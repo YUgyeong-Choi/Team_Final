@@ -49,8 +49,43 @@ HRESULT Engine::CInput_Device::Initialize(HINSTANCE hInst, HWND hWnd)
 
 void Engine::CInput_Device::Update(void)
 {
+	memcpy(m_byPrevKeyState, m_byKeyState, sizeof(m_byKeyState));
 	m_pKeyBoard->GetDeviceState(256, m_byKeyState);
+
+	m_tPrevMouseState = m_tMouseState;
 	m_pMouse->GetDeviceState(sizeof(m_tMouseState), &m_tMouseState);
+
+	m_lWheelDelta = m_tMouseState.lZ;
+}
+
+_bool CInput_Device::Key_Down(_byte byKeyID)
+{
+	return !(m_byPrevKeyState[byKeyID] & 0x80) && (m_byKeyState[byKeyID] & 0x80);
+}
+
+_bool CInput_Device::Key_Up(_byte byKeyID)
+{
+	return (m_byPrevKeyState[byKeyID] & 0x80) && !(m_byKeyState[byKeyID] & 0x80);
+}
+
+_bool CInput_Device::Key_Pressing(_byte byKeyID)
+{
+	return m_byKeyState[byKeyID] & 0x80;
+}
+
+_bool CInput_Device::Mouse_Down(DIM eMouseBtn)
+{
+	return !(m_tPrevMouseState.rgbButtons[ENUM_CLASS(eMouseBtn)] & 0x80) && (m_tMouseState.rgbButtons[ENUM_CLASS(eMouseBtn)] & 0x80);
+}
+
+_bool CInput_Device::Mouse_Up(DIM eMouseBtn)
+{
+	return (m_tPrevMouseState.rgbButtons[ENUM_CLASS(eMouseBtn)] & 0x80) && !(m_tMouseState.rgbButtons[ENUM_CLASS(eMouseBtn)] & 0x80);
+}
+
+_bool CInput_Device::Mouse_Pressing(DIM eMouseBtn)
+{
+	return m_tMouseState.rgbButtons[ENUM_CLASS(eMouseBtn)] & 0x80;
 }
 
 CInput_Device* CInput_Device::Create(HINSTANCE hInstance, HWND hWnd)

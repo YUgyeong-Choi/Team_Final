@@ -44,6 +44,12 @@ private:
 public:
 	HRESULT Loading_For_Logo();
 	HRESULT Loading_For_GamePlay();
+	HRESULT Loading_For_DH();
+	HRESULT Loading_For_JW();
+	HRESULT Loading_For_GL();
+	HRESULT Loading_For_YW();
+	HRESULT Loading_For_CY();
+	HRESULT Loading_For_YG();
 
 
 public:

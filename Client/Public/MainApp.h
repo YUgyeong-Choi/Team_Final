@@ -34,7 +34,7 @@ private:
 #endif
 
 public:
-	HRESULT Ready_Gara();
+	HRESULT Ready_Fonts();
 	HRESULT Ready_Prototype_Component();
 	HRESULT Start_Level(LEVEL eStartLevel);
 

@@ -21,9 +21,9 @@ public:
 protected:
 	ID3D11Buffer* m_pVB = { nullptr };
 	ID3D11Buffer* m_pIB = { nullptr };
-
 protected:
-	_float3*					m_pVertexPositions = {};
+	_float3* m_pVertexPositions = {};
+	_uint* m_pIndices = {};
 
 protected:
 	_uint						m_iNumVertices = {};

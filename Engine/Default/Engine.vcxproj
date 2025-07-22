@@ -130,8 +130,8 @@
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <PostBuildEvent>
-      <Command>CALL $(SolutionDir)\UpdateLib.bat
-CD $(SolutionDir)</Command>
+      <Command>CD $(SolutionDir)
+CALL $(SolutionDir)\UpdateLib.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,17 +162,17 @@ CD $(SolutionDir)</Command>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\public\Animation.h" />
+    <ClInclude Include="..\Public\Animation.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\BlendObject.h" />
-    <ClInclude Include="..\public\Bone.h" />
+    <ClInclude Include="..\Public\Bone.h" />
     <ClInclude Include="..\public\Bounding.h" />
     <ClInclude Include="..\public\Bounding_AABB.h" />
     <ClInclude Include="..\Public\Bounding_OBB.h" />
     <ClInclude Include="..\Public\Bounding_Sphere.h" />
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\public\Cell.h" />
-    <ClInclude Include="..\public\Channel.h" />
+    <ClInclude Include="..\Public\Channel.h" />
     <ClInclude Include="..\public\Collider.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\public\ContainerObject.h" />
@@ -195,9 +195,9 @@ CD $(SolutionDir)</Command>
     <ClInclude Include="..\Public\Level_Manager.h" />
     <ClInclude Include="..\public\Light.h" />
     <ClInclude Include="..\public\Light_Manager.h" />
-    <ClInclude Include="..\public\Material.h" />
-    <ClInclude Include="..\public\Mesh.h" />
-    <ClInclude Include="..\public\Model.h" />
+    <ClInclude Include="..\Public\Material.h" />
+    <ClInclude Include="..\Public\Mesh.h" />
+    <ClInclude Include="..\Public\Model.h" />
     <ClInclude Include="..\public\Navigation.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\PartObject.h" />
@@ -232,17 +232,17 @@ CD $(SolutionDir)</Command>
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\private\Animation.cpp" />
+    <ClCompile Include="..\Private\Animation.cpp" />
     <ClCompile Include="..\Private\Base.cpp" />
     <ClCompile Include="..\Private\BlendObject.cpp" />
-    <ClCompile Include="..\private\Bone.cpp" />
+    <ClCompile Include="..\Private\Bone.cpp" />
     <ClCompile Include="..\private\Bounding.cpp" />
     <ClCompile Include="..\private\Bounding_AABB.cpp" />
     <ClCompile Include="..\Private\Bounding_OBB.cpp" />
     <ClCompile Include="..\Private\Bounding_Sphere.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\private\Cell.cpp" />
-    <ClCompile Include="..\private\Channel.cpp" />
+    <ClCompile Include="..\Private\Channel.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\ContainerObject.cpp" />
@@ -260,9 +260,9 @@ CD $(SolutionDir)</Command>
     <ClCompile Include="..\Private\Level_Manager.cpp" />
     <ClCompile Include="..\private\Light.cpp" />
     <ClCompile Include="..\private\Light_Manager.cpp" />
-    <ClCompile Include="..\private\Material.cpp" />
-    <ClCompile Include="..\private\Mesh.cpp" />
-    <ClCompile Include="..\private\Model.cpp" />
+    <ClCompile Include="..\Private\Material.cpp" />
+    <ClCompile Include="..\Private\Mesh.cpp" />
+    <ClCompile Include="..\Private\Model.cpp" />
     <ClCompile Include="..\private\Navigation.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\PartObject.cpp" />

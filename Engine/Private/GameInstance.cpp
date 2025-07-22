@@ -310,6 +310,46 @@ _long CGameInstance::Get_DIMouseMove(DIMM eMouseState)
 {
 	return m_pInput_Device->Get_DIMouseMove(eMouseState);
 }
+
+_bool CGameInstance::Key_Down(_byte byKeyID)
+{
+	return m_pInput_Device->Key_Down(byKeyID);
+}
+
+_bool CGameInstance::Key_Up(_byte byKeyID)
+{
+	return m_pInput_Device->Key_Up(byKeyID);
+}
+
+_bool CGameInstance::Key_Pressing(_byte byKeyID)
+{
+	return m_pInput_Device->Key_Pressing(byKeyID);
+}
+
+_bool CGameInstance::Mouse_Down(DIM eMouseBtn)
+{
+	if (!m_pInput_Device)
+	{
+		OutputDebugStringA("m_pInput_Device is null!\n");
+		return false;
+	}
+	return m_pInput_Device->Mouse_Down(eMouseBtn);
+}
+
+_bool CGameInstance::Mouse_Up(DIM eMouseBtn)
+{
+	return m_pInput_Device->Mouse_Up(eMouseBtn);
+}
+
+_bool CGameInstance::Mouse_Pressing(DIM eMouseBtn)
+{
+	return m_pInput_Device->Mouse_Pressing(eMouseBtn);
+}
+
+_long CGameInstance::Get_DIMouseWheelDelta()
+{
+	return m_pInput_Device->Get_DIMouseWheelDelta();
+}
 #pragma endregion
 
 #pragma region LIGHT_MANAGER

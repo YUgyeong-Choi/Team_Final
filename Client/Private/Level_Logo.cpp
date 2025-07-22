@@ -21,10 +21,40 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Update(_float fTimeDelta)
 {
-	if (GetKeyState(VK_RETURN) & 0x8000)
+	
+	if(m_pGameInstance->Key_Down(DIK_F1))
 	{
-		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::GAMEPLAY))))
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::DH))))
+			return;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F2))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::JW))))
+			return;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F3))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::GL))))
+			return;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F4))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::YW))))
+			return;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F5))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::CY))))
+			return;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F6))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::YG))))
 			return;
 	}
 }

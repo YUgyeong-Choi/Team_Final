@@ -13,7 +13,7 @@ CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CModel::CModel(const CModel& Prototype)
-	: CComponent { Prototype }	
+	: CComponent ( Prototype )
 	, m_iNumMeshes { Prototype.m_iNumMeshes }
 	, m_Meshes { Prototype.m_Meshes }
 	, m_iNumMaterials { Prototype.m_iNumMaterials }
@@ -38,22 +38,6 @@ CModel::CModel(const CModel& Prototype)
 
 }
 
-const _float4x4* CModel::Get_BoneMatrix(const _char* pBoneName) const
-{	
-	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
-	{
-			if (true == pBone->Compare_Name(pBoneName))
-				return true;
-			return false;		
-	});
-
-	if (iter == m_Bones.end())
-		return nullptr;
-
-	return (*iter)->Get_CombinedTransformationMatrix();	
-	
-}
-
 HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uint iMeshIndex, aiTextureType eType, _uint iTextureIndex)
 {
 	if (iMeshIndex >= m_iNumMeshes)
@@ -73,34 +57,25 @@ HRESULT CModel::Bind_Bone_Matrices(CShader* pShader, const _char* pConstantName,
 }
 
 HRESULT CModel::Initialize_Prototype(MODEL eType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
-{	
-
+{
 	_uint		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 	
 	if (MODEL::NONANIM == eType)
 		iFlag |= aiProcess_PreTransformVertices;
 
-	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
+	//m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
 
-	if (nullptr == m_pAIScene)
-		return E_FAIL;
+	//if (nullptr == m_pAIScene)
+	//	return E_FAIL;
 
 	XMStoreFloat4x4(&m_PreTransformMatrix, PreTransformMatrix);
 
 	m_eType = eType;
 
-	if (FAILED(Ready_Bones(m_pAIScene->mRootNode, -1)))
-		return E_FAIL;
+	// 뼈 머태리얼 메쉬 애니메이션 읽고 생성
+	Read_BinaryFBX(pModelFilePath); 
 
-	if (FAILED(Ready_Meshes()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Materials(pModelFilePath)))
-		return E_FAIL;
-
-	/* 각 애니메이션 마다 이용하고 있는 뼈대들의 시간에 맞는 상태값들을 미리 읽어서 저장해둔다. */
-	if (FAILED(Ready_Animations()))
-		return E_FAIL;
+	//Read_OriginalFBX(pModelFilePath);
 
 	return S_OK;
 }
@@ -121,31 +96,54 @@ HRESULT CModel::Render(_uint iMeshIndex)
 _bool CModel::Play_Animation(_float fTimeDelta)
 {
 	_bool		isFinished = { false };
-	/* 1. 현재 애니메이션에 맞는 뼈의 상태를 읽어와서 뼈의 TrnasformationMatrix를 갱신해준다. */
-	isFinished  = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
+ 
+	isFinished = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
 
-	/* 2. 전체 뼐르 순회하면서 뼈들의 ColmbinedTransformationMatixf를 부모에서부터 자식으로 갱신해주낟. */
 	for (auto& pBone : m_Bones)
 	{
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 	}
 
-	/*XMMatrixDecompose()*/
 
 	return isFinished;
 }
 
+void CModel::Set_Animation(_uint iIndex, _bool isLoop)
+{
+	if (iIndex >= m_Animations.size())
+		return;
 
+	m_iCurrentAnimIndex = iIndex;
+	m_isLoop = isLoop;
+}
+
+void CModel::Set_Animation_TickPerSecond(_uint iIndex, _float fTickPerSecond)
+{
+	if (iIndex >= m_iNumAnimations)
+		return;
+	m_Animations[iIndex]->Set_TickPerSecond(fTickPerSecond);
+}
+
+void CModel::Set_Animation_TickPerSecond_All(_float fTickPerSecond)
+{
+	for (auto& pAnim : m_Animations)
+		pAnim->Set_TickPerSecond(fTickPerSecond);
+}
+
+void CModel::Reset_CurAnimationFrame()
+{
+	m_Animations[m_iCurrentAnimIndex]->Reset();
+}
 
 HRESULT CModel::Ready_Bones(const aiNode* pAINode, _int iParentBoneIndex)
-{	
+{
 	CBone* pBone = CBone::Create(pAINode, iParentBoneIndex);
 	if (nullptr == pBone)
 		return E_FAIL;
 
-	m_Bones.push_back(pBone);	
+	m_Bones.push_back(pBone);
 
-	_int		iParentIndex = m_Bones.size() - 1;
+	_int		iParentIndex = (_int)m_Bones.size() - 1;
 
 	for (size_t i = 0; i < pAINode->mNumChildren; i++)
 	{
@@ -182,6 +180,189 @@ HRESULT CModel::Ready_Materials(const _char* pModelFilePath)
 
 		m_Materials.push_back(pMaterial);
 	}
+	return S_OK;
+}
+
+HRESULT CModel::Read_BinaryFBX(const string& filepath)
+{
+	ifstream ifs(filepath, ios::binary);
+	if (!ifs.is_open()) {
+		MSG_BOX("너는 파일 열기도 못하는구나");
+		return E_FAIL;
+	}
+
+	if (m_eType == MODEL::ANIM)
+	{
+		if (FAILED(Ready_Bones(ifs)))
+			return E_FAIL;
+	}
+
+	if (FAILED(Ready_Meshes(ifs)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Materials(ifs, filepath.c_str())))
+		return E_FAIL;
+
+	if (m_eType == MODEL::ANIM)
+	{
+		if (FAILED(Ready_Animations(ifs)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Ready_Bones(ifstream& ifs)
+{
+	_uint BonesSize = {};
+	ifs.read(reinterpret_cast<_char*>(&BonesSize), sizeof(_uint));
+	m_Bones.reserve(BonesSize);
+	for (size_t i = 0; i < BonesSize; i++)
+	{
+		CBone* pBone = CBone::Create(ifs);
+		if (nullptr == pBone)
+			return E_FAIL;
+		m_Bones.push_back(pBone);
+	}
+	return S_OK;
+}
+
+HRESULT CModel::Ready_Meshes( ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<_char*>(&m_iNumMeshes), sizeof(_uint));  // 메쉬 몇개읨 
+
+	for (size_t i = 0; i < m_iNumMeshes; i++)
+	{
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eType, ifs, m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+		if (nullptr == pMesh)
+			return E_FAIL;
+
+		m_Meshes.push_back(pMesh);
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Ready_Materials( ifstream& ifs, const _char* pModelFilePath)
+{
+	ifs.read(reinterpret_cast<_char*>(&m_iNumMaterials), sizeof(_uint));  // 머테리얼 몇개읨 
+
+	for (size_t i = 0; i < m_iNumMaterials; i++)
+	{
+		CMaterial* pMaterial = CMaterial::Create(m_pDevice, m_pContext, pModelFilePath, ifs);
+		if (nullptr == pMaterial)
+			return E_FAIL;
+
+		m_Materials.push_back(pMaterial);
+	}
+	return S_OK;
+}
+
+HRESULT CModel::Ready_Animations(ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<_char*>(&m_iNumAnimations), sizeof(_uint));  // 애니메이션 몇개읨 
+
+  	_uint iRootBoneIdx = Find_BoneIndex("Root_$AssimpFbx$_Translation");
+	if (iRootBoneIdx == m_Bones.size())
+	{
+		iRootBoneIdx = Find_BoneIndex("Root");
+	}
+
+	for (size_t i = 0; i < m_iNumAnimations; i++)
+	{
+ 		CAnimation* pAnimation = CAnimation::Create(ifs, m_Bones, iRootBoneIdx);
+		if (nullptr == pAnimation)
+			return E_FAIL;
+
+		m_Animations.push_back(pAnimation);
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CModel::Add_Animations(const string& filepath)
+{
+	ifstream ifs(filepath, ios::binary);
+
+	if (!ifs.is_open())
+		return E_FAIL;
+	
+	_uint iAdditionalNumAnimations = {};
+
+	_uint iRootBoneIdx = Find_BoneIndex("Root");
+
+	ifs.read(reinterpret_cast<_char*>(&iAdditionalNumAnimations), sizeof(_uint));  // 애니메이션 몇개읨 
+
+	for (size_t i = 0; i < iAdditionalNumAnimations; i++)
+	{
+		CAnimation* pAnimation = CAnimation::Create(ifs, m_Bones, iRootBoneIdx);
+		if (nullptr == pAnimation)
+			return E_FAIL;
+
+		m_Animations.push_back(pAnimation);
+	}
+
+	return S_OK;
+}
+
+_uint CModel::Find_BoneIndex(const _char* srcName)
+{
+	_uint iBoneIndex = {};
+	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
+	{
+		if (true == pBone->Compare_Name(srcName))
+			return true;
+
+		++iBoneIndex;
+
+		return false;
+	});
+	return iBoneIndex;
+}
+
+const _float4x4* CModel::Get_CombinedTransformationMatrix(_uint iBoneIndex)
+{
+	return m_Bones[iBoneIndex]->Get_CombinedTransformationMatrix();
+}
+
+const _float4x4* CModel::Get_TransformationMatrix(_uint iBoneIndex)
+{
+	return m_Bones[iBoneIndex]->Get_TransformationMatrix();
+}
+
+HRESULT CModel::Set_BoneMatrix(_uint iBoneIndex, _fmatrix matTransform)
+{
+	if (iBoneIndex > m_Bones.size())
+		return E_FAIL;
+	m_Bones[iBoneIndex]->Set_TransformationMatrix(matTransform);
+	return S_OK;
+}
+
+const _float CModel::Get_CurrentTrackPosition()
+{
+	return 	m_Animations[m_iCurrentAnimIndex]->Get_CurrentTrackPosition();
+}
+
+const _float CModel::Get_Duration()
+{
+	return 	m_Animations[m_iCurrentAnimIndex]->Get_Duration();
+}
+
+HRESULT CModel::Read_OriginalFBX(const string& filepath)
+{
+	if (FAILED(Ready_Bones(m_pAIScene->mRootNode, -1)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Meshes()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Materials(filepath.c_str())))
+		return E_FAIL;
+
+	/* 각 애니메이션 마다 이용하고 있는 뼈대들의 시간에 맞는 상태값들을 미리 읽어서 저장해둔다. */
+	if (FAILED(Ready_Animations()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -242,6 +423,11 @@ void CModel::Free()
 	for (auto& pAnimation : m_Animations)
 		Safe_Release(pAnimation);
 	m_Animations.clear();
+
+	for (auto& pBone : m_Bones)
+		Safe_Release(pBone);
+	m_Bones.clear();
+
 
 	m_Importer.FreeScene();
 }

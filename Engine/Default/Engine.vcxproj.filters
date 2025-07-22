@@ -88,24 +88,6 @@
     <ClInclude Include="..\Public\Input_Device.h">
       <Filter>00.System\01.Device\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Model.h">
-      <Filter>01.Utility\04.Components\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Mesh.h">
-      <Filter>01.Utility\04.Components\Model\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Material.h">
-      <Filter>01.Utility\04.Components\Model\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Bone.h">
-      <Filter>01.Utility\04.Components\Model\Bone</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Animation.h">
-      <Filter>01.Utility\04.Components\Model\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Channel.h">
-      <Filter>01.Utility\04.Components\Model\Animation\Channel</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Light.h">
       <Filter>01.Utility\07.Lights</Filter>
     </ClInclude>
@@ -205,6 +187,24 @@
     <ClInclude Include="..\Public\PhysXStaticActor.h">
       <Filter>01.Utility\04.Components\PhysX\StaticActor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Animation.h">
+      <Filter>01.Utility\04.Components\Model\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Channel.h">
+      <Filter>01.Utility\04.Components\Model\Animation\Channel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bone.h">
+      <Filter>01.Utility\04.Components\Model\Bone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Material.h">
+      <Filter>01.Utility\04.Components\Model\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>01.Utility\04.Components\Model\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>01.Utility\04.Components\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -278,24 +278,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Input_Device.cpp">
       <Filter>00.System\01.Device\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Model.cpp">
-      <Filter>01.Utility\04.Components\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Mesh.cpp">
-      <Filter>01.Utility\04.Components\Model\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Material.cpp">
-      <Filter>01.Utility\04.Components\Model\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Bone.cpp">
-      <Filter>01.Utility\04.Components\Model\Bone</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Animation.cpp">
-      <Filter>01.Utility\04.Components\Model\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Channel.cpp">
-      <Filter>01.Utility\04.Components\Model\Animation\Channel</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Light.cpp">
       <Filter>01.Utility\07.Lights</Filter>
@@ -389,6 +371,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\PhysXStaticActor.cpp">
       <Filter>01.Utility\04.Components\PhysX\StaticActor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Animation.cpp">
+      <Filter>01.Utility\04.Components\Model\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Channel.cpp">
+      <Filter>01.Utility\04.Components\Model\Animation\Channel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bone.cpp">
+      <Filter>01.Utility\04.Components\Model\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Material.cpp">
+      <Filter>01.Utility\04.Components\Model\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>01.Utility\04.Components\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>01.Utility\04.Components\Model\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

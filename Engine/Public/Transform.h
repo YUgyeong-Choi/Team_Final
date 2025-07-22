@@ -38,12 +38,11 @@ public:
 		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[ENUM_CLASS(eState)]), vState);
 	}
 
-
-
+	void Set_SpeedPreSec(_float _fSpeeed) { m_fSpeedPerSec = _fSpeeed;}
+	void Set_RotationPreSec(_float _fSpeeed) { m_fRotationPerSec = _fSpeeed; }
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
-
 
 public:
 	void Scaling(_float fX = 1.f, _float fY = 1.f, _float fZ = 1.f);
@@ -61,7 +60,6 @@ public:
 
 public:
 	void LookAt(_fvector vAt);
-	
 
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName);

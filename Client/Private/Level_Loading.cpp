@@ -5,6 +5,13 @@
 #include "Level_Logo.h"
 #include "Loader.h"
 
+#include "Level_DH.h"
+#include "Level_JW.h"
+#include "Level_YW.h"
+#include "Level_GL.h"
+#include "Level_CY.h"
+#include "Level_YG.h"
+
 #include "GameInstance.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -32,7 +39,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 void CLevel_Loading::Update(_float fTimeDelta)
 {
 
-	if (GetKeyState(VK_SPACE) & 0x8000)
+	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 		if (true == m_pLoader->isFinished())
 		{
@@ -45,6 +52,24 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				break;
 			case LEVEL::GAMEPLAY:
 				pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::DH:
+				pLevel = CLevel_DH::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::JW:
+				pLevel = CLevel_JW::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::GL:
+				pLevel = CLevel_GL::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::YW:
+				pLevel = CLevel_YW::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::CY:
+				pLevel = CLevel_CY::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::YG:
+				pLevel = CLevel_YG::Create(m_pDevice, m_pContext);
 				break;
 			}
 

@@ -70,9 +70,16 @@ public:
 #pragma endregion
 
 #pragma region INPUT_DEVICE
-	_byte	Get_DIKeyState(_ubyte byKeyID);
-	_byte	Get_DIMouseState(DIM eMouse);	
-	_long	Get_DIMouseMove(DIMM eMouseState);
+	_byte Get_DIKeyState(_ubyte byKeyID);
+	_byte Get_DIMouseState(DIM eMouse);
+	_long Get_DIMouseMove(DIMM eMouseState);
+	_bool Key_Down(_byte byKeyID);
+	_bool Key_Up(_byte byKeyID);
+	_bool Key_Pressing(_byte byKeyID);
+	_bool Mouse_Down(DIM eMouseBtn);
+	_bool Mouse_Up(DIM eMouseBtn);
+	_bool Mouse_Pressing(DIM eMouseBtn);
+	_long Get_DIMouseWheelDelta();
 #pragma endregion
 
 #pragma region LIGHT_MANAGER

@@ -4,30 +4,28 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_LightViewMatrix, g_LightProjMatrix;
 matrix g_ViewMatrixInv, g_ProjMatrixInv;
-Texture2D g_RenderTargetTexture;
-Texture2D g_NormalTexture;
-Texture2D g_DiffuseTexture;
-Texture2D g_EmissiveTexture;
-Texture2D g_ShadeTexture;
-Texture2D g_DepthTexture;
-Texture2D g_SpecularTexture;
-Texture2D g_ShadowTexture;
+texture2D g_RenderTargetTexture;
+texture2D g_NormalTexture;
+texture2D g_DiffuseTexture;
+texture2D g_ShadeTexture;
+texture2D g_DepthTexture;
+texture2D g_SpecularTexture;
+texture2D g_ShadowTexture;
 
-Texture2D g_FinalTexture;
-Texture2D g_BlurXTexture;
+texture2D g_FinalTexture;
+texture2D g_BlurXTexture;
 
 vector g_vLightDir;
 vector g_vLightPos;
 float g_fLightRange;
 vector g_vLightDiffuse;
-vector g_vLightAmbient;
+float  g_fLightAmbient;
 vector g_vLightSpecular;
 
 float  g_fMtrlAmbient = 1.f;
 vector g_vMtrlSpecular = 1.f;
 
 vector g_vCamPosition;
-
 
 struct VS_IN
 {
@@ -92,12 +90,12 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
     
-    vector fShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_vLightAmbient * g_fMtrlAmbient);
+    float fShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_fLightAmbient * g_fMtrlAmbient);
     
     Out.vShade = g_vLightDiffuse * saturate(fShade);
     
     vector  vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);    
-    float fViewZ = vDepthDesc.y * 1000.f;
+    float fViewZ = vDepthDesc.y * 500.f;
     
     vector vWorldPos;
     
@@ -116,9 +114,8 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     vector vReflect = reflect(normalize(g_vLightDir), vNormal);
     vector vLook = vWorldPos - g_vCamPosition;
     
-    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 100.f);
+    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 50.f);
     
-    Out.vSpecular = min(Out.vSpecular, 0.5f);
     
     return Out;
 }
@@ -133,7 +130,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     
         
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y * 1000.f;
+    float fViewZ = vDepthDesc.y * 500.f;
     
     vector vWorldPos;
     
@@ -153,19 +150,21 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     
     float fAtt = (g_fLightRange - length(vLightDir)) / g_fLightRange;
     
-    vector fShade = max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) + (g_vLightAmbient * g_fMtrlAmbient);
+    float fShade = max(dot(normalize(vLightDir) * -1.f, vNormal), 0.f) + (g_fLightAmbient * g_fMtrlAmbient);
     
     Out.vShade = g_vLightDiffuse * saturate(fShade) * fAtt;
     
     vector vReflect = reflect(normalize(vLightDir), vNormal);
     vector vLook = vWorldPos - g_vCamPosition;
     
-    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 100.f) * fAtt;
+    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 50.f) * fAtt;
     
-    Out.vSpecular = min(Out.vSpecular, 0.5f);
     
     return Out;
 }
+
+
+
 
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
@@ -182,14 +181,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     Out.vBackBuffer = vDiffuse * vShade + vSpecular;
     
-    vector vEmissive = g_EmissiveTexture.Sample(DefaultSampler, In.vTexcoord);
-    
-    Out.vBackBuffer.rgb += vEmissive.rgb;
     
     
     
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y * 1000.f;
+    float fViewZ = vDepthDesc.y * 500.f;
     
     vector vPosition;
 
@@ -213,34 +209,18 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vTexcoord.y = vPosition.y / vPosition.w * -0.5f + 0.5f;    
     
     float4  vOldDepthDesc = g_ShadowTexture.Sample(DefaultSampler, vTexcoord);
-    float fOldViewZ = vOldDepthDesc.y * 1000.f;
+    float fOldViewZ = vOldDepthDesc.y * 500.f;
     
-    if (fOldViewZ + 10.f < vPosition.w)
-        Out.vBackBuffer = Out.vBackBuffer * 0.6f;
+    if (fOldViewZ + 0.1f < vPosition.w)
+        Out.vBackBuffer = Out.vBackBuffer * 0.5f;
     
     return Out;    
 }
 
 
-float g_f13Weights[13] =
+float g_fWeights[13] =
 {
     0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231, 1.f, 0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
-};
-
-
-float g_f7Weights[7] =
-{
-    0.0702, 0.1315, 0.1900, 0.2166, 0.1900, 0.1315, 0.0702 
-};
-
-float g_f21Weights[21] =
-{
-    0.0022, 0.0045, 0.0083, 0.0144, 0.0234,
-    0.0356, 0.0505, 0.0669, 0.0831, 0.0973,
-    0.1070,
-    0.1110, 0.1070, 0.0973, 0.0831,
-    0.0669, 0.0505, 0.0356, 0.0234, 0.0144,
-    0.0083
 };
 
 struct PS_OUT_BLUR
@@ -258,23 +238,13 @@ PS_OUT_BLUR PS_MAIN_BLURX(PS_IN In)
     
     for (int i = -6; i < 7; ++i)
     {
-        vTexcoord.x = In.vTexcoord.x + i * 1.f / 1280.f;
+        vTexcoord.x = In.vTexcoord.x + i / 1280.f;
         vTexcoord.y = In.vTexcoord.y;
-    
-        Out.vColor += g_f13Weights[i + 6] * g_FinalTexture.Sample(LinearClampSampler, vTexcoord);
+  
+        Out.vColor += g_fWeights[i + 6] * g_FinalTexture.Sample(LinearClampSampler, vTexcoord);
     }
-    Out.vColor /= 7.9808f;
-    
-    
-    //for (int i = -10; i < 11; ++i)
-    //{
-    //    vTexcoord.x = In.vTexcoord.x + i * 2.f/ 1280.f;
-    //    vTexcoord.y = In.vTexcoord.y;
-    //
-    //    Out.vColor += g_f21Weights[i + 10] * g_FinalTexture.Sample(LinearClampSampler, vTexcoord);
-    //}
-    
-    
+
+    Out.vColor /= 6.0f;
     
     return Out;
 }
@@ -290,33 +260,19 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     for (int i = -6; i < 7; ++i)
     {
         vTexcoord.x = In.vTexcoord.x;
-        vTexcoord.y = In.vTexcoord.y + i * 1.f / 720.f;
-    
-        Out.vBackBuffer += g_f13Weights[i + 6] * g_BlurXTexture.Sample(LinearClampSampler, vTexcoord);
+        vTexcoord.y = In.vTexcoord.y + i / 720.f;
+  
+        Out.vBackBuffer += g_fWeights[i + 6] * g_BlurXTexture.Sample(LinearClampSampler, vTexcoord);
     }
-    
-    Out.vBackBuffer /= 7.9808f;
 
-
-    //for (int i = -10; i < 11; ++i)
-    //{
-    //    vTexcoord.x = In.vTexcoord.x;
-    //    vTexcoord.y = In.vTexcoord.y + i * 2.f / 720.f;
-    //
-    //    Out.vBackBuffer += g_f21Weights[i + 10] * g_FinalTexture.Sample(LinearClampSampler, vTexcoord);
-    //}
-    
-    Out.vBackBuffer *= 2.f;
+    Out.vBackBuffer /= 6.0f;
     
     return Out;
 }
 
-
-
-
 technique11 DefaultTechnique
 {
-    pass Debug //0
+    pass Debug 
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -328,7 +284,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DEBUG();
     }
 
-    pass Light_Directional//1
+    pass Light_Directional
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -340,7 +296,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_LIGHT_DIRECTIONAL();
     }
 
-    pass Light_Point//2
+    pass Light_Point
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -352,7 +308,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_LIGHT_POINT();
     }
 
-    pass Deferred//3
+    pass Deferred
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -364,18 +320,18 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DEFERRED();
     }
 
-    pass BlurX//4
+    pass BlurX
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);        
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_BLURX();
     }
 
-    pass BlurY//5
+    pass BlurY
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);

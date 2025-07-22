@@ -8,7 +8,7 @@ CCamera_Free::CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CCamera_Free::CCamera_Free(const CCamera_Free& Prototype)
-	: CCamera { Prototype }
+	: CCamera ( Prototype )
 {
 
 }
@@ -41,21 +41,29 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-	// if (GetKeyState('A') & 0x8000)
-	if(m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	// 달리기 여부 체크
+	m_bSprint = (m_pGameInstance->Key_Pressing(DIK_LSHIFT)) != 0;
+
+	// 속도 설정
+	if (m_bSprint)
+		m_pTransformCom->Set_SpeedPreSec(100.f);
+	else
+		m_pTransformCom->Set_SpeedPreSec(10.f);
+
+	if (m_pGameInstance->Key_Pressing(DIK_A))
 	{
 		m_pTransformCom->Go_Left(fTimeDelta);
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	if (m_pGameInstance->Key_Pressing(DIK_D))
 	{
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}
-	if (m_pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	if (m_pGameInstance->Key_Pressing(DIK_W))
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
-	if (m_pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+	if (m_pGameInstance->Key_Pressing(DIK_S))
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
@@ -72,14 +80,24 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * m_fSensor);
 	}
 
-
-
 	__super::Bind_Matrices();
 }
 
 void CCamera_Free::Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON)) {
+		_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
 
+		_float3 vPos;
+		XMStoreFloat3(&vPos, pos);
+		printf("Camera Position: x = %.2f, y = %.2f, z = %.2f\n", vPos.x, vPos.y, vPos.z);
+
+		_vector look = m_pTransformCom->Get_State(STATE::LOOK);
+
+		_float3 vLook;
+		XMStoreFloat3(&vLook, look);
+		printf("Camera Look: x = %.2f, y = %.2f, z = %.2f\n", vLook.x, vLook.y, vLook.z);
+	}
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)
