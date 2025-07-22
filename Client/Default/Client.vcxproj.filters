@@ -70,6 +70,12 @@
     <Filter Include="01.Levels\LevelGL">
       <UniqueIdentifier>{114caee8-9a92-40b8-9edf-32778d06ccda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98.Default\Imgui">
+      <UniqueIdentifier>{616b9833-a47a-4eff-b72f-3d608893f527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Default\Imgui\Backend">
+      <UniqueIdentifier>{624280e6-f79c-4cda-87dc-3b5155cfa85e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -138,6 +144,42 @@
     <ClInclude Include="..\Public\Level_GL.h">
       <Filter>01.Levels\LevelGL</Filter>
     </ClInclude>
+    <ClInclude Include="imgui\backends\imgui_impl_dx11.h">
+      <Filter>98.Default\Imgui\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\backends\imgui_impl_win32.h">
+      <Filter>98.Default\Imgui\Backend</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\ImGuiFileDialog.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\ImGuiFileDialogConfig.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\ImGuizmo.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\dirent\dirent.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -203,6 +245,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_GL.cpp">
       <Filter>01.Levels\LevelGL</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\backends\imgui_impl_win32.cpp">
+      <Filter>98.Default\Imgui\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>98.Default\Imgui\Backend</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\ImGuiFileDialog.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\ImGuizmo.cpp">
+      <Filter>98.Default\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
