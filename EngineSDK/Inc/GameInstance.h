@@ -117,6 +117,13 @@ public:
 	_bool isIn_Frustum_LocalSpace(_fvector vLocalPos, _float fRange);
 #pragma region
 
+#pragma region PHYSX_MANAGER
+	PxTriangleMeshGeometry CookTriangleMesh(const PxVec3* vertices, PxU32 vertexCount, const PxU32* indices, PxU32 triangleCount, PxMeshScale geomScale);
+	PxConvexMeshGeometry CookConvexMesh(const PxVec3* vertices, PxU32 vertexCount, PxMeshScale geomScale);
+	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
+	PxScene* Get_Scene();
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -132,7 +139,7 @@ private:
 	class CPicking*				m_pPicking = { nullptr };
 	class CShadow*				m_pShadow = { nullptr };
 	class CFrustum*				m_pFrustum = { nullptr };
-
+	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 public:
 	void Release_Engine();
 	virtual void Free() override;

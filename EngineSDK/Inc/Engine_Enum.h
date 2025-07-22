@@ -12,5 +12,11 @@ namespace Engine
 
 	enum class PROTOTYPE { TYPE_GAMEOBJECT, TYPE_COMPONENT };
 	enum class STATE { RIGHT, UP, LOOK, POSITION, END };
+
+
+	enum class WorldFilter //일단 무시하셈
+	{
+		PERSON, STATIC, LOOT, RESOURCES, ITEMS, PREVIEW, BUILDING, EFFECT, ANIMAL
+	};
 	
 }

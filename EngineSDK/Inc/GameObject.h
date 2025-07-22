@@ -20,7 +20,6 @@ protected:
 public:
 	CComponent* Get_Component(const _wstring& strComponentTag);
 	
-
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -30,7 +29,13 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT Render_Shadow() { return S_OK; }
 
-	
+	virtual void On_CollisionEnter(CGameObject* pOther) {}
+	virtual void On_CollisionStay(CGameObject* pOther) {}
+	virtual void On_CollisionExit(CGameObject* pOther) {}
+
+	// Ray로 인항 충돌을 하면 On_Hit를 호출함 (HitPos & HitNormal을 가지고 올 수 있음)
+	virtual void On_Hit(_int iDamage, _float3 HitPos) {}
+	virtual void On_Trigger() {}
 
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
