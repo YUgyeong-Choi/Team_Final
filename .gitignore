@@ -18,7 +18,6 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
 
 # Fortran module files
 *.mod
@@ -28,7 +27,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
@@ -434,6 +432,5 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudio
-Client/Bin/Resources/Map/Supermarket/supermarket/supermarket.fbx
-Client/Bin/Resources/Map/test/supermarket/supermarket.fbx
-Client/Bin/Client.pdb
+FBXConverter/Bin/PhysXGpu_64.dll
+Client/Bin/PhysXGpu_64.dll
