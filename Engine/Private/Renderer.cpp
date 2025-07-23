@@ -135,8 +135,8 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_BackBuffer()))
 		return E_FAIL;
 
-	//if (FAILED(Render_Blur()))
-	//	return E_FAIL;
+	if (FAILED(Render_Blur()))
+		return E_FAIL;
 
 	if (FAILED(Render_NonLight()))
 		return E_FAIL;
@@ -178,7 +178,7 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pDebugCom)
 
 HRESULT CRenderer::Render_Priority()
 {
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"));
+	//m_pGameInstance->Begin_MRT(TEXT("MRT_Final"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_PRIORITY)])
 	{
@@ -189,7 +189,7 @@ HRESULT CRenderer::Render_Priority()
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_PRIORITY)].clear();
 
-	m_pGameInstance->End_MRT();
+	//m_pGameInstance->End_MRT();
 
 	return S_OK;
 }

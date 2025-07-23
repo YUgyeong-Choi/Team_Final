@@ -154,7 +154,6 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
@@ -167,7 +166,7 @@
     <ClInclude Include="..\Public\AnimTool.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
-    <ClInclude Include="..\Public\Level_GamePlay.h" />
+    <ClInclude Include="..\Public\Level_KratCentralStation.h" />
     <ClInclude Include="..\Public\Level_GL.h" />
     <ClInclude Include="..\Public\Level_JW.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -176,10 +175,15 @@
     <ClInclude Include="..\Public\Level_YW.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\MapTool.h" />
     <ClInclude Include="..\Public\MySequence.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\StaticMesh.h" />
+    <ClInclude Include="..\public\Static_UI.h" />
+    <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_Calculation.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="imgui\backends\imgui_impl_win32.h" />
@@ -200,7 +204,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\CYTool.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
@@ -210,7 +213,7 @@
     <ClCompile Include="..\Private\AnimTool.cpp" />
     <ClCompile Include="..\Private\Level_CY.cpp" />
     <ClCompile Include="..\Private\Level_DH.cpp" />
-    <ClCompile Include="..\Private\Level_GamePlay.cpp" />
+    <ClCompile Include="..\Private\Level_KratCentralStation.cpp" />
     <ClCompile Include="..\Private\Level_GL.cpp" />
     <ClCompile Include="..\Private\Level_JW.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -219,8 +222,12 @@
     <ClCompile Include="..\Private\Level_YW.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\StaticMesh.cpp" />
+    <ClCompile Include="..\private\Static_UI.cpp" />
+    <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
@@ -243,6 +250,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />

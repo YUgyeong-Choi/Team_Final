@@ -28,6 +28,8 @@ public:
 	_float Compute_Random_Normal();
 	_float Compute_Random(_float fMin, _float fMax);
 
+	void Set_RenderCollider() { m_bRenderCollider = !m_bRenderCollider; }
+	_bool Get_RenderCollider() { return m_bRenderCollider; }
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
@@ -36,6 +38,7 @@ public:
 #pragma region PROTOTYPE_MANAGER
 	HRESULT Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg = nullptr);
+	const map<const _wstring, class CBase*>* Get_Prototypes();
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
@@ -151,6 +154,8 @@ private:
 	class CShadow*				m_pShadow = { nullptr };
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
+
+	_bool m_bRenderCollider = false;
 public:
 	void Release_Engine();
 	virtual void Free() override;

@@ -30,11 +30,14 @@ public:
 
 private:
 	HRESULT Ready_Lights();
+	HRESULT Ready_Camera();
 	HRESULT Ready_ImGuiTools();
 private:
 	HRESULT Ready_ImGui();
 	HRESULT ImGui_Render();
 	HRESULT ImGui_Docking_Settings();
+
+	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 private:
 	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)];
 public:

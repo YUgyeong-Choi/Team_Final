@@ -19,6 +19,7 @@ CAnimation::CAnimation(const CAnimation& Prototype)
 	, m_CurrentKeyFrameIndices{ Prototype.m_CurrentKeyFrameIndices }
 	, m_iNumChannels{ Prototype.m_iNumChannels }
 	, m_Channels{ Prototype.m_Channels }
+	, m_AnimationName{ Prototype.m_AnimationName }
 
 {
 	for (auto& pChannel : m_Channels)
@@ -57,6 +58,11 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<cla
 
 HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>& Bones)
 {
+	_uint nameLength = 0;
+	ifs.read(reinterpret_cast<char*>(&nameLength), sizeof(_uint));  // 길이 먼저 읽음
+	string AnimationName(nameLength, '\0');  
+	ifs.read(&AnimationName[0], nameLength);      
+	m_AnimationName = AnimationName;  // 애니메이션 이름을 복사
 
 	ifs.read(reinterpret_cast<_char*>(&m_fTickPerSecond), sizeof(_float));  // 애니메이션 안에 채널 몇개읨 
 	ifs.read(reinterpret_cast<_char*>(&m_fDuration), sizeof(_float));  // 애니메이션 안에 채널 몇개읨 

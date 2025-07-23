@@ -204,8 +204,8 @@ HRESULT CModel::Read_BinaryFBX(const string& filepath)
 
 	if (m_eType == MODEL::ANIM)
 	{
-		if (FAILED(Ready_Animations(ifs)))
-			return E_FAIL;
+		//if (FAILED(Ready_Animations(ifs)))
+		//	return E_FAIL;
 
 		if (FAILED(Add_Animations(filepath)))
 			return E_FAIL;
@@ -306,7 +306,8 @@ HRESULT CModel::Add_Animations(const string& filepath)
 			ifstream ifs(animPath, ios::binary);
 			if (!ifs.is_open())
 				continue;
-
+			_uint iAdditionalNumAnimations = {};
+			ifs.read(reinterpret_cast<_char*>(&iAdditionalNumAnimations), sizeof(_uint));
 			// CAnimation 생성 (bones는 이미 채워져 있음)
 			CAnimation* pAnim = CAnimation::CreateByBinary(ifs, this->m_Bones);
 			if (pAnim)

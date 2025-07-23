@@ -1,7 +1,7 @@
 #include "Level_Loading.h"
 
 
-#include "Level_GamePlay.h"
+#include "Level_KratCentralStation.h"
 #include "Level_Logo.h"
 #include "Loader.h"
 
@@ -14,6 +14,8 @@
 
 #include "GameInstance.h"
 
+#include "Static_UI.h"
+
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 {
@@ -24,6 +26,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 {
 	m_eNextLevelID = eNextLevelID;
 
+
 	/* 로딩레벨 자체에 필요한 객체를 생성한다. */
 	/* 배경, 로딩바, 버튼, font */
 
@@ -31,6 +34,9 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 	수행할 로더객체를 생성한다. */
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevelID);
 	if (nullptr == m_pLoader)
+		return E_FAIL;
+
+	if (FAILED(Ready_Loading()))
 		return E_FAIL;
 	
 	return S_OK;
@@ -50,8 +56,8 @@ void CLevel_Loading::Update(_float fTimeDelta)
 			case LEVEL::LOGO:
 				pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 				break;
-			case LEVEL::GAMEPLAY:
-				pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+			case LEVEL::KRAT_CENTERAL_STATION:
+				pLevel = CLevel_KratCentralStation::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL::DH:
 				pLevel = CLevel_DH::Create(m_pDevice, m_pContext);
@@ -86,6 +92,44 @@ void CLevel_Loading::Update(_float fTimeDelta)
 HRESULT CLevel_Loading::Render()
 {
 	m_pLoader->Output_LoadingText();
+
+	_wstring text = L"하나둘삼넷오여섯칠팔아홉공 \n Test Test 중";
+	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.3f, g_iWinSizeY * 0.75f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), 0.8f);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Loading::Ready_Loading()
+{
+
+
+	json j;
+
+	ifstream file("../Bin/DataFiles/UI/Loading.json");
+
+	file >> j;
+
+	for (const auto& eUIJson : j)
+	{
+		CStatic_UI::STATIC_UI_DESC eStaticDesc = {};
+
+		eStaticDesc.fOffset = eUIJson["Offset"];
+		eStaticDesc.iPassIndex = eUIJson["PassIndex"];
+		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"];
+		eStaticDesc.fSizeX = eUIJson["fSizeX"];
+		eStaticDesc.fSizeY = eUIJson["fSizeY"];
+		eStaticDesc.fX = eUIJson["fX"];
+		eStaticDesc.fY = eUIJson["fY"];
+
+		string textureTag = eUIJson["TextureTag"];
+		eStaticDesc.strTextureTag = StringToWString(textureTag);
+
+		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+			static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eStaticDesc)))
+			return E_FAIL;
+	}
+
+	file.close();
 
 	return S_OK;
 }

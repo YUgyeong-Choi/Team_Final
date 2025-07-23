@@ -31,9 +31,6 @@
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{db82fc83-d01c-41cf-8115-cfc65328ad5c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.BackGround">
-      <UniqueIdentifier>{2a95d670-b78b-4365-888f-45a6815fed54}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Camera">
       <UniqueIdentifier>{563801dd-18f2-42c6-8c0f-279f233bf0b8}</UniqueIdentifier>
     </Filter>
@@ -64,9 +61,6 @@
     <Filter Include="01.Levels\LevelCY">
       <UniqueIdentifier>{fe0db61e-17b3-4a02-b250-2ba12840b64c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelYG">
-      <UniqueIdentifier>{85c5eeba-3847-41ce-afd0-b98471da8b71}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelGL">
       <UniqueIdentifier>{114caee8-9a92-40b8-9edf-32778d06ccda}</UniqueIdentifier>
     </Filter>
@@ -75,9 +69,6 @@
     </Filter>
     <Filter Include="98.Default\Imgui\Backend">
       <UniqueIdentifier>{624280e6-f79c-4cda-87dc-3b5155cfa85e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYG\YG_Tool">
-      <UniqueIdentifier>{8de7c18e-dec8-49c8-9824-c68b8062a0b6}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool">
       <UniqueIdentifier>{c4cd7325-aee3-4c9c-b2d0-f34ede7d57bc}</UniqueIdentifier>
@@ -96,6 +87,24 @@
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolParticle">
       <UniqueIdentifier>{8965fe92-8566-43de-91a1-1c9d4df84dfc}</UniqueIdentifier>
+	</Filter>
+	<Filter Include="01.Levels\LevelYW\Map_Tool">
+      <UniqueIdentifier>{d8e56a61-088b-4c0b-a489-2cc6726e9093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\Map_Tool\StaticMesh">
+      <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYG">
+      <UniqueIdentifier>{85c5eeba-3847-41ce-afd0-b98471da8b71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYG\YG_Tool">
+      <UniqueIdentifier>{8de7c18e-dec8-49c8-9824-c68b8062a0b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.TestObject">
+      <UniqueIdentifier>{fd6a2e2e-1acb-4059-8da8-96746c2038c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI">
+      <UniqueIdentifier>{abd57b5b-f0cf-4c34-8c0b-f0f78d57b774}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -117,7 +126,7 @@
     <ClInclude Include="..\Public\Client_Enum.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Level_GamePlay.h">
+    <ClInclude Include="..\Public\Level_KratCentralStation.h">
       <Filter>01.Levels\GamePlay</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
@@ -131,9 +140,6 @@
     </ClInclude>
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00.MainApp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\BackGround.h">
-      <Filter>02.GameObjects\00.BackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Camera_Free.h">
       <Filter>02.GameObjects\02.Camera</Filter>
@@ -216,11 +222,23 @@
     <ClInclude Include="..\Public\Level_JW.h">
       <Filter>01.Levels\LevelJW</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\YGObject.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Static_UI.h">
+      <Filter>02.GameObjects\99.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapTool.h">
+      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticMesh.h">
+      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\AnimTool.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MySequence.h">
-      <Filter>01.Levels\LevelJW\Tool</Filter>
+      <Filter>98.Default\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imnodes.h">
       <Filter>98.Default\Imgui</Filter>
@@ -236,6 +254,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\ToolParticle.h">
       <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
+	</ClInclude>
+	<ClInclude Include="Client_Calculation.h">
+      <Filter>99.Defines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -255,7 +276,7 @@
     <ClCompile Include="Client.cpp">
       <Filter>98.Default</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Level_GamePlay.cpp">
+    <ClCompile Include="..\Private\Level_KratCentralStation.cpp">
       <Filter>01.Levels\GamePlay</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
@@ -269,9 +290,6 @@
     </ClCompile>
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>02.GameObjects\00.BackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Camera_Free.cpp">
       <Filter>02.GameObjects\02.Camera</Filter>
@@ -342,16 +360,28 @@
     <ClCompile Include="..\Private\Level_JW.cpp">
       <Filter>01.Levels\LevelJW</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\YGObject.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Static_UI.cpp">
+      <Filter>02.GameObjects\99.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapTool.cpp">
+      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticMesh.cpp">
+      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\AnimTool.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MySequence.cpp">
-      <Filter>01.Levels\LevelJW\Tool</Filter>
+    <ClCompile Include="imgui\imnodes.cpp">
+      <Filter>98.Default\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui\ImSequencer.cpp">
       <Filter>98.Default\Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imnodes.cpp">
+    <ClCompile Include="..\Private\MySequence.cpp">
       <Filter>98.Default\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\EffectSequence.cpp">
@@ -381,6 +411,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -3,12 +3,14 @@
 #include "GameInstance.h"
 
 #include "Camera_Free.h"
-#include "BackGround.h"
-#include "Explosion.h"
-
-
-#include "Effect.h"
 #include "Sky.h"
+
+#pragma region LEVEL_YW
+#include "StaticMesh.h"
+#pragma endregion
+
+
+#include "YGObject.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -60,7 +62,7 @@ HRESULT CLoader::Loading()
 		hr = Loading_For_Logo();
 		break;
 
-	case LEVEL::GAMEPLAY:
+	case LEVEL::KRAT_CENTERAL_STATION:
 		hr = Loading_For_GamePlay();
 		break;
 	case LEVEL::DH:
@@ -96,10 +98,6 @@ HRESULT CLoader::Loading()
 HRESULT CLoader::Loading_For_Logo()
 {	
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-	/* For.Prototype_Component_Texture_BackGround*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
-		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
@@ -112,10 +110,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-	/* For.Prototype_GameObject_BackGround */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
-		CBackGround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -146,7 +140,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
-	
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -202,6 +196,9 @@ HRESULT CLoader::Loading_For_JW()
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JW), TEXT("Prototype_GameObject_Cam"),
+		CCamera_Free::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -246,6 +243,10 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_SM_Station_Light_01"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_01.bin"))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
@@ -256,6 +257,9 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -299,7 +303,8 @@ HRESULT CLoader::Loading_For_YG()
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Finoa"),CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,"../Bin/Resources/Models/Bin_NonAnim/Fiona.bin"))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
@@ -309,7 +314,15 @@ HRESULT CLoader::Loading_For_YG()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+	/* For.Prototype_GameObject_Camera_Free */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
+	/* For.Prototype_GameObject_YGObject */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGObject"),
+		CYGObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

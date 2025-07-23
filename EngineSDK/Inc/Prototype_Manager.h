@@ -13,6 +13,9 @@
 #include "Shader.h"
 #include "Model.h"
 
+#include "PhysXStaticActor.h"
+#include "PhysXKinematicActor.h"
+#include "PhysXDynamicActor.h"
 
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"
@@ -35,6 +38,8 @@ public:
 	HRESULT Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 	void Clear(_uint iLevelIndex);
+
+	const map<const _wstring, class CBase*>* Get_Prototypes() { return m_pPrototypes; }
 private:
 	_uint										m_iNumLevels = {};
 	map<const _wstring, class CBase*>*			m_pPrototypes = { nullptr };

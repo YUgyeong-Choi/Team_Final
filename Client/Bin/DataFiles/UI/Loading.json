@@ -1,0 +1,112 @@
+[
+    {
+        "Offset": 0.10000000149011612,
+        "PassIndex": 0,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_BackGround_Loading_Desk",
+        "fSizeX": 1280.0,
+        "fSizeY": 720.0,
+        "fX": 640.0,
+        "fY": 360.0
+    },
+    {
+        "Offset": 0.07999999821186066,
+        "PassIndex": 2,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_BackGround_Loading_Photo",
+        "fSizeX": 1280.0,
+        "fSizeY": 720.0,
+        "fX": 640.0,
+        "fY": 360.0
+    },
+    {
+        "Offset": 0.09000000357627869,
+        "PassIndex": 3,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_BackGround_Loading_Paper",
+        "fSizeX": 1600.0,
+        "fSizeY": 792.0,
+        "fX": 608.0,
+        "fY": 360.0
+    },
+    {
+        "Offset": 0.07500000298023224,
+        "PassIndex": 3,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_BackGround_Loading_Tip",
+        "fSizeX": 704.0,
+        "fSizeY": 324.0,
+        "fX": 608.0,
+        "fY": 594.0
+    },
+    {
+        "Offset": 0.07500000298023224,
+        "PassIndex": 2,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_Loading_Object",
+        "fSizeX": 160.0,
+        "fSizeY": 720.0,
+        "fX": 64.0,
+        "fY": 360.0
+    },
+    {
+        "Offset": 0.07500000298023224,
+        "PassIndex": 3,
+        "TextureIndex": 1,
+        "TextureTag": "Prototype_Component_Texture_Loading_Object",
+        "fSizeX": 512.0,
+        "fSizeY": 288.0,
+        "fX": 1024.0,
+        "fY": 108.00000762939453
+    },
+    {
+        "Offset": 0.07500000298023224,
+        "PassIndex": 3,
+        "TextureIndex": 3,
+        "TextureTag": "Prototype_Component_Texture_Loading_Object",
+        "fSizeX": 256.0,
+        "fSizeY": 288.0,
+        "fX": 1184.0,
+        "fY": 576.0
+    },
+    {
+        "Offset": 0.07500000298023224,
+        "PassIndex": 3,
+        "TextureIndex": 4,
+        "TextureTag": "Prototype_Component_Texture_Loading_Object",
+        "fSizeX": 256.0,
+        "fSizeY": 288.0,
+        "fX": 64.0,
+        "fY": 432.0000305175781
+    },
+    {
+        "Offset": 0.07500000298023224,
+        "PassIndex": 3,
+        "TextureIndex": 5,
+        "TextureTag": "Prototype_Component_Texture_Loading_Object",
+        "fSizeX": 128.0,
+        "fSizeY": 108.00000762939453,
+        "fX": 896.0,
+        "fY": 540.0
+    },
+    {
+        "Offset": 0.07500000298023224,
+        "PassIndex": 3,
+        "TextureIndex": 2,
+        "TextureTag": "Prototype_Component_Texture_Loading_Object",
+        "fSizeX": 320.0,
+        "fSizeY": 180.0,
+        "fX": 192.0,
+        "fY": 666.0
+    },
+    {
+        "Offset": 0.0,
+        "PassIndex": 3,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_Loading_Image",
+        "fSizeX": 768.0,
+        "fSizeY": 396.0,
+        "fX": 608.0,
+        "fY": 306.0
+    }
+]

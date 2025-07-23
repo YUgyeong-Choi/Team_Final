@@ -1,0 +1,1 @@
+MakeSpriteFont "Noto Serif KR" Title_Bold.spritefont /FontSize:20 /FontStyle:Bold /FastPack /CharacterRegion:0x0020-0x00FF /CharacterRegion:0x3131-0x3163 /CharacterRegion:0xAC00-0xD800 /DefaultCharacter:0xAC00

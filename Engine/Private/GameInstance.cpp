@@ -23,7 +23,6 @@ IMPLEMENT_SINGLETON(CGameInstance);
 static PxDefaultAllocator gAllocator;
 static PxDefaultErrorCallback gErrorCallback;
 
-
 #ifdef _DEBUG
 void EnableConsole()
 {
@@ -210,6 +209,10 @@ HRESULT CGameInstance::Add_Prototype(_uint iPrototypeLevelIndex, const _wstring&
 CBase* CGameInstance::Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg)
 {
 	return m_pPrototype_Manager->Clone_Prototype(ePrototypeType, iPrototypeLevelIndex, strPrototypeTag, pArg);
+}
+const map<const _wstring, class CBase*>* CGameInstance::Get_Prototypes()
+{
+	return m_pPrototype_Manager->Get_Prototypes();
 }
 #pragma endregion
 
