@@ -91,6 +91,9 @@
     <Filter Include="01.Levels\LevelJW\Tool">
       <UniqueIdentifier>{f0850a50-09c5-4f0f-af92-9eaa411944e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI">
+      <UniqueIdentifier>{abd57b5b-f0cf-4c34-8c0b-f0f78d57b774}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -225,6 +228,9 @@
     <ClInclude Include="imgui\ImSequencer.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Static_UI.h">
+      <Filter>02.GameObjects\99.UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -342,6 +348,9 @@
     <ClCompile Include="imgui\imnodes.cpp">
       <Filter>98.Default\Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Static_UI.cpp">
+      <Filter>02.GameObjects\99.UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
@@ -363,6 +372,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

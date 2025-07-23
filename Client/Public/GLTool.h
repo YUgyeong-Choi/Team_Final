@@ -25,7 +25,8 @@ public:
 	virtual HRESULT Render();
 
 	void Save_File();
-	void Load_File();
+	void Open_File();
+	void Add_UI_From_File();
 
 	void Add_UI();
 
@@ -50,6 +51,8 @@ private:
 	//
 	list<CStatic_UI*> m_UIList = {};
 	CStatic_UI* m_pSelectObj = { nullptr };
+
+	string  m_strSavePath = {};
 	
 public:
 	static CGLTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

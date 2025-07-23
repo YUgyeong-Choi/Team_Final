@@ -144,7 +144,7 @@ PS_OUT PS_MAIN_DISCARD_ALPHA(PS_IN In)
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    if (Out.vColor.a < 0.1f)
+    if (Out.vColor.a < 0.2f)
         discard;
     
     return Out;
@@ -153,7 +153,7 @@ PS_OUT PS_MAIN_DISCARD_ALPHA(PS_IN In)
 
 
 technique11 DefaultTechnique
-{
+{ 
     /* 패스를 생성하는 기준을 뭘로? */ 
     /* 같은 모델을 그릴때 각기 다른 렌더스테이츠를 먹여야하거나. 
     완전히 다른 쉐이딩 기법을 적용해야하거나 */ 
