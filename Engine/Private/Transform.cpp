@@ -147,6 +147,12 @@ void CTransform::Rotation(_float fX, _float fY, _float fZ)
 	Set_State(STATE::LOOK, XMVector4Transform(vLook, RotationMatrix));
 }
 
+void CTransform::Move(const _vector& vDirectionVector)
+{
+	_vector vPos = Get_State(STATE::POSITION) + vDirectionVector;
+	Set_State(STATE::POSITION, vPos);
+}
+
 void CTransform::Go_Front(_float fTimeDelta, CNavigation* pNavigation)
 {
 	_vector		vLook = Get_State(STATE::LOOK);
@@ -470,6 +476,23 @@ bool CTransform::RotateToDirectionImmediately(const _fvector& vTargetDir)
 	Set_State(STATE::LOOK, vLook * XMVectorGetZ(vScale));
 
 	return true;
+}
+
+void CTransform::Quaternion_Turn(const _vector& vAngle)
+{
+	_vector			vRight = Get_State(STATE::RIGHT);
+	_vector			vUp = Get_State(STATE::UP);
+	_vector			vLook = Get_State(STATE::LOOK);
+
+	_vector Qur = XMQuaternionRotationRollPitchYaw(
+		XMConvertToRadians(XMVectorGetX(vAngle)),
+		XMConvertToRadians(XMVectorGetY(vAngle)),
+		XMConvertToRadians(XMVectorGetZ(vAngle))
+	);
+
+	Set_State(STATE::RIGHT, XMVector3Rotate(vRight, Qur));
+	Set_State(STATE::UP, XMVector3Rotate(vUp, Qur));
+	Set_State(STATE::LOOK, XMVector3Rotate(vLook, Qur));
 }
 
 void CTransform::LookAtWithOutY(_fvector vAt)
