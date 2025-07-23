@@ -6,7 +6,7 @@
 #undef USE_IMGUI
 
 NS_BEGIN(Client)
-
+  
 class CGLTool final : public CGameObject
 {
 private:
