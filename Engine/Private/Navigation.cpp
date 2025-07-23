@@ -131,6 +131,21 @@ _vector CNavigation::SetUp_Height(_fvector vWorldPos)
 	return XMVector3TransformCoord(vLocalPos, XMLoadFloat4x4(&m_WorldMatrix));
 }
 
+_float CNavigation::Compute_NavigationY(const _vector pTransform)
+{
+	_matrix		WorldMatrixInv = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
+
+	_vector		vPosition = XMVector3TransformCoord(pTransform, WorldMatrixInv);
+
+	_float		fHeight = m_Cells[m_iIndex]->Compute_Height(vPosition);
+
+	vPosition = XMVectorSetY(vPosition, fHeight);
+
+	return XMVectorGetY(XMVector3TransformCoord(vPosition, XMLoadFloat4x4(&m_WorldMatrix)));
+
+	return 0.f;
+}
+
 #ifdef _DEBUG
 HRESULT CNavigation::Render()
 {	
