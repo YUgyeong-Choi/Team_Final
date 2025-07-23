@@ -108,7 +108,7 @@ HRESULT CCYTool::Test_Sequence()
 
 	if (Button("ADD"))
 	{
-
+		m_pSequence->Add(0);
 	}
 
 	ImSequencer::Sequencer(m_pSequence, &iCurFrame, &bExpanded, &iSelected, nullptr, ImSequencer::SEQUENCER_EDIT_STARTEND);

@@ -32,7 +32,7 @@ public:
         if (end)   *end = &m_Items[index].endFrame;
         if (type)  *type = m_Items[index].type;
     };
-    virtual void Add(int /*type*/)  override {}
+    virtual void Add(int type)  override { m_Items.push_back({ "Name", 0, 10, 1, 100 }); }
     virtual void Del(int /*index*/) override {}
     virtual void Duplicate(int /*index*/) override {}
 

@@ -161,6 +161,7 @@
     <ClInclude Include="..\Public\CYTool.h" />
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\EffectSequence.h" />
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
@@ -178,8 +179,11 @@
     <ClInclude Include="..\Public\MapTool.h" />
     <ClInclude Include="..\Public\MySequence.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\SpriteEffect.h" />
     <ClInclude Include="..\Public\StaticMesh.h" />
     <ClInclude Include="..\public\Static_UI.h" />
+    <ClInclude Include="..\Public\TestSpirteEffect.h" />
+    <ClInclude Include="..\Public\ToolParticle.h" />
     <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="Client.h" />
@@ -208,6 +212,7 @@
     <ClCompile Include="..\Private\CYTool.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\EffectSequence.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
@@ -225,8 +230,11 @@
     <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
+    <ClCompile Include="..\Private\TestSpirteEffect.cpp" />
+    <ClCompile Include="..\Private\ToolParticle.cpp" />
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="Client.cpp" />

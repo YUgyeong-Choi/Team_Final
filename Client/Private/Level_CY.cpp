@@ -44,7 +44,7 @@ HRESULT CLevel_CY::Render()
 	int height = rect.bottom - rect.top;
 
 	io.DisplaySize = ImVec2((float)width, (float)height);
-	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	//io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
 
 	ImGui::NewFrame();
