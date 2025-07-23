@@ -184,6 +184,9 @@ HRESULT CMainApp::Start_Level(LEVEL eStartLevel)
 
 HRESULT CMainApp::Ready_Loading()
 {
+	
+
+
 	/* For.Prototype_Component_Texture_BackGround_Loading_Desk*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround_Loading_Desk"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Loading_DeskBg.dds")))))
@@ -208,6 +211,12 @@ HRESULT CMainApp::Ready_Loading()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Loading_Object"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Object/Loading_Object_%d.dds"), 6))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Loading_Image*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Loading_Image"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/PhotoImage/PhotoImage.dds")))))
+		return E_FAIL;
+
 
 
 	/* For.Prototype_GameObject_BackGround */

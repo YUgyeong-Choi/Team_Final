@@ -93,55 +93,47 @@ HRESULT CLevel_Loading::Render()
 {
 	m_pLoader->Output_LoadingText();
 
+	_wstring text = L"ÇÏ³ªµÑ»ï³Ý¿À¿©¼¸Ä¥ÆÈ¾ÆÈ©°ø \n Test Test Áß";
+	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.3f, g_iWinSizeY * 0.75f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), 0.8f);
+
 	return S_OK;
 }
 
 HRESULT CLevel_Loading::Ready_Loading()
 {
-	CStatic_UI::STATIC_UI_DESC eUIDesc = {};
+	
+	
 
-	eUIDesc.fX = g_iWinSizeX * 0.5f;
-	eUIDesc.fY = g_iWinSizeY * 0.5f;
-	eUIDesc.fSizeX = g_iWinSizeX;
-	eUIDesc.fSizeY = g_iWinSizeY;
-	eUIDesc.iPassIndex = UI_DEFAULT;
-	eUIDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+	json j;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
-		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eUIDesc)))
-		return E_FAIL;
+	ifstream file("../Bin/DataFiles/UI/Loading.json");
 
-	eUIDesc.fSizeX = g_iWinSizeX * 1.2f;
-	eUIDesc.fSizeY = g_iWinSizeY * 1.1f;
-	eUIDesc.iPassIndex = UI_DISCARD_ALAPH;
-	eUIDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Paper");
+	file >> j;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
-		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eUIDesc)))
-		return E_FAIL;
+	for (const auto& eUIJson : j)
+	{
+		CStatic_UI::STATIC_UI_DESC eStaticDesc = {};
 
 
-	eUIDesc.fX = g_iWinSizeX * 0.5f;
-	eUIDesc.fY = g_iWinSizeY * 0.5f;
-	eUIDesc.fSizeX = g_iWinSizeX;
-	eUIDesc.fSizeY = g_iWinSizeY;
-	eUIDesc.iPassIndex = UI_DISCARD_DARK;
-	eUIDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Photo");
+		eStaticDesc.fOffset = eUIJson["Offset"];
+		eStaticDesc.iPassIndex = eUIJson["PassIndex"];
+		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"];
+		eStaticDesc.fSizeX = eUIJson["fSizeX"];
+		eStaticDesc.fSizeY = eUIJson["fSizeY"];
+		eStaticDesc.fX = eUIJson["fX"];
+		eStaticDesc.fY = eUIJson["fY"];
 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
-		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eUIDesc)))
-		return E_FAIL;
+		string textureTag = eUIJson["TextureTag"];
+		eStaticDesc.strTextureTag = wstring(textureTag.begin(), textureTag.end());
 
-	eUIDesc.fX = g_iWinSizeX * 0.475f;
-	eUIDesc.fY = g_iWinSizeY * 0.8f;
-	eUIDesc.fSizeX = g_iWinSizeX * 0.6f;
-	eUIDesc.fSizeY = g_iWinSizeY * 0.4f;
-	eUIDesc.iPassIndex = UI_DISCARD_ALAPH;
-	eUIDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Tip");
+		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+			static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eStaticDesc)))
+			return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
-		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eUIDesc)))
-		return E_FAIL;
+		
+	}
+
+	file.close();
 
 	return S_OK;
 }
