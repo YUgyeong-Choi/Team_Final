@@ -86,7 +86,6 @@ namespace Engine
 		XMFLOAT3		vPosition;
 		XMFLOAT3		vNormal;
 		XMFLOAT3		vTangent;
-		//XMFLOAT3		vBinormal;
 		XMFLOAT2		vTexcoord;
 
 		static const unsigned int					iNumElements = { 4 };

@@ -34,6 +34,7 @@ public:
 		eDesc.fX = m_fX;
 		eDesc.fY = m_fY;
 		eDesc.fOffset = m_fOffset;
+		eDesc.strTextureTag = m_strTextureTag;
 
 		return eDesc;
 

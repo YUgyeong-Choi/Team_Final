@@ -23,7 +23,6 @@ IMPLEMENT_SINGLETON(CGameInstance);
 static PxDefaultAllocator gAllocator;
 static PxDefaultErrorCallback gErrorCallback;
 
-
 #ifdef _DEBUG
 void EnableConsole()
 {

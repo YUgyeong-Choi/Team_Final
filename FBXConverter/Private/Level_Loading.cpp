@@ -45,7 +45,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL::GAMEPLAY:
-				pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+				pLevel = CLevel_KratCentralStation::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL::MAPTOOL:
 				pLevel = CLevel_MapTool::Create(m_pDevice, m_pContext);

@@ -63,15 +63,96 @@ HRESULT CGLTool::Render()
 	if (FAILED(Render_UIList()))
 		return E_FAIL;
 
+	
+
 	return S_OK;
 }
 
 void CGLTool::Save_File()
 {
+	json JsonArray = json::array();
+	json j;
+
+	for (auto& pObj : m_UIList)
+	{
+		if (nullptr == pObj || pObj->Get_bDead())
+			continue;
+		auto eDesc = pObj->Get_Desc();
+
+		// 이제 값 채워서 dump로 넘겨준다 
+		j["TextureTag"] = WStringToString(eDesc.strTextureTag);
+		j["PassIndex"] = eDesc.iPassIndex;
+		j["TextureIndex"] = eDesc.iTextureIndex;
+		j["Offset"] = eDesc.fOffset;
+		j["fSizeX"] = eDesc.fSizeX;
+		j["fSizeY"] = eDesc.fSizeY;
+		j["fX"] = eDesc.fX;
+		j["fY"] = eDesc.fY;
+		JsonArray.push_back(j);
+		
+	}
+
+	ofstream file("../Bin/DataFiles/UI/Temp.json");
+
+	file << JsonArray.dump(4);
+
+	file.close();
 }
 
-void CGLTool::Load_File()
+void CGLTool::Open_File()
 {
+	
+
+	
+	IGFD::FileDialogConfig config;
+
+	m_strSavePath = R"(../Bin/DataFiles/UI)";
+	config.path = m_strSavePath;
+	config.countSelectionMax = 0; // 무제한
+	
+
+	IFILEDIALOG->OpenDialog("JsonDialog", "Select json File", ".json", config);
+
+	
+}
+
+void CGLTool::Add_UI_From_File()
+{
+
+	string filePath = IFILEDIALOG->GetFilePathName();
+
+	json j;
+
+	ifstream file(filePath);
+
+	file >> j;
+
+	for (const auto& eUIJson : j)
+	{
+		CStatic_UI::STATIC_UI_DESC eStaticDesc = {};
+
+
+		eStaticDesc.fOffset = eUIJson["Offset"];
+		eStaticDesc.iPassIndex = eUIJson["PassIndex"];
+		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"];
+		eStaticDesc.fSizeX = eUIJson["fSizeX"];
+		eStaticDesc.fSizeY = eUIJson["fSizeY"];
+		eStaticDesc.fX = eUIJson["fX"];
+		eStaticDesc.fY = eUIJson["fY"];
+
+		string textureTag = eUIJson["TextureTag"];
+		eStaticDesc.strTextureTag = wstring(textureTag.begin(), textureTag.end());
+
+		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+			static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Static"), &eStaticDesc)))
+			return;
+
+		auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Static"));
+
+		m_UIList.push_back(static_cast<CStatic_UI*>(pObj));
+	}
+
+	file.close();
 }
 
 void CGLTool::Add_UI()
@@ -97,14 +178,21 @@ HRESULT CGLTool::Render_UtilTool()
 		Save_File();
 	}
 
-	if (Button(u8"Load File"))
+	if (Button(u8"Open File"))
 	{
-		Load_File();
+		Open_File();
+
 	}
 
 	if (Button(u8"Add UI"))
 	{
 		Add_UI();
+	}
+
+	if (Button(u8"Delete UI"))
+	{
+		if (nullptr != m_pSelectObj)
+			m_pSelectObj->Set_bDead();
 	}
 
 	int index = 0;
@@ -113,7 +201,7 @@ HRESULT CGLTool::Render_UtilTool()
 	{
 		bool isSelected = (index == m_iSelectTextureIndex);
 
-		if (ImGui::Selectable(string(strName.begin(), strName.end()).c_str(), isSelected))
+		if (ImGui::Selectable(WStringToString(strName).c_str(), isSelected))
 		{
 			m_iSelectTextureIndex = index;
 			m_strSelectName = strName;
@@ -121,7 +209,25 @@ HRESULT CGLTool::Render_UtilTool()
 		++index;
 	}
 
+
+	// 파일 탐색기를 띄운다
+	ImGui::SetNextWindowSize(ImVec2(800, 600));
+	if (IFILEDIALOG->Display("JsonDialog"))
+	{
+		if (IFILEDIALOG->IsOk())
+		{
+			
+			Add_UI_From_File();
+
+		}
+		IFILEDIALOG->Close();
+	}
+
 	ImGui::End();
+
+
+	
+
 	return S_OK;
 }
 
@@ -180,13 +286,19 @@ HRESULT CGLTool::Render_UIList()
 	for (const auto& pObj : m_UIList)
 	{
 		bool isSelected = (index == m_iSelectObjIndex);
-	
 
-		if (ImGui::Selectable(string(pObj->Get_StrTextureTag().begin(), pObj->Get_StrTextureTag().end()).c_str(), isSelected))
+		if (nullptr == pObj || pObj->Get_bDead())
+			continue;
+		
+		if (ImGui::Selectable(WStringToString(pObj->Get_StrTextureTag()).c_str(), isSelected))
 		{
 			m_iSelectObjIndex = index;
 			m_pSelectObj = pObj;
 			eUITempDesc = m_pSelectObj->Get_Desc();
+			eUITempDesc.fSizeX /= g_iWinSizeX;
+			eUITempDesc.fSizeY /= g_iWinSizeY;
+			eUITempDesc.fX /= g_iWinSizeX;
+			eUITempDesc.fY /= g_iWinSizeY;
 			eUITempDesc.strTextureTag = pObj->Get_StrTextureTag();
 		}
 		

@@ -75,9 +75,9 @@ public:
     }
     _float GetStateLengthByName(const string& name) const;
 public:
-    void AddBool(const std::string& name) { m_Params[name] = { ParamType::Bool }; }
-    void AddFloat(const std::string& name) { m_Params[name] = { ParamType::Float }; }
-    void AddTrigger(const std::string& name) { m_Params[name] = { ParamType::Trigger }; }
+    void AddBool(const string& name) { m_Params[name] = { ParamType::Bool }; }
+    void AddFloat(const string& name) { m_Params[name] = { ParamType::Float }; }
+    void AddTrigger(const string& name) { m_Params[name] = { ParamType::Trigger }; }
 
     // 파라미터 설정
     void SetBool(const string& name, _bool v) {
@@ -122,15 +122,15 @@ private:
     void UpdateBlend(_float fTimeDelta);
 
 private:
-    class CModel* m_pModel{ nullptr };          // 본과 메시 데이터 참조
-	CAnimation* m_pCurrentAnim = nullptr; // 현재 애니메이션
+	_bool m_bIsFinished = false; // 애니메이션 재생 완료 여부
     _uint						m_iCurrentAnimIndex = { };
     _uint						m_iPrevAnimIndex = { };
+	class CAnimController* m_pAnimController = nullptr; // 애니메이션 컨트롤러
+    class CModel* m_pModel{ nullptr };          // 본과 메시 데이터 참조
+	CAnimation* m_pCurrentAnim = nullptr; // 현재 애니메이션
     BlendState  m_Blend{};
 	vector<class CBone*> m_Bones; // 전체 본의 개수
-	class CAnimController* m_pAnimController = nullptr; // 애니메이션 컨트롤러
     unordered_map<string, Parameter> m_Params;
-	_bool m_bIsFinished = false; // 애니메이션 재생 완료 여부
     unordered_map<string, vector<AnimEventCallback>> m_eventListeners;
 
 public:

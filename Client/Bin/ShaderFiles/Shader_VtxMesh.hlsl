@@ -11,7 +11,6 @@ struct VS_IN
     float3 vPosition : POSITION;
     float3 vNormal : NORMAL;
     float3 vTangent : TANGENT;
-    //float3 vBinormal : BINORMAL;
     float2 vTexcoord : TEXCOORD0;
 };
 
@@ -40,7 +39,6 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
     Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
     Out.vBinormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
-    //Out.vBinormal = normalize(mul(vector(In.vBinormal, 0.f), g_WorldMatrix)) * -1.f;
     Out.vTexcoord = In.vTexcoord;
     Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
     Out.vProjPos = Out.vPosition;
