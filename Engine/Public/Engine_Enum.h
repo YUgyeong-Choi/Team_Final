@@ -19,5 +19,5 @@ namespace Engine
 		PERSON, STATIC, LOOT, RESOURCES, ITEMS, PREVIEW, BUILDING, EFFECT, ANIMAL
 	};
 
-	
+	enum class ParamType { Bool, Trigger, Float, Int };
 }

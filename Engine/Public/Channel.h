@@ -15,8 +15,14 @@ private:
 public:
 	HRESULT Initialize(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
 	HRESULT Initialize(ifstream& ifs, const vector<class CBone*>& Bones, _uint iRootBoneIdx);
-	void Update_TransformationMatrix(_uint* pCurrentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones);
+	void Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones);
 	_uint Get_BoneIndex() { return m_iBoneIndex; }
+
+	const _float4x4& GetLocalMatrix() const
+	{
+		return m_LocalTransformationMatrix;
+	}
+
 private:
 	_char				m_szName[MAX_PATH] = {};
 	_uint				m_iNumKeyFrames = {}; 
@@ -26,7 +32,7 @@ private:
 
 	_uint				m_iRootBoneIndex = {};
 	
-
+	_float4x4 		    m_LocalTransformationMatrix = {};
 public:
 	static CChannel* Create(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
 	static CChannel* Create(ifstream& ifs, const vector<class CBone*>& Bones, _uint iRootBoneIdx);
