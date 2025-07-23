@@ -40,6 +40,10 @@ public:
 
 	void Set_SpeedPreSec(_float _fSpeeed) { m_fSpeedPerSec = _fSpeeed;}
 	void Set_RotationPreSec(_float _fSpeeed) { m_fRotationPerSec = _fSpeeed; }
+
+	_float4x4& Get_World4x4() {
+		return m_WorldMatrix;
+	}
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);

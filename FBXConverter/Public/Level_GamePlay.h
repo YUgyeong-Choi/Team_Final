@@ -4,7 +4,7 @@
 #include "Level.h"
 
 NS_BEGIN(Client)
-
+ 
 class CLevel_KratCentralStation final : public CLevel
 {
 private:

@@ -36,6 +36,7 @@ private:
 public:
 	HRESULT Ready_Fonts();
 	HRESULT Ready_Prototype_Component();
+	HRESULT Ready_Static();
 	HRESULT Start_Level(LEVEL eStartLevel);
 
 	// 너무 많아지면 줄이거나 없애기

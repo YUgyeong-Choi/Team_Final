@@ -333,7 +333,7 @@ HRESULT CConvertTool::Write_NonAnimMeshData(ostream& ofs)
 
 		vector<VTXMESH> pVertices;
 		pVertices.reserve(iNumVertices);
-		for (size_t j = 0; j < iNumVertices; j++)
+		for (size_t j = 0; j < iNumVertices; j++) 
 		{
 			VTXMESH tVertex = {};
 			memcpy(&tVertex.vPosition, &pAIMesh->mVertices[j], sizeof(_float3));
@@ -575,7 +575,11 @@ HRESULT CConvertTool::Write_AnimationData(const vector<FBX_BONEDATA>& Bones, ost
 
 		_float tickspersec = (_float)pAIAnimation->mTicksPerSecond;
 		_float duration = (_float)pAIAnimation->mDuration;
-		string AnimationName = pAIAnimation->mName.data;
+		string AnimationName = pAIAnimation->mName.C_Str(); 
+
+		_uint nameLength = static_cast<_uint>(AnimationName.length());
+		ofs.write(reinterpret_cast<const char*>(&nameLength), sizeof(_uint));        // 문자열 길이 먼저 저장
+		ofs.write(AnimationName.c_str(), nameLength);
 
 		ofs.write(reinterpret_cast<const char*>(&tickspersec), sizeof(_float));					// 뭐라해야할까 초당틱
 		ofs.write(reinterpret_cast<const char*>(&duration), sizeof(_float));					// 애니메이션 총 길이

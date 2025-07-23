@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "Static_UI.h"
-#include "BackGround.h"
+
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -13,8 +13,6 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -70,23 +68,6 @@ HRESULT CLevel_Logo::Render()
 
 	text = L"F10 : 콜라이더 렌더 OnOff";
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 620.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-
-	return S_OK;
-}
-
-HRESULT CLevel_Logo::Ready_Layer_BackGround(const _wstring strLayerTag)
-{
-	CBackGround::BACKGROUND_DESC				BackGroundDesc{};
-
-	BackGroundDesc.fX = g_iWinSizeX * 0.5f;
-	BackGroundDesc.fY = g_iWinSizeY * 0.5f;
-	BackGroundDesc.fSizeX = 200.0f;
-	BackGroundDesc.fSizeY = 200.0f;	
-
- 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
-		static_cast<_uint>(LEVEL::LOGO), strLayerTag, &BackGroundDesc)))
-		return E_FAIL;
 
 	return S_OK;
 }
