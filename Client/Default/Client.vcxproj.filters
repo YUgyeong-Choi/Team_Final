@@ -91,6 +91,9 @@
     <Filter Include="01.Levels\LevelJW\Tool">
       <UniqueIdentifier>{f0850a50-09c5-4f0f-af92-9eaa411944e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\Map_Tool">
+      <UniqueIdentifier>{d8e56a61-088b-4c0b-a489-2cc6726e9093}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -213,6 +216,9 @@
     <ClInclude Include="..\Public\JWTool.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MapTool.h">
+      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -320,6 +326,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\JWTool.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapTool.cpp">
+      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

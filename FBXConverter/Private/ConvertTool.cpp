@@ -68,8 +68,8 @@ HRESULT CConvertTool::Render_ConvertTool()
 	if (Button("Load NonAnim File"))
 	{
 		m_isAnim = false;	
-		savePath = R"(C:\Users\CMAP\Documents\github\Dx11_PersonalProj_BL2\Client\Bin\Resources\Models\Bin_NonAnim)";
-		config.path = R"(C:\Users\CMAP\Documents\Dx11_Personal_Projects\3d\Borderlands2 Exports\Borderlands2_ALL\Frost_P\StaticMesh3\FBX)";
+		savePath = R"(../../Client\Bin\Resources\Models\Bin_NonAnim)";
+		config.path = R"(Z:\Lie\LieOfP_SM\Game\LiesofP\Content\ArtAsset\ENV\AreaProp\Station\InStructure\FBX)";
 		config.countSelectionMax = 0; // ¹«Á¦ÇÑ
 
 		IFILEDIALOG->OpenDialog("FBXDialog", "Select Non Anim Staticmesh FBX Files", ".fbx", config);
