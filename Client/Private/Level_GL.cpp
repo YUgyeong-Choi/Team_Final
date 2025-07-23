@@ -51,7 +51,7 @@ HRESULT CLevel_GL::Render()
 
 	ImGui_Render();
 	//·»´õ¸µ 
-	ImGui::ShowDemoWindow(); // Show demo window! :)
+	//ImGui::ShowDemoWindow(); // Show demo window! :)
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

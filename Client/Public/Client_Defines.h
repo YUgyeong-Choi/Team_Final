@@ -20,6 +20,10 @@
 #include "imgui_impl_win32.h"
 #include "ImGuizmo.h"
 #include "ImGuiFileDialog.h"
+#include "imnodes.h"
+#include "ImSequencer.h"
+
+using namespace ImNodes;
 using namespace ImGui;
 #endif
 

@@ -78,8 +78,8 @@ HRESULT CConvertTool::Render_ConvertTool()
 	if (Button("Load Anim File"))
 	{
 		m_isAnim = true;
-		savePath = R"(C:\Users\user\Desktop\Team_Final\Client\Bin\Resources\Models\Bin_Anim)";
-		config.path = R"(C:\Users\CMAP\Documents\Dx11_Personal_Projects\3d\Borderlands2 Exports\)";
+		savePath = R"(C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Resources\Models\Bin_Anim)";
+		config.path = R"(Z:\Lie\Animations)";
 		config.countSelectionMax = 0; // 公力茄
 
 		IFILEDIALOG->OpenDialog("FBXDialog", "Select Anim Skeletalmesh FBX Files", ".fbx", config);
@@ -88,8 +88,8 @@ HRESULT CConvertTool::Render_ConvertTool()
 	if (Button("Load Anim File (Anim Only)"))
 	{
 		m_isAnimOnly = true;
-		savePath = R"(C:\Users\CMAP\Documents\github\Dx11_PersonalProj_BL2\Client\Bin\Resources\Models\Bin_Anim)";
-		config.path = R"(C:\Users\CMAP\Documents\Dx11_Personal_Projects\3d\Borderlands2 Exports\Borderlands2_ALL\GD_Siren_Streaming_SF\AnimSet\FBX)";
+		savePath = R"(C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Resources\Models\Bin_Anim)";
+		config.path = R"(Z:\Lie\Animations)";
 		config.countSelectionMax = 0; // 公力茄
 
 		IFILEDIALOG->OpenDialog("FBXDialog", "Select Anim Skeletalmesh FBX Files", ".fbx", config);

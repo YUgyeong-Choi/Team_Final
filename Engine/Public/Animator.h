@@ -1,0 +1,141 @@
+#pragma once
+#include "Component.h"
+#include "Animation.h"
+
+NS_BEGIN(Engine)
+using AnimEventCallback = function<void(const string&)>;
+class ENGINE_DLL CAnimator final  :  public CComponent
+{
+public:
+    struct BlendState
+    {
+        CAnimation* srcAnim = nullptr;   // 이전 애니메이션
+        CAnimation* dstAnim = nullptr;   // 다음 애니메이션
+        _float        elapsed = 0.f;       // 경과 시간
+        _float        duration = 0.2f;      // 블렌드 총 시간
+        _bool         isLoop = true;
+        _bool         active = false;
+        _bool         hasExitTime = false; // 이전 애니메이션 종료했을 때 블렌드 시작
+    };
+
+    struct Parameter
+    {
+		ParamType     eType;
+        _int         id;       // UI/식별용
+        _bool         bValue = false;   // Bool/Trigger
+        _float        fValue = 0.f;      // Float
+        _bool         bTriggered = false;   // Trigger 전용 플래그
+        _int          iValue = 0;      // Int
+    };
+    
+private:
+    CAnimator(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CAnimator(const CAnimator& Prototype);
+    virtual ~CAnimator() = default;
+
+public:
+    virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+    void Update(_float fDeltaTime);
+
+    // 즉시 전환: 현재 애니메이션을 멈추고 바로 새 애니메이션 재생
+    void Play(_uint iAnimIndex, _bool isLoop = true);
+	void PlayClip(class CAnimation* pAnim, _bool isLoop = true);
+	void StopAnimation() { m_pCurrentAnim = nullptr; m_iCurrentAnimIndex = 0; m_bIsFinished = true; }
+
+    void StartTransition(CAnimation* from, CAnimation* to, _float duration = 0.2f);
+    void Set_Animation(_uint iIndex, _float fadeDuration = 0.2f, _bool isLoop = false);
+	void Set_BlendState(BlendState blend) { m_Blend = blend; }
+	void Set_Model(class CModel* pModel) { m_pModel = pModel; }
+	void SetBlendDuration(_float duration) { m_Blend.duration = duration; }
+
+    const char* GetCurrentAnimName() const;
+	class CAnimation* GetCurrentAnim() const { return m_pCurrentAnim; }
+    class CAnimController* GetAnimController() const { return m_pAnimController; }
+
+    void RegisterEventListener(const string& eventName, AnimEventCallback cb);
+	const unordered_map<string, vector<AnimEventCallback>>& GetEventListeners() const { return m_eventListeners; }
+
+
+	_bool IsBlending() const { return m_Blend.active; }
+	_float GetCurrentAnimDuration() const {
+		if (m_pCurrentAnim == nullptr)
+			return 0.f;
+		return m_pCurrentAnim->GetDuration();
+	}
+
+    _float GetCurrentAnimProgress() const // 애니메이션 진행도
+    {
+        if (!m_pCurrentAnim) return 0.f;
+        _float elapsed = m_pCurrentAnim->GetCurrentTrackPosition();
+        _float duration = m_pCurrentAnim->GetDuration();
+        return duration > 0.f
+            ? (elapsed / duration)
+            : 0.f;
+    }
+    _float GetStateLengthByName(const string& name) const;
+public:
+    void AddBool(const std::string& name) { m_Params[name] = { ParamType::Bool }; }
+    void AddFloat(const std::string& name) { m_Params[name] = { ParamType::Float }; }
+    void AddTrigger(const std::string& name) { m_Params[name] = { ParamType::Trigger }; }
+
+    // 파라미터 설정
+    void SetBool(const string& name, _bool v) {
+        auto& p = m_Params[name];
+        p.bValue = v;
+    }
+    void SetFloat(const string& name, _float v) {
+        auto& p = m_Params[name];
+        p.fValue = v;
+    }
+    void SetTrigger(const string& name) {
+        auto& p = m_Params[name];
+        p.bTriggered = true;
+    }
+
+	void ResetTrigger(const string& name) {
+		auto& p = m_Params[name];
+		p.bTriggered = false;
+	}
+
+	void SetInt(const string& name, _int v) {
+		auto& p = m_Params[name];
+		p.iValue = v;
+	}
+
+    // 조건 검사용
+    _bool CheckBool(const string& name) const { return m_Params.at(name).bValue; }
+    _float GetFloat(const string& name) const { return m_Params.at(name).fValue; }
+    _bool CheckTrigger(const string& name) {
+        auto& p = m_Params[name];
+        if (p.bTriggered) 
+        { 
+            p.bTriggered = false; 
+            return true; 
+        }
+        return false;
+    }
+	_int GetInt(const string& name) const { return m_Params.at(name).iValue; }
+
+	_bool IsFinished() const { return m_bIsFinished; }
+private:
+    void UpdateBlend(_float fTimeDelta);
+
+private:
+    class CModel* m_pModel{ nullptr };          // 본과 메시 데이터 참조
+	CAnimation* m_pCurrentAnim = nullptr; // 현재 애니메이션
+    _uint						m_iCurrentAnimIndex = { };
+    _uint						m_iPrevAnimIndex = { };
+    BlendState  m_Blend{};
+	vector<class CBone*> m_Bones; // 전체 본의 개수
+	class CAnimController* m_pAnimController = nullptr; // 애니메이션 컨트롤러
+    unordered_map<string, Parameter> m_Params;
+	_bool m_bIsFinished = false; // 애니메이션 재생 완료 여부
+    unordered_map<string, vector<AnimEventCallback>> m_eventListeners;
+
+public:
+	static CAnimator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    virtual CComponent* Clone(void* pArg) override;
+    virtual void Free() override;
+};
+NS_END

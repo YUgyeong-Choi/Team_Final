@@ -27,6 +27,8 @@ HRESULT CUIObject::Initialize(void* pArg)
 	m_fSizeX = pDesc->fSizeX;
 	m_fSizeY = pDesc->fSizeY;
 
+	m_fOffset = pDesc->fOffset;
+	
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -41,7 +43,7 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
 
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, 0.f, 1.f));
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 
 
 	return S_OK;
