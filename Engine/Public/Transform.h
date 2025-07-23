@@ -61,6 +61,60 @@ public:
 	void Rotation(_fvector vAxis, _float fRadian);
 	void Rotation(_float fX, _float fY, _float fZ);
 
+public:
+	/* [ 앞으로 (네비) ] */
+	void Go_Front(_float fTimeDelta, CNavigation* pNavigation = nullptr);
+	/* [ 지정된 위치로 앞으로 회전 후 이동 ] */
+	bool Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CNavigation* pNavigation = nullptr);
+
+public:
+	/* [ 위로 (고점 도달시 정지) ] */
+	bool Go_UpCustom(_float fTimeDelta, _float fSpeed, _float fMaxHight);
+	/* [ 아래로 (저점 도달시 정지) ] */
+	void Go_DownCustom(_float fTimeDelta, _float fSpeed);
+
+public:
+	/* [ 방향으로 이동 (네비) ] */
+	void Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CNavigation* pNavigation = nullptr);
+
+public:
+	/* [ 몇초동안 어느방향으로 몇만큼 이동할거니? ] */
+	bool Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CNavigation* pNavigation = nullptr);
+	/* [ 몇초동안 타겟 스케일만큼 스케일된다. ] */
+	bool Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetScale);
+	/* [ 몇초동안 어느방향으로 어느축을 기준으로 몇만큼 회전할거니? ] */
+	bool Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, _float fAngleDegree);
+	/* [ 목표지점까지 얼마만큼 높이로 점프한다 ] */
+	bool JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime);
+
+public:
+	/* [ 천천히 회전한다 ] */
+	void RotationTimeDelta(_float fTimeDelta, _fvector Axis, _float fSpeedPerSec);
+	/* [ 해당 방향으로 즉시 회전한다 ] */
+	bool RotateToDirectionImmediately(const _fvector& vTargetDir);
+
+public:
+	/* [ Y축을 제외하고 바라본다 ] */
+	void LookAtWithOutY(_fvector vAt);
+	/* [ Y축을 제외하고 쫓아간다 (네비) ] */
+	bool ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fMinDistance, CNavigation* pNavigation = nullptr);
+	/* [ 쫓아간다 ] */
+	bool ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _float fMinDistance, _float fSpeed);
+
+public:
+	/* [ Y축을 고정하고 빌보드된다 ] */
+	void BillboardToCameraY(_fvector vCameraPos);
+	/* [ 전체를 빌보드한다. ] */
+	void BillboardToCameraFull(_fvector vCameraPos);
+
+public:
+	/* [ 스케일을 계산한다 ] */
+	_float3 Compute_Scaled();
+	/* [ 스케일을 적용한다 ] */
+	void SetUp_Scale(_float fScaleX, _float fScaleY, _float fScaleZ);
+	/* [ 스케일을 가져온다 ] */
+	_vector Get_Scale() const;
+
 
 public:
 	void LookAt(_fvector vAt);
@@ -73,6 +127,36 @@ private:
 	_float					m_fSpeedPerSec = {};
 	_float					m_fRotationPerSec = {};
 
+private:
+	// 이동 전용 멤버변수들
+	_float  m_fSpecialMoveElapsed = 0.f;
+	_float  m_fSpecialMoveDuration = 0.f;
+	_vector m_vSpecialMoveOffset = {};
+	_vector m_fSpecialMoveStartPos = {};
+	_bool	m_bSpecialMoving = {};
+
+	// 회전용 멤버 변수들
+	_bool m_bSpecialRotating = false;
+	_float m_fSpecialRotateElapsed = 0.f;
+	_float m_fSpecialRotateDuration = 0.f;
+	_float m_fSpecialRotateAngle = 0.f;
+	_vector m_vSpecialRotateAxis = {};
+	_matrix m_matSpecialRotateStart = {};
+
+	_vector m_vOriginalRight = { 1.f, 0.f, 0.f };
+	_vector m_vOriginalUp = { 0.f, 1.f, 0.f };
+	_vector m_vOriginalLook = { 0.f, 0.f, 1.f };
+
+	//점프 전용
+	_vector m_vSpecialMoveStartPos = {};
+	_vector m_vSpecialMoveTargetPos = {};
+
+	//스케일 전용
+	_bool m_bScaling = false;
+	_float m_fScaleElapsed = 0.f;
+	_float m_fScaleDuration = 0.f;
+	_vector m_vStartScale = {};
+	_vector m_vTargetScale = {};
 
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

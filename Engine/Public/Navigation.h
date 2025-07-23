@@ -26,6 +26,9 @@ public:
 	_bool isMove(_fvector vWorldPos);
 	_vector SetUp_Height(_fvector vWorldPos);
 
+public:
+	_float Compute_NavigationY(const _vector pTransform);
+
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render() override;

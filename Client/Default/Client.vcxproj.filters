@@ -243,6 +243,9 @@
     <ClInclude Include="imgui\ImSequencer.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Client_Calculation.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
