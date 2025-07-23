@@ -175,12 +175,15 @@
     <ClInclude Include="..\Public\Level_YW.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\MapTool.h" />
     <ClInclude Include="..\Public\MySequence.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\StaticMesh.h" />
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_Calculation.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="imgui\backends\imgui_impl_win32.h" />
@@ -219,8 +222,10 @@
     <ClCompile Include="..\Private\Level_YW.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />

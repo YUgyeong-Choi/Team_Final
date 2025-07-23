@@ -2,8 +2,8 @@
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
-texture2D g_DiffuseTexture;
-texture2D g_NormalTexture;
+Texture2D g_DiffuseTexture;
+Texture2D g_NormalTexture;
 
 
 struct VS_IN
