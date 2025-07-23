@@ -8,6 +8,7 @@
 #include "VIBuffer_Rect.h"
 #include "Navigation.h"
 #include "Transform.h"
+#include "PipeLine.h"
 #include "Collider.h"
 #include "Texture.h"
 #include "Shader.h"

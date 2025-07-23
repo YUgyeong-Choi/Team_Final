@@ -27,6 +27,7 @@ HRESULT CLevel_YG::Initialize()
 
 void CLevel_YG::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
 }
 
 HRESULT CLevel_YG::Render()
