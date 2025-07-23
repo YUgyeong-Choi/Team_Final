@@ -93,6 +93,9 @@ HRESULT CLevel_Loading::Render()
 {
 	m_pLoader->Output_LoadingText();
 
+	_wstring text = L"ÇÏ³ªµÑ»ï³Ý¿À¿©¼¸Ä¥ÆÈ¾ÆÈ©°ø \n Test Test Áß";
+	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.3f, g_iWinSizeY * 0.75f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), 0.8f);
+
 	return S_OK;
 }
 

@@ -88,5 +88,15 @@
         "fSizeY": 108.00000762939453,
         "fX": 896.0,
         "fY": 540.0
+    },
+    {
+        "Offset": 0.07500000298023224,
+        "PassIndex": 3,
+        "TextureIndex": 2,
+        "TextureTag": "Prototype_Component_Texture_Loading_Object",
+        "fSizeX": 320.0,
+        "fSizeY": 180.0,
+        "fX": 192.0,
+        "fY": 666.0
     }
 ]

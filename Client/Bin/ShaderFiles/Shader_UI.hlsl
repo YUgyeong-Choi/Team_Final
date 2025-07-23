@@ -132,7 +132,7 @@ PS_OUT PS_MAIN_DISCARD_DARK(PS_IN In)
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    if(length(Out.vColor) < 0.2f)
+    if(length(Out.vColor.rgb) < 0.15f)
         discard;
     
     return Out;
@@ -144,7 +144,10 @@ PS_OUT PS_MAIN_DISCARD_ALPHA(PS_IN In)
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    if (Out.vColor.a < 0.2f)
+    if (Out.vColor.a < 0.15f)
+        discard;
+    
+    if (length(Out.vColor.rgb) < 0.015f)
         discard;
     
     return Out;
