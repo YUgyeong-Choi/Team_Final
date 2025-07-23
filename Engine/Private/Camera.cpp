@@ -7,7 +7,7 @@ CCamera::CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CCamera::CCamera(const CCamera& Prototype)
-	: CGameObject{ Prototype }
+	: CGameObject( Prototype )
 {
 }
 
@@ -42,6 +42,20 @@ HRESULT CCamera::Initialize(void* pArg)
 
 void CCamera::Priority_Update(_float fTimeDelta)
 {
+	if (m_bShake)
+		Update_Camera_Shake(fTimeDelta);
+
+	// Transform 컴포넌트에서 위치와 방향 정보 가져옴
+	_vector vEye = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_vector vAt = vEye + vLook;
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	// 뷰 행렬 갱신
+	m_ViewMatrix = XMMatrixLookAtLH(vEye, vAt, vUp);
+
+	// 투영 행렬 갱신
+	m_ProjMatrix = XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar);
 }
 
 void CCamera::Update(_float fTimeDelta)
@@ -52,11 +66,81 @@ void CCamera::Late_Update(_float fTimeDelta)
 {
 }
 
+
 HRESULT CCamera::Render()
 {
 	return S_OK;
 }
 
+HRESULT CCamera::Update_Camera()
+{
+	m_vPureCamPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	m_pTransformCom->Move(m_vCurrentShakePos);
+	m_pTransformCom->Quaternion_Turn(m_vCurrentShakeRot);
+	
+	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
+	m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
+
+	m_pTransformCom->Move(-m_vCurrentShakePos);
+	m_pTransformCom->Quaternion_Turn(-m_vCurrentShakeRot);
+
+
+	return S_OK;
+}
+_fvector& CCamera::GetPosition()
+{
+	return m_pTransformCom->Get_State(STATE::POSITION);
+}
+
+void CCamera::StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot)
+{
+	m_fShakeIntensity = fIntensity;
+	m_fShakeDuration = fDuration;
+	m_fShakeFreqPos = fShakeFreqPos;
+	m_fShakeFreqRot = fShakeFreqRot;
+
+	m_fShakeTime = 0.f;
+	m_bShake = TRUE;
+}
+
+// 쉐이크 갱신 함수
+void CCamera::Update_Camera_Shake(_float fTimedelta)
+{
+	m_fShakeTime += fTimedelta;
+
+	if (m_fShakeTime >= m_fShakeDuration)
+	{
+		m_bShake = FALSE;
+		m_vCurrentShakePos = { 0.f, 0.f, 0.f, 0.f };
+		m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
+		return;
+	}
+
+	// 2. 감쇠 적용
+	_float decay = 1.f - (m_fShakeTime / m_fShakeDuration);
+	_float shakeStrength = m_fShakeIntensity * decay;
+
+	_float t = m_fShakeTime;
+
+	// 3. 부드러운 위치 흔들림 (sin/cos 기반)
+	_vector offsetPos = {
+		sin(t * m_fShakeFreqPos) * shakeStrength * 0.5f,
+		cos(t * m_fShakeFreqPos * 0.8f) * shakeStrength * 0.4f,
+		sin(t * m_fShakeFreqPos * 1.2f) * shakeStrength * 0.3f
+	};
+
+	// 4. 부드러운 회전 흔들림 (YawPitchRoll 순서 기준)
+	_vector offsetRot = {
+		cos(t * m_fShakeFreqRot * 1.5f) * shakeStrength * 1.5f, // Pitch (X)
+		sin(t * m_fShakeFreqRot) * shakeStrength * 2.0f, // Yaw   (Y)
+		cos(t * m_fShakeFreqRot * 0.7f) * shakeStrength * 0.8f  // Roll  (Z)
+	};
+
+	// 5. 적용
+	m_vCurrentShakePos = offsetPos;
+	m_vCurrentShakeRot = offsetRot;
+}
 
 void CCamera::Bind_Matrices()
 {

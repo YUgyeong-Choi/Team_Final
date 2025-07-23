@@ -28,6 +28,8 @@ HRESULT CLevel_YW::Initialize()
 void CLevel_YW::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
+
+	__super::Update(fTimeDelta);
 }
 
 HRESULT CLevel_YW::Render()
