@@ -37,6 +37,8 @@ public:
 	virtual void On_Hit(_int iDamage, _float3 HitPos) {}
 	virtual void On_Trigger() {}
 
+	virtual void Set_bDead() { m_bDead = true; }
+	virtual _bool Get_bDead();
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
@@ -48,6 +50,7 @@ protected:
 	map<const _wstring, class CComponent*>		m_Components;
 	class CTransform*							m_pTransformCom = { nullptr };
 
+	_bool m_bDead = { false };
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
 

@@ -61,7 +61,6 @@ HRESULT CGameObject::Initialize(void* pArg)
 
 void CGameObject::Priority_Update(_float fTimeDelta)
 {
-
 }
 
 void CGameObject::Update(_float fTimeDelta)
@@ -78,6 +77,11 @@ HRESULT CGameObject::Render()
 {
 
 	return S_OK;
+}
+
+_bool CGameObject::Get_bDead()
+{
+	return m_bDead;
 }
 
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)

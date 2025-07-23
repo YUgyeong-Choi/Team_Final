@@ -23,8 +23,8 @@ HRESULT CPicking::Initialize(HWND hWnd)
 
 
 	D3D11_TEXTURE2D_DESC		TextureDesc{};
-	TextureDesc.Width = ViewportDesc.Width;
-	TextureDesc.Height = ViewportDesc.Height;
+	TextureDesc.Width = static_cast<_uint>(ViewportDesc.Width);
+	TextureDesc.Height = static_cast<_uint>(ViewportDesc.Height);
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
 	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;

@@ -234,6 +234,30 @@ CComponent* CGameInstance::Get_Component(_uint iLevelIndex, const _wstring& strL
 	return m_pObject_Manager->Get_Component(iLevelIndex, strLayerTag, iPartID, strComponentTag, iIndex);
 }
 
+CGameObject* CGameInstance::Get_Object(_uint iLevelIndex, const _wstring& strLayerTag, _uint iIndex)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Find_Object(iLevelIndex, strLayerTag, iIndex);
+}
+
+CGameObject* CGameInstance::Get_LastObject(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+	return m_pObject_Manager->Find_LastObject(iLevelIndex, strLayerTag);
+}
+
+list<class CGameObject*>& CGameInstance::Get_ObjectList(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	static list<class CGameObject*> _nullList = {};
+	if (nullptr == m_pObject_Manager)
+		return _nullList;
+
+	return m_pObject_Manager->Get_ObjectList(iLevelIndex, strLayerTag);
+}
+
 #pragma endregion
 
 #pragma region RENDERER

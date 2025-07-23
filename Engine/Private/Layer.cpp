@@ -38,11 +38,23 @@ HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 
 void CLayer::Priority_Update(_float fTimeDelta)
 {
-	for (auto& pGameObject : m_GameObjects)
+	for (auto iter = m_GameObjects.begin(); iter != m_GameObjects.end(); )
 	{
-		if (nullptr != pGameObject)
+		CGameObject* pGameObject = *iter;
+
+		if (pGameObject != nullptr)
+		{
 			pGameObject->Priority_Update(fTimeDelta);
 
+			if (pGameObject->Get_bDead())
+			{
+				Safe_Release(pGameObject);  // 리소스 해제
+				iter = m_GameObjects.erase(iter);  // 리스트에서 제거
+				continue;  // erase 후 iter가 이미 다음 요소를 가리킴
+			}
+		}
+
+		++iter;
 	}
 		
 }
@@ -65,6 +77,30 @@ void CLayer::Late_Update(_float fTimeDelta)
 			pGameObject->Late_Update(fTimeDelta);
 
 	}
+}
+
+CGameObject* CLayer::Get_Object(_uint iIndex)
+{
+	if (m_GameObjects.size() <= iIndex)
+		return nullptr;
+
+	auto	iter = m_GameObjects.begin();
+
+	for (size_t i = 0; i < iIndex; ++i)
+		++iter;
+
+	return *iter;
+}
+
+
+CGameObject* CLayer::Get_LastObject()
+{
+	return m_GameObjects.back();
+}
+
+list<class CGameObject*>& CLayer::Get_ObjectList()
+{
+	return m_GameObjects;
 }
 
 CLayer* CLayer::Create()
