@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Component.h"
 
@@ -62,57 +62,57 @@ public:
 	void Rotation(_float fX, _float fY, _float fZ);
 
 public:
-	/* [ ¾ÕÀ¸·Î (³×ºñ) ] */
+	/* [ ì•ìœ¼ë¡œ (ë„¤ë¹„) ] */
 	void Go_Front(_float fTimeDelta, CNavigation* pNavigation = nullptr);
-	/* [ ÁöÁ¤µÈ À§Ä¡·Î ¾ÕÀ¸·Î È¸Àü ÈÄ ÀÌµ¿ ] */
+	/* [ ì§€ì •ëœ ìœ„ì¹˜ë¡œ ì•ìœ¼ë¡œ íšŒì „ í›„ ì´ë™ ] */
 	bool Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CNavigation* pNavigation = nullptr);
 
 public:
-	/* [ À§·Î (°íÁ¡ µµ´Ş½Ã Á¤Áö) ] */
+	/* [ ìœ„ë¡œ (ê³ ì  ë„ë‹¬ì‹œ ì •ì§€) ] */
 	bool Go_UpCustom(_float fTimeDelta, _float fSpeed, _float fMaxHight);
-	/* [ ¾Æ·¡·Î (ÀúÁ¡ µµ´Ş½Ã Á¤Áö) ] */
+	/* [ ì•„ë˜ë¡œ (ì €ì  ë„ë‹¬ì‹œ ì •ì§€) ] */
 	void Go_DownCustom(_float fTimeDelta, _float fSpeed);
 
 public:
-	/* [ ¹æÇâÀ¸·Î ÀÌµ¿ (³×ºñ) ] */
+	/* [ ë°©í–¥ìœ¼ë¡œ ì´ë™ (ë„¤ë¹„) ] */
 	void Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CNavigation* pNavigation = nullptr);
 
 public:
-	/* [ ¸îÃÊµ¿¾È ¾î´À¹æÇâÀ¸·Î ¸î¸¸Å­ ÀÌµ¿ÇÒ°Å´Ï? ] */
+	/* [ ëª‡ì´ˆë™ì•ˆ ì–´ëŠë°©í–¥ìœ¼ë¡œ ëª‡ë§Œí¼ ì´ë™í• ê±°ë‹ˆ? ] */
 	bool Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CNavigation* pNavigation = nullptr);
-	/* [ ¸îÃÊµ¿¾È Å¸°Ù ½ºÄÉÀÏ¸¸Å­ ½ºÄÉÀÏµÈ´Ù. ] */
+	/* [ ëª‡ì´ˆë™ì•ˆ íƒ€ê²Ÿ ìŠ¤ì¼€ì¼ë§Œí¼ ìŠ¤ì¼€ì¼ëœë‹¤. ] */
 	bool Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetScale);
-	/* [ ¸îÃÊµ¿¾È ¾î´À¹æÇâÀ¸·Î ¾î´ÀÃàÀ» ±âÁØÀ¸·Î ¸î¸¸Å­ È¸ÀüÇÒ°Å´Ï? ] */
+	/* [ ëª‡ì´ˆë™ì•ˆ ì–´ëŠë°©í–¥ìœ¼ë¡œ ì–´ëŠì¶•ì„ ê¸°ì¤€ìœ¼ë¡œ ëª‡ë§Œí¼ íšŒì „í• ê±°ë‹ˆ? ] */
 	bool Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, _float fAngleDegree);
-	/* [ ¸ñÇ¥ÁöÁ¡±îÁö ¾ó¸¶¸¸Å­ ³ôÀÌ·Î Á¡ÇÁÇÑ´Ù ] */
+	/* [ ëª©í‘œì§€ì ê¹Œì§€ ì–¼ë§ˆë§Œí¼ ë†’ì´ë¡œ ì í”„í•œë‹¤ ] */
 	bool JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime);
 
 public:
-	/* [ ÃµÃµÈ÷ È¸ÀüÇÑ´Ù ] */
+	/* [ ì²œì²œíˆ íšŒì „í•œë‹¤ ] */
 	void RotationTimeDelta(_float fTimeDelta, _fvector Axis, _float fSpeedPerSec);
-	/* [ ÇØ´ç ¹æÇâÀ¸·Î Áï½Ã È¸ÀüÇÑ´Ù ] */
+	/* [ í•´ë‹¹ ë°©í–¥ìœ¼ë¡œ ì¦‰ì‹œ íšŒì „í•œë‹¤ ] */
 	bool RotateToDirectionImmediately(const _fvector& vTargetDir);
 
 public:
-	/* [ YÃàÀ» Á¦¿ÜÇÏ°í ¹Ù¶óº»´Ù ] */
+	/* [ Yì¶•ì„ ì œì™¸í•˜ê³  ë°”ë¼ë³¸ë‹¤ ] */
 	void LookAtWithOutY(_fvector vAt);
-	/* [ YÃàÀ» Á¦¿ÜÇÏ°í ÂÑ¾Æ°£´Ù (³×ºñ) ] */
+	/* [ Yì¶•ì„ ì œì™¸í•˜ê³  ì«“ì•„ê°„ë‹¤ (ë„¤ë¹„) ] */
 	bool ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fMinDistance, CNavigation* pNavigation = nullptr);
-	/* [ ÂÑ¾Æ°£´Ù ] */
+	/* [ ì«“ì•„ê°„ë‹¤ ] */
 	bool ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _float fMinDistance, _float fSpeed);
 
 public:
-	/* [ YÃàÀ» °íÁ¤ÇÏ°í ºôº¸µåµÈ´Ù ] */
+	/* [ Yì¶•ì„ ê³ ì •í•˜ê³  ë¹Œë³´ë“œëœë‹¤ ] */
 	void BillboardToCameraY(_fvector vCameraPos);
-	/* [ ÀüÃ¼¸¦ ºôº¸µåÇÑ´Ù. ] */
+	/* [ ì „ì²´ë¥¼ ë¹Œë³´ë“œí•œë‹¤. ] */
 	void BillboardToCameraFull(_fvector vCameraPos);
 
 public:
-	/* [ ½ºÄÉÀÏÀ» °è»êÇÑ´Ù ] */
+	/* [ ìŠ¤ì¼€ì¼ì„ ê³„ì‚°í•œë‹¤ ] */
 	_float3 Compute_Scaled();
-	/* [ ½ºÄÉÀÏÀ» Àû¿ëÇÑ´Ù ] */
+	/* [ ìŠ¤ì¼€ì¼ì„ ì ìš©í•œë‹¤ ] */
 	void SetUp_Scale(_float fScaleX, _float fScaleY, _float fScaleZ);
-	/* [ ½ºÄÉÀÏÀ» °¡Á®¿Â´Ù ] */
+	/* [ ìŠ¤ì¼€ì¼ì„ ê°€ì ¸ì˜¨ë‹¤ ] */
 	_vector Get_Scale() const;
 
 
@@ -128,14 +128,14 @@ private:
 	_float					m_fRotationPerSec = {};
 
 private:
-	// ÀÌµ¿ Àü¿ë ¸â¹öº¯¼öµé
+	// ì´ë™ ì „ìš© ë©¤ë²„ë³€ìˆ˜ë“¤
 	_float  m_fSpecialMoveElapsed = 0.f;
 	_float  m_fSpecialMoveDuration = 0.f;
 	_vector m_vSpecialMoveOffset = {};
 	_vector m_fSpecialMoveStartPos = {};
 	_bool	m_bSpecialMoving = {};
 
-	// È¸Àü¿ë ¸â¹ö º¯¼öµé
+	// íšŒì „ìš© ë©¤ë²„ ë³€ìˆ˜ë“¤
 	_bool m_bSpecialRotating = false;
 	_float m_fSpecialRotateElapsed = 0.f;
 	_float m_fSpecialRotateDuration = 0.f;
@@ -147,11 +147,11 @@ private:
 	_vector m_vOriginalUp = { 0.f, 1.f, 0.f };
 	_vector m_vOriginalLook = { 0.f, 0.f, 1.f };
 
-	//Á¡ÇÁ Àü¿ë
+	//ì í”„ ì „ìš©
 	_vector m_vSpecialMoveStartPos = {};
 	_vector m_vSpecialMoveTargetPos = {};
 
-	//½ºÄÉÀÏ Àü¿ë
+	//ìŠ¤ì¼€ì¼ ì „ìš©
 	_bool m_bScaling = false;
 	_float m_fScaleElapsed = 0.f;
 	_float m_fScaleDuration = 0.f;
