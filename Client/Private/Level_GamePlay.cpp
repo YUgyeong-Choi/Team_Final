@@ -12,7 +12,6 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
