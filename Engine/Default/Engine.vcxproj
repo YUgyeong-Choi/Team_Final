@@ -216,6 +216,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\public\QuadTree.h" />
     <ClInclude Include="..\Public\Renderer.h" />
     <ClInclude Include="..\public\RenderTarget.h" />
+    <ClInclude Include="..\Public\Serializable.h" />
     <ClInclude Include="..\public\Shader.h" />
     <ClInclude Include="..\public\Shadow.h" />
     <ClInclude Include="..\public\Target_Manager.h" />

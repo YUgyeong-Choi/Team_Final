@@ -135,8 +135,8 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_BackBuffer()))
 		return E_FAIL;
 
-	//if (FAILED(Render_Blur()))
-	//	return E_FAIL;
+	if (FAILED(Render_Blur()))
+		return E_FAIL;
 
 	if (FAILED(Render_NonLight()))
 		return E_FAIL;

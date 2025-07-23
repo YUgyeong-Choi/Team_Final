@@ -211,6 +211,9 @@
     <ClInclude Include="..\Public\AnimController.h">
       <Filter>01.Utility\04.Components\Model\Animation\Controller</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Serializable.h">
+      <Filter>01.Utility\97.Serializ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -610,6 +613,9 @@
     </Filter>
     <Filter Include="01.Utility\04.Components\Model\Animation\Controller">
       <UniqueIdentifier>{f6b274cf-b840-4b6c-afa3-e9ea408e63b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\97.Serializ">
+      <UniqueIdentifier>{7069efbe-8a0c-4817-b42f-8fac16683e46}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
