@@ -210,8 +210,20 @@
     <ClInclude Include="..\Public\Level_JW.h">
       <Filter>01.Levels\LevelJW</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\JWTool.h">
+    <ClInclude Include="..\Public\AnimTool.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MySequence.h">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imnodes.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imnodes_internal.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\ImSequencer.h">
+      <Filter>98.Default\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -318,8 +330,17 @@
     <ClCompile Include="..\Private\Level_JW.cpp">
       <Filter>01.Levels\LevelJW</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\JWTool.cpp">
+    <ClCompile Include="..\Private\AnimTool.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MySequence.cpp">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\ImSequencer.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imnodes.cpp">
+      <Filter>98.Default\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

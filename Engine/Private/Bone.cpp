@@ -12,6 +12,8 @@ HRESULT CBone::Initialize(const aiNode* pAINode, _int iParentBoneIndex)
 
 	XMStoreFloat4x4(&m_TransformationMatrix, XMMatrixTranspose(XMLoadFloat4x4(&m_TransformationMatrix)));	
 
+	m_LocalBindPoseMatrix = m_TransformationMatrix; // 로컬 행렬 설정 나중에 블렌드에 사용하기
+
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity());
 
 	m_iParentBoneIndex = iParentBoneIndex;

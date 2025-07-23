@@ -1,6 +1,6 @@
 #include "Level_JW.h"
 #include "GameInstance.h"
-#include "JWTool.h"
+#include "AnimTool.h"
 
 CLevel_JW::CLevel_JW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -79,7 +79,7 @@ HRESULT CLevel_JW::Ready_Lights()
 
 HRESULT CLevel_JW::Ready_ImGuiTools()
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CJWTool::Create(m_pDevice, m_pContext);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CAnimTool::Create(m_pDevice, m_pContext);
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)])
 		return E_FAIL;
 

@@ -12,6 +12,13 @@ namespace Engine
 		unsigned int	iNumLevels;		
 	}ENGINE_DESC;
 
+
+	struct AnimationEvent
+	{
+		float fTime{ 0.f };
+		string name;
+	};
+
 	typedef struct tagKeyFrame
 	{
 		/* 행렬이 아닌이유? : 상태와 상태 사이를 보간해주기위해서. */

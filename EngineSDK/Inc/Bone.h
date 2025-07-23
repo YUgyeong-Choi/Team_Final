@@ -25,6 +25,8 @@ public:
 		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
 	}
 
+	const _float4x4& Get_LocalBindPose() const { return m_LocalBindPoseMatrix; }
+
 public:
 	HRESULT Initialize(const aiNode* pAINode, _int iParentBoneIndex);
 	HRESULT Initialize( ifstream& ifs);
@@ -44,6 +46,8 @@ private:
 	_float4x4				m_CombinedTransformationMatrix = {};	
 
 	_int					m_iParentBoneIndex = { -1 };
+
+	_float4x4  m_LocalBindPoseMatrix = {};
 
 public:
 	static CBone* Create(const aiNode* pAINode, _int iParentBoneIndex);
