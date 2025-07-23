@@ -62,12 +62,6 @@ private:
 	HRESULT Convert_AnimOnly(const _char* pModelFilePath);
 	HRESULT Copy_MaterialTextures();
 
-private:
-	HRESULT Render_MergeTool();
-	HRESULT Read_DestinationBinary(const _char* pModelFilePath, vector<char>& rawData, vector<TOOLANIMDATA>& AnimData);
-	HRESULT Read_SourceBinary(const _char* pModelFilePath, vector<char>& rawData, vector<TOOLANIMDATA>& AnimData);
-	HRESULT Merge_Animation(const _char* pModelFilePath, vector<char>& rawData, vector<TOOLANIMDATA>& DstAnimData, vector<TOOLANIMDATA>& SrcAnimData);
-
 private: // 멍청해서 다시쓰는중 파일스트림으로
 	HRESULT Write_BoneData(const aiNode* pAINode, _int iParentBoneIndex, vector<FBX_BONEDATA>& m_Bones, ostream& ofs);
 	HRESULT Write_NonAnimMeshData(ostream& ofs);

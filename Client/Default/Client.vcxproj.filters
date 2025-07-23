@@ -111,7 +111,7 @@
     <ClInclude Include="..\Public\Client_Enum.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Level_GamePlay.h">
+    <ClInclude Include="..\Public\Level_KratCentralStation.h">
       <Filter>01.Levels\GamePlay</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
@@ -225,6 +225,7 @@
     <ClInclude Include="imgui\ImSequencer.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Static_UI.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -243,7 +244,7 @@
     <ClCompile Include="Client.cpp">
       <Filter>98.Default</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Level_GamePlay.cpp">
+    <ClCompile Include="..\Private\Level_KratCentralStation.cpp">
       <Filter>01.Levels\GamePlay</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
@@ -342,6 +343,7 @@
     <ClCompile Include="imgui\imnodes.cpp">
       <Filter>98.Default\Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Static_UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
@@ -365,5 +367,6 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
   </ItemGroup>
 </Project>

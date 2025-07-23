@@ -28,6 +28,8 @@ public:
 	_float Compute_Random_Normal();
 	_float Compute_Random(_float fMin, _float fMax);
 
+	void Set_RenderCollider() { m_bRenderCollider = !m_bRenderCollider; }
+	_bool Get_RenderCollider() { return m_bRenderCollider; }
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
@@ -152,6 +154,8 @@ private:
 	class CShadow*				m_pShadow = { nullptr };
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
+
+	_bool m_bRenderCollider = false;
 public:
 	void Release_Engine();
 	virtual void Free() override;

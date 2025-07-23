@@ -5,11 +5,11 @@
 
 NS_BEGIN(Client)
 
-class CLevel_GamePlay final : public CLevel
+class CLevel_KratCentralStation final : public CLevel
 {
 private:
-	CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual ~CLevel_GamePlay() = default;
+	CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CLevel_KratCentralStation() = default;
 
 public:
 	virtual HRESULT Initialize() override;
@@ -22,7 +22,7 @@ private:
 	HRESULT Ready_Layer_Monster(const _wstring strLayerTag);
 
 public:
-	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CLevel_KratCentralStation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
 };
 

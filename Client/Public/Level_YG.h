@@ -1,9 +1,6 @@
 #pragma once
 
-#define USE_IMGUI
 #include "Client_Defines.h"
-#undef USE_IMGUI
-
 #include "Level.h"
 
 NS_BEGIN(Engine)
@@ -30,13 +27,7 @@ public:
 
 private:
 	HRESULT Ready_Lights();
-	HRESULT Ready_ImGuiTools();
-private:
-	HRESULT Ready_ImGui();
-	HRESULT ImGui_Render();
-	HRESULT ImGui_Docking_Settings();
-private:
-	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)];
+
 public:
 	static CLevel_YG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

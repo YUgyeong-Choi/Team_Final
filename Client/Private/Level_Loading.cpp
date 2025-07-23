@@ -1,7 +1,7 @@
 #include "Level_Loading.h"
 
 
-#include "Level_GamePlay.h"
+#include "Level_KratCentralStation.h"
 #include "Level_Logo.h"
 #include "Loader.h"
 
@@ -56,8 +56,8 @@ void CLevel_Loading::Update(_float fTimeDelta)
 			case LEVEL::LOGO:
 				pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 				break;
-			case LEVEL::GAMEPLAY:
-				pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+			case LEVEL::KRAT_CENTERAL_STATION:
+				pLevel = CLevel_KratCentralStation::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL::DH:
 				pLevel = CLevel_DH::Create(m_pDevice, m_pContext);

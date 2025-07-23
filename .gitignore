@@ -434,3 +434,9 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/c++,visualstudio
 FBXConverter/Bin/PhysXGpu_64.dll
 Client/Bin/PhysXGpu_64.dll
+Client/Bin/Engine.dll
+Engine/Bin/Engine.dll
+Engine/Bin/Engine.exp
+Engine/Bin/Engine.lib
+EngineSDK/Lib/Engine.lib
+FBXConverter/Bin/Engine.dll

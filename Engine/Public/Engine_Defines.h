@@ -63,6 +63,7 @@ namespace Engine
 
 	const unsigned int g_iMaxWidth = 8192;
 	const unsigned int g_iMaxHeight = 4608;
+
 }
 
 using namespace Engine;

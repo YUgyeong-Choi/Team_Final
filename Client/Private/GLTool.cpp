@@ -113,7 +113,7 @@ HRESULT CGLTool::Render_UtilTool()
 	{
 		bool isSelected = (index == m_iSelectTextureIndex);
 
-		if (ImGui::Selectable(string(strName.begin(), strName.end()).c_str(), isSelected))
+		if (ImGui::Selectable(WStringToString(strName).c_str(), isSelected))
 		{
 			m_iSelectTextureIndex = index;
 			m_strSelectName = strName;
@@ -182,7 +182,7 @@ HRESULT CGLTool::Render_UIList()
 		bool isSelected = (index == m_iSelectObjIndex);
 	
 
-		if (ImGui::Selectable(string(pObj->Get_StrTextureTag().begin(), pObj->Get_StrTextureTag().end()).c_str(), isSelected))
+		if (ImGui::Selectable(WStringToString(pObj->Get_StrTextureTag()).c_str(), isSelected))
 		{
 			m_iSelectObjIndex = index;
 			m_pSelectObj = pObj;
