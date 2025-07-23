@@ -87,7 +87,7 @@
     </Filter>
     <Filter Include="01.Levels\LevelYW\Map_Tool\StaticMesh">
       <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Levels\LevelYG">
       <UniqueIdentifier>{85c5eeba-3847-41ce-afd0-b98471da8b71}</UniqueIdentifier>
     </Filter>
@@ -96,7 +96,7 @@
     </Filter>
     <Filter Include="02.GameObjects\08.TestObject">
       <UniqueIdentifier>{fd6a2e2e-1acb-4059-8da8-96746c2038c0}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI">
       <UniqueIdentifier>{abd57b5b-f0cf-4c34-8c0b-f0f78d57b774}</UniqueIdentifier>
     </Filter>
@@ -216,20 +216,32 @@
     <ClInclude Include="..\Public\Level_JW.h">
       <Filter>01.Levels\LevelJW</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\JWTool.h">
-      <Filter>01.Levels\LevelJW\Tool</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\MapTool.h">
-      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\StaticMesh.h">
-      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\YGObject.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\Static_UI.h">
       <Filter>02.GameObjects\99.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapTool.h">
+      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticMesh.h">
+      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AnimTool.h">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MySequence.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imnodes.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imnodes_internal.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\ImSequencer.h">
+      <Filter>98.Default\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -333,20 +345,29 @@
     <ClCompile Include="..\Private\Level_JW.cpp">
       <Filter>01.Levels\LevelJW</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\JWTool.cpp">
-      <Filter>01.Levels\LevelJW\Tool</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\MapTool.cpp">
-      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\StaticMesh.cpp">
-      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\YGObject.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\Static_UI.cpp">
       <Filter>02.GameObjects\99.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapTool.cpp">
+      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticMesh.cpp">
+      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AnimTool.cpp">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imnodes.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\ImSequencer.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MySequence.cpp">
+      <Filter>98.Default\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
