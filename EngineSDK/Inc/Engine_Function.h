@@ -47,4 +47,23 @@ namespace Engine
 		return iRefCnt;
 	}
 
+	static string WStringToString(const _wstring& wstr)
+	{
+		if (wstr.empty()) return {};
+		int sizeNeeded = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), (int)wstr.size(), nullptr, 0, nullptr, nullptr);
+		string result(sizeNeeded, 0);
+		WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), (int)wstr.size(), &result[0], sizeNeeded, nullptr, nullptr);
+		return result;
+	}
+
+	static wstring StringToWString(const string& str)
+	{
+		if (str.empty()) return {};
+
+		int sizeNeeded = MultiByteToWideChar(CP_ACP, 0, str.c_str(), (int)str.size(), nullptr, 0);
+		wstring result(sizeNeeded, 0);
+		MultiByteToWideChar(CP_ACP, 0, str.c_str(), (int)str.size(), &result[0], sizeNeeded);
+		return result;
+	}
+
 }

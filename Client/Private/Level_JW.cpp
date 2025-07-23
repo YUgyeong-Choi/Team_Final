@@ -21,6 +21,10 @@ HRESULT CLevel_JW::Initialize()
 
 	if(FAILED(Ready_Camera()))
 		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -161,6 +165,16 @@ HRESULT CLevel_JW::ImGui_Docking_Settings()
 
 	return S_OK;
 }
+
+HRESULT CLevel_JW::Ready_Layer_Sky(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
+		ENUM_CLASS(LEVEL::JW), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 
 CLevel_JW* CLevel_JW::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

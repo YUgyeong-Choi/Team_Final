@@ -50,7 +50,6 @@ HRESULT CLevel_MapTool::Render()
 
     ImGui_Render();
     //·»´õ¸µ ¾îÂ¼±¸ÀúÂ¼±¸µé
-    ImGui::ShowDemoWindow(); // Show demo window! :)
 
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

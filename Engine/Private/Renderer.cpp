@@ -178,7 +178,7 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pDebugCom)
 
 HRESULT CRenderer::Render_Priority()
 {
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"));
+	//m_pGameInstance->Begin_MRT(TEXT("MRT_Final"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_PRIORITY)])
 	{
@@ -189,14 +189,14 @@ HRESULT CRenderer::Render_Priority()
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_PRIORITY)].clear();
 
-	m_pGameInstance->End_MRT();
+	//m_pGameInstance->End_MRT();
 
 	return S_OK;
 }
 
 HRESULT CRenderer::Render_Shadow()
 {
-	m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), m_pShadowDSV, true);
+	m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), m_pShadowDSV, true, true);
 
 	if (FAILED(Change_ViewportDesc(g_iMaxWidth, g_iMaxHeight)))
 		return E_FAIL;
@@ -312,7 +312,7 @@ HRESULT CRenderer::Render_Lights()
 
 HRESULT CRenderer::Render_BackBuffer()
 {
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false);
+	//m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false);
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
@@ -347,7 +347,7 @@ HRESULT CRenderer::Render_BackBuffer()
 	m_pVIBuffer->Bind_Buffers();
 	m_pVIBuffer->Render();
 
-	m_pGameInstance->End_MRT();
+	//m_pGameInstance->End_MRT();
 
 	return S_OK;
 }

@@ -70,6 +70,8 @@ private:
 	vector<class CBone*> m_Bones;
 	vector<AnimationEvent> m_events;
 	vector<_matrix>			m_TransformMatrices;
+
+	string m_AnimationName = {};
 public:
 	static CAnimation* Create(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones);
 	static CAnimation* CreateByBinary(ifstream& ifs, const vector<class CBone*>& Bones);
