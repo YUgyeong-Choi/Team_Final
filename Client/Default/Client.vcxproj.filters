@@ -94,6 +94,9 @@
     <Filter Include="01.Levels\LevelYW\Map_Tool">
       <UniqueIdentifier>{d8e56a61-088b-4c0b-a489-2cc6726e9093}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\Map_Tool\StaticMesh">
+      <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -219,6 +222,9 @@
     <ClInclude Include="..\public\MapTool.h">
       <Filter>01.Levels\LevelYW\Map_Tool</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StaticMesh.h">
+      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -329,6 +335,9 @@
     </ClCompile>
     <ClCompile Include="..\private\MapTool.cpp">
       <Filter>01.Levels\LevelYW\Map_Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StaticMesh.cpp">
+      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
