@@ -91,6 +91,12 @@
     <Filter Include="01.Levels\LevelJW\Tool">
       <UniqueIdentifier>{f0850a50-09c5-4f0f-af92-9eaa411944e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\EffectSequence">
+      <UniqueIdentifier>{0937bec9-d18e-47f9-98c3-b4ba670deab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\ToolParticle">
+      <UniqueIdentifier>{8965fe92-8566-43de-91a1-1c9d4df84dfc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -225,6 +231,12 @@
     <ClInclude Include="imgui\ImSequencer.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EffectSequence.h">
+      <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolParticle.h">
+      <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -341,6 +353,12 @@
     </ClCompile>
     <ClCompile Include="imgui\imnodes.cpp">
       <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectSequence.cpp">
+      <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolParticle.cpp">
+      <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

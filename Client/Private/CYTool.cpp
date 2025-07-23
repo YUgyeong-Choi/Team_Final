@@ -1,5 +1,7 @@
 #include "CYTool.h"
 #include "GameInstance.h"
+#include "EffectSequence.h"
+#include "ToolParticle.h"
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
@@ -25,6 +27,8 @@ HRESULT CCYTool::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_pSequence = new CEffectSequence();
+
 
 	return S_OK;
 }
@@ -44,16 +48,16 @@ void CCYTool::Late_Update(_float fTimeDelta)
 
 HRESULT CCYTool::Render()
 {
-	if (FAILED(Render_HiTool()))
+	if (FAILED(Render_EffectTool()))
 		return E_FAIL;
-
-	if (FAILED(Render_Hi2Tool()))
+	
+	if (FAILED(Test_Sequence()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CCYTool::Render_HiTool()
+HRESULT CCYTool::Render_EffectTool()
 {
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
@@ -88,15 +92,44 @@ HRESULT CCYTool::Render_HiTool()
 	return S_OK;
 }
 
-HRESULT CCYTool::Render_Hi2Tool()
+HRESULT CCYTool::Make_Particles()
 {
-	SetNextWindowSize(ImVec2(200, 300));
-	_bool open = true;
-	ImGui::Begin("Hi2 Tools", &open, NULL);
+	return S_OK;
+}
+
+HRESULT CCYTool::Test_Sequence()
+{
+	ImGui::Begin("Effect Sequence");
+
+	static _int iCurFrame = {};
+	static _bool bExpanded = { true };
+	static _int iSelected = { -1 };
+
+
+	if (Button("ADD"))
+	{
+
+	}
+
+	ImSequencer::Sequencer(m_pSequence, &iCurFrame, &bExpanded, &iSelected, nullptr, ImSequencer::SEQUENCER_EDIT_STARTEND);
 
 
 	ImGui::End();
 	return S_OK;
+}
+
+HRESULT CCYTool::Save_Particles()
+{
+	return S_OK;
+}
+
+HRESULT CCYTool::Load_Particles()
+{
+	return S_OK;
+}
+
+void CCYTool::Key_Input()
+{
 }
 
 CCYTool* CCYTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
