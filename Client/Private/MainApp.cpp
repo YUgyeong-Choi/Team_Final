@@ -147,7 +147,7 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxPosTex */
+	/* For.Prototype_Component_Shader_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_UI.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
@@ -172,7 +172,6 @@ HRESULT CMainApp::Ready_Static()
 
 HRESULT CMainApp::Start_Level(LEVEL eStartLevel)
 {
-	//
 	if (FAILED(Ready_Loading()))
 		return E_FAIL;
 
@@ -185,8 +184,6 @@ HRESULT CMainApp::Start_Level(LEVEL eStartLevel)
 HRESULT CMainApp::Ready_Loading()
 {
 	
-
-
 	/* For.Prototype_Component_Texture_BackGround_Loading_Desk*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround_Loading_Desk"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Loading_DeskBg.dds")))))

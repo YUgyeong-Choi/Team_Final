@@ -527,8 +527,6 @@ PxScene* CGameInstance::Get_Scene()
 
 void CGameInstance::Release_Engine()
 {
-	Safe_Release(m_pPhysX_Manager);
-
 	Safe_Release(m_pFrustum);
 
 	Safe_Release(m_pShadow);
@@ -556,6 +554,9 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pInput_Device);
 
 	Safe_Release(m_pGraphic_Device);
+
+	m_pPhysX_Manager->Shutdown();
+	Safe_Release(m_pPhysX_Manager);
 
 	Destroy_Instance();
 }
