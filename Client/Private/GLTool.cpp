@@ -79,6 +79,10 @@ void CGLTool::Add_UI()
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
 		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Static"), &eUIDesc)))
 		return;
+
+	auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Static"));
+
+	m_UIList.push_back(static_cast<CStatic_UI*>(pObj));
 }
 
 HRESULT CGLTool::Render_UtilTool()
@@ -107,11 +111,11 @@ HRESULT CGLTool::Render_UtilTool()
 
 	for (const auto& strName : m_TextureNames)
 	{
-		bool isSelected = (index == m_iSelectIndex);
+		bool isSelected = (index == m_iSelectTextureIndex);
 
 		if (ImGui::Selectable(string(strName.begin(), strName.end()).c_str(), isSelected))
 		{
-			m_iSelectIndex = index;
+			m_iSelectTextureIndex = index;
 			m_strSelectName = strName;
 		}
 		++index;
@@ -132,10 +136,10 @@ HRESULT CGLTool::Render_SelectOptionTool()
 	// 입력 칸 만들기
 
 	ImGui::InputFloat("Offset", &eUITempDesc.fOffset);
-	ImGui::InputFloat("SizeX", &eUITempDesc.fSizeX);
-	ImGui::InputFloat("SizeY", &eUITempDesc.fSizeY);
-	ImGui::InputFloat("fX", &eUITempDesc.fX);
-	ImGui::InputFloat("fY", &eUITempDesc.fY);
+	ImGui::InputFloat("SizeX_Ratio", &eUITempDesc.fSizeX);
+	ImGui::InputFloat("SizeY_Ratio", &eUITempDesc.fSizeY);
+	ImGui::InputFloat("fX_Ratio", &eUITempDesc.fX);
+	ImGui::InputFloat("fY_Ratio", &eUITempDesc.fY);
 	ImGui::InputInt("PassIndex", &eUITempDesc.iPassIndex);
 	ImGui::InputInt("TextureIndex", &eUITempDesc.iTextureIndex);
 
@@ -144,7 +148,17 @@ HRESULT CGLTool::Render_SelectOptionTool()
 	if (ImGui::Button("Apply"))
 	{
 		eUIDesc = eUITempDesc;
+		eUIDesc.fSizeX *= g_iWinSizeX;
+		eUIDesc.fSizeY *= g_iWinSizeY;
+		eUIDesc.fX *= g_iWinSizeX;
+		eUIDesc.fY *= g_iWinSizeY;
+
 		eUIDesc.strTextureTag = m_strSelectName;
+	}
+
+	if (ImGui::Button("Change Select UI"))
+	{
+		m_pSelectObj->Update_UI_From_Tool(eUIDesc);
 	}
 
 
@@ -159,9 +173,25 @@ HRESULT CGLTool::Render_UIList()
 	_bool open = true;
 	ImGui::Begin("UI List", &open, NULL);
 
+	// 만들어진 uilist 
 
+	int index = 0;
+	
+	for (const auto& pObj : m_UIList)
+	{
+		bool isSelected = (index == m_iSelectObjIndex);
 	
 
+		if (ImGui::Selectable(string(pObj->Get_StrTextureTag().begin(), pObj->Get_StrTextureTag().end()).c_str(), isSelected))
+		{
+			m_iSelectObjIndex = index;
+			m_pSelectObj = pObj;
+			eUITempDesc = m_pSelectObj->Get_Desc();
+			eUITempDesc.strTextureTag = pObj->Get_StrTextureTag();
+		}
+		
+		++index;
+	}
 
 	ImGui::End();
 	return S_OK;

@@ -24,10 +24,14 @@ HRESULT CStatic_UI::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components(pDesc->strTextureTag)))
+	m_strTextureTag = pDesc->strTextureTag;
+
+	if (FAILED(Ready_Components(m_strTextureTag)))
 		return E_FAIL;
 
 	m_iPassIndex = pDesc->iPassIndex;
+	m_iTextureIndex = pDesc->iTextureIndex;
+	
 
 	return S_OK;
 }
@@ -70,7 +74,28 @@ HRESULT CStatic_UI::Render()
 	return S_OK;
 }
 
-HRESULT CStatic_UI::Ready_Components(const wstring strTextureTag)
+void CStatic_UI::Update_UI_From_Tool(STATIC_UI_DESC& eDesc)
+{
+	m_fX = eDesc.fX;
+	m_fY = eDesc.fY;
+	m_fOffset = eDesc.fOffset;
+	m_fSizeX = eDesc.fSizeX;
+	m_fSizeY = eDesc.fSizeY;
+	m_iPassIndex = eDesc.iPassIndex;
+	m_iTextureIndex = eDesc.iTextureIndex;
+
+	D3D11_VIEWPORT			ViewportDesc{};
+	_uint					iNumViewports = { 1 };
+
+	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+
+	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
+}
+
+HRESULT CStatic_UI::Ready_Components(const wstring& strTextureTag)
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),

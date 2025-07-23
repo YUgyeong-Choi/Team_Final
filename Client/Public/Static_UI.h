@@ -21,6 +21,24 @@ public:
 		wstring strTextureTag;
 	}STATIC_UI_DESC;
 
+
+	_wstring& Get_StrTextureTag() { return m_strTextureTag; }
+
+	STATIC_UI_DESC Get_Desc()
+	{
+		STATIC_UI_DESC eDesc = {};
+		eDesc.fSizeX = m_fSizeX;
+		eDesc.fSizeY = m_fSizeY;
+		eDesc.iPassIndex = m_iPassIndex;
+		eDesc.iTextureIndex = m_iTextureIndex;
+		eDesc.fX = m_fX;
+		eDesc.fY = m_fY;
+		eDesc.fOffset = m_fOffset;
+
+		return eDesc;
+
+	}
+
 private:
 	CStatic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CStatic_UI(const CStatic_UI& Prototype);
@@ -34,6 +52,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	void Update_UI_From_Tool(STATIC_UI_DESC& eDesc);
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
@@ -41,6 +61,8 @@ private:
 
 private:
 
+	// tool에서 사용할...
+	_wstring m_strTextureTag = {};
 
 	// 월드에 그릴 사이즈
 	_float m_fScale = {};
@@ -48,7 +70,7 @@ private:
 	_int   m_iTextureIndex = {};
 
 private:
-	HRESULT Ready_Components(const wstring strTextureTag);
+	HRESULT Ready_Components(const wstring& strTextureTag);
 
 public:
 	static CStatic_UI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
