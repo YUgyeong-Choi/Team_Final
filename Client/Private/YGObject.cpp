@@ -133,6 +133,7 @@ HRESULT CYGObject::Render()
 	//if (g_bRenderDebug)
 	//	m_pPhysXActor->DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
 
+	return S_OK;
 }
 
 

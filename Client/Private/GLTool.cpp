@@ -80,7 +80,7 @@ void CGLTool::Save_File()
 		auto eDesc = pObj->Get_Desc();
 
 		// 이제 값 채워서 dump로 넘겨준다 
-		j["TextureTag"] = string(eDesc.strTextureTag.begin(), eDesc.strTextureTag.end());
+		j["TextureTag"] = WStringToString(eDesc.strTextureTag);
 		j["PassIndex"] = eDesc.iPassIndex;
 		j["TextureIndex"] = eDesc.iTextureIndex;
 		j["Offset"] = eDesc.fOffset;

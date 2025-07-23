@@ -101,8 +101,7 @@ HRESULT CLevel_Loading::Render()
 
 HRESULT CLevel_Loading::Ready_Loading()
 {
-	
-	
+
 
 	json j;
 
@@ -114,7 +113,6 @@ HRESULT CLevel_Loading::Ready_Loading()
 	{
 		CStatic_UI::STATIC_UI_DESC eStaticDesc = {};
 
-
 		eStaticDesc.fOffset = eUIJson["Offset"];
 		eStaticDesc.iPassIndex = eUIJson["PassIndex"];
 		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"];
@@ -124,13 +122,11 @@ HRESULT CLevel_Loading::Ready_Loading()
 		eStaticDesc.fY = eUIJson["fY"];
 
 		string textureTag = eUIJson["TextureTag"];
-		eStaticDesc.strTextureTag = wstring(textureTag.begin(), textureTag.end());
+		eStaticDesc.strTextureTag = StringToWString(textureTag);
 
 		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
 			static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eStaticDesc)))
 			return E_FAIL;
-
-		
 	}
 
 	file.close();

@@ -440,3 +440,13 @@ Engine/Bin/Engine.exp
 Engine/Bin/Engine.lib
 EngineSDK/Lib/Engine.lib
 FBXConverter/Bin/Engine.dll
+Client/Bin/Shader_VtxAnimMesh.cso
+Client/Bin/Shader_UI.cso
+Client/Bin/Shader_VtxCube.cso
+Client/Bin/Shader_VtxMesh.cso
+Client/Bin/Shader_VtxNorTex.cso
+Client/Bin/Shader_VtxPosInstance.cso
+Client/Bin/Shader_VtxPosTex.cso
+Client/Bin/Shader_VtxRectInstance.cso
+Engine/Bin/Shader_Cell.cso
+Engine/Bin/Shader_Deferred.cso
