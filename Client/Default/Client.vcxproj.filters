@@ -79,6 +79,18 @@
     <Filter Include="01.Levels\LevelYG\YG_Tool">
       <UniqueIdentifier>{8de7c18e-dec8-49c8-9824-c68b8062a0b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool">
+      <UniqueIdentifier>{c4cd7325-aee3-4c9c-b2d0-f34ede7d57bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelDH\Tool">
+      <UniqueIdentifier>{d260ba25-9dd3-4a2e-ae6d-6d3665e49f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelGL\Tool">
+      <UniqueIdentifier>{8671a455-ac8e-4381-af0d-4cb81272fd65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelJW\Tool">
+      <UniqueIdentifier>{f0850a50-09c5-4f0f-af92-9eaa411944e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -132,20 +144,8 @@
     <ClInclude Include="..\Public\Level_YG.h">
       <Filter>01.Levels\LevelYG</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Level_JW.h">
-      <Filter>01.Levels\LevelJW</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Level_YW.h">
       <Filter>01.Levels\LevelYW</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_DH.h">
-      <Filter>01.Levels\LevelDH</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_CY.h">
-      <Filter>01.Levels\LevelCY</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_GL.h">
-      <Filter>01.Levels\LevelGL</Filter>
     </ClInclude>
     <ClInclude Include="imgui\backends\imgui_impl_dx11.h">
       <Filter>98.Default\Imgui\Backend</Filter>
@@ -183,14 +183,35 @@
     <ClInclude Include="imgui\dirent\dirent.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ImGuiTool.h">
-      <Filter>98.Default\Imgui</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Client_Struct.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\YGTool.h">
       <Filter>01.Levels\LevelYG\YG_Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_CY.h">
+      <Filter>01.Levels\LevelCY</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CYTool.h">
+      <Filter>01.Levels\LevelCY\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_DH.h">
+      <Filter>01.Levels\LevelDH</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DHTool.h">
+      <Filter>01.Levels\LevelDH\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GLTool.h">
+      <Filter>01.Levels\LevelGL\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_GL.h">
+      <Filter>01.Levels\LevelGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_JW.h">
+      <Filter>01.Levels\LevelJW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\JWTool.h">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -243,20 +264,8 @@
     <ClCompile Include="..\Private\Level_YG.cpp">
       <Filter>01.Levels\LevelYG</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Level_JW.cpp">
-      <Filter>01.Levels\LevelJW</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Level_YW.cpp">
       <Filter>01.Levels\LevelYW</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_DH.cpp">
-      <Filter>01.Levels\LevelDH</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_CY.cpp">
-      <Filter>01.Levels\LevelCY</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_GL.cpp">
-      <Filter>01.Levels\LevelGL</Filter>
     </ClCompile>
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp">
       <Filter>98.Default\Imgui\Backend</Filter>
@@ -285,11 +294,32 @@
     <ClCompile Include="imgui\ImGuizmo.cpp">
       <Filter>98.Default\Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ImGuiTool.cpp">
-      <Filter>98.Default\Imgui</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\YGTool.cpp">
       <Filter>01.Levels\LevelYG\YG_Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_CY.cpp">
+      <Filter>01.Levels\LevelCY</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CYTool.cpp">
+      <Filter>01.Levels\LevelCY\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_DH.cpp">
+      <Filter>01.Levels\LevelDH</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DHTool.cpp">
+      <Filter>01.Levels\LevelDH\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GLTool.cpp">
+      <Filter>01.Levels\LevelGL\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_GL.cpp">
+      <Filter>01.Levels\LevelGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_JW.cpp">
+      <Filter>01.Levels\LevelJW</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\JWTool.cpp">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -7,12 +7,12 @@
 
 NS_BEGIN(Client)
 
-class CYGTool final : public CGameObject
+class CDHTool final : public CGameObject
 {
 private:
-	CYGTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CYGTool(const CYGTool& Prototype);
-	virtual ~CYGTool() = default;
+	CDHTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CDHTool(const CDHTool& Prototype);
+	virtual ~CDHTool() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -26,7 +26,7 @@ private:
 	HRESULT Render_HiTool();
 	HRESULT Render_Hi2Tool();
 public:
-	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
+	static CDHTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

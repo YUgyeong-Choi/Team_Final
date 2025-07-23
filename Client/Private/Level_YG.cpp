@@ -1,6 +1,5 @@
 #include "Level_YG.h"
 #include "GameInstance.h"
-#include "ImGuiTool.h"
 #include "YGTool.h"
 
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -80,10 +79,9 @@ HRESULT CLevel_YG::Ready_Lights()
 
 HRESULT CLevel_YG::Ready_ImGuiTools()
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CYGTool::Create(m_pDevice, m_pContext, &m_tWindowData);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CYGTool::Create(m_pDevice, m_pContext);
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)])
 		return E_FAIL;
-	m_tWindowData.ShowConvertMenu = true;
 
 	return S_OK;
 }
@@ -98,9 +96,8 @@ HRESULT CLevel_YG::Ready_ImGui()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // multi-viewport?
 
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Consola.ttf", 14.0f);
-
 	ImGui::StyleColorsDark();
+	io.Fonts->AddFontFromFileTTF("C://Windows//Fonts//gulim.ttc", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);

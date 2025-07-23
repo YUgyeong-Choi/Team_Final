@@ -1,26 +1,26 @@
-#include "YGTool.h"
+#include "GLTool.h"
 #include "GameInstance.h"
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
 
-CYGTool::CYGTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CGLTool::CGLTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
 
 }
 
-CYGTool::CYGTool(const CYGTool& Prototype)
+CGLTool::CGLTool(const CGLTool& Prototype)
 	: CGameObject(Prototype)
 {
 }
 
-HRESULT CYGTool::Initialize_Prototype()
+HRESULT CGLTool::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CYGTool::Initialize(void* pArg)
+HRESULT CGLTool::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -29,20 +29,20 @@ HRESULT CYGTool::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CYGTool::Priority_Update(_float fTimeDelta)
+void CGLTool::Priority_Update(_float fTimeDelta)
 {
 
 }
 
-void CYGTool::Update(_float fTimeDelta)
+void CGLTool::Update(_float fTimeDelta)
 {
 }
 
-void CYGTool::Late_Update(_float fTimeDelta)
+void CGLTool::Late_Update(_float fTimeDelta)
 {
 }
 
-HRESULT CYGTool::Render()
+HRESULT CGLTool::Render()
 {
 	if (FAILED(Render_HiTool()))
 		return E_FAIL;
@@ -53,11 +53,11 @@ HRESULT CYGTool::Render()
 	return S_OK;
 }
 
-HRESULT CYGTool::Render_HiTool()
+HRESULT CGLTool::Render_HiTool()
 {
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
-	Begin("YG Tools", &open, NULL);
+	Begin("GL Tools", &open, NULL);
 
 	IGFD::FileDialogConfig config;
 	if (Button(u8"안녕"))
@@ -88,7 +88,7 @@ HRESULT CYGTool::Render_HiTool()
 	return S_OK;
 }
 
-HRESULT CYGTool::Render_Hi2Tool()
+HRESULT CGLTool::Render_Hi2Tool()
 {
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
@@ -105,26 +105,26 @@ HRESULT CYGTool::Render_Hi2Tool()
 	return S_OK;
 }
 
-CYGTool* CYGTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
+CGLTool* CGLTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
-	CYGTool* pInstance = new CYGTool(pDevice, pContext);
+	CGLTool* pInstance = new CGLTool(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Created : CYGTool");
+		MSG_BOX("Failed to Created : CGLTool");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CYGTool::Clone(void* pArg)
+CGameObject* CGLTool::Clone(void* pArg)
 {
-	CYGTool* pInstance = new CYGTool(*this);
+	CGLTool* pInstance = new CGLTool(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CYGTool");
+		MSG_BOX("Failed to Cloned : CGLTool");
 		Safe_Release(pInstance);
 	}
 
@@ -132,7 +132,7 @@ CGameObject* CYGTool::Clone(void* pArg)
 }
 
 
-void CYGTool::Free()
+void CGLTool::Free()
 {
 	__super::Free();
 

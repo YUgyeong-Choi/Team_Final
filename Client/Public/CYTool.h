@@ -1,5 +1,4 @@
 #pragma once
-
 #include "GameObject.h"
 
 #define USE_IMGUI
@@ -8,12 +7,12 @@
 
 NS_BEGIN(Client)
 
-class CImGuiTool abstract : public CGameObject
+class CCYTool final : public CGameObject
 {
-protected:
-	CImGuiTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CImGuiTool(const CImGuiTool& Prototype);
-	virtual ~CImGuiTool() = default;
+private:
+	CCYTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CCYTool(const CCYTool& Prototype);
+	virtual ~CCYTool() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -23,10 +22,12 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-protected:
-	IMGUIWINDATA* m_pWindowData = { nullptr };
+private:
+	HRESULT Render_HiTool();
+	HRESULT Render_Hi2Tool();
 public:
-	virtual CGameObject* Clone(void* pArg) =0;
+	static CCYTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
+	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
 };

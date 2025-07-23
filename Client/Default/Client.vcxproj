@@ -159,9 +159,12 @@
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\Public\Client_Struct.h" />
+    <ClInclude Include="..\Public\CYTool.h" />
+    <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Explosion.h" />
-    <ClInclude Include="..\Public\ImGuiTool.h" />
+    <ClInclude Include="..\Public\GLTool.h" />
+    <ClInclude Include="..\Public\JWTool.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -195,9 +198,12 @@
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\Private\CYTool.cpp" />
+    <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
-    <ClCompile Include="..\Private\ImGuiTool.cpp" />
+    <ClCompile Include="..\Private\GLTool.cpp" />
+    <ClCompile Include="..\Private\JWTool.cpp" />
     <ClCompile Include="..\Private\Level_CY.cpp" />
     <ClCompile Include="..\Private\Level_DH.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />

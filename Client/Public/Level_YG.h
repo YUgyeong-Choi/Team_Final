@@ -36,8 +36,7 @@ private:
 	HRESULT ImGui_Render();
 	HRESULT ImGui_Docking_Settings();
 private:
-	class CImGuiTool* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)];
-	IMGUIWINDATA		m_tWindowData;
+	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)];
 public:
 	static CLevel_YG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
