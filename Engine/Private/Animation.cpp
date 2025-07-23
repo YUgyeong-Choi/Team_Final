@@ -89,6 +89,7 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 			XMLoadFloat4x4(Bones[i]->Get_TransformationMatrix());
 	}
 
+	m_Bones = Bones;
 	return S_OK;
 }
 

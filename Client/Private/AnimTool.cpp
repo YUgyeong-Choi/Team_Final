@@ -322,16 +322,7 @@ void CAnimTool::SelectAnimation()
 		iSelectedAnimIndex--;
 		if (iSelectedAnimIndex < 0) 
 			iSelectedAnimIndex = static_cast<_int>(anims.size()) - 1; // 마지막으로 순환
-
-		if (m_pCurAnimation)
-		{
-			m_pCurAnimator->StartTransition(m_pCurAnimation,anims[iSelectedAnimIndex],0.2f);
-
-		}
-		else
-		{
 			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
-		}
 		m_pCurAnimation = anims[iSelectedAnimIndex];
 	}
 	if (m_pGameInstance->Key_Down(DIK_PERIOD)) 
@@ -339,16 +330,8 @@ void CAnimTool::SelectAnimation()
 		iSelectedAnimIndex++;
 		if (iSelectedAnimIndex >= static_cast<_int>(anims.size())) 
 			iSelectedAnimIndex = 0;
-
-		if (m_pCurAnimation)
-		{
-			m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex], 0.2f);
-
-		}
-		else
-		{
-			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
-		}
+		m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
+		m_pCurAnimation = anims[iSelectedAnimIndex];
 	}
 
 	ImGui::End();
