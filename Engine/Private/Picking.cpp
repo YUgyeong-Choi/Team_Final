@@ -52,13 +52,13 @@ void CPicking::Update()
 {
 	//if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PickPos"), m_pTexture)))
 	//	return;
-
+	//
 	//D3D11_MAPPED_SUBRESOURCE		SubResource{};
-
+	//
 	//m_pContext->Map(m_pTexture, 0, D3D11_MAP_READ, 0, &SubResource);
-
+	//
 	//memcpy(m_pWorldPostions, SubResource.pData, sizeof(_float4) * m_iWidth * m_iHeight);
-
+	//
 	//m_pContext->Unmap(m_pTexture, 0);	
 }
 

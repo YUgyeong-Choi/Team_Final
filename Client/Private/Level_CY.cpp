@@ -25,6 +25,8 @@ HRESULT CLevel_CY::Initialize()
 void CLevel_CY::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
+
+	__super::Update(fTimeDelta);
 }
 
 HRESULT CLevel_CY::Render()

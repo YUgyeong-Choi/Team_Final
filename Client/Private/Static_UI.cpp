@@ -8,7 +8,7 @@ CStatic_UI::CStatic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CStatic_UI::CStatic_UI(const CStatic_UI& Prototype)
-	: CUIObject{ Prototype }
+	: CUIObject( Prototype )
 {
 }
 
@@ -141,9 +141,8 @@ CGameObject* CStatic_UI::Clone(void* pArg)
 
 void CStatic_UI::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
+	__super::Free();
 }

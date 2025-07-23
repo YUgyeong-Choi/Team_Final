@@ -177,7 +177,6 @@ HRESULT CMainApp::Ready_Static()
 
 HRESULT CMainApp::Start_Level(LEVEL eStartLevel)
 {
-	//
 	if (FAILED(Ready_Loading()))
 		return E_FAIL;
 
@@ -190,8 +189,6 @@ HRESULT CMainApp::Start_Level(LEVEL eStartLevel)
 HRESULT CMainApp::Ready_Loading()
 {
 	
-
-
 	/* For.Prototype_Component_Texture_BackGround_Loading_Desk*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround_Loading_Desk"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Loading_DeskBg.dds")))))

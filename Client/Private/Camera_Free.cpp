@@ -41,6 +41,9 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
+		return;
+
 	// 달리기 여부 체크
 	m_bSprint = (m_pGameInstance->Key_Pressing(DIK_LSHIFT)) != 0;
 

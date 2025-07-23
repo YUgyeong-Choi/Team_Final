@@ -61,7 +61,10 @@ public:
 	void Rotation(_fvector vAxis, _float fRadian);
 	void Rotation(_float fX, _float fY, _float fZ);
 
+
 public:
+	/* [ 방향으로 이동 ] */
+	void Move(const _vector& vDirectionVector);
 	/* [ 앞으로 (네비) ] */
 	void Go_Front(_float fTimeDelta, CNavigation* pNavigation = nullptr);
 	/* [ 지정된 위치로 앞으로 회전 후 이동 ] */
@@ -92,6 +95,8 @@ public:
 	void RotationTimeDelta(_float fTimeDelta, _fvector Axis, _float fSpeedPerSec);
 	/* [ 해당 방향으로 즉시 회전한다 ] */
 	bool RotateToDirectionImmediately(const _fvector& vTargetDir);
+	/* [ 쿼터니언 회전 ] */
+	void Quaternion_Turn(const _vector& vAngle);
 
 public:
 	/* [ Y축을 제외하고 바라본다 ] */
@@ -114,7 +119,6 @@ public:
 	void SetUp_Scale(_float fScaleX, _float fScaleY, _float fScaleZ);
 	/* [ 스케일을 가져온다 ] */
 	_vector Get_Scale() const;
-
 
 public:
 	void LookAt(_fvector vAt);

@@ -56,24 +56,17 @@ HRESULT CStaticMesh::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (m_pModelCom)
+	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMesh; i++)
 	{
-		_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 
-		for (_uint i = 0; i < iNumMesh; i++)
-		{
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
-				return E_FAIL;
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
-				return E_FAIL;
+		m_pShaderCom->Begin(0);
 
-			if (FAILED(m_pShaderCom->Begin(0)))
-				return E_FAIL;
-
-			if (FAILED(m_pModelCom->Render(i)))
-				return E_FAIL;
-		}
+		m_pModelCom->Render(i);
 	}
 
 	return S_OK;
