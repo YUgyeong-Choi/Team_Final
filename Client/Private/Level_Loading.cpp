@@ -14,6 +14,8 @@
 
 #include "GameInstance.h"
 
+#include "Static_UI.h"
+
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 {
@@ -32,6 +34,9 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 	수행할 로더객체를 생성한다. */
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevelID);
 	if (nullptr == m_pLoader)
+		return E_FAIL;
+
+	if (FAILED(Ready_Loading()))
 		return E_FAIL;
 	
 	return S_OK;
@@ -87,6 +92,56 @@ void CLevel_Loading::Update(_float fTimeDelta)
 HRESULT CLevel_Loading::Render()
 {
 	m_pLoader->Output_LoadingText();
+
+	return S_OK;
+}
+
+HRESULT CLevel_Loading::Ready_Loading()
+{
+	CStatic_UI::STATIC_UI_DESC eUIDesc = {};
+
+	eUIDesc.fX = g_iWinSizeX * 0.5f;
+	eUIDesc.fY = g_iWinSizeY * 0.5f;
+	eUIDesc.fSizeX = g_iWinSizeX;
+	eUIDesc.fSizeY = g_iWinSizeY;
+	eUIDesc.iPassIndex = UI_DEFAULT;
+	eUIDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eUIDesc)))
+		return E_FAIL;
+
+	eUIDesc.fSizeX = g_iWinSizeX * 1.2f;
+	eUIDesc.fSizeY = g_iWinSizeY * 1.1f;
+	eUIDesc.iPassIndex = UI_DISCARD_ALAPH;
+	eUIDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Paper");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eUIDesc)))
+		return E_FAIL;
+
+
+	eUIDesc.fX = g_iWinSizeX * 0.5f;
+	eUIDesc.fY = g_iWinSizeY * 0.5f;
+	eUIDesc.fSizeX = g_iWinSizeX;
+	eUIDesc.fSizeY = g_iWinSizeY;
+	eUIDesc.iPassIndex = UI_DISCARD_DARK;
+	eUIDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Photo");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eUIDesc)))
+		return E_FAIL;
+
+	eUIDesc.fX = g_iWinSizeX * 0.475f;
+	eUIDesc.fY = g_iWinSizeY * 0.8f;
+	eUIDesc.fSizeX = g_iWinSizeX * 0.6f;
+	eUIDesc.fSizeY = g_iWinSizeY * 0.4f;
+	eUIDesc.iPassIndex = UI_DISCARD_ALAPH;
+	eUIDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Tip");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eUIDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

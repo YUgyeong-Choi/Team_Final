@@ -1,6 +1,7 @@
 #include "MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "Static_UI.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::Get_Instance() }
@@ -141,9 +142,49 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 HRESULT CMainApp::Start_Level(LEVEL eStartLevel)
 {
+	//
+	if (FAILED(Ready_Loading()))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, eStartLevel))))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Loading()
+{
+	/* For.Prototype_Component_Texture_BackGround_Loading_Desk*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround_Loading_Desk"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Loading_DeskBg.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_BackGround_Loading_Desk*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround_Loading_Photo"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Loading_PhotoBg.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_BackGround_Loading_Desk*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround_Loading_Tip"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Loading_TipBg.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_BackGround_Loading_Paper*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround_Loading_Paper"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Loading_Paper.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Loading_Object*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Loading_Object"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/Object/Loading_Object_%d.dds"), 6))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_BackGround */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		CStatic_UI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	 
 	return S_OK;
 }
 

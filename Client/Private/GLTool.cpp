@@ -17,6 +17,9 @@ CGLTool::CGLTool(const CGLTool& Prototype)
 
 HRESULT CGLTool::Initialize_Prototype()
 {
+
+	
+	
 	return S_OK;
 }
 
@@ -25,6 +28,13 @@ HRESULT CGLTool::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	auto map = m_pGameInstance->Get_Prototypes();
+
+	for (auto& pair : *map)
+	{
+		if(pair.first.find(L"Texture") != pair.first.npos)
+			m_TextureNames.push_back(pair.first);
+	}
 
 	return S_OK;
 }
@@ -44,61 +54,113 @@ void CGLTool::Late_Update(_float fTimeDelta)
 
 HRESULT CGLTool::Render()
 {
-	if (FAILED(Render_HiTool()))
+	if (FAILED(Render_UtilTool()))
 		return E_FAIL;
 
-	if (FAILED(Render_Hi2Tool()))
+	if (FAILED(Render_SelectOptionTool()))
+		return E_FAIL;
+
+	if (FAILED(Render_UIList()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CGLTool::Render_HiTool()
+void CGLTool::Save_File()
 {
-	SetNextWindowSize(ImVec2(200, 300));
+}
+
+void CGLTool::Load_File()
+{
+}
+
+void CGLTool::Add_UI()
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Static"), &eUIDesc)))
+		return;
+}
+
+HRESULT CGLTool::Render_UtilTool()
+{
+	SetNextWindowSize(ImVec2(500, 300));
 	_bool open = true;
 	Begin("GL Tools", &open, NULL);
 
 	IGFD::FileDialogConfig config;
-	if (Button(u8"안녕"))
+	if (Button(u8"Save File"))
 	{
-
+		Save_File();
 	}
 
-	if (IFILEDIALOG->Display("FBXDialog"))
+	if (Button(u8"Load File"))
 	{
-		if (IFILEDIALOG->IsOk())
-		{
-			auto selections = IFILEDIALOG->GetSelection();
-			// 처리
-			// first: 파일명.확장자
-			// second: 전체 경로 (파일명포함)
-			if (!selections.empty())
-			{
-				for (auto FilePath : selections)
-				{
+		Load_File();
+	}
 
-				}
-			}
+	if (Button(u8"Add UI"))
+	{
+		Add_UI();
+	}
+
+	int index = 0;
+
+	for (const auto& strName : m_TextureNames)
+	{
+		bool isSelected = (index == m_iSelectIndex);
+
+		if (ImGui::Selectable(string(strName.begin(), strName.end()).c_str(), isSelected))
+		{
+			m_iSelectIndex = index;
+			m_strSelectName = strName;
 		}
-		IFILEDIALOG->Close();
+		++index;
 	}
 
 	ImGui::End();
 	return S_OK;
 }
 
-HRESULT CGLTool::Render_Hi2Tool()
+HRESULT CGLTool::Render_SelectOptionTool()
 {
+	
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
-	ImGui::Begin("Hi2 Tools", &open, NULL);
+	ImGui::Begin("Select option ", &open, NULL);
 
 
-	IGFD::FileDialogConfig config;
-	if (Button("Merge Animations"))
+	// 입력 칸 만들기
+
+	ImGui::InputFloat("Offset", &eUITempDesc.fOffset);
+	ImGui::InputFloat("SizeX", &eUITempDesc.fSizeX);
+	ImGui::InputFloat("SizeY", &eUITempDesc.fSizeY);
+	ImGui::InputFloat("fX", &eUITempDesc.fX);
+	ImGui::InputFloat("fY", &eUITempDesc.fY);
+	ImGui::InputInt("PassIndex", &eUITempDesc.iPassIndex);
+	ImGui::InputInt("TextureIndex", &eUITempDesc.iTextureIndex);
+
+
+	// apply 누르면 내가 선언한 변수에 담도록 하기?
+	if (ImGui::Button("Apply"))
 	{
+		eUIDesc = eUITempDesc;
+		eUIDesc.strTextureTag = m_strSelectName;
 	}
+
+
+	ImGui::End();
+	return S_OK;
+}
+
+HRESULT CGLTool::Render_UIList()
+{
+	
+	SetNextWindowSize(ImVec2(200, 300));
+	_bool open = true;
+	ImGui::Begin("UI List", &open, NULL);
+
+
+	
 
 
 	ImGui::End();

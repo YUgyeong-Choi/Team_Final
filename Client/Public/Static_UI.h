@@ -17,6 +17,7 @@ public:
 	typedef struct tagStaticUIDesc : public CUIObject::UIOBJECT_DESC
 	{
 		_int iPassIndex = { 0 };
+		_int iTextureIndex = { 0 };
 		wstring strTextureTag;
 	}STATIC_UI_DESC;
 
@@ -44,6 +45,7 @@ private:
 	// 월드에 그릴 사이즈
 	_float m_fScale = {};
 	_int   m_iPassIndex = {};
+	_int   m_iTextureIndex = {};
 
 private:
 	HRESULT Ready_Components(const wstring strTextureTag);
