@@ -132,6 +132,12 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pPhysX_Manager->Simulate(fTimeDelta);
 
 	m_pLevel_Manager->Update(fTimeDelta);
+
+#ifdef _DEBUG
+	if (Key_Down(DIK_F11))
+		m_pRenderer->Set_RenderDebug();
+#endif
+
 }
 
 HRESULT CGameInstance::Begin_Draw()
@@ -233,6 +239,11 @@ HRESULT CGameInstance::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pR
 	return m_pRenderer->Add_RenderGroup(eRenderGroup, pRenderObject);
 }
 
+void CGameInstance::Set_RenderDebug()
+{
+	m_pRenderer->Set_RenderDebug();
+}
+
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
 {
@@ -313,7 +324,7 @@ _long CGameInstance::Get_DIMouseMove(DIMM eMouseState)
 
 _bool CGameInstance::Key_Down(_byte byKeyID)
 {
-	return m_pInput_Device->Key_Down(byKeyID);
+ 	return m_pInput_Device->Key_Down(byKeyID);
 }
 
 _bool CGameInstance::Key_Up(_byte byKeyID)

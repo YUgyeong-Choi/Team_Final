@@ -18,6 +18,7 @@ public:
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
+	void Set_RenderDebug() { m_bRenderDebug = !m_bRenderDebug; }
 #endif
 
 private:
@@ -40,8 +41,8 @@ private:
 #ifdef _DEBUG
 private:
 	list<class CComponent*>		m_DebugComponent;
+	_bool m_bRenderDebug = false;
 #endif
-
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();

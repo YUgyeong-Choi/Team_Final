@@ -63,7 +63,11 @@ HRESULT CLevel_Logo::Render()
 {
 	SetWindowText(g_hWnd, TEXT("로고레벨입니다."));
 	_wstring text = L"F1 : 동하, F2 : 장원, F3 : 경래, F4 : 영웅, F5 : 채영, F6 : 유경";
-	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(0.f, 680.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 680.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
+	text = L"F11 : 렌더타겟 OnOff";
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 650.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
 	return S_OK;
 }
 

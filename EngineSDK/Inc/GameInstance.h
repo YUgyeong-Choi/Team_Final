@@ -46,7 +46,7 @@ public:
 
 #pragma region RENDERER
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
-
+	void Set_RenderDebug();
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
