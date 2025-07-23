@@ -13,53 +13,52 @@ CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CModel::CModel(const CModel& Prototype)
-	: CComponent ( Prototype )
-	, m_iNumMeshes { Prototype.m_iNumMeshes }
-	, m_Meshes { Prototype.m_Meshes }
-	, m_iNumMaterials { Prototype.m_iNumMaterials }
-	, m_Materials { Prototype.m_Materials }
-	, m_eType { Prototype.m_eType }
-	, m_PreTransformMatrix { Prototype.m_PreTransformMatrix }
+	: CComponent(Prototype)
+	, m_iNumMeshes{ Prototype.m_iNumMeshes }
+	, m_Meshes{ Prototype.m_Meshes }
+	, m_iNumMaterials{ Prototype.m_iNumMaterials }
+	, m_Materials{ Prototype.m_Materials }
+	, m_eType{ Prototype.m_eType }
+	, m_PreTransformMatrix{ Prototype.m_PreTransformMatrix }
 	//, m_Bones { Prototype.m_Bones }
-	, m_iNumAnimations { Prototype.m_iNumAnimations }
+	, m_iNumAnimations{ Prototype.m_iNumAnimations }
 	// , m_Animations { Prototype.m_Animations }
 {
 	for (auto& pPrototypeBone : Prototype.m_Bones)
-		m_Bones.push_back(pPrototypeBone->Clone());		
+		m_Bones.push_back(pPrototypeBone->Clone());
 
 	for (auto& pMaterial : m_Materials)
 		Safe_AddRef(pMaterial);
 
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
-
-	for (auto& pPrototypeAnim: Prototype.m_Animations)
-		m_Animations.push_back(pPrototypeAnim->Clone());
+	for (auto& pPrototypeAnim : Prototype.m_Animations)
+		m_Animations.push_back(pPrototypeAnim->Clone(m_Bones));
 
 }
 
 HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uint iMeshIndex, aiTextureType eType, _uint iTextureIndex)
 {
 	if (iMeshIndex >= m_iNumMeshes)
-		return E_FAIL;		
+		return E_FAIL;
 
 	_uint		iMaterialIndex = m_Meshes[iMeshIndex]->Get_MaterialIndex();
 
 	if (iMaterialIndex >= m_iNumMaterials)
 		return E_FAIL;
 
-	return m_Materials[iMaterialIndex]->Bind_ShaderResource(pShader, pConstantName, eType, iTextureIndex);	
+	return m_Materials[iMaterialIndex]->Bind_ShaderResource(pShader, pConstantName, eType, iTextureIndex);
 }
 
 HRESULT CModel::Bind_Bone_Matrices(CShader* pShader, const _char* pConstantName, _uint iMeshIndex)
 {
-	return m_Meshes[iMeshIndex]->Bind_Bone_Matrices(pShader, pConstantName, m_Bones);	
+	return m_Meshes[iMeshIndex]->Bind_Bone_Matrices(pShader, pConstantName, m_Bones);
 }
 
 HRESULT CModel::Initialize_Prototype(MODEL eType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
 {
 	_uint		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
-	
+
 	if (MODEL::NONANIM == eType)
 		iFlag |= aiProcess_PreTransformVertices;
 
@@ -73,7 +72,7 @@ HRESULT CModel::Initialize_Prototype(MODEL eType, const _char* pModelFilePath, _
 	m_eType = eType;
 
 	// 뼈 머태리얼 메쉬 애니메이션 읽고 생성
-	Read_BinaryFBX(pModelFilePath); 
+	Read_BinaryFBX(pModelFilePath);
 
 	//Read_OriginalFBX(pModelFilePath);
 
@@ -86,18 +85,18 @@ HRESULT CModel::Initialize(void* pArg)
 }
 
 HRESULT CModel::Render(_uint iMeshIndex)
-{	
+{
 	m_Meshes[iMeshIndex]->Bind_Buffers();
-	m_Meshes[iMeshIndex]->Render();	
+	m_Meshes[iMeshIndex]->Render();
 
 	return S_OK;
 }
 
-_bool CModel::Play_Animation(_float fTimeDelta)
+HRESULT CModel::Play_Animation(_float fTimeDelta)
 {
-	_bool		isFinished = { false };
- 
-	isFinished = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
+	//_bool		isFinished = { false };
+ //
+	//isFinished = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
 
 	for (auto& pBone : m_Bones)
 	{
@@ -105,7 +104,7 @@ _bool CModel::Play_Animation(_float fTimeDelta)
 	}
 
 
-	return isFinished;
+	return S_OK;
 }
 
 void CModel::Set_Animation(_uint iIndex, _bool isLoop)
@@ -121,18 +120,18 @@ void CModel::Set_Animation_TickPerSecond(_uint iIndex, _float fTickPerSecond)
 {
 	if (iIndex >= m_iNumAnimations)
 		return;
-	m_Animations[iIndex]->Set_TickPerSecond(fTickPerSecond);
+	m_Animations[iIndex]->SetTickPerSecond(fTickPerSecond);
 }
 
 void CModel::Set_Animation_TickPerSecond_All(_float fTickPerSecond)
 {
 	for (auto& pAnim : m_Animations)
-		pAnim->Set_TickPerSecond(fTickPerSecond);
+		pAnim->SetTickPerSecond(fTickPerSecond);
 }
 
 void CModel::Reset_CurAnimationFrame()
 {
-	m_Animations[m_iCurrentAnimIndex]->Reset();
+	m_Animations[m_iCurrentAnimIndex]->ResetTrack();
 }
 
 HRESULT CModel::Ready_Bones(const aiNode* pAINode, _int iParentBoneIndex)
@@ -207,6 +206,9 @@ HRESULT CModel::Read_BinaryFBX(const string& filepath)
 	{
 		if (FAILED(Ready_Animations(ifs)))
 			return E_FAIL;
+
+		if (FAILED(Add_Animations(filepath)))
+			return E_FAIL;
 	}
 
 	return S_OK;
@@ -227,7 +229,7 @@ HRESULT CModel::Ready_Bones(ifstream& ifs)
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Meshes( ifstream& ifs)
+HRESULT CModel::Ready_Meshes(ifstream& ifs)
 {
 	ifs.read(reinterpret_cast<_char*>(&m_iNumMeshes), sizeof(_uint));  // 메쉬 몇개읨 
 
@@ -243,7 +245,7 @@ HRESULT CModel::Ready_Meshes( ifstream& ifs)
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Materials( ifstream& ifs, const _char* pModelFilePath)
+HRESULT CModel::Ready_Materials(ifstream& ifs, const _char* pModelFilePath)
 {
 	ifs.read(reinterpret_cast<_char*>(&m_iNumMaterials), sizeof(_uint));  // 머테리얼 몇개읨 
 
@@ -262,7 +264,7 @@ HRESULT CModel::Ready_Animations(ifstream& ifs)
 {
 	ifs.read(reinterpret_cast<_char*>(&m_iNumAnimations), sizeof(_uint));  // 애니메이션 몇개읨 
 
-  	_uint iRootBoneIdx = Find_BoneIndex("Root_$AssimpFbx$_Translation");
+	_uint iRootBoneIdx = Find_BoneIndex("Root_$AssimpFbx$_Translation");
 	if (iRootBoneIdx == m_Bones.size())
 	{
 		iRootBoneIdx = Find_BoneIndex("Root");
@@ -270,7 +272,7 @@ HRESULT CModel::Ready_Animations(ifstream& ifs)
 
 	for (size_t i = 0; i < m_iNumAnimations; i++)
 	{
- 		CAnimation* pAnimation = CAnimation::Create(ifs, m_Bones, iRootBoneIdx);
+		CAnimation* pAnimation = CAnimation::CreateByBinary(ifs, m_Bones);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
@@ -283,26 +285,45 @@ HRESULT CModel::Ready_Animations(ifstream& ifs)
 
 HRESULT CModel::Add_Animations(const string& filepath)
 {
-	ifstream ifs(filepath, ios::binary);
 
-	if (!ifs.is_open())
-		return E_FAIL;
-	
-	_uint iAdditionalNumAnimations = {};
+	string full = filepath;
+	size_t pos = full.find_last_of("\\/");
+	string dir = (pos != string::npos) ? full.substr(0, pos + 1) : "./";
 
-	_uint iRootBoneIdx = Find_BoneIndex("Root");
+	//  검색 패턴 (예: "C:/Models/*.anim.bin")
+	string pattern = dir + "*.anim";
 
-	ifs.read(reinterpret_cast<_char*>(&iAdditionalNumAnimations), sizeof(_uint));  // 애니메이션 몇개읨 
-
-	for (size_t i = 0; i < iAdditionalNumAnimations; i++)
+	WIN32_FIND_DATAA findData;
+	HANDLE hFind = FindFirstFileA(pattern.c_str(), &findData);
+	if (hFind != INVALID_HANDLE_VALUE)
 	{
-		CAnimation* pAnimation = CAnimation::Create(ifs, m_Bones, iRootBoneIdx);
-		if (nullptr == pAnimation)
-			return E_FAIL;
+		do
+		{
+			// 찾은 파일 이름(build.cFileName)과 디렉터리 결합
+			string animPath = dir + findData.cFileName;
 
-		m_Animations.push_back(pAnimation);
+			// 파일 열기
+			ifstream ifs(animPath, ios::binary);
+			if (!ifs.is_open())
+				continue;
+
+			// CAnimation 생성 (bones는 이미 채워져 있음)
+			CAnimation* pAnim = CAnimation::CreateByBinary(ifs, this->m_Bones);
+			if (pAnim)
+			{
+				this->m_Animations.push_back(pAnim);
+				this->m_AnimationMap[pAnim->Get_Name()] =
+					static_cast<uint32_t>(this->m_Animations.size() - 1);
+				this->m_AnimationNameMap[static_cast<uint32_t>(this->m_Animations.size() - 1)] = pAnim->Get_Name();
+			}
+
+		} while (FindNextFileA(hFind, &findData));  // 다음 파일 검색
+
+		FindClose(hFind);
 	}
 
+	// 총 개수 업데이트
+	this->m_iNumAnimations = static_cast<uint32_t>(this->m_Animations.size());
 	return S_OK;
 }
 
@@ -310,14 +331,14 @@ _uint CModel::Find_BoneIndex(const _char* srcName)
 {
 	_uint iBoneIndex = {};
 	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
-	{
-		if (true == pBone->Compare_Name(srcName))
-			return true;
+		{
+			if (true == pBone->Compare_Name(srcName))
+				return true;
 
-		++iBoneIndex;
+			++iBoneIndex;
 
-		return false;
-	});
+			return false;
+		});
 	return iBoneIndex;
 }
 
@@ -341,12 +362,7 @@ HRESULT CModel::Set_BoneMatrix(_uint iBoneIndex, _fmatrix matTransform)
 
 const _float CModel::Get_CurrentTrackPosition()
 {
-	return 	m_Animations[m_iCurrentAnimIndex]->Get_CurrentTrackPosition();
-}
-
-const _float CModel::Get_Duration()
-{
-	return 	m_Animations[m_iCurrentAnimIndex]->Get_Duration();
+	return 	m_Animations[m_iCurrentAnimIndex]->GetCurrentTrackPosition();
 }
 
 HRESULT CModel::Read_OriginalFBX(const string& filepath)
@@ -417,7 +433,7 @@ void CModel::Free()
 	m_Materials.clear();
 
 	for (auto& pMesh : m_Meshes)
-		Safe_Release(pMesh);	
+		Safe_Release(pMesh);
 	m_Meshes.clear();
 
 	for (auto& pAnimation : m_Animations)

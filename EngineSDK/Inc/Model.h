@@ -28,6 +28,26 @@ public:
 	void Set_Animation_TickPerSecond_All(_float fTickPerSecond);
 	void Reset_CurAnimationFrame();
 
+	const vector<class CBone*>& Get_Bones() const {
+		return m_Bones;
+	}
+	_uint Get_NumAnimations() const { return m_iNumAnimations; }
+	vector<class CAnimation*> GetAnimations()& { return m_Animations; }
+
+	class CAnimation* GetAnimationClip(_uint iIndex)
+	{
+		if (iIndex >= m_iNumAnimations)
+			return nullptr;
+		return m_Animations[iIndex];
+	}
+	class CAnimation* GetAnimationClipByName(const string& name)
+	{
+		auto it = m_AnimationMap.find(name);
+		if (it != m_AnimationMap.end())
+			return m_Animations[it->second];
+		return nullptr;
+	}
+
 public:
 	HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iMeshIndex, aiTextureType eType, _uint iTextureIndex = 0);
 	HRESULT Bind_Bone_Matrices(class CShader* pShader, const _char* pConstantName, _uint iMeshIndex);
@@ -38,7 +58,7 @@ public:
 	virtual HRESULT Render(_uint iMeshIndex);
 
 public:
-	_bool Play_Animation(_float fTimeDelta);
+	HRESULT Play_Animation(_float fTimeDelta);
 
 private:
 	Assimp::Importer			m_Importer;	
@@ -60,6 +80,10 @@ private:
 	_uint						m_iCurrentAnimIndex = { };
 	_uint						m_iNumAnimations = {};
 	vector<class CAnimation*>	m_Animations;
+
+
+	unordered_map<string, _uint> m_AnimationMap;
+	unordered_map<_uint, string> m_AnimationNameMap;
 
 public:
 	vector<CMesh*>* Get_Meshes() { return &m_Meshes; };
