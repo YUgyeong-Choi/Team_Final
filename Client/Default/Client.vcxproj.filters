@@ -76,6 +76,9 @@
     <Filter Include="98.Default\Imgui\Backend">
       <UniqueIdentifier>{624280e6-f79c-4cda-87dc-3b5155cfa85e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYG\YG_Tool">
+      <UniqueIdentifier>{8de7c18e-dec8-49c8-9824-c68b8062a0b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -180,6 +183,15 @@
     <ClInclude Include="imgui\dirent\dirent.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ImGuiTool.h">
+      <Filter>98.Default\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Struct.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGTool.h">
+      <Filter>01.Levels\LevelYG\YG_Tool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -272,6 +284,12 @@
     </ClCompile>
     <ClCompile Include="imgui\ImGuizmo.cpp">
       <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGuiTool.cpp">
+      <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGTool.cpp">
+      <Filter>01.Levels\LevelYG\YG_Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

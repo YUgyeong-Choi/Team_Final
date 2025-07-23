@@ -23,7 +23,7 @@ void CLevel_CY::Update(_float fTimeDelta)
 
 HRESULT CLevel_CY::Render()
 {
-	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
+	SetWindowText(g_hWnd, TEXT("채영 레벨입니다."));
 
 	return S_OK;
 }

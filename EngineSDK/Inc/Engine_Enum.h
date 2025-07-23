@@ -18,5 +18,6 @@ namespace Engine
 	{
 		PERSON, STATIC, LOOT, RESOURCES, ITEMS, PREVIEW, BUILDING, EFFECT, ANIMAL
 	};
+
 	
 }

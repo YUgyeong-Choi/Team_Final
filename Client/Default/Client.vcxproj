@@ -158,8 +158,10 @@
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Explosion.h" />
+    <ClInclude Include="..\Public\ImGuiTool.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -172,6 +174,7 @@
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="imgui\backends\imgui_impl_dx11.h" />
@@ -194,6 +197,7 @@
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
+    <ClCompile Include="..\Private\ImGuiTool.cpp" />
     <ClCompile Include="..\Private\Level_CY.cpp" />
     <ClCompile Include="..\Private\Level_DH.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
@@ -206,6 +210,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />

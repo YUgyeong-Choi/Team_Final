@@ -8,6 +8,7 @@
 #include "../Default/framework.h"
 #include <process.h>
 #include "Client_Enum.h"
+#include "Client_Struct.h"
 
 #ifdef USE_IMGUI
 #pragma push_macro("new")
@@ -33,25 +34,3 @@ extern HINSTANCE g_hInst;
 
 
 using namespace Client;
-
-//화 : 그림자.틀
-//수 : 그림자 최종,블러 이론 
-//목 :  절두체(Frustum)컬링.지형컬링.쿼드트리 
-//금 : 팀편성관련 설문조사.
-
-
-// (7월14일)월요일 검사
-// (7월17일)목요일 검사
-// (7월18일)금요일 발표. 
-
-
-
-
-// 선생님 사랑합니다♥
-// ㅡ151기 막내ㅡ 
-
-
-
-
-
-

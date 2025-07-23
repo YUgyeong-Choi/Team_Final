@@ -22,7 +22,7 @@ void CLevel_GL::Update(_float fTimeDelta)
 
 HRESULT CLevel_GL::Render()
 {
-	SetWindowText(g_hWnd, TEXT("YG 레벨입니다."));
+	SetWindowText(g_hWnd, TEXT("경래 레벨입니다."));
 
 	return S_OK;
 }
