@@ -220,6 +220,9 @@
     <ClInclude Include="..\Public\Sound_Core.h">
       <Filter>00.System\02.Sound\Core</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PhysX_RaycastIgnoreSelfCallback.h">
+      <Filter>01.Utility\13.PhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">

@@ -1,6 +1,7 @@
 #include "YGMonster.h"
 
 #include "GameInstance.h"
+#include "PhysX_RaycastIgnoreSelfCallback.h"
 
 CYGMonster::CYGMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
@@ -59,6 +60,7 @@ void CYGMonster::Priority_Update(_float fTimeDelta)
 void CYGMonster::Update(_float fTimeDelta)
 {
 	Update_ColliderPos();
+	Ray();
 }
 
 void CYGMonster::Late_Update(_float fTimeDelta)
@@ -95,14 +97,6 @@ HRESULT CYGMonster::Render()
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
-
-		DEBUGRAY_DATA _data{};
-		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
-		_data.vDirection = PxVec3(0.f, 1.f, 0.f);
-		_data.fRayLength = 10.f;
-		_data.bIsHit = true;
-		_data.vHitPos = _data.vStartPos + _data.vDirection.getNormalized() * _data.fRayLength;
-		m_pPhysXActorCom->Add_RenderRay(_data);
 	}
 #endif
 
@@ -127,7 +121,7 @@ HRESULT CYGMonster::Bind_ShaderResources()
 
 void CYGMonster::On_CollisionEnter(CGameObject* pOther)
 {
-	printf("몬스터 충돌!\n");
+	printf("몬스터 충돌 시작!\n");
 }
 
 void CYGMonster::On_CollisionStay(CGameObject* pOther)
@@ -136,6 +130,7 @@ void CYGMonster::On_CollisionStay(CGameObject* pOther)
 
 void CYGMonster::On_CollisionExit(CGameObject* pOther)
 {
+	printf("몬스터 충돌 종료!\n");
 }
 
 void CYGMonster::On_Hit(_int iDamage, _float3 HitPos)
@@ -197,6 +192,7 @@ HRESULT CYGMonster::Ready_Collider()
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
 		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
@@ -227,6 +223,65 @@ void CYGMonster::Update_ColliderPos()
 
 	// 4. PhysX Transform 적용
 	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
+}
+
+void CYGMonster::Ray()
+{
+	PxVec3 origin = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
+	XMFLOAT3 fLook;
+	XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
+	_float fRayLength = 10.f;
+
+	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+	PxRaycastBuffer hit;
+	PxQueryFilterData filterData;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+	CRaycastIgnoreSelfCallback callback(m_pPhysXActorCom->Get_Actor());
+
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+	{
+		if (hit.hasBlock)
+		{
+			PxRigidActor* hitActor = hit.block.actor;
+
+			//  자기 자신이면 무시
+			if (hitActor == m_pPhysXActorCom->Get_Actor())
+			{
+				printf(" Ray hit myself  skipping\n");
+				return;
+			}
+
+			PxVec3 hitPos = hit.block.position;
+			PxVec3 hitNormal = hit.block.normal;
+
+			printf("Ray충돌 했다!\n");
+			printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
+			printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
+			m_bHit = true;
+			m_vHitPos = hitPos;
+			// 저기 hit.block.여기에 뭐 faceIndex, U, V 다양하게 있으니 궁금하면 보세여.. 
+		}
+	}
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
+		XMFLOAT3 fLook;
+		XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
+		_data.fRayLength = 10.f;
+		_data.bIsHit = m_bHit;
+		_data.vHitPos = m_vHitPos;
+		m_pPhysXActorCom->Add_RenderRay(_data);
+
+		m_bHit = false;
+		m_vHitPos = {};
+	}
+#endif
+
 }
 
 CYGMonster* CYGMonster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

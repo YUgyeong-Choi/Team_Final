@@ -40,6 +40,10 @@ private:
 	HRESULT Ready_Components();
 	HRESULT Ready_Collider();
 	void Update_ColliderPos();
+	void Ray();
+
+	PxVec3 m_vHitPos = {};
+	_bool m_bHit = false;
 public:
 	static CYGObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

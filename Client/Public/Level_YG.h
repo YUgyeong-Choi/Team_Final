@@ -29,7 +29,6 @@ public:
 private:
 	HRESULT Ready_Camera();
 	HRESULT Ready_Lights();
-	HRESULT Ready_Layer_Camera(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Object(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 

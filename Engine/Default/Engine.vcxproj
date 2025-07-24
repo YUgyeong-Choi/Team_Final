@@ -213,6 +213,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\Public\PhysXStaticActor.h" />
     <ClInclude Include="..\Public\PhysX_ContactReport.h" />
     <ClInclude Include="..\Public\PhysX_Manager.h" />
+    <ClInclude Include="..\Public\PhysX_RaycastIgnoreSelfCallback.h" />
     <ClInclude Include="..\public\Picking.h" />
     <ClInclude Include="..\public\PipeLine.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
