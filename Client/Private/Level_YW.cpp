@@ -24,6 +24,9 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+
 	//if (FAILED(Ready_Layer_MapToolObject(TEXT("Layer_MapToolObject"))))
 	//	return E_FAIL;
 	

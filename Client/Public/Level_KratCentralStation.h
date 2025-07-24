@@ -3,6 +3,10 @@
 #include "Client_Defines.h"
 #include "Level.h"
 
+NS_BEGIN(Engine)
+class CSound_Core;
+NS_END
+
 NS_BEGIN(Client)
 
 class CLevel_KratCentralStation final : public CLevel
@@ -24,6 +28,7 @@ private:
 
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+	CSound_Core* m_pBGM = { nullptr };
 
 public:
 	static CLevel_KratCentralStation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

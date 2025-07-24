@@ -37,7 +37,7 @@ void CCamera_Orbital::Priority_Update(_float fTimeDelta)
 
 void CCamera_Orbital::Update(_float fTimeDelta)
 {
-	if (!m_bRockOn)
+	if (m_pPlayer)
 	{
 		_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
 		_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMM::Y);
@@ -51,7 +51,8 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		m_fPitch += MouseMoveY * fTimeDelta * m_fMouseSensor;
 
 		// 플레이어 위치 가져오기
-		m_vPlayerPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f); + XMVectorSet(0.f, 3.f, 0.f, 0.f);
+		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
+		m_vPlayerPosition = m_vPlayerPosition + XMVectorSet(0.f, 3.f, 0.f, 0.f);
 
 		// 구면좌표계 → 직교좌표계 변환
 		_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);

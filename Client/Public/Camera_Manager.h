@@ -43,6 +43,9 @@ public:
     const _vector& GetCurCamLook() const { return m_vCurCamLook; }
 
 public:
+    void SetPlayer(CGameObject* pPlayer);
+
+public:
     void	SetFreeCam() { m_pCurCamera = m_pCamera_Free; }
     void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital; }
     void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene; }
@@ -54,7 +57,6 @@ private:
     CCamera_Free* m_pCamera_Free = { nullptr };
     CCamera_Orbital* m_pCamera_Orbital = { nullptr };
     CCamera_CutScene* m_pCamera_CutScene = { nullptr };
-
 
 private:
     _vector m_vCurCamRight = {};

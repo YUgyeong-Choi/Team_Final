@@ -92,6 +92,10 @@ HRESULT CCamera_Manager::Update(_float fTimeDelta)
 
     m_pCurCamera->Update_Camera();
 
+    m_vCurCamRight = XMVector3Normalize(m_pCurCamera->GetRightVector());
+    m_vCurCamUp = XMVector3Normalize(m_pCurCamera->GetUpVector());
+    m_vCurCamLook = XMVector3Normalize(m_pCurCamera->GetLookVector());
+
     return S_OK;
 }
 
@@ -108,6 +112,11 @@ _fvector CCamera_Manager::GetCurCamPos()
 CCamera* CCamera_Manager::GetCurCam()
 {
     return m_pCurCamera;
+}
+
+void CCamera_Manager::SetPlayer(CGameObject* pPlayer)
+{
+	m_pCamera_Orbital->SetPlayer(pPlayer);
 }
 
 void CCamera_Manager::Shake_Camera(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot)
