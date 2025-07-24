@@ -121,6 +121,30 @@
     <Filter Include="01.Levels\LevelGL\UISequence">
       <UniqueIdentifier>{84d85fce-26e2-426d-b3c6-d47585fc318c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Static">
+      <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic">
+      <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag">
+      <UniqueIdentifier>{6875e49f-be9f-4489-a085-8947ec2d62b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag\Slot">
+      <UniqueIdentifier>{101522f9-cb3f-4b33-89dd-ea1a4fea32a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
+      <UniqueIdentifier>{d25084e2-a294-435f-9e57-1c389a5d2735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
+      <UniqueIdentifier>{45020529-4ae1-4570-8126-9f8d3f1d4c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Ergo">
+      <UniqueIdentifier>{046a677b-ac2f-4241-b046-33f2caa8c6dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
+      <UniqueIdentifier>{c802c0aa-2fed-41f2-a7b0-a9a6bfa5842b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -237,9 +261,6 @@
     <ClInclude Include="..\Public\YGObject.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Static_UI.h">
-      <Filter>02.GameObjects\99.UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MapTool.h">
       <Filter>01.Levels\LevelYW\Map_Tool</Filter>
     </ClInclude>
@@ -290,6 +311,24 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Sequence.h">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Slot.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\SlotBag\Slot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Static_UI.h">
+      <Filter>02.GameObjects\99.UI\Static</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Dynamic_UI.h">
+      <Filter>02.GameObjects\99.UI\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Stamina_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Ergo.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Ergo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Icon_Dynamic.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -393,9 +432,6 @@
     <ClCompile Include="..\Private\YGObject.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Static_UI.cpp">
-      <Filter>02.GameObjects\99.UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MapTool.cpp">
       <Filter>01.Levels\LevelYW\Map_Tool</Filter>
     </ClCompile>
@@ -440,6 +476,24 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Sequence.cpp">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Slot.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\SlotBag\Slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Static_UI.cpp">
+      <Filter>02.GameObjects\99.UI\Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Dynamic_UI.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Stamina_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Ergo.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Ergo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Icon_Dynamic.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

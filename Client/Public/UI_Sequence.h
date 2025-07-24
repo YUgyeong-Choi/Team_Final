@@ -5,7 +5,7 @@
 #undef USE_IMGUI
 
 NS_BEGIN(Engine)
-class CAnimation;
+
 NS_END
 
 NS_BEGIN(Client)
@@ -21,7 +21,7 @@ public:
         string name; // ¿Ã∏ß
     };
 public:
-    CUI_Sequence() = delete;
+    CUI_Sequence() = default;
     CUI_Sequence(vector<SequenceItem>& items, class CToolbar* pToolbar) : m_items(items) {}
     virtual ~CUI_Sequence() = default;
 
@@ -56,7 +56,7 @@ public:
     _int  m_iCurEditIndex = -1;
 
 private:
-    vector<SequenceItem>& m_items;
+    vector<SequenceItem> m_items;
 
 };
 NS_END

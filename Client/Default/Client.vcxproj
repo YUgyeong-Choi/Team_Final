@@ -163,11 +163,14 @@
     <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\CYTool.h" />
     <ClInclude Include="..\Public\DHTool.h" />
+    <ClInclude Include="..\public\Dynamic_UI.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\EffectSequence.h" />
+    <ClInclude Include="..\public\Ergo.h" />
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
+    <ClInclude Include="..\public\Icon_Dynamic.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
     <ClInclude Include="..\Public\Level_KratCentralStation.h" />
@@ -182,8 +185,10 @@
     <ClInclude Include="..\Public\MapTool.h" />
     <ClInclude Include="..\Public\MySequence.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\public\Slot.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
     <ClInclude Include="..\Public\MapToolObject.h" />
+    <ClInclude Include="..\public\Stamina_Bar.h" />
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\Public\TestSpirteEffect.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
@@ -218,11 +223,14 @@
     <ClCompile Include="..\private\Camera_Orbital.cpp" />
     <ClCompile Include="..\Private\CYTool.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
+    <ClCompile Include="..\private\Dynamic_UI.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\EffectSequence.cpp" />
+    <ClCompile Include="..\private\Ergo.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
+    <ClCompile Include="..\private\Icon_Dynamic.cpp" />
     <ClCompile Include="..\Private\Level_CY.cpp" />
     <ClCompile Include="..\Private\Level_DH.cpp" />
     <ClCompile Include="..\Private\Level_KratCentralStation.cpp" />
@@ -237,6 +245,7 @@
     <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\private\Slot.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
@@ -245,6 +254,7 @@
     <ClCompile Include="..\private\UI_Sequence.cpp" />
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
+    <ClCompile Include="..\public\Stamina_Bar.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />
