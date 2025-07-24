@@ -107,6 +107,39 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 	return S_OK;
 }
 
+
+_uint CModel::Get_Mesh_NumVertices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return 0;
+
+	return m_Meshes[iMeshIndex]->Get_NumVertices();
+}
+
+_uint CModel::Get_Mesh_NumIndices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return 0;
+
+	return m_Meshes[iMeshIndex]->Get_NumIndices();
+}
+
+const _float3* CModel::Get_Mesh_pVertices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return nullptr;
+
+	return m_Meshes[iMeshIndex]->Get_Vertices();
+}
+
+const _uint* CModel::Get_Mesh_pIndices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return nullptr;
+
+	return m_Meshes[iMeshIndex]->Get_Indices();
+}
+
 void CModel::Set_Animation(_uint iIndex, _bool isLoop)
 {
 	if (iIndex >= m_Animations.size())

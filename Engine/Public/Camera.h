@@ -27,7 +27,7 @@ public:
 	virtual HRESULT Render() override;
 
 	HRESULT Update_Camera();
-	_fvector& GetPosition();
+	_fvector GetPosition();
 
 protected:
 	_float				m_fFov = { };
