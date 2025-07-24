@@ -84,10 +84,10 @@ void CGLTool::Save_File()
 		j["PassIndex"] = eDesc.iPassIndex;
 		j["TextureIndex"] = eDesc.iTextureIndex;
 		j["Offset"] = eDesc.fOffset;
-		j["fSizeX"] = eDesc.fSizeX;
-		j["fSizeY"] = eDesc.fSizeY;
-		j["fX"] = eDesc.fX;
-		j["fY"] = eDesc.fY;
+		j["fSizeX"] = eDesc.fSizeX / g_iWinSizeX;
+		j["fSizeY"] = eDesc.fSizeY / g_iWinSizeY;
+		j["fX"] = eDesc.fX / g_iWinSizeX;
+		j["fY"] = eDesc.fY / g_iWinSizeY;
 		JsonArray.push_back(j);
 		
 	}
@@ -131,14 +131,16 @@ void CGLTool::Add_UI_From_File()
 	{
 		CStatic_UI::STATIC_UI_DESC eStaticDesc = {};
 
+		_float tmpx = 1920.f / 1280.f;
+		_float tmpy = 1080.f / 720.f;
 
-		eStaticDesc.fOffset = eUIJson["Offset"];
+		eStaticDesc.fOffset = eUIJson["Offset"]  ;
 		eStaticDesc.iPassIndex = eUIJson["PassIndex"];
-		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"];
-		eStaticDesc.fSizeX = eUIJson["fSizeX"];
-		eStaticDesc.fSizeY = eUIJson["fSizeY"];
-		eStaticDesc.fX = eUIJson["fX"];
-		eStaticDesc.fY = eUIJson["fY"];
+		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"]; 
+		eStaticDesc.fSizeX = eUIJson["fSizeX"] * tmpx;
+		eStaticDesc.fSizeY = eUIJson["fSizeY"] * tmpy;
+		eStaticDesc.fX = eUIJson["fX"] * tmpx;
+		eStaticDesc.fY = eUIJson["fY"] * tmpy;
 
 		string textureTag = eUIJson["TextureTag"];
 		eStaticDesc.strTextureTag = wstring(textureTag.begin(), textureTag.end());
