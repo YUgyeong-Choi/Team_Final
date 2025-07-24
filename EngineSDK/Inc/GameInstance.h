@@ -142,6 +142,7 @@ public:
 	PxCapsuleGeometry CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
 	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
 	PxSphereGeometry  CookSphereGeometry(_float fRadius);
+	PxSphereGeometry CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
 	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
 	PxScene* Get_Scene();
 	PxPhysics* GetPhysics();

@@ -18,10 +18,10 @@ HRESULT CLevel_YG::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
+	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Camera()))
+	if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -38,6 +38,20 @@ HRESULT CLevel_YG::Render()
 {
 	SetWindowText(g_hWnd, TEXT("유경 레벨입니다."));
 
+	_wstring text = L"제일 왼쪽: Capsule";
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 30.f), XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+	text = L"왼쪽 : TriangleMesh";
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 60.f), XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+	text = L"가운곳 : ConvexMesh <- 지 맘대로 콜라이더 만들어서 간단하게 생긴 오브젝트한테만 해야함";
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 90.f), XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+	text = L"오른쪽 : Box";
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 120.f), XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+	text = L"제일 오른쪽 : Shere";
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 150.f), XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	
 	return S_OK;
 }
@@ -73,7 +87,23 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGMonster"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGCapsule"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTriangleMesh"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGConvexMesh"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGBox"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGShpere"),
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
 		return E_FAIL;
 

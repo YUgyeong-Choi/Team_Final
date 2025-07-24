@@ -563,6 +563,11 @@ PxSphereGeometry CGameInstance::CookSphereGeometry(_float fRadius)
 	return m_pPhysX_Manager->CookSphereGeometry(fRadius);
 }
 
+PxSphereGeometry CGameInstance::CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale)
+{
+	return m_pPhysX_Manager->CookSphereGeometry(pVertices, vertexCount, fScale);
+}
+
 PxScene* CGameInstance::Get_Scene()
 {
 	return m_pPhysX_Manager->GetScene();

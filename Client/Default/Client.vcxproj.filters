@@ -330,6 +330,18 @@
     <ClInclude Include="..\public\StaticMesh.h">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\YGTriangleMesh.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGConvexMesh.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGBox.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGShpere.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -491,6 +503,18 @@
     </ClCompile>
     <ClCompile Include="..\private\StaticMesh.cpp">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGTriangleMesh.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGConvexMesh.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGBox.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGShpere.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

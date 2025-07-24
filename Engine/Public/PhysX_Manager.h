@@ -41,6 +41,9 @@ public:
 	// 직접 캡슐 만드는 코드
 	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
 
+	// 정점 정보가지고 Sphere를 만들어 줌
+	PxSphereGeometry CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
+
 	// 직접 구체 만드는 코드
 	PxSphereGeometry CookSphereGeometry(_float fRadius);
 

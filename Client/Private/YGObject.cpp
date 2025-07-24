@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "PhysX_IgnoreSelfCallback.h"
+#include "Camera_Manager.h"
 
 CYGObject::CYGObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
@@ -42,6 +43,8 @@ HRESULT CYGObject::Initialize(void* pArg)
 #ifdef _DEBUG
 	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
 #endif
+
+	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
 	return S_OK;
 }
