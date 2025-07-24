@@ -9,8 +9,11 @@
 #include "MapToolObject.h"
 #pragma endregion
 
-
+#pragma region LEVEL_YG
 #include "YGObject.h"
+#include "YGMonster.h"
+#pragma endregion
+
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -324,6 +327,11 @@ HRESULT CLoader::Loading_For_YG()
 	/* For.Prototype_GameObject_YGObject */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGObject"),
 		CYGObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YGMonster */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGMonster"),
+		CYGMonster::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

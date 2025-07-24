@@ -11,12 +11,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CYGObject final : public CGameObject
+class CYGMonster final : public CGameObject
 {
 private:
-	CYGObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CYGObject(const CYGObject& Prototype);
-	virtual ~CYGObject() = default;
+	CYGMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CYGMonster(const CYGMonster& Prototype);
+	virtual ~CYGMonster() = default;
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -41,7 +41,7 @@ private:
 	HRESULT Ready_Collider();
 	void Update_ColliderPos();
 public:
-	static CYGObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CYGMonster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

@@ -172,9 +172,6 @@
     <ClInclude Include="..\Public\PhysX_ContactReport.h">
       <Filter>01.Utility\13.PhysX</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PhysX_RaycastIgnoreSelfCallback.h">
-      <Filter>01.Utility\13.PhysX</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PhysXActor.h">
       <Filter>01.Utility\04.Components\PhysX</Filter>
     </ClInclude>

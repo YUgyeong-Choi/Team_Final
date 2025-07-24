@@ -17,6 +17,9 @@ public:
     PxShape* Get_Shape() { return m_pShape; }
     CGameObject* Get_Owner() { return m_pOwner; }
 
+    void Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery);
+    void Set_SimulationFilterData(PxFilterData _data);
+    void Set_QueryFilterData(PxFilterData _data);
 public:
     virtual void On_Enter(CPhysXActor* pOther);
     virtual void On_Stay(CPhysXActor* pOther);

@@ -536,6 +536,11 @@ PxCapsuleGeometry CGameInstance::CookCapsuleGeometry(_float fRadius, _float fCap
 	return m_pPhysX_Manager->CookCapsuleGeometry(fRadius, fCapsuleHeight);
 }
 
+PxSphereGeometry CGameInstance::CookSphereGeometry(_float fRadius)
+{
+	return m_pPhysX_Manager->CookSphereGeometry(fRadius);
+}
+
 PxScene* CGameInstance::Get_Scene()
 {
 	return m_pPhysX_Manager->GetScene();

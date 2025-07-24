@@ -22,7 +22,7 @@ HRESULT CPhysXKinematicActor::Initialize(void* pArg)
     return S_OK;
 }
 
-HRESULT CPhysXKinematicActor::Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material, WorldFilter _filter)
+HRESULT CPhysXKinematicActor::Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material)
 {
     m_pMaterial = material;
 
@@ -36,15 +36,9 @@ HRESULT CPhysXKinematicActor::Create_Collision(PxPhysics* physics, const PxGeome
     if (!m_pShape)
         return E_FAIL;
 
-    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true); 
-    m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);  
-    m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
-    PxFilterData filterData;
-    filterData.word0 = (1 << static_cast<_int>(_filter)); // 그룹
-    filterData.word1 = (1 << static_cast<_int>(WorldFilter::BUILDING)) | (1 << static_cast<_int>(WorldFilter::STATIC)) | (1 << static_cast<_int>(WorldFilter::LOOT)) | (1 << static_cast<_int>(WorldFilter::RESOURCES)); // 마스크
-
-    m_pShape->setSimulationFilterData(filterData);
+    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); 
+    m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
+    m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false); 
 
     m_pActor = pDynamic;
     m_pActor->userData = this;

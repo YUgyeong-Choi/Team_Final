@@ -20,6 +20,24 @@ CPhysXActor::CPhysXActor(const CPhysXActor& Prototype)
 
 }
 
+void CPhysXActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery)
+{
+    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation); // OnEnter, OnStay, OnExit 활성화
+    m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bTrigger); //OnTriger 활성화
+    m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bQuery); // Ray충돌 활성화 
+}
+
+void CPhysXActor::Set_SimulationFilterData(PxFilterData _data)
+{
+    m_pShape->setSimulationFilterData(_data);
+}
+
+void CPhysXActor::Set_QueryFilterData(PxFilterData _data)
+{
+    m_pShape->setQueryFilterData(_data);
+}
+
+
 void CPhysXActor::On_Enter(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())

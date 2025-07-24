@@ -132,9 +132,10 @@ public:
 #pragma region PHYSX_MANAGER
 	PxTriangleMeshGeometry CookTriangleMesh(const PxVec3* vertices, PxU32 vertexCount, const PxU32* indices, PxU32 triangleCount, PxMeshScale geomScale);
 	PxConvexMeshGeometry CookConvexMesh(const PxVec3* vertices, PxU32 vertexCount, PxMeshScale geomScale);
-	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
 	PxCapsuleGeometry CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
 	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
+	PxSphereGeometry  CookSphereGeometry(_float fRadius);
+	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
 	PxScene* Get_Scene();
 	PxPhysics* GetPhysics();
 	PxMaterial* GetMaterial(const wstring& name);

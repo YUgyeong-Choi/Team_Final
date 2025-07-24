@@ -291,6 +291,9 @@
     <ClInclude Include="..\public\UI_Sequence.h">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\YGMonster.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -440,6 +443,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Sequence.cpp">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGMonster.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

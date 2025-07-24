@@ -22,7 +22,7 @@ HRESULT CPhysXStaticActor::Initialize(void* pArg)
 }
   
 
-HRESULT CPhysXStaticActor::Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material, WorldFilter _filter)
+HRESULT CPhysXStaticActor::Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material)
 {
     m_pMaterial = material;
 
@@ -34,17 +34,10 @@ HRESULT CPhysXStaticActor::Create_Collision(PxPhysics* physics, const PxGeometry
     if (!m_pShape)
         return E_FAIL;
 
-    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true); // OnEnter, OnStay, OnExit 활성화
+    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false); // OnEnter, OnStay, OnExit 활성화
     m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false); //OnTriger 활성화
-    m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, true); // Ray충돌 활성화 
+    m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false); // Ray충돌 활성화 
 
-    // 여기 밑에 일단 무시 어떤 것 끼리 충돌할까 ~ 하는건데 정확히 잘 작동안함
-    PxFilterData filterData;
-    filterData.word0 = (1 << static_cast<_int>(_filter)); // 그룹
-    filterData.word1 = (1 << static_cast<_int>(WorldFilter::PERSON)) | (1 << static_cast<_int>(WorldFilter::ITEMS)); // 마스크
-
-    m_pShape->setSimulationFilterData(filterData);
-    m_pShape->setQueryFilterData(filterData);
     m_pActor->userData = this;
     return S_OK;
 }

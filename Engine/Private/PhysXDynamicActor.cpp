@@ -22,7 +22,7 @@ HRESULT CPhysXDynamicActor::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CPhysXDynamicActor::Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material, WorldFilter _filter)
+HRESULT CPhysXDynamicActor::Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material)
 {
     m_pMaterial = material;
 
@@ -37,15 +37,9 @@ HRESULT CPhysXDynamicActor::Create_Collision(PxPhysics* physics, const PxGeometr
 
 
     // 충돌 속성 설정
-    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, true);
+    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
     m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, false);
     m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, false);
-
-    PxFilterData filterData;
-    filterData.word0 = static_cast<_int>(_filter); // 그룹
-    filterData.word1 = static_cast<_int>(_filter); // 마스크
-    m_pShape->setSimulationFilterData(filterData);
-    m_pShape->setQueryFilterData(filterData);
 
     m_pActor = pDynamic;
     pDynamic->userData = this;
