@@ -25,7 +25,6 @@ public:
     virtual HRESULT Initialize(LEVEL eLevel);
     virtual HRESULT Update(_float fTimeDelta);
     virtual HRESULT Render();
-
 public:
     _fvector GetCurCamPos();
     CCamera* GetCurCam();

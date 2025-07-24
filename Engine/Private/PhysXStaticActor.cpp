@@ -20,7 +20,7 @@ HRESULT CPhysXStaticActor::Initialize(void* pArg)
 {
     return S_OK;
 }
-  
+
 
 HRESULT CPhysXStaticActor::Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material)
 {

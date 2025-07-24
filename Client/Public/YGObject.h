@@ -31,7 +31,7 @@ public:
 	virtual void On_CollisionStay(CGameObject* pOther) override;
 	virtual void On_CollisionExit(CGameObject* pOther) override;
 
-	virtual void On_Hit(_int iDamage, _float3 HitPos) override;
+	virtual void On_Hit(CGameObject* pOther) override;
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -42,8 +42,8 @@ private:
 	void Update_ColliderPos();
 	void Ray();
 
-	PxVec3 m_vHitPos = {};
-	_bool m_bHit = false;
+	PxVec3 m_vRayHitPos = {};
+	_bool m_bRayHit = false;
 public:
 	static CYGObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

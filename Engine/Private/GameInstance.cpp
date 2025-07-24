@@ -24,19 +24,19 @@ IMPLEMENT_SINGLETON(CGameInstance);
 static PxDefaultAllocator gAllocator;
 static PxDefaultErrorCallback gErrorCallback;
 
-#ifdef _DEBUG
-void EnableConsole()
-{
-	AllocConsole();
-
-	FILE* fp;
-	freopen_s(&fp, "CONOUT$", "w", stdout);
-	freopen_s(&fp, "CONIN$", "r", stdin);
-	freopen_s(&fp, "CONOUT$", "w", stderr);
-
-	SetConsoleTitle(L"Debug Console");
-}
-#endif
+//#ifdef _DEBUG
+//void EnableConsole()
+//{
+//	AllocConsole();
+//
+//	FILE* fp;
+//	freopen_s(&fp, "CONOUT$", "w", stdout);
+//	freopen_s(&fp, "CONIN$", "r", stdin);
+//	freopen_s(&fp, "CONOUT$", "w", stderr);
+//
+//	SetConsoleTitle(L"Debug Console");
+//}
+//#endif
 
 CGameInstance::CGameInstance()
 {
@@ -44,9 +44,9 @@ CGameInstance::CGameInstance()
 
 HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut)
 {
-#ifdef _DEBUG
-	EnableConsole(); // 콘솔 창 띄우기
-#endif
+//#ifdef _DEBUG
+//	EnableConsole(); // 콘솔 창 띄우기
+//#endif
 	srand(static_cast<unsigned>(time(nullptr)));
 
 	m_pGraphic_Device = CGraphic_Device::Create(EngineDesc.hWnd, EngineDesc.isWindowed, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY, ppDeviceOut, ppContextOut);
