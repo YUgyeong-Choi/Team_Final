@@ -1,0 +1,355 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_ATAA1_Skill_01"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_02"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_03"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Attack"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Break"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Counter"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_End"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_GuardAttack"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_LAttack"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Loop"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move_Back"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move_Back_Root"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move_Front"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move_Front_Root"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move_Left"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move_Left_Root"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move_Right"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Move_Right_Root"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_RAttack"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Start"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_04_Success"
+        },
+        {
+            "ClipName": "AS_ATAA1_Skill_05"
+        },
+        {
+            "ClipName": "AS_Down_Away_Fall_B"
+        },
+        {
+            "ClipName": "AS_Down_Away_Fall_B_01"
+        },
+        {
+            "ClipName": "AS_Down_Away_Fall_B_02"
+        },
+        {
+            "ClipName": "AS_Down_Away_Fall_F"
+        },
+        {
+            "ClipName": "AS_Down_Away_Fall_F_01"
+        },
+        {
+            "ClipName": "AS_Down_Away_Fall_F_02"
+        },
+        {
+            "ClipName": "AS_Down_Away_Intro_B"
+        },
+        {
+            "ClipName": "AS_Down_Away_Intro_B_01"
+        },
+        {
+            "ClipName": "AS_Down_Away_Intro_B_02"
+        },
+        {
+            "ClipName": "AS_Down_Away_Intro_F"
+        },
+        {
+            "ClipName": "AS_Down_Away_Intro_F_01"
+        },
+        {
+            "ClipName": "AS_Down_Away_Intro_F_02"
+        },
+        {
+            "ClipName": "AS_Down_Away_Land_B"
+        },
+        {
+            "ClipName": "AS_Down_Away_Land_B_01"
+        },
+        {
+            "ClipName": "AS_Down_Away_Land_B_02"
+        },
+        {
+            "ClipName": "AS_Down_Away_Land_F"
+        },
+        {
+            "ClipName": "AS_Down_Away_Land_F_01"
+        },
+        {
+            "ClipName": "AS_Down_Away_Land_F_02"
+        },
+        {
+            "ClipName": "AS_Down_Dead_B"
+        },
+        {
+            "ClipName": "AS_Down_Dead_B_01"
+        },
+        {
+            "ClipName": "AS_Down_Dead_B_02"
+        },
+        {
+            "ClipName": "AS_Down_Dead_F"
+        },
+        {
+            "ClipName": "AS_Down_Dead_F_01"
+        },
+        {
+            "ClipName": "AS_Down_Dead_F_02"
+        },
+        {
+            "ClipName": "AS_Down_Drag_Intro_B"
+        },
+        {
+            "ClipName": "AS_Down_Drag_Intro_F"
+        },
+        {
+            "ClipName": "AS_Down_GetUp_B"
+        },
+        {
+            "ClipName": "AS_Down_GetUp_F"
+        },
+        {
+            "ClipName": "AS_Down_Lying_B"
+        },
+        {
+            "ClipName": "AS_Down_Lying_F"
+        },
+        {
+            "ClipName": "AS_Down_Stamp_Intro_B"
+        },
+        {
+            "ClipName": "AS_Down_Stamp_Intro_F"
+        },
+        {
+            "ClipName": "AS_Down_Up_Fall_B"
+        },
+        {
+            "ClipName": "AS_Down_Up_Fall_F"
+        },
+        {
+            "ClipName": "AS_Down_Up_Intro_B"
+        },
+        {
+            "ClipName": "AS_Down_Up_Intro_F"
+        },
+        {
+            "ClipName": "AS_Down_Up_Land_B"
+        },
+        {
+            "ClipName": "AS_Down_Up_Land_F"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Ing_B"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Ing_F"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Start_B"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Start_F"
+        },
+        {
+            "ClipName": "AS_Groggy_End"
+        },
+        {
+            "ClipName": "AS_Groggy_Loop"
+        },
+        {
+            "ClipName": "AS_Groggy_Start"
+        },
+        {
+            "ClipName": "AS_Hit_B"
+        },
+        {
+            "ClipName": "AS_Hit_B_01"
+        },
+        {
+            "ClipName": "AS_Hit_B_02"
+        },
+        {
+            "ClipName": "AS_Hit_B_03"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_B"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_B_01"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_B_02"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_B_03"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_F"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_F_01"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_F_02"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_F_03"
+        },
+        {
+            "ClipName": "AS_Hit_L"
+        },
+        {
+            "ClipName": "AS_Hit_L_01"
+        },
+        {
+            "ClipName": "AS_Hit_L_02"
+        },
+        {
+            "ClipName": "AS_Hit_R"
+        },
+        {
+            "ClipName": "AS_Hit_R_01"
+        },
+        {
+            "ClipName": "AS_Hit_R_02"
+        },
+        {
+            "ClipName": "AS_Hit_R_03"
+        },
+        {
+            "ClipName": "AS_Idle_C"
+        },
+        {
+            "ClipName": "AS_Idle_Loco"
+        },
+        {
+            "ClipName": "AS_Idle_Spawn_02_End"
+        },
+        {
+            "ClipName": "AS_Idle_Spawn_02_Loop"
+        },
+        {
+            "ClipName": "AS_Idle_Spawn_Falling_End"
+        },
+        {
+            "ClipName": "AS_Idle_Spawn_Falling_Loop"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_B"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_B_01"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_B_02"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_B_03"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_L"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_L_01"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_L_02"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_L_03"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_R"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_R_01"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_R_02"
+        },
+        {
+            "ClipName": "AS_KnockBack_Weak_R_03"
+        },
+        {
+            "ClipName": "AS_Run_C_F"
+        },
+        {
+            "ClipName": "AS_Run_C_F_Root"
+        },
+        {
+            "ClipName": "AS_Turn_C_L"
+        },
+        {
+            "ClipName": "AS_Turn_C_R"
+        },
+        {
+            "ClipName": "AS_Walk_C_B"
+        },
+        {
+            "ClipName": "AS_Walk_C_B_Root"
+        },
+        {
+            "ClipName": "AS_Walk_C_F"
+        },
+        {
+            "ClipName": "AS_Walk_C_F_Root"
+        },
+        {
+            "ClipName": "AS_Walk_C_L"
+        },
+        {
+            "ClipName": "AS_Walk_C_L_Root"
+        },
+        {
+            "ClipName": "AS_Walk_C_R"
+        },
+        {
+            "ClipName": "AS_Walk_C_R_Root"
+        }
+    ]
+}

@@ -15,7 +15,6 @@ CAnimTool::CAnimTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	, m_pEventMag(CEventMag::Get_Instance())
 {
 	Safe_AddRef(m_pGameInstance);
-	Safe_AddRef(m_pEventMag);
 }
 
 CAnimTool::CAnimTool(const CAnimTool& Prototype)
@@ -24,7 +23,6 @@ CAnimTool::CAnimTool(const CAnimTool& Prototype)
 	, m_pEventMag(CEventMag::Get_Instance())
 {
 	Safe_AddRef(m_pGameInstance);
-	Safe_AddRef(m_pEventMag);
 }
 
 HRESULT CAnimTool::Initialize_Prototype()
@@ -207,6 +205,11 @@ HRESULT CAnimTool::Render_AnimEvents()
 	if (ImGui::Button("Save All Clips Events to JSON"))
 	{
 		SaveLoadEvents();
+	}
+
+	if (ImGui::Button("Load All Clips Events from JSON"))
+	{
+		SaveLoadEvents(false);
 	}
 	return S_OK;
 }
@@ -474,6 +477,7 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 {
 	if (m_pCurModel == nullptr)
 		return;
+	string path = string("../Bin/Save/AnimationEvents/") + m_stSelectedModelName + "_events.json";
 	if (isSave)
 	{
 		json root;
@@ -482,13 +486,37 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 		{
 			root["animations"].push_back(anim->Serialize());
 		}
-		string path = string("../Bin/Save/AnimationEvents/") + m_stSelectedModelName + "_events.json";
+	
 		ofstream ofs(path);
 		ofs << root.dump(4);
 	}
 	else
 	{
+		ifstream ifs(path);
+		if (!ifs.is_open())
+			return; // 파일이 없으면 로드하지 않음
+		json root;
+		ifs >> root;
 
+		if (root.contains("animations"))
+		{
+			auto& animationsJson = root["animations"];
+			auto& clonedAnims = m_LoadedAnimations[m_stSelectedModelName];
+
+			for (const auto& animData : animationsJson)
+			{
+				const string& clipName = animData["ClipName"];
+
+				for (auto& pAnim : clonedAnims)
+				{
+					if (pAnim->Get_Name() == clipName)
+					{
+						pAnim->Deserialize(animData);
+						break;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -683,6 +711,13 @@ void CAnimTool::Free()
 	for (auto& pair : m_LoadedAnimators)
 	{
 		Safe_Release(pair.second);
+	}
+
+	for (auto& pair : m_LoadedAnimations)
+	{
+		for (auto& anim : pair.second)
+			Safe_Release(anim);
+		pair.second.clear();
 	}
 
 	Safe_Release(m_pEventMag);

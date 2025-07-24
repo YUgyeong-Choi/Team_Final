@@ -119,6 +119,7 @@
       <AdditionalIncludeDirectories>../public/;../../PhysXSDK/Include/;../../PhysXSDK/Include/cooking/;../../PhysXSDK/Include/task/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/MP</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

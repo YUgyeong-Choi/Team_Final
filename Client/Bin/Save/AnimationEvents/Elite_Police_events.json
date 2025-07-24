@@ -1,0 +1,151 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_ATSC0_Skill_01"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_01_New"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_02"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_02_New"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_03"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_03_New"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_04"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_04_New",
+            "Events": [
+                {
+                    "EventName": "TestEvent",
+                    "Time": 21.0
+                }
+            ]
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_05"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_05_New"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_06"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_06_New"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_07_End"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_07_Loop"
+        },
+        {
+            "ClipName": "AS_ATSC0_Skill_07_Start"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_End"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_End_01"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Ing"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Start"
+        },
+        {
+            "ClipName": "AS_Groggy_End"
+        },
+        {
+            "ClipName": "AS_Groggy_Loop"
+        },
+        {
+            "ClipName": "AS_Groggy_Start"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_B"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_F"
+        },
+        {
+            "ClipName": "AS_Idle_C"
+        },
+        {
+            "ClipName": "AS_Idle_C_Sub01"
+        },
+        {
+            "ClipName": "AS_Idle_C_Sub02"
+        },
+        {
+            "ClipName": "AS_Idle_C_Sub03"
+        },
+        {
+            "ClipName": "AS_Idle_Spawn_01_End"
+        },
+        {
+            "ClipName": "AS_Idle_Spawn_01_Loop"
+        },
+        {
+            "ClipName": "AS_Paralyzation_End"
+        },
+        {
+            "ClipName": "AS_Paralyzation_Loop"
+        },
+        {
+            "ClipName": "AS_Paralyzation_Start"
+        },
+        {
+            "ClipName": "AS_Run_C_F"
+        },
+        {
+            "ClipName": "AS_Run_C_F_Root"
+        },
+        {
+            "ClipName": "AS_Tough_SpeicialHit"
+        },
+        {
+            "ClipName": "AS_Turn_C_L"
+        },
+        {
+            "ClipName": "AS_Turn_C_R"
+        },
+        {
+            "ClipName": "AS_Walk_C_B"
+        },
+        {
+            "ClipName": "AS_Walk_C_B_Root"
+        },
+        {
+            "ClipName": "AS_Walk_C_F"
+        },
+        {
+            "ClipName": "AS_Walk_C_F_Root"
+        },
+        {
+            "ClipName": "AS_Walk_C_L"
+        },
+        {
+            "ClipName": "AS_Walk_C_L_Root"
+        },
+        {
+            "ClipName": "AS_Walk_C_R"
+        },
+        {
+            "ClipName": "AS_Walk_C_R_Root"
+        }
+    ]
+}
