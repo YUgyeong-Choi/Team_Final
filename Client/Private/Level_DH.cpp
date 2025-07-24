@@ -25,6 +25,8 @@ HRESULT CLevel_DH::Initialize()
 void CLevel_DH::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
+
+	__super::Update(fTimeDelta);
 }
 
 HRESULT CLevel_DH::Render()

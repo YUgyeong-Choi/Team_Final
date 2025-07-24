@@ -82,6 +82,12 @@
     <Filter Include="01.Levels\LevelJW\Tool">
       <UniqueIdentifier>{f0850a50-09c5-4f0f-af92-9eaa411944e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\EffectSequence">
+      <UniqueIdentifier>{0937bec9-d18e-47f9-98c3-b4ba670deab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\ToolParticle">
+      <UniqueIdentifier>{8965fe92-8566-43de-91a1-1c9d4df84dfc}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01.Levels\LevelYW\Map_Tool">
       <UniqueIdentifier>{d8e56a61-088b-4c0b-a489-2cc6726e9093}</UniqueIdentifier>
     </Filter>
@@ -99,6 +105,18 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI">
       <UniqueIdentifier>{abd57b5b-f0cf-4c34-8c0b-f0f78d57b774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\ToolEffect">
+      <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.Camera\00.Camara_Free">
+      <UniqueIdentifier>{3e4d9fb2-772a-4885-981e-42db3ac214d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Camera\01.Camera_CutScene">
+      <UniqueIdentifier>{208b02de-9696-4480-9b48-eddf81843e13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Camera\02.Camera_Orbital">
+      <UniqueIdentifier>{20b11ae1-58ab-43ea-a0df-fbcc72eb93ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -134,9 +152,6 @@
     </ClInclude>
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00.MainApp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Camera_Free.h">
-      <Filter>02.GameObjects\02.Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObjects\06.Sky</Filter>
@@ -228,6 +243,9 @@
     <ClInclude Include="..\Public\StaticMesh.h">
       <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AnimTool.h">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MySequence.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
@@ -243,8 +261,29 @@
     <ClInclude Include="Client_Calculation.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\AnimTool.h">
-      <Filter>01.Levels\LevelJW</Filter>
+    <ClInclude Include="..\Public\ToolParticle.h">
+      <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestSpirteEffect.h">
+      <Filter>01.Levels\LevelCY\Tool\ToolEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SpriteEffect.h">
+      <Filter>01.Levels\LevelCY\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectSequence.h">
+      <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\Camera_Free.h">
+      <Filter>02.GameObjects\02.Camera\00.Camara_Free</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera_CutScene.h">
+      <Filter>02.GameObjects\02.Camera\01.Camera_CutScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera_Orbital.h">
+      <Filter>02.GameObjects\02.Camera\02.Camera_Orbital</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera_Manager.h">
+      <Filter>02.GameObjects\02.Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -278,9 +317,6 @@
     </ClCompile>
     <ClCompile Include="..\private\MainApp.cpp">
       <Filter>00.MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Camera_Free.cpp">
-      <Filter>02.GameObjects\02.Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObjects\06.Sky</Filter>
@@ -371,6 +407,30 @@
     </ClCompile>
     <ClCompile Include="..\Private\MySequence.cpp">
       <Filter>98.Default\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolParticle.cpp">
+      <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestSpirteEffect.cpp">
+      <Filter>01.Levels\LevelCY\Tool\ToolEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SpriteEffect.cpp">
+      <Filter>01.Levels\LevelCY\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectSequence.cpp">
+      <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\Camera_Free.cpp">
+      <Filter>02.GameObjects\02.Camera\00.Camara_Free</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_CutScene.cpp">
+      <Filter>02.GameObjects\02.Camera\01.Camera_CutScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Orbital.cpp">
+      <Filter>02.GameObjects\02.Camera\02.Camera_Orbital</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Manager.cpp">
+      <Filter>02.GameObjects\02.Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

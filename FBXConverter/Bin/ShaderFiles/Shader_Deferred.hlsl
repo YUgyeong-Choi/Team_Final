@@ -4,16 +4,16 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_LightViewMatrix, g_LightProjMatrix;
 matrix g_ViewMatrixInv, g_ProjMatrixInv;
-texture2D g_RenderTargetTexture;
-texture2D g_NormalTexture;
-texture2D g_DiffuseTexture;
-texture2D g_ShadeTexture;
-texture2D g_DepthTexture;
-texture2D g_SpecularTexture;
-texture2D g_ShadowTexture;
+Texture2D g_RenderTargetTexture;
+Texture2D g_NormalTexture;
+Texture2D g_DiffuseTexture;
+Texture2D g_ShadeTexture;
+Texture2D g_DepthTexture;
+Texture2D g_SpecularTexture;
+Texture2D g_ShadowTexture;
 
-texture2D g_FinalTexture;
-texture2D g_BlurXTexture;
+Texture2D g_FinalTexture;
+Texture2D g_BlurXTexture;
 
 vector g_vLightDir;
 vector g_vLightPos;

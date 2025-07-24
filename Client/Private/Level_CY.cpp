@@ -25,6 +25,8 @@ HRESULT CLevel_CY::Initialize()
 void CLevel_CY::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
+
+	__super::Update(fTimeDelta);
 }
 
 HRESULT CLevel_CY::Render()
@@ -44,14 +46,14 @@ HRESULT CLevel_CY::Render()
 	int height = rect.bottom - rect.top;
 
 	io.DisplaySize = ImVec2((float)width, (float)height);
-	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	//io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
 
 	ImGui::NewFrame();
 
 	ImGui_Render();
 	//·»´õ¸µ 
-	ImGui::ShowDemoWindow(); // Show demo window! :)
+	//ImGui::ShowDemoWindow(); // Show demo window! :)
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

@@ -28,6 +28,7 @@ public:
 	virtual void Drop(_float fTimeDelta)override;
 	virtual void Spread(_float fTimeDelta)override;
 
+	void Set_Loop(_bool isLoop) { m_isLoop = isLoop; }
 
 protected:
 	VTXPOS_PARTICLE_INSTANCE*	m_pVertexInstances = { nullptr };
