@@ -87,7 +87,7 @@ HRESULT CConvertTool::Render_ConvertTool()
 	if (Button("Load Anim File (Anim Only)"))
 	{
 		m_isAnimOnly = true;
-		savePath = "..\\..\\Client\\Bin\\Resources\\Models\\Bin_AnimOnly";
+		savePath = "..\\..\\Client\\Bin\\Resources\\Models\\Bin_Anim";
 		config.path = R"(Z:\Lie\Animations)";
 		config.countSelectionMax = 0; // ¹«Á¦ÇÑ
 
