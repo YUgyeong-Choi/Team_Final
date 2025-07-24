@@ -8,6 +8,7 @@
 
 NS_BEGIN(Engine)
 class CGameObject;
+class CSound_Core;
 NS_END
 
 NS_BEGIN(Client)
@@ -43,6 +44,7 @@ private:
 
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+	CSound_Core* m_pBGM = { nullptr };
 
 public:
 	static CLevel_DH* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
