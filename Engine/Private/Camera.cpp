@@ -60,6 +60,8 @@ void CCamera::Priority_Update(_float fTimeDelta)
 
 void CCamera::Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Key_Down(DIK_K))
+		StartShake(0.4f, 0.4f);
 }
 
 void CCamera::Late_Update(_float fTimeDelta)
@@ -88,7 +90,7 @@ HRESULT CCamera::Update_Camera()
 
 	return S_OK;
 }
-_fvector& CCamera::GetPosition()
+_fvector CCamera::GetPosition()
 {
 	return m_pTransformCom->Get_State(STATE::POSITION);
 }

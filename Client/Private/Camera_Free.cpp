@@ -41,9 +41,6 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
-		return;
-
 	// 달리기 여부 체크
 	m_bSprint = (m_pGameInstance->Key_Pressing(DIK_LSHIFT)) != 0;
 
@@ -84,6 +81,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	}
 
 	__super::Bind_Matrices();
+	__super::Priority_Update(fTimeDelta);
 }
 
 void CCamera_Free::Update(_float fTimeDelta)
@@ -101,6 +99,8 @@ void CCamera_Free::Update(_float fTimeDelta)
 		XMStoreFloat3(&vLook, look);
 		printf("Camera Look: x = %.2f, y = %.2f, z = %.2f\n", vLook.x, vLook.y, vLook.z);
 	}
+
+	__super::Update(fTimeDelta);
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)

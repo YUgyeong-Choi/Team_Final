@@ -1,9 +1,11 @@
 #include "Level_JW.h"
 #include "GameInstance.h"
 #include "AnimTool.h"
+#include "Camera_Manager.h"
 
 CLevel_JW::CLevel_JW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
+	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
 }
@@ -25,6 +27,7 @@ HRESULT CLevel_JW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
+
 	return S_OK;
 }
 
@@ -33,6 +36,7 @@ void CLevel_JW::Update(_float fTimeDelta)
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);
 
+	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 }
 
@@ -70,6 +74,14 @@ HRESULT CLevel_JW::Render()
 	return S_OK;
 }
 
+HRESULT CLevel_JW::Ready_Camera()
+{
+	m_pCamera_Manager->Initialize(LEVEL::STATIC);
+	m_pCamera_Manager->SetFreeCam();
+
+	return S_OK;
+}
+
 HRESULT CLevel_JW::Ready_Lights()
 {
 	LIGHT_DESC			LightDesc{};
@@ -84,13 +96,6 @@ HRESULT CLevel_JW::Ready_Lights()
 		return E_FAIL;
 
 
-	return S_OK;
-}
-
-HRESULT CLevel_JW::Ready_Camera()
-{
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::JW), TEXT("Prototype_GameObject_Cam"), ENUM_CLASS(LEVEL::JW), TEXT("Camera_JW"), nullptr)))
-		return E_FAIL;
 	return S_OK;
 }
 
