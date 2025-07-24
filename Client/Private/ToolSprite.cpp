@@ -2,24 +2,27 @@
 
 #include "GameInstance.h"
 
-CToolSpirte::CToolSpirte(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CToolSprite::CToolSprite(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CSpriteEffect{ pDevice, pContext }
 {
 
 }
 
-CToolSpirte::CToolSpirte(const CToolSpirte& Prototype)
+CToolSprite::CToolSprite(const CToolSprite& Prototype)
 	: CSpriteEffect( Prototype )
 {
 
 }
 
-HRESULT CToolSpirte::Initialize_Prototype()
+HRESULT CToolSprite::Initialize_Prototype()
 {
+	m_KeyFrames.push_back(KEYFRAME{ {},{}, {}, 0.f });
+	m_KeyFrames.push_back(KEYFRAME{ {},{}, {}, 3.f });
+	m_KeyFrames.push_back(KEYFRAME{ {},{}, {}, 6.f });
 	return S_OK;
 }
 
-HRESULT CToolSpirte::Initialize(void* pArg)
+HRESULT CToolSprite::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -31,24 +34,24 @@ HRESULT CToolSpirte::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CToolSpirte::Priority_Update(_float fTimeDelta)
+void CToolSprite::Priority_Update(_float fTimeDelta)
 {
 
 }
 
-void CToolSpirte::Update(_float fTimeDelta)
+void CToolSprite::Update(_float fTimeDelta)
 {
 	m_pTransformCom->Get_Scaled();
 	m_pTransformCom->Scaling();
 	return ;
 }
 
-void CToolSpirte::Late_Update(_float fTimeDelta)
+void CToolSprite::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
 }
 
-HRESULT CToolSpirte::Render()
+HRESULT CToolSprite::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -65,7 +68,7 @@ HRESULT CToolSpirte::Render()
 	return S_OK;
 }
 
-HRESULT CToolSpirte::Ready_Components()
+HRESULT CToolSprite::Ready_Components()
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_SpriteEffect"),
@@ -78,14 +81,14 @@ HRESULT CToolSpirte::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_Splash"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CToolSpirte::Bind_ShaderResources()
+HRESULT CToolSprite::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -107,9 +110,9 @@ HRESULT CToolSpirte::Bind_ShaderResources()
 	return S_OK;
 }
 
-CToolSpirte* CToolSpirte::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CToolSprite* CToolSprite::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CToolSpirte* pInstance = new CToolSpirte(pDevice, pContext);
+	CToolSprite* pInstance = new CToolSprite(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -120,20 +123,20 @@ CToolSpirte* CToolSpirte::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return pInstance;
 }
 
-CGameObject* CToolSpirte::Clone(void* pArg)
+CGameObject* CToolSprite::Clone(void* pArg)
 {
-	CToolSpirte* pInstance = new CToolSpirte(*this);
+	CToolSprite* pInstance = new CToolSprite(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CToolSpirte");
+		MSG_BOX("Failed to Cloned : CToolSprite");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CToolSpirte::Free()
+void CToolSprite::Free()
 {
 	__super::Free();
 
