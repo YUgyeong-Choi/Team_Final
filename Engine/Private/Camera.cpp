@@ -95,6 +95,21 @@ _fvector CCamera::GetPosition()
 	return m_pTransformCom->Get_State(STATE::POSITION);
 }
 
+_vector CCamera::GetRightVector()
+{
+	return m_pTransformCom->Get_State(STATE::RIGHT);
+}
+
+_vector CCamera::GetUpVector()
+{
+	return m_pTransformCom->Get_State(STATE::UP);;
+}
+
+_vector CCamera::GetLookVector()
+{
+	return m_pTransformCom->Get_State(STATE::LOOK);
+}
+
 void CCamera::StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot)
 {
 	m_fShakeIntensity = fIntensity;

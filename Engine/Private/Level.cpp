@@ -19,6 +19,20 @@ HRESULT CLevel::Initialize()
 
 void CLevel::Update(_float fTimeDelta)
 {
+    // 화면 해상도 기준 중앙 좌표 구하기
+    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+    // 마우스를 화면 중앙으로 이동
+    if (MOUSE_PRESSING(DIM::RBUTTON))
+    {
+        SetCursorPos(screenWidth / 2, screenHeight / 2);
+        ShowCursor(TRUE);
+    }
+    else
+    {
+        ShowCursor(TRUE);
+    }
 }
 
 
