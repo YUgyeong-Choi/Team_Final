@@ -121,6 +121,9 @@
     <Filter Include="01.Levels\LevelGL\UISequence">
       <UniqueIdentifier>{84d85fce-26e2-426d-b3c6-d47585fc318c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.StaticMesh">
+      <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -291,6 +294,9 @@
     <ClInclude Include="..\public\UI_Sequence.h">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StaticMesh.h">
+      <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -440,6 +446,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Sequence.cpp">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StaticMesh.cpp">
+      <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

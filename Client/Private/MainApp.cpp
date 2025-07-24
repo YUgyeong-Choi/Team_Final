@@ -163,11 +163,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 HRESULT CMainApp::Ready_Static()
 {
-	/* For.Prototype_Component_Texture_Sky */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Sky"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pDevice, m_pContext))))
@@ -192,10 +187,6 @@ HRESULT CMainApp::Ready_Static()
 
 	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/Example/BGM/", false, true);
-
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Sound_Player")),
-	//	CSoundController::Create("../Bin/Resources/Sound/Example/Player/"))))
-	//	return E_FAIL;
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
 
 	return S_OK;

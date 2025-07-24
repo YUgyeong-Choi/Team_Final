@@ -9,7 +9,7 @@
 #include "MapToolObject.h"
 #pragma endregion
 
-
+#include "StaticMesh.h"
 #include "YGObject.h"
 
 
@@ -100,7 +100,10 @@ HRESULT CLoader::Loading_For_Logo()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_SkyBox"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SkyBox.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
@@ -127,10 +130,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 	
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Model_Finoa"),
-	//	CModel::Create(m_pDevice, m_pContext, MODEL::ANIM,
-	//		"../Bin/Resources/Models/Bin_Anim/Fiona.bin"))))
-	//	return E_FAIL;
+
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_SM_OldTown_BrickFloor_01"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_BrickFloor_01.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
@@ -140,7 +145,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

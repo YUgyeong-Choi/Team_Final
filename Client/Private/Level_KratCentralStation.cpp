@@ -2,6 +2,8 @@
 #include "GameInstance.h"
 #include "Camera_Manager.h"
 
+#include "StaticMesh.h"
+
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -14,6 +16,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -44,7 +48,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
 	LightDesc.fAmbient = 0.2f;
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
+	
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
 		return E_FAIL;
 
@@ -88,6 +92,29 @@ HRESULT CLevel_KratCentralStation::Ready_Camera()
 	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
 
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLayerTag)
+{
+	CStaticMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.m_vInitPos = _float3(0.f, 0.f, 0.f);
+	Desc.m_vInitScale = _float3(1.f, 1.f, 1.f);
+	Desc.szMeshID = TEXT("SM_OldTown_BrickFloor_01");
+	lstrcpy(Desc.szName, TEXT("SM_TEST_FLOOR"));
+	Desc.szShaderID = TEXT("VtxMesh");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
+{
 	return S_OK;
 }
 
