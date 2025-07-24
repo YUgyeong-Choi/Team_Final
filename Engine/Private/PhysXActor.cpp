@@ -1,6 +1,6 @@
 #include "PhysXActor.h"
 #include "DebugDraw.h"
-
+#include "GameInstance.h"
 CPhysXActor::CPhysXActor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CComponent{ pDevice, pContext }
 {
@@ -8,9 +8,35 @@ CPhysXActor::CPhysXActor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CPhysXActor::CPhysXActor(const CPhysXActor& Prototype)
     : CComponent(Prototype )
+    , m_pBatch{ Prototype.m_pBatch }
+    , m_pEffect{ Prototype.m_pEffect }
+#ifdef _DEBUG
+    , m_pInputLayout{ Prototype.m_pInputLayout }
+#endif
 {
+#ifdef _DEBUG
+    Safe_AddRef(m_pInputLayout);
+#endif
 
 }
+
+void CPhysXActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery)
+{
+    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation); // OnEnter, OnStay, OnExit 활성화
+    m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bTrigger); //OnTriger 활성화
+    m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bQuery); // Ray충돌 활성화 
+}
+
+void CPhysXActor::Set_SimulationFilterData(PxFilterData _data)
+{
+    m_pShape->setSimulationFilterData(_data);
+}
+
+void CPhysXActor::Set_QueryFilterData(PxFilterData _data)
+{
+    m_pShape->setQueryFilterData(_data);
+}
+
 
 void CPhysXActor::On_Enter(CPhysXActor* pOther)
 {
@@ -47,6 +73,7 @@ void CPhysXActor::On_Trigger(CPhysXActor* pOther)
 
 HRESULT CPhysXActor::ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
+#ifdef _DEBUG
     m_pBatch = new PrimitiveBatch<VertexPositionColor>(pContext);
     m_pEffect = new BasicEffect(pDevice);
 
@@ -60,10 +87,27 @@ HRESULT CPhysXActor::ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContex
     if (FAILED(pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount,
         pShaderByteCode, iShaderByteCodeLength, &m_pInputLayout)))
         return E_FAIL;
+#endif
+    return S_OK;
+}
+
+
+HRESULT CPhysXActor::Render()
+{
+    DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+
+    for (auto& Ray : m_RenderRay) {
+        DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);
+    }
+    m_RenderRay.clear();
 
     return S_OK;
 }
 
+void CPhysXActor::Add_RenderRay(DEBUGRAY_DATA _data)
+{
+    m_RenderRay.push_back(_data);
+}
 
 void CPhysXActor::DebugRender(const _matrix& view,const _matrix& proj, _float offSet)
 {  
@@ -425,9 +469,14 @@ void CPhysXActor::DrawRay(const _matrix& view, const _matrix& proj, const PxVec3
 
 void CPhysXActor::Free()
 {
+#ifdef _DEBUG
     Safe_Release(m_pInputLayout);
-    Safe_Delete(m_pBatch);
-    Safe_Delete(m_pEffect);
+    if (false == m_isCloned)
+    {
+        Safe_Delete(m_pBatch);
+        Safe_Delete(m_pEffect);
+    }
+#endif
 
     __super::Free();
 }

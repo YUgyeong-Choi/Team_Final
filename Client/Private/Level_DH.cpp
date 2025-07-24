@@ -1,9 +1,11 @@
 #include "Level_DH.h"
 #include "GameInstance.h"
 #include "DHTool.h"
+#include "Camera_Manager.h"
 
 CLevel_DH::CLevel_DH(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
+	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
 }
@@ -19,6 +21,12 @@ HRESULT CLevel_DH::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -26,6 +34,7 @@ void CLevel_DH::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
 
+	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 }
 
@@ -62,6 +71,14 @@ HRESULT CLevel_DH::Render()
 	return S_OK;
 }
 
+HRESULT CLevel_DH::Ready_Camera()
+{
+	m_pCamera_Manager->Initialize(LEVEL::STATIC);
+	m_pCamera_Manager->SetFreeCam();
+
+	return S_OK;
+}
+
 HRESULT CLevel_DH::Ready_Lights()
 {
 	LIGHT_DESC			LightDesc{};
@@ -83,6 +100,15 @@ HRESULT CLevel_DH::Ready_ImGuiTools()
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CDHTool::Create(m_pDevice, m_pContext);
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)])
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Ready_Layer_Sky(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
+		ENUM_CLASS(LEVEL::DH), strLayerTag)))
 		return E_FAIL;
 
 	return S_OK;

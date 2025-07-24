@@ -36,6 +36,9 @@ HRESULT CGLTool::Initialize(void* pArg)
 			m_TextureNames.push_back(pair.first);
 	}
 
+	m_pSequence = new CUI_Sequence();
+	
+
 	return S_OK;
 }
 
@@ -63,7 +66,8 @@ HRESULT CGLTool::Render()
 	if (FAILED(Render_UIList()))
 		return E_FAIL;
 
-	
+	if (FAILED(Render_Sequence()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -84,10 +88,10 @@ void CGLTool::Save_File()
 		j["PassIndex"] = eDesc.iPassIndex;
 		j["TextureIndex"] = eDesc.iTextureIndex;
 		j["Offset"] = eDesc.fOffset;
-		j["fSizeX"] = eDesc.fSizeX;
-		j["fSizeY"] = eDesc.fSizeY;
-		j["fX"] = eDesc.fX;
-		j["fY"] = eDesc.fY;
+		j["fSizeX"] = eDesc.fSizeX / g_iWinSizeX;
+		j["fSizeY"] = eDesc.fSizeY / g_iWinSizeY;
+		j["fX"] = eDesc.fX / g_iWinSizeX;
+		j["fY"] = eDesc.fY / g_iWinSizeY;
 		JsonArray.push_back(j);
 		
 	}
@@ -131,14 +135,15 @@ void CGLTool::Add_UI_From_File()
 	{
 		CStatic_UI::STATIC_UI_DESC eStaticDesc = {};
 
+		
 
-		eStaticDesc.fOffset = eUIJson["Offset"];
+		eStaticDesc.fOffset = eUIJson["Offset"]  ;
 		eStaticDesc.iPassIndex = eUIJson["PassIndex"];
-		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"];
-		eStaticDesc.fSizeX = eUIJson["fSizeX"];
-		eStaticDesc.fSizeY = eUIJson["fSizeY"];
-		eStaticDesc.fX = eUIJson["fX"];
-		eStaticDesc.fY = eUIJson["fY"];
+		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"]; 
+		eStaticDesc.fSizeX = eUIJson["fSizeX"].get<float>() * g_iWinSizeX;
+		eStaticDesc.fSizeY = eUIJson["fSizeY"].get<float>() * g_iWinSizeY;
+		eStaticDesc.fX = eUIJson["fX"].get<float>() * g_iWinSizeX;
+		eStaticDesc.fY = eUIJson["fY"].get<float>() * g_iWinSizeY;
 
 		string textureTag = eUIJson["TextureTag"];
 		eStaticDesc.strTextureTag = wstring(textureTag.begin(), textureTag.end());
@@ -184,7 +189,7 @@ HRESULT CGLTool::Render_UtilTool()
 
 	}
 
-	if (Button(u8"Add UI"))
+	if (Button(u8"Add Static UI"))
 	{
 		Add_UI();
 	}
@@ -208,6 +213,8 @@ HRESULT CGLTool::Render_UtilTool()
 		}
 		++index;
 	}
+
+	
 
 
 	// 파일 탐색기를 띄운다
@@ -234,39 +241,59 @@ HRESULT CGLTool::Render_UtilTool()
 HRESULT CGLTool::Render_SelectOptionTool()
 {
 	
-	SetNextWindowSize(ImVec2(200, 300));
+	SetNextWindowSize(ImVec2(400, 300));
 	_bool open = true;
 	ImGui::Begin("Select option ", &open, NULL);
+
+	//float value = 0.6f;
+	//ImGui::SliderFloat("Offset", &value, 0.0f, 1.0f);
 
 
 	// 입력 칸 만들기
 
 	ImGui::InputFloat("Offset", &eUITempDesc.fOffset);
+	ImGui::InputInt("PassIndex", &eUITempDesc.iPassIndex);
+	ImGui::InputInt("TextureIndex", &eUITempDesc.iTextureIndex);
 	ImGui::InputFloat("SizeX_Ratio", &eUITempDesc.fSizeX);
 	ImGui::InputFloat("SizeY_Ratio", &eUITempDesc.fSizeY);
 	ImGui::InputFloat("fX_Ratio", &eUITempDesc.fX);
 	ImGui::InputFloat("fY_Ratio", &eUITempDesc.fY);
-	ImGui::InputInt("PassIndex", &eUITempDesc.iPassIndex);
-	ImGui::InputInt("TextureIndex", &eUITempDesc.iTextureIndex);
 
+	// 필요하면 슬라이더로
+	ImGui::SliderFloat("SizeX_Slider", &eUITempDesc.fSizeX, 0.001f, 1.5f); 
+	ImGui::SliderFloat("SizeY_Slider", &eUITempDesc.fSizeY, 0.001f, 1.5f);
+	ImGui::SliderFloat("fX_Slider", &eUITempDesc.fX, -0.5f, 1.5f);
+	ImGui::SliderFloat("fY_Slider", &eUITempDesc.fY, -0.5f, 1.5f);
 
-	// apply 누르면 내가 선언한 변수에 담도록 하기?
-	if (ImGui::Button("Apply"))
+	eUIDesc = eUITempDesc;
+	eUIDesc.fSizeX *= g_iWinSizeX;
+	eUIDesc.fSizeY *= g_iWinSizeY;
+	eUIDesc.fX *= g_iWinSizeX;
+	eUIDesc.fY *= g_iWinSizeY;
+
+	eUIDesc.strTextureTag = m_strSelectName;
+
+	if (eUIDesc.iPassIndex >= UI_END)
 	{
-		eUIDesc = eUITempDesc;
-		eUIDesc.fSizeX *= g_iWinSizeX;
-		eUIDesc.fSizeY *= g_iWinSizeY;
-		eUIDesc.fX *= g_iWinSizeX;
-		eUIDesc.fY *= g_iWinSizeY;
-
-		eUIDesc.strTextureTag = m_strSelectName;
+		eUIDesc.iPassIndex = UI_END - 1;
+		eUITempDesc.iPassIndex = UI_END - 1;
 	}
 
-	if (ImGui::Button("Change Select UI"))
+	if (eUIDesc.iPassIndex < 0)
+	{
+		eUIDesc.iPassIndex = 0;
+		eUITempDesc.iPassIndex = 0;
+	}
+
+	if (nullptr == m_pSelectObj || m_pSelectObj->Get_bDead())
+	{
+
+	}
+	else
 	{
 		m_pSelectObj->Update_UI_From_Tool(eUIDesc);
 	}
-
+		
 
 	ImGui::End();
 	return S_OK;
@@ -290,7 +317,7 @@ HRESULT CGLTool::Render_UIList()
 		if (nullptr == pObj || pObj->Get_bDead())
 			continue;
 		
-		if (ImGui::Selectable(WStringToString(pObj->Get_StrTextureTag()).c_str(), isSelected))
+		if (ImGui::Selectable(to_string(index).c_str(), isSelected))
 		{
 			m_iSelectObjIndex = index;
 			m_pSelectObj = pObj;
@@ -300,12 +327,38 @@ HRESULT CGLTool::Render_UIList()
 			eUITempDesc.fX /= g_iWinSizeX;
 			eUITempDesc.fY /= g_iWinSizeY;
 			eUITempDesc.strTextureTag = pObj->Get_StrTextureTag();
+
 		}
+
 		
 		++index;
 	}
 
 	ImGui::End();
+	return S_OK;
+}
+
+HRESULT CGLTool::Render_Sequence()
+{
+	SetNextWindowSize(ImVec2(800, 200));
+	_bool open = true;
+	ImGui::Begin("Sequence ", &open, NULL);
+
+	//                   
+	
+
+	ImSequencer::Sequencer(m_pSequence,
+		&m_iCurrentFrame,
+		&m_bExpanded,
+		&m_iSelectedEntry,
+		&m_iCurrentFrame, // Optional callback for drawing custom UI
+		ImSequencer::SEQUENCER_EDIT_STARTEND |
+		ImSequencer::SEQUENCER_ADD |
+		ImSequencer::SEQUENCER_DEL |
+		ImSequencer::SEQUENCER_COPYPASTE);
+
+	ImGui::End();
+
 	return S_OK;
 }
 
@@ -339,5 +392,7 @@ CGameObject* CGLTool::Clone(void* pArg)
 void CGLTool::Free()
 {
 	__super::Free();
+
+	Safe_Delete(m_pSequence);
 
 }

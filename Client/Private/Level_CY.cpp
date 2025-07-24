@@ -1,9 +1,11 @@
 #include "Level_CY.h"
 #include "GameInstance.h"
 #include "CYTool.h"
+#include "Camera_Manager.h"
 
 CLevel_CY::CLevel_CY(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
+	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
 }
@@ -19,6 +21,9 @@ HRESULT CLevel_CY::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -28,6 +33,7 @@ void CLevel_CY::Update(_float fTimeDelta)
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);
 
+	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 }
 
@@ -77,6 +83,14 @@ HRESULT CLevel_CY::Ready_Lights()
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
 		return E_FAIL;
 
+
+	return S_OK;
+}
+
+HRESULT CLevel_CY::Ready_Camera()
+{
+	m_pCamera_Manager->Initialize(LEVEL::STATIC);
+	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;
 }

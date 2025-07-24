@@ -1,4 +1,5 @@
 #include "Sky.h"
+#include "Camera_Manager.h"
 
 #include "GameInstance.h"
 
@@ -10,6 +11,7 @@ CSky::CSky(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CSky::CSky(const CSky& Prototype)
 	: CGameObject { Prototype }
+	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
 }
@@ -43,8 +45,8 @@ void CSky::Priority_Update(_float fTimeDelta)
 
 void CSky::Update(_float fTimeDelta)
 {
-	m_pTransformCom->Set_State(STATE::POSITION,
-		XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
+	_vector vCamPos = m_pCamera_Manager->GetCurCamPos();
+	m_pTransformCom->Set_State(STATE::POSITION, vCamPos);
 }
 
 void CSky::Late_Update(_float fTimeDelta)

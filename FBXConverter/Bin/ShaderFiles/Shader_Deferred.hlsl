@@ -238,7 +238,7 @@ PS_OUT_BLUR PS_MAIN_BLURX(PS_IN In)
     
     for (int i = -6; i < 7; ++i)
     {
-        vTexcoord.x = In.vTexcoord.x + i / 1280.f;
+        vTexcoord.x = In.vTexcoord.x + i / 1920.f;
         vTexcoord.y = In.vTexcoord.y;
   
         Out.vColor += g_fWeights[i + 6] * g_FinalTexture.Sample(LinearClampSampler, vTexcoord);
@@ -260,7 +260,7 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     for (int i = -6; i < 7; ++i)
     {
         vTexcoord.x = In.vTexcoord.x;
-        vTexcoord.y = In.vTexcoord.y + i / 720.f;
+        vTexcoord.y = In.vTexcoord.y + i / 1080.f;
   
         Out.vBackBuffer += g_fWeights[i + 6] * g_BlurXTexture.Sample(LinearClampSampler, vTexcoord);
     }

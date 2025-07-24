@@ -1,7 +1,6 @@
 #include "YGObject.h"
 
 #include "GameInstance.h"
-#include "Mesh.h"
 
 CYGObject::CYGObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
@@ -22,7 +21,8 @@ HRESULT CYGObject::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC _desc{};
 	lstrcpy(_desc.szName, TEXT("YGObject"));
-
+	_desc.fRotationPerSec = 8.f;
+	_desc.fSpeedPerSec = 10.f;
 
 	if (FAILED(__super::Initialize(&_desc))) {
 		return E_FAIL;
@@ -32,71 +32,59 @@ HRESULT CYGObject::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
+	if (FAILED(Ready_Collider())) {
+		return E_FAIL;
+	}
 
-
-	//CModel* _model = nullptr;
-	///* For.Com_Model */
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), m_prototypeColTag,
-	//	TEXT("Com_Model2"), reinterpret_cast<CComponent**>(&_model))))
-	//	return E_FAIL;
-
-	//if (_model)
-	//{
-	//	_uint numVertices = _model->Get_Mesh(0)->Get_NumVertices();
-	//	_uint numIndices = _model->Get_Mesh(0)->Get_NumIndices();
-
-	//	// 1. 정점 추출 (★ 스케일 미적용)
-	//	vector<PxVec3> physxVertices;
-	//	physxVertices.reserve(numVertices);
-
-	//	const _float3* pVertexPositions = _model->Get_Mesh(0)->Get_Vertices();
-	//	for (_uint i = 0; i < numVertices; ++i)
-	//	{
-	//		const _float3& v = pVertexPositions[i];
-	//		physxVertices.emplace_back(v.x, v.y, v.z);
-	//	}
-
-	//	// 2. 인덱스 복사
-	//	const _uint* pIndices = _model->Get_Mesh(0)->Get_Indices();
-	//	std::vector<PxU32> physxIndices;
-	//	physxIndices.reserve(numIndices);
-
-	//	for (_uint i = 0; i < numIndices; ++i)
-	//		physxIndices.push_back(static_cast<PxU32>(pIndices[i]));
-
-	//	// 3. Transform에서 S, R, T 분리
-	//	XMVECTOR S, R, T;
-	//	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
-
-	//	// 3-1. 스케일, 회전, 위치 변환
-	//	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
-	//	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-	//	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-
-	//	PxTransform pose(positionVec, rotationQuat);
-	//	PxMeshScale meshScale(scaleVec);
-
-	//	m_pPhysXActor = m_pGameInstance->Create_StaticConvexMeshActor(physxVertices.data(), numVertices, pose, meshScale, WorldFilter::RESOURCES);
-	//	m_pPhysXActor->Set_Owner(this);
-	//	m_pPhysXActor->ReadyForDebugDraw(m_pDevice, m_pContext);
-	//}
-	//else
-	//{
-	//	_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
-	//}
-
-	//Safe_Release(_model);
+	Update_ColliderPos();
 
 	return S_OK;
 }
 
 void CYGObject::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead) {
+		PxScene* pScene = m_pGameInstance->Get_Scene();
+		if (pScene)
+			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
+
+		Safe_Release(m_pPhysXActorCom);
+		m_pPhysXActorCom = nullptr;
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_A))
+	{
+		m_pTransformCom->Go_Left(fTimeDelta);
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_D))
+	{
+		m_pTransformCom->Go_Right(fTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_W))
+	{
+		m_pTransformCom->Go_Straight(fTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_S))
+	{
+		m_pTransformCom->Go_Backward(fTimeDelta);
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_E))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f),  fTimeDelta * 0.1f);
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_Q))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f),  -fTimeDelta * 0.1f);
+	}
 
 }
 
 void CYGObject::Update(_float fTimeDelta)
 {
+	Update_ColliderPos();
 }
 
 void CYGObject::Late_Update(_float fTimeDelta)
@@ -130,8 +118,20 @@ HRESULT CYGObject::Render()
 			continue;
 	}
 
-	//if (g_bRenderDebug)
-	//	m_pPhysXActor->DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
+		_data.vDirection = PxVec3(0.f, 1.f, 0.f);
+		_data.fRayLength = 10.f;
+		_data.bIsHit = true;
+		_data.vHitPos = _data.vStartPos + _data.vDirection.getNormalized() * _data.fRayLength;
+		m_pPhysXActorCom->Add_RenderRay(_data);
+	}
+#endif
+
 
 	return S_OK;
 }
@@ -153,6 +153,7 @@ HRESULT CYGObject::Bind_ShaderResources()
 
 void CYGObject::On_CollisionEnter(CGameObject* pOther)
 {
+	printf("플레이어 충돌!\n");
 }
 
 void CYGObject::On_CollisionStay(CGameObject* pOther)
@@ -178,7 +179,80 @@ HRESULT CYGObject::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Finoa"),TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Kinematic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
 	return S_OK;
+}
+
+HRESULT CYGObject::Ready_Collider()
+{
+	if (m_pModelCom)
+	{
+		// 피오나 몸체가 2번째 메쉬라서
+		_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(2);
+
+		vector<PxVec3> physxVertices;
+		physxVertices.reserve(numVertices);
+
+		const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(2);
+		for (_uint i = 0; i < numVertices; ++i)
+		{
+			const _float3& v = pVertexPositions[i];
+			physxVertices.emplace_back(v.x, v.y, v.z);
+		}
+
+		// 3. Transform에서 S, R, T 분리
+		XMVECTOR S, R, T;
+		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+		// 3-1. 스케일, 회전, 위치 변환
+		PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+		PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+		PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+		PxTransform pose(positionVec, rotationQuat);
+		PxMeshScale meshScale(scaleVec);
+
+		PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(physxVertices.data(), numVertices, 1.f);
+		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+		PxFilterData filterData{};
+		filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
+		filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorCom->Set_Owner(this);
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+	}
+	else
+	{
+		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
+	}
+
+
+	return S_OK;
+}
+
+void CYGObject::Update_ColliderPos()
+{	// 1. 월드 행렬 가져오기
+	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	// 2. 위치 추출
+	_float4 vPos;
+	XMStoreFloat4(&vPos, worldMatrix.r[3]);
+
+	PxVec3 pos(vPos.x, vPos.y, vPos.z);
+	pos.y += 0.5f;
+
+	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
+	XMFLOAT4 fQuat;
+	XMStoreFloat4(&fQuat, boneQuat);
+	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
+
+	// 4. PhysX Transform 적용
+	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
 }
 
 CYGObject* CYGObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -35,6 +35,10 @@ private:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 
+
+private:
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+
 public:
 	static CSky* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

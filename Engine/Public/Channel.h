@@ -15,7 +15,7 @@ private:
 public:
 	HRESULT Initialize(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
 	HRESULT Initialize(ifstream& ifs, const vector<class CBone*>& Bones, _uint iRootBoneIdx);
-	void Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones);
+	void Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones,_bool bIsReverse = false);
 	_uint Get_BoneIndex() { return m_iBoneIndex; }
 
 	const _float4x4& GetLocalMatrix() const

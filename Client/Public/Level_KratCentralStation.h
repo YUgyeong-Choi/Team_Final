@@ -18,6 +18,11 @@ public:
 
 private:
 	HRESULT Ready_Lights();
+	HRESULT Ready_Camera();
+
+private:
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+
 public:
 	static CLevel_KratCentralStation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

@@ -27,7 +27,7 @@ public:
     virtual HRESULT Render();
 
 public:
-    _fvector& GetCurCamPos();
+    _fvector GetCurCamPos();
     CCamera* GetCurCam();
     CCamera_CutScene* GetCutScene() { return m_pCamera_CutScene; }
     CCamera_Orbital* GetOrbitalCam() { return m_pCamera_Orbital; }

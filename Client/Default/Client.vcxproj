@@ -166,6 +166,7 @@
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectSequence.h" />
+    <ClInclude Include="..\public\EventMag.h" />
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
@@ -184,10 +185,12 @@
     <ClInclude Include="..\Public\MySequence.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
-    <ClInclude Include="..\Public\StaticMesh.h" />
+    <ClInclude Include="..\Public\MapToolObject.h" />
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\Public\ToolSprite.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
+    <ClInclude Include="..\public\UI_Sequence.h" />
+    <ClInclude Include="..\Public\YGMonster.h" />
     <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="Client.h" />
@@ -221,6 +224,7 @@
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\private\EffectBase.cpp" />
     <ClCompile Include="..\Private\EffectSequence.cpp" />
+    <ClCompile Include="..\private\EventMag.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
@@ -239,10 +243,12 @@
     <ClCompile Include="..\Private\MySequence.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
-    <ClCompile Include="..\Private\StaticMesh.cpp" />
+    <ClCompile Include="..\Private\MapToolObject.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\Private\ToolSprite.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />
+    <ClCompile Include="..\private\UI_Sequence.cpp" />
+    <ClCompile Include="..\Private\YGMonster.cpp" />
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="Client.cpp" />
