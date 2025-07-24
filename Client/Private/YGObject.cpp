@@ -140,6 +140,8 @@ HRESULT CYGObject::Render()
 		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
 		_data.vDirection = PxVec3(0.f, 1.f, 0.f);
 		_data.fRayLength = 10.f;
+		_data.bIsHit = true;
+		_data.vHitPos = _data.vStartPos + _data.vDirection.getNormalized() * _data.fRayLength;
 		m_pPhysXActorCom->Add_RenderRay(_data);
 	}
 #endif
