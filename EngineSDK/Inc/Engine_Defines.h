@@ -39,6 +39,9 @@ using namespace std;
 #include <filesystem>
 using namespace std::filesystem;
 
+#include <PxPhysicsAPI.h>
+using namespace physx;
+
 #include "Engine_Typedef.h"
 #include "Engine_Macro.h"
 #include "Engine_Enum.h"
@@ -49,9 +52,6 @@ using namespace std::filesystem;
 #include "json.hpp"
 using json = nlohmann::json;
 
-
-#include <PxPhysicsAPI.h>
-using namespace physx;
 
 namespace Engine
 {

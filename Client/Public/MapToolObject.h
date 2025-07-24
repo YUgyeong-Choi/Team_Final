@@ -10,12 +10,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CStaticMesh final : public CGameObject
+class CMapToolObject final : public CGameObject
 {
 private:
-	CStaticMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CStaticMesh(const CStaticMesh& Prototype);
-	virtual ~CStaticMesh() = default;
+	CMapToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CMapToolObject(const CMapToolObject& Prototype);
+	virtual ~CMapToolObject() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -34,7 +34,7 @@ private:
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CStaticMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CMapToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

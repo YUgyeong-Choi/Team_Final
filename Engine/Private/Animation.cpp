@@ -20,6 +20,7 @@ CAnimation::CAnimation(const CAnimation& Prototype)
 	, m_iNumChannels{ Prototype.m_iNumChannels }
 	, m_Channels{ Prototype.m_Channels }
 	, m_AnimationName{ Prototype.m_AnimationName }
+	, m_events{ Prototype.m_events }
 
 {
 	for (auto& pChannel : m_Channels)
@@ -64,14 +65,12 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 	ifs.read(&AnimationName[0], nameLength);      
 	m_AnimationName = AnimationName;  // 애니메이션 이름을 복사
 
-	ifs.read(reinterpret_cast<_char*>(&m_fTickPerSecond), sizeof(_float));  // 애니메이션 안에 채널 몇개읨 
-	ifs.read(reinterpret_cast<_char*>(&m_fDuration), sizeof(_float));  // 애니메이션 안에 채널 몇개읨 
-	/* 이 애니메이션이 컨트롤해야하는 뼈의 갯수 */
-	ifs.read(reinterpret_cast<_char*>(&m_iNumChannels), sizeof(_uint));  // 애니메이션 안에 채널 몇개읨 
+	ifs.read(reinterpret_cast<_char*>(&m_fTickPerSecond), sizeof(_float));  
+	ifs.read(reinterpret_cast<_char*>(&m_fDuration), sizeof(_float));  
+	ifs.read(reinterpret_cast<_char*>(&m_iNumChannels), sizeof(_uint)); 
 
-	m_CurrentKeyFrameIndices.resize(m_iNumChannels);
-
-	/* 각 뼈의 정보를 생성한다. */
+	
+	m_Channels.reserve(m_iNumChannels);
 	for (size_t i = 0; i < m_iNumChannels; i++)
 	{
 		CChannel* pChannel = CChannel::Create(ifs, Bones,-1);
@@ -80,14 +79,15 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 
 		m_Channels.push_back(pChannel);
 	}
-	m_TransformMatrices.resize(Bones.size());
-	for (auto& mat : m_TransformMatrices)
-		mat = XMMatrixIdentity();
-	for (size_t i = 0; i < Bones.size(); ++i)
-	{
-		m_TransformMatrices[i] =
-			XMLoadFloat4x4(Bones[i]->Get_TransformationMatrix());
-	}
+	//m_TransformMatrices.resize(Bones.size());
+	//for (auto& mat : m_TransformMatrices)
+	//	mat = XMMatrixIdentity();
+	//for (size_t i = 0; i < Bones.size(); ++i)
+	//{
+	//	m_TransformMatrices[i] =
+	//		XMLoadFloat4x4(Bones[i]->Get_TransformationMatrix());
+	//}
+	m_CurrentKeyFrameIndices.resize(m_iNumChannels);
 
 	return S_OK;
 }
@@ -119,7 +119,10 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 {
 	m_isLoop = isLoop;
 	_float prevPos = m_fCurrentTrackPosition;
+	m_fPrevTrackPosition = prevPos;
+
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+	_bool bIsReverse = (m_fPrevTrackPosition > m_fCurrentTrackPosition); // 이전이 더 크다면 지금 역 재생중
 
 
 	if (m_fCurrentTrackPosition >= m_fDuration)
@@ -151,7 +154,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 		m_Channels[i]->Update_TransformationMatrix(
 			m_CurrentKeyFrameIndices[i],
 			m_fCurrentTrackPosition,
-			Bones
+			Bones, bIsReverse
 		);
 	}
 
@@ -231,4 +234,33 @@ void CAnimation::Free()
 		Safe_Release(pChannel);
 
 	m_Channels.clear();
+}
+
+json CAnimation::Serialize()
+{
+	json j;
+	// 이벤트 직렬화
+	j["ClipName"] = m_AnimationName;
+	for (const auto& event : m_events)
+	{
+		j["Events"].push_back({
+			{"EventName", event.name},
+			{"Time", event.fTime}
+			});
+	}
+	return j;
+}
+
+void CAnimation::Deserialize(const json& j)
+{
+	if (j.contains("Events"))
+	{
+		for (const auto& event : j["Events"])
+		{
+			m_events.push_back({
+				event["Time"].get<_float>(),
+				event["EventName"].get<string>()
+				});
+		}
+	}
 }

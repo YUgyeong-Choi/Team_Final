@@ -2,13 +2,13 @@
 #include "GameInstance.h"
 
 CCamera_Free::CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CCamera { pDevice, pContext }
+	: CCamera{ pDevice, pContext }
 {
 
 }
 
 CCamera_Free::CCamera_Free(const CCamera_Free& Prototype)
-	: CCamera ( Prototype )
+	: CCamera(Prototype)
 {
 
 }
@@ -41,9 +41,6 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
-		return;
-
 	// 달리기 여부 체크
 	m_bSprint = (m_pGameInstance->Key_Pressing(DIK_LSHIFT)) != 0;
 
@@ -71,19 +68,26 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
 
-	_long			MouseMove = {};
 
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::X))
+	// 우클릭 눌러야 카메라 움직일 수 있음
+	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * m_fSensor);
+		_long			MouseMove = {};
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::X))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * m_fSensor);
+		}
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::Y))
+		{
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * m_fSensor);
+		}
 	}
 
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * m_fSensor);
-	}
 
 	__super::Bind_Matrices();
+	__super::Priority_Update(fTimeDelta);
 }
 
 void CCamera_Free::Update(_float fTimeDelta)
@@ -101,6 +105,8 @@ void CCamera_Free::Update(_float fTimeDelta)
 		XMStoreFloat3(&vLook, look);
 		printf("Camera Look: x = %.2f, y = %.2f, z = %.2f\n", vLook.x, vLook.y, vLook.z);
 	}
+
+	__super::Update(fTimeDelta);
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)
@@ -110,7 +116,7 @@ void CCamera_Free::Late_Update(_float fTimeDelta)
 
 HRESULT CCamera_Free::Render()
 {
-	
+
 	return S_OK;
 }
 

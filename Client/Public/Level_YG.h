@@ -25,11 +25,17 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+
 private:
+	HRESULT Ready_Camera();
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Camera(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Object(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
+
+private:
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+
 public:
 	static CLevel_YG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

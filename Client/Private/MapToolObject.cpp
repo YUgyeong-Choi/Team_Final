@@ -1,31 +1,31 @@
-#include "StaticMesh.h"
+#include "MapToolObject.h"
 
 #include "GameInstance.h"
 
-CStaticMesh::CStaticMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CMapToolObject::CMapToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
 
 }
 
-CStaticMesh::CStaticMesh(const CStaticMesh& Prototype)
+CMapToolObject::CMapToolObject(const CMapToolObject& Prototype)
 	: CGameObject(Prototype)
 {
 
 }
 
-HRESULT CStaticMesh::Initialize_Prototype()
+HRESULT CMapToolObject::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CStaticMesh::Initialize(void* pArg)
+HRESULT CMapToolObject::Initialize(void* pArg)
 {
 	GAMEOBJECT_DESC			Desc{};
 
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
-	lstrcpy(Desc.szName, TEXT("StaticMesh"));
+	lstrcpy(Desc.szName, TEXT("MapToolObject"));
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -36,22 +36,22 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CStaticMesh::Priority_Update(_float fTimeDelta)
+void CMapToolObject::Priority_Update(_float fTimeDelta)
 {
 
 }
 
-void CStaticMesh::Update(_float fTimeDelta)
+void CMapToolObject::Update(_float fTimeDelta)
 {
 
 }
 
-void CStaticMesh::Late_Update(_float fTimeDelta)
+void CMapToolObject::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
-HRESULT CStaticMesh::Render()
+HRESULT CMapToolObject::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -72,7 +72,7 @@ HRESULT CStaticMesh::Render()
 	return S_OK;
 }
 
-HRESULT CStaticMesh::Ready_Components()
+HRESULT CMapToolObject::Ready_Components()
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
@@ -87,7 +87,7 @@ HRESULT CStaticMesh::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CStaticMesh::Bind_ShaderResources()
+HRESULT CMapToolObject::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -99,33 +99,33 @@ HRESULT CStaticMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-CStaticMesh* CStaticMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CMapToolObject* CMapToolObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CStaticMesh* pInstance = new CStaticMesh(pDevice, pContext);
+	CMapToolObject* pInstance = new CMapToolObject(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CStaticMesh");
+		MSG_BOX("Failed to Created : CMapToolObject");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CStaticMesh::Clone(void* pArg)
+CGameObject* CMapToolObject::Clone(void* pArg)
 {
-	CStaticMesh* pInstance = new CStaticMesh(*this);
+	CMapToolObject* pInstance = new CMapToolObject(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CStaticMesh");
+		MSG_BOX("Failed to Cloned : CMapToolObject");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CStaticMesh::Free()
+void CMapToolObject::Free()
 {
 	__super::Free();
 

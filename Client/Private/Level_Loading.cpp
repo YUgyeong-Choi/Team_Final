@@ -94,7 +94,7 @@ HRESULT CLevel_Loading::Render()
 	m_pLoader->Output_LoadingText();
 
 	_wstring text = L"ÇÏ³ªµÑ»ï³Ý¿À¿©¼¸Ä¥ÆÈ¾ÆÈ©°ø \n Test Test Áß";
-	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.3f, g_iWinSizeY * 0.75f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), 0.8f);
+	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.3f, g_iWinSizeY * 0.75f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1000.f);
 
 	return S_OK;
 }
@@ -116,10 +116,10 @@ HRESULT CLevel_Loading::Ready_Loading()
 		eStaticDesc.fOffset = eUIJson["Offset"];
 		eStaticDesc.iPassIndex = eUIJson["PassIndex"];
 		eStaticDesc.iTextureIndex = eUIJson["TextureIndex"];
-		eStaticDesc.fSizeX = eUIJson["fSizeX"];
-		eStaticDesc.fSizeY = eUIJson["fSizeY"];
-		eStaticDesc.fX = eUIJson["fX"];
-		eStaticDesc.fY = eUIJson["fY"];
+		eStaticDesc.fSizeX = eUIJson["fSizeX"].get<float>() * g_iWinSizeX;
+		eStaticDesc.fSizeY = eUIJson["fSizeY"].get<float>() * g_iWinSizeY;
+		eStaticDesc.fX = eUIJson["fX"].get<float>() * g_iWinSizeX;
+		eStaticDesc.fY = eUIJson["fY"].get<float>() * g_iWinSizeY;
 
 		string textureTag = eUIJson["TextureTag"];
 		eStaticDesc.strTextureTag = StringToWString(textureTag);

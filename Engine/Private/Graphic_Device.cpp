@@ -45,8 +45,7 @@ HRESULT CGraphic_Device::Initialize(HWND hWnd, _bool isWindowed, _uint iWinSizeX
 	};
 
 	/* 렌더타겟의 픽셀 수와 깊이스텐실버퍼의 픽셀수가 서로 다르다면 절대 렌더링이 불가능해진다. */
-	m_pDeviceContext->OMSetRenderTargets(1, pRTVs,
-		m_pDepthStencilView);		
+	m_pDeviceContext->OMSetRenderTargets(1, pRTVs,m_pDepthStencilView);		
 	
 	D3D11_VIEWPORT			ViewPortDesc;
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));

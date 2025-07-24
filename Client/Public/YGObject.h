@@ -6,7 +6,7 @@
 NS_BEGIN(Engine)
 class CShader;
 class CModel;
-class CPhysXStaticActor;
+class CPhysXKinematicActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -35,9 +35,11 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CPhysXStaticActor*  m_pPhysXActorCom = { nullptr };
+	CPhysXKinematicActor*  m_pPhysXActorCom = { nullptr };
 private:
 	HRESULT Ready_Components();
+	HRESULT Ready_Collider();
+	void Update_ColliderPos();
 public:
 	static CYGObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
