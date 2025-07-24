@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Base.h"
-
+#include  "Serializable.h"
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CAnimation final : public CBase
+class ENGINE_DLL CAnimation final : public CBase, public ISerializable
 {
 private:
 	CAnimation();
@@ -82,6 +82,10 @@ public:
 	static CAnimation* CreateByBinary(ifstream& ifs, const vector<class CBone*>& Bones);
 	CAnimation* Clone(const vector<class CBone*>& Bones);
 	virtual void Free() override;
+
+	// ISerializable을(를) 통해 상속됨
+	json Serialize() override;
+	void Deserialize(const json& j) override;
 };
 
 NS_END

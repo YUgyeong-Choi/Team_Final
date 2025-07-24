@@ -447,3 +447,33 @@ void CModel::Free()
 
 	m_Importer.FreeScene();
 }
+
+json CModel::Serialize()
+{
+	json j;
+	j["animations"] = json::array();
+	// 애니메이션에 저장된 이벤트 직렬화
+	for (const auto& pAnim : m_Animations)
+	{
+		j["animations"].push_back(pAnim->Serialize());
+	}
+	return j;
+}
+
+void CModel::Deserialize(const json& j)
+{
+	if (j.contains("animations"))
+	{
+		for (const auto& animData : j["animations"])
+		{
+			for (auto& pAnim : m_Animations)
+			{
+				if (pAnim->Get_Name() == animData["name"])
+				{
+					pAnim->Deserialize(animData);
+					break;
+				}
+			}
+		}
+	}
+}

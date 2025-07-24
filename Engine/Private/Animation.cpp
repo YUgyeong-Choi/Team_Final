@@ -20,6 +20,7 @@ CAnimation::CAnimation(const CAnimation& Prototype)
 	, m_iNumChannels{ Prototype.m_iNumChannels }
 	, m_Channels{ Prototype.m_Channels }
 	, m_AnimationName{ Prototype.m_AnimationName }
+	, m_events{ Prototype.m_events }
 
 {
 	for (auto& pChannel : m_Channels)
@@ -233,4 +234,33 @@ void CAnimation::Free()
 		Safe_Release(pChannel);
 
 	m_Channels.clear();
+}
+
+json CAnimation::Serialize()
+{
+	json j;
+	// 이벤트 직렬화
+	j["ClipName"] = m_AnimationName;
+	for (const auto& event : m_events)
+	{
+		j["Events"].push_back({
+			{"EventName", event.name},
+			{"Time", event.fTime}
+			});
+	}
+	return j;
+}
+
+void CAnimation::Deserialize(const json& j)
+{
+	if (j.contains("Events"))
+	{
+		for (const auto& event : j["Events"])
+		{
+			m_events.push_back({
+				event["Time"].get<_float>(),
+				event["EventName"].get<string>()
+				});
+		}
+	}
 }

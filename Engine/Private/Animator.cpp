@@ -62,7 +62,7 @@ void CAnimator::Update(_float fDeltaTime)
 		m_bIsFinished = m_pCurrentAnim->Update_Bones(
 			fDeltaTime,
 			m_Bones,
-			m_Blend.isLoop,
+			m_pCurrentAnim->Get_isLoop(),
 			&triggeredEvents
 		);
 

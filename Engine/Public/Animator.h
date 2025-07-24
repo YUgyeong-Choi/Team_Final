@@ -13,7 +13,7 @@ public:
         CAnimation* dstAnim = nullptr;   // 다음 애니메이션
         _float        elapsed = 0.f;       // 경과 시간
         _float        duration = 0.2f;      // 블렌드 총 시간
-        _bool         isLoop = true;
+        _bool         isLoop = false;
         _bool         active = false;
         _bool         hasExitTime = false; // 이전 애니메이션 종료했을 때 블렌드 시작
     };

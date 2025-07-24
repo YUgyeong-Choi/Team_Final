@@ -117,7 +117,7 @@ HRESULT CLevel_JW::Ready_ImGui()
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
-
+	io.IniFilename = nullptr;  // ini 파일 저장/로드 비활성화
 	return S_OK;
 }
 

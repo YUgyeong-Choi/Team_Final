@@ -59,6 +59,7 @@ void CAnimTool::Priority_Update(_float fTimeDelta)
 void CAnimTool::Update(_float fTimeDelta)
 {
 	UpdateCurrentModel(fTimeDelta);
+
 }
 
 void CAnimTool::Late_Update(_float fTimeDelta)
@@ -74,22 +75,12 @@ HRESULT CAnimTool::Render()
 		if (FAILED(Render_Load_Model()))
 			return E_FAIL;
 
-		ImGui::Checkbox("Use Animation Sequence", &m_bUseAnimSequence);
+		Setting_Sequence();
 		if (m_bUseAnimSequence)
 		{
-			if (m_pMySequence)
-			{
-				if (m_pCurAnimator)
-				{
-					// 현재 재생중이던 애니메이션의 트랙포지션으로 갱신
-					auto pAnim = m_pCurAnimator->GetCurrentAnim();
-					if (pAnim)
-					{
-						m_iSequenceFrame = static_cast<_int>(pAnim->GetCurrentTrackPosition());
-					}
-				}
-			}
 			if (FAILED(Render_AnimationSequence()))
+				return E_FAIL;
+			if (FAILED(Render_AnimEvents()))
 				return E_FAIL;
 		}
 	}
@@ -107,8 +98,6 @@ HRESULT CAnimTool::Render()
 
 HRESULT CAnimTool::Render_Load_Model()
 {
-
-	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
 	Begin("Load Model", &open, NULL);
 	ImGui::Checkbox("Load Model", &m_bActiveLoadModel);
@@ -154,43 +143,71 @@ HRESULT CAnimTool::Render_Load_Model()
 		return E_FAIL;
 	}
 
+	ImGui::End();
 	return S_OK;
 }
 
-HRESULT CAnimTool::Bind_Shader()
+HRESULT CAnimTool::Render_AnimEvents()
 {
-	if (m_pCurModel == nullptr || m_pCurAnimator == nullptr)
-		return S_OK;
-
-	if (m_pAnimShader == nullptr)
-		return E_FAIL;
-	if (FAILED(m_pAnimShader->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
-		return E_FAIL;
-
-	_float4x4 ViewMatrix, ProjViewMatrix;
-	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
-	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
-	if (FAILED(m_pAnimShader->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pAnimShader->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
-		return E_FAIL;
-
-	_uint		iNumMesh = m_pCurModel->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMesh; i++)
+	if (m_pCurAnimation == nullptr || m_pCurAnimator == nullptr || m_pMySequence == nullptr)
 	{
-		if (FAILED(m_pCurModel->Bind_Material(m_pAnimShader, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
-			return E_FAIL;
-
-		m_pCurModel->Bind_Bone_Matrices(m_pAnimShader, "g_BoneMatrices", i);
-
-		if (FAILED(m_pAnimShader->Begin(0)))
-			return E_FAIL;
-
-		if (FAILED(m_pCurModel->Render(i)))
-			return E_FAIL;
+		return S_OK;
 	}
 
+	static _int   selectedListenerIdx = 0;
+	_float fCurTarckPos = m_pCurAnimation->GetCurrentTrackPosition();
+	_float fDuration = m_pCurAnimation->GetDuration();
+	ImGui::Separator();
+
+	if (ImGui::Button("Add Manual Event"))
+	{
+		m_pCurAnimation->AddEvent({ fCurTarckPos, "NewEvent" });
+	}
+
+	auto& events = m_pCurAnimation->GetEvents();
+	for (_int i = 0; i < (_int)events.size(); ++i)
+	{
+		auto& ev = events[i];
+		ImGui::PushID(i);
+		char buf[64];
+		strncpy_s(buf, ev.name.c_str(), sizeof(buf));
+		if (ImGui::InputText("Name", buf, sizeof(buf)))
+			ev.name = buf;
+		ImGui::Separator();
+		if (ImGui::DragFloat("Time", &ev.fTime, 0.01f, 0.f, fDuration, "%.2f"))
+			ImGui::SameLine();
+		if (ImGui::Button("Remove"))
+		{
+			events.erase(events.begin() + i);
+			ImGui::PopID();
+			break;
+		}
+		ImGui::PopID();
+		ImGui::Separator();
+	}
+
+	const auto& listeners = m_pCurAnimator->GetEventListeners();
+	vector<const char*> listenerNames;
+	listenerNames.reserve(listeners.size());
+	for (auto& kv : listeners)
+		listenerNames.push_back(kv.first.c_str());
+
+	if (!listenerNames.empty())
+	{
+		ImGui::Text("Available Animator Events:");
+		ImGui::Combo("##listener_combo", &selectedListenerIdx,
+			listenerNames.data(), (int)listenerNames.size());
+		ImGui::SameLine();
+		if (ImGui::Button("Assign To Anim"))
+		{
+			m_pCurAnimation->AddEvent({ fCurTarckPos, listenerNames[selectedListenerIdx] });
+		}
+		ImGui::Separator();
+	}
+	if (ImGui::Button("Save All Clips Events to JSON"))
+	{
+		SaveLoadEvents();
+	}
 	return S_OK;
 }
 
@@ -204,6 +221,7 @@ HRESULT CAnimTool::Render_AnimationSequence()
 	static _int           selectedEntry = -1;
 	static _bool          expanded = true;// 트랙 확장 여부
 	static const _float FRAME = 60.f; // 1초당 60프레임 기준
+
 	ImGui::Begin("Animation Sequence");
 	m_bIsPlaying = m_pCurAnimator->IsPlaying();
 	if (m_bIsPlaying)
@@ -224,7 +242,7 @@ HRESULT CAnimTool::Render_AnimationSequence()
 			m_bIsPlaying = true;
 			if (m_pCurAnimator)
 			{
-				m_pCurAnimator->PlayClip(m_pCurAnimation, true); // 현재 선택된 애니메이션을 루프 재생
+				m_pCurAnimator->PlayClip(m_pCurAnimation, false);
 			}
 		}
 	}
@@ -275,7 +293,6 @@ HRESULT CAnimTool::Render_Loaded_Models()
 {
 	if (m_LoadedModels.empty())
 	{
-		ImGui::End();
 		return S_OK;
 	}
 
@@ -309,6 +326,7 @@ HRESULT CAnimTool::Render_Loaded_Models()
 	{
 		m_pMySequence->SetAnimator(m_pCurAnimator);
 	}
+
 	// 선택된 모델의 애니메이션들
 	SelectAnimation();
 	return S_OK;
@@ -345,7 +363,6 @@ void CAnimTool::SelectAnimation()
 {
 	if (m_pCurModel == nullptr || m_pCurAnimator == nullptr)
 	{
-		ImGui::End();
 		return;
 	}
 	static _int iSelectedAnimIndex = -1;
@@ -369,7 +386,7 @@ void CAnimTool::SelectAnimation()
 			{
 				iSelectedAnimIndex = i;
 				m_pCurAnimation = anims[iSelectedAnimIndex];
-				m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
+				m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -389,7 +406,7 @@ void CAnimTool::SelectAnimation()
 		}
 		else
 		{
-			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
+			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
 		}
 
 		m_pCurAnimation = anims[iSelectedAnimIndex];
@@ -405,11 +422,74 @@ void CAnimTool::SelectAnimation()
 		}
 		else
 		{
-			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
+			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
 		}
 		m_pCurAnimation = anims[iSelectedAnimIndex];
 	}
-	ImGui::End();
+
+	// 애니메이션 프로퍼티들 설정
+	Setting_AnimationProperties();
+}
+
+void CAnimTool::Setting_AnimationProperties()
+{
+	if (m_pCurAnimation)
+	{
+		ImGui::Checkbox("Use Animation Sequence", &m_bUseAnimSequence);
+		ImGui::Separator();
+		_bool bChanged = false;
+
+		ImGui::Text("Animation Properties");
+
+		// 애니메이션 이름
+		const string& animName = m_pCurAnimation->Get_Name();
+		ImGui::Text("Name: %s", animName.c_str());
+		_float fCurTarckPos = m_pCurAnimation->GetCurrentTrackPosition();
+		_float fDuration = m_pCurAnimation->GetDuration();
+		ImGui::Text("Current Track Position: %.2f / Duration: %.2f", fCurTarckPos, fDuration);
+		_float fTickPerSecond = m_pCurAnimation->GetTickPerSecond();
+		bChanged |= ImGui::DragFloat("Tick Per Second", &fTickPerSecond, 0.1f, 0.1f, 100.f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+		_bool bLoop = m_pCurAnimation->Get_isLoop();
+		if (ImGui::Checkbox("Loop", &bLoop))
+		{
+			m_pCurAnimation->SetLoop(bLoop);
+		}
+		if (bChanged)
+		{
+			m_pCurAnimation->SetTickPerSecond(fTickPerSecond);
+		}
+	}
+
+}
+
+void CAnimTool::Test_AnimEvents()
+{
+	//if (m_pCurAnimator)
+	//{
+	//	m_pCurAnimator->
+	//}
+}
+
+void CAnimTool::SaveLoadEvents(_bool isSave)
+{
+	if (m_pCurModel == nullptr)
+		return;
+	if (isSave)
+	{
+		json root;
+		root["animations"] = json::array();
+		for (auto* anim : m_LoadedAnimations[m_stSelectedModelName])
+		{
+			root["animations"].push_back(anim->Serialize());
+		}
+		string path = string("../Bin/Save/AnimationEvents/") + m_stSelectedModelName + "_events.json";
+		ofstream ofs(path);
+		ofs << root.dump(4);
+	}
+	else
+	{
+
+	}
 }
 
 void CAnimTool::CreateModel(const string& fileName, const string& filePath)
@@ -445,6 +525,30 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 		{
 			pAnimator->Initialize(pModel);
 			m_LoadedAnimators[modelName] = pAnimator;
+			pAnimator->RegisterEventListener("TestEvent", [&](const string& eventName)
+				{
+					MSG_BOX("애니메이션 이벤트 발생");
+				});
+		}
+	}
+}
+
+void CAnimTool::Setting_Sequence()
+{
+
+	if (m_bUseAnimSequence)
+	{
+		if (m_pMySequence)
+		{
+			if (m_pCurAnimator)
+			{
+				// 현재 재생중이던 애니메이션의 트랙포지션으로 갱신
+				auto pAnim = m_pCurAnimator->GetCurrentAnim();
+				if (pAnim)
+				{
+					m_iSequenceFrame = static_cast<_int>(pAnim->GetCurrentTrackPosition());
+				}
+			}
 		}
 	}
 }
@@ -500,6 +604,43 @@ void CAnimTool::Manipulate(Operation op, const _float snapT[3], const _float sna
 	//	}
 	//}
 
+}
+
+HRESULT CAnimTool::Bind_Shader()
+{
+	if (m_pCurModel == nullptr || m_pCurAnimator == nullptr)
+		return S_OK;
+
+	if (m_pAnimShader == nullptr)
+		return E_FAIL;
+	if (FAILED(m_pAnimShader->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
+		return E_FAIL;
+
+	_float4x4 ViewMatrix, ProjViewMatrix;
+	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+	if (FAILED(m_pAnimShader->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pAnimShader->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
+		return E_FAIL;
+
+	_uint		iNumMesh = m_pCurModel->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMesh; i++)
+	{
+		if (FAILED(m_pCurModel->Bind_Material(m_pAnimShader, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+			return E_FAIL;
+
+		m_pCurModel->Bind_Bone_Matrices(m_pAnimShader, "g_BoneMatrices", i);
+
+		if (FAILED(m_pAnimShader->Begin(0)))
+			return E_FAIL;
+
+		if (FAILED(m_pCurModel->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
 }
 
 

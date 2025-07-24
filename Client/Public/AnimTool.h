@@ -38,12 +38,19 @@ private:
 	HRESULT Render_AnimStatesByNode();
 	HRESULT Render_Loaded_Models();
 	HRESULT Render_Load_Model();
+	HRESULT Render_AnimEvents();
 
 	HRESULT Bind_Shader();
 
 	void UpdateCurrentModel(_float fTimeDelta);
-	void SelectAnimation();
 	void CreateModel(const string& fileName,const string& filePath);
+	void Setting_Sequence();
+	void SelectAnimation();
+	void Setting_AnimationProperties();
+
+	void Test_AnimEvents();
+
+	void SaveLoadEvents(_bool isSave = true);
 
 	void Manipulate(
 		Operation op,
@@ -65,20 +72,22 @@ private:
 	unordered_map<string, class CAnimator*> m_LoadedAnimators; // 각각 모델의 애니메이터
 	unordered_map<string, vector<class CAnimation*>> m_LoadedAnimations; // 각각 모델의 애니메이션들
 	string m_stSelectedModelName; // 현재 선택된 모델 이름
+	
 	// 모델 불러오기 툴
 	_bool m_bActiveLoadModel = false;
-
 	// 모델용 월드 매트릭스
 	_float4x4 m_ModelWorldMatrix{};
 	CTransform* m_pTransformComForModel = nullptr; // 모델의 트랜스폼 컴포넌트
 
+
+	// 레벨 렌더와 렌더러와의 렌더 구분용
 	_bool m_bRenerLevel = false;
 
-	_bool m_bUseAnimSequence = false; // 애니메이션 시퀀스 모드 활성화
+
 
 	// 애니메이션 시퀀스용
-
 	CMySequence* m_pMySequence = nullptr;
+	_bool m_bUseAnimSequence = false; // 애니메이션 시퀀스 모드 활성화
 	_bool m_bIsPlaying = false;
 	_bool  m_bUseSequence = false;   // 시퀀서 모드 활성화 플래그
 	_int   m_iSequenceFrame = 0;       // 시퀀서로 제어할 현재 프레임
