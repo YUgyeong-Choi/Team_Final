@@ -108,7 +108,7 @@
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolEffect">
       <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.Camera\00.Camara_Free">
       <UniqueIdentifier>{3e4d9fb2-772a-4885-981e-42db3ac214d9}</UniqueIdentifier>
     </Filter>
@@ -264,7 +264,7 @@
     <ClInclude Include="..\Public\ToolParticle.h">
       <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TestSpirteEffect.h">
+    <ClInclude Include="..\Public\ToolSprite.h">
       <Filter>01.Levels\LevelCY\Tool\ToolEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SpriteEffect.h">
@@ -272,7 +272,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\EffectSequence.h">
       <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\Camera_Free.h">
       <Filter>02.GameObjects\02.Camera\00.Camara_Free</Filter>
     </ClInclude>
@@ -284,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Camera_Manager.h">
       <Filter>02.GameObjects\02.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectBase.h">
+      <Filter>02.GameObjects\07.Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -411,7 +414,7 @@
     <ClCompile Include="..\Private\ToolParticle.cpp">
       <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\TestSpirteEffect.cpp">
+    <ClCompile Include="..\Private\ToolSprite.cpp">
       <Filter>01.Levels\LevelCY\Tool\ToolEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SpriteEffect.cpp">
@@ -419,7 +422,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\EffectSequence.cpp">
       <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\Camera_Free.cpp">
       <Filter>02.GameObjects\02.Camera\00.Camara_Free</Filter>
     </ClCompile>
@@ -431,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Camera_Manager.cpp">
       <Filter>02.GameObjects\02.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EffectBase.cpp">
+      <Filter>02.GameObjects\07.Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

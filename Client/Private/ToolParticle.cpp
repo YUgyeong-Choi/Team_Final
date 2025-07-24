@@ -3,13 +3,13 @@
 #include "GameInstance.h"
 
 CToolParticle::CToolParticle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject { pDevice, pContext }
+	: CEffectBase { pDevice, pContext }
 {
 
 }
 
 CToolParticle::CToolParticle(const CToolParticle& Prototype)
-	: CGameObject ( Prototype )
+	: CEffectBase( Prototype )
 {
 
 }

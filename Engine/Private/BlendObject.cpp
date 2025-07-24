@@ -7,7 +7,7 @@ CBlendObject::CBlendObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CBlendObject::CBlendObject(const CBlendObject& Prototype)
-    : CGameObject{ Prototype }
+    : CGameObject( Prototype )
 {
 }
 
@@ -45,9 +45,6 @@ void CBlendObject::Compute_CameraDepth(_fvector vPosition)
 {
     m_fDepth = XMVectorGetX(XMVector3Length(XMLoadFloat4(m_pGameInstance->Get_CamPosition()) - vPosition));
 }
-
-
-
 
 void CBlendObject::Free()
 {

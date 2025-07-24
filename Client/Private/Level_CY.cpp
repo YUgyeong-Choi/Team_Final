@@ -15,7 +15,7 @@ HRESULT CLevel_CY::Initialize()
 
 	if (FAILED(Ready_ImGuiTools()))
 		return E_FAIL;
-
+	 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
@@ -24,7 +24,9 @@ HRESULT CLevel_CY::Initialize()
 
 void CLevel_CY::Update(_float fTimeDelta)
 {
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Priority_Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);
 
 	__super::Update(fTimeDelta);
 }

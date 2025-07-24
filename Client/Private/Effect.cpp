@@ -9,7 +9,7 @@ CEffect::CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CEffect::CEffect(const CEffect& Prototype)
-	: CBlendObject{ Prototype }
+	: CBlendObject( Prototype )
 {
 
 }

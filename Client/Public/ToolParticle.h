@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "EffectBase.h"
 
 NS_BEGIN(Engine)
 class CShader;
@@ -11,7 +11,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CToolParticle final : public CGameObject
+class CToolParticle final : public CEffectBase
 {
 private:
 	CToolParticle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -30,8 +30,6 @@ public:
 	void Set_Loop(_bool isLoop);
 
 private:
-	CShader*						m_pShaderCom = { nullptr };
-	CTexture*						m_pTextureCom = { nullptr };
 	CVIBuffer_Point_Instance*		m_pVIBufferCom = { nullptr };
 	_uint							m_iPType = { 0 }; // Particle Type
 

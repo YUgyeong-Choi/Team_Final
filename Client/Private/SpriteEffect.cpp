@@ -3,13 +3,13 @@
 #include "GameInstance.h"
 
 CSpriteEffect::CSpriteEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CBlendObject{ pDevice, pContext }
+	: CEffectBase{ pDevice, pContext }
 {
 
 }
 
 CSpriteEffect::CSpriteEffect(const CSpriteEffect& Prototype)
-	: CBlendObject( Prototype )
+	: CEffectBase( Prototype )
 {
 
 }

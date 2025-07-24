@@ -9,6 +9,11 @@
 #include "StaticMesh.h"
 #pragma endregion
 
+#pragma region LEVEL_CY
+
+#pragma endregion
+
+
 
 #include "YGObject.h"
 
@@ -279,6 +284,10 @@ HRESULT CLoader::Loading_For_CY()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+	///* For.Prototype_Component_Texture_Terrain */
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_Terrain"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Frost/DirtySnow_Dif.dds"), 1))))
+	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 

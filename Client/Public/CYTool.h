@@ -29,7 +29,11 @@ public:
 private:
 	HRESULT Render_EffectTool();
 	HRESULT Make_Particles();
-	HRESULT Test_Sequence();
+	HRESULT SequenceWindow();
+	HRESULT Edit_Preferences();
+	HRESULT Window_Sprite();
+	HRESULT Window_Particle();
+	HRESULT Window_Mesh();
 
 	HRESULT Save_Particles();
 	HRESULT Load_Particles();
@@ -39,8 +43,19 @@ private:
 private:
 	CShader*				m_pShader = { nullptr };
 
-	_bool					m_isParticlePreview = { false };
+private:
+#pragma region Sprite
+	// 스프라이트 이펙트 용 변수들
+	_int	m_iGridWidthCnt = { 1 };
+	_int	m_iGridHeightCnt = { 1 };
+	_bool	m_bAnimateSprite = { false };
 
+#pragma endregion
+
+
+#pragma region Particle
+	// 파티클 용 변수들
+	_bool					m_isParticlePreview = { false };
 	enum PARTICLE_TYPE { PTYPE_SPREAD, PTYPE_DROP, PTYPE_SPDROP, PTYPE_DROPGRAV, PTYPE_END };
 	PARTICLE_TYPE			m_eParticleType = PTYPE_END;
 
@@ -52,11 +67,30 @@ private:
 	_float3					m_vRange = { 10.f, 10.f, 30.f };
 	_float2					m_vSize = { 1.f, 2.f };
 	_float3					m_vCenter = { 0.f, 0.f, 0.f };
-	class CToolParticle* m_pToolParticle = { nullptr };
+	class CToolParticle*	m_pToolParticle = { nullptr };
 
-	/******************************/
+#pragma endregion
+
+#pragma region ImSequence
+	// 시퀀스 용 변수들
+	enum EFFECT_TYPE { EFF_SPRITE, EFF_PARTICLE, EFF_MESH, EFF_END };
 
 	class CEffectSequence* m_pSequence = { nullptr };
+
+	_int		m_iCurFrame = {};
+	_bool		m_bExpanded = { true };
+	_int		m_iSelected = { -1 };
+	_int		m_iFirstFrame = { 0 };
+	_uint		m_iSeqItemColor = { D3DCOLOR_ARGB(255, 200, 60, 40) };
+	EFFECT_TYPE	m_eEffectType = EFF_SPRITE;
+	string		m_strSeqItemName = "Sprite";
+
+	_bool		m_bPlaySequence = { false };
+
+	_float		m_fTimeAcc = {};
+
+#pragma endregion
+
 
 public:
 	static CCYTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
