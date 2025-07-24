@@ -56,9 +56,10 @@ HRESULT CPhysX_Manager::Initialize()
 		return E_FAIL;
 
 	// 5. 기본 머티리얼
-	m_pDefaultMaterial = m_pPhysics->createMaterial(0.6f, 0.6f, 0.05f); //정적 마찰, 동적 마찰, 탄성 계수
-	if (!m_pDefaultMaterial)
+	PxMaterial* pMaterial = m_pPhysics->createMaterial(0.6f, 0.6f, 0.05f); //정적 마찰, 동적 마찰, 탄성 계수
+	if (!pMaterial)
 		return E_FAIL;
+	m_Materials.emplace(make_pair(L"Default", pMaterial));
 
 	return S_OK;
 }
@@ -71,11 +72,12 @@ void CPhysX_Manager::Shutdown()
 		m_pScene = nullptr;
 	}
 
-	if (m_pDefaultMaterial)
-	{
-		m_pDefaultMaterial->release();
-		m_pDefaultMaterial = nullptr;
+	for (auto& material : m_Materials) {
+		material.second->release();
+		material.second = nullptr;
 	}
+
+
 
 	if (m_pDispatcher)
 	{
@@ -94,6 +96,11 @@ void CPhysX_Manager::Shutdown()
 		m_pFoundation->release();
 		m_pFoundation = nullptr;
 	}
+}
+
+PxMaterial* CPhysX_Manager::GetMaterial(const wstring& name)
+{
+	return nullptr;
 }
 
 void CPhysX_Manager::Simulate(float fDeltaTime)
@@ -180,6 +187,41 @@ PxBoxGeometry CPhysX_Manager::CookBoxGeometry(const PxVec3* pVertices, PxU32 ver
 	PxVec3 extents = (vMax - vMin) * 0.5f * fScale;
 	PxBoxGeometry boxGeom(extents);
 	return boxGeom;
+}
+
+PxCapsuleGeometry CPhysX_Manager::CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale)
+{
+	if (pVertices == nullptr || vertexCount == 0)
+		return PxCapsuleGeometry();
+
+	// 1. AABB 계산
+	PxVec3 vMin = pVertices[0];
+	PxVec3 vMax = pVertices[0];
+
+	for (PxU32 i = 1; i < vertexCount; ++i)
+	{
+		vMin = vMin.minimum(pVertices[i]);
+		vMax = vMax.maximum(pVertices[i]);
+	}
+
+	// 2. 캡슐 축 방향은 Y축 기준 (수직 캡슐)
+	_float height = (vMax.y - vMin.y) * geomScale;
+
+	// 3. 반지름 계산 (X/Z방향 평균)
+	_float radiusX = (vMax.x - vMin.x) * 0.5f * geomScale;
+	_float radiusZ = (vMax.z - vMin.z) * 0.5f * geomScale;
+	_float radius = max(radiusX, radiusZ); // 또는 평균도 가능
+
+	// 4. 캡슐의 height는 양 끝 구체를 제외한 실린더 부분의 길이
+	// 따라서 실제 물리 height = 전체 길이 - 2 * radius
+	_float capsuleHeight = max(0.f, height - 2.f * radius);
+
+	return PxCapsuleGeometry(radius, capsuleHeight);
+}
+
+PxCapsuleGeometry CPhysX_Manager::CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight)
+{
+	return PxCapsuleGeometry(fRadius, fCapsuleHeight);
 }
 
 //CPhysXStaticActor* CPhysX_Manager::Create_Terrain(const PxVec3* pVertices, PxU32 vertexCount, const PxU32* pIndices, PxU32 triangleCount)

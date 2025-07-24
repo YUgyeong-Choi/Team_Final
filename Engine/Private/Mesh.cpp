@@ -99,7 +99,7 @@ HRESULT CMesh::Initialize_Prototype(MODEL eType, ifstream& ifs, const vector<cla
 	if (FAILED(m_pDevice->CreateBuffer(&IBBufferDesc, &IBInitialData, &m_pIB)))
 		return E_FAIL;
 
-	//Safe_Delete_Array(m_pIndices);
+	Safe_Delete_Array(m_pIndices);
 
 
 

@@ -38,6 +38,7 @@ private:
 	CPhysXStaticActor*  m_pPhysXActorCom = { nullptr };
 private:
 	HRESULT Ready_Components();
+	HRESULT Ready_Collider();
 public:
 	static CYGObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -49,7 +49,7 @@ public:
 	void Set_Model(class CModel* pModel) { m_pModel = pModel; }
 	void SetBlendDuration(_float duration) { m_Blend.duration = duration; }
 
-    const char* GetCurrentAnimName() const;
+    const string& GetCurrentAnimName() const;
 	class CAnimation* GetCurrentAnim() const { return m_pCurrentAnim; }
     class CAnimController* GetAnimController() const { return m_pAnimController; }
 

@@ -23,6 +23,11 @@ public:
 		return m_iCurrentAnimIndex;
 	}
 
+	_uint Get_Mesh_NumVertices(_int iMeshIndex);
+	_uint Get_Mesh_NumIndices(_int iMeshIndex);
+	const _float3* Get_Mesh_pVertices(_int iMeshIndex);
+	const _uint* Get_Mesh_pIndices(_int iMeshIndex);
+
 	void Set_Animation(_uint iIndex, _bool isLoop = true);
 	void Set_Animation_TickPerSecond(_uint iIndex, _float fTickPerSecond);
 	void Set_Animation_TickPerSecond_All(_float fTickPerSecond);

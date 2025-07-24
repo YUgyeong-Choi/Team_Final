@@ -107,6 +107,39 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 	return S_OK;
 }
 
+
+_uint CModel::Get_Mesh_NumVertices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return 0;
+
+	return m_Meshes[iMeshIndex]->Get_NumVertices();
+}
+
+_uint CModel::Get_Mesh_NumIndices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return 0;
+
+	return m_Meshes[iMeshIndex]->Get_NumIndices();
+}
+
+const _float3* CModel::Get_Mesh_pVertices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return nullptr;
+
+	return m_Meshes[iMeshIndex]->Get_Vertices();
+}
+
+const _uint* CModel::Get_Mesh_pIndices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return nullptr;
+
+	return m_Meshes[iMeshIndex]->Get_Indices();
+}
+
 void CModel::Set_Animation(_uint iIndex, _bool isLoop)
 {
 	if (iIndex >= m_Animations.size())
@@ -186,7 +219,7 @@ HRESULT CModel::Read_BinaryFBX(const string& filepath)
 {
 	ifstream ifs(filepath, ios::binary);
 	if (!ifs.is_open()) {
-		MSG_BOX("너는 파일 열기도 못하는구나");
+		MSG_BOX("파일 열기 실패.");
 		return E_FAIL;
 	}
 
@@ -264,19 +297,22 @@ HRESULT CModel::Ready_Animations(ifstream& ifs)
 {
 	ifs.read(reinterpret_cast<_char*>(&m_iNumAnimations), sizeof(_uint));  // 애니메이션 몇개읨 
 
-	_uint iRootBoneIdx = Find_BoneIndex("Root_$AssimpFbx$_Translation");
-	if (iRootBoneIdx == m_Bones.size())
-	{
-		iRootBoneIdx = Find_BoneIndex("Root");
-	}
+	//_uint iRootBoneIdx = Find_BoneIndex("Root_$AssimpFbx$_Translation");
+	//if (iRootBoneIdx == m_Bones.size())
+	//{
+	//	iRootBoneIdx = Find_BoneIndex("Root");
+	//}
 
 	for (size_t i = 0; i < m_iNumAnimations; i++)
 	{
-		CAnimation* pAnimation = CAnimation::CreateByBinary(ifs, m_Bones);
+		CAnimation* pAnimation = CAnimation::CreateByBinary(ifs, this->m_Bones);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
 		m_Animations.push_back(pAnimation);
+		m_AnimationMap[pAnimation->Get_Name()] =
+			static_cast<uint32_t>(m_Animations.size() - 1);
+		m_AnimationNameMap[static_cast<uint32_t>(m_Animations.size() - 1)] = pAnimation->Get_Name();
 	}
 
 

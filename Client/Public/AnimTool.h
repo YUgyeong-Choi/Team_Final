@@ -42,6 +42,7 @@ private:
 
 	void UpdateCurrentModel(_float fTimeDelta);
 	void SelectAnimation();
+	void CreateModel(const string& fileName,const string& filePath);
 
 	void Manipulate(
 		Operation op,
