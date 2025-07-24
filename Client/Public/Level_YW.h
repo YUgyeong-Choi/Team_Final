@@ -38,7 +38,7 @@ private:
 
 private:
 	HRESULT Ready_Layer_Camera_Free(const _wstring strLayerTag);
-	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
+	HRESULT Ready_Layer_MapToolObject(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 private:
 	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)] = {};

@@ -24,6 +24,19 @@ public:
 
 private:
 	HRESULT Render_MapTool();
+
+private:
+	void Hierarchy();
+	void Asset();
+
+private:
+	HRESULT Spawn_MapToolObject();
+	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
+
+private:
+	vector<string>	m_ModelNames = {};
+	_int			m_iSelectedModelIndex = { -1 };
+
 public:
 	static CMapTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

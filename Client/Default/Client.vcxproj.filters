@@ -88,12 +88,6 @@
     <Filter Include="01.Levels\LevelCY\Tool\ToolParticle">
       <UniqueIdentifier>{8965fe92-8566-43de-91a1-1c9d4df84dfc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelYW\Map_Tool">
-      <UniqueIdentifier>{d8e56a61-088b-4c0b-a489-2cc6726e9093}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYW\Map_Tool\StaticMesh">
-      <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelYG">
       <UniqueIdentifier>{85c5eeba-3847-41ce-afd0-b98471da8b71}</UniqueIdentifier>
     </Filter>
@@ -120,6 +114,12 @@
     </Filter>
     <Filter Include="01.Levels\LevelGL\UISequence">
       <UniqueIdentifier>{84d85fce-26e2-426d-b3c6-d47585fc318c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\MapTool">
+      <UniqueIdentifier>{d8e56a61-088b-4c0b-a489-2cc6726e9093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\MapTool\MapToolObject">
+      <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -241,10 +241,10 @@
       <Filter>02.GameObjects\99.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapTool.h">
-      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
+      <Filter>01.Levels\LevelYW\MapTool</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapToolObject.h">
-      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
+      <Filter>01.Levels\LevelYW\MapTool\MapToolObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AnimTool.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
@@ -397,10 +397,10 @@
       <Filter>02.GameObjects\99.UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapTool.cpp">
-      <Filter>01.Levels\LevelYW\Map_Tool</Filter>
+      <Filter>01.Levels\LevelYW\MapTool</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapToolObject.cpp">
-      <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
+      <Filter>01.Levels\LevelYW\MapTool\MapToolObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AnimTool.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
