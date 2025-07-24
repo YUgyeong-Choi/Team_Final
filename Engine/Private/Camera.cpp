@@ -88,7 +88,7 @@ HRESULT CCamera::Update_Camera()
 
 	return S_OK;
 }
-_fvector& CCamera::GetPosition()
+_fvector CCamera::GetPosition()
 {
 	return m_pTransformCom->Get_State(STATE::POSITION);
 }
