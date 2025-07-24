@@ -42,7 +42,7 @@ private:
 
 private:
 	void UpdateHierarchy();
-
+	CGameObject* Get_Selected_GameObject();
 private:
 	vector<string>	m_ModelNames = {};
 	_int			m_iSelectedModelIndex = { -1 };
@@ -51,6 +51,9 @@ private:
 	map<string, vector<CGameObject*>> m_ModelGroups;
 	vector<string> m_HierarchyNames;
 	_int m_iSelectedHierarchyIndex = { -1 };
+
+private:
+	_uint m_iID = { 0 };
 
 public:
 	static CMapTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

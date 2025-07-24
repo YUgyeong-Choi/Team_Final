@@ -22,6 +22,7 @@ public:
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
 		);
+		_uint		iID = { 0 };
 
 	}MAPTOOLOBJ_DESC;
 
@@ -43,8 +44,15 @@ public:
 		return &m_ModelPrototypeTag;
 	}
 
+	_uint Get_ID() const {
+		return m_iID;
+	}
+
 private:
 	wstring m_ModelPrototypeTag = {};
+	
+	//맵 오브젝트들 간 고유 식별 번호
+	_uint	m_iID = { 0 };
 
 private:
 	CShader* m_pShaderCom = { nullptr };

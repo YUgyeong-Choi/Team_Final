@@ -54,7 +54,7 @@ public:
 	vector<wstring> Find_LayerNamesContaining(_uint iLevelIndex, const wstring& SubString);
 
 	//해당 레벨에 있는 레이어를 챙겨온다.
-	//const map<const _wstring, class CLayer*>& Get_Layers(_uint iLevelIndex) const;
+	const map<const _wstring, class CLayer*>& Get_Layers(_uint iLevelIndex) const;
 #pragma endregion
 
 #pragma region RENDERER
