@@ -13,12 +13,12 @@ CPhysXKinematicActor::CPhysXKinematicActor(const CPhysXKinematicActor& Prototype
 
 HRESULT CPhysXKinematicActor::Initialize_Prototype()
 {
+    ReadyForDebugDraw(m_pDevice, m_pContext);
     return S_OK;
 }
 
 HRESULT CPhysXKinematicActor::Initialize(void* pArg)
 {
-    ReadyForDebugDraw(m_pDevice, m_pContext);
     return S_OK;
 }
 
@@ -48,7 +48,6 @@ HRESULT CPhysXKinematicActor::Create_Collision(PxPhysics* physics, const PxGeome
 
     m_pActor = pDynamic;
     m_pActor->userData = this;
-
     return S_OK;
 }
 

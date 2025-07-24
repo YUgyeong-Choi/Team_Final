@@ -33,6 +33,7 @@ HRESULT CLevel_YG::Initialize()
 void CLevel_YG::Update(_float fTimeDelta)
 {
 	m_pCamera_Manager->Update(fTimeDelta);
+
 	__super::Update(fTimeDelta);
 }
 

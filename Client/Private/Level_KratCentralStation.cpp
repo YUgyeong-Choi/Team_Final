@@ -21,10 +21,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
-	if(m_pGameInstance->Key_Down(DIK_F10)) {
-		m_pGameInstance->Set_RenderCollider();
-	}
-
 	__super::Update(fTimeDelta);
 }
 

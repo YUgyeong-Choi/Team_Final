@@ -16,15 +16,22 @@ public:
     virtual PxRigidActor* Get_Actor() const { return m_pActor; }
     PxShape* Get_Shape() { return m_pShape; }
     CGameObject* Get_Owner() { return m_pOwner; }
+
 public:
     virtual void On_Enter(CPhysXActor* pOther);
     virtual void On_Stay(CPhysXActor* pOther);
     virtual void On_Exit(CPhysXActor* pOther);
     virtual void On_Trigger(CPhysXActor* pOther);
-
-	// For Debug Render
-    void DebugRender(const _matrix& view,const _matrix& proj, _float offSet = 0.f);
+    virtual HRESULT Render() override;
+#ifdef _DEBUG
+    // For Debug Render
+    virtual void Add_RenderRay(DEBUGRAY_DATA _data);
+    void DebugRender(const _matrix& view, const _matrix& proj, _float offSet = 0.f);
     void DrawRay(const _matrix& view, const _matrix& proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox = false, PxVec3 hitPos = { 0.f, 0.f, 0.f });
+
+protected:
+    list<DEBUGRAY_DATA> m_RenderRay;
+#endif
 protected:
     PxRigidActor* m_pActor = { nullptr };
     PxShape* m_pShape = { nullptr };

@@ -12,12 +12,13 @@ CPhysXDynamicActor::CPhysXDynamicActor(const CPhysXDynamicActor& Prototype)
 
 HRESULT CPhysXDynamicActor::Initialize_Prototype()
 {
+	ReadyForDebugDraw(m_pDevice, m_pContext);
 	return S_OK;
 }
 
 HRESULT CPhysXDynamicActor::Initialize(void* pArg)
 {
-	ReadyForDebugDraw(m_pDevice, m_pContext);
+
 	return S_OK;
 }
 

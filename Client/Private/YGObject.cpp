@@ -41,6 +41,15 @@ HRESULT CYGObject::Initialize(void* pArg)
 
 void CYGObject::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead) {
+		PxScene* pScene = m_pGameInstance->Get_Scene();
+		if (pScene)
+			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
+
+		Safe_Release(m_pPhysXActorCom);
+		m_pPhysXActorCom = nullptr;
+	}
+
 	if (m_pGameInstance->Key_Pressing(DIK_A))
 	{
 		m_pTransformCom->Go_Left(fTimeDelta);
@@ -68,10 +77,28 @@ void CYGObject::Priority_Update(_float fTimeDelta)
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f),  -fTimeDelta * 0.1f);
 	}
+
 }
 
 void CYGObject::Update(_float fTimeDelta)
 {
+	// 1. 월드 행렬 가져오기
+	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	// 2. 위치 추출
+	_float4 vPos;
+	XMStoreFloat4(&vPos, worldMatrix.r[3]);
+
+	PxVec3 pos(vPos.x, vPos.y, vPos.z);
+	pos.y += 0.5f;
+
+	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
+	XMFLOAT4 fQuat;
+	XMStoreFloat4(&fQuat, boneQuat);
+	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
+
+	// 4. PhysX Transform 적용
+	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
 }
 
 void CYGObject::Late_Update(_float fTimeDelta)
@@ -105,8 +132,18 @@ HRESULT CYGObject::Render()
 			continue;
 	}
 
-	//if (g_bRenderDebug)
-	//	m_pPhysXActor->DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
+		_data.vDirection = PxVec3(0.f, 1.f, 0.f);
+		_data.fRayLength = 10.f;
+		m_pPhysXActorCom->Add_RenderRay(_data);
+	}
+#endif
+
 
 	return S_OK;
 }
@@ -153,6 +190,10 @@ HRESULT CYGObject::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Finoa"),TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Kinematic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -195,7 +236,9 @@ HRESULT CYGObject::Ready_Collider()
 		PxMeshScale meshScale(scaleVec);
 
 		PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(physxVertices.data(), numVertices, 1.f);
-		PxMaterial* m_pDefaultMaterial;
+		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(),geom, pose, m_pGameInstance->GetMaterial(L"Default"),WorldFilter::ANIMAL);
+
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else
 	{

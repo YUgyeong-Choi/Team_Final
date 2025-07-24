@@ -202,4 +202,11 @@ namespace Engine
 	}FBX_MODELDATA;
 
 #pragma endregion
+
+	typedef struct tagDebugRay
+	{
+		PxVec3 vStartPos = {};
+		PxVec3 vDirection = {};
+		_float fRayLength = {};
+	}DEBUGRAY_DATA;
 }

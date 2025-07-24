@@ -12,12 +12,12 @@ CPhysXStaticActor::CPhysXStaticActor(const CPhysXStaticActor& Prototype)
 
 HRESULT CPhysXStaticActor::Initialize_Prototype()
 {
+    ReadyForDebugDraw(m_pDevice, m_pContext);
     return S_OK;
 }
 
 HRESULT CPhysXStaticActor::Initialize(void* pArg)
 {
-    ReadyForDebugDraw(m_pDevice, m_pContext);
     return S_OK;
 }
   

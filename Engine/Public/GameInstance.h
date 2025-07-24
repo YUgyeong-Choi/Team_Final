@@ -28,8 +28,6 @@ public:
 	_float Compute_Random_Normal();
 	_float Compute_Random(_float fMin, _float fMax);
 
-	void Set_RenderCollider() { m_bRenderCollider = !m_bRenderCollider; }
-	_bool Get_RenderCollider() { return m_bRenderCollider; }
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
@@ -54,9 +52,8 @@ public:
 
 #pragma region RENDERER
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
-	void Set_RenderDebug();
 #ifdef _DEBUG
-public:
+	_bool Get_RenderCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
 #endif
 #pragma endregion
@@ -139,6 +136,8 @@ public:
 	PxCapsuleGeometry CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
 	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
 	PxScene* Get_Scene();
+	PxPhysics* GetPhysics();
+	PxMaterial* GetMaterial(const wstring& name);
 #pragma endregion
 
 private:
@@ -158,7 +157,6 @@ private:
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 
-	_bool m_bRenderCollider = false;
 public:
 	void Release_Engine();
 	virtual void Free() override;

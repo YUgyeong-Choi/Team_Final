@@ -100,7 +100,14 @@ void CPhysX_Manager::Shutdown()
 
 PxMaterial* CPhysX_Manager::GetMaterial(const wstring& name)
 {
-	return nullptr;
+	auto iter = m_Materials.find(name);
+	if (iter != m_Materials.end()) {
+		return iter->second;
+	}
+	else {
+		return nullptr;
+	}
+
 }
 
 void CPhysX_Manager::Simulate(float fDeltaTime)
