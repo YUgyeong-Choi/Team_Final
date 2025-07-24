@@ -5,6 +5,8 @@
 #include "Client_Defines.h"
 #undef USE_IMGUI
 
+#define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
+
 NS_BEGIN(Client)
 
 class CMapTool final : public CGameObject
@@ -21,6 +23,11 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+
+private:
+	HRESULT Ready_Model();
+	HRESULT Save_Map();
+	HRESULT Load_Map();
 
 private:
 	HRESULT Render_MapTool();

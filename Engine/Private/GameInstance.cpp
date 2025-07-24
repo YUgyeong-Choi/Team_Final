@@ -224,6 +224,11 @@ const map<const _wstring, class CBase*>* CGameInstance::Get_Prototypes()
 {
 	return m_pPrototype_Manager->Get_Prototypes();
 }
+
+class CBase* CGameInstance::Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag)
+{
+	return m_pPrototype_Manager->Find_Prototype(iLevelIndex, strPrototypeTag);
+}
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
@@ -269,6 +274,11 @@ list<class CGameObject*>& CGameInstance::Get_ObjectList(_uint iLevelIndex, const
 		return _nullList;
 
 	return m_pObject_Manager->Get_ObjectList(iLevelIndex, strLayerTag);
+}
+
+vector<wstring> CGameInstance::Find_LayerNamesContaining(_uint iLevelIndex, const wstring& SubString)
+{
+	return m_pObject_Manager->Find_LayerNamesContaining(iLevelIndex, SubString);
 }
 
 #pragma endregion
