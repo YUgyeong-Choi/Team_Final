@@ -27,7 +27,7 @@ HRESULT CSpriteEffect::Initialize(void* pArg)
 	DESC* pDesc = static_cast<DESC*>(pArg);
 
 	m_bAnimation = pDesc->bAnimation;
-	m_fMaxFrame = pDesc->iFrame;
+	m_fMaxFrame = static_cast<_float>(pDesc->iFrame);
 
 
 	if (FAILED(__super::Initialize(pArg)))
