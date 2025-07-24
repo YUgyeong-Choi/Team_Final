@@ -41,8 +41,16 @@ private:
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
 private:
+	void UpdateHierarchy();
+
+private:
 	vector<string>	m_ModelNames = {};
 	_int			m_iSelectedModelIndex = { -1 };
+
+private:
+	map<string, vector<CGameObject*>> m_ModelGroups;
+	vector<string> m_HierarchyNames;
+	_int m_iSelectedHierarchyIndex = { -1 };
 
 public:
 	static CMapTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

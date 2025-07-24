@@ -281,6 +281,11 @@ vector<wstring> CGameInstance::Find_LayerNamesContaining(_uint iLevelIndex, cons
 	return m_pObject_Manager->Find_LayerNamesContaining(iLevelIndex, SubString);
 }
 
+//const map<const _wstring, class CLayer*>& CGameInstance::Get_Layers(_uint iLevelIndex) const
+//{
+//	//return m_pObject_Manager->Get_Layers(iLevelIndex);
+//}
+
 #pragma endregion
 
 #pragma region RENDERER
