@@ -21,5 +21,10 @@ namespace Engine
 		FILTER_MONSTERWEAPOM = 1 << 2
 	};
 
+	enum class COLLIDERTYPE 
+	{
+
+	};
+
 	enum class ParamType { Bool, Trigger, Float, Int };
 }

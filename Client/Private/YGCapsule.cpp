@@ -1,23 +1,24 @@
-#include "YGMonster.h"
+#include "YGCapsule.h"
 
 #include "GameInstance.h"
+#include "PhysX_IgnoreSelfCallback.h"
 
-CYGMonster::CYGMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CYGCapsule::CYGCapsule(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
 {
 }
 
-CYGMonster::CYGMonster(const CYGMonster& Prototype)
+CYGCapsule::CYGCapsule(const CYGCapsule& Prototype)
     : CGameObject(Prototype)
 {
 }
 
-HRESULT CYGMonster::Initialize_Prototype()
+HRESULT CYGCapsule::Initialize_Prototype()
 {
     return S_OK;
 }
 
-HRESULT CYGMonster::Initialize(void* pArg)
+HRESULT CYGCapsule::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC _desc{};
 	lstrcpy(_desc.szName, TEXT("YGMonster"));
@@ -40,10 +41,14 @@ HRESULT CYGMonster::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
+#ifdef _DEBUG
+	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
+#endif
+
 	return S_OK;
 }
 
-void CYGMonster::Priority_Update(_float fTimeDelta)
+void CYGCapsule::Priority_Update(_float fTimeDelta)
 {
 	if (m_bDead) {
 		PxScene* pScene = m_pGameInstance->Get_Scene();
@@ -56,12 +61,13 @@ void CYGMonster::Priority_Update(_float fTimeDelta)
 
 }
 
-void CYGMonster::Update(_float fTimeDelta)
+void CYGCapsule::Update(_float fTimeDelta)
 {
 	Update_ColliderPos();
+	Ray();
 }
 
-void CYGMonster::Late_Update(_float fTimeDelta)
+void CYGCapsule::Late_Update(_float fTimeDelta)
 {
 	//if (m_pGameInstance->Is_In_Frustum(m_pPhysXActor)) {
 	//	
@@ -71,7 +77,7 @@ void CYGMonster::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
-HRESULT CYGMonster::Render()
+HRESULT CYGCapsule::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -95,14 +101,6 @@ HRESULT CYGMonster::Render()
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
-
-		DEBUGRAY_DATA _data{};
-		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
-		_data.vDirection = PxVec3(0.f, 1.f, 0.f);
-		_data.fRayLength = 10.f;
-		_data.bIsHit = true;
-		_data.vHitPos = _data.vStartPos + _data.vDirection.getNormalized() * _data.fRayLength;
-		m_pPhysXActorCom->Add_RenderRay(_data);
 	}
 #endif
 
@@ -113,7 +111,7 @@ HRESULT CYGMonster::Render()
 
 
 
-HRESULT CYGMonster::Bind_ShaderResources()
+HRESULT CYGCapsule::Bind_ShaderResources()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_pTransformCom->Get_World4x4())))
 		return E_FAIL;
@@ -125,24 +123,32 @@ HRESULT CYGMonster::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGMonster::On_CollisionEnter(CGameObject* pOther)
+void CYGCapsule::On_CollisionEnter(CGameObject* pOther)
 {
-	printf("몬스터 충돌!\n");
+	printf("몬스터 충돌 시작!\n");
+#ifdef _DEBUG
+	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
+#endif
 }
 
-void CYGMonster::On_CollisionStay(CGameObject* pOther)
-{
-}
-
-void CYGMonster::On_CollisionExit(CGameObject* pOther)
-{
-}
-
-void CYGMonster::On_Hit(_int iDamage, _float3 HitPos)
+void CYGCapsule::On_CollisionStay(CGameObject* pOther)
 {
 }
 
-HRESULT CYGMonster::Ready_Components()
+void CYGCapsule::On_CollisionExit(CGameObject* pOther)
+{
+	printf("몬스터 충돌 종료!\n");
+#ifdef _DEBUG
+	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
+#endif
+}
+
+void CYGCapsule::On_Hit(CGameObject* pOther)
+{
+	wprintf(L"YGMonster Hit: %s\n", pOther->Get_Name().c_str());
+}
+
+HRESULT CYGCapsule::Ready_Components()
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
@@ -160,7 +166,7 @@ HRESULT CYGMonster::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CYGMonster::Ready_Collider()
+HRESULT CYGCapsule::Ready_Collider()
 {
 	if (m_pModelCom)
 	{
@@ -197,6 +203,7 @@ HRESULT CYGMonster::Ready_Collider()
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
 		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
@@ -209,7 +216,7 @@ HRESULT CYGMonster::Ready_Collider()
 	return S_OK;
 }
 
-void CYGMonster::Update_ColliderPos()
+void CYGCapsule::Update_ColliderPos()
 {	// 1. 월드 행렬 가져오기
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
 
@@ -229,33 +236,96 @@ void CYGMonster::Update_ColliderPos()
 	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
 }
 
-CYGMonster* CYGMonster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void CYGCapsule::Ray()
 {
-	CYGMonster* pInstance = new CYGMonster(pDevice, pContext);
+	PxVec3 origin = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
+	XMFLOAT3 fLook;
+	XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
+	direction.normalize();
+	_float fRayLength = 10.f;
+
+	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+	PxRaycastBuffer hit;
+	PxQueryFilterData filterData;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+	CIgnoreSelfCallback callback(m_pPhysXActorCom->Get_Actor());
+
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+	{
+		if (hit.hasBlock)
+		{
+			PxRigidActor* hitActor = hit.block.actor;
+
+			//  자기 자신이면 무시
+			if (hitActor == m_pPhysXActorCom->Get_Actor())
+			{
+				printf(" Ray hit myself  skipping\n");
+				return;
+			}
+
+			PxVec3 hitPos = hit.block.position;
+			PxVec3 hitNormal = hit.block.normal;
+
+			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+			pHitActor->Get_Owner()->On_Hit(this);
+
+			printf("Ray충돌 했다!\n");
+			printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
+			printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
+			m_bRayHit = true;
+			m_vHitPos = hitPos;
+			// 저기 hit.block.여기에 뭐 faceIndex, U, V 다양하게 있으니 궁금하면 보세여.. 
+		}
+	}
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
+		XMFLOAT3 fLook;
+		XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
+		_data.fRayLength = 10.f;
+		_data.bIsHit = m_bRayHit;
+		_data.vHitPos = m_vHitPos;
+		m_pPhysXActorCom->Add_RenderRay(_data);
+
+		m_bRayHit = false;
+		m_vHitPos = {};
+	}
+#endif
+
+}
+
+CYGCapsule* CYGCapsule::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CYGCapsule* pInstance = new CYGCapsule(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CYGMonster");
+		MSG_BOX("Failed to Created : CYGCapsule");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CYGMonster::Clone(void* pArg)
+CGameObject* CYGCapsule::Clone(void* pArg)
 {
-	CYGMonster* pInstance = new CYGMonster(*this);
+	CYGCapsule* pInstance = new CYGCapsule(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CYGMonster");
+		MSG_BOX("Failed to Cloned : CYGCapsule");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CYGMonster::Free()
+void CYGCapsule::Free()
 {
 	__super::Free();
 

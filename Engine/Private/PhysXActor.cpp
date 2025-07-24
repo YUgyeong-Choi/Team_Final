@@ -37,7 +37,6 @@ void CPhysXActor::Set_QueryFilterData(PxFilterData _data)
     m_pShape->setQueryFilterData(_data);
 }
 
-
 void CPhysXActor::On_Enter(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
@@ -109,7 +108,7 @@ void CPhysXActor::Add_RenderRay(DEBUGRAY_DATA _data)
     m_RenderRay.push_back(_data);
 }
 
-void CPhysXActor::DebugRender(const _matrix& view,const _matrix& proj, _float offSet)
+void CPhysXActor::DebugRender(_fmatrix view, _cmatrix proj, _float offSet)
 {  
     PxTransform pose = PxShapeExt::getGlobalPose(*m_pShape, *m_pActor); 
     PxGeometryHolder geom = m_pShape->getGeometry();
@@ -134,7 +133,7 @@ void CPhysXActor::DebugRender(const _matrix& view,const _matrix& proj, _float of
         obb.Extents = { geom.box().halfExtents.x, geom.box().halfExtents.y, geom.box().halfExtents.z };
         obb.Orientation = { pose.q.x, pose.q.y, pose.q.z, pose.q.w };
 
-        DX::Draw(m_pBatch, obb, Colors::Yellow);
+        DX::Draw(m_pBatch, obb, m_vRenderColor);
         break;
     }
 
@@ -144,7 +143,7 @@ void CPhysXActor::DebugRender(const _matrix& view,const _matrix& proj, _float of
         sphere.Center = { pose.p.x, pose.p.y, pose.p.z };
         sphere.Radius = geom.sphere().radius;
 
-        DX::Draw(m_pBatch, sphere, Colors::Cyan);
+        DX::Draw(m_pBatch, sphere, m_vRenderColor);
         break;
     }
 
@@ -152,7 +151,7 @@ void CPhysXActor::DebugRender(const _matrix& view,const _matrix& proj, _float of
     {
         const PxCapsuleGeometry& capsule = geom.capsule();
         pose.p.y += offSet;
-        DrawDebugCapsule(m_pBatch, pose, capsule.radius, capsule.halfHeight, Colors::Green);
+        DrawDebugCapsule(m_pBatch, pose, capsule.radius, capsule.halfHeight, m_vRenderColor);
         break;
     }
     case PxGeometryType::eTRIANGLEMESH:
@@ -353,9 +352,9 @@ void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom)
         XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3((XMFLOAT3*)&verts[i2]), matPose);
 
         // 삼각형 테두리 선으로 렌더
-        m_pBatch->DrawLine(VertexPositionColor(v0, Colors::Red), VertexPositionColor(v1, Colors::Red));
-        m_pBatch->DrawLine(VertexPositionColor(v1, Colors::Red), VertexPositionColor(v2, Colors::Red));
-        m_pBatch->DrawLine(VertexPositionColor(v2, Colors::Red), VertexPositionColor(v0, Colors::Red));
+        m_pBatch->DrawLine(VertexPositionColor(v0, m_vRenderColor), VertexPositionColor(v1, m_vRenderColor));
+        m_pBatch->DrawLine(VertexPositionColor(v1, m_vRenderColor), VertexPositionColor(v2, m_vRenderColor));
+        m_pBatch->DrawLine(VertexPositionColor(v2, m_vRenderColor), VertexPositionColor(v0, m_vRenderColor));
     }
 
 
@@ -372,7 +371,7 @@ void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom)
         (bounds.maximum.y - bounds.minimum.y) * 0.5f,
         (bounds.maximum.z - bounds.minimum.z) * 0.5f
     );
-    DX::Draw(m_pBatch, aabb, Colors::Yellow); // AABB는 노란색으로
+    DX::Draw(m_pBatch, aabb, Colors::Yellow);
 
 }
 
@@ -419,14 +418,14 @@ void CPhysXActor::DrawConvexMesh(PxTransform pose, PxGeometryHolder geom)
             XMVECTOR v1 = XMVector3TransformCoord(XMLoadFloat3((XMFLOAT3*)&verts[i1]), matPose);
             XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3((XMFLOAT3*)&verts[i2]), matPose);
 
-            m_pBatch->DrawLine(VertexPositionColor(v0, Colors::Orange), VertexPositionColor(v1, Colors::Orange));
-            m_pBatch->DrawLine(VertexPositionColor(v1, Colors::Orange), VertexPositionColor(v2, Colors::Orange));
-            m_pBatch->DrawLine(VertexPositionColor(v2, Colors::Orange), VertexPositionColor(v0, Colors::Orange));
+            m_pBatch->DrawLine(VertexPositionColor(v0, m_vRenderColor), VertexPositionColor(v1, m_vRenderColor));
+            m_pBatch->DrawLine(VertexPositionColor(v1, m_vRenderColor), VertexPositionColor(v2, m_vRenderColor));
+            m_pBatch->DrawLine(VertexPositionColor(v2, m_vRenderColor), VertexPositionColor(v0, m_vRenderColor));
         }
     }
 }
 
-void CPhysXActor::DrawRay(const _matrix& view, const _matrix& proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox, PxVec3 hitPos)
+void CPhysXActor::DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox, PxVec3 hitPos)
 {
     if (!m_pBatch || !m_pEffect || !m_pContext)
         return;
@@ -442,7 +441,10 @@ void CPhysXActor::DrawRay(const _matrix& view, const _matrix& proj, const PxVec3
     XMVECTOR start = XMVectorSet(origin.x, origin.y, origin.z, 1.f);
     XMVECTOR end = XMVectorSet(origin.x + dir.x * length, origin.y + dir.y * length, origin.z + dir.z * length, 1.f);
 
-    m_pBatch->DrawLine(VertexPositionColor(start, Colors::Cyan), VertexPositionColor(end, Colors::Cyan));
+    if(drawHitBox)
+        m_pBatch->DrawLine(VertexPositionColor(start, Colors::Red), VertexPositionColor(end, Colors::Red));
+    else
+        m_pBatch->DrawLine(VertexPositionColor(start, Colors::Yellow), VertexPositionColor(end, Colors::Yellow));
 
     if (drawHitBox)
     {

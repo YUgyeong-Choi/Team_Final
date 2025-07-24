@@ -31,16 +31,20 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT Render_Shadow() { return S_OK; }
 
+public:
 	virtual void On_CollisionEnter(CGameObject* pOther) {}
 	virtual void On_CollisionStay(CGameObject* pOther) {}
 	virtual void On_CollisionExit(CGameObject* pOther) {}
 
 	// Ray로 인항 충돌을 하면 On_Hit를 호출함 (HitPos & HitNormal을 가지고 올 수 있음)
-	virtual void On_Hit(_int iDamage, _float3 HitPos) {}
+	virtual void On_Hit(CGameObject* pOther) {}
 	virtual void On_Trigger() {}
 
+public:
 	virtual void Set_bDead() { m_bDead = true; }
 	virtual _bool Get_bDead();
+
+	wstring Get_Name() { return wstring(m_szName); }
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };

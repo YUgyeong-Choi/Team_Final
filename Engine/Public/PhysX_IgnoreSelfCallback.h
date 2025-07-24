@@ -1,13 +1,12 @@
-#include "PxSimulationEventCallback.h"
 #include "PxPhysicsAPI.h"
 #include "PhysXActor.h"
 
 using namespace physx;
 
-class CRaycastIgnoreSelfCallback : public PxQueryFilterCallback
+class CIgnoreSelfCallback : public PxQueryFilterCallback
 {
 public:
-    CRaycastIgnoreSelfCallback(PxActor* pIgnoreActor) : m_pIgnoreActor(pIgnoreActor) {}
+    CIgnoreSelfCallback(PxActor* pIgnoreActor) : m_pIgnoreActor(pIgnoreActor) {}
 
     virtual PxQueryHitType::Enum preFilter(const PxFilterData&, const PxShape*, const PxRigidActor* actor, PxHitFlags&) override
     {

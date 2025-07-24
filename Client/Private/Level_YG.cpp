@@ -15,9 +15,6 @@ HRESULT CLevel_YG::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
@@ -66,15 +63,6 @@ HRESULT CLevel_YG::Ready_Lights()
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
 		return E_FAIL;
 
-
-	return S_OK;
-}
-
-HRESULT CLevel_YG::Ready_Layer_Camera(const _wstring strLayerTag)
-{
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_Camera_Free"),
-		ENUM_CLASS(LEVEL::YG), strLayerTag)))
-		return E_FAIL;
 
 	return S_OK;
 }

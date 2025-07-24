@@ -22,6 +22,7 @@ HRESULT CPhysXKinematicActor::Initialize(void* pArg)
     return S_OK;
 }
 
+
 HRESULT CPhysXKinematicActor::Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material)
 {
     m_pMaterial = material;
