@@ -276,6 +276,13 @@ HRESULT CGLTool::Render_SelectOptionTool()
 	if (eUIDesc.iPassIndex >= UI_END)
 	{
 		eUIDesc.iPassIndex = UI_END - 1;
+		eUITempDesc.iPassIndex = UI_END - 1;
+	}
+
+	if (eUIDesc.iPassIndex < 0)
+	{
+		eUIDesc.iPassIndex = 0;
+		eUITempDesc.iPassIndex = 0;
 	}
 
 	if (nullptr == m_pSelectObj || m_pSelectObj->Get_bDead())
