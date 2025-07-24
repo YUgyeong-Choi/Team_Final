@@ -92,7 +92,35 @@ HRESULT CYGObject::Initialize(void* pArg)
 
 void CYGObject::Priority_Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Key_Pressing(DIK_A))
+	{
+		m_pTransformCom->Go_Left(fTimeDelta);
+	}
 
+	if (m_pGameInstance->Key_Pressing(DIK_D))
+	{
+		m_pTransformCom->Go_Right(fTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_W))
+	{
+		m_pTransformCom->Go_Straight(fTimeDelta);
+	}
+	if (m_pGameInstance->Key_Pressing(DIK_S))
+	{
+		m_pTransformCom->Go_Backward(fTimeDelta);
+	}
+
+	_long			MouseMove = {};
+
+	if (m_pGameInstance->Key_Pressing(DIK_R))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * 0.1f);
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_Q))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, -1.f, 0.f, 0.f), MouseMove * fTimeDelta * 0.1f);
+	}
 }
 
 void CYGObject::Update(_float fTimeDelta)
