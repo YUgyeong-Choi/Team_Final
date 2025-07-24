@@ -190,7 +190,7 @@ void CAnimator::UpdateBlend(_float fTimeDelta)
 	}
 }
 
-const char* CAnimator::GetCurrentAnimName() const
+const string& CAnimator::GetCurrentAnimName() const
 {
 	if (m_pCurrentAnim == nullptr)
 		return nullptr;

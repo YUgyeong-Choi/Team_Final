@@ -228,9 +228,6 @@
     <ClInclude Include="..\Public\StaticMesh.h">
       <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\AnimTool.h">
-      <Filter>01.Levels\LevelJW\Tool</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MySequence.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
@@ -245,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="Client_Calculation.h">
       <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AnimTool.h">
+      <Filter>01.Levels\LevelJW</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

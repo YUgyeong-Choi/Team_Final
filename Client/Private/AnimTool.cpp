@@ -1,3 +1,4 @@
+#include "Bone.h"
 #include "AnimTool.h"
 #include "Animator.h"
 #include "Animation.h"
@@ -11,7 +12,7 @@ CAnimTool::CAnimTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 	, m_pGameInstance(CGameInstance::Get_Instance())
 {
-	Safe_AddRef(m_pGameInstance);	
+	Safe_AddRef(m_pGameInstance);
 }
 
 CAnimTool::CAnimTool(const CAnimTool& Prototype)
@@ -37,7 +38,7 @@ HRESULT CAnimTool::Initialize(void* pArg)
 	_matrix ModelWorldMatrix = XMMatrixIdentity();
 	XMStoreFloat4x4(&m_ModelWorldMatrix, ModelWorldMatrix);
 
-	
+
 	m_pTransformCom->Scaling(_float3(0.1f, 0.1f, 0.1f));
 	return S_OK;
 }
@@ -69,7 +70,7 @@ HRESULT CAnimTool::Render()
 	if (m_bRenerLevel)
 	{
 
-	if (FAILED(Render_Load_Model()))
+		if (FAILED(Render_Load_Model()))
 			return E_FAIL;
 	}
 	else
@@ -169,23 +170,8 @@ HRESULT CAnimTool::Render_Load_Model()
 			{
 				for (const auto& FilePath : selections)
 				{
-					auto pModel = CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, FilePath.second.c_str());
-					if (pModel)
-					{
-						string modelName = FilePath.first.find(".bin") != string::npos ?
-							FilePath.first.substr(0, FilePath.first.find(".bin")) :
-							FilePath.first;
-						m_LoadedModels[modelName] = pModel;
-						auto pAnimations = pModel->GetAnimations();
-						m_LoadedAnimations[modelName] = pAnimations;
-
-						auto pAnimator = CAnimator::Create(m_pDevice,m_pContext);
-						if (pAnimator)
-						{
-							pAnimator->Initialize(pModel);
-							m_LoadedAnimators[modelName] = pAnimator;
-						}
-					}
+					CreateModel(FilePath.first,FilePath.second); // 전체 경로로 모델 생성
+					
 				}
 			}
 		}
@@ -290,6 +276,7 @@ void CAnimTool::SelectAnimation()
 	if (m_pCurModel == nullptr || m_pCurAnimator == nullptr)
 		return;
 	static _int iSelectedAnimIndex = -1;
+
 	ImGui::Begin("Select Animation");
 
 	vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
@@ -309,7 +296,7 @@ void CAnimTool::SelectAnimation()
 			{
 				iSelectedAnimIndex = i;
 				m_pCurAnimation = anims[iSelectedAnimIndex];
-		        m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
+				m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -317,24 +304,69 @@ void CAnimTool::SelectAnimation()
 		ImGui::EndCombo();
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_COMMA)) 
+	if (m_pGameInstance->Key_Down(DIK_COMMA))
 	{
 		iSelectedAnimIndex--;
-		if (iSelectedAnimIndex < 0) 
-			iSelectedAnimIndex = static_cast<_int>(anims.size()) - 1; // 마지막으로 순환
+		if (iSelectedAnimIndex < 0)
+			iSelectedAnimIndex = static_cast<_int>(anims.size()) - 1; // 마지막으로 순서
+
+		if (m_pCurAnimation)
+		{
+			m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
+		}
+		else
+		{
 			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
+		}
+
 		m_pCurAnimation = anims[iSelectedAnimIndex];
 	}
-	if (m_pGameInstance->Key_Down(DIK_PERIOD)) 
+	if (m_pGameInstance->Key_Down(DIK_PERIOD))
 	{
 		iSelectedAnimIndex++;
-		if (iSelectedAnimIndex >= static_cast<_int>(anims.size())) 
+		if (iSelectedAnimIndex >= static_cast<_int>(anims.size()))
 			iSelectedAnimIndex = 0;
-		m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
+		if (m_pCurAnimation)
+		{
+			m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
+		}
+		else
+		{
+			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex]);
+		}
 		m_pCurAnimation = anims[iSelectedAnimIndex];
 	}
 
 	ImGui::End();
+}
+
+void CAnimTool::CreateModel(const string& fileName, const string& filePath)
+{
+	auto pModel = CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, filePath.c_str());
+	if (pModel)
+	{
+		string modelName = fileName.find(".bin") != string::npos ?
+			fileName.substr(0, fileName.find(".bin")) :
+			fileName;
+		m_LoadedModels[modelName] = pModel;
+		auto pAnimations = pModel->GetAnimations();
+
+		vector<CAnimation*>& pModelCloneAnims = m_LoadedAnimations[modelName];
+
+		const auto& Bones = pModel->Get_Bones();
+		pModelCloneAnims.reserve(pAnimations.size());
+		for (_uint i = 0; i < pAnimations.size(); i++)
+		{
+			pModelCloneAnims.push_back(pAnimations[i]->Clone(Bones));
+		}
+
+		auto pAnimator = CAnimator::Create(m_pDevice, m_pContext);
+		if (pAnimator)
+		{
+			pAnimator->Initialize(pModel);
+			m_LoadedAnimators[modelName] = pAnimator;
+		}
+	}
 }
 
 void CAnimTool::Manipulate(Operation op, const _float snapT[3], const _float snapR[3], const _float snapS[3])
@@ -349,7 +381,7 @@ void CAnimTool::Manipulate(Operation op, const _float snapT[3], const _float sna
 	// 뷰·프로젝션·월드 매트릭스 float[16] 준비
 	_float matV[16], matP[16], matW[16];
 	XMStoreFloat4x4((XMFLOAT4X4*)matV, CGameInstance::Get_Instance()->Get_Transform_Matrix(D3DTS::VIEW));
-	XMStoreFloat4x4((XMFLOAT4X4*)matP,CGameInstance::Get_Instance()->Get_Transform_Matrix(D3DTS::PROJ));
+	XMStoreFloat4x4((XMFLOAT4X4*)matP, CGameInstance::Get_Instance()->Get_Transform_Matrix(D3DTS::PROJ));
 
 	_matrix xmW = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
 	XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(matW), xmW);
@@ -420,5 +452,14 @@ CGameObject* CAnimTool::Clone(void* pArg)
 void CAnimTool::Free()
 {
 	__super::Free();
+	for (auto& pair : m_LoadedModels)
+	{
+		Safe_Release(pair.second);
+	}
+	for (auto& pair : m_LoadedAnimators)
+	{
+		Safe_Release(pair.second);
+	}
+	Safe_Release(m_pAnimShader);
 	Safe_Release(m_pGameInstance);
 }
