@@ -190,6 +190,14 @@ HRESULT CMainApp::Ready_Static()
 		CCamera_CutScene::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
+	m_pGameInstance->LoadSound("../Bin/Resources/Sound/Example/BGM/", false, true);
+
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Sound_Player")),
+	//	CSoundController::Create("../Bin/Resources/Sound/Example/Player/"))))
+	//	return E_FAIL;
+	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
+
 	return S_OK;
 }
 

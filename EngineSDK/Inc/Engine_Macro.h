@@ -66,3 +66,13 @@ unsigned int ClassName::Destroy_Instance()				\
 	}													\
 	return iRefCnt;										\
 }
+
+#define ADD_SOUND(Name,Path)																						\
+if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Sound_"))+L###Name ,	\
+CSoundController::Create(Path))))																					\
+return E_FAIL
+
+#define ADD_SOUND_EX(Name,Path,...)																					\
+if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Sound_"))+L###Name ,	\
+CSoundController::Create(Path, __VA_ARGS__))))																		\
+return E_FAIL

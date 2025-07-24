@@ -22,6 +22,9 @@
 #include "Bounding_OBB.h"
 #include "Bounding_Sphere.h"
 
+#include "SoundController.h"
+#include "Sound_Core.h"
+
 /* 1. 원형객체를 보관한다. */
 /* 1_1. 원형객체의 타입( CGameObject, CComponent )에 크게 영향을 받지 않는다. */
 /* 1_2. 보관할때 레벨별( + 모든레벨) 로 구분하여 저장할거야. */
