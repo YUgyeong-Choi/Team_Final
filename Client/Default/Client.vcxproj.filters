@@ -243,7 +243,7 @@
     <ClInclude Include="..\Public\MapTool.h">
       <Filter>01.Levels\LevelYW\Map_Tool</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StaticMesh.h">
+    <ClInclude Include="..\Public\MapToolObject.h">
       <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AnimTool.h">
@@ -399,7 +399,7 @@
     <ClCompile Include="..\Private\MapTool.cpp">
       <Filter>01.Levels\LevelYW\Map_Tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\StaticMesh.cpp">
+    <ClCompile Include="..\Private\MapToolObject.cpp">
       <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AnimTool.cpp">

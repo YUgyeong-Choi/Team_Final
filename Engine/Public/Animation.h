@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class CAnimation final : public CBase
+class ENGINE_DLL CAnimation final : public CBase
 {
 private:
 	CAnimation();
@@ -21,7 +21,7 @@ public:
 	void ExportBinary(ofstream& ofs);
 
 	/* 애니메이션의 이름을 반환. */
-	const _char* Get_Name() { return m_Name; }
+	const string& Get_Name() { return m_AnimationName; }
 
 	void SetLoop(_bool isLoop) { m_isLoop = isLoop; }
 	_bool Get_isLoop() { return m_isLoop; }
