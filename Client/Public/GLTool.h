@@ -6,6 +6,7 @@
 #undef USE_IMGUI
 
 #include "Static_UI.h"
+#include "UI_Sequence.h"
 
 NS_BEGIN(Client)
   
@@ -35,6 +36,7 @@ private:
 	HRESULT Render_SelectOptionTool();
 
 	HRESULT Render_UIList();
+	HRESULT Render_Sequence();
 
 private:
 	//

@@ -63,7 +63,8 @@ HRESULT CGLTool::Render()
 	if (FAILED(Render_UIList()))
 		return E_FAIL;
 
-	
+	if (FAILED(Render_Sequence()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -211,6 +212,8 @@ HRESULT CGLTool::Render_UtilTool()
 		++index;
 	}
 
+	
+
 
 	// ÆÄÀÏ Å½»ö±â¸¦ ¶ç¿î´Ù
 	ImGui::SetNextWindowSize(ImVec2(800, 600));
@@ -239,6 +242,9 @@ HRESULT CGLTool::Render_SelectOptionTool()
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
 	ImGui::Begin("Select option ", &open, NULL);
+
+	float value = 0.6f;
+	ImGui::SliderFloat("Offset", &value, 0.0f, 1.0f);
 
 
 	// ÀÔ·Â Ä­ ¸¸µé±â
@@ -308,6 +314,19 @@ HRESULT CGLTool::Render_UIList()
 	}
 
 	ImGui::End();
+	return S_OK;
+}
+
+HRESULT CGLTool::Render_Sequence()
+{
+	SetNextWindowSize(ImVec2(800, 200));
+	_bool open = true;
+	ImGui::Begin("Sequence ", &open, NULL);
+
+	//                                                                                     
+
+	ImGui::End();
+
 	return S_OK;
 }
 
