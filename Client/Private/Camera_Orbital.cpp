@@ -22,7 +22,7 @@ HRESULT CCamera_Orbital::Initialize(void* pArg)
 		return E_FAIL;
 
 	CAMERA_ORBITAL_DESC* pDesc = static_cast<CAMERA_ORBITAL_DESC*>(pArg);
-	m_fMouseSensor = pDesc->fMouseSensor;
+	m_fMouseSensor = 0.5f;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -37,7 +37,7 @@ void CCamera_Orbital::Priority_Update(_float fTimeDelta)
 
 void CCamera_Orbital::Update(_float fTimeDelta)
 {
-	if (m_bRockOn)
+	if (!m_bRockOn)
 	{
 		_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
 		_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMM::Y);
@@ -65,6 +65,8 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		m_pTransformCom->Set_State(STATE::POSITION, m_vTargetCamPos);
 		m_pTransformCom->LookAt(m_vPlayerPosition);
 	}
+
+	__super::Update(fTimeDelta);
 }
 
 void CCamera_Orbital::Late_Update(_float fTimeDelta)

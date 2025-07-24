@@ -86,6 +86,8 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	}
 
 
+	__super::Bind_Matrices();
+	__super::Priority_Update(fTimeDelta);
 }
 
 void CCamera_Free::Update(_float fTimeDelta)
@@ -103,6 +105,8 @@ void CCamera_Free::Update(_float fTimeDelta)
 		XMStoreFloat3(&vLook, look);
 		printf("Camera Look: x = %.2f, y = %.2f, z = %.2f\n", vLook.x, vLook.y, vLook.z);
 	}
+
+	__super::Update(fTimeDelta);
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)
