@@ -154,6 +154,19 @@ CGameObject* CObject_Manager::Find_Object(_uint iLevelIndex, const _wstring& str
 	return pLayer->Get_Object(iIndex);
 }
 
+vector<wstring> CObject_Manager::Find_LayerNamesContaining(_uint iLevelIndex, const wstring& SubString)
+{
+	vector<wstring> Results;
+
+	for (const auto& pair : m_pLayers[iLevelIndex])
+	{
+		if (pair.first.find(SubString) != wstring::npos)
+			Results.push_back(pair.first);
+	}
+
+	return Results;
+}
+
 CLayer* CObject_Manager::Find_Layer(_uint iLevelIndex, const _wstring& strLayerTag)
 {
 	auto	iter = m_pLayers[iLevelIndex].find(strLayerTag);

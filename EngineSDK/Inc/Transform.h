@@ -44,6 +44,11 @@ public:
 	_matrix Get_WorldMatrix() {
 		return XMLoadFloat4x4(&m_WorldMatrix);
 	}
+	
+	//월드매트릭스 대입하는 것(맵 오브젝트 배치 할 때 필요 해서 넣음)
+	void Set_WorldMatrix(const _float4x4& WorldMatrix) {
+		m_WorldMatrix = WorldMatrix;
+	}
 
 	_float4x4& Get_World4x4() {
 		return m_WorldMatrix;

@@ -29,6 +29,9 @@ public:
 	list<class CGameObject*>& Get_ObjectList(_uint iLevelIndex, const _wstring& strLayerTag);
 	class CGameObject* Find_LastObject(_uint iLevelIndex, const _wstring& strLayerTag);
 	class CGameObject* Find_Object(_uint iLevelIndex, const _wstring& strLayerTag, _uint iIndex);
+
+	//해당 이름을 포함한 레이어들의 태그를 모두 가져온다.
+	vector<wstring> Find_LayerNamesContaining(_uint iLevelIndex, const wstring& SubString);
 private:	
 	_uint								m_iNumLevels = {};
 	map<const _wstring, class CLayer*>* m_pLayers = { nullptr };
