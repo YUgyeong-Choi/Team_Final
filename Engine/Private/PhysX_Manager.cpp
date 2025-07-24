@@ -39,7 +39,8 @@ HRESULT CPhysX_Manager::Initialize()
 	// 4. Scene 생성
 	PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-	sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(2); // 사용 가능하지만 삭제 예정
+	m_pDispatcher = PxDefaultCpuDispatcherCreate(2);
+	sceneDesc.cpuDispatcher = m_pDispatcher;
 	// 충돌 관련 콜백 함수 설정
 	m_pContactCallback = new CPhysX_ContactReport();
 	sceneDesc.simulationEventCallback = m_pContactCallback;
@@ -64,11 +65,35 @@ HRESULT CPhysX_Manager::Initialize()
 
 void CPhysX_Manager::Shutdown()
 {
-	if (m_pScene) m_pScene->release();
-	if (m_pDefaultMaterial) m_pDefaultMaterial->release();
-	if (m_pPhysics) m_pPhysics->release();
+	if (m_pScene)
+	{
+		m_pScene->release();
+		m_pScene = nullptr;
+	}
 
-	if (m_pFoundation) m_pFoundation->release();
+	if (m_pDefaultMaterial)
+	{
+		m_pDefaultMaterial->release();
+		m_pDefaultMaterial = nullptr;
+	}
+
+	if (m_pDispatcher)
+	{
+		m_pDispatcher->release(); 
+		m_pDispatcher = nullptr;
+	}
+
+	if (m_pPhysics)
+	{
+		m_pPhysics->release();
+		m_pPhysics = nullptr;
+	}
+
+	if (m_pFoundation)
+	{
+		m_pFoundation->release();
+		m_pFoundation = nullptr;
+	}
 }
 
 void CPhysX_Manager::Simulate(float fDeltaTime)

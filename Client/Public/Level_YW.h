@@ -35,9 +35,11 @@ private:
 	HRESULT Ready_ImGui();
 	HRESULT ImGui_Render();
 	HRESULT ImGui_Docking_Settings();
-private:
-	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
 
+private:
+	HRESULT Ready_Layer_Camera_Free(const _wstring strLayerTag);
+	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
+	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 private:
 	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)] = {};
 public:

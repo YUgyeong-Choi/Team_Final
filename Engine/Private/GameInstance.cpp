@@ -221,6 +221,10 @@ HRESULT CGameInstance::Add_GameObject(_uint iPrototypeLevelIndex, const _wstring
 {
 	return m_pObject_Manager->Add_GameObject(iPrototypeLevelIndex, strPrototypeTag, iLevelIndex, strLayerTag, pArg);
 }
+HRESULT CGameInstance::Add_GameObjectReturn(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, CGameObject** ppOut, void* pArg)
+{
+	return m_pObject_Manager->Add_GameObjectReturn(iPrototypeLevelIndex, strPrototypeTag, iLevelIndex, strLayerTag, ppOut, pArg);
+}
 
 CComponent* CGameInstance::Get_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentTag, _uint iIndex)
 {
@@ -527,8 +531,6 @@ PxScene* CGameInstance::Get_Scene()
 
 void CGameInstance::Release_Engine()
 {
-	Safe_Release(m_pPhysX_Manager);
-
 	Safe_Release(m_pFrustum);
 
 	Safe_Release(m_pShadow);
@@ -556,6 +558,9 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pInput_Device);
 
 	Safe_Release(m_pGraphic_Device);
+
+	m_pPhysX_Manager->Shutdown();
+	Safe_Release(m_pPhysX_Manager);
 
 	Destroy_Instance();
 }

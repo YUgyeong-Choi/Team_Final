@@ -32,6 +32,8 @@ void CLevel_JW::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);
+
+	__super::Update(fTimeDelta);
 }
 
 HRESULT CLevel_JW::Render()

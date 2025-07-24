@@ -51,6 +51,7 @@ private:
 	PxPhysics* m_pPhysics = nullptr;
 	PxScene* m_pScene = nullptr;
 	PxMaterial* m_pDefaultMaterial = nullptr;
+	PxDefaultCpuDispatcher* m_pDispatcher = nullptr;
 
 	PxDefaultAllocator m_Allocator;
 	PxDefaultErrorCallback m_ErrorCallback;
