@@ -189,6 +189,7 @@
     <ClInclude Include="..\Public\TestSpirteEffect.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
+    <ClInclude Include="..\Public\YGMonster.h" />
     <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="Client.h" />
@@ -245,6 +246,7 @@
     <ClCompile Include="..\Private\TestSpirteEffect.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
+    <ClCompile Include="..\Private\YGMonster.cpp" />
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="Client.cpp" />

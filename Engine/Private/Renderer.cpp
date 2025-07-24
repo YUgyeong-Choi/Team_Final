@@ -151,11 +151,9 @@ HRESULT CRenderer::Draw()
 
 #ifdef _DEBUG
 
-	if (m_bRenderDebug)
-	{
-		if (FAILED(Render_Debug()))
-			return E_FAIL;
-	}
+
+	if (FAILED(Render_Debug()))
+		return E_FAIL;
 
 #endif
 	
@@ -453,20 +451,26 @@ HRESULT CRenderer::Change_ViewportDesc(_uint iWidth, _uint iHeight)
 
 HRESULT CRenderer::Render_Debug()
 {
-	for (auto& pDebugCom : m_DebugComponent)
+	if (m_bRenderCollider)
 	{
-		pDebugCom->Render();
-		Safe_Release(pDebugCom);
+		for (auto& pDebugCom : m_DebugComponent)
+		{
+			pDebugCom->Render();
+			Safe_Release(pDebugCom);
+		}
+		m_DebugComponent.clear();
 	}
-	m_DebugComponent.clear();
 
-	m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
-	m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+	if (m_bRenderTarget)
+	{
 
-	m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
-	
+		m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
+		m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer);
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
+	}
 
 	return S_OK;
 }

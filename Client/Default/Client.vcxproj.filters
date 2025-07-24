@@ -294,6 +294,9 @@
     <ClInclude Include="..\public\EventMag.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\YGMonster.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -446,6 +449,9 @@
 	</ClCompile>
     <ClCompile Include="..\private\EventMag.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGMonster.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

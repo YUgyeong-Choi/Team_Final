@@ -9,6 +9,9 @@ static PxFilterFlags CustomFilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
+	
+	printf("filerData0 world0: %d , filterData1 world1: %d\n", filterData0.word0, filterData1.word1);
+	printf("filterData1 world0: %d ,filterData0 world1: %d\n", filterData1.word0, filterData0.word1);
 
 	if ((filterData0.word0 & filterData1.word1) == 0 &&
 		(filterData1.word0 & filterData0.word1) == 0)
@@ -100,7 +103,14 @@ void CPhysX_Manager::Shutdown()
 
 PxMaterial* CPhysX_Manager::GetMaterial(const wstring& name)
 {
-	return nullptr;
+	auto iter = m_Materials.find(name);
+	if (iter != m_Materials.end()) {
+		return iter->second;
+	}
+	else {
+		return nullptr;
+	}
+
 }
 
 void CPhysX_Manager::Simulate(float fDeltaTime)
@@ -222,6 +232,11 @@ PxCapsuleGeometry CPhysX_Manager::CookCapsuleGeometry(const PxVec3* pVertices, P
 PxCapsuleGeometry CPhysX_Manager::CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight)
 {
 	return PxCapsuleGeometry(fRadius, fCapsuleHeight);
+}
+
+PxSphereGeometry CPhysX_Manager::CookSphereGeometry(_float fRadius)
+{
+	return PxSphereGeometry(fRadius);
 }
 
 //CPhysXStaticActor* CPhysX_Manager::Create_Terrain(const PxVec3* pVertices, PxU32 vertexCount, const PxU32* pIndices, PxU32 triangleCount)

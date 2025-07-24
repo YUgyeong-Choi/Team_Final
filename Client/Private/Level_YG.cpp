@@ -33,6 +33,7 @@ HRESULT CLevel_YG::Initialize()
 void CLevel_YG::Update(_float fTimeDelta)
 {
 	m_pCamera_Manager->Update(fTimeDelta);
+
 	__super::Update(fTimeDelta);
 }
 
@@ -81,6 +82,10 @@ HRESULT CLevel_YG::Ready_Layer_Camera(const _wstring strLayerTag)
 HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGObject"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGMonster"),
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
 		return E_FAIL;
 

@@ -41,6 +41,9 @@ public:
 	// 직접 캡슐 만드는 코드
 	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
 
+	// 직접 구체 만드는 코드
+	PxSphereGeometry CookSphereGeometry(_float fRadius);
+
 	// 지형 매쉬 생성
 	//CPhysXStaticActor* Create_Terrain(const PxVec3* pVertices, PxU32 vertexCount, const PxU32* pIndices, PxU32 triangleCount);
 

@@ -14,9 +14,11 @@ namespace Engine
 	enum class STATE { RIGHT, UP, LOOK, POSITION, END };
 
 
-	enum class WorldFilter //일단 무시하셈
+	enum WORLDFILTER
 	{
-		PERSON, STATIC, LOOT, RESOURCES, ITEMS, PREVIEW, BUILDING, EFFECT, ANIMAL
+		FILTER_PLAYERBODY = 1 << 0,
+		FILTER_MONSTERBODY = 1 << 1,
+		FILTER_MONSTERWEAPOM = 1 << 2
 	};
 
 	enum class ParamType { Bool, Trigger, Float, Int };

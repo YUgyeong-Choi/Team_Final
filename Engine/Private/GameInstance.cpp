@@ -133,8 +133,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pLevel_Manager->Update(fTimeDelta);
 
 #ifdef _DEBUG
-	if (Key_Down(DIK_F11))
-		m_pRenderer->Set_RenderDebug();
+	if (Key_Down(DIK_F5))
+		m_pRenderer->Set_RenderTarget();
+
+	if (Key_Down(DIK_F6))
+		m_pRenderer->Set_RenderCollider();
 #endif
 
 }
@@ -270,16 +273,17 @@ HRESULT CGameInstance::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pR
 	return m_pRenderer->Add_RenderGroup(eRenderGroup, pRenderObject);
 }
 
-void CGameInstance::Set_RenderDebug()
-{
-	m_pRenderer->Set_RenderDebug();
-}
-
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
 {
 	return m_pRenderer->Add_DebugComponent(pDebugCom);
 }
+
+_bool CGameInstance::Get_RenderCollider()
+{
+	return m_pRenderer->Get_RenderCollider();
+}
+
 #endif
 
 #pragma endregion
@@ -532,9 +536,24 @@ PxCapsuleGeometry CGameInstance::CookCapsuleGeometry(_float fRadius, _float fCap
 	return m_pPhysX_Manager->CookCapsuleGeometry(fRadius, fCapsuleHeight);
 }
 
+PxSphereGeometry CGameInstance::CookSphereGeometry(_float fRadius)
+{
+	return m_pPhysX_Manager->CookSphereGeometry(fRadius);
+}
+
 PxScene* CGameInstance::Get_Scene()
 {
 	return m_pPhysX_Manager->GetScene();
+}
+
+PxPhysics* CGameInstance::GetPhysics()
+{
+	return m_pPhysX_Manager->GetPhysics();
+}
+
+PxMaterial* CGameInstance::GetMaterial(const wstring& name)
+{
+	return m_pPhysX_Manager->GetMaterial(name);
 }
 
 #pragma endregion

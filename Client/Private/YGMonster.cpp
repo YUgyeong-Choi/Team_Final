@@ -1,26 +1,26 @@
-#include "YGObject.h"
+#include "YGMonster.h"
 
 #include "GameInstance.h"
 
-CYGObject::CYGObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CYGMonster::CYGMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
 {
 }
 
-CYGObject::CYGObject(const CYGObject& Prototype)
+CYGMonster::CYGMonster(const CYGMonster& Prototype)
     : CGameObject(Prototype)
 {
 }
 
-HRESULT CYGObject::Initialize_Prototype()
+HRESULT CYGMonster::Initialize_Prototype()
 {
     return S_OK;
 }
 
-HRESULT CYGObject::Initialize(void* pArg)
+HRESULT CYGMonster::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC _desc{};
-	lstrcpy(_desc.szName, TEXT("YGObject"));
+	lstrcpy(_desc.szName, TEXT("YGMonster"));
 	_desc.fRotationPerSec = 8.f;
 	_desc.fSpeedPerSec = 10.f;
 
@@ -32,16 +32,18 @@ HRESULT CYGObject::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
+	_fvector vPos{ 0.0f, 0.f, 5.0f, 1.0f };
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	// Tranform위치를 이동해준 뒤 콜라이더를 생성해서 맨 처음 시작할때 충돌안 됨
 	if (FAILED(Ready_Collider())) {
 		return E_FAIL;
 	}
 
-	Update_ColliderPos();
-
 	return S_OK;
 }
 
-void CYGObject::Priority_Update(_float fTimeDelta)
+void CYGMonster::Priority_Update(_float fTimeDelta)
 {
 	if (m_bDead) {
 		PxScene* pScene = m_pGameInstance->Get_Scene();
@@ -52,42 +54,14 @@ void CYGObject::Priority_Update(_float fTimeDelta)
 		m_pPhysXActorCom = nullptr;
 	}
 
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-	{
-		m_pTransformCom->Go_Left(fTimeDelta);
-	}
-
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-	{
-		m_pTransformCom->Go_Right(fTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-
-	if (m_pGameInstance->Key_Pressing(DIK_E))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f),  fTimeDelta * 0.1f);
-	}
-
-	if (m_pGameInstance->Key_Pressing(DIK_Q))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f),  -fTimeDelta * 0.1f);
-	}
-
 }
 
-void CYGObject::Update(_float fTimeDelta)
+void CYGMonster::Update(_float fTimeDelta)
 {
 	Update_ColliderPos();
 }
 
-void CYGObject::Late_Update(_float fTimeDelta)
+void CYGMonster::Late_Update(_float fTimeDelta)
 {
 	//if (m_pGameInstance->Is_In_Frustum(m_pPhysXActor)) {
 	//	
@@ -97,7 +71,7 @@ void CYGObject::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
-HRESULT CYGObject::Render()
+HRESULT CYGMonster::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -139,7 +113,7 @@ HRESULT CYGObject::Render()
 
 
 
-HRESULT CYGObject::Bind_ShaderResources()
+HRESULT CYGMonster::Bind_ShaderResources()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_pTransformCom->Get_World4x4())))
 		return E_FAIL;
@@ -151,24 +125,24 @@ HRESULT CYGObject::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGObject::On_CollisionEnter(CGameObject* pOther)
+void CYGMonster::On_CollisionEnter(CGameObject* pOther)
 {
-	printf("플레이어 충돌!\n");
+	printf("몬스터 충돌!\n");
 }
 
-void CYGObject::On_CollisionStay(CGameObject* pOther)
-{
-}
-
-void CYGObject::On_CollisionExit(CGameObject* pOther)
+void CYGMonster::On_CollisionStay(CGameObject* pOther)
 {
 }
 
-void CYGObject::On_Hit(_int iDamage, _float3 HitPos)
+void CYGMonster::On_CollisionExit(CGameObject* pOther)
 {
 }
 
-HRESULT CYGObject::Ready_Components()
+void CYGMonster::On_Hit(_int iDamage, _float3 HitPos)
+{
+}
+
+HRESULT CYGMonster::Ready_Components()
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
@@ -186,7 +160,7 @@ HRESULT CYGObject::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CYGObject::Ready_Collider()
+HRESULT CYGMonster::Ready_Collider()
 {
 	if (m_pModelCom)
 	{
@@ -220,8 +194,8 @@ HRESULT CYGObject::Ready_Collider()
 		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 
 		PxFilterData filterData{};
-		filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-		filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
@@ -235,7 +209,7 @@ HRESULT CYGObject::Ready_Collider()
 	return S_OK;
 }
 
-void CYGObject::Update_ColliderPos()
+void CYGMonster::Update_ColliderPos()
 {	// 1. 월드 행렬 가져오기
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
 
@@ -255,33 +229,33 @@ void CYGObject::Update_ColliderPos()
 	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
 }
 
-CYGObject* CYGObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CYGMonster* CYGMonster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CYGObject* pInstance = new CYGObject(pDevice, pContext);
+	CYGMonster* pInstance = new CYGMonster(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CYGObject");
+		MSG_BOX("Failed to Created : CYGMonster");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CYGObject::Clone(void* pArg)
+CGameObject* CYGMonster::Clone(void* pArg)
 {
-	CYGObject* pInstance = new CYGObject(*this);
+	CYGMonster* pInstance = new CYGMonster(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CYGObject");
+		MSG_BOX("Failed to Cloned : CYGMonster");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CYGObject::Free()
+void CYGMonster::Free()
 {
 	__super::Free();
 
