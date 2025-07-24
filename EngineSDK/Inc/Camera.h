@@ -39,7 +39,7 @@ protected:
 	void Bind_Matrices();
 
 public:
-	void StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot);
+	void StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
 	void Update_Camera_Shake(_float fTimedelta);
 
 public:

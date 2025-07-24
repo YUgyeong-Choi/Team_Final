@@ -92,12 +92,8 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Play_Animation(_float fTimeDelta)
+HRESULT CModel::Play_Animation()
 {
-	//_bool		isFinished = { false };
- //
-	//isFinished = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
-
 	for (auto& pBone : m_Bones)
 	{
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
@@ -105,6 +101,39 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 
 
 	return S_OK;
+}
+
+
+_uint CModel::Get_Mesh_NumVertices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return 0;
+
+	return m_Meshes[iMeshIndex]->Get_NumVertices();
+}
+
+_uint CModel::Get_Mesh_NumIndices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return 0;
+
+	return m_Meshes[iMeshIndex]->Get_NumIndices();
+}
+
+const _float3* CModel::Get_Mesh_pVertices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return nullptr;
+
+	return m_Meshes[iMeshIndex]->Get_Vertices();
+}
+
+const _uint* CModel::Get_Mesh_pIndices(_int iMeshIndex)
+{
+	if (iMeshIndex >= m_Meshes.size())
+		return nullptr;
+
+	return m_Meshes[iMeshIndex]->Get_Indices();
 }
 
 void CModel::Set_Animation(_uint iIndex, _bool isLoop)
@@ -450,4 +479,34 @@ void CModel::Free()
 
 
 	m_Importer.FreeScene();
+}
+
+json CModel::Serialize()
+{
+	json j;
+	j["animations"] = json::array();
+	// 애니메이션에 저장된 이벤트 직렬화
+	for (const auto& pAnim : m_Animations)
+	{
+		j["animations"].push_back(pAnim->Serialize());
+	}
+	return j;
+}
+
+void CModel::Deserialize(const json& j)
+{
+	if (j.contains("animations"))
+	{
+		for (const auto& animData : j["animations"])
+		{
+			for (auto& pAnim : m_Animations)
+			{
+				if (pAnim->Get_Name() == animData["name"])
+				{
+					pAnim->Deserialize(animData);
+					break;
+				}
+			}
+		}
+	}
 }

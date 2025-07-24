@@ -8,6 +8,7 @@
 #include "Static_UI.h"
 #include "UI_Sequence.h"
 
+
 NS_BEGIN(Client)
   
 class CGLTool final : public CGameObject
@@ -55,6 +56,14 @@ private:
 	CStatic_UI* m_pSelectObj = { nullptr };
 
 	string  m_strSavePath = {};
+
+	// sequence
+	_int m_iCurrentFrame = {};
+	_bool m_bExpanded = { true };
+	_int m_iSelectedEntry = { -1 };
+	CUI_Sequence*	m_pSequence = { nullptr };
+	
+
 	
 public:
 	static CGLTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

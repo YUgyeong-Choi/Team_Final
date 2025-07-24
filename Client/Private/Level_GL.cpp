@@ -1,9 +1,11 @@
 #include "Level_GL.h"
 #include "GameInstance.h"
 #include "GLTool.h"
+#include "Camera_Manager.h"
 
 CLevel_GL::CLevel_GL(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
+	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
 }
@@ -19,6 +21,9 @@ HRESULT CLevel_GL::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -26,6 +31,7 @@ void CLevel_GL::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
 
+	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 }
 
@@ -84,6 +90,14 @@ HRESULT CLevel_GL::Ready_ImGuiTools()
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CGLTool::Create(m_pDevice, m_pContext);
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)])
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GL::Ready_Camera()
+{
+	m_pCamera_Manager->Initialize(LEVEL::STATIC);
+	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;
 }

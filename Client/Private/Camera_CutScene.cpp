@@ -38,6 +38,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 void CCamera_CutScene::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
 }
 
 void CCamera_CutScene::Late_Update(_float fTimeDelta)

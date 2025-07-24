@@ -165,6 +165,7 @@
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\EffectSequence.h" />
+    <ClInclude Include="..\public\EventMag.h" />
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="..\Public\TestSpirteEffect.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
+    <ClInclude Include="..\Public\YGMonster.h" />
     <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="Client.h" />
@@ -220,6 +222,7 @@
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\EffectSequence.cpp" />
+    <ClCompile Include="..\private\EventMag.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
@@ -243,6 +246,7 @@
     <ClCompile Include="..\Private\TestSpirteEffect.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
+    <ClCompile Include="..\Private\YGMonster.cpp" />
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="Client.cpp" />

@@ -30,6 +30,7 @@ public:
 
 private:
 	HRESULT Ready_Lights();
+	HRESULT Ready_Camera();
 	HRESULT Ready_ImGuiTools();
 private:
 	HRESULT Ready_ImGui();
@@ -42,6 +43,10 @@ private:
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 private:
 	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)] = {};
+
+private:
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+
 public:
 	static CLevel_YW* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

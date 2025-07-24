@@ -1,9 +1,11 @@
 #include "Level_YW.h"
 #include "GameInstance.h"
 #include "MapTool.h"
+#include "Camera_Manager.h"
 
 CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
+	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
 }
@@ -19,9 +21,6 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Camera_Free(TEXT("Layer_Camera_Free"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
@@ -34,7 +33,8 @@ HRESULT CLevel_YW::Initialize()
 void CLevel_YW::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
-
+	
+	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 }
 
@@ -88,13 +88,14 @@ HRESULT CLevel_YW::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_YW::Ready_Layer_Camera_Free(const _wstring strLayerTag)
+HRESULT CLevel_YW::Ready_Camera()
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_Camera_Free"),
-		ENUM_CLASS(LEVEL::YW), strLayerTag, nullptr)))
-		return E_FAIL;
+	m_pCamera_Manager->Initialize(LEVEL::STATIC);
+	m_pCamera_Manager->SetFreeCam();
+
 	return S_OK;
 }
+
 
 HRESULT CLevel_YW::Ready_Layer_Sky(const _wstring strLayerTag)
 {

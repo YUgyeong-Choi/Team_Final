@@ -1,8 +1,10 @@
 #include "Level_KratCentralStation.h"
 #include "GameInstance.h"
+#include "Camera_Manager.h"
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
+	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
 }
@@ -11,16 +13,14 @@ HRESULT CLevel_KratCentralStation::Initialize()
 {
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
-	if(m_pGameInstance->Key_Down(DIK_F10)) {
-		m_pGameInstance->Set_RenderCollider();
-	}
-
 	__super::Update(fTimeDelta);
 }
 
@@ -75,6 +75,14 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc)))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Camera()
+{
+	m_pCamera_Manager->Initialize(LEVEL::STATIC);
+	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;
 }

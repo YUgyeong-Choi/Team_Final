@@ -28,15 +28,22 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+
 private:
+	HRESULT Ready_Camera();
 	HRESULT Ready_Lights();
 	HRESULT Ready_ImGuiTools();
+	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 private:
 	HRESULT Ready_ImGui();
 	HRESULT ImGui_Render();
 	HRESULT ImGui_Docking_Settings();
 private:
 	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)];
+
+private:
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+
 public:
 	static CLevel_DH* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

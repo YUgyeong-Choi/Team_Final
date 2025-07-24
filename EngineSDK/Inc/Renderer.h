@@ -18,7 +18,9 @@ public:
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
-	void Set_RenderDebug() { m_bRenderDebug = !m_bRenderDebug; }
+	void Set_RenderTarget() { m_bRenderTarget = !m_bRenderTarget; }
+	void Set_RenderCollider() { m_bRenderCollider = !m_bRenderCollider; }
+	_bool Get_RenderCollider() { return m_bRenderCollider; }
 #endif
 
 private:
@@ -41,7 +43,8 @@ private:
 #ifdef _DEBUG
 private:
 	list<class CComponent*>		m_DebugComponent;
-	_bool m_bRenderDebug = false;
+	_bool m_bRenderTarget = false;
+	_bool m_bRenderCollider = false;
 #endif
 private:
 	HRESULT Render_Priority();

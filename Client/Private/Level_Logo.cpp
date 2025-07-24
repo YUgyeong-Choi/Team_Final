@@ -63,10 +63,10 @@ HRESULT CLevel_Logo::Render()
 	_wstring text = L"F1 : µ¿ÇÏ, F2 : Àå¿ø, F3 : °æ·¡, F4 : ¿µ¿õ, F5 : Ã¤¿µ, F6 : À¯°æ";
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 680.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
-	text = L"F11 : ·»´õÅ¸°Ù OnOff";
+	text = L"F5 : ·»´õÅ¸°Ù OnOff";
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 650.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
-	text = L"F10 : ÄÝ¶óÀÌ´õ ·»´õ OnOff";
+	text = L"F6 : ÄÝ¶óÀÌ´õ ·»´õ OnOff";
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 620.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	return S_OK;

@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Serializable.h"
 #include "Component.h"
 #include "Mesh.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CModel final : public CComponent
+class ENGINE_DLL CModel final : public CComponent, public ISerializable
 {
 protected:
 	CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
@@ -22,6 +23,11 @@ public:
 	_uint Get_CurAnimationIndex() const {
 		return m_iCurrentAnimIndex;
 	}
+
+	_uint Get_Mesh_NumVertices(_int iMeshIndex);
+	_uint Get_Mesh_NumIndices(_int iMeshIndex);
+	const _float3* Get_Mesh_pVertices(_int iMeshIndex);
+	const _uint* Get_Mesh_pIndices(_int iMeshIndex);
 
 	void Set_Animation(_uint iIndex, _bool isLoop = true);
 	void Set_Animation_TickPerSecond(_uint iIndex, _float fTickPerSecond);
@@ -58,7 +64,7 @@ public:
 	virtual HRESULT Render(_uint iMeshIndex);
 
 public:
-	HRESULT Play_Animation(_float fTimeDelta);
+	HRESULT Play_Animation();
 
 private:
 	Assimp::Importer			m_Importer;	
@@ -119,6 +125,10 @@ public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, const _char* pModelFilePath, _fmatrix PreTransformMatrix = XMMatrixIdentity());
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
+
+	// ISerializable을(를) 통해 상속됨
+	json Serialize() override;
+	void Deserialize(const json& j) override;
 };
 
 NS_END
