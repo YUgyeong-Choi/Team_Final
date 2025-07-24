@@ -64,8 +64,6 @@ HRESULT CLevel_JW::Render()
 
 	if(FAILED(ImGui_Render()))
 		return E_FAIL;
-	//렌더링 
-	ImGui::ShowDemoWindow(); // Show demo window! :)
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -124,7 +122,7 @@ HRESULT CLevel_JW::Ready_ImGui()
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
-
+	io.IniFilename = nullptr;  // ini 파일 저장/로드 비활성화
 	return S_OK;
 }
 

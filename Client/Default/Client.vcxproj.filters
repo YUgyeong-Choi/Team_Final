@@ -290,6 +290,9 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Sequence.h">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\EventMag.h">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -440,6 +443,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Sequence.cpp">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\EventMag.cpp">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

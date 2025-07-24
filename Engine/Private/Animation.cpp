@@ -20,6 +20,7 @@ CAnimation::CAnimation(const CAnimation& Prototype)
 	, m_iNumChannels{ Prototype.m_iNumChannels }
 	, m_Channels{ Prototype.m_Channels }
 	, m_AnimationName{ Prototype.m_AnimationName }
+	, m_events{ Prototype.m_events }
 
 {
 	for (auto& pChannel : m_Channels)
@@ -118,7 +119,10 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 {
 	m_isLoop = isLoop;
 	_float prevPos = m_fCurrentTrackPosition;
+	m_fPrevTrackPosition = prevPos;
+
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+	_bool bIsReverse = (m_fPrevTrackPosition > m_fCurrentTrackPosition); // 이전이 더 크다면 지금 역 재생중
 
 
 	if (m_fCurrentTrackPosition >= m_fDuration)
@@ -150,7 +154,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 		m_Channels[i]->Update_TransformationMatrix(
 			m_CurrentKeyFrameIndices[i],
 			m_fCurrentTrackPosition,
-			Bones
+			Bones, bIsReverse
 		);
 	}
 
@@ -230,4 +234,33 @@ void CAnimation::Free()
 		Safe_Release(pChannel);
 
 	m_Channels.clear();
+}
+
+json CAnimation::Serialize()
+{
+	json j;
+	// 이벤트 직렬화
+	j["ClipName"] = m_AnimationName;
+	for (const auto& event : m_events)
+	{
+		j["Events"].push_back({
+			{"EventName", event.name},
+			{"Time", event.fTime}
+			});
+	}
+	return j;
+}
+
+void CAnimation::Deserialize(const json& j)
+{
+	if (j.contains("Events"))
+	{
+		for (const auto& event : j["Events"])
+		{
+			m_events.push_back({
+				event["Time"].get<_float>(),
+				event["EventName"].get<string>()
+				});
+		}
+	}
 }

@@ -165,6 +165,7 @@
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\EffectSequence.h" />
+    <ClInclude Include="..\public\EventMag.h" />
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\EffectSequence.cpp" />
+    <ClCompile Include="..\private\EventMag.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />

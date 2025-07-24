@@ -92,12 +92,8 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Play_Animation(_float fTimeDelta)
+HRESULT CModel::Play_Animation()
 {
-	//_bool		isFinished = { false };
- //
-	//isFinished = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
-
 	for (auto& pBone : m_Bones)
 	{
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
@@ -483,4 +479,34 @@ void CModel::Free()
 
 
 	m_Importer.FreeScene();
+}
+
+json CModel::Serialize()
+{
+	json j;
+	j["animations"] = json::array();
+	// 애니메이션에 저장된 이벤트 직렬화
+	for (const auto& pAnim : m_Animations)
+	{
+		j["animations"].push_back(pAnim->Serialize());
+	}
+	return j;
+}
+
+void CModel::Deserialize(const json& j)
+{
+	if (j.contains("animations"))
+	{
+		for (const auto& animData : j["animations"])
+		{
+			for (auto& pAnim : m_Animations)
+			{
+				if (pAnim->Get_Name() == animData["name"])
+				{
+					pAnim->Deserialize(animData);
+					break;
+				}
+			}
+		}
+	}
 }
