@@ -17,6 +17,7 @@
 #include "Prototype_Manager.h"
 
 #include "PhysX_Manager.h"
+#include "Sound_Device.h"
 
 IMPLEMENT_SINGLETON(CGameInstance);
 
@@ -109,12 +110,18 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pPhysX_Manager)
 		return E_FAIL;
 
+	m_pSound_Device = CSound_Device::Create();
+	if (nullptr == m_pSound_Device)
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	m_pPicking->Update();
+
+	m_pSound_Device->Update();
 
 	m_pInput_Device->Update();
 
@@ -558,6 +565,33 @@ PxMaterial* CGameInstance::GetMaterial(const wstring& name)
 
 #pragma endregion
 
+#pragma region SOUND_DEVICE
+
+FORCEINLINE
+HRESULT CGameInstance::LoadSound(const string& Path, _bool is3D, _bool loop, _bool stream, unordered_map<string, class CSound_Core*>* _Out_ pOut)
+{
+	return m_pSound_Device->LoadSound(Path, is3D, loop, stream, pOut);
+}
+
+FORCEINLINE
+CSound_Core* CGameInstance::Get_Single_Sound(const string& strKey)
+{
+	return m_pSound_Device->Get_Single_Sound(strKey);
+}
+
+FORCEINLINE
+void CGameInstance::Set_Listener_Position(CTransform* pTransform, const _float3& vel)
+{
+	m_pSound_Device->Set_Listener_Position(pTransform, vel);
+}
+
+FORCEINLINE
+void CGameInstance::Set_Master_Volume(_float volume)
+{
+	m_pSound_Device->Set_Master_Volume(volume);
+}
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
 	Safe_Release(m_pFrustum);
@@ -591,14 +625,13 @@ void CGameInstance::Release_Engine()
 	m_pPhysX_Manager->Shutdown();
 	Safe_Release(m_pPhysX_Manager);
 
+	Safe_Release(m_pSound_Device);
+
 	Destroy_Instance();
 }
 
 void CGameInstance::Free()
 {
 	__super::Free();
-
-
-
 	
 }

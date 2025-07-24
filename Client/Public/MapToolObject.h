@@ -42,9 +42,9 @@ private:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-
 private:
-	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_Components(void *pArg);
+
 	HRESULT Bind_ShaderResources();
 
 public:

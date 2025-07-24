@@ -211,6 +211,15 @@
     <ClInclude Include="..\Public\Serializable.h">
       <Filter>01.Utility\97.Serializ</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SoundController.h">
+      <Filter>01.Utility\04.Components\SoundController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sound_Device.h">
+      <Filter>00.System\02.Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sound_Core.h">
+      <Filter>00.System\02.Sound\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -401,6 +410,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\AnimController.cpp">
       <Filter>01.Utility\04.Components\Model\Animation\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoundController.cpp">
+      <Filter>01.Utility\04.Components\SoundController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sound_Device.cpp">
+      <Filter>00.System\02.Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sound_Core.cpp">
+      <Filter>00.System\02.Sound\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -613,6 +631,15 @@
     </Filter>
     <Filter Include="01.Utility\97.Serializ">
       <UniqueIdentifier>{7069efbe-8a0c-4817-b42f-8fac16683e46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\SoundController">
+      <UniqueIdentifier>{5ca5d4b4-a817-42dc-8bba-09c8c7e21ff1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\02.Sound">
+      <UniqueIdentifier>{ce33a6c6-7ee7-4b41-bfc9-542265bff38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\02.Sound\Core">
+      <UniqueIdentifier>{96eba9b0-b53a-4979-b84c-06878bc9ee2c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

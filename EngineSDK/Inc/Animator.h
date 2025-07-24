@@ -48,7 +48,7 @@ public:
 	void SetBlendDuration(_float duration) { m_Blend.duration = duration; }
 	void SetPlaying(_bool bPlaying) { m_bPlaying = bPlaying; }
 
-    const string& GetCurrentAnimName() const;
+    const string GetCurrentAnimName() const;
 	class CAnimation* GetCurrentAnim() const { return m_pCurrentAnim; }
     class CAnimController* GetAnimController() const { return m_pAnimController; }
 

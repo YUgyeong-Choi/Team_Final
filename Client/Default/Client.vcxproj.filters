@@ -144,6 +144,9 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
       <UniqueIdentifier>{c802c0aa-2fed-41f2-a7b0-a9a6bfa5842b}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\00.StaticMesh">
+      <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +342,9 @@
     <ClInclude Include="..\public\Icon_Dynamic.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StaticMesh.h">
+      <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -512,6 +518,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Icon_Dynamic.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StaticMesh.cpp">
+      <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

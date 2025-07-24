@@ -18,7 +18,7 @@ public:
 public:
     virtual _int GetFrameMin() const override { return 0; };
     virtual _int GetFrameMax() const override { return 150; };
-    virtual _int GetItemCount() const override { return m_Items.size(); };
+    virtual _int GetItemCount() const override { return static_cast<_int>(m_Items.size()); };
 
     virtual void BeginEdit(_int iIndex)  override;
     virtual void EndEdit() override;

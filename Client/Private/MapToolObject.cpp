@@ -21,7 +21,7 @@ HRESULT CMapToolObject::Initialize_Prototype()
 
 HRESULT CMapToolObject::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(&pArg)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components(pArg)))

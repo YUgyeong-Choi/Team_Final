@@ -27,6 +27,11 @@ HRESULT CLevel_DH::Initialize()
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 
+	/* [ »ç¿îµå ] */
+	m_pBGM = m_pGameInstance->Get_Single_Sound("Example");
+	m_pBGM->Set_Volume(1.f);
+	m_pBGM->Play();
+
 	return S_OK;
 }
 
@@ -205,4 +210,10 @@ void CLevel_DH::Free()
 	
 	__super::Free();
 
+
+	if (m_pBGM)
+	{
+		m_pBGM->Stop();
+		Safe_Release(m_pBGM);
+	}
 }

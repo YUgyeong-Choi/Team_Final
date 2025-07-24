@@ -186,6 +186,7 @@
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
     <ClInclude Include="..\Public\MapToolObject.h" />
+    <ClInclude Include="..\public\StaticMesh.h" />
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\Public\ToolSprite.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
@@ -244,6 +245,7 @@
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />
+    <ClCompile Include="..\private\StaticMesh.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\Private\ToolSprite.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />

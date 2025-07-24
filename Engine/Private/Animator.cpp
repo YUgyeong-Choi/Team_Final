@@ -190,7 +190,7 @@ void CAnimator::UpdateBlend(_float fTimeDelta)
 	}
 }
 
-const string& CAnimator::GetCurrentAnimName() const
+const string CAnimator::GetCurrentAnimName() const
 {
 	return m_pCurrentAnim->Get_Name();
 }

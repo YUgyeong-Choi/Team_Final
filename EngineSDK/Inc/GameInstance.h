@@ -121,13 +121,13 @@ public:
 	HRESULT Ready_Light_For_Shadow(const CShadow::SHADOW_DESC& Desc);
 	const _float4x4* Get_Light_ViewMatrix();
 	const _float4x4* Get_Light_ProjMatrix();
-#pragma region
+#pragma endregion
 
 #pragma region FRUSTUM	
 	void Transform_Frustum_ToLocalSpace(_fmatrix WorldMatrix);
 	_bool isIn_Frustum_WorldSpace(_fvector vWorldPos, _float fRange = 0.f);
 	_bool isIn_Frustum_LocalSpace(_fvector vLocalPos, _float fRange);
-#pragma region
+#pragma endregion
 
 #pragma region PHYSX_MANAGER
 	PxTriangleMeshGeometry CookTriangleMesh(const PxVec3* vertices, PxU32 vertexCount, const PxU32* indices, PxU32 triangleCount, PxMeshScale geomScale);
@@ -139,6 +139,17 @@ public:
 	PxScene* Get_Scene();
 	PxPhysics* GetPhysics();
 	PxMaterial* GetMaterial(const wstring& name);
+#pragma endregion
+
+#pragma region SOUND_DEVICE
+	// Out에 nullptr 넣으면 싱글사운드로 등록됨
+	HRESULT LoadSound(const string& Path, _bool is3D = FALSE, _bool loop = FALSE, _bool stream = FALSE, unordered_map<string, class CSound_Core*>* _Out_ pOut = nullptr);
+	// 난 에드래퍼 올릴거다 분명히 말했다 래퍼 올린다 릴리즈 시키시오
+	class CSound_Core* Get_Single_Sound(const string& strKey);
+	// 리스너 포지션 제어(업룩포 요구해서 트랜스폼 받았음)
+	void Set_Listener_Position(class CTransform* pTransform, const _float3& vel);
+	// 전체 볼륨 제어
+	void Set_Master_Volume(_float volume);
 #pragma endregion
 
 private:
@@ -157,6 +168,7 @@ private:
 	class CShadow*				m_pShadow = { nullptr };
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
+	class CSound_Device*		m_pSound_Device = { nullptr };
 
 public:
 	void Release_Engine();
