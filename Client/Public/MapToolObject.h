@@ -12,6 +12,12 @@ NS_BEGIN(Client)
 
 class CMapToolObject final : public CGameObject
 {
+public:
+	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		_tchar		szModelPrototypeTag[MAX_PATH];
+	}MAPTOOLOBJ_DESC;
+
 private:
 	CMapToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMapToolObject(const CMapToolObject& Prototype);
@@ -25,12 +31,20 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	const wstring* Get_ModelPrototypeTag() const {
+		return &m_ModelPrototypeTag;
+	}
+
+private:
+	wstring m_ModelPrototypeTag = {};
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
 private:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 
 public:

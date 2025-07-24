@@ -19,7 +19,9 @@ protected:
 
 public:
 	CComponent* Get_Component(const _wstring& strComponentTag);
-	
+	CTransform* Get_TransfomCom() const {
+		return m_pTransformCom;
+	}
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);

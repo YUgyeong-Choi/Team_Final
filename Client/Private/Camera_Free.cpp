@@ -88,6 +88,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 	__super::Bind_Matrices();
 	__super::Priority_Update(fTimeDelta);
+
 }
 
 void CCamera_Free::Update(_float fTimeDelta)

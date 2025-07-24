@@ -40,6 +40,8 @@ public:
 
 	}
 
+
+
 private:
 	CStatic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CStatic_UI(const CStatic_UI& Prototype);
@@ -64,6 +66,7 @@ private:
 
 	// tool에서 사용할...
 	_wstring m_strTextureTag = {};
+	
 
 	// 월드에 그릴 사이즈
 	_float m_fScale = {};

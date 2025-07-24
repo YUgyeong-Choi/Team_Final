@@ -24,11 +24,8 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
-		return E_FAIL;
-
-	if (FAILED(Ready_Camera()))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_MapToolObject(TEXT("Layer_MapToolObject"))))
+	//	return E_FAIL;
 	
 	return S_OK;
 }
@@ -183,9 +180,9 @@ HRESULT CLevel_YW::ImGui_Docking_Settings()
 	return S_OK;
 }
 
-HRESULT CLevel_YW::Ready_Layer_StaticMesh(const _wstring strLayerTag)
+HRESULT CLevel_YW::Ready_Layer_MapToolObject(const _wstring strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 		ENUM_CLASS(LEVEL::YW), strLayerTag)))
 		return E_FAIL;
 

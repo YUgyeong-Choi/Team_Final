@@ -21,16 +21,10 @@ HRESULT CMapToolObject::Initialize_Prototype()
 
 HRESULT CMapToolObject::Initialize(void* pArg)
 {
-	GAMEOBJECT_DESC			Desc{};
-
-	Desc.fRotationPerSec = 0.f;
-	Desc.fSpeedPerSec = 0.f;
-	lstrcpy(Desc.szName, TEXT("MapToolObject"));
-
-	if (FAILED(__super::Initialize(&Desc)))
+	if (FAILED(__super::Initialize(&pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -72,15 +66,22 @@ HRESULT CMapToolObject::Render()
 	return S_OK;
 }
 
-HRESULT CMapToolObject::Ready_Components()
+HRESULT CMapToolObject::Ready_Components(void* pArg)
 {
+	if (pArg == nullptr)
+		return E_FAIL;
+
+	MAPTOOLOBJ_DESC* pDesc = static_cast<MAPTOOLOBJ_DESC*>(pArg);
+
+	m_ModelPrototypeTag = pDesc->szModelPrototypeTag;
+
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_SM_Station_Light_01"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), pDesc->szModelPrototypeTag,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
