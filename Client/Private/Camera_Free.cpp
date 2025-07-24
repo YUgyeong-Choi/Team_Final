@@ -41,8 +41,6 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
-		return;
 
 	// 달리기 여부 체크
 	m_bSprint = (m_pGameInstance->Key_Pressing(DIK_LSHIFT)) != 0;
@@ -71,17 +69,21 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
 
-	_long			MouseMove = {};
-
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::X))
+	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * m_fSensor);
+		_long			MouseMove = {};
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::X))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * m_fSensor);
+		}
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::Y))
+		{
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * m_fSensor);
+		}
 	}
 
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * m_fSensor);
-	}
 
 	__super::Bind_Matrices();
 }

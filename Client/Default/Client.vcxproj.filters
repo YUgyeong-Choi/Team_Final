@@ -108,7 +108,7 @@
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolEffect">
       <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.Camera\00.Camara_Free">
       <UniqueIdentifier>{3e4d9fb2-772a-4885-981e-42db3ac214d9}</UniqueIdentifier>
     </Filter>
@@ -240,7 +240,7 @@
     <ClInclude Include="..\Public\MapTool.h">
       <Filter>01.Levels\LevelYW\Map_Tool</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StaticMesh.h">
+    <ClInclude Include="..\Public\MapToolObject.h">
       <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AnimTool.h">
@@ -272,7 +272,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\EffectSequence.h">
       <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\Camera_Free.h">
       <Filter>02.GameObjects\02.Camera\00.Camara_Free</Filter>
     </ClInclude>
@@ -393,7 +393,7 @@
     <ClCompile Include="..\Private\MapTool.cpp">
       <Filter>01.Levels\LevelYW\Map_Tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\StaticMesh.cpp">
+    <ClCompile Include="..\Private\MapToolObject.cpp">
       <Filter>01.Levels\LevelYW\Map_Tool\StaticMesh</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AnimTool.cpp">
@@ -419,7 +419,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\EffectSequence.cpp">
       <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\Camera_Free.cpp">
       <Filter>02.GameObjects\02.Camera\00.Camara_Free</Filter>
     </ClCompile>

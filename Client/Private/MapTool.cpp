@@ -56,6 +56,11 @@ HRESULT CMapTool::Render_MapTool()
 	_bool open = true;
 	ImGui::Begin("MapTool", &open, NULL);
 
+	if (ImGui::BeginListBox("##HierarchyList", ImVec2(-FLT_MIN, 300)))
+	{
+		ImGui::EndListBox();
+	}
+
 	ImGui::End();
 	return S_OK;
 }

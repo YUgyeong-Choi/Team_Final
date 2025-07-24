@@ -6,7 +6,7 @@
 #include "Sky.h"
 
 #pragma region LEVEL_YW
-#include "StaticMesh.h"
+#include "MapToolObject.h"
 #pragma endregion
 
 
@@ -262,7 +262,7 @@ HRESULT CLoader::Loading_For_YW()
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
-		CStaticMesh::Create(m_pDevice, m_pContext))))
+		CMapToolObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_Camera_Free"),
