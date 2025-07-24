@@ -17,7 +17,7 @@ public:
 
 	PxPhysics* GetPhysics() const { return m_pPhysics; }
 	PxScene* GetScene() const { return m_pScene; }
-	PxMaterial* GetDefaultMaterial() const { return m_pDefaultMaterial; }
+	PxMaterial* GetMaterial(const wstring& name);
 
 	void Simulate(float fDeltaTime);
 
@@ -32,7 +32,14 @@ public:
 	// 동적 오브젝트에 사용할 메쉬 콜라이더 (ConvexMesh)생성 - triangle은 너무 무겁데
 	PxConvexMeshGeometry CookConvexMesh(const PxVec3* vertices, PxU32 vertexCount, PxMeshScale geomScale);
 	
+	// 정점 정보가지고 AABB를 만들어 줌
 	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
+
+	// 정점 정보가지고 AABB 만들고 그것을 이용해서 캡슐 크기를 알아서 만들어줌
+	PxCapsuleGeometry CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
+
+	// 직접 캡슐 만드는 코드
+	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
 
 	// 지형 매쉬 생성
 	//CPhysXStaticActor* Create_Terrain(const PxVec3* pVertices, PxU32 vertexCount, const PxU32* pIndices, PxU32 triangleCount);
@@ -42,21 +49,21 @@ public:
 	virtual void Free() override;
 
 private:
-	ID3D11Device* m_pDevice = nullptr;
-	ID3D11DeviceContext* m_pContext = nullptr;
-	SpriteBatch* m_pBatch = nullptr;
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
+	SpriteBatch* m_pBatch = { nullptr };
 
 private:
-	PxFoundation* m_pFoundation = nullptr;
-	PxPhysics* m_pPhysics = nullptr;
-	PxScene* m_pScene = nullptr;
-	PxMaterial* m_pDefaultMaterial = nullptr;
-	PxDefaultCpuDispatcher* m_pDispatcher = nullptr;
+	PxFoundation* m_pFoundation = { nullptr };
+	PxPhysics* m_pPhysics = { nullptr };
+	PxScene* m_pScene = { nullptr };
+	unordered_map<wstring, PxMaterial*> m_Materials;
+	PxDefaultCpuDispatcher* m_pDispatcher = { nullptr };
 
 	PxDefaultAllocator m_Allocator;
 	PxDefaultErrorCallback m_ErrorCallback;
 
-	CPhysX_ContactReport* m_pContactCallback = nullptr;
+	CPhysX_ContactReport* m_pContactCallback = { nullptr };
 
 };
 

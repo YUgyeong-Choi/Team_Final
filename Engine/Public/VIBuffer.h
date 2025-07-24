@@ -18,6 +18,11 @@ public:
 	virtual HRESULT Bind_Buffers();
 	virtual HRESULT Render();
 
+	const _float3* Get_Vertices() const { return m_pVertexPositions; }
+	const _uint* Get_Indices() const { return m_pIndices; }
+	_uint Get_NumVertices() const { return m_iNumVertices; }
+	_uint Get_NumIndices() const { return m_iNumIndices; }
+
 protected:
 	ID3D11Buffer* m_pVB = { nullptr };
 	ID3D11Buffer* m_pIB = { nullptr };

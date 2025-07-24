@@ -522,6 +522,16 @@ PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3* vertices, PxU32 verte
 	return m_pPhysX_Manager->CookBoxGeometry(vertices, vertexCount, fScale);
 }
 
+PxCapsuleGeometry CGameInstance::CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale)
+{
+	return m_pPhysX_Manager->CookCapsuleGeometry(pVertices, vertexCount, geomScale);
+}
+
+PxCapsuleGeometry CGameInstance::CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight)
+{
+	return m_pPhysX_Manager->CookCapsuleGeometry(fRadius, fCapsuleHeight);
+}
+
 PxScene* CGameInstance::Get_Scene()
 {
 	return m_pPhysX_Manager->GetScene();
