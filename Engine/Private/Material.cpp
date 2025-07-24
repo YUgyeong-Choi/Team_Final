@@ -93,7 +93,8 @@ HRESULT CMaterial::Initialize(const _char* pModelFilePath, ifstream& ifs)
         if (FileName.extension() == ".dds") 
             hr = DirectX::CreateDDSTextureFromFile(m_pDevice, szTextureFilePath, nullptr, &pSRV);
         else
-            hr = DirectX::CreateWICTextureFromFile(m_pDevice, szTextureFilePath, nullptr, &pSRV);
+           // hr =  DirectX::CreateDDSTextureFromFile(m_pDevice, szTextureFilePath, nullptr, &pSRV);
+            hr =DirectX::CreateDDSTextureFromFile(m_pDevice, szTextureFilePath, nullptr, &pSRV);
 
         if (FAILED(hr))
              return E_FAIL;

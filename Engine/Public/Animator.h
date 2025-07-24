@@ -21,7 +21,7 @@ public:
     struct Parameter
     {
 		ParamType     eType;
-        _int         id;       // UI/식별용
+        _int          id;       // UI/식별용
         _bool         bValue = false;   // Bool/Trigger
         _float        fValue = 0.f;      // Float
         _bool         bTriggered = false;   // Trigger 전용 플래그
