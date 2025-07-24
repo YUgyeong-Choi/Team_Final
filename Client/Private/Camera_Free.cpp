@@ -41,7 +41,9 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
+	__super::Bind_Matrices();
+
+	if (!m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
 		return;
 
 	// 달리기 여부 체크
@@ -83,7 +85,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * m_fSensor);
 	}
 
-	__super::Bind_Matrices();
+
 }
 
 void CCamera_Free::Update(_float fTimeDelta)
