@@ -71,7 +71,7 @@ HRESULT CChannel::Initialize(ifstream& ifs, const vector<class CBone*>& Bones, _
 	return S_OK;
 }
 
-void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones)
+void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones, _bool bIsReverse)
 {
 	if (0.0f == fCurrentTrackPosition)
 		currentKeyFrameIndex = 0;
@@ -90,8 +90,28 @@ void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float f
 	}
 	else
 	{
-		if (fCurrentTrackPosition >= m_KeyFrames[currentKeyFrameIndex + 1].fTrackPosition)
-			++currentKeyFrameIndex;
+		//// 현재 트랙포지션이 현재 키프레임의 트랙포지션보다 크거나 같으면 다음 키프레임으로 이동
+		//if (fCurrentTrackPosition >= m_KeyFrames[currentKeyFrameIndex + 1].fTrackPosition)
+		//	++currentKeyFrameIndex;
+
+		if (bIsReverse)
+		{
+			// 역방향
+			while (currentKeyFrameIndex > 0 &&
+				m_KeyFrames[currentKeyFrameIndex].fTrackPosition > fCurrentTrackPosition)
+			{
+				--currentKeyFrameIndex;
+			}
+		}
+		else
+		{
+			// 정방향
+			while (currentKeyFrameIndex < m_KeyFrames.size() - 2 &&
+				fCurrentTrackPosition >= m_KeyFrames[currentKeyFrameIndex + 1].fTrackPosition)
+			{
+				++currentKeyFrameIndex;
+			}
+		}
 
 		_float			fRatio = (fCurrentTrackPosition - m_KeyFrames[currentKeyFrameIndex].fTrackPosition) /
 			(m_KeyFrames[currentKeyFrameIndex + 1].fTrackPosition - m_KeyFrames[currentKeyFrameIndex].fTrackPosition);

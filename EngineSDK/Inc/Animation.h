@@ -29,7 +29,11 @@ public:
 
 	void SetDuration(_float fDuration) { m_fDuration = fDuration; }
 	void SetTickPerSecond(_float fTickPerSecond) { m_fTickPerSecond = fTickPerSecond; }
-	void SetCurrentTrackPosition(_float fCurrentTrackPosition) { m_fCurrentTrackPosition = fCurrentTrackPosition; }
+	void SetCurrentTrackPosition(_float fCurrentTrackPosition) {
+		ResetTrack(); // 강제로 리셋 안하면 해당 뼈정보가 꼬임
+		// 이전 위치 저장
+		m_fPrevTrackPosition = m_fCurrentTrackPosition;
+		m_fCurrentTrackPosition = fCurrentTrackPosition; }
 	void SetCurrentKeyFrameIndices(_uint iIndex, _uint iKeyFrameIndex) {
 		if (iIndex >= m_CurrentKeyFrameIndices.size())
 			return;
@@ -61,6 +65,7 @@ private:
 	_float					m_fDuration = {};
 	_float					m_fTickPerSecond = {};
 	_float					m_fCurrentTrackPosition = {};
+	_float                  m_fPrevTrackPosition = 0.f;
 	vector<_uint>			m_CurrentKeyFrameIndices;
 	// 애니메이션 뼈의 개수
 	_uint					m_iNumChannels;

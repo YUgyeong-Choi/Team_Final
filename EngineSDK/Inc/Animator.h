@@ -38,16 +38,15 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
     void Update(_float fDeltaTime);
 
-    // 즉시 전환: 현재 애니메이션을 멈추고 바로 새 애니메이션 재생
-    void Play(_uint iAnimIndex, _bool isLoop = true);
 	void PlayClip(class CAnimation* pAnim, _bool isLoop = true);
-	void StopAnimation() { m_pCurrentAnim = nullptr; m_iCurrentAnimIndex = 0; m_bIsFinished = true; }
+    void StopAnimation() { m_bPlaying = false; }
 
     void StartTransition(CAnimation* from, CAnimation* to, _float duration = 0.2f);
     void Set_Animation(_uint iIndex, _float fadeDuration = 0.2f, _bool isLoop = false);
 	void Set_BlendState(BlendState blend) { m_Blend = blend; }
 	void Set_Model(class CModel* pModel) { m_pModel = pModel; }
 	void SetBlendDuration(_float duration) { m_Blend.duration = duration; }
+	void SetPlaying(_bool bPlaying) { m_bPlaying = bPlaying; }
 
     const string& GetCurrentAnimName() const;
 	class CAnimation* GetCurrentAnim() const { return m_pCurrentAnim; }
@@ -56,7 +55,7 @@ public:
     void RegisterEventListener(const string& eventName, AnimEventCallback cb);
 	const unordered_map<string, vector<AnimEventCallback>>& GetEventListeners() const { return m_eventListeners; }
 
-
+	_bool IsPlaying() const { return m_bPlaying; }
 	_bool IsBlending() const { return m_Blend.active; }
 	_float GetCurrentAnimDuration() const {
 		if (m_pCurrentAnim == nullptr)
@@ -122,6 +121,7 @@ private:
     void UpdateBlend(_float fTimeDelta);
 
 private:
+    _bool m_bPlaying = true;
 	_bool m_bIsFinished = false; // 애니메이션 재생 완료 여부
     _uint						m_iCurrentAnimIndex = { };
     _uint						m_iPrevAnimIndex = { };

@@ -100,7 +100,7 @@ HRESULT CCamera_Manager::Render()
     return S_OK;
 }
 
-_fvector& CCamera_Manager::GetCurCamPos()
+_fvector CCamera_Manager::GetCurCamPos()
 {
     return m_pCurCamera->GetPosition();
 }

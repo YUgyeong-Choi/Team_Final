@@ -92,12 +92,8 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Play_Animation(_float fTimeDelta)
+HRESULT CModel::Play_Animation()
 {
-	//_bool		isFinished = { false };
- //
-	//isFinished = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
-
 	for (auto& pBone : m_Bones)
 	{
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));

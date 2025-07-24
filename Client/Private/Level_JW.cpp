@@ -60,8 +60,6 @@ HRESULT CLevel_JW::Render()
 
 	if(FAILED(ImGui_Render()))
 		return E_FAIL;
-	//·»´õ¸µ 
-	ImGui::ShowDemoWindow(); // Show demo window! :)
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

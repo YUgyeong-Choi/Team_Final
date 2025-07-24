@@ -118,7 +118,10 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 {
 	m_isLoop = isLoop;
 	_float prevPos = m_fCurrentTrackPosition;
+	m_fPrevTrackPosition = prevPos;
+
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+	_bool bIsReverse = (m_fPrevTrackPosition > m_fCurrentTrackPosition); // 이전이 더 크다면 지금 역 재생중
 
 
 	if (m_fCurrentTrackPosition >= m_fDuration)
@@ -150,7 +153,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 		m_Channels[i]->Update_TransformationMatrix(
 			m_CurrentKeyFrameIndices[i],
 			m_fCurrentTrackPosition,
-			Bones
+			Bones, bIsReverse
 		);
 	}
 

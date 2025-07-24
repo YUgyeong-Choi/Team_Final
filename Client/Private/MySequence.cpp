@@ -1,23 +1,54 @@
+#include "AnimController.h"
 #include "MySequence.h"
 #include "Animation.h"
+#include "Animator.h"
 
 
-void CMySequence::Add(_int type)
+CMySequence::~CMySequence()
 {
-    SequenceItem item;
-    item.pAnim = nullptr;
-    item.start = 0;
-    item.end = 60;
-    item.type = type;
-    item.color = 0xFF00CCFF;
-    item.name = "NewEffect";
-    m_items.push_back(item);
+    Safe_Release(m_pAnimator); 
 }
 
-void CMySequence::Del(_int index)
+void CMySequence::Get(int index, int** start, int** end, int* type, unsigned int* color)
 {
-	if (index < 0 || index >= (_int)m_items.size())
+    CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
+
+	if (pCurAnim == nullptr)
+	{
 		return;
-    Safe_Release(m_items[index].pAnim);
-	m_items.erase(m_items.begin() + index);
+	}
+
+    m_iStart = 0;
+    // 60 프레임 기준으로 프레임 계산
+    m_iEnd = static_cast<_int>(pCurAnim->GetDuration());
+    m_frameMax = m_iEnd;
+	m_iType = 1; // 기본 타입
+
+     if (start != nullptr)
+        *start = &m_iStart;
+    if (end != nullptr)
+        *end = &m_iEnd;
+    if (type != nullptr)
+        *type = m_iType;
+    if (color != nullptr)
+		*color = m_uiColor;
 }
+
+_int CMySequence::GetItemCount() const
+{
+    return m_pAnimator->GetCurrentAnim() ? 1 : 0;
+}
+
+const _char* CMySequence::GetItemLabel(_int index) const
+{
+    auto p = m_pAnimator->GetCurrentAnim();
+    return p ? p->Get_Name().c_str() : "";
+}
+
+void CMySequence::SetAnimator(CAnimator* pAnimator)
+{
+    Safe_Release(m_pAnimator);
+    m_pAnimator = pAnimator;
+    Safe_AddRef(m_pAnimator);
+}
+

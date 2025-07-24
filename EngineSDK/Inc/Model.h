@@ -58,7 +58,7 @@ public:
 	virtual HRESULT Render(_uint iMeshIndex);
 
 public:
-	HRESULT Play_Animation(_float fTimeDelta);
+	HRESULT Play_Animation();
 
 private:
 	Assimp::Importer			m_Importer;	

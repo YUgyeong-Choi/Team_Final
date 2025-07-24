@@ -48,6 +48,8 @@ HRESULT CAnimator::Initialize(void* pArg)
 
 void CAnimator::Update(_float fDeltaTime)
 {
+	if (m_bPlaying == false)
+		return;
 	if (!m_Blend.active)
 	{
 		// 블렌드 중이 아니면 그냥 현재 애니메이션만 업데이트
@@ -82,10 +84,6 @@ void CAnimator::Update(_float fDeltaTime)
 	}
 }
 
-void CAnimator::Play(_uint iAnimIndex, _bool isLoop)
-{
-
-}
 
 void CAnimator::PlayClip(CAnimation* pAnim, _bool isLoop)
 {
@@ -93,6 +91,7 @@ void CAnimator::PlayClip(CAnimation* pAnim, _bool isLoop)
 		return;
 	m_pCurrentAnim = pAnim;
 	m_Blend.active = false;
+	m_bPlaying = true;
 }
 
 void CAnimator::StartTransition(CAnimation* from, CAnimation* to, _float duration)
@@ -107,6 +106,7 @@ void CAnimator::StartTransition(CAnimation* from, CAnimation* to, _float duratio
 	// 애니메이션 트랙 초기화
 //	m_Blend.srcAnim->ResetTrack();
 	m_Blend.dstAnim->ResetTrack();
+	m_bPlaying = true;
 }
 
 void CAnimator::Set_Animation(_uint iIndex, _float fadeDuration, _bool isLoop)
@@ -192,8 +192,6 @@ void CAnimator::UpdateBlend(_float fTimeDelta)
 
 const string& CAnimator::GetCurrentAnimName() const
 {
-	if (m_pCurrentAnim == nullptr)
-		return nullptr;
 	return m_pCurrentAnim->Get_Name();
 }
 
