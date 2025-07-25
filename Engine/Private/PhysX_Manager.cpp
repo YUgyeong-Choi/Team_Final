@@ -1,5 +1,5 @@
-#include "PhysX_Manager.h"
-
+ï»¿#include "PhysX_Manager.h"
+#include <cuda_runtime.h>
 CPhysX_Manager::CPhysX_Manager()
 {
 }
@@ -28,38 +28,62 @@ static PxFilterFlags CustomFilterShader(
 
 HRESULT CPhysX_Manager::Initialize()
 {
-	// 1. Foundation »ı¼º
+	// 1. Foundation ìƒì„±
 	m_pFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
 	if (!m_pFoundation)
 		return E_FAIL;
 
-	// 3. Physics °´Ã¼ »ı¼º
+	// 2. CUDA Context Manager ìƒì„± (GPU ì—°ë™ìš©)
+	//PxCudaContextManagerDesc cudaDesc;
+	//cudaDesc.graphicsDevice = m_pDevice; // DirectX11 ë””ë°”ì´ìŠ¤ ì—°ê²°
+	//m_pCudaContextManager = PxCreateCudaContextManager(*m_pFoundation, cudaDesc);
+	//if (!m_pCudaContextManager || !m_pCudaContextManager->contextIsValid())
+	//{
+	//	OutputDebugStringA(" PhysX GPU ì‚¬ìš© ë¶ˆê°€: CUDA Context ìœ íš¨í•˜ì§€ ì•ŠìŒ\n");
+	//	if (m_pCudaContextManager)
+	//	{
+	//		m_pCudaContextManager->release(); 
+	//		m_pCudaContextManager = nullptr;
+	//	}
+	//}
+	//PrintCudaDeviceInfo();
+
+	// 3. Physics ê°ì²´ ìƒì„±
 	PxTolerancesScale scale;
 	m_pPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, scale, true, nullptr);
 	if (!m_pPhysics)
 		return E_FAIL;
 
-	// 4. Scene »ı¼º
+	// 4. Scene ìƒì„±
 	PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	m_pDispatcher = PxDefaultCpuDispatcherCreate(2);
 	sceneDesc.cpuDispatcher = m_pDispatcher;
-	// Ãæµ¹ °ü·Ã Äİ¹é ÇÔ¼ö ¼³Á¤
+
+	// GPU dispatcherì™€ GPU dynamics í™œì„±í™”
+	//if (m_pCudaContextManager && m_pCudaContextManager->contextIsValid())
+	//{
+	//	sceneDesc.cudaContextManager = m_pCudaContextManager;
+	//	sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
+	//	sceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
+	//}
+
+	// ì¶©ëŒ ê´€ë ¨ ì½œë°± í•¨ìˆ˜ ì„¤ì •
 	m_pContactCallback = new CPhysX_ContactReport();
 	sceneDesc.simulationEventCallback = m_pContactCallback;
 	sceneDesc.filterShader = CustomFilterShader;
 
+
 	sceneDesc.kineKineFilteringMode = PxPairFilteringMode::eKEEP;
 	sceneDesc.staticKineFilteringMode = PxPairFilteringMode::eKEEP;
-
 	sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
 
 	m_pScene = m_pPhysics->createScene(sceneDesc);
 	if (!m_pScene)
 		return E_FAIL;
 
-	// 5. ±âº» ¸ÓÆ¼¸®¾ó
-	PxMaterial* pMaterial = m_pPhysics->createMaterial(0.6f, 0.6f, 0.05f); //Á¤Àû ¸¶Âû, µ¿Àû ¸¶Âû, Åº¼º °è¼ö
+	// 5. ê¸°ë³¸ ë¨¸í‹°ë¦¬ì–¼
+	PxMaterial* pMaterial = m_pPhysics->createMaterial(0.6f, 0.6f, 0.05f); //ì •ì  ë§ˆì°°, ë™ì  ë§ˆì°°, íƒ„ì„± ê³„ìˆ˜
 	if (!pMaterial)
 		return E_FAIL;
 	m_Materials.emplace(make_pair(L"Default", pMaterial));
@@ -80,7 +104,11 @@ void CPhysX_Manager::Shutdown()
 		material.second = nullptr;
 	}
 
-
+	//if (m_pCudaContextManager)
+	//{
+	//	m_pCudaContextManager->release();  
+	//	m_pCudaContextManager = nullptr;
+	//}
 
 	if (m_pDispatcher)
 	{
@@ -117,8 +145,46 @@ void CPhysX_Manager::Simulate(float fDeltaTime)
 {
 	if (m_pScene)
 	{
+		//using namespace std::chrono;
+
+		//// ì „ì²´ íƒ€ì´ë° ì¸¡ì •
+		//auto timeBeforeSim = high_resolution_clock::now();
+
+		//// 1. simulate()
+		//auto t0 = high_resolution_clock::now();
+		//m_pScene->simulate(fDeltaTime);
+		//auto t1 = high_resolution_clock::now();
+
+		//// 2. fetchResults()
+		//m_pScene->fetchResults(true);
+		//auto t2 = high_resolution_clock::now();
+
+		//// 3. ê²°ê³¼ ì¶œë ¥
+		//auto simulateTime = duration_cast<microseconds>(t1 - t0).count();
+		//auto fetchTime = duration_cast<microseconds>(t2 - t1).count();
+		//auto totalTime = duration_cast<microseconds>(t2 - timeBeforeSim).count();
+
+		//printf("[PhysX] simulate: %lldus, fetchResults: %lldus, total: %lldus\n",
+		//	simulateTime, fetchTime, totalTime);
+
 		m_pScene->simulate(fDeltaTime);
 		m_pScene->fetchResults(true);
+	}
+
+}
+
+void CPhysX_Manager::Sync()
+{
+	if (m_pScene && m_pScene->checkResults(true)) // blockì€ trueì—¬ì•¼ í™•ì‹¤íˆ ê¸°ë‹¤ë¦¼
+	{
+		// ê²°ê³¼ë¥¼ ì´ì œ ì•ˆì „í•˜ê²Œ ì‚¬ìš© ê°€ëŠ¥
+		// ì—¬ê¸°ì„œ getGlobalPose() ë“±ì˜ ê²°ê³¼ ê°±ì‹  ê°€ëŠ¥
+
+		// (ì„ íƒ) ë””ë²„ê¹…ìš© ì‹œê°„ ì¸¡ì •
+		using namespace std::chrono;
+		auto now = high_resolution_clock::now();
+		auto micros = duration_cast<microseconds>(now.time_since_epoch()).count();
+		printf("[PhysX] fetchResults(sync) completed at: %lldus\n", micros);
 	}
 }
 
@@ -157,15 +223,15 @@ PxConvexMeshGeometry CPhysX_Manager::CookConvexMesh(const PxVec3* vertices, PxU3
 	cookingParams.meshPreprocessParams = PxMeshPreprocessingFlags(
 		PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH |
 		PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE);
-	cookingParams.areaTestEpsilon = 0.0001f; // ´õ ÀÛ°Ô ÇÏ¸é ´õ ¼¼¹ĞÇÑ ¸é Çã¿ë
-	cookingParams.planeTolerance = 0.0001f; // µ¿ÀÏÆò¸é °£ÁÖ ±âÁØ ³·Ãß±â
-	cookingParams.gaussMapLimit = 256; // ³Ê¹« ³·À¸¸é Ä÷¸®Æ¼ ¶³¾îÁü
+	cookingParams.areaTestEpsilon = 0.0001f; // ë” ì‘ê²Œ í•˜ë©´ ë” ì„¸ë°€í•œ ë©´ í—ˆìš©
+	cookingParams.planeTolerance = 0.0001f; // ë™ì¼í‰ë©´ ê°„ì£¼ ê¸°ì¤€ ë‚®ì¶”ê¸°
+	cookingParams.gaussMapLimit = 256; // ë„ˆë¬´ ë‚®ìœ¼ë©´ í€„ë¦¬í‹° ë–¨ì–´ì§
 
     PxConvexMeshDesc convexDesc;
     convexDesc.points.count = vertexCount;
     convexDesc.points.stride = sizeof(PxVec3);
     convexDesc.points.data = vertices;
-    convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX; // ÀÚµ¿ º¼·Ï ²®Áú
+    convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX; // ìë™ ë³¼ë¡ ê»ì§ˆ
 
     PxDefaultMemoryOutputStream writeBuffer;
     if (!PxCookConvexMesh(cookingParams, convexDesc, writeBuffer))
@@ -183,7 +249,7 @@ PxBoxGeometry CPhysX_Manager::CookBoxGeometry(const PxVec3* pVertices, PxU32 ver
 	if (pVertices == nullptr || vertexCount == 0)
 		return PxBoxGeometry();
 
-	// 1. AABB °è»ê
+	// 1. AABB ê³„ì‚°
 	PxVec3 vMin = pVertices[0];
 	PxVec3 vMax = pVertices[0];
 
@@ -193,7 +259,7 @@ PxBoxGeometry CPhysX_Manager::CookBoxGeometry(const PxVec3* pVertices, PxU32 ver
 		vMax = vMax.maximum(pVertices[i]);
 	}
 
-	// 2. Extents °è»ê
+	// 2. Extents ê³„ì‚°
 	PxVec3 extents = (vMax - vMin) * 0.5f * fScale;
 	PxBoxGeometry boxGeom(extents);
 	return boxGeom;
@@ -209,7 +275,7 @@ PxCapsuleGeometry CPhysX_Manager::CookCapsuleGeometry(const PxVec3* pVertices, P
 	if (pVertices == nullptr || vertexCount == 0)
 		return PxCapsuleGeometry();
 
-	// 1. AABB °è»ê
+	// 1. AABB ê³„ì‚°
 	PxVec3 vMin = pVertices[0];
 	PxVec3 vMax = pVertices[0];
 
@@ -219,16 +285,16 @@ PxCapsuleGeometry CPhysX_Manager::CookCapsuleGeometry(const PxVec3* pVertices, P
 		vMax = vMax.maximum(pVertices[i]);
 	}
 
-	// 2. Ä¸½¶ Ãà ¹æÇâÀº YÃà ±âÁØ (¼öÁ÷ Ä¸½¶)
+	// 2. ìº¡ìŠ ì¶• ë°©í–¥ì€ Yì¶• ê¸°ì¤€ (ìˆ˜ì§ ìº¡ìŠ)
 	_float height = (vMax.y - vMin.y) * geomScale;
 
-	// 3. ¹İÁö¸§ °è»ê (X/Z¹æÇâ Æò±Õ)
+	// 3. ë°˜ì§€ë¦„ ê³„ì‚° (X/Zë°©í–¥ í‰ê· )
 	_float radiusX = (vMax.x - vMin.x) * 0.5f * geomScale;
 	_float radiusZ = (vMax.z - vMin.z) * 0.5f * geomScale;
-	_float radius = max(radiusX, radiusZ); // ¶Ç´Â Æò±Õµµ °¡´É
+	_float radius = max(radiusX, radiusZ); // ë˜ëŠ” í‰ê· ë„ ê°€ëŠ¥
 
-	// 4. Ä¸½¶ÀÇ height´Â ¾ç ³¡ ±¸Ã¼¸¦ Á¦¿ÜÇÑ ½Ç¸°´õ ºÎºĞÀÇ ±æÀÌ
-	// µû¶ó¼­ ½ÇÁ¦ ¹°¸® height = ÀüÃ¼ ±æÀÌ - 2 * radius
+	// 4. ìº¡ìŠì˜ heightëŠ” ì–‘ ë êµ¬ì²´ë¥¼ ì œì™¸í•œ ì‹¤ë¦°ë” ë¶€ë¶„ì˜ ê¸¸ì´
+	// ë”°ë¼ì„œ ì‹¤ì œ ë¬¼ë¦¬ height = ì „ì²´ ê¸¸ì´ - 2 * radius
 	_float capsuleHeight = max(0.f, height - 2.f * radius);
 
 	return PxCapsuleGeometry(radius, capsuleHeight);
@@ -244,7 +310,7 @@ PxSphereGeometry CPhysX_Manager::CookSphereGeometry(const PxVec3* pVertices, PxU
 	if (pVertices == nullptr || vertexCount == 0)
 		return PxSphereGeometry();
 
-	// 1. AABB °è»ê
+	// 1. AABB ê³„ì‚°
 	PxVec3 vMin = pVertices[0];
 	PxVec3 vMax = pVertices[0];
 
@@ -254,22 +320,22 @@ PxSphereGeometry CPhysX_Manager::CookSphereGeometry(const PxVec3* pVertices, PxU
 		vMax = vMax.maximum(pVertices[i]);
 	}
 
-	// 2. Áß½É °è»ê (AABB Áß½É »ç¿ë)
+	// 2. ì¤‘ì‹¬ ê³„ì‚° (AABB ì¤‘ì‹¬ ì‚¬ìš©)
 	PxVec3 vCenter = (vMin + vMax) * 0.5f;
 
-	// 3. ¹İÁö¸§ °è»ê (°¡Àå ¸Õ Á¡À¸·ÎºÎÅÍÀÇ °Å¸®)
+	// 3. ë°˜ì§€ë¦„ ê³„ì‚° (ê°€ì¥ ë¨¼ ì ìœ¼ë¡œë¶€í„°ì˜ ê±°ë¦¬)
 	float fMaxDistSq = 0.f;
 	for (PxU32 i = 0; i < vertexCount; ++i)
 	{
 		PxVec3 vDiff = pVertices[i] - vCenter;
-		float distSq = vDiff.magnitudeSquared(); // °Å¸® Á¦°ö
+		float distSq = vDiff.magnitudeSquared(); // ê±°ë¦¬ ì œê³±
 		if (distSq > fMaxDistSq)
 			fMaxDistSq = distSq;
 	}
 
 	float radius = sqrtf(fMaxDistSq) * fScale;
 
-	// 4. ±¸Ã¼ Áö¿À¸ŞÆ®¸® »ı¼º
+	// 4. êµ¬ì²´ ì§€ì˜¤ë©”íŠ¸ë¦¬ ìƒì„±
 	return PxSphereGeometry(radius);
 }
 
@@ -285,7 +351,7 @@ PxSphereGeometry CPhysX_Manager::CookSphereGeometry(_float fRadius)
 //		return nullptr;
 //
 //	PxTriangleMeshGeometry geom(pMesh);
-//	PxTransform pose = PxTransform(PxVec3(0.f)); // ±âº» ¿ùµå À§Ä¡
+//	PxTransform pose = PxTransform(PxVec3(0.f)); // ê¸°ë³¸ ì›”ë“œ ìœ„ì¹˜
 //
 //	CPhysXStaticActor* pActor = CPhysXStaticActor::Create(m_pPhysics, geom, pose, m_pDefaultMaterial, WorldFilter::STATIC);
 //	if (m_pScene && pActor)
@@ -293,6 +359,47 @@ PxSphereGeometry CPhysX_Manager::CookSphereGeometry(_float fRadius)
 //
 //	return pActor;
 //}
+
+
+void CPhysX_Manager::PrintCudaDeviceInfo()
+{
+	if (m_pCudaContextManager && m_pCudaContextManager->contextIsValid())
+	{
+		printf(" CUDA Context Valid\n");
+
+		int deviceCount = 0;
+		cudaError_t err = cudaGetDeviceCount(&deviceCount);
+		if (err != cudaSuccess)
+		{
+			printf(" cudaGetDeviceCount failed\n");
+			printf(cudaGetErrorString(err));
+			return;
+		}
+
+		if (deviceCount == 0)
+		{
+			printf(" No CUDA devices found\n");
+			return;
+		}
+
+		cudaDeviceProp prop;
+		err = cudaGetDeviceProperties(&prop, 0); // ì²« ë²ˆì§¸ ë””ë°”ì´ìŠ¤ ì •ë³´ ì¡°íšŒ
+		if (err != cudaSuccess)
+		{
+			printf(" cudaGetDeviceProperties failed\n");
+			printf(cudaGetErrorString(err));
+			return;
+		}
+
+		printf(" CUDA Device: ");
+		printf(prop.name);
+		printf("\n");
+	}
+	else
+	{
+		printf(" CUDA Context Invalid\n");
+	}
+}
 
 CPhysX_Manager* CPhysX_Manager::Create()
 {

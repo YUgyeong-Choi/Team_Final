@@ -146,7 +146,7 @@ HRESULT CYGTrrigerWithoutModel::Ready_Collider()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxVec3 halfExtents = PxVec3(1.f, 2.f, 3.f); // AABB 크기 (절반 값)
+	PxVec3 halfExtents = PxVec3(1.f, 2.f, 3.f);
 	PxBoxGeometry  geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(false, true, false);

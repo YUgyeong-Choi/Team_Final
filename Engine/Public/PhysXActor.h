@@ -40,6 +40,7 @@ public:
 protected:
     list<DEBUGRAY_DATA> m_RenderRay;
     _vector m_vRenderColor;
+    void Set_RenderColor();
 #endif
 protected:
     PxRigidActor* m_pActor = { nullptr };

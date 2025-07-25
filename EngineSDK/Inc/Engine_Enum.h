@@ -28,8 +28,10 @@ namespace Engine
 		B,
 		C,
 		D,
-		E
+		E,
+		TRIGGER
 	};
+
 
 	enum class ParamType { Bool, Trigger, Float, Int };
 }

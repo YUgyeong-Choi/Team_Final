@@ -20,7 +20,7 @@ public:
 	PxMaterial* GetMaterial(const wstring& name);
 
 	void Simulate(float fDeltaTime);
-
+	void Sync();
 	/* 
 	TriangleMesh : RayCast, TriggerShape, 충돌응답(Static전용) 만 가능
 	ConvexMesh : RayCast, TriggerShape, Overlap, Sweep, DynamicActor, KinematicActor, 충돌응답 가능
@@ -54,6 +54,7 @@ public:
 	//CPhysXStaticActor* Create_Terrain(const PxVec3* pVertices, PxU32 vertexCount, const PxU32* pIndices, PxU32 triangleCount);
 
 public:
+	void PrintCudaDeviceInfo();
 	static CPhysX_Manager* Create();
 	virtual void Free() override;
 
@@ -74,6 +75,7 @@ private:
 
 	CPhysX_ContactReport* m_pContactCallback = { nullptr };
 
+	PxCudaContextManager* m_pCudaContextManager;
 };
 
 NS_END

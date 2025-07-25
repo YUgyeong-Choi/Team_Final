@@ -476,6 +476,27 @@ void CPhysXActor::DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, co
     m_pBatch->End();
 }
 
+void CPhysXActor::Set_RenderColor()
+{
+    switch (m_eColliderType) 
+    {
+    case COLLIDERTYPE::PALYER:
+        break;
+    case COLLIDERTYPE::TRIGGER:
+        break;
+    case COLLIDERTYPE::A:
+        break;
+    case COLLIDERTYPE::B:
+        break;
+    case COLLIDERTYPE::C:
+        break;
+    case COLLIDERTYPE::D:
+        break;
+    case COLLIDERTYPE::E:
+        break;
+    }
+}
+
 
 void CPhysXActor::Free()
 {

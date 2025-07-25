@@ -135,10 +135,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 
-	m_pPhysX_Manager->Simulate(fTimeDelta);
+ 	m_pPhysX_Manager->Simulate(fTimeDelta);
 
 	m_pLevel_Manager->Update(fTimeDelta);
 
+	//m_pPhysX_Manager->Sync();
 #ifdef _DEBUG
 	if (Key_Down(DIK_F5))
 		m_pRenderer->Set_RenderTarget();
