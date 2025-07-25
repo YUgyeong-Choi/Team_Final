@@ -317,7 +317,7 @@
     </ClInclude>
     <ClInclude Include="..\public\EffectBase.h">
       <Filter>02.GameObjects\07.Effect</Filter>
-    </ClInclude>
+	</ClInclude>
     <ClInclude Include="..\public\UI_Sequence.h">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
     </ClInclude>

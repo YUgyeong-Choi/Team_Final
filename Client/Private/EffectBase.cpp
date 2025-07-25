@@ -10,6 +10,7 @@ CEffectBase::CEffectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CEffectBase::CEffectBase(const CEffectBase& Prototype)
 	: CBlendObject( Prototype )
+	, m_KeyFrames(Prototype.m_KeyFrames)
 {
 
 }
@@ -50,6 +51,11 @@ void CEffectBase::Late_Update(_float fTimeDelta)
 HRESULT CEffectBase::Render()
 {
 	return S_OK;
+}
+
+void CEffectBase::Set_KeyFrames(KEYFRAME tNewKeyframe)
+{
+	m_KeyFrames.push_back(tNewKeyframe);
 }
 
 void CEffectBase::Free()

@@ -33,6 +33,10 @@ public:
 
 public:
 	const vector<KEYFRAME>& Get_KeyFrames() { return m_KeyFrames; }
+	_int* Get_Duration_Ptr() { return &m_iDuration; }
+	_int* Get_StartTrackPosition_Ptr() { return &m_iStartTrackPosition; }
+
+	void Set_KeyFrames(KEYFRAME tNewKeyframe);
 
 protected:
 	CShader*		m_pShaderCom = { nullptr };
@@ -43,7 +47,8 @@ protected:
 
 protected:
 	// TrackPosition, Keyframes
-	_float				m_fDuration = {};
+	_int				m_iDuration = {10};
+	_int				m_iStartTrackPosition = {};
 	_float				m_fTickPerSecond = {};
 	_float				m_fCurrentTrackPosition = {};
 	_uint				m_iNumKeyFrames = {};
