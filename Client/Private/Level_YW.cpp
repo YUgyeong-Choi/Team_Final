@@ -30,6 +30,8 @@ HRESULT CLevel_YW::Initialize()
 	//if (FAILED(Ready_Layer_MapToolObject(TEXT("Layer_MapToolObject"))))
 	//	return E_FAIL;
 	
+
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
 	return S_OK;
 }
 

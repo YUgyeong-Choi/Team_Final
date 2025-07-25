@@ -4,6 +4,7 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
+Texture2D g_ARMTexture;
 
 
 struct VS_IN
@@ -47,21 +48,24 @@ VS_OUT VS_MAIN(VS_IN In)
 
 struct PS_IN
 {
-    float4 vPosition : SV_POSITION;
-    float4 vNormal : NORMAL;
-    float4 vTangent : TANGENT;
-    float3 vBinormal : BINORMAL;
-    float2 vTexcoord : TEXCOORD0;
-    float4 vWorldPos : TEXCOORD1;
-    float4 vProjPos : TEXCOORD2;
+    float4 vPosition    : SV_POSITION;
+    float4 vNormal      : NORMAL;
+    float4 vTangent     : TANGENT;
+    float3 vBinormal    : BINORMAL;
+    float2 vTexcoord    : TEXCOORD0;
+    float4 vWorldPos    : TEXCOORD1;
+    float4 vProjPos     : TEXCOORD2;
 };
 
 struct PS_OUT
 {
-    vector vDiffuse : SV_TARGET0;
-    vector vNormal : SV_TARGET1;
-    vector vDepth : SV_TARGET2;
-    vector vPickPos : SV_TARGET3;
+    vector vDiffuse     : SV_TARGET0;
+    vector vNormal      : SV_TARGET1;
+    vector vARM         : SV_TARGET2;
+    vector vProjPos     : SV_TARGET3;
+    vector vAO          : SV_TARGET4;
+    vector vRoughness   : SV_TARGET5;
+    vector vMetallic    : SV_TARGET6;
 };
 
 struct PS_SKY_OUT
@@ -73,22 +77,28 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
     
+    // 디퓨즈 텍스처
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     if (vMtrlDiffuse.a < 0.3f)
         discard;
     
+    // 노말 텍스처
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = mul(vNormal, WorldMatrix);
     
-    vNormal = mul(vNormal, WorldMatrix);    
-    
+    // ARM 텍스처
+    float3 vARM = g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
    
     Out.vDiffuse = vMtrlDiffuse;
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
-    Out.vPickPos = In.vWorldPos;
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 1.f);
+    Out.vARM = float4(vARM, 1.0f);
+    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
+    Out.vAO = float4(vARM.r, vARM.r, vARM.r, 1.f);
+    Out.vRoughness = float4(vARM.g, vARM.g, vARM.g, 1.0f);
+    Out.vMetallic = float4(vARM.b, vARM.b, vARM.b, 1.0f);
     
     return Out;
 }

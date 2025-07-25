@@ -37,6 +37,7 @@ namespace Engine
 		TYPE				eType;
 		XMFLOAT4			vDirection;
 		XMFLOAT4			vPosition;
+		float				fIntensity;
 		float				fRange;
 
 		XMFLOAT4			vDiffuse;
@@ -140,6 +141,7 @@ namespace Engine
 		static const unsigned int					iNumElements = { 6 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXPOS_PARTICLE_INSTANCE;
+
 #pragma region Model_Binary
 
 	typedef struct tagBoneData

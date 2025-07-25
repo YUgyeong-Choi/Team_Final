@@ -27,7 +27,7 @@ HRESULT CLevel_JW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
-
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::JW));
 	return S_OK;
 }
 
@@ -92,7 +92,6 @@ HRESULT CLevel_JW::Ready_Lights()
 
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
 		return E_FAIL;
-
 
 	return S_OK;
 }

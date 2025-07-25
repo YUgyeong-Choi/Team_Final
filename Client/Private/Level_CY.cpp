@@ -24,6 +24,7 @@ HRESULT CLevel_CY::Initialize()
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::CY));
 	return S_OK;
 }
 
