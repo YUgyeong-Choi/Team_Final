@@ -16,6 +16,15 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	HRESULT Ready_Video();
+
+
+private:
+	class CUI_Video* m_pMainUI = {};
+
+	_bool			 m_isReady = { false };
+	LEVEL			 m_eNextLevel = {LEVEL::END};
+
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

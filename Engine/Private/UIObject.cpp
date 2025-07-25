@@ -67,6 +67,42 @@ HRESULT CUIObject::Render()
 	return S_OK;
 }
 
+void CUIObject::FadeStart(_float fStartAlpha, _float fEndAlpha, _float fFadeTime)
+{
+	if (m_isFade)
+		return;
+
+	m_isFade = true;
+	
+
+	m_fStartAlpha = fStartAlpha;
+	m_fEndAlpha = fEndAlpha;
+	m_fFadeTime = fFadeTime;
+
+	m_fFadeElapsedTime = 0.f;
+
+}
+
+void CUIObject::Fade(float fTimeDelta)
+{
+	if (!m_isFade)
+		return;
+
+	m_fFadeElapsedTime += fTimeDelta;
+
+	if (m_fFadeElapsedTime >= m_fFadeTime)
+	{
+		m_isFade = false;
+		m_fFadeElapsedTime = 0.f;
+		m_fCurrentAlpha = m_fEndAlpha;
+		return;
+	}
+
+	_float t = std::clamp(m_fFadeElapsedTime / m_fFadeTime, 0.f, 1.f);
+	m_fCurrentAlpha = LERP(m_fStartAlpha, m_fEndAlpha, t);
+}
+
+
 void CUIObject::Free()
 {
 	__super::Free();

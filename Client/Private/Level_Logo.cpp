@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "Static_UI.h"
+#include "UI_Video.h"
 
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -13,6 +14,9 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
+	if (FAILED(Ready_Video()))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -22,45 +26,46 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	
 	if(m_pGameInstance->Key_Down(DIK_F1))
 	{
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::DH))))
-			return;
+		m_eNextLevel = LEVEL::DH;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F2))
 	{
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::JW))))
-			return;
+		m_eNextLevel = LEVEL::JW;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F3))
 	{
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::GL))))
-			return;
+		m_eNextLevel = LEVEL::GL;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F4))
 	{
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::YW))))
-			return;
+		m_eNextLevel = LEVEL::YW;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F5))
 	{
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::CY))))
-			return;
+		m_eNextLevel = LEVEL::CY;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F6))
 	{
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::YG))))
-			return;
+		m_eNextLevel = LEVEL::YG;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_F7))
 	{
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::KRAT_CENTERAL_STATION))))
+		m_eNextLevel = LEVEL::KRAT_CENTERAL_STATION;
+	}
+
+	if (LEVEL::END != m_eNextLevel)
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, m_eNextLevel))))
 			return;
 	}
+
+
 }
 
 HRESULT CLevel_Logo::Render()
@@ -74,6 +79,32 @@ HRESULT CLevel_Logo::Render()
 
 	text = L"F6 : 콜라이더 렌더 OnOff";
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 620.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Video()
+{
+	CUI_Video::VIDEO_UI_DESC eDesc = {};
+	eDesc.fOffset = 0.1;
+	eDesc.fInterval = 1.f;
+	eDesc.fSpeedPerSec = 30.f;
+	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Title.mp4");
+	eDesc.fX = g_iWinSizeX * 0.5f;
+	eDesc.fY = g_iWinSizeY * 0.5f;
+	eDesc.fSizeX = g_iWinSizeX;
+	eDesc.fSizeY = g_iWinSizeY;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
+		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Video"), &eDesc)))
+		return E_FAIL;
+
+
+	m_pMainUI = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Video")));
+
+	Safe_AddRef(m_pMainUI);
+
+	m_pMainUI->FadeStart(0.f, 1.f, 3.f);
 
 	return S_OK;
 }
@@ -97,4 +128,5 @@ void CLevel_Logo::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pMainUI);
 }

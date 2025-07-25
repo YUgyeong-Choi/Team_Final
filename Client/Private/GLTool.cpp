@@ -194,7 +194,7 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 	if (ImGui::BeginTabBar("Util"))
 	{
-		if (ImGui::BeginTabItem("Input"))
+		if (ImGui::BeginTabItem("Input Static Desc"))
 		{
 			// 입력 칸 만들기
 
@@ -245,6 +245,16 @@ HRESULT CGLTool::Render_SelectOptionTool()
 			ImGui::EndTabItem();
 		}
 
+		if (ImGui::BeginTabItem("Input Dynamic Desc"))
+		{
+			// 입력 칸 만들기
+
+
+
+
+			ImGui::EndTabItem();
+		}
+
 		if (ImGui::BeginTabItem("Button"))
 		{
 
@@ -269,6 +279,11 @@ HRESULT CGLTool::Render_SelectOptionTool()
 			{
 				if (nullptr != m_pSelectObj)
 					m_pSelectObj->Set_bDead();
+			}
+
+			if (Button(u8"Add Sequence"))
+			{
+				
 			}
 
 			if (Button(u8"Play Sequence"))
@@ -301,6 +316,7 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 			ImGui::EndTabItem();
 		}
+
 
 		ImGui::EndTabBar();
 	}

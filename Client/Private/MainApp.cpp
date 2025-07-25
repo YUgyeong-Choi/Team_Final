@@ -5,6 +5,7 @@
 
 #include "Static_UI.h"
 #include "Dynamic_UI.h"
+#include "UI_Video.h"
 
 #include "Sky.h"
 CMainApp::CMainApp()
@@ -260,6 +261,12 @@ HRESULT CMainApp::Ready_Loading()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/gauge/Img_ChGear.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Loading_Image*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Dissolve"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Dissolve.dds")))))
+		return E_FAIL;
+
+
 
 
 	/* For.Prototype_GameObject_Static_UI */
@@ -270,6 +277,11 @@ HRESULT CMainApp::Ready_Loading()
 	/* For.Prototype_GameObject_Dynamic_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
 		CDynamic_UI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Video_UI */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
+		CUI_Video::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	 
 	return S_OK;

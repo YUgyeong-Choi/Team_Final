@@ -22,6 +22,14 @@ using namespace ImNodes;
 using namespace ImGui;
 #endif
 
+// ¿µ»ó ¿ë
+#include <mfapi.h>
+#include <mfidl.h>
+#include <mfreadwrite.h>
+#include <mfobjects.h>
+#include <mferror.h>
+#include <iostream>
+
 namespace Client
 {
 	const unsigned int			g_iWinSizeX = 1600;

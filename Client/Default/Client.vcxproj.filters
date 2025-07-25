@@ -127,29 +127,26 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic">
       <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag">
-      <UniqueIdentifier>{6875e49f-be9f-4489-a085-8947ec2d62b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag\Slot">
-      <UniqueIdentifier>{101522f9-cb3f-4b33-89dd-ea1a4fea32a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
-      <UniqueIdentifier>{d25084e2-a294-435f-9e57-1c389a5d2735}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
-      <UniqueIdentifier>{45020529-4ae1-4570-8126-9f8d3f1d4c7c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Ergo">
-      <UniqueIdentifier>{046a677b-ac2f-4241-b046-33f2caa8c6dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
-      <UniqueIdentifier>{c802c0aa-2fed-41f2-a7b0-a9a6bfa5842b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\00.StaticMesh">
       <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelGL\UISequence\Controller">
-      <UniqueIdentifier>{a72b3d61-7808-4349-8b58-12bd0a0653f7}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature">
+      <UniqueIdentifier>{352f8db1-0649-441d-9b02-807cefb57c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Video">
+      <UniqueIdentifier>{23a91808-8324-4249-8518-c3ecc5b47f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Fade">
+      <UniqueIdentifier>{1f820ca1-801b-4471-a6a4-62a75a29c844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\UV">
+      <UniqueIdentifier>{316b5174-4657-45ad-91c2-3422eb303f38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Position">
+      <UniqueIdentifier>{fe249679-3cc4-4bb7-84c3-374afcb03f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Scale">
+      <UniqueIdentifier>{4537235e-4674-48ab-8d72-0aaf855c27fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -348,6 +345,12 @@
     <ClInclude Include="..\Public\YGShpere.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Feature.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Video.h">
+      <Filter>02.GameObjects\99.UI\Video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -524,6 +527,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\YGShpere.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Feature.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Video.cpp">
+      <Filter>02.GameObjects\99.UI\Video</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

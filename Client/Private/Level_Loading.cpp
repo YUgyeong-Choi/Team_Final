@@ -16,6 +16,7 @@
 
 #include "Static_UI.h"
 #include "Dynamic_UI.h"
+#include "UI_Video.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -37,14 +38,19 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 
-	if (FAILED(Ready_Loading()))
-		return E_FAIL;
+	if (m_eNextLevelID != LEVEL::LOGO)
+	{
+		if (FAILED(Ready_Loading()))
+			return E_FAIL;
+	}
+
 	
 	return S_OK;
 }
 
 void CLevel_Loading::Update(_float fTimeDelta)
 {
+
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
@@ -88,6 +94,25 @@ void CLevel_Loading::Update(_float fTimeDelta)
 							
 		}
 	}	
+
+
+
+	if (m_eNextLevelID == LEVEL::LOGO)
+	{
+		if (true == m_pLoader->isFinished())
+		{
+			CLevel* pLevel = { nullptr };
+
+			pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+
+			if (nullptr == pLevel)
+				return;
+
+			if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(m_eNextLevelID), pLevel)))
+				return;
+
+		}
+	}
 }
 
 HRESULT CLevel_Loading::Render()
@@ -156,6 +181,8 @@ HRESULT CLevel_Loading::Ready_Loading()
 
 	return S_OK;
 }
+
+
 
 CLevel_Loading* CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID)
 {

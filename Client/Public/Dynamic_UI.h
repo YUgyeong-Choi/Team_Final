@@ -106,7 +106,6 @@ private:
 	// 가로 세로 몇개 있는지
 	_int    m_iWidth = {};
 	_int    m_iHeight = {};
-
 	_int    m_iCount = {};
 
 
