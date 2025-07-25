@@ -173,6 +173,7 @@
     <ClInclude Include="..\Public\AnimTool.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
+    <ClInclude Include="..\Public\Level_KratHotel.h" />
     <ClInclude Include="..\Public\Level_KratCentralStation.h" />
     <ClInclude Include="..\Public\Level_GL.h" />
     <ClInclude Include="..\Public\Level_JW.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\Public\YGCapsule.h" />
     <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
+    <ClInclude Include="..\Public\YGTrrigerWithoutModel.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Calculation.h" />
     <ClInclude Include="framework.h" />
@@ -242,6 +244,7 @@
     <ClCompile Include="..\Private\Level_KratCentralStation.cpp" />
     <ClCompile Include="..\Private\Level_GL.cpp" />
     <ClCompile Include="..\Private\Level_JW.cpp" />
+    <ClCompile Include="..\Private\Level_KratHotel.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_YG.cpp" />
@@ -267,6 +270,7 @@
     <ClCompile Include="..\Private\YGCapsule.cpp" />
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
+    <ClCompile Include="..\Private\YGTriggerWithoutModel.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />

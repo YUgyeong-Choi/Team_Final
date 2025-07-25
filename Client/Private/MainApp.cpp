@@ -188,7 +188,6 @@ HRESULT CMainApp::Ready_Static()
 		CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
 	/* [ 朝五虞 社発 ] */
 	/* For.Prototype_GameObject_Camera_Free */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),

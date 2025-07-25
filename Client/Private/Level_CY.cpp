@@ -3,6 +3,8 @@
 #include "CYTool.h"
 #include "Camera_Manager.h"
 
+#include "Level_Loading.h"
+
 CLevel_CY::CLevel_CY(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -29,6 +31,12 @@ HRESULT CLevel_CY::Initialize()
 
 void CLevel_CY::Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Key_Down(DIK_F1))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
+			return;
+	}
+
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Priority_Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);

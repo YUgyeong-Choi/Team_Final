@@ -27,23 +27,19 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	HRESULT Bind_ShaderResources();
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 
-	virtual void On_CollisionEnter(CGameObject* pOther) override;
-	virtual void On_CollisionStay(CGameObject* pOther) override;
-	virtual void On_CollisionExit(CGameObject* pOther) override;
-
-	virtual void On_Hit(CGameObject* pOther) override;
+	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CPhysXStaticActor*  m_pPhysXActorCom = { nullptr };
 private:
+	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Components();
 	HRESULT Ready_Collider();
-
-	PxVec3 m_vHitPos = {};
-	_bool m_bRayHit = false;
 public:
 	static CYGBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

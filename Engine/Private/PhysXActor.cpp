@@ -20,6 +20,15 @@ CPhysXActor::CPhysXActor(const CPhysXActor& Prototype)
 
 }
 
+void CPhysXActor::Set_ColliderType(COLLIDERTYPE eColliderType)
+{
+    m_eColliderType = eColliderType; 
+#ifdef _DEBUG
+    Set_RenderColor();
+#endif
+
+}
+
 void CPhysXActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery)
 {
     m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation); // OnEnter, OnStay, OnExit È°¼ºÈ­
@@ -41,7 +50,8 @@ void CPhysXActor::On_Enter(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionEnter(m_pOwner);
+        pOther->Get_Owner()->On_CollisionEnter(m_pOwner, m_eColliderType);
+        m_vRenderColor = Colors::Red;
     }
 }
 
@@ -49,7 +59,7 @@ void CPhysXActor::On_Stay(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionStay(m_pOwner);
+        pOther->Get_Owner()->On_CollisionStay(m_pOwner, m_eColliderType);
     }
 }
 
@@ -57,16 +67,27 @@ void CPhysXActor::On_Exit(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionExit(m_pOwner);
+        pOther->Get_Owner()->On_CollisionExit(m_pOwner, m_eColliderType);
+        Set_RenderColor();
     }
 }
 
 
-void CPhysXActor::On_Trigger(CPhysXActor* pOther)
+void CPhysXActor::On_TriggerEnter(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_Trigger();
+        m_vRenderColor = Colors::Red;
+        pOther->Get_Owner()->On_TriggerEnter(m_pOwner, m_eColliderType);
+    }
+}
+
+void CPhysXActor::On_TriggerExit(CPhysXActor* pOther)
+{
+    if (m_pOwner && pOther->Get_Owner())
+    {
+        pOther->Get_Owner()->On_TriggerExit(m_pOwner, m_eColliderType);
+        Set_RenderColor();
     }
 }
 
@@ -466,6 +487,34 @@ void CPhysXActor::DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, co
     }
 
     m_pBatch->End();
+}
+
+void CPhysXActor::Set_RenderColor()
+{
+    switch (m_eColliderType) 
+    {
+    case COLLIDERTYPE::PALYER:
+        m_vRenderColor = Colors::Green;
+        break;
+    case COLLIDERTYPE::TRIGGER:
+        m_vRenderColor = Colors::BlueViolet;
+        break;
+    case COLLIDERTYPE::A:
+        m_vRenderColor = Colors::Orange;
+        break;
+    case COLLIDERTYPE::B:
+        m_vRenderColor = Colors::Blue;
+        break;
+    case COLLIDERTYPE::C:
+        m_vRenderColor = Colors::Pink;
+        break;
+    case COLLIDERTYPE::D:
+        m_vRenderColor = Colors::Aqua;
+        break;
+    case COLLIDERTYPE::E:
+        m_vRenderColor = Colors::SaddleBrown;
+        break;
+    }
 }
 
 

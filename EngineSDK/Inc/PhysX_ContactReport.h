@@ -74,8 +74,17 @@ public:
             CPhysXActor* actorA = static_cast<CPhysXActor*>(userDataA);
             CPhysXActor* actorB = static_cast<CPhysXActor*>(userDataB);
 
-            if (actorA) actorA->On_Trigger(actorB);
-            if (actorB) actorB->On_Trigger(actorA);
+            if (pair.status & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+            {
+                if (actorA) actorA->On_TriggerEnter(actorB);
+                if (actorB) actorB->On_TriggerEnter(actorA);
+            }
+
+            if (pair.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
+            {
+                if (actorA) actorA->On_TriggerExit(actorB);
+                if (actorB) actorB->On_TriggerExit(actorA);
+            }
         }
     }
     void onConstraintBreak(PxConstraintInfo*, PxU32) override {}

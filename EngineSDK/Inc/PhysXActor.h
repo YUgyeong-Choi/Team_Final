@@ -12,10 +12,12 @@ protected:
 public:
     virtual void Set_Transform(const PxTransform& pose) {};
     void Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
+    void Set_ColliderType(COLLIDERTYPE eColliderType);
 
     virtual PxRigidActor* Get_Actor() const { return m_pActor; }
     PxShape* Get_Shape() { return m_pShape; }
     CGameObject* Get_Owner() { return m_pOwner; }
+    COLLIDERTYPE Get_ColliderType() { return m_eColliderType; }
 
     void Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery);
     void Set_SimulationFilterData(PxFilterData _data);
@@ -24,12 +26,11 @@ public:
     virtual void On_Enter(CPhysXActor* pOther);
     virtual void On_Stay(CPhysXActor* pOther);
     virtual void On_Exit(CPhysXActor* pOther);
-    virtual void On_Trigger(CPhysXActor* pOther);
+    virtual void On_TriggerEnter(CPhysXActor* pOther);
+    virtual void On_TriggerExit(CPhysXActor* pOther);
     virtual HRESULT Render() override;
 #ifdef _DEBUG
     // For Debug Render
-    void Set_ColliderColor(_fvector vColor) { m_vRenderColor = vColor; }
-
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
     void DebugRender(_fmatrix view, _cmatrix proj, _float offSet = 0.f);
     void DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox = false, PxVec3 hitPos = { 0.f, 0.f, 0.f });
@@ -37,6 +38,7 @@ public:
 protected:
     list<DEBUGRAY_DATA> m_RenderRay;
     _vector m_vRenderColor;
+    void Set_RenderColor();
 #endif
 protected:
     PxRigidActor* m_pActor = { nullptr };
@@ -45,6 +47,9 @@ protected:
 
     // 소유자 게임 오브젝트 Call Hit
     CGameObject* m_pOwner = { nullptr };
+
+    // 어떤 콜라이더 타입인지
+    COLLIDERTYPE m_eColliderType = COLLIDERTYPE::A;
 
     // For Debug Render
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };

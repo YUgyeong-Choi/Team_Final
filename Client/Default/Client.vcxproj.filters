@@ -25,9 +25,6 @@
     <Filter Include="01.Levels\Loading\Loader">
       <UniqueIdentifier>{09b33f93-851a-4e38-8e8a-83626e4878cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\GamePlay">
-      <UniqueIdentifier>{a3f64273-696d-4106-b58f-efef5e5d53fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{db82fc83-d01c-41cf-8115-cfc65328ad5c}</UniqueIdentifier>
     </Filter>
@@ -147,6 +144,12 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Scale">
       <UniqueIdentifier>{4537235e-4674-48ab-8d72-0aaf855c27fc}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="01.Levels\0_Level_KratCentralStation">
+      <UniqueIdentifier>{a3f64273-696d-4106-b58f-efef5e5d53fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\1_Level_KratHotel">
+      <UniqueIdentifier>{ea5342ed-30cc-4ec1-8908-d537d6b3b11d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +172,7 @@
       <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_KratCentralStation.h">
-      <Filter>01.Levels\GamePlay</Filter>
+      <Filter>01.Levels\0_Level_KratCentralStation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>01.Levels\Loading</Filter>
@@ -350,6 +353,12 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Video.h">
       <Filter>02.GameObjects\99.UI\Video</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\YGTrrigerWithoutModel.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_KratHotel.h">
+      <Filter>01.Levels\1_Level_KratHotel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -370,7 +379,7 @@
       <Filter>98.Default</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_KratCentralStation.cpp">
-      <Filter>01.Levels\GamePlay</Filter>
+      <Filter>01.Levels\0_Level_KratCentralStation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
       <Filter>01.Levels\Loading</Filter>
@@ -533,6 +542,12 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Video.cpp">
       <Filter>02.GameObjects\99.UI\Video</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\YGTriggerWithoutModel.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_KratHotel.cpp">
+      <Filter>01.Levels\1_Level_KratHotel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,7 @@
 #include "Camera_Manager.h"
 
 #include "StaticMesh.h"
+#include "Level_Loading.h"
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -32,6 +33,12 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Key_Down(DIK_F1))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
+			return;
+	}
+
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 }
@@ -120,7 +127,7 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLaye
 HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
-		ENUM_CLASS(LEVEL::JW), strLayerTag)))
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag)))
 		return E_FAIL;
 
 	return S_OK;
