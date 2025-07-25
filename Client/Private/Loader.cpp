@@ -81,7 +81,10 @@ HRESULT CLoader::Loading()
 		break;
 
 	case LEVEL::KRAT_CENTERAL_STATION:
-		hr = Loading_For_GamePlay();
+		hr = Loading_For_KRAT_CENTERAL_STATION();
+		break;
+	case LEVEL::KRAT_HOTEL:
+		hr = Loading_For_KRAT_HOTEL();
 		break;
 	case LEVEL::DH:
 		hr = Loading_For_DH();
@@ -159,13 +162,13 @@ HRESULT CLoader::Loading_For_Static()
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_For_GamePlay()
+HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-	
+
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
-	
+
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
@@ -193,6 +196,36 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	return S_OK;
 }
+
+HRESULT CLoader::Loading_For_KRAT_HOTEL()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
+
+
+
+	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+
 
 HRESULT CLoader::Loading_For_DH()
 {

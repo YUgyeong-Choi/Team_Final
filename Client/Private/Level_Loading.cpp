@@ -2,6 +2,7 @@
 
 
 #include "Level_KratCentralStation.h"
+#include "Level_KratHotel.h"
 #include "Level_Logo.h"
 #include "Loader.h"
 
@@ -58,6 +59,9 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				break;
 			case LEVEL::KRAT_CENTERAL_STATION:
 				pLevel = CLevel_KratCentralStation::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::KRAT_HOTEL:
+				pLevel = CLevel_KratHotel::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL::DH:
 				pLevel = CLevel_DH::Create(m_pDevice, m_pContext);

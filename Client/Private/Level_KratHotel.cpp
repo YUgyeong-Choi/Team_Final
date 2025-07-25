@@ -1,24 +1,21 @@
-#include "Level_KratCentralStation.h"
+#include "Level_KratHotel.h"
 #include "GameInstance.h"
 #include "Camera_Manager.h"
 
-#include "StaticMesh.h"
 #include "Level_Loading.h"
 
-CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_KratHotel::CLevel_KratHotel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
 }
 
-HRESULT CLevel_KratCentralStation::Initialize()
+HRESULT CLevel_KratHotel::Initialize()
 {
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 	if (FAILED(Ready_Camera()))
-		return E_FAIL;
-	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
@@ -31,7 +28,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	return S_OK;
 }
 
-void CLevel_KratCentralStation::Update(_float fTimeDelta)
+void CLevel_KratHotel::Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
@@ -43,14 +40,14 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 }
 
-HRESULT CLevel_KratCentralStation::Render()
+HRESULT CLevel_KratHotel::Render()
 {
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
 
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_Lights()
+HRESULT CLevel_KratHotel::Ready_Lights()
 {
 	LIGHT_DESC			LightDesc{};
 
@@ -98,7 +95,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_Camera()
+HRESULT CLevel_KratHotel::Ready_Camera()
 {
 	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
@@ -106,40 +103,23 @@ HRESULT CLevel_KratCentralStation::Ready_Camera()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLayerTag)
-{
-	CStaticMesh::STATICMESH_DESC Desc{};
-	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.m_vInitPos = _float3(0.f, 0.f, 0.f);
-	Desc.m_vInitScale = _float3(1.f, 1.f, 1.f);
-	Desc.szMeshID = TEXT("SM_OldTown_BrickFloor_01");
-	lstrcpy(Desc.szName, TEXT("SM_TEST_FLOOR"));
-	Desc.szShaderID = TEXT("VtxMesh");
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
+HRESULT CLevel_KratHotel::Ready_Layer_Sky(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag)))
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CLevel_KratCentralStation* CLevel_KratCentralStation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_KratHotel* CLevel_KratHotel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CLevel_KratCentralStation* pInstance = new CLevel_KratCentralStation(pDevice, pContext);
+	CLevel_KratHotel* pInstance = new CLevel_KratHotel(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("Failed to Created : CLevel_KratCentralStation");
+		MSG_BOX("Failed to Created : CLevel_KratHotel");
 		Safe_Release(pInstance);
 	}
 
@@ -147,7 +127,7 @@ CLevel_KratCentralStation* CLevel_KratCentralStation::Create(ID3D11Device* pDevi
 }
 
 
-void CLevel_KratCentralStation::Free()
+void CLevel_KratHotel::Free()
 {
 	__super::Free();
 

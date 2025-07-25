@@ -61,6 +61,12 @@ void CLevel_Logo::Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::KRAT_CENTERAL_STATION))))
 			return;
 	}
+
+	if (m_pGameInstance->Key_Down(DIK_F8))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::KRAT_HOTEL))))
+			return;
+	}
 }
 
 HRESULT CLevel_Logo::Render()
