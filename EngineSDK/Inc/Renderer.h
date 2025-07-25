@@ -38,6 +38,9 @@ private:
 	_uint						m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};
 
 private:
+	_uint m_iCurrentRenderLevel = 0;
+
+private:
 	list<class CGameObject*>	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_END)];
 
 #ifdef _DEBUG
@@ -50,9 +53,11 @@ private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();
 	HRESULT Render_NonBlend();
+	HRESULT Render_PBRMesh();
 	HRESULT Render_Blend();
 	HRESULT Render_UI();
 	HRESULT Render_Lights();
+	HRESULT Render_PBRLights();
 	HRESULT Render_BackBuffer();
 	HRESULT Render_NonLight();
 	HRESULT Render_Blur();

@@ -121,6 +121,8 @@ HRESULT CConvertTool::Render_ConvertTool()
 				}
 			}
 			Copy_MaterialTextures();
+
+			printf("Converted %d files.\n", static_cast<int>(selections.size()));
 		}
 		IFILEDIALOG->Close();
 	}
