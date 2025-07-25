@@ -52,7 +52,7 @@ void CEffectSequence::Add(string name, _int start, _int end, _int type, _uint co
 
 void CEffectSequence::Add(string name, CEffectBase* effect, _int type, _uint color)
 {
-	m_Items.push_back(SEQDESC{ name, effect->Get_StartTrackPosition_Ptr(), effect->Get_Duration_Ptr(), type, color, effect});
+	m_Items.push_back(SEQDESC{ name, effect->Get_StartTrackPosition_Ptr(), effect->Get_EndTrackPosition_Ptr(), type, color, effect});
 }
 
 

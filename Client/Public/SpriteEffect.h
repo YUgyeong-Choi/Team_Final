@@ -12,12 +12,10 @@ NS_BEGIN(Client)
 class CSpriteEffect abstract : public CEffectBase
 {
 public:
-	typedef struct tagSpriteEffectDesc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct tagSpriteEffectDesc : public CEffectBase::DESC
 	{
 		_bool		bAnimation = { false };
 		_uint		iFrame = {};
-		_uint		iUVWidth = {};
-		_uint		iUVHeight = {};
 	}DESC;
 
 protected:
@@ -38,8 +36,6 @@ protected:
 
 protected:
 	_bool				m_bAnimation = { false };
-	_float				m_fMaxFrame = { };
-	_float				m_fFrame = { };
 
 protected:
 	virtual HRESULT Ready_Components();

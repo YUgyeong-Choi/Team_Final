@@ -102,7 +102,7 @@ static _float Compute_TriangleArea(const _float3& A, const _float3& B, const _fl
     return 0.5f * XMVectorGetX(len);
 }
 
-/* [ 쿼터니언을 xyz로 표기 ] */
+/* [ 쿼터니언을 xyz로 ] */
 static _float3 QuaternionToEuler(_fvector q)
 {
     _matrix mat = XMMatrixRotationQuaternion(q);

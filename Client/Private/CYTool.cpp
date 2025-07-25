@@ -3,6 +3,7 @@
 #include "EffectSequence.h"
 #include "ToolParticle.h"
 #include "ToolSprite.h"
+#include "Client_Calculation.h"
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
@@ -16,6 +17,7 @@ CCYTool::CCYTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CCYTool::CCYTool(const CCYTool& Prototype)
 	: CGameObject(Prototype)
 {
+
 }
 
 HRESULT CCYTool::Initialize_Prototype()
@@ -39,44 +41,55 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 	Key_Input();
 	if (m_bPlaySequence)
 	{
-		m_fTimeAcc += fTimeDelta;
-		if (m_fTimeAcc >= 1.f/60.f)
+		m_fCurFrame += m_fTickPerSecond * fTimeDelta;
+
+		m_fTimeAcc = 0.f;
+		m_iCurFrame = static_cast<_int>(m_fCurFrame);
+		if (m_fCurFrame > m_pSequence->GetFrameMax())
 		{
-			++m_iCurFrame;
-			if (m_iCurFrame > m_pSequence->GetFrameMax())
-				m_iCurFrame = m_pSequence->GetFrameMin();
-			m_fTimeAcc = 0.f;
+			m_fCurFrame = m_pSequence->GetFrameMin();
+			for (auto& pItem : m_pSequence->m_Items)
+			{
+				pItem.pEffect->Reset_TrackPosition();
+			}
 		}
-		//for (auto& pItem : m_pSequence->m_Items)
-		//{
-		//	if (m_iCurFrame >= pItem.iStart && m_iCurFrame <= pItem.iEnd)
-		//	{
-		//		pItem.pEffect->Priority_Update(fTimeDelta);
-		//		// 이펙트를 재생
-		//		//PlaySpriteEffect(pItem.iType, m_iCurFrame - pItem.iStart);
-		//	}
-		//}
+		for (auto& pItem : m_pSequence->m_Items)
+		{
+			if (m_iCurFrame >= *pItem.iStart && m_iCurFrame <= *pItem.iEnd)
+			{
+				pItem.pEffect->Priority_Update(fTimeDelta);
+				// 이펙트를 재생
+				//PlaySpriteEffect(pItem.iType, m_iCurFrame - pItem.iStart);
+			}
+		}
 	}
 }
 
 void CCYTool::Update(_float fTimeDelta)
 {
 	//if (m_bPlaySequence)
-	//{
-	//	for (auto& pItem : m_pSequence->m_Items)
-	//	{
-	//		if (m_iCurFrame >= pItem.iStart && m_iCurFrame <= pItem.iEnd)
-	//		{
-	//			pItem.pEffect->Update(fTimeDelta);
-	//			// 이펙트를 재생
-	//			//PlaySpriteEffect(pItem.iType, m_iCurFrame - pItem.iStart);
-	//		}
-	//	}
-	//}
+	{
+		for (auto& pItem : m_pSequence->m_Items)
+		{
+			if (m_fCurFrame >= *pItem.iStart && m_fCurFrame <= *pItem.iEnd)
+			{
+				pItem.pEffect->Update_Tool(fTimeDelta, m_fCurFrame - static_cast<_float>(*pItem.iStart));
+				// 이펙트를 재생
+				//PlaySpriteEffect(pItem.iType, m_fCurFrame - pItem.iStart);
+			}
+		}
+	}
 }
 
 void CCYTool::Late_Update(_float fTimeDelta)
 {
+	for (auto& pItem : m_pSequence->m_Items)
+	{
+		if (m_iCurFrame >= *pItem.iStart && m_iCurFrame <= *pItem.iEnd)
+		{
+			pItem.pEffect->Late_Update(fTimeDelta);
+		}
+	}
 }
 
 HRESULT CCYTool::Render()
@@ -163,8 +176,8 @@ HRESULT CCYTool::SequenceWindow()
 		desc.bAnimation = true;
 		desc.fRotationPerSec = 0.f;
 		desc.fSpeedPerSec = 5.f;
-		desc.iUVHeight = 8.f;
-		desc.iUVWidth = 8.f;
+		desc.iTileX = 8.f;
+		desc.iTileY = 8.f;
 		pInstance = dynamic_cast<CToolSprite*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
 		m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 	}
@@ -178,7 +191,7 @@ HRESULT CCYTool::SequenceWindow()
 HRESULT CCYTool::Edit_Preferences()
 {
 	ImGui::Begin("Edit Item Preferences");
-	if (m_pSequence == nullptr || m_pSequence->m_Items.empty())
+	if (m_pSequence == nullptr || m_pSequence->m_Items.empty() || m_iSelected == -1)
 	{
 		ImGui::End();
 		return S_OK;
@@ -220,26 +233,64 @@ HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pTS = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-	// pTS-> 
-	// 속성 imgui로 조정하기
-	// 재생 시키기 
-
-	ImGui::Dummy(ImVec2(0.0f, 10.0f));
-	ImGui::SeparatorText("Sprite Preferences");
-	ImGui::Dummy(ImVec2(0.0f, 10.0f));
-	ImGui::PushItemWidth(100);
-	ImGui::Text("U Count");
-	ImGui::SameLine();
-	ImGui::InputInt("##Grid_U", &m_iGridWidthCnt);
-	ImGui::SameLine();
-	ImGui::Text("V Count");
-	ImGui::SameLine();
-	ImGui::InputInt("##Grid_V", &m_iGridHeightCnt);
-	ImGui::PopItemWidth();
-
-	ImGui::Checkbox("Animation", &m_bAnimateSprite);
+	auto& TSKeyFrames = pTS->Get_KeyFrames();
+	//속성 imgui로 조정하기
+	//재생 시키기 
+	ImGui::Text("StartTrackPos: %d", *pTS->Get_StartTrackPosition_Ptr());
+	ImGui::Text("EndTrackPos: %d", *pTS->Get_EndTrackPosition_Ptr());
+	ImGui::Text("Duration: %d", *pTS->Get_Duration_Ptr());
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+	_int iIdx = {};
+	for (auto& Keyframe : TSKeyFrames)
+	{
+		ImGui::DragFloat(string("Frame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pTS->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
+
+		ImGui::DragFloat3(string("Translation" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vTranslation), 0.1f);
+
+		_float3 vRotAxis = QuaternionToEuler(XMLoadFloat4(&Keyframe.vRotation));
+		ImGui::BeginDisabled();
+		ImGui::DragFloat3(string("Rotation" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&vRotAxis));
+		ImGui::EndDisabled();
+
+		ImGui::DragFloat3(string("Scaling" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
+
+		_int iSelected = m_iSelectedInterpolationType;
+		if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
+		{
+			m_iSelectedInterpolationType = iSelected;
+			pTS->Set_InterpolationType(iIdx, static_cast<CEffectBase::INTERPOLATION>(iSelected));
+		}
+
+
+
+
+		++iIdx;
+		ImGui::Separator();
+	}
+
+
+
+	//ImGui::Dummy(ImVec2(0.0f, 10.0f));
+	//ImGui::SeparatorText("Sprite Preferences");
+	//ImGui::Dummy(ImVec2(0.0f, 10.0f));
+	//ImGui::PushItemWidth(100);
+	//ImGui::Text("U Count");
+	//ImGui::SameLine();
+	//ImGui::InputInt("##Grid_U", &m_iGridWidthCnt);
+	//ImGui::SameLine();
+	//ImGui::Text("V Count");
+	//ImGui::SameLine();
+	//ImGui::InputInt("##Grid_V", &m_iGridHeightCnt);
+	//ImGui::PopItemWidth();
+
+	//ImGui::Checkbox("Animation", &m_bAnimateSprite);
 
 
 	return S_OK;

@@ -314,7 +314,7 @@
     </ClInclude>
     <ClInclude Include="..\public\EffectBase.h">
       <Filter>02.GameObjects\07.Effect</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\UI_Sequence.h">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
     </ClInclude>
@@ -540,6 +540,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_SpriteEffect.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

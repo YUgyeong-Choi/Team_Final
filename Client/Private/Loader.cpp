@@ -311,7 +311,7 @@ HRESULT CLoader::Loading_For_CY()
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+ 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 	/* For.Prototype_GameObject_ToolSprite */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"),
 		CToolSprite::Create(m_pDevice, m_pContext))))

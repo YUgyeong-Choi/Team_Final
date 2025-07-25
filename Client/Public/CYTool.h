@@ -44,6 +44,15 @@ private:
 	CShader*				m_pShader = { nullptr };
 
 private:
+#pragma region BaseEffect
+	// 공통 이펙트 용 변수들
+	_int			m_iSelectedInterpolationType = { 0 };
+	const _char*	m_InterpolationTypes[5] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
+
+
+#pragma endregion
+
+
 #pragma region Sprite
 	// 스프라이트 이펙트 용 변수들
 	_int	m_iGridWidthCnt = { 1 };
@@ -77,7 +86,8 @@ private:
 
 	class CEffectSequence* m_pSequence = { nullptr };
 
-	_int		m_iCurFrame = {};
+	_int		m_iCurFrame = {}; // please make this deprecated...
+	_float		m_fCurFrame = {};
 	_bool		m_bExpanded = { true };
 	_int		m_iSelected = { -1 };
 	_int		m_iFirstFrame = { 0 };
@@ -86,6 +96,7 @@ private:
 	string		m_strSeqItemName = "Sprite";
 
 	_bool		m_bPlaySequence = { false };
+	_float		m_fTickPerSecond = { 60.f };
 
 	_float		m_fTimeAcc = {};
 

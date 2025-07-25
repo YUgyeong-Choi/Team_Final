@@ -27,7 +27,6 @@ HRESULT CSpriteEffect::Initialize(void* pArg)
 	DESC* pDesc = static_cast<DESC*>(pArg);
 
 	m_bAnimation = pDesc->bAnimation;
-	m_fMaxFrame = static_cast<_float>(pDesc->iFrame);
 
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -44,13 +43,14 @@ void CSpriteEffect::Priority_Update(_float fTimeDelta)
 
 void CSpriteEffect::Update(_float fTimeDelta)
 {
-	if (m_bAnimation)
-	{
-		m_fFrame += m_fMaxFrame * fTimeDelta;
+	//if (m_bAnimation)
+	//{
+	//	m_fFrame += m_fMaxFrame * fTimeDelta;
 
-		if (m_fFrame >= m_fMaxFrame)
-			m_fFrame = 0.f;
-	}
+	//	if (m_fFrame >= m_fMaxFrame)
+	//		m_fFrame = 0.f;
+	//}
+	__super::Update(fTimeDelta);
 
 	return ;
 }
@@ -110,7 +110,7 @@ HRESULT CSpriteEffect::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", static_cast<_uint>(m_fFrame))))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;	
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
