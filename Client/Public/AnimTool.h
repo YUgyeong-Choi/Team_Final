@@ -1,6 +1,8 @@
 #pragma once
 #include "GameObject.h"
-
+#include "Animator.h"
+#include "Animation.h"
+#include "AnimController.h"
 #define USE_IMGUI
 #include "Client_Defines.h"
 #include <MySequence.h>
@@ -8,10 +10,7 @@
 
 NS_BEGIN(Engine)
 class CModel;
-class CAnimation;
-class CAnimator;
 class CTransform;
-class CAnimController;
 class CShader;
 NS_END
 
@@ -34,23 +33,27 @@ public:
 	virtual HRESULT Render();
 
 private:
+	HRESULT Render_TransitionConditions();
 	HRESULT Render_AnimationSequence();
 	HRESULT Render_AnimStatesByNode();
 	HRESULT Render_Loaded_Models();
 	HRESULT Render_Load_Model();
 	HRESULT Render_AnimEvents();
+	HRESULT Render_Parameters();
 
 	HRESULT Bind_Shader();
 
 	void UpdateCurrentModel(_float fTimeDelta);
 	void CreateModel(const string& fileName,const string& filePath);
+	
 	void Setting_Sequence();
+
 	void SelectAnimation();
 	void Setting_AnimationProperties();
 
-	void Test_AnimEvents();
 
 	void SaveLoadEvents(_bool isSave = true);
+	void Test_AnimEvents();
 
 	void Manipulate(
 		Operation op,
@@ -58,6 +61,13 @@ private:
 		const _float snapR[3] = nullptr,   // 회전용 스냅 (deg)
 		const _float snapS[3] = nullptr    // 스케일용 스냅 (factor)
 	);
+
+	// 노드관련
+	void SelectNode();
+	void CreateLink();
+
+	HRESULT Modify_Transition(CAnimController::Transition& transition);
+
 
 private:
 	CAnimator* m_pCurAnimator = nullptr; // 현재 모델의 애니메이터
@@ -96,6 +106,23 @@ private:
 	_float m_fTimeAcc = 0.0f;
 	class CEventMag* m_pEventMag = nullptr; // 이벤트 매니저
 
+	// 애니메이션 스테이트 머신 관리용
+	_int m_iSpeicificNodeId = 1;
+	vector<Engine::Parameter> m_Parameters; // 파라미터들
+	_bool m_bShowParameters = false; // 파라미터 UI 표시 여부
+
+
+	static constexpr const _char* BoolOpNames[] = { "IsTrue", "IsFalse", "None" };
+	static constexpr const _char* TriggerOpNames[] = { "Trigger", "None" };
+	static constexpr const _char* CmpIntOpNames[] = { "Greater", "Less", "Equal", "NotEqual", "None" };
+	static constexpr const _char* CmpFloatOpNames[] = { "Greater", "Less", "None" };
+
+
+	static constexpr CAnimController::EOp BoolOps[] = { CAnimController::EOp::IsTrue,    CAnimController::EOp::IsFalse,    CAnimController::EOp::None };
+	static constexpr CAnimController::EOp TriggerOps[] = { CAnimController::EOp::Trigger,   CAnimController::EOp::None };
+	static constexpr CAnimController::EOp CmpIntOps[] = { CAnimController::EOp::Greater,   CAnimController::EOp::Less,     CAnimController::EOp::Equal,
+														   CAnimController::EOp::NotEqual,  CAnimController::EOp::None };
+	static constexpr CAnimController::EOp CmpFloatOps[] = { CAnimController::EOp::Greater,   CAnimController::EOp::Less,  CAnimController::EOp::None };
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -19,6 +19,22 @@ namespace Engine
 		string name;
 	};
 
+	struct Link
+	{
+		int iLinkId; // 링크 ID
+		int iLinkStartID; // 시작 Pin ID
+		int iLinkEndID; // 끝 Pin ID
+	};
+
+	struct Parameter
+	{
+		string name;
+		ParamType type;
+		bool bValue = false; // bool 값
+		int iValue = 0; // int 값
+		float fValue = 0.f; // float 값
+	};
+
 	typedef struct tagKeyFrame
 	{
 		/* 행렬이 아닌이유? : 상태와 상태 사이를 보간해주기위해서. */
