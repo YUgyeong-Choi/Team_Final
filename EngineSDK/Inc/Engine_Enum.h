@@ -23,7 +23,12 @@ namespace Engine
 
 	enum class COLLIDERTYPE 
 	{
-
+		PALYER,
+		A,
+		B,
+		C,
+		D,
+		E
 	};
 
 	enum class ParamType { Bool, Trigger, Float, Int };

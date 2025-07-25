@@ -23,6 +23,7 @@
 #include "YGConvexMesh.h"
 #include "YGBox.h"
 #include "YGShpere.h"
+#include "YGTrrigerWithoutModel.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -393,6 +394,11 @@ HRESULT CLoader::Loading_For_YG()
 	/* For.Prototype_GameObject_YGShpere */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGShpere"),
 		CYGShpere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YGTrrigerWithoutModel */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTrrigerWithoutModel"),
+		CYGTrrigerWithoutModel::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

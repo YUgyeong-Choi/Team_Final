@@ -342,6 +342,9 @@
     <ClInclude Include="..\Public\YGShpere.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\YGTrrigerWithoutModel.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -514,6 +517,9 @@
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\YGShpere.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGTriggerWithoutModel.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>

@@ -32,14 +32,15 @@ public:
 	virtual HRESULT Render_Shadow() { return S_OK; }
 
 public:
-	virtual void On_CollisionEnter(CGameObject* pOther) {}
-	virtual void On_CollisionStay(CGameObject* pOther) {}
-	virtual void On_CollisionExit(CGameObject* pOther) {}
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 
 	// Ray로 인항 충돌을 하면 On_Hit를 호출함 (HitPos & HitNormal을 가지고 올 수 있음)
-	virtual void On_Hit(CGameObject* pOther) {}
-	virtual void On_Trigger() {}
+	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 
+	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
+	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 public:
 	virtual void Set_bDead() { m_bDead = true; }
 	virtual _bool Get_bDead();

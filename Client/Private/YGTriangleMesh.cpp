@@ -123,7 +123,7 @@ HRESULT CYGTriangleMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGTriangleMesh::On_CollisionEnter(CGameObject* pOther)
+void CYGTriangleMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGTriangle 충돌 시작!\n");
 #ifdef _DEBUG
@@ -131,11 +131,11 @@ void CYGTriangleMesh::On_CollisionEnter(CGameObject* pOther)
 #endif
 }
 
-void CYGTriangleMesh::On_CollisionStay(CGameObject* pOther)
+void CYGTriangleMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CYGTriangleMesh::On_CollisionExit(CGameObject* pOther)
+void CYGTriangleMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGTriangle 충돌 종료!\n");
 #ifdef _DEBUG
@@ -143,7 +143,7 @@ void CYGTriangleMesh::On_CollisionExit(CGameObject* pOther)
 #endif
 }
 
-void CYGTriangleMesh::On_Hit(CGameObject* pOther)
+void CYGTriangleMesh::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	wprintf(L"YGTriangle Hit: %s\n", pOther->Get_Name().c_str());
 }
@@ -214,6 +214,7 @@ HRESULT CYGTriangleMesh::Ready_Collider()
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::B);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else

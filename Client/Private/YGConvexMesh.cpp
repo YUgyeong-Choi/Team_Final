@@ -123,7 +123,7 @@ HRESULT CYGConvexMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGConvexMesh::On_CollisionEnter(CGameObject* pOther)
+void CYGConvexMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGConvex 충돌 시작!\n");
 #ifdef _DEBUG
@@ -131,11 +131,11 @@ void CYGConvexMesh::On_CollisionEnter(CGameObject* pOther)
 #endif
 }
 
-void CYGConvexMesh::On_CollisionStay(CGameObject* pOther)
+void CYGConvexMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CYGConvexMesh::On_CollisionExit(CGameObject* pOther)
+void CYGConvexMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGConvex 충돌 종료!\n");
 #ifdef _DEBUG
@@ -143,7 +143,7 @@ void CYGConvexMesh::On_CollisionExit(CGameObject* pOther)
 #endif
 }
 
-void CYGConvexMesh::On_Hit(CGameObject* pOther)
+void CYGConvexMesh::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	wprintf(L"YGConvex Hit: %s\n", pOther->Get_Name().c_str());
 }
@@ -205,6 +205,7 @@ HRESULT CYGConvexMesh::Ready_Collider()
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::C);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else

@@ -152,7 +152,7 @@ HRESULT CYGObject::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGObject::On_CollisionEnter(CGameObject* pOther)
+void CYGObject::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 #ifdef _DEBUG
 	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
@@ -161,11 +161,11 @@ void CYGObject::On_CollisionEnter(CGameObject* pOther)
 	printf("플레이어 충돌 시작!\n");
 }
 
-void CYGObject::On_CollisionStay(CGameObject* pOther)
+void CYGObject::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CYGObject::On_CollisionExit(CGameObject* pOther)
+void CYGObject::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 #ifdef _DEBUG
 	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
@@ -173,10 +173,27 @@ void CYGObject::On_CollisionExit(CGameObject* pOther)
 	printf("플레이어 충돌 종료!\n");
 }
 
-void CYGObject::On_Hit(CGameObject* pOther)
+void CYGObject::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	wprintf(L"YGObject Hit: %s\n", pOther->Get_Name().c_str());
 }
+
+void CYGObject::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+#ifdef _DEBUG
+	m_pPhysXActorCom->Set_ColliderColor(Colors::MediumPurple);
+#endif
+	wprintf(L"YGObject Trigger 시작: %s\n", pOther->Get_Name().c_str());
+}
+
+void CYGObject::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+#ifdef _DEBUG
+	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
+#endif
+	wprintf(L"YGTrigger Trriger 종료: %s\n", pOther->Get_Name().c_str());
+}
+
 
 HRESULT CYGObject::Ready_Components()
 {
@@ -235,6 +252,7 @@ HRESULT CYGObject::Ready_Collider()
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PALYER);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else
@@ -298,7 +316,7 @@ void CYGObject::Ray()
 			PxVec3 hitNormal = hit.block.normal;
 
 			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
-			pHitActor->Get_Owner()->On_Hit(this);
+			pHitActor->Get_Owner()->On_Hit(this, m_pPhysXActorCom->Get_ColliderType());
 
 			printf("Ray충돌 했다!\n");
 			printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);

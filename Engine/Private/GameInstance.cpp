@@ -568,6 +568,11 @@ PxSphereGeometry CGameInstance::CookSphereGeometry(const PxVec3* pVertices, PxU3
 	return m_pPhysX_Manager->CookSphereGeometry(pVertices, vertexCount, fScale);
 }
 
+PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3& halfExtents)
+{
+	return m_pPhysX_Manager->CookBoxGeometry(halfExtents);
+}
+
 PxScene* CGameInstance::Get_Scene()
 {
 	return m_pPhysX_Manager->GetScene();

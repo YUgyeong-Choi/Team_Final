@@ -199,6 +199,11 @@ PxBoxGeometry CPhysX_Manager::CookBoxGeometry(const PxVec3* pVertices, PxU32 ver
 	return boxGeom;
 }
 
+PxBoxGeometry CPhysX_Manager::CookBoxGeometry(const PxVec3& halfExtents)
+{
+	return PxBoxGeometry(halfExtents);
+}
+
 PxCapsuleGeometry CPhysX_Manager::CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale)
 {
 	if (pVertices == nullptr || vertexCount == 0)

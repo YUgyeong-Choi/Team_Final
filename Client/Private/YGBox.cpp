@@ -123,7 +123,7 @@ HRESULT CYGBox::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGBox::On_CollisionEnter(CGameObject* pOther)
+void CYGBox::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGBox 충돌 시작!\n");
 #ifdef _DEBUG
@@ -131,11 +131,11 @@ void CYGBox::On_CollisionEnter(CGameObject* pOther)
 #endif
 }
 
-void CYGBox::On_CollisionStay(CGameObject* pOther)
+void CYGBox::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CYGBox::On_CollisionExit(CGameObject* pOther)
+void CYGBox::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGBox 충돌 종료!\n");
 #ifdef _DEBUG
@@ -143,7 +143,7 @@ void CYGBox::On_CollisionExit(CGameObject* pOther)
 #endif
 }
 
-void CYGBox::On_Hit(CGameObject* pOther)
+void CYGBox::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	wprintf(L"YGBox Hit: %s\n", pOther->Get_Name().c_str());
 }
@@ -210,6 +210,7 @@ HRESULT CYGBox::Ready_Collider()
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::D);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else

@@ -41,7 +41,7 @@ void CPhysXActor::On_Enter(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionEnter(m_pOwner);
+        pOther->Get_Owner()->On_CollisionEnter(m_pOwner, m_eColliderType);
     }
 }
 
@@ -49,7 +49,7 @@ void CPhysXActor::On_Stay(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionStay(m_pOwner);
+        pOther->Get_Owner()->On_CollisionStay(m_pOwner, m_eColliderType);
     }
 }
 
@@ -57,16 +57,24 @@ void CPhysXActor::On_Exit(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionExit(m_pOwner);
+        pOther->Get_Owner()->On_CollisionExit(m_pOwner, m_eColliderType);
     }
 }
 
 
-void CPhysXActor::On_Trigger(CPhysXActor* pOther)
+void CPhysXActor::On_TriggerEnter(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_Trigger();
+        pOther->Get_Owner()->On_TriggerEnter(m_pOwner, m_eColliderType);
+    }
+}
+
+void CPhysXActor::On_TriggerExit(CPhysXActor* pOther)
+{
+    if (m_pOwner && pOther->Get_Owner())
+    {
+        pOther->Get_Owner()->On_TriggerExit(m_pOwner, m_eColliderType);
     }
 }
 
