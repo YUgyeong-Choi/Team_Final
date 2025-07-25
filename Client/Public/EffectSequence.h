@@ -13,11 +13,11 @@ class CEffectSequence : public ImSequencer::SequenceInterface
 {
 public:
     CEffectSequence() = default;
-    ~CEffectSequence() = default;
+    virtual ~CEffectSequence();
 
 public:
-    virtual _int GetFrameMin() const override { return 0; };
-    virtual _int GetFrameMax() const override { return 150; };
+    virtual _int GetFrameMin() const override { return m_iFrameMin; };
+    virtual _int GetFrameMax() const override { return m_iFrameMax; };
     virtual _int GetItemCount() const override { return static_cast<_int>(m_Items.size()); };
 
     virtual void BeginEdit(_int iIndex)  override;
@@ -30,9 +30,11 @@ public:
     virtual void Add(_int type)  override;
     virtual void Add(string name, _int start, _int end, _int type, _uint color);
     virtual void Add(string name, _int start, _int end, _int type, _uint color, class CEffectBase* effect);
+    virtual void Add(string name, class CEffectBase* effect, _int type, _uint color);
     virtual void Del(_int index) override;
     virtual void Duplicate(_int index) override;
 
+    virtual size_t GetCustomHeight(int /*index*/) { return 12; }
     virtual void CustomDraw(int index, ImDrawList* draw_list, const ImRect& rc, const ImRect&, const ImRect&, const ImRect&) override;
 
     virtual void Copy() override;
@@ -44,14 +46,18 @@ public:
     typedef struct SequenceItem
     {
         string strName;
-        _int iStart = 0;
-        _int iEnd = 0;
+        _int* iStart = { nullptr };
+        _int* iEnd = { nullptr };
         _int iType = 0; // 타입에 따라 색상/분류 등 처리 가능
         _uint iColor = D3DCOLOR_ARGB(255, 255, 255, 255);
         class CEffectBase* pEffect = { nullptr };
     }SEQDESC;
 
     vector<SequenceItem>        m_Items;
+
+    _int m_iFrameMax = { 80 };
+    _int m_iFrameMin = { 0 };
+
 };
 
 NS_END

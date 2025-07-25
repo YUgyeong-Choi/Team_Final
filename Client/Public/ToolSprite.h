@@ -1,17 +1,16 @@
 #pragma once
 
 #include "Client_Defines.h"
-//#include "BlendObject.h"
 #include "SpriteEffect.h"
 
 NS_BEGIN(Client)
 
-class CToolSpirte final : public CSpriteEffect
+class CToolSprite final : public CSpriteEffect
 {
 private:
-	CToolSpirte(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CToolSpirte(const CToolSpirte& Prototype);
-	virtual ~CToolSpirte() = default;
+	CToolSprite(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CToolSprite(const CToolSprite& Prototype);
+	virtual ~CToolSprite() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -25,9 +24,8 @@ private:
 	virtual HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 
-
 public:
-	static CToolSpirte* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CToolSprite* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

@@ -1,0 +1,184 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_ATLBoss0_Skill_01_End"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_01_Left_End"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_01_Loop"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_01_Right_End"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_01_Start"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_02_End"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_02_Start"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_03"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_04_End"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_04_Left"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_04_Left_New"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_04_Left_P2_Start"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_04_Right"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_04_Start"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_05_Attack"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_05_End"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_05_Start"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_06"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_06_New"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_07"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_08"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_09",
+            "Events": [
+                {
+                    "EventName": "TestEvent",
+                    "Time": 33.0
+                }
+            ]
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_10"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_11_End"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_11_Left"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_11_Loop"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_11_Right"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_11_Start"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_12_End"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_12_Left"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_12_Right"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_12_Start"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_13"
+        },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_14"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_End"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_ing"
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Start"
+        },
+        {
+            "ClipName": "AS_Groggy_End"
+        },
+        {
+            "ClipName": "AS_Groggy_Loop"
+        },
+        {
+            "ClipName": "AS_Groggy_Start"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_B"
+        },
+        {
+            "ClipName": "AS_Hit_Dead_F"
+        },
+        {
+            "ClipName": "AS_Idle_C"
+        },
+        {
+            "ClipName": "AS_Idle_Loco"
+        },
+        {
+            "ClipName": "AS_Paralyzation_End"
+        },
+        {
+            "ClipName": "AS_Paralyzation_Loop"
+        },
+        {
+            "ClipName": "AS_Paralyzation_Start"
+        },
+        {
+            "ClipName": "AS_Run_C_F"
+        },
+        {
+            "ClipName": "AS_Run_C_F_Root"
+        },
+        {
+            "ClipName": "AS_Special_Die"
+        },
+        {
+            "ClipName": "AS_Turn_C_L"
+        },
+        {
+            "ClipName": "AS_Turn_C_R"
+        },
+        {
+            "ClipName": "AS_Walk_C_B"
+        },
+        {
+            "ClipName": "AS_Walk_C_F"
+        },
+        {
+            "ClipName": "AS_Walk_C_F_Root"
+        },
+        {
+            "ClipName": "AS_Walk_C_L"
+        },
+        {
+            "ClipName": "AS_Walk_C_R"
+        },
+        {
+            "ClipName": "AS_Walk_C_R_Root"
+        }
+    ]
+}

@@ -29,6 +29,11 @@ public:
 	HRESULT Update_Camera();
 	_fvector GetPosition();
 
+public:
+	_vector GetRightVector();
+	_vector GetUpVector();
+	_vector GetLookVector();
+
 protected:
 	_float				m_fFov = { };
 	_float				m_fNear = { };

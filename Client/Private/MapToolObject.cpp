@@ -24,6 +24,9 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	MAPTOOLOBJ_DESC* pDesc = static_cast<MAPTOOLOBJ_DESC*>(pArg);
+	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 

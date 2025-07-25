@@ -127,6 +127,24 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic">
       <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag">
+      <UniqueIdentifier>{6875e49f-be9f-4489-a085-8947ec2d62b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag\Slot">
+      <UniqueIdentifier>{101522f9-cb3f-4b33-89dd-ea1a4fea32a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
+      <UniqueIdentifier>{d25084e2-a294-435f-9e57-1c389a5d2735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
+      <UniqueIdentifier>{45020529-4ae1-4570-8126-9f8d3f1d4c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Ergo">
+      <UniqueIdentifier>{046a677b-ac2f-4241-b046-33f2caa8c6dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
+      <UniqueIdentifier>{c802c0aa-2fed-41f2-a7b0-a9a6bfa5842b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\00.StaticMesh">
       <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
     </Filter>
@@ -306,7 +324,7 @@
     <ClInclude Include="..\public\EventMag.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\YGMonster.h">
+    <ClInclude Include="..\Public\YGCapsule.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Static_UI.h">
@@ -317,6 +335,18 @@
     </ClInclude>
     <ClInclude Include="..\public\Dynamic_UI.h">
       <Filter>02.GameObjects\99.UI\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGTriangleMesh.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGConvexMesh.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGBox.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGShpere.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -471,7 +501,7 @@
     <ClCompile Include="..\private\EventMag.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\YGMonster.cpp">
+    <ClCompile Include="..\Private\YGCapsule.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Static_UI.cpp">
@@ -482,6 +512,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Dynamic_UI.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGTriangleMesh.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGConvexMesh.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGBox.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGShpere.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

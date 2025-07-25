@@ -37,6 +37,7 @@ public:
 	HRESULT Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg = nullptr);
 	const map<const _wstring, class CBase*>* Get_Prototypes();
+	class CBase* Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag);
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
@@ -48,6 +49,12 @@ public:
 	class CGameObject* Get_Object(_uint iLevelIndex, const _wstring& strLayerTag, _uint iIndex);
 	class CGameObject* Get_LastObject(_uint iLevelIndex, const _wstring& strLayerTag);
 	list<class CGameObject*>& Get_ObjectList(_uint iLevelIndex, const _wstring& strLayerTag);
+
+	//해당 이름을 포함한 레이어들의 태그를 모두 가져온다.
+	vector<wstring> Find_LayerNamesContaining(_uint iLevelIndex, const wstring& SubString);
+
+	//해당 레벨에 있는 레이어를 챙겨온다.
+	//const map<const _wstring, class CLayer*>& Get_Layers(_uint iLevelIndex) const;
 #pragma endregion
 
 #pragma region RENDERER
@@ -135,6 +142,7 @@ public:
 	PxCapsuleGeometry CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
 	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
 	PxSphereGeometry  CookSphereGeometry(_float fRadius);
+	PxSphereGeometry CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
 	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
 	PxScene* Get_Scene();
 	PxPhysics* GetPhysics();

@@ -205,7 +205,7 @@ HRESULT CMainApp::Ready_Static()
 		return E_FAIL;
 
 	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
-	m_pGameInstance->LoadSound("../Bin/Resources/Sound/Example/BGM/", false, true);
+	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
 
 	return S_OK;

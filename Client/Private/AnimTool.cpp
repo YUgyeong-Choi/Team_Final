@@ -15,7 +15,6 @@ CAnimTool::CAnimTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	, m_pEventMag(CEventMag::Get_Instance())
 {
 	Safe_AddRef(m_pGameInstance);
-	Safe_AddRef(m_pEventMag);
 }
 
 CAnimTool::CAnimTool(const CAnimTool& Prototype)
@@ -24,7 +23,6 @@ CAnimTool::CAnimTool(const CAnimTool& Prototype)
 	, m_pEventMag(CEventMag::Get_Instance())
 {
 	Safe_AddRef(m_pGameInstance);
-	Safe_AddRef(m_pEventMag);
 }
 
 HRESULT CAnimTool::Initialize_Prototype()
@@ -83,6 +81,8 @@ HRESULT CAnimTool::Render()
 			if (FAILED(Render_AnimEvents()))
 				return E_FAIL;
 		}
+		if (FAILED(Render_AnimStatesByNode()))
+			return E_FAIL;
 	}
 	else
 	{
@@ -208,6 +208,11 @@ HRESULT CAnimTool::Render_AnimEvents()
 	{
 		SaveLoadEvents();
 	}
+
+	if (ImGui::Button("Load All Clips Events from JSON"))
+	{
+		SaveLoadEvents(false);
+	}
 	return S_OK;
 }
 
@@ -286,6 +291,124 @@ HRESULT CAnimTool::Render_AnimationSequence()
 
 
 	ImGui::End();
+	return S_OK;
+}
+
+HRESULT CAnimTool::Render_AnimStatesByNode()
+{
+	if (m_pCurAnimator == nullptr || m_pCurAnimator->GetAnimController() == nullptr)
+	{
+		return S_OK;
+	}
+	static _int g_nodeID = 100; // 전역 노드로 ID 증가용으로 사용 
+	static _int iIndex = 0;
+	static _int selectedNodeID = -1;  // 선택한 노드 아이디
+	CAnimController* pCtrl = m_pCurAnimator->GetAnimController();
+
+	ImGui::Begin("Anim State Machine");
+
+	ImNodes::BeginNodeEditor();
+
+	// 우클릭으로 상대 추가 팝업
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) && ImNodes::IsEditorHovered())
+	{
+		ImGui::OpenPopup("AddStatePopup");
+	}
+
+	if (ImGui::BeginPopup("AddStatePopup"))
+	{
+		static char stateName[64] = "NewState";
+
+		ImGui::InputText("State Name", stateName, IM_ARRAYSIZE(stateName));
+
+		if (ImGui::Button("Add State"))
+		{
+			const ImVec2 mousePos = ImNodes::EditorContextGetPanning(); // 현재 마우스 위치
+			CAnimation* selectedAnim = m_pCurAnimation;
+
+			size_t newIdx = pCtrl->AddState(stateName, selectedAnim, iIndex++);
+			auto& newState = pCtrl->GetStates()[newIdx];
+			newState.iNodeId = g_nodeID++;
+			newState.fNodePos = { mousePos.x, mousePos.y };
+
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+
+	for (auto& state : pCtrl->GetStates())
+	{
+		ImNodes::BeginNode(state.iNodeId);
+
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted(state.stateName.c_str());
+		ImNodes::EndNodeTitleBar();
+
+		// 노드 아이디 
+		ImNodes::BeginInputAttribute(state.iNodeId * 10 + 1);
+		ImGui::Text("In");
+		ImNodes::EndInputAttribute();
+
+		ImNodes::BeginOutputAttribute(state.iNodeId * 10 + 2);
+		ImGui::Text("Out");
+		ImNodes::EndOutputAttribute();
+
+		ImNodes::EndNode();
+
+		/*if (state.fNodePos.x == 0.f && state.fNodePos.y == 0.f)
+		{
+			ImVec2 initPos = ImNodes::EditorContextGetPanning();
+			ImNodes::SetNodeEditorSpacePos(state.iNodeId, initPos);
+
+			state.fNodePos = { initPos.x, initPos.y };
+		}
+		else
+		{
+	
+		}*/
+		
+		ImVec2 pos = ImNodes::GetNodeEditorSpacePos(state.iNodeId);
+		state.fNodePos = { pos.x, pos.y };
+	}
+
+	
+	ImNodes::EndNodeEditor();
+	_int hoveredNodeID = -1;
+	if (ImNodes::IsNodeHovered(&hoveredNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+	{
+		selectedNodeID = hoveredNodeID;
+	}
+	ImGui::End();
+
+
+	if (selectedNodeID != -1)
+	{
+		for (auto& state : pCtrl->GetStates())
+		{
+			if (state.iNodeId == selectedNodeID)
+			{
+				ImGui::Begin("Anim Info");
+				ImGui::Text("State: %s", state.stateName.c_str());
+				if (state.clip)
+				{
+					ImGui::Text("Clip: %s", state.clip->Get_Name().c_str());
+					ImGui::Text("Duration: %.2f", state.clip->GetDuration());
+					ImGui::Text("Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
+					ImGui::Text("Tick Per Second: %.2f", state.clip->GetTickPerSecond());
+					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
+				}
+				else
+				{
+					ImGui::Text("No Clip Assigned");
+				}
+				ImGui::End();
+				break;
+			}
+		}
+	}
+
 	return S_OK;
 }
 
@@ -474,6 +597,7 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 {
 	if (m_pCurModel == nullptr)
 		return;
+	string path = string("../Bin/Save/AnimationEvents/") + m_stSelectedModelName + "_events.json";
 	if (isSave)
 	{
 		json root;
@@ -482,13 +606,37 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 		{
 			root["animations"].push_back(anim->Serialize());
 		}
-		string path = string("../Bin/Save/AnimationEvents/") + m_stSelectedModelName + "_events.json";
+	
 		ofstream ofs(path);
 		ofs << root.dump(4);
 	}
 	else
 	{
+		ifstream ifs(path);
+		if (!ifs.is_open())
+			return; // 파일이 없으면 로드하지 않음
+		json root;
+		ifs >> root;
 
+		if (root.contains("animations"))
+		{
+			auto& animationsJson = root["animations"];
+			auto& clonedAnims = m_LoadedAnimations[m_stSelectedModelName];
+
+			for (const auto& animData : animationsJson)
+			{
+				const string& clipName = animData["ClipName"];
+
+				for (auto& pAnim : clonedAnims)
+				{
+					if (pAnim->Get_Name() == clipName)
+					{
+						pAnim->Deserialize(animData);
+						break;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -685,6 +833,13 @@ void CAnimTool::Free()
 		Safe_Release(pair.second);
 	}
 
+	for (auto& pair : m_LoadedAnimations)
+	{
+		for (auto& anim : pair.second)
+			Safe_Release(anim);
+		pair.second.clear();
+	}
+	ImNodes::DestroyContext();
 	Safe_Release(m_pEventMag);
 	Safe_Delete(m_pMySequence);
 	Safe_Release(m_pAnimShader);

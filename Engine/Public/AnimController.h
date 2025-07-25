@@ -24,6 +24,8 @@ public:
 		string stateName;
 		class CAnimation* clip = nullptr; // 현재 애니메이션
 		_uint clipIndex{};
+		_int iNodeId; // 툴상에서의 노드 ID
+		_float2 fNodePos; // 툴상에서의 노드 위치
 	};
 
 	struct Transition 
@@ -32,6 +34,7 @@ public:
 		size_t       toIdx;
 		function<bool()> condition;
 		_float   duration;
+		_int iLinkNodeId; // 툴상에서의 링크 노드 ID
 	};
 
 
@@ -66,7 +69,7 @@ public:
 	void AddTransition(size_t fromIdx, size_t toIdx, const Condition& cond, _float duration = 0.2f);
 
 	void SetState(const string& name);
-	const vector<AnimState>& GetStates() const { return m_States; }
+	vector<AnimState>& GetStates() { return m_States; }
 	const vector<Transition>& GetTransitions() const { return m_Transitions; }
 public:
 	//virtual json Serialize() override;
