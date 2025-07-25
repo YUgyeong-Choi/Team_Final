@@ -12,7 +12,7 @@ protected:
 public:
     virtual void Set_Transform(const PxTransform& pose) {};
     void Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
-    void Set_ColliderType(COLLIDERTYPE eColliderType) { m_eColliderType = eColliderType; }
+    void Set_ColliderType(COLLIDERTYPE eColliderType);
 
     virtual PxRigidActor* Get_Actor() const { return m_pActor; }
     PxShape* Get_Shape() { return m_pShape; }
@@ -31,8 +31,6 @@ public:
     virtual HRESULT Render() override;
 #ifdef _DEBUG
     // For Debug Render
-    void Set_ColliderColor(_fvector vColor) { m_vRenderColor = vColor; }
-
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
     void DebugRender(_fmatrix view, _cmatrix proj, _float offSet = 0.f);
     void DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox = false, PxVec3 hitPos = { 0.f, 0.f, 0.f });

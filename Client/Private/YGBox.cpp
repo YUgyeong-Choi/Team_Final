@@ -42,10 +42,6 @@ HRESULT CYGBox::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
-
 	return S_OK;
 }
 
@@ -126,9 +122,7 @@ HRESULT CYGBox::Bind_ShaderResources()
 void CYGBox::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGBox 충돌 시작!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
-#endif
+
 }
 
 void CYGBox::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -138,9 +132,7 @@ void CYGBox::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CYGBox::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGBox 충돌 종료!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
+
 }
 
 void CYGBox::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)

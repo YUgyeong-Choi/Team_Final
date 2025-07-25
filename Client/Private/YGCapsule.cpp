@@ -42,10 +42,6 @@ HRESULT CYGCapsule::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
-
 	return S_OK;
 }
 
@@ -127,9 +123,7 @@ HRESULT CYGCapsule::Bind_ShaderResources()
 void CYGCapsule::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGCapsule 충돌 시작!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
-#endif
+
 }
 
 void CYGCapsule::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -139,9 +133,7 @@ void CYGCapsule::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 void CYGCapsule::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGCapsule 충돌 종료!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
+
 }
 
 void CYGCapsule::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)

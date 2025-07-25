@@ -42,9 +42,6 @@ HRESULT CYGTriangleMesh::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
 
 	return S_OK;
 }
@@ -126,9 +123,7 @@ HRESULT CYGTriangleMesh::Bind_ShaderResources()
 void CYGTriangleMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGTriangle 충돌 시작!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
-#endif
+
 }
 
 void CYGTriangleMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -138,9 +133,7 @@ void CYGTriangleMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollid
 void CYGTriangleMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGTriangle 충돌 종료!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
+
 }
 
 void CYGTriangleMesh::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)

@@ -40,10 +40,6 @@ HRESULT CYGObject::Initialize(void* pArg)
 
 	Update_ColliderPos();
 
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
-
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
 	return S_OK;
@@ -154,9 +150,6 @@ HRESULT CYGObject::Bind_ShaderResources()
 
 void CYGObject::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
-#endif
 
 	printf("플레이어 충돌 시작!\n");
 }
@@ -167,9 +160,6 @@ void CYGObject::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 void CYGObject::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
 	printf("플레이어 충돌 종료!\n");
 }
 
@@ -180,17 +170,12 @@ void CYGObject::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CYGObject::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::MediumPurple);
-#endif
 	wprintf(L"YGObject Trigger 시작: %s\n", pOther->Get_Name().c_str());
 }
 
 void CYGObject::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
+
 	wprintf(L"YGTrigger Trriger 종료: %s\n", pOther->Get_Name().c_str());
 }
 

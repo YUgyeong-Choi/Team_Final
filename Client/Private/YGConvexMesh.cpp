@@ -42,10 +42,6 @@ HRESULT CYGConvexMesh::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
-
 	return S_OK;
 }
 
@@ -126,9 +122,7 @@ HRESULT CYGConvexMesh::Bind_ShaderResources()
 void CYGConvexMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGConvex 충돌 시작!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
-#endif
+
 }
 
 void CYGConvexMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -138,9 +132,7 @@ void CYGConvexMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollider
 void CYGConvexMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGConvex 충돌 종료!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
+
 }
 
 void CYGConvexMesh::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
