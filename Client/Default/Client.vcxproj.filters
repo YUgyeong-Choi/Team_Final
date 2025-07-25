@@ -4,9 +4,6 @@
     <Filter Include="98.Default">
       <UniqueIdentifier>{e4b14c11-52df-475b-b837-3a232685c010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99.Defines">
-      <UniqueIdentifier>{72444e1a-0502-4c74-8392-c8e6a1e89ed0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00.MainApp">
       <UniqueIdentifier>{ffac1f7d-cb22-4ce8-a7fd-43cfb62fb4db}</UniqueIdentifier>
     </Filter>
@@ -162,12 +159,15 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Scale">
       <UniqueIdentifier>{4537235e-4674-48ab-8d72-0aaf855c27fc}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Levels\0_Level_KratCentralStation">
       <UniqueIdentifier>{a3f64273-696d-4106-b58f-efef5e5d53fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\1_Level_KratHotel">
       <UniqueIdentifier>{ea5342ed-30cc-4ec1-8908-d537d6b3b11d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Default\99.Defines">
+      <UniqueIdentifier>{72444e1a-0502-4c74-8392-c8e6a1e89ed0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -184,10 +184,10 @@
       <Filter>98.Default</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
-      <Filter>99.Defines</Filter>
+      <Filter>98.Default\99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Enum.h">
-      <Filter>99.Defines</Filter>
+      <Filter>98.Default\99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_KratCentralStation.h">
       <Filter>01.Levels\0_Level_KratCentralStation</Filter>
@@ -256,7 +256,7 @@
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Struct.h">
-      <Filter>99.Defines</Filter>
+      <Filter>98.Default\99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\YGTool.h">
       <Filter>01.Levels\LevelYG\YG_Tool</Filter>
@@ -307,7 +307,7 @@
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="Client_Calculation.h">
-      <Filter>99.Defines</Filter>
+      <Filter>98.Default\99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolParticle.h">
       <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
@@ -371,7 +371,7 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Video.h">
       <Filter>02.GameObjects\99.UI\Video</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\YGTrrigerWithoutModel.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
@@ -560,7 +560,7 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Video.cpp">
       <Filter>02.GameObjects\99.UI\Video</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\YGTriggerWithoutModel.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
@@ -590,15 +590,12 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-	<FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
-	  <Filter>97.ShaderFiles</Filter>
-	</FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_SpriteEffect.hlsl">
-		<Filter>97.ShaderFiles</Filter>
-	</FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl">
-		<Filter>97.ShaderFiles</Filter>
-	</FxCompile>
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPBRMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>

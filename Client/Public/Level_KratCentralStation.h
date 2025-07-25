@@ -31,7 +31,7 @@ private:
 private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Camera();
-	//HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
+	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 
 private:

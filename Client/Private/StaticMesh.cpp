@@ -27,7 +27,6 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	m_eLevelID = StaicMeshDESC->m_eLevelID;
 
 	m_szMeshID = StaicMeshDESC->szMeshID;
-	m_InitPos = StaicMeshDESC->m_vInitPos;
 
 	m_iRender = StaicMeshDESC->iRender;
 
