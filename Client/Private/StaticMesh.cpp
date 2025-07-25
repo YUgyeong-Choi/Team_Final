@@ -25,9 +25,9 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
 
 	m_eLevelID = StaicMeshDESC->m_eLevelID;
-	m_szMeshID = StaicMeshDESC->szMeshID;
+	//m_szMeshID = StaicMeshDESC->szMeshID;
 	m_szShaderID = StaicMeshDESC->szShaderID;
-	m_InitPos = StaicMeshDESC->m_vInitPos;
+	//m_InitPos = StaicMeshDESC->m_vInitPos;
 	m_iRender = StaicMeshDESC->iRender;
 
 	StaicMeshDESC->fSpeedPerSec = 0.f;
@@ -36,11 +36,13 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_InitPos.x, m_InitPos.y, m_InitPos.z, 1.f));
-	m_pTransformCom->SetUp_Scale(StaicMeshDESC->m_vInitScale.x, StaicMeshDESC->m_vInitScale.y, StaicMeshDESC->m_vInitScale.z);
+	m_pTransformCom->Set_WorldMatrix(StaicMeshDESC->WorldMatrix);
+
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_InitPos.x, m_InitPos.y, m_InitPos.z, 1.f));
+	//m_pTransformCom->SetUp_Scale(StaicMeshDESC->m_vInitScale.x, StaicMeshDESC->m_vInitScale.y, StaicMeshDESC->m_vInitScale.z);
 
 	return S_OK;
 }
@@ -80,15 +82,19 @@ HRESULT CStaticMesh::Render()
 	return S_OK;
 }
 
-HRESULT CStaticMesh::Ready_Components()
+HRESULT CStaticMesh::Ready_Components(void* pArg)
 {
+	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
+
+
+
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_")) + m_szShaderID,
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), StaicMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
