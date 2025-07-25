@@ -124,6 +124,24 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic">
       <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag">
+      <UniqueIdentifier>{6875e49f-be9f-4489-a085-8947ec2d62b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag\Slot">
+      <UniqueIdentifier>{101522f9-cb3f-4b33-89dd-ea1a4fea32a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
+      <UniqueIdentifier>{d25084e2-a294-435f-9e57-1c389a5d2735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
+      <UniqueIdentifier>{45020529-4ae1-4570-8126-9f8d3f1d4c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Ergo">
+      <UniqueIdentifier>{046a677b-ac2f-4241-b046-33f2caa8c6dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
+      <UniqueIdentifier>{c802c0aa-2fed-41f2-a7b0-a9a6bfa5842b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\00.StaticMesh">
       <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
     </Filter>
@@ -572,13 +590,16 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
+	<FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+	  <Filter>97.ShaderFiles</Filter>
+	</FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SpriteEffect.hlsl">
 		<Filter>97.ShaderFiles</Filter>
 	</FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl">
+		<Filter>97.ShaderFiles</Filter>
+	</FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPBRMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

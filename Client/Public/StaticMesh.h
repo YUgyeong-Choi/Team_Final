@@ -16,8 +16,8 @@ class CStaticMesh final : public CGameObject
 public:
 	typedef struct tagStaticMeshDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		//const _tchar*	szMeshID;
-		const _tchar*	szShaderID;
+		const _tchar*	szMeshID;
+
 		LEVEL			m_eLevelID;
 		_int			iRender = 0;
 
@@ -46,7 +46,6 @@ public:
 
 public:
 	LEVEL Get_LevelID() const { return m_eLevelID; }
-	const _tchar* Get_ShaderID() const { return m_szShaderID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 
 public:
@@ -60,7 +59,6 @@ private:
 
 protected: /* [ 초기화 변수 ] */
 	const _tchar*	m_szMeshID = { nullptr };
-	const _tchar*	m_szShaderID = { nullptr };
 	LEVEL			m_eLevelID = { LEVEL::END };
 	LEVEL			m_eLevelLight = { LEVEL::END };
 	_float3			m_InitPos = {};

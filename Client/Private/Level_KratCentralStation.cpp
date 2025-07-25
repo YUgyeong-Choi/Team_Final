@@ -36,6 +36,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pBGM->Set_Volume(1.f);
 	m_pBGM->Play();
 
+
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 	return S_OK;
 }
 
@@ -186,35 +188,25 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	LIGHT_DESC			LightDesc{};
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);	
-	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
 	LightDesc.fAmbient = 0.2f;
+	LightDesc.fIntensity = 5.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);	
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
-		return E_FAIL;
-
-
-	/*LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
-	LightDesc.fAmbient = 0.4f;
-	LightDesc.vSpecular = _float4(1.f, 0.f, 0.f, 1.f);
-
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
 		return E_FAIL;
 
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(15.f, 5.0f, 10.f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(0.f, 1.f, 0.f, 1.f);
-	LightDesc.fAmbient = 0.4f;
-	LightDesc.vSpecular = _float4(0.f, 1.f, 0.f, 1.f);
+	LightDesc.fAmbient = 0.2f;
+	LightDesc.fIntensity = 5.f;
+	LightDesc.fRange = 100.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
 
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
-		return E_FAIL;*/
-
+	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
+		return E_FAIL;
 
 	CShadow::SHADOW_DESC		Desc{};
 	Desc.vEye = _float4(0.f, 20.f, -15.f, 1.f);
@@ -237,23 +229,30 @@ HRESULT CLevel_KratCentralStation::Ready_Camera()
 	return S_OK;
 }
 
-//HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLayerTag)
-//{
-//	CStaticMesh::STATICMESH_DESC Desc{};
-//	Desc.iRender = 0;
-//	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-//	//Desc.m_vInitPos = _float3(0.f, 0.f, 0.f);
-//	//Desc.m_vInitScale = _float3(1.f, 1.f, 1.f);
-//	//Desc.szMeshID = TEXT("SM_OldTown_BrickFloor_01");
-//	lstrcpy(Desc.szName, TEXT("SM_TEST_FLOOR"));
-//	Desc.szShaderID = TEXT("VtxMesh");
-//
-//	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
-//		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-//		return E_FAIL;
-//
-//	return S_OK;
-//}
+
+HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLayerTag)
+{
+	CStaticMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.m_vInitPos = _float3(0.f, 0.f, 0.f);
+	Desc.m_vInitScale = _float3(1.f, 1.f, 1.f);
+	Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 
 HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 {

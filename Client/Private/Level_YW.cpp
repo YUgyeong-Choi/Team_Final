@@ -28,6 +28,8 @@ HRESULT CLevel_YW::Initialize()
 		return E_FAIL;
 
 	
+
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
 	return S_OK;
 }
 
