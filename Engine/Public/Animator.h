@@ -107,7 +107,10 @@ public:
 	}
 
     // 조건 검사용
-    _bool CheckBool(const string& name) const { return m_Params.at(name).bValue; }
+    _bool CheckBool(const string& name) const {
+        _bool test = m_Params.at(name).bValue;
+        return test;
+    }
     _float GetFloat(const string& name) const { return m_Params.at(name).fValue; }
     _bool CheckTrigger(const string& name) {
         auto& p = m_Params[name];

@@ -1,5 +1,5 @@
 ﻿#include "PhysX_Manager.h"
-#include <cuda_runtime.h>
+//#include <cuda_runtime.h>
 CPhysX_Manager::CPhysX_Manager()
 {
 }
@@ -321,46 +321,46 @@ PxSphereGeometry CPhysX_Manager::CookSphereGeometry(_float fRadius)
 //	return pActor;
 //}
 
-
-void CPhysX_Manager::PrintCudaDeviceInfo()
-{
-	if (m_pCudaContextManager && m_pCudaContextManager->contextIsValid())
-	{
-		printf(" CUDA Context Valid\n");
-
-		int deviceCount = 0;
-		cudaError_t err = cudaGetDeviceCount(&deviceCount);
-		if (err != cudaSuccess)
-		{
-			printf(" cudaGetDeviceCount failed\n");
-			printf(cudaGetErrorString(err));
-			return;
-		}
-
-		if (deviceCount == 0)
-		{
-			printf(" No CUDA devices found\n");
-			return;
-		}
-
-		cudaDeviceProp prop;
-		err = cudaGetDeviceProperties(&prop, 0); // 첫 번째 디바이스 정보 조회
-		if (err != cudaSuccess)
-		{
-			printf(" cudaGetDeviceProperties failed\n");
-			printf(cudaGetErrorString(err));
-			return;
-		}
-
-		printf(" CUDA Device: ");
-		printf(prop.name);
-		printf("\n");
-	}
-	else
-	{
-		printf(" CUDA Context Invalid\n");
-	}
-}
+//
+//void CPhysX_Manager::PrintCudaDeviceInfo()
+//{
+//	if (m_pCudaContextManager && m_pCudaContextManager->contextIsValid())
+//	{
+//		printf(" CUDA Context Valid\n");
+//
+//		int deviceCount = 0;
+//		cudaError_t err = cudaGetDeviceCount(&deviceCount);
+//		if (err != cudaSuccess)
+//		{
+//			printf(" cudaGetDeviceCount failed\n");
+//			printf(cudaGetErrorString(err));
+//			return;
+//		}
+//
+//		if (deviceCount == 0)
+//		{
+//			printf(" No CUDA devices found\n");
+//			return;
+//		}
+//
+//		cudaDeviceProp prop;
+//		err = cudaGetDeviceProperties(&prop, 0); // 첫 번째 디바이스 정보 조회
+//		if (err != cudaSuccess)
+//		{
+//			printf(" cudaGetDeviceProperties failed\n");
+//			printf(cudaGetErrorString(err));
+//			return;
+//		}
+//
+//		printf(" CUDA Device: ");
+//		printf(prop.name);
+//		printf("\n");
+//	}
+//	else
+//	{
+//		printf(" CUDA Context Invalid\n");
+//	}
+//}
 
 CPhysX_Manager* CPhysX_Manager::Create()
 {

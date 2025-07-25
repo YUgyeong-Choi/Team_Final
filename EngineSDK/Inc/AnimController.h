@@ -75,6 +75,7 @@ public:
 	void AddTransition(_int fromNode, _int toNode, const Link& link, _float duration = 0.2f, _bool bHasExitTime = false);
 
 	void SetState(const string& name);
+	void SetState(_int iNodeId);
 	vector<AnimState>& GetStates() { return m_States; }
 	AnimState* GetStateByName(const string& name)
 	{
@@ -110,6 +111,12 @@ private:
 	{
 		for (auto& s : m_States)
 			if (s.stateName == name) return &s;
+		return nullptr;
+	}
+	AnimState* FindStateByNodeId(_int iNodeId)
+	{
+		for (auto& s : m_States)
+			if (s.iNodeId == iNodeId) return &s;
 		return nullptr;
 	}
 

@@ -20,7 +20,7 @@ _bool CAnimController::Condition::Evaluate(CAnimator* animator) const
 		case EOp::IsTrue:
 			return animator->CheckBool(paramName);
 		case EOp::IsFalse:
-			return !animator->CheckBool(paramName);
+			return animator->CheckBool(paramName) == false;
 		default:
 			return false; // Bool 타입에서 지원하지 않는 연산
 		}
@@ -184,6 +184,16 @@ void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link
 void CAnimController::SetState(const string& name)
 {
 	auto state = FindState(name);
+	if (state)
+	{
+		m_CurrentStateNodeId = state->iNodeId;
+		m_pAnimator->PlayClip(state->clip);
+	}
+}
+
+void CAnimController::SetState(_int iNodeId)
+{
+	auto state = FindStateByNodeId(iNodeId);
 	if (state)
 	{
 		m_CurrentStateNodeId = state->iNodeId;

@@ -260,11 +260,13 @@ HRESULT CAnimTool::Render_Parameters()
 			switch (parm.type)
 			{
 			case ParamType::Bool:
-				ImGui::Checkbox(("##Val" + id).c_str(), &parm.bValue);
+				if (ImGui::Checkbox(("##Val" + id).c_str(), &parm.bValue))
+				{
 				if (m_pCurAnimator)
 				{
 					m_pCurAnimator->SetBool(parm.name, parm.bValue);
 				}
+				 }
 				break;
 			case ParamType::Int:
 				ImGui::DragInt(("##Val" + id).c_str(), &parm.iValue, 1, -10000, 10000);
@@ -686,6 +688,10 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 					// 클립이 있었던 경우에는 현재 애니메이션을 state의 애니메이션으로 변경
 					m_pCurAnimation = state.clip;
+					if (ImNodes::IsNodeSelected(selectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					{
+						pCtrl->SetState(selectedNodeID);
+					}
 				}
 				else
 				{
