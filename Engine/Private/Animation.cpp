@@ -241,6 +241,9 @@ json CAnimation::Serialize()
 	json j;
 	// 이벤트 직렬화
 	j["ClipName"] = m_AnimationName;
+	j["Duration"] = m_fDuration;
+	j["TickPerSecond"] = m_fTickPerSecond;
+	j["IsLoop"] = m_isLoop;
 	for (const auto& event : m_events)
 	{
 		j["Events"].push_back({
@@ -253,14 +256,32 @@ json CAnimation::Serialize()
 
 void CAnimation::Deserialize(const json& j)
 {
-	if (j.contains("Events"))
+	if (j.contains("ClipName") && j["ClipName"].is_string())
+	{
+		m_AnimationName = j["ClipName"].get<string>();
+	}
+
+	if (j.contains("TickPerSecond") && j["TickPerSecond"].is_number())
+	{
+		m_fTickPerSecond = j["TickPerSecond"].get<_float>();
+	}
+
+	if (j.contains("IsLoop") && j["IsLoop"].is_boolean())
+	{
+		m_isLoop = j["IsLoop"].get<_bool>();
+	}
+
+	if (j.contains("Events") && j["Events"].is_array())
 	{
 		for (const auto& event : j["Events"])
 		{
-			m_events.push_back({
-				event["Time"].get<_float>(),
-				event["EventName"].get<string>()
-				});
+			if (event.contains("Time") && event.contains("EventName"))
+			{
+				m_events.push_back({
+					event["Time"].get<_float>(),
+					event["EventName"].get<string>()
+					});
+			}
 		}
 	}
 }

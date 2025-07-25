@@ -16,6 +16,13 @@ public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_tchar		szModelPrototypeTag[MAX_PATH];
+		_float4x4	WorldMatrix = _float4x4(
+			1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			0.f, 0.f, 0.f, 1.f
+		);
+
 	}MAPTOOLOBJ_DESC;
 
 private:

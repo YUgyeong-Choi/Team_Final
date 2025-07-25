@@ -37,6 +37,9 @@ public:
 	void SetbActiveDialogView(_bool bActive) { m_bActiveDialogView = bActive; }
 	_bool GetbActiveDialogView() const { return m_bActiveDialogView; }
 
+public:
+	void SetPlayer(CGameObject* pPlayer) { m_pPlayer = pPlayer; }
+
 private:
 	_float			m_fMouseSensor = { };
 
@@ -54,6 +57,8 @@ private:
 
 	_vector			m_vPlayerPosition = {};
 
+private:
+	CGameObject*	m_pPlayer = { nullptr };
 
 private:
 	_vector			m_vDialogPostion = {};

@@ -234,6 +234,40 @@ PxCapsuleGeometry CPhysX_Manager::CookCapsuleGeometry(_float fRadius, _float fCa
 	return PxCapsuleGeometry(fRadius, fCapsuleHeight);
 }
 
+PxSphereGeometry CPhysX_Manager::CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale)
+{
+	if (pVertices == nullptr || vertexCount == 0)
+		return PxSphereGeometry();
+
+	// 1. AABB 계산
+	PxVec3 vMin = pVertices[0];
+	PxVec3 vMax = pVertices[0];
+
+	for (PxU32 i = 1; i < vertexCount; ++i)
+	{
+		vMin = vMin.minimum(pVertices[i]);
+		vMax = vMax.maximum(pVertices[i]);
+	}
+
+	// 2. 중심 계산 (AABB 중심 사용)
+	PxVec3 vCenter = (vMin + vMax) * 0.5f;
+
+	// 3. 반지름 계산 (가장 먼 점으로부터의 거리)
+	float fMaxDistSq = 0.f;
+	for (PxU32 i = 0; i < vertexCount; ++i)
+	{
+		PxVec3 vDiff = pVertices[i] - vCenter;
+		float distSq = vDiff.magnitudeSquared(); // 거리 제곱
+		if (distSq > fMaxDistSq)
+			fMaxDistSq = distSq;
+	}
+
+	float radius = sqrtf(fMaxDistSq) * fScale;
+
+	// 4. 구체 지오메트리 생성
+	return PxSphereGeometry(radius);
+}
+
 PxSphereGeometry CPhysX_Manager::CookSphereGeometry(_float fRadius)
 {
 	return PxSphereGeometry(fRadius);

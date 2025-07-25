@@ -38,7 +38,6 @@ private:
 	HRESULT ImGui_Docking_Settings();
 
 private:
-	HRESULT Ready_Layer_Camera_Free(const _wstring strLayerTag);
 	HRESULT Ready_Layer_MapToolObject(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 private:

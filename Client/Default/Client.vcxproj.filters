@@ -120,7 +120,7 @@
     </Filter>
     <Filter Include="01.Levels\LevelYW\MapTool\MapToolObject">
       <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Static">
       <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
     </Filter>
@@ -144,7 +144,7 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
       <UniqueIdentifier>{c802c0aa-2fed-41f2-a7b0-a9a6bfa5842b}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\00.StaticMesh">
       <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
     </Filter>
@@ -315,35 +315,32 @@
     <ClInclude Include="..\public\EffectBase.h">
       <Filter>02.GameObjects\07.Effect</Filter>
 	</ClInclude>
-	<ClInclude Include="..\public\UI_Sequence.h">
+    <ClInclude Include="..\public\UI_Sequence.h">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\EventMag.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\YGMonster.h">
+    <ClInclude Include="..\Public\YGCapsule.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Slot.h">
-      <Filter>02.GameObjects\99.UI\Dynamic\SlotBag\Slot</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Static_UI.h">
       <Filter>02.GameObjects\99.UI\Static</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Dynamic_UI.h">
-      <Filter>02.GameObjects\99.UI\Dynamic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Stamina_Bar.h">
-      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Ergo.h">
-      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Ergo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Icon_Dynamic.h">
-      <Filter>02.GameObjects\99.UI\Dynamic\Icon</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\StaticMesh.h">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGTriangleMesh.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGConvexMesh.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGBox.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGShpere.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -491,36 +488,33 @@
     </ClCompile>
     <ClCompile Include="..\private\EffectBase.cpp">
       <Filter>02.GameObjects\07.Effect</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\UI_Sequence.cpp">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\EventMag.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\YGMonster.cpp">
+    <ClCompile Include="..\Private\YGCapsule.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Slot.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\SlotBag\Slot</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Static_UI.cpp">
       <Filter>02.GameObjects\99.UI\Static</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Dynamic_UI.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\public\Stamina_Bar.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Ergo.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Ergo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Icon_Dynamic.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\Icon</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\StaticMesh.cpp">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGTriangleMesh.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGConvexMesh.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGBox.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGShpere.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -501,7 +501,7 @@ void CModel::Deserialize(const json& j)
 		{
 			for (auto& pAnim : m_Animations)
 			{
-				if (pAnim->Get_Name() == animData["name"])
+				if (pAnim->Get_Name() == animData["ClipName"])
 				{
 					pAnim->Deserialize(animData);
 					break;

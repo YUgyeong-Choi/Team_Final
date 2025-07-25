@@ -43,14 +43,15 @@ public:
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 	void Clear(_uint iLevelIndex);
 
+	//프로토타입이 존재하는지 확인하기 위해 public으로 올렸으요
+	class CBase* Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag);
+
 	const map<const _wstring, class CBase*>* Get_Prototypes() { return m_pPrototypes; }
 private:
 	_uint										m_iNumLevels = {};
 	map<const _wstring, class CBase*>*			m_pPrototypes = { nullptr };
 	typedef map<const _wstring, class CBase*>	PROTOTYPES;
 
-private:
-	class CBase* Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag);
 
 public:
 	static CPrototype_Manager* Create(_uint iNumLevels);

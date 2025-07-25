@@ -19,12 +19,20 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 		return E_FAIL;
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+
+	/* [ »ç¿îµå ] */
+	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
+	m_pBGM->Set_Volume(1.f);
+	m_pBGM->Play();
 
 	return S_OK;
 }
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
+	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 }
 
@@ -111,6 +119,10 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLaye
 
 HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 {
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
+		ENUM_CLASS(LEVEL::JW), strLayerTag)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -132,4 +144,9 @@ void CLevel_KratCentralStation::Free()
 {
 	__super::Free();
 
+	if (m_pBGM)
+	{
+		m_pBGM->Stop();
+		Safe_Release(m_pBGM);
+	}
 }

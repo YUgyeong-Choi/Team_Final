@@ -47,6 +47,7 @@ HRESULT CLevel_JW::Render()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
+	ImGui::NewFrame();
 
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -60,13 +61,13 @@ HRESULT CLevel_JW::Render()
 	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
 
-	ImGui::NewFrame();
 
 	if(FAILED(ImGui_Render()))
 		return E_FAIL;
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
 	//ImGui::UpdatePlatformWindows();
 	//ImGui::RenderPlatformWindowsDefault();
 	return S_OK;
@@ -122,7 +123,8 @@ HRESULT CLevel_JW::Ready_ImGui()
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
-	io.IniFilename = nullptr;  // ini 파일 저장/로드 비활성화
+	io.IniFilename = "../Bin/Resources/Models/Bin_Anim/ImGui.ini"; // ImGui 설정 파일 경로
+	ImNodes::CreateContext();
 	return S_OK;
 }
 
@@ -201,6 +203,7 @@ void CLevel_JW::Free()
 	ImGui_ImplWin32_Shutdown();
 	//ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable; // 멀티 뷰포트 비활성화
 	//ImGui::GetIO().Fonts->Clear(); // 폰트 캐시 정리
+
 	ImGui::DestroyContext();
 
 	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]);

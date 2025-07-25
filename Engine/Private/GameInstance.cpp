@@ -24,19 +24,19 @@ IMPLEMENT_SINGLETON(CGameInstance);
 static PxDefaultAllocator gAllocator;
 static PxDefaultErrorCallback gErrorCallback;
 
-#ifdef _DEBUG
-void EnableConsole()
-{
-	AllocConsole();
-
-	FILE* fp;
-	freopen_s(&fp, "CONOUT$", "w", stdout);
-	freopen_s(&fp, "CONIN$", "r", stdin);
-	freopen_s(&fp, "CONOUT$", "w", stderr);
-
-	SetConsoleTitle(L"Debug Console");
-}
-#endif
+//#ifdef _DEBUG
+//void EnableConsole()
+//{
+//	AllocConsole();
+//
+//	FILE* fp;
+//	freopen_s(&fp, "CONOUT$", "w", stdout);
+//	freopen_s(&fp, "CONIN$", "r", stdin);
+//	freopen_s(&fp, "CONOUT$", "w", stderr);
+//
+//	SetConsoleTitle(L"Debug Console");
+//}
+//#endif
 
 CGameInstance::CGameInstance()
 {
@@ -44,9 +44,9 @@ CGameInstance::CGameInstance()
 
 HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppContextOut)
 {
-#ifdef _DEBUG
-	EnableConsole(); // 콘솔 창 띄우기
-#endif
+//#ifdef _DEBUG
+//	EnableConsole(); // 콘솔 창 띄우기
+//#endif
 	srand(static_cast<unsigned>(time(nullptr)));
 
 	m_pGraphic_Device = CGraphic_Device::Create(EngineDesc.hWnd, EngineDesc.isWindowed, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY, ppDeviceOut, ppContextOut);
@@ -224,6 +224,11 @@ const map<const _wstring, class CBase*>* CGameInstance::Get_Prototypes()
 {
 	return m_pPrototype_Manager->Get_Prototypes();
 }
+
+class CBase* CGameInstance::Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag)
+{
+	return m_pPrototype_Manager->Find_Prototype(iLevelIndex, strPrototypeTag);
+}
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
@@ -270,6 +275,16 @@ list<class CGameObject*>& CGameInstance::Get_ObjectList(_uint iLevelIndex, const
 
 	return m_pObject_Manager->Get_ObjectList(iLevelIndex, strLayerTag);
 }
+
+vector<wstring> CGameInstance::Find_LayerNamesContaining(_uint iLevelIndex, const wstring& SubString)
+{
+	return m_pObject_Manager->Find_LayerNamesContaining(iLevelIndex, SubString);
+}
+
+//const map<const _wstring, class CLayer*>& CGameInstance::Get_Layers(_uint iLevelIndex) const
+//{
+//	//return m_pObject_Manager->Get_Layers(iLevelIndex);
+//}
 
 #pragma endregion
 
@@ -546,6 +561,11 @@ PxCapsuleGeometry CGameInstance::CookCapsuleGeometry(_float fRadius, _float fCap
 PxSphereGeometry CGameInstance::CookSphereGeometry(_float fRadius)
 {
 	return m_pPhysX_Manager->CookSphereGeometry(fRadius);
+}
+
+PxSphereGeometry CGameInstance::CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale)
+{
+	return m_pPhysX_Manager->CookSphereGeometry(pVertices, vertexCount, fScale);
 }
 
 PxScene* CGameInstance::Get_Scene()

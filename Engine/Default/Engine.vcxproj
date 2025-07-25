@@ -119,6 +119,7 @@
       <AdditionalIncludeDirectories>../public/;../../PhysXSDK/Include/;../../PhysXSDK/Include/cooking/;../../PhysXSDK/Include/task/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/MP</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -213,6 +214,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\Public\PhysXStaticActor.h" />
     <ClInclude Include="..\Public\PhysX_ContactReport.h" />
     <ClInclude Include="..\Public\PhysX_Manager.h" />
+    <ClInclude Include="..\Public\PhysX_IgnoreSelfCallback.h" />
     <ClInclude Include="..\public\Picking.h" />
     <ClInclude Include="..\public\PipeLine.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />

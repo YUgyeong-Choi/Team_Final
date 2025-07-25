@@ -28,12 +28,15 @@ public:
     virtual HRESULT Render() override;
 #ifdef _DEBUG
     // For Debug Render
+    void Set_ColliderColor(_fvector vColor) { m_vRenderColor = vColor; }
+
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
-    void DebugRender(const _matrix& view, const _matrix& proj, _float offSet = 0.f);
-    void DrawRay(const _matrix& view, const _matrix& proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox = false, PxVec3 hitPos = { 0.f, 0.f, 0.f });
+    void DebugRender(_fmatrix view, _cmatrix proj, _float offSet = 0.f);
+    void DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox = false, PxVec3 hitPos = { 0.f, 0.f, 0.f });
 
 protected:
     list<DEBUGRAY_DATA> m_RenderRay;
+    _vector m_vRenderColor;
 #endif
 protected:
     PxRigidActor* m_pActor = { nullptr };
@@ -49,7 +52,7 @@ protected:
     ID3D11InputLayout* m_pInputLayout = { nullptr };
 protected:
     HRESULT ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-private:
+protected:
     void DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, const PxTransform& pose, float radius, float halfHeight, FXMVECTOR color);
     void DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom);
     void DrawConvexMesh(PxTransform pose, PxGeometryHolder geom);

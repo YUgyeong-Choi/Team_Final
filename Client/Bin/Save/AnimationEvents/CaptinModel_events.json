@@ -2,270 +2,531 @@
     "animations": [
         {
             "ClipName": "AS_ATAB0_Skill_01",
+            "Duration": 210.0,
             "Events": [
                 {
                     "EventName": "TestEvent",
                     "Time": 71.43876647949219
                 }
-            ]
+            ],
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_ATAB0_Skill_02"
+            "ClipName": "AS_ATAB0_Skill_02",
+            "Duration": 179.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_ATAB0_Skill_03"
+            "ClipName": "AS_ATAB0_Skill_03",
+            "Duration": 231.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_ATAB0_Skill_04"
+            "ClipName": "AS_ATAB0_Skill_04",
+            "Duration": 256.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_ATAB0_Skill_05"
+            "ClipName": "AS_ATAB0_Skill_05",
+            "Duration": 279.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_ATAB1_Skill_01"
+            "ClipName": "AS_ATAB1_Skill_01",
+            "Duration": 372.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_ATAB1_Skill_02"
+            "ClipName": "AS_ATAB1_Skill_02",
+            "Duration": 394.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_ATAB1_Skill_03"
+            "ClipName": "AS_ATAB1_Skill_03",
+            "Duration": 177.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Fall_B_01"
+            "ClipName": "AS_Down_Away_Fall_B_01",
+            "Duration": 59.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Fall_B_02"
+            "ClipName": "AS_Down_Away_Fall_B_02",
+            "Duration": 59.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Fall_F_01"
+            "ClipName": "AS_Down_Away_Fall_F_01",
+            "Duration": 59.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Fall_F_02"
+            "ClipName": "AS_Down_Away_Fall_F_02",
+            "Duration": 59.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Intro_B_01"
+            "ClipName": "AS_Down_Away_Intro_B_01",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Intro_B_02"
+            "ClipName": "AS_Down_Away_Intro_B_02",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Intro_F_01"
+            "ClipName": "AS_Down_Away_Intro_F_01",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Intro_F_02"
+            "ClipName": "AS_Down_Away_Intro_F_02",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Land_B_01"
+            "ClipName": "AS_Down_Away_Land_B_01",
+            "Duration": 40.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Land_B_02"
+            "ClipName": "AS_Down_Away_Land_B_02",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Land_F_01"
+            "ClipName": "AS_Down_Away_Land_F_01",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Away_Land_F_02"
+            "ClipName": "AS_Down_Away_Land_F_02",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Dead_B_01"
+            "ClipName": "AS_Down_Dead_B_01",
+            "Duration": 126.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Dead_B_02"
+            "ClipName": "AS_Down_Dead_B_02",
+            "Duration": 160.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Dead_F_01"
+            "ClipName": "AS_Down_Dead_F_01",
+            "Duration": 165.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Dead_F_02"
+            "ClipName": "AS_Down_Dead_F_02",
+            "Duration": 115.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Drag_Intro_B"
+            "ClipName": "AS_Down_Drag_Intro_B",
+            "Duration": 85.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Drag_Intro_F"
+            "ClipName": "AS_Down_Drag_Intro_F",
+            "Duration": 87.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Getup_B_01"
+            "ClipName": "AS_Down_Getup_B_01",
+            "Duration": 187.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_GetUp_F_01"
+            "ClipName": "AS_Down_GetUp_F_01",
+            "Duration": 125.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Lying_B_01"
+            "ClipName": "AS_Down_Lying_B_01",
+            "Duration": 159.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Lying_B_02"
+            "ClipName": "AS_Down_Lying_B_02",
+            "Duration": 169.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Lying_F_01"
+            "ClipName": "AS_Down_Lying_F_01",
+            "Duration": 149.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Lying_F_02"
+            "ClipName": "AS_Down_Lying_F_02",
+            "Duration": 129.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Stamp_Intro_B"
+            "ClipName": "AS_Down_Stamp_Intro_B",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Down_Stamp_Intro_F"
+            "ClipName": "AS_Down_Stamp_Intro_F",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Fatal_NPC_Hit_End_B"
+            "ClipName": "AS_Fatal_NPC_Hit_End_B",
+            "Duration": 40.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Fatal_NPC_Hit_End_F"
+            "ClipName": "AS_Fatal_NPC_Hit_End_F",
+            "Duration": 52.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Fatal_NPC_Hit_Ing_B"
+            "ClipName": "AS_Fatal_NPC_Hit_Ing_B",
+            "Duration": 89.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Fatal_NPC_Hit_Ing_F"
+            "ClipName": "AS_Fatal_NPC_Hit_Ing_F",
+            "Duration": 89.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Fatal_NPC_Hit_Start_B"
+            "ClipName": "AS_Fatal_NPC_Hit_Start_B",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Fatal_NPC_Hit_Start_F"
+            "ClipName": "AS_Fatal_NPC_Hit_Start_F",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Fury_Attack_Start"
+            "ClipName": "AS_Fury_Attack_Start",
+            "Duration": 93.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Groggy_End"
+            "ClipName": "AS_Groggy_End",
+            "Duration": 100.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Groggy_Loop"
+            "ClipName": "AS_Groggy_Loop",
+            "Duration": 100.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Groggy_Start"
+            "ClipName": "AS_Groggy_Start",
+            "Duration": 70.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_B_01"
+            "ClipName": "AS_Hit_B_01",
+            "Duration": 88.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_B_02"
+            "ClipName": "AS_Hit_B_02",
+            "Duration": 70.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_B_03"
+            "ClipName": "AS_Hit_B_03",
+            "Duration": 86.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_Dead_B"
+            "ClipName": "AS_Hit_Dead_B",
+            "Duration": 460.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_Dead_B_01"
+            "ClipName": "AS_Hit_Dead_B_01",
+            "Duration": 96.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_Dead_B_02"
+            "ClipName": "AS_Hit_Dead_B_02",
+            "Duration": 140.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_Dead_B_03"
+            "ClipName": "AS_Hit_Dead_B_03",
+            "Duration": 161.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_Dead_F"
+            "ClipName": "AS_Hit_Dead_F",
+            "Duration": 460.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_Dead_F_01"
+            "ClipName": "AS_Hit_Dead_F_01",
+            "Duration": 89.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_Dead_F_02"
+            "ClipName": "AS_Hit_Dead_F_02",
+            "Duration": 137.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_Dead_F_03"
+            "ClipName": "AS_Hit_Dead_F_03",
+            "Duration": 148.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_L_01"
+            "ClipName": "AS_Hit_L_01",
+            "Duration": 83.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_L_02"
+            "ClipName": "AS_Hit_L_02",
+            "Duration": 81.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_L_03"
+            "ClipName": "AS_Hit_L_03",
+            "Duration": 83.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_R_01"
+            "ClipName": "AS_Hit_R_01",
+            "Duration": 83.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_R_02"
+            "ClipName": "AS_Hit_R_02",
+            "Duration": 83.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Hit_R_03"
+            "ClipName": "AS_Hit_R_03",
+            "Duration": 83.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Idle_C"
+            "ClipName": "AS_Idle_C",
+            "Duration": 240.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Idle_Loco"
+            "ClipName": "AS_Idle_Loco",
+            "Duration": 143.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_B_01"
+            "ClipName": "AS_KnockBack_Weak_B_01",
+            "Duration": 92.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_B_02"
+            "ClipName": "AS_KnockBack_Weak_B_02",
+            "Duration": 136.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_B_03"
+            "ClipName": "AS_KnockBack_Weak_B_03",
+            "Duration": 124.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_L_01"
+            "ClipName": "AS_KnockBack_Weak_L_01",
+            "Duration": 125.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_L_02"
+            "ClipName": "AS_KnockBack_Weak_L_02",
+            "Duration": 136.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_L_03"
+            "ClipName": "AS_KnockBack_Weak_L_03",
+            "Duration": 132.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_R_01"
+            "ClipName": "AS_KnockBack_Weak_R_01",
+            "Duration": 115.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_R_02"
+            "ClipName": "AS_KnockBack_Weak_R_02",
+            "Duration": 105.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_KnockBack_Weak_R_03"
+            "ClipName": "AS_KnockBack_Weak_R_03",
+            "Duration": 128.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Paralyzation_End"
+            "ClipName": "AS_Paralyzation_End",
+            "Duration": 117.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Paralyzation_Loop"
+            "ClipName": "AS_Paralyzation_Loop",
+            "Duration": 90.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Paralyzation_Start"
+            "ClipName": "AS_Paralyzation_Start",
+            "Duration": 80.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Run_C_F"
+            "ClipName": "AS_Run_C_F",
+            "Duration": 144.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Run_C_F_Root"
+            "ClipName": "AS_Run_C_F_Root",
+            "Duration": 73.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Turn_C_L"
+            "ClipName": "AS_Turn_C_L",
+            "Duration": 90.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Turn_C_R"
+            "ClipName": "AS_Turn_C_R",
+            "Duration": 90.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Walk_C_B"
+            "ClipName": "AS_Walk_C_B",
+            "Duration": 144.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Walk_C_B_Root"
+            "ClipName": "AS_Walk_C_B_Root",
+            "Duration": 136.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Walk_C_F"
+            "ClipName": "AS_Walk_C_F",
+            "Duration": 144.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Walk_C_F_Root"
+            "ClipName": "AS_Walk_C_F_Root",
+            "Duration": 126.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Walk_C_L"
+            "ClipName": "AS_Walk_C_L",
+            "Duration": 144.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Walk_C_L_Root"
+            "ClipName": "AS_Walk_C_L_Root",
+            "Duration": 130.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Walk_C_R"
+            "ClipName": "AS_Walk_C_R",
+            "Duration": 144.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Walk_C_R_Root"
+            "ClipName": "AS_Walk_C_R_Root",
+            "Duration": 130.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
         }
     ]
 }

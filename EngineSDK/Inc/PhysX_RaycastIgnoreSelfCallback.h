@@ -1,33 +1,26 @@
-#pragma once
-
-#include "PxQueryFiltering.h"
+#include "PxSimulationEventCallback.h"
 #include "PxPhysicsAPI.h"
+#include "PhysXActor.h"
 
 using namespace physx;
-#include <unordered_set>
 
 class CRaycastIgnoreSelfCallback : public PxQueryFilterCallback
 {
 public:
-    CRaycastIgnoreSelfCallback(const std::unordered_set<PxActor*>& ignoreActors)
-        : m_IgnoreActors(ignoreActors) {
-    }
+    CRaycastIgnoreSelfCallback(PxActor* pIgnoreActor) : m_pIgnoreActor(pIgnoreActor) {}
 
-    // 정확한 시그니처로 override
-    virtual PxQueryHitType::Enum preFilter(
-        const PxFilterData&, const PxShape*, const PxRigidActor* pActor, PxHitFlags& /*queryFlags*/) override
+    virtual PxQueryHitType::Enum preFilter(const PxFilterData&, const PxShape*, const PxRigidActor* actor, PxHitFlags&) override
     {
-        if (m_IgnoreActors.find((PxActor*)pActor) != m_IgnoreActors.end())
+        if (actor == m_pIgnoreActor)
             return PxQueryHitType::eNONE;
         return PxQueryHitType::eBLOCK;
     }
 
-    virtual PxQueryHitType::Enum postFilter(
-        const PxFilterData&, const PxQueryHit&, const PxShape*, const PxRigidActor*) override
+    virtual PxQueryHitType::Enum postFilter(const PxFilterData&, const PxQueryHit&, const PxShape*, const PxRigidActor*) override
     {
         return PxQueryHitType::eBLOCK;
     }
 
 private:
-    std::unordered_set<PxActor*> m_IgnoreActors;
+    PxActor* m_pIgnoreActor;
 };
