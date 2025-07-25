@@ -41,15 +41,17 @@ private:
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
 private:
-	void UpdateHierarchy();
+	void Add_ModelGroup(string ModelName, CGameObject* pMapToolObject);
+	void Delete_ModelGroup(CGameObject* pMapToolObject);
+
 	CGameObject* Get_Selected_GameObject();
 private:
+	//set하고싶었지만 imgui 선택이 인덱스로 접근해야해서 vector로
 	vector<string>	m_ModelNames = {};
 	_int			m_iSelectedModelIndex = { -1 };
 
 private:
-	map<string, vector<CGameObject*>> m_ModelGroups;
-	vector<string> m_HierarchyNames;
+	map<string, list<CGameObject*>> m_ModelGroups;
 	_int m_iSelectedHierarchyIndex = { -1 };
 
 private:

@@ -10,5 +10,9 @@
     {
         "ModelName": "SM_Station_Light_01",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_01.bin"
+    },
+    {
+        "ModelName": "SkyBox",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SkyBox.bin"
     }
 ]

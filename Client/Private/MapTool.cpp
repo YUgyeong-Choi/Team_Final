@@ -135,7 +135,7 @@ HRESULT CMapTool::Save_Map()
 
 		//Json 파일에 모델의 이름과 파일경로 저장
 		string strModelName = WStringToString(ModelName);
-		filesystem::path path = filesystem::path(PATH_NONANIM) / (strModelName + ".bin");
+		filesystem::path path = filesystem::path(PATH_NONANIM) / (strModelName + ".bin"); //이렇게 하드코드 저장말고
 		string FullPath = path.generic_string();
 
 		json ObjectJson;
@@ -233,6 +233,7 @@ HRESULT CMapTool::Load_Map()
 			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
 			ModelPrototypeTag += wstrModelName;
 
+			lstrcpy(MapToolObjDesc.szModelName, wstrModelName.c_str());
 			lstrcpy(MapToolObjDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 			MapToolObjDesc.WorldMatrix = WorldMatrix;
 
@@ -242,7 +243,9 @@ HRESULT CMapTool::Load_Map()
 				ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
 				return E_FAIL;
 
-			UpdateHierarchy();
+			//방금 추가한서을 모델 그룹에 분류해서 저장
+			Add_ModelGroup(ModelName, m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
+
 		}
 	}
 
@@ -271,11 +274,10 @@ void CMapTool::Hierarchy()
 			// 트리 노드 생성 (열려있게 기본 설정) - 모델 이름을 기준으로 그룹화된 항목
 			_bool bOpen = ImGui::TreeNodeEx(ModelName.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 
-			//_uint j = 0; // 각 모델 그룹 내에서의 개별 오브젝트 인덱스
 			for (auto pGameObject : group.second)
 			{
 				// 개별 오브젝트에 대한 이름 생성 (ID 값 주자 나중에)
-				string strHierarchyName = ModelName + " (ID:" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID()) + ')';
+				string strHierarchyName = "(ID:" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID()) + ')' + ModelName;
 
 				// 현재 인덱스가 선택된 상태인지 확인
 				_bool isSelected = (m_iSelectedHierarchyIndex == i);
@@ -306,8 +308,14 @@ void CMapTool::Hierarchy()
 	if (ImGui::Button("Delete"))
 	{
 		CGameObject* pGameObject = Get_Selected_GameObject();
+
 		if (nullptr != pGameObject)
+		{
+			//그룹에서 삭제
+			Delete_ModelGroup(pGameObject);
+			//실제로 삭제
 			pGameObject->Set_bDead();
+		}
 	}
 
 	if (ImGui::Button("Save Map"))
@@ -405,7 +413,11 @@ void CMapTool::Asset()
 				}
 				else
 				{
-					m_ModelNames.push_back(strPrototypeTag);
+					// 이미 이름이 목록에 존재하면 중복 추가하지 않음
+					if (find(m_ModelNames.begin(), m_ModelNames.end(), strPrototypeTag) == m_ModelNames.end())
+					{
+						m_ModelNames.push_back(strPrototypeTag); // 이름 추가
+					}
 				}
 			}
 		}
@@ -433,7 +445,7 @@ HRESULT CMapTool::Spawn_MapToolObject()
 	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
 	ModelPrototypeTag += ModelName;
 	lstrcpy(MapToolObjDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
+	lstrcpy(MapToolObjDesc.szModelName, ModelName.c_str());
 	/*
 	스폰을 눌렀을 때 어떤 레이어에 담았는지 저장하는 레이어 리스트가 필요함
 	삭제할 때 레이어가 존재하는 지 확인(레이어가 없으면 존재하지 않다는 것)
@@ -444,11 +456,13 @@ HRESULT CMapTool::Spawn_MapToolObject()
 
 	MapToolObjDesc.iID = m_iID++;
 
+
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 		ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
 		return E_FAIL;
 
-	UpdateHierarchy();
+	//방금 추가한서을 모델 그룹에 분류해서 저장
+	Add_ModelGroup(WStringToString(ModelName), m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
 
 	return S_OK;
 }
@@ -474,65 +488,108 @@ HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModel
 	return S_OK;
 }
 
-void CMapTool::UpdateHierarchy()
+//void CMapTool::UpdateHierarchy()
+//{
+//	// 기존 데이터 초기화
+//	m_ModelGroups.clear();      // 모델 이름별로 그룹화된 GameObject 리스트 초기화
+//	m_HierarchyNames.clear();   // Hierarchy UI에서 사용할 이름 리스트 초기화
+//
+//	// 현재 레벨(YW)의 모든 레이어들에 대해 반복
+//	for (auto& pLayer : m_pGameInstance->Get_Layers(ENUM_CLASS(LEVEL::YW)))
+//	{
+//		// 레이어 이름에 "MapObject"가 포함되지 않으면 무시 (맵 에디터용 객체만 필터링)
+//		if (pLayer.first.find(L"MapToolObject") == wstring::npos)
+//			continue;
+//
+//		// 해당 레이어의 모든 GameObject에 대해 반복
+//		for (auto pGameObject : pLayer.second->Get_GameObjects())
+//		{
+//			// 모델 컴포넌트 이름에서 "Prototype_Component_Model_" 접두사를 기준으로 모델명 추출
+//			wstring prefix = L"Prototype_Component_Model_";
+//			wstring wstrModelCom = *static_cast<CMapToolObject*>(pGameObject)->Get_ModelPrototypeTag(); // 모델 이름 얻기
+//
+//			// 접두사가 없는 경우는 무시
+//			size_t PosPrefix = wstrModelCom.find(prefix);
+//			if (PosPrefix == wstring::npos)
+//				continue;
+//
+//			// 접두사 이후의 실제 모델 이름 부분을 잘라내어 string으로 변환
+//			string ModelName = WStringToString(wstrModelCom.substr(PosPrefix + prefix.length()));
+//
+//			// 모델 이름을 키로 하여 그룹에 GameObject를 추가
+//			m_ModelGroups[ModelName].push_back(pGameObject);
+//		}
+//
+//		// 모델 그룹들로부터 UI에 사용할 Hierarchy 이름들을 생성
+//		_uint i = 0; // 전체 인덱스
+//		for (auto& group : m_ModelGroups)
+//		{
+//			for (auto pGameObject : group.second)
+//			{
+//				// "모델이름_숫자" 형태의 이름 생성하여 Hierarchy UI 항목으로 사용
+//				string strHierarchyName = group.first + "_" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID());
+//
+//				// 이름 리스트에 추가
+//				m_HierarchyNames.push_back(strHierarchyName);
+//
+//				++i; // 전체 인덱스 증가
+//			}
+//		}
+//	}
+//
+//}
+
+void CMapTool::Add_ModelGroup(string ModelName, CGameObject* pMapToolObject)
 {
-	// 기존 데이터 초기화
-	m_ModelGroups.clear();      // 모델 이름별로 그룹화된 GameObject 리스트 초기화
-	m_HierarchyNames.clear();   // Hierarchy UI에서 사용할 이름 리스트 초기화
+	// 모델 이름을 키로 하여 그룹에 GameObject를 추가
+	m_ModelGroups[ModelName].push_back(pMapToolObject);
+}
 
-	// 현재 레벨(YW)의 모든 레이어들에 대해 반복
-	for (auto& pLayer : m_pGameInstance->Get_Layers(ENUM_CLASS(LEVEL::YW)))
+void CMapTool::Delete_ModelGroup(CGameObject* pMapToolObject)
+{
+	// map<string, vector<CGameObject*>> m_ModelGroups; 에서
+	// 그룹중 이름과, 아이디가 같은놈을 제거
+
+	string ModelName = static_cast<CMapToolObject*>(pMapToolObject)->Get_ModelName();
+
+	auto iterGroup = m_ModelGroups.find(ModelName);
+
+	// 해당 그룹이 존재하지 않으면 리턴
+	if (iterGroup == m_ModelGroups.end())
 	{
-		// 레이어 이름에 "MapObject"가 포함되지 않으면 무시 (맵 에디터용 객체만 필터링)
-		if (pLayer.first.find(L"MapToolObject") == wstring::npos)
-			continue;
+		MSG_BOX("심각한 에러) 지우려는 해당 그룹이 존재하지 않음");
+		return;
+	}
 
-		// 해당 레이어의 모든 GameObject에 대해 반복
-		for (auto pGameObject : pLayer.second->Get_GameObjects())
-		{
-			// 모델 컴포넌트 이름에서 "Prototype_Component_Model_" 접두사를 기준으로 모델명 추출
-			wstring prefix = L"Prototype_Component_Model_";
-			wstring wstrModelCom = *static_cast<CMapToolObject*>(pGameObject)->Get_ModelPrototypeTag(); // 모델 이름 얻기
+	std::list<CGameObject*>& objList = iterGroup->second;
 
-			// 접두사가 없는 경우는 무시
-			size_t PosPrefix = wstrModelCom.find(prefix);
-			if (PosPrefix == wstring::npos)
-				continue;
+	// 리스트에서 해당 오브젝트 제거
+	objList.remove(pMapToolObject);
 
-			// 접두사 이후의 실제 모델 이름 부분을 잘라내어 string으로 변환
-			string ModelName = WStringToString(wstrModelCom.substr(PosPrefix + prefix.length()));
-
-			// 모델 이름을 키로 하여 그룹에 GameObject를 추가
-			m_ModelGroups[ModelName].push_back(pGameObject);
-		}
-
-		// 모델 그룹들로부터 UI에 사용할 Hierarchy 이름들을 생성
-		_uint i = 0; // 전체 인덱스
-		for (auto& group : m_ModelGroups)
-		{
-			for (auto pGameObject : group.second)
-			{
-				// "모델이름_숫자" 형태의 이름 생성하여 Hierarchy UI 항목으로 사용
-				string strHierarchyName = group.first + "_" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID());
-
-				// 이름 리스트에 추가
-				m_HierarchyNames.push_back(strHierarchyName);
-
-				++i; // 전체 인덱스 증가
-			}
-		}
+	// 만약 해당 그룹이 비었다면 map에서 그룹 자체도 제거
+	if (objList.empty())
+	{
+		m_ModelGroups.erase(iterGroup);
 	}
 
 }
 
 CGameObject* CMapTool::Get_Selected_GameObject()
 {
-	if (m_iSelectedHierarchyIndex < m_HierarchyNames.size())
+	_uint index = m_iSelectedHierarchyIndex;
+
+	for (auto& group : m_ModelGroups)
 	{
-		//return Get_GameObject(m_HierarchyNames[m_iSelectedHierarchyIndex]);
+		for (auto pGameObject : group.second)
+		{
+			if (index == 0)
+				return pGameObject;
+
+			--index;
+		}
 	}
 
-	return nullptr;
+	return nullptr; // 인덱스 초과 시 null
 }
 
 

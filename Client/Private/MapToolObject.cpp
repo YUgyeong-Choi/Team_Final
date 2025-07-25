@@ -26,8 +26,8 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 
 	MAPTOOLOBJ_DESC* pDesc = static_cast<MAPTOOLOBJ_DESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
-
 	m_iID = pDesc->iID;
+	m_ModelName = WStringToString(pDesc->szModelName);
 
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;

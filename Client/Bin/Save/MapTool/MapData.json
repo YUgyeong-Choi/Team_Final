@@ -1,39 +1,10 @@
 {
-    "ModelCount": 3,
+    "ModelCount": 4,
     "Models": [
         {
             "ModelName": "SM_BuildingA_Door_01",
-            "ObjectCount": 1,
-            "Objects": [
-                {
-                    "WorldMatrix": [
-                        [
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            1.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            0.0,
-                            1.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            0.0,
-                            0.0,
-                            1.0
-                        ]
-                    ]
-                }
-            ]
+            "ObjectCount": 0,
+            "Objects": []
         },
         {
             "ModelName": "SM_OldTown_BrickFloor_01",
@@ -71,6 +42,11 @@
         },
         {
             "ModelName": "SM_Station_Light_01",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "ModelName": "SkyBox",
             "ObjectCount": 1,
             "Objects": [
                 {

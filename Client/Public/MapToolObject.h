@@ -15,6 +15,7 @@ class CMapToolObject final : public CGameObject
 public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
+		_tchar		szModelName[MAX_PATH];
 		_tchar		szModelPrototypeTag[MAX_PATH];
 		_float4x4	WorldMatrix = _float4x4(
 			1.f, 0.f, 0.f, 0.f,
@@ -40,17 +41,21 @@ public:
 	virtual HRESULT Render();
 
 public:
-	const wstring* Get_ModelPrototypeTag() const {
-		return &m_ModelPrototypeTag;
-	}
+	//const wstring& Get_ModelPrototypeTag() const {
+	//	return m_ModelPrototypeTag;
+	//}
 
 	_uint Get_ID() const {
 		return m_iID;
 	}
 
+	const string& Get_ModelName() const {
+		return m_ModelName;
+	}
+
 private:
 	wstring m_ModelPrototypeTag = {};
-	
+	string	m_ModelName = {};
 	//맵 오브젝트들 간 고유 식별 번호
 	_uint	m_iID = { 0 };
 
