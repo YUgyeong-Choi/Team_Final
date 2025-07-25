@@ -19,10 +19,11 @@ HRESULT CPrototype_Manager::Initialize(_uint iNumLevels)
 HRESULT CPrototype_Manager::Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, CBase* pPrototype)
 {
 
-	if (nullptr == m_pPrototypes ||
-		iPrototypeLevelIndex >= m_iNumLevels ||
-		nullptr != Find_Prototype(iPrototypeLevelIndex, strPrototypeTag))
+	if (nullptr == m_pPrototypes || iPrototypeLevelIndex >= m_iNumLevels)
 		return E_FAIL;
+	
+	if (nullptr != Find_Prototype(iPrototypeLevelIndex, strPrototypeTag))
+		return S_OK;
 
 	m_pPrototypes[iPrototypeLevelIndex].emplace(strPrototypeTag, pPrototype);
 

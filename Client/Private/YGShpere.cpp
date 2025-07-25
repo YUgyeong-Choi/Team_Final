@@ -249,9 +249,16 @@ CGameObject* CYGShpere::Clone(void* pArg)
 
 void CYGShpere::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+
+	if (m_pPhysXActorCom)
+	{
+		PxScene* pScene = m_pGameInstance->Get_Scene();
+		if (pScene)
+			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
+	}
 	Safe_Release(m_pPhysXActorCom);
+
+	__super::Free();
 }

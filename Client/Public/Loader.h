@@ -43,6 +43,7 @@ private:
 
 public:
 	HRESULT Loading_For_Logo();
+	HRESULT Loading_For_Static(); // 모두 사용하는 것들 Logo에서 처음에만 생성 
 	HRESULT Loading_For_GamePlay();
 	HRESULT Loading_For_DH();
 	HRESULT Loading_For_JW();
