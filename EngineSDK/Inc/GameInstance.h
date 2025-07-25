@@ -187,9 +187,9 @@ private:
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
 
+
 private:
 	_uint					m_iCurrentLevelIndex = 0;
-
 
 public:
 	void Release_Engine();
