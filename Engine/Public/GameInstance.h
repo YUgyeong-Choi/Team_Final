@@ -98,6 +98,8 @@ public:
 	const LIGHT_DESC* Get_Light(_uint iIndex);
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+	HRESULT Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
+	HRESULT Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& LightDesc);
 #pragma endregion
 
 #pragma region FONT_MANAGER
@@ -162,6 +164,11 @@ public:
 	void Set_Master_Volume(_float volume);
 #pragma endregion
 
+#pragma region LEVEL_SET
+	void SetCurrentLevelIndex(_uint iLevelIndex) { m_iCurrentLevelIndex = iLevelIndex; }
+	_uint GetCurrentLevelIndex() const { return m_iCurrentLevelIndex; }
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -179,6 +186,11 @@ private:
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
+
+
+private:
+	_uint					m_iCurrentLevelIndex = 0;
+
 public:
 	void Release_Engine();
 	virtual void Free() override;

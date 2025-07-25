@@ -15,6 +15,16 @@ Texture2D g_ShadowTexture;
 Texture2D g_FinalTexture;
 Texture2D g_BlurXTexture;
 
+
+/* [ PBR 전용 ] */
+Texture2D g_PBR_Diffuse;
+Texture2D g_PBR_Normal;
+Texture2D g_PBR_ARM;
+Texture2D g_PBR_Depth;
+
+float PI = 3.14159265358979323846f;
+
+
 vector g_vLightDir;
 vector g_vLightPos;
 float g_fLightRange;
@@ -84,6 +94,12 @@ struct PS_OUT_LIGHT
     
 };
 
+struct PS_OUT_PBR
+{
+    vector vSpecular    : SV_TARGET0;
+    vector vFinal       : SV_TARGET1;
+};
+
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 {
     PS_OUT_LIGHT Out;
@@ -121,7 +137,6 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     return Out;
 }
-
 PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
 {
     PS_OUT_LIGHT Out;
@@ -165,7 +180,173 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     return Out;
 }
 
+PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
+{
+    PS_OUT_PBR Out;
+    
+    /* [ 텍스처 임포트 ] */
+    vector vDiffuseDesc = g_PBR_Diffuse.Sample(DefaultSampler, In.vTexcoord);
+    vector vNormalDesc = g_PBR_Normal.Sample(DefaultSampler, In.vTexcoord);
+    vector vARMDesc = g_PBR_ARM.Sample(DefaultSampler, In.vTexcoord);
+    vector vDepthDesc = g_PBR_Depth.Sample(DefaultSampler, In.vTexcoord);
+    
+    /* [ 활용할 변수 정리 ] */
+    float3 Albedo = vDiffuseDesc.rgb;
+    float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
+    float AO = vARMDesc.r;
+    float Roughness = vARMDesc.g;
+    float Metallic = vARMDesc.b;
+    float3 Ambient = Albedo * g_fLightAmbient * AO;
+    
+    /* [ ViewPos 복원 ] */
+    float2 vUV = In.vTexcoord;
+    float z_ndc = vDepthDesc.x;
+    float viewZ = vDepthDesc.y * 500.0f;
 
+    /* [ NDC 공간상의 깊이복원 ] */
+    float4 clipPos;
+    clipPos.x = vUV.x * 2.0f - 1.0f;
+    clipPos.y = vUV.y * -2.0f + 1.0f;
+    clipPos.z = z_ndc;
+    clipPos.w = 1.0f;
+    clipPos *= viewZ;
+    
+    /* [ 월드로 공간복원 ] */
+    float4 worldPos = mul(clipPos, g_ProjMatrixInv);
+    worldPos = mul(worldPos, g_ViewMatrixInv);
+    
+    /* [ 빛 계산 ] */
+    float3 V = normalize(g_vCamPosition.xyz - worldPos.xyz);
+    float3 L = normalize(-g_vLightDir.xyz);
+    float3 H = normalize(V + L);
+    
+    /* [ 필요한 내적 공식 ] */
+    float NdotL = saturate(dot(Normal, L));
+    float NdotV = saturate(dot(Normal, V));
+    float NdotH = saturate(dot(Normal, H));
+    float VdotH = saturate(dot(V, H));
+
+    /* [ 프레넬 반사율(금속) ] */
+    float3 F0 = lerp(float3(0.04f, 0.04f, 0.04f), Albedo, Metallic);
+    float3 F = F0 + (1.0f - F0) * pow(1.0f - VdotH, 5.0f);
+
+    /* [ GGX 에너지반사 공식 ] */
+    float a = Roughness * Roughness;
+    float a2 = a * a;
+    float denom = (NdotH * NdotH * (a2 - 1.0f) + 1.0f);
+    float D = a2 / (PI * denom * denom + 0.001f);
+
+    /* [ 지오메트리 함수 공식 ] */
+    float k = (Roughness + 1.0f);
+    k = (k * k) / 8.0f;
+    float G_V = NdotV / (NdotV * (1.0f - k) + k);
+    float G_L = NdotL / (NdotL * (1.0f - k) + k);
+    float G = G_V * G_L;
+
+    /* [ 공식의 결과 스펙큘러 ] */
+    float3 Specular = D * G * F / (4.0f * NdotV * NdotL + 0.001f);
+    Specular *= g_vLightSpecular.rgb;
+
+    /* [ 디퓨즈 색상 결정 ] */
+    float3 kD = (1.0f - F) * (1.0f - Metallic);
+    float3 Diffuse = kD * Albedo / PI;
+
+    /* [ 라이트의 색상 ] */
+    float3 radiance = g_vLightDiffuse.rgb;
+
+    /* [ 최종 PBR 조명 계산 ] */
+    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO + Ambient;
+    float3 Specalur = Specular * radiance;
+
+    Out.vFinal = float4(FinalColor, 1.0f);
+    Out.vSpecular = float4(Specular, 1.0f);
+    return Out;
+}
+PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
+{
+    PS_OUT_PBR Out;
+
+    // [ 텍스처 샘플링 ]
+    vector vDiffuseDesc = g_PBR_Diffuse.Sample(DefaultSampler, In.vTexcoord);
+    vector vNormalDesc = g_PBR_Normal.Sample(DefaultSampler, In.vTexcoord);
+    vector vARMDesc = g_PBR_ARM.Sample(DefaultSampler, In.vTexcoord);
+    vector vDepthDesc = g_PBR_Depth.Sample(DefaultSampler, In.vTexcoord);
+
+    // [ 변수 정리 ]
+    float3 Albedo = vDiffuseDesc.rgb;
+    float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
+    float AO = vARMDesc.r;
+    float Roughness = vARMDesc.g;
+    float Metallic = vARMDesc.b;
+    float3 Ambient = Albedo * g_fLightAmbient * AO;
+
+    // [ ViewPos 복원 ]
+    float2 vUV = In.vTexcoord;
+    float z_ndc = vDepthDesc.x;
+    float viewZ = vDepthDesc.y * 500.0f;
+
+    float4 clipPos;
+    clipPos.x = vUV.x * 2.0f - 1.0f;
+    clipPos.y = vUV.y * -2.0f + 1.0f;
+    clipPos.z = z_ndc;
+    clipPos.w = 1.0f;
+    clipPos *= viewZ;
+
+    float4 worldPos = mul(clipPos, g_ProjMatrixInv);
+    worldPos = mul(worldPos, g_ViewMatrixInv);
+
+    // [ 라이트 방향 및 감쇠 ]
+    float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
+    float distance = length(L_unormalized);
+    float3 L = normalize(L_unormalized);
+
+    float fAtt = saturate((g_fLightRange - distance) / g_fLightRange);
+
+    // [ 뷰, 하프 벡터 ]
+    float3 V = normalize(g_vCamPosition.xyz - worldPos.xyz);
+    float3 H = normalize(V + L);
+
+    float NdotL = saturate(dot(Normal, L));
+    float NdotV = saturate(dot(Normal, V));
+    float NdotH = saturate(dot(Normal, H));
+    float VdotH = saturate(dot(V, H));
+
+    // [ 프레넬 ]
+    float3 F0 = lerp(float3(0.04f, 0.04f, 0.04f), Albedo, Metallic);
+    float3 F = F0 + (1.0f - F0) * pow(1.0f - VdotH, 5.0f);
+
+    // [ GGX ]
+    float a = Roughness * Roughness;
+    float a2 = a * a;
+    float denom = (NdotH * NdotH * (a2 - 1.0f) + 1.0f);
+    float D = a2 / (PI * denom * denom + 0.001f);
+
+    // [ Geometry ]
+    float k = (Roughness + 1.0f);
+    k = (k * k) / 8.0f;
+    float G_V = NdotV / (NdotV * (1.0f - k) + k);
+    float G_L = NdotL / (NdotL * (1.0f - k) + k);
+    float G = G_V * G_L;
+
+    // [ Specular ]
+    float3 Specular = D * G * F / (4.0f * NdotV * NdotL + 0.001f);
+    Specular *= g_vLightSpecular.rgb;
+
+    // [ Diffuse ]
+    float3 kD = (1.0f - F) * (1.0f - Metallic);
+    float3 Diffuse = kD * Albedo / PI;
+
+    // [ 라이트 색상 ]
+    float3 radiance = g_vLightDiffuse.rgb;
+
+    // [ 최종 조명 ]
+    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt + Ambient;
+    float3 Specalur = Specular * radiance;
+
+    Out.vFinal = float4(FinalColor, 1.0f);
+    Out.vSpecular = float4(Specular, 1.0f);
+    return Out;
+}
 
 
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
@@ -274,7 +455,7 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
 
 technique11 DefaultTechnique
 {
-    pass Debug 
+    pass Debug //0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -286,7 +467,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DEBUG();
     }
 
-    pass Light_Directional
+    pass Light_Directional //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -298,7 +479,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_LIGHT_DIRECTIONAL();
     }
 
-    pass Light_Point
+    pass Light_Point //2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -310,7 +491,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_LIGHT_POINT();
     }
 
-    pass Deferred
+    pass Deferred //3
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -322,7 +503,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DEFERRED();
     }
 
-    pass BlurX
+    pass BlurX //4
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -333,7 +514,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_BLURX();
     }
 
-    pass BlurY
+    pass BlurY //5
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -342,6 +523,28 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_BLURY();
+    }
+
+    pass PBRLight_Point //6
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_PBR_LIGHT_POINT();
+    }
+
+    pass PBRLight_Direction //7
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_PBR_LIGHT_DIRECTIONAL();
     }
   
 }

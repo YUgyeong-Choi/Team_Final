@@ -24,6 +24,7 @@ HRESULT CLevel_YG::Initialize()
 	if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
 		return E_FAIL;
 
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YG));
 	return S_OK;
 }
 
