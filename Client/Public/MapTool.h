@@ -33,8 +33,9 @@ private:
 	HRESULT Render_MapTool();
 
 private:
-	void Hierarchy();
-	void Asset();
+	void Render_Hierarchy();
+	void Render_Asset();
+	void Render_Detail();
 
 private:
 	HRESULT Spawn_MapToolObject();
@@ -56,6 +57,9 @@ private:
 
 private:
 	_uint m_iID = { 0 };
+
+private:
+	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };
 
 public:
 	static CMapTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

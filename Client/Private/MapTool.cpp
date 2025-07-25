@@ -48,6 +48,22 @@ void CMapTool::Priority_Update(_float fTimeDelta)
 
 void CMapTool::Update(_float fTimeDelta)
 {
+	//E 회전, R 크기, T는 위치
+	if (m_pGameInstance->Key_Down(DIK_E))
+		m_currentOperation = ImGuizmo::ROTATE;
+	else if (m_pGameInstance->Key_Down(DIK_R))
+		m_currentOperation = ImGuizmo::SCALE;
+	else if (m_pGameInstance->Key_Down(DIK_T))
+		m_currentOperation = ImGuizmo::TRANSLATE;
+	else if (m_pGameInstance->Key_Down(DIK_ESCAPE))
+		m_iSelectedHierarchyIndex = -1;
+
+	//Ctrl + S 맵 저장
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	{
+		Save_Map();
+	}
+
 }
 
 void CMapTool::Late_Update(_float fTimeDelta)
@@ -188,6 +204,8 @@ HRESULT CMapTool::Save_Map()
 	MapDataFile.close();
 	ReadyModelFile.close();
 
+	MSG_BOX("맵 저장 성공");
+
 	return S_OK;
 }
 
@@ -254,13 +272,14 @@ HRESULT CMapTool::Load_Map()
 
 HRESULT CMapTool::Render_MapTool()
 {
-	Hierarchy();
-	Asset();
+	Render_Hierarchy();
+	Render_Asset();
+	Render_Detail();
 
 	return S_OK;
 }
 
-void CMapTool::Hierarchy()
+void CMapTool::Render_Hierarchy()
 {
 #pragma region 하이어라키
 	ImGui::Begin("Hierarchy", nullptr);
@@ -332,7 +351,7 @@ void CMapTool::Hierarchy()
 	ImGui::End();
 }
 
-void CMapTool::Asset()
+void CMapTool::Render_Asset()
 {
 #pragma region 에셋
 	ImGui::Begin("Asset", nullptr);
@@ -428,6 +447,98 @@ void CMapTool::Asset()
 
 	ImGui::End();
 
+#pragma endregion
+}
+
+void CMapTool::Render_Detail()
+{
+#pragma region 디테일
+	ImGui::Begin("Detail", nullptr);
+
+	ImGui::Separator();
+
+	ImGui::Text("Transform");
+
+	CGameObject* pGameObject = Get_Selected_GameObject();
+	if (pGameObject != nullptr)
+	{
+		CTransform* pTransform = static_cast<CTransform*>(pGameObject->Get_Component(g_strTransformTag));
+
+		ImGui::SameLine();
+		if (ImGui::Button("Reset"))
+		{
+			_float4x4 MatrixIdentity = {};
+			XMStoreFloat4x4(&MatrixIdentity, XMMatrixIdentity());
+			pTransform->Set_WorldMatrix(MatrixIdentity);
+		}
+
+#pragma region 기즈모 및 행렬 분해
+		_float4x4 worldMat;
+		XMStoreFloat4x4(&worldMat, pTransform->Get_WorldMatrix());
+
+		_float matrix[16];
+		memcpy(matrix, &worldMat, sizeof(float) * 16);
+
+		// 분해
+		_float position[3], rotation[3], scale[3];
+		ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
+
+		// ImGuizmo 설정
+		ImGuizmo::BeginFrame();
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+
+		ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+		ImGuizmo::SetRect(0, 0, displaySize.x, displaySize.y);
+
+		_float viewMat[16], projMat[16];
+		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(viewMat), m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(projMat), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+
+		// Gizmo 조작
+		ImGuizmo::Manipulate(viewMat, projMat, m_currentOperation, ImGuizmo::LOCAL, matrix);
+#pragma endregion
+
+#pragma region 포지션
+		_bool bPositionChanged = ImGui::InputFloat3("##Position", position, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Position", m_currentOperation == ImGuizmo::TRANSLATE))
+			m_currentOperation = ImGuizmo::TRANSLATE;
+#pragma endregion
+
+#pragma region 회전
+		_bool bRotationChanged = ImGui::InputFloat3("##Rotation", rotation, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rotation", m_currentOperation == ImGuizmo::ROTATE))
+			m_currentOperation = ImGuizmo::ROTATE;
+#pragma endregion
+
+#pragma region 스케일
+		_bool bScaleChanged = ImGui::InputFloat3("##Scale", scale, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Scale", m_currentOperation == ImGuizmo::SCALE))
+			m_currentOperation = ImGuizmo::SCALE;
+#pragma endregion
+
+#pragma region 적용
+		if (ImGuizmo::IsUsing())
+		{
+			// ImGuizmo로 조작된 matrix 그대로 적용
+			memcpy(&worldMat, matrix, sizeof(_float) * 16);
+			pTransform->Set_WorldMatrix(worldMat);
+		}
+		else if (bPositionChanged || bRotationChanged || bScaleChanged)
+		{
+			// 수동 입력으로 바뀐 값 → matrix 재구성 후 적용
+			ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, matrix);
+			memcpy(&worldMat, matrix, sizeof(_float) * 16);
+			pTransform->Set_WorldMatrix(worldMat);
+		}
+
+#pragma endregion
+	}
+
+	ImGui::End();
 #pragma endregion
 }
 
