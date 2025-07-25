@@ -6,6 +6,7 @@
 #undef USE_IMGUI
 
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
+#define PRE_TRANSFORMMATRIX_SCALE 0.01f
 
 NS_BEGIN(Client)
 
@@ -33,24 +34,40 @@ private:
 	HRESULT Render_MapTool();
 
 private:
-	void Hierarchy();
-	void Asset();
+	void Render_Hierarchy();
+	void Render_Asset();
+	void Render_Detail();
 
 private:
 	HRESULT Spawn_MapToolObject();
+	void DeleteMapToolObject();
+	
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
 private:
-	void UpdateHierarchy();
+	void Add_ModelGroup(string ModelName, CGameObject* pMapToolObject);
+	void Delete_ModelGroup(CGameObject* pMapToolObject);
+
+	CGameObject* Get_Selected_GameObject();
 
 private:
+	void Picking();
+
+
+private:
+	//set하고싶었지만 imgui 선택이 인덱스로 접근해야해서 vector로
 	vector<string>	m_ModelNames = {};
 	_int			m_iSelectedModelIndex = { -1 };
 
 private:
-	map<string, vector<CGameObject*>> m_ModelGroups;
-	vector<string> m_HierarchyNames;
+	map<string, list<CGameObject*>> m_ModelGroups;
 	_int m_iSelectedHierarchyIndex = { -1 };
+
+private:
+	_uint m_iID = { 0 };
+
+private:
+	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };
 
 public:
 	static CMapTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

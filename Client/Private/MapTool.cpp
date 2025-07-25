@@ -4,6 +4,8 @@
 #include <filesystem>
 #include "MapToolObject.h"
 
+#include "Layer.h"
+
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
 
@@ -46,10 +48,40 @@ void CMapTool::Priority_Update(_float fTimeDelta)
 
 void CMapTool::Update(_float fTimeDelta)
 {
+	//E 회전, R 크기, T는 위치
+	if (m_pGameInstance->Key_Down(DIK_E))
+		m_currentOperation = ImGuizmo::ROTATE;
+	else if (m_pGameInstance->Key_Down(DIK_R))
+		m_currentOperation = ImGuizmo::SCALE;
+	else if (m_pGameInstance->Key_Down(DIK_T))
+		m_currentOperation = ImGuizmo::TRANSLATE;
+	else if (m_pGameInstance->Key_Down(DIK_ESCAPE))
+		m_iSelectedHierarchyIndex = -1;
+
+	//Ctrl + S 맵 저장
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	{
+		Save_Map();
+	}
+
+	//피킹했을 때 오브젝트 선택 하는 기능(기즈모가 다른 물체보다 뒤에 있으면 조작하려는 물체가 바뀌어버림 IsOver()로 해결)
+	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON) && m_pGameInstance->Key_Pressing(DIK_LCONTROL) == false && ImGuizmo::IsOver() == false)
+	{
+		Picking();
+	}
+
+	//딜리트키 누르면 현재 선택된거 삭제
+	if (/*m_pGameInstance->Key_Down(DIK_D)*/ImGui::IsKeyPressed(ImGuiKey_Delete))
+	{
+		printf("Delete\n");
+		DeleteMapToolObject();
+	}
+
 }
 
 void CMapTool::Late_Update(_float fTimeDelta)
 {
+
 }
 
 HRESULT CMapTool::Render()
@@ -133,7 +165,7 @@ HRESULT CMapTool::Save_Map()
 
 		//Json 파일에 모델의 이름과 파일경로 저장
 		string strModelName = WStringToString(ModelName);
-		filesystem::path path = filesystem::path(PATH_NONANIM) / (strModelName + ".bin");
+		filesystem::path path = filesystem::path(PATH_NONANIM) / (strModelName + ".bin"); //이렇게 하드코드 저장말고
 		string FullPath = path.generic_string();
 
 		json ObjectJson;
@@ -186,6 +218,8 @@ HRESULT CMapTool::Save_Map()
 	MapDataFile.close();
 	ReadyModelFile.close();
 
+	MSG_BOX("맵 저장 성공");
+
 	return S_OK;
 }
 
@@ -231,12 +265,19 @@ HRESULT CMapTool::Load_Map()
 			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
 			ModelPrototypeTag += wstrModelName;
 
+			lstrcpy(MapToolObjDesc.szModelName, wstrModelName.c_str());
 			lstrcpy(MapToolObjDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 			MapToolObjDesc.WorldMatrix = WorldMatrix;
+
+			MapToolObjDesc.iID = m_iID++;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 				ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
 				return E_FAIL;
+
+			//방금 추가한서을 모델 그룹에 분류해서 저장
+			Add_ModelGroup(ModelName, m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
+
 		}
 	}
 
@@ -245,58 +286,62 @@ HRESULT CMapTool::Load_Map()
 
 HRESULT CMapTool::Render_MapTool()
 {
-	Hierarchy();
-	Asset();
+	Render_Hierarchy();
+	Render_Asset();
+	Render_Detail();
 
 	return S_OK;
 }
 
-void CMapTool::Hierarchy()
+void CMapTool::Render_Hierarchy()
 {
 #pragma region 하이어라키
 	ImGui::Begin("Hierarchy", nullptr);
 
-	//if (ImGui::BeginListBox("##HierarchyList", ImVec2(-FLT_MIN, 300)))
-	//{
-	//	_uint i = 0; // 전체 Hierarchy 항목 인덱스를 위한 카운터 (전역 인덱스)
-	//	for (auto& group : m_ModelGroups) // 모델 이름별로 그룹화된 GameObject 목록을 반복
-	//	{
-	//		const string& ModelName = group.first; // 현재 그룹의 모델 이름
-	//		// 트리 노드 생성 (열려있게 기본 설정) - 모델 이름을 기준으로 그룹화된 항목
-	//		_bool bOpen = ImGui::TreeNodeEx(ModelName.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+	if (ImGui::BeginListBox("##HierarchyList", ImVec2(-FLT_MIN, 300)))
+	{
+		_uint i = 0; // 전체 Hierarchy 항목 인덱스를 위한 카운터 (전역 인덱스)
+		for (auto& group : m_ModelGroups) // 모델 이름별로 그룹화된 GameObject 목록을 반복
+		{
+			const string& ModelName = group.first; // 현재 그룹의 모델 이름
+			// 트리 노드 생성 (열려있게 기본 설정) - 모델 이름을 기준으로 그룹화된 항목
+			_bool bOpen = ImGui::TreeNodeEx(ModelName.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 
-	//		//_uint j = 0; // 각 모델 그룹 내에서의 개별 오브젝트 인덱스
-	//		for (auto pGameObject : group.second)
-	//		{
-	//			// 개별 오브젝트에 대한 이름 생성 (ID 값 주자 나중에)
-	//			string strHierarchyName = ModelName + '_';// + to_string(ID);
+			for (auto pGameObject : group.second)
+			{
+				// 개별 오브젝트에 대한 이름 생성 (ID 값 주자 나중에)
+				string strHierarchyName = "(ID:" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID()) + ')' + ModelName;
 
-	//			// 현재 인덱스가 선택된 상태인지 확인
-	//			_bool isSelected = (m_iSelectedHierarchyIndex == i);
+				// 현재 인덱스가 선택된 상태인지 확인
+				_bool isSelected = (m_iSelectedHierarchyIndex == i);
 
-	//			if (bOpen) // 트리 노드가 열려 있을 때만 Selectable 항목을 그린다
-	//			{
-	//				// 해당 항목이 클릭되면 인덱스를 기록하여 선택 상태로 만든다
-	//				if (ImGui::Selectable(strHierarchyName.c_str(), isSelected))
-	//				{
-	//					m_iSelectedHierarchyIndex = i; // 현재 선택된 항목으로 갱신
-	//				}
+				if (bOpen) // 트리 노드가 열려 있을 때만 Selectable 항목을 그린다
+				{
+					// 해당 항목이 클릭되면 인덱스를 기록하여 선택 상태로 만든다
+					if (ImGui::Selectable(strHierarchyName.c_str(), isSelected))
+					{
+						m_iSelectedHierarchyIndex = i; // 현재 선택된 항목으로 갱신
+					}
 
-	//				if (isSelected)
-	//					ImGui::SetItemDefaultFocus(); // 포커스를 해당 항목에 맞춰준다 (키보드 네비게이션용)
-	//			}
+					if (isSelected)
+						ImGui::SetItemDefaultFocus(); // 포커스를 해당 항목에 맞춰준다 (키보드 네비게이션용)
+				}
 
-	//			++i; // 전체 인덱스 증가 (트리 노드 열려있든 말든 증가시켜야 함)
-	//		}
+				++i; // 전체 인덱스 증가 (트리 노드 열려있든 말든 증가시켜야 함)
+			}
 
-	//		if (bOpen)
-	//			ImGui::TreePop(); // 트리 노드 닫기 (트리 UI를 닫아줌)
-	//	}
+			if (bOpen)
+				ImGui::TreePop(); // 트리 노드 닫기 (트리 UI를 닫아줌)
+		}
 
-	//	ImGui::EndListBox(); // 리스트박스 끝
+		ImGui::EndListBox(); // 리스트박스 끝
 
-	//}
-
+	}
+#pragma endregion
+	if (ImGui::Button("Delete"))
+	{
+		DeleteMapToolObject();
+	}
 
 	if (ImGui::Button("Save Map"))
 	{
@@ -305,15 +350,14 @@ void CMapTool::Hierarchy()
 	}
 
 
-	if (ImGui::Button("Load Map"))
-	{
+	//if (ImGui::Button("Load Map"))
+	//{
 
-	}
+	//}
 	ImGui::End();
-#pragma endregion
 }
 
-void CMapTool::Asset()
+void CMapTool::Render_Asset()
 {
 #pragma region 에셋
 	ImGui::Begin("Asset", nullptr);
@@ -394,7 +438,11 @@ void CMapTool::Asset()
 				}
 				else
 				{
-					m_ModelNames.push_back(strPrototypeTag);
+					// 이미 이름이 목록에 존재하면 중복 추가하지 않음
+					if (find(m_ModelNames.begin(), m_ModelNames.end(), strPrototypeTag) == m_ModelNames.end())
+					{
+						m_ModelNames.push_back(strPrototypeTag); // 이름 추가
+					}
 				}
 			}
 		}
@@ -408,9 +456,112 @@ void CMapTool::Asset()
 #pragma endregion
 }
 
+void CMapTool::Render_Detail()
+{
+#pragma region 디테일
+	ImGui::Begin("Detail", nullptr);
+
+	ImGui::Separator();
+
+	ImGui::Text("Transform");
+
+	CGameObject* pGameObject = Get_Selected_GameObject();
+	if (pGameObject != nullptr)
+	{
+		CTransform* pTransform = static_cast<CTransform*>(pGameObject->Get_Component(g_strTransformTag));
+
+		//리셋 버튼
+		ImGui::SameLine();
+		if (ImGui::Button("Reset"))
+		{
+			_float4x4 MatrixIdentity = {};
+			XMStoreFloat4x4(&MatrixIdentity, XMMatrixIdentity());
+			pTransform->Set_WorldMatrix(MatrixIdentity);
+		}
+
+		//컨트롤 클릭 하면 피킹된 위치로 이동
+		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+		{
+			_float4 vPickedPos = {};
+			if (m_pGameInstance->Picking(&vPickedPos))
+			{
+				pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
+			}
+		}
+
+
+#pragma region 기즈모 및 행렬 분해
+		_float4x4 worldMat;
+		XMStoreFloat4x4(&worldMat, pTransform->Get_WorldMatrix());
+
+		_float matrix[16];
+		memcpy(matrix, &worldMat, sizeof(float) * 16);
+
+		// 분해
+		_float position[3], rotation[3], scale[3];
+		ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
+
+		// ImGuizmo 설정
+		ImGuizmo::BeginFrame();
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+
+		ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+		ImGuizmo::SetRect(0, 0, displaySize.x, displaySize.y);
+
+		_float viewMat[16], projMat[16];
+		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(viewMat), m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(projMat), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+
+		// Gizmo 조작
+		ImGuizmo::Manipulate(viewMat, projMat, m_currentOperation, ImGuizmo::LOCAL, matrix);
+#pragma endregion
+
+#pragma region 포지션
+		_bool bPositionChanged = ImGui::InputFloat3("##Position", position, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Position", m_currentOperation == ImGuizmo::TRANSLATE))
+			m_currentOperation = ImGuizmo::TRANSLATE;
+#pragma endregion
+
+#pragma region 회전
+		_bool bRotationChanged = ImGui::InputFloat3("##Rotation", rotation, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rotation", m_currentOperation == ImGuizmo::ROTATE))
+			m_currentOperation = ImGuizmo::ROTATE;
+#pragma endregion
+
+#pragma region 스케일
+		_bool bScaleChanged = ImGui::InputFloat3("##Scale", scale, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Scale", m_currentOperation == ImGuizmo::SCALE))
+			m_currentOperation = ImGuizmo::SCALE;
+#pragma endregion
+
+#pragma region 적용
+		if (ImGuizmo::IsUsing())
+		{
+			// ImGuizmo로 조작된 matrix 그대로 적용
+			memcpy(&worldMat, matrix, sizeof(_float) * 16);
+			pTransform->Set_WorldMatrix(worldMat);
+		}
+		else if (bPositionChanged || bRotationChanged || bScaleChanged)
+		{
+			// 수동 입력으로 바뀐 값 → matrix 재구성 후 적용
+			ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, matrix);
+			memcpy(&worldMat, matrix, sizeof(_float) * 16);
+			pTransform->Set_WorldMatrix(worldMat);
+		}
+
+#pragma endregion
+	}
+
+	ImGui::End();
+#pragma endregion
+}
+
 HRESULT CMapTool::Spawn_MapToolObject()
 {
-
 	if (m_iSelectedModelIndex == -1)
 		return E_FAIL;
 
@@ -423,7 +574,7 @@ HRESULT CMapTool::Spawn_MapToolObject()
 	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
 	ModelPrototypeTag += ModelName;
 	lstrcpy(MapToolObjDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
+	lstrcpy(MapToolObjDesc.szModelName, ModelName.c_str());
 	/*
 	스폰을 눌렀을 때 어떤 레이어에 담았는지 저장하는 레이어 리스트가 필요함
 	삭제할 때 레이어가 존재하는 지 확인(레이어가 없으면 존재하지 않다는 것)
@@ -432,11 +583,68 @@ HRESULT CMapTool::Spawn_MapToolObject()
 	wstring LayerTag = TEXT("Layer_MapToolObject_");
 	LayerTag += ModelName;
 
+	MapToolObjDesc.iID = m_iID++;
+
+#pragma region 카메라 앞에다가 소환
+	//카메라 앞에다가 소환
+	//카메라 위치에서, 뷰행렬 Look 만큼 앞으로
+	// 카메라 위치
+	_float4 CamPos = *m_pGameInstance->Get_CamPosition();
+
+	// 위치만 반영한 행렬 생성
+	_matrix matWorld = XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
+
+	// 카메라 월드 행렬 (뷰 행렬 역행렬)
+	_matrix CamWorldMatrix = XMMatrixInverse(nullptr, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	_float4x4 CamWM = {};
+	XMStoreFloat4x4(&CamWM, CamWorldMatrix);
+
+	// 룩 벡터 추출 (3번째 행)
+	_vector vLook = XMVectorSet(CamWM._31, CamWM._32, CamWM._33, 0.f);
+
+	// 룩 벡터 정규화
+	vLook = XMVector3Normalize(vLook);
+
+	// 거리 설정
+	_float fDist = PRE_TRANSFORMMATRIX_SCALE * 500.f;
+
+	// 룩 벡터에 거리 곱하기
+	_vector vOffset = XMVectorScale(vLook, fDist);
+
+	// 카메라 위치 벡터
+	_vector vCamPos = XMLoadFloat4(&CamPos);
+
+	// 최종 위치 계산 (카메라 위치 + 룩 * 거리)
+	_vector vSpawnPos = XMVectorAdd(vCamPos, vOffset);
+
+	// 최종 월드 행렬 생성 (위치만)
+	_matrix SpawnWorldMatrix = XMMatrixTranslationFromVector(vSpawnPos);
+
+	// 오브젝트 월드 행렬에 적용
+	XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, SpawnWorldMatrix);
+#pragma endregion
+
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 		ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
 		return E_FAIL;
 
+	//방금 추가한서을 모델 그룹에 분류해서 저장
+	Add_ModelGroup(WStringToString(ModelName), m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
+
 	return S_OK;
+}
+
+void CMapTool::DeleteMapToolObject()
+{
+	CGameObject* pGameObject = Get_Selected_GameObject();
+
+	if (nullptr != pGameObject)
+	{
+		//그룹에서 삭제
+		Delete_ModelGroup(pGameObject);
+		//실제로 삭제
+		pGameObject->Set_bDead();
+	}
 }
 
 HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
@@ -451,7 +659,7 @@ HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModel
 
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), strPrototypeTag,
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
@@ -460,56 +668,91 @@ HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModel
 	return S_OK;
 }
 
-void CMapTool::UpdateHierarchy()
+void CMapTool::Add_ModelGroup(string ModelName, CGameObject* pMapToolObject)
 {
-	//// 기존 데이터 초기화
-	//m_ModelGroups.clear();      // 모델 이름별로 그룹화된 GameObject 리스트 초기화
-	//m_HierarchyNames.clear();   // Hierarchy UI에서 사용할 이름 리스트 초기화
+	// 모델 이름을 키로 하여 그룹에 GameObject를 추가
+	m_ModelGroups[ModelName].push_back(pMapToolObject);
+}
 
-	//// 현재 레벨(YW)의 모든 레이어들에 대해 반복
-	//for (auto& pLayer : m_pGameInstance->Get_Layers(ENUM_CLASS(LEVEL::YW)))
-	//{
-	//	// 레이어 이름에 "MapObject"가 포함되지 않으면 무시 (맵 에디터용 객체만 필터링)
-	//	if (pLayer.first.find(L"MapToolObject") == wstring::npos)
-	//		continue;
+void CMapTool::Delete_ModelGroup(CGameObject* pMapToolObject)
+{
+	// map<string, vector<CGameObject*>> m_ModelGroups; 에서
+	// 그룹중 이름과, 아이디가 같은놈을 제거
 
-	//	// 해당 레이어의 모든 GameObject에 대해 반복
-	//	for (auto pGameObject : pLayer.second->Get_GameObjects())
-	//	{
-	//		// 모델 컴포넌트 이름에서 "Prototype_Component_Model_" 접두사를 기준으로 모델명 추출
-	//		wstring prefix = L"Prototype_Component_Model_";
-	//		wstring wstrModelCom = static_cast<CMapToolObject*>(pGameObject)->Get_ModelCom(); // 모델 이름 얻기
+	string ModelName = static_cast<CMapToolObject*>(pMapToolObject)->Get_ModelName();
 
-	//		// 접두사가 없는 경우는 무시
-	//		size_t PosPrefix = wstrModelCom.find(prefix);
-	//		if (PosPrefix == wstring::npos)
-	//			continue;
+	auto iterGroup = m_ModelGroups.find(ModelName);
 
-	//		// 접두사 이후의 실제 모델 이름 부분을 잘라내어 string으로 변환
-	//		string ModelName = WStringToString(wstrModelCom.substr(PosPrefix + prefix.length()));
+	// 해당 그룹이 존재하지 않으면 리턴
+	if (iterGroup == m_ModelGroups.end())
+	{
+		MSG_BOX("심각한 에러) 지우려는 해당 그룹이 존재하지 않음");
+		return;
+	}
 
-	//		// 모델 이름을 키로 하여 그룹에 GameObject를 추가
-	//		m_ModelGroups[ModelName].push_back(pGameObject);
-	//	}
-	//}
+	std::list<CGameObject*>& objList = iterGroup->second;
 
-	//// 모델 그룹들로부터 UI에 사용할 Hierarchy 이름들을 생성
-	//_uint i = 0; // 전체 인덱스
-	//for (auto& group : m_ModelGroups)
-	//{
-	//	_uint j = 0; // 각 모델 그룹 내 인덱스
-	//	for (auto pGameObject : group.second)
-	//	{
-	//		// "모델이름_숫자" 형태의 이름 생성하여 Hierarchy UI 항목으로 사용
-	//		string strHierarchyName = group.first + "_" + to_string(j++);
+	// 리스트에서 해당 오브젝트 제거
+	objList.remove(pMapToolObject);
 
-	//		// 이름 리스트에 추가
-	//		m_HierarchyNames.push_back(strHierarchyName);
+	// 만약 해당 그룹이 비었다면 map에서 그룹 자체도 제거
+	if (objList.empty())
+	{
+		m_ModelGroups.erase(iterGroup);
+	}
 
-	//		++i; // 전체 인덱스 증가
-	//	}
-	//}
+}
 
+CGameObject* CMapTool::Get_Selected_GameObject()
+{
+	_uint index = m_iSelectedHierarchyIndex;
+
+	for (auto& group : m_ModelGroups)
+	{
+		for (auto pGameObject : group.second)
+		{
+			if (index == 0)
+				return pGameObject;
+
+			--index;
+		}
+	}
+
+	return nullptr; // 인덱스 초과 시 null
+}
+
+void CMapTool::Picking()
+{
+	_int iID = -1;
+	if (m_pGameInstance->Picking(&iID))
+	{
+		printf("ID: %d\n", iID);
+		//같은 아이디를 가진 오브젝트에 포커스
+		//모델 그룹중에서 같은 아이디를 가진 오브젝트를 만날때까지순회
+
+		_bool bFind = false;
+		_uint i = 0;
+		for (auto& Group : m_ModelGroups)
+		{
+			if (bFind)
+				break;
+
+			const string& ModelName = Group.first;
+
+			for (auto pGameObject : Group.second)
+			{
+				if (static_cast<CMapToolObject*>(pGameObject)->Get_ID() == iID)
+				{
+					m_iSelectedHierarchyIndex = i;
+					//printf("m_iSelectedModelIndex: %d\n", m_iSelectedHierarchyIndex);
+					bFind = true;
+					break;
+				}
+
+				++i;
+			}
+		}
+	}
 }
 
 

@@ -57,6 +57,7 @@ public:
 
 	void Update_UI_From_Tool(STATIC_UI_DESC& eDesc);
 
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };

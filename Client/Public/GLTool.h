@@ -33,7 +33,7 @@ public:
 	void Add_UI();
 
 private:
-	HRESULT Render_UtilTool();
+	
 	HRESULT Render_SelectOptionTool();
 
 	HRESULT Render_UIList();
@@ -45,6 +45,7 @@ private:
 
 	_int m_iSelectTextureIndex = {-1};
 	_int m_iSelectObjIndex = { -1 };
+	_int m_iDynamicObjIndex = { -1 };
 	wstring m_strSelectName = {};
 
 	// 바로 값 적용되는거를 막기 위해, 입력은 temp로 받아두고, apply 버튼을 누르면 eUIDesc를 바꿔서 실제로 적용 되도록
@@ -58,6 +59,8 @@ private:
 	string  m_strSavePath = {};
 
 	// sequence
+	_float m_fElapsedTime = {};
+	_bool m_isPlay = { false };
 	_int m_iCurrentFrame = {};
 	_bool m_bExpanded = { true };
 	_int m_iSelectedEntry = { -1 };

@@ -15,7 +15,10 @@ private:
 public:
 	class CComponent* Get_Component(const _wstring& strComponentTag, _uint iIndex);
 	class CComponent* Get_Component(_uint iPartID, const _wstring& strComponentTag, _uint iIndex);
-
+	//게임 오브젝트들 가져온다.
+	const list<class CGameObject*>& Get_GameObjects() const { 
+		return m_GameObjects; 
+	}
 public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	void Priority_Update(_float fTimeDelta);

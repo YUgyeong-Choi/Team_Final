@@ -22,10 +22,15 @@
 #include "YGConvexMesh.h"
 #include "YGBox.h"
 #include "YGShpere.h"
+#include "YGTrrigerWithoutModel.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
 #include "StaticMesh.h"
+#pragma endregion
+
+#pragma region LEVEL_GL
+#include "Dynamic_UI.h"
 #pragma endregion
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -74,11 +79,15 @@ HRESULT CLoader::Loading()
 	switch (m_eNextLevelID)
 	{
 	case LEVEL::LOGO:
+		hr = Loading_For_Static();
 		hr = Loading_For_Logo();
 		break;
 
 	case LEVEL::KRAT_CENTERAL_STATION:
-		hr = Loading_For_GamePlay();
+		hr = Loading_For_KRAT_CENTERAL_STATION();
+		break;
+	case LEVEL::KRAT_HOTEL:
+		hr = Loading_For_KRAT_HOTEL();
 		break;
 	case LEVEL::DH:
 		hr = Loading_For_DH();
@@ -115,6 +124,28 @@ HRESULT CLoader::Loading_For_Logo()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
+	
+
+	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+	
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Static()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
+
+	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_SkyBox"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SkyBox.bin", PreTransformMatrix))))
@@ -124,33 +155,32 @@ HRESULT CLoader::Loading_For_Logo()
 
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
-	
+
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-	
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
-	m_isFinished = true;
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_For_GamePlay()
+HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-	
+
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
-	
+
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_SM_OldTown_BrickFloor_01"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_BrickFloor_01.bin", PreTransformMatrix))))
-		return E_FAIL;
+	//제이슨으로 로드할 거기 때문에 주석처리
+	//_matrix		PreTransformMatrix = XMMatrixIdentity();
+	//PreTransformMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_SM_OldTown_BrickFloor_01"),
+	//	CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_BrickFloor_01.bin", PreTransformMatrix))))
+	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
@@ -160,7 +190,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -170,6 +200,36 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	return S_OK;
 }
+
+HRESULT CLoader::Loading_For_KRAT_HOTEL()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
+
+
+
+	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+
 
 HRESULT CLoader::Loading_For_DH()
 {
@@ -243,6 +303,7 @@ HRESULT CLoader::Loading_For_GL()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -374,6 +435,11 @@ HRESULT CLoader::Loading_For_YG()
 	/* For.Prototype_GameObject_YGShpere */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGShpere"),
 		CYGShpere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YGTrrigerWithoutModel */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTrrigerWithoutModel"),
+		CYGTrrigerWithoutModel::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

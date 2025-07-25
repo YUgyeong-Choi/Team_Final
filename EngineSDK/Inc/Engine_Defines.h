@@ -33,6 +33,7 @@ using namespace DirectX;
 #include <vector>
 #include <set>
 #include <unordered_map>
+#include <cmath>
 using namespace std;
 
 #include <fstream>

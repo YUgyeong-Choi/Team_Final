@@ -26,6 +26,8 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 
 	MAPTOOLOBJ_DESC* pDesc = static_cast<MAPTOOLOBJ_DESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+	m_iID = pDesc->iID;
+	m_ModelName = WStringToString(pDesc->szModelName);
 
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
@@ -99,6 +101,11 @@ HRESULT CMapToolObject::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
+
+	_float fID = static_cast<_float>(m_iID);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fID", &fID, sizeof(_float))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

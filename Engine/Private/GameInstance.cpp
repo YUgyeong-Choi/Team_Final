@@ -135,10 +135,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 
-	m_pPhysX_Manager->Simulate(fTimeDelta);
+ 	m_pPhysX_Manager->Simulate(fTimeDelta);
 
 	m_pLevel_Manager->Update(fTimeDelta);
 
+	//m_pPhysX_Manager->Sync();
 #ifdef _DEBUG
 	if (Key_Down(DIK_F5))
 		m_pRenderer->Set_RenderTarget();
@@ -281,10 +282,10 @@ vector<wstring> CGameInstance::Find_LayerNamesContaining(_uint iLevelIndex, cons
 	return m_pObject_Manager->Find_LayerNamesContaining(iLevelIndex, SubString);
 }
 
-//const map<const _wstring, class CLayer*>& CGameInstance::Get_Layers(_uint iLevelIndex) const
-//{
-//	//return m_pObject_Manager->Get_Layers(iLevelIndex);
-//}
+const map<const _wstring, class CLayer*>& CGameInstance::Get_Layers(_uint iLevelIndex) const
+{
+	return m_pObject_Manager->Get_Layers(iLevelIndex);
+}
 
 #pragma endregion
 
@@ -498,6 +499,11 @@ _bool CGameInstance::Picking(_float4* pOut)
 {
 	return m_pPicking->Picking(pOut);
 }
+
+_bool CGameInstance::Picking(_int* pOut)
+{
+	return m_pPicking->Picking(pOut);
+}
 #pragma endregion
 
 #pragma region SHADOW
@@ -566,6 +572,11 @@ PxSphereGeometry CGameInstance::CookSphereGeometry(_float fRadius)
 PxSphereGeometry CGameInstance::CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale)
 {
 	return m_pPhysX_Manager->CookSphereGeometry(pVertices, vertexCount, fScale);
+}
+
+PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3& halfExtents)
+{
+	return m_pPhysX_Manager->CookBoxGeometry(halfExtents);
 }
 
 PxScene* CGameInstance::Get_Scene()

@@ -2,7 +2,7 @@
 #include "GameInstance.h"
 #include "MapTool.h"
 #include "Camera_Manager.h"
-
+#include "Level_Loading.h"
 CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -33,10 +33,18 @@ HRESULT CLevel_YW::Initialize()
 
 void CLevel_YW::Update(_float fTimeDelta)
 {
+
+	if (m_pGameInstance->Key_Down(DIK_F1))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
+			return;
+	}
+
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
+
 	
 	m_pCamera_Manager->Update(fTimeDelta);
-	__super::Update(fTimeDelta);
+	//__super::Update(fTimeDelta);
 }
 
 HRESULT CLevel_YW::Render()
@@ -109,8 +117,8 @@ HRESULT CLevel_YW::Ready_Layer_Sky(const _wstring strLayerTag)
 
 HRESULT CLevel_YW::Ready_ImGuiTools()
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CMapTool::Create(m_pDevice, m_pContext);
-	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)])
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CMapTool::Create(m_pDevice, m_pContext);
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
 
 	return S_OK;
@@ -141,7 +149,7 @@ HRESULT CLevel_YW::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Render()))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Render()))
 		return E_FAIL;
 	return S_OK;
 }
@@ -212,7 +220,7 @@ void CLevel_YW::Free()
 	//ImGui::GetIO().Fonts->Clear(); // 폰트 캐시 정리
 	ImGui::DestroyContext();
 
-	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]);
+	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
 
 	__super::Free();
 

@@ -27,18 +27,17 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	HRESULT Bind_ShaderResources();
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 
-	virtual void On_CollisionEnter(CGameObject* pOther) override;
-	virtual void On_CollisionStay(CGameObject* pOther) override;
-	virtual void On_CollisionExit(CGameObject* pOther) override;
-
-	virtual void On_Hit(CGameObject* pOther) override;
+	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CPhysXKinematicActor*  m_pPhysXActorCom = { nullptr };
 private:
+	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Components();
 	HRESULT Ready_Collider();
 	void Update_ColliderPos();

@@ -5,6 +5,8 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 
+float g_fID;
+
 
 struct VS_IN
 {
@@ -87,7 +89,7 @@ PS_OUT PS_MAIN(PS_IN In)
    
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, g_fID); //w값에다가 아이디를 저장하겠음
     Out.vPickPos = In.vWorldPos;
     
     return Out;

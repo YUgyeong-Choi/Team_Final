@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "DHTool.h"
 #include "Camera_Manager.h"
+#include "Level_Loading.h"
 
 CLevel_DH::CLevel_DH(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -32,7 +33,13 @@ HRESULT CLevel_DH::Initialize()
 
 void CLevel_DH::Update(_float fTimeDelta)
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_F1))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
+			return;
+	}
+
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
@@ -98,8 +105,8 @@ HRESULT CLevel_DH::Ready_Lights()
 
 HRESULT CLevel_DH::Ready_ImGuiTools()
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CDHTool::Create(m_pDevice, m_pContext);
-	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)])
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CDHTool::Create(m_pDevice, m_pContext);
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
 
 	return S_OK;
@@ -139,7 +146,7 @@ HRESULT CLevel_DH::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Render()))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Render()))
 		return E_FAIL;
 	return S_OK;
 }
@@ -201,7 +208,7 @@ void CLevel_DH::Free()
 	//ImGui::GetIO().Fonts->Clear(); // 폰트 캐시 정리
 	ImGui::DestroyContext();
 
-	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]);
+	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
 	
 	__super::Free();
 

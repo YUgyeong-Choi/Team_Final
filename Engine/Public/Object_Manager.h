@@ -32,6 +32,12 @@ public:
 
 	//해당 이름을 포함한 레이어들의 태그를 모두 가져온다.
 	vector<wstring> Find_LayerNamesContaining(_uint iLevelIndex, const wstring& SubString);
+
+	//해당 레벨에 있는 레이어를 챙겨온다.
+	const map<const _wstring, class CLayer*>& Get_Layers(_uint iLevelIndex) const {
+		return m_pLayers[iLevelIndex]; 
+	}
+
 private:	
 	_uint								m_iNumLevels = {};
 	map<const _wstring, class CLayer*>* m_pLayers = { nullptr };

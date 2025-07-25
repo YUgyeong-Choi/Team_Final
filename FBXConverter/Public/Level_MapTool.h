@@ -17,7 +17,7 @@ class CLevel_MapTool final : public CLevel
 public:
 	enum class IMGUITOOL {
 		TERRAIN,
-		OBJECT,
+		MAP,
 		CONVERT,
 		CAMERA,
 		END

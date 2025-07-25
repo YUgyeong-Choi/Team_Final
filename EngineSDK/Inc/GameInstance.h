@@ -54,7 +54,7 @@ public:
 	vector<wstring> Find_LayerNamesContaining(_uint iLevelIndex, const wstring& SubString);
 
 	//해당 레벨에 있는 레이어를 챙겨온다.
-	//const map<const _wstring, class CLayer*>& Get_Layers(_uint iLevelIndex) const;
+	const map<const _wstring, class CLayer*>& Get_Layers(_uint iLevelIndex) const;
 #pragma endregion
 
 #pragma region RENDERER
@@ -122,6 +122,7 @@ public:
 
 #pragma region PICKING
 	_bool Picking(_float4* pOut);
+	_bool Picking(_int* pOut);
 #pragma endregion
 
 #pragma region SHADOW
@@ -139,11 +140,12 @@ public:
 #pragma region PHYSX_MANAGER
 	PxTriangleMeshGeometry CookTriangleMesh(const PxVec3* vertices, PxU32 vertexCount, const PxU32* indices, PxU32 triangleCount, PxMeshScale geomScale);
 	PxConvexMeshGeometry CookConvexMesh(const PxVec3* vertices, PxU32 vertexCount, PxMeshScale geomScale);
-	PxCapsuleGeometry CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
+	PxCapsuleGeometry CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale = 1.f);
 	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
 	PxSphereGeometry  CookSphereGeometry(_float fRadius);
-	PxSphereGeometry CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
-	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
+	PxSphereGeometry CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale = 1.f);
+	PxBoxGeometry CookBoxGeometry(const PxVec3& halfExtents);
+	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale = 1.f);
 	PxScene* Get_Scene();
 	PxPhysics* GetPhysics();
 	PxMaterial* GetMaterial(const wstring& name);
@@ -177,7 +179,6 @@ private:
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
-
 public:
 	void Release_Engine();
 	virtual void Free() override;

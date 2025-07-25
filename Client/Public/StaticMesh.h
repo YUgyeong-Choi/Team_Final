@@ -16,13 +16,18 @@ class CStaticMesh final : public CGameObject
 public:
 	typedef struct tagStaticMeshDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		const _tchar*	szMeshID;
+		//const _tchar*	szMeshID;
 		const _tchar*	szShaderID;
 		LEVEL			m_eLevelID;
 		_int			iRender = 0;
 
-		_float3			m_vInitPos = { 0.f, 0.f, 0.f };
-		_float3			m_vInitScale = { 1.f, 1.f, 1.f };
+		_tchar		szModelPrototypeTag[MAX_PATH];
+		_float4x4	WorldMatrix = _float4x4(
+			1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			0.f, 0.f, 0.f, 1.f
+		);
 
 	}STATICMESH_DESC;
 
@@ -65,7 +70,7 @@ protected:
 	_bool			m_bDead = {};
 
 private:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 
 public:

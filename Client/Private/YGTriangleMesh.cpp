@@ -42,9 +42,6 @@ HRESULT CYGTriangleMesh::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
 
 	return S_OK;
 }
@@ -123,27 +120,23 @@ HRESULT CYGTriangleMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGTriangleMesh::On_CollisionEnter(CGameObject* pOther)
+void CYGTriangleMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGTriangle 충돌 시작!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
-#endif
+
 }
 
-void CYGTriangleMesh::On_CollisionStay(CGameObject* pOther)
+void CYGTriangleMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CYGTriangleMesh::On_CollisionExit(CGameObject* pOther)
+void CYGTriangleMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	printf("YGTriangle 충돌 종료!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
+
 }
 
-void CYGTriangleMesh::On_Hit(CGameObject* pOther)
+void CYGTriangleMesh::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	wprintf(L"YGTriangle Hit: %s\n", pOther->Get_Name().c_str());
 }
@@ -214,6 +207,7 @@ HRESULT CYGTriangleMesh::Ready_Collider()
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::B);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else
@@ -253,9 +247,15 @@ CGameObject* CYGTriangleMesh::Clone(void* pArg)
 
 void CYGTriangleMesh::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+	if (m_pPhysXActorCom)
+	{
+		PxScene* pScene = m_pGameInstance->Get_Scene();
+		if (pScene)
+			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
+	}
 	Safe_Release(m_pPhysXActorCom);
+
+	__super::Free();
 }

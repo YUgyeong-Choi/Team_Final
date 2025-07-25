@@ -16,7 +16,7 @@ class CLevel_GL final : public CLevel
 {
 public:
 	enum class IMGUITOOL {
-		OBJECT,
+		MAP,
 		END
 	};
 private:
