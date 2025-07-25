@@ -178,7 +178,6 @@ private:
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
-
 public:
 	void Release_Engine();
 	virtual void Free() override;

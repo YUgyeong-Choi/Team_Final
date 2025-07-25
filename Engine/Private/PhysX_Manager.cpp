@@ -104,11 +104,11 @@ void CPhysX_Manager::Shutdown()
 		material.second = nullptr;
 	}
 
-	//if (m_pCudaContextManager)
-	//{
-	//	m_pCudaContextManager->release();  
-	//	m_pCudaContextManager = nullptr;
-	//}
+	if (m_pCudaContextManager)
+	{
+		m_pCudaContextManager->release();  
+		m_pCudaContextManager = nullptr;
+	}
 
 	if (m_pDispatcher)
 	{
@@ -143,50 +143,11 @@ PxMaterial* CPhysX_Manager::GetMaterial(const wstring& name)
 
 void CPhysX_Manager::Simulate(float fDeltaTime)
 {
-	if (m_pScene)
-	{
-		//using namespace std::chrono;
-
-		//// 전체 타이밍 측정
-		//auto timeBeforeSim = high_resolution_clock::now();
-
-		//// 1. simulate()
-		//auto t0 = high_resolution_clock::now();
-		//m_pScene->simulate(fDeltaTime);
-		//auto t1 = high_resolution_clock::now();
-
-		//// 2. fetchResults()
-		//m_pScene->fetchResults(true);
-		//auto t2 = high_resolution_clock::now();
-
-		//// 3. 결과 출력
-		//auto simulateTime = duration_cast<microseconds>(t1 - t0).count();
-		//auto fetchTime = duration_cast<microseconds>(t2 - t1).count();
-		//auto totalTime = duration_cast<microseconds>(t2 - timeBeforeSim).count();
-
-		//printf("[PhysX] simulate: %lldus, fetchResults: %lldus, total: %lldus\n",
-		//	simulateTime, fetchTime, totalTime);
-
-		m_pScene->simulate(fDeltaTime);
-		m_pScene->fetchResults(true);
-	}
-
+	m_pScene->simulate(fDeltaTime);
+	m_pScene->fetchResults(true);
 }
 
-void CPhysX_Manager::Sync()
-{
-	if (m_pScene && m_pScene->checkResults(true)) // block은 true여야 확실히 기다림
-	{
-		// 결과를 이제 안전하게 사용 가능
-		// 여기서 getGlobalPose() 등의 결과 갱신 가능
 
-		// (선택) 디버깅용 시간 측정
-		using namespace std::chrono;
-		auto now = high_resolution_clock::now();
-		auto micros = duration_cast<microseconds>(now.time_since_epoch()).count();
-		printf("[PhysX] fetchResults(sync) completed at: %lldus\n", micros);
-	}
-}
 
 PxTriangleMeshGeometry CPhysX_Manager::CookTriangleMesh(const PxVec3* vertices, PxU32 vertexCount, const PxU32* indices, PxU32 triangleCount, PxMeshScale geomScale)
 {
