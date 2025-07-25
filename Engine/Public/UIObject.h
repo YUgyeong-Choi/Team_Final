@@ -15,6 +15,9 @@ public:
 		_float			fX, fY, fSizeX, fSizeY;
 		_float			fOffset = {0.f};
 	}UIOBJECT_DESC;
+
+	_float Get_Depth() { return m_fOffset; }
+
 protected:
 	CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIObject(const CUIObject& Prototype);
@@ -27,6 +30,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
 
 protected:
 	/* 뷰포트 상의 유아이의 중심위치 fX, fY, 사이즈 fSiuzeX, fSizeY */

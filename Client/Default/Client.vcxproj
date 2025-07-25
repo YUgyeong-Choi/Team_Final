@@ -163,6 +163,7 @@
     <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\CYTool.h" />
     <ClInclude Include="..\Public\DHTool.h" />
+    <ClInclude Include="..\public\Dynamic_UI.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectSequence.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="..\private\Camera_Orbital.cpp" />
     <ClCompile Include="..\Private\CYTool.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
+    <ClCompile Include="..\private\Dynamic_UI.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\private\EffectBase.cpp" />
     <ClCompile Include="..\Private\EffectSequence.cpp" />
@@ -274,6 +276,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />

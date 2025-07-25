@@ -22,7 +22,6 @@ public:
     };
 public:
     CUI_Sequence() = default;
-    CUI_Sequence(vector<SequenceItem>& items, class CToolbar* pToolbar) : m_items(items) {}
     virtual ~CUI_Sequence() = default;
 
     _int GetFrameMin()   const override { return m_frameMin; }

@@ -25,6 +25,10 @@
 #include "StaticMesh.h"
 #pragma endregion
 
+#pragma region LEVEL_GL
+#include "Dynamic_UI.h"
+#pragma endregion
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice { pDevice }
 	, m_pContext { pContext }
@@ -240,6 +244,7 @@ HRESULT CLoader::Loading_For_GL()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

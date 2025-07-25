@@ -15,6 +15,7 @@
 #include "GameInstance.h"
 
 #include "Static_UI.h"
+#include "Dynamic_UI.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -130,6 +131,28 @@ HRESULT CLevel_Loading::Ready_Loading()
 	}
 
 	file.close();
+
+
+	// ½ÇÇè¿ë
+
+	CDynamic_UI::DYNAMIC_UI_DESC eDesc = {};
+
+	eDesc.fOffset = 0.f;
+	eDesc.fOffsetUV = { 0.25f, 0.5f };
+	eDesc.fSizeX = 100;
+	eDesc.fSizeY = 100;
+	eDesc.fX = g_iWinSizeX * 0.2f;
+	eDesc.fY = g_iWinSizeY * 0.9f;
+	eDesc.iPassIndex = 2;
+	eDesc.isLoop = true;
+	eDesc.iTextureIndex = 0;
+	eDesc.iUIType = 2;
+	eDesc.strTextureTag = TEXT("Prototype_Component_Texture_Img_ChGear");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
+		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Dynamic"), &eDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }

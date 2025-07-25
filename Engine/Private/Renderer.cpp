@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "GameObject.h"
+#include "UIObject.h"
 
 #include "GameInstance.h"
 
@@ -261,6 +262,12 @@ HRESULT CRenderer::Render_Blend()
 
 HRESULT CRenderer::Render_UI()
 {
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	{
+		return dynamic_cast<CUIObject*>(pSour)->Get_Depth() > dynamic_cast<CUIObject*>(pDest)->Get_Depth();
+	});
+
+
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI)])
 	{
 		if (nullptr != pGameObject)

@@ -120,33 +120,18 @@
     </Filter>
     <Filter Include="01.Levels\LevelYW\MapTool\MapToolObject">
       <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Static">
       <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic">
       <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag">
-      <UniqueIdentifier>{6875e49f-be9f-4489-a085-8947ec2d62b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag\Slot">
-      <UniqueIdentifier>{101522f9-cb3f-4b33-89dd-ea1a4fea32a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
-      <UniqueIdentifier>{d25084e2-a294-435f-9e57-1c389a5d2735}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
-      <UniqueIdentifier>{45020529-4ae1-4570-8126-9f8d3f1d4c7c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Ergo">
-      <UniqueIdentifier>{046a677b-ac2f-4241-b046-33f2caa8c6dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
-      <UniqueIdentifier>{c802c0aa-2fed-41f2-a7b0-a9a6bfa5842b}</UniqueIdentifier>
-	</Filter>
     <Filter Include="02.GameObjects\00.StaticMesh">
       <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelGL\UISequence\Controller">
+      <UniqueIdentifier>{a72b3d61-7808-4349-8b58-12bd0a0653f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -314,36 +299,24 @@
     </ClInclude>
     <ClInclude Include="..\public\EffectBase.h">
       <Filter>02.GameObjects\07.Effect</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\UI_Sequence.h">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\EventMag.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\YGMonster.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Slot.h">
-      <Filter>02.GameObjects\99.UI\Dynamic\SlotBag\Slot</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Static_UI.h">
       <Filter>02.GameObjects\99.UI\Static</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Dynamic_UI.h">
-      <Filter>02.GameObjects\99.UI\Dynamic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Stamina_Bar.h">
-      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Ergo.h">
-      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Ergo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Icon_Dynamic.h">
-      <Filter>02.GameObjects\99.UI\Dynamic\Icon</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\StaticMesh.h">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Dynamic_UI.h">
+      <Filter>02.GameObjects\99.UI\Dynamic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -491,36 +464,24 @@
     </ClCompile>
     <ClCompile Include="..\private\EffectBase.cpp">
       <Filter>02.GameObjects\07.Effect</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\UI_Sequence.cpp">
       <Filter>01.Levels\LevelGL\UISequence</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\EventMag.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\YGMonster.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Slot.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\SlotBag\Slot</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Static_UI.cpp">
       <Filter>02.GameObjects\99.UI\Static</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Dynamic_UI.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\public\Stamina_Bar.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Ergo.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Ergo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Icon_Dynamic.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\Icon</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\StaticMesh.cpp">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Dynamic_UI.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -546,6 +507,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
