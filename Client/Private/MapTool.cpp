@@ -70,6 +70,13 @@ void CMapTool::Update(_float fTimeDelta)
 		Picking();
 	}
 
+	//딜리트키 누르면 현재 선택된거 삭제
+	if (/*m_pGameInstance->Key_Down(DIK_D)*/ImGui::IsKeyPressed(ImGuiKey_Delete))
+	{
+		printf("Delete\n");
+		DeleteMapToolObject();
+	}
+
 }
 
 void CMapTool::Late_Update(_float fTimeDelta)
@@ -333,15 +340,7 @@ void CMapTool::Render_Hierarchy()
 #pragma endregion
 	if (ImGui::Button("Delete"))
 	{
-		CGameObject* pGameObject = Get_Selected_GameObject();
-
-		if (nullptr != pGameObject)
-		{
-			//그룹에서 삭제
-			Delete_ModelGroup(pGameObject);
-			//실제로 삭제
-			pGameObject->Set_bDead();
-		}
+		DeleteMapToolObject();
 	}
 
 	if (ImGui::Button("Save Map"))
@@ -633,6 +632,19 @@ HRESULT CMapTool::Spawn_MapToolObject()
 	Add_ModelGroup(WStringToString(ModelName), m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
 
 	return S_OK;
+}
+
+void CMapTool::DeleteMapToolObject()
+{
+	CGameObject* pGameObject = Get_Selected_GameObject();
+
+	if (nullptr != pGameObject)
+	{
+		//그룹에서 삭제
+		Delete_ModelGroup(pGameObject);
+		//실제로 삭제
+		pGameObject->Set_bDead();
+	}
 }
 
 HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)

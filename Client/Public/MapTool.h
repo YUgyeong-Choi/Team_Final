@@ -40,6 +40,8 @@ private:
 
 private:
 	HRESULT Spawn_MapToolObject();
+	void DeleteMapToolObject();
+	
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
 private:
@@ -50,6 +52,7 @@ private:
 
 private:
 	void Picking();
+
 
 private:
 	//set하고싶었지만 imgui 선택이 인덱스로 접근해야해서 vector로
