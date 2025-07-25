@@ -48,7 +48,7 @@ public:
 
 
 
-private:
+protected:
 	CDynamic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDynamic_UI(const CDynamic_UI& Prototype);
 	virtual ~CDynamic_UI() = default;
@@ -77,8 +77,6 @@ private:
 	// tool에서 사용할...
 	_wstring m_strTextureTag = {};
 
-	// 월드에 그릴 사이즈
-	_float m_fScale = {};
 	_int   m_iPassIndex = {};
 	_int   m_iTextureIndex = {};
 
