@@ -29,9 +29,9 @@ HRESULT CLevel_CY::Initialize()
 
 void CLevel_CY::Update(_float fTimeDelta)
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Priority_Update(fTimeDelta);
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Priority_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
@@ -97,8 +97,8 @@ HRESULT CLevel_CY::Ready_Camera()
 
 HRESULT CLevel_CY::Ready_ImGuiTools()
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CCYTool::Create(m_pDevice, m_pContext);
-	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)])
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CCYTool::Create(m_pDevice, m_pContext);
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
 
 	return S_OK;
@@ -129,7 +129,7 @@ HRESULT CLevel_CY::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Render()))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Render()))
 		return E_FAIL;
 	return S_OK;
 }
@@ -191,7 +191,7 @@ void CLevel_CY::Free()
 	//ImGui::GetIO().Fonts->Clear(); // 폰트 캐시 정리
 	ImGui::DestroyContext();
 
-	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]);
+	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
 	
 	__super::Free();
 

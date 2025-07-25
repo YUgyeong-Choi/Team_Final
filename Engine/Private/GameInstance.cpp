@@ -498,6 +498,11 @@ _bool CGameInstance::Picking(_float4* pOut)
 {
 	return m_pPicking->Picking(pOut);
 }
+
+_bool CGameInstance::Picking(_int* pOut)
+{
+	return m_pPicking->Picking(pOut);
+}
 #pragma endregion
 
 #pragma region SHADOW

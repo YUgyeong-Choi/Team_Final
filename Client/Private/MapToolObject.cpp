@@ -102,6 +102,11 @@ HRESULT CMapToolObject::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
+	_float fID = static_cast<_float>(m_iID);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fID", &fID, sizeof(_float))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 

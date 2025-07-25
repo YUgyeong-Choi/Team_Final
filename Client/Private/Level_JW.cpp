@@ -33,8 +33,8 @@ HRESULT CLevel_JW::Initialize()
 
 void CLevel_JW::Update(_float fTimeDelta)
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
@@ -100,8 +100,8 @@ HRESULT CLevel_JW::Ready_Lights()
 
 HRESULT CLevel_JW::Ready_ImGuiTools()
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)] = CAnimTool::Create(m_pDevice, m_pContext);
-	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)])
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CAnimTool::Create(m_pDevice, m_pContext);
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
 
 	return S_OK;
@@ -133,7 +133,7 @@ HRESULT CLevel_JW::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Render()))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Render()))
 		return E_FAIL;
 	return S_OK;
 }
@@ -206,7 +206,7 @@ void CLevel_JW::Free()
 
 	ImGui::DestroyContext();
 
-	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]);
+	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
 	
 	__super::Free();
 

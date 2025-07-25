@@ -122,6 +122,7 @@ public:
 
 #pragma region PICKING
 	_bool Picking(_float4* pOut);
+	_bool Picking(_int* pOut);
 #pragma endregion
 
 #pragma region SHADOW

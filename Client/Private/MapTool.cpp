@@ -64,10 +64,17 @@ void CMapTool::Update(_float fTimeDelta)
 		Save_Map();
 	}
 
+	//피킹했을 때 오브젝트 선택 하는 기능(기즈모가 다른 물체보다 뒤에 있으면 조작하려는 물체가 바뀌어버림 IsOver()로 해결)
+	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON) && m_pGameInstance->Key_Pressing(DIK_LCONTROL) == false && ImGuizmo::IsOver() == false)
+	{
+		Picking();
+	}
+
 }
 
 void CMapTool::Late_Update(_float fTimeDelta)
 {
+
 }
 
 HRESULT CMapTool::Render()
@@ -464,6 +471,7 @@ void CMapTool::Render_Detail()
 	{
 		CTransform* pTransform = static_cast<CTransform*>(pGameObject->Get_Component(g_strTransformTag));
 
+		//리셋 버튼
 		ImGui::SameLine();
 		if (ImGui::Button("Reset"))
 		{
@@ -471,6 +479,17 @@ void CMapTool::Render_Detail()
 			XMStoreFloat4x4(&MatrixIdentity, XMMatrixIdentity());
 			pTransform->Set_WorldMatrix(MatrixIdentity);
 		}
+
+		//컨트롤 클릭 하면 피킹된 위치로 이동
+		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+		{
+			_float4 vPickedPos = {};
+			if (m_pGameInstance->Picking(&vPickedPos))
+			{
+				pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
+			}
+		}
+
 
 #pragma region 기즈모 및 행렬 분해
 		_float4x4 worldMat;
@@ -688,6 +707,40 @@ CGameObject* CMapTool::Get_Selected_GameObject()
 	}
 
 	return nullptr; // 인덱스 초과 시 null
+}
+
+void CMapTool::Picking()
+{
+	_int iID = -1;
+	if (m_pGameInstance->Picking(&iID))
+	{
+		printf("ID: %d\n", iID);
+		//같은 아이디를 가진 오브젝트에 포커스
+		//모델 그룹중에서 같은 아이디를 가진 오브젝트를 만날때까지순회
+
+		_bool bFind = false;
+		_uint i = 0;
+		for (auto& Group : m_ModelGroups)
+		{
+			if (bFind)
+				break;
+
+			const string& ModelName = Group.first;
+
+			for (auto pGameObject : Group.second)
+			{
+				if (static_cast<CMapToolObject*>(pGameObject)->Get_ID() == iID)
+				{
+					m_iSelectedHierarchyIndex = i;
+					//printf("m_iSelectedModelIndex: %d\n", m_iSelectedHierarchyIndex);
+					bFind = true;
+					break;
+				}
+
+				++i;
+			}
+		}
+	}
 }
 
 

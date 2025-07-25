@@ -47,6 +47,10 @@ private:
 	void Delete_ModelGroup(CGameObject* pMapToolObject);
 
 	CGameObject* Get_Selected_GameObject();
+
+private:
+	void Picking();
+
 private:
 	//set하고싶었지만 imgui 선택이 인덱스로 접근해야해서 vector로
 	vector<string>	m_ModelNames = {};

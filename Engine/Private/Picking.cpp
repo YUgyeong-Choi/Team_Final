@@ -42,6 +42,9 @@ HRESULT CPicking::Initialize(HWND hWnd)
 	m_pWorldPostions = new _float4[TextureDesc.Width * TextureDesc.Height];
 	ZeroMemory(m_pWorldPostions, sizeof(_float4) * TextureDesc.Width * TextureDesc.Height);
 
+	m_pIDs = new _float4[TextureDesc.Width * TextureDesc.Height];
+	ZeroMemory(m_pIDs, sizeof(_float4) * TextureDesc.Width * TextureDesc.Height);
+
 	m_iWidth = TextureDesc.Width;
 	m_iHeight = TextureDesc.Height;
 
@@ -64,10 +67,25 @@ void CPicking::Update()
 
 _bool CPicking::Picking(_float4* pOut)
 {
+	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PickPos"), m_pTexture)))
+		return false;
+	
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+	
+	m_pContext->Map(m_pTexture, 0, D3D11_MAP_READ, 0, &SubResource);
+	
+	memcpy(m_pWorldPostions, SubResource.pData, sizeof(_float4) * m_iWidth * m_iHeight);
+	
+	m_pContext->Unmap(m_pTexture, 0);	
+
 	POINT			ptMouse{};
 
 	GetCursorPos(&ptMouse);
 	ScreenToClient(m_hWnd, &ptMouse);
+
+	// 마우스가 클라이언트 영역 밖이면 무시
+	if (ptMouse.x < 0 || ptMouse.y < 0 || ptMouse.x >= static_cast<_long>(m_iWidth) || ptMouse.y >= static_cast<_long>(m_iHeight))
+		return false;
 
 	_uint			iIndex = ptMouse.y * m_iWidth + ptMouse.x;
 
@@ -76,6 +94,38 @@ _bool CPicking::Picking(_float4* pOut)
 	*pOut = m_pWorldPostions[iIndex];
 
 	return static_cast<_bool>(m_pWorldPostions[iIndex].w);	
+}
+
+_bool CPicking::Picking(_int* pOut)
+{
+	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_Depth"), m_pTexture)))
+		return false;
+
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pTexture, 0, D3D11_MAP_READ, 0, &SubResource);
+
+	memcpy(m_pIDs, SubResource.pData, sizeof(_float4) * m_iWidth * m_iHeight);
+
+	m_pContext->Unmap(m_pTexture, 0);
+
+	POINT			ptMouse{};
+
+	GetCursorPos(&ptMouse);
+	ScreenToClient(m_hWnd, &ptMouse);
+
+	// 마우스가 클라이언트 영역 밖이면 무시
+	if (ptMouse.x < 0 || ptMouse.y < 0 || ptMouse.x >= static_cast<_long>(m_iWidth) || ptMouse.y >= static_cast<_long>(m_iHeight))
+		return false;
+
+	_uint			iIndex = ptMouse.y * m_iWidth + ptMouse.x;
+
+	*pOut = static_cast<_int>(m_pIDs[iIndex].w);
+
+	if (static_cast<_int>(m_pIDs[iIndex].w) < 0.f)
+		return false;
+
+	return true;
 }
 
 CPicking* CPicking::Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -96,6 +146,7 @@ void CPicking::Free()
 	__super::Free();
 
 	Safe_Delete_Array(m_pWorldPostions);
+	Safe_Delete_Array(m_pIDs);
 
 	Safe_Release(m_pGameInstance);
 

@@ -13,7 +13,7 @@ class CLevel_YG final : public CLevel
 {
 public:
 	enum class IMGUITOOL {
-		OBJECT,
+		MAP,
 		END
 	};
 private:
