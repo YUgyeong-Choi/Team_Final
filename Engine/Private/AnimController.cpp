@@ -4,36 +4,84 @@
 
 _bool CAnimController::Condition::Evaluate(CAnimator* animator) const
 {
+
 	_float t = animator->GetCurrentAnimProgress();
 	if (t < minTime || t > maxTime)
 		return false;
-	switch (op)
+
+	if (op == EOp::None)
+		return true;
+
+	switch (type)
 	{
-	case EOp::IsTrue:   
-		return animator->CheckBool(paramName);
-	case EOp::IsFalse: 
-		return !animator->CheckBool(paramName);
-	case EOp::Greater:  
-		return animator->GetFloat(paramName) > threshold;
-	case EOp::Less:     
-		return animator->GetFloat(paramName) < threshold;
-	case EOp::Trigger:  
+	case ParamType::Bool:
+		switch (op)
+		{
+		case EOp::IsTrue:
+			return animator->CheckBool(paramName);
+		case EOp::IsFalse:
+			return !animator->CheckBool(paramName);
+		default:
+			return false; // Bool 타입에서 지원하지 않는 연산
+		}
+	case ParamType::Int:
+		switch (op)
+		{
+		case EOp::Greater:
+			return animator->GetInt(paramName) < iThreshold;
+		case EOp::Less:
+			return animator->GetInt(paramName) > iThreshold;
+		case EOp::NotEqual:
+			return animator->GetInt(paramName) != iThreshold;
+		case EOp::Equal:
+			return animator->GetInt(paramName) == iThreshold;
+		default:
+			return false; // Int 타입에서 지원하지 않는 연산
+		}
+	case ParamType::Float:
+		switch (op)
+		{
+		case EOp::Greater:
+			return animator->GetFloat(paramName) < fThreshold;
+		case EOp::Less:
+			return animator->GetFloat(paramName) > fThreshold;
+		default:
+			return false; // Float 타입에서 지원하지 않는 연산
+		}
+	case ParamType::Trigger:
 		return animator->CheckTrigger(paramName);
-	case EOp::Finished:
-		CAnimation* cur = animator->GetCurrentAnim();
-		if (!cur)
-			return false;
-		// 논루프 애니만 검사
-		if (cur->Get_isLoop())
-			return false;
-		// 0~1 정규화 진행도를 체크
-		return animator->GetCurrentAnimProgress() >= 1.0f;
+	default:
+		return false; // 지원하지 않는 타입
 	}
+
+
+	//switch (op)
+	//{
+	//case EOp::IsTrue:   
+	//	return animator->CheckBool(paramName);
+	//case EOp::IsFalse: 
+	//	return !animator->CheckBool(paramName);
+	//case EOp::Greater:  
+	//	return animator->GetFloat(paramName) > fThreshold;
+	//case EOp::Less:     
+	//	return animator->GetFloat(paramName) < fThreshold;
+	//case EOp::Trigger:  
+	//	return animator->CheckTrigger(paramName);
+	////case EOp::Finished:
+	////	CAnimation* cur = animator->GetCurrentAnim();
+	////	if (!cur)
+	////		return false;
+	////	// 논루프 애니만 검사
+	////	if (cur->Get_isLoop())
+	////		return false;
+	////	// 0~1 정규화 진행도를 체크
+	////	return animator->GetCurrentAnimProgress() >= 1.0f;
+	//}
 	return false;
 }
 
 CAnimController::CAnimController()
-	:m_CurrentStateIdx{ 0 }
+	:m_CurrentStateNodeId{ 0 }
 {
 }
 
@@ -41,7 +89,7 @@ CAnimController::CAnimController(const CAnimController& Prototype)
 	: CBase(Prototype)
 	, m_States(Prototype.m_States)
 	, m_Transitions(Prototype.m_Transitions)
-	, m_CurrentStateIdx(Prototype.m_CurrentStateIdx)
+	, m_CurrentStateNodeId(Prototype.m_CurrentStateNodeId)
 {
 }
 
@@ -61,16 +109,30 @@ void CAnimController::Update(_float fTimeDelta)
 	{
 		for (auto& tr : m_Transitions)
 		{
-			if (tr.fromIdx != m_CurrentStateIdx)
+			if (tr.iFromNodeId != m_CurrentStateNodeId)
 				continue;
-			if (!tr.condition())
+			if (tr.hasExitTime)
+			{
+				CAnimation* currentAnim = m_pAnimator->GetCurrentAnim();
+				if (!currentAnim || currentAnim->Get_isLoop())
+					continue; // 현재 애니메이션이 없거나 루프면 뛰어넘게
+				_float progress = m_pAnimator->GetCurrentAnimProgress();
+				if (progress < 1.f)
+					continue; // 현재 애니메이션이 끝나지 않았으면 뛰어넘게
+			}
+			if (!tr.condition.Evaluate(m_pAnimator))
 				continue;
 
-			auto* fromClip = m_States[tr.fromIdx].clip;
-			auto* toClip = m_States[tr.toIdx].clip;
+		/*	auto* fromClip = m_States[tr.fromIdx].clip;
+			auto* toClip = m_States[tr.toIdx].clip;*/
 
+			auto* fromClip = GetStateAnimationByNodeId(tr.iFromNodeId);
+			auto* toClip = GetStateAnimationByNodeId(tr.iToNodeId);
+
+			if (!fromClip || !toClip)
+				continue;
 			m_pAnimator->StartTransition(fromClip, toClip, tr.duration);
-			m_CurrentStateIdx = tr.toIdx;
+			m_CurrentStateNodeId = tr.iToNodeId;
 			break;
 		}
 	}
@@ -86,23 +148,45 @@ _float CAnimController::GetStateLength(const string& name)
 	return 0.f;
 }
 
-void CAnimController::AddTransition(size_t fromIdx, size_t toIdx, const Condition& cond, _float duration)
-{	// Transition 저장 시 condition.Evaluate(animator)
-	if (fromIdx >= m_States.size() || toIdx >= m_States.size())
-		return;
-	m_Transitions.push_back({
-		fromIdx, toIdx,
-		[&]() { return cond.Evaluate(m_pAnimator); },
-		duration
-		});
+void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, const Condition& cond, _float duration,_bool bHasExitTime)
+{	
+	m_Transitions.emplace_back();
+	auto& tr = m_Transitions.back();
+	tr.condition = cond;
+	tr.duration = duration;
+	tr.iFromNodeId = fromNode;
+	tr.iToNodeId = toNode;
+	tr.link = link;
+	tr.hasExitTime = bHasExitTime;
+
+	//m_Transitions.push_back({
+	//	[&cond, this]() { return cond.Evaluate(m_pAnimator); },
+	//	duration,
+	//	fromNode, // 시작 노드 ID
+	//	toNode,   // 끝 노드 ID
+	//	link // 링크 정보 
+	//	,cond // 컨디션 정보
+	//	,bHasExtiTime // 애니메이션이 끝난 경우에
+	//	});
 }
+
+void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, _float duration, _bool bHasExitTime)
+{
+	Condition noCond{};
+	noCond.op = EOp::None;
+	AddTransition(fromNode, toNode, link,
+		noCond,
+		duration,
+		bHasExitTime);
+}
+
 
 void CAnimController::SetState(const string& name)
 {
 	auto state = FindState(name);
 	if (state)
 	{
-		m_CurrentStateIdx = state->clipIndex;
+		m_CurrentStateNodeId = state->iNodeId;
 		m_pAnimator->PlayClip(state->clip);
 	}
 }

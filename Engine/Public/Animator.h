@@ -77,7 +77,7 @@ public:
     void AddBool(const string& name) { m_Params[name] = { ParamType::Bool }; }
     void AddFloat(const string& name) { m_Params[name] = { ParamType::Float }; }
     void AddTrigger(const string& name) { m_Params[name] = { ParamType::Trigger }; }
-
+	void AddInt(const string& name) { m_Params[name] = { ParamType::Int }; }
     // 파라미터 설정
     void SetBool(const string& name, _bool v) {
         auto& p = m_Params[name];
@@ -100,6 +100,10 @@ public:
 	void SetInt(const string& name, _int v) {
 		auto& p = m_Params[name];
 		p.iValue = v;
+	}
+
+	void DeleteParameter(const string& name) {
+		m_Params.erase(name);
 	}
 
     // 조건 검사용
