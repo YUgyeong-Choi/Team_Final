@@ -22,8 +22,11 @@ HRESULT CPrototype_Manager::Add_Prototype(_uint iPrototypeLevelIndex, const _wst
 	if (nullptr == m_pPrototypes || iPrototypeLevelIndex >= m_iNumLevels)
 		return E_FAIL;
 	
-	if (nullptr != Find_Prototype(iPrototypeLevelIndex, strPrototypeTag))
+	if (nullptr != Find_Prototype(iPrototypeLevelIndex, strPrototypeTag)) {
+		Safe_Release(pPrototype);
 		return S_OK;
+	}
+
 
 	m_pPrototypes[iPrototypeLevelIndex].emplace(strPrototypeTag, pPrototype);
 
@@ -40,7 +43,6 @@ CBase* CPrototype_Manager::Clone_Prototype(PROTOTYPE ePrototypeType, _uint iProt
 		return dynamic_cast<CGameObject*>(pPrototype)->Clone(pArg);
 	else
 		return dynamic_cast<CComponent*>(pPrototype)->Clone(pArg);
-		return nullptr;	
 }
 
 void CPrototype_Manager::Clear(_uint iLevelIndex)

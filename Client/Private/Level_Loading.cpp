@@ -131,8 +131,6 @@ HRESULT CLevel_Loading::Render()
 
 HRESULT CLevel_Loading::Ready_Loading()
 {
-
-
 	json j;
 
 	ifstream file("../Bin/DataFiles/UI/Loading.json");
