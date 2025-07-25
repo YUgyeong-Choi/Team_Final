@@ -40,7 +40,7 @@ void CLevel_YW::Update(_float fTimeDelta)
 			return;
 	}
 
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
 
 	
 	m_pCamera_Manager->Update(fTimeDelta);

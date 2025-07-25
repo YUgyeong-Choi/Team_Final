@@ -47,7 +47,7 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 		m_iCurFrame = static_cast<_int>(m_fCurFrame);
 		if (m_fCurFrame > m_pSequence->GetFrameMax())
 		{
-			m_fCurFrame = m_pSequence->GetFrameMin();
+			m_fCurFrame = static_cast<_float>(m_pSequence->GetFrameMin());
 			for (auto& pItem : m_pSequence->m_Items)
 			{
 				pItem.pEffect->Reset_TrackPosition();
@@ -176,8 +176,8 @@ HRESULT CCYTool::SequenceWindow()
 		desc.bAnimation = true;
 		desc.fRotationPerSec = 0.f;
 		desc.fSpeedPerSec = 5.f;
-		desc.iTileX = 8.f;
-		desc.iTileY = 8.f;
+		desc.iTileX = 8;
+		desc.iTileY = 8;
 		pInstance = dynamic_cast<CToolSprite*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
 		m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 	}

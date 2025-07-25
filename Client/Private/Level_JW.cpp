@@ -39,8 +39,8 @@ void CLevel_JW::Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
 
 
 	m_pCamera_Manager->Update(fTimeDelta);

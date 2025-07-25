@@ -36,8 +36,8 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 
 	m_fOffsetUV = pDesc->fOffsetUV;
 
-	m_iWidth = 1 / m_fOffsetUV.x;
-	m_iHeight = 1 / m_fOffsetUV.y;
+	m_iWidth = static_cast<_int>(1 / m_fOffsetUV.x);
+	m_iHeight = static_cast<_int>(1 / m_fOffsetUV.y);
 
 	m_iUIType = pDesc->iUIType;
 

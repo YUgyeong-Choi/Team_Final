@@ -38,9 +38,9 @@ void CLevel_CY::Update(_float fTimeDelta)
 			return;
 	}
 
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Priority_Update(fTimeDelta);
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Update(fTimeDelta);
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::OBJECT)]->Late_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Priority_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
 
 
 	m_pCamera_Manager->Update(fTimeDelta);

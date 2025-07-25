@@ -91,7 +91,7 @@ HRESULT CLevel_Logo::Render()
 HRESULT CLevel_Logo::Ready_Video()
 {
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
-	eDesc.fOffset = 0.1;
+	eDesc.fOffset = 0.1f;
 	eDesc.fInterval = 1.f;
 	eDesc.fSpeedPerSec = 30.f;
 	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Title.mp4");
