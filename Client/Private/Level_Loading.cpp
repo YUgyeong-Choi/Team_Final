@@ -2,6 +2,7 @@
 
 
 #include "Level_KratCentralStation.h"
+#include "Level_KratHotel.h"
 #include "Level_Logo.h"
 #include "Loader.h"
 
@@ -15,6 +16,8 @@
 #include "GameInstance.h"
 
 #include "Static_UI.h"
+#include "Dynamic_UI.h"
+#include "UI_Video.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -36,14 +39,19 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 
-	if (FAILED(Ready_Loading()))
-		return E_FAIL;
+	if (m_eNextLevelID != LEVEL::LOGO)
+	{
+		if (FAILED(Ready_Loading()))
+			return E_FAIL;
+	}
+
 	
 	return S_OK;
 }
 
 void CLevel_Loading::Update(_float fTimeDelta)
 {
+
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
@@ -58,6 +66,9 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				break;
 			case LEVEL::KRAT_CENTERAL_STATION:
 				pLevel = CLevel_KratCentralStation::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::KRAT_HOTEL:
+				pLevel = CLevel_KratHotel::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL::DH:
 				pLevel = CLevel_DH::Create(m_pDevice, m_pContext);
@@ -87,6 +98,25 @@ void CLevel_Loading::Update(_float fTimeDelta)
 							
 		}
 	}	
+
+
+
+	if (m_eNextLevelID == LEVEL::LOGO)
+	{
+		if (true == m_pLoader->isFinished())
+		{
+			CLevel* pLevel = { nullptr };
+
+			pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+
+			if (nullptr == pLevel)
+				return;
+
+			if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(m_eNextLevelID), pLevel)))
+				return;
+
+		}
+	}
 }
 
 HRESULT CLevel_Loading::Render()
@@ -131,8 +161,32 @@ HRESULT CLevel_Loading::Ready_Loading()
 
 	file.close();
 
+
+	// ½ÇÇè¿ë
+
+	CDynamic_UI::DYNAMIC_UI_DESC eDesc = {};
+
+	eDesc.fOffset = 0.f;
+	eDesc.fOffsetUV = { 0.25f, 0.5f };
+	eDesc.fSizeX = 100;
+	eDesc.fSizeY = 100;
+	eDesc.fX = g_iWinSizeX * 0.2f;
+	eDesc.fY = g_iWinSizeY * 0.9f;
+	eDesc.iPassIndex = 2;
+	eDesc.isLoop = true;
+	eDesc.iTextureIndex = 0;
+	eDesc.iUIType = 2;
+	eDesc.strTextureTag = TEXT("Prototype_Component_Texture_Img_ChGear");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
+		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Dynamic"), &eDesc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
+
+
 
 CLevel_Loading* CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID)
 {

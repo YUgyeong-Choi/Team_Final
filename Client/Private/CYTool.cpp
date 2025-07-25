@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "EffectSequence.h"
 #include "ToolParticle.h"
+#include "ToolSprite.h"
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
@@ -38,7 +39,14 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 	Key_Input();
 	if (m_bPlaySequence)
 	{
-		++m_iCurFrame;
+		m_fTimeAcc += fTimeDelta;
+		if (m_fTimeAcc >= 1.f/60.f)
+		{
+			++m_iCurFrame;
+			if (m_iCurFrame > m_pSequence->GetFrameMax())
+				m_iCurFrame = m_pSequence->GetFrameMin();
+			m_fTimeAcc = 0.f;
+		}
 		//for (auto& pItem : m_pSequence->m_Items)
 		//{
 		//	if (m_iCurFrame >= pItem.iStart && m_iCurFrame <= pItem.iEnd)
@@ -128,17 +136,6 @@ HRESULT CCYTool::Make_Particles()
 HRESULT CCYTool::SequenceWindow()
 {
 	ImGui::Begin("ImSequence Window");
-
-	ImSequencer::Sequencer(m_pSequence, &m_iCurFrame, &m_bExpanded, &m_iSelected, &m_iFirstFrame, ImSequencer::SEQUENCER_EDIT_ALL);
-
-	ImGui::End();
-	return S_OK;
-}
-
-HRESULT CCYTool::Edit_Preferences()
-{
-	ImGui::Begin("Edit Item Preferences");
-
 	if (ImGui::RadioButton("Sprite Effect", m_eEffectType == EFF_SPRITE)) {
 		m_eEffectType = EFF_SPRITE;
 		m_strSeqItemName = "Sprite";
@@ -156,8 +153,37 @@ HRESULT CCYTool::Edit_Preferences()
 		m_strSeqItemName = "Mesh";
 		m_iSeqItemColor = D3DCOLOR_ARGB(255, 100, 100, 220);
 	}
+	ImGui::SameLine();
 
-	switch (m_eEffectType)
+	if (ImGui::Button("Add to Sequence"))
+	{
+		CToolSprite* pInstance = { nullptr };
+		CToolSprite::DESC desc = {};
+
+		desc.bAnimation = true;
+		desc.fRotationPerSec = 0.f;
+		desc.fSpeedPerSec = 5.f;
+		desc.iUVHeight = 8.f;
+		desc.iUVWidth = 8.f;
+		pInstance = dynamic_cast<CToolSprite*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
+		m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+	}
+
+	ImSequencer::Sequencer(m_pSequence, &m_iCurFrame, &m_bExpanded, &m_iSelected, &m_iFirstFrame, ImSequencer::SEQUENCER_EDIT_ALL);
+
+	ImGui::End();
+	return S_OK;
+}
+
+HRESULT CCYTool::Edit_Preferences()
+{
+	ImGui::Begin("Edit Item Preferences");
+	if (m_pSequence == nullptr || m_pSequence->m_Items.empty())
+	{
+		ImGui::End();
+		return S_OK;
+	}
+	switch (m_pSequence->m_Items[m_iSelected].iType)
 	{
 	case Client::CCYTool::EFF_SPRITE:
 		if (FAILED(Window_Sprite()))
@@ -181,11 +207,8 @@ HRESULT CCYTool::Edit_Preferences()
 		}
 		break;
 	}
+	ImGui::SameLine();
 
-	if (ImGui::Button("Add to Sequence"))
-	{
-		m_pSequence->Add(m_strSeqItemName, 0, 10, m_eEffectType, m_iSeqItemColor);
-	}
 
 	ImGui::End();
 
@@ -195,6 +218,12 @@ HRESULT CCYTool::Edit_Preferences()
 
 HRESULT CCYTool::Window_Sprite()
 {
+	CToolSprite* pTS = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
+
+	// pTS-> 
+	// 속성 imgui로 조정하기
+	// 재생 시키기 
+
 	ImGui::Dummy(ImVec2(0.0f, 10.0f));
 	ImGui::SeparatorText("Sprite Preferences");
 	ImGui::Dummy(ImVec2(0.0f, 10.0f));

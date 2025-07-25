@@ -5,6 +5,8 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
 texture2D g_DepthTexture;
 
+float g_Alpha;
+
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
 
@@ -150,7 +152,31 @@ PS_OUT PS_MAIN_DISCARD_ALPHA(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_FADE(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    Out.vColor.a = g_Alpha;
+    
+    return Out;
+}
 
+PS_OUT PS_MAIN_VIGNETTING(PS_IN In)
+{
+    PS_OUT Out;
+    
+    float4 vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    float luminance = dot(vColor.rgb, float3(0.299, 0.587, 0.114));
+    
+    Out.vColor = float4(0.f, 0.f, 0.f, 0.f);
+    
+    Out.vColor.a = saturate(1.0 - luminance);
+    
+    return Out;
+}
 
 technique11 DefaultTechnique
 { 
@@ -240,6 +266,28 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_DISCARD_DARK();
+    }
+    pass Fade
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_FADE();
+    }
+    pass Vignetting
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_FADE();
     }
     //pass Blend/* 반투명 */
     //{

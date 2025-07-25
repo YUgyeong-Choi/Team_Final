@@ -14,8 +14,10 @@ class CSpriteEffect abstract : public CEffectBase
 public:
 	typedef struct tagSpriteEffectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		_bool				bAnimation = { false };
-		_uint				iFrame = {};
+		_bool		bAnimation = { false };
+		_uint		iFrame = {};
+		_uint		iUVWidth = {};
+		_uint		iUVHeight = {};
 	}DESC;
 
 protected:

@@ -21,7 +21,7 @@ HRESULT CYGCapsule::Initialize_Prototype()
 HRESULT CYGCapsule::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC _desc{};
-	lstrcpy(_desc.szName, TEXT("YGMonster"));
+	lstrcpy(_desc.szName, TEXT("YGCapsule"));
 	_desc.fRotationPerSec = 8.f;
 	_desc.fSpeedPerSec = 10.f;
 
@@ -33,17 +33,14 @@ HRESULT CYGCapsule::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-	_fvector vPos{ 0.0f, 0.f, 5.0f, 1.0f };
+	_fvector vPos{-20.0f, 0.f, 10.0f, 1.0f };
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+	m_pTransformCom->Rotation(0.f, XMConvertToRadians(180.f), 0.f);
 
 	// Tranform위치를 이동해준 뒤 콜라이더를 생성해서 맨 처음 시작할때 충돌안 됨
 	if (FAILED(Ready_Collider())) {
 		return E_FAIL;
 	}
-
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
 
 	return S_OK;
 }
@@ -123,29 +120,25 @@ HRESULT CYGCapsule::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGCapsule::On_CollisionEnter(CGameObject* pOther)
+void CYGCapsule::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("몬스터 충돌 시작!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Red);
-#endif
+	printf("YGCapsule 충돌 시작!\n");
+
 }
 
-void CYGCapsule::On_CollisionStay(CGameObject* pOther)
+void CYGCapsule::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CYGCapsule::On_CollisionExit(CGameObject* pOther)
+void CYGCapsule::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("몬스터 충돌 종료!\n");
-#ifdef _DEBUG
-	m_pPhysXActorCom->Set_ColliderColor(Colors::Green);
-#endif
+	printf("YGCapsule 충돌 종료!\n");
+
 }
 
-void CYGCapsule::On_Hit(CGameObject* pOther)
+void CYGCapsule::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	wprintf(L"YGMonster Hit: %s\n", pOther->Get_Name().c_str());
+	wprintf(L"YGCapsule Hit: %s\n", pOther->Get_Name().c_str());
 }
 
 HRESULT CYGCapsule::Ready_Components()
@@ -205,6 +198,7 @@ HRESULT CYGCapsule::Ready_Collider()
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::A);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else
@@ -269,7 +263,7 @@ void CYGCapsule::Ray()
 			PxVec3 hitNormal = hit.block.normal;
 
 			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
-			pHitActor->Get_Owner()->On_Hit(this);
+			pHitActor->Get_Owner()->On_Hit(this,m_pPhysXActorCom->Get_ColliderType());
 
 			printf("Ray충돌 했다!\n");
 			printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
@@ -327,9 +321,17 @@ CGameObject* CYGCapsule::Clone(void* pArg)
 
 void CYGCapsule::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+
+	if (m_pPhysXActorCom) 
+	{
+		PxScene* pScene = m_pGameInstance->Get_Scene();
+		if (pScene)
+			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
+	}
+	
 	Safe_Release(m_pPhysXActorCom);
+
+	__super::Free();
 }

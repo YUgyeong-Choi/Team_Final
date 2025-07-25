@@ -38,6 +38,7 @@ HRESULT CGLTool::Initialize(void* pArg)
 
 	m_pSequence = new CUI_Sequence();
 	
+	m_pSequence->Add(2);
 
 	return S_OK;
 }
@@ -49,6 +50,18 @@ void CGLTool::Priority_Update(_float fTimeDelta)
 
 void CGLTool::Update(_float fTimeDelta)
 {
+	if (m_isPlay)
+	{
+		m_fElapsedTime += fTimeDelta;
+
+		if (m_fElapsedTime > 0.16f)
+		{
+			++m_iCurrentFrame;
+			m_fElapsedTime = 0.f;
+
+		}
+	}
+		
 }
 
 void CGLTool::Late_Update(_float fTimeDelta)
@@ -57,8 +70,6 @@ void CGLTool::Late_Update(_float fTimeDelta)
 
 HRESULT CGLTool::Render()
 {
-	if (FAILED(Render_UtilTool()))
-		return E_FAIL;
 
 	if (FAILED(Render_SelectOptionTool()))
 		return E_FAIL;
@@ -171,128 +182,145 @@ void CGLTool::Add_UI()
 	m_UIList.push_back(static_cast<CStatic_UI*>(pObj));
 }
 
-HRESULT CGLTool::Render_UtilTool()
-{
-	SetNextWindowSize(ImVec2(500, 300));
-	_bool open = true;
-	Begin("GL Tools", &open, NULL);
-
-	IGFD::FileDialogConfig config;
-	if (Button(u8"Save File"))
-	{
-		Save_File();
-	}
-
-	if (Button(u8"Open File"))
-	{
-		Open_File();
-
-	}
-
-	if (Button(u8"Add Static UI"))
-	{
-		Add_UI();
-	}
-
-	if (Button(u8"Delete UI"))
-	{
-		if (nullptr != m_pSelectObj)
-			m_pSelectObj->Set_bDead();
-	}
-
-	int index = 0;
-
-	for (const auto& strName : m_TextureNames)
-	{
-		bool isSelected = (index == m_iSelectTextureIndex);
-
-		if (ImGui::Selectable(WStringToString(strName).c_str(), isSelected))
-		{
-			m_iSelectTextureIndex = index;
-			m_strSelectName = strName;
-		}
-		++index;
-	}
-
-	
-
-
-	// 파일 탐색기를 띄운다
-	ImGui::SetNextWindowSize(ImVec2(800, 600));
-	if (IFILEDIALOG->Display("JsonDialog"))
-	{
-		if (IFILEDIALOG->IsOk())
-		{
-			
-			Add_UI_From_File();
-
-		}
-		IFILEDIALOG->Close();
-	}
-
-	ImGui::End();
-
-
-	
-
-	return S_OK;
-}
-
 HRESULT CGLTool::Render_SelectOptionTool()
 {
 	
-	SetNextWindowSize(ImVec2(400, 300));
+	SetNextWindowSize(ImVec2(400, 400));
 	_bool open = true;
 	ImGui::Begin("Select option ", &open, NULL);
 
 	//float value = 0.6f;
 	//ImGui::SliderFloat("Offset", &value, 0.0f, 1.0f);
 
-
-	// 입력 칸 만들기
-
-	ImGui::InputFloat("Offset", &eUITempDesc.fOffset);
-	ImGui::InputInt("PassIndex", &eUITempDesc.iPassIndex);
-	ImGui::InputInt("TextureIndex", &eUITempDesc.iTextureIndex);
-	ImGui::InputFloat("SizeX_Ratio", &eUITempDesc.fSizeX);
-	ImGui::InputFloat("SizeY_Ratio", &eUITempDesc.fSizeY);
-	ImGui::InputFloat("fX_Ratio", &eUITempDesc.fX);
-	ImGui::InputFloat("fY_Ratio", &eUITempDesc.fY);
-
-	// 필요하면 슬라이더로
-	ImGui::SliderFloat("SizeX_Slider", &eUITempDesc.fSizeX, 0.001f, 1.5f); 
-	ImGui::SliderFloat("SizeY_Slider", &eUITempDesc.fSizeY, 0.001f, 1.5f);
-	ImGui::SliderFloat("fX_Slider", &eUITempDesc.fX, -0.5f, 1.5f);
-	ImGui::SliderFloat("fY_Slider", &eUITempDesc.fY, -0.5f, 1.5f);
-
-	eUIDesc = eUITempDesc;
-	eUIDesc.fSizeX *= g_iWinSizeX;
-	eUIDesc.fSizeY *= g_iWinSizeY;
-	eUIDesc.fX *= g_iWinSizeX;
-	eUIDesc.fY *= g_iWinSizeY;
-
-	eUIDesc.strTextureTag = m_strSelectName;
-
-	if (eUIDesc.iPassIndex >= UI_END)
+	if (ImGui::BeginTabBar("Util"))
 	{
-		eUIDesc.iPassIndex = UI_END - 1;
-		eUITempDesc.iPassIndex = UI_END - 1;
+		if (ImGui::BeginTabItem("Input Static Desc"))
+		{
+			// 입력 칸 만들기
+
+			ImGui::InputFloat("Offset", &eUITempDesc.fOffset);
+			ImGui::InputInt("PassIndex", &eUITempDesc.iPassIndex);
+			ImGui::InputInt("TextureIndex", &eUITempDesc.iTextureIndex);
+			ImGui::InputFloat("SizeX_Ratio", &eUITempDesc.fSizeX);
+			ImGui::InputFloat("SizeY_Ratio", &eUITempDesc.fSizeY);
+			ImGui::InputFloat("fX_Ratio", &eUITempDesc.fX);
+			ImGui::InputFloat("fY_Ratio", &eUITempDesc.fY);
+
+			// 필요하면 슬라이더로
+			ImGui::SliderFloat("SizeX_Slider", &eUITempDesc.fSizeX, 0.001f, 1.5f);
+			ImGui::SliderFloat("SizeY_Slider", &eUITempDesc.fSizeY, 0.001f, 1.5f);
+			ImGui::SliderFloat("fX_Slider", &eUITempDesc.fX, -0.5f, 1.5f);
+			ImGui::SliderFloat("fY_Slider", &eUITempDesc.fY, -0.5f, 1.5f);
+
+			eUIDesc = eUITempDesc;
+			eUIDesc.fSizeX *= g_iWinSizeX;
+			eUIDesc.fSizeY *= g_iWinSizeY;
+			eUIDesc.fX *= g_iWinSizeX;
+			eUIDesc.fY *= g_iWinSizeY;
+
+			eUIDesc.strTextureTag = m_strSelectName;
+
+			if (eUIDesc.iPassIndex >= UI_END)
+			{
+				eUIDesc.iPassIndex = UI_END - 1;
+				eUITempDesc.iPassIndex = UI_END - 1;
+			}
+
+			if (eUIDesc.iPassIndex < 0)
+			{
+				eUIDesc.iPassIndex = 0;
+				eUITempDesc.iPassIndex = 0;
+			}
+
+			if (nullptr == m_pSelectObj || m_pSelectObj->Get_bDead())
+			{
+
+			}
+			else
+			{
+				m_pSelectObj->Update_UI_From_Tool(eUIDesc);
+			}
+
+
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Input Dynamic Desc"))
+		{
+			// 입력 칸 만들기
+
+
+
+
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Button"))
+		{
+
+			IGFD::FileDialogConfig config;
+			if (Button(u8"Save File"))
+			{
+				Save_File();
+			}
+
+			if (Button(u8"Open File"))
+			{
+				Open_File();
+
+			}
+
+			if (Button(u8"Add Static UI"))
+			{
+				Add_UI();
+			}
+
+			if (Button(u8"Delete UI"))
+			{
+				if (nullptr != m_pSelectObj)
+					m_pSelectObj->Set_bDead();
+			}
+
+			if (Button(u8"Add Sequence"))
+			{
+				
+			}
+
+			if (Button(u8"Play Sequence"))
+			{
+				m_isPlay = true;
+			}
+
+			if (Button(u8"Stop Sequence and reset"))
+			{
+				m_isPlay = false;
+				m_iCurrentFrame = 0;
+			}
+
+
+
+
+			// 파일 탐색기를 띄운다
+			ImGui::SetNextWindowSize(ImVec2(800, 600));
+			if (IFILEDIALOG->Display("JsonDialog"))
+			{
+				if (IFILEDIALOG->IsOk())
+				{
+
+					Add_UI_From_File();
+
+				}
+				IFILEDIALOG->Close();
+			}
+
+
+			ImGui::EndTabItem();
+		}
+
+
+		ImGui::EndTabBar();
 	}
 
-	if (eUIDesc.iPassIndex < 0)
-	{
-		eUIDesc.iPassIndex = 0;
-		eUITempDesc.iPassIndex = 0;
-	}
-
-	if (nullptr == m_pSelectObj || m_pSelectObj->Get_bDead())
-	{
-
-	}
-	else
-	{
-		m_pSelectObj->Update_UI_From_Tool(eUIDesc);
-	}
 		
 
 	ImGui::End();
@@ -301,40 +329,80 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 HRESULT CGLTool::Render_UIList()
 {
-	
-	SetNextWindowSize(ImVec2(200, 300));
+	SetNextWindowSize(ImVec2(400, 300));
+
 	_bool open = true;
-	ImGui::Begin("UI List", &open, NULL);
-
-	// 만들어진 uilist 
-
-	int index = 0;
-	
-	for (const auto& pObj : m_UIList)
+	ImGui::Begin("UIList", &open, NULL);
 	{
-		bool isSelected = (index == m_iSelectObjIndex);
-
-		if (nullptr == pObj || pObj->Get_bDead())
-			continue;
-		
-		if (ImGui::Selectable(to_string(index).c_str(), isSelected))
+		if (ImGui::BeginTabBar("MyTabBar"))
 		{
-			m_iSelectObjIndex = index;
-			m_pSelectObj = pObj;
-			eUITempDesc = m_pSelectObj->Get_Desc();
-			eUITempDesc.fSizeX /= g_iWinSizeX;
-			eUITempDesc.fSizeY /= g_iWinSizeY;
-			eUITempDesc.fX /= g_iWinSizeX;
-			eUITempDesc.fY /= g_iWinSizeY;
-			eUITempDesc.strTextureTag = pObj->Get_StrTextureTag();
+			if (ImGui::BeginTabItem("Static"))
+			{
+				int index = 0;
+
+				for (const auto& pObj : m_UIList)
+				{
+					bool isSelected = (index == m_iSelectObjIndex);
+
+					if (nullptr == pObj || pObj->Get_bDead())
+						continue;
+
+					if (ImGui::Selectable(to_string(index).c_str(), isSelected))
+					{
+						m_iSelectObjIndex = index;
+						m_pSelectObj = pObj;
+						eUITempDesc = m_pSelectObj->Get_Desc();
+						eUITempDesc.fSizeX /= g_iWinSizeX;
+						eUITempDesc.fSizeY /= g_iWinSizeY;
+						eUITempDesc.fX /= g_iWinSizeX;
+						eUITempDesc.fY /= g_iWinSizeY;
+						eUITempDesc.strTextureTag = pObj->Get_StrTextureTag();
+
+					}
+
+
+					++index;
+				}
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Dynamic"))
+			{
+
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Prototype"))
+			{
+
+
+				int index = 0;
+
+				for (const auto& strName : m_TextureNames)
+				{
+					bool isSelected = (index == m_iSelectTextureIndex);
+
+					if (ImGui::Selectable(WStringToString(strName).c_str(), isSelected))
+					{
+						m_iSelectTextureIndex = index;
+						m_strSelectName = strName;
+					}
+					++index;
+				}
+
+				ImGui::EndTabItem();
+			}
+
+			ImGui::EndTabBar();
 
 		}
 
-		
-		++index;
+
+		ImGui::End();
 	}
 
-	ImGui::End();
+	
+	
 	return S_OK;
 }
 
@@ -346,12 +414,12 @@ HRESULT CGLTool::Render_Sequence()
 
 	//                   
 	
-
+	int iFirstFrame = 0;
 	ImSequencer::Sequencer(m_pSequence,
 		&m_iCurrentFrame,
 		&m_bExpanded,
 		&m_iSelectedEntry,
-		&m_iCurrentFrame, // Optional callback for drawing custom UI
+		&iFirstFrame, // Optional callback for drawing custom UI
 		ImSequencer::SEQUENCER_EDIT_STARTEND |
 		ImSequencer::SEQUENCER_ADD |
 		ImSequencer::SEQUENCER_DEL |

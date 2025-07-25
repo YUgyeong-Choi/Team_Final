@@ -16,6 +16,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);	
 	virtual HRESULT Render() { return S_OK; }
 
+	_bool Get_isCloned() { return m_isCloned; }
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };

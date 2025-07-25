@@ -17,6 +17,7 @@ public:
 	virtual HRESULT Render() override;
 
 	HRESULT	Ready_Loading();
+	
 
 private:
 	LEVEL				m_eNextLevelID = { LEVEL::END };

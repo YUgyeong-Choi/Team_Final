@@ -35,11 +35,17 @@ public:
 	// 정점 정보가지고 AABB를 만들어 줌
 	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
 
-	// 정점 정보가지고 AABB 만들고 그것을 이용해서 캡슐 크기를 알아서 만들어줌
+	// 직접 AABB를 만드는 코드
+	PxBoxGeometry CookBoxGeometry(const PxVec3& halfExtents);
+
+	// 정점 정보가지고 캡슐 크기를 알아서 만들어줌
 	PxCapsuleGeometry CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale);
 
 	// 직접 캡슐 만드는 코드
 	PxCapsuleGeometry CookCapsuleGeometry(_float fRadius, _float fCapsuleHeight);
+
+	// 정점 정보가지고 Sphere를 만들어 줌
+	PxSphereGeometry CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale);
 
 	// 직접 구체 만드는 코드
 	PxSphereGeometry CookSphereGeometry(_float fRadius);
@@ -48,6 +54,7 @@ public:
 	//CPhysXStaticActor* Create_Terrain(const PxVec3* pVertices, PxU32 vertexCount, const PxU32* pIndices, PxU32 triangleCount);
 
 public:
+	void PrintCudaDeviceInfo();
 	static CPhysX_Manager* Create();
 	virtual void Free() override;
 
@@ -68,6 +75,7 @@ private:
 
 	CPhysX_ContactReport* m_pContactCallback = { nullptr };
 
+	PxCudaContextManager* m_pCudaContextManager = {nullptr};
 };
 
 NS_END

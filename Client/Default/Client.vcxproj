@@ -118,7 +118,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../EngineSDK/Lib/;../../PhysXSDK/Debug/LIB/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;DirectXTKd.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCooking_64.lib;PhysXVehicle2_static_64.lib;PhysXGpu_64.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;DirectXTKd.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCooking_64.lib;PhysXVehicle2_static_64.lib;PhysXGpu_64.lib;assimp-vc143-mtd.lib;mfplat.lib;mf.lib;mfreadwrite.lib;mfuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -163,6 +163,7 @@
     <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\CYTool.h" />
     <ClInclude Include="..\Public\DHTool.h" />
+    <ClInclude Include="..\public\Dynamic_UI.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectSequence.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="..\Public\AnimTool.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
+    <ClInclude Include="..\Public\Level_KratHotel.h" />
     <ClInclude Include="..\Public\Level_KratCentralStation.h" />
     <ClInclude Include="..\Public\Level_GL.h" />
     <ClInclude Include="..\Public\Level_JW.h" />
@@ -190,10 +192,17 @@
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\Public\ToolSprite.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
+    <ClInclude Include="..\public\UI_Feature.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
+    <ClInclude Include="..\public\UI_Video.h" />
+    <ClInclude Include="..\Public\YGBox.h" />
+    <ClInclude Include="..\Public\YGConvexMesh.h" />
+    <ClInclude Include="..\Public\YGShpere.h" />
+    <ClInclude Include="..\Public\YGTriangleMesh.h" />
     <ClInclude Include="..\Public\YGCapsule.h" />
     <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
+    <ClInclude Include="..\Public\YGTrrigerWithoutModel.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Calculation.h" />
     <ClInclude Include="framework.h" />
@@ -222,6 +231,7 @@
     <ClCompile Include="..\private\Camera_Orbital.cpp" />
     <ClCompile Include="..\Private\CYTool.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
+    <ClCompile Include="..\private\Dynamic_UI.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\private\EffectBase.cpp" />
     <ClCompile Include="..\Private\EffectSequence.cpp" />
@@ -234,6 +244,7 @@
     <ClCompile Include="..\Private\Level_KratCentralStation.cpp" />
     <ClCompile Include="..\Private\Level_GL.cpp" />
     <ClCompile Include="..\Private\Level_JW.cpp" />
+    <ClCompile Include="..\Private\Level_KratHotel.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_YG.cpp" />
@@ -249,10 +260,17 @@
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\Private\ToolSprite.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />
+    <ClCompile Include="..\private\UI_Feature.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
+    <ClCompile Include="..\private\UI_Video.cpp" />
+    <ClCompile Include="..\Private\YGBox.cpp" />
+    <ClCompile Include="..\Private\YGConvexMesh.cpp" />
+    <ClCompile Include="..\Private\YGShpere.cpp" />
+    <ClCompile Include="..\Private\YGTriangleMesh.cpp" />
     <ClCompile Include="..\Private\YGCapsule.cpp" />
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
+    <ClCompile Include="..\Private\YGTriggerWithoutModel.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />
@@ -274,6 +292,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
