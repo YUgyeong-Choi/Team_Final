@@ -108,12 +108,6 @@ public:
 	void Quaternion_Turn(const _vector& vAngle);
 
 public:
-	////오일러 각도를 가져온다.
-	//_float3 Get_EulerRotation();
-	////오일러 각도를 세팅한다.
-	//void Set_EulerRotation(const _float3& vEulerDeg);
-
-public:
 	/* [ Y축을 제외하고 바라본다 ] */
 	void LookAtWithOutY(_fvector vAt);
 	/* [ Y축을 제외하고 쫓아간다 (네비) ] */

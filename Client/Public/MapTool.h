@@ -6,6 +6,7 @@
 #undef USE_IMGUI
 
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
+#define PRE_TRANSFORMMATRIX_SCALE 0.01f
 
 NS_BEGIN(Client)
 

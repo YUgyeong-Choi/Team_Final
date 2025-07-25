@@ -567,6 +567,44 @@ HRESULT CMapTool::Spawn_MapToolObject()
 
 	MapToolObjDesc.iID = m_iID++;
 
+#pragma region 카메라 앞에다가 소환
+	//카메라 앞에다가 소환
+	//카메라 위치에서, 뷰행렬 Look 만큼 앞으로
+	// 카메라 위치
+	_float4 CamPos = *m_pGameInstance->Get_CamPosition();
+
+	// 위치만 반영한 행렬 생성
+	_matrix matWorld = XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
+
+	// 카메라 월드 행렬 (뷰 행렬 역행렬)
+	_matrix CamWorldMatrix = XMMatrixInverse(nullptr, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	_float4x4 CamWM = {};
+	XMStoreFloat4x4(&CamWM, CamWorldMatrix);
+
+	// 룩 벡터 추출 (3번째 행)
+	_vector vLook = XMVectorSet(CamWM._31, CamWM._32, CamWM._33, 0.f);
+
+	// 룩 벡터 정규화
+	vLook = XMVector3Normalize(vLook);
+
+	// 거리 설정
+	_float fDist = PRE_TRANSFORMMATRIX_SCALE * 500.f;
+
+	// 룩 벡터에 거리 곱하기
+	_vector vOffset = XMVectorScale(vLook, fDist);
+
+	// 카메라 위치 벡터
+	_vector vCamPos = XMLoadFloat4(&CamPos);
+
+	// 최종 위치 계산 (카메라 위치 + 룩 * 거리)
+	_vector vSpawnPos = XMVectorAdd(vCamPos, vOffset);
+
+	// 최종 월드 행렬 생성 (위치만)
+	_matrix SpawnWorldMatrix = XMMatrixTranslationFromVector(vSpawnPos);
+
+	// 오브젝트 월드 행렬에 적용
+	XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, SpawnWorldMatrix);
+#pragma endregion
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 		ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
@@ -590,7 +628,7 @@ HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModel
 
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), strPrototypeTag,
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
@@ -598,57 +636,6 @@ HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModel
 
 	return S_OK;
 }
-
-//void CMapTool::UpdateHierarchy()
-//{
-//	// 기존 데이터 초기화
-//	m_ModelGroups.clear();      // 모델 이름별로 그룹화된 GameObject 리스트 초기화
-//	m_HierarchyNames.clear();   // Hierarchy UI에서 사용할 이름 리스트 초기화
-//
-//	// 현재 레벨(YW)의 모든 레이어들에 대해 반복
-//	for (auto& pLayer : m_pGameInstance->Get_Layers(ENUM_CLASS(LEVEL::YW)))
-//	{
-//		// 레이어 이름에 "MapObject"가 포함되지 않으면 무시 (맵 에디터용 객체만 필터링)
-//		if (pLayer.first.find(L"MapToolObject") == wstring::npos)
-//			continue;
-//
-//		// 해당 레이어의 모든 GameObject에 대해 반복
-//		for (auto pGameObject : pLayer.second->Get_GameObjects())
-//		{
-//			// 모델 컴포넌트 이름에서 "Prototype_Component_Model_" 접두사를 기준으로 모델명 추출
-//			wstring prefix = L"Prototype_Component_Model_";
-//			wstring wstrModelCom = *static_cast<CMapToolObject*>(pGameObject)->Get_ModelPrototypeTag(); // 모델 이름 얻기
-//
-//			// 접두사가 없는 경우는 무시
-//			size_t PosPrefix = wstrModelCom.find(prefix);
-//			if (PosPrefix == wstring::npos)
-//				continue;
-//
-//			// 접두사 이후의 실제 모델 이름 부분을 잘라내어 string으로 변환
-//			string ModelName = WStringToString(wstrModelCom.substr(PosPrefix + prefix.length()));
-//
-//			// 모델 이름을 키로 하여 그룹에 GameObject를 추가
-//			m_ModelGroups[ModelName].push_back(pGameObject);
-//		}
-//
-//		// 모델 그룹들로부터 UI에 사용할 Hierarchy 이름들을 생성
-//		_uint i = 0; // 전체 인덱스
-//		for (auto& group : m_ModelGroups)
-//		{
-//			for (auto pGameObject : group.second)
-//			{
-//				// "모델이름_숫자" 형태의 이름 생성하여 Hierarchy UI 항목으로 사용
-//				string strHierarchyName = group.first + "_" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID());
-//
-//				// 이름 리스트에 추가
-//				m_HierarchyNames.push_back(strHierarchyName);
-//
-//				++i; // 전체 인덱스 증가
-//			}
-//		}
-//	}
-//
-//}
 
 void CMapTool::Add_ModelGroup(string ModelName, CGameObject* pMapToolObject)
 {
