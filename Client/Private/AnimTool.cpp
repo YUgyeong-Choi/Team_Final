@@ -235,56 +235,81 @@ HRESULT CAnimTool::Render_Parameters()
 		ImGui::Text("Action"); ImGui::NextColumn();
 		ImGui::Separator();
 
+		unordered_map<string, Parameter>& parameters = m_pCurAnimator->GetParameters();
 		// 파라미터 타입들
 		const _char* typeNames[] = { "Bool", "Trigger", "Float", "Int" };
 
-		for (_int i = 0; i < (_int)m_Parameters.size(); ++i)
+		_int i = 0;
+
+		for (auto it = parameters.begin(); it != parameters.end();)
 		{
-			auto& parm = m_Parameters[i];
-		    string id = to_string(i); // 식별하는 아이디용
+			auto& parmeter = it->second;
+			string id = to_string(i); // 식별하는 아이디용
 
 			// Name
 			_char buf[64];
-			strncpy_s(buf, parm.name.c_str(), sizeof(buf));
+			strncpy_s(buf, it->first.c_str(), sizeof(buf));
 			if (ImGui::InputText(("##Name" + id).c_str(), buf, sizeof(buf)))
-				parm.name = buf;
+			{
+				string oldName = parmeter.name;
+				string newName = buf;
+				if (newName != oldName)
+				{
+					Parameter newParameter = parmeter; // 기존 파라미터 복사
+					newParameter.name = newName; // 새 이름으로 변경
+					it = parameters.erase(it); // 기존 이름 삭제
+					m_pCurAnimator->AddParameter(newName, newParameter);
+					continue;
+				}
+			}
 			ImGui::NextColumn();
 
 			// Type 콤보
-			_int t = (_int)parm.type;
+			_int t = static_cast<_int>(parmeter.type);
 			if (ImGui::Combo(("##Type" + id).c_str(), &t, typeNames, IM_ARRAYSIZE(typeNames)))
-				parm.type = (ParamType)t;
+				parmeter.type = (ParamType)t;
 			ImGui::NextColumn();
 
 			// Value 위젯
-			switch (parm.type)
+			switch (parmeter.type)
 			{
 			case ParamType::Bool:
-				if (ImGui::Checkbox(("##Val" + id).c_str(), &parm.bValue))
+			{
+
+				_bool bFlag = parmeter.bValue;
+				if (ImGui::Checkbox(("##Val" + id).c_str(), &bFlag))
 				{
-				if (m_pCurAnimator)
-				{
-					m_pCurAnimator->SetBool(parm.name, parm.bValue);
+					parmeter.bValue = bFlag;
+					if (m_pCurAnimator)
+						m_pCurAnimator->SetBool(parmeter.name, parmeter.bValue);
 				}
-				 }
+			}
 				break;
 			case ParamType::Int:
-				ImGui::DragInt(("##Val" + id).c_str(), &parm.iValue, 1, -10000, 10000);
-				if (m_pCurAnimator)
+			{
+				_int iVal = parmeter.iValue;
+				if (ImGui::DragInt(("##Val" + id).c_str(), &iVal, 1, -10000, 10000))
 				{
-					m_pCurAnimator->SetInt(parm.name, parm.bValue);
+					parmeter.iValue = iVal;
+					if (m_pCurAnimator)
+						m_pCurAnimator->SetInt(parmeter.name, parmeter.iValue);
 				}
 				break;
+			}
 			case ParamType::Float:
-				ImGui::DragFloat(("##Val" + id).c_str(), &parm.fValue, 0.01f, -1000.f, 1000.f);
-				if (m_pCurAnimator)
+			{
+				_float fVal = parmeter.fValue;
+				if (ImGui::DragFloat(("##Val" + id).c_str(), &fVal, 0.01f, -1000.f, 1000.f))
 				{
-					m_pCurAnimator->SetInt(parm.name, parm.bValue);
+					parmeter.fValue = fVal;
+					if (m_pCurAnimator)
+						m_pCurAnimator->SetFloat(parmeter.name, parmeter.fValue);
 				}
 				break;
+			}
 			case ParamType::Trigger:
 				if (ImGui::Button(("Trigger##" + id).c_str()))
-					m_pCurAnimator->SetTrigger(parm.name);
+					m_pCurAnimator->SetTrigger(parmeter.name);
 				break;
 			}
 			ImGui::NextColumn();
@@ -292,15 +317,17 @@ HRESULT CAnimTool::Render_Parameters()
 			// Delete 버튼
 			if (ImGui::Button(("X##" + id).c_str()))
 			{
-				m_Parameters.erase(m_Parameters.begin() + i);
+				it = parameters.erase(it);
 				--i; // 삭제했으니 인덱스 보정
-				if (m_pCurAnimator) // 애니메이터에서도 파라미터 제거
-				{
-					m_pCurAnimator->DeleteParameter(parm.name);
-				}
+			}
+			else
+			{
+				++it;
+				i++;
 			}
 			ImGui::NextColumn();
 		}
+
 
 		ImGui::Columns(1);
 
@@ -318,27 +345,29 @@ HRESULT CAnimTool::Render_Parameters()
 			{
 				if (m_pCurAnimator)
 				{
+					_bool bExists = m_pCurAnimator->ExisitsParameter(newName);
+					string diffName = newName + to_string(i);
 					switch (newType)
 					{	
 					case 0: // Bool
-						m_pCurAnimator->AddBool(newName);
+						m_pCurAnimator->AddBool(bExists? diffName : newName);
 						break;
 					case 1: // Trigger
-						m_pCurAnimator->AddTrigger(newName);
+						m_pCurAnimator->AddTrigger(bExists ? diffName : newName);
 						break;
 					case 2: // Float
-						m_pCurAnimator->AddFloat(newName);
+						m_pCurAnimator->AddFloat(bExists ? diffName : newName);
 						break;
 					case 3: // Int
-						m_pCurAnimator->AddInt(newName);
+						m_pCurAnimator->AddInt(bExists ? diffName : newName);
 						break;
 					default:
 						break;
 					}
-				// 일단 추가하고 나면 상태를 설정할 수 있음
-				m_Parameters.push_back({ newName,
-										 static_cast<ParamType>(newType),
-										 false, 0, 0.f });
+				//// 일단 추가하고 나면 상태를 설정할 수 있음
+				//m_Parameters.push_back({ newName,
+				//						 static_cast<ParamType>(newType),
+				//						 false, 0, 0.f });
 				newName[0] = '\0'; // 클리어
 				}
 				ImGui::CloseCurrentPopup();
@@ -412,7 +441,7 @@ HRESULT CAnimTool::Render_AnimationSequence()
 
 	// 재생 속도 조절
 	ImGui::SameLine();
-	ImGui::SliderInt("Speed", &m_playSpeed, 1, 10);
+	ImGui::SliderInt("Speed", &m_iPlaySpeed, 1, 10);
 
 
 	_bool bChanged = ImSequencer::Sequencer(
@@ -447,7 +476,15 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	{
 		return S_OK;
 	}
+	if (ImGui::Button("Save AnimState This Model"))
+	{
+		SaveLoadAnimStates();
+	}
 
+	if (ImGui::Button("Load AnimState This Model"))
+	{
+		SaveLoadAnimStates(false);
+	}
 	static _int selectedNodeID = -1;  // 선택한 노드 아이디
 
 	// 컨트롤러가 바뀌면 식별 ID 초기화 시켜놓기
@@ -764,6 +801,8 @@ HRESULT CAnimTool::Render_Loaded_Models()
 				m_pCurModel = m_LoadedModels[modelNames[i]];
 
 				m_pCurAnimator = m_LoadedAnimators[modelNames[i]];
+				// 모델을 바꿀 때는 현재 애니메이션을 nullptr
+				m_pCurAnimation = nullptr;
 				m_stSelectedModelName = modelNames[i];
 			}
 			if (isSelected)
@@ -800,12 +839,12 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 				/ _float(m_pMySequence->GetFrameMax() - m_pMySequence->GetFrameMin());
 			_float ticks = normalized * pAnim->GetDuration();
 			pAnim->SetCurrentTrackPosition(ticks);
-			m_pCurAnimator->GetAnimController()->Update(0.f);
+			m_pCurAnimator->Update(0.f);
 		}
 	}
 	else
 	{
-		m_pCurAnimator->GetAnimController()->Update(fTimeDelta);
+		m_pCurAnimator->Update(fTimeDelta* m_iPlaySpeed);
 	}
 	m_pCurModel->Play_Animation();
 }
@@ -968,6 +1007,44 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 	}
 }
 
+void CAnimTool::SaveLoadAnimStates(_bool isSave)
+{
+	if (m_pCurModel == nullptr)
+		return;
+	string path = string("../Bin/Save/AnimationStates/") + m_stSelectedModelName + "_States.json";
+	if (isSave)
+	{
+		if (m_pCurAnimator)
+		{
+		json j = 	m_pCurAnimator->Serialize();
+		ofstream ofs(path);
+		ofs << j.dump(4);
+		}
+		else
+		{
+			MSG_BOX("애니메이터가 없습니다. 애니메이터를 먼저 생성해주세요.");
+			return;
+		}
+	
+	}
+	else
+	{
+		ifstream ifs(path);
+		if (!ifs.is_open())
+			return; // 파일이 없으면 로드하지 않음
+		json root;
+		ifs >> root;
+		if (m_pCurAnimator && path.find(m_stSelectedModelName) != string::npos)
+		{
+			m_pCurAnimator->Deserialize(root);
+		}
+		else
+		{
+			MSG_BOX("애니메이터가 없습니다. 애니메이터를 먼저 생성해주세요.");
+		}
+	}
+}
+
 void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 {
 	string modelName = fileName.find(".bin") != string::npos ?
@@ -1114,10 +1191,11 @@ HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 	// 각각의 컨디션마다 조건을 정할 수 있게 
 
 	vector<string> paramNames;
-	paramNames.reserve(m_Parameters.size());
-	for (const auto& parm : m_Parameters)
+	auto& parameters = m_pCurAnimator->GetParameters();
+	paramNames.reserve(parameters.size());
+	for (const auto& parm : parameters)
 	{
-		paramNames.push_back(parm.name);
+		paramNames.push_back(parm.first);
 	}
 
 	_int selectedParamIdx = -1;
@@ -1133,8 +1211,10 @@ HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 			if (ImGui::Selectable(paramNames[i].c_str(), isSelected))
 			{
 				selectedParamIdx = i;
-				auto& sel = m_Parameters[selectedParamIdx];
-				transition.condition.paramName = sel.name;
+				if (parameters.find(paramNames[i]) == parameters.end())
+					continue; // 없는 파라미터는 제외
+				auto& sel = parameters[paramNames[i]];
+				transition.condition.paramName = paramNames[i];
 				transition.condition.type = sel.type;
 				transition.condition.fThreshold = sel.fValue;
 				transition.condition.iThreshold = sel.iValue;

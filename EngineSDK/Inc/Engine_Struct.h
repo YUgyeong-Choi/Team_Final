@@ -30,9 +30,18 @@ namespace Engine
 	{
 		string name;
 		ParamType type;
-		bool bValue = false; // bool 값
-		int iValue = 0; // int 값
-		float fValue = 0.f; // float 값
+		bool	bTriggered = false; 
+		bool	bValue = false; // bool 값
+		int		iValue = 0; // int 값
+		float	fValue = 0.f; // float 값
+	};
+
+	struct TransitionResult
+	{
+		_bool bTransition = false; // 전환 여부
+		class CAnimation* pFromAnim = nullptr;
+		class CAnimation* pToAnim = nullptr;
+		_float fDuration = 0.f; // 전환 시간
 	};
 
 	typedef struct tagKeyFrame

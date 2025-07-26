@@ -1,6 +1,7 @@
 #include "AnimController.h"
 #include "Animation.h"
 #include "Animator.h"
+#include "Model.h"
 
 _bool CAnimController::Condition::Evaluate(CAnimator* animator) const
 {
@@ -105,6 +106,7 @@ HRESULT CAnimController::Initialize(void* pArg)
 
 void CAnimController::Update(_float fTimeDelta)
 {
+	m_TransitionResult.bTransition = false;
 	if (!m_pAnimator->IsBlending())
 	{
 		for (auto& tr : m_Transitions)
@@ -128,13 +130,15 @@ void CAnimController::Update(_float fTimeDelta)
 
 			if (!fromClip || !toClip)
 				continue;
-			m_pAnimator->StartTransition(fromClip, toClip, tr.duration);
+
+			m_TransitionResult.bTransition = true;
+			m_TransitionResult.pFromAnim = fromClip;
+			m_TransitionResult.pToAnim = toClip;
+			m_TransitionResult.fDuration = tr.duration;
 			m_CurrentStateNodeId = tr.iToNodeId;
 			break;
 		}
 	}
-
-	m_pAnimator->Update(fTimeDelta);
 }
 
 _float CAnimController::GetStateLength(const string& name)
@@ -155,16 +159,6 @@ void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link
 	tr.iToNodeId = toNode;
 	tr.link = link;
 	tr.hasExitTime = bHasExitTime;
-
-	//m_Transitions.push_back({
-	//	[&cond, this]() { return cond.Evaluate(m_pAnimator); },
-	//	duration,
-	//	fromNode, // 시작 노드 ID
-	//	toNode,   // 끝 노드 ID
-	//	link // 링크 정보 
-	//	,cond // 컨디션 정보
-	//	,bHasExtiTime // 애니메이션이 끝난 경우에
-	//	});
 }
 
 void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, _float duration, _bool bHasExitTime)
@@ -175,6 +169,11 @@ void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link
 		noCond,
 		duration,
 		bHasExitTime);
+}
+
+TransitionResult& CAnimController::CheckTransition()
+{
+	return m_TransitionResult;
 }
 
 
@@ -226,4 +225,109 @@ void CAnimController::Free()
 	__super::Free();
 	m_States.clear();
 	m_Transitions.clear();
+}
+
+json CAnimController::Serialize()
+{
+	json j;
+	// 상태 직렬화
+	for (const auto& state : m_States)
+	{
+		j["Anim States"].push_back({
+			{"NodeId", state.iNodeId},
+			{"Name", state.stateName},
+			{"Clip", state.clip ? state.clip->Get_Name() : ""},
+			{"NodePos", { state.fNodePos.x, state.fNodePos.y }},
+			});
+	}
+
+	// 트랜지션 직렬화
+	for (const auto& tr : m_Transitions)
+	{
+		j["Transitions"].push_back({
+			{"FromNodeId", tr.iFromNodeId},
+			{"ToNodeId", tr.iToNodeId},
+			{"Duration", tr.duration},
+			{"HasExitTime", tr.hasExitTime},
+			{"Condition", {
+				{"Type", static_cast<int>(tr.condition.type)},
+				{"ParamName", tr.condition.paramName},
+				{"Op", static_cast<int>(tr.condition.op)},
+				{"MinTime", tr.condition.minTime},
+				{"MaxTime", tr.condition.maxTime},
+				{"iThreshold", tr.condition.iThreshold},
+				{"fThreshold", tr.condition.fThreshold}
+			}},
+			{"Link", {
+				{"LinkId", tr.link.iLinkId},
+				{"FromNodeId", tr.link.iLinkStartID},
+				{"ToNodeId", tr.link.iLinkEndID}
+			}}
+			});
+	}
+	return j;
+}
+
+void CAnimController::Deserialize(const json& j)
+{
+	if (j.contains("Anim States") && j["Anim States"].is_array())
+	{
+		for (const auto& state : j["Anim States"])
+		{
+			if (state.contains("NodeId") && state.contains("Name") && state.contains("Clip"))
+			{
+				_int nodeId = state["NodeId"];
+				string name = state["Name"];
+				string clipName = state["Clip"];
+				_float2 pos = { 0.f, 0.f };
+				if (state.contains("NodePos"))
+				{
+					pos.x = state["NodePos"][0];
+					pos.y = state["NodePos"][1];
+				}
+				CAnimation* clip = nullptr;
+				if (!clipName.empty())
+				{
+					auto pModel = m_pAnimator->GetModel();
+					clip = pModel ? pModel->GetAnimationClipByName(clipName) : nullptr;
+				}
+				m_States.push_back({ name, clip, nodeId, pos });
+			}
+		}
+	}
+
+	// 트랜지션 역직렬화
+
+	if (j.contains("Transitions") && j["Transitions"].is_array())
+	{
+		for (const auto& tr : j["Transitions"])
+		{
+			if (tr.contains("FromNodeId") && tr.contains("ToNodeId") && tr.contains("Duration"))
+			{
+				_int fromNodeId = tr["FromNodeId"];
+				_int toNodeId = tr["ToNodeId"];
+				_float duration = tr["Duration"];
+				_bool hasExitTime = tr.value("HasExitTime", false);
+				Link link;
+				if (tr.contains("Link"))
+				{
+					link.iLinkId = tr["Link"]["LinkId"];
+					link.iLinkStartID = tr["Link"]["FromNodeId"];
+					link.iLinkEndID = tr["Link"]["ToNodeId"];
+				}
+				Condition cond;
+				if (tr.contains("Condition"))
+				{
+					cond.type = static_cast<ParamType>(tr["Condition"]["Type"]);
+					cond.paramName = tr["Condition"]["ParamName"];
+					cond.op = static_cast<EOp>(tr["Condition"]["Op"]);
+					cond.minTime = tr.value("MinTime", 0.f);
+					cond.maxTime = tr.value("MaxTime", 1.f);
+					cond.iThreshold = tr.value("iThreshold", 0);
+					cond.fThreshold = tr.value("fThreshold", 0.f);
+				}
+				AddTransition(fromNodeId, toNodeId, link, cond, duration, hasExitTime);
+			}
+		}
+	}
 }

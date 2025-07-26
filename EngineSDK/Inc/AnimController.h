@@ -1,9 +1,10 @@
 #pragma once
 #include "Base.h"
+#include "Serializable.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CAnimController final :  public CBase
+class ENGINE_DLL CAnimController final : public CBase, public ISerializable
 {
 public:
 	enum class EOp { IsTrue, IsFalse, Greater, Less,NotEqual,Equal,  Trigger, None};
@@ -74,6 +75,9 @@ public:
 	void AddTransition(_int fromNode, _int toNode,  const Link& link, const Condition& cond, _float duration = 0.2f,_bool bHasExitTime = false);
 	void AddTransition(_int fromNode, _int toNode, const Link& link, _float duration = 0.2f, _bool bHasExitTime = false);
 
+	TransitionResult& CheckTransition();
+	void ResetTransitionResult() { m_TransitionResult = TransitionResult{}; }
+
 	void SetState(const string& name);
 	void SetState(_int iNodeId);
 	vector<AnimState>& GetStates() { return m_States; }
@@ -126,13 +130,19 @@ private:
 	vector<AnimState>      m_States;
 	vector<Transition>     m_Transitions;
 	vector<Condition>	   m_Conditions; // 아직 쓰는 곳 없음
-	vector<Parameter>	   m_Parameters; // 애니메이션 컨트롤러에서 사용하는 파라미터들
+
 	class CAnimator*	   m_pAnimator = nullptr;  // 애니메이터 참조
 	unordered_map<size_t, size_t> m_SubClipIndex; //지금 몇 번째 클립을 재생 중인지 저장
+
+	TransitionResult       m_TransitionResult{}; // 트래지션을 한 결과 (애니메이터에서 요청)
 
 public:
 	static CAnimController* Create();
 	CAnimController* Clone();
 	virtual void Free() override;
+
+	// ISerializable을(를) 통해 상속됨
+	json Serialize() override;
+	void Deserialize(const json& j) override;
 };
 NS_END

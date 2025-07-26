@@ -50,15 +50,33 @@ void CAnimator::Update(_float fDeltaTime)
 {
 	if (m_bPlaying == false)
 		return;
+
+
+	// 그냥 현재 애니메이션 업데이트 
 	if (!m_Blend.active)
 	{
+		// 애니메이션 컨트롤러 업데이트 
+		// 컨트롤러 업데이트 하면서 트랜지션 확인해서 상태 전환
+		// 블렌드 할 애니메이션 클립 2개와 전환 시간 받아오기
+
+		if (m_pAnimController)
+		{
+			m_pAnimController->Update(fDeltaTime);
+			auto& transitionResult = m_pAnimController->CheckTransition();
+			if (transitionResult.bTransition)
+			{
+				StartTransition(transitionResult.pFromAnim,transitionResult.pToAnim,transitionResult.fDuration);
+				m_pAnimController->ResetTransitionResult();
+			}
+		}
+ 
 		// 블렌드 중이 아니면 그냥 현재 애니메이션만 업데이트
-		if (m_pCurrentAnim == nullptr)
-			return;
-		/*m_bIsFinished =  m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_Blend.isLoop);*/
+		if (m_pCurrentAnim)
+		{
+
 
 		vector<string> triggeredEvents;
-		// 수정한 Update_Bones 호출 (outEvents 전달)
+		// Update_Bones 호출 (outEvents 전달)
 		m_bIsFinished = m_pCurrentAnim->Update_Bones(
 			fDeltaTime,
 			m_Bones,
@@ -76,6 +94,7 @@ void CAnimator::Update(_float fDeltaTime)
 				for (auto& cb : it->second)
 					cb(name);
 			}
+		}
 		}
 	}
 	else
@@ -96,6 +115,9 @@ void CAnimator::PlayClip(CAnimation* pAnim, _bool isLoop)
 
 void CAnimator::StartTransition(CAnimation* from, CAnimation* to, _float duration)
 {
+	if (from == nullptr || to == nullptr)
+		return;
+
 	m_Blend.active = true;
 	m_Blend.srcAnim = from;
 	m_Blend.dstAnim = to;
@@ -104,7 +126,6 @@ void CAnimator::StartTransition(CAnimation* from, CAnimation* to, _float duratio
 	m_Blend.isLoop = to->Get_isLoop();
 
 	// 애니메이션 트랙 초기화
-//	m_Blend.srcAnim->ResetTrack();
 	m_Blend.dstAnim->ResetTrack();
 	m_bPlaying = true;
 }
@@ -232,4 +253,41 @@ void CAnimator::Free()
 {
 	__super::Free();
 	Safe_Release(m_pAnimController); // 모델은 다른 곳에서 해제하므로 해제하지 않음
+}
+
+json CAnimator::Serialize()
+{
+	json j = m_pAnimController->Serialize();
+
+	// 애니메이터의 파라미터들 저장
+	for (const auto& [name, param] : m_Params)
+	{
+		j["Parameters"][name] = {
+			{"bValue", param.bValue},
+			{"fValue", param.fValue},
+			{"iValue", param.iValue},
+			{"bTriggered", param.bTriggered},
+			{"Type", static_cast<int>(param.type)} // ParamType을 정수로 저장
+		};
+	}
+	return j;
+}
+
+void CAnimator::Deserialize(const json& j)
+{
+	// 애니메이터의 파라미터들 복원
+	if (j.contains("Parameters"))
+	{
+		for (const auto& [name, param] : j["Parameters"].items())
+		{
+			Parameter p;
+			p.bValue = param["bValue"].get<_bool>();
+			p.fValue = param["fValue"].get<_float>();
+			p.iValue = param["iValue"].get<_int>();
+			p.bTriggered = param["bTriggered"].get<_bool>();
+			p.type = static_cast<ParamType>(param["Type"].get<int>());
+			m_Params[name] = p;
+		}
+	}
+	m_pAnimController->Deserialize(j);
 }
