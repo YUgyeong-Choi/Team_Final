@@ -42,25 +42,28 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 	if (m_bPlaySequence)
 	{
 		m_fCurFrame += m_fTickPerSecond * fTimeDelta;
-
-		m_fTimeAcc = 0.f;
 		m_iCurFrame = static_cast<_int>(m_fCurFrame);
-		if (m_fCurFrame > m_pSequence->GetFrameMax())
-		{
-			m_fCurFrame = static_cast<_float>(m_pSequence->GetFrameMin());
-			for (auto& pItem : m_pSequence->m_Items)
-			{
-				pItem.pEffect->Reset_TrackPosition();
-			}
-		}
+	}
+	else
+	{
+		m_fCurFrame = static_cast<_float>(m_iCurFrame);
+
+	}
+	if (m_fCurFrame > m_pSequence->GetFrameMax())
+	{
+		m_fCurFrame = static_cast<_float>(m_pSequence->GetFrameMin());
 		for (auto& pItem : m_pSequence->m_Items)
 		{
-			if (m_iCurFrame >= *pItem.iStart && m_iCurFrame <= *pItem.iEnd)
-			{
-				pItem.pEffect->Priority_Update(fTimeDelta);
-				// 이펙트를 재생
-				//PlaySpriteEffect(pItem.iType, m_iCurFrame - pItem.iStart);
-			}
+			pItem.pEffect->Reset_TrackPosition();
+		}
+	}
+	for (auto& pItem : m_pSequence->m_Items)
+	{
+		if (m_iCurFrame >= *pItem.iStart && m_iCurFrame <= *pItem.iEnd)
+		{
+			pItem.pEffect->Priority_Update(fTimeDelta);
+			// 이펙트를 재생
+			//PlaySpriteEffect(pItem.iType, m_iCurFrame - pItem.iStart);
 		}
 	}
 }
@@ -71,9 +74,9 @@ void CCYTool::Update(_float fTimeDelta)
 	{
 		for (auto& pItem : m_pSequence->m_Items)
 		{
-			if (m_fCurFrame >= *pItem.iStart && m_fCurFrame <= *pItem.iEnd)
+			if (m_iCurFrame >= *pItem.iStart && m_fCurFrame <= *pItem.iEnd)
 			{
-				pItem.pEffect->Update_Tool(fTimeDelta, m_fCurFrame - static_cast<_float>(*pItem.iStart));
+				pItem.pEffect->Update_Tool(fTimeDelta, m_iCurFrame - /*static_cast<_float>*/(*pItem.iStart));
 				// 이펙트를 재생
 				//PlaySpriteEffect(pItem.iType, m_fCurFrame - pItem.iStart);
 			}
@@ -115,10 +118,10 @@ HRESULT CCYTool::Render_EffectTool()
 	IGFD::FileDialogConfig config;
 	if (Button(u8"안녕"))
 	{
-
+		IFILEDIALOG->OpenDialog("Effect Tool Dialog", "Select File", nullptr, config);
 	}
 
-	if (IFILEDIALOG->Display("FBXDialog"))
+	if (IFILEDIALOG->Display("Effect Tool Dialog"))
 	{
 		if (IFILEDIALOG->IsOk())
 		{
@@ -167,19 +170,40 @@ HRESULT CCYTool::SequenceWindow()
 		m_iSeqItemColor = D3DCOLOR_ARGB(255, 100, 100, 220);
 	}
 	ImGui::SameLine();
+	if (ImGui::RadioButton("Trail Effect", m_eEffectType == EFF_TRAIL)) {
+		m_eEffectType = EFF_TRAIL;
+		m_strSeqItemName = "Trail";
+		m_iSeqItemColor = D3DCOLOR_ARGB(255, 170, 80, 250);
+	}
+	ImGui::SameLine();
 
 	if (ImGui::Button("Add to Sequence"))
 	{
-		CToolSprite* pInstance = { nullptr };
-		CToolSprite::DESC desc = {};
-
-		desc.bAnimation = true;
-		desc.fRotationPerSec = 0.f;
-		desc.fSpeedPerSec = 5.f;
-		desc.iTileX = 8;
-		desc.iTileY = 8;
-		pInstance = dynamic_cast<CToolSprite*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
-		m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+		CEffectBase* pInstance = { nullptr };
+		switch (m_eEffectType)
+		{
+		case Client::CCYTool::EFF_SPRITE:
+		{
+			CToolSprite::DESC desc = {};
+			desc.bAnimation = true;
+			desc.fRotationPerSec = 0.f;
+			desc.fSpeedPerSec = 5.f;
+			desc.iTileX = 8;
+			desc.iTileY = 8;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
+		}
+			break;
+		case Client::CCYTool::EFF_PARTICLE:
+			//CToolParticle::DESC desc = {};
+			//desc.
+			break;
+		case Client::CCYTool::EFF_MESH:
+			break;
+		case Client::CCYTool::EFF_TRAIL:
+			break;
+		}
+		if (pInstance != nullptr)
+			m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 	}
 
 	ImSequencer::Sequencer(m_pSequence, &m_iCurFrame, &m_bExpanded, &m_iSelected, &m_iFirstFrame, ImSequencer::SEQUENCER_EDIT_ALL);
@@ -196,6 +220,20 @@ HRESULT CCYTool::Edit_Preferences()
 		ImGui::End();
 		return S_OK;
 	}
+	auto pEffect = m_pSequence->m_Items[m_iSelected].pEffect;
+
+	ImGui::Text("StartTrackPos: %d", *pEffect->Get_StartTrackPosition_Ptr());
+	ImGui::Text("EndTrackPos: %d", *pEffect->Get_EndTrackPosition_Ptr());
+	ImGui::Text("Duration: %d", *pEffect->Get_Duration_Ptr());
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+	// 텍스쳐 선택, UV 칸 수 조절 등
+
+
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 	switch (m_pSequence->m_Items[m_iSelected].iType)
 	{
 	case Client::CCYTool::EFF_SPRITE:
@@ -233,48 +271,45 @@ HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pTS = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
+
 	auto& TSKeyFrames = pTS->Get_KeyFrames();
-	//속성 imgui로 조정하기
-	//재생 시키기 
-	ImGui::Text("StartTrackPos: %d", *pTS->Get_StartTrackPosition_Ptr());
-	ImGui::Text("EndTrackPos: %d", *pTS->Get_EndTrackPosition_Ptr());
-	ImGui::Text("Duration: %d", *pTS->Get_Duration_Ptr());
-	ImGui::Dummy(ImVec2(0.0f, 5.0f));
-	ImGui::Separator();
-	ImGui::Dummy(ImVec2(0.0f, 5.0f));
-
-
-	ImGui::Separator();
-	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 	_int iIdx = {};
 	for (auto& Keyframe : TSKeyFrames)
 	{
 		ImGui::DragFloat(string("Frame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pTS->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
 
-		ImGui::DragFloat3(string("Translation" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vTranslation), 0.1f);
+		ImGui::DragFloat3(string("Translation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vTranslation), 0.1f);
 
 		_float3 vRotAxis = QuaternionToEuler(XMLoadFloat4(&Keyframe.vRotation));
 		ImGui::BeginDisabled();
-		ImGui::DragFloat3(string("Rotation" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&vRotAxis));
+		ImGui::DragFloat3(string("Rotation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&vRotAxis));
 		ImGui::EndDisabled();
 
-		ImGui::DragFloat3(string("Scaling" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
+		ImGui::DragFloat3(string("Scaling##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
 
-		_int iSelected = m_iSelectedInterpolationType;
+		static _float4 color;
+		ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
+
+		_int iSelected = Keyframe.eInterpolationType;
 		if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
 		{
-			m_iSelectedInterpolationType = iSelected;
-			pTS->Set_InterpolationType(iIdx, static_cast<CEffectBase::INTERPOLATION>(iSelected));
+			Keyframe.eInterpolationType = static_cast<CEffectBase::INTERPOLATION>(iSelected);
+			//pTS->Set_InterpolationType(iIdx, static_cast<CEffectBase::INTERPOLATION>(iSelected));
+			//:3
 		}
-
-
-
 
 		++iIdx;
 		ImGui::Separator();
 	}
-
+	if (ImGui::Button("Add Keyframe"))
+	{
+		pTS->Add_KeyFrame(CEffectBase::EFFKEYFRAME{});
+	} 
+	if (iIdx > 1 && ImGui::Button("Delete Keyframe"))
+	{
+		pTS->Delete_KeyFrame();
+	}
 
 
 	//ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -298,6 +333,56 @@ HRESULT CCYTool::Window_Sprite()
 
 HRESULT CCYTool::Window_Particle()
 {
+	CToolSprite* pTS = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
+
+	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 1000, "%d");
+	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.1f, -1000.f, 1000.f, "%.1f");
+	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.1f, 0.f, 100.f, "%.1f");
+	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.1f, 1.f, 1000.f, "%.1f");
+	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 1.f, 1000.f, "%.1f");
+	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.1f, 1.f, 1000.f, "%.1f");
+	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.1f, -1000.f, 1000.f, "%.1f");
+
+
+	//_int iIdx = {};
+	//for (auto& Keyframe : TSKeyFrames)
+	//{
+	//	ImGui::DragFloat(string("Frame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pTS->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
+
+	//	ImGui::DragFloat3(string("Translation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vTranslation), 0.1f);
+
+	//	_float3 vRotAxis = QuaternionToEuler(XMLoadFloat4(&Keyframe.vRotation));
+	//	ImGui::BeginDisabled();
+	//	ImGui::DragFloat3(string("Rotation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&vRotAxis));
+	//	ImGui::EndDisabled();
+
+	//	ImGui::DragFloat3(string("Scaling##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
+
+	//	static _float4 color;
+	//	ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
+
+	//	_int iSelected = Keyframe.eInterpolationType;
+	//	if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
+	//	{
+	//		Keyframe.eInterpolationType = static_cast<CEffectBase::INTERPOLATION>(iSelected);
+	//		//pTS->Set_InterpolationType(iIdx, static_cast<CEffectBase::INTERPOLATION>(iSelected));
+	//		//:3
+	//	}
+
+	//	++iIdx;
+	//	ImGui::Separator();
+	//}
+	//if (ImGui::Button("Add Keyframe"))
+	//{
+	//	pTS->Add_KeyFrame(CEffectBase::EFFKEYFRAME{});
+	//}
+	//if (iIdx > 1 && ImGui::Button("Delete Keyframe"))
+	//{
+	//	pTS->Delete_KeyFrame();
+	//}
+
+
+
 	return S_OK;
 }
 
@@ -321,6 +406,17 @@ void CCYTool::Key_Input()
 	if (KEY_DOWN(DIK_SPACE))
 	{
 		m_bPlaySequence = !m_bPlaySequence;
+	}
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
+	{
+		if (m_pSequence &&
+			!m_pSequence->m_Items.empty() && 
+			m_iSelected != -1)
+		{
+			m_pSequence->Del(m_iSelected);
+			m_iSelected = - 1;
+		}
 	}
 }
 

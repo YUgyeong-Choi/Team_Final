@@ -40,12 +40,12 @@ void CLevel_CY::Update(_float fTimeDelta)
 	}
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Priority_Update(fTimeDelta);
+	m_pCamera_Manager->Update(fTimeDelta);
+	__super::Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
 
 
-	m_pCamera_Manager->Update(fTimeDelta);
-	__super::Update(fTimeDelta);
 }
 
 HRESULT CLevel_CY::Render()
@@ -65,19 +65,37 @@ HRESULT CLevel_CY::Render()
 	int height = rect.bottom - rect.top;
 
 	io.DisplaySize = ImVec2((float)width, (float)height);
-	//io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
 
 	ImGui::NewFrame();
 
 	ImGui_Render();
 	//·»´õ¸µ 
-	//ImGui::ShowDemoWindow(); // Show demo window! :)
+	ImGui::ShowDemoWindow(); // Show demo window! :)
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	//ImGui::UpdatePlatformWindows();
-	//ImGui::RenderPlatformWindowsDefault();
+
+
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		///* ºäÆ÷Æ® °ü·Ã*/
+		ID3D11RenderTargetView* mainRTV = nullptr;
+		ID3D11DepthStencilView* mainDSV = nullptr;
+		m_pContext->OMGetRenderTargets(1, &mainRTV, &mainDSV);
+
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+
+		m_pContext->OMSetRenderTargets(1, &mainRTV, mainDSV);
+
+		if (mainRTV) mainRTV->Release();
+		if (mainDSV) mainDSV->Release();
+	}
+
 	return S_OK;
 }
 
@@ -121,9 +139,9 @@ HRESULT CLevel_CY::Ready_ImGui()
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // multi-viewport?
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // multi-viewport?
 
 	ImGui::StyleColorsDark();
 	io.Fonts->AddFontFromFileTTF("C://Windows//Fonts//gulim.ttc", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());

@@ -16,9 +16,7 @@ CToolSprite::CToolSprite(const CToolSprite& Prototype)
 
 HRESULT CToolSprite::Initialize_Prototype()
 {
-	m_KeyFrames.push_back(EFFKEYFRAME{ {1.f, 1.f, 1.f},{}, {}, 0.f, INTERPOLATION_LERP });
-	m_KeyFrames.push_back(EFFKEYFRAME{ {1.f, 1.f, 1.f},{}, {}, 10.f, INTERPOLATION_LERP });
-	m_KeyFrames.push_back(EFFKEYFRAME{ {1.f, 1.f, 1.f},{}, {}, 20.f, INTERPOLATION_LERP });
+	m_KeyFrames.push_back(EFFKEYFRAME{});
 	return S_OK;
 }
 

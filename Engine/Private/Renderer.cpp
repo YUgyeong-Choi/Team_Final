@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include "GameObject.h"
 #include "UIObject.h"
-
+#include "BlendObject.h"
 #include "GameInstance.h"
 
 
@@ -95,6 +95,15 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Metallic"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Final"))))
+		return E_FAIL;
+#pragma endregion
+
+
+#pragma region ÀÌÆåÆ®¿ë MRT
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_Effect_Diffuse"))))
 		return E_FAIL;
 #pragma endregion
 
@@ -368,6 +377,25 @@ HRESULT CRenderer::Render_Blend()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_BLEND)].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect_WB()
+{
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	{
+		return dynamic_cast<CBlendObject*>(pSour)->Get_Depth() > dynamic_cast<CBlendObject*>(pDest)->Get_Depth();
+	});
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)].clear();
 
 	return S_OK;
 }

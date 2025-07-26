@@ -140,6 +140,8 @@ PS_OUT PS_MAIN_GRID(PS_IN_BLEND In)
     float2 finalUV = baseUV + g_fTileOffset.xy;
     
     Out.vColor = g_Texture.Sample(DefaultSampler, finalUV);
+    if (Out.vColor.a <= 0.01f)
+        discard;
     
     Out.vColor = SoftEffect(Out.vColor, In.vProjPos);
     

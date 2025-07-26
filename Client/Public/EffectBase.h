@@ -21,6 +21,7 @@ public:
 		_int				iTileY = {};	
 	}DESC;
 
+	// 보간 방식
 	enum INTERPOLATION {
 		INTERPOLATION_LERP,
 		INTERPOLATION_EASEOUTBACK,
@@ -29,6 +30,18 @@ public:
 		INTERPOLATION_EASEOUTQUAD,
 		INTERPOLATION_END
 	};
+
+	// Keyframes
+	typedef struct tagEffectKeyFrame
+	{
+		_float3			vScale = {1.f, 1.f, 1.f};
+		_float4			vRotation = { 0.f, 0.f, 0.f, 0.f };
+		_float3			vTranslation = {0.f, 0.f, 0.f};
+		_float4			vColor = { 1.f, 1.f, 1.f, 1.f };
+
+		_float			fTrackPosition = {};
+		INTERPOLATION	eInterpolationType = { INTERPOLATION_LERP };
+	}EFFKEYFRAME;
 
 protected:
 	CEffectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -55,9 +68,13 @@ protected:
 	CTexture*		m_pTextureCom = { nullptr };
 
 protected:
-	const _float4x4*		m_pSocketMatrix = { nullptr };
+	const _float4x4*	m_pSocketMatrix = { nullptr };
 
 protected:
+	// Basic Effect Preferences
+	_float4				m_vColor = { 1.f, 1.f, 1.f, 1.f };
+	_float				m_fLifeTime = {};
+
 	// TrackPositions
 	_int				m_iDuration = {10};
 	_int				m_iStartTrackPosition = {};
@@ -65,17 +82,6 @@ protected:
 	_float				m_fCurrentTrackPosition = {};
 	_float				m_fTickPerSecond = {};
 	_float				m_fTickAcc = {};
-
-	// Keyframes
-	typedef struct tagEffectKeyFrame
-	{
-		_float3			vScale;
-		_float4			vRotation;
-		_float3			vTranslation;
-
-		_float			fTrackPosition;
-		INTERPOLATION	eInterpolationType = { INTERPOLATION_LERP };
-	}EFFKEYFRAME;
 
 	_uint				m_iNumKeyFrames = {};
 	_uint				m_iCurKeyFrameIndex = {};
@@ -94,14 +100,26 @@ public:
 	_int* Get_Duration_Ptr() { m_iDuration = m_iEndTrackPosition - m_iStartTrackPosition; return &m_iDuration; }
 	_int* Get_EndTrackPosition_Ptr() { return &m_iEndTrackPosition; }
 	_int* Get_StartTrackPosition_Ptr() { return &m_iStartTrackPosition; }
+	void Set_TileXY(_int iX, _int iY) { m_iTileX = iX; m_iTileY = iY; }
+	_int* Get_TileX() { return &m_iTileX; }
+	_int* Get_TileY() { return &m_iTileY; }
 
-	void Set_KeyFrames(EFFKEYFRAME tNewKeyframe);
 	HRESULT Set_InterpolationType(_uint iKeyFrameIndex, INTERPOLATION eType) { 
 		if (iKeyFrameIndex >= m_KeyFrames.size())
 			return E_FAIL;
 		m_KeyFrames[iKeyFrameIndex].eInterpolationType = eType; return S_OK;
 	}
+	INTERPOLATION Get_InterpolationType(_uint iKeyFrameIndex) {
+		if (iKeyFrameIndex >= m_KeyFrames.size())
+			return INTERPOLATION_END;
+		return m_KeyFrames[iKeyFrameIndex].eInterpolationType;
+	}
 	void Reset_TrackPosition() { m_iCurKeyFrameIndex = 0; m_fCurrentTrackPosition = 0.f; m_fTickAcc = 0.f; }
+
+	
+	// 키프레임 특성상 항상 인덱스 순서대로 진행되기 때문에 삭제도 무조건 가장 마지막 것 부터 pop_back 합니다
+	void Delete_KeyFrame() { m_KeyFrames.pop_back(); }
+	void Add_KeyFrame(EFFKEYFRAME tNewKeyframe) { m_KeyFrames.push_back(tNewKeyframe); }
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
