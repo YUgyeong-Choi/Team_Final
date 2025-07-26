@@ -123,9 +123,6 @@ void CAnimController::Update(_float fTimeDelta)
 			if (!tr.condition.Evaluate(m_pAnimator))
 				continue;
 
-		/*	auto* fromClip = m_States[tr.fromIdx].clip;
-			auto* toClip = m_States[tr.toIdx].clip;*/
-
 			auto* fromClip = GetStateAnimationByNodeId(tr.iFromNodeId);
 			auto* toClip = GetStateAnimationByNodeId(tr.iToNodeId);
 

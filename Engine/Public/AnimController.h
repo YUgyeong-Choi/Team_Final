@@ -122,11 +122,12 @@ private:
 
 private:
 	// 상태·전환 저장
+    _int                   m_CurrentStateNodeId= 0;
 	vector<AnimState>      m_States;
 	vector<Transition>     m_Transitions;
-	vector<Condition>   m_Conditions;
-    _int                 m_CurrentStateNodeId= 0;
-	class CAnimator* m_pAnimator = nullptr;  // 애니메이터 참조
+	vector<Condition>	   m_Conditions; // 아직 쓰는 곳 없음
+	vector<Parameter>	   m_Parameters; // 애니메이션 컨트롤러에서 사용하는 파라미터들
+	class CAnimator*	   m_pAnimator = nullptr;  // 애니메이터 참조
 	unordered_map<size_t, size_t> m_SubClipIndex; //지금 몇 번째 클립을 재생 중인지 저장
 
 public:
