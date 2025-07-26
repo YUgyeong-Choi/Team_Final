@@ -15,8 +15,6 @@ public:
 		EOp          op;
 		_int         iThreshold = 0; // int에 값 비교할 때
 		_float       fThreshold = 0.f; // float이나 int에 값 비교할 때
-		_float  minTime = 0.f; // 진행 상황
-		_float  maxTime = 1.f; // 최대 진행 상황
 		// Evaluate 구현은 CPP에서
 		_bool Evaluate(class CAnimator* animator) const;
 	};
@@ -32,13 +30,17 @@ public:
 
 	struct Transition 
 	{
-		_float   duration; // 전환 시간
-		_int     iFromNodeId; // 시작 노드 ID
-		_int      iToNodeId; // 끝 노드 ID
+		_float		 duration; // 전환 시간
+		_float 	     minTime = 0.f; // 최소 시간 (애니메이션 진행 시간)
+		_float       maxTime = 1.f; // 최대 시간 (애니메이션 진행 시간)
+		_int		iFromNodeId; // 시작 노드 ID
+		_int		iToNodeId; // 끝 노드 ID
 
 		Link link; // 링크 정보 (툴상에서 사용)
-		Condition condition; // 전환 조건
+		vector<Condition> conditions; // 전환 조건
 		_bool hasExitTime = false; // 애니메이션이 다 끝난 경우에
+
+		_bool Evaluates(class CAnimator* animator) const;
 	};
 
 
@@ -60,7 +62,6 @@ public:
 	size_t  AddState(const string& name, class CAnimation* clip,_int iNodeId)
 	{
 		m_States.push_back({ name, clip, iNodeId });
-		// 첫 상태라면 currentIdx 0으로
 		if (m_States.size() == 1)
 		{
 			m_CurrentStateNodeId = iNodeId;
@@ -74,7 +75,9 @@ public:
 
 	void AddTransition(_int fromNode, _int toNode,  const Link& link, const Condition& cond, _float duration = 0.2f,_bool bHasExitTime = false);
 	void AddTransition(_int fromNode, _int toNode, const Link& link, _float duration = 0.2f, _bool bHasExitTime = false);
-
+	void AddTransitionMultiCondition(
+		_int fromNode, _int toNode, const Link& link,
+		const vector<Condition>& conditions, _float duration = 0.2f, _bool bHasExitTime = false);
 	TransitionResult& CheckTransition();
 	void ResetTransitionResult() { m_TransitionResult = TransitionResult{}; }
 
@@ -107,9 +110,6 @@ public:
 	}
 
 	vector<Transition>& GetTransitions()  { return m_Transitions; }
-public:
-	//virtual json Serialize() override;
-	//virtual void Deserialize(const json& j) override;
 private:
 	AnimState* FindState(const string& name) 
 	{
@@ -123,7 +123,7 @@ private:
 			if (s.iNodeId == iNodeId) return &s;
 		return nullptr;
 	}
-
+	void ResetTransAndStates();
 private:
 	// 상태·전환 저장
     _int                   m_CurrentStateNodeId= 0;

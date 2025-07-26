@@ -36,7 +36,7 @@ HRESULT CAnimator::Initialize(void* pArg)
 
 	m_pModel = static_cast<CModel*>(pArg);
 
-	m_Bones = m_pModel->Get_Bones();
+ 	m_Bones = m_pModel->Get_Bones();
 
 	m_pAnimController = CAnimController::Create();
 	if (m_pAnimController == nullptr)
@@ -275,6 +275,7 @@ json CAnimator::Serialize()
 
 void CAnimator::Deserialize(const json& j)
 {
+	m_pCurrentAnim = nullptr; // 현재 애니메이션 초기화
 	// 애니메이터의 파라미터들 복원
 	if (j.contains("Parameters"))
 	{
@@ -287,6 +288,7 @@ void CAnimator::Deserialize(const json& j)
 			p.bTriggered = param["bTriggered"].get<_bool>();
 			p.type = static_cast<ParamType>(param["Type"].get<int>());
 			m_Params[name] = p;
+			SetParamName(m_Params[name], name); // 파라미터 이름 설정
 		}
 	}
 	m_pAnimController->Deserialize(j);

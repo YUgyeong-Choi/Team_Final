@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Animation.h"
+#include <iostream>
 #include "Serializable.h"
 
 NS_BEGIN(Engine)
@@ -56,6 +57,7 @@ public:
 
 	void AddParameter(const string& name, Parameter& parm) {
         m_Params[name] = parm;
+        SetParamName(m_Params[name], name); // 파라미터 이름 설정
 	}
 
     void RegisterEventListener(const string& eventName, AnimEventCallback cb);
@@ -69,6 +71,7 @@ public:
 		return m_pCurrentAnim->GetDuration();
 	}
 
+
     _float GetCurrentAnimProgress() const // 애니메이션 진행도
     {
         if (!m_pCurrentAnim) return 0.f;
@@ -80,10 +83,22 @@ public:
     }
     _float GetStateLengthByName(const string& name) const;
 public:
-    void AddBool(const string& name) { m_Params[name].type = { ParamType::Bool }; }
-    void AddFloat(const string& name) { m_Params[name].type = { ParamType::Float }; }
-    void AddTrigger(const string& name) { m_Params[name].type = { ParamType::Trigger }; }
-	void AddInt(const string& name) { m_Params[name].type = { ParamType::Int }; }
+    void AddBool(const string& name) {
+        m_Params[name].type = { ParamType::Bool }; 
+        SetParamName(m_Params[name], name); // 파라미터 이름 설정
+    }
+    void AddFloat(const string& name) {
+        m_Params[name].type = { ParamType::Float };
+        SetParamName(m_Params[name], name); // 파라미터 이름 설정}
+    }
+    void AddTrigger(const string& name) {
+        m_Params[name].type = { ParamType::Trigger };
+        SetParamName(m_Params[name], name); // 파라미터 이름 설정}
+    }
+	void AddInt(const string& name) { 
+        m_Params[name].type = { ParamType::Int }; 
+		SetParamName(m_Params[name], name); // 파라미터 이름 설정
+    }
     // 파라미터 설정
     void SetBool(const string& name, _bool v) {
         auto& p = m_Params[name];
@@ -122,6 +137,7 @@ public:
         auto& p = m_Params[name];
         if (p.bTriggered) 
         { 
+			cout << "Trigger: " << name << endl; // 디버그용 출력
             p.bTriggered = false; 
             return true; 
         }
@@ -137,7 +153,9 @@ public:
 	class CModel* GetModel() const { return m_pModel; } 
 private:
     void UpdateBlend(_float fTimeDelta);
-
+	void SetParamName(Parameter& param, const string& name) {
+		param.name = name; // 파라미터 이름 설정
+	}
 private:
     _bool                       m_bPlaying = true;
 	_bool                       m_bIsFinished = false; // 애니메이션 재생 완료 여부
