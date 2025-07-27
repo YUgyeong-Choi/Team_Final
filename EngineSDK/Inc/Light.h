@@ -4,14 +4,14 @@
 
 NS_BEGIN(Engine)
 
-class CLight final : public CBase
+class ENGINE_DLL CLight final : public CBase
 {
 private:
 	CLight();
 	virtual ~CLight() = default;
 
 public:
-	const LIGHT_DESC* Get_LightDesc() const {
+	LIGHT_DESC* Get_LightDesc() {
 		return &m_LightDesc;
 	}
 

@@ -27,6 +27,19 @@ HRESULT CLight_Manager::Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& 
 	return S_OK;
 }
 
+HRESULT CLight_Manager::Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, CLight** ppOut)
+{
+	CLight* pLight = CLight::Create(LightDesc);
+	if (nullptr == pLight)
+		return E_FAIL;
+
+	*ppOut = pLight;
+
+	m_LevelLights[iLevelIndex].push_back(pLight);
+
+	return S_OK;
+}
+
 HRESULT CLight_Manager::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	CLight* pLight = CLight::Create(LightDesc);
@@ -52,6 +65,36 @@ HRESULT CLight_Manager::Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIB
 		pLight->PBRRender(pShader, pVIBuffer);
 
 	return S_OK;
+}
+
+_uint CLight_Manager::Get_LightCount(_uint TYPE)
+{
+	auto iter = m_LevelLights.find(static_cast<_uint>(LEVEL::DH));
+	_uint Dirrectioncount = 0;
+	_uint Pointcount = 0;
+	_uint Spotcount = 0;
+
+	if (iter != m_LevelLights.end())
+	{
+		for (auto& pLight : iter->second)
+		{
+			if (pLight && pLight->Get_LightDesc()->eType == 0)
+				++Dirrectioncount;
+			if (pLight && pLight->Get_LightDesc()->eType == 1)
+				++Pointcount;
+			if (pLight && pLight->Get_LightDesc()->eType == 2)
+				++Spotcount;
+		}
+	}
+
+	if (TYPE == 0)
+		return Dirrectioncount;
+	if (TYPE == 1)
+		return Pointcount;
+	if (TYPE == 2)
+		return Spotcount;
+
+	return 0;
 }
 
 

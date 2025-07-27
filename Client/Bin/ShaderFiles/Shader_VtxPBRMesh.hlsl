@@ -17,6 +17,9 @@ float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
+/* [ 피킹변수 ] */
+float g_fID;
+
 
 struct VS_IN
 {
@@ -120,6 +123,31 @@ PS_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_TOOL_MAIN(PS_IN In)
+{
+    PS_OUT Out;
+    
+    // 디퓨즈 텍스처
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+    if (vMtrlDiffuse.a < 0.3f)
+        discard;
+    
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, g_fID);
+    
+     // 노멀은 -1~1 범위를 0~1로 맵핑해서 컬러로 보기 좋게
+    vector vNormal = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 1.f);
+
+    Out.vARM = vector(0.8f, 0.2f, 0.0f, 1.f);
+    
+    Out.vAO = vector(Out.vARM.r, Out.vARM.r, Out.vARM.r, 1.f);
+    Out.vRoughness = vector(Out.vARM.g, Out.vARM.g, Out.vARM.g, 1.f);
+    Out.vMetallic = vector(Out.vARM.b, Out.vARM.b, Out.vARM.b, 1.f);
+
+    return Out;
+}
+
 PS_SKY_OUT PS_SKY_MAIN(PS_IN In)
 {
     PS_SKY_OUT Out;
@@ -143,7 +171,7 @@ PS_SKY_OUT PS_SKY_MAIN(PS_IN In)
 
 technique11 DefaultTechnique
 {   
-    pass Default
+    pass Default //0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -154,7 +182,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();      
     }
 
-    pass SkyBox
+    pass SkyBox //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -164,5 +192,16 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_SKY_MAIN();
     }
-   
+
+    pass ToolMesh //2
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_TOOL_MAIN();
+    }
+
 }
