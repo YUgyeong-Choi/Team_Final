@@ -378,6 +378,9 @@
     <ClInclude Include="..\Public\Level_KratHotel.h">
       <Filter>01.Levels\1_Level_KratHotel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\YGFloor.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -566,6 +569,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_KratHotel.cpp">
       <Filter>01.Levels\1_Level_KratHotel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGFloor.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
