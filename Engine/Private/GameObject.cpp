@@ -111,7 +111,7 @@ HRESULT CGameObject::Replace_Component(_uint iPrototypeLevelIndex, const _wstrin
 	if (nullptr == pComponent)
 		return E_FAIL;
 
-	Delete_Component(strComponentTag);
+	Remove_Component(strComponentTag);
 
 	m_Components.emplace(make_pair(strComponentTag, pComponent));
 
@@ -123,7 +123,7 @@ HRESULT CGameObject::Replace_Component(_uint iPrototypeLevelIndex, const _wstrin
 }
 
 
-void CGameObject::Delete_Component(const _wstring& strComponentTag)
+void CGameObject::Remove_Component(const _wstring& strComponentTag)
 {
 	auto	iter = m_Components.find(strComponentTag);
 	if (iter != m_Components.end())
