@@ -51,6 +51,30 @@ HRESULT CTarget_Manager::Add_MRT(const _wstring& strMRTTag, const _wstring& strT
 	return S_OK;
 }
 
+HRESULT CTarget_Manager::Delete_RenderTarget(const _wstring& strTargetTag)
+{
+	auto	iter = m_RenderTargets.find(strTargetTag);
+	if (iter == m_RenderTargets.end())
+		return E_FAIL;
+
+	Safe_Release(iter->second);
+	m_RenderTargets.erase(iter);
+
+	return S_OK;
+}
+
+HRESULT CTarget_Manager::Delete_MRT(const _wstring& strMRTTag)
+{
+	auto	iter = m_MRTs.find(strMRTTag);
+	if (iter == m_MRTs.end())
+		return E_FAIL;
+
+	Safe_Release(iter->second);
+	m_MRTs.erase(iter);
+
+	return S_OK;
+}
+
 HRESULT CTarget_Manager::Begin_MRT(const _wstring& strMRTTag, ID3D11DepthStencilView* pDSV, _bool isTargetClear, _bool isDepthClear)
 {
 	ID3D11ShaderResourceView* pSRV[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {

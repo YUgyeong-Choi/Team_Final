@@ -38,6 +38,9 @@ HRESULT CMapTool::Initialize(void* pArg)
 	if (FAILED(Load_Map()))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Preview"), static_cast<_uint>(g_iWinSizeX), static_cast<_uint>(g_iWinSizeY), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -454,6 +457,12 @@ void CMapTool::Render_Asset()
 	ImGui::End();
 
 #pragma endregion
+
+
+#pragma region 모델 미리보기
+	
+#pragma endregion
+
 }
 
 void CMapTool::Render_Detail()
