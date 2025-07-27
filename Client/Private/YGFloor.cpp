@@ -33,7 +33,7 @@ HRESULT CYGFloor::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-	_fvector vPos{ 10.0f, -20.f, 10.0f, 1.0f };
+	_fvector vPos{ 0.0f, -6.f, 0.0f, 1.0f };
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 	m_pTransformCom->Rotation(0.f, XMConvertToRadians(180.f),0.f);
 
@@ -94,11 +94,11 @@ HRESULT CYGFloor::Render()
 			continue;
 	}
 
-#ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
-		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
-	}
-#endif
+//#ifdef _DEBUG
+//	if (m_pGameInstance->Get_RenderCollider()) {
+//		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+//	}
+//#endif
 
 
 	return S_OK;

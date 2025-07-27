@@ -170,13 +170,13 @@ void CYGObject::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CYGObject::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	wprintf(L"YGObject Trigger 시작: %s\n", pOther->Get_Name().c_str());
+	wprintf(L"YGObject Trigger 시작: %ls\n", pOther->Get_Name().c_str());
 }
 
 void CYGObject::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 
-	wprintf(L"YGTrigger Trriger 종료: %s\n", pOther->Get_Name().c_str());
+	wprintf(L"YGTrigger Trriger 종료: %ls\n", pOther->Get_Name().c_str());
 }
 
 
@@ -192,7 +192,7 @@ HRESULT CYGObject::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_PhysX */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Kinematic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -238,6 +238,7 @@ HRESULT CYGObject::Ready_Collider()
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
 		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PALYER);
+		m_pPhysXActorCom->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else

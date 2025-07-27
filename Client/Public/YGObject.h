@@ -6,7 +6,7 @@
 NS_BEGIN(Engine)
 class CShader;
 class CModel;
-class CPhysXKinematicActor;
+class CPhysXDynamicActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -36,7 +36,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CPhysXKinematicActor*  m_pPhysXActorCom = { nullptr };
+	CPhysXDynamicActor*  m_pPhysXActorCom = { nullptr };
 private:
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Components();

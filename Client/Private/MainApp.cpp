@@ -174,9 +174,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_SpriteEffect.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_PhysX_Kinematic */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Kinematic"), CPhysXKinematicActor::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 	/* For.Prototype_Component_PhysX_Static */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Static"), CPhysXStaticActor::Create(m_pDevice, m_pContext))))

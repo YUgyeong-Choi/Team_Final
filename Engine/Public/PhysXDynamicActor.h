@@ -13,12 +13,17 @@ public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg);
     HRESULT Create_Collision(PxPhysics* physics, const PxGeometry& geom, const PxTransform& pose, PxMaterial* material);
+    void Set_Kinematic(_bool bActiveDynamic);
 
     void Set_Transform(const PxTransform& pose) override
     {
-        // го╦И ╬х╣й
+        if (m_bKinematic)
+        {
+            static_cast<PxRigidDynamic*>(m_pActor)->setKinematicTarget(pose);
+        }
     }
-
+private:
+    _bool m_bKinematic = false;
 public:
     static CPhysXDynamicActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg) override;

@@ -178,9 +178,6 @@
     <ClInclude Include="..\Public\PhysXDynamicActor.h">
       <Filter>01.Utility\04.Components\PhysX\DynamicActor</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PhysXKinematicActor.h">
-      <Filter>01.Utility\04.Components\PhysX\KinematicActor</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PhysXStaticActor.h">
       <Filter>01.Utility\04.Components\PhysX\StaticActor</Filter>
     </ClInclude>
@@ -383,9 +380,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\PhysXDynamicActor.cpp">
       <Filter>01.Utility\04.Components\PhysX\DynamicActor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\PhysXKinematicActor.cpp">
-      <Filter>01.Utility\04.Components\PhysX\KinematicActor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PhysXStaticActor.cpp">
       <Filter>01.Utility\04.Components\PhysX\StaticActor</Filter>
@@ -613,9 +607,6 @@
     </Filter>
     <Filter Include="01.Utility\04.Components\PhysX\DynamicActor">
       <UniqueIdentifier>{b98eb86d-4172-4223-9ed7-142ed56d1a1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\04.Components\PhysX\KinematicActor">
-      <UniqueIdentifier>{e23dfe55-867c-4362-b3e1-ca59e59efd01}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\04.Components\PhysX\StaticActor">
       <UniqueIdentifier>{8aa541a4-6b49-4945-ab45-538cbabd4d64}</UniqueIdentifier>

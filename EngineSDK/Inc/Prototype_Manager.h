@@ -15,7 +15,6 @@
 #include "Model.h"
 
 #include "PhysXStaticActor.h"
-#include "PhysXKinematicActor.h"
 #include "PhysXDynamicActor.h"
 
 #include "Bounding_AABB.h"

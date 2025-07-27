@@ -153,7 +153,7 @@ HRESULT CYGCapsule::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_PhysX */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Kinematic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -199,6 +199,7 @@ HRESULT CYGCapsule::Ready_Collider()
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
 		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::A);
+		m_pPhysXActorCom->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
 	else
