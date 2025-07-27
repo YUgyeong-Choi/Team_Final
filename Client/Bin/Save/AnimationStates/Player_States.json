@@ -1,5 +1,6 @@
 {
     "Controllers": [
-        "Player_Default"
+        "Player_Default",
+        "Player_TwoHand"
     ]
 }

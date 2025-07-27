@@ -505,9 +505,9 @@ HRESULT CAnimTool::Render_Parameters()
 
 HRESULT CAnimTool::Render_AnimControllers()
 {
-	ImGui::Begin("Controller"); // 툴바처럼 띄워도 되고, 노드창 안에 넣어도 됩니다.
+	ImGui::Begin("Controller"); 
 
-	// 1-1) 이름 목록 뽑기
+
 	auto& ctrls = m_pCurAnimator->GetAnimControllers();
 	vector<string> names;
 	names.reserve(ctrls.size());
@@ -519,9 +519,9 @@ HRESULT CAnimTool::Render_AnimControllers()
 	const _char* curName = names.empty() ? "" : names[selIdx].c_str();
 	if (ImGui::BeginCombo("##Controllers", curName))
 	{
-		for (int i = 0; i < (int)names.size(); ++i)
+		for (_int i = 0; i < static_cast<_int>(names.size()); ++i)
 		{
-			bool selected = (i == selIdx);
+			_bool selected = (i == selIdx);
 			if (ImGui::Selectable(names[i].c_str(), selected))
 			{
 				selIdx = i;
@@ -542,10 +542,9 @@ HRESULT CAnimTool::Render_AnimControllers()
 		string oldName = names[selIdx];
 		string newName = bufRename;
 		// 언레지스터 → 이름 바꿔서 → 리지스터
-		auto ctrlPtr = ctrls[oldName];
+		auto pCtrl= ctrls[oldName];
 		m_pCurAnimator->RenameAnimController(oldName, newName);
-		ctrlPtr->SetName(newName);
-		m_pCurAnimator->RegisterAnimController(newName, ctrlPtr);
+		pCtrl->SetName(newName);
 		// 선택 인덱스 보정
 		names[selIdx] = newName;
 	}
@@ -554,17 +553,15 @@ HRESULT CAnimTool::Render_AnimControllers()
 	static _char bufNew[64] = "";
 	ImGui::InputText("New Ctrl", bufNew, sizeof(bufNew));
 	ImGui::SameLine();
-	if (ImGui::Button("Add"))
+	if (ImGui::Button("Create"))
 	{
-		std::string nm = bufNew;
-		if (!nm.empty() && ctrls.find(nm) == ctrls.end())
+		string name = bufNew;
+		if (!name.empty() && ctrls.find(name) == ctrls.end())
 		{
 			auto pNew = CAnimController::Create();
-			pNew->SetAnimator(m_pCurAnimator);
-			pNew->SetName(nm);
-			m_pCurAnimator->RegisterAnimController(nm, pNew);
+			pNew->SetName(name);
+			m_pCurAnimator->RegisterAnimController(name, pNew);
 			bufNew[0] = '\0';
-			selIdx = (int)names.size(); // 새로 추가된 게 마지막
 		}
 	}
 	ImGui::End();

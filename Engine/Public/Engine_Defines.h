@@ -39,7 +39,6 @@ using namespace std;
 #include <fstream>
 #include <filesystem>
 using namespace std::filesystem;
-
 #include <PxPhysicsAPI.h>
 using namespace physx;
 
@@ -68,6 +67,7 @@ namespace Engine
 }
 
 using namespace Engine;
+namespace fs = std::filesystem;
 
 
 
