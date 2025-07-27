@@ -7,7 +7,7 @@ CTexture::CTexture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CTexture::CTexture(const CTexture& Prototype)
-	: CComponent{ Prototype }
+	: CComponent( Prototype )
 	, m_SRVs{ Prototype.m_SRVs }
 	, m_iNumTextures { Prototype.m_iNumTextures }
 {

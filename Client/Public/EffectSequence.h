@@ -2,9 +2,7 @@
 
 #include "Base.h"
 
-#define USE_IMGUI
 #include "Client_Defines.h"
-#undef USE_IMGUI
 
 
 NS_BEGIN(Client)

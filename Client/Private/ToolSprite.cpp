@@ -39,7 +39,7 @@ void CToolSprite::Priority_Update(_float fTimeDelta)
 
 void CToolSprite::Update(_float fTimeDelta)
 {
-	m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
+	//m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
 	__super::Update(fTimeDelta);
 }
 
@@ -108,20 +108,6 @@ HRESULT CToolSprite::Bind_ShaderResources()
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CToolSprite::Change_Texture(_wstring strTextureTag)
-{
-	//Replace_Component()
-
-
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
-
 
 	return S_OK;
 }

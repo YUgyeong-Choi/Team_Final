@@ -4,9 +4,7 @@
 #include "framework.h"
 #include "Client.h"
 
-#define USE_IMGUI
 #include "MainApp.h"
-#undef USE_IMGUI
 
 #include "GameInstance.h"
 
@@ -190,11 +188,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (wParam == VK_ESCAPE)
             PostQuitMessage(0);
         break;
+    case WM_CLOSE:
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
-    case WM_CLOSE:
-        DestroyWindow(hWnd); 
+    case WM_NCDESTROY:
+        break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

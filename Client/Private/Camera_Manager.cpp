@@ -78,9 +78,9 @@ HRESULT CCamera_Manager::Initialize(LEVEL eLevel)
 HRESULT CCamera_Manager::Update(_float fTimeDelta)
 {
     /* [ 카메라를 전환하며 파이프라인에 넘긴다 ] */
-	if (m_pGameInstance->Key_Down(DIK_9))
+	if (m_pGameInstance->Key_Down(DIK_P))
         m_pCurCamera = m_pCamera_Free;
-    if (m_pGameInstance->Key_Down(DIK_8))
+    if (m_pGameInstance->Key_Down(DIK_O))
         m_pCurCamera = m_pCamera_Orbital;
 
     if (m_pCurCamera == m_pCamera_Free)
