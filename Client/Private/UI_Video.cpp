@@ -22,6 +22,9 @@ HRESULT CUI_Video::Initialize(void* pArg)
 
 	m_strVideoPath = pDesc->strVideoPath;
 	m_fPlaybackSpeed = pDesc->fSpeedPerSec;
+	m_fFrameInterval = pDesc->fInterval;
+
+	m_fFrameInterval = pDesc->fInterval;
 
 	if (FAILED(InitMediaFoundationAndCreateReader(m_strVideoPath.c_str(), m_pReader)))
 		return E_FAIL;

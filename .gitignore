@@ -452,3 +452,4 @@ Engine/Bin/Shader_Cell.cso
 Engine/Bin/Shader_Deferred.cso
 EngineSDK/Lib/Engine.lib
 CUDASDK/
+PhysXSDK

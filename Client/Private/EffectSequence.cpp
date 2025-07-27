@@ -56,9 +56,10 @@ void CEffectSequence::Add(string name, CEffectBase* effect, _int type, _uint col
 }
 
 
-void CEffectSequence::Del(_int)
+void CEffectSequence::Del(_int index)
 {
-
+	Safe_Release(m_Items[index].pEffect);
+	m_Items.erase(m_Items.begin() + index);
 }
 
 void CEffectSequence::Duplicate(_int)

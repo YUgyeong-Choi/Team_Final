@@ -82,7 +82,7 @@ private:
 
 #pragma region ImSequence
 	// 시퀀스 용 변수들
-	enum EFFECT_TYPE { EFF_SPRITE, EFF_PARTICLE, EFF_MESH, EFF_END };
+	enum EFFECT_TYPE { EFF_SPRITE, EFF_PARTICLE, EFF_MESH, EFF_TRAIL, EFF_END };
 
 	class CEffectSequence* m_pSequence = { nullptr };
 

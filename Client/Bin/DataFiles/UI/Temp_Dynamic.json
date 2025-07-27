@@ -1,0 +1,24 @@
+[
+    {
+        "Offset": 0.0,
+        "PassIndex": 2,
+        "ProtoTag": "Prototype_Component_UI_Feature_UV",
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_Img_ChGear",
+        "fOffsetUV": {
+            "x": 0.25,
+            "y": 0.5
+        },
+        "fSizeX": 0.0,
+        "fSizeY": 0.0,
+        "fStartUV": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "fX": 0.0,
+        "fY": 0.0,
+        "iEndFrame": 8,
+        "iStartFrame": 0,
+        "isLoop": true
+    }
+]

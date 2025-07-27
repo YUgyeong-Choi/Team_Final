@@ -7,6 +7,7 @@ texture2D g_DepthTexture;
 
 float2   g_fTexcoord;
 float2   g_fTileSize;
+float    g_Alpha;
 
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
@@ -153,9 +154,25 @@ PS_OUT PS_MAIN_SPRITE(PS_IN In)
     if(Out.vColor.a <0.1f)
         discard;
    
+    Out.vColor.a = g_Alpha;
     
     return Out;
 }
+
+PS_OUT PS_MAIN_FADE(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    if (Out.vColor.a < 0.1f)
+        discard;
+   
+    Out.vColor.a = g_Alpha;
+    
+    return Out;
+}
+
 
 
 
@@ -200,6 +217,18 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SPRITE();
+    }
+
+
+    pass Fade
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_FADE();
     }
    
 }

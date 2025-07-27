@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include "GameObject.h"
 #include "UIObject.h"
-
+#include "BlendObject.h"
 #include "GameInstance.h"
 
 
@@ -85,16 +85,25 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_Depth"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_Specular"))))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_AO"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_Roughness"))))
-
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Metallic"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_Metallic"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Final"))))
+		return E_FAIL;
+#pragma endregion
+
+
+#pragma region ÀÌÆåÆ®¿ë MRT
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_Effect_Diffuse"))))
 		return E_FAIL;
 #pragma endregion
 
@@ -149,6 +158,11 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	/* [ PBR µð¹ö±ë ] */
+	_float fFullSizeX = 1600.f;
+	_float fFullSizeY = 900.f;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Final"), fFullSizeX/2, fFullSizeY/2, fFullSizeX, fFullSizeY)))
+		return E_FAIL;
+
 	_float fSizeX = 1600.f / 5;
 	_float fSizeY = 900.f / 5;
 	_float fOffset = 3.f;
@@ -172,18 +186,13 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Depth"), GetTargetX(3), GetTargetY(4), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Specular"), GetTargetX(4), GetTargetY(4), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_AO"), GetTargetX(4), GetTargetY(4), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_AO"), GetTargetX(4), GetTargetY(3), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Roughness"), GetTargetX(4), GetTargetY(3), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Roughness"), GetTargetX(4), GetTargetY(2), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Metallic"), GetTargetX(4), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Metallic"), GetTargetX(4), GetTargetY(1), fSizeX, fSizeY)))
-		return E_FAIL;
-
-	fSizeX = 1600.f / 2;
-	fSizeY = 900.f / 2;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Final"), fSizeX, fSizeY, fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Specular"), GetTargetX(4), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
 	
 #endif
@@ -368,6 +377,25 @@ HRESULT CRenderer::Render_Blend()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_BLEND)].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect_WB()
+{
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	{
+		return dynamic_cast<CBlendObject*>(pSour)->Get_Depth() > dynamic_cast<CBlendObject*>(pDest)->Get_Depth();
+	});
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)].clear();
 
 	return S_OK;
 }
@@ -626,12 +654,12 @@ HRESULT CRenderer::Render_Debug()
 		m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
 		m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRFinal"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRFinal"), m_pShader, m_pVIBuffer);
 	}
 
 	return S_OK;

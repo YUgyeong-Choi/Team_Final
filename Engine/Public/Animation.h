@@ -40,6 +40,10 @@ public:
 		m_CurrentKeyFrameIndices[iIndex] = iKeyFrameIndex;
 	}
 
+	void Set_Bones(const vector<class CBone*>& Bones) {
+		if(m_Bones.empty())
+			m_Bones = Bones; }	
+
 	_uint GetCurrentKeyFrameIndices(_uint iIndex) const { return m_CurrentKeyFrameIndices[iIndex]; }
 	_float GetDuration() const { return m_fDuration; }
 	_float GetTickPerSecond() const { return m_fTickPerSecond; }

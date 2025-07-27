@@ -85,10 +85,6 @@ void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	m_fTickAcc = 0.f;
 }
 
-void CEffectBase::Set_KeyFrames(EFFKEYFRAME tNewKeyframe)
-{
-	m_KeyFrames.push_back(tNewKeyframe);
-}
 
 _float CEffectBase::Interpolate_Ratio(_float fRatio)
 {
@@ -118,7 +114,7 @@ void CEffectBase::Update_Keyframes()
 
 	EFFKEYFRAME		LastKeyFrame = m_KeyFrames.back();
 
-	_vector			vScale, vRotation, vPosition;
+	_vector			vScale, vRotation, vPosition, vColor;
 
 	if (m_fCurrentTrackPosition >= LastKeyFrame.fTrackPosition)	
 	{
@@ -139,6 +135,7 @@ void CEffectBase::Update_Keyframes()
 		_vector			vSourScale, vDestScale;
 		_vector			vSourRotation, vDestRotation;
 		_vector			vSourTranslation, vDestTranslation;
+		_vector			vSourColor, vDestColor;
 
 		vSourScale = XMLoadFloat3(&m_KeyFrames[m_iCurKeyFrameIndex].vScale);
 		vDestScale = XMLoadFloat3(&m_KeyFrames[m_iCurKeyFrameIndex + 1].vScale);
@@ -149,9 +146,13 @@ void CEffectBase::Update_Keyframes()
 		vSourTranslation = XMVectorSetW(XMLoadFloat3(&m_KeyFrames[m_iCurKeyFrameIndex].vTranslation), 1.f);
 		vDestTranslation = XMVectorSetW(XMLoadFloat3(&m_KeyFrames[m_iCurKeyFrameIndex + 1].vTranslation), 1.f);
 
+		vSourColor = XMLoadFloat4(&m_KeyFrames[m_iCurKeyFrameIndex].vColor);
+		vDestColor = XMLoadFloat4(&m_KeyFrames[m_iCurKeyFrameIndex + 1].vColor);
+
 		vScale = XMVectorLerp(vSourScale, vDestScale, fRatio);
 		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio);
 		vPosition = XMVectorLerp(vSourTranslation, vDestTranslation, fRatio);
+		vColor = XMVectorLerp(vSourColor, vDestColor, fRatio);
 	}
 
 	// TransformationMatrix = XMMatrixScaling() * XMMatrixRotationQuaternion() * XMMatrixTranslation();

@@ -67,7 +67,7 @@ HRESULT CUIObject::Render()
 	return S_OK;
 }
 
-void CUIObject::FadeStart(_float fStartAlpha, _float fEndAlpha, _float fFadeTime)
+void CUIObject::FadeStart(_float fStartAlpha, _float fEndAlpha, _float fTime)
 {
 	if (m_isFade)
 		return;
@@ -77,7 +77,7 @@ void CUIObject::FadeStart(_float fStartAlpha, _float fEndAlpha, _float fFadeTime
 
 	m_fStartAlpha = fStartAlpha;
 	m_fEndAlpha = fEndAlpha;
-	m_fFadeTime = fFadeTime;
+	m_fFadeTime = fTime;
 
 	m_fFadeElapsedTime = 0.f;
 
