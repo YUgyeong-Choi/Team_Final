@@ -2,11 +2,13 @@
 
 CPhysXDynamicActor::CPhysXDynamicActor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPhysXActor{ pDevice, pContext }
+	, m_bKinematic { m_bKinematic }
 {
 }
 
 CPhysXDynamicActor::CPhysXDynamicActor(const CPhysXDynamicActor& Prototype)
-	: CPhysXActor(Prototype)
+	: CPhysXActor(Prototype),
+	m_bKinematic(Prototype.m_bKinematic)
 {
 }
 
@@ -30,7 +32,6 @@ HRESULT CPhysXDynamicActor::Create_Collision(PxPhysics* physics, const PxGeometr
     if (!pDynamic)
         return E_FAIL;
 
-
     m_pShape = PxRigidActorExt::createExclusiveShape(*pDynamic, geom, *material);
     if (!m_pShape)
         return E_FAIL;
@@ -45,6 +46,18 @@ HRESULT CPhysXDynamicActor::Create_Collision(PxPhysics* physics, const PxGeometr
     pDynamic->userData = this;
 
     return S_OK;
+}
+
+void CPhysXDynamicActor::Set_Kinematic(_bool bActiveKinematic)
+{
+	if (!m_pActor)
+		return;
+
+	PxRigidDynamic* pDynamic = m_pActor->is<PxRigidDynamic>();
+	if (pDynamic)
+		pDynamic->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, bActiveKinematic);
+
+	m_bKinematic = bActiveKinematic;
 }
 
 CPhysXDynamicActor* CPhysXDynamicActor::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

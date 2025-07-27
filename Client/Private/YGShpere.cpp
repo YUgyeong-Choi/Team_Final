@@ -121,7 +121,7 @@ HRESULT CYGShpere::Bind_ShaderResources()
 
 void CYGShpere::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("YGBox 충돌 시작!\n");
+	printf("YGShpere 충돌 시작!\n");
 }
 
 void CYGShpere::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -130,12 +130,12 @@ void CYGShpere::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 void CYGShpere::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("YGBox 충돌 종료!\n");
+	printf("YGShpere 충돌 종료!\n");
 }
 
 void CYGShpere::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	wprintf(L"YGBox Hit: %s\n", pOther->Get_Name().c_str());
+	wprintf(L"YGShpere Hit: %s\n", pOther->Get_Name().c_str());
 }
 
 HRESULT CYGShpere::Ready_Components()

@@ -210,7 +210,6 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\public\PartObject.h" />
     <ClInclude Include="..\Public\PhysXActor.h" />
     <ClInclude Include="..\Public\PhysXDynamicActor.h" />
-    <ClInclude Include="..\Public\PhysXKinematicActor.h" />
     <ClInclude Include="..\Public\PhysXStaticActor.h" />
     <ClInclude Include="..\Public\PhysX_ContactReport.h" />
     <ClInclude Include="..\Public\PhysX_Manager.h" />
@@ -281,7 +280,6 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\private\PartObject.cpp" />
     <ClCompile Include="..\Private\PhysXActor.cpp" />
     <ClCompile Include="..\Private\PhysXDynamicActor.cpp" />
-    <ClCompile Include="..\Private\PhysXKinematicActor.cpp" />
     <ClCompile Include="..\Private\PhysXStaticActor.cpp" />
     <ClCompile Include="..\Private\PhysX_Manager.cpp" />
     <ClCompile Include="..\private\Picking.cpp" />

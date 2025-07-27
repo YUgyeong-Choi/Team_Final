@@ -17,19 +17,22 @@ namespace Engine
 	enum WORLDFILTER
 	{
 		FILTER_PLAYERBODY = 1 << 0,
-		FILTER_MONSTERBODY = 1 << 1,
-		FILTER_MONSTERWEAPOM = 1 << 2
+		FILTER_PLAYERWEAPON = 1 << 1,
+		FILTER_MONSTERBODY = 1 << 2,
+		FILTER_MONSTERWEAPON = 1 << 3,
+		FILTER_EFFECTGIB = 1 << 4,
+		FILTER_DYNAMICOBJ = 1 << 5
 	};
 
 	enum class COLLIDERTYPE 
 	{
 		PALYER,
+		TRIGGER,
 		A,
 		B,
 		C,
 		D,
 		E,
-		TRIGGER
 	};
 
 

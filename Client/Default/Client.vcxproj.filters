@@ -192,9 +192,6 @@
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>01.Levels\Loading</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Loader.h">
-      <Filter>01.Levels\Loading\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Levels\Logo</Filter>
     </ClInclude>
@@ -401,6 +398,15 @@
 	</ClInclude>
     <ClInclude Include="..\public\UI_Bar_Loading.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\YGDynamicGib.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>01.Levels\Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGDynamicObj.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -617,6 +623,12 @@
 	</ClCompile>
     <ClCompile Include="..\private\UI_Bar_Loading.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\YGDynamicGib.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGDynamicObj.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
