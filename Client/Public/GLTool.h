@@ -6,6 +6,7 @@
 #undef USE_IMGUI
 
 #include "Static_UI.h"
+#include "Dynamic_UI.h"
 #include "UI_Sequence.h"
 
 
@@ -26,35 +27,50 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	void Save_File();
-	void Open_File();
-	void Add_UI_From_File();
 
-	void Add_UI();
 
 private:
 	
-	HRESULT Render_SelectOptionTool();
+	void Save_File();
+	void Open_File();
+	void Add_Static_UI_From_File();
+	void Add_Dynamic_UI_From_File();
 
+	void Add_Static_UI();
+
+	void Add_Dynamic_UI();
+
+	// dynamicui가 가지고 있는 시퀀스로 바꿔서 보여주기
+	void Add_Sequence_To_DynamicUI();
+
+	// 시퀀스를 ui에 적용하기
+	void Apply_Sequence_To_DynamicUI();
+
+private:
+
+	HRESULT Render_SelectOptionTool();
 	HRESULT Render_UIList();
 	HRESULT Render_Sequence();
 
 private:
 	//
 	list<_wstring> m_TextureNames = {};
-
+	
 	_int m_iSelectTextureIndex = {-1};
 	_int m_iSelectObjIndex = { -1 };
 	_int m_iDynamicObjIndex = { -1 };
 	wstring m_strSelectName = {};
 
-	// 바로 값 적용되는거를 막기 위해, 입력은 temp로 받아두고, apply 버튼을 누르면 eUIDesc를 바꿔서 실제로 적용 되도록
-	CStatic_UI::STATIC_UI_DESC eUIDesc = {};
-	CStatic_UI::STATIC_UI_DESC eUITempDesc = {};
+	//  temp로 비율을 받고 실제 정보로 바꾸기
+	CStatic_UI::STATIC_UI_DESC eStaticUIDesc = {};
+	CStatic_UI::STATIC_UI_DESC eStaticUITempDesc = {};
+	list<CStatic_UI*> m_StaticUIList = {};
+	CStatic_UI* m_pSelectStaticObj = { nullptr };
 
-	//
-	list<CStatic_UI*> m_UIList = {};
-	CStatic_UI* m_pSelectObj = { nullptr };
+	CDynamic_UI::DYNAMIC_UI_DESC eDynamicUITempDesc = {};
+	CDynamic_UI::DYNAMIC_UI_DESC eDynamicUIDesc = {};
+	list<CDynamic_UI*> m_DynamicUIList = {};
+	CDynamic_UI* m_pSelectDynamicObj = { nullptr };
 
 	string  m_strSavePath = {};
 
@@ -66,6 +82,12 @@ private:
 	_int m_iSelectedEntry = { -1 };
 	CUI_Sequence*	m_pSequence = { nullptr };
 	
+	UI_FEATURE_TOOL_DESC m_eFeatureDesc = {};
+
+
+	//
+	_bool m_isFromTool = { true };
+
 
 	
 public:

@@ -115,29 +115,8 @@
     <Filter Include="01.Levels\LevelYW\MapTool\MapToolObject">
       <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Static">
-      <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic">
       <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag">
-      <UniqueIdentifier>{6875e49f-be9f-4489-a085-8947ec2d62b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\SlotBag\Slot">
-      <UniqueIdentifier>{101522f9-cb3f-4b33-89dd-ea1a4fea32a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
-      <UniqueIdentifier>{d25084e2-a294-435f-9e57-1c389a5d2735}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
-      <UniqueIdentifier>{45020529-4ae1-4570-8126-9f8d3f1d4c7c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Ergo">
-      <UniqueIdentifier>{046a677b-ac2f-4241-b046-33f2caa8c6dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
-      <UniqueIdentifier>{c802c0aa-2fed-41f2-a7b0-a9a6bfa5842b}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\00.StaticMesh">
       <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
@@ -166,8 +145,11 @@
     <Filter Include="01.Levels\1_Level_KratHotel">
       <UniqueIdentifier>{ea5342ed-30cc-4ec1-8908-d537d6b3b11d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="98.Default\99.Defines">
+    <Filter Include="99.Defines">
       <UniqueIdentifier>{72444e1a-0502-4c74-8392-c8e6a1e89ed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Static">
+      <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -184,10 +166,10 @@
       <Filter>98.Default</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
-      <Filter>98.Default\99.Defines</Filter>
+      <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Enum.h">
-      <Filter>98.Default\99.Defines</Filter>
+      <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_KratCentralStation.h">
       <Filter>01.Levels\0_Level_KratCentralStation</Filter>
@@ -256,7 +238,7 @@
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Struct.h">
-      <Filter>98.Default\99.Defines</Filter>
+      <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\YGTool.h">
       <Filter>01.Levels\LevelYG\YG_Tool</Filter>
@@ -307,7 +289,7 @@
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="Client_Calculation.h">
-      <Filter>98.Default\99.Defines</Filter>
+      <Filter>99.Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolParticle.h">
       <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
@@ -377,6 +359,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_KratHotel.h">
       <Filter>01.Levels\1_Level_KratHotel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Feature_UV.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\UV</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Feature_Fade.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Feature_Position.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Position</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Featrue_Scale.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -566,6 +560,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_KratHotel.cpp">
       <Filter>01.Levels\1_Level_KratHotel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Feature_UV.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\UV</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Feature_Fade.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Fade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\UI_Feature_Position.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Featrue_Scale.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
