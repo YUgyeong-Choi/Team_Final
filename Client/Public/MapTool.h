@@ -47,9 +47,9 @@ private:
 	HRESULT Spawn_MapToolObject();
 	HRESULT Duplicate_Selected_Object();
 	HRESULT Undo_Selected_Object();
-	void DeleteMapToolObject();
+	void	DeleteMapToolObject();
 	
-	HRESULT Import_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
+	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
 private:
 	void Add_ModelGroup(string ModelName, CGameObject* pMapToolObject);

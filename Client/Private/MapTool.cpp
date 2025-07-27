@@ -158,7 +158,7 @@ HRESULT CMapTool::Ready_Model()
 
 		const _char* pModelFilePath = Path.c_str();
 
-		if (FAILED(Import_Model(PrototypeTag, pModelFilePath)))
+		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
 		{
 			return E_FAIL;
 		}
@@ -460,40 +460,53 @@ void CMapTool::Render_Asset()
 	{
 		IGFD::FileDialogConfig config;
 		config.path = PATH_NONANIM;
-		config.countSelectionMax = 1;
+		config.countSelectionMax = 0; //무제한 갯수 로드
 
-		IFILEDIALOG->OpenDialog("Load Model", "Load .bin model", ".bin", config);
+		IFILEDIALOG->OpenDialog("Import Model", "Import .bin model", ".bin", config);
 	}
 
 	// 매 프레임마다 Display 호출
-	if (IFILEDIALOG->Display("Load Model"))
+	if (IFILEDIALOG->Display("Import Model"))
 	{
 		if (IFILEDIALOG->IsOk())
 		{
-			filesystem::path ModelPath = IFILEDIALOG->GetFilePathName();
+			//filesystem::path ModelPath = IFILEDIALOG->GetFilePathName();
 
-			if (!ModelPath.empty())
+			auto selections = IFILEDIALOG->GetSelection();
+			// 처리
+			// first: 파일명.확장자
+			// second: 전체 경로 (파일명포함)
+			if (!selections.empty())
 			{
-				// Prototype 이름 설정
-				wstring PrototypeTag = L"Prototype_Component_Model_" + ModelPath.stem().wstring();
-				string strPrototypeTag = ModelPath.stem().string(); // 확장자 없이 파일 이름만
-
-				string ModelFilePath = ModelPath.string();
-				const _char* pModelFilePath = ModelFilePath.c_str();
-
-				if (FAILED(Import_Model(PrototypeTag, pModelFilePath)))
+				for (auto FilePath : selections)
 				{
-					MSG_BOX("로드 실패");
-				}
-				else
-				{
-					// 이미 이름이 목록에 존재하면 중복 추가하지 않음
-					if (find(m_ModelNames.begin(), m_ModelNames.end(), strPrototypeTag) == m_ModelNames.end())
+					filesystem::path ModelPath = FilePath.second;
+
+					if (!FilePath.second.empty())
 					{
-						m_ModelNames.push_back(strPrototypeTag); // 이름 추가
+						// Prototype 이름 설정
+						wstring PrototypeTag = L"Prototype_Component_Model_" + ModelPath.stem().wstring();
+						string strPrototypeTag = ModelPath.stem().string(); // 확장자 없이 파일 이름만
+
+						string ModelFilePath = ModelPath.string();
+						const _char* pModelFilePath = ModelFilePath.c_str();
+
+						if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+						{
+							MSG_BOX("로드 실패");
+						}
+						else
+						{
+							// 이미 이름이 목록에 존재하면 중복 추가하지 않음
+							if (find(m_ModelNames.begin(), m_ModelNames.end(), strPrototypeTag) == m_ModelNames.end())
+							{
+								m_ModelNames.push_back(strPrototypeTag); // 이름 추가
+							}
+						}
 					}
 				}
 			}
+
 		}
 
 
@@ -644,12 +657,7 @@ void CMapTool::Render_Preview()
 				CTransform* pCamTransformCom = m_pPreviewObject->Get_CameraTransformCom();
 				if (pCamTransformCom)
 				{
-					_vector vEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
-					_vector vAt = XMVectorSet(0.f, 0.f, 0.f, 1.f); // 고정 타겟
-					_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-					_matrix matView = XMMatrixLookAtLH(vEye, vAt, vUp);
-					pCamTransformCom->Set_WorldMatrix(matView);
+					m_pPreviewObject->Reset_CameraWorldMatrix();
 				}
 			}
 		}
@@ -828,13 +836,13 @@ void CMapTool::DeleteMapToolObject()
 	}
 }
 
-HRESULT CMapTool::Import_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
+HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
 {
 	//이미 프로토타입이존재하는 지확인
 	
 	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::YW), strPrototypeTag) != nullptr)
 	{
-		MSG_BOX("이미 프로토타입이 존재함");
+		//MSG_BOX("이미 프로토타입이 존재함");
 		return S_OK;
 	}
 
@@ -955,6 +963,11 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 		//	return;
 
 		CTransform* pCamTransformCom = m_pPreviewObject->Get_CameraTransformCom();
+
+		_float3 vPos = {};
+		XMStoreFloat3(&vPos, pCamTransformCom->Get_State(STATE::POSITION));
+
+		printf("x: %0.1f, y: %0.1f, z: %0.1f\n", vPos.x, vPos.y, vPos.z);
 
 		if (m_pGameInstance->Key_Pressing(DIK_A))
 		{

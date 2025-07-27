@@ -56,6 +56,7 @@ public:
 	_float4x4& Get_World4x4() {
 		return m_WorldMatrix;
 	}
+
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
