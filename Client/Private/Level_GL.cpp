@@ -24,6 +24,23 @@ HRESULT CLevel_GL::Initialize()
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 
+	// 
+	CStatic_UI::STATIC_UI_DESC eDesc = {};
+	eDesc.fOffset = 0.1f;
+	eDesc.fSpeedPerSec = 1.f;
+	eDesc.fX = g_iWinSizeX * 0.5f;
+	eDesc.fY = g_iWinSizeY * 0.5f;
+	eDesc.fSizeX = g_iWinSizeX;
+	eDesc.fSizeY = g_iWinSizeY;
+	eDesc.iPassIndex = 0;
+	eDesc.iTextureIndex = 0;
+	eDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background"), &eDesc)))
+		return E_FAIL;
+
+
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::GL));
 	return S_OK;
 }

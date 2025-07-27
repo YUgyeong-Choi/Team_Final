@@ -11,15 +11,7 @@ NS_END
 NS_BEGIN(Client)
 class CUI_Sequence : public ImSequencer::SequenceInterface
 {
-public:
-    struct SequenceItem
-    {
-        //뭘 넣지
-
-        int start, end, type;
-        unsigned int color;
-        string name; // 이름
-    };
+  
 public:
     CUI_Sequence() = default;
     virtual ~CUI_Sequence() = default;
@@ -34,28 +26,37 @@ public:
         if (index < 0 || index >= static_cast<_int>(m_items.size()))
             return;
         if (start != nullptr)
-            *start = &m_items[index].start;
+            *start = &m_items[index].iStartFrame;
         if (end != nullptr)
-            *end = &m_items[index].end;
+            *end = &m_items[index].iEndFrame;
         if (type != nullptr)
-            *type = m_items[index].type;
+            *type = m_items[index].iType;
         if (color != nullptr)
             *color = m_items[index].color;
     }
     const _char* GetItemLabel(_int index) const override
     {
-        return m_items[index].name.c_str();
+        return m_items[index].strTypeTag.c_str();
     }
 
     void Add(_int type)     override;
     void Del(_int index)    override;
 
+    // 어떤 인덱스 아이템을 가져와서 수정할지 결정
+    void Upadte_Items(_int iIndex, UI_FEATURE_TOOL_DESC& eDesc);
+
+    void Clear() { m_items.clear(); }
+
+    UI_FEATURE_TOOL_DESC Get_Desc(_int iIndex) { return m_items[iIndex]; }
+
+    void Push_Item(UI_FEATURE_TOOL_DESC& eDesc);
+
     _int  m_frameMin = 0;
-    _int  m_frameMax = 60;
+    _int  m_frameMax = 120;
     _int  m_iCurEditIndex = -1;
 
 private:
-    vector<SequenceItem> m_items;
+    vector<UI_FEATURE_TOOL_DESC> m_items;
 
 };
 NS_END

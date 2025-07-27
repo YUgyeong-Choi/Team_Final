@@ -192,7 +192,11 @@
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\Public\ToolSprite.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
+    <ClInclude Include="..\public\UI_Featrue_Scale.h" />
     <ClInclude Include="..\public\UI_Feature.h" />
+    <ClInclude Include="..\public\UI_Feature_Fade.h" />
+    <ClInclude Include="..\public\UI_Feature_Position.h" />
+    <ClInclude Include="..\public\UI_Feature_UV.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
     <ClInclude Include="..\public\UI_Video.h" />
     <ClInclude Include="..\Public\YGBox.h" />
@@ -260,7 +264,10 @@
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\Private\ToolSprite.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />
+    <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
+    <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
+    <ClCompile Include="..\private\UI_Feature_UV.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />
     <ClCompile Include="..\Private\YGBox.cpp" />
@@ -271,6 +278,7 @@
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="..\Private\YGTriggerWithoutModel.cpp" />
+    <ClCompile Include="..\public\UI_Feature_Position.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />

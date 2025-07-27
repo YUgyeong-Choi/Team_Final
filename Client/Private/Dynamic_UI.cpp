@@ -1,5 +1,31 @@
 #include "Dynamic_UI.h"
 #include "GameInstance.h"
+#include "UI_Feature.h"
+
+
+vector<class CUI_Feature*>& CDynamic_UI::Get_Features()
+{
+	return m_pUIFeatures;
+}
+
+CDynamic_UI::DYNAMIC_UI_DESC CDynamic_UI::Get_Desc()
+{
+	DYNAMIC_UI_DESC eDesc = {};
+
+	eDesc.iPassIndex = m_iPassIndex;
+	eDesc.iTextureIndex = m_iTextureIndex;
+	eDesc.strTextureTag = m_strTextureTag;
+	eDesc.strProtoTag = m_strProtoTag;
+	eDesc.fDuration = m_fDuration;
+
+	for (auto pFeature : m_pUIFeatures)
+	{
+		eDesc.FeatureDescs.push_back(pFeature->Get_Desc());
+	}
+
+	return eDesc;
+}
+
 
 CDynamic_UI::CDynamic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUIObject{pDevice, pContext}
@@ -31,15 +57,14 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 	m_iPassIndex = pDesc->iPassIndex;
 	m_iTextureIndex = pDesc->iTextureIndex;
 
-	m_iStartFrame = pDesc->iStartFrame;
-	m_iEndFrame = pDesc->iEndFrame;
+	m_fDuration = pDesc->fDuration;
 
-	m_fOffsetUV = pDesc->fOffsetUV;
 
-	m_iWidth = static_cast<_int>(1 / m_fOffsetUV.x);
-	m_iHeight = static_cast<_int>(1 / m_fOffsetUV.y);
+	
 
-	m_iUIType = pDesc->iUIType;
+	// 파일 읽어서 분기를 나눠야될듯?
+
+
 
 
 	return S_OK;
@@ -47,35 +72,31 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 
 void CDynamic_UI::Priority_Update(_float fTimeDelta)
 {
+
 }
 
 void CDynamic_UI::Update(_float fTimeDelta)
 {
-	// 나중에 객체 만들어서 빼기
-	if (m_iUIType == 2)
+	if (!m_isFromTool)
 	{
 		m_fDuration += fTimeDelta;
 
-		if (m_fDuration > 0.15f)
+		if (m_fDuration > 0.16f)
 		{
-			m_iCount;
+			m_fDuration = 0;
+			++m_iCurrentFrame;
+		}
 
-			++m_iCount;
+		for (auto& pFeature : m_pUIFeatures)
+		{
+			if (nullptr == pFeature || Get_bDead())
+				continue;
 
-			if (m_iCount >= m_iWidth * m_iHeight)
-				m_iCount = 0;
-
-			int iRow = m_iCount / m_iWidth;
-			int iCol = m_iCount % m_iWidth;
-
-			m_fUV.x = iCol * m_fOffsetUV.x;
-			m_fUV.y = iRow * m_fOffsetUV.y;
-
-			m_fDuration = 0.f;
-
+			pFeature->Update(m_iCurrentFrame, this);
 		}
 			
 	}
+
 }
 
 void CDynamic_UI::Late_Update(_float fTimeDelta)
@@ -101,11 +122,50 @@ HRESULT CDynamic_UI::Render()
 	return S_OK;
 }
 
-void CDynamic_UI::Update_UI_From_Tool(DYNAMIC_UI_DESC& eDesc)
+void CDynamic_UI::Update_UI_From_Tool(_int& iCurrentFrame)
 {
-	// sequence type에 따라 일단 바꿔보자
-
 	
+	for (auto& pFeature : m_pUIFeatures)
+	{
+		if (nullptr == pFeature || Get_bDead())
+			continue;
+
+		pFeature->Update(iCurrentFrame, this);
+	}
+
+}
+
+void CDynamic_UI::Update_UI_From_Tool(DYNAMIC_UI_DESC eDesc)
+{
+
+	m_fX = eDesc.fX;
+	m_fY = eDesc.fY;
+	m_fOffset = eDesc.fOffset;
+	m_fSizeX = eDesc.fSizeX;
+	m_fSizeY = eDesc.fSizeY;
+	m_iPassIndex = eDesc.iPassIndex;
+	m_iTextureIndex = eDesc.iTextureIndex;
+
+	D3D11_VIEWPORT			ViewportDesc{};
+	_uint					iNumViewports = { 1 };
+
+	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+
+	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
+}
+
+void CDynamic_UI::Reset()
+{
+	for (auto& pFeature : m_pUIFeatures)
+	{
+		if (nullptr == pFeature || Get_bDead())
+			continue;
+
+		pFeature->Reset();
+	}
 }
 
 
@@ -124,6 +184,8 @@ HRESULT CDynamic_UI::Ready_Components(const wstring& strTextureTag)
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	
+
 	return S_OK;
 }
 
@@ -140,16 +202,32 @@ HRESULT CDynamic_UI::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTextureIndex)))
 		return E_FAIL;
 
-	// 나중에 객체 만들어서 빼기
-	if (m_iUIType == 2)
+	// 기본값을 던지고, 추가로 덮어쓰자
+
+	_float fAlpha = 1.f;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &fAlpha, sizeof(_float))))
+		return E_FAIL;
+
+	
+	for (auto& pFeature : m_pUIFeatures)
 	{
-		if(FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoord", &m_fUV, sizeof(_float2))))
-			return E_FAIL;
-
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileSize", &m_fOffsetUV, sizeof(_float2))))
-			return E_FAIL;
+		if(nullptr != pFeature)
+			pFeature->Bind_ShaderResources(m_pShaderCom);
 	}
+		
 
+
+	return S_OK;
+}
+
+HRESULT CDynamic_UI::Add_Feature(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg)
+{
+	CUI_Feature* pPartObject = dynamic_cast<CUI_Feature*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
+	if (nullptr == pPartObject)
+		return E_FAIL;
+
+	m_pUIFeatures.push_back(pPartObject);
 
 	return S_OK;
 }
@@ -185,6 +263,11 @@ void CDynamic_UI::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
+
+	for (auto& pFeature : m_pUIFeatures)
+		Safe_Release(pFeature);
+
+
 	__super::Free();
 }
 

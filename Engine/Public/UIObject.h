@@ -52,7 +52,6 @@ protected:
 
 	// 나중에 뺄거, fade 용
 	_bool			m_isFade = {false};
-	_bool			m_isFadeIn = {};
 	_float			m_fFadeTime = {};
 	_float			m_fFadeElapsedTime = {};
 	_float			m_fCurrentAlpha = {};

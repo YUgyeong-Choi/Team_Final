@@ -37,6 +37,8 @@ vector g_vMtrlSpecular = 1.f;
 
 vector g_vCamPosition;
 
+Texture2D g_MaskTexture;
+
 struct VS_IN
 {
     float3 vPosition : POSITION;

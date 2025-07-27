@@ -7,6 +7,10 @@
 #include "Dynamic_UI.h"
 #include "UI_Video.h"
 
+#include "UI_Feature_UV.h"
+#include "UI_Feature_Fade.h"
+#include "UI_Feature_Position.h"
+
 #include "Sky.h"
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::Get_Instance() }
@@ -270,6 +274,21 @@ HRESULT CMainApp::Ready_Loading()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Dissolve.dds")))))
 		return E_FAIL;
 
+
+	/* For.Prototype_Component_UI_Feature_UV*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_UI_Feature_UV"),
+		CUI_Feature_UV::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_UI_Feature_Fade*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_UI_Feature_Fade"),
+		CUI_Feature_Fade::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_UI_Feature_Fade*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_UI_Feature_Pos"),
+		CUI_Feature_Position::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 
