@@ -121,6 +121,10 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTrrigerWithoutModel"),
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGFloor"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag)))
+		return E_FAIL;
 	
 	return S_OK;
 }

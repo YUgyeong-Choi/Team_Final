@@ -373,6 +373,9 @@
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
 	</ClInclude>
     <ClInclude Include="..\public\TestAnimObject.h">
+		<Filter>02.GameObjects\08.TestObject</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\YGFloor.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
   </ItemGroup>
@@ -577,6 +580,9 @@
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
 	</ClCompile>
     <ClCompile Include="..\private\TestAnimObject.cpp">
+		<Filter>02.GameObjects\08.TestObject</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\YGFloor.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
