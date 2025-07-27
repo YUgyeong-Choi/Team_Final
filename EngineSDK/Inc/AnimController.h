@@ -30,7 +30,7 @@ public:
 
 	struct Transition 
 	{
-		_float		 duration; // 전환 시간
+		_float		 duration = 0.2f; // 전환 시간
 		_float 	     minTime = 0.f; // 최소 시간 (애니메이션 진행 시간)
 		_float       maxTime = 1.f; // 최대 시간 (애니메이션 진행 시간)
 		_int		iFromNodeId; // 시작 노드 ID

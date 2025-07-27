@@ -5,8 +5,8 @@
             "Name": "Idle",
             "NodeId": 1,
             "NodePos": [
-                764.3773193359375,
-                102.8475341796875
+                893.0,
+                301.0
             ]
         },
         {
@@ -14,8 +14,8 @@
             "Name": "Walk_F",
             "NodeId": 2,
             "NodePos": [
-                778.3773193359375,
-                556.8475341796875
+                533.0,
+                16.0
             ]
         },
         {
@@ -23,8 +23,8 @@
             "Name": "Run_F",
             "NodeId": 5,
             "NodePos": [
-                1161.0,
-                613.0
+                1507.0,
+                260.0
             ]
         },
         {
@@ -32,8 +32,8 @@
             "Name": "Run_F_Stop",
             "NodeId": 6,
             "NodePos": [
-                510.3773193359375,
-                615.8475341796875
+                856.0,
+                556.0
             ]
         },
         {
@@ -41,8 +41,8 @@
             "Name": "Sprint",
             "NodeId": 11,
             "NodePos": [
-                1488.3773193359375,
-                435.8475341796875
+                1189.0,
+                41.0
             ]
         },
         {
@@ -50,8 +50,8 @@
             "Name": "Sprint_Stop",
             "NodeId": 14,
             "NodePos": [
-                335.3773193359375,
-                234.8475341796875
+                323.0,
+                264.0
             ]
         },
         {
@@ -59,8 +59,8 @@
             "Name": "Dash_Focus_B",
             "NodeId": 18,
             "NodePos": [
-                345.3773193359375,
-                437.8475341796875
+                499.0,
+                475.0
             ]
         },
         {
@@ -68,8 +68,8 @@
             "Name": "Dash_Normal_F",
             "NodeId": 21,
             "NodePos": [
-                1320.3773193359375,
-                309.8475341796875
+                1213.0,
+                425.0
             ]
         }
     ],
@@ -81,17 +81,17 @@
             "fValue": 0.0,
             "iValue": 0
         },
-        "Run": {
-            "Type": 0,
-            "bTriggered": false,
-            "bValue": true,
-            "fValue": 0.0,
-            "iValue": 0
-        },
         "Move": {
             "Type": 0,
             "bTriggered": false,
-            "bValue": true,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "Run": {
+            "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
             "fValue": 0.0,
             "iValue": 0
         },
@@ -150,7 +150,7 @@
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.5,
+            "Duration": 0.25600001215934753,
             "FromNodeId": 2,
             "HasExitTime": false,
             "Link": {
@@ -267,7 +267,7 @@
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.5,
+            "Duration": 0.1550000011920929,
             "FromNodeId": 2,
             "HasExitTime": false,
             "Link": {
@@ -333,7 +333,7 @@
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.5,
+            "Duration": 0.14100000262260437,
             "FromNodeId": 5,
             "HasExitTime": false,
             "Link": {

@@ -69,7 +69,7 @@ public:
 	virtual HRESULT Render(_uint iMeshIndex);
 
 public:
-	HRESULT Play_Animation();
+	HRESULT Update_Bones();
 
 private:
 	Assimp::Importer			m_Importer;	

@@ -761,7 +761,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				link.iLinkEndID = endPinID;
 
 				// 트랜지션 추가
-				pCtrl->AddTransition(fromNodeID, toNodeID, link, 0.5f,true);
+				pCtrl->AddTransition(fromNodeID, toNodeID, link, 0.2f,true);
 			}
 
 		}
@@ -1041,7 +1041,7 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 	{
 		m_pCurAnimator->Update(fTimeDelta* m_iPlaySpeed);
 	}
-	m_pCurModel->Play_Animation();
+	m_pCurModel->Update_Bones();
 }
 
 void CAnimTool::SelectAnimation()

@@ -20,16 +20,6 @@ public:
         _bool         hasExitTime = false; // 이전 애니메이션 종료했을 때 블렌드 시작
     };
 
-  //  struct Parameter
-  //  {
-		//ParamType     eType;
-  //      _int          id;       // UI/식별용
-  //      _bool         bValue = false;   // Bool/Trigger
-  //      _float        fValue = 0.f;      // Float
-  //      _bool         bTriggered = false;   // Trigger 전용 플래그
-  //      _int          iValue = 0;      // Int
-  //  };
-    
 private:
     CAnimator(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CAnimator(const CAnimator& Prototype);
@@ -101,29 +91,53 @@ public:
     }
     // 파라미터 설정
     void SetBool(const string& name, _bool v) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
         auto& p = m_Params[name];
         p.bValue = v;
     }
     void SetFloat(const string& name, _float v) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
         auto& p = m_Params[name];
         p.fValue = v;
     }
     void SetTrigger(const string& name) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
         auto& p = m_Params[name];
         p.bTriggered = true;
     }
 
 	void ResetTrigger(const string& name) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
 		auto& p = m_Params[name];
 		p.bTriggered = false;
 	}
 
 	void SetInt(const string& name, _int v) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
 		auto& p = m_Params[name];
 		p.iValue = v;
 	}
 
 	void DeleteParameter(const string& name) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
 		m_Params.erase(name);
 	}
 
@@ -188,7 +202,6 @@ public:
     virtual CComponent* Clone(void* pArg) override;
     virtual void Free() override;
 
-    // ISerializable을(를) 통해 상속됨
     json Serialize() override;
     void Deserialize(const json& j) override;
 };

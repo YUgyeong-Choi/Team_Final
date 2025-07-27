@@ -83,7 +83,7 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	}
 	if (m_pModelCom)
 	{
-		m_pModelCom->Play_Animation();
+		m_pModelCom->Update_Bones();
 	}
 	Input_Test(fTimeDelta);
 }

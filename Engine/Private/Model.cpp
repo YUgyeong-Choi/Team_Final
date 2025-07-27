@@ -95,7 +95,7 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Play_Animation()
+HRESULT CModel::Update_Bones()
 {
 	for (auto& pBone : m_Bones)
 	{
