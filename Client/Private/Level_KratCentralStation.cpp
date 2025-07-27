@@ -25,19 +25,22 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
-	//¸ÊÀ» »ý¼ºÇÏ±âÀ§ÇÑ ¸ðµ¨ ÇÁ·ÎÅäÅ¸ÀÔÀ» ÁØºñÇÑ´Ù.
-	if (FAILED(Ready_MapModel()))
-		return E_FAIL;
-	//Á¦ÀÌ½¼À¸·Î ÀúÀåµÈ ¸ÊÀ» ·ÎµåÇÑ´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ï¿½Ñ´ï¿½.
+	/*if (FAILED(Ready_MapModel()))
+		return E_FAIL;*/
+
+	//ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½Ñ´ï¿½.
+
 	if (FAILED(LoadMap()))
 		return E_FAIL;
 
-	//¾Ö´Ï¸ÞÀÌ¼Ç ¿ÀºêÁ§Æ®
+	//ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	if (FAILED(Ready_TestAnimObject()))
 		return E_FAIL;
+
 	
 
-	/* [ »ç¿îµå ] */
+	/* [ ï¿½ï¿½ï¿½ï¿½ ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
 	m_pBGM->Play();
@@ -61,18 +64,18 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 HRESULT CLevel_KratCentralStation::Render()
 {
-	SetWindowText(g_hWnd, TEXT("°ÔÀÓÇÃ·¹ÀÌ ·¹º§ÀÔ´Ï´Ù."));
+	SetWindowText(g_hWnd, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	return S_OK;
 }
 
 HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
 {
-	//ÀÌ¹Ì ÇÁ·ÎÅäÅ¸ÀÔÀÌÁ¸ÀçÇÏ´Â ÁöÈ®ÀÎ
+	//ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½È®ï¿½ï¿½
 
 	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
 	{
-		MSG_BOX("ÀÌ¹Ì ÇÁ·ÎÅäÅ¸ÀÔÀÌ Á¸ÀçÇÔ");
+		MSG_BOX("ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		return S_OK;
 	}
 
@@ -92,7 +95,7 @@ HRESULT CLevel_KratCentralStation::Ready_MapModel()
 	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
 	if (!inFile.is_open())
 	{
-		MSG_BOX("ReadyModel.json ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù.");
+		MSG_BOX("ReadyModel.json ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
 		return S_OK;
 	}
 
@@ -105,17 +108,17 @@ HRESULT CLevel_KratCentralStation::Ready_MapModel()
 	catch (const exception& e)
 	{
 		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON ÆÄ½Ì ½ÇÆÐ", MB_OK);
+		MessageBoxA(nullptr, e.what(), "JSON ï¿½Ä½ï¿½ ï¿½ï¿½ï¿½ï¿½", MB_OK);
 		return E_FAIL;
 	}
 
-	// JSON µ¥ÀÌÅÍ È®ÀÎ
+	// JSON ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	for (const auto& element : ReadyModelJson)
 	{
 		string ModelName = element.value("ModelName", "");
 		string Path = element.value("Path", "");
 
-		//¸ðµ¨ ÇÁ·ÎÅä Å¸ÀÔ »ý¼º
+		//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
 
 		const _char* pModelFilePath = Path.c_str();
@@ -134,7 +137,7 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 	ifstream inFile("../Bin/Save/MapTool/MapData.json");
 	if (!inFile.is_open())
 	{
-		MSG_BOX("MapData.json ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù.");
+		MSG_BOX("MapData.json ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
 		return S_OK;
 	}
 
@@ -160,7 +163,7 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 				for (_int col = 0; col < 4; ++col)
 					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
-			//¿ÀºêÁ§Æ® »ý¼º, ¹èÄ¡
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Ä¡
 
 			wstring LayerTag = TEXT("Layer_MapToolObject_");
 			LayerTag += StringToWString(ModelName);

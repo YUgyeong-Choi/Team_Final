@@ -489,6 +489,17 @@ HRESULT CGameInstance::Copy_RT_Resource(const _wstring& strTargetTag, ID3D11Text
 	return m_pTarget_Manager->Copy_Resource(strTargetTag, pDest);
 }
 
+//·»´õ Å¸°ÙÀ» Á¦°ÅÇÑ´Ù.
+HRESULT CGameInstance::Delete_RenderTarget(const _wstring& strTargetTag)
+{
+	return m_pTarget_Manager->Delete_RenderTarget(strTargetTag);
+}
+//¸ÖÆ¼ ·»´õÅ¸°ÙÀ» Á¦°ÅÇÑ´Ù.
+HRESULT CGameInstance::Delete_MRT(const _wstring& strMRTTag)
+{
+	return m_pTarget_Manager->Delete_MRT(strMRTTag);
+}
+
 #ifdef _DEBUG
 
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
