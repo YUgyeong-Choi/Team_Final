@@ -141,7 +141,7 @@
         {
             "ClipName": "AS_Pino_H_Walk_F",
             "Duration": 150.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "TickPerSecond": 30.0
         },
         {

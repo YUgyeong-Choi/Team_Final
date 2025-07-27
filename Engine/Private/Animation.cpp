@@ -88,7 +88,7 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 	//		XMLoadFloat4x4(Bones[i]->Get_TransformationMatrix());
 	//}
 	m_CurrentKeyFrameIndices.resize(m_iNumChannels);
-
+	m_Bones = Bones; // 뼈대 정보 저장
 	return S_OK;
 }
 

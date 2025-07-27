@@ -72,7 +72,6 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 	}
 
 	m_pAnimator->GetAnimController()->SetState("Idle");
-	//	m_pTransformCom->Scaling(_float3(0.1f, 0.1f, 0.1f));
 	return S_OK;
 }
 
@@ -91,7 +90,7 @@ void CTestAnimObject::Update(_float fTimeDelta)
 
 void CTestAnimObject::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
 HRESULT CTestAnimObject::Render()
@@ -156,56 +155,97 @@ HRESULT CTestAnimObject::Ready_Components()
 
 void CTestAnimObject::Input_Test(_float fTimeDelta)
 {
-	_bool bUp = GetAsyncKeyState(VK_UP) & 0x8000; // GetAsyncKeyState는 키가 눌렸는지 확인하는 함수
+	_bool bUp = GetAsyncKeyState(VK_UP) & 0x8000;
 	_bool bDown = GetAsyncKeyState(VK_DOWN) & 0x8000;
 	_bool bLeft = GetAsyncKeyState(VK_LEFT) & 0x8000;
 	_bool bRight = GetAsyncKeyState(VK_RIGHT) & 0x8000;
+	_bool bMove = (bUp || bDown || bLeft || bRight);
 
-	static _bool bIsRun = false;
-	if (GetAsyncKeyState('F') & 0x8000)
+	static _bool bRunToggle = false;
+	static _bool bSpaceHeld = false;      // 스페이스가 눌린 중인지
+	static _bool bSprinting = false;      // 스프린트 모드로 전환했는지
+	static _float fPressTime = 0.f;       // 누른 시간 누적
+	const _float sprintTh = 0.8f;         // 이 시간 이상 누르면 스프린트
+
+	_bool bSpaceDown = m_pGameInstance->Key_Down(DIK_SPACE);
+	_bool bSpacePress = m_pGameInstance->Key_Pressing(DIK_SPACE);
+	_bool bSpaceUp = m_pGameInstance->Key_Up(DIK_SPACE);
+
+	// 스페이스 바를 눌렀을 때 (한 번만)
+	if (bSpaceDown)
 	{
-		bIsRun = !bIsRun; // F 키를 누르면 달리기 모드 토글
-	}
-	// 디버깅 출력
-	if (bUp || bDown || bLeft || bRight)
-	{
-		cout << "Keys pressed - Up:" << bUp << " Down:" << bDown
-			<< " Left:" << bLeft << " Right:" << bRight << endl;
-	}
-
-	bool bMove = bUp || bLeft || bRight;
-	m_pAnimator->SetBool("Move", bMove);
-	m_pAnimator->SetBool("IsRun", bIsRun);
-
-	_bool bSpaceHold = m_pGameInstance->Key_Pressing(DIK_SPACE); // 누르고 있는 중
-	_bool bSpacePressed = m_pGameInstance->Key_Down(DIK_SPACE);     // 눌린 순간
-	_bool bSpaceReleased = m_pGameInstance->Key_Up(DIK_SPACE);       // 뗀 순간
-
-
-	static _bool prevSpaceHold = false;  // 지난 프레임의 누름 상태
-	static _bool spaceReleasedAfterPress = false; 
-
-
-	if (!bSpaceHold && prevSpaceHold) 
-	{
-		// 이전 프레임엔 누르고 있었고, 지금은 뗀 순간
-		spaceReleasedAfterPress = true;
+		if (!bMove)
+		{
+			// 이동하지 않을 때는 즉시 트리거 발생
+			m_pAnimator->SetTrigger("Dash");
+		}
+		else
+		{
+			// 이동 중일 때는 홀드 시작
+			bSpaceHeld = true;
+			bSprinting = false;
+			fPressTime = 0.f;
+		}
 	}
 
-	//  대시 트리거 조건
-	if (bSpacePressed && spaceReleasedAfterPress)
+	// 이동 중이면서 스페이스를 누르는 동안
+	if (bMove && bSpaceHeld && bSpacePress)
 	{
-		m_pAnimator->SetTrigger("Dash");       // Dash 발동
-		spaceReleasedAfterPress = false;      
-	}
-	else
-	{
-		m_pAnimator->SetBool("KeyDownSpace", bSpaceHold);
+		fPressTime += fTimeDelta;
+
+		// 일정 시간 넘어가면 스프린트 시작
+		if (!bSprinting && fPressTime >= sprintTh)
+		{
+			m_pAnimator->SetBool("Sprint", true);
+			bRunToggle = true;
+			bSprinting = true;
+		}
 	}
 
-	// 5) 다음 프레임을 위해 현재 상태 저장
-	prevSpaceHold = bSpaceHold;
+	// 스페이스 바를 뗄 때 (한 번만)
+	if (bSpaceHeld && bSpaceUp)
+	{
+		if (bMove)
+		{
+			if (!bSprinting)
+			{
+				// 짧게 눌렀으면 대시 트리거
+				m_pAnimator->SetTrigger("Dash");
+			}
+			else
+			{
+				// 스프린트 종료
+				m_pAnimator->SetBool("Sprint", false);
+			}
+		}
 
+		// 상태 초기화
+		bSpaceHeld = false;
+		bSprinting = false;
+		fPressTime = 0.f;
+	}
+
+	// 이동이 중단되면 스프린트도 중단
+	if (!bMove && bSprinting)
+	{
+		m_pAnimator->SetBool("Sprint", false);
+		bSprinting = false;
+		bSpaceHeld = false;
+		fPressTime = 0.f;
+	}
+
+	// 애니메이터 상태 설정
+	if (m_pAnimator)
+	{
+		m_pAnimator->SetBool("Move", bMove);
+
+		// F키로 런 토글
+		if (m_pGameInstance->Key_Down(DIK_F))
+		{
+			bRunToggle = !bRunToggle;
+		}
+		m_pAnimator->SetBool("IsRun", bRunToggle);
+	}
 }
 
 CTestAnimObject* CTestAnimObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -233,6 +273,7 @@ CGameObject* CTestAnimObject::Clone(void* pArg)
 void CTestAnimObject::Free()
 {
 	__super::Free();
+	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 }

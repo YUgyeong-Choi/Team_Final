@@ -25,9 +25,9 @@ _bool CAnimController::Condition::Evaluate(CAnimator* animator) const
 		switch (op)
 		{
 		case EOp::Greater:
-			return animator->GetInt(paramName) < iThreshold;
-		case EOp::Less:
 			return animator->GetInt(paramName) > iThreshold;
+		case EOp::Less:
+			return animator->GetInt(paramName) < iThreshold;
 		case EOp::NotEqual:
 			return animator->GetInt(paramName) != iThreshold;
 		case EOp::Equal:
@@ -39,9 +39,9 @@ _bool CAnimController::Condition::Evaluate(CAnimator* animator) const
 		switch (op)
 		{
 		case EOp::Greater:
-			return animator->GetFloat(paramName) < fThreshold;
-		case EOp::Less:
 			return animator->GetFloat(paramName) > fThreshold;
+		case EOp::Less:
+			return animator->GetFloat(paramName) < fThreshold;
 		default:
 			return false; // Float 타입에서 지원하지 않는 연산
 		}

@@ -129,10 +129,18 @@ public:
 
     // 조건 검사용
     _bool CheckBool(const string& name) const {
-        _bool test = m_Params.at(name).bValue;
-        return test;
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return false; // 기본값 반환
+		}
+		return m_Params.at(name).bValue;
     }
-    _float GetFloat(const string& name) const { return m_Params.at(name).fValue; }
+    _float GetFloat(const string& name) const { 
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return 0.f; // 기본값 반환
+		}
+        return m_Params.at(name).fValue; }
     _bool CheckTrigger(const string& name) {
         auto& p = m_Params[name];
         if (p.bTriggered) 
@@ -143,7 +151,13 @@ public:
         }
         return false;
     }
-	_int GetInt(const string& name) const { return m_Params.at(name).iValue; }
+	_int GetInt(const string& name) const {
+        if (m_Params.find(name) == m_Params.end()) {
+            cout << "Parameter not found: " << name << endl; // 디버그용 출력
+            return 0; // 기본값 반환
+        }
+		return m_Params.at(name).iValue;
+    }
 
 	_bool IsFinished() const { return m_bIsFinished; }
 
