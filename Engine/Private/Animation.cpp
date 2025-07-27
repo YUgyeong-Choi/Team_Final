@@ -284,4 +284,6 @@ void CAnimation::Deserialize(const json& j)
 			}
 		}
 	}
+
+	m_fTickPerSecond = max(m_fTickPerSecond, 50.f); // 최소값 설정
 }

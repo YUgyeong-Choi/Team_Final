@@ -220,6 +220,12 @@
     <ClInclude Include="..\Public\PhysX_IgnoreSelfCallback.h">
       <Filter>01.Utility\13.PhysX</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Observer.h">
+      <Filter>01.Utility\14. Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_Manager.h">
+      <Filter>01.Utility\14. Observer\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -416,6 +422,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sound_Core.cpp">
       <Filter>00.System\02.Sound\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer.cpp">
+      <Filter>01.Utility\14. Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_Manager.cpp">
+      <Filter>01.Utility\14. Observer\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -634,6 +646,12 @@
     </Filter>
     <Filter Include="01.Utility\01.Levels\Manager">
       <UniqueIdentifier>{234015e5-16ad-46c6-b584-e43a2fb240bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\14. Observer">
+      <UniqueIdentifier>{88b99f19-78d6-4868-a7cf-31c1e904c011}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\14. Observer\Manager">
+      <UniqueIdentifier>{1fba679e-4c91-4fe4-a8d6-a6b1a08640ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

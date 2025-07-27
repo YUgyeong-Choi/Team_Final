@@ -59,6 +59,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		{
 			CLevel* pLevel = { nullptr };
 
+
 			switch (m_eNextLevelID)
 			{
 			case LEVEL::LOGO:
@@ -124,7 +125,12 @@ HRESULT CLevel_Loading::Render()
 	m_pLoader->Output_LoadingText();
 
 	_wstring text = L"ÇÏ³ªµÑ»ï³Ý¿À¿©¼¸Ä¥ÆÈ¾ÆÈ©°ø \n Test Test Áß";
-	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.3f, g_iWinSizeY * 0.75f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1000.f);
+	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.25f, g_iWinSizeY * 0.725f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1350.f);
+
+	
+	
+	_wstring loadingText = L"°ÅÁþ¸»ÇÏ´Â Áß ...   " + to_wstring(100) + L" %";
+	m_pGameInstance->Draw_Font(TEXT("Font_Bold"), loadingText.c_str(), _float2(g_iWinSizeX * 0.77f, g_iWinSizeY * 0.95f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1200.f);
 
 	return S_OK;
 }
@@ -159,8 +165,11 @@ HRESULT CLevel_Loading::Ready_Loading()
 			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
 				static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eStaticDesc)))
 				return E_FAIL;
+
+			static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static")))->Set_isVignetting(true);
 		}
 
+		static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static")))->Set_isVignetting(false);
 		file.close();
 	}
 

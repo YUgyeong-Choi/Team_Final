@@ -38,6 +38,7 @@ vector g_vMtrlSpecular = 1.f;
 vector g_vCamPosition;
 
 Texture2D g_MaskTexture;
+Texture2D g_UITexture;
 
 struct VS_IN
 {
@@ -457,6 +458,27 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     return Out;
 }
 
+
+PS_OUT PS_MAIN_VIGNETTING(PS_IN In)
+{
+    PS_OUT Out;
+
+    Out.vBackBuffer = g_UITexture.Sample(DefaultSampler, In.vTexcoord);
+    
+    float4 vMask = g_MaskTexture.Sample(DefaultSampler, In.vTexcoord);
+  
+    
+    float2 uv = In.vTexcoord * 2.f - 1.f;
+ 
+    
+    
+    float vignette = 1.0f - 0.8f * smoothstep(0.05f, 1.5f, length(uv));
+    
+    Out.vBackBuffer.rgb *= (vignette);
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Debug //0
@@ -549,6 +571,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_PBR_LIGHT_DIRECTIONAL();
+    }
+
+    pass Vignetting //8
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_VIGNETTING();
     }
   
 }

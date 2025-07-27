@@ -63,6 +63,8 @@ public:
 	_bool Get_RenderCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
 #endif
+
+
 #pragma endregion
 
 #pragma region TIMER_MANAGER
@@ -175,6 +177,13 @@ public:
 	_uint GetCurrentLevelIndex() const { return m_iCurrentLevelIndex; }
 #pragma endregion
 
+#pragma region OBSERVER_MANAGER
+	HRESULT Add_Observer(const _wstring strTag, class CObserver* pObserver);
+	HRESULT Remove_Observer(const _wstring strTag);
+	void Notify(const _wstring& strTag, const _wstring& eventType, void* pData = nullptr);
+	class CObserver* Find_Observer(const _wstring& strTag);
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -192,6 +201,7 @@ private:
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
+	class CObserver_Manager* m_pObserver_Manager = { nullptr };
 
 
 private:

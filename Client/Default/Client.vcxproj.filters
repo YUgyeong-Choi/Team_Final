@@ -168,7 +168,7 @@
     </Filter>
     <Filter Include="01.Levels\LevelYW\MapTool\Camera_MapTool">
       <UniqueIdentifier>{3ff3fcc4-4317-4ddd-8da4-8f2d1ed7043e}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
       <UniqueIdentifier>{85e6703b-969f-44ff-8640-27151012a745}</UniqueIdentifier>
     </Filter>
@@ -177,7 +177,7 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\HP">
       <UniqueIdentifier>{754f49d2-926e-4330-905d-0dc51623fb1b}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="97.ShaderFiles\Effect">
       <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
     </Filter>
@@ -206,9 +206,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>01.Levels\Loading</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Level_Logo.h">
-      <Filter>01.Levels\Logo</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MainApp.h">
       <Filter>00.MainApp</Filter>
@@ -410,10 +407,10 @@
     </ClInclude>
     <ClInclude Include="..\public\PreviewObject.h">
       <Filter>01.Levels\LevelYW\MapTool\PreviewObject</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\UI_Bar_Loading.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\YGDynamicGib.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
@@ -422,12 +419,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\YGDynamicObj.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\ParticleEffect.h">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Particle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MeshEffect.h">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Logo.h">
+      <Filter>01.Levels\Logo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -641,16 +641,16 @@
     </ClCompile>
     <ClCompile Include="..\private\PreviewObject.cpp">
       <Filter>01.Levels\LevelYW\MapTool\PreviewObject</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\UI_Bar_Loading.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\YGDynamicGib.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\YGDynamicObj.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\ParticleEffect.cpp">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Particle</Filter>
     </ClCompile>

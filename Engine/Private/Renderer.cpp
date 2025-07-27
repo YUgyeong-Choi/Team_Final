@@ -108,6 +108,16 @@ HRESULT CRenderer::Initialize()
 #pragma endregion
 
 
+// 일단 만들기
+#pragma region RenderUI
+
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_UI_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_UIObjects"), TEXT("Target_UI_Diffuse"))))
+		return E_FAIL;
+
+#pragma endregion
 
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Lights"), TEXT("Target_Shade"))))
@@ -249,8 +259,16 @@ HRESULT CRenderer::Draw()
 	/* 블렌딩이전에 백버퍼를 완성시키낟.  */
 	if (FAILED(Render_Blend()))
 		return E_FAIL;
+
+	
+	if (FAILED(Render_UI_Deferred()))
+		return E_FAIL;
+	
+
 	if (FAILED(Render_UI()))
 		return E_FAIL;
+
+	
 
 #ifdef _DEBUG
 
@@ -417,6 +435,13 @@ HRESULT CRenderer::Render_UI()
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI)].clear();
 
+
+	//
+
+	
+
+	
+
 	return S_OK;
 }
 
@@ -581,6 +606,50 @@ HRESULT CRenderer::Render_Blur()
 
 	return S_OK;
 }
+
+HRESULT CRenderer::Render_UI_Deferred()
+{
+	if (m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI_DEFERRED)].empty())
+		return S_OK;
+
+	m_pGameInstance->Begin_MRT(TEXT("MRT_UIObjects"));
+
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI_DEFERRED)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+		{
+			return dynamic_cast<CUIObject*>(pSour)->Get_Depth() > dynamic_cast<CUIObject*>(pDest)->Get_Depth();
+		});
+
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI_DEFERRED)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI_DEFERRED)].clear();
+
+
+	m_pGameInstance->End_MRT();
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_UI_Diffuse"), m_pShader, "g_UITexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(8);
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	return S_OK;
+}
+
+
 
 HRESULT CRenderer::Ready_DepthStencilView(_uint iWidth, _uint iHeight)
 {
