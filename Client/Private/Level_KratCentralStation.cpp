@@ -31,8 +31,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	//���̽����� ����� ���� �ε��Ѵ�.
 
-	if (FAILED(LoadMap()))
-		return E_FAIL;
+	//if (FAILED(LoadMap()))
+	//	return E_FAIL;
 
 	//�ִϸ��̼� ������Ʈ
 	if (FAILED(Ready_TestAnimObject()))

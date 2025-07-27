@@ -75,7 +75,7 @@
         {
             "ClipName": "AS_Pino_H_Idle",
             "Duration": 195.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "TickPerSecond": 30.0
         },
         {
@@ -93,7 +93,7 @@
         {
             "ClipName": "AS_Pino_H_Run_F",
             "Duration": 48.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "TickPerSecond": 30.0
         },
         {
@@ -117,7 +117,7 @@
         {
             "ClipName": "AS_Pino_H_Sprint",
             "Duration": 36.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "TickPerSecond": 30.0
         },
         {
@@ -141,7 +141,7 @@
         {
             "ClipName": "AS_Pino_H_Walk_F",
             "Duration": 150.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "TickPerSecond": 30.0
         },
         {

@@ -291,5 +291,5 @@ void CAnimator::Deserialize(const json& j)
 			SetParamName(m_Params[name], name); // 파라미터 이름 설정
 		}
 	}
-	m_pAnimController->Deserialize(j);
+ 	m_pAnimController->Deserialize(j);
 }

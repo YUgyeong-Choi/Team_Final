@@ -5,8 +5,8 @@
             "Name": "Idle",
             "NodeId": 1,
             "NodePos": [
-                340.8019714355469,
-                255.2442626953125
+                669.0,
+                161.0
             ]
         },
         {
@@ -14,8 +14,8 @@
             "Name": "Walk_F",
             "NodeId": 2,
             "NodePos": [
-                663.6483154296875,
-                455.1844787597656
+                669.0,
+                161.0
             ]
         },
         {
@@ -23,8 +23,8 @@
             "Name": "Dash_Focus_B",
             "NodeId": 5,
             "NodePos": [
-                331.68890380859375,
-                450.2312927246094
+                669.0,
+                161.0
             ]
         },
         {
@@ -32,8 +32,8 @@
             "Name": "Sprint",
             "NodeId": 8,
             "NodePos": [
-                6.23712158203125,
-                263.5810546875
+                669.0,
+                161.0
             ]
         },
         {
@@ -41,8 +41,8 @@
             "Name": "SprintEnd",
             "NodeId": 11,
             "NodePos": [
-                100.77798461914063,
-                548.5100708007813
+                669.0,
+                161.0
             ]
         },
         {
@@ -50,8 +50,8 @@
             "Name": "Run_F_Stop",
             "NodeId": 18,
             "NodePos": [
-                759.0947265625,
-                271.85302734375
+                669.0,
+                161.0
             ]
         },
         {
@@ -59,8 +59,8 @@
             "Name": "Run_F",
             "NodeId": 21,
             "NodePos": [
-                628.7982177734375,
-                171.68426513671875
+                669.0,
+                161.0
             ]
         },
         {
@@ -68,8 +68,8 @@
             "Name": "Dash_Normal_F",
             "NodeId": 25,
             "NodePos": [
-                314.87823486328125,
-                567.9790649414063
+                224.0,
+                201.0
             ]
         }
     ],
@@ -89,10 +89,10 @@
             "iValue": 0
         },
         "KeyDownSpace": {
-            "Type": 0,
+            "Type": 2,
             "bTriggered": false,
             "bValue": false,
-            "fValue": 0.0,
+            "fValue": 1.0,
             "iValue": 0
         },
         "Move": {
@@ -205,35 +205,6 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 1
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": 0,
-                    "ParamName": "Move",
-                    "Type": 0,
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": 0,
-                    "ParamName": "KeyDownSpace",
-                    "Type": 0,
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.5,
-            "FromNodeId": 1,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 12,
-                "LinkId": 9,
-                "ToNodeId": 81
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 8
         },
         {
             "Conditions": [

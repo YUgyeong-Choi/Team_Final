@@ -46,22 +46,84 @@ HRESULT CAnimTool::Initialize(void* pArg)
 
 	ImNodesStyle& style = ImNodes::GetStyle();
 
-		// 유니티 스타일 색상
-		style.Colors[ImNodesCol_NodeBackground] = IM_COL32(60, 60, 70, 255);
-		style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(75, 75, 85, 255);
-		style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(85, 85, 95, 255);
-		style.Colors[ImNodesCol_NodeOutline] = IM_COL32(100, 100, 110, 255);
+		//// 유니티 스타일 색상
+		//style.Colors[ImNodesCol_NodeBackground] = IM_COL32(60, 60, 70, 255);
+		//style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(75, 75, 85, 255);
+		//style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(85, 85, 95, 255);
+		//style.Colors[ImNodesCol_NodeOutline] = IM_COL32(100, 100, 110, 255);
 
-		// 둥근 모서리
-		style.NodeCornerRounding = 5.0f;
-		style.NodePadding = ImVec2(8.0f, 4.0f);
+		//// 둥근 모서리
+		//style.NodeCornerRounding = 5.0f;
+		//style.NodePadding = ImVec2(8.0f, 4.0f);
 
-		// 핀 스타일
-		style.PinCircleRadius = 6.0f;
-		style.PinQuadSideLength = 8.0f;
-		style.LinkThickness = 3.0f;
-		style.LinkLineSegmentsPerLength = 0.1f;
+		//// 핀 스타일
+		//style.PinCircleRadius = 6.0f;
+		//style.PinQuadSideLength = 8.0f;
+		//style.LinkThickness = 3.0f;
+		style.LinkLineSegmentsPerLength = 0.0f; // 직선
 
+
+		style.Colors[ImNodesCol_NodeBackground] = IM_COL32(56, 56, 56, 255);           // 더 어두운 배경
+		style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(70, 70, 70, 255);    // 호버 시
+		style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(90, 90, 90, 255);   // 선택 시
+		style.Colors[ImNodesCol_NodeOutline] = IM_COL32(128, 128, 128, 255);           // 테두리
+
+		// 타이틀바 색상 (유니티의 주황색 계열)
+		style.Colors[ImNodesCol_TitleBar] = IM_COL32(58, 58, 58, 255);
+		style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(72, 72, 72, 255);
+		style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(86, 86, 86, 255);
+
+		// === 핀(Pin) 스타일 ===
+		// 입력/출력 핀 색상을 다르게 설정
+		style.Colors[ImNodesCol_Pin] = IM_COL32(200, 200, 200, 255);                   // 기본 핀
+		style.Colors[ImNodesCol_PinHovered] = IM_COL32(255, 255, 255, 255);            // 호버 시 핀
+
+		// 핀 크기 및 모양 설정
+		style.PinCircleRadius = 7.0f;        // 핀을 좀 더 크게
+		style.PinQuadSideLength = 10.0f;     // 사각형 핀 크기
+		style.PinTriangleSideLength = 12.0f; // 삼각형 핀 크기
+
+		// === 링크(연결선) 스타일 - 핵심 개선 사항 ===
+
+		// 1. 직선형 링크로 변경 (곡선 제거)
+		style.LinkThickness = 3.0f;                    // 선 두께
+		style.LinkLineSegmentsPerLength = 0.0f;        // 0으로 설정하면 직선
+		style.LinkHoverDistance = 10.0f;               // 마우스 호버 감지 거리
+
+		// 2. 링크 색상 설정 (유니티 스타일)
+		style.Colors[ImNodesCol_Link] = IM_COL32(150, 150, 150, 255);                // 기본 링크 색상
+		style.Colors[ImNodesCol_LinkHovered] = IM_COL32(255, 255, 255, 255);         // 호버 시 흰색
+		style.Colors[ImNodesCol_LinkSelected] = IM_COL32(255, 165, 0, 255);          // 선택 시 주황색
+
+		// === 노드 모양 개선 ===
+		style.NodeCornerRounding = 6.0f;       // 모서리 둥글기
+		style.NodePadding = ImVec2(10.0f, 6.0f); // 노드 내부 여백 증가
+		style.NodeBorderThickness = 2.0f;      // 테두리 두께
+
+		// === 그리드 스타일 ===
+		style.Colors[ImNodesCol_GridBackground] = IM_COL32(40, 40, 40, 255);    // 배경색
+		style.Colors[ImNodesCol_GridLine] = IM_COL32(60, 60, 60, 100);          // 그리드 라인
+		style.GridSpacing = 32.0f;                                               // 그리드 간격
+
+		// === 선택 영역 스타일 ===
+		style.Colors[ImNodesCol_BoxSelector] = IM_COL32(100, 149, 237, 80);     // 선택 박스
+		style.Colors[ImNodesCol_BoxSelectorOutline] = IM_COL32(100, 149, 237, 255);
+
+		// === 미니맵 스타일 ===
+		style.Colors[ImNodesCol_MiniMapBackground] = IM_COL32(25, 25, 25, 150);
+		style.Colors[ImNodesCol_MiniMapBackgroundHovered] = IM_COL32(25, 25, 25, 200);
+		style.Colors[ImNodesCol_MiniMapOutline] = IM_COL32(150, 150, 150, 100);
+		style.Colors[ImNodesCol_MiniMapOutlineHovered] = IM_COL32(150, 150, 150, 200);
+		style.Colors[ImNodesCol_MiniMapNodeBackground] = IM_COL32(200, 200, 200, 100);
+		style.Colors[ImNodesCol_MiniMapNodeBackgroundHovered] = IM_COL32(200, 200, 200, 255);
+		style.Colors[ImNodesCol_MiniMapNodeBackgroundSelected] = IM_COL32(255, 165, 0, 255);
+		style.Colors[ImNodesCol_MiniMapNodeOutline] = IM_COL32(200, 200, 200, 100);
+		style.Colors[ImNodesCol_MiniMapLink] = IM_COL32(200, 200, 200, 100);
+		style.Colors[ImNodesCol_MiniMapLinkSelected] = IM_COL32(255, 165, 0, 255);
+
+		// 미니맵 크기 및 위치
+		style.MiniMapPadding = ImVec2(8.0f, 8.0f);
+		style.MiniMapOffset = ImVec2(4.0f, 4.0f);
 	return S_OK;
 }
 
@@ -696,6 +758,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		if (bDeleteLink == false) // 삭제 안한 경우에만
 		{
 
+			auto pCtrl = m_pCurAnimator->GetAnimController();
 		for (_int linkId : selectedLinks)
 		{
 			for (auto& transition : transitions)
@@ -703,8 +766,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				if (transition.link.iLinkId == linkId)
 				{
 					ImGui::Begin("Transition Info");
-					ImGui::Text("From Node ID: %d", transition.iFromNodeId);
-					ImGui::Text("To Node ID: %d", transition.iToNodeId);
+					ImGui::Text("From Node : %s", pCtrl->GetStateAnimationByNodeId(transition.iFromNodeId)->Get_Name().c_str());
+					ImGui::Text("To Node : %s", pCtrl->GetStateAnimationByNodeId(transition.iToNodeId)->Get_Name().c_str());
 					ImGui::Text("Link ID: %d", transition.link.iLinkId);
 					//ImGui::Text("Condition: %s", transition.condition.paramName.c_str());
 					ImGui::End();
@@ -786,6 +849,17 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::Text("Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
 					ImGui::Text("Tick Per Second: %.2f", state.clip->GetTickPerSecond());
 					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
+					if(m_pCurAnimation)
+						ImGui::Text("CurAnimLoop: %s", m_pCurAnimation->Get_isLoop() ? "True" : "False");
+
+					auto it = find_if(m_LoadedAnimations[m_stSelectedModelName].begin(), m_LoadedAnimations[m_stSelectedModelName].end(),
+						[&](CAnimation* anim) { return anim->Get_Name() == state.clip->Get_Name(); });
+					if (it != m_LoadedAnimations[m_stSelectedModelName].end())
+					{
+						auto pAnim = *it;
+						ImGui::Text("OriginAnimLoop: %s", pAnim->Get_isLoop() ? "True" : "False");
+					}
+				
 
 					// 클립이 있었던 경우에는 현재 애니메이션을 state의 애니메이션으로 변경
 					m_pCurAnimation = state.clip;
@@ -948,38 +1022,38 @@ void CAnimTool::SelectAnimation()
 		ImGui::EndCombo();
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_COMMA))
-	{
-		iSelectedAnimIndex--;
-		if (iSelectedAnimIndex < 0)
-			iSelectedAnimIndex = static_cast<_int>(anims.size()) - 1; // 마지막으로 순서
+	//if (m_pGameInstance->Key_Down(DIK_COMMA))
+	//{
+	//	iSelectedAnimIndex--;
+	//	if (iSelectedAnimIndex < 0)
+	//		iSelectedAnimIndex = static_cast<_int>(anims.size()) - 1; // 마지막으로 순서
 
-		if (m_pCurAnimation)
-		{
-			m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
-		}
-		else
-		{
-			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
-		}
+	//	if (m_pCurAnimation)
+	//	{
+	//		m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
+	//	}
+	//	else
+	//	{
+	//		m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
+	//	}
 
-		m_pCurAnimation = anims[iSelectedAnimIndex];
-	}
-	if (m_pGameInstance->Key_Down(DIK_PERIOD))
-	{
-		iSelectedAnimIndex++;
-		if (iSelectedAnimIndex >= static_cast<_int>(anims.size()))
-			iSelectedAnimIndex = 0;
-		if (m_pCurAnimation)
-		{
-			m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
-		}
-		else
-		{
-			m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
-		}
-		m_pCurAnimation = anims[iSelectedAnimIndex];
-	}
+	//	m_pCurAnimation = anims[iSelectedAnimIndex];
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_PERIOD))
+	//{
+	//	iSelectedAnimIndex++;
+	//	if (iSelectedAnimIndex >= static_cast<_int>(anims.size()))
+	//		iSelectedAnimIndex = 0;
+	//	if (m_pCurAnimation)
+	//	{
+	//		m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
+	//	}
+	//	else
+	//	{
+	//		m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
+	//	}
+	//	m_pCurAnimation = anims[iSelectedAnimIndex];
+	//}
 
 	// 애니메이션 프로퍼티들 설정
 	Setting_AnimationProperties();
@@ -987,6 +1061,8 @@ void CAnimTool::SelectAnimation()
 
 void CAnimTool::Setting_AnimationProperties()
 {
+
+	// 원본의 애니메이션에도 적용을 해줘야함
 	if (m_pCurAnimation)
 	{
 		ImGui::Checkbox("Use Animation Sequence", &m_bUseAnimSequence);
@@ -1007,10 +1083,21 @@ void CAnimTool::Setting_AnimationProperties()
 		if (ImGui::Checkbox("Loop", &bLoop))
 		{
 			m_pCurAnimation->SetLoop(bLoop);
+			bChanged = true;
 		}
 		if (bChanged)
 		{
 			m_pCurAnimation->SetTickPerSecond(fTickPerSecond);
+
+			auto& anims = m_LoadedAnimations[m_stSelectedModelName];
+			auto it = find_if(anims.begin(), anims.end(),
+				[&](CAnimation* anim) { return anim->Get_Name() == m_pCurAnimation->Get_Name(); });
+
+			if (it != anims.end())
+			{
+				(*it)->SetLoop(bLoop);
+				(*it)->SetTickPerSecond(fTickPerSecond);
+			}
 		}
 	}
 
@@ -1139,17 +1226,16 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 	if (pModel)
 	{
 		m_LoadedModels[modelName] = pModel;
-		auto pAnimations = pModel->GetAnimations();
+		auto& pAnimations = pModel->GetAnimations();
+		m_LoadedAnimations[modelName] = pAnimations;
+		//vector<CAnimation*>& pModelCloneAnims = m_LoadedAnimations[modelName];
 
-		vector<CAnimation*>& pModelCloneAnims = m_LoadedAnimations[modelName];
-
-		const auto& Bones = pModel->Get_Bones();
-		pModelCloneAnims.reserve(pAnimations.size());
-		for (_uint i = 0; i < pAnimations.size(); i++)
-		{
-			pModelCloneAnims.push_back(pAnimations[i]->Clone(Bones));
-			//Safe_AddRef(pModelCloneAnims.back());
-		}
+		//const auto& Bones = pModel->Get_Bones();
+		//pModelCloneAnims.reserve(pAnimations.size());
+		//for (_uint i = 0; i < pAnimations.size(); i++)
+		//{
+		//	pModelCloneAnims.push_back(pAnimations[i]->Clone(Bones));
+		//}
 
 		auto pAnimator = CAnimator::Create(m_pDevice, m_pContext);
 		if (pAnimator)
@@ -1557,12 +1643,12 @@ void CAnimTool::Free()
 		Safe_Release(pair.second);
 	}
 
-	for (auto& pair : m_LoadedAnimations)
-	{
-		for (auto& anim : pair.second)
-			Safe_Release(anim);
-		pair.second.clear();
-	}
+	//for (auto& pair : m_LoadedAnimations)
+	//{
+	//	for (auto& anim : pair.second)
+	//		Safe_Release(anim);
+	//	pair.second.clear();
+	//}
 	ImNodes::DestroyContext();
 	Safe_Release(m_pEventMag);
 	Safe_Delete(m_pMySequence);
