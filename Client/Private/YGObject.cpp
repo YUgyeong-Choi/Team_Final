@@ -26,6 +26,7 @@ HRESULT CYGObject::Initialize(void* pArg)
 	_desc.fRotationPerSec = 8.f;
 	_desc.fSpeedPerSec = 10.f;
 
+
 	if (FAILED(__super::Initialize(&_desc))) {
 		return E_FAIL;
 	}
@@ -54,6 +55,14 @@ void CYGObject::Priority_Update(_float fTimeDelta)
 
 		Safe_Release(m_pPhysXActorCom);
 		m_pPhysXActorCom = nullptr;
+
+		pScene = m_pGameInstance->Get_Scene();
+		if (pScene)
+			pScene->removeActor(*m_pPhysXActorWeaponCom->Get_Actor());
+
+		Safe_Release(m_pPhysXActorWeaponCom);
+		m_pPhysXActorWeaponCom = nullptr;
+
 	}
 
 	if (m_pGameInstance->Key_Pressing(DIK_A))
@@ -82,6 +91,16 @@ void CYGObject::Priority_Update(_float fTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_Q))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f),  -fTimeDelta * 0.1f);
+	}
+
+	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON)) {
+		m_pPhysXActorWeaponCom->Set_ShapeFlag(true, false, false);
+		m_bAttack = true;
+	}
+
+	if (m_pGameInstance->Mouse_Up(DIM::LBUTTON)) {
+		m_pPhysXActorWeaponCom->Set_ShapeFlag(false, false, false);
+		m_bAttack = true;
 	}
 
 }
@@ -126,6 +145,7 @@ HRESULT CYGObject::Render()
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorWeaponCom);
 	}
 #endif
 
@@ -195,6 +215,10 @@ HRESULT CYGObject::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysXWeapon"), reinterpret_cast<CComponent**>(&m_pPhysXActorWeaponCom))))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -246,6 +270,38 @@ HRESULT CYGObject::Ready_Collider()
 		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
 	}
 
+	/////////////////// 무기 콜라이더 ////////////////////////
+	PxVec3 attackHalfExtents(0.5f, 0.5f, 1.0f); 
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(attackHalfExtents);
+
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 1. 플레이어 앞쪽 방향 구하기
+	XMVECTOR vForward = m_pTransformCom->Get_State(STATE::LOOK); // 보통 FORWARD 방향 (Z축)
+
+	// 2. 이동할 거리 (앞으로 0.5f만큼 이동한다고 가정)
+	float fOffset = 2.f;
+	XMVECTOR vOffsetPos = XMVectorMultiplyAdd(XMVectorReplicate(fOffset), XMVector3Normalize(vForward), T);
+
+	// 3. 변환
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(vOffsetPos), XMVectorGetY(vOffsetPos), XMVectorGetZ(vOffsetPos));
+	positionVec.y += 0.5f;
+	PxTransform pose(positionVec, rotationQuat);
+	m_pPhysXActorWeaponCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorWeaponCom->Set_ShapeFlag(false, false, false);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON;
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+	m_pPhysXActorWeaponCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorWeaponCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorWeaponCom->Set_Owner(this);
+	m_pPhysXActorWeaponCom->Set_ColliderType(COLLIDERTYPE::PALYER);
+	m_pPhysXActorWeaponCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorWeaponCom->Get_Actor());
 
 	return S_OK;
 }
@@ -269,6 +325,26 @@ void CYGObject::Update_ColliderPos()
 
 	// 4. PhysX Transform 적용
 	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
+
+
+	if (m_pPhysXActorWeaponCom)
+	{
+		// 플레이어 앞쪽 방향 구하기
+		XMVECTOR vForward = m_pTransformCom->Get_State(STATE::LOOK);
+		XMVECTOR vPosition = XMLoadFloat4(&vPos);
+
+		// offset 위치 계산 (앞으로 0.5f 이동)
+		float fOffset = 2.f;
+		XMVECTOR vWeaponPos = XMVectorMultiplyAdd(XMVectorReplicate(fOffset), XMVector3Normalize(vForward), vPosition);
+
+		XMFLOAT4 weaponPosFloat4;
+		XMStoreFloat4(&weaponPosFloat4, vWeaponPos);
+		weaponPosFloat4.y += 0.5f;
+		PxVec3 weaponPos(weaponPosFloat4.x, weaponPosFloat4.y, weaponPosFloat4.z);
+
+		// 회전 동일하게 적용
+		m_pPhysXActorWeaponCom->Set_Transform(PxTransform(weaponPos, rot));
+	}
 }
 
 void CYGObject::Ray()
@@ -370,7 +446,14 @@ void CYGObject::Free()
 		if (pScene)
 			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
 	}
+
+	if (m_pPhysXActorWeaponCom) {
+		PxScene* pScene = m_pGameInstance->Get_Scene();
+		if (pScene)
+			pScene->removeActor(*m_pPhysXActorWeaponCom->Get_Actor());
+	}
 	Safe_Release(m_pPhysXActorCom);
+	Safe_Release(m_pPhysXActorWeaponCom);
 
 	__super::Free();
 }

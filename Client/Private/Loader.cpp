@@ -409,8 +409,13 @@ HRESULT CLoader::Loading_For_YG()
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Finoa"),CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,"../Bin/Resources/Models/TestPhysX/FionaBin/Fiona.bin", PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Finoa"),CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,"../Bin/Resources/Models/TestPhysX/FionaNonAnimBin/Fiona.bin", PreTransformMatrix))))
 		return E_FAIL;
+
+	//PreTransformMatrix = XMMatrixIdentity();
+	//PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(90.f));
+ //	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_FinoaAnim"), CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/TestPhysX/FionaAnimBin/Fiona.bin", PreTransformMatrix))))
+	//	return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Floor"), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/TestPhysX/Floor/Floor.bin"))))
 		return E_FAIL;

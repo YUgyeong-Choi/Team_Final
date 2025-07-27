@@ -37,6 +37,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CPhysXDynamicActor*  m_pPhysXActorCom = { nullptr };
+	CPhysXDynamicActor*  m_pPhysXActorWeaponCom = { nullptr };
 private:
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Components();
@@ -46,6 +47,8 @@ private:
 
 	PxVec3 m_vRayHitPos = {};
 	_bool m_bRayHit = false;
+
+	_bool m_bAttack = false;
 public:
 	static CYGObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

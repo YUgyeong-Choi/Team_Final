@@ -87,7 +87,6 @@ void CYGDynamicObj::Priority_Update(_float fTimeDelta)
 	m_pTransformCom->Set_State(STATE::RIGHT, rotMatrix.r[0]);
 	m_pTransformCom->Set_State(STATE::UP, rotMatrix.r[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, rotMatrix.r[2]);
-
 }
 
 void CYGDynamicObj::Update(_float fTimeDelta)

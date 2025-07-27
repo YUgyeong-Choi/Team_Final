@@ -162,7 +162,7 @@ HRESULT CYGDynamicGib::Bind_ShaderResources()
 
 void CYGDynamicGib::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("YGBox 충돌 시작!\n");
+	printf("YGDynamicGib 충돌 시작!\n");
 }
 
 void CYGDynamicGib::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -171,12 +171,12 @@ void CYGDynamicGib::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollider
 
 void CYGDynamicGib::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("YGBox 충돌 종료!\n");
+	printf("YGDynamicGib 충돌 종료!\n");
 }
 
 void CYGDynamicGib::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	wprintf(L"YGBox Hit: %s\n", pOther->Get_Name().c_str());
+	wprintf(L"YGDynamicGib Hit: %s\n", pOther->Get_Name().c_str());
 }
 
 HRESULT CYGDynamicGib::Ready_Components(GIBDATA_DESC* desc)
