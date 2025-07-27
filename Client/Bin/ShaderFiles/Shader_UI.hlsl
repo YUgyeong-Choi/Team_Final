@@ -7,6 +7,8 @@ texture2D g_DepthTexture;
 
 float g_Alpha;
 
+float4 g_Color;
+
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
 
@@ -90,6 +92,8 @@ PS_OUT PS_MAIN(PS_IN In)
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
+    Out.vColor *= g_Color;
+    
     return Out;    
 }
 
@@ -125,6 +129,8 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
     
     Out.vColor.a = Out.vColor.a * saturate(fOldViewZ - In.vProjPos.w);
     
+    Out.vColor *= g_Color;
+    
     return Out;
 }
 
@@ -136,6 +142,8 @@ PS_OUT PS_MAIN_DISCARD_DARK(PS_IN In)
     
     if(length(Out.vColor.rgb) < 0.2f)
         discard;
+    
+    Out.vColor *= g_Color;
     
     return Out;
 }
@@ -149,6 +157,8 @@ PS_OUT PS_MAIN_DISCARD_ALPHA(PS_IN In)
     if (Out.vColor.a < 0.15f)
         discard;
     
+    Out.vColor *= g_Color;
+    
     return Out;
 }
 
@@ -159,6 +169,8 @@ PS_OUT PS_MAIN_FADE(PS_IN In)
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
     Out.vColor.a = g_Alpha;
+    
+    Out.vColor *= g_Color;
     
     return Out;
 }
@@ -174,6 +186,8 @@ PS_OUT PS_MAIN_VIGNETTING(PS_IN In)
     Out.vColor = float4(0.f, 0.f, 0.f, 0.f);
     
     Out.vColor.a = saturate(1.0 - luminance);
+    
+    Out.vColor *= g_Color;
     
     return Out;
 }

@@ -58,8 +58,14 @@ protected:
 	class CTransform*							m_pTransformCom = { nullptr };
 
 	_bool m_bDead = { false };
+
+	//클론인지 아닌지
+	_bool m_bCloned = { false };
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
+
+	HRESULT Replace_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
+	void Remove_Component(const _wstring& strComponentTag);
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

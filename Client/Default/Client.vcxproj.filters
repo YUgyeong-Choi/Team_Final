@@ -34,15 +34,6 @@
     <Filter Include="02.GameObjects\07.Effect">
       <UniqueIdentifier>{190fe5b3-e648-4e0a-9311-8c2b7952c9a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07.Effect\Particle">
-      <UniqueIdentifier>{f599145a-12a8-43d0-ae4d-4d668c51ed6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\07.Effect\Sprite">
-      <UniqueIdentifier>{34236fea-d1bc-453f-8d9a-5b085ca428d9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\07.Effect\Particle\Explosion">
-      <UniqueIdentifier>{bc5eb1b7-60bc-4699-a4fe-4b7b555d9aad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelJW">
       <UniqueIdentifier>{f50dac70-8439-4d7a-b261-1f7f0d22ce06}</UniqueIdentifier>
     </Filter>
@@ -148,8 +139,47 @@
     <Filter Include="99.Defines">
       <UniqueIdentifier>{72444e1a-0502-4c74-8392-c8e6a1e89ed0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07.Effect\EffectContainer">
+      <UniqueIdentifier>{2c8a2e19-15c7-4937-9958-c7adac2aeaec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\EffectContainer\Sprite">
+      <UniqueIdentifier>{34236fea-d1bc-453f-8d9a-5b085ca428d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\EffectContainer\Trail">
+      <UniqueIdentifier>{f3dfc6e3-9403-4ccc-85a3-91c2db939d47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\EffectContainer\Particle">
+      <UniqueIdentifier>{f599145a-12a8-43d0-ae4d-4d668c51ed6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\EffectContainer\Mesh">
+      <UniqueIdentifier>{796d0e24-7864-414b-af5c-9f1657db5ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\Deprecated">
+      <UniqueIdentifier>{4791dabd-c40a-44f5-9ab0-a3c816f83265}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\Deprecated\Explosion">
+      <UniqueIdentifier>{bc5eb1b7-60bc-4699-a4fe-4b7b555d9aad}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Static">
       <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\MapTool\PreviewObject">
+      <UniqueIdentifier>{7540b347-438e-4d48-b0f4-5406c3ce1d98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\MapTool\Camera_MapTool">
+      <UniqueIdentifier>{3ff3fcc4-4317-4ddd-8da4-8f2d1ed7043e}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
+      <UniqueIdentifier>{85e6703b-969f-44ff-8640-27151012a745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Loading">
+      <UniqueIdentifier>{3a0ddaee-96b8-4ed3-8e84-eb55b5279ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\HP">
+      <UniqueIdentifier>{754f49d2-926e-4330-905d-0dc51623fb1b}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="97.ShaderFiles\Effect">
+      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -177,9 +207,6 @@
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>01.Levels\Loading</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Loader.h">
-      <Filter>01.Levels\Loading\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Levels\Logo</Filter>
     </ClInclude>
@@ -188,12 +215,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObjects\06.Sky</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Explosion.h">
-      <Filter>02.GameObjects\07.Effect\Particle\Explosion</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Effect.h">
-      <Filter>02.GameObjects\07.Effect\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_YG.h">
       <Filter>01.Levels\LevelYG</Filter>
@@ -297,9 +318,6 @@
     <ClInclude Include="..\Public\ToolSprite.h">
       <Filter>01.Levels\LevelCY\Tool\ToolEffect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SpriteEffect.h">
-      <Filter>01.Levels\LevelCY\Tool</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\EffectSequence.h">
       <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
     </ClInclude>
@@ -360,6 +378,15 @@
     <ClInclude Include="..\Public\Level_KratHotel.h">
       <Filter>01.Levels\1_Level_KratHotel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Explosion.h">
+      <Filter>02.GameObjects\07.Effect\Deprecated\Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SpriteEffect.h">
+      <Filter>02.GameObjects\07.Effect\EffectContainer\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Class.h">
+      <Filter>02.GameObjects\07.Effect\Deprecated</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\UI_Feature_UV.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\UV</Filter>
     </ClInclude>
@@ -371,15 +398,36 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Featrue_Scale.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\TestAnimObject.h">
-		<Filter>02.GameObjects\08.TestObject</Filter>
-	</ClInclude>
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\YGFloor.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\PBRMesh.h">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PreviewObject.h">
+      <Filter>01.Levels\LevelYW\MapTool\PreviewObject</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\UI_Bar_Loading.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\YGDynamicGib.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>01.Levels\Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YGDynamicObj.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\ParticleEffect.h">
+      <Filter>02.GameObjects\07.Effect\EffectContainer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MeshEffect.h">
+      <Filter>02.GameObjects\07.Effect\EffectContainer\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -416,12 +464,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObjects\06.Sky</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Explosion.cpp">
-      <Filter>02.GameObjects\07.Effect\Particle\Explosion</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Effect.cpp">
-      <Filter>02.GameObjects\07.Effect\Sprite</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_YG.cpp">
       <Filter>01.Levels\LevelYG</Filter>
@@ -507,9 +549,6 @@
     <ClCompile Include="..\Private\ToolSprite.cpp">
       <Filter>01.Levels\LevelCY\Tool\ToolEffect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SpriteEffect.cpp">
-      <Filter>01.Levels\LevelCY\Tool</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\EffectSequence.cpp">
       <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
     </ClCompile>
@@ -570,6 +609,15 @@
     <ClCompile Include="..\Private\Level_KratHotel.cpp">
       <Filter>01.Levels\1_Level_KratHotel</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Explosion.cpp">
+      <Filter>02.GameObjects\07.Effect\Deprecated\Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SpriteEffect.cpp">
+      <Filter>02.GameObjects\07.Effect\EffectContainer\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Class.cpp">
+      <Filter>02.GameObjects\07.Effect\Deprecated</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\UI_Feature_UV.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\UV</Filter>
     </ClCompile>
@@ -581,15 +629,33 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\TestAnimObject.cpp">
-		<Filter>02.GameObjects\08.TestObject</Filter>
-	</ClCompile>
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\YGFloor.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\PBRMesh.cpp">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PreviewObject.cpp">
+      <Filter>01.Levels\LevelYW\MapTool\PreviewObject</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\UI_Bar_Loading.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\YGDynamicGib.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGDynamicObj.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\ParticleEffect.cpp">
+      <Filter>02.GameObjects\07.Effect\EffectContainer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MeshEffect.cpp">
+      <Filter>02.GameObjects\07.Effect\EffectContainer\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -622,6 +688,12 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPBRMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_SpriteEffect.hlsl">
+      <Filter>97.ShaderFiles\Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader_Compute_Particle.hlsl">
+      <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

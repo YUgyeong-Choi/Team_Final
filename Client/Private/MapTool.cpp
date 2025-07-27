@@ -5,6 +5,13 @@
 #include "MapToolObject.h"
 
 #include "Layer.h"
+#include "RenderTarget.h"
+
+#include "PreviewObject.h"
+
+#include "Camera_Free.h"
+
+#include "Camera_Manager.h"
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
@@ -36,9 +43,6 @@ HRESULT CMapTool::Initialize(void* pArg)
 
 	//MapData를 따라 맵을 로드한다.
 	if (FAILED(Load_Map()))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Preview"), static_cast<_uint>(g_iWinSizeX), static_cast<_uint>(g_iWinSizeY), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	return S_OK;
@@ -79,6 +83,9 @@ void CMapTool::Update(_float fTimeDelta)
 		printf("Delete\n");
 		DeleteMapToolObject();
 	}
+
+
+	Control_PreviewObject(fTimeDelta);
 
 }
 
@@ -290,7 +297,10 @@ HRESULT CMapTool::Load_Map()
 HRESULT CMapTool::Render_MapTool()
 {
 	Render_Hierarchy();
+
 	Render_Asset();
+	Render_Preview();
+
 	Render_Detail();
 
 	return S_OK;
@@ -385,6 +395,19 @@ void CMapTool::Render_Asset()
 			if (ImGui::Selectable(m_ModelNames[i].c_str(), isSelected))
 			{
 				m_iSelectedModelIndex = i;
+
+				CPreviewObject* pPreviewObject = static_cast<CPreviewObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_PreviewObject")));
+
+				if (pPreviewObject == nullptr)
+					return;
+
+				//미리보기 모델 변경
+				//TEXT("Prototype_Component_Model_모델이름"),
+				wstring ModelName = wstring(m_ModelNames[m_iSelectedModelIndex].begin(), m_ModelNames[m_iSelectedModelIndex].end());
+				wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
+				ModelPrototypeTag += ModelName;
+
+				pPreviewObject->Change_Model(ModelPrototypeTag);
 			}
 
 			// 선택된 항목에 포커스
@@ -456,11 +479,6 @@ void CMapTool::Render_Asset()
 
 	ImGui::End();
 
-#pragma endregion
-
-
-#pragma region 모델 미리보기
-	
 #pragma endregion
 
 }
@@ -567,6 +585,55 @@ void CMapTool::Render_Detail()
 
 	ImGui::End();
 #pragma endregion
+}
+
+void CMapTool::Render_Preview()
+{
+	
+	if (ImGui::Begin("Preview"))
+	{
+		// 카메라 리셋 버튼
+		if (ImGui::Button("Reset Camera"))
+		{
+			CPreviewObject* pPreviewObject = static_cast<CPreviewObject*>(
+				m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_PreviewObject")));
+
+			if (pPreviewObject)
+			{
+				CTransform* pCamTransformCom = pPreviewObject->Get_CameraTransformCom();
+				if (pCamTransformCom)
+				{
+					_vector vEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
+					_vector vAt = XMVectorSet(0.f, 0.f, 0.f, 1.f); // 고정 타겟
+					_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+					_matrix matView = XMMatrixLookAtLH(vEye, vAt, vUp);
+					pCamTransformCom->Set_WorldMatrix(matView);
+				}
+			}
+		}
+
+		if(ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows))
+		{
+			m_bPreviewHovered = true;
+		}
+		else
+		{
+			m_bPreviewHovered = false;
+		}
+
+
+		// 2. 렌더타겟을 텍스처처럼 ImGui에 표시
+		ID3D11ShaderResourceView* pSRV = m_pGameInstance->Find_RenderTarget(TEXT("Target_Preview"))->Get_SRV();
+
+		// 현재 창의 가용 영역 크기 (패딩 제외)
+		ImVec2 availableSize = ImGui::GetContentRegionAvail();
+
+		ImGui::Image(reinterpret_cast<ImTextureID>(pSRV), availableSize, ImVec2(0.f, 0.f), ImVec2(1.f, 1.f));
+
+	}
+
+	ImGui::End();
 }
 
 HRESULT CMapTool::Spawn_MapToolObject()
@@ -764,6 +831,57 @@ void CMapTool::Picking()
 	}
 }
 
+void CMapTool::Control_PreviewObject(_float fTimeDelta)
+{
+	CCamera_Free* pCameraFree = CCamera_Manager::Get_Instance()->GetFreeCam(); //static_cast<CCamera_Free*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Layer_Camera")));
+
+	if (m_bPreviewHovered && m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
+	{
+		pCameraFree->Set_Moveable(false);
+
+		CPreviewObject* pPreviewObject = static_cast<CPreviewObject*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_PreviewObject")));
+
+		if (pPreviewObject == nullptr)
+			return;
+
+		CTransform* pCamTransformCom = pPreviewObject->Get_CameraTransformCom();
+
+		if (m_pGameInstance->Key_Pressing(DIK_A))
+		{
+			pCamTransformCom->Go_Left(fTimeDelta * 10.f);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_D))
+		{
+			pCamTransformCom->Go_Right(fTimeDelta * 10.f);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+		{
+			pCamTransformCom->Go_Straight(fTimeDelta * 10.f);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_S))
+		{
+			pCamTransformCom->Go_Backward(fTimeDelta * 10.f);
+		}
+
+		_long			MouseMove = {};
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::X))
+		{
+			pCamTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * 1.f);
+		}
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::Y))
+		{
+			pCamTransformCom->Turn(pCamTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * 1.f);
+		}
+	}
+	else
+	{
+		pCameraFree->Set_Moveable(true);
+	}
+
+}
+
 
 CMapTool* CMapTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
@@ -794,6 +912,6 @@ CGameObject* CMapTool::Clone(void* pArg)
 
 void CMapTool::Free()
 {
-	__super::Free();
+	__super::Free();	
 
 }

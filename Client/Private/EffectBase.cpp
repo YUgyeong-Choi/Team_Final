@@ -42,7 +42,6 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
@@ -55,7 +54,7 @@ void CEffectBase::Update(_float fTimeDelta)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
-		m_fCurrentTrackPosition = 0.f;
+		m_fCurrentTrackPosition = m_iTileCnt - 1.f;
 	Update_Keyframes();
 	m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
@@ -78,6 +77,9 @@ void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
 		m_fCurrentTrackPosition = m_iTileCnt - 1.f;
 	Update_Keyframes();
+
+	if (m_bBillboard)
+		m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
 
 	m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
@@ -121,6 +123,7 @@ void CEffectBase::Update_Keyframes()
 		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
 		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
 		vPosition = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vTranslation), 1.f);
+		vColor = XMLoadFloat4(&LastKeyFrame.vColor);
 	}
 	else
 	{
@@ -160,6 +163,7 @@ void CEffectBase::Update_Keyframes()
 	_float4x4 resWorldMat = {};
 	XMStoreFloat4x4(&resWorldMat, TransformationMatrix);
 	m_pTransformCom->Set_WorldMatrix(resWorldMat);
+	XMStoreFloat4(&m_vColor, vColor);
 }
 
 void CEffectBase::Free()

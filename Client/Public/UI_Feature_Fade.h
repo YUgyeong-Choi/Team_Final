@@ -26,8 +26,6 @@ public:
 private:
 
 	_bool			m_isFade = { false };
-	_float			m_fFadeTime = {};
-	_float			m_fFadeElapsedTime = {};
 	_float			m_fCurrentAlpha = {};
 	_float			m_fStartAlpha = {};
 	_float			m_fEndAlpha = {};

@@ -39,7 +39,7 @@ void CToolSprite::Priority_Update(_float fTimeDelta)
 
 void CToolSprite::Update(_float fTimeDelta)
 {
-
+	m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
 	__super::Update(fTimeDelta);
 }
 
@@ -53,7 +53,7 @@ HRESULT CToolSprite::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(EFF_UVSPRITE)))
+	if (FAILED(m_pShaderCom->Begin(EFF_UVSPRITE_COLOR)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
@@ -96,6 +96,8 @@ HRESULT CToolSprite::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileOffset", &m_fOffset, sizeof(_float2))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
+		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
@@ -106,6 +108,20 @@ HRESULT CToolSprite::Bind_ShaderResources()
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CToolSprite::Change_Texture(_wstring strTextureTag)
+{
+	//Replace_Component()
+
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -140,7 +156,7 @@ void CToolSprite::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pTextureCom);
+	//Safe_Release(m_pVIBufferCom);
+	//Safe_Release(m_pShaderCom);
+	//Safe_Release(m_pTextureCom);
 }

@@ -155,7 +155,7 @@ HRESULT CGameInstance::Begin_Draw()
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
 
-	m_pGraphic_Device->Clear_BackBuffer_View(_float4(0.f, 0.0f, 1.f, 1.f));
+	m_pGraphic_Device->Clear_BackBuffer_View(_float4(0.f, 0.0f, 0.f, 1.f));
 	m_pGraphic_Device->Clear_DepthStencil_View();
 
 	return S_OK;
@@ -500,6 +500,12 @@ HRESULT CGameInstance::Delete_MRT(const _wstring& strMRTTag)
 	return m_pTarget_Manager->Delete_MRT(strMRTTag);
 }
 
+class CRenderTarget* CGameInstance::Find_RenderTarget(const _wstring& strTargetTag)
+{
+	return m_pTarget_Manager->Find_RenderTarget(strTargetTag);
+}
+
+
 #ifdef _DEBUG
 
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
@@ -574,6 +580,11 @@ PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3* vertices, PxU32 verte
 	return m_pPhysX_Manager->CookBoxGeometry(vertices, vertexCount, fScale);
 }
 
+PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3& halfExtents)
+{
+	return m_pPhysX_Manager->CookBoxGeometry(halfExtents);
+}
+
 PxCapsuleGeometry CGameInstance::CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale)
 {
 	return m_pPhysX_Manager->CookCapsuleGeometry(pVertices, vertexCount, geomScale);
@@ -592,11 +603,6 @@ PxSphereGeometry CGameInstance::CookSphereGeometry(_float fRadius)
 PxSphereGeometry CGameInstance::CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale)
 {
 	return m_pPhysX_Manager->CookSphereGeometry(pVertices, vertexCount, fScale);
-}
-
-PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3& halfExtents)
-{
-	return m_pPhysX_Manager->CookBoxGeometry(halfExtents);
 }
 
 PxScene* CGameInstance::Get_Scene()
@@ -651,8 +657,6 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pPicking);
 
-	Safe_Release(m_pTarget_Manager);
-
 	Safe_Release(m_pFont_Manager);
 
 	Safe_Release(m_pLight_Manager);
@@ -664,6 +668,9 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pRenderer);
 
 	Safe_Release(m_pObject_Manager);
+
+	//오브젝트 매니저에서 타겟 없애야 되는게 있어서 후 순위로 옮겼음 (모델 미리보기 기능)
+	Safe_Release(m_pTarget_Manager);
 
 	Safe_Release(m_pPrototype_Manager);
 

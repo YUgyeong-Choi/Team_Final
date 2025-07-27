@@ -19,6 +19,9 @@ CGameObject::CGameObject(const CGameObject& Prototype)
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pContext);
 	Safe_AddRef(m_pDevice);
+
+	//≈¨∑–¿”
+	m_bCloned = true;
 }
 
 CComponent* CGameObject::Get_Component(const _wstring& strComponentTag)
@@ -99,6 +102,35 @@ HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& s
 	Safe_AddRef(pComponent);
 
 	return S_OK;
+}
+
+
+HRESULT CGameObject::Replace_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
+{
+	CComponent* pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
+	if (nullptr == pComponent)
+		return E_FAIL;
+
+	Remove_Component(strComponentTag);
+
+	m_Components.emplace(make_pair(strComponentTag, pComponent));
+
+	*ppOut = pComponent;
+
+	Safe_AddRef(pComponent);
+
+	return S_OK;
+}
+
+
+void CGameObject::Remove_Component(const _wstring& strComponentTag)
+{
+	auto	iter = m_Components.find(strComponentTag);
+	if (iter != m_Components.end())
+	{
+		Safe_Release(iter->second);
+		m_Components.erase(iter);
+	}
 }
 
 void CGameObject::Free()

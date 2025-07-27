@@ -37,6 +37,9 @@ HRESULT CUI_Feature_UV::Initialize(void* pArg)
 
 void CUI_Feature_UV::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
 {
+	if (iCurrentFrame < m_iStartFrame)
+		return;
+
 	if (m_isLoop)
 	{
 		m_iCurrentFrame = iCurrentFrame % (m_iWidth * m_iHeight);
@@ -84,7 +87,7 @@ UI_FEATURE_TOOL_DESC CUI_Feature_UV::Get_Desc_From_Tool()
 	eDesc.iEndFrame = m_iEndFrame;
 	eDesc.fStartUV = {};
 	eDesc.fOffsetUV = m_fOffsetUV;
-
+	eDesc.strTypeTag = "UV";
 
 	return eDesc;
 }

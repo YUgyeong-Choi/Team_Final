@@ -33,7 +33,7 @@ HRESULT CYGFloor::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-	_fvector vPos{ 10.0f, -20.f, 10.0f, 1.0f };
+	_fvector vPos{ 0.0f, -6.0f, 0.0f, 1.0f };
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 	m_pTransformCom->Rotation(0.f, XMConvertToRadians(180.f),0.f);
 
@@ -94,11 +94,11 @@ HRESULT CYGFloor::Render()
 			continue;
 	}
 
-#ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
-		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
-	}
-#endif
+//#ifdef _DEBUG
+//	if (m_pGameInstance->Get_RenderCollider()) {
+//		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+//	}
+//#endif
 
 
 	return S_OK;
@@ -121,7 +121,7 @@ HRESULT CYGFloor::Bind_ShaderResources()
 
 void CYGFloor::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("YGBox 충돌 시작!\n");
+	printf("YGFloor 충돌 시작!\n");
 
 }
 
@@ -131,13 +131,13 @@ void CYGFloor::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CYGFloor::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("YGBox 충돌 종료!\n");
+	printf("YGFloor 충돌 종료!\n");
 
 }
 
 void CYGFloor::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	wprintf(L"YGBox Hit: %s\n", pOther->Get_Name().c_str());
+	wprintf(L"YGFloor Hit: %s\n", pOther->Get_Name().c_str());
 }
 
 HRESULT CYGFloor::Ready_Components()

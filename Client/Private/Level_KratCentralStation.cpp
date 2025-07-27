@@ -1,4 +1,4 @@
-#include "Level_KratCentralStation.h"
+﻿#include "Level_KratCentralStation.h"
 #include "GameInstance.h"
 #include "Camera_Manager.h"
 
@@ -64,7 +64,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 HRESULT CLevel_KratCentralStation::Render()
 {
-	SetWindowText(g_hWnd, TEXT("�����÷��� �����Դϴ�."));
+	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
 
 	return S_OK;
 }
@@ -75,7 +75,7 @@ HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, co
 
 	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
 	{
-		MSG_BOX("�̹� ������Ÿ���� ������");
+		MSG_BOX("이미 프로토타입이 존재함");
 		return S_OK;
 	}
 
@@ -95,7 +95,7 @@ HRESULT CLevel_KratCentralStation::Ready_MapModel()
 	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
 	if (!inFile.is_open())
 	{
-		MSG_BOX("ReadyModel.json ������ �� �� �����ϴ�.");
+		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
 		return S_OK;
 	}
 
@@ -108,7 +108,7 @@ HRESULT CLevel_KratCentralStation::Ready_MapModel()
 	catch (const exception& e)
 	{
 		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON �Ľ� ����", MB_OK);
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
 		return E_FAIL;
 	}
 
@@ -137,7 +137,7 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 	ifstream inFile("../Bin/Save/MapTool/MapData.json");
 	if (!inFile.is_open())
 	{
-		MSG_BOX("MapData.json ������ �� �� �����ϴ�.");
+		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
 		return S_OK;
 	}
 

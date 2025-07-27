@@ -7,6 +7,7 @@
 
 #pragma region LEVEL_YW
 #include "MapToolObject.h"
+#include "PreviewObject.h"
 #pragma endregion
 
 #pragma region LEVEL_CY
@@ -24,6 +25,8 @@
 #include "YGShpere.h"
 #include "YGTrrigerWithoutModel.h"
 #include "YGFloor.h"
+#include "YGDynamicGib.h"
+#include "YGDynamicObj.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -228,6 +231,15 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
+	//제이슨 파일 안읽고 로드하고 싶은 모델 직접 로드시켜놔야함
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_Component_Model_SM_BuildingA_Lift_01"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Lift_01.bin", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_Component_Model_SM_BuildingA_Lift_02"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Lift_02.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
@@ -341,6 +353,12 @@ HRESULT CLoader::Loading_For_GL()
 
 HRESULT CLoader::Loading_For_YW()
 {
+	lstrcpy(m_szLoadingText, TEXT("컴포넌트을(를) 로딩중입니다."));
+	/* For.Prototype_Component_Transform */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Transform"),
+		CTransform::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 
@@ -363,6 +381,10 @@ HRESULT CLoader::Loading_For_YW()
 		CMapToolObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_PreviewObject"),
+		CPreviewObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -375,8 +397,21 @@ HRESULT CLoader::Loading_For_CY()
 
 	/* For.Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
 		return E_FAIL;
+
+
+	//_wstring strFileName
+	///* For.Prototype_Component_Texture */
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), _wstring("Prototype_Component_Texture_") + ,
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
+	//	return E_FAIL;
+
+
+
+
+
+
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
@@ -414,11 +449,28 @@ HRESULT CLoader::Loading_For_YG()
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Finoa"),CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,"../Bin/Resources/Models/FionaBin/Fiona.bin", PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Finoa"),CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,"../Bin/Resources/Models/TestPhysX/FionaNonAnimBin/Fiona.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Floor"), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_BrickFloor_01.bin"))))
+	//PreTransformMatrix = XMMatrixIdentity();
+	//PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(90.f));
+ //	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_FinoaAnim"), CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/TestPhysX/FionaAnimBin/Fiona.bin", PreTransformMatrix))))
+	//	return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Floor"), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/TestPhysX/Floor/Floor.bin"))))
 		return E_FAIL;
+
+	for (int i = 1; i <= 11; ++i) {
+		wstring protoTag = L"Prototype_Component_Model_Part" + to_wstring(i);
+		string modelPath = "../Bin/Resources/Models/TestPhysX/Gib/stone_stage_1_part" + to_string(i) + ".bin";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), protoTag.c_str(), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, modelPath.c_str()))))
+			return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Barrel"), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/TestPhysX/Barrel/lootbarrel.bin"))))
+		return E_FAIL;
+
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
 
@@ -461,6 +513,16 @@ HRESULT CLoader::Loading_For_YG()
 	/* For.Prototype_GameObject_YGTrrigerWithoutModel */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTrrigerWithoutModel"),
 		CYGTrrigerWithoutModel::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YGDynamicGib */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicGib"),
+		CYGDynamicGib::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YGDynamicObj */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicObj"),
+		CYGDynamicObj::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_YGFloor */

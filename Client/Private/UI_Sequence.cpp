@@ -34,6 +34,8 @@ void CUI_Sequence::Upadte_Items(_int iIndex, UI_FEATURE_TOOL_DESC& eDesc)
 {
 
 
+	m_items[iIndex] = eDesc;
+
 	if (eDesc.iType == 0)
 		eDesc.strTypeTag = "Fade";
 	else if (eDesc.iType == 1)
@@ -42,9 +44,6 @@ void CUI_Sequence::Upadte_Items(_int iIndex, UI_FEATURE_TOOL_DESC& eDesc)
 		eDesc.strTypeTag = "Pos";
 	else if (eDesc.iType == 3)
 		eDesc.strTypeTag = "Scale";
-
-	m_items[iIndex] = eDesc;
-
 }
 
 void CUI_Sequence::Push_Item(UI_FEATURE_TOOL_DESC& eDesc)

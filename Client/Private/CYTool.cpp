@@ -1,9 +1,12 @@
+#define USE_IMGUI
 #include "CYTool.h"
 #include "GameInstance.h"
 #include "EffectSequence.h"
 #include "ToolParticle.h"
 #include "ToolSprite.h"
 #include "Client_Calculation.h"
+#undef USE_IMGUI
+
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
@@ -32,6 +35,7 @@ HRESULT CCYTool::Initialize(void* pArg)
 
 	m_pSequence = new CEffectSequence();
 
+	Load_Textures();
 
 	return S_OK;
 }
@@ -76,7 +80,7 @@ void CCYTool::Update(_float fTimeDelta)
 		{
 			if (m_iCurFrame >= *pItem.iStart && m_fCurFrame <= *pItem.iEnd)
 			{
-				pItem.pEffect->Update_Tool(fTimeDelta, m_iCurFrame - /*static_cast<_float>*/(*pItem.iStart));
+				pItem.pEffect->Update_Tool(fTimeDelta, static_cast<_float>(m_iCurFrame - *pItem.iStart));
 				// 이펙트를 재생
 				//PlaySpriteEffect(pItem.iType, m_fCurFrame - pItem.iStart);
 			}
@@ -226,6 +230,13 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Text("EndTrackPos: %d", *pEffect->Get_EndTrackPosition_Ptr());
 	ImGui::Text("Duration: %d", *pEffect->Get_Duration_Ptr());
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+	ImGui::Checkbox("Billboard", pEffect->Get_Billboard_Ptr());
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+	if (ImGui::Combo("##Select Texture", &m_iSelectedTextureIdx, m_TextureNames.data(), static_cast<_int>(m_TextureNames.size())))
+	{
+		//pEffect->
+	}
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
@@ -288,8 +299,7 @@ HRESULT CCYTool::Window_Sprite()
 
 		ImGui::DragFloat3(string("Scaling##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
 
-		static _float4 color;
-		ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
+		ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&Keyframe.vColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
 
 		_int iSelected = Keyframe.eInterpolationType;
 		if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
@@ -342,44 +352,16 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 1.f, 1000.f, "%.1f");
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.1f, 1.f, 1000.f, "%.1f");
 	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.1f, -1000.f, 1000.f, "%.1f");
+	ImGui::Checkbox("Gravity", &m_bGravity);
+	ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
+	ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
+
+	// Gravity
+	// Accel, Decel
+	// Rotation Speed
+	// Loop
 
 
-	//_int iIdx = {};
-	//for (auto& Keyframe : TSKeyFrames)
-	//{
-	//	ImGui::DragFloat(string("Frame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pTS->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
-
-	//	ImGui::DragFloat3(string("Translation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vTranslation), 0.1f);
-
-	//	_float3 vRotAxis = QuaternionToEuler(XMLoadFloat4(&Keyframe.vRotation));
-	//	ImGui::BeginDisabled();
-	//	ImGui::DragFloat3(string("Rotation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&vRotAxis));
-	//	ImGui::EndDisabled();
-
-	//	ImGui::DragFloat3(string("Scaling##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
-
-	//	static _float4 color;
-	//	ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
-
-	//	_int iSelected = Keyframe.eInterpolationType;
-	//	if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
-	//	{
-	//		Keyframe.eInterpolationType = static_cast<CEffectBase::INTERPOLATION>(iSelected);
-	//		//pTS->Set_InterpolationType(iIdx, static_cast<CEffectBase::INTERPOLATION>(iSelected));
-	//		//:3
-	//	}
-
-	//	++iIdx;
-	//	ImGui::Separator();
-	//}
-	//if (ImGui::Button("Add Keyframe"))
-	//{
-	//	pTS->Add_KeyFrame(CEffectBase::EFFKEYFRAME{});
-	//}
-	//if (iIdx > 1 && ImGui::Button("Delete Keyframe"))
-	//{
-	//	pTS->Delete_KeyFrame();
-	//}
 
 
 
@@ -398,6 +380,42 @@ HRESULT CCYTool::Save_Particles()
 
 HRESULT CCYTool::Load_Particles()
 {
+	return S_OK;
+}
+
+HRESULT CCYTool::Load_Textures()
+{
+	path TexturePath = R"(../Bin/Resources/Textures/Effect/)";
+	if (!exists(TexturePath))
+	{
+		MSG_BOX("텍스쳐 경로가 이상해요");
+		return E_FAIL;
+	}
+
+	for (const auto& entry : directory_iterator(TexturePath))
+	{
+		if (entry.is_regular_file() && (entry.path().extension() == L".dds" || entry.path().extension() == L".png"))
+		{
+			_wstring filePath = entry.path().wstring();
+			_wstring stemName = entry.path().stem().wstring();
+			_wstring prototypeTag = L"Prototype_Component_Texture_" + stemName;
+			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), prototypeTag,
+				CTexture::Create(m_pDevice, m_pContext,
+					filePath.c_str(), 1))))
+			{
+				string msg = "파일 오픈 실패:\n대상 경로: ";
+				msg += WStringToString(filePath);
+
+				// 2) MessageBoxA로 출력
+				MessageBoxA(nullptr, msg.c_str(), "오류", MB_OK | MB_ICONERROR);
+				continue;
+			}//모델태그를 게임오브젝트에 뒀냐 모델에 뒀냐..?
+
+			string strRelativePath = filesystem::relative(entry.path(), filesystem::current_path()).string();
+			m_TextureNames.push_back(WStringToString(stemName).c_str());
+		}
+	}
+
 	return S_OK;
 }
 

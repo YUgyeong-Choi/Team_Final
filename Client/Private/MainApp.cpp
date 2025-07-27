@@ -10,6 +10,7 @@
 #include "UI_Feature_UV.h"
 #include "UI_Feature_Fade.h"
 #include "UI_Feature_Position.h"
+#include "UI_Featrue_Scale.h"
 
 #include "Sky.h"
 CMainApp::CMainApp()
@@ -174,9 +175,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_SpriteEffect.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_PhysX_Kinematic */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Kinematic"), CPhysXKinematicActor::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 	/* For.Prototype_Component_PhysX_Static */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Static"), CPhysXStaticActor::Create(m_pDevice, m_pContext))))
@@ -264,9 +262,19 @@ HRESULT CMainApp::Ready_Loading()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/PhotoImage/PhotoImage.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Loading_Image*/
+	/* For.Prototype_Component_Texture_Img_ChGear*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Img_ChGear"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/gauge/Img_ChGear.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Img_ChNose*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Img_ChNose"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/gauge/Img_ChNose.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Img_ChNose*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Img_ChHead"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/gauge/Img_ChHead.dds")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Loading_Image*/
@@ -288,6 +296,11 @@ HRESULT CMainApp::Ready_Loading()
 	/* For.Prototype_Component_UI_Feature_Fade*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_UI_Feature_Pos"),
 		CUI_Feature_Position::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_UI_Feature_Scale*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_UI_Feature_Scale"),
+		CUI_Feature_Scale::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
