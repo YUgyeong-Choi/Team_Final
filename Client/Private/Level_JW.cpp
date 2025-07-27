@@ -59,13 +59,13 @@ HRESULT CLevel_JW::Render()
 	ImGuiIO& io = ImGui::GetIO();
 
 
-	RECT rect;
-	GetClientRect(g_hWnd, &rect);
-	int width = rect.right - rect.left;
-	int height = rect.bottom - rect.top;
+	//RECT rect;
+	//GetClientRect(g_hWnd, &rect);
+	//int width = rect.right - rect.left;
+	//int height = rect.bottom - rect.top;
 
-	io.DisplaySize = ImVec2((float)width, (float)height);
-	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	//io.DisplaySize = ImVec2((float)width, (float)height);
+	//io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
 
 
@@ -74,9 +74,23 @@ HRESULT CLevel_JW::Render()
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		///* ºäÆ÷Æ® °ü·Ã*/
+		ID3D11RenderTargetView* mainRTV = nullptr;
+		ID3D11DepthStencilView* mainDSV = nullptr;
+		m_pContext->OMGetRenderTargets(1, &mainRTV, &mainDSV);
 
-	//ImGui::UpdatePlatformWindows();
-	//ImGui::RenderPlatformWindowsDefault();
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+
+		m_pContext->OMSetRenderTargets(1, &mainRTV, mainDSV);
+
+		if (mainRTV) mainRTV->Release();
+		if (mainDSV) mainDSV->Release();
+	}
 	return S_OK;
 }
 
@@ -121,7 +135,7 @@ HRESULT CLevel_JW::Ready_ImGui()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // multi-viewport?
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // multi-viewport?
 
 	ImGui::StyleColorsDark();
 	io.Fonts->AddFontFromFileTTF("C://Windows//Fonts//gulim.ttc", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());

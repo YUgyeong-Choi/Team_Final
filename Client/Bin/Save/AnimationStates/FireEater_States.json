@@ -1,0 +1,73 @@
+{
+    "Anim States": [
+        {
+            "Clip": "AS_ATLBoss0_Skill_02_Start",
+            "Name": "NewState",
+            "NodeId": 1,
+            "NodePos": [
+                180.77984619140625,
+                111.70111083984375
+            ]
+        },
+        {
+            "Clip": "AS_ATLBoss0_Skill_01_Loop",
+            "Name": "NewState",
+            "NodeId": 2,
+            "NodePos": [
+                434.0,
+                108.0
+            ]
+        },
+        {
+            "Clip": "AS_ATLBoss0_Skill_01_Left_End",
+            "Name": "NewState",
+            "NodeId": 4,
+            "NodePos": [
+                600.7798461914063,
+                140.70111083984375
+            ]
+        }
+    ],
+    "Transitions": [
+        {
+            "Condition": {
+                "MaxTime": 1.0,
+                "MinTime": 0.0,
+                "Op": 7,
+                "ParamName": "",
+                "Type": 0,
+                "fThreshold": 0.0,
+                "iThreshold": 0
+            },
+            "Duration": 0.5,
+            "FromNodeId": 1,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 12,
+                "LinkId": 3,
+                "ToNodeId": 21
+            },
+            "ToNodeId": 2
+        },
+        {
+            "Condition": {
+                "MaxTime": 1.0,
+                "MinTime": 0.0,
+                "Op": 7,
+                "ParamName": "",
+                "Type": 0,
+                "fThreshold": 0.0,
+                "iThreshold": 0
+            },
+            "Duration": 0.5,
+            "FromNodeId": 2,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 22,
+                "LinkId": 5,
+                "ToNodeId": 41
+            },
+            "ToNodeId": 4
+        }
+    ]
+}

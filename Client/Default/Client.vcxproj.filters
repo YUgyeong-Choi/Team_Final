@@ -371,6 +371,9 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Featrue_Scale.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\TestAnimObject.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -572,6 +575,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\TestAnimObject.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
