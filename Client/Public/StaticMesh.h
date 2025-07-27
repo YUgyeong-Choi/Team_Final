@@ -21,7 +21,7 @@ public:
 		LEVEL			m_eLevelID;
 		_int			iRender = 0;
 
-		_tchar		szModelPrototypeTag[MAX_PATH];
+		_tchar		szModelPrototypeTag[MAX_PATH] = { 0 };
 		_float4x4	WorldMatrix = _float4x4(
 			1.f, 0.f, 0.f, 0.f,
 			0.f, 1.f, 0.f, 0.f,

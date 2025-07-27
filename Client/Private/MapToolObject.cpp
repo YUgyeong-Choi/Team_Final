@@ -63,7 +63,7 @@ HRESULT CMapToolObject::Render()
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(i);
 	}

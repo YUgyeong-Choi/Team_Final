@@ -27,6 +27,9 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_PreviewObject(TEXT("Layer_PreviewObject"))))
+		return E_FAIL;
+	
 	
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
@@ -194,6 +197,15 @@ HRESULT CLevel_YW::ImGui_Docking_Settings()
 HRESULT CLevel_YW::Ready_Layer_MapToolObject(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
+		ENUM_CLASS(LEVEL::YW), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_YW::Ready_Layer_PreviewObject(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_PreviewObject"),
 		ENUM_CLASS(LEVEL::YW), strLayerTag)))
 		return E_FAIL;
 

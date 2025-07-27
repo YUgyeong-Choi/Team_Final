@@ -118,6 +118,8 @@ public:
 	HRESULT Delete_RenderTarget(const _wstring& strTargetTag);
 	//멀티 렌더타겟을 제거한다.
 	HRESULT Delete_MRT(const _wstring& strMRTTag);
+	//모델 미리보기 그리기위해 렌더타겟 찾는거 퍼블릭으로 올림
+	class CRenderTarget* Find_RenderTarget(const _wstring& strTargetTag);
 
 #ifdef _DEBUG
 	HRESULT Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
