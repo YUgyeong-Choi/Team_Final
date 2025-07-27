@@ -129,6 +129,9 @@ HRESULT CUI_Video::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &m_vColor, sizeof(_float4))))
+		return E_FAIL;
+
 	
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &m_fCurrentAlpha, sizeof(_float))))
 		return E_FAIL;
@@ -246,6 +249,8 @@ HRESULT CUI_Video::ReadFrameToBuffer(IMFSourceReader* pReader, BYTE** ppData, DW
 	*pHeight = height;
 	*pTimeStamp = llTimestamp;
 
+
+
 	pBuffer->Unlock();
 
 	pMediaType->Release();
@@ -284,11 +289,23 @@ HRESULT CUI_Video::UploadFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		return hr;
 	}
 
-	for (UINT32 y = 0; y < height; ++y)
+	for (UINT32 y = 0; y < height - 8; ++y)
 	{
 		memcpy((BYTE*)mapped.pData + y * mapped.RowPitch, pData + y * width * 4, width * 4);
 	}
 	pContext->Unmap(pTexture, 0);
+
+	
+	// 초록 부분(쓰레기값)을 없애기 위해 가장 정상적인 데이터가 나오는 위치에 픽셀 값을 다 박는다
+	BYTE* pSourceLine = pData + (height - 9) * mapped.RowPitch;
+
+	BYTE* pDst = (BYTE*)mapped.pData + (height - 8) * mapped.RowPitch;
+
+	for (UINT32 i = 0; i < 8; ++i)
+	{
+		memcpy(pDst + i * mapped.RowPitch, pSourceLine, width * 4);
+	}
+
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = texDesc.Format;

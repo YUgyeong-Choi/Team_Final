@@ -23,11 +23,12 @@ public:
 		_int iPassIndex = { 0 };
 		_int iTextureIndex = { 0 };
 		_wstring strTextureTag;
-		_wstring strProtoTag;
-		_float fDuration;
+		_wstring strProtoTag; // 이제 상속받으면 채우기
+		_float fDuration = {0.016f}; // 몇 초 간격으로 할건지
+		_float4 vColor = { 1.f,1.f,1.f,1.f };
 
 
-		vector<UI_FEATRE_DESC> FeatureDescs;
+		vector<UI_FEATRE_DESC*> FeatureDescs;
 
 	}DYNAMIC_UI_DESC;
 
@@ -84,9 +85,8 @@ private:
 	_wstring    m_strProtoTag = {TEXT("Prototype_GameObject_Dynamic_UI")};
 
 	// 일단 시간으로, 다른 값으로 수정해야 되면 상속받아서 다른 값으로 프레임을 제어하면 될듯?
-	// 일단 1초에 60프레임이라고 생각하고 계산
-	_float m_fDuration = {};
-
+	_float m_fDuration = {0.016f};
+	_float m_fElapsedTime = {};
 
 private:
 	

@@ -195,6 +195,7 @@
     <ClInclude Include="..\public\TestAnimObject.h" />
     <ClInclude Include="..\Public\ToolSprite.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
+    <ClInclude Include="..\public\UI_Bar_Loading.h" />
     <ClInclude Include="..\public\UI_Featrue_Scale.h" />
     <ClInclude Include="..\public\UI_Feature.h" />
     <ClInclude Include="..\public\UI_Feature_Fade.h" />
@@ -271,6 +272,7 @@
     <ClCompile Include="..\private\TestAnimObject.cpp" />
     <ClCompile Include="..\Private\ToolSprite.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />
+    <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />

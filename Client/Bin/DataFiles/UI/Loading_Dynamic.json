@@ -1,0 +1,82 @@
+[
+    {
+        "Color": [
+            1.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "Duration": 0.1599999964237213,
+        "Features": [
+            {
+                "ProtoTag": "Prototype_Component_UI_Feature_UV",
+                "fOffsetUV": {
+                    "x": 0.25,
+                    "y": 0.5
+                },
+                "fStartUV": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "iEndFrame": 8,
+                "iStartFrame": 0,
+                "isLoop": true
+            }
+        ],
+        "Offset": 0.0,
+        "PassIndex": 2,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_Img_ChGear",
+        "fSizeX": 0.029999999329447746,
+        "fSizeY": 0.03500000014901161,
+        "fX": 0.054999999701976776,
+        "fY": 0.9649999737739563
+    },
+    {
+        "Color": [
+            1.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "Duration": 0.01600000075995922,
+        "Features": [
+            {
+                "ProtoTag": "Prototype_Component_UI_Feature_Pos",
+                "fEndPos": {
+                    "x": 0.5,
+                    "y": 0.925000011920929
+                },
+                "fStartPos": {
+                    "x": 0.0949999988079071,
+                    "y": 0.925000011920929
+                },
+                "iEndFrame": 60,
+                "iStartFrame": 0,
+                "isLoop": false
+            },
+            {
+                "ProtoTag": "Prototype_Component_UI_Feature_Scale",
+                "fEndScale": {
+                    "x": 0.8399999737739563,
+                    "y": 0.004999999888241291
+                },
+                "fStartScale": {
+                    "x": 0.009999999776482582,
+                    "y": 0.004999999888241291
+                },
+                "iEndFrame": 60,
+                "iStartFrame": 0,
+                "isLoop": false
+            }
+        ],
+        "Offset": 0.0,
+        "PassIndex": 3,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_Img_ChNose",
+        "fSizeX": 0.009999999776482582,
+        "fSizeY": 0.07500000298023224,
+        "fX": 0.0949999988079071,
+        "fY": 0.925000011920929
+    }
+]

@@ -50,14 +50,16 @@ protected:
 	/* 직교 투영을 위한 행렬. */
 	_float4x4		m_ViewMatrix{}, m_ProjMatrix{};
 
-	// 나중에 뺄거, fade 용
+	// fade 용, 간단하게 쓸거면 이거 사용
 	_bool			m_isFade = {false};
 	_float			m_fFadeTime = {};
 	_float			m_fFadeElapsedTime = {};
 	_float			m_fCurrentAlpha = {};
 	_float			m_fStartAlpha = {};
 	_float			m_fEndAlpha = {};
-	//
+
+	// 곱할 색. 
+	_float4         m_vColor = {1.f,1.f,1.f,1.f};
 	
 
 public:
