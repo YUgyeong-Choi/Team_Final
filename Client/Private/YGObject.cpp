@@ -250,6 +250,7 @@ HRESULT CYGObject::Ready_Collider()
 	return S_OK;
 }
 
+
 void CYGObject::Update_ColliderPos()
 {	// 1. 월드 행렬 가져오기
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();

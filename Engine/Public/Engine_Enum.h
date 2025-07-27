@@ -24,12 +24,12 @@ namespace Engine
 	enum class COLLIDERTYPE 
 	{
 		PALYER,
+		TRIGGER,
 		A,
 		B,
 		C,
 		D,
 		E,
-		TRIGGER
 	};
 
 

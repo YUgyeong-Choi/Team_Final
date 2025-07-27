@@ -56,6 +56,12 @@ void CYGCapsule::Priority_Update(_float fTimeDelta)
 		m_pPhysXActorCom = nullptr;
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_R))
+	{
+
+		m_pPhysXActorCom->Set_ColliderType(static_cast<COLLIDERTYPE>(rand() % 5 + 2));
+	}
+
 }
 
 void CYGCapsule::Update(_float fTimeDelta)
