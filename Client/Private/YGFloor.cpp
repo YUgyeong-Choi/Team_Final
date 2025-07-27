@@ -33,7 +33,7 @@ HRESULT CYGFloor::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-	_fvector vPos{ 0.0f, -6.f, 0.0f, 1.0f };
+	_fvector vPos{ 0.0f, -5.5f, 0.0f, 1.0f };
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 	m_pTransformCom->Rotation(0.f, XMConvertToRadians(180.f),0.f);
 

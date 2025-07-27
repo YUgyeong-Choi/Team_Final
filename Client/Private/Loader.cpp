@@ -24,6 +24,8 @@
 #include "YGShpere.h"
 #include "YGTrrigerWithoutModel.h"
 #include "YGFloor.h"
+#include "YGDynamicGib.h"
+#include "YGDynamicObj.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -412,6 +414,18 @@ HRESULT CLoader::Loading_For_YG()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Floor"), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/TestPhysX/Floor/Floor.bin"))))
 		return E_FAIL;
+
+	for (int i = 1; i <= 11; ++i) {
+		wstring protoTag = L"Prototype_Component_Model_Part" + to_wstring(i);
+		string modelPath = "../Bin/Resources/Models/TestPhysX/Gib/stone_stage_1_part" + to_string(i) + ".bin";
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), protoTag.c_str(), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, modelPath.c_str()))))
+			return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Barrel"), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/TestPhysX/Barrel/lootbarrel.bin"))))
+		return E_FAIL;
+
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
 
@@ -454,6 +468,16 @@ HRESULT CLoader::Loading_For_YG()
 	/* For.Prototype_GameObject_YGTrrigerWithoutModel */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTrrigerWithoutModel"),
 		CYGTrrigerWithoutModel::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YGDynamicGib */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicGib"),
+		CYGDynamicGib::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YGDynamicObj */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicObj"),
+		CYGDynamicObj::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_YGFloor */

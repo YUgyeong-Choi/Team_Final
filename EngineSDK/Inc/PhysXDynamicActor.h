@@ -17,7 +17,7 @@ public:
 
     void Set_Transform(const PxTransform& pose) override
     {
-        // го╦И ╬х╣й
+        static_cast<PxRigidDynamic*>(m_pActor)->setKinematicTarget(pose);
     }
 private:
     _bool m_bKinematic = false;

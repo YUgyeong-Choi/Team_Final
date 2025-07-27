@@ -3,6 +3,9 @@
 #include "YGTool.h"
 #include "Camera_Manager.h"
 #include "Level_Loading.h"
+
+#include "YGDynamicGib.h"
+#include "YGDynamicObj.h"
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -120,6 +123,41 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTrrigerWithoutModel"),
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
+		return E_FAIL;
+
+	for (int i = 1; i <= 11; ++i) {
+		wstring protoTag = L"Prototype_Component_Model_Part" + to_wstring(i);
+		wstring name = L"DynamicGib" + to_wstring(i);
+
+		CYGDynamicGib::GIBDATA_DESC _desc{};
+		_desc.protoTag = protoTag;
+		wcscmp(_desc.szName, name.c_str());
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicGib"),
+			ENUM_CLASS(LEVEL::YG), strLayerTag, &_desc)))
+			return E_FAIL;
+	}
+
+	CYGDynamicObj::DYNAMICDATA_DESC _dynamicDesc{};
+	_dynamicDesc.colliderType = L"Box";
+	lstrcpy(_dynamicDesc.szName, TEXT("YGDynamicBox"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicObj"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag, &_dynamicDesc)))
+		return E_FAIL;
+
+	_dynamicDesc.colliderType = L"Shpere";
+	lstrcpy(_dynamicDesc.szName, TEXT("YGDynamicShpere"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicObj"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag, &_dynamicDesc)))
+		return E_FAIL;
+
+	_dynamicDesc.colliderType = L"Convex";
+	lstrcpy(_dynamicDesc.szName, TEXT("YGDynamicConvex"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicObj"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag, &_dynamicDesc)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGFloor"),

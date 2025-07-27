@@ -203,6 +203,8 @@
     <ClInclude Include="..\public\UI_Video.h" />
     <ClInclude Include="..\Public\YGBox.h" />
     <ClInclude Include="..\Public\YGConvexMesh.h" />
+    <ClInclude Include="..\Public\YGDynamicGib.h" />
+    <ClInclude Include="..\Public\YGDynamicObj.h" />
     <ClInclude Include="..\Public\YGFloor.h" />
     <ClInclude Include="..\Public\YGShpere.h" />
     <ClInclude Include="..\Public\YGTriangleMesh.h" />
@@ -277,6 +279,8 @@
     <ClCompile Include="..\private\UI_Video.cpp" />
     <ClCompile Include="..\Private\YGBox.cpp" />
     <ClCompile Include="..\Private\YGConvexMesh.cpp" />
+    <ClCompile Include="..\Private\YGDynamicGib.cpp" />
+    <ClCompile Include="..\Private\YGDynamicObj.cpp" />
     <ClCompile Include="..\Private\YGFloor.cpp" />
     <ClCompile Include="..\Private\YGShpere.cpp" />
     <ClCompile Include="..\Private\YGTriangleMesh.cpp" />

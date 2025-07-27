@@ -574,6 +574,11 @@ PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3* vertices, PxU32 verte
 	return m_pPhysX_Manager->CookBoxGeometry(vertices, vertexCount, fScale);
 }
 
+PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3& halfExtents)
+{
+	return m_pPhysX_Manager->CookBoxGeometry(halfExtents);
+}
+
 PxCapsuleGeometry CGameInstance::CookCapsuleGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float geomScale)
 {
 	return m_pPhysX_Manager->CookCapsuleGeometry(pVertices, vertexCount, geomScale);
@@ -592,11 +597,6 @@ PxSphereGeometry CGameInstance::CookSphereGeometry(_float fRadius)
 PxSphereGeometry CGameInstance::CookSphereGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale)
 {
 	return m_pPhysX_Manager->CookSphereGeometry(pVertices, vertexCount, fScale);
-}
-
-PxBoxGeometry CGameInstance::CookBoxGeometry(const PxVec3& halfExtents)
-{
-	return m_pPhysX_Manager->CookBoxGeometry(halfExtents);
 }
 
 PxScene* CGameInstance::Get_Scene()
