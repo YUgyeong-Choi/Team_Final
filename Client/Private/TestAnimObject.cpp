@@ -40,6 +40,15 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 
 void CTestAnimObject::Update(_float fTimeDelta)
 {
+	if (m_pAnimator)
+	{
+		m_pAnimator->Update(fTimeDelta);
+	}
+	if (m_pModelCom)
+	{
+		m_pModelCom->Play_Animation();
+	}
+	Input_Test(fTimeDelta);
 }
 
 void CTestAnimObject::Late_Update(_float fTimeDelta)
@@ -106,6 +115,28 @@ HRESULT CTestAnimObject::Ready_Components()
 
 void CTestAnimObject::Input_Test(_float fTimeDelta)
 {
+}
+
+CTestAnimObject* CTestAnimObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CTestAnimObject* pInstance = new CTestAnimObject(pDevice, pContext);
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Created : CTestAnimObject");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+CGameObject* CTestAnimObject::Clone(void* pArg)
+{
+	CTestAnimObject* pInstance = new CTestAnimObject(*this);
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed to Cloned : CTestAnimObject");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
 }
 
 void CTestAnimObject::Free()

@@ -5,6 +5,8 @@
 #include "StaticMesh.h"
 #include "Level_Loading.h"
 
+#include "TestAnimObject.h"
+
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -28,6 +30,10 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 	//제이슨으로 저장된 맵을 로드한다.
 	if (FAILED(LoadMap()))
+		return E_FAIL;
+
+	//애니메이션 오브젝트
+	if (FAILED(Ready_TestAnimObject()))
 		return E_FAIL;
 	
 
@@ -255,6 +261,15 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_TestAnimObject()
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("TestAnimObject"))))
 		return E_FAIL;
 
 	return S_OK;

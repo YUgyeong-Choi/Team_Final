@@ -8,7 +8,7 @@ class CShader;
 class CAnimator;
 NS_END
 
-NS_BEGIN(Engine)
+NS_BEGIN(Client)
 class CTestAnimObject : public CGameObject
 {
 private:
@@ -34,6 +34,8 @@ private:
 	CAnimator* m_pAnimator = nullptr; // 애니메이터
 
 public:
+	static CTestAnimObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 };
 NS_END
