@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include <iostream>
 #include "Serializable.h"
 
 NS_BEGIN(Engine)
@@ -16,7 +17,7 @@ public:
 		_int         iThreshold = 0; // int에 값 비교할 때
 		_float       fThreshold = 0.f; // float이나 int에 값 비교할 때
 		// Evaluate 구현은 CPP에서
-		_bool Evaluate(class CAnimator* animator) const;
+		_bool Evaluate(class CAnimController* pAnimController) const;
 	};
 
 
@@ -40,7 +41,7 @@ public:
 		vector<Condition> conditions; // 전환 조건
 		_bool hasExitTime = false; // 애니메이션이 다 끝난 경우에
 
-		_bool Evaluates(class CAnimator* animator) const;
+		_bool Evaluates(class CAnimController* pAnimController, class CAnimator* pAnimator) const;
 	};
 
 
@@ -110,6 +111,127 @@ public:
 	}
 
 	vector<Transition>& GetTransitions()  { return m_Transitions; }
+
+	void SetName(const string& name) { m_Name = name; }
+	const string& GetName() const { return m_Name; }
+
+	// 파라미터 관련
+	_bool ExisitsParameter(const string& name) const {
+		return m_Params.find(name) != m_Params.end();
+	}
+
+	void AddParameter(const string& name, Parameter& parm) {
+		m_Params[name] = parm;
+		SetParamName(m_Params[name], name); // 파라미터 이름 설정
+	}
+
+	void AddBool(const string& name) {
+		m_Params[name].type = { ParamType::Bool };
+		SetParamName(m_Params[name], name); // 파라미터 이름 설정
+	}
+	void AddFloat(const string& name) {
+		m_Params[name].type = { ParamType::Float };
+		SetParamName(m_Params[name], name); // 파라미터 이름 설정}
+	}
+	void AddTrigger(const string& name) {
+		m_Params[name].type = { ParamType::Trigger };
+		SetParamName(m_Params[name], name); // 파라미터 이름 설정}
+	}
+	void AddInt(const string& name) {
+		m_Params[name].type = { ParamType::Int };
+		SetParamName(m_Params[name], name); // 파라미터 이름 설정
+	}
+	// 파라미터 설정
+	void SetBool(const string& name, _bool v) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
+		auto& p = m_Params[name];
+		p.bValue = v;
+	}
+	void SetFloat(const string& name, _float v) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
+		auto& p = m_Params[name];
+		p.fValue = v;
+	}
+	void SetTrigger(const string& name) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
+		auto& p = m_Params[name];
+		p.bTriggered = true;
+	}
+
+	void ResetTrigger(const string& name) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
+		auto& p = m_Params[name];
+		p.bTriggered = false;
+	}
+
+	void SetInt(const string& name, _int v) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
+		auto& p = m_Params[name];
+		p.iValue = v;
+	}
+
+	void DeleteParameter(const string& name) {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return; // 파라미터가 없으면 아무것도 하지 않음
+		}
+		m_Params.erase(name);
+	}
+
+	// 조건 검사용
+	_bool CheckBool(const string& name) const {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return false; // 기본값 반환
+		}
+		return m_Params.at(name).bValue;
+	}
+	_float GetFloat(const string& name) const {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return 0.f; // 기본값 반환
+		}
+		return m_Params.at(name).fValue;
+	}
+	_bool CheckTrigger(const string& name) {
+		auto& p = m_Params[name];
+		if (p.bTriggered)
+		{
+			cout << "Trigger: " << name << endl; // 디버그용 출력
+			p.bTriggered = false;
+			return true;
+		}
+		return false;
+	}
+	_int GetInt(const string& name) const {
+		if (m_Params.find(name) == m_Params.end()) {
+			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			return 0; // 기본값 반환
+		}
+		return m_Params.at(name).iValue;
+	}
+
+	void SetParamName(Parameter& param, const string& name) {
+		param.name = name; // 파라미터 이름 설정
+	}
+	unordered_map<string, Parameter>& GetParameters() {
+		return m_Params;
+	}
 private:
 	AnimState* FindState(const string& name) 
 	{
@@ -132,10 +254,10 @@ private:
 	vector<Condition>	   m_Conditions; // 아직 쓰는 곳 없음
 
 	class CAnimator*	   m_pAnimator = nullptr;  // 애니메이터 참조
-	unordered_map<size_t, size_t> m_SubClipIndex; //지금 몇 번째 클립을 재생 중인지 저장
+	unordered_map<string, Parameter> m_Params; // 파라미터 관리 (컨트롤러 별 개별로 관리)
 
 	TransitionResult       m_TransitionResult{}; // 트래지션을 한 결과 (애니메이터에서 요청)
-
+	string 				   m_Name; // 컨트롤러 이름
 public:
 	static CAnimController* Create();
 	CAnimController* Clone();

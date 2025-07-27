@@ -71,7 +71,7 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 		m_pAnimator->Deserialize(rootStates);
 	}
 
-	m_pAnimator->GetAnimController()->SetState("Idle");
+	m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
 	return S_OK;
 }
 

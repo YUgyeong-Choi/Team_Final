@@ -1,0 +1,78 @@
+{
+    "Anim States": [
+        {
+            "Clip": "AS_Pino_H_Idle",
+            "Name": "Idle",
+            "NodeId": 1,
+            "NodePos": [
+                605.0,
+                382.0
+            ]
+        },
+        {
+            "Clip": "AS_Pino_H_Walk_F",
+            "Name": "Walk_F",
+            "NodeId": 2,
+            "NodePos": [
+                615.0,
+                624.0
+            ]
+        }
+    ],
+    "ControllerName": "Player_Default",
+    "Parameters": {
+        "Move": {
+            "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        }
+    },
+    "Transitions": [
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 1,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 12,
+                "LinkId": 3,
+                "ToNodeId": 21
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 2
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 2,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 22,
+                "LinkId": 4,
+                "ToNodeId": 11
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 1
+        }
+    ]
+}

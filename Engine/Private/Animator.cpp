@@ -17,9 +17,10 @@ CAnimator::CAnimator(const CAnimator& Prototype)
 	, m_pCurrentAnim{ Prototype.m_pCurrentAnim }
 	, m_Blend{ Prototype.m_Blend }
 	, m_Bones{ Prototype.m_Bones }
-	, m_pAnimController{ Prototype.m_pAnimController }
+	, m_pCurAnimController{ Prototype.m_pCurAnimController }
 	, m_iCurrentAnimIndex{ Prototype.m_iCurrentAnimIndex }
 	, m_iPrevAnimIndex{ Prototype.m_iPrevAnimIndex }
+	, m_AnimControllers{ Prototype.m_AnimControllers }
 {
 
 }
@@ -38,11 +39,13 @@ HRESULT CAnimator::Initialize(void* pArg)
 
  	m_Bones = m_pModel->Get_Bones();
 
-	m_pAnimController = CAnimController::Create();
-	if (m_pAnimController == nullptr)
+	m_pCurAnimController = CAnimController::Create();
+	if (m_pCurAnimController == nullptr)
 		return E_FAIL;
-	m_pAnimController->SetAnimator(this);
-
+	// 디폴트 컨트롤러 생성해서 설정
+	m_pCurAnimController->SetAnimator(this);
+	m_AnimControllers["Default"] = m_pCurAnimController;
+	m_pCurAnimController->SetName(m_pModel->Get_ModelName() + "_Default");
 	return S_OK;
 }
 
@@ -59,14 +62,14 @@ void CAnimator::Update(_float fDeltaTime)
 		// 컨트롤러 업데이트 하면서 트랜지션 확인해서 상태 전환
 		// 블렌드 할 애니메이션 클립 2개와 전환 시간 받아오기
 
-		if (m_pAnimController)
+		if (m_pCurAnimController)
 		{
-			m_pAnimController->Update(fDeltaTime);
-			auto& transitionResult = m_pAnimController->CheckTransition();
+			m_pCurAnimController->Update(fDeltaTime);
+			auto& transitionResult = m_pCurAnimController->CheckTransition();
 			if (transitionResult.bTransition)
 			{
 				StartTransition(transitionResult.pFromAnim,transitionResult.pToAnim,transitionResult.fDuration);
-				m_pAnimController->ResetTransitionResult();
+				m_pCurAnimController->ResetTransitionResult();
 			}
 		}
  
@@ -221,11 +224,283 @@ void CAnimator::RegisterEventListener(const string& eventName, AnimEventCallback
 	m_eventListeners[eventName].push_back(move(cb));
 }
 
-_float CAnimator::GetStateLengthByName(const string& name) const
+void CAnimator::RegisterAnimController(const string& name, CAnimController* pController)
 {
-	return m_pAnimController->GetStateLength(name);
+	if (pController == nullptr)
+	{
+		MSG_BOX("Cannot register a null animation controller.");
+		return;
+	}
+	if (m_AnimControllers.find(name) != m_AnimControllers.end())
+	{
+		MSG_BOX("Animation controller with this name already exists.");
+		return;
+	}
+	pController->SetAnimator(this);
+	m_AnimControllers[name] = pController;
+	if (m_pCurAnimController == nullptr)
+	{
+		m_pCurAnimController = pController; // 첫 번째 등록된 컨트롤러를 현재 컨트롤러로 설정
+	}
 }
 
+void CAnimator::UnregisterAnimController(const string& name)
+{
+	auto it = m_AnimControllers.find(name);
+	if (it != m_AnimControllers.end()) 
+	{
+		Safe_Release(it->second);
+		m_AnimControllers.erase(it);
+	}
+}
+
+void CAnimator::RenameAnimController(const string& oldName, const string& newName)
+{
+	auto it = m_AnimControllers.find(oldName);
+	if (it != m_AnimControllers.end())
+	{
+		if (m_AnimControllers.find(newName) != m_AnimControllers.end())
+		{
+			MSG_BOX("Name already exists.");
+			return;
+		}
+		it->second->SetName(newName);
+		m_AnimControllers[newName] = it->second;
+		m_AnimControllers.erase(it);
+	}
+	else
+	{
+		MSG_BOX("Old name does not exist.");
+	}
+}
+
+_float CAnimator::GetStateLengthByName(const string& name) const
+{
+	return m_pCurAnimController->GetStateLength(name);
+}
+
+_bool CAnimator::ExisitsParameter(const string& name) const
+{
+	if (m_pCurAnimController)
+	{
+		return m_pCurAnimController->ExisitsParameter(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+		return false; // 기본값 반환
+	}
+}
+
+void CAnimator::AddBool(const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->AddBool(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::AddFloat(const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->AddFloat(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::AddTrigger(const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->AddTrigger(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::AddInt(const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->AddInt(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::SetInt(const string& name, _int v)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->SetInt(name, v);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::SetBool(const string& name, _bool v)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->SetBool(name, v);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::SetFloat(const string& name, _float v)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->SetFloat(name, v);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::SetTrigger(const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->SetTrigger(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::ResetTrigger(const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->ResetTrigger(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::DeleteParameter(const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->DeleteParameter(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::SetParamName(Parameter& param, const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->SetParamName(param, name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+_float CAnimator::GetFloat(const string& name) const
+{
+	if (m_pCurAnimController)
+	{
+		return m_pCurAnimController->GetFloat(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+		return 0.f; // 기본값 반환
+	}
+}
+
+_int CAnimator::GetInt(const string& name) const
+{
+	if (m_pCurAnimController)
+	{
+		return m_pCurAnimController->GetInt(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+		return 0; // 기본값 반환
+	}
+}
+
+_bool CAnimator::CheckBool(const string& name) const
+{
+	if (m_pCurAnimController)
+	{
+		return m_pCurAnimController->CheckBool(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+		return false; // 기본값 반환
+	}
+}
+
+_bool CAnimator::CheckTrigger(const string& name)
+{
+	if (m_pCurAnimController)
+	{
+		return m_pCurAnimController->CheckTrigger(name);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+		return false; // 기본값 반환
+	}
+}
+
+void CAnimator::AddParameter(const string & name, Parameter & parm)
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->AddParameter(name, parm);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+unordered_map<string, Parameter>& CAnimator::GetParameters()
+{
+	if (m_pCurAnimController)
+	{
+		return m_pCurAnimController->GetParameters();
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+		static unordered_map<string, Parameter> emptyParams; // 빈 맵 반환
+		return emptyParams;
+	}
+}
 
 CAnimator* CAnimator::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -252,44 +527,110 @@ CComponent* CAnimator::Clone(void* pArg)
 void CAnimator::Free()
 {
 	__super::Free();
-	Safe_Release(m_pAnimController); // 모델은 다른 곳에서 해제하므로 해제하지 않음
+	for (auto& Pair : m_AnimControllers)
+	{
+		Safe_Release(Pair.second);
+	}
 }
 
 json CAnimator::Serialize()
 {
-	json j = m_pAnimController->Serialize();
+	//json j = m_pAnimController->Serialize();
+	//// 애니메이션 컨트롤러 각각의 이름으로 
+	//// 애니메이터의 파라미터들 저장
+	//for (const auto& [name, param] : m_Params)
+	//{
+	//	j["Parameters"][name] = {
+	//		{"bValue", param.bValue},
+	//		{"fValue", param.fValue},
+	//		{"iValue", param.iValue},
+	//		{"bTriggered", param.bTriggered},
+	//		{"Type", static_cast<int>(param.type)} // ParamType을 정수로 저장
+	//	};
+	//}
+	//return j;
 
-	// 애니메이터의 파라미터들 저장
-	for (const auto& [name, param] : m_Params)
+	CHAR exeFullPath[MAX_PATH] = {};
+	GetModuleFileNameA(nullptr, exeFullPath, MAX_PATH);
+
+	// 2) EXE가 있는 폴더를 기준으로 경로 계산
+	   filesystem::path exeDir = filesystem::path(exeFullPath).parent_path();
+	   filesystem::path saveDir = exeDir
+		   / "Save"
+		   / "AnimationStates"
+		   / "AnimControllers";
+
+	   // 경로 없으면 생성
+	filesystem::create_directories(saveDir);
+
+	json j;
+	j["Controllers"] = json::array();
+
+	// 컨트롤러별 파일로 내보내기
+	for (auto& [name, pCtrl] : m_AnimControllers)
 	{
-		j["Parameters"][name] = {
-			{"bValue", param.bValue},
-			{"fValue", param.fValue},
-			{"iValue", param.iValue},
-			{"bTriggered", param.bTriggered},
-			{"Type", static_cast<int>(param.type)} // ParamType을 정수로 저장
-		};
+		if (!pCtrl)
+			continue;
+
+		json ctrlJ = pCtrl->Serialize();
+
+		// 파일명: <exeDir>/Bin/Save/AnimationStates/<ControllerName>.json
+		filesystem::path filePath = saveDir / (pCtrl->GetName() + ".json");
+
+		ofstream ofs(filePath.string());
+		if (!ofs)
+		{
+			MSG_BOX("Failed to write file");
+			continue;
+		}
+		ofs << ctrlJ.dump(4);
+		ofs.close();
+
+		j["Controllers"].push_back(name);
 	}
 	return j;
 }
 
 void CAnimator::Deserialize(const json& j)
 {
+	m_pCurAnimController = nullptr;
 	m_pCurrentAnim = nullptr; // 현재 애니메이션 초기화
-	// 애니메이터의 파라미터들 복원
-	if (j.contains("Parameters"))
+	CHAR exeFullPath[MAX_PATH] = {};
+	GetModuleFileNameA(nullptr, exeFullPath, MAX_PATH);
+	filesystem::path exeDir = filesystem::path(exeFullPath).parent_path();
+	auto loadDir = exeDir  / "Save" / "AnimationStates" / "AnimControllers";
+
+	for (auto& Pair : m_AnimControllers)
 	{
-		for (const auto& [name, param] : j["Parameters"].items())
+		Safe_Release(Pair.second);
+	}
+	m_AnimControllers.clear();
+
+	if (j.contains("Controllers") && j["Controllers"].is_array())
+	{
+		for (auto& nameJ : j["Controllers"])
 		{
-			Parameter p;
-			p.bValue = param["bValue"].get<_bool>();
-			p.fValue = param["fValue"].get<_float>();
-			p.iValue = param["iValue"].get<_int>();
-			p.bTriggered = param["bTriggered"].get<_bool>();
-			p.type = static_cast<ParamType>(param["Type"].get<int>());
-			m_Params[name] = p;
-			SetParamName(m_Params[name], name); // 파라미터 이름 설정
+			if (!nameJ.is_string()) continue;
+
+			string name = nameJ.get<string>();
+			auto filePath = loadDir / (name + ".json");
+			ifstream ifs(filePath.string());
+			if (!ifs) {
+				MSG_BOX("Cannot open");
+				continue;
+			}
+
+			json ctrlJ;
+			ifs >> ctrlJ;
+
+			CAnimController* pCtrl = CAnimController::Create();
+			pCtrl->SetAnimator(this);
+			pCtrl->Deserialize(ctrlJ);
+			m_AnimControllers[name] = pCtrl;
+
+			// 첫 번째 컨트롤러를 current로
+			if (!m_pCurAnimController)
+				m_pCurAnimController = pCtrl;
 		}
 	}
- 	m_pAnimController->Deserialize(j);
 }

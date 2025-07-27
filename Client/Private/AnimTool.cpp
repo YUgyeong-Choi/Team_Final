@@ -503,10 +503,79 @@ HRESULT CAnimTool::Render_Parameters()
 	return S_OK;
 }
 
+HRESULT CAnimTool::Render_AnimControllers()
+{
+	ImGui::Begin("Controller"); // 툴바처럼 띄워도 되고, 노드창 안에 넣어도 됩니다.
+
+	// 1-1) 이름 목록 뽑기
+	auto& ctrls = m_pCurAnimator->GetAnimControllers();
+	vector<string> names;
+	names.reserve(ctrls.size());
+	for (auto& kv : ctrls) 
+		names.push_back(kv.first);
+
+	static _int selIdx = 0;
+	
+	const _char* curName = names.empty() ? "" : names[selIdx].c_str();
+	if (ImGui::BeginCombo("##Controllers", curName))
+	{
+		for (int i = 0; i < (int)names.size(); ++i)
+		{
+			bool selected = (i == selIdx);
+			if (ImGui::Selectable(names[i].c_str(), selected))
+			{
+				selIdx = i;
+				m_pCurAnimator->SetCurrentAnimController(names[i]);
+			}
+			if (selected) ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+
+	static _char bufRename[64] = "";
+	if (!names.empty())
+		strncpy_s(bufRename, names[selIdx].c_str(), 63);
+	if (ImGui::InputText("Rename", bufRename, sizeof(bufRename),
+		ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		string oldName = names[selIdx];
+		string newName = bufRename;
+		// 언레지스터 → 이름 바꿔서 → 리지스터
+		auto ctrlPtr = ctrls[oldName];
+		m_pCurAnimator->RenameAnimController(oldName, newName);
+		ctrlPtr->SetName(newName);
+		m_pCurAnimator->RegisterAnimController(newName, ctrlPtr);
+		// 선택 인덱스 보정
+		names[selIdx] = newName;
+	}
+
+
+	static _char bufNew[64] = "";
+	ImGui::InputText("New Ctrl", bufNew, sizeof(bufNew));
+	ImGui::SameLine();
+	if (ImGui::Button("Add"))
+	{
+		std::string nm = bufNew;
+		if (!nm.empty() && ctrls.find(nm) == ctrls.end())
+		{
+			auto pNew = CAnimController::Create();
+			pNew->SetAnimator(m_pCurAnimator);
+			pNew->SetName(nm);
+			m_pCurAnimator->RegisterAnimController(nm, pNew);
+			bufNew[0] = '\0';
+			selIdx = (int)names.size(); // 새로 추가된 게 마지막
+		}
+	}
+	ImGui::End();
+
+	return S_OK;
+}
+
 HRESULT CAnimTool::Render_TransitionConditions()
 {
 	// 현재 추가되어있는 트랜지션의 조건들을 보여주고 콤보박스로 컨디션이 있으면 수정할 수 있게 처리
-	if (m_pCurAnimator == nullptr || m_pCurAnimator->GetAnimController() == nullptr)
+	if (m_pCurAnimator == nullptr || m_pCurAnimator->Get_CurrentAnimController() == nullptr)
 	{
 		return S_OK;
 	}
@@ -597,10 +666,12 @@ HRESULT CAnimTool::Render_AnimationSequence()
 
 HRESULT CAnimTool::Render_AnimStatesByNode()
 {
-	if (m_pCurAnimator == nullptr || m_pCurAnimator->GetAnimController() == nullptr)
+	if (m_pCurAnimator == nullptr || m_pCurAnimator->Get_CurrentAnimController() == nullptr)
 	{
 		return S_OK;
 	}
+	if (FAILED(Render_AnimControllers()))
+		return E_FAIL;
 
 	if (ImGui::Button("Save AnimState This Model"))
 	{
@@ -615,7 +686,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	static _int selectedNodeID = -1;  // 선택한 노드 아이디
 
 	// 컨트롤러가 바뀌면 식별 ID 초기화 시켜놓기
-	CAnimController* pCtrl = m_pCurAnimator->GetAnimController();
+	CAnimController* pCtrl = m_pCurAnimator->Get_CurrentAnimController();
 
 	ImGui::Begin("Anim State Machine");
 
@@ -799,7 +870,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		if (bDeleteLink == false) // 삭제 안한 경우에만
 		{
 
-			auto pCtrl = m_pCurAnimator->GetAnimController();
+			auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
 		for (_int linkId : selectedLinks)
 		{
 			for (auto& transition : transitions)
@@ -889,7 +960,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		{
 			if (state.iNodeId == selectedNodeID)
 			{
-				ImGui::Begin("Anim Info");
+				ImGui::Begin("State Info");
 
 				_char buf[64];
 				strcpy_s(buf, state.stateName.c_str());
@@ -1245,7 +1316,7 @@ void CAnimTool::SaveLoadAnimStates(_bool isSave)
 		if (m_pCurAnimator && path.find(m_stSelectedModelName) != string::npos)
 		{
 			m_pCurAnimator->Deserialize(root);
-			auto pCtrl = m_pCurAnimator->GetAnimController();
+			auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
 			auto states = pCtrl->GetStates();
 			auto transitions = pCtrl->GetTransitions();
 
@@ -1304,6 +1375,9 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 					MSG_BOX("애니메이션 이벤트 발생");
 				});
 		}
+
+		// 모델 불러오면 처음 애니메이션 관련 정보들 불러오기 
+		SaveLoadEvents(false);
 	}
 }
 
