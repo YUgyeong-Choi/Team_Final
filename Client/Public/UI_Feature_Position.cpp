@@ -12,6 +12,8 @@ CUI_Feature_Position::CUI_Feature_Position(const CUI_Feature_Position& Prototype
 
 HRESULT CUI_Feature_Position::Initialize_Prototype()
 {
+
+
     return S_OK;
 }
 
@@ -22,7 +24,6 @@ HRESULT CUI_Feature_Position::Initialize(void* pArg)
     m_isLoop = pDesc->isLoop;
     m_iStartFrame = pDesc->iStartFrame;
     m_iEndFrame = pDesc->iEndFrame;
-    m_fMoveTime = pDesc->fTime;
     m_fStartPos = pDesc->fStartPos;
     m_fEndPos = pDesc->fEndPos;
 
@@ -36,6 +37,9 @@ HRESULT CUI_Feature_Position::Initialize(void* pArg)
 void CUI_Feature_Position::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
 {
     if (m_iStartFrame == m_iEndFrame)
+        return;
+
+    if (iCurrentFrame < m_iStartFrame)
         return;
 
     if (m_isLoop)
@@ -91,9 +95,9 @@ UI_FEATURE_TOOL_DESC CUI_Feature_Position::Get_Desc_From_Tool()
     eDesc.iType = 2;
     eDesc.iStartFrame = m_iStartFrame;
     eDesc.iEndFrame = m_iEndFrame;
-    eDesc.fTime = m_fMoveTime;
     eDesc.fStartPos = m_fStartPos;
     eDesc.fEndPos = m_fEndPos;
+    eDesc.strTypeTag = "Pos";
 
     return eDesc;
 }
@@ -104,7 +108,6 @@ UI_FEATRE_DESC& CUI_Feature_Position::Get_Desc()
     m_eDesc.isLoop = m_isLoop;
     m_eDesc.iStartFrame = m_iStartFrame;
     m_eDesc.iEndFrame = m_iEndFrame;
-    m_eDesc.fTime = m_fMoveTime;
     m_eDesc.fStartPos = m_fStartPos;
     m_eDesc.fEndPos = m_fEndPos;
     m_eDesc.strProtoTag = "Prototype_Component_UI_Feature_Pos";

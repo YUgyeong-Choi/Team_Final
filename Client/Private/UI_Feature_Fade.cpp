@@ -24,13 +24,12 @@ HRESULT CUI_Feature_Fade::Initialize(void* pArg)
     m_iStartFrame = pDesc->iStartFrame;
     m_fStartAlpha = pDesc->fStartAlpha;
     m_fEndAlpha = pDesc->fEndAlpha;
-    m_fFadeTime = pDesc->fTime;
 
     // 지속 시간에 따라 끝나는 프레임을 늘린다.
     // 일단 1초에 60프레임으로 하도록 하고, 나중에 필요하면 수정
-    m_iEndFrame = m_iStartFrame + int(m_fFadeTime * 60.f);
+    m_iEndFrame = pDesc->iEndFrame;
 
-    m_iRange = int(m_fFadeTime * 60.f);
+    m_iRange = m_iEndFrame - m_iStartFrame;
 
     return S_OK;
 }
@@ -86,9 +85,9 @@ UI_FEATURE_TOOL_DESC CUI_Feature_Fade::Get_Desc_From_Tool()
     eDesc.iType = 0;
     eDesc.iStartFrame = m_iStartFrame;
     eDesc.iEndFrame = m_iEndFrame;
-    eDesc.fTime = m_fFadeTime;
     eDesc.fStartAlpha = m_fStartAlpha;
     eDesc.fEndAlpha = m_fEndAlpha;
+    eDesc.strTypeTag = "Fade";
 
 
     return eDesc;
@@ -101,7 +100,6 @@ UI_FEATRE_DESC& CUI_Feature_Fade::Get_Desc()
     m_eDesc.isLoop = m_isLoop;
     m_eDesc.iStartFrame = m_iStartFrame;
     m_eDesc.iEndFrame = m_iEndFrame;
-    m_eDesc.fTime = m_fFadeTime;
     m_eDesc.fStartAlpha = m_fStartAlpha;
     m_eDesc.fEndAlpha = m_fEndAlpha;
     m_eDesc.strProtoTag = "Prototype_Component_UI_Feature_Fade";

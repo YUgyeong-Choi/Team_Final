@@ -151,6 +151,15 @@
     <Filter Include="02.GameObjects\99.UI\Static">
       <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
+      <UniqueIdentifier>{85e6703b-969f-44ff-8640-27151012a745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Loading">
+      <UniqueIdentifier>{3a0ddaee-96b8-4ed3-8e84-eb55b5279ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\HP">
+      <UniqueIdentifier>{754f49d2-926e-4330-905d-0dc51623fb1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -371,15 +380,18 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Featrue_Scale.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\TestAnimObject.h">
-		<Filter>02.GameObjects\08.TestObject</Filter>
-	</ClInclude>
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\YGFloor.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\PBRMesh.h">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Bar_Loading.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -581,15 +593,18 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\TestAnimObject.cpp">
-		<Filter>02.GameObjects\08.TestObject</Filter>
-	</ClCompile>
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\YGFloor.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\PBRMesh.cpp">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Bar_Loading.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

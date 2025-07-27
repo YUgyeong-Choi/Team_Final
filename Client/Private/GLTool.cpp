@@ -113,8 +113,9 @@ void CGLTool::Save_File()
 		j["Offset"] = eDesc.fOffset;
 		j["fSizeX"] = eDesc.fSizeX / g_iWinSizeX;
 		j["fSizeY"] = eDesc.fSizeY / g_iWinSizeY;
-		j["fX"] = eDesc.fX / g_iWinSizeX;
+		j["fX"] = eDesc.fX / g_iWinSizeX; 
 		j["fY"] = eDesc.fY / g_iWinSizeY;
+		j["Color"] = { eDesc.vColor.x,  eDesc.vColor.y,  eDesc.vColor.z,  eDesc.vColor.w, };
 		JsonArrayStatic.push_back(j);
 		
 	}
@@ -133,13 +134,12 @@ void CGLTool::Save_File()
 
 	for (auto& pObj : m_DynamicUIList)
 	{
-		json j;
-
 		if (nullptr == pObj || pObj->Get_bDead())
 			continue;
+
 		auto eDesc = pObj->Get_Desc();
 
-		// 이제 값 채워서 dump로 넘겨준다 
+		json j;
 		j["TextureTag"] = WStringToString(eDesc.strTextureTag);
 		j["PassIndex"] = eDesc.iPassIndex;
 		j["TextureIndex"] = eDesc.iTextureIndex;
@@ -148,66 +148,67 @@ void CGLTool::Save_File()
 		j["fSizeY"] = eDesc.fSizeY / g_iWinSizeY;
 		j["fX"] = eDesc.fX / g_iWinSizeX;
 		j["fY"] = eDesc.fY / g_iWinSizeY;
+		j["Color"] = { eDesc.vColor.x,  eDesc.vColor.y,  eDesc.vColor.z,  eDesc.vColor.w, };
+		j["Duration"] = eDesc.fDuration;
 
-		// 이제 기능을 채워줘야됨
+		// Features 배열 생성
+		json jFeatures = json::array();
 
 		for (auto& pFeature : pObj->Get_Features())
 		{
 			if (nullptr == pFeature)
 				continue;
-			
+
 			auto& eFeatureDesc = pFeature->Get_Desc();
 
-			j["ProtoTag"] = eFeatureDesc.strProtoTag;
-			j["isLoop"] = eFeatureDesc.isLoop;
-			j["iStartFrame"] = eFeatureDesc.iStartFrame;
-			j["iEndFrame"] = eFeatureDesc.iEndFrame;
+			json jFeature;
+			jFeature["ProtoTag"] = eFeatureDesc.strProtoTag;
+			jFeature["isLoop"] = eFeatureDesc.isLoop;
+			jFeature["iStartFrame"] = eFeatureDesc.iStartFrame;
+			jFeature["iEndFrame"] = eFeatureDesc.iEndFrame;
 
-			if(eFeatureDesc.strProtoTag.find("Fade") != string::npos)
+			if (eFeatureDesc.strProtoTag.find("Fade") != string::npos)
 			{
 				UI_FEATURE_FADE_DESC& eFadeDesc = static_cast<UI_FEATURE_FADE_DESC&>(eFeatureDesc);
-
-				j["fTime"] = eFadeDesc.fTime;
-				j["iStartAlpha"] = eFadeDesc.fStartAlpha;
-				j["iEndAlpha"] = eFadeDesc.fEndAlpha;
-				
+				jFeature["fStartAlpha"] = eFadeDesc.fStartAlpha;
+				jFeature["fEndAlpha"] = eFadeDesc.fEndAlpha;
 			}
 			else if (eFeatureDesc.strProtoTag.find("Pos") != string::npos)
 			{
 				UI_FEATURE_POS_DESC& ePosDesc = static_cast<UI_FEATURE_POS_DESC&>(eFeatureDesc);
-
-				j["fTime"] = ePosDesc.fTime;
-
-				j["fStartPos"]["x"] = ePosDesc.fStartPos.x;
-				j["fStartPos"]["y"] = ePosDesc.fStartPos.y;
-
-				j["fEndPos"]["x"] = ePosDesc.fEndPos.x;
-				j["fEndPos"]["y"] = ePosDesc.fEndPos.y;
-			
+				jFeature["fStartPos"]["x"] = ePosDesc.fStartPos.x;
+				jFeature["fStartPos"]["y"] = ePosDesc.fStartPos.y;
+				jFeature["fEndPos"]["x"] = ePosDesc.fEndPos.x;
+				jFeature["fEndPos"]["y"] = ePosDesc.fEndPos.y;
 			}
 			else if (eFeatureDesc.strProtoTag.find("UV") != string::npos)
 			{
 				UI_FEATURE_UV_DESC& ePosDesc = static_cast<UI_FEATURE_UV_DESC&>(eFeatureDesc);
-
-				j["fStartUV"]["x"] = ePosDesc.fStartUV.x;
-				j["fStartUV"]["y"] = ePosDesc.fStartUV.y;
-
-				j["fOffsetUV"]["x"] = ePosDesc.fOffsetUV.x;
-				j["fOffsetUV"]["y"] = ePosDesc.fOffsetUV.y;
-
+				jFeature["fStartUV"]["x"] = ePosDesc.fStartUV.x;
+				jFeature["fStartUV"]["y"] = ePosDesc.fStartUV.y;
+				jFeature["fOffsetUV"]["x"] = ePosDesc.fOffsetUV.x;
+				jFeature["fOffsetUV"]["y"] = ePosDesc.fOffsetUV.y;
 			}
-			
+			else if (eFeatureDesc.strProtoTag.find("Scale") != string::npos)
+			{
+				UI_FEATURE_SCALE_DESC& ePosDesc = static_cast<UI_FEATURE_SCALE_DESC&>(eFeatureDesc);
+				jFeature["fStartScale"]["x"] = ePosDesc.fStartScale.x;
+				jFeature["fStartScale"]["y"] = ePosDesc.fStartScale.y;
+				jFeature["fEndScale"]["x"] = ePosDesc.fEndScale.x;
+				jFeature["fEndScale"]["y"] = ePosDesc.fEndScale.y;
+			}
 
+			jFeatures.push_back(jFeature);
 		}
-		
+
+		// 최종적으로 Feature 배열을 넣어줌
+		j["Features"] = jFeatures;
 
 		JsonArrayDynamic.push_back(j);
-
 	}
 
 	ofstream ofile("../Bin/DataFiles/UI/Temp_Dynamic.json");
-
-	ofile << JsonArrayDynamic.dump(4);
+	ofile << JsonArrayDynamic.dump(4); 
 
 	ofile.close();
 
@@ -255,6 +256,8 @@ void CGLTool::Add_Static_UI_From_File()
 		eStaticDesc.fX = eUIJson["fX"].get<float>() * g_iWinSizeX;
 		eStaticDesc.fY = eUIJson["fY"].get<float>() * g_iWinSizeY;
 
+		eStaticDesc.vColor = { eUIJson["Color"][0], eUIJson["Color"][1], eUIJson["Color"][2],eUIJson["Color"][3], };
+
 		string textureTag = eUIJson["TextureTag"];
 		eStaticDesc.strTextureTag = wstring(textureTag.begin(), textureTag.end());
 
@@ -273,6 +276,115 @@ void CGLTool::Add_Static_UI_From_File()
 void CGLTool::Add_Dynamic_UI_From_File()
 {
 	//
+
+	string filePath = IFILEDIALOG->GetFilePathName();
+
+	json j;
+
+	ifstream file(filePath);
+
+	file >> j;
+
+	for (const auto& eUIJson : j)
+	{
+		CDynamic_UI::DYNAMIC_UI_DESC eDesc = {};
+
+
+		eDesc.fOffset = eUIJson["Offset"];
+		eDesc.iPassIndex = eUIJson["PassIndex"];
+		eDesc.iTextureIndex = eUIJson["TextureIndex"];
+		eDesc.fSizeX = eUIJson["fSizeX"].get<float>() * g_iWinSizeX;
+		eDesc.fSizeY = eUIJson["fSizeY"].get<float>() * g_iWinSizeY;
+		eDesc.fX = eUIJson["fX"].get<float>() * g_iWinSizeX;
+		eDesc.fY = eUIJson["fY"].get<float>() * g_iWinSizeY;
+		eDesc.fDuration = eUIJson["Duration"].get<float>();
+		eDesc.vColor = { eUIJson["Color"][0], eUIJson["Color"][1], eUIJson["Color"][2],eUIJson["Color"][3] };
+
+		string textureTag = eUIJson["TextureTag"];
+		eDesc.strTextureTag = wstring(textureTag.begin(), textureTag.end());
+		eDesc.isFromTool = true;
+
+		// 기능 읽어서 각 프로토타입에 맞게 구조체 생성해서 넣자
+		if (!eUIJson.contains("Features"))
+			continue;
+
+		const auto& features = eUIJson["Features"];
+
+		for (const auto& feature : features)
+		{
+			std::string protoTag = feature["ProtoTag"];
+
+			if (protoTag.find("UV") != protoTag.npos)
+			{
+				UI_FEATURE_UV_DESC* efeatureDesc = new UI_FEATURE_UV_DESC;
+				efeatureDesc->strProtoTag = (protoTag);
+				efeatureDesc->iStartFrame = feature["iStartFrame"];
+				efeatureDesc->iEndFrame = feature["iEndFrame"];
+				efeatureDesc->isLoop = feature["isLoop"];
+
+				efeatureDesc->fStartUV = { feature["fStartUV"]["x"],  feature["fStartUV"]["y"] };
+				efeatureDesc->fOffsetUV = { feature["fOffsetUV"]["x"],  feature["fOffsetUV"]["y"] };
+
+				eDesc.FeatureDescs.push_back(efeatureDesc);
+			}
+			else if (protoTag.find("Pos") != protoTag.npos)
+			{
+				UI_FEATURE_POS_DESC* efeatureDesc = new UI_FEATURE_POS_DESC;
+				efeatureDesc->strProtoTag = (protoTag);
+				efeatureDesc->iStartFrame = feature["iStartFrame"];
+				efeatureDesc->iEndFrame = feature["iEndFrame"];
+				efeatureDesc->isLoop = feature["isLoop"];
+
+				efeatureDesc->fStartPos = { feature["fStartPos"]["x"],  feature["fStartPos"]["y"] };
+				efeatureDesc->fEndPos = { feature["fEndPos"]["x"],  feature["fEndPos"]["y"] };
+
+				eDesc.FeatureDescs.push_back(efeatureDesc);
+			}
+			else if (protoTag.find("Scale") != protoTag.npos)
+			{
+				UI_FEATURE_SCALE_DESC* efeatureDesc = new UI_FEATURE_SCALE_DESC;
+				efeatureDesc->strProtoTag = (protoTag);
+				efeatureDesc->iStartFrame = feature["iStartFrame"];
+				efeatureDesc->iEndFrame = feature["iEndFrame"];
+				efeatureDesc->isLoop = feature["isLoop"];
+
+				efeatureDesc->fStartScale = { feature["fStartScale"]["x"],  feature["fStartScale"]["y"] };
+				efeatureDesc->fEndScale = { feature["fEndScale"]["x"],  feature["fEndScale"]["y"] };
+
+				eDesc.FeatureDescs.push_back(efeatureDesc);
+			}
+			else if (protoTag.find("Fade") != protoTag.npos)
+			{
+				UI_FEATURE_FADE_DESC* efeatureDesc = new UI_FEATURE_FADE_DESC;
+				efeatureDesc->strProtoTag = (protoTag);
+				efeatureDesc->iStartFrame = feature["iStartFrame"];
+				efeatureDesc->iEndFrame = feature["iEndFrame"];
+				efeatureDesc->isLoop = feature["isLoop"];
+
+				efeatureDesc->fStartAlpha = feature["StartAlpha"];
+				efeatureDesc->fEndAlpha = feature["fEndAlpha"];
+
+				eDesc.FeatureDescs.push_back(efeatureDesc);
+			}
+		}
+
+	
+		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
+			static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Dynamic"), &eDesc)))
+			return;
+
+		auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Dynamic"));
+
+		m_DynamicUIList.push_back(static_cast<CDynamic_UI*>(pObj));
+
+		for (auto& pDesc : eDesc.FeatureDescs)
+		{
+			Safe_Delete(pDesc);
+		}
+		
+	}
+
+	file.close();
 }
 
 void CGLTool::Add_Static_UI()
@@ -343,7 +455,6 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			fadeDesc.isLoop = eDesc.isLoop;
 			fadeDesc.iStartFrame = eDesc.iStartFrame;
 			fadeDesc.iEndFrame = eDesc.iEndFrame;
-			fadeDesc.fTime = eDesc.fTime;
 			fadeDesc.fStartAlpha = eDesc.fStartAlpha;
 			fadeDesc.fEndAlpha = eDesc.fEndAlpha;
 
@@ -372,9 +483,22 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			posDesc.iEndFrame = eDesc.iEndFrame;
 			posDesc.fStartPos = eDesc.fStartPos;
 			posDesc.fEndPos = eDesc.fEndPos;
-			posDesc.fTime = eDesc.fTime;
 
 			m_pSelectDynamicObj->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(posDesc.strProtoTag), &posDesc);
+		}
+
+		else if (3 == eDesc.iType)
+		{
+			UI_FEATURE_SCALE_DESC scaleDesc = {};
+			scaleDesc.strProtoTag = "Prototype_Component_UI_Feature_Scale";
+			scaleDesc.isLoop = eDesc.isLoop;
+			scaleDesc.iStartFrame = eDesc.iStartFrame;
+			scaleDesc.iEndFrame = eDesc.iEndFrame;
+			scaleDesc.fStartScale = eDesc.fStartScale;
+			scaleDesc.fEndScale = eDesc.fEndScale;
+			
+
+			m_pSelectDynamicObj->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(scaleDesc.strProtoTag), &scaleDesc);
 		}
 	}
 }
@@ -395,11 +519,17 @@ HRESULT CGLTool::Render_SelectOptionTool()
 		{
 			// 입력 칸 만들기
 
+			ImGui::InputFloat4("Color", reinterpret_cast<float*>(&eStaticUITempDesc.vColor));
+
 			ImGui::InputFloat("Offset", &eStaticUITempDesc.fOffset);
 			ImGui::InputInt("PassIndex", &eStaticUITempDesc.iPassIndex);
 			ImGui::InputInt("TextureIndex", &eStaticUITempDesc.iTextureIndex);
 			ImGui::InputFloat("SizeX_Ratio", &eStaticUITempDesc.fSizeX);
+			if (eStaticUITempDesc.fSizeX <= 0.0f)
+				eStaticUITempDesc.fSizeX = 0.001f;
 			ImGui::InputFloat("SizeY_Ratio", &eStaticUITempDesc.fSizeY);
+			if (eStaticUITempDesc.fSizeY <= 0.0f)
+				eStaticUITempDesc.fSizeY = 0.001f;
 			ImGui::InputFloat("fX_Ratio", &eStaticUITempDesc.fX);
 			ImGui::InputFloat("fY_Ratio", &eStaticUITempDesc.fY);
 
@@ -408,6 +538,8 @@ HRESULT CGLTool::Render_SelectOptionTool()
 			ImGui::SliderFloat("SizeY_Slider", &eStaticUITempDesc.fSizeY, 0.001f, 1.5f);
 			ImGui::SliderFloat("fX_Slider", &eStaticUITempDesc.fX, -0.5f, 1.5f);
 			ImGui::SliderFloat("fY_Slider", &eStaticUITempDesc.fY, -0.5f, 1.5f);
+
+
 
 			eStaticUIDesc = eStaticUITempDesc;
 			eStaticUIDesc.fSizeX *= g_iWinSizeX;
@@ -444,15 +576,19 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 		if (ImGui::BeginTabItem("Input Dynamic Desc"))
 		{
+		
 			// 입력 칸 만들기
-
-			// 입력 칸 만들기
-
+			ImGui::InputFloat4("Color", reinterpret_cast<float*>(&eDynamicUITempDesc.vColor));
+			ImGui::InputFloat("Duration", &eDynamicUITempDesc.fDuration);
 			ImGui::InputFloat("Offset", &eDynamicUITempDesc.fOffset);
 			ImGui::InputInt("PassIndex", &eDynamicUITempDesc.iPassIndex);
 			ImGui::InputInt("TextureIndex", &eDynamicUITempDesc.iTextureIndex);
 			ImGui::InputFloat("SizeX_Ratio", &eDynamicUITempDesc.fSizeX);
+			if (eDynamicUITempDesc.fSizeX <= 0.0f)
+				eDynamicUITempDesc.fSizeX = 0.001f;
 			ImGui::InputFloat("SizeY_Ratio", &eDynamicUITempDesc.fSizeY);
+			if (eDynamicUITempDesc.fSizeY <= 0.0f)
+				eDynamicUITempDesc.fSizeY = 0.001f;
 			ImGui::InputFloat("fX_Ratio", &eDynamicUITempDesc.fX);
 			ImGui::InputFloat("fY_Ratio", &eDynamicUITempDesc.fY);
 
@@ -504,13 +640,25 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 			ImGui::InputFloat("StartAlpha", &m_eFeatureDesc.fStartAlpha);
 			ImGui::InputFloat("EndAlpha", &m_eFeatureDesc.fEndAlpha);
-			ImGui::InputFloat("FadeTime", &m_eFeatureDesc.fTime);
 
 			ImGui::InputFloat2("StartUV", reinterpret_cast<float*>(& m_eFeatureDesc.fStartUV));
 			ImGui::InputFloat2("OffsetUV", reinterpret_cast<float*>(& m_eFeatureDesc.fOffsetUV));
 
 			ImGui::InputFloat2("StartPos", reinterpret_cast<float*>(&m_eFeatureDesc.fStartPos));
 			ImGui::InputFloat2("EndPos", reinterpret_cast<float*>(&m_eFeatureDesc.fEndPos));
+
+			// 최소값 설정
+			ImGui::InputFloat2("StartScale", reinterpret_cast<float*>(&m_eFeatureDesc.fStartScale));
+			if (m_eFeatureDesc.fStartScale.x <= 0.0f)
+				m_eFeatureDesc.fStartScale.x = 0.001f;
+			if (m_eFeatureDesc.fStartScale.y <= 0.0f)
+				m_eFeatureDesc.fStartScale.y = 0.001f;
+
+			ImGui::InputFloat2("EndScale", reinterpret_cast<float*>(&m_eFeatureDesc.fEndScale));
+			if (m_eFeatureDesc.fEndScale.x <= 0.0f)
+				m_eFeatureDesc.fEndScale.x = 0.001f;
+			if (m_eFeatureDesc.fEndScale.y <= 0.0f)
+				m_eFeatureDesc.fEndScale.y = 0.001f;
 
 
 			if (0 == m_eFeatureDesc.iType)
@@ -519,6 +667,8 @@ HRESULT CGLTool::Render_SelectOptionTool()
 				m_eFeatureDesc.strTypeTag = "UV";
 			else if (2 == m_eFeatureDesc.iType)
 				m_eFeatureDesc.strTypeTag = "Pos";
+			else if (3 == m_eFeatureDesc.iType)
+				m_eFeatureDesc.strTypeTag = "Scale";
 
 			ImGui::EndTabItem();
 		}
@@ -552,6 +702,17 @@ HRESULT CGLTool::Render_SelectOptionTool()
 			{
 				if (nullptr != m_pSelectStaticObj)
 					m_pSelectStaticObj->Set_bDead();
+
+				int currentIndex = 0;
+				for (auto& pObj : m_StaticUIList)
+				{
+					if (m_iSelectObjIndex == currentIndex)
+						pObj = nullptr;
+
+					++currentIndex;
+				}
+
+				m_pSelectStaticObj = nullptr;
 				m_iSelectObjIndex = -1;
 			}
 
@@ -559,6 +720,17 @@ HRESULT CGLTool::Render_SelectOptionTool()
 			{
 				if (nullptr != m_pSelectDynamicObj)
 					m_pSelectDynamicObj->Set_bDead();
+
+				int currentIndex = 0;
+				for (auto& pObj : m_DynamicUIList)
+				{
+					if (m_iDynamicObjIndex == currentIndex)
+						pObj = nullptr;
+
+					++currentIndex;
+				}
+
+				m_pSelectDynamicObj = nullptr;
 				m_iDynamicObjIndex = -1;
 			}
 
@@ -616,13 +788,13 @@ HRESULT CGLTool::Render_SelectOptionTool()
 				{
 					string fileName = IFILEDIALOG->GetCurrentFileName();
 
-					if (fileName.find("Static"))
+					if (fileName.find("Static") != fileName.npos)
 					{
 						Add_Static_UI_From_File();
 					}
-					else if (fileName.find("Dynamic"))
+					else if (fileName.find("Dynamic") != fileName.npos)
 					{
-
+						Add_Dynamic_UI_From_File();
 					}
 
 					
@@ -700,12 +872,12 @@ HRESULT CGLTool::Render_UIList()
 					{
 						m_iDynamicObjIndex = index;
 						m_pSelectDynamicObj = pObj;
-						eDynamicUIDesc = m_pSelectDynamicObj->Get_Desc();
-						eDynamicUIDesc.fSizeX /= g_iWinSizeX;
-						eDynamicUIDesc.fSizeY /= g_iWinSizeY;
-						eDynamicUIDesc.fX /= g_iWinSizeX;
-						eDynamicUIDesc.fY /= g_iWinSizeY;
-						eDynamicUIDesc.strTextureTag = pObj->Get_StrTextureTag();
+						eDynamicUITempDesc = m_pSelectDynamicObj->Get_Desc();
+						eDynamicUITempDesc.fSizeX /= g_iWinSizeX;
+						eDynamicUITempDesc.fSizeY /= g_iWinSizeY;
+						eDynamicUITempDesc.fX /= g_iWinSizeX;
+						eDynamicUITempDesc.fY /= g_iWinSizeY;
+						eDynamicUITempDesc.strTextureTag = pObj->Get_StrTextureTag();
 
 					
 					}

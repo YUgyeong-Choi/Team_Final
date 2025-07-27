@@ -19,6 +19,7 @@ public:
 		_int iPassIndex = { 0 };
 		_int iTextureIndex = { 0 };
 		wstring strTextureTag;
+		_float4 vColor = {1.f,1.f,1.f,1.f};
 	}STATIC_UI_DESC;
 
 
@@ -35,6 +36,7 @@ public:
 		eDesc.fY = m_fY;
 		eDesc.fOffset = m_fOffset;
 		eDesc.strTextureTag = m_strTextureTag;
+		eDesc.vColor = m_vColor;
 
 		return eDesc;
 

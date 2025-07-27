@@ -12,15 +12,23 @@ CDynamic_UI::DYNAMIC_UI_DESC CDynamic_UI::Get_Desc()
 {
 	DYNAMIC_UI_DESC eDesc = {};
 
+	eDesc.fSizeX = m_fSizeX;
+	eDesc.fSizeY = m_fSizeY;
 	eDesc.iPassIndex = m_iPassIndex;
 	eDesc.iTextureIndex = m_iTextureIndex;
+	eDesc.fX = m_fX;
+	eDesc.fY = m_fY;
+	eDesc.fOffset = m_fOffset;
 	eDesc.strTextureTag = m_strTextureTag;
+	eDesc.vColor = m_vColor;
+
 	eDesc.strProtoTag = m_strProtoTag;
 	eDesc.fDuration = m_fDuration;
 
 	for (auto pFeature : m_pUIFeatures)
 	{
-		eDesc.FeatureDescs.push_back(pFeature->Get_Desc());
+		if(nullptr != pFeature)
+			eDesc.FeatureDescs.push_back(&pFeature->Get_Desc());
 	}
 
 	return eDesc;
@@ -60,10 +68,18 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 	m_fDuration = pDesc->fDuration;
 
 
-	
+	m_vColor = pDesc->vColor;
+
+	m_isFromTool = pDesc->isFromTool;
 
 	// 파일 읽어서 분기를 나눠야될듯?
 
+	auto& eFeatures = pDesc->FeatureDescs;
+
+	for (auto& pDesc : eFeatures)
+	{
+		Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(pDesc->strProtoTag), pDesc);
+	}
 
 
 
@@ -79,11 +95,12 @@ void CDynamic_UI::Update(_float fTimeDelta)
 {
 	if (!m_isFromTool)
 	{
-		m_fDuration += fTimeDelta;
+		m_fElapsedTime += fTimeDelta;
 
-		if (m_fDuration > 0.16f)
+
+		if (m_fElapsedTime > m_fDuration)
 		{
-			m_fDuration = 0;
+			m_fElapsedTime = 0.f;
 			++m_iCurrentFrame;
 		}
 
@@ -137,7 +154,8 @@ void CDynamic_UI::Update_UI_From_Tool(_int& iCurrentFrame)
 
 void CDynamic_UI::Update_UI_From_Tool(DYNAMIC_UI_DESC eDesc)
 {
-
+	m_fDuration = eDesc.fDuration;
+	m_vColor = eDesc.vColor;
 	m_fX = eDesc.fX;
 	m_fY = eDesc.fY;
 	m_fOffset = eDesc.fOffset;
@@ -200,6 +218,9 @@ HRESULT CDynamic_UI::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTextureIndex)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &m_vColor, sizeof(_float4))))
 		return E_FAIL;
 
 	// 기본값을 던지고, 추가로 덮어쓰자
