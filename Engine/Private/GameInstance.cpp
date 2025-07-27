@@ -669,12 +669,12 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pObject_Manager);
 
-	//오브젝트 매니저에서 타겟 없애야 되는게 있어서 후 순위로 옮겼음 (모델 미리보기 기능)
-	Safe_Release(m_pTarget_Manager);
-
 	Safe_Release(m_pPrototype_Manager);
 
 	Safe_Release(m_pLevel_Manager);
+
+	//오브젝트 매니저에서 타겟 없애야 되는게 있어서 후 순위로 옮겼음 (모델 미리보기 기능)
+	Safe_Release(m_pTarget_Manager);
 
 	Safe_Release(m_pInput_Device);
 

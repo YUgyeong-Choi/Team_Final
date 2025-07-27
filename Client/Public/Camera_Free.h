@@ -27,7 +27,6 @@ public:
 
 public:
 	void Set_Moveable(_bool bMoveable) {
-		printf("%d\n", bMoveable);
 		m_bMoveable = bMoveable;
 	}
 

@@ -36,7 +36,7 @@ HRESULT CPreviewObject::Initialize(void* pArg)
 	m_pCameraTransformCom->Set_RotationPreSec(1.f);
 	m_pCameraTransformCom->Set_SpeedPreSec(1.f);
 
-	_vector vEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
+	_vector vEye = XMVectorSet(0.f, 0.f, 10.f, 1.f);
 	_vector vAt = XMVectorSet(0.f, 0.f, 0.f, 1.f); // °íÁ¤ Å¸°Ù
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
@@ -184,7 +184,7 @@ void CPreviewObject::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pCameraTransformCom);
 
-	if (m_bCloned)
+	if (nullptr != m_pGameInstance->Find_RenderTarget(TEXT("Target_Preview")))
 	{
 		m_pGameInstance->Delete_RenderTarget(TEXT("Target_Preview"));
 		m_pGameInstance->Delete_MRT(TEXT("MRT_Preview"));
