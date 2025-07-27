@@ -15,6 +15,11 @@ public:
 	HRESULT Add_RenderTarget(const _wstring& strTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
 	HRESULT Add_MRT(const _wstring& strMRTTag, const _wstring& strTargetTag);
 
+	//렌더 타겟을 제거한다.
+	HRESULT Delete_RenderTarget(const _wstring& strTargetTag);
+	//멀티 렌더타겟을 제거한다.
+	HRESULT Delete_MRT(const _wstring& strMRTTag);
+
 	/*특정 타겟들을 장치에 동시(최대8개)에 바인딩한다. */
 	HRESULT Begin_MRT(const _wstring& strMRTTag, ID3D11DepthStencilView* pDSV = nullptr, _bool isTargetClear = false, _bool isDepthClear = false);
 	HRESULT End_MRT();
