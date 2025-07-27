@@ -75,6 +75,7 @@ protected:
 	_float4				m_vColor = { 1.f, 1.f, 1.f, 1.f };
 	_float				m_fLifeTime = {};
 	_bool				m_bBillboard = { true };
+	_bool				m_bAnimation = { true };
 
 	// TrackPositions
 	_int				m_iDuration = {10};
@@ -98,7 +99,6 @@ protected:
 public:
 	vector<EFFKEYFRAME>& Get_KeyFrames() { return m_KeyFrames; }
 
-#define USE_IMGUI
 #ifdef USE_IMGUI
 	_int* Get_Duration_Ptr() { m_iDuration = m_iEndTrackPosition - m_iStartTrackPosition; return &m_iDuration; }
 	_int* Get_EndTrackPosition_Ptr() { return &m_iEndTrackPosition; }
@@ -106,13 +106,13 @@ public:
 	_int* Get_TileX() { return &m_iTileX; }
 	_int* Get_TileY() { return &m_iTileY; }
 	_bool* Get_Billboard_Ptr() { return &m_bBillboard; }
+	_bool* Get_Animation_Ptr() { return &m_bAnimation; }
 
 	void Set_TileXY(_int iX, _int iY) { m_iTileX = iX; m_iTileY = iY; }
 	void Set_Billboard(_bool bBillboard) { m_bBillboard = bBillboard; }
+	HRESULT Change_Texture(_wstring strTextureName);
 
-#endif _USE_IMGUI
-#undef USE_IMGUI
-
+#endif
 
 	HRESULT Set_InterpolationType(_uint iKeyFrameIndex, INTERPOLATION eType) { 
 		if (iKeyFrameIndex >= m_KeyFrames.size())
