@@ -26,6 +26,8 @@ public:
 	HRESULT Bind_ShaderResource(const _wstring& strTargetTag, class CShader* pShader, const _char* pContantName);
 	HRESULT Copy_Resource(const _wstring& strTargetTag, ID3D11Texture2D* pDest);
 
+	//모델 미리보기 그리기위해 렌더타겟 찾는거 퍼블릭으로 올림
+	class CRenderTarget* Find_RenderTarget(const _wstring& strTargetTag);
 
 #ifdef _DEBUG
 public:
@@ -46,7 +48,6 @@ private:
 	map<const _wstring, list<class CRenderTarget*>>	m_MRTs;
 
 private:
-	class CRenderTarget* Find_RenderTarget(const _wstring& strTargetTag);
 	list<class CRenderTarget*>* Find_MRT(const _wstring& strMRTTag);
 
 public:

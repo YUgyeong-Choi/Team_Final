@@ -15,6 +15,10 @@ public:
 		return m_pRTV;
 	}
 
+	ID3D11ShaderResourceView* Get_SRV() const {
+		return m_pSRV;
+	}
+
 public:
 	HRESULT Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);	
 	void Clear();

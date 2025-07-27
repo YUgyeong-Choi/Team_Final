@@ -37,6 +37,7 @@ private:
 	void Render_Hierarchy();
 	void Render_Asset();
 	void Render_Detail();
+	void Render_Preview();
 
 private:
 	HRESULT Spawn_MapToolObject();
@@ -53,6 +54,11 @@ private:
 private:
 	void Picking();
 
+private:
+	void Control_PreviewObject(_float fTimeDelta);
+
+private:
+	_bool m_bPreviewHovered = { false };
 
 private:
 	//set하고싶었지만 imgui 선택이 인덱스로 접근해야해서 vector로

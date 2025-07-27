@@ -500,6 +500,12 @@ HRESULT CGameInstance::Delete_MRT(const _wstring& strMRTTag)
 	return m_pTarget_Manager->Delete_MRT(strMRTTag);
 }
 
+class CRenderTarget* CGameInstance::Find_RenderTarget(const _wstring& strTargetTag)
+{
+	return m_pTarget_Manager->Find_RenderTarget(strTargetTag);
+}
+
+
 #ifdef _DEBUG
 
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
@@ -651,8 +657,6 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pPicking);
 
-	Safe_Release(m_pTarget_Manager);
-
 	Safe_Release(m_pFont_Manager);
 
 	Safe_Release(m_pLight_Manager);
@@ -664,6 +668,9 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pRenderer);
 
 	Safe_Release(m_pObject_Manager);
+
+	//오브젝트 매니저에서 타겟 없애야 되는게 있어서 후 순위로 옮겼음 (모델 미리보기 기능)
+	Safe_Release(m_pTarget_Manager);
 
 	Safe_Release(m_pPrototype_Manager);
 
