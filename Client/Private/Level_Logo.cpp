@@ -92,7 +92,7 @@ HRESULT CLevel_Logo::Ready_Video()
 {
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
 	eDesc.fOffset = 0.1f;
-	eDesc.fInterval = 0.03f;
+	eDesc.fInterval = 0.05f;
 	eDesc.fSpeedPerSec = 1.f;
 	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Title.mp4");
 	eDesc.fX = g_iWinSizeX * 0.5f;

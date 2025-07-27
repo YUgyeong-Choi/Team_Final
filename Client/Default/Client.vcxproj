@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MapTool.h" />
     <ClInclude Include="..\Public\MySequence.h" />
+    <ClInclude Include="..\public\PBRMesh.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
     <ClInclude Include="..\Public\MapToolObject.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
+    <ClCompile Include="..\private\PBRMesh.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />

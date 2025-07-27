@@ -9,6 +9,8 @@
 NS_BEGIN(Engine)
 class CGameObject;
 class CSound_Core;
+class CShader;
+class CComponent;
 NS_END
 
 NS_BEGIN(Client)
@@ -30,10 +32,12 @@ public:
 	virtual HRESULT Render() override;
 
 
+
 private:
 	HRESULT Ready_Camera();
 	HRESULT Ready_Lights();
 	HRESULT Ready_ImGuiTools();
+	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 private:
 	HRESULT Ready_ImGui();

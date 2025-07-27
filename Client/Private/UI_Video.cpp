@@ -22,6 +22,7 @@ HRESULT CUI_Video::Initialize(void* pArg)
 
 	m_strVideoPath = pDesc->strVideoPath;
 	m_fPlaybackSpeed = pDesc->fSpeedPerSec;
+	m_fFrameInterval = pDesc->fInterval;
 
 	m_fFrameInterval = pDesc->fInterval;
 

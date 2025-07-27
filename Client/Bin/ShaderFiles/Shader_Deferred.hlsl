@@ -229,6 +229,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     /* [ 프레넬 반사율(금속) ] */
     float3 F0 = lerp(float3(0.04f, 0.04f, 0.04f), Albedo, Metallic);
     float3 F = F0 + (1.0f - F0) * pow(1.0f - VdotH, 5.0f);
+    F *= vDepthDesc.z;
 
     /* [ GGX 에너지반사 공식 ] */
     float a = Roughness * Roughness;
@@ -246,6 +247,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     /* [ 공식의 결과 스펙큘러 ] */
     float3 Specular = D * G * F / (4.0f * NdotV * NdotL + 0.001f);
     Specular *= g_vLightSpecular.rgb;
+    Specular *= vDepthDesc.w;
 
     /* [ 디퓨즈 색상 결정 ] */
     float3 kD = (1.0f - F) * (1.0f - Metallic);
@@ -253,6 +255,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
 
     /* [ 라이트의 색상 ] */
     float3 radiance = g_vLightDiffuse.rgb;
+    radiance *= 3.5f;
 
     /* [ 최종 PBR 조명 계산 ] */
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO + Ambient;
@@ -338,6 +341,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
 
     // [ 라이트 색상 ]
     float3 radiance = g_vLightDiffuse.rgb;
+    radiance *= 3.5f;
 
     // [ 최종 조명 ]
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt + Ambient;

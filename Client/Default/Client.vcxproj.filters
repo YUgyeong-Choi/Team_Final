@@ -377,6 +377,9 @@
 	</ClInclude>
     <ClInclude Include="..\Public\YGFloor.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\PBRMesh.h">
+      <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -584,6 +587,9 @@
 	</ClCompile>
     <ClCompile Include="..\Private\YGFloor.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\PBRMesh.cpp">
+      <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
