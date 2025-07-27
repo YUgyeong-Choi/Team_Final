@@ -69,7 +69,13 @@ HRESULT CTarget_Manager::Delete_MRT(const _wstring& strMRTTag)
 	if (iter == m_MRTs.end())
 		return E_FAIL;
 
-	Safe_Release(iter->second);
+	list<CRenderTarget*>& MRTList = iter->second;
+
+	for (CRenderTarget* pRenderTarget : MRTList)
+	{
+		Safe_Release(pRenderTarget);
+	}
+
 	m_MRTs.erase(iter);
 
 	return S_OK;

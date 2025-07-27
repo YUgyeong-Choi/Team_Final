@@ -24,11 +24,12 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Ready_MapModel()))
-		return E_FAIL;
+	/*if (FAILED(Ready_MapModel()))
+		return E_FAIL;*/
+
 	//제이슨으로 저장된 맵을 로드한다.
-	if (FAILED(LoadMap()))
-		return E_FAIL;
+	/*if (FAILED(LoadMap()))
+		return E_FAIL;*/
 	
 
 	/* [ 사운드 ] */

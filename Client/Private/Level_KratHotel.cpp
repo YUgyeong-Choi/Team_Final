@@ -4,6 +4,8 @@
 
 #include "Level_Loading.h"
 
+#include "StaticMesh.h"
+
 CLevel_KratHotel::CLevel_KratHotel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -18,6 +20,14 @@ HRESULT CLevel_KratHotel::Initialize()
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
+	if (FAILED(Ready_MapModel()))
+		return E_FAIL;
+
+	//제이슨으로 저장된 맵을 로드한다.
+	if (FAILED(LoadMap()))
 		return E_FAIL;
 
 	/* [ 사운드 ] */
@@ -46,6 +56,129 @@ HRESULT CLevel_KratHotel::Render()
 
 	return S_OK;
 }
+
+HRESULT CLevel_KratHotel::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
+{
+	//이미 프로토타입이존재하는 지확인
+
+	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag) != nullptr)
+	{
+		MSG_BOX("이미 프로토타입이 존재함");
+		return S_OK;
+	}
+
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratHotel::Ready_MapModel()
+{
+	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	if (!inFile.is_open())
+	{
+		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		return S_OK;
+	}
+
+	json ReadyModelJson;
+	try
+	{
+		inFile >> ReadyModelJson;
+		inFile.close();
+	}
+	catch (const exception& e)
+	{
+		inFile.close();
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+		return E_FAIL;
+	}
+
+	// JSON 데이터 확인
+	for (const auto& element : ReadyModelJson)
+	{
+		string ModelName = element.value("ModelName", "");
+		string Path = element.value("Path", "");
+
+		//모델 프로토 타입 생성
+		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+
+		const _char* pModelFilePath = Path.c_str();
+
+		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+		{
+			return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratHotel::LoadMap()
+{
+	ifstream inFile("../Bin/Save/MapTool/MapData.json");
+	if (!inFile.is_open())
+	{
+		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
+		return S_OK;
+	}
+
+	json MapDataJson;
+	inFile >> MapDataJson;
+	inFile.close();
+
+	_uint iModelCount = MapDataJson["ModelCount"];
+	const json& Models = MapDataJson["Models"];
+
+	for (_uint i = 0; i < iModelCount; ++i)
+	{
+		string ModelName = Models[i]["ModelName"];
+		_uint iObjectCount = Models[i]["ObjectCount"];
+		const json& objects = Models[i]["Objects"];
+
+		for (_uint j = 0; j < iObjectCount; ++j)
+		{
+			const json& WorldMatrixJson = objects[j]["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			//오브젝트 생성, 배치
+
+			wstring LayerTag = TEXT("Layer_MapToolObject_");
+			LayerTag += StringToWString(ModelName);
+
+			CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
+
+			StaticMeshDesc.iRender = 0;
+			StaticMeshDesc.m_eLevelID = LEVEL::KRAT_HOTEL;
+			//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+			wstring wstrModelName = StringToWString(ModelName);
+			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
+			ModelPrototypeTag += wstrModelName;
+
+			lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+			StaticMeshDesc.WorldMatrix = WorldMatrix;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
+				ENUM_CLASS(LEVEL::KRAT_HOTEL), LayerTag, &StaticMeshDesc)))
+				return E_FAIL;
+
+		}
+	}
+
+	return S_OK;
+}
+
 
 HRESULT CLevel_KratHotel::Ready_Lights()
 {
