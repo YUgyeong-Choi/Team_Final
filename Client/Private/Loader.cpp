@@ -368,8 +368,21 @@ HRESULT CLoader::Loading_For_CY()
 
 	/* For.Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
 		return E_FAIL;
+
+
+	//_wstring strFileName
+	///* For.Prototype_Component_Texture */
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), _wstring("Prototype_Component_Texture_") + ,
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
+	//	return E_FAIL;
+
+
+
+
+
+
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 

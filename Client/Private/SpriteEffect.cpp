@@ -16,6 +16,7 @@ CSpriteEffect::CSpriteEffect(const CSpriteEffect& Prototype)
 
 HRESULT CSpriteEffect::Initialize_Prototype()
 {
+	m_KeyFrames.push_back(EFFKEYFRAME{});
 	return S_OK;
 }
 

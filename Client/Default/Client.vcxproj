@@ -184,7 +184,9 @@
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\MapTool.h" />
+    <ClInclude Include="..\public\MeshEffect.h" />
     <ClInclude Include="..\Public\MySequence.h" />
+    <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PBRMesh.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
@@ -259,7 +261,9 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />
+    <ClCompile Include="..\private\MeshEffect.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
+    <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\PBRMesh.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
@@ -307,6 +311,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_SpriteEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
@@ -316,6 +321,16 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl" />
+    <FxCompile Include="Shader_Compute_Particle.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
