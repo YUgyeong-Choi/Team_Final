@@ -26,6 +26,10 @@ public:
 	virtual HRESULT Render();
 
 private:
+	//맵툴 조작
+	void Control(_float fTimeDelta);
+
+private:
 	HRESULT Ready_Model();
 	HRESULT Save_Map();
 	HRESULT Load_Map();
@@ -41,7 +45,9 @@ private:
 
 private:
 	HRESULT Spawn_MapToolObject();
-	void DeleteMapToolObject();
+	HRESULT Duplicate_Selected_Object();
+	HRESULT Undo_Selected_Object();
+	void	DeleteMapToolObject();
 	
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
@@ -50,12 +56,17 @@ private:
 	void Delete_ModelGroup(CGameObject* pMapToolObject);
 
 	CGameObject* Get_Selected_GameObject();
+	_int		Find_HierarchyIndex_By_ID(_uint iID);
 
 private:
 	void Picking();
 
 private:
 	void Control_PreviewObject(_float fTimeDelta);
+
+private:
+	//이전 프레임에 기즈모를 사용 중인가?
+	bool m_bWasUsingGizmoLastFrame = false;
 
 private:
 	_bool m_bPreviewHovered = { false };
@@ -74,6 +85,9 @@ private:
 
 private:
 	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };
+
+private:
+	class CPreviewObject* m_pPreviewObject = { nullptr };
 
 public:
 	static CMapTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
