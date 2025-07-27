@@ -11,12 +11,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CEffect final : public CBlendObject
+class CEffect_Class final : public CBlendObject
 {
 private:
-	CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CEffect(const CEffect& Prototype);
-	virtual ~CEffect() = default;
+	CEffect_Class(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CEffect_Class(const CEffect_Class& Prototype);
+	virtual ~CEffect_Class() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -39,7 +39,7 @@ private:
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CEffect_Class* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

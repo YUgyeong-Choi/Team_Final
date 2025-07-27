@@ -164,7 +164,7 @@
     <ClInclude Include="..\Public\CYTool.h" />
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\public\Dynamic_UI.h" />
-    <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\Effect_Class.h" />
     <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectSequence.h" />
     <ClInclude Include="..\public\EventMag.h" />
@@ -232,7 +232,7 @@
     <ClCompile Include="..\Private\CYTool.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\private\Dynamic_UI.cpp" />
-    <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\Effect_Class.cpp" />
     <ClCompile Include="..\private\EffectBase.cpp" />
     <ClCompile Include="..\Private\EffectSequence.cpp" />
     <ClCompile Include="..\private\EventMag.cpp" />

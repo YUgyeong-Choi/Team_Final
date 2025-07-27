@@ -1,25 +1,25 @@
-#include "Effect.h"
+#include "Effect_Class.h"
 
 #include "GameInstance.h"
 
-CEffect::CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CEffect_Class::CEffect_Class(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBlendObject{ pDevice, pContext }
 {
 
 }
 
-CEffect::CEffect(const CEffect& Prototype)
+CEffect_Class::CEffect_Class(const CEffect_Class& Prototype)
 	: CBlendObject( Prototype )
 {
 
 }
 
-HRESULT CEffect::Initialize_Prototype()
+HRESULT CEffect_Class::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CEffect::Initialize(void* pArg)
+HRESULT CEffect_Class::Initialize(void* pArg)
 {
 	GAMEOBJECT_DESC			Desc{};
 
@@ -43,12 +43,12 @@ HRESULT CEffect::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CEffect::Priority_Update(_float fTimeDelta)
+void CEffect_Class::Priority_Update(_float fTimeDelta)
 {
 
 }
 
-void CEffect::Update(_float fTimeDelta)
+void CEffect_Class::Update(_float fTimeDelta)
 {
 	m_fFrame += 90.f * fTimeDelta;
 
@@ -56,12 +56,12 @@ void CEffect::Update(_float fTimeDelta)
 		m_fFrame = 0.f;
 }
 
-void CEffect::Late_Update(_float fTimeDelta)
+void CEffect_Class::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
 }
 
-HRESULT CEffect::Render()
+HRESULT CEffect_Class::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -78,7 +78,7 @@ HRESULT CEffect::Render()
 	return S_OK;
 }
 
-HRESULT CEffect::Ready_Components()
+HRESULT CEffect_Class::Ready_Components()
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPosTex"),
@@ -98,7 +98,7 @@ HRESULT CEffect::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CEffect::Bind_ShaderResources()
+HRESULT CEffect_Class::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -120,9 +120,9 @@ HRESULT CEffect::Bind_ShaderResources()
 	return S_OK;
 }
 
-CEffect* CEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CEffect_Class* CEffect_Class::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CEffect* pInstance = new CEffect(pDevice, pContext);
+	CEffect_Class* pInstance = new CEffect_Class(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -133,20 +133,20 @@ CEffect* CEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	return pInstance;
 }
 
-CGameObject* CEffect::Clone(void* pArg)
+CGameObject* CEffect_Class::Clone(void* pArg)
 {
-	CEffect* pInstance = new CEffect(*this);
+	CEffect_Class* pInstance = new CEffect_Class(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CEffect");
+		MSG_BOX("Failed to Cloned : CEffect_Class");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CEffect::Free()
+void CEffect_Class::Free()
 {
 	__super::Free();
 
