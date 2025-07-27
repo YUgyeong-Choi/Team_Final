@@ -100,6 +100,8 @@ public:
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 	HRESULT Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
 	HRESULT Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& LightDesc);
+	HRESULT Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, class CLight** ppOut);
+	_uint Get_LightCount(_uint TYPE) const;
 #pragma endregion
 
 #pragma region FONT_MANAGER
@@ -129,6 +131,7 @@ public:
 #pragma region PICKING
 	_bool Picking(_float4* pOut);
 	_bool Picking(_int* pOut);
+	_bool Picking_ToolMesh(_int* pOut);
 #pragma endregion
 
 #pragma region SHADOW

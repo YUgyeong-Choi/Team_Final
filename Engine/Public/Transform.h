@@ -131,6 +131,9 @@ public:
 
 public:
 	void LookAt(_fvector vAt);
+	void QuaternionRotate(_matrix matWorld);
+	void Set_Quaternion(_vector vQuaternion);
+	void Update_WorldMatrix();
 
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName);
@@ -159,6 +162,7 @@ private:
 	_vector m_vOriginalRight = { 1.f, 0.f, 0.f };
 	_vector m_vOriginalUp = { 0.f, 1.f, 0.f };
 	_vector m_vOriginalLook = { 0.f, 0.f, 1.f };
+	_vector m_vQuaternionRotation = XMQuaternionIdentity();
 
 	//점프 전용
 	_vector m_vSpecialMoveStartPos = {};

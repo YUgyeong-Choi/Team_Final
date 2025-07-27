@@ -29,6 +29,7 @@
 #pragma region LEVEL_DH
 #include "StaticMesh.h"
 #include "PBRMesh.h"
+#include "DH_ToolMesh.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -252,7 +253,19 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
+
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_DirrectionalLight"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/DirrectionalLight.bin", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_PointLight"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/PointLight.bin", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_SpotLight"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SpotLight.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_SM_BuildingA_Lift_01"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Lift_01.bin", PreTransformMatrix))))
@@ -270,7 +283,9 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_ToolMesh"),
+		CDH_ToolMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

@@ -128,6 +128,38 @@ _bool CPicking::Picking(_int* pOut)
 	return true;
 }
 
+_bool CPicking::PickingToolMesh(_int* pOut)
+{
+	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PBR_Depth"), m_pTexture)))
+		return false;
+
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pTexture, 0, D3D11_MAP_READ, 0, &SubResource);
+
+	memcpy(m_pIDs, SubResource.pData, sizeof(_float4) * m_iWidth * m_iHeight);
+
+	m_pContext->Unmap(m_pTexture, 0);
+
+	POINT			ptMouse{};
+
+	GetCursorPos(&ptMouse);
+	ScreenToClient(m_hWnd, &ptMouse);
+
+	// 마우스가 클라이언트 영역 밖이면 무시
+	if (ptMouse.x < 0 || ptMouse.y < 0 || ptMouse.x >= static_cast<_long>(m_iWidth) || ptMouse.y >= static_cast<_long>(m_iHeight))
+		return false;
+
+	_uint			iIndex = ptMouse.y * m_iWidth + ptMouse.x;
+
+	*pOut = static_cast<_int>(m_pIDs[iIndex].w);
+
+	if (static_cast<_int>(m_pIDs[iIndex].w) < 0.f)
+		return false;
+
+	return true;
+}
+
 CPicking* CPicking::Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CPicking* pInstance = new CPicking(pDevice, pContext);

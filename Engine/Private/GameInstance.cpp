@@ -447,6 +447,16 @@ HRESULT CGameInstance::Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& L
 	return m_pLight_Manager->Add_LevelLightData(iLevelIndex, LightDesc);
 }
 
+HRESULT CGameInstance::Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, CLight** ppOut)
+{
+	return m_pLight_Manager->Add_LevelLightDataReturn(iLevelIndex, LightDesc, ppOut);
+}
+
+_uint CGameInstance::Get_LightCount(_uint TYPE) const
+{
+	return m_pLight_Manager->Get_LightCount(TYPE);
+}
+
 HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
@@ -523,6 +533,11 @@ _bool CGameInstance::Picking(_float4* pOut)
 _bool CGameInstance::Picking(_int* pOut)
 {
 	return m_pPicking->Picking(pOut);
+}
+
+_bool CGameInstance::Picking_ToolMesh(_int* pOut)
+{
+	return m_pPicking->PickingToolMesh(pOut);
 }
 #pragma endregion
 

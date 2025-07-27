@@ -19,7 +19,7 @@ class CLevel_DH final : public CLevel
 {
 public:
 	enum class IMGUITOOL {
-		MAP,
+		DONGHA,
 		END
 	};
 private:

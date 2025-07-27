@@ -43,9 +43,6 @@
     <Filter Include="01.Levels\LevelDH">
       <UniqueIdentifier>{14f01e87-c3e2-4c4b-bc02-7a8eca0f6f93}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelCY">
-      <UniqueIdentifier>{fe0db61e-17b3-4a02-b250-2ba12840b64c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelGL">
       <UniqueIdentifier>{114caee8-9a92-40b8-9edf-32778d06ccda}</UniqueIdentifier>
     </Filter>
@@ -55,9 +52,6 @@
     <Filter Include="98.Default\Imgui\Backend">
       <UniqueIdentifier>{624280e6-f79c-4cda-87dc-3b5155cfa85e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelCY\Tool">
-      <UniqueIdentifier>{c4cd7325-aee3-4c9c-b2d0-f34ede7d57bc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelDH\Tool">
       <UniqueIdentifier>{d260ba25-9dd3-4a2e-ae6d-6d3665e49f83}</UniqueIdentifier>
     </Filter>
@@ -66,12 +60,6 @@
     </Filter>
     <Filter Include="01.Levels\LevelJW\Tool">
       <UniqueIdentifier>{f0850a50-09c5-4f0f-af92-9eaa411944e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelCY\Tool\EffectSequence">
-      <UniqueIdentifier>{0937bec9-d18e-47f9-98c3-b4ba670deab4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelCY\Tool\ToolParticle">
-      <UniqueIdentifier>{8965fe92-8566-43de-91a1-1c9d4df84dfc}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\LevelYG">
       <UniqueIdentifier>{85c5eeba-3847-41ce-afd0-b98471da8b71}</UniqueIdentifier>
@@ -84,9 +72,6 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI">
       <UniqueIdentifier>{abd57b5b-f0cf-4c34-8c0b-f0f78d57b774}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelCY\Tool\ToolEffect">
-      <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Camera\00.Camara_Free">
       <UniqueIdentifier>{3e4d9fb2-772a-4885-981e-42db3ac214d9}</UniqueIdentifier>
@@ -159,9 +144,24 @@
     </Filter>
     <Filter Include="02.GameObjects\07.Effect\Deprecated\Explosion">
       <UniqueIdentifier>{bc5eb1b7-60bc-4699-a4fe-4b7b555d9aad}</UniqueIdentifier>
-	</Filter>
-	<Filter Include="02.GameObjects\99.UI\Static">
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Static">
       <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY">
+      <UniqueIdentifier>{fe0db61e-17b3-4a02-b250-2ba12840b64c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool">
+      <UniqueIdentifier>{c4cd7325-aee3-4c9c-b2d0-f34ede7d57bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\EffectSequence">
+      <UniqueIdentifier>{0937bec9-d18e-47f9-98c3-b4ba670deab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\ToolParticle">
+      <UniqueIdentifier>{8965fe92-8566-43de-91a1-1c9d4df84dfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\ToolEffect">
+      <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -371,8 +371,8 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Class.h">
       <Filter>02.GameObjects\07.Effect\Deprecated</Filter>
-	</ClInclude>
-	<ClInclude Include="..\public\UI_Feature_UV.h">
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Feature_UV.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\UV</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Feature_Fade.h">
@@ -383,15 +383,18 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Featrue_Scale.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\TestAnimObject.h">
-		<Filter>02.GameObjects\08.TestObject</Filter>
-	</ClInclude>
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\YGFloor.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\PBRMesh.h">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DH_ToolMesh.h">
+      <Filter>01.Levels\LevelDH\Tool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -581,8 +584,8 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Class.cpp">
       <Filter>02.GameObjects\07.Effect\Deprecated</Filter>
-	</ClCompile>
-	<ClCompile Include="..\private\UI_Feature_UV.cpp">
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Feature_UV.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\UV</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Feature_Fade.cpp">
@@ -593,15 +596,18 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\TestAnimObject.cpp">
-		<Filter>02.GameObjects\08.TestObject</Filter>
-	</ClCompile>
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\YGFloor.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\PBRMesh.cpp">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DH_ToolMesh.cpp">
+      <Filter>01.Levels\LevelDH\Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

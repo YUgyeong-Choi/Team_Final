@@ -163,6 +163,7 @@
     <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\CYTool.h" />
     <ClInclude Include="..\Public\DHTool.h" />
+    <ClInclude Include="..\Public\DH_ToolMesh.h" />
     <ClInclude Include="..\public\Dynamic_UI.h" />
     <ClInclude Include="..\Public\Effect_Class.h" />
     <ClInclude Include="..\public\EffectBase.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="..\private\Camera_Orbital.cpp" />
     <ClCompile Include="..\Private\CYTool.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
+    <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
     <ClCompile Include="..\private\Dynamic_UI.cpp" />
     <ClCompile Include="..\Private\Effect_Class.cpp" />
     <ClCompile Include="..\private\EffectBase.cpp" />
