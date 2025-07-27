@@ -18,6 +18,7 @@
 
 #include "PhysX_Manager.h"
 #include "Sound_Device.h"
+#include "Observer_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance);
 
@@ -112,6 +113,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 
 	m_pSound_Device = CSound_Device::Create();
 	if (nullptr == m_pSound_Device)
+		return E_FAIL;
+
+	m_pObserver_Manager = CObserver_Manager::Create();
+	if (nullptr == m_pObserver_Manager)
 		return E_FAIL;
 
 	return S_OK;
@@ -301,6 +306,7 @@ HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
 {
 	return m_pRenderer->Add_DebugComponent(pDebugCom);
 }
+
 
 _bool CGameInstance::Get_RenderCollider()
 {
@@ -649,6 +655,30 @@ void CGameInstance::Set_Master_Volume(_float volume)
 }
 #pragma endregion
 
+#pragma region OBSERVER
+
+HRESULT CGameInstance::Add_Observer(const _wstring strTag, CObserver* pObserver)
+{
+	return m_pObserver_Manager->Add_Observer(strTag, pObserver);
+}
+
+HRESULT CGameInstance::Remove_Observer(const _wstring strTag)
+{
+	return m_pObserver_Manager->Remove_Observer(strTag);
+}
+
+void CGameInstance::Notify(const _wstring& strTag, const _wstring& eventType, void* pData)
+{
+	m_pObserver_Manager->Notify(strTag, eventType, pData);
+}
+
+CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
+{
+	return m_pObserver_Manager->Find_Observer(strTag);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
 	Safe_Release(m_pFrustum);
@@ -684,6 +714,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pPhysX_Manager);
 
 	Safe_Release(m_pSound_Device);
+
+	Safe_Release(m_pObserver_Manager);
 
 	Destroy_Instance();
 }

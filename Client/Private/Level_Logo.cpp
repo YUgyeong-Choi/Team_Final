@@ -14,6 +14,8 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
+	
+
 	if (FAILED(Ready_Video()))
 		return E_FAIL;
 
@@ -90,8 +92,25 @@ HRESULT CLevel_Logo::Render()
 
 HRESULT CLevel_Logo::Ready_Video()
 {
+	CStatic_UI::STATIC_UI_DESC eBackDesc = {};
+	eBackDesc.fOffset = 0.1f;
+	eBackDesc.fSpeedPerSec = 1.f;
+	eBackDesc.fX = g_iWinSizeX * 0.5f;
+	eBackDesc.fY = g_iWinSizeY * 0.5f;
+	eBackDesc.fSizeX = g_iWinSizeX;
+	eBackDesc.fSizeY = g_iWinSizeY;
+	eBackDesc.iPassIndex = 0;
+	eBackDesc.iTextureIndex = 0;
+	eBackDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+	eBackDesc.vColor = { 0.f,0.f,0.f,0.f };
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background"), &eBackDesc)))
+		return E_FAIL;
+
+
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
-	eDesc.fOffset = 0.1f;
+	eDesc.fOffset = 0.05f;
 	eDesc.fInterval = 0.05f;
 	eDesc.fSpeedPerSec = 1.f;
 	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Title.mp4");
