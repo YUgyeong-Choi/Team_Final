@@ -119,12 +119,65 @@ float4 SoftEffect(float4 vOrigColor, float4 vProjPos)
     return vOrigColor;
 }
 
+// if texture has no tileset, just put In.Texcoord only
+float2 UVTexcoord(float2 vInTexcoord, float2 fTileSize = (1, 1), float2 fTileOffset = (0, 0))
+{
+    float2 baseUV = vInTexcoord * fTileSize;
+    
+    float2 finalUV = baseUV + fTileOffset.xy;
+    
+    return finalUV;
+}
+
+vector ColorAdjustment_Multiply(float4 vOrigColor, float4 vMultiplyColor)
+{
+    vector vResColor =  vOrigColor * vMultiplyColor;
+    
+    return vResColor;
+}
+
+
+vector ColorAdjustment_Hue(float4 vOrigColor, float4 vMultiplyColor)
+{
+    vector vResColor =  vOrigColor * vMultiplyColor;
+    
+    return vResColor;
+}
+
+
+float GetHue(float3 rgb)
+{
+    float cmax = max(rgb.r, max(rgb.g, rgb.b));
+    float cmin = min(rgb.r, min(rgb.g, rgb.b));
+    float delta = cmax - cmin;
+
+    float hue = 0.0f;
+
+    if (delta > 0.00001f)
+    {
+        if (cmax == rgb.r)
+            hue = fmod((rgb.g - rgb.b) / delta, 6.0f);
+        else if (cmax == rgb.g)
+            hue = ((rgb.b - rgb.r) / delta) + 2.0f;
+        else
+            hue = ((rgb.r - rgb.g) / delta) + 4.0f;
+
+        hue /= 6.0f;
+        if (hue < 0)
+            hue += 1.0f;
+    }
+
+    return hue; // 0.0 ~ 1.0
+}
+
+
+
 
 PS_OUT PS_MAIN_SOFTEFFECT(PS_IN_BLEND In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord));
     
     Out.vColor = SoftEffect(Out.vColor, In.vProjPos);
     
@@ -134,12 +187,8 @@ PS_OUT PS_MAIN_SOFTEFFECT(PS_IN_BLEND In)
 PS_OUT PS_MAIN_GRID(PS_IN_BLEND In)
 {
     PS_OUT Out;
-
-    float2 baseUV = In.vTexcoord * g_fTileSize;
     
-    float2 finalUV = baseUV + g_fTileOffset.xy;
-    
-    Out.vColor = g_Texture.Sample(DefaultSampler, finalUV);
+    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     if (Out.vColor.a <= 0.01f)
         discard;
     
@@ -148,9 +197,23 @@ PS_OUT PS_MAIN_GRID(PS_IN_BLEND In)
     return Out;
 }
 
+PS_OUT PS_MAIN_GRID_COLOR(PS_IN_BLEND In)
+{
+    PS_OUT Out;    
+    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    if (Out.vColor.a <= 0.01f)
+        discard;
+    
+    Out.vColor = ColorAdjustment_Multiply(Out.vColor, g_vColor);
+    
+    Out.vColor = SoftEffect(Out.vColor, In.vProjPos);
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
-    pass Default    // 0
+    pass Default            // 0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -161,7 +224,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();      
     }
-    pass SoftEffect // 1
+    pass SoftEffectOnly     // 1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -171,7 +234,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SOFTEFFECT();
     }
-    pass UVSprite   // 2
+    pass UVSprite_Default   // 2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -180,5 +243,15 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_BLEND();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_GRID();
+    }
+    pass UVSprite_Coloring  // 3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_BLEND();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_GRID_COLOR();
     }
 }

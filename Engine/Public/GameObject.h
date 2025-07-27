@@ -63,8 +63,10 @@ protected:
 	_bool m_bCloned = { false };
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
-	//컴포넌트를 제거한다.
-	HRESULT Remove_Component(const _wstring& strComponentTag);
+
+	HRESULT Replace_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
+	void Delete_Component(const _wstring& strComponentTag);
+
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;
