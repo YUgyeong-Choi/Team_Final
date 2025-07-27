@@ -53,6 +53,7 @@ private:
 
 
 	void SaveLoadEvents(_bool isSave = true);
+	void SaveLoadAnimStates(_bool isSave = true);
 	void Test_AnimEvents();
 
 	void Manipulate(
@@ -102,27 +103,26 @@ private:
 	_bool  m_bUseSequence = false;   // 시퀀서 모드 활성화 플래그
 	_int   m_iSequenceFrame = 0;       // 시퀀서로 제어할 현재 프레임
 	_int   m_iFirstFrame = 0;       // 시퀀서 뷰의 첫 프레임 (필요하다면)
-	_int   m_playSpeed = 1;       // 재생 속도
+	_int   m_iPlaySpeed = 1;       // 재생 속도
 	_float m_fTimeAcc = 0.0f;
 	class CEventMag* m_pEventMag = nullptr; // 이벤트 매니저
 
 	// 애니메이션 스테이트 머신 관리용
 	_int m_iSpeicificNodeId = 1;
-	vector<Engine::Parameter> m_Parameters; // 파라미터들
 	_bool m_bShowParameters = false; // 파라미터 UI 표시 여부
 
 
-	static constexpr const _char* BoolOpNames[] = { "IsTrue", "IsFalse", "None" };
-	static constexpr const _char* TriggerOpNames[] = { "Trigger", "None" };
-	static constexpr const _char* CmpIntOpNames[] = { "Greater", "Less", "Equal", "NotEqual", "None" };
-	static constexpr const _char* CmpFloatOpNames[] = { "Greater", "Less", "None" };
+	static constexpr const _char* BoolOpNames[] = { "IsTrue", "IsFalse"};
+	static constexpr const _char* TriggerOpNames[] = { "Trigger" };
+	static constexpr const _char* CmpIntOpNames[] = { "Greater", "Less", "Equal", "NotEqual"};
+	static constexpr const _char* CmpFloatOpNames[] = { "Greater", "Less" };
 
 
-	static constexpr CAnimController::EOp BoolOps[] = { CAnimController::EOp::IsTrue,    CAnimController::EOp::IsFalse,    CAnimController::EOp::None };
-	static constexpr CAnimController::EOp TriggerOps[] = { CAnimController::EOp::Trigger,   CAnimController::EOp::None };
+	static constexpr CAnimController::EOp BoolOps[] = { CAnimController::EOp::IsTrue,    CAnimController::EOp::IsFalse };
+	static constexpr CAnimController::EOp TriggerOps[] = { CAnimController::EOp::Trigger };
 	static constexpr CAnimController::EOp CmpIntOps[] = { CAnimController::EOp::Greater,   CAnimController::EOp::Less,     CAnimController::EOp::Equal,
-														   CAnimController::EOp::NotEqual,  CAnimController::EOp::None };
-	static constexpr CAnimController::EOp CmpFloatOps[] = { CAnimController::EOp::Greater,   CAnimController::EOp::Less,  CAnimController::EOp::None };
+														   CAnimController::EOp::NotEqual };
+	static constexpr CAnimController::EOp CmpFloatOps[] = { CAnimController::EOp::Greater,   CAnimController::EOp::Less};
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

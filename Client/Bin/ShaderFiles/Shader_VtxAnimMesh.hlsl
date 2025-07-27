@@ -4,6 +4,7 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 matrix g_BoneMatrices[512];
+matrix g_BoneMatrices2[256];
 
 texture2D g_DiffuseTexture;
 

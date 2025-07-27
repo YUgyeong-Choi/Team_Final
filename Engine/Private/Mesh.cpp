@@ -391,6 +391,12 @@ HRESULT CMesh::Bind_Bone_Matrices(CShader* pShader, const _char* pConstantName, 
 			XMLoadFloat4x4(Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix()));
 	}
 
+	if (m_iNumBones > g_iMaxNumBones)
+	{
+		MSG_BOX("뼈가 너무 많아");
+		return E_FAIL;
+	}
+
 	return pShader->Bind_Matrices(pConstantName, m_BoneMatrices, m_iNumBones);	
 }
 

@@ -69,8 +69,7 @@ private:
 	_wstring m_strTextureTag = {};
 	
 
-	// 월드에 그릴 사이즈
-	_float m_fScale = {};
+
 	_int   m_iPassIndex = {};
 	_int   m_iTextureIndex = {};
 

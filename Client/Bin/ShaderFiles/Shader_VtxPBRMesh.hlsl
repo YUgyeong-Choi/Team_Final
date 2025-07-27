@@ -6,6 +6,17 @@ Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 Texture2D g_ARMTexture;
 
+/* [ 조절용 파라미터 ] */
+float g_fDiffuseIntensity = 1;
+float g_fNormalIntensity = 1;
+float g_fAOIntensity = 1;
+float g_fAOPower = 1;
+float g_fRoughnessIntensity = 1;
+float g_fMetallicIntensity = 1;
+float g_fReflectionIntensity = 1;
+float g_fSpecularIntensity = 1;
+vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
+
 
 struct VS_IN
 {
@@ -87,18 +98,24 @@ PS_OUT PS_MAIN(PS_IN In)
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    vNormal = mul(vNormal, WorldMatrix);
+    float3 vNormalSample = vNormalDesc.xyz * 2.f - 1.f;
+    float3 vNormalTS = normalize(lerp(float3(0, 0, 1), vNormalSample, g_fNormalIntensity));
+    float3x3 TBN = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    float3 vWorldNormal = mul(vNormalTS, TBN);
     
     // ARM 텍스처
     float3 vARM = g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
+    float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
+    float Roughness = vARM.g * g_fRoughnessIntensity;
+    float Metallic = vARM.b * g_fMetallicIntensity;
    
-    Out.vDiffuse = vMtrlDiffuse;
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 1.f);
-    Out.vARM = float4(vARM, 1.0f);
-    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
-    Out.vAO = float4(vARM.r, vARM.r, vARM.r, 1.f);
-    Out.vRoughness = float4(vARM.g, vARM.g, vARM.g, 1.0f);
-    Out.vMetallic = float4(vARM.b, vARM.b, vARM.b, 1.0f);
+    Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
+    Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
+    Out.vARM = float4(AO, Roughness, Metallic, 1.f);
+    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, g_fReflectionIntensity, g_fSpecularIntensity);
+    Out.vAO = float4(AO, AO, AO, 1.f);
+    Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
+    Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
     
     return Out;
 }

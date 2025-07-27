@@ -3,6 +3,7 @@
 #include "DHTool.h"
 #include "Camera_Manager.h"
 #include "Level_Loading.h"
+#include "PBRMesh.h"
 
 CLevel_DH::CLevel_DH(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -26,6 +27,9 @@ HRESULT CLevel_DH::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 		return E_FAIL;
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::DH));
@@ -70,7 +74,7 @@ HRESULT CLevel_DH::Render()
 
 	ImGui_Render();
 	//·»´õ¸µ 
-	ImGui::ShowDemoWindow(); // Show demo window! :)
+	//ImGui::ShowDemoWindow(); // Show demo window! :)
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -92,14 +96,35 @@ HRESULT CLevel_DH::Ready_Lights()
 	LIGHT_DESC			LightDesc{};
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
 	LightDesc.fAmbient = 0.2f;
+	LightDesc.fIntensity = 5.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::DH), LightDesc)))
 		return E_FAIL;
 
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.fAmbient = 0.2f;
+	LightDesc.fIntensity = 5.f;
+	LightDesc.fRange = 100.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::DH), LightDesc)))
+		return E_FAIL;
+
+	CShadow::SHADOW_DESC		Desc{};
+	Desc.vEye = _float4(0.f, 20.f, -15.f, 1.f);
+	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	Desc.fFovy = XMConvertToRadians(60.0f);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 500.f;
+
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -108,6 +133,27 @@ HRESULT CLevel_DH::Ready_ImGuiTools()
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CDHTool::Create(m_pDevice, m_pContext);
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Ready_Layer_StaticMesh(const _wstring strLayerTag)
+{
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::DH;
+	Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::DH), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::DH), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
