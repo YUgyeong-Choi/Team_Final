@@ -36,6 +36,20 @@ public:
 		return !strcmp(m_szName, pName);
 	}
 
+	_int Get_ParentBoneIndex() const {
+		return m_iParentBoneIndex;
+	}
+
+	void Set_BoneIndex(_int iBoneIndex) {
+		m_iBoneIndex = iBoneIndex;
+	}
+	_int Get_BoneIndex() const {
+		return m_iBoneIndex;
+	}
+	const _char* Get_Name() {
+		return m_szName;
+	}
+
 private:
 	_char					m_szName[MAX_PATH] = {};
 
@@ -46,6 +60,7 @@ private:
 	_float4x4				m_CombinedTransformationMatrix = {};	
 
 	_int					m_iParentBoneIndex = { -1 };
+	_int					m_iBoneIndex = { -1 }; // ¿Ã ª¿¿« ¿Œµ¶Ω∫. (∏µ®ø°º≠¿« ¿Œµ¶Ω∫)
 
 	_float4x4  m_LocalBindPoseMatrix = {};
 

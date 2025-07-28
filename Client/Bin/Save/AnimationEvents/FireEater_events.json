@@ -255,7 +255,7 @@
         {
             "ClipName": "AS_Idle_C",
             "Duration": 480.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "TickPerSecond": 30.0
         },
         {
@@ -333,7 +333,7 @@
         {
             "ClipName": "AS_Walk_C_L",
             "Duration": 120.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "TickPerSecond": 30.0
         },
         {

@@ -706,7 +706,12 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	{
 		static _char stateName[64] = "NewState";
 
+		static _bool bMaskBone = false;
 		ImGui::InputText("State Name", stateName, IM_ARRAYSIZE(stateName));
+		
+		ImGui::Checkbox("Mask Bone", &bMaskBone);
+
+		
 
 		if (ImGui::Button("Add State"))
 		{
@@ -717,6 +722,10 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			// 지금 막 만든 인덱스 반환한걸로 state 찾기
 			auto& newState = pCtrl->GetStates()[newIdx];
 			newState.fNodePos = { mousePos.x, mousePos.y };
+			if (bMaskBone)
+			{
+				newState.maskBoneName = "Bip001-Spine";
+			}
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -966,6 +975,19 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				{
 					state.stateName = buf; // 이름 변경
 				}
+
+				if (ImGui::Button("MaskBone"))
+				{
+					if (state.maskBoneName.empty())
+					{
+						state.maskBoneName = "Bip001-Spine"; // 기본 마스크 본
+					}
+					else
+					{
+						state.maskBoneName.clear(); // 마스크 본 제거
+					}
+				}
+
 				if (state.clip)
 				{
 					ImGui::Text("Clip: %s", state.clip->Get_Name().c_str());
@@ -1014,7 +1036,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 
 				// 해당 노드에 애니메이션 선택하는 창
-				_int iSelectedAnimIndex = -1;
+				static _int iSelectedAnimIndex = -1;
+				static _int iSelectedUpperAnimIndex = -1;
 				if (ImGui::BeginCombo("Animations", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Animation"))
 				{
 					for (_int i = 0; i < animNames.size(); ++i)
@@ -1030,6 +1053,26 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					}
 					ImGui::EndCombo();
 				}
+
+				if (state.maskBoneName.empty() == false)
+				{
+					if (ImGui::BeginCombo("Upper Animations", iSelectedUpperAnimIndex >= 0 ? animNames[iSelectedUpperAnimIndex].c_str() : "Select Upper"))
+					{
+						for (_int i = 0; i < animNames.size(); ++i)
+						{
+							_bool isSelected = (i == iSelectedUpperAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+							{
+								iSelectedUpperAnimIndex = i;
+								state.upperClipName = anims[iSelectedUpperAnimIndex]->Get_Name();
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+				}
+
 
 				ImGui::End();
 				break;
@@ -1476,108 +1519,9 @@ HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 		ImGui::Unindent(10);
 	}
 
-
-
 	// 현재 트랜지션의 컨디션 조건 가져오기
 	// 가져왔을 때 현재 조건을 포함해서 컨디션을 정할 수 있게
 	// 각각의 컨디션마다 조건을 정할 수 있게 
-
-//	vector<string> paramNames;
-//	auto& parameters = m_pCurAnimator->GetParameters();
-//	paramNames.reserve(parameters.size());
-//	for (const auto& parm : parameters)
-//	{
-//		paramNames.push_back(parm.first);
-//	}
-//	static _int selectedParamIdx = -1;
-//
-//
-//	if (ImGui::BeginCombo("Params", selectedParamIdx >= 0 ? paramNames[selectedParamIdx].c_str() : "Select Parameter"))
-//	{
-//		for (_int i = 0; i < paramNames.size(); ++i)
-//		{
-//			_bool isSelected = (i == selectedParamIdx);
-//			if(paramNames[i].empty())
-//				continue; // 빈 이름은 제외
-//			if (ImGui::Selectable(paramNames[i].c_str(), isSelected))
-//			{
-//				selectedParamIdx = i;
-//				if (parameters.find(paramNames[i]) == parameters.end())
-//					continue; // 없는 파라미터는 제외
-//				Parameter& sel = parameters[paramNames[i]];
-//				transition.condition.paramName = paramNames[i];
-//				transition.condition.type = sel.type;
-//				transition.condition.fThreshold = sel.fValue;
-//				transition.condition.iThreshold = sel.iValue;
-//			}
-//			if (isSelected)
-//				ImGui::SetItemDefaultFocus();
-//		}
-//		ImGui::EndCombo();
-//	}	
-//	
-////	const _char* operationNames[] = { "True", "False", "Greater", "Less", "NotEqual","Equal","None" };
-//
-//	switch (transition.condition.type)
-//	{
-//	case ParamType::Bool:
-//	{
-//		
-//		_int opIdx = 0;
-//		for (_int i = 0; i < IM_ARRAYSIZE(BoolOps); ++i)
-//			if (transition.condition.op == BoolOps[i])
-//				opIdx = i;
-//
-//		// 콤보박스
-//		if (ImGui::Combo("Operator", &opIdx, BoolOpNames, IM_ARRAYSIZE(BoolOpNames)))
-//			transition.condition.op = BoolOps[opIdx];
-//		break;
-//	}
-//	case ParamType::Trigger:
-//	{
-//		transition.condition.op = CAnimController::EOp::Trigger;
-//		break;
-//	}
-//	case ParamType::Float:
-//	{
-//		_int opIdx = 0;
-//		for (_int i = 0; i < IM_ARRAYSIZE(CmpFloatOps); ++i)
-//			if (transition.condition.op == CmpFloatOps[i])
-//				opIdx = i;
-//
-//		if (ImGui::Combo("Operator", &opIdx, CmpFloatOpNames, IM_ARRAYSIZE(CmpFloatOpNames)))
-//			transition.condition.op = CmpFloatOps[opIdx];
-//		break;
-//	}
-//	case ParamType::Int:
-//	{
-//		_int opIdx = 0;
-//		for (_int i = 0; i < IM_ARRAYSIZE(CmpIntOps); ++i)
-//			if (transition.condition.op == CmpIntOps[i])
-//				opIdx = i;
-//
-//		if (ImGui::Combo("Operator", &opIdx, CmpIntOpNames, IM_ARRAYSIZE(CmpIntOpNames)))
-//			transition.condition.op = CmpIntOps[opIdx];
-//		break;
-//	}
-//	}
-//
-//	switch (transition.condition.op)
-//	{
-//	case CAnimController::EOp::Greater:
-//	case CAnimController::EOp::Less:
-//	case CAnimController::EOp::Equal:
-//	case CAnimController::EOp::NotEqual:
-//		if (transition.condition.type == ParamType::Float)
-//			ImGui::DragFloat("Threshold", &transition.condition.fThreshold, 0.01f);
-//		else  // ParamType::Int
-//			ImGui::DragInt("Threshold", &transition.condition.iThreshold, 1);
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	return S_OK;
 
 if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 {
@@ -1589,16 +1533,17 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 		paramNames.push_back(kv.first);
 
 	// 기존 조건들 편집
-	for (int idx = 0; idx < (int)transition.conditions.size(); /*증가 inside*/)
+	for (_int idx = 0; idx < static_cast<_int>(transition.conditions.size());)
 	{
 		auto& cond = transition.conditions[idx];
 		ImGui::PushID(idx);
 		ImGui::Separator();
 
-		// 1) Param 선택
-		int selParam = -1;
-		for (int i = 0; i < (int)paramNames.size(); ++i)
-			if (paramNames[i] == cond.paramName) selParam = i;
+		//Param 선택
+		_int selParam = -1;
+		for (_int i = 0; i < static_cast<_int>(paramNames.size()); ++i)
+			if (paramNames[i] == cond.paramName) 
+				selParam = i;
 
 		if (ImGui::BeginCombo("Param", selParam >= 0 ? paramNames[selParam].c_str() : "Select"))
 		{
@@ -1621,8 +1566,8 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 		case ParamType::Bool:
 		{
-			int opIdx = 0;
-			for (int i = 0; i < IM_ARRAYSIZE(BoolOps); ++i)
+			_int opIdx = 0;
+			for (_int i = 0; i < IM_ARRAYSIZE(BoolOps); ++i)
 				if (BoolOps[i] == cond.op) opIdx = i;
 			if (ImGui::Combo("Operator", &opIdx, BoolOpNames, IM_ARRAYSIZE(BoolOpNames)))
 				cond.op = BoolOps[opIdx];
@@ -1637,8 +1582,8 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 		}
 		case ParamType::Float:
 		{
-			int opIdx = 0;
-			for (int i = 0; i < IM_ARRAYSIZE(CmpFloatOps); ++i)
+			_int opIdx = 0;
+			for (_int i = 0; i < IM_ARRAYSIZE(CmpFloatOps); ++i)
 				if (CmpFloatOps[i] == cond.op) opIdx = i;
 			if (ImGui::Combo("Operator", &opIdx, CmpFloatOpNames, IM_ARRAYSIZE(CmpFloatOpNames)))
 				cond.op = CmpFloatOps[opIdx];
@@ -1646,8 +1591,8 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 		}
 		case ParamType::Int:
 		{
-			int opIdx = 0;
-			for (int i = 0; i < IM_ARRAYSIZE(CmpIntOps); ++i)
+			_int opIdx = 0;
+			for (_int i = 0; i < IM_ARRAYSIZE(CmpIntOps); ++i)
 				if (CmpIntOps[i] == cond.op) opIdx = i;
 			if (ImGui::Combo("Operator", &opIdx, CmpIntOpNames, IM_ARRAYSIZE(CmpIntOpNames)))
 				cond.op = CmpIntOps[opIdx];

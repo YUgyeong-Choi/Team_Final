@@ -39,6 +39,7 @@ namespace Engine
 	struct TransitionResult
 	{
 		_bool bTransition = false; // 전환 여부
+		_bool bBlendFullbody = true; // 블렌드 여부
 		class CAnimation* pFromAnim = nullptr;
 		class CAnimation* pToAnim = nullptr;
 		_float fDuration = 0.f; // 전환 시간

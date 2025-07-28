@@ -51,11 +51,7 @@ public:
 			return it->second;
 		return nullptr;
 	}
-	void SetCurrentAnimController(const string& name) {
-		auto it = m_AnimControllers.find(name);
-		if (it != m_AnimControllers.end())
-			m_pCurAnimController = it->second;
-	}
+    void SetCurrentAnimController(const string& name, const string& stateName = "");
     unordered_map<string, Parameter>& GetParameters();
 
     void AddParameter(const string& name, Parameter& parm);
@@ -120,6 +116,8 @@ public:
 
 private:
     void UpdateBlend(_float fTimeDelta);
+    void MakeMaskBones(const string& maskBoneName);
+	void CollectBoneChildren(const _char* boneName);
 
 
 private:
@@ -132,6 +130,9 @@ private:
 	CAnimation*                 m_pCurrentAnim = nullptr; // 현재 애니메이션
 	unordered_map<string, class CAnimController*> m_AnimControllers; // 컨트롤러 관리
     BlendState                  m_Blend{};
+
+    unordered_map<string,unordered_set<_int>>         m_UpperMaskSetMap; // 한번씩만 매핑 해두기 이름 별로
+	unordered_set<_int>         m_UpperMaskSet; // 하위 본들만 모아둔 집합 (마스크용)
 	vector<class CBone*>        m_Bones; // 전체 본의 개수
     unordered_map<string, vector<AnimEventCallback>> m_eventListeners;
 

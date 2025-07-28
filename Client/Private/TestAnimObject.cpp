@@ -171,6 +171,14 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 	_bool bSpacePress = m_pGameInstance->Key_Pressing(DIK_SPACE);
 	_bool bSpaceUp = m_pGameInstance->Key_Up(DIK_SPACE);
 
+	if (m_pGameInstance->Key_Down(DIK_TAB))
+	{
+		// 무기 장착
+		// 애니메이션 컨트롤러 변경
+		m_pAnimator->SetTrigger("EquipWepaon");
+		m_pAnimator->SetCurrentAnimController("Player_TwoHand","EquipWeapon");
+	}
+
 	// 스페이스 바를 눌렀을 때 (한 번만)
 	if (bSpaceDown)
 	{
@@ -239,8 +247,8 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 	{
 		m_pAnimator->SetBool("Move", bMove);
 
-		// F키로 런 토글
-		if (m_pGameInstance->Key_Down(DIK_F))
+		// Z키로 런 토글
+		if (m_pGameInstance->Key_Down(DIK_Z))
 		{
 			bRunToggle = !bRunToggle;
 		}

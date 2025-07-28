@@ -5,8 +5,8 @@
             "Name": "Run_F",
             "NodeId": 2,
             "NodePos": [
-                962.0,
-                599.0
+                0.0,
+                0.0
             ]
         },
         {
@@ -14,8 +14,8 @@
             "Name": "Walk_F",
             "NodeId": 4,
             "NodePos": [
-                573.372314453125,
-                -50.472320556640625
+                0.0,
+                0.0
             ]
         },
         {
@@ -23,8 +23,8 @@
             "Name": "Run_F_Stop",
             "NodeId": 5,
             "NodePos": [
-                738.372314453125,
-                80.52767944335938
+                0.0,
+                0.0
             ]
         },
         {
@@ -32,8 +32,8 @@
             "Name": "Sprint",
             "NodeId": 9,
             "NodePos": [
-                410.372314453125,
-                160.52767944335938
+                0.0,
+                0.0
             ]
         },
         {
@@ -41,8 +41,8 @@
             "Name": "Idle",
             "NodeId": 17,
             "NodePos": [
-                572.372314453125,
-                493.5276794433594
+                0.0,
+                0.0
             ]
         },
         {
@@ -50,17 +50,17 @@
             "Name": "Sprint_Stop",
             "NodeId": 23,
             "NodePos": [
-                68.372314453125,
-                195.52767944335938
+                0.0,
+                0.0
             ]
         },
         {
-            "Clip": "AS_Pino_H_Dash_Focus_B",
-            "Name": "Dash_Focus_B",
+            "Clip": "AS_Pino_H_Dash_Normal_B",
+            "Name": "Dash_Normal_B",
             "NodeId": 26,
             "NodePos": [
-                15.372314453125,
-                497.5276794433594
+                0.0,
+                0.0
             ]
         },
         {
@@ -68,8 +68,17 @@
             "Name": "Dash_Normal_F",
             "NodeId": 29,
             "NodePos": [
-                1008.372314453125,
-                321.5276794433594
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Clip": "AS_Pino_T_EquipmentWeapon",
+            "Name": "EquipWeapon",
+            "NodeId": 35,
+            "NodePos": [
+                0.0,
+                0.0
             ]
         }
     ],
@@ -77,6 +86,20 @@
     "Parameters": {
         "Dash": {
             "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "EquipWeapon": {
+            "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "FocusOn": {
+            "Type": 0,
             "bTriggered": false,
             "bValue": false,
             "fValue": 0.0,
@@ -106,6 +129,7 @@
     },
     "Transitions": [
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "IsFalse",
@@ -128,10 +152,18 @@
             "ToNodeId": 5
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "IsTrue",
                     "ParamName": "Run",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "None",
+                    "ParamName": "Move",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -150,6 +182,7 @@
             "ToNodeId": 2
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "IsTrue",
@@ -172,6 +205,7 @@
             "ToNodeId": 9
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "IsTrue",
@@ -201,6 +235,7 @@
             "ToNodeId": 4
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "IsFalse",
@@ -223,6 +258,7 @@
             "ToNodeId": 17
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "IsTrue",
@@ -252,6 +288,7 @@
             "ToNodeId": 2
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "None",
@@ -274,6 +311,7 @@
             "ToNodeId": 17
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "IsTrue",
@@ -296,6 +334,7 @@
             "ToNodeId": 9
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "IsFalse",
@@ -318,6 +357,7 @@
             "ToNodeId": 23
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "None",
@@ -340,6 +380,7 @@
             "ToNodeId": 17
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "Trigger",
@@ -362,6 +403,7 @@
             "ToNodeId": 26
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "None",
@@ -384,6 +426,7 @@
             "ToNodeId": 17
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "Trigger",
@@ -406,6 +449,7 @@
             "ToNodeId": 29
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "Trigger",
@@ -428,6 +472,7 @@
             "ToNodeId": 29
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "Trigger",
@@ -450,6 +495,7 @@
             "ToNodeId": 29
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "None",
@@ -472,6 +518,7 @@
             "ToNodeId": 17
         },
         {
+            "BlendFullbody": true,
             "Conditions": [
                 {
                     "Op": "None",
@@ -499,6 +546,29 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 4
+        },
+        {
+            "BlendFullbody": true,
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "EquipWeapon",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 17,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 172,
+                "LinkId": 36,
+                "ToNodeId": 351
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 35
         }
     ]
 }

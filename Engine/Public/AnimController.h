@@ -24,9 +24,13 @@ public:
 	struct AnimState
 	{
 		string stateName;
-		class CAnimation* clip = nullptr; // 현재 애니메이션
+		class CAnimation* clip = nullptr; // 현재 애니메이션 (하체로도 사용)
 		_int iNodeId; // 툴상에서의 노드 ID
 		_float2 fNodePos; // 툴상에서의 노드 위치
+
+		// 상하체 분리 애니메이션인 경우
+		string upperClipName; // 상체 애니메이션 이름
+		string maskBoneName; // 마스크용 뼈 이름 (없으면 빈 문자열)
 	};
 
 	struct Transition 
@@ -40,7 +44,6 @@ public:
 		Link link; // 링크 정보 (툴상에서 사용)
 		vector<Condition> conditions; // 전환 조건
 		_bool hasExitTime = false; // 애니메이션이 다 끝난 경우에
-
 		_bool Evaluates(class CAnimController* pAnimController, class CAnimator* pAnimator) const;
 	};
 
@@ -74,11 +77,11 @@ public:
 		return FindStateByNodeId(m_CurrentStateNodeId);
 	}
 
-	void AddTransition(_int fromNode, _int toNode,  const Link& link, const Condition& cond, _float duration = 0.2f,_bool bHasExitTime = false);
-	void AddTransition(_int fromNode, _int toNode, const Link& link, _float duration = 0.2f, _bool bHasExitTime = false);
+	void AddTransition(_int fromNode, _int toNode,  const Link& link, const Condition& cond, _float duration = 0.2f,_bool bHasExitTime = false,_bool bBlendFullBody = true);
+	void AddTransition(_int fromNode, _int toNode, const Link& link, _float duration = 0.2f, _bool bHasExitTime = false, _bool bBlendFullBody = true);
 	void AddTransitionMultiCondition(
 		_int fromNode, _int toNode, const Link& link,
-		const vector<Condition>& conditions, _float duration = 0.2f, _bool bHasExitTime = false);
+		const vector<Condition>& conditions, _float duration = 0.2f, _bool bHasExitTime = false, _bool bBlendFullBody = true);
 	TransitionResult& CheckTransition();
 	void ResetTransitionResult() { m_TransitionResult = TransitionResult{}; }
 

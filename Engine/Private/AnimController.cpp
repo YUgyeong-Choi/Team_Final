@@ -139,7 +139,7 @@ _float CAnimController::GetStateLength(const string& name)
 	return 0.f;
 }
 
-void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, const Condition& cond, _float duration,_bool bHasExitTime)
+void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, const Condition& cond, _float duration,_bool bHasExitTime, _bool bBlendFullBody)
 {	
 	m_Transitions.emplace_back();
 	auto& tr = m_Transitions.back();
@@ -151,17 +151,18 @@ void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link
 	tr.hasExitTime = bHasExitTime;
 }
 
-void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, _float duration, _bool bHasExitTime)
+void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, _float duration, _bool bHasExitTime, _bool bBlendFullBody)
 {
 	Condition noCond{};
 	noCond.op = EOp::None;
 	AddTransition(fromNode, toNode, link,
 		noCond,
 		duration,
-		bHasExitTime);
+		bHasExitTime,
+		bBlendFullBody);
 }
 
-void CAnimController::AddTransitionMultiCondition(_int fromNode, _int toNode, const Link& link, const vector<Condition>& conditions, _float duration, _bool bHasExitTime)
+void CAnimController::AddTransitionMultiCondition(_int fromNode, _int toNode, const Link& link, const vector<Condition>& conditions, _float duration, _bool bHasExitTime, _bool bBlendFullBody)
 {
 	m_Transitions.emplace_back();
 	auto& tr = m_Transitions.back();
@@ -261,6 +262,8 @@ json CAnimController::Serialize()
 			{"Name", state.stateName},
 			{"Clip", state.clip ? state.clip->Get_Name() : ""},
 			{"NodePos", { state.fNodePos.x, state.fNodePos.y }},
+			{"MaskBone",{state.maskBoneName}},
+			{"UpperClip", state.upperClipName},
 			});
 	}
 
@@ -385,6 +388,17 @@ void CAnimController::Deserialize(const json& j)
 				_int nodeId = state["NodeId"];
 				string name = state["Name"];
 				string clipName = state["Clip"];
+				string maskBoneName = "";
+				string upperClipName = "";
+				if (state.contains("MaskBone") && state["MaskBone"].is_string())
+				{
+					maskBoneName = state["MaskBone"];
+				}
+				if (state.contains("UpperClip") && state["UpperClip"].is_string())
+				{
+					upperClipName = state["UpperClip"];
+				}
+		
 				_float2 pos = { 0.f, 0.f };
 				if (state.contains("NodePos"))
 				{
@@ -398,7 +412,8 @@ void CAnimController::Deserialize(const json& j)
 					clip = pModel ? pModel->GetAnimationClipByName(clipName): nullptr;
 					clip->Set_Bones(m_pAnimator->GetModel()->Get_Bones()); // 애니메이션에 모델의 본 정보 설정
 				}
-				m_States.push_back({ name, clip, nodeId, pos });
+		
+				m_States.push_back({ name, clip, nodeId, pos ,upperClipName,maskBoneName});
 			}
 		}
 	}
@@ -467,7 +482,12 @@ void CAnimController::Deserialize(const json& j)
 						}
 					}
 				}
-				AddTransitionMultiCondition(fromNode, toNode, link, conditions, duration, hasExitTime);
+				_bool bBlendFullBody = true; // 기본값
+				if (tr.contains("BlendFullbody"))
+				{
+					bBlendFullBody = tr["BlendFullbody"];
+				}
+				AddTransitionMultiCondition(fromNode, toNode, link, conditions, duration, hasExitTime, bBlendFullBody);
 			}
 		}
 	}

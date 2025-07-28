@@ -106,6 +106,23 @@ HRESULT CModel::Update_Bones()
 	return S_OK;
 }
 
+void CModel::MakeBoneChildrenMap()
+{
+	for (_int i = 0; i < static_cast<_int>(m_Bones.size()); i++)
+	{
+		const _char* pBoneName = m_Bones[i]->Get_Name();
+		if (m_BoneChildrenMap.find(pBoneName) == m_BoneChildrenMap.end())
+		{
+			m_BoneChildrenMap[pBoneName] = vector<_int>();
+		}
+		if (m_Bones[i]->Get_ParentBoneIndex() != -1)
+		{
+			const _char* pParentBoneName = m_Bones[m_Bones[i]->Get_ParentBoneIndex()]->Get_Name();
+			m_BoneChildrenMap[pParentBoneName].push_back(i);
+		}
+	}
+}
+
 
 _uint CModel::Get_Mesh_NumVertices(_int iMeshIndex)
 {
@@ -258,7 +275,9 @@ HRESULT CModel::Ready_Bones(ifstream& ifs)
 		if (nullptr == pBone)
 			return E_FAIL;
 		m_Bones.push_back(pBone);
+		m_Bones.back()->Set_BoneIndex(static_cast<_int>(i)); // 자기 자신의 인덱스를 알고 있게 (상,하체 블렌딩에 사용)
 	}
+	MakeBoneChildrenMap(); // 뼈 자식 맵 생성
 	return S_OK;
 }
 
