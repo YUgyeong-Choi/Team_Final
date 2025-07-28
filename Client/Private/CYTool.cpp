@@ -193,20 +193,22 @@ HRESULT CCYTool::SequenceWindow()
 			desc.fSpeedPerSec = 5.f;
 			desc.iTileX = 8;
 			desc.iTileY = 8;
-			desc.eShaderPass = EFF_UVSPRITE_COLOR;
-			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
+			desc.iShaderPass = ENUM_CLASS(EFF_UVSPRITE_COLOR);
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
 		}
 			break;
 		case Client::CCYTool::EFF_PARTICLE:
 		{
 			CToolParticle::DESC desc = {};
-			desc.eShaderPass = EFF_UVSPRITE_COLOR;
+			desc.iShaderPass = ENUM_CLASS(EFF_UVSPRITE_COLOR);
 			desc.fRotationPerSec = XMConvertToRadians(90.f);
 			desc.fSpeedPerSec = 5.f;
 			desc.iTileX = 8;
 			desc.iTileY = 8;
 			//desc.
-			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
 		}
 
 			break;

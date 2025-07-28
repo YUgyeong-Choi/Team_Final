@@ -359,8 +359,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
     PS_OUT Out;
-    Out.vBackBuffer = float4(1.f, 0.f, 0.f, 1.f);
-    return Out;
+    
     vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     //if (all(vDiffuse.rgb == 0.f))
     if(vDiffuse.a == 0.f)
@@ -408,7 +407,6 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     if (fOldViewZ + 0.1f < vPosition.w)
         Out.vBackBuffer = Out.vBackBuffer * 0.5f;
     
-    Out.vBackBuffer = float4(1.f, 0.f, 0.f, 1.f);
     return Out;    
 }
 

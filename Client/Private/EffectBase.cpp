@@ -39,7 +39,8 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_iTileCnt = m_iTileX * m_iTileY;
 	m_fTickPerSecond = 60.f; // 60프레임으로 재생
-	m_eShaderPass = pDesc->eShaderPass;
+	m_iShaderPass = pDesc->iShaderPass;
+	m_bAnimation = pDesc->bAnimation;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -198,4 +199,7 @@ void CEffectBase::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pMaskTextureCom[0]);
+	Safe_Release(m_pMaskTextureCom[1]);
+
 }

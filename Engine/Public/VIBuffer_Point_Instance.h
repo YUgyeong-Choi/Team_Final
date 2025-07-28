@@ -9,12 +9,12 @@ class ENGINE_DLL CVIBuffer_Point_Instance final : public CVIBuffer_Instance
 public:
 	typedef struct tagPointInstance : public CVIBuffer_Instance::INSTANCE_DESC
 	{
-		_float3		vPivot;
-		_float2		vLifeTime;
-		_float2		vSpeed;
-		_bool		isLoop;
+		_float3			vPivot;
+		_float2			vLifeTime;
+		_float2			vSpeed;
+		_bool			isLoop;
 
-	}POINT_INSTANCE_DESC;
+	}DESC;
 	
 private:
 	CVIBuffer_Point_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -24,7 +24,11 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(const INSTANCE_DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
-	
+	virtual void Update(_float fTimeDelta);
+
+	virtual HRESULT Bind_Buffers() override;
+	virtual HRESULT Render() override;
+
 	virtual void Drop(_float fTimeDelta)override;
 	virtual void Spread(_float fTimeDelta)override;
 
@@ -35,6 +39,7 @@ protected:
 	_float*						m_pSpeeds = { nullptr };
 	_float3						m_vPivot = {};
 	_bool						m_isLoop = { false };
+
 
 public:
 	static CVIBuffer_Point_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const INSTANCE_DESC* pDesc);

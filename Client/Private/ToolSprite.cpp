@@ -53,7 +53,7 @@ HRESULT CToolSprite::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(m_eShaderPass)))
+	if (FAILED(m_pShaderCom->Begin(m_iShaderPass)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))

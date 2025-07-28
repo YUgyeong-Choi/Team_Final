@@ -38,4 +38,7 @@ namespace Engine
 
 	enum class ParamType { Bool, Trigger, Float, Int };
 
+
+	enum PARTICLETYPE { PTYPE_SPREAD, PTYPE_DROP, PTYPE_END };
+
 }

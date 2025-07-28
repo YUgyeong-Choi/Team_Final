@@ -3,10 +3,8 @@
 #include "Animator.h"
 #include "Animation.h"
 #include "AnimController.h"
-#define USE_IMGUI
 #include "Client_Defines.h"
 #include <MySequence.h>
-#undef USE_IMGUI
 
 NS_BEGIN(Engine)
 class CModel;
