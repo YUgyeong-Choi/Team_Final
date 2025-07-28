@@ -36,6 +36,12 @@ namespace Client
 
 #pragma endregion
 
+	enum INTERPOLATION_CAMERA
+	{
+		NONE,
+		LERP,
+		CATMULLROM
+	};
 }
 
 

@@ -25,22 +25,22 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
-	//���� �����ϱ����� �� ������Ÿ���� �غ��Ѵ�.
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
 	/*if (FAILED(Ready_MapModel()))
 		return E_FAIL;*/
 
-	//���̽����� ����� ���� �ε��Ѵ�.
+		//제이슨으로 저장된 맵을 로드한다.
 
 	//if (FAILED(LoadMap()))
 	//	return E_FAIL;
 
-	//�ִϸ��̼� ������Ʈ
+	//애니메이션 오브젝트
 	if (FAILED(Ready_TestAnimObject()))
 		return E_FAIL;
 
 	
 
-	/* [ ���� ] */
+	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
 	m_pBGM->Play();
@@ -71,7 +71,7 @@ HRESULT CLevel_KratCentralStation::Render()
 
 HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
 {
-	//�̹� ������Ÿ���������ϴ� ��Ȯ��
+	//이미 프로토타입이존재하는 지확인
 
 	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
 	{
@@ -112,13 +112,13 @@ HRESULT CLevel_KratCentralStation::Ready_MapModel()
 		return E_FAIL;
 	}
 
-	// JSON ������ Ȯ��
+	// JSON 데이터 확인
 	for (const auto& element : ReadyModelJson)
 	{
 		string ModelName = element.value("ModelName", "");
 		string Path = element.value("Path", "");
 
-		//�� ������ Ÿ�� ����
+		//모델 프로토 타입 생성
 		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
 
 		const _char* pModelFilePath = Path.c_str();
@@ -163,7 +163,7 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 				for (_int col = 0; col < 4; ++col)
 					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
-			//������Ʈ ����, ��ġ
+			//오브젝트 생성, 배치
 
 			wstring LayerTag = TEXT("Layer_MapToolObject_");
 			LayerTag += StringToWString(ModelName);

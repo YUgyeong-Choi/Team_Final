@@ -25,14 +25,20 @@ private:
 	HRESULT Render_CameraFrame();
 	vector<CUTSCENE_DESC> m_vecCameraFrame;
 	CUTSCENE_DESC m_CutSceneDesc = {};
-	_float m_fDuration = {};
-	_bool m_bUseLerp = true;
+	_float m_fInterpDuration = {};
+	INTERPOLATION_CAMERA m_eInterpMode = INTERPOLATION_CAMERA::NONE;
+	_bool m_bZoom = false;
+	_float m_fFov = 60.f;
+	_float m_fFovDuration = {};
 
-	int selectedFrameIndex = -1;
-	XMFLOAT3 editedPos{}, editedRot{};
-	float editedDuration = 0.f;
-	_bool editedLerp = false;
-	int lastSelectedIndex = -1;
+	int m_iSelectedFrameIndex = -1;
+	int m_iLastSelectedIndex = -1;
+	XMFLOAT3 m_editedPos{}, m_editedRot{};
+	float m_fEditedInterpDuration = 0.f;
+	INTERPOLATION_CAMERA m_eEditInterpMode = INTERPOLATION_CAMERA::NONE;
+	_bool m_bEditZoom = false;
+	_float m_fEditFov = 60.f;
+	_float m_fEditFovDuration = {};
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

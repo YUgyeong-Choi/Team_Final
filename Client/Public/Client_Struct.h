@@ -84,8 +84,11 @@ namespace Client
 	typedef struct tagCutScene
 	{
 		_matrix worldMatrix;
-		_bool bUseLerp;
-		_float fDuration;
+		INTERPOLATION_CAMERA eInterp;
+		_float fInterpDuration;
+		_bool bZoom;
+		_float fFov;
+		_float fFovDuration;
 	}CUTSCENE_DESC;
 
 }
