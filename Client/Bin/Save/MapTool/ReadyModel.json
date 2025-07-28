@@ -4,6 +4,14 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_01.bin"
     },
     {
+        "ModelName": "SM_BuildingA_Door_04",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_04.bin"
+    },
+    {
+        "ModelName": "SM_BuildingA_Door_11a",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_11a.bin"
+    },
+    {
         "ModelName": "SM_BuildingA_Drain_01",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Drain_01.bin"
     },

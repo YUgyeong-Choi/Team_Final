@@ -34,7 +34,6 @@ HRESULT CLevel_YW::Initialize()
 
 void CLevel_YW::Update(_float fTimeDelta)
 {
-
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
@@ -43,7 +42,6 @@ void CLevel_YW::Update(_float fTimeDelta)
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
 
-	
 	m_pCamera_Manager->Update(fTimeDelta);
 	//__super::Update(fTimeDelta);
 }
@@ -78,6 +76,7 @@ HRESULT CLevel_YW::Render()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	//ImGui::UpdatePlatformWindows();
 	//ImGui::RenderPlatformWindowsDefault();
+
 	return S_OK;
 }
 

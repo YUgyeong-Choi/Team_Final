@@ -322,6 +322,8 @@ HRESULT CMapTool::Render_MapTool()
 	Render_Hierarchy();
 
 	Render_Asset();
+	Render_Favorite();
+
 	Render_Preview();
 
 	Render_Detail();
@@ -406,6 +408,22 @@ void CMapTool::Render_Asset()
 		}
 	}
 
+	ImGui::SameLine();
+	if (ImGui::Button("Add Favorites"))
+	{
+		if (false == m_ModelNames.empty())
+		{
+			// 이미 이름이 목록에 존재하면 중복 추가하지 않음
+			if (find(m_FavoriteModelNames.begin(), m_FavoriteModelNames.end(), m_ModelNames[m_iSelectedModelIndex]) == m_FavoriteModelNames.end())
+			{
+				m_FavoriteModelNames.push_back(m_ModelNames[m_iSelectedModelIndex]); // 이름 추가
+			}
+		}
+	}
+
+	// 창 포커스 여부
+	const _bool bWindowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootAndChildWindows);
+
 	if (ImGui::BeginListBox("##Model List", ImVec2(-FLT_MIN, 200)))
 	{
 		/*
@@ -417,20 +435,18 @@ void CMapTool::Render_Asset()
 			const _bool isSelected = (m_iSelectedModelIndex == i);
 			if (ImGui::Selectable(m_ModelNames[i].c_str(), isSelected))
 			{
-				m_iSelectedModelIndex = i;
+				if (bWindowFocused)
+				{
+					m_iSelectedModelIndex = i;
 
-				//CPreviewObject* pPreviewObject = static_cast<CPreviewObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_PreviewObject")));
+					//미리보기 모델 변경
+					//TEXT("Prototype_Component_Model_모델이름"),
+					wstring ModelName = wstring(m_ModelNames[m_iSelectedModelIndex].begin(), m_ModelNames[m_iSelectedModelIndex].end());
+					wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
+					ModelPrototypeTag += ModelName;
 
-				//if (pPreviewObject == nullptr)
-				//	return;
-
-				//미리보기 모델 변경
-				//TEXT("Prototype_Component_Model_모델이름"),
-				wstring ModelName = wstring(m_ModelNames[m_iSelectedModelIndex].begin(), m_ModelNames[m_iSelectedModelIndex].end());
-				wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
-				ModelPrototypeTag += ModelName;
-
-				m_pPreviewObject->Change_Model(ModelPrototypeTag);
+					m_pPreviewObject->Change_Model(ModelPrototypeTag);
+				}
 			}
 
 			// 선택된 항목에 포커스
@@ -506,10 +522,7 @@ void CMapTool::Render_Asset()
 					}
 				}
 			}
-
 		}
-
-
 		IFILEDIALOG->Close();
 	}
 
@@ -517,6 +530,75 @@ void CMapTool::Render_Asset()
 
 #pragma endregion
 
+}
+
+void CMapTool::Render_Favorite()
+{
+	ImGui::Begin("Favorite", nullptr);
+
+	// 창 포커스 여부
+	const _bool bFavoriteWindowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootAndChildWindows);
+
+	if (ImGui::Button("Spawn"))
+	{
+		if (m_iSelectedFavoriteModelIndex != -1)
+		{
+			if (FAILED(Spawn_MapToolObject(m_FavoriteModelNames[m_iSelectedFavoriteModelIndex])))
+			{
+				MSG_BOX("스폰 실패");
+			}
+		}
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button("Delete Favorite"))
+	{
+		if (m_iSelectedFavoriteModelIndex != -1 && m_FavoriteModelNames.empty() == false)
+		{
+			const string& selectModel = m_FavoriteModelNames[m_iSelectedFavoriteModelIndex];
+
+			auto iter = find(m_FavoriteModelNames.begin(), m_FavoriteModelNames.end(), selectModel);
+			// 찾아서 제거
+			if (iter != m_FavoriteModelNames.end())
+			{
+				m_FavoriteModelNames.erase(iter);
+				m_iSelectedFavoriteModelIndex = -1;
+			}
+		}
+	}
+	
+
+	if (ImGui::BeginListBox("##Favorite List", ImVec2(-FLT_MIN, 200)))
+	{
+		for (_int i = 0; i < m_FavoriteModelNames.size(); ++i)
+		{
+			const _bool isSelected = (m_iSelectedFavoriteModelIndex == i);
+			if (ImGui::Selectable(m_FavoriteModelNames[i].c_str(), isSelected))
+			{
+				if (bFavoriteWindowFocused) // 포커스 된 경우에만 모델 변경
+				{
+
+					m_iSelectedFavoriteModelIndex = i;
+
+					//미리보기 모델 변경
+					//TEXT("Prototype_Component_Model_모델이름"),
+					wstring ModelName = wstring(m_FavoriteModelNames[m_iSelectedFavoriteModelIndex].begin(), m_FavoriteModelNames[m_iSelectedFavoriteModelIndex].end());
+					wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
+					ModelPrototypeTag += ModelName;
+
+					m_pPreviewObject->Change_Model(ModelPrototypeTag);
+				}
+			}
+
+			// 선택된 항목에 포커스
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+
+		ImGui::EndListBox();
+	}
+
+	ImGui::End();
 }
 
 void CMapTool::Render_Detail()
@@ -646,6 +728,11 @@ void CMapTool::Render_Preview()
 	
 	if (ImGui::Begin("Preview"))
 	{
+		if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows))
+			m_bPreviewHovered = true;
+		else
+			m_bPreviewHovered = false;
+
 		// 카메라 리셋 버튼
 		if (ImGui::Button("Reset Camera"))
 		{
@@ -662,15 +749,16 @@ void CMapTool::Render_Preview()
 			}
 		}
 
-		if(ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows))
+		//프리뷰 오브젝트 회전 토글 버튼
+		ImGui::SameLine();
+		_bool* pIsRotate = m_pPreviewObject->Get_IsRotate_Ptr();
+		const _char* label = *pIsRotate ? "ON" : "OFF";
+		ImGui::Text("Rotate");
+		ImGui::SameLine();
+		if (ImGui::Button(label))
 		{
-			m_bPreviewHovered = true;
+			*pIsRotate = !*pIsRotate;
 		}
-		else
-		{
-			m_bPreviewHovered = false;
-		}
-
 
 		// 2. 렌더타겟을 텍스처처럼 ImGui에 표시
 		ID3D11ShaderResourceView* pSRV = m_pGameInstance->Find_RenderTarget(TEXT("Target_Preview"))->Get_SRV();
@@ -755,6 +843,77 @@ HRESULT CMapTool::Spawn_MapToolObject()
 
 	//방금 추가한서을 모델 그룹에 분류해서 저장
 	Add_ModelGroup(WStringToString(ModelName), m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
+
+	return S_OK;
+}
+
+HRESULT CMapTool::Spawn_MapToolObject(string ModelName)
+{
+	//현재 선택된 모델로 맵오브젝트를 생성
+
+	CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
+
+	//TEXT("Prototype_Component_Model_모델이름"),
+	wstring wModelName = StringToWString(ModelName);
+	wstring wModelPrototypeTag = TEXT("Prototype_Component_Model_");
+	wModelPrototypeTag += wModelName;
+	lstrcpy(MapToolObjDesc.szModelPrototypeTag, wModelPrototypeTag.c_str());
+	lstrcpy(MapToolObjDesc.szModelName, wModelName.c_str());
+	/*
+	스폰을 눌렀을 때 어떤 레이어에 담았는지 저장하는 레이어 리스트가 필요함
+	삭제할 때 레이어가 존재하는 지 확인(레이어가 없으면 존재하지 않다는 것)
+	이 레이어가 비었으면 리스트에서 제외 해야함
+	*/
+	wstring LayerTag = TEXT("Layer_MapToolObject_");
+	LayerTag += wModelName;
+
+	MapToolObjDesc.iID = m_iID++;
+
+#pragma region 카메라 앞에다가 소환
+	//카메라 앞에다가 소환
+	//카메라 위치에서, 뷰행렬 Look 만큼 앞으로
+	// 카메라 위치
+	_float4 CamPos = *m_pGameInstance->Get_CamPosition();
+
+	// 위치만 반영한 행렬 생성
+	_matrix matWorld = XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
+
+	// 카메라 월드 행렬 (뷰 행렬 역행렬)
+	_matrix CamWorldMatrix = XMMatrixInverse(nullptr, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	_float4x4 CamWM = {};
+	XMStoreFloat4x4(&CamWM, CamWorldMatrix);
+
+	// 룩 벡터 추출 (3번째 행)
+	_vector vLook = XMVectorSet(CamWM._31, CamWM._32, CamWM._33, 0.f);
+
+	// 룩 벡터 정규화
+	vLook = XMVector3Normalize(vLook);
+
+	// 거리 설정
+	_float fDist = PRE_TRANSFORMMATRIX_SCALE * 500.f;
+
+	// 룩 벡터에 거리 곱하기
+	_vector vOffset = XMVectorScale(vLook, fDist);
+
+	// 카메라 위치 벡터
+	_vector vCamPos = XMLoadFloat4(&CamPos);
+
+	// 최종 위치 계산 (카메라 위치 + 룩 * 거리)
+	_vector vSpawnPos = XMVectorAdd(vCamPos, vOffset);
+
+	// 최종 월드 행렬 생성 (위치만)
+	_matrix SpawnWorldMatrix = XMMatrixTranslationFromVector(vSpawnPos);
+
+	// 오브젝트 월드 행렬에 적용
+	XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, SpawnWorldMatrix);
+#pragma endregion
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
+		ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
+		return E_FAIL;
+
+	//방금 추가한서을 모델 그룹에 분류해서 저장
+	Add_ModelGroup(ModelName, m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
 
 	return S_OK;
 }
@@ -952,6 +1111,17 @@ void CMapTool::Picking()
 void CMapTool::Control_PreviewObject(_float fTimeDelta)
 {
 	CCamera_Free* pCameraFree = CCamera_Manager::Get_Instance()->GetFreeCam(); //static_cast<CCamera_Free*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Layer_Camera")));
+
+	/*if (m_bPreviewHovered)
+	{
+		_int a = 10;
+	}
+
+	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
+	{
+		_int a = 10;
+
+	}*/
 
 	if (m_bPreviewHovered && m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
 	{

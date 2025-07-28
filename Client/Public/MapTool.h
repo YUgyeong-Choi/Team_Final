@@ -1,9 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-#define USE_IMGUI
 #include "Client_Defines.h"
-#undef USE_IMGUI
 
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
 #define PRE_TRANSFORMMATRIX_SCALE 0.01f
@@ -40,11 +38,13 @@ private:
 private:
 	void Render_Hierarchy();
 	void Render_Asset();
+	void Render_Favorite();
 	void Render_Detail();
 	void Render_Preview();
 
 private:
 	HRESULT Spawn_MapToolObject();
+	HRESULT Spawn_MapToolObject(string ModelName);
 	HRESULT Duplicate_Selected_Object();
 	HRESULT Undo_Selected_Object();
 	void	DeleteMapToolObject();
@@ -76,6 +76,9 @@ private:
 	vector<string>	m_ModelNames = {};
 	_int			m_iSelectedModelIndex = { -1 };
 
+	//즐겨찾기 목록
+	vector<string>	m_FavoriteModelNames = {};
+	_int			m_iSelectedFavoriteModelIndex = { -1 };
 private:
 	map<string, list<CGameObject*>> m_ModelGroups;
 	_int m_iSelectedHierarchyIndex = { -1 };

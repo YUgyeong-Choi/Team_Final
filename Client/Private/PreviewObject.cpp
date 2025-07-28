@@ -54,7 +54,8 @@ void CPreviewObject::Priority_Update(_float fTimeDelta)
 
 void CPreviewObject::Update(_float fTimeDelta)
 {
-	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
+	if(m_bRotate)
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
 
 }
 
@@ -69,10 +70,9 @@ void CPreviewObject::Late_Update(_float fTimeDelta)
 HRESULT CPreviewObject::Render()
 {
 	//Áß°£¿¡ ÇÁ¸®ºä¿ë Å¸°Ù º¯°æ
-
 	m_pGameInstance->End_MRT();
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Preview"), m_pDSV, true, false);
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Preview"), m_pDSV, true, true);
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -102,7 +102,7 @@ void CPreviewObject::Reset_CameraWorldMatrix()
 {
 	//_float fHeight = 10.f;
 
-	_vector vEye = XMVectorSet(0.f, 0.f, -20.f, 1.f);
+	_vector vEye = XMVectorSet(0.f, 0.f, 10.f, 1.f);
 	_vector vAt = XMVectorSet(0.f, 0.f, 0.f, 1.f); // °íÁ¤ Å¸°Ù
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
@@ -232,9 +232,15 @@ void CPreviewObject::Free()
 	Safe_Release(m_pCameraTransformCom);
 	Safe_Release(m_pDSV);
 
-	if (nullptr != m_pGameInstance->Find_RenderTarget(TEXT("Target_Preview")))
+	if (m_bCloned)
 	{
 		m_pGameInstance->Delete_RenderTarget(TEXT("Target_Preview"));
 		m_pGameInstance->Delete_MRT(TEXT("MRT_Preview"));
 	}
+
+	//if (nullptr != m_pGameInstance->Find_RenderTarget(TEXT("Target_Preview")))
+	//{
+	//	m_pGameInstance->Delete_RenderTarget(TEXT("Target_Preview"));
+	//	m_pGameInstance->Delete_MRT(TEXT("MRT_Preview"));
+	//}
 }

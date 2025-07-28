@@ -34,8 +34,15 @@ public:
 		return m_pCameraTransformCom;
 	}
 
+	_bool* Get_IsRotate_Ptr() {
+		return &m_bRotate;
+	}
+
 private:
 	wstring m_ModelPrototypeTag = {};
+
+private:
+	_bool	m_bRotate = { true };
 
 private:
 	ID3D11DepthStencilView* m_pDSV = { nullptr };
