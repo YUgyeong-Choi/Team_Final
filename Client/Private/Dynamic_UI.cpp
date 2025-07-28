@@ -118,7 +118,10 @@ void CDynamic_UI::Update(_float fTimeDelta)
 
 void CDynamic_UI::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+	if (!m_isVignetting)
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+	else
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI_DEFERRED, this);
 }
 
 HRESULT CDynamic_UI::Render()

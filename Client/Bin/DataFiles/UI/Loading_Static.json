@@ -122,8 +122,8 @@
         "PassIndex": 4,
         "TextureIndex": 4,
         "TextureTag": "Prototype_Component_Texture_Loading_Object",
-        "fSizeX": 0.12600000202655792,
-        "fSizeY": 0.5040000081062317,
+        "fSizeX": 0.11999999731779099,
+        "fSizeY": 0.4620000123977661,
         "fX": 0.032999999821186066,
         "fY": 0.7699999809265137
     },
@@ -176,18 +176,18 @@
         "fY": 0.4339999854564667
     },
     {
-        "Color": [
-            1.0,
-            0.0,
-            0.0,
-            1.0
-        ],
+      "Color": [
+        1.0,
+        0.3,
+        0.3,
+        1.0
+      ],
         "Offset": 0.029999999329447746,
         "PassIndex": 3,
         "TextureIndex": 0,
         "TextureTag": "Prototype_Component_Texture_Img_ChHead",
         "fSizeX": 0.07500000298023224,
-        "fSizeY": 0.15000000596046448,
+        "fSizeY": 0.13699999451637268,
         "fX": 0.07800000160932541,
         "fY": 0.9380000233650208
     }

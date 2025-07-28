@@ -173,9 +173,9 @@ PS_OUT PS_MAIN_FADE(PS_IN In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    Out.vColor = g_Texture.Sample(LinearClampSampler, In.vTexcoord);
     
-    if (Out.vColor.a < 0.1f)
+    if (Out.vColor.a < 0.001f)
         discard;
    
     Out.vColor.a = g_Alpha;

@@ -21,6 +21,7 @@ Texture2D g_PBR_Diffuse;
 Texture2D g_PBR_Normal;
 Texture2D g_PBR_ARM;
 Texture2D g_PBR_Depth;
+Texture2D g_PBR_Final;
 
 float PI = 3.14159265358979323846f;
 
@@ -38,6 +39,7 @@ vector g_vMtrlSpecular = 1.f;
 vector g_vCamPosition;
 
 Texture2D g_MaskTexture;
+Texture2D g_UITexture;
 
 struct VS_IN
 {
@@ -217,7 +219,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     
     /* [ 빛 계산 ] */
     float3 V = normalize(g_vCamPosition.xyz - worldPos.xyz);
-    float3 L = normalize(-g_vLightDir.xyz);
+    float3 L = normalize(g_vLightDir.xyz);
     float3 H = normalize(V + L);
     
     /* [ 필요한 내적 공식 ] */
@@ -294,12 +296,13 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     clipPos.z = z_ndc;
     clipPos.w = 1.0f;
     clipPos *= viewZ;
-
+    
     float4 worldPos = mul(clipPos, g_ProjMatrixInv);
     worldPos = mul(worldPos, g_ViewMatrixInv);
 
     // [ 라이트 방향 및 감쇠 ]
-    float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
+    //float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
+    float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
 
@@ -366,8 +369,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
     
-    Out.vBackBuffer = vDiffuse * vShade + vSpecular;
+    vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     
+    Out.vBackBuffer = vDiffuse * vShade + vSpecular;
+    if (vPBRFinal.a > 0.01f)
+        Out.vBackBuffer = vPBRFinal;
     
     
     
@@ -453,6 +459,27 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     }
 
     Out.vBackBuffer /= 6.0f;
+    
+    return Out;
+}
+
+
+PS_OUT PS_MAIN_VIGNETTING(PS_IN In)
+{
+    PS_OUT Out;
+
+    Out.vBackBuffer = g_UITexture.Sample(DefaultSampler, In.vTexcoord);
+    
+    float4 vMask = g_MaskTexture.Sample(DefaultSampler, In.vTexcoord);
+  
+    
+    float2 uv = In.vTexcoord * 2.f - 1.f;
+ 
+    
+    
+    float vignette = 1.0f - 0.8f * smoothstep(0.05f, 1.5f, length(uv));
+    
+    Out.vBackBuffer.rgb *= (vignette);
     
     return Out;
 }
@@ -549,6 +576,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_PBR_LIGHT_DIRECTIONAL();
+    }
+
+    pass Vignetting //8
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_VIGNETTING();
     }
   
 }

@@ -1,11 +1,10 @@
-#define USE_IMGUI
+
 #include "CYTool.h"
 #include "GameInstance.h"
 #include "EffectSequence.h"
 #include "ToolParticle.h"
 #include "ToolSprite.h"
 #include "Client_Calculation.h"
-#undef USE_IMGUI
 
 
 //ImGuiFileDialog g_ImGuiFileDialog;
@@ -231,17 +230,29 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Text("Duration: %d", *pEffect->Get_Duration_Ptr());
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 	ImGui::Checkbox("Billboard", pEffect->Get_Billboard_Ptr());
+	ImGui::Checkbox("Animation", pEffect->Get_Animation_Ptr());
+	ImGui::PushItemWidth(100);
+	ImGui::Text("Tile X");
+	ImGui::SameLine();
+	
+	ImGui::InputInt("##Tile X", pEffect->Get_TileX());
+	ImGui::SameLine();
+	ImGui::Text("Tile Y");
+	ImGui::SameLine();
+	ImGui::InputInt("##Tile Y", pEffect->Get_TileY());
+	ImGui::PopItemWidth();
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
-	if (ImGui::Combo("##Select Texture", &m_iSelectedTextureIdx, m_TextureNames.data(), static_cast<_int>(m_TextureNames.size())))
+	if (FAILED(Draw_TextureBrowser(pEffect)))
 	{
-		//pEffect->
+		MSG_BOX("Failed to draw texture browser");
+		ImGui::End();
+		return E_FAIL;
 	}
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
 	// 텍스쳐 선택, UV 칸 수 조절 등
-
 
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
@@ -328,11 +339,11 @@ HRESULT CCYTool::Window_Sprite()
 	//ImGui::PushItemWidth(100);
 	//ImGui::Text("U Count");
 	//ImGui::SameLine();
-	//ImGui::InputInt("##Grid_U", &m_iGridWidthCnt);
+	//ImGui::InputInt("##Grid_U", &m_iGridTileX);
 	//ImGui::SameLine();
 	//ImGui::Text("V Count");
 	//ImGui::SameLine();
-	//ImGui::InputInt("##Grid_V", &m_iGridHeightCnt);
+	//ImGui::InputInt("##Grid_V", &m_iGridTileY);
 	//ImGui::PopItemWidth();
 
 	//ImGui::Checkbox("Animation", &m_bAnimateSprite);
@@ -404,17 +415,51 @@ HRESULT CCYTool::Load_Textures()
 					filePath.c_str(), 1))))
 			{
 				string msg = "파일 오픈 실패:\n대상 경로: ";
+
 				msg += WStringToString(filePath);
 
-				// 2) MessageBoxA로 출력
 				MessageBoxA(nullptr, msg.c_str(), "오류", MB_OK | MB_ICONERROR);
 				continue;
-			}//모델태그를 게임오브젝트에 뒀냐 모델에 뒀냐..?
+			}
 
 			string strRelativePath = filesystem::relative(entry.path(), filesystem::current_path()).string();
-			m_TextureNames.push_back(WStringToString(stemName).c_str());
+			m_Textures.push_back({
+				static_cast<CTexture*>(m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::CY), prototypeTag))->Get_SRV(0),
+				WStringToString(stemName)
+				});
 		}
 	}
+
+	return S_OK;
+}
+
+HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
+{
+	ImGui::Text("Select a Texture:");
+	int columnCount = 4; // 한 줄에 몇 개 보여줄지
+
+	ImGui::BeginChild("TextureGrid", ImVec2(0, 300), true); // 스크롤 영역
+	ImGui::Columns(columnCount, nullptr, false);
+
+	for (int i = 0; i < m_Textures.size(); ++i) {
+		ImGui::PushID(i);
+
+		// 텍스처 미리보기 이미지
+		if (ImGui::ImageButton("SelectTexture", reinterpret_cast<ImTextureID>(m_Textures[i].pSRV), ImVec2(64, 64))) {
+			m_iSelectedTextureIdx = i;
+			if (FAILED(pEffect->Change_Texture(StringToWString(m_Textures[i].name))))
+				return E_FAIL;
+		}
+
+		// 텍스트 이름
+		ImGui::TextWrapped("%s", m_Textures[i].name.c_str());
+
+		ImGui::NextColumn();
+		ImGui::PopID();
+	}
+
+	ImGui::Columns(1);
+	ImGui::EndChild();
 
 	return S_OK;
 }
@@ -469,5 +514,10 @@ void CCYTool::Free()
 {
 	__super::Free();
 	Safe_Delete(m_pSequence);
+	//for (auto& tex : m_Textures)
+	//{
+	//	Safe_Release(const_cast<ID3D11ShaderResourceView*&>(tex.pSRV));
+	//}
+	m_Textures.clear();
 }
  

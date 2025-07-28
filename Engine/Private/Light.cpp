@@ -11,7 +11,7 @@ HRESULT CLight::Initialize(const LIGHT_DESC& LightDesc)
 {
 	m_pGameInstance = CGameInstance::Get_Instance();
 	m_LightDesc = LightDesc;
-
+	
     return S_OK;
 }
 

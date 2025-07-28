@@ -28,7 +28,7 @@ HRESULT CPreviewObject::Initialize(void* pArg)
 		return E_FAIL;
 
 	//¹Ì¸®º¸±â¿ë ·»´õÅ¸°Ù
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Preview"), static_cast<_uint>(g_iWinSizeX), static_cast<_uint>(g_iWinSizeY), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Preview"), static_cast<_uint>(g_iWinSizeX), static_cast<_uint>(g_iWinSizeY), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 1.f, 1.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Preview"), TEXT("Target_Preview"))))
 		return E_FAIL;
@@ -36,12 +36,7 @@ HRESULT CPreviewObject::Initialize(void* pArg)
 	m_pCameraTransformCom->Set_RotationPreSec(1.f);
 	m_pCameraTransformCom->Set_SpeedPreSec(1.f);
 
-	_vector vEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
-	_vector vAt = XMVectorSet(0.f, 0.f, 0.f, 1.f); // °íÁ¤ Å¸°Ù
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-	_matrix matView = XMMatrixLookAtLH(vEye, vAt, vUp);
-	m_pCameraTransformCom->Set_WorldMatrix(matView);
+	Reset_CameraWorldMatrix();
 
 	return S_OK;
 }
@@ -97,6 +92,18 @@ HRESULT CPreviewObject::Render()
 	return S_OK;
 }
 
+void CPreviewObject::Reset_CameraWorldMatrix()
+{
+	//_float fHeight = 10.f;
+
+	_vector vEye = XMVectorSet(-20.f, 20.f, 10.f, 1.f);
+	_vector vAt = XMVectorSet(0.f, 0.f, 0.f, 1.f); // °íÁ¤ Å¸°Ù
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	_matrix matView = XMMatrixLookAtLH(vEye, vAt, vUp);
+	m_pCameraTransformCom->Set_WorldMatrix(matView);
+}
+
 HRESULT CPreviewObject::Change_Model(wstring ModelPrototypeTag)
 {
 	//ÇöÀç µé°í ÀÖ´Â ¸ðµ¨À» ¹Ù²Û´Ù.
@@ -123,11 +130,6 @@ HRESULT CPreviewObject::Ready_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	///* For.Com_Model */
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_SM_Station_Light_01"),
-	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
-
 	/* For.Com_CameraTransformCom */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_CameraTransformCom"), reinterpret_cast<CComponent**>(&m_pCameraTransformCom))))
@@ -141,9 +143,13 @@ HRESULT CPreviewObject::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
-	
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_pCameraTransformCom->Get_World4x4())))
+
+	_float4x4 CameraWorldInverse = {};
+	XMStoreFloat4x4(&CameraWorldInverse, m_pCameraTransformCom->Get_WorldMatrix_Inverse());
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &CameraWorldInverse)))
 		return E_FAIL;
+	
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
@@ -184,7 +190,7 @@ void CPreviewObject::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pCameraTransformCom);
 
-	if (m_bCloned)
+	if (nullptr != m_pGameInstance->Find_RenderTarget(TEXT("Target_Preview")))
 	{
 		m_pGameInstance->Delete_RenderTarget(TEXT("Target_Preview"));
 		m_pGameInstance->Delete_MRT(TEXT("MRT_Preview"));

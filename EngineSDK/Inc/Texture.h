@@ -20,6 +20,12 @@ public:
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName, _uint iTextureIndex);
 	HRESULT Bind_ShaderResources(class CShader* pShader, const _char* pConstantName);
 
+	const ID3D11ShaderResourceView* Get_SRV(_uint iTextureIndex) {
+		if (iTextureIndex >= m_iNumTextures)
+			return nullptr;
+		return m_SRVs[iTextureIndex];
+	}
+
 private:	
 	vector<ID3D11ShaderResourceView*>				m_SRVs;
 	_uint											m_iNumTextures = {};

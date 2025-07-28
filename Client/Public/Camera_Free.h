@@ -24,10 +24,8 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
-
 public:
 	void Set_Moveable(_bool bMoveable) {
-		printf("%d\n", bMoveable);
 		m_bMoveable = bMoveable;
 	}
 
