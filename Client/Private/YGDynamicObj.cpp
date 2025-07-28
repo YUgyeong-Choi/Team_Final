@@ -59,8 +59,9 @@ void CYGDynamicObj::Priority_Update(_float fTimeDelta)
 		if (pScene)
 			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
 
-		Safe_Release(m_pPhysXActorCom);
-		m_pPhysXActorCom = nullptr;
+		//Safe_Release(m_pPhysXActorCom);
+		//m_pPhysXActorCom = nullptr;
+		return;
 	}
 
 	// 1. PhysX 위치 및 회전 추출

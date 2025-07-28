@@ -36,6 +36,8 @@ private:
 	//맵툴에서 프리뷰랑 같이움직여서 불값 하나 추가
 	_bool				m_bMoveable = { true };
 
+	float m_fYaw = 0.f;
+	float m_fPitch = 0.f; // Pitch는 클램핑 필요
 public:
 	static CCamera_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

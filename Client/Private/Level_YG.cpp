@@ -181,7 +181,7 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
 		return E_FAIL;
 
-	for (int i = 1; i <= 11; ++i) {
+	/*for (int i = 1; i <= 11; ++i) {
 		wstring protoTag = L"Prototype_Component_Model_Part" + to_wstring(i);
 		wstring name = L"DynamicGib" + to_wstring(i);
 
@@ -192,7 +192,7 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicGib"),
 			ENUM_CLASS(LEVEL::YG), strLayerTag, &_desc)))
 			return E_FAIL;
-	}
+	}*/
 
 	CYGDynamicObj::DYNAMICDATA_DESC _dynamicDesc{};
 	_dynamicDesc.colliderType = L"Box";
@@ -238,8 +238,8 @@ HRESULT CLevel_YG::Ready_ImGui()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Impact.ttf", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
 
 	ImGui::StyleColorsDark();  // 어두운 테마 기반
@@ -263,19 +263,6 @@ HRESULT CLevel_YG::Ready_ImGui()
 	colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f); // 클릭 시 진한 파랑
 	colors[ImGuiCol_FrameBg] = ImVec4(0.16f, 0.29f, 0.48f, 1.00f); // 입력창 배경
 
-	ImGui_ImplWin32_Init(g_hWnd);
-	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
-
-
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // multi-viewport?
-
-	ImGui::StyleColorsDark();
-	io.Fonts->AddFontFromFileTTF("C://Windows//Fonts//gulim.ttc", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
-
-	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
 
