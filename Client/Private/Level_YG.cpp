@@ -7,7 +7,7 @@
 #include "YGDynamicGib.h"
 #include "YGDynamicObj.h"
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-		: CLevel { pDevice, pContext }
+	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
@@ -40,7 +40,7 @@ void CLevel_YG::Update(_float fTimeDelta)
 		{
 			return;
 		}
-			
+
 	}
 
 	m_pCamera_Manager->Update(fTimeDelta);
@@ -66,7 +66,7 @@ HRESULT CLevel_YG::Render()
 
 	text = L"제일 오른쪽 : Shere";
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 150.f), XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	
+
 	return S_OK;
 }
 
@@ -81,7 +81,7 @@ HRESULT CLevel_YG::Ready_Camera()
 HRESULT CLevel_YG::Ready_Lights()
 {
 	LIGHT_DESC			LightDesc{};
-	 
+
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
@@ -163,9 +163,102 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGFloor"),
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
+
+
+HRESULT CLevel_YG::Ready_ImGuiTools()
+{
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::CAMERA)] = CYGTool::Create(m_pDevice, m_pContext);
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::CAMERA)])
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_YG::Ready_ImGui()
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Impact.ttf", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
+
+	ImGui::StyleColorsDark();  // 어두운 테마 기반
+
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowRounding = 8.0f;
+	style.FrameRounding = 5.0f;
+	style.GrabRounding = 5.0f;
+	style.ScrollbarRounding = 6.0f;
+
+	style.WindowPadding = ImVec2(20, 20);   // 넉넉한 창 내부 여백
+	style.FramePadding = ImVec2(10, 8);    // 버튼/입력창 안쪽 여백
+	style.ItemSpacing = ImVec2(12, 10);   // 위젯 간 간격
+
+	// 투명한 배경 느낌
+	style.Colors[ImGuiCol_WindowBg].w = 0.92f;  // 1.0은 완전 불투명
+
+	ImVec4* colors = style.Colors;
+	colors[ImGuiCol_Button] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f); // 버튼 파랑
+	colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.78f); // 호버 시 연한 파랑
+	colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f); // 클릭 시 진한 파랑
+	colors[ImGuiCol_FrameBg] = ImVec4(0.16f, 0.29f, 0.48f, 1.00f); // 입력창 배경
+
+	ImGui_ImplWin32_Init(g_hWnd);
+	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_YG::ImGui_Render()
+{
+	if (FAILED(ImGui_Docking_Settings()))
+		return E_FAIL;
+
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::CAMERA)]->Render()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_YG::ImGui_Docking_Settings()
+{
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->WorkPos);
+	ImGui::SetNextWindowSize(viewport->Size);
+	ImGui::SetNextWindowViewport(viewport->ID);
+	ImGuiWindowFlags window_flags =
+		ImGuiWindowFlags_NoDocking |
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoBringToFrontOnFocus |
+		ImGuiWindowFlags_NoNavFocus |
+		ImGuiWindowFlags_NoBackground |
+		ImGuiWindowFlags_NoDecoration |
+		ImGuiWindowFlags_MenuBar;
+
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::Begin("DockSpace", nullptr, window_flags);
+	ImGui::PopStyleVar(3);
+
+
+	ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+	ImGui::End();
+
+	return S_OK;
+}
+
 
 HRESULT CLevel_YG::Ready_Layer_Sky(const _wstring strLayerTag)
 {
