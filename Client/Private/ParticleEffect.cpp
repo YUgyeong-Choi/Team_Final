@@ -44,7 +44,7 @@ void CParticleEffect::Update(_float fTimeDelta)
 void CParticleEffect::Late_Update(_float fTimeDelta)
 {
 	/* WeightBlend */
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_EFFECT_WB, this);
 }
 
 HRESULT CParticleEffect::Render()
@@ -86,14 +86,17 @@ HRESULT CParticleEffect::Ready_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_VIBuffer_ToolParticle"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-		return E_FAIL;
-
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Smoke"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	CVIBuffer_Point_Instance::POINT_INSTANCE_DESC Desc = {};
+	Desc.vPivot = 
+
+	/* For.Com_VIBuffer */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_VIBuffer_ToolParticle"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	return S_OK;

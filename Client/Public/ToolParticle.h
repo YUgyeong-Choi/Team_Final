@@ -13,6 +13,15 @@ NS_BEGIN(Client)
 
 class CToolParticle final : public CEffectBase
 {
+public:
+	typedef struct tagPointInstance : public CVIBuffer_Instance::INSTANCE_DESC
+	{
+		_float3		vPivot;
+		_float2		vLifeTime;
+		_float2		vSpeed;
+		_bool		isLoop;
+
+	}POINT_INSTANCE_DESC;
 private:
 	CToolParticle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CToolParticle(const CToolParticle& Prototype);

@@ -11,7 +11,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CParticleEffect final : public CEffectBase
+class CParticleEffect : public CEffectBase
 {
 public:
 	typedef struct tagParticleEffectDesc : public CEffectBase::DESC
