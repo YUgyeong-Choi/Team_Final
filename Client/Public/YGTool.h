@@ -23,8 +23,7 @@ public:
 	virtual HRESULT Render();
 
 private:
-	HRESULT Render_HiTool();
-	HRESULT Render_Hi2Tool();
+	HRESULT Render_CaemraTool();
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

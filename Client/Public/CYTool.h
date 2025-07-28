@@ -1,9 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-#define USE_IMGUI
 #include "Client_Defines.h"
-#undef USE_IMGUI
 
 NS_BEGIN(Engine)
 class CShader;
@@ -39,6 +37,7 @@ private:
 	HRESULT Load_Particles();
 
 	HRESULT Load_Textures();
+	HRESULT Draw_TextureBrowser(class CEffectBase* pEffect);
 
 	void Key_Input();
 
@@ -47,8 +46,12 @@ private:
 
 private:
 #pragma region Textures
-	vector<const char*>		m_TextureNames;
-	_int					m_iSelectedTextureIdx = { 0 };
+	typedef struct TextureItem {
+		const ID3D11ShaderResourceView* pSRV;
+		string name;
+	}EFFTEXTURE;
+	vector<EFFTEXTURE>			m_Textures;
+	_int						m_iSelectedTextureIdx = { 0 };
 #pragma endregion
 
 
@@ -62,8 +65,8 @@ private:
 
 #pragma region Sprite
 	// 스프라이트 이펙트 용 변수들
-	_int	m_iGridWidthCnt = { 1 };
-	_int	m_iGridHeightCnt = { 1 };
+	//_int	m_iGridTileX = { 1 };
+	//_int	m_iGridTileY = { 1 };
 	_bool	m_bAnimateSprite = { false };
 
 #pragma endregion

@@ -1,8 +1,6 @@
 #pragma once
 
-#define USE_IMGUI
 #include "Client_Defines.h"
-#undef USE_IMGUI
 
 #include "Level.h"
 
@@ -19,7 +17,7 @@ class CLevel_DH final : public CLevel
 {
 public:
 	enum class IMGUITOOL {
-		MAP,
+		DONGHA,
 		END
 	};
 private:
