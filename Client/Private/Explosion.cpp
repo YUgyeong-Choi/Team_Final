@@ -9,7 +9,7 @@ CExplosion::CExplosion(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CExplosion::CExplosion(const CExplosion& Prototype)
-	: CPartObject{ Prototype }
+	: CPartObject(Prototype)
 {
 
 }
@@ -44,7 +44,7 @@ void CExplosion::Priority_Update(_float fTimeDelta)
 void CExplosion::Update(_float fTimeDelta)
 {
 	
-	m_pVIBufferCom->Spread(fTimeDelta);
+	//m_pVIBufferCom->Spread(fTimeDelta);
 
 	_matrix		BoneMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 

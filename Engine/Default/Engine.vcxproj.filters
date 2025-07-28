@@ -653,6 +653,9 @@
     <Filter Include="01.Utility\14. Observer\Manager">
       <UniqueIdentifier>{1fba679e-4c91-4fe4-a8d6-a6b1a08640ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Instance\Mesh">
+      <UniqueIdentifier>{9de25b12-63ab-4747-b3b1-ac6173101c54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">
