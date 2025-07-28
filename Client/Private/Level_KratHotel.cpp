@@ -316,16 +316,23 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
 	 lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_SM_BuildingA_Lift_01"));
 	
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
-		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &Desc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
+	//	ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
-	Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
-	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
-	lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_SM_BuildingA_Lift_02"));
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &Desc)))
-		return E_FAIL;
+	CStaticMesh_Instance::STATICMESHINSTANCE_DESC InstanceDesc{};
+	InstanceDesc.iRender = 0;
+	InstanceDesc.m_eLevelID = LEVEL::KRAT_HOTEL;
+
+	InstanceDesc.iNumInstance = 1;//인스턴스 갯수
+	InstanceDesc.szMeshID = TEXT("SM_BuildingA_Lift_02");
+	lstrcpy(InstanceDesc.szName, TEXT("SM_BuildingA_Lift_02"));
+	lstrcpy(InstanceDesc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Instance_SM_BuildingA_Lift_02")); //인스턴스용 모델
+
+	//요거 누수 확인해야함
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+	//	ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &InstanceDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

@@ -5,13 +5,14 @@
 #include "Mesh_Instance.h"
 
 CModel_Instance::CModel_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CComponent{ pDevice, pContext }
+	: CModel{ pDevice, pContext }
 {
 
 }
 
 CModel_Instance::CModel_Instance(const CModel_Instance& Prototype)
-	: CComponent(Prototype)
+	: CModel(Prototype)
+	, m_Meshes{ Prototype.m_Meshes }
 {
 
 
@@ -54,21 +55,17 @@ HRESULT CModel_Instance::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Read_BinaryFBX(const string& filepath)
+HRESULT CModel_Instance::Bind_Material(CShader* pShader, const _char* pConstantName, _uint iMeshIndex, aiTextureType eType, _uint iTextureIndex)
 {
-	ifstream ifs(filepath, ios::binary);
-	if (!ifs.is_open()) {
-		MSG_BOX("파일 열기 실패.");
-		return E_FAIL;
-	}
-
-	if (FAILED(Ready_Meshes(ifs)))
+	if (iMeshIndex >= m_iNumMeshes)
 		return E_FAIL;
 
-	if (FAILED(Ready_Materials(ifs, filepath.c_str())))
+	_uint		iMaterialIndex = m_Meshes[iMeshIndex]->Get_MaterialIndex();
+
+	if (iMaterialIndex >= m_iNumMaterials)
 		return E_FAIL;
 
-	return S_OK;
+	return m_Materials[iMaterialIndex]->Bind_ShaderResource(pShader, pConstantName, eType, iTextureIndex);
 }
 
 HRESULT CModel_Instance::Ready_Meshes(ifstream& ifs)
@@ -77,7 +74,7 @@ HRESULT CModel_Instance::Ready_Meshes(ifstream& ifs)
 
 	for (size_t i = 0; i < m_iNumMeshes; i++)
 	{
-		CMesh_Instance* pMesh = CMesh_Instance::Create(m_pDevice, m_pContext, m_eType, ifs, XMLoadFloat4x4(&m_PreTransformMatrix));
+		CMesh_Instance* pMesh = CMesh_Instance::Create(m_pDevice, m_pContext, m_eType, ifs, m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 		if (nullptr == pMesh)
 			return E_FAIL;
 
@@ -87,18 +84,36 @@ HRESULT CModel_Instance::Ready_Meshes(ifstream& ifs)
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Ready_Materials(ifstream& ifs, const _char* pModelFilePath)
+HRESULT CModel_Instance::Read_BinaryFBX(const string& filepath)
 {
-	ifs.read(reinterpret_cast<_char*>(&m_iNumMaterials), sizeof(_uint));  // 머테리얼 몇개읨 
-
-	for (size_t i = 0; i < m_iNumMaterials; i++)
-	{
-		CMaterial* pMaterial = CMaterial::Create(m_pDevice, m_pContext, pModelFilePath, ifs);
-		if (nullptr == pMaterial)
-			return E_FAIL;
-
-		m_Materials.push_back(pMaterial);
+	ifstream ifs(filepath, ios::binary);
+	if (!ifs.is_open()) {
+		MSG_BOX("파일 열기 실패.");
+		return E_FAIL;
 	}
+
+	SubStrModelName(filepath);
+	if (m_eType == MODEL::ANIM)
+	{
+		if (FAILED(Ready_Bones(ifs)))
+			return E_FAIL;
+	}
+
+	if (FAILED(CModel_Instance::Ready_Meshes(ifs)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Materials(ifs, filepath.c_str())))
+		return E_FAIL;
+
+	if (m_eType == MODEL::ANIM)
+	{
+		//if (FAILED(Ready_Animations(ifs)))
+		//	return E_FAIL;
+
+		if (FAILED(Add_Animations(filepath)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -132,12 +147,7 @@ void CModel_Instance::Free()
 {
 	__super::Free();
 
-	for (auto& pMaterial : m_Materials)
-		Safe_Release(pMaterial);
-	m_Materials.clear();
-
 	for (auto& pMesh : m_Meshes)
 		Safe_Release(pMesh);
 	m_Meshes.clear();
-
 }

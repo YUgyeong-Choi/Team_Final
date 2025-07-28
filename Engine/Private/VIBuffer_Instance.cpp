@@ -6,7 +6,7 @@ CVIBuffer_Instance::CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContex
 }
 
 CVIBuffer_Instance::CVIBuffer_Instance(const CVIBuffer_Instance& Prototype)
-    : CVIBuffer{ Prototype }
+    : CVIBuffer(Prototype)
     , m_pVBInstance{ Prototype.m_pVBInstance }
     , m_VBInstanceDesc{ Prototype.m_VBInstanceDesc }
     , m_VBInstanceSubresourceData{ Prototype.m_VBInstanceSubresourceData }

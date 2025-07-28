@@ -9,10 +9,11 @@ CMesh_Instance::CMesh_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 CMesh_Instance::CMesh_Instance(const CMesh_Instance& Prototype)
 	: CVIBuffer_Instance(Prototype)
+	, m_pVertexInstances(Prototype.m_pVertexInstances)
 {
 }
 
-HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix)
+HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
 	strcpy_s(m_szName, pAIMesh->mName.data);
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
@@ -55,10 +56,39 @@ HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, const aiMesh* pAIMesh,
 	if (FAILED(m_pDevice->CreateBuffer(&IBBufferDesc, &IBInitialData, &m_pIB)))
 		return E_FAIL;
 
+#pragma region INSTANCEBUFFER
+
+	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
+	m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_VBInstanceDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
+	m_VBInstanceDesc.MiscFlags = 0;
+
+	m_pVertexInstances = new VTXMESH_INSTANCE[m_iNumInstance];
+
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		m_pVertexInstances[i].vRight = _float4(rand()%10 * 1.f, rand() % 10 * 1.f, rand() % 10 * 1.f, 0.f);
+		m_pVertexInstances[i].vUp = _float4(rand() % 10 * 1.f, rand() % 10 * 1.f, rand() % 10 * 1.f, 0.f);
+		m_pVertexInstances[i].vLook = _float4(rand() % 10 * 1.f, rand() % 10 * 1.f, rand() % 10 * 1.f, 0.f);
+		m_pVertexInstances[i].vTranslation = _float4(rand() % 10 * 1.f, rand() % 10 * 1.f, rand() % 10 * 1.f, 1.f);
+
+	}
+	
+	m_VBInstanceSubresourceData.pSysMem = m_pVertexInstances;
+
+	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
+		return E_FAIL;
+
+#pragma endregion 
+	
+
+
 	return S_OK;
 }
 
-HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, ifstream& ifs, _fmatrix PreTransformMatrix)
+HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, ifstream& ifs, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
 	_uint NameLength = {};
 	ifs.read(reinterpret_cast<char*>(&NameLength), sizeof(_uint));			// 메쉬 이름 길이 
@@ -196,11 +226,11 @@ HRESULT CMesh_Instance::Ready_NonAnim_Mesh(ifstream& ifs, _fmatrix PreTransformM
 	return S_OK;
 }
 
-CMesh_Instance* CMesh_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix)
+CMesh_Instance* CMesh_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
 	CMesh_Instance* pInstance = new CMesh_Instance(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh, PreTransformMatrix)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh, Bones, PreTransformMatrix)))
 	{
 		MSG_BOX("Failed to Created : CMesh_Instance");
 		Safe_Release(pInstance);
@@ -209,11 +239,11 @@ CMesh_Instance* CMesh_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CMesh_Instance* CMesh_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, ifstream& ifs, _fmatrix PreTransformMatrix)
+CMesh_Instance* CMesh_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, ifstream& ifs, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
 	CMesh_Instance* pInstance = new CMesh_Instance(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, ifs, PreTransformMatrix)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, ifs, Bones, PreTransformMatrix)))
 	{
 		MSG_BOX("Failed to Created : CMesh_Instance");
 		Safe_Release(pInstance);
@@ -238,4 +268,9 @@ CComponent* CMesh_Instance::Clone(void* pArg)
 void CMesh_Instance::Free()
 {
 	__super::Free();
+
+	if (false == m_isCloned)
+	{
+		Safe_Delete_Array(m_pVertexInstances);
+	}
 }

@@ -35,7 +35,7 @@ public:
 
 private:
 	CModel_Instance* m_pModelCom = { nullptr };
-
+	_uint	m_iNumInstance = { 0 };
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

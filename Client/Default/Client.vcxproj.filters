@@ -181,9 +181,9 @@
     <Filter Include="01.Levels\LevelCY\Tool\ToolEffect">
       <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
     </Filter>
-	  <Filter Include="02.GameObjects\00.StaticMesh\StaticMesh_Instance">
-		  <UniqueIdentifier>{3dc06d4f-f034-42de-b5d0-7cc25f51a15f}</UniqueIdentifier>
-	  </Filter>
+    <Filter Include="02.GameObjects\00.StaticMesh\StaticMesh_Instance">
+      <UniqueIdentifier>{3dc06d4f-f034-42de-b5d0-7cc25f51a15f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Button">
       <UniqueIdentifier>{2b0fcbb9-ea95-4cc2-a9ea-66880efc5920}</UniqueIdentifier>
     </Filter>
@@ -443,7 +443,7 @@
     </ClInclude>
     <ClInclude Include="..\public\StaticMesh_Instance.h">
       <Filter>02.GameObjects\00.StaticMesh\StaticMesh_Instance</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\UI_Button.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Button</Filter>
     </ClInclude>
@@ -683,7 +683,7 @@
     </ClCompile>
     <ClCompile Include="..\private\StaticMesh_Instance.cpp">
       <Filter>02.GameObjects\00.StaticMesh\StaticMesh_Instance</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\UI_Button.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Button</Filter>
     </ClCompile>
@@ -727,6 +727,9 @@
     </FxCompile>
     <FxCompile Include="Shader_Compute_Particle.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh_Instance.hlsl">
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

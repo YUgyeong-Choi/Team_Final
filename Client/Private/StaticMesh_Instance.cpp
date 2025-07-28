@@ -24,7 +24,31 @@ HRESULT CStaticMesh_Instance::Initialize(void* pArg)
 {
 	//인스턴싱으로 이니셜라이즈
 
-	return __super::Initialize(pArg);
+	STATICMESHINSTANCE_DESC* InstanceDesc = static_cast<STATICMESHINSTANCE_DESC*>(pArg);
+
+	m_iNumInstance = InstanceDesc->iNumInstance;
+
+	m_eLevelID = InstanceDesc->m_eLevelID;
+
+	m_szMeshID = InstanceDesc->szMeshID;
+
+	m_iRender = InstanceDesc->iRender;
+
+	InstanceDesc->fSpeedPerSec = 0.f;
+	InstanceDesc->fRotationPerSec = 0.f;
+
+	if (FAILED(CGameObject::Initialize(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Components(pArg)))
+		return E_FAIL;
+
+	m_pTransformCom->Set_WorldMatrix(InstanceDesc->WorldMatrix);
+
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_InitPos.x, m_InitPos.y, m_InitPos.z, 1.f));
+	//m_pTransformCom->SetUp_Scale(InstanceDesc->m_vInitScale.x, InstanceDesc->m_vInitScale.y, InstanceDesc->m_vInitScale.z);
+
+	return S_OK;
 }
 
 void CStaticMesh_Instance::Priority_Update(_float fTimeDelta)
@@ -68,10 +92,10 @@ HRESULT CStaticMesh_Instance::Render()
 
 HRESULT CStaticMesh_Instance::Ready_Components(void* pArg)
 {
-	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
+  	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh")),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh_Instance")),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
