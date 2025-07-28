@@ -28,9 +28,9 @@ void CLevel_Logo::Update(_float fTimeDelta)
 {	
 	if (!m_isReady)
 	{
-		for (int vk = 0x08; vk <= 0xFE; ++vk) 
+		for (int vk = 0; vk <= 254; ++vk) 
 		{
-			SHORT keyState = GetAsyncKeyState(vk);
+			_int keyState = m_pGameInstance->Get_DIKeyState(vk);
 			if (keyState & 0x8000)
 			{
 				m_isReady = true;
@@ -50,15 +50,14 @@ void CLevel_Logo::Update(_float fTimeDelta)
 		if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
 		{
 
-			for (auto& pButton : m_pButtons)
+			for (int i = 0; i < m_pButtons.size(); ++i)
 			{
-				if (!pButton->Check_Click())
-					++m_iButtonIndex;
-				else
+				if (m_pButtons[i]->Check_Click())
 				{
-
+					Interation_Button(i);
 				}
 			}
+		
 
 
 		}
@@ -266,6 +265,25 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 
 	return S_OK;
+}
+
+void CLevel_Logo::Interation_Button(_int& iIndex)
+{
+	switch (iIndex)
+	{
+	case 0:
+		m_eNextLevel = LEVEL::KRAT_CENTERAL_STATION;
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		PostQuitMessage(0);
+		break;
+	default:
+		break;
+	}
 }
 
 

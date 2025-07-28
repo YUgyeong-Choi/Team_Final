@@ -20,6 +20,8 @@ public:
 
 	HRESULT Ready_Menu();
 
+	void Interation_Button(_int& iIndex);
+
 
 private:
 	class CUI_Video* m_pMainUI = {};
