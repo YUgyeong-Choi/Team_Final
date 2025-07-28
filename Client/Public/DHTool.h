@@ -6,6 +6,7 @@
 
 NS_BEGIN(Engine)
 class CShader;
+class CLight;
 NS_END
 
 NS_BEGIN(Client)
@@ -15,9 +16,9 @@ class CDHTool final : public CGameObject
 public:
 	enum class LIGHT_TYPE
 	{
-		POINT,
-		SPOT,
 		DIRECTIONAL,
+		SPOT,
+		POINT,
 		LIGHT_TYPE_END
 	};
 	enum class LEVEL_TYPE
@@ -52,6 +53,8 @@ private:
 private:
 	void Picking();
 	void PickGuizmo();
+	void TogglePickMode();
+	void DeleteSelectedObject();
 
 private:
 	HRESULT Save_Shader(
@@ -60,7 +63,13 @@ private:
 		_float& Diffuse, _float& Normal, _float& AO, _float& AOPower, _float& Roughness, _float& Metallic, _float& Reflection, _float& Specular, _float4& vTint);
 
 private:
+	void Save_Lights(LEVEL_TYPE eLType);
+	void Load_Lights(LEVEL_TYPE eLType);
+	void DeleteAllLights();
+
+private:
 	CShader* m_pShaderCom = { nullptr };
+	vector<class CDH_ToolMesh*> m_vecLights;
 
 
 private: /* [ 라이팅툴 관련 변수들 ] */
@@ -71,9 +80,13 @@ private: /* [ 라이팅툴 관련 변수들 ] */
 
 private:
 	_uint m_iID = { 0 };
+	_int m_iLightMode = { 0 };
 
 private:
-	CGameObject* m_pSelectedObject = nullptr;
+	_bool m_bPickColor = {};
+
+private:
+	class CDH_ToolMesh* m_pSelectedObject = nullptr;
 	ImGuizmo::OPERATION m_eGizmoOp = ImGuizmo::TRANSLATE;
 
 public:

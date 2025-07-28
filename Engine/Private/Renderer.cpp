@@ -170,8 +170,8 @@ HRESULT CRenderer::Initialize()
 	/* [ PBR µð¹ö±ë ] */
 	_float fFullSizeX = 1600.f;
 	_float fFullSizeY = 900.f;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Final"), fFullSizeX/2, fFullSizeY/2, fFullSizeX, fFullSizeY)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Final"), fFullSizeX/2, fFullSizeY/2, fFullSizeX, fFullSizeY)))
+	//	return E_FAIL;
 
 	_float fSizeX = 1600.f / 5;
 	_float fSizeY = 900.f / 5;
@@ -530,13 +530,13 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shadow"), m_pShader, "g_ShadowTexture")))
 		return E_FAIL;
 
 	/* [ PBR ·»´õ¸µ¿ë ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Final"), m_pShader, "g_PBR_Final")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_DepthTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))

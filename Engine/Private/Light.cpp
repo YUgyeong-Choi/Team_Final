@@ -80,6 +80,8 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		return E_FAIL;
 	if (FAILED(pShader->Bind_RawValue("g_fLightAmbient", &m_LightDesc.fAmbient, sizeof(_float))))
 		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_fLightIntencity", &m_LightDesc.fIntensity, sizeof(_float))))
+		return E_FAIL;
 	if (FAILED(pShader->Bind_RawValue("g_vLightSpecular", &m_LightDesc.vSpecular, sizeof(_float4))))
 		return E_FAIL;
 

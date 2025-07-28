@@ -40,6 +40,19 @@ HRESULT CLight_Manager::Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_
 	return S_OK;
 }
 
+HRESULT CLight_Manager::Remove_Light(_uint iLevelIndex, CLight* pLight)
+{
+	auto& lightList = m_LevelLights[iLevelIndex];
+	auto iter = std::find(lightList.begin(), lightList.end(), pLight);
+	if (iter != lightList.end())
+	{
+		Safe_Release(*iter);
+		lightList.erase(iter);
+	}
+
+	return S_OK;
+}
+
 HRESULT CLight_Manager::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	CLight* pLight = CLight::Create(LightDesc);

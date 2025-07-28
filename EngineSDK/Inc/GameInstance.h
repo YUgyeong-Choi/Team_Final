@@ -103,6 +103,7 @@ public:
 	HRESULT Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
 	HRESULT Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& LightDesc);
 	HRESULT Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, class CLight** ppOut);
+	HRESULT Remove_Light(_uint iLevelIndex, class CLight* pLight);
 	_uint Get_LightCount(_uint TYPE) const;
 #pragma endregion
 

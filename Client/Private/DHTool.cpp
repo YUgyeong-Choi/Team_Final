@@ -1,6 +1,8 @@
 #include "DHTool.h"
+
 #include "GameInstance.h"
 #include "DH_ToolMesh.h"
+#include "Light.h"
 
 const char* CDHTool::szLightName[] = {"Point", "Spot", "Directional"};
 const char* CDHTool::szLevelName[] = {"KRAT_CENTERAL_STATION","KRAT_HOTEL"};
@@ -54,6 +56,12 @@ void CDHTool::Update(_float fTimeDelta)
 	// 선택 (오브젝트 클릭 시)
 	if (MOUSE_DOWN(DIM::LBUTTON))
 		Picking();
+
+	if (KEY_DOWN(DIK_G))
+		TogglePickMode();
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
+		DeleteSelectedObject(); 
 }
 
 void CDHTool::Late_Update(_float fTimeDelta)
@@ -124,12 +132,13 @@ HRESULT CDHTool::Render_ShaderTool()
 			vDiffuseTint = _float4{1.f, 1.f, 1.f, 1.f};
 		}
 
-		static ImVec4 vTintColor = ImVec4(vDiffuseTint.x, vDiffuseTint.y, vDiffuseTint.z, 1.f);
+		ImVec4 vTintColor = ImVec4(vDiffuseTint.x, vDiffuseTint.y, vDiffuseTint.z, 1.f);
 
-		if (ImGui::ColorPicker4("Tint Color", (float*)&vTintColor,
+		if (m_bPickColor || ImGui::ColorPicker4("Tint Color", (float*)&vTintColor,
 			ImGuiColorEditFlags_DisplayHSV |
 			ImGuiColorEditFlags_PickerHueWheel))
 		{
+			m_bPickColor = false;
 			bUpdated = true;
 			vDiffuseTint = _float4(vTintColor.x, vTintColor.y, vTintColor.z, vTintColor.w);
 		}
@@ -153,6 +162,7 @@ HRESULT CDHTool::Render_ShaderTool()
 		if (ImGui::Button("Load Parameters"))
 		{
 			bUpdated = true;
+			m_bPickColor = true;
 			Load_Shader(
 				fDiffuseIntensity,
 				fNormalIntensity,
@@ -202,6 +212,30 @@ HRESULT CDHTool::Render_LightTool()
 		ImGui::End();
 		return S_OK;
 	}
+
+	ImGui::Text("Mode");
+
+	// 선택된 상태에 따라 손잡이 색상 지정
+	ImVec4 moveColor = ImVec4(1.f, 0.2f, 0.2f, 1.f);   // 붉은색
+	ImVec4 pickColor = ImVec4(0.2f, 0.6f, 1.f, 1.f);   // 파란색 등 자유 조정
+
+	// 스타일 적용 (슬라이더 손잡이 색상 변경)
+	ImGui::PushStyleColor(ImGuiCol_SliderGrab, m_iLightMode == 0 ? pickColor : moveColor);
+
+	// 슬라이더 폭 지정
+	ImGui::PushItemWidth(265);
+
+	// 슬라이더 본체
+	ImGui::SliderInt("##LightModeSlider", &m_iLightMode, 0, 1,
+		m_iLightMode == 0 ? "Pick" : "Move");
+
+	// 스타일 원상복귀
+	ImGui::PopItemWidth();
+	ImGui::PopStyleColor();
+
+	// 선택된 모드 출력 (예시)
+	ImGui::Text("Current Mode: %s", m_iLightMode == 0 ? "Pick" : "Move");
+
 
 	// ComboBox로 조명 타입 선택
 	ImGui::Text("Light Type");
@@ -257,17 +291,93 @@ HRESULT CDHTool::Render_LightTool()
 	ImGui::Text("Light Parameters");
 
 	// 세기(Intensity)
-	static float fIntensity = 1.0f;
-	ImGui::SliderFloat("Intensity", &fIntensity, 0.0f, 10.0f, "%.2f");
+	if (m_pSelectedObject != nullptr)
+	{
+		// 1. 선택된 오브젝트의 Intensity 값 가져오기
+		float fIntensity = m_pSelectedObject->GetIntensity();
 
-	// 색상(Color)
-	static ImVec4 vColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImGui::ColorEdit3("Color", (float*)&vColor);
+		// 2. 슬라이더 UI로 표시 및 조정
+		if (ImGui::SliderFloat("Intensity", &fIntensity, 0.0f, 10.0f, "%.2f"))
+		{
+			// 3. 사용자가 값 변경 시 다시 적용
+			m_pSelectedObject->SetIntensity(fIntensity);
+		}
+	}
+	else
+	{
+		float fIntensity = 1.f;
+		ImGui::SliderFloat("Intensity", &fIntensity, 0.0f, 10.0f, "%.2f");
+	}
+
+	// 색상 (Color)
+	if (m_pSelectedObject != nullptr)
+	{
+		// 1. XMFLOAT4 → ImVec4 변환
+		_float4 dxColor = m_pSelectedObject->GetColor(); // XMFLOAT4 or _float4
+		ImVec4 vColor = ImVec4(dxColor.x, dxColor.y, dxColor.z, dxColor.w);
+
+		// 2. 색상 편집 UI
+		if (ImGui::ColorEdit3("Color", (float*)&vColor)) // 알파 제외
+		{
+			// 3. ImVec4 → _float4로 다시 변환
+			_float4 updatedColor(vColor.x, vColor.y, vColor.z, vColor.w);
+			m_pSelectedObject->SetColor(updatedColor);
+		}
+	}
+	else
+	{
+		static ImVec4 vColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+		ImGui::ColorEdit3("Color", (float*)&vColor);
+	}
 
 	// 범위(Range)
-	static float fRange = 10.0f;
-	ImGui::SliderFloat("Range", &fRange, 0.1f, 100.0f, "%.1f");
+	if (m_pSelectedObject != nullptr)
+	{
+		// 1. 선택된 오브젝트의 Range 값 가져오기
+		float fRange = m_pSelectedObject->GetRange();
 
+		// 2. Range 슬라이더 UI
+		if (ImGui::SliderFloat("Range", &fRange, 0.1f, 100.0f, "%.1f"))
+		{
+			// 3. 값이 바뀌었을 때 다시 적용
+			m_pSelectedObject->SetRange(fRange);
+		}
+	}
+	else
+	{
+		// 선택된 오브젝트가 없을 경우 기본값만 표시 (비활성 상태)
+		static float fRange = 10.0f;
+		ImGui::SliderFloat("Range", &fRange, 0.1f, 100.0f, "%.1f");
+	}
+
+
+	ImGui::Separator();
+	if (ImGui::Button("Save Light", ImVec2(120, 0)))
+	{
+		Save_Lights(static_cast<LEVEL_TYPE>(m_iSelectedLevelType));
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load Light", ImVec2(120, 0)))
+	{
+		DeleteAllLights();
+		Load_Lights(static_cast<LEVEL_TYPE>(m_iSelectedLevelType));
+	}
+
+	ImGui::Spacing();
+
+	static float curvePoints[8] = { 0.0f, 0.2f, 0.4f, 0.6f, 0.6f, 0.8f, 0.9f, 1.0f };
+
+	ImGui::Text("Editable Curve");
+	ImGui::PlotLines("##Curve", curvePoints, IM_ARRAYSIZE(curvePoints), 0, nullptr, 0.0f, 1.0f, ImVec2(300, 100));
+
+	for (int i = 0; i < IM_ARRAYSIZE(curvePoints); ++i)
+	{
+		char label[32];
+		sprintf_s(label, "P%d", i);
+		ImGui::PushItemWidth(260.0f);
+		ImGui::SliderFloat(label, &curvePoints[i], 0.0f, 1.0f);
+		ImGui::PopItemWidth();
+	}
 
 	ImGui::End();
 	return S_OK;
@@ -309,48 +419,52 @@ HRESULT CDHTool::Add_Light(LIGHT_TYPE eType, LEVEL_TYPE eLType)
 	Desc.m_vInitPos = _float3(0.f, 0.f, 10.f);
 	Desc.iID = m_iID++;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_ToolMesh"),
-		ENUM_CLASS(LEVEL::DH), L"Layer_ToolMesh", &Desc)))
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_ToolMesh"),
+		ENUM_CLASS(LEVEL::DH), L"Layer_ToolMesh", &pGameObject, &Desc)))
 		return E_FAIL;
+
+	m_vecLights.push_back(dynamic_cast<CDH_ToolMesh*>(pGameObject));
 
 	return S_OK;
 }
 
 void CDHTool::Picking()
 {
-	_int iID = -1;
-	if (m_pGameInstance->Picking_ToolMesh(&iID))
+	if (m_iLightMode == 0)
 	{
-		printf("ID: %d\n", iID);
-		//같은 아이디를 가진 오브젝트에 포커스
-		//모델 그룹중에서 같은 아이디를 가진 오브젝트를 만날때까지순회
-
-		_bool bFind = false;
-		_bool bOpened = false;
-
-		auto LightList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::DH), TEXT("Layer_ToolMesh"));
-		for (auto& LightMesh : LightList)
+		_int iID = -1;
+		if (m_pGameInstance->Picking_ToolMesh(&iID))
 		{
-			if (bFind)
-				break;
+			printf("ID: %d\n", iID);
+			//같은 아이디를 가진 오브젝트에 포커스
+			//모델 그룹중에서 같은 아이디를 가진 오브젝트를 만날때까지순회
 
-			if (static_cast<CDH_ToolMesh*>(LightMesh)->Get_ID() == iID)
+			_bool bFind = false;
+			_bool bOpened = false;
+
+			auto LightList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::DH), TEXT("Layer_ToolMesh"));
+			for (auto& LightMesh : LightList)
 			{
-				wprintf(L"m_iSelectedModelIndex: %s\n", LightMesh->Get_Name().c_str());
-				m_pSelectedObject = LightMesh;
-				bFind = true;
-				break;
-			}
-		}
+				if (bFind)
+					break;
 
-		if (!bFind)
-		{
-			m_pSelectedObject = nullptr;
+				if (static_cast<CDH_ToolMesh*>(LightMesh)->Get_ID() == iID)
+				{
+					wprintf(L"m_iSelectedModelIndex: %s\n", LightMesh->Get_Name().c_str());
+					m_pSelectedObject = dynamic_cast<CDH_ToolMesh*>(LightMesh);
+					bFind = true;
+					break;
+				}
+			}
+
+			if (!bFind)
+			{
+				m_pSelectedObject = nullptr;
+			}
 		}
 	}
 }
-
-
 void CDHTool::PickGuizmo()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -390,6 +504,9 @@ void CDHTool::PickGuizmo()
 			(float*)&vScale.x
 		);
 
+		if (m_iLightMode == 0)
+			return;
+
 		switch (m_eGizmoOp)
 		{
 		case ImGuizmo::TRANSLATE:
@@ -410,13 +527,27 @@ void CDHTool::PickGuizmo()
 	}
 }
 
+void CDHTool::TogglePickMode()
+{
+	m_iLightMode = (m_iLightMode + 1) % 2; // 0: Pick, 1: Move
+}
+
+void CDHTool::DeleteSelectedObject()
+{
+	if (m_pSelectedObject)
+	{
+		m_pSelectedObject->Set_bDead();
+		m_pSelectedObject = nullptr;
+	}
+}
+
 
 
 
 HRESULT CDHTool::Save_Shader(
 	_float Diffuse, _float Normal, _float AO, _float AOPower, _float Roughness, _float Metallic, _float Reflection, _float Specular, _float4 vTint)
 {
-	namespace fs = std::filesystem;
+	namespace fs = filesystem;
 	fs::create_directories("../Bin/Save/ShaderParameters");
 
 	ofstream ShaderDataFile("../Bin/Save/ShaderParameters/ShaderData.json");
@@ -438,28 +569,27 @@ HRESULT CDHTool::Save_Shader(
 	ShaderDataJson["SpecularIntensity"] = Specular;
 	ShaderDataJson["AlbedoTint"] = { vTint.x, vTint.y, vTint.z, vTint.w };
 
-	ShaderDataFile << std::setw(4) << ShaderDataJson << std::endl;
+	ShaderDataFile << setw(4) << ShaderDataJson << endl;
 	ShaderDataFile.close();
 
 	MSG_BOX("셰이더 저장 성공");
 	return S_OK;
 }
-
 HRESULT CDHTool::Load_Shader(
 	_float& Diffuse, _float& Normal, _float& AO, _float& AOPower, _float& Roughness, _float& Metallic, _float& Reflection, _float& Specular, _float4& vTint)
 {
 	// [1] 경로 준비
-	const std::string strPath = "../Bin/Save/ShaderParameters/ShaderData.json";
+	const string strPath = "../Bin/Save/ShaderParameters/ShaderData.json";
 
 	// [2] 파일 존재 여부 확인
-	if (!std::filesystem::exists(strPath))
+	if (!filesystem::exists(strPath))
 	{
 		MSG_BOX("셰이더 불러오기 실패: 저장된 파일이 없습니다.");
 		return E_FAIL;
 	}
 
 	// [3] JSON 파일 열기
-	std::ifstream ShaderDataFile(strPath);
+	ifstream ShaderDataFile(strPath);
 	if (!ShaderDataFile.is_open())
 	{
 		MSG_BOX("셰이더 불러오기 실패: 파일 열기 실패.");
@@ -496,6 +626,120 @@ HRESULT CDHTool::Load_Shader(
 	ShaderDataFile.close();
 
 	return S_OK;
+}
+
+void CDHTool::Save_Lights(LEVEL_TYPE eLType)
+{
+	nlohmann::json jLights = nlohmann::json::array();
+
+	for (CDH_ToolMesh* pToolMesh : m_vecLights)
+	{
+		if (nullptr == pToolMesh)
+			continue;
+
+		// [ 툴 매쉬의 월드 행렬 , 라이트의 밝기, 색상, 범위 ]
+		_matrix matWorld = pToolMesh->Get_TransfomCom()->Get_WorldMatrix();
+		_float fIntensity = pToolMesh->GetIntensity();
+		_float fRange = pToolMesh->GetRange();
+		_float4 vColor = pToolMesh->GetColor();
+		XMFLOAT4X4 matOut;
+		XMStoreFloat4x4(&matOut, matWorld);
+
+		// 행렬을 2차원 배열로 변환
+		vector<vector<float>> matrixArray = {
+		{ matOut._11, matOut._12, matOut._13, matOut._14 },
+		{ matOut._21, matOut._22, matOut._23, matOut._24 },
+		{ matOut._31, matOut._32, matOut._33, matOut._34 },
+		{ matOut._41, matOut._42, matOut._43, matOut._44 }
+		};
+
+		// JSON 객체로 구성
+		nlohmann::json jLight;
+		jLight["WorldMatrix"] = matrixArray;
+		jLight["Intensity"] = fIntensity;
+		jLight["Range"] = fRange;
+		jLight["Color"] = { vColor.x, vColor.y, vColor.z, vColor.w };
+
+		jLight["LightType"] = pToolMesh->GetLightType();
+		jLight["LevelType"] = static_cast<int>(eLType);
+
+		// 배열에 추가
+		jLights.push_back(jLight);
+	}
+
+	wstring basePath = L"D:\\LieOfP\\Client\\Bin\\Save\\LightInfomation\\";
+	wstring fileName = L"Light_Information.json";
+
+	ofstream ofs(basePath + fileName);
+	if (!ofs.is_open())
+	{
+		MSG_BOX("파일 열기에 실패했습니다.");
+		return;
+	}
+	ofs << setw(4) << jLights;
+	ofs.close();
+
+	MSG_BOX("라이트 저장 성공");
+}
+void CDHTool::Load_Lights(LEVEL_TYPE eLType)
+{
+	wstring basePath = L"D:\\LieOfP\\Client\\Bin\\Save\\LightInfomation\\";
+	wstring fileName = L"Light_Information.json";
+
+	ifstream ifs(basePath + fileName);
+	if (!ifs.is_open())
+		return;
+
+	nlohmann::json jLights;
+	ifs >> jLights;
+	ifs.close();
+
+	for (const auto& jLight : jLights)
+	{
+		// 1. 기본 정보 추출
+		vector<vector<float>> matrixArray = jLight["WorldMatrix"];
+		float fIntensity = jLight["Intensity"];
+		float fRange = jLight["Range"];
+		vector<float> colorVec = jLight["Color"];
+
+		LIGHT_TYPE eLightType = static_cast<LIGHT_TYPE>(jLight["LightType"].get<int>());
+		LEVEL_TYPE eLevelType = static_cast<LEVEL_TYPE>(jLight["LevelType"].get<int>());
+
+		// 2. 행렬 복원
+		XMFLOAT4X4 mat;
+		mat._11 = matrixArray[0][0]; mat._12 = matrixArray[0][1]; mat._13 = matrixArray[0][2]; mat._14 = matrixArray[0][3];
+		mat._21 = matrixArray[1][0]; mat._22 = matrixArray[1][1]; mat._23 = matrixArray[1][2]; mat._24 = matrixArray[1][3];
+		mat._31 = matrixArray[2][0]; mat._32 = matrixArray[2][1]; mat._33 = matrixArray[2][2]; mat._34 = matrixArray[2][3];
+		mat._41 = matrixArray[3][0]; mat._42 = matrixArray[3][1]; mat._43 = matrixArray[3][2]; mat._44 = matrixArray[3][3];
+		_matrix matWorld = XMLoadFloat4x4(&mat);
+
+		// 3. 라이트 생성
+		if (FAILED(Add_Light(eLightType, eLevelType)))
+			continue;
+
+		// 4. 생성된 라이트 설정
+		CDH_ToolMesh* pNewLight = m_vecLights.back();
+		if (!pNewLight)
+			continue;
+
+		pNewLight->Get_TransfomCom()->Set_WorldMatrix(matWorld);
+		pNewLight->SetIntensity(fIntensity);
+		pNewLight->SetRange(fRange);
+		pNewLight->SetColor(_float4(colorVec[0], colorVec[1], colorVec[2], colorVec[3]));
+	}
+}
+
+void CDHTool::DeleteAllLights()
+{
+	for (CDH_ToolMesh* pToolMesh : m_vecLights)
+	{
+		if (nullptr == pToolMesh)
+			continue;
+
+		pToolMesh->Set_bDead();
+	}
+
+	m_pSelectedObject = nullptr;
 }
 
 CDHTool* CDHTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
