@@ -1,5 +1,9 @@
 [
     {
+        "ModelName": "SM_BuildingA_Deco_03",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Deco_03.bin"
+    },
+    {
         "ModelName": "SM_BuildingA_Door_01",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_01.bin"
     },
@@ -14,6 +18,10 @@
     {
         "ModelName": "SM_BuildingA_Drain_01",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Drain_01.bin"
+    },
+    {
+        "ModelName": "SM_BuildingA_RoofWindow_03",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RoofWindow_03.bin"
     },
     {
         "ModelName": "SM_Cathedral_GroundRock_01",

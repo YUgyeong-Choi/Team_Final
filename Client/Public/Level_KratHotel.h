@@ -27,6 +27,8 @@ private:
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 	HRESULT Ready_MapModel();
 	HRESULT LoadMap();
+	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName);
+	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName);
 
 private:
 	HRESULT Ready_Lights();

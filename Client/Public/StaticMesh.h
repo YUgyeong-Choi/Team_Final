@@ -11,7 +11,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CStaticMesh final : public CGameObject
+class CStaticMesh : public CGameObject
 {
 public:
 	typedef struct tagStaticMeshDesc : public CGameObject::GAMEOBJECT_DESC
@@ -31,7 +31,7 @@ public:
 
 	}STATICMESH_DESC;
 
-private:
+protected:
 	CStaticMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CStaticMesh(const CStaticMesh& Prototype);
 	virtual ~CStaticMesh() = default;
@@ -51,7 +51,7 @@ public:
 public:
 	void	SetbDead(_bool bDead) { m_bDead = bDead; }
 
-private:
+protected:
 
 	CShader*		m_pShaderCom = { nullptr };
 	CModel*			m_pModelCom = { nullptr };
@@ -67,7 +67,7 @@ protected: /* [ 초기화 변수 ] */
 protected:
 	_bool			m_bDead = {};
 
-private:
+protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 

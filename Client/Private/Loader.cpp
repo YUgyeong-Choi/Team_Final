@@ -5,6 +5,16 @@
 #include "Camera_Free.h"
 #include "Sky.h"
 
+
+#pragma region LEVEL_KRAT_CENTERAL_STATION
+#
+#pragma endregion
+
+#pragma region LEVEL_KRAT_HOTEL
+#include "StaticMesh.h"
+#include "StaticMesh_Instance.h"
+#pragma endregion
+
 #pragma region LEVEL_YW
 #include "MapToolObject.h"
 #include "PreviewObject.h"
@@ -252,6 +262,10 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
