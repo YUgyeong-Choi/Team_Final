@@ -27,6 +27,10 @@ HRESULT CPreviewObject::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Ready_DepthStencilView(g_iWinSizeX, g_iWinSizeY)))
+		return E_FAIL;
+	
+
 	//미리보기용 렌더타겟
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Preview"), static_cast<_uint>(g_iWinSizeX), static_cast<_uint>(g_iWinSizeY), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 1.f, 1.f))))
 		return E_FAIL;
@@ -35,6 +39,8 @@ HRESULT CPreviewObject::Initialize(void* pArg)
 
 	m_pCameraTransformCom->Set_RotationPreSec(1.f);
 	m_pCameraTransformCom->Set_SpeedPreSec(1.f);
+
+	m_pTransformCom->Set_RotationPreSec(1.f);
 
 	Reset_CameraWorldMatrix();
 
@@ -48,7 +54,7 @@ void CPreviewObject::Priority_Update(_float fTimeDelta)
 
 void CPreviewObject::Update(_float fTimeDelta)
 {
-
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
 
 }
 
@@ -66,7 +72,7 @@ HRESULT CPreviewObject::Render()
 
 	m_pGameInstance->End_MRT();
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Preview"));
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Preview"), m_pDSV, true, false);
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -96,7 +102,7 @@ void CPreviewObject::Reset_CameraWorldMatrix()
 {
 	//_float fHeight = 10.f;
 
-	_vector vEye = XMVectorSet(-20.f, 20.f, 10.f, 1.f);
+	_vector vEye = XMVectorSet(0.f, 0.f, -20.f, 1.f);
 	_vector vAt = XMVectorSet(0.f, 0.f, 0.f, 1.f); // 고정 타겟
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
@@ -135,6 +141,41 @@ HRESULT CPreviewObject::Ready_Components(void* pArg)
 		TEXT("Com_CameraTransformCom"), reinterpret_cast<CComponent**>(&m_pCameraTransformCom))))
 		return E_FAIL;
 	
+
+	return S_OK;
+}
+
+HRESULT CPreviewObject::Ready_DepthStencilView(_uint iWidth, _uint iHeight)
+{
+	ID3D11Texture2D* pDepthStencilTexture = nullptr;
+
+	D3D11_TEXTURE2D_DESC	TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	/* 깊이 버퍼의 픽셀은 백버퍼의 픽셀과 갯수가 동일해야만 깊이 텍스트가 가능해진다. */
+	/* 픽셀의 수가 다르면 아에 렌더링을 못함. */
+	TextureDesc.Width = iWidth;
+	TextureDesc.Height = iHeight;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pDSV)))
+		return E_FAIL;
+
+	Safe_Release(pDepthStencilTexture);
 
 	return S_OK;
 }
@@ -189,6 +230,7 @@ void CPreviewObject::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pCameraTransformCom);
+	Safe_Release(m_pDSV);
 
 	if (nullptr != m_pGameInstance->Find_RenderTarget(TEXT("Target_Preview")))
 	{

@@ -38,13 +38,14 @@ private:
 	wstring m_ModelPrototypeTag = {};
 
 private:
-
+	ID3D11DepthStencilView* m_pDSV = { nullptr };
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTransform* m_pCameraTransformCom = { nullptr };
 private:
 	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_DepthStencilView(_uint iWidth, _uint iHeight);
 	HRESULT Bind_ShaderResources();
 
 public:
