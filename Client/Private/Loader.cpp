@@ -4,6 +4,7 @@
 
 #include "Camera_Free.h"
 #include "Sky.h"
+#include "UI_Button.h"
 
 
 #pragma region LEVEL_KRAT_CENTERAL_STATION
@@ -53,10 +54,11 @@
 #include "TestAnimObject.h"
 #pragma endregion
 
-CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, atomic<float>& fRatio)
 	: m_pDevice { pDevice }
 	, m_pContext { pContext }
 	, m_pGameInstance { CGameInstance::Get_Instance() }
+	, m_fRatio{fRatio}
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pContext);
@@ -143,6 +145,8 @@ HRESULT CLoader::Loading_For_Logo()
 {	
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+
+
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
@@ -165,6 +169,18 @@ HRESULT CLoader::Loading_For_Static()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+	/* For.Prototype_Component_Texture_Img_ChNose*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Button_Hover.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Img_ChNose*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Line_Highlight.dds")))))
+		return E_FAIL;
+
+	
+
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_SkyBox"),
@@ -182,7 +198,10 @@ HRESULT CLoader::Loading_For_Static()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
-	
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button"),
+		CUI_Button::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -356,25 +375,41 @@ HRESULT CLoader::Loading_For_GL()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+	// 
+	m_fRatio = 0.1f;
+	Sleep(200);
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
+
+	m_fRatio = 0.3f;
+	Sleep(250);
+
+	
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
+	m_fRatio = 0.5f;
+	Sleep(200);
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
-
+	m_fRatio = 0.6f;
+	Sleep(250);
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
+	m_fRatio = 0.7f;
+	Sleep(250);
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-
+	m_fRatio = 0.9f;
+	Sleep(250);
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_fRatio = 1.f;
 
 	m_isFinished = true;
 	return S_OK;
@@ -565,9 +600,9 @@ HRESULT CLoader::Loading_For_YG()
 	return S_OK;
 }
 
-CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID)
+CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID, atomic<float>& fRatio)
 {
-	CLoader* pInstance = new CLoader(pDevice, pContext);
+	CLoader* pInstance = new CLoader(pDevice, pContext, fRatio);
 
 	if (FAILED(pInstance->Initialize(eNextLevelID)))
 	{

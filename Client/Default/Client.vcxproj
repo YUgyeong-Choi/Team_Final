@@ -200,6 +200,8 @@
     <ClInclude Include="..\Public\ToolSprite.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
     <ClInclude Include="..\public\UI_Bar_Loading.h" />
+    <ClInclude Include="..\public\UI_Button.h" />
+    <ClInclude Include="..\public\UI_Canvus.h" />
     <ClInclude Include="..\public\UI_Featrue_Scale.h" />
     <ClInclude Include="..\public\UI_Feature.h" />
     <ClInclude Include="..\public\UI_Feature_Fade.h" />
@@ -283,6 +285,8 @@
     <ClCompile Include="..\Private\ToolSprite.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
+    <ClCompile Include="..\private\UI_Button.cpp" />
+    <ClCompile Include="..\private\UI_Canvus.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />

@@ -18,12 +18,21 @@ public:
 
 	HRESULT Ready_Video();
 
+	HRESULT Ready_Menu();
+
 
 private:
 	class CUI_Video* m_pMainUI = {};
 
 	_bool			 m_isReady = { false };
 	LEVEL			 m_eNextLevel = {LEVEL::END};
+
+	_float           m_fDelay = 0.3f;
+	
+
+	_int			 m_iButtonIndex = {-1};
+
+	vector <class CUI_Button* > m_pButtons = {};
 
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -200,11 +200,14 @@ HRESULT CDynamic_UI::Ready_Components(const wstring& strTextureTag)
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
 
+	if (strTextureTag != L"")
+	{
+		/* For.Com_Texture */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
+			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+			return E_FAIL;
+	}
 	
 
 	return S_OK;
@@ -284,6 +287,8 @@ CGameObject* CDynamic_UI::Clone(void* pArg)
 
 void CDynamic_UI::Free()
 {
+	__super::Free();
+
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
@@ -292,6 +297,6 @@ void CDynamic_UI::Free()
 		Safe_Release(pFeature);
 
 
-	__super::Free();
+
 }
 

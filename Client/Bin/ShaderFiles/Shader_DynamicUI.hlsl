@@ -5,11 +5,16 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
 texture2D g_DepthTexture;
 
+texture2D g_HoverTexture;
+texture2D g_HighlightTexture;
+
 float2   g_fTexcoord;
 float2   g_fTileSize;
 float    g_Alpha;
 
 float4   g_Color;
+
+float4   g_ButtonFlag;
 
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
@@ -68,6 +73,7 @@ VS_OUT_BLEND VS_MAIN_BLEND(VS_IN In)
     
     return Out;
 }
+
 
 //POSITION시멘틱이 붙은
 //멤버변수에 대해서
@@ -186,6 +192,65 @@ PS_OUT PS_MAIN_FADE(PS_IN In)
 }
 
 
+PS_OUT PS_MAIN_BUTTON(PS_IN In)
+{
+    PS_OUT Out;
+    
+    float4 vTexture = { 0.f, 0.f, 0.f, 0.f };
+    float4 vHover = { 0.f, 0.f, 0.f, 0.f };
+    float4 vHighlight = { 0.f, 0.f, 0.f, 0.f };
+    
+    if(g_ButtonFlag.x == 1.f)
+    {
+        vTexture = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+
+    }
+    
+    if(g_ButtonFlag.y == 1.f)
+    {
+        vHover = g_HoverTexture.Sample(DefaultSampler, In.vTexcoord);
+
+    }
+    
+    if(g_ButtonFlag.z == 1.f)
+    {
+        if (In.vTexcoord.y > 0.97f)
+        {
+            vHighlight = g_HighlightTexture.Sample(DefaultSampler, In.vTexcoord - float2(0.f, 0.4f));
+            vHover.a = 0.2f;
+        }
+
+    }
+    
+    Out.vColor  = vTexture + vHighlight ;
+    
+    if (Out.vColor.a < 0.001f)
+    {
+        if (vHover.a > 0.01f)
+        {
+            vHover.a *= 0.2f;
+            
+            Out.vColor += vHover;
+           
+        }
+       
+    }
+    else
+    {
+        Out.vColor.a *= g_Alpha;
+    
+        Out.vColor *= g_Color;
+    }
+    
+   
+   
+    
+  
+    
+    return Out;
+}
+
+
 
 
 technique11 DefaultTechnique
@@ -241,6 +306,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_FADE();
+    }
+
+    pass Button
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_BUTTON();
     }
    
 }

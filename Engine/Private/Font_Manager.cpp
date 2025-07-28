@@ -43,6 +43,29 @@ void CFont_Manager::Draw(const _wstring& strFontTag, const _tchar* pText, const 
 	m_pBatch->End();
 }
 
+void CFont_Manager::Draw_Centered(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
+{
+	CCustomFont* pFont = Find_Font(strFontTag);
+	if (nullptr == pFont)
+		return;
+
+	m_pBatch->Begin();
+
+	pFont->Draw_Centered(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale);
+
+	m_pBatch->End();
+}
+
+_float2 CFont_Manager::Draw_Range(const _wstring& strFontTag, const _tchar* pText)
+{
+	CCustomFont* pFont = Find_Font(strFontTag);
+	if (nullptr == pFont)
+		return _float2(0.f,0.f);
+
+
+	return pFont->Calc_Draw_Range(pText);
+}
+
 CCustomFont* CFont_Manager::Find_Font(const _wstring& strFontTag)
 {
 	auto	iter = m_Fonts.find(strFontTag);

@@ -477,6 +477,14 @@ void CGameInstance::Draw_Font(const _wstring& strFontTag, const _tchar* pText, c
 {
 	m_pFont_Manager->Draw(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale);
 }
+void CGameInstance::Draw_Font_Centered(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
+{
+	m_pFont_Manager->Draw_Centered(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale);
+}
+_float2 CGameInstance::Calc_Draw_Range(const _wstring& strFontTag, const _tchar* pText)
+{
+	return m_pFont_Manager->Draw_Range(strFontTag, pText);
+}
 #pragma endregion
 
 #pragma region TARGET_MANAGER
