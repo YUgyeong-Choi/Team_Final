@@ -45,40 +45,31 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 		{
 			const CUTSCENE_DESC& nextDesc = m_vecCameraFrame[m_iCurrentFrame + 1];
 
-			// 선형 보간 (위치)
-			_vector vPos = XMVectorLerp(curDesc.vPosition, nextDesc.vPosition, t);
-			m_pTransformCom->Set_State(STATE::POSITION, vPos);
+			// 1. SRT 분해
+			XMVECTOR scale1, rot1, trans1;
+			XMMatrixDecompose(&scale1, &rot1, &trans1, curDesc.worldMatrix);
 
-			// 회전 보간 (SLERP)
-			_vector qRot = XMQuaternionSlerp(curDesc.vRotation, nextDesc.vRotation, t);
-			qRot = XMQuaternionNormalize(qRot);
+			XMVECTOR scale2, rot2, trans2;
+			XMMatrixDecompose(&scale2, &rot2, &trans2, nextDesc.worldMatrix);
 
-			_matrix rotMatrix = XMMatrixRotationQuaternion(qRot);
-			m_pTransformCom->Set_State(STATE::RIGHT, rotMatrix.r[0]);
-			m_pTransformCom->Set_State(STATE::UP, rotMatrix.r[1]);
-			m_pTransformCom->Set_State(STATE::LOOK, rotMatrix.r[2]);
+			// 2. 보간
+			XMVECTOR lerpScale = XMVectorLerp(scale1, scale2, t);
+			XMVECTOR lerpTrans = XMVectorLerp(trans1, trans2, t);
+			XMVECTOR slerpRot = XMQuaternionSlerp(rot1, rot2, t);
+
+			// 3. 조립
+			XMMATRIX matInterpolated =
+				XMMatrixScalingFromVector(lerpScale) *
+				XMMatrixRotationQuaternion(slerpRot) *
+				XMMatrixTranslationFromVector(lerpTrans);
+
+			// 4. 적용
+			m_pTransformCom->Set_WorldMatrix(matInterpolated);
 		}
 		else
 		{
 			// 즉시 전환
-			m_pTransformCom->Set_State(STATE::POSITION, curDesc.vPosition);
-
-			// 쿼터니언 변환용 오일러각 꺼내기
-			XMFLOAT3 fRot{};
-			XMStoreFloat3(&fRot, curDesc.vRotation);  // _vector → XMFLOAT3 변환
-
-			// 오일러(degree) → radian
-			XMVECTOR quat = XMQuaternionRotationRollPitchYaw(
-				XMConvertToRadians(fRot.x), // pitch (X)
-				XMConvertToRadians(fRot.y), // yaw (Y)
-				XMConvertToRadians(fRot.z)  // roll (Z)
-			);
-
-			_matrix rotMatrix = XMMatrixRotationQuaternion(quat);
-
-			m_pTransformCom->Set_State(STATE::RIGHT, XMVector3Normalize(rotMatrix.r[0]));
-			m_pTransformCom->Set_State(STATE::UP, XMVector3Normalize(rotMatrix.r[1]));
-			m_pTransformCom->Set_State(STATE::LOOK, XMVector3Normalize(rotMatrix.r[2]));
+			m_pTransformCom->Set_WorldMatrix(curDesc.worldMatrix);
 		}
 
 		// 시간 누적 및 프레임 전환

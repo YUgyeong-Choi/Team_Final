@@ -111,21 +111,18 @@ HRESULT CYGTool::Render_CameraTool()
 			ImGui::InputFloat(u8"Duration (sec)", &m_fDuration, 0.1f, 1.0f, "%.2f");
 			if (m_fDuration < 0.f) m_fDuration = 0.f; // 음수 방지
 
-			XMStoreFloat4x4(&worldMat, pTransform->Get_WorldMatrix());
-			memcpy(matrix, &worldMat, sizeof(float) * 16);
-			ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
-
 			// float[3] → _vector로 변환
-			m_CutSceneDesc.vPosition = XMVectorSet(position[0], position[1], position[2], 1.f);
-			m_CutSceneDesc.vRotation = XMVectorSet(rotation[0], rotation[1], rotation[2], 0.f);
+			_float worldMatrix[16];
+			ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, worldMatrix);
+			XMMATRIX mat = XMLoadFloat4x4((XMFLOAT4X4*)worldMatrix);
+
+			m_CutSceneDesc.worldMatrix = mat;
 			m_CutSceneDesc.bUseLerp = m_bUseLerp;
 			m_CutSceneDesc.fDuration = m_fDuration;
-
 
 			if (ImGui::Button(u8"Add"))
 			{
 				m_vecCameraFrame.push_back(m_CutSceneDesc);
-				m_fDuration = {};
 			}
 		}
 		else
@@ -145,21 +142,31 @@ HRESULT CYGTool::Render_CameraTool()
 	{
 		const auto& desc = m_vecCameraFrame[i];
 
-		XMFLOAT3 pos{}, rot{};
-		XMStoreFloat3(&pos, desc.vPosition);
-		XMStoreFloat3(&rot, desc.vRotation);
+		// 기존 월드 행렬
+		XMFLOAT4X4 worldMat;
+		XMStoreFloat4x4(&worldMat, desc.worldMatrix);
+
+		// 행렬 -> float[16]
+		_float matrix[16];
+		memcpy(matrix, &worldMat, sizeof(float) * 16);
+
+		// 분해
+		_float position[3], rotation[3], scale[3];
+		ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
 
 		char label[256];
 		sprintf_s(label, sizeof(label),
 			"Frame %zu: Pos(%.2f, %.2f, %.2f) Rot(%.2f, %.2f, %.2f) Dur: %.2fs",
-			i, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, desc.fDuration);
+			i, position[0], position[1], position[2],
+			rotation[0], rotation[1], rotation[2],
+			desc.fDuration);
 
-		// 선택 가능하게
 		if (ImGui::Selectable(label, selectedFrameIndex == i))
 		{
 			selectedFrameIndex = static_cast<int>(i);
-			m_CutSceneDesc = m_vecCameraFrame[i]; // 선택 시 현재 편집용으로 복사
+			m_CutSceneDesc = m_vecCameraFrame[i]; // 복사
 		}
+
 	}
 	ImGui::EndChild();
 
@@ -171,12 +178,20 @@ HRESULT CYGTool::Render_CameraTool()
 		{
 			lastSelectedIndex = selectedFrameIndex;
 
-			XMFLOAT3 pos, rot;
-			XMStoreFloat3(&pos, m_vecCameraFrame[selectedFrameIndex].vPosition);
-			XMStoreFloat3(&rot, m_vecCameraFrame[selectedFrameIndex].vRotation);
+			// 기존 월드 행렬
+			XMFLOAT4X4 worldMat;
+			XMStoreFloat4x4(&worldMat, m_vecCameraFrame[selectedFrameIndex].worldMatrix);
 
-			editedPos = pos;
-			editedRot = rot;
+			// 행렬 -> float[16]
+			_float matrix[16];
+			memcpy(matrix, &worldMat, sizeof(float) * 16);
+
+			// 분해
+			_float position[3], rotation[3], scale[3];
+			ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
+
+			editedPos = { position[0], position[1], position[2] };
+			editedRot = { rotation[0], rotation[1], rotation[2] };
 			editedDuration = m_vecCameraFrame[selectedFrameIndex].fDuration;
 			editedLerp = m_vecCameraFrame[selectedFrameIndex].bUseLerp;
 		}
@@ -203,14 +218,19 @@ HRESULT CYGTool::Render_CameraTool()
 		// 적용 버튼
 		if (ImGui::Button("Apply Changes"))
 		{
-			// _vector로 다시 변환해서 대입
-			m_vecCameraFrame[selectedFrameIndex].vPosition = XMVectorSet(editedPos.x, editedPos.y, editedPos.z, 1.0f);
-			m_vecCameraFrame[selectedFrameIndex].vRotation = XMVectorSet(editedRot.x, editedRot.y, editedRot.z, 0.0f); 
+			// 1. float[3] → 행렬 재조합
+			float pos[3] = { editedPos.x, editedPos.y, editedPos.z };
+			float rot[3] = { editedRot.x, editedRot.y, editedRot.z };
+			float scl[3] = { 1.f, 1.f, 1.f }; // 스케일 고정
 
-			m_vecCameraFrame[selectedFrameIndex].fDuration = editedDuration;
+			float matrix[16];
+			ImGuizmo::RecomposeMatrixFromComponents(pos, rot, scl, matrix);
+			XMMATRIX mat = XMLoadFloat4x4((XMFLOAT4X4*)matrix);
+
+			// 2. 프레임 정보 갱신
+			m_vecCameraFrame[selectedFrameIndex].worldMatrix = mat;
 			m_vecCameraFrame[selectedFrameIndex].bUseLerp = editedLerp;
-
-			m_CutSceneDesc = m_vecCameraFrame[selectedFrameIndex]; // 현재 작업 중 값도 동기화
+			m_vecCameraFrame[selectedFrameIndex].fDuration = editedDuration;
 		}
 
 		ImGui::SameLine();
@@ -225,13 +245,6 @@ HRESULT CYGTool::Render_CameraTool()
 		if (ImGui::Button("Clone Camera"))
 		{
 			m_vecCameraFrame[selectedFrameIndex] = m_CutSceneDesc;
-			XMFLOAT3 pos, rot;
-			XMStoreFloat3(&pos, m_vecCameraFrame[selectedFrameIndex].vPosition);
-			XMStoreFloat3(&rot, m_vecCameraFrame[selectedFrameIndex].vRotation);
-
-			editedPos = pos;
-			editedRot = rot;
-			editedDuration = m_vecCameraFrame[selectedFrameIndex].fDuration;
 		}
 	}
 
