@@ -19,6 +19,7 @@ public:
 		const _float4x4*	pSocketMatrix = { nullptr };
 		_int				iTileX = {};
 		_int				iTileY = {};	
+		EFFECT_PASS_INDEX	eShaderPass = { EFF_UVSPRITE_COLOR };
 	}DESC;
 
 	// 보간 방식
@@ -76,6 +77,7 @@ protected:
 	_float				m_fLifeTime = {};
 	_bool				m_bBillboard = { true };
 	_bool				m_bAnimation = { true };
+	EFFECT_PASS_INDEX	m_eShaderPass = { EFF_UVSPRITE_COLOR };
 
 	// TrackPositions
 	_int				m_iDuration = {10};

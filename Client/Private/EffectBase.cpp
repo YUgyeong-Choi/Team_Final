@@ -39,6 +39,7 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_iTileCnt = m_iTileX * m_iTileY;
 	m_fTickPerSecond = 60.f; // 60프레임으로 재생
+	m_eShaderPass = pDesc->eShaderPass;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
