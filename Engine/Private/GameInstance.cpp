@@ -458,6 +458,11 @@ HRESULT CGameInstance::Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_D
 	return m_pLight_Manager->Add_LevelLightDataReturn(iLevelIndex, LightDesc, ppOut);
 }
 
+HRESULT CGameInstance::Remove_Light(_uint iLevelIndex, CLight* pLight)
+{
+	return m_pLight_Manager->Remove_Light(iLevelIndex, pLight);
+}
+
 _uint CGameInstance::Get_LightCount(_uint TYPE) const
 {
 	return m_pLight_Manager->Get_LightCount(TYPE);

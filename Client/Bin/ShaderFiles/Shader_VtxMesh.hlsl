@@ -89,7 +89,7 @@ PS_OUT PS_MAIN(PS_IN In)
    
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f); //w값에다가 아이디를 저장하겠음
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
     Out.vPickPos = In.vWorldPos;
     
     return Out;

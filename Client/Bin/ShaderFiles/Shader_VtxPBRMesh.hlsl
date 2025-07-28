@@ -147,28 +147,6 @@ PS_OUT PS_TOOL_MAIN(PS_IN In)
 
     return Out;
 }
-
-PS_SKY_OUT PS_SKY_MAIN(PS_IN In)
-{
-    PS_SKY_OUT Out;
-    
-    vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
-    if (vMtrlDiffuse.a < 0.3f)
-        discard;
-    
-    vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
-    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
-    
-    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    
-    vNormal = mul(vNormal, WorldMatrix);
-    
-   
-    Out.vDiffuse = vMtrlDiffuse;
-    
-    return Out;
-}
-
 technique11 DefaultTechnique
 {   
     pass Default //0
@@ -181,19 +159,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();      
     }
-
-    pass SkyBox //1
-    {
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_None, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-        
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_SKY_MAIN();
-    }
-
-    pass ToolMesh //2
+    pass ToolMesh //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);

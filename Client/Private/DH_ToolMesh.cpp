@@ -1,6 +1,5 @@
 #include "DH_ToolMesh.h"
 #include "GameInstance.h"
-#include "Light.h"
 
 CDH_ToolMesh::CDH_ToolMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -48,7 +47,8 @@ HRESULT CDH_ToolMesh::Initialize(void* pArg)
 
 void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 {
-
+	if (m_bDead)
+		m_pGameInstance->Remove_Light(ENUM_CLASS(LEVEL::DH), m_pLight);
 }
 
 void CDH_ToolMesh::Update(_float fTimeDelta)
@@ -63,6 +63,7 @@ void CDH_ToolMesh::Update(_float fTimeDelta)
 void CDH_ToolMesh::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
 }
 
 HRESULT CDH_ToolMesh::Render()
@@ -82,7 +83,7 @@ HRESULT CDH_ToolMesh::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(2);
+		m_pShaderCom->Begin(1);
 
 		m_pModelCom->Render(i);
 	}
@@ -133,7 +134,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
 
 		LightDesc.fAmbient = 0.2f;
-		LightDesc.fIntensity = 5.f;
+		LightDesc.fIntensity = 1.f;
 		LightDesc.fRange = 100.f;
 		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
@@ -148,7 +149,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 
 		LightDesc.fAmbient = 0.2f;
-		LightDesc.fIntensity = 5.f;
+		LightDesc.fIntensity = 1.f;
 		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	}

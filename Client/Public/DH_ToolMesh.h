@@ -2,12 +2,12 @@
 
 #include "Client_Defines.h"
 #include "GameObject.h"
+#include "Light.h"
 
 NS_BEGIN(Engine)
 class CShader;
 class CTexture;
 class CModel;
-class CLight;
 NS_END
 
 NS_BEGIN(Client)
@@ -39,6 +39,18 @@ public:
 
 public:
 	_uint Get_ID() const { return m_iID; }
+
+public:
+	void SetIntensity(_float fIntensity) { m_pLight->Get_LightDesc()->fIntensity = fIntensity; }
+	_float GetIntensity() { return m_pLight->Get_LightDesc()->fIntensity; }
+
+	void SetColor(_float4 vColor) { m_pLight->Get_LightDesc()->vDiffuse = vColor; }
+	_float4 GetColor() { return m_pLight->Get_LightDesc()->vDiffuse; }
+
+	void SetRange(_float fRange) { m_pLight->Get_LightDesc()->fRange = fRange; }
+	_float GetRange() { return m_pLight->Get_LightDesc()->fRange; }
+
+	_int GetLightType() { return static_cast<int>(m_pLight->Get_LightDesc()->eType); }
 
 private:
 	_uint m_iID = { 0 };

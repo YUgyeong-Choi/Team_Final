@@ -28,10 +28,11 @@ float PI = 3.14159265358979323846f;
 
 vector g_vLightDir;
 vector g_vLightPos;
-float g_fLightRange;
 vector g_vLightDiffuse;
-float  g_fLightAmbient;
 vector g_vLightSpecular;
+float  g_fLightAmbient;
+float  g_fLightRange;
+float  g_fLightIntencity = 1.f;
 
 float  g_fMtrlAmbient = 1.f;
 vector g_vMtrlSpecular = 1.f;
@@ -200,22 +201,22 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float Metallic = vARMDesc.b;
     float3 Ambient = Albedo * g_fLightAmbient * AO;
     
-    /* [ ViewPos 복원 ] */
+    // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
     float viewZ = vDepthDesc.y * 500.0f;
-
-    /* [ NDC 공간상의 깊이복원 ] */
-    float4 clipPos;
-    clipPos.x = vUV.x * 2.0f - 1.0f;
-    clipPos.y = vUV.y * -2.0f + 1.0f;
-    clipPos.z = z_ndc;
-    clipPos.w = 1.0f;
-    clipPos *= viewZ;
     
-    /* [ 월드로 공간복원 ] */
-    float4 worldPos = mul(clipPos, g_ProjMatrixInv);
-    worldPos = mul(worldPos, g_ViewMatrixInv);
+    float4 ndcPos;
+    ndcPos.x = vUV.x * 2.0f - 1.0f;
+    ndcPos.y = (1.0f - vUV.y * 2.0f);
+    ndcPos.z = z_ndc;
+    ndcPos.w = 1.0f;
+    
+    float4 viewPos = mul(ndcPos, g_ProjMatrixInv);
+    viewPos /= viewPos.w; // Perspective divide
+    viewPos *= viewZ / viewPos.z; // View Z 보정
+
+    float4 worldPos = mul(viewPos, g_ViewMatrixInv);
     
     /* [ 빛 계산 ] */
     float3 V = normalize(g_vCamPosition.xyz - worldPos.xyz);
@@ -257,13 +258,14 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
 
     /* [ 라이트의 색상 ] */
     float3 radiance = g_vLightDiffuse.rgb;
+    radiance *= g_fLightIntencity;
     radiance *= 3.5f;
 
     /* [ 최종 PBR 조명 계산 ] */
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO + Ambient;
     float3 Specalur = Specular * radiance;
 
-    Out.vFinal = float4(FinalColor, 1.0f);
+    Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     Out.vSpecular = float4(Specular, 1.0f);
     return Out;
 }
@@ -289,16 +291,18 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
     float viewZ = vDepthDesc.y * 500.0f;
-
-    float4 clipPos;
-    clipPos.x = vUV.x * 2.0f - 1.0f;
-    clipPos.y = vUV.y * -2.0f + 1.0f;
-    clipPos.z = z_ndc;
-    clipPos.w = 1.0f;
-    clipPos *= viewZ;
     
-    float4 worldPos = mul(clipPos, g_ProjMatrixInv);
-    worldPos = mul(worldPos, g_ViewMatrixInv);
+    float4 ndcPos;
+    ndcPos.x = vUV.x * 2.0f - 1.0f;
+    ndcPos.y = (1.0f - vUV.y * 2.0f);
+    ndcPos.z = z_ndc;
+    ndcPos.w = 1.0f;
+    
+    float4 viewPos = mul(ndcPos, g_ProjMatrixInv);
+    viewPos /= viewPos.w; // Perspective divide
+    viewPos *= viewZ / viewPos.z; // View Z 보정
+
+    float4 worldPos = mul(viewPos, g_ViewMatrixInv);
 
     // [ 라이트 방향 및 감쇠 ]
     //float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
@@ -344,13 +348,14 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
 
     // [ 라이트 색상 ]
     float3 radiance = g_vLightDiffuse.rgb;
+    radiance *= g_fLightIntencity;
     radiance *= 3.5f;
 
     // [ 최종 조명 ]
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt + Ambient;
     float3 Specalur = Specular * radiance;
 
-    Out.vFinal = float4(FinalColor, 1.0f);
+    Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     Out.vSpecular = float4(Specular, 1.0f);
     return Out;
 }
@@ -361,9 +366,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     PS_OUT Out;
     
     vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
-    //if (all(vDiffuse.rgb == 0.f))
-    if(vDiffuse.a == 0.f)
-        discard;
+    
     
     vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
     
@@ -371,13 +374,14 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     
-    Out.vBackBuffer = vDiffuse * vShade + vSpecular;
+    Out.vBackBuffer = vDiffuse * vShade + vSpecular;   
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = vPBRFinal;
     
+    if (vDiffuse.a < 0.1f && vPBRFinal.a < 0.1f)
+        discard;
     
-    
-    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
+        vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 500.f;
     
     vector vPosition;
@@ -406,7 +410,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     if (fOldViewZ + 0.1f < vPosition.w)
         Out.vBackBuffer = Out.vBackBuffer * 0.5f;
-    
+        
     return Out;    
 }
 
