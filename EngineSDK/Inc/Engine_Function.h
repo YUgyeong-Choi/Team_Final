@@ -84,5 +84,4 @@ namespace Engine
 		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), &result[0], sizeNeeded);
 		return result;
 	}
-
 }

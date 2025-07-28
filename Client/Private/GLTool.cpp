@@ -692,6 +692,8 @@ HRESULT CGLTool::Render_SelectOptionTool()
 				::MessageBox(nullptr, wInput.c_str(), L"error", MB_OK);
 			}
 
+		
+
 			ImGui::EndTabItem();
 		}
 

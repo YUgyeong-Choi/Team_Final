@@ -75,7 +75,8 @@ protected:
 	_int			m_iPassIndex = {};
 	_int			m_iTextureIndex = {};
 
-
+	// 이걸로 구분하자
+	_int			m_iUIType = {};
 	
 
 public:
