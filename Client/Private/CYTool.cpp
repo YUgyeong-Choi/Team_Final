@@ -4,6 +4,7 @@
 #include "EffectSequence.h"
 #include "ToolParticle.h"
 #include "ToolSprite.h"
+#include "ToolMeshEffect.h"
 #include "Client_Calculation.h"
 
 
@@ -327,7 +328,7 @@ HRESULT CCYTool::Window_Sprite()
 		_int iSelected = Keyframe.eInterpolationType;
 		if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
 		{
-			Keyframe.eInterpolationType = static_cast<CEffectBase::INTERPOLATION>(iSelected);
+			Keyframe.eInterpolationType = static_cast<INTERPOLATION>(iSelected);
 			//pTS->Set_InterpolationType(iIdx, static_cast<CEffectBase::INTERPOLATION>(iSelected));
 			//:3
 		}
@@ -393,15 +394,57 @@ HRESULT CCYTool::Window_Particle()
 
 HRESULT CCYTool::Window_Mesh()
 {
+
+	CToolMeshEffect* pTS = dynamic_cast<CToolMeshEffect*>(m_pSequence->m_Items[m_iSelected].pEffect);
+
+
+	auto& TSKeyFrames = pTS->Get_KeyFrames();
+
+	_int iIdx = {};
+	for (auto& Keyframe : TSKeyFrames)
+	{
+		ImGui::DragFloat(string("Frame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pTS->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
+
+		ImGui::DragFloat3(string("Translation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vTranslation), 0.1f);
+
+		_float3 vRotAxis = QuaternionToEuler(XMLoadFloat4(&Keyframe.vRotation));
+		ImGui::BeginDisabled();
+		ImGui::DragFloat3(string("Rotation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&vRotAxis));
+		ImGui::EndDisabled();
+
+		ImGui::DragFloat3(string("Scaling##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
+
+		ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&Keyframe.vColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
+
+		_int iSelected = Keyframe.eInterpolationType;
+		if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
+		{
+			Keyframe.eInterpolationType = static_cast<INTERPOLATION>(iSelected);
+			//pTS->Set_InterpolationType(iIdx, static_cast<CEffectBase::INTERPOLATION>(iSelected));
+			//:3
+		}
+
+		++iIdx;
+		ImGui::Separator();
+	}
+	if (ImGui::Button("Add Keyframe"))
+	{
+		pTS->Add_KeyFrame(CEffectBase::EFFKEYFRAME{});
+	}
+	if (iIdx > 1 && ImGui::Button("Delete Keyframe"))
+	{
+		pTS->Delete_KeyFrame();
+	}
+
 	return S_OK;
 }
 
-HRESULT CCYTool::Save_Particles()
+HRESULT CCYTool::Save_EffectSet()
 {
 	return S_OK;
 }
 
-HRESULT CCYTool::Load_Particles()
+HRESULT CCYTool::Load_EffectSet()
 {
 	return S_OK;
 }
@@ -525,11 +568,9 @@ CGameObject* CCYTool::Clone(void* pArg)
 void CCYTool::Free()
 {
 	__super::Free();
+
 	Safe_Delete(m_pSequence);
-	//for (auto& tex : m_Textures)
-	//{
-	//	Safe_Release(const_cast<ID3D11ShaderResourceView*&>(tex.pSRV));
-	//}
+
 	m_Textures.clear();
 }
  

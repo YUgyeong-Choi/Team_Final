@@ -13,10 +13,7 @@ class ENGINE_DLL CVIBuffer_Instance abstract : public CVIBuffer
 public:
 	typedef struct tagInstanceDesc
 	{
-		_uint		iNumInstance;
-		_float3		vRange;
-		_float2		vSize;
-		_float3		vCenter;
+		_uint			iNumInstance;
 
 	}INSTANCE_DESC;
 protected:
@@ -31,16 +28,11 @@ public:
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
 
-	virtual void Drop(_float fTimeDelta);
-	virtual void Spread(_float fTimeDelta);
-
-
 protected:
 	ID3D11Buffer*			m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC		m_VBInstanceDesc = {};
 	D3D11_SUBRESOURCE_DATA	m_VBInstanceSubresourceData = {};
 	
-
 	_uint					m_iNumIndexPerInstance = {};
 	_uint					m_iNumInstance = {};
 	_uint					m_iVertexInstanceStride = {};

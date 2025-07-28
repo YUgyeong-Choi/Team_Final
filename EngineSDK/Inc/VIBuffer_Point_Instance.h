@@ -14,6 +14,9 @@ public:
 		_float2			vSpeed;
 		_bool			isLoop;
 		PARTICLETYPE	ePType;
+		_float3			vRange;
+		_float2			vSize;
+		_float3			vCenter;
 
 	}DESC;
 	
@@ -26,9 +29,12 @@ public:
 	virtual HRESULT Initialize_Prototype(const INSTANCE_DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Update(_float fTimeDelta);
-	
-	virtual void Drop(_float fTimeDelta)override;
-	virtual void Spread(_float fTimeDelta)override;
+
+	virtual HRESULT Bind_Buffers() override;
+	virtual HRESULT Render() override;
+
+	virtual void Drop(_float fTimeDelta);
+	virtual void Spread(_float fTimeDelta);
 
 	void Set_Loop(_bool isLoop) { m_isLoop = isLoop; }
 
@@ -37,6 +43,7 @@ protected:
 	_float*						m_pSpeeds = { nullptr };
 	_float3						m_vPivot = {};
 	_bool						m_isLoop = { false };
+	PARTICLETYPE				m_ePType;
 
 
 public:

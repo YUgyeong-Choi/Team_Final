@@ -23,15 +23,6 @@ public:
 		_uint				iShaderPass = { 0 };
 	}DESC;
 
-	// 보간 방식
-	enum INTERPOLATION {
-		INTERPOLATION_LERP,
-		INTERPOLATION_EASEOUTBACK,
-		INTERPOLATION_EASEOUTCUBIC,
-		INTERPOLATION_EASEINQUAD,
-		INTERPOLATION_EASEOUTQUAD,
-		INTERPOLATION_END
-	};
 
 	// Keyframes
 	typedef struct tagEffectKeyFrame
@@ -81,6 +72,10 @@ protected:
 	_bool				m_bAnimation = { true };
 	_uint				m_iShaderPass = {};
 
+	// 지금 메쉬만 사용중, 다른 애들도 바꾸고 주석 지우기
+	enum TEXUSAGE { TU_DIFFUSE, TU_MASK1, TU_MASK2, TU_END };
+	_bool				m_bTextureUsage[TU_END];
+
 	// TrackPositions
 	_int				m_iDuration = {10};
 	_int				m_iStartTrackPosition = {};
@@ -99,6 +94,8 @@ protected:
 	_int				m_iTileIdx{0};
 	_float2				m_fTileSize{};
 	_float2				m_fOffset{};
+
+	// 
 
 public:
 	vector<EFFKEYFRAME>& Get_KeyFrames() { return m_KeyFrames; }

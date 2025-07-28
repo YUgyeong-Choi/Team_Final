@@ -109,15 +109,15 @@ _float CEffectBase::Interpolate_Ratio(_float fRatio)
 {
 	switch (m_KeyFrames[m_iCurKeyFrameIndex].eInterpolationType)
 	{
-	case Client::CEffectBase::INTERPOLATION_LERP:
+	case Client::INTERPOLATION_LERP:
 		return fRatio;
-	case Client::CEffectBase::INTERPOLATION_EASEOUTBACK:
+	case Client::INTERPOLATION_EASEOUTBACK:
 		return EaseOutBack(fRatio);
-	case Client::CEffectBase::INTERPOLATION_EASEOUTCUBIC:
+	case Client::INTERPOLATION_EASEOUTCUBIC:
 		return EaseOutCubic(fRatio);
-	case Client::CEffectBase::INTERPOLATION_EASEINQUAD:
+	case Client::INTERPOLATION_EASEINQUAD:
 		return EaseInQuad(fRatio);
-	case Client::CEffectBase::INTERPOLATION_EASEOUTQUAD:
+	case Client::INTERPOLATION_EASEOUTQUAD:
 		return EaseOutBack(fRatio);
 	default:
 		return fRatio;

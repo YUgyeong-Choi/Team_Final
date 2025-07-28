@@ -14,10 +14,6 @@ public:
 	typedef struct tagInstanceDesc
 	{
 		_uint			iNumInstance;
-		_float3			vRange;
-		_float2			vSize;
-		_float3			vCenter;
-		PARTICLETYPE	ePType;
 
 	}INSTANCE_DESC;
 protected:
@@ -32,10 +28,6 @@ public:
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
 
-	virtual void Drop(_float fTimeDelta);
-	virtual void Spread(_float fTimeDelta);
-
-
 protected:
 	ID3D11Buffer*			m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC		m_VBInstanceDesc = {};
@@ -44,7 +36,6 @@ protected:
 	_uint					m_iNumIndexPerInstance = {};
 	_uint					m_iNumInstance = {};
 	_uint					m_iVertexInstanceStride = {};
-	PARTICLETYPE			m_ePType;
 
 public:
 	virtual CComponent* Clone(void* pArg) = 0;

@@ -33,8 +33,8 @@ private:
 	HRESULT Window_Particle();
 	HRESULT Window_Mesh();
 
-	HRESULT Save_Particles();
-	HRESULT Load_Particles();
+	HRESULT Save_EffectSet();
+	HRESULT Load_EffectSet();
 
 	HRESULT Load_Textures();
 	HRESULT Draw_TextureBrowser(class CEffectBase* pEffect);
