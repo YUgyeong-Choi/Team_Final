@@ -39,7 +39,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 		const CUTSCENE_DESC& curDesc = m_vecCameraFrame[m_iCurrentFrame];
 
 		// 진행 비율 계산
-		_float t = m_fElapsedTime / max(0.0001f, curDesc.fDuration);
+		_float t = m_fElapsedTime / max(0.0001f, curDesc.fInterpDuration);
 		t = min(t, 1.f); // 과도한 t 방지
 
 		if (curDesc.eInterp == INTERPOLATION_CAMERA::LERP)
@@ -137,7 +137,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		// 시간 누적 및 프레임 전환
 		m_fElapsedTime += fTimeDelta;
-		if (m_fElapsedTime >= curDesc.fDuration)
+		if (m_fElapsedTime >= curDesc.fInterpDuration)
 		{
 			m_fElapsedTime = 0.f;
 			++m_iCurrentFrame;
@@ -164,6 +164,31 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				CCamera_Manager::Get_Instance()->SetFreeCam();
 				return;
 			}
+		}
+
+
+		if (m_iCurrentFrame + 1 != m_vecCameraFrame.size())
+		{
+			CUTSCENE_DESC nextDesc = m_vecCameraFrame[m_iCurrentFrame + 1];
+			if (nextDesc.bZoom)
+			{
+				_float startFov = curDesc.fFov;
+				_float endFov = nextDesc.fFov;
+				m_fFov = XMConvertToRadians(startFov + (endFov - startFov) * t);
+			}
+		}
+
+		if (curDesc.bZoom)
+		{
+			CUTSCENE_DESC nextDesc{};
+			if (m_iCurrentFrame + 1 == m_vecCameraFrame.size())
+				nextDesc = curDesc;
+			else
+				nextDesc = m_vecCameraFrame[m_iCurrentFrame + 1];
+
+			_float  startFov = curDesc.fFov;
+			_float  endFov = nextDesc.fFov;
+			m_fFov = XMConvertToRadians(startFov + (endFov - startFov) * t);
 		}
 	}
 

@@ -116,8 +116,17 @@ HRESULT CYGTool::Render_CameraTool()
 			if (ImGui::RadioButton("CatmullRom", m_eInterpMode == INTERPOLATION_CAMERA::CATMULLROM))
 				m_eInterpMode = INTERPOLATION_CAMERA::CATMULLROM;
 
-			ImGui::InputFloat(u8"Duration (sec)", &m_fDuration, 0.1f, 1.0f, "%.2f");
-			if (m_fDuration < 0.f) m_fDuration = 0.f; // 음수 방지
+			ImGui::InputFloat(u8"Duration (sec)", &m_fInterpDuration, 0.1f, 1.0f, "%.2f");
+			if (m_fInterpDuration < 0.f) m_fInterpDuration = 0.f; // 음수 방지
+
+
+			if (ImGui::Checkbox("Zoom Effect", &m_bZoom)) {}
+
+			if (m_bZoom)
+			{
+				ImGui::DragFloat("FOV", &m_fFov, 0.1f, 1.f, 179.f, "%.1f");
+				ImGui::DragFloat("Zoom Duration", &m_fFovDuration, 0.01f, 0.f, 10.f, "%.2f");
+			}
 
 			// float[3] → _vector로 변환
 			_float worldMatrix[16];
@@ -126,11 +135,15 @@ HRESULT CYGTool::Render_CameraTool()
 
 			m_CutSceneDesc.worldMatrix = mat;
 			m_CutSceneDesc.eInterp = m_eInterpMode;
-			m_CutSceneDesc.fDuration = m_fDuration;
+			m_CutSceneDesc.fInterpDuration = m_fInterpDuration;
+			m_CutSceneDesc.bZoom = m_bZoom;
+			m_CutSceneDesc.fFov = m_fFov;
+			m_CutSceneDesc.fFovDuration = m_fFovDuration;
 
 			if (ImGui::Button(u8"Add"))
 			{
 				m_vecCameraFrame.push_back(m_CutSceneDesc);
+				m_CutSceneDesc.fFov = 60.f;
 			}
 		}
 		else
@@ -174,7 +187,7 @@ HRESULT CYGTool::Render_CameraFrame()
 			"Frame %zu: Pos(%.2f, %.2f, %.2f) Rot(%.2f, %.2f, %.2f) Dur: %.2fs",
 			i, position[0], position[1], position[2],
 			rotation[0], rotation[1], rotation[2],
-			desc.fDuration);
+			desc.fInterpDuration);
 
 		if (ImGui::Selectable(label, m_iSelectedFrameIndex == i))
 		{
@@ -207,8 +220,11 @@ HRESULT CYGTool::Render_CameraFrame()
 
 			m_editedPos = { position[0], position[1], position[2] };
 			m_editedRot = { rotation[0], rotation[1], rotation[2] };
-			m_editedDuration = m_vecCameraFrame[m_iSelectedFrameIndex].fDuration;
+			m_fEditedInterpDuration = m_vecCameraFrame[m_iSelectedFrameIndex].fInterpDuration;
 			m_eEditInterpMode = m_vecCameraFrame[m_iSelectedFrameIndex].eInterp;
+			m_bEditZoom = m_vecCameraFrame[m_iSelectedFrameIndex].bZoom;;
+			m_fEditFov = m_vecCameraFrame[m_iSelectedFrameIndex].fFov;
+			m_fFovDuration = m_vecCameraFrame[m_iSelectedFrameIndex].fFovDuration;
 		}
 
 		ImGui::Separator();
@@ -224,7 +240,7 @@ HRESULT CYGTool::Render_CameraFrame()
 
 		// Duration 입력
 		ImGui::Text("Duration (sec)");
-		ImGui::InputFloat("##duration", &m_editedDuration, 0.1f, 1.0f, "%.2f");
+		ImGui::InputFloat("##duration", &m_fEditedInterpDuration, 0.1f, 1.0f, "%.2f");
 
 		// UseLerp 입력
 		ImGui::Text("Use Lerp");
@@ -236,6 +252,16 @@ HRESULT CYGTool::Render_CameraFrame()
 
 		if (ImGui::RadioButton("CatmullRom", m_eEditInterpMode == INTERPOLATION_CAMERA::CATMULLROM))
 			m_eEditInterpMode = INTERPOLATION_CAMERA::CATMULLROM;
+
+
+		if (ImGui::Checkbox("Zoom Effect", &m_bEditZoom)) {}
+
+		if (m_bEditZoom)
+		{
+			ImGui::DragFloat("FOV", &m_fEditFov, 0.1f, 1.f, 179.f, "%.1f");
+			ImGui::DragFloat("Zoom Duration", &m_fEditFovDuration, 0.01f, 0.f, 10.f, "%.2f");
+		}
+
 
 		// 적용 버튼
 		if (ImGui::Button("Apply Changes"))
@@ -252,7 +278,10 @@ HRESULT CYGTool::Render_CameraFrame()
 			// 2. 프레임 정보 갱신
 			m_vecCameraFrame[m_iSelectedFrameIndex].worldMatrix = mat;
 			m_vecCameraFrame[m_iSelectedFrameIndex].eInterp = m_eEditInterpMode;
-			m_vecCameraFrame[m_iSelectedFrameIndex].fDuration = m_editedDuration;
+			m_vecCameraFrame[m_iSelectedFrameIndex].fInterpDuration = m_fEditedInterpDuration;
+			m_vecCameraFrame[m_iSelectedFrameIndex].bZoom = m_bEditZoom;
+			m_vecCameraFrame[m_iSelectedFrameIndex].fFov = m_fEditFov;
+			m_vecCameraFrame[m_iSelectedFrameIndex].fFovDuration = m_fEditFovDuration;
 		}
 
 		ImGui::SameLine();

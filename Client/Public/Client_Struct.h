@@ -85,7 +85,10 @@ namespace Client
 	{
 		_matrix worldMatrix;
 		INTERPOLATION_CAMERA eInterp;
-		_float fDuration;
+		_float fInterpDuration;
+		_bool bZoom;
+		_float fFov;
+		_float fFovDuration;
 	}CUTSCENE_DESC;
 
 }
