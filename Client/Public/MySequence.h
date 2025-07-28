@@ -1,8 +1,6 @@
 #pragma once
-#include "Base.h"	
-#define USE_IMGUI
+#include "Base.h"
 #include "Client_Defines.h"
-#undef USE_IMGUI
 
 NS_BEGIN(Engine)
 class CAnimation;

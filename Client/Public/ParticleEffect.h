@@ -4,30 +4,29 @@
 #include "EffectBase.h"
 
 NS_BEGIN(Engine)
-class CShader;
-class CTexture;
 class CVIBuffer_Point_Instance;
 NS_END
 
 NS_BEGIN(Client)
 
-class CParticleEffect final : public CEffectBase
+class CParticleEffect : public CEffectBase
 {
 public:
 	typedef struct tagParticleEffectDesc : public CEffectBase::DESC
 	{
-		_bool		bAnimation = { false };
-		_uint		iFrame = {};
-
 		/* Instance Buffer Desc */
-		_float3		vPivot;
-		_float2		vLifeTime;
-		_float2		vSpeed;
-		_bool		isLoop;
-
+		_uint				iNumInstance;
+		_float3				vRange;
+		_float2				vSize;
+		_float3				vCenter;
+		_float3				vPivot;
+		_float2				vLifeTime;
+		_float2				vSpeed; 
+		_bool				isLoop;
+		PARTICLETYPE		ePType;
 	}DESC;
 
-private:
+protected:
 	CParticleEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CParticleEffect(const CParticleEffect& Prototype);
 	virtual ~CParticleEffect() = default;
@@ -40,15 +39,21 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	void Set_PType(_uint iPType) { m_iPType = iPType; }
+	void Set_PType(PARTICLETYPE ePType) { m_ePType = ePType; }
 	void Set_Loop(_bool isLoop);
 
-private:
+protected:
 	CVIBuffer_Point_Instance*		m_pVIBufferCom = { nullptr };
-	_uint							m_iPType = { 0 }; // Particle Type
+	PARTICLETYPE					m_ePType = { }; // Particle Type
 
-private:
-	HRESULT Ready_Components();
+protected:
+	_uint				m_iNumInstance;
+	_float3				m_vPivot = {};
+	_float				m_fMaxLifeTime = {};
+	_bool				m_isLoop = { false };
+
+protected:
+	HRESULT Ready_Components(void* pArg);
 
 public:
 	static CParticleEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

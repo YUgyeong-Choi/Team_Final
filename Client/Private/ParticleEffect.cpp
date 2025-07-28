@@ -21,10 +21,24 @@ HRESULT CParticleEffect::Initialize_Prototype()
 
 HRESULT CParticleEffect::Initialize(void* pArg)
 {
+	if (pArg == nullptr)
+	{
+		MSG_BOX("파티클은 Desc가 필수");
+		return E_FAIL;
+	}
+
+	DESC* pDesc = static_cast<DESC*>(pArg);
+
+	m_iNumInstance = pDesc->iNumInstance;
+	m_fMaxLifeTime = pDesc->vLifeTime.y;
+	m_vPivot = pDesc->vPivot;
+	m_isLoop = pDesc->isLoop;
+	m_ePType = pDesc->ePType;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -37,7 +51,7 @@ void CParticleEffect::Priority_Update(_float fTimeDelta)
 
 void CParticleEffect::Update(_float fTimeDelta)
 {
-
+	m_pVIBufferCom->Update(fTimeDelta);
 	return;
 }
 
@@ -79,21 +93,36 @@ void CParticleEffect::Set_Loop(_bool isLoop)
 	m_pVIBufferCom->Set_Loop(isLoop);
 }
 
-HRESULT CParticleEffect::Ready_Components()
+HRESULT CParticleEffect::Ready_Components(void* pArg)
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPosInstance"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_VIBuffer_ToolParticle"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-		return E_FAIL;
-
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Smoke"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	DESC* pDesc = static_cast<DESC*>(pArg);
+
+	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
+	VIBufferDesc.ePType =		pDesc->ePType;
+	VIBufferDesc.iNumInstance = pDesc->iNumInstance;
+	VIBufferDesc.isLoop =		pDesc->isLoop;
+	VIBufferDesc.vCenter =		pDesc->vCenter;
+	VIBufferDesc.vLifeTime =	pDesc->vLifeTime;
+	VIBufferDesc.vPivot =		pDesc->vPivot;
+	VIBufferDesc.vRange =		pDesc->vRange;
+	VIBufferDesc.vSize =		pDesc->vSize;
+	VIBufferDesc.vSpeed =		pDesc->vSpeed;
+
+
+
+	/* For.Com_VIBuffer */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_VIBuffer_ToolParticle"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &VIBufferDesc)))
 		return E_FAIL;
 
 	return S_OK;

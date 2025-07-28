@@ -53,7 +53,7 @@ HRESULT CToolSprite::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(EFF_UVSPRITE_COLOR)))
+	if (FAILED(m_pShaderCom->Begin(m_iShaderPass)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))

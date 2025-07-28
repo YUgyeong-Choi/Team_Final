@@ -30,6 +30,7 @@ HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 
 HRESULT CVIBuffer_Instance::Bind_Buffers()
 {
+	// 여기는 cs로 변경하기 
 	ID3D11Buffer* pVertexBuffers[] = {
 		   m_pVB,
 		   m_pVBInstance,		   
@@ -47,7 +48,7 @@ HRESULT CVIBuffer_Instance::Bind_Buffers()
 	};
 
 	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iVertexStrides, iOffsets);
-	m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
+	m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0); // 파티클 Indexbuffer 삭제 예정
 	m_pContext->IASetPrimitiveTopology(m_ePrimitiveTopology);
 
 	return S_OK;
@@ -56,7 +57,10 @@ HRESULT CVIBuffer_Instance::Bind_Buffers()
 HRESULT CVIBuffer_Instance::Render()
 {	
 
-	m_pContext->DrawIndexedInstanced(m_iNumIndexPerInstance, m_iNumInstance, 0, 0, 0);
+	m_pContext->DrawIndexedInstanced(m_iNumIndexPerInstance, m_iNumInstance, 0, 0, 0); // 너도
+	//m_pContext->DrawInstanced(m_iNumIndexPerInstance, m_iNumInstance, 0, 0); 
+	// TODO: 매개변수 알아올 것 
+	
 
 	return S_OK;
 }

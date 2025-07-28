@@ -495,6 +495,10 @@ HRESULT CLoader::Loading_For_CY()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"),
 		CToolSprite::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	/* For.Prototype_GameObject_ToolParticle */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"),
+		CToolParticle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

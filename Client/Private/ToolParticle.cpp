@@ -3,13 +3,13 @@
 #include "GameInstance.h"
 
 CToolParticle::CToolParticle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CEffectBase { pDevice, pContext }
+	: CParticleEffect { pDevice, pContext }
 {
 
 }
 
 CToolParticle::CToolParticle(const CToolParticle& Prototype)
-	: CEffectBase( Prototype )
+	: CParticleEffect( Prototype )
 {
 
 }
@@ -74,11 +74,6 @@ HRESULT CToolParticle::Render()
 	return S_OK;
 }
 
-void CToolParticle::Set_Loop(_bool isLoop)
-{
-	m_pVIBufferCom->Set_Loop(isLoop);
-}
-
 HRESULT CToolParticle::Ready_Components()
 {
 	/* For.Com_Shader */
@@ -130,6 +125,4 @@ void CToolParticle::Free()
 	__super::Free();
 
 	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pTextureCom);
 }

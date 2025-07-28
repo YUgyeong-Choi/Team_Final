@@ -14,8 +14,7 @@ class CSpriteEffect : public CEffectBase
 public:
 	typedef struct tagSpriteEffectDesc : public CEffectBase::DESC
 	{
-		_bool		bAnimation = { false };
-		_uint		iFrame = {};
+
 	}DESC;
 
 protected:
@@ -33,9 +32,6 @@ public:
 
 protected:
 	CVIBuffer_Rect*		m_pVIBufferCom = { nullptr };
-
-protected:
-	_bool				m_bAnimation = { false };
 
 protected:
 	virtual HRESULT Ready_Components();
