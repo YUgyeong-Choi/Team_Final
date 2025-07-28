@@ -375,6 +375,17 @@ HRESULT CLoader::Loading_For_GL()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+	/* For.Prototype_Component_Texture_Img_ChNose*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Button_Hover.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Img_ChNose*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Line_Highlight.dds")))))
+		return E_FAIL;
+
+
 	// 
 	m_fRatio = 0.1f;
 	Sleep(200);
@@ -403,6 +414,10 @@ HRESULT CLoader::Loading_For_GL()
 	Sleep(250);
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+	
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button"),
+		CUI_Button::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	m_fRatio = 0.9f;
 	Sleep(250);

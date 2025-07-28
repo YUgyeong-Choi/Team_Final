@@ -22,7 +22,7 @@ namespace Client
 #pragma region GL
 	enum UI_PASS_INDEX { UI_DEFAULT = 0, UI_SOFTEFFECT, UI_DISCARD_DARK, UI_DISCARD_ALAPH, 
 						UI_BLEND, UI_BLEND_DISCARD_ALAPH, UI_BLEND_DISCARD_DARK, UI_FADE,
-						UI_VIGNETTING,
+						UI_FONT,
 						UI_END};
 
 	enum DYNAMIC_UI_PASS_INDEX {
@@ -30,6 +30,9 @@ namespace Client
 		D_UI_BUTTON,
 		D_UI_END
 	};
+
+	
+	enum class UI_TYPE {STATIC, DYNAMIC, TEXT , END};
 
 #pragma endregion
 

@@ -5,6 +5,7 @@
 #include "Static_UI.h"
 #include "UI_Video.h"
 #include "UI_Button.h"
+#include "UI_Text.h"
 
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -196,7 +197,7 @@ HRESULT CLevel_Logo::Ready_Video()
 	Safe_AddRef(m_pMainUI);
 
 	m_pMainUI->FadeStart(0.f, 1.f, 3.f);
-
+	
 
 	return S_OK;
 }
@@ -206,6 +207,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 	_float2 vRange = m_pGameInstance->Calc_Draw_Range(TEXT("Font_Bold"), TEXT("ÇÏ³ª µÑ»ï"));
 
 	CUI_Button::BUTTON_UI_DESC eButtonDesc = {};
+	eButtonDesc.strTextureTag = L"";
 	eButtonDesc.fOffset = 0.01f;
 	eButtonDesc.fX = g_iWinSizeX * 0.2f;
 	eButtonDesc.iTextureIndex = 0;
@@ -262,6 +264,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
 	Safe_AddRef(m_pButtons.back());
+
 
 
 	return S_OK;

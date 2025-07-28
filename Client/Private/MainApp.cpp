@@ -6,6 +6,7 @@
 #include "Static_UI.h"
 #include "Dynamic_UI.h"
 #include "UI_Video.h"
+#include "UI_Text.h"
 
 #include "UI_Feature_UV.h"
 #include "UI_Feature_Fade.h"
@@ -318,6 +319,11 @@ HRESULT CMainApp::Ready_Loading()
 	/* For.Prototype_GameObject_Video_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
 		CUI_Video::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Video_UI */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Text"),
+		CUI_Text::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	 
 	return S_OK;

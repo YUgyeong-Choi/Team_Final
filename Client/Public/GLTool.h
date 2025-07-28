@@ -86,6 +86,8 @@ private:
 	//
 	_bool m_isFromTool = { true };
 
+	string m_strInput = {};
+
 
 	
 public:

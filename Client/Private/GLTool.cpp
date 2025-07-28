@@ -673,6 +673,28 @@ HRESULT CGLTool::Render_SelectOptionTool()
 			ImGui::EndTabItem();
 		}
 
+		if (ImGui::BeginTabItem(u8"텍스트 입력하기"))
+		{
+			size_t buf_size = m_strInput.size() + 512;
+			char* buf = new char[buf_size];
+			memcpy(buf, m_strInput.c_str(), m_strInput.size() + 1);
+
+			if (ImGui::InputTextMultiline("##multiline", buf, buf_size, ImVec2(-FLT_MIN, 200)))
+			{
+				m_strInput = buf;
+			}
+
+			delete[] buf;
+
+			if (ImGui::Button(u8"메시지 박스 띄우기"))
+			{
+				_wstring wInput = StringToWStringU8(m_strInput);
+				::MessageBox(nullptr, wInput.c_str(), L"error", MB_OK);
+			}
+
+			ImGui::EndTabItem();
+		}
+
 		if (ImGui::BeginTabItem("Button"))
 		{
 
