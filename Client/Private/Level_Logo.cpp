@@ -14,6 +14,8 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
+	
+
 	if (FAILED(Ready_Video()))
 		return E_FAIL;
 
@@ -76,22 +78,39 @@ void CLevel_Logo::Update(_float fTimeDelta)
 HRESULT CLevel_Logo::Render()
 {
 	SetWindowText(g_hWnd, TEXT("로고레벨입니다."));
-	_wstring text = L"F1 : 동하, F2 : 장원, F3 : 경래, F4 : 영웅, F5 : 채영, F6 : 유경 , F7 : 본 게임 레벨";
-	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 680.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	_wstring text = L"F1 : 동하, F2 : 장원, F3 : 경래, F4 : 영웅, F5 : 채영, F6 : 유경 , F7 : 클라크 스테이션 , F8 : 클라크 호텔";
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 860.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	text = L"F5 : 렌더타겟 OnOff";
-	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 650.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 830.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	text = L"F6 : 콜라이더 렌더 OnOff";
-	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 620.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 800.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	return S_OK;
 }
 
 HRESULT CLevel_Logo::Ready_Video()
 {
+	CStatic_UI::STATIC_UI_DESC eBackDesc = {};
+	eBackDesc.fOffset = 0.1f;
+	eBackDesc.fSpeedPerSec = 1.f;
+	eBackDesc.fX = g_iWinSizeX * 0.5f;
+	eBackDesc.fY = g_iWinSizeY * 0.5f;
+	eBackDesc.fSizeX = g_iWinSizeX;
+	eBackDesc.fSizeY = g_iWinSizeY;
+	eBackDesc.iPassIndex = 0;
+	eBackDesc.iTextureIndex = 0;
+	eBackDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+	eBackDesc.vColor = { 0.f,0.f,0.f,0.f };
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background"), &eBackDesc)))
+		return E_FAIL;
+
+
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
-	eDesc.fOffset = 0.1f;
+	eDesc.fOffset = 0.05f;
 	eDesc.fInterval = 0.05f;
 	eDesc.fSpeedPerSec = 1.f;
 	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Title.mp4");

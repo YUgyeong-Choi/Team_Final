@@ -644,6 +644,43 @@ void CTransform::LookAt(_fvector vAt)
 	Set_State(STATE::LOOK, XMVector3Normalize(vLook) * vScaled.z);
 }
 
+
+void CTransform::QuaternionRotate(_matrix matWorld)
+{
+	_vector vScale, vRotationQuat, vTranslation;
+	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, matWorld);
+
+	Set_Quaternion(vRotationQuat);
+}
+
+void CTransform::Set_Quaternion(_vector vQuaternion)
+{
+	// 정규화(안정성 확보) 후 저장
+	m_vQuaternionRotation = XMQuaternionNormalize(vQuaternion);
+
+	// 회전값이 바뀌었으니 월드 행렬도 갱신 필요
+	Update_WorldMatrix();
+}
+
+void CTransform::Update_WorldMatrix()
+{
+	_float3 vScale = Compute_Scaled();
+	_matrix matScale = XMMatrixScaling(vScale.x, vScale.y, vScale.z);
+
+	_matrix matRotation = XMMatrixRotationQuaternion(m_vQuaternionRotation);
+
+	_vector vPosition = Get_State(STATE::POSITION);
+	_matrix matTranslation = XMMatrixTranslation(
+		XMVectorGetX(vPosition),
+		XMVectorGetY(vPosition),
+		XMVectorGetZ(vPosition)
+	);
+
+	XMMATRIX matWorld = matScale * matRotation * matTranslation;
+	XMStoreFloat4x4(&m_WorldMatrix, matWorld);
+
+}
+
 HRESULT CTransform::Bind_ShaderResource(CShader* pShader, const _char* pConstantName)
 {
 	return pShader->Bind_Matrix(pConstantName, &m_WorldMatrix);	

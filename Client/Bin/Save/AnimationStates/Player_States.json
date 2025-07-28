@@ -81,7 +81,7 @@
             "fValue": 0.0,
             "iValue": 0
         },
-        "IsRun": {
+        "Run": {
             "Type": 0,
             "bTriggered": false,
             "bValue": true,
@@ -115,7 +115,7 @@
                 },
                 {
                     "Op": 1,
-                    "ParamName": "IsRun",
+                    "ParamName": "Run",
                     "Type": 0,
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -144,7 +144,7 @@
                 },
                 {
                     "Op": 1,
-                    "ParamName": "IsRun",
+                    "ParamName": "Run",
                     "Type": 0,
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -210,7 +210,7 @@
             "Conditions": [
                 {
                     "Op": 0,
-                    "ParamName": "IsRun",
+                    "ParamName": "Run",
                     "Type": 0,
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -239,7 +239,7 @@
                 },
                 {
                     "Op": 0,
-                    "ParamName": "IsRun",
+                    "ParamName": "Run",
                     "Type": 0,
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -466,7 +466,7 @@
                 },
                 {
                     "Op": 1,
-                    "ParamName": "IsRun",
+                    "ParamName": "Run",
                     "Type": 0,
                     "fThreshold": 0.0,
                     "iThreshold": 0

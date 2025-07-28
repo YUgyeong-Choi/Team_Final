@@ -41,9 +41,17 @@ public:
 	virtual HRESULT Render();
 
 public:
-	//const wstring& Get_ModelPrototypeTag() const {
-	//	return m_ModelPrototypeTag;
-	//}
+	void Undo_WorldMatrix();
+
+	void Set_UndoWorldMatrix(const _fmatrix WorldMatrix) {
+		m_bCanUndo = true;
+		XMStoreFloat4x4(&m_UndoWorldMatrix, WorldMatrix);
+	}
+
+public:
+	const wstring& Get_ModelPrototypeTag() const {
+		return m_ModelPrototypeTag;
+	}
 
 	_uint Get_ID() const {
 		return m_iID;
@@ -52,6 +60,10 @@ public:
 	const string& Get_ModelName() const {
 		return m_ModelName;
 	}
+
+private:
+	_bool		m_bCanUndo = { false };
+	_float4x4	m_UndoWorldMatrix = {};
 
 private:
 	wstring m_ModelPrototypeTag = {};

@@ -38,14 +38,13 @@ HRESULT CLevel_DH::Initialize()
 
 void CLevel_DH::Update(_float fTimeDelta)
 {
-
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
 
-
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 }
@@ -56,7 +55,6 @@ HRESULT CLevel_DH::Render()
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
-
 
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -69,17 +67,13 @@ HRESULT CLevel_DH::Render()
 	io.DisplaySize = ImVec2((float)width, (float)height);
 	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
-
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 
 	ImGui_Render();
-	//렌더링 
-	//ImGui::ShowDemoWindow(); // Show demo window! :)
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	//ImGui::UpdatePlatformWindows();
-	//ImGui::RenderPlatformWindowsDefault();
 	return S_OK;
 }
 
@@ -93,29 +87,6 @@ HRESULT CLevel_DH::Ready_Camera()
 
 HRESULT CLevel_DH::Ready_Lights()
 {
-	LIGHT_DESC			LightDesc{};
-
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 5.f;
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::DH), LightDesc)))
-		return E_FAIL;
-
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 5.f;
-	LightDesc.fRange = 100.f;
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
-
-	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::DH), LightDesc)))
-		return E_FAIL;
-
 	CShadow::SHADOW_DESC		Desc{};
 	Desc.vEye = _float4(0.f, 20.f, -15.f, 1.f);
 	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
@@ -131,8 +102,8 @@ HRESULT CLevel_DH::Ready_Lights()
 
 HRESULT CLevel_DH::Ready_ImGuiTools()
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CDHTool::Create(m_pDevice, m_pContext);
-	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)] = CDHTool::Create(m_pDevice, m_pContext);
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)])
 		return E_FAIL;
 
 	return S_OK;
@@ -173,15 +144,30 @@ HRESULT CLevel_DH::Ready_ImGui()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
-	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // multi-viewport?
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/segoeui.ttf", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
 
-	ImGui::StyleColorsDark();
-	io.Fonts->AddFontFromFileTTF("C://Windows//Fonts//gulim.ttc", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
+	ImGui::StyleColorsDark();  // 어두운 테마 기반
 
-	// Setup Platform/Renderer backends
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowRounding = 8.0f;
+	style.FrameRounding = 5.0f;
+	style.GrabRounding = 5.0f;
+	style.ScrollbarRounding = 6.0f;
+
+	style.WindowPadding = ImVec2(20, 20);   // 넉넉한 창 내부 여백
+	style.FramePadding = ImVec2(10, 8);    // 버튼/입력창 안쪽 여백
+	style.ItemSpacing = ImVec2(12, 10);   // 위젯 간 간격
+
+	// 투명한 배경 느낌
+	style.Colors[ImGuiCol_WindowBg].w = 0.92f;  // 1.0은 완전 불투명
+
+	ImVec4* colors = style.Colors;
+	colors[ImGuiCol_Button] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f); // 버튼 파랑
+	colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.78f); // 호버 시 연한 파랑
+	colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f); // 클릭 시 진한 파랑
+	colors[ImGuiCol_FrameBg] = ImVec4(0.16f, 0.29f, 0.48f, 1.00f); // 입력창 배경
+
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
 
@@ -193,7 +179,7 @@ HRESULT CLevel_DH::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Render()))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Render()))
 		return E_FAIL;
 	return S_OK;
 }
@@ -214,6 +200,7 @@ HRESULT CLevel_DH::ImGui_Docking_Settings()
 		ImGuiWindowFlags_NoNavFocus |
 		ImGuiWindowFlags_NoBackground |
 		ImGuiWindowFlags_NoDecoration |
+		ImGuiWindowFlags_NoInputs |
 		ImGuiWindowFlags_MenuBar;
 
 
@@ -255,7 +242,7 @@ void CLevel_DH::Free()
 	//ImGui::GetIO().Fonts->Clear(); // 폰트 캐시 정리
 	ImGui::DestroyContext();
 
-	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
+	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]);
 	
 	__super::Free();
 

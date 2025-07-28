@@ -244,7 +244,7 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		{
 			bRunToggle = !bRunToggle;
 		}
-		m_pAnimator->SetBool("IsRun", bRunToggle);
+		m_pAnimator->SetBool("Run", bRunToggle);
 	}
 }
 

@@ -26,6 +26,8 @@ public:
 	virtual HRESULT Render();
 
 public:
+	void Reset_CameraWorldMatrix();
+
 	HRESULT Change_Model(wstring ModelPrototypeTag);
 
 	CTransform* Get_CameraTransformCom() const {

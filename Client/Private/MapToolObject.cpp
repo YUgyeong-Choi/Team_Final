@@ -71,6 +71,15 @@ HRESULT CMapToolObject::Render()
 	return S_OK;
 }
 
+void CMapToolObject::Undo_WorldMatrix()
+{
+	if (m_bCanUndo == true)
+	{
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_UndoWorldMatrix));
+		m_bCanUndo = false;
+	}
+}
+
 HRESULT CMapToolObject::Ready_Components(void* pArg)
 {
 	if (pArg == nullptr)

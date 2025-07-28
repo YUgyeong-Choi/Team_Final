@@ -23,6 +23,8 @@ public:
 	_bool Get_RenderCollider() { return m_bRenderCollider; }
 #endif
 
+	
+
 private:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
@@ -48,7 +50,9 @@ private:
 	list<class CComponent*>		m_DebugComponent;
 	_bool m_bRenderTarget = false;
 	_bool m_bRenderCollider = false;
+	
 #endif
+
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();
@@ -62,6 +66,8 @@ private:
 	HRESULT Render_BackBuffer();
 	HRESULT Render_NonLight();
 	HRESULT Render_Blur();
+	HRESULT Render_UI_Deferred();
+	
 
 private:
 	HRESULT Ready_DepthStencilView(_uint iWidth, _uint iHeight);

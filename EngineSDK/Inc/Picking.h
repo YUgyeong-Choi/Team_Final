@@ -17,6 +17,7 @@ public:
 
 	//피킹된 오브젝트의 아이디를 가져오는 피킹
 	_bool Picking(_int* pOut);
+	_bool PickingToolMesh(_int* pOut);
 
 private:
 	ID3D11Device*			m_pDevice = { nullptr };

@@ -21,6 +21,8 @@ public:
 	_bool  Get_isFade() { return m_isFade; }
 	_float Get_Alpha() { return m_fCurrentAlpha; }
 
+	void  Set_isVignetting(_bool isVignetting) { m_isVignetting = isVignetting; }
+
 protected:
 	CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIObject(const CUIObject& Prototype);
@@ -60,6 +62,8 @@ protected:
 
 	// ฐ๖วา ป๖. 
 	_float4         m_vColor = {1.f,1.f,1.f,1.f};
+
+	_bool			m_isVignetting = { false };
 	
 
 public:

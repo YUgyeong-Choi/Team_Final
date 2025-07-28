@@ -3,6 +3,8 @@
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
+#include "Camera.h"
+#include "Camera_Manager.h"
 
 CYGTool::CYGTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -44,62 +46,30 @@ void CYGTool::Late_Update(_float fTimeDelta)
 
 HRESULT CYGTool::Render()
 {
-	if (FAILED(Render_HiTool()))
-		return E_FAIL;
-
-	if (FAILED(Render_Hi2Tool()))
+	if (FAILED(Render_CaemraTool()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CYGTool::Render_HiTool()
+
+HRESULT CYGTool::Render_CaemraTool()
 {
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
 	Begin("YG Tools", &open, NULL);
 
-	IGFD::FileDialogConfig config;
-	if (Button(u8"안녕"))
-	{
+    if (ImGui::CollapsingHeader(u8"카메라 위치/방향 제어"))
+    {
+        if (CCamera* pCam = CCamera_Manager::Get_Instance()->GetCurCam())
+        {
 
-	}
-
-	if (IFILEDIALOG->Display("FBXDialog"))
-	{
-		if (IFILEDIALOG->IsOk())
-		{
-			auto selections = IFILEDIALOG->GetSelection();
-			// 처리
-			// first: 파일명.확장자
-			// second: 전체 경로 (파일명포함)
-			if (!selections.empty())
-			{
-				for (auto FilePath : selections)
-				{
-
-				}
-			}
-		}
-		IFILEDIALOG->Close();
-	}
-
-	ImGui::End();
-	return S_OK;
-}
-
-HRESULT CYGTool::Render_Hi2Tool()
-{
-	SetNextWindowSize(ImVec2(200, 300));
-	_bool open = true;
-	ImGui::Begin("Hi2 Tools", &open, NULL);
-
-
-	IGFD::FileDialogConfig config;
-	if (Button("Merge Animations"))
-	{
-	}
-
+        }
+        else
+        {
+            ImGui::Text("현재 활성화된 카메라가 없습니다.");
+        }
+    }
 
 	ImGui::End();
 	return S_OK;
