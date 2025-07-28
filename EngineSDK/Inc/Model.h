@@ -69,7 +69,11 @@ public:
 	virtual HRESULT Render(_uint iMeshIndex);
 
 public:
-	HRESULT Play_Animation();
+	HRESULT Update_Bones();
+
+private:
+	void MakeBoneChildrenMap();
+
 
 private:
 	Assimp::Importer			m_Importer;	
@@ -96,6 +100,8 @@ private:
 	unordered_map<string, _uint> m_AnimationMap;
 	unordered_map<_uint, string> m_AnimationNameMap;
 	string 						 m_ModelName;
+	unordered_map<string, vector<_int>> m_BoneChildrenMap; // »À ÀÌ¸§°ú ÀÚ½Ä »À ÀÎµ¦½º ¸ñ·Ï
+
 
 public:
 	vector<CMesh*>* Get_Meshes() { return &m_Meshes; };
@@ -134,10 +140,15 @@ public: /* bone */
 	const _float4x4* Get_CombinedTransformationMatrix(_uint iBoneIndex);
 	const _float4x4* Get_TransformationMatrix(_uint iBoneIndex);
 	HRESULT Set_BoneMatrix(_uint iBoneIndex, _fmatrix matTransform);
-
+	const vector<_int> GetBoneChildren(const string& bonName) const 
+	{
+		auto it = m_BoneChildrenMap.find(bonName);
+		if (it != m_BoneChildrenMap.end())
+			return it->second;
+		return {};
+	}
 public:
 	const _float Get_CurrentTrackPosition();
-	const _float Get_Duration();
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, const _char* pModelFilePath, _fmatrix PreTransformMatrix = XMMatrixIdentity());

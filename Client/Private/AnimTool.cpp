@@ -503,10 +503,76 @@ HRESULT CAnimTool::Render_Parameters()
 	return S_OK;
 }
 
+HRESULT CAnimTool::Render_AnimControllers()
+{
+	ImGui::Begin("Controller"); 
+
+
+	auto& ctrls = m_pCurAnimator->GetAnimControllers();
+	vector<string> names;
+	names.reserve(ctrls.size());
+	for (auto& kv : ctrls) 
+		names.push_back(kv.first);
+
+	static _int selIdx = 0;
+	
+	const _char* curName = names.empty() ? "" : names[selIdx].c_str();
+	if (ImGui::BeginCombo("##Controllers", curName))
+	{
+		for (_int i = 0; i < static_cast<_int>(names.size()); ++i)
+		{
+			_bool selected = (i == selIdx);
+			if (ImGui::Selectable(names[i].c_str(), selected))
+			{
+				selIdx = i;
+				m_pCurAnimator->SetCurrentAnimController(names[i]);
+			}
+			if (selected) ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+
+	static _char bufRename[64] = "";
+	if (!names.empty())
+		strncpy_s(bufRename, names[selIdx].c_str(), 63);
+	if (ImGui::InputText("Rename", bufRename, sizeof(bufRename),
+		ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		string oldName = names[selIdx];
+		string newName = bufRename;
+		// 언레지스터 → 이름 바꿔서 → 리지스터
+		auto pCtrl= ctrls[oldName];
+		m_pCurAnimator->RenameAnimController(oldName, newName);
+		pCtrl->SetName(newName);
+		// 선택 인덱스 보정
+		names[selIdx] = newName;
+	}
+
+
+	static _char bufNew[64] = "";
+	ImGui::InputText("New Ctrl", bufNew, sizeof(bufNew));
+	ImGui::SameLine();
+	if (ImGui::Button("Create"))
+	{
+		string name = bufNew;
+		if (!name.empty() && ctrls.find(name) == ctrls.end())
+		{
+			auto pNew = CAnimController::Create();
+			pNew->SetName(name);
+			m_pCurAnimator->RegisterAnimController(name, pNew);
+			bufNew[0] = '\0';
+		}
+	}
+	ImGui::End();
+
+	return S_OK;
+}
+
 HRESULT CAnimTool::Render_TransitionConditions()
 {
 	// 현재 추가되어있는 트랜지션의 조건들을 보여주고 콤보박스로 컨디션이 있으면 수정할 수 있게 처리
-	if (m_pCurAnimator == nullptr || m_pCurAnimator->GetAnimController() == nullptr)
+	if (m_pCurAnimator == nullptr || m_pCurAnimator->Get_CurrentAnimController() == nullptr)
 	{
 		return S_OK;
 	}
@@ -597,10 +663,12 @@ HRESULT CAnimTool::Render_AnimationSequence()
 
 HRESULT CAnimTool::Render_AnimStatesByNode()
 {
-	if (m_pCurAnimator == nullptr || m_pCurAnimator->GetAnimController() == nullptr)
+	if (m_pCurAnimator == nullptr || m_pCurAnimator->Get_CurrentAnimController() == nullptr)
 	{
 		return S_OK;
 	}
+	if (FAILED(Render_AnimControllers()))
+		return E_FAIL;
 
 	if (ImGui::Button("Save AnimState This Model"))
 	{
@@ -615,7 +683,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	static _int selectedNodeID = -1;  // 선택한 노드 아이디
 
 	// 컨트롤러가 바뀌면 식별 ID 초기화 시켜놓기
-	CAnimController* pCtrl = m_pCurAnimator->GetAnimController();
+	CAnimController* pCtrl = m_pCurAnimator->Get_CurrentAnimController();
 
 	ImGui::Begin("Anim State Machine");
 
@@ -638,7 +706,12 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	{
 		static _char stateName[64] = "NewState";
 
+		static _bool bMaskBone = false;
 		ImGui::InputText("State Name", stateName, IM_ARRAYSIZE(stateName));
+		
+		ImGui::Checkbox("Mask Bone", &bMaskBone);
+
+		
 
 		if (ImGui::Button("Add State"))
 		{
@@ -649,6 +722,10 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			// 지금 막 만든 인덱스 반환한걸로 state 찾기
 			auto& newState = pCtrl->GetStates()[newIdx];
 			newState.fNodePos = { mousePos.x, mousePos.y };
+			if (bMaskBone)
+			{
+				newState.maskBoneName = "Bip001-Spine";
+			}
 
 			ImGui::CloseCurrentPopup();
 		}
@@ -761,7 +838,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				link.iLinkEndID = endPinID;
 
 				// 트랜지션 추가
-				pCtrl->AddTransition(fromNodeID, toNodeID, link, 0.5f,true);
+				pCtrl->AddTransition(fromNodeID, toNodeID, link, 0.2f,true);
 			}
 
 		}
@@ -799,7 +876,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		if (bDeleteLink == false) // 삭제 안한 경우에만
 		{
 
-			auto pCtrl = m_pCurAnimator->GetAnimController();
+			auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
 		for (_int linkId : selectedLinks)
 		{
 			for (auto& transition : transitions)
@@ -889,7 +966,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		{
 			if (state.iNodeId == selectedNodeID)
 			{
-				ImGui::Begin("Anim Info");
+				ImGui::Begin("State Info");
 
 				_char buf[64];
 				strcpy_s(buf, state.stateName.c_str());
@@ -898,6 +975,19 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				{
 					state.stateName = buf; // 이름 변경
 				}
+
+				if (ImGui::Button("MaskBone"))
+				{
+					if (state.maskBoneName.empty())
+					{
+						state.maskBoneName = "Bip001-Spine"; // 기본 마스크 본
+					}
+					else
+					{
+						state.maskBoneName.clear(); // 마스크 본 제거
+					}
+				}
+
 				if (state.clip)
 				{
 					ImGui::Text("Clip: %s", state.clip->Get_Name().c_str());
@@ -946,7 +1036,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 
 				// 해당 노드에 애니메이션 선택하는 창
-				_int iSelectedAnimIndex = -1;
+				static _int iSelectedAnimIndex = -1;
+				static _int iSelectedUpperAnimIndex = -1;
 				if (ImGui::BeginCombo("Animations", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Animation"))
 				{
 					for (_int i = 0; i < animNames.size(); ++i)
@@ -962,6 +1053,26 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					}
 					ImGui::EndCombo();
 				}
+
+				if (state.maskBoneName.empty() == false)
+				{
+					if (ImGui::BeginCombo("Upper Animations", iSelectedUpperAnimIndex >= 0 ? animNames[iSelectedUpperAnimIndex].c_str() : "Select Upper"))
+					{
+						for (_int i = 0; i < animNames.size(); ++i)
+						{
+							_bool isSelected = (i == iSelectedUpperAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+							{
+								iSelectedUpperAnimIndex = i;
+								state.upperClipName = anims[iSelectedUpperAnimIndex]->Get_Name();
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+				}
+
 
 				ImGui::End();
 				break;
@@ -1041,7 +1152,7 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 	{
 		m_pCurAnimator->Update(fTimeDelta* m_iPlaySpeed);
 	}
-	m_pCurModel->Play_Animation();
+	m_pCurModel->Update_Bones();
 }
 
 void CAnimTool::SelectAnimation()
@@ -1245,7 +1356,7 @@ void CAnimTool::SaveLoadAnimStates(_bool isSave)
 		if (m_pCurAnimator && path.find(m_stSelectedModelName) != string::npos)
 		{
 			m_pCurAnimator->Deserialize(root);
-			auto pCtrl = m_pCurAnimator->GetAnimController();
+			auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
 			auto states = pCtrl->GetStates();
 			auto transitions = pCtrl->GetTransitions();
 
@@ -1304,6 +1415,9 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 					MSG_BOX("애니메이션 이벤트 발생");
 				});
 		}
+
+		// 모델 불러오면 처음 애니메이션 관련 정보들 불러오기 
+		SaveLoadEvents(false);
 	}
 }
 
@@ -1405,108 +1519,9 @@ HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 		ImGui::Unindent(10);
 	}
 
-
-
 	// 현재 트랜지션의 컨디션 조건 가져오기
 	// 가져왔을 때 현재 조건을 포함해서 컨디션을 정할 수 있게
 	// 각각의 컨디션마다 조건을 정할 수 있게 
-
-//	vector<string> paramNames;
-//	auto& parameters = m_pCurAnimator->GetParameters();
-//	paramNames.reserve(parameters.size());
-//	for (const auto& parm : parameters)
-//	{
-//		paramNames.push_back(parm.first);
-//	}
-//	static _int selectedParamIdx = -1;
-//
-//
-//	if (ImGui::BeginCombo("Params", selectedParamIdx >= 0 ? paramNames[selectedParamIdx].c_str() : "Select Parameter"))
-//	{
-//		for (_int i = 0; i < paramNames.size(); ++i)
-//		{
-//			_bool isSelected = (i == selectedParamIdx);
-//			if(paramNames[i].empty())
-//				continue; // 빈 이름은 제외
-//			if (ImGui::Selectable(paramNames[i].c_str(), isSelected))
-//			{
-//				selectedParamIdx = i;
-//				if (parameters.find(paramNames[i]) == parameters.end())
-//					continue; // 없는 파라미터는 제외
-//				Parameter& sel = parameters[paramNames[i]];
-//				transition.condition.paramName = paramNames[i];
-//				transition.condition.type = sel.type;
-//				transition.condition.fThreshold = sel.fValue;
-//				transition.condition.iThreshold = sel.iValue;
-//			}
-//			if (isSelected)
-//				ImGui::SetItemDefaultFocus();
-//		}
-//		ImGui::EndCombo();
-//	}	
-//	
-////	const _char* operationNames[] = { "True", "False", "Greater", "Less", "NotEqual","Equal","None" };
-//
-//	switch (transition.condition.type)
-//	{
-//	case ParamType::Bool:
-//	{
-//		
-//		_int opIdx = 0;
-//		for (_int i = 0; i < IM_ARRAYSIZE(BoolOps); ++i)
-//			if (transition.condition.op == BoolOps[i])
-//				opIdx = i;
-//
-//		// 콤보박스
-//		if (ImGui::Combo("Operator", &opIdx, BoolOpNames, IM_ARRAYSIZE(BoolOpNames)))
-//			transition.condition.op = BoolOps[opIdx];
-//		break;
-//	}
-//	case ParamType::Trigger:
-//	{
-//		transition.condition.op = CAnimController::EOp::Trigger;
-//		break;
-//	}
-//	case ParamType::Float:
-//	{
-//		_int opIdx = 0;
-//		for (_int i = 0; i < IM_ARRAYSIZE(CmpFloatOps); ++i)
-//			if (transition.condition.op == CmpFloatOps[i])
-//				opIdx = i;
-//
-//		if (ImGui::Combo("Operator", &opIdx, CmpFloatOpNames, IM_ARRAYSIZE(CmpFloatOpNames)))
-//			transition.condition.op = CmpFloatOps[opIdx];
-//		break;
-//	}
-//	case ParamType::Int:
-//	{
-//		_int opIdx = 0;
-//		for (_int i = 0; i < IM_ARRAYSIZE(CmpIntOps); ++i)
-//			if (transition.condition.op == CmpIntOps[i])
-//				opIdx = i;
-//
-//		if (ImGui::Combo("Operator", &opIdx, CmpIntOpNames, IM_ARRAYSIZE(CmpIntOpNames)))
-//			transition.condition.op = CmpIntOps[opIdx];
-//		break;
-//	}
-//	}
-//
-//	switch (transition.condition.op)
-//	{
-//	case CAnimController::EOp::Greater:
-//	case CAnimController::EOp::Less:
-//	case CAnimController::EOp::Equal:
-//	case CAnimController::EOp::NotEqual:
-//		if (transition.condition.type == ParamType::Float)
-//			ImGui::DragFloat("Threshold", &transition.condition.fThreshold, 0.01f);
-//		else  // ParamType::Int
-//			ImGui::DragInt("Threshold", &transition.condition.iThreshold, 1);
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	return S_OK;
 
 if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 {
@@ -1518,16 +1533,17 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 		paramNames.push_back(kv.first);
 
 	// 기존 조건들 편집
-	for (int idx = 0; idx < (int)transition.conditions.size(); /*증가 inside*/)
+	for (_int idx = 0; idx < static_cast<_int>(transition.conditions.size());)
 	{
 		auto& cond = transition.conditions[idx];
 		ImGui::PushID(idx);
 		ImGui::Separator();
 
-		// 1) Param 선택
-		int selParam = -1;
-		for (int i = 0; i < (int)paramNames.size(); ++i)
-			if (paramNames[i] == cond.paramName) selParam = i;
+		//Param 선택
+		_int selParam = -1;
+		for (_int i = 0; i < static_cast<_int>(paramNames.size()); ++i)
+			if (paramNames[i] == cond.paramName) 
+				selParam = i;
 
 		if (ImGui::BeginCombo("Param", selParam >= 0 ? paramNames[selParam].c_str() : "Select"))
 		{
@@ -1550,8 +1566,8 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 		case ParamType::Bool:
 		{
-			int opIdx = 0;
-			for (int i = 0; i < IM_ARRAYSIZE(BoolOps); ++i)
+			_int opIdx = 0;
+			for (_int i = 0; i < IM_ARRAYSIZE(BoolOps); ++i)
 				if (BoolOps[i] == cond.op) opIdx = i;
 			if (ImGui::Combo("Operator", &opIdx, BoolOpNames, IM_ARRAYSIZE(BoolOpNames)))
 				cond.op = BoolOps[opIdx];
@@ -1566,8 +1582,8 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 		}
 		case ParamType::Float:
 		{
-			int opIdx = 0;
-			for (int i = 0; i < IM_ARRAYSIZE(CmpFloatOps); ++i)
+			_int opIdx = 0;
+			for (_int i = 0; i < IM_ARRAYSIZE(CmpFloatOps); ++i)
 				if (CmpFloatOps[i] == cond.op) opIdx = i;
 			if (ImGui::Combo("Operator", &opIdx, CmpFloatOpNames, IM_ARRAYSIZE(CmpFloatOpNames)))
 				cond.op = CmpFloatOps[opIdx];
@@ -1575,8 +1591,8 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 		}
 		case ParamType::Int:
 		{
-			int opIdx = 0;
-			for (int i = 0; i < IM_ARRAYSIZE(CmpIntOps); ++i)
+			_int opIdx = 0;
+			for (_int i = 0; i < IM_ARRAYSIZE(CmpIntOps); ++i)
 				if (CmpIntOps[i] == cond.op) opIdx = i;
 			if (ImGui::Combo("Operator", &opIdx, CmpIntOpNames, IM_ARRAYSIZE(CmpIntOpNames)))
 				cond.op = CmpIntOps[opIdx];

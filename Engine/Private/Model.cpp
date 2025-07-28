@@ -95,7 +95,7 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Play_Animation()
+HRESULT CModel::Update_Bones()
 {
 	for (auto& pBone : m_Bones)
 	{
@@ -104,6 +104,23 @@ HRESULT CModel::Play_Animation()
 
 
 	return S_OK;
+}
+
+void CModel::MakeBoneChildrenMap()
+{
+	for (_int i = 0; i < static_cast<_int>(m_Bones.size()); i++)
+	{
+		const _char* pBoneName = m_Bones[i]->Get_Name();
+		if (m_BoneChildrenMap.find(pBoneName) == m_BoneChildrenMap.end())
+		{
+			m_BoneChildrenMap[pBoneName] = vector<_int>();
+		}
+		if (m_Bones[i]->Get_ParentBoneIndex() != -1)
+		{
+			const _char* pParentBoneName = m_Bones[m_Bones[i]->Get_ParentBoneIndex()]->Get_Name();
+			m_BoneChildrenMap[pParentBoneName].push_back(i);
+		}
+	}
 }
 
 
@@ -258,7 +275,9 @@ HRESULT CModel::Ready_Bones(ifstream& ifs)
 		if (nullptr == pBone)
 			return E_FAIL;
 		m_Bones.push_back(pBone);
+		m_Bones.back()->Set_BoneIndex(static_cast<_int>(i)); // 자기 자신의 인덱스를 알고 있게 (상,하체 블렌딩에 사용)
 	}
+	MakeBoneChildrenMap(); // 뼈 자식 맵 생성
 	return S_OK;
 }
 
@@ -322,44 +341,77 @@ HRESULT CModel::Ready_Animations(ifstream& ifs)
 HRESULT CModel::Add_Animations(const string& filepath)
 {
 
-	string full = filepath;
-	size_t pos = full.find_last_of("\\/");
-	string dir = (pos != string::npos) ? full.substr(0, pos + 1) : "./";
+	//string full = filepath;
+	//size_t pos = full.find_last_of("\\/");
+	//string dir = (pos != string::npos) ? full.substr(0, pos + 1) : "./";
 
-	//  검색 패턴 (예: "C:/Models/*.anim.bin")
-	string pattern = dir + "*.anim";
+	////  검색 패턴 (예: "C:/Models/*.anim.bin")
+	//string pattern = dir + "*.anim";
 
-	WIN32_FIND_DATAA findData;
-	HANDLE hFind = FindFirstFileA(pattern.c_str(), &findData);
-	if (hFind != INVALID_HANDLE_VALUE)
+	//WIN32_FIND_DATAA findData;
+	//HANDLE hFind = FindFirstFileA(pattern.c_str(), &findData);
+	//if (hFind != INVALID_HANDLE_VALUE)
+	//{
+	//	do
+	//	{
+	//		// 찾은 파일 이름(build.cFileName)과 디렉터리 결합
+	//		string animPath = dir + findData.cFileName;
+
+	//		// 파일 열기
+	//		ifstream ifs(animPath, ios::binary);
+	//		if (!ifs.is_open())
+	//			continue;
+	//		_uint iAdditionalNumAnimations = {};
+	//		ifs.read(reinterpret_cast<_char*>(&iAdditionalNumAnimations), sizeof(_uint));
+	//		// CAnimation 생성 (bones는 이미 채워져 있음)
+	//		CAnimation* pAnim = CAnimation::CreateByBinary(ifs, this->m_Bones);
+	//		if (pAnim)
+	//		{
+	//			this->m_Animations.push_back(pAnim);
+	//			this->m_AnimationMap[pAnim->Get_Name()] =
+	//				static_cast<uint32_t>(this->m_Animations.size() - 1);
+	//			this->m_AnimationNameMap[static_cast<uint32_t>(this->m_Animations.size() - 1)] = pAnim->Get_Name();
+	//		}
+
+	//	} while (FindNextFileA(hFind, &findData));  // 다음 파일 검색
+
+	//	FindClose(hFind);
+	//}
+
+	//// 총 개수 업데이트
+	//this->m_iNumAnimations = static_cast<uint32_t>(this->m_Animations.size());
+	//return S_OK;
+
+
+
+
+	fs::path modelPath(filepath);
+	fs::path dir = modelPath.parent_path();
+
+	for (auto& entry : fs::recursive_directory_iterator(dir))
 	{
-		do
+		// 확장자가 ".anim" 일 때만 처리
+		if (!entry.is_directory() && entry.path().extension() == ".anim")
 		{
-			// 찾은 파일 이름(build.cFileName)과 디렉터리 결합
-			string animPath = dir + findData.cFileName;
-
-			// 파일 열기
-			ifstream ifs(animPath, ios::binary);
+			std::string animPath = entry.path().string();
+			std::ifstream ifs(animPath, std::ios::binary);
 			if (!ifs.is_open())
 				continue;
-			_uint iAdditionalNumAnimations = {};
+
+			_uint iAdditionalNumAnimations = 0;
 			ifs.read(reinterpret_cast<_char*>(&iAdditionalNumAnimations), sizeof(_uint));
-			// CAnimation 생성 (bones는 이미 채워져 있음)
+
 			CAnimation* pAnim = CAnimation::CreateByBinary(ifs, this->m_Bones);
 			if (pAnim)
 			{
 				this->m_Animations.push_back(pAnim);
-				this->m_AnimationMap[pAnim->Get_Name()] =
-					static_cast<uint32_t>(this->m_Animations.size() - 1);
-				this->m_AnimationNameMap[static_cast<uint32_t>(this->m_Animations.size() - 1)] = pAnim->Get_Name();
+				auto idx = static_cast<uint32_t>(m_Animations.size() - 1);
+				this->m_AnimationMap[pAnim->Get_Name()] = idx;
+				this->m_AnimationNameMap[idx] = pAnim->Get_Name();
 			}
-
-		} while (FindNextFileA(hFind, &findData));  // 다음 파일 검색
-
-		FindClose(hFind);
+		}
 	}
 
-	// 총 개수 업데이트
 	this->m_iNumAnimations = static_cast<uint32_t>(this->m_Animations.size());
 	return S_OK;
 }

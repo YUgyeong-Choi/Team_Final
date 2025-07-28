@@ -40,6 +40,7 @@ private:
 	HRESULT Render_Load_Model();
 	HRESULT Render_AnimEvents();
 	HRESULT Render_Parameters();
+	HRESULT Render_AnimControllers();
 
 	HRESULT Bind_Shader();
 
@@ -97,7 +98,7 @@ private:
 
 	// 애니메이션 시퀀스용
 	CMySequence* m_pMySequence = nullptr;
-	_bool m_bUseAnimSequence = false; // 애니메이션 시퀀스 모드 활성화
+	_bool m_bUseAnimSequence = true; // 애니메이션 시퀀스 모드 활성화
 	_bool m_bIsPlaying = false;
 	_bool  m_bUseSequence = false;   // 시퀀서 모드 활성화 플래그
 	_int   m_iSequenceFrame = 0;       // 시퀀서로 제어할 현재 프레임

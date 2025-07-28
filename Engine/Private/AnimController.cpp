@@ -4,7 +4,7 @@
 #include "Model.h"
 #include "Bone.h"
 
-_bool CAnimController::Condition::Evaluate(CAnimator* animator) const
+_bool CAnimController::Condition::Evaluate(class CAnimController* pAnimController) const
 {
 	if (op == EOp::None)
 		return true;
@@ -15,9 +15,9 @@ _bool CAnimController::Condition::Evaluate(CAnimator* animator) const
 		switch (op)
 		{
 		case EOp::IsTrue:
-			return animator->CheckBool(paramName);
+			return pAnimController->CheckBool(paramName);
 		case EOp::IsFalse:
-			return animator->CheckBool(paramName) == false;
+			return pAnimController->CheckBool(paramName) == false;
 		default:
 			return false; // Bool 타입에서 지원하지 않는 연산
 		}
@@ -25,13 +25,13 @@ _bool CAnimController::Condition::Evaluate(CAnimator* animator) const
 		switch (op)
 		{
 		case EOp::Greater:
-			return animator->GetInt(paramName) > iThreshold;
+			return pAnimController->GetInt(paramName) > iThreshold;
 		case EOp::Less:
-			return animator->GetInt(paramName) < iThreshold;
+			return pAnimController->GetInt(paramName) < iThreshold;
 		case EOp::NotEqual:
-			return animator->GetInt(paramName) != iThreshold;
+			return pAnimController->GetInt(paramName) != iThreshold;
 		case EOp::Equal:
-			return animator->GetInt(paramName) == iThreshold;
+			return pAnimController->GetInt(paramName) == iThreshold;
 		default:
 			return false; // Int 타입에서 지원하지 않는 연산
 		}
@@ -39,23 +39,23 @@ _bool CAnimController::Condition::Evaluate(CAnimator* animator) const
 		switch (op)
 		{
 		case EOp::Greater:
-			return animator->GetFloat(paramName) > fThreshold;
+			return pAnimController->GetFloat(paramName) > fThreshold;
 		case EOp::Less:
-			return animator->GetFloat(paramName) < fThreshold;
+			return pAnimController->GetFloat(paramName) < fThreshold;
 		default:
 			return false; // Float 타입에서 지원하지 않는 연산
 		}
 	case ParamType::Trigger:
-		return animator->CheckTrigger(paramName);
+		return pAnimController->CheckTrigger(paramName);
 	default:
 		return false; // 지원하지 않는 타입
 	}
 	return false;
 }
 
-_bool CAnimController::Transition::Evaluates(CAnimator* animator) const
+_bool CAnimController::Transition::Evaluates(CAnimController* pAnimController, CAnimator* pAnimator) const
 {
-	_float t = animator->GetCurrentAnimProgress();
+	_float t = pAnimator->GetCurrentAnimProgress();
 	if (t < minTime || t > maxTime)
 		return false;
 
@@ -64,11 +64,12 @@ _bool CAnimController::Transition::Evaluates(CAnimator* animator) const
 
 	for (const auto& condition : conditions)
 	{
-		if (!condition.Evaluate(animator))
+		if (!condition.Evaluate(pAnimController))
 			return false; // 하나라도 false면 전체 false
 	}
 	return true; // 모든 조건이 true
 }
+
 
 CAnimController::CAnimController()
 	:m_CurrentStateNodeId{ 0 }
@@ -111,7 +112,7 @@ void CAnimController::Update(_float fTimeDelta)
 				if (progress < 1.f)
 					continue; // 현재 애니메이션이 끝나지 않았으면 뛰어넘게
 			}
-			if (!tr.Evaluates(m_pAnimator))
+			if (!tr.Evaluates(this,m_pAnimator))
 				continue;
 
 			auto* fromClip = GetStateAnimationByNodeId(tr.iFromNodeId);
@@ -138,7 +139,7 @@ _float CAnimController::GetStateLength(const string& name)
 	return 0.f;
 }
 
-void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, const Condition& cond, _float duration,_bool bHasExitTime)
+void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, const Condition& cond, _float duration,_bool bHasExitTime, _bool bBlendFullBody)
 {	
 	m_Transitions.emplace_back();
 	auto& tr = m_Transitions.back();
@@ -150,17 +151,18 @@ void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link
 	tr.hasExitTime = bHasExitTime;
 }
 
-void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, _float duration, _bool bHasExitTime)
+void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, _float duration, _bool bHasExitTime, _bool bBlendFullBody)
 {
 	Condition noCond{};
 	noCond.op = EOp::None;
 	AddTransition(fromNode, toNode, link,
 		noCond,
 		duration,
-		bHasExitTime);
+		bHasExitTime,
+		bBlendFullBody);
 }
 
-void CAnimController::AddTransitionMultiCondition(_int fromNode, _int toNode, const Link& link, const vector<Condition>& conditions, _float duration, _bool bHasExitTime)
+void CAnimController::AddTransitionMultiCondition(_int fromNode, _int toNode, const Link& link, const vector<Condition>& conditions, _float duration, _bool bHasExitTime, _bool bBlendFullBody)
 {
 	m_Transitions.emplace_back();
 	auto& tr = m_Transitions.back();
@@ -248,6 +250,10 @@ void CAnimController::Free()
 json CAnimController::Serialize()
 {
 	json j;
+	// 컨트롤러 이름 직렬화
+	
+	j["ControllerName"] = m_Name;
+
 	// 상태 직렬화
 	for (const auto& state : m_States)
 	{
@@ -256,6 +262,8 @@ json CAnimController::Serialize()
 			{"Name", state.stateName},
 			{"Clip", state.clip ? state.clip->Get_Name() : ""},
 			{"NodePos", { state.fNodePos.x, state.fNodePos.y }},
+			{"MaskBone",{state.maskBoneName}},
+			{"UpperClip", state.upperClipName},
 			});
 	}
 
@@ -276,16 +284,64 @@ json CAnimController::Serialize()
 		for (const auto& cond : tr.conditions)
 		{
 			json cJ;
-			cJ["Type"] = static_cast<int>(cond.type);
+
+			switch (cond.type)
+			{
+			case ParamType::Bool:
+				cJ["Type"] = "Bool";
+				break;
+			case ParamType::Int:
+				cJ["Type"] = "Int";
+				break;
+			case ParamType::Float:
+				cJ["Type"] = "Float";
+				break;
+			case ParamType::Trigger:
+				cJ["Type"] = "Trigger";
+				break;
+			default:
+				cJ["Type"] = "Unknown"; // 알 수 없는 타입 처리
+				break;
+			}
 			cJ["ParamName"] = cond.paramName;
-			cJ["Op"] = static_cast<int>(cond.op);
+
+			switch (cond.op)
+			{
+			case EOp::IsTrue:
+				cJ["Op"] = "IsTrue";
+				break;
+			case EOp::IsFalse:
+				cJ["Op"] = "IsFalse";
+				break;
+			case EOp::Greater:
+				cJ["Op"] = "Greater";
+				break;
+			case EOp::Less:
+				cJ["Op"] = "Less";
+				break;
+			case EOp::NotEqual:
+				cJ["Op"] = "NotEqual";
+				break;
+			case EOp::Equal:
+				cJ["Op"] = "Equal";
+				break;
+			case EOp::Trigger:
+				cJ["Op"] = "Trigger";
+				break;
+			case EOp::None:
+				cJ["Op"] = "None"; // 조건이 없는 경우
+				break;
+			default:
+				cJ["Op"] = "Unknown"; // 알 수 없는 연산자 처리
+				break;
+			}
 
 			cJ["iThreshold"] = cond.iThreshold;
 			cJ["fThreshold"] = cond.fThreshold;
 			trJ["Conditions"].push_back(cJ);
 		}
 
-		// 2) Link 객체
+		// Link 객체
 		trJ["Link"] = {
 			{"LinkId",      tr.link.iLinkId},
 			{"FromNodeId",  tr.link.iLinkStartID},
@@ -295,6 +351,19 @@ json CAnimController::Serialize()
 		j["Transitions"].push_back(trJ);
 	}
 
+	// 파라미터 직렬화
+
+	for (const auto& [name, param] : m_Params)
+	{
+		j["Parameters"][name] = {
+			{"bValue", param.bValue},
+			{"fValue", param.fValue},
+			{"iValue", param.iValue},
+			{"bTriggered", param.bTriggered},
+			{"Type", static_cast<int>(param.type)} // ParamType을 정수로 저장
+		};
+	}
+
 
 	return j;
 }
@@ -302,6 +371,13 @@ json CAnimController::Serialize()
 void CAnimController::Deserialize(const json& j)
 {
 	ResetTransAndStates();
+
+	// 컨트롤러 이름 역직렬화
+	if (j.contains("ControllerName") && j["ControllerName"].is_string())
+	{
+		m_Name = j["ControllerName"];
+	}
+
 	if (j.contains("Anim States") && j["Anim States"].is_array())
 	{
 
@@ -312,6 +388,17 @@ void CAnimController::Deserialize(const json& j)
 				_int nodeId = state["NodeId"];
 				string name = state["Name"];
 				string clipName = state["Clip"];
+				string maskBoneName = "";
+				string upperClipName = "";
+				if (state.contains("MaskBone") && state["MaskBone"].is_string())
+				{
+					maskBoneName = state["MaskBone"];
+				}
+				if (state.contains("UpperClip") && state["UpperClip"].is_string())
+				{
+					upperClipName = state["UpperClip"];
+				}
+		
 				_float2 pos = { 0.f, 0.f };
 				if (state.contains("NodePos"))
 				{
@@ -325,7 +412,8 @@ void CAnimController::Deserialize(const json& j)
 					clip = pModel ? pModel->GetAnimationClipByName(clipName): nullptr;
 					clip->Set_Bones(m_pAnimator->GetModel()->Get_Bones()); // 애니메이션에 모델의 본 정보 설정
 				}
-				m_States.push_back({ name, clip, nodeId, pos });
+		
+				m_States.push_back({ name, clip, nodeId, pos ,upperClipName,maskBoneName});
 			}
 		}
 	}
@@ -363,17 +451,61 @@ void CAnimController::Deserialize(const json& j)
 							cond.contains("fThreshold"))
 						{
 							Condition condition;
-							condition.type = static_cast<ParamType>(cond["Type"]);
+							if (cond["Type"] == "Bool")
+								condition.type = ParamType::Bool;
+							else if (cond["Type"] == "Int")
+								condition.type = ParamType::Int;
+							else if (cond["Type"] == "Float")
+								condition.type = ParamType::Float;
+							else if (cond["Type"] == "Trigger")
+								condition.type = ParamType::Trigger;
 							condition.paramName = cond["ParamName"];
-							condition.op = static_cast<EOp>(cond["Op"]);
+							if (cond["Op"] == "IsTrue")
+								condition.op = EOp::IsTrue;
+							else if (cond["Op"] == "IsFalse")
+								condition.op = EOp::IsFalse;
+							else if (cond["Op"] == "Greater")
+								condition.op = EOp::Greater;
+							else if (cond["Op"] == "Less")
+								condition.op = EOp::Less;
+							else if (cond["Op"] == "NotEqual")
+								condition.op = EOp::NotEqual;
+							else if (cond["Op"] == "Equal")
+								condition.op = EOp::Equal;
+							else if (cond["Op"] == "Trigger")
+								condition.op = EOp::Trigger;
+							else
+								condition.op = EOp::None; // 알 수 없는 연산자 처리
 							condition.iThreshold = cond["iThreshold"];
 							condition.fThreshold = cond["fThreshold"];
 							conditions.push_back(condition);
 						}
 					}
 				}
-				AddTransitionMultiCondition(fromNode, toNode, link, conditions, duration, hasExitTime);
+				_bool bBlendFullBody = true; // 기본값
+				if (tr.contains("BlendFullbody"))
+				{
+					bBlendFullBody = tr["BlendFullbody"];
+				}
+				AddTransitionMultiCondition(fromNode, toNode, link, conditions, duration, hasExitTime, bBlendFullBody);
 			}
 		}
 	}
+
+	if (j.contains("Parameters"))
+	{
+		for (const auto& [name, param] : j["Parameters"].items())
+
+		{
+			Parameter p;
+			p.bValue = param["bValue"].get<_bool>();
+			p.fValue = param["fValue"].get<_float>();
+			p.iValue = param["iValue"].get<_int>();
+			p.bTriggered = param["bTriggered"].get<_bool>();
+			p.type = static_cast<ParamType>(param["Type"].get<int>());
+			m_Params[name] = p;
+			SetParamName(m_Params[name], name);
+		}
+	}
 }
+

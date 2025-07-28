@@ -30,6 +30,7 @@ HRESULT CBone::Initialize( ifstream& ifs)
 	ifs.read(reinterpret_cast<char*>(&m_iParentBoneIndex), sizeof(_int));			// 부모 뼈 인덱스 
 	this->m_LocalBindPoseMatrix = m_TransformationMatrix; // 로컬 행렬 설정 나중에 블렌드에 사용하기
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity()); // 초기화
+
 	return S_OK;
 }
 
