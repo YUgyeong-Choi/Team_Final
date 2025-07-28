@@ -9,7 +9,7 @@ NS_END
 
 NS_BEGIN(Client)
 // 스프라이트 이펙트 부모
-class CSpriteEffect abstract : public CEffectBase
+class CSpriteEffect : public CEffectBase
 {
 public:
 	typedef struct tagSpriteEffectDesc : public CEffectBase::DESC
@@ -42,7 +42,8 @@ protected:
 	HRESULT Bind_ShaderResources();
 
 public:
-	virtual CGameObject* Clone(void* pArg) PURE;
+	static CSpriteEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
 };

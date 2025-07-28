@@ -32,6 +32,7 @@ HRESULT CStatic_UI::Initialize(void* pArg)
 	m_iPassIndex = pDesc->iPassIndex;
 	m_iTextureIndex = pDesc->iTextureIndex;
 	
+	m_vColor = pDesc->vColor;
 
 	return S_OK;
 }
@@ -46,7 +47,10 @@ void CStatic_UI::Update(_float fTimeDelta)
 
 void CStatic_UI::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+	if(!m_isVignetting)
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+	else
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI_DEFERRED, this);
 }
 
 HRESULT CStatic_UI::Render()
@@ -60,6 +64,9 @@ HRESULT CStatic_UI::Render()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTextureIndex)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &m_vColor, sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(m_iPassIndex)))
@@ -76,6 +83,7 @@ HRESULT CStatic_UI::Render()
 
 void CStatic_UI::Update_UI_From_Tool(STATIC_UI_DESC& eDesc)
 {
+	m_vColor = eDesc.vColor;
 	m_fX = eDesc.fX;
 	m_fY = eDesc.fY;
 	m_fOffset = eDesc.fOffset;

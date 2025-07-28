@@ -7,7 +7,7 @@ NS_BEGIN(Engine)
 class CLight_Manager final : public CBase
 {
 public:
-	enum class LEVEL { STATIC, LOADING, LOGO, KRAT_CENTERAL_STATION, YG, CY, GL, DH, YW, JW, END };
+	enum class LEVEL { STATIC, LOADING, LOGO, KRAT_CENTERAL_STATION, KRAT_HOTEL, YG, CY, GL, DH, YW, JW, END };
 
 private:
 	CLight_Manager();
@@ -19,8 +19,10 @@ public:
 public:
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
 	HRESULT Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& LightDesc);
+	HRESULT Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, class CLight** ppOut);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 	HRESULT Render_PBR_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _uint Level);
+	_uint Get_LightCount(_uint TYPE);
 
 private:
 	list<class CLight*>	m_Lights;

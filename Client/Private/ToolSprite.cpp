@@ -39,7 +39,7 @@ void CToolSprite::Priority_Update(_float fTimeDelta)
 
 void CToolSprite::Update(_float fTimeDelta)
 {
-
+	//m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
 	__super::Update(fTimeDelta);
 }
 
@@ -53,7 +53,7 @@ HRESULT CToolSprite::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(EFF_UVSPRITE)))
+	if (FAILED(m_pShaderCom->Begin(EFF_UVSPRITE_COLOR)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
@@ -95,6 +95,8 @@ HRESULT CToolSprite::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileSize", &m_fTileSize, sizeof(_float2))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileOffset", &m_fOffset, sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
@@ -140,7 +142,7 @@ void CToolSprite::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pTextureCom);
+	//Safe_Release(m_pVIBufferCom);
+	//Safe_Release(m_pShaderCom);
+	//Safe_Release(m_pTextureCom);
 }

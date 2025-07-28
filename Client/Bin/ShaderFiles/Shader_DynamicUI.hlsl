@@ -9,6 +9,8 @@ float2   g_fTexcoord;
 float2   g_fTileSize;
 float    g_Alpha;
 
+float4   g_Color;
+
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
 
@@ -92,6 +94,8 @@ PS_OUT PS_MAIN(PS_IN In)
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
+    Out.vColor *= g_Color;
+    
     return Out;    
 }
 
@@ -127,6 +131,8 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
     
     Out.vColor.a = Out.vColor.a * saturate(fOldViewZ - In.vProjPos.w);
     
+    Out.vColor *= g_Color;
+    
     return Out;
 }
 
@@ -138,6 +144,8 @@ PS_OUT PS_MAIN_DISCARD_DARK(PS_IN In)
     
     if(length(Out.vColor.rgb) < 0.2f)
         discard;
+    
+    Out.vColor *= g_Color;
     
     return Out;
 }
@@ -156,6 +164,8 @@ PS_OUT PS_MAIN_SPRITE(PS_IN In)
    
     Out.vColor.a = g_Alpha;
     
+    Out.vColor *= g_Color;
+    
     return Out;
 }
 
@@ -163,12 +173,14 @@ PS_OUT PS_MAIN_FADE(PS_IN In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    Out.vColor = g_Texture.Sample(LinearClampSampler, In.vTexcoord);
     
-    if (Out.vColor.a < 0.1f)
+    if (Out.vColor.a < 0.001f)
         discard;
    
     Out.vColor.a = g_Alpha;
+    
+    Out.vColor *= g_Color;
     
     return Out;
 }

@@ -24,10 +24,18 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+public:
+	void Set_Moveable(_bool bMoveable) {
+		m_bMoveable = bMoveable;
+	}
 
 private:
 	_float				m_fSensor{};
 	_bool				m_bSprint = false;
+
+	//맵툴에서 프리뷰랑 같이움직여서 불값 하나 추가
+	_bool				m_bMoveable = { true };
+
 public:
 	static CCamera_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

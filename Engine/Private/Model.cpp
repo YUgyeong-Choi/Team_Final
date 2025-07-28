@@ -22,6 +22,9 @@ CModel::CModel(const CModel& Prototype)
 	, m_PreTransformMatrix{ Prototype.m_PreTransformMatrix }
 	//, m_Bones { Prototype.m_Bones }
 	, m_iNumAnimations{ Prototype.m_iNumAnimations }
+	, m_AnimationMap{ Prototype.m_AnimationMap }
+	, m_AnimationNameMap{ Prototype.m_AnimationNameMap }
+	, m_ModelName{ Prototype.m_ModelName }	
 	// , m_Animations { Prototype.m_Animations }
 {
 	for (auto& pPrototypeBone : Prototype.m_Bones)
@@ -219,6 +222,7 @@ HRESULT CModel::Read_BinaryFBX(const string& filepath)
 		return E_FAIL;
 	}
 
+	SubStrModelName(filepath);
 	if (m_eType == MODEL::ANIM)
 	{
 		if (FAILED(Ready_Bones(ifs)))

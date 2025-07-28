@@ -25,6 +25,7 @@ public:
 private:
 	HRESULT Render_CameraTool();
 	HRESULT Render_CameraFrame();
+
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

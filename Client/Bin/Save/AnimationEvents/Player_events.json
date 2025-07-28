@@ -1,0 +1,160 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_Pino_H_Dash_Focus_B",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Dash_Focus_F",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Dash_Focus_L",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Dash_Focus_R",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Dash_Heavy_B",
+            "Duration": 75.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Dash_Heavy_F",
+            "Duration": 109.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Dash_Normal_B",
+            "Duration": 45.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Dash_Normal_F",
+            "Duration": 80.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Fall_End",
+            "Duration": 52.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Fall_Land_Heavy",
+            "Duration": 221.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Fall_Loop",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Fall_Start",
+            "Duration": 18.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Idle",
+            "Duration": 195.0,
+            "IsLoop": true,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Idle_Loco",
+            "Duration": 68.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Run_B",
+            "Duration": 44.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Run_F",
+            "Duration": 48.0,
+            "IsLoop": true,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Run_F_Stop",
+            "Duration": 37.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Run_L",
+            "Duration": 44.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Run_R",
+            "Duration": 132.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Sprint",
+            "Duration": 36.0,
+            "IsLoop": true,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Sprint_Stop",
+            "Duration": 40.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Sprint_Turn",
+            "Duration": 54.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Walk_B",
+            "Duration": 204.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Walk_F",
+            "Duration": 150.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Walk_L",
+            "Duration": 204.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_H_Walk_R",
+            "Duration": 204.0,
+            "IsLoop": false,
+            "TickPerSecond": 30.0
+        }
+    ]
+}

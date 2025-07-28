@@ -28,17 +28,19 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-
 private:
 	HRESULT Ready_Camera();
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Object(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
+
 private:
+
 	HRESULT Ready_ImGuiTools();
 	HRESULT Ready_ImGui();
 	HRESULT ImGui_Render();
 	HRESULT ImGui_Docking_Settings();
+
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)];

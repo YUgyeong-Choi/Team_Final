@@ -41,37 +41,36 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-	// 달리기 여부 체크
-	m_bSprint = (m_pGameInstance->Key_Pressing(DIK_LSHIFT)) != 0;
-
-	// 속도 설정
-	if (m_bSprint)
-		m_pTransformCom->Set_SpeedPreSec(100.f);
-	else
-		m_pTransformCom->Set_SpeedPreSec(10.f);
-
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-	{
-		m_pTransformCom->Go_Left(fTimeDelta);
-	}
-
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-	{
-		m_pTransformCom->Go_Right(fTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-
-
+	
 	// 우클릭 눌러야 카메라 움직일 수 있음
-	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
+	if (m_bMoveable && m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
 	{
+		// 달리기 여부 체크
+		m_bSprint = (m_pGameInstance->Key_Pressing(DIK_LSHIFT)) != 0;
+
+		// 속도 설정
+		if (m_bSprint)
+			m_pTransformCom->Set_SpeedPreSec(100.f);
+		else
+			m_pTransformCom->Set_SpeedPreSec(10.f);
+
+		if (m_pGameInstance->Key_Pressing(DIK_A))
+		{
+			m_pTransformCom->Go_Left(fTimeDelta);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_D))
+		{
+			m_pTransformCom->Go_Right(fTimeDelta);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+		{
+			m_pTransformCom->Go_Straight(fTimeDelta);
+		}
+		if (m_pGameInstance->Key_Pressing(DIK_S))
+		{
+			m_pTransformCom->Go_Backward(fTimeDelta);
+		}
+
 		_long			MouseMove = {};
 
 		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::X))
@@ -84,6 +83,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * m_fSensor);
 		}
 	}
+
 
 
 	__super::Bind_Matrices();

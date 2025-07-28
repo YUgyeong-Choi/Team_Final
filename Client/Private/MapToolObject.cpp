@@ -63,12 +63,21 @@ HRESULT CMapToolObject::Render()
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(i);
 	}
 
 	return S_OK;
+}
+
+void CMapToolObject::Undo_WorldMatrix()
+{
+	if (m_bCanUndo == true)
+	{
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_UndoWorldMatrix));
+		m_bCanUndo = false;
+	}
 }
 
 HRESULT CMapToolObject::Ready_Components(void* pArg)

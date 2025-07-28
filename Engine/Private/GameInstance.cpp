@@ -18,6 +18,7 @@
 
 #include "PhysX_Manager.h"
 #include "Sound_Device.h"
+#include "Observer_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance);
 
@@ -114,6 +115,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pSound_Device)
 		return E_FAIL;
 
+	m_pObserver_Manager = CObserver_Manager::Create();
+	if (nullptr == m_pObserver_Manager)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -155,7 +160,7 @@ HRESULT CGameInstance::Begin_Draw()
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
 
-	m_pGraphic_Device->Clear_BackBuffer_View(_float4(0.f, 0.0f, 0.f, 1.f));
+	m_pGraphic_Device->Clear_BackBuffer_View(_float4(0.f, 0.0f, 1.f, 1.f));
 	m_pGraphic_Device->Clear_DepthStencil_View();
 
 	return S_OK;
@@ -302,6 +307,7 @@ HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
 	return m_pRenderer->Add_DebugComponent(pDebugCom);
 }
 
+
 _bool CGameInstance::Get_RenderCollider()
 {
 	return m_pRenderer->Get_RenderCollider();
@@ -447,6 +453,16 @@ HRESULT CGameInstance::Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& L
 	return m_pLight_Manager->Add_LevelLightData(iLevelIndex, LightDesc);
 }
 
+HRESULT CGameInstance::Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, CLight** ppOut)
+{
+	return m_pLight_Manager->Add_LevelLightDataReturn(iLevelIndex, LightDesc, ppOut);
+}
+
+_uint CGameInstance::Get_LightCount(_uint TYPE) const
+{
+	return m_pLight_Manager->Get_LightCount(TYPE);
+}
+
 HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
@@ -500,6 +516,12 @@ HRESULT CGameInstance::Delete_MRT(const _wstring& strMRTTag)
 	return m_pTarget_Manager->Delete_MRT(strMRTTag);
 }
 
+class CRenderTarget* CGameInstance::Find_RenderTarget(const _wstring& strTargetTag)
+{
+	return m_pTarget_Manager->Find_RenderTarget(strTargetTag);
+}
+
+
 #ifdef _DEBUG
 
 HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
@@ -523,6 +545,11 @@ _bool CGameInstance::Picking(_float4* pOut)
 _bool CGameInstance::Picking(_int* pOut)
 {
 	return m_pPicking->Picking(pOut);
+}
+
+_bool CGameInstance::Picking_ToolMesh(_int* pOut)
+{
+	return m_pPicking->PickingToolMesh(pOut);
 }
 #pragma endregion
 
@@ -643,6 +670,30 @@ void CGameInstance::Set_Master_Volume(_float volume)
 }
 #pragma endregion
 
+#pragma region OBSERVER
+
+HRESULT CGameInstance::Add_Observer(const _wstring strTag, CObserver* pObserver)
+{
+	return m_pObserver_Manager->Add_Observer(strTag, pObserver);
+}
+
+HRESULT CGameInstance::Remove_Observer(const _wstring strTag)
+{
+	return m_pObserver_Manager->Remove_Observer(strTag);
+}
+
+void CGameInstance::Notify(const _wstring& strTag, const _wstring& eventType, void* pData)
+{
+	m_pObserver_Manager->Notify(strTag, eventType, pData);
+}
+
+CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
+{
+	return m_pObserver_Manager->Find_Observer(strTag);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
 	Safe_Release(m_pFrustum);
@@ -650,8 +701,6 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pShadow);
 
 	Safe_Release(m_pPicking);
-
-	Safe_Release(m_pTarget_Manager);
 
 	Safe_Release(m_pFont_Manager);
 
@@ -669,6 +718,9 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pLevel_Manager);
 
+	//오브젝트 매니저에서 타겟 없애야 되는게 있어서 후 순위로 옮겼음 (모델 미리보기 기능)
+	Safe_Release(m_pTarget_Manager);
+
 	Safe_Release(m_pInput_Device);
 
 	Safe_Release(m_pGraphic_Device);
@@ -677,6 +729,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pPhysX_Manager);
 
 	Safe_Release(m_pSound_Device);
+
+	Safe_Release(m_pObserver_Manager);
 
 	Destroy_Instance();
 }

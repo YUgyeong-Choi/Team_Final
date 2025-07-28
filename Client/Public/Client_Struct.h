@@ -29,12 +29,15 @@ namespace Client
 		_float2 fStartUV{};
 
 		// fade용
-		_float			fTime{};
 		_float			fStartAlpha{};
 		_float			fEndAlpha{};
 
 		_float2 fStartPos{};
 		_float2 fEndPos{};
+
+		// scale
+		_float2			fStartScale{};
+		_float2			fEndScale{};
 		
 	}UI_FEATURE_TOOL_DESC;
 
@@ -57,7 +60,7 @@ namespace Client
 
 	typedef struct tagFadeFeature : public tagFeatureUI {
 
-		_float			fTime{};
+		
 		_float			fStartAlpha{};
 		_float			fEndAlpha{};
 
@@ -67,15 +70,13 @@ namespace Client
 
 		_float2 fStartPos{};
 		_float2 fEndPos{};
-		_float	fTime{};
-
+	
 	}UI_FEATURE_POS_DESC;
 
 	typedef struct tagScaleFeature : public tagFeatureUI {
 
-		_float fStartScale{}; // 0 들어가면 오류날듯?
-		_float fEndScale{};
-		_float	fTime{};
+		_float2 fStartScale{}; // 0 들어가면 오류날듯?
+		_float2 fEndScale{};
 
 	}UI_FEATURE_SCALE_DESC;
 

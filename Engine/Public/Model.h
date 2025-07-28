@@ -38,7 +38,7 @@ public:
 		return m_Bones;
 	}
 	_uint Get_NumAnimations() const { return m_iNumAnimations; }
-	vector<class CAnimation*> GetAnimations()& { return m_Animations; }
+	vector<class CAnimation*>& GetAnimations() { return m_Animations; }
 
 	class CAnimation* GetAnimationClip(_uint iIndex)
 	{
@@ -52,6 +52,11 @@ public:
 		if (it != m_AnimationMap.end())
 			return m_Animations[it->second];
 		return nullptr;
+	}
+
+	const string& Get_ModelName() const
+	{
+		return m_ModelName;
 	}
 
 public:
@@ -90,6 +95,7 @@ private:
 
 	unordered_map<string, _uint> m_AnimationMap;
 	unordered_map<_uint, string> m_AnimationNameMap;
+	string 						 m_ModelName;
 
 public:
 	vector<CMesh*>* Get_Meshes() { return &m_Meshes; };
@@ -107,6 +113,18 @@ private: // 바이너리 읽는 방식
 	HRESULT Ready_Meshes(ifstream& ifs);
 	HRESULT Ready_Materials( ifstream& ifs, const _char* pModelFilePath);
 	HRESULT Ready_Animations(ifstream& ifs);
+
+	void SubStrModelName(const string& filepath)
+	{
+		size_t pos = filepath.find_last_of("/\\");
+		if (pos != string::npos)
+		{
+			m_ModelName = filepath.substr(pos + 1);
+			m_ModelName = m_ModelName.substr(0, m_ModelName.find_last_of('.')); // 확장자 제거
+		}
+		else
+			m_ModelName = filepath;
+	}
 
 public:
 	HRESULT Add_Animations(const string& filepath);

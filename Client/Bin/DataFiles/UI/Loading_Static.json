@@ -1,5 +1,11 @@
 [
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.10000000149011612,
         "PassIndex": 0,
         "TextureIndex": 0,
@@ -10,36 +16,60 @@
         "fY": 0.5
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.07999999821186066,
         "PassIndex": 5,
         "TextureIndex": 0,
         "TextureTag": "Prototype_Component_Texture_BackGround_Loading_Photo",
-        "fSizeX": 1.0,
-        "fSizeY": 1.0,
-        "fX": 0.5,
-        "fY": 0.5
+        "fSizeX": 1.024999976158142,
+        "fSizeY": 1.0010000467300415,
+        "fX": 0.5080000162124634,
+        "fY": 0.515999972820282
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.09000000357627869,
         "PassIndex": 5,
         "TextureIndex": 0,
         "TextureTag": "Prototype_Component_Texture_BackGround_Loading_Paper",
         "fSizeX": 1.25,
         "fSizeY": 1.100000023841858,
-        "fX": 0.4749999940395355,
+        "fX": 0.4829999804496765,
         "fY": 0.5
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.07500000298023224,
         "PassIndex": 5,
         "TextureIndex": 0,
         "TextureTag": "Prototype_Component_Texture_BackGround_Loading_Tip",
         "fSizeX": 0.550000011920929,
         "fSizeY": 0.44999998807907104,
-        "fX": 0.4749999940395355,
-        "fY": 0.824999988079071
+        "fX": 0.4829999804496765,
+        "fY": 0.8410000205039978
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.07500000298023224,
         "PassIndex": 2,
         "TextureIndex": 0,
@@ -50,63 +80,115 @@
         "fY": 0.5
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.07500000298023224,
         "PassIndex": 5,
         "TextureIndex": 1,
         "TextureTag": "Prototype_Component_Texture_Loading_Object",
-        "fSizeX": 0.4000000059604645,
-        "fSizeY": 0.4000000059604645,
-        "fX": 0.800000011920929,
-        "fY": 0.15000000596046448
+        "fSizeX": 0.3499999940395355,
+        "fSizeY": 0.3499999940395355,
+        "fX": 0.828000009059906,
+        "fY": 0.19200000166893005
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.07500000298023224,
         "PassIndex": 5,
         "TextureIndex": 3,
         "TextureTag": "Prototype_Component_Texture_Loading_Object",
-        "fSizeX": 0.20000000298023224,
-        "fSizeY": 0.492000013589859,
-        "fX": 0.9010000824928284,
-        "fY": 0.8080000281333923
+        "fSizeX": 0.1550000011920929,
+        "fSizeY": 0.5109999775886536,
+        "fX": 0.9259999990463257,
+        "fY": 0.7260000109672546
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.07500000298023224,
         "PassIndex": 4,
         "TextureIndex": 4,
         "TextureTag": "Prototype_Component_Texture_Loading_Object",
-        "fSizeX": 0.20000000298023224,
-        "fSizeY": 0.5040000081062317,
-        "fX": 0.05000000074505806,
-        "fY": 0.6740000247955322
+        "fSizeX": 0.11999999731779099,
+        "fSizeY": 0.4620000123977661,
+        "fX": 0.032999999821186066,
+        "fY": 0.7699999809265137
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.07500000298023224,
         "PassIndex": 4,
         "TextureIndex": 5,
         "TextureTag": "Prototype_Component_Texture_Loading_Object",
         "fSizeX": 0.10000000149011612,
         "fSizeY": 0.15000000596046448,
-        "fX": 0.699999988079071,
-        "fY": 0.75
+        "fX": 0.7250000238418579,
+        "fY": 0.7749999761581421
     },
     {
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
         "Offset": 0.07500000298023224,
         "PassIndex": 5,
         "TextureIndex": 2,
         "TextureTag": "Prototype_Component_Texture_Loading_Object",
         "fSizeX": 0.3050000071525574,
-        "fSizeY": 0.20100000500679016,
-        "fX": 0.1420000046491623,
-        "fY": 0.925000011920929
+        "fSizeY": 0.1459999978542328,
+        "fX": 0.16699999570846558,
+        "fY": 0.9739999771118164
     },
     {
-        "Offset": 0.0,
+        "Color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "Offset": 0.05000000074505806,
         "PassIndex": 3,
         "TextureIndex": 0,
         "TextureTag": "Prototype_Component_Texture_Loading_Image",
-        "fSizeX": 0.6119999885559082,
-        "fSizeY": 0.6050000190734863,
-        "fX": 0.47999998927116394,
-        "fY": 0.4090000092983246
+        "fSizeX": 0.6389999985694885,
+        "fSizeY": 0.609000027179718,
+        "fX": 0.4880000054836273,
+        "fY": 0.4339999854564667
+    },
+    {
+      "Color": [
+        1.0,
+        0.3,
+        0.3,
+        1.0
+      ],
+        "Offset": 0.029999999329447746,
+        "PassIndex": 3,
+        "TextureIndex": 0,
+        "TextureTag": "Prototype_Component_Texture_Img_ChHead",
+        "fSizeX": 0.07500000298023224,
+        "fSizeY": 0.13699999451637268,
+        "fX": 0.07800000160932541,
+        "fY": 0.9380000233650208
     }
 ]

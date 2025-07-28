@@ -70,7 +70,7 @@ public:
     }
 
 	AnimState* GetCurrentState() {
-		return &m_States[m_CurrentStateNodeId];
+		return FindStateByNodeId(m_CurrentStateNodeId);
 	}
 
 	void AddTransition(_int fromNode, _int toNode,  const Link& link, const Condition& cond, _float duration = 0.2f,_bool bHasExitTime = false);

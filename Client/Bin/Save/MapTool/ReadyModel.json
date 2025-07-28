@@ -4,6 +4,14 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_01.bin"
     },
     {
+        "ModelName": "SM_BuildingA_Drain_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Drain_01.bin"
+    },
+    {
+        "ModelName": "SM_Cathedral_GroundRock_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_GroundRock_01.bin"
+    },
+    {
         "ModelName": "SM_OldTown_BrickFloor_01",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_BrickFloor_01.bin"
     },

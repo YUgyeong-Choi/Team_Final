@@ -1,6 +1,7 @@
 #include "EffectBase.h"
 #include "Client_Calculation.h"
 #include "GameInstance.h"
+#include "Camera_Manager.h"
 
 CEffectBase::CEffectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBlendObject{ pDevice, pContext }
@@ -42,7 +43,6 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
@@ -55,8 +55,13 @@ void CEffectBase::Update(_float fTimeDelta)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
-		m_fCurrentTrackPosition = 0.f;
+		m_fCurrentTrackPosition = m_iTileCnt - 1.f;
+
 	Update_Keyframes();
+
+	if (m_bBillboard)
+		m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
+
 	m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
@@ -75,14 +80,26 @@ HRESULT CEffectBase::Render()
 void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 {
 	m_fCurrentTrackPosition = fCurFrame;
-	if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
-		m_fCurrentTrackPosition = m_iTileCnt - 1.f;
+	if (m_fCurrentTrackPosition > static_cast<_float>(m_iDuration))
+		m_fCurrentTrackPosition = 0;
+
+
+
 	Update_Keyframes();
 
-	m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+	if (m_bBillboard)
+		m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
+
+	if (m_bAnimation)
+		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+	else
+		m_iTileIdx = 0;
+
+	m_fTileSize.x = 1.0f / _float(m_iTileX);
+	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
-	m_fTickAcc = 0.f;
+	//m_fTickAcc = 0.f;
 }
 
 
@@ -121,6 +138,7 @@ void CEffectBase::Update_Keyframes()
 		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
 		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
 		vPosition = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vTranslation), 1.f);
+		vColor = XMLoadFloat4(&LastKeyFrame.vColor);
 	}
 	else
 	{
@@ -160,7 +178,18 @@ void CEffectBase::Update_Keyframes()
 	_float4x4 resWorldMat = {};
 	XMStoreFloat4x4(&resWorldMat, TransformationMatrix);
 	m_pTransformCom->Set_WorldMatrix(resWorldMat);
+	XMStoreFloat4(&m_vColor, vColor);
 }
+
+#ifdef USE_IMGUI
+HRESULT CEffectBase::Change_Texture(_wstring strTextureName)
+{
+	Safe_Release(m_pTextureCom);
+	_wstring strTextureTag = L"Prototype_Component_Texture_" + strTextureName;
+	return Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom));
+}
+#endif USE_IMGUI
 
 void CEffectBase::Free()
 {

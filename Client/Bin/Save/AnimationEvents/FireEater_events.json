@@ -33,24 +33,12 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_02_End",
             "Duration": 44.0,
-            "Events": [
-                {
-                    "EventName": "TestEvent",
-                    "Time": 27.0
-                }
-            ],
             "IsLoop": false,
             "TickPerSecond": 30.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_02_Start",
             "Duration": 106.0,
-            "Events": [
-                {
-                    "EventName": "TestEvent",
-                    "Time": 101.0
-                }
-            ],
             "IsLoop": false,
             "TickPerSecond": 30.0
         },
@@ -267,7 +255,7 @@
         {
             "ClipName": "AS_Idle_C",
             "Duration": 480.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "TickPerSecond": 30.0
         },
         {
@@ -345,7 +333,7 @@
         {
             "ClipName": "AS_Walk_C_L",
             "Duration": 120.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "TickPerSecond": 30.0
         },
         {

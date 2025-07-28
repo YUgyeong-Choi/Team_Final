@@ -33,7 +33,6 @@ private:
 	_float2 m_fEndPos = {};
 	// 그리고 GetClientRect를 이용해서 크기를 구하고 위치를 정해주자
 	_float2 m_fCurrentPos = {};
-	_float	m_fMoveTime = {1.f};
 
 
 	UI_FEATURE_POS_DESC m_eDesc = {};

@@ -69,7 +69,6 @@ private:
 
 	HRESULT Modify_Transition(CAnimController::Transition& transition);
 
-
 private:
 	CAnimator* m_pCurAnimator = nullptr; // 현재 모델의 애니메이터
 	CAnimation* m_pCurAnimation = nullptr; // 현재 애니메이션

@@ -1,9 +1,11 @@
-#include "Level_KratCentralStation.h"
+ï»¿#include "Level_KratCentralStation.h"
 #include "GameInstance.h"
 #include "Camera_Manager.h"
 
 #include "StaticMesh.h"
 #include "Level_Loading.h"
+
+#include "TestAnimObject.h"
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -23,16 +25,22 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
-	//¸ÊÀ» »ı¼ºÇÏ±âÀ§ÇÑ ¸ğµ¨ ÇÁ·ÎÅäÅ¸ÀÔÀ» ÁØºñÇÑ´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ï¿½Ñ´ï¿½.
 	/*if (FAILED(Ready_MapModel()))
 		return E_FAIL;*/
 
-	//Á¦ÀÌ½¼À¸·Î ÀúÀåµÈ ¸ÊÀ» ·ÎµåÇÑ´Ù.
-	/*if (FAILED(LoadMap()))
-		return E_FAIL;*/
+	//ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½Ñ´ï¿½.
+
+	//if (FAILED(LoadMap()))
+	//	return E_FAIL;
+
+	//ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+	if (FAILED(Ready_TestAnimObject()))
+		return E_FAIL;
+
 	
 
-	/* [ »ç¿îµå ] */
+	/* [ ï¿½ï¿½ï¿½ï¿½ ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
 	m_pBGM->Play();
@@ -56,18 +64,18 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 HRESULT CLevel_KratCentralStation::Render()
 {
-	SetWindowText(g_hWnd, TEXT("°ÔÀÓÇÃ·¹ÀÌ ·¹º§ÀÔ´Ï´Ù."));
+	SetWindowText(g_hWnd, TEXT("ê²Œì„í”Œë ˆì´ ë ˆë²¨ì…ë‹ˆë‹¤."));
 
 	return S_OK;
 }
 
 HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
 {
-	//ÀÌ¹Ì ÇÁ·ÎÅäÅ¸ÀÔÀÌÁ¸ÀçÇÏ´Â ÁöÈ®ÀÎ
+	//ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½È®ï¿½ï¿½
 
 	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
 	{
-		MSG_BOX("ÀÌ¹Ì ÇÁ·ÎÅäÅ¸ÀÔÀÌ Á¸ÀçÇÔ");
+		MSG_BOX("ì´ë¯¸ í”„ë¡œí† íƒ€ì…ì´ ì¡´ì¬í•¨");
 		return S_OK;
 	}
 
@@ -87,7 +95,7 @@ HRESULT CLevel_KratCentralStation::Ready_MapModel()
 	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
 	if (!inFile.is_open())
 	{
-		MSG_BOX("ReadyModel.json ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù.");
+		MSG_BOX("ReadyModel.json íŒŒì¼ì„ ì—´ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 		return S_OK;
 	}
 
@@ -100,17 +108,17 @@ HRESULT CLevel_KratCentralStation::Ready_MapModel()
 	catch (const exception& e)
 	{
 		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON ÆÄ½Ì ½ÇÆĞ", MB_OK);
+		MessageBoxA(nullptr, e.what(), "JSON íŒŒì‹± ì‹¤íŒ¨", MB_OK);
 		return E_FAIL;
 	}
 
-	// JSON µ¥ÀÌÅÍ È®ÀÎ
+	// JSON ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	for (const auto& element : ReadyModelJson)
 	{
 		string ModelName = element.value("ModelName", "");
 		string Path = element.value("Path", "");
 
-		//¸ğµ¨ ÇÁ·ÎÅä Å¸ÀÔ »ı¼º
+		//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
 
 		const _char* pModelFilePath = Path.c_str();
@@ -129,7 +137,7 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 	ifstream inFile("../Bin/Save/MapTool/MapData.json");
 	if (!inFile.is_open())
 	{
-		MSG_BOX("MapData.json ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù.");
+		MSG_BOX("MapData.json íŒŒì¼ì„ ì—´ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
 		return S_OK;
 	}
 
@@ -155,7 +163,7 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 				for (_int col = 0; col < 4; ++col)
 					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
-			//¿ÀºêÁ§Æ® »ı¼º, ¹èÄ¡
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Ä¡
 
 			wstring LayerTag = TEXT("Layer_MapToolObject_");
 			LayerTag += StringToWString(ModelName);
@@ -256,6 +264,15 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_TestAnimObject()
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("TestAnimObject"))))
 		return E_FAIL;
 
 	return S_OK;

@@ -89,6 +89,30 @@ PS_OUT PS_MAIN(PS_IN In)
    
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f); //w값에다가 아이디를 저장하겠음
+    Out.vPickPos = In.vWorldPos;
+    
+    return Out;
+}
+
+PS_OUT PS_MAPTOOLOBJECT(PS_IN In)
+{
+    PS_OUT Out;
+    
+    vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+    if (vMtrlDiffuse.a < 0.3f)
+        discard;
+    
+    vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+    vNormal = mul(vNormal, WorldMatrix);
+    
+   
+    Out.vDiffuse = vMtrlDiffuse;
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, g_fID); //w값에다가 아이디를 저장하겠음
     Out.vPickPos = In.vWorldPos;
     
@@ -118,6 +142,7 @@ PS_SKY_OUT PS_SKY_MAIN(PS_IN In)
 
 technique11 DefaultTechnique
 {   
+//0
     pass Default
     {
         SetRasterizerState(RS_Default);
@@ -128,7 +153,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();      
     }
-
+//1
     pass SkyBox
     {
         SetRasterizerState(RS_Default);
@@ -138,6 +163,28 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_SKY_MAIN();
+    }
+//2
+    pass MAPTOOL_OBJECT
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAPTOOLOBJECT();
+    }
+//3
+    pass PREVIEW_OBJECT
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
     }
    
 }

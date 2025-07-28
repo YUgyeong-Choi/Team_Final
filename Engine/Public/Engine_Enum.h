@@ -8,7 +8,7 @@ namespace Engine
 	enum class DIMM { X, Y, WHEEL };
 	enum class D3DTS { VIEW, PROJ, END };
 	
-	enum class RENDERGROUP{ RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_PBRMESH, RG_NONLIGHT, RG_BLEND, RG_EFFECT_WB, RG_UI, RG_END };
+	enum class RENDERGROUP{ RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_PBRMESH, RG_NONLIGHT, RG_BLEND, RG_EFFECT_WB, RG_UI, RG_UI_DEFERRED, RG_END };
 
 	enum class PROTOTYPE { TYPE_GAMEOBJECT, TYPE_COMPONENT };
 	enum class STATE { RIGHT, UP, LOOK, POSITION, END };
@@ -37,4 +37,5 @@ namespace Engine
 
 
 	enum class ParamType { Bool, Trigger, Float, Int };
+
 }

@@ -3,6 +3,8 @@
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
+#include "Camera.h"
+#include "Camera_Manager.h"
 
 #include "Camera.h"
 #include "Camera_Manager.h"
@@ -47,18 +49,22 @@ void CYGTool::Late_Update(_float fTimeDelta)
 
 HRESULT CYGTool::Render()
 {
+
 	if (FAILED(Render_CameraTool()))
 		return E_FAIL;
 
 
 	if (FAILED(Render_CameraFrame()))
 		return E_FAIL;
+	if (FAILED(Render_CaemraTool()))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 
-HRESULT CYGTool::Render_CameraTool()
+
+HRESULT CYGTool::Render_CaemraTool()
 {
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
@@ -154,6 +160,17 @@ HRESULT CYGTool::Render_CameraTool()
 		}
 	}
 
+    if (ImGui::CollapsingHeader(u8"카메라 위치/방향 제어"))
+    {
+        if (CCamera* pCam = CCamera_Manager::Get_Instance()->GetCurCam())
+        {
+
+        }
+        else
+        {
+            ImGui::Text("현재 활성화된 카메라가 없습니다.");
+        }
+    }
 
 	ImGui::End();
 	return S_OK;

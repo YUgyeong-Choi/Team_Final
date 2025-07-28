@@ -1,9 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-#define USE_IMGUI
 #include "Client_Defines.h"
-#undef USE_IMGUI
 
 NS_BEGIN(Engine)
 class CShader;
@@ -38,25 +36,37 @@ private:
 	HRESULT Save_Particles();
 	HRESULT Load_Particles();
 
+	HRESULT Load_Textures();
+	HRESULT Draw_TextureBrowser(class CEffectBase* pEffect);
+
 	void Key_Input();
 
 private:
 	CShader*				m_pShader = { nullptr };
 
 private:
+#pragma region Textures
+	typedef struct TextureItem {
+		const ID3D11ShaderResourceView* pSRV;
+		string name;
+	}EFFTEXTURE;
+	vector<EFFTEXTURE>			m_Textures;
+	_int						m_iSelectedTextureIdx = { 0 };
+#pragma endregion
+
+
 #pragma region BaseEffect
 	// 공통 이펙트 용 변수들
 	_int			m_iSelectedInterpolationType = { 0 };
 	const _char*	m_InterpolationTypes[5] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
-
 
 #pragma endregion
 
 
 #pragma region Sprite
 	// 스프라이트 이펙트 용 변수들
-	_int	m_iGridWidthCnt = { 1 };
-	_int	m_iGridHeightCnt = { 1 };
+	//_int	m_iGridTileX = { 1 };
+	//_int	m_iGridTileY = { 1 };
 	_bool	m_bAnimateSprite = { false };
 
 #pragma endregion
@@ -76,6 +86,9 @@ private:
 	_float3					m_vRange = { 10.f, 10.f, 30.f };
 	_float2					m_vSize = { 1.f, 2.f };
 	_float3					m_vCenter = { 0.f, 0.f, 0.f };
+	_bool					m_bGravity = { false };
+	_bool					m_bOrbit = { false };
+	_float					m_fRotationSpeed = {};
 	class CToolParticle*	m_pToolParticle = { nullptr };
 
 #pragma endregion

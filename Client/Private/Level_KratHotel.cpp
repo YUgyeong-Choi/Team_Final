@@ -30,6 +30,10 @@ HRESULT CLevel_KratHotel::Initialize()
 	if (FAILED(LoadMap()))
 		return E_FAIL;
 
+	//제이슨으로 로드하지않고 따로 스태틱매쉬 소환하려면 모델프로토타입을 넣어줘야함
+	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
+		return E_FAIL;
+
 	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
@@ -241,6 +245,30 @@ HRESULT CLevel_KratHotel::Ready_Layer_Sky(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
 		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
+{
+	CStaticMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::KRAT_HOTEL;
+
+	Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
+	 lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_SM_BuildingA_Lift_01"));
+	
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
+	lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_SM_BuildingA_Lift_02"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

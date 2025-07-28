@@ -25,7 +25,7 @@ HRESULT CLevel_GL::Initialize()
 		return E_FAIL;
 
 	// 
-	CStatic_UI::STATIC_UI_DESC eDesc = {};
+	/*CStatic_UI::STATIC_UI_DESC eDesc = {};
 	eDesc.fOffset = 0.1f;
 	eDesc.fSpeedPerSec = 1.f;
 	eDesc.fX = g_iWinSizeX * 0.5f;
@@ -38,7 +38,7 @@ HRESULT CLevel_GL::Initialize()
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
 		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background"), &eDesc)))
-		return E_FAIL;
+		return E_FAIL;*/
 
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::GL));
