@@ -30,6 +30,9 @@ using namespace ImGui;
 #include <mferror.h>
 #include <iostream>
 
+// 로딩 비율 설정하기 위한?
+#include <atomic>
+
 namespace Client
 {
 	const unsigned int			g_iWinSizeX = 1600;

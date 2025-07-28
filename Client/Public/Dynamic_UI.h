@@ -64,14 +64,12 @@ public:
 
 	HRESULT Add_Feature( _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 
-private:
+protected:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 	vector<class CUI_Feature*> m_pUIFeatures = {};
-
-private:
 
 	_bool    m_isFromTool = {false};
 

@@ -12,7 +12,7 @@ NS_BEGIN(Client)
 class CLoader final : public CBase
 {
 private:
-	CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, atomic<float>& fRatio);
 	virtual ~CLoader() = default;
 
 public:
@@ -41,6 +41,8 @@ private:
 	CRITICAL_SECTION			m_CriticalSection = {};
 	_tchar						m_szLoadingText[MAX_PATH] = {};
 
+	atomic<float>&             m_fRatio;
+
 public:
 	HRESULT Loading_For_Logo();
 	HRESULT Loading_For_Static(); // 모두 사용하는 것들 Logo에서 처음에만 생성 
@@ -55,7 +57,7 @@ public:
 
 
 public:
-	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID);
+	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID, atomic<float>& fRatio);
 	virtual void Free() override;
 };
 

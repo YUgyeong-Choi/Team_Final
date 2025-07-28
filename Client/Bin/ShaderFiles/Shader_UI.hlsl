@@ -9,6 +9,8 @@ float g_Alpha;
 
 float4 g_Color;
 
+float2 g_ButtonFlag;
+
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
 

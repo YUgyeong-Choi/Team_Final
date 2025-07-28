@@ -165,7 +165,7 @@
     </Filter>
     <Filter Include="97.ShaderFiles\Effect">
       <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Levels\LevelCY">
       <UniqueIdentifier>{fe0db61e-17b3-4a02-b250-2ba12840b64c}</UniqueIdentifier>
     </Filter>
@@ -180,6 +180,12 @@
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolEffect">
       <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Button">
+      <UniqueIdentifier>{2b0fcbb9-ea95-4cc2-a9ea-66880efc5920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Canvus">
+      <UniqueIdentifier>{166d625d-85e0-4014-bef6-412ee2dce9bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -428,9 +434,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_Logo.h">
       <Filter>01.Levels\Logo</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\DH_ToolMesh.h">
       <Filter>01.Levels\LevelDH\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Button.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Canvus.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Canvus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -659,9 +671,15 @@
     </ClCompile>
     <ClCompile Include="..\private\MeshEffect.cpp">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Mesh</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\DH_ToolMesh.cpp">
       <Filter>01.Levels\LevelDH\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Button.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Canvus.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Canvus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

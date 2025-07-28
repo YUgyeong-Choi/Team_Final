@@ -35,7 +35,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 
 	/* 로딩의 역할(다음레벨에 필요한 자원(Resource)(텍스쳐, 모델, 사운드 등등등 )을 생성하는)을 
 	수행할 로더객체를 생성한다. */
-	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevelID);
+	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevelID, ref(m_fRatio));
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 
@@ -128,8 +128,9 @@ HRESULT CLevel_Loading::Render()
 	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.25f, g_iWinSizeY * 0.725f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1350.f);
 
 	
+	_int iPercent = int(floorf(m_fRatio * 100.f));
 	
-	_wstring loadingText = L"거짓말하는 중 ...   " + to_wstring(100) + L" %";
+	_wstring loadingText = L"거짓말하는 중 ...   " + to_wstring(iPercent) + L" %";
 	m_pGameInstance->Draw_Font(TEXT("Font_Bold"), loadingText.c_str(), _float2(g_iWinSizeX * 0.77f, g_iWinSizeY * 0.95f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1200.f);
 
 	return S_OK;
