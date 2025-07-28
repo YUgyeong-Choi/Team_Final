@@ -6,7 +6,7 @@
 NS_BEGIN(Engine)
 class CShader;
 class CTexture;
-class CModel;
+class CModel_Instance;
 NS_END
 
 NS_BEGIN(Client)
@@ -32,6 +32,9 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+private:
+	CModel_Instance* m_pModelCom = { nullptr };
 
 private:
 	HRESULT Ready_Components(void* pArg);

@@ -226,6 +226,12 @@
     <ClInclude Include="..\public\Observer_Manager.h">
       <Filter>01.Utility\14. Observer\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Mesh_Instance.h">
+      <Filter>01.Utility\04.Components\Model_Instance\Mesh_Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Model_Instance.h">
+      <Filter>01.Utility\04.Components\Model_Instance</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -428,6 +434,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Observer_Manager.cpp">
       <Filter>01.Utility\14. Observer\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Mesh_Instance.cpp">
+      <Filter>01.Utility\04.Components\Model_Instance\Mesh_Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Model_Instance.cpp">
+      <Filter>01.Utility\04.Components\Model_Instance</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -653,8 +665,11 @@
     <Filter Include="01.Utility\14. Observer\Manager">
       <UniqueIdentifier>{1fba679e-4c91-4fe4-a8d6-a6b1a08640ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Components\VIBuffer\Instance\Mesh">
-      <UniqueIdentifier>{9de25b12-63ab-4747-b3b1-ac6173101c54}</UniqueIdentifier>
+    <Filter Include="01.Utility\04.Components\Model_Instance">
+      <UniqueIdentifier>{21c5063f-9481-48ea-9909-acb6cc2eb358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Model_Instance\Mesh_Instance">
+      <UniqueIdentifier>{5ab14028-17db-4feb-954f-409f9de4164b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

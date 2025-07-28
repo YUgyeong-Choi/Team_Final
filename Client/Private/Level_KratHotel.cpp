@@ -68,7 +68,7 @@ HRESULT CLevel_KratHotel::Load_Model(const wstring& strPrototypeTag, const _char
 
 	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag) != nullptr)
 	{
-		MSG_BOX("이미 프로토타입이 존재함");
+		//MSG_BOX("이미 프로토타입이 존재함");
 		return S_OK;
 	}
 
@@ -323,7 +323,7 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
 	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
 	lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_SM_BuildingA_Lift_02"));
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
 		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &Desc)))
 		return E_FAIL;
 

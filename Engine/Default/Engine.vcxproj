@@ -204,7 +204,9 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\public\Light_Manager.h" />
     <ClInclude Include="..\Public\Material.h" />
     <ClInclude Include="..\Public\Mesh.h" />
+    <ClInclude Include="..\public\Mesh_Instance.h" />
     <ClInclude Include="..\Public\Model.h" />
+    <ClInclude Include="..\public\Model_Instance.h" />
     <ClInclude Include="..\public\Navigation.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\Observer.h" />
@@ -276,7 +278,9 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\private\Light_Manager.cpp" />
     <ClCompile Include="..\Private\Material.cpp" />
     <ClCompile Include="..\Private\Mesh.cpp" />
+    <ClCompile Include="..\private\Mesh_Instance.cpp" />
     <ClCompile Include="..\Private\Model.cpp" />
+    <ClCompile Include="..\private\Model_Instance.cpp" />
     <ClCompile Include="..\private\Navigation.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\Observer.cpp" />
