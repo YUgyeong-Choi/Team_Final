@@ -663,7 +663,7 @@
         {
             "ClipName": "AS_Pino_T_Walk_F",
             "Duration": 68.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "TickPerSecond": 50.0
         },
         {
