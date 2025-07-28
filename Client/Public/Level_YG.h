@@ -1,8 +1,7 @@
 #pragma once
 
-#define USE_IMGUI
+
 #include "Client_Defines.h"
-#undef USE_IMGUI
 
 #include "Level.h"
 
@@ -33,6 +32,8 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Object(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
+
+private:
 
 	HRESULT Ready_ImGuiTools();
 	HRESULT Ready_ImGui();

@@ -81,4 +81,12 @@ namespace Client
 	}UI_FEATURE_SCALE_DESC;
 
 #pragma endregion
+	typedef struct tagCutScene
+	{
+		_vector vPosition;
+		_vector vRotation;
+		_bool bUseLerp;
+		_float fDuration;
+	}CUTSCENE_DESC;
+
 }

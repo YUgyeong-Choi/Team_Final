@@ -95,16 +95,6 @@ void CCamera_Free::Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON)) {
 		_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
-
-		_float3 vPos;
-		XMStoreFloat3(&vPos, pos);
-		printf("Camera Position: x = %.2f, y = %.2f, z = %.2f\n", vPos.x, vPos.y, vPos.z);
-
-		_vector look = m_pTransformCom->Get_State(STATE::LOOK);
-
-		_float3 vLook;
-		XMStoreFloat3(&vLook, look);
-		printf("Camera Look: x = %.2f, y = %.2f, z = %.2f\n", vLook.x, vLook.y, vLook.z);
 	}
 
 	__super::Update(fTimeDelta);

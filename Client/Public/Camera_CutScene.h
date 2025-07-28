@@ -32,6 +32,11 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void Set_CameraFrame(const vector<CUTSCENE_DESC>& vecCameraFrame)
+	{
+		m_vecCameraFrame = vecCameraFrame;
+	}
+	void PlayCutScene() { m_bActive = true;  m_iCurrentFrame = 0; }
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 
@@ -40,7 +45,10 @@ private:
 	_float			m_fPanSpeed = { };
 
 	CGameObject* m_pPlayer = { nullptr };
-
+	vector<CUTSCENE_DESC> m_vecCameraFrame;
+	_bool m_bActive = false;
+	_int m_iCurrentFrame = -1;
+	_float m_fElapsedTime = {};
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

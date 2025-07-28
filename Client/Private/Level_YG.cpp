@@ -8,7 +8,7 @@
 #include "YGDynamicObj.h"
 
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-		: CLevel { pDevice, pContext }
+	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
@@ -77,6 +77,7 @@ HRESULT CLevel_YG::Render()
 
 	text = L"제일 오른쪽 : Shere";
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 150.f), XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
 	
 
 	ImGui_ImplDX11_NewFrame();
@@ -136,7 +137,7 @@ HRESULT CLevel_YG::Ready_Camera()
 HRESULT CLevel_YG::Ready_Lights()
 {
 	LIGHT_DESC			LightDesc{};
-	 
+
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
@@ -180,7 +181,7 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
 		return E_FAIL;
 
-	for (int i = 1; i <= 11; ++i) {
+	/*for (int i = 1; i <= 11; ++i) {
 		wstring protoTag = L"Prototype_Component_Model_Part" + to_wstring(i);
 		wstring name = L"DynamicGib" + to_wstring(i);
 
@@ -191,7 +192,7 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicGib"),
 			ENUM_CLASS(LEVEL::YG), strLayerTag, &_desc)))
 			return E_FAIL;
-	}
+	}*/
 
 	CYGDynamicObj::DYNAMICDATA_DESC _dynamicDesc{};
 	_dynamicDesc.colliderType = L"Box";
@@ -218,9 +219,10 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGFloor"),
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
+
 
 HRESULT CLevel_YG::Ready_ImGuiTools()
 {
@@ -236,15 +238,31 @@ HRESULT CLevel_YG::Ready_ImGui()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // multi-viewport?
+	io.Fonts->AddFontFromFileTTF("C:/Windows/Fonts/Impact.ttf", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
 
-	ImGui::StyleColorsDark();
-	io.Fonts->AddFontFromFileTTF("C://Windows//Fonts//gulim.ttc", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
+	ImGui::StyleColorsDark();  // 어두운 테마 기반
 
-	// Setup Platform/Renderer backends
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowRounding = 8.0f;
+	style.FrameRounding = 5.0f;
+	style.GrabRounding = 5.0f;
+	style.ScrollbarRounding = 6.0f;
+
+	style.WindowPadding = ImVec2(20, 20);   // 넉넉한 창 내부 여백
+	style.FramePadding = ImVec2(10, 8);    // 버튼/입력창 안쪽 여백
+	style.ItemSpacing = ImVec2(12, 10);   // 위젯 간 간격
+
+	// 투명한 배경 느낌
+	style.Colors[ImGuiCol_WindowBg].w = 0.92f;  // 1.0은 완전 불투명
+
+	ImVec4* colors = style.Colors;
+	colors[ImGuiCol_Button] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f); // 버튼 파랑
+	colors[ImGuiCol_ButtonHovered] = ImVec4(0.26f, 0.59f, 0.98f, 0.78f); // 호버 시 연한 파랑
+	colors[ImGuiCol_ButtonActive] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f); // 클릭 시 진한 파랑
+	colors[ImGuiCol_FrameBg] = ImVec4(0.16f, 0.29f, 0.48f, 1.00f); // 입력창 배경
+
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
 
@@ -295,6 +313,7 @@ HRESULT CLevel_YG::ImGui_Docking_Settings()
 
 	return S_OK;
 }
+
 
 HRESULT CLevel_YG::Ready_Layer_Sky(const _wstring strLayerTag)
 {

@@ -1,9 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-#define USE_IMGUI
 #include "Client_Defines.h"
-#undef USE_IMGUI
 
 NS_BEGIN(Client)
 
@@ -23,7 +21,18 @@ public:
 	virtual HRESULT Render();
 
 private:
-	HRESULT Render_CaemraTool();
+	HRESULT Render_CameraTool();
+	HRESULT Render_CameraFrame();
+	vector<CUTSCENE_DESC> m_vecCameraFrame;
+	CUTSCENE_DESC m_CutSceneDesc = {};
+	_float m_fDuration = {};
+	_bool m_bUseLerp = true;
+
+	int selectedFrameIndex = -1;
+	XMFLOAT3 editedPos{}, editedRot{};
+	float editedDuration = 0.f;
+	_bool editedLerp = false;
+	int lastSelectedIndex = -1;
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
