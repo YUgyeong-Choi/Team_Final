@@ -26,13 +26,13 @@ private:
 	vector<CUTSCENE_DESC> m_vecCameraFrame;
 	CUTSCENE_DESC m_CutSceneDesc = {};
 	_float m_fDuration = {};
-	_bool m_bUseLerp = true;
+	INTERPOLATION_CAMERA m_eInterpMode = INTERPOLATION_CAMERA::NONE;
 
-	int selectedFrameIndex = -1;
-	XMFLOAT3 editedPos{}, editedRot{};
-	float editedDuration = 0.f;
-	_bool editedLerp = false;
-	int lastSelectedIndex = -1;
+	int m_iSelectedFrameIndex = -1;
+	XMFLOAT3 m_editedPos{}, m_editedRot{};
+	float m_editedDuration = 0.f;
+	int m_iLastSelectedIndex = -1;
+	INTERPOLATION_CAMERA m_eEditInterpMode = INTERPOLATION_CAMERA::NONE;
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
