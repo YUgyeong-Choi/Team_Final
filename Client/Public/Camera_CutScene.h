@@ -49,6 +49,9 @@ private:
 	_bool m_bActive = false;
 	_int m_iCurrentFrame = -1;
 	_float m_fElapsedTime = {};
+
+	_bool m_bStartSpecialRotate;
+	_bool m_bStartSpecialRotate2;
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

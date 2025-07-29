@@ -190,6 +190,27 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			_float  endFov = nextDesc.fFov;
 			m_fFov = XMConvertToRadians(startFov + (endFov - startFov) * t);
 		}
+
+
+		if (m_pGameInstance->Key_Down(DIK_M))
+			m_bStartSpecialRotate = true;
+
+		if (m_bStartSpecialRotate)
+		{
+			bool bFinished = m_pTransformCom->Rotate_Special(fTimeDelta, 1.0f, m_pTransformCom->Get_State(STATE::LOOK), 30.f);
+			if (bFinished)
+				m_bStartSpecialRotate = false;
+		}
+
+		if (m_pGameInstance->Key_Down(DIK_N))
+			m_bStartSpecialRotate2 = true;
+
+		if (m_bStartSpecialRotate2)
+		{
+			bool bFinished = m_pTransformCom->Rotate_Special(fTimeDelta, 1.0f, m_pTransformCom->Get_State(STATE::LOOK), -30.f);
+			if (bFinished)
+				m_bStartSpecialRotate2 = false;
+		}
 	}
 
 	__super::Priority_Update(fTimeDelta);
