@@ -47,7 +47,7 @@ void CStatic_UI::Update(_float fTimeDelta)
 
 void CStatic_UI::Late_Update(_float fTimeDelta)
 {
-	if(!m_isVignetting)
+	if(!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI_DEFERRED, this);

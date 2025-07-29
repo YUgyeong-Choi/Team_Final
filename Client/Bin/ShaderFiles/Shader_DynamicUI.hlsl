@@ -212,15 +212,16 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
         vTexcoord.x *= 2.5f;
         
         vHover = g_HoverTexture.Sample(DefaultSampler, vTexcoord);
+        vHover.a = 0.2f;
 
     }
     
     if(g_ButtonFlag.z == 1.f)
     {
-        if (In.vTexcoord.y > 0.97f)
+        if (In.vTexcoord.y > 0.95f)
         {
             vHighlight = g_HighlightTexture.Sample(DefaultSampler, In.vTexcoord - float2(0.f, 0.4f));
-            vHover.a = 0.2f;
+           
         }
 
     }
@@ -229,13 +230,13 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
     
     if (Out.vColor.a < 0.001f)
     {
-        if (vHover.a > 0.01f)
+        if (length(vHover.rgb) > 0.5f)
         {
-            vHover.a *= 0.2f;
             
             if(In.vTexcoord.x < 0.4f)
             {
-                Out.vColor += vHover;
+                Out.vColor += vHover ;
+
             }
               
            

@@ -169,14 +169,19 @@ HRESULT CLoader::Loading_For_Static()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
-	/* For.Prototype_Component_Texture_Img_ChNose*/
+	/* For.Prototype_Component_Texture_Button_Hover*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Button_Hover.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Img_ChNose*/
+	/* For.Prototype_Component_Texture_Button_Highlight*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Line_Highlight.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Select*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Select"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Button_Select_%d.dds"),3))))
 		return E_FAIL;
 
 	
@@ -381,16 +386,20 @@ HRESULT CLoader::Loading_For_GL()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
-	/* For.Prototype_Component_Texture_Img_ChNose*/
+	/* For.Prototype_Component_Texture_Button_Hover*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Button_Hover.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Img_ChNose*/
+	/* For.Prototype_Component_Texture_Button_Highlight*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Line_Highlight.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Button_Select*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Select"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Button_Select_%d.dds"), 3))))
+		return E_FAIL;
 
 	// 
 	m_fRatio = 0.1f;
