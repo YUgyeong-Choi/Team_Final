@@ -17,7 +17,7 @@ public:
 		_float3			vRange;
 		_float2			vSize;
 		_float3			vCenter;
-
+		_bool			isTool = { false };
 	}DESC;
 	
 private:
@@ -26,7 +26,7 @@ private:
 	virtual ~CVIBuffer_Point_Instance() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
+	virtual HRESULT Initialize_Prototype(const DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Update(_float fTimeDelta);
 	virtual void Update_Tool(_float fCurTrackPos);
@@ -46,9 +46,12 @@ protected:
 	_bool						m_isLoop = { false };
 	PARTICLETYPE				m_ePType;
 
+protected:
+	HRESULT Make_InstanceBuffer(const DESC* pDesc);
+
 
 public:
-	static CVIBuffer_Point_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CVIBuffer_Point_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };
