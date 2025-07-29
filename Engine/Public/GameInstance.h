@@ -142,9 +142,9 @@ public:
 #pragma endregion
 
 #pragma region SHADOW
-	HRESULT Ready_Light_For_Shadow(const CShadow::SHADOW_DESC& Desc);
-	const _float4x4* Get_Light_ViewMatrix();
-	const _float4x4* Get_Light_ProjMatrix();
+	HRESULT Ready_Light_For_Shadow(const CShadow::SHADOW_DESC& Desc, SHADOW eShadow);
+	const _float4x4* Get_Light_ViewMatrix(SHADOW eShadow);
+	const _float4x4* Get_Light_ProjMatrix(SHADOW eShadow);
 #pragma endregion
 
 #pragma region FRUSTUM	

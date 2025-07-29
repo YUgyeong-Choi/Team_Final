@@ -20,6 +20,8 @@ public:
 
 		LEVEL			m_eLevelID;
 		_int			iRender = 0;
+		_float3 		InitPos = { 0.f, 0.f, 0.f };
+		_float3 		InitScale = { 1.f, 1.f, 1.f };
 
 		_tchar		szModelPrototypeTag[MAX_PATH];
 		_float4x4	WorldMatrix = _float4x4(
@@ -43,6 +45,10 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Shadow() override;
+
+private:
+	void SetCascadeShadow();
 
 public:
 	LEVEL Get_LevelID() const { return m_eLevelID; }
@@ -66,6 +72,10 @@ protected: /* [ 초기화 변수 ] */
 
 protected:
 	_bool			m_bDead = {};
+	_bool			m_bDoOnce = {};
+
+protected:
+	SHADOW			m_eShadow = SHADOW::SHADOW_END;
 
 private:
 	HRESULT Ready_Components(void* pArg);

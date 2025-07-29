@@ -82,6 +82,15 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+void CGameObject::Compute_ViewZ(const _vector* pPos)
+{
+	_vector vCamPos = XMLoadFloat4(m_pGameInstance->Get_CamPosition());
+
+	_vector vDiff = vCamPos - *pPos;
+	m_fViewZ = XMVectorGetX(XMVector3Length(vDiff));
+}
+
+
 _bool CGameObject::Get_bDead()
 {
 	return m_bDead;

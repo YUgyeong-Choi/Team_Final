@@ -17,23 +17,25 @@ private:
 	virtual ~CShadow() = default;
 
 public:
-	const _float4x4* Get_Light_ViewMatrix() {
-		return &m_LightViewMatrix;
+	// View Matrix
+	const _float4x4* Get_LightViewMatrix(SHADOW eShadow) const {
+		return &m_LightViewMatrix[ENUM_CLASS(eShadow)];
 	}
-	const _float4x4* Get_Light_ProjMatrix() {
-		return &m_LightProjMatrix;
+	// Proj Matrix
+	const _float4x4* Get_LightProjMatrix(SHADOW eShadow) const {
+		return &m_LightProjMatrix[ENUM_CLASS(eShadow)];
 	}
 
 public:
-	HRESULT Ready_Light_For_Shadow(const SHADOW_DESC& Desc);
+	HRESULT Ready_Light_For_Shadow(const SHADOW_DESC& Desc, SHADOW eShadow);
 
 private:
 	ID3D11Device*					m_pDevice = { nullptr };
 	ID3D11DeviceContext*			m_pContext = { nullptr };
 
 private:
-	_float4x4						m_LightViewMatrix = {};
-	_float4x4						m_LightProjMatrix = {};
+	_float4x4						m_LightViewMatrix[ENUM_CLASS(SHADOW::SHADOW_END)] = {};
+	_float4x4						m_LightProjMatrix[ENUM_CLASS(SHADOW::SHADOW_END)] = {};
 
 public:
 	static CShadow* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -224,7 +224,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	Desc.fNear = 0.1f;
 	Desc.fFar = 500.f;
 	
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc)))
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
 		return E_FAIL;
 
 	return S_OK;

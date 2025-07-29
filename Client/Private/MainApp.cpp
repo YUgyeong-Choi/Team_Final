@@ -216,6 +216,10 @@ HRESULT CMainApp::Ready_Static()
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_DefaultARM"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ARM_Default.png")))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

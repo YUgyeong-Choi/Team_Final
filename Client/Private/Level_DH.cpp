@@ -22,6 +22,9 @@ HRESULT CLevel_DH::Initialize()
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
+	
+	if (FAILED(Ready_Shadow()))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
@@ -87,14 +90,28 @@ HRESULT CLevel_DH::Ready_Camera()
 
 HRESULT CLevel_DH::Ready_Lights()
 {
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Ready_Shadow()
+{
 	CShadow::SHADOW_DESC		Desc{};
-	Desc.vEye = _float4(0.f, 20.f, -15.f, 1.f);
 	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 	Desc.fFovy = XMConvertToRadians(60.0f);
 	Desc.fNear = 0.1f;
 	Desc.fFar = 500.f;
 
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc)))
+	Desc.vEye = _float4(0.f, 100.f, -20.f, 1.f);
+	Desc.fFovy = XMConvertToRadians(40.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
+		return E_FAIL;
+
+	Desc.fFovy = XMConvertToRadians(80.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
+		return E_FAIL;
+
+	Desc.fFovy = XMConvertToRadians(120.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWC)))
 		return E_FAIL;
 
 	return S_OK;
@@ -123,6 +140,21 @@ HRESULT CLevel_DH::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 
 	Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
 	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::DH), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("SM_BuildingC_Sewer_01");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingC_Sewer_01"));
+	Desc.InitPos = _float3(10.f, 0.f, 0.f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::DH), strLayerTag, &Desc)))
+		return E_FAIL;
+	
+	Desc.szMeshID = TEXT("SM_Cathedral_FloorBR_03");
+	lstrcpy(Desc.szName, TEXT("SM_Cathedral_FloorBR_03"));
+	Desc.InitPos = _float3(0.f, 0.f, 5.f);
+	Desc.InitScale = _float3(3.f, 3.f, 3.f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::DH), strLayerTag, &Desc)))
 		return E_FAIL;
