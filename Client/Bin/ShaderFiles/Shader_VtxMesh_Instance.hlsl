@@ -32,23 +32,28 @@ struct VS_OUT
 VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out;
-    
-    matrix matWV, matWVP;
-    
-    /* mul : 모든 행렬의 곱하기를 수행한다. /w연산을 수행하지 않는다. */
-    matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    matWVP = mul(matWV, g_ProjMatrix);
-    
-    vector vPosition = mul(vector(In.vPosition, 1.f), In.TransformMatrix);
-    Out.vPosition = mul(vPosition, g_WorldMatrix);
-    
-    //Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);    
-    Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
-    Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
+
+    // 인스턴스별 월드 행렬 계산
+    matrix matInstanceWorld = mul(In.TransformMatrix, g_WorldMatrix);
+
+    // 위치 계산
+    float4 vWorldPos = mul(float4(In.vPosition, 1.f), matInstanceWorld);
+    float4 vViewPos = mul(vWorldPos, g_ViewMatrix);
+    float4 vProjPos = mul(vViewPos, g_ProjMatrix);
+
+    Out.vPosition = vProjPos;
+    Out.vProjPos = vProjPos;
+
+    // 정규벡터 변환 (회전만 적용)
+    matrix matNormalTransform = matInstanceWorld;
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), matNormalTransform));
+    Out.vTangent = normalize(mul(float4(In.vTangent, 0.f), matNormalTransform));
     Out.vBinormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
+
+    // 텍스처 좌표 및 월드 위치
     Out.vTexcoord = In.vTexcoord;
-    Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
-    Out.vProjPos = Out.vPosition;
+    Out.vWorldPos = vWorldPos;
+
     return Out;
 }
 

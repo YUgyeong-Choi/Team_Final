@@ -9,94 +9,66 @@ CMesh_Instance::CMesh_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 CMesh_Instance::CMesh_Instance(const CMesh_Instance& Prototype)
 	: CVIBuffer_Instance(Prototype)
-	, m_pVertexInstances(Prototype.m_pVertexInstances)
 {
+	//메쉬는 클론을 안하나?
+	_int a = 0;
 }
 
-HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
-{
-	strcpy_s(m_szName, pAIMesh->mName.data);
-	m_iMaterialIndex = pAIMesh->mMaterialIndex;
-	m_iNumVertexBuffers = 1;
-	m_iNumVertices = pAIMesh->mNumVertices;
-	m_iNumIndices = pAIMesh->mNumFaces * 3;
-	m_iIndexStride = sizeof(_uint);
-	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
-	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
-	HRESULT hr = Ready_NonAnim_Mesh(pAIMesh, PreTransformMatrix);
-	//HRESULT hr = eType == MODEL::NONANIM ? Ready_NonAnim_Mesh(pAIMesh, PreTransformMatrix) : Ready_Anim_Mesh(pAIMesh, Bones);
-
-	if (FAILED(hr))
-		return E_FAIL;
-
-	D3D11_BUFFER_DESC			IBBufferDesc{};
-	IBBufferDesc.ByteWidth = m_iNumIndices * m_iIndexStride;
-	IBBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	IBBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	IBBufferDesc.CPUAccessFlags = /*D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE*/0;
-	IBBufferDesc.StructureByteStride = m_iIndexStride;
-	IBBufferDesc.MiscFlags = 0;
-
-	m_pIndices = new _uint[m_iNumIndices];
-	ZeroMemory(m_pIndices, sizeof(_uint) * m_iNumIndices);
-
-	_uint	iNumIndices = { 0 };
-
-	for (size_t i = 0; i < pAIMesh->mNumFaces; i++)
-	{
-		m_pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[0];
-		m_pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[1];
-		m_pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[2];
-	}
-
-	D3D11_SUBRESOURCE_DATA		IBInitialData{};
-	IBInitialData.pSysMem = m_pIndices;
-
-	if (FAILED(m_pDevice->CreateBuffer(&IBBufferDesc, &IBInitialData, &m_pIB)))
-		return E_FAIL;
-
-#pragma region INSTANCEBUFFER
-
-	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
-	m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_VBInstanceDesc.Usage = D3D11_USAGE_DYNAMIC;
-	m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
-	m_VBInstanceDesc.MiscFlags = 0;
-
-	m_pVertexInstances = new VTXMESH_INSTANCE[m_iNumInstance];
-
-	for (size_t i = 0; i < m_iNumInstance; i++)
-	{
-		m_pVertexInstances[i].vRight = _float4(rand()%10 * 1.f, rand() % 10 * 1.f, rand() % 10 * 1.f, 0.f);
-		m_pVertexInstances[i].vUp = _float4(rand() % 10 * 1.f, rand() % 10 * 1.f, rand() % 10 * 1.f, 0.f);
-		m_pVertexInstances[i].vLook = _float4(rand() % 10 * 1.f, rand() % 10 * 1.f, rand() % 10 * 1.f, 0.f);
-		m_pVertexInstances[i].vTranslation = _float4(rand() % 10 * 1.f, rand() % 10 * 1.f, rand() % 10 * 1.f, 1.f);
-
-	}
-	
-	m_VBInstanceSubresourceData.pSysMem = m_pVertexInstances;
-
-	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
-		return E_FAIL;
-
-#pragma endregion 
-	
-
-
-	return S_OK;
-}
+//HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
+//{
+//	strcpy_s(m_szName, pAIMesh->mName.data);
+//	m_iMaterialIndex = pAIMesh->mMaterialIndex;
+//	m_iNumVertexBuffers = 1;
+//	m_iNumVertices = pAIMesh->mNumVertices;
+//	m_iNumIndices = pAIMesh->mNumFaces * 3;
+//	m_iIndexStride = sizeof(_uint);
+//	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
+//	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+//
+//	HRESULT hr = Ready_NonAnim_Mesh(pAIMesh, PreTransformMatrix);
+//	//HRESULT hr = eType == MODEL::NONANIM ? Ready_NonAnim_Mesh(pAIMesh, PreTransformMatrix) : Ready_Anim_Mesh(pAIMesh, Bones);
+//
+//	if (FAILED(hr))
+//		return E_FAIL;
+//
+//	D3D11_BUFFER_DESC			IBBufferDesc{};
+//	IBBufferDesc.ByteWidth = m_iNumIndices * m_iIndexStride;
+//	IBBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+//	IBBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+//	IBBufferDesc.CPUAccessFlags = /*D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE*/0;
+//	IBBufferDesc.StructureByteStride = m_iIndexStride;
+//	IBBufferDesc.MiscFlags = 0;
+//
+//	m_pIndices = new _uint[m_iNumIndices];
+//	ZeroMemory(m_pIndices, sizeof(_uint) * m_iNumIndices);
+//
+//	_uint	iNumIndices = { 0 };
+//
+//	for (size_t i = 0; i < pAIMesh->mNumFaces; i++)
+//	{
+//		m_pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[0];
+//		m_pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[1];
+//		m_pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[2];
+//	}
+//
+//	D3D11_SUBRESOURCE_DATA		IBInitialData{};
+//	IBInitialData.pSysMem = m_pIndices;
+//
+//	if (FAILED(m_pDevice->CreateBuffer(&IBBufferDesc, &IBInitialData, &m_pIB)))
+//		return E_FAIL;
+//
+//	return S_OK;
+//}
 
 HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, ifstream& ifs, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
+#pragma region 버텍스 버퍼
 	_uint NameLength = {};
 	ifs.read(reinterpret_cast<char*>(&NameLength), sizeof(_uint));			// 메쉬 이름 길이 
 	ifs.read(reinterpret_cast<char*>(m_szName), NameLength);				// 메쉬 이름
 	ifs.read(reinterpret_cast<char*>(&m_iMaterialIndex), sizeof(_uint));	// 머테리얼 인덱스
 	ifs.read(reinterpret_cast<char*>(&m_iNumVertices), sizeof(_uint));		// 버텍스 몇개
 	ifs.read(reinterpret_cast<char*>(&m_iNumIndices), sizeof(_uint));		// 인덱스 몇개
-	m_iNumVertexBuffers = 1;
 	m_iIndexStride = sizeof(_uint);
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -107,8 +79,9 @@ HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, ifstream& ifs, const v
 
 	if (FAILED(hr))
 		return E_FAIL;
+#pragma endregion
 
-
+#pragma region 인덱스버퍼
 	D3D11_BUFFER_DESC			IBBufferDesc{};
 	IBBufferDesc.ByteWidth = m_iNumIndices * m_iIndexStride;
 	IBBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -129,12 +102,51 @@ HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, ifstream& ifs, const v
 
 	if (FAILED(m_pDevice->CreateBuffer(&IBBufferDesc, &IBInitialData, &m_pIB)))
 		return E_FAIL;
+#pragma endregion
+
+#pragma region 인스턴싱을 위한 준비
+	m_iNumVertexBuffers = 2; //두개 해야해 버텍스 + 인스턴스버퍼(이거 땜에 응애응애)
+	//인스턴스 버퍼 스트라이드
+	m_iVertexInstanceStride = sizeof(VTXMESH_INSTANCE);
+	m_iNumIndexPerInstance = m_iNumIndices;
+	//m_iNumInstance
+#pragma endregion
+
 
 	return S_OK;
 }
 
 HRESULT CMesh_Instance::Initialize(void* pArg)
 {
+	INSTANCE_DESC* pDesc = static_cast<INSTANCE_DESC*>(pArg);
+	m_iNumInstance = pDesc->iNumInstance;
+
+#pragma region INSTANCEBUFFER
+
+	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
+	m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_VBInstanceDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
+	m_VBInstanceDesc.MiscFlags = 0;
+
+ 	m_pVertexInstances = new VTXMESH_INSTANCE[m_iNumInstance];
+
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		m_pVertexInstances[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);  // X축
+		m_pVertexInstances[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);  // Y축
+		m_pVertexInstances[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);  // Z축
+		m_pVertexInstances[i].vTranslation = _float4(0.f, 0.f, 0.f, 1.f);  // 위치 (원점)
+	}
+
+	m_VBInstanceSubresourceData.pSysMem = m_pVertexInstances;
+
+	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
+		return E_FAIL;
+
+#pragma endregion 
+
 	return S_OK;
 }
 
@@ -226,18 +238,18 @@ HRESULT CMesh_Instance::Ready_NonAnim_Mesh(ifstream& ifs, _fmatrix PreTransformM
 	return S_OK;
 }
 
-CMesh_Instance* CMesh_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
-{
-	CMesh_Instance* pInstance = new CMesh_Instance(pDevice, pContext);
-
-	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh, Bones, PreTransformMatrix)))
-	{
-		MSG_BOX("Failed to Created : CMesh_Instance");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
-}
+//CMesh_Instance* CMesh_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
+//{
+//	CMesh_Instance* pInstance = new CMesh_Instance(pDevice, pContext);
+//
+//	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh, Bones, PreTransformMatrix)))
+//	{
+//		MSG_BOX("Failed to Created : CMesh_Instance");
+//		Safe_Release(pInstance);
+//	}
+//
+//	return pInstance;
+//}
 
 CMesh_Instance* CMesh_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, ifstream& ifs, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
@@ -269,8 +281,5 @@ void CMesh_Instance::Free()
 {
 	__super::Free();
 
-	if (false == m_isCloned)
-	{
-		Safe_Delete_Array(m_pVertexInstances);
-	}
+	Safe_Delete_Array(m_pVertexInstances);
 }

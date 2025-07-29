@@ -330,9 +330,9 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	lstrcpy(InstanceDesc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Instance_SM_BuildingA_Lift_02")); //인스턴스용 모델
 
 	//요거 누수 확인해야함
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
-	//	ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &InstanceDesc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &InstanceDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

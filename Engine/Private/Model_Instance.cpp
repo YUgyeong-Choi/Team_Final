@@ -14,8 +14,8 @@ CModel_Instance::CModel_Instance(const CModel_Instance& Prototype)
 	: CModel(Prototype)
 	, m_Meshes{ Prototype.m_Meshes }
 {
-
-
+	for (auto& pMesh : m_Meshes)
+		Safe_AddRef(pMesh);
 }
 
 HRESULT CModel_Instance::Initialize_Prototype(MODEL eType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
@@ -44,6 +44,14 @@ HRESULT CModel_Instance::Initialize_Prototype(MODEL eType, const _char* pModelFi
 
 HRESULT CModel_Instance::Initialize(void* pArg)
 {
+	//여기서 인스턴스버퍼 만들어주자
+
+	for (CMesh_Instance* pMesh : m_Meshes)
+	{
+		if (FAILED(pMesh->Initialize(pArg)))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 

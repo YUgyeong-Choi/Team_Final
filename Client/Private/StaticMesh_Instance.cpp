@@ -99,9 +99,12 @@ HRESULT CStaticMesh_Instance::Ready_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	CMesh_Instance::INSTANCE_DESC InstanceDesc{};
+	InstanceDesc.iNumInstance = m_iNumInstance;
+
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), StaicMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
-		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom), &InstanceDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -142,4 +145,7 @@ CGameObject* CStaticMesh_Instance::Clone(void* pArg)
 void CStaticMesh_Instance::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pModelCom);
+
 }
