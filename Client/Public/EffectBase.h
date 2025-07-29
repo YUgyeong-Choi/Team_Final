@@ -68,6 +68,7 @@ protected:
 	enum TEXUSAGE { TU_DIFFUSE, TU_MASK1, TU_MASK2, TU_MASK3, TU_END };
 	_bool			m_bTextureUsage[TU_END];
 	CTexture*		m_pTextureCom[TU_END] = {nullptr};
+	_wstring		m_TextureTag[TU_END];
 
 protected:
 	const _float4x4*	m_pSocketMatrix = { nullptr };

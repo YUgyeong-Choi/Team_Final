@@ -44,6 +44,11 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	m_bAnimation = pDesc->bAnimation;
 	m_bTool = pDesc->bTool;
 
+	for (_uint i = 0; i < TU_END; i++)
+	{
+		m_TextureTag[i] = L"";
+	}
+
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -196,8 +201,11 @@ HRESULT CEffectBase::Change_Texture(_wstring strTextureName, TEXUSAGE eTex)
 {
 	Safe_Release(m_pTextureCom[eTex]);
 	_wstring strTextureTag = L"Prototype_Component_Texture_" + strTextureName;
-	return Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom));
+	if (FAILED(Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[eTex]))))
+		return E_FAIL;
+	m_TextureTag[eTex] = strTextureName;
+	return S_OK;
 }
 #endif USE_IMGUI
 

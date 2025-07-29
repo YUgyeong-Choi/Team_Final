@@ -172,10 +172,17 @@ json CSpriteEffect::Serialize()
 	j["ShaderPass"] = m_iShaderPass;
 
 	// Texture Usage
-	json textureUsage;
+	json textureUsage = json::array();
+	json textureTags = json::array();
+
 	for (int i = 0; i < TU_END; ++i)
+	{
 		textureUsage.push_back(m_bTextureUsage[i]);
+		textureTags.push_back(WStringToString(m_TextureTag[i]));
+	}
+
 	j["TextureUsage"] = textureUsage;
+	j["TextureTags"] = textureTags;
 
 	// Track Positions
 	j["Duration"] = m_iDuration;
@@ -196,9 +203,77 @@ json CSpriteEffect::Serialize()
 	j["TileY"] = m_iTileY;
 	j["FlipUV"] = m_bFlipUV;
 
+
+
 	return j;
 }
 
 void CSpriteEffect::Deserialize(const json& j)
 {
+	// Basic Effect Preferences
+	if (j.contains("Color") && j["Color"].is_array() && j["Color"].size() == 4)
+		m_vColor = { j["Color"][0].get<_float>(), j["Color"][1].get<_float>(), j["Color"][2].get<_float>(), j["Color"][3].get<_float>() };
+
+	if (j.contains("LifeTime"))
+		m_fLifeTime = j["LifeTime"].get<_float>();
+
+	if (j.contains("Billboard"))
+		m_bBillboard = j["Billboard"].get<_bool>();
+
+	if (j.contains("Animation"))
+		m_bAnimation = j["Animation"].get<_bool>();
+
+	if (j.contains("ShaderPass"))
+		m_iShaderPass = j["ShaderPass"].get<_uint>();
+
+	// Texture Usage
+	if (j.contains("TextureUsage") && j["TextureUsage"].is_array())
+	{
+		for (int i = 0; i < TU_END && i < j["TextureUsage"].size(); ++i)
+			m_bTextureUsage[i] = j["TextureUsage"][i].get<_bool>();
+	}
+
+	if (j.contains("TextureTags") && j["TextureTags"].is_array())
+	{
+		for (int i = 0; i < TU_END && i < j["TextureTags"].size(); ++i)
+			m_TextureTag[i] = StringToWString(j["TextureTags"][i].get<std::string>());
+	}
+
+	// Track Positions
+	if (j.contains("Duration"))
+		m_iDuration = j["Duration"].get<_int>();
+
+	if (j.contains("StartTrack"))
+		m_iStartTrackPosition = j["StartTrack"].get<_int>();
+
+	if (j.contains("EndTrack"))
+		m_iEndTrackPosition = j["EndTrack"].get<_int>();
+
+	if (j.contains("TickPerSecond"))
+		m_fTickPerSecond = j["TickPerSecond"].get<_float>();
+
+	// KeyFrames
+	if (j.contains("NumKeyFrames"))
+		m_iNumKeyFrames = j["NumKeyFrames"].get<_uint>();
+
+	if (j.contains("KeyFrames") && j["KeyFrames"].is_array())
+	{
+		m_KeyFrames.clear();
+		for (const auto& keyJson : j["KeyFrames"])
+		{
+			tagEffectKeyFrame key;
+			key.Deserialize(keyJson);
+			m_KeyFrames.push_back(key);
+		}
+	}
+
+	// UV Grid
+	if (j.contains("TileX"))
+		m_iTileX = j["TileX"].get<_int>();
+
+	if (j.contains("TileY"))
+		m_iTileY = j["TileY"].get<_int>();
+
+	if (j.contains("FlipUV"))
+		m_bFlipUV = j["FlipUV"].get<_bool>();
 }
