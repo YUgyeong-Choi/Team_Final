@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 #include "Camera_Manager.h"
+
+#include "Level_Loading.h"
 CYGController::CYGController(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
 {
@@ -45,7 +47,6 @@ HRESULT CYGController::Initialize(void* pArg)
 
 void CYGController::Priority_Update(_float fTimeDelta)
 {
-
 	_vector vMoveDir = XMVectorZero();
 
 	if (m_pGameInstance->Key_Pressing(DIK_W))

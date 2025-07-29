@@ -173,11 +173,6 @@ CComponent* CPhysXController::Clone(void* pArg)
 
 void CPhysXController::Free()
 {
-    if (m_pController)
-    {
-        m_pController->release();  // 내부 액터도 PxScene에서 자동 제거됨
-        m_pController = nullptr;
-    }
     __super::Free();
 }
 

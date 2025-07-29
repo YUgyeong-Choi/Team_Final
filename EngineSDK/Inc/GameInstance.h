@@ -28,6 +28,8 @@ public:
 	_float Compute_Random_Normal();
 	_float Compute_Random(_float fMin, _float fMax);
 
+	void Set_IsChangeLevel(_bool _b) { g_bSceneChanging = _b; }
+
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
@@ -62,6 +64,7 @@ public:
 #ifdef _DEBUG
 	_bool Get_RenderCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
+	void ClearRenderObjects();
 #endif
 
 
@@ -103,7 +106,9 @@ public:
 	HRESULT Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
 	HRESULT Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& LightDesc);
 	HRESULT Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, class CLight** ppOut);
+	HRESULT Remove_NoLevelLight();
 	HRESULT Remove_Light(_uint iLevelIndex, class CLight* pLight);
+	HRESULT RemoveAll_Light(_uint iLevelIndex);
 	_uint Get_LightCount(_uint TYPE) const;
 #pragma endregion
 

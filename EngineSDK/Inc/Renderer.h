@@ -15,6 +15,7 @@ public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);	
 	HRESULT Draw();
 
+	void ClearRenderObjects();
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
@@ -22,8 +23,6 @@ public:
 	void Set_RenderCollider() { m_bRenderCollider = !m_bRenderCollider; }
 	_bool Get_RenderCollider() { return m_bRenderCollider; }
 #endif
-
-	
 
 private:
 	ID3D11Device*				m_pDevice = { nullptr };
