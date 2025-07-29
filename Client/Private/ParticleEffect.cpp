@@ -185,7 +185,16 @@ void CParticleEffect::Free()
 
 json CParticleEffect::Serialize()
 {
-	return json();
+	json j = __super::Serialize();
+
+	j["NumInstance"] = m_iNumInstance;
+	j["Pivot"] = { m_vPivot.x, m_vPivot.y, m_vPivot.z };
+	j["MaxLifeTime"] = m_iNumInstance;
+	j[""] = m_iNumInstance;
+	j[""] = m_iNumInstance;
+
+
+	return j;
 }
 
 void CParticleEffect::Deserialize(const json& j)

@@ -169,7 +169,10 @@ void CMeshEffect::Free()
 
 json CMeshEffect::Serialize()
 {
-	return json();
+	json j = __super::Serialize();
+
+
+	return j;
 }
 
 void CMeshEffect::Deserialize(const json& j)

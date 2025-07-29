@@ -130,9 +130,12 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
-	/* For.Prototype_Component_VIBuffer_Cube */
+	/* For.Prototype_Component_VIBuffer_PointInstance */
+	CVIBuffer_Point_Instance::DESC PIDesc = {};
+	PIDesc.isTool = true;
+	// 클라이언트용은 Tag변경해서 Prototype 수업코드처럼 별개 생성 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
-		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext))))
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, &PIDesc))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxPosTex */

@@ -134,7 +134,7 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 	VIBufferDesc.vRange = pDesc->vRange;
 	VIBufferDesc.vSize = pDesc->vSize;
 	VIBufferDesc.vSpeed = pDesc->vSpeed;
-
+	VIBufferDesc.isTool = true;
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &VIBufferDesc)))

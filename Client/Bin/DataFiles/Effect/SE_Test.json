@@ -1,0 +1,138 @@
+{
+    "Animation": true,
+    "Billboard": true,
+    "Color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Duration": 63,
+    "EndTrack": 63,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Interpolation": 1,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 21.0,
+            "Translation": [
+                0.0,
+                1.5,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                0.1465967893600464,
+                1.0,
+                0.0,
+                1.0
+            ],
+            "Interpolation": 4,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 41.0,
+            "Translation": [
+                0.800000011920929,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 63.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 0.0,
+    "NumKeyFrames": 0,
+    "ShaderPass": 3,
+    "StartTrack": 0,
+    "TextureTags": [
+        "T_SubUV_DebStone_03_8x8_SC_KMH",
+        "",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        true,
+        true,
+        true
+    ],
+    "TickPerSecond": 60.0,
+    "TileX": 8,
+    "TileY": 8
+}

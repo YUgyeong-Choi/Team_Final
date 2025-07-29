@@ -41,10 +41,12 @@ private:
 	HRESULT Save_EffectSet();
 	HRESULT Load_EffectSet();
 
+	HRESULT Save_Effect();
+
 	HRESULT Save_Sprite(json& jItem, class CEffectBase* pEffect);
-	HRESULT Save_Particle(json& jItem, class CEffectBase* pEffect);
-	HRESULT Save_Mesh(json& jItem, class CEffectBase* pEffect);
-	HRESULT Save_Trail(json& jItem, class CEffectBase* pEffect);
+	//HRESULT Save_Particle(json& jItem, class CEffectBase* pEffect);
+	//HRESULT Save_Mesh(json& jItem, class CEffectBase* pEffect);
+	//HRESULT Save_Trail(json& jItem, class CEffectBase* pEffect);
 
 	HRESULT Load_Textures();
 	HRESULT Draw_TextureBrowser(class CEffectBase* pEffect);
@@ -55,13 +57,17 @@ private:
 	CShader*				m_pShader = { nullptr };
 
 private:
-#pragma region Textures
+#pragma region Tool
+	// 툴 용 변수들
 	typedef struct TextureItem {
 		const ID3D11ShaderResourceView* pSRV;
 		string name;
 	}EFFTEXTURE;
 	vector<EFFTEXTURE>			m_Textures;
 	_int						m_iSelectedTextureIdx = { 0 };
+
+	_bool			m_bOpenSaveEffectOnly = { false };
+	_bool			m_bOpenSaveEffectContainer = { false };
 #pragma endregion
 
 
@@ -92,7 +98,6 @@ private:
 #pragma region Particle
 	// 파티클 용 변수들
 	_bool					m_isParticlePreview = { false };
-	//enum PARTICLE_TYPE { PTYPE_SPREAD, PTYPE_DROP, PTYPE_SPDROP, PTYPE_DROPGRAV, PTYPE_END };
 	PARTICLETYPE			m_eParticleType = PTYPE_SPREAD;
 
 	_float3					m_vPivot = { 0.f, 0.f, 0.f };

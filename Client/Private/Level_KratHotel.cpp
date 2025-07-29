@@ -330,6 +330,12 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	return S_OK;
 }
 
+HRESULT CLevel_KratHotel::Ready_TestEffect()
+{
+
+	return S_OK;
+}
+
 CLevel_KratHotel* CLevel_KratHotel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CLevel_KratHotel* pInstance = new CLevel_KratHotel(pDevice, pContext);

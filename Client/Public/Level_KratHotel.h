@@ -35,6 +35,7 @@ private:
 	HRESULT Ready_Camera();
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
+	HRESULT Ready_TestEffect();
 
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };

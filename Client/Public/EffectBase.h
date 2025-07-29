@@ -145,7 +145,7 @@ public:
 	virtual void Free() override;
 
 public:
-	virtual json Serialize() = 0;
+	virtual json Serialize();
 	virtual void Deserialize(const json& j) = 0;
 };
 

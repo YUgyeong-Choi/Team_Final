@@ -58,17 +58,17 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const DESC* pArg)
 
 #pragma endregion 
 
-	// if Tool == false
-	Make_InstanceBuffer(pArg);
-
+	if(pArg->isTool == false)
+		Make_InstanceBuffer(pArg);
 
 	return S_OK;
 }
 
 HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 {
-	// if Tool == true
-	Make_InstanceBuffer(static_cast<DESC*>(pArg));
+	DESC* pDesc = static_cast<DESC*>(pArg);
+	if (pDesc->isTool == true)
+		Make_InstanceBuffer(pDesc);
 
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
 		return E_FAIL;
@@ -188,9 +188,6 @@ void CVIBuffer_Point_Instance::Drop(_float fTimeDelta, _bool bTool)
 		}
 	}
 
-
-
-
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
@@ -256,7 +253,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_vPivot = pDesc->vPivot;
 	m_isLoop = pDesc->isLoop;
 	m_iNumInstance = pDesc->iNumInstance;
-
+	m_ePType = pDesc->ePType;
 #pragma region INSTANCEBUFFER
 	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
 	m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -301,7 +298,7 @@ CVIBuffer_Point_Instance* CVIBuffer_Point_Instance::Create(ID3D11Device* pDevice
 {
 	CVIBuffer_Point_Instance* pInstance = new CVIBuffer_Point_Instance(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->Initialize_Prototype(pArg)))
 	{
 		MSG_BOX("Failed to Created : CVIBuffer_Point_Instance");
 		Safe_Release(pInstance);

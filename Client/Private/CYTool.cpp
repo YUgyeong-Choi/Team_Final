@@ -110,6 +110,9 @@ HRESULT CCYTool::Render()
 	if (FAILED(Edit_Preferences()))
 		return E_FAIL;
 
+	if (m_bOpenSaveEffectOnly)
+		Save_Effect();
+
 	return S_OK;
 }
 
@@ -240,6 +243,11 @@ HRESULT CCYTool::SequenceWindow()
 		if (pInstance != nullptr)
 			m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load EffectContainer"))
+	{
+
+	}
 
 	ImSequencer::Sequencer(
 		m_pSequence,
@@ -263,6 +271,11 @@ HRESULT CCYTool::Edit_Preferences()
 	}
 	auto pEffect = m_pSequence->m_Items[m_iSelected].pEffect;
 	
+	if (ImGui::Button("Save Selected Effect"))
+	{
+		m_bOpenSaveEffectOnly = true;
+	}
+
 	ImGui::Text("StartTrackPos: %d", *pEffect->Get_StartTrackPosition_Ptr());
 	ImGui::Text("EndTrackPos: %d", *pEffect->Get_EndTrackPosition_Ptr());
 	ImGui::Text("Duration: %d", *pEffect->Get_Duration_Ptr());
@@ -336,7 +349,6 @@ HRESULT CCYTool::Window_Sprite()
 
 
 	Edit_Keyframes(pSE);
-	
 
 	return S_OK;
 }
@@ -380,7 +392,7 @@ HRESULT CCYTool::Window_Particle()
 		desc.vRange = m_vRange;
 		desc.vSize = m_vSize;
 		desc.vSpeed = m_vSpeed;
-		
+		desc.isTool = true;
 		pPE->Change_InstanceBuffer(&desc);
 	}
 
@@ -537,32 +549,52 @@ HRESULT CCYTool::Save_EffectSet()
 		jItem["StartPos"] = *Item.iStart;
 		jItem["EndPos"] = *Item.iEnd;
 		jItem["EffectType"] = Item.iType;
-		
-		switch (Item.iType)
-		{
-		case Client::EFF_SPRITE:
-			Save_Sprite(jItem, Item.pEffect);
-			break;
-		case Client::EFF_PARTICLE:
-			Save_Particle(jItem, Item.pEffect);
-			break;
-		case Client::EFF_MESH:
-			Save_Mesh(jItem, Item.pEffect);
-			break;
-		case Client::EFF_TRAIL:
-			Save_Trail(jItem, Item.pEffect);
-			break;
-		default:
-			break;
-		}
+
+		jItem.push_back(Item.pEffect->Serialize());
+
 		jSave["EffectObject"].push_back(jItem);
 	}
-
+	//미완
 	return S_OK;
 }
 
 HRESULT CCYTool::Load_EffectSet()
 {
+	return S_OK;
+}
+
+HRESULT CCYTool::Save_Effect()
+{
+	IGFD::FileDialogConfig config;
+	config.path = R"(..\Bin\DataFiles\Effect\)";
+
+	IFILEDIALOG->OpenDialog("SaveEffectonlyDialog", "Choose directory to save", ".json", config);
+
+	if (IFILEDIALOG->Display("SaveEffectonlyDialog"))
+	{
+		if (IFILEDIALOG->IsOk())
+		{
+			path savePath = IFILEDIALOG->GetFilePathName();
+
+			// 확장자가 없으면 .json 붙이기
+			if (savePath.extension().string() != ".json")
+				savePath += ".json";
+
+
+			ofstream ofs(savePath);
+
+			if (!ofs.is_open())
+				return E_FAIL;
+
+			json jSave = m_pSequence->m_Items[m_iSelected].pEffect->Serialize();
+
+			ofs << setw(4) << jSave;
+			ofs.close();
+		}
+		m_bOpenSaveEffectOnly = false;
+		IFILEDIALOG->Close();
+	}
+
 	return S_OK;
 }
 
@@ -573,20 +605,6 @@ HRESULT CCYTool::Save_Sprite(json& jItem, CEffectBase* pEffect)
 	return S_OK;
 }
 
-HRESULT CCYTool::Save_Particle(json& jItem, CEffectBase* pEffect)
-{
-	return S_OK;
-}
-
-HRESULT CCYTool::Save_Mesh(json& jItem, CEffectBase* pEffect)
-{
-	return S_OK;
-}
-
-HRESULT CCYTool::Save_Trail(json& jItem, CEffectBase* pEffect)
-{
-	return S_OK;
-}
 
 HRESULT CCYTool::Load_Textures()
 {

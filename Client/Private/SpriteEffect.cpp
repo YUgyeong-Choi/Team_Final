@@ -162,47 +162,7 @@ void CSpriteEffect::Free()
 
 json CSpriteEffect::Serialize()
 {
-	json j;
-
-	// Basic Effect Preferences
-	j["Color"] = { m_vColor.x, m_vColor.y, m_vColor.z, m_vColor.w };
-	j["LifeTime"] = m_fLifeTime;
-	j["Billboard"] = m_bBillboard;
-	j["Animation"] = m_bAnimation;
-	j["ShaderPass"] = m_iShaderPass;
-
-	// Texture Usage
-	json textureUsage = json::array();
-	json textureTags = json::array();
-
-	for (int i = 0; i < TU_END; ++i)
-	{
-		textureUsage.push_back(m_bTextureUsage[i]);
-		textureTags.push_back(WStringToString(m_TextureTag[i]));
-	}
-
-	j["TextureUsage"] = textureUsage;
-	j["TextureTags"] = textureTags;
-
-	// Track Positions
-	j["Duration"] = m_iDuration;
-	j["StartTrack"] = m_iStartTrackPosition;
-	j["EndTrack"] = m_iEndTrackPosition;
-	j["TickPerSecond"] = m_fTickPerSecond;
-
-	// KeyFrames
-	j["NumKeyFrames"] = m_iNumKeyFrames;
-
-	json keyFramesJson = json::array();
-	for (auto& key : m_KeyFrames)
-		keyFramesJson.push_back(key.Serialize()); // EFFKEYFRAME에 Serialize() 함수 필요
-	j["KeyFrames"] = keyFramesJson;
-
-	// UV Grid
-	j["TileX"] = m_iTileX;
-	j["TileY"] = m_iTileY;
-	j["FlipUV"] = m_bFlipUV;
-
+	json j = __super::Serialize();
 
 
 	return j;
