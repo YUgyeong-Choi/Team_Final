@@ -29,23 +29,6 @@ void CPhysXActor::Set_ColliderType(COLLIDERTYPE eColliderType)
 
 }
 
-void CPhysXActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery)
-{
-    m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation); // OnEnter, OnStay, OnExit 활성화
-    m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bTrigger); //OnTriger 활성화
-    m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bQuery); // Ray충돌 활성화 
-}
-
-void CPhysXActor::Set_SimulationFilterData(PxFilterData _data)
-{
-    m_pShape->setSimulationFilterData(_data);
-}
-
-void CPhysXActor::Set_QueryFilterData(PxFilterData _data)
-{
-    m_pShape->setQueryFilterData(_data);
-}
-
 void CPhysXActor::On_Enter(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
@@ -111,29 +94,13 @@ HRESULT CPhysXActor::ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContex
     return S_OK;
 }
 
-
-HRESULT CPhysXActor::Render()
-{
-    DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
-
-    for (auto& Ray : m_RenderRay) {
-        DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);
-    }
-    m_RenderRay.clear();
-
-    return S_OK;
-}
-
 void CPhysXActor::Add_RenderRay(DEBUGRAY_DATA _data)
 {
     m_RenderRay.push_back(_data);
 }
 
-void CPhysXActor::DebugRender(_fmatrix view, _cmatrix proj, _float offSet)
+void CPhysXActor::DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, PxGeometryHolder geom, _float offSet)
 {  
-    PxTransform pose = PxShapeExt::getGlobalPose(*m_pShape, *m_pActor); 
-    PxGeometryHolder geom = m_pShape->getGeometry();
-
     m_pEffect->SetWorld(XMMatrixIdentity());
     m_pEffect->SetView(view);
     m_pEffect->SetProjection(proj);
@@ -380,7 +347,7 @@ void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom)
 
 
     // === AABB 시각화 추가 ===
-    PxBounds3 bounds = PxShapeExt::getWorldBounds(*m_pShape, *m_pActor);
+  /*  PxBounds3 bounds = PxShapeExt::getWorldBounds(*m_pShape, *m_pActor);
     BoundingBox aabb;
     aabb.Center = XMFLOAT3(
         (bounds.minimum.x + bounds.maximum.x) * 0.5f,
@@ -392,7 +359,7 @@ void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom)
         (bounds.maximum.y - bounds.minimum.y) * 0.5f,
         (bounds.maximum.z - bounds.minimum.z) * 0.5f
     );
-    DX::Draw(m_pBatch, aabb, Colors::Yellow);
+    DX::Draw(m_pBatch, aabb, Colors::Yellow);*/
 
 }
 

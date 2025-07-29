@@ -16,7 +16,8 @@ public:
 	void Shutdown();
 
 	PxPhysics* GetPhysics() const { return m_pPhysics; }
-	PxScene* GetScene() const { return m_pScene; }
+	PxScene* Get_Scene() const { return m_pScene; }
+	PxControllerManager* Get_ControllerManager() const { return m_pControllerManager; }
 	PxMaterial* GetMaterial(const wstring& name);
 
 	void Simulate(float fDeltaTime);
@@ -67,6 +68,8 @@ private:
 	PxFoundation* m_pFoundation = { nullptr };
 	PxPhysics* m_pPhysics = { nullptr };
 	PxScene* m_pScene = { nullptr };
+	PxControllerManager* m_pControllerManager = { nullptr };
+
 	unordered_map<wstring, PxMaterial*> m_Materials;
 	PxDefaultCpuDispatcher* m_pDispatcher = { nullptr };
 
@@ -76,6 +79,7 @@ private:
 	CPhysX_ContactReport* m_pContactCallback = { nullptr };
 
 	PxCudaContextManager* m_pCudaContextManager = {nullptr};
+
 };
 
 NS_END

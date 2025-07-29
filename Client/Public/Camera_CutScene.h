@@ -36,7 +36,10 @@ public:
 	{
 		m_vecCameraFrame = vecCameraFrame;
 	}
-	void PlayCutScene() { m_bActive = true;  m_iCurrentFrame = 0; }
+
+	_int Get_CurrentFrame() { return m_iCurrentFrame; }
+	void Set_CurrentFrame(_int frame);
+	void PlayCutScene() { m_bActive = true; }
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 

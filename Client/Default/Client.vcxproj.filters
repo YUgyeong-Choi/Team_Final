@@ -456,6 +456,12 @@
     <ClInclude Include="..\public\UI_Text.h">
       <Filter>02.GameObjects\99.UI\Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\YGController.h">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraSequence.h">
+      <Filter>01.Levels\LevelYG\YG_Tool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -698,6 +704,12 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Text.cpp">
       <Filter>02.GameObjects\99.UI\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YGController.cpp">
+      <Filter>02.GameObjects\08.TestObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraSequence.cpp">
+      <Filter>01.Levels\LevelYG\YG_Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

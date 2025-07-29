@@ -64,8 +64,12 @@ namespace Engine
 	const unsigned int g_iMaxWidth = 8192;
 	const unsigned int g_iMaxHeight = 4608;
 
+
 	const unsigned int g_iMiddleWidth = 3200;
 	const unsigned int g_iMiddleHeight = 1800;
+
+	extern _bool g_bSceneChanging;
+
 }
 
 using namespace Engine;

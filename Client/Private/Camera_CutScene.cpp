@@ -142,20 +142,6 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			m_fElapsedTime = 0.f;
 			++m_iCurrentFrame;
 
-			// 마지막 전 프레임이 Lerp라면
-			if (m_iCurrentFrame == m_vecCameraFrame.size() - 1)
-			{
-				const CUTSCENE_DESC& preDesc = m_vecCameraFrame[m_iCurrentFrame-1];
-				if (preDesc.eInterp == INTERPOLATION_CAMERA::LERP)
-				{
-					m_bActive = false;
-					m_fElapsedTime = 0.f;
-					m_iCurrentFrame = -1;
-					CCamera_Manager::Get_Instance()->SetFreeCam();
-					return;
-				}
-			}
-
 			// 마지막 프레임이 끝났다면
 			if (m_iCurrentFrame == m_vecCameraFrame.size()) {
 				m_bActive = false;
@@ -228,6 +214,13 @@ void CCamera_CutScene::Late_Update(_float fTimeDelta)
 HRESULT CCamera_CutScene::Render()
 {
 	return S_OK;
+}
+
+void CCamera_CutScene::Set_CurrentFrame(_int frame)
+{
+	m_iCurrentFrame = frame;
+	if (m_iCurrentFrame == -1)
+		m_iCurrentFrame = 0;
 }
 
 

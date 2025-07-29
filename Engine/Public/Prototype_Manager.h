@@ -16,6 +16,7 @@
 
 #include "PhysXStaticActor.h"
 #include "PhysXDynamicActor.h"
+#include "PhysXController.h"
 
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"

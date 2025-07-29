@@ -280,6 +280,18 @@ HRESULT CRenderer::Draw()
 	return S_OK;
 }
 
+void CRenderer::ClearRenderObjects()
+{
+	for (int i = 0; i < static_cast<int>(RENDERGROUP::RG_END); ++i)
+	{
+		for (CGameObject* pObj : m_RenderObjects[i])
+		{
+			Safe_Release(pObj);
+		}
+		m_RenderObjects[i].clear();
+	}
+}
+
 #ifdef _DEBUG
 
 HRESULT CRenderer::Add_DebugComponent(CComponent* pDebugCom)

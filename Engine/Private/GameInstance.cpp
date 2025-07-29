@@ -24,7 +24,10 @@ IMPLEMENT_SINGLETON(CGameInstance);
 
 static PxDefaultAllocator gAllocator;
 static PxDefaultErrorCallback gErrorCallback;
-
+namespace Engine
+{
+	_bool g_bSceneChanging = false;
+}
 //#ifdef _DEBUG
 //void EnableConsole()
 //{
@@ -307,6 +310,11 @@ HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
 	return m_pRenderer->Add_DebugComponent(pDebugCom);
 }
 
+void CGameInstance::ClearRenderObjects()
+{
+	return m_pRenderer->ClearRenderObjects();
+}
+
 
 _bool CGameInstance::Get_RenderCollider()
 {
@@ -458,9 +466,19 @@ HRESULT CGameInstance::Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_D
 	return m_pLight_Manager->Add_LevelLightDataReturn(iLevelIndex, LightDesc, ppOut);
 }
 
+HRESULT CGameInstance::Remove_NoLevelLight()
+{
+	return m_pLight_Manager->Remove_NoLevelLight();
+}
+
 HRESULT CGameInstance::Remove_Light(_uint iLevelIndex, CLight* pLight)
 {
 	return m_pLight_Manager->Remove_Light(iLevelIndex, pLight);
+}
+
+HRESULT CGameInstance::RemoveAll_Light(_uint iLevelIndex)
+{
+	return m_pLight_Manager->RemoveAll_Light(iLevelIndex);
 }
 
 _uint CGameInstance::Get_LightCount(_uint TYPE) const
@@ -641,7 +659,12 @@ PxSphereGeometry CGameInstance::CookSphereGeometry(const PxVec3* pVertices, PxU3
 
 PxScene* CGameInstance::Get_Scene()
 {
-	return m_pPhysX_Manager->GetScene();
+	return m_pPhysX_Manager->Get_Scene();
+}
+
+PxControllerManager* CGameInstance::Get_ControllerManager()
+{
+	return m_pPhysX_Manager->Get_ControllerManager();
 }
 
 PxPhysics* CGameInstance::GetPhysics()
@@ -653,7 +676,6 @@ PxMaterial* CGameInstance::GetMaterial(const wstring& name)
 {
 	return m_pPhysX_Manager->GetMaterial(name);
 }
-
 #pragma endregion
 
 #pragma region SOUND_DEVICE

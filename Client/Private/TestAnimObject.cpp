@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "AnimController.h"
 #include "TestAnimObject.h"
-
+#include "Camera_Manager.h"
 CTestAnimObject::CTestAnimObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
 	, m_pAnimator(nullptr)
@@ -26,7 +26,7 @@ HRESULT CTestAnimObject::Initialize_Prototype()
 HRESULT CTestAnimObject::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC GameObjectDesc = {};
-	GameObjectDesc.fSpeedPerSec = 30.f;
+	GameObjectDesc.fSpeedPerSec = 10.f;
 	GameObjectDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
 	if (FAILED(__super::Initialize(&GameObjectDesc)))
@@ -72,9 +72,72 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 	}
 
 	m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
+
+
+	_fvector vPos{ 0.0f, 5.f, 0.0f, 1.0f };
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	if (FAILED(Ready_Collider())) {
+		return E_FAIL;
+	}
+
+	CCamera_Manager::Get_Instance()->SetPlayer(this);
+
 	return S_OK;
 }
 
+void CTestAnimObject::Priority_Update(_float fTimeDelta)
+{
+	if (m_pGameInstance->Key_Pressing(DIK_E))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * 0.1f);
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_Q))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), -fTimeDelta * 0.1f);
+	}
+
+	_vector vMoveDir = XMVectorZero();
+
+	if (m_pGameInstance->Key_Pressing(DIK_W))
+		vMoveDir += m_pTransformCom->Get_State(STATE::LOOK);
+	if (m_pGameInstance->Key_Pressing(DIK_S))
+		vMoveDir -= m_pTransformCom->Get_State(STATE::LOOK);
+	if (m_pGameInstance->Key_Pressing(DIK_A))
+		vMoveDir -= m_pTransformCom->Get_State(STATE::RIGHT);
+	if (m_pGameInstance->Key_Pressing(DIK_D))
+		vMoveDir += m_pTransformCom->Get_State(STATE::RIGHT);
+
+	// 1. 방향 이동 계산
+	XMFLOAT3 moveVec = {};
+	if (XMVector3LengthSq(vMoveDir).m128_f32[0] > 0.0001f)
+	{
+		vMoveDir = XMVector3Normalize(vMoveDir);
+		_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+		_float fDist = fSpeed * fTimeDelta;
+		vMoveDir *= fDist;
+		XMStoreFloat3(&moveVec, vMoveDir);
+	}
+
+	// 2. 중력 적용
+	constexpr float fGravity = -9.81f;
+	m_vGravityVelocity.y += fGravity * fTimeDelta;
+	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
+
+	// 3. 이동
+	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
+	PxControllerFilters filters;
+
+	PxControllerCollisionFlags collisionFlags =
+		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+
+	// 4. 지면에 닿았으면 중력 속도 초기화
+	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+		m_vGravityVelocity.y = 0.f;
+
+	SyncTransformWithController();
+}
 void CTestAnimObject::Update(_float fTimeDelta)
 {
 	if (m_pAnimator)
@@ -85,7 +148,7 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	{
 		m_pModelCom->Update_Bones();
 	}
-	Input_Test(fTimeDelta);
+	//Input_Test(fTimeDelta);
 }
 
 void CTestAnimObject::Late_Update(_float fTimeDelta)
@@ -97,6 +160,12 @@ HRESULT CTestAnimObject::Render()
 {
 	if (FAILED(Bind_Shader()))
 		return E_FAIL;
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		m_pGameInstance->Add_DebugComponent(m_pControllerCom);
+	}
+#endif
 	return S_OK;
 }
 
@@ -148,6 +217,10 @@ HRESULT CTestAnimObject::Ready_Components()
 	if (nullptr == m_pAnimator)
 		return E_FAIL;
 	if (FAILED(m_pAnimator->Initialize(m_pModelCom)))
+		return E_FAIL;
+
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Controller"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pControllerCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -256,6 +329,34 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 	}
 }
 
+HRESULT CTestAnimObject::Ready_Collider()
+{
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxExtendedVec3 pos(positionVec.x, positionVec.y, positionVec.z);
+	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f);
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+	m_pControllerCom->Set_SimulationFilterData(filterData);
+	m_pControllerCom->Set_QueryFilterData(filterData);
+	m_pControllerCom->Set_Owner(this);
+	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
+	return S_OK;
+}
+
+void CTestAnimObject::SyncTransformWithController()
+{
+	if (!m_pControllerCom) return;
+
+	PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
+	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.8f, (float)pos.z, 1.f);
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+}
+
 CTestAnimObject* CTestAnimObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CTestAnimObject* pInstance = new CTestAnimObject(pDevice, pContext);
@@ -284,4 +385,5 @@ void CTestAnimObject::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pControllerCom);
 }

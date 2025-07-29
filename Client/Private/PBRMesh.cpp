@@ -52,6 +52,11 @@ HRESULT CPBRMesh::Initialize(void* pArg)
 		StaicMeshDESC->InitScale.z
 	);
 
+	// Tranform위치를 이동해준 뒤 콜라이더를 생성해서 맨 처음 시작할때 충돌안 됨
+	if (FAILED(Ready_Collider())) {
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -106,8 +111,14 @@ HRESULT CPBRMesh::Render()
 		m_pModelCom->Render(i);
 	}
 
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+	}
+#endif
 	return S_OK;
 }
+
 
 HRESULT CPBRMesh::Render_Shadow()
 {
@@ -149,11 +160,28 @@ void CPBRMesh::SetCascadeShadow()
 		m_eShadow = SHADOW::SHADOWC;
 }
 
+void CPBRMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	printf("CPBRMesh 충돌 시작!\n");
+}
+
+void CPBRMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPBRMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	printf("CPBRMesh 충돌 종료!\n");
+}
+
+void CPBRMesh::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	wprintf(L"CPBRMesh Hit: %s\n", pOther->Get_Name().c_str());
+}
+
 HRESULT CPBRMesh::Ready_Components(void* pArg)
 {
 	CPBRMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
-
-
 
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
@@ -163,6 +191,10 @@ HRESULT CPBRMesh::Ready_Components(void* pArg)
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -176,6 +208,66 @@ HRESULT CPBRMesh::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CPBRMesh::Ready_Collider()
+{
+	if (m_pModelCom)
+	{
+		// 피오나 몸체가 2번째 메쉬라서
+		_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(0);
+		_uint numIndices = m_pModelCom->Get_Mesh_NumIndices(0);
+
+		vector<PxVec3> physxVertices;
+		physxVertices.reserve(numVertices);
+
+		const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(0);
+		for (_uint i = 0; i < numVertices; ++i)
+		{
+			const _float3& v = pVertexPositions[i];
+			physxVertices.emplace_back(v.x, v.y, v.z);
+		}
+
+		// 2. 인덱스 복사
+		const _uint* pIndices = m_pModelCom->Get_Mesh_pIndices(0);
+		vector<PxU32> physxIndices;
+		physxIndices.reserve(numIndices);
+
+		for (_uint i = 0; i < numIndices; ++i)
+			physxIndices.push_back(static_cast<PxU32>(pIndices[i]));
+
+		// 3. Transform에서 S, R, T 분리
+		XMVECTOR S, R, T;
+		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+		// 3-1. 스케일, 회전, 위치 변환
+		PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+		PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+		PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+		PxTransform pose(positionVec, rotationQuat);
+		PxMeshScale meshScale(scaleVec);
+
+		PxTriangleMeshGeometry  geom = m_pGameInstance->CookTriangleMesh(physxVertices.data(), numVertices, physxIndices.data(), numIndices / 3, meshScale);
+		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+		PxFilterData filterData{};
+		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorCom->Set_QueryFilterData(filterData);
+		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::B);
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+	}
+	else
+	{
+		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
+	}
+
 
 	return S_OK;
 }
@@ -214,4 +306,5 @@ void CPBRMesh::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pPhysXActorCom);
 }
