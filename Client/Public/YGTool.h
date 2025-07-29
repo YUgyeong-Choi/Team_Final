@@ -7,6 +7,22 @@ NS_BEGIN(Client)
 
 class CYGTool final : public CGameObject
 {
+	struct CAMERA_KEYFRAME
+	{
+		_int keyFrame;
+
+		XMFLOAT3 position;
+		XMFLOAT3 rotation;   // Euler or quaternion
+		_float fFov;
+
+		INTERPOLATION_CAMERA interpPosition;
+		INTERPOLATION_CAMERA interpRotation;
+		INTERPOLATION_CAMERA interpFov;
+
+		//_bool bLookAt = false;
+		//_vector lookAtTarget;
+		//INTERPOLATION_CAMERA interpLookAt;
+	};
 private:
 	CYGTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CYGTool(const CYGTool& Prototype);
@@ -23,30 +39,23 @@ public:
 private:
 	HRESULT Render_CameraTool();
 	HRESULT Render_CameraFrame();
-	vector<CUTSCENE_DESC> m_vecCameraFrame;
-	CUTSCENE_DESC m_CutSceneDesc = {};
-	_float m_fInterpDuration = {};
-	INTERPOLATION_CAMERA m_eInterpMode = INTERPOLATION_CAMERA::NONE;
-	_bool m_bZoom = false;
-	_float m_fFov = 60.f;
-	_float m_fFovDuration = {};
-
-	int m_iSelectedFrameIndex = -1;
-	int m_iLastSelectedIndex = -1;
-	XMFLOAT3 m_editedPos{}, m_editedRot{};
-	float m_fEditedInterpDuration = 0.f;
-	INTERPOLATION_CAMERA m_eEditInterpMode = INTERPOLATION_CAMERA::NONE;
-	_bool m_bEditZoom = false;
-	_float m_fEditFov = 60.f;
-	_float m_fEditFovDuration = {};
+	HRESULT Render_CameraSequence();
+	void Render_SetInfos();
 
 	CCameraSequence* m_CameraSequence;
-	int m_iSelectedIndex = 0;
-
+	_int m_iCurrentFrame = 0;
+	_bool m_bExpanded = true;
+	_int m_iSelected = -1;
+	_int m_iFirstFrame = 0;
 
 	_int m_iEndFrame = {};
+
+	vector<CAMERA_KEYFRAME> m_vecCameraKeyFrame;
+	CCameraSequence::CAMERA_KEY* m_pSelectedKey = nullptr;
+
+	_int m_iEditKey = -1;
+	CAMERA_KEYFRAME* m_pEditKey = nullptr;
 public:
-	HRESULT Render_CameraSequence();
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
