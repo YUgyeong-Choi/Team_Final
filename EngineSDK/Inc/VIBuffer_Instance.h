@@ -13,10 +13,11 @@ class ENGINE_DLL CVIBuffer_Instance abstract : public CVIBuffer
 public:
 	typedef struct tagInstanceDesc
 	{
-		_uint		iNumInstance;
-		_float3		vRange;
-		_float2		vSize;
-		_float3		vCenter;
+		_uint			iNumInstance;
+		_float3			vRange;
+		_float2			vSize;
+		_float3			vCenter;
+		PARTICLETYPE	ePType;
 
 	}INSTANCE_DESC;
 protected:
@@ -40,10 +41,10 @@ protected:
 	D3D11_BUFFER_DESC		m_VBInstanceDesc = {};
 	D3D11_SUBRESOURCE_DATA	m_VBInstanceSubresourceData = {};
 	
-
 	_uint					m_iNumIndexPerInstance = {};
 	_uint					m_iNumInstance = {};
 	_uint					m_iVertexInstanceStride = {};
+	PARTICLETYPE			m_ePType;
 
 public:
 	virtual CComponent* Clone(void* pArg) = 0;

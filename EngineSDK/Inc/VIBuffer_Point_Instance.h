@@ -13,7 +13,6 @@ public:
 		_float2			vLifeTime;
 		_float2			vSpeed;
 		_bool			isLoop;
-		PARTICLETYPE	ePType;
 
 	}DESC;
 	
@@ -26,7 +25,10 @@ public:
 	virtual HRESULT Initialize_Prototype(const INSTANCE_DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Update(_float fTimeDelta);
-	
+
+	virtual HRESULT Bind_Buffers() override;
+	virtual HRESULT Render() override;
+
 	virtual void Drop(_float fTimeDelta)override;
 	virtual void Spread(_float fTimeDelta)override;
 

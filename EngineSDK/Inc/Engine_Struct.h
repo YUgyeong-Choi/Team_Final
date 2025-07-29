@@ -42,7 +42,10 @@ namespace Engine
 		_bool bBlendFullbody = true; // 블렌드 여부
 		class CAnimation* pFromAnim = nullptr;
 		class CAnimation* pToAnim = nullptr;
+		class CAnimation* pUpperAnim = nullptr; // 상체 애니메이션
+		class CAnimation* pLowerAnim = nullptr; // 하체 애니메이션
 		_float fDuration = 0.f; // 전환 시간
+		_float fBlendWeight = 1.f; // 마스크에 사용함
 	};
 
 	typedef struct tagKeyFrame

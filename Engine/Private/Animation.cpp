@@ -163,24 +163,6 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 		return true;
 	return false;
 }
-//
-//void CAnimation::ExportBinary(ofstream& ofs)
-//{
-//	// 1) Animation Name
-//	uint32_t nameLength = (uint32_t)strlen(m_Name);
-//	ofs.write((char*)&nameLength, sizeof(nameLength));
-//	ofs.write(m_Name, nameLength);
-//
-//	//Duration
-//	ofs.write((char*)&m_fDuration, sizeof(m_fDuration));
-//	// 2) TickPerSecond
-//	ofs.write((char*)&m_fTickPerSecond, sizeof(m_fTickPerSecond));
-//	// 3) Channels
-//	uint32_t channelCount = (uint32_t)m_Channels.size();
-//	ofs.write((char*)&channelCount, sizeof(channelCount));
-//	for (auto& channel : m_Channels)
-//		channel->ExportBinary(ofs);
-//}
 
 _matrix CAnimation::GetBoneMatrix(_uint iIndex)
 {

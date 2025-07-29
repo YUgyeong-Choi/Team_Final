@@ -8,6 +8,7 @@ NS_BEGIN(Engine)
 using AnimEventCallback = function<void(const string&)>;
 class ENGINE_DLL CAnimator final : public CComponent, public ISerializable
 {
+	friend class CAnimController;
 public:
     struct BlendState
     {
@@ -18,6 +19,9 @@ public:
         _bool         isLoop = false;
         _bool         active = false;
         _bool         hasExitTime = false; // 이전 애니메이션 종료했을 때 블렌드 시작
+		_bool         belendFullBody = true; // 전체 바디 블렌드 여부
+        _float 	      blendWeight = 0.f; // 블렌드 가중치 (0~1 사이)
+
     };
 
 private:
@@ -41,7 +45,10 @@ public:
 	void SetPlaying(_bool bPlaying) { m_bPlaying = bPlaying; }
 
     const string GetCurrentAnimName() const;
-	class CAnimation* GetCurrentAnim() const { return m_pCurrentAnim; }
+	class CAnimation* GetCurrentAnim() const {
+		if (m_pLowerClip)
+			return m_pLowerClip; // 하체 기준으로 
+        return m_pCurrentAnim; }
 
     // 애니메이션 컨트롤러 관련
     class CAnimController* Get_CurrentAnimController() const { return m_pCurAnimController; }
@@ -74,13 +81,34 @@ public:
 
     _float GetCurrentAnimProgress() const // 애니메이션 진행도
     {
-        if (!m_pCurrentAnim) return 0.f;
-        _float elapsed = m_pCurrentAnim->GetCurrentTrackPosition();
-        _float duration = m_pCurrentAnim->GetDuration();
-        return duration > 0.f
-            ? (elapsed / duration)
+        _float fElapsed, fDuration{  };
+        if (m_pUpperClip)
+        {
+            fElapsed = m_pUpperClip->GetCurrentTrackPosition();
+            fDuration = m_pUpperClip->GetDuration();
+        }
+        else
+        {
+            if (!m_pCurrentAnim) return 0.f;
+            fElapsed = m_pCurrentAnim->GetCurrentTrackPosition();
+            fDuration = m_pCurrentAnim->GetDuration();
+        }
+
+        return fDuration > 0.f
+            ? (fElapsed / fDuration)
             : 0.f;
     }
+
+	_float GetCurrentUpperAnimProgress() const // 상체 애니메이션 진행도
+	{
+		if (!m_pUpperClip) return -1.f;
+		_float elapsed = m_pUpperClip->GetCurrentTrackPosition();
+		_float duration = m_pUpperClip->GetDuration();
+		return duration > 0.f
+			? (elapsed / duration)
+			: 0.f;
+	}
+
     _float GetStateLengthByName(const string& name) const;
 	_bool IsFinished() const { return m_bIsFinished; }
     class CModel* GetModel() const { return m_pModel; }
@@ -115,7 +143,9 @@ public:
 	unordered_map<string, class CAnimController*>& GetAnimControllers() { return m_AnimControllers; }
 
 private:
+    // 기본 블렌딩
     void UpdateBlend(_float fTimeDelta);
+    void UpdateMaskState();
     void MakeMaskBones(const string& maskBoneName);
 	void CollectBoneChildren(const _char* boneName);
 
@@ -131,8 +161,12 @@ private:
 	unordered_map<string, class CAnimController*> m_AnimControllers; // 컨트롤러 관리
     BlendState                  m_Blend{};
 
+	CAnimation* m_pUpperClip = nullptr; // 상체 애니메이션 클립
+	CAnimation* m_pLowerClip = nullptr; // 하체 애니메이션 클립
     unordered_map<string,unordered_set<_int>>         m_UpperMaskSetMap; // 한번씩만 매핑 해두기 이름 별로
 	unordered_set<_int>         m_UpperMaskSet; // 하위 본들만 모아둔 집합 (마스크용)
+	_bool                       m_bPlayMask = false; // 마스크 애니메이션 재생 여부 (반복 재생으로 Mask로 하는지)
+    _bool                       m_bSeparateUpperLowerBlend = false; // 상태 전환 시에 상,하체 분리 플레그
 	vector<class CBone*>        m_Bones; // 전체 본의 개수
     unordered_map<string, vector<AnimEventCallback>> m_eventListeners;
 

@@ -61,6 +61,12 @@ void CAnimator::Update(_float fDeltaTime)
 		auto& transitionResult = m_pCurAnimController->CheckTransition();
 		if (transitionResult.bTransition)
 		{
+			UpdateMaskState(); // 마스킹 상태 업데이트
+			m_Blend.belendFullBody = transitionResult.bBlendFullbody;
+			if (m_Blend.belendFullBody == false)
+			{
+				m_Blend.blendWeight = transitionResult.fBlendWeight; // 블렌드 가중치 설정
+			}
 			StartTransition(transitionResult.pFromAnim, transitionResult.pToAnim, transitionResult.fDuration);
 			m_pCurAnimController->ResetTransitionResult();
 		}
@@ -72,35 +78,22 @@ void CAnimator::Update(_float fDeltaTime)
 	}
 	else
 	{
-		auto curAnimState = m_pCurAnimController->GetCurrentState();
-
-		if (curAnimState && curAnimState->maskBoneName.empty() == false)
-		{
-			vector<string> triggeredEvents;
-			// Update_Bones 호출
-
-			// lower 로 쓰이는 애니메이션 클립
-			m_bIsFinished = m_pCurrentAnim->Update_Bones(
-				fDeltaTime,
-				m_Bones,
-				m_pCurrentAnim->Get_isLoop(),
-				&triggeredEvents
-			);
-
-			if (curAnimState->upperClipName.empty())
-				return;
-			CAnimation* pUpper = m_pModel->GetAnimationClipByName(curAnimState->upperClipName);
-
-			if (pUpper)
+		if (m_bPlayMask)
+		{	
+				
+			if (m_pUpperClip && m_pLowerClip)
 			{
-				pUpper->Update_Bones(fDeltaTime, m_Bones, pUpper->Get_isLoop(), &triggeredEvents);
-				_float t = 0.7f;
-				MakeMaskBones(curAnimState->maskBoneName);
+				vector<string> triggeredEvents;
+				// 하체 기준으로 끝났는지 판단하기 
+				 m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents);
+
+				 m_bIsFinished= m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents);
+				_float t =1.f; // 상체 블렌딩 비율
 
 				for (size_t i = 0; i < m_Bones.size(); ++i)
 				{
-					_matrix srcM = m_pCurrentAnim->GetBoneMatrix(static_cast<_uint>(i));
-					_matrix dstM = pUpper->GetBoneMatrix(static_cast<_uint>(i));
+					_matrix srcM = m_pLowerClip->GetBoneMatrix(static_cast<_uint>(i));
+					_matrix dstM = m_pUpperClip->GetBoneMatrix(static_cast<_uint>(i));
 
 					_vector sS, sR, sT, dS, dR, dT;
 					XMMatrixDecompose(&sS, &sR, &sT, srcM);
@@ -120,20 +113,25 @@ void CAnimator::Update(_float fDeltaTime)
 					}
 					else
 					{
-						// 하체는 그대로 두기
 						m_Bones[i]->Set_TransformationMatrix(srcM);
 					}
 				}
 				for (auto& name : triggeredEvents)
 					for (auto& cb : m_eventListeners[name])
 						cb(name);
-
 			}
 		}
 		else
 		{
 			if (m_pCurrentAnim)
 			{
+				if (m_pUpperClip)
+				{
+					// 상체에서 하체로
+					StartTransition(m_pUpperClip,m_pCurrentAnim, 0.2f);
+					m_bPlayMask = false;
+				}
+
 				vector<string> triggeredEvents;
 				// Update_Bones 호출 (outEvents 전달)
 				m_bIsFinished = m_pCurrentAnim->Update_Bones(
@@ -243,6 +241,7 @@ void CAnimator::Update(_float fDeltaTime)
 		m_pCurrentAnim = pAnim;
 		m_Blend.active = false;
 		m_bPlaying = true;
+		UpdateMaskState();
 	}
 
 	void CAnimator::StartTransition(CAnimation * from, CAnimation * to, _float duration)
@@ -256,9 +255,6 @@ void CAnimator::Update(_float fDeltaTime)
 		m_Blend.elapsed = 0.f;
 		m_Blend.duration = duration;
 		m_Blend.isLoop = to->Get_isLoop();
-
-		// 애니메이션 트랙 초기화
-		m_Blend.dstAnim->ResetTrack();
 		m_bPlaying = true;
 	}
 
@@ -287,7 +283,6 @@ void CAnimator::Update(_float fDeltaTime)
 
 		vector<string> triggeredEvents;
 
-		//  src / dst 애니메이션을 이벤트 콜백 모드로 업데이트
 		m_Blend.srcAnim->Update_Bones(
 			fTimeDelta,
 			m_Bones,
@@ -301,112 +296,65 @@ void CAnimator::Update(_float fDeltaTime)
 			&triggeredEvents
 		);
 
+
+
 		m_Blend.elapsed += fTimeDelta;
 		_float t = min(m_Blend.elapsed / m_Blend.duration, 1.f);
-		//_bool bBlendFullbody = m_UpperMaskSet.empty();
-
-		//// 풀바디 기준
-		//for (size_t i = 0; i < m_Bones.size(); ++i)
-		//{
-		//	_matrix srcM = m_Blend.srcAnim->GetBoneMatrix(static_cast<_uint>(i));
-		//	_matrix dstM = m_Blend.dstAnim->GetBoneMatrix(static_cast<_uint>(i));
-
-		//	_vector sS, sR, sT, dS, dR, dT;
-		//	XMMatrixDecompose(&sS, &sR, &sT, srcM);
-		//	XMMatrixDecompose(&dS, &dR, &dT, dstM);
-
-		//	_vector bS = XMVectorLerp(sS, dS, t);
-		//	_vector bR = XMQuaternionSlerp(sR, dR, t);
-		//	_vector bT = XMVectorLerp(sT, dT, t);
-
-		///*	_matrix M = XMMatrixScalingFromVector(bS)
-		//		* XMMatrixRotationQuaternion(bR)
-		//		* XMMatrixTranslationFromVector(bT);
-
-		//	m_Bones[i]->Set_TransformationMatrix(M);*/
-
-		//	if (bBlendFullbody || m_UpperMaskSet.count(static_cast<_int>(i)))
-		//	{
-		//		_matrix M = XMMatrixScalingFromVector(bS)
-		//			* XMMatrixRotationQuaternion(bR)
-		//			* XMMatrixTranslationFromVector(bT);
-		//		m_Bones[i]->Set_TransformationMatrix(M);
-		//	}
-		//	else
-		//	{
-		//		// 하체는 그대로 두기
-		//		m_Bones[i]->Set_TransformationMatrix(srcM);
-		//	}
-
-		//	if (bBlendFullbody)
-		//	{
-		//		// 풀바디 블렌딩: 모든 본을 src와 dst 사이에서 블렌딩
-		//		_vector sS, sR, sT, dS, dR, dT;
-		//		XMMatrixDecompose(&sS, &sR, &sT, srcM);
-		//		XMMatrixDecompose(&dS, &dR, &dT, dstM);
-
-		//		_vector bS = XMVectorLerp(sS, dS, t);
-		//		_vector bR = XMQuaternionSlerp(sR, dR, t);
-		//		_vector bT = XMVectorLerp(sT, dT, t);
-
-		//		_matrix M = XMMatrixScalingFromVector(bS)
-		//			* XMMatrixRotationQuaternion(bR)
-		//			* XMMatrixTranslationFromVector(bT);
-
-		//		m_Bones[i]->Set_TransformationMatrix(M);
-		//	}
-		//	else
-		//	{
-		//		// 마스킹 블렌딩
-		//		if (m_UpperMaskSet.count(static_cast<_int>(i)))
-		//		{
-		//			_vector sS, sR, sT, dS, dR, dT;
-		//			XMMatrixDecompose(&sS, &sR, &sT, srcM);
-		//			XMMatrixDecompose(&dS, &dR, &dT, dstM);
-
-		//			_vector bS = XMVectorLerp(sS, dS, t);
-		//			_vector bR = XMQuaternionSlerp(sR, dR, t);
-		//			_vector bT = XMVectorLerp(sT, dT, t);
-
-		//			_matrix M = XMMatrixScalingFromVector(bS)
-		//				* XMMatrixRotationQuaternion(bR)
-		//				* XMMatrixTranslationFromVector(bT);
-
-		//			m_Bones[i]->Set_TransformationMatrix(M);
-		//		}
-		//		else
-		//		{
-		//			m_Bones[i]->Set_TransformationMatrix(srcM);
-		//		}
-		//	}
-		//}
-		//// 상,하체 기준
-
-		//// dest 상체와 src 상체 블렌딩
-		//// dest 하체와 src 하체 블렌딩
 
 
-		//// 각각의 뼈 정보를 다시 만들어서가져오기
-
-		for (size_t i = 0; i < m_Bones.size(); ++i)
+		if (m_bSeparateUpperLowerBlend)
 		{
-			_matrix srcM = m_Blend.srcAnim->GetBoneMatrix(static_cast<_uint>(i));
-			_matrix dstM = m_Blend.dstAnim->GetBoneMatrix(static_cast<_uint>(i));
+			t = m_Blend.blendWeight; // 블렌드 가중치 사용 (유니티의 레이어처럼)
+			for (size_t i = 0; i < m_Bones.size(); ++i)
+			{
+				_matrix srcM = m_Blend.srcAnim->GetBoneMatrix(static_cast<_uint>(i));
+				_matrix dstM = m_Blend.dstAnim->GetBoneMatrix(static_cast<_uint>(i));
 
-			_vector sS, sR, sT, dS, dR, dT;
-			XMMatrixDecompose(&sS, &sR, &sT, srcM);
-			XMMatrixDecompose(&dS, &dR, &dT, dstM);
+				_vector sS, sR, sT, dS, dR, dT;
+				XMMatrixDecompose(&sS, &sR, &sT, srcM);
+				XMMatrixDecompose(&dS, &dR, &dT, dstM);
 
-			_vector bS = XMVectorLerp(sS, dS, t);
-			_vector bR = XMQuaternionSlerp(sR, dR, t);
-			_vector bT = XMVectorLerp(sT, dT, t);
+				_vector bS = XMVectorLerp(sS, dS, t);
+				_vector bR = XMQuaternionSlerp(sR, dR, t);
+				_vector bT = XMVectorLerp(sT, dT, t);
 
-			_matrix M = XMMatrixScalingFromVector(bS)
-				* XMMatrixRotationQuaternion(bR)
-				* XMMatrixTranslationFromVector(bT);
 
-			m_Bones[i]->Set_TransformationMatrix(M);
+				if (m_UpperMaskSet.count(static_cast<_int>(i)))
+				{
+					_matrix M = XMMatrixScalingFromVector(bS)
+						* XMMatrixRotationQuaternion(bR)
+						* XMMatrixTranslationFromVector(bT);
+					m_Bones[i]->Set_TransformationMatrix(M);
+				}
+				else
+				{
+					m_Bones[i]->Set_TransformationMatrix(srcM);
+				}
+			}
 		}
+		else
+		{
+			for (size_t i = 0; i < m_Bones.size(); ++i)
+			{
+				_matrix srcM = m_Blend.srcAnim->GetBoneMatrix(static_cast<_uint>(i));
+				_matrix dstM = m_Blend.dstAnim->GetBoneMatrix(static_cast<_uint>(i));
+
+				_vector sS, sR, sT, dS, dR, dT;
+				XMMatrixDecompose(&sS, &sR, &sT, srcM);
+				XMMatrixDecompose(&dS, &dR, &dT, dstM);
+
+				_vector bS = XMVectorLerp(sS, dS, t);
+				_vector bR = XMQuaternionSlerp(sR, dR, t);
+				_vector bT = XMVectorLerp(sT, dT, t);
+
+				_matrix M = XMMatrixScalingFromVector(bS)
+					* XMMatrixRotationQuaternion(bR)
+					* XMMatrixTranslationFromVector(bT);
+
+				m_Bones[i]->Set_TransformationMatrix(M);
+			}
+		}
+	
 
 		//  수집된 이벤트에 대해 기존과 동일하게 콜백 실행
 		for (auto& name : triggeredEvents)
@@ -424,9 +372,43 @@ void CAnimator::Update(_float fDeltaTime)
 		// 블렌드 완료 시
 		if (t >= 1.f)
 		{
+			if (m_pUpperClip)
+			{
+				m_pUpperClip->ResetTrack();
+				m_pUpperClip = nullptr;
+			}
+			m_bSeparateUpperLowerBlend = false;
 			m_Blend.active = false;
 			m_pCurrentAnim = m_Blend.dstAnim;
 			m_Blend.srcAnim->ResetTrack();
+		}
+	}
+
+	void CAnimator::UpdateMaskState()
+	{
+		auto curState = m_pCurAnimController->GetCurrentState();
+		if (curState && !curState->maskBoneName.empty())
+		{
+			m_bPlayMask = true;
+			m_pLowerClip = m_pModel->GetAnimationClipByName(curState->lowerClipName);
+			m_pUpperClip = m_pModel->GetAnimationClipByName(curState->upperClipName);
+			if (m_pLowerClip&&m_pLowerClip->GetCurrentTrackPosition() >= m_pLowerClip->GetDuration())
+			{
+				m_pLowerClip->ResetTrack();
+			}
+			if (m_pUpperClip&&m_pUpperClip->GetCurrentTrackPosition() >= m_pUpperClip->GetDuration())
+			{
+				m_pUpperClip->ResetTrack();
+			}
+
+			MakeMaskBones(curState -> maskBoneName);
+		}
+		else
+		{
+			m_bPlayMask = false;
+			m_pLowerClip = nullptr;
+			m_pUpperClip = nullptr;
+			m_UpperMaskSet.clear();
 		}
 	}
 
@@ -864,7 +846,7 @@ void CAnimator::Update(_float fDeltaTime)
 		CHAR exeFullPath[MAX_PATH] = {};
 		GetModuleFileNameA(nullptr, exeFullPath, MAX_PATH);
 
-		// 2) EXE가 있는 폴더를 기준으로 경로 계산
+		// EXE가 있는 폴더를 기준으로 경로 계산
 		filesystem::path exeDir = filesystem::path(exeFullPath).parent_path();
 		filesystem::path saveDir = exeDir
 			/ "Save"
@@ -943,7 +925,7 @@ void CAnimator::Update(_float fDeltaTime)
 				if (!m_pCurAnimController)
 					m_pCurAnimController = pCtrl;
 
-				// 현재 애니메이션 컨트롤러의 스테이츠들을 불러와서 MaskBone을 사용하면 다 미리 불러두기
+				// 현재 애니메이션 컨트롤러의 스테이트들을 불러와서 MaskBone을 사용하면 다 미리 불러두기
 				auto& states = pCtrl->GetStates();
 
 				for (const auto& state : states)

@@ -998,14 +998,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
 					if(m_pCurAnimation)
 						ImGui::Text("CurAnimLoop: %s", m_pCurAnimation->Get_isLoop() ? "True" : "False");
-
-					auto it = find_if(m_LoadedAnimations[m_stSelectedModelName].begin(), m_LoadedAnimations[m_stSelectedModelName].end(),
-						[&](CAnimation* anim) { return anim->Get_Name() == state.clip->Get_Name(); });
-					if (it != m_LoadedAnimations[m_stSelectedModelName].end())
-					{
-						auto pAnim = *it;
-						ImGui::Text("OriginAnimLoop: %s", pAnim->Get_isLoop() ? "True" : "False");
-					}
 				
 
 					// 클립이 있었던 경우에는 현재 애니메이션을 state의 애니메이션으로 변경
@@ -1015,9 +1007,38 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						pCtrl->SetState(selectedNodeID);
 					}
 				}
+				else if(state.maskBoneName.empty() == false)
+				{
+
+					//ImGui::Text("Lower Clip: %s", state.lowerClipName.c_str());
+					//ImGui::Text("Upper Clip: %s", state.upperClipName.c_str());
+
+					ImGui::Text("Node ID: %d", state.iNodeId);
+					ImGui::Text("Mask Bone: %s", state.maskBoneName.c_str());
+					ImGui::DragFloat("Weight", &state.fBlendWeight, 0.01f, 0.f, 1.f, "%.2f");
+			/*		auto pLower = m_pCurModel->GetAnimationClipByName(state.lowerClipName);
+					auto pUpper = m_pCurModel->GetAnimationClipByName(state.upperClipName);
+					ImGui::Text("Lower Duration: %.2f", m_pCurModel->GetAnimationClipByName(state.lowerClipName)->GetDuration());
+					ImGui::Text("Upper Duration: %.2f", m_pCurModel->GetAnimationClipByName(state.upperClipName)->GetDuration());
+					
+					ImGui::Text("Lower Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
+					ImGui::Text("Upper Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
+
+					ImGui::Text("Lower Tick Per Second: %.2f", state.clip->GetTickPerSecond());
+					ImGui::Text("Upper Tick Per Second: %.2f", state.clip->GetTickPerSecond());
+					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
+					if (m_pCurAnimation)
+						ImGui::Text("CurAnimLoop: %s", m_pCurAnimation->Get_isLoop() ? "True" : "False");*/
+
+					if (ImNodes::IsNodeSelected(selectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					{
+						pCtrl->SetState(selectedNodeID);
+					}
+				}
 				else
 				{
 					ImGui::Text("No Clip Assigned");
+
 				}
 
 				auto& transitions = pCtrl->GetTransitions();
@@ -1038,7 +1059,14 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				// 해당 노드에 애니메이션 선택하는 창
 				static _int iSelectedAnimIndex = -1;
 				static _int iSelectedUpperAnimIndex = -1;
-				if (ImGui::BeginCombo("Animations", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Animation"))
+				static _int iSelectedLowerAnimIndex = -1;
+
+
+				if (state.maskBoneName.empty())
+				{
+
+
+				if (ImGui::BeginCombo("Clips", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Clip"))
 				{
 					for (_int i = 0; i < animNames.size(); ++i)
 					{
@@ -1046,7 +1074,12 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 						{
 							iSelectedAnimIndex = i;
-							state.clip = anims[iSelectedAnimIndex];
+							if(state.maskBoneName.empty()) // 마스크 본 이름이 없을 때만 
+								state.clip = anims[iSelectedAnimIndex];
+							else
+							{
+								state.clip = nullptr;
+							}
 						}
 						if (isSelected)
 							ImGui::SetItemDefaultFocus();
@@ -1054,6 +1087,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::EndCombo();
 				}
 
+				}
 				if (state.maskBoneName.empty() == false)
 				{
 					if (ImGui::BeginCombo("Upper Animations", iSelectedUpperAnimIndex >= 0 ? animNames[iSelectedUpperAnimIndex].c_str() : "Select Upper"))
@@ -1071,8 +1105,23 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						}
 						ImGui::EndCombo();
 					}
-				}
 
+					if (ImGui::BeginCombo("Lower Animations", iSelectedLowerAnimIndex >= 0 ? animNames[iSelectedLowerAnimIndex].c_str() : "Select Lower"))
+					{
+						for (_int i = 0; i < animNames.size(); ++i)
+						{
+							_bool isSelected = (i == iSelectedLowerAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+							{
+								iSelectedLowerAnimIndex = i;
+								state.lowerClipName = anims[iSelectedLowerAnimIndex]->Get_Name();
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+				}
 
 				ImGui::End();
 				break;

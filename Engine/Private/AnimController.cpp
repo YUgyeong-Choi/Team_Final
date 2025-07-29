@@ -109,16 +109,48 @@ void CAnimController::Update(_float fTimeDelta)
 				if (!currentAnim || currentAnim->Get_isLoop())
 					continue; // 현재 애니메이션이 없거나 루프면 뛰어넘게
 				_float progress = m_pAnimator->GetCurrentAnimProgress();
-				if (progress < 1.f)
-					continue; // 현재 애니메이션이 끝나지 않았으면 뛰어넘게
+					if (progress < 1.f)
+						continue; // 현재 애니메이션이 끝나지 않았으면 뛰어넘게
 			}
 			if (!tr.Evaluates(this,m_pAnimator))
 				continue;
 
+			// 통짜-> 분리
 			auto* fromClip = GetStateAnimationByNodeId(tr.iFromNodeId);
 			auto* toClip = GetStateAnimationByNodeId(tr.iToNodeId);
 
-			if (!fromClip || !toClip)
+			AnimState* pToAnimState = FindStateByNodeId(tr.iToNodeId); // 이게 통짜면
+			AnimState* pFromAnimState = FindStateByNodeId(m_CurrentStateNodeId);
+			if (pFromAnimState)
+			{
+				if (pFromAnimState->maskBoneName.empty() == false) // 분리 -> 통짜
+				{
+					m_TransitionResult.bBlendFullbody = false;
+					// 분리의 상체에서 -> 일반의 상체로 변경
+					fromClip = m_pAnimator->GetModel()->GetAnimationClipByName(pFromAnimState->upperClipName);
+
+				}
+				else if (pToAnimState ->maskBoneName.empty() == false && pFromAnimState->maskBoneName.empty() && pFromAnimState->lowerClipName.empty()
+					&& pFromAnimState->upperClipName.empty()) // 통짜 -> 분리
+				{
+					m_TransitionResult.fBlendWeight = pToAnimState->fBlendWeight; // 블렌드 가중치 설정
+					m_TransitionResult.bBlendFullbody = false;
+					// 이건 반복 재생용으로 쓰일 거 
+					m_TransitionResult.pUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(pToAnimState->upperClipName);
+					m_TransitionResult.pLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(pToAnimState->lowerClipName);
+					toClip = m_TransitionResult.pUpperAnim;
+				}
+				else
+				{
+					m_TransitionResult.bBlendFullbody = true;
+				}
+			}
+
+			// 현재 상태상하체 분리인지
+			// 상체, 하체 애니메이션 가져오기
+
+
+			if (pToAnimState &&pToAnimState->maskBoneName.empty()&&(!fromClip || !toClip)) // 상하체 분리가 아닌데 클립이 없다면
 				continue;
 
 			m_TransitionResult.bTransition = true;
@@ -196,7 +228,12 @@ void CAnimController::SetState(_int iNodeId)
 	if (state)
 	{
 		m_CurrentStateNodeId = state->iNodeId;
-		m_pAnimator->PlayClip(state->clip);
+		if(state->clip)
+			m_pAnimator->PlayClip(state->clip);
+		else
+		{
+			m_pAnimator->UpdateMaskState();
+		}
 	}
 }
 
@@ -263,6 +300,7 @@ json CAnimController::Serialize()
 			{"Clip", state.clip ? state.clip->Get_Name() : ""},
 			{"NodePos", { state.fNodePos.x, state.fNodePos.y }},
 			{"MaskBone",{state.maskBoneName}},
+			{"LowerClip", state.lowerClipName},
 			{"UpperClip", state.upperClipName},
 			});
 	}
@@ -389,6 +427,7 @@ void CAnimController::Deserialize(const json& j)
 				string name = state["Name"];
 				string clipName = state["Clip"];
 				string maskBoneName = "";
+				string lowerClipName = "";
 				string upperClipName = "";
 				if (state.contains("MaskBone") && state["MaskBone"].is_string())
 				{
@@ -397,6 +436,10 @@ void CAnimController::Deserialize(const json& j)
 				if (state.contains("UpperClip") && state["UpperClip"].is_string())
 				{
 					upperClipName = state["UpperClip"];
+				}
+				if (state.contains("LowerClip") && state["LowerClip"].is_string())
+				{
+					lowerClipName = state["LowerClip"];
 				}
 		
 				_float2 pos = { 0.f, 0.f };
@@ -413,7 +456,7 @@ void CAnimController::Deserialize(const json& j)
 					clip->Set_Bones(m_pAnimator->GetModel()->Get_Bones()); // 애니메이션에 모델의 본 정보 설정
 				}
 		
-				m_States.push_back({ name, clip, nodeId, pos ,upperClipName,maskBoneName});
+				m_States.push_back({ name, clip, nodeId, pos ,lowerClipName, upperClipName,maskBoneName });
 			}
 		}
 	}

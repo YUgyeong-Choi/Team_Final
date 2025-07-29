@@ -24,13 +24,15 @@ public:
 	struct AnimState
 	{
 		string stateName;
-		class CAnimation* clip = nullptr; // 현재 애니메이션 (하체로도 사용)
+		class CAnimation* clip = nullptr; // 현재 애니메이션
 		_int iNodeId; // 툴상에서의 노드 ID
 		_float2 fNodePos; // 툴상에서의 노드 위치
 
 		// 상하체 분리 애니메이션인 경우
+		string lowerClipName; // 하체 애니메이션 이름
 		string upperClipName; // 상체 애니메이션 이름
 		string maskBoneName; // 마스크용 뼈 이름 (없으면 빈 문자열)
+		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
 	};
 
 	struct Transition 
@@ -252,6 +254,11 @@ private:
 private:
 	// 상태·전환 저장
     _int                   m_CurrentStateNodeId= 0;
+	_float                 m_fLayerWeight{ 0.f };
+	unordered_map<string, vector<AnimState>> m_Layers;
+
+	AnimState              m_EntryState;
+	AnimState              m_ExitState;
 	vector<AnimState>      m_States;
 	vector<Transition>     m_Transitions;
 	vector<Condition>	   m_Conditions; // 아직 쓰는 곳 없음
