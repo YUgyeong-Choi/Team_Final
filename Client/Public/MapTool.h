@@ -97,6 +97,10 @@ private:
 private:
 	class CPreviewObject* m_pPreviewObject = { nullptr };
 
+private:
+	//복사한 월드 행렬 저장용
+	_float4x4 m_CopyWorldMatrix = {};
+
 public:
 	static CMapTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

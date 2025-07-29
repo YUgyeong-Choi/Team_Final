@@ -51,6 +51,8 @@ HRESULT CMapTool::Initialize(void* pArg)
 
 	Safe_AddRef(m_pPreviewObject);
 
+	XMStoreFloat4x4(&m_CopyWorldMatrix, XMMatrixIdentity());
+
 	return S_OK;
 }
 
@@ -119,6 +121,24 @@ void CMapTool::Control(_float fTimeDelta)
 	{
 		printf("Delete\n");
 		DeleteMapToolObject();
+	}
+	
+	//F 키누르면 해당 오브젝트 위치로 이동
+	if (m_pGameInstance->Key_Down(DIK_F))
+	{
+		if (m_pSelectedObject)
+		{
+			_vector vObjectPos = m_pSelectedObject->Get_TransfomCom()->Get_State(STATE::POSITION);
+			_vector vCameraPos = XMVectorAdd(vObjectPos, XMVectorSet(0.f, 3.f, -3.f, 0.f));
+
+			CTransform* pCameraTransformCom = CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom();
+
+			//여유를 두고 이동한후
+			pCameraTransformCom->Set_State(STATE::POSITION, vCameraPos);
+
+			//LookAt 하자
+			pCameraTransformCom->LookAt(vObjectPos);
+		}
 	}
 
 	Control_PreviewObject(fTimeDelta);
@@ -1113,6 +1133,20 @@ void CMapTool::Detail_Transform()
 			pTransform->Set_WorldMatrix(MatrixIdentity);
 		}
 
+		//행렬 복사 버튼
+		ImGui::SameLine();
+		if (ImGui::Button("Copy"))
+		{
+			XMStoreFloat4x4(&m_CopyWorldMatrix, m_pSelectedObject->Get_TransfomCom()->Get_WorldMatrix());			
+		}
+
+		//행렬 붙이기 버튼
+		ImGui::SameLine();
+		if (ImGui::Button("Paste"))
+		{
+			m_pSelectedObject->Get_TransfomCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_CopyWorldMatrix));
+		}
+
 		//컨트롤 클릭 하면 피킹된 위치로 이동
 		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
 		{
@@ -1210,9 +1244,9 @@ void CMapTool::Detail_Transform()
 
 void CMapTool::Detail_Tile()
 {
+	ImGui::Text("Tile Settings");
 	if (m_pSelectedObject)
 	{
-		ImGui::Text("Tile Settings");
 
 		// 타일링 여부 체크박스
 		ImGui::Checkbox("Enable Tiling", &m_pSelectedObject->m_bUseTiling);
