@@ -190,6 +190,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Canvus">
       <UniqueIdentifier>{166d625d-85e0-4014-bef6-412ee2dce9bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Text">
+      <UniqueIdentifier>{b1e0564c-381f-4d59-a7ce-4e891ff924d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -450,6 +453,9 @@
     <ClInclude Include="..\public\UI_Canvus.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Canvus</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Text.h">
+      <Filter>02.GameObjects\99.UI\Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -689,6 +695,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Canvus.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Canvus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Text.cpp">
+      <Filter>02.GameObjects\99.UI\Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

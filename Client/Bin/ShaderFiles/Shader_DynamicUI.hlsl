@@ -208,7 +208,10 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
     
     if(g_ButtonFlag.y == 1.f)
     {
-        vHover = g_HoverTexture.Sample(DefaultSampler, In.vTexcoord);
+        float2 vTexcoord = In.vTexcoord;
+        vTexcoord.x *= 2.5f;
+        
+        vHover = g_HoverTexture.Sample(DefaultSampler, vTexcoord);
 
     }
     
@@ -230,7 +233,11 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
         {
             vHover.a *= 0.2f;
             
-            Out.vColor += vHover;
+            if(In.vTexcoord.x < 0.4f)
+            {
+                Out.vColor += vHover;
+            }
+              
            
         }
        

@@ -67,13 +67,8 @@ private:
 
 private:
 
-	// tool에서 사용할...
-	_wstring m_strTextureTag = {};
+
 	
-
-
-	_int   m_iPassIndex = {};
-	_int   m_iTextureIndex = {};
 
 private:
 	HRESULT Ready_Components(const wstring& strTextureTag);

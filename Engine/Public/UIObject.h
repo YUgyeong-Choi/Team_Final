@@ -14,7 +14,13 @@ public:
 	{
 		_float			fX, fY, fSizeX, fSizeY;
 		_float			fOffset = {0.f};
+		_int iTextureIndex, iPassIndex;
+		_float4 vColor = { 1.f,1.f,1.f,1.f };
+		_wstring strTextureTag = {};
+
 	}UIOBJECT_DESC;
+
+	_wstring& Get_StrTextureTag() { return m_strTextureTag; }
 
 	_float Get_Depth() { return m_fOffset; }
 
@@ -64,6 +70,13 @@ protected:
 	_float4         m_vColor = {1.f,1.f,1.f,1.f};
 
 	_bool			m_isVignetting = { false };
+
+	_wstring		m_strTextureTag = {};
+	_int			m_iPassIndex = {};
+	_int			m_iTextureIndex = {};
+
+	// 이걸로 구분하자
+	_int			m_iUIType = {};
 	
 
 public:

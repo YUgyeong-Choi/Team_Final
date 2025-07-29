@@ -3,6 +3,7 @@
 #include "Camera_Manager.h"
 
 #include "StaticMesh.h"
+#include "PBRMesh.h"
 #include "Level_Loading.h"
 
 #include "TestAnimObject.h"
@@ -25,22 +26,22 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
-	//���� �����ϱ����� �� ������Ÿ���� �غ��Ѵ�.
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
 	/*if (FAILED(Ready_MapModel()))
 		return E_FAIL;*/
 
-	//���̽����� ����� ���� �ε��Ѵ�.
+		//제이슨으로 저장된 맵을 로드한다.
 
 	//if (FAILED(LoadMap()))
 	//	return E_FAIL;
 
-	//�ִϸ��̼� ������Ʈ
+	//애니메이션 오브젝트
 	if (FAILED(Ready_TestAnimObject()))
 		return E_FAIL;
 
 	
 
-	/* [ ���� ] */
+	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
 	m_pBGM->Play();
@@ -71,7 +72,7 @@ HRESULT CLevel_KratCentralStation::Render()
 
 HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
 {
-	//�̹� ������Ÿ���������ϴ� ��Ȯ��
+	//이미 프로토타입이존재하는 지확인
 
 	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
 	{
@@ -112,13 +113,13 @@ HRESULT CLevel_KratCentralStation::Ready_MapModel()
 		return E_FAIL;
 	}
 
-	// JSON ������ Ȯ��
+	// JSON 데이터 확인
 	for (const auto& element : ReadyModelJson)
 	{
 		string ModelName = element.value("ModelName", "");
 		string Path = element.value("Path", "");
 
-		//�� ������ Ÿ�� ����
+		//모델 프로토 타입 생성
 		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
 
 		const _char* pModelFilePath = Path.c_str();
@@ -163,7 +164,7 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 				for (_int col = 0; col < 4; ++col)
 					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
-			//������Ʈ ����, ��ġ
+			//오브젝트 생성, 배치
 
 			wstring LayerTag = TEXT("Layer_MapToolObject_");
 			LayerTag += StringToWString(ModelName);
@@ -197,7 +198,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 5.f;
+	LightDesc.fIntensity = 1.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);	
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
@@ -207,7 +208,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
 	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 5.f;
+	LightDesc.fIntensity = 1.f;
 	LightDesc.fRange = 100.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
@@ -240,21 +241,21 @@ HRESULT CLevel_KratCentralStation::Ready_Camera()
 
 HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 {
-	//CStaticMesh::STATICMESH_DESC Desc{};
-	//Desc.iRender = 0;
-	//Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	//Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
-	//lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("Train");
+	lstrcpy(Desc.szName, TEXT("Train"));
 
-	////if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
-	////	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-	////	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
+		return E_FAIL;
 
-	//Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
-	//lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-	//	return E_FAIL;
+	Desc.szMeshID = TEXT("Station");
+	lstrcpy(Desc.szName, TEXT("Station"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

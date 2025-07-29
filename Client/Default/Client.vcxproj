@@ -208,6 +208,7 @@
     <ClInclude Include="..\public\UI_Feature_Position.h" />
     <ClInclude Include="..\public\UI_Feature_UV.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
+    <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
     <ClInclude Include="..\Public\YGBox.h" />
     <ClInclude Include="..\Public\YGConvexMesh.h" />
@@ -292,6 +293,7 @@
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
     <ClCompile Include="..\private\UI_Feature_UV.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
+    <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />
     <ClCompile Include="..\Private\YGBox.cpp" />
     <ClCompile Include="..\Private\YGConvexMesh.cpp" />

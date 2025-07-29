@@ -177,19 +177,12 @@ PS_OUT PS_MAIN_FADE(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_MAIN_VIGNETTING(PS_IN In)
+PS_OUT PS_MAIN_FONT(PS_IN In)
 {
     PS_OUT Out;
+  
     
-    float4 vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
-    
-    float luminance = dot(vColor.rgb, float3(0.299, 0.587, 0.114));
-    
-    Out.vColor = float4(0.f, 0.f, 0.f, 0.f);
-    
-    Out.vColor.a = saturate(1.0 - luminance);
-    
-    Out.vColor *= g_Color;
+    Out.vColor = float4(0.f,0.f,0.f,0.f);
     
     return Out;
 }
@@ -293,6 +286,18 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_FADE();
+    }
+    
+    pass Font
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_FONT();
     }
     //pass Blend/* π›≈ı∏Ì */
     //{

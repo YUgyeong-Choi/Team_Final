@@ -13,10 +13,6 @@ public:
 		_float2			vLifeTime;
 		_float2			vSpeed;
 		_bool			isLoop;
-		_float3			vRange;
-		_float2			vSize;
-		_float3			vCenter;
-		PARTICLETYPE	ePType;
 
 	}DESC;
 	
@@ -33,9 +29,8 @@ public:
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
 
-	//병합할때 채영꺼를 선택해!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!내꺼 선택하지마!!!!!!!!!!!
-	//virtual void Drop(_float fTimeDelta)override;
-	//virtual void Spread(_float fTimeDelta)override;
+	virtual void Drop(_float fTimeDelta)override;
+	virtual void Spread(_float fTimeDelta)override;
 
 	void Set_Loop(_bool isLoop) { m_isLoop = isLoop; }
 

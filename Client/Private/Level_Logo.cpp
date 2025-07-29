@@ -5,6 +5,7 @@
 #include "Static_UI.h"
 #include "UI_Video.h"
 #include "UI_Button.h"
+#include "UI_Text.h"
 
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -28,9 +29,9 @@ void CLevel_Logo::Update(_float fTimeDelta)
 {	
 	if (!m_isReady)
 	{
-		for (int vk = 0x08; vk <= 0xFE; ++vk) 
+		for (int vk = 0; vk <= 254; ++vk) 
 		{
-			SHORT keyState = GetAsyncKeyState(vk);
+			_int keyState = m_pGameInstance->Get_DIKeyState(vk);
 			if (keyState & 0x8000)
 			{
 				m_isReady = true;
@@ -50,15 +51,14 @@ void CLevel_Logo::Update(_float fTimeDelta)
 		if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
 		{
 
-			for (auto& pButton : m_pButtons)
+			for (int i = 0; i < m_pButtons.size(); ++i)
 			{
-				if (!pButton->Check_Click())
-					++m_iButtonIndex;
-				else
+				if (m_pButtons[i]->Check_Click())
 				{
-
+					Interation_Button(i);
 				}
 			}
+		
 
 
 		}
@@ -197,7 +197,7 @@ HRESULT CLevel_Logo::Ready_Video()
 	Safe_AddRef(m_pMainUI);
 
 	m_pMainUI->FadeStart(0.f, 1.f, 3.f);
-
+	
 
 	return S_OK;
 }
@@ -207,6 +207,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 	_float2 vRange = m_pGameInstance->Calc_Draw_Range(TEXT("Font_Bold"), TEXT("ÇÏ³ª µÑ»ï"));
 
 	CUI_Button::BUTTON_UI_DESC eButtonDesc = {};
+	eButtonDesc.strTextureTag = L"";
 	eButtonDesc.fOffset = 0.01f;
 	eButtonDesc.fX = g_iWinSizeX * 0.2f;
 	eButtonDesc.iTextureIndex = 0;
@@ -265,7 +266,27 @@ HRESULT CLevel_Logo::Ready_Menu()
 	Safe_AddRef(m_pButtons.back());
 
 
+
 	return S_OK;
+}
+
+void CLevel_Logo::Interation_Button(_int& iIndex)
+{
+	switch (iIndex)
+	{
+	case 0:
+		m_eNextLevel = LEVEL::KRAT_CENTERAL_STATION;
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		PostQuitMessage(0);
+		break;
+	default:
+		break;
+	}
 }
 
 
