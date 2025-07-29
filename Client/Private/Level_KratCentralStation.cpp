@@ -3,6 +3,7 @@
 #include "Camera_Manager.h"
 
 #include "StaticMesh.h"
+#include "PBRMesh.h"
 #include "Level_Loading.h"
 
 #include "TestAnimObject.h"
@@ -197,7 +198,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 5.f;
+	LightDesc.fIntensity = 1.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);	
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
@@ -207,7 +208,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
 	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 5.f;
+	LightDesc.fIntensity = 1.f;
 	LightDesc.fRange = 100.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
@@ -240,21 +241,21 @@ HRESULT CLevel_KratCentralStation::Ready_Camera()
 
 HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 {
-	//CStaticMesh::STATICMESH_DESC Desc{};
-	//Desc.iRender = 0;
-	//Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	//Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
-	//lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("Train");
+	lstrcpy(Desc.szName, TEXT("Train"));
 
-	////if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
-	////	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-	////	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
+		return E_FAIL;
 
-	//Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
-	//lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_LevelStaticMesh"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-	//	return E_FAIL;
+	Desc.szMeshID = TEXT("Station");
+	lstrcpy(Desc.szName, TEXT("Station"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

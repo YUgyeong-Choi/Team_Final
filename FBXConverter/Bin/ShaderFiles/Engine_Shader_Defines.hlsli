@@ -48,6 +48,13 @@ RasterizerState RS_Cull_Front
     CullMode = front;
 };
 
+RasterizerState RS_Cull_None
+{
+    FillMode = Solid;
+    CullMode = NONE;
+    FrontCounterClockwise = FALSE;
+};
+
 
 DepthStencilState DSS_Default
 {
