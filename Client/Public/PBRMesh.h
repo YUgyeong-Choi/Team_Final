@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CShader;
 class CTexture;
 class CModel;
+class CPhysXStaticActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -44,6 +45,12 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+
+	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 public:
 	LEVEL Get_LevelID() const { return m_eLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
@@ -56,7 +63,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
-
+	CPhysXStaticActor* m_pPhysXActorCom = { nullptr };
 protected: /* [ 초기화 변수 ] */
 	const _tchar* m_szMeshID = { nullptr };
 	LEVEL			m_eLevelID = { LEVEL::END };
@@ -70,7 +77,7 @@ protected:
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
-
+	HRESULT Ready_Collider();
 public:
 	static CPBRMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
