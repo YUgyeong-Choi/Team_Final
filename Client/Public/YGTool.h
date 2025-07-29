@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 #include "Client_Defines.h"
-
+#include "CameraSequence.h"
 NS_BEGIN(Client)
 
 class CYGTool final : public CGameObject
@@ -39,7 +39,11 @@ private:
 	_bool m_bEditZoom = false;
 	_float m_fEditFov = 60.f;
 	_float m_fEditFovDuration = {};
+
+	CCameraSequence* m_CameraSequence;
+	int m_iSelectedIndex = 0;
 public:
+	HRESULT Render_CameraSequence();
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;

@@ -28,6 +28,7 @@ HRESULT CYGTool::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_CameraSequence = new CCameraSequence();
 
 	return S_OK;
 }
@@ -55,6 +56,8 @@ HRESULT CYGTool::Render()
 	if (FAILED(Render_CameraFrame()))
 		return E_FAIL;
 
+	if (FAILED(Render_CameraSequence()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -143,7 +146,7 @@ HRESULT CYGTool::Render_CameraTool()
 			if (ImGui::Button(u8"Add"))
 			{
 				m_vecCameraFrame.push_back(m_CutSceneDesc);
-				m_CutSceneDesc.fFov = 60.f;
+				m_fFov = 60.f;
 			}
 		}
 		else
@@ -163,7 +166,7 @@ HRESULT CYGTool::Render_CameraFrame()
 	ImGui::Begin("Camera Frame", &open, NULL);
 	ImGui::Text("CutScene Frames:");
 
-	ImGui::BeginChild("CutSceneFrameList", ImVec2(0, 200), true);
+	ImGui::BeginChild("CutSceneFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
 
 	// 리스트 출력
 	for (size_t i = 0; i < m_vecCameraFrame.size(); ++i)
@@ -305,11 +308,78 @@ HRESULT CYGTool::Render_CameraFrame()
 		CCamera_CutScene* cutSceneCamera = static_cast<CCamera_CutScene*>(CCamera_Manager::Get_Instance()->GetCurCam());
 		cutSceneCamera->Set_CameraFrame(m_vecCameraFrame);
 		cutSceneCamera->PlayCutScene();
+		cutSceneCamera->Set_CurrentFrame(m_iSelectedFrameIndex);
 	}
+
+	if(CCamera_CutScene* _scene = dynamic_cast<CCamera_CutScene*>(CCamera_Manager::Get_Instance()->GetCurCam()))
+	{
+		ImGui::Text("Play Frame: %d", _scene->Get_CurrentFrame());
+	}
+	
 
 	ImGui::End();
 	return S_OK;
 }
+
+
+HRESULT CYGTool::Render_CameraSequence()
+{
+	SetNextWindowSize(ImVec2(1000, 400), ImGuiCond_FirstUseEver);
+	ImGui::Begin("Camera Sequencer");
+
+	static int currentFrame = 0;
+	static bool expanded = true;
+	static int selected = -1;
+	static int firstFrame = 0;
+
+	ImSequencer::Sequencer(
+		m_CameraSequence,
+		&currentFrame,
+		&expanded,
+		&selected,
+		&firstFrame,
+		ImSequencer::SEQUENCER_EDIT_ALL);
+
+	//m_CameraSequence->Render_EditorUI();
+
+	ImGui::End();
+
+	return S_OK;
+}
+
+//void Render_EditorUI()
+//{
+//	CAMERA_KEY& key = m_vecKeys[m_iSelectedIndex];
+//
+//	ImGui::Separator();
+//	ImGui::Text("Editing Camera Key %d", m_iSelectedIndex);
+//
+//	// 시작/끝 프레임
+//	ImGui::InputInt("Start Frame", &key.startFrame);
+//	ImGui::InputInt("End Frame", &key.endFrame);
+//
+//	// 타입 선택
+//	const char* typeNames[] = { "Position", "Rotation", "FOV" };
+//	int type = key.type;
+//	if (ImGui::Combo("Type", &type, typeNames, IM_ARRAYSIZE(typeNames)))
+//	{
+//		key.type = type;
+//		// 색상 자동 설정
+//		switch (type)
+//		{
+//		case 0: key.color = IM_COL32(255, 200, 0, 255); break;
+//		case 1: key.color = IM_COL32(100, 255, 255, 255); break;
+//		case 2: key.color = IM_COL32(200, 100, 255, 255); break;
+//		}
+//	}
+//
+//	// 색상도 편집 가능하게 (선택)
+//	ImGui::ColorEdit4("Color", (float*)&key.color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel);
+//
+//	// 개발 편의를 위한 디버그 출력
+//	ImGui::Text("Duration: %d frames", key.endFrame - key.startFrame);
+//}
+
 CYGTool* CYGTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
 	CYGTool* pInstance = new CYGTool(pDevice, pContext);
@@ -340,5 +410,5 @@ CGameObject* CYGTool::Clone(void* pArg)
 void CYGTool::Free()
 {
 	__super::Free();
-
+	Safe_Delete(m_CameraSequence);
 }
