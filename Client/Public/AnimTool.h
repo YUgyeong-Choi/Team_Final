@@ -125,6 +125,33 @@ private:
 	static constexpr CAnimController::EOp CmpIntOps[] = { CAnimController::EOp::Greater,   CAnimController::EOp::Less,     CAnimController::EOp::Equal,
 														   CAnimController::EOp::NotEqual };
 	static constexpr CAnimController::EOp CmpFloatOps[] = { CAnimController::EOp::Greater,   CAnimController::EOp::Less};
+
+
+	// 인덱스 선택 변수들 
+	_int m_iSelectedListenerIdx = -1; // 선택된 애니메이션 이벤트 리스너 인덱스
+	_int m_iControllerIndex = 0;	// 애니메이션 컨트롤러 인덱스
+	_int m_iSelectEntry = -1; // 시퀀스 선택 인덱스
+	_int m_iSelectedNodeID = -1; // 선택된 노드 ID
+	_int m_iDefualtSeletedAnimIndex = -1; // 선택된 State Default Anim 인덱스
+	_int m_iSelectedUpperAnimIndex = -1; // 상체 애니메이션 인덱스
+	_int m_iSelectedLowerAnimIndex = -1; // 하체 애니메이션 인덱스
+	_int m_iSelectedModelIndex = -1; // 선택된 모델 인덱스
+	_int m_iSelectedAnimIndex = -1; // 선택된 애니메이션 인덱스
+	_int m_iSelectedMaskBoneIndex = -1; // 선택된 마스크 뼈대 인덱스
+	
+	// Bool 관련 변수들
+	_bool m_bExpanded = true; // 트랙 확장 여부
+
+	// 파라미터 팝업 관련 변수들
+	_char m_NewParameterName[64] = ""; // 새 파라미터 이름 입력용
+	_int  m_iNewType = 0;
+
+	// 새로운 컨트롤러 생성 변수
+	_char m_NewControllerName[64] = ""; // 새 컨트롤러 이름 입력용
+	_char m_RenameControllerName[64] = ""; // 컨트롤러 이름 변경용
+	_char m_NewStateName[64] = ""; // 새 상태 이름 입력용
+	vector<string> m_vecMaskBoneNames; // 마스크에 사용할 뼈대 이름들
+
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

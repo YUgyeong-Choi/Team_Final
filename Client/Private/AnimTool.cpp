@@ -231,7 +231,6 @@ HRESULT CAnimTool::Render_AnimEvents()
 		return S_OK;
 	}
 
-	static _int   selectedListenerIdx = 0;
 	_float fCurTarckPos = m_pCurAnimation->GetCurrentTrackPosition();
 	_float fDuration = m_pCurAnimation->GetDuration();
 	ImGui::Separator();
@@ -272,12 +271,12 @@ HRESULT CAnimTool::Render_AnimEvents()
 	if (!listenerNames.empty())
 	{
 		ImGui::Text("Available Animator Events:");
-		ImGui::Combo("##listener_combo", &selectedListenerIdx,
+		ImGui::Combo("##listener_combo", &m_iSelectedListenerIdx,
 			listenerNames.data(), (int)listenerNames.size());
 		ImGui::SameLine();
 		if (ImGui::Button("Assign To Anim"))
 		{
-			m_pCurAnimation->AddEvent({ fCurTarckPos, listenerNames[selectedListenerIdx] });
+			m_pCurAnimation->AddEvent({ fCurTarckPos, listenerNames[m_iSelectedListenerIdx] });
 		}
 		ImGui::Separator();
 	}
@@ -466,34 +465,32 @@ HRESULT CAnimTool::Render_Parameters()
 
 		if (ImGui::BeginPopup("AddParamPopup"))
 		{
-			static _char newName[64] = "";
-			static _int  newType = 0; // 0: Bool, 1: Trigger, 2: Float, 3: Int
-			ImGui::InputText("Name", newName, sizeof(newName));
-			ImGui::Combo("Type", &newType, typeNames, IM_ARRAYSIZE(typeNames));
+			ImGui::InputText("Name", m_NewParameterName, sizeof(m_NewParameterName));
+			ImGui::Combo("Type", &m_iNewType, typeNames, IM_ARRAYSIZE(typeNames));
 			if (ImGui::Button("Add"))
 			{
 				if (m_pCurAnimator)
 				{
-					_bool bExists = m_pCurAnimator->ExisitsParameter(newName);
-					string diffName = newName + to_string(i);
-					switch (newType)
+					_bool bExists = m_pCurAnimator->ExisitsParameter(m_NewParameterName);
+					string diffName = m_NewParameterName + to_string(i);
+					switch (m_iNewType)
 					{	
 					case 0: // Bool
-						m_pCurAnimator->AddBool(bExists? diffName : newName);
+						m_pCurAnimator->AddBool(bExists? diffName : m_NewParameterName);
 						break;
 					case 1: // Trigger
-						m_pCurAnimator->AddTrigger(bExists ? diffName : newName);
+						m_pCurAnimator->AddTrigger(bExists ? diffName : m_NewParameterName);
 						break;
 					case 2: // Float
-						m_pCurAnimator->AddFloat(bExists ? diffName : newName);
+						m_pCurAnimator->AddFloat(bExists ? diffName : m_NewParameterName);
 						break;
 					case 3: // Int
-						m_pCurAnimator->AddInt(bExists ? diffName : newName);
+						m_pCurAnimator->AddInt(bExists ? diffName : m_NewParameterName);
 						break;
 					default:
 						break;
 					}
-				newName[0] = '\0'; // 클리어
+					m_NewParameterName[0] = '\0'; // 클리어
 				}
 				ImGui::CloseCurrentPopup();
 			}
@@ -514,18 +511,34 @@ HRESULT CAnimTool::Render_AnimControllers()
 	for (auto& kv : ctrls) 
 		names.push_back(kv.first);
 
-	static _int selIdx = 0;
 	
-	const _char* curName = names.empty() ? "" : names[selIdx].c_str();
+	const _char* curName = names.empty() ? "" : names[m_iControllerIndex].c_str();
 	if (ImGui::BeginCombo("##Controllers", curName))
 	{
 		for (_int i = 0; i < static_cast<_int>(names.size()); ++i)
 		{
-			_bool selected = (i == selIdx);
+			_bool selected = (i == m_iControllerIndex);
 			if (ImGui::Selectable(names[i].c_str(), selected))
 			{
-				selIdx = i;
-				m_pCurAnimator->SetCurrentAnimController(names[i]);
+				m_iControllerIndex = i;
+				m_pCurAnimator->SetCurrentAnimControllerForEditor(names[i]);
+				// 여기서도 컨트롤러 불러와서 ID 바꿔줘야함
+				auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
+				if (pCtrl)
+				{
+					auto& states = pCtrl->GetStates();
+					for (const auto& state : states)
+					{
+						m_iSpeicificNodeId = max(m_iSpeicificNodeId, state.iNodeId);
+					}
+
+					for (const auto& trns : pCtrl->GetTransitions())
+					{
+						m_iSpeicificNodeId = max(m_iSpeicificNodeId, trns.iFromNodeId);
+						m_iSpeicificNodeId = max(m_iSpeicificNodeId, trns.iToNodeId);
+					}
+					m_iSpeicificNodeId++;
+				}
 			}
 			if (selected) ImGui::SetItemDefaultFocus();
 		}
@@ -533,35 +546,33 @@ HRESULT CAnimTool::Render_AnimControllers()
 	}
 
 
-	static _char bufRename[64] = "";
 	if (!names.empty())
-		strncpy_s(bufRename, names[selIdx].c_str(), 63);
-	if (ImGui::InputText("Rename", bufRename, sizeof(bufRename),
+		strncpy_s(m_RenameControllerName, names[m_iControllerIndex].c_str(), 63);
+	if (ImGui::InputText("Rename", m_RenameControllerName, sizeof(m_RenameControllerName),
 		ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		string oldName = names[selIdx];
-		string newName = bufRename;
+		string oldName = names[m_iControllerIndex];
+		string newName = m_RenameControllerName;
 		// 언레지스터 → 이름 바꿔서 → 리지스터
 		auto pCtrl= ctrls[oldName];
 		m_pCurAnimator->RenameAnimController(oldName, newName);
 		pCtrl->SetName(newName);
 		// 선택 인덱스 보정
-		names[selIdx] = newName;
+		names[m_iControllerIndex] = newName;
 	}
 
 
-	static _char bufNew[64] = "";
-	ImGui::InputText("New Ctrl", bufNew, sizeof(bufNew));
+	ImGui::InputText("New Ctrl", m_NewControllerName, sizeof(m_NewControllerName));
 	ImGui::SameLine();
 	if (ImGui::Button("Create"))
 	{
-		string name = bufNew;
+		string name = m_NewControllerName;
 		if (!name.empty() && ctrls.find(name) == ctrls.end())
 		{
 			auto pNew = CAnimController::Create();
 			pNew->SetName(name);
 			m_pCurAnimator->RegisterAnimController(name, pNew);
-			bufNew[0] = '\0';
+			m_NewControllerName[0] = '\0';
 		}
 	}
 	ImGui::End();
@@ -587,8 +598,6 @@ HRESULT CAnimTool::Render_AnimationSequence()
 		return S_OK;
 	}
 
-	static _int           selectedEntry = -1;
-	static _bool          expanded = true;// 트랙 확장 여부
 	static const _float FRAME = 60.f; // 1초당 60프레임 기준
 
 	ImGui::Begin("Animation Sequence");
@@ -638,8 +647,8 @@ HRESULT CAnimTool::Render_AnimationSequence()
 	_bool bChanged = ImSequencer::Sequencer(
 		m_pMySequence,
 		&m_iSequenceFrame,
-		&expanded,
-		&selectedEntry,
+		&m_bExpanded,
+		&m_iSelectEntry,
 		&m_iFirstFrame,
 		ImSequencer::SEQUENCER_EDIT_ALL | ImSequencer::SEQUENCER_CHANGE_FRAME
 	);
@@ -680,7 +689,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		SaveLoadAnimStates(false);
 		return S_OK; // 불렀올 때는 한 프레임 넘기기
 	}
-	static _int selectedNodeID = -1;  // 선택한 노드 아이디
 
 	// 컨트롤러가 바뀌면 식별 ID 초기화 시켜놓기
 	CAnimController* pCtrl = m_pCurAnimator->Get_CurrentAnimController();
@@ -704,10 +712,9 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 	if (ImGui::BeginPopup("AddStatePopup"))
 	{
-		static _char stateName[64] = "NewState";
 
 		static _bool bMaskBone = false;
-		ImGui::InputText("State Name", stateName, IM_ARRAYSIZE(stateName));
+		ImGui::InputText("State Name", m_NewStateName, IM_ARRAYSIZE(m_NewStateName));
 		
 		ImGui::Checkbox("Mask Bone", &bMaskBone);
 
@@ -718,13 +725,24 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			const ImVec2 mousePos = ImNodes::EditorContextGetPanning(); // 현재 마우스 위치
 			CAnimation* selectedAnim = m_pCurAnimation;
 
-			size_t newIdx = pCtrl->AddState(stateName, selectedAnim, m_iSpeicificNodeId++);
-			// 지금 막 만든 인덱스 반환한걸로 state 찾기
+			//size_t newIdx = pCtrl->AddState(stateName, selectedAnim, m_iSpeicificNodeId++);
+			_int iNodeId = m_iSpeicificNodeId++; // 고유한 노드 아이디 생성
+			// ID 확인
+			for (auto& state : pCtrl->GetStates())
+			{
+				if (state.iNodeId == iNodeId)
+				{
+					iNodeId = m_iSpeicificNodeId++; // 중복되면 다음 ID로
+					break;
+				}
+			}
+
+			size_t newIdx = pCtrl->AddState(m_NewStateName, selectedAnim, iNodeId, bMaskBone);
 			auto& newState = pCtrl->GetStates()[newIdx];
 			newState.fNodePos = { mousePos.x, mousePos.y };
 			if (bMaskBone)
 			{
-				newState.maskBoneName = "Bip001-Spine";
+				newState.maskBoneName = "Bip001-Spine2";
 			}
 
 			ImGui::CloseCurrentPopup();
@@ -740,6 +758,17 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 		ImNodes::BeginNodeTitleBar();
 		ImGui::TextUnformatted(state.stateName.c_str());
+
+		if (state.iNodeId == pCtrl->GetEntryNodeId())
+		{
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.0f, 1.0f), "[ENTRY]"); // 녹색으로 Entry 표시
+		}
+		if (state.iNodeId == pCtrl->GetExitNodeId())
+		{
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f), "[EXIT]"); // 빨간색으로 Exit 표시
+		}
 		ImNodes::EndNodeTitleBar();
 
 		ImGui::BeginGroup();
@@ -944,7 +973,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	_int hoveredNodeID = -1;
 	if (ImNodes::IsNodeHovered(&hoveredNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 	{
-		selectedNodeID = hoveredNodeID;
+		m_iSelectedNodeID = hoveredNodeID;
 	}
 	ImGui::End();
 
@@ -960,11 +989,11 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		animNames.push_back(anim->Get_Name());
 	}
 
-	if (selectedNodeID != -1)
+	if (m_iSelectedNodeID != -1)
 	{
 		for (auto& state : pCtrl->GetStates())
 		{
-			if (state.iNodeId == selectedNodeID)
+			if (state.iNodeId == m_iSelectedNodeID)
 			{
 				ImGui::Begin("State Info");
 
@@ -1002,16 +1031,16 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 					// 클립이 있었던 경우에는 현재 애니메이션을 state의 애니메이션으로 변경
 					m_pCurAnimation = state.clip;
-					if (ImNodes::IsNodeSelected(selectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					if (ImNodes::IsNodeSelected(m_iSelectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 					{
-						pCtrl->SetState(selectedNodeID);
+						pCtrl->SetState(m_iSelectedNodeID);
 					}
 				}
 				else if (state.maskBoneName.empty() == false)
 				{
-					if (ImNodes::IsNodeSelected(selectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					if (ImNodes::IsNodeSelected(m_iSelectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 					{
-						pCtrl->SetState(selectedNodeID);
+						pCtrl->SetState(m_iSelectedNodeID);
 					}
 				}
 				else
@@ -1035,24 +1064,18 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				}
 
 
-				// 해당 노드에 애니메이션 선택하는 창
-				static _int iSelectedAnimIndex = -1;
-				static _int iSelectedUpperAnimIndex = -1;
-				static _int iSelectedLowerAnimIndex = -1;
-
-
 				if (state.maskBoneName.empty())
 				{
-					if (ImGui::BeginCombo("Clips", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Clip"))
+					if (ImGui::BeginCombo("Clips", m_iDefualtSeletedAnimIndex >= 0 ? animNames[m_iDefualtSeletedAnimIndex].c_str() : "Select Clip"))
 					{
 						for (_int i = 0; i < animNames.size(); ++i)
 						{
-							_bool isSelected = (i == iSelectedAnimIndex);
+							_bool isSelected = (i == m_iDefualtSeletedAnimIndex);
 							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
-								iSelectedAnimIndex = i;
+								m_iDefualtSeletedAnimIndex = i;
 								if (state.maskBoneName.empty()) // 마스크 본 이름이 없을 때만 
-									state.clip = anims[iSelectedAnimIndex];
+									state.clip = anims[m_iDefualtSeletedAnimIndex];
 								else
 								{
 									state.clip = nullptr;
@@ -1073,30 +1096,28 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 					// 마스크 본 선택
 
-					static vector<string> maskBoneNames;
 
 					auto& bones = m_pCurModel->Get_Bones();
 
-					if (maskBoneNames.empty())
+					if (m_vecMaskBoneNames.empty())
 					{
-						maskBoneNames.reserve(bones.size());
+						m_vecMaskBoneNames.reserve(bones.size());
 						for (const auto& bone : bones)
 						{
-							maskBoneNames.push_back(bone->Get_Name());
+							m_vecMaskBoneNames.push_back(bone->Get_Name());
 						}
 					}
 
-					static _int iSelectedMaskBoneIndex = -1;
 
-					if (ImGui::BeginCombo("Mask Bone", iSelectedMaskBoneIndex >= 0 ? maskBoneNames[iSelectedMaskBoneIndex].c_str() : "Select Mask Bone"))
+					if (ImGui::BeginCombo("Mask Bone", m_iSelectedMaskBoneIndex >= 0 ? m_vecMaskBoneNames[m_iSelectedMaskBoneIndex].c_str() : "Select Mask Bone"))
 					{
-						for (_int i = 0; i < maskBoneNames.size(); ++i)
+						for (_int i = 0; i < m_vecMaskBoneNames.size(); ++i)
 						{
-							_bool isSelected = (i == iSelectedMaskBoneIndex);
-							if (ImGui::Selectable(maskBoneNames[i].c_str(), isSelected))
+							_bool isSelected = (i == m_iSelectedMaskBoneIndex);
+							if (ImGui::Selectable(m_vecMaskBoneNames[i].c_str(), isSelected))
 							{
-								iSelectedMaskBoneIndex = i;
-								state.maskBoneName = maskBoneNames[iSelectedMaskBoneIndex];
+								m_iSelectedMaskBoneIndex = i;
+								state.maskBoneName = m_vecMaskBoneNames[m_iSelectedMaskBoneIndex];
 							}
 							if (isSelected)
 								ImGui::SetItemDefaultFocus();
@@ -1104,15 +1125,15 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						ImGui::EndCombo();
 					}
 
-					if (ImGui::BeginCombo("Upper Animations", iSelectedUpperAnimIndex >= 0 ? animNames[iSelectedUpperAnimIndex].c_str() : "Select Upper"))
+					if (ImGui::BeginCombo("Upper Animations", m_iSelectedUpperAnimIndex >= 0 ? animNames[m_iSelectedUpperAnimIndex].c_str() : "Select Upper"))
 					{
 						for (_int i = 0; i < animNames.size(); ++i)
 						{
-							_bool isSelected = (i == iSelectedUpperAnimIndex);
+							_bool isSelected = (i == m_iSelectedUpperAnimIndex);
 							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
-								iSelectedUpperAnimIndex = i;
-								state.upperClipName = anims[iSelectedUpperAnimIndex]->Get_Name();
+								m_iSelectedUpperAnimIndex = i;
+								state.upperClipName = anims[m_iSelectedUpperAnimIndex]->Get_Name();
 							}
 							if (isSelected)
 								ImGui::SetItemDefaultFocus();
@@ -1120,15 +1141,15 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						ImGui::EndCombo();
 					}
 
-					if (ImGui::BeginCombo("Lower Animations", iSelectedLowerAnimIndex >= 0 ? animNames[iSelectedLowerAnimIndex].c_str() : "Select Lower"))
+					if (ImGui::BeginCombo("Lower Animations", m_iSelectedLowerAnimIndex >= 0 ? animNames[m_iSelectedLowerAnimIndex].c_str() : "Select Lower"))
 					{
 						for (_int i = 0; i < animNames.size(); ++i)
 						{
-							_bool isSelected = (i == iSelectedLowerAnimIndex);
+							_bool isSelected = (i == m_iSelectedLowerAnimIndex);
 							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
-								iSelectedLowerAnimIndex = i;
-								state.lowerClipName = anims[iSelectedLowerAnimIndex]->Get_Name();
+								m_iSelectedLowerAnimIndex = i;
+								state.lowerClipName = anims[m_iSelectedLowerAnimIndex]->Get_Name();
 							}
 							if (isSelected)
 								ImGui::SetItemDefaultFocus();
@@ -1136,9 +1157,13 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						ImGui::EndCombo();
 					}
 				}
+				if (Button("Set Entry This State"))
+				{
+					pCtrl->SetEntry(state.stateName);
+				}
 				ImGui::End();
-			}
 			break;
+			}
 		}
 	}
 	return S_OK;
@@ -1151,26 +1176,25 @@ HRESULT CAnimTool::Render_Loaded_Models()
 		return S_OK;
 	}
 
-	static _int iSelectedModelIndex = -1;
-
 	vector<string> modelNames;
 	for (const auto& pair : m_LoadedModels)
 		modelNames.push_back(pair.first);
 
-	if (ImGui::BeginCombo("Models", iSelectedModelIndex >= 0 ? modelNames[iSelectedModelIndex].c_str() : "Select Model"))
+	if (ImGui::BeginCombo("Models", m_iSelectedModelIndex >= 0 ? modelNames[m_iSelectedModelIndex].c_str() : "Select Model"))
 	{
 		for (_int i = 0; i < modelNames.size(); ++i)
 		{
-			_bool isSelected = (i == iSelectedModelIndex);
+			_bool isSelected = (i == m_iSelectedModelIndex);
 			if (ImGui::Selectable(modelNames[i].c_str(), isSelected))
 			{
-				iSelectedModelIndex = i;
+				m_iSelectedModelIndex = i;
 				m_pCurModel = m_LoadedModels[modelNames[i]];
 
 				m_pCurAnimator = m_LoadedAnimators[modelNames[i]];
 				// 모델을 바꿀 때는 현재 애니메이션을 nullptr
 				m_pCurAnimation = nullptr;
 				m_stSelectedModelName = modelNames[i];
+				m_vecMaskBoneNames.clear(); // 마스크 본 이름 초기화
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -1222,7 +1246,6 @@ void CAnimTool::SelectAnimation()
 	{
 		return;
 	}
-	static _int iSelectedAnimIndex = -1;
 
 	vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
 
@@ -1233,16 +1256,16 @@ void CAnimTool::SelectAnimation()
 		animNames.push_back(anim->Get_Name());
 	}
 
-	if (ImGui::BeginCombo("Animations", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Animation"))
+	if (ImGui::BeginCombo("Animations", m_iSelectedAnimIndex >= 0 ? animNames[m_iSelectedAnimIndex].c_str() : "Select Animation"))
 	{
 		for (_int i = 0; i < animNames.size(); ++i)
 		{
-			_bool isSelected = (i == iSelectedAnimIndex);
+			_bool isSelected = (i == m_iSelectedAnimIndex);
 			if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 			{
-				iSelectedAnimIndex = i;
-				m_pCurAnimation = anims[iSelectedAnimIndex];
-				m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
+				m_iSelectedAnimIndex = i;
+				m_pCurAnimation = anims[m_iSelectedAnimIndex];
+				m_pCurAnimator->PlayClip(anims[m_iSelectedAnimIndex], false);
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -1385,13 +1408,15 @@ void CAnimTool::SaveLoadAnimStates(_bool isSave)
 
 			for (const auto& state : states)
 			{
-				m_iSpeicificNodeId = max(m_iSpeicificNodeId, state.iNodeId + 1);
+				m_iSpeicificNodeId = max(m_iSpeicificNodeId, state.iNodeId);
 			}
 
 			for (const auto& transition : transitions)
 			{
-				m_iSpeicificNodeId = max(m_iSpeicificNodeId, transition.link.iLinkId + 1);
+				m_iSpeicificNodeId = max(m_iSpeicificNodeId, transition.link.iLinkId);
+				m_iSpeicificNodeId = max(m_iSpeicificNodeId, transition.iFromNodeId);
 			}
+			m_iSpeicificNodeId += 1;
 		}
 		else
 		{
@@ -1534,7 +1559,7 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 {
 	// 파라미터 목록 준비
 	auto& parameters = m_pCurAnimator->GetParameters();
-	std::vector<std::string> paramNames;
+	vector<string> paramNames;
 	paramNames.reserve(parameters.size());
 	for (auto& kv : parameters)
 		paramNames.push_back(kv.first);

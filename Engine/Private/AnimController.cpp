@@ -245,6 +245,20 @@ void CAnimController::SetState(const string& name)
 		m_CurrentStateNodeId = state->iNodeId;
 		m_pAnimator->PlayClip(state->clip);
 	}
+	else
+	{
+		m_CurrentStateNodeId = m_EntryStateNodeId; // Entry 상태로 되돌리기
+		auto entryState = FindStateByNodeId(m_EntryStateNodeId);
+		if (entryState)
+		{
+			if (entryState->clip)
+				m_pAnimator->PlayClip(entryState->clip);
+		}
+		else
+		{
+			MSG_BOX("Entry state not found");
+		}
+	}
 }
 
 void CAnimController::SetState(_int iNodeId)
@@ -260,6 +274,22 @@ void CAnimController::SetState(_int iNodeId)
 			m_pAnimator->UpdateMaskState();
 		}
 	}
+}
+
+void CAnimController::Applay_OverrideAnimController(const string& ctrlName, const vector<OverrideAnimController>& overrideControllers)
+{
+	if (overrideControllers.empty())
+		return;
+	auto it = m_OverrideAnimControllers.find(ctrlName);
+	if (it != m_OverrideAnimControllers.end())
+	{
+		it->second = overrideControllers; // 기존 컨트롤러 업데이트
+	}
+	else
+	{
+		m_OverrideAnimControllers[ctrlName] = overrideControllers; // 새로운 컨트롤러 추가
+	}
+	m_bOverrideAnimController = true; // 오버라이드 애니메이션 컨트롤러 사용 중으로 설
 }
 
 void CAnimController::ResetTransAndStates()
@@ -324,9 +354,10 @@ json CAnimController::Serialize()
 			{"Name", state.stateName},
 			{"Clip", state.clip ? state.clip->Get_Name() : ""},
 			{"NodePos", { state.fNodePos.x, state.fNodePos.y }},
-			{"MaskBone",{state.maskBoneName}},
+			{"MaskBone",state.maskBoneName},
 			{"LowerClip", state.lowerClipName},
 			{"UpperClip", state.upperClipName},
+			{"BlendWeight", state.fBlendWeight}
 			});
 	}
 
@@ -427,6 +458,15 @@ json CAnimController::Serialize()
 		};
 	}
 
+	// Entry와 Exit State 저장해두기
+	if (m_EntryStateName.empty() == false)
+	{
+		j["EntryState"] = m_EntryStateName;
+	}
+	if (m_ExitStateName.empty() == false)
+	{
+		j["ExitState"] = m_ExitStateName;
+	}
 
 	return j;
 }
@@ -466,6 +506,11 @@ void CAnimController::Deserialize(const json& j)
 				{
 					lowerClipName = state["LowerClip"];
 				}
+				_float fBlendWeight = 1.f; // 기본값
+				if (state.contains("BlendWeight") && state["BlendWeight"].is_number())
+				{
+					fBlendWeight = state["BlendWeight"];
+				}
 		
 				_float2 pos = { 0.f, 0.f };
 				if (state.contains("NodePos"))
@@ -481,7 +526,9 @@ void CAnimController::Deserialize(const json& j)
 					clip->Set_Bones(m_pAnimator->GetModel()->Get_Bones()); // 애니메이션에 모델의 본 정보 설정
 				}
 		
-				m_States.push_back({ name, clip, nodeId, pos ,lowerClipName, upperClipName,maskBoneName });
+				AddState(name, clip, nodeId, maskBoneName.empty() == false, maskBoneName, upperClipName, lowerClipName);
+
+				//m_States.push_back({ name, clip, nodeId, pos ,lowerClipName, upperClipName,maskBoneName,fBlendWeight });
 			}
 		}
 	}
@@ -575,5 +622,18 @@ void CAnimController::Deserialize(const json& j)
 			SetParamName(m_Params[name], name);
 		}
 	}
+
+	// Entry와 Exit State 역직렬화
+	if (j.contains("EntryState") && j["EntryState"].is_string())
+	{
+		m_EntryStateName = j["EntryState"];
+		SetState(m_EntryStateName);
+	}
+	if (j.contains("ExitState") && j["ExitState"].is_string())
+	{
+		m_ExitStateName = j["ExitState"];
+	}
+	SetEntry(m_EntryStateName);
+	SetExit(m_ExitStateName);
 }
 

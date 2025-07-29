@@ -89,6 +89,7 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 	//}
 	m_CurrentKeyFrameIndices.resize(m_iNumChannels);
 	m_Bones = Bones; // 뼈대 정보 저장
+	m_fTickPerSecond = 50.f;
 	return S_OK;
 }
 

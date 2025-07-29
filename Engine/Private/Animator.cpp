@@ -183,10 +183,15 @@ void CAnimator::Update(_float fDeltaTime)
 		vector<_matrix> fromL(boneCount), toL(boneCount), fromU(boneCount), toU(boneCount);
 		for (size_t i = 0; i < boneCount; ++i)
 		{
-			fromL[i] = m_pBlendFromLowerAnim->GetBoneMatrix((unsigned)i);
-			toL[i] = m_pBlendToLowerAnim->GetBoneMatrix((unsigned)i);
-			fromU[i] = m_pBlendFromUpperAnim ? m_pBlendFromUpperAnim->GetBoneMatrix((unsigned)i) : _matrix{};
-			toU[i] = m_pBlendToUpperAnim ? m_pBlendToUpperAnim->GetBoneMatrix((unsigned)i) : _matrix{};
+			// nullptr 검사
+			if(m_pBlendFromLowerAnim)
+				fromL[i] = m_pBlendFromLowerAnim->GetBoneMatrix((unsigned)i);
+			if (m_pBlendToLowerAnim)
+				toL[i] = m_pBlendToLowerAnim->GetBoneMatrix((unsigned)i);
+			if (m_pBlendFromUpperAnim)
+				fromU[i] = m_pBlendFromUpperAnim ? m_pBlendFromUpperAnim->GetBoneMatrix((unsigned)i) : _matrix{};
+			if (m_pBlendToUpperAnim)
+				toU[i] = m_pBlendToUpperAnim ? m_pBlendToUpperAnim->GetBoneMatrix((unsigned)i) : _matrix{};
 		}
 
 		//블렌드
@@ -550,6 +555,8 @@ void CAnimator::Update(_float fDeltaTime)
 
 	void CAnimator::UpdateMaskState()
 	{
+		if (m_pCurAnimController == nullptr)
+			return;
 		auto curState = m_pCurAnimController->GetCurrentState();
 		if (curState && !curState->maskBoneName.empty())
 		{
@@ -720,55 +727,87 @@ void CAnimator::Update(_float fDeltaTime)
 				// 이미 현재 컨트롤러와 같으면 아무것도 안함
 				return;
 			}
-			// 현재 애니메이션의 컨트롤러와 바꿀 컨트롤러의 애니메이션 클립을 블렌딩한다.
-
-			if (stateName.empty() == false && m_pCurAnimController->GetStateByName(stateName) != nullptr)
+			// 현재 애니메이션의 컨트롤러와 바꿀 컨트롤러의 애니메이션 클립을 블렌딩
+			CAnimController* pCurrentController = m_pCurAnimController;
+			CAnimController* pTargetController = it->second;
+			if (stateName.empty() == false && pTargetController->GetStateByName(stateName) != nullptr)
 			{
+				auto pFromAnimState = pCurrentController->GetCurrentState(); // 현재 애니메이터가 재생 중인 AnimState
+				auto pToAnimState = pTargetController->GetStateByName(stateName); // 목표 AnimState
 
-				switch (m_eCurrentTransitionType)
+				if (pFromAnimState == nullptr || pToAnimState == nullptr)
 				{
-				case CAnimController::ETransitionType::FullbodyToFullbody:
-					m_pBlendFromLowerAnim = m_pCurrentAnim;
-					m_pBlendToLowerAnim = it->second->GetStateByName(stateName)->clip;
-					m_pBlendFromUpperAnim = nullptr;
-					m_pBlendToUpperAnim = nullptr;
-					break;
-				case CAnimController::ETransitionType::FullbodyToMasked:
-					m_pBlendFromLowerAnim = m_pCurrentAnim;
-					m_pBlendToLowerAnim = it->second->GetStateByName(stateName)->clip;
-					m_pBlendFromUpperAnim = m_pUpperClip; // 현재 상체 애니메이션
-					m_pBlendToUpperAnim = nullptr; // 상체 애니메이션은 블렌드 안함
-					break;
-				case CAnimController::ETransitionType::MaskedToFullbody:
-					m_pBlendFromLowerAnim = m_pLowerClip; // 현재 하체 애니메이션
-					m_pBlendToLowerAnim = it->second->GetStateByName(stateName)->clip;
-					m_pBlendFromUpperAnim = m_pUpperClip; // 현재 상체 애니메이션
-					m_pBlendToUpperAnim = nullptr; // 상체 애니메이션은 블렌드 안함
-					break;
-				case CAnimController::ETransitionType::MaskedToMasked:
-					m_pBlendFromLowerAnim = m_pLowerClip; // 현재 하체 애니메이션
-					m_pBlendToLowerAnim = it->second->GetStateByName(stateName)->clip;
-					m_pBlendFromUpperAnim = m_pUpperClip; // 현재 상체 애니메이션
-					m_pBlendToUpperAnim = nullptr; // 상체 애니메이션은 블렌드 안함
-					break;
-
+					// 현재 상태나 목표 상태를 찾을 수 없는 경우 처리 (에러 또는 기본 전환)
+					m_pCurAnimController = pTargetController;
+					m_pCurAnimController->SetState(stateName);
+					return;
 				}
+
+				//현재 및 목표 상태가 Fullbody인지 Masked인지 판단
+				_bool bFromIsMasked = pFromAnimState->maskBoneName.empty() == false;
+				_bool bToIsMasked = pToAnimState->maskBoneName.empty() == false;
+
+				//  m_eCurrentTransitionType 결정
+				if (!bFromIsMasked && !bToIsMasked) // Fullbody -> Fullbody
+				{
+					m_eCurrentTransitionType = CAnimController::ETransitionType::FullbodyToFullbody;
+				}
+				else if (!bFromIsMasked && bToIsMasked) // Fullbody -> Masked
+				{
+					m_eCurrentTransitionType = CAnimController::ETransitionType::FullbodyToMasked;
+				}
+				else if (bFromIsMasked && !bToIsMasked) // Masked -> Fullbody
+				{
+					m_eCurrentTransitionType = CAnimController::ETransitionType::MaskedToFullbody;
+				}
+				else // bFromIsMasked && bToIsMasked (Masked -> Masked)
+				{
+					m_eCurrentTransitionType = CAnimController::ETransitionType::MaskedToMasked;
+				}
+
+				// From 애니메이션 설정
+				if (bFromIsMasked)
+				{
+					m_pBlendFromLowerAnim = m_pModel->GetAnimationClipByName(pFromAnimState->lowerClipName);
+					m_pBlendFromUpperAnim = m_pModel->GetAnimationClipByName(pFromAnimState->upperClipName);
+				}
+				else // Fullbody
+				{
+					m_pBlendFromLowerAnim = m_pCurrentAnim; // 현재 재생 중인 Fullbody 애니
+					m_pBlendFromUpperAnim = m_pCurrentAnim; // Fullbody의 상체도 동일 애니
+				}
+
+				// To 애니메이션 설정
+				if (bToIsMasked)
+				{
+					m_pBlendToLowerAnim = m_pModel->GetAnimationClipByName(pToAnimState->lowerClipName);
+					m_pBlendToUpperAnim = m_pModel->GetAnimationClipByName(pToAnimState->upperClipName);
+				}
+				else // Fullbody
+				{
+					m_pBlendToLowerAnim = pToAnimState->clip; // Fullbody는 clip 사용
+					m_pBlendToUpperAnim = pToAnimState->clip; // Fullbody의 상체도 동일 애니
+				}
+
 				CAnimController::TransitionResult transitionResult{};
 				transitionResult.pFromLowerAnim = m_pBlendFromLowerAnim;
 				transitionResult.pToLowerAnim = m_pBlendToLowerAnim;
 				transitionResult.pFromUpperAnim = m_pBlendFromUpperAnim;
 				transitionResult.pToUpperAnim = m_pBlendToUpperAnim;
-				transitionResult.fDuration = 0.f; // 같은 상태라서 바로 
-				m_Blend.active = true;
-			    m_pCurAnimController = it->second;
-				m_pCurAnimController->SetState(stateName);
-				StartTransition(transitionResult);
+
+				transitionResult.fDuration = 0.2f;
+
+				m_Blend.active = true; // 블렌딩 활성화
+				m_pCurAnimController = pTargetController; // 현재 컨트롤러 변경
+				m_pCurAnimController->SetState(stateName); // 컨트롤러의 현재 상태 설정
+				StartTransition(transitionResult); // 실제 블렌딩 시작
 			}
-		}
-		else
-		{
-			// 없으면 그냥 컨트롤러가 변경되면 됨
-			m_pCurAnimController = it->second;
+			else
+			{
+				// 없으면 그냥 컨트롤러가 변경되면 됨
+				m_pCurAnimController = it->second;
+				m_pCurAnimController->SetState(""); // 상태를 비워서 초기화
+			}
 		}
 	}
 
@@ -1135,7 +1174,7 @@ void CAnimator::Update(_float fDeltaTime)
 
 				for (const auto& state : states)
 				{
-					if (state.clip)
+					if (state.maskBoneName.empty() == false)
 					{
 						MakeMaskBones(state.maskBoneName);
 					}

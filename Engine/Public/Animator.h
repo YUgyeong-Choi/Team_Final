@@ -60,6 +60,19 @@ public:
 		return nullptr;
 	}
     void SetCurrentAnimController(const string& name, const string& stateName = "");
+#ifdef _DEBUG
+    void SetCurrentAnimControllerForEditor(const string& name, const string& stateName = "")
+    {
+        // 에디터에서 애니메이션 컨트롤러 설정
+        if (m_AnimControllers.find(name) != m_AnimControllers.end())
+        {
+            m_pCurAnimController = m_AnimControllers[name];
+            m_pCurAnimController->SetState(stateName);
+        }
+    }
+#endif // DEBUG
+
+
     unordered_map<string, Parameter>& GetParameters();
 
     void AddParameter(const string& name, Parameter& parm);

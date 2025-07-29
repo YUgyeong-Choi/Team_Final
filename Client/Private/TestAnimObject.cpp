@@ -71,7 +71,6 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 		m_pAnimator->Deserialize(rootStates);
 	}
 
-	m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
 	return S_OK;
 }
 
@@ -176,7 +175,15 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		// 무기 장착
 		// 애니메이션 컨트롤러 변경
 		m_pAnimator->SetTrigger("EquipWepaon");
+		if (m_pAnimator->CheckBool("Move"))
+		{
+		m_pAnimator->SetCurrentAnimController("Player_TwoHand","EquipWeapon_Walk_F");
+
+		}
+		else
+		{
 		m_pAnimator->SetCurrentAnimController("Player_TwoHand","EquipWeapon");
+		}
 	}
 
 	// 스페이스 바를 눌렀을 때 (한 번만)

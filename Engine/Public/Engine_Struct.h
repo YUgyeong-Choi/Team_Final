@@ -36,6 +36,17 @@ namespace Engine
 		float	fValue = 0.f; // float 값
 	};
 
+	struct OverrideAnimController
+	{
+		string stateName; // 상태 이름
+		string clipNmae;	// 애니메이션 클립 이름
+		string upperClipName; // 상체 애니메이션 이름
+		string lowerClipName; // 하체 애니메이션 이름
+		// 필요시에
+		string maskBoneName; // 마스크 본 이름
+		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
+	};
+
 	typedef struct tagKeyFrame
 	{
 		/* 행렬이 아닌이유? : 상태와 상태 사이를 보간해주기위해서. */

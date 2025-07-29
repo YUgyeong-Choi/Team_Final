@@ -453,7 +453,7 @@
         {
             "ClipName": "AS_Pino_T_Item_Grinder",
             "Duration": 126.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "TickPerSecond": 50.0
         },
         {
