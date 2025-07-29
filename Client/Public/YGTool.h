@@ -42,6 +42,9 @@ private:
 
 	CCameraSequence* m_CameraSequence;
 	int m_iSelectedIndex = 0;
+
+
+	_int m_iEndFrame = {};
 public:
 	HRESULT Render_CameraSequence();
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

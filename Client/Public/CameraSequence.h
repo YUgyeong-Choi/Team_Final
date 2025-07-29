@@ -16,6 +16,12 @@ public:
         int endFrame;
         int type;
         unsigned int color;
+        _matrix worldMatrix = XMMatrixIdentity();
+        INTERPOLATION_CAMERA interpWorld = INTERPOLATION_CAMERA::NONE;
+        _float fFov = 60.f;
+        INTERPOLATION_CAMERA interpFov = INTERPOLATION_CAMERA::NONE;
+        _vector rotation = XMVectorZero();
+        INTERPOLATION_CAMERA interpRotation = INTERPOLATION_CAMERA::NONE;
     };
 public:
     CCameraSequence() = default;
@@ -33,7 +39,7 @@ public:
         {
         case 0: return "Position";
         case 1: return "Rotation";
-        case 2: return "FOV";
+        case 2: return "Fov";
         default: return "Unknown";
         }
     }
@@ -46,48 +52,28 @@ public:
         if (color) *color = m_vecKeys[index].color;
     }
 
+    // 시퀀스 이름
     virtual const char* GetItemLabel(int index) const override
     {
         static char label[64];
-        sprintf_s(label, "Camera Key %d", index);
+        switch (index)
+        {
+        case 0: return "Position";
+            sprintf_s(label, "Camera Key %d", index);
+        case 1: return "Rotation";
+            sprintf_s(label, "Camera Key %d", index);
+        case 2: return "Fov";
+            sprintf_s(label, "Camera Key %d", index);
+        default: return "Unknown";
+        }
+
         return label;
     }
 
-    void Add(int type) override
-    {
-        CAMERA_KEY newKey;
-        newKey.startFrame = 10;
-        newKey.endFrame = 20;
-        newKey.type = type;
-
-        // 타입에 따른 색상 분기
-        switch (type)
-        {
-        case 0: newKey.color = IM_COL32(255, 200, 0, 255); break;      // Position: Yellow
-        case 1: newKey.color = IM_COL32(100, 255, 255, 255); break;    // Rotation: Cyan
-        case 2: newKey.color = IM_COL32(200, 100, 255, 255); break;    // FOV: Purple
-        }
-
-        // 초기값도 필요시 분기 설정 가능
-        m_vecKeys.push_back(newKey);
-    }
-
-    virtual void Del(int index) override
-    {
-        if (index >= 0 && index < (int)m_vecKeys.size())
-            m_vecKeys.erase(m_vecKeys.begin() + index);
-    }
-
-    virtual void Duplicate(int index) override
-    {
-        if (index >= 0 && index < (int)m_vecKeys.size())
-        {
-            CAMERA_KEY copy = m_vecKeys[index];
-            copy.startFrame += 5;
-            copy.endFrame += 5;
-            m_vecKeys.push_back(copy);
-        }
-    }
+    // 시퀀스 추가
+    void Add(_int startFrame, _int endFrame, int type);
+    
+    void Set_EndFrame(_int endFrame);
 
 public:
     std::vector<CAMERA_KEY> m_vecKeys;

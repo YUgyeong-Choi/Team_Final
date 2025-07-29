@@ -29,7 +29,11 @@ HRESULT CYGTool::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_CameraSequence = new CCameraSequence();
-
+	m_CameraSequence->m_iFrameMin = 0;
+	m_CameraSequence->m_iFrameMax = 300;
+	m_CameraSequence->Add(0,10,0);
+	m_CameraSequence->Add(0,10,1);
+	m_CameraSequence->Add(0,10,2);
 	return S_OK;
 }
 
@@ -63,9 +67,9 @@ HRESULT CYGTool::Render()
 }
 
 
-
 HRESULT CYGTool::Render_CameraTool()
 {
+	/*
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
 	ImGui::Begin("Camera Tools", &open, NULL);
@@ -154,6 +158,16 @@ HRESULT CYGTool::Render_CameraTool()
 			ImGui::Text("현재 활성화된 카메라가 없습니다.");
 		}
 	}
+
+	ImGui::End();
+	*/
+
+	SetNextWindowSize(ImVec2(200, 300));
+	_bool open = true;
+	ImGui::Begin("Sequence Tool", &open, NULL);
+
+	ImGui::InputInt("End Frame", &m_iEndFrame, 10, 0);
+	m_CameraSequence->Set_EndFrame(m_iEndFrame);
 
 	ImGui::End();
 	return S_OK;
