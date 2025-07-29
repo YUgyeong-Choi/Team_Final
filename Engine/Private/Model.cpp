@@ -76,11 +76,11 @@ HRESULT CModel::Initialize_Prototype(MODEL eType, const _char* pModelFilePath, _
 	m_eType = eType;
 
 	// 뼈 머태리얼 메쉬 애니메이션 읽고 생성
-	Read_BinaryFBX(pModelFilePath);
+	return Read_BinaryFBX(pModelFilePath);
 
 	//Read_OriginalFBX(pModelFilePath);
 
-	return S_OK;
+	//return S_OK;
 }
 
 HRESULT CModel::Initialize(void* pArg)

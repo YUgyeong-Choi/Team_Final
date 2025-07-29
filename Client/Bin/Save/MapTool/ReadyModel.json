@@ -1,17 +1,12 @@
 [
     {
-        "ModelName": "SM_BuildingA_Door_01",
-        "ObjectCount": 24,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_01.bin"
-    },
-    {
-        "ModelName": "SM_BuildingA_Door_02",
-        "ObjectCount": 8,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_02.bin"
-    },
-    {
-        "ModelName": "SM_BuildingA_Door_05",
+        "ModelName": "FloorA",
         "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_05.bin"
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorA.bin"
+    },
+    {
+        "ModelName": "FloorB",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorB.bin"
     }
 ]

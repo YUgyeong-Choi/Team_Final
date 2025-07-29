@@ -222,6 +222,9 @@ HRESULT CMapTool::Save_Map()
 
 		for (CGameObject* pGameObject : MapObjectList)
 		{
+			// JSON 하나 구성
+			json ObjectJson;
+
 			//모델 위치들 저장
 			_matrix matWorld = pGameObject->Get_TransfomCom()->Get_WorldMatrix();
 			_float4x4 matWorldFloat4x4;
@@ -239,7 +242,13 @@ HRESULT CMapTool::Save_Map()
 				MatrixJson.push_back(Row);
 			}
 
-			ModelJson["Objects"].push_back({ {"WorldMatrix", MatrixJson} });
+			CMapToolObject* pMapToolObject = static_cast<CMapToolObject*>(pGameObject);
+
+			ObjectJson["WorldMatrix"] = MatrixJson;
+			if(pMapToolObject->m_bUseTiling)
+				ObjectJson["TileDensity"] = { pMapToolObject->m_TileDensity[0], pMapToolObject->m_TileDensity[1] };
+
+			ModelJson["Objects"].push_back(ObjectJson);
 		}
 
 		MapDataJson["Models"].push_back(ModelJson);
@@ -305,6 +314,19 @@ HRESULT CMapTool::Load_Map()
 
 			MapToolObjDesc.iID = m_iID++;
 
+			//타일링
+			if (objects[j].contains("TileDensity"))
+			{
+				MapToolObjDesc.bUseTiling = true;
+
+				const json& TileDensityJson = objects[j]["TileDensity"];
+				MapToolObjDesc.vTileDensity = {
+					TileDensityJson[0].get<_float>(),
+					TileDensityJson[1].get<_float>()
+				};
+			}
+
+
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 				ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
 				return E_FAIL;
@@ -360,6 +382,7 @@ void CMapTool::Render_Hierarchy()
 					if (ImGui::Selectable(strHierarchyName.c_str(), isSelected))
 					{
 						m_iSelectedHierarchyIndex = i; // 현재 선택된 항목으로 갱신
+						m_pSelectedObject = static_cast<CMapToolObject*>(Get_Selected_GameObject());
 					}
 
 					if (isSelected)
@@ -609,116 +632,11 @@ void CMapTool::Render_Detail()
 
 	ImGui::Separator();
 
-	ImGui::Text("Transform");
+	Detail_Transform();
 
-	CMapToolObject* pSelectedObject = static_cast<CMapToolObject*>(Get_Selected_GameObject());
+	ImGui::Separator();
 
-	if (pSelectedObject != nullptr)
-	{
-		CTransform* pTransform = pSelectedObject->Get_TransfomCom();
-
-		//리셋 버튼
-		ImGui::SameLine();
-		if (ImGui::Button("Reset"))
-		{
-			_float4x4 MatrixIdentity = {};
-			XMStoreFloat4x4(&MatrixIdentity, XMMatrixIdentity());
-			pTransform->Set_WorldMatrix(MatrixIdentity);
-		}
-
-		//컨트롤 클릭 하면 피킹된 위치로 이동
-		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
-		{
-			_float4 vPickedPos = {};
-			if (m_pGameInstance->Picking(&vPickedPos))
-			{
-				//이전 월드 행렬 저장
-				pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
-
-				pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
-
-			}
-		}
-
-
-#pragma region 기즈모 및 행렬 분해
-		_float4x4 worldMat;
-		XMStoreFloat4x4(&worldMat, pTransform->Get_WorldMatrix());
-
-		_float matrix[16];
-		memcpy(matrix, &worldMat, sizeof(float) * 16);
-
-		// 분해
-		_float position[3], rotation[3], scale[3];
-		ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
-
-		// ImGuizmo 설정
-		ImGuizmo::BeginFrame();
-		ImGuizmo::SetOrthographic(false);
-		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
-
-		ImVec2 displaySize = ImGui::GetIO().DisplaySize;
-		ImGuizmo::SetRect(0, 0, displaySize.x, displaySize.y);
-
-		_float viewMat[16], projMat[16];
-		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(viewMat), m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
-		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(projMat), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
-
-		// Gizmo 조작
-		ImGuizmo::Manipulate(viewMat, projMat, m_currentOperation, ImGuizmo::LOCAL, matrix);
-#pragma endregion
-
-#pragma region 포지션
-		_bool bPositionChanged = ImGui::InputFloat3("##Position", position, "%.2f");
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Position", m_currentOperation == ImGuizmo::TRANSLATE))
-			m_currentOperation = ImGuizmo::TRANSLATE;
-#pragma endregion
-
-#pragma region 회전
-		_bool bRotationChanged = ImGui::InputFloat3("##Rotation", rotation, "%.2f");
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Rotation", m_currentOperation == ImGuizmo::ROTATE))
-			m_currentOperation = ImGuizmo::ROTATE;
-#pragma endregion
-
-#pragma region 스케일
-		_bool bScaleChanged = ImGui::InputFloat3("##Scale", scale, "%.2f");
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Scale", m_currentOperation == ImGuizmo::SCALE))
-			m_currentOperation = ImGuizmo::SCALE;
-#pragma endregion
-
-#pragma region 적용
-
-		//전에 안눌렸고 지금 눌렸으면 저장
-		if (m_bWasUsingGizmoLastFrame == false && ImGuizmo::IsUsing())
-		{
-			//이전 월드 행렬 저장
-			pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
-
-			m_bWasUsingGizmoLastFrame = true;
-		}
-		m_bWasUsingGizmoLastFrame = ImGuizmo::IsUsing();
-
-		if (ImGuizmo::IsUsing())
-		{
-			// ImGuizmo로 조작된 matrix 그대로 적용
-			memcpy(&worldMat, matrix, sizeof(_float) * 16);
-			pTransform->Set_WorldMatrix(worldMat);
-		}
-		else if (bPositionChanged || bRotationChanged || bScaleChanged)
-		{
-			pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
-
-			// 수동 입력으로 바뀐 값 → matrix 재구성 후 적용
-			ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, matrix);
-			memcpy(&worldMat, matrix, sizeof(_float) * 16);
-			pTransform->Set_WorldMatrix(worldMat);
-		}
-
-#pragma endregion
-	}
+	Detail_Tile();
 
 	ImGui::End();
 #pragma endregion
@@ -993,6 +911,7 @@ void CMapTool::DeleteMapToolObject()
 		pGameObject->Set_bDead();
 
 		m_iSelectedHierarchyIndex = -1;
+		m_pSelectedObject = nullptr;
 	}
 }
 
@@ -1106,6 +1025,7 @@ void CMapTool::Picking()
 	{
 		printf("ID: %d\n", iID);
 		m_iSelectedHierarchyIndex = Find_HierarchyIndex_By_ID(iID);
+		m_pSelectedObject = static_cast<CMapToolObject*>(Get_Selected_GameObject());
 	}
 }
 
@@ -1174,6 +1094,135 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 		pCameraFree->Set_Moveable(true);
 	}
 
+}
+
+void CMapTool::Detail_Transform()
+{
+	ImGui::Text("Transform");
+
+	if (m_pSelectedObject != nullptr)
+	{
+		CTransform* pTransform = m_pSelectedObject->Get_TransfomCom();
+
+		//리셋 버튼
+		ImGui::SameLine();
+		if (ImGui::Button("Reset"))
+		{
+			_float4x4 MatrixIdentity = {};
+			XMStoreFloat4x4(&MatrixIdentity, XMMatrixIdentity());
+			pTransform->Set_WorldMatrix(MatrixIdentity);
+		}
+
+		//컨트롤 클릭 하면 피킹된 위치로 이동
+		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+		{
+			_float4 vPickedPos = {};
+			if (m_pGameInstance->Picking(&vPickedPos))
+			{
+				//이전 월드 행렬 저장
+				m_pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
+
+				pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
+
+			}
+		}
+
+
+#pragma region 기즈모 및 행렬 분해
+		_float4x4 worldMat;
+		XMStoreFloat4x4(&worldMat, pTransform->Get_WorldMatrix());
+
+		_float matrix[16];
+		memcpy(matrix, &worldMat, sizeof(float) * 16);
+
+		// 분해
+		_float position[3], rotation[3], scale[3];
+		ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
+
+		// ImGuizmo 설정
+		ImGuizmo::BeginFrame();
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+
+		ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+		ImGuizmo::SetRect(0, 0, displaySize.x, displaySize.y);
+
+		_float viewMat[16], projMat[16];
+		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(viewMat), m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+		XMStoreFloat4x4(reinterpret_cast<_float4x4*>(projMat), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+
+		// Gizmo 조작
+		ImGuizmo::Manipulate(viewMat, projMat, m_currentOperation, ImGuizmo::LOCAL, matrix);
+#pragma endregion
+
+#pragma region 포지션
+		_bool bPositionChanged = ImGui::InputFloat3("##Position", position, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Position", m_currentOperation == ImGuizmo::TRANSLATE))
+			m_currentOperation = ImGuizmo::TRANSLATE;
+#pragma endregion
+
+#pragma region 회전
+		_bool bRotationChanged = ImGui::InputFloat3("##Rotation", rotation, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rotation", m_currentOperation == ImGuizmo::ROTATE))
+			m_currentOperation = ImGuizmo::ROTATE;
+#pragma endregion
+
+#pragma region 스케일
+		_bool bScaleChanged = ImGui::InputFloat3("##Scale", scale, "%.2f");
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Scale", m_currentOperation == ImGuizmo::SCALE))
+			m_currentOperation = ImGuizmo::SCALE;
+#pragma endregion
+
+#pragma region 적용
+
+		//전에 안눌렸고 지금 눌렸으면 저장
+		if (m_bWasUsingGizmoLastFrame == false && ImGuizmo::IsUsing())
+		{
+			//이전 월드 행렬 저장
+			m_pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
+
+			m_bWasUsingGizmoLastFrame = true;
+		}
+		m_bWasUsingGizmoLastFrame = ImGuizmo::IsUsing();
+
+		if (ImGuizmo::IsUsing())
+		{
+			// ImGuizmo로 조작된 matrix 그대로 적용
+			memcpy(&worldMat, matrix, sizeof(_float) * 16);
+			pTransform->Set_WorldMatrix(worldMat);
+		}
+		else if (bPositionChanged || bRotationChanged || bScaleChanged)
+		{
+			m_pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
+
+			// 수동 입력으로 바뀐 값 → matrix 재구성 후 적용
+			ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, matrix);
+			memcpy(&worldMat, matrix, sizeof(_float) * 16);
+			pTransform->Set_WorldMatrix(worldMat);
+		}
+
+#pragma endregion
+	}
+}
+
+void CMapTool::Detail_Tile()
+{
+	if (m_pSelectedObject)
+	{
+		ImGui::Text("Tile Settings");
+
+		// 타일링 여부 체크박스
+		ImGui::Checkbox("Enable Tiling", &m_pSelectedObject->m_bUseTiling);
+
+		// 타일링 값 슬라이더 (X, Z)
+		if (m_pSelectedObject->m_bUseTiling)
+		{
+			ImGui::DragFloat2("Tiling (X,Z)", m_pSelectedObject->m_TileDensity, 0.01f, 0.01f, 32.0f, "%.2f");
+		}
+	}
 }
 
 

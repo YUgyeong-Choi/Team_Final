@@ -7,10 +7,6 @@ NS_BEGIN(Engine)
 class CSound_Core;
 NS_END
 
-#define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
-#define PRE_TRANSFORMMATRIX_SCALE 0.01f
-#define INSTANCE_THRESHOLD 1 //이 갯수 이상 모델로드시 인스턴싱으로 로드한다.
-
 NS_BEGIN(Client)
 
 class CLevel_KratHotel final : public CLevel

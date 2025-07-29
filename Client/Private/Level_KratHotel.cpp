@@ -192,6 +192,9 @@ HRESULT CLevel_KratHotel::Load_StaticMesh(_uint iObjectCount, const json& object
 {
 	for (_uint j = 0; j < iObjectCount; ++j)
 	{
+#pragma region 월드행렬
+		CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
+
 		const json& WorldMatrixJson = objects[j]["WorldMatrix"];
 		_float4x4 WorldMatrix = {};
 
@@ -199,12 +202,25 @@ HRESULT CLevel_KratHotel::Load_StaticMesh(_uint iObjectCount, const json& object
 			for (_int col = 0; col < 4; ++col)
 				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
-		//오브젝트 생성, 배치
+		StaticMeshDesc.WorldMatrix = WorldMatrix;
+#pragma endregion
+
+#pragma region 타일링
+		//타일링
+		if (objects[j].contains("TileDensity"))
+		{
+			StaticMeshDesc.bUseTiling = true;
+
+			const json& TileDensityJson = objects[j]["TileDensity"];
+			StaticMeshDesc.vTileDensity = {
+				TileDensityJson[0].get<_float>(),
+				TileDensityJson[1].get<_float>()
+			};
+		}
+#pragma endregion
 
 		wstring LayerTag = TEXT("Layer_MapToolObject_");
 		LayerTag += StringToWString(ModelName);
-
-		CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
 
 		StaticMeshDesc.iRender = 0;
 		StaticMeshDesc.m_eLevelID = LEVEL::KRAT_HOTEL;
@@ -215,7 +231,7 @@ HRESULT CLevel_KratHotel::Load_StaticMesh(_uint iObjectCount, const json& object
 		ModelPrototypeTag += wstrModelName;
 
 		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-		StaticMeshDesc.WorldMatrix = WorldMatrix;
+
 
 		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
 			ENUM_CLASS(LEVEL::KRAT_HOTEL), LayerTag, &StaticMeshDesc)))

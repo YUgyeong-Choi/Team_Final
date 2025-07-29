@@ -12,7 +12,7 @@ CMesh::CMesh(const CMesh& Prototype)
 	: CVIBuffer( Prototype )
 {
 	//메쉬 클론 안함?
-	_int a = 0;
+	//_int a = 0;
 }
 
 HRESULT CMesh::Initialize_Prototype(MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)

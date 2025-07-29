@@ -3,9 +3,6 @@
 
 #include "Client_Defines.h"
 
-#define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
-#define PRE_TRANSFORMMATRIX_SCALE 0.01f
-
 NS_BEGIN(Client)
 
 class CMapTool final : public CGameObject
@@ -65,6 +62,11 @@ private:
 	void Control_PreviewObject(_float fTimeDelta);
 
 private:
+	void Detail_Transform();
+	void Detail_Tile();
+	//컨백스 또는 트라이앵글 선택(기본 컨백스)
+
+private:
 	//이전 프레임에 기즈모를 사용 중인가?
 	bool m_bWasUsingGizmoLastFrame = false;
 
@@ -79,6 +81,9 @@ private:
 	//즐겨찾기 목록
 	vector<string>	m_FavoriteModelNames = {};
 	_int			m_iSelectedFavoriteModelIndex = { -1 };
+
+	class CMapToolObject* m_pSelectedObject = { nullptr };
+
 private:
 	map<string, list<CGameObject*>> m_ModelGroups;
 	_int m_iSelectedHierarchyIndex = { -1 };

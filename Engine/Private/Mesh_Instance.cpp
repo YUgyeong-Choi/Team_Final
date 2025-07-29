@@ -11,7 +11,7 @@ CMesh_Instance::CMesh_Instance(const CMesh_Instance& Prototype)
 	: CVIBuffer_Instance(Prototype)
 {
 	//메쉬는 클론을 안하나?
-	_int a = 0;
+	//_int a = 0;
 }
 
 //HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)

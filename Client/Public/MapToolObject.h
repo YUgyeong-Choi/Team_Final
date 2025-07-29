@@ -12,6 +12,8 @@ NS_BEGIN(Client)
 
 class CMapToolObject final : public CGameObject
 {
+	friend class CMapTool;
+
 public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
@@ -24,7 +26,8 @@ public:
 			0.f, 0.f, 0.f, 1.f
 		);
 		_uint		iID = { 0 };
-
+		_bool		bUseTiling = { false };
+		_float2		vTileDensity = { 1.f, 1.f };
 	}MAPTOOLOBJ_DESC;
 
 private:
@@ -72,11 +75,15 @@ private:
 	_uint	m_iID = { 0 };
 
 private:
+	_bool	m_bUseTiling = { false };
+	_float	m_TileDensity[2] = { 1.0f, 1.0f };
+
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+
 private:
 	HRESULT Ready_Components(void *pArg);
-
 	HRESULT Bind_ShaderResources();
 
 public:
