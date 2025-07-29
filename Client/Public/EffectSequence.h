@@ -56,6 +56,11 @@ public:
     _int m_iFrameMax = { 80 };
     _int m_iFrameMin = { 0 };
 
+
+public:
+    vector<SequenceItem>& Get_Items() { return m_Items; }
+
+
 };
 
 NS_END

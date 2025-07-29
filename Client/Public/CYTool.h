@@ -41,6 +41,11 @@ private:
 	HRESULT Save_EffectSet();
 	HRESULT Load_EffectSet();
 
+	HRESULT Save_Sprite(json& jItem, class CEffectBase* pEffect);
+	HRESULT Save_Particle(json& jItem, class CEffectBase* pEffect);
+	HRESULT Save_Mesh(json& jItem, class CEffectBase* pEffect);
+	HRESULT Save_Trail(json& jItem, class CEffectBase* pEffect);
+
 	HRESULT Load_Textures();
 	HRESULT Draw_TextureBrowser(class CEffectBase* pEffect);
 
@@ -107,7 +112,6 @@ private:
 
 #pragma region ImSequence
 	// 시퀀스 용 변수들
-	enum EFFECT_TYPE { EFF_SPRITE, EFF_PARTICLE, EFF_MESH, EFF_TRAIL, SE_END };
 
 	class CEffectSequence* m_pSequence = { nullptr };
 

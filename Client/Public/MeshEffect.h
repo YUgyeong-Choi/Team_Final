@@ -50,6 +50,9 @@ public:
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
+public:
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
 };
 
 NS_END

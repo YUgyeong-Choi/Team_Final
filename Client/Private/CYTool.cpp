@@ -181,7 +181,7 @@ HRESULT CCYTool::SequenceWindow()
 		CEffectBase* pInstance = { nullptr };
 		switch (m_eEffectType)
 		{
-		case Client::CCYTool::EFF_SPRITE:
+		case Client::EFF_SPRITE:
 		{
 			CToolSprite::DESC desc = {};
 			desc.bAnimation = true;
@@ -195,7 +195,7 @@ HRESULT CCYTool::SequenceWindow()
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
 		}
 			break;
-		case Client::CCYTool::EFF_PARTICLE:
+		case Client::EFF_PARTICLE:
 		{
 			CToolParticle::DESC desc = {};
 			desc.iShaderPass = ENUM_CLASS(SE_UVSPRITE_COLOR);
@@ -219,7 +219,7 @@ HRESULT CCYTool::SequenceWindow()
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
 		}
 			break;
-		case Client::CCYTool::EFF_MESH:
+		case Client::EFF_MESH:
 		{
 			CToolMeshEffect::DESC desc = {};
 			desc.bAnimation = true;
@@ -234,14 +234,20 @@ HRESULT CCYTool::SequenceWindow()
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
 		}
 			break;
-		case Client::CCYTool::EFF_TRAIL:
+		case Client::EFF_TRAIL:
 			break;
 		}
 		if (pInstance != nullptr)
 			m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 	}
 
-	ImSequencer::Sequencer(m_pSequence, &m_iCurFrame, &m_bExpanded, &m_iSelected, &m_iFirstFrame, ImSequencer::SEQUENCER_EDIT_ALL);
+	ImSequencer::Sequencer(
+		m_pSequence,
+		&m_iCurFrame,
+		&m_bExpanded,
+		&m_iSelected,
+		&m_iFirstFrame,
+		ImSequencer::SEQUENCER_EDIT_ALL);
 
 	ImGui::End();
 	return S_OK;
@@ -256,7 +262,7 @@ HRESULT CCYTool::Edit_Preferences()
 		return S_OK;
 	}
 	auto pEffect = m_pSequence->m_Items[m_iSelected].pEffect;
-
+	
 	ImGui::Text("StartTrackPos: %d", *pEffect->Get_StartTrackPosition_Ptr());
 	ImGui::Text("EndTrackPos: %d", *pEffect->Get_EndTrackPosition_Ptr());
 	ImGui::Text("Duration: %d", *pEffect->Get_Duration_Ptr());
@@ -293,21 +299,21 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 	switch (m_pSequence->m_Items[m_iSelected].iType)
 	{
-	case Client::CCYTool::EFF_SPRITE:
+	case Client::EFF_SPRITE:
 		if (FAILED(Window_Sprite()))
 		{
 			ImGui::End();
 			return E_FAIL;
 		}
 		break;
-	case Client::CCYTool::EFF_PARTICLE:
+	case Client::EFF_PARTICLE:
 		if (FAILED(Window_Particle()))
 		{
 			ImGui::End();
 			return E_FAIL;
 		}
 		break;
-	case Client::CCYTool::EFF_MESH:
+	case Client::EFF_MESH:
 		if (FAILED(Window_Mesh()))
 		{
 			ImGui::End();
@@ -349,9 +355,18 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 1.f, 1000.f, "%.1f");
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.1f, 1.f, 1000.f, "%.1f");
 	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.1f, -1000.f, 1000.f, "%.1f");
+	// ¾ÆÁ÷¾È¸¸µê
 	ImGui::Checkbox("Gravity", &m_bGravity);
 	ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
 	ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
+
+	if (ImGui::RadioButton("Explosion", m_eParticleType == PTYPE_SPREAD)) {
+		m_eParticleType = PTYPE_SPREAD;
+	}
+	if (ImGui::RadioButton("Drop", m_eParticleType == PTYPE_DROP)) {
+		m_eParticleType = PTYPE_DROP;
+	}
+
 
 	if(ImGui::Button("Update Particle"))
 	{
@@ -368,7 +383,6 @@ HRESULT CCYTool::Window_Particle()
 		
 		pPE->Change_InstanceBuffer(&desc);
 	}
-
 
 	// Gravity
 	// Accel, Decel
@@ -467,7 +481,6 @@ void CCYTool::Edit_Keyframes(CEffectBase* pEffect)
 	ImGui::End();
 }
 
-
 HRESULT CCYTool::Load_EffectModel()
 {
 	if (IFILEDIALOG->Display("Mesh Effect Model Select"))
@@ -498,7 +511,6 @@ HRESULT CCYTool::Make_EffectModel_Prototypes(const string strModelFilePath)
 	path ModelName = ModelPath.stem();
 	_wstring strModelTag = ModelName.wstring();
 
-
 	_matrix		PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), _wstring(L"Prototype_Component_Model_") + strModelTag,
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelFilePath.c_str(), PreTransformMatrix))))
@@ -510,10 +522,68 @@ HRESULT CCYTool::Make_EffectModel_Prototypes(const string strModelFilePath)
 
 HRESULT CCYTool::Save_EffectSet()
 {
+	path SavePath = R"(../Bin/DataFiles/Effect/EffectContainer/)";
+	ofstream ofs(SavePath);
+	if (!ofs.is_open())
+		return E_FAIL;
+	json jSave;
+
+	auto& Items = m_pSequence->Get_Items();
+
+	for (auto& Item : Items)
+	{
+		json jItem;
+		jItem["Name"] = Item.strName.data();
+		jItem["StartPos"] = *Item.iStart;
+		jItem["EndPos"] = *Item.iEnd;
+		jItem["EffectType"] = Item.iType;
+		
+		switch (Item.iType)
+		{
+		case Client::EFF_SPRITE:
+			Save_Sprite(jItem, Item.pEffect);
+			break;
+		case Client::EFF_PARTICLE:
+			Save_Particle(jItem, Item.pEffect);
+			break;
+		case Client::EFF_MESH:
+			Save_Mesh(jItem, Item.pEffect);
+			break;
+		case Client::EFF_TRAIL:
+			Save_Trail(jItem, Item.pEffect);
+			break;
+		default:
+			break;
+		}
+		jSave["EffectObject"].push_back(jItem);
+	}
+
 	return S_OK;
 }
 
 HRESULT CCYTool::Load_EffectSet()
+{
+	return S_OK;
+}
+
+HRESULT CCYTool::Save_Sprite(json& jItem, CEffectBase* pEffect)
+{
+	json asfd;
+
+	return S_OK;
+}
+
+HRESULT CCYTool::Save_Particle(json& jItem, CEffectBase* pEffect)
+{
+	return S_OK;
+}
+
+HRESULT CCYTool::Save_Mesh(json& jItem, CEffectBase* pEffect)
+{
+	return S_OK;
+}
+
+HRESULT CCYTool::Save_Trail(json& jItem, CEffectBase* pEffect)
 {
 	return S_OK;
 }

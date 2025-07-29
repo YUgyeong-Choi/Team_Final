@@ -1,5 +1,6 @@
 #include "EffectSequence.h"
 #include "EffectBase.h"
+#include "Serializable.h"
 
 CEffectSequence::~CEffectSequence()
 {

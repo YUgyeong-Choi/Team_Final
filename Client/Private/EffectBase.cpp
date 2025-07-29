@@ -100,6 +100,11 @@ void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	else
 		m_iTileIdx = 0;
 
+	if (m_iTileX == 0)
+		m_iTileX = 1;
+	if (m_iTileY == 0)
+		m_iTileY = 1;
+
 	m_fTileSize.x = 1.0f / _float(m_iTileX);
 	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
@@ -187,9 +192,9 @@ void CEffectBase::Update_Keyframes()
 }
 
 #ifdef USE_IMGUI
-HRESULT CEffectBase::Change_Texture(_wstring strTextureName)
+HRESULT CEffectBase::Change_Texture(_wstring strTextureName, TEXUSAGE eTex)
 {
-	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTextureCom[eTex]);
 	_wstring strTextureTag = L"Prototype_Component_Texture_" + strTextureName;
 	return Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom));
@@ -198,11 +203,55 @@ HRESULT CEffectBase::Change_Texture(_wstring strTextureName)
 
 void CEffectBase::Free()
 {
-	__super::Free();
+	__super::Free();	
 
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pMaskTextureCom[0]);
-	Safe_Release(m_pMaskTextureCom[1]);
+	for (_uint i = 0; i < TU_END; i++)
+	{
+		Safe_Release(m_pTextureCom[i]);
+	}
 
+}
+
+json CEffectBase::tagEffectKeyFrame::Serialize()
+{
+	json j;
+
+	j["Scale"] = { vScale.x, vScale.y, vScale.z };
+	j["Rotation"] = { vRotation.x, vRotation.y, vRotation.z, vRotation.w };
+	j["Translation"] = { vTranslation.x, vTranslation.y, vTranslation.z };
+	j["Color"] = { vColor.x, vColor.y, vColor.z, vColor.w };
+	j["TrackPosition"] = fTrackPosition;
+	j["Interpolation"] = static_cast<int>(eInterpolationType); // 정수 저장
+
+	return j;
+}
+
+void CEffectBase::tagEffectKeyFrame::Deserialize(const json& j)
+{
+	if (j.contains("Scale") && j["Scale"].is_array() && j["Scale"].size() == 3)
+	{
+		vScale = { j["Scale"][0].get<_float>(), j["Scale"][1].get<_float>(), j["Scale"][2].get<_float>() };
+	}
+
+	if (j.contains("Rotation") && j["Rotation"].is_array() && j["Rotation"].size() == 4)
+	{
+		vRotation = { j["Rotation"][0].get<_float>(), j["Rotation"][1].get<_float>(), j["Rotation"][2].get<_float>(), j["Rotation"][3].get<_float>() };
+	}
+
+	if (j.contains("Translation") && j["Translation"].is_array() && j["Translation"].size() == 3)
+	{
+		vTranslation = { j["Translation"][0].get<_float>(), j["Translation"][1].get<_float>(), j["Translation"][2].get<_float>() };
+	}
+
+	if (j.contains("Color") && j["Color"].is_array() && j["Color"].size() == 4)
+	{
+		vColor = { j["Color"][0].get<_float>(), j["Color"][1].get<_float>(), j["Color"][2].get<_float>(), j["Color"][3].get<_float>() };
+	}
+
+	if (j.contains("TrackPosition"))
+		fTrackPosition = j["TrackPosition"].get<_float>();
+
+	if (j.contains("Interpolation"))
+		eInterpolationType = static_cast<INTERPOLATION>(j["Interpolation"].get<int>());
 }

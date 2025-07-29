@@ -29,12 +29,13 @@ public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Update(_float fTimeDelta);
+	virtual void Update_Tool(_float fCurTrackPos);
 
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
 
-	virtual void Drop(_float fTimeDelta);
-	virtual void Spread(_float fTimeDelta);
+	virtual void Drop(_float fTimeDelta, _bool bTool = false);
+	virtual void Spread(_float fTimeDelta, _bool bTool = false);
 
 	void Set_Loop(_bool isLoop) { m_isLoop = isLoop; }
 

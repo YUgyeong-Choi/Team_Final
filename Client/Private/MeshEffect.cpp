@@ -67,17 +67,17 @@ HRESULT CMeshEffect::Render()
 	{
 		if (m_bTextureUsage[TU_DIFFUSE] == true)
 		{
-			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+			if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 				return E_FAIL;
 		}
 		if (m_bTextureUsage[TU_MASK1] == true)
 		{
-			if (FAILED(m_pMaskTextureCom[0]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
+			if (FAILED(m_pTextureCom[TU_MASK1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
 				return E_FAIL;
 		}
 		if (m_bTextureUsage[TU_MASK2] == true)
 		{
-			if (FAILED(m_pMaskTextureCom[1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
+			if (FAILED(m_pTextureCom[TU_MASK2]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
 				return E_FAIL;
 		}
 		//m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
@@ -125,7 +125,7 @@ HRESULT CMeshEffect::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
@@ -165,4 +165,13 @@ void CMeshEffect::Free()
 	__super::Free();
 
 	Safe_Release(m_pModelCom);
+}
+
+json CMeshEffect::Serialize()
+{
+	return json();
+}
+
+void CMeshEffect::Deserialize(const json& j)
+{
 }

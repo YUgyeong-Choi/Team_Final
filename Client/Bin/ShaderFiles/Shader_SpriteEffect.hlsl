@@ -1,4 +1,3 @@
-#include "Engine_Shader_Defines.hlsli"
 #include "Effect_Shader_Defines.hlsli"
 
 

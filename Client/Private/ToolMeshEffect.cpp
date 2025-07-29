@@ -67,17 +67,17 @@ HRESULT CToolMeshEffect::Render()
 	{
 		if (m_bTextureUsage[TU_DIFFUSE] == true)
 		{
-			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+			if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 				return E_FAIL;
 		}
 		if (m_bTextureUsage[TU_MASK1] == true)
 		{
-			if (FAILED(m_pMaskTextureCom[0]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
+			if (FAILED(m_pTextureCom[TU_MASK1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
 				return E_FAIL;
 		}
 		if (m_bTextureUsage[TU_MASK2] == true)
 		{
-			if (FAILED(m_pMaskTextureCom[1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
+			if (FAILED(m_pTextureCom[TU_MASK2]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
 				return E_FAIL;
 		}
 
@@ -114,15 +114,15 @@ HRESULT CToolMeshEffect::Ready_Components()
 
 	/* For.Com_Texture */ 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Thunder_01_4x1_SC_GDH"), // 세로
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_DIFFUSE]))))
 		return E_FAIL;
 	/* For.Com_TextureMask1 */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Aura_04_C_LGS"), // 가로
-		TEXT("Com_TextureMask1"), reinterpret_cast<CComponent**>(&m_pMaskTextureCom[0]))))
+		TEXT("Com_TextureMask1"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK1]))))
 		return E_FAIL;
 	/* For.Com_TextureMask2 */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Tile_Noise_81_C_GDH"), // 노이즈
-		TEXT("Com_TextureMask2"), reinterpret_cast<CComponent**>(&m_pMaskTextureCom[1]))))
+		TEXT("Com_TextureMask2"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK2]))))
 		return E_FAIL;
 
 	return S_OK;

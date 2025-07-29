@@ -1,4 +1,3 @@
-#include "Engine_Shader_Defines.hlsli"
 #include "Effect_Shader_Defines.hlsli"
 
 Texture2D g_Texture;
@@ -121,7 +120,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord));
+    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     
     if(Out.vColor.a < 0.1f)
         discard;
@@ -135,8 +134,6 @@ PS_OUT PS_MAIN(PS_IN In)
     
     return Out;
 }
-
-
 
 technique11 DefaultTechnique
 {

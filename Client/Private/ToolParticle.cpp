@@ -83,12 +83,18 @@ void CToolParticle::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	else
 		m_iTileIdx = 0;
 
+	if (m_iTileX == 0)
+		m_iTileX = 1;
+	if (m_iTileY == 0)
+		m_iTileY = 1;
+
 	m_fTileSize.x = 1.0f / _float(m_iTileX);
 	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
 
-	m_pVIBufferCom->Update(fTimeDelta);
+	//m_pVIBufferCom->Update(fTimeDelta);
+	m_pVIBufferCom->Update_Tool(m_fCurrentTrackPosition);
 
 }
 
@@ -158,7 +164,7 @@ HRESULT CToolParticle::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
