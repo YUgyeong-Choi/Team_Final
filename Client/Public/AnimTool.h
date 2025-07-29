@@ -34,12 +34,15 @@ private:
 	HRESULT Render_TransitionConditions();
 	HRESULT Render_AnimationSequence();
 	HRESULT Render_AnimStatesByNode();
+	HRESULT Render_AnimControllers();
+	HRESULT Render_SaveLoadButtons();
+	HRESULT Render_AddStatePopup(CAnimController* pCtrl, _int& iSpecificNodeId, CAnimation* pCurAnimation);
+	HRESULT Render_NodesAndLinks(CAnimController* pCtrl);
+	HRESULT Render_SelectedNodeInfo(CAnimController* pCtrl, _int& iSpecificNodeId, const vector<CAnimation*>& anims, const vector<string>& animNames);
 	HRESULT Render_Loaded_Models();
 	HRESULT Render_Load_Model();
 	HRESULT Render_AnimEvents();
 	HRESULT Render_Parameters();
-	HRESULT Render_AnimControllers();
-
 	HRESULT Bind_Shader();
 
 	void UpdateCurrentModel(_float fTimeDelta);
@@ -62,10 +65,11 @@ private:
 		const _float snapS[3] = nullptr    // 스케일용 스냅 (factor)
 	);
 
-	// 노드관련
-	void SelectNode();
-	void CreateLink();
+	vector<string> GetAnimNames();
 
+	HRESULT Handle_LinkCreation(CAnimController* pCtrl, _int& iSpecificNodeId);
+	HRESULT Handle_LinkDeletion(CAnimController* pCtrl);
+	HRESULT Handle_NodeDeletion(CAnimController* pCtrl);
 	HRESULT Modify_Transition(CAnimController::Transition& transition);
 
 private:

@@ -9,6 +9,13 @@ class ENGINE_DLL CAnimController final : public CBase, public ISerializable
 {
 public:
 	enum class EOp { IsTrue, IsFalse, Greater, Less,NotEqual,Equal,  Trigger, None};
+
+	enum class ETransitionType {
+		FullbodyToFullbody,         // 통짜 -> 통짜
+		FullbodyToMasked,           // 통짜 -> 상하체 분리
+		MaskedToFullbody,           // 상하체 분리 -> 통짜
+		MaskedToMasked              // 상하체 분리 -> 상하체 분리
+	};
 	struct Condition
 	{
 		string			paramName;
@@ -47,6 +54,19 @@ public:
 		vector<Condition> conditions; // 전환 조건
 		_bool hasExitTime = false; // 애니메이션이 다 끝난 경우에
 		_bool Evaluates(class CAnimController* pAnimController, class CAnimator* pAnimator) const;
+	};
+
+	struct TransitionResult
+	{
+		_bool bTransition = false; // 전환 여부
+		_bool bBlendFullbody = true; // 블렌드 여부
+		ETransitionType eType = ETransitionType::FullbodyToFullbody;
+		CAnimation* pFromLowerAnim = nullptr; // 전환 시작 하체/통짜 클립
+		CAnimation* pToLowerAnim = nullptr;   // 전환 목표 하체/통짜 클립
+		CAnimation* pFromUpperAnim = nullptr; // 전환 시작 상체 클립 
+		CAnimation* pToUpperAnim = nullptr;   // 전환 목표 상체 클립 
+		_float fDuration = 0.f; // 전환 시간
+		_float fBlendWeight = 1.f; // 마스크에 사용함
 	};
 
 
@@ -236,6 +256,15 @@ public:
 	}
 	unordered_map<string, Parameter>& GetParameters() {
 		return m_Params;
+	}
+
+	void SetEntry(const AnimState& entryState)
+	{
+		m_EntryState = entryState;
+	}
+	void SetExit(const AnimState& exitState)
+	{
+		m_ExitState = exitState;
 	}
 private:
 	AnimState* FindState(const string& name) 

@@ -976,11 +976,11 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					state.stateName = buf; // 이름 변경
 				}
 
-				if (ImGui::Button("MaskBone"))
+				if (ImGui::Button("Active Upper MaskBone"))
 				{
 					if (state.maskBoneName.empty())
 					{
-						state.maskBoneName = "Bip001-Spine"; // 기본 마스크 본
+						state.maskBoneName = "Bip001-Spine2"; // 기본 마스크 본
 					}
 					else
 					{
@@ -996,9 +996,9 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::Text("Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
 					ImGui::Text("Tick Per Second: %.2f", state.clip->GetTickPerSecond());
 					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
-					if(m_pCurAnimation)
+					if (m_pCurAnimation)
 						ImGui::Text("CurAnimLoop: %s", m_pCurAnimation->Get_isLoop() ? "True" : "False");
-				
+
 
 					// 클립이 있었던 경우에는 현재 애니메이션을 state의 애니메이션으로 변경
 					m_pCurAnimation = state.clip;
@@ -1007,29 +1007,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						pCtrl->SetState(selectedNodeID);
 					}
 				}
-				else if(state.maskBoneName.empty() == false)
+				else if (state.maskBoneName.empty() == false)
 				{
-
-					//ImGui::Text("Lower Clip: %s", state.lowerClipName.c_str());
-					//ImGui::Text("Upper Clip: %s", state.upperClipName.c_str());
-
-					ImGui::Text("Node ID: %d", state.iNodeId);
-					ImGui::Text("Mask Bone: %s", state.maskBoneName.c_str());
-					ImGui::DragFloat("Weight", &state.fBlendWeight, 0.01f, 0.f, 1.f, "%.2f");
-			/*		auto pLower = m_pCurModel->GetAnimationClipByName(state.lowerClipName);
-					auto pUpper = m_pCurModel->GetAnimationClipByName(state.upperClipName);
-					ImGui::Text("Lower Duration: %.2f", m_pCurModel->GetAnimationClipByName(state.lowerClipName)->GetDuration());
-					ImGui::Text("Upper Duration: %.2f", m_pCurModel->GetAnimationClipByName(state.upperClipName)->GetDuration());
-					
-					ImGui::Text("Lower Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
-					ImGui::Text("Upper Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
-
-					ImGui::Text("Lower Tick Per Second: %.2f", state.clip->GetTickPerSecond());
-					ImGui::Text("Upper Tick Per Second: %.2f", state.clip->GetTickPerSecond());
-					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
-					if (m_pCurAnimation)
-						ImGui::Text("CurAnimLoop: %s", m_pCurAnimation->Get_isLoop() ? "True" : "False");*/
-
 					if (ImNodes::IsNodeSelected(selectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 					{
 						pCtrl->SetState(selectedNodeID);
@@ -1048,7 +1027,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				{
 					if (transition.iFromNodeId == state.iNodeId)
 					{
-						const string& stateName = pCtrl-> GetStateNameByNodeId(transition.iToNodeId);
+						const string& stateName = pCtrl->GetStateNameByNodeId(transition.iToNodeId);
 						ImGui::Text("Transition to: %s", stateName.c_str());
 						ImGui::Text("Transition to Node ID: %d", transition.iToNodeId);
 						ImGui::Text("Link ID: %d", transition.link.iLinkId);
@@ -1064,32 +1043,67 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 				if (state.maskBoneName.empty())
 				{
-
-
-				if (ImGui::BeginCombo("Clips", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Clip"))
-				{
-					for (_int i = 0; i < animNames.size(); ++i)
+					if (ImGui::BeginCombo("Clips", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Clip"))
 					{
-						_bool isSelected = (i == iSelectedAnimIndex);
-						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+						for (_int i = 0; i < animNames.size(); ++i)
 						{
-							iSelectedAnimIndex = i;
-							if(state.maskBoneName.empty()) // 마스크 본 이름이 없을 때만 
-								state.clip = anims[iSelectedAnimIndex];
-							else
+							_bool isSelected = (i == iSelectedAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
-								state.clip = nullptr;
+								iSelectedAnimIndex = i;
+								if (state.maskBoneName.empty()) // 마스크 본 이름이 없을 때만 
+									state.clip = anims[iSelectedAnimIndex];
+								else
+								{
+									state.clip = nullptr;
+								}
 							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
 						}
-						if (isSelected)
-							ImGui::SetItemDefaultFocus();
+						ImGui::EndCombo();
 					}
-					ImGui::EndCombo();
-				}
 
 				}
-				if (state.maskBoneName.empty() == false)
+				else if (state.maskBoneName.empty() == false)
 				{
+					ImGui::Text("Mask Bone Name: %s", state.maskBoneName.c_str());
+					ImGui::Text("Upper Clip: %s", state.upperClipName.c_str());
+					ImGui::Text("Lower Clip: %s", state.lowerClipName.c_str());
+
+					// 마스크 본 선택
+
+					static vector<string> maskBoneNames;
+
+					auto& bones = m_pCurModel->Get_Bones();
+
+					if (maskBoneNames.empty())
+					{
+						maskBoneNames.reserve(bones.size());
+						for (const auto& bone : bones)
+						{
+							maskBoneNames.push_back(bone->Get_Name());
+						}
+					}
+
+					static _int iSelectedMaskBoneIndex = -1;
+
+					if (ImGui::BeginCombo("Mask Bone", iSelectedMaskBoneIndex >= 0 ? maskBoneNames[iSelectedMaskBoneIndex].c_str() : "Select Mask Bone"))
+					{
+						for (_int i = 0; i < maskBoneNames.size(); ++i)
+						{
+							_bool isSelected = (i == iSelectedMaskBoneIndex);
+							if (ImGui::Selectable(maskBoneNames[i].c_str(), isSelected))
+							{
+								iSelectedMaskBoneIndex = i;
+								state.maskBoneName = maskBoneNames[iSelectedMaskBoneIndex];
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+
 					if (ImGui::BeginCombo("Upper Animations", iSelectedUpperAnimIndex >= 0 ? animNames[iSelectedUpperAnimIndex].c_str() : "Select Upper"))
 					{
 						for (_int i = 0; i < animNames.size(); ++i)
@@ -1122,13 +1136,11 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						ImGui::EndCombo();
 					}
 				}
-
 				ImGui::End();
-				break;
 			}
+			break;
 		}
 	}
-
 	return S_OK;
 }
 
@@ -1212,7 +1224,6 @@ void CAnimTool::SelectAnimation()
 	}
 	static _int iSelectedAnimIndex = -1;
 
-
 	vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
 
 	vector<string> animNames;
@@ -1239,47 +1250,13 @@ void CAnimTool::SelectAnimation()
 		ImGui::EndCombo();
 	}
 
-	//if (m_pGameInstance->Key_Down(DIK_COMMA))
-	//{
-	//	iSelectedAnimIndex--;
-	//	if (iSelectedAnimIndex < 0)
-	//		iSelectedAnimIndex = static_cast<_int>(anims.size()) - 1; // 마지막으로 순서
-
-	//	if (m_pCurAnimation)
-	//	{
-	//		m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
-	//	}
-	//	else
-	//	{
-	//		m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
-	//	}
-
-	//	m_pCurAnimation = anims[iSelectedAnimIndex];
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_PERIOD))
-	//{
-	//	iSelectedAnimIndex++;
-	//	if (iSelectedAnimIndex >= static_cast<_int>(anims.size()))
-	//		iSelectedAnimIndex = 0;
-	//	if (m_pCurAnimation)
-	//	{
-	//		m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
-	//	}
-	//	else
-	//	{
-	//		m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
-	//	}
-	//	m_pCurAnimation = anims[iSelectedAnimIndex];
-	//}
-
 	// 애니메이션 프로퍼티들 설정
 	Setting_AnimationProperties();
 }
 
 void CAnimTool::Setting_AnimationProperties()
 {
-
-	// 원본의 애니메이션에도 적용을 해줘야함
+	// 원본의 애니메이션에 적용을 해줘야함
 	if (m_pCurAnimation)
 	{
 		ImGui::Checkbox("Use Animation Sequence", &m_bUseAnimSequence);
@@ -1322,10 +1299,7 @@ void CAnimTool::Setting_AnimationProperties()
 
 void CAnimTool::Test_AnimEvents()
 {
-	//if (m_pCurAnimator)
-	//{
-	//	m_pCurAnimator->
-	//}
+
 }
 
 void CAnimTool::SaveLoadEvents(_bool isSave)
@@ -1445,14 +1419,6 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 		m_LoadedModels[modelName] = pModel;
 		auto& pAnimations = pModel->GetAnimations();
 		m_LoadedAnimations[modelName] = pAnimations;
-		//vector<CAnimation*>& pModelCloneAnims = m_LoadedAnimations[modelName];
-
-		//const auto& Bones = pModel->Get_Bones();
-		//pModelCloneAnims.reserve(pAnimations.size());
-		//for (_uint i = 0; i < pAnimations.size(); i++)
-		//{
-		//	pModelCloneAnims.push_back(pAnimations[i]->Clone(Bones));
-		//}
 
 		auto pAnimator = CAnimator::Create(m_pDevice, m_pContext);
 		if (pAnimator)
@@ -1541,14 +1507,6 @@ void CAnimTool::Manipulate(Operation op, const _float snapT[3], const _float sna
 	//	}
 	//}
 
-}
-
-void CAnimTool::SelectNode()
-{
-}
-
-void CAnimTool::CreateLink()
-{
 }
 
 HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)

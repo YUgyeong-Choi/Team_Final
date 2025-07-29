@@ -17,7 +17,6 @@ public:
 
 	//	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop);
 	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents = nullptr);
-
 	void ExportBinary(ofstream& ofs);
 
 	/* 애니메이션의 이름을 반환. */

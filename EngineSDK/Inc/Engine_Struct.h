@@ -36,18 +36,6 @@ namespace Engine
 		float	fValue = 0.f; // float 값
 	};
 
-	struct TransitionResult
-	{
-		_bool bTransition = false; // 전환 여부
-		_bool bBlendFullbody = true; // 블렌드 여부
-		class CAnimation* pFromAnim = nullptr;
-		class CAnimation* pToAnim = nullptr;
-		class CAnimation* pUpperAnim = nullptr; // 상체 애니메이션
-		class CAnimation* pLowerAnim = nullptr; // 하체 애니메이션
-		_float fDuration = 0.f; // 전환 시간
-		_float fBlendWeight = 1.f; // 마스크에 사용함
-	};
-
 	typedef struct tagKeyFrame
 	{
 		/* 행렬이 아닌이유? : 상태와 상태 사이를 보간해주기위해서. */

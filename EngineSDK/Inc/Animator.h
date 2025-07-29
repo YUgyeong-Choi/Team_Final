@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "Animation.h"
+#include "AnimController.h"
 
 #include "Serializable.h"
 
@@ -38,6 +39,7 @@ public:
     void StopAnimation() { m_bPlaying = false; }
 
     void StartTransition(CAnimation* from, CAnimation* to, _float duration = 0.2f);
+    void StartTransition(CAnimController::TransitionResult& transitionResult);
     void Set_Animation(_uint iIndex, _float fadeDuration = 0.2f, _bool isLoop = false);
 	void Set_BlendState(BlendState blend) { m_Blend = blend; }
 	void Set_Model(class CModel* pModel) { m_pModel = pModel; }
@@ -45,10 +47,9 @@ public:
 	void SetPlaying(_bool bPlaying) { m_bPlaying = bPlaying; }
 
     const string GetCurrentAnimName() const;
-	class CAnimation* GetCurrentAnim() const {
-		if (m_pLowerClip)
-			return m_pLowerClip; // 하체 기준으로 
-        return m_pCurrentAnim; }
+	class CAnimation* GetCurrentAnim() const { return m_pCurrentAnim; }
+	class CAnimation* GetUpperClip() const { return m_pUpperClip; } // 상체 애니메이션 클립
+	class CAnimation* GetLowerClip() const { return m_pLowerClip; } // 하체 애니메이션 클립
 
     // 애니메이션 컨트롤러 관련
     class CAnimController* Get_CurrentAnimController() const { return m_pCurAnimController; }
@@ -81,29 +82,29 @@ public:
 
     _float GetCurrentAnimProgress() const // 애니메이션 진행도
     {
-        _float fElapsed, fDuration{  };
-        if (m_pUpperClip)
-        {
-            fElapsed = m_pUpperClip->GetCurrentTrackPosition();
-            fDuration = m_pUpperClip->GetDuration();
-        }
-        else
-        {
-            if (!m_pCurrentAnim) return 0.f;
-            fElapsed = m_pCurrentAnim->GetCurrentTrackPosition();
-            fDuration = m_pCurrentAnim->GetDuration();
-        }
-
-        return fDuration > 0.f
-            ? (fElapsed / fDuration)
-            : 0.f;
+		if (!m_pCurrentAnim) return 0.f;
+		_float elapsed = m_pCurrentAnim->GetCurrentTrackPosition();
+		_float duration = m_pCurrentAnim->GetDuration();
+		return duration > 0.f
+			? (elapsed / duration)
+			: 0.f;
     }
 
 	_float GetCurrentUpperAnimProgress() const // 상체 애니메이션 진행도
 	{
-		if (!m_pUpperClip) return -1.f;
+		if (!m_pUpperClip) return 0.f;
 		_float elapsed = m_pUpperClip->GetCurrentTrackPosition();
 		_float duration = m_pUpperClip->GetDuration();
+		return duration > 0.f
+			? (elapsed / duration)
+			: 0.f;
+	}
+
+	_float GetCurrentLowerAnimProgress() const // 하체 애니메이션 진행도
+	{
+		if (!m_pLowerClip) return 0.f;
+		_float elapsed = m_pLowerClip->GetCurrentTrackPosition();
+		_float duration = m_pLowerClip->GetDuration();
 		return duration > 0.f
 			? (elapsed / duration)
 			: 0.f;
@@ -149,6 +150,8 @@ private:
     void MakeMaskBones(const string& maskBoneName);
 	void CollectBoneChildren(const _char* boneName);
 
+	_matrix LerpMatrix(const _matrix& src, const _matrix& dst, _float t);
+
 
 private:
     _bool                       m_bPlaying = true;
@@ -163,6 +166,13 @@ private:
 
 	CAnimation* m_pUpperClip = nullptr; // 상체 애니메이션 클립
 	CAnimation* m_pLowerClip = nullptr; // 하체 애니메이션 클립
+
+    CAnimation* m_pBlendFromLowerAnim = nullptr;
+    CAnimation* m_pBlendToLowerAnim = nullptr;
+    CAnimation* m_pBlendFromUpperAnim = nullptr; // 전환 중인 이전 상체 클립
+    CAnimation* m_pBlendToUpperAnim = nullptr;   // 전환 중인 목표 상체 클립
+    CAnimController::ETransitionType m_eCurrentTransitionType = CAnimController::ETransitionType::FullbodyToFullbody; // 현재 진행 중인 전환 타입
+
     unordered_map<string,unordered_set<_int>>         m_UpperMaskSetMap; // 한번씩만 매핑 해두기 이름 별로
 	unordered_set<_int>         m_UpperMaskSet; // 하위 본들만 모아둔 집합 (마스크용)
 	_bool                       m_bPlayMask = false; // 마스크 애니메이션 재생 여부 (반복 재생으로 Mask로 하는지)
