@@ -211,6 +211,9 @@
     <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
     <ClInclude Include="..\Public\YGBox.h" />
+    <ClInclude Include="..\Public\YGController.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\YGConvexMesh.h" />
     <ClInclude Include="..\Public\YGDynamicGib.h" />
     <ClInclude Include="..\Public\YGDynamicObj.h" />
@@ -296,6 +299,9 @@
     <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />
     <ClCompile Include="..\Private\YGBox.cpp" />
+    <ClCompile Include="..\Private\YGController.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\YGConvexMesh.cpp" />
     <ClCompile Include="..\Private\YGDynamicGib.cpp" />
     <ClCompile Include="..\Private\YGDynamicObj.cpp" />

@@ -163,6 +163,7 @@ public:
 	PxBoxGeometry CookBoxGeometry(const PxVec3& halfExtents);
 	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale = 1.f);
 	PxScene* Get_Scene();
+	PxControllerManager* Get_ControllerManager();
 	PxPhysics* GetPhysics();
 	PxMaterial* GetMaterial(const wstring& name);
 #pragma endregion

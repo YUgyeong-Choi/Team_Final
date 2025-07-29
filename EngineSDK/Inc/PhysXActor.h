@@ -14,25 +14,20 @@ public:
     void Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
     void Set_ColliderType(COLLIDERTYPE eColliderType);
 
-    virtual PxRigidActor* Get_Actor() const { return m_pActor; }
-    PxShape* Get_Shape() { return m_pShape; }
     CGameObject* Get_Owner() { return m_pOwner; }
     COLLIDERTYPE Get_ColliderType() { return m_eColliderType; }
 
-    void Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery);
-    void Set_SimulationFilterData(PxFilterData _data);
-    void Set_QueryFilterData(PxFilterData _data);
 public:
     virtual void On_Enter(CPhysXActor* pOther);
     virtual void On_Stay(CPhysXActor* pOther);
     virtual void On_Exit(CPhysXActor* pOther);
     virtual void On_TriggerEnter(CPhysXActor* pOther);
     virtual void On_TriggerExit(CPhysXActor* pOther);
-    virtual HRESULT Render() override;
+    virtual HRESULT Render() = 0;
 #ifdef _DEBUG
     // For Debug Render
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
-    void DebugRender(_fmatrix view, _cmatrix proj, _float offSet = 0.f);
+    void DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, PxGeometryHolder geom, _float offSet = 0.f);
     void DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox = false, PxVec3 hitPos = { 0.f, 0.f, 0.f });
 
 protected:
@@ -41,8 +36,6 @@ protected:
     void Set_RenderColor();
 #endif
 protected:
-    PxRigidActor* m_pActor = { nullptr };
-    PxShape* m_pShape = { nullptr };
     PxMaterial* m_pMaterial = { nullptr };
 
     // 소유자 게임 오브젝트 Call Hit

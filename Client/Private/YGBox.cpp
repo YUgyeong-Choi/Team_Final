@@ -47,15 +47,6 @@ HRESULT CYGBox::Initialize(void* pArg)
 
 void CYGBox::Priority_Update(_float fTimeDelta)
 {
-	if (m_bDead) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-
-		Safe_Release(m_pPhysXActorCom);
-		m_pPhysXActorCom = nullptr;
-	}
-
 }
 
 void CYGBox::Update(_float fTimeDelta)
@@ -242,16 +233,8 @@ CGameObject* CYGBox::Clone(void* pArg)
 
 void CYGBox::Free()
 {
+	__super::Free();
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
-
-	if (m_pPhysXActorCom) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-	}
-
 	Safe_Release(m_pPhysXActorCom);
-
-	__super::Free();
 }

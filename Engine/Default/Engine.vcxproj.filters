@@ -226,6 +226,12 @@
     <ClInclude Include="..\public\Observer_Manager.h">
       <Filter>01.Utility\14. Observer\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PhysX_ControllerReport.h">
+      <Filter>01.Utility\13.PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PhysXController.h">
+      <Filter>01.Utility\04.Components\PhysX\Controller</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -428,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Observer_Manager.cpp">
       <Filter>01.Utility\14. Observer\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PhysXController.cpp">
+      <Filter>01.Utility\04.Components\PhysX\Controller</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -652,6 +661,9 @@
     </Filter>
     <Filter Include="01.Utility\14. Observer\Manager">
       <UniqueIdentifier>{1fba679e-4c91-4fe4-a8d6-a6b1a08640ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\PhysX\Controller">
+      <UniqueIdentifier>{4b7ce3b7-6e05-46a2-8ee6-4721dc5ec15c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

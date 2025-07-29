@@ -641,7 +641,12 @@ PxSphereGeometry CGameInstance::CookSphereGeometry(const PxVec3* pVertices, PxU3
 
 PxScene* CGameInstance::Get_Scene()
 {
-	return m_pPhysX_Manager->GetScene();
+	return m_pPhysX_Manager->Get_Scene();
+}
+
+PxControllerManager* CGameInstance::Get_ControllerManager()
+{
+	return m_pPhysX_Manager->Get_ControllerManager();
 }
 
 PxPhysics* CGameInstance::GetPhysics()
