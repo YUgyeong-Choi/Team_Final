@@ -37,8 +37,8 @@ protected:
 	_float	m_fThreshold = {};
 	_float	m_fIntensity = {};
 	_float4	m_vCenterColor = {};
-
-
+	_float	m_fTimeAcc = {};
+	_float	m_fUVScrollSpeed = {};
 
 
 protected:

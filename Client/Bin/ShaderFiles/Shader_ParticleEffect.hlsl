@@ -1,8 +1,9 @@
 #include "Engine_Shader_Defines.hlsli"
+#include "Effect_Shader_Defines.hlsli"
 
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 Texture2D g_Texture;
-vector g_vCamPosition;
+vector  g_vCamPosition;
+bool    g_bLocal;
 
 struct VS_IN
 {
@@ -30,9 +31,15 @@ VS_OUT VS_MAIN(VS_IN In)
     
     matrix matWV, matWVP;    
    
+    
+    // 이부분에서 transform 곱하는거로 로컬월드분기.......
+    // 로컬쓸려면 곱하고, 각자 월드상태 가지려면 처음부터 월드 상태의 좌표 든 채로 이부분스킵
     vector vPosition = mul(vector(In.vPosition, 1.f), In.TransformMatrix);    
     
-    Out.vPosition = mul(vPosition, g_WorldMatrix);
+    if (g_bLocal == 0)
+        Out.vPosition = mul(vPosition, g_WorldMatrix);
+    else
+        Out.vPosition = vPosition;
     
     Out.vPSize = float2(length(In.TransformMatrix._11_12_13), length(In.TransformMatrix._21_22_23));
     
@@ -114,13 +121,12 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);           
+    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord));
     
-    if(Out.vColor.a < 0.3f)
+    if(Out.vColor.a < 0.1f)
         discard;
     
-    Out.vColor.rgb = float3(1.f, 0.f, 0.f);
-    
+    // 이부분도 변수로 받을 수 있으면??
     Out.vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
     
 

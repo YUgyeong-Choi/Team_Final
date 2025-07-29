@@ -20,6 +20,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	HRESULT Change_Model(_wstring strModelName);
+
 private:
 	virtual HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

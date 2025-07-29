@@ -27,13 +27,14 @@ HRESULT CMeshEffect::Initialize(void* pArg)
 
 	DESC* pDesc = static_cast<DESC*>(pArg);
 
-	m_bAnimation = pDesc->bAnimation;
-
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-
+	if (!m_bTool)
+	{
+		if (FAILED(Ready_Components()))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -44,13 +45,7 @@ void CMeshEffect::Priority_Update(_float fTimeDelta)
 
 void CMeshEffect::Update(_float fTimeDelta)
 {
-	//if (m_bAnimation)
-	//{
-	//	m_fFrame += m_fMaxFrame * fTimeDelta;
 
-	//	if (m_fFrame >= m_fMaxFrame)
-	//		m_fFrame = 0.f;
-	//}
 	__super::Update(fTimeDelta);
 
 	return;
@@ -89,7 +84,7 @@ HRESULT CMeshEffect::Render()
 
 		//m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(m_iShaderPass);
 
 		m_pModelCom->Render(i);
 	}

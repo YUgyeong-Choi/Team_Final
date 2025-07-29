@@ -20,9 +20,14 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual void Update_Tool(_float fTimeDelta, _float fCurFrame);
+
+public:
+	HRESULT Change_InstanceBuffer(void* pArg);
 
 private:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
+	HRESULT Bind_ShaderResources();
 
 public:
 	static CToolParticle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

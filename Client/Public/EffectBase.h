@@ -19,8 +19,10 @@ public:
 		const _float4x4*	pSocketMatrix = { nullptr };
 		_int				iTileX = {};
 		_int				iTileY = {};
+		_bool				bBillboard = { true };
 		_bool				bAnimation = { true };
 		_uint				iShaderPass = { 0 };
+		_bool				bTool = { false };
 	}DESC;
 
 
@@ -94,8 +96,10 @@ protected:
 	_int				m_iTileIdx{0};
 	_float2				m_fTileSize{};
 	_float2				m_fOffset{};
-
-	// 
+	_bool				m_bFlipUV = { false };
+	
+	// Tool
+	_bool				m_bTool = { false };
 
 public:
 	vector<EFFKEYFRAME>& Get_KeyFrames() { return m_KeyFrames; }
@@ -108,7 +112,7 @@ public:
 	_int* Get_TileY() { return &m_iTileY; }
 	_bool* Get_Billboard_Ptr() { return &m_bBillboard; }
 	_bool* Get_Animation_Ptr() { return &m_bAnimation; }
-
+	_bool* Get_FlipUV_Ptr() { return &m_bFlipUV; }
 	void Set_TileXY(_int iX, _int iY) { m_iTileX = iX; m_iTileY = iY; }
 	void Set_Billboard(_bool bBillboard) { m_bBillboard = bBillboard; }
 	HRESULT Change_Texture(_wstring strTextureName);

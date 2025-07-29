@@ -1,18 +1,12 @@
 #include "Engine_Shader_Defines.hlsli"
-
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-//Texture2D g_NormalTexture;
+#include "Effect_Shader_Defines.hlsli"
 
 Texture2D g_DiffuseTexture;
 
-Texture2D g_MaskTexture1;
-Texture2D g_MaskTexture2;
 
-Texture2D g_DepthTexture;
-
-vector g_vColor = { 1.f, 1.f, 1.f, 1.f };
 float g_fThreshold, g_fIntensity;
 vector g_vCenterColor;
+float g_fTime;
 
 struct VS_IN
 {
@@ -39,7 +33,6 @@ VS_OUT VS_MAIN(VS_IN In)
     
     matrix matWV, matWVP;
     
-    /* mul : 모든 행렬의 곱하기를 수행한다. /w연산을 수행하지 않는다. */
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
     
@@ -71,29 +64,6 @@ struct PS_OUT
     vector vDepth : SV_TARGET2;
     //vector vPickPos : SV_TARGET3;
 };
-
-float4 SoftEffect(float4 vOrigColor, float4 vProjPos)
-{
-    float2 vTexcoord;
-    
-    vTexcoord.x = vProjPos.x / vProjPos.w;
-    vTexcoord.y = vProjPos.y / vProjPos.w;
-    
-    vTexcoord.x = vTexcoord.x * 0.5f + 0.5f;
-    vTexcoord.y = vTexcoord.y * -0.5f + 0.5f;
-    
-    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, vTexcoord);
-    
-    if (vDepthDesc.y != 0.f)
-    {
-        float fOldViewZ = vDepthDesc.y * 1000.f;
-        float fDiff = (fOldViewZ - vProjPos.w) / vProjPos.w;
-        vOrigColor.a = vOrigColor.a * saturate(fDiff);
-    }
-    
-    return vOrigColor;
-}
-
 
 struct PS_OUT_EFFECT
 {
@@ -127,47 +97,112 @@ PS_OUT PS_MAIN(PS_IN In)
 PS_OUT_EFFECT PS_MAIN_MASKONLY(PS_IN In)
 {
     PS_OUT_EFFECT Out;
-    //샘플러좀보고오자
-    // 마스크의 밝기 정보 (흑백 텍스처)
-    float mask = g_MaskTexture1.Sample(LinearClampSampler, In.vTexcoord).r;
+    
+    float mask = g_MaskTexture1.Sample(DefaultSampler, In.vTexcoord).r;
     
     
-    // 중심부 기준 값과 비교해서 색상 결정
     float4 color;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
-
-    // 외곽은 보라색, 중심부는 흰색
+    
     color = lerp(g_vColor, g_vCenterColor, lerpFactor);
-
-    // 밝기 조절
+    
     Out.vColor.rgb = color.rgb * mask * g_fIntensity;
     Out.vColor.a = color.a * mask;
     
     return Out;
 }
 
-// 나중에 노이즈 텍스쳐도 포함해서 만들기
 PS_OUT_EFFECT PS_MAIN_MASK_NOISE(PS_IN In)
 {
     PS_OUT_EFFECT Out;
-    // 마스크의 밝기 정보 (흑백 텍스처)
-    float mask = g_MaskTexture1.Sample(LinearClampSampler, In.vTexcoord).r;
     
     
-    // 중심부 기준 값과 비교해서 색상 결정
+    float2 uv = In.vTexcoord;
+    
+    uv.x *= 3.0f; // 가로 타일링
+    uv.x -= g_fTime * 2.0f; // 시간 기반 스크롤
+    uv.y *= 0.5f; // 세로 압축 (패턴 길이 보정)
+    
+
+    float2 noiseUV = uv * /*g_fNoiseTile*/float2(4.0, 4.0) + g_fTime * float2(0.2, 0.1) /*g_fNoiseScrollSpeed*/;
+    float noise = g_MaskTexture2.Sample(DefaultSampler, noiseUV).r; // grayscale 노이즈
+    
+    float noiseOffset = (noise - 0.5f) * /*g_fNoiseStrength*/0.03;
+    uv.y += noiseOffset; // 또는 uv.x += noiseOffset; ← 방향 선택 가능
+    
+    float mask = g_MaskTexture1.Sample(DefaultSampler, uv).r;
+    
+    float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    float4 color = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    Out.vColor.rgb = color.rgb * mask * g_fIntensity;
+    Out.vColor.a = color.a * mask;
+
+    return Out;
+    
+    
+    
+    
+    //float2 uv = In.vTexcoord;
+    //uv.x *= 3.0; // 타일링
+    //uv.x -= g_fTime * 2.f; // 가로 방향 스크롤 (휘감기듯)
+    //uv.y *= 0.5f;
+    //// 노이즈 왜곡 (선택)
+    //float2 noiseUV = uv * 8.0 + g_fTime * 0.2f;
+    //uv.x += (g_MaskTexture2.Sample(DefaultSampler, noiseUV).r/* - 0.5f*/) * 0.1f;
+    //
+    //float mask = g_MaskTexture1.Sample(DefaultSampler, uv).r;
+    //
+    //float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    //float4 color = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    //
+    //Out.vColor.rgb = color.rgb * mask * g_fIntensity;
+    //Out.vColor.a = color.a * mask;
+    //
+    //return Out;
+  
+    
+    //float2 uv = In.vTexcoord;
+    //
+    //uv.x += g_fTime * g_fScrollSpeed; // ← U 방향으로 스크롤 (가로 방향)
+    //
+    //// 마스크의 밝기 정보 (흑백 텍스처)
+    //float mask = g_MaskTexture1.Sample(DefaultSampler, uv).r;
+    //
+    //
+    //
+    //// 중심부 기준 값과 비교해서 색상 결정
+    //float4 color;
+    //float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    //
+    //// 외곽은 보라색, 중심부는 흰색
+    //color = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    //
+    //// 밝기 조절
+    //Out.vColor.rgb = color.rgb * mask * g_fIntensity;
+    //Out.vColor.a = color.a * mask;
+    /***********************************/
+    
+    return Out;
+}
+
+
+PS_OUT_EFFECT PS_MAIN_UVMASKONLY(PS_IN In)
+{
+    PS_OUT_EFFECT Out;
+    
+    float mask = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    
     float4 color;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
-
-    // 외곽은 보라색, 중심부는 흰색
+    
     color = lerp(g_vColor, g_vCenterColor, lerpFactor);
-
-    // 밝기 조절
+    
     Out.vColor.rgb = color.rgb * mask * g_fIntensity;
     Out.vColor.a = color.a * mask;
     
     return Out;
 }
-
 
 technique11 DefaultTechnique
 {   
@@ -191,6 +226,28 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();      
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY();
+    }
+   
+    pass MaskNoise       // 2
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();      
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_MASK_NOISE();
+    }
+   
+    pass UVMask // 3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_UVMASKONLY();
     }
    
 }

@@ -2,7 +2,6 @@
 #include "GameObject.h"
 
 #include "Client_Defines.h"
-
 NS_BEGIN(Engine)
 class CShader;
 NS_END
@@ -26,12 +25,18 @@ public:
 
 private:
 	HRESULT Render_EffectTool();
-	HRESULT Make_Particles();
+	//HRESULT Make_Particles();
 	HRESULT SequenceWindow();
 	HRESULT Edit_Preferences();
+
 	HRESULT Window_Sprite();
 	HRESULT Window_Particle();
 	HRESULT Window_Mesh();
+
+	void Edit_Keyframes(class CEffectBase* pEffect);
+
+	HRESULT Load_EffectModel();
+	HRESULT Make_EffectModel_Prototypes(const string pModelFilePath);
 
 	HRESULT Save_EffectSet();
 	HRESULT Load_EffectSet();
@@ -59,6 +64,7 @@ private:
 	// 공통 이펙트 용 변수들
 	_int			m_iSelectedInterpolationType = { 0 };
 	const _char*	m_InterpolationTypes[5] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
+	_bool			m_bAnimateSprite = { false };
 
 #pragma endregion
 
@@ -67,23 +73,29 @@ private:
 	// 스프라이트 이펙트 용 변수들
 	//_int	m_iGridTileX = { 1 };
 	//_int	m_iGridTileY = { 1 };
-	_bool	m_bAnimateSprite = { false };
 
 #pragma endregion
+
+#pragma region Mesh
+	// 메쉬 이펙트 용 변수들
+	vector<string>	m_ModelNames;
+	_int			m_iSelectedModelIdx = { -1 };
+#pragma endregion
+
 
 
 #pragma region Particle
 	// 파티클 용 변수들
 	_bool					m_isParticlePreview = { false };
-	enum PARTICLE_TYPE { PTYPE_SPREAD, PTYPE_DROP, PTYPE_SPDROP, PTYPE_DROPGRAV, PTYPE_END };
-	PARTICLE_TYPE			m_eParticleType = PTYPE_END;
+	//enum PARTICLE_TYPE { PTYPE_SPREAD, PTYPE_DROP, PTYPE_SPDROP, PTYPE_DROPGRAV, PTYPE_END };
+	PARTICLETYPE			m_eParticleType = PTYPE_SPREAD;
 
 	_float3					m_vPivot = { 0.f, 0.f, 0.f };
 	_float2					m_vLifeTime = { 2.f, 4.f };
 	_float2					m_vSpeed = { 5.f, 10.f };
 	_bool					m_isLoop = { true };
 	_int					m_iNumInstance = { 100 };
-	_float3					m_vRange = { 10.f, 10.f, 30.f };
+	_float3					m_vRange = { 5.f, 1.f, 5.f };
 	_float2					m_vSize = { 1.f, 2.f };
 	_float3					m_vCenter = { 0.f, 0.f, 0.f };
 	_bool					m_bGravity = { false };
@@ -95,7 +107,7 @@ private:
 
 #pragma region ImSequence
 	// 시퀀스 용 변수들
-	enum EFFECT_TYPE { EFF_SPRITE, EFF_PARTICLE, EFF_MESH, EFF_TRAIL, EFF_END };
+	enum EFFECT_TYPE { EFF_SPRITE, EFF_PARTICLE, EFF_MESH, EFF_TRAIL, SE_END };
 
 	class CEffectSequence* m_pSequence = { nullptr };
 

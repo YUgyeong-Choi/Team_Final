@@ -13,7 +13,7 @@ CVIBuffer_Point_Instance::CVIBuffer_Point_Instance(const CVIBuffer_Point_Instanc
 	
 }
 
-HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const INSTANCE_DESC* pArg)
+HRESULT CVIBuffer_Point_Instance::Initialize_Prototype()
 {
 	//const DESC* pDesc = static_cast<const DESC*>(pArg);
 
@@ -60,6 +60,7 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const INSTANCE_DESC* pArg
 
 #pragma endregion 
 
+	//deprecated
 #pragma region INDEXBUFFER
 
 	//D3D11_BUFFER_DESC			IBBufferDesc{};
@@ -225,8 +226,6 @@ HRESULT CVIBuffer_Point_Instance::Render()
 	return S_OK;
 }
 
-
-
 void CVIBuffer_Point_Instance::Drop(_float fTimeDelta)
 {
 	D3D11_MAPPED_SUBRESOURCE	SubResource{};
@@ -282,11 +281,11 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta)
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
-CVIBuffer_Point_Instance* CVIBuffer_Point_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const INSTANCE_DESC* pArg)
+CVIBuffer_Point_Instance* CVIBuffer_Point_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CVIBuffer_Point_Instance* pInstance = new CVIBuffer_Point_Instance(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pArg)))
+	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed to Created : CVIBuffer_Point_Instance");
 		Safe_Release(pInstance);
@@ -312,9 +311,6 @@ void CVIBuffer_Point_Instance::Free()
 {
 	__super::Free();
 
-	if(false == m_isCloned)
-	{
-		Safe_Delete_Array(m_pVertexInstances);
-		Safe_Delete_Array(m_pSpeeds);
-	}
+	Safe_Delete_Array(m_pVertexInstances);
+	Safe_Delete_Array(m_pSpeeds);
 }

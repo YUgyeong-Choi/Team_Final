@@ -456,6 +456,9 @@
     <ClInclude Include="..\Public\ToolMeshEffect.h">
       <Filter>01.Levels\LevelCY\Tool\ToolMeshEffect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\EffectContainer.h">
+      <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -699,6 +702,9 @@
     <ClCompile Include="..\Private\ToolMeshEffect.cpp">
       <Filter>01.Levels\LevelCY\Tool\ToolMeshEffect</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\EffectContainer.cpp">
+      <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
@@ -740,5 +746,13 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_ParticleEffect.hlsl">
+      <Filter>97.ShaderFiles\Effect</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Effect_Shader_Defines.hlsli">
+      <Filter>97.ShaderFiles\Effect</Filter>
+    </None>
   </ItemGroup>
 </Project>

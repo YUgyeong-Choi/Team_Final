@@ -42,18 +42,28 @@ public:
 	void Set_PType(PARTICLETYPE ePType) { m_ePType = ePType; }
 	void Set_Loop(_bool isLoop);
 
+#ifdef USE_IMGUI
+	PARTICLETYPE* Get_PType_Ptr() { return &m_ePType; }
+	_bool* Get_Loop_Ptr() { return &m_isLoop; }
+#endif
+
 protected:
 	CVIBuffer_Point_Instance*		m_pVIBufferCom = { nullptr };
-	PARTICLETYPE					m_ePType = { }; // Particle Type
+	PARTICLETYPE					m_ePType = {}; // Particle Type
+	// 로컬/월드 분리할건지
+	// 변수로 처리할건지
+	// 일단 변수로
 
 protected:
 	_uint				m_iNumInstance;
 	_float3				m_vPivot = {};
 	_float				m_fMaxLifeTime = {};
 	_bool				m_isLoop = { false };
+	_bool				m_bLocal = { true };
 
 protected:
 	HRESULT Ready_Components(void* pArg);
+	HRESULT Bind_ShaderResources();
 
 public:
 	static CParticleEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -24,6 +24,7 @@
 #pragma region LEVEL_CY
 #include "ToolSprite.h"
 #include "ToolParticle.h"
+#include "ToolMeshEffect.h"
 #pragma endregion
 
 
@@ -496,7 +497,7 @@ HRESULT CLoader::Loading_For_CY()
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	_matrix		PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Model_ToolMeshEffect"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/EffectMesh/SM_Swirl_01_RSW.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -517,6 +518,10 @@ HRESULT CLoader::Loading_For_CY()
 	/* For.Prototype_GameObject_ToolParticle */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"),
 		CToolParticle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_ToolMeshEffect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"),
+		CToolMeshEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

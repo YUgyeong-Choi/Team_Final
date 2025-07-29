@@ -31,21 +31,23 @@ HRESULT CToolMeshEffect::Initialize(void* pArg)
 	m_fThreshold = 0.9f;
 	m_fIntensity = 3.0f;
 	m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
-	m_bTextureUsage[TU_DIFFUSE] = false;
-	m_bTextureUsage[TU_MASK1] = true;
-	m_bTextureUsage[TU_MASK2] = true;
+	//m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
+	m_bTextureUsage[TU_DIFFUSE] = true;
+	m_bTextureUsage[TU_MASK1] = false;
+	m_bTextureUsage[TU_MASK2] = false;
+
+	m_iShaderPass = ENUM_CLASS(ME_UVMASK);
 
 	return S_OK;
 }
 
 void CToolMeshEffect::Priority_Update(_float fTimeDelta)
 {
-
+	m_fTimeAcc += fTimeDelta;
 }
 
 void CToolMeshEffect::Update(_float fTimeDelta)
 {
-	//m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
 	__super::Update(fTimeDelta);
 }
 
@@ -82,7 +84,7 @@ HRESULT CToolMeshEffect::Render()
 		//m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		//m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(m_iShaderPass);
 
 		m_pModelCom->Render(i);
 	}
@@ -90,6 +92,13 @@ HRESULT CToolMeshEffect::Render()
 	return S_OK;
 }
 
+HRESULT CToolMeshEffect::Change_Model(_wstring strModelName)
+{
+	Safe_Release(m_pModelCom);
+	_wstring strModelTag = L"Prototype_Component_Model_" + strModelName;
+	return Replace_Component(ENUM_CLASS(LEVEL::CY), strModelTag.c_str(),
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom));
+}
 
 HRESULT CToolMeshEffect::Ready_Components()
 {
@@ -103,16 +112,16 @@ HRESULT CToolMeshEffect::Ready_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Aura_01_C_GDH"),
+	/* For.Com_Texture */ 
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Thunder_01_4x1_SC_GDH"), // 세로
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 	/* For.Com_TextureMask1 */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Aura_01_C_GDH"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Aura_04_C_LGS"), // 가로
 		TEXT("Com_TextureMask1"), reinterpret_cast<CComponent**>(&m_pMaskTextureCom[0]))))
 		return E_FAIL;
 	/* For.Com_TextureMask2 */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Tile_Noise_81_C_GDH"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Tile_Noise_81_C_GDH"), // 노이즈
 		TEXT("Com_TextureMask2"), reinterpret_cast<CComponent**>(&m_pMaskTextureCom[1]))))
 		return E_FAIL;
 
@@ -126,10 +135,12 @@ HRESULT CToolMeshEffect::Bind_ShaderResources()
 
 	/* dx9 : 장치에 뷰, 투영행렬을 저장해두면 렌더링시 알아서 정점에 Transform해주었다. */
 	/* dx11 : 셰이더에 뷰, 투영행렬을 저장해두고 우리가 직접 변환해주어야한다. */
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileSize", &m_fTileSize, sizeof(_float2))))
-	//	return E_FAIL;
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileOffset", &m_fOffset, sizeof(_float2))))
-	//	return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bFlipUV", &m_bFlipUV, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileSize", &m_fTileSize, sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileOffset", &m_fOffset, sizeof(_float2))))
+		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCenterColor", &m_vCenterColor, sizeof(_float4))))
@@ -137,6 +148,8 @@ HRESULT CToolMeshEffect::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fIntensity", &m_fIntensity, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fThreshold", &m_fThreshold, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTime", &m_fTimeAcc, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
@@ -179,7 +192,4 @@ void CToolMeshEffect::Free()
 {
 	__super::Free();
 
-	//Safe_Release(m_pVIBufferCom);
-	//Safe_Release(m_pShaderCom);
-	//Safe_Release(m_pTextureCom);
 }

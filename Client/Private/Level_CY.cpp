@@ -72,7 +72,6 @@ HRESULT CLevel_CY::Render()
 
 	ImGui_Render();
 	//·»´õ¸µ 
-	ImGui::ShowDemoWindow(); // Show demo window! :)
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
