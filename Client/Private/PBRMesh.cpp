@@ -62,7 +62,8 @@ HRESULT CPBRMesh::Initialize(void* pArg)
 
 void CPBRMesh::Priority_Update(_float fTimeDelta)
 {
-
+	if(KEY_DOWN(DIK_F7))
+		Toggleummy();
 }
 
 void CPBRMesh::Update(_float fTimeDelta)
@@ -80,6 +81,12 @@ void CPBRMesh::Late_Update(_float fTimeDelta)
 
 HRESULT CPBRMesh::Render()
 {
+	if (!m_bDummyShow)
+	{
+		if (m_szMeshID == TEXT("Train") || m_szMeshID == TEXT("Station"))
+			return S_OK; // 더미 오브젝트는 렌더링하지 않음
+	}
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 

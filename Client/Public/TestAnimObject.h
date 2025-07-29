@@ -32,6 +32,25 @@ private:
 
 	HRESULT Ready_Collider();
 	void SyncTransformWithController();
+
+private:/* [ 캐스케이드 전용함수 ] */
+	HRESULT UpdateShadowCamera();
+private: /* [ 이동로직 ] */
+	void SetMoveState(_float fTimeDelta);
+
+	void Ray();
+
+private:
+	PxVec3 m_vRayHitPos = {};
+	_bool m_bRayHit = false;
+
+private:
+	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
+
+private:
+	_vector m_vShadowCam_Eye = {};
+	_vector m_vShadowCam_At = {};
+
 private:
 	CModel* m_pModelCom = nullptr; // 모델 컴포넌트
 	CShader* m_pShaderCom = nullptr; // 셰이더 컴포넌트

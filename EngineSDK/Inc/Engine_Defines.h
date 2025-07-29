@@ -69,7 +69,6 @@ namespace Engine
 	const unsigned int g_iMiddleHeight = 1800;
 
 	extern _bool g_bSceneChanging;
-
 }
 
 using namespace Engine;

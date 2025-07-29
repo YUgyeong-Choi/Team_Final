@@ -4,6 +4,10 @@
 #include "AnimController.h"
 #include "TestAnimObject.h"
 #include "Camera_Manager.h"
+#include "PhysX_IgnoreSelfCallback.h"
+#include "PhysXController.h"
+
+
 CTestAnimObject::CTestAnimObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
 	, m_pAnimator(nullptr)
@@ -28,6 +32,8 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 	CGameObject::GAMEOBJECT_DESC GameObjectDesc = {};
 	GameObjectDesc.fSpeedPerSec = 10.f;
 	GameObjectDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 
 	if (FAILED(__super::Initialize(&GameObjectDesc)))
 		return E_FAIL;
@@ -149,6 +155,13 @@ void CTestAnimObject::Update(_float fTimeDelta)
 		m_pModelCom->Update_Bones();
 	}
 	//Input_Test(fTimeDelta);
+
+	/* [ 캐스케이드 전용 업데이트 함수 ] */
+	UpdateShadowCamera();
+	/* [ 움직임 전용 함수 ] */
+	SetMoveState(fTimeDelta);
+	/* [ 룩 벡터 레이케스트 ] */
+	Ray();
 }
 
 void CTestAnimObject::Late_Update(_float fTimeDelta)
@@ -355,6 +368,149 @@ void CTestAnimObject::SyncTransformWithController()
 	PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
 	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.8f, (float)pos.z, 1.f);
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+}
+
+
+HRESULT CTestAnimObject::UpdateShadowCamera()
+{
+	CShadow::SHADOW_DESC Desc{};
+
+	// 1. 타겟 위치 계산 (플레이어 기준 오프셋)
+	_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vTargetEye = vPlayerPos + XMVectorSet(-50.f, 70.f, -50.f, 0.f);
+	_vector vTargetAt = vPlayerPos;
+
+	m_vShadowCam_Eye = vTargetEye;
+	m_vShadowCam_At = vTargetAt;
+
+	// 3. 셰도우 카메라에 적용
+	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
+	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 500.f;
+
+	Desc.fFovy = XMConvertToRadians(40.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc,SHADOW::SHADOWA)))
+		return E_FAIL;
+	Desc.fFovy = XMConvertToRadians(80.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
+		return E_FAIL;
+	Desc.fFovy = XMConvertToRadians(120.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWC)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CTestAnimObject::SetMoveState(_float fTimeDelta)
+{
+	// 1. 카메라 기준 방향 추출
+	_vector vCamLook = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::LOOK);
+	_vector vCamRight = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::RIGHT);
+
+	// 2. 수평 방향만 유지
+	vCamLook = XMVectorSetY(vCamLook, 0.f);
+	vCamRight = XMVectorSetY(vCamRight, 0.f);
+	vCamLook = XMVector3Normalize(vCamLook);
+	vCamRight = XMVector3Normalize(vCamRight);
+
+	// 3. 입력 처리
+	_vector vInputDir = XMVectorZero();
+	if (m_pGameInstance->Key_Pressing(DIK_W)) vInputDir += vCamLook;
+	if (m_pGameInstance->Key_Pressing(DIK_S)) vInputDir -= vCamLook;
+	if (m_pGameInstance->Key_Pressing(DIK_D)) vInputDir += vCamRight;
+	if (m_pGameInstance->Key_Pressing(DIK_A)) vInputDir -= vCamRight;
+
+	// 4. 입력 없으면 리턴
+	if (XMVector3Equal(vInputDir, XMVectorZero()))
+		return;
+
+	// 5. 방향 정규화
+	vInputDir = XMVector3Normalize(vInputDir);
+
+	// 6. 회전: 현재 방향과 입력 방향의 각도 계산
+	_vector vPlayerLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vPlayerLook = XMVectorSetY(vPlayerLook, 0.f);
+	vPlayerLook = XMVector3Normalize(vPlayerLook);
+
+	_float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vInputDir));
+	fDot = max(-1.f, min(1.f, fDot)); // Clamp
+	_float fAngle = acosf(fDot);
+
+	// 회전 방향 확인 (시계 or 반시계)
+	_vector vCross = XMVector3Cross(vPlayerLook, vInputDir);
+	if (XMVectorGetY(vCross) < 0.f)
+		fAngle = -fAngle;
+
+	// 부드러운 회전 적용 (고정 회전 속도)
+	const _float fTurnSpeed = XMConvertToRadians(720.f); // 초당 720도 회전
+	_float fClampedAngle = max(-fTurnSpeed * fTimeDelta, min(fTurnSpeed * fTimeDelta, fAngle));
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
+
+	// 7. 이동 (입력 방향으로 월드 기준 이동)
+	m_pTransformCom->Go_Dir(vInputDir, fTimeDelta);
+}
+
+void CTestAnimObject::Ray()
+{
+	PxVec3 origin = m_pControllerCom->Get_Actor()->getGlobalPose().p;
+	XMFLOAT3 fLook;
+	XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
+	direction.normalize();
+	_float fRayLength = 10.f;
+
+	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+	PxRaycastBuffer hit;
+	PxQueryFilterData filterData;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+	
+	CIgnoreSelfCallback callback(m_pControllerCom->Get_Actor());
+
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+	{
+		if (hit.hasBlock)
+		{
+			PxRigidActor* hitActor = hit.block.actor;
+
+			//  자기 자신이면 무시
+			if (hitActor == m_pControllerCom->Get_Actor())
+			{
+				printf(" Ray hit myself  skipping\n");
+				return;
+			}
+			PxVec3 hitPos = hit.block.position;
+			PxVec3 hitNormal = hit.block.normal;
+
+			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+			pHitActor->Get_Owner()->On_Hit(this, m_pControllerCom->Get_ColliderType());
+
+			printf("Ray충돌 했다!\n");
+			printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
+			printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
+			m_bRayHit = true;
+			m_vRayHitPos = hitPos;
+			// 저기 hit.block.여기에 뭐 faceIndex, U, V 다양하게 있으니 궁금하면 보세여.. 
+		}
+	}
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = m_pControllerCom->Get_Actor()->getGlobalPose().p;
+		XMFLOAT3 fLook;
+		XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
+		_data.fRayLength = 10.f;
+		_data.bIsHit = m_bRayHit;
+		_data.vHitPos = m_vRayHitPos;
+		m_pControllerCom->Add_RenderRay(_data);
+
+		m_bRayHit = false;
+		m_vRayHitPos = {};
+	}
+#endif
+
 }
 
 CTestAnimObject* CTestAnimObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

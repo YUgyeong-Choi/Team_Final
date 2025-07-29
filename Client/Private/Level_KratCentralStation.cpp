@@ -3,6 +3,7 @@
 #include "Camera_Manager.h"
 
 #include "StaticMesh.h"
+#include "TestAnimObject.h"
 #include "PBRMesh.h"
 #include "Level_Loading.h"
 
@@ -46,7 +47,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pBGM->Set_Volume(1.f);
 	m_pBGM->Play();
 
-
+	m_pCamera_Manager->SetOrbitalCam();
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 	return S_OK;
 }
@@ -60,7 +61,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	}
 
 	m_pCamera_Manager->Update(fTimeDelta);
-	__super::Update(fTimeDelta);
+	HoldMouse();
 }
 
 HRESULT CLevel_KratCentralStation::Render()
@@ -217,16 +218,6 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
 		return E_FAIL;
 
-	CShadow::SHADOW_DESC		Desc{};
-	Desc.vEye = _float4(0.f, 20.f, -15.f, 1.f);
-	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	Desc.fFovy = XMConvertToRadians(60.0f);
-	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
-	
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -272,8 +263,11 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 
 HRESULT CLevel_KratCentralStation::Ready_TestAnimObject()
 {
+	CTestAnimObject::GAMEOBJECT_DESC Desc{};
+	Desc.fSpeedPerSec = 10.f;
+	Desc.fRotationPerSec = XMConvertToRadians(600.0f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("TestAnimObject"))))
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("TestAnimObject"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;
