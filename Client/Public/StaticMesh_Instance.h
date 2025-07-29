@@ -18,6 +18,7 @@ public:
 	{
 		//인스턴스 갯수
 		_uint iNumInstance = { 0 };
+		vector<_float4x4>* pInstanceMatrixs = { nullptr };
 	}STATICMESHINSTANCE_DESC;
 
 private:

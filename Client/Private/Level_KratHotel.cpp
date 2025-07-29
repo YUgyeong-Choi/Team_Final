@@ -32,8 +32,8 @@ HRESULT CLevel_KratHotel::Initialize()
 		return E_FAIL;
 
 	//제이슨으로 로드하지않고 따로 스태틱매쉬 소환하려면 모델프로토타입을 넣어줘야함
-	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
+	//	return E_FAIL;
 
 	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
@@ -62,7 +62,7 @@ HRESULT CLevel_KratHotel::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_KratHotel::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
+HRESULT CLevel_KratHotel::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance)
 {
 	//이미 프로토타입이존재하는 지확인
 
@@ -76,9 +76,19 @@ HRESULT CLevel_KratHotel::Load_Model(const wstring& strPrototypeTag, const _char
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-		return E_FAIL;
+	if (bInstance == false)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+			CModel_Instance::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+			return E_FAIL;
+	}
+
 
 	return S_OK;
 }
@@ -111,12 +121,29 @@ HRESULT CLevel_KratHotel::Ready_MapModel()
 		string ModelName = element.value("ModelName", "");
 		string Path = element.value("Path", "");
 
-		//모델 프로토 타입 생성
-		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+		//갯수도 저장해서 인스턴스용 모델 프로토타입을 만들지 결정해야할듯
+		_uint iObjectCount = element["ObjectCount"];
+
+		wstring PrototypeTag = {};
+		_bool bInstance = false;
+		if (iObjectCount > INSTANCE_THRESHOLD)
+		{
+			//인스턴싱용 모델 프로토 타입 생성
+			PrototypeTag = L"Prototype_Component_Model_Instance" + StringToWString(ModelName);
+			bInstance = true;
+
+		}
+		else
+		{
+			//모델 프로토 타입 생성
+			PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+			bInstance = false;
+		}
+
 
 		const _char* pModelFilePath = Path.c_str();
 
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance)))
 		{
 			return E_FAIL;
 		}
@@ -147,17 +174,15 @@ HRESULT CLevel_KratHotel::LoadMap()
 		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.
 		const json& objects = Models[i]["Objects"];
 
-		Load_StaticMesh(iObjectCount, objects, ModelName);
-
-		////일정 갯수 이상이면 인스턴싱오브젝트로 로드
-		//if (iObjectCount > 0)
-		//{
-		//	Load_StaticMesh_Instance(iObjectCount, objects, ModelName);
-		//}
-		//else
-		//{
-		//	Load_StaticMesh(iObjectCount, objects, ModelName);
-		//}
+		//일정 갯수 이상이면 인스턴싱오브젝트로 로드
+		if (iObjectCount > INSTANCE_THRESHOLD)
+		{
+			Load_StaticMesh_Instance(iObjectCount, objects, ModelName);
+		}
+		else
+		{
+			Load_StaticMesh(iObjectCount, objects, ModelName);
+		}
 	}
 
 	return S_OK;
@@ -203,38 +228,40 @@ HRESULT CLevel_KratHotel::Load_StaticMesh(_uint iObjectCount, const json& object
 
 HRESULT CLevel_KratHotel::Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName)
 {
-	for (_uint j = 0; j < iObjectCount; ++j)
+	vector<_float4x4> InstanceMatixs(iObjectCount);
+
+	for (_uint i = 0; i < iObjectCount; ++i)
 	{
-		const json& WorldMatrixJson = objects[j]["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
+		const json& WorldMatrixJson = objects[i]["WorldMatrix"];
 
 		for (_int row = 0; row < 4; ++row)
 			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-		//오브젝트 생성, 배치
-
-		wstring LayerTag = TEXT("Layer_MapToolObject_");
-		LayerTag += StringToWString(ModelName);
-
-		CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
-		StaticMeshInstanceDesc.iNumInstance = iObjectCount;//인스턴스 갯수랑, 월드행렬들을 넘겨줘야한다.
-		StaticMeshInstanceDesc.iRender = 0;
-		StaticMeshInstanceDesc.m_eLevelID = LEVEL::KRAT_HOTEL;
-		//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
-
-		wstring wstrModelName = StringToWString(ModelName);
-		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
-		ModelPrototypeTag += wstrModelName;
-
-		lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-		StaticMeshInstanceDesc.WorldMatrix = WorldMatrix;
-
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
-			ENUM_CLASS(LEVEL::KRAT_HOTEL), LayerTag, &StaticMeshInstanceDesc)))
-			return E_FAIL;
-
+				InstanceMatixs[i].m[row][col] = WorldMatrixJson[row][col];
 	}
+
+
+	//오브젝트 생성, 배치
+
+	wstring LayerTag = TEXT("Layer_MapToolObject_");
+	LayerTag += StringToWString(ModelName);
+
+	CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
+	StaticMeshInstanceDesc.iNumInstance = iObjectCount;//인스턴스 갯수랑
+	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
+
+	StaticMeshInstanceDesc.iRender = 0;
+	StaticMeshInstanceDesc.m_eLevelID = LEVEL::KRAT_HOTEL;
+	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+	wstring wstrModelName = StringToWString(ModelName);
+	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance"); //인스턴스 용 모델을 준비해야겠는디?
+	ModelPrototypeTag += wstrModelName;
+
+	lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), LayerTag, &StaticMeshInstanceDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -324,12 +351,18 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	InstanceDesc.iRender = 0;
 	InstanceDesc.m_eLevelID = LEVEL::KRAT_HOTEL;
 
-	InstanceDesc.iNumInstance = 1;//인스턴스 갯수
 	InstanceDesc.szMeshID = TEXT("SM_BuildingA_Lift_02");
 	lstrcpy(InstanceDesc.szName, TEXT("SM_BuildingA_Lift_02"));
 	lstrcpy(InstanceDesc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Instance_SM_BuildingA_Lift_02")); //인스턴스용 모델
 
-	//요거 누수 확인해야함
+	//인스턴스 월드 매트릭스들
+	vector<_float4x4> InstanceMatrixs(2);
+	XMStoreFloat4x4(&InstanceMatrixs[0], XMMatrixIdentity());
+	XMStoreFloat4x4(&InstanceMatrixs[1], XMMatrixTranslationFromVector(XMVectorSet(5.f, 0.f, 0.f, 1.f)));
+	InstanceDesc.pInstanceMatrixs = &InstanceMatrixs;
+	//인스턴스 갯수
+	InstanceDesc.iNumInstance = static_cast<_uint>(InstanceMatrixs.size());
+
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
 		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &InstanceDesc)))
 		return E_FAIL;

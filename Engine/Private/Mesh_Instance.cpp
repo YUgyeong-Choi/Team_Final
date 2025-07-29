@@ -118,7 +118,7 @@ HRESULT CMesh_Instance::Initialize_Prototype(MODEL eType, ifstream& ifs, const v
 
 HRESULT CMesh_Instance::Initialize(void* pArg)
 {
-	INSTANCE_DESC* pDesc = static_cast<INSTANCE_DESC*>(pArg);
+	MESHINSTANCE_DESC* pDesc = static_cast<MESHINSTANCE_DESC*>(pArg);
 	m_iNumInstance = pDesc->iNumInstance;
 
 #pragma region INSTANCEBUFFER
@@ -134,10 +134,10 @@ HRESULT CMesh_Instance::Initialize(void* pArg)
 
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
-		m_pVertexInstances[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);  // X축
-		m_pVertexInstances[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);  // Y축
-		m_pVertexInstances[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);  // Z축
-		m_pVertexInstances[i].vTranslation = _float4(0.f, 0.f, 0.f, 1.f);  // 위치 (원점)
+		memcpy_s(&m_pVertexInstances[i].vRight, sizeof(_float4), &(*pDesc->pInstanceMatrixs)[i].m[0], sizeof(_float4));
+		memcpy_s(&m_pVertexInstances[i].vUp, sizeof(_float4), &(*pDesc->pInstanceMatrixs)[i].m[1], sizeof(_float4));
+		memcpy_s(&m_pVertexInstances[i].vLook, sizeof(_float4), &(*pDesc->pInstanceMatrixs)[i].m[2], sizeof(_float4));
+		memcpy_s(&m_pVertexInstances[i].vTranslation, sizeof(_float4), &(*pDesc->pInstanceMatrixs)[i].m[3], sizeof(_float4));
 	}
 
 	m_VBInstanceSubresourceData.pSysMem = m_pVertexInstances;

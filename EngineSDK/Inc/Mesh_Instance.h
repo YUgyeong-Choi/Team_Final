@@ -6,6 +6,13 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CMesh_Instance final : public CVIBuffer_Instance
 {
+public:
+	typedef struct tagMesh_MeshInstanceDesc : public INSTANCE_DESC 
+	{
+		//월드행렬들 전달
+		vector<_float4x4>* pInstanceMatrixs = { nullptr };
+	}MESHINSTANCE_DESC;
+	
 private:
 	CMesh_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMesh_Instance(const CMesh_Instance& Prototype);

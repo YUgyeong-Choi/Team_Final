@@ -92,19 +92,20 @@ HRESULT CStaticMesh_Instance::Render()
 
 HRESULT CStaticMesh_Instance::Ready_Components(void* pArg)
 {
-  	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
+	STATICMESHINSTANCE_DESC* Desc = static_cast<STATICMESHINSTANCE_DESC*>(pArg);
 
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh_Instance")),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	CMesh_Instance::INSTANCE_DESC InstanceDesc{};
-	InstanceDesc.iNumInstance = m_iNumInstance;
+	CMesh_Instance::MESHINSTANCE_DESC ComDesc = {};
+	ComDesc.iNumInstance = Desc->iNumInstance;
+	ComDesc.pInstanceMatrixs = Desc->pInstanceMatrixs;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), StaicMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
-		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom), &InstanceDesc)))
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), Desc->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom), &ComDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -131,7 +132,7 @@ CStaticMesh_Instance* CStaticMesh_Instance::Create(ID3D11Device* pDevice, ID3D11
 
 CGameObject* CStaticMesh_Instance::Clone(void* pArg)
 {
-	CStaticMesh_Instance* pGameInstance = new CStaticMesh_Instance(*this);
+ 	CStaticMesh_Instance* pGameInstance = new CStaticMesh_Instance(*this);
 
 	if (FAILED(pGameInstance->Initialize(pArg)))
 	{

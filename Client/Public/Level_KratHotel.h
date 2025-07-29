@@ -9,6 +9,7 @@ NS_END
 
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
 #define PRE_TRANSFORMMATRIX_SCALE 0.01f
+#define INSTANCE_THRESHOLD 1 //이 갯수 이상 모델로드시 인스턴싱으로 로드한다.
 
 NS_BEGIN(Client)
 
@@ -24,7 +25,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
+	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance);
 	HRESULT Ready_MapModel();
 	HRESULT LoadMap();
 	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName);

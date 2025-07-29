@@ -204,6 +204,7 @@ HRESULT CMapTool::Save_Map()
 		json ObjectJson;
 		ObjectJson["ModelName"] = strModelName;
 		ObjectJson["Path"] = FullPath; // 또는 Path
+		ObjectJson["ObjectCount"] = static_cast<_uint>(MapObjectList.size());//갯수 저장해서 인스턴싱 모델을 로드할지 결정 
 
 		ReadyModelJsonArray.push_back(ObjectJson);
 
