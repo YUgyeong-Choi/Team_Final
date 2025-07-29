@@ -32,6 +32,8 @@ public:
 	virtual HRESULT Render_Shadow() { return S_OK; }
 
 public:
+	void Compute_ViewZ(const _vector* pPos);
+public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
@@ -58,6 +60,8 @@ protected:
 	class CTransform*							m_pTransformCom = { nullptr };
 
 	_bool m_bDead = { false };
+	
+	_float	m_fViewZ = {};
 
 	//클론인지 아닌지
 	_bool m_bCloned = { false };

@@ -65,7 +65,6 @@ private:
 	HRESULT Render_PBRLights();
 	HRESULT Render_BackBuffer();
 	HRESULT Render_NonLight();
-	HRESULT Render_Blur();
 	HRESULT Render_UI_Deferred();
 	
 

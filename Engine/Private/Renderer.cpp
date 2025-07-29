@@ -40,8 +40,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurX"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
-		return E_FAIL;	
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
@@ -76,6 +74,14 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/* [ 케스케이드 쉐도우 ] */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowA"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowB"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowC"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
+		return E_FAIL;
+
 	/* [ PBR 멀티렌더타겟 ] */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_Diffuse"))))
 		return E_FAIL;
@@ -96,6 +102,13 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Final"))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRShadow"), TEXT("Target_PBR_ShadowA"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRShadow"), TEXT("Target_PBR_ShadowB"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRShadow"), TEXT("Target_PBR_ShadowC"))))
+		return E_FAIL;
 #pragma endregion
 
 
@@ -108,7 +121,6 @@ HRESULT CRenderer::Initialize()
 #pragma endregion
 
 
-// 일단 만들기
 #pragma region RenderUI
 
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_UI_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
@@ -129,8 +141,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_ShadowObjects"), TEXT("Target_Shadow"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurX"), TEXT("Target_BlurX"))))
-		return E_FAIL;
 
 
 
@@ -150,29 +160,12 @@ HRESULT CRenderer::Initialize()
 	m_iOriginalViewportWidth = static_cast<_uint>(ViewportDesc.Width);
 	m_iOriginalViewportHeight = static_cast<_uint>(ViewportDesc.Height);
 
-	if (FAILED(Ready_DepthStencilView(g_iMaxWidth, g_iMaxHeight)))
+	if (FAILED(Ready_DepthStencilView(g_iMiddleWidth, g_iMiddleHeight)))
 		return E_FAIL;
 
 #ifdef _DEBUG
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Diffuse"), 100.0f, 100.0f, 200.0f, 200.0f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Normal"), 100.0f, 300.0f, 200.0f, 200.0f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), 100.0f, 500.0f, 200.0f, 200.0f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), 300.f, 100.0f, 200.0f, 200.0f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Specular"), 300.f, 300.0f, 200.0f, 200.0f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shadow"), ViewportDesc.Width - 150.f, 150.0f, 300.0f, 300.0f)))
-		return E_FAIL;
 
 	/* [ PBR 디버깅 ] */
-	_float fFullSizeX = 1600.f;
-	_float fFullSizeY = 900.f;
-	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Final"), fFullSizeX/2, fFullSizeY/2, fFullSizeX, fFullSizeY)))
-	//	return E_FAIL;
-
 	_float fSizeX = 1600.f / 5;
 	_float fSizeY = 900.f / 5;
 	_float fOffset = 3.f;
@@ -204,6 +197,13 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Specular"), GetTargetX(4), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowA"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowB"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowC"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+		return E_FAIL;
 	
 #endif
 
@@ -230,6 +230,7 @@ HRESULT CRenderer::Draw()
 	
 	if (FAILED(Render_Priority()))
 		return E_FAIL;	
+
 	if (FAILED(Render_Shadow()))
 		return E_FAIL;
 	
@@ -247,9 +248,6 @@ HRESULT CRenderer::Draw()
 
 	if (FAILED(Render_BackBuffer()))
 		return E_FAIL;
-
-	//if (FAILED(Render_Blur()))
-	//	return E_FAIL;
 
 	if (FAILED(Render_NonLight()))
 		return E_FAIL;
@@ -315,9 +313,9 @@ HRESULT CRenderer::Render_Priority()
 
 HRESULT CRenderer::Render_Shadow()
 {
-	m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), m_pShadowDSV, true, true);
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRShadow"), m_pShadowDSV, true, true);
 
-	if (FAILED(Change_ViewportDesc(g_iMaxWidth, g_iMaxHeight)))
+	if (FAILED(Change_ViewportDesc(g_iMiddleWidth, g_iMiddleHeight)))
 		return E_FAIL;
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_SHADOW)])
@@ -373,12 +371,6 @@ HRESULT CRenderer::Render_PBRMesh()
 
 	return S_OK;
 }
-
-
-//_bool Compare(CGameObject* pSour, CGameObject* pDest)
-//{
-//	return dynamic_cast<CBlendObject*>(pSour)->Get_Depth() > dynamic_cast<CBlendObject*>(pDest)->Get_Depth();
-//}
 
 HRESULT CRenderer::Render_Blend()
 {
@@ -530,13 +522,17 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shadow"), m_pShader, "g_ShadowTexture")))
-		return E_FAIL;
 
 	/* [ PBR 렌더링용 ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Final"), m_pShader, "g_PBR_Final")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_DepthTexture")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowA"), m_pShader, "g_ShadowTextureA")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowB"), m_pShader, "g_ShadowTextureB")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowC"), m_pShader, "g_ShadowTextureC")))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -551,9 +547,17 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Float4x4_Inv(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", m_pGameInstance->Get_Light_ViewMatrix())))
+	if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrixA", m_pGameInstance->Get_Light_ViewMatrix(SHADOW::SHADOWA))))
 		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", m_pGameInstance->Get_Light_ProjMatrix())))
+	if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrixA", m_pGameInstance->Get_Light_ProjMatrix(SHADOW::SHADOWA))))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrixB", m_pGameInstance->Get_Light_ViewMatrix(SHADOW::SHADOWB))))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrixB", m_pGameInstance->Get_Light_ProjMatrix(SHADOW::SHADOWB))))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrixC", m_pGameInstance->Get_Light_ViewMatrix(SHADOW::SHADOWC))))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrixC", m_pGameInstance->Get_Light_ProjMatrix(SHADOW::SHADOWC))))
 		return E_FAIL;
 
 	m_pShader->Begin(3);
@@ -576,37 +580,6 @@ HRESULT CRenderer::Render_NonLight()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_NONLIGHT)].clear();
-
-	return S_OK;
-}
-
-HRESULT CRenderer::Render_Blur()
-{
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
-
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))
-		return E_FAIL;
-
-	m_pShader->Begin(4);
-	m_pVIBuffer->Bind_Buffers();
-	m_pVIBuffer->Render();
-
-	m_pGameInstance->End_MRT();
-
-	
-	/* 백버퍼에 찍는다. */
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_BlurX"), m_pShader, "g_BlurXTexture")))
-		return E_FAIL;
-
-	m_pShader->Begin(5);
-	m_pVIBuffer->Bind_Buffers();
-	m_pVIBuffer->Render();
 
 	return S_OK;
 }
@@ -733,6 +706,7 @@ HRESULT CRenderer::Render_Debug()
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 	}
 
 	return S_OK;

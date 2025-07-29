@@ -567,18 +567,18 @@ _bool CGameInstance::Picking_ToolMesh(_int* pOut)
 #pragma endregion
 
 #pragma region SHADOW
-HRESULT CGameInstance::Ready_Light_For_Shadow(const CShadow::SHADOW_DESC& Desc)
+HRESULT CGameInstance::Ready_Light_For_Shadow(const CShadow::SHADOW_DESC& Desc, SHADOW eShadow)
 {
-	return m_pShadow->Ready_Light_For_Shadow(Desc);
+	return m_pShadow->Ready_Light_For_Shadow(Desc, eShadow);
 }
 
-const _float4x4* CGameInstance::Get_Light_ViewMatrix()
+const _float4x4* CGameInstance::Get_Light_ViewMatrix(SHADOW eShadow)
 {
-	return m_pShadow->Get_Light_ViewMatrix();
+	return m_pShadow->Get_LightViewMatrix(eShadow);
 }
-const _float4x4* CGameInstance::Get_Light_ProjMatrix()
+const _float4x4* CGameInstance::Get_Light_ProjMatrix(SHADOW eShadow)
 {
-	return m_pShadow->Get_Light_ProjMatrix();
+	return m_pShadow->Get_LightProjMatrix(eShadow);
 }
 #pragma endregion
 

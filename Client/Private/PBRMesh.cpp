@@ -39,8 +39,18 @@ HRESULT CPBRMesh::Initialize(void* pArg)
 
 	m_pTransformCom->Set_WorldMatrix(StaicMeshDESC->WorldMatrix);
 
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	m_pTransformCom->SetUp_Scale(1.f, 1.f, 1.f);
+	m_pTransformCom->Set_State(STATE::POSITION, 
+		XMVectorSet(
+			StaicMeshDESC->InitPos.x,
+			StaicMeshDESC->InitPos.y,
+			StaicMeshDESC->InitPos.z,
+			1.f));
+
+	m_pTransformCom->SetUp_Scale(
+		StaicMeshDESC->InitScale.x,
+		StaicMeshDESC->InitScale.y,
+		StaicMeshDESC->InitScale.z
+	);
 
 	return S_OK;
 }
@@ -56,6 +66,10 @@ void CPBRMesh::Update(_float fTimeDelta)
 
 void CPBRMesh::Late_Update(_float fTimeDelta)
 {
+	_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
+	CGameObject::Compute_ViewZ(&vTemp);
+
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -73,7 +87,19 @@ HRESULT CPBRMesh::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
 			return E_FAIL;
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
-			return E_FAIL;
+		{
+			if (!m_bDoOnce)
+			{
+				/* Com_Texture */
+				if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_DefaultARM")),
+					TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+					return E_FAIL;
+
+				if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+					return E_FAIL;
+				m_bDoOnce = true;
+			}
+		}
 
 		m_pShaderCom->Begin(0);
 
@@ -81,6 +107,46 @@ HRESULT CPBRMesh::Render()
 	}
 
 	return S_OK;
+}
+
+HRESULT CPBRMesh::Render_Shadow()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+
+	SetCascadeShadow();
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Light_ViewMatrix(m_eShadow))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Light_ProjMatrix(m_eShadow))))
+		return E_FAIL;
+
+	_int iCascadeCount = ENUM_CLASS(m_eShadow);
+	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMesh; i++)
+	{
+		switch (iCascadeCount)
+		{
+		case 0: m_pShaderCom->Begin(2); break;
+		case 1: m_pShaderCom->Begin(3); break;
+		case 2: m_pShaderCom->Begin(4); break;
+		}
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+void CPBRMesh::SetCascadeShadow()
+{
+	if (m_fViewZ < 20.f)
+		m_eShadow = SHADOW::SHADOWA;
+	else if (m_fViewZ < 40.f)
+		m_eShadow = SHADOW::SHADOWB;
+	else
+		m_eShadow = SHADOW::SHADOWC;
 }
 
 HRESULT CPBRMesh::Ready_Components(void* pArg)
