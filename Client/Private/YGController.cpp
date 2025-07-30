@@ -47,6 +47,7 @@ HRESULT CYGController::Initialize(void* pArg)
 
 void CYGController::Priority_Update(_float fTimeDelta)
 {
+	return;
 	_vector vMoveDir = XMVectorZero();
 
 	if (m_pGameInstance->Key_Pressing(DIK_W))

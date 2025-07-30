@@ -104,6 +104,7 @@ namespace Client
 
 	struct CAMERA_FRAMEDATA
 	{
+		_int iEndFrame;
 		vector<CAMERA_POSFRAME> vecPosData;
 		vector<CAMERA_ROTFRAME> vecRotData;
 		vector<CAMERA_FOVFRAME> vecFovData;

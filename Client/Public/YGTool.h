@@ -19,8 +19,10 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
-
 private:
+	json SaveCameraFrameData(const CAMERA_FRAMEDATA& data);
+	void SaveToJsonFile(const std::string& filePath, const CAMERA_FRAMEDATA& data);
+
 	HRESULT Render_CameraTool();
 	HRESULT Render_CameraFrame();
 	HRESULT Render_CameraSequence();
@@ -41,6 +43,7 @@ private:
 	CAMERA_POSFRAME m_EditPosKey = {};
 	CAMERA_ROTFRAME m_EditRotKey = {};
 	CAMERA_FOVFRAME m_EditFovKey = {};
+	CUTSCENE_TYPE m_eCutSceneType = CUTSCENE_TYPE::ONE;
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
@@ -49,3 +52,4 @@ public:
 };
 
 NS_END
+

@@ -59,6 +59,8 @@ private:
 	_float m_fElapsedTime = 0.f;
 	_int   m_iCurrentFrame = 0;
 	_float m_fFrameSpeed = 60.f; // 1초에 60프레임 기준
+
+
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

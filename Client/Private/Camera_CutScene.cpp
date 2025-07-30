@@ -50,7 +50,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			Interp_OffsetRot(m_iCurrentFrame);
 
 			// 종료 조건
-			if (m_iCurrentFrame > m_CameraDatas.vecPosData.back().keyFrame)
+			if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 			{
 				m_bActive = false;
 				m_fElapsedTime = 0.f;

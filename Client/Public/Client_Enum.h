@@ -42,6 +42,11 @@ namespace Client
 		LERP,
 		CATMULLROM
 	};
+
+	enum class CUTSCENE_TYPE
+	{
+		ONE, TWO, THREE
+	};
 }
 
 

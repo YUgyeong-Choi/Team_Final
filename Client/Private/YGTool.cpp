@@ -66,6 +66,67 @@ HRESULT CYGTool::Render()
 	return S_OK;
 }
 
+json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
+{
+	json j;
+
+	j["iEndFrame"] = data.iEndFrame;
+
+	// 1. Position Frame (WorldMatrix은 16개의 float 값으로 저장)
+	for (const auto& pos : data.vecPosData)
+	{
+		XMFLOAT4X4 mat;
+		XMStoreFloat4x4(&mat, pos.WorldMatrix);
+
+		std::vector<float> matValues(16);
+		memcpy(matValues.data(), &mat, sizeof(float) * 16);
+
+		j["vecPosData"].push_back({
+			{ "keyFrame", pos.keyFrame },
+			{ "worldMatrix", matValues },
+			{ "interpPosition", pos.interpPosition }
+			});
+	}
+
+	// 2. Rotation Frame
+	for (const auto& rot : data.vecRotData)
+	{
+		j["vecRotData"].push_back({
+			{ "keyFrame", rot.keyFrame },
+			{ "rotation", { rot.rotation.x, rot.rotation.y, rot.rotation.z } },
+			{ "interpRotation", rot.interpRotation }
+			});
+	}
+
+	// 3. FOV Frame
+	for (const auto& fov : data.vecFovData)
+	{
+		j["vecFovData"].push_back({
+			{ "keyFrame", fov.keyFrame },
+			{ "fFov", fov.fFov },
+			{ "interpFov", fov.interpFov }
+			});
+	}
+
+	return j;
+}
+
+
+void CYGTool::SaveToJsonFile(const std::string& filePath, const CAMERA_FRAMEDATA& data)
+{
+	json j = SaveCameraFrameData(data);
+
+	std::ofstream outFile(filePath);
+	if (outFile.is_open())
+	{
+		outFile << std::setw(4) << j;  // 보기 좋게 들여쓰기
+		outFile.close();
+	}
+	else
+	{
+		MessageBoxA(nullptr, "JSON 파일 저장 실패", "에러", MB_OK);
+	}
+}
 
 HRESULT CYGTool::Render_CameraTool()
 {
@@ -76,6 +137,7 @@ HRESULT CYGTool::Render_CameraTool()
 	{
 		ImGui::InputInt("End Frame", &m_iEndFrame, 10, 0);
 		m_CameraSequence->Set_EndFrame(m_iEndFrame);
+		m_CameraDatas.iEndFrame = m_iEndFrame;
 	}
 
 	if (ImGui::Button("Get CurrentKeyFrame"))
@@ -223,6 +285,37 @@ HRESULT CYGTool::Render_CameraTool()
 		CCamera_Manager::Get_Instance()->GetCutScene()->Set_CameraFrame(m_CameraDatas);
 		CCamera_Manager::Get_Instance()->GetCutScene()->PlayCutScene();
 		CCamera_Manager::Get_Instance()->SetCutSceneCam();
+	}
+
+	ImGui::SeparatorText("Save Data");
+
+	const char* CutsceneTypeNames[] = { "ONE", "TWO", "THREE" };
+	int currentCutsceneType = static_cast<int>(m_eCutSceneType); // 현재 값 저장
+
+	ImGui::SeparatorText("Cutscene Type");
+	if (ImGui::Combo("Type", &currentCutsceneType, CutsceneTypeNames, IM_ARRAYSIZE(CutsceneTypeNames)))
+	{
+		m_eCutSceneType = static_cast<CUTSCENE_TYPE>(currentCutsceneType);
+	}
+
+	if (ImGui::Button("Save"))
+	{
+		string filePath;
+		switch (m_eCutSceneType)
+		{
+		case Client::CUTSCENE_TYPE::ONE:
+			filePath = "../Bin/Save/CutScene/one.json";
+			break;
+		case Client::CUTSCENE_TYPE::TWO:
+			filePath = "../Bin/Save/CutScene/two.json";
+			break;
+		case Client::CUTSCENE_TYPE::THREE:
+			filePath = "../Bin/Save/CutScene/three.json";
+			break;
+		default:
+			break;
+		}
+		SaveToJsonFile(filePath, m_CameraDatas);
 	}
 
 	ImGui::End();
@@ -439,7 +532,7 @@ HRESULT CYGTool::Render_CameraFrame()
 
 		if (ImGui::Button("Fov Apply"))
 		{
-			m_CameraDatas.vecFovData[m_iEditKey].fFov = m_EditFovKey.fFov;
+			m_CameraDatas.vecFovData[m_iEditKey] = m_EditFovKey;
 		}
 
 		if (ImGui::Button("Fov Delete"))
