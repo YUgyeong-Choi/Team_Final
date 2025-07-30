@@ -30,19 +30,16 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	}
 
 	DESC* pDesc = static_cast<DESC*>(pArg);
-
 	m_pSocketMatrix = pDesc->pSocketMatrix;
+	m_bTool = pDesc->bTool;
 
 	m_iTileX = pDesc->iTileX;
 	m_iTileY = pDesc->iTileY;
-	m_fTileSize.x = 1.0f / _float(m_iTileX);
-	m_fTileSize.y = 1.0f / _float(m_iTileY);
-	m_iTileCnt = m_iTileX * m_iTileY;
 	m_fTickPerSecond = 60.f; // 60프레임으로 재생
 	m_bBillboard = pDesc->bBillboard;
 	m_iShaderPass = pDesc->iShaderPass;
 	m_bAnimation = pDesc->bAnimation;
-	m_bTool = pDesc->bTool;
+	m_isLoop = pDesc->isLoop;
 
 	for (_uint i = 0; i < TU_END; i++)
 	{
@@ -64,8 +61,14 @@ void CEffectBase::Priority_Update(_float fTimeDelta)
 void CEffectBase::Update(_float fTimeDelta)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+	m_fLifeTime += fTimeDelta;
 	if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
-		m_fCurrentTrackPosition = m_iTileCnt - 1.f;
+	{
+		if (m_isLoop)
+			m_fCurrentTrackPosition = 0.f;
+		else
+			m_bDead = true;
+	}
 
 	Update_Keyframes();
 
@@ -73,6 +76,7 @@ void CEffectBase::Update(_float fTimeDelta)
 		m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
 
 	m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+	// 이부분 AnimationSpeed로 별개로 관리하자 
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
 	m_fTickAcc = 0.f;
@@ -92,8 +96,6 @@ void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	m_fCurrentTrackPosition = fCurFrame;
 	if (m_fCurrentTrackPosition > static_cast<_float>(m_iDuration))
 		m_fCurrentTrackPosition = 0;
-
-
 
 	Update_Keyframes();
 
@@ -199,15 +201,97 @@ void CEffectBase::Update_Keyframes()
 #ifdef USE_IMGUI
 HRESULT CEffectBase::Change_Texture(_wstring strTextureName, TEXUSAGE eTex)
 {
+	_wstring Tag;
+	switch (eTex)
+	{
+	case Client::CEffectBase::TU_DIFFUSE:
+		Tag = TEXT("Com_Texture");
+		break;
+	case Client::CEffectBase::TU_MASK1:
+		Tag = TEXT("Com_TextureMask1");
+		break;
+	case Client::CEffectBase::TU_MASK2:
+		Tag = TEXT("Com_TextureMask2");
+		break;
+	case Client::CEffectBase::TU_MASK3:
+		Tag = TEXT("Com_TextureMask3");
+		break;
+	default:
+		return E_FAIL;
+	}
+
 	Safe_Release(m_pTextureCom[eTex]);
 	_wstring strTextureTag = L"Prototype_Component_Texture_" + strTextureName;
 	if (FAILED(Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[eTex]))))
+		Tag, reinterpret_cast<CComponent**>(&m_pTextureCom[eTex]))))
 		return E_FAIL;
 	m_TextureTag[eTex] = strTextureName;
+	m_bTextureUsage[eTex] = true;
 	return S_OK;
 }
+
+HRESULT CEffectBase::Delete_Texture(TEXUSAGE eTex)
+{
+	_wstring Tag;
+	switch (eTex)
+	{
+	case Client::CEffectBase::TU_DIFFUSE:
+		Tag = TEXT("Com_Texture");
+		break;
+	case Client::CEffectBase::TU_MASK1:
+		Tag = TEXT("Com_TextureMask1");
+		break;
+	case Client::CEffectBase::TU_MASK2:
+		Tag = TEXT("Com_TextureMask2");
+		break;
+	case Client::CEffectBase::TU_MASK3:
+		Tag = TEXT("Com_TextureMask3");
+		break;
+	default:
+		return E_FAIL;
+	}
+	Safe_Release(m_pTextureCom[eTex]);
+	Remove_Component(Tag);
+	m_bTextureUsage[eTex] = false;
+	m_TextureTag[eTex] = L"";
+	return S_OK;
+}
+
+
 #endif USE_IMGUI
+
+HRESULT CEffectBase::Ready_Textures_Prototype()
+{
+	_wstring TextureFilePath = TEXT("../Bin/Resources/Textures/Effect/");
+	_wstring TextureTag = TEXT("Prototype_Component_Texture_");
+
+	if (m_bTextureUsage[TU_DIFFUSE] == true && m_TextureTag[TU_DIFFUSE].size() != 0)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_DIFFUSE],
+			CTexture::Create(m_pDevice, m_pContext, (TextureFilePath + m_TextureTag[TU_DIFFUSE] + TEXT(".dds")).c_str(), 1))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK1] == true && m_TextureTag[TU_MASK1].size() != 0)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK1],
+			CTexture::Create(m_pDevice, m_pContext, (TextureFilePath + m_TextureTag[TU_MASK1] + TEXT(".dds")).c_str(), 1))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK2] == true && m_TextureTag[TU_MASK2].size() != 0)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK2],
+			CTexture::Create(m_pDevice, m_pContext, (TextureFilePath + m_TextureTag[TU_MASK2] + TEXT(".dds")).c_str(), 1))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK3] == true && m_TextureTag[TU_MASK3].size() != 0)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK3],
+			CTexture::Create(m_pDevice, m_pContext, (TextureFilePath + m_TextureTag[TU_MASK3] + TEXT(".dds")).c_str(), 1))))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
 
 void CEffectBase::Free()
 {
@@ -265,6 +349,76 @@ json CEffectBase::Serialize()
 	j["FlipUV"] = m_bFlipUV;
 
 	return j;
+}
+
+void CEffectBase::Deserialize(const json& j)
+{
+	// Basic Effect Preferences
+	if (j.contains("Color") && j["Color"].is_array() && j["Color"].size() == 4)
+		m_vColor = { j["Color"][0].get<_float>(), j["Color"][1].get<_float>(), j["Color"][2].get<_float>(), j["Color"][3].get<_float>() };
+
+	if (j.contains("LifeTime"))
+		m_fLifeTime = j["LifeTime"].get<_float>();
+
+	if (j.contains("Billboard"))
+		m_bBillboard = j["Billboard"].get<_bool>();
+
+	if (j.contains("Animation"))
+		m_bAnimation = j["Animation"].get<_bool>();
+
+	if (j.contains("ShaderPass"))
+		m_iShaderPass = j["ShaderPass"].get<_uint>();
+
+	// Texture Usage
+	if (j.contains("TextureUsage") && j["TextureUsage"].is_array())
+	{
+		for (int i = 0; i < TU_END && i < j["TextureUsage"].size(); ++i)
+			m_bTextureUsage[i] = j["TextureUsage"][i].get<_bool>();
+	}
+
+	if (j.contains("TextureTags") && j["TextureTags"].is_array())
+	{
+		for (int i = 0; i < TU_END && i < j["TextureTags"].size(); ++i)
+			m_TextureTag[i] = StringToWString(j["TextureTags"][i].get<std::string>());
+	}
+
+	// Track Positions
+	if (j.contains("Duration"))
+		m_iDuration = j["Duration"].get<_int>();
+
+	if (j.contains("StartTrack"))
+		m_iStartTrackPosition = j["StartTrack"].get<_int>();
+
+	if (j.contains("EndTrack"))
+		m_iEndTrackPosition = j["EndTrack"].get<_int>();
+
+	if (j.contains("TickPerSecond"))
+		m_fTickPerSecond = j["TickPerSecond"].get<_float>();
+
+	// KeyFrames
+	if (j.contains("NumKeyFrames"))
+		m_iNumKeyFrames = j["NumKeyFrames"].get<_uint>();
+
+	if (j.contains("KeyFrames") && j["KeyFrames"].is_array())
+	{
+		m_KeyFrames.clear();
+		for (const auto& keyJson : j["KeyFrames"])
+		{
+			tagEffectKeyFrame key;
+			key.Deserialize(keyJson);
+			m_KeyFrames.push_back(key);
+		}
+	}
+
+	// UV Grid
+	if (j.contains("TileX"))
+		m_iTileX = j["TileX"].get<_int>();
+
+	if (j.contains("TileY"))
+		m_iTileY = j["TileY"].get<_int>();
+
+	if (j.contains("FlipUV"))
+		m_bFlipUV = j["FlipUV"].get<_bool>();
 }
 
 json CEffectBase::tagEffectKeyFrame::Serialize()

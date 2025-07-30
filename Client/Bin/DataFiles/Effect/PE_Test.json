@@ -1,0 +1,60 @@
+{
+    "Animation": true,
+    "Billboard": false,
+    "Color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Duration": 50,
+    "EndTrack": 50,
+    "FlipUV": true,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 0.0,
+    "NumKeyFrames": 0,
+    "ShaderPass": 3,
+    "StartTrack": 0,
+    "TextureTags": [
+        "T_Slash_01_C_RSW",
+        "T_Tile_Wave_05_C_LGS",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        false,
+        false,
+        false
+    ],
+    "TickPerSecond": 60.0,
+    "TileX": 50,
+    "TileY": 1
+}

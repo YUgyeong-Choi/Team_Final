@@ -15,6 +15,7 @@ CParticleEffect::CParticleEffect(const CParticleEffect& Prototype)
 
 HRESULT CParticleEffect::Initialize_Prototype()
 {
+	m_KeyFrames.push_back(EFFKEYFRAME{});
 	return S_OK;
 }
 
@@ -31,7 +32,6 @@ HRESULT CParticleEffect::Initialize(void* pArg)
 	m_iNumInstance = pDesc->iNumInstance;
 	m_fMaxLifeTime = pDesc->vLifeTime.y;
 	m_vPivot = pDesc->vPivot;
-	m_isLoop = pDesc->isLoop;
 	m_ePType = pDesc->ePType;
 	m_iShaderPass = pDesc->iShaderPass;
 
@@ -192,11 +192,12 @@ json CParticleEffect::Serialize()
 	j["MaxLifeTime"] = m_iNumInstance;
 	j[""] = m_iNumInstance;
 	j[""] = m_iNumInstance;
-
+	// VIBuffer에 필요한 정보들 넣을 것... 
 
 	return j;
 }
 
 void CParticleEffect::Deserialize(const json& j)
 {
+	__super::Deserialize(j);
 }

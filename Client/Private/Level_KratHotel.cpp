@@ -7,6 +7,8 @@
 //#include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
 
+#include "SpriteEffect.h"
+
 CLevel_KratHotel::CLevel_KratHotel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -30,6 +32,13 @@ HRESULT CLevel_KratHotel::Initialize()
 	//제이슨으로 저장된 맵을 로드한다.
 	if (FAILED(LoadMap()))
 		return E_FAIL;
+
+
+	// 이펙트 파싱 테스트입니다요
+	if (FAILED(Ready_TestEffect(TEXT("Layer_Effect"))))
+		return E_FAIL;
+
+
 
 	//제이슨으로 로드하지않고 따로 스태틱매쉬 소환하려면 모델프로토타입을 넣어줘야함
 	//if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
@@ -386,8 +395,14 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_KratHotel::Ready_TestEffect()
+HRESULT CLevel_KratHotel::Ready_TestEffect(const _wstring strLayerTag)
 {
+	CSpriteEffect::DESC SEDesc = {};
+	lstrcpy(SEDesc.pJsonFilePath, TEXT("../Bin/DataFiles/Effect/SE_BasicExplosion.json"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"),
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &SEDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

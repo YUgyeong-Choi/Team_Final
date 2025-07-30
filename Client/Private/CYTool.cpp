@@ -296,6 +296,7 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
+	// 텍스쳐 선택 창
 	if (FAILED(Draw_TextureBrowser(pEffect)))
 	{
 		MSG_BOX("Failed to draw texture browser");
@@ -303,8 +304,13 @@ HRESULT CCYTool::Edit_Preferences()
 		return E_FAIL;
 	}
 
+
+
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+	// 키프레임 
+	Edit_Keyframes(pEffect);
 
 	// 텍스쳐 선택, UV 칸 수 조절 등
 
@@ -334,7 +340,9 @@ HRESULT CCYTool::Edit_Preferences()
 		}
 		break;
 	}
-	ImGui::SameLine();
+	//ImGui::SameLine();
+
+
 
 
 	ImGui::End();
@@ -347,8 +355,19 @@ HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
+	ImGui::Text("Select Pass\n0. Default\t1. SoftEffect\t2. UVSprite\t3. UVSprite_Color");
 
-	Edit_Keyframes(pSE);
+	for (_uint i = 0; i < SE_END; i++)
+	{
+		if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), m_eSelectedPass_SE == i)) {
+			m_eSelectedPass_SE = (SPRITEEFFECT_PASS_INDEX)i;
+			pSE->Set_ShaderPass(i);
+		}
+		if (i % 6 != 0 || i == 0)
+			ImGui::SameLine();
+	}
+	ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
 
 	return S_OK;
 }
@@ -357,8 +376,17 @@ HRESULT CCYTool::Window_Particle()
 {
 	CToolParticle* pPE = dynamic_cast<CToolParticle*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-
-	Edit_Keyframes(pPE);
+	ImGui::Text("Select Pass\n0. Default");
+	for (_uint i = 0; i < PE_END; i++)
+	{
+		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), m_eSelectedPass_PE == i)) {
+			m_eSelectedPass_PE = (PARTICLEEFFECT_PASS_INDEX)i;
+			pPE->Set_ShaderPass(i);
+		}
+		if (i % 6 != 0 || i == 0)
+			ImGui::SameLine();
+	}
+	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 1000, "%d");
 	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.1f, -1000.f, 1000.f, "%.1f");
@@ -411,6 +439,18 @@ HRESULT CCYTool::Window_Mesh()
 	if (pME == nullptr)
 		return E_FAIL;
 
+	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask");
+	for (_uint i = 0; i < ME_END; i++)
+	{
+		if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), m_eSelectedPass_ME == i)) {
+			m_eSelectedPass_ME = (MESHEFFECT_PASS_INDEX)i;
+			pME->Set_ShaderPass(i);
+		}
+		if (i % 6 != 0 || i == 0)
+			ImGui::SameLine();
+	}
+	ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
 	if (ImGui::Button("Load Models"))
 	{
 		IGFD::FileDialogConfig config;
@@ -445,7 +485,7 @@ HRESULT CCYTool::Window_Mesh()
 
 	ImGui::Separator();
 
-	Edit_Keyframes(pME);
+	//Edit_Keyframes(pME);
 
 	return S_OK;
 }
@@ -598,13 +638,130 @@ HRESULT CCYTool::Save_Effect()
 	return S_OK;
 }
 
-HRESULT CCYTool::Save_Sprite(json& jItem, CEffectBase* pEffect)
+HRESULT CCYTool::Load_Effect()
 {
-	json asfd;
+	IGFD::FileDialogConfig config;
+	config.path = R"(..\Bin\DataFiles\Effect\)";
+	json j;
+	IFILEDIALOG->OpenDialog("LoadEffectonlyDialog", "Choose File to Load", ".json", config);
+
+	if (IFILEDIALOG->Display("LoadEffectonlyDialog"))
+	{
+		if (IFILEDIALOG->IsOk())
+		{
+			path loadPath = IFILEDIALOG->GetFilePathName();
+			string filename = IFILEDIALOG->GetCurrentFileName();
+			string prefix = filename.substr(0, 2);
+			// 확장자가 없으면 .json 붙이기
+			if (loadPath.extension().string() != ".json")
+				loadPath += ".json";
+			if (prefix == "SE")
+			{
+
+			}
+			else if (prefix == "PE")
+			{
+
+			}
+			else if (prefix == "ME")
+			{
+
+			}
+			else if (prefix == "TE")
+			{
+
+			}
+			else
+			{
+				MSG_BOX("Filename should start with \"SE / PE / ME / TE\"");
+				m_bOpenLoadEffectOnly = false;
+				IFILEDIALOG->Close();
+				return S_OK;
+			}
+
+
+
+			ifstream ifs(loadPath);
+
+			if (!ifs.is_open())
+				return E_FAIL;
+
+			ifs >> j;
+
+			CEffectBase* pInstance = { nullptr };
+			CSpriteEffect::DESC SEDesc = {};
+			lstrcpy(SEDesc.pJsonFilePath, TEXT("../Bin/DataFiles/Effect/SE_BasicExplosion.json"));
+
+
+
+			switch (m_eEffectType)
+			{
+			case Client::EFF_SPRITE:
+			{
+				CToolSprite::DESC desc = {};
+				desc.bTool = true;
+				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
+			}
+			break;
+			case Client::EFF_PARTICLE:
+			{
+				CToolParticle::DESC desc = {};
+				desc.iShaderPass = ENUM_CLASS(SE_UVSPRITE_COLOR);
+				desc.fRotationPerSec = XMConvertToRadians(90.f);
+				desc.fSpeedPerSec = 5.f;
+				desc.iTileX = 8;
+				desc.iTileY = 8;
+				desc.ePType = m_eParticleType;
+				desc.iNumInstance = m_iNumInstance;
+				desc.isLoop = m_isLoop;
+				desc.vCenter = m_vCenter;
+				desc.vLifeTime = m_vLifeTime;
+				desc.vPivot = m_vPivot;
+				desc.vRange = m_vRange;
+				desc.vSize = m_vSize;
+				desc.vSpeed = m_vSpeed;
+				desc.bBillboard = false;
+				desc.bTool = true;
+				desc.iShaderPass = ENUM_CLASS(PE_DEFAULT);
+				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
+			}
+			break;
+			case Client::EFF_MESH:
+			{
+				CToolMeshEffect::DESC desc = {};
+				desc.bAnimation = true;
+				desc.fRotationPerSec = 0.f;
+				desc.fSpeedPerSec = 5.f;
+				desc.iTileX = 4;
+				desc.iTileY = 1;
+				desc.bBillboard = false;
+				desc.bTool = true;
+				desc.iShaderPass = ENUM_CLASS(ME_MASKONLY);
+				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
+			}
+			break;
+			case Client::EFF_TRAIL:
+				break;
+			}
+			if (pInstance != nullptr)
+				m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+
+
+
+
+
+			ifs.close();
+		}
+		m_bOpenSaveEffectOnly = false;
+		IFILEDIALOG->Close();
+	}
+
 
 	return S_OK;
 }
-
 
 HRESULT CCYTool::Load_Textures()
 {
@@ -645,27 +802,67 @@ HRESULT CCYTool::Load_Textures()
 	return S_OK;
 }
 
+//HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
+//{
+//	ImGui::Text("Select a Texture:");
+//	int columnCount = 4; // 한 줄에 몇 개 보여줄지
+//
+//	ImGui::BeginChild("TextureGrid", ImVec2(0, 300), true); // 스크롤 영역
+//	ImGui::Columns(columnCount, nullptr, false);
+//
+//	for (int i = 0; i < m_Textures.size(); ++i) {
+//		ImGui::PushID(i);
+//
+//		// 텍스처 미리보기 이미지
+//		if (ImGui::ImageButton("SelectTexture", reinterpret_cast<ImTextureID>(m_Textures[i].pSRV), ImVec2(64, 64))) {
+//			m_iSelectedTextureIdx = i;
+//			if (FAILED(pEffect->Change_Texture(StringToWString(m_Textures[i].name))))
+//				return E_FAIL;
+//		}
+//
+//		// 텍스트 이름
+//		ImGui::TextWrapped("%s", m_Textures[i].name.c_str());
+//
+//		ImGui::NextColumn();
+//		ImGui::PopID();
+//	}
+//
+//	ImGui::Columns(1);
+//	ImGui::EndChild();
+//
+//	return S_OK;
+//}
+
+
+
+
+
 HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 {
-	ImGui::Text("Select a Texture:");
-	int columnCount = 4; // 한 줄에 몇 개 보여줄지
+	ImGui::BeginGroup();
 
-	ImGui::BeginChild("TextureGrid", ImVec2(0, 300), true); // 스크롤 영역
+	// 텍스처 미리보기 목록 (드래그 가능)
+	ImGui::Text("Select a Texture:");
+	int columnCount = 4;
+
+	ImGui::BeginChild("TextureGrid", ImVec2(400, 300), true);
 	ImGui::Columns(columnCount, nullptr, false);
 
 	for (int i = 0; i < m_Textures.size(); ++i) {
 		ImGui::PushID(i);
 
-		// 텍스처 미리보기 이미지
-		if (ImGui::ImageButton("SelectTexture", reinterpret_cast<ImTextureID>(m_Textures[i].pSRV), ImVec2(64, 64))) {
+		// 이미지 버튼
+		if (ImGui::ImageButton("##TexBtn", reinterpret_cast<ImTextureID>(m_Textures[i].pSRV), ImVec2(64, 64)))
 			m_iSelectedTextureIdx = i;
-			if (FAILED(pEffect->Change_Texture(StringToWString(m_Textures[i].name))))
-				return E_FAIL;
+
+		// 드래그 소스 등록
+		if (ImGui::BeginDragDropSource()) {
+			ImGui::SetDragDropPayload("TEXTURE_PAYLOAD", &i, sizeof(int));
+			ImGui::Text("Dragging: %s", m_Textures[i].name.c_str());
+			ImGui::EndDragDropSource();
 		}
 
-		// 텍스트 이름
 		ImGui::TextWrapped("%s", m_Textures[i].name.c_str());
-
 		ImGui::NextColumn();
 		ImGui::PopID();
 	}
@@ -673,8 +870,63 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 	ImGui::Columns(1);
 	ImGui::EndChild();
 
+	ImGui::EndGroup();
+	ImGui::Separator();
+	//ImGui::SameLine();
+
+	// 슬롯 UI (Drop Target)
+	ImGui::BeginGroup();
+	ImGui::Text("Texture Slots:");
+	const _char* slotNames[4] = { "Diffuse", "Mask1", "Mask2", "Mask3" };
+	ImVec2 slotSize = ImVec2(48, 48);
+
+	for (_int slotIdx = 0; slotIdx < CEffectBase::TU_END; ++slotIdx) {
+		if (slotIdx > 0)
+			ImGui::SameLine(); // 가로 정렬
+		ImGui::BeginGroup();
+		ImGui::PushID(slotIdx);
+
+		ImGui::Text("%s", slotNames[slotIdx]);
+
+		if (m_pSlotSRV[slotIdx])
+			ImGui::Image(reinterpret_cast<ImTextureID>(m_pSlotSRV[slotIdx]), slotSize);
+		else
+			ImGui::Dummy(slotSize);
+
+		// 드롭 대상 처리
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TEXTURE_PAYLOAD")) {
+				_int draggedIndex = *(const int*)payload->Data;
+
+				m_pSlotSRV[slotIdx] = m_Textures[draggedIndex].pSRV;
+				m_SlotTexNames[slotIdx] = m_Textures[draggedIndex].name;
+
+				if (FAILED(pEffect->Change_Texture(StringToWString(m_SlotTexNames[slotIdx]), (CEffectBase::TEXUSAGE)slotIdx)))
+					return E_FAIL;
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		// 이름 출력 및 Clear 버튼
+		if (!m_SlotTexNames[slotIdx].empty()) {
+			ImGui::TextWrapped("(%s)", m_SlotTexNames[slotIdx].c_str());
+			if (ImGui::Button("Clear")) {
+				m_pSlotSRV[slotIdx] = nullptr;
+				m_SlotTexNames[slotIdx].clear();
+				pEffect->Delete_Texture((CEffectBase::TEXUSAGE)slotIdx);
+			}
+		}
+
+		//ImGui::Separator();
+		ImGui::PopID();
+		ImGui::EndGroup();
+	}
+
+	ImGui::EndGroup();
+
 	return S_OK;
 }
+
 
 void CCYTool::Key_Input()
 {

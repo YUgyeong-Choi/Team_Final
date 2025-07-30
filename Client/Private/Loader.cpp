@@ -210,6 +210,20 @@ HRESULT CLoader::Loading_For_Static()
 		CUI_Button::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
+	/* For.Prototype_GameObject_SpriteEffect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"),
+		CSpriteEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_ParticleEffect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"),
+		CParticleEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_MeshEffect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"),
+		CMeshEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	return S_OK;
@@ -307,6 +321,7 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh_Instance"),
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -619,7 +634,6 @@ HRESULT CLoader::Loading_For_YG()
 
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
-
 
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));

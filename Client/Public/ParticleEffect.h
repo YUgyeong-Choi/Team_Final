@@ -22,7 +22,6 @@ public:
 		_float3				vPivot;
 		_float2				vLifeTime;
 		_float2				vSpeed; 
-		_bool				isLoop;
 		PARTICLETYPE		ePType;
 	}DESC;
 
@@ -58,7 +57,6 @@ protected:
 	_uint				m_iNumInstance;
 	_float3				m_vPivot = {};
 	_float				m_fMaxLifeTime = {};
-	_bool				m_isLoop = { false };
 	_bool				m_bLocal = { true };
 
 protected:

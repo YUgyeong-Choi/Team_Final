@@ -128,9 +128,9 @@
     ],
     "TextureUsage": [
         true,
-        true,
-        true,
-        true
+        false,
+        false,
+        false
     ],
     "TickPerSecond": 60.0,
     "TileX": 8,

@@ -33,8 +33,9 @@ HRESULT CToolMeshEffect::Initialize(void* pArg)
 	m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
 	//m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
 	m_bTextureUsage[TU_DIFFUSE] = true;
-	m_bTextureUsage[TU_MASK1] = false;
-	m_bTextureUsage[TU_MASK2] = false;
+	m_bTextureUsage[TU_MASK1] = true;
+	m_bTextureUsage[TU_MASK2] = true;
+	m_bTextureUsage[TU_MASK3] = false;
 
 	m_iShaderPass = ENUM_CLASS(ME_UVMASK);
 
@@ -65,24 +66,22 @@ HRESULT CToolMeshEffect::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
-		if (m_bTextureUsage[TU_DIFFUSE] == true)
-		{
+		if (m_bTextureUsage[TU_DIFFUSE] == true) {
 			if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 				return E_FAIL;
 		}
-		if (m_bTextureUsage[TU_MASK1] == true)
-		{
+		if (m_bTextureUsage[TU_MASK1] == true) {
 			if (FAILED(m_pTextureCom[TU_MASK1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
 				return E_FAIL;
 		}
-		if (m_bTextureUsage[TU_MASK2] == true)
-		{
+		if (m_bTextureUsage[TU_MASK2] == true) {
 			if (FAILED(m_pTextureCom[TU_MASK2]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
 				return E_FAIL;
 		}
-
-		//m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
-		//m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
+		if (m_bTextureUsage[TU_MASK3] == true) {
+			if (FAILED(m_pTextureCom[TU_MASK3]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture3", 0)))
+				return E_FAIL;
+		}
 
 		m_pShaderCom->Begin(m_iShaderPass);
 
@@ -123,6 +122,10 @@ HRESULT CToolMeshEffect::Ready_Components()
 	/* For.Com_TextureMask2 */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Tile_Noise_81_C_GDH"), // 노이즈
 		TEXT("Com_TextureMask2"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK2]))))
+		return E_FAIL;
+	/* For.Com_TextureMask3 */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Tile_Noise_81_C_GDH"), // 노이즈
+		TEXT("Com_TextureMask3"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK3]))))
 		return E_FAIL;
 
 	return S_OK;
