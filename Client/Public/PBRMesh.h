@@ -63,6 +63,7 @@ public:
 
 public:
 	void	SetbDead(_bool bDead) { m_bDead = bDead; }
+	void	Toggleummy() { m_bDummyShow = !m_bDummyShow; }
 
 private:
 
@@ -80,6 +81,7 @@ protected: /* [ 초기화 변수 ] */
 protected:
 	_bool			m_bDead = {};
 	_bool			m_bDoOnce = {};
+	_bool			m_bDummyShow = { true };
 
 protected:
 	SHADOW			m_eShadow = SHADOW::SHADOW_END;

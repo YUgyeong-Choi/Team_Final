@@ -96,6 +96,18 @@ _bool CGameObject::Get_bDead()
 	return m_bDead;
 }
 
+void CGameObject::PrintMatrix(const char* szName, const _matrix& mat)
+{
+	_float4x4 matFloat;
+	XMStoreFloat4x4(&matFloat, mat);
+
+	printf("[%s Matrix]\n", szName);
+	printf(" %.2f %.2f %.2f %.2f\n", matFloat._11, matFloat._12, matFloat._13, matFloat._14);
+	printf(" %.2f %.2f %.2f %.2f\n", matFloat._21, matFloat._22, matFloat._23, matFloat._24);
+	printf(" %.2f %.2f %.2f %.2f\n", matFloat._31, matFloat._32, matFloat._33, matFloat._34);
+	printf(" %.2f %.2f %.2f %.2f\n\n", matFloat._41, matFloat._42, matFloat._43, matFloat._44);
+}
+
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
 {
 	CComponent*	pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
