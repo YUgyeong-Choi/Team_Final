@@ -1,0 +1,54 @@
+#pragma once
+
+#include "Client_Defines.h"
+#include "UI_Container.h"
+
+NS_BEGIN(Engine)
+
+
+NS_END
+
+
+NS_BEGIN(Client)
+
+class CUI_Guide  : public CUI_Container
+{
+public:
+	
+protected:
+	CUI_Guide(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_Guide(const CUI_Guide& Prototype);
+	virtual ~CUI_Guide() = default;
+
+public:
+
+
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
+
+public:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Priority_Update(_float fTimeDelta) override;
+	virtual void Update(_float fTimeDelta) override;
+	virtual void Late_Update(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
+
+	
+
+private:
+	HRESULT Ready_Component();
+
+	
+
+
+public:
+	static CUI_Guide* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
+	virtual void Free() override;
+
+};
+
+NS_END
+
+

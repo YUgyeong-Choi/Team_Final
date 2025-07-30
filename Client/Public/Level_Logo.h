@@ -3,6 +3,10 @@
 #include "Client_Defines.h"
 #include "Level.h"
 
+NS_BEGIN(Engine)
+class CGameObject;
+NS_END
+
 NS_BEGIN(Client)
 
 class CLevel_Logo final : public CLevel
@@ -19,6 +23,8 @@ public:
 	HRESULT Ready_Video();
 
 	HRESULT Ready_Menu();
+	// 객체로 다시 만들어서 조절
+	HRESULT Ready_Guide();
 
 	void Check_Button();
 	void Interation_Button(_int& iIndex);
@@ -38,6 +44,11 @@ private:
 	_int			 m_iButtonIndex = {0};
 	vector <class CUI_Button* > m_pButtons = {};
 	class CDynamic_UI*	m_pSelectUI = {nullptr};
+
+	_bool m_isOpen = { false };
+
+	class CUI_Container* m_pGuide = {nullptr};
+	class CGameObject* m_pGuideBack = { nullptr };
 
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
