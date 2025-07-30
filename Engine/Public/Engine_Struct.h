@@ -36,13 +36,20 @@ namespace Engine
 		float	fValue = 0.f; // float 값
 	};
 
-	struct TransitionResult
+	struct OverrideAnimController
 	{
-		_bool bTransition = false; // 전환 여부
-		_bool bBlendFullbody = true; // 블렌드 여부
-		class CAnimation* pFromAnim = nullptr;
-		class CAnimation* pToAnim = nullptr;
-		_float fDuration = 0.f; // 전환 시간
+		string name;
+		string controllerName; // 애니메이션 컨트롤러 이름
+		struct OverrideState
+		{
+			string clipName; // 애니메이션 클립 이름
+			string upperClipName; // 상체 애니메이션 이름
+			string lowerClipName; // 하체 애니메이션 이름
+			string maskBoneName; // 마스크 본 이름 (없으면 빈 문자열)
+			float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
+		};
+
+		unordered_map<string, OverrideState> states; // 상태 이름, OverrideState
 	};
 
 	typedef struct tagKeyFrame

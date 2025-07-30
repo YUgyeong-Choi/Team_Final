@@ -9,6 +9,13 @@ class ENGINE_DLL CAnimController final : public CBase, public ISerializable
 {
 public:
 	enum class EOp { IsTrue, IsFalse, Greater, Less,NotEqual,Equal,  Trigger, None};
+
+	enum class ETransitionType {
+		FullbodyToFullbody,         // 통짜 -> 통짜
+		FullbodyToMasked,           // 통짜 -> 상하체 분리
+		MaskedToFullbody,           // 상하체 분리 -> 통짜
+		MaskedToMasked              // 상하체 분리 -> 상하체 분리
+	};
 	struct Condition
 	{
 		string			paramName;
@@ -24,13 +31,15 @@ public:
 	struct AnimState
 	{
 		string stateName;
-		class CAnimation* clip = nullptr; // 현재 애니메이션 (하체로도 사용)
+		class CAnimation* clip = nullptr; // 현재 애니메이션
 		_int iNodeId; // 툴상에서의 노드 ID
 		_float2 fNodePos; // 툴상에서의 노드 위치
 
 		// 상하체 분리 애니메이션인 경우
+		string lowerClipName; // 하체 애니메이션 이름
 		string upperClipName; // 상체 애니메이션 이름
 		string maskBoneName; // 마스크용 뼈 이름 (없으면 빈 문자열)
+		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
 	};
 
 	struct Transition 
@@ -45,6 +54,19 @@ public:
 		vector<Condition> conditions; // 전환 조건
 		_bool hasExitTime = false; // 애니메이션이 다 끝난 경우에
 		_bool Evaluates(class CAnimController* pAnimController, class CAnimator* pAnimator) const;
+	};
+
+	struct TransitionResult
+	{
+		_bool bTransition = false; // 전환 여부
+		_bool bBlendFullbody = true; // 블렌드 여부
+		ETransitionType eType = ETransitionType::FullbodyToFullbody;
+		CAnimation* pFromLowerAnim = nullptr; // 전환 시작 하체/통짜 클립
+		CAnimation* pToLowerAnim = nullptr;   // 전환 목표 하체/통짜 클립
+		CAnimation* pFromUpperAnim = nullptr; // 전환 시작 상체 클립 
+		CAnimation* pToUpperAnim = nullptr;   // 전환 목표 상체 클립 
+		_float fDuration = 0.f; // 전환 시간
+		_float fBlendWeight = 1.f; // 마스크에 사용함
 	};
 
 
@@ -69,9 +91,42 @@ public:
 		if (m_States.size() == 1)
 		{
 			m_CurrentStateNodeId = iNodeId;
+			SetEntry(name);
 		}
 		return m_States.size() - 1;
     }
+	size_t AddState(const string& stateName,CAnimation* defaultClip, _int nodeId,_bool bIsMaskBone = false, const string& initialMaskBone = "",
+		const string& initialUpperClip = "", 
+		const string& initialLowerClip = "")
+	{
+		AnimState newState;
+		newState.stateName = stateName;
+		newState.iNodeId = nodeId;
+		newState.fNodePos = { 0.f, 0.f }; // 이 위치는 나중에 ImGui에서 설정
+
+		if (bIsMaskBone)
+		{
+			newState.clip = nullptr; // 마스크 본 상태일 때는 일반 클립은 null
+			newState.maskBoneName = initialMaskBone;
+			newState.upperClipName = initialUpperClip;
+			newState.lowerClipName = initialLowerClip;
+		}
+		else
+		{
+			newState.clip = defaultClip; // 일반 상태일 때는 기본 클립 할당
+			newState.maskBoneName.clear(); // 마스크 본 이름 초기화
+			newState.upperClipName.clear();
+			newState.lowerClipName.clear();
+		}
+
+		m_States.push_back(newState);
+		if (m_States.size() == 1)
+		{
+			m_CurrentStateNodeId = nodeId;
+			SetEntry(stateName);
+		}
+		return m_States.size() - 1;
+	}
 
 	AnimState* GetCurrentState() {
 		return FindStateByNodeId(m_CurrentStateNodeId);
@@ -235,11 +290,50 @@ public:
 	unordered_map<string, Parameter>& GetParameters() {
 		return m_Params;
 	}
+
+	void SetEntry(const string& entryStateName)
+	{
+		m_EntryStateName = entryStateName;
+		m_EntryState = FindState(entryStateName);
+		if (m_EntryState == nullptr)
+		{
+			cout << "Entry state not found: " << entryStateName << endl; // 디버그용 출력
+			return;
+		}
+		else
+		{
+			m_EntryStateNodeId = m_EntryState->iNodeId; // Entry 상태 노드 ID 설정
+			m_CurrentStateNodeId = m_EntryStateNodeId; // 현재 상태를 Entry 상태로 설정
+		}
+	}
+	void SetExit(const string& exitStateName)
+	{
+		m_ExitStateName = exitStateName;
+		m_ExitState = FindState(exitStateName);
+		if (m_ExitState == nullptr)
+		{
+			cout << "Exit state not found: " << exitStateName << endl; // 디버그용 출력
+			return;
+		}
+		else
+		{
+			m_ExitStateNodeId = m_ExitState->iNodeId; // Exit 상태 노드 ID 설정
+		}
+	}
+
+	AnimState* GetEntryState() const { return m_EntryState; }
+	AnimState* GetExitState() const { return m_ExitState; }
+	_int GetEntryNodeId() const { return m_EntryStateNodeId; }
+	_int GetExitNodeId() const { return m_ExitStateNodeId; }
+	void Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController);
+	void Applay_OverrideAnimController(const string& ctrlName, const OverrideAnimController& overrideController);
+	void Cancel_OverrideAnimController();
 private:
 	AnimState* FindState(const string& name) 
 	{
 		for (auto& s : m_States)
-			if (s.stateName == name) return &s;
+			if (s.stateName == name) 
+				return &s;
 		return nullptr;
 	}
 	AnimState* FindStateByNodeId(_int iNodeId)
@@ -249,18 +343,32 @@ private:
 		return nullptr;
 	}
 	void ResetTransAndStates();
+	void ChangeStates(const string& overrideCtrlName);// 오버라이드 애니메이션 컨트롤러를 적용할 때 상태들을 변경
 private:
+	
+	_bool m_bOverrideAnimController = false; // 오버라이드 애니메이션 컨트롤러 사용 중인지
+	// Override 애니메이션 컨트롤러들
+	unordered_map<string, OverrideAnimController> m_OverrideAnimControllers;
 	// 상태·전환 저장
     _int                   m_CurrentStateNodeId= 0;
+	_float                 m_fLayerWeight{ 0.f };
+	unordered_map<string, vector<AnimState>> m_Layers;
+	_int m_EntryStateNodeId = -1; // 
+	_int m_ExitStateNodeId = -1;
+	AnimState*			   m_EntryState{ nullptr };
+	AnimState*			   m_ExitState{nullptr};
+	string				   m_EntryStateName{};
+	string				   m_ExitStateName{};
 	vector<AnimState>      m_States;
 	vector<Transition>     m_Transitions;
 	vector<Condition>	   m_Conditions; // 아직 쓰는 곳 없음
 
 	class CAnimator*	   m_pAnimator = nullptr;  // 애니메이터 참조
 	unordered_map<string, Parameter> m_Params; // 파라미터 관리 (컨트롤러 별 개별로 관리)
-
+	unordered_map<string, vector<AnimState>> m_OriginalAnimStates; // 원본 애니메이션 상태들 (복사본을 만들 때 사용)
 	TransitionResult       m_TransitionResult{}; // 트래지션을 한 결과 (애니메이터에서 요청)
 	string 				   m_Name; // 컨트롤러 이름
+
 public:
 	static CAnimController* Create();
 	CAnimController* Clone();

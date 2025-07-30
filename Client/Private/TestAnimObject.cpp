@@ -77,7 +77,6 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 		m_pAnimator->Deserialize(rootStates);
 	}
 
-	m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
 
 
 	_fvector vPos{ 0.0f, 5.f, 0.0f, 1.0f };
@@ -94,12 +93,14 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 
 void CTestAnimObject::Priority_Update(_float fTimeDelta)
 {
+
 	/* [ Ä³½ºÄÉÀÌµå Àü¿ë ¾÷µ¥ÀÌÆ® ÇÔ¼ö ] */
 	UpdateShadowCamera();
 	/* [ ¿òÁ÷ÀÓ Àü¿ë ÇÔ¼ö ] */
 	SetMoveState(fTimeDelta);
 	/* [ ·è º¤ÅÍ ·¹ÀÌÄÉ½ºÆ® ] */
 	RayCast();
+
 }
 void CTestAnimObject::Update(_float fTimeDelta)
 {
@@ -111,7 +112,8 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	{
 		m_pModelCom->Update_Bones();
 	}
-	//Input_Test(fTimeDelta);
+
+	Input_Test(fTimeDelta);
 }
 
 void CTestAnimObject::Late_Update(_float fTimeDelta)
@@ -151,7 +153,7 @@ HRESULT CTestAnimObject::Bind_Shader()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 		{
-			// ÇÃ·¹ÀÌ¾î ¸ðµ¨ÀÌ ´«ÀÌ ¿¬°áÀÌ ¾ÈµÇ´Â °æ¿ì°¡ ÀÖ¾î¼­ return »­
+			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÇ´ï¿½ ï¿½ï¿½ì°?ï¿½Ö¾î¼­ return ï¿½ï¿½
 		}
 		//	return E_FAIL;
 
@@ -198,10 +200,10 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 	_bool bMove = (bUp || bDown || bLeft || bRight);
 
 	static _bool bRunToggle = false;
-	static _bool bSpaceHeld = false;      // ½ºÆäÀÌ½º°¡ ´­¸° ÁßÀÎÁö
-	static _bool bSprinting = false;      // ½ºÇÁ¸°Æ® ¸ðµå·Î ÀüÈ¯Çß´ÂÁö
-	static _float fPressTime = 0.f;       // ´©¸¥ ½Ã°£ ´©Àû
-	const _float sprintTh = 0.8f;         // ÀÌ ½Ã°£ ÀÌ»ó ´©¸£¸é ½ºÇÁ¸°Æ®
+	static _bool bSpaceHeld = false;      
+	static _bool bSprinting = false;      
+	static _float fPressTime = 0.f;       
+	const _float sprintTh = 0.8f;         
 
 	_bool bSpaceDown = m_pGameInstance->Key_Down(DIK_SPACE);
 	_bool bSpacePress = m_pGameInstance->Key_Pressing(DIK_SPACE);
@@ -209,35 +211,34 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_TAB))
 	{
-		// ¹«±â ÀåÂø
-		// ¾Ö´Ï¸ÞÀÌ¼Ç ÄÁÆ®·Ñ·¯ º¯°æ
-		m_pAnimator->SetTrigger("EquipWepaon");
-		m_pAnimator->SetCurrentAnimController("Player_TwoHand","EquipWeapon");
+		_bool test = m_pAnimator->CheckBool("Move");
+		if (test)
+		{
+			int a = 0;
+		}
+		m_pAnimator->SetTrigger("EquipWeapon");
+		m_pAnimator->ApplyOverrideAnimController("TwoHand");
 	}
 
-	// ½ºÆäÀÌ½º ¹Ù¸¦ ´­·¶À» ¶§ (ÇÑ ¹ø¸¸)
 	if (bSpaceDown)
 	{
 		if (!bMove)
 		{
-			// ÀÌµ¿ÇÏÁö ¾ÊÀ» ¶§´Â Áï½Ã Æ®¸®°Å ¹ß»ý
 			m_pAnimator->SetTrigger("Dash");
 		}
 		else
 		{
-			// ÀÌµ¿ ÁßÀÏ ¶§´Â È¦µå ½ÃÀÛ
+
 			bSpaceHeld = true;
 			bSprinting = false;
 			fPressTime = 0.f;
 		}
 	}
-
-	// ÀÌµ¿ ÁßÀÌ¸é¼­ ½ºÆäÀÌ½º¸¦ ´©¸£´Â µ¿¾È
 	if (bMove && bSpaceHeld && bSpacePress)
 	{
 		fPressTime += fTimeDelta;
 
-		// ÀÏÁ¤ ½Ã°£ ³Ñ¾î°¡¸é ½ºÇÁ¸°Æ® ½ÃÀÛ
+		
 		if (!bSprinting && fPressTime >= sprintTh)
 		{
 			m_pAnimator->SetBool("Sprint", true);
@@ -246,30 +247,27 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		}
 	}
 
-	// ½ºÆäÀÌ½º ¹Ù¸¦ ¶¿ ¶§ (ÇÑ ¹ø¸¸)
+
 	if (bSpaceHeld && bSpaceUp)
 	{
 		if (bMove)
 		{
 			if (!bSprinting)
 			{
-				// Âª°Ô ´­·¶À¸¸é ´ë½Ã Æ®¸®°Å
+
 				m_pAnimator->SetTrigger("Dash");
 			}
 			else
 			{
-				// ½ºÇÁ¸°Æ® Á¾·á
 				m_pAnimator->SetBool("Sprint", false);
 			}
 		}
 
-		// »óÅÂ ÃÊ±âÈ­
 		bSpaceHeld = false;
 		bSprinting = false;
 		fPressTime = 0.f;
 	}
 
-	// ÀÌµ¿ÀÌ Áß´ÜµÇ¸é ½ºÇÁ¸°Æ®µµ Áß´Ü
 	if (!bMove && bSprinting)
 	{
 		m_pAnimator->SetBool("Sprint", false);
@@ -278,12 +276,10 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		fPressTime = 0.f;
 	}
 
-	// ¾Ö´Ï¸ÞÀÌÅÍ »óÅÂ ¼³Á¤
 	if (m_pAnimator)
 	{
 		m_pAnimator->SetBool("Move", bMove);
 
-		// ZÅ°·Î ·± Åä±Û
 		if (m_pGameInstance->Key_Down(DIK_Z))
 		{
 			bRunToggle = !bRunToggle;
@@ -356,24 +352,24 @@ HRESULT CTestAnimObject::UpdateShadowCamera()
 
 void CTestAnimObject::SetMoveState(_float fTimeDelta)
 {
-	// 1. Ä«¸Þ¶ó ±âÁØ ¹æÇâ ÃßÃâ
+
 	_vector vCamLook = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::LOOK);
 	_vector vCamRight = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::RIGHT);
 
-	// 2. ¼öÆò ¹æÇâ¸¸ À¯Áö
+
 	vCamLook = XMVectorSetY(vCamLook, 0.f);
 	vCamRight = XMVectorSetY(vCamRight, 0.f);
 	vCamLook = XMVector3Normalize(vCamLook);
 	vCamRight = XMVector3Normalize(vCamRight);
 
-	// 3. ÀÔ·Â Ã³¸®
+
 	_vector vInputDir = XMVectorZero();
 	if (m_pGameInstance->Key_Pressing(DIK_W)) vInputDir += vCamLook;
 	if (m_pGameInstance->Key_Pressing(DIK_S)) vInputDir -= vCamLook;
 	if (m_pGameInstance->Key_Pressing(DIK_D)) vInputDir += vCamRight;
 	if (m_pGameInstance->Key_Pressing(DIK_A)) vInputDir -= vCamRight;
 
-	// 4. ÀÔ·Â ¾øÀ¸¸é ¸®ÅÏ
+
 	if (XMVector3Equal(vInputDir, XMVectorZero()))
 	{
 		_float3 moveVec = {};
@@ -402,10 +398,9 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 		return;
 	}
 
-	// 5. ¹æÇâ Á¤±ÔÈ­
 	vInputDir = XMVector3Normalize(vInputDir);
 
-	// 6. È¸Àü: ÇöÀç ¹æÇâ°ú ÀÔ·Â ¹æÇâÀÇ °¢µµ °è»ê
+
 	_vector vPlayerLook = m_pTransformCom->Get_State(STATE::LOOK);
 	vPlayerLook = XMVectorSetY(vPlayerLook, 0.f);
 	vPlayerLook = XMVector3Normalize(vPlayerLook);
@@ -414,15 +409,16 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 	fDot = max(-1.f, min(1.f, fDot)); // Clamp
 	_float fAngle = acosf(fDot);
 
-	// È¸Àü ¹æÇâ È®ÀÎ (½Ã°è or ¹Ý½Ã°è)
+
 	_vector vCross = XMVector3Cross(vPlayerLook, vInputDir);
 	if (XMVectorGetY(vCross) < 0.f)
 		fAngle = -fAngle;
 
-	// ºÎµå·¯¿î È¸Àü Àû¿ë (°íÁ¤ È¸Àü ¼Óµµ)
-	const _float fTurnSpeed = XMConvertToRadians(720.f); // ÃÊ´ç 720µµ È¸Àü
+
+	const _float fTurnSpeed = XMConvertToRadians(720.f); 
 	_float fClampedAngle = max(-fTurnSpeed * fTimeDelta, min(fTurnSpeed * fTimeDelta, fAngle));
 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
+
 
 	// 7. ÀÌµ¿
 	_float3 moveVec = {};
@@ -449,6 +445,7 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 		m_vGravityVelocity.y = 0.f;
 
 	SyncTransformWithController();
+
 }
 
 void CTestAnimObject::RayCast()
@@ -473,7 +470,7 @@ void CTestAnimObject::RayCast()
 		{
 			PxRigidActor* hitActor = hit.block.actor;
 
-			//  ÀÚ±â ÀÚ½ÅÀÌ¸é ¹«½Ã
+			//  ï¿½Ú±ï¿½ ï¿½Ú½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 			if (hitActor == m_pControllerCom->Get_Actor())
 			{
 				printf(" Ray hit myself  skipping\n");
@@ -485,12 +482,12 @@ void CTestAnimObject::RayCast()
 			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 			pHitActor->Get_Owner()->On_Hit(this, m_pControllerCom->Get_ColliderType());
 
-			printf("RayÃæµ¹ Çß´Ù!\n");
+			printf("Rayï¿½æµ¹ ï¿½ß´ï¿½!\n");
 			printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
 			printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
 			m_bRayHit = true;
 			m_vRayHitPos = hitPos;
-			// Àú±â hit.block.¿©±â¿¡ ¹¹ faceIndex, U, V ´Ù¾çÇÏ°Ô ÀÖÀ¸´Ï ±Ã±ÝÇÏ¸é º¸¼¼¿©.. 
+			// ï¿½ï¿½ï¿½ï¿½ hit.block.ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ faceIndex, U, V ï¿½Ù¾ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã±ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.. 
 		}
 	}
 

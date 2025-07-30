@@ -160,6 +160,8 @@ HRESULT CAnimTool::Render()
 		}
 		if (FAILED(Render_AnimStatesByNode()))
 			return E_FAIL;
+		if (FAILED(Render_OverrideAnimControllers()))
+			return E_FAIL;
 	}
 	else
 	{
@@ -231,7 +233,6 @@ HRESULT CAnimTool::Render_AnimEvents()
 		return S_OK;
 	}
 
-	static _int   selectedListenerIdx = 0;
 	_float fCurTarckPos = m_pCurAnimation->GetCurrentTrackPosition();
 	_float fDuration = m_pCurAnimation->GetDuration();
 	ImGui::Separator();
@@ -272,12 +273,12 @@ HRESULT CAnimTool::Render_AnimEvents()
 	if (!listenerNames.empty())
 	{
 		ImGui::Text("Available Animator Events:");
-		ImGui::Combo("##listener_combo", &selectedListenerIdx,
+		ImGui::Combo("##listener_combo", &m_iSelectedListenerIdx,
 			listenerNames.data(), (int)listenerNames.size());
 		ImGui::SameLine();
 		if (ImGui::Button("Assign To Anim"))
 		{
-			m_pCurAnimation->AddEvent({ fCurTarckPos, listenerNames[selectedListenerIdx] });
+			m_pCurAnimation->AddEvent({ fCurTarckPos, listenerNames[m_iSelectedListenerIdx] });
 		}
 		ImGui::Separator();
 	}
@@ -466,34 +467,32 @@ HRESULT CAnimTool::Render_Parameters()
 
 		if (ImGui::BeginPopup("AddParamPopup"))
 		{
-			static _char newName[64] = "";
-			static _int  newType = 0; // 0: Bool, 1: Trigger, 2: Float, 3: Int
-			ImGui::InputText("Name", newName, sizeof(newName));
-			ImGui::Combo("Type", &newType, typeNames, IM_ARRAYSIZE(typeNames));
+			ImGui::InputText("Name", m_NewParameterName, sizeof(m_NewParameterName));
+			ImGui::Combo("Type", &m_iNewType, typeNames, IM_ARRAYSIZE(typeNames));
 			if (ImGui::Button("Add"))
 			{
 				if (m_pCurAnimator)
 				{
-					_bool bExists = m_pCurAnimator->ExisitsParameter(newName);
-					string diffName = newName + to_string(i);
-					switch (newType)
+					_bool bExists = m_pCurAnimator->ExisitsParameter(m_NewParameterName);
+					string diffName = m_NewParameterName + to_string(i);
+					switch (m_iNewType)
 					{	
 					case 0: // Bool
-						m_pCurAnimator->AddBool(bExists? diffName : newName);
+						m_pCurAnimator->AddBool(bExists? diffName : m_NewParameterName);
 						break;
 					case 1: // Trigger
-						m_pCurAnimator->AddTrigger(bExists ? diffName : newName);
+						m_pCurAnimator->AddTrigger(bExists ? diffName : m_NewParameterName);
 						break;
 					case 2: // Float
-						m_pCurAnimator->AddFloat(bExists ? diffName : newName);
+						m_pCurAnimator->AddFloat(bExists ? diffName : m_NewParameterName);
 						break;
 					case 3: // Int
-						m_pCurAnimator->AddInt(bExists ? diffName : newName);
+						m_pCurAnimator->AddInt(bExists ? diffName : m_NewParameterName);
 						break;
 					default:
 						break;
 					}
-				newName[0] = '\0'; // 클리어
+					m_NewParameterName[0] = '\0'; // 클리어
 				}
 				ImGui::CloseCurrentPopup();
 			}
@@ -514,18 +513,34 @@ HRESULT CAnimTool::Render_AnimControllers()
 	for (auto& kv : ctrls) 
 		names.push_back(kv.first);
 
-	static _int selIdx = 0;
 	
-	const _char* curName = names.empty() ? "" : names[selIdx].c_str();
+	const _char* curName = names.empty() ? "" : names[m_iControllerIndex].c_str();
 	if (ImGui::BeginCombo("##Controllers", curName))
 	{
 		for (_int i = 0; i < static_cast<_int>(names.size()); ++i)
 		{
-			_bool selected = (i == selIdx);
+			_bool selected = (i == m_iControllerIndex);
 			if (ImGui::Selectable(names[i].c_str(), selected))
 			{
-				selIdx = i;
-				m_pCurAnimator->SetCurrentAnimController(names[i]);
+				m_iControllerIndex = i;
+				m_pCurAnimator->SetCurrentAnimControllerForEditor(names[i]);
+				// 여기서도 컨트롤러 불러와서 ID 바꿔줘야함
+				auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
+				if (pCtrl)
+				{
+					auto& states = pCtrl->GetStates();
+					for (const auto& state : states)
+					{
+						m_iSpeicificNodeId = max(m_iSpeicificNodeId, state.iNodeId);
+					}
+
+					for (const auto& trns : pCtrl->GetTransitions())
+					{
+						m_iSpeicificNodeId = max(m_iSpeicificNodeId, trns.iFromNodeId);
+						m_iSpeicificNodeId = max(m_iSpeicificNodeId, trns.iToNodeId);
+					}
+					m_iSpeicificNodeId++;
+				}
 			}
 			if (selected) ImGui::SetItemDefaultFocus();
 		}
@@ -533,39 +548,217 @@ HRESULT CAnimTool::Render_AnimControllers()
 	}
 
 
-	static _char bufRename[64] = "";
 	if (!names.empty())
-		strncpy_s(bufRename, names[selIdx].c_str(), 63);
-	if (ImGui::InputText("Rename", bufRename, sizeof(bufRename),
+		strncpy_s(m_RenameControllerName, names[m_iControllerIndex].c_str(), 63);
+	if (ImGui::InputText("Rename", m_RenameControllerName, sizeof(m_RenameControllerName),
 		ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		string oldName = names[selIdx];
-		string newName = bufRename;
+		string oldName = names[m_iControllerIndex];
+		string newName = m_RenameControllerName;
 		// 언레지스터 → 이름 바꿔서 → 리지스터
 		auto pCtrl= ctrls[oldName];
 		m_pCurAnimator->RenameAnimController(oldName, newName);
 		pCtrl->SetName(newName);
 		// 선택 인덱스 보정
-		names[selIdx] = newName;
+		names[m_iControllerIndex] = newName;
 	}
 
 
-	static _char bufNew[64] = "";
-	ImGui::InputText("New Ctrl", bufNew, sizeof(bufNew));
+	ImGui::InputText("New Ctrl", m_NewControllerName, sizeof(m_NewControllerName));
 	ImGui::SameLine();
 	if (ImGui::Button("Create"))
 	{
-		string name = bufNew;
+		string name = m_NewControllerName;
 		if (!name.empty() && ctrls.find(name) == ctrls.end())
 		{
 			auto pNew = CAnimController::Create();
 			pNew->SetName(name);
 			m_pCurAnimator->RegisterAnimController(name, pNew);
-			bufNew[0] = '\0';
+			m_NewControllerName[0] = '\0';
 		}
 	}
 	ImGui::End();
 
+	return S_OK;
+}
+
+HRESULT CAnimTool::Render_OverrideAnimControllers()
+{
+	if (m_pCurAnimator == nullptr || m_pCurAnimator->Get_CurrentAnimController() == nullptr)
+	{
+		return S_OK;
+	}
+
+	ImGui::Begin("Override Anim Controllers");
+	auto& ctrls = m_pCurAnimator->GetAnimControllers();
+	ImGui::Checkbox("Use Override AnimCtrl", &m_bUseOverrideController);
+
+		if (m_bUseOverrideController)
+		{
+			// 현재 컨트롤러의 스테이트들 가져와서 설정하게
+			auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
+			auto& states = pCtrl->GetStates();
+			if (m_NewOverrideAnimController.states.empty())
+			{
+				
+				// 오버라이드 컨트롤러가 비어있으면 현재 컨트롤러의 상태들로 초기화
+				for (const auto& state : states)
+				{
+					m_NewOverrideAnimController.states.emplace(state.stateName, OverrideAnimController::OverrideState{
+						state.clip ? state.clip->Get_Name() : "",
+						state.upperClipName,
+						state.lowerClipName,
+						state.maskBoneName,
+						state.fBlendWeight
+						});
+				}
+			}
+		
+			// 오버라이드 해야할 스테이트들 오버라이드 컨트롤러에 추가
+			vector<string> stateNames;
+			stateNames.reserve(m_NewOverrideAnimController.states.size());
+			for (const auto& Pair : m_NewOverrideAnimController.states)
+			{
+				stateNames.push_back(Pair.first);
+			}
+			sort(stateNames.begin(), stateNames.end());
+
+			if (ImGui::BeginCombo("Override States", m_iSelectedOverrideStateIndex >= 0 ? stateNames[m_iSelectedOverrideStateIndex].c_str() : "Select State"))
+			{
+				for (_int i = 0; i < stateNames.size(); ++i)
+				{
+					_bool isSelected = (i == m_iSelectedOverrideStateIndex);
+					if (ImGui::Selectable(stateNames[i].c_str(), isSelected))
+					{
+						m_iSelectedOverrideStateIndex = i;
+						auto it = find_if(states.begin(), states.end(),
+							[&](const CAnimController::AnimState& state) { return state.stateName == stateNames[i]; });
+
+						if (it != states.end())
+						{
+							// 마스크 본을 사용하는 스테이트인지 확인
+							m_bIsUesMaskBoneState = it->maskBoneName.empty() == false;
+						}
+					}
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+
+			// 선택된 오버라이드 상태가 있다면 해당 상태의 정보를 보여주고 수정할 수 있게
+			if (m_iSelectedOverrideStateIndex >= 0 && m_iSelectedOverrideStateIndex < stateNames.size())
+			{
+				auto& selectedState = m_NewOverrideAnimController.states[stateNames[m_iSelectedOverrideStateIndex]]; 
+
+				// 상태 이름
+
+				vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
+
+				vector<string> animNames;
+				animNames.reserve(anims.size());
+				for (const auto& anim : anims)
+				{
+					animNames.push_back(anim->Get_Name());
+				}
+
+				if (ImGui::BeginCombo("Override Animations", m_iOverrideAnimIndex >= 0 ? animNames[m_iOverrideAnimIndex].c_str() : "Override Select"))
+				{
+					for (_int i = 0; i < animNames.size(); ++i)
+					{
+						_bool isSelected = (i == m_iOverrideAnimIndex);
+						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+						{
+							m_iOverrideAnimIndex = i;
+							selectedState.clipName = anims[i]->Get_Name();
+						}
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+				if (m_bIsUesMaskBoneState)
+				{
+
+				if (ImGui::BeginCombo("Override Upper Animations", m_iOverrideUpperAnimIndex >= 0 ? animNames[m_iOverrideUpperAnimIndex].c_str() : "Override Select Upper"))
+				{
+					for (_int i = 0; i < animNames.size(); ++i)
+					{
+						_bool isSelected = (i == m_iOverrideUpperAnimIndex);
+						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+						{
+							m_iOverrideUpperAnimIndex = i;
+							selectedState.upperClipName = anims[m_iOverrideUpperAnimIndex]->Get_Name();
+						}
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+				
+			
+				if (ImGui::BeginCombo("Override Lower Animations", m_iOverrideLowerAnimIndex >= 0 ? animNames[m_iOverrideLowerAnimIndex].c_str() : "Override Select Lower"))
+				{
+					for (_int i = 0; i < animNames.size(); ++i)
+					{
+						_bool isSelected = (i == m_iOverrideLowerAnimIndex);
+						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+						{
+							m_iOverrideLowerAnimIndex = i;
+							selectedState.lowerClipName = anims[m_iOverrideLowerAnimIndex]->Get_Name();
+						}
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+				}
+				else
+				{
+					m_iOverrideLowerAnimIndex = -1;
+					m_iOverrideUpperAnimIndex = -1; // 마스크 본을 사용하지 않는 상태라면 상체, 하체 애니메이션 선택 초기화
+				}
+			}
+		// 컨트롤러 이름 설정
+		
+		if (ImGui::InputText("Name", m_NewOverrideControllerName, sizeof(m_NewOverrideControllerName),
+			ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+		}
+
+		if (ImGui::Button("Add Override Controller"))
+		{
+			if (m_bUseOverrideController && !m_NewOverrideControllerName[0] == '\0')
+			{
+				m_pCurAnimator->Add_OverrideAnimController(
+					m_NewOverrideControllerName, m_NewOverrideAnimController);
+			//	m_NewOverrideControllerName[0] = '\0'; // 클리어
+			}
+		}
+
+		if (ImGui::Button("Clear Override Controllers"))
+		{
+			m_NewOverrideAnimController.states.clear();
+			m_NewOverrideControllerName[0] = '\0'; // 클리어
+			m_iSelectedOverrideStateIndex = -1; // 선택 초기화
+			m_iOverrideAnimIndex = -1; // 애니메이션 선택 초기화
+			m_iOverrideUpperAnimIndex = -1; // 상체 애니메이션 선택 초기화
+			m_iOverrideLowerAnimIndex = -1; // 하체 애니메이션 선택 초기화
+		}
+
+		if (ImGui::Button("Apply Override Controllers"))
+		{
+			if (m_bUseOverrideController && !m_NewOverrideControllerName[0] == '\0')
+			{
+				m_pCurAnimator->ApplyOverrideAnimController(m_NewOverrideControllerName);
+			}
+		}
+		if (ImGui::Button("Cancel Override Controllers"))
+		{
+			m_pCurAnimator->CancelOverrideAnimController();
+		}
+	}
+	ImGui::End();
 	return S_OK;
 }
 
@@ -587,8 +780,6 @@ HRESULT CAnimTool::Render_AnimationSequence()
 		return S_OK;
 	}
 
-	static _int           selectedEntry = -1;
-	static _bool          expanded = true;// 트랙 확장 여부
 	static const _float FRAME = 60.f; // 1초당 60프레임 기준
 
 	ImGui::Begin("Animation Sequence");
@@ -638,8 +829,8 @@ HRESULT CAnimTool::Render_AnimationSequence()
 	_bool bChanged = ImSequencer::Sequencer(
 		m_pMySequence,
 		&m_iSequenceFrame,
-		&expanded,
-		&selectedEntry,
+		&m_bExpanded,
+		&m_iSelectEntry,
 		&m_iFirstFrame,
 		ImSequencer::SEQUENCER_EDIT_ALL | ImSequencer::SEQUENCER_CHANGE_FRAME
 	);
@@ -680,7 +871,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		SaveLoadAnimStates(false);
 		return S_OK; // 불렀올 때는 한 프레임 넘기기
 	}
-	static _int selectedNodeID = -1;  // 선택한 노드 아이디
 
 	// 컨트롤러가 바뀌면 식별 ID 초기화 시켜놓기
 	CAnimController* pCtrl = m_pCurAnimator->Get_CurrentAnimController();
@@ -704,10 +894,9 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 	if (ImGui::BeginPopup("AddStatePopup"))
 	{
-		static _char stateName[64] = "NewState";
 
 		static _bool bMaskBone = false;
-		ImGui::InputText("State Name", stateName, IM_ARRAYSIZE(stateName));
+		ImGui::InputText("State Name", m_NewStateName, IM_ARRAYSIZE(m_NewStateName));
 		
 		ImGui::Checkbox("Mask Bone", &bMaskBone);
 
@@ -718,13 +907,24 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			const ImVec2 mousePos = ImNodes::EditorContextGetPanning(); // 현재 마우스 위치
 			CAnimation* selectedAnim = m_pCurAnimation;
 
-			size_t newIdx = pCtrl->AddState(stateName, selectedAnim, m_iSpeicificNodeId++);
-			// 지금 막 만든 인덱스 반환한걸로 state 찾기
+			//size_t newIdx = pCtrl->AddState(stateName, selectedAnim, m_iSpeicificNodeId++);
+			_int iNodeId = m_iSpeicificNodeId++; // 고유한 노드 아이디 생성
+			// ID 확인
+			for (auto& state : pCtrl->GetStates())
+			{
+				if (state.iNodeId == iNodeId)
+				{
+					iNodeId = m_iSpeicificNodeId++; // 중복되면 다음 ID로
+					break;
+				}
+			}
+
+			size_t newIdx = pCtrl->AddState(m_NewStateName, selectedAnim, iNodeId, bMaskBone);
 			auto& newState = pCtrl->GetStates()[newIdx];
 			newState.fNodePos = { mousePos.x, mousePos.y };
 			if (bMaskBone)
 			{
-				newState.maskBoneName = "Bip001-Spine";
+				newState.maskBoneName = "Bip001-Spine2";
 			}
 
 			ImGui::CloseCurrentPopup();
@@ -740,6 +940,17 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 		ImNodes::BeginNodeTitleBar();
 		ImGui::TextUnformatted(state.stateName.c_str());
+
+		if (state.iNodeId == pCtrl->GetEntryNodeId())
+		{
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.0f, 1.0f), "[ENTRY]"); // 녹색으로 Entry 표시
+		}
+		if (state.iNodeId == pCtrl->GetExitNodeId())
+		{
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f), "[EXIT]"); // 빨간색으로 Exit 표시
+		}
 		ImNodes::EndNodeTitleBar();
 
 		ImGui::BeginGroup();
@@ -944,7 +1155,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	_int hoveredNodeID = -1;
 	if (ImNodes::IsNodeHovered(&hoveredNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 	{
-		selectedNodeID = hoveredNodeID;
+		m_iSelectedNodeID = hoveredNodeID;
 	}
 	ImGui::End();
 
@@ -960,11 +1171,11 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		animNames.push_back(anim->Get_Name());
 	}
 
-	if (selectedNodeID != -1)
+	if (m_iSelectedNodeID != -1)
 	{
 		for (auto& state : pCtrl->GetStates())
 		{
-			if (state.iNodeId == selectedNodeID)
+			if (state.iNodeId == m_iSelectedNodeID)
 			{
 				ImGui::Begin("State Info");
 
@@ -976,11 +1187,11 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					state.stateName = buf; // 이름 변경
 				}
 
-				if (ImGui::Button("MaskBone"))
+				if (ImGui::Button("Active Upper MaskBone"))
 				{
 					if (state.maskBoneName.empty())
 					{
-						state.maskBoneName = "Bip001-Spine"; // 기본 마스크 본
+						state.maskBoneName = "Bip001-Spine2"; // 기본 마스크 본
 					}
 					else
 					{
@@ -996,28 +1207,28 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::Text("Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
 					ImGui::Text("Tick Per Second: %.2f", state.clip->GetTickPerSecond());
 					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
-					if(m_pCurAnimation)
+					if (m_pCurAnimation)
 						ImGui::Text("CurAnimLoop: %s", m_pCurAnimation->Get_isLoop() ? "True" : "False");
 
-					auto it = find_if(m_LoadedAnimations[m_stSelectedModelName].begin(), m_LoadedAnimations[m_stSelectedModelName].end(),
-						[&](CAnimation* anim) { return anim->Get_Name() == state.clip->Get_Name(); });
-					if (it != m_LoadedAnimations[m_stSelectedModelName].end())
-					{
-						auto pAnim = *it;
-						ImGui::Text("OriginAnimLoop: %s", pAnim->Get_isLoop() ? "True" : "False");
-					}
-				
 
 					// 클립이 있었던 경우에는 현재 애니메이션을 state의 애니메이션으로 변경
 					m_pCurAnimation = state.clip;
-					if (ImNodes::IsNodeSelected(selectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					if (ImNodes::IsNodeSelected(m_iSelectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 					{
-						pCtrl->SetState(selectedNodeID);
+						pCtrl->SetState(m_iSelectedNodeID);
+					}
+				}
+				else if (state.maskBoneName.empty() == false)
+				{
+					if (ImNodes::IsNodeSelected(m_iSelectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					{
+						pCtrl->SetState(m_iSelectedNodeID);
 					}
 				}
 				else
 				{
 					ImGui::Text("No Clip Assigned");
+
 				}
 
 				auto& transitions = pCtrl->GetTransitions();
@@ -1027,7 +1238,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				{
 					if (transition.iFromNodeId == state.iNodeId)
 					{
-						const string& stateName = pCtrl-> GetStateNameByNodeId(transition.iToNodeId);
+						const string& stateName = pCtrl->GetStateNameByNodeId(transition.iToNodeId);
 						ImGui::Text("Transition to: %s", stateName.c_str());
 						ImGui::Text("Transition to Node ID: %d", transition.iToNodeId);
 						ImGui::Text("Link ID: %d", transition.link.iLinkId);
@@ -1035,36 +1246,92 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				}
 
 
-				// 해당 노드에 애니메이션 선택하는 창
-				static _int iSelectedAnimIndex = -1;
-				static _int iSelectedUpperAnimIndex = -1;
-				if (ImGui::BeginCombo("Animations", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Animation"))
+				if (state.maskBoneName.empty())
 				{
-					for (_int i = 0; i < animNames.size(); ++i)
-					{
-						_bool isSelected = (i == iSelectedAnimIndex);
-						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
-						{
-							iSelectedAnimIndex = i;
-							state.clip = anims[iSelectedAnimIndex];
-						}
-						if (isSelected)
-							ImGui::SetItemDefaultFocus();
-					}
-					ImGui::EndCombo();
-				}
-
-				if (state.maskBoneName.empty() == false)
-				{
-					if (ImGui::BeginCombo("Upper Animations", iSelectedUpperAnimIndex >= 0 ? animNames[iSelectedUpperAnimIndex].c_str() : "Select Upper"))
+					if (ImGui::BeginCombo("Clips", m_iDefualtSeletedAnimIndex >= 0 ? animNames[m_iDefualtSeletedAnimIndex].c_str() : "Select Clip"))
 					{
 						for (_int i = 0; i < animNames.size(); ++i)
 						{
-							_bool isSelected = (i == iSelectedUpperAnimIndex);
+							_bool isSelected = (i == m_iDefualtSeletedAnimIndex);
 							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
-								iSelectedUpperAnimIndex = i;
-								state.upperClipName = anims[iSelectedUpperAnimIndex]->Get_Name();
+								m_iDefualtSeletedAnimIndex = i;
+								if (state.maskBoneName.empty()) // 마스크 본 이름이 없을 때만 
+									state.clip = anims[m_iDefualtSeletedAnimIndex];
+								else
+								{
+									state.clip = nullptr;
+								}
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+
+				}
+				else if (state.maskBoneName.empty() == false)
+				{
+					ImGui::Text("Mask Bone Name: %s", state.maskBoneName.c_str());
+					ImGui::Text("Upper Clip: %s", state.upperClipName.c_str());
+					ImGui::Text("Lower Clip: %s", state.lowerClipName.c_str());
+
+					// 마스크 본 선택
+
+
+					auto& bones = m_pCurModel->Get_Bones();
+
+					if (m_vecMaskBoneNames.empty())
+					{
+						m_vecMaskBoneNames.reserve(bones.size());
+						for (const auto& bone : bones)
+						{
+							m_vecMaskBoneNames.push_back(bone->Get_Name());
+						}
+					}
+
+
+					if (ImGui::BeginCombo("Mask Bone", m_iSelectedMaskBoneIndex >= 0 ? m_vecMaskBoneNames[m_iSelectedMaskBoneIndex].c_str() : "Select Mask Bone"))
+					{
+						for (_int i = 0; i < m_vecMaskBoneNames.size(); ++i)
+						{
+							_bool isSelected = (i == m_iSelectedMaskBoneIndex);
+							if (ImGui::Selectable(m_vecMaskBoneNames[i].c_str(), isSelected))
+							{
+								m_iSelectedMaskBoneIndex = i;
+								state.maskBoneName = m_vecMaskBoneNames[m_iSelectedMaskBoneIndex];
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+
+					if (ImGui::BeginCombo("Upper Animations", m_iSelectedUpperAnimIndex >= 0 ? animNames[m_iSelectedUpperAnimIndex].c_str() : "Select Upper"))
+					{
+						for (_int i = 0; i < animNames.size(); ++i)
+						{
+							_bool isSelected = (i == m_iSelectedUpperAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+							{
+								m_iSelectedUpperAnimIndex = i;
+								state.upperClipName = anims[m_iSelectedUpperAnimIndex]->Get_Name();
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+
+					if (ImGui::BeginCombo("Lower Animations", m_iSelectedLowerAnimIndex >= 0 ? animNames[m_iSelectedLowerAnimIndex].c_str() : "Select Lower"))
+					{
+						for (_int i = 0; i < animNames.size(); ++i)
+						{
+							_bool isSelected = (i == m_iSelectedLowerAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+							{
+								m_iSelectedLowerAnimIndex = i;
+								state.lowerClipName = anims[m_iSelectedLowerAnimIndex]->Get_Name();
 							}
 							if (isSelected)
 								ImGui::SetItemDefaultFocus();
@@ -1072,14 +1339,15 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						ImGui::EndCombo();
 					}
 				}
-
-
+				if (Button("Set Entry This State"))
+				{
+					pCtrl->SetEntry(state.stateName);
+				}
 				ImGui::End();
-				break;
+			break;
 			}
 		}
 	}
-
 	return S_OK;
 }
 
@@ -1090,26 +1358,25 @@ HRESULT CAnimTool::Render_Loaded_Models()
 		return S_OK;
 	}
 
-	static _int iSelectedModelIndex = -1;
-
 	vector<string> modelNames;
 	for (const auto& pair : m_LoadedModels)
 		modelNames.push_back(pair.first);
 
-	if (ImGui::BeginCombo("Models", iSelectedModelIndex >= 0 ? modelNames[iSelectedModelIndex].c_str() : "Select Model"))
+	if (ImGui::BeginCombo("Models", m_iSelectedModelIndex >= 0 ? modelNames[m_iSelectedModelIndex].c_str() : "Select Model"))
 	{
 		for (_int i = 0; i < modelNames.size(); ++i)
 		{
-			_bool isSelected = (i == iSelectedModelIndex);
+			_bool isSelected = (i == m_iSelectedModelIndex);
 			if (ImGui::Selectable(modelNames[i].c_str(), isSelected))
 			{
-				iSelectedModelIndex = i;
+				m_iSelectedModelIndex = i;
 				m_pCurModel = m_LoadedModels[modelNames[i]];
 
 				m_pCurAnimator = m_LoadedAnimators[modelNames[i]];
 				// 모델을 바꿀 때는 현재 애니메이션을 nullptr
 				m_pCurAnimation = nullptr;
 				m_stSelectedModelName = modelNames[i];
+				m_vecMaskBoneNames.clear(); // 마스크 본 이름 초기화
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -1161,8 +1428,6 @@ void CAnimTool::SelectAnimation()
 	{
 		return;
 	}
-	static _int iSelectedAnimIndex = -1;
-
 
 	vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
 
@@ -1173,16 +1438,16 @@ void CAnimTool::SelectAnimation()
 		animNames.push_back(anim->Get_Name());
 	}
 
-	if (ImGui::BeginCombo("Animations", iSelectedAnimIndex >= 0 ? animNames[iSelectedAnimIndex].c_str() : "Select Animation"))
+	if (ImGui::BeginCombo("Animations", m_iSelectedAnimIndex >= 0 ? animNames[m_iSelectedAnimIndex].c_str() : "Select Animation"))
 	{
 		for (_int i = 0; i < animNames.size(); ++i)
 		{
-			_bool isSelected = (i == iSelectedAnimIndex);
+			_bool isSelected = (i == m_iSelectedAnimIndex);
 			if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 			{
-				iSelectedAnimIndex = i;
-				m_pCurAnimation = anims[iSelectedAnimIndex];
-				m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
+				m_iSelectedAnimIndex = i;
+				m_pCurAnimation = anims[m_iSelectedAnimIndex];
+				m_pCurAnimator->PlayClip(anims[m_iSelectedAnimIndex], false);
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -1190,47 +1455,13 @@ void CAnimTool::SelectAnimation()
 		ImGui::EndCombo();
 	}
 
-	//if (m_pGameInstance->Key_Down(DIK_COMMA))
-	//{
-	//	iSelectedAnimIndex--;
-	//	if (iSelectedAnimIndex < 0)
-	//		iSelectedAnimIndex = static_cast<_int>(anims.size()) - 1; // 마지막으로 순서
-
-	//	if (m_pCurAnimation)
-	//	{
-	//		m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
-	//	}
-	//	else
-	//	{
-	//		m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
-	//	}
-
-	//	m_pCurAnimation = anims[iSelectedAnimIndex];
-	//}
-	//if (m_pGameInstance->Key_Down(DIK_PERIOD))
-	//{
-	//	iSelectedAnimIndex++;
-	//	if (iSelectedAnimIndex >= static_cast<_int>(anims.size()))
-	//		iSelectedAnimIndex = 0;
-	//	if (m_pCurAnimation)
-	//	{
-	//		m_pCurAnimator->StartTransition(m_pCurAnimation, anims[iSelectedAnimIndex]);
-	//	}
-	//	else
-	//	{
-	//		m_pCurAnimator->PlayClip(anims[iSelectedAnimIndex], false);
-	//	}
-	//	m_pCurAnimation = anims[iSelectedAnimIndex];
-	//}
-
 	// 애니메이션 프로퍼티들 설정
 	Setting_AnimationProperties();
 }
 
 void CAnimTool::Setting_AnimationProperties()
 {
-
-	// 원본의 애니메이션에도 적용을 해줘야함
+	// 원본의 애니메이션에 적용을 해줘야함
 	if (m_pCurAnimation)
 	{
 		ImGui::Checkbox("Use Animation Sequence", &m_bUseAnimSequence);
@@ -1273,10 +1504,7 @@ void CAnimTool::Setting_AnimationProperties()
 
 void CAnimTool::Test_AnimEvents()
 {
-	//if (m_pCurAnimator)
-	//{
-	//	m_pCurAnimator->
-	//}
+
 }
 
 void CAnimTool::SaveLoadEvents(_bool isSave)
@@ -1362,13 +1590,15 @@ void CAnimTool::SaveLoadAnimStates(_bool isSave)
 
 			for (const auto& state : states)
 			{
-				m_iSpeicificNodeId = max(m_iSpeicificNodeId, state.iNodeId + 1);
+				m_iSpeicificNodeId = max(m_iSpeicificNodeId, state.iNodeId);
 			}
 
 			for (const auto& transition : transitions)
 			{
-				m_iSpeicificNodeId = max(m_iSpeicificNodeId, transition.link.iLinkId + 1);
+				m_iSpeicificNodeId = max(m_iSpeicificNodeId, transition.link.iLinkId);
+				m_iSpeicificNodeId = max(m_iSpeicificNodeId, transition.iFromNodeId);
 			}
+			m_iSpeicificNodeId += 1;
 		}
 		else
 		{
@@ -1396,14 +1626,6 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 		m_LoadedModels[modelName] = pModel;
 		auto& pAnimations = pModel->GetAnimations();
 		m_LoadedAnimations[modelName] = pAnimations;
-		//vector<CAnimation*>& pModelCloneAnims = m_LoadedAnimations[modelName];
-
-		//const auto& Bones = pModel->Get_Bones();
-		//pModelCloneAnims.reserve(pAnimations.size());
-		//for (_uint i = 0; i < pAnimations.size(); i++)
-		//{
-		//	pModelCloneAnims.push_back(pAnimations[i]->Clone(Bones));
-		//}
 
 		auto pAnimator = CAnimator::Create(m_pDevice, m_pContext);
 		if (pAnimator)
@@ -1494,14 +1716,6 @@ void CAnimTool::Manipulate(Operation op, const _float snapT[3], const _float sna
 
 }
 
-void CAnimTool::SelectNode()
-{
-}
-
-void CAnimTool::CreateLink()
-{
-}
-
 HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 {
 	ImGui::Separator();
@@ -1527,7 +1741,7 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 {
 	// 파라미터 목록 준비
 	auto& parameters = m_pCurAnimator->GetParameters();
-	std::vector<std::string> paramNames;
+	vector<string> paramNames;
 	paramNames.reserve(parameters.size());
 	for (auto& kv : parameters)
 		paramNames.push_back(kv.first);
@@ -1569,8 +1783,8 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 			_int opIdx = 0;
 			for (_int i = 0; i < IM_ARRAYSIZE(BoolOps); ++i)
 				if (BoolOps[i] == cond.op) opIdx = i;
-			if (ImGui::Combo("Operator", &opIdx, BoolOpNames, IM_ARRAYSIZE(BoolOpNames)))
-				cond.op = BoolOps[opIdx];
+			ImGui::Combo("Operator", &opIdx, BoolOpNames, IM_ARRAYSIZE(BoolOpNames));
+			cond.op = BoolOps[opIdx];
 			break;
 		}
 		case ParamType::Trigger:
@@ -1585,7 +1799,7 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 			_int opIdx = 0;
 			for (_int i = 0; i < IM_ARRAYSIZE(CmpFloatOps); ++i)
 				if (CmpFloatOps[i] == cond.op) opIdx = i;
-			if (ImGui::Combo("Operator", &opIdx, CmpFloatOpNames, IM_ARRAYSIZE(CmpFloatOpNames)))
+			ImGui::Combo("Operator", &opIdx, CmpFloatOpNames, IM_ARRAYSIZE(CmpFloatOpNames));
 				cond.op = CmpFloatOps[opIdx];
 			break;
 		}
@@ -1594,7 +1808,7 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 			_int opIdx = 0;
 			for (_int i = 0; i < IM_ARRAYSIZE(CmpIntOps); ++i)
 				if (CmpIntOps[i] == cond.op) opIdx = i;
-			if (ImGui::Combo("Operator", &opIdx, CmpIntOpNames, IM_ARRAYSIZE(CmpIntOpNames)))
+			ImGui::Combo("Operator", &opIdx, CmpIntOpNames, IM_ARRAYSIZE(CmpIntOpNames));
 				cond.op = CmpIntOps[opIdx];
 			break;
 		}

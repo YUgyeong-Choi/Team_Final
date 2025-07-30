@@ -25,6 +25,7 @@ CModel::CModel(const CModel& Prototype)
 	, m_AnimationMap{ Prototype.m_AnimationMap }
 	, m_AnimationNameMap{ Prototype.m_AnimationNameMap }
 	, m_ModelName{ Prototype.m_ModelName }	
+	, m_BoneChildrenMap{ Prototype.m_BoneChildrenMap }
 	// , m_Animations { Prototype.m_Animations }
 {
 	for (auto& pPrototypeBone : Prototype.m_Bones)
@@ -278,7 +279,7 @@ HRESULT CModel::Ready_Bones(ifstream& ifs)
 		m_Bones.push_back(pBone);
 		m_Bones.back()->Set_BoneIndex(static_cast<_int>(i)); // 자기 자신의 인덱스를 알고 있게 (상,하체 블렌딩에 사용)
 	}
-	MakeBoneChildrenMap(); // 뼈 자식 맵 생성
+ 	MakeBoneChildrenMap(); // 뼈 자식 맵 생성
 	return S_OK;
 }
 
