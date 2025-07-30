@@ -68,7 +68,7 @@ private:
 
 private:
 	//이전 프레임에 기즈모를 사용 중인가?
-	bool m_bWasUsingGizmoLastFrame = false;
+	_bool m_bWasUsingGizmoLastFrame = false;
 
 private:
 	_bool m_bPreviewHovered = { false };
@@ -77,16 +77,15 @@ private:
 	//set하고싶었지만 imgui 선택이 인덱스로 접근해야해서 vector로
 	vector<string>	m_ModelNames = {};
 	_int			m_iSelectedModelIndex = { -1 };
-
+private:
 	//즐겨찾기 목록
 	vector<string>	m_FavoriteModelNames = {};
 	_int			m_iSelectedFavoriteModelIndex = { -1 };
-
-	class CMapToolObject* m_pSelectedObject = { nullptr };
-
 private:
+	//하이어라키 관련
 	map<string, list<CGameObject*>> m_ModelGroups;
 	_int m_iSelectedHierarchyIndex = { -1 };
+	class CMapToolObject* m_pSelectedObject = { nullptr };
 
 private:
 	_uint m_iID = { 0 };
@@ -95,7 +94,8 @@ private:
 	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };
 
 private:
-	class CPreviewObject* m_pPreviewObject = { nullptr };
+	class CPreviewObject*	m_pPreviewObject = { nullptr };
+	class CCamera_Free*		m_pCamera_Free = { nullptr };
 
 private:
 	//복사한 월드 행렬 저장용

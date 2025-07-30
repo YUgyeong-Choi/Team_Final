@@ -53,6 +53,9 @@ HRESULT CMapTool::Initialize(void* pArg)
 
 	XMStoreFloat4x4(&m_CopyWorldMatrix, XMMatrixIdentity());
 
+	m_pCamera_Free = CCamera_Manager::Get_Instance()->GetFreeCam();
+	Safe_AddRef(m_pCamera_Free);
+
 	return S_OK;
 }
 
@@ -1040,6 +1043,10 @@ _int CMapTool::Find_HierarchyIndex_By_ID(_uint iID)
 
 void CMapTool::Picking()
 {
+	// ImGui가 마우스 입력을 가져가면 피킹을 하지 않음
+	if (ImGui::GetIO().WantCaptureMouse)
+		return;
+
 	_int iID = -1;
 	if (m_pGameInstance->Picking(&iID))
 	{
@@ -1051,27 +1058,10 @@ void CMapTool::Picking()
 
 void CMapTool::Control_PreviewObject(_float fTimeDelta)
 {
-	CCamera_Free* pCameraFree = CCamera_Manager::Get_Instance()->GetFreeCam(); //static_cast<CCamera_Free*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Layer_Camera")));
-
-	/*if (m_bPreviewHovered)
-	{
-		_int a = 10;
-	}
-
-	if (m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
-	{
-		_int a = 10;
-
-	}*/
 
 	if (m_bPreviewHovered && m_pGameInstance->Mouse_Pressing(DIM::RBUTTON))
 	{
-		pCameraFree->Set_Moveable(false);
-
-		//CPreviewObject* pPreviewObject = static_cast<CPreviewObject*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_PreviewObject")));
-
-		//if (pPreviewObject == nullptr)
-		//	return;
+		m_pCamera_Free->Set_Moveable(false);
 
 		CTransform* pCamTransformCom = m_pPreviewObject->Get_CameraTransformCom();
 
@@ -1111,7 +1101,7 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 	}
 	else
 	{
-		pCameraFree->Set_Moveable(true);
+		m_pCamera_Free->Set_Moveable(true);
 	}
 
 }
@@ -1292,5 +1282,5 @@ void CMapTool::Free()
 	__super::Free();	
 
 	Safe_Release(m_pPreviewObject);
-
+	Safe_Release(m_pCamera_Free);
 }
