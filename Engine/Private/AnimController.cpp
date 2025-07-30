@@ -109,12 +109,12 @@ void CAnimController::Update(_float fTimeDelta)
 				AnimState* currentAnimState = FindStateByNodeId(m_CurrentStateNodeId);
 				if (currentAnimState && currentAnimState->maskBoneName.empty() == false) // 현재 상태가 상하체 분리 상태라면
 				{
-					CAnimation* lowerAnim = m_pAnimator->GetLowerClip();
-					if (lowerAnim && lowerAnim->Get_isLoop())
-						continue; // 현재 하체 애니메이션이 루프면 뛰어넘게
-					_float progress = m_pAnimator->GetCurrentLowerAnimProgress();
+					CAnimation* upperAnim = m_pAnimator->GetUpperClip();
+					if (upperAnim && upperAnim->Get_isLoop())
+						continue; // 현재 상체 애니메이션이 루프면 뛰어넘게(보통은 그런 경우가 없을듯함.)
+					_float progress = m_pAnimator->GetCurrentUpperAnimProgress();
 					if (progress < 1.f)
-						continue; // 현재 하체 애니메이션이 끝나지 않았으면 뛰어넘게
+						continue; // 현재 상체 애니메이션이 끝나지 않았으면 뛰어넘게
 				}
 				else
 				{
@@ -147,6 +147,7 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.eType = ETransitionType::FullbodyToFullbody;
 				m_TransitionResult.pFromLowerAnim = fromState->clip;
 				m_TransitionResult.pToLowerAnim = toState->clip;
+				m_TransitionResult.bBlendFullbody = true;
 			}
 			else if (!bFromMasked && bToMasked) //  통짜 -> 상하체 분리
 			{
@@ -155,6 +156,7 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName); // 목표 하체
 				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName); // 목표 상체
 				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+				m_TransitionResult.bBlendFullbody = false;
 			}
 			else if (bFromMasked && !bToMasked) //  상하체 분리 -> 통짜
 			{
@@ -163,6 +165,7 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip(); // 현재 재생 중인 상체 클립
 				m_TransitionResult.pToLowerAnim = toState->clip; // 목표 통짜 애니메이션
 				m_TransitionResult.fBlendWeight = fromState->fBlendWeight; // 이전 상태의 블렌드 가중치
+				m_TransitionResult.bBlendFullbody = false;
 			}
 			else  // 상하체 분리 -> 상하체 분리
 			{
@@ -172,13 +175,18 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
 				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
 				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+				m_TransitionResult.bBlendFullbody = false;
 			}
 
 			//  유효 검사
-			if (!m_TransitionResult.pFromLowerAnim || !m_TransitionResult.pToLowerAnim) continue; // 최소한 하체/통짜 클립은 있어야 함
-			if (m_TransitionResult.eType == ETransitionType::FullbodyToMasked && !m_TransitionResult.pToUpperAnim) continue;
-			if (m_TransitionResult.eType == ETransitionType::MaskedToFullbody && !m_TransitionResult.pFromUpperAnim) continue;
-			if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim)) continue;
+			if (!m_TransitionResult.pFromLowerAnim || !m_TransitionResult.pToLowerAnim) 
+				continue; // 최소한 하체/통짜 클립은 있어야 함
+			if (m_TransitionResult.eType == ETransitionType::FullbodyToMasked && !m_TransitionResult.pToUpperAnim)
+				continue;
+			if (m_TransitionResult.eType == ETransitionType::MaskedToFullbody && !m_TransitionResult.pFromUpperAnim) 
+				continue;
+			if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim)) 
+				continue;
 
 			m_TransitionResult.bTransition = true;
 			m_TransitionResult.fDuration = tr.duration;
@@ -276,6 +284,22 @@ void CAnimController::SetState(_int iNodeId)
 	}
 }
 
+void CAnimController::Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController)
+{
+	if (m_OverrideAnimControllers.find(name) != m_OverrideAnimControllers.end())
+	{
+		// 이미 존재하는 컨트롤러 이름이면 덮어쓰기
+		m_OverrideAnimControllers[name] = overrideController;
+		return;
+	}
+	m_OverrideAnimControllers.emplace(name, overrideController);
+	auto it = m_OverrideAnimControllers.find(name);
+	if (it != m_OverrideAnimControllers.end())
+	{
+		it->second.controllerName = m_Name; // 이름 설정
+	}
+}
+
 void CAnimController::Applay_OverrideAnimController(const string& ctrlName, const OverrideAnimController& overrideController)
 {
 	if (overrideController.states.empty())
@@ -341,6 +365,8 @@ void CAnimController::ChangeStates(const string& overrideCtrlName)
 				state.fBlendWeight = overrideState.fBlendWeight;
 			}
 		}
+		// 오버라이드한 컨트롤러 이름 설정
+		overrideCtrl.controllerName = m_Name;
 	}
 }
 
@@ -386,7 +412,12 @@ json CAnimController::Serialize()
 	
 	j["ControllerName"] = m_Name;
 
-	// 상태 직렬화
+	// 상태 직렬화(오버라이드 컨트롤러 사용하고 있었으면 기본으로 바꿔서 내보내기)
+	if (m_bOverrideAnimController)
+	{
+		m_States = m_OriginalAnimStates["Default"]; // 오버라이드 컨트롤러 사용 중이면 원래 상태로 되돌리기
+	}
+
 	for (const auto& state : m_States)
 	{
 		j["Anim States"].push_back({

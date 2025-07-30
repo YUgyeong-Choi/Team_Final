@@ -39,6 +39,7 @@ namespace Engine
 	struct OverrideAnimController
 	{
 		string name;
+		string controllerName; // 애니메이션 컨트롤러 이름
 		struct OverrideState
 		{
 			string clipName; // 애니메이션 클립 이름

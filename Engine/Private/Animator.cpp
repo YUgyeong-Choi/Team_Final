@@ -61,7 +61,7 @@ void CAnimator::Update(_float fDeltaTime)
 		auto& transitionResult = m_pCurAnimController->CheckTransition();
 		if (transitionResult.bTransition)
 		{
-			UpdateMaskState(); // 마스킹 상태 업데이트
+			//UpdateMaskState(); // 마스킹 상태 업데이트
 			m_Blend.belendFullBody = transitionResult.bBlendFullbody;
 			if (m_Blend.belendFullBody == false)
 			{
@@ -174,9 +174,13 @@ void CAnimator::Update(_float fDeltaTime)
 		if (m_pBlendToLowerAnim) // 타겟 하체 애니메이션
 			m_pBlendToLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToLowerAnim->Get_isLoop(), &triggeredEvents);
 
+		if (m_eCurrentTransitionType == CAnimController::ETransitionType::MaskedToMasked)
+		{
+
 		if (m_pBlendFromUpperAnim && m_pBlendFromUpperAnim != m_pBlendToUpperAnim) // 상체 애니메이션이 다르면
 			m_pBlendFromUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromUpperAnim->Get_isLoop(), &triggeredEvents);
 
+		}
 		if (m_pBlendToUpperAnim) // 타겟 상체 애니메이션
 			m_pBlendToUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToUpperAnim->Get_isLoop(), &triggeredEvents);
 		// 매트릭스 미리 가져오기
@@ -200,12 +204,12 @@ void CAnimator::Update(_float fDeltaTime)
 		// 근데 만약 상하체 분리 블렌드면 블렌드 웨이트로
 		if (m_Blend.belendFullBody == false)
 		{
-			fBlendFactor = m_Blend.blendWeight;
+	//		fBlendFactor = m_Blend.blendWeight;
 		}
 
 		for (size_t i = 0; i < boneCount; ++i)
 		{
-			bool isUpperBone = (m_UpperMaskSet.count((int)i) != 0);
+			_bool isUpperBone = (m_UpperMaskSet.count((int)i) != 0);
 			_matrix finalM;
 
 			using ET = CAnimController::ETransitionType;
@@ -222,15 +226,37 @@ void CAnimator::Update(_float fDeltaTime)
 				break;
 
 			case ET::MaskedToFullbody:
-				finalM = isUpperBone
-					? LerpMatrix(fromU[i], toL[i], fBlendFactor)
-					: LerpMatrix(fromL[i], toL[i], fBlendFactor);
+				if (isUpperBone)
+				{
+					// fromU(상체 마스크) → toU(풀바디) 로 부드럽게 블렌딩
+					finalM = LerpMatrix(fromU[i], toL[i], fBlendFactor);
+				}
+				else
+				{
+					// fromL(하체 마스크) → toL(풀바디) 도 마찬가지
+					finalM = LerpMatrix(fromL[i], toL[i], fBlendFactor);
+				}
 				break;
 
 			case ET::MaskedToMasked:
-				finalM = isUpperBone
-					? LerpMatrix(fromU[i], toU[i], fBlendFactor)
-					: LerpMatrix(fromL[i], toL[i], fBlendFactor);
+				if (isUpperBone) {
+					if (m_pBlendFromUpperAnim == m_pBlendToUpperAnim) {
+						// 상체 애니메이션이 같으면 블렌딩 없이 그대로 사용
+						finalM = toU[i];
+					}
+					else {
+						finalM = LerpMatrix(fromU[i], toU[i], fBlendFactor);
+					}
+				}
+				else {
+					if (m_pBlendFromLowerAnim == m_pBlendToLowerAnim) {
+						// 하체 애니메이션이 같으면 블렌딩 없이 그대로 사용
+						finalM = toL[i];
+					}
+					else {
+						finalM = LerpMatrix(fromL[i], toL[i], fBlendFactor);
+					}
+				}
 				break;
 			}
 
@@ -241,10 +267,6 @@ void CAnimator::Update(_float fDeltaTime)
 		if (fBlendFactor >= 1.f)
 		{
 			m_Blend.active = false;
-			//if (m_pBlendFromLowerAnim) m_pBlendFromLowerAnim->ResetTrack();
-		//	if (m_pBlendToLowerAnim)   m_pBlendToLowerAnim->ResetTrack();
-		////	if (m_pBlendFromUpperAnim) m_pBlendFromUpperAnim->ResetTrack();
-		//	if (m_pBlendToUpperAnim&&m_pBlendToUpperAnim!= m_pBlendToLowerAnim)   m_pBlendToUpperAnim->ResetTrack();
 			if (m_pBlendFromLowerAnim && m_pBlendFromLowerAnim != m_pBlendToLowerAnim)
 				m_pBlendFromLowerAnim->ResetTrack();
 			if (m_pBlendFromUpperAnim && m_pBlendFromUpperAnim != m_pBlendToUpperAnim)
@@ -253,6 +275,7 @@ void CAnimator::Update(_float fDeltaTime)
 			m_pLowerClip = m_pBlendToLowerAnim;
 			m_pUpperClip = m_pBlendToUpperAnim;
 			UpdateMaskState();
+			return;
 		}
 	}
 	else // 블렌드가 아닐 때
@@ -260,8 +283,8 @@ void CAnimator::Update(_float fDeltaTime)
 		if (m_bPlayMask && m_pLowerClip && m_pUpperClip)
 		{
 			// 하체/상체 업데이트
-			m_bIsFinished = m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents);
-			m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents);
+		     m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents);
+			m_bIsFinished = m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents);
 
 			// 매트릭스 미리 가져오기
 			vector<_matrix> lowerM(boneCount), upperM(boneCount);
@@ -299,80 +322,6 @@ void CAnimator::Update(_float fDeltaTime)
 		}
 	}
 
-
-		//auto curAnimState = m_pCurAnimController->GetCurrentState();
-		//
-		//if (m_Blend.active && false == curAnimState->maskBoneName.empty())
-		//{
-		//	vector<string> triggeredEvents;
-		//	// Update_Bones 호출 (outEvents 전달)
-		//	m_bIsFinished = m_pCurrentAnim->Update_Bones(
-		//		fDeltaTime,
-		//		m_Bones,
-		//		m_pCurrentAnim->Get_isLoop(),
-		//		&triggeredEvents
-		//	);
-
-		//	CAnimation* pUpper = m_pModel->GetAnimationClipByName(curAnimState->upperClipName);
-
-		//	vector<CBone*> tmpBones = m_Bones;
-		//	pUpper->Update_Bones(fDeltaTime, tmpBones, pUpper->Get_isLoop(), &triggeredEvents);
-
-		//	for (auto i : m_UpperMaskSet)
-		//		m_Bones[i]->Set_TransformationMatrix(XMLoadFloat4x4(tmpBones[i]->Get_TransformationMatrix()));
-
-		//	for (auto& name : triggeredEvents)
-		//		for (auto& cb : m_eventListeners[name])
-		//			cb(name);
-		//}
-		//else if (!m_Blend.active && true  == curAnimState->maskBoneName.empty())
-		//{
-		//	// 애니메이션 컨트롤러 업데이트 
-		//	// 컨트롤러 업데이트 하면서 트랜지션 확인해서 상태 전환
-		//	// 블렌드 할 애니메이션 클립 2개와 전환 시간 받아오기
-
-		//	if (m_pCurAnimController)
-		//	{
-		//		m_pCurAnimController->Update(fDeltaTime);
-		//		auto& transitionResult = m_pCurAnimController->CheckTransition();
-		//		if (transitionResult.bTransition)
-		//		{
-		//			StartTransition(transitionResult.pFromAnim,transitionResult.pToAnim,transitionResult.fDuration);
-		//			m_pCurAnimController->ResetTransitionResult();
-		//		}
-		//	}
-	 //
-		//	// 블렌드 중이 아니면 그냥 현재 애니메이션만 업데이트
-		//	if (m_pCurrentAnim)
-		//	{
-
-
-		//	vector<string> triggeredEvents;
-		//	// Update_Bones 호출 (outEvents 전달)
-		//	m_bIsFinished = m_pCurrentAnim->Update_Bones(
-		//		fDeltaTime,
-		//		m_Bones,
-		//		m_pCurrentAnim->Get_isLoop(),
-		//		&triggeredEvents
-		//	);
-
-		//	// 콜백 실행
-		//	for (auto& name : triggeredEvents)
-		//	{
-		//		// 이벤트 리스너에 등록 해둔거에 애니메이션 이벤트가 있는지 찾기
-		//		auto it = m_eventListeners.find(name);
-		//		if (it != m_eventListeners.end()) 
-		//		{
-		//			for (auto& cb : it->second)
-		//				cb(name);
-		//		}
-		//	}
-		//	}
-		//}
-		//else
-		//{
-		//	UpdateBlend(fDeltaTime);
-		//}
 	}
 
 
@@ -403,11 +352,24 @@ void CAnimator::Update(_float fDeltaTime)
 	void CAnimator::StartTransition(CAnimController::TransitionResult& transitionResult)
 	{
 		if (m_Blend.active) {
-			if (m_Blend.srcAnim) m_Blend.srcAnim->ResetTrack();
-			if (m_Blend.dstAnim) m_Blend.dstAnim->ResetTrack();
+			////if (m_Blend.srcAnim) m_Blend.srcAnim->ResetTrack();
+			//if (m_Blend.dstAnim) m_Blend.dstAnim->ResetTrack();
 		}
-		if (m_pBlendFromUpperAnim) m_pBlendFromUpperAnim->ResetTrack();
-		if (m_pBlendToUpperAnim) m_pBlendToUpperAnim->ResetTrack();
+		//if (m_pBlendFromUpperAnim) 
+		//	m_pBlendFromUpperAnim->ResetTrack();
+		//if (m_pBlendToUpperAnim) 
+		//	m_pBlendToUpperAnim->ResetTrack();
+
+		if (m_pBlendFromUpperAnim
+			&& m_pBlendFromUpperAnim != transitionResult.pFromLowerAnim)
+		{
+			m_pBlendFromUpperAnim->ResetTrack();
+		}
+		if (m_pBlendToUpperAnim
+			&& m_pBlendToUpperAnim != transitionResult.pToLowerAnim)
+		{
+			m_pBlendToUpperAnim->ResetTrack();
+		}
 
 		m_Blend.active = true;
 		m_Blend.elapsed = 0.f;
@@ -422,9 +384,8 @@ void CAnimator::Update(_float fDeltaTime)
 		m_Blend.blendWeight = transitionResult.fBlendWeight; // 상하체 블렌드 가중치 
 
 		m_bPlaying = true;
-
-		// 이 시점에서 CAnimController의 m_CurrentStateNodeId는 이미 변경.
-		UpdateMaskState();
+		//if(transitionResult.bBlendFullbody == false)
+		//UpdateMaskState();
 	}
 
 	void CAnimator::Set_Animation(_uint iIndex, _float fadeDuration, _bool isLoop)
@@ -604,7 +565,7 @@ void CAnimator::Update(_float fDeltaTime)
 		//	}
 		//}
 
-		m_UpperMaskSet.clear();
+	//	m_UpperMaskSet.clear();
 
 		// 비어있으면 처리 안하기
 		if (maskBoneName.empty())
@@ -619,6 +580,7 @@ void CAnimator::Update(_float fDeltaTime)
 		}
 		else
 		{
+		//	CollectBoneChildren(maskBoneName.c_str(),"Neck");
 			CollectBoneChildren(maskBoneName.c_str());
 			m_UpperMaskSetMap[maskBoneName] = m_UpperMaskSet;
 		}
@@ -639,8 +601,28 @@ void CAnimator::Update(_float fDeltaTime)
 		{
 			const char* childName = m_pModel->Get_Bones()[childIdx]->Get_Name();
 			cout << "Child bone: " << childName << endl;
-			CollectBoneChildren(childName);
+			CollectBoneChildren(childName,"Neck");
 		}
+	}
+
+	void CAnimator::CollectBoneChildren(const _char* boneName, const _char* stopBoneName)
+	{
+		int idx = m_pModel->Find_BoneIndex(boneName);
+		// 유효 인덱스인지, 이미 추가된 본인지 확인
+		if (idx < 0 || m_UpperMaskSet.count(idx))
+			return;
+
+		string bone = boneName;
+		if (bone.find(stopBoneName) != string::npos)
+			return;
+		m_UpperMaskSet.insert(idx);
+
+		for (int childIdx : m_pModel->GetBoneChildren(boneName))
+		{
+			const char* childName = m_pModel->Get_Bones()[childIdx]->Get_Name();
+			CollectBoneChildren(childName, stopBoneName);
+		}
+
 	}
 
 	_matrix CAnimator::LerpMatrix(const _matrix& src, const _matrix& dst, _float t)
@@ -1072,21 +1054,6 @@ void CAnimator::Update(_float fDeltaTime)
 
 	json CAnimator::Serialize()
 	{
-		//json j = m_pAnimController->Serialize();
-		//// 애니메이션 컨트롤러 각각의 이름으로 
-		//// 애니메이터의 파라미터들 저장
-		//for (const auto& [name, param] : m_Params)
-		//{
-		//	j["Parameters"][name] = {
-		//		{"bValue", param.bValue},
-		//		{"fValue", param.fValue},
-		//		{"iValue", param.iValue},
-		//		{"bTriggered", param.bTriggered},
-		//		{"Type", static_cast<int>(param.type)} // ParamType을 정수로 저장
-		//	};
-		//}
-		//return j;
-
 		CHAR exeFullPath[MAX_PATH] = {};
 		GetModuleFileNameA(nullptr, exeFullPath, MAX_PATH);
 
@@ -1125,6 +1092,34 @@ void CAnimator::Update(_float fDeltaTime)
 
 			j["Controllers"].push_back(name);
 		}
+
+		// 컨트롤러에 연결 되는 오버라이트 컨트롤러 저장
+
+		j["OverrideControllers"] = json::array();
+		for (auto& [name, ctrl] : m_OverrideControllerMap)
+		{
+			json overrideCtrlJ;
+			overrideCtrlJ["Name"] = name;
+			overrideCtrlJ["Controller"] = ctrl.controllerName;
+			json stateJ;
+			stateJ["States"] = json::array();
+			for (auto& [stateName, state] : ctrl.states)
+			{
+
+				json stateDataJ;
+				stateDataJ["Name"] = stateName;
+				stateDataJ["ClipName"] = state.clipName;
+				stateDataJ["MaskBoneName"] = state.maskBoneName;
+				stateDataJ["LowerClipName"] = state.lowerClipName;
+				stateDataJ["UpperClipName"] = state.upperClipName;
+				stateDataJ["BlendWeight"] = state.fBlendWeight;
+				stateJ["States"].push_back(stateDataJ);
+			}
+
+			overrideCtrlJ["States"] = stateJ["States"];
+			j["OverrideControllers"].push_back(overrideCtrlJ);
+		}
+
 		return j;
 	}
 
@@ -1179,6 +1174,51 @@ void CAnimator::Update(_float fDeltaTime)
 						MakeMaskBones(state.maskBoneName);
 					}
 				}
+			}
+		}
+
+		if (j.contains("OverrideControllers") && j["OverrideControllers"].is_array())
+		{
+			for (auto& ctrl : j["OverrideControllers"])
+			{
+				if (!ctrl.is_object())
+					continue;
+				OverrideAnimController overrideCtrl;
+				overrideCtrl.name = ctrl.value("Name", "");
+				overrideCtrl.controllerName = ctrl.value("Controller", "");
+				if (overrideCtrl.name.empty() || overrideCtrl.controllerName.empty())
+					continue;
+
+				if (ctrl.contains("States") && ctrl["States"].is_array())
+				{
+					for (auto& sj : ctrl["States"])
+					{
+						if (!sj.is_object()) continue;
+						string stName = sj.value("Name", "");
+						if (stName.empty()) continue;
+
+						OverrideAnimController::OverrideState state;
+						state.clipName = sj.value("ClipName", "");
+						state.maskBoneName = sj.value("MaskBoneName", "");
+						state.lowerClipName = sj.value("LowerClipName", "");
+						state.upperClipName = sj.value("UpperClipName", "");
+						state.fBlendWeight = sj.value("BlendWeight", 1.0f);
+
+						overrideCtrl.states[stName] = state;
+					}
+				}
+
+				m_OverrideControllerMap[overrideCtrl.name] = overrideCtrl;
+			}
+		}
+
+		// 오버라이드 컨트롤러 컨트롤러에 등록
+		for (auto& [name, ctrl] : m_OverrideControllerMap)
+		{
+			auto it = m_AnimControllers.find(ctrl.controllerName);
+			if (it != m_AnimControllers.end())
+			{
+ 				it->second->Add_OverrideAnimController(name, ctrl);
 			}
 		}
 	}

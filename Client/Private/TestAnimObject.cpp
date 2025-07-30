@@ -152,7 +152,7 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	{
 		m_pModelCom->Update_Bones();
 	}
-	//Input_Test(fTimeDelta);
+	Input_Test(fTimeDelta);
 
 
 	UpdateShadowCamera();
@@ -246,10 +246,10 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 	_bool bMove = (bUp || bDown || bLeft || bRight);
 
 	static _bool bRunToggle = false;
-	static _bool bSpaceHeld = false;      // �����̽��� ���� ������
-	static _bool bSprinting = false;      // ������Ʈ ���� ��ȯ�ߴ���
-	static _float fPressTime = 0.f;       // ���� �ð� ����
-	const _float sprintTh = 0.8f;         // �� �ð� �̻� ������ ������Ʈ
+	static _bool bSpaceHeld = false;      
+	static _bool bSprinting = false;      
+	static _float fPressTime = 0.f;       
+	const _float sprintTh = 0.8f;         
 
 	_bool bSpaceDown = m_pGameInstance->Key_Down(DIK_SPACE);
 	_bool bSpacePress = m_pGameInstance->Key_Pressing(DIK_SPACE);
@@ -257,43 +257,34 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_TAB))
 	{
-		// ���� ����
-		// �ִϸ��̼� ��Ʈ�ѷ� ����
-		m_pAnimator->SetTrigger("EquipWepaon");
-		if (m_pAnimator->CheckBool("Move"))
+		_bool test = m_pAnimator->CheckBool("Move");
+		if (test)
 		{
-		m_pAnimator->SetCurrentAnimController("Player_TwoHand","EquipWeapon_Walk_F");
-
+			int a = 0;
 		}
-		else
-		{
-		m_pAnimator->SetCurrentAnimController("Player_TwoHand","EquipWeapon");
-		}
+		m_pAnimator->SetTrigger("EquipWeapon");
+		m_pAnimator->ApplyOverrideAnimController("TwoHand");
 	}
 
-	// �����̽� �ٸ� ������ �� (�� ����)
 	if (bSpaceDown)
 	{
 		if (!bMove)
 		{
-			// �̵����� ���� ���� ��� Ʈ���� �߻�
 			m_pAnimator->SetTrigger("Dash");
 		}
 		else
 		{
-			// �̵� ���� ���� Ȧ�� ����
+
 			bSpaceHeld = true;
 			bSprinting = false;
 			fPressTime = 0.f;
 		}
 	}
-
-	// �̵� ���̸鼭 �����̽��� ������ ����
 	if (bMove && bSpaceHeld && bSpacePress)
 	{
 		fPressTime += fTimeDelta;
 
-		// ���� �ð� �Ѿ�� ������Ʈ ����
+		
 		if (!bSprinting && fPressTime >= sprintTh)
 		{
 			m_pAnimator->SetBool("Sprint", true);
@@ -302,30 +293,27 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		}
 	}
 
-	// �����̽� �ٸ� �� �� (�� ����)
+
 	if (bSpaceHeld && bSpaceUp)
 	{
 		if (bMove)
 		{
 			if (!bSprinting)
 			{
-				// ª�� �������� ��� Ʈ����
+
 				m_pAnimator->SetTrigger("Dash");
 			}
 			else
 			{
-				// ������Ʈ ����
 				m_pAnimator->SetBool("Sprint", false);
 			}
 		}
 
-		// ���� �ʱ�ȭ
 		bSpaceHeld = false;
 		bSprinting = false;
 		fPressTime = 0.f;
 	}
 
-	// �̵��� �ߴܵǸ� ������Ʈ�� �ߴ�
 	if (!bMove && bSprinting)
 	{
 		m_pAnimator->SetBool("Sprint", false);
@@ -334,12 +322,10 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		fPressTime = 0.f;
 	}
 
-	// �ִϸ����� ���� ����
 	if (m_pAnimator)
 	{
 		m_pAnimator->SetBool("Move", bMove);
 
-		// ZŰ�� �� ���
 		if (m_pGameInstance->Key_Down(DIK_Z))
 		{
 			bRunToggle = !bRunToggle;

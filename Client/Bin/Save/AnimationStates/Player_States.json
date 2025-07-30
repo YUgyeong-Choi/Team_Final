@@ -1,6 +1,93 @@
 {
     "Controllers": [
-        "Player_Default",
-        "Player_TwoHand"
+        "Player_Default"
+    ],
+    "OverrideControllers": [
+        {
+            "Controller": "Player_Default",
+            "Name": "TwoHand",
+            "States": [
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Idle",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Idle",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_F",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Walk_F",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Walk_F",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Dash_Normal_B",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Dash_Normal_B",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_F_Stop",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F_Stop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Sprint",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Sprint",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Sprint_Stop",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Sprint_Stop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Dash_Normal_F",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Dash_Normal_F",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_EquipmentWeapon",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "EquipWeapon",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_F",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "EquipWeapon_Walk_F",
+                    "UpperClipName": "AS_Pino_T_EquipmentWeapon"
+                }
+            ]
+        }
     ]
 }

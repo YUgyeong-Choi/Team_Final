@@ -614,6 +614,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 				}
 			}
 		
+			// 오버라이드 해야할 스테이트들 오버라이드 컨트롤러에 추가
 			vector<string> stateNames;
 			stateNames.reserve(m_NewOverrideAnimController.states.size());
 			for (const auto& Pair : m_NewOverrideAnimController.states)
@@ -630,6 +631,14 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 					if (ImGui::Selectable(stateNames[i].c_str(), isSelected))
 					{
 						m_iSelectedOverrideStateIndex = i;
+						auto it = find_if(states.begin(), states.end(),
+							[&](const CAnimController::AnimState& state) { return state.stateName == stateNames[i]; });
+
+						if (it != states.end())
+						{
+							// 마스크 본을 사용하는 스테이트인지 확인
+							m_bIsUesMaskBoneState = it->maskBoneName.empty() == false;
+						}
 					}
 					if (isSelected)
 						ImGui::SetItemDefaultFocus();
@@ -668,6 +677,8 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 					}
 					ImGui::EndCombo();
 				}
+				if (m_bIsUesMaskBoneState)
+				{
 
 				if (ImGui::BeginCombo("Override Upper Animations", m_iOverrideUpperAnimIndex >= 0 ? animNames[m_iOverrideUpperAnimIndex].c_str() : "Override Select Upper"))
 				{
@@ -684,7 +695,8 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 					}
 					ImGui::EndCombo();
 				}
-
+				
+			
 				if (ImGui::BeginCombo("Override Lower Animations", m_iOverrideLowerAnimIndex >= 0 ? animNames[m_iOverrideLowerAnimIndex].c_str() : "Override Select Lower"))
 				{
 					for (_int i = 0; i < animNames.size(); ++i)
@@ -699,6 +711,12 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 							ImGui::SetItemDefaultFocus();
 					}
 					ImGui::EndCombo();
+				}
+				}
+				else
+				{
+					m_iOverrideLowerAnimIndex = -1;
+					m_iOverrideUpperAnimIndex = -1; // 마스크 본을 사용하지 않는 상태라면 상체, 하체 애니메이션 선택 초기화
 				}
 			}
 		// 컨트롤러 이름 설정
@@ -1765,8 +1783,8 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 			_int opIdx = 0;
 			for (_int i = 0; i < IM_ARRAYSIZE(BoolOps); ++i)
 				if (BoolOps[i] == cond.op) opIdx = i;
-			if (ImGui::Combo("Operator", &opIdx, BoolOpNames, IM_ARRAYSIZE(BoolOpNames)))
-				cond.op = BoolOps[opIdx];
+			ImGui::Combo("Operator", &opIdx, BoolOpNames, IM_ARRAYSIZE(BoolOpNames));
+			cond.op = BoolOps[opIdx];
 			break;
 		}
 		case ParamType::Trigger:
@@ -1781,7 +1799,7 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 			_int opIdx = 0;
 			for (_int i = 0; i < IM_ARRAYSIZE(CmpFloatOps); ++i)
 				if (CmpFloatOps[i] == cond.op) opIdx = i;
-			if (ImGui::Combo("Operator", &opIdx, CmpFloatOpNames, IM_ARRAYSIZE(CmpFloatOpNames)))
+			ImGui::Combo("Operator", &opIdx, CmpFloatOpNames, IM_ARRAYSIZE(CmpFloatOpNames));
 				cond.op = CmpFloatOps[opIdx];
 			break;
 		}
@@ -1790,7 +1808,7 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 			_int opIdx = 0;
 			for (_int i = 0; i < IM_ARRAYSIZE(CmpIntOps); ++i)
 				if (CmpIntOps[i] == cond.op) opIdx = i;
-			if (ImGui::Combo("Operator", &opIdx, CmpIntOpNames, IM_ARRAYSIZE(CmpIntOpNames)))
+			ImGui::Combo("Operator", &opIdx, CmpIntOpNames, IM_ARRAYSIZE(CmpIntOpNames));
 				cond.op = CmpIntOps[opIdx];
 			break;
 		}

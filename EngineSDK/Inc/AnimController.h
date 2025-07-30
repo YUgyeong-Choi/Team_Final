@@ -325,6 +325,7 @@ public:
 	AnimState* GetExitState() const { return m_ExitState; }
 	_int GetEntryNodeId() const { return m_EntryStateNodeId; }
 	_int GetExitNodeId() const { return m_ExitStateNodeId; }
+	void Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController);
 	void Applay_OverrideAnimController(const string& ctrlName, const OverrideAnimController& overrideController);
 	void Cancel_OverrideAnimController();
 private:

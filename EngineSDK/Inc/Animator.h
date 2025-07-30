@@ -206,6 +206,7 @@ private:
     void UpdateMaskState();
     void MakeMaskBones(const string& maskBoneName);
 	void CollectBoneChildren(const _char* boneName);
+    void CollectBoneChildren(const _char* boneName, const _char* stopBoneName);
 
 	_matrix LerpMatrix(const _matrix& src, const _matrix& dst, _float t);
 

@@ -160,12 +160,16 @@ private:
 	_char m_NewOverrideControllerName[64] = ""; // 새 오버라이드 컨트롤러 이름 입력용
 	_char m_RenameOverrideControllerName[64] = ""; // 오버라이드 컨트롤러 이름 변경용
 	OverrideAnimController m_NewOverrideAnimController; // 새 오버라이드 애니메이션 컨트롤러
+	vector<OverrideAnimController> m_vecOverrideAnimControllers; // 오버라이드 애니메이션 컨트롤러들
 	_bool m_bUseOverrideController = false; // 오버라이드 컨트롤러 사용 여부
+	_bool m_bIsUesMaskBoneState = false;
 	_int  m_iOverrideMaskBoneIndex = -1; // 오버라이드 컨트롤러의 마스크 뼈대 인덱스
 	_int  m_iOverrideAnimIndex = -1; // 오버라이드 애니메이션 인덱스
 	_int  m_iOverrideUpperAnimIndex = -1; // 오버라이드 상체 애니메이션 인덱스
 	_int  m_iOverrideLowerAnimIndex = -1; // 오버라이드 하체 애니메이션 인덱스
+	_int  m_iOverrideControllerIndex = -1;// 애니메이터에 등록된 오버라이드 컨트롤러
 	_float m_fOverrideBlendWeight = 1.f; // 오버라이드 블렌드 가중치
+
 
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

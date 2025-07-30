@@ -8,8 +8,8 @@
             "Name": "Run_F",
             "NodeId": 2,
             "NodePos": [
-                324.0,
-                318.0
+                335.0,
+                270.0
             ],
             "UpperClip": ""
         },
@@ -21,8 +21,8 @@
             "Name": "Walk_F",
             "NodeId": 4,
             "NodePos": [
-                324.0,
-                318.0
+                335.0,
+                270.0
             ],
             "UpperClip": ""
         },
@@ -34,8 +34,8 @@
             "Name": "Run_F_Stop",
             "NodeId": 5,
             "NodePos": [
-                324.0,
-                318.0
+                342.0,
+                269.0
             ],
             "UpperClip": ""
         },
@@ -47,8 +47,8 @@
             "Name": "Sprint",
             "NodeId": 9,
             "NodePos": [
-                324.0,
-                318.0
+                299.0,
+                396.0
             ],
             "UpperClip": ""
         },
@@ -60,8 +60,8 @@
             "Name": "Idle",
             "NodeId": 17,
             "NodePos": [
-                324.0,
-                318.0
+                360.0,
+                114.0
             ],
             "UpperClip": ""
         },
@@ -73,8 +73,8 @@
             "Name": "Sprint_Stop",
             "NodeId": 23,
             "NodePos": [
-                324.0,
-                318.0
+                19.0,
+                301.0
             ],
             "UpperClip": ""
         },
@@ -86,8 +86,8 @@
             "Name": "Dash_Normal_B",
             "NodeId": 26,
             "NodePos": [
-                324.0,
-                318.0
+                390.0,
+                504.0
             ],
             "UpperClip": ""
         },
@@ -99,8 +99,8 @@
             "Name": "Dash_Normal_F",
             "NodeId": 29,
             "NodePos": [
-                324.0,
-                318.0
+                542.0,
+                125.0
             ],
             "UpperClip": ""
         },
@@ -112,23 +112,75 @@
             "Name": "EquipWeapon",
             "NodeId": 35,
             "NodePos": [
-                324.0,
-                318.0
+                134.0,
+                461.0
             ],
             "UpperClip": ""
         },
         {
             "BlendWeight": 1.0,
             "Clip": "",
-            "LowerClip": "AS_Pino_T_Walk_F",
+            "LowerClip": "AS_Pino_H_Walk_F",
             "MaskBone": "Bip001-Spine2",
             "Name": "EquipWeapon_Walk_F",
             "NodeId": 38,
             "NodePos": [
-                443.0,
-                111.0
+                234.0,
+                113.0
             ],
             "UpperClip": "AS_Pino_T_EquipmentWeapon"
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_T_Bayonet_SA4",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "StrongAttack",
+            "NodeId": 45,
+            "NodePos": [
+                586.0,
+                313.0
+            ],
+            "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_T_Bayonet_CA1",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "ChargeStrongAttack",
+            "NodeId": 46,
+            "NodePos": [
+                604.0,
+                465.0
+            ],
+            "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_T_Bayonet_NA3",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "NormalAttack",
+            "NodeId": 47,
+            "NodePos": [
+                553.0,
+                602.0
+            ],
+            "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_T_Bayonet_NA4",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "NormalAttack2",
+            "NodeId": 48,
+            "NodePos": [
+                322.0,
+                630.0
+            ],
+            "UpperClip": ""
         }
     ],
     "ControllerName": "Player_Default",
@@ -653,6 +705,13 @@
                     "Type": "Trigger",
                     "fThreshold": 0.0,
                     "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
                 }
             ],
             "Duration": 0.20000000298023224,
@@ -661,6 +720,94 @@
             "Link": {
                 "FromNodeId": 42,
                 "LinkId": 39,
+                "ToNodeId": 381
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 38
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 35,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 352,
+                "LinkId": 40,
+                "ToNodeId": 171
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 17
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.0,
+            "FromNodeId": 35,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 352,
+                "LinkId": 42,
+                "ToNodeId": 381
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 38
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.19900000095367432,
+            "FromNodeId": 38,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 382,
+                "LinkId": 43,
+                "ToNodeId": 41
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 4
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "EquipWeapon",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 2,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 22,
+                "LinkId": 44,
                 "ToNodeId": 381
             },
             "MaxTime": 1.0,
