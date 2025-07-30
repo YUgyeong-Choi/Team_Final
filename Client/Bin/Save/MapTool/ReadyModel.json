@@ -1,32 +1,72 @@
 [
     {
         "ModelName": "FloorB",
-        "ObjectCount": 1,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorB.bin"
     },
     {
-        "ModelName": "SM_Station_BlueFairy_01",
+        "ModelName": "SM_BuildingAcult_DeadServant_01",
+        "ObjectCount": 0,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingAcult_DeadServant_01.bin"
+    },
+    {
+        "ModelName": "SM_BuildingD_Stairs_01",
         "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingD_Stairs_01.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_Bench_03",
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Bench_03.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_Suitcase_01",
+        "ObjectCount": 9,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_01.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_Suitcase_02",
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_02.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_Suitcase_03",
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_03.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_Suitcase_04",
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_04.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_transportcart_01",
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_transportcart_01.bin"
+    },
+    {
+        "ModelName": "SM_Station_BlueFairy_01",
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_01.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_01a",
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_01a.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_02",
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_02a",
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02a.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_02b",
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02b.bin"
     },
     {
@@ -46,32 +86,17 @@
     },
     {
         "ModelName": "SM_Station_BlueFairy_04",
-        "ObjectCount": 1,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_04.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_04a",
-        "ObjectCount": 1,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_04a.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_04b",
-        "ObjectCount": 1,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_04b.bin"
-    },
-    {
-        "ModelName": "SM_Station_BlueFairy_05",
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_05.bin"
-    },
-    {
-        "ModelName": "SM_Station_BlueFairy_05a",
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_05a.bin"
-    },
-    {
-        "ModelName": "SM_Station_BlueFairy_05b",
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_05b.bin"
     }
 ]

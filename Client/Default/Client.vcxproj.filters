@@ -321,9 +321,6 @@
     <ClInclude Include="imgui\ImSequencer.h">
       <Filter>98.Default\Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Client_Calculation.h">
-      <Filter>99.Defines</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ToolParticle.h">
       <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
     </ClInclude>
@@ -470,6 +467,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\CameraSequence.h">
       <Filter>01.Levels\LevelYG\YG_Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Calculation.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Function.h">
+      <Filter>99.Defines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -573,9 +573,14 @@ _bool CGameInstance::Picking(_float4* pOut)
 	return m_pPicking->Picking(pOut);
 }
 
-_bool CGameInstance::Picking(_int* pOut)
+_bool CGameInstance::PickByClick(_int* pOut)
 {
-	return m_pPicking->Picking(pOut);
+	return m_pPicking->PickByClick(pOut);
+}
+
+_bool CGameInstance::PickInRect(const _float2& vStart, const _float2& vEnd, set<_int>* pOut)
+{
+	return m_pPicking->PickInRect(vStart, vEnd, pOut);
 }
 
 _bool CGameInstance::Picking_ToolMesh(_int* pOut)

@@ -26,7 +26,7 @@ public:
 	virtual HRESULT Render();
 public:
 	void Set_Moveable(_bool bMoveable) {
-		m_bMoveable = bMoveable;
+ 		m_bMoveable = bMoveable;
 	}
 
 private:

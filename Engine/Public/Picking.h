@@ -16,7 +16,10 @@ public:
 	_bool Picking(_float4* pOut);
 
 	//피킹된 오브젝트의 아이디를 가져오는 피킹
-	_bool Picking(_int* pOut);
+	_bool PickByClick(_int* pOut);
+	//드래그한 범위만큼 아이디를 가져오는 피킹
+	_bool PickInRect(const _float2& vStart, const _float2& vEnd, set<_int>* pOut);
+
 	_bool PickingToolMesh(_int* pOut);
 
 private:

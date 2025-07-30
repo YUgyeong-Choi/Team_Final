@@ -24,13 +24,13 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+
 	if (FAILED(Ready_ImGuiTools()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
