@@ -12,7 +12,7 @@ class ENGINE_DLL CUIObject abstract : public CGameObject
 public:
 	typedef struct tagUIObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		_float			fX, fY, fSizeX, fSizeY;
+		_float			fX, fY, fSizeX, fSizeY, fAlpha{1.f};
 		_float			fOffset = {0.f};
 		_int iTextureIndex, iPassIndex;
 		_float4 vColor = { 1.f,1.f,1.f,1.f };
@@ -27,7 +27,7 @@ public:
 	_bool  Get_isFade() { return m_isFade; }
 	_float Get_Alpha() { return m_fCurrentAlpha; }
 
-	void  Set_isVignetting(_bool isVignetting) { m_isVignetting = isVignetting; }
+	void  Set_isVignetting(_bool isVignetting) { m_isDeferred = isVignetting; }
 
 protected:
 	CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -41,6 +41,9 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+	// 뷰포트를 구해서 위치에 맞춘다
+	void Set_Position(_float fX, _float fY);
 
 	// 나중에 뺄거, start를 크게하면 fade out, 작게하면 fade in
 	void FadeStart(_float fStartAlpha, _float fEndAlpha, _float fDuration);
@@ -69,7 +72,7 @@ protected:
 	// 곱할 색. 
 	_float4         m_vColor = {1.f,1.f,1.f,1.f};
 
-	_bool			m_isVignetting = { false };
+	_bool			m_isDeferred = { false };
 
 	_wstring		m_strTextureTag = {};
 	_int			m_iPassIndex = {};

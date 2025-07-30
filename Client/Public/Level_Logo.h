@@ -20,6 +20,7 @@ public:
 
 	HRESULT Ready_Menu();
 
+	void Check_Button();
 	void Interation_Button(_int& iIndex);
 
 
@@ -32,9 +33,11 @@ private:
 	_float           m_fDelay = 0.3f;
 	
 
-	_int			 m_iButtonIndex = {-1};
-
+	// 이런 식으로 객체 만들어서 인벤토리나 다른 화면 구성하면 될듯? 
+	// 이거는 간단해서 이정도로만
+	_int			 m_iButtonIndex = {0};
 	vector <class CUI_Button* > m_pButtons = {};
+	class CDynamic_UI*	m_pSelectUI = {nullptr};
 
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

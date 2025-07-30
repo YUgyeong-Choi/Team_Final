@@ -39,7 +39,7 @@ HRESULT CUI_Text::Initialize(void* pArg)
 
 	m_isCenter = pDesc->isCenter;
 
-	m_isVignetting = false;
+	m_isDeferred = false;
 
 	
 
@@ -58,7 +58,7 @@ void CUI_Text::Update(_float fTimeDelta)
 
 void CUI_Text::Late_Update(_float fTimeDelta)
 {
-	if (!m_isVignetting)
+	if (!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI_DEFERRED, this);
