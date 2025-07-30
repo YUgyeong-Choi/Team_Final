@@ -33,14 +33,6 @@ public:
 protected:
 	CModel*			m_pModelCom = { nullptr };
 
-	// masking용 컬러세팅, 스레숄드랑 인텐시티.. 베이스로 옮길 수 있음
-	_float	m_fThreshold = {};
-	_float	m_fIntensity = {};
-	_float4	m_vCenterColor = {};
-	_float	m_fTimeAcc = {};
-	_float	m_fUVScrollSpeed = {};
-
-
 protected:
 	virtual HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

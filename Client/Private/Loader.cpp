@@ -582,11 +582,6 @@ HRESULT CLoader::Loading_For_CY()
 	//	return E_FAIL;
 
 
-
-
-
-
-
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
 

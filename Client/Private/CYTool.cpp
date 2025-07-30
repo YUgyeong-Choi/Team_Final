@@ -310,8 +310,6 @@ HRESULT CCYTool::Edit_Preferences()
 		return E_FAIL;
 	}
 
-
-
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
@@ -347,8 +345,6 @@ HRESULT CCYTool::Edit_Preferences()
 		break;
 	}
 	//ImGui::SameLine();
-
-
 
 
 	ImGui::End();
@@ -394,13 +390,15 @@ HRESULT CCYTool::Window_Particle()
 	}
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 1000, "%d");
+	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 5000, "%d");
 	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.1f, -1000.f, 1000.f, "%.1f");
 	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.1f, 0.f, 100.f, "%.1f");
-	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.1f, 1.f, 1000.f, "%.1f");
-	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 1.f, 1000.f, "%.1f");
-	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.1f, 1.f, 1000.f, "%.1f");
+	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
+	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 0.1f, 1000.f, "%.1f");
+	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.1f, -1000.f, 1000.f, "%.1f");
+	ImGui::ColorEdit4("Center Color", reinterpret_cast<_float*>(pPE->Get_CenterColor()), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
+
 	// ¾ÆÁ÷¾È¸¸µê
 	ImGui::Checkbox("Gravity", &m_bGravity);
 	ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
@@ -412,7 +410,6 @@ HRESULT CCYTool::Window_Particle()
 	if (ImGui::RadioButton("Drop", m_eParticleType == PTYPE_DROP)) {
 		m_eParticleType = PTYPE_DROP;
 	}
-
 
 	if(ImGui::Button("Update Particle"))
 	{
@@ -514,6 +511,7 @@ void CCYTool::Edit_Keyframes(CEffectBase* pEffect)
 		ImGui::EndDisabled();
 
 		ImGui::DragFloat3(string("Scaling##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
+		ImGui::DragFloat(string("Intensity##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.fIntensity), 0.01f, 0.f, 10.f, "%.2f");
 
 		ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&Keyframe.vColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
 
@@ -580,7 +578,7 @@ HRESULT CCYTool::Make_EffectModel_Prototypes(const string strModelFilePath)
 
 HRESULT CCYTool::Save_EffectSet()
 {
-	path SavePath = R"(../Bin/DataFiles/Effect/EffectContainer/)";
+	path SavePath = R"(../Bin/Save/Effect/EffectContainer/)";
 	ofstream ofs(SavePath);
 	if (!ofs.is_open())
 		return E_FAIL;
@@ -612,7 +610,7 @@ HRESULT CCYTool::Load_EffectSet()
 HRESULT CCYTool::Save_Effect()
 {
 	IGFD::FileDialogConfig config;
-	config.path = R"(..\Bin\DataFiles\Effect\)";
+	config.path = R"(..\Bin\Save\Effect\)";
 
 	IFILEDIALOG->OpenDialog("SaveEffectonlyDialog", "Choose directory to save", ".json", config);
 
@@ -648,7 +646,7 @@ HRESULT CCYTool::Save_Effect()
 HRESULT CCYTool::Load_Effect()
 {
 	IGFD::FileDialogConfig config;
-	config.path = R"(..\Bin\DataFiles\Effect\)";
+	config.path = R"(..\Bin\Save\Effect\)";
 	json j;
 	IFILEDIALOG->OpenDialog("LoadEffectonlyDialog", "Choose File to Load", ".json", config);
 
@@ -667,16 +665,25 @@ HRESULT CCYTool::Load_Effect()
 			// Compare Prefix for making each effects
 			// Check the filenames before saving
 			if (prefix == "SE"){
+
 				m_eEffectType = EFF_SPRITE;
+				m_strSeqItemName = "Sprite";
+				m_iSeqItemColor = D3DCOLOR_ARGB(255, 200, 60, 40);
 			}
 			else if (prefix == "PE"){
 				m_eEffectType = EFF_PARTICLE;
+				m_strSeqItemName = "Particle";
+				m_iSeqItemColor = D3DCOLOR_ARGB(255, 60, 200, 80);
 			}
 			else if (prefix == "ME"){
 				m_eEffectType = EFF_MESH;
+				m_strSeqItemName = "Mesh";
+				m_iSeqItemColor = D3DCOLOR_ARGB(255, 100, 100, 220);
 			}
 			else if (prefix == "TE"){
 				m_eEffectType = EFF_TRAIL;
+				m_strSeqItemName = "Trail";
+				m_iSeqItemColor = D3DCOLOR_ARGB(255, 170, 80, 250);
 			}
 			else
 			{
@@ -737,6 +744,7 @@ HRESULT CCYTool::Load_Effect()
 			if (pInstance != nullptr)
 			{
 				pInstance->Deserialize(j);
+				pInstance->Ready_Textures_Prototype_Tool();
 				m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 			}
 			else

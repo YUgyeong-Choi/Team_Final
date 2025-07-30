@@ -36,6 +36,7 @@ public:
 		_float4			vRotation = { 0.f, 0.f, 0.f, 0.f };
 		_float3			vTranslation = {0.f, 0.f, 0.f};
 		_float4			vColor = { 1.f, 1.f, 1.f, 1.f };
+		_float			fIntensity = { 1.f };
 
 		_float			fTrackPosition = {};
 		INTERPOLATION	eInterpolationType = { INTERPOLATION_LERP };
@@ -79,12 +80,19 @@ protected:
 
 protected:
 	// Basic Effect Preferences
-	_float4				m_vColor = { 1.f, 1.f, 1.f, 1.f };
 	_float				m_fLifeTime = {};
 	_bool				m_bBillboard = { true };
 	_bool				m_bAnimation = { true };
 	_uint				m_iShaderPass = {};
 	_bool				m_isLoop = { false };
+	_float				m_fTimeAcc = {};
+
+	// Colors
+	_float4				m_vColor = { 1.f, 1.f, 1.f, 1.f };
+	_float				m_fIntensity = {};
+	_float				m_fThreshold = {};
+	_float4				m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
+	//_float			m_fUVScrollSpeed = {};
 
 
 	// TrackPositions
@@ -93,7 +101,6 @@ protected:
 	_int				m_iEndTrackPosition = {20};
 	_float				m_fCurrentTrackPosition = {};
 	_float				m_fTickPerSecond = {};
-	_float				m_fTickAcc = {};
 
 	_uint				m_iNumKeyFrames = {};
 	_uint				m_iCurKeyFrameIndex = {};
@@ -127,6 +134,9 @@ public:
 	HRESULT Change_Texture(_wstring strTextureName, TEXUSAGE eTex = TU_DIFFUSE);
 	HRESULT Delete_Texture(TEXUSAGE eTex);
 	void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
+
+	_float* Get_Threshold() { return &m_fThreshold; }
+	_float4* Get_CenterColor() { return &m_vCenterColor; }
 #endif
 
 	HRESULT Set_InterpolationType(_uint iKeyFrameIndex, INTERPOLATION eType) { 
@@ -139,16 +149,15 @@ public:
 			return INTERPOLATION_END;
 		return m_KeyFrames[iKeyFrameIndex].eInterpolationType;
 	}
-	void Reset_TrackPosition() { m_iCurKeyFrameIndex = 0; m_fCurrentTrackPosition = 0.f; m_fTickAcc = 0.f; }
+	void Reset_TrackPosition() { m_iCurKeyFrameIndex = 0; m_fCurrentTrackPosition = 0.f; /*m_fTickAcc = 0.f;*/ }
 
 	
 	// 키프레임 특성상 항상 인덱스 순서대로 진행되기 때문에 삭제도 무조건 가장 마지막 것 부터 pop_back 합니다
 	void Delete_KeyFrame() { m_KeyFrames.pop_back(); }
 	void Add_KeyFrame(EFFKEYFRAME tNewKeyframe) { m_KeyFrames.push_back(tNewKeyframe); }
 
-protected:
 	HRESULT Ready_Textures_Prototype();//이펙트매니저 이전 임시 함수
-
+	HRESULT Ready_Textures_Prototype_Tool();
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;

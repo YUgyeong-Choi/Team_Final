@@ -43,6 +43,8 @@ protected:
 	VTXPOS_PARTICLE_INSTANCE*	m_pVertexInstances = { nullptr };
 	_float*						m_pSpeeds = { nullptr };
 	_float3						m_vPivot = {};
+	_bool						m_bGravity = { false };
+	_float						m_fGravity = { 9.8f };
 	_bool						m_isLoop = { false };
 	PARTICLETYPE				m_ePType;
 
