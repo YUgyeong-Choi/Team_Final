@@ -38,13 +38,17 @@ namespace Engine
 
 	struct OverrideAnimController
 	{
-		string stateName; // 상태 이름
-		string clipNmae;	// 애니메이션 클립 이름
-		string upperClipName; // 상체 애니메이션 이름
-		string lowerClipName; // 하체 애니메이션 이름
-		// 필요시에
-		string maskBoneName; // 마스크 본 이름
-		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
+		string name;
+		struct OverrideState
+		{
+			string clipName; // 애니메이션 클립 이름
+			string upperClipName; // 상체 애니메이션 이름
+			string lowerClipName; // 하체 애니메이션 이름
+			string maskBoneName; // 마스크 본 이름 (없으면 빈 문자열)
+			float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
+		};
+
+		unordered_map<string, OverrideState> states; // 상태 이름, OverrideState
 	};
 
 	typedef struct tagKeyFrame

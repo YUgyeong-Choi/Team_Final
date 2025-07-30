@@ -276,20 +276,28 @@ void CAnimController::SetState(_int iNodeId)
 	}
 }
 
-void CAnimController::Applay_OverrideAnimController(const string& ctrlName, const vector<OverrideAnimController>& overrideControllers)
+void CAnimController::Applay_OverrideAnimController(const string& ctrlName, const OverrideAnimController& overrideController)
 {
-	if (overrideControllers.empty())
+	if (overrideController.states.empty())
 		return;
-	auto it = m_OverrideAnimControllers.find(ctrlName);
-	if (it != m_OverrideAnimControllers.end())
+
+	if (m_OriginalAnimStates.empty())
 	{
-		it->second = overrideControllers; // 기존 컨트롤러 업데이트
+		// 적용 전에 기존 애니메이션 상태들을 저장
+		m_OriginalAnimStates["Default"] = m_States; 
 	}
-	else
-	{
-		m_OverrideAnimControllers[ctrlName] = overrideControllers; // 새로운 컨트롤러 추가
-	}
+
+	m_OverrideAnimControllers[ctrlName] = overrideController;
+
+	ChangeStates(ctrlName); // 오버라이드 애니메이션 컨트롤러의 상태로 변경
 	m_bOverrideAnimController = true; // 오버라이드 애니메이션 컨트롤러 사용 중으로 설
+}
+
+void CAnimController::Cancel_OverrideAnimController()
+{
+	if (m_OriginalAnimStates.empty())
+		return;
+	m_States = m_OriginalAnimStates["Default"]; // 원래 상태로 되돌리기
 }
 
 void CAnimController::ResetTransAndStates()
@@ -302,6 +310,38 @@ void CAnimController::ResetTransAndStates()
 	m_States.clear();
 	m_Transitions.clear();
 	m_CurrentStateNodeId = 0;
+}
+
+void CAnimController::ChangeStates(const string& overrideCtrlName)
+{
+	auto it = m_OverrideAnimControllers.find(overrideCtrlName);
+
+	if (it != m_OverrideAnimControllers.end())
+	{
+		auto& overrideCtrl = it->second;
+		auto& overrideStateMap = overrideCtrl.states;
+		for (auto& state : m_States)
+		{
+			auto it = overrideStateMap.find(state.stateName);
+			if (it != overrideStateMap.end())
+			{
+				OverrideAnimController::OverrideState& overrideState = it->second;
+				if (overrideState.clipName.empty() == false)
+				{
+					state.clip = m_pAnimator->GetModel()->GetAnimationClipByName(overrideState.clipName);
+				}
+				else
+				{
+					state.clip = nullptr;
+				}
+
+				state.upperClipName = overrideState.upperClipName;
+				state.lowerClipName = overrideState.lowerClipName;
+				state.maskBoneName = overrideState.maskBoneName;
+				state.fBlendWeight = overrideState.fBlendWeight;
+			}
+		}
+	}
 }
 
 CAnimController* CAnimController::Create()
@@ -635,5 +675,7 @@ void CAnimController::Deserialize(const json& j)
 	}
 	SetEntry(m_EntryStateName);
 	SetExit(m_ExitStateName);
+
+	m_OriginalAnimStates["Default"] = m_States; // 기본 애니메이션 상태들 저장
 }
 

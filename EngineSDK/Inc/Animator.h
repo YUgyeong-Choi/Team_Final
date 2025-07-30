@@ -155,7 +155,51 @@ public:
 
 
 	unordered_map<string, class CAnimController*>& GetAnimControllers() { return m_AnimControllers; }
+    void Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController)
+    {
+        if (m_OverrideControllerMap.find(name) != m_OverrideControllerMap.end())
+        {
+            // 이미 존재하는 컨트롤러 이름이면 덮어쓰기
+            m_OverrideControllerMap[name] = overrideController;
+            return;
+        }
+		m_OverrideControllerMap.emplace(name, overrideController);
+		auto it = m_OverrideControllerMap.find(name);
+        if (it != m_OverrideControllerMap.end())
+        {
+			it->second.name = name; // 이름 설정
+        }
+    }
+#ifdef _DEBUG
+    auto& GetOverrideAnimControllersMap() { return m_OverrideControllerMap; }
+#endif // _DEBUG
 
+	void ApplyOverrideAnimController(const string& ctrlName)
+    {
+		auto it = m_OverrideControllerMap.find(ctrlName);
+        if (it == m_OverrideControllerMap.end())
+            return;
+        if (m_pCurAnimController)
+        {
+			m_pCurAnimController->Applay_OverrideAnimController(it->first, it->second);
+        }
+	}
+
+	void RemoveOverrideAnimController(const string& ctrlName)
+	{
+		auto it = m_OverrideControllerMap.find(ctrlName);
+		if (it != m_OverrideControllerMap.end())
+		{
+			m_OverrideControllerMap.erase(it);
+		}
+	}
+	void CancelOverrideAnimController()
+	{
+		if (m_pCurAnimController)
+		{
+			m_pCurAnimController->Cancel_OverrideAnimController();
+		}
+	}
 private:
     // 기본 블렌딩
     void UpdateBlend(_float fTimeDelta);
@@ -192,7 +236,7 @@ private:
     _bool                       m_bSeparateUpperLowerBlend = false; // 상태 전환 시에 상,하체 분리 플레그
 	vector<class CBone*>        m_Bones; // 전체 본의 개수
     unordered_map<string, vector<AnimEventCallback>> m_eventListeners;
-
+    unordered_map<string, OverrideAnimController> m_OverrideControllerMap; // 오버라이드하는 컨트롤러 이름과 컨트롤러 매핑
 public:
 	static CAnimator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg) override;

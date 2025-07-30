@@ -31,6 +31,7 @@ public:
 	virtual HRESULT Render();
 
 private:
+	HRESULT Render_OverrideAnimControllers();
 	HRESULT Render_TransitionConditions();
 	HRESULT Render_AnimationSequence();
 	HRESULT Render_AnimStatesByNode();
@@ -57,6 +58,7 @@ private:
 	void SaveLoadEvents(_bool isSave = true);
 	void SaveLoadAnimStates(_bool isSave = true);
 	void Test_AnimEvents();
+	void Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController);
 
 	void Manipulate(
 		Operation op,
@@ -138,6 +140,8 @@ private:
 	_int m_iSelectedModelIndex = -1; // 선택된 모델 인덱스
 	_int m_iSelectedAnimIndex = -1; // 선택된 애니메이션 인덱스
 	_int m_iSelectedMaskBoneIndex = -1; // 선택된 마스크 뼈대 인덱스
+	_int m_iSelectedOverrideStateIndex = -1; // 선택된 오버라이드 상태 인덱스
+	_int m_iSelectedOverrideControllerIndex = -1; // 선택된 오버라이드 컨트롤러 인덱스
 	
 	// Bool 관련 변수들
 	_bool m_bExpanded = true; // 트랙 확장 여부
@@ -151,6 +155,17 @@ private:
 	_char m_RenameControllerName[64] = ""; // 컨트롤러 이름 변경용
 	_char m_NewStateName[64] = ""; // 새 상태 이름 입력용
 	vector<string> m_vecMaskBoneNames; // 마스크에 사용할 뼈대 이름들
+
+	// 오버라이드 애니메이션 컨트롤러 이름 
+	_char m_NewOverrideControllerName[64] = ""; // 새 오버라이드 컨트롤러 이름 입력용
+	_char m_RenameOverrideControllerName[64] = ""; // 오버라이드 컨트롤러 이름 변경용
+	OverrideAnimController m_NewOverrideAnimController; // 새 오버라이드 애니메이션 컨트롤러
+	_bool m_bUseOverrideController = false; // 오버라이드 컨트롤러 사용 여부
+	_int  m_iOverrideMaskBoneIndex = -1; // 오버라이드 컨트롤러의 마스크 뼈대 인덱스
+	_int  m_iOverrideAnimIndex = -1; // 오버라이드 애니메이션 인덱스
+	_int  m_iOverrideUpperAnimIndex = -1; // 오버라이드 상체 애니메이션 인덱스
+	_int  m_iOverrideLowerAnimIndex = -1; // 오버라이드 하체 애니메이션 인덱스
+	_float m_fOverrideBlendWeight = 1.f; // 오버라이드 블렌드 가중치
 
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

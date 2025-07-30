@@ -325,7 +325,8 @@ public:
 	AnimState* GetExitState() const { return m_ExitState; }
 	_int GetEntryNodeId() const { return m_EntryStateNodeId; }
 	_int GetExitNodeId() const { return m_ExitStateNodeId; }
-	void Applay_OverrideAnimController(const string& ctrlName, const vector< OverrideAnimController>& overrideControllers);
+	void Applay_OverrideAnimController(const string& ctrlName, const OverrideAnimController& overrideController);
+	void Cancel_OverrideAnimController();
 private:
 	AnimState* FindState(const string& name) 
 	{
@@ -341,11 +342,12 @@ private:
 		return nullptr;
 	}
 	void ResetTransAndStates();
+	void ChangeStates(const string& overrideCtrlName);// 오버라이드 애니메이션 컨트롤러를 적용할 때 상태들을 변경
 private:
 	
 	_bool m_bOverrideAnimController = false; // 오버라이드 애니메이션 컨트롤러 사용 중인지
 	// Override 애니메이션 컨트롤러들
-	unordered_map<string, vector<OverrideAnimController>> m_OverrideAnimControllers;
+	unordered_map<string, OverrideAnimController> m_OverrideAnimControllers;
 	// 상태·전환 저장
     _int                   m_CurrentStateNodeId= 0;
 	_float                 m_fLayerWeight{ 0.f };
@@ -362,7 +364,7 @@ private:
 
 	class CAnimator*	   m_pAnimator = nullptr;  // 애니메이터 참조
 	unordered_map<string, Parameter> m_Params; // 파라미터 관리 (컨트롤러 별 개별로 관리)
-
+	unordered_map<string, vector<AnimState>> m_OriginalAnimStates; // 원본 애니메이션 상태들 (복사본을 만들 때 사용)
 	TransitionResult       m_TransitionResult{}; // 트래지션을 한 결과 (애니메이터에서 요청)
 	string 				   m_Name; // 컨트롤러 이름
 

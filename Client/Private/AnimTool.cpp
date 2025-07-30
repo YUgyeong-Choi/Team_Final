@@ -160,6 +160,8 @@ HRESULT CAnimTool::Render()
 		}
 		if (FAILED(Render_AnimStatesByNode()))
 			return E_FAIL;
+		if (FAILED(Render_OverrideAnimControllers()))
+			return E_FAIL;
 	}
 	else
 	{
@@ -577,6 +579,168 @@ HRESULT CAnimTool::Render_AnimControllers()
 	}
 	ImGui::End();
 
+	return S_OK;
+}
+
+HRESULT CAnimTool::Render_OverrideAnimControllers()
+{
+	if (m_pCurAnimator == nullptr || m_pCurAnimator->Get_CurrentAnimController() == nullptr)
+	{
+		return S_OK;
+	}
+
+	ImGui::Begin("Override Anim Controllers");
+	auto& ctrls = m_pCurAnimator->GetAnimControllers();
+	ImGui::Checkbox("Use Override AnimCtrl", &m_bUseOverrideController);
+
+		if (m_bUseOverrideController)
+		{
+			// 현재 컨트롤러의 스테이트들 가져와서 설정하게
+			auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
+			auto& states = pCtrl->GetStates();
+			if (m_NewOverrideAnimController.states.empty())
+			{
+				
+				// 오버라이드 컨트롤러가 비어있으면 현재 컨트롤러의 상태들로 초기화
+				for (const auto& state : states)
+				{
+					m_NewOverrideAnimController.states.emplace(state.stateName, OverrideAnimController::OverrideState{
+						state.clip ? state.clip->Get_Name() : "",
+						state.upperClipName,
+						state.lowerClipName,
+						state.maskBoneName,
+						state.fBlendWeight
+						});
+				}
+			}
+		
+			vector<string> stateNames;
+			stateNames.reserve(m_NewOverrideAnimController.states.size());
+			for (const auto& Pair : m_NewOverrideAnimController.states)
+			{
+				stateNames.push_back(Pair.first);
+			}
+			sort(stateNames.begin(), stateNames.end());
+
+			if (ImGui::BeginCombo("Override States", m_iSelectedOverrideStateIndex >= 0 ? stateNames[m_iSelectedOverrideStateIndex].c_str() : "Select State"))
+			{
+				for (_int i = 0; i < stateNames.size(); ++i)
+				{
+					_bool isSelected = (i == m_iSelectedOverrideStateIndex);
+					if (ImGui::Selectable(stateNames[i].c_str(), isSelected))
+					{
+						m_iSelectedOverrideStateIndex = i;
+					}
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+
+			// 선택된 오버라이드 상태가 있다면 해당 상태의 정보를 보여주고 수정할 수 있게
+			if (m_iSelectedOverrideStateIndex >= 0 && m_iSelectedOverrideStateIndex < stateNames.size())
+			{
+				auto& selectedState = m_NewOverrideAnimController.states[stateNames[m_iSelectedOverrideStateIndex]]; 
+
+				// 상태 이름
+
+				vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
+
+				vector<string> animNames;
+				animNames.reserve(anims.size());
+				for (const auto& anim : anims)
+				{
+					animNames.push_back(anim->Get_Name());
+				}
+
+				if (ImGui::BeginCombo("Override Animations", m_iOverrideAnimIndex >= 0 ? animNames[m_iOverrideAnimIndex].c_str() : "Override Select"))
+				{
+					for (_int i = 0; i < animNames.size(); ++i)
+					{
+						_bool isSelected = (i == m_iOverrideAnimIndex);
+						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+						{
+							m_iOverrideAnimIndex = i;
+							selectedState.clipName = anims[i]->Get_Name();
+						}
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+
+				if (ImGui::BeginCombo("Override Upper Animations", m_iOverrideUpperAnimIndex >= 0 ? animNames[m_iOverrideUpperAnimIndex].c_str() : "Override Select Upper"))
+				{
+					for (_int i = 0; i < animNames.size(); ++i)
+					{
+						_bool isSelected = (i == m_iOverrideUpperAnimIndex);
+						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+						{
+							m_iOverrideUpperAnimIndex = i;
+							selectedState.upperClipName = anims[m_iOverrideUpperAnimIndex]->Get_Name();
+						}
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+
+				if (ImGui::BeginCombo("Override Lower Animations", m_iOverrideLowerAnimIndex >= 0 ? animNames[m_iOverrideLowerAnimIndex].c_str() : "Override Select Lower"))
+				{
+					for (_int i = 0; i < animNames.size(); ++i)
+					{
+						_bool isSelected = (i == m_iOverrideLowerAnimIndex);
+						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+						{
+							m_iOverrideLowerAnimIndex = i;
+							selectedState.lowerClipName = anims[m_iOverrideLowerAnimIndex]->Get_Name();
+						}
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+			}
+		// 컨트롤러 이름 설정
+		
+		if (ImGui::InputText("Name", m_NewOverrideControllerName, sizeof(m_NewOverrideControllerName),
+			ImGuiInputTextFlags_EnterReturnsTrue))
+		{
+		}
+
+		if (ImGui::Button("Add Override Controller"))
+		{
+			if (m_bUseOverrideController && !m_NewOverrideControllerName[0] == '\0')
+			{
+				m_pCurAnimator->Add_OverrideAnimController(
+					m_NewOverrideControllerName, m_NewOverrideAnimController);
+			//	m_NewOverrideControllerName[0] = '\0'; // 클리어
+			}
+		}
+
+		if (ImGui::Button("Clear Override Controllers"))
+		{
+			m_NewOverrideAnimController.states.clear();
+			m_NewOverrideControllerName[0] = '\0'; // 클리어
+			m_iSelectedOverrideStateIndex = -1; // 선택 초기화
+			m_iOverrideAnimIndex = -1; // 애니메이션 선택 초기화
+			m_iOverrideUpperAnimIndex = -1; // 상체 애니메이션 선택 초기화
+			m_iOverrideLowerAnimIndex = -1; // 하체 애니메이션 선택 초기화
+		}
+
+		if (ImGui::Button("Apply Override Controllers"))
+		{
+			if (m_bUseOverrideController && !m_NewOverrideControllerName[0] == '\0')
+			{
+				m_pCurAnimator->ApplyOverrideAnimController(m_NewOverrideControllerName);
+			}
+		}
+		if (ImGui::Button("Cancel Override Controllers"))
+		{
+			m_pCurAnimator->CancelOverrideAnimController();
+		}
+	}
+	ImGui::End();
 	return S_OK;
 }
 
