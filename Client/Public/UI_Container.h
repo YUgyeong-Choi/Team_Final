@@ -40,6 +40,8 @@ public:
 
 	HRESULT Add_PartObject(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 
+
+
 protected:
 	_wstring							m_strFilePath = {};
 	vector<class CUIObject*>			m_PartObjects;

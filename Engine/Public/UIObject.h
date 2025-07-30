@@ -33,6 +33,7 @@ public:
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
 
+
 protected:
 	CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIObject(const CUIObject& Prototype);
@@ -58,6 +59,7 @@ public:
 	void Fade(_float fTimeDelta);
 	
 	//
+	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) { return S_OK; }
 
 protected:
 	/* 뷰포트 상의 유아이의 중심위치 fX, fY, 사이즈 fSiuzeX, fSizeY */

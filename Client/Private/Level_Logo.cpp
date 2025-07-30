@@ -241,7 +241,6 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
-	Safe_AddRef(m_pButtons.back());
 
 	eButtonDesc.fY = g_iWinSizeY * 0.45f;
 	eButtonDesc.strCaption = TEXT("환경 설정");
@@ -253,8 +252,6 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
-	Safe_AddRef(m_pButtons.back());
-
 	eButtonDesc.fY = g_iWinSizeY * 0.55f;
 	eButtonDesc.strCaption = TEXT("팀원 소개");
 	
@@ -265,7 +262,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
-	Safe_AddRef(m_pButtons.back());
+	
 
 	eButtonDesc.fY = g_iWinSizeY * 0.65f;
 	eButtonDesc.strCaption = TEXT("게임 종료");
@@ -277,7 +274,8 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
-	Safe_AddRef(m_pButtons.back());
+	for (auto& pObj : m_pButtons)
+		Safe_AddRef(pObj);
 
 	m_pButtons[0]->Set_isHighlight(true);
 
@@ -313,7 +311,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pSelectUI = static_cast<CDynamic_UI*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select")));
 
-	Safe_AddRef(m_pSelectUI);
+	
 
 
 	return S_OK;
@@ -323,7 +321,7 @@ HRESULT CLevel_Logo::Ready_Guide()
 {
 	CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
-	eDesc.strFilePath = TEXT("../Bin/DataFiles/UI/TeamMate.json");
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/TeamMate.json");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Guide"), &eDesc)))
@@ -454,8 +452,8 @@ void CLevel_Logo::Free()
 	__super::Free();
 
 	Safe_Release(m_pMainUI);
-	Safe_Release(m_pSelectUI);
 
 	for(auto& pButton: m_pButtons)
 		Safe_Release(pButton);
+	m_pButtons.clear();
 }

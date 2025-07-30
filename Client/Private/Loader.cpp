@@ -245,10 +245,10 @@ HRESULT CLoader::Loading_For_Static()
 HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-
+	m_fRatio = 0.1f;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
-
+	m_fRatio = 0.2f;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
@@ -267,14 +267,14 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-
+	m_fRatio = 0.4f;
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
 
-
+	m_fRatio = 0.6f;
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
-
+	m_fRatio = 0.7f;
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
@@ -284,6 +284,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTestAnimObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	m_fRatio = 1.f;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -445,14 +446,23 @@ HRESULT CLoader::Loading_For_GL()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Guide/TeamPicture.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_TeamPicture*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Tutorial"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Guide/Tutorial_%d.dds"),2))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Icon_Key_Space*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_Space"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_Space.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Icon_Key_Space*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Arrow"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Button/Btn_Arrow.dds")))))
+		return E_FAIL;
 
 
-	// 
+	
 	m_fRatio = 0.1f;
 	Sleep(200);
 

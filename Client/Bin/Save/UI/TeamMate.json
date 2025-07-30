@@ -52,7 +52,7 @@
         "SizeY": 90.0,
         "Texturetag": "Prototype_Component_Texture_Sealingwax",
         "fAlpha": 1.0,
-        "fOffset": 0.0,
+        "fOffset": 0,
         "fX": 1155.199951171875,
         "fY": 361.8000183105469,
         "iPassIndex": 4,
@@ -67,7 +67,7 @@
             "R": 1.0
         },
         "ProtoTag": "Prototype_GameObject_Static_UI",
-        "RotationZ": 357.04901123046875,
+        "RotationZ": 357,
         "SizeX": 440.0,
         "SizeY": 225.0,
         "Texturetag": "Prototype_Component_Texture_TeamPicture",
@@ -77,7 +77,7 @@
         "fY": 472.4999694824219,
         "iPassIndex": 4,
         "iTextureIndex": 0,
-        "iTextureLevel": 0
+        "iTextureLevel": 2
     },
     {
         "Caption": "팀원 소개",

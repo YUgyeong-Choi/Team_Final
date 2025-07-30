@@ -113,7 +113,7 @@ void CGLTool::Obj_Serialize()
 		if (pObj != nullptr)
 			JsonArray.push_back(pObj->Serialize());
 
-	ofstream file("../Bin/DataFiles/UI/Temp.json");
+	ofstream file("../Bin/Save/UI/Temp.json");
 
 	file << JsonArray.dump(4);
 
@@ -203,7 +203,7 @@ void CGLTool::Open_File()
 	
 	IGFD::FileDialogConfig config;
 
-	m_strSavePath = R"(../Bin/DataFiles/UI)";
+	m_strSavePath = R"(../Bin/Save/UI)";
 	config.path = m_strSavePath;
 	config.countSelectionMax = 0; // ¹«Á¦ÇÑ
 	

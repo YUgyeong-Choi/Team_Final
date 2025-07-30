@@ -58,6 +58,11 @@ HRESULT CUI_Text::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_strProtoTag = TEXT("Prototype_GameObject_UI_Text");
+
+	if (nullptr == pArg)
+		return S_OK;
+
 	TEXT_UI_DESC* pDesc = static_cast<TEXT_UI_DESC*>(pArg);
 
 
@@ -69,9 +74,8 @@ HRESULT CUI_Text::Initialize(void* pArg)
 
 	m_isCenter = pDesc->isCenter;
 
-	m_isDeferred = false;
 
-	m_strProtoTag = TEXT("Prototype_GameObject_UI_Text");
+
 
 	return S_OK;
    

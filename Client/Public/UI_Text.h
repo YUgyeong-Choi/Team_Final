@@ -65,6 +65,7 @@ public:
 
 	void Update_UI_From_Tool(TEXT_UI_DESC& eDesc);
 
+	virtual HRESULT Ready_Components(const wstring& strTextureTag) { return S_OK; }
 
 private:
 

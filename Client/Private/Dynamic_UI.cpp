@@ -28,6 +28,7 @@ json CDynamic_UI::Serialize()
 	
 		
 
+
 	return j;
 }
 
@@ -56,8 +57,14 @@ void CDynamic_UI::Deserialize(const json& j)
 			pFeature->Deserialize(featureJson);
 
 			m_pUIFeatures.push_back(pFeature);
+
+			
 		}
 	}
+
+	Ready_Components_File(m_strTextureTag);
+
+	Update_Data();
 }
 
 CDynamic_UI::DYNAMIC_UI_DESC CDynamic_UI::Get_Desc()
@@ -110,6 +117,9 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	if (nullptr == pArg)
+		return S_OK;
 
 	DYNAMIC_UI_DESC* pDesc = static_cast<DYNAMIC_UI_DESC*>(pArg);
 
@@ -278,6 +288,31 @@ HRESULT CDynamic_UI::Ready_Components(const wstring& strTextureTag)
 			return E_FAIL;
 	}
 	
+
+	return S_OK;
+}
+
+HRESULT CDynamic_UI::Ready_Components_File(const wstring& strTextureTag)
+{
+	__super::Ready_Components_File(strTextureTag);
+
+	/* For.Com_Shader */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+	/* For.Com_VIBuffer */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;
+
+	if (strTextureTag != L"")
+	{
+		/* For.Com_Texture */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
+			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+			return E_FAIL;
+	}
+
 
 	return S_OK;
 }

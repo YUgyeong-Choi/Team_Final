@@ -53,8 +53,22 @@ HRESULT CUIObject::Initialize_Prototype()
 
 HRESULT CUIObject::Initialize(void* pArg)
 {
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
 	if (nullptr == pArg)
+	{
+		D3D11_VIEWPORT			ViewportDesc{};
+		_uint					iNumViewports = { 1 };
+
+		m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+		XMStoreFloat4x4(&m_pTransformCom->Get_World4x4(), XMMatrixIdentity());
+		XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+		XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.0f, 1.f));
 		return S_OK;
+	}
+		
 
 	UIOBJECT_DESC* pDesc = static_cast<UIOBJECT_DESC*>(pArg);
 
@@ -68,9 +82,6 @@ HRESULT CUIObject::Initialize(void* pArg)
 	m_fCurrentAlpha = pDesc->fAlpha;
 
 	m_fRotation = pDesc->fRotation;
-
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
 
 	D3D11_VIEWPORT			ViewportDesc{};
 	_uint					iNumViewports = { 1 };

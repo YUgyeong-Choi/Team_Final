@@ -142,7 +142,7 @@ HRESULT CLevel_Loading::Ready_Loading()
 {
 	json j;
 
-	ifstream file("../Bin/DataFiles/UI/Loading.json");
+	ifstream file("../Bin/Save/UI/Loading.json");
 
 	file >> j;
 
@@ -152,14 +152,8 @@ HRESULT CLevel_Loading::Ready_Loading()
 
 		if ("Prototype_GameObject_Static_UI" == protoTag)
 		{
-			CStatic_UI::STATIC_UI_DESC eDesc = {};
 
-			string textureTag = eUIJson["Texturetag"];
-			eDesc.strTextureTag = StringToWStringU8(textureTag);
-			eDesc.iTextureLevel = eUIJson["iTextureLevel"];
-
-
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eDesc));
+			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Static"), nullptr));
 
 			CStatic_UI* pObj = static_cast<CStatic_UI*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Static")));
 
@@ -172,14 +166,8 @@ HRESULT CLevel_Loading::Ready_Loading()
 		}
 		else if ("Prototype_GameObject_Dynamic_UI" == protoTag)
 		{
-			CDynamic_UI::DYNAMIC_UI_DESC eDesc = {};
 
-			string textureTag = eUIJson["Texturetag"];
-			eDesc.strTextureTag = StringToWStringU8(textureTag);
-			eDesc.iTextureLevel = eUIJson["iTextureLevel"];
-
-
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Dynamic"), &eDesc));
+			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Dynamic"), nullptr));
 
 			CDynamic_UI* pObj = static_cast<CDynamic_UI*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Dynamic")));
 
@@ -187,12 +175,13 @@ HRESULT CLevel_Loading::Ready_Loading()
 
 			pObj->Update_Data();
 
+		
+
 		}
 		else if ("Prototype_GameObject_UI_Text" == protoTag)
 		{
-			CUI_Text::TEXT_UI_DESC eDesc = {};
-
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Text"), &eDesc));
+			
+			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Text"), nullptr));
 
 			CUI_Text* pObj = static_cast<CUI_Text*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Text")));
 

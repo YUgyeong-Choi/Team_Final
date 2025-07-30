@@ -22,6 +22,8 @@ json CUI_Container::Serialize()
 
 	j["FilePath"] = WStringToStringU8(m_strFilePath);
 
+	for (const auto& pObj : m_PartObjects)
+		j["Parts"].push_back(pObj->Serialize());
 
 	return j;
 }
@@ -35,6 +37,19 @@ void CUI_Container::Deserialize(const json& j)
 
 	m_strFilePath = StringToWStringU8(strFilePath);
 
+	if (j.contains("Parts") && j["Parts"].is_array())
+	{
+		for (const auto& objJson : j["Parts"])
+		{
+			string protoTag = objJson["Prototag"].get<string>();
+
+			Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), nullptr);
+
+			m_PartObjects.back()->Deserialize(objJson);
+
+			m_PartObjects.back()->Update_Data();
+		}
+	}
 }
 
 HRESULT CUI_Container::Initialize_Prototype()
@@ -51,6 +66,9 @@ HRESULT CUI_Container::Initialize(void* pArg)
 
 	m_strFilePath = pDesc->strFilePath;
 
+	if (m_strFilePath.empty())
+		return S_OK;
+
 	json j;
 
 	ifstream file(WStringToStringU8(m_strFilePath));
@@ -61,41 +79,11 @@ HRESULT CUI_Container::Initialize(void* pArg)
 	{
 		string protoTag = eUIJson["ProtoTag"];
 
-		if ("Prototype_GameObject_Static_UI" == protoTag)
-		{
-			CStatic_UI::STATIC_UI_DESC eDesc = {};
-
-			string textureTag = eUIJson["Texturetag"];
-			eDesc.strTextureTag = StringToWStringU8(textureTag);
-			eDesc.iTextureLevel = eUIJson["iTextureLevel"];
-		
-			Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), &eDesc);
-			
-
-		}
-		else if ("Prototype_GameObject_Dynamic_UI" == protoTag)
-		{
-			CDynamic_UI::DYNAMIC_UI_DESC eDesc = {};
-
-			string textureTag = eUIJson["Texturetag"];
-			eDesc.strTextureTag = StringToWStringU8(textureTag);
-			eDesc.iTextureLevel = eUIJson["iTextureLevel"];
-			
-			Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), &eDesc);
-		
-
-		}
-		else if ("Prototype_GameObject_UI_Text" == protoTag)
-		{
-			CUI_Text::TEXT_UI_DESC eDesc = {};
-
-			Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), &eDesc);
-
-		}
+		if (FAILED(Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), nullptr)))
+			return E_FAIL;
 
 		m_PartObjects.back()->Deserialize(eUIJson);
 
-		m_PartObjects.back()->Update_Data();
 	}
 	file.close();
 

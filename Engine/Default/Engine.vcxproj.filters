@@ -500,9 +500,6 @@
     <Filter Include="01.Utility\03.GameObject\LandObject">
       <UniqueIdentifier>{d8865f37-fbd9-481c-b923-62d1ea007274}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\03.GameObject\PartObject">
-      <UniqueIdentifier>{555d19d9-169e-4fc4-9d50-96e03f3e281c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.GameObject\UIObject">
       <UniqueIdentifier>{514e7d77-7e75-4725-9b62-8b73f0a15645}</UniqueIdentifier>
     </Filter>
@@ -652,6 +649,9 @@
     </Filter>
     <Filter Include="01.Utility\14. Observer\Manager">
       <UniqueIdentifier>{1fba679e-4c91-4fe4-a8d6-a6b1a08640ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\PartObject">
+      <UniqueIdentifier>{555d19d9-169e-4fc4-9d50-96e03f3e281c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
