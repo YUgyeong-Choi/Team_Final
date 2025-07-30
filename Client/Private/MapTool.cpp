@@ -981,54 +981,75 @@ HRESULT CMapTool::Spawn_MapToolObject(string ModelName)
 HRESULT CMapTool::Duplicate_Selected_Object()
 {
 	//현재 선택된 오브젝트로 맵오브젝트를 생성
-
-	CMapToolObject* pMapToolObject = static_cast<CMapToolObject*>(Get_Focused_Object());
+	/*CMapToolObject* pMapToolObject = static_cast<CMapToolObject*>(Get_Focused_Object());
 	if (pMapToolObject == nullptr)
-		return S_OK;
+		return S_OK;*/
 
-	CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
-
-	//TEXT("Prototype_Component_Model_모델이름"),
-	string ModelName = pMapToolObject->Get_ModelName();
-
-	lstrcpy(MapToolObjDesc.szModelPrototypeTag, pMapToolObject->Get_ModelPrototypeTag().c_str());
-	lstrcpy(MapToolObjDesc.szModelName, StringToWString(ModelName).c_str());
-	/*
-	스폰을 눌렀을 때 어떤 레이어에 담았는지 저장하는 레이어 리스트가 필요함
-	삭제할 때 레이어가 존재하는 지 확인(레이어가 없으면 존재하지 않다는 것)
-	이 레이어가 비었으면 리스트에서 제외 해야함
-	*/
-	wstring LayerTag = TEXT("Layer_MapToolObject_");
-	LayerTag += StringToWString(ModelName);
-
-	MapToolObjDesc.iID = m_iID++;
-
-#pragma region 해당 오브젝트 옆에다가 소환
-	_matrix SpawnWorldMatrix = pMapToolObject->Get_TransfomCom()->Get_WorldMatrix();
-
-	// x축으로 3.f 만큼 이동하는 변환 행렬
-	_matrix matOffset = XMMatrixTranslation(3.f, 0.f, 0.f);
-
-	// 변환 적용: 기존 행렬에 offset을 곱해준다
-	_matrix matResult = matOffset * SpawnWorldMatrix;
-
-	// 결과 저장
-	XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, matResult);
-#pragma endregion
-
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
-		ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
+	if (m_SelectedObjects.empty())
 		return E_FAIL;
 
-	//방금 추가한 것을 모델 그룹에 분류해서 저장
-	CGameObject* pLastObject = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag);
+	//임시 저장
+	set<CMapToolObject*> pTempSelectObjects = m_SelectedObjects;
 
-	Add_ModelGroup(ModelName, pLastObject);
-	m_iFocusIndex = Find_HierarchyIndex_By_ID(m_iID);
+	//선택된것들 모두 초기화 후 복제한것만 넣기
+	m_SelectedIndexies.clear();
 
-	Safe_Release(m_pFocusObject);
-	m_pFocusObject = static_cast<CMapToolObject*>(pLastObject);
-	Safe_AddRef(m_pFocusObject);
+	for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);
+	m_SelectedObjects.clear();
+
+	for (CMapToolObject* pObj : pTempSelectObjects)
+	{
+		CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
+
+		//TEXT("Prototype_Component_Model_모델이름"),
+		string ModelName = pObj->Get_ModelName();
+
+		lstrcpy(MapToolObjDesc.szModelPrototypeTag, pObj->Get_ModelPrototypeTag().c_str());
+		lstrcpy(MapToolObjDesc.szModelName, StringToWString(ModelName).c_str());
+		/*
+		스폰을 눌렀을 때 어떤 레이어에 담았는지 저장하는 레이어 리스트가 필요함
+		삭제할 때 레이어가 존재하는 지 확인(레이어가 없으면 존재하지 않다는 것)
+		이 레이어가 비었으면 리스트에서 제외 해야함
+		*/
+		wstring LayerTag = TEXT("Layer_MapToolObject_");
+		LayerTag += StringToWString(ModelName);
+
+		MapToolObjDesc.iID = m_iID++;
+
+#pragma region 해당 오브젝트 옆에다가 소환
+		_matrix SpawnWorldMatrix = pObj->Get_TransfomCom()->Get_WorldMatrix();
+
+		// x축으로 3.f 만큼 이동하는 변환 행렬
+		_matrix matOffset = XMMatrixTranslation(3.f, 0.f, 0.f);
+
+		// 변환 적용: 기존 행렬에 offset을 곱해준다
+		_matrix matResult = matOffset * SpawnWorldMatrix;
+
+		// 결과 저장
+		XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, matResult);
+#pragma endregion
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
+			ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
+			return E_FAIL;
+
+		//방금 추가한 것을 모델 그룹에 분류해서 저장
+		CGameObject* pLastObject = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag);
+
+		Add_ModelGroup(ModelName, pLastObject);
+		m_iFocusIndex = Find_HierarchyIndex_By_ID(m_iID);
+
+		//포커스 되는 오브젝트 변경
+		Safe_Release(m_pFocusObject);
+		m_pFocusObject = static_cast<CMapToolObject*>(pLastObject);
+		Safe_AddRef(m_pFocusObject);
+
+		//복제된 것 넣기
+		m_SelectedIndexies.insert(m_iFocusIndex);
+		m_SelectedObjects.insert(m_pFocusObject);
+		Safe_AddRef(m_pFocusObject);
+	}
 
 	return S_OK;
 }
