@@ -18,6 +18,8 @@ HRESULT CPrototype_Manager::Initialize(_uint iNumLevels)
 
 HRESULT CPrototype_Manager::Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, CBase* pPrototype)
 {
+	if (nullptr == pPrototype)
+		return E_FAIL;
 
 	if (nullptr == m_pPrototypes || iPrototypeLevelIndex >= m_iNumLevels)
 		return E_FAIL;

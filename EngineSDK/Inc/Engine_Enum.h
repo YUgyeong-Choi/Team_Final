@@ -13,6 +13,7 @@ namespace Engine
 	enum class PROTOTYPE { TYPE_GAMEOBJECT, TYPE_COMPONENT };
 	enum class STATE { RIGHT, UP, LOOK, POSITION, END };
 
+	enum class SHADOW { SHADOWA, SHADOWB, SHADOWC, SHADOW_END };
 
 	enum WORLDFILTER
 	{

@@ -32,6 +32,8 @@ public:
 	virtual HRESULT Render_Shadow() { return S_OK; }
 
 public:
+	void Compute_ViewZ(const _vector* pPos);
+public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
@@ -45,6 +47,8 @@ public:
 	virtual void Set_bDead() { m_bDead = true; }
 	virtual _bool Get_bDead();
 
+	void PrintMatrix(const char* szName, const _matrix& mat);
+
 	wstring Get_Name() { return wstring(m_szName); }
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
@@ -57,10 +61,11 @@ protected:
 	map<const _wstring, class CComponent*>		m_Components;
 	class CTransform*							m_pTransformCom = { nullptr };
 
-	_bool m_bDead = { false };
+	_bool m_bDead = {};
+	
+	_float	m_fViewZ = {};
+	_bool m_bCloned = {};
 
-	//클론인지 아닌지
-	_bool m_bCloned = { false };
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
 

@@ -3,6 +3,15 @@
 #include "MapTool.h"
 #include "Camera_Manager.h"
 #include "Level_Loading.h"
+
+
+
+#pragma region 다른 사람 거
+#include "PBRMesh.h"
+#pragma endregion
+
+
+
 CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -26,7 +35,9 @@ HRESULT CLevel_YW::Initialize()
 
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;	
-	
+
+	if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
+		return E_FAIL;	
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
 	return S_OK;
@@ -91,6 +102,18 @@ HRESULT CLevel_YW::Ready_Lights()
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
+	//LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.fAmbient = 0.2f;
+	LightDesc.fIntensity = 0.5f;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::YW), LightDesc)))
 		return E_FAIL;
 
 
@@ -188,6 +211,27 @@ HRESULT CLevel_YW::ImGui_Docking_Settings()
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
 	ImGui::End();
+
+	return S_OK;
+}
+
+HRESULT CLevel_YW::Ready_Layer_DummyMap(const _wstring strLayerTag)
+{
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::YW;
+	Desc.szMeshID = TEXT("Train");
+	lstrcpy(Desc.szName, TEXT("Train"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("Station");
+	lstrcpy(Desc.szName, TEXT("Station"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

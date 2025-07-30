@@ -15,6 +15,8 @@ public:
     // 충돌이 발생할 때 자동 호출됨
     void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override
     {
+        if (g_bSceneChanging)
+            return;
 
         void* userDataA = pairHeader.actors[0]->userData;
         void* userDataB = pairHeader.actors[1]->userData;
@@ -57,6 +59,9 @@ public:
 
     void onTrigger(PxTriggerPair* pairs, PxU32 count) override
     {
+        if (g_bSceneChanging)
+            return;
+
         for (PxU32 i = 0; i < count; ++i)
         {
             const PxTriggerPair& pair = pairs[i];

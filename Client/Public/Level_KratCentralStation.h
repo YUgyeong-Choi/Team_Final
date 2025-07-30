@@ -7,9 +7,6 @@ NS_BEGIN(Engine)
 class CSound_Core;
 NS_END
 
-#define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
-#define PRE_TRANSFORMMATRIX_SCALE 0.01f
-
 NS_BEGIN(Client)
 
 class CLevel_KratCentralStation final : public CLevel

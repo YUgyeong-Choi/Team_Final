@@ -40,6 +40,15 @@ HRESULT CLight_Manager::Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_
 	return S_OK;
 }
 
+HRESULT CLight_Manager::Remove_NoLevelLight()
+{
+	for (CLight* pLight : m_Lights) {
+		Safe_Release(pLight);
+	}
+	m_Lights.clear();
+	return S_OK;
+}
+
 HRESULT CLight_Manager::Remove_Light(_uint iLevelIndex, CLight* pLight)
 {
 	auto& lightList = m_LevelLights[iLevelIndex];
@@ -52,6 +61,17 @@ HRESULT CLight_Manager::Remove_Light(_uint iLevelIndex, CLight* pLight)
 
 	return S_OK;
 }
+
+HRESULT CLight_Manager::RemoveAll_Light(_uint iLevelIndex)
+{
+	auto& lightList = m_LevelLights[iLevelIndex];
+	for (CLight* pLight : lightList) {
+		Safe_Release(pLight);
+	}
+	m_LevelLights[iLevelIndex].clear();
+	return S_OK;
+}
+
 
 HRESULT CLight_Manager::Add_Light(const LIGHT_DESC& LightDesc)
 {

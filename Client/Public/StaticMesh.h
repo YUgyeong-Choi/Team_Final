@@ -29,6 +29,9 @@ public:
 			0.f, 0.f, 0.f, 1.f
 		);
 
+		_bool		bUseTiling = { false };
+		_float2		vTileDensity = { 1.f, 1.f };
+
 	}STATICMESH_DESC;
 
 protected:
@@ -48,24 +51,22 @@ public:
 	LEVEL Get_LevelID() const { return m_eLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 
-public:
-	void	SetbDead(_bool bDead) { m_bDead = bDead; }
+protected: /* [ 초기화 변수 ] */
+	const _tchar* m_szMeshID = { nullptr };
+	LEVEL			m_eLevelID = { LEVEL::END };
+	LEVEL			m_eLevelLight = { LEVEL::END };
+	_float3			m_InitPos = {};
+	_int			m_iRender = {};
+
+private:
+	_bool	m_bUseTiling = { false };
+	_float2	m_vTileDensity = { 1.0f, 1.0f };
 
 protected:
 
 	CShader*		m_pShaderCom = { nullptr };
 	CModel*			m_pModelCom = { nullptr };
 	CTexture*		m_pTextureCom = { nullptr };
-
-protected: /* [ 초기화 변수 ] */
-	const _tchar*	m_szMeshID = { nullptr };
-	LEVEL			m_eLevelID = { LEVEL::END };
-	LEVEL			m_eLevelLight = { LEVEL::END };
-	_float3			m_InitPos = {};
-	_int			m_iRender = {};
-
-protected:
-	_bool			m_bDead = {};
 
 protected:
 	HRESULT Ready_Components(void* pArg);

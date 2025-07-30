@@ -204,16 +204,22 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\public\Light_Manager.h" />
     <ClInclude Include="..\Public\Material.h" />
     <ClInclude Include="..\Public\Mesh.h" />
+    <ClInclude Include="..\public\Mesh_Instance.h" />
     <ClInclude Include="..\Public\Model.h" />
+    <ClInclude Include="..\public\Model_Instance.h" />
     <ClInclude Include="..\public\Navigation.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\Observer.h" />
     <ClInclude Include="..\public\Observer_Manager.h" />
     <ClInclude Include="..\public\PartObject.h" />
     <ClInclude Include="..\Public\PhysXActor.h" />
+    <ClInclude Include="..\Public\PhysXController.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\PhysXDynamicActor.h" />
     <ClInclude Include="..\Public\PhysXStaticActor.h" />
     <ClInclude Include="..\Public\PhysX_ContactReport.h" />
+    <ClInclude Include="..\Public\PhysX_ControllerReport.h" />
     <ClInclude Include="..\Public\PhysX_Manager.h" />
     <ClInclude Include="..\Public\PhysX_IgnoreSelfCallback.h" />
     <ClInclude Include="..\public\Picking.h" />
@@ -276,13 +282,18 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\private\Light_Manager.cpp" />
     <ClCompile Include="..\Private\Material.cpp" />
     <ClCompile Include="..\Private\Mesh.cpp" />
+    <ClCompile Include="..\private\Mesh_Instance.cpp" />
     <ClCompile Include="..\Private\Model.cpp" />
+    <ClCompile Include="..\private\Model_Instance.cpp" />
     <ClCompile Include="..\private\Navigation.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\Observer.cpp" />
     <ClCompile Include="..\private\Observer_Manager.cpp" />
     <ClCompile Include="..\private\PartObject.cpp" />
     <ClCompile Include="..\Private\PhysXActor.cpp" />
+    <ClCompile Include="..\Private\PhysXController.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\PhysXDynamicActor.cpp" />
     <ClCompile Include="..\Private\PhysXStaticActor.cpp" />
     <ClCompile Include="..\Private\PhysX_Manager.cpp" />

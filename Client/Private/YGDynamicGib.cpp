@@ -47,15 +47,6 @@ HRESULT CYGDynamicGib::Initialize(void* pArg)
 
 void CYGDynamicGib::Priority_Update(_float fTimeDelta)
 {
-	if (m_bDead) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-
-		Safe_Release(m_pPhysXActorCom);
-		m_pPhysXActorCom = nullptr;
-	}
-
 	// 위치/회전 동기화
 	PxTransform physxPose = m_pPhysXActorCom->Get_Actor()->getGlobalPose();
 	_vector vPos = XMVectorSet(physxPose.p.x, physxPose.p.y, physxPose.p.z, 1.f);
@@ -278,16 +269,8 @@ CGameObject* CYGDynamicGib::Clone(void* pArg)
 
 void CYGDynamicGib::Free()
 {
+	__super::Free();
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
-
-	if (m_pPhysXActorCom)
-	{
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-	}
 	Safe_Release(m_pPhysXActorCom);
-
-	__super::Free();
 }

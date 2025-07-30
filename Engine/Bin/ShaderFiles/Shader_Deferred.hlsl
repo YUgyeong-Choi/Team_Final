@@ -2,7 +2,9 @@
 
 /* 상수테이블 ConstantTable */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix g_LightViewMatrix, g_LightProjMatrix;
+matrix g_LightViewMatrixA, g_LightProjMatrixA;
+matrix g_LightViewMatrixB, g_LightProjMatrixB;
+matrix g_LightViewMatrixC, g_LightProjMatrixC;
 matrix g_ViewMatrixInv, g_ProjMatrixInv;
 Texture2D g_RenderTargetTexture;
 Texture2D g_NormalTexture;
@@ -11,6 +13,12 @@ Texture2D g_ShadeTexture;
 Texture2D g_DepthTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
+
+/* [ 캐스케이드 전용 ] */
+Texture2D g_ShadowTextureA;
+Texture2D g_ShadowTextureB;
+Texture2D g_ShadowTextureC;
+
 
 Texture2D g_FinalTexture;
 Texture2D g_BlurXTexture;
@@ -267,6 +275,22 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
 
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     Out.vSpecular = float4(Specular, 1.0f);
+    
+    
+    
+    
+    /* [ Volumetric Raymarching 기법 ] */
+    //float4 ViewSpacePosition = viewPos;
+    //float3 ViewSpaceCamPos = float3(0, 0, 0);
+    //float3 ViewSpacePixelDir = normalize(viewPos.xyz);
+    //
+    //float StepSize = 0.2f;
+    //int NumStep = 64;
+    //
+    //float3 SamplePos = ViewSpaceCamPos;
+    //float Accumulated = 0.0f;
+    
+    
     return Out;
 }
 PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
@@ -365,25 +389,24 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
     PS_OUT Out;
     
+    /* [ 기존 VTXMesh ] */
     vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
-    
-    
     vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
-    
     vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
-    
-    vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
-    
     Out.vBackBuffer = vDiffuse * vShade + vSpecular;   
+    
+    /* [ PBR 매쉬 ] */
+    vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
+    float fViewZ = vDepthDesc.y * 500.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = vPBRFinal;
     
     if (vDiffuse.a < 0.1f && vPBRFinal.a < 0.1f)
         discard;
     
-        vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y * 500.f;
     
+    /* [ 뷰포트상의 깊이값 복원 ] */
     vector vPosition;
 
     vPosition.x = In.vTexcoord.x * 2.f - 1.f;
@@ -396,20 +419,50 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vPosition = mul(vPosition, g_ProjMatrixInv);
     vPosition = mul(vPosition, g_ViewMatrixInv);
     
-    vPosition = mul(vPosition, g_LightViewMatrix);
-    vPosition = mul(vPosition, g_LightProjMatrix);
+    // 1. Cascade A
+    vector vLightPosA;
+    vLightPosA = mul(vPosition, g_LightViewMatrixA);
+    vLightPosA = mul(vLightPosA, g_LightProjMatrixA);
     
-    float2 vTexcoord;
+    float2 uvA;
+    uvA.x = vLightPosA.x / vLightPosA.w * 0.5f + 0.5f;
+    uvA.y = vLightPosA.y / vLightPosA.w * -0.5f + 0.5f;
     
-    /* (-1, 1 ~ 1, -1) -> (0, 0 ~ 1, 1) */
-    vTexcoord.x = vPosition.x / vPosition.w * 0.5f + 0.5f;
-    vTexcoord.y = vPosition.y / vPosition.w * -0.5f + 0.5f;    
+    float4 vDepthA = g_ShadowTextureA.Sample(DefaultSampler, uvA);
+    float fShadowViewZA = vDepthA.y * 500.f;
     
-    float4  vOldDepthDesc = g_ShadowTexture.Sample(DefaultSampler, vTexcoord);
-    float fOldViewZ = vOldDepthDesc.y * 500.f;
+    // 2. Cascade B
+    vector vLightPosB;
+    vLightPosB = mul(vPosition, g_LightViewMatrixB);
+    vLightPosB = mul(vLightPosB, g_LightProjMatrixB);
     
-    if (fOldViewZ + 0.1f < vPosition.w)
-        Out.vBackBuffer = Out.vBackBuffer * 0.5f;
+    float2 uvB;
+    uvB.x = vLightPosB.x / vLightPosB.w * 0.5f + 0.5f;
+    uvB.y = vLightPosB.y / vLightPosB.w * -0.5f + 0.5f;
+    
+    float4 vDepthB = g_ShadowTextureB.Sample(DefaultSampler, uvB);
+    float fShadowViewZB = vDepthB.y * 500.f;
+
+    // 3. Cascade C
+    vector vLightPosC;
+    vLightPosC = mul(vPosition, g_LightViewMatrixC);
+    vLightPosC = mul(vLightPosC, g_LightProjMatrixC);
+    
+    float2 uvC;
+    uvC.x = vLightPosC.x / vLightPosC.w * 0.5f + 0.5f;
+    uvC.y = vLightPosC.y / vLightPosC.w * -0.5f + 0.5f;
+    
+    float4 vDepthC = g_ShadowTextureC.Sample(DefaultSampler, uvC);
+    float fShadowViewZC = vDepthC.y * 500.f;
+
+    // --- 깊이 비교 ---
+    float fBias = 0.1f;
+    if (fShadowViewZA + fBias < vLightPosA.w)
+        Out.vBackBuffer *= 0.5f;
+    else if (fShadowViewZB + fBias < vLightPosB.w)
+        Out.vBackBuffer *= 0.5f;
+    else if (fShadowViewZC + fBias < vLightPosC.w)
+        Out.vBackBuffer *= 0.5f;
         
     return Out;    
 }

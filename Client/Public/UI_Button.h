@@ -22,10 +22,12 @@ public:
 		// 
 		_wstring strCaption;
 		_float2  fPadding;
+		_float   fFontSize = {1.f};
 	}BUTTON_UI_DESC;
 
 public:
-
+	void Set_isMouseHover(_bool isMouseHover) { m_isMouseHover = isMouseHover; }
+	void Set_isHighlight(_bool isHighlight) { m_isHighlight = isHighlight; }
 
 protected:
 	CUI_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -44,7 +46,7 @@ public:
 	HRESULT Ready_Components(const wstring& strTextureTag);
 	HRESULT Bind_ShaderResources();
 
-	// 나중에 feature로 빼기
+	// 나중에 feature로 빼기?
 	_bool Check_MousePos();
 	_bool Check_MouseHover();
 	_bool Check_Click();
@@ -64,6 +66,7 @@ private:
 	_wstring m_strCaption = {};
 
 	_float2 m_fPadding = {};
+	_float  m_fFontSize = {1.f};
 
 public:
 	static CUI_Button* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -24,7 +24,31 @@ HRESULT CStaticMesh_Instance::Initialize(void* pArg)
 {
 	//¿ŒΩ∫≈œΩÃ¿∏∑Œ ¿Ã¥œº»∂Û¿Ã¡Ó
 
-	return __super::Initialize(pArg);
+	STATICMESHINSTANCE_DESC* InstanceDesc = static_cast<STATICMESHINSTANCE_DESC*>(pArg);
+
+	m_iNumInstance = InstanceDesc->iNumInstance;
+
+	m_eLevelID = InstanceDesc->m_eLevelID;
+
+	m_szMeshID = InstanceDesc->szMeshID;
+
+	m_iRender = InstanceDesc->iRender;
+
+	InstanceDesc->fSpeedPerSec = 0.f;
+	InstanceDesc->fRotationPerSec = 0.f;
+
+	if (FAILED(CGameObject::Initialize(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Components(pArg)))
+		return E_FAIL;
+
+	m_pTransformCom->Set_WorldMatrix(InstanceDesc->WorldMatrix);
+
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_InitPos.x, m_InitPos.y, m_InitPos.z, 1.f));
+	//m_pTransformCom->SetUp_Scale(InstanceDesc->m_vInitScale.x, InstanceDesc->m_vInitScale.y, InstanceDesc->m_vInitScale.z);
+
+	return S_OK;
 }
 
 void CStaticMesh_Instance::Priority_Update(_float fTimeDelta)
@@ -46,12 +70,45 @@ HRESULT CStaticMesh_Instance::Render()
 {
 	//¿ŒΩ∫≈œΩÃ¿∏∑Œ ∑ª¥ı
 
-	return __super::Render();
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMesh; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+			return E_FAIL;
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(0);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
 }
 
 HRESULT CStaticMesh_Instance::Ready_Components(void* pArg)
 {
-	return __super::Ready_Components(pArg);
+	STATICMESHINSTANCE_DESC* Desc = static_cast<STATICMESHINSTANCE_DESC*>(pArg);
+
+	/* Com_Shader */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh_Instance")),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+
+	CMesh_Instance::MESHINSTANCE_DESC ComDesc = {};
+	ComDesc.iNumInstance = Desc->iNumInstance;
+	ComDesc.pInstanceMatrixs = Desc->pInstanceMatrixs;
+
+	/* Com_Model */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), Desc->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom), &ComDesc)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CStaticMesh_Instance::Bind_ShaderResources()
@@ -75,7 +132,7 @@ CStaticMesh_Instance* CStaticMesh_Instance::Create(ID3D11Device* pDevice, ID3D11
 
 CGameObject* CStaticMesh_Instance::Clone(void* pArg)
 {
-	CStaticMesh_Instance* pGameInstance = new CStaticMesh_Instance(*this);
+ 	CStaticMesh_Instance* pGameInstance = new CStaticMesh_Instance(*this);
 
 	if (FAILED(pGameInstance->Initialize(pArg)))
 	{
@@ -89,4 +146,7 @@ CGameObject* CStaticMesh_Instance::Clone(void* pArg)
 void CStaticMesh_Instance::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pModelCom);
+
 }

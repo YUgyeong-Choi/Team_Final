@@ -22,7 +22,7 @@ HRESULT CCamera_Orbital::Initialize(void* pArg)
 		return E_FAIL;
 
 	CAMERA_ORBITAL_DESC* pDesc = static_cast<CAMERA_ORBITAL_DESC*>(pArg);
-	m_fMouseSensor = 0.5f;
+	m_fMouseSensor = 0.3f;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -44,7 +44,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_long iWheelDelta = m_pGameInstance->Get_DIMouseMove(DIMM::WHEEL);
 
 		m_fDistance -= iWheelDelta * fTimeDelta * m_fZoomSpeed;
-		m_fDistance = clamp(m_fDistance, 2.f, 7.5f);
+		m_fDistance = clamp(m_fDistance, 2.f, 5.5f);
 
 		// 마우스 입력에 따라 회전값 누적
 		m_fYaw += MouseMoveX * fTimeDelta * m_fMouseSensor;
@@ -52,7 +52,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 		// 플레이어 위치 가져오기
 		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
-		m_vPlayerPosition = m_vPlayerPosition + XMVectorSet(0.f, 3.f, 0.f, 0.f);
+		m_vPlayerPosition = m_vPlayerPosition + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
 
 		// 구면좌표계 → 직교좌표계 변환
 		_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);

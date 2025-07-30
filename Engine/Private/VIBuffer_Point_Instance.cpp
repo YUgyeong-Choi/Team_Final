@@ -78,7 +78,7 @@ HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 
 void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 {
-	switch (m_ePType)
+	/*switch (m_ePType)
 	{
 	case Engine::PTYPE_SPREAD:
 		Spread(fTimeDelta);
@@ -90,7 +90,7 @@ void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 		break;
 	default:
 		break;
-	}
+	}*/
 }
 void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 {

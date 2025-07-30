@@ -4,7 +4,7 @@
 #include "DH_ToolMesh.h"
 #include "Light.h"
 
-const char* CDHTool::szLightName[] = {"Point", "Spot", "Directional"};
+const char* CDHTool::szLightName[] = { "Directional", "Spot","Point"};
 const char* CDHTool::szLevelName[] = {"KRAT_CENTERAL_STATION","KRAT_HOTEL"};
 
 CDHTool::CDHTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

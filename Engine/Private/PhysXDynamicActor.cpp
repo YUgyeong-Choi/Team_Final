@@ -1,5 +1,5 @@
 #include "PhysXDynamicActor.h"
-
+#include "GameInstance.h"
 CPhysXDynamicActor::CPhysXDynamicActor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPhysXActor{ pDevice, pContext }
 	, m_bKinematic { m_bKinematic }
@@ -48,6 +48,20 @@ HRESULT CPhysXDynamicActor::Create_Collision(PxPhysics* physics, const PxGeometr
     return S_OK;
 }
 
+HRESULT CPhysXDynamicActor::Render()
+{
+	PxTransform pose = PxShapeExt::getGlobalPose(*m_pShape, *m_pActor);
+	PxGeometryHolder geom = m_pShape->getGeometry();
+	DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ),pose, geom);
+
+	for (auto& Ray : m_RenderRay) {
+		DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);
+	}
+	m_RenderRay.clear();
+
+	return S_OK;
+}
+
 void CPhysXDynamicActor::Set_Kinematic(_bool bActiveKinematic)
 {
 	if (!m_pActor)
@@ -59,6 +73,24 @@ void CPhysXDynamicActor::Set_Kinematic(_bool bActiveKinematic)
 
 	m_bKinematic = bActiveKinematic;
 }
+
+void CPhysXDynamicActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery)
+{
+	m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation); // OnEnter, OnStay, OnExit 활성화
+	m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bTrigger); //OnTriger 활성화
+	m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bQuery); // Ray충돌 활성화 
+}
+
+void CPhysXDynamicActor::Set_SimulationFilterData(PxFilterData _data)
+{
+	m_pShape->setSimulationFilterData(_data);
+}
+
+void CPhysXDynamicActor::Set_QueryFilterData(PxFilterData _data)
+{
+	m_pShape->setQueryFilterData(_data);
+}
+
 
 CPhysXDynamicActor* CPhysXDynamicActor::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -88,5 +120,10 @@ CComponent* CPhysXDynamicActor::Clone(void* pArg)
 
 void CPhysXDynamicActor::Free()
 {
+	if (m_pActor)
+	{
+		m_pActor->release();
+		m_pActor = nullptr;
+	}
 	__super::Free();
 }

@@ -1,6 +1,6 @@
 #include "YGTool.h"
 #include "GameInstance.h"
-
+#include "Client_Calculation.h"
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
 #include "Camera.h"
@@ -28,7 +28,10 @@ HRESULT CYGTool::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-
+	m_CameraSequence = new CCameraSequence();
+	m_CameraSequence->m_iFrameMin = 0;
+	m_CameraSequence->m_iFrameMax = 300;
+	m_CameraSequence->Add(0,10,0);
 	return S_OK;
 }
 
@@ -55,203 +58,239 @@ HRESULT CYGTool::Render()
 	if (FAILED(Render_CameraFrame()))
 		return E_FAIL;
 
+	if (FAILED(Render_CameraSequence()))
+		return E_FAIL;
 
 	return S_OK;
 }
-
 
 
 HRESULT CYGTool::Render_CameraTool()
 {
 	SetNextWindowSize(ImVec2(200, 300));
 	_bool open = true;
-	ImGui::Begin("Camera Tools", &open, NULL);
-
-	if (ImGui::CollapsingHeader("Camera Control"))
+	ImGui::Begin("Sequence Tool", &open, NULL);
+	if (ImGui::CollapsingHeader("Sequence Info"))
 	{
-		if (CCamera* pCam = CCamera_Manager::Get_Instance()->GetCurCam())
-		{
-			CTransform* pTransform = pCam->Get_TransfomCom();
-
-			// 기존 월드 행렬
-			_float4x4 worldMat;
-			XMStoreFloat4x4(&worldMat, pTransform->Get_WorldMatrix());
-
-			// 행렬 -> float[16]
-			_float matrix[16];
-			memcpy(matrix, &worldMat, sizeof(float) * 16);
-
-			// 분해
-			_float position[3], rotation[3], scale[3];
-			ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
-
-			if (ImGui::DragFloat3("Position", position, 0.1f, -FLT_MAX, FLT_MAX, "%.3f"))
-			{
-				XMVECTOR newPos = XMVectorSet(position[0], position[1], position[2], 1.f);
-				pTransform->Set_State(STATE::POSITION, newPos);
-			}
-
-			if (ImGui::DragFloat3("Rotation", rotation, 0.1f, -FLT_MAX, FLT_MAX, "%.3f"))
-			{
-				// 오일러(degree) → radian
-				XMVECTOR quat = XMQuaternionRotationRollPitchYaw(
-					XMConvertToRadians(rotation[0]), // pitch (X)
-					XMConvertToRadians(rotation[1]), // yaw (Y)
-					XMConvertToRadians(rotation[2])  // roll (Z)
-				);
-
-				_matrix rotMatrix = XMMatrixRotationQuaternion(quat);
-
-				pTransform->Set_State(STATE::RIGHT, XMVector3Normalize(rotMatrix.r[0]));
-				pTransform->Set_State(STATE::UP, XMVector3Normalize(rotMatrix.r[1]));
-				pTransform->Set_State(STATE::LOOK, XMVector3Normalize(rotMatrix.r[2]));
-			}
-
-			if (ImGui::Checkbox(u8"Use Lerp?", &m_bUseLerp)) {}
-			ImGui::InputFloat(u8"Duration (sec)", &m_fDuration, 0.1f, 1.0f, "%.2f");
-			if (m_fDuration < 0.f) m_fDuration = 0.f; // 음수 방지
-
-			XMStoreFloat4x4(&worldMat, pTransform->Get_WorldMatrix());
-			memcpy(matrix, &worldMat, sizeof(float) * 16);
-			ImGuizmo::DecomposeMatrixToComponents(matrix, position, rotation, scale);
-
-			// float[3] → _vector로 변환
-			m_CutSceneDesc.vPosition = XMVectorSet(position[0], position[1], position[2], 1.f);
-			m_CutSceneDesc.vRotation = XMVectorSet(rotation[0], rotation[1], rotation[2], 0.f);
-			m_CutSceneDesc.bUseLerp = m_bUseLerp;
-			m_CutSceneDesc.fDuration = m_fDuration;
-
-
-			if (ImGui::Button(u8"Add"))
-			{
-				m_vecCameraFrame.push_back(m_CutSceneDesc);
-				m_fDuration = {};
-			}
-		}
-		else
-		{
-			ImGui::Text("현재 활성화된 카메라가 없습니다.");
-		}
+		ImGui::InputInt("End Frame", &m_iEndFrame, 10, 0);
+		m_CameraSequence->Set_EndFrame(m_iEndFrame);
 	}
 
-
-	ImGui::Separator();
-	ImGui::Text("CutScene Frames:");
-
-	ImGui::BeginChild("CutSceneFrameList", ImVec2(0, 200), true);
-
-	// 리스트 출력
-	for (size_t i = 0; i < m_vecCameraFrame.size(); ++i)
+	if (ImGui::Button("Get CurrentKeyFrame"))
 	{
-		const auto& desc = m_vecCameraFrame[i];
-
-		XMFLOAT3 pos{}, rot{};
-		XMStoreFloat3(&pos, desc.vPosition);
-		XMStoreFloat3(&rot, desc.vRotation);
-
-		char label[256];
-		sprintf_s(label, sizeof(label),
-			"Frame %zu: Pos(%.2f, %.2f, %.2f) Rot(%.2f, %.2f, %.2f) Dur: %.2fs",
-			i, pos.x, pos.y, pos.z, rot.x, rot.y, rot.z, desc.fDuration);
-
-		// 선택 가능하게
-		if (ImGui::Selectable(label, selectedFrameIndex == i))
-		{
-			selectedFrameIndex = static_cast<int>(i);
-			m_CutSceneDesc = m_vecCameraFrame[i]; // 선택 시 현재 편집용으로 복사
-		}
-	}
-	ImGui::EndChild();
-
-
-	if (selectedFrameIndex >= 0 && selectedFrameIndex < (int)m_vecCameraFrame.size())
-	{
-		// 선택된 것이 바뀌면 편집용 값 초기화
-		if (selectedFrameIndex != lastSelectedIndex)
-		{
-			lastSelectedIndex = selectedFrameIndex;
-
-			XMFLOAT3 pos, rot;
-			XMStoreFloat3(&pos, m_vecCameraFrame[selectedFrameIndex].vPosition);
-			XMStoreFloat3(&rot, m_vecCameraFrame[selectedFrameIndex].vRotation);
-
-			editedPos = pos;
-			editedRot = rot;
-			editedDuration = m_vecCameraFrame[selectedFrameIndex].fDuration;
-			editedLerp = m_vecCameraFrame[selectedFrameIndex].bUseLerp;
-		}
-
-		ImGui::Separator();
-		ImGui::Text("Selected Frame: %d", selectedFrameIndex);
-
-		// Position 입력
-		ImGui::Text("Position");
-		ImGui::InputFloat3("##pos", reinterpret_cast<float*>(&editedPos));
-
-		// Rotation 입력
-		ImGui::Text("Rotation");
-		ImGui::InputFloat3("##rot", reinterpret_cast<float*>(&editedRot));
-
-		// Duration 입력
-		ImGui::Text("Duration (sec)");
-		ImGui::InputFloat("##duration", &editedDuration, 0.1f, 1.0f, "%.2f");
-
-		// UseLerp 입력
-		ImGui::Text("Use Lerp");
-		ImGui::Checkbox("##Lerp", &editedLerp);
-
-		// 적용 버튼
-		if (ImGui::Button("Apply Changes"))
-		{
-			// _vector로 다시 변환해서 대입
-			m_vecCameraFrame[selectedFrameIndex].vPosition = XMVectorSet(editedPos.x, editedPos.y, editedPos.z, 1.0f);
-			m_vecCameraFrame[selectedFrameIndex].vRotation = XMVectorSet(editedRot.x, editedRot.y, editedRot.z, 0.0f); 
-
-			m_vecCameraFrame[selectedFrameIndex].fDuration = editedDuration;
-			m_vecCameraFrame[selectedFrameIndex].bUseLerp = editedLerp;
-
-			m_CutSceneDesc = m_vecCameraFrame[selectedFrameIndex]; // 현재 작업 중 값도 동기화
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Delete"))
-		{
-			m_vecCameraFrame.erase(m_vecCameraFrame.begin() + selectedFrameIndex);
-			selectedFrameIndex = -1;
-			lastSelectedIndex = -1;
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Clone Camera"))
-		{
-			m_vecCameraFrame[selectedFrameIndex] = m_CutSceneDesc;
-			XMFLOAT3 pos, rot;
-			XMStoreFloat3(&pos, m_vecCameraFrame[selectedFrameIndex].vPosition);
-			XMStoreFloat3(&rot, m_vecCameraFrame[selectedFrameIndex].vRotation);
-
-			editedPos = pos;
-			editedRot = rot;
-			editedDuration = m_vecCameraFrame[selectedFrameIndex].fDuration;
-		}
+		m_pSelectedKey = m_CameraSequence->GetKeyAtFrame(m_iCurrentFrame);
+		m_pSelectedKey->keyFrame = m_iCurrentFrame;
 	}
 
-	if (ImGui::Button("Play CutScene"))
+	if (m_pSelectedKey)
 	{
-		CCamera_Manager::Get_Instance()->SetCutSceneCam();
-		CCamera_CutScene* cutSceneCamera = static_cast<CCamera_CutScene*>(CCamera_Manager::Get_Instance()->GetCurCam());
-		cutSceneCamera->Set_CameraFrame(m_vecCameraFrame);
-		cutSceneCamera->PlayCutScene();
+		ImGui::SeparatorText("Current Key Info");
+
+		// 포지션
+		XMFLOAT3 pos = m_pSelectedKey->position;
+		if (ImGui::DragFloat3("Position", reinterpret_cast<float*>(&pos), 0.1f))
+			m_pSelectedKey->position = pos;
+
+		// 회전
+		XMFLOAT3 rot = m_pSelectedKey->rotation;
+		if (ImGui::DragFloat3("Rotation (Euler)", reinterpret_cast<float*>(&rot), 0.5f))
+			m_pSelectedKey->rotation = rot;
+
+		// FOV
+		ImGui::DragFloat("FOV", &m_pSelectedKey->fFov, 0.1f, 1.0f, 179.0f);
+
+		// 보간 방식
+		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
+		int interpPos = static_cast<int>(m_pSelectedKey->interpPosition);
+		int interpRot = static_cast<int>(m_pSelectedKey->interpRotation);
+		int interpFov = static_cast<int>(m_pSelectedKey->interpFov);
+
+		if (ImGui::Combo("Interp Position", &interpPos, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_pSelectedKey->interpPosition = static_cast<INTERPOLATION_CAMERA>(interpPos);
+
+		if (ImGui::Combo("Interp Rotation", &interpRot, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_pSelectedKey->interpRotation = static_cast<INTERPOLATION_CAMERA>(interpRot);
+
+		if (ImGui::Combo("Interp FOV", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_pSelectedKey->interpFov = static_cast<INTERPOLATION_CAMERA>(interpFov);
+	}
+
+	Render_SetInfos();
+
+	if (ImGui::Button("Add KeyFrame"))
+	{
+		if (m_pSelectedKey)
+		{
+			CAMERA_KEYFRAME keyFrame;
+			keyFrame.keyFrame = m_pSelectedKey->keyFrame;
+			keyFrame.position = m_pSelectedKey->position;
+			keyFrame.rotation = m_pSelectedKey->rotation;
+			keyFrame.fFov = m_pSelectedKey->fFov;
+
+			keyFrame.interpPosition = m_pSelectedKey->interpPosition;
+			keyFrame.interpRotation = m_pSelectedKey->interpRotation;
+			keyFrame.interpFov = m_pSelectedKey->interpFov;
+			m_vecCameraKeyFrame.push_back(keyFrame);
+			m_CameraSequence->Add_KeyFrame(0,keyFrame.keyFrame);
+		}
 	}
 
 	ImGui::End();
 	return S_OK;
 }
 
+void CYGTool::Render_SetInfos()
+{
+	if (m_pSelectedKey)
+	{
+		ImGui::SeparatorText("Current Camera Info");
+
+		if (CCamera* pCam = CCamera_Manager::Get_Instance()->GetCurCam())
+		{
+			CTransform* pTransform = pCam->Get_TransfomCom();
+
+			// 1. 위치
+			XMFLOAT3 vPos;
+			XMStoreFloat3(&vPos, pTransform->Get_State(STATE::POSITION));
+			ImGui::DragFloat3("Camera Position", (float*)&vPos, 0.1f);
+
+			// 2. 회전 (쿼터니언 → Euler)
+			_matrix worldMat = pTransform->Get_WorldMatrix();
+			XMVECTOR qRot = XMQuaternionRotationMatrix(worldMat);
+
+			XMFLOAT3 euler = QuaternionToEuler(qRot);
+			XMFLOAT3 eulerDeg;
+			eulerDeg.x = XMConvertToDegrees(euler.x);
+			eulerDeg.y = XMConvertToDegrees(euler.y);
+			eulerDeg.z = XMConvertToDegrees(euler.z);
+			ImGui::DragFloat3("Camera Rotation (Euler)", (float*)&eulerDeg, 0.1f);
+
+			// 2. 카메라 Transform에도 적용
+			// A. 포지션
+			pTransform->Set_State(STATE::POSITION, XMVectorSet(vPos.x, vPos.y, vPos.z, 1.0f));
+
+			// B. 회전 (Euler Deg → Rad → Quaternion → 방향 벡터)
+			XMFLOAT3 eulerRad;
+			eulerRad.x = XMConvertToRadians(eulerDeg.x);
+			eulerRad.y = XMConvertToRadians(eulerDeg.y);
+			eulerRad.z = XMConvertToRadians(eulerDeg.z);
+
+			qRot = XMQuaternionRotationRollPitchYaw(eulerRad.x, eulerRad.y, eulerRad.z);
+			XMMATRIX rotMat = XMMatrixRotationQuaternion(qRot);
+
+			// C. 회전 행렬의 각 축을 Transform에 적용
+			pTransform->Set_State(STATE::RIGHT, rotMat.r[0]);
+			pTransform->Set_State(STATE::UP, rotMat.r[1]);
+			pTransform->Set_State(STATE::LOOK, rotMat.r[2]);
+
+			if (ImGui::Button(u8"카메라 위치 회전 적용"))
+			{
+				m_pSelectedKey->position = vPos;
+				m_pSelectedKey->rotation = eulerDeg;
+			}
+		}
+	}
+}
+
 HRESULT CYGTool::Render_CameraFrame()
 {
+	SetNextWindowSize(ImVec2(200, 300));
+	_bool open = true;
+	ImGui::Begin("Camera Frame", &open, NULL);
+	ImGui::Text("CutScene Frames:");
+
+	ImGui::BeginChild("CutSceneFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+	// 리스트 출력
+	for (size_t i = 0; i < m_vecCameraKeyFrame.size(); ++i)
+	{
+		const auto& desc = m_vecCameraKeyFrame[i];
+		char label[32];
+		sprintf_s(label, "KeyFrame: %d", desc.keyFrame);
+
+		bool bSelected = (m_iEditKey == static_cast<int>(i));
+
+		if (ImGui::Selectable(label, bSelected))
+		{
+			// 선택됨 → 인덱스 및 포인터 저장
+			m_iEditKey = static_cast<int>(i);
+			m_pEditKey = &m_vecCameraKeyFrame[i];
+		}
+	}
+	ImGui::EndChild();
+
+
+	if (m_pEditKey)
+	{
+		ImGui::SeparatorText("Edit Key Info");
+
+		// 포지션
+		XMFLOAT3 pos = m_pEditKey->position;
+		if (ImGui::DragFloat3("Position", reinterpret_cast<float*>(&pos), 0.1f))
+			m_pEditKey->position = pos;
+
+		// 회전
+		XMFLOAT3 rot = m_pEditKey->rotation;
+		if (ImGui::DragFloat3("Rotation (Euler)", reinterpret_cast<float*>(&rot), 0.5f))
+			m_pEditKey->rotation = rot;
+
+		// FOV
+		ImGui::DragFloat("FOV", &m_pEditKey->fFov, 0.1f, 1.0f, 179.0f);
+
+		// 보간 방식
+		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
+		int interpPos = static_cast<int>(m_pEditKey->interpPosition);
+		int interpRot = static_cast<int>(m_pEditKey->interpRotation);
+		int interpFov = static_cast<int>(m_pEditKey->interpFov);
+
+		if (ImGui::Combo("Interp Position", &interpPos, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_pEditKey->interpPosition = static_cast<INTERPOLATION_CAMERA>(interpPos);
+
+		if (ImGui::Combo("Interp Rotation", &interpRot, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_pEditKey->interpRotation = static_cast<INTERPOLATION_CAMERA>(interpRot);
+
+		if (ImGui::Combo("Interp FOV", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_pEditKey->interpFov = static_cast<INTERPOLATION_CAMERA>(interpFov);
+
+		if (ImGui::Button("Delete"))
+		{
+			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_vecCameraKeyFrame.size()))
+			{
+				m_vecCameraKeyFrame.erase(m_vecCameraKeyFrame.begin() + m_iEditKey);
+
+				// 선택 초기화
+				m_CameraSequence->Delete_KeyFrame(0,m_pEditKey->keyFrame);
+				m_iEditKey = -1;
+				m_pEditKey = nullptr;
+			}
+		}
+	}
+
+	ImGui::End();
+	
+	return S_OK;
+}
+
+
+HRESULT CYGTool::Render_CameraSequence()
+{
+	SetNextWindowSize(ImVec2(1000, 400), ImGuiCond_FirstUseEver);
+	ImGui::Begin("Camera Sequencer");
+
+	ImSequencer::Sequencer(
+		m_CameraSequence,
+		&m_iCurrentFrame,
+		&m_bExpanded,
+		&m_iSelected,
+		&m_iFirstFrame,
+		ImSequencer::SEQUENCER_EDIT_ALL);
+
+	ImGui::End();
 
 	return S_OK;
 }
+
+
 CYGTool* CYGTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
 	CYGTool* pInstance = new CYGTool(pDevice, pContext);
@@ -282,5 +321,5 @@ CGameObject* CYGTool::Clone(void* pArg)
 void CYGTool::Free()
 {
 	__super::Free();
-
+	Safe_Delete(m_CameraSequence);
 }

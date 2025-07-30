@@ -118,7 +118,7 @@ void CDynamic_UI::Update(_float fTimeDelta)
 
 void CDynamic_UI::Late_Update(_float fTimeDelta)
 {
-	if (!m_isVignetting)
+	if (!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI_DEFERRED, this);
@@ -233,7 +233,7 @@ HRESULT CDynamic_UI::Bind_ShaderResources()
 
 	_float fAlpha = 1.f;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &fAlpha, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &m_fCurrentAlpha, sizeof(_float))))
 		return E_FAIL;
 
 	

@@ -18,6 +18,7 @@
 #include "Static_UI.h"
 #include "Dynamic_UI.h"
 #include "UI_Video.h"
+#include "UI_Text.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -43,6 +44,25 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 	{
 		if (FAILED(Ready_Loading()))
 			return E_FAIL;
+
+		CUI_Text::TEXT_UI_DESC eTextDesc = {};
+		eTextDesc.fOffset = { 0.0f };
+		eTextDesc.fFontScale = { 1.f };
+		eTextDesc.fFontOffset = { 0.f,0.f };
+		eTextDesc.fSizeX = 0.f;
+		eTextDesc.fSizeY = 0.f;
+		eTextDesc.fX = g_iWinSizeX * 0.2f;
+		eTextDesc.fY = g_iWinSizeY * 0.2f;
+		eTextDesc.isCenter = true;
+		eTextDesc.strCaption = TEXT("Test");
+		eTextDesc.strFontTag = TEXT("Font_Medium");
+		eTextDesc.vColor = { 1.f,1.f,1.f,1.f };
+
+		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Text"),
+			static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Text"), &eTextDesc)))
+			return E_FAIL;
+
+		static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Text")))->FadeStart(1.f, 0.f, 1.5f);
 	}
 
 	

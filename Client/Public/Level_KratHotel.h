@@ -7,9 +7,6 @@ NS_BEGIN(Engine)
 class CSound_Core;
 NS_END
 
-#define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
-#define PRE_TRANSFORMMATRIX_SCALE 0.01f
-
 NS_BEGIN(Client)
 
 class CLevel_KratHotel final : public CLevel
@@ -24,7 +21,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
+	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance);
 	HRESULT Ready_MapModel();
 	HRESULT LoadMap();
 	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName);

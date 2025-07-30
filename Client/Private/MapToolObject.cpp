@@ -25,9 +25,17 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 		return E_FAIL;
 
 	MAPTOOLOBJ_DESC* pDesc = static_cast<MAPTOOLOBJ_DESC*>(pArg);
-	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+
 	m_iID = pDesc->iID;
 	m_ModelName = WStringToString(pDesc->szModelName);
+
+	//월드행렬
+	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+
+	//타일링 여부
+	m_bUseTiling = pDesc->bUseTiling;
+	m_TileDensity[0] = pDesc->vTileDensity.x;
+	m_TileDensity[1] = pDesc->vTileDensity.y;
 
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
@@ -115,6 +123,15 @@ HRESULT CMapToolObject::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fID", &fID, sizeof(_float))))
 		return E_FAIL;
 
+	//타일링을 사용 하는가? 인스턴스된 애들은 타일링 하기 번거롭겠다.
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTile", &m_bUseTiling, sizeof(_bool))))
+		return E_FAIL;
+	
+	if (m_bUseTiling)
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_TileDensity", &m_TileDensity, sizeof(m_TileDensity))))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

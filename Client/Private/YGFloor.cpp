@@ -21,7 +21,7 @@ HRESULT CYGFloor::Initialize_Prototype()
 HRESULT CYGFloor::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC _desc{};
-	lstrcpy(_desc.szName, TEXT("YGBox"));
+	lstrcpy(_desc.szName, TEXT("YGFloor"));
 	_desc.fRotationPerSec = 8.f;
 	_desc.fSpeedPerSec = 10.f;
 
@@ -47,14 +47,7 @@ HRESULT CYGFloor::Initialize(void* pArg)
 
 void CYGFloor::Priority_Update(_float fTimeDelta)
 {
-	if (m_bDead) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
 
-		Safe_Release(m_pPhysXActorCom);
-		m_pPhysXActorCom = nullptr;
-	}
 
 }
 
@@ -242,16 +235,8 @@ CGameObject* CYGFloor::Clone(void* pArg)
 
 void CYGFloor::Free()
 {
+	__super::Free();
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
-
-	if (m_pPhysXActorCom) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-	}
-
 	Safe_Release(m_pPhysXActorCom);
-
-	__super::Free();
 }

@@ -7,6 +7,8 @@ Texture2D g_NormalTexture;
 
 float g_fID;
 
+bool g_bTile = false;
+float2 g_TileDensity = float2(1.0f, 1.0f); // 1m당 1회 반복
 
 struct VS_IN
 {
@@ -75,11 +77,24 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
     
-    vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+    vector vMtrlDiffuse;
+    vector vNormalDesc;
+    if (g_bTile)
+    {
+        //벽지를 미리 발라 놓고 떼오는 느낌 스케일 상관 없이 타일링 적용 가능
+        float2 uv = In.vWorldPos.xz * g_TileDensity;
+        vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, uv);
+        vNormalDesc = g_NormalTexture.Sample(DefaultSampler, uv);
+    }
+    else //기본
+    {
+        vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+        vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
+    }
+    
     if (vMtrlDiffuse.a < 0.3f)
         discard;
     
-    vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
@@ -99,11 +114,24 @@ PS_OUT PS_MAPTOOLOBJECT(PS_IN In)
 {
     PS_OUT Out;
     
-    vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+    vector vMtrlDiffuse;
+    vector vNormalDesc;
+    if (g_bTile)
+    {
+        //벽지를 미리 발라 놓고 떼오는 느낌 스케일 상관 없이 타일링 적용 가능
+        float2 uv = In.vWorldPos.xz * g_TileDensity;
+        vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, uv);
+        vNormalDesc = g_NormalTexture.Sample(DefaultSampler, uv);
+    }
+    else //기본
+    {
+        vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+        vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
+    }
+    
     if (vMtrlDiffuse.a < 0.3f)
         discard;
     
-    vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);

@@ -36,7 +36,10 @@ public:
 	{
 		m_vecCameraFrame = vecCameraFrame;
 	}
-	void PlayCutScene() { m_bActive = true;  m_iCurrentFrame = 0; }
+
+	_int Get_CurrentFrame() { return m_iCurrentFrame; }
+	void Set_CurrentFrame(_int frame);
+	void PlayCutScene() { m_bActive = true; }
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 
@@ -49,6 +52,9 @@ private:
 	_bool m_bActive = false;
 	_int m_iCurrentFrame = -1;
 	_float m_fElapsedTime = {};
+
+	_bool m_bStartSpecialRotate;
+	_bool m_bStartSpecialRotate2;
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
