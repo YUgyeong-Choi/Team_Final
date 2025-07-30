@@ -84,8 +84,12 @@ private:
 private:
 	//하이어라키 관련
 	map<string, list<CGameObject*>> m_ModelGroups;
-	_int m_iSelectedHierarchyIndex = { -1 };
-	class CMapToolObject* m_pSelectedObject = { nullptr };
+	//_int m_iSelectedHierarchyIndex = { -1 };
+	//class CMapToolObject* m_pSelectedObject = { nullptr };
+	set<_int> m_iHierachyIndexies;
+	set<class CMapToolObject*> m_SelectedObjects = {};
+	_int m_iFocusIndex = { -1 };
+	class CMapToolObject* m_pFocusObject = { nullptr };
 
 private:
 	_uint m_iID = { 0 };

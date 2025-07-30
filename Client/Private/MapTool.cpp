@@ -93,7 +93,32 @@ void CMapTool::Control(_float fTimeDelta)
 	else if (m_pGameInstance->Key_Down(DIK_T))
 		m_currentOperation = ImGuizmo::TRANSLATE;
 	else if (m_pGameInstance->Key_Down(DIK_ESCAPE))
-		m_iSelectedHierarchyIndex = -1;
+	{
+		m_iHierachyIndexies.clear();
+
+		for (CMapToolObject* pObj : m_SelectedObjects)
+			Safe_Release(pObj);
+
+		m_SelectedObjects.clear();
+	}
+
+	//컨트롤 클릭 하면 피킹된 위치로 이동
+	if (m_pGameInstance->Key_Pressing(DIK_LALT) && m_pGameInstance->Mouse_Up(DIM::LBUTTON))
+	{
+		if (m_pFocusObject)
+		{
+			CTransform* pTransform = m_pFocusObject->Get_TransfomCom();
+	
+			_float4 vPickedPos = {};
+			if (m_pGameInstance->Picking(&vPickedPos))
+			{
+				//이전 월드 행렬 저장
+				m_pFocusObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
+				pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
+
+			}
+		}
+	}
 
 	//Ctrl + S 맵 저장
 	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
@@ -114,7 +139,7 @@ void CMapTool::Control(_float fTimeDelta)
 	}
 
 	//피킹했을 때 오브젝트 선택 하는 기능(기즈모가 다른 물체보다 뒤에 있으면 조작하려는 물체가 바뀌어버림 IsOver()로 해결)
-	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON) && m_pGameInstance->Key_Pressing(DIK_LCONTROL) == false && ImGuizmo::IsOver() == false)
+	if (m_pGameInstance->Mouse_Up(DIM::LBUTTON) && m_pGameInstance->Key_Pressing(DIK_LCONTROL) == false && ImGuizmo::IsOver() == false)
 	{
 		Picking();
 	}
@@ -129,9 +154,9 @@ void CMapTool::Control(_float fTimeDelta)
 	//F 키누르면 해당 오브젝트 위치로 이동
 	if (m_pGameInstance->Key_Down(DIK_F))
 	{
-		if (m_pSelectedObject)
+		if (m_SelectedObjects.empty() == false)
 		{
-			_vector vObjectPos = m_pSelectedObject->Get_TransfomCom()->Get_State(STATE::POSITION);
+			_vector vObjectPos = (*m_SelectedObjects.begin())->Get_TransfomCom()->Get_State(STATE::POSITION);
 			_vector vCameraPos = XMVectorAdd(vObjectPos, XMVectorSet(0.f, 3.f, -3.f, 0.f));
 
 			CTransform* pCameraTransformCom = CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom();
@@ -397,20 +422,57 @@ void CMapTool::Render_Hierarchy()
 				string strHierarchyName = "(ID:" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID()) + ')' + ModelName;
 
 				// 현재 인덱스가 선택된 상태인지 확인
-				_bool isSelected = (m_iSelectedHierarchyIndex == i);
+				_bool isSelected = (m_iHierachyIndexies.count(i) > 0);
 
 				if (bOpen) // 트리 노드가 열려 있을 때만 Selectable 항목을 그린다
 				{
 					// 해당 항목이 클릭되면 인덱스를 기록하여 선택 상태로 만든다
 					if (ImGui::Selectable(strHierarchyName.c_str(), isSelected))
 					{
-						m_iSelectedHierarchyIndex = i; // 현재 선택된 항목으로 갱신
-						m_pSelectedObject = static_cast<CMapToolObject*>(Get_Selected_GameObject());
-					}
+						if (ImGui::GetIO().KeyCtrl)
+						{
+							// Ctrl 눌렀으면 선택 토글
+							if (isSelected)
+							{
+								m_SelectedObjects.erase(static_cast<CMapToolObject*>(pGameObject));
+								Safe_Release(pGameObject);
 
-					if (isSelected)
-						ImGui::SetItemDefaultFocus(); // 포커스를 해당 항목에 맞춰준다 (키보드 네비게이션용)
+								m_iHierachyIndexies.erase(i);
+							}
+							else
+							{
+								m_SelectedObjects.insert(static_cast<CMapToolObject*>(pGameObject));
+								Safe_AddRef(pGameObject);
+
+								m_iHierachyIndexies.insert(i);
+							}
+						}
+						else
+						{
+							for (CMapToolObject* pObj : m_SelectedObjects)
+								Safe_Release(pObj);
+							m_SelectedObjects.clear();
+
+							m_SelectedObjects.insert(static_cast<CMapToolObject*>(pGameObject));
+							Safe_AddRef(pGameObject);
+
+							// Ctrl 안 눌렀으면 단일 선택
+							m_iHierachyIndexies.clear();
+							m_iHierachyIndexies.insert(i);
+						}
+
+						//마지막 클릭한 항목
+						m_iFocusIndex = i;
+
+						Safe_Release(m_pFocusObject);
+						m_pFocusObject = static_cast<CMapToolObject*>(Get_Selected_GameObject());
+						Safe_AddRef(m_pFocusObject);
+					}
 				}
+
+				// 포커스만 마지막 항목만
+				if (m_iFocusIndex == i)
+					ImGui::SetItemDefaultFocus();
 
 				++i; // 전체 인덱스 증가 (트리 노드 열려있든 말든 증가시켜야 함)
 			}
@@ -903,39 +965,50 @@ HRESULT CMapTool::Duplicate_Selected_Object()
 		return E_FAIL;
 
 	//방금 추가한 것을 모델 그룹에 분류해서 저장
-	Add_ModelGroup(ModelName, m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
+	CGameObject* pLastObject = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag);
+
+	Add_ModelGroup(ModelName, pLastObject);
 
 
-	m_iSelectedHierarchyIndex = Find_HierarchyIndex_By_ID(MapToolObjDesc.iID);
+	m_iFocusIndex = Find_HierarchyIndex_By_ID(MapToolObjDesc.iID);
+
+	Safe_Release(m_pFocusObject);
+	m_pFocusObject = static_cast<CMapToolObject*>(pLastObject);
+	Safe_AddRef(m_pFocusObject);
 
 	return S_OK;
 }
 
 HRESULT CMapTool::Undo_Selected_Object()
 {
-	CMapToolObject* pMapToolObject = static_cast<CMapToolObject*>(Get_Selected_GameObject());
-	if (pMapToolObject == nullptr)
-		return S_OK;
-
-	pMapToolObject->Undo_WorldMatrix();
+	for (CMapToolObject* pObj : m_SelectedObjects)
+	{
+		pObj->Undo_WorldMatrix();
+	}
 
 	return S_OK;
 }
 
 void CMapTool::DeleteMapToolObject()
 {
-	CGameObject* pGameObject = Get_Selected_GameObject();
-
-	if (nullptr != pGameObject)
+	for (CGameObject* pObj : m_SelectedObjects)
 	{
+		//m_SelectedObjects 릴리즈
+		Safe_Release(pObj);
 		//그룹에서 삭제
-		Delete_ModelGroup(pGameObject);
+		Delete_ModelGroup(pObj);
 		//실제로 삭제
-		pGameObject->Set_bDead();
-
-		m_iSelectedHierarchyIndex = -1;
-		m_pSelectedObject = nullptr;
+		pObj->Set_bDead();
 	}
+
+	m_iHierachyIndexies.clear();
+	m_SelectedObjects.clear();
+
+	m_iFocusIndex = -1;
+
+	//포커스 릴리즈
+	Safe_Release(m_pFocusObject);
+	m_pFocusObject = nullptr;
 }
 
 HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
@@ -961,6 +1034,7 @@ HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModel
 
 void CMapTool::Add_ModelGroup(string ModelName, CGameObject* pMapToolObject)
 {
+	Safe_AddRef(pMapToolObject);
 	// 모델 이름을 키로 하여 그룹에 GameObject를 추가
 	m_ModelGroups[ModelName].push_back(pMapToolObject);
 }
@@ -983,6 +1057,7 @@ void CMapTool::Delete_ModelGroup(CGameObject* pMapToolObject)
 
 	std::list<CGameObject*>& objList = iterGroup->second;
 
+	Safe_Release(pMapToolObject);
 	// 리스트에서 해당 오브젝트 제거
 	objList.remove(pMapToolObject);
 
@@ -996,7 +1071,7 @@ void CMapTool::Delete_ModelGroup(CGameObject* pMapToolObject)
 
 CGameObject* CMapTool::Get_Selected_GameObject()
 {
-	_uint index = m_iSelectedHierarchyIndex;
+	_uint index = m_iFocusIndex;
 
 	for (auto& group : m_ModelGroups)
 	{
@@ -1043,6 +1118,10 @@ _int CMapTool::Find_HierarchyIndex_By_ID(_uint iID)
 
 void CMapTool::Picking()
 {
+	//알트키 누르고 있으면 피킹하지 않음(오브젝트 붙이고나서 오브젝트 변경되는거 막기 위함임)
+	if (m_pGameInstance->Key_Pressing(DIK_LALT))
+		return;
+
 	// ImGui가 마우스 입력을 가져가면 피킹을 하지 않음
 	if (ImGui::GetIO().WantCaptureMouse)
 		return;
@@ -1051,8 +1130,15 @@ void CMapTool::Picking()
 	if (m_pGameInstance->Picking(&iID))
 	{
 		printf("ID: %d\n", iID);
-		m_iSelectedHierarchyIndex = Find_HierarchyIndex_By_ID(iID);
-		m_pSelectedObject = static_cast<CMapToolObject*>(Get_Selected_GameObject());
+		m_iFocusIndex = Find_HierarchyIndex_By_ID(iID);
+
+		Safe_Release(m_pFocusObject);
+		m_pFocusObject = static_cast<CMapToolObject*>(Get_Selected_GameObject());
+		Safe_AddRef(m_pFocusObject);
+
+		//하이어라키도 넣어야한다.
+		//m_iHierachyIndexies.insert();
+		//m_SelectedObjects.insert(m_pFocusObject);
 	}
 }
 
@@ -1110,9 +1196,9 @@ void CMapTool::Detail_Transform()
 {
 	ImGui::Text("Transform");
 
-	if (m_pSelectedObject != nullptr)
+	if (m_pFocusObject != nullptr)
 	{
-		CTransform* pTransform = m_pSelectedObject->Get_TransfomCom();
+		CTransform* pTransform = m_pFocusObject->Get_TransfomCom();
 
 		//리셋 버튼
 		ImGui::SameLine();
@@ -1127,30 +1213,15 @@ void CMapTool::Detail_Transform()
 		ImGui::SameLine();
 		if (ImGui::Button("Copy"))
 		{
-			XMStoreFloat4x4(&m_CopyWorldMatrix, m_pSelectedObject->Get_TransfomCom()->Get_WorldMatrix());			
+			XMStoreFloat4x4(&m_CopyWorldMatrix, m_pFocusObject->Get_TransfomCom()->Get_WorldMatrix());
 		}
 
 		//행렬 붙이기 버튼
 		ImGui::SameLine();
 		if (ImGui::Button("Paste"))
 		{
-			m_pSelectedObject->Get_TransfomCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_CopyWorldMatrix));
+			m_pFocusObject->Get_TransfomCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_CopyWorldMatrix));
 		}
-
-		//컨트롤 클릭 하면 피킹된 위치로 이동
-		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
-		{
-			_float4 vPickedPos = {};
-			if (m_pGameInstance->Picking(&vPickedPos))
-			{
-				//이전 월드 행렬 저장
-				m_pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
-
-				pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
-
-			}
-		}
-
 
 #pragma region 기즈모 및 행렬 분해
 		_float4x4 worldMat;
@@ -1205,9 +1276,10 @@ void CMapTool::Detail_Transform()
 		//전에 안눌렸고 지금 눌렸으면 저장
 		if (m_bWasUsingGizmoLastFrame == false && ImGuizmo::IsUsing())
 		{
-			//이전 월드 행렬 저장
-			m_pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
-
+			for (CMapToolObject* pObj : m_SelectedObjects)
+			{
+				pObj->Set_UndoWorldMatrix(pObj->Get_TransfomCom()->Get_WorldMatrix());
+			}
 			m_bWasUsingGizmoLastFrame = true;
 		}
 		m_bWasUsingGizmoLastFrame = ImGuizmo::IsUsing();
@@ -1216,11 +1288,32 @@ void CMapTool::Detail_Transform()
 		{
 			// ImGuizmo로 조작된 matrix 그대로 적용
 			memcpy(&worldMat, matrix, sizeof(_float) * 16);
+
+			// 대표 오브젝트의 이전 행렬과 새 행렬 비교
+			_matrix matPrevMain = m_pFocusObject->Get_TransfomCom()->Get_WorldMatrix();
+			_matrix matNewMain = XMLoadFloat4x4(&worldMat);
+
+			// 대표 오브젝트의 이동/회전/스케일 변화 행렬 계산
+			_matrix matOffset = matNewMain * XMMatrixInverse(nullptr, matPrevMain);
+
 			pTransform->Set_WorldMatrix(worldMat);
+
+			//선택된 모든오브젝트가 같이 움직이게
+			for (CGameObject* pObj : m_SelectedObjects)
+			{
+				if (pObj == m_pFocusObject)
+					continue;
+
+				_matrix matOld = pObj->Get_TransfomCom()->Get_WorldMatrix();
+				_matrix matNew = matOffset * matOld;
+
+				pObj->Get_TransfomCom()->Set_WorldMatrix(matNew);
+			}
+
 		}
 		else if (bPositionChanged || bRotationChanged || bScaleChanged)
 		{
-			m_pSelectedObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
+			m_pFocusObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
 
 			// 수동 입력으로 바뀐 값 → matrix 재구성 후 적용
 			ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, matrix);
@@ -1235,16 +1328,15 @@ void CMapTool::Detail_Transform()
 void CMapTool::Detail_Tile()
 {
 	ImGui::Text("Tile Settings");
-	if (m_pSelectedObject)
+	if (m_pFocusObject)
 	{
-
 		// 타일링 여부 체크박스
-		ImGui::Checkbox("Enable Tiling", &m_pSelectedObject->m_bUseTiling);
+		ImGui::Checkbox("Enable Tiling", &m_pFocusObject->m_bUseTiling);
 
 		// 타일링 값 슬라이더 (X, Z)
-		if (m_pSelectedObject->m_bUseTiling)
+		if (m_pFocusObject->m_bUseTiling)
 		{
-			ImGui::DragFloat2("Tiling (X,Z)", m_pSelectedObject->m_TileDensity, 0.01f, 0.01f, 32.0f, "%.2f");
+			ImGui::DragFloat2("Tiling (X,Z)", m_pFocusObject->m_TileDensity, 0.01f, 0.01f, 32.0f, "%.2f");
 		}
 	}
 }
@@ -1283,4 +1375,19 @@ void CMapTool::Free()
 
 	Safe_Release(m_pPreviewObject);
 	Safe_Release(m_pCamera_Free);
+
+
+	for (auto Group : m_ModelGroups)
+	{
+		for (auto pObj : Group.second )
+			Safe_Release(pObj);
+		Group.second.clear();
+	}
+	m_ModelGroups.clear();
+
+	Safe_Release(m_pFocusObject);
+
+	for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);
+	m_SelectedObjects.clear();
 }
