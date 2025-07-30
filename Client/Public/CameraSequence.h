@@ -12,16 +12,22 @@ class CCameraSequence : public ImSequencer::SequenceInterface
 public:
     struct CAMERA_KEY
     {
-        int startFrame;
-        int endFrame;
-        int type;
-        unsigned int color;
-        _matrix worldMatrix = XMMatrixIdentity();
-        INTERPOLATION_CAMERA interpWorld = INTERPOLATION_CAMERA::NONE;
-        _float fFov = 60.f;
-        INTERPOLATION_CAMERA interpFov = INTERPOLATION_CAMERA::NONE;
-        _vector rotation = XMVectorZero();
-        INTERPOLATION_CAMERA interpRotation = INTERPOLATION_CAMERA::NONE;
+        _int startFrame, endFrame;
+        _int type;
+        _uint color;
+
+        XMFLOAT3 position;
+        XMFLOAT3 rotation;   // Euler or quaternion
+        _float fFov;
+
+        INTERPOLATION_CAMERA interpPosition;
+        INTERPOLATION_CAMERA interpRotation;
+        INTERPOLATION_CAMERA interpFov;
+
+        //_bool bLookAt = false;
+        //_vector lookAtTarget;
+        //INTERPOLATION_CAMERA interpLookAt;
+        _int keyFrame;
     };
 public:
     CCameraSequence() = default;
@@ -71,12 +77,30 @@ public:
     }
 
     // ½ÃÄö½º Ãß°¡
-    void Add(_int startFrame, _int endFrame, int type);
-    
+    void Add(_int startFrame, _int endFrame, _int type);
+    void Add_KeyFrame(_int type, _int keyFrame);
+    void Delete_KeyFrame(_int type, _int keyFrame);
+
     void Set_EndFrame(_int endFrame);
 
+
+    virtual size_t GetCustomHeight(int /*index*/) { return 12; }
+    virtual void CustomDraw(int index, ImDrawList* draw_list, const ImRect& rc, const ImRect&, const ImRect&, const ImRect&) override;
+
+    CAMERA_KEY* GetKeyAtFrame(_int frame)
+    {
+        for (auto& key : m_vecKeys)
+        {
+            if (frame >= key.startFrame && frame <= key.endFrame)
+                return &key;
+        }
+        return nullptr;
+    }
 public:
     std::vector<CAMERA_KEY> m_vecKeys;
+    vector<_int> m_vecPosKeyFrames;
+    vector<_int> m_vecRotKeyFrames;
+    vector<_int> m_vecFovKeyFrames;
     _int m_iFrameMax = { 80 };
     _int m_iFrameMin = { 0 };
 };
