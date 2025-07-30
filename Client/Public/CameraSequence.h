@@ -77,9 +77,9 @@ public:
     }
 
     // ½ÃÄö½º Ãß°¡
-    void Add(_int startFrame, _int endFrame);
-    void Add_KeyFrame(_int keyFrame);
-    void Delete_KeyFrame(_int keyFrame);
+    void Add(_int startFrame, _int endFrame, _int type);
+    void Add_KeyFrame(_int type, _int keyFrame);
+    void Delete_KeyFrame(_int type, _int keyFrame);
 
     void Set_EndFrame(_int endFrame);
 
@@ -98,7 +98,9 @@ public:
     }
 public:
     std::vector<CAMERA_KEY> m_vecKeys;
-    vector<_int> m_vecKeyFrames;
+    vector<_int> m_vecPosKeyFrames;
+    vector<_int> m_vecRotKeyFrames;
+    vector<_int> m_vecFovKeyFrames;
     _int m_iFrameMax = { 80 };
     _int m_iFrameMin = { 0 };
 };

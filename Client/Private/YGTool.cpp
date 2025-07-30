@@ -31,7 +31,7 @@ HRESULT CYGTool::Initialize(void* pArg)
 	m_CameraSequence = new CCameraSequence();
 	m_CameraSequence->m_iFrameMin = 0;
 	m_CameraSequence->m_iFrameMax = 300;
-	m_CameraSequence->Add(0,10);
+	m_CameraSequence->Add(0,10,0);
 	return S_OK;
 }
 
@@ -131,7 +131,7 @@ HRESULT CYGTool::Render_CameraTool()
 			keyFrame.interpRotation = m_pSelectedKey->interpRotation;
 			keyFrame.interpFov = m_pSelectedKey->interpFov;
 			m_vecCameraKeyFrame.push_back(keyFrame);
-			m_CameraSequence->Add_KeyFrame(keyFrame.keyFrame);
+			m_CameraSequence->Add_KeyFrame(0,keyFrame.keyFrame);
 		}
 	}
 
@@ -259,7 +259,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_vecCameraKeyFrame.erase(m_vecCameraKeyFrame.begin() + m_iEditKey);
 
 				// 선택 초기화
-				m_CameraSequence->Delete_KeyFrame(m_pEditKey->keyFrame);
+				m_CameraSequence->Delete_KeyFrame(0,m_pEditKey->keyFrame);
 				m_iEditKey = -1;
 				m_pEditKey = nullptr;
 			}
