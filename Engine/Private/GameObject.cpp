@@ -113,8 +113,6 @@ HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& s
 	if (nullptr == pComponent)
 		return E_FAIL;
 
-
-
 	m_Components.emplace(make_pair(strComponentTag, pComponent));
 
 	*ppOut = pComponent;

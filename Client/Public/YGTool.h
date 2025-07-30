@@ -22,6 +22,7 @@ public:
 private:
 	json SaveCameraFrameData(const CAMERA_FRAMEDATA& data);
 	void SaveToJsonFile(const std::string& filePath, const CAMERA_FRAMEDATA& data);
+	CAMERA_FRAMEDATA LoadCameraFrameData(const json& j);
 
 	HRESULT Render_CameraTool();
 	HRESULT Render_CameraFrame();

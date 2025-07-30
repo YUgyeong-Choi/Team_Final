@@ -47,6 +47,11 @@ HRESULT CYGController::Initialize(void* pArg)
 
 void CYGController::Priority_Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Key_Down(DIK_N))
+	{
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
+	}
+
 	return;
 	_vector vMoveDir = XMVectorZero();
 

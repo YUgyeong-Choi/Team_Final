@@ -36,6 +36,7 @@ public:
     _bool GetIsShake() { return m_pCurCamera->GetIsShake(); }
     _vector GetPureCamPos() const { return m_pCurCamera->GetPureCamPos(); }
 
+    void Play_CutScene(CUTSCENE_TYPE cutSceneType);
 public:
     const _vector& GetCurCamRight() const { return m_vCurCamRight; }
     const _vector& GetCurCamUp() const { return m_vCurCamUp; }

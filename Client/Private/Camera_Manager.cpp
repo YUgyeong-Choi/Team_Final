@@ -114,6 +114,13 @@ CCamera* CCamera_Manager::GetCurCam()
     return m_pCurCamera;
 }
 
+void CCamera_Manager::Play_CutScene(CUTSCENE_TYPE cutSceneType)
+{
+    SetCutSceneCam();
+    m_pCamera_CutScene->Set_CutSceneData(cutSceneType);
+    m_pCamera_CutScene->PlayCutScene();
+}
+
 void CCamera_Manager::SetPlayer(CGameObject* pPlayer)
 {
 	m_pCamera_Orbital->SetPlayer(pPlayer);

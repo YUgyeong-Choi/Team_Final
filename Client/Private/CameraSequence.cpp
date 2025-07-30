@@ -5,6 +5,13 @@ CCameraSequence::~CCameraSequence()
 
 }
 
+void CCameraSequence::InitAllFrames()
+{
+    m_vecPosKeyFrames.clear();
+    m_vecRotKeyFrames.clear();
+    m_vecFovKeyFrames.clear();
+}
+
 void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
 {
     CAMERA_KEY newKey;

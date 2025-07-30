@@ -38,12 +38,14 @@ public:
 	}
 
 	_int Get_CurrentFrame() { return m_iCurrentFrame; }
+	void Set_CutSceneData(CUTSCENE_TYPE cutSceneType);
 	void PlayCutScene() { m_bActive = true; }
-
 private:
 	void Interp_WorldMatrixOnly(_int curFrame);
 	void Interp_Fov(_int curFrame);
 	void Interp_OffsetRot(_int curFrame);
+	HRESULT InitDatas();
+	CAMERA_FRAMEDATA LoadCameraFrameData(const json& j);
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 
@@ -60,7 +62,7 @@ private:
 	_int   m_iCurrentFrame = 0;
 	_float m_fFrameSpeed = 60.f; // 1초에 60프레임 기준
 
-
+	unordered_map<CUTSCENE_TYPE, CAMERA_FRAMEDATA> m_CutSceneDatas;
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -128,6 +128,66 @@ void CYGTool::SaveToJsonFile(const std::string& filePath, const CAMERA_FRAMEDATA
 	}
 }
 
+CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
+{
+	CAMERA_FRAMEDATA data;
+
+	// 1. iEndFrame
+	data.iEndFrame = j.value("iEndFrame", 0);
+
+	// 2. vecPosData
+	if (j.contains("vecPosData"))
+	{
+		for (const auto& posJson : j["vecPosData"])
+		{
+			CAMERA_POSFRAME posFrame;
+			posFrame.keyFrame = posJson["keyFrame"];
+			posFrame.interpPosition = posJson["interpPosition"];
+
+			const std::vector<float>& matValues = posJson["worldMatrix"];
+			XMFLOAT4X4 mat;
+			memcpy(&mat, matValues.data(), sizeof(float) * 16);
+			posFrame.WorldMatrix = XMLoadFloat4x4(&mat);
+
+			data.vecPosData.push_back(posFrame);
+		}
+	}
+
+	// 3. vecRotData
+	if (j.contains("vecRotData"))
+	{
+		for (const auto& rotJson : j["vecRotData"])
+		{
+			CAMERA_ROTFRAME rotFrame;
+			rotFrame.keyFrame = rotJson["keyFrame"];
+			rotFrame.rotation = XMFLOAT3(
+				rotJson["rotation"][0],
+				rotJson["rotation"][1],
+				rotJson["rotation"][2]
+			);
+			rotFrame.interpRotation = rotJson["interpRotation"];
+
+			data.vecRotData.push_back(rotFrame);
+		}
+	}
+
+	// 4. vecFovData
+	if (j.contains("vecFovData"))
+	{
+		for (const auto& fovJson : j["vecFovData"])
+		{
+			CAMERA_FOVFRAME fovFrame;
+			fovFrame.keyFrame = fovJson["keyFrame"];
+			fovFrame.fFov = fovJson["fFov"];
+			fovFrame.interpFov = fovJson["interpFov"];
+
+			data.vecFovData.push_back(fovFrame);
+		}
+	}
+
+	return data;
+}
+
 HRESULT CYGTool::Render_CameraTool()
 {
 	SetNextWindowSize(ImVec2(200, 300));
@@ -138,9 +198,71 @@ HRESULT CYGTool::Render_CameraTool()
 		ImGui::InputInt("End Frame", &m_iEndFrame, 10, 0);
 		m_CameraSequence->Set_EndFrame(m_iEndFrame);
 		m_CameraDatas.iEndFrame = m_iEndFrame;
+
+		const char* CutsceneTypeNames[] = { "ONE", "TWO", "THREE" };
+		int currentCutsceneType = static_cast<int>(m_eCutSceneType); // 현재 값 저장
+
+		if (ImGui::Combo("Load Type", &currentCutsceneType, CutsceneTypeNames, IM_ARRAYSIZE(CutsceneTypeNames)))
+		{
+			m_eCutSceneType = static_cast<CUTSCENE_TYPE>(currentCutsceneType);
+		}
+
+		if (ImGui::Button("Load Data"))
+		{
+			string filePath;
+			switch (m_eCutSceneType)
+			{
+			case Client::CUTSCENE_TYPE::ONE:
+				filePath = "../Bin/Save/CutScene/one.json";
+				break;
+			case Client::CUTSCENE_TYPE::TWO:
+				filePath = "../Bin/Save/CutScene/two.json";
+				break;
+			case Client::CUTSCENE_TYPE::THREE:
+				filePath = "../Bin/Save/CutScene/three.json";
+				break;
+			default:
+				break;
+			}
+			ifstream inFile(filePath);
+			if (inFile.is_open())
+			{
+				json j;
+				inFile >> j;
+				inFile.close();
+
+				// 모든 것들 초기화
+				m_CameraSequence->InitAllFrames();
+				m_CameraDatas.vecPosData.clear();
+				m_CameraDatas.vecRotData.clear();
+				m_CameraDatas.vecFovData.clear();
+				m_pSelectedKey = nullptr;
+				
+				m_CameraDatas = LoadCameraFrameData(j);
+				for (auto& pos : m_CameraDatas.vecPosData)
+				{
+					m_CameraSequence->Add_KeyFrame(0, pos.keyFrame);
+				}
+
+				for (auto& pos : m_CameraDatas.vecRotData)
+				{
+					m_CameraSequence->Add_KeyFrame(1, pos.keyFrame);
+				}
+
+				for (auto& pos : m_CameraDatas.vecFovData)
+				{
+					m_CameraSequence->Add_KeyFrame(2, pos.keyFrame);
+				}
+
+				m_iEndFrame = m_CameraDatas.iEndFrame;
+			}
+		}
 	}
 
-	if (ImGui::Button("Get CurrentKeyFrame"))
+	ImGui::SeparatorText("=====");
+
+	ImGui::Text("Current Frame: %d", m_iCurrentFrame);
+	if (m_iCurrentFrame < m_iEndFrame)
 	{
 		m_pSelectedKey = m_CameraSequence->GetKeyAtFrame(m_iCurrentFrame);
 		m_pSelectedKey->keyFrame = m_iCurrentFrame;
@@ -150,37 +272,45 @@ HRESULT CYGTool::Render_CameraTool()
 	{
 		ImGui::SeparatorText("Current Key Info");
 
-		// 포지션
-		XMFLOAT3 pos = m_pSelectedKey->position;
-		if (ImGui::DragFloat3("Position", reinterpret_cast<float*>(&pos), 0.1f))
-			m_pSelectedKey->position = pos;
-
-		// 회전
-		XMFLOAT3 rot = m_pSelectedKey->rotation;
-		if (ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rot), 0.5f))
-			m_pSelectedKey->rotation = rot;
-
-		XMFLOAT3 offSetRot = m_pSelectedKey->offSetRotation;
-		if (ImGui::DragFloat3("Offset Rotation", reinterpret_cast<float*>(&offSetRot), 0.5f))
-			m_pSelectedKey->offSetRotation = offSetRot;
-
-		// FOV
-		ImGui::DragFloat("FOV", &m_pSelectedKey->fFov, 0.1f, 1.0f, 179.0f);
-
-		// 보간 방식
 		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
-		int interpPos = static_cast<int>(m_pSelectedKey->interpPosition);
-		int interpRot = static_cast<int>(m_pSelectedKey->interpRotation);
-		int interpFov = static_cast<int>(m_pSelectedKey->interpFov);
+		if (m_iSelected == 0)
+		{
+			// World
+			XMFLOAT3 pos = m_pSelectedKey->position;
+			if (ImGui::DragFloat3("Position", reinterpret_cast<float*>(&pos), 0.1f))
+				m_pSelectedKey->position = pos;
 
-		if (ImGui::Combo("Interp Position", &interpPos, interpNames, IM_ARRAYSIZE(interpNames)))
-			m_pSelectedKey->interpPosition = static_cast<INTERPOLATION_CAMERA>(interpPos);
+			XMFLOAT3 rot = m_pSelectedKey->rotation;
+			if (ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rot), 0.5f))
+				m_pSelectedKey->rotation = rot;
 
-		if (ImGui::Combo("Interp Rotation", &interpRot, interpNames, IM_ARRAYSIZE(interpNames)))
-			m_pSelectedKey->interpRotation = static_cast<INTERPOLATION_CAMERA>(interpRot);
+			int interpPos = static_cast<int>(m_pSelectedKey->interpPosition);
 
-		if (ImGui::Combo("Interp FOV", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
-			m_pSelectedKey->interpFov = static_cast<INTERPOLATION_CAMERA>(interpFov);
+			if (ImGui::Combo("Interp Position", &interpPos, interpNames, IM_ARRAYSIZE(interpNames)))
+				m_pSelectedKey->interpPosition = static_cast<INTERPOLATION_CAMERA>(interpPos);
+		}
+		else if (m_iSelected == 1)
+		{
+			// Offset Rot
+			XMFLOAT3 offSetRot = m_pSelectedKey->offSetRotation;
+			if (ImGui::DragFloat3("Offset Rotation", reinterpret_cast<float*>(&offSetRot), 0.5f))
+				m_pSelectedKey->offSetRotation = offSetRot;
+
+			int interpRot = static_cast<int>(m_pSelectedKey->interpRotation);
+
+			if (ImGui::Combo("Interp Rotation", &interpRot, interpNames, IM_ARRAYSIZE(interpNames)))
+				m_pSelectedKey->interpRotation = static_cast<INTERPOLATION_CAMERA>(interpRot);
+		}
+		else if (m_iSelected == 2)
+		{
+			// Fov
+			ImGui::DragFloat("FOV", &m_pSelectedKey->fFov, 0.1f, 1.0f, 179.0f);
+
+			int interpFov = static_cast<int>(m_pSelectedKey->interpFov);
+
+			if (ImGui::Combo("Interp FOV", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+				m_pSelectedKey->interpFov = static_cast<INTERPOLATION_CAMERA>(interpFov);
+		}
 	}
 
 	Render_SetInfos();
@@ -324,7 +454,7 @@ HRESULT CYGTool::Render_CameraTool()
 
 void CYGTool::Render_SetInfos()
 {
-	if (m_pSelectedKey)
+	if (m_pSelectedKey && (m_iSelected == 0 || m_iEditKey != -1))
 	{
 		ImGui::SeparatorText("Current Camera Info");
 

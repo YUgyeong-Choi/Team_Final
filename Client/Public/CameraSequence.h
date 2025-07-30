@@ -77,13 +77,14 @@ public:
         return label;
     }
 
+    void InitAllFrames();
+
     // ½ÃÄö½º Ãß°¡
     void Add(_int startFrame, _int endFrame, _int type);
     void Add_KeyFrame(_int type, _int keyFrame);
     void Delete_KeyFrame(_int type, _int keyFrame);
 
     void Set_EndFrame(_int endFrame);
-
 
     virtual size_t GetCustomHeight(int /*index*/) { return 12; }
     virtual void CustomDraw(int index, ImDrawList* draw_list, const ImRect& rc, const ImRect&, const ImRect&, const ImRect&) override;

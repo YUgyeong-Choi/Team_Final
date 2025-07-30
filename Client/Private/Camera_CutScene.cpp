@@ -29,6 +29,8 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	InitDatas();
+
 	return S_OK;
 }
 
@@ -82,6 +84,11 @@ XMVECTOR XMMatrixDecompose_T(const _matrix& m)
 	XMVECTOR scale, rot, trans;
 	XMMatrixDecompose(&scale, &rot, &trans, m);
 	return trans;
+}
+
+void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
+{
+	m_CameraDatas = m_CutSceneDatas[cutSceneType];
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -259,6 +266,80 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
 		else
 			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().rotation);
+}
+
+HRESULT CCamera_CutScene::InitDatas()
+{
+	std::ifstream inFile("../Bin/Save/CutScene/one.json");
+	if (inFile.is_open())
+	{
+		json j;
+		inFile >> j;
+		inFile.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::ONE, LoadCameraFrameData(j)));
+	}
+	return E_NOTIMPL;
+}
+
+CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
+{
+	CAMERA_FRAMEDATA data;
+
+	// 1. iEndFrame
+	data.iEndFrame = j.value("iEndFrame", 0);
+
+	// 2. vecPosData
+	if (j.contains("vecPosData"))
+	{
+		for (const auto& posJson : j["vecPosData"])
+		{
+			CAMERA_POSFRAME posFrame;
+			posFrame.keyFrame = posJson["keyFrame"];
+			posFrame.interpPosition = posJson["interpPosition"];
+
+			const std::vector<float>& matValues = posJson["worldMatrix"];
+			XMFLOAT4X4 mat;
+			memcpy(&mat, matValues.data(), sizeof(float) * 16);
+			posFrame.WorldMatrix = XMLoadFloat4x4(&mat);
+
+			data.vecPosData.push_back(posFrame);
+		}
+	}
+
+	// 3. vecRotData
+	if (j.contains("vecRotData"))
+	{
+		for (const auto& rotJson : j["vecRotData"])
+		{
+			CAMERA_ROTFRAME rotFrame;
+			rotFrame.keyFrame = rotJson["keyFrame"];
+			rotFrame.rotation = XMFLOAT3(
+				rotJson["rotation"][0],
+				rotJson["rotation"][1],
+				rotJson["rotation"][2]
+			);
+			rotFrame.interpRotation = rotJson["interpRotation"];
+
+			data.vecRotData.push_back(rotFrame);
+		}
+	}
+
+	// 4. vecFovData
+	if (j.contains("vecFovData"))
+	{
+		for (const auto& fovJson : j["vecFovData"])
+		{
+			CAMERA_FOVFRAME fovFrame;
+			fovFrame.keyFrame = fovJson["keyFrame"];
+			fovFrame.fFov = fovJson["fFov"];
+			fovFrame.interpFov = fovJson["interpFov"];
+
+			data.vecFovData.push_back(fovFrame);
+		}
+	}
+
+	return data;
 }
 
 CCamera_CutScene* CCamera_CutScene::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

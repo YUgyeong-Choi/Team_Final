@@ -49,6 +49,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	m_pCamera_Manager->SetOrbitalCam();
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+
+	m_pGameInstance->Set_IsChangeLevel(false);
 	return S_OK;
 }
 
@@ -56,6 +58,10 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
+		m_pGameInstance->Set_IsChangeLevel(true);
+		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
+		m_pGameInstance->ClearRenderObjects();
+		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
