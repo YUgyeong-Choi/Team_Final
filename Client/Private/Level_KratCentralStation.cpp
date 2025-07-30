@@ -20,6 +20,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 {
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
+	if (FAILED(Ready_Shadow()))
+		return E_FAIL;
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
@@ -56,6 +58,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
+		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
+		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
@@ -221,6 +225,30 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	return S_OK;
 }
 
+HRESULT CLevel_KratCentralStation::Ready_Shadow()
+{
+	CShadow::SHADOW_DESC		Desc{};
+	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	Desc.fFovy = XMConvertToRadians(60.0f);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 500.f;
+
+	Desc.vEye = _float4(76.f, 57.f, -21.f, 1.f);
+	Desc.fFovy = XMConvertToRadians(40.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
+		return E_FAIL;
+
+	Desc.fFovy = XMConvertToRadians(80.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
+		return E_FAIL;
+
+	Desc.fFovy = XMConvertToRadians(120.0f);
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWC)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_KratCentralStation::Ready_Camera()
 {
 	m_pCamera_Manager->Initialize(LEVEL::STATIC);
@@ -264,7 +292,7 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 HRESULT CLevel_KratCentralStation::Ready_TestAnimObject()
 {
 	CTestAnimObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPerSec = 10.f;
+	Desc.fSpeedPerSec = 3.f;
 	Desc.fRotationPerSec = XMConvertToRadians(600.0f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("TestAnimObject"), &Desc)))

@@ -32,6 +32,7 @@ private:
 private:
 	class CVIBuffer_Rect*		m_pVIBuffer = { nullptr };
 	class CShader*				m_pShader = { nullptr };
+	class CTexture*				m_pTextureCom = { nullptr };
 
 	_float4x4					m_WorldMatrix{}, m_ViewMatrix{}, m_ProjMatrix{};
 
@@ -49,6 +50,7 @@ private:
 	list<class CComponent*>		m_DebugComponent;
 	_bool m_bRenderTarget = false;
 	_bool m_bRenderCollider = false;
+	_bool m_bDoOnce = false;
 	
 #endif
 
@@ -70,6 +72,7 @@ private:
 private:
 	HRESULT Ready_DepthStencilView(_uint iWidth, _uint iHeight);
 	HRESULT Change_ViewportDesc(_uint iWidth, _uint iHeight);
+	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
 
 
 #ifdef _DEBUG

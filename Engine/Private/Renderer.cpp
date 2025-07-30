@@ -71,6 +71,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Specular"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Volume"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
@@ -99,6 +101,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Volume"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Final"))))
 		return E_FAIL;
@@ -204,10 +208,10 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowC"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Volume"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
+		return E_FAIL;
 	
 #endif
-
-	
 
 	return S_OK;
 }
@@ -486,7 +490,9 @@ HRESULT CRenderer::Render_Lights()
 
 HRESULT CRenderer::Render_PBRLights()
 {
-	/* Shade */
+	m_iCurrentRenderLevel = m_pGameInstance->GetCurrentLevelIndex();
+
+	/* [ PBR 최종(라이팅에서 끝남) ] */
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_PBRFinal"))))
 		return E_FAIL;
 
@@ -498,6 +504,28 @@ HRESULT CRenderer::Render_PBRLights()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_PBR_Depth")))
 		return E_FAIL;
+
+	/* [ 볼륨메트리를 위한 매핑 ] */
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowA"), m_pShader, "g_ShadowTextureA")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowB"), m_pShader, "g_ShadowTextureB")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowC"), m_pShader, "g_ShadowTextureC")))
+		return E_FAIL;
+
+	if (!m_bDoOnce)
+	{
+		/* [ 3D 노이즈 텍스처 추가 ] */
+		if (FAILED(Add_Component(0, _wstring(TEXT("Prototype_Component_Texture_perlin_volume")),
+			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+			return E_FAIL;
+		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShader, "g_FogNoiseTex", 0)))
+			return E_FAIL;
+		m_bDoOnce = true;
+	}
+	/* [ 포인트라이트 개수 추가 ] */
+	_uint iPointNum = m_pGameInstance->Get_LightCount(2, m_iCurrentRenderLevel);
+	m_pShader->Bind_RawValue("g_iPointNum", &iPointNum, sizeof(_uint));
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
@@ -514,7 +542,6 @@ HRESULT CRenderer::Render_PBRLights()
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL; 
 
-	m_iCurrentRenderLevel = m_pGameInstance->GetCurrentLevelIndex();
 	m_pGameInstance->Render_PBR_Lights(m_pShader, m_pVIBuffer, m_iCurrentRenderLevel);
 
 	/* 장치에 백버퍼로 복구한다. */
@@ -692,6 +719,18 @@ HRESULT CRenderer::Change_ViewportDesc(_uint iWidth, _uint iHeight)
 	return S_OK;
 }
 
+HRESULT CRenderer::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
+{
+	CComponent* pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
+	if (nullptr == pComponent)
+		return E_FAIL;
+
+	*ppOut = pComponent;
+
+	return S_OK;
+}
+
+
 #ifdef _DEBUG
 
 HRESULT CRenderer::Render_Debug()
@@ -753,6 +792,7 @@ void CRenderer::Free()
 
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pShader);
+	Safe_Release(m_pTextureCom);
 
 	for (auto& ObjectList : m_RenderObjects)
 	{

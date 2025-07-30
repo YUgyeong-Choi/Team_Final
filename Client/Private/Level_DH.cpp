@@ -26,8 +26,8 @@ HRESULT CLevel_DH::Initialize()
 	if (FAILED(Ready_Shadow()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;

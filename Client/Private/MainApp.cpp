@@ -199,6 +199,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 HRESULT CMainApp::Ready_Static()
 {
+	/* [ 볼륨메트릭 노이즈텍스쳐 ] */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_perlin_volume"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/perlin_volume.dds")))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pDevice, m_pContext))))

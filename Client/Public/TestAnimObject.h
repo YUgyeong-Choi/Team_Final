@@ -37,8 +37,9 @@ private:/* [ 캐스케이드 전용함수 ] */
 	HRESULT UpdateShadowCamera();
 private: /* [ 이동로직 ] */
 	void SetMoveState(_float fTimeDelta);
+	void SetPlayerMoveState(_float fTimeDelta);
 
-	void Ray();
+	void RayCast();
 
 private:
 	PxVec3 m_vRayHitPos = {};

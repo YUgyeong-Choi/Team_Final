@@ -94,55 +94,12 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 
 void CTestAnimObject::Priority_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Key_Pressing(DIK_E))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * 0.1f);
-	}
-
-	if (m_pGameInstance->Key_Pressing(DIK_Q))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), -fTimeDelta * 0.1f);
-	}
-
-	_vector vMoveDir = XMVectorZero();
-
-	if (m_pGameInstance->Key_Pressing(DIK_W))
-		vMoveDir += m_pTransformCom->Get_State(STATE::LOOK);
-	if (m_pGameInstance->Key_Pressing(DIK_S))
-		vMoveDir -= m_pTransformCom->Get_State(STATE::LOOK);
-	if (m_pGameInstance->Key_Pressing(DIK_A))
-		vMoveDir -= m_pTransformCom->Get_State(STATE::RIGHT);
-	if (m_pGameInstance->Key_Pressing(DIK_D))
-		vMoveDir += m_pTransformCom->Get_State(STATE::RIGHT);
-
-	// 1. 방향 이동 계산
-	XMFLOAT3 moveVec = {};
-	if (XMVector3LengthSq(vMoveDir).m128_f32[0] > 0.0001f)
-	{
-		vMoveDir = XMVector3Normalize(vMoveDir);
-		_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
-		_float fDist = fSpeed * fTimeDelta;
-		vMoveDir *= fDist;
-		XMStoreFloat3(&moveVec, vMoveDir);
-	}
-
-	// 2. 중력 적용
-	constexpr float fGravity = -9.81f;
-	m_vGravityVelocity.y += fGravity * fTimeDelta;
-	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
-
-	// 3. 이동
-	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
-	PxControllerFilters filters;
-
-	PxControllerCollisionFlags collisionFlags =
-		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
-
-	// 4. 지면에 닿았으면 중력 속도 초기화
-	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
-		m_vGravityVelocity.y = 0.f;
-
-	SyncTransformWithController();
+	/* [ 캐스케이드 전용 업데이트 함수 ] */
+	UpdateShadowCamera();
+	/* [ 움직임 전용 함수 ] */
+	SetMoveState(fTimeDelta);
+	/* [ 룩 벡터 레이케스트 ] */
+	RayCast();
 }
 void CTestAnimObject::Update(_float fTimeDelta)
 {
@@ -155,13 +112,6 @@ void CTestAnimObject::Update(_float fTimeDelta)
 		m_pModelCom->Update_Bones();
 	}
 	//Input_Test(fTimeDelta);
-
-	/* [ 캐스케이드 전용 업데이트 함수 ] */
-	UpdateShadowCamera();
-	/* [ 움직임 전용 함수 ] */
-	SetMoveState(fTimeDelta);
-	/* [ 룩 벡터 레이케스트 ] */
-	Ray();
 }
 
 void CTestAnimObject::Late_Update(_float fTimeDelta)
@@ -375,22 +325,24 @@ HRESULT CTestAnimObject::UpdateShadowCamera()
 {
 	CShadow::SHADOW_DESC Desc{};
 
-	// 1. 타겟 위치 계산 (플레이어 기준 오프셋)
+	// 1. 카메라 고정 위치 (예: 공중에 떠있는 위치)
+	_vector vFixedEye = XMVectorSet(76.f, 57.f, -21.f, 1.f);
+
+	// 2. 플레이어 현재 위치를 타겟으로 설정
 	_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vTargetEye = vPlayerPos + XMVectorSet(-50.f, 70.f, -50.f, 0.f);
 	_vector vTargetAt = vPlayerPos;
 
-	m_vShadowCam_Eye = vTargetEye;
+	// 3. 적용
+	m_vShadowCam_Eye = vFixedEye;
 	m_vShadowCam_At = vTargetAt;
 
-	// 3. 셰도우 카메라에 적용
 	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
 	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
 	Desc.fNear = 0.1f;
 	Desc.fFar = 500.f;
 
 	Desc.fFovy = XMConvertToRadians(40.0f);
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc,SHADOW::SHADOWA)))
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
 		return E_FAIL;
 	Desc.fFovy = XMConvertToRadians(80.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
@@ -423,7 +375,32 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 
 	// 4. 입력 없으면 리턴
 	if (XMVector3Equal(vInputDir, XMVectorZero()))
+	{
+		_float3 moveVec = {};
+
+		_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+		_float fDist = fSpeed * fTimeDelta;
+		vInputDir *= fDist;
+		XMStoreFloat3(&moveVec, vInputDir);
+
+		// 중력 적용
+		constexpr float fGravity = -9.81f;
+		m_vGravityVelocity.y += fGravity * fTimeDelta;
+		moveVec.y += m_vGravityVelocity.y * fTimeDelta;
+
+		PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
+		PxControllerFilters filters;
+
+		PxControllerCollisionFlags collisionFlags =
+			m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+
+		// 4. 지면에 닿았으면 중력 속도 초기화
+		if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+			m_vGravityVelocity.y = 0.f;
+
+		SyncTransformWithController();
 		return;
+	}
 
 	// 5. 방향 정규화
 	vInputDir = XMVector3Normalize(vInputDir);
@@ -447,11 +424,34 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 	_float fClampedAngle = max(-fTurnSpeed * fTimeDelta, min(fTurnSpeed * fTimeDelta, fAngle));
 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
 
-	// 7. 이동 (입력 방향으로 월드 기준 이동)
-	m_pTransformCom->Go_Dir(vInputDir, fTimeDelta);
+	// 7. 이동
+	_float3 moveVec = {};
+
+	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+	_float fDist = fSpeed * fTimeDelta;
+	vInputDir *= fDist;
+	//어느방향으로 몇만큼 이동한 벡터를 구함
+	XMStoreFloat3(&moveVec, vInputDir);
+
+	// 중력 적용
+	constexpr float fGravity = -9.81f;
+	m_vGravityVelocity.y += fGravity * fTimeDelta;
+	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
+
+	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
+	PxControllerFilters filters;
+
+	PxControllerCollisionFlags collisionFlags =
+		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+
+	// 4. 지면에 닿았으면 중력 속도 초기화
+	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+		m_vGravityVelocity.y = 0.f;
+
+	SyncTransformWithController();
 }
 
-void CTestAnimObject::Ray()
+void CTestAnimObject::RayCast()
 {
 	PxVec3 origin = m_pControllerCom->Get_Actor()->getGlobalPose().p;
 	XMFLOAT3 fLook;
