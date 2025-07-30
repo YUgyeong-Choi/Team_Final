@@ -193,6 +193,12 @@
     <Filter Include="02.GameObjects\99.UI\Text">
       <UniqueIdentifier>{b1e0564c-381f-4d59-a7ce-4e891ff924d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container">
+      <UniqueIdentifier>{d888e1c5-be6b-4084-8646-c7631719cdd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Guide">
+      <UniqueIdentifier>{43320e95-3774-4b5a-a704-205f6b0f9bb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -456,6 +462,12 @@
     <ClInclude Include="..\public\UI_Text.h">
       <Filter>02.GameObjects\99.UI\Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Container.h">
+      <Filter>02.GameObjects\99.UI\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Guide.h">
+      <Filter>02.GameObjects\99.UI\Container\Guide</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -698,6 +710,12 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Text.cpp">
       <Filter>02.GameObjects\99.UI\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Container.cpp">
+      <Filter>02.GameObjects\99.UI\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Guide.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Guide</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

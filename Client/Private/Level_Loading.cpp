@@ -187,8 +187,6 @@ HRESULT CLevel_Loading::Ready_Loading()
 
 			pObj->Update_Data();
 
-		
-
 		}
 		else if ("Prototype_GameObject_UI_Text" == protoTag)
 		{

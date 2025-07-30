@@ -45,6 +45,10 @@ public:
 	virtual void Set_bDead() { m_bDead = true; }
 	virtual _bool Get_bDead();
 
+	virtual void Set_isActive(_bool isActive) { m_isActive = isActive; }
+	_bool Get_isActive() { return m_isActive; }
+	
+
 	wstring Get_Name() { return wstring(m_szName); }
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
@@ -61,6 +65,8 @@ protected:
 
 	//클론인지 아닌지
 	_bool m_bCloned = { false };
+
+	_bool m_isActive = { true };
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
 

@@ -30,7 +30,7 @@ HRESULT CFont_Manager::Add_Font(const _wstring& strFontTag, const _tchar* pFontF
 	return S_OK;
 }
 
-void CFont_Manager::Draw(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
+void CFont_Manager::Draw(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale, _float fOffset)
 {
 	CCustomFont* pFont = Find_Font(strFontTag);
 	if (nullptr == pFont)
@@ -38,12 +38,12 @@ void CFont_Manager::Draw(const _wstring& strFontTag, const _tchar* pText, const 
 
 	m_pBatch->Begin();
 
-	pFont->Draw(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale);
+	pFont->Draw(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale, fOffset);
 
 	m_pBatch->End();
 }
 
-void CFont_Manager::Draw_Centered(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
+void CFont_Manager::Draw_Centered(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale,  _float fOffset)
 {
 	CCustomFont* pFont = Find_Font(strFontTag);
 	if (nullptr == pFont)
@@ -51,7 +51,7 @@ void CFont_Manager::Draw_Centered(const _wstring& strFontTag, const _tchar* pTex
 
 	m_pBatch->Begin();
 
-	pFont->Draw_Centered(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale);
+	pFont->Draw_Centered(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale, fOffset);
 
 	m_pBatch->End();
 }

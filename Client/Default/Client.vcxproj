@@ -202,11 +202,13 @@
     <ClInclude Include="..\public\UI_Bar_Loading.h" />
     <ClInclude Include="..\public\UI_Button.h" />
     <ClInclude Include="..\public\UI_Canvus.h" />
+    <ClInclude Include="..\public\UI_Container.h" />
     <ClInclude Include="..\public\UI_Featrue_Scale.h" />
     <ClInclude Include="..\public\UI_Feature.h" />
     <ClInclude Include="..\public\UI_Feature_Fade.h" />
     <ClInclude Include="..\public\UI_Feature_Position.h" />
     <ClInclude Include="..\public\UI_Feature_UV.h" />
+    <ClInclude Include="..\public\UI_Guide.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
     <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
@@ -288,10 +290,12 @@
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\private\UI_Canvus.cpp" />
+    <ClCompile Include="..\private\UI_Container.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
     <ClCompile Include="..\private\UI_Feature_UV.cpp" />
+    <ClCompile Include="..\private\UI_Guide.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
     <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />

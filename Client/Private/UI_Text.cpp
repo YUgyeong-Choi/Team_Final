@@ -88,6 +88,9 @@ void CUI_Text::Update(_float fTimeDelta)
 
 void CUI_Text::Late_Update(_float fTimeDelta)
 {
+	if (!m_isActive)
+		return;
+
 	if (!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
@@ -101,11 +104,11 @@ HRESULT CUI_Text::Render()
 
 	if (m_isCenter)
 	{
-		m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale);
+		m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale, m_fOffset);
 	}
 	else
 	{
-		m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale);
+		m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale, m_fOffset);
 	}
 
     return S_OK;

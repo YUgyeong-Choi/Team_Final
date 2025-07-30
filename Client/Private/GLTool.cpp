@@ -99,13 +99,19 @@ void CGLTool::Obj_Serialize()
 
 
 	for (auto& pObj : m_StaticUIList)
-		JsonArray.push_back(pObj->Serialize());
+	{
+		if(pObj != nullptr)
+			JsonArray.push_back(pObj->Serialize());
+	}
+	
 
 	for (auto& pObj : m_DynamicUIList)
-		JsonArray.push_back(pObj->Serialize());
+		if (pObj != nullptr)
+			JsonArray.push_back(pObj->Serialize());
 
 	for (auto& pObj : m_TextUIList)
-		JsonArray.push_back(pObj->Serialize());
+		if (pObj != nullptr)
+			JsonArray.push_back(pObj->Serialize());
 
 	ofstream file("../Bin/DataFiles/UI/Temp.json");
 
@@ -195,8 +201,6 @@ void CGLTool::Obj_Deserialize()
 void CGLTool::Open_File()
 {
 	
-
-	
 	IGFD::FileDialogConfig config;
 
 	m_strSavePath = R"(../Bin/DataFiles/UI)";
@@ -213,6 +217,8 @@ void CGLTool::Open_File()
 
 void CGLTool::Add_Static_UI()
 {
+	eStaticUIDesc.strTextureTag = m_strSelectName;
+
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
 		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Static"), &eStaticUIDesc)))
 		return;
@@ -225,6 +231,8 @@ void CGLTool::Add_Static_UI()
 void CGLTool::Add_Dynamic_UI()
 {
 	eDynamicUIDesc.isFromTool = true;
+
+	eStaticUIDesc.strTextureTag = m_strSelectName;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
 		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Dynamic"), &eDynamicUIDesc)))
@@ -576,6 +584,8 @@ HRESULT CGLTool::Render_SelectOptionTool()
 			{
 				m_eTextTempUIDesc.strCaption = StringToWStringU8(m_strInput);
 				m_eTextUIDesc.strCaption = StringToWStringU8(m_strInput);
+
+			
 			}
 
 			if (nullptr == m_pSelectTxtObj || m_pSelectTxtObj->Get_bDead())
@@ -668,7 +678,7 @@ HRESULT CGLTool::Render_SelectOptionTool()
 			if (Button(u8"Delete Text UI"))
 			{
 				if (nullptr != m_pSelectTxtObj)
-					m_pSelectDynamicObj->Set_bDead();
+					m_pSelectTxtObj->Set_bDead();
 
 				int currentIndex = 0;
 				for (auto& pObj : m_TextUIList)

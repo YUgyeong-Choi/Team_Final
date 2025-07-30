@@ -15,12 +15,12 @@ HRESULT CCustomFont::Initialize(const _tchar* pFontFilePath)
 	return S_OK;
 }
 
-void CCustomFont::Draw(SpriteBatch* pBatch, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
+void CCustomFont::Draw(SpriteBatch* pBatch, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale, _float fOffset)
 {
-	m_pFont->DrawString(pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale);
+	m_pFont->DrawString(pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale, SpriteEffects_None, fOffset);
 }
 
-void CCustomFont::Draw_Centered(SpriteBatch* pBatch, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
+void CCustomFont::Draw_Centered(SpriteBatch* pBatch, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale,  _float fOffset)
 {
 	_float2 vFontDesc = {};
 	XMStoreFloat2(&vFontDesc, m_pFont->MeasureString(pText));
@@ -37,7 +37,7 @@ void CCustomFont::Draw_Centered(SpriteBatch* pBatch, const _tchar* pText, const 
 
 	XMStoreFloat2(&vPos, vCenteredPos);
 
-	m_pFont->DrawString(pBatch, pText, vPos, vColor, fRotation, vOrigin, fScale);
+	m_pFont->DrawString(pBatch, pText, vPos, vColor, fRotation, vOrigin, fScale, SpriteEffects_None, fOffset);
 
 }
 

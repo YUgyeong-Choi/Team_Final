@@ -150,6 +150,10 @@ void CDynamic_UI::Priority_Update(_float fTimeDelta)
 
 void CDynamic_UI::Update(_float fTimeDelta)
 {
+	if (!m_isActive)
+		return;
+
+
 	if (!m_isFromTool)
 	{
 		m_fElapsedTime += fTimeDelta;
@@ -175,6 +179,10 @@ void CDynamic_UI::Update(_float fTimeDelta)
 
 void CDynamic_UI::Late_Update(_float fTimeDelta)
 {
+	if (!m_isActive)
+		return;
+
+
 	if (!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
