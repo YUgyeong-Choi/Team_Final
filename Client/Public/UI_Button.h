@@ -29,6 +29,9 @@ public:
 	void Set_isMouseHover(_bool isMouseHover) { m_isMouseHover = isMouseHover; }
 	void Set_isHighlight(_bool isHighlight) { m_isHighlight = isHighlight; }
 
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
+
 protected:
 	CUI_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_Button(const CUI_Button& Prototype);
@@ -44,6 +47,7 @@ public:
 
 
 	HRESULT Ready_Components(const wstring& strTextureTag);
+	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) override;
 	HRESULT Bind_ShaderResources();
 
 	// 나중에 feature로 빼기?
