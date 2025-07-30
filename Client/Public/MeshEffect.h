@@ -8,7 +8,7 @@ class CModel;
 NS_END
 
 NS_BEGIN(Client)
-// 스프라이트 이펙트 부모
+
 class CMeshEffect : public CEffectBase
 {
 public:
@@ -33,6 +33,14 @@ public:
 protected:
 	CModel*			m_pModelCom = { nullptr };
 
+	// masking용 컬러세팅, 스레숄드랑 인텐시티.. 베이스로 옮길 수 있음
+	_float	m_fThreshold = {};
+	_float	m_fIntensity = {};
+	_float4	m_vCenterColor = {};
+	_float	m_fTimeAcc = {};
+	_float	m_fUVScrollSpeed = {};
+
+
 protected:
 	virtual HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
@@ -42,6 +50,9 @@ public:
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
+public:
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
 };
 
 NS_END

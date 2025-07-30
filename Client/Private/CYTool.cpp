@@ -1,9 +1,9 @@
-
 #include "CYTool.h"
 #include "GameInstance.h"
 #include "EffectSequence.h"
 #include "ToolParticle.h"
 #include "ToolSprite.h"
+#include "ToolMeshEffect.h"
 #include "Client_Calculation.h"
 
 
@@ -102,12 +102,16 @@ HRESULT CCYTool::Render()
 {
 	//if (FAILED(Render_EffectTool()))
 	//	return E_FAIL;
-	
+	//ImGui::ShowDemoWindow(); // Show demo window! :)
+
 	if (FAILED(SequenceWindow()))
 		return E_FAIL;
 
 	if (FAILED(Edit_Preferences()))
 		return E_FAIL;
+
+	if (m_bOpenSaveEffectOnly)
+		Save_Effect();
 
 	return S_OK;
 }
@@ -147,11 +151,6 @@ HRESULT CCYTool::Render_EffectTool()
 	return S_OK;
 }
 
-HRESULT CCYTool::Make_Particles()
-{
-	return S_OK;
-}
-
 HRESULT CCYTool::SequenceWindow()
 {
 	ImGui::Begin("ImSequence Window");
@@ -185,7 +184,7 @@ HRESULT CCYTool::SequenceWindow()
 		CEffectBase* pInstance = { nullptr };
 		switch (m_eEffectType)
 		{
-		case Client::CCYTool::EFF_SPRITE:
+		case Client::EFF_SPRITE:
 		{
 			CToolSprite::DESC desc = {};
 			desc.bAnimation = true;
@@ -193,35 +192,70 @@ HRESULT CCYTool::SequenceWindow()
 			desc.fSpeedPerSec = 5.f;
 			desc.iTileX = 8;
 			desc.iTileY = 8;
-			desc.iShaderPass = ENUM_CLASS(EFF_UVSPRITE_COLOR);
+			desc.iShaderPass = ENUM_CLASS(SE_UVSPRITE_COLOR);
+			desc.bTool = true;
 			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
 		}
 			break;
-		case Client::CCYTool::EFF_PARTICLE:
+		case Client::EFF_PARTICLE:
 		{
 			CToolParticle::DESC desc = {};
-			desc.iShaderPass = ENUM_CLASS(EFF_UVSPRITE_COLOR);
+			desc.iShaderPass = ENUM_CLASS(SE_UVSPRITE_COLOR);
 			desc.fRotationPerSec = XMConvertToRadians(90.f);
 			desc.fSpeedPerSec = 5.f;
 			desc.iTileX = 8;
 			desc.iTileY = 8;
-			//desc.
+			desc.ePType = m_eParticleType;
+			desc.iNumInstance = m_iNumInstance;
+			desc.isLoop = m_isLoop;
+			desc.vCenter = m_vCenter;
+			desc.vLifeTime = m_vLifeTime;
+			desc.vPivot = m_vPivot;
+			desc.vRange = m_vRange;
+			desc.vSize = m_vSize;
+			desc.vSpeed = m_vSpeed;
+			desc.bBillboard = false;
+			desc.bTool = true;
+			desc.iShaderPass = ENUM_CLASS(PE_DEFAULT);
 			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
 		}
-
 			break;
-		case Client::CCYTool::EFF_MESH:
+		case Client::EFF_MESH:
+		{
+			CToolMeshEffect::DESC desc = {};
+			desc.bAnimation = true;
+			desc.fRotationPerSec = 0.f;
+			desc.fSpeedPerSec = 5.f;
+			desc.iTileX = 4;
+			desc.iTileY = 1;
+			desc.bBillboard = false;
+			desc.bTool = true;
+			desc.iShaderPass = ENUM_CLASS(ME_MASKONLY);
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
+		}
 			break;
-		case Client::CCYTool::EFF_TRAIL:
+		case Client::EFF_TRAIL:
 			break;
 		}
 		if (pInstance != nullptr)
 			m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load EffectContainer"))
+	{
 
-	ImSequencer::Sequencer(m_pSequence, &m_iCurFrame, &m_bExpanded, &m_iSelected, &m_iFirstFrame, ImSequencer::SEQUENCER_EDIT_ALL);
+	}
+
+	ImSequencer::Sequencer(
+		m_pSequence,
+		&m_iCurFrame,
+		&m_bExpanded,
+		&m_iSelected,
+		&m_iFirstFrame,
+		ImSequencer::SEQUENCER_EDIT_ALL);
 
 	ImGui::End();
 	return S_OK;
@@ -236,6 +270,11 @@ HRESULT CCYTool::Edit_Preferences()
 		return S_OK;
 	}
 	auto pEffect = m_pSequence->m_Items[m_iSelected].pEffect;
+	
+	if (ImGui::Button("Save Selected Effect"))
+	{
+		m_bOpenSaveEffectOnly = true;
+	}
 
 	ImGui::Text("StartTrackPos: %d", *pEffect->Get_StartTrackPosition_Ptr());
 	ImGui::Text("EndTrackPos: %d", *pEffect->Get_EndTrackPosition_Ptr());
@@ -243,10 +282,11 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 	ImGui::Checkbox("Billboard", pEffect->Get_Billboard_Ptr());
 	ImGui::Checkbox("Animation", pEffect->Get_Animation_Ptr());
+	ImGui::Checkbox("Flip UV", pEffect->Get_FlipUV_Ptr());
+
 	ImGui::PushItemWidth(100);
 	ImGui::Text("Tile X");
 	ImGui::SameLine();
-	
 	ImGui::InputInt("##Tile X", pEffect->Get_TileX());
 	ImGui::SameLine();
 	ImGui::Text("Tile Y");
@@ -255,12 +295,14 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::PopItemWidth();
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
 	if (FAILED(Draw_TextureBrowser(pEffect)))
 	{
 		MSG_BOX("Failed to draw texture browser");
 		ImGui::End();
 		return E_FAIL;
 	}
+
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
@@ -270,21 +312,21 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 	switch (m_pSequence->m_Items[m_iSelected].iType)
 	{
-	case Client::CCYTool::EFF_SPRITE:
+	case Client::EFF_SPRITE:
 		if (FAILED(Window_Sprite()))
 		{
 			ImGui::End();
 			return E_FAIL;
 		}
 		break;
-	case Client::CCYTool::EFF_PARTICLE:
+	case Client::EFF_PARTICLE:
 		if (FAILED(Window_Particle()))
 		{
 			ImGui::End();
 			return E_FAIL;
 		}
 		break;
-	case Client::CCYTool::EFF_MESH:
+	case Client::EFF_MESH:
 		if (FAILED(Window_Mesh()))
 		{
 			ImGui::End();
@@ -303,15 +345,120 @@ HRESULT CCYTool::Edit_Preferences()
 
 HRESULT CCYTool::Window_Sprite()
 {
-	CToolSprite* pTS = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
+	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
 
-	auto& TSKeyFrames = pTS->Get_KeyFrames();
+	Edit_Keyframes(pSE);
+
+	return S_OK;
+}
+
+HRESULT CCYTool::Window_Particle()
+{
+	CToolParticle* pPE = dynamic_cast<CToolParticle*>(m_pSequence->m_Items[m_iSelected].pEffect);
+
+
+	Edit_Keyframes(pPE);
+
+	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 1000, "%d");
+	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.1f, -1000.f, 1000.f, "%.1f");
+	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.1f, 0.f, 100.f, "%.1f");
+	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.1f, 1.f, 1000.f, "%.1f");
+	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 1.f, 1000.f, "%.1f");
+	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.1f, 1.f, 1000.f, "%.1f");
+	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.1f, -1000.f, 1000.f, "%.1f");
+	// 아직안만듦
+	ImGui::Checkbox("Gravity", &m_bGravity);
+	ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
+	ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
+
+	if (ImGui::RadioButton("Explosion", m_eParticleType == PTYPE_SPREAD)) {
+		m_eParticleType = PTYPE_SPREAD;
+	}
+	if (ImGui::RadioButton("Drop", m_eParticleType == PTYPE_DROP)) {
+		m_eParticleType = PTYPE_DROP;
+	}
+
+
+	if(ImGui::Button("Update Particle"))
+	{
+		CVIBuffer_Point_Instance::DESC desc = {};
+		desc.ePType = m_eParticleType;
+		desc.iNumInstance = m_iNumInstance;
+		desc.isLoop = m_isLoop;
+		desc.vCenter = m_vCenter;
+		desc.vLifeTime = m_vLifeTime;
+		desc.vPivot = m_vPivot;
+		desc.vRange = m_vRange;
+		desc.vSize = m_vSize;
+		desc.vSpeed = m_vSpeed;
+		desc.isTool = true;
+		pPE->Change_InstanceBuffer(&desc);
+	}
+
+	// Gravity
+	// Accel, Decel
+	// Random? <- 랜덤한 방향을 잡을 인터벌, 랜덤한 방향각도 최대치 설정 필요
+	// Rotation Speed
+	// Loop
+
+	return S_OK;
+}
+
+HRESULT CCYTool::Window_Mesh()
+{
+	CToolMeshEffect* pME = dynamic_cast<CToolMeshEffect*>(m_pSequence->m_Items[m_iSelected].pEffect);
+	if (pME == nullptr)
+		return E_FAIL;
+
+	if (ImGui::Button("Load Models"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path = R"(..\Bin\Resources\Models\EffectMesh)";
+		config.countSelectionMax = 0; // 무제한
+		IFILEDIALOG->OpenDialog("Mesh Effect Model Select", "Select File", ".bin", config);
+		
+	}
+	if (FAILED(Load_EffectModel()))
+		return E_FAIL;
+	
+
+	if (ImGui::BeginCombo("##SelectModel", m_iSelectedModelIdx >= 0 ? m_ModelNames[m_iSelectedModelIdx].c_str() : "Preset Model"))
+	{
+		for (_int i = 0; i < m_ModelNames.size(); ++i)
+		{
+			_bool isSelected = (i == m_iSelectedModelIdx);
+			if (ImGui::Selectable(m_ModelNames[i].c_str(), isSelected))
+			{
+				if (FAILED(pME->Change_Model(StringToWString(m_ModelNames[i]))))
+				{
+					MSG_BOX("모델 변경 실패 ");
+					return E_FAIL;
+				}
+				m_iSelectedModelIdx = i;
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::Separator();
+
+	Edit_Keyframes(pME);
+
+	return S_OK;
+}
+
+void CCYTool::Edit_Keyframes(CEffectBase* pEffect)
+{
+	ImGui::Begin("Edit Keyframes");
+	auto& KeyFrames = pEffect->Get_KeyFrames();
 
 	_int iIdx = {};
-	for (auto& Keyframe : TSKeyFrames)
+	for (auto& Keyframe : KeyFrames)
 	{
-		ImGui::DragFloat(string("Frame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pTS->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
+		ImGui::DragFloat(string("Frame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pEffect->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
 
 		ImGui::DragFloat3(string("Translation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vTranslation), 0.1f);
 
@@ -327,84 +474,137 @@ HRESULT CCYTool::Window_Sprite()
 		_int iSelected = Keyframe.eInterpolationType;
 		if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
 		{
-			Keyframe.eInterpolationType = static_cast<CEffectBase::INTERPOLATION>(iSelected);
+			Keyframe.eInterpolationType = static_cast<INTERPOLATION>(iSelected);
 			//pTS->Set_InterpolationType(iIdx, static_cast<CEffectBase::INTERPOLATION>(iSelected));
 			//:3
+			//:>
 		}
-
 		++iIdx;
 		ImGui::Separator();
 	}
 	if (ImGui::Button("Add Keyframe"))
 	{
-		pTS->Add_KeyFrame(CEffectBase::EFFKEYFRAME{});
-	} 
+		pEffect->Add_KeyFrame(CEffectBase::EFFKEYFRAME{});
+	}
 	if (iIdx > 1 && ImGui::Button("Delete Keyframe"))
 	{
-		pTS->Delete_KeyFrame();
+		pEffect->Delete_KeyFrame();
+	}
+	ImGui::End();
+}
+
+HRESULT CCYTool::Load_EffectModel()
+{
+	if (IFILEDIALOG->Display("Mesh Effect Model Select"))
+	{
+		if (IFILEDIALOG->IsOk())
+		{
+			auto selections = IFILEDIALOG->GetSelection();
+			// 처리
+			// first: 파일명.확장자
+			// second: 전체 경로 (파일명포함)
+			if (!selections.empty())
+			{
+				for (auto FilePath : selections)
+				{
+					Make_EffectModel_Prototypes(FilePath.second);
+				}
+			}
+		}
+		IFILEDIALOG->Close();
 	}
 
-
-	//ImGui::Dummy(ImVec2(0.0f, 10.0f));
-	//ImGui::SeparatorText("Sprite Preferences");
-	//ImGui::Dummy(ImVec2(0.0f, 10.0f));
-	//ImGui::PushItemWidth(100);
-	//ImGui::Text("U Count");
-	//ImGui::SameLine();
-	//ImGui::InputInt("##Grid_U", &m_iGridTileX);
-	//ImGui::SameLine();
-	//ImGui::Text("V Count");
-	//ImGui::SameLine();
-	//ImGui::InputInt("##Grid_V", &m_iGridTileY);
-	//ImGui::PopItemWidth();
-
-	//ImGui::Checkbox("Animation", &m_bAnimateSprite);
-
-
 	return S_OK;
 }
 
-HRESULT CCYTool::Window_Particle()
+HRESULT CCYTool::Make_EffectModel_Prototypes(const string strModelFilePath)
 {
-	CToolSprite* pTS = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
+	path ModelPath = strModelFilePath;
+	path ModelName = ModelPath.stem();
+	_wstring strModelTag = ModelName.wstring();
 
-	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 1000, "%d");
-	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.1f, -1000.f, 1000.f, "%.1f");
-	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.1f, 0.f, 100.f, "%.1f");
-	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.1f, 1.f, 1000.f, "%.1f");
-	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 1.f, 1000.f, "%.1f");
-	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.1f, 1.f, 1000.f, "%.1f");
-	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.1f, -1000.f, 1000.f, "%.1f");
-	ImGui::Checkbox("Gravity", &m_bGravity);
-	ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
-	ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
+	_matrix		PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), _wstring(L"Prototype_Component_Model_") + strModelTag,
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelFilePath.c_str(), PreTransformMatrix))))
+		return E_FAIL;
 
-	// Gravity
-	// Accel, Decel
-	// Rotation Speed
-	// Loop
-
-
-
-
-
+	m_ModelNames.push_back(ModelName.string());
 	return S_OK;
 }
 
-HRESULT CCYTool::Window_Mesh()
+HRESULT CCYTool::Save_EffectSet()
+{
+	path SavePath = R"(../Bin/DataFiles/Effect/EffectContainer/)";
+	ofstream ofs(SavePath);
+	if (!ofs.is_open())
+		return E_FAIL;
+	json jSave;
+
+	auto& Items = m_pSequence->Get_Items();
+
+	for (auto& Item : Items)
+	{
+		json jItem;
+		jItem["Name"] = Item.strName.data();
+		jItem["StartPos"] = *Item.iStart;
+		jItem["EndPos"] = *Item.iEnd;
+		jItem["EffectType"] = Item.iType;
+
+		jItem.push_back(Item.pEffect->Serialize());
+
+		jSave["EffectObject"].push_back(jItem);
+	}
+	//미완
+	return S_OK;
+}
+
+HRESULT CCYTool::Load_EffectSet()
 {
 	return S_OK;
 }
 
-HRESULT CCYTool::Save_Particles()
+HRESULT CCYTool::Save_Effect()
 {
+	IGFD::FileDialogConfig config;
+	config.path = R"(..\Bin\DataFiles\Effect\)";
+
+	IFILEDIALOG->OpenDialog("SaveEffectonlyDialog", "Choose directory to save", ".json", config);
+
+	if (IFILEDIALOG->Display("SaveEffectonlyDialog"))
+	{
+		if (IFILEDIALOG->IsOk())
+		{
+			path savePath = IFILEDIALOG->GetFilePathName();
+
+			// 확장자가 없으면 .json 붙이기
+			if (savePath.extension().string() != ".json")
+				savePath += ".json";
+
+
+			ofstream ofs(savePath);
+
+			if (!ofs.is_open())
+				return E_FAIL;
+
+			json jSave = m_pSequence->m_Items[m_iSelected].pEffect->Serialize();
+
+			ofs << setw(4) << jSave;
+			ofs.close();
+		}
+		m_bOpenSaveEffectOnly = false;
+		IFILEDIALOG->Close();
+	}
+
 	return S_OK;
 }
 
-HRESULT CCYTool::Load_Particles()
+HRESULT CCYTool::Save_Sprite(json& jItem, CEffectBase* pEffect)
 {
+	json asfd;
+
 	return S_OK;
 }
+
 
 HRESULT CCYTool::Load_Textures()
 {
@@ -525,11 +725,9 @@ CGameObject* CCYTool::Clone(void* pArg)
 void CCYTool::Free()
 {
 	__super::Free();
+
 	Safe_Delete(m_pSequence);
-	//for (auto& tex : m_Textures)
-	//{
-	//	Safe_Release(const_cast<ID3D11ShaderResourceView*&>(tex.pSRV));
-	//}
+
 	m_Textures.clear();
 }
  

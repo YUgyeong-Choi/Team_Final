@@ -1,19 +1,10 @@
-#include "Engine_Shader_Defines.hlsli"
+#include "Effect_Shader_Defines.hlsli"
 
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 Texture2D g_Texture;
-Texture2D g_DepthTexture;
-Texture2D g_MaskTexture;
 
-float4  g_vColor = { 1.f, 1.f, 1.f, 1.f };
 float   g_fOpacity = 1.f;
 float   g_fPercentage = 1.f;
-
-/******  Sprite Grid variables  ******/
-float2  g_fTileSize;     // 타일 하나 사이즈
-float2  g_fTileOffset;   // 타일 위치
-
 
 
 struct VS_IN
@@ -97,37 +88,7 @@ struct PS_IN_BLEND
     float4 vProjPos : TEXCOORD1;    
 };
 
-float4 SoftEffect(float4 vOrigColor, float4 vProjPos)
-{
-    float2 vTexcoord;
-    
-    vTexcoord.x = vProjPos.x / vProjPos.w;
-    vTexcoord.y = vProjPos.y / vProjPos.w;
-    
-    vTexcoord.x = vTexcoord.x * 0.5f + 0.5f;
-    vTexcoord.y = vTexcoord.y * -0.5f + 0.5f;
-    
-    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, vTexcoord);
-    
-    if (vDepthDesc.y != 0.f)
-    {
-        float fOldViewZ = vDepthDesc.y * 1000.f;
-        float fDiff = (fOldViewZ - vProjPos.w) / vProjPos.w;
-        vOrigColor.a = vOrigColor.a * saturate(fDiff);
-    }
-    
-    return vOrigColor;
-}
 
-// if texture has no tileset, just put In.Texcoord only
-float2 UVTexcoord(float2 vInTexcoord, float2 fTileSize = (1, 1), float2 fTileOffset = (0, 0))
-{
-    float2 baseUV = vInTexcoord * fTileSize;
-    
-    float2 finalUV = baseUV + fTileOffset.xy;
-    
-    return finalUV;
-}
 
 vector ColorAdjustment_Multiply(float4 vOrigColor, float4 vMultiplyColor)
 {

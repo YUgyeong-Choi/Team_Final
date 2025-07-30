@@ -1,5 +1,41 @@
 #include "UIObject.h"
 
+json CUIObject::Serialize()
+{
+	json j;
+
+	j["ProtoTag"] = WStringToString(m_strProtoTag);
+	j["fX"] = m_fX;
+	j["fY"] = m_fY;
+	j["SizeX"] = m_fSizeX;
+	j["SizeY"] = m_fSizeY;
+	j["fOffset"] = m_fOffset;
+	j["fAlpha"] = m_fCurrentAlpha;
+	j["RotationZ"] = m_fRotation;
+	j["Color"]["R"] = m_vColor.x;
+	j["Color"]["G"] = m_vColor.y;
+	j["Color"]["B"] = m_vColor.z;
+	j["Color"]["A"] = m_vColor.w;
+
+
+	return j;
+}
+
+void CUIObject::Deserialize(const json& j)
+{
+	string protoTag = j["ProtoTag"].get<string>();
+	m_strProtoTag = StringToWStringU8(protoTag);
+	m_fX = j["fX"].get<_float>();
+	m_fY = j["fY"].get<_float>();
+	m_fSizeX = j["SizeX"].get<_float>();
+	m_fSizeY = j["SizeY"].get<_float>();
+	m_fOffset = j["fOffset"].get<_float>();
+	m_fCurrentAlpha = j["fAlpha"].get<_float>();
+	m_fRotation = j["RotationZ"].get<_float>();
+
+	m_vColor = { j["Color"]["R"].get<_float>() , j["Color"]["G"].get<_float>() , j["Color"]["B"].get<_float>() , j["Color"]["A"].get<_float>() ,};
+}
+
 CUIObject::CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject { pDevice, pContext }
 {
@@ -31,6 +67,8 @@ HRESULT CUIObject::Initialize(void* pArg)
 	
 	m_fCurrentAlpha = pDesc->fAlpha;
 
+	m_fRotation = pDesc->fRotation;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -44,8 +82,15 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
 
+	m_pTransformCom->Rotation(0.f, 0.f, m_fRotation);
+
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 
+	
+
+	m_strProtoTag = pDesc-> strProtoTag;
+
+	m_vColor = pDesc->vColor;
 
 
 	return S_OK;
@@ -67,6 +112,23 @@ HRESULT CUIObject::Render()
 {
 
 	return S_OK;
+}
+
+void CUIObject::Update_Data()
+{
+	D3D11_VIEWPORT			ViewportDesc{};
+	_uint					iNumViewports = { 1 };
+
+	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.0f, 1.f));
+
+	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+
+	m_pTransformCom->Rotation(0.f, 0.f, m_fRotation);
+
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 }
 
 void CUIObject::Set_Position(_float fX, _float fY)

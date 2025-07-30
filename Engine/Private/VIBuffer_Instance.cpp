@@ -30,10 +30,10 @@ HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 
 HRESULT CVIBuffer_Instance::Bind_Buffers()
 {
-    ID3D11Buffer* pVertexBuffers[] = {
-           m_pVB,
-           m_pVBInstance,
-    };
+	ID3D11Buffer* pVertexBuffers[] = {
+		   m_pVB,
+		   m_pVBInstance,		   
+	};
 
     _uint        iVertexStrides[] = {
         m_iVertexStride,
@@ -46,9 +46,9 @@ HRESULT CVIBuffer_Instance::Bind_Buffers()
         0
     };
 
-    m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iVertexStrides, iOffsets);
-    m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
-    m_pContext->IASetPrimitiveTopology(m_ePrimitiveTopology);
+	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iVertexStrides, iOffsets);
+	m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0); 
+	m_pContext->IASetPrimitiveTopology(m_ePrimitiveTopology);
 
     return S_OK;
 }

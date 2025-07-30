@@ -39,8 +39,16 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_iTileCnt = m_iTileX * m_iTileY;
 	m_fTickPerSecond = 60.f; // 60프레임으로 재생
+	m_bBillboard = pDesc->bBillboard;
 	m_iShaderPass = pDesc->iShaderPass;
 	m_bAnimation = pDesc->bAnimation;
+	m_bTool = pDesc->bTool;
+
+	for (_uint i = 0; i < TU_END; i++)
+	{
+		m_TextureTag[i] = L"";
+	}
+
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -97,6 +105,11 @@ void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	else
 		m_iTileIdx = 0;
 
+	if (m_iTileX == 0)
+		m_iTileX = 1;
+	if (m_iTileY == 0)
+		m_iTileY = 1;
+
 	m_fTileSize.x = 1.0f / _float(m_iTileX);
 	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
@@ -109,15 +122,15 @@ _float CEffectBase::Interpolate_Ratio(_float fRatio)
 {
 	switch (m_KeyFrames[m_iCurKeyFrameIndex].eInterpolationType)
 	{
-	case Client::CEffectBase::INTERPOLATION_LERP:
+	case Client::INTERPOLATION_LERP:
 		return fRatio;
-	case Client::CEffectBase::INTERPOLATION_EASEOUTBACK:
+	case Client::INTERPOLATION_EASEOUTBACK:
 		return EaseOutBack(fRatio);
-	case Client::CEffectBase::INTERPOLATION_EASEOUTCUBIC:
+	case Client::INTERPOLATION_EASEOUTCUBIC:
 		return EaseOutCubic(fRatio);
-	case Client::CEffectBase::INTERPOLATION_EASEINQUAD:
+	case Client::INTERPOLATION_EASEINQUAD:
 		return EaseInQuad(fRatio);
-	case Client::CEffectBase::INTERPOLATION_EASEOUTQUAD:
+	case Client::INTERPOLATION_EASEOUTQUAD:
 		return EaseOutBack(fRatio);
 	default:
 		return fRatio;
@@ -184,22 +197,115 @@ void CEffectBase::Update_Keyframes()
 }
 
 #ifdef USE_IMGUI
-HRESULT CEffectBase::Change_Texture(_wstring strTextureName)
+HRESULT CEffectBase::Change_Texture(_wstring strTextureName, TEXUSAGE eTex)
 {
-	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTextureCom[eTex]);
 	_wstring strTextureTag = L"Prototype_Component_Texture_" + strTextureName;
-	return Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom));
+	if (FAILED(Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[eTex]))))
+		return E_FAIL;
+	m_TextureTag[eTex] = strTextureName;
+	return S_OK;
 }
 #endif USE_IMGUI
 
 void CEffectBase::Free()
 {
-	__super::Free();
+	__super::Free();	
 
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pMaskTextureCom[0]);
-	Safe_Release(m_pMaskTextureCom[1]);
+	for (_uint i = 0; i < TU_END; i++)
+	{
+		Safe_Release(m_pTextureCom[i]);
+	}
 
+}
+
+json CEffectBase::Serialize()
+{
+	json j;
+
+	// Basic Effect Preferences
+	j["Color"] = { m_vColor.x, m_vColor.y, m_vColor.z, m_vColor.w };
+	j["LifeTime"] = m_fLifeTime;
+	j["Billboard"] = m_bBillboard;
+	j["Animation"] = m_bAnimation;
+	j["ShaderPass"] = m_iShaderPass;
+
+	// Texture Usage
+	json textureUsage = json::array();
+	json textureTags = json::array();
+
+	for (int i = 0; i < TU_END; ++i)
+	{
+		textureUsage.push_back(m_bTextureUsage[i]);
+		textureTags.push_back(WStringToString(m_TextureTag[i]));
+	}
+
+	j["TextureUsage"] = textureUsage;
+	j["TextureTags"] = textureTags;
+
+	// Track Positions
+	j["Duration"] = m_iDuration;
+	j["StartTrack"] = m_iStartTrackPosition;
+	j["EndTrack"] = m_iEndTrackPosition;
+	j["TickPerSecond"] = m_fTickPerSecond;
+
+	// KeyFrames
+	j["NumKeyFrames"] = m_iNumKeyFrames;
+
+	json keyFramesJson = json::array();
+	for (auto& key : m_KeyFrames)
+		keyFramesJson.push_back(key.Serialize()); // EFFKEYFRAME에 Serialize() 함수 필요
+	j["KeyFrames"] = keyFramesJson;
+
+	// UV Grid
+	j["TileX"] = m_iTileX;
+	j["TileY"] = m_iTileY;
+	j["FlipUV"] = m_bFlipUV;
+
+	return j;
+}
+
+json CEffectBase::tagEffectKeyFrame::Serialize()
+{
+	json j;
+
+	j["Scale"] = { vScale.x, vScale.y, vScale.z };
+	j["Rotation"] = { vRotation.x, vRotation.y, vRotation.z, vRotation.w };
+	j["Translation"] = { vTranslation.x, vTranslation.y, vTranslation.z };
+	j["Color"] = { vColor.x, vColor.y, vColor.z, vColor.w };
+	j["TrackPosition"] = fTrackPosition;
+	j["Interpolation"] = static_cast<int>(eInterpolationType); // 정수 저장
+
+	return j;
+}
+
+void CEffectBase::tagEffectKeyFrame::Deserialize(const json& j)
+{
+	if (j.contains("Scale") && j["Scale"].is_array() && j["Scale"].size() == 3)
+	{
+		vScale = { j["Scale"][0].get<_float>(), j["Scale"][1].get<_float>(), j["Scale"][2].get<_float>() };
+	}
+
+	if (j.contains("Rotation") && j["Rotation"].is_array() && j["Rotation"].size() == 4)
+	{
+		vRotation = { j["Rotation"][0].get<_float>(), j["Rotation"][1].get<_float>(), j["Rotation"][2].get<_float>(), j["Rotation"][3].get<_float>() };
+	}
+
+	if (j.contains("Translation") && j["Translation"].is_array() && j["Translation"].size() == 3)
+	{
+		vTranslation = { j["Translation"][0].get<_float>(), j["Translation"][1].get<_float>(), j["Translation"][2].get<_float>() };
+	}
+
+	if (j.contains("Color") && j["Color"].is_array() && j["Color"].size() == 4)
+	{
+		vColor = { j["Color"][0].get<_float>(), j["Color"][1].get<_float>(), j["Color"][2].get<_float>(), j["Color"][3].get<_float>() };
+	}
+
+	if (j.contains("TrackPosition"))
+		fTrackPosition = j["TrackPosition"].get<_float>();
+
+	if (j.contains("Interpolation"))
+		eInterpolationType = static_cast<INTERPOLATION>(j["Interpolation"].get<int>());
 }

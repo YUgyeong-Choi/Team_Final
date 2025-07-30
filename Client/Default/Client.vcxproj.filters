@@ -190,7 +190,10 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Canvus">
       <UniqueIdentifier>{166d625d-85e0-4014-bef6-412ee2dce9bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Text">
+    <Filter Include="01.Levels\LevelCY\Tool\ToolMeshEffect">
+      <UniqueIdentifier>{c96d79a7-a63e-4a35-83f4-de237defe4ed}</UniqueIdentifier>
+	</Filter>
+	<Filter Include="02.GameObjects\99.UI\Text">
       <UniqueIdentifier>{b1e0564c-381f-4d59-a7ce-4e891ff924d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -453,7 +456,13 @@
     <ClInclude Include="..\public\UI_Canvus.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Canvus</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\UI_Text.h">
+    <ClInclude Include="..\Public\ToolMeshEffect.h">
+      <Filter>01.Levels\LevelCY\Tool\ToolMeshEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectContainer.h">
+      <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
+	</ClInclude>
+	<ClInclude Include="..\public\UI_Text.h">
       <Filter>02.GameObjects\99.UI\Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\YGController.h">
@@ -702,7 +711,13 @@
     <ClCompile Include="..\private\UI_Canvus.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Canvus</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\UI_Text.cpp">
+    <ClCompile Include="..\Private\ToolMeshEffect.cpp">
+      <Filter>01.Levels\LevelCY\Tool\ToolMeshEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EffectContainer.cpp">
+      <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
+	</ClCompile>
+	<ClCompile Include="..\private\UI_Text.cpp">
       <Filter>02.GameObjects\99.UI\Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\YGController.cpp">
@@ -749,6 +764,17 @@
     <FxCompile Include="Shader_Compute_Particle.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
+      <Filter>97.ShaderFiles\Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_ParticleEffect.hlsl">
+      <Filter>97.ShaderFiles\Effect</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Effect_Shader_Defines.hlsli">
+      <Filter>97.ShaderFiles\Effect</Filter>
+    </None>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh_Instance.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>

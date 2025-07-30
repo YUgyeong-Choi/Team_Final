@@ -13,11 +13,15 @@ CUI_Feature_Scale::CUI_Feature_Scale(const CUI_Feature_Scale& Prototype)
 
 HRESULT CUI_Feature_Scale::Initialize_Prototype()
 {
+  
 	return S_OK;
 }
 
 HRESULT CUI_Feature_Scale::Initialize(void* pArg)
 {
+    if (nullptr == pArg)
+        return S_OK;
+
 	UI_FEATURE_SCALE_DESC* pDesc = static_cast<UI_FEATURE_SCALE_DESC*>(pArg);
 
 	m_isLoop = pDesc->isLoop;
@@ -27,7 +31,7 @@ HRESULT CUI_Feature_Scale::Initialize(void* pArg)
 	m_fEndScale = pDesc->fEndScale;
 
 	
-
+    m_strProtoTag = TEXT("Prototype_Component_UI_Feature_Scale");
 	m_iRange = m_iEndFrame - m_iStartFrame;
 
 	return S_OK;
@@ -104,6 +108,36 @@ UI_FEATRE_DESC& CUI_Feature_Scale::Get_Desc()
     m_eDesc.strProtoTag = "Prototype_Component_UI_Feature_Scale";
 
 	return m_eDesc;
+}
+
+json CUI_Feature_Scale::Serialize()
+{
+    json j = __super::Serialize();
+
+
+    j["StartScale"]["X"] = m_fStartScale.x;
+    j["StartScale"]["Y"] = m_fStartScale.y;
+
+    j["EndScale"]["X"] = m_fEndScale.x;
+    j["EndScale"]["Y"] = m_fEndScale.y;
+
+    j["FeatureProtoTag"] = "Prototype_Component_UI_Feature_Scale";
+
+
+    return j;
+}
+
+void CUI_Feature_Scale::Deserialize(const json& j)
+{
+    __super::Deserialize(j);
+
+    m_fStartScale = { j["StartScale"]["X"] , j["StartScale"]["Y"] };
+    m_fEndScale = { j["EndScale"]["X"] , j["EndScale"]["Y"] };
+
+    string strPrototag = j["FeatureProtoTag"];
+    m_strProtoTag = StringToWStringU8(strPrototag);
+
+   
 }
 
 CUI_Feature_Scale* CUI_Feature_Scale::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

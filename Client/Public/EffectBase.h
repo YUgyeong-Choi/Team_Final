@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "BlendObject.h"
 
+#include "Serializable.h"
 NS_BEGIN(Engine)
 class CShader;
 class CTexture;
@@ -11,7 +12,7 @@ NS_END
 NS_BEGIN(Client)
 
 // 모든 이펙트의 부모가 되고싶은 클래스
-class CEffectBase abstract : public CBlendObject // 블렌드오브젝트를 상속받지만 무조건 RG_BLEND는 아님
+class CEffectBase abstract : public CBlendObject, public ISerializable // 블렌드오브젝트를 상속받지만 무조건 RG_BLEND는 아님
 {
 public:
 	typedef struct tagEffectBaseDesc : public CGameObject::GAMEOBJECT_DESC
@@ -19,22 +20,14 @@ public:
 		const _float4x4*	pSocketMatrix = { nullptr };
 		_int				iTileX = {};
 		_int				iTileY = {};
+		_bool				bBillboard = { true };
 		_bool				bAnimation = { true };
 		_uint				iShaderPass = { 0 };
+		_bool				bTool = { false };
 	}DESC;
 
-	// 보간 방식
-	enum INTERPOLATION {
-		INTERPOLATION_LERP,
-		INTERPOLATION_EASEOUTBACK,
-		INTERPOLATION_EASEOUTCUBIC,
-		INTERPOLATION_EASEINQUAD,
-		INTERPOLATION_EASEOUTQUAD,
-		INTERPOLATION_END
-	};
-
 	// Keyframes
-	typedef struct tagEffectKeyFrame
+	typedef struct tagEffectKeyFrame : public Engine::ISerializable
 	{
 		_float3			vScale = {1.f, 1.f, 1.f};
 		_float4			vRotation = { 0.f, 0.f, 0.f, 0.f };
@@ -43,6 +36,9 @@ public:
 
 		_float			fTrackPosition = {};
 		INTERPOLATION	eInterpolationType = { INTERPOLATION_LERP };
+	public:
+		virtual json Serialize() override;
+		virtual void Deserialize(const json& j) override;
 	}EFFKEYFRAME;
 
 protected:
@@ -67,8 +63,12 @@ protected:
 
 protected:
 	CShader*		m_pShaderCom = { nullptr };
-	CTexture*		m_pTextureCom = { nullptr };
-	CTexture*		m_pMaskTextureCom[2] = { nullptr };
+
+	// 지금 메쉬만 사용중, 다른 애들도 바꾸고 주석 지우기
+	enum TEXUSAGE { TU_DIFFUSE, TU_MASK1, TU_MASK2, TU_MASK3, TU_END };
+	_bool			m_bTextureUsage[TU_END];
+	CTexture*		m_pTextureCom[TU_END] = {nullptr};
+	_wstring		m_TextureTag[TU_END];
 
 protected:
 	const _float4x4*	m_pSocketMatrix = { nullptr };
@@ -80,6 +80,7 @@ protected:
 	_bool				m_bBillboard = { true };
 	_bool				m_bAnimation = { true };
 	_uint				m_iShaderPass = {};
+
 
 	// TrackPositions
 	_int				m_iDuration = {10};
@@ -99,6 +100,10 @@ protected:
 	_int				m_iTileIdx{0};
 	_float2				m_fTileSize{};
 	_float2				m_fOffset{};
+	_bool				m_bFlipUV = { false };
+	
+	// Tool
+	_bool				m_bTool = { false };
 
 public:
 	vector<EFFKEYFRAME>& Get_KeyFrames() { return m_KeyFrames; }
@@ -111,10 +116,10 @@ public:
 	_int* Get_TileY() { return &m_iTileY; }
 	_bool* Get_Billboard_Ptr() { return &m_bBillboard; }
 	_bool* Get_Animation_Ptr() { return &m_bAnimation; }
-
+	_bool* Get_FlipUV_Ptr() { return &m_bFlipUV; }
 	void Set_TileXY(_int iX, _int iY) { m_iTileX = iX; m_iTileY = iY; }
 	void Set_Billboard(_bool bBillboard) { m_bBillboard = bBillboard; }
-	HRESULT Change_Texture(_wstring strTextureName);
+	HRESULT Change_Texture(_wstring strTextureName, TEXUSAGE eTex = TU_DIFFUSE);
 
 #endif
 
@@ -139,6 +144,9 @@ public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;
 
+public:
+	virtual json Serialize();
+	virtual void Deserialize(const json& j) = 0;
 };
 
 NS_END

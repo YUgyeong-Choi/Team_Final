@@ -234,7 +234,7 @@ void CAnimation::Free()
 		Safe_Release(pChannel);
 
 	m_Channels.clear();
-}
+} 
 
 json CAnimation::Serialize()
 {

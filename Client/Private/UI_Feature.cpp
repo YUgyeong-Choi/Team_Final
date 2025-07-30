@@ -11,8 +11,30 @@ CUI_Feature::CUI_Feature(const CUI_Feature& Prototype)
 {
 }
 
+json CUI_Feature::Serialize()
+{
+	json j;
+
+	j["iStartFrame"] = m_iStartFrame;
+	j["iEndFrame"] = m_iEndFrame;
+	j["isLoop"] = m_isLoop;
+
+	return j;
+}
+
+void CUI_Feature::Deserialize(const json& j)
+{
+	m_iStartFrame = j["iStartFrame"];
+	m_iEndFrame = j["iEndFrame"];
+	m_isLoop = j["isLoop"].get<_bool>();
+
+	m_iRange = m_iEndFrame - m_iStartFrame;
+}
+
 HRESULT CUI_Feature::Initialize_Prototype()
 {
+	m_strProtoTag = TEXT("Prototype_GameObject_Static_UI");
+
 	return S_OK;
 }
 
