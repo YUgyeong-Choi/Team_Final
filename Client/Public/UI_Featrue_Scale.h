@@ -23,6 +23,9 @@ public:
 	virtual UI_FEATURE_TOOL_DESC Get_Desc_From_Tool() override;
 	virtual UI_FEATRE_DESC& Get_Desc() override;
 
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
+
 private:
 
 	// 이거는 다 비율로 가져오자

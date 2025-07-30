@@ -1,26 +1,27 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Serializable.h"
 
 /* CUIObject_2D */
 /* CUIObject_3D */
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CUIObject abstract : public CGameObject
+class ENGINE_DLL CUIObject abstract : public CGameObject, public ISerializable
 {
 public:
 	typedef struct tagUIObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		_float			fX, fY, fSizeX, fSizeY, fAlpha{1.f};
+		_float			fX, fY, fSizeX{0.01f}, fSizeY{0.01f}, fAlpha{1.f};
 		_float			fOffset = {0.f};
-		_int iTextureIndex, iPassIndex;
 		_float4 vColor = { 1.f,1.f,1.f,1.f };
-		_wstring strTextureTag = {};
+		_wstring strProtoTag = {};
+
+		_float fRotation = {};
 
 	}UIOBJECT_DESC;
 
-	_wstring& Get_StrTextureTag() { return m_strTextureTag; }
 
 	_float Get_Depth() { return m_fOffset; }
 
@@ -28,6 +29,9 @@ public:
 	_float Get_Alpha() { return m_fCurrentAlpha; }
 
 	void  Set_isVignetting(_bool isVignetting) { m_isDeferred = isVignetting; }
+
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
 
 protected:
 	CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -41,6 +45,8 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+	virtual void Update_Data();
 
 	// 뷰포트를 구해서 위치에 맞춘다
 	void Set_Position(_float fX, _float fY);
@@ -65,21 +71,23 @@ protected:
 	_bool			m_isFade = {false};
 	_float			m_fFadeTime = {};
 	_float			m_fFadeElapsedTime = {};
-	_float			m_fCurrentAlpha = {};
+	_float			m_fCurrentAlpha = {1.f};
 	_float			m_fStartAlpha = {};
 	_float			m_fEndAlpha = {};
+
+	_wstring    m_strProtoTag = {  };
 
 	// 곱할 색. 
 	_float4         m_vColor = {1.f,1.f,1.f,1.f};
 
 	_bool			m_isDeferred = { false };
 
-	_wstring		m_strTextureTag = {};
-	_int			m_iPassIndex = {};
-	_int			m_iTextureIndex = {};
-
 	// 이걸로 구분하자
 	_int			m_iUIType = {};
+
+	_float			m_fRotation = {};
+
+
 	
 
 public:

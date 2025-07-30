@@ -1,6 +1,38 @@
 #include "UI_Text.h"
 #include "GameInstance.h"
 
+json CUI_Text::Serialize()
+{
+	json j;
+	j = __super::Serialize();
+
+
+	j["FontTag"] = WStringToStringU8(m_strFontTag);
+	j["Caption"] = WStringToStringU8(m_strCaption);
+	j["FontOffset"]["X"] = m_fFontOffset.x;
+	j["FontOffset"]["Y"] = m_fFontOffset.y;
+	j["FontScale"] = m_fFontScale;
+	j["IsCenter"] = m_isCenter;
+
+
+	return j;
+}
+
+void CUI_Text::Deserialize(const json& j)
+{
+	__super::Deserialize(j);
+
+	string fontTag = j["FontTag"].get<string>();
+	m_strFontTag = StringToWStringU8(fontTag);
+
+	string caption = j["Caption"].get<string>();
+	m_strCaption = StringToWStringU8(caption);
+
+	m_fFontOffset = { j["FontOffset"]["X"].get<_float>(), j["FontOffset"]["Y"].get<_float>() };
+	m_fFontScale = j["FontScale"].get<_float>();
+	m_isCenter = j["IsCenter"].get<_bool>();
+}
+
 CUI_Text::CUI_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUIObject{pDevice, pContext}
 {
@@ -8,28 +40,26 @@ CUI_Text::CUI_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CUI_Text::CUI_Text(const CUI_Text& Prototype)
     :CUIObject{Prototype}
+	
 {
 }
 
 HRESULT CUI_Text::Initialize_Prototype()
 {
+	
     return S_OK;
 }
 
 HRESULT CUI_Text::Initialize(void* pArg)
 {
 
-	TEXT_UI_DESC* pDesc = static_cast<TEXT_UI_DESC*>(pArg);
+	
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_strTextureTag = pDesc->strTextureTag;
+	TEXT_UI_DESC* pDesc = static_cast<TEXT_UI_DESC*>(pArg);
 
-	if (FAILED(Ready_Components(m_strTextureTag)))
-		return E_FAIL;
-
-	m_vColor = pDesc->vColor;
 
 	m_strFontTag = pDesc->strFontTag;
 	m_strCaption = pDesc->strCaption;
@@ -41,7 +71,7 @@ HRESULT CUI_Text::Initialize(void* pArg)
 
 	m_isDeferred = false;
 
-	
+	m_strProtoTag = TEXT("Prototype_GameObject_UI_Text");
 
 	return S_OK;
    
@@ -66,16 +96,16 @@ void CUI_Text::Late_Update(_float fTimeDelta)
 
 HRESULT CUI_Text::Render()
 {
-
-	m_vColor = { m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha };
+	if(m_isFade)
+		m_vColor = { m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha };
 
 	if (m_isCenter)
 	{
-		m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), 0.f, m_fFontOffset, m_fFontScale);
+		m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale);
 	}
 	else
 	{
-		m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), 0.f, m_fFontOffset, m_fFontScale);
+		m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale);
 	}
 
     return S_OK;
@@ -83,17 +113,37 @@ HRESULT CUI_Text::Render()
 
 void CUI_Text::Update_UI_From_Tool(TEXT_UI_DESC& eDesc)
 {
-	// 나중에 채우죠?
+	m_strCaption = eDesc.strCaption;
+	m_fFontOffset = eDesc.fFontOffset;
+	m_fFontScale = eDesc.fFontScale;
+	m_isCenter = eDesc.isCenter;
+
+	m_vColor = eDesc.vColor;
+	m_fX = eDesc.fX;
+	m_fY = eDesc.fY;
+	m_fOffset = eDesc.fOffset;
+	m_fSizeX = eDesc.fSizeX;
+	m_fSizeY = eDesc.fSizeY;
+	m_fRotation = eDesc.fRotation;
+
+	m_strCaption = eDesc.strCaption;
+
+	D3D11_VIEWPORT			ViewportDesc{};
+	_uint					iNumViewports = { 1 };
+
+	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+
+	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+
+	m_pTransformCom->Rotation(0.f, 0.f, XMConvertToRadians(m_fRotation));
+
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 }
 
-HRESULT CUI_Text::Ready_Components(const wstring& strTextureTag)
-{
-
-	
 
 
-    return S_OK;
-}
+
 
 CUI_Text* CUI_Text::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

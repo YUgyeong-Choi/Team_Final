@@ -2,6 +2,31 @@
 #include "GameInstance.h"
 
 
+json CStatic_UI::Serialize()
+{
+	json j;
+	j = __super::Serialize();
+
+	j["Texturetag"] = WStringToString(m_strTextureTag);
+	j["iTextureLevel"] = m_iTextureLevel;
+	j["iTextureIndex"] = m_iTextureIndex;
+	j["iPassIndex"] = m_iPassIndex;
+
+	return j;
+}
+
+void CStatic_UI::Deserialize(const json& j)
+{
+	__super::Deserialize(j);
+
+	string textureTag = j["Texturetag"].get<string>();
+	m_strTextureTag = StringToWStringU8(textureTag);
+
+	m_iTextureLevel = j["iTextureLevel"];
+	m_iTextureIndex = j["iTextureIndex"];
+	m_iPassIndex = j["iPassIndex"];
+}
+
 CStatic_UI::CStatic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIObject{ pDevice, pContext }
 {
@@ -19,12 +44,15 @@ HRESULT CStatic_UI::Initialize_Prototype()
 
 HRESULT CStatic_UI::Initialize(void* pArg)
 {
-	STATIC_UI_DESC* pDesc = static_cast<STATIC_UI_DESC*>(pArg);
+	
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	STATIC_UI_DESC* pDesc = static_cast<STATIC_UI_DESC*>(pArg);
+
 	m_strTextureTag = pDesc->strTextureTag;
+	m_iTextureLevel = pDesc->iTextureLevel;
 
 	if (FAILED(Ready_Components(m_strTextureTag)))
 		return E_FAIL;
@@ -32,7 +60,7 @@ HRESULT CStatic_UI::Initialize(void* pArg)
 	m_iPassIndex = pDesc->iPassIndex;
 	m_iTextureIndex = pDesc->iTextureIndex;
 	
-	m_vColor = pDesc->vColor;
+	m_strProtoTag = TEXT("Prototype_GameObject_Static_UI");
 
 	return S_OK;
 }
@@ -91,6 +119,7 @@ void CStatic_UI::Update_UI_From_Tool(STATIC_UI_DESC& eDesc)
 	m_fSizeY = eDesc.fSizeY;
 	m_iPassIndex = eDesc.iPassIndex;
 	m_iTextureIndex = eDesc.iTextureIndex;
+	m_fRotation = eDesc.fRotation;
 
 	D3D11_VIEWPORT			ViewportDesc{};
 	_uint					iNumViewports = { 1 };
@@ -99,6 +128,8 @@ void CStatic_UI::Update_UI_From_Tool(STATIC_UI_DESC& eDesc)
 
 
 	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+
+	m_pTransformCom->Rotation(0.f, 0.f, XMConvertToRadians(m_fRotation));
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 }
@@ -114,7 +145,7 @@ HRESULT CStatic_UI::Ready_Components(const wstring& strTextureTag)
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
+	if (FAILED(__super::Add_Component(m_iTextureLevel, strTextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

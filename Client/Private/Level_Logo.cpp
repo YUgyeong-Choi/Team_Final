@@ -154,7 +154,7 @@ HRESULT CLevel_Logo::Ready_Video()
 	eBackDesc.iPassIndex = 0;
 	eBackDesc.iTextureIndex = 0;
 	eBackDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
-	eBackDesc.vColor = { 0.f,0.f,0.f,0.f };
+	eBackDesc.vColor = { 0.f,0.f,0.f,1.f };
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
 		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background"), &eBackDesc)))

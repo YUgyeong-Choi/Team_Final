@@ -16,10 +16,11 @@ class CStatic_UI final : public CUIObject
 public:
 	typedef struct tagStaticUIDesc : public CUIObject::UIOBJECT_DESC
 	{
-		_int iPassIndex = { 0 };
-		_int iTextureIndex = { 0 };
-		wstring strTextureTag;
-		_float4 vColor = {1.f,1.f,1.f,1.f};
+
+		_int iTextureIndex, iPassIndex;
+		_int iTextureLevel = { ENUM_CLASS(LEVEL::STATIC) };
+		_wstring strTextureTag = {};
+
 	}STATIC_UI_DESC;
 
 
@@ -37,12 +38,15 @@ public:
 		eDesc.fOffset = m_fOffset;
 		eDesc.strTextureTag = m_strTextureTag;
 		eDesc.vColor = m_vColor;
+		eDesc.fAlpha = m_fCurrentAlpha;
+		eDesc.fRotation = m_fRotation;
 
 		return eDesc;
 
 	}
 
-
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
 
 private:
 	CStatic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -67,7 +71,10 @@ private:
 
 private:
 
-
+	_wstring		m_strTextureTag = {};
+	_int			m_iPassIndex = {};
+	_int			m_iTextureIndex = {};
+	_int			m_iTextureLevel = { ENUM_CLASS(LEVEL::STATIC)};
 	
 
 private:
