@@ -16,7 +16,7 @@ CSpriteEffect::CSpriteEffect(const CSpriteEffect& Prototype)
 
 HRESULT CSpriteEffect::Initialize_Prototype()
 {
-	m_KeyFrames.push_back(EFFKEYFRAME{});
+	//m_KeyFrames.push_back(EFFKEYFRAME{});
 	return S_OK;
 }
 
@@ -27,17 +27,31 @@ HRESULT CSpriteEffect::Initialize(void* pArg)
 
 	DESC* pDesc = static_cast<DESC*>(pArg);
 
-	m_bAnimation = pDesc->bAnimation;
-
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (!m_bTool)
 	{
+		json j;
+		ifstream ifs(pDesc->pJsonFilePath);
+
+		if (!ifs.is_open())
+		{
+			return E_FAIL;
+		}
+		ifs >> j;
+
+		Deserialize(j);
+		Ready_Textures_Prototype();
 		if (FAILED(Ready_Components()))
 			return E_FAIL;
 	}
+
+
+	m_fTileSize.x = 1.0f / _float(m_iTileX);
+	m_fTileSize.y = 1.0f / _float(m_iTileY);
+	m_iTileCnt = m_iTileX * m_iTileY;
+
 	return S_OK;
 }
 
@@ -48,16 +62,8 @@ void CSpriteEffect::Priority_Update(_float fTimeDelta)
 
 void CSpriteEffect::Update(_float fTimeDelta)
 {
-	//if (m_bAnimation)
-	//{
-	//	m_fFrame += m_fMaxFrame * fTimeDelta;
-
-	//	if (m_fFrame >= m_fMaxFrame)
-	//		m_fFrame = 0.f;
-	//}
 	__super::Update(fTimeDelta);
 
-	return ;
 }
 
 void CSpriteEffect::Late_Update(_float fTimeDelta)
@@ -94,10 +100,31 @@ HRESULT CSpriteEffect::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
+	_wstring TextureTag = TEXT("Prototype_Component_Texture_");
+	if (m_bTextureUsage[TU_DIFFUSE] == true){
+		/* For.Com_Texture */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_DIFFUSE], 
+			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_DIFFUSE]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK1] == true){
+		/* For.Com_TextureMask1 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK1],
+			TEXT("Com_TextureMask1"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK1]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK2] == true){
+		/* For.Com_TextureMask2 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK2],
+			TEXT("Com_TextureMask2"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK2]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK3] == true){
+		/* For.Com_TextureMask3 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK3],
+			TEXT("Com_TextureMask3"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK3]))))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -116,8 +143,22 @@ HRESULT CSpriteEffect::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
-		return E_FAIL;
+	if (m_bTextureUsage[TU_DIFFUSE] == true) {
+		if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK1] == true) {
+		if (FAILED(m_pTextureCom[TU_MASK1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK2] == true) {
+		if (FAILED(m_pTextureCom[TU_MASK2]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK3] == true) {
+		if (FAILED(m_pTextureCom[TU_MASK3]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture3", 0)))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
@@ -170,70 +211,5 @@ json CSpriteEffect::Serialize()
 
 void CSpriteEffect::Deserialize(const json& j)
 {
-	// Basic Effect Preferences
-	if (j.contains("Color") && j["Color"].is_array() && j["Color"].size() == 4)
-		m_vColor = { j["Color"][0].get<_float>(), j["Color"][1].get<_float>(), j["Color"][2].get<_float>(), j["Color"][3].get<_float>() };
-
-	if (j.contains("LifeTime"))
-		m_fLifeTime = j["LifeTime"].get<_float>();
-
-	if (j.contains("Billboard"))
-		m_bBillboard = j["Billboard"].get<_bool>();
-
-	if (j.contains("Animation"))
-		m_bAnimation = j["Animation"].get<_bool>();
-
-	if (j.contains("ShaderPass"))
-		m_iShaderPass = j["ShaderPass"].get<_uint>();
-
-	// Texture Usage
-	if (j.contains("TextureUsage") && j["TextureUsage"].is_array())
-	{
-		for (int i = 0; i < TU_END && i < j["TextureUsage"].size(); ++i)
-			m_bTextureUsage[i] = j["TextureUsage"][i].get<_bool>();
-	}
-
-	if (j.contains("TextureTags") && j["TextureTags"].is_array())
-	{
-		for (int i = 0; i < TU_END && i < j["TextureTags"].size(); ++i)
-			m_TextureTag[i] = StringToWString(j["TextureTags"][i].get<std::string>());
-	}
-
-	// Track Positions
-	if (j.contains("Duration"))
-		m_iDuration = j["Duration"].get<_int>();
-
-	if (j.contains("StartTrack"))
-		m_iStartTrackPosition = j["StartTrack"].get<_int>();
-
-	if (j.contains("EndTrack"))
-		m_iEndTrackPosition = j["EndTrack"].get<_int>();
-
-	if (j.contains("TickPerSecond"))
-		m_fTickPerSecond = j["TickPerSecond"].get<_float>();
-
-	// KeyFrames
-	if (j.contains("NumKeyFrames"))
-		m_iNumKeyFrames = j["NumKeyFrames"].get<_uint>();
-
-	if (j.contains("KeyFrames") && j["KeyFrames"].is_array())
-	{
-		m_KeyFrames.clear();
-		for (const auto& keyJson : j["KeyFrames"])
-		{
-			tagEffectKeyFrame key;
-			key.Deserialize(keyJson);
-			m_KeyFrames.push_back(key);
-		}
-	}
-
-	// UV Grid
-	if (j.contains("TileX"))
-		m_iTileX = j["TileX"].get<_int>();
-
-	if (j.contains("TileY"))
-		m_iTileY = j["TileY"].get<_int>();
-
-	if (j.contains("FlipUV"))
-		m_bFlipUV = j["FlipUV"].get<_bool>();
+	__super::Deserialize(j);
 }

@@ -9,8 +9,10 @@ bool g_bFlipUV;
 
 
 /******  Texture variables  ******/
+Texture2D g_DiffuseTexture;
 Texture2D g_MaskTexture1;
 Texture2D g_MaskTexture2;
+Texture2D g_MaskTexture3;
 
 Texture2D g_DepthTexture;
 

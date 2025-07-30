@@ -1,6 +1,5 @@
 #include "Effect_Shader_Defines.hlsli"
 
-Texture2D g_Texture;
 vector  g_vCamPosition;
 bool    g_bLocal;
 
@@ -120,7 +119,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     
     if(Out.vColor.a < 0.1f)
         discard;
@@ -134,6 +133,30 @@ PS_OUT PS_MAIN(PS_IN In)
     
     return Out;
 }
+
+
+
+PS_OUT PS_MAIN_A(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    
+    if (Out.vColor.a < 0.1f)
+        discard;
+    
+    Out.vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
+    
+
+    if (In.vLifeTime.y >= In.vLifeTime.x)
+        discard;
+    
+    return Out;
+}
+
+
+
+
 
 technique11 DefaultTechnique
 {

@@ -27,6 +27,11 @@ HRESULT CToolSprite::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
+	for (_int i = 0; i < TU_END; i++)
+	{
+		m_bTextureUsage[i] = false;
+	}
+	m_bTextureUsage[TU_DIFFUSE] = true;
 
 
 	return S_OK;
@@ -79,7 +84,7 @@ HRESULT CToolSprite::Ready_Components()
 
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_DIFFUSE]))))
 		return E_FAIL;
 
 	return S_OK;
@@ -103,8 +108,22 @@ HRESULT CToolSprite::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
-		return E_FAIL;	
+	if (m_bTextureUsage[TU_DIFFUSE] == true){
+		if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK1] == true){
+		if (FAILED(m_pTextureCom[TU_MASK1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK2] == true){
+		if (FAILED(m_pTextureCom[TU_MASK2]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK3] == true){
+		if (FAILED(m_pTextureCom[TU_MASK3]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture3", 0)))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;

@@ -42,11 +42,7 @@ private:
 	HRESULT Load_EffectSet();
 
 	HRESULT Save_Effect();
-
-	HRESULT Save_Sprite(json& jItem, class CEffectBase* pEffect);
-	//HRESULT Save_Particle(json& jItem, class CEffectBase* pEffect);
-	//HRESULT Save_Mesh(json& jItem, class CEffectBase* pEffect);
-	//HRESULT Save_Trail(json& jItem, class CEffectBase* pEffect);
+	HRESULT Load_Effect();
 
 	HRESULT Load_Textures();
 	HRESULT Draw_TextureBrowser(class CEffectBase* pEffect);
@@ -64,10 +60,18 @@ private:
 		string name;
 	}EFFTEXTURE;
 	vector<EFFTEXTURE>			m_Textures;
-	_int						m_iSelectedTextureIdx = { 0 };
+	_int						m_iSelectedTextureIdx = { -1 };
 
 	_bool			m_bOpenSaveEffectOnly = { false };
 	_bool			m_bOpenSaveEffectContainer = { false };
+	_bool			m_bOpenLoadEffectOnly = { false };
+
+	const ID3D11ShaderResourceView* m_pSlotSRV[4] = {};
+	string m_SlotTexNames[4] = {};
+
+	SPRITEEFFECT_PASS_INDEX		m_eSelectedPass_SE = { SE_DEFAULT };
+	MESHEFFECT_PASS_INDEX		m_eSelectedPass_ME = { ME_DEFAULT };
+	PARTICLEEFFECT_PASS_INDEX	m_eSelectedPass_PE = { PE_DEFAULT };
 #pragma endregion
 
 

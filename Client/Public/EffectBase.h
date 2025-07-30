@@ -22,8 +22,11 @@ public:
 		_int				iTileY = {};
 		_bool				bBillboard = { true };
 		_bool				bAnimation = { true };
+
 		_uint				iShaderPass = { 0 };
+		_bool				isLoop = { true };
 		_bool				bTool = { false };
+		_tchar				pJsonFilePath[MAX_PATH]; // 이펙트 매니저 생길 때 까지 임시방편
 	}DESC;
 
 	// Keyframes
@@ -40,6 +43,8 @@ public:
 		virtual json Serialize() override;
 		virtual void Deserialize(const json& j) override;
 	}EFFKEYFRAME;
+
+	enum TEXUSAGE { TU_DIFFUSE, TU_MASK1, TU_MASK2, TU_MASK3, TU_END };
 
 protected:
 	CEffectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -65,7 +70,6 @@ protected:
 	CShader*		m_pShaderCom = { nullptr };
 
 	// 지금 메쉬만 사용중, 다른 애들도 바꾸고 주석 지우기
-	enum TEXUSAGE { TU_DIFFUSE, TU_MASK1, TU_MASK2, TU_MASK3, TU_END };
 	_bool			m_bTextureUsage[TU_END];
 	CTexture*		m_pTextureCom[TU_END] = {nullptr};
 	_wstring		m_TextureTag[TU_END];
@@ -80,6 +84,7 @@ protected:
 	_bool				m_bBillboard = { true };
 	_bool				m_bAnimation = { true };
 	_uint				m_iShaderPass = {};
+	_bool				m_isLoop = { false };
 
 
 	// TrackPositions
@@ -120,7 +125,8 @@ public:
 	void Set_TileXY(_int iX, _int iY) { m_iTileX = iX; m_iTileY = iY; }
 	void Set_Billboard(_bool bBillboard) { m_bBillboard = bBillboard; }
 	HRESULT Change_Texture(_wstring strTextureName, TEXUSAGE eTex = TU_DIFFUSE);
-
+	HRESULT Delete_Texture(TEXUSAGE eTex);
+	void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
 #endif
 
 	HRESULT Set_InterpolationType(_uint iKeyFrameIndex, INTERPOLATION eType) { 
@@ -140,13 +146,16 @@ public:
 	void Delete_KeyFrame() { m_KeyFrames.pop_back(); }
 	void Add_KeyFrame(EFFKEYFRAME tNewKeyframe) { m_KeyFrames.push_back(tNewKeyframe); }
 
+protected:
+	HRESULT Ready_Textures_Prototype();//이펙트매니저 이전 임시 함수
+
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;
 
 public:
 	virtual json Serialize();
-	virtual void Deserialize(const json& j) = 0;
+	virtual void Deserialize(const json& j);
 };
 
 NS_END

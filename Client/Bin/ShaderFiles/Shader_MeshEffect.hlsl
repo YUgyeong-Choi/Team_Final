@@ -1,8 +1,5 @@
 #include "Effect_Shader_Defines.hlsli"
 
-Texture2D g_DiffuseTexture;
-
-
 float g_fThreshold, g_fIntensity;
 vector g_vCenterColor;
 float g_fTime;
@@ -97,7 +94,7 @@ PS_OUT_EFFECT PS_MAIN_MASKONLY(PS_IN In)
 {
     PS_OUT_EFFECT Out;
     
-    float mask = g_MaskTexture1.Sample(DefaultSampler, In.vTexcoord).r;
+    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTileScroll(In.vTexcoord, g_fTileSize, g_fTileOffset, 1.2f, g_fTime)).r;
     
     
     float4 color;
@@ -115,15 +112,14 @@ PS_OUT_EFFECT PS_MAIN_MASK_NOISE(PS_IN In)
 {
     PS_OUT_EFFECT Out;
     
-    
     float2 uv = In.vTexcoord;
     
     uv.x *= 3.0f; // 가로 타일링
-    uv.x -= g_fTime * 2.0f; // 시간 기반 스크롤
+    uv.x -= g_fTime * 0.8f; // 시간 기반 스크롤
     uv.y *= 0.5f; // 세로 압축 (패턴 길이 보정)
     
 
-    float2 noiseUV = uv * /*g_fNoiseTile*/float2(4.0, 4.0) + g_fTime * float2(0.2, 0.1) /*g_fNoiseScrollSpeed*/;
+    float2 noiseUV = uv * /*g_fNoiseTile*/float2(4.0, 4.0) + g_fTime * float2(0.8, 0.5) /*g_fNoiseScrollSpeed*/;
     float noise = g_MaskTexture2.Sample(DefaultSampler, noiseUV).r; // grayscale 노이즈
     
     float noiseOffset = (noise - 0.5f) * /*g_fNoiseStrength*/0.03;

@@ -1,8 +1,6 @@
 #include "Effect_Shader_Defines.hlsli"
 
 
-Texture2D g_Texture;
-
 float   g_fOpacity = 1.f;
 float   g_fPercentage = 1.f;
 
@@ -76,7 +74,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     
     return Out;    
 }
@@ -138,7 +136,7 @@ PS_OUT PS_MAIN_SOFTEFFECT(PS_IN_BLEND In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord));
+    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord));
     
     Out.vColor = SoftEffect(Out.vColor, In.vProjPos);
     
@@ -149,7 +147,7 @@ PS_OUT PS_MAIN_GRID(PS_IN_BLEND In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     if (Out.vColor.a <= 0.01f)
         discard;
     
@@ -161,7 +159,7 @@ PS_OUT PS_MAIN_GRID(PS_IN_BLEND In)
 PS_OUT PS_MAIN_GRID_COLOR(PS_IN_BLEND In)
 {
     PS_OUT Out;    
-    Out.vColor = g_Texture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     if (Out.vColor.a <= 0.01f)
         discard;
     
