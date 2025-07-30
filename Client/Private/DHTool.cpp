@@ -277,10 +277,10 @@ HRESULT CDHTool::Render_LightTool()
 	ImGui::Separator();
 
 	// 현재 라이트 개수 표시
-	int iDirectionalCount = m_pGameInstance->Get_LightCount(0);
-	int iPointCount = m_pGameInstance->Get_LightCount(1);
-	int iSpotCount = m_pGameInstance->Get_LightCount(2);
-
+	int iDirectionalCount = m_pGameInstance->Get_LightCount(0, ENUM_CLASS(LEVEL::DH));
+	int iSpotCount = m_pGameInstance->Get_LightCount(1, ENUM_CLASS(LEVEL::DH));
+	int iPointCount = m_pGameInstance->Get_LightCount(2, ENUM_CLASS(LEVEL::DH));
+	
 	ImGui::Text("Light Count:");
 	ImGui::BulletText("Point Light      : %d", iPointCount);
 	ImGui::BulletText("Spot Light       : %d", iSpotCount);

@@ -100,9 +100,9 @@ HRESULT CLight_Manager::Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIB
 	return S_OK;
 }
 
-_uint CLight_Manager::Get_LightCount(_uint TYPE)
+_uint CLight_Manager::Get_LightCount(_uint TYPE, _uint iLevel)
 {
-	auto iter = m_LevelLights.find(static_cast<_uint>(LEVEL::DH));
+	auto iter = m_LevelLights.find(iLevel);
 	_uint Dirrectioncount = 0;
 	_uint Pointcount = 0;
 	_uint Spotcount = 0;
@@ -114,18 +114,18 @@ _uint CLight_Manager::Get_LightCount(_uint TYPE)
 			if (pLight && pLight->Get_LightDesc()->eType == 0)
 				++Dirrectioncount;
 			if (pLight && pLight->Get_LightDesc()->eType == 1)
-				++Pointcount;
-			if (pLight && pLight->Get_LightDesc()->eType == 2)
 				++Spotcount;
+			if (pLight && pLight->Get_LightDesc()->eType == 2)
+				++Pointcount;
 		}
 	}
 
 	if (TYPE == 0)
 		return Dirrectioncount;
 	if (TYPE == 1)
-		return Pointcount;
-	if (TYPE == 2)
 		return Spotcount;
+	if (TYPE == 2)
+		return Pointcount;
 
 	return 0;
 }

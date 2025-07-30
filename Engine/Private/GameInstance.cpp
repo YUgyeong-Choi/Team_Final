@@ -481,9 +481,9 @@ HRESULT CGameInstance::RemoveAll_Light(_uint iLevelIndex)
 	return m_pLight_Manager->RemoveAll_Light(iLevelIndex);
 }
 
-_uint CGameInstance::Get_LightCount(_uint TYPE) const
+_uint CGameInstance::Get_LightCount(_uint TYPE, _uint iLevel) const
 {
-	return m_pLight_Manager->Get_LightCount(TYPE);
+	return m_pLight_Manager->Get_LightCount(TYPE, iLevel);
 }
 
 HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
