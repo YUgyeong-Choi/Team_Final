@@ -6,6 +6,8 @@
 
 #include "YGDynamicGib.h"
 #include "YGDynamicObj.h"
+#include "PBRMesh.h"
+#include "TestAnimObject.h"
 
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -32,10 +34,41 @@ HRESULT CLevel_YG::Initialize()
 	if (FAILED(Ready_ImGuiTools()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
+	//if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
+	//	return E_FAIL;
+
+	if (FAILED(Ready_Layer_Station(TEXT("Layer_StaticMesh"))))
 		return E_FAIL;
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YG));
+	return S_OK;
+}
+
+HRESULT CLevel_YG::Ready_Layer_Station(const _wstring strLayerTag)
+{
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("Train");
+	lstrcpy(Desc.szName, TEXT("Train"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("Station");
+	lstrcpy(Desc.szName, TEXT("Station"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::YG), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	CTestAnimObject::GAMEOBJECT_DESC playerDesc{};
+	playerDesc.fSpeedPerSec = 3.f;
+	playerDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
+		ENUM_CLASS(LEVEL::YG), TEXT("TestAnimObject"), &playerDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
