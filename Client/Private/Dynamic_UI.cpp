@@ -1,11 +1,63 @@
 #include "Dynamic_UI.h"
 #include "GameInstance.h"
 #include "UI_Feature.h"
+#include "UI_Featrue_Scale.h"
+#include "UI_Feature_Fade.h"
+#include "UI_Feature_Position.h"
+#include "UI_Feature_UV.h"
 
 
 vector<class CUI_Feature*>& CDynamic_UI::Get_Features()
 {
 	return m_pUIFeatures;
+}
+
+json CDynamic_UI::Serialize()
+{
+	json j = __super::Serialize();
+
+
+	j["Texturetag"] = WStringToString(m_strTextureTag);
+	j["iTextureLevel"] = m_iTextureLevel;
+	j["iTextureIndex"] = m_iTextureIndex;
+	j["iPassIndex"] = m_iPassIndex;
+	j["fDuration"] = m_fDuration;
+
+	for (const auto& pFeature : m_pUIFeatures)
+		j["Features"].push_back(pFeature->Serialize());
+	
+		
+
+	return j;
+}
+
+void CDynamic_UI::Deserialize(const json& j)
+{
+	__super::Deserialize(j);
+
+	string textureTag = j["Texturetag"].get<string>();
+	m_strTextureTag = StringToWStringU8(textureTag);
+
+	m_iTextureLevel = j["iTextureLevel"];
+	m_iTextureIndex = j["iTextureIndex"];
+	m_iPassIndex = j["iPassIndex"];
+	m_fDuration = j["fDuration"];
+
+	if (j.contains("Features") && j["Features"].is_array())
+	{
+		for (const auto& featureJson : j["Features"])
+		{
+			string featureTag = featureJson["FeatureProtoTag"].get<string>();
+
+			CUI_Feature* pFeature = dynamic_cast<CUI_Feature*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(featureTag), nullptr));
+			if (nullptr == pFeature)
+				continue;
+
+			pFeature->Deserialize(featureJson);
+
+			m_pUIFeatures.push_back(pFeature);
+		}
+	}
 }
 
 CDynamic_UI::DYNAMIC_UI_DESC CDynamic_UI::Get_Desc()
@@ -24,6 +76,9 @@ CDynamic_UI::DYNAMIC_UI_DESC CDynamic_UI::Get_Desc()
 
 	eDesc.strProtoTag = m_strProtoTag;
 	eDesc.fDuration = m_fDuration;
+
+	eDesc.fAlpha = m_fCurrentAlpha;
+	eDesc.fRotation = m_fRotation;
 
 	for (auto pFeature : m_pUIFeatures)
 	{
@@ -52,10 +107,11 @@ HRESULT CDynamic_UI::Initialize_Prototype()
 
 HRESULT CDynamic_UI::Initialize(void* pArg)
 {
-	DYNAMIC_UI_DESC* pDesc = static_cast<DYNAMIC_UI_DESC*>(pArg);
-
+	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	DYNAMIC_UI_DESC* pDesc = static_cast<DYNAMIC_UI_DESC*>(pArg);
 
 	m_strTextureTag = pDesc->strTextureTag;
 
@@ -81,8 +137,9 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 		Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(pDesc->strProtoTag), pDesc);
 	}
 
+	m_strProtoTag = TEXT("Prototype_GameObject_Dynamic_UI");
 
-
+	
 	return S_OK;
 }
 
@@ -166,6 +223,8 @@ void CDynamic_UI::Update_UI_From_Tool(DYNAMIC_UI_DESC eDesc)
 	m_fSizeY = eDesc.fSizeY;
 	m_iPassIndex = eDesc.iPassIndex;
 	m_iTextureIndex = eDesc.iTextureIndex;
+	m_fRotation = eDesc.fRotation;
+
 
 	D3D11_VIEWPORT			ViewportDesc{};
 	_uint					iNumViewports = { 1 };
@@ -174,6 +233,8 @@ void CDynamic_UI::Update_UI_From_Tool(DYNAMIC_UI_DESC eDesc)
 
 
 	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+
+	m_pTransformCom->Rotation(0.f, 0.f, XMConvertToRadians(m_fRotation));
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 }
@@ -231,8 +292,6 @@ HRESULT CDynamic_UI::Bind_ShaderResources()
 
 	// 기본값을 던지고, 추가로 덮어쓰자
 
-	_float fAlpha = 1.f;
-
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &m_fCurrentAlpha, sizeof(_float))))
 		return E_FAIL;
 
@@ -257,6 +316,14 @@ HRESULT CDynamic_UI::Add_Feature(_uint iPrototypeLevelIndex, const _wstring& str
 	m_pUIFeatures.push_back(pPartObject);
 
 	return S_OK;
+}
+
+void CDynamic_UI::Update_Data()
+{
+	__super::Update_Data();
+
+
+
 }
 
 CDynamic_UI* CDynamic_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -6,6 +6,7 @@
 #include "Static_UI.h"
 #include "Dynamic_UI.h"
 #include "UI_Sequence.h"
+#include "UI_Text.h"
 
 
 NS_BEGIN(Client)
@@ -29,20 +30,28 @@ public:
 
 private:
 	
-	void Save_File();
+	void Obj_Serialize();
+	void Obj_Deserialize();
+
+	
 	void Open_File();
-	void Add_Static_UI_From_File();
-	void Add_Dynamic_UI_From_File();
+
 
 	void Add_Static_UI();
-
 	void Add_Dynamic_UI();
+	void Add_UI_Text();
+
 
 	// dynamicui가 가지고 있는 시퀀스로 바꿔서 보여주기
 	void Add_Sequence_To_DynamicUI();
 
 	// 시퀀스를 ui에 적용하기
 	void Apply_Sequence_To_DynamicUI();
+
+	void Input_Static_Desc();
+	void Input_Dynamic_Desc();
+	void Input_Sequence_Desc();
+	void Input_Text();
 
 private:
 
@@ -57,6 +66,7 @@ private:
 	_int m_iSelectTextureIndex = {-1};
 	_int m_iSelectObjIndex = { -1 };
 	_int m_iDynamicObjIndex = { -1 };
+	_int m_iTextObjIndex = { -1 };
 	wstring m_strSelectName = {};
 
 	//  temp로 비율을 받고 실제 정보로 바꾸기
@@ -82,12 +92,15 @@ private:
 	
 	UI_FEATURE_TOOL_DESC m_eFeatureDesc = {};
 
-
 	//
 	_bool m_isFromTool = { true };
 
 	string m_strInput = {};
 
+	CUI_Text::TEXT_UI_DESC m_eTextTempUIDesc = {};
+	CUI_Text::TEXT_UI_DESC m_eTextUIDesc = {};
+	list<CUI_Text*> m_TextUIList = {};
+	CUI_Text* m_pSelectTxtObj = { nullptr };
 
 	
 public:

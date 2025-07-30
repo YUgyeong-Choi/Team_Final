@@ -4,10 +4,11 @@
 
 #include "Client_Defines.h"
 #include "Dynamic_UI.h"
+#include "Serializable.h"
 
 NS_BEGIN(Client)
 
-class CUI_Feature abstract : public CComponent
+class CUI_Feature abstract : public CComponent, public ISerializable
 {
 protected:
 	CUI_Feature(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -21,6 +22,9 @@ public:
 	// 툴에서 사용할 정보를 전달.
 	virtual UI_FEATURE_TOOL_DESC Get_Desc_From_Tool() = 0;
 	virtual UI_FEATRE_DESC& Get_Desc() = 0;
+
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -39,7 +43,7 @@ protected:
 
 	_bool  m_isLoop = {false};
 
-
+	_wstring m_strProtoTag = {};
 	
 	
 

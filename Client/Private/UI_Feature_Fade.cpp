@@ -18,6 +18,9 @@ HRESULT CUI_Feature_Fade::Initialize_Prototype()
 
 HRESULT CUI_Feature_Fade::Initialize(void* pArg)
 {
+    if (nullptr == pArg)
+        return S_OK;
+
     UI_FEATURE_FADE_DESC* pDesc = static_cast<UI_FEATURE_FADE_DESC*>(pArg);
 
     m_isLoop = pDesc->isLoop;
@@ -25,11 +28,12 @@ HRESULT CUI_Feature_Fade::Initialize(void* pArg)
     m_fStartAlpha = pDesc->fStartAlpha;
     m_fEndAlpha = pDesc->fEndAlpha;
 
-    // 지속 시간에 따라 끝나는 프레임을 늘린다.
-    // 일단 1초에 60프레임으로 하도록 하고, 나중에 필요하면 수정
+   
     m_iEndFrame = pDesc->iEndFrame;
 
     m_iRange = m_iEndFrame - m_iStartFrame;
+
+    m_strProtoTag = TEXT("Prototype_Component_UI_Feature_Fade");
 
     return S_OK;
 }
@@ -105,6 +109,32 @@ UI_FEATRE_DESC& CUI_Feature_Fade::Get_Desc()
     m_eDesc.strProtoTag = "Prototype_Component_UI_Feature_Fade";
 
     return m_eDesc;
+}
+
+json CUI_Feature_Fade::Serialize()
+{
+    json j = __super::Serialize();
+
+
+    j["StartAlpha"] = m_fStartAlpha;
+   
+    j["EndAlpha"] = m_fEndAlpha;
+
+    j["FeatureProtoTag"] = "Prototype_Component_UI_Feature_Fade";
+
+
+    return j;
+}
+
+void CUI_Feature_Fade::Deserialize(const json& j)
+{
+    __super::Deserialize(j);
+
+    m_fStartAlpha = j["StartAlpha"].get<_float>();
+    m_fEndAlpha = j["EndAlpha"].get<_float>();
+
+    string strPrototag = j["FeatureProtoTag"];
+    m_strProtoTag = StringToWStringU8(strPrototag);
 }
 
 CUI_Feature_Fade* CUI_Feature_Fade::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

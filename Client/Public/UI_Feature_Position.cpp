@@ -12,13 +12,16 @@ CUI_Feature_Position::CUI_Feature_Position(const CUI_Feature_Position& Prototype
 
 HRESULT CUI_Feature_Position::Initialize_Prototype()
 {
-
+   
 
     return S_OK;
 }
 
 HRESULT CUI_Feature_Position::Initialize(void* pArg)
 {
+    if (nullptr == pArg)
+        return S_OK;
+
     UI_FEATURE_POS_DESC* pDesc = static_cast<UI_FEATURE_POS_DESC*>(pArg);
 
     m_isLoop = pDesc->isLoop;
@@ -28,7 +31,7 @@ HRESULT CUI_Feature_Position::Initialize(void* pArg)
     m_fEndPos = pDesc->fEndPos;
 
     m_fCurrentPos = m_fStartPos;
-
+    m_strProtoTag = TEXT("Prototype_Component_UI_Feature_Pos");
     m_iRange = m_iEndFrame - m_iStartFrame;
 
     return S_OK;
@@ -113,6 +116,34 @@ UI_FEATRE_DESC& CUI_Feature_Position::Get_Desc()
     m_eDesc.strProtoTag = "Prototype_Component_UI_Feature_Pos";
 
     return m_eDesc;
+}
+
+json CUI_Feature_Position::Serialize()
+{
+    json j = __super::Serialize();
+
+
+    j["StartPos"]["X"] = m_fStartPos.x;
+    j["StartPos"]["Y"] = m_fStartPos.y;
+
+    j["EndPos"]["X"] = m_fEndPos.x;
+    j["EndPos"]["Y"] = m_fEndPos.y;
+
+    j["FeatureProtoTag"] = "Prototype_Component_UI_Feature_Pos";
+
+
+    return j;
+}
+
+void CUI_Feature_Position::Deserialize(const json& j)
+{
+    __super::Deserialize(j);
+
+    m_fStartPos = { j["StartPos"]["X"] , j["StartPos"]["Y"] };
+    m_fEndPos = { j["EndPos"]["X"] , j["EndPos"]["Y"] };
+
+    string strPrototag = j["FeatureProtoTag"];
+    m_strProtoTag = StringToWStringU8(strPrototag);
 }
 
 CUI_Feature_Position* CUI_Feature_Position::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

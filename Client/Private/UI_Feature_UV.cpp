@@ -13,11 +13,15 @@ CUI_Feature_UV::CUI_Feature_UV(const CUI_Feature_UV& Prototype)
 
 HRESULT CUI_Feature_UV::Initialize_Prototype()
 {
+	
 	return S_OK;
 }
 
 HRESULT CUI_Feature_UV::Initialize(void* pArg)
 {
+	if (nullptr == pArg)
+		return S_OK;
+
 	UI_FEATURE_UV_DESC* pDesc = static_cast<UI_FEATURE_UV_DESC*>(pArg);
 
 	m_fUV = pDesc->fStartUV;
@@ -31,6 +35,7 @@ HRESULT CUI_Feature_UV::Initialize(void* pArg)
 	
 	m_iStartFrame = pDesc->iStartFrame;
 	m_iEndFrame = pDesc->iEndFrame;
+	m_strProtoTag = TEXT("Prototype_Component_UI_Feature_UV");
 
 	return S_OK;
 }
@@ -40,8 +45,12 @@ void CUI_Feature_UV::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
 	if (iCurrentFrame < m_iStartFrame)
 		return;
 
+	if (m_iWidth == 0 || m_iHeight == 0)
+		return;
+
 	if (m_isLoop)
 	{
+		
 		m_iCurrentFrame = iCurrentFrame % (m_iWidth * m_iHeight);
 	}
 	else
@@ -104,6 +113,38 @@ UI_FEATRE_DESC& CUI_Feature_UV::Get_Desc()
 	m_eDesc.strProtoTag = "Prototype_Component_UI_Feature_UV";
 
 	return m_eDesc;
+}
+
+json CUI_Feature_UV::Serialize()
+{
+	json j = __super::Serialize();
+
+
+	j["StartUV"]["U"] = m_fUV.x;
+	j["StartUV"]["V"] = m_fUV.y;
+
+	j["OffsetUV"]["U"] = m_fOffsetUV.x;
+	j["OffsetUV"]["V"] = m_fOffsetUV.y;
+
+	j["FeatureProtoTag"] = "Prototype_Component_UI_Feature_UV";
+
+
+	return j;
+}
+
+void CUI_Feature_UV::Deserialize(const json& j)
+{
+	__super::Deserialize(j);
+
+	m_fUV = { j["StartUV"]["U"] , j["StartUV"]["V"] };
+	m_fOffsetUV = { j["OffsetUV"]["U"] , j["OffsetUV"]["V"] };
+
+	string strPrototag = j["FeatureProtoTag"];
+	m_strProtoTag = StringToWStringU8(strPrototag);
+
+	m_iWidth = static_cast<_int>(1 / m_fOffsetUV.x);
+	m_iHeight = static_cast<_int>(1 / m_fOffsetUV.y);
+
 }
 
 CUI_Feature_UV* CUI_Feature_UV::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

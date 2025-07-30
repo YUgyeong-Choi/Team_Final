@@ -24,6 +24,11 @@ public:
 		_float fDuration = {0.016f}; // 몇 초 간격으로 할건지
 
 
+		_int iTextureIndex, iPassIndex;
+		_int iTextureLevel = { ENUM_CLASS(LEVEL::STATIC) };
+		_wstring strTextureTag = {};
+
+		
 		vector<UI_FEATRE_DESC*> FeatureDescs;
 
 	}DYNAMIC_UI_DESC;
@@ -32,10 +37,14 @@ public:
 
 	DYNAMIC_UI_DESC Get_Desc();
 	
+	_wstring& Get_StrTextureTag() { return m_strTextureTag; }
 
 	
 
 	vector<class CUI_Feature*>& Get_Features();
+
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
 
 protected:
 	CDynamic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -59,6 +68,8 @@ public:
 
 	HRESULT Add_Feature( _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 
+	virtual void Update_Data();
+
 protected:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
@@ -72,11 +83,14 @@ protected:
 
 	_int   m_iCurrentFrame = {};
 
-	_wstring    m_strProtoTag = {TEXT("Prototype_GameObject_Dynamic_UI")};
-
 	// 일단 시간으로, 다른 값으로 수정해야 되면 상속받아서 다른 값으로 프레임을 제어하면 될듯?
 	_float m_fDuration = {0.016f};
 	_float m_fElapsedTime = {};
+
+	_wstring		m_strTextureTag = {};
+	_int			m_iPassIndex = {};
+	_int			m_iTextureIndex = {};
+	_int			m_iTextureLevel = { ENUM_CLASS(LEVEL::STATIC) };
 
 private:
 	

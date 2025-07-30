@@ -45,24 +45,6 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 		if (FAILED(Ready_Loading()))
 			return E_FAIL;
 
-		CUI_Text::TEXT_UI_DESC eTextDesc = {};
-		eTextDesc.fOffset = { 0.0f };
-		eTextDesc.fFontScale = { 1.f };
-		eTextDesc.fFontOffset = { 0.f,0.f };
-		eTextDesc.fSizeX = 0.f;
-		eTextDesc.fSizeY = 0.f;
-		eTextDesc.fX = g_iWinSizeX * 0.2f;
-		eTextDesc.fY = g_iWinSizeY * 0.2f;
-		eTextDesc.isCenter = true;
-		eTextDesc.strCaption = TEXT("Test");
-		eTextDesc.strFontTag = TEXT("Font_Medium");
-		eTextDesc.vColor = { 1.f,1.f,1.f,1.f };
-
-		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Text"),
-			static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Text"), &eTextDesc)))
-			return E_FAIL;
-
-		static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Text")))->FadeStart(1.f, 0.f, 1.5f);
 	}
 
 	
@@ -158,148 +140,77 @@ HRESULT CLevel_Loading::Render()
 
 HRESULT CLevel_Loading::Ready_Loading()
 {
+	json j;
 
+	ifstream file("../Bin/DataFiles/UI/Loading.json");
+
+	file >> j;
+
+	for (const auto& eUIJson : j)
 	{
-		json j;
+		string protoTag = eUIJson["ProtoTag"];
 
-		ifstream file("../Bin/DataFiles/UI/Loading_Static.json");
-
-		file >> j;
-
-		for (const auto& eUIJson : j)
+		if ("Prototype_GameObject_Static_UI" == protoTag)
 		{
-			CStatic_UI::STATIC_UI_DESC eStaticDesc = {};
+			CStatic_UI::STATIC_UI_DESC eDesc = {};
 
-			eStaticDesc.fOffset = eUIJson["Offset"];
-			eStaticDesc.iPassIndex = eUIJson["PassIndex"];
-			eStaticDesc.iTextureIndex = eUIJson["TextureIndex"];
-			eStaticDesc.fSizeX = eUIJson["fSizeX"].get<float>() * g_iWinSizeX;
-			eStaticDesc.fSizeY = eUIJson["fSizeY"].get<float>() * g_iWinSizeY;
-			eStaticDesc.fX = eUIJson["fX"].get<float>() * g_iWinSizeX;
-			eStaticDesc.fY = eUIJson["fY"].get<float>() * g_iWinSizeY;
+			string textureTag = eUIJson["Texturetag"];
+			eDesc.strTextureTag = StringToWStringU8(textureTag);
+			eDesc.iTextureLevel = eUIJson["iTextureLevel"];
 
-			eStaticDesc.vColor = { eUIJson["Color"][0], eUIJson["Color"][1], eUIJson["Color"][2],eUIJson["Color"][3], };
 
-			string textureTag = eUIJson["TextureTag"];
-			eStaticDesc.strTextureTag = StringToWString(textureTag);
+			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eDesc));
 
-			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
-				static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static"), &eStaticDesc)))
-				return E_FAIL;
+			CStatic_UI* pObj = static_cast<CStatic_UI*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Static")));
+
+			pObj->Deserialize(eUIJson);
+
+			pObj->Update_Data();
 
 			static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static")))->Set_isVignetting(true);
+
 		}
-
-		static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static")))->Set_isVignetting(false);
-		file.close();
-	}
-
-	
-
-	{
-
-		json j;
-
-		ifstream file("../Bin/DataFiles/UI/Loading_Dynamic.json");
-
-		file >> j;
-
-		for (const auto& eUIJson : j)
+		else if ("Prototype_GameObject_Dynamic_UI" == protoTag)
 		{
 			CDynamic_UI::DYNAMIC_UI_DESC eDesc = {};
 
-
-			eDesc.fOffset = eUIJson["Offset"];
-			eDesc.iPassIndex = eUIJson["PassIndex"];
-			eDesc.iTextureIndex = eUIJson["TextureIndex"];
-			eDesc.fSizeX = eUIJson["fSizeX"].get<float>() * g_iWinSizeX;
-			eDesc.fSizeY = eUIJson["fSizeY"].get<float>() * g_iWinSizeY;
-			eDesc.fX = eUIJson["fX"].get<float>() * g_iWinSizeX;
-			eDesc.fY = eUIJson["fY"].get<float>() * g_iWinSizeY;
-			eDesc.fDuration = eUIJson["Duration"].get<float>();
-			eDesc.vColor = { eUIJson["Color"][0], eUIJson["Color"][1], eUIJson["Color"][2],eUIJson["Color"][3] };
-
-			string textureTag = eUIJson["TextureTag"];
-			eDesc.strTextureTag = wstring(textureTag.begin(), textureTag.end());
-	
-			// 기능 읽어서 각 프로토타입에 맞게 구조체 생성해서 넣자
-			if (!eUIJson.contains("Features"))
-				continue;
-
-			const auto& features = eUIJson["Features"];
-
-			for (const auto& feature : features)
-			{
-				std::string protoTag = feature["ProtoTag"];
-
-				if (protoTag.find("UV") != protoTag.npos)
-				{
-					UI_FEATURE_UV_DESC* efeatureDesc = new UI_FEATURE_UV_DESC;
-					efeatureDesc->strProtoTag = (protoTag);
-					efeatureDesc->iStartFrame = feature["iStartFrame"];
-					efeatureDesc->iEndFrame = feature["iEndFrame"];
-					efeatureDesc->isLoop = feature["isLoop"];
-
-					efeatureDesc->fStartUV = { feature["fStartUV"]["x"],  feature["fStartUV"]["y"] };
-					efeatureDesc->fOffsetUV = { feature["fOffsetUV"]["x"],  feature["fOffsetUV"]["y"] };
-
-					eDesc.FeatureDescs.push_back(efeatureDesc);
-				}
-				else if (protoTag.find("Pos") != protoTag.npos)
-				{
-					UI_FEATURE_POS_DESC* efeatureDesc = new UI_FEATURE_POS_DESC;
-					efeatureDesc->strProtoTag = (protoTag);
-					efeatureDesc->iStartFrame = feature["iStartFrame"];
-					efeatureDesc->iEndFrame = feature["iEndFrame"];
-					efeatureDesc->isLoop = feature["isLoop"];
-
-					efeatureDesc->fStartPos = { feature["fStartPos"]["x"],  feature["fStartPos"]["y"] };
-					efeatureDesc->fEndPos = { feature["fEndPos"]["x"],  feature["fEndPos"]["y"] };
-
-					eDesc.FeatureDescs.push_back(efeatureDesc);
-				}
-				else if (protoTag.find("Scale") != protoTag.npos)
-				{
-					UI_FEATURE_SCALE_DESC* efeatureDesc = new UI_FEATURE_SCALE_DESC;
-					efeatureDesc->strProtoTag = (protoTag);
-					efeatureDesc->iStartFrame = feature["iStartFrame"];
-					efeatureDesc->iEndFrame = feature["iEndFrame"];
-					efeatureDesc->isLoop = feature["isLoop"];
-
-					efeatureDesc->fStartScale = { feature["fStartScale"]["x"],  feature["fStartScale"]["y"] };
-					efeatureDesc->fEndScale = { feature["fEndScale"]["x"],  feature["fEndScale"]["y"] };
-
-					eDesc.FeatureDescs.push_back(efeatureDesc);
-				}
-				else if (protoTag.find("Fade") != protoTag.npos)
-				{
-					UI_FEATURE_FADE_DESC* efeatureDesc = new UI_FEATURE_FADE_DESC;
-					efeatureDesc->strProtoTag = (protoTag);
-					efeatureDesc->iStartFrame = feature["iStartFrame"];
-					efeatureDesc->iEndFrame = feature["iEndFrame"];
-					efeatureDesc->isLoop = feature["isLoop"];
-
-					efeatureDesc->fStartAlpha = feature["StartAlpha"];
-					efeatureDesc->fEndAlpha = feature["fEndAlpha"];
-
-					eDesc.FeatureDescs.push_back(efeatureDesc);
-				}
-			}
+			string textureTag = eUIJson["Texturetag"];
+			eDesc.strTextureTag = StringToWStringU8(textureTag);
+			eDesc.iTextureLevel = eUIJson["iTextureLevel"];
 
 
-			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
-				static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Dynamic"), &eDesc)))
-				return E_FAIL;
+			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Dynamic"), &eDesc));
 
-			for (auto& pDesc : eDesc.FeatureDescs)
-			{
-				Safe_Delete(pDesc);
-			}
+			CDynamic_UI* pObj = static_cast<CDynamic_UI*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Dynamic")));
+
+			pObj->Deserialize(eUIJson);
+
+			pObj->Update_Data();
+
+		
 
 		}
+		else if ("Prototype_GameObject_UI_Text" == protoTag)
+		{
+			CUI_Text::TEXT_UI_DESC eDesc = {};
 
-		file.close();
+			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Text"), &eDesc));
+
+			CUI_Text* pObj = static_cast<CUI_Text*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Text")));
+
+			pObj->Deserialize(eUIJson);
+
+			pObj->Update_Data();
+
+			
+		}
+
 	}
+	file.close();
+
+	
+	static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static")))->Set_isVignetting(false);
+
 	
 
 

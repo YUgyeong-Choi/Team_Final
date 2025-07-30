@@ -38,7 +38,8 @@ public:
 
 	}
 
-
+	virtual json Serialize();
+	virtual void Deserialize(const json& j);
 
 private:
 	CUI_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -71,12 +72,6 @@ private:
 	_bool   m_isCenter = {};
 
 	
-
-
-
-private:
-	HRESULT Ready_Components(const wstring& strTextureTag);
-
 public:
 	static CUI_Text* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
