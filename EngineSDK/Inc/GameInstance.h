@@ -141,8 +141,16 @@ public:
 #pragma endregion
 
 #pragma region PICKING
+	//피킹된 위치를 가져옴
 	_bool Picking(_float4* pOut);
-	_bool Picking(_int* pOut);
+
+	//피킹한 오브젝트의 아이디를 가져옴
+	_bool PickByClick(_int* pOut);
+
+	//드래그한 만큼의 범위에서 오브젝트의 아이디를 가져옴
+	_bool PickInRect(const _float2& vStart, const _float2& vEnd, set<_int>* pOut);
+
+
 	_bool Picking_ToolMesh(_int* pOut);
 #pragma endregion
 

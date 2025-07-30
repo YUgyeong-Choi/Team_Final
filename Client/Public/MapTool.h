@@ -49,15 +49,28 @@ private:
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
 private:
+	//모델 그룹에 추가 제거
 	void Add_ModelGroup(string ModelName, CGameObject* pMapToolObject);
 	void Delete_ModelGroup(CGameObject* pMapToolObject);
 
-	CGameObject* Get_Selected_GameObject();
-	_int		Find_HierarchyIndex_By_ID(_uint iID);
+	//현재 포커스된 오브젝트 가져오기
+	CGameObject* Get_Focused_Object();
+
+	//아이디로 하이어라키 인덱스 찾기
+	_int			Find_HierarchyIndex_By_ID(_uint iID);
+
+	//인덱스로 오브젝트 찾기
+	class CMapToolObject*	Find_Object_By_Index(_int iIndex);
 
 private:
-	void Picking();
+	//클릭으로 오브젝트 선택하기
+	void SelectByClick();
+	//드래그로 오브젝트 다중 선택하기
+	void SelectByDrag(const _float2& vMouseDragEnd);
 
+	//마우스 드랙 시작 포인트
+	_float2 m_vMouseDragStart = {};
+	_bool	m_bDragging = { false };
 private:
 	void Control_PreviewObject(_float fTimeDelta);
 
@@ -84,10 +97,12 @@ private:
 private:
 	//하이어라키 관련
 	map<string, list<CGameObject*>> m_ModelGroups;
-	//_int m_iSelectedHierarchyIndex = { -1 };
-	//class CMapToolObject* m_pSelectedObject = { nullptr };
-	set<_int> m_iHierachyIndexies;
+
+	//선택된 것들
+	set<_int> m_SelectedIndexies;
 	set<class CMapToolObject*> m_SelectedObjects = {};
+
+	//포커스
 	_int m_iFocusIndex = { -1 };
 	class CMapToolObject* m_pFocusObject = { nullptr };
 

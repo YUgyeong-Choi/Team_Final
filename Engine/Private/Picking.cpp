@@ -96,7 +96,7 @@ _bool CPicking::Picking(_float4* pOut)
 	return static_cast<_bool>(m_pWorldPostions[iIndex].w);	
 }
 
-_bool CPicking::Picking(_int* pOut)
+_bool CPicking::PickByClick(_int* pOut)
 {
 	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_Depth"), m_pTexture)))
 		return false;
@@ -126,6 +126,45 @@ _bool CPicking::Picking(_int* pOut)
 		return false;
 
 	return true;
+}
+
+_bool CPicking::PickInRect(const _float2& vStart, const _float2& vEnd, set<_int>* pOut)
+{
+	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_Depth"), m_pTexture)))
+		return false;
+
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	if (FAILED(m_pContext->Map(m_pTexture, 0, D3D11_MAP_READ, 0, &SubResource)))
+		return false;
+
+	memcpy(m_pIDs, SubResource.pData, sizeof(_float4) * m_iWidth * m_iHeight);
+	m_pContext->Unmap(m_pTexture, 0);
+
+	_long iMinX = (_long)min(vStart.x, vEnd.x);
+	_long iMaxX = (_long)max(vStart.x, vEnd.x);
+	_long iMinY = (_long)min(vStart.y, vEnd.y);
+	_long iMaxY = (_long)max(vStart.y, vEnd.y);
+
+	iMinX = max(0L, iMinX);
+	iMaxX = min((_long)m_iWidth - 1, iMaxX);
+	iMinY = max(0L, iMinY);
+	iMaxY = min((_long)m_iHeight - 1, iMaxY);
+
+	pOut->clear();
+
+	for (_long y = iMinY; y <= iMaxY; ++y)
+	{
+		for (_long x = iMinX; x <= iMaxX; ++x)
+		{
+			_uint iIndex = y * m_iWidth + x;
+			_int iID = static_cast<_int>(m_pIDs[iIndex].w);
+
+			if (iID >= 0)
+				pOut->insert(iID);
+		}
+	}
+
+	return !pOut->empty(); // 선택된 게 있으면 true
 }
 
 _bool CPicking::PickingToolMesh(_int* pOut)

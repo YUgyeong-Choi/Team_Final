@@ -159,8 +159,10 @@
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\public\Camera_Manager.h" />
     <ClInclude Include="..\public\Camera_Orbital.h" />
+    <ClInclude Include="..\Public\Client_Calculation.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\Client_Function.h" />
     <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\CYTool.h" />
     <ClInclude Include="..\Public\DHTool.h" />
@@ -226,7 +228,6 @@
     <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="..\Public\YGTrrigerWithoutModel.h" />
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Client_Calculation.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="imgui\backends\imgui_impl_win32.h" />
