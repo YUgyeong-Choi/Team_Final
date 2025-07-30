@@ -625,7 +625,8 @@ HRESULT CRenderer::Render_NonLight()
 
 HRESULT CRenderer::Render_UI_Deferred()
 {
-	
+	if (m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI_DEFERRED)].empty())
+		return S_OK;
 
 	m_pGameInstance->Begin_MRT(TEXT("MRT_UIObjects"));
 

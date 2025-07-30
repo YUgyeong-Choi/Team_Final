@@ -13,11 +13,11 @@ public:
 		_float2			vLifeTime;
 		_float2			vSpeed;
 		_bool			isLoop;
+		PARTICLETYPE	ePType;
 		_float3			vRange;
 		_float2			vSize;
 		_float3			vCenter;
-		PARTICLETYPE	ePType;
-
+		_bool			isTool = { false };
 	}DESC;
 	
 private:
@@ -26,16 +26,16 @@ private:
 	virtual ~CVIBuffer_Point_Instance() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const INSTANCE_DESC* pDesc);
+	virtual HRESULT Initialize_Prototype(const DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Update(_float fTimeDelta);
+	virtual void Update_Tool(_float fCurTrackPos);
 
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
 
-	//병합할때 채영꺼를 선택해!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!내꺼 선택하지마!!!!!!!!!!!
-	//virtual void Drop(_float fTimeDelta)override;
-	//virtual void Spread(_float fTimeDelta)override;
+	virtual void Drop(_float fTimeDelta, _bool bTool = false);
+	virtual void Spread(_float fTimeDelta, _bool bTool = false);
 
 	void Set_Loop(_bool isLoop) { m_isLoop = isLoop; }
 
@@ -44,10 +44,14 @@ protected:
 	_float*						m_pSpeeds = { nullptr };
 	_float3						m_vPivot = {};
 	_bool						m_isLoop = { false };
+	PARTICLETYPE				m_ePType;
+
+protected:
+	HRESULT Make_InstanceBuffer(const DESC* pDesc);
 
 
 public:
-	static CVIBuffer_Point_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const INSTANCE_DESC* pDesc);
+	static CVIBuffer_Point_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };
