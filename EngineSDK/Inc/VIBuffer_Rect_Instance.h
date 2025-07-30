@@ -24,7 +24,7 @@ public:
 	virtual HRESULT Initialize_Prototype(const INSTANCE_DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
 	
-	virtual void Drop(_float fTimeDelta)override;
+	//virtual void Drop(_float fTimeDelta)override;
 
 
 protected:

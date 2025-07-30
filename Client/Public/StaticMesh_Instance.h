@@ -6,7 +6,7 @@
 NS_BEGIN(Engine)
 class CShader;
 class CTexture;
-class CModel;
+class CModel_Instance;
 NS_END
 
 NS_BEGIN(Client)
@@ -18,6 +18,7 @@ public:
 	{
 		//인스턴스 갯수
 		_uint iNumInstance = { 0 };
+		vector<_float4x4>* pInstanceMatrixs = { nullptr };
 	}STATICMESHINSTANCE_DESC;
 
 private:
@@ -33,6 +34,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+private:
+	CModel_Instance* m_pModelCom = { nullptr };
+	_uint	m_iNumInstance = { 0 };
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

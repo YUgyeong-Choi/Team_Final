@@ -30,8 +30,9 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 
 	m_iRender = StaicMeshDESC->iRender;
 
-	StaicMeshDESC->fSpeedPerSec = 0.f;
-	StaicMeshDESC->fRotationPerSec = 0.f;
+	//타일링 여부
+	m_bUseTiling = StaicMeshDESC->bUseTiling;
+	m_vTileDensity = StaicMeshDESC->vTileDensity;
 
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
 		return E_FAIL;
@@ -87,8 +88,6 @@ HRESULT CStaticMesh::Ready_Components(void* pArg)
 {
 	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
 
-
-
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh")),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -110,6 +109,16 @@ HRESULT CStaticMesh::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
+
+	//타일링을 사용 하는가? 인스턴스된 애들은 타일링 하기 번거롭겠다.
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTile", &m_bUseTiling, sizeof(_bool))))
+		return E_FAIL;
+
+	if (m_bUseTiling)
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_TileDensity", &m_vTileDensity, sizeof(_float2))))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
