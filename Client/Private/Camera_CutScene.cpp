@@ -36,169 +36,29 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 {
 	if (m_bActive)
 	{
-		const CUTSCENE_DESC& curDesc = m_vecCameraFrame[m_iCurrentFrame];
-
-		// 진행 비율 계산
-		_float t = m_fElapsedTime / max(0.0001f, curDesc.fInterpDuration);
-		t = min(t, 1.f); // 과도한 t 방지
-
-		if (curDesc.eInterp == INTERPOLATION_CAMERA::LERP)
-		{
-			CUTSCENE_DESC nextDesc{};
-			// 예외 처리
-			if (m_iCurrentFrame + 1 == m_vecCameraFrame.size())
-				nextDesc = curDesc;
-			else
-				nextDesc = m_vecCameraFrame[m_iCurrentFrame + 1];
-
-			// 1. SRT 분해
-			XMVECTOR scale1, rot1, trans1;
-			XMMatrixDecompose(&scale1, &rot1, &trans1, curDesc.worldMatrix);
-
-			XMVECTOR scale2, rot2, trans2;
-			XMMatrixDecompose(&scale2, &rot2, &trans2, nextDesc.worldMatrix);
-
-			// 2. 보간
-			XMVECTOR lerpScale = XMVectorLerp(scale1, scale2, t);
-			XMVECTOR lerpTrans = XMVectorLerp(trans1, trans2, t);
-			XMVECTOR slerpRot = XMQuaternionSlerp(rot1, rot2, t);
-
-			// 3. 조립
-			XMMATRIX matInterpolated =
-				XMMatrixScalingFromVector(lerpScale) *
-				XMMatrixRotationQuaternion(slerpRot) *
-				XMMatrixTranslationFromVector(lerpTrans);
-
-			// 4. 적용
-			m_pTransformCom->Set_WorldMatrix(matInterpolated);
-		}else if (curDesc.eInterp == INTERPOLATION_CAMERA::CATMULLROM)
-		{
-			CUTSCENE_DESC prevDesc;
-			CUTSCENE_DESC nextDesc;
-			CUTSCENE_DESC nextNextDesc;
-
-			// 예외 처리
-			if (m_iCurrentFrame - 1 == -1)
-				prevDesc = curDesc;
-			else
-				prevDesc = m_vecCameraFrame[m_iCurrentFrame - 1];
-
-			if (m_iCurrentFrame + 1 >= m_vecCameraFrame.size())
-			{
-				nextDesc = curDesc;
-			}
-			else {
-				nextDesc = m_vecCameraFrame[m_iCurrentFrame + 1];
-			}
-
-			if (m_iCurrentFrame + 2 >= m_vecCameraFrame.size())
-			{
-				nextNextDesc = curDesc;
-			}
-			else {
-				nextNextDesc = m_vecCameraFrame[m_iCurrentFrame + 2];
-			}
-
-			// 각각의 위치값 추출
-			XMVECTOR pos0 = XMVector3TransformCoord(XMVectorZero(), prevDesc.worldMatrix);
-			XMVECTOR pos1 = XMVector3TransformCoord(XMVectorZero(), curDesc.worldMatrix);
-			XMVECTOR pos2 = XMVector3TransformCoord(XMVectorZero(), nextDesc.worldMatrix);
-			XMVECTOR pos3 = XMVector3TransformCoord(XMVectorZero(), nextNextDesc.worldMatrix);
-
-			// 쿼터니언 회전 추출
-			XMVECTOR scale1, rot1, _;
-			XMMatrixDecompose(&scale1, &rot1, &_, curDesc.worldMatrix);
-
-			XMVECTOR scale2, rot2, __;
-			XMMatrixDecompose(&scale2, &rot2, &__, nextDesc.worldMatrix);
-
-			// 위치는 CatmullRom 보간
-			XMVECTOR interpolatedPos = CatmullRom(pos0, pos1, pos2, pos3, t);
-
-			// 회전은 SLERP로 유지 (CatmullRom은 회전에 잘 안 맞음)
-			XMVECTOR interpolatedRot = XMQuaternionSlerp(rot1, rot2, t);
-
-			// 스케일도 선형 보간
-			XMVECTOR interpolatedScale = XMVectorLerp(scale1, scale2, t);
-
-			// 최종 행렬 조립
-			XMMATRIX resultMat =
-				XMMatrixScalingFromVector(interpolatedScale) *
-				XMMatrixRotationQuaternion(interpolatedRot) *
-				XMMatrixTranslationFromVector(interpolatedPos);
-
-			m_pTransformCom->Set_WorldMatrix(resultMat);
-		}
-		else
-		{
-			// 즉시 전환
-			m_pTransformCom->Set_WorldMatrix(curDesc.worldMatrix);
-		}
-
-		// 시간 누적 및 프레임 전환
 		m_fElapsedTime += fTimeDelta;
-		if (m_fElapsedTime >= curDesc.fInterpDuration)
-		{
-			m_fElapsedTime = 0.f;
-			++m_iCurrentFrame;
 
-			// 마지막 프레임이 끝났다면
-			if (m_iCurrentFrame == m_vecCameraFrame.size()) {
+		// 시간 누적 → 프레임 단위 변환
+		_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
+
+		if (iNewFrame != m_iCurrentFrame)
+		{
+			m_iCurrentFrame = iNewFrame;
+
+			Interp_WorldMatrixOnly(m_iCurrentFrame);
+			Interp_Fov(m_iCurrentFrame);
+			Interp_OffsetRot(m_iCurrentFrame);
+
+			// 종료 조건
+			if (m_iCurrentFrame > m_CameraDatas.vecPosData.back().keyFrame)
+			{
 				m_bActive = false;
 				m_fElapsedTime = 0.f;
-				m_iCurrentFrame = -1;
+				m_iCurrentFrame = 0;
 				CCamera_Manager::Get_Instance()->SetFreeCam();
-				return;
 			}
-		}
-
-
-		if (m_iCurrentFrame + 1 != m_vecCameraFrame.size())
-		{
-			CUTSCENE_DESC nextDesc = m_vecCameraFrame[m_iCurrentFrame + 1];
-			if (nextDesc.bZoom)
-			{
-				_float startFov = curDesc.fFov;
-				_float endFov = nextDesc.fFov;
-				m_fFov = XMConvertToRadians(startFov + (endFov - startFov) * t);
-			}
-		}
-
-		if (curDesc.bZoom)
-		{
-			CUTSCENE_DESC nextDesc{};
-			if (m_iCurrentFrame + 1 == m_vecCameraFrame.size())
-				nextDesc = curDesc;
-			else
-				nextDesc = m_vecCameraFrame[m_iCurrentFrame + 1];
-
-			_float  startFov = curDesc.fFov;
-			_float  endFov = nextDesc.fFov;
-			m_fFov = XMConvertToRadians(startFov + (endFov - startFov) * t);
-		}
-
-
-		if (m_pGameInstance->Key_Down(DIK_M))
-			m_bStartSpecialRotate = true;
-
-		if (m_bStartSpecialRotate)
-		{
-			bool bFinished = m_pTransformCom->Rotate_Special(fTimeDelta, 1.0f, m_pTransformCom->Get_State(STATE::LOOK), 30.f);
-			if (bFinished)
-				m_bStartSpecialRotate = false;
-		}
-
-		if (m_pGameInstance->Key_Down(DIK_N))
-			m_bStartSpecialRotate2 = true;
-
-		if (m_bStartSpecialRotate2)
-		{
-			bool bFinished = m_pTransformCom->Rotate_Special(fTimeDelta, 1.0f, m_pTransformCom->Get_State(STATE::LOOK), -30.f);
-			if (bFinished)
-				m_bStartSpecialRotate2 = false;
 		}
 	}
-
 	__super::Priority_Update(fTimeDelta);
 }
 
@@ -216,13 +76,190 @@ HRESULT CCamera_CutScene::Render()
 	return S_OK;
 }
 
-void CCamera_CutScene::Set_CurrentFrame(_int frame)
+
+XMVECTOR XMMatrixDecompose_T(const _matrix& m)
 {
-	m_iCurrentFrame = frame;
-	if (m_iCurrentFrame == -1)
-		m_iCurrentFrame = 0;
+	XMVECTOR scale, rot, trans;
+	XMMatrixDecompose(&scale, &rot, &trans, m);
+	return trans;
 }
 
+void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
+{
+	const auto& vec = m_CameraDatas.vecPosData;
+	if (vec.size() < 1)
+		return;
+
+	for (size_t i = 0; i < vec.size() - 1; ++i)
+	{
+		const auto& a = vec[i];
+		const auto& b = vec[i + 1];
+
+		if (curFrame >= a.keyFrame && curFrame <= b.keyFrame)
+		{
+			const float t = float(curFrame - a.keyFrame) / float(max(1, b.keyFrame - a.keyFrame));
+			const INTERPOLATION_CAMERA interp = a.interpPosition;
+
+			// Decompose A
+			XMVECTOR sA, rA, tA;
+			XMMatrixDecompose(&sA, &rA, &tA, a.WorldMatrix);
+
+			// Decompose B
+			XMVECTOR sB, rB, tB;
+			XMMatrixDecompose(&sB, &rB, &tB, b.WorldMatrix);
+
+			XMVECTOR finalT = tA;
+			XMVECTOR finalR = rA;
+			XMVECTOR finalS = sA;
+
+			switch (interp)
+			{
+			case INTERPOLATION_CAMERA::NONE:
+				finalT = tA;
+				finalR = rA;
+				finalS = sA;
+				break;
+
+			case INTERPOLATION_CAMERA::LERP:
+				finalT = XMVectorLerp(tA, tB, t);
+				finalR = XMQuaternionSlerp(rA, rB, t);
+				finalS = XMVectorLerp(sA, sB, t);
+				break;
+
+			case INTERPOLATION_CAMERA::CATMULLROM:
+			{
+				XMVECTOR t0 = (i == 0) ? tA : XMMatrixDecompose_T(vec[i - 1].WorldMatrix);
+				XMVECTOR t1 = tA;
+				XMVECTOR t2 = tB;
+				XMVECTOR t3 = (i + 2 < vec.size()) ? XMMatrixDecompose_T(vec[i + 2].WorldMatrix) : t2;
+
+				finalT = XMVectorCatmullRom(t0, t1, t2, t3, t);
+				finalR = XMQuaternionSlerp(rA, rB, t); // 회전은 안정성을 위해 그대로 Slerp
+				finalS = XMVectorLerp(sA, sB, t);      // 스케일은 단순 LERP
+				break;
+			}
+			}
+
+			// 다시 합성
+			_matrix result = XMMatrixAffineTransformation(finalS, XMVectorZero(), finalR, finalT);
+			m_pTransformCom->Set_WorldMatrix(result);
+			return;
+		}
+	}
+
+	// 범위 밖이면 고정
+	const _matrix& m = (curFrame <= vec.front().keyFrame) ? vec.front().WorldMatrix : vec.back().WorldMatrix;
+	m_pTransformCom->Set_WorldMatrix(m);
+}
+
+void CCamera_CutScene::Interp_Fov(_int curFrame)
+{
+	const auto& vec = m_CameraDatas.vecFovData;
+	if (vec.empty())
+		return;
+
+	for (size_t i = 0; i < vec.size() - 1; ++i)
+	{
+		const auto& a = vec[i];
+		const auto& b = vec[i + 1];
+
+		if (curFrame >= a.keyFrame && curFrame <= b.keyFrame)
+		{
+			const INTERPOLATION_CAMERA interp = a.interpFov;
+			float t = float(curFrame - a.keyFrame) / float(max(1, b.keyFrame - a.keyFrame));
+
+			_float result = a.fFov;
+
+			switch (interp)
+			{
+			case INTERPOLATION_CAMERA::NONE:
+				result = a.fFov;
+				break;
+
+			case INTERPOLATION_CAMERA::LERP:
+			default:
+				result = a.fFov + (b.fFov - a.fFov) * t;
+				break;
+
+			case INTERPOLATION_CAMERA::CATMULLROM:
+			{
+				_float p0 = (i == 0) ? a.fFov : vec[i - 1].fFov;
+				_float p1 = a.fFov;
+				_float p2 = b.fFov;
+				_float p3 = (i + 2 < vec.size()) ? vec[i + 2].fFov : p2;
+
+				result = CatmullRom(p0, p1, p2, p3, t);
+				break;
+			}
+			}
+
+			Set_FOV(XMConvertToRadians(result)); // ← 라디안 변환 후 적용
+			return;
+		}
+	}
+
+	// 경계 외에서는 처음 또는 마지막 값 고정
+	if (curFrame <= vec.front().keyFrame)
+		Set_FOV(XMConvertToRadians(vec.front().fFov));
+	else if (curFrame >= vec.back().keyFrame)
+		Set_FOV(XMConvertToRadians(vec.back().fFov));
+}
+
+void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
+{
+	const auto& vec = m_CameraDatas.vecRotData;
+	if (vec.size() < 1)
+		return;
+
+	for (size_t i = 0; i < vec.size() - 1; ++i)
+	{
+		const auto& a = vec[i];
+		const auto& b = vec[i + 1];
+
+		if (curFrame >= a.keyFrame && curFrame <= b.keyFrame)
+		{
+			const INTERPOLATION_CAMERA interp = a.interpRotation;
+			float t = float(curFrame - a.keyFrame) / float(max(1, b.keyFrame - a.keyFrame));
+
+			XMVECTOR rotA = XMLoadFloat3(&a.rotation);
+			XMVECTOR rotB = XMLoadFloat3(&b.rotation);
+			XMVECTOR result = {};
+
+			switch (interp)
+			{
+			case INTERPOLATION_CAMERA::NONE:
+				m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
+				break;
+			case INTERPOLATION_CAMERA::LERP:
+			default:
+				result = XMVectorLerp(rotA, rotB, t);
+				break;
+			case INTERPOLATION_CAMERA::CATMULLROM:
+			{
+				XMVECTOR p1 = rotA;
+				XMVECTOR p2 = rotB;
+				XMVECTOR p0 = (i == 0) ? p1 : XMLoadFloat3(&vec[i - 1].rotation);
+				XMVECTOR p3 = (i + 2 < vec.size()) ? XMLoadFloat3(&vec[i + 2].rotation) : p2;
+				result = XMVectorCatmullRom(p0, p1, p2, p3, t);
+				break;
+			}
+			}
+
+			// 오프셋 회전 저장 (최종 회전은 update에서 적용)
+			m_vCurrentShakeRot = result;
+			return;
+		}
+	}
+
+	// 범위 바깥이면 시작/끝값
+	if (curFrame <= vec.front().keyFrame)
+		m_vCurrentShakeRot = XMLoadFloat3(&vec.front().rotation);
+	else if (curFrame >= vec.back().keyFrame)
+		if (vec.back().interpRotation == INTERPOLATION_CAMERA::NONE)
+			m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
+		else
+			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().rotation);
+}
 
 CCamera_CutScene* CCamera_CutScene::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

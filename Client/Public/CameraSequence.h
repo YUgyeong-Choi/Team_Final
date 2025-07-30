@@ -17,7 +17,8 @@ public:
         _uint color;
 
         XMFLOAT3 position;
-        XMFLOAT3 rotation;   // Euler or quaternion
+        XMFLOAT3 rotation;  
+        XMFLOAT3 offSetRotation;
         _float fFov;
 
         INTERPOLATION_CAMERA interpPosition;
@@ -97,7 +98,7 @@ public:
         return nullptr;
     }
 public:
-    std::vector<CAMERA_KEY> m_vecKeys;
+    vector<CAMERA_KEY> m_vecKeys;
     vector<_int> m_vecPosKeyFrames;
     vector<_int> m_vecRotKeyFrames;
     vector<_int> m_vecFovKeyFrames;

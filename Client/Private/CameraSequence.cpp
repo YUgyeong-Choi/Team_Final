@@ -31,6 +31,7 @@ void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
     // 기본 카메라 파라미터 초기화
     XMStoreFloat3(&newKey.position, XMVectorZero());
     XMStoreFloat3(&newKey.rotation, XMVectorZero());
+    XMStoreFloat3(&newKey.offSetRotation, XMVectorZero());
     newKey.fFov = 60.f;
 
     //newKey.lookAtTarget = XMVectorZero();

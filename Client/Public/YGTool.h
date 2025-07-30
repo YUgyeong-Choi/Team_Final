@@ -7,31 +7,6 @@ NS_BEGIN(Client)
 
 class CYGTool final : public CGameObject
 {
-	struct CAMERA_POSFRAME
-	{
-		_int keyFrame;
-		XMFLOAT3 position;
-		INTERPOLATION_CAMERA interpPosition;
-	};
-	struct CAMERA_ROTFRAME
-	{
-		_int keyFrame;
-		XMFLOAT3 rotation;  
-		INTERPOLATION_CAMERA interpRotation;
-	};
-	struct CAMERA_FOVFRAME
-	{
-		_int keyFrame;
-		_float fFov;
-		INTERPOLATION_CAMERA interpFov;
-	};
-
-	struct CAMERA_FRAMEDATA
-	{
-		vector<CAMERA_POSFRAME> vecPosData;
-		vector<CAMERA_ROTFRAME> vecRotData;
-		vector<CAMERA_FOVFRAME> vecFovData;
-	};
 private:
 	CYGTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CYGTool(const CYGTool& Prototype);
@@ -63,9 +38,9 @@ private:
 	CCameraSequence::CAMERA_KEY* m_pSelectedKey = nullptr;
 
 	_int m_iEditKey = -1;
-	CAMERA_POSFRAME* m_pEditPosKey = nullptr;
-	CAMERA_ROTFRAME* m_pEditRotKey = nullptr;
-	CAMERA_FOVFRAME* m_pEditFovKey = nullptr;
+	CAMERA_POSFRAME m_EditPosKey = {};
+	CAMERA_ROTFRAME m_EditRotKey = {};
+	CAMERA_FOVFRAME m_EditFovKey = {};
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

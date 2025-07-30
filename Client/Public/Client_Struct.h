@@ -81,14 +81,33 @@ namespace Client
 	}UI_FEATURE_SCALE_DESC;
 
 #pragma endregion
-	typedef struct tagCutScene
-	{
-		_matrix worldMatrix;
-		INTERPOLATION_CAMERA eInterp;
-		_float fInterpDuration;
-		_bool bZoom;
-		_float fFov;
-		_float fFovDuration;
-	}CUTSCENE_DESC;
 
+#pragma region YG
+	struct CAMERA_POSFRAME
+	{
+		_int keyFrame;
+		_matrix WorldMatrix;
+		INTERPOLATION_CAMERA interpPosition;
+	};
+	struct CAMERA_ROTFRAME
+	{
+		_int keyFrame;
+		XMFLOAT3 rotation;
+		INTERPOLATION_CAMERA interpRotation;
+	};
+	struct CAMERA_FOVFRAME
+	{
+		_int keyFrame;
+		_float fFov;
+		INTERPOLATION_CAMERA interpFov;
+	};
+
+	struct CAMERA_FRAMEDATA
+	{
+		vector<CAMERA_POSFRAME> vecPosData;
+		vector<CAMERA_ROTFRAME> vecRotData;
+		vector<CAMERA_FOVFRAME> vecFovData;
+	};
+
+#pragma endregion
 }
