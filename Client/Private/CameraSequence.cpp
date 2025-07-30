@@ -16,13 +16,13 @@ void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
     switch (type)
     {
     case 0:
+        newKey.color = IM_COL32(255, 255, 0, 255); 
         break;
     case 1:
+        newKey.color = IM_COL32(0, 255, 255, 255);  
         break;
     case 2:
-        newKey.color = IM_COL32(255, 255, 0, 255);  // ³ë¶û
-        //DrawKeyFrames(m_vecRotKeyFrames, IM_COL32(0, 255, 255, 255));  // ½Ã¾È
-        //DrawKeyFrames(m_vecFovKeyFrames, IM_COL32(255, 0, 255, 255));  // ¸¶Á¨Å¸
+        newKey.color = IM_COL32(255, 0, 255, 255);  
         break;
     default:
         break;
@@ -104,8 +104,28 @@ void CCameraSequence::Set_EndFrame(_int endFrame)
 
 void CCameraSequence::CustomDraw(int index, ImDrawList* draw_list, const ImRect& rc, const ImRect&, const ImRect&, const ImRect&)
 {
+    const vector<_int>* pKeyFrames = nullptr;
+    ImU32 color = IM_COL32(255, 255, 255, 255); // fallback color
 
-    for (auto& keyFrame : m_vecPosKeyFrames)
+    switch (index)
+    {
+    case 0:
+        pKeyFrames = &m_vecPosKeyFrames;
+        color = IM_COL32(255, 255, 0, 255); // Yellow
+        break;
+    case 1:
+        pKeyFrames = &m_vecRotKeyFrames;
+        color = IM_COL32(0, 255, 255, 255); // Cyan
+        break;
+    case 2:
+        pKeyFrames = &m_vecFovKeyFrames;
+        color = IM_COL32(255, 0, 255, 255); // Magenta
+        break;
+    default:
+        return;
+    }
+
+    for (auto& keyFrame : *pKeyFrames)
     {
         _float frameNorm = (keyFrame - m_iFrameMin + 0.6f) / static_cast<_float>(m_iFrameMax - m_iFrameMin);
 
@@ -113,7 +133,7 @@ void CCameraSequence::CustomDraw(int index, ImDrawList* draw_list, const ImRect&
         _float y = rc.Min.y;
         _float h = rc.Max.y - rc.Min.y;
 
-        draw_list->AddLine(ImVec2(x, y), ImVec2(x, y + h), IM_COL32(255, 255, 0, 255));
-        draw_list->AddCircleFilled(ImVec2(x, y + h / 2), 3.0f, IM_COL32(255, 255, 0, 255));
+        draw_list->AddLine(ImVec2(x, y), ImVec2(x, y + h), color);
+        draw_list->AddCircleFilled(ImVec2(x, y + h / 2), 3.0f, color);
     }
 }

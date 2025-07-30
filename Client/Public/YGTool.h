@@ -7,21 +7,30 @@ NS_BEGIN(Client)
 
 class CYGTool final : public CGameObject
 {
-	struct CAMERA_KEYFRAME
+	struct CAMERA_POSFRAME
 	{
 		_int keyFrame;
-
 		XMFLOAT3 position;
-		XMFLOAT3 rotation;   // Euler or quaternion
-		_float fFov;
-
 		INTERPOLATION_CAMERA interpPosition;
+	};
+	struct CAMERA_ROTFRAME
+	{
+		_int keyFrame;
+		XMFLOAT3 rotation;  
 		INTERPOLATION_CAMERA interpRotation;
+	};
+	struct CAMERA_FOVFRAME
+	{
+		_int keyFrame;
+		_float fFov;
 		INTERPOLATION_CAMERA interpFov;
+	};
 
-		//_bool bLookAt = false;
-		//_vector lookAtTarget;
-		//INTERPOLATION_CAMERA interpLookAt;
+	struct CAMERA_FRAMEDATA
+	{
+		vector<CAMERA_POSFRAME> vecPosData;
+		vector<CAMERA_ROTFRAME> vecRotData;
+		vector<CAMERA_FOVFRAME> vecFovData;
 	};
 private:
 	CYGTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -50,11 +59,13 @@ private:
 
 	_int m_iEndFrame = {};
 
-	vector<CAMERA_KEYFRAME> m_vecCameraKeyFrame;
+	CAMERA_FRAMEDATA m_CameraDatas;
 	CCameraSequence::CAMERA_KEY* m_pSelectedKey = nullptr;
 
 	_int m_iEditKey = -1;
-	CAMERA_KEYFRAME* m_pEditKey = nullptr;
+	CAMERA_POSFRAME* m_pEditPosKey = nullptr;
+	CAMERA_ROTFRAME* m_pEditRotKey = nullptr;
+	CAMERA_FOVFRAME* m_pEditFovKey = nullptr;
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

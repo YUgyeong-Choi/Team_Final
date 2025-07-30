@@ -32,6 +32,8 @@ HRESULT CYGTool::Initialize(void* pArg)
 	m_CameraSequence->m_iFrameMin = 0;
 	m_CameraSequence->m_iFrameMax = 300;
 	m_CameraSequence->Add(0,10,0);
+	m_CameraSequence->Add(0,10,1);
+	m_CameraSequence->Add(0,10,2);
 	return S_OK;
 }
 
@@ -121,17 +123,41 @@ HRESULT CYGTool::Render_CameraTool()
 	{
 		if (m_pSelectedKey)
 		{
-			CAMERA_KEYFRAME keyFrame;
-			keyFrame.keyFrame = m_pSelectedKey->keyFrame;
-			keyFrame.position = m_pSelectedKey->position;
-			keyFrame.rotation = m_pSelectedKey->rotation;
-			keyFrame.fFov = m_pSelectedKey->fFov;
-
-			keyFrame.interpPosition = m_pSelectedKey->interpPosition;
-			keyFrame.interpRotation = m_pSelectedKey->interpRotation;
-			keyFrame.interpFov = m_pSelectedKey->interpFov;
-			m_vecCameraKeyFrame.push_back(keyFrame);
-			m_CameraSequence->Add_KeyFrame(0,keyFrame.keyFrame);
+			switch (m_iSelected)
+			{
+			case 0:
+			{
+				CAMERA_POSFRAME posFrame;
+				posFrame.keyFrame = m_pSelectedKey->keyFrame;
+				posFrame.position = m_pSelectedKey->position;
+				posFrame.interpPosition = m_pSelectedKey->interpPosition;
+				m_CameraDatas.vecPosData.push_back(posFrame);
+				m_CameraSequence->Add_KeyFrame(0, m_pSelectedKey->keyFrame);
+			}
+				break;
+			case 1:
+			{
+				CAMERA_ROTFRAME rotFrame;
+				rotFrame.keyFrame = m_pSelectedKey->keyFrame;
+				rotFrame.rotation = m_pSelectedKey->rotation;
+				rotFrame.interpRotation = m_pSelectedKey->interpRotation;
+				m_CameraDatas.vecRotData.push_back(rotFrame);
+				m_CameraSequence->Add_KeyFrame(1, m_pSelectedKey->keyFrame);
+			}
+				break;
+			case 2:
+			{
+				CAMERA_FOVFRAME fovFrame;
+				fovFrame.keyFrame = m_pSelectedKey->keyFrame;
+				fovFrame.fFov = m_pSelectedKey->fFov;
+				fovFrame.interpFov = m_pSelectedKey->interpFov;
+				m_CameraDatas.vecFovData.push_back(fovFrame);
+				m_CameraSequence->Add_KeyFrame(2, m_pSelectedKey->keyFrame);
+			}
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -199,12 +225,12 @@ HRESULT CYGTool::Render_CameraFrame()
 	ImGui::Begin("Camera Frame", &open, NULL);
 	ImGui::Text("CutScene Frames:");
 
-	ImGui::BeginChild("CutSceneFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("PosFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
 
 	// 리스트 출력
-	for (size_t i = 0; i < m_vecCameraKeyFrame.size(); ++i)
+	for (size_t i = 0; i < m_CameraDatas.vecPosData.size(); ++i)
 	{
-		const auto& desc = m_vecCameraKeyFrame[i];
+		const auto& desc = m_CameraDatas.vecPosData[i];
 		char label[32];
 		sprintf_s(label, "KeyFrame: %d", desc.keyFrame);
 
@@ -214,57 +240,126 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			// 선택됨 → 인덱스 및 포인터 저장
 			m_iEditKey = static_cast<int>(i);
-			m_pEditKey = &m_vecCameraKeyFrame[i];
+			m_pEditPosKey = &m_CameraDatas.vecPosData[i];
+			m_pEditRotKey = nullptr;
+			m_pEditFovKey = nullptr;
+		}
+	}
+	ImGui::EndChild();
+
+	ImGui::BeginChild("RotFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+	// 리스트 출력
+	for (size_t i = 0; i < m_CameraDatas.vecRotData.size(); ++i)
+	{
+		const auto& desc = m_CameraDatas.vecRotData[i];
+		char label[32];
+		sprintf_s(label, "KeyFrame: %d", desc.keyFrame);
+
+		bool bSelected = (m_iEditKey == static_cast<int>(i));
+
+		if (ImGui::Selectable(label, bSelected))
+		{
+			// 선택됨 → 인덱스 및 포인터 저장
+			m_iEditKey = static_cast<int>(i);
+			m_pEditPosKey = nullptr;
+			m_pEditRotKey = &m_CameraDatas.vecRotData[i];
+			m_pEditFovKey = nullptr;
 		}
 	}
 	ImGui::EndChild();
 
 
-	if (m_pEditKey)
+	ImGui::BeginChild("FovFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+	// 리스트 출력
+	for (size_t i = 0; i < m_CameraDatas.vecFovData.size(); ++i)
 	{
-		ImGui::SeparatorText("Edit Key Info");
+		const auto& desc = m_CameraDatas.vecFovData[i];
+		char label[32];
+		sprintf_s(label, "KeyFrame: %d", desc.keyFrame);
+
+		bool bSelected = (m_iEditKey == static_cast<int>(i));
+
+		if (ImGui::Selectable(label, bSelected))
+		{
+			// 선택됨 → 인덱스 및 포인터 저장
+			m_iEditKey = static_cast<int>(i);
+			m_pEditPosKey = nullptr;
+			m_pEditRotKey = nullptr;
+			m_pEditFovKey = &m_CameraDatas.vecFovData[i];
+		}
+	}
+	ImGui::EndChild();
+
+
+	if (m_pEditPosKey)
+	{
+		ImGui::SeparatorText("Edit Pos Key Info");
 
 		// 포지션
-		XMFLOAT3 pos = m_pEditKey->position;
+		XMFLOAT3 pos = m_pEditPosKey->position;
 		if (ImGui::DragFloat3("Position", reinterpret_cast<float*>(&pos), 0.1f))
-			m_pEditKey->position = pos;
+			m_pEditPosKey->position = pos;
 
-		// 회전
-		XMFLOAT3 rot = m_pEditKey->rotation;
-		if (ImGui::DragFloat3("Rotation (Euler)", reinterpret_cast<float*>(&rot), 0.5f))
-			m_pEditKey->rotation = rot;
-
-		// FOV
-		ImGui::DragFloat("FOV", &m_pEditKey->fFov, 0.1f, 1.0f, 179.0f);
-
-		// 보간 방식
 		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
-		int interpPos = static_cast<int>(m_pEditKey->interpPosition);
-		int interpRot = static_cast<int>(m_pEditKey->interpRotation);
-		int interpFov = static_cast<int>(m_pEditKey->interpFov);
-
+		int interpPos = static_cast<int>(m_pEditPosKey->interpPosition);
 		if (ImGui::Combo("Interp Position", &interpPos, interpNames, IM_ARRAYSIZE(interpNames)))
-			m_pEditKey->interpPosition = static_cast<INTERPOLATION_CAMERA>(interpPos);
-
-		if (ImGui::Combo("Interp Rotation", &interpRot, interpNames, IM_ARRAYSIZE(interpNames)))
-			m_pEditKey->interpRotation = static_cast<INTERPOLATION_CAMERA>(interpRot);
-
-		if (ImGui::Combo("Interp FOV", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
-			m_pEditKey->interpFov = static_cast<INTERPOLATION_CAMERA>(interpFov);
+			m_pEditPosKey->interpPosition = static_cast<INTERPOLATION_CAMERA>(interpPos);
 
 		if (ImGui::Button("Delete"))
 		{
-			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_vecCameraKeyFrame.size()))
+			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecPosData.size()))
 			{
-				m_vecCameraKeyFrame.erase(m_vecCameraKeyFrame.begin() + m_iEditKey);
+				m_CameraDatas.vecPosData.erase(m_CameraDatas.vecPosData.begin() + m_iEditKey);
 
 				// 선택 초기화
-				m_CameraSequence->Delete_KeyFrame(0,m_pEditKey->keyFrame);
+				m_CameraSequence->Delete_KeyFrame(0, m_iEditKey);
 				m_iEditKey = -1;
-				m_pEditKey = nullptr;
+				m_pEditPosKey = nullptr;
 			}
 		}
 	}
+
+
+
+	/*
+	// 회전
+	XMFLOAT3 rot = m_pEditKey->rotation;
+	if (ImGui::DragFloat3("Rotation (Euler)", reinterpret_cast<float*>(&rot), 0.5f))
+		m_pEditKey->rotation = rot;
+
+	// FOV
+	ImGui::DragFloat("FOV", &m_pEditKey->fFov, 0.1f, 1.0f, 179.0f);
+
+	// 보간 방식
+	const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
+	int interpPos = static_cast<int>(m_pEditKey->interpPosition);
+	int interpRot = static_cast<int>(m_pEditKey->interpRotation);
+	int interpFov = static_cast<int>(m_pEditKey->interpFov);
+
+	if (ImGui::Combo("Interp Position", &interpPos, interpNames, IM_ARRAYSIZE(interpNames)))
+		m_pEditKey->interpPosition = static_cast<INTERPOLATION_CAMERA>(interpPos);
+
+	if (ImGui::Combo("Interp Rotation", &interpRot, interpNames, IM_ARRAYSIZE(interpNames)))
+		m_pEditKey->interpRotation = static_cast<INTERPOLATION_CAMERA>(interpRot);
+
+	if (ImGui::Combo("Interp FOV", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+		m_pEditKey->interpFov = static_cast<INTERPOLATION_CAMERA>(interpFov);
+
+	if (ImGui::Button("Delete"))
+	{
+		if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_vecCameraKeyFrame.size()))
+		{
+			m_vecCameraKeyFrame.erase(m_vecCameraKeyFrame.begin() + m_iEditKey);
+
+			// 선택 초기화
+			m_CameraSequence->Delete_KeyFrame(0,m_pEditKey->keyFrame);
+			m_iEditKey = -1;
+			m_pEditKey = nullptr;
+		}
+	}
+	*/
 
 	ImGui::End();
 	
