@@ -116,6 +116,8 @@ CCamera* CCamera_Manager::GetCurCam()
 
 void CCamera_Manager::Play_CutScene(CUTSCENE_TYPE cutSceneType)
 {
+    _matrix oribtalMatrix = m_pCamera_Orbital->Get_TransfomCom()->Get_WorldMatrix();
+    m_pCamera_CutScene->Get_TransfomCom()->Set_WorldMatrix(oribtalMatrix);
     SetCutSceneCam();
     m_pCamera_CutScene->Set_CutSceneData(cutSceneType);
     m_pCamera_CutScene->PlayCutScene();

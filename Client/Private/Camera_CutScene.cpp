@@ -36,28 +36,69 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 
 void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 {
+
 	if (m_bActive)
 	{
-		m_fElapsedTime += fTimeDelta;
-
-		// 시간 누적 → 프레임 단위 변환
-		_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
-
-		if (iNewFrame != m_iCurrentFrame)
+		if (m_bReadyCutScene)
 		{
-			m_iCurrentFrame = iNewFrame;
+			m_fElapsedTime += fTimeDelta;
 
-			Interp_WorldMatrixOnly(m_iCurrentFrame);
-			Interp_Fov(m_iCurrentFrame);
-			Interp_OffsetRot(m_iCurrentFrame);
+			// 시간 누적 → 프레임 단위 변환
+			_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
 
-			// 종료 조건
-			if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
+			if (iNewFrame != m_iCurrentFrame)
 			{
-				m_bActive = false;
-				m_fElapsedTime = 0.f;
-				m_iCurrentFrame = 0;
-				CCamera_Manager::Get_Instance()->SetFreeCam();
+				m_iCurrentFrame = iNewFrame;
+
+				Interp_WorldMatrixOnly(m_iCurrentFrame);
+				Interp_Fov(m_iCurrentFrame);
+				Interp_OffsetRot(m_iCurrentFrame);
+
+				// 종료 조건
+				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
+				{
+					m_bActive = false;
+					m_fElapsedTime = 0.f;
+					m_iCurrentFrame = 0;
+					CCamera_Manager::Get_Instance()->SetOrbitalCam();
+					m_bReadyCutScene = false;
+				}
+			}
+		}
+		else 
+		{
+			// 목표 행렬
+			_matrix targetMat = m_CameraDatas.vecPosData.front().WorldMatrix;
+
+			// 현재 행렬
+			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
+
+			// 분해
+			XMVECTOR curScale, curRotQuat, curTrans;
+			XMVECTOR tgtScale, tgtRotQuat, tgtTrans;
+			XMMatrixDecompose(&curScale, &curRotQuat, &curTrans, currentMat);
+			XMMatrixDecompose(&tgtScale, &tgtRotQuat, &tgtTrans, targetMat);
+
+			// 보간
+			_float blendSpeed = 15.f;
+			_float t = fTimeDelta * blendSpeed;
+
+			XMVECTOR lerpPos = XMVectorLerp(curTrans, tgtTrans, t);
+			XMVECTOR slerpRot = XMQuaternionSlerp(curRotQuat, tgtRotQuat, t);
+			XMVECTOR lerpScale = XMVectorLerp(curScale, tgtScale, t);
+
+			// 재합성
+			_matrix blendedMat = XMMatrixScalingFromVector(lerpScale)
+				* XMMatrixRotationQuaternion(slerpRot)
+				* XMMatrixTranslationFromVector(lerpPos);
+
+			m_pTransformCom->Set_WorldMatrix(blendedMat);
+
+			// 차이 계산
+			XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
+			if (XMVectorGetX(diff) < 0.0001f)
+			{
+				m_bReadyCutScene = true;
 			}
 		}
 	}
@@ -90,6 +131,7 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 {
 	m_CameraDatas = m_CutSceneDatas[cutSceneType];
 }
+
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 {

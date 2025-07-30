@@ -52,7 +52,6 @@ void CYGController::Priority_Update(_float fTimeDelta)
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
 	}
 
-	return;
 	_vector vMoveDir = XMVectorZero();
 
 	if (m_pGameInstance->Key_Pressing(DIK_W))

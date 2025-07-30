@@ -62,8 +62,15 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 카메라 위치 계산
 		m_vTargetCamPos = m_vPlayerPosition + XMVectorSet(x, y, z, 0.f);
 
+		// 현재 카메라 위치
+		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+		// 보간된 위치 계산 (보간 속도는 5.0f 정도가 적당)
+		_float fInterpSpeed = 5.0f;
+		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
+
 		// 카메라 위치 설정
-		m_pTransformCom->Set_State(STATE::POSITION, m_vTargetCamPos);
+		m_pTransformCom->Set_State(STATE::POSITION, vInterpolatedPos);
 		m_pTransformCom->LookAt(m_vPlayerPosition);
 	}
 

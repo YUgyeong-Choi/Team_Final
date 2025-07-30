@@ -71,7 +71,6 @@ private:
 
 private:
     _bool				m_bMoveable = {};
-
 public:
     virtual void Free() override;
 

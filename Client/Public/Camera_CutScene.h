@@ -39,6 +39,7 @@ public:
 
 	_int Get_CurrentFrame() { return m_iCurrentFrame; }
 	void Set_CutSceneData(CUTSCENE_TYPE cutSceneType);
+
 	void PlayCutScene() { m_bActive = true; }
 private:
 	void Interp_WorldMatrixOnly(_int curFrame);
@@ -63,6 +64,8 @@ private:
 	_float m_fFrameSpeed = 60.f; // 1초에 60프레임 기준
 
 	unordered_map<CUTSCENE_TYPE, CAMERA_FRAMEDATA> m_CutSceneDatas;
+
+	_bool m_bReadyCutScene = false;
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
