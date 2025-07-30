@@ -143,7 +143,7 @@ namespace Engine
 		XMFLOAT4		vRight;
 		XMFLOAT4		vUp;
 		XMFLOAT4		vLook;
-		XMFLOAT4		vTranslation;		
+		XMFLOAT4		vTranslation;
 
 		static const unsigned int					iNumElements = { 8 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];

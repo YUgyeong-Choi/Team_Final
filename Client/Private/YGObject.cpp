@@ -48,22 +48,6 @@ HRESULT CYGObject::Initialize(void* pArg)
 
 void CYGObject::Priority_Update(_float fTimeDelta)
 {
-	if (m_bDead) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-
-		Safe_Release(m_pPhysXActorCom);
-		m_pPhysXActorCom = nullptr;
-
-		pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorWeaponCom->Get_Actor());
-
-		Safe_Release(m_pPhysXActorWeaponCom);
-		m_pPhysXActorWeaponCom = nullptr;
-
-	}
 
 	if (m_pGameInstance->Key_Pressing(DIK_A))
 	{
@@ -437,23 +421,10 @@ CGameObject* CYGObject::Clone(void* pArg)
 
 void CYGObject::Free()
 {
+	__super::Free();
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
-
-	if (m_pPhysXActorCom)
-	{
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-	}
-
-	if (m_pPhysXActorWeaponCom) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorWeaponCom->Get_Actor());
-	}
 	Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pPhysXActorWeaponCom);
 
-	__super::Free();
 }

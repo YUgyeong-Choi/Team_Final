@@ -46,15 +46,6 @@ HRESULT CYGTrrigerWithoutModel::Initialize(void* pArg)
 
 void CYGTrrigerWithoutModel::Priority_Update(_float fTimeDelta)
 {
-	if (m_bDead) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-
-		Safe_Release(m_pPhysXActorCom);
-		m_pPhysXActorCom = nullptr;
-	}
-
 }
 
 void CYGTrrigerWithoutModel::Update(_float fTimeDelta)
@@ -175,13 +166,6 @@ CGameObject* CYGTrrigerWithoutModel::Clone(void* pArg)
 
 void CYGTrrigerWithoutModel::Free()
 {
-	if (m_pPhysXActorCom) {
-		PxScene* pScene = m_pGameInstance->Get_Scene();
-		if (pScene)
-			pScene->removeActor(*m_pPhysXActorCom->Get_Actor());
-	}
-
-	Safe_Release(m_pPhysXActorCom);
-
 	__super::Free();
+	Safe_Release(m_pPhysXActorCom);
 }

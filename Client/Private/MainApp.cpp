@@ -6,6 +6,7 @@
 #include "Static_UI.h"
 #include "Dynamic_UI.h"
 #include "UI_Video.h"
+#include "UI_Text.h"
 
 #include "UI_Feature_UV.h"
 #include "UI_Feature_Fade.h"
@@ -145,6 +146,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxMesh_Instanve */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh_Instance"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh_Instance.hlsl"), VTXMESH_INSTANCE::Elements, VTXMESH_INSTANCE::iNumElements))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Shader_VtxPBRMesh */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPBRMesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPBRMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
@@ -184,6 +190,9 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), CPhysXDynamicActor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_PhysX_Controller */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Controller"), CPhysXController::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -214,6 +223,10 @@ HRESULT CMainApp::Ready_Static()
 	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_DefaultARM"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ARM_Default.png")))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -318,6 +331,11 @@ HRESULT CMainApp::Ready_Loading()
 	/* For.Prototype_GameObject_Video_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
 		CUI_Video::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Video_UI */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Text"),
+		CUI_Text::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	 
 	return S_OK;

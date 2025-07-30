@@ -19,13 +19,9 @@ public:
 	typedef struct tagDynamicUIDesc : public CUIObject::UIOBJECT_DESC
 	{
 		_bool isFromTool = {false};
-		// 
-		_int iPassIndex = { 0 };
-		_int iTextureIndex = { 0 };
-		_wstring strTextureTag;
+		
 		_wstring strProtoTag; // 이제 상속받으면 채우기
 		_float fDuration = {0.016f}; // 몇 초 간격으로 할건지
-		_float4 vColor = { 1.f,1.f,1.f,1.f };
 
 
 		vector<UI_FEATRE_DESC*> FeatureDescs;
@@ -33,7 +29,6 @@ public:
 	}DYNAMIC_UI_DESC;
 
 
-	_wstring& Get_StrTextureTag() { return m_strTextureTag; }
 
 	DYNAMIC_UI_DESC Get_Desc();
 	
@@ -73,10 +68,7 @@ protected:
 
 	_bool    m_isFromTool = {false};
 
-	_wstring m_strTextureTag = {};
 
-	_int   m_iPassIndex = {};
-	_int   m_iTextureIndex = {};
 
 	_int   m_iCurrentFrame = {};
 

@@ -29,6 +29,7 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_fOffset = pDesc->fOffset;
 	
+	m_fCurrentAlpha = pDesc->fAlpha;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -65,6 +66,17 @@ HRESULT CUIObject::Render()
 {
 
 	return S_OK;
+}
+
+void CUIObject::Set_Position(_float fX, _float fY)
+{
+
+	D3D11_VIEWPORT			ViewportDesc{};
+	_uint					iNumViewports = { 1 };
+
+	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(fX - ViewportDesc.Width * 0.5f, -fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 }
 
 void CUIObject::FadeStart(_float fStartAlpha, _float fEndAlpha, _float fTime)

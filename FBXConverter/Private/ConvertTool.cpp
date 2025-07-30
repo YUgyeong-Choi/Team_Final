@@ -68,7 +68,7 @@ HRESULT CConvertTool::Render_ConvertTool()
 	{
 		m_isAnim = false;	
 		savePath = R"(../../Client\Bin\Resources\Models\Bin_NonAnim)";
-		config.path = R"(Z:\Lie\LieOfP_SM\Game\LiesofP\Content\ArtAsset\ENV\AreaProp\Station\InStructure\FBX)";
+		config.path = R"(Z:\Lie\LieOfP_SM\Game\ArtAsset\ENV\AreaProp\Station\Train\FBX)";
 		config.countSelectionMax = 0; // ¹«Á¦ÇÑ
 
 		IFILEDIALOG->OpenDialog("FBXDialog", "Select Non Anim Staticmesh FBX Files", ".fbx", config);

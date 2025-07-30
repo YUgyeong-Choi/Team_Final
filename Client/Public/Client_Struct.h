@@ -83,10 +83,12 @@ namespace Client
 #pragma endregion
 	typedef struct tagCutScene
 	{
-		_vector vPosition;
-		_vector vRotation;
-		_bool bUseLerp;
-		_float fDuration;
+		_matrix worldMatrix;
+		INTERPOLATION_CAMERA eInterp;
+		_float fInterpDuration;
+		_bool bZoom;
+		_float fFov;
+		_float fFovDuration;
 	}CUTSCENE_DESC;
 
 }

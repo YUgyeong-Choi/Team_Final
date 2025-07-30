@@ -13,9 +13,11 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "Model.h"
+#include "Model_Instance.h"
 
 #include "PhysXStaticActor.h"
 #include "PhysXDynamicActor.h"
+#include "PhysXController.h"
 
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"

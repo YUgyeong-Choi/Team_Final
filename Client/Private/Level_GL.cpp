@@ -40,6 +40,8 @@ HRESULT CLevel_GL::Initialize()
 		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background"), &eDesc)))
 		return E_FAIL;*/
 
+	
+
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::GL));
 	return S_OK;

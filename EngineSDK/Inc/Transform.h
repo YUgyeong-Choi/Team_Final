@@ -39,6 +39,7 @@ public:
 	}
 
 	void Set_SpeedPreSec(_float _fSpeeed) { m_fSpeedPerSec = _fSpeeed;}
+	_float Get_SpeedPreSec() { return m_fSpeedPerSec; }
 	void Set_RotationPreSec(_float _fSpeeed) { m_fRotationPerSec = _fSpeeed; }
 
 	_matrix Get_WorldMatrix() {

@@ -28,6 +28,8 @@ public:
 	_float Compute_Random_Normal();
 	_float Compute_Random(_float fMin, _float fMax);
 
+	void Set_IsChangeLevel(_bool _b) { g_bSceneChanging = _b; }
+
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
@@ -62,6 +64,7 @@ public:
 #ifdef _DEBUG
 	_bool Get_RenderCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
+	void ClearRenderObjects();
 #endif
 
 
@@ -103,7 +106,9 @@ public:
 	HRESULT Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
 	HRESULT Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& LightDesc);
 	HRESULT Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, class CLight** ppOut);
+	HRESULT Remove_NoLevelLight();
 	HRESULT Remove_Light(_uint iLevelIndex, class CLight* pLight);
+	HRESULT RemoveAll_Light(_uint iLevelIndex);
 	_uint Get_LightCount(_uint TYPE) const;
 #pragma endregion
 
@@ -142,9 +147,9 @@ public:
 #pragma endregion
 
 #pragma region SHADOW
-	HRESULT Ready_Light_For_Shadow(const CShadow::SHADOW_DESC& Desc);
-	const _float4x4* Get_Light_ViewMatrix();
-	const _float4x4* Get_Light_ProjMatrix();
+	HRESULT Ready_Light_For_Shadow(const CShadow::SHADOW_DESC& Desc, SHADOW eShadow);
+	const _float4x4* Get_Light_ViewMatrix(SHADOW eShadow);
+	const _float4x4* Get_Light_ProjMatrix(SHADOW eShadow);
 #pragma endregion
 
 #pragma region FRUSTUM	
@@ -163,6 +168,7 @@ public:
 	PxBoxGeometry CookBoxGeometry(const PxVec3& halfExtents);
 	PxBoxGeometry CookBoxGeometry(const PxVec3* pVertices, PxU32 vertexCount, _float fScale = 1.f);
 	PxScene* Get_Scene();
+	PxControllerManager* Get_ControllerManager();
 	PxPhysics* GetPhysics();
 	PxMaterial* GetMaterial(const wstring& name);
 #pragma endregion

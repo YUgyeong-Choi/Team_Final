@@ -154,6 +154,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\CameraSequence.h" />
     <ClInclude Include="..\public\Camera_CutScene.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\public\Camera_Manager.h" />
@@ -208,8 +209,12 @@
     <ClInclude Include="..\public\UI_Feature_Position.h" />
     <ClInclude Include="..\public\UI_Feature_UV.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
+    <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
     <ClInclude Include="..\Public\YGBox.h" />
+    <ClInclude Include="..\Public\YGController.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\YGConvexMesh.h" />
     <ClInclude Include="..\Public\YGDynamicGib.h" />
     <ClInclude Include="..\Public\YGDynamicObj.h" />
@@ -242,6 +247,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\CameraSequence.cpp" />
     <ClCompile Include="..\private\Camera_CutScene.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\private\Camera_Manager.cpp" />
@@ -292,8 +298,12 @@
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
     <ClCompile Include="..\private\UI_Feature_UV.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
+    <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />
     <ClCompile Include="..\Private\YGBox.cpp" />
+    <ClCompile Include="..\Private\YGController.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\YGConvexMesh.cpp" />
     <ClCompile Include="..\Private\YGDynamicGib.cpp" />
     <ClCompile Include="..\Private\YGDynamicObj.cpp" />
@@ -332,6 +342,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh_Instance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPBRMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl" />

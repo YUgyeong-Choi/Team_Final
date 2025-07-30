@@ -3,9 +3,11 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "Static_UI.h"
+#include "Dynamic_UI.h"
 #include "UI_Video.h"
 #include "UI_Button.h"
-
+#include "UI_Text.h"
+#include "UI_Feature_UV.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -28,9 +30,9 @@ void CLevel_Logo::Update(_float fTimeDelta)
 {	
 	if (!m_isReady)
 	{
-		for (int vk = 0x08; vk <= 0xFE; ++vk) 
+		for (int vk = 0; vk <= 254; ++vk) 
 		{
-			SHORT keyState = GetAsyncKeyState(vk);
+			_int keyState = m_pGameInstance->Get_DIKeyState(vk);
 			if (keyState & 0x8000)
 			{
 				m_isReady = true;
@@ -42,26 +44,8 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	}
 	else
 	{
-		for (auto& pButton : m_pButtons)
-		{
-			pButton->Check_MouseHover();
-		}
 
-		if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
-		{
-
-			for (auto& pButton : m_pButtons)
-			{
-				if (!pButton->Check_Click())
-					++m_iButtonIndex;
-				else
-				{
-
-				}
-			}
-
-
-		}
+		Check_Button();
 
 
 		if (m_pGameInstance->Key_Down(DIK_F1))
@@ -150,8 +134,8 @@ HRESULT CLevel_Logo::Render()
 
 	if(!m_isReady)
 	{
-		text = L"아무 키나 누르세요";
-		m_pGameInstance->Draw_Font_Centered(TEXT("Font_Bold"), text.c_str(), _float2(g_iWinSizeX * 0.2f, g_iWinSizeY * 0.5f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+		text = L"아무 버튼이나 누르세요.";
+		m_pGameInstance->Draw_Font_Centered(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.2f, g_iWinSizeY * 0.5f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 	}
 	
 
@@ -197,27 +181,29 @@ HRESULT CLevel_Logo::Ready_Video()
 	Safe_AddRef(m_pMainUI);
 
 	m_pMainUI->FadeStart(0.f, 1.f, 3.f);
-
+	
 
 	return S_OK;
 }
 
 HRESULT CLevel_Logo::Ready_Menu()
 {
-	_float2 vRange = m_pGameInstance->Calc_Draw_Range(TEXT("Font_Bold"), TEXT("하나 둘삼"));
+	_float2 vRange = m_pGameInstance->Calc_Draw_Range(TEXT("Font_Medium"), TEXT("게임 시작"));
 
 	CUI_Button::BUTTON_UI_DESC eButtonDesc = {};
+	eButtonDesc.strTextureTag = L"";
 	eButtonDesc.fOffset = 0.01f;
-	eButtonDesc.fX = g_iWinSizeX * 0.2f;
+	eButtonDesc.fX = g_iWinSizeX * 0.225f;
 	eButtonDesc.iTextureIndex = 0;
-	eButtonDesc.vColor = { 1.f,0.f,0.f,1.f };
+	eButtonDesc.vColor = { 0.8f,0.f,0.f,0.8f };
 	eButtonDesc.fPadding = { 40.f, 15.f };
-	eButtonDesc.fSizeX = vRange.x + eButtonDesc.fPadding.x;
-	eButtonDesc.fSizeY = vRange.y + eButtonDesc.fPadding.y;
+	eButtonDesc.fFontSize = 0.75f;
+	eButtonDesc.fSizeX = vRange.x * eButtonDesc.fFontSize + eButtonDesc.fPadding.x;
+	eButtonDesc.fSizeY = vRange.y * eButtonDesc.fFontSize + eButtonDesc.fPadding.y;
 
 	
 
-	eButtonDesc.fY = g_iWinSizeY * 0.3f;
+	eButtonDesc.fY = g_iWinSizeY * 0.35f;
 	eButtonDesc.strCaption = TEXT("새 게임");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button"),
@@ -228,7 +214,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	Safe_AddRef(m_pButtons.back());
 
-	eButtonDesc.fY = g_iWinSizeY * 0.4f;
+	eButtonDesc.fY = g_iWinSizeY * 0.45f;
 	eButtonDesc.strCaption = TEXT("환경 설정");
 	
 
@@ -240,7 +226,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	Safe_AddRef(m_pButtons.back());
 
-	eButtonDesc.fY = g_iWinSizeY * 0.5f;
+	eButtonDesc.fY = g_iWinSizeY * 0.55f;
 	eButtonDesc.strCaption = TEXT("팀원 소개");
 	
 
@@ -252,7 +238,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	Safe_AddRef(m_pButtons.back());
 
-	eButtonDesc.fY = g_iWinSizeY * 0.6f;
+	eButtonDesc.fY = g_iWinSizeY * 0.65f;
 	eButtonDesc.strCaption = TEXT("게임 종료");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button"),
@@ -264,8 +250,118 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	Safe_AddRef(m_pButtons.back());
 
+	m_pButtons[0]->Set_isHighlight(true);
+
+	CDynamic_UI::DYNAMIC_UI_DESC eSelectDesc = {};
+	eSelectDesc.fOffset = 0.01f;
+	eSelectDesc.fDuration = 0.033f;
+	eSelectDesc.fSizeX = g_iWinSizeX * 0.02f;
+	eSelectDesc.fSizeY = g_iWinSizeY * 0.04f;
+	eSelectDesc.fX = g_iWinSizeX * 0.175f;
+	eSelectDesc.fY = g_iWinSizeY * 0.25f;
+	eSelectDesc.iPassIndex = D_UI_SPRITE;
+	eSelectDesc.iTextureIndex = 2;
+	eSelectDesc.vColor = { 1.f,1.f,1.f,1.f };
+	eSelectDesc.strTextureTag = TEXT("Prototype_Component_Texture_Button_Select");
+	eSelectDesc.fAlpha = 0.5f;
+	
+
+	UI_FEATURE_UV_DESC *uvDesc = new UI_FEATURE_UV_DESC;
+	uvDesc->iStartFrame = 0;
+	uvDesc->iEndFrame = 16;
+	uvDesc->fStartUV = { 0.f,0.f };
+	uvDesc->fOffsetUV = { 0.25f,0.25f };
+	uvDesc->isLoop = true;
+	uvDesc->strProtoTag = ("Prototype_Component_UI_Feature_UV");
+
+	eSelectDesc.FeatureDescs.push_back(uvDesc);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
+		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select"), &eSelectDesc)))
+		return E_FAIL;
+
+	Safe_Delete(uvDesc);
+
+	m_pSelectUI = static_cast<CDynamic_UI*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select")));
+
+	Safe_AddRef(m_pSelectUI);
+
 
 	return S_OK;
+}
+
+void CLevel_Logo::Check_Button()
+{
+	
+	if (m_pGameInstance->Key_Down(DIK_S))
+	{
+		if (m_iButtonIndex < m_pButtons.size() - 1)
+		{
+			m_pButtons[m_iButtonIndex]->Set_isHighlight(false);
+			++m_iButtonIndex;
+			m_pButtons[m_iButtonIndex]->Set_isHighlight(true);
+		}
+			
+	}
+	else if (m_pGameInstance->Key_Down(DIK_W))
+	{
+		if (m_iButtonIndex > 0)
+		{
+			m_pButtons[m_iButtonIndex]->Set_isHighlight(false);
+			--m_iButtonIndex;
+			m_pButtons[m_iButtonIndex]->Set_isHighlight(true);
+			
+		}
+			
+	}
+
+	for (int i = 0; i < m_pButtons.size(); ++i)
+	{
+		_bool isHover = m_pButtons[i]->Check_MouseHover();
+
+		if (isHover)
+		{
+			m_pButtons[m_iButtonIndex]->Set_isHighlight(false);
+			m_iButtonIndex = i;
+			m_pButtons[m_iButtonIndex]->Set_isHighlight(true);
+
+			if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+			{
+				Interation_Button(m_iButtonIndex);
+			}
+
+			break;
+		}
+
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	{
+		Interation_Button(m_iButtonIndex);
+	}
+
+
+	m_pButtons[m_iButtonIndex]->Set_isMouseHover(true);
+	m_pSelectUI->Set_Position(g_iWinSizeX * 0.175f, g_iWinSizeY * (0.35f + 0.1f * m_iButtonIndex));
+}
+
+void CLevel_Logo::Interation_Button(_int& iIndex)
+{
+	switch (iIndex)
+	{
+	case 0:
+		m_eNextLevel = LEVEL::KRAT_CENTERAL_STATION;
+		break;
+	case 1:
+		break;
+	case 2:
+		break;
+	case 3:
+		PostQuitMessage(0);
+		break;
+	default:
+		break;
+	}
 }
 
 
@@ -288,6 +384,7 @@ void CLevel_Logo::Free()
 	__super::Free();
 
 	Safe_Release(m_pMainUI);
+	Safe_Release(m_pSelectUI);
 
 	for(auto& pButton: m_pButtons)
 		Safe_Release(pButton);

@@ -88,11 +88,24 @@ HRESULT CPhysX_Manager::Initialize()
 		return E_FAIL;
 	m_Materials.emplace(make_pair(L"Default", pMaterial));
 
+
+	// 컨트롤러 매니저 추가
+	m_pControllerManager = PxCreateControllerManager(*m_pScene);
+	if (!m_pControllerManager)
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CPhysX_Manager::Shutdown()
 {
+	if (m_pControllerManager)
+	{
+		m_pControllerManager->purgeControllers(); // 컨트롤러 모두 정리
+		m_pControllerManager->release();
+		m_pControllerManager = nullptr;
+	}
+
 	if (m_pScene)
 	{
 		m_pScene->release();
