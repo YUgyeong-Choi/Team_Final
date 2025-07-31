@@ -192,9 +192,12 @@
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolMeshEffect">
       <UniqueIdentifier>{c96d79a7-a63e-4a35-83f4-de237defe4ed}</UniqueIdentifier>
-	</Filter>
-	<Filter Include="02.GameObjects\99.UI\Text">
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Text">
       <UniqueIdentifier>{b1e0564c-381f-4d59-a7ce-4e891ff924d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container">
+      <UniqueIdentifier>{a57f9c53-0a50-4000-935c-7a8076f50e0e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -458,8 +461,8 @@
     </ClInclude>
     <ClInclude Include="..\public\EffectContainer.h">
       <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
-	</ClInclude>
-	<ClInclude Include="..\public\UI_Text.h">
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Text.h">
       <Filter>02.GameObjects\99.UI\Text</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\YGController.h">
@@ -473,6 +476,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Client_Function.h">
       <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Container.h">
+      <Filter>02.GameObjects\99.UI\Container</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -669,9 +675,6 @@
     <ClCompile Include="..\private\UI_Feature_Fade.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Fade</Filter>
     </ClCompile>
-    <ClCompile Include="..\public\UI_Feature_Position.cpp">
-      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Position</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Scale</Filter>
     </ClCompile>
@@ -719,8 +722,8 @@
     </ClCompile>
     <ClCompile Include="..\private\EffectContainer.cpp">
       <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
-	</ClCompile>
-	<ClCompile Include="..\private\UI_Text.cpp">
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Text.cpp">
       <Filter>02.GameObjects\99.UI\Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\YGController.cpp">
@@ -728,6 +731,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CameraSequence.cpp">
       <Filter>01.Levels\LevelYG\YG_Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Feature_Position.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Position</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Container.cpp">
+      <Filter>02.GameObjects\99.UI\Container</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

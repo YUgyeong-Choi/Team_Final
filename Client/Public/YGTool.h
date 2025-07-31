@@ -35,7 +35,7 @@ private:
 	_int m_iSelected = -1;
 	_int m_iFirstFrame = 0;
 
-	_int m_iEndFrame = {};
+	_int m_iEndFrame = 10;
 
 	CAMERA_FRAMEDATA m_CameraDatas;
 	CCameraSequence::CAMERA_KEY* m_pSelectedKey = nullptr;

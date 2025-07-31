@@ -355,13 +355,13 @@ void CAnimator::Update(_float fDeltaTime)
 			////if (m_Blend.srcAnim) m_Blend.srcAnim->ResetTrack();
 			//if (m_Blend.dstAnim) m_Blend.dstAnim->ResetTrack();
 		}
-		//if (m_pBlendFromUpperAnim) 
-		//	m_pBlendFromUpperAnim->ResetTrack();
+		if (m_pBlendFromUpperAnim) 
+			m_pBlendFromUpperAnim->ResetTrack();
 		//if (m_pBlendToUpperAnim) 
 		//	m_pBlendToUpperAnim->ResetTrack();
 
 		if (m_pBlendFromUpperAnim
-			&& m_pBlendFromUpperAnim != transitionResult.pFromLowerAnim)
+			&& m_pBlendFromUpperAnim != transitionResult.pToLowerAnim)
 		{
 			m_pBlendFromUpperAnim->ResetTrack();
 		}

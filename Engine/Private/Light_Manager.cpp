@@ -99,6 +99,13 @@ HRESULT CLight_Manager::Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIB
 
 	return S_OK;
 }
+HRESULT CLight_Manager::Render_Volumetric_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level)
+{
+	for (auto& pLight : m_LevelLights[Level])
+		pLight->VolumetricRender(pShader, pVIBuffer);
+
+	return S_OK;
+}
 
 _uint CLight_Manager::Get_LightCount(_uint TYPE, _uint iLevel)
 {

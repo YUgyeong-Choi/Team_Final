@@ -113,6 +113,7 @@ private:
 	_float2					m_vSize = { 1.f, 2.f };
 	_float3					m_vCenter = { 0.f, 0.f, 0.f };
 	_bool					m_bGravity = { false };
+	_float					m_fGravity = { 9.8f };
 	_bool					m_bOrbit = { false };
 	_float					m_fRotationSpeed = {};
 	class CToolParticle*	m_pToolParticle = { nullptr };
@@ -124,7 +125,7 @@ private:
 
 	class CEffectSequence* m_pSequence = { nullptr };
 
-	_int		m_iCurFrame = {}; // please make this deprecated...
+	_int		m_iCurFrame = {};
 	_float		m_fCurFrame = {};
 	_bool		m_bExpanded = { true };
 	_int		m_iSelected = { -1 };

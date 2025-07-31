@@ -200,6 +200,18 @@ public:
 			m_pCurAnimController->Cancel_OverrideAnimController();
 		}
 	}
+
+	void RenameOverrideAnimController(const string& oldName, const string& newName)
+	{
+		auto it = m_OverrideControllerMap.find(oldName);
+		if (it != m_OverrideControllerMap.end())
+		{
+			OverrideAnimController overrideCtrl = it->second;
+			m_OverrideControllerMap.erase(it);
+			overrideCtrl.name = newName; // 이름 변경
+			m_OverrideControllerMap[newName] = overrideCtrl;
+		}
+	}
 private:
     // 기본 블렌딩
     void UpdateBlend(_float fTimeDelta);

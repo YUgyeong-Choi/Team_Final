@@ -64,6 +64,10 @@ public:
 	void Reset() ;
 
 	HRESULT Ready_Components(const wstring& strTextureTag);
+
+	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) override;
+
+
 	HRESULT Bind_ShaderResources();
 
 	HRESULT Add_Feature( _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
