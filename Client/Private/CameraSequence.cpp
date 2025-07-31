@@ -104,6 +104,36 @@ void CCameraSequence::Delete_KeyFrame(_int type, _int keyFrame)
 
 }
 
+void CCameraSequence::Change_KeyFrame(_int type, _int originKeyFrame, _int changeKeyFrame)
+{
+    switch (type)
+    {
+    case 0:
+    {
+        auto it = find(m_vecPosKeyFrames.begin(), m_vecPosKeyFrames.end(), originKeyFrame);
+        if (it != m_vecPosKeyFrames.end())
+            *it = changeKeyFrame;
+        break;
+    }
+    case 1:
+    {
+        auto it = find(m_vecRotKeyFrames.begin(), m_vecRotKeyFrames.end(), originKeyFrame);
+        if (it != m_vecRotKeyFrames.end())
+            *it = changeKeyFrame;
+        break;
+    }
+    case 2:
+    {
+        auto it = find(m_vecFovKeyFrames.begin(), m_vecFovKeyFrames.end(), originKeyFrame);
+        if (it != m_vecFovKeyFrames.end())
+            *it = changeKeyFrame;
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void CCameraSequence::Set_EndFrame(_int endFrame)
 {
     for (auto& key : m_vecKeys)
