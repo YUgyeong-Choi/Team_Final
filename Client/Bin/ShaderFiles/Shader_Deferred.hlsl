@@ -573,23 +573,20 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC(PS_IN In)
     
     for (int j = 0; j < NumStep; ++j)
     {
+        // 레이 도달지점을 월드 좌표로 변환
         RayPos += RayDir * StepSize;
-        // 샘플 위치 → WorldPos
         float3 worldPos = mul(float4(RayPos, 1.0f), g_ViewMatrixInv).xyz;
 
-        // 샘플 위치 → ViewPos
+        // 도달지점을 다시 뷰 공간으로 변환
         float3 sampleViewPos = mul(float4(worldPos, 1.0f), g_ViewMatrix).xyz;
 
-        // 샘플 위치 → ViewProj → UV 변환
-        float4 projPos = mul(float4(worldPos, 1.0f), g_ViewMatrix * g_ProjMatrix);
-        float2 sampleUV = projPos.xy / projPos.w * 0.5f + 0.5f;
+        // 도달지점을 UV 공간까지 변환
+        float4 clipPos = mul(float4(worldPos, 1.0f), g_ViewMatrix * g_ProjMatrix);
+        float2 ndcXY = clipPos.xy / clipPos.w;
+        float2 sampleUV = ndcXY * 0.5f + 0.5f;
         sampleUV.y = 1.0f - sampleUV.y;
-
-        // 화면 밖은 스킵
-        if (sampleUV.x < 0 || sampleUV.x > 1 || sampleUV.y < 0 || sampleUV.y > 1)
-            continue;
         
-        
+        // 기존 깊이값을 샘플링
         vector sceneDepthDesc = g_PBR_Depth.Sample(DefaultSampler, sampleUV);
         if (sceneDepthDesc.x >= 0.999f)
             continue;
@@ -601,7 +598,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC(PS_IN In)
             continue;
         
         
-        
+        /* [ 포그 최대거리 컷팅 ] */
         float distanceToLight = length(g_vLightPos.xyz - worldPos);
         float cutoff = 20.0f;
         float softFalloff = saturate(1.0f - (distanceToLight / cutoff));

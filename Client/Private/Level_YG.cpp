@@ -48,7 +48,7 @@ HRESULT CLevel_YG::Ready_Layer_Station(const _wstring strLayerTag)
 {
 	CPBRMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.m_eLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("Train");
 	lstrcpy(Desc.szName, TEXT("Train"));
 
@@ -62,12 +62,12 @@ HRESULT CLevel_YG::Ready_Layer_Station(const _wstring strLayerTag)
 		ENUM_CLASS(LEVEL::YG), strLayerTag, &Desc)))
 		return E_FAIL;
 
-	CTestAnimObject::GAMEOBJECT_DESC playerDesc{};
-	playerDesc.fSpeedPerSec = 3.f;
-	playerDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
-		ENUM_CLASS(LEVEL::YG), TEXT("TestAnimObject"), &playerDesc)))
-		return E_FAIL;
+	//CTestAnimObject::GAMEOBJECT_DESC playerDesc{};
+	//playerDesc.fSpeedPerSec = 3.f;
+	//playerDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
+	//	ENUM_CLASS(LEVEL::YG), TEXT("TestAnimObject"), &playerDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
