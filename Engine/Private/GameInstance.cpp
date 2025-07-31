@@ -626,6 +626,11 @@ _bool CGameInstance::isIn_Frustum_LocalSpace(_fvector vLocalPos, _float fRange)
 	return m_pFrustum->isIn_LocalSpace(vLocalPos, fRange);
 }
 
+_bool CGameInstance::isIn_PhysXAABB(CPhysXActor* pPhysXActor)
+{
+	return m_pFrustum->isIn_PhysXAABB(pPhysXActor);
+}
+
 PxTriangleMeshGeometry CGameInstance::CookTriangleMesh(const PxVec3* vertices, PxU32 vertexCount, const PxU32* indices, PxU32 triangleCount, PxMeshScale geomScale)
 {
 	return m_pPhysX_Manager->CookTriangleMesh(vertices, vertexCount, indices, triangleCount, geomScale);

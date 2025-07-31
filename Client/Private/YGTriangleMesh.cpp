@@ -58,12 +58,12 @@ void CYGTriangleMesh::Update(_float fTimeDelta)
 
 void CYGTriangleMesh::Late_Update(_float fTimeDelta)
 {
-	//if (m_pGameInstance->Is_In_Frustum(m_pPhysXActor)) {
-	//	
-	//}
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	}
 	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
 HRESULT CYGTriangleMesh::Render()

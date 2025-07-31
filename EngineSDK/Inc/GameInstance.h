@@ -165,6 +165,7 @@ public:
 	void Transform_Frustum_ToLocalSpace(_fmatrix WorldMatrix);
 	_bool isIn_Frustum_WorldSpace(_fvector vWorldPos, _float fRange = 0.f);
 	_bool isIn_Frustum_LocalSpace(_fvector vLocalPos, _float fRange);
+	_bool isIn_PhysXAABB(class CPhysXActor* pPhysXActor);
 #pragma endregion
 
 #pragma region PHYSX_MANAGER

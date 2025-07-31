@@ -16,7 +16,7 @@ public:
 
     CGameObject* Get_Owner() { return m_pOwner; }
     COLLIDERTYPE Get_ColliderType() { return m_eColliderType; }
-
+    virtual PxRigidActor* Get_Actor() = 0;
 public:
     virtual void On_Enter(CPhysXActor* pOther);
     virtual void On_Stay(CPhysXActor* pOther);
