@@ -1,4 +1,4 @@
-#include "Animator.h"
+ï»¿#include "Animator.h"
 #include "Animation.h"
 #include "GameInstance.h"
 #include "AnimController.h"
@@ -94,11 +94,11 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 void CTestAnimObject::Priority_Update(_float fTimeDelta)
 {
 
-	/* [ Ä³½ºÄÉÀÌµå Àü¿ë ¾÷µ¥ÀÌÆ® ÇÔ¼ö ] */
+	/* [ ìºìŠ¤ì¼€ì´ë“œ ì „ìš© ì—…ë°ì´íŠ¸ í•¨ìˆ˜ ] */
 	UpdateShadowCamera();
-	/* [ ¿òÁ÷ÀÓ Àü¿ë ÇÔ¼ö ] */
+	/* [ ì›€ì§ì„ ì „ìš© í•¨ìˆ˜ ] */
 	SetMoveState(fTimeDelta);
-	/* [ ·è º¤ÅÍ ·¹ÀÌÄÉ½ºÆ® ] */
+	/* [ ë£© ë²¡í„° ë ˆì´ì¼€ìŠ¤íŠ¸ ] */
 	RayCast();
 
 }
@@ -153,7 +153,7 @@ HRESULT CTestAnimObject::Bind_Shader()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 		{
-			// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÇ´ï¿½ ï¿½ï¿½ì°?ï¿½Ö¾î¼­ return ï¿½ï¿½
+			// å ì‹œë¤„ì˜™å ì‹±ì–µì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì‹«ë˜ëŒì˜™ å ì™ì˜™ï§¡?å ìŒì–´ì„œ return å ì™ì˜™
 		}
 		//	return E_FAIL;
 
@@ -247,6 +247,33 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		}
 	}
 
+	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+	{
+		_int iCombo = m_pAnimator->GetInt("Combo");
+		if (m_pAnimator->GetCurrentAnim())
+		{
+			if (m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName.find("Attack") == string::npos)
+			{
+				if (iCombo == 0)
+					iCombo = 1;
+				else
+					iCombo = 0;
+				m_pAnimator->SetInt("Combo", iCombo);
+				m_pAnimator->SetBool("Charge", true);
+				m_pAnimator->SetTrigger("NormalAttack");
+			}
+		}
+	}
+	if (m_pGameInstance->Mouse_Down(DIM::RBUTTON))
+	{
+		static _int iStrongCombo = 0;
+		if (iStrongCombo == 0)
+			iStrongCombo = 1;
+		else if (iStrongCombo == 1)
+			iStrongCombo = 0;
+		m_pAnimator->SetInt("Combo", iStrongCombo);
+		m_pAnimator->SetTrigger("StrongAttack");
+	}
 
 	if (bSpaceHeld && bSpaceUp)
 	{
@@ -321,14 +348,14 @@ HRESULT CTestAnimObject::UpdateShadowCamera()
 {
 	CShadow::SHADOW_DESC Desc{};
 
-	// 1. Ä«¸Ş¶ó °íÁ¤ À§Ä¡ (¿¹: °øÁß¿¡ ¶°ÀÖ´Â À§Ä¡)
+	// 1. ì¹´ë©”ë¼ ê³ ì • ìœ„ì¹˜ (ì˜ˆ: ê³µì¤‘ì— ë– ìˆëŠ” ìœ„ì¹˜)
 	_vector vFixedEye = XMVectorSet(76.f, 57.f, -21.f, 1.f);
 
-	// 2. ÇÃ·¹ÀÌ¾î ÇöÀç À§Ä¡¸¦ Å¸°ÙÀ¸·Î ¼³Á¤
+	// 2. í”Œë ˆì´ì–´ í˜„ì¬ ìœ„ì¹˜ë¥¼ íƒ€ê²Ÿìœ¼ë¡œ ì„¤ì •
 	_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vTargetAt = vPlayerPos;
 
-	// 3. Àû¿ë
+	// 3. ì ìš©
 	m_vShadowCam_Eye = vFixedEye;
 	m_vShadowCam_At = vTargetAt;
 
@@ -379,7 +406,7 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 		vInputDir *= fDist;
 		XMStoreFloat3(&moveVec, vInputDir);
 
-		// Áß·Â Àû¿ë
+		// ì¤‘ë ¥ ì ìš©
 		constexpr float fGravity = -9.81f;
 		m_vGravityVelocity.y += fGravity * fTimeDelta;
 		moveVec.y += m_vGravityVelocity.y * fTimeDelta;
@@ -390,7 +417,7 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 		PxControllerCollisionFlags collisionFlags =
 			m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 
-		// 4. Áö¸é¿¡ ´ê¾ÒÀ¸¸é Áß·Â ¼Óµµ ÃÊ±âÈ­
+		// 4. ì§€ë©´ì— ë‹¿ì•˜ìœ¼ë©´ ì¤‘ë ¥ ì†ë„ ì´ˆê¸°í™”
 		if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
 			m_vGravityVelocity.y = 0.f;
 
@@ -420,16 +447,16 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
 
 
-	// 7. ÀÌµ¿
+	// 7. ì´ë™
 	_float3 moveVec = {};
 
 	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
 	_float fDist = fSpeed * fTimeDelta;
 	vInputDir *= fDist;
-	//¾î´À¹æÇâÀ¸·Î ¸î¸¸Å­ ÀÌµ¿ÇÑ º¤ÅÍ¸¦ ±¸ÇÔ
+	//ì–´ëŠë°©í–¥ìœ¼ë¡œ ëª‡ë§Œí¼ ì´ë™í•œ ë²¡í„°ë¥¼ êµ¬í•¨
 	XMStoreFloat3(&moveVec, vInputDir);
 
-	// Áß·Â Àû¿ë
+	// ì¤‘ë ¥ ì ìš©
 	constexpr float fGravity = -9.81f;
 	m_vGravityVelocity.y += fGravity * fTimeDelta;
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
@@ -440,7 +467,7 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 	PxControllerCollisionFlags collisionFlags =
 		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 
-	// 4. Áö¸é¿¡ ´ê¾ÒÀ¸¸é Áß·Â ¼Óµµ ÃÊ±âÈ­
+	// 4. ì§€ë©´ì— ë‹¿ì•˜ìœ¼ë©´ ì¤‘ë ¥ ì†ë„ ì´ˆê¸°í™”
 	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
 		m_vGravityVelocity.y = 0.f;
 
@@ -470,7 +497,7 @@ void CTestAnimObject::RayCast()
 		{
 			PxRigidActor* hitActor = hit.block.actor;
 
-			//  ï¿½Ú±ï¿½ ï¿½Ú½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+			//  å ìŒ˜ê¹ì˜™ å ìŒ˜ì™ì˜™å ì‹±ëªŒì˜™ å ì™ì˜™å ì™ì˜™
 			if (hitActor == m_pControllerCom->Get_Actor())
 			{
 				printf(" Ray hit myself  skipping\n");
@@ -482,12 +509,11 @@ void CTestAnimObject::RayCast()
 			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 			pHitActor->Get_Owner()->On_Hit(this, m_pControllerCom->Get_ColliderType());
 
-			printf("Rayï¿½æµ¹ ï¿½ß´ï¿½!\n");
 			printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
 			printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
 			m_bRayHit = true;
 			m_vRayHitPos = hitPos;
-			// ï¿½ï¿½ï¿½ï¿½ hit.block.ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ faceIndex, U, V ï¿½Ù¾ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã±ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.. 
+			// å ì™ì˜™å ì™ì˜™ hit.block.å ì™ì˜™å ì©ì— å ì™ì˜™ faceIndex, U, V å ìŒ•ì–µì˜™å ì‹¹ê³¤ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™ å ì‹œê¹ì˜™å ì‹¹ëªŒì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™.. 
 		}
 	}
 
