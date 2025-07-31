@@ -30,7 +30,7 @@ public:
     void Set_SimulationFilterData(PxFilterData _data);
     void Set_QueryFilterData(PxFilterData _data);
 public:
-    PxRigidActor* Get_Actor() const { return m_pActor; }
+    PxRigidActor* Get_Actor() override { return m_pActor; }
     PxShape* Get_Shape() { return m_pShape; }
 private:
     PxRigidActor* m_pActor = { nullptr };

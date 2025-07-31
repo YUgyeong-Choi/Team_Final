@@ -28,7 +28,7 @@ public:
 
     PxController* Get_Controller() const { return m_pController; }
 public:
-    PxRigidActor* Get_Actor() const
+    PxRigidActor* Get_Actor() override
     {
         return m_pController ? m_pController->getActor() : nullptr;
     }
