@@ -725,6 +725,138 @@
             "Duration": 68.0,
             "IsLoop": false,
             "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_CA1",
+            "Duration": 206.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_CA2",
+            "Duration": 225.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_CA3",
+            "Duration": 275.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_CA4",
+            "Duration": 244.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_DNA",
+            "Duration": 123.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_DNA2",
+            "Duration": 153.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_DSA",
+            "Duration": 103.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_FA",
+            "Duration": 139.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_FCA",
+            "Duration": 174.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_NA1",
+            "Duration": 154.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_NA2",
+            "Duration": 147.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_NA3",
+            "Duration": 153.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_NA4",
+            "Duration": 158.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_RA",
+            "Duration": 148.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA1",
+            "Duration": 195.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA2",
+            "Duration": 148.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA3",
+            "Duration": 144.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA4",
+            "Duration": 147.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA5",
+            "Duration": 176.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA6",
+            "Duration": 176.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SNA",
+            "Duration": 120.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SSA",
+            "Duration": 158.0,
+            "IsLoop": false,
+            "TickPerSecond": 50.0
         }
     ]
 }

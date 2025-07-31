@@ -97,10 +97,42 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Bayonet_CA1",
+                    "ClipName": "AS_Pino_T_Bayonet_CA3",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "ChargeStrongAttack",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_CA4",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "ChargeStrongAttack2",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_SA5",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "StrongAttack2",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_NA1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "SprintNormalAttack",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_SNA",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "SprintStrongAttack",
                     "UpperClipName": ""
                 },
                 {

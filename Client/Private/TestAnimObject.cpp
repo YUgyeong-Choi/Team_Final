@@ -153,7 +153,7 @@ HRESULT CTestAnimObject::Bind_Shader()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 		{
-			// 占시뤄옙占싱억옙 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙 占싫되댐옙 占쏙옙李?占쌍어서 return 占쏙옙
+			
 		}
 		//	return E_FAIL;
 
@@ -193,21 +193,34 @@ HRESULT CTestAnimObject::Ready_Components()
 
 void CTestAnimObject::Input_Test(_float fTimeDelta)
 {
-	_bool bUp = GetAsyncKeyState(VK_UP) & 0x8000;
-	_bool bDown = GetAsyncKeyState(VK_DOWN) & 0x8000;
-	_bool bLeft = GetAsyncKeyState(VK_LEFT) & 0x8000;
-	_bool bRight = GetAsyncKeyState(VK_RIGHT) & 0x8000;
-	_bool bMove = (bUp || bDown || bLeft || bRight);
+	//_bool bUp = GetAsyncKeyState(VK_UP) & 0x8000;
+	//_bool bDown = GetAsyncKeyState(VK_DOWN) & 0x8000;
+	//_bool bLeft = GetAsyncKeyState(VK_LEFT) & 0x8000;
+	//_bool bRight = GetAsyncKeyState(VK_RIGHT) & 0x8000;
 
+	_bool bUp = m_pGameInstance->Key_Pressing(DIK_W);
+	_bool bDown = m_pGameInstance->Key_Pressing(DIK_S);
+	_bool bLeft = m_pGameInstance->Key_Pressing(DIK_D);
+	_bool bRight = m_pGameInstance->Key_Pressing(DIK_A);
+	_bool bMove = (bUp || bDown || bLeft || bRight);
 	static _bool bRunToggle = false;
 	static _bool bSpaceHeld = false;      
 	static _bool bSprinting = false;      
 	static _float fPressTime = 0.f;       
 	const _float sprintTh = 0.8f;         
 
+	static _bool bRightMouseHeld = false;
+	static _float fChargeTime = 0.f;
+	static _bool bCharging = false;
+	const _float chargeThreshold = 0.2f; // 0.2
+
 	_bool bSpaceDown = m_pGameInstance->Key_Down(DIK_SPACE);
 	_bool bSpacePress = m_pGameInstance->Key_Pressing(DIK_SPACE);
 	_bool bSpaceUp = m_pGameInstance->Key_Up(DIK_SPACE);
+
+	_bool bRightMouseDown = m_pGameInstance->Mouse_Down(DIM::RBUTTON);
+	_bool bRightMousePress = m_pGameInstance->Mouse_Pressing(DIM::RBUTTON);
+	_bool bRightMouseUp = m_pGameInstance->Mouse_Up(DIM::RBUTTON);
 
 	if (m_pGameInstance->Key_Down(DIK_TAB))
 	{
@@ -246,10 +259,9 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 			bSprinting = true;
 		}
 	}
-
+	_int iCombo = m_pAnimator->GetInt("Combo");
 	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
 	{
-		_int iCombo = m_pAnimator->GetInt("Combo");
 		if (m_pAnimator->GetCurrentAnim())
 		{
 			if (m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName.find("Attack") == string::npos)
@@ -259,20 +271,65 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 				else
 					iCombo = 0;
 				m_pAnimator->SetInt("Combo", iCombo);
-				m_pAnimator->SetBool("Charge", true);
-				m_pAnimator->SetTrigger("NormalAttack");
+		m_pAnimator->SetTrigger("NormalAttack");
 			}
 		}
 	}
-	if (m_pGameInstance->Mouse_Down(DIM::RBUTTON))
+
+	if (bRightMouseDown)
 	{
-		static _int iStrongCombo = 0;
-		if (iStrongCombo == 0)
-			iStrongCombo = 1;
-		else if (iStrongCombo == 1)
-			iStrongCombo = 0;
-		m_pAnimator->SetInt("Combo", iStrongCombo);
-		m_pAnimator->SetTrigger("StrongAttack");
+		// 우클릭 시작
+		bRightMouseHeld = true;
+		fChargeTime = 0.f;
+		bCharging = false;
+		m_pAnimator->SetBool("Charge", false); // 차지 시작 시 false로 초기화
+	}
+
+	if (bRightMouseHeld && bRightMousePress)
+	{
+		// 우클릭을 계속 누르고 있는 동안
+		fChargeTime += fTimeDelta;
+
+		if (!bCharging && fChargeTime >= chargeThreshold)
+		{
+			// 0.5초 이상 누르면 차지 상태로 변경
+			bCharging = true;
+			m_pAnimator->SetBool("Charge", true);
+			cout << "Charge activated! Time: " << fChargeTime << endl; // 디버그용
+		}
+		else
+		{
+			//m_pAnimator->SetBool("Charge", false);
+		}
+	}
+
+	if (bRightMouseUp)
+	{
+		// 우클릭을 뗄 때
+		if (bRightMouseHeld)
+		{
+			if (m_pAnimator->GetCurrentAnim())
+			{
+				if (m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName.find("Attack") == string::npos)
+				{
+					if (iCombo == 0)
+						iCombo = 1;
+					else
+						iCombo = 0;
+					m_pAnimator->SetInt("Combo", iCombo);
+			m_pAnimator->SetTrigger("StrongAttack");
+				}
+			}
+		}
+
+		// 차지 상태 초기화
+		bRightMouseHeld = false;
+		fChargeTime = 0.f;
+		//if (bCharging)
+		//{
+		//	bCharging = false;
+		//	m_pAnimator->SetBool("Charge", false); // 공격 후 차지 해제
+		//}
 	}
 
 	if (bSpaceHeld && bSpaceUp)
