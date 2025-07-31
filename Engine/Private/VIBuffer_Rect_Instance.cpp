@@ -165,7 +165,7 @@
 //
 //
 //
-//void CVIBuffer_Rect_Instance::Drop(_float fTimeDelta)
+//void CVIBuffer_Rect_Instance::Directional(_float fTimeDelta)
 //{
 //	D3D11_MAPPED_SUBRESOURCE	SubResource{};
 //

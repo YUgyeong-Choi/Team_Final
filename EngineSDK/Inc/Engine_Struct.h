@@ -168,10 +168,12 @@ namespace Engine
 		XMFLOAT4		vUp;
 		XMFLOAT4		vLook;
 		XMFLOAT4		vTranslation;
+
 		XMFLOAT2		vLifeTime;
+		XMFLOAT4		vDirection;			// CS에 옮길 것
+		
 
-
-		static const unsigned int					iNumElements = { 6 };
+		static const unsigned int					iNumElements = { 7 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXPOS_PARTICLE_INSTANCE;
 
