@@ -17,6 +17,8 @@ public:
 		_float3			vRange;
 		_float2			vSize;
 		_float3			vCenter;
+		_bool			bGravity = { false };
+		_float			fGravity = { 9.8f };
 		_bool			isTool = { false };
 	}DESC;
 	

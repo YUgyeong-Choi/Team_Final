@@ -392,21 +392,25 @@ HRESULT CCYTool::Window_Particle()
 
 	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 5000, "%d");
 	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.1f, -1000.f, 1000.f, "%.1f");
-	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.1f, 0.f, 100.f, "%.1f");
-	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
-	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 0.1f, 1000.f, "%.1f");
-	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.1f, -1000.f, 1000.f, "%.1f");
-	ImGui::ColorEdit4("Center Color", reinterpret_cast<_float*>(pPE->Get_CenterColor()), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
-
+	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 0.1f, 1000.f, "%.1f");
+	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.05f, 0.01f, 1000.f, "%.2f");
+	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
+	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.1f, 0.f, 100.f, "%.1f");
+	ImGui::DragFloat("Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 100.f, "%.1f");
+	ImGui::ColorEdit4("Center Color##picker", reinterpret_cast<_float*>(pPE->Get_CenterColor()), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
+	ImGui::SameLine();
+	ImGui::Text("Center Color");
 	// ¾ÆÁ÷¾È¸¸µê
 	ImGui::Checkbox("Gravity", &m_bGravity);
-	ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
-	ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
+	ImGui::Checkbox("Loop", &m_isLoop);
+	//ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
+	//ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
 
 	if (ImGui::RadioButton("Explosion", m_eParticleType == PTYPE_SPREAD)) {
 		m_eParticleType = PTYPE_SPREAD;
 	}
+	ImGui::SameLine();
 	if (ImGui::RadioButton("Drop", m_eParticleType == PTYPE_DROP)) {
 		m_eParticleType = PTYPE_DROP;
 	}
@@ -423,6 +427,8 @@ HRESULT CCYTool::Window_Particle()
 		desc.vRange = m_vRange;
 		desc.vSize = m_vSize;
 		desc.vSpeed = m_vSpeed;
+		desc.bGravity = m_bGravity;
+		desc.fGravity = m_fGravity;
 		desc.isTool = true;
 		pPE->Change_InstanceBuffer(&desc);
 	}
