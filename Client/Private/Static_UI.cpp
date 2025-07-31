@@ -25,6 +25,10 @@ void CStatic_UI::Deserialize(const json& j)
 	m_iTextureLevel = j["iTextureLevel"];
 	m_iTextureIndex = j["iTextureIndex"];
 	m_iPassIndex = j["iPassIndex"];
+
+	Ready_Components_File(m_strTextureTag);
+
+	Update_Data();
 }
 
 CStatic_UI::CStatic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -48,6 +52,10 @@ HRESULT CStatic_UI::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+	m_strProtoTag = TEXT("Prototype_GameObject_Static_UI");
+
+	if (nullptr == pArg)
+		return S_OK;
 
 	STATIC_UI_DESC* pDesc = static_cast<STATIC_UI_DESC*>(pArg);
 
@@ -60,7 +68,7 @@ HRESULT CStatic_UI::Initialize(void* pArg)
 	m_iPassIndex = pDesc->iPassIndex;
 	m_iTextureIndex = pDesc->iTextureIndex;
 	
-	m_strProtoTag = TEXT("Prototype_GameObject_Static_UI");
+	
 
 	return S_OK;
 }
@@ -75,6 +83,10 @@ void CStatic_UI::Update(_float fTimeDelta)
 
 void CStatic_UI::Late_Update(_float fTimeDelta)
 {
+	if (!m_isActive)
+		return;
+
+
 	if(!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
@@ -136,6 +148,25 @@ void CStatic_UI::Update_UI_From_Tool(STATIC_UI_DESC& eDesc)
 
 HRESULT CStatic_UI::Ready_Components(const wstring& strTextureTag)
 {
+	/* For.Com_Shader */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+	/* For.Com_VIBuffer */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(m_iTextureLevel, strTextureTag,
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CStatic_UI::Ready_Components_File(const wstring& strTextureTag)
+{
+	__super::Ready_Components_File(strTextureTag);
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))

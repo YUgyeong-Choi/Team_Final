@@ -112,6 +112,8 @@ HRESULT CCYTool::Render()
 
 	if (m_bOpenSaveEffectOnly)
 		Save_Effect();
+	if (m_bOpenLoadEffectOnly)
+		Load_Effect();
 
 	return S_OK;
 }
@@ -178,7 +180,6 @@ HRESULT CCYTool::SequenceWindow()
 		m_iSeqItemColor = D3DCOLOR_ARGB(255, 170, 80, 250);
 	}
 	ImGui::SameLine();
-
 	if (ImGui::Button("Add to Sequence"))
 	{
 		CEffectBase* pInstance = { nullptr };
@@ -264,6 +265,11 @@ HRESULT CCYTool::SequenceWindow()
 HRESULT CCYTool::Edit_Preferences()
 {
 	ImGui::Begin("Edit Item Preferences");
+	if (ImGui::Button("Load Effect"))
+	{
+		m_bOpenLoadEffectOnly = true;
+	}
+	ImGui::SameLine();
 	if (m_pSequence == nullptr || m_pSequence->m_Items.empty() || m_iSelected == -1)
 	{
 		ImGui::End();
@@ -638,6 +644,7 @@ HRESULT CCYTool::Save_Effect()
 	return S_OK;
 }
 
+// 이펙트 단일 로드
 HRESULT CCYTool::Load_Effect()
 {
 	IGFD::FileDialogConfig config;
@@ -652,24 +659,24 @@ HRESULT CCYTool::Load_Effect()
 			path loadPath = IFILEDIALOG->GetFilePathName();
 			string filename = IFILEDIALOG->GetCurrentFileName();
 			string prefix = filename.substr(0, 2);
-			// 확장자가 없으면 .json 붙이기
+			
+			// put extension '.json'
 			if (loadPath.extension().string() != ".json")
 				loadPath += ".json";
-			if (prefix == "SE")
-			{
 
+			// Compare Prefix for making each effects
+			// Check the filenames before saving
+			if (prefix == "SE"){
+				m_eEffectType = EFF_SPRITE;
 			}
-			else if (prefix == "PE")
-			{
-
+			else if (prefix == "PE"){
+				m_eEffectType = EFF_PARTICLE;
 			}
-			else if (prefix == "ME")
-			{
-
+			else if (prefix == "ME"){
+				m_eEffectType = EFF_MESH;
 			}
-			else if (prefix == "TE")
-			{
-
+			else if (prefix == "TE"){
+				m_eEffectType = EFF_TRAIL;
 			}
 			else
 			{
@@ -679,20 +686,20 @@ HRESULT CCYTool::Load_Effect()
 				return S_OK;
 			}
 
-
-
 			ifstream ifs(loadPath);
 
 			if (!ifs.is_open())
+			{
+				MSG_BOX("File open Failed");
+				m_bOpenLoadEffectOnly = false;
+				IFILEDIALOG->Close();
 				return E_FAIL;
+			}
 
 			ifs >> j;
+			ifs.close();
 
 			CEffectBase* pInstance = { nullptr };
-			CSpriteEffect::DESC SEDesc = {};
-			lstrcpy(SEDesc.pJsonFilePath, TEXT("../Bin/DataFiles/Effect/SE_BasicExplosion.json"));
-
-
 
 			switch (m_eEffectType)
 			{
@@ -707,23 +714,9 @@ HRESULT CCYTool::Load_Effect()
 			case Client::EFF_PARTICLE:
 			{
 				CToolParticle::DESC desc = {};
-				desc.iShaderPass = ENUM_CLASS(SE_UVSPRITE_COLOR);
 				desc.fRotationPerSec = XMConvertToRadians(90.f);
 				desc.fSpeedPerSec = 5.f;
-				desc.iTileX = 8;
-				desc.iTileY = 8;
-				desc.ePType = m_eParticleType;
-				desc.iNumInstance = m_iNumInstance;
-				desc.isLoop = m_isLoop;
-				desc.vCenter = m_vCenter;
-				desc.vLifeTime = m_vLifeTime;
-				desc.vPivot = m_vPivot;
-				desc.vRange = m_vRange;
-				desc.vSize = m_vSize;
-				desc.vSpeed = m_vSpeed;
-				desc.bBillboard = false;
 				desc.bTool = true;
-				desc.iShaderPass = ENUM_CLASS(PE_DEFAULT);
 				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
 			}
@@ -731,14 +724,9 @@ HRESULT CCYTool::Load_Effect()
 			case Client::EFF_MESH:
 			{
 				CToolMeshEffect::DESC desc = {};
-				desc.bAnimation = true;
-				desc.fRotationPerSec = 0.f;
+				desc.fRotationPerSec = XMConvertToRadians(90.f);
 				desc.fSpeedPerSec = 5.f;
-				desc.iTileX = 4;
-				desc.iTileY = 1;
-				desc.bBillboard = false;
 				desc.bTool = true;
-				desc.iShaderPass = ENUM_CLASS(ME_MASKONLY);
 				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
 			}
@@ -747,18 +735,21 @@ HRESULT CCYTool::Load_Effect()
 				break;
 			}
 			if (pInstance != nullptr)
+			{
+				pInstance->Deserialize(j);
 				m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
-
-
-
-
-
-			ifs.close();
+			}
+			else
+			{
+				MSG_BOX("Failed to make Effect");
+				m_bOpenLoadEffectOnly = false;
+				IFILEDIALOG->Close();
+				return E_FAIL;
+			}
 		}
-		m_bOpenSaveEffectOnly = false;
+		m_bOpenLoadEffectOnly = false;
 		IFILEDIALOG->Close();
 	}
-
 
 	return S_OK;
 }
@@ -832,10 +823,6 @@ HRESULT CCYTool::Load_Textures()
 //
 //	return S_OK;
 //}
-
-
-
-
 
 HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 {
