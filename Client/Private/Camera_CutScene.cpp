@@ -80,7 +80,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			XMMatrixDecompose(&tgtScale, &tgtRotQuat, &tgtTrans, targetMat);
 
 			// º¸°£
-			_float blendSpeed = 15.f;
+			_float blendSpeed = 10.f;
 			_float t = fTimeDelta * blendSpeed;
 
 			XMVECTOR lerpPos = XMVectorLerp(curTrans, tgtTrans, t);
