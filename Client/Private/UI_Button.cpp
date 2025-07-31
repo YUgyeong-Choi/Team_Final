@@ -2,6 +2,15 @@
 #include "GameInstance.h"
 #include "UI_Feature.h"
 
+json CUI_Button::Serialize()
+{
+	return json();
+}
+
+void CUI_Button::Deserialize(const json& j)
+{
+}
+
 CUI_Button::CUI_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CDynamic_UI{pDevice, pContext}
 {
@@ -80,9 +89,6 @@ HRESULT CUI_Button::Render()
 
 HRESULT CUI_Button::Ready_Components(const wstring& strTextureTag)
 {
-	
-	
-	
 	if (strTextureTag != L"")
 	{
 
@@ -91,6 +97,32 @@ HRESULT CUI_Button::Ready_Components(const wstring& strTextureTag)
 
 	// 마스크, 하이라이트 텍스처 있으면 좋겠는데? 
 	
+		/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
+		TEXT("Com_Texture_Hover"), reinterpret_cast<CComponent**>(&m_pHoverTextureCom))))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
+		TEXT("Com_Texture_Highlight"), reinterpret_cast<CComponent**>(&m_pHighlightTextureCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_Button::Ready_Components_File(const wstring& strTextureTag)
+{
+	__super::Ready_Components_File(strTextureTag);
+
+
+	if (strTextureTag != L"")
+	{
+
+		m_isHasTexture = true;
+	}
+
+	// 마스크, 하이라이트 텍스처 있으면 좋겠는데? 
+
 		/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
 		TEXT("Com_Texture_Hover"), reinterpret_cast<CComponent**>(&m_pHoverTextureCom))))

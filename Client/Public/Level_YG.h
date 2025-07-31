@@ -32,7 +32,7 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Object(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
-
+	HRESULT Ready_Layer_Station(const _wstring strLayerTag);
 private:
 
 	HRESULT Ready_ImGuiTools();

@@ -31,7 +31,7 @@ HRESULT CToolMeshEffect::Initialize(void* pArg)
 	m_fThreshold = 0.9f;
 	m_fIntensity = 3.0f;
 	m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
-	//m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
+
 	m_bTextureUsage[TU_DIFFUSE] = true;
 	m_bTextureUsage[TU_MASK1] = true;
 	m_bTextureUsage[TU_MASK2] = true;
@@ -84,7 +84,6 @@ HRESULT CToolMeshEffect::Render()
 		}
 
 		m_pShaderCom->Begin(m_iShaderPass);
-
 		m_pModelCom->Render(i);
 	}
 

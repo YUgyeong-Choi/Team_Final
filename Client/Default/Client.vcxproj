@@ -207,6 +207,7 @@
     <ClInclude Include="..\public\UI_Bar_Loading.h" />
     <ClInclude Include="..\public\UI_Button.h" />
     <ClInclude Include="..\public\UI_Canvus.h" />
+    <ClInclude Include="..\Public\UI_Container.h" />
     <ClInclude Include="..\public\UI_Featrue_Scale.h" />
     <ClInclude Include="..\public\UI_Feature.h" />
     <ClInclude Include="..\public\UI_Feature_Fade.h" />
@@ -298,9 +299,11 @@
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\private\UI_Canvus.cpp" />
+    <ClCompile Include="..\Private\UI_Container.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
+    <ClCompile Include="..\Private\UI_Feature_Position.cpp" />
     <ClCompile Include="..\private\UI_Feature_UV.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
     <ClCompile Include="..\private\UI_Text.cpp" />
@@ -319,7 +322,6 @@
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="..\Private\YGTriggerWithoutModel.cpp" />
-    <ClCompile Include="..\public\UI_Feature_Position.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />

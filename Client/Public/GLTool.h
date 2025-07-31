@@ -7,6 +7,7 @@
 #include "Dynamic_UI.h"
 #include "UI_Sequence.h"
 #include "UI_Text.h"
+#include "UI_Container.h"
 
 
 NS_BEGIN(Client)
@@ -101,6 +102,10 @@ private:
 	CUI_Text::TEXT_UI_DESC m_eTextUIDesc = {};
 	list<CUI_Text*> m_TextUIList = {};
 	CUI_Text* m_pSelectTxtObj = { nullptr };
+
+	
+	list<CUI_Container*> m_ContainerList = {};
+	CUI_Container* m_pContainerObj = {};
 
 	
 public:

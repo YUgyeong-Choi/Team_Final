@@ -6,6 +6,7 @@
 NS_BEGIN(Engine)
 class CShader;
 class CModel;
+class CPhysXDynamicActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -45,7 +46,7 @@ public:
 
 public:
 	void Undo_WorldMatrix();
-
+	void Update_ColliderPos();
 	void Set_UndoWorldMatrix(const _fmatrix WorldMatrix) {
 		m_bCanUndo = true;
 		XMStoreFloat4x4(&m_UndoWorldMatrix, WorldMatrix);
@@ -85,7 +86,8 @@ private:
 private:
 	HRESULT Ready_Components(void *pArg);
 	HRESULT Bind_ShaderResources();
-
+	HRESULT Ready_Collider();
+	CPhysXDynamicActor* m_pPhysXActorConvexCom = { nullptr };
 public:
 	static CMapToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

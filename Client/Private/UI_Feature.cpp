@@ -33,7 +33,6 @@ void CUI_Feature::Deserialize(const json& j)
 
 HRESULT CUI_Feature::Initialize_Prototype()
 {
-	m_strProtoTag = TEXT("Prototype_GameObject_Static_UI");
 
 	return S_OK;
 }

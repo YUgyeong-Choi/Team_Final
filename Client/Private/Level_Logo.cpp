@@ -8,6 +8,7 @@
 #include "UI_Button.h"
 #include "UI_Text.h"
 #include "UI_Feature_UV.h"
+#include "UI_Container.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -22,12 +23,17 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Video()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Guide()))
+		return E_FAIL;
+
 
 	return S_OK;
 }
 
 void CLevel_Logo::Update(_float fTimeDelta)
 {	
+
+
 	if (!m_isReady)
 	{
 		for (int vk = 0; vk <= 254; ++vk) 
@@ -44,6 +50,29 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	}
 	else
 	{
+		if (m_isOpen)
+		{
+
+			if (!m_pGuideBack->Get_isActive())
+			{
+				m_pGuide->Active_Update(true);
+				m_pGuideBack->Set_isActive(true);
+			}
+
+
+			if (m_pGameInstance->Key_Down(DIK_SPACE))
+			{
+				m_pGuide->Active_Update(false);
+				m_pGuideBack->Set_isActive(false);
+
+				m_isOpen = false;
+				return;
+			}
+
+			
+			return;
+		}
+		
 
 		Check_Button();
 
@@ -145,7 +174,7 @@ HRESULT CLevel_Logo::Render()
 HRESULT CLevel_Logo::Ready_Video()
 {
 	CStatic_UI::STATIC_UI_DESC eBackDesc = {};
-	eBackDesc.fOffset = 0.1f;
+	eBackDesc.fOffset = 0.7f;
 	eBackDesc.fSpeedPerSec = 1.f;
 	eBackDesc.fX = g_iWinSizeX * 0.5f;
 	eBackDesc.fY = g_iWinSizeY * 0.5f;
@@ -162,7 +191,7 @@ HRESULT CLevel_Logo::Ready_Video()
 
 
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
-	eDesc.fOffset = 0.05f;
+	eDesc.fOffset = 0.5f;
 	eDesc.fInterval = 0.05f;
 	eDesc.fSpeedPerSec = 1.f;
 	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Title.mp4");
@@ -192,7 +221,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	CUI_Button::BUTTON_UI_DESC eButtonDesc = {};
 	eButtonDesc.strTextureTag = L"";
-	eButtonDesc.fOffset = 0.01f;
+	eButtonDesc.fOffset = 0.45f;
 	eButtonDesc.fX = g_iWinSizeX * 0.225f;
 	eButtonDesc.iTextureIndex = 0;
 	eButtonDesc.vColor = { 0.8f,0.f,0.f,0.8f };
@@ -212,7 +241,6 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
-	Safe_AddRef(m_pButtons.back());
 
 	eButtonDesc.fY = g_iWinSizeY * 0.45f;
 	eButtonDesc.strCaption = TEXT("환경 설정");
@@ -224,8 +252,6 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
-	Safe_AddRef(m_pButtons.back());
-
 	eButtonDesc.fY = g_iWinSizeY * 0.55f;
 	eButtonDesc.strCaption = TEXT("팀원 소개");
 	
@@ -236,7 +262,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
-	Safe_AddRef(m_pButtons.back());
+	
 
 	eButtonDesc.fY = g_iWinSizeY * 0.65f;
 	eButtonDesc.strCaption = TEXT("게임 종료");
@@ -248,7 +274,8 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button"))));
 
-	Safe_AddRef(m_pButtons.back());
+	for (auto& pObj : m_pButtons)
+		Safe_AddRef(pObj);
 
 	m_pButtons[0]->Set_isHighlight(true);
 
@@ -284,8 +311,48 @@ HRESULT CLevel_Logo::Ready_Menu()
 
 	m_pSelectUI = static_cast<CDynamic_UI*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select")));
 
-	Safe_AddRef(m_pSelectUI);
+	
 
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Guide()
+{
+	CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/TeamMate.json");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Guide"), &eDesc)))
+		return E_FAIL;
+
+	m_pGuide = static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOGO), TEXT("Layer_Guide")));
+
+	CStatic_UI::STATIC_UI_DESC eBackDesc = {};
+	eBackDesc.fOffset = 0.4f;
+	eBackDesc.fSpeedPerSec = 1.f;
+	eBackDesc.fX = g_iWinSizeX * 0.5f;
+	eBackDesc.fY = g_iWinSizeY * 0.5f;
+	eBackDesc.fSizeX = g_iWinSizeX;
+	eBackDesc.fSizeY = g_iWinSizeY;
+	eBackDesc.iPassIndex = UI_BLEND;
+	eBackDesc.iTextureIndex = 0;
+	eBackDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+	eBackDesc.vColor = { 0.f,0.f,0.f,0.5f };
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Guide"), &eBackDesc)))
+		return E_FAIL;
+
+	
+
+
+
+	m_pGuideBack = (m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Guide")));
+
+	m_pGuide->Active_Update(false);
+	m_pGuideBack->Set_isActive(false);
 
 	return S_OK;
 }
@@ -355,6 +422,7 @@ void CLevel_Logo::Interation_Button(_int& iIndex)
 	case 1:
 		break;
 	case 2:
+		m_isOpen = true;
 		break;
 	case 3:
 		PostQuitMessage(0);
@@ -384,8 +452,8 @@ void CLevel_Logo::Free()
 	__super::Free();
 
 	Safe_Release(m_pMainUI);
-	Safe_Release(m_pSelectUI);
 
 	for(auto& pButton: m_pButtons)
 		Safe_Release(pButton);
+	m_pButtons.clear();
 }

@@ -154,7 +154,7 @@ void CVIBuffer_Point_Instance::Drop(_float fTimeDelta, _bool bTool)
 	{
 		for (size_t i = 0; i < m_iNumInstance; i++)
 		{
-			_float trackTime = fTimeDelta; // ← fTimeDelta는 누적 시간으로 들어옴 (trackPos / 60.0f)
+			_float trackTime = fTimeDelta; // fTimeDelta는 누적 시간으로 들어옴 (trackPos / 60.0f)
 
 			// 루프 적용 시: trackTime을 주기 내로 제한
 			if (m_isLoop)
@@ -173,8 +173,6 @@ void CVIBuffer_Point_Instance::Drop(_float fTimeDelta, _bool bTool)
 	{
 		for (size_t i = 0; i < m_iNumInstance; i++)
 		{
-			// 기존 런타임 로직
-
 			pVertices[i].vLifeTime.y += fTimeDelta;
 
 			pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta;
@@ -212,14 +210,17 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 
 			pVertices[i].vLifeTime.y = trackTime;
 
-			// 방향 계산 (시작 위치 → 축 기준)
 			_vector vStart = XMLoadFloat4(&m_pVertexInstances[i].vTranslation);
 			_vector vPivot = XMLoadFloat3(&m_vPivot);
-
 			vDir = XMVectorSetW(XMVector3Normalize(vPivot - vStart), 0.f);
 
-			// 새 위치 = 시작 위치 - dir * 속도 * 시간
 			_vector vNew = vStart - vDir * m_pSpeeds[i] * trackTime;
+
+			if (m_bGravity)
+			{
+				_float gravityOffset = 0.5f * m_fGravity * trackTime * trackTime;
+				vNew = XMVectorSetY(vNew, XMVectorGetY(vNew) - gravityOffset);
+			}
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vNew);
 		}
@@ -254,6 +255,8 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_isLoop = pDesc->isLoop;
 	m_iNumInstance = pDesc->iNumInstance;
 	m_ePType = pDesc->ePType;
+	m_bGravity = pDesc->bGravity;
+	m_fGravity = pDesc->fGravity;
 #pragma region INSTANCEBUFFER
 	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
 	m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;

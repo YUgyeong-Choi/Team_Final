@@ -32,6 +32,15 @@ public:
 	TEXT_UI_DESC Get_Desc()
 	{
 		TEXT_UI_DESC eDesc = {};
+
+		eDesc.strCaption = m_strCaption;
+		eDesc.fFontOffset = m_fFontOffset;
+		eDesc.fFontScale = m_fFontScale;
+		eDesc.isCenter = m_isCenter;
+		eDesc.fRotation = m_fRotation;
+		eDesc.vColor = m_vColor;
+		eDesc.fX = m_fX;
+		eDesc.fY = m_fY;
 		
 
 		return eDesc;
@@ -56,6 +65,7 @@ public:
 
 	void Update_UI_From_Tool(TEXT_UI_DESC& eDesc);
 
+	virtual HRESULT Ready_Components(const wstring& strTextureTag) { return S_OK; }
 
 private:
 

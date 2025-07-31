@@ -1,8 +1,5 @@
 #include "Effect_Shader_Defines.hlsli"
 
-float g_fThreshold, g_fIntensity;
-vector g_vCenterColor;
-float g_fTime;
 
 struct VS_IN
 {
@@ -95,7 +92,8 @@ PS_OUT_EFFECT PS_MAIN_MASKONLY(PS_IN In)
     PS_OUT_EFFECT Out;
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTileScroll(In.vTexcoord, g_fTileSize, g_fTileOffset, 1.2f, g_fTime)).r;
-    
+    if (mask < 0.00001f)
+        discard;
     
     float4 color;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));

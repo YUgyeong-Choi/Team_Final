@@ -79,7 +79,7 @@ void CEffectBase::Update(_float fTimeDelta)
 	// 이부분 AnimationSpeed로 별개로 관리하자 
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
-	m_fTickAcc = 0.f;
+	//m_fTickAcc = 0.f;
 }
 
 void CEffectBase::Late_Update(_float fTimeDelta)
@@ -148,7 +148,7 @@ void CEffectBase::Update_Keyframes()
 
 	EFFKEYFRAME		LastKeyFrame = m_KeyFrames.back();
 
-	_vector			vScale, vRotation, vPosition, vColor;
+	_vector			vScale, vRotation, vPosition, vColor, fIntensity;
 
 	if (m_fCurrentTrackPosition >= LastKeyFrame.fTrackPosition)	
 	{
@@ -156,6 +156,7 @@ void CEffectBase::Update_Keyframes()
 		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
 		vPosition = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vTranslation), 1.f);
 		vColor = XMLoadFloat4(&LastKeyFrame.vColor);
+		fIntensity = XMLoadFloat(&LastKeyFrame.fIntensity);
 	}
 	else
 	{
@@ -171,6 +172,7 @@ void CEffectBase::Update_Keyframes()
 		_vector			vSourRotation, vDestRotation;
 		_vector			vSourTranslation, vDestTranslation;
 		_vector			vSourColor, vDestColor;
+		_vector			vSourIntensity, vDestIntensity;
 
 		vSourScale = XMLoadFloat3(&m_KeyFrames[m_iCurKeyFrameIndex].vScale);
 		vDestScale = XMLoadFloat3(&m_KeyFrames[m_iCurKeyFrameIndex + 1].vScale);
@@ -184,10 +186,14 @@ void CEffectBase::Update_Keyframes()
 		vSourColor = XMLoadFloat4(&m_KeyFrames[m_iCurKeyFrameIndex].vColor);
 		vDestColor = XMLoadFloat4(&m_KeyFrames[m_iCurKeyFrameIndex + 1].vColor);
 
+		vSourIntensity = XMLoadFloat(&m_KeyFrames[m_iCurKeyFrameIndex].fIntensity);
+		vDestIntensity = XMLoadFloat(&m_KeyFrames[m_iCurKeyFrameIndex + 1].fIntensity);
+
 		vScale = XMVectorLerp(vSourScale, vDestScale, fRatio);
 		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio);
 		vPosition = XMVectorLerp(vSourTranslation, vDestTranslation, fRatio);
 		vColor = XMVectorLerp(vSourColor, vDestColor, fRatio);
+		fIntensity = XMVectorLerp(vSourIntensity, vDestIntensity, fRatio);
 	}
 
 	// TransformationMatrix = XMMatrixScaling() * XMMatrixRotationQuaternion() * XMMatrixTranslation();
@@ -196,6 +202,8 @@ void CEffectBase::Update_Keyframes()
 	XMStoreFloat4x4(&resWorldMat, TransformationMatrix);
 	m_pTransformCom->Set_WorldMatrix(resWorldMat);
 	XMStoreFloat4(&m_vColor, vColor);
+	XMStoreFloat(&m_fIntensity, fIntensity);
+
 }
 
 #ifdef USE_IMGUI
@@ -293,6 +301,44 @@ HRESULT CEffectBase::Ready_Textures_Prototype()
 	return S_OK;
 }
 
+HRESULT CEffectBase::Ready_Textures_Prototype_Tool()
+{
+	_wstring TextureFilePath = TEXT("../Bin/Resources/Textures/Effect/");
+	_wstring TextureTag = TEXT("Prototype_Component_Texture_");
+
+	if (m_bTextureUsage[TU_DIFFUSE] == true && m_TextureTag[TU_DIFFUSE].size() != 0)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TextureTag + m_TextureTag[TU_DIFFUSE],
+			CTexture::Create(m_pDevice, m_pContext, (TextureFilePath + m_TextureTag[TU_DIFFUSE] + TEXT(".dds")).c_str(), 1))))
+			return E_FAIL;
+		Change_Texture(m_TextureTag[TU_DIFFUSE], TU_DIFFUSE);
+	}
+	if (m_bTextureUsage[TU_MASK1] == true && m_TextureTag[TU_MASK1].size() != 0)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TextureTag + m_TextureTag[TU_MASK1],
+			CTexture::Create(m_pDevice, m_pContext, (TextureFilePath + m_TextureTag[TU_MASK1] + TEXT(".dds")).c_str(), 1))))
+			return E_FAIL;
+		Change_Texture(m_TextureTag[TU_MASK1], TU_MASK1);
+	}
+	if (m_bTextureUsage[TU_MASK2] == true && m_TextureTag[TU_MASK2].size() != 0)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TextureTag + m_TextureTag[TU_MASK2],
+			CTexture::Create(m_pDevice, m_pContext, (TextureFilePath + m_TextureTag[TU_MASK2] + TEXT(".dds")).c_str(), 1))))
+			return E_FAIL;
+		Change_Texture(m_TextureTag[TU_MASK2], TU_MASK2);
+	}
+	if (m_bTextureUsage[TU_MASK3] == true && m_TextureTag[TU_MASK3].size() != 0)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TextureTag + m_TextureTag[TU_MASK3],
+			CTexture::Create(m_pDevice, m_pContext, (TextureFilePath + m_TextureTag[TU_MASK3] + TEXT(".dds")).c_str(), 1))))
+			return E_FAIL;
+		Change_Texture(m_TextureTag[TU_MASK3], TU_MASK3);
+	}
+
+
+	return S_OK;
+}
+
 void CEffectBase::Free()
 {
 	__super::Free();	
@@ -310,11 +356,15 @@ json CEffectBase::Serialize()
 	json j;
 
 	// Basic Effect Preferences
-	j["Color"] = { m_vColor.x, m_vColor.y, m_vColor.z, m_vColor.w };
 	j["LifeTime"] = m_fLifeTime;
 	j["Billboard"] = m_bBillboard;
 	j["Animation"] = m_bAnimation;
 	j["ShaderPass"] = m_iShaderPass;
+
+	// Colors
+	j["Color"] = { m_vColor.x, m_vColor.y, m_vColor.z, m_vColor.w };
+	j["Threshold"] = m_fThreshold;
+	j["CenterColor"] = { m_vCenterColor.x, m_vCenterColor.y, m_vCenterColor.z, m_vCenterColor.w };
 
 	// Texture Usage
 	json textureUsage = json::array();
@@ -354,9 +404,6 @@ json CEffectBase::Serialize()
 void CEffectBase::Deserialize(const json& j)
 {
 	// Basic Effect Preferences
-	if (j.contains("Color") && j["Color"].is_array() && j["Color"].size() == 4)
-		m_vColor = { j["Color"][0].get<_float>(), j["Color"][1].get<_float>(), j["Color"][2].get<_float>(), j["Color"][3].get<_float>() };
-
 	if (j.contains("LifeTime"))
 		m_fLifeTime = j["LifeTime"].get<_float>();
 
@@ -368,6 +415,17 @@ void CEffectBase::Deserialize(const json& j)
 
 	if (j.contains("ShaderPass"))
 		m_iShaderPass = j["ShaderPass"].get<_uint>();
+
+	
+	// Colors
+	if (j.contains("Color") && j["Color"].is_array() && j["Color"].size() == 4)
+		m_vColor = { j["Color"][0].get<_float>(), j["Color"][1].get<_float>(), j["Color"][2].get<_float>(), j["Color"][3].get<_float>() };
+
+	if (j.contains("Threshold"))
+		m_fThreshold = j["Threshold"].get<_float>();
+
+	if (j.contains("CenterColor") && j["CenterColor"].is_array() && j["CenterColor"].size() == 4)
+		m_vCenterColor = { j["CenterColor"][0].get<_float>(), j["CenterColor"][1].get<_float>(), j["CenterColor"][2].get<_float>(), j["CenterColor"][3].get<_float>() };
 
 	// Texture Usage
 	if (j.contains("TextureUsage") && j["TextureUsage"].is_array())
@@ -429,6 +487,7 @@ json CEffectBase::tagEffectKeyFrame::Serialize()
 	j["Rotation"] = { vRotation.x, vRotation.y, vRotation.z, vRotation.w };
 	j["Translation"] = { vTranslation.x, vTranslation.y, vTranslation.z };
 	j["Color"] = { vColor.x, vColor.y, vColor.z, vColor.w };
+	j["Intensity"] = fIntensity;
 	j["TrackPosition"] = fTrackPosition;
 	j["Interpolation"] = static_cast<int>(eInterpolationType); // 정수 저장
 
@@ -456,6 +515,9 @@ void CEffectBase::tagEffectKeyFrame::Deserialize(const json& j)
 	{
 		vColor = { j["Color"][0].get<_float>(), j["Color"][1].get<_float>(), j["Color"][2].get<_float>(), j["Color"][3].get<_float>() };
 	}
+
+	if (j.contains("Intensity"))
+		fIntensity = j["Intensity"].get<_float>();
 
 	if (j.contains("TrackPosition"))
 		fTrackPosition = j["TrackPosition"].get<_float>();

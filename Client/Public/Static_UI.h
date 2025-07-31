@@ -63,6 +63,9 @@ public:
 
 	void Update_UI_From_Tool(STATIC_UI_DESC& eDesc);
 
+	HRESULT Ready_Components(const wstring& strTextureTag);
+
+	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) override;
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -78,7 +81,7 @@ private:
 	
 
 private:
-	HRESULT Ready_Components(const wstring& strTextureTag);
+	
 
 public:
 	static CStatic_UI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
