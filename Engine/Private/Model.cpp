@@ -103,8 +103,6 @@ HRESULT CModel::Update_Bones()
 	{
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 	}
-
-
 	return S_OK;
 }
 

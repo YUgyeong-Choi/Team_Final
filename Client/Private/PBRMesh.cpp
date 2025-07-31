@@ -183,7 +183,7 @@ void CPBRMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CPBRMesh::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	wprintf(L"CPBRMesh Hit: %s\n", pOther->Get_Name().c_str());
+//	wprintf(L"CPBRMesh Hit: %s\n", pOther->Get_Name().c_str());
 }
 
 HRESULT CPBRMesh::Ready_Components(void* pArg)

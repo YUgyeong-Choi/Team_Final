@@ -212,6 +212,14 @@ public:
 			m_OverrideControllerMap[newName] = overrideCtrl;
 		}
 	}
+    void SetCurrentRootTransform(const _float3& pos, const _float4& rot);
+	void SetCurrentRootRotation(const _float4& rot);
+    void SetCurrentRootPosition(const _float3& pos);
+
+    _float3& GetRootMotionDelta()  { return m_RootMotionDelta; }
+    _float4& GetRootRotationDelta()  { return m_RootRotationDelta; }
+    _float GetYAngleFromQuaternion(const _vector& quat);
+
 private:
     // 기본 블렌딩
     void UpdateBlend(_float fTimeDelta);
@@ -221,8 +229,7 @@ private:
     void CollectBoneChildren(const _char* boneName, const _char* stopBoneName);
 
 	_matrix LerpMatrix(const _matrix& src, const _matrix& dst, _float t);
-
-
+    void ResetRootMotion();
 private:
     _bool                       m_bPlaying = true;
 	_bool                       m_bIsFinished = false; // 애니메이션 재생 완료 여부
@@ -250,6 +257,17 @@ private:
 	vector<class CBone*>        m_Bones; // 전체 본의 개수
     unordered_map<string, vector<AnimEventCallback>> m_eventListeners;
     unordered_map<string, OverrideAnimController> m_OverrideControllerMap; // 오버라이드하는 컨트롤러 이름과 컨트롤러 매핑
+
+    // 루트 모션
+    _float3 m_PrevRootPosition = { 0.f, 0.f, 0.f };
+    _float3 m_CurrentRootPosition = { 0.f, 0.f, 0.f };
+    _float4 m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
+    _float4 m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
+
+    _float3 m_RootMotionDelta = { 0.f, 0.f, 0.f };
+    _float4 m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+    _bool m_bFirstFrameAfterReset = false;
+
 public:
 	static CAnimator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg) override;

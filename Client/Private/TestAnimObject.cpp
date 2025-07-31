@@ -97,7 +97,7 @@ void CTestAnimObject::Priority_Update(_float fTimeDelta)
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
 	/* [ 움직임 전용 함수 ] */
-	SetMoveState(fTimeDelta);
+//	SetMoveState(fTimeDelta);
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
 
@@ -112,7 +112,77 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	{
 		m_pModelCom->Update_Bones();
 	}
+	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
+	bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
+	_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 
+	if (bUseRoot)
+	{
+		//_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+		//_float4 rootRotationDelta = m_pAnimator->GetRootRotationDelta();
+		//static const XMMATRIX matPre =
+		//	XMMatrixScaling(0.01f, 0.01f, 0.01f)
+		//	* XMMatrixRotationX(XMConvertToRadians(-90.f))
+		//	* XMMatrixRotationY(XMConvertToRadians(-90.f));
+		//_vector vLocalPos = XMVectorSetW(XMLoadFloat3(&rootMotionDelta),1.f);
+		//vLocalPos = XMVector3TransformCoord(vLocalPos, matPre);
+		//_vector vLocalRot = XMLoadFloat4(&rootRotationDelta);
+		//vLocalRot = XMVector3TransformCoord(vLocalRot, matPre);
+
+		//// 현재 위치와 회전
+
+		//PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
+		//_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.8f, (float)pos.z, 1.f);
+		//// 회전은 Y축 회전만 적용
+		//_vector vRot = XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(XMVectorGetY(vLocalRot)));
+		//// 위치 업데이트
+		//vPos += vLocalPos;
+		//// 회전 업데이트
+		//_float3 moveVec;
+		//XMStoreFloat3(&moveVec, vPos);
+		//PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
+		//PxControllerFilters filters;
+
+		//PxControllerCollisionFlags collisionFlags =
+		//	m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+
+
+		
+	//	static const XMMATRIX matPre = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	/*	rootMotionDelta = {
+			rootMotionDelta.x,
+			rootMotionDelta.y
+			rootMotionDelta.z
+		};*/
+		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
+
+		cout << "Local Delta: " << rootMotionDelta.x << ", " << rootMotionDelta.y << ", " << rootMotionDelta.z << endl;
+		
+		_vector vScale, vRotQuat, vTrans;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
+
+		PxControllerFilters filters;
+		XMVECTOR vWorldDelta = XMVector3TransformNormal(vLocal,
+			XMMatrixRotationQuaternion(vRotQuat));
+
+		PxVec3 pos{
+			XMVectorGetX(vWorldDelta),
+			XMVectorGetY(vWorldDelta) - 0.8f, // Y축 보정
+			XMVectorGetZ(vWorldDelta)
+		};
+		_float fSpeed = fTimeDelta*m_pTransformCom->Get_SpeedPreSec();
+		//pos// *= fSpeed;
+		m_pControllerCom->Get_Controller()->move(
+			pos,
+			0.001f, fTimeDelta, filters
+		);
+		SyncTransformWithController();
+
+	}
+	else
+	{
+		SetMoveState(fTimeDelta);
+	}
 	Input_Test(fTimeDelta);
 }
 
@@ -566,8 +636,8 @@ void CTestAnimObject::RayCast()
 			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 			pHitActor->Get_Owner()->On_Hit(this, m_pControllerCom->Get_ColliderType());
 
-			printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
-			printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
+			//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
+			//printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
 			m_bRayHit = true;
 			m_vRayHitPos = hitPos;
 			// 占쏙옙占쏙옙 hit.block.占쏙옙占썩에 占쏙옙 faceIndex, U, V 占쌕억옙占싹곤옙 占쏙옙占쏙옙占쏙옙 占시깍옙占싹몌옙 占쏙옙占쏙옙占쏙옙.. 

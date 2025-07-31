@@ -30,6 +30,20 @@ HRESULT CBone::Initialize( ifstream& ifs)
 	ifs.read(reinterpret_cast<char*>(&m_iParentBoneIndex), sizeof(_int));			// 부모 뼈 인덱스 
 	this->m_LocalBindPoseMatrix = m_TransformationMatrix; // 로컬 행렬 설정 나중에 블렌드에 사용하기
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity()); // 초기화
+	
+	if (!strcmp(m_szName, "Root"))
+	{
+  		m_bIsRootBone = true;
+	}
+	else if (!strcmp(m_szName, "Bip001-Pelvis"))
+	{
+ 		m_bIsPelvisBone = true;
+	}
+	else
+	{
+		m_bIsRootBone = false;
+		m_bIsPelvisBone = false;
+	}
 
 	return S_OK;
 }
@@ -37,15 +51,17 @@ HRESULT CBone::Initialize( ifstream& ifs)
 void CBone::Update_CombinedTransformationMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
 	
+	if (m_iParentBoneIndex == 6)// 여기 수정하기
+ 	{
+		m_iParentBoneIndex = -1;
+	}
 	if (-1 == m_iParentBoneIndex)
+	{
 		XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_TransformationMatrix) * PreTransformMatrix);
+	}
 
 	else
 	{
-		m_CombinedTransformationMatrix;
-		m_TransformationMatrix;
-		Bones[m_iParentBoneIndex]->m_CombinedTransformationMatrix;
-
 		XMStoreFloat4x4(&m_CombinedTransformationMatrix,
 			XMLoadFloat4x4(&m_TransformationMatrix) * XMLoadFloat4x4(&Bones[m_iParentBoneIndex]->m_CombinedTransformationMatrix));
 	}
