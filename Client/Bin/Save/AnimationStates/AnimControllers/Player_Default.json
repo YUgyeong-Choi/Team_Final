@@ -8,8 +8,8 @@
             "Name": "Run_F",
             "NodeId": 2,
             "NodePos": [
-                335.0,
-                270.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -21,8 +21,8 @@
             "Name": "Walk_F",
             "NodeId": 4,
             "NodePos": [
-                335.0,
-                270.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -34,8 +34,8 @@
             "Name": "Run_F_Stop",
             "NodeId": 5,
             "NodePos": [
-                342.0,
-                269.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -47,8 +47,8 @@
             "Name": "Sprint",
             "NodeId": 9,
             "NodePos": [
-                299.0,
-                396.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -60,8 +60,8 @@
             "Name": "Idle",
             "NodeId": 17,
             "NodePos": [
-                360.0,
-                114.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -73,8 +73,8 @@
             "Name": "Sprint_Stop",
             "NodeId": 23,
             "NodePos": [
-                19.0,
-                301.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -86,8 +86,8 @@
             "Name": "Dash_Normal_B",
             "NodeId": 26,
             "NodePos": [
-                390.0,
-                504.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -99,8 +99,8 @@
             "Name": "Dash_Normal_F",
             "NodeId": 29,
             "NodePos": [
-                542.0,
-                125.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -112,8 +112,8 @@
             "Name": "EquipWeapon",
             "NodeId": 35,
             "NodePos": [
-                134.0,
-                461.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
@@ -125,60 +125,60 @@
             "Name": "EquipWeapon_Walk_F",
             "NodeId": 38,
             "NodePos": [
-                234.0,
-                113.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": "AS_Pino_T_EquipmentWeapon"
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_Pino_T_Bayonet_SA4",
+            "Clip": "",
             "LowerClip": "",
             "MaskBone": "",
             "Name": "StrongAttack",
             "NodeId": 45,
             "NodePos": [
-                586.0,
-                313.0
+                300.49212646484375,
+                135.8534393310547
             ],
             "UpperClip": ""
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_Pino_T_Bayonet_CA1",
+            "Clip": "",
             "LowerClip": "",
             "MaskBone": "",
             "Name": "ChargeStrongAttack",
             "NodeId": 46,
             "NodePos": [
-                604.0,
-                465.0
+                166.4921875,
+                1.85345458984375
             ],
             "UpperClip": ""
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_Pino_T_Bayonet_NA3",
+            "Clip": "",
             "LowerClip": "",
             "MaskBone": "",
             "Name": "NormalAttack",
             "NodeId": 47,
             "NodePos": [
-                553.0,
-                602.0
+                -42.605743408203125,
+                106.0678482055664
             ],
             "UpperClip": ""
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_Pino_T_Bayonet_NA4",
+            "Clip": "",
             "LowerClip": "",
             "MaskBone": "",
             "Name": "NormalAttack2",
             "NodeId": 48,
             "NodePos": [
-                322.0,
-                630.0
+                550.4921264648438,
+                118.85343933105469
             ],
             "UpperClip": ""
         }
@@ -186,6 +186,27 @@
     "ControllerName": "Player_Default",
     "EntryState": "Idle",
     "Parameters": {
+        "Charage": {
+            "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "Charge": {
+            "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "Combo": {
+            "Type": 3,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
         "Dash": {
             "Type": 1,
             "bTriggered": false,
@@ -214,6 +235,13 @@
             "fValue": 0.0,
             "iValue": 0
         },
+        "NormalAttack": {
+            "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
         "Run": {
             "Type": 0,
             "bTriggered": false,
@@ -223,6 +251,13 @@
         },
         "Sprint": {
             "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "StrongAttack": {
+            "Type": 1,
             "bTriggered": false,
             "bValue": false,
             "fValue": 0.0,
@@ -262,7 +297,7 @@
                     "iThreshold": 0
                 },
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "Move",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -291,7 +326,7 @@
                     "iThreshold": 0
                 },
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "Move",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -393,7 +428,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -459,7 +494,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -503,7 +538,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -591,7 +626,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -613,7 +648,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "Move",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -671,14 +706,14 @@
                     "iThreshold": 0
                 },
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "Move",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 },
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "Run",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -773,7 +808,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "Move",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -813,6 +848,216 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 38
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Equal",
+                    "ParamName": "Combo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 1
+                },
+                {
+                    "Op": "Trigger",
+                    "ParamName": "NormalAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 17,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 172,
+                "LinkId": 66,
+                "ToNodeId": 471
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 47
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Equal",
+                    "ParamName": "Combo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Trigger",
+                    "ParamName": "NormalAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 17,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 172,
+                "LinkId": 67,
+                "ToNodeId": 481
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 48
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 47,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 472,
+                "LinkId": 68,
+                "ToNodeId": 171
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 17
+        },
+        {
+            "Conditions": [],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 48,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 482,
+                "LinkId": 69,
+                "ToNodeId": 171
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 17
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "StrongAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Equal",
+                    "ParamName": "Combo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Charage",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 17,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 172,
+                "LinkId": 72,
+                "ToNodeId": 451
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 45
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 45,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 452,
+                "LinkId": 73,
+                "ToNodeId": 171
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 17
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "StrongAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Charage",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Equal",
+                    "ParamName": "Combo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 17,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 172,
+                "LinkId": 75,
+                "ToNodeId": 461
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 46
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 46,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 462,
+                "LinkId": 76,
+                "ToNodeId": 171
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 17
         }
     ]
 }

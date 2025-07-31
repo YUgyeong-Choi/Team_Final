@@ -6,6 +6,8 @@
 
 _bool CAnimController::Condition::Evaluate(class CAnimController* pAnimController) const
 {
+	if (paramName.empty())
+		return true;
 	if (op == EOp::None)
 		return true;
 

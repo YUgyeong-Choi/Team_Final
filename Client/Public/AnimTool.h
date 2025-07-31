@@ -153,6 +153,8 @@ private:
 	// 새로운 컨트롤러 생성 변수
 	_char m_NewControllerName[64] = ""; // 새 컨트롤러 이름 입력용
 	_char m_RenameControllerName[64] = ""; // 컨트롤러 이름 변경용
+	_char m_OverrideControllerRename[64] = ""; // 이름 변경 오버라이드 컨트롤러 이름 변경용
+	_char m_OverrideControllerName[64] = ""; // 컨트롤러 이름 변경용
 	_char m_NewStateName[64] = ""; // 새 상태 이름 입력용
 	vector<string> m_vecMaskBoneNames; // 마스크에 사용할 뼈대 이름들
 
