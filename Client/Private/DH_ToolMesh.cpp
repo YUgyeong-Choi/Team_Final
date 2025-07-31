@@ -40,7 +40,7 @@ HRESULT CDH_ToolMesh::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_InitPos.x, m_InitPos.y, m_InitPos.z, 1.f));
-	m_pTransformCom->SetUp_Scale(0.5f, 0.5f, 0.5f);
+	m_pTransformCom->SetUp_Scale(0.35f, 0.35f, 0.35f);
 
 	return S_OK;
 }
@@ -141,6 +141,18 @@ HRESULT CDH_ToolMesh::Ready_Light()
 	}
 	if (m_szMeshID == TEXT("SpotLight"))
 	{
+		LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
+		LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
+		LightDesc.fFalloff = 1.f;
+		LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+		LightDesc.fInnerCosAngle = cosf(XMConvertToRadians(30.f));
+		LightDesc.fOuterCosAngle = cosf(XMConvertToRadians(45.f));
+		LightDesc.fAmbient = 0.2f;
+		LightDesc.fIntensity = 1.f;
+		LightDesc.fRange = 100.f;
+		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
 		LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
 	}
 	if (m_szMeshID == TEXT("DirrectionalLight"))
