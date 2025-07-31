@@ -73,91 +73,6 @@ void CAnimator::Update(_float fDeltaTime)
 		}
 	}
 
-	//if (m_Blend.active)
-	//{
-	//	UpdateBlend(fDeltaTime);
-	//}
-	//else
-	//{
-	//	if (m_bPlayMask)
-	//	{	
-	//			
-	//		if (m_pUpperClip && m_pLowerClip)
-	//		{
-	//			vector<string> triggeredEvents;
-	//			// 하체 기준으로 끝났는지 판단하기 
-	//			 m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents);
-
-	//			 m_bIsFinished= m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents);
-	//			_float t =1.f; // 상체 블렌딩 비율
-
-	//			for (size_t i = 0; i < m_Bones.size(); ++i)
-	//			{
-	//				_matrix srcM = m_pLowerClip->GetBoneMatrix(static_cast<_uint>(i));
-	//				_matrix dstM = m_pUpperClip->GetBoneMatrix(static_cast<_uint>(i));
-
-	//				_vector sS, sR, sT, dS, dR, dT;
-	//				XMMatrixDecompose(&sS, &sR, &sT, srcM);
-	//				XMMatrixDecompose(&dS, &dR, &dT, dstM);
-
-	//				_vector bS = XMVectorLerp(sS, dS, t);
-	//				_vector bR = XMQuaternionSlerp(sR, dR, t);
-	//				_vector bT = XMVectorLerp(sT, dT, t);
-
-
-	//				if (m_UpperMaskSet.count(static_cast<_int>(i)))
-	//				{
-	//					_matrix M = XMMatrixScalingFromVector(bS)
-	//						* XMMatrixRotationQuaternion(bR)
-	//						* XMMatrixTranslationFromVector(bT);
-	//					m_Bones[i]->Set_TransformationMatrix(M);
-	//				}
-	//				else
-	//				{
-	//					m_Bones[i]->Set_TransformationMatrix(srcM);
-	//				}
-	//			}
-	//			for (auto& name : triggeredEvents)
-	//				for (auto& cb : m_eventListeners[name])
-	//					cb(name);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		if (m_pCurrentAnim)
-	//		{
-	//			if (m_pUpperClip)
-	//			{
-	//				// 상체에서 하체로
-	//				StartTransition(m_pUpperClip,m_pCurrentAnim, 0.2f);
-	//				m_bPlayMask = false;
-	//			}
-
-	//			vector<string> triggeredEvents;
-	//			// Update_Bones 호출 (outEvents 전달)
-	//			m_bIsFinished = m_pCurrentAnim->Update_Bones(
-	//				fDeltaTime,
-	//				m_Bones,
-	//				m_pCurrentAnim->Get_isLoop(),
-	//				&triggeredEvents
-	//			);
-
-	//			// 콜백 실행
-	//			for (auto& name : triggeredEvents)
-	//			{
-	//				// 이벤트 리스너에 등록 해둔거에 애니메이션 이벤트가 있는지 찾기
-	//				auto it = m_eventListeners.find(name);
-	//				if (it != m_eventListeners.end())
-	//				{
-	//					for (auto& cb : it->second)
-	//						cb(name);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
-
 	vector<string> triggeredEvents; // 이벤트를 한 번에 수집
 	size_t boneCount = m_Bones.size();
 
@@ -305,7 +220,10 @@ void CAnimator::Update(_float fDeltaTime)
 			}
 		}
 		else if (m_pCurrentAnim)
-		{
+		{	
+			// 단일 전체 애니메이션
+			m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents);
+
 			if (m_pCurrentAnim->IsRootMotionEnabled())
 			{
 				CBone* rootBone = m_Bones[6];
@@ -328,10 +246,6 @@ void CAnimator::Update(_float fDeltaTime)
 				this->SetCurrentRootPosition(rootPos);
 				this->SetCurrentRootRotation(pelvisRot);
 			}
-			// 단일 전체 애니메이션
-			m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents);
-
-	
 		}
 	}
 
