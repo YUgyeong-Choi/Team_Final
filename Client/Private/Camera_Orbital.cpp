@@ -1,6 +1,8 @@
 #include "Camera_Orbital.h"
 #include "GameInstance.h"
 
+#include "PhysX_IgnoreSelfCallback.h"
+#include "TestAnimObject.h"
 CCamera_Orbital::CCamera_Orbital(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
 {
@@ -39,37 +41,77 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 {
 	if (m_pPlayer)
 	{
+		// 입력 처리
 		_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
 		_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMM::Y);
 		_long iWheelDelta = m_pGameInstance->Get_DIMouseMove(DIMM::WHEEL);
 
+		// 줌 거리 조정
 		m_fDistance -= iWheelDelta * fTimeDelta * m_fZoomSpeed;
 		m_fDistance = clamp(m_fDistance, 2.f, 5.5f);
 
-		// 마우스 입력에 따라 회전값 누적
+		// 회전값 누적
 		m_fYaw += MouseMoveX * fTimeDelta * m_fMouseSensor;
 		m_fPitch += MouseMoveY * fTimeDelta * m_fMouseSensor;
 
-		// 플레이어 위치 가져오기
+		// 기준점 위치 계산 (플레이어 + 높이)
 		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
-		m_vPlayerPosition = m_vPlayerPosition + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+		m_vPlayerPosition += XMVectorSet(0.f, 1.5f, 0.f, 0.f);
 
-		// 구면좌표계 → 직교좌표계 변환
+		// 오비탈 카메라 방향 계산 (spherical to cartesian)
 		_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
 		_float y = m_fDistance * sinf(m_fPitch);
 		_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
+		_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-		// 카메라 위치 계산
-		m_vTargetCamPos = m_vPlayerPosition + XMVectorSet(x, y, z, 0.f);
+		// 기본 목표 카메라 위치
+		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
+		/*
+		// --- 스프링암 Raycast 처리 시작 ---
+		_vector vRayDir = XMVector3Normalize(vOffset);
+		_float fTargetDist = XMVectorGetX(XMVector3Length(vOffset));
+
+		XMFLOAT3 fStart, fDir;
+		XMStoreFloat3(&fStart, m_vPlayerPosition);
+		XMStoreFloat3(&fDir, vRayDir);
+
+		PxVec3 origin(fStart.x, fStart.y, fStart.z);
+		PxVec3 direction(fDir.x, fDir.y, fDir.z);
+
+		PxRaycastBuffer hit;
+		PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+		PxQueryFilterData filterData;
+		filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+		// 무시할 자기 자신 액터 설정
+		PxRigidActor* actor = nullptr;
+		if (CTestAnimObject* obj = dynamic_cast<CTestAnimObject*>(m_pPlayer))
+			actor = obj->Get_Actor();
+		CIgnoreSelfCallback callback(actor);
+
+		if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fTargetDist, hit, hitFlags, filterData, &callback))
+		{
+			if (hit.hasBlock)
+			{
+				// 스프링암 보정 거리
+				_float fHitDist = hit.block.distance - 0.3f; // 여유 거리
+				fHitDist = max(fHitDist, 0.5f);              // 너무 가까워지지 않게 제한
+
+				// 보정된 카메라 위치
+				m_vTargetCamPos = m_vPlayerPosition + vRayDir * fHitDist;
+			}
+		}
+		// --- 스프링암 Raycast 처리 끝 ---
+		*/
 		// 현재 카메라 위치
 		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-		// 보간된 위치 계산 (보간 속도는 5.0f 정도가 적당)
+		// 위치 보간 (LERP)
 		_float fInterpSpeed = 5.0f;
 		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
 
-		// 카메라 위치 설정
+		// 카메라 설정
 		m_pTransformCom->Set_State(STATE::POSITION, vInterpolatedPos);
 		m_pTransformCom->LookAt(m_vPlayerPosition);
 	}
