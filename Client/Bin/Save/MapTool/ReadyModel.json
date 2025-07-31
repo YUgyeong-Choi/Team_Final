@@ -5,11 +5,6 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorB.bin"
     },
     {
-        "ModelName": "SM_BuildingAcult_DeadServant_01",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingAcult_DeadServant_01.bin"
-    },
-    {
         "ModelName": "SM_BuildingD_Stairs_01",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingD_Stairs_01.bin"
@@ -98,5 +93,10 @@
         "ModelName": "SM_Station_BlueFairy_04b",
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_04b.bin"
+    },
+    {
+        "ModelName": "SM_Station_Railway_01",
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Railway_01.bin"
     }
 ]

@@ -4,6 +4,7 @@
 #include "GameObject.h"
 
 NS_BEGIN(Engine)
+class CPhysXStaticActor;
 class CShader;
 class CModel;
 NS_END
@@ -50,8 +51,12 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTransform* m_pCameraTransformCom = { nullptr };
+
+	CPhysXStaticActor* m_pPhysXActorConvexCom = { nullptr };
+	CPhysXStaticActor* m_pPhysXActorTriangleCom = { nullptr };
 private:
 	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_Collider();
 	HRESULT Ready_DepthStencilView(_uint iWidth, _uint iHeight);
 	HRESULT Bind_ShaderResources();
 
