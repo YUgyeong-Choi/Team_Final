@@ -162,8 +162,11 @@ void CTestAnimObject::Update(_float fTimeDelta)
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
 
 		PxControllerFilters filters;
-		XMVECTOR vWorldDelta = XMVector3TransformNormal(vLocal,
+	/*	XMVECTOR vWorldDelta = XMVector3TransformNormal(vLocal,
+			XMMatrixRotationQuaternion(vRotQuat));	*/
+		XMVECTOR vWorldDelta = XMVector3Transform(vLocal,
 			XMMatrixRotationQuaternion(vRotQuat));
+
 
 		PxVec3 pos{
 			XMVectorGetX(vWorldDelta),

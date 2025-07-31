@@ -495,12 +495,13 @@ void CAnimator::Update(_float fDeltaTime)
 		// 극소값 처리 (노이즈 제거)
 		if (abs(m_RootMotionDelta.x) < 0.001f) m_RootMotionDelta.x = 0.f;
 		if (abs(m_RootMotionDelta.z) < 0.001f) m_RootMotionDelta.z = 0.f;
+	
 		if (abs(yAngle) < 0.001f) m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
 	}
 
 	void CAnimator::SetCurrentRootPosition(const _float3& pos)
 	{	// 이전 위치/회전 저장
-	
+		m_PrevRootPosition = m_CurrentRootPosition;
 
 		// 현재 위치/회전 업데이트
 		m_CurrentRootPosition = pos;
@@ -508,10 +509,10 @@ void CAnimator::Update(_float fDeltaTime)
 		// 위치 델타 계산 (Y축 포함 여부는 설정에 따라)
 		m_RootMotionDelta = {
 			m_CurrentRootPosition.x - m_PrevRootPosition.x,
-			0.f, // Y축은 보통 제외 (중력과 점프는 별도 처리)
+			m_CurrentRootPosition.y - m_PrevRootPosition.y,
 			m_CurrentRootPosition.z - m_PrevRootPosition.z
 		};
-		m_PrevRootPosition = m_CurrentRootPosition;
+	
 	}
 
 	void CAnimator::UpdateBlend(_float fDeltaTime)
