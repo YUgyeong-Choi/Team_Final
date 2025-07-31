@@ -456,6 +456,10 @@ HRESULT CGameInstance::Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIBu
 {
 	return m_pLight_Manager->Render_PBR_Lights(pShader, pVIBuffer, Level);
 }
+HRESULT CGameInstance::Render_Volumetric_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level)
+{
+	return m_pLight_Manager->Render_Volumetric_Lights(pShader, pVIBuffer, Level);
+}
 HRESULT CGameInstance::Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_LevelLightData(iLevelIndex, LightDesc);

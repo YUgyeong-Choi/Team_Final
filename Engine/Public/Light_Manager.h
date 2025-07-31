@@ -25,6 +25,7 @@ public:
 	HRESULT RemoveAll_Light(_uint iLevelIndex);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 	HRESULT Render_PBR_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _uint Level);
+	HRESULT Render_Volumetric_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
 	_uint Get_LightCount(_uint TYPE, _uint iLevel);
 
 private:

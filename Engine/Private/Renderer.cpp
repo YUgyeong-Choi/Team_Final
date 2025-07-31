@@ -71,8 +71,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Specular"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Volume"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
@@ -82,6 +80,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowB"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowC"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
+		return E_FAIL;
+
+	/* [ 볼륨메트릭 포그 ] */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Volumetric"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* [ PBR 멀티렌더타겟 ] */
@@ -102,8 +104,6 @@ HRESULT CRenderer::Initialize()
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Volume"))))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Final"))))
 		return E_FAIL;
 
@@ -112,6 +112,9 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRShadow"), TEXT("Target_PBR_ShadowB"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRShadow"), TEXT("Target_PBR_ShadowC"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Volumetric"), TEXT("Target_Volumetric"))))
 		return E_FAIL;
 #pragma endregion
 
@@ -208,9 +211,10 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowC"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Volume"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
-	
+
+	m_StartTime = std::chrono::steady_clock::now();
 #endif
 
 	return S_OK;
@@ -250,6 +254,9 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_PBRLights()))
 		return E_FAIL;
 
+	if (FAILED(Render_Volumetric()))
+		return E_FAIL;
+
 	if (FAILED(Render_BackBuffer()))
 		return E_FAIL;
 
@@ -266,7 +273,7 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_UI_Deferred()))
 		return E_FAIL;
 	
-
+	
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
@@ -505,28 +512,6 @@ HRESULT CRenderer::Render_PBRLights()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_PBR_Depth")))
 		return E_FAIL;
 
-	/* [ 볼륨메트리를 위한 매핑 ] */
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowA"), m_pShader, "g_ShadowTextureA")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowB"), m_pShader, "g_ShadowTextureB")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowC"), m_pShader, "g_ShadowTextureC")))
-		return E_FAIL;
-
-	if (!m_bDoOnce)
-	{
-		/* [ 3D 노이즈 텍스처 추가 ] */
-		if (FAILED(Add_Component(0, _wstring(TEXT("Prototype_Component_Texture_perlin_volume")),
-			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-			return E_FAIL;
-		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShader, "g_FogNoiseTex", 0)))
-			return E_FAIL;
-		m_bDoOnce = true;
-	}
-	/* [ 포인트라이트 개수 추가 ] */
-	_uint iPointNum = m_pGameInstance->Get_LightCount(2, m_iCurrentRenderLevel);
-	m_pShader->Bind_RawValue("g_iPointNum", &iPointNum, sizeof(_uint));
-
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -547,6 +532,55 @@ HRESULT CRenderer::Render_PBRLights()
 	/* 장치에 백버퍼로 복구한다. */
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Volumetric()
+{
+	/* [ 렌더타겟 클리어 x , 뎁스 클리어 x ] */
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Volumetric"));
+		
+	/* [ 볼륨메트리를 위한 매핑 ] */
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_DepthTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowA"), m_pShader, "g_ShadowTextureA")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowB"), m_pShader, "g_ShadowTextureB")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowC"), m_pShader, "g_ShadowTextureC")))
+		return E_FAIL;
+
+	/* [ 포인트라이트 개수 추가 ] */
+	_uint iPointNum = m_pGameInstance->Get_LightCount(2, m_iCurrentRenderLevel);
+	m_pShader->Bind_RawValue("g_iPointNum", &iPointNum, sizeof(_uint));
+
+	/* [ 포그 애니메이션 추가 ] */
+	auto now = std::chrono::steady_clock::now();
+	std::chrono::duration<float> elapsed = now - m_StartTime;
+
+	_float g_fTime = elapsed.count();
+	if (FAILED(m_pShader->Bind_RawValue("g_fTime", &g_fTime, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Float4x4_Inv(D3DTS::VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Float4x4_Inv(D3DTS::PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
+
+	m_pGameInstance->Render_Volumetric_Lights(m_pShader, m_pVIBuffer, m_iCurrentRenderLevel);
+	m_pGameInstance->End_MRT();
 
 	return S_OK;
 }
@@ -758,6 +792,7 @@ HRESULT CRenderer::Render_Debug()
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
 	}
 
 	return S_OK;
@@ -792,7 +827,6 @@ void CRenderer::Free()
 
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pShader);
-	Safe_Release(m_pTextureCom);
 
 	for (auto& ObjectList : m_RenderObjects)
 	{
