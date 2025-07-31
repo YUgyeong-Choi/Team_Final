@@ -27,7 +27,7 @@ public:
         static_cast<PxRigidDynamic*>(m_pActor)->setKinematicTarget(pose);
     }
 public:
-    PxRigidActor* Get_Actor() const { return m_pActor; }
+    PxRigidActor* Get_Actor() override { return m_pActor; }
     PxShape* Get_Shape() { return m_pShape; }
 private:
     _bool m_bKinematic = false;

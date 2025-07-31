@@ -19,6 +19,8 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+	HRESULT	Render_ImGui();
+
 
 private:
 	//맵툴 조작
@@ -120,6 +122,11 @@ private:
 private:
 	//복사한 월드 행렬 저장용
 	_float4x4 m_CopyWorldMatrix = {};
+
+private:
+	//모든 콜라이더를 렌더 할지 말지
+	_bool	m_bRenderAllCollider = { false };
+
 
 public:
 	static CMapTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

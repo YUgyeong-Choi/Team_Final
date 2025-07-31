@@ -76,6 +76,10 @@ namespace Engine
 		XMFLOAT4			vDiffuse;
 		float				fAmbient;
 		XMFLOAT4			vSpecular;
+
+		_float				fInnerCosAngle;
+		_float				fOuterCosAngle;
+		_float				fFalloff;
 	}LIGHT_DESC;
 
 	/* 화면에 그려야하는 최종적인 색 = Light.Diffuse * 재질.Diffuse */

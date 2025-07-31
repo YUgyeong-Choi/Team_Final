@@ -517,6 +517,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditPosKey = m_CameraDatas.vecPosData[i];
 				m_EditRotKey = {};
 				m_EditFovKey = {};
+				m_iChangeKeyFrame = m_EditPosKey.keyFrame;
 			}
 		}
 		ImGui::EndChild();
@@ -551,6 +552,8 @@ HRESULT CYGTool::Render_CameraFrame()
 			}
 		}
 
+		ImGui::SameLine();
+
 		if (ImGui::Button("Set Camera Same"))
 		{
 			if (CCamera* pCam = CCamera_Manager::Get_Instance()->GetCurCam())
@@ -560,10 +563,18 @@ HRESULT CYGTool::Render_CameraFrame()
 			}
 		}
 
+		ImGui::DragInt("WorldPosRot Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("WorldPosRot Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(0, m_EditPosKey.keyFrame, m_iChangeKeyFrame);
+			m_EditPosKey.keyFrame = m_iChangeKeyFrame;
+		}
+
 		if (ImGui::Button("WorldPosRot Apply"))
 		{
 			m_CameraDatas.vecPosData[m_iEditKey] = m_EditPosKey;
 		}
+		ImGui::SameLine();
 
 		if (ImGui::Button("WorldPosRot Delete"))
 		{
@@ -597,6 +608,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditPosKey = {};
 				m_EditRotKey = m_CameraDatas.vecRotData[i];;
 				m_EditFovKey = {};
+				m_iChangeKeyFrame = m_EditRotKey.keyFrame;
 			}
 		}
 		ImGui::EndChild();
@@ -610,12 +622,19 @@ HRESULT CYGTool::Render_CameraFrame()
 		if (ImGui::Combo("OffsetRot Interp", &interpOffsetRot, interpNames, IM_ARRAYSIZE(interpNames)))
 			m_EditRotKey.interpRotation = static_cast<INTERPOLATION_CAMERA>(interpOffsetRot);
 
+		ImGui::DragInt("OffsetRot Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("OffsetRot Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(1, m_EditRotKey.keyFrame, m_iChangeKeyFrame);
+			m_EditRotKey.keyFrame = m_iChangeKeyFrame;
+		}
+
 		if (ImGui::Button("OffsetRot Apply"))
 		{
 			m_CameraDatas.vecRotData[m_iEditKey] = m_EditRotKey;
 		}
 
-		if (ImGui::Button("Rot Delete"))
+		if (ImGui::Button("OffsetRot Delete"))
 		{
 			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecRotData.size()))
 			{
@@ -647,6 +666,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditPosKey = {};
 				m_EditRotKey = {};
 				m_EditFovKey = m_CameraDatas.vecFovData[i];
+				m_iChangeKeyFrame = m_EditFovKey.keyFrame;
 			}
 		}
 		ImGui::EndChild();
@@ -659,6 +679,13 @@ HRESULT CYGTool::Render_CameraFrame()
 		int interpFov = static_cast<int>(m_EditFovKey.interpFov);
 		if (ImGui::Combo("Fov Interp", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
 			m_EditFovKey.interpFov = static_cast<INTERPOLATION_CAMERA>(interpFov);
+
+		ImGui::DragInt("Fov Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("Fov Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(1, m_EditFovKey.keyFrame, m_iChangeKeyFrame);
+			m_EditFovKey.keyFrame = m_iChangeKeyFrame;
+		}
 
 		if (ImGui::Button("Fov Apply"))
 		{

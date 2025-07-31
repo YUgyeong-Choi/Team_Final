@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CShader;
 class CModel;
 class CPhysXDynamicActor;
+class CPhysXStaticActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -29,6 +30,7 @@ public:
 		_uint		iID = { 0 };
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
+		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
 	}MAPTOOLOBJ_DESC;
 
 private:
@@ -43,7 +45,7 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
-
+	HRESULT Render_Collider();
 public:
 	void Undo_WorldMatrix();
 	void Update_ColliderPos();
@@ -80,14 +82,18 @@ private:
 	_float	m_TileDensity[2] = { 1.0f, 1.0f };
 
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
+	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
 
 private:
-	HRESULT Ready_Components(void *pArg);
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorConvexCom = { nullptr };
+	CPhysXStaticActor*	m_pPhysXActorTriangleCom = { nullptr };
+
+private:
+	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Collider();
-	CPhysXDynamicActor* m_pPhysXActorConvexCom = { nullptr };
 public:
 	static CMapToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

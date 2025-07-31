@@ -350,6 +350,45 @@ HRESULT CDHTool::Render_LightTool()
 		ImGui::SliderFloat("Range", &fRange, 0.1f, 100.0f, "%.1f");
 	}
 
+	// SPOT(Range)
+	if (m_pSelectedObject != nullptr)
+	{
+		float fInnerCosAngle = m_pSelectedObject->GetfInnerCosAngle();
+		if (ImGui::SliderFloat("InnerCosAngle", &fInnerCosAngle, 0.1f, 100.0f, "%.1f"))
+			m_pSelectedObject->SetfInnerCosAngle(fInnerCosAngle);
+	}
+	else
+	{
+		static float fInnerCosAngle = 15.f;
+		ImGui::SliderFloat("InnerCosAngle", &fInnerCosAngle, 0.1f, 100.0f, "%.1f");
+	}
+
+	// SPOT(Range)
+	if (m_pSelectedObject != nullptr)
+	{
+		float fOuterCosAngle = m_pSelectedObject->GetfOuterCosAngle();
+		if (ImGui::SliderFloat("fOuterCosAngle", &fOuterCosAngle, 0.1f, 100.0f, "%.1f"))
+			m_pSelectedObject->SetfOuterCosAngle(fOuterCosAngle);
+	}
+	else
+	{
+		static float fOuterCosAngle = 25.f;
+		ImGui::SliderFloat("fOuterCosAngle", &fOuterCosAngle, 0.1f, 100.0f, "%.1f");
+	}
+
+	// SPOT(Fallof)
+	if (m_pSelectedObject != nullptr)
+	{
+		float fFalloff = m_pSelectedObject->GetfFalloff();
+		if (ImGui::SliderFloat("fFalloff", &fFalloff, 0.1f, 5.0f, "%.1f"))
+			m_pSelectedObject->SetfFalloff(fFalloff);
+	}
+	else
+	{
+		static float fFalloff = 1.f;
+		ImGui::SliderFloat("fFalloff", &fFalloff, 0.1f, 5.0f, "%.1f");
+	}
+
 
 	ImGui::Separator();
 	if (ImGui::Button("Save Light", ImVec2(120, 0)))

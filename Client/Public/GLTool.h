@@ -33,14 +33,19 @@ private:
 	
 	void Obj_Serialize();
 	void Obj_Deserialize();
-
-	
 	void Open_File();
 
+	void Add_Container();
+	void Add_UI_Select_Prototype();
+	
+	void Save_Container();
+	void Load_Container_Part();
 
-	void Add_Static_UI();
-	void Add_Dynamic_UI();
-	void Add_UI_Text();
+	void Set_Container_Active();
+	_bool Check_Dynamic_UI();
+
+	void Delete_Container();
+	void Delete_SelectPart();
 
 
 	// dynamicui가 가지고 있는 시퀀스로 바꿔서 보여주기
@@ -54,6 +59,10 @@ private:
 	void Input_Sequence_Desc();
 	void Input_Text();
 
+
+
+
+
 private:
 
 	HRESULT Render_SelectOptionTool();
@@ -61,25 +70,37 @@ private:
 	HRESULT Render_Sequence();
 
 private:
-	//
+	//prototype
+	list<_wstring> m_ProtoNames = {};
+	_wstring m_strSelectProtoName = {};
+	_int m_iSelectProtoIndex = { -1 };
+
+	//texture
 	list<_wstring> m_TextureNames = {};
-	
-	_int m_iSelectTextureIndex = {-1};
+	_wstring m_strSelectTextureName = {};
+	_int m_iSelectTextureIndex = { -1 };
+
+	//container
+	list<CUI_Container*> m_ContainerList = {};
+	CUI_Container* m_pContainerObj = {nullptr};
+	_int m_iSelectContainerIndex = { -1 };
+
+	//containerpart
+	CUIObject* m_pSelectConatinerPart = { nullptr };
 	_int m_iSelectObjIndex = { -1 };
-	_int m_iDynamicObjIndex = { -1 };
-	_int m_iTextObjIndex = { -1 };
-	wstring m_strSelectName = {};
+
+	
 
 	//  temp로 비율을 받고 실제 정보로 바꾸기
 	CStatic_UI::STATIC_UI_DESC eStaticUIDesc = {};
 	CStatic_UI::STATIC_UI_DESC eStaticUITempDesc = {};
-	list<CStatic_UI*> m_StaticUIList = {};
-	CStatic_UI* m_pSelectStaticObj = { nullptr };
+
+	CUI_Text::TEXT_UI_DESC m_eTextTempUIDesc = {};
+	CUI_Text::TEXT_UI_DESC m_eTextUIDesc = {};
+	string m_strInput = {};
 
 	CDynamic_UI::DYNAMIC_UI_DESC eDynamicUITempDesc = {};
 	CDynamic_UI::DYNAMIC_UI_DESC eDynamicUIDesc = {};
-	list<CDynamic_UI*> m_DynamicUIList = {};
-	CDynamic_UI* m_pSelectDynamicObj = { nullptr };
 
 	string  m_strSavePath = {};
 
@@ -92,20 +113,10 @@ private:
 	CUI_Sequence*	m_pSequence = { nullptr };
 	
 	UI_FEATURE_TOOL_DESC m_eFeatureDesc = {};
-
 	//
 	_bool m_isFromTool = { true };
 
-	string m_strInput = {};
-
-	CUI_Text::TEXT_UI_DESC m_eTextTempUIDesc = {};
-	CUI_Text::TEXT_UI_DESC m_eTextUIDesc = {};
-	list<CUI_Text*> m_TextUIList = {};
-	CUI_Text* m_pSelectTxtObj = { nullptr };
-
-	
-	list<CUI_Container*> m_ContainerList = {};
-	CUI_Container* m_pContainerObj = {};
+	_bool m_bActive = {false};
 
 	
 public:

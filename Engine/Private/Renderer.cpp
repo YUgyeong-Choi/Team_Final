@@ -83,7 +83,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	/* [ º¼·ý¸ÞÆ®¸¯ Æ÷±× ] */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Volumetric"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Volumetric"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* [ PBR ¸ÖÆ¼·»´õÅ¸°Ù ] */
@@ -627,6 +627,9 @@ HRESULT CRenderer::Render_BackBuffer()
 	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_Distort"), m_pShader, "g_Effect_Distort")))
 	//	return E_FAIL;
 
+	/* [ º¼·ý¸ÞÆ®¸¯ Æ÷±× ] */
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Volumetric"), m_pShader, "g_VolumetricTexture")))
+		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;

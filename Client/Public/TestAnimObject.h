@@ -25,6 +25,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	PxRigidActor* Get_Actor() { return m_pControllerCom->Get_Actor(); }
 private:
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();

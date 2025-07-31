@@ -339,7 +339,7 @@ void CTestAnimObject::SyncTransformWithController()
 	if (!m_pControllerCom) return;
 
 	PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
-	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.8f, (float)pos.z, 1.f);
+	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 1.0f, (float)pos.z, 1.f);
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 }
 
