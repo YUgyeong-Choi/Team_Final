@@ -32,7 +32,6 @@ private:
 private:
 	class CVIBuffer_Rect*		m_pVIBuffer = { nullptr };
 	class CShader*				m_pShader = { nullptr };
-	class CTexture*				m_pTextureCom = { nullptr };
 
 	_float4x4					m_WorldMatrix{}, m_ViewMatrix{}, m_ProjMatrix{};
 
@@ -44,13 +43,13 @@ private:
 
 private:
 	list<class CGameObject*>	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_END)];
+	std::chrono::steady_clock::time_point m_StartTime = std::chrono::steady_clock::now();
 
 #ifdef _DEBUG
 private:
 	list<class CComponent*>		m_DebugComponent;
 	_bool m_bRenderTarget = false;
 	_bool m_bRenderCollider = false;
-	_bool m_bDoOnce = false;
 	
 #endif
 
@@ -64,6 +63,7 @@ private:
 	HRESULT Render_UI();
 	HRESULT Render_Lights();
 	HRESULT Render_PBRLights();
+	HRESULT Render_Volumetric();
 	HRESULT Render_BackBuffer();
 	HRESULT Render_NonLight();
 	HRESULT Render_UI_Deferred();

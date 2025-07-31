@@ -30,7 +30,7 @@ HRESULT CYGTool::Initialize(void* pArg)
 
 	m_CameraSequence = new CCameraSequence();
 	m_CameraSequence->m_iFrameMin = 0;
-	m_CameraSequence->m_iFrameMax = 300;
+	m_CameraSequence->m_iFrameMax = 2000;
 	m_CameraSequence->Add(0,10,0);
 	m_CameraSequence->Add(0,10,1);
 	m_CameraSequence->Add(0,10,2);

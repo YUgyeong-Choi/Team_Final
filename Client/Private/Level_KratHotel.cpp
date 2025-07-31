@@ -35,8 +35,8 @@ HRESULT CLevel_KratHotel::Initialize()
 
 
 	// 이펙트 파싱 테스트입니다요
-	if (FAILED(Ready_TestEffect(TEXT("Layer_Effect"))))
-		return E_FAIL;
+	//if (FAILED(Ready_TestEffect(TEXT("Layer_Effect"))))
+	//	return E_FAIL;
 
 
 

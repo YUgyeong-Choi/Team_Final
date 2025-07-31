@@ -92,6 +92,46 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	return S_OK;
 }
+HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+{
+	/* [ º¼·ý¸ÞÆ®¸¯ Àü¿ë ·»´õ ] */
+	_uint iPassIndex = {};
+
+	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
+	{
+		/* ºûÁ¤º¸¸¦ ½¦ÀÌ´õ¿¡ ´øÁø´Ù. */
+		if (FAILED(pShader->Bind_RawValue("g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4))))
+			return E_FAIL;
+
+		iPassIndex = 10;
+	}
+	else
+	{
+		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fLightRange", &m_LightDesc.fRange, sizeof(_float))))
+			return E_FAIL;
+
+		iPassIndex = 9;
+	}
+
+
+	if (FAILED(pShader->Bind_RawValue("g_vLightDiffuse", &m_LightDesc.vDiffuse, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_fLightAmbient", &m_LightDesc.fAmbient, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_fLightIntencity", &m_LightDesc.fIntensity, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_vLightSpecular", &m_LightDesc.vSpecular, sizeof(_float4))))
+		return E_FAIL;
+
+	pShader->Begin(iPassIndex);
+
+	pVIBuffer->Bind_Buffers();
+	pVIBuffer->Render();
+
+	return S_OK;
+}
 
 CLight* CLight::Create(const LIGHT_DESC& LightDesc)
 {
