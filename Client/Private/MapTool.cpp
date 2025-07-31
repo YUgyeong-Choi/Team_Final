@@ -777,7 +777,13 @@ void CMapTool::Render_Detail()
 
 	ImGui::Separator();
 
+	Detail_Collider();
+
+	ImGui::Separator();
+
 	Detail_Tile();
+
+
 
 	ImGui::End();
 #pragma endregion
@@ -1461,7 +1467,7 @@ void CMapTool::Detail_Transform()
 
 void CMapTool::Detail_Tile()
 {
-	ImGui::Text("Tile Settings");
+	ImGui::Text("Tile");
 	if (m_pFocusObject)
 	{
 		// 타일링 여부 체크박스
@@ -1472,6 +1478,25 @@ void CMapTool::Detail_Tile()
 		{
 			ImGui::DragFloat2("Tiling (X,Z)", m_pFocusObject->m_TileDensity, 0.01f, 0.01f, 32.0f, "%.2f");
 		}
+	}
+}
+
+void CMapTool::Detail_Collider()
+{
+	ImGui::Text("Collider");
+	if (m_pFocusObject)
+	{
+		//콜라이더 생성, 컨백스, 트라이앵글 세가지중 선택하려고함 imgui로
+
+
+		// 타일링 여부 체크박스
+		//ImGui::Checkbox("Enable Tiling", &m_pFocusObject->m_bUseTiling);
+
+		//// 타일링 값 슬라이더 (X, Z)
+		//if (m_pFocusObject->m_bUseTiling)
+		//{
+		//	ImGui::DragFloat2("Tiling (X,Z)", m_pFocusObject->m_TileDensity, 0.01f, 0.01f, 32.0f, "%.2f");
+		//}
 	}
 }
 

@@ -39,6 +39,10 @@ namespace Client
 
 #pragma endregion
 
+#pragma region ÇÑ¿µ¿õ
+	enum class COLLIDER_TYPE { CONVEX, TRIANGLE, NONE };
+#pragma endregion
+
 	enum INTERPOLATION_CAMERA
 	{
 		NONE,
