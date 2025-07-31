@@ -480,7 +480,7 @@ void CAnimator::Update(_float fDeltaTime)
 
 	void CAnimator::SetCurrentRootRotation(const _float4& rot)
 	{
-		m_PrevRootPosition = m_CurrentRootPosition;
+		m_PrevRootRotation = m_CurrentRootRotation;
 		m_CurrentRootRotation = rot;
 
 		// 회전 델타 계산
@@ -492,10 +492,7 @@ void CAnimator::Update(_float fDeltaTime)
 		_float yAngle = GetYAngleFromQuaternion(deltaRot);
 
 		XMStoreFloat4(&m_RootRotationDelta, XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), yAngle));
-		// 극소값 처리 (노이즈 제거)
-		if (abs(m_RootMotionDelta.x) < 0.001f) m_RootMotionDelta.x = 0.f;
-		if (abs(m_RootMotionDelta.z) < 0.001f) m_RootMotionDelta.z = 0.f;
-	
+
 		if (abs(yAngle) < 0.001f) m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
 	}
 
