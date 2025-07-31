@@ -41,7 +41,7 @@ private:
 	CCameraSequence::CAMERA_KEY* m_pSelectedKey = nullptr;
 
 	_int m_iEditKey = -1;
-	CAMERA_POSFRAME m_EditPosKey = {};
+	CAMERA_WORLDFRAME m_EditPosKey = {};
 	CAMERA_ROTFRAME m_EditRotKey = {};
 	CAMERA_FOVFRAME m_EditFovKey = {};
 	_int m_iChangeKeyFrame = 0;

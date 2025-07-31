@@ -64,6 +64,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 		_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
+		printf("x: %f, y: %f, z: %f\n", x, y, z);
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 

@@ -68,7 +68,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 		else 
 		{
 			// 목표 행렬
-			_matrix targetMat = m_CameraDatas.vecPosData.front().WorldMatrix;
+			_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
 
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
@@ -135,7 +135,7 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 {
-	const auto& vec = m_CameraDatas.vecPosData;
+	const auto& vec = m_CameraDatas.vecWorldMatrixData;
 	if (vec.size() < 1)
 		return;
 
@@ -270,8 +270,8 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			const INTERPOLATION_CAMERA interp = a.interpRotation;
 			float t = float(curFrame - a.keyFrame) / float(max(1, b.keyFrame - a.keyFrame));
 
-			XMVECTOR rotA = XMLoadFloat3(&a.rotation);
-			XMVECTOR rotB = XMLoadFloat3(&b.rotation);
+			XMVECTOR rotA = XMLoadFloat3(&a.offSetRot);
+			XMVECTOR rotB = XMLoadFloat3(&b.offSetRot);
 			XMVECTOR result = {};
 
 			switch (interp)
@@ -287,8 +287,8 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			{
 				XMVECTOR p1 = rotA;
 				XMVECTOR p2 = rotB;
-				XMVECTOR p0 = (i == 0) ? p1 : XMLoadFloat3(&vec[i - 1].rotation);
-				XMVECTOR p3 = (i + 2 < vec.size()) ? XMLoadFloat3(&vec[i + 2].rotation) : p2;
+				XMVECTOR p0 = (i == 0) ? p1 : XMLoadFloat3(&vec[i - 1].offSetRot);
+				XMVECTOR p3 = (i + 2 < vec.size()) ? XMLoadFloat3(&vec[i + 2].offSetRot) : p2;
 				result = XMVectorCatmullRom(p0, p1, p2, p3, t);
 				break;
 			}
@@ -302,12 +302,12 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 
 	// 범위 바깥이면 시작/끝값
 	if (curFrame <= vec.front().keyFrame)
-		m_vCurrentShakeRot = XMLoadFloat3(&vec.front().rotation);
+		m_vCurrentShakeRot = XMLoadFloat3(&vec.front().offSetRot);
 	else if (curFrame >= vec.back().keyFrame)
 		if (vec.back().interpRotation == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
 		else
-			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().rotation);
+			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().offSetRot);
 }
 
 HRESULT CCamera_CutScene::InitDatas()
@@ -336,7 +336,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 	{
 		for (const auto& posJson : j["vecPosData"])
 		{
-			CAMERA_POSFRAME posFrame;
+			CAMERA_WORLDFRAME posFrame;
 			posFrame.keyFrame = posJson["keyFrame"];
 			posFrame.interpPosition = posJson["interpPosition"];
 
@@ -345,7 +345,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 			memcpy(&mat, matValues.data(), sizeof(float) * 16);
 			posFrame.WorldMatrix = XMLoadFloat4x4(&mat);
 
-			data.vecPosData.push_back(posFrame);
+			data.vecWorldMatrixData.push_back(posFrame);
 		}
 	}
 
@@ -356,7 +356,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 		{
 			CAMERA_ROTFRAME rotFrame;
 			rotFrame.keyFrame = rotJson["keyFrame"];
-			rotFrame.rotation = XMFLOAT3(
+			rotFrame.offSetRot = XMFLOAT3(
 				rotJson["rotation"][0],
 				rotJson["rotation"][1],
 				rotJson["rotation"][2]
