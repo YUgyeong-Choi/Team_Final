@@ -398,7 +398,7 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 HRESULT CLevel_KratHotel::Ready_TestEffect(const _wstring strLayerTag)
 {
 	CSpriteEffect::DESC SEDesc = {};
-	lstrcpy(SEDesc.pJsonFilePath, TEXT("../Bin/DataFiles/Effect/SE_Test.json"));
+	lstrcpy(SEDesc.pJsonFilePath, TEXT("../Bin/Save/Effect/SE_Test.json"));
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"),
 		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &SEDesc)))

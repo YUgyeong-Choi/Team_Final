@@ -53,7 +53,7 @@ public:
 
     vector<SequenceItem>        m_Items;
 
-    _int m_iFrameMax = { 80 };
+    _int m_iFrameMax = { 200 };
     _int m_iFrameMin = { 0 };
 
 
