@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CShader;
 class CTexture;
 class CModel;
+class CPhysXStaticActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -31,6 +32,7 @@ public:
 
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
+		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
 
 	}STATICMESH_DESC;
 
@@ -62,15 +64,20 @@ private:
 	_bool	m_bUseTiling = { false };
 	_float2	m_vTileDensity = { 1.0f, 1.0f };
 
+private:
+	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
+
 protected:
 
 	CShader*		m_pShaderCom = { nullptr };
 	CModel*			m_pModelCom = { nullptr };
 	CTexture*		m_pTextureCom = { nullptr };
+	CPhysXStaticActor* m_pPhysXActorCom = { nullptr };
 
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
+	HRESULT Ready_Collider();
 
 public:
 	static CStaticMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -1,7 +1,7 @@
 [
     {
         "ModelName": "FloorB",
-        "ObjectCount": 4,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorB.bin"
     },
     {
@@ -11,7 +11,7 @@
     },
     {
         "ModelName": "SM_Exterior_Bench_03",
-        "ObjectCount": 8,
+        "ObjectCount": 34,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Bench_03.bin"
     },
     {
@@ -51,17 +51,17 @@
     },
     {
         "ModelName": "SM_Station_BlueFairy_02",
-        "ObjectCount": 2,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_02a",
-        "ObjectCount": 2,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02a.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_02b",
-        "ObjectCount": 2,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02b.bin"
     },
     {

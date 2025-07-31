@@ -14,7 +14,9 @@ protected:
 
 public:
 	virtual HRESULT Initialize();	
+	virtual void Priority_Update(_float fTimeDelta);
 	virtual void Update(_float fTimeDelta);
+	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
 protected:

@@ -57,6 +57,11 @@ void CLevel_YW::Update(_float fTimeDelta)
 	//__super::Update(fTimeDelta);
 }
 
+void CLevel_YW::Late_Update(_float fTimeDelta)
+{
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
+}
+
 HRESULT CLevel_YW::Render()
 {
 	SetWindowText(g_hWnd, TEXT("영웅 레벨입니다."));
@@ -175,7 +180,7 @@ HRESULT CLevel_YW::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Render()))
+	if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])->Render_ImGui()))
 		return E_FAIL;
 	return S_OK;
 }

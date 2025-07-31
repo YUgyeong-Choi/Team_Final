@@ -16,6 +16,10 @@ HRESULT CLevel::Initialize()
     return S_OK;
 }
 
+void CLevel::Priority_Update(_float fTimeDelta)
+{
+
+}
 
 void CLevel::Update(_float fTimeDelta)
 {
@@ -24,6 +28,10 @@ void CLevel::Update(_float fTimeDelta)
         HoldMouse();
 }
 
+void CLevel::Late_Update(_float fTimeDelta)
+{
+
+}
 
 HRESULT CLevel::Render()
 {

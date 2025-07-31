@@ -37,6 +37,9 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	m_TileDensity[0] = pDesc->vTileDensity.x;
 	m_TileDensity[1] = pDesc->vTileDensity.y;
 
+	//콜라이더 종류
+	m_eColliderType = pDesc->eColliderType;
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
@@ -48,31 +51,38 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 
 void CMapToolObject::Priority_Update(_float fTimeDelta)
 {
-	Update_ColliderPos();
+
 }
 
 void CMapToolObject::Update(_float fTimeDelta)
 {
-
+	Update_ColliderPos();
 }
 
 void CMapToolObject::Update_ColliderPos()
-{	// 1. 월드 행렬 가져오기
-	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
+{	
+	/*
+		스케일을 바꾸려면 m_pPhysXActorConvexCom 컴포넌트를 새로 만들어야 한다.
+		그렇다고 한다. 새로 만들어주는거로 해보자
+	*/
 
-	// 2. 위치 추출
-	_float4 vPos;
-	XMStoreFloat4(&vPos, worldMatrix.r[3]);
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
 
-	PxVec3 pos(vPos.x, vPos.y, vPos.z);
+	// 행렬 → 스케일, 회전, 위치 분해
+	_vector vScale, vRotationQuat, vTranslation;
+	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
 
-	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
-	XMFLOAT4 fQuat;
-	XMStoreFloat4(&fQuat, boneQuat);
-	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
+	// 위치 추출
+	_float3 vPos;
+	XMStoreFloat3(&vPos, vTranslation);
 
-	// 4. PhysX Transform 적용
-	m_pPhysXActorConvexCom->Set_Transform(PxTransform(pos, rot));
+	// 회전 추출
+	_float4 vRot;
+	XMStoreFloat4(&vRot, vRotationQuat);
+
+	// PxTransform으로 생성
+	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
+	m_pPhysXActorConvexCom->Set_Transform(physxTransform);
 }
 
 void CMapToolObject::Late_Update(_float fTimeDelta)
@@ -98,9 +108,36 @@ HRESULT CMapToolObject::Render()
 		m_pModelCom->Render(i);
 	}
 
+	return S_OK;
+}
+
+HRESULT CMapToolObject::Render_Collider()
+{
+
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
-		m_pGameInstance->Add_DebugComponent(m_pPhysXActorConvexCom);
+	//초기화가 이상함
+	if (m_eColliderType == COLLIDER_TYPE::END)
+		return E_FAIL; //치명적 오류
+
+	//충돌체 없음
+	if (m_eColliderType == COLLIDER_TYPE::NONE)
+		return S_OK;
+
+	if (m_pGameInstance->Get_RenderCollider())
+	{
+		//컨벡스 충돌체
+		if (m_eColliderType == COLLIDER_TYPE::CONVEX)
+		{
+			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorConvexCom)))
+				return E_FAIL;
+		}
+
+		//트라이앵글 충돌체
+		if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
+		{
+			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorTriangleCom)))
+				return E_FAIL;
+		}
 	}
 #endif
 
@@ -137,7 +174,13 @@ HRESULT CMapToolObject::Ready_Components(void* pArg)
 
 
 	/* For.Com_PhysX */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorConvexCom))))
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX_Dynamic"), reinterpret_cast<CComponent**>(&m_pPhysXActorConvexCom))))
+		return E_FAIL;
+
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX_Static"), reinterpret_cast<CComponent**>(&m_pPhysXActorTriangleCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -159,7 +202,7 @@ HRESULT CMapToolObject::Bind_ShaderResources()
 	//타일링을 사용 하는가? 인스턴스된 애들은 타일링 하기 번거롭겠다.
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTile", &m_bUseTiling, sizeof(_bool))))
 		return E_FAIL;
-	
+
 	if (m_bUseTiling)
 	{
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_TileDensity", &m_TileDensity, sizeof(m_TileDensity))))
@@ -198,18 +241,43 @@ HRESULT CMapToolObject::Ready_Collider()
 		PxTransform pose(positionVec, rotationQuat);
 		PxMeshScale meshScale(scaleVec);
 
-		PxConvexMeshGeometry  geom2 = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
-		m_pPhysXActorConvexCom->Create_Collision(m_pGameInstance->GetPhysics(), geom2, pose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorConvexCom->Set_Kinematic(true);
-		m_pPhysXActorConvexCom->Set_ShapeFlag(false, false, false);
 		PxFilterData filterData{};
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
 		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+
+#pragma region 컨벡스 메쉬
+		PxConvexMeshGeometry  ConvexGeom = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
+		m_pPhysXActorConvexCom->Create_Collision(m_pGameInstance->GetPhysics(), ConvexGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorConvexCom->Set_Kinematic(true);
+		m_pPhysXActorConvexCom->Set_ShapeFlag(false, false, false);
+
 		m_pPhysXActorConvexCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorConvexCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorConvexCom->Set_Owner(this);
-		m_pPhysXActorConvexCom->Set_ColliderType(COLLIDERTYPE::B);
+		m_pPhysXActorConvexCom->Set_ColliderType(COLLIDERTYPE::B); // 이걸로 색깔을 바꿀 수 있다.
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
+#pragma endregion
+
+#pragma region 트라이앵글 메쉬
+		// 인덱스 복사
+		const _uint* pIndices = m_pModelCom->Get_Mesh_pIndices(0);
+		vector<PxU32> physxIndices;
+		physxIndices.reserve(numIndices);
+
+		for (_uint i = 0; i < numIndices; ++i)
+			physxIndices.push_back(static_cast<PxU32>(pIndices[i]));
+
+		PxTriangleMeshGeometry  TriangleGeom = m_pGameInstance->CookTriangleMesh(physxVertices.data(), numVertices, physxIndices.data(), numIndices / 3, meshScale);
+		m_pPhysXActorTriangleCom->Create_Collision(m_pGameInstance->GetPhysics(), TriangleGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorTriangleCom->Set_ShapeFlag(true, false, true);
+
+		m_pPhysXActorTriangleCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorTriangleCom->Set_QueryFilterData(filterData);
+		m_pPhysXActorTriangleCom->Set_Owner(this);
+		m_pPhysXActorTriangleCom->Set_ColliderType(COLLIDERTYPE::A);
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
+#pragma endregion
+	
 	}
 	else
 	{
@@ -254,4 +322,5 @@ void CMapToolObject::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pPhysXActorConvexCom);
+	Safe_Release(m_pPhysXActorTriangleCom);
 }
