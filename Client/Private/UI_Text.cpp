@@ -148,6 +148,15 @@ void CUI_Text::Update_UI_From_Tool(TEXT_UI_DESC& eDesc)
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 }
 
+HRESULT CUI_Text::Ready_Components_File(const wstring& strTextureTag)
+{
+	__super::Ready_Components_File(strTextureTag);
+
+	m_strFontTag = L"Font_Medium";
+
+	return S_OK;
+}
+
 
 
 

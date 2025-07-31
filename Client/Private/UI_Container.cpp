@@ -22,6 +22,7 @@ json CUI_Container::Serialize()
 
 	j["FilePath"] = WStringToStringU8(m_strFilePath);
 
+
 	for (const auto& pObj : m_PartObjects)
 		j["Parts"].push_back(pObj->Serialize());
 
@@ -33,15 +34,18 @@ void CUI_Container::Deserialize(const json& j)
 	__super::Deserialize(j);
 	
 	
-	string strFilePath = j["FilePath"];
+	if (true == j.contains("FilePath"))
+	{
+		string strFilePath = j["FilePath"];
 
-	m_strFilePath = StringToWStringU8(strFilePath);
-
+		m_strFilePath = StringToWStringU8(strFilePath);
+	}
+	
 	if (j.contains("Parts") && j["Parts"].is_array())
 	{
 		for (const auto& objJson : j["Parts"])
 		{
-			string protoTag = objJson["Prototag"].get<string>();
+			string protoTag = objJson["ProtoTag"].get<string>();
 
 			Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), nullptr);
 
@@ -50,6 +54,11 @@ void CUI_Container::Deserialize(const json& j)
 			m_PartObjects.back()->Update_Data();
 		}
 	}
+}
+
+vector<CUIObject*>& CUI_Container::Get_PartUI()
+{
+	return m_PartObjects;
 }
 
 HRESULT CUI_Container::Initialize_Prototype()
@@ -61,6 +70,11 @@ HRESULT CUI_Container::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	m_strProtoTag = TEXT("Prototype_GameObject_UI_Container");
+
+	if (nullptr == pArg)
+		return S_OK;
 
 	UI_CONTAINER_DESC* pDesc = static_cast<UI_CONTAINER_DESC*>(pArg);
 
@@ -84,6 +98,7 @@ HRESULT CUI_Container::Initialize(void* pArg)
 
 		m_PartObjects.back()->Deserialize(eUIJson);
 
+		m_PartObjects.back()->Update_Data();
 	}
 	file.close();
 
@@ -145,6 +160,16 @@ HRESULT CUI_Container::Add_PartObject(_uint iPrototypeLevelIndex, const _wstring
 
 	return S_OK;
 
+}
+
+void CUI_Container::Add_UI_From_Tool(CUIObject* pObj)
+{
+	if (nullptr == pObj)
+		return;
+
+	Safe_AddRef(pObj);
+
+	m_PartObjects.push_back(pObj);
 }
 
 

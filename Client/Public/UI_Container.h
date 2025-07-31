@@ -27,6 +27,8 @@ public:
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
 
+	vector<class CUIObject*>& Get_PartUI();
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -40,7 +42,7 @@ public:
 
 	HRESULT Add_PartObject(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 
-
+	void Add_UI_From_Tool(CUIObject* pObj);
 
 protected:
 	_wstring							m_strFilePath = {};

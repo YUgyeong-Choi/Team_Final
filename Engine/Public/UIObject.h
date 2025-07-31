@@ -30,6 +30,8 @@ public:
 
 	void  Set_isVignetting(_bool isVignetting) { m_isDeferred = isVignetting; }
 
+	_wstring Get_ProtoTag() { return m_strProtoTag; }
+
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
 
