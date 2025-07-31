@@ -104,6 +104,7 @@ public:
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
 	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 	HRESULT Render_PBR_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
+	HRESULT Render_Volumetric_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
 	HRESULT Add_LevelLightData(_uint iLevelIndex, const LIGHT_DESC& LightDesc);
 	HRESULT Add_LevelLightDataReturn(_uint iLevelIndex, const LIGHT_DESC& LightDesc, class CLight** ppOut);
 	HRESULT Remove_NoLevelLight();

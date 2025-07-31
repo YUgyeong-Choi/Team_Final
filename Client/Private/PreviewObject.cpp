@@ -27,6 +27,10 @@ HRESULT CPreviewObject::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Collider()))
+		return E_FAIL;
+
+
 	if (FAILED(Ready_DepthStencilView(g_iWinSizeX, g_iWinSizeY)))
 		return E_FAIL;
 	
@@ -95,6 +99,14 @@ HRESULT CPreviewObject::Render()
 	//타겟 복원
 	m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), nullptr, false);
 
+//#ifdef _DEBUG
+//	if (m_pGameInstance->Get_RenderCollider()) 
+//	{
+//		m_pGameInstance->Add_DebugComponent(m_pPhysXActorTriangleCom);
+//		m_pGameInstance->Add_DebugComponent(m_pPhysXActorConvexCom);
+//	}
+//#endif
+
 	return S_OK;
 }
 
@@ -140,7 +152,90 @@ HRESULT CPreviewObject::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_CameraTransformCom"), reinterpret_cast<CComponent**>(&m_pCameraTransformCom))))
 		return E_FAIL;
+
+
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX1"), reinterpret_cast<CComponent**>(&m_pPhysXActorTriangleCom))))
+		return E_FAIL;
+
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXActorConvexCom))))
+		return E_FAIL;
 	
+
+	return S_OK;
+}
+
+HRESULT CPreviewObject::Ready_Collider()
+{
+	if (m_pModelCom)
+	{
+		// 피오나 몸체가 2번째 메쉬라서
+		_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(0);
+		_uint numIndices = m_pModelCom->Get_Mesh_NumIndices(0);
+
+		vector<PxVec3> physxVertices;
+		physxVertices.reserve(numVertices);
+
+		const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(0);
+		for (_uint i = 0; i < numVertices; ++i)
+		{
+			const _float3& v = pVertexPositions[i];
+			physxVertices.emplace_back(v.x, v.y, v.z);
+		}
+
+		// 2. 인덱스 복사
+		const _uint* pIndices = m_pModelCom->Get_Mesh_pIndices(0);
+		vector<PxU32> physxIndices;
+		physxIndices.reserve(numIndices);
+
+		for (_uint i = 0; i < numIndices; ++i)
+			physxIndices.push_back(static_cast<PxU32>(pIndices[i]));
+
+		// 3. Transform에서 S, R, T 분리
+		XMVECTOR S, R, T;
+		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+		// 3-1. 스케일, 회전, 위치 변환
+		PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+		PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+		PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+		PxTransform pose(positionVec, rotationQuat);
+		PxMeshScale meshScale(scaleVec);
+
+		PxTriangleMeshGeometry  geom = m_pGameInstance->CookTriangleMesh(physxVertices.data(), numVertices, physxIndices.data(), numIndices / 3, meshScale);
+		m_pPhysXActorTriangleCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorTriangleCom->Set_ShapeFlag(true, false, true);
+
+		PxFilterData filterData{};
+		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		m_pPhysXActorTriangleCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorTriangleCom->Set_QueryFilterData(filterData);
+		m_pPhysXActorTriangleCom->Set_Owner(this);
+		m_pPhysXActorTriangleCom->Set_ColliderType(COLLIDERTYPE::B);
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
+
+
+
+		PxConvexMeshGeometry  geom2 = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
+		m_pPhysXActorConvexCom->Create_Collision(m_pGameInstance->GetPhysics(), geom2, pose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorConvexCom->Set_ShapeFlag(true, false, true);
+
+		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		m_pPhysXActorConvexCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorConvexCom->Set_QueryFilterData(filterData);
+		m_pPhysXActorConvexCom->Set_Owner(this);
+		m_pPhysXActorConvexCom->Set_ColliderType(COLLIDERTYPE::B);
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
+	}
+	else
+	{
+		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
+	}
+
 
 	return S_OK;
 }
@@ -231,6 +326,9 @@ void CPreviewObject::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pCameraTransformCom);
 	Safe_Release(m_pDSV);
+
+	Safe_Release(m_pPhysXActorConvexCom);
+	Safe_Release(m_pPhysXActorTriangleCom);
 
 	if (m_bCloned)
 	{

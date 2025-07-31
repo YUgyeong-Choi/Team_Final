@@ -173,6 +173,11 @@ CComponent* CPhysXController::Clone(void* pArg)
 
 void CPhysXController::Free()
 {
+    if (m_pController)
+    {
+        m_pController->release();
+        m_pController = nullptr;
+    }
     __super::Free();
 }
 

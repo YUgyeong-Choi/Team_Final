@@ -9,18 +9,18 @@
             "States": [
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Idle",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Idle",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Run_F",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Run_F",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Idle",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Idle",
                     "UpperClipName": ""
                 },
                 {
@@ -33,18 +33,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Dash_Normal_B",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Dash_Normal_B",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Run_F_Stop",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Run_F_Stop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Dash_Normal_B",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Dash_Normal_B",
                     "UpperClipName": ""
                 },
                 {
@@ -86,6 +86,38 @@
                     "MaskBoneName": "Bip001-Spine2",
                     "Name": "EquipWeapon_Walk_F",
                     "UpperClipName": "AS_Pino_T_EquipmentWeapon"
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_SA4",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "StrongAttack",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_CA1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "ChargeStrongAttack",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_NA3",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "NormalAttack",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_NA4",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "NormalAttack2",
+                    "UpperClipName": ""
                 }
             ]
         }

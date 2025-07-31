@@ -23,7 +23,8 @@ Texture2D g_ShadowTextureB;
 Texture2D g_ShadowTextureC;
 
 /* [ 볼륨메트리 포그 ] */
-Texture3D g_FogNoiseTex;
+float g_fFogSpeed = 1.f;
+float g_fTime;
 int g_iPointNum = 1;
 
 /* [ PBR 전용 ] */
@@ -53,18 +54,50 @@ Texture2D g_MaskTexture;
 Texture2D g_UITexture;
 
 /* [ 볼륨메트리 포그 함수 ] */
-float SampleFogDensity(float3 worldPos)//,float time)
+float Hash(float3 p)
 {
-    // 타일링 조절: 값이 작을수록 덩어리 커짐
-    float3 uvw = worldPos * 0.03f;
-    //uvw.z += time * 0.1f;
+    p = frac(p * 0.3183099f + 0.1f);
+    p *= 17.0f;
+    return frac(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+float ValueNoise3D(float3 p)
+{
+    float3 i = floor(p);
+    float3 f = frac(p);
 
-    // 노이즈 샘플링
-    float noise = g_FogNoiseTex.SampleLevel(LinearWrapSampler, uvw, 0.0f).r;
+    // Trilinear interpolation weights
+    float3 w = f * f * (3.0f - 2.0f * f); // smootherstep
 
-    // 농도 보정
-    float density = saturate(noise * 1.2f);
-    
+    // 8-corner hash values
+    float n000 = Hash(i + float3(0, 0, 0));
+    float n100 = Hash(i + float3(1, 0, 0));
+    float n010 = Hash(i + float3(0, 1, 0));
+    float n110 = Hash(i + float3(1, 1, 0));
+    float n001 = Hash(i + float3(0, 0, 1));
+    float n101 = Hash(i + float3(1, 0, 1));
+    float n011 = Hash(i + float3(0, 1, 1));
+    float n111 = Hash(i + float3(1, 1, 1));
+
+    // Trilinear interpolation
+    float nx00 = lerp(n000, n100, w.x);
+    float nx10 = lerp(n010, n110, w.x);
+    float nx01 = lerp(n001, n101, w.x);
+    float nx11 = lerp(n011, n111, w.x);
+
+    float nxy0 = lerp(nx00, nx10, w.y);
+    float nxy1 = lerp(nx01, nx11, w.y);
+
+    return lerp(nxy0, nxy1, w.z);
+}
+
+float SampleFogDensity(float3 worldPos, float time)
+{
+    float3 uvw = worldPos * 0.05f; // 타일링 조절
+    uvw.z += time * g_fFogSpeed;
+
+    float noise = ValueNoise3D(uvw);
+    float density = saturate(noise * 1.5f); // 강도 보정
+
     return density;
 }
 float SampleShadowMap(float3 worldPos)
@@ -180,8 +213,12 @@ struct PS_OUT_LIGHT
 struct PS_OUT_PBR
 {
     vector vSpecular    : SV_TARGET0;
-    vector vVolume      : SV_TARGET1;
-    vector vFinal       : SV_TARGET2;
+    vector vFinal       : SV_TARGET1;
+};
+
+struct PS_OUT_VOLUMETRIC
+{
+    vector vVolumetric : SV_TARGET0;
 };
 
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
@@ -352,42 +389,42 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     
     
     
-    /* [ Volumetric Raymarching 기법 ] */
-    float4 ViewSpacePosition = viewPos;
-    float3 ViewSpaceCamPos = float3(0, 0, 0);
-    float3 ViewSpaceCameraToPixelDir = normalize(viewPos.xyz);
+    ///* [ Volumetric Raymarching 기법 ] */
+    //float4 ViewSpacePosition = viewPos;
+    //float3 ViewSpaceCamPos = float3(0, 0, 0);
+    //float3 ViewSpaceCameraToPixelDir = normalize(viewPos.xyz);
     
-    float StepSize = 0.2f;
-    static const int NumStep = 64;
+    //float StepSize = 0.2f;
+    //static const int NumStep = 64;
     
-    float3 SamplePos = ViewSpaceCamPos;
-    float CameraFog = 0.0f;
+    //float3 SamplePos = ViewSpaceCamPos;
+    //float CameraFog = 0.0f;
     
-    // 레이의 길이가 너무 멀리 나가면 중단
-    float3 SceneViewPos = ReconstructViewPosFromDepth(In.vTexcoord);
-    float maxDepth = SceneViewPos.z;
+    //// 레이의 길이가 너무 멀리 나가면 중단
+    //float3 SceneViewPos = ReconstructViewPosFromDepth(In.vTexcoord);
+    //float maxDepth = SceneViewPos.z;
     
-    for (int i = 0; i < NumStep; ++i)
-    {        
-        if (SamplePos.z > maxDepth)
-            break;
+    //for (int i = 0; i < NumStep; ++i)
+    //{        
+    //    if (SamplePos.z > maxDepth)
+    //        break;
         
-        //이 위치에 안개가 얼마나 진한지
-        float3 SampleWorldPos = mul(float4(SamplePos, 1.0f), g_ViewMatrixInv).xyz;
-        float density = SampleFogDensity(SampleWorldPos);
-        //이 지점에 빛이 얼마나 도달하는지를 계산한다
-        float rawShadow = SampleShadowMap(SampleWorldPos);
-        float shadow = 1.0f - rawShadow;
+    //    //이 위치에 안개가 얼마나 진한지
+    //    float3 SampleWorldPos = mul(float4(SamplePos, 1.0f), g_ViewMatrixInv).xyz;
+    //    float density = SampleFogDensity(SampleWorldPos);
+    //    //이 지점에 빛이 얼마나 도달하는지를 계산한다
+    //    float rawShadow = SampleShadowMap(SampleWorldPos);
+    //    float shadow = 1.0f - rawShadow;
         
-        CameraFog += density * shadow * StepSize * 0.01f;
-        SamplePos += ViewSpaceCameraToPixelDir * StepSize;        
-    }
+    //    CameraFog += density * shadow * StepSize * 0.01f;
+    //    SamplePos += ViewSpaceCameraToPixelDir * StepSize;        
+    //}
 
-    float3 fogColor = g_vLightDiffuse.rgb;
-    float3 finalFog = fogColor * (CameraFog * 1.2f);
+    //float3 fogColor = g_vLightDiffuse.rgb;
+    //float3 finalFog = fogColor * (CameraFog * 1.2f);
 
-    //Out.vVolume = float4(finalFog, 1.0f);
-    Out.vVolume = float4(1.f - finalFog, 1.f);
+    ////Out.vVolume = float4(finalFog, 1.0f);
+    //Out.vVolume = float4(1.f - finalFog, 1.f);
     
     return Out;
 }
@@ -480,12 +517,47 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     Out.vSpecular = float4(Specular, 1.0f);
     
+    return Out;
+}
+
+PS_OUT_VOLUMETRIC PS_VOLUMETRIC(PS_IN In)
+{
+    PS_OUT_VOLUMETRIC Out;
+
+    // [ 텍스처 샘플링 ]
+    vector vDepthDesc = g_PBR_Depth.Sample(DefaultSampler, In.vTexcoord);
+
+    // [ ViewPos 복원 ]
+    float2 vUV = In.vTexcoord;
+    float z_ndc = vDepthDesc.x;
+    float viewZ = vDepthDesc.y * 500.0f;
     
+    bool bNoMeshBehind = (z_ndc >= 0.999f || viewZ <= 0.001f);
+    
+    float4 ndcPos;
+    ndcPos.x = vUV.x * 2.0f - 1.0f;
+    ndcPos.y = (1.0f - vUV.y * 2.0f);
+    ndcPos.z = z_ndc;
+    ndcPos.w = 1.0f;
+    
+    float4 viewPos = mul(ndcPos, g_ProjMatrixInv);
+    viewPos /= viewPos.w; // Perspective divide
+    
+    if (bNoMeshBehind)
+    {
+    // 카메라 정면 방향 * 최대 거리
+        viewPos.xyz = normalize(viewPos.xyz) * 50.0f;
+    }
+    else
+    {
+        viewPos *= viewZ / viewPos.z;
+    }   
+
     /* [ Volumetric Raymarching 기법 ] */
     float4 ViewSpacePosition = viewPos;
     
-    float StepSize = 0.2f;
-    static const int NumStep = 64;
+    float StepSize = 2.f;
+    static const int NumStep = 50;
         
     // -----------------------------------------
     // 여기부터 Light 방향 볼륨광 추가
@@ -494,20 +566,49 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float LightFog = 0.0f;
 
     float3 PixelWorldPos = mul(float4(ViewSpacePosition.xyz, 1.0f), g_ViewMatrixInv).xyz;
-    float3 LightPos = g_vLightPos.xyz;
-    float3 LightDir = normalize(LightPos - PixelWorldPos);
     float3 LightSamplePos = PixelWorldPos;
-
+    float3 RayOrigin = float3(0.0f, 0.0f, 0.0f); 
+    float3 RayDir = normalize(ViewSpacePosition.xyz);
+    float3 RayPos = RayOrigin;
+    
     for (int j = 0; j < NumStep; ++j)
     {
-        LightSamplePos += LightDir * StepSize; // 광원 방향으로 전진
+        // 레이 도달지점을 월드 좌표로 변환
+        RayPos += RayDir * StepSize;
+        float3 worldPos = mul(float4(RayPos, 1.0f), g_ViewMatrixInv).xyz;
 
-        float density = SampleFogDensity(LightSamplePos);
-        float shadow = SampleShadowMap(LightSamplePos);
+        // 도달지점을 다시 뷰 공간으로 변환
+        float3 sampleViewPos = mul(float4(worldPos, 1.0f), g_ViewMatrix).xyz;
 
+        // 도달지점을 UV 공간까지 변환
+        float4 clipPos = mul(float4(worldPos, 1.0f), g_ViewMatrix * g_ProjMatrix);
+        float2 ndcXY = clipPos.xy / clipPos.w;
+        float2 sampleUV = ndcXY * 0.5f + 0.5f;
+        sampleUV.y = 1.0f - sampleUV.y;
+        
+        // 기존 깊이값을 샘플링
+        vector sceneDepthDesc = g_PBR_Depth.Sample(DefaultSampler, sampleUV);
+        if (sceneDepthDesc.x >= 0.999f)
+            continue;
+
+        float sceneViewZ = sceneDepthDesc.y * 500.0f;
+        float sampleViewZ = sampleViewPos.z;
+
+        if (sampleViewZ > sceneViewZ)
+            continue;
+        
+        
+        /* [ 포그 최대거리 컷팅 ] */
+        float distanceToLight = length(g_vLightPos.xyz - worldPos);
+        float cutoff = 20.0f;
+        float softFalloff = saturate(1.0f - (distanceToLight / cutoff));
+
+        float density = SampleFogDensity(worldPos, g_fTime);
+        float shadow = SampleShadowMap(worldPos);
+        
         float transmittance = 1.0f - shadow;
         int NumLights = max(g_iPointNum, 1);
-        LightFog += (density * transmittance * StepSize * 0.05f) / NumLights;
+        LightFog += density * transmittance * softFalloff * StepSize * 0.05f;
     }
     
     // -----------------------------------------
@@ -517,7 +618,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float3 fogColor = g_vLightDiffuse.rgb;
     float3 finalFog = fogColor * (LightFog * 1.2f);
     
-    Out.vVolume = float4(finalFog, 1.f);
+    Out.vVolumetric = float4(finalFog, 1.f);
     
     return Out;
 }
@@ -784,4 +885,14 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_VIGNETTING();
     }
   
+    pass Volumetric //9
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_VOLUMETRIC();
+    }
 }

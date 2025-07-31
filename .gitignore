@@ -445,5 +445,4 @@ CUDASDK/
 PhysXSDK
 
 *.cso
-*.cso
-OldEngineSDK
+OldEngineSDK/

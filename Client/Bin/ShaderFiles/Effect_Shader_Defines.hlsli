@@ -18,8 +18,13 @@ Texture2D g_DepthTexture;
 
 
 /******  Color variables  ******/
-vector g_vColor = { 1.f, 1.f, 1.f, 1.f };
+vector g_vColor = { 1.f, 1.f, 1.f, 1.f }; // Default Color
+float g_fThreshold; 
+float g_fIntensity;
+vector g_vCenterColor;
 
+
+float g_fTime;
 
 
 /******  Basic Functions  ******/
@@ -40,9 +45,7 @@ float2 FlipUV_90(float2 vInTexcoord)
         vInTexcoord = rotatedUV + center;
     }
     return vInTexcoord;
-
 }
-
 
 float2 UVTexcoord(float2 vInTexcoord, float2 fTileSize, float2 fTileOffset)
 {
@@ -70,7 +73,6 @@ float2 UVTileScroll(float2 uv, float2 tile, float2 offset, float2 scrollSpeed, f
     float2 scrolled = uv + scrollSpeed * time;
     return scrolled * tile + offset;
 }
-
 
 float4 SoftEffect(float4 vOrigColor, float4 vProjPos)
 {

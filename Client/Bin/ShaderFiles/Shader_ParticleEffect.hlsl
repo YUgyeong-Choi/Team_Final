@@ -29,7 +29,6 @@ VS_OUT VS_MAIN(VS_IN In)
     
     matrix matWV, matWVP;    
    
-    
     // 이부분에서 transform 곱하는거로 로컬월드분기.......
     // 로컬쓸려면 곱하고, 각자 월드상태 가지려면 처음부터 월드 상태의 좌표 든 채로 이부분스킵
     vector vPosition = mul(vector(In.vPosition, 1.f), In.TransformMatrix);    
@@ -103,6 +102,7 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 }
 
 
+
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
@@ -134,34 +134,27 @@ PS_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
-
-
-PS_OUT PS_MAIN_A(PS_IN In)
+PS_OUT PS_MAIN_MASKONLY(PS_IN In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-    
-    if (Out.vColor.a < 0.1f)
+    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    if (mask < 0.00001f)
         discard;
+    float4 color;
+    float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
     
-    Out.vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
+    color = lerp(g_vColor, g_vCenterColor, lerpFactor);
     
-
-    if (In.vLifeTime.y >= In.vLifeTime.x)
-        discard;
+    Out.vColor.rgb = color.rgb * mask * g_fIntensity;
+    Out.vColor.a = color.a * mask;
     
     return Out;
 }
 
-
-
-
-
 technique11 DefaultTechnique
 {
-  
-    pass Default
+    pass Default // 0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -171,6 +164,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();    
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN();      
+    }
+    pass MaskOnly //1
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN();    
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_MASKONLY();
     }
  
 }
