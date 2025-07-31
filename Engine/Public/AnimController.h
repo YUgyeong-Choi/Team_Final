@@ -257,6 +257,7 @@ public:
 			cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return false; // 기본값 반환
 		}
+		cout << "CheckBool: " << name << " = " << m_Params.at(name).bValue << endl; // 디버그용 출력
 		return m_Params.at(name).bValue;
 	}
 	_float GetFloat(const string& name) const {
@@ -281,6 +282,7 @@ public:
 			cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return 0; // 기본값 반환
 		}
+		cout << "GetInt: " << name << " = " << m_Params.at(name).iValue << endl; // 디버그용 출력
 		return m_Params.at(name).iValue;
 	}
 

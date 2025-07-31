@@ -17,7 +17,7 @@ _bool CAnimController::Condition::Evaluate(class CAnimController* pAnimControlle
 		switch (op)
 		{
 		case EOp::IsTrue:
-			return pAnimController->CheckBool(paramName);
+			return pAnimController->CheckBool(paramName) == true;
 		case EOp::IsFalse:
 			return pAnimController->CheckBool(paramName) == false;
 		default:
@@ -27,13 +27,13 @@ _bool CAnimController::Condition::Evaluate(class CAnimController* pAnimControlle
 		switch (op)
 		{
 		case EOp::Greater:
-			return pAnimController->GetInt(paramName) > iThreshold;
+			return (pAnimController->GetInt(paramName) > iThreshold);
 		case EOp::Less:
-			return pAnimController->GetInt(paramName) < iThreshold;
+			return (pAnimController->GetInt(paramName) < iThreshold);
 		case EOp::NotEqual:
-			return pAnimController->GetInt(paramName) != iThreshold;
+			return (pAnimController->GetInt(paramName) != iThreshold);
 		case EOp::Equal:
-			return pAnimController->GetInt(paramName) == iThreshold;
+			return (pAnimController->GetInt(paramName) == iThreshold);
 		default:
 			return false; // Int 타입에서 지원하지 않는 연산
 		}
@@ -41,9 +41,9 @@ _bool CAnimController::Condition::Evaluate(class CAnimController* pAnimControlle
 		switch (op)
 		{
 		case EOp::Greater:
-			return pAnimController->GetFloat(paramName) > fThreshold;
+			return (pAnimController->GetFloat(paramName) > fThreshold);
 		case EOp::Less:
-			return pAnimController->GetFloat(paramName) < fThreshold;
+			return (pAnimController->GetFloat(paramName) < fThreshold);
 		default:
 			return false; // Float 타입에서 지원하지 않는 연산
 		}
