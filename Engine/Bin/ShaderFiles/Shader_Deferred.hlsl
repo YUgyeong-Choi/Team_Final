@@ -34,6 +34,12 @@ Texture2D g_PBR_ARM;
 Texture2D g_PBR_Depth;
 Texture2D g_PBR_Final;
 
+/* [ Effect ] */
+Texture2D g_Effect_Diffuse;
+Texture2D g_Effect_Blur; // 따로 나눠야하나?
+Texture2D g_Effect_Distort;
+
+
 float PI = 3.14159265358979323846f;
 
 

@@ -67,6 +67,8 @@ private:
 	HRESULT Render_BackBuffer();
 	HRESULT Render_NonLight();
 	HRESULT Render_UI_Deferred();
+	HRESULT Render_Effect_Blend();
+	HRESULT Render_Effect_NonLight();
 	
 
 private:

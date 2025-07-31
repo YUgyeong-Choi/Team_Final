@@ -360,6 +360,7 @@ json CEffectBase::Serialize()
 	j["Billboard"] = m_bBillboard;
 	j["Animation"] = m_bAnimation;
 	j["ShaderPass"] = m_iShaderPass;
+	j["RenderGroup"] = m_iRenderGroup;
 	j["Loop"] = m_isLoop;
 
 	// Colors
@@ -416,6 +417,9 @@ void CEffectBase::Deserialize(const json& j)
 
 	if (j.contains("ShaderPass"))
 		m_iShaderPass = j["ShaderPass"].get<_uint>();
+
+	if (j.contains("RenderGroup"))
+		m_iRenderGroup = j["RenderGroup"].get<_uint>();
 
 	if (j.contains("Loop"))
 		m_isLoop = j["Loop"].get<_bool>();

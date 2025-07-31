@@ -52,7 +52,7 @@ void CToolParticle::Update(_float fTimeDelta)
 void CToolParticle::Late_Update(_float fTimeDelta)
 {
 	/* WeightBlend */	
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_EFFECT_WB, this);
 }
 
 HRESULT CToolParticle::Render()
