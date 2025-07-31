@@ -170,7 +170,7 @@ technique11 DefaultTechnique
     pass Default // 0
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetDepthStencilState(DSS_None, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
@@ -181,7 +181,7 @@ technique11 DefaultTechnique
     pass MaskOnly //1
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetDepthStencilState(DSS_None, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 

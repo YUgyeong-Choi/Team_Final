@@ -50,6 +50,7 @@ protected:
 	_bool						m_isLoop = { false };
 	_float4						m_vDirection = {};
 	PARTICLETYPE				m_ePType;
+	_bool						m_isTool = { false };
 
 	typedef struct tagCSMembers {
 		_float4		vDirection = {};

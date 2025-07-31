@@ -64,8 +64,8 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const DESC* pArg)
 	Safe_Delete_Array(pVertices);
 
 #pragma endregion 
-
-	if(pArg->isTool == false)
+	m_isTool = pArg->isTool;
+	if(m_isTool == false)
 		Make_InstanceBuffer(pArg);
 
 	return S_OK;
@@ -74,7 +74,9 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const DESC* pArg)
 HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 {
 	DESC* pDesc = static_cast<DESC*>(pArg);
-	if (pDesc->isTool == true)
+	m_isTool = pDesc->isTool;
+
+	if (m_isTool == true)
 		Make_InstanceBuffer(pDesc);
 
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
@@ -169,7 +171,7 @@ void CVIBuffer_Point_Instance::Directional(_float fTimeDelta, _bool bTool)
 				trackTime = fmodf(trackTime, m_pVertexInstances[i].vLifeTime.x);
 			}
 			_vector vStart = XMLoadFloat4(&m_pVertexInstances[i].vTranslation);
-			_vector vDir = XMLoadFloat4(&m_pVertexInstances[i].vDirection);
+			_vector vDir = XMLoadFloat4(&m_pParticleDesc[i].vDirection);
 			_vector vNew = vStart + vDir * m_pParticleDesc[i].vSpeeds * trackTime;
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vNew);
@@ -189,7 +191,7 @@ void CVIBuffer_Point_Instance::Directional(_float fTimeDelta, _bool bTool)
 
 			//pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta;
 
-			_vector vDir = XMLoadFloat4(&m_pVertexInstances[i].vDirection);
+			_vector vDir = XMLoadFloat4(&m_pParticleDesc[i].vDirection);
 			_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
 			vPos += vDir * m_pParticleDesc[i].vSpeeds * fTimeDelta;
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
@@ -228,7 +230,7 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 			pVertices[i].vLifeTime.y = trackTime;
 
 			_vector vStart = XMLoadFloat4(&m_pVertexInstances[i].vTranslation);
-			_vector vDir = XMLoadFloat4(&m_pVertexInstances[i].vDirection);
+			_vector vDir = XMLoadFloat4(&m_pParticleDesc[i].vDirection);
 			_vector vNew = vStart + vDir * m_pParticleDesc[i].vSpeeds * trackTime;
 
 			if (m_bGravity)
@@ -281,7 +283,7 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 		{
 			pVertices[i].vLifeTime.y += fTimeDelta;
 
-			_vector vDir = XMLoadFloat4(&m_pVertexInstances[i].vDirection);
+			_vector vDir = XMLoadFloat4(&m_pParticleDesc[i].vDirection);
 			_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
 			vPos += vDir * m_pParticleDesc[i].vSpeeds * fTimeDelta;
 
@@ -378,8 +380,8 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 
 		
 
-		XMStoreFloat4(&m_pVertexInstances[i].vDirection, vDir);
-		//XMStoreFloat4(&m_pParticleDesc[i].vDirection, vDir);
+		//XMStoreFloat4(&m_pVertexInstances[i].vDirection, vDir);
+		XMStoreFloat4(&m_pParticleDesc[i].vDirection, vDir);
 	}
 
 	m_VBInstanceSubresourceData.pSysMem = m_pVertexInstances;
@@ -419,8 +421,15 @@ void CVIBuffer_Point_Instance::Free()
 {
 	__super::Free();
 
+	// 클라일 때 프로토타입에서 삭제
+	// 툴일 땐 클론에서 삭제
 
-	if (false == m_isCloned)
+	if (false == m_isTool && false == m_isCloned)
+	{
+		Safe_Delete_Array(m_pVertexInstances);
+		Safe_Delete_Array(m_pParticleDesc);
+	}
+	if (m_isTool && m_isCloned)
 	{
 		Safe_Delete_Array(m_pVertexInstances);
 		Safe_Delete_Array(m_pParticleDesc);
