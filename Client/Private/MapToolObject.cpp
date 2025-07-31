@@ -108,9 +108,6 @@ HRESULT CMapToolObject::Render()
 		m_pModelCom->Render(i);
 	}
 
-	//if (FAILED(Render_Collider()))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 
