@@ -26,6 +26,9 @@ HRESULT CLevel_CY::Initialize()
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::CY));
 	return S_OK;
 }
@@ -125,8 +128,18 @@ HRESULT CLevel_CY::Ready_Camera()
 
 HRESULT CLevel_CY::Ready_ImGuiTools()
 {
+
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CCYTool::Create(m_pDevice, m_pContext);
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_CY::Ready_Sky(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
+		ENUM_CLASS(LEVEL::CY), strLayerTag)))
 		return E_FAIL;
 
 	return S_OK;

@@ -30,6 +30,8 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Camera();
 	HRESULT Ready_ImGuiTools();
+	HRESULT Ready_Sky(const _wstring strLayerTag);
+
 private:
 	HRESULT Ready_ImGui();
 	HRESULT ImGui_Render();

@@ -360,6 +360,8 @@ json CEffectBase::Serialize()
 	j["Billboard"] = m_bBillboard;
 	j["Animation"] = m_bAnimation;
 	j["ShaderPass"] = m_iShaderPass;
+	j["RenderGroup"] = m_iRenderGroup;
+	j["Loop"] = m_isLoop;
 
 	// Colors
 	j["Color"] = { m_vColor.x, m_vColor.y, m_vColor.z, m_vColor.w };
@@ -386,7 +388,7 @@ json CEffectBase::Serialize()
 	j["TickPerSecond"] = m_fTickPerSecond;
 
 	// KeyFrames
-	j["NumKeyFrames"] = m_iNumKeyFrames;
+	j["NumKeyFrames"] = m_KeyFrames.size();
 
 	json keyFramesJson = json::array();
 	for (auto& key : m_KeyFrames)
@@ -415,6 +417,12 @@ void CEffectBase::Deserialize(const json& j)
 
 	if (j.contains("ShaderPass"))
 		m_iShaderPass = j["ShaderPass"].get<_uint>();
+
+	if (j.contains("RenderGroup"))
+		m_iRenderGroup = j["RenderGroup"].get<_uint>();
+
+	if (j.contains("Loop"))
+		m_isLoop = j["Loop"].get<_bool>();
 
 	
 	// Colors

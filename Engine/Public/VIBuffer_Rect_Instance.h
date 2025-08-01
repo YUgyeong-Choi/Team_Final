@@ -24,7 +24,7 @@
 //	virtual HRESULT Initialize_Prototype(const INSTANCE_DESC* pDesc);
 //	virtual HRESULT Initialize(void* pArg);
 //	
-//	virtual void Drop(_float fTimeDelta);
+//	virtual void Directional(_float fTimeDelta);
 //
 //
 //protected:
