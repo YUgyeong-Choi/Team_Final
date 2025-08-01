@@ -267,6 +267,7 @@ HRESULT CRenderer::Draw()
 
 	if (FAILED(Render_Effect_Blend()))
 		return E_FAIL;
+
 	//if (FAILED(Render_Effect_NonLight()))
 	//	return E_FAIL;
 
@@ -602,8 +603,8 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 
 	/* [ Effect 렌더링용 ]*/
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
+	//	return E_FAIL;
 	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
 	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_Distort"), m_pShader, "g_Effect_Distort")))
 	//	return E_FAIL;

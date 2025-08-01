@@ -40,8 +40,8 @@ Texture2D g_VolumetricTexture;
 
 /* [ Effect ] */
 Texture2D g_Effect_Diffuse;
-Texture2D g_Effect_Blur; // 따로 나눠야하나?
-Texture2D g_Effect_Distort;
+// Texture2D g_Effect_Blur;
+// Texture2D g_Effect_Distort;
 
 float PI = 3.14159265358979323846f;
 
@@ -1050,6 +1050,16 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_VOLUMETRIC_DIRECTIONAL();
     }
     pass PBRLight_Spot //11
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_PBR_LIGHT_SPOT();
+    }
+    pass Effect_Deffered //12 // 아직 안쓰니 이어서 쓸 패스 있으면 그냥 밑으로 내려주세요
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
