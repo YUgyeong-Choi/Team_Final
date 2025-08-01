@@ -110,6 +110,8 @@ public:
 	bool RotateToDirectionImmediately(const _fvector& vTargetDir);
 	/* [ 쿼터니언 회전 ] */
 	void Quaternion_Turn(const _vector& vAngle);
+	/* [ 이건 쓰지마시오 ] */
+	void LookAtWithRoll(const _vector& vPosition, const _vector& vTarget, _float fRollDeg);
 
 public:
 	/* [ Y축을 제외하고 바라본다 ] */
@@ -132,6 +134,8 @@ public:
 	void SetUp_Scale(_float fScaleX, _float fScaleY, _float fScaleZ);
 	/* [ 스케일을 가져온다 ] */
 	_vector Get_Scale() const;
+
+
 
 public:
 	void LookAt(_fvector vAt);

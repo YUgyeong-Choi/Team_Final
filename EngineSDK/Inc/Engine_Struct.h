@@ -80,7 +80,9 @@ namespace Engine
 		_float				fInnerCosAngle;
 		_float				fOuterCosAngle;
 		_float				fFalloff;
+		_float				fFogDensity;
 	}LIGHT_DESC;
+
 
 	/* 화면에 그려야하는 최종적인 색 = Light.Diffuse * 재질.Diffuse */
 	typedef struct ENGINE_DLL tagVertexPosition
