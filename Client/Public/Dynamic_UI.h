@@ -59,8 +59,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	void Update_UI_From_Tool(_int& iCurrentFrame);
-	void Update_UI_From_Tool(DYNAMIC_UI_DESC eDesc);
+	void Update_UI_From_Frame(_int& iCurrentFrame);
+	virtual void Update_UI_From_Tool(void* pArg) override;
 	void Reset() ;
 
 	HRESULT Ready_Components(const wstring& strTextureTag);

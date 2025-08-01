@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "UI_Container.h"
+#include "UI_Button.h"
 
 NS_BEGIN(Engine)
 
@@ -14,6 +15,12 @@ NS_BEGIN(Client)
 class CUI_Guide  : public CUI_Container
 {
 public:
+	typedef struct tagGuideStruct : public CUI_Container::UI_CONTAINER_DESC
+	{
+	
+		vector<_wstring> partPaths;
+
+	}UI_GUIDE_DESC;
 	
 protected:
 	CUI_Guide(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -22,9 +29,9 @@ protected:
 
 public:
 
-
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
+
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -34,12 +41,18 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	
+
+	void Check_Button();
 
 private:
-	HRESULT Ready_Component();
+	CUI_Container* m_pBackGround = {nullptr};
+	vector<CUI_Button*> m_Buttons = {};
+	vector<CUI_Container*> m_Explainations = {};
 
+	_int    m_iSize = {};
+	_int	m_iIndex = {};
 	
+
 
 
 public:

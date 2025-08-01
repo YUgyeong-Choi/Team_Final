@@ -213,6 +213,7 @@
     <ClInclude Include="..\public\UI_Feature_Fade.h" />
     <ClInclude Include="..\public\UI_Feature_Position.h" />
     <ClInclude Include="..\public\UI_Feature_UV.h" />
+    <ClInclude Include="..\Public\UI_Guide.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
     <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
@@ -305,6 +306,7 @@
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
     <ClCompile Include="..\Private\UI_Feature_Position.cpp" />
     <ClCompile Include="..\private\UI_Feature_UV.cpp" />
+    <ClCompile Include="..\Private\UI_Guide.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
     <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />

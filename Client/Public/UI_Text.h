@@ -64,6 +64,7 @@ public:
 	virtual HRESULT Render();
 
 	void Update_UI_From_Tool(TEXT_UI_DESC& eDesc);
+	virtual void Update_UI_From_Tool(void* pArg) override;
 
 	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) override;
 

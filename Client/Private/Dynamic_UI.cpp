@@ -206,7 +206,7 @@ HRESULT CDynamic_UI::Render()
 	return S_OK;
 }
 
-void CDynamic_UI::Update_UI_From_Tool(_int& iCurrentFrame)
+void CDynamic_UI::Update_UI_From_Frame(_int& iCurrentFrame)
 {
 	
 	for (auto& pFeature : m_pUIFeatures)
@@ -219,19 +219,22 @@ void CDynamic_UI::Update_UI_From_Tool(_int& iCurrentFrame)
 
 }
 
-void CDynamic_UI::Update_UI_From_Tool(DYNAMIC_UI_DESC eDesc)
-{
-	m_fDuration = eDesc.fDuration;
-	m_vColor = eDesc.vColor;
-	m_fX = eDesc.fX;
-	m_fY = eDesc.fY;
-	m_fOffset = eDesc.fOffset;
-	m_fSizeX = eDesc.fSizeX;
-	m_fSizeY = eDesc.fSizeY;
-	m_iPassIndex = eDesc.iPassIndex;
-	m_iTextureIndex = eDesc.iTextureIndex;
-	m_fRotation = eDesc.fRotation;
 
+
+void CDynamic_UI::Update_UI_From_Tool(void* pArg)
+{
+	DYNAMIC_UI_DESC* pDesc = static_cast<DYNAMIC_UI_DESC*>(pArg);
+
+	m_fDuration = pDesc->fDuration;
+	m_vColor = pDesc->vColor;
+	m_fX = pDesc->fX;
+	m_fY = pDesc->fY;
+	m_fOffset = pDesc->fOffset;
+	m_fSizeX = pDesc->fSizeX;
+	m_fSizeY = pDesc->fSizeY;
+	m_iPassIndex = pDesc->iPassIndex;
+	m_iTextureIndex = pDesc->iTextureIndex;
+	m_fRotation = pDesc->fRotation;
 
 	D3D11_VIEWPORT			ViewportDesc{};
 	_uint					iNumViewports = { 1 };
@@ -284,6 +287,8 @@ HRESULT CDynamic_UI::Ready_Components(const wstring& strTextureTag)
 HRESULT CDynamic_UI::Ready_Components_File(const wstring& strTextureTag)
 {
 	__super::Ready_Components_File(strTextureTag);
+
+	m_strTextureTag = strTextureTag;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))

@@ -1,0 +1,102 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Caption": "닫기",
+                "Color": {
+                    "A": 0.800000011920929,
+                    "B": 0.800000011920929,
+                    "G": 0.800000011920929,
+                    "R": 0.800000011920929
+                },
+                "FontSize": 0.675000011920929,
+                "Padding": {
+                    "X": 0.0,
+                    "Y": 0.0
+                },
+                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "RotationZ": 0.0,
+                "SizeX": 40.0,
+                "SizeY": 45.0,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 867.2000122070313,
+                "fY": 678.6000366210938,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "",
+                "Color": {
+                    "A": 0.800000011920929,
+                    "B": 0.800000011920929,
+                    "G": 0.800000011920929,
+                    "R": 0.800000011920929
+                },
+                "FontSize": 1.0,
+                "Padding": {
+                    "X": 0.0,
+                    "Y": 0.0
+                },
+                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "RotationZ": 270.0,
+                "SizeX": 40.0,
+                "SizeY": 45.0,
+                "Texturetag": "Prototype_Component_Texture_Button_Arrow",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 1286.4000244140625,
+                "fY": 450.0,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "",
+                "Color": {
+                    "A": 0.800000011920929,
+                    "B": 0.800000011920929,
+                    "G": 0.800000011920929,
+                    "R": 0.800000011920929
+                },
+                "FontSize": 1.0,
+                "Padding": {
+                    "X": 0.0,
+                    "Y": 0.0
+                },
+                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "RotationZ": 90.0,
+                "SizeX": 40.0,
+                "SizeY": 45.0,
+                "Texturetag": "Prototype_Component_Texture_Button_Arrow",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 315.1999816894531,
+                "fY": 450.0,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

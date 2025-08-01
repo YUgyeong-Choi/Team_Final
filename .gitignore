@@ -447,3 +447,5 @@ PhysXSDK
 *.cso
 OldEngineSDK/
 Client/Default/imgui.ini
+*.cso
+Client/Default/imgui.ini

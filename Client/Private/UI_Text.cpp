@@ -148,6 +148,37 @@ void CUI_Text::Update_UI_From_Tool(TEXT_UI_DESC& eDesc)
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 }
 
+void CUI_Text::Update_UI_From_Tool(void* pArg)
+{
+	TEXT_UI_DESC* pDesc = static_cast<TEXT_UI_DESC*>(pArg);
+
+	m_strCaption = pDesc->strCaption;
+	m_fFontOffset = pDesc->fFontOffset;
+	m_fFontScale = pDesc->fFontScale;
+	m_isCenter = pDesc->isCenter;
+
+	m_vColor = pDesc->vColor;
+	m_fX = pDesc->fX;
+	m_fY = pDesc->fY;
+	m_fOffset = pDesc->fOffset;
+	m_fSizeX = pDesc->fSizeX;
+	m_fSizeY = pDesc->fSizeY;
+	m_fRotation = pDesc->fRotation;
+	m_strCaption = pDesc->strCaption;
+
+	D3D11_VIEWPORT			ViewportDesc{};
+	_uint					iNumViewports = { 1 };
+
+	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+
+	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+
+	m_pTransformCom->Rotation(0.f, 0.f, XMConvertToRadians(m_fRotation));
+
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
+}
+
 HRESULT CUI_Text::Ready_Components_File(const wstring& strTextureTag)
 {
 	__super::Ready_Components_File(strTextureTag);

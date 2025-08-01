@@ -24,7 +24,14 @@ json CUI_Container::Serialize()
 
 
 	for (const auto& pObj : m_PartObjects)
-		j["Parts"].push_back(pObj->Serialize());
+	{
+		if (nullptr != pObj)
+		{
+			j["Parts"].push_back(pObj->Serialize());
+		}
+	}
+		
+		
 
 	return j;
 }

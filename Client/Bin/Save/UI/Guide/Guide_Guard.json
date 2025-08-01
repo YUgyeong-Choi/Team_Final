@@ -1,0 +1,113 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+          {
+            "Caption": "가드",
+            "Color": {
+              "A": 1.0,
+              "B": 0.10000000149011612,
+              "G": 0.10000000149011612,
+              "R": 0.10000000149011612
+            },
+            "FontOffset": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "FontScale": 0.8500000238418579,
+            "FontTag": "Font_Medium",
+            "IsCenter": true,
+            "ProtoTag": "Prototype_GameObject_UI_Text",
+            "RotationZ": 0.0,
+            "SizeX": 6.24999984211172e-06,
+            "SizeY": 1.1111111234640703e-05,
+            "fAlpha": 1.0,
+            "fOffset": 0.0,
+            "fX": 800.0,
+            "fY": 232.19998168945313
+          },
+            {
+                "Caption": "1 / 2",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.10000000149011612,
+                    "G": 0.10000000149011612,
+                    "R": 0.10000000149011612
+                },
+                "FontOffset": {
+                    "X": 0.0,
+                    "Y": 0.0
+                },
+                "FontScale": 0.6499999761581421,
+                "FontTag": "Font_Medium",
+                "IsCenter": true,
+                "ProtoTag": "Prototype_GameObject_UI_Text",
+                "RotationZ": 0.0,
+                "SizeX": 6.24999984211172e-06,
+                "SizeY": 1.1111111234640703e-05,
+                "fAlpha": 1.0,
+                "fOffset": 0.0,
+                "fX": 800.0,
+                "fY": 627.300048828125
+            },
+            {
+                "Caption": "피격되기 직전에 가드에 성공하면 퍼펙트 가드가\n발생된다.\n\n퍼펙트 가드에 성공하면 피해를 받지 않고, 스태미나만\n소비된다.\n퍼펙트 가드로 적의 무기를 파괴시키거나, 그로기 가능\n상태로 만들 수 있다.",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.10000000149011612,
+                    "G": 0.10000000149011612,
+                    "R": 0.10000000149011612
+                },
+                "FontOffset": {
+                    "X": 0.0,
+                    "Y": 0.0
+                },
+                "FontScale": 0.6499999761581421,
+                "FontTag": "Font_Medium",
+                "IsCenter": false,
+                "ProtoTag": "Prototype_GameObject_UI_Text",
+                "RotationZ": 0.0,
+                "SizeX": 6.24999984211172e-06,
+                "SizeY": 1.1111111234640703e-05,
+                "fAlpha": 1.0,
+                "fOffset": 0.0,
+                "fX": 380.8000183105469,
+                "fY": 369.0
+            },
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
+            },
+            "ProtoTag": "Prototype_GameObject_Static_UI",
+            "RotationZ": 357.04901123046875,
+            "SizeX": 496.0,
+            "SizeY": 254.6999969482422,
+            "Texturetag": "Prototype_Component_Texture_Tutorial",
+            "fAlpha": 1.0,
+            "fOffset": 0.019999999552965164,
+            "fX": 1052.800048828125,
+            "fY": 457.20001220703125,
+            "iPassIndex": 4,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

@@ -199,6 +199,9 @@
     <Filter Include="02.GameObjects\99.UI\Container">
       <UniqueIdentifier>{a57f9c53-0a50-4000-935c-7a8076f50e0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Guide">
+      <UniqueIdentifier>{d4dbb103-38eb-42f4-bae6-7687d2708db9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -480,6 +483,9 @@
     <ClInclude Include="..\Public\UI_Container.h">
       <Filter>02.GameObjects\99.UI\Container</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Guide.h">
+      <Filter>02.GameObjects\99.UI\Container\Guide</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -737,6 +743,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Container.cpp">
       <Filter>02.GameObjects\99.UI\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Guide.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Guide</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

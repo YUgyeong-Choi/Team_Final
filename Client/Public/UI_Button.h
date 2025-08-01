@@ -21,6 +21,7 @@ public:
 	{
 		// 
 		_wstring strCaption;
+
 		_float2  fPadding;
 		_float   fFontSize = {1.f};
 	}BUTTON_UI_DESC;
@@ -36,6 +37,9 @@ protected:
 	CUI_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_Button(const CUI_Button& Prototype);
 	virtual ~CUI_Button() = default;
+
+public:
+	BUTTON_UI_DESC Get_Desc();
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -54,6 +58,8 @@ public:
 	_bool Check_MousePos();
 	_bool Check_MouseHover();
 	_bool Check_Click();
+
+	virtual void Update_UI_From_Tool(void* pArg) override;
 
 private:
 
