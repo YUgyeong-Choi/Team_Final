@@ -60,7 +60,7 @@ public:
 	void Fade(_float fTimeDelta);
 	
 	
-	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) {  return S_OK; }
+	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) { return S_OK; }
 	virtual void Update_UI_From_Tool(void* pArg) {};
 protected:
 	/* 뷰포트 상의 유아이의 중심위치 fX, fY, 사이즈 fSiuzeX, fSizeY */

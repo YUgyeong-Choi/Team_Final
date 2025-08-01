@@ -8,7 +8,7 @@ CUI_Guide::CUI_Guide(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CUI_Guide::CUI_Guide(const CUI_Guide& Prototype)
-    :CUI_Container{Prototype}
+    :CUI_Container(Prototype)
 {
 }
 
@@ -77,7 +77,7 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     m_pBackGround = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eBackDesc));
     
     
-    m_iSize = m_Explainations.size();
+    m_iSize = static_cast<_int>(m_Explainations.size());
 
     m_iIndex = 0;
 
