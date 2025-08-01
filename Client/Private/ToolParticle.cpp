@@ -52,7 +52,11 @@ void CToolParticle::Update(_float fTimeDelta)
 void CToolParticle::Late_Update(_float fTimeDelta)
 {
 	/* WeightBlend */	
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_EFFECT_WB, this);
+
+	// 아래 변수로 교체할 것 
+	//(RENDERGROUP)m_iRenderGroup;
+
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_EFFECT_DEFFERED, this);
 }
 
 HRESULT CToolParticle::Render()
@@ -101,7 +105,6 @@ void CToolParticle::Update_Tool(_float fTimeDelta, _float fCurFrame)
 
 	//m_pVIBufferCom->Update(fTimeDelta);
 	m_pVIBufferCom->Update_Tool(m_fCurrentTrackPosition);
-
 }
 
 

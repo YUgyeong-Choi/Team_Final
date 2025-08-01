@@ -1,9 +1,9 @@
 #include "Effect_Shader_Defines.hlsli"
 
 vector  g_vCamPosition;
-//bool    g_bLocal;
+bool    g_bLocal;
 
-//bool    g_size
+//bool    g_size 
 
 struct VS_IN
 {

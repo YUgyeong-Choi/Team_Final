@@ -59,7 +59,6 @@ private:
 	HRESULT Render_NonBlend();
 	HRESULT Render_PBRMesh();
 	HRESULT Render_Blend();
-	HRESULT Render_Effect_WB();
 	HRESULT Render_UI();
 	HRESULT Render_Lights();
 	HRESULT Render_PBRLights();
