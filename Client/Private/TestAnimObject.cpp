@@ -100,7 +100,6 @@ void CTestAnimObject::Priority_Update(_float fTimeDelta)
 //	SetMoveState(fTimeDelta);
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
-
 }
 void CTestAnimObject::Update(_float fTimeDelta)
 {
@@ -207,7 +206,7 @@ HRESULT CTestAnimObject::Bind_Shader()
 HRESULT CTestAnimObject::Ready_Components()
 {
 
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_TestAnimObject"), TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_TestAnimObject"), TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxAnimMesh"), TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -431,7 +430,7 @@ void CTestAnimObject::SyncTransformWithController()
 	if (!m_pControllerCom) return;
 
 	PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
-	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.8f, (float)pos.z, 1.f);
+	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 1.0f, (float)pos.z, 1.f);
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 }
 
@@ -627,6 +626,7 @@ void CTestAnimObject::RayCast()
 #endif
 
 }
+
 
 CTestAnimObject* CTestAnimObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

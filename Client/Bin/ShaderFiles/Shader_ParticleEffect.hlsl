@@ -3,6 +3,8 @@
 vector  g_vCamPosition;
 bool    g_bLocal;
 
+//bool    g_size 
+
 struct VS_IN
 {
     float3 vPosition : POSITION;       
@@ -10,6 +12,7 @@ struct VS_IN
     row_major float4x4 TransformMatrix : WORLD;
     
     float2 vLifeTime : TEXCOORD0;    
+    //float4 vDirection : TEXCOORD1;
 };
 
 struct VS_OUT
@@ -139,7 +142,7 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
     PS_OUT Out;
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
-    if (mask < 0.00001f)
+    if (mask < 0.1f)
         discard;
     float4 color;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
@@ -149,6 +152,16 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
     Out.vColor.rgb = color.rgb * mask * g_fIntensity;
     Out.vColor.a = color.a * mask;
     
+
+
+
+    Out.vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
+
+
+
+    if (In.vLifeTime.y >= In.vLifeTime.x)
+        discard;
+    
     return Out;
 }
 
@@ -157,7 +170,7 @@ technique11 DefaultTechnique
     pass Default // 0
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_None, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
@@ -168,7 +181,7 @@ technique11 DefaultTechnique
     pass MaskOnly //1
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_None, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 

@@ -84,6 +84,7 @@ protected:
 	_bool				m_bBillboard = { true };
 	_bool				m_bAnimation = { true };
 	_uint				m_iShaderPass = {};
+	_uint				m_iRenderGroup = {};
 	_bool				m_isLoop = { false };
 	_float				m_fTimeAcc = {};
 

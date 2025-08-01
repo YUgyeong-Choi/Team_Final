@@ -83,6 +83,7 @@ public:
     void Add(_int startFrame, _int endFrame, _int type);
     void Add_KeyFrame(_int type, _int keyFrame);
     void Delete_KeyFrame(_int type, _int keyFrame);
+    void Change_KeyFrame(_int type, _int originKeyFrame, _int changeKeyFrame);
 
     void Set_EndFrame(_int endFrame);
 

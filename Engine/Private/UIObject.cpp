@@ -141,7 +141,7 @@ void CUIObject::Update_Data()
 
 	m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
 
-	m_pTransformCom->Rotation(0.f, 0.f, m_fRotation);
+	m_pTransformCom->Rotation(0.f, 0.f, XMConvertToRadians(m_fRotation));
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 }

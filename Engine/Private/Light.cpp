@@ -65,6 +65,22 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 		iPassIndex = 7;
 	}
+	else if (LIGHT_DESC::TYPE_SPOT == m_LightDesc.eType)
+	{
+		/* 빛정보를 쉐이더에 던진다. */
+		if (FAILED(pShader->Bind_RawValue("g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fInnerCosAngle", &m_LightDesc.fInnerCosAngle, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fOuterCosAngle", &m_LightDesc.fOuterCosAngle, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fFalloff", &m_LightDesc.fFalloff, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))
+			return E_FAIL;
+
+		iPassIndex = 11;
+	}
 	else
 	{
 		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))

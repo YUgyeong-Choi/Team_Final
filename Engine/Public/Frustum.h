@@ -18,6 +18,8 @@ public:
 public:
 	_bool isIn_WorldSpace(_fvector vWorldPos, _float fRange);
 	_bool isIn_LocalSpace(_fvector vLocalPos, _float fRange);
+	_bool isIn_PhysXAABB(class CPhysXActor* pPhysXActor);
+
 private:
 	class CGameInstance*	m_pGameInstance = { nullptr };
 	_float4					m_vOriginalPoints[8] = { };
@@ -28,7 +30,7 @@ private:
 
 private:
 	void Make_Plane(const _float4* pPoints, _float4* pPlanes);
-
+	_bool Is_AABB_InFrustum(const _float3& vMin, const _float3& vMax);
 
 public:
 	static CFrustum* Create();

@@ -50,6 +50,13 @@ public:
 	void SetRange(_float fRange) { m_pLight->Get_LightDesc()->fRange = fRange; }
 	_float GetRange() { return m_pLight->Get_LightDesc()->fRange; }
 
+	void SetfInnerCosAngle(_float fInnerCosAngle) { m_pLight->Get_LightDesc()->fInnerCosAngle = cosf(XMConvertToRadians(fInnerCosAngle));; }
+	_float GetfInnerCosAngle() {_float cosAngle = m_pLight->Get_LightDesc()->fInnerCosAngle; return XMConvertToDegrees(acosf(cosAngle));}
+	void SetfOuterCosAngle(_float fOuterAngleDegrees){m_pLight->Get_LightDesc()->fOuterCosAngle = cosf(XMConvertToRadians(fOuterAngleDegrees));}
+	_float GetfOuterCosAngle(){	_float cosAngle = m_pLight->Get_LightDesc()->fOuterCosAngle;return XMConvertToDegrees(acosf(cosAngle));	}
+	void SetfFalloff(_float fFalloff) { m_pLight->Get_LightDesc()->fFalloff = fFalloff; }
+	_float GetfFalloff() { return m_pLight->Get_LightDesc()->fFalloff; }
+
 	_int GetLightType() { return static_cast<int>(m_pLight->Get_LightDesc()->eType); }
 
 private:

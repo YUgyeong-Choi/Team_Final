@@ -228,6 +228,16 @@ HRESULT CLevel_KratHotel::Load_StaticMesh(_uint iObjectCount, const json& object
 		}
 #pragma endregion
 
+#pragma region 콜라이더
+		//콜라이더
+		if (objects[j].contains("ColliderType") && objects[j]["ColliderType"].is_number_integer())
+		{
+			StaticMeshDesc.eColliderType = static_cast<COLLIDER_TYPE>(objects[j]["ColliderType"].get<_int>());
+		}
+		else
+			return E_FAIL;
+#pragma endregion
+
 		wstring LayerTag = TEXT("Layer_MapToolObject_");
 		LayerTag += StringToWString(ModelName);
 

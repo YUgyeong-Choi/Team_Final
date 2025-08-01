@@ -76,7 +76,13 @@ namespace Engine
 		XMFLOAT4			vDiffuse;
 		float				fAmbient;
 		XMFLOAT4			vSpecular;
+
+		_float				fInnerCosAngle;
+		_float				fOuterCosAngle;
+		_float				fFalloff;
+		_float				fFogDensity;
 	}LIGHT_DESC;
+
 
 	/* 화면에 그려야하는 최종적인 색 = Light.Diffuse * 재질.Diffuse */
 	typedef struct ENGINE_DLL tagVertexPosition
@@ -168,8 +174,10 @@ namespace Engine
 		XMFLOAT4		vUp;
 		XMFLOAT4		vLook;
 		XMFLOAT4		vTranslation;
-		XMFLOAT2		vLifeTime;
 
+		XMFLOAT2		vLifeTime;
+		//XMFLOAT4		vDirection;			// CS에 옮길 것
+		
 
 		static const unsigned int					iNumElements = { 6 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];

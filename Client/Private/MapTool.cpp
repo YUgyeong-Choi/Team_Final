@@ -76,15 +76,41 @@ void CMapTool::Update(_float fTimeDelta)
 
 void CMapTool::Late_Update(_float fTimeDelta)
 {
-
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
 HRESULT CMapTool::Render()
+{
+	//모두 렌더 하는것도 만들자
+	if (m_bRenderAllCollider)
+	{
+		for (auto& Group : m_ModelGroups) // 모델 이름별로 그룹화된 GameObject 목록을 반복
+		{
+			for (auto pGameObject : Group.second)
+			{
+				if (FAILED(static_cast<CMapToolObject*>(pGameObject)->Render_Collider()))
+					return E_FAIL;
+			}
+		}
+
+	}
+	//포커스 된놈만 랜더
+	else if (m_pFocusObject)
+	{
+		if (FAILED(m_pFocusObject->Render_Collider()))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapTool::Render_ImGui()
 {
 	if (FAILED(Render_MapTool()))
 		return E_FAIL;
 
 	return S_OK;
+
 }
 
 void CMapTool::Control(_float fTimeDelta)
@@ -339,6 +365,8 @@ HRESULT CMapTool::Save_Map()
 			if(pMapToolObject->m_bUseTiling)
 				ObjectJson["TileDensity"] = { pMapToolObject->m_TileDensity[0], pMapToolObject->m_TileDensity[1] };
 
+			ObjectJson["ColliderType"] = static_cast<_int>(pMapToolObject->m_eColliderType);
+
 			ModelJson["Objects"].push_back(ObjectJson);
 		}
 
@@ -377,11 +405,11 @@ HRESULT CMapTool::Load_Map()
 	{
 		string ModelName = Models[i]["ModelName"];
 		_uint iObjectCount = Models[i]["ObjectCount"];
-		const json& objects = Models[i]["Objects"];
+		const json& Objects = Models[i]["Objects"];
 
 		for (_uint j = 0; j < iObjectCount; ++j)
 		{
-			const json& WorldMatrixJson = objects[j]["WorldMatrix"];
+			const json& WorldMatrixJson = Objects[j]["WorldMatrix"];
 			_float4x4 WorldMatrix = {};
 
 			for (_int row = 0; row < 4; ++row)
@@ -406,17 +434,24 @@ HRESULT CMapTool::Load_Map()
 			MapToolObjDesc.iID = m_iID++;
 
 			//타일링
-			if (objects[j].contains("TileDensity"))
+			if (Objects[j].contains("TileDensity"))
 			{
 				MapToolObjDesc.bUseTiling = true;
 
-				const json& TileDensityJson = objects[j]["TileDensity"];
+				const json& TileDensityJson = Objects[j]["TileDensity"];
 				MapToolObjDesc.vTileDensity = {
 					TileDensityJson[0].get<_float>(),
 					TileDensityJson[1].get<_float>()
 				};
 			}
 
+			//콜라이더
+			if (Objects[j].contains("ColliderType") && Objects[j]["ColliderType"].is_number_integer())
+			{
+				MapToolObjDesc.eColliderType = static_cast<COLLIDER_TYPE>(Objects[j]["ColliderType"].get<_int>());
+			}
+			else
+				return E_FAIL;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 				ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
@@ -834,6 +869,11 @@ void CMapTool::Render_Preview()
 
 		ImGui::Image(reinterpret_cast<ImTextureID>(pSRV), availableSize, ImVec2(0.f, 0.f), ImVec2(1.f, 1.f));
 
+	}
+	else
+	{
+		// 창이 닫힌 상태일 때
+		m_bPreviewHovered = false;
 	}
 
 	ImGui::End();
@@ -1340,15 +1380,6 @@ void CMapTool::Detail_Transform()
 	{
 		CTransform* pTransform = m_pFocusObject->Get_TransfomCom();
 
-		//리셋 버튼
-		ImGui::SameLine();
-		if (ImGui::Button("Reset"))
-		{
-			_float4x4 MatrixIdentity = {};
-			XMStoreFloat4x4(&MatrixIdentity, XMMatrixIdentity());
-			pTransform->Set_WorldMatrix(MatrixIdentity);
-		}
-
 		//행렬 복사 버튼
 		ImGui::SameLine();
 		if (ImGui::Button("Copy"))
@@ -1362,6 +1393,24 @@ void CMapTool::Detail_Transform()
 		{
 			m_pFocusObject->Get_TransfomCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_CopyWorldMatrix));
 		}
+
+		// 리셋 버튼 오른쪽 정렬
+		_float fButtonWidth = ImGui::CalcTextSize("Reset").x + ImGui::GetStyle().FramePadding.x * 2;
+		_float fRegionWidth = ImGui::GetContentRegionAvail().x;
+		ImGui::SameLine(ImGui::GetCursorPosX() + fRegionWidth - fButtonWidth);
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.0f, 0.3f, 0.3f, 1.0f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.6f, 0.1f, 0.1f, 1.0f));
+
+		if (ImGui::Button("Reset"))
+		{
+			_float4x4 MatrixIdentity = {};
+			XMStoreFloat4x4(&MatrixIdentity, XMMatrixIdentity());
+			pTransform->Set_WorldMatrix(MatrixIdentity);
+		}
+
+		ImGui::PopStyleColor(3);
 
 #pragma region 기즈모 및 행렬 분해
 		_float4x4 worldMat;
@@ -1484,19 +1533,30 @@ void CMapTool::Detail_Tile()
 void CMapTool::Detail_Collider()
 {
 	ImGui::Text("Collider");
+	ImGui::SameLine();
+
+	if (m_bRenderAllCollider)
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));  // 초록색
+	else
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.2f, 0.2f, 1.0f));  // 붉은색
+
+	if (ImGui::Button(m_bRenderAllCollider ? "Show All" : "Focus Only"))
+	{
+		m_bRenderAllCollider = !m_bRenderAllCollider;
+	}
+	ImGui::PopStyleColor();
+
 	if (m_pFocusObject)
 	{
-		//콜라이더 생성, 컨백스, 트라이앵글 세가지중 선택하려고함 imgui로
+		// 콜라이더 타입 선택 콤보박스
+		const _char* ColliderTypes[] = { "None", "Convex", "Triangle" };
+		_int CurrentCollider = static_cast<int>(m_pFocusObject->m_eColliderType);
 
+		if (ImGui::Combo("Collider Type", &CurrentCollider, ColliderTypes, IM_ARRAYSIZE(ColliderTypes)))
+		{
+			m_pFocusObject->m_eColliderType = static_cast<COLLIDER_TYPE>(CurrentCollider);
+		}
 
-		// 타일링 여부 체크박스
-		//ImGui::Checkbox("Enable Tiling", &m_pFocusObject->m_bUseTiling);
-
-		//// 타일링 값 슬라이더 (X, Z)
-		//if (m_pFocusObject->m_bUseTiling)
-		//{
-		//	ImGui::DragFloat2("Tiling (X,Z)", m_pFocusObject->m_TileDensity, 0.01f, 0.01f, 32.0f, "%.2f");
-		//}
 	}
 }
 

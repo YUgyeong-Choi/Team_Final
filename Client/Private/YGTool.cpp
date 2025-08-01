@@ -56,7 +56,6 @@ HRESULT CYGTool::Render()
 	if (FAILED(Render_CameraTool()))
 		return E_FAIL;
 
-
 	if (FAILED(Render_CameraFrame()))
 		return E_FAIL;
 
@@ -73,7 +72,7 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 	j["iEndFrame"] = data.iEndFrame;
 
 	// 1. Position Frame (WorldMatrix은 16개의 float 값으로 저장)
-	for (const auto& pos : data.vecPosData)
+	for (const auto& pos : data.vecWorldMatrixData)
 	{
 		XMFLOAT4X4 mat;
 		XMStoreFloat4x4(&mat, pos.WorldMatrix);
@@ -93,7 +92,7 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 	{
 		j["vecRotData"].push_back({
 			{ "keyFrame", rot.keyFrame },
-			{ "rotation", { rot.rotation.x, rot.rotation.y, rot.rotation.z } },
+			{ "rotation", { rot.offSetRot.x, rot.offSetRot.y, rot.offSetRot.z } },
 			{ "interpRotation", rot.interpRotation }
 			});
 	}
@@ -140,7 +139,7 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 	{
 		for (const auto& posJson : j["vecPosData"])
 		{
-			CAMERA_POSFRAME posFrame;
+			CAMERA_WORLDFRAME posFrame;
 			posFrame.keyFrame = posJson["keyFrame"];
 			posFrame.interpPosition = posJson["interpPosition"];
 
@@ -149,7 +148,7 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			memcpy(&mat, matValues.data(), sizeof(float) * 16);
 			posFrame.WorldMatrix = XMLoadFloat4x4(&mat);
 
-			data.vecPosData.push_back(posFrame);
+			data.vecWorldMatrixData.push_back(posFrame);
 		}
 	}
 
@@ -160,7 +159,7 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 		{
 			CAMERA_ROTFRAME rotFrame;
 			rotFrame.keyFrame = rotJson["keyFrame"];
-			rotFrame.rotation = XMFLOAT3(
+			rotFrame.offSetRot = XMFLOAT3(
 				rotJson["rotation"][0],
 				rotJson["rotation"][1],
 				rotJson["rotation"][2]
@@ -233,13 +232,13 @@ HRESULT CYGTool::Render_CameraTool()
 
 				// 모든 것들 초기화
 				m_CameraSequence->InitAllFrames();
-				m_CameraDatas.vecPosData.clear();
+				m_CameraDatas.vecWorldMatrixData.clear();
 				m_CameraDatas.vecRotData.clear();
 				m_CameraDatas.vecFovData.clear();
 				m_pSelectedKey = nullptr;
 				
 				m_CameraDatas = LoadCameraFrameData(j);
-				for (auto& pos : m_CameraDatas.vecPosData)
+				for (auto& pos : m_CameraDatas.vecWorldMatrixData)
 				{
 					m_CameraSequence->Add_KeyFrame(0, pos.keyFrame);
 				}
@@ -324,7 +323,7 @@ HRESULT CYGTool::Render_CameraTool()
 			case 0:
 			{
 				_bool exist = false;
-				for (auto& keyframe : m_CameraDatas.vecPosData)
+				for (auto& keyframe : m_CameraDatas.vecWorldMatrixData)
 				{
 					if (keyframe.keyFrame == m_pSelectedKey->keyFrame)
 					{
@@ -349,11 +348,11 @@ HRESULT CYGTool::Render_CameraTool()
 					std::memcpy(&worldMat, matrix, sizeof(float) * 16);
 					_matrix finalMat = XMLoadFloat4x4(&worldMat);
 
-					CAMERA_POSFRAME posFrame;
+					CAMERA_WORLDFRAME posFrame;
 					posFrame.keyFrame = m_pSelectedKey->keyFrame;
 					posFrame.WorldMatrix = finalMat;
 					posFrame.interpPosition = m_pSelectedKey->interpPosition;
-					m_CameraDatas.vecPosData.push_back(posFrame);
+					m_CameraDatas.vecWorldMatrixData.push_back(posFrame);
 					m_CameraSequence->Add_KeyFrame(0, m_pSelectedKey->keyFrame);
 				}
 			}
@@ -374,7 +373,7 @@ HRESULT CYGTool::Render_CameraTool()
 				{
 					CAMERA_ROTFRAME rotFrame;
 					rotFrame.keyFrame = m_pSelectedKey->keyFrame;
-					rotFrame.rotation = m_pSelectedKey->offSetRotation;
+					rotFrame.offSetRot = m_pSelectedKey->offSetRotation;
 					rotFrame.interpRotation = m_pSelectedKey->interpRotation;
 					m_CameraDatas.vecRotData.push_back(rotFrame);
 					m_CameraSequence->Add_KeyFrame(1, m_pSelectedKey->keyFrame);
@@ -502,9 +501,9 @@ HRESULT CYGTool::Render_CameraFrame()
 		ImGui::BeginChild("PosFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
 
 		// 리스트 출력
-		for (size_t i = 0; i < m_CameraDatas.vecPosData.size(); ++i)
+		for (size_t i = 0; i < m_CameraDatas.vecWorldMatrixData.size(); ++i)
 		{
-			const auto& desc = m_CameraDatas.vecPosData[i];
+			const auto& desc = m_CameraDatas.vecWorldMatrixData[i];
 			char label[32];
 			sprintf_s(label, "KeyFrame: %d", desc.keyFrame);
 
@@ -514,9 +513,10 @@ HRESULT CYGTool::Render_CameraFrame()
 			{
 				// 선택됨 → 인덱스 및 포인터 저장
 				m_iEditKey = static_cast<int>(i);
-				m_EditPosKey = m_CameraDatas.vecPosData[i];
+				m_EditPosKey = m_CameraDatas.vecWorldMatrixData[i];
 				m_EditRotKey = {};
 				m_EditFovKey = {};
+				m_iChangeKeyFrame = m_EditPosKey.keyFrame;
 			}
 		}
 		ImGui::EndChild();
@@ -551,6 +551,8 @@ HRESULT CYGTool::Render_CameraFrame()
 			}
 		}
 
+		ImGui::SameLine();
+
 		if (ImGui::Button("Set Camera Same"))
 		{
 			if (CCamera* pCam = CCamera_Manager::Get_Instance()->GetCurCam())
@@ -560,17 +562,25 @@ HRESULT CYGTool::Render_CameraFrame()
 			}
 		}
 
+		ImGui::DragInt("WorldPosRot Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("WorldPosRot Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(0, m_EditPosKey.keyFrame, m_iChangeKeyFrame);
+			m_EditPosKey.keyFrame = m_iChangeKeyFrame;
+		}
+
 		if (ImGui::Button("WorldPosRot Apply"))
 		{
-			m_CameraDatas.vecPosData[m_iEditKey] = m_EditPosKey;
+			m_CameraDatas.vecWorldMatrixData[m_iEditKey] = m_EditPosKey;
 		}
+		ImGui::SameLine();
 
 		if (ImGui::Button("WorldPosRot Delete"))
 		{
-			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecPosData.size()))
+			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecWorldMatrixData.size()))
 			{
-				m_CameraSequence->Delete_KeyFrame(0, m_CameraDatas.vecPosData[m_iEditKey].keyFrame);
-				m_CameraDatas.vecPosData.erase(m_CameraDatas.vecPosData.begin() + m_iEditKey);
+				m_CameraSequence->Delete_KeyFrame(0, m_CameraDatas.vecWorldMatrixData[m_iEditKey].keyFrame);
+				m_CameraDatas.vecWorldMatrixData.erase(m_CameraDatas.vecWorldMatrixData.begin() + m_iEditKey);
 				m_iEditKey = -1;
 				m_EditPosKey = {};
 			}
@@ -597,25 +607,33 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditPosKey = {};
 				m_EditRotKey = m_CameraDatas.vecRotData[i];;
 				m_EditFovKey = {};
+				m_iChangeKeyFrame = m_EditRotKey.keyFrame;
 			}
 		}
 		ImGui::EndChild();
 
 		ImGui::SeparatorText("Edit OffsetRot Key Info");
 
-		ImGui::DragFloat3("OffsetRot", reinterpret_cast<float*>(&m_EditRotKey.rotation), 0.1f);
+		ImGui::DragFloat3("OffsetRot", reinterpret_cast<float*>(&m_EditRotKey.offSetRot), 0.1f);
 
 		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
 		int interpOffsetRot = static_cast<int>(m_EditRotKey.interpRotation);
 		if (ImGui::Combo("OffsetRot Interp", &interpOffsetRot, interpNames, IM_ARRAYSIZE(interpNames)))
 			m_EditRotKey.interpRotation = static_cast<INTERPOLATION_CAMERA>(interpOffsetRot);
 
+		ImGui::DragInt("OffsetRot Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("OffsetRot Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(1, m_EditRotKey.keyFrame, m_iChangeKeyFrame);
+			m_EditRotKey.keyFrame = m_iChangeKeyFrame;
+		}
+
 		if (ImGui::Button("OffsetRot Apply"))
 		{
 			m_CameraDatas.vecRotData[m_iEditKey] = m_EditRotKey;
 		}
 
-		if (ImGui::Button("Rot Delete"))
+		if (ImGui::Button("OffsetRot Delete"))
 		{
 			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecRotData.size()))
 			{
@@ -647,6 +665,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditPosKey = {};
 				m_EditRotKey = {};
 				m_EditFovKey = m_CameraDatas.vecFovData[i];
+				m_iChangeKeyFrame = m_EditFovKey.keyFrame;
 			}
 		}
 		ImGui::EndChild();
@@ -659,6 +678,13 @@ HRESULT CYGTool::Render_CameraFrame()
 		int interpFov = static_cast<int>(m_EditFovKey.interpFov);
 		if (ImGui::Combo("Fov Interp", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
 			m_EditFovKey.interpFov = static_cast<INTERPOLATION_CAMERA>(interpFov);
+
+		ImGui::DragInt("Fov Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("Fov Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(1, m_EditFovKey.keyFrame, m_iChangeKeyFrame);
+			m_EditFovKey.keyFrame = m_iChangeKeyFrame;
+		}
 
 		if (ImGui::Button("Fov Apply"))
 		{

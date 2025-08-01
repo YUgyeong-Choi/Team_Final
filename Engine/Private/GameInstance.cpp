@@ -134,18 +134,20 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pInput_Device->Update();
 
 	m_pObject_Manager->Priority_Update(fTimeDelta);
+	m_pLevel_Manager->Priority_Update(fTimeDelta);
 
 	m_pPipeLine->Update();
 
 	m_pFrustum->Transform_ToWorldSpace();
 
 	m_pObject_Manager->Update(fTimeDelta);	
+	m_pLevel_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
+	m_pLevel_Manager->Late_Update(fTimeDelta);
 
  	m_pPhysX_Manager->Simulate(fTimeDelta);
 
-	m_pLevel_Manager->Update(fTimeDelta);
 
 	//m_pPhysX_Manager->Sync();
 #ifdef _DEBUG
@@ -624,6 +626,11 @@ _bool CGameInstance::isIn_Frustum_WorldSpace(_fvector vWorldPos, _float fRange)
 _bool CGameInstance::isIn_Frustum_LocalSpace(_fvector vLocalPos, _float fRange)
 {
 	return m_pFrustum->isIn_LocalSpace(vLocalPos, fRange);
+}
+
+_bool CGameInstance::isIn_PhysXAABB(CPhysXActor* pPhysXActor)
+{
+	return m_pFrustum->isIn_PhysXAABB(pPhysXActor);
 }
 
 PxTriangleMeshGeometry CGameInstance::CookTriangleMesh(const PxVec3* vertices, PxU32 vertexCount, const PxU32* indices, PxU32 triangleCount, PxMeshScale geomScale)

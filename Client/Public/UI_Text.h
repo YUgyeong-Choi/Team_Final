@@ -65,7 +65,7 @@ public:
 
 	void Update_UI_From_Tool(TEXT_UI_DESC& eDesc);
 
-	virtual HRESULT Ready_Components(const wstring& strTextureTag) { return S_OK; }
+	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) override;
 
 private:
 

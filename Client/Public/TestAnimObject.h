@@ -25,6 +25,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	PxRigidActor* Get_Actor() { return m_pControllerCom->Get_Actor(); }
 private:
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();
@@ -37,7 +38,6 @@ private:/* [ 캐스케이드 전용함수 ] */
 	HRESULT UpdateShadowCamera();
 private: /* [ 이동로직 ] */
 	void SetMoveState(_float fTimeDelta);
-	void SetPlayerMoveState(_float fTimeDelta);
 
 	void RayCast();
 

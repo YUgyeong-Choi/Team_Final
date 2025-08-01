@@ -33,6 +33,7 @@ HRESULT CDHTool::Initialize(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	Add_Light(LIGHT_TYPE::POINT, LEVEL_TYPE::KRAT_CENTERAL_STATION);
 	return S_OK;
 }
 
@@ -94,7 +95,6 @@ HRESULT CDHTool::Render_ShaderTool()
         static _float fMaxMetallic = 1.f;
         static _float fMaxReflection = 10.f;
         static _float fMaxSpecular = 10.f;
-        
 		ImGui::Text("PBR Intensity Controls");
         ImGui::Separator();
 
@@ -350,6 +350,45 @@ HRESULT CDHTool::Render_LightTool()
 		ImGui::SliderFloat("Range", &fRange, 0.1f, 100.0f, "%.1f");
 	}
 
+	// SPOT(Range)
+	if (m_pSelectedObject != nullptr)
+	{
+		float fInnerCosAngle = m_pSelectedObject->GetfInnerCosAngle();
+		if (ImGui::SliderFloat("InnerCosAngle", &fInnerCosAngle, 0.1f, 100.0f, "%.1f"))
+			m_pSelectedObject->SetfInnerCosAngle(fInnerCosAngle);
+	}
+	else
+	{
+		static float fInnerCosAngle = 15.f;
+		ImGui::SliderFloat("InnerCosAngle", &fInnerCosAngle, 0.1f, 100.0f, "%.1f");
+	}
+
+	// SPOT(Range)
+	if (m_pSelectedObject != nullptr)
+	{
+		float fOuterCosAngle = m_pSelectedObject->GetfOuterCosAngle();
+		if (ImGui::SliderFloat("fOuterCosAngle", &fOuterCosAngle, 0.1f, 100.0f, "%.1f"))
+			m_pSelectedObject->SetfOuterCosAngle(fOuterCosAngle);
+	}
+	else
+	{
+		static float fOuterCosAngle = 25.f;
+		ImGui::SliderFloat("fOuterCosAngle", &fOuterCosAngle, 0.1f, 100.0f, "%.1f");
+	}
+
+	// SPOT(Fallof)
+	if (m_pSelectedObject != nullptr)
+	{
+		float fFalloff = m_pSelectedObject->GetfFalloff();
+		if (ImGui::SliderFloat("fFalloff", &fFalloff, 0.1f, 5.0f, "%.1f"))
+			m_pSelectedObject->SetfFalloff(fFalloff);
+	}
+	else
+	{
+		static float fFalloff = 1.f;
+		ImGui::SliderFloat("fFalloff", &fFalloff, 0.1f, 5.0f, "%.1f");
+	}
+
 
 	ImGui::Separator();
 	if (ImGui::Button("Save Light", ImVec2(120, 0)))
@@ -416,7 +455,7 @@ HRESULT CDHTool::Add_Light(LIGHT_TYPE eType, LEVEL_TYPE eLType)
 
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
-	Desc.m_vInitPos = _float3(0.f, 0.f, 10.f);
+	Desc.m_vInitPos = _float3(0.f, 10.f, 10.f);
 	Desc.iID = m_iID++;
 
 	CGameObject* pGameObject = nullptr;

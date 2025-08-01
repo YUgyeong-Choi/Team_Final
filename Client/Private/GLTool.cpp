@@ -37,6 +37,18 @@ HRESULT CGLTool::Initialize(void* pArg)
 			m_TextureNames.push_back(pair.first);
 	}
 
+
+	for (auto& pair : *map)
+	{
+		if (pair.first.find(L"GameObject") != pair.first.npos)
+		{
+			if(pair.first.find(L"UI") != pair.first.npos)
+				m_ProtoNames.push_back(pair.first);
+		}
+			
+	}
+
+
 	m_pSequence = new CUI_Sequence();
 
 	return S_OK;
@@ -61,14 +73,7 @@ void CGLTool::Update(_float fTimeDelta)
 		}
 	}
 
-	for (const auto& pObj : m_DynamicUIList)
-	{
-
-		if (nullptr == pObj || pObj->Get_bDead())
-			continue;
-
-		pObj->Update_UI_From_Tool(m_iCurrentFrame);
-	}
+	// 시퀀스 업데이트 추가
 
 	
 		
@@ -98,20 +103,12 @@ void CGLTool::Obj_Serialize()
 	json JsonArray = json::array();
 
 
-	for (auto& pObj : m_StaticUIList)
+	for (auto& pContainer : m_ContainerList)
 	{
-		if(pObj != nullptr)
-			JsonArray.push_back(pObj->Serialize());
+		if (nullptr != pContainer)
+			JsonArray.push_back(pContainer->Serialize());
 	}
-	
 
-	for (auto& pObj : m_DynamicUIList)
-		if (pObj != nullptr)
-			JsonArray.push_back(pObj->Serialize());
-
-	for (auto& pObj : m_TextUIList)
-		if (pObj != nullptr)
-			JsonArray.push_back(pObj->Serialize());
 
 	ofstream file("../Bin/Save/UI/Temp.json");
 
@@ -125,74 +122,53 @@ void CGLTool::Obj_Deserialize()
 {
 	string filePath = IFILEDIALOG->GetFilePathName();
 
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+		ENUM_CLASS(LEVEL::GL), TEXT("Layer_Container"), nullptr)))
+		return ;
+
+	m_ContainerList.push_back(static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::GL), TEXT("Layer_Container"))));
+
 	json j;
 
 	ifstream file(filePath);
 
 	file >> j;
 
-	for (const auto& eUIJson : j)
+	if (j.is_array())
 	{
-		string protoTag = eUIJson["ProtoTag"];
-		
-		if ("Prototype_GameObject_Static_UI" == protoTag)
+		if (j.front().contains("Parts"))
 		{
-			CStatic_UI::STATIC_UI_DESC eDesc = {};
+			for (const auto& containerJson : j)
+			{
 
-			string textureTag = eUIJson["Texturetag"];
-			eDesc.strTextureTag = StringToWStringU8(textureTag);
-			eDesc.iTextureLevel = eUIJson["iTextureLevel"];
+				if (containerJson.is_object())
+					(m_ContainerList.back())->Deserialize(containerJson);
 
-
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::GL), TEXT("Layer_Background_Static"), &eDesc));
-
-			CStatic_UI* pObj = static_cast<CStatic_UI*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::GL), TEXT("Layer_Background_Static")));
-
-			pObj->Deserialize(eUIJson);
-
-			pObj->Update_Data();
-
-			m_StaticUIList.push_back(pObj);
-
-		}
-		else if ("Prototype_GameObject_Dynamic_UI" == protoTag)
-		{
-			CDynamic_UI::DYNAMIC_UI_DESC eDesc = {};
-
-			string textureTag = eUIJson["Texturetag"];
-			eDesc.strTextureTag = StringToWStringU8(textureTag);
-			eDesc.iTextureLevel = eUIJson["iTextureLevel"];
-
-
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::GL), TEXT("Layer_Background_Dynamic"), &eDesc));
-
-			CDynamic_UI* pObj = static_cast<CDynamic_UI*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::GL), TEXT("Layer_Background_Dynamic")));
-
-			pObj->Deserialize(eUIJson);
-
-			pObj->Update_Data();
-
-			m_DynamicUIList.push_back(pObj);
-
-		}
-		else if ("Prototype_GameObject_UI_Text" == protoTag)
-		{
-			CUI_Text::TEXT_UI_DESC eDesc = {};
-
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::GL), TEXT("Layer_Background_Text"), &eDesc));
-
-			CUI_Text* pObj = static_cast<CUI_Text*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::GL), TEXT("Layer_Background_Text")));
-
-			pObj->Deserialize(eUIJson);
-
-			pObj->Update_Data();
-
-			m_TextUIList.push_back(pObj);
+			}
 		}
 
+		else if (j.front().contains("ProtoTag"))
+		{
+			for (const auto& objJson : j)
+			{
+				if (!objJson.contains("ProtoTag")) continue;
+
+				string protoTag = objJson["ProtoTag"];
+				m_ContainerList.back()->Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), nullptr);
+
+
+				auto& partList = m_ContainerList.back()->Get_PartUI();
+				if (!partList.empty())
+				{
+					partList.back()->Deserialize(objJson);
+					partList.back()->Update_Data();
+				}
+
+
+			}
+		}
 	}
-
-
+	
 	
 }
 
@@ -213,59 +189,95 @@ void CGLTool::Open_File()
 	
 }
 
-
-
-void CGLTool::Add_Static_UI()
+void CGLTool::Add_Container()
 {
-	eStaticUIDesc.strTextureTag = m_strSelectName;
-
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
-		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Static"), &eStaticUIDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Container"), nullptr)))
 		return;
 
-	auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Static"));
+	auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Container"));
 
-	m_StaticUIList.push_back(static_cast<CStatic_UI*>(pObj));
+	m_ContainerList.push_back(static_cast<CUI_Container*>(pObj));
+
 }
 
-void CGLTool::Add_Dynamic_UI()
+void CGLTool::Add_UI_Select_Prototype()
 {
-	eDynamicUIDesc.isFromTool = true;
-
-	eStaticUIDesc.strTextureTag = m_strSelectName;
-
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
-		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Dynamic"), &eDynamicUIDesc)))
+	if (nullptr == m_pContainerObj)
 		return;
 
-	auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Dynamic"));
+	if (m_strSelectProtoName.empty())
+		return;
 
-	m_DynamicUIList.push_back(static_cast<CDynamic_UI*>(pObj));
+	m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), m_strSelectProtoName, static_cast<_uint>(LEVEL::GL), TEXT("Layer_Temp"), nullptr);
+
+	auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Temp"));
+	if (nullptr == pObj)
+		return;
+
+
+	static_cast<CUIObject*>(pObj)->Ready_Components_File(m_strSelectTextureName);
+
+
+	m_pContainerObj->Add_UI_From_Tool(static_cast<CUIObject*>(pObj));
+
 }
 
-void CGLTool::Add_UI_Text()
+void CGLTool::Save_Container()
 {
-	
-	m_eTextUIDesc.strFontTag = TEXT("Font_Medium");
-
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Text"),
-		static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Text"), &m_eTextUIDesc)))
+	if (nullptr == m_pContainerObj)
 		return;
 
-	auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Background_Text"));
+	json J;
 
-	m_TextUIList.push_back(static_cast<CUI_Text*>(pObj));
+	J.push_back(m_pContainerObj->Serialize());
 
+	ofstream file("../Bin/Save/UI/Temp_Container.json");
+
+	file << J.dump(4);
+
+	file.close();
+}
+
+void CGLTool::Set_Container_Active()
+{
+	if (nullptr == m_pContainerObj)
+		return;
+	m_pContainerObj->Active_Update(m_isActive);
+}
+
+_bool CGLTool::Check_Dynamic_UI()
+{
+	if (nullptr == m_pSelectConatinerPart)
+		return false;
+
+	if (L"Prototype_GameObject_Static_UI" != m_pSelectConatinerPart->Get_ProtoTag())
+		return false;
+
+	if (L"Prototype_GameObject_UI_Text" != m_pSelectConatinerPart->Get_ProtoTag())
+		return false;
+
+
+	return true;
+}
+
+void CGLTool::Delete_Container()
+{
+}
+
+void CGLTool::Delete_SelectPart()
+{
 }
 
 void CGLTool::Add_Sequence_To_DynamicUI()
 {
-	if (nullptr == m_pSelectDynamicObj)
+	if (!Check_Dynamic_UI())
 		return;
+
 
 	m_pSequence->Clear();
 
-	for (auto& pFeature : m_pSelectDynamicObj->Get_Features())
+	for (auto& pFeature : static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Get_Features())
 	{
 		if (nullptr == pFeature)
 			continue;
@@ -281,10 +293,10 @@ void CGLTool::Add_Sequence_To_DynamicUI()
 
 void CGLTool::Apply_Sequence_To_DynamicUI()
 {
-	if (nullptr == m_pSelectDynamicObj)
+	if (!Check_Dynamic_UI())
 		return;
 
-	for (auto& pFeature : m_pSelectDynamicObj->Get_Features())
+	for (auto& pFeature : static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Get_Features())
 	{
 		Safe_Release(pFeature);
 	}
@@ -305,7 +317,7 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			fadeDesc.fStartAlpha = eDesc.fStartAlpha;
 			fadeDesc.fEndAlpha = eDesc.fEndAlpha;
 
-			m_pSelectDynamicObj->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(fadeDesc.strProtoTag), &fadeDesc);
+			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(fadeDesc.strProtoTag), &fadeDesc);
 			
 		}
 		else if (1 == eDesc.iType)
@@ -319,7 +331,7 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			uvDesc.fStartUV = eDesc.fStartUV;
 			uvDesc.fOffsetUV = eDesc.fOffsetUV;
 
-			m_pSelectDynamicObj->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(uvDesc.strProtoTag), &uvDesc);
+			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(uvDesc.strProtoTag), &uvDesc);
 		}
 		else if (2 == eDesc.iType)
 		{
@@ -331,7 +343,7 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			posDesc.fStartPos = eDesc.fStartPos;
 			posDesc.fEndPos = eDesc.fEndPos;
 
-			m_pSelectDynamicObj->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(posDesc.strProtoTag), &posDesc);
+			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(posDesc.strProtoTag), &posDesc);
 		}
 
 		else if (3 == eDesc.iType)
@@ -345,7 +357,7 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			scaleDesc.fEndScale = eDesc.fEndScale;
 			
 
-			m_pSelectDynamicObj->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(scaleDesc.strProtoTag), &scaleDesc);
+			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(scaleDesc.strProtoTag), &scaleDesc);
 		}
 	}
 }
@@ -382,7 +394,7 @@ void CGLTool::Input_Static_Desc()
 	eStaticUIDesc.fY *= g_iWinSizeY;
 	eStaticUIDesc.fRotation = eStaticUITempDesc.fRotation;
 
-	eStaticUIDesc.strTextureTag = m_strSelectName;
+	eStaticUIDesc.strTextureTag = m_strSelectTextureName;
 
 	if (eStaticUIDesc.iPassIndex >= UI_END)
 	{
@@ -396,13 +408,15 @@ void CGLTool::Input_Static_Desc()
 		eStaticUITempDesc.iPassIndex = 0;
 	}
 
-	if (nullptr == m_pSelectStaticObj || m_pSelectStaticObj->Get_bDead())
+	//
+
+	if (nullptr == m_pSelectConatinerPart || m_pSelectConatinerPart->Get_bDead())
 	{
 
 	}
 	else
 	{
-		m_pSelectStaticObj->Update_UI_From_Tool(eStaticUIDesc);
+		static_cast<CStatic_UI*>(m_pSelectConatinerPart)->Update_UI_From_Tool(eStaticUIDesc);
 	}
 }
 
@@ -437,7 +451,7 @@ void CGLTool::Input_Dynamic_Desc()
 	eDynamicUIDesc.fX *= g_iWinSizeX;
 	eDynamicUIDesc.fY *= g_iWinSizeY;
 
-	eDynamicUIDesc.strTextureTag = m_strSelectName;
+	eDynamicUIDesc.strTextureTag = m_strSelectTextureName;
 
 	if (eDynamicUIDesc.iPassIndex >= D_UI_END)
 	{
@@ -451,13 +465,13 @@ void CGLTool::Input_Dynamic_Desc()
 		eDynamicUITempDesc.iPassIndex = 0;
 	}
 
-	if (nullptr == m_pSelectDynamicObj || m_pSelectDynamicObj->Get_bDead())
+	if (nullptr == m_pSelectConatinerPart || m_pSelectConatinerPart->Get_bDead())
 	{
 
 	}
 	else
 	{
-		m_pSelectDynamicObj->Update_UI_From_Tool(eDynamicUIDesc);
+		static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Update_UI_From_Tool(eDynamicUIDesc);
 	}
 
 }
@@ -553,52 +567,73 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 	if (ImGui::BeginTabBar("Util"))
 	{
-		if (ImGui::BeginTabItem("Input Static Desc"))
+		//
+		if (nullptr != m_pSelectConatinerPart)
 		{
-			// 입력 칸 만들기
 
-			Input_Static_Desc();
-
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Input Dynamic Desc"))
-		{
-			Input_Dynamic_Desc();
-			
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Input Sequence Desc"))
-		{
-			Input_Sequence_Desc();
-			
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem(u8"텍스트 입력하기"))
-		{
-			Input_Text();
-
-			if (ImGui::Button(u8"선택된 텍스트 바꾸기"))
+			if (m_pSelectConatinerPart->Get_ProtoTag().find(L"Prototype_GameObject_Static_UI") != m_pSelectConatinerPart->Get_ProtoTag().npos)
 			{
-				m_eTextTempUIDesc.strCaption = StringToWStringU8(m_strInput);
-				m_eTextUIDesc.strCaption = StringToWStringU8(m_strInput);
+				if (ImGui::BeginTabItem("Input Static Desc"))
+				{
+					// 입력 칸 만들기
 
-			
+					Input_Static_Desc();
+
+					ImGui::EndTabItem();
+				}
 			}
-
-			if (nullptr == m_pSelectTxtObj || m_pSelectTxtObj->Get_bDead())
+			else if (m_pSelectConatinerPart->Get_ProtoTag().find(L"Prototype_GameObject_UI_Text") != m_pSelectConatinerPart->Get_ProtoTag().npos)
 			{
+				if (ImGui::BeginTabItem(u8"텍스트 입력하기"))
+				{
+					Input_Text();
 
+					if (ImGui::Button(u8"선택된 텍스트 바꾸기"))
+					{
+						m_eTextTempUIDesc.strCaption = StringToWStringU8(m_strInput);
+						m_eTextUIDesc.strCaption = StringToWStringU8(m_strInput);
+
+
+					}
+
+					if (nullptr == m_pSelectConatinerPart || m_pSelectConatinerPart->Get_bDead())
+					{
+
+					}
+					else
+					{
+						static_cast<CUI_Text*>(m_pSelectConatinerPart)->Update_UI_From_Tool(m_eTextUIDesc);
+					}
+
+					ImGui::EndTabItem();
+				}
 			}
+			
 			else
 			{
-				m_pSelectTxtObj->Update_UI_From_Tool(m_eTextUIDesc);
+				if (ImGui::BeginTabItem("Input Dynamic Desc"))
+				{
+					Input_Dynamic_Desc();
+
+					ImGui::EndTabItem();
+				}
+
+				if (ImGui::BeginTabItem("Input Sequence Desc"))
+				{
+					Input_Sequence_Desc();
+
+					ImGui::EndTabItem();
+				}
 			}
 
-			ImGui::EndTabItem();
+			
+
+			
+
+			
 		}
+		
+		
 
 		if (ImGui::BeginTabItem("Button"))
 		{
@@ -617,85 +652,74 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 			}
 
-			if (Button(u8"Add Static UI"))
+			if (Button(u8"Add Select ProtoUI"))
 			{
-				Add_Static_UI();
+				Add_UI_Select_Prototype();
 
-			
 			}
 
-			if (Button(u8"Add Dynamic UI"))
-			{
-				Add_Dynamic_UI();
-			}
 
-			if (Button(u8"Add UI Text"))
+			if (Button(u8"Delete Select UI"))
 			{
-				Add_UI_Text();
-			}
 
-			if (Button(u8"Delete Static UI"))
-			{
-				if (nullptr != m_pSelectStaticObj)
-					m_pSelectStaticObj->Set_bDead();
+				if (nullptr != m_pSelectConatinerPart)
+					m_pSelectConatinerPart->Set_bDead();
 
-				int currentIndex = 0;
-				for (auto& pObj : m_StaticUIList)
+				int index = 0;
+
+				for (auto& pObj : m_pContainerObj->Get_PartUI())
 				{
-					if (m_iSelectObjIndex == currentIndex)
-					{
-						pObj = nullptr;
-						break;
-					}
+					if (pObj == nullptr)
+						continue;
 
-					++currentIndex;
-				}
+					bool isSelected = (index == m_iSelectObjIndex);
 
-				m_pSelectStaticObj = nullptr;
-				m_iSelectObjIndex = -1;
-			}
-
-			if (Button(u8"Delete Dynamic UI"))
-			{
-				if (nullptr != m_pSelectDynamicObj)
-					m_pSelectDynamicObj->Set_bDead();
-
-				int currentIndex = 0;
-				for (auto& pObj : m_DynamicUIList)
-				{
-					if (m_iDynamicObjIndex == currentIndex)
-					{
-						pObj = nullptr;
-						break;
-					}
-
-					++currentIndex;
-				}
-
-				m_pSelectDynamicObj = nullptr;
-				m_iDynamicObjIndex = -1;
-			}
-			if (Button(u8"Delete Text UI"))
-			{
-				if (nullptr != m_pSelectTxtObj)
-					m_pSelectTxtObj->Set_bDead();
-
-				int currentIndex = 0;
-				for (auto& pObj : m_TextUIList)
-				{
-					if (m_iTextObjIndex == currentIndex)
+					if (isSelected)
 					{
 						pObj = nullptr;
 						break;
 					}
 						
 
-					++currentIndex;
+					++index;
 				}
 
-				m_pSelectTxtObj = nullptr;
-				m_iTextObjIndex = -1;
+				m_pSelectConatinerPart = nullptr;
+				m_iSelectObjIndex = -1;
+
+			
+
+	
 			}
+
+			if (Button(u8"Delete Container"))
+			{
+				if (nullptr != m_pContainerObj)
+					m_pContainerObj->Set_bDead();
+
+				
+
+				int index = 0;
+
+				for (auto& pObj : m_ContainerList)
+				{
+					if (pObj == nullptr)
+						continue;
+
+					bool isSelected = (index == m_iSelectContainerIndex);
+
+					if (isSelected)
+						pObj = nullptr;
+
+					++index;
+				}
+
+				m_pContainerObj = nullptr;
+				m_iSelectContainerIndex = -1;
+
+
+			}
+
 
 			if (Button(u8"Add Sequence"))
 			{
@@ -730,14 +754,14 @@ HRESULT CGLTool::Render_SelectOptionTool()
 				m_isPlay = false;
 				m_iCurrentFrame = 0;
 
-				for (const auto& pObj : m_DynamicUIList)
+			/*	for (const auto& pObj : m_DynamicUIList)
 				{
 
 					if (nullptr == pObj || pObj->Get_bDead())
 						continue;
 
 					pObj->Reset();
-				}
+				}*/
 			}
 
 
@@ -752,15 +776,6 @@ HRESULT CGLTool::Render_SelectOptionTool()
 					string fileName = IFILEDIALOG->GetCurrentFileName();
 
 					Obj_Deserialize();
-
-					/*if (fileName.find("Static") != fileName.npos)
-					{
-						Add_Static_UI_From_File();
-					}
-					else if (fileName.find("Dynamic") != fileName.npos)
-					{
-						Add_Dynamic_UI_From_File();
-					}*/
 
 					
 
@@ -791,93 +806,99 @@ HRESULT CGLTool::Render_UIList()
 	{
 		if (ImGui::BeginTabBar("MyTabBar"))
 		{
-			if (ImGui::BeginTabItem("Static"))
+
+
+			if (ImGui::BeginTabItem("Container"))
 			{
+
+
 				int index = 0;
 
-				for (const auto& pObj : m_StaticUIList)
+				for (const auto& pObj : m_ContainerList)
 				{
-					bool isSelected = (index == m_iSelectObjIndex);
-
-					if (nullptr == pObj || pObj->Get_bDead())
+					if (pObj == nullptr)
 						continue;
+
+					bool isSelected = (index == m_iSelectContainerIndex);
 
 					if (ImGui::Selectable(to_string(index).c_str(), isSelected))
 					{
-						m_iSelectObjIndex = index;
-						m_pSelectStaticObj = pObj;
-						eStaticUITempDesc = m_pSelectStaticObj->Get_Desc();
-						eStaticUITempDesc.fSizeX /= g_iWinSizeX;
-						eStaticUITempDesc.fSizeY /= g_iWinSizeY;
-						eStaticUITempDesc.fX /= g_iWinSizeX;
-						eStaticUITempDesc.fY /= g_iWinSizeY;
-						eStaticUITempDesc.strTextureTag = pObj->Get_StrTextureTag();
-
+						m_iSelectContainerIndex = index;
+						m_pContainerObj = pObj;
 					}
-
-
 					++index;
 				}
+
 				ImGui::EndTabItem();
 			}
 
-			if (ImGui::BeginTabItem("Dynamic"))
+			if (ImGui::BeginTabItem("ContainerParts"))
 			{
+			
 
-				int index = 0;
-
-				for (const auto& pObj : m_DynamicUIList)
+				if (nullptr != m_pContainerObj)
 				{
-					bool isSelected = (index == m_iDynamicObjIndex);
-
-					if (nullptr == pObj || pObj->Get_bDead())
-						continue;
-
-					if (ImGui::Selectable(to_string(index).c_str(), isSelected))
-					{
-						m_iDynamicObjIndex = index;
-						m_pSelectDynamicObj = pObj;
-						eDynamicUITempDesc = m_pSelectDynamicObj->Get_Desc();
-						eDynamicUITempDesc.fSizeX /= g_iWinSizeX;
-						eDynamicUITempDesc.fSizeY /= g_iWinSizeY;
-						eDynamicUITempDesc.fX /= g_iWinSizeX;
-						eDynamicUITempDesc.fY /= g_iWinSizeY;
-						eDynamicUITempDesc.strTextureTag = pObj->Get_StrTextureTag();
+					int index = 0;
 
 					
-					}
+					auto& containerPart = m_pContainerObj->Get_PartUI();
 
-
-					++index;
-				}
-
-				ImGui::EndTabItem();
-			}
-
-			if (ImGui::BeginTabItem("Text"))
-			{
-				int index = 0;
-
-				for (const auto& pObj : m_TextUIList)
-				{
-					bool isSelected = (index == m_iTextObjIndex);
-
-					if (nullptr == pObj || pObj->Get_bDead())
-						continue;
-
-					if (ImGui::Selectable(to_string(index).c_str(), isSelected))
+					for (auto& part : containerPart)
 					{
-						m_iTextObjIndex = index;
-						m_pSelectTxtObj = pObj;
-						m_eTextTempUIDesc = m_pSelectTxtObj->Get_Desc();
-						m_eTextTempUIDesc.fX /= g_iWinSizeX;
-						m_eTextTempUIDesc.fY /= g_iWinSizeY;
+						if (nullptr == part)
+							continue;
 
-						m_strInput = WStringToStringU8(m_eTextTempUIDesc.strCaption);
+						bool isSelected = (index == m_iSelectObjIndex);
+
+						if (ImGui::Selectable(to_string(index).c_str(), isSelected))
+						{
+							m_iSelectObjIndex = index;
+							m_pSelectConatinerPart = part;
+
+							//
+							if (m_pSelectConatinerPart->Get_ProtoTag().find(L"Prototype_GameObject_Static_UI") != m_pSelectConatinerPart->Get_ProtoTag().npos)
+							{
+								eStaticUIDesc = static_cast<CStatic_UI*>(m_pSelectConatinerPart)->Get_Desc();
+
+								eStaticUITempDesc = eStaticUIDesc;
+
+								eStaticUITempDesc.fSizeX /= g_iWinSizeX;
+								eStaticUITempDesc.fSizeY /= g_iWinSizeY;
+								eStaticUITempDesc.fX /= g_iWinSizeX;
+								eStaticUITempDesc.fY /= g_iWinSizeY;
+
+								
+							}
+
+							//
+							else if (m_pSelectConatinerPart->Get_ProtoTag().find(L"Prototype_GameObject_UI_Text") != m_pSelectConatinerPart->Get_ProtoTag().npos)
+							{
+								m_eTextUIDesc = static_cast<CUI_Text*>(m_pSelectConatinerPart)->Get_Desc();
+
+								m_eTextTempUIDesc = m_eTextUIDesc;
+
+								m_eTextTempUIDesc.fSizeX /= g_iWinSizeX;
+								m_eTextTempUIDesc.fSizeY /= g_iWinSizeY;
+								m_eTextTempUIDesc.fX /= g_iWinSizeX;
+								m_eTextTempUIDesc.fY /= g_iWinSizeY;
+							}
+							else
+							{
+								eDynamicUIDesc = static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Get_Desc();
+
+								eDynamicUITempDesc = eDynamicUIDesc;
+
+								eDynamicUITempDesc.fSizeX /= g_iWinSizeX;
+								eDynamicUITempDesc.fSizeY /= g_iWinSizeY;
+								eDynamicUITempDesc.fX /= g_iWinSizeX;
+								eDynamicUITempDesc.fY /= g_iWinSizeY;
+							}
+
+							//
+
+						}
+						++index;
 					}
-
-
-					++index;
 				}
 				ImGui::EndTabItem();
 			}
@@ -895,13 +916,35 @@ HRESULT CGLTool::Render_UIList()
 					if (ImGui::Selectable(WStringToString(strName).c_str(), isSelected))
 					{
 						m_iSelectTextureIndex = index;
-						m_strSelectName = strName;
+						m_strSelectTextureName = strName;
 					}
 					++index;
 				}
 
 				ImGui::EndTabItem();
 			}
+
+			if (ImGui::BeginTabItem("Prototype"))
+			{
+
+
+				int index = 0;
+
+				for (const auto& strName : m_ProtoNames)
+				{
+					bool isSelected = (index == m_iSelectProtoIndex);
+
+					if (ImGui::Selectable(WStringToString(strName).c_str(), isSelected))
+					{
+						m_iSelectProtoIndex = index;
+						m_strSelectProtoName = strName;
+					}
+					++index;
+				}
+
+				ImGui::EndTabItem();
+			}
+
 
 
 			ImGui::EndTabBar();
