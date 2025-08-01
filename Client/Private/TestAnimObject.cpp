@@ -112,9 +112,9 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	{
 		m_pModelCom->Update_Bones();
 	}
-	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
-	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
-	_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+	CAnimation*		pCurAnim = m_pAnimator->GetCurrentAnim();
+	_bool			bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
+	_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 
 	if (bUseRoot)
 	{
@@ -126,19 +126,17 @@ void CTestAnimObject::Update(_float fTimeDelta)
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
 
 		PxControllerFilters filters;
-	/*	XMVECTOR vWorldDelta = XMVector3TransformNormal(vLocal,
-			XMMatrixRotationQuaternion(vRotQuat));	*/
 		XMVECTOR vWorldDelta = XMVector3Transform(vLocal,
 			XMMatrixRotationQuaternion(vRotQuat));
 
-
+		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
+		vWorldDelta = XMVectorSetY(vWorldDelta, dy);
 		PxVec3 pos{
 			XMVectorGetX(vWorldDelta),
-			XMVectorGetY(vWorldDelta) - 0.8f, // Y축 보정
+			XMVectorGetY(vWorldDelta),
 			XMVectorGetZ(vWorldDelta)
 		};
-		_float fSpeed = fTimeDelta*m_pTransformCom->Get_SpeedPreSec();
-		//pos// *= fSpeed;
+		
 		m_pControllerCom->Get_Controller()->move(
 			pos,
 			0.001f, fTimeDelta, filters
