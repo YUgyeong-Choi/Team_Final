@@ -32,6 +32,8 @@ private:
 	HRESULT Ready_ImGuiTools();
 	HRESULT Ready_Sky(const _wstring strLayerTag);
 
+	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
+
 private:
 	HRESULT Ready_ImGui();
 	HRESULT ImGui_Render();

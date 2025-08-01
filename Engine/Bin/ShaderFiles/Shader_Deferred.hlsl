@@ -14,8 +14,10 @@ Texture2D g_DepthTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
 
-Texture2D g_FinalTexture;
+/* [ Blur ] */
+Texture2D g_PreBlurTexture;
 Texture2D g_BlurXTexture;
+Texture2D g_BlurYTexture;
 
 /* [ 캐스케이드 전용 ] */
 Texture2D g_ShadowTextureA;
@@ -39,9 +41,10 @@ Texture2D g_PBR_Final;
 Texture2D g_VolumetricTexture;
 
 /* [ Effect ] */
-Texture2D g_Effect_Diffuse;
-// Texture2D g_Effect_Blur;
+Texture2D g_EffectBlend_Diffuse;
+Texture2D g_EffectBlend_Glow;
 // Texture2D g_Effect_Distort;
+
 
 float PI = 3.14159265358979323846f;
 
@@ -765,17 +768,18 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
     return Out;
 }
 
-
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
     PS_OUT Out;
+    
+    vector finalColor = (0.f, 0.f,0.f,0.f);
     
     /* [ 기존 VTXMesh ] */
     vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
     Out.vBackBuffer = vDiffuse * vShade + vSpecular;   
-    
+    finalColor = Out.vBackBuffer;
     /* [ PBR 매쉬 ] */
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -783,10 +787,20 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     float fViewZ = vDepthDesc.y * 500.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = vPBRFinal;
+    finalColor = Out.vBackBuffer;
     
-    if (vDiffuse.a < 0.1f && vPBRFinal.a < 0.1f)
+    
+    
+    vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
+    vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
+    EffectBlendDiffuse += EffectBlendGlow;
+    finalColor += EffectBlendDiffuse;
+    
+     //if (vDiffuse.a < 0.1f && vPBRFinal.a < 0.1f && EffectDiffuse.a < 0.1f)
+     //   discard;   
+    if (finalColor.a < 0.003f)
         discard;
-    
+    Out.vBackBuffer = finalColor;
     Out.vBackBuffer += vVolumetric;
     
     /* [ 뷰포트상의 깊이값 복원 ] */
@@ -846,6 +860,8 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
         Out.vBackBuffer *= 0.5f;
     else if (fShadowViewZC + fBias < vLightPosC.w)
         Out.vBackBuffer *= 0.5f;
+    
+
         
     return Out;    
 }
@@ -871,10 +887,10 @@ PS_OUT_BLUR PS_MAIN_BLURX(PS_IN In)
     
     for (int i = -6; i < 7; ++i)
     {
-        vTexcoord.x = In.vTexcoord.x + i / 1920.f;
+        vTexcoord.x = In.vTexcoord.x + i / 1600.f;
         vTexcoord.y = In.vTexcoord.y;
   
-        Out.vColor += g_fWeights[i + 6] * g_FinalTexture.Sample(LinearClampSampler, vTexcoord);
+        Out.vColor += g_fWeights[i + 6] * g_PreBlurTexture.Sample(LinearClampSampler, vTexcoord);
     }
 
     Out.vColor /= 6.0f;
@@ -893,7 +909,7 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     for (int i = -6; i < 7; ++i)
     {
         vTexcoord.x = In.vTexcoord.x;
-        vTexcoord.y = In.vTexcoord.y + i / 1080.f;
+        vTexcoord.y = In.vTexcoord.y + i / 900.f;
   
         Out.vBackBuffer += g_fWeights[i + 6] * g_BlurXTexture.Sample(LinearClampSampler, vTexcoord);
     }
@@ -903,6 +919,15 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_EFFECT_GLOW(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vBackBuffer = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord);
+    /* 기타 잡기술 */
+    
+    return Out;
+}
 
 PS_OUT PS_MAIN_VIGNETTING(PS_IN In)
 {
@@ -1059,7 +1084,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_PBR_LIGHT_SPOT();
     }
-    pass Effect_Deffered //12 // 아직 안쓰니 이어서 쓸 패스 있으면 그냥 밑으로 내려주세요
+    pass VolumetricSpot //12
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -1068,5 +1093,15 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_PBR_LIGHT_SPOT();
+    }
+    pass Effect_Glow //13 // 아직 안쓰니 이어서 쓸 패스 있으면 그냥 밑으로 내려주세요
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_EFFECT_GLOW();
     }
 }
