@@ -204,6 +204,8 @@ public:
 	HRESULT Remove_Observer(const _wstring strTag);
 	void Notify(const _wstring& strTag, const _wstring& eventType, void* pData = nullptr);
 	class CObserver* Find_Observer(const _wstring& strTag);
+	void Register_Callback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
+	void Clear_Callback(const _wstring& strTag);
 #pragma endregion
 
 private:

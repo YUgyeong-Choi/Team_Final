@@ -202,6 +202,12 @@
     <Filter Include="02.GameObjects\99.UI\Container\Guide">
       <UniqueIdentifier>{d4dbb103-38eb-42f4-bae6-7687d2708db9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Observer">
+      <UniqueIdentifier>{18a85b51-91ef-4e0f-b3a9-088ada422286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Observer\Player">
+      <UniqueIdentifier>{0cf68e2e-7499-467e-8996-01dcada4ac10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -486,6 +492,9 @@
     <ClInclude Include="..\Public\UI_Guide.h">
       <Filter>02.GameObjects\99.UI\Container\Guide</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Observer_Player_Status.h">
+      <Filter>03. Observer\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -746,6 +755,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Guide.cpp">
       <Filter>02.GameObjects\99.UI\Container\Guide</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Observer_Player_Status.cpp">
+      <Filter>03. Observer\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

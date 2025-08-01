@@ -16,7 +16,14 @@ public:
 	// 풀링되면 지우지 말고 처음 상태로 다시 만들고 다시 쓰기?
 	virtual void Reset() = 0;
 
+	// 콜백용 
+	void Register_Callback(function<void(const _wstring& eventType, void* data)> callback) { m_Callbacks.push_back(callback); }
+	void Clear_Callback() { m_Callbacks.clear(); }
+
 private:
+	vector<function<void(const _wstring& eventType, void* data)>> m_Callbacks;
+
+public:
 
 	virtual void Free() override;
 };

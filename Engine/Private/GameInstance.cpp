@@ -743,6 +743,16 @@ CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
 	return m_pObserver_Manager->Find_Observer(strTag);
 }
 
+void CGameInstance::Register_Callback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+{
+	m_pObserver_Manager->Register_Callback(strTag, callback);
+}
+
+void CGameInstance::Clear_Callback(const _wstring& strTag)
+{
+	m_pObserver_Manager->Clear_Callback(strTag);
+}
+
 #pragma endregion
 
 void CGameInstance::Release_Engine()

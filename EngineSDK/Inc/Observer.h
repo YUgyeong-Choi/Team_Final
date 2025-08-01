@@ -16,7 +16,7 @@ public:
 	// 풀링되면 지우지 말고 처음 상태로 다시 만들고 다시 쓰기?
 	virtual void Reset() = 0;
 
-private:
+public:
 
 	virtual void Free() override;
 };

@@ -31,6 +31,22 @@ HRESULT CObserver_Manager::Remove_Observer(const _wstring strTag)
 	return S_OK;
 }
 
+void CObserver_Manager::Register_Callback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+{
+	if (m_pObservers.end() == m_pObservers.find(strTag))
+		return;
+
+	m_pObservers[strTag]->Register_Callback(callback);
+}
+
+void CObserver_Manager::Clear_Callback(const _wstring& strTag)
+{
+	if (m_pObservers.end() == m_pObservers.find(strTag))
+		return;
+
+	m_pObservers[strTag]->Clear_Callback();
+}
+
 void CObserver_Manager::Notify(const _wstring& strTag, const _wstring& eventType, void* pData)
 {
 	auto it = m_pObservers.find(strTag);

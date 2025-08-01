@@ -6,6 +6,8 @@ CObserver::CObserver()
 }
 
 
+
+
 void CObserver::Free()
 {
 	__super::Free();
