@@ -53,7 +53,7 @@ private:
 
 	void SelectAnimation();
 	void Setting_AnimationProperties();
-
+	void ApplyHierarchicalLayout(class CAnimController* pCtrl);
 
 	void SaveLoadEvents(_bool isSave = true);
 	void SaveLoadAnimStates(_bool isSave = true);

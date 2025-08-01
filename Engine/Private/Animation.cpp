@@ -283,5 +283,5 @@ void CAnimation::Deserialize(const json& j)
 		m_bUseRootMotion = j["RootMotion"].get<_bool>();
 	}
 
-	m_fTickPerSecond = max(m_fTickPerSecond, 50.f); // 최소값 설정
+	m_fTickPerSecond = max(m_fTickPerSecond, 55.f); // 최소값 설정
 }
