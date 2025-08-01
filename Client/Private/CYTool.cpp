@@ -411,8 +411,8 @@ HRESULT CCYTool::Window_Particle()
 		m_eParticleType = PTYPE_SPREAD;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Drop", m_eParticleType == PTYPE_DROP)) {
-		m_eParticleType = PTYPE_DROP;
+	if (ImGui::RadioButton("Directional", m_eParticleType == PTYPE_DIRECTIONAL)) {
+		m_eParticleType = PTYPE_DIRECTIONAL;
 	}
 
 	if(ImGui::Button("Update Particle"))
@@ -875,7 +875,7 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 	ImGui::Separator();
 	//ImGui::SameLine();
 
-	// ½½·Ô UI (Drop Target)
+	// ½½·Ô UI (Directional Target)
 	ImGui::BeginGroup();
 	ImGui::Text("Texture Slots:");
 	const _char* slotNames[4] = { "Diffuse", "Mask1", "Mask2", "Mask3" };

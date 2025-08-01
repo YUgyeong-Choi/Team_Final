@@ -769,7 +769,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 			{
 				if (ImGui::BeginCombo("Override Upper Animations", m_iOverrideUpperAnimIndex >= 0 && m_iOverrideUpperAnimIndex < animNames.size() ? animNames[m_iOverrideUpperAnimIndex].c_str() : "Override Select Upper"))
 				{
-					for (_int i = 0; i < animNames.size(); ++i)
+					for (_int i = 1; i < animNames.size(); ++i)
 					{
 						_bool isSelected = (i == m_iOverrideUpperAnimIndex);
 						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
@@ -785,7 +785,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 
 				if (ImGui::BeginCombo("Override Lower Animations", m_iOverrideLowerAnimIndex >= 0 && m_iOverrideLowerAnimIndex < animNames.size() ? animNames[m_iOverrideLowerAnimIndex].c_str() : "Override Select Lower"))
 				{
-					for (_int i = 0; i < animNames.size(); ++i)
+					for (_int i = 1; i < animNames.size(); ++i)
 					{
 						_bool isSelected = (i == m_iOverrideLowerAnimIndex);
 						if (ImGui::Selectable(animNames[i].c_str(), isSelected))
@@ -1593,9 +1593,15 @@ void CAnimTool::Setting_AnimationProperties()
 		_float fTickPerSecond = m_pCurAnimation->GetTickPerSecond();
 		bChanged |= ImGui::DragFloat("Tick Per Second", &fTickPerSecond, 0.1f, 0.1f, 100.f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
 		_bool bLoop = m_pCurAnimation->Get_isLoop();
+		_bool bRootMotion = m_pCurAnimation->IsRootMotionEnabled();
 		if (ImGui::Checkbox("Loop", &bLoop))
 		{
 			m_pCurAnimation->SetLoop(bLoop);
+			bChanged = true;
+		}
+		if (ImGui::Checkbox("Root Motion", &bRootMotion))
+		{
+			m_pCurAnimation->SetUseRootMotion(bRootMotion);
 			bChanged = true;
 		}
 		if (bChanged)

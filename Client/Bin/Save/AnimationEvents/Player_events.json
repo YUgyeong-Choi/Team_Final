@@ -4,726 +4,1001 @@
             "ClipName": "AS_Pino_H_Dash_Focus_B",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Dash_Focus_F",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Dash_Focus_L",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Dash_Focus_R",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Dash_Heavy_B",
             "Duration": 75.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Dash_Heavy_F",
             "Duration": 109.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Dash_Normal_B",
             "Duration": 45.0,
             "IsLoop": false,
+            "RootMotion": true,
             "TickPerSecond": 50.0
         },
-        {
-            "ClipName": "AS_Pino_H_Dash_Normal_F",
-            "Duration": 80.0,
-            "IsLoop": false,
-            "TickPerSecond": 50.0
-        },
+      {
+        "ClipName": "AS_Pino_H_Dash_Normal_F",
+        "Duration": 80.0,
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 50.0
+      },
         {
             "ClipName": "AS_Pino_H_Fall_End",
             "Duration": 52.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Fall_Land_Heavy",
             "Duration": 221.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Fall_Loop",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Fall_Start",
             "Duration": 18.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Idle",
             "Duration": 195.0,
             "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Idle_Loco",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Run_B",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Run_F",
             "Duration": 48.0,
             "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Run_F_Stop",
             "Duration": 37.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Run_L",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Run_R",
             "Duration": 132.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Sprint",
             "Duration": 36.0,
             "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Sprint_Stop",
             "Duration": 40.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Sprint_Turn",
             "Duration": 54.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Walk_B",
             "Duration": 204.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Walk_F",
             "Duration": 150.0,
             "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Walk_L",
             "Duration": 204.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_H_Walk_R",
             "Duration": 204.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_Item_Use_Grinder_ST2",
             "Duration": 233.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_Prop_T_ItemGet",
             "Duration": 86.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_Turn_L",
             "Duration": 48.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_Turn_R",
             "Duration": 48.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "As_Pino_T_Dash_Fail_B",
             "Duration": 104.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "As_Pino_T_Dash_Fail_F",
             "Duration": 104.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "As_Pino_T_Dash_Fail_L",
             "Duration": 104.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "As_Pino_T_Dash_Fail_R",
             "Duration": 104.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_FocusHurt_B",
             "Duration": 70.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_FocusHurt_F",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_FocusHurt_L",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_FocusHurt_R",
             "Duration": 66.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_B",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_F",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_Heavy_B",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_Heavy_F",
             "Duration": 66.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_Heavy_L",
             "Duration": 69.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_Heavy_R",
             "Duration": 69.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_L",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_R",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Heavy_B",
             "Duration": 75.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Heavy_F",
             "Duration": 109.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Normal_B",
             "Duration": 45.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Normal_F",
             "Duration": 80.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_DrawWeapon",
             "Duration": 72.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_EquipmentWeapon",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_EquipWeapon",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Fall_Land_Heavy",
             "Duration": 221.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Fall_Land_Search",
             "Duration": 400.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Frenzy",
             "Duration": 35.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Frozen_Escape",
             "Duration": 95.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard",
             "Duration": 160.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_GuardHit",
             "Duration": 30.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_GuardHit_Break",
             "Duration": 125.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_GuardHit_Heavy",
             "Duration": 110.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_GuardHit_Loop",
             "Duration": 160.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_GuardHit_Normal",
             "Duration": 30.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_GuardHit_Strong",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Idle",
             "Duration": 160.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_B",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_B_Root",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_F",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_F_Root",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_L",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_L_Root",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_R",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_R_Root",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Idle",
             "Duration": 602.0,
             "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Idle_Loco",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Item_Grinder",
             "Duration": 126.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Fall_Loop",
             "Duration": 30.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Heavy_Land_Light",
             "Duration": 40.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Heavy_Land_Rolling",
             "Duration": 112.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Heavy_Loop",
             "Duration": 30.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Heavy_Up",
             "Duration": 36.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Land_Ligh",
             "Duration": 52.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Land_Rolling",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Up",
             "Duration": 30.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Jump_Up_Root",
             "Duration": 50.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Parry_Dash",
             "Duration": 60.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Parry_Guard",
             "Duration": 90.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_PutWeapon",
             "Duration": 84.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Repulse_R",
             "Duration": 90.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_B",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_BL",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_BR",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_F",
             "Duration": 48.0,
             "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_FL",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_FR",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_F_Root",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_F_Stop",
             "Duration": 37.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_L",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Run_R",
             "Duration": 44.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_SlaveArm_Change",
             "Duration": 100.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Sprint",
             "Duration": 32.0,
             "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Sprint_Root",
             "Duration": 30.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Sprint_Stop",
             "Duration": 40.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Sprint_Turn",
             "Duration": 54.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_StatRoom_Idle",
             "Duration": 140.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_B",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_BL",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_BR",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_B_Fast",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_B_Root",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_F",
             "Duration": 68.0,
             "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_FL",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_FR",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_F_Fast",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_F_Root",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_L",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_L_Fast",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_L_Root",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_R",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_R_Fast",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_Pino_T_Walk_R_Root",
             "Duration": 68.0,
             "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_CA1",
+            "Duration": 206.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_CA2",
+            "Duration": 225.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_CA3",
+            "Duration": 275.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_CA4",
+            "Duration": 244.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_DNA",
+            "Duration": 123.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_DNA2",
+            "Duration": 153.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_DSA",
+            "Duration": 103.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_FA",
+            "Duration": 139.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_FCA",
+            "Duration": 174.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_NA1",
+            "Duration": 154.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_NA2",
+            "Duration": 147.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_NA3",
+            "Duration": 153.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_NA4",
+            "Duration": 158.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_RA",
+            "Duration": 148.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA1",
+            "Duration": 195.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA2",
+            "Duration": 148.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA3",
+            "Duration": 144.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA4",
+            "Duration": 147.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA5",
+            "Duration": 176.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SA6",
+            "Duration": 176.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SNA",
+            "Duration": 120.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 50.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Bayonet_SSA",
+            "Duration": 158.0,
+            "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 50.0
         }
     ]

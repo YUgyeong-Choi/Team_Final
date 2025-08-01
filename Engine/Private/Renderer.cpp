@@ -120,11 +120,19 @@ HRESULT CRenderer::Initialize()
 
 
 #pragma region 이펙트용 MRT
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_EffectBlend_Diffuse"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_PBR_Diffuse"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_Effect_Diffuse"))))
-		return E_FAIL;
+	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
+	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Distort"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_Effect_Distort"))))
+	//	return E_FAIL;
+
 #pragma endregion
 
 
@@ -237,45 +245,89 @@ HRESULT CRenderer::Draw()
 {
 	
 	if (FAILED(Render_Priority()))
-		return E_FAIL;	
+	{
+		MSG_BOX("Render Priority Failed");
+		return E_FAIL;
+	}
 
 	if (FAILED(Render_Shadow()))
+	{
+		MSG_BOX("Render_Shadow Failed");
 		return E_FAIL;
+	}
 	
 	if (FAILED(Render_NonBlend()))
+	{
+		MSG_BOX("Render_NonBlend Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_PBRMesh()))
+	{
+		MSG_BOX("Render_PBRMesh Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_Lights()))
+	{
+		MSG_BOX("Render_Lights Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_PBRLights()))
+	{
+		MSG_BOX("Render_PBRLights Failed");
 		return E_FAIL;
+	}
 
-	//if (FAILED(Render_Volumetric()))
+	if (FAILED(Render_Volumetric()))
+	{
+		MSG_BOX("Render_Volumetric Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Effect_Blend()))
+	{
+		MSG_BOX("Render_Effect_Blend Failed");
+		return E_FAIL;
+	}
+
+	//if (FAILED(Render_Effect_NonLight()))
 	//	return E_FAIL;
 
 	if (FAILED(Render_BackBuffer()))
+	{
+		MSG_BOX("Render_BackBuffer Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_NonLight()))
+	{
+		MSG_BOX("Render_NonLight Failed");
 		return E_FAIL;
-
+	}
 
 
 	/* 블렌딩이전에 백버퍼를 완성시키낟.  */
 	if (FAILED(Render_Blend()))
+	{
+		MSG_BOX("Render_Blend Failed");
 		return E_FAIL;
+	}
 
 	
 	if (FAILED(Render_UI_Deferred()))
+	{
+		MSG_BOX("Render_UI_Deferred Failed");
 		return E_FAIL;
+	}
 	
 	
 	if (FAILED(Render_UI()))
+	{
+		MSG_BOX("Render_UI Failed");
 		return E_FAIL;
+	}
 
 	
 
@@ -283,7 +335,10 @@ HRESULT CRenderer::Draw()
 
 
 	if (FAILED(Render_Debug()))
+	{
+		MSG_BOX("Render_Debug Failed");
 		return E_FAIL;
+	}
 
 #endif
 	
@@ -410,25 +465,6 @@ HRESULT CRenderer::Render_Blend()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_BLEND)].clear();
-
-	return S_OK;
-}
-
-HRESULT CRenderer::Render_Effect_WB()
-{
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
-	{
-		return dynamic_cast<CBlendObject*>(pSour)->Get_Depth() > dynamic_cast<CBlendObject*>(pDest)->Get_Depth();
-	});
-
-	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)])
-	{
-		if (nullptr != pGameObject)
-			pGameObject->Render();
-
-		Safe_Release(pGameObject);
-	}
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)].clear();
 
 	return S_OK;
 }
@@ -608,6 +644,13 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowC"), m_pShader, "g_ShadowTextureC")))
 		return E_FAIL;
 
+	/* [ Effect 렌더링용 ]*/
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
+	//	return E_FAIL;
+	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_Distort"), m_pShader, "g_Effect_Distort")))
+	//	return E_FAIL;
+
 	/* [ 볼륨메트릭 포그 ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Volumetric"), m_pShader, "g_VolumetricTexture")))
 		return E_FAIL;
@@ -699,6 +742,42 @@ HRESULT CRenderer::Render_UI_Deferred()
 	m_pShader->Begin(8);
 	m_pVIBuffer->Bind_Buffers();
 	m_pVIBuffer->Render();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect_Blend()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_EffectBlendObjects"))))
+		return E_FAIL;
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_DEFFERED)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_DEFFERED)].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect_NonLight()
+{
+	// 당장 안 쓰고 상황 봐서 사용할 것
+	// 예상가는사용처: 블렌드 필요 없는 SubUV SE/PE
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)].clear();
 
 	return S_OK;
 }

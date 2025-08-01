@@ -870,6 +870,11 @@ void CMapTool::Render_Preview()
 		ImGui::Image(reinterpret_cast<ImTextureID>(pSRV), availableSize, ImVec2(0.f, 0.f), ImVec2(1.f, 1.f));
 
 	}
+	else
+	{
+		// Ã¢ÀÌ ´İÈù »óÅÂÀÏ ¶§
+		m_bPreviewHovered = false;
+	}
 
 	ImGui::End();
 }

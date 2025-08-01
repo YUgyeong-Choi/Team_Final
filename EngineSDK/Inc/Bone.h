@@ -50,11 +50,21 @@ public:
 		return m_szName;
 	}
 
+	_bool Is_RootBone() const {
+		return m_bIsRootBone;
+	}
+
+	_bool Is_PelvisBone() const {
+		return m_bIsPelvisBone;
+	}
+
 private:
 	_char					m_szName[MAX_PATH] = {};
 
 	/* (A : 이 뼈 자체의 원점기준 변환정보를 표현한 행렬) */
 	_float4x4				m_TransformationMatrix = {};
+	_bool m_bIsRootBone = false;
+	_bool m_bIsPelvisBone = false; // Pelvis 뼈인지 여부
 
 	/* (A : 이 뼈 자체의 원점기준 변환정보를 표현한 행렬) * 부모행렬. = A: 부모를 기준으로 회전한다. */
 	_float4x4				m_CombinedTransformationMatrix = {};	

@@ -17,7 +17,7 @@ _bool CAnimController::Condition::Evaluate(class CAnimController* pAnimControlle
 		switch (op)
 		{
 		case EOp::IsTrue:
-			return pAnimController->CheckBool(paramName);
+			return pAnimController->CheckBool(paramName) == true;
 		case EOp::IsFalse:
 			return pAnimController->CheckBool(paramName) == false;
 		default:
@@ -27,13 +27,13 @@ _bool CAnimController::Condition::Evaluate(class CAnimController* pAnimControlle
 		switch (op)
 		{
 		case EOp::Greater:
-			return pAnimController->GetInt(paramName) > iThreshold;
+			return (pAnimController->GetInt(paramName) > iThreshold);
 		case EOp::Less:
-			return pAnimController->GetInt(paramName) < iThreshold;
+			return (pAnimController->GetInt(paramName) < iThreshold);
 		case EOp::NotEqual:
-			return pAnimController->GetInt(paramName) != iThreshold;
+			return (pAnimController->GetInt(paramName) != iThreshold);
 		case EOp::Equal:
-			return pAnimController->GetInt(paramName) == iThreshold;
+			return (pAnimController->GetInt(paramName) == iThreshold);
 		default:
 			return false; // Int 타입에서 지원하지 않는 연산
 		}
@@ -41,14 +41,21 @@ _bool CAnimController::Condition::Evaluate(class CAnimController* pAnimControlle
 		switch (op)
 		{
 		case EOp::Greater:
-			return pAnimController->GetFloat(paramName) > fThreshold;
+			return (pAnimController->GetFloat(paramName) > fThreshold);
 		case EOp::Less:
-			return pAnimController->GetFloat(paramName) < fThreshold;
+			return (pAnimController->GetFloat(paramName) < fThreshold);
 		default:
 			return false; // Float 타입에서 지원하지 않는 연산
 		}
 	case ParamType::Trigger:
-		return pAnimController->CheckTrigger(paramName);
+		switch (op)
+		{
+		case EOp::Trigger:
+		case EOp::None:  // op가 None인 경우도 처리
+			return pAnimController->CheckTrigger(paramName);
+		default:
+			return false; // Trigger에서 지원하지 않는 연산
+		}
 	default:
 		return false; // 지원하지 않는 타입
 	}
@@ -64,11 +71,62 @@ _bool CAnimController::Transition::Evaluates(CAnimController* pAnimController, C
 	if (conditions.empty())
 		return true; // 조건이 없으면 항상 true
 
+	//for (const auto& condition : conditions)
+	//{
+	//	if (!condition.Evaluate(pAnimController))
+	//	{
+	//		return false; // 하나라도 false면 전체 false
+	//	}
+	//}
+
 	for (const auto& condition : conditions)
 	{
-		if (!condition.Evaluate(pAnimController))
-			return false; // 하나라도 false면 전체 false
+		if (condition.type != ParamType::Trigger)
+		{
+			if (!condition.Evaluate(pAnimController))
+			{
+				return false; // Trigger가 아닌 조건 실패 시 바로 종료
+			}
+		}
 	}
+
+	// 모든 일반 조건이 통과했을 때만 Trigger 확인 
+	for (const auto& condition : conditions)
+	{
+		if (condition.type == ParamType::Trigger)
+		{
+			if (!condition.Evaluate(pAnimController))
+			{
+				return false;
+			}
+		}
+	}
+
+	// 모든 조건이 true면
+	// 디버그용 출력
+
+	for (const auto& condition : conditions)
+	{
+		switch (condition.type)
+		{
+		case ParamType::Bool:
+			cout << "Condition passed: " << condition.paramName << " is true." << endl; // 디버그용 출력
+			break;
+		case ParamType::Int:
+			cout << "Condition passed: " << condition.paramName << " is in range ("
+				<< condition.iThreshold << ")." << endl; // 디버그용 출력
+			break;
+		case ParamType::Float:
+			cout << "Condition passed: " << condition.paramName << " is in range ("
+				<< condition.fThreshold << ")." << endl; // 디버그용 출력
+			break;
+		case ParamType::Trigger:
+			cout << "Condition passed: " << condition.paramName << " trigger activated." << endl; // 디버그용 출력
+			break;
+		}
+	}
+
+
 	return true; // 모든 조건이 true
 }
 

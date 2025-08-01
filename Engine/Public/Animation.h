@@ -16,7 +16,7 @@ public:
 	HRESULT InitializeByBinary(ifstream& ifs, const vector<class CBone*>& Bones);
 
 	//	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop);
-	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents = nullptr);
+	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents = nullptr,class CAnimator* pAnimator = nullptr);
 	void ExportBinary(ofstream& ofs);
 
 	/* 애니메이션의 이름을 반환. */
@@ -53,6 +53,8 @@ public:
 			? (m_fDuration / m_fTickPerSecond)
 			: 0.f;
 	}
+	_bool IsRootMotionEnabled() const { return m_bUseRootMotion; }
+	void SetUseRootMotion(_bool bUseRootMotion) { m_bUseRootMotion = bUseRootMotion; }
 
 	void AddEvent(AnimationEvent vEvent) { m_events.push_back(vEvent); }
 	vector<AnimationEvent>& GetEvents() { return m_events; }
@@ -75,6 +77,7 @@ private:
 	vector<class CChannel*>	m_Channels;
 	char m_Name[MAX_PATH] = {};
 	_bool m_isLoop = false;
+	_bool    m_bUseRootMotion = false;
 	vector<class CBone*> m_Bones;
 	vector<AnimationEvent> m_events;
 	vector<_matrix>			m_TransformMatrices;

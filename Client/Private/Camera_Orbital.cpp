@@ -64,6 +64,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 		_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
+		printf("x: %f, y: %f, z: %f\n", x, y, z);
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
@@ -114,7 +115,6 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		m_pTransformCom->Set_State(STATE::POSITION, vInterpolatedPos);
 		m_pTransformCom->LookAt(m_vPlayerPosition);
 	}
-
 	__super::Update(fTimeDelta);
 }
 
@@ -125,23 +125,6 @@ void CCamera_Orbital::Late_Update(_float fTimeDelta)
 HRESULT CCamera_Orbital::Render()
 {
 	return S_OK;
-}
-
-void CCamera_Orbital::ActiveDialogView(_vector NPCPos, _vector NPCLook)
-{
-	/* [ 카메라 업데이트를 멈추고 해당 포지션으로 다가간다. ] */
-	m_bActiveDialogView = true;
-
-	m_vDialogPostion = m_pTransformCom->Get_State(STATE::POSITION);
-
-	//1. NPC 의 룩벡터를 기준으로 떨어진곳에서 NPC 를 바라보는 느낌
-	_vector vNPCPos = XMVectorSetY(NPCPos, XMVectorGetY(NPCPos) + 2.5f);
-	_vector vNPCLook = XMVector3Normalize(NPCLook);
-	_vector vTargetPos = vNPCPos + vNPCLook * 3.f;
-
-	_vector vFinalCamPos = LERP(m_vDialogPostion, vTargetPos, 0.1f);
-	m_pTransformCom->Set_State(STATE::POSITION, vFinalCamPos);
-	m_pTransformCom->LookAt(vNPCPos);
 }
 
 CCamera_Orbital* CCamera_Orbital::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

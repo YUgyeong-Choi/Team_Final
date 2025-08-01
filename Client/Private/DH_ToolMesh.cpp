@@ -138,6 +138,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fRange = 100.f;
 		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+		LightDesc.fFogDensity = 0.1f;
 	}
 	if (m_szMeshID == TEXT("SpotLight"))
 	{
@@ -152,8 +153,8 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fRange = 100.f;
 		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+		LightDesc.fFogDensity = 0.1f;
 
-		LightDesc.eType = LIGHT_DESC::TYPE_SPOT;
 	}
 	if (m_szMeshID == TEXT("DirrectionalLight"))
 	{
@@ -164,6 +165,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fIntensity = 1.f;
 		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+		LightDesc.fFogDensity = 0.1f;
 	}
 
 	if (FAILED(m_pGameInstance->Add_LevelLightDataReturn(ENUM_CLASS(LEVEL::DH), LightDesc, &m_pLight)))
