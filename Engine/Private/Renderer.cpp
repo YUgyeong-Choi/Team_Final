@@ -245,50 +245,89 @@ HRESULT CRenderer::Draw()
 {
 	
 	if (FAILED(Render_Priority()))
-		return E_FAIL;	
+	{
+		MSG_BOX("Render Priority Failed");
+		return E_FAIL;
+	}
 
 	if (FAILED(Render_Shadow()))
+	{
+		MSG_BOX("Render_Shadow Failed");
 		return E_FAIL;
+	}
 	
 	if (FAILED(Render_NonBlend()))
+	{
+		MSG_BOX("Render_NonBlend Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_PBRMesh()))
+	{
+		MSG_BOX("Render_PBRMesh Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_Lights()))
+	{
+		MSG_BOX("Render_Lights Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_PBRLights()))
+	{
+		MSG_BOX("Render_PBRLights Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_Volumetric()))
+	{
+		MSG_BOX("Render_Volumetric Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_Effect_Blend()))
+	{
+		MSG_BOX("Render_Effect_Blend Failed");
 		return E_FAIL;
+	}
 
 	//if (FAILED(Render_Effect_NonLight()))
 	//	return E_FAIL;
 
 	if (FAILED(Render_BackBuffer()))
+	{
+		MSG_BOX("Render_BackBuffer Failed");
 		return E_FAIL;
+	}
 
 	if (FAILED(Render_NonLight()))
+	{
+		MSG_BOX("Render_NonLight Failed");
 		return E_FAIL;
+	}
 
 
 	/* 블렌딩이전에 백버퍼를 완성시키낟.  */
 	if (FAILED(Render_Blend()))
+	{
+		MSG_BOX("Render_Blend Failed");
 		return E_FAIL;
+	}
 
 	
 	if (FAILED(Render_UI_Deferred()))
+	{
+		MSG_BOX("Render_UI_Deferred Failed");
 		return E_FAIL;
+	}
 	
 	
 	if (FAILED(Render_UI()))
+	{
+		MSG_BOX("Render_UI Failed");
 		return E_FAIL;
+	}
 
 	
 
@@ -296,7 +335,10 @@ HRESULT CRenderer::Draw()
 
 
 	if (FAILED(Render_Debug()))
+	{
+		MSG_BOX("Render_Debug Failed");
 		return E_FAIL;
+	}
 
 #endif
 	
