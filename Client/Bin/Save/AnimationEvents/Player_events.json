@@ -402,7 +402,7 @@
         {
             "ClipName": "AS_Pino_T_Guard",
             "Duration": 160.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -451,14 +451,14 @@
         {
             "ClipName": "AS_Pino_T_Guard_Idle",
             "Duration": 160.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Pino_T_Guard_Walk_B",
             "Duration": 68.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -472,7 +472,7 @@
         {
             "ClipName": "AS_Pino_T_Guard_Walk_F",
             "Duration": 68.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -486,7 +486,7 @@
         {
             "ClipName": "AS_Pino_T_Guard_Walk_L",
             "Duration": 68.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -500,7 +500,7 @@
         {
             "ClipName": "AS_Pino_T_Guard_Walk_R",
             "Duration": 68.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -829,7 +829,7 @@
         {
             "ClipName": "AS_Pino_T_Walk_R",
             "Duration": 68.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -997,6 +997,13 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_SSA",
             "Duration": 158.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_T_CrystalSword_FCA",
+            "Duration": 160.0,
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
