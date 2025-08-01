@@ -67,12 +67,14 @@ public:
 
 private:
 
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
+	CShader*		m_pShaderCom = { nullptr };
+	CModel*			m_pModelCom = { nullptr };
+	CTexture*		m_pTextureCom = { nullptr };
+
 	CPhysXStaticActor* m_pPhysXActorCom = { nullptr };
+
 protected: /* [ 초기화 변수 ] */
-	const _tchar* m_szMeshID = { nullptr };
+	const _tchar*	m_szMeshID = { nullptr };
 	LEVEL			m_eLevelID = { LEVEL::END };
 	LEVEL			m_eLevelLight = { LEVEL::END };
 	_float3			m_InitPos = {};

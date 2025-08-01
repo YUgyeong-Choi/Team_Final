@@ -199,6 +199,12 @@
     <Filter Include="02.GameObjects\99.UI\Container">
       <UniqueIdentifier>{a57f9c53-0a50-4000-935c-7a8076f50e0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit">
+      <UniqueIdentifier>{1262068e-f1b1-40a9-9e97-c548a3914883}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player">
+      <UniqueIdentifier>{38ace16e-e299-4a9a-a813-bcd2d3ad5053}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -480,6 +486,12 @@
     <ClInclude Include="..\Public\UI_Container.h">
       <Filter>02.GameObjects\99.UI\Container</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Unit.h">
+      <Filter>02.GameObjects\01.Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player.h">
+      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -737,6 +749,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Container.cpp">
       <Filter>02.GameObjects\99.UI\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Unit.cpp">
+      <Filter>02.GameObjects\01.Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

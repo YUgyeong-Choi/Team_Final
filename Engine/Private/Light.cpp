@@ -121,11 +121,31 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 		iPassIndex = 10;
 	}
+	else if (LIGHT_DESC::TYPE_SPOT == m_LightDesc.eType)
+	{
+		/* 빛정보를 쉐이더에 던진다. */
+		if (FAILED(pShader->Bind_RawValue("g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fInnerCosAngle", &m_LightDesc.fInnerCosAngle, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fOuterCosAngle", &m_LightDesc.fOuterCosAngle, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fFalloff", &m_LightDesc.fFalloff, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fFogCutoff", &m_LightDesc.fFogCutoff, sizeof(_float))))
+			return E_FAIL;
+
+		iPassIndex = 12;
+	}
 	else
 	{
 		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))
 			return E_FAIL;
 		if (FAILED(pShader->Bind_RawValue("g_fLightRange", &m_LightDesc.fRange, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fFogCutoff", &m_LightDesc.fFogCutoff, sizeof(_float))))
 			return E_FAIL;
 
 		iPassIndex = 9;
@@ -139,6 +159,9 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	if (FAILED(pShader->Bind_RawValue("g_fLightIntencity", &m_LightDesc.fIntensity, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(pShader->Bind_RawValue("g_vLightSpecular", &m_LightDesc.vSpecular, sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_fFogPower", &m_LightDesc.fFogDensity, sizeof(_float))))
 		return E_FAIL;
 
 	pShader->Begin(iPassIndex);

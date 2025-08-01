@@ -211,6 +211,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);	
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.fFogDensity = 0.f;
 	
 	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
 		return E_FAIL;
@@ -222,6 +223,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
+	LightDesc.fFogDensity = 0.f;
 
 	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
 		return E_FAIL;

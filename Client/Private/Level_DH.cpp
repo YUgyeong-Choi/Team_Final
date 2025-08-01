@@ -150,11 +150,19 @@ HRESULT CLevel_DH::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::DH), strLayerTag, &Desc)))
 		return E_FAIL;
+
+	Desc.szMeshID = TEXT("SM_Station_Floor_01");
+	lstrcpy(Desc.szName, TEXT("SM_Station_Floor_01"));
+	Desc.InitPos = _float3(0.f, -1.f, 0.f);
+	Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::DH), strLayerTag, &Desc)))
+		return E_FAIL;
 	
-	Desc.szMeshID = TEXT("SM_Cathedral_FloorBR_03");
-	lstrcpy(Desc.szName, TEXT("SM_Cathedral_FloorBR_03"));
-	Desc.InitPos = _float3(0.f, 0.f, 5.f);
-	Desc.InitScale = _float3(3.f, 3.f, 3.f);
+	Desc.szMeshID = TEXT("TestMap");
+	lstrcpy(Desc.szName, TEXT("TestMap"));
+	Desc.InitPos = _float3(0.f, 0.f, 0.f);
+	Desc.InitScale = _float3(10.f, 10.f, 10.f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::DH), strLayerTag, &Desc)))
 		return E_FAIL;

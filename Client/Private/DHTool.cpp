@@ -389,6 +389,31 @@ HRESULT CDHTool::Render_LightTool()
 		ImGui::SliderFloat("fFalloff", &fFalloff, 0.1f, 5.0f, "%.1f");
 	}
 
+	// Fog
+	if (m_pSelectedObject != nullptr)
+	{
+		float fFogDensity = m_pSelectedObject->GetfFogDensity();
+		if (ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 30.0f, "%.1f"))
+			m_pSelectedObject->SetfFogDensity(fFogDensity);
+	}
+	else
+	{
+		static float fFogDensity = 1.f;
+		ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 5.0f, "%.1f");
+	}
+	// FogCutOff
+	if (m_pSelectedObject != nullptr)
+	{
+		float fFogCutOff = m_pSelectedObject->GetfFogCutOff();
+		if (ImGui::SliderFloat("fFogCutOff", &fFogCutOff, 1.f, 30.f, "%.1f"))
+			m_pSelectedObject->SetfFogCutOff(fFogCutOff);
+	}
+	else
+	{
+		static float fFogCutOff = 15.f;
+		ImGui::SliderFloat("fFogCutOff", &fFogCutOff, 1.f, 30.f, "%.1f");
+	}
+
 
 	ImGui::Separator();
 	if (ImGui::Button("Save Light", ImVec2(120, 0)))
@@ -576,6 +601,10 @@ void CDHTool::DeleteSelectedObject()
 	if (m_pSelectedObject)
 	{
 		m_pSelectedObject->Set_bDead();
+		auto iter = std::find(m_vecLights.begin(), m_vecLights.end(), m_pSelectedObject);
+		if (iter != m_vecLights.end())
+			m_vecLights.erase(iter);
+
 		m_pSelectedObject = nullptr;
 	}
 }
@@ -681,6 +710,14 @@ void CDHTool::Save_Lights(LEVEL_TYPE eLType)
 		_float fIntensity = pToolMesh->GetIntensity();
 		_float fRange = pToolMesh->GetRange();
 		_float4 vColor = pToolMesh->GetColor();
+
+		/* [ ¿Ã≥ æﬁ±€, æ∆øÙæﬁ±€, ∆Á ø¿«¡, ∆˜±◊µßΩ√∆º, ∆˜±◊ ƒ∆ ø¿«¡ ] */
+		_float fInnerCosAngle = pToolMesh->GetfInnerCosAngle();
+		_float fOuterCosAngle = pToolMesh->GetfOuterCosAngle();
+		_float fFalloff = pToolMesh->GetfFalloff();
+		_float fFogDensity = pToolMesh->GetfFogDensity();
+		_float fFogCutOff = pToolMesh->GetfFogCutOff();
+
 		XMFLOAT4X4 matOut;
 		XMStoreFloat4x4(&matOut, matWorld);
 
@@ -698,6 +735,12 @@ void CDHTool::Save_Lights(LEVEL_TYPE eLType)
 		jLight["Intensity"] = fIntensity;
 		jLight["Range"] = fRange;
 		jLight["Color"] = { vColor.x, vColor.y, vColor.z, vColor.w };
+
+		jLight["InnerCosAngle"] = fInnerCosAngle;
+		jLight["OuterCosAngle"] = fOuterCosAngle;
+		jLight["Falloff"] = fFalloff;
+		jLight["FogDensity"] = fFogDensity;
+		jLight["FogCutOff"] = fFogCutOff;
 
 		jLight["LightType"] = pToolMesh->GetLightType();
 		jLight["LevelType"] = static_cast<int>(eLType);
@@ -737,9 +780,15 @@ void CDHTool::Load_Lights(LEVEL_TYPE eLType)
 	{
 		// 1. ±‚∫ª ¡§∫∏ √ﬂ√‚
 		vector<vector<float>> matrixArray = jLight["WorldMatrix"];
-		float fIntensity = jLight["Intensity"];
-		float fRange = jLight["Range"];
+		_float fIntensity = jLight["Intensity"];
+		_float fRange = jLight["Range"];
 		vector<float> colorVec = jLight["Color"];
+
+		_float fInnerCosAngle = jLight["InnerCosAngle"];
+		_float fOuterCosAngle = jLight["OuterCosAngle"];
+		_float fFalloff = jLight["Falloff"];
+		_float fFogDensity = jLight["FogDensity"];
+		_float fFogCutOff = jLight["FogCutOff"];
 
 		LIGHT_TYPE eLightType = static_cast<LIGHT_TYPE>(jLight["LightType"].get<int>());
 		LEVEL_TYPE eLevelType = static_cast<LEVEL_TYPE>(jLight["LevelType"].get<int>());
@@ -765,6 +814,11 @@ void CDHTool::Load_Lights(LEVEL_TYPE eLType)
 		pNewLight->SetIntensity(fIntensity);
 		pNewLight->SetRange(fRange);
 		pNewLight->SetColor(_float4(colorVec[0], colorVec[1], colorVec[2], colorVec[3]));
+		pNewLight->SetfInnerCosAngle(fInnerCosAngle);
+		pNewLight->SetfOuterCosAngle(fOuterCosAngle);
+		pNewLight->SetfFalloff(fFalloff);
+		pNewLight->SetfFogDensity(fFogDensity);
+		pNewLight->SetfFogCutOff(fFogCutOff);
 	}
 }
 
