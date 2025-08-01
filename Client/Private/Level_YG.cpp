@@ -65,7 +65,7 @@ void CLevel_YG::Update(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_I))
 	{
-		m_pGameInstance->Set_GameTimeScale(0.3f);
+		m_pGameInstance->Set_GameTimeScale(0.5f);
 	}
 
 

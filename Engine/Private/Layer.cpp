@@ -44,7 +44,8 @@ void CLayer::Priority_Update(_float fTimeDelta)
 
 		if (pGameObject != nullptr)
 		{
-			pGameObject->Priority_Update(fTimeDelta);
+			_float fScaledDelta = pGameObject->Get_TimeScale()* fTimeDelta;
+			pGameObject->Priority_Update(fScaledDelta);
 
 			if (pGameObject->Get_bDead())
 			{
@@ -64,8 +65,10 @@ void CLayer::Update(_float fTimeDelta)
 	for (auto& pGameObject : m_GameObjects)
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Update(fTimeDelta);
-
+		{
+			_float fScaledDelta = pGameObject->Get_TimeScale() * fTimeDelta;
+			pGameObject->Update(fScaledDelta);
+		}
 	}
 }
 
@@ -74,8 +77,10 @@ void CLayer::Late_Update(_float fTimeDelta)
 	for (auto& pGameObject : m_GameObjects)
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Late_Update(fTimeDelta);
-
+		{
+			_float fScaledDelta = pGameObject->Get_TimeScale() * fTimeDelta;
+			pGameObject->Late_Update(fScaledDelta);
+		}
 	}
 }
 

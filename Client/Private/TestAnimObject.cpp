@@ -99,6 +99,15 @@ void CTestAnimObject::Priority_Update(_float fTimeDelta)
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
 	}
 
+	// 속도 느려지고 안느려지고
+	if (m_pGameInstance->Key_Down(DIK_Y))
+	{
+		if(m_fTimeScale == 1.f)
+			m_fTimeScale = 0.5f;
+		else
+			m_fTimeScale = 1.f;
+	}
+
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
 	/* [ 움직임 전용 함수 ] */
