@@ -227,11 +227,11 @@ void CAnimator::Update(_float fDeltaTime)
 			if (m_pCurrentAnim->IsRootMotionEnabled())
 			{
 				CBone* rootBone = m_Bones[1];
-				CBone* pelvisBone = m_Bones[7];
+				CBone* pelvisBone = m_Bones[1];
 
 				// 꺼내온 조합 행렬
 				XMMATRIX rootMat = XMLoadFloat4x4(rootBone->Get_CombinedTransformationMatrix());
-				XMMATRIX pelvisMat = XMLoadFloat4x4(pelvisBone->Get_CombinedTransformationMatrix());
+				XMMATRIX pelvisMat = XMLoadFloat4x4(pelvisBone->Get_TransformationMatrix());
 
 				// 위치·회전·스케일 분해
 				XMVECTOR rootScale, rootRotQuat, rootTrans;
@@ -405,9 +405,8 @@ void CAnimator::Update(_float fDeltaTime)
 		// Y축 회전만 추출 (캐릭터 회전은 보통 Y축만 사용)
 		_float yAngle = GetYAngleFromQuaternion(deltaRot);
 
-		XMStoreFloat4(&m_RootRotationDelta, XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), yAngle));
-
-		if (abs(yAngle) < 0.001f) m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+		//	XMStoreFloat4(&m_RootRotationDelta, XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), yAngle));
+		XMStoreFloat4(&m_RootRotationDelta, deltaRot);
 	}
 
 	void CAnimator::SetCurrentRootPosition(const _float3& pos)
@@ -661,6 +660,8 @@ void CAnimator::Update(_float fDeltaTime)
 		m_PrevRootPosition = { 0.f, 0.f, 0.f };
 		m_CurrentRootPosition = { 0.f, 0.f, 0.f };
 		m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+		m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
+		m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
 	}
 
 	_float CAnimator::GetYAngleFromQuaternion(const _vector& quat)
@@ -974,6 +975,15 @@ void CAnimator::Update(_float fDeltaTime)
 		else
 		{
 			MSG_BOX("No current animation controller set.");
+		}
+	}
+
+	void CAnimator::SetApplyRootMotion(_bool bApply)
+	{
+		m_bApplyRootMotion = bApply;
+		for (auto& pBone : m_Bones)
+		{
+			pBone->SetApplyRootMotion(bApply);
 		}
 	}
 

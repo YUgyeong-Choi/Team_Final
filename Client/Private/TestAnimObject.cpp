@@ -127,42 +127,67 @@ void CTestAnimObject::Update(_float fTimeDelta)
 		m_pModelCom->Update_Bones();
 	}
 
+
 	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
 		return;
 
 	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
 	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
-	_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+
 
 	if (bUseRoot)
 	{
+	_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+	_float4 		rootMotionQuat = m_pAnimator->GetRootRotationDelta();
 		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
 
-		cout << "Local Delta: " << rootMotionDelta.x << ", " << rootMotionDelta.y << ", " << rootMotionDelta.z << endl;
+	//	cout << "Local Delta: " << rootMotionDelta.x << ", " << rootMotionDelta.y << ", " << rootMotionDelta.z << endl;
 		
 		_vector vScale, vRotQuat, vTrans;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
 
 		PxControllerFilters filters;
-	/*	XMVECTOR vWorldDelta = XMVector3TransformNormal(vLocal,
-			XMMatrixRotationQuaternion(vRotQuat));	*/
-		XMVECTOR vWorldDelta = XMVector3Transform(vLocal,
-			XMMatrixRotationQuaternion(vRotQuat));
+		XMVECTOR vWorldDelta = XMVector3Transform(vLocal,XMMatrixRotationQuaternion(vRotQuat));
 
+		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
+		vWorldDelta = XMVectorSetY(vWorldDelta, dy);
+
+		_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta)); // 마진
+	//	cout << fDeltaMag << endl;
+		_vector finalDelta;
+		if (fDeltaMag > m_fSmoothThreshold)
+		{
+			_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
+			finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+		}
+		else
+		{
+			finalDelta = vWorldDelta;
+		}
+		m_PrevWorldDelta = finalDelta;
 
 		PxVec3 pos{
-			XMVectorGetX(vWorldDelta),
-			XMVectorGetY(vWorldDelta) - 0.8f, // Y축 보정
-			XMVectorGetZ(vWorldDelta)
+			XMVectorGetX(finalDelta),
+			XMVectorGetY(finalDelta),
+			XMVectorGetZ(finalDelta)
 		};
-		_float fSpeed = fTimeDelta*m_pTransformCom->Get_SpeedPreSec();
-		//pos// *= fSpeed;
-		m_pControllerCom->Get_Controller()->move(
-			pos,
-			0.001f, fTimeDelta, filters
-		);
+		
+		m_pControllerCom->Get_Controller()->move(pos,0.001f, fTimeDelta, filters);
 		SyncTransformWithController();
+		_vector vTmp{};
+		XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
+		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
+		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
+		_matrix newWorld =
+			XMMatrixScalingFromVector(vScale) *
+			XMMatrixRotationQuaternion(vNewRot) *
+			XMMatrixTranslationFromVector(vTrans);
+		m_pTransformCom->Set_WorldMatrix(newWorld);
 
+		// 현재 회전 값 디버그
+		_float4 rot;
+		XMStoreFloat4(&rot, vNewRot);
+		cout << "New Rotation: " << rot.x << ", " << rot.y << ", " << rot.z << ", " << rot.w << endl;
 	}
 	else
 	{

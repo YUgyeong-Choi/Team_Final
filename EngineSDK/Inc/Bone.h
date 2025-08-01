@@ -30,7 +30,6 @@ public:
 public:
 	HRESULT Initialize(const aiNode* pAINode, _int iParentBoneIndex);
 	HRESULT Initialize( ifstream& ifs);
-	//void Update_TransformationMatrix(_fmatrix TransformationMatrix);
 	void Update_CombinedTransformationMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix);
 	_bool Compare_Name(const _char* pName) {
 		return !strcmp(m_szName, pName);
@@ -58,6 +57,10 @@ public:
 		return m_bIsPelvisBone;
 	}
 
+	void SetApplyRootMotion(_bool bApply) {
+		m_bApplyRootMotion = bApply;
+	}
+
 private:
 	_char					m_szName[MAX_PATH] = {};
 
@@ -70,7 +73,9 @@ private:
 	_float4x4				m_CombinedTransformationMatrix = {};	
 
 	_int					m_iParentBoneIndex = { -1 };
+	_int	                m_iPrevParentBoneIndex = { -1 }; // ¿Ã¿¸ ∫Œ∏ ª¿ ¿Œµ¶Ω∫.
 	_int					m_iBoneIndex = { -1 }; // ¿Ã ª¿¿« ¿Œµ¶Ω∫. (∏µ®ø°º≠¿« ¿Œµ¶Ω∫)
+	_bool                   m_bApplyRootMotion = true;
 
 	_float4x4  m_LocalBindPoseMatrix = {};
 
