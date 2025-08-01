@@ -68,6 +68,16 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			return;
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_U))
+	{
+		m_pGameInstance->Set_GameTimeScale(1.f);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_I))
+	{
+		m_pGameInstance->Set_GameTimeScale(0.5f);
+	}
+
 	m_pCamera_Manager->Update(fTimeDelta);
 	HoldMouse();
 }
