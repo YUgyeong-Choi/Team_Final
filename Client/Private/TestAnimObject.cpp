@@ -187,7 +187,7 @@ void CTestAnimObject::Update(_float fTimeDelta)
 		// 현재 회전 값 디버그
 		_float4 rot;
 		XMStoreFloat4(&rot, vNewRot);
-		cout << "New Rotation: " << rot.x << ", " << rot.y << ", " << rot.z << ", " << rot.w << endl;
+		//cout << "New Rotation: " << rot.x << ", " << rot.y << ", " << rot.z << ", " << rot.w << endl;
 	}
 	else
 	{

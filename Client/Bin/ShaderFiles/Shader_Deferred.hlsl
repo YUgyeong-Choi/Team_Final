@@ -896,7 +896,6 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     if (finalColor.a < 0.003f)
         discard;
 
-
     Out.vBackBuffer = finalColor;
 
     
@@ -1199,7 +1198,6 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_VOLUMETRIC_SPOT();
     }
-
     pass Effect_Glow //13 
     {
         SetRasterizerState(RS_Default);
