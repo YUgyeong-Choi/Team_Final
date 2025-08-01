@@ -69,11 +69,21 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 	ifs.read(reinterpret_cast<_char*>(&m_fDuration), sizeof(_float));  
 	ifs.read(reinterpret_cast<_char*>(&m_iNumChannels), sizeof(_uint)); 
 
+	_int iRootBoneIdx = -1; // 루트 본 인덱스 초기화
+
+	for (size_t i = 0; i < Bones.size(); ++i)
+	{
+		if (Bones[i]->Is_RootBone())
+		{
+			iRootBoneIdx = static_cast<_int>(i);
+			break;
+		}
+	}
 	
 	m_Channels.reserve(m_iNumChannels);
 	for (size_t i = 0; i < m_iNumChannels; i++)
 	{
-		CChannel* pChannel = CChannel::Create(ifs, Bones,-1);
+		CChannel* pChannel = CChannel::Create(ifs, Bones, iRootBoneIdx);
 		if (nullptr == pChannel)
 			return E_FAIL;
 
@@ -116,7 +126,7 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 //	return false;
 //}
 
-_bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents)
+_bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents, CAnimator* pAnimator)
 {
 	m_isLoop = isLoop;
 	_float prevPos = m_fCurrentTrackPosition;
@@ -155,7 +165,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 		m_Channels[i]->Update_TransformationMatrix(
 			m_CurrentKeyFrameIndices[i],
 			m_fCurrentTrackPosition,
-			Bones, bIsReverse
+			Bones, bIsReverse, pAnimator
 		);
 	}
 
@@ -234,6 +244,7 @@ json CAnimation::Serialize()
 			{"Time", event.fTime}
 			});
 	}
+	j["RootMotion"] = m_bUseRootMotion;
 	return j;
 }
 
@@ -266,6 +277,10 @@ void CAnimation::Deserialize(const json& j)
 					});
 			}
 		}
+	}
+	if (j.contains("RootMotion") && j["RootMotion"].is_boolean())
+	{
+		m_bUseRootMotion = j["RootMotion"].get<_bool>();
 	}
 
 	m_fTickPerSecond = max(m_fTickPerSecond, 50.f); // 최소값 설정

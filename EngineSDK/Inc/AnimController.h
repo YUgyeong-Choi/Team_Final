@@ -281,6 +281,7 @@ public:
 			cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return 0; // 기본값 반환
 		}
+
 		return m_Params.at(name).iValue;
 	}
 

@@ -73,91 +73,6 @@ void CAnimator::Update(_float fDeltaTime)
 		}
 	}
 
-	//if (m_Blend.active)
-	//{
-	//	UpdateBlend(fDeltaTime);
-	//}
-	//else
-	//{
-	//	if (m_bPlayMask)
-	//	{	
-	//			
-	//		if (m_pUpperClip && m_pLowerClip)
-	//		{
-	//			vector<string> triggeredEvents;
-	//			// 하체 기준으로 끝났는지 판단하기 
-	//			 m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents);
-
-	//			 m_bIsFinished= m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents);
-	//			_float t =1.f; // 상체 블렌딩 비율
-
-	//			for (size_t i = 0; i < m_Bones.size(); ++i)
-	//			{
-	//				_matrix srcM = m_pLowerClip->GetBoneMatrix(static_cast<_uint>(i));
-	//				_matrix dstM = m_pUpperClip->GetBoneMatrix(static_cast<_uint>(i));
-
-	//				_vector sS, sR, sT, dS, dR, dT;
-	//				XMMatrixDecompose(&sS, &sR, &sT, srcM);
-	//				XMMatrixDecompose(&dS, &dR, &dT, dstM);
-
-	//				_vector bS = XMVectorLerp(sS, dS, t);
-	//				_vector bR = XMQuaternionSlerp(sR, dR, t);
-	//				_vector bT = XMVectorLerp(sT, dT, t);
-
-
-	//				if (m_UpperMaskSet.count(static_cast<_int>(i)))
-	//				{
-	//					_matrix M = XMMatrixScalingFromVector(bS)
-	//						* XMMatrixRotationQuaternion(bR)
-	//						* XMMatrixTranslationFromVector(bT);
-	//					m_Bones[i]->Set_TransformationMatrix(M);
-	//				}
-	//				else
-	//				{
-	//					m_Bones[i]->Set_TransformationMatrix(srcM);
-	//				}
-	//			}
-	//			for (auto& name : triggeredEvents)
-	//				for (auto& cb : m_eventListeners[name])
-	//					cb(name);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		if (m_pCurrentAnim)
-	//		{
-	//			if (m_pUpperClip)
-	//			{
-	//				// 상체에서 하체로
-	//				StartTransition(m_pUpperClip,m_pCurrentAnim, 0.2f);
-	//				m_bPlayMask = false;
-	//			}
-
-	//			vector<string> triggeredEvents;
-	//			// Update_Bones 호출 (outEvents 전달)
-	//			m_bIsFinished = m_pCurrentAnim->Update_Bones(
-	//				fDeltaTime,
-	//				m_Bones,
-	//				m_pCurrentAnim->Get_isLoop(),
-	//				&triggeredEvents
-	//			);
-
-	//			// 콜백 실행
-	//			for (auto& name : triggeredEvents)
-	//			{
-	//				// 이벤트 리스너에 등록 해둔거에 애니메이션 이벤트가 있는지 찾기
-	//				auto it = m_eventListeners.find(name);
-	//				if (it != m_eventListeners.end())
-	//				{
-	//					for (auto& cb : it->second)
-	//						cb(name);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
-
 	vector<string> triggeredEvents; // 이벤트를 한 번에 수집
 	size_t boneCount = m_Bones.size();
 
@@ -305,9 +220,32 @@ void CAnimator::Update(_float fDeltaTime)
 			}
 		}
 		else if (m_pCurrentAnim)
-		{
+		{	
 			// 단일 전체 애니메이션
 			m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents);
+
+			if (m_pCurrentAnim->IsRootMotionEnabled())
+			{
+				CBone* rootBone = m_Bones[1];
+				CBone* pelvisBone = m_Bones[7];
+
+				// 꺼내온 조합 행렬
+				XMMATRIX rootMat = XMLoadFloat4x4(rootBone->Get_CombinedTransformationMatrix());
+				XMMATRIX pelvisMat = XMLoadFloat4x4(pelvisBone->Get_CombinedTransformationMatrix());
+
+				// 위치·회전·스케일 분해
+				XMVECTOR rootScale, rootRotQuat, rootTrans;
+				XMMatrixDecompose(&rootScale, &rootRotQuat, &rootTrans, rootMat);
+
+				XMVECTOR pelvisScale, pelvisRotQuat, pelvisTrans;
+				XMMatrixDecompose(&pelvisScale, &pelvisRotQuat, &pelvisTrans, pelvisMat);
+
+				_float3 rootPos;      XMStoreFloat3(&rootPos, rootTrans);
+				_float4 pelvisRot;    XMStoreFloat4(&pelvisRot, pelvisRotQuat);
+
+				this->SetCurrentRootPosition(rootPos);
+				this->SetCurrentRootRotation(pelvisRot);
+			}
 		}
 	}
 
@@ -321,8 +259,7 @@ void CAnimator::Update(_float fDeltaTime)
 				cb(name);
 		}
 	}
-
-	}
+}
 
 
 	void CAnimator::PlayClip(CAnimation * pAnim, _bool isLoop)
@@ -351,6 +288,7 @@ void CAnimator::Update(_float fDeltaTime)
 
 	void CAnimator::StartTransition(CAnimController::TransitionResult& transitionResult)
 	{
+		ResetRootMotion();
 		if (m_Blend.active) {
 			////if (m_Blend.srcAnim) m_Blend.srcAnim->ResetTrack();
 			//if (m_Blend.dstAnim) m_Blend.dstAnim->ResetTrack();
@@ -386,6 +324,7 @@ void CAnimator::Update(_float fDeltaTime)
 		m_bPlaying = true;
 		//if(transitionResult.bBlendFullbody == false)
 		//UpdateMaskState();
+
 	}
 
 	void CAnimator::Set_Animation(_uint iIndex, _float fadeDuration, _bool isLoop)
@@ -406,6 +345,85 @@ void CAnimator::Update(_float fDeltaTime)
 
 		m_pCurrentAnim = m_pModel->GetAnimationClip(iIndex);
 		m_Blend.active = false;
+	}
+
+	void CAnimator::SetCurrentRootTransform(const _float3& pos, const _float4& rot)
+	{
+	
+		if (m_bFirstFrameAfterReset)
+		{
+			m_PrevRootPosition = pos;
+			m_CurrentRootPosition = pos;
+			m_PrevRootRotation = rot;
+			m_CurrentRootRotation = rot;
+			m_RootMotionDelta = { 0.f, 0.f, 0.f };
+			m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+			m_bFirstFrameAfterReset = false;
+			return;
+		}
+
+		// 이전 위치/회전 저장
+		m_PrevRootPosition = m_CurrentRootPosition;
+		m_PrevRootRotation = m_CurrentRootRotation;
+
+		// 현재 위치/회전 업데이트
+		m_CurrentRootPosition = pos;
+		m_CurrentRootRotation = rot;
+
+		// 위치 델타 계산 (Y축 포함 여부는 설정에 따라)
+		m_RootMotionDelta = {
+			m_CurrentRootPosition.x - m_PrevRootPosition.x,
+			0.f, // Y축은 보통 제외 (중력과 점프는 별도 처리)
+			m_CurrentRootPosition.z - m_PrevRootPosition.z
+		};
+
+		// 회전 델타 계산
+		_vector prevRotInverse = XMQuaternionInverse(XMLoadFloat4(&m_PrevRootRotation));
+		_vector currentRot = XMLoadFloat4(&m_CurrentRootRotation);
+		_vector deltaRot = XMQuaternionMultiply(prevRotInverse, currentRot);
+
+		// Y축 회전만 추출 (캐릭터 회전은 보통 Y축만 사용)
+		_float yAngle = GetYAngleFromQuaternion(deltaRot);
+
+		XMStoreFloat4(&m_RootRotationDelta, XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), yAngle));
+		// 극소값 처리 (노이즈 제거)
+		if (abs(m_RootMotionDelta.x) < 0.001f) m_RootMotionDelta.x = 0.f;
+		if (abs(m_RootMotionDelta.z) < 0.001f) m_RootMotionDelta.z = 0.f;
+		if (abs(yAngle) < 0.001f) m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+	}
+
+	void CAnimator::SetCurrentRootRotation(const _float4& rot)
+	{
+		m_PrevRootRotation = m_CurrentRootRotation;
+		m_CurrentRootRotation = rot;
+
+		// 회전 델타 계산
+		_vector prevRotInverse = XMQuaternionInverse(XMLoadFloat4(&m_PrevRootRotation));
+		_vector currentRot = XMLoadFloat4(&m_CurrentRootRotation);
+		_vector deltaRot = XMQuaternionMultiply(prevRotInverse, currentRot);
+
+		// Y축 회전만 추출 (캐릭터 회전은 보통 Y축만 사용)
+		_float yAngle = GetYAngleFromQuaternion(deltaRot);
+
+		XMStoreFloat4(&m_RootRotationDelta, XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), yAngle));
+
+		if (abs(yAngle) < 0.001f) m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+	}
+
+	void CAnimator::SetCurrentRootPosition(const _float3& pos)
+	{	// 이전 위치/회전 저장
+		m_PrevRootPosition = m_CurrentRootPosition;
+
+		// 현재 위치/회전 업데이트
+		m_CurrentRootPosition = pos;
+
+		// 위치 델타 계산 (Y축 포함 여부는 설정에 따라)
+		m_RootMotionDelta = {
+			m_CurrentRootPosition.x - m_PrevRootPosition.x,
+			m_CurrentRootPosition.y - m_PrevRootPosition.y,
+			m_CurrentRootPosition.z - m_PrevRootPosition.z
+		};
+	
 	}
 
 	void CAnimator::UpdateBlend(_float fDeltaTime)
@@ -634,6 +652,22 @@ void CAnimator::Update(_float fDeltaTime)
 		_vector bR = XMQuaternionSlerp(sR, dR, t);
 		_vector bT = XMVectorLerp(sT, dT, t);
 		return XMMatrixScalingFromVector(bS) * XMMatrixRotationQuaternion(bR) * XMMatrixTranslationFromVector(bT);
+	}
+
+	void CAnimator::ResetRootMotion()
+	{
+		m_bFirstFrameAfterReset = true;
+		m_RootMotionDelta = { 0.f, 0.f, 0.f };
+		m_PrevRootPosition = { 0.f, 0.f, 0.f };
+		m_CurrentRootPosition = { 0.f, 0.f, 0.f };
+		m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+	}
+
+	_float CAnimator::GetYAngleFromQuaternion(const _vector& quat)
+	{
+		_float4 q;
+		XMStoreFloat4(&q, quat);
+		return atan2(2.0f * (q.w * q.y + q.x * q.z), 1.0f - 2.0f * (q.y * q.y + q.z * q.z));
 	}
 
 

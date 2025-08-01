@@ -1,4 +1,5 @@
 #include "Channel.h"
+#include "Animator.h"
 #include "Bone.h"
 
 CChannel::CChannel()
@@ -71,7 +72,8 @@ HRESULT CChannel::Initialize(ifstream& ifs, const vector<class CBone*>& Bones, _
 	return S_OK;
 }
 
-void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones, _bool bIsReverse)
+void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones, _bool bIsReverse,
+	CAnimator* pAnimator)
 {
 	if (0.0f == fCurrentTrackPosition)
 		currentKeyFrameIndex = 0;
@@ -141,8 +143,42 @@ void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float f
 	{
 		return;
 	}
-	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
-	XMStoreFloat4x4(&m_LocalTransformationMatrix, TransformationMatrix);
+
+	if (pAnimator && Bones[m_iBoneIndex]->Is_RootBone())
+	{
+		// ① rootDelta 계산용 원본 위치 전달
+		_float3 sampledRootPos;
+		XMStoreFloat3(&sampledRootPos, vPosition);
+		pAnimator->SetCurrentRootPosition(sampledRootPos);
+
+		// ② in-place: translation만 날리고 Scale/Rotation은 그대로
+		XMVECTOR zeroTrans = XMVectorZero();
+		XMMATRIX inPlace =
+			XMMatrixScalingFromVector(vScale) *
+			XMMatrixRotationQuaternion(vRotation) *
+			XMMatrixTranslationFromVector(zeroTrans);
+
+		Bones[m_iBoneIndex]->Set_TransformationMatrix(inPlace);
+		XMStoreFloat4x4(&m_LocalTransformationMatrix, inPlace);
+		return;
+	}
+
+	// 나머지 뼈들은 기존 로컬 트랜스폼 그대로
+	XMMATRIX full =
+		XMMatrixAffineTransformation(vScale,
+			XMVectorZero(),
+			vRotation,
+			vPosition);
+	Bones[m_iBoneIndex]->Set_TransformationMatrix(full);
+	XMStoreFloat4x4(&m_LocalTransformationMatrix, full);
+
+	/*Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
+	XMStoreFloat4x4(&m_LocalTransformationMatrix, TransformationMatrix);*/
+}
+
+_bool CChannel::IsRootBone(const CBone* pBone) const
+{
+	return pBone->Is_RootBone();
 }
 
 CChannel* CChannel::Create(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones)
