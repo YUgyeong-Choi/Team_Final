@@ -1,0 +1,101 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Static_UI",
+                "RotationZ": 0.0,
+                "SizeX": 1120.0,
+                "SizeY": 540.0,
+                "Texturetag": "Prototype_Component_Texture_Guide_Background",
+                "fAlpha": 1.0,
+                "fOffset": 0.029999999329447746,
+                "fX": 800.0,
+                "fY": 450.0,
+                "iPassIndex": 2,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Static_UI",
+                "RotationZ": 0.0,
+                "SizeX": 80.0,
+                "SizeY": 36.0,
+                "Texturetag": "Prototype_Component_Texture_Icon_Key_Space",
+                "fAlpha": 1.0,
+                "fOffset": 0.0,
+                "fX": 800.0,
+                "fY": 670.5,
+                "iPassIndex": 6,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Static_UI",
+                "RotationZ": 38.361000061035156,
+                "SizeX": 104.0,
+                "SizeY": 90.0,
+                "Texturetag": "Prototype_Component_Texture_Sealingwax",
+                "fAlpha": 1.0,
+                "fOffset": 0.0,
+                "fX": 1155.199951171875,
+                "fY": 333.0,
+                "iPassIndex": 4,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 0.5,
+                    "B": 0.0,
+                    "G": 0.0,
+                    "R": 0.0
+                },
+                "ProtoTag": "Prototype_GameObject_Static_UI",
+                "RotationZ": 0.0,
+                "SizeX": 1600.0,
+                "SizeY": 900.0,
+                "Texturetag": "Prototype_Component_Texture_BackGround_Loading_Desk",
+                "fAlpha": 1.0,
+                "fOffset": 0.4000000059604645,
+                "fX": 800.0,
+                "fY": 450.0,
+                "iPassIndex": 4,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

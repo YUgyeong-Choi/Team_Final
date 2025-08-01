@@ -38,7 +38,7 @@ public:
 	virtual HRESULT Render() override;
 
 	
-	void Active_Update(_bool isActive);
+	virtual void Active_Update(_bool isActive);
 
 	HRESULT Add_PartObject(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 
