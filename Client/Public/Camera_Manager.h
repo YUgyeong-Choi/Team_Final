@@ -50,8 +50,6 @@ public:
     void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital; }
     void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene; }
     void	Shake_Camera(_float fIntensity = 1.f, _float fDuration = 1.f, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
-    void	ActiveDialogView(_vector NPCPos, _vector NPCLook);
-    void	InactiveDialogView();
 
 private:
     CCamera_Free* m_pCamera_Free = { nullptr };

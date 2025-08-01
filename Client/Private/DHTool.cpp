@@ -33,6 +33,7 @@ HRESULT CDHTool::Initialize(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	Add_Light(LIGHT_TYPE::POINT, LEVEL_TYPE::KRAT_CENTERAL_STATION);
 	return S_OK;
 }
 
@@ -94,7 +95,6 @@ HRESULT CDHTool::Render_ShaderTool()
         static _float fMaxMetallic = 1.f;
         static _float fMaxReflection = 10.f;
         static _float fMaxSpecular = 10.f;
-        
 		ImGui::Text("PBR Intensity Controls");
         ImGui::Separator();
 
@@ -455,7 +455,7 @@ HRESULT CDHTool::Add_Light(LIGHT_TYPE eType, LEVEL_TYPE eLType)
 
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
-	Desc.m_vInitPos = _float3(0.f, 0.f, 10.f);
+	Desc.m_vInitPos = _float3(0.f, 10.f, 10.f);
 	Desc.iID = m_iID++;
 
 	CGameObject* pGameObject = nullptr;

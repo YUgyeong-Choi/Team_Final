@@ -262,8 +262,8 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_PBRLights()))
 		return E_FAIL;
 
-	//if (FAILED(Render_Volumetric()))
-	//	return E_FAIL;
+	if (FAILED(Render_Volumetric()))
+		return E_FAIL;
 
 	if (FAILED(Render_Effect_Blend()))
 		return E_FAIL;

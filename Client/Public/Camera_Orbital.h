@@ -12,6 +12,7 @@ NS_BEGIN(Client)
 
 class CCamera_Orbital final : public CCamera
 {
+
 public:
 	typedef struct tagCameraOrbitalDesc : public CCamera::CAMERA_DESC
 	{
@@ -30,12 +31,6 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
-public:
-	void ActiveDialogView(_vector NPCPos, _vector NPCLook);
-
-	void SetbActiveDialogView(_bool bActive) { m_bActiveDialogView = bActive; }
-	_bool GetbActiveDialogView() const { return m_bActiveDialogView; }
 
 public:
 	void SetPlayer(CGameObject* pPlayer) { m_pPlayer = pPlayer; }
@@ -60,9 +55,6 @@ private:
 private:
 	CGameObject*	m_pPlayer = { nullptr };
 
-private:
-	_vector			m_vDialogPostion = {};
-	_bool			m_bActiveDialogView = false;
 
 public:
 	static CCamera_Orbital* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

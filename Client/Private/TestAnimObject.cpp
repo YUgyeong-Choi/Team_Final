@@ -100,7 +100,6 @@ void CTestAnimObject::Priority_Update(_float fTimeDelta)
 //	SetMoveState(fTimeDelta);
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
-
 }
 void CTestAnimObject::Update(_float fTimeDelta)
 {
@@ -629,6 +628,7 @@ void CTestAnimObject::RayCast()
 #endif
 
 }
+
 
 CTestAnimObject* CTestAnimObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

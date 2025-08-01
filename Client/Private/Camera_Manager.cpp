@@ -134,15 +134,6 @@ void CCamera_Manager::Shake_Camera(_float fIntensity, _float fDuration, _float f
         m_pCurCamera->StartShake(fIntensity, fDuration, fShakeFreqPos, fShakeFreqRot);
 }
 
-void CCamera_Manager::ActiveDialogView(_vector NPCPos, _vector NPCLook)
-{
-    m_pCamera_Orbital->ActiveDialogView(NPCPos, NPCLook);
-}
-void CCamera_Manager::InactiveDialogView()
-{
-    m_pCamera_Orbital->SetbActiveDialogView(false);
-}
-
 
 void CCamera_Manager::Free()
 {
