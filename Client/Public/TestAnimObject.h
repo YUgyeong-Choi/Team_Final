@@ -57,7 +57,12 @@ private:
 	CShader* m_pShaderCom = nullptr; // 셰이더 컴포넌트
 	CAnimator* m_pAnimator = nullptr; // 애니메이터
 	CPhysXController* m_pControllerCom = { nullptr };
-
+	_vector  m_PrevWorldDelta = XMVectorZero();
+	_vector  m_PrevWorldRotation = XMVectorZero();
+	_bool    m_bIsFirstFrame = true;
+	_float   m_fRotSmoothSpeed = 8.0f; // 회전 스무딩 속도
+	_float   m_fSmoothSpeed = 8.0f;
+	_float   m_fSmoothThreshold = 0.1f; // 스무딩 임계값
 	//중력땜시
 private:
 	bool m_bOnGround = false;

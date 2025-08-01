@@ -29,6 +29,7 @@ public:
 	_float Compute_Random(_float fMin, _float fMax);
 
 	void Set_IsChangeLevel(_bool _b) { g_bSceneChanging = _b; }
+	void Set_GameTimeScale(_float ftimeScale) { m_fTimeScale = ftimeScale; }
 
 #pragma region LEVEL_MANAGER
 public:
@@ -72,6 +73,7 @@ public:
 
 #pragma region TIMER_MANAGER
 	_float Get_TimeDelta(const _wstring& strTimerTag);
+	_float Get_ScaledTimeDelta(const wstring& timerTag);
 	HRESULT Add_Timer(const _wstring& strTimerTag);
 	void Update_Timer(const _wstring& strTimerTag);
 #pragma endregion
@@ -230,7 +232,7 @@ private:
 
 private:
 	_uint					m_iCurrentLevelIndex = 0;
-
+	float m_fTimeScale = 1.f; // 업데이트 속도
 public:
 	void Release_Engine();
 	virtual void Free() override;

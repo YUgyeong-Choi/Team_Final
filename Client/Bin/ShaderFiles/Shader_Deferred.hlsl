@@ -14,8 +14,10 @@ Texture2D g_DepthTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
 
-Texture2D g_FinalTexture;
+/* [ Blur ] */
+Texture2D g_PreBlurTexture;
 Texture2D g_BlurXTexture;
+Texture2D g_BlurYTexture;
 
 /* [ 캐스케이드 전용 ] */
 Texture2D g_ShadowTextureA;
@@ -24,8 +26,8 @@ Texture2D g_ShadowTextureC;
 
 /* [ 볼륨메트리 포그 ] */
 float g_fFogSpeed = 0.5f;
-float g_fFogPointPower = 1.5f;
-float g_fFogDirecPower = 0.5f;
+float g_fFogPower = 1.5f;
+float g_fFogCutoff = 15.f;
 float g_fTime;
 int g_iPointNum = 1;
 
@@ -39,9 +41,10 @@ Texture2D g_PBR_Final;
 Texture2D g_VolumetricTexture;
 
 /* [ Effect ] */
-Texture2D g_Effect_Diffuse;
-// Texture2D g_Effect_Blur;
+Texture2D g_EffectBlend_Diffuse;
+Texture2D g_EffectBlend_Glow;
 // Texture2D g_Effect_Distort;
+
 
 float PI = 3.14159265358979323846f;
 
@@ -664,8 +667,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
         
         /* [ 포그 최대거리 컷팅 ] */
         float distanceToLight = length(g_vLightPos.xyz - worldPos);
-        float cutoff = 15.0f;
-        float softFalloff = saturate(1.0f - (distanceToLight / cutoff));
+        float softFalloff = saturate(1.0f - (distanceToLight / g_fFogCutoff));
 
         float density = SampleFogDensity(worldPos, g_fTime);
         float shadow = SampleShadowMap(worldPos);
@@ -680,7 +682,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
     // -----------------------------------------
 
     float3 fogColor = g_vLightDiffuse.rgb;
-    float3 finalFog = fogColor * (LightFog * g_fFogPointPower);
+    float3 finalFog = fogColor * (LightFog * g_fFogPower);
     
     Out.vVolumetric = float4(finalFog, 1.f);
     
@@ -759,23 +761,120 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
     }
 
     float3 fogColor = g_vLightDiffuse.rgb;
-    float3 finalFog = fogColor * (LightFog * g_fFogDirecPower);
+    float3 finalFog = fogColor * (LightFog * g_fFogPower);
+
+    Out.vVolumetric = float4(finalFog, 1.f);
+    return Out;
+}
+PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
+{
+    PS_OUT_VOLUMETRIC Out;
+
+    // [ 텍스처 샘플링 ]
+    vector vDepthDesc = g_PBR_Depth.Sample(DefaultSampler, In.vTexcoord);
+
+    // [ 해당 뷰포트의 깊이값 포함 ViewPos ]
+    float2 vUV = In.vTexcoord;
+    float z_ndc = vDepthDesc.x;
+    float viewZ = vDepthDesc.y * 500.0f;
+    
+    bool bNoMeshBehind = (z_ndc >= 0.999f || viewZ <= 0.001f);
+    
+    float4 ndcPos;
+    ndcPos.x = vUV.x * 2.0f - 1.0f;
+    ndcPos.y = 1.0f - vUV.y * 2.0f;
+    ndcPos.z = z_ndc;
+    ndcPos.w = 1.0f;
+    
+    float4 viewPos = mul(ndcPos, g_ProjMatrixInv);
+    viewPos /= viewPos.w;
+    
+    if (bNoMeshBehind)
+    {
+        viewPos.xyz = normalize(viewPos.xyz) * 50.0f;
+    }
+    else
+    {
+        float scaleZ = viewZ / max(viewPos.z, 0.0001f);
+        viewPos *= scaleZ;
+    }
+
+    /* [ Volumetric Raymarching 기법 ] */
+    float4 ViewSpacePosition = viewPos;
+
+    float StepSize = 0.5f;
+    static const int NumStep = 100;
+
+    float LightFog = 0.0f;
+
+    float3 PixelWorldPos = mul(float4(ViewSpacePosition.xyz, 1.0f), g_ViewMatrixInv).xyz;
+    float3 RayOrigin = float3(0.f, 0.f, 0.f);
+    float3 RayDir = normalize(ViewSpacePosition.xyz);
+    float3 RayPos = RayOrigin;
+
+    bool bBlocked = false;
+    for (int j = 0; j < NumStep; ++j)
+    {
+        RayPos += RayDir * StepSize;
+        float3 worldPos = mul(float4(RayPos, 1.0f), g_ViewMatrixInv).xyz;
+
+    // [ 차폐 체크 유지 ]
+        if (!bNoMeshBehind)
+        {
+            if (!bBlocked && RayPos.z > viewZ + 0.01f)
+                bBlocked = true;
+
+            if (bBlocked)
+                continue;
+        }
+
+        // [ 스포트라이트 원뿔 감쇠 계산 ]
+        float3 toPos = worldPos - g_vLightPos.xyz;
+        float distanceToLight = length(toPos);
+        float3 dirToPos = toPos / max(distanceToLight, 0.001f);
+
+        float cosAngle = dot(-g_vLightDir.xyz, dirToPos);
+
+        // [ 범위 바깥은 무시 ]
+        float fOuterCosAngle = g_fOuterCosAngle;
+        if (cosAngle < fOuterCosAngle)
+            continue;
+
+        // [ 원뿔 감쇠 ]
+        float spotFalloff = saturate((cosAngle - fOuterCosAngle) / max(g_fInnerCosAngle - fOuterCosAngle, 0.001f));
+
+        // [ 최대 거리 감쇠 ]
+        float softFalloff = saturate(1.0f - (distanceToLight / g_fFogCutoff));
+
+        // [ 밀도 + 그림자 ]
+        float density = SampleFogDensity(worldPos, g_fTime);
+        float shadow = SampleShadowMap(worldPos);
+        float transmittance = 1.0f - shadow;
+
+        // [ 누적 ]
+        LightFog += density * transmittance * softFalloff * spotFalloff * StepSize * 0.05f;
+    }
+
+    // [ 최종 적용 ]
+    float3 fogColor = g_vLightDiffuse.rgb;
+    float3 finalFog = fogColor * (LightFog * g_fFogPower * 100.f);
 
     Out.vVolumetric = float4(finalFog, 1.f);
     return Out;
 }
 
-
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
     PS_OUT Out;
+    
+    vector finalColor = (0.f, 0.f,0.f,0.f);
     
     /* [ 기존 VTXMesh ] */
     vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
     Out.vBackBuffer = vDiffuse * vShade + vSpecular;   
-    
+    finalColor = Out.vBackBuffer;
     /* [ PBR 매쉬 ] */
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -783,11 +882,30 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     float fViewZ = vDepthDesc.y * 500.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = vPBRFinal;
+    finalColor = Out.vBackBuffer;
     
-    if (vDiffuse.a < 0.1f && vPBRFinal.a < 0.1f)
+    
+    
+    vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
+    vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
+    EffectBlendDiffuse += EffectBlendGlow;
+    finalColor += EffectBlendDiffuse;
+    
+     //if (vDiffuse.a < 0.1f && vPBRFinal.a < 0.1f && EffectDiffuse.a < 0.1f)
+     //   discard;   
+    if (finalColor.a < 0.003f)
         discard;
+
+    Out.vBackBuffer = finalColor;
+
     
-    Out.vBackBuffer += vVolumetric;
+    // === 지수 감쇠 방식 적용 ===
+    float fogDensity = 0.02f;
+    float attenuation = exp(-fViewZ * fogDensity);
+    float3 fogColor = vVolumetric.rgb * (1.0 - attenuation);
+
+    Out.vBackBuffer.rgb += fogColor;
+
     
     /* [ 뷰포트상의 깊이값 복원 ] */
     vector vPosition;
@@ -846,6 +964,8 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
         Out.vBackBuffer *= 0.5f;
     else if (fShadowViewZC + fBias < vLightPosC.w)
         Out.vBackBuffer *= 0.5f;
+    
+
         
     return Out;    
 }
@@ -871,10 +991,10 @@ PS_OUT_BLUR PS_MAIN_BLURX(PS_IN In)
     
     for (int i = -6; i < 7; ++i)
     {
-        vTexcoord.x = In.vTexcoord.x + i / 1920.f;
+        vTexcoord.x = In.vTexcoord.x + i / 1600.f;
         vTexcoord.y = In.vTexcoord.y;
   
-        Out.vColor += g_fWeights[i + 6] * g_FinalTexture.Sample(LinearClampSampler, vTexcoord);
+        Out.vColor += g_fWeights[i + 6] * g_PreBlurTexture.Sample(LinearClampSampler, vTexcoord);
     }
 
     Out.vColor /= 6.0f;
@@ -893,7 +1013,7 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     for (int i = -6; i < 7; ++i)
     {
         vTexcoord.x = In.vTexcoord.x;
-        vTexcoord.y = In.vTexcoord.y + i / 1080.f;
+        vTexcoord.y = In.vTexcoord.y + i / 900.f;
   
         Out.vBackBuffer += g_fWeights[i + 6] * g_BlurXTexture.Sample(LinearClampSampler, vTexcoord);
     }
@@ -903,6 +1023,15 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_EFFECT_GLOW(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vBackBuffer = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord);
+    /* 기타 잡기술 */
+    
+    return Out;
+}
 
 PS_OUT PS_MAIN_VIGNETTING(PS_IN In)
 {
@@ -1059,7 +1188,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_PBR_LIGHT_SPOT();
     }
-    pass Effect_Deffered //12 // 아직 안쓰니 이어서 쓸 패스 있으면 그냥 밑으로 내려주세요
+    pass VolumetricSpot //12
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
@@ -1067,6 +1196,16 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_PBR_LIGHT_SPOT();
+        PixelShader = compile ps_5_0 PS_VOLUMETRIC_SPOT();
+    }
+    pass Effect_Glow //13 
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_EFFECT_GLOW();
     }
 }

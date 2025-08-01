@@ -3,6 +3,7 @@
 
 #include "PhysX_IgnoreSelfCallback.h"
 #include "TestAnimObject.h"
+#include "Camera_Manager.h"
 CCamera_Orbital::CCamera_Orbital(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
 {
@@ -34,11 +35,16 @@ HRESULT CCamera_Orbital::Initialize(void* pArg)
 
 void CCamera_Orbital::Priority_Update(_float fTimeDelta)
 {
+	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
+		return;
 	__super::Priority_Update(fTimeDelta);
 }
 
 void CCamera_Orbital::Update(_float fTimeDelta)
 {
+	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
+		return;
+
 	if (m_pPlayer)
 	{
 		// 입력 처리
@@ -64,7 +70,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 		_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-		printf("x: %f, y: %f, z: %f\n", x, y, z);
+		//printf("x: %f, y: %f, z: %f\n", x, y, z);
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 

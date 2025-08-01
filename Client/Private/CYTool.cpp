@@ -65,7 +65,7 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 		if (m_iCurFrame >= *pItem.iStart && m_iCurFrame <= *pItem.iEnd)
 		{
 			pItem.pEffect->Priority_Update(fTimeDelta);
-			// 이펙트를 재생
+			// 이펙트를 재생 생정보통다리 치킨~
 			//PlaySpriteEffect(pItem.iType, m_iCurFrame - pItem.iStart);
 		}
 	}

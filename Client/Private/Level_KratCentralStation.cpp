@@ -68,6 +68,16 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			return;
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_U))
+	{
+		m_pGameInstance->Set_GameTimeScale(1.f);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_I))
+	{
+		m_pGameInstance->Set_GameTimeScale(0.5f);
+	}
+
 	m_pCamera_Manager->Update(fTimeDelta);
 	HoldMouse();
 }
@@ -211,6 +221,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);	
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.fFogDensity = 0.f;
 	
 	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
 		return E_FAIL;
@@ -222,6 +233,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
+	LightDesc.fFogDensity = 0.f;
 
 	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
 		return E_FAIL;

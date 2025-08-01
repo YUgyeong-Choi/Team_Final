@@ -120,12 +120,29 @@ HRESULT CRenderer::Initialize()
 
 
 #pragma region 이펙트용 MRT
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_EffectBlend_Diffuse"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_PBR_Diffuse"))))
+	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_PBR_Diffuse"))))
+	//	return E_FAIL;
+
+	// 블러 부활
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurX"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurY"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurX"), TEXT("Target_BlurX"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurY"), TEXT("Target_BlurY"))))
+		return E_FAIL;
+
+	// 다른 곳에서도 블러 사용할 수도 있으니까 블러용 렌더타겟은 별도로 두고 글로우 용 렌더타겟 따로 두겠습니다
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_Glow"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlend_Glow"), TEXT("Target_EffectBlend_Glow"))))
+		return E_FAIL;
+
 
 	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
 	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Distort"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
@@ -222,6 +239,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Diffuse"), GetTargetX(2), GetTargetY(0), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Glow"), GetTargetX(3), GetTargetY(0), fSizeX, fSizeY)))
+		return E_FAIL;
+
 	m_StartTime = std::chrono::steady_clock::now();
 #endif
 
@@ -292,6 +314,18 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
+	if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
+	{
+		MSG_BOX("Render_Blur Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Effect_Glow()))
+	{
+		MSG_BOX("Render_Effect_Glow Failed");
+		return E_FAIL;
+	}
+
 	//if (FAILED(Render_Effect_NonLight()))
 	//	return E_FAIL;
 
@@ -308,7 +342,7 @@ HRESULT CRenderer::Draw()
 	}
 
 
-	/* 블렌딩이전에 백버퍼를 완성시키낟.  */
+	/* 블렌딩이전에 백버퍼를 완성시킨다.  */
 	if (FAILED(Render_Blend()))
 	{
 		MSG_BOX("Render_Blend Failed");
@@ -645,8 +679,11 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 
 	/* [ Effect 렌더링용 ]*/
-	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Glow"), m_pShader, "g_EffectBlend_Glow")))
+		return E_FAIL;
+
 	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
 	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_Distort"), m_pShader, "g_Effect_Distort")))
 	//	return E_FAIL;
@@ -680,7 +717,7 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrixC", m_pGameInstance->Get_Light_ProjMatrix(SHADOW::SHADOWC))))
 		return E_FAIL;
 
-	m_pShader->Begin(3);
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::DEFERRED));
 
 	m_pVIBuffer->Bind_Buffers();
 	m_pVIBuffer->Render();
@@ -739,7 +776,7 @@ HRESULT CRenderer::Render_UI_Deferred()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_UI_Diffuse"), m_pShader, "g_UITexture")))
 		return E_FAIL;
 
-	m_pShader->Begin(8);
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::VIGNETTING));
 	m_pVIBuffer->Bind_Buffers();
 	m_pVIBuffer->Render();
 
@@ -762,6 +799,61 @@ HRESULT CRenderer::Render_Effect_Blend()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag)
+{
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(strTargetTag, m_pShader, "g_PreBlurTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::BLURX));
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"));
+
+	/* 백버퍼에 찍는다. */
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_BlurX"), m_pShader, "g_BlurXTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::BLURY));
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+	m_pGameInstance->End_MRT();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect_Glow()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_EffectBlend_Glow"))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_BlurY"), m_pShader, "g_BlurYTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::EFFECT_GLOW));
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
 
 	return S_OK;
 }
@@ -876,6 +968,8 @@ HRESULT CRenderer::Render_Debug()
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlendObjects"), m_pShader, m_pVIBuffer);
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlend_Glow"), m_pShader, m_pVIBuffer);
 	}
 
 	return S_OK;

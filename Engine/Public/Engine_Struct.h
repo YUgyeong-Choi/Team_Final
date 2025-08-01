@@ -80,7 +80,9 @@ namespace Engine
 		_float				fInnerCosAngle;
 		_float				fOuterCosAngle;
 		_float				fFalloff;
+
 		_float				fFogDensity;
+		_float				fFogCutoff;
 	}LIGHT_DESC;
 
 

@@ -3,6 +3,7 @@
 #include "AnimTool.h"
 
 #include "GameInstance.h"
+#include <queue>
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
@@ -965,6 +966,10 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	if (FAILED(Render_AnimControllers()))
 		return E_FAIL;
 
+	_bool bApplyRootMotion = m_pCurAnimator->IsApplyRootMotion();
+	ImGui::Checkbox("Apply Root Motion", &bApplyRootMotion);
+	m_pCurAnimator->SetApplyRootMotion(bApplyRootMotion);
+
 	if (ImGui::Button("Save AnimState This Model"))
 	{
 		SaveLoadAnimStates();
@@ -987,6 +992,20 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			return E_FAIL;
 	}
 
+	_int iNumSelectedNodes = ImNodes::NumSelectedNodes();
+	_bool isAnyNodeSelected = iNumSelectedNodes > 0;
+	_int iNumSelectedLinks = ImNodes::NumSelectedLinks();
+	_bool isAnyLinkSelected = iNumSelectedLinks > 0;
+	vector<_int> selectedLinkIds;
+	if (isAnyLinkSelected)
+	{
+		selectedLinkIds.resize(ImNodes::NumSelectedLinks());
+		ImNodes::GetSelectedLinks(selectedLinkIds.data());
+	}
+	else
+	{
+		selectedLinkIds.clear();
+	}
 
 	ImNodes::BeginNodeEditor();
 
@@ -1036,8 +1055,16 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		ImGui::EndPopup();
 	}
 
-	auto& transitions = pCtrl->GetTransitions();
 
+	ImNodes::MiniMap(0.3f, 3);
+
+	// 정렬하기
+	if (ImGui::IsKeyDown(ImGuiKey_L))
+	{
+		ApplyHierarchicalLayout(pCtrl);
+		ImNodes::EditorContextResetPanning(ImVec2(0.0f, 0.0f));
+	}
+	auto& transitions = pCtrl->GetTransitions();
 	for (auto& state : pCtrl->GetStates())
 	{
 		ImNodes::BeginNode(state.iNodeId);
@@ -1115,14 +1142,47 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		state.fNodePos = { pos.x, pos.y };
 	}
 
+
 	for (auto& t : pCtrl->GetTransitions())
 	{
+		_bool bDrawLink = false;
 		_int startPinID = t.iFromNodeId * 10 + 2;  // Output Pin
 		_int endPinID = t.iToNodeId * 10 + 1;     // Input Pin
-		ImNodes::Link(t.link.iLinkId, startPinID, endPinID);
+
+		if (isAnyLinkSelected)
+		{
+			for (const auto& linkId : selectedLinkIds)
+			{
+				if (linkId == t.link.iLinkId)
+				{
+					bDrawLink = true;
+					break;
+				}
+			}
+		}
+		else if (isAnyNodeSelected)
+		{
+			_bool isFromSelected = ImNodes::IsNodeSelected(t.iFromNodeId);
+			_bool isToSelected = ImNodes::IsNodeSelected(t.iToNodeId);
+
+			if (isFromSelected || isToSelected)
+			{
+				bDrawLink = true;
+				// 둘 중 하나라도 선택이 됐으면
+				//ImNodes::Link(t.link.iLinkId, startPinID, endPinID);
+			}
+		}
+		else  // 아무것도 선택이 안됐는데 링크도 선택된게 없으면
+		{
+			bDrawLink = true;
+		}
+		if (bDrawLink)
+		{
+			ImNodes::Link(t.link.iLinkId, startPinID, endPinID);
+		}
 	}
 
-	ImNodes::MiniMap();
+
 	ImNodes::EndNodeEditor();
 
 	_bool bCanLink = pCtrl->GetStates().size() >= 2;
@@ -1361,20 +1421,20 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
 								m_iDefualtSeletedAnimIndex = i;
-								if (state.maskBoneName.empty()) // 마스크 본 이름이 없을 때만 
-									state.clip = anims[m_iDefualtSeletedAnimIndex];
-								else
+								if (i == 0) // "None"이 선택된 경우
 								{
 									state.clip = nullptr;
 								}
-
-								if ("None" == animNames[m_iDefualtSeletedAnimIndex])
+								else // 다른 애니메이션이 선택된 경우
 								{
-									state.clip = nullptr; // "None" 선택시 클립 초기화
-								}
-								else
-								{
-									state.clip = anims[m_iDefualtSeletedAnimIndex];
+									if (state.maskBoneName.empty())
+									{
+										state.clip = anims[i - 1];
+									}
+									else
+									{
+										state.clip = nullptr;
+									}
 								}
 							}
 							if (isSelected)
@@ -1429,7 +1489,16 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
 								m_iSelectedUpperAnimIndex = i;
-								state.upperClipName = anims[m_iSelectedUpperAnimIndex]->Get_Name();
+
+								if (i == 0) // "None"이 선택된 경우
+								{
+									state.upperClipName = ""; // 상체 애니메이션 초기화
+								}
+								else // 다른 애니메이션이 선택된 경우
+								{
+									state.upperClipName = anims[i-1]->Get_Name();
+								}
+					
 							}
 							if (isSelected)
 								ImGui::SetItemDefaultFocus();
@@ -1445,7 +1514,14 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
 								m_iSelectedLowerAnimIndex = i;
-								state.lowerClipName = anims[m_iSelectedLowerAnimIndex]->Get_Name();
+								if (i == 0) // "None"이 선택된 경우
+								{
+									state.lowerClipName = ""; // 상체 애니메이션 초기화
+								}
+								else // 다른 애니메이션이 선택된 경우
+								{
+									state.lowerClipName = anims[i - 1]->Get_Name();
+								}
 							}
 							if (isSelected)
 								ImGui::SetItemDefaultFocus();
@@ -1622,6 +1698,74 @@ void CAnimTool::Setting_AnimationProperties()
 
 }
 
+void CAnimTool::ApplyHierarchicalLayout(CAnimController* pCtrl)
+{
+	set<_int>visited;
+	//map<_int, _bool> visited;
+	map<_int, _int> level;
+	map<_int, _int> nodeOrderInLevel; // 각 계층 내에서 노드의 순서
+
+	
+	queue<_int> q;
+
+	// ENTRY 노드를 찾아 큐에 넣고, 방문 처리 및 0레벨로 설정
+	_int entryNodeId = pCtrl->GetEntryNodeId();
+	q.push(entryNodeId);
+	visited.insert(entryNodeId);
+	level[entryNodeId] = 0;
+	nodeOrderInLevel[0] = 0;
+
+	// BFS 
+	while (!q.empty())
+	{
+		_int currentNodeId = q.front();
+		q.pop();
+
+		// 현재 노드에서 나가는 전환 찾기
+		for (const auto& transition : pCtrl->GetTransitions())
+		{
+			if (transition.iFromNodeId == currentNodeId)
+			{
+				_int nextNodeId = transition.iToNodeId;
+				if (!visited.count(nextNodeId))
+				{
+					visited.insert(nextNodeId); // 방문 처리
+					level[nextNodeId] = level[currentNodeId] + 1; // 다음 노드는 현재 노드보다 한 단계 아래
+					q.push(nextNodeId);
+				}
+			}
+		}
+	}
+
+	// 계산된 레벨과 순서를 기반으로 노드 위치 설정
+	map<_int, _int> levelNodeCount;
+	_float horizontalSpacing = 250.0f; // 노드 간 가로 간격
+	_float verticalSpacing = 200.0f;   // 노드 간 세로 간격
+
+	// 노드를 레벨별로 그룹화
+	map<_int,vector<_int>> nodesByLevel;
+	for (const auto& state : pCtrl->GetStates())
+	{
+		nodesByLevel[level[state.iNodeId]].push_back(state.iNodeId);
+	}
+
+	// 각 레벨의 노드 위치를 계산하여 설정
+	for (auto const& [nodeLevel, nodeIds] : nodesByLevel)
+	{
+		_float startX = 0.0f;
+		// 필요에 따라 각 레벨을 중앙에 오게 조정
+		startX = -(static_cast<_float>(nodeIds.size() - 1) / 2.0f) * horizontalSpacing;
+
+		for (size_t i = 0; i < nodeIds.size(); ++i)
+		{
+			_int nodeId = nodeIds[i];
+			ImVec2 newPos = ImVec2(startX + i * horizontalSpacing, nodeLevel * verticalSpacing);
+
+			ImNodes::SetNodeEditorSpacePos(nodeId, newPos);
+		}
+	}
+}
+
 void CAnimTool::Test_AnimEvents()
 {
 
@@ -1724,6 +1868,7 @@ void CAnimTool::SaveLoadAnimStates(_bool isSave)
 		{
 			MSG_BOX("애니메이터가 없습니다. 애니메이터를 먼저 생성해주세요.");
 		}
+		ApplyHierarchicalLayout(m_pCurAnimator->Get_CurrentAnimController());
 	}
 }
 

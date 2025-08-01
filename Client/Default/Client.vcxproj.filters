@@ -201,6 +201,12 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Guide">
       <UniqueIdentifier>{d4dbb103-38eb-42f4-bae6-7687d2708db9}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\01.Unit">
+      <UniqueIdentifier>{1262068e-f1b1-40a9-9e97-c548a3914883}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player">
+      <UniqueIdentifier>{38ace16e-e299-4a9a-a813-bcd2d3ad5053}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. Observer">
       <UniqueIdentifier>{18a85b51-91ef-4e0f-b3a9-088ada422286}</UniqueIdentifier>
@@ -491,6 +497,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Guide.h">
       <Filter>02.GameObjects\99.UI\Container\Guide</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\Unit.h">
+      <Filter>02.GameObjects\01.Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player.h">
+      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Observer_Player_Status.h">
       <Filter>03. Observer\Player</Filter>
@@ -755,6 +767,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Guide.cpp">
       <Filter>02.GameObjects\99.UI\Container\Guide</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\Unit.cpp">
+      <Filter>02.GameObjects\01.Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Observer_Player_Status.cpp">
       <Filter>03. Observer\Player</Filter>
