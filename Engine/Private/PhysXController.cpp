@@ -29,8 +29,8 @@ HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMat
     desc.radius = radius;
     desc.position = pos;
     desc.upDirection = PxVec3(0, 1, 0);
-    desc.stepOffset = 0.3f;
-    desc.contactOffset = 0.1f;
+    desc.stepOffset = 0.005f;
+    desc.contactOffset = 0.05f;
     desc.slopeLimit = cosf(PxPi / 4); // 45µµ
 
     desc.userData = this;

@@ -34,7 +34,8 @@ public:
 
 public:
 	void SetPlayer(CGameObject* pPlayer) { m_pPlayer = pPlayer; }
-
+	_vector Get_PlayerPos() { return m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION); }
+	_vector Get_PlayerLook() { return m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK); }
 private:
 	_float			m_fMouseSensor = { };
 
