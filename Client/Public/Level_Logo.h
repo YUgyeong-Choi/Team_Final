@@ -47,8 +47,12 @@ private:
 
 	_bool m_isOpen = { false };
 
-	class CUI_Container* m_pGuide = {nullptr};
+	class CUI_Container* m_pTeammate = {nullptr};
 	class CGameObject* m_pGuideBack = { nullptr };
+
+
+	// 이거는 나중에 빼기
+	class CUI_Guide* m_pGuide = { nullptr };
 
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

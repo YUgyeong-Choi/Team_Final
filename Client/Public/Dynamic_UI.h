@@ -65,7 +65,7 @@ public:
 
 	HRESULT Ready_Components(const wstring& strTextureTag);
 
-	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) override;
+	HRESULT Ready_Components_File(const wstring& strTextureTag) ;
 
 
 	HRESULT Bind_ShaderResources();

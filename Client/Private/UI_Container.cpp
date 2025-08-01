@@ -100,12 +100,38 @@ HRESULT CUI_Container::Initialize(void* pArg)
 	{
 		string protoTag = eUIJson["ProtoTag"];
 
-		if (FAILED(Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), nullptr)))
-			return E_FAIL;
+		if (protoTag == "Prototype_GameObject_UI_Container")
+		{
+			// 여기는 파츠 바로 생성하도록
 
-		m_PartObjects.back()->Deserialize(eUIJson);
+			if (eUIJson.contains("Parts") && eUIJson["Parts"].is_array())
+			{
+				for (const auto& partJson : eUIJson["Parts"])
+				{
+					string childProtoTag = partJson["ProtoTag"];
 
-		m_PartObjects.back()->Update_Data();
+					if (FAILED(Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(childProtoTag), nullptr)))
+						return E_FAIL;
+
+					m_PartObjects.back()->Deserialize(partJson);
+					m_PartObjects.back()->Update_Data();
+				}
+			}
+		}
+		else
+		{
+			// 여기는 컨테이너 생성하도록
+			
+			if (FAILED(Add_PartObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), nullptr)))
+				return E_FAIL;
+
+			m_PartObjects.back()->Deserialize(eUIJson);
+
+			m_PartObjects.back()->Update_Data();
+		}
+			
+
+		
 	}
 	file.close();
 

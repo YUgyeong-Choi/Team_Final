@@ -24,9 +24,8 @@ void CUI_Button::Deserialize(const json& j)
 	string strCaption = j["Caption"].get<string>();
 	m_strCaption = StringToWStringU8(strCaption);
 
-	Ready_Components_File(m_strTextureTag);
+	CUI_Button::Ready_Components_File(m_strTextureTag);
 
-	Update_Data();
 }
 
 CUI_Button::CUI_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -87,11 +86,7 @@ HRESULT CUI_Button::Initialize(void* pArg)
 	if (nullptr == pArg)
 		return S_OK;
 
-
-
 	BUTTON_UI_DESC* pDesc = static_cast<BUTTON_UI_DESC*>(pArg);
-
-	
 
 	if (FAILED(Ready_Components(m_strTextureTag)))
 		return E_FAIL;
@@ -120,10 +115,16 @@ void CUI_Button::Update(_float fTimeDelta)
 
 void CUI_Button::Late_Update(_float fTimeDelta)
 {
+	if (!m_isActive)
+		return;
+
+	
 	if (!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI_DEFERRED, this);
+	
+
 }
 
 HRESULT CUI_Button::Render()
@@ -157,12 +158,12 @@ HRESULT CUI_Button::Ready_Components(const wstring& strTextureTag)
 	// 마스크, 하이라이트 텍스처 있으면 좋겠는데? 
 	
 		/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
 		TEXT("Com_Texture_Hover"), reinterpret_cast<CComponent**>(&m_pHoverTextureCom))))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
 		TEXT("Com_Texture_Highlight"), reinterpret_cast<CComponent**>(&m_pHighlightTextureCom))))
 		return E_FAIL;
 
@@ -171,8 +172,6 @@ HRESULT CUI_Button::Ready_Components(const wstring& strTextureTag)
 
 HRESULT CUI_Button::Ready_Components_File(const wstring& strTextureTag)
 {
-	__super::Ready_Components_File(strTextureTag);
-
 	
 
 	if (strTextureTag != L"")
@@ -184,12 +183,12 @@ HRESULT CUI_Button::Ready_Components_File(const wstring& strTextureTag)
 	// 마스크, 하이라이트 텍스처 있으면 좋겠는데? 
 
 		/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
 		TEXT("Com_Texture_Hover"), reinterpret_cast<CComponent**>(&m_pHoverTextureCom))))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
 		TEXT("Com_Texture_Highlight"), reinterpret_cast<CComponent**>(&m_pHighlightTextureCom))))
 		return E_FAIL;
 

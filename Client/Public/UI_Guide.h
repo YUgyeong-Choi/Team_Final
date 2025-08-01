@@ -44,8 +44,15 @@ public:
 
 	void Check_Button();
 
+	void Click_Interaction();
+
+	virtual void Active_Update(_bool isActive) override;
+
 private:
 	CUI_Container* m_pBackGround = {nullptr};
+	CUI_Container* m_pButtonContainer = {nullptr};
+
+	// 닫기 오른쪽 왼쪽 순서로 들어감
 	vector<CUI_Button*> m_Buttons = {};
 	vector<CUI_Container*> m_Explainations = {};
 

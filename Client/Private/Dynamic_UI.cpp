@@ -59,7 +59,7 @@ void CDynamic_UI::Deserialize(const json& j)
 		}
 	}
 
-	Ready_Components_File(m_strTextureTag);
+	CDynamic_UI::Ready_Components_File(m_strTextureTag);
 
 	Update_Data();
 }
@@ -118,7 +118,10 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 	if (nullptr == pArg)
 		return S_OK;
 
+
 	DYNAMIC_UI_DESC* pDesc = static_cast<DYNAMIC_UI_DESC*>(pArg);
+
+	
 
 	m_strTextureTag = pDesc->strTextureTag;
 
@@ -182,10 +185,17 @@ void CDynamic_UI::Update(_float fTimeDelta)
 
 void CDynamic_UI::Late_Update(_float fTimeDelta)
 {
+	if (!m_isActive)
+		return;
+
+	
 	if (!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI_DEFERRED, this);
+
+	
+
 }
 
 HRESULT CDynamic_UI::Render()
@@ -264,18 +274,18 @@ void CDynamic_UI::Reset()
 HRESULT CDynamic_UI::Ready_Components(const wstring& strTextureTag)
 {
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	if (strTextureTag != L"")
 	{
 		/* For.Com_Texture */
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
+		if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 	}
@@ -290,18 +300,18 @@ HRESULT CDynamic_UI::Ready_Components_File(const wstring& strTextureTag)
 
 	m_strTextureTag = strTextureTag;
 
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	if (strTextureTag != L"")
 	{
 		/* For.Com_Texture */
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
+		if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 	}

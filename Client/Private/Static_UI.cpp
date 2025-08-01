@@ -26,7 +26,7 @@ void CStatic_UI::Deserialize(const json& j)
 	m_iTextureIndex = j["iTextureIndex"];
 	m_iPassIndex = j["iPassIndex"];
 
-	Ready_Components_File(m_strTextureTag);
+	CStatic_UI::Ready_Components_File(m_strTextureTag);
 
 	Update_Data();
 }
@@ -59,6 +59,7 @@ HRESULT CStatic_UI::Initialize(void* pArg)
 
 	STATIC_UI_DESC* pDesc = static_cast<STATIC_UI_DESC*>(pArg);
 
+	
 	m_strTextureTag = pDesc->strTextureTag;
 	m_iTextureLevel = pDesc->iTextureLevel;
 
@@ -177,15 +178,15 @@ void CStatic_UI::Update_UI_From_Tool(void* pArg)
 HRESULT CStatic_UI::Ready_Components(const wstring& strTextureTag)
 {
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(m_iTextureLevel, strTextureTag,
+	if (FAILED(__super::Replace_Component(m_iTextureLevel, strTextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -199,15 +200,15 @@ HRESULT CStatic_UI::Ready_Components_File(const wstring& strTextureTag)
 	m_strTextureTag = strTextureTag;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(m_iTextureLevel, strTextureTag,
+	if (FAILED(__super::Replace_Component(m_iTextureLevel, strTextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
