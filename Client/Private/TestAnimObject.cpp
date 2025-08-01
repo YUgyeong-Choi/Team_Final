@@ -113,47 +113,11 @@ void CTestAnimObject::Update(_float fTimeDelta)
 		m_pModelCom->Update_Bones();
 	}
 	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
-	bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
+	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 	_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 
 	if (bUseRoot)
 	{
-		//_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
-		//_float4 rootRotationDelta = m_pAnimator->GetRootRotationDelta();
-		//static const XMMATRIX matPre =
-		//	XMMatrixScaling(0.01f, 0.01f, 0.01f)
-		//	* XMMatrixRotationX(XMConvertToRadians(-90.f))
-		//	* XMMatrixRotationY(XMConvertToRadians(-90.f));
-		//_vector vLocalPos = XMVectorSetW(XMLoadFloat3(&rootMotionDelta),1.f);
-		//vLocalPos = XMVector3TransformCoord(vLocalPos, matPre);
-		//_vector vLocalRot = XMLoadFloat4(&rootRotationDelta);
-		//vLocalRot = XMVector3TransformCoord(vLocalRot, matPre);
-
-		//// 현재 위치와 회전
-
-		//PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
-		//_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.8f, (float)pos.z, 1.f);
-		//// 회전은 Y축 회전만 적용
-		//_vector vRot = XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(XMVectorGetY(vLocalRot)));
-		//// 위치 업데이트
-		//vPos += vLocalPos;
-		//// 회전 업데이트
-		//_float3 moveVec;
-		//XMStoreFloat3(&moveVec, vPos);
-		//PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
-		//PxControllerFilters filters;
-
-		//PxControllerCollisionFlags collisionFlags =
-		//	m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
-
-
-		
-	//	static const XMMATRIX matPre = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	/*	rootMotionDelta = {
-			rootMotionDelta.x,
-			rootMotionDelta.y
-			rootMotionDelta.z
-		};*/
 		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
 
 		cout << "Local Delta: " << rootMotionDelta.x << ", " << rootMotionDelta.y << ", " << rootMotionDelta.z << endl;

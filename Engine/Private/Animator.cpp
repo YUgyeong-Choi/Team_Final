@@ -226,7 +226,7 @@ void CAnimator::Update(_float fDeltaTime)
 
 			if (m_pCurrentAnim->IsRootMotionEnabled())
 			{
-				CBone* rootBone = m_Bones[6];
+				CBone* rootBone = m_Bones[1];
 				CBone* pelvisBone = m_Bones[7];
 
 				// 꺼내온 조합 행렬

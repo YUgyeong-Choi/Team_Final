@@ -51,7 +51,7 @@ HRESULT CBone::Initialize( ifstream& ifs)
 void CBone::Update_CombinedTransformationMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
 	
-	if (m_iParentBoneIndex == 6)// 여기 수정하기
+	if (m_iParentBoneIndex == 1) // 1번이 트랜스레이션 
  	{
 		m_iParentBoneIndex = -1;
 	}
