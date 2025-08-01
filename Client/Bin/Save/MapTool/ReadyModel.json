@@ -1,7 +1,7 @@
 [
     {
         "ModelName": "FloorB",
-        "ObjectCount": 5,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorB.bin"
     },
     {
@@ -10,9 +10,39 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingD_Stairs_01.bin"
     },
     {
-        "ModelName": "SM_Exterior_Bench_03",
-        "ObjectCount": 34,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Bench_03.bin"
+        "ModelName": "SM_CH_PROB_Corpse_01_Male",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_01_Male.bin"
+    },
+    {
+        "ModelName": "SM_CH_PROB_Corpse_02_Male",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_02_Male.bin"
+    },
+    {
+        "ModelName": "SM_CH_PROB_Corpse_03_Female",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_03_Female.bin"
+    },
+    {
+        "ModelName": "SM_CH_PROB_Corpse_03_Male",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_03_Male.bin"
+    },
+    {
+        "ModelName": "SM_CH_PROB_Corpse_04_Female",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
+    },
+    {
+        "ModelName": "SM_CH_PROB_Corpse_05_Female",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_05_Female.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_Clock_01",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Clock_01.bin"
     },
     {
         "ModelName": "SM_Exterior_Suitcase_01",
@@ -40,6 +70,11 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_transportcart_01.bin"
     },
     {
+        "ModelName": "SM_Station_Bench_01",
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Bench_01.bin"
+    },
+    {
         "ModelName": "SM_Station_BlueFairy_01",
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_01.bin"
@@ -51,17 +86,17 @@
     },
     {
         "ModelName": "SM_Station_BlueFairy_02",
-        "ObjectCount": 4,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_02a",
-        "ObjectCount": 4,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02a.bin"
     },
     {
         "ModelName": "SM_Station_BlueFairy_02b",
-        "ObjectCount": 4,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_02b.bin"
     },
     {
@@ -95,8 +130,33 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_04b.bin"
     },
     {
+        "ModelName": "SM_Station_Clock_02",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Clock_02.bin"
+    },
+    {
+        "ModelName": "SM_Station_FStair_01",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FStair_01.bin"
+    },
+    {
         "ModelName": "SM_Station_Railway_01",
         "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Railway_01.bin"
+    },
+    {
+        "ModelName": "SM_Station_Sign_02B",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Sign_02B.bin"
+    },
+    {
+        "ModelName": "SM_Station_Sign_02C",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Sign_02C.bin"
+    },
+    {
+        "ModelName": "SM_Station_TrainStationRoof_01",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainStationRoof_01.bin"
     }
 ]
