@@ -93,6 +93,11 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 
 void CTestAnimObject::Priority_Update(_float fTimeDelta)
 {
+	// 문여는 컷씬
+	if (m_pGameInstance->Key_Down(DIK_N))
+	{
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
+	}
 
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
@@ -101,6 +106,7 @@ void CTestAnimObject::Priority_Update(_float fTimeDelta)
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
 }
+
 void CTestAnimObject::Update(_float fTimeDelta)
 {
 	if (m_pAnimator)
@@ -111,6 +117,10 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	{
 		m_pModelCom->Update_Bones();
 	}
+
+	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+		return;
+
 	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
 	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 	_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
@@ -149,6 +159,7 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	{
 		SetMoveState(fTimeDelta);
 	}
+
 	Input_Test(fTimeDelta);
 }
 
