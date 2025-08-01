@@ -57,6 +57,12 @@ public:
 	void SetfFalloff(_float fFalloff) { m_pLight->Get_LightDesc()->fFalloff = fFalloff; }
 	_float GetfFalloff() { return m_pLight->Get_LightDesc()->fFalloff; }
 
+	void SetfFogDensity(_float fFogDensity) { m_pLight->Get_LightDesc()->fFogDensity = fFogDensity; }
+	_float GetfFogDensity() { return m_pLight->Get_LightDesc()->fFogDensity; }
+
+	void SetfFogCutOff(_float fFogCutoff) { m_pLight->Get_LightDesc()->fFogCutoff = fFogCutoff; }
+	_float GetfFogCutOff() { return m_pLight->Get_LightDesc()->fFogCutoff; }
+
 	_int GetLightType() { return static_cast<int>(m_pLight->Get_LightDesc()->eType); }
 
 private:

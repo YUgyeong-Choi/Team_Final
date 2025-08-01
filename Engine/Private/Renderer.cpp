@@ -342,7 +342,7 @@ HRESULT CRenderer::Draw()
 	}
 
 
-	/* 블렌딩이전에 백버퍼를 완성시키낟.  */
+	/* 블렌딩이전에 백버퍼를 완성시킨다.  */
 	if (FAILED(Render_Blend()))
 	{
 		MSG_BOX("Render_Blend Failed");
