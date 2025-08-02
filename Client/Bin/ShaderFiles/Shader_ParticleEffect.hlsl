@@ -124,7 +124,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     
-    if(Out.vColor.a < 0.1f)
+    if(Out.vColor.a < 0.003f)
         discard;
     
     // 이부분도 변수로 받을 수 있으면??
@@ -142,7 +142,7 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
     PS_OUT Out;
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
-    if (mask < 0.1f)
+    if (mask < 0.003f)
         discard;
     float4 color;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
@@ -171,7 +171,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_ReadOnlyDepth, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
         VertexShader = compile vs_5_0 VS_MAIN();    
@@ -182,7 +182,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_ReadOnlyDepth, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
         VertexShader = compile vs_5_0 VS_MAIN();    

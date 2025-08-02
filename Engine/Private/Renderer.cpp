@@ -127,21 +127,30 @@ HRESULT CRenderer::Initialize()
 	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_PBR_Diffuse"))))
 	//	return E_FAIL;
 
-	// 블러 부활
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurX"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurY"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurX"), TEXT("Target_BlurX"))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurY"), TEXT("Target_BlurY"))))
-		return E_FAIL;
-
 	// 다른 곳에서도 블러 사용할 수도 있으니까 블러용 렌더타겟은 별도로 두고 글로우 용 렌더타겟 따로 두겠습니다
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_Glow"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlend_Glow"), TEXT("Target_EffectBlend_Glow"))))
 		return E_FAIL;
+
+	// downscale 배율
+	//m_fDownscaledRatio = 0.0625f; // 1/16
+	//m_fDownscaledRatio = 0.125f;	// 1/8
+	m_fDownscaledRatio = 0.25f;		// 1/4
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Downscaled"), static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio), static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effectblend_Downscaled"), TEXT("Target_Effect_Downscaled"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DownscaledBlurX"), static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio), static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DownscaledBlurY"), static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio), static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurX"), TEXT("Target_DownscaledBlurX"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurY"), TEXT("Target_DownscaledBlurY"))))
+		return E_FAIL;
+
 
 
 	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
@@ -314,7 +323,7 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
+	if (FAILED(Render_Blur(TEXT("Target_Effect_Downscaled"))))
 	{
 		MSG_BOX("Render_Blur Failed");
 		return E_FAIL;
@@ -800,18 +809,60 @@ HRESULT CRenderer::Render_Effect_Blend()
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
 
-	return S_OK;
-}
+	/* [ Downscale RT ] */
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Effectblend_Downscaled"));
 
-HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag)
-{
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
+	// 다운스케일 복사
+	if (FAILED(Change_ViewportDesc(static_cast<_uint>(m_iOriginalViewportWidth * m_fDownscaledRatio), static_cast<_uint>(m_iOriginalViewportHeight * m_fDownscaledRatio))))
+		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
+		return E_FAIL;
+
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::DOWNSCALE));
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	if (FAILED(Change_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag, _bool bDownscale)
+{
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
+
+	_float fCurVPSizeX = { static_cast<_float>(m_iOriginalViewportWidth) };
+	_float fCurVPSizeY = { static_cast<_float>(m_iOriginalViewportHeight) };
+
+	if (bDownscale)
+	{
+		// 뷰포트
+		if (FAILED(Change_ViewportDesc(static_cast<_uint>(m_iOriginalViewportWidth * m_fDownscaledRatio), static_cast<_uint>(m_iOriginalViewportHeight * m_fDownscaledRatio))))
+			return E_FAIL;
+
+		fCurVPSizeX *= m_fDownscaledRatio;
+		fCurVPSizeY *= m_fDownscaledRatio;
+	}
+
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fViewportSizeX", &fCurVPSizeX, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(strTargetTag, m_pShader, "g_PreBlurTexture")))
 		return E_FAIL;
@@ -824,13 +875,18 @@ HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag)
 	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"));
 
 	/* 백버퍼에 찍는다. */
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_BlurX"), m_pShader, "g_BlurXTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurX"), m_pShader, "g_BlurXTexture")))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_RawValue("g_fViewportSizeY", &fCurVPSizeY, sizeof(_float))))
 		return E_FAIL;
 
 	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::BLURY));
 	m_pVIBuffer->Bind_Buffers();
 	m_pVIBuffer->Render();
 	m_pGameInstance->End_MRT();
+
+	if (FAILED(Change_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -846,7 +902,7 @@ HRESULT CRenderer::Render_Effect_Glow()
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_BlurY"), m_pShader, "g_BlurYTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurY"), m_pShader, "g_BlurYTexture")))
 		return E_FAIL;
 
 	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::EFFECT_GLOW));

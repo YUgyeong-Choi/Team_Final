@@ -54,6 +54,9 @@ private:
 #endif
 
 private:
+	_float m_fDownscaledRatio = {};
+
+private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();
 	HRESULT Render_NonBlend();
@@ -67,10 +70,10 @@ private:
 	HRESULT Render_NonLight();
 	HRESULT Render_UI_Deferred();
 	HRESULT Render_Effect_Blend();
-	HRESULT Render_Blur(const _wstring& strTargetTag);
+	HRESULT Render_Blur(const _wstring& strTargetTag, _bool bDownscale = true);
 	HRESULT Render_Effect_Glow();
 	HRESULT Render_Effect_NonLight();
-	
+
 
 private:
 	HRESULT Ready_DepthStencilView(_uint iWidth, _uint iHeight);
