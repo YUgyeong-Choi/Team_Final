@@ -16,7 +16,7 @@ CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
-
+	Safe_AddRef(m_pCamera_Manager);
 }
 
 HRESULT CLevel_YW::Initialize()
@@ -53,7 +53,7 @@ void CLevel_YW::Update(_float fTimeDelta)
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
 
-	m_pCamera_Manager->Update(fTimeDelta);
+	//m_pCamera_Manager->Update(fTimeDelta);
 	//__super::Update(fTimeDelta);
 }
 
@@ -273,6 +273,7 @@ void CLevel_YW::Free()
 	ImGui::DestroyContext();
 
 	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
+	Safe_Release(m_pCamera_Manager);
 
 	__super::Free();
 
