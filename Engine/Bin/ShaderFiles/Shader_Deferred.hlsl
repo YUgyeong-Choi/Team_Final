@@ -68,6 +68,8 @@ vector g_vCamPosition;
 Texture2D g_MaskTexture;
 Texture2D g_UITexture;
 
+float g_fViewportSizeX, g_fViewportSizeY;
+
 /* [ 볼륨메트리 포그 함수 ] */
 float Hash(float3 p)
 {
@@ -885,9 +887,13 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     finalColor = Out.vBackBuffer;
     
     
+    /* [ 이펙트 + 글로우 ] */
+    //float fGlowIntensity = 3.f;
     
     vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
     vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
+    //EffectBlendGlow.rgb *= fGlowIntensity;
+   // EffectBlendGlow.a *= 1.5f;
     EffectBlendDiffuse += EffectBlendGlow;
     finalColor += EffectBlendDiffuse;
     
@@ -970,10 +976,25 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     return Out;    
 }
 
-
-float g_fWeights[13] =
+float g_f7Weights[7] =
 {
-    0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231, 1.f, 0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
+    0.0702, 0.1315, 0.1900, 0.2166, 0.1900, 0.1315, 0.0702
+};
+
+float g_f13Weights[13] =
+{
+    0.01855, 0.03416, 0.05634, 0.08316, 0.10971, 0.12962,
+    0.13703,
+    0.12962, 0.10971, 0.08316, 0.05634, 0.03416, 0.01855 
+};
+
+float g_f21Weights[21] =
+{
+    0.00202, 0.00413, 0.00761, 0.01320, 0.02145,
+    0.03264, 0.04630, 0.06134, 0.07619, 0.08921,
+    0.09810,
+    0.10177, 0.09810, 0.08921, 0.07619, 0.06134,
+    0.04630, 0.03264, 0.02145, 0.01320, 0.00761
 };
 
 struct PS_OUT_BLUR
@@ -991,13 +1012,11 @@ PS_OUT_BLUR PS_MAIN_BLURX(PS_IN In)
     
     for (int i = -6; i < 7; ++i)
     {
-        vTexcoord.x = In.vTexcoord.x + i / 1600.f;
+        vTexcoord.x = In.vTexcoord.x + i / g_fViewportSizeX;
         vTexcoord.y = In.vTexcoord.y;
   
-        Out.vColor += g_fWeights[i + 6] * g_PreBlurTexture.Sample(LinearClampSampler, vTexcoord);
+        Out.vColor += g_f13Weights[i + 6] * g_PreBlurTexture.Sample(LinearClampSampler, vTexcoord);
     }
-
-    Out.vColor /= 6.0f;
     
     return Out;
 }
@@ -1013,12 +1032,10 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
     for (int i = -6; i < 7; ++i)
     {
         vTexcoord.x = In.vTexcoord.x;
-        vTexcoord.y = In.vTexcoord.y + i / 900.f;
+        vTexcoord.y = In.vTexcoord.y + i / g_fViewportSizeY;
   
-        Out.vBackBuffer += g_fWeights[i + 6] * g_BlurXTexture.Sample(LinearClampSampler, vTexcoord);
+        Out.vBackBuffer += g_f13Weights[i + 6] * g_BlurXTexture.Sample(LinearClampSampler, vTexcoord);
     }
-
-    Out.vBackBuffer /= 6.0f;
     
     return Out;
 }
@@ -1029,6 +1046,18 @@ PS_OUT PS_EFFECT_GLOW(PS_IN In)
     
     Out.vBackBuffer = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord);
     /* 기타 잡기술 */
+    Out.vBackBuffer.rgb *= 3.f;
+    Out.vBackBuffer.a *= 1.5f;
+    // 밖에서 값 변경해가면서 볼 수 있으면 좋겠는데 당장 안 될 것 같으므로 고정함
+    
+    return Out;
+}
+
+PS_OUT PS_COPYONLY(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vBackBuffer = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
     
     return Out;
 }
@@ -1207,5 +1236,15 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_EFFECT_GLOW();
+    }   
+    pass Downscale_Copy //14 다운스케일 용으로 만들었는데 그냥 카피만 해주는 패스임
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_COPYONLY();
     }
 }

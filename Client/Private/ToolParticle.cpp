@@ -55,8 +55,10 @@ void CToolParticle::Late_Update(_float fTimeDelta)
 
 	// 아래 변수로 교체할 것 
 	//(RENDERGROUP)m_iRenderGroup;
+	// 임시로 고정 지정
+	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_DEFFERED;
 
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_EFFECT_DEFFERED, this);
+	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
 
 HRESULT CToolParticle::Render()
@@ -73,7 +75,7 @@ HRESULT CToolParticle::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
-
+		
 	return S_OK;
 }
 

@@ -103,7 +103,7 @@ HRESULT CCYTool::Render()
 	//if (FAILED(Render_EffectTool()))
 	//	return E_FAIL;
 	//ImGui::ShowDemoWindow(); // Show demo window! :)
-
+	ImGuizmo::BeginFrame();
 	if (FAILED(SequenceWindow()))
 		return E_FAIL;
 
@@ -323,25 +323,34 @@ HRESULT CCYTool::Edit_Preferences()
 	switch (m_pSequence->m_Items[m_iSelected].iType)
 	{
 	case Client::EFF_SPRITE:
+		ImGui::Begin("TypeWindow");
 		if (FAILED(Window_Sprite()))
 		{
 			ImGui::End();
+			ImGui::End();
 			return E_FAIL;
 		}
+		ImGui::End();
 		break;
 	case Client::EFF_PARTICLE:
+		ImGui::Begin("TypeWindow");
 		if (FAILED(Window_Particle()))
 		{
 			ImGui::End();
-			return E_FAIL;
-		}
-		break;
-	case Client::EFF_MESH:
-		if (FAILED(Window_Mesh()))
-		{
 			ImGui::End();
 			return E_FAIL;
 		}
+		ImGui::End();
+		break;
+	case Client::EFF_MESH:
+		ImGui::Begin("TypeWindow");
+		if (FAILED(Window_Mesh()))
+		{
+			ImGui::End();
+			ImGui::End();
+			return E_FAIL;
+		}
+		ImGui::End();
 		break;
 	}
 	//ImGui::SameLine();
@@ -349,6 +358,7 @@ HRESULT CCYTool::Edit_Preferences()
 
 	ImGui::End();
 
+	Guizmo_Tool();
 
 	return S_OK;
 }
@@ -807,37 +817,6 @@ HRESULT CCYTool::Load_Textures()
 	return S_OK;
 }
 
-//HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
-//{
-//	ImGui::Text("Select a Texture:");
-//	int columnCount = 4; // 한 줄에 몇 개 보여줄지
-//
-//	ImGui::BeginChild("TextureGrid", ImVec2(0, 300), true); // 스크롤 영역
-//	ImGui::Columns(columnCount, nullptr, false);
-//
-//	for (int i = 0; i < m_Textures.size(); ++i) {
-//		ImGui::PushID(i);
-//
-//		// 텍스처 미리보기 이미지
-//		if (ImGui::ImageButton("SelectTexture", reinterpret_cast<ImTextureID>(m_Textures[i].pSRV), ImVec2(64, 64))) {
-//			m_iSelectedTextureIdx = i;
-//			if (FAILED(pEffect->Change_Texture(StringToWString(m_Textures[i].name))))
-//				return E_FAIL;
-//		}
-//
-//		// 텍스트 이름
-//		ImGui::TextWrapped("%s", m_Textures[i].name.c_str());
-//
-//		ImGui::NextColumn();
-//		ImGui::PopID();
-//	}
-//
-//	ImGui::Columns(1);
-//	ImGui::EndChild();
-//
-//	return S_OK;
-//}
-
 HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 {
 	ImGui::BeginGroup();
@@ -928,6 +907,45 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 	return S_OK;
 }
 
+HRESULT CCYTool::Guizmo_Tool()
+{
+	if (m_isGizmoEnable && m_iSelected != -1)
+	{
+		// ImGui 프레임 내부에서 호출
+
+		ImGuizmo::SetOrthographic(false); // 투영 방식 설정 (false = Perspective)
+		ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList()); // 기본 ImGui drawlist 사용
+
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGuizmo::SetRect(viewport->Pos.x, viewport->Pos.y, viewport->Size.x, viewport->Size.y);
+
+		auto pObjTransformCom = m_pSequence->m_Items[m_iSelected].pEffect->Get_TransfomCom();
+
+		_float4x4 matView = *m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW);
+		_float4x4 matProj = *m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ);
+
+		/* 스냅 오프셋 조절, 회전은 15도 기준*/
+		_float snapoffset[3] = {};
+		if (KEY_PRESSING(DIK_LSHIFT))
+		{
+			if (m_eOperation == ImGuizmo::ROTATE)
+				snapoffset[0] = 15.f;
+			else
+				snapoffset[0] = snapoffset[1] = snapoffset[2] = 1.f;
+		}
+
+		/* 실제 조작하는 부분 */
+		ImGuizmo::Manipulate(
+			reinterpret_cast<const _float*>(&matView),
+			reinterpret_cast<const _float*>(&matProj),
+			m_eOperation, m_eMode,
+			reinterpret_cast<_float*>(&pObjTransformCom->Get_World4x4()),
+			nullptr, snapoffset);
+
+	}
+	return S_OK;
+}
+
 
 void CCYTool::Key_Input()
 {
@@ -944,6 +962,34 @@ void CCYTool::Key_Input()
 		{
 			m_pSequence->Del(m_iSelected);
 			m_iSelected = - 1;
+		}
+	}
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (m_isGizmoEnable)
+		{
+			if (KEY_DOWN(DIK_W)) {
+				m_eOperation = ImGuizmo::TRANSLATE;
+			}
+			else if (KEY_DOWN(DIK_E)) {
+				m_eOperation = ImGuizmo::ROTATE;
+			}
+			else if (KEY_DOWN(DIK_R)) {
+				m_eOperation = ImGuizmo::SCALE;
+			}
+		}
+		if (KEY_DOWN(DIK_Q)) {
+			m_isGizmoEnable = !m_isGizmoEnable;
+		}
+		
+		if (KEY_DOWN(DIK_T)) {
+			if (m_iSelected != -1)
+			{
+				CEffectBase::EFFKEYFRAME newKF = {};
+				newKF.fTrackPosition = static_cast<_float>(m_iCurFrame - *m_pSequence->m_Items[m_iSelected].iStart);
+				m_pSequence->m_Items[m_iSelected].pEffect->Add_KeyFrame(newKF);
+			}
+
 		}
 	}
 }

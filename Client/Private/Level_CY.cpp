@@ -115,7 +115,8 @@ HRESULT CLevel_CY::Ready_Lights()
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
+	LightDesc.fFogDensity = 0.f;
+		
 	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::CY), LightDesc)))
 		return E_FAIL;
 
@@ -180,6 +181,14 @@ HRESULT CLevel_CY::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	lstrcpy(Desc.szName, TEXT("SM_Cathedral_FloorBR_03"));
 	Desc.InitPos = _float3(0.f, 0.f, 5.f);
 	Desc.InitScale = _float3(3.f, 3.f, 3.f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("TestMap");
+	lstrcpy(Desc.szName, TEXT("TestMap"));
+	Desc.InitPos = _float3(0.f, 0.f, 0.f);
+	Desc.InitScale = _float3(10.f, 10.f, 10.f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
 		return E_FAIL;
