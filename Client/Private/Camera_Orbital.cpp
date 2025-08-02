@@ -70,7 +70,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 		_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-		//printf("x: %f, y: %f, z: %f\n", x, y, z);
+		//printf("m_fPitch: %f, m_fYaw: %f\n", m_fPitch, m_fYaw, z);
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
@@ -114,7 +114,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 		// 위치 보간 (LERP)
-		_float fInterpSpeed = 5.0f;
+		_float fInterpSpeed = 8.0f;
 		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
 
 		// 카메라 설정
@@ -131,6 +131,12 @@ void CCamera_Orbital::Late_Update(_float fTimeDelta)
 HRESULT CCamera_Orbital::Render()
 {
 	return S_OK;
+}
+
+void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
+{
+	m_fPitch = pitch;
+	m_fYaw = yaw;
 }
 
 CCamera_Orbital* CCamera_Orbital::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
