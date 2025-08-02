@@ -54,7 +54,6 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 			_bool bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
 			m_bReadyCutScene = bFinish;
-			return;
 		}
 
 		if (m_bReadyCutScene && !m_bReadyCutSceneOrbital)
@@ -124,14 +123,20 @@ void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
 {
 	m_CameraDatas = CameraFrameData;
 	m_bReadySetOrbitalPos = CameraFrameData.bReadySetOrbitalPos;
+	if (m_bReadySetOrbitalPos)
+		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 	m_bReadyCutSceneOrbital = CameraFrameData.bReadyCutSceneOrbital;
+	m_bReadyCutScene = false;
 }
 
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 {
 	m_CameraDatas = m_CutSceneDatas[cutSceneType];
 	m_bReadySetOrbitalPos = m_CameraDatas.bReadySetOrbitalPos;
+	if (m_bReadySetOrbitalPos)
+		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 	m_bReadyCutSceneOrbital = m_CameraDatas.bReadyCutSceneOrbital;
+	m_bReadyCutScene = false;
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -329,6 +334,16 @@ HRESULT CCamera_CutScene::InitDatas()
 
 		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::ONE, LoadCameraFrameData(j)));
 	}
+
+	std::ifstream inFile2("../Bin/Save/CutScene/two.json");
+	if (inFile2.is_open())
+	{
+		json j;
+		inFile2 >> j;
+		inFile2.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TWO, LoadCameraFrameData(j)));
+	}
 	return S_OK;
 }
 
@@ -338,6 +353,8 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 
 	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
+	data.bReadySetOrbitalPos = j.value("bStartBlend", false);
+	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
 
 	// 2. vecPosData
 	if (j.contains("vecPosData"))

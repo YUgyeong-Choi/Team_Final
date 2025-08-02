@@ -34,11 +34,11 @@ HRESULT CLevel_YG::Initialize()
 	if (FAILED(Ready_ImGuiTools()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
-		return E_FAIL;
-
-	//if (FAILED(Ready_Layer_Station(TEXT("Layer_StaticMesh"))))
+	//if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
 	//	return E_FAIL;
+
+	if (FAILED(Ready_Layer_Station(TEXT("Layer_StaticMesh"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
@@ -174,7 +174,7 @@ HRESULT CLevel_YG::Ready_Player()
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::STATIC;
-	pDesc.InitPos = _float3(0.f, 5.f, 0.f);
+	pDesc.InitPos = _float3(0.f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");

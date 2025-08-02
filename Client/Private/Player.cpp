@@ -40,6 +40,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	/* [ 초기화 위치값 ] */
 	m_pTransformCom->Set_State(STATE::POSITION, _vector{ m_InitPos.x, m_InitPos.y, m_InitPos.z });
+	m_pTransformCom->Rotation(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));
 	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
 
 	/* [ 위치 초기화 후 콜라이더 생성 ] */
@@ -49,6 +50,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 	SyncTransformWithController();
+
+	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 	return S_OK;
 }
 

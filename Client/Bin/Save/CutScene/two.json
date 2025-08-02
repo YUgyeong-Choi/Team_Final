@@ -1,11 +1,11 @@
 {
     "bEndBlend": false,
     "bStartBlend": true,
-    "iEndFrame": 170,
+    "iEndFrame": 200,
     "vecPosData": [
         {
             "interpPosition": 1,
-            "keyFrame": 0,
+            "keyFrame": 20,
             "worldMatrix": [
                 -0.0075423759408295155,
                 1.3726564773719474e-08,
@@ -27,7 +27,7 @@
         },
         {
             "interpPosition": 0,
-            "keyFrame": 129,
+            "keyFrame": 199,
             "worldMatrix": [
                 -0.007541786413639784,
                 1.3725491854188476e-08,
