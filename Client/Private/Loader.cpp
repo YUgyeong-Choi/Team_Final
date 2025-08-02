@@ -46,6 +46,7 @@
 #include "StaticMesh.h"
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
+#include "Player.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -231,7 +232,8 @@ HRESULT CLoader::Loading_For_Static()
 	
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
+
+	_matrix PreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_SkyBox"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Sky/SkyBox.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -292,11 +294,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
+	/* [ 메인 플레이어 로딩 ] */
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 
-	// 애니메이션 모델 테스트 (현재 플레이어 모델 테스트)
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_TestAnimObject"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Player"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
 		return E_FAIL;
 	
@@ -318,6 +320,12 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	m_fRatio = 0.7f;
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+	/* [ 메인 플레이어 로딩 ] */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

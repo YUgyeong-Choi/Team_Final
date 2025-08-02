@@ -8,6 +8,7 @@
 #include "PhysX_IgnoreSelfCallback.h"
 #include "PhysXController.h"
 
+#include "PlayerState.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -28,26 +29,47 @@ HRESULT CPlayer::Initialize(void* pArg)
 	PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
 
 
-	if (FAILED(__super::Initialize(&pDesc)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	/* [ 플레이어 제이슨 로딩 ] */
+	LoadPlayerFromJson();
+
+	/* [ 초기화 위치값 ] */
+	m_pTransformCom->Set_State(STATE::POSITION, _vector{ m_InitPos.x, m_InitPos.y, m_InitPos.z });
+	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
+
+	/* [ 위치 초기화 후 콜라이더 생성 ] */
+	if (FAILED(Ready_Collider()))
+		return E_FAIL;
+
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
-
+	SyncTransformWithController();
 	return S_OK;
 }
 
+
+
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+	// 문여는 컷씬
+	if (KEY_DOWN(DIK_N))
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
+
+	if (KEY_DOWN(DIK_Y))
+	{
+		if (m_fTimeScale == 1.f)
+			m_fTimeScale = 0.5f;
+		else
+			m_fTimeScale = 1.f;
+	}
+
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
-	/* [ 움직임 전용 함수 ] */
-	SetMoveState(fTimeDelta);
-	/* [ 스테이트 관리 ] */
-	Input_Test(fTimeDelta);
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
 
@@ -55,7 +77,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 }
 void CPlayer::Update(_float fTimeDelta)
 {
+	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
+
+	/* [ 입력 ] */
+	//HandleInput();
+	//UpdateCurrentState(fTimeDelta);
+
+
+	// 바꿀 예정
+	Movement(fTimeDelta);
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -70,14 +101,114 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
+void CPlayer::HandleInput()
+{
+	/* [ 키 입력을 업데이트합니다. ] */
+	m_Input.bUp = KEY_PRESSING(DIK_W);
+	m_Input.bDown = KEY_PRESSING(DIK_S);
+	m_Input.bLeft = KEY_PRESSING(DIK_A);
+	m_Input.bRight = KEY_PRESSING(DIK_D);
+
+	/* [ 마우스 입력을 업데이트합니다. ] */
+	m_Input.bRightMouseDown = MOUSE_DOWN(DIM::RBUTTON);
+	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
+	m_Input.bRightMouseUp = MOUSE_UP(DIM::RBUTTON);
+}
+
+EPlayerState CPlayer::EvaluateTransitions()
+{
+	if (!m_pCurrentState)
+		return m_eCurrentState;
+
+	return m_pCurrentState->EvaluateTransitions(m_Input);
+}
+
+void CPlayer::UpdateCurrentState(_float fTimeDelta)
+{
+	if (!m_pCurrentState)
+		return;
+
+	EPlayerState eNextState = EvaluateTransitions();
+
+	if (eNextState != m_eCurrentState && m_pCurrentState->CanExit())
+	{
+		m_pCurrentState->Exit();
+
+		m_eCurrentState = eNextState;
+		m_pCurrentState = m_StateMap[m_eCurrentState];
+
+		m_pCurrentState->Enter();
+	}
+
+	m_pCurrentState->Execute(fTimeDelta);
+	TriggerStateEffects();
+}
+
+void CPlayer::TriggerStateEffects()
+{
+	switch (m_eCurrentState)
+	{
+	case EPlayerState::IDLE:
+		//m_SoundPlayer->Play("Idle");
+		break;
+
+	case EPlayerState::WALK:
+		//m_SoundPlayer->Play("Walk");
+		break;
+
+	default:
+		break;
+	}
+}
+
+
+
 HRESULT CPlayer::Ready_Components()
 {
 	/* [ 따로 붙일 컴포넌트를 붙여보자 ] */
 
 	return S_OK;
 }
+void CPlayer::LoadPlayerFromJson()
+{
+	string path = "../Bin/Save/AnimationEvents/" + m_pModelCom->Get_ModelName() + "_events.json";
+	ifstream ifs(path);
+	if (ifs.is_open())
+	{
+		json root;
+		ifs >> root;
+		if (root.contains("animations"))
+		{
+			auto& animationsJson = root["animations"];
+			auto& clonedAnims = m_pModelCom->GetAnimations();
 
-void CPlayer::Input_Test(_float fTimeDelta)
+			for (const auto& animData : animationsJson)
+			{
+				const string& clipName = animData["ClipName"];
+
+				for (auto& pAnim : clonedAnims)
+				{
+					if (pAnim->Get_Name() == clipName)
+					{
+						pAnim->Deserialize(animData);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	path = "../Bin/Save/AnimationStates/" + m_pModelCom->Get_ModelName() + "_States.json";
+	ifstream ifsStates(path);
+	if (ifsStates.is_open())
+	{
+		json rootStates;
+		ifsStates >> rootStates;
+		m_pAnimator->Deserialize(rootStates);
+	}
+}
+
+void CPlayer::SetPlayerState(_float fTimeDelta)
 {
 	_bool bUp = m_pGameInstance->Key_Pressing(DIK_W);
 	_bool bDown = m_pGameInstance->Key_Pressing(DIK_S);
@@ -253,6 +384,73 @@ void CPlayer::Input_Test(_float fTimeDelta)
 	}
 }
 
+void CPlayer::Movement(_float fTimeDelta)
+{
+	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+		return;
+
+	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
+	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
+
+
+	if (bUseRoot)
+	{
+		_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+		_float4 		rootMotionQuat = m_pAnimator->GetRootRotationDelta();
+		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
+
+		_vector vScale, vRotQuat, vTrans;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
+
+		PxControllerFilters filters;
+		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
+
+		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
+		vWorldDelta = XMVectorSetY(vWorldDelta, dy);
+
+		_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
+		_vector finalDelta;
+		if (fDeltaMag > m_fSmoothThreshold)
+		{
+			_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
+			finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+		}
+		else
+		{
+			finalDelta = vWorldDelta;
+		}
+		m_PrevWorldDelta = finalDelta;
+
+		PxVec3 pos{
+			XMVectorGetX(finalDelta),
+			XMVectorGetY(finalDelta),
+			XMVectorGetZ(finalDelta)
+		};
+
+		m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
+		SyncTransformWithController();
+		_vector vTmp{};
+		XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
+		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
+		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
+		_matrix newWorld =
+			XMMatrixScalingFromVector(vScale) *
+			XMMatrixRotationQuaternion(vNewRot) *
+			XMMatrixTranslationFromVector(vTrans);
+		m_pTransformCom->Set_WorldMatrix(newWorld);
+
+		// 현재 회전 값 디버그
+		_float4 rot;
+		XMStoreFloat4(&rot, vNewRot);
+	}
+	else
+	{
+		SetMoveState(fTimeDelta);
+	}
+
+	SetPlayerState(fTimeDelta);
+}
+
 
 HRESULT CPlayer::UpdateShadowCamera()
 {
@@ -301,73 +499,50 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 
 
 	_vector vInputDir = XMVectorZero();
-	if (m_pGameInstance->Key_Pressing(DIK_W)) vInputDir += vCamLook;
-	if (m_pGameInstance->Key_Pressing(DIK_S)) vInputDir -= vCamLook;
-	if (m_pGameInstance->Key_Pressing(DIK_D)) vInputDir += vCamRight;
-	if (m_pGameInstance->Key_Pressing(DIK_A)) vInputDir -= vCamRight;
+	if (KEY_PRESSING(DIK_W)) vInputDir += vCamLook;
+	if (KEY_PRESSING(DIK_S)) vInputDir -= vCamLook;
+	if (KEY_PRESSING(DIK_D)) vInputDir += vCamRight;
+	if (KEY_PRESSING(DIK_A)) vInputDir -= vCamRight;
 
-
-	if (XMVector3Equal(vInputDir, XMVectorZero()))
+	/* [ 입력값이 있으면? ] */
+	if (!XMVector3Equal(vInputDir, XMVectorZero()))
 	{
-		_float3 moveVec = {};
+		/* [ 회전을 시킨다. ] */
+		vInputDir = XMVector3Normalize(vInputDir);
 
-		_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
-		_float fDist = fSpeed * fTimeDelta;
-		vInputDir *= fDist;
-		XMStoreFloat3(&moveVec, vInputDir);
+		_vector vPlayerLook = m_pTransformCom->Get_State(STATE::LOOK);
+		vPlayerLook = XMVectorSetY(vPlayerLook, 0.f);
+		vPlayerLook = XMVector3Normalize(vPlayerLook);
 
-		// 중력 적용
-		constexpr float fGravity = -9.81f;
-		m_vGravityVelocity.y += fGravity * fTimeDelta;
-		moveVec.y += m_vGravityVelocity.y * fTimeDelta;
+		_float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vInputDir));
+		fDot = max(-1.f, min(1.f, fDot)); // Clamp
+		_float fAngle = acosf(fDot);
 
-		PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
-		PxControllerFilters filters;
 
-		PxControllerCollisionFlags collisionFlags =
-			m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+		_vector vCross = XMVector3Cross(vPlayerLook, vInputDir);
+		if (XMVectorGetY(vCross) < 0.f)
+			fAngle = -fAngle;
 
-		// 4. 지면에 닿았으면 중력 속도 초기화
-		if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
-			m_vGravityVelocity.y = 0.f;
+		// 회전각을 직접 계산했으니 그대로 사용 가능
+		const _float fTurnSpeed = XMConvertToRadians(720.f);
+		const _float fMinAngle = XMConvertToRadians(0.5f);
 
-		SyncTransformWithController();
-		return;
+		if (fabsf(fAngle) > fMinAngle)
+		{
+			_float fClampedAngle = max(-fTurnSpeed * fTimeDelta, min(fTurnSpeed * fTimeDelta, fAngle));
+			m_pTransformCom->TurnAngle(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
+		}
 	}
 
-	vInputDir = XMVector3Normalize(vInputDir);
-
-
-	_vector vPlayerLook = m_pTransformCom->Get_State(STATE::LOOK);
-	vPlayerLook = XMVectorSetY(vPlayerLook, 0.f);
-	vPlayerLook = XMVector3Normalize(vPlayerLook);
-
-	_float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vInputDir));
-	fDot = max(-1.f, min(1.f, fDot)); // Clamp
-	_float fAngle = acosf(fDot);
-
-
-	_vector vCross = XMVector3Cross(vPlayerLook, vInputDir);
-	if (XMVectorGetY(vCross) < 0.f)
-		fAngle = -fAngle;
-
-
-	const _float fTurnSpeed = XMConvertToRadians(720.f);
-	_float fClampedAngle = max(-fTurnSpeed * fTimeDelta, min(fTurnSpeed * fTimeDelta, fAngle));
-	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
-
-
-	// 7. 이동
+	/* [ 이동을 한다. ] */
 	_float3 moveVec = {};
-
 	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
 	_float fDist = fSpeed * fTimeDelta;
 	vInputDir *= fDist;
-	//어느방향으로 몇만큼 이동한 벡터를 구함
 	XMStoreFloat3(&moveVec, vInputDir);
 
 	// 중력 적용
-	constexpr float fGravity = -9.81f;
+	constexpr _float fGravity = -9.81f;
 	m_vGravityVelocity.y += fGravity * fTimeDelta;
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
 
@@ -382,8 +557,9 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 		m_vGravityVelocity.y = 0.f;
 
 	SyncTransformWithController();
-
 }
+
+
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -395,7 +571,6 @@ CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	}
 	return pInstance;
 }
-
 CGameObject* CPlayer::Clone(void* pArg)
 {
 	CPlayer* pInstance = new CPlayer(*this);

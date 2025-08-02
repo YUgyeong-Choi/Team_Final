@@ -867,7 +867,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
     PS_OUT Out;
     
-    vector finalColor = (0.f, 0.f,0.f,0.f);
+    vector finalColor = vector(0.f, 0.f, 0.f, 0.f);
     
     /* [ ±‚¡∏ VTXMesh ] */
     vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);

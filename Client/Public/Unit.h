@@ -39,17 +39,14 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-protected:
-	void LoadAnimFromJson();
 
-
-private: /* [ Setup 함수 ] */
+protected: /* [ Setup 함수 ] */
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();
 	HRESULT Ready_Collider();
 
 
-protected: /* [ 피직스 관련 ] */
+public: /* [ 피직스 관련 ] */
 	PxRigidActor* Get_Actor();
 	void SyncTransformWithController(); // 위치동기화(컨트롤러)
 	void RayCast();
@@ -74,9 +71,11 @@ protected:				/* [ 기본 속성 ] */
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);
 	_float3				m_InitPos = {};
+	_float3				m_InitScale = {};
 	_int				m_iRender = {};
 
 protected: 				/* [ 기본 타입 ] */
+	const _tchar*		m_szName = { nullptr };
 	const _tchar*		m_szMeshID = { nullptr };
 	LEVEL				m_eLevelID = { LEVEL::END };
 

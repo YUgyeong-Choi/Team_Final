@@ -3,11 +3,10 @@
 #include "Camera_Manager.h"
 
 #include "StaticMesh.h"
-#include "TestAnimObject.h"
 #include "PBRMesh.h"
 #include "Level_Loading.h"
 
-#include "TestAnimObject.h"
+#include "Player.h"
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -28,19 +27,12 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
-
-	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	/*if (FAILED(Ready_MapModel()))
-		return E_FAIL;*/
-
-		//제이슨으로 저장된 맵을 로드한다.
-
-	//if (FAILED(LoadMap()))
-	//	return E_FAIL;
-
-	//애니메이션 오브젝트
-	if (FAILED(Ready_TestAnimObject()))
+	if (FAILED(Ready_Player()))
 		return E_FAIL;
+	/*if (FAILED(Ready_MapModel()))
+		return E_FAIL;
+	if (FAILED(LoadMap()))
+		return E_FAIL;*/
 
 	
 
@@ -68,18 +60,17 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			return;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_U))
-	{
+	if (KEY_DOWN(DIK_U))
 		m_pGameInstance->Set_GameTimeScale(1.f);
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_I))
-	{
+	if (KEY_DOWN(DIK_I))
 		m_pGameInstance->Set_GameTimeScale(0.5f);
-	}
+
+	if(KEY_DOWN(DIK_H))
+		ToggleHoldMouse();
+	if(m_bHold)
+		HoldMouse();
 
 	m_pCamera_Manager->Update(fTimeDelta);
-	HoldMouse();
 }
 
 HRESULT CLevel_KratCentralStation::Render()
@@ -211,6 +202,24 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 	return S_OK;
 }
 
+HRESULT CLevel_KratCentralStation::Ready_Player()
+{
+	CPlayer::PLAYER_DESC pDesc{};
+	//pDesc.fSpeedPerSec = 1.f;
+	pDesc.fSpeedPerSec = 5.f;
+	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc.eLevelID = LEVEL::STATIC;
+	pDesc.InitPos = _float3(0.f, 5.f, 0.f);
+	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pDesc.szName, TEXT("Player"));
+	pDesc.szMeshID = TEXT("Player");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player"), &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_KratCentralStation::Ready_Lights()
 {
 	LIGHT_DESC			LightDesc{};
@@ -300,18 +309,6 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_TestAnimObject()
-{
-	CTestAnimObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPerSec = 3.f;
-	Desc.fRotationPerSec = XMConvertToRadians(600.0f);
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("TestAnimObject"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -2,8 +2,9 @@
 #include "GameInstance.h"
 
 #include "PhysX_IgnoreSelfCallback.h"
-#include "TestAnimObject.h"
 #include "Camera_Manager.h"
+#include "Player.h"
+
 CCamera_Orbital::CCamera_Orbital(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
 {
@@ -92,7 +93,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 		// 무시할 자기 자신 액터 설정
 		PxRigidActor* actor = nullptr;
-		if (CTestAnimObject* obj = dynamic_cast<CTestAnimObject*>(m_pPlayer))
+		if (CPlayer* obj = dynamic_cast<CPlayer*>(m_pPlayer))
 			actor = obj->Get_Actor();
 		CIgnoreSelfCallback callback(actor);
 

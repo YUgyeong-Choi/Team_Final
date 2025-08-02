@@ -111,7 +111,7 @@ void CTestAnimObject::Priority_Update(_float fTimeDelta)
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
 	/* [ 움직임 전용 함수 ] */
-//	SetMoveState(fTimeDelta);
+	//	SetMoveState(fTimeDelta);
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
 }
