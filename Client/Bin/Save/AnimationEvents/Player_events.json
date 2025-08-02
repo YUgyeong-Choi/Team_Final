@@ -116,7 +116,7 @@
             "ClipName": "AS_Pino_H_Run_F_Stop",
             "Duration": 37.0,
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
@@ -144,7 +144,7 @@
             "ClipName": "AS_Pino_H_Sprint_Stop",
             "Duration": 40.0,
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
@@ -626,21 +626,21 @@
         {
             "ClipName": "AS_Pino_T_Run_B",
             "Duration": 44.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Pino_T_Run_BL",
             "Duration": 44.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Pino_T_Run_BR",
             "Duration": 44.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -654,17 +654,17 @@
         {
             "ClipName": "AS_Pino_T_Run_FL",
             "Duration": 44.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
-        {
-            "ClipName": "AS_Pino_T_Run_FR",
-            "Duration": 44.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 55.0
-        },
+      {
+        "ClipName": "AS_Pino_T_Run_FR",
+        "Duration": 44.0,
+        "IsLoop": true,
+        "RootMotion": false,
+        "TickPerSecond": 55.0
+      },
         {
             "ClipName": "AS_Pino_T_Run_F_Root",
             "Duration": 44.0,
@@ -676,23 +676,23 @@
             "ClipName": "AS_Pino_T_Run_F_Stop",
             "Duration": 37.0,
             "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 55.0
-        },
-        {
-            "ClipName": "AS_Pino_T_Run_L",
-            "Duration": 44.0,
-            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
-        {
-            "ClipName": "AS_Pino_T_Run_R",
-            "Duration": 44.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 55.0
-        },
+      {
+        "ClipName": "AS_Pino_T_Run_L",
+        "Duration": 44.0,
+        "IsLoop": true,
+        "RootMotion": false,
+        "TickPerSecond": 55.0
+      },
+      {
+        "ClipName": "AS_Pino_T_Run_R",
+        "Duration": 44.0,
+        "IsLoop": true,
+        "RootMotion": false,
+        "TickPerSecond": 55.0
+      },
         {
             "ClipName": "AS_Pino_T_SlaveArm_Change",
             "Duration": 100.0,
@@ -718,7 +718,7 @@
             "ClipName": "AS_Pino_T_Sprint_Stop",
             "Duration": 40.0,
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {

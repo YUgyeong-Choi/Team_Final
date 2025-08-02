@@ -10,12 +10,15 @@ class ENGINE_DLL CAnimController final : public CBase, public ISerializable
 public:
 	enum class EOp { IsTrue, IsFalse, Greater, Less,NotEqual,Equal,  Trigger, None};
 
-	enum class ETransitionType {
+	enum class ETransitionType
+	{
 		FullbodyToFullbody,         // 통짜 -> 통짜
 		FullbodyToMasked,           // 통짜 -> 상하체 분리
 		MaskedToFullbody,           // 상하체 분리 -> 통짜
 		MaskedToMasked              // 상하체 분리 -> 상하체 분리
 	};
+
+
 	struct Condition
 	{
 		string			paramName;
@@ -41,6 +44,8 @@ public:
 		string maskBoneName; // 마스크용 뼈 이름 (없으면 빈 문자열)
 		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
 	};
+
+
 
 	struct Transition 
 	{

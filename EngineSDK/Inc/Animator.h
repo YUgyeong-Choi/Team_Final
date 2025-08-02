@@ -160,8 +160,6 @@ public:
 	unordered_map<string, class CAnimController*>& GetAnimControllers() { return m_AnimControllers; }
     void Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController)
     {
-        if (name.empty())
-            return;
         if (m_OverrideControllerMap.find(name) != m_OverrideControllerMap.end())
         {
             // 이미 존재하는 컨트롤러 이름이면 덮어쓰기

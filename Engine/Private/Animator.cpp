@@ -227,17 +227,17 @@ void CAnimator::Update(_float fDeltaTime)
 			if (m_pCurrentAnim->IsRootMotionEnabled())
 			{
 				CBone* rootBone = m_Bones[1];
-				CBone* pelvisBone = m_Bones[1];
+				CBone* pelvisBone = m_Bones[1]; // 나중에 수정하기
 
 				// 꺼내온 조합 행렬
-				XMMATRIX rootMat = XMLoadFloat4x4(rootBone->Get_CombinedTransformationMatrix());
-				XMMATRIX pelvisMat = XMLoadFloat4x4(pelvisBone->Get_TransformationMatrix());
+				_matrix rootMat = XMLoadFloat4x4(rootBone->Get_CombinedTransformationMatrix());
+				_matrix pelvisMat = XMLoadFloat4x4(pelvisBone->Get_TransformationMatrix());
 
 				// 위치·회전·스케일 분해
-				XMVECTOR rootScale, rootRotQuat, rootTrans;
+				_vector rootScale, rootRotQuat, rootTrans;
 				XMMatrixDecompose(&rootScale, &rootRotQuat, &rootTrans, rootMat);
 
-				XMVECTOR pelvisScale, pelvisRotQuat, pelvisTrans;
+				_vector pelvisScale, pelvisRotQuat, pelvisTrans;
 				XMMatrixDecompose(&pelvisScale, &pelvisRotQuat, &pelvisTrans, pelvisMat);
 
 				_float3 rootPos;      XMStoreFloat3(&rootPos, rootTrans);

@@ -560,7 +560,7 @@
         "Run": {
             "Type": 0,
             "bTriggered": false,
-            "bValue": false,
+            "bValue": true,
             "fValue": 0.0,
             "iValue": 0
         },
@@ -4465,73 +4465,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 118,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1182,
-                "LinkId": 253,
-                "ToNodeId": 1481
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 148
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 116,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1162,
-                "LinkId": 249,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
                     "Op": "IsFalse",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 114,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1142,
-                "LinkId": 125,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
                     "ParamName": "FocusOn",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -4545,904 +4479,27 @@
                     "iThreshold": 0
                 },
                 {
-                    "Op": "IsTrue",
+                    "Op": "IsFalse",
                     "ParamName": "Run",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
-                "LinkId": 218,
-                "ToNodeId": 1101
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 110
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 5,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 52,
-                "LinkId": 234,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 5,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 52,
-                "LinkId": 233,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
-                "LinkId": 222,
-                "ToNodeId": 1181
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 118
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 5,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 52,
-                "LinkId": 21,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
-                "LinkId": 219,
-                "ToNodeId": 1121
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 112
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 110,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1102,
-                "LinkId": 123,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 110,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1102,
-                "LinkId": 241,
-                "ToNodeId": 1481
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 148
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 2,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 22,
-                "LinkId": 225,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 119,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1192,
-                "LinkId": 206,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 112,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1122,
-                "LinkId": 243,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 2,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 22,
-                "LinkId": 97,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 110,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1102,
-                "LinkId": 227,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 109,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1092,
-                "LinkId": 236,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
+            "Duration": 0.20000000298023224,
             "FromNodeId": 118,
             "HasExitTime": false,
             "Link": {
                 "FromNodeId": 1182,
-                "LinkId": 251,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 112,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1122,
-                "LinkId": 242,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 119,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1192,
-                "LinkId": 254,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 4,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 42,
-                "LinkId": 19,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 2,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 22,
-                "LinkId": 160,
-                "ToNodeId": 1481
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 148
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 118,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1182,
-                "LinkId": 231,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 116,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1162,
-                "LinkId": 250,
-                "ToNodeId": 1481
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 148
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 109,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1092,
-                "LinkId": 237,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 119,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1192,
-                "LinkId": 256,
-                "ToNodeId": 1481
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 148
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 109,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1092,
-                "LinkId": 226,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 109,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1092,
-                "LinkId": 202,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 114,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1142,
-                "LinkId": 247,
-                "ToNodeId": 1481
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 148
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
-                "LinkId": 20,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 118,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1182,
-                "LinkId": 183,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 118,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1182,
-                "LinkId": 252,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 2,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 22,
-                "LinkId": 225,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 112,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1122,
-                "LinkId": 124,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 112,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1122,
-                "LinkId": 228,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 114,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1142,
-                "LinkId": 246,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 114,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1142,
-                "LinkId": 245,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
                 "LinkId": 217,
-                "ToNodeId": 51
+                "ToNodeId": 41
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 5
+            "ToNodeId": 4
         },
         {
             "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 5,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 52,
-                "LinkId": 224,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 116,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1162,
-                "LinkId": 248,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 110,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1102,
-                "LinkId": 239,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
                 {
                     "Op": "IsTrue",
                     "ParamName": "Move",
@@ -5452,351 +4509,174 @@
                 },
                 {
                     "Op": "IsTrue",
+                    "ParamName": "FocusOn",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
                     "ParamName": "Run",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
-                "LinkId": 223,
-                "ToNodeId": 1191
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 119
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 2,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 22,
-                "LinkId": 98,
-                "ToNodeId": 471
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 47
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 119,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1192,
-                "LinkId": 255,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
-                "LinkId": 221,
-                "ToNodeId": 1161
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 116
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 5,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 52,
-                "LinkId": 235,
-                "ToNodeId": 1481
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 148
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 109,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1092,
-                "LinkId": 238,
-                "ToNodeId": 1481
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 148
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 119,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1192,
-                "LinkId": 232,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 116,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1162,
-                "LinkId": 126,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
-                "LinkId": 122,
-                "ToNodeId": 1091
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 109
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 116,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1162,
-                "LinkId": 230,
-                "ToNodeId": 171
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "StrongAttack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 110,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1102,
-                "LinkId": 240,
-                "ToNodeId": 451
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 45
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
-            "FromNodeId": 17,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 172,
-                "LinkId": 220,
-                "ToNodeId": 1141
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 114
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.2,
+            "Duration": 0.20000000298023224,
             "FromNodeId": 114,
             "HasExitTime": false,
             "Link": {
                 "FromNodeId": 1142,
-                "LinkId": 229,
-                "ToNodeId": 171
+                "LinkId": 218,
+                "ToNodeId": 41
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 17
+            "ToNodeId": 4
         },
         {
             "Conditions": [
                 {
-                    "Op": "Trigger",
-                    "ParamName": "MainSkill",
-                    "Type": "Trigger",
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Run",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "FocusOn",
+                    "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.2,
+            "Duration": 0.20000000298023224,
             "FromNodeId": 112,
             "HasExitTime": false,
             "Link": {
                 "FromNodeId": 1122,
-                "LinkId": 244,
-                "ToNodeId": 1481
+                "LinkId": 219,
+                "ToNodeId": 41
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 148
+            "ToNodeId": 4
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Run",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "FocusOn",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 116,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1162,
+                "LinkId": 220,
+                "ToNodeId": 41
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 4
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Run",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "FocusOn",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 110,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1102,
+                "LinkId": 221,
+                "ToNodeId": 41
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 4
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "FocusOn",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Run",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 109,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1092,
+                "LinkId": 222,
+                "ToNodeId": 41
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 4
         }
     ]
 }
