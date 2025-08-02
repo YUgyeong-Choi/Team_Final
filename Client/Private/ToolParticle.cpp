@@ -56,7 +56,7 @@ void CToolParticle::Late_Update(_float fTimeDelta)
 	// 아래 변수로 교체할 것 
 	//(RENDERGROUP)m_iRenderGroup;
 	// 임시로 고정 지정
-	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_DEFFERED;
+	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_DEFERED;
 
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }

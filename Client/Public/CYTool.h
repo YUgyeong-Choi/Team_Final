@@ -78,7 +78,7 @@ private:
 	_bool					m_isGizmoEnable = { false };
 	ImGuizmo::OPERATION		m_eOperation = { ImGuizmo::TRANSLATE };
 	ImGuizmo::MODE			m_eMode = { ImGuizmo::WORLD };
-
+	_int					m_iSelectedKeyframe = { 0 };
 #pragma endregion
 
 
