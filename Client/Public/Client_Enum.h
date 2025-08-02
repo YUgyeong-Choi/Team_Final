@@ -49,6 +49,7 @@ namespace Client
 	enum class COLLIDER_TYPE { NONE, CONVEX, TRIANGLE, END };
 #pragma endregion
 
+#pragma region YG
 	enum INTERPOLATION_CAMERA
 	{
 		NONE,
@@ -60,6 +61,7 @@ namespace Client
 	{
 		ONE, TWO, THREE
 	};
+#pragma endregion
 }
 
 

@@ -71,7 +71,6 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 		_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-		//printf("m_fPitch: %f, m_fYaw: %f\n", m_fPitch, m_fYaw, z);
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
@@ -138,6 +137,26 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 {
 	m_fPitch = pitch;
 	m_fYaw = yaw;
+}
+
+_matrix CCamera_Orbital::Get_OrbitalPosBackLookFront()
+{
+	_vector vPlayerLook = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
+	_vector vOffset = vPlayerLook * -2.5f + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+	_vector vTargetCamPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + vOffset;
+
+	_vector vLook = XMVector3Normalize(vPlayerLook);
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+	_matrix matWorld = XMMatrixIdentity();
+	matWorld.r[0] = XMVectorSetW(vRight, 0.f);
+	matWorld.r[1] = XMVectorSetW(vUp, 0.f);
+	matWorld.r[2] = XMVectorSetW(vLook, 0.f);
+	matWorld.r[3] = XMVectorSetW(vTargetCamPos, 1.f);
+
+	return matWorld;
 }
 
 CCamera_Orbital* CCamera_Orbital::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

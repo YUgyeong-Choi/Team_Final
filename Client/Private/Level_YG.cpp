@@ -7,7 +7,7 @@
 #include "YGDynamicGib.h"
 #include "YGDynamicObj.h"
 #include "PBRMesh.h"
-#include "TestAnimObject.h"
+#include "Player.h"
 
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -38,6 +38,9 @@ HRESULT CLevel_YG::Initialize()
 	//	return E_FAIL;
 
 	if (FAILED(Ready_Layer_Station(TEXT("Layer_StaticMesh"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Player()))
 		return E_FAIL;
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YG));
@@ -161,11 +164,22 @@ HRESULT CLevel_YG::Ready_Layer_Station(const _wstring strLayerTag)
 		ENUM_CLASS(LEVEL::YG), strLayerTag, &Desc)))
 		return E_FAIL;
 
-	CTestAnimObject::GAMEOBJECT_DESC playerDesc{};
-	playerDesc.fSpeedPerSec = 3.f;
-	playerDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_TestAnimObject"),
-		ENUM_CLASS(LEVEL::YG), TEXT("TestAnimObject"), &playerDesc)))
+	return S_OK;
+}
+
+HRESULT CLevel_YG::Ready_Player()
+{
+	CPlayer::PLAYER_DESC pDesc{};
+	//pDesc.fSpeedPerSec = 1.f;
+	pDesc.fSpeedPerSec = 5.f;
+	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc.eLevelID = LEVEL::STATIC;
+	pDesc.InitPos = _float3(0.f, 5.f, 0.f);
+	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pDesc.szName, TEXT("Player"));
+	pDesc.szMeshID = TEXT("Player");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		ENUM_CLASS(LEVEL::YG), TEXT("Player"), &pDesc)))
 		return E_FAIL;
 
 	return S_OK;

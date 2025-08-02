@@ -43,8 +43,6 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 		{
 			_bool bFinish = ReadyToOrbitalWorldMatrix(fTimeDelta);
 			m_bReadySetOrbitalPos = bFinish;
-			__super::Priority_Update(fTimeDelta);
-			return;
 		}
 
 		if (m_bReadySetOrbitalPos && !m_bReadyCutScene)
@@ -54,10 +52,8 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
-			_bool bFinish = ReadyToCutScene(fTimeDelta, targetMat, currentMat);
+			_bool bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
 			m_bReadyCutScene = bFinish;
-			__super::Priority_Update(fTimeDelta);
-			return;
 		}
 
 		if (m_bReadyCutScene && !m_bReadyCutSceneOrbital)
@@ -79,20 +75,19 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
 					m_bReadyCutSceneOrbital = true;
-					__super::Priority_Update(fTimeDelta);
-					return;
 				}
 			}
 		}
 
 		if (m_bReadyCutSceneOrbital)
 		{
+			m_initOrbitalPos = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalPosBackLookFront();
 			// 목표 행렬
 			_matrix targetMat = m_initOrbitalPos;
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
-			_bool bFinish = ReadyToCutScene(fTimeDelta, targetMat, currentMat);
+			_bool bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
 
 			if (bFinish)
 			{
@@ -101,7 +96,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				m_bReadyCutScene = false;
 				m_bReadyCutSceneOrbital = false;
 				m_fElapsedTime = 0.f;
-				m_iCurrentFrame = 0;
+				m_iCurrentFrame = -1;
 				m_initOrbitalPos = {};
 				CCamera_Manager::Get_Instance()->SetOrbitalCam();
 			}
@@ -124,9 +119,18 @@ HRESULT CCamera_CutScene::Render()
 	return S_OK;
 }
 
+void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
+{
+	m_CameraDatas = CameraFrameData;
+	m_bReadySetOrbitalPos = CameraFrameData.bReadySetOrbitalPos;
+	m_bReadyCutSceneOrbital = CameraFrameData.bReadyCutSceneOrbital;
+}
+
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 {
 	m_CameraDatas = m_CutSceneDatas[cutSceneType];
+	m_bReadySetOrbitalPos = m_CameraDatas.bReadySetOrbitalPos;
+	m_bReadyCutSceneOrbital = m_CameraDatas.bReadyCutSceneOrbital;
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -436,7 +440,7 @@ _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 	return false;
 }
 
-_bool CCamera_CutScene::ReadyToCutScene(_float fTimeDelta, _matrix targetMat, _matrix currentMat)
+_bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat)
 {
 	// 분해
 	XMVECTOR curScale, curRotQuat, curTrans;
@@ -459,18 +463,20 @@ _bool CCamera_CutScene::ReadyToCutScene(_float fTimeDelta, _matrix targetMat, _m
 
 	m_pTransformCom->Set_WorldMatrix(blendedMat);
 
+	// 위치 차이 계산
+	XMVECTOR diffPos = XMVector3LengthSq(tgtTrans - lerpPos);
+
+	// 회전 차이 계산 (dot product가 1에 가까울수록 유사)
+	XMVECTOR dotQuat = XMQuaternionDot(slerpRot, tgtRotQuat);
+	float fQuatSimilarity = fabsf(XMVectorGetX(dotQuat)); // 음수 dot 보정
+
 	// 차이 계산
 	XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
-	if (XMVectorGetX(diff) < 0.0001f)
+	if (XMVectorGetX(diff) < 0.00001f)
 	{
 		return true; 
 	}
 	return false;
-}
-
-_bool CCamera_CutScene::ReadyToCutSceneOrbital(_float fTimeDelta)
-{
-	return _bool();
 }
 
 CCamera_CutScene* CCamera_CutScene::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

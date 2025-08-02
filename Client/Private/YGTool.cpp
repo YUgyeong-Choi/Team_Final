@@ -70,6 +70,8 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 	json j;
 
 	j["iEndFrame"] = data.iEndFrame;
+	j["bStartBlend"] = data.bReadySetOrbitalPos;
+	j["bEndBlend"] = data.bReadyCutSceneOrbital;
 
 	// 1. Position Frame (WorldMatrix은 16개의 float 값으로 저장)
 	for (const auto& pos : data.vecWorldMatrixData)
@@ -133,6 +135,8 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 
 	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
+	data.bReadySetOrbitalPos = j.value("bStartBelend", 0);
+	data.bReadyCutSceneOrbital = j.value("bEndBlend", 0);
 
 	// 2. vecPosData
 	if (j.contains("vecPosData"))
@@ -183,7 +187,6 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			data.vecFovData.push_back(fovFrame);
 		}
 	}
-
 	return data;
 }
 
@@ -267,6 +270,10 @@ HRESULT CYGTool::Render_CameraTool()
 		m_pSelectedKey->keyFrame = m_iCurrentFrame;
 	}
 
+	ImGui::Checkbox("StartBlend", &m_CameraDatas.bReadySetOrbitalPos);
+	ImGui::Checkbox("EndBlend", &m_CameraDatas.bReadyCutSceneOrbital);
+
+	ImGui::SeparatorText("=====");
 	if (m_pSelectedKey)
 	{
 		ImGui::SeparatorText("Current Key Info");
@@ -411,10 +418,37 @@ HRESULT CYGTool::Render_CameraTool()
 
 	if (ImGui::Button("Play CutScene"))
 	{
+		CCamera_Orbital* pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
+		CCamera_CutScene* pCamera_CutScene = CCamera_Manager::Get_Instance()->GetCutScene();
+
+		// 플레이어 등 뒤에 위치하며 플레이어랑 똑같은 Loook벡터를 가진 컷신이 시작할 때와 끝났을 때의 Obital카메라 위치
+		_vector vPlayerLook = XMVector3Normalize(pCamera_Orbital->Get_PlayerLook());
+		_vector vOffset = vPlayerLook * -2.5f + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+		_vector vTargetCamPos = pCamera_Orbital->Get_PlayerPos() + vOffset;
+
+		_vector vLook = XMVector3Normalize(vPlayerLook);
+		_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+		_matrix matWorld = XMMatrixIdentity();
+		matWorld.r[0] = XMVectorSetW(vRight, 0.f);
+		matWorld.r[1] = XMVectorSetW(vUp, 0.f);
+		matWorld.r[2] = XMVectorSetW(vLook, 0.f);
+		matWorld.r[3] = XMVectorSetW(vTargetCamPos, 1.f);
+
+		pCamera_CutScene->Set_InitOrbitalWorldMatrix(matWorld);
+
+		_matrix oribtalMatrix = pCamera_Orbital->Get_TransfomCom()->Get_WorldMatrix();
+		pCamera_CutScene->Get_TransfomCom()->Set_WorldMatrix(oribtalMatrix);
+
+		CCamera_Manager::Get_Instance()->SetCutSceneCam();
 		CCamera_Manager::Get_Instance()->GetCutScene()->Set_CameraFrame(m_CameraDatas);
 		CCamera_Manager::Get_Instance()->GetCutScene()->PlayCutScene();
-		CCamera_Manager::Get_Instance()->SetCutSceneCam();
 	}
+
+	ImGui::SameLine();
+	ImGui::Text("Current Frame: %d", CCamera_Manager::Get_Instance()->GetCutScene()->Get_CurrentFrame());
 
 	ImGui::SeparatorText("Save Data");
 
