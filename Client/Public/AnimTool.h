@@ -54,6 +54,7 @@ private:
 	void SelectAnimation();
 	void Setting_AnimationProperties();
 	void ApplyHierarchicalLayout(class CAnimController* pCtrl);
+	void ApplyCategoryLayout(class CAnimController* pCtrl);
 
 	void SaveLoadEvents(_bool isSave = true);
 	void SaveLoadAnimStates(_bool isSave = true);
@@ -68,6 +69,8 @@ private:
 	);
 
 	vector<string> GetAnimNames();
+
+	string GetStateCategory(const string& stateName);
 
 	HRESULT Handle_LinkCreation(CAnimController* pCtrl, _int& iSpecificNodeId);
 	HRESULT Handle_LinkDeletion(CAnimController* pCtrl);

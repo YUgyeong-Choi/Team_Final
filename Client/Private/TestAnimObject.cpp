@@ -321,6 +321,11 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 	_bool bRightMousePress = m_pGameInstance->Mouse_Pressing(DIM::RBUTTON);
 	_bool bRightMouseUp = m_pGameInstance->Mouse_Up(DIM::RBUTTON);
 
+	if (m_pGameInstance->Key_Down(DIK_F))
+	{
+		m_pAnimator->SetTrigger("MainSkill");
+	}
+
 	if (m_pGameInstance->Key_Down(DIK_TAB))
 	{
 		_bool test = m_pAnimator->CheckBool("Move");
@@ -330,6 +335,15 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		}
 		m_pAnimator->SetTrigger("EquipWeapon");
 		m_pAnimator->ApplyOverrideAnimController("TwoHand");
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_LSHIFT))
+	{
+		m_pAnimator->SetBool("Guard", true);
+	}
+	else
+	{
+		m_pAnimator->SetBool("Guard", false);
 	}
 
 	if (bSpaceDown)

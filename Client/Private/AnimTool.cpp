@@ -631,7 +631,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 				{
 					m_iSelectedOverrideControllerIndex = i;
 					// 선택된 오버라이드 컨트롤러로 현재 작업 중인 컨트롤러 설정
-					//m_NewOverrideAnimController = m_pCurAnimator->GetOverrideAnimControllersMap()[overrideCtrlNames[i]];
+					m_NewOverrideAnimController = m_pCurAnimator->GetOverrideAnimControllersMap()[overrideCtrlNames[i]];
 					// 선택된 컨트롤러의 이름을 현재 이름으로 설정
 					strcpy_s(m_OverrideControllerName, overrideCtrlNames[i].c_str());
 				//	strcpy_s(m_NewOverrideControllerName, overrideCtrlNames[i].c_str());
@@ -818,10 +818,27 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 
 		if (ImGui::Button("Add Override Controller"))
 		{
-			if (m_bUseOverrideController && !m_NewOverrideControllerName[0] == '\0')
+			if (m_bUseOverrideController)
 			{
-				m_pCurAnimator->Add_OverrideAnimController(
-					m_NewOverrideControllerName, m_NewOverrideAnimController);
+				if (m_OverrideControllerName[0] != '\0')
+				{
+					// 기존 컨트롤러 이름으로 추가
+					m_pCurAnimator->Add_OverrideAnimController(
+						m_OverrideControllerName, m_NewOverrideAnimController);
+				}
+				else if (m_iSelectedOverrideControllerIndex >= 0)
+				{
+					// 선택된 컨트롤러로 추가
+					m_pCurAnimator->Add_OverrideAnimController(
+						m_OverrideControllerName, m_NewOverrideAnimController);
+				}
+				else
+				if (m_NewOverrideControllerName[0] == '\0')
+				{
+					m_pCurAnimator->Add_OverrideAnimController(
+						m_NewOverrideAnimController.name, m_NewOverrideAnimController);
+				}
+				
 			}
 		}
 
@@ -1061,8 +1078,9 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	// 정렬하기
 	if (ImGui::IsKeyDown(ImGuiKey_L))
 	{
-		ApplyHierarchicalLayout(pCtrl);
-		ImNodes::EditorContextResetPanning(ImVec2(0.0f, 0.0f));
+		//ApplyHierarchicalLayout(pCtrl);
+		ApplyCategoryLayout(pCtrl);
+	//	ImNodes::EditorContextResetPanning(ImVec2(0.0f, 0.0f));
 	}
 	auto& transitions = pCtrl->GetTransitions();
 	for (auto& state : pCtrl->GetStates())
@@ -1739,7 +1757,7 @@ void CAnimTool::ApplyHierarchicalLayout(CAnimController* pCtrl)
 
 	// 계산된 레벨과 순서를 기반으로 노드 위치 설정
 	map<_int, _int> levelNodeCount;
-	_float horizontalSpacing = 250.0f; // 노드 간 가로 간격
+	_float horizontalSpacing = 220.0f; // 노드 간 가로 간격
 	_float verticalSpacing = 200.0f;   // 노드 간 세로 간격
 
 	// 노드를 레벨별로 그룹화
@@ -1763,6 +1781,47 @@ void CAnimTool::ApplyHierarchicalLayout(CAnimController* pCtrl)
 
 			ImNodes::SetNodeEditorSpacePos(nodeId, newPos);
 		}
+	}
+}
+
+void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
+{
+	const auto& states = pCtrl->GetStates();
+
+	// 상태를 카테고리별로 분류
+	map<string, vector<_int>> categories;
+
+	for (const auto& state : states)
+	{
+		string category = GetStateCategory(state.stateName);
+		categories[category].push_back(state.iNodeId);
+	}
+
+	_float categorySpacing = 400.0f;
+	_float nodeSpacing = 150.0f;
+	_int categoryIndex = 0;
+
+	for (auto& [categoryName, nodeIds] : categories)
+	{
+		// 각 카테고리를 세로로 나열
+		_float categoryX = categoryIndex * categorySpacing;
+
+		// 카테고리 내 노드들을 격자로 배치
+		_int nodesPerRow = max(1, (_int)sqrt(nodeIds.size()));
+
+		for (_int i = 0; i < static_cast<_int>(nodeIds.size()); ++i)
+		{
+			_int row = i / nodesPerRow;
+			_int col = i % nodesPerRow;
+
+			ImVec2 pos = ImVec2(
+				categoryX + col * nodeSpacing,
+				row * nodeSpacing
+			);
+			ImNodes::SetNodeEditorSpacePos(nodeIds[i], pos);
+		}
+
+		categoryIndex++;
 	}
 }
 
@@ -1979,6 +2038,26 @@ void CAnimTool::Manipulate(Operation op, const _float snapT[3], const _float sna
 	//	}
 	//}
 
+}
+
+string CAnimTool::GetStateCategory(const string& stateName)
+{
+	if (stateName.find("Walk") != string::npos ||
+		stateName.find("Run") != string::npos ||
+		stateName.find("Move") != string::npos)
+		return "Movement";
+	else if (stateName.find("Attack") != string::npos ||
+		stateName.find("Skill") != string::npos)
+		return "Combat";
+	else if (stateName.find("Jump") != string::npos ||
+		stateName.find("Fall") != string::npos ||
+		stateName.find("Land") != string::npos)
+		return "Aerial";
+	else if (stateName.find("Idle") != string::npos ||
+		stateName.find("Stand") != string::npos)
+		return "Idle";
+	else
+		return "Other";
 }
 
 HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)

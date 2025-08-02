@@ -198,6 +198,8 @@ void CAnimController::Update(_float fTimeDelta)
 
 			_bool bFromMasked = fromState->maskBoneName.empty() == false; // 분리 상태인지
 			_bool bToMasked = toState->maskBoneName.empty() == false; // 분리 상태인지
+		
+		
 			// 통짜-> 분리
 			auto* fromClip = GetStateAnimationByNodeId(tr.iFromNodeId);
 			auto* toClip = GetStateAnimationByNodeId(tr.iToNodeId);
@@ -678,6 +680,7 @@ void CAnimController::Deserialize(const json& j)
 				_float minTime = tr["MinTime"];
 				_float maxTime = tr["MaxTime"];
 				_bool hasExitTime = tr["HasExitTime"];
+
 				Link link;
 				if (tr.contains("Link"))
 				{
@@ -734,6 +737,8 @@ void CAnimController::Deserialize(const json& j)
 					bBlendFullBody = tr["BlendFullbody"];
 				}
 				AddTransitionMultiCondition(fromNode, toNode, link, conditions, duration, hasExitTime, bBlendFullBody);
+				m_Transitions.back().minTime = minTime; // 최소 시간
+				m_Transitions.back().maxTime = maxTime; // 최대 시간
 			}
 		}
 	}
