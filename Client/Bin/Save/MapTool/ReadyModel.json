@@ -1,7 +1,7 @@
 [
     {
         "ModelName": "FloorB",
-        "ObjectCount": 10,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorB.bin"
     },
     {
@@ -11,12 +11,12 @@
     },
     {
         "ModelName": "SM_BuildingA_Wall_23",
-        "ObjectCount": 5,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_23.bin"
     },
     {
         "ModelName": "SM_BuildingA_Wall_28",
-        "ObjectCount": 3,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_28.bin"
     },
     {
@@ -78,6 +78,21 @@
         "ModelName": "SM_Exterior_transportcart_01",
         "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_transportcart_01.bin"
+    },
+    {
+        "ModelName": "SM_Station_1FRail_01",
+        "ObjectCount": 11,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_1FRail_01.bin"
+    },
+    {
+        "ModelName": "SM_Station_1FRail_02",
+        "ObjectCount": 0,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_1FRail_02.bin"
+    },
+    {
+        "ModelName": "SM_Station_2FRail_02",
+        "ObjectCount": 0,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_2FRail_02.bin"
     },
     {
         "ModelName": "SM_Station_Bench_01",
@@ -173,5 +188,10 @@
         "ModelName": "SM_Station_TrainStationRoof_01",
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainStationRoof_01.bin"
+    },
+    {
+        "ModelName": "Wall_Station_Flatform",
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/Wall_Station_Flatform.bin"
     }
 ]

@@ -1116,14 +1116,14 @@ HRESULT CMapTool::Duplicate_Selected_Object()
 #pragma region 해당 오브젝트 옆에다가 소환
 		_matrix SpawnWorldMatrix = pObj->Get_TransfomCom()->Get_WorldMatrix();
 
-		// x축으로 3.f 만큼 이동하는 변환 행렬
-		_matrix matOffset = XMMatrixTranslation(3.f, 0.f, 0.f);
+		//// x축으로 3.f 만큼 이동하는 변환 행렬
+		//_matrix matOffset = XMMatrixTranslation(3.f, 0.f, 0.f);
 
-		// 변환 적용: 기존 행렬에 offset을 곱해준다
-		_matrix matResult = matOffset * SpawnWorldMatrix;
+		//// 변환 적용: 기존 행렬에 offset을 곱해준다
+		//_matrix matResult = matOffset * SpawnWorldMatrix;
 
 		// 결과 저장
-		XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, matResult);
+		XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, SpawnWorldMatrix);
 #pragma endregion
 
 		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
