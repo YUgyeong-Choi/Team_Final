@@ -15,6 +15,7 @@
 #include "ImGuizmo.h"
 #include "ImGuiFileDialog.h"
 #include "imnodes.h"
+#include "imnodes_internal.h"
 #include "ImSequencer.h"
 #pragma pop_macro("new")
 

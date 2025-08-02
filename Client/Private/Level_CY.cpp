@@ -4,6 +4,7 @@
 #include "Camera_Manager.h"
 
 #include "Level_Loading.h"
+#include "PBRMesh.h"
 
 CLevel_CY::CLevel_CY(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -27,6 +28,9 @@ HRESULT CLevel_CY::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 		return E_FAIL;
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::CY));
@@ -106,12 +110,13 @@ HRESULT CLevel_CY::Ready_Lights()
 	LIGHT_DESC			LightDesc{};
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
 	LightDesc.fAmbient = 0.2f;
+	LightDesc.fIntensity = 1.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::CY), LightDesc)))
 		return E_FAIL;
 
 
@@ -144,6 +149,44 @@ HRESULT CLevel_CY::Ready_Sky(const _wstring strLayerTag)
 
 	return S_OK;
 }
+
+
+HRESULT CLevel_CY::Ready_Layer_StaticMesh(const _wstring strLayerTag)
+{
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::CY;
+	Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("SM_BuildingA_Lift_02");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_02"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("SM_BuildingC_Sewer_01");
+	lstrcpy(Desc.szName, TEXT("SM_BuildingC_Sewer_01"));
+	Desc.InitPos = _float3(10.f, 0.f, 0.f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	Desc.szMeshID = TEXT("SM_Cathedral_FloorBR_03");
+	lstrcpy(Desc.szName, TEXT("SM_Cathedral_FloorBR_03"));
+	Desc.InitPos = _float3(0.f, 0.f, 5.f);
+	Desc.InitScale = _float3(3.f, 3.f, 3.f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 
 HRESULT CLevel_CY::Ready_ImGui()
 {

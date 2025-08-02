@@ -9,6 +9,7 @@
 #include "UI_Text.h"
 #include "UI_Feature_UV.h"
 #include "UI_Container.h"
+#include "UI_Guide.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -53,21 +54,34 @@ void CLevel_Logo::Update(_float fTimeDelta)
 		if (m_isOpen)
 		{
 
-			if (!m_pGuideBack->Get_isActive())
+			if (2 == m_iButtonIndex)
 			{
-				m_pGuide->Active_Update(true);
-				m_pGuideBack->Set_isActive(true);
+				if (!m_pGuideBack->Get_isActive())
+				{
+					m_pTeammate->Active_Update(true);
+					m_pGuideBack->Set_isActive(true);
+				}
+
+
+				if (m_pGameInstance->Key_Down(DIK_SPACE))
+				{
+					m_pTeammate->Active_Update(false);
+					m_pGuideBack->Set_isActive(false);
+
+					m_isOpen = false;
+					return;
+				}
+			}
+			else if (1 == m_iButtonIndex)
+			{
+				if (!m_pGuide->Get_isActive())
+				{
+					m_isOpen = false;
+		
+				}
 			}
 
-
-			if (m_pGameInstance->Key_Down(DIK_SPACE))
-			{
-				m_pGuide->Active_Update(false);
-				m_pGuideBack->Set_isActive(false);
-
-				m_isOpen = false;
-				return;
-			}
+			
 
 			
 			return;
@@ -327,7 +341,7 @@ HRESULT CLevel_Logo::Ready_Guide()
 		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Guide"), &eDesc)))
 		return E_FAIL;
 
-	m_pGuide = static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOGO), TEXT("Layer_Guide")));
+	m_pTeammate = static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOGO), TEXT("Layer_Guide")));
 
 	CStatic_UI::STATIC_UI_DESC eBackDesc = {};
 	eBackDesc.fOffset = 0.4f;
@@ -351,8 +365,22 @@ HRESULT CLevel_Logo::Ready_Guide()
 
 	m_pGuideBack = (m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Guide")));
 
-	m_pGuide->Active_Update(false);
+	m_pTeammate->Active_Update(false);
 	m_pGuideBack->Set_isActive(false);
+
+	// »©±â
+
+	CUI_Guide::UI_GUIDE_DESC eGuideDesc = {};
+
+	eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Guard.json"),TEXT("../Bin/Save/UI/Guide/Guide_PerfectGuard.json") };
+
+	m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), ENUM_CLASS(LEVEL::LOGO), TEXT("Layer_temp"), &eGuideDesc);
+
+	m_pGuide = static_cast<CUI_Guide*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOGO), TEXT("Layer_temp")));
+
+	Safe_AddRef(m_pGuide);
+
+	m_pGuide->Active_Update(false);
 
 	return S_OK;
 }
@@ -420,6 +448,8 @@ void CLevel_Logo::Interation_Button(_int& iIndex)
 		m_eNextLevel = LEVEL::KRAT_CENTERAL_STATION;
 		break;
 	case 1:
+		m_pGuide->Active_Update(true);
+		m_isOpen = true;
 		break;
 	case 2:
 		m_isOpen = true;
@@ -456,4 +486,6 @@ void CLevel_Logo::Free()
 	for(auto& pButton: m_pButtons)
 		Safe_Release(pButton);
 	m_pButtons.clear();
+
+	Safe_Release(m_pGuide);
 }

@@ -8,6 +8,7 @@
 #include "UI_Sequence.h"
 #include "UI_Text.h"
 #include "UI_Container.h"
+#include "UI_Button.h"
 
 
 NS_BEGIN(Client)
@@ -30,16 +31,24 @@ public:
 
 
 private:
-	
+
 	void Obj_Serialize();
 	void Obj_Deserialize();
 	void Open_File();
 
 	void Add_Container();
 	void Add_UI_Select_Prototype();
-	
+
 	void Save_Container();
-	void Load_Container_Part();
+
+	// 저장용 컨테이너에 올린다
+	void Upload_Merge_Container();
+	// 현재 선택된 컨테이너에 전체 내용을 옮기기
+	void Download_Merge_Container();
+	// 전체 컨테이너를 비운다.
+	void Clear_Merge_Container();
+	// 머지 컨테이너 중에 선택된 ui를 지우기
+	void Delete_Merge_Container_Select_Obj();
 
 	void Set_Container_Active();
 	_bool Check_Dynamic_UI();
@@ -58,7 +67,7 @@ private:
 	void Input_Dynamic_Desc();
 	void Input_Sequence_Desc();
 	void Input_Text();
-
+	void Input_Button_Desc();
 
 
 
@@ -82,12 +91,16 @@ private:
 
 	//container
 	list<CUI_Container*> m_ContainerList = {};
-	CUI_Container* m_pContainerObj = {nullptr};
+	CUI_Container* m_pContainerObj = { nullptr };
 	_int m_iSelectContainerIndex = { -1 };
 
 	//containerpart
 	CUIObject* m_pSelectConatinerPart = { nullptr };
 	_int m_iSelectObjIndex = { -1 };
+
+	//
+	CUI_Container* m_pMergeContainer = {};
+	_int m_iMergeContainerPartIndex = { -1 };
 
 	
 
@@ -102,6 +115,10 @@ private:
 	CDynamic_UI::DYNAMIC_UI_DESC eDynamicUITempDesc = {};
 	CDynamic_UI::DYNAMIC_UI_DESC eDynamicUIDesc = {};
 
+	CUI_Button::BUTTON_UI_DESC eButtonUITempDesc = {};
+	CUI_Button::BUTTON_UI_DESC eButtonUIDesc = {};
+	string m_strCaption = {};
+
 	string  m_strSavePath = {};
 
 	// sequence
@@ -111,7 +128,6 @@ private:
 	_bool m_bExpanded = { true };
 	_int m_iSelectedEntry = { -1 };
 	CUI_Sequence*	m_pSequence = { nullptr };
-	
 	UI_FEATURE_TOOL_DESC m_eFeatureDesc = {};
 	//
 	_bool m_isFromTool = { true };

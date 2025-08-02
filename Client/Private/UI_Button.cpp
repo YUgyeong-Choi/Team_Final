@@ -4,11 +4,28 @@
 
 json CUI_Button::Serialize()
 {
-	return json();
+	json j = __super::Serialize();
+
+	j["Padding"]["X"] = m_fPadding.x;
+	j["Padding"]["Y"] = m_fPadding.y;
+	j["FontSize"] = m_fFontSize;
+	j["Caption"] = WStringToStringU8(m_strCaption);
+
+
+	return j;
 }
 
 void CUI_Button::Deserialize(const json& j)
 {
+	__super::Deserialize(j);
+
+	m_fPadding = { j["Padding"]["X"], j["Padding"]["Y"] };
+	m_fFontSize = j["FontSize"];
+	string strCaption = j["Caption"].get<string>();
+	m_strCaption = StringToWStringU8(strCaption);
+
+	CUI_Button::Ready_Components_File(m_strTextureTag);
+
 }
 
 CUI_Button::CUI_Button(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -21,6 +38,39 @@ CUI_Button::CUI_Button(const CUI_Button& Prototype)
 {
 }
 
+CUI_Button::BUTTON_UI_DESC CUI_Button::Get_Desc()
+{
+	BUTTON_UI_DESC eDesc = {};
+
+	eDesc.fSizeX = m_fSizeX;
+	eDesc.fSizeY = m_fSizeY;
+	eDesc.iPassIndex = m_iPassIndex;
+	eDesc.iTextureIndex = m_iTextureIndex;
+	eDesc.fX = m_fX;
+	eDesc.fY = m_fY;
+	eDesc.fOffset = m_fOffset;
+	eDesc.strTextureTag = m_strTextureTag;
+	eDesc.vColor = m_vColor;
+
+	eDesc.strProtoTag = m_strProtoTag;
+	eDesc.fDuration = m_fDuration;
+
+	eDesc.fAlpha = m_fCurrentAlpha;
+	eDesc.fRotation = m_fRotation;
+
+	for (auto pFeature : m_pUIFeatures)
+	{
+		if (nullptr != pFeature)
+			eDesc.FeatureDescs.push_back(&pFeature->Get_Desc());
+	}
+
+	eDesc.strCaption = m_strCaption;
+	eDesc.fFontSize = m_fFontSize;
+	eDesc.fPadding = m_fPadding;
+
+	return eDesc;
+}
+
 HRESULT CUI_Button::Initialize_Prototype()
 {
 	return S_OK;
@@ -28,11 +78,15 @@ HRESULT CUI_Button::Initialize_Prototype()
 
 HRESULT CUI_Button::Initialize(void* pArg)
 {
-	
-	BUTTON_UI_DESC* pDesc = static_cast<BUTTON_UI_DESC*>(pArg);
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	m_strProtoTag = L"Prototype_GameObject_UI_Button";
+
+	if (nullptr == pArg)
+		return S_OK;
+
+	BUTTON_UI_DESC* pDesc = static_cast<BUTTON_UI_DESC*>(pArg);
 
 	if (FAILED(Ready_Components(m_strTextureTag)))
 		return E_FAIL;
@@ -61,10 +115,16 @@ void CUI_Button::Update(_float fTimeDelta)
 
 void CUI_Button::Late_Update(_float fTimeDelta)
 {
+	if (!m_isActive)
+		return;
+
+	
 	if (!m_isDeferred)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	else
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI_DEFERRED, this);
+	
+
 }
 
 HRESULT CUI_Button::Render()
@@ -98,12 +158,12 @@ HRESULT CUI_Button::Ready_Components(const wstring& strTextureTag)
 	// 마스크, 하이라이트 텍스처 있으면 좋겠는데? 
 	
 		/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
 		TEXT("Com_Texture_Hover"), reinterpret_cast<CComponent**>(&m_pHoverTextureCom))))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
 		TEXT("Com_Texture_Highlight"), reinterpret_cast<CComponent**>(&m_pHighlightTextureCom))))
 		return E_FAIL;
 
@@ -112,24 +172,23 @@ HRESULT CUI_Button::Ready_Components(const wstring& strTextureTag)
 
 HRESULT CUI_Button::Ready_Components_File(const wstring& strTextureTag)
 {
-	__super::Ready_Components_File(strTextureTag);
-
+	
 
 	if (strTextureTag != L"")
 	{
-
+		m_strTextureTag = strTextureTag;
 		m_isHasTexture = true;
 	}
 
 	// 마스크, 하이라이트 텍스처 있으면 좋겠는데? 
 
 		/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
 		TEXT("Com_Texture_Hover"), reinterpret_cast<CComponent**>(&m_pHoverTextureCom))))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Highlight"),
 		TEXT("Com_Texture_Highlight"), reinterpret_cast<CComponent**>(&m_pHighlightTextureCom))))
 		return E_FAIL;
 
@@ -228,6 +287,19 @@ _bool CUI_Button::Check_Click()
 	m_isHighlight = Check_MousePos();
 
 	return m_isHighlight;
+}
+
+void CUI_Button::Update_UI_From_Tool(void* pArg)
+{
+	__super::Update_UI_From_Tool(pArg);
+
+	BUTTON_UI_DESC* pDesc = static_cast<BUTTON_UI_DESC*>(pArg);
+
+	m_strCaption = pDesc->strCaption;
+	m_fPadding = pDesc->fPadding;
+	m_fFontSize = pDesc->fFontSize;
+
+
 }
 
 CUI_Button* CUI_Button::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

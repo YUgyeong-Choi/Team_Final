@@ -51,6 +51,10 @@ HRESULT CGLTool::Initialize(void* pArg)
 
 	m_pSequence = new CUI_Sequence();
 
+	m_pMergeContainer = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), nullptr));
+
+
+
 	return S_OK;
 }
 
@@ -197,6 +201,9 @@ void CGLTool::Add_Container()
 
 	auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Container"));
 
+	if (nullptr == pObj)
+		return;
+
 	m_ContainerList.push_back(static_cast<CUI_Container*>(pObj));
 
 }
@@ -237,6 +244,57 @@ void CGLTool::Save_Container()
 	file << J.dump(4);
 
 	file.close();
+}
+
+void CGLTool::Upload_Merge_Container()
+{
+	if (nullptr == m_pSelectConatinerPart)
+		return;
+
+	m_pMergeContainer->Get_PartUI().push_back(m_pSelectConatinerPart);
+
+
+}
+
+void CGLTool::Download_Merge_Container()
+{
+	for (auto& part : m_pMergeContainer->Get_PartUI())
+	{
+		if (nullptr != part)
+		{
+			m_pContainerObj->Get_PartUI().push_back(part);
+			Safe_AddRef(part);
+		}
+		
+	}
+
+}
+
+void CGLTool::Clear_Merge_Container()
+{
+	m_pMergeContainer->Get_PartUI().clear();
+}
+
+void CGLTool::Delete_Merge_Container_Select_Obj()
+{
+	if (-1 == m_iMergeContainerPartIndex)
+		return;
+
+	_int iIndex = { 0 };
+
+	for (auto& part : m_pMergeContainer->Get_PartUI())
+	{
+		bool isSelected = (iIndex == m_iSelectObjIndex);
+
+		if (isSelected)
+		{
+			part = nullptr;
+			break;
+		}
+	}
+
+	m_iMergeContainerPartIndex = -1;
+
 }
 
 void CGLTool::Set_Container_Active()
@@ -416,7 +474,7 @@ void CGLTool::Input_Static_Desc()
 	}
 	else
 	{
-		static_cast<CStatic_UI*>(m_pSelectConatinerPart)->Update_UI_From_Tool(eStaticUIDesc);
+		(m_pSelectConatinerPart)->Update_UI_From_Tool(&eStaticUIDesc);
 	}
 }
 
@@ -471,7 +529,7 @@ void CGLTool::Input_Dynamic_Desc()
 	}
 	else
 	{
-		static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Update_UI_From_Tool(eDynamicUIDesc);
+		(m_pSelectConatinerPart)->Update_UI_From_Tool(&eDynamicUIDesc);
 	}
 
 }
@@ -551,7 +609,88 @@ void CGLTool::Input_Text()
 	m_eTextUIDesc.fX *= g_iWinSizeX;
 	m_eTextUIDesc.fY *= g_iWinSizeY;
 
-	
+	if (nullptr == m_pSelectConatinerPart || m_pSelectConatinerPart->Get_bDead())
+	{
+
+	}
+	else
+	{
+		(m_pSelectConatinerPart)->Update_UI_From_Tool(&m_eTextUIDesc);
+	}
+}
+
+void CGLTool::Input_Button_Desc()
+{
+
+
+	// 입력 칸 만들기
+	ImGui::InputFloat4("Color", reinterpret_cast<float*>(&eButtonUITempDesc.vColor));
+	ImGui::InputFloat("Duration", &eButtonUITempDesc.fDuration);
+	ImGui::InputFloat("Offset", &eButtonUITempDesc.fOffset);
+	ImGui::InputInt("PassIndex", &eButtonUITempDesc.iPassIndex);
+	ImGui::InputInt("TextureIndex", &eButtonUITempDesc.iTextureIndex);
+	ImGui::InputFloat("SizeX_Ratio", &eButtonUITempDesc.fSizeX);
+	if (eButtonUITempDesc.fSizeX <= 0.0f)
+		eButtonUITempDesc.fSizeX = 0.001f;
+	ImGui::InputFloat("SizeY_Ratio", &eButtonUITempDesc.fSizeY);
+	if (eButtonUITempDesc.fSizeY <= 0.0f)
+		eButtonUITempDesc.fSizeY = 0.001f;
+	ImGui::InputFloat("fX_Ratio", &eButtonUITempDesc.fX);
+	ImGui::InputFloat("fY_Ratio", &eButtonUITempDesc.fY);
+
+	// 필요하면 슬라이더로
+	ImGui::SliderFloat("SizeX_Slider", &eButtonUITempDesc.fSizeX, 0.001f, 1.5f);
+	ImGui::SliderFloat("SizeY_Slider", &eButtonUITempDesc.fSizeY, 0.001f, 1.5f);
+	ImGui::SliderFloat("fX_Slider", &eButtonUITempDesc.fX, -0.5f, 1.5f);
+	ImGui::SliderFloat("fY_Slider", &eButtonUITempDesc.fY, -0.5f, 1.5f);
+
+	ImGui::SliderFloat("Rotation", &eButtonUITempDesc.fRotation, 0.f, 360.f);
+
+	ImGui::InputFloat2("Padding", reinterpret_cast<float*>(&eButtonUITempDesc.fPadding));
+	ImGui::InputFloat("FontSize", &eButtonUITempDesc.fFontSize);
+
+
+	eButtonUIDesc = eButtonUITempDesc;
+	eButtonUIDesc.fSizeX *= g_iWinSizeX;
+	eButtonUIDesc.fSizeY *= g_iWinSizeY;
+	eButtonUIDesc.fX *= g_iWinSizeX;
+	eButtonUIDesc.fY *= g_iWinSizeY;
+
+	if (eButtonUIDesc.iPassIndex >= D_UI_END)
+	{
+		eButtonUIDesc.iPassIndex = D_UI_END - 1;
+		eButtonUITempDesc.iPassIndex = D_UI_END - 1;
+	}
+
+	if (eButtonUIDesc.iPassIndex < 0)
+	{
+		eButtonUIDesc.iPassIndex = 0;
+		eButtonUITempDesc.iPassIndex = 0;
+	}
+
+	size_t buf_size = m_strCaption.size() + 512;
+	char* buf = new char[buf_size];
+	memcpy(buf, m_strCaption.c_str(), m_strCaption.size() + 1);
+
+	if (ImGui::InputTextMultiline("##multiline", buf, buf_size, ImVec2(-FLT_MIN, 200)))
+	{
+		m_strCaption = buf;
+	}
+
+	delete[] buf;
+
+	eButtonUITempDesc.strCaption = StringToWStringU8(m_strCaption);
+	eButtonUIDesc.strCaption = StringToWStringU8(m_strCaption);
+
+	if (nullptr == m_pSelectConatinerPart || m_pSelectConatinerPart->Get_bDead())
+	{
+
+	}
+	else
+	{
+		(m_pSelectConatinerPart)->Update_UI_From_Tool(&eButtonUIDesc);
+	}
+
 }
 
 
@@ -596,14 +735,17 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 					}
 
-					if (nullptr == m_pSelectConatinerPart || m_pSelectConatinerPart->Get_bDead())
-					{
+					ImGui::EndTabItem();
+				}
+			}
 
-					}
-					else
-					{
-						static_cast<CUI_Text*>(m_pSelectConatinerPart)->Update_UI_From_Tool(m_eTextUIDesc);
-					}
+			else if (m_pSelectConatinerPart->Get_ProtoTag().find(L"Prototype_GameObject_UI_Button") != m_pSelectConatinerPart->Get_ProtoTag().npos)
+			{
+				if (ImGui::BeginTabItem("Input Button Desc"))
+				{
+					// 입력 칸 만들기
+
+					Input_Button_Desc();
 
 					ImGui::EndTabItem();
 				}
@@ -614,6 +756,9 @@ HRESULT CGLTool::Render_SelectOptionTool()
 				if (ImGui::BeginTabItem("Input Dynamic Desc"))
 				{
 					Input_Dynamic_Desc();
+
+
+
 
 					ImGui::EndTabItem();
 				}
@@ -652,12 +797,25 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 			}
 
+			if (Button(u8"Add Container"))
+			{
+				Add_Container();
+
+			}
+
+
+
+			if (Button(u8"Save Container"))
+			{
+
+				Save_Container();
+			}
+
 			if (Button(u8"Add Select ProtoUI"))
 			{
 				Add_UI_Select_Prototype();
 
 			}
-
 
 			if (Button(u8"Delete Select UI"))
 			{
@@ -691,7 +849,7 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 	
 			}
-
+			
 			if (Button(u8"Delete Container"))
 			{
 				if (nullptr != m_pContainerObj)
@@ -709,7 +867,13 @@ HRESULT CGLTool::Render_SelectOptionTool()
 					bool isSelected = (index == m_iSelectContainerIndex);
 
 					if (isSelected)
+					{
+						for (auto pPart : pObj->Get_PartUI())
+							pPart->Set_bDead();
+
 						pObj = nullptr;
+					}
+					
 
 					++index;
 				}
@@ -764,7 +928,25 @@ HRESULT CGLTool::Render_SelectOptionTool()
 				}*/
 			}
 
+			if (Button(u8"Upload Merge Container"))
+			{
+				Upload_Merge_Container();
+			}
 
+			if (Button(u8"Download Merge Container"))
+			{
+				Download_Merge_Container();
+			}
+
+			if (Button(u8"Clear Merge Container"))
+			{
+				Clear_Merge_Container();
+			}
+
+			if (Button(u8"Delete Select UI Merge Container"))
+			{
+				Delete_Merge_Container_Select_Obj();
+			}
 
 
 			// 파일 탐색기를 띄운다
@@ -881,7 +1063,24 @@ HRESULT CGLTool::Render_UIList()
 								m_eTextTempUIDesc.fSizeY /= g_iWinSizeY;
 								m_eTextTempUIDesc.fX /= g_iWinSizeX;
 								m_eTextTempUIDesc.fY /= g_iWinSizeY;
+
+								m_strInput = WStringToStringU8(m_eTextTempUIDesc.strCaption);
 							}
+
+							else if (m_pSelectConatinerPart->Get_ProtoTag().find(L"Prototype_GameObject_UI_Button") != m_pSelectConatinerPart->Get_ProtoTag().npos)
+							{
+								eButtonUIDesc = static_cast<CUI_Button*>(m_pSelectConatinerPart)->Get_Desc();
+
+								eButtonUITempDesc = eButtonUIDesc;
+
+								eButtonUITempDesc.fSizeX /= g_iWinSizeX;
+								eButtonUITempDesc.fSizeY /= g_iWinSizeY;
+								eButtonUITempDesc.fX /= g_iWinSizeX;
+								eButtonUITempDesc.fY /= g_iWinSizeY;
+
+								m_strCaption = WStringToStringU8(eButtonUITempDesc.strCaption);
+							}
+
 							else
 							{
 								eDynamicUIDesc = static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Get_Desc();
@@ -896,6 +1095,37 @@ HRESULT CGLTool::Render_UIList()
 
 							//
 
+						}
+						++index;
+					}
+				}
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Merge Container Parts"))
+			{
+
+
+				if (nullptr != m_pMergeContainer)
+				{
+					int index = 0;
+
+
+					auto& containerPart = m_pMergeContainer->Get_PartUI();
+
+					for (auto& part : containerPart)
+					{
+						if (nullptr == part)
+							continue;
+
+						bool isSelected = (index == m_iMergeContainerPartIndex);
+
+						if (ImGui::Selectable(to_string(index).c_str(), isSelected))
+						{
+							m_iMergeContainerPartIndex = index;
+
+							//
+							
 						}
 						++index;
 					}
@@ -1023,4 +1253,5 @@ void CGLTool::Free()
 
 	Safe_Delete(m_pSequence);
 
+	Safe_Release(m_pMergeContainer);
 }

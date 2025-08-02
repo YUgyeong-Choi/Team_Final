@@ -16,7 +16,6 @@ NS_BEGIN(Client)
 class CCamera_Manager final : public CBase
 {
     DECLARE_SINGLETON(CCamera_Manager)
-
 private:
     CCamera_Manager();
     virtual ~CCamera_Manager() = default;
@@ -41,14 +40,13 @@ public:
     const _vector& GetCurCamRight() const { return m_vCurCamRight; }
     const _vector& GetCurCamUp() const { return m_vCurCamUp; }
     const _vector& GetCurCamLook() const { return m_vCurCamLook; }
-
 public:
     void SetPlayer(CGameObject* pPlayer);
 
 public:
-    void	SetFreeCam() { m_pCurCamera = m_pCamera_Free; }
-    void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital; }
-    void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene; }
+    void	SetFreeCam() { m_pCurCamera = m_pCamera_Free;}
+    void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital;}
+    void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene;}
     void	Shake_Camera(_float fIntensity = 1.f, _float fDuration = 1.f, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
 
 private:
@@ -66,8 +64,8 @@ private:
 
 private:
     CCamera* m_pCurCamera = { nullptr };
-
 private:
+    // 플레이어가 움직임 방지 및 카메라 회전 방지
     _bool				m_bMoveable = {};
 public:
     virtual void Free() override;

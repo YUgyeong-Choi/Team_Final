@@ -193,6 +193,7 @@
     <ClInclude Include="..\Public\MySequence.h" />
     <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PBRMesh.h" />
+    <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
@@ -213,9 +214,11 @@
     <ClInclude Include="..\public\UI_Feature_Fade.h" />
     <ClInclude Include="..\public\UI_Feature_Position.h" />
     <ClInclude Include="..\public\UI_Feature_UV.h" />
+    <ClInclude Include="..\Public\UI_Guide.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
     <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
+    <ClInclude Include="..\public\Unit.h" />
     <ClInclude Include="..\Public\YGBox.h" />
     <ClInclude Include="..\Public\YGController.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -285,6 +288,7 @@
     <ClCompile Include="..\Private\MySequence.cpp" />
     <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\PBRMesh.cpp" />
+    <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
@@ -305,9 +309,11 @@
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
     <ClCompile Include="..\Private\UI_Feature_Position.cpp" />
     <ClCompile Include="..\private\UI_Feature_UV.cpp" />
+    <ClCompile Include="..\Private\UI_Guide.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
     <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />
+    <ClCompile Include="..\private\Unit.cpp" />
     <ClCompile Include="..\Private\YGBox.cpp" />
     <ClCompile Include="..\Private\YGController.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

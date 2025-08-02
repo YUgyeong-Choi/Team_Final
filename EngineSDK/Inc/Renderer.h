@@ -67,6 +67,8 @@ private:
 	HRESULT Render_NonLight();
 	HRESULT Render_UI_Deferred();
 	HRESULT Render_Effect_Blend();
+	HRESULT Render_Blur(const _wstring& strTargetTag);
+	HRESULT Render_Effect_Glow();
 	HRESULT Render_Effect_NonLight();
 	
 

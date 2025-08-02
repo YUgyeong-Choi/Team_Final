@@ -146,6 +146,9 @@ public:
 
     void SetParamName(Parameter& param, const string& name);
 
+    void SetApplyRootMotion(_bool bApply);
+        
+    _bool IsApplyRootMotion() const { return m_bApplyRootMotion; }
 
     // 조건 검사용 ( 현재 애니메이션 컨트롤러에서 가져오기)
     _float GetFloat(const string& name) const;
@@ -267,6 +270,7 @@ private:
     _float3 m_RootMotionDelta = { 0.f, 0.f, 0.f };
     _float4 m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
     _bool m_bFirstFrameAfterReset = false;
+	_bool m_bApplyRootMotion = true; // 루트 모션 적용 여부
 
 public:
 	static CAnimator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

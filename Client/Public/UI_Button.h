@@ -21,6 +21,7 @@ public:
 	{
 		// 
 		_wstring strCaption;
+
 		_float2  fPadding;
 		_float   fFontSize = {1.f};
 	}BUTTON_UI_DESC;
@@ -38,6 +39,9 @@ protected:
 	virtual ~CUI_Button() = default;
 
 public:
+	BUTTON_UI_DESC Get_Desc();
+
+public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Priority_Update(_float fTimeDelta);
@@ -47,13 +51,15 @@ public:
 
 
 	HRESULT Ready_Components(const wstring& strTextureTag);
-	virtual HRESULT Ready_Components_File(const wstring& strTextureTag) override;
+	HRESULT Ready_Components_File(const wstring& strTextureTag);
 	HRESULT Bind_ShaderResources();
 
 	// 나중에 feature로 빼기?
 	_bool Check_MousePos();
 	_bool Check_MouseHover();
 	_bool Check_Click();
+
+	virtual void Update_UI_From_Tool(void* pArg) override;
 
 private:
 
