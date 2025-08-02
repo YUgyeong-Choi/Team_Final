@@ -32,21 +32,19 @@ HRESULT CUnit::Initialize(void* pArg)
 	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
 	m_fSpeedPerSec = pDesc->fSpeedPerSec;
 	m_fRotationPerSec = pDesc->fRotationPerSec;
-	m_InitPos = pDesc->InitPos;
 
-	if (FAILED(__super::Initialize(&pDesc)))
+	m_InitPos = pDesc->InitPos;
+	m_InitScale = pDesc->InitScale;
+	m_szMeshID = pDesc->szMeshID;
+	m_eLevelID = pDesc->eLevelID;
+	m_iRender = pDesc->iRender;
+	m_szName = pDesc->szName;
+
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	if (FAILED(Ready_Collider()))
-		return E_FAIL;
-
-	LoadAnimFromJson();
-
-	m_pTransformCom->Set_State(STATE::POSITION, _vector{ m_InitPos.x, m_InitPos.y, m_InitPos.z });
-	m_pTransformCom->SetUp_Scale( pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z );
 
 	return S_OK;
 }
@@ -83,50 +81,14 @@ HRESULT CUnit::Render()
 	return S_OK;
 }
 
-void CUnit::LoadAnimFromJson()
-{
-	string path = "../Bin/Save/AnimationEvents/" + m_pModelCom->Get_ModelName() + "_events.json";
-	ifstream ifs(path);
-	if (ifs.is_open())
-	{
-		json root;
-		ifs >> root;
-		if (root.contains("animations"))
-		{
-			auto& animationsJson = root["animations"];
-			auto& clonedAnims = m_pModelCom->GetAnimations();
-
-			for (const auto& animData : animationsJson)
-			{
-				const string& clipName = animData["ClipName"];
-
-				for (auto& pAnim : clonedAnims)
-				{
-					if (pAnim->Get_Name() == clipName)
-					{
-						pAnim->Deserialize(animData);
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	path = "../Bin/Save/AnimationStates/" + m_pModelCom->Get_ModelName() + "_States.json";
-	ifstream ifsStates(path);
-	if (ifsStates.is_open())
-	{
-		json rootStates;
-		ifsStates >> rootStates;
-		m_pAnimator->Deserialize(rootStates);
-	}
-}
 
 HRESULT CUnit::Bind_Shader()
 {
+	/* [ 월드 스페이스 넘기기 ] */
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
 		return E_FAIL;
 
+	/* [ 뷰 , 투영 스페이스 넘기기 ] */
 	_float4x4 ViewMatrix, ProjViewMatrix;
 	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
 	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
@@ -136,14 +98,13 @@ HRESULT CUnit::Bind_Shader()
 		return E_FAIL;
 
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 		{
-
+			// 텍스처가 아직 안꼽혀서 탈출하면 안됨
+			//return E_FAIL;
 		}
-		//	return E_FAIL;
 
 		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 

@@ -3,6 +3,12 @@
 
 namespace Client
 {
+	enum class EPlayerState
+	{
+		IDLE, WALK, RUN, JUMP, FALL, LANDING, ATTACK, HIT, DEAD, END
+	};
+
+
 	enum class LEVEL { STATIC, LOADING, LOGO, KRAT_CENTERAL_STATION, KRAT_HOTEL, YG, CY, GL, DH, YW, JW,END };
 
 

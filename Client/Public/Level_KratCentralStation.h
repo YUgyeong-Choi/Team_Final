@@ -26,17 +26,24 @@ private:
 	HRESULT LoadMap();
 
 private:
+	HRESULT Ready_Player();
 	HRESULT Ready_Lights();
 	HRESULT Ready_Shadow();
 	HRESULT Ready_Camera();
 	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
-	HRESULT Ready_TestAnimObject();
 	HRESULT Ready_UI();
+
+
+private:
+	void ToggleHoldMouse() { m_bHold = !m_bHold; }
 
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	CSound_Core* m_pBGM = { nullptr };
+
+private:
+	_bool m_bHold = {};
 
 public:
 	static CLevel_KratCentralStation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

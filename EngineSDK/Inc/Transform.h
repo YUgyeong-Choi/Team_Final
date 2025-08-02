@@ -71,6 +71,7 @@ public:
 	void Go_Left(_float fTimeDelta);
 	void Go_Target(_fvector vTarget, _float fTimeDelta, _float fMinDistance);
 	void Turn(_fvector vAxis, _float fTimeDelta);
+	void TurnAngle(_fvector vAxis, _float fAngle);
 	void Rotation(_fvector vAxis, _float fRadian);
 	void Rotation(_float fX, _float fY, _float fZ);
 
@@ -110,8 +111,6 @@ public:
 	bool RotateToDirectionImmediately(const _fvector& vTargetDir);
 	/* [ 쿼터니언 회전 ] */
 	void Quaternion_Turn(const _vector& vAngle);
-	/* [ 이건 쓰지마시오 ] */
-	void LookAtWithRoll(const _vector& vPosition, const _vector& vTarget, _float fRollDeg);
 
 public:
 	/* [ Y축을 제외하고 바라본다 ] */
