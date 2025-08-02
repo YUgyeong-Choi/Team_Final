@@ -2,59 +2,26 @@
 
 CObserver_Player_Status::CObserver_Player_Status()
 {
-}
+	Register_PullCallback([this](_wstring eventType, void* data) {
+		if (L"CurrentHP" == eventType)
+			m_iCurrentHP = *static_cast<int*>(data);
+		else if (L"MaxHP" == eventType)
+			m_iMaxHP = *static_cast<int*>(data);
+		});
 
-void CObserver_Player_Status::OnNotify(const _wstring& eventType, void* data)
-{
-    bool isCurrent = eventType.find(L"Current") != eventType.npos;
-    bool isMax = eventType.find(L"Max") != eventType.npos;
+	Register_PullCallback([this](_wstring eventType, void* data) {
+		if (L"CurrentStamina" == eventType)
+			m_iCurrentStamina = *static_cast<int*>(data);
+		else if (L"MaxStamina" == eventType)
+			m_iMaxStamina = *static_cast<int*>(data);
+		});
 
-    if (!isCurrent && !isMax)
-        return;
-
-    if (eventType.find(L"HP") != eventType.npos)
-    {
-        if (isCurrent)
-        {
-           
-        }
-        else if (isMax)
-        {
-            
-        }
-    }
-    else if (eventType.find(L"MP") != eventType.npos)
-    {
-        if (isCurrent)
-        {
-            
-        }
-        else if (isMax)
-        {
-            
-        }
-    }
-    else if (eventType.find(L"Stamina") != eventType.npos)
-    {
-        if (isCurrent)
-        {
-           
-        }
-        else if (isMax)
-        {
-           
-        }
-    }
-}
-
-
-void CObserver_Player_Status::Reset()
-{
-
-	m_fHpRatio = 1.f;
-	m_fMpRatio = 1.f;
-	m_fStaminaRatio = 1.f;
-
+	Register_PullCallback([this](_wstring eventType, void* data) {
+		if (L"CurrentMana" == eventType)
+			m_iCurrentMana = *static_cast<int*>(data);
+		else if (L"MaxMana" == eventType)
+			m_iMaxMana = *static_cast<int*>(data);
+		});
 
 }
 

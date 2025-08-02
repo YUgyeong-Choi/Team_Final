@@ -53,6 +53,7 @@
 #include "Dynamic_UI.h"
 #include "UI_Text.h"
 #include "UI_Guide.h"
+#include "HP_Bar.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -277,6 +278,10 @@ HRESULT CLoader::Loading_For_Static()
 		CUI_Guide::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_HP_Bar"),
+		CHP_Bar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	return S_OK;
@@ -325,6 +330,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
 		CTestAnimObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
 
 	m_fRatio = 1.f;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -525,15 +532,23 @@ HRESULT CLoader::Loading_For_GL()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Btn_Arrow.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Border"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/SketchBorder.dds")))))
+		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Background"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/BG_Recollection.dds")))))
+		return E_FAIL;
 	
 	m_fRatio = 0.1f;
-	Sleep(200);
+
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
 	m_fRatio = 0.3f;
-	Sleep(250);
+	
 
 	
 
@@ -541,17 +556,14 @@ HRESULT CLoader::Loading_For_GL()
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
 	m_fRatio = 0.5f;
-	Sleep(200);
-
+	
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
 	m_fRatio = 0.6f;
-	Sleep(250);
-
+	
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
 	m_fRatio = 0.7f;
-	Sleep(250);
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 	

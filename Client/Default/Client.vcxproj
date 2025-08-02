@@ -176,6 +176,7 @@
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
+    <ClInclude Include="..\public\HP_Bar.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
     <ClInclude Include="..\Public\Level_KratHotel.h" />
@@ -272,6 +273,7 @@
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
+    <ClCompile Include="..\private\HP_Bar.cpp" />
     <ClCompile Include="..\Private\Level_CY.cpp" />
     <ClCompile Include="..\Private\Level_DH.cpp" />
     <ClCompile Include="..\Private\Level_KratCentralStation.cpp" />

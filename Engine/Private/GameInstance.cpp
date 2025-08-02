@@ -743,19 +743,34 @@ void CGameInstance::Notify(const _wstring& strTag, const _wstring& eventType, vo
 	m_pObserver_Manager->Notify(strTag, eventType, pData);
 }
 
+void CGameInstance::Notify_Pull(const _wstring& strTag, const _wstring& eventType, void* pData)
+{
+	m_pObserver_Manager->Notify_Pull(strTag, eventType, pData);
+}
+
+void CGameInstance::Notify_Push(const _wstring& strTag, const _wstring& eventType, void* pData)
+{
+	m_pObserver_Manager->Notify_Push(strTag, eventType, pData);
+}
+
 CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
 {
 	return m_pObserver_Manager->Find_Observer(strTag);
 }
 
-void CGameInstance::Register_Callback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+void CGameInstance::Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
 {
-	m_pObserver_Manager->Register_Callback(strTag, callback);
+	m_pObserver_Manager->Register_PullCallback(strTag, callback);
 }
 
-void CGameInstance::Clear_Callback(const _wstring& strTag)
+void CGameInstance::Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
 {
-	m_pObserver_Manager->Clear_Callback(strTag);
+	m_pObserver_Manager->Register_PushCallback(strTag, callback);
+}
+
+void CGameInstance::Reset(const _wstring& strTag)
+{
+	m_pObserver_Manager->Reset(strTag);
 }
 
 #pragma endregion

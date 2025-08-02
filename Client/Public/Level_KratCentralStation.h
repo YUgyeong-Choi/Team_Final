@@ -32,6 +32,7 @@ private:
 	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 	HRESULT Ready_TestAnimObject();
+	HRESULT Ready_UI();
 
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };

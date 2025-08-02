@@ -17,10 +17,19 @@ public:
 	HRESULT Add_Observer(const _wstring strTag, CObserver* pObserver);
 	HRESULT Remove_Observer(const _wstring strTag);
 
-	void Register_Callback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
-	void Clear_Callback(const _wstring& strTag);
+	void Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
+	
+	void Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
 
+	// pull push 둘다
 	void Notify(const _wstring& strTag, const _wstring& eventType, void* pData);
+
+	// 필요하면 쓰기
+	void Notify_Pull(const _wstring& strTag, const _wstring& eventType, void* pData);
+
+	void Notify_Push(const _wstring& strTag, const _wstring& eventType, void* pData);
+
+	void Reset(const _wstring& strTag);
 
 	CObserver* Find_Observer(const _wstring& strTag)
 	{

@@ -61,7 +61,7 @@ public:
 
 	void Update_UI_From_Frame(_int& iCurrentFrame);
 	virtual void Update_UI_From_Tool(void* pArg) override;
-	void Reset() ;
+	void Reset();
 
 	HRESULT Ready_Components(const wstring& strTextureTag);
 

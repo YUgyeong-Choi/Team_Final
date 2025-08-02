@@ -204,10 +204,17 @@ public:
 #pragma region OBSERVER_MANAGER
 	HRESULT Add_Observer(const _wstring strTag, class CObserver* pObserver);
 	HRESULT Remove_Observer(const _wstring strTag);
+	// pull push 둘다
 	void Notify(const _wstring& strTag, const _wstring& eventType, void* pData = nullptr);
+	// 값 올리는거만 필요하면
+	void Notify_Pull(const _wstring& strTag, const _wstring& eventType, void* pData);
+	// 값 받아오는거만 필요하면
+	void Notify_Push(const _wstring& strTag, const _wstring& eventType, void* pData);
+
 	class CObserver* Find_Observer(const _wstring& strTag);
-	void Register_Callback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
-	void Clear_Callback(const _wstring& strTag);
+	void Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
+	void Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
+	void Reset(const _wstring& strTag);
 #pragma endregion
 
 private:

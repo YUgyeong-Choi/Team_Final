@@ -38,6 +38,11 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	//if (FAILED(LoadMap()))
 	//	return E_FAIL;
 
+
+	// 플레이어 생성 전에 ui부터 일단
+	if (FAILED(Ready_UI()))
+		return E_FAIL;
+
 	//애니메이션 오브젝트
 	if (FAILED(Ready_TestAnimObject()))
 		return E_FAIL;
@@ -312,6 +317,17 @@ HRESULT CLevel_KratCentralStation::Ready_TestAnimObject()
 	Desc.fRotationPerSec = XMConvertToRadians(600.0f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("TestAnimObject"), &Desc)))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_UI()
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_HP_Bar"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_UI_HP"), nullptr)))
 		return E_FAIL;
 
 	return S_OK;

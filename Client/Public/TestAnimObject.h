@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Client_Defines.h"
 
+
 NS_BEGIN(Engine)
 class CModel;
 class CShader;
@@ -41,6 +42,14 @@ private: /* [ 이동로직 ] */
 
 	void RayCast();
 
+private: /* 옵저버 관련*/
+	void Set_StatusObserver();
+	void Callback_HP();
+	void Callback_Stamina();
+
+	// 스탯 변화 테스트용
+	void Update_Stat();
+
 private:
 	PxVec3 m_vRayHitPos = {};
 	_bool m_bRayHit = false;
@@ -68,6 +77,22 @@ private:
 	bool m_bOnGround = false;
 	PxVec3 m_vVelocity = PxVec3(0.f, 0.f, 0.f);
 	XMFLOAT3 m_vGravityVelocity = { 0.f, 0.f, 0.f };  // 헤더에 선언
+
+private: // 옵저버 관련
+	// stat용
+	class CObserver_Player_Status* m_pStatusObserver = { nullptr };
+	_int m_iCurrentHP = {};
+	_int m_iMaxHP = {200};
+	_int m_iCurrentStamina = {};
+	_int m_iMaxStamina = {100};
+	// 일단 한칸에 50씩
+	_int m_iCurrentMana = {};
+	_int m_iMaxMana = { 150 };
+
+	// 아이템?
+	// 에르고(돈)
+	// 무기
+
 public:
 	static CTestAnimObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

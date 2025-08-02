@@ -9,21 +9,24 @@ NS_BEGIN(Client)
 
 class   CObserver_Player_Status  : public CObserver
 {
-protected:
+public:
 	CObserver_Player_Status();
 	virtual ~CObserver_Player_Status() = default;
 
-public:
-	virtual void OnNotify(const _wstring& eventType, void* data = nullptr);
-
-	
-	virtual void Reset();
-
 
 private:
-	_float m_fStaminaRatio = {};
-	_float m_fHpRatio = {};
-	_float m_fMpRatio = {};
+	_float m_fStaminaRatio = {1.f};
+	_float m_fHpRatio = {1.f};
+	_float m_fMpRatio = {1.f};
+
+	_int m_iCurrentHP = {};
+	_int m_iMaxHP = {};
+
+	_int m_iCurrentStamina = {};
+	_int m_iMaxStamina = {};
+
+	_int m_iCurrentMana = {};
+	_int m_iMaxMana = {};
 
 
 public:
