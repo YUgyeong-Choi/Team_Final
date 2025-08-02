@@ -47,6 +47,8 @@ private:
 	HRESULT Load_Textures();
 	HRESULT Draw_TextureBrowser(class CEffectBase* pEffect);
 
+	HRESULT Guizmo_Tool();
+
 	void Key_Input();
 
 private:
@@ -72,6 +74,11 @@ private:
 	SPRITEEFFECT_PASS_INDEX		m_eSelectedPass_SE = { SE_DEFAULT };
 	MESHEFFECT_PASS_INDEX		m_eSelectedPass_ME = { ME_DEFAULT };
 	PARTICLEEFFECT_PASS_INDEX	m_eSelectedPass_PE = { PE_DEFAULT };
+
+	_bool					m_isGizmoEnable = { false };
+	ImGuizmo::OPERATION		m_eOperation = { ImGuizmo::TRANSLATE };
+	ImGuizmo::MODE			m_eMode = { ImGuizmo::WORLD };
+
 #pragma endregion
 
 
