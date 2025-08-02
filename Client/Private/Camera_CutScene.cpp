@@ -54,6 +54,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 			_bool bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
 			m_bReadyCutScene = bFinish;
+			return;
 		}
 
 		if (m_bReadyCutScene && !m_bReadyCutSceneOrbital)
@@ -422,7 +423,7 @@ _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalPos);
 
 		XMVECTOR vCamPos = m_initOrbitalPos.r[3];  
-		XMVECTOR vPlayerPos = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_PlayerPos();
+		XMVECTOR vPlayerPos = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_PlayerPos() + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
 
 		XMVECTOR vOffset = vCamPos - vPlayerPos;
 
@@ -442,15 +443,14 @@ _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 
 _bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat)
 {
-	// 분해
 	XMVECTOR curScale, curRotQuat, curTrans;
 	XMVECTOR tgtScale, tgtRotQuat, tgtTrans;
 	XMMatrixDecompose(&curScale, &curRotQuat, &curTrans, currentMat);
 	XMMatrixDecompose(&tgtScale, &tgtRotQuat, &tgtTrans, targetMat);
 
-	// 보간
-	_float blendSpeed = 2.f;
+	_float blendSpeed = 5.f;
 	_float t = fTimeDelta * blendSpeed;
+	t = min(t, 1.0f); // overshoot 방지
 
 	XMVECTOR lerpPos = XMVectorLerp(curTrans, tgtTrans, t);
 	XMVECTOR slerpRot = XMQuaternionSlerp(curRotQuat, tgtRotQuat, t);
@@ -463,17 +463,26 @@ _bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _m
 
 	m_pTransformCom->Set_WorldMatrix(blendedMat);
 
-	// 위치 차이 계산
-	XMVECTOR diffPos = XMVector3LengthSq(tgtTrans - lerpPos);
-
-	// 회전 차이 계산 (dot product가 1에 가까울수록 유사)
-	XMVECTOR dotQuat = XMQuaternionDot(slerpRot, tgtRotQuat);
-	float fQuatSimilarity = fabsf(XMVectorGetX(dotQuat)); // 음수 dot 보정
-
 	// 차이 계산
 	XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
 	if (XMVectorGetX(diff) < 0.00001f)
 	{
+		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(targetMat);
+
+		XMVECTOR vCamPos = targetMat.r[3];
+		XMVECTOR vPlayerPos = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_PlayerPos() + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+
+		XMVECTOR vOffset = vCamPos - vPlayerPos;
+
+		_float fDistance = XMVectorGetX(XMVector3Length(vOffset));
+
+		XMVECTOR vDir = XMVector3Normalize(vOffset) * 4.0f;
+
+		_float fPitch = asinf(XMVectorGetY(vDir));
+		_float fYaw = atan2f(XMVectorGetX(vDir), XMVectorGetZ(vDir));
+
+		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
+
 		return true; 
 	}
 	return false;

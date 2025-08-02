@@ -135,8 +135,8 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 
 	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
-	data.bReadySetOrbitalPos = j.value("bStartBelend", 0);
-	data.bReadyCutSceneOrbital = j.value("bEndBlend", 0);
+	data.bReadySetOrbitalPos = j.value("bStartBlend", false);
+	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
 
 	// 2. vecPosData
 	if (j.contains("vecPosData"))

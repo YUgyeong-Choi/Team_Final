@@ -142,7 +142,7 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 _matrix CCamera_Orbital::Get_OrbitalPosBackLookFront()
 {
 	_vector vPlayerLook = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
-	_vector vOffset = vPlayerLook * -2.5f + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+	_vector vOffset = vPlayerLook * -4.f + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
 	_vector vTargetCamPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + vOffset;
 
 	_vector vLook = XMVector3Normalize(vPlayerLook);
