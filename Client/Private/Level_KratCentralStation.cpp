@@ -29,8 +29,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 	// 플레이어 생성 전에 ui부터 일단
-	if (FAILED(Ready_UI()))
-		return E_FAIL;
+	//if (FAILED(Ready_UI()))
+	//	return E_FAIL;
 
 	//애니메이션 오브젝트
 	if (FAILED(Ready_Player()))
