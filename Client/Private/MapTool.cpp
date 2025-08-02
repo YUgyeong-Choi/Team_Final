@@ -115,6 +115,9 @@ HRESULT CMapTool::Render_ImGui()
 
 void CMapTool::Control(_float fTimeDelta)
 {
+	if (GetForegroundWindow() != g_hWnd)
+		return;
+
 	//E 회전, R 크기, T는 위치
 	if (m_pGameInstance->Key_Down(DIK_E))
 		m_currentOperation = ImGuizmo::ROTATE;
@@ -468,6 +471,9 @@ HRESULT CMapTool::Load_Map()
 
 HRESULT CMapTool::Render_MapTool()
 {
+	if (GetForegroundWindow() != g_hWnd)
+		return S_OK;
+
 	Render_Hierarchy();
 
 	Render_Asset();
@@ -819,6 +825,10 @@ void CMapTool::Render_Detail()
 {
 #pragma region 디테일
 	ImGui::Begin("Detail", nullptr);
+
+	ImGui::Separator();
+
+	Detail_Name();
 
 	ImGui::Separator();
 
@@ -1420,6 +1430,14 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 		m_pCamera_Free->Set_Moveable(true);
 	}
 
+}
+
+void CMapTool::Detail_Name()
+{
+	if (m_pFocusObject == nullptr)
+		return;
+
+	ImGui::Text(m_pFocusObject->Get_ModelName().c_str());
 }
 
 void CMapTool::Detail_Transform()
