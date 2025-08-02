@@ -10,15 +10,14 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CHP_Bar : public CDynamic_UI
+class CMana_Bar : public CDynamic_UI
 {
 
-	
-private:
-	CHP_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CHP_Bar(const CHP_Bar& Prototype);
-	virtual ~CHP_Bar() = default;
 
+private:
+	CMana_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CMana_Bar(const CMana_Bar& Prototype);
+	virtual ~CMana_Bar() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -31,19 +30,18 @@ public:
 private:
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Component(const wstring& strTextureTag);
-	
 
 private:
 	CTexture* m_pBackTextureCom = { nullptr };
 	CTexture* m_pGradationCom = { nullptr };
 
 private:
-	_int m_iCurrentHP = {};
-	_int m_iMaxHP = {};
-	_float m_fRatio = {1.f};
+	_int m_iCurrentMana = {};
+	_int m_iMaxMana = {300};
+	
 
 public:
-	static CHP_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CMana_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

@@ -1,29 +1,29 @@
-#include "HP_Bar.h"
+#include "Mana_Bar.h"
 #include "GameInstance.h"
 #include "Observer_Player_Status.h"
 
-CHP_Bar::CHP_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CDynamic_UI{pDevice,pContext}
+CMana_Bar::CMana_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	:CDynamic_UI{pDevice, pContext}
 {
 }
 
-CHP_Bar::CHP_Bar(const CHP_Bar& Prototype)
+CMana_Bar::CMana_Bar(const CMana_Bar& Prototype)
 	:CDynamic_UI{Prototype}
 {
 }
 
-HRESULT CHP_Bar::Initialize_Prototype()
+
+HRESULT CMana_Bar::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CHP_Bar::Initialize(void* pArg)
+HRESULT CMana_Bar::Initialize(void* pArg)
 {
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_strProtoTag = TEXT("Prototype_GameObject_UI_HP_Bar");
+	m_strProtoTag = TEXT("Prototype_GameObject_UI_Mana_Bar");
 
 	// 콜백을 등록
 	if (nullptr == m_pGameInstance->Find_Observer(TEXT("Player_Status")))
@@ -34,24 +34,24 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 	}
 
 	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
-		if (L"CurrentHP" == eventType)
+		if (L"CurrentMana" == eventType)
 		{
-			m_iCurrentHP = *static_cast<int*>(data);
+			m_iCurrentMana = *static_cast<int*>(data);
 
 
 		}
-		else if (L"MaxHP" == eventType)
+		else if (L"MaxMana" == eventType)
 		{
-			m_iMaxHP = *static_cast<int*>(data);
+			m_iMaxMana = *static_cast<int*>(data);
 
 
 		}
-			
-		m_fRatio = float(m_iCurrentHP) / m_iMaxHP;
+
 		
+
 		});
 
-	
+
 	Ready_Component(m_strTextureTag);
 
 	if (nullptr == pArg)
@@ -62,30 +62,26 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CHP_Bar::Priority_Update(_float fTimeDelta)
+void CMana_Bar::Priority_Update(_float fTimeDelta)
 {
-	
 }
 
-void CHP_Bar::Update(_float fTimeDelta)
+void CMana_Bar::Update(_float fTimeDelta)
 {
-	// 일단 하고 나중에 고쳐
 	__super::Update(fTimeDelta);
 }
 
-void CHP_Bar::Late_Update(_float fTimeDelta)
+void CMana_Bar::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 }
 
-HRESULT CHP_Bar::Render()
+HRESULT CMana_Bar::Render()
 {
-
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(D_UI_HPBAR)))
+	if (FAILED(m_pShaderCom->Begin(D_UI_MANABAR)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
@@ -98,7 +94,7 @@ HRESULT CHP_Bar::Render()
 	return S_OK;
 }
 
-HRESULT CHP_Bar::Bind_ShaderResources()
+HRESULT CMana_Bar::Bind_ShaderResources()
 {
 	__super::Bind_ShaderResources();
 
@@ -110,13 +106,17 @@ HRESULT CHP_Bar::Bind_ShaderResources()
 	if (FAILED(m_pGradationCom->Bind_ShaderResource(m_pShaderCom, "g_GradationTexture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fRatio, sizeof(_float))))
+	// //
+	// 그릴 칸 수. 칸 사이 마진, 몇 칸 꽉 차있는지, 현재 칸에 얼마 비율로 차 있는지.
+	_float4 vManaDesc = {float(m_iMaxMana) / 100, 0.01f, float(m_iCurrentMana) / 100, float( m_iCurrentMana % 100) / 100.f };
+	
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_ManaDesc", &vManaDesc, sizeof(_float4))))
 		return E_FAIL;
 
-	return S_OK;
 }
 
-HRESULT CHP_Bar::Ready_Component(const wstring& strTextureTag)
+HRESULT CMana_Bar::Ready_Component(const wstring& strTextureTag)
 {
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -130,7 +130,7 @@ HRESULT CHP_Bar::Ready_Component(const wstring& strTextureTag)
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Border"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
-	
+
 
 	/* For.Com_Texture */
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Background"),
@@ -139,7 +139,7 @@ HRESULT CHP_Bar::Ready_Component(const wstring& strTextureTag)
 
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Gradation"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Gradation_Side"),
 		TEXT("Com_Texture_Gradation"), reinterpret_cast<CComponent**>(&m_pGradationCom))))
 		return E_FAIL;
 
@@ -148,36 +148,37 @@ HRESULT CHP_Bar::Ready_Component(const wstring& strTextureTag)
 
 
 
-CHP_Bar* CHP_Bar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CMana_Bar* CMana_Bar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CHP_Bar* pInstance = new CHP_Bar(pDevice, pContext);
+	CMana_Bar* pInstance = new CMana_Bar(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CHP_Bar");
+		MSG_BOX("Failed to Created : CMana_Bar");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CHP_Bar::Clone(void* pArg)
+CGameObject* CMana_Bar::Clone(void* pArg)
 {
-	CHP_Bar* pInstance = new CHP_Bar(*this);
+	CMana_Bar* pInstance = new CMana_Bar(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CHP_Bar");
+		MSG_BOX("Failed to Cloned : CMana_Bar");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CHP_Bar::Free()
+void CMana_Bar::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pBackTextureCom);
 	Safe_Release(m_pGradationCom);
 }
+

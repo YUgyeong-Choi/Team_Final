@@ -1,29 +1,30 @@
-#include "HP_Bar.h"
+#include "Stamina_Bar.h"
 #include "GameInstance.h"
 #include "Observer_Player_Status.h"
 
-CHP_Bar::CHP_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CDynamic_UI{pDevice,pContext}
+CStamina_Bar::CStamina_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    :CDynamic_UI{pDevice, pContext}
 {
 }
 
-CHP_Bar::CHP_Bar(const CHP_Bar& Prototype)
-	:CDynamic_UI{Prototype}
+CStamina_Bar::CStamina_Bar(const CStamina_Bar& Prototype)
+    :CDynamic_UI{Prototype}
 {
 }
 
-HRESULT CHP_Bar::Initialize_Prototype()
+
+
+HRESULT CStamina_Bar::Initialize_Prototype()
 {
-	return S_OK;
+    return S_OK;
 }
 
-HRESULT CHP_Bar::Initialize(void* pArg)
+HRESULT CStamina_Bar::Initialize(void* pArg)
 {
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_strProtoTag = TEXT("Prototype_GameObject_UI_HP_Bar");
+	m_strProtoTag = TEXT("Prototype_GameObject_UI_Stamina_Bar");
 
 	// 콜백을 등록
 	if (nullptr == m_pGameInstance->Find_Observer(TEXT("Player_Status")))
@@ -34,24 +35,24 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 	}
 
 	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
-		if (L"CurrentHP" == eventType)
+		if (L"CurrentStamina" == eventType)
 		{
-			m_iCurrentHP = *static_cast<int*>(data);
+			m_iCurrentStamina = *static_cast<int*>(data);
 
 
 		}
-		else if (L"MaxHP" == eventType)
+		else if (L"MaxStamina" == eventType)
 		{
-			m_iMaxHP = *static_cast<int*>(data);
+			m_iMaxStamina = *static_cast<int*>(data);
 
 
 		}
-			
-		m_fRatio = float(m_iCurrentHP) / m_iMaxHP;
-		
+
+		m_fRatio = float(m_iCurrentStamina) / m_iMaxStamina;
+
 		});
 
-	
+
 	Ready_Component(m_strTextureTag);
 
 	if (nullptr == pArg)
@@ -62,26 +63,22 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CHP_Bar::Priority_Update(_float fTimeDelta)
+void CStamina_Bar::Priority_Update(_float fTimeDelta)
 {
-	
 }
 
-void CHP_Bar::Update(_float fTimeDelta)
+void CStamina_Bar::Update(_float fTimeDelta)
 {
-	// 일단 하고 나중에 고쳐
 	__super::Update(fTimeDelta);
 }
 
-void CHP_Bar::Late_Update(_float fTimeDelta)
+void CStamina_Bar::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 }
 
-HRESULT CHP_Bar::Render()
+HRESULT CStamina_Bar::Render()
 {
-
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -98,7 +95,7 @@ HRESULT CHP_Bar::Render()
 	return S_OK;
 }
 
-HRESULT CHP_Bar::Bind_ShaderResources()
+HRESULT CStamina_Bar::Bind_ShaderResources()
 {
 	__super::Bind_ShaderResources();
 
@@ -116,7 +113,7 @@ HRESULT CHP_Bar::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CHP_Bar::Ready_Component(const wstring& strTextureTag)
+HRESULT CStamina_Bar::Ready_Component(const wstring& strTextureTag)
 {
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -130,7 +127,7 @@ HRESULT CHP_Bar::Ready_Component(const wstring& strTextureTag)
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Border"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
-	
+
 
 	/* For.Com_Texture */
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Background"),
@@ -146,35 +143,33 @@ HRESULT CHP_Bar::Ready_Component(const wstring& strTextureTag)
 	return S_OK;
 }
 
-
-
-CHP_Bar* CHP_Bar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CStamina_Bar* CStamina_Bar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CHP_Bar* pInstance = new CHP_Bar(pDevice, pContext);
+	CStamina_Bar* pInstance = new CStamina_Bar(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CHP_Bar");
+		MSG_BOX("Failed to Created : CStamina_Bar");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CHP_Bar::Clone(void* pArg)
+CGameObject* CStamina_Bar::Clone(void* pArg)
 {
-	CHP_Bar* pInstance = new CHP_Bar(*this);
+	CStamina_Bar* pInstance = new CStamina_Bar(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CHP_Bar");
+		MSG_BOX("Failed to Cloned : CStamina_Bar");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CHP_Bar::Free()
+void CStamina_Bar::Free()
 {
 	__super::Free();
 

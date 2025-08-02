@@ -63,6 +63,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_iCurrentHP = m_iMaxHP;
 
 	Callback_HP();
+	Callback_Mana();
+	Callback_Stamina();
 
 	return S_OK;
 }
@@ -235,6 +237,14 @@ void CPlayer::Callback_HP()
 
 void CPlayer::Callback_Stamina()
 {
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_iCurrentStamina);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxStamina"), &m_iMaxStamina);
+}
+
+void CPlayer::Callback_Mana()
+{
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_iCurrentMana);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_iMaxMana);
 }
 
 void CPlayer::Update_Stat()
@@ -242,13 +252,21 @@ void CPlayer::Update_Stat()
 	if (m_pGameInstance->Key_Down(DIK_V))
 	{
 		m_iCurrentHP += 10;
+		m_iCurrentStamina += 20;
+		m_iCurrentMana += 10;
 		Callback_HP();
+		Callback_Mana();
+		Callback_Stamina();
 
 	}
 	else if (m_pGameInstance->Key_Down(DIK_B))
 	{
 		m_iCurrentHP -= 10;
+		m_iCurrentStamina -= 20;
+		m_iCurrentMana -= 100;
 		Callback_HP();
+		Callback_Mana();
+		Callback_Stamina();
 	}
 }
 

@@ -63,6 +63,7 @@ private: /* [ Setup 함수 ] */
 private: /* 옵저버 관련*/
 	void Callback_HP();
 	void Callback_Stamina();
+	void Callback_Mana();
 
 	// 스탯 변화 테스트용
 	void Update_Stat();
@@ -104,9 +105,9 @@ private: // 옵저버 관련
 	_int m_iMaxHP = { 200 };
 	_int m_iCurrentStamina = {};
 	_int m_iMaxStamina = { 100 };
-	// 일단 한칸에 50씩
+	// 일단 한칸에 100씩
 	_int m_iCurrentMana = {};
-	_int m_iMaxMana = { 150 };
+	_int m_iMaxMana = { 300 };
 
 
 public:

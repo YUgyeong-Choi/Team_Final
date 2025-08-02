@@ -223,6 +223,12 @@
     <Filter Include="02.GameObjects\99.UI\Container\Panel\Player">
       <UniqueIdentifier>{21b0be92-1722-4dbf-9f8a-80c41ff5d6d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
+      <UniqueIdentifier>{58e701f2-137e-4b53-9f66-da65d354bf05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Mana">
+      <UniqueIdentifier>{367fcc09-a226-4aab-9b15-2cb35c437e7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -522,6 +528,12 @@
     <ClInclude Include="..\Public\PlayerState.h">
       <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Mana_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Mana</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Stamina_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -794,6 +806,12 @@
     </ClCompile>
     <ClCompile Include="..\private\HP_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Mana_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Mana</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Stamina_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

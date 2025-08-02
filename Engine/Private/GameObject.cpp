@@ -141,7 +141,7 @@ HRESULT CGameObject::Replace_Component(_uint iPrototypeLevelIndex, const _wstrin
 	if (ppOut)
 	{
 		*ppOut = pComponent;
-		Safe_AddRef(pComponent);  
+		Safe_AddRef(pComponent);   
 	}
 
 	return S_OK;
