@@ -78,7 +78,16 @@ void CGLTool::Update(_float fTimeDelta)
 	}
 
 	// 시퀀스 업데이트 추가
-
+	for (auto& container : m_ContainerList)
+	{
+		for (auto& part : container->Get_PartUI())
+		{
+			if (auto pDynamicUI = dynamic_cast<CDynamic_UI*>(part))
+			{
+				pDynamicUI->Update_UI_From_Frame(m_iCurrentFrame);
+			}
+		}
+	}
 	
 		
 }
@@ -140,6 +149,7 @@ void CGLTool::Obj_Deserialize()
 
 	if (j.is_array())
 	{
+
 		if (j.front().contains("Parts"))
 		{
 			for (const auto& containerJson : j)
@@ -171,6 +181,9 @@ void CGLTool::Obj_Deserialize()
 
 			}
 		}
+
+		
+		
 	}
 	
 	
@@ -309,10 +322,10 @@ _bool CGLTool::Check_Dynamic_UI()
 	if (nullptr == m_pSelectConatinerPart)
 		return false;
 
-	if (L"Prototype_GameObject_Static_UI" != m_pSelectConatinerPart->Get_ProtoTag())
+	if (L"Prototype_GameObject_Static_UI" == m_pSelectConatinerPart->Get_ProtoTag())
 		return false;
 
-	if (L"Prototype_GameObject_UI_Text" != m_pSelectConatinerPart->Get_ProtoTag())
+	if (L"Prototype_GameObject_UI_Text" == m_pSelectConatinerPart->Get_ProtoTag())
 		return false;
 
 

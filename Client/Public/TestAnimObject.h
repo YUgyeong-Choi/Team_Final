@@ -43,7 +43,6 @@ private: /* [ 이동로직 ] */
 	void RayCast();
 
 private: /* 옵저버 관련*/
-	void Set_StatusObserver();
 	void Callback_HP();
 	void Callback_Stamina();
 
@@ -80,7 +79,6 @@ private:
 
 private: // 옵저버 관련
 	// stat용
-	class CObserver_Player_Status* m_pStatusObserver = { nullptr };
 	_int m_iCurrentHP = {};
 	_int m_iMaxHP = {200};
 	_int m_iCurrentStamina = {};

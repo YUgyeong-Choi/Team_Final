@@ -10,6 +10,8 @@
 
 #include "PlayerState.h"
 
+#include "Observer_Player_Status.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -49,6 +51,19 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 	SyncTransformWithController();
+
+	// 옵저버 찾아서 없으면 추가
+	if (nullptr == m_pGameInstance->Find_Observer(TEXT("Player_Status")))
+	{
+
+		m_pGameInstance->Add_Observer(TEXT("Player_Status"), new CObserver_Player_Status);
+
+	}
+
+	m_iCurrentHP = m_iMaxHP;
+
+	Callback_HP();
+
 	return S_OK;
 }
 
@@ -72,6 +87,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	UpdateShadowCamera();
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
+
+
+	// 옵저버 변수들 처리
+	Update_Stat();
 
 	__super::Priority_Update(fTimeDelta);
 }
@@ -205,6 +224,31 @@ void CPlayer::LoadPlayerFromJson()
 		json rootStates;
 		ifsStates >> rootStates;
 		m_pAnimator->Deserialize(rootStates);
+	}
+}
+
+void CPlayer::Callback_HP()
+{
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_iCurrentHP);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_iMaxHP);
+}
+
+void CPlayer::Callback_Stamina()
+{
+}
+
+void CPlayer::Update_Stat()
+{
+	if (m_pGameInstance->Key_Down(DIK_V))
+	{
+		m_iCurrentHP += 10;
+		Callback_HP();
+
+	}
+	else if (m_pGameInstance->Key_Down(DIK_B))
+	{
+		m_iCurrentHP -= 10;
+		Callback_HP();
 	}
 }
 

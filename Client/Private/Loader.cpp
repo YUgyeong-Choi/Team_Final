@@ -230,7 +230,15 @@ HRESULT CLoader::Loading_For_Static()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Btn_Arrow.dds")))))
 		return E_FAIL;
 
-	
+	/* For.Prototype_Component_Texture_Bar_Border*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Border"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/SketchBorder.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Bar_Background*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Background"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/BG_Recollection.dds")))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 

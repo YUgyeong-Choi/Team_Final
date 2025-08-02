@@ -24,7 +24,8 @@ json CDynamic_UI::Serialize()
 	j["fDuration"] = m_fDuration;
 
 	for (const auto& pFeature : m_pUIFeatures)
-		j["Features"].push_back(pFeature->Serialize());
+		if(nullptr != pFeature)
+			j["Features"].push_back(pFeature->Serialize());
 	
 		
 
@@ -114,6 +115,8 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	m_strProtoTag = TEXT("Prototype_GameObject_Dynamic_UI");
 
 	if (nullptr == pArg)
 		return S_OK;

@@ -12,6 +12,22 @@ CHP_Bar::CHP_Bar(const CHP_Bar& Prototype)
 {
 }
 
+json CHP_Bar::Serialize()
+{
+	json j = __super::Serialize();
+
+	
+
+	return j;
+}
+
+void CHP_Bar::Deserialize(const json& j)
+{
+	__super::Deserialize(j);
+
+	
+}
+
 HRESULT CHP_Bar::Initialize_Prototype()
 {
 	return S_OK;
@@ -52,7 +68,7 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 		});
 
 	
-
+	Ready_Component(m_strTextureTag);
 
 	if (nullptr == pArg)
 		return S_OK;
@@ -69,7 +85,8 @@ void CHP_Bar::Priority_Update(_float fTimeDelta)
 
 void CHP_Bar::Update(_float fTimeDelta)
 {
-
+	// 일단 하고 나중에 고쳐
+	__super::Update(fTimeDelta);
 }
 
 void CHP_Bar::Late_Update(_float fTimeDelta)
@@ -80,9 +97,73 @@ void CHP_Bar::Late_Update(_float fTimeDelta)
 HRESULT CHP_Bar::Render()
 {
 
-	//	임시용
-	_wstring text = L"현재 체력 : " + to_wstring(m_iCurrentHP);
-	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), {g_iWinSizeX*0.5, g_iWinSizeY * 0.5}, XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Begin(D_UI_HPBAR)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Render()))
+		return E_FAIL;
+
+
+	return S_OK;
+}
+
+HRESULT CHP_Bar::Bind_ShaderResources()
+{
+	__super::Bind_ShaderResources();
+
+	// 넘겨줘
+
+	if (FAILED(m_pBackTextureCom->Bind_ShaderResource(m_pShaderCom, "g_BackgroundTexture", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fRatio, sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CHP_Bar::Ready_Component(const wstring& strTextureTag)
+{
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+	/* For.Com_VIBuffer */
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Border"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+	
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Background"),
+		TEXT("Com_Texture_Back"), reinterpret_cast<CComponent**>(&m_pBackTextureCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CHP_Bar::Ready_Components_File(const wstring& strTextureTag)
+{
+	/* For.Com_Texture */
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Border"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Background"),
+		TEXT("Com_Texture_Back"), reinterpret_cast<CComponent**>(&m_pBackTextureCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -116,5 +197,7 @@ CGameObject* CHP_Bar::Clone(void* pArg)
 void CHP_Bar::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pBackTextureCom);
 
 }

@@ -3,7 +3,8 @@
 /* 상수테이블 ConstantTable */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
-texture2D g_DepthTexture;
+
+texture2D g_BackgroundTexture;
 
 texture2D g_HoverTexture;
 texture2D g_HighlightTexture;
@@ -11,11 +12,11 @@ texture2D g_HighlightTexture;
 float2   g_fTexcoord;
 float2   g_fTileSize;
 float    g_Alpha;
-
 float4   g_Color;
 
 float4   g_ButtonFlag;
 
+float    g_BarRatio;
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
 
@@ -117,27 +118,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);   
    
-    
-    /*화면 전체 기준(0, 0 ~ 1, 1)으로 이펙트의 픽셀이 그려질 위치에 해당하는 좌표 */    
-    float2 vTexcoord;
-    
-    /*이펙트의 특정 픽셀(psin)이 화면 전체기준으로 어디에 존재하는지? */ 
-    /* 우선 투영공간상(-1, 1 -> 1, -1)의 픽셀의 위치를 구한다.*/    
-    vTexcoord.x = In.vProjPos.x / In.vProjPos.w;
-    vTexcoord.y = In.vProjPos.y / In.vProjPos.w;
-    
-    vTexcoord.x = vTexcoord.x * 0.5f + 0.5f;
-    vTexcoord.y = vTexcoord.y * -0.5f + 0.5f;    
-    
-    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, vTexcoord);
-    
-    float fOldViewZ = vDepthDesc.y * 500.f;
-    
-    Out.vColor.a = Out.vColor.a * saturate(fOldViewZ - In.vProjPos.w);
-    
-    Out.vColor *= g_Color;
     
     return Out;
 }
@@ -261,19 +242,42 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
 PS_OUT PS_MAIN_HPBAR(PS_IN In)
 {
     PS_OUT Out;
+ 
+    vector vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    vector vBack = g_BackgroundTexture.Sample(DefaultSampler, In.vTexcoord);
     
-    if (Out.vColor.a < 0.1f)
+    
+  
+    if (vBorder.a > 0.1f)
+    {
+        Out.vColor = vBorder;
+        return Out;
+    }
+    
+    float fMarginX = 0.06f;
+    float fMarginY = 0.3f;
+    bool isInsideX;
+    
+    if (g_BarRatio > 1 - 1.2 * fMarginX)
+        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= 1 - 1.2 * fMarginX;
+    else
+        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
+    bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
+  
+    if (isInsideX && isInsideY)
+    {
+        Out.vColor = g_Color;
+
+        Out.vColor * g_Alpha;
+
+    }
+    else
     {
         discard;
     }
-    
-  
-       
-  
 
-        return Out;
+    return Out;
 }
 
 

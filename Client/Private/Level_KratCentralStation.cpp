@@ -5,6 +5,7 @@
 #include "StaticMesh.h"
 #include "PBRMesh.h"
 #include "Level_Loading.h"
+#include "UI_Container.h"
 
 #include "Player.h"
 
@@ -29,8 +30,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 	// 플레이어 생성 전에 ui부터 일단
-	//if (FAILED(Ready_UI()))
-	//	return E_FAIL;
+	if (FAILED(Ready_UI()))
+		return E_FAIL;
 
 	//애니메이션 오브젝트
 	if (FAILED(Ready_Player()))
@@ -323,8 +324,13 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 
 HRESULT CLevel_KratCentralStation::Ready_UI()
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_HP_Bar"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_UI_HP"), nullptr)))
+	
+	CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Panel_Player.json");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"), &eDesc)))
 		return E_FAIL;
 
 	return S_OK;
