@@ -118,6 +118,15 @@ void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 	Set_State(STATE::LOOK, XMVector4Transform(Get_State(STATE::LOOK), RotationMatrix));
 }
 
+void CTransform::TurnAngle(_fvector vAxis, _float fAngle)
+{
+	_matrix RotationMatrix = XMMatrixRotationAxis(vAxis, fAngle);
+
+	Set_State(STATE::RIGHT, XMVector4Transform(Get_State(STATE::RIGHT), RotationMatrix));
+	Set_State(STATE::UP, XMVector4Transform(Get_State(STATE::UP), RotationMatrix));
+	Set_State(STATE::LOOK, XMVector4Transform(Get_State(STATE::LOOK), RotationMatrix));
+}
+
 void CTransform::Rotation(_fvector vAxis, _float fRadian)
 {
 	_float3		vScaled = Get_Scaled();
@@ -496,35 +505,6 @@ void CTransform::Quaternion_Turn(const _vector& vAngle)
 	Set_State(STATE::RIGHT, XMVector3Rotate(vRight, Qur));
 	Set_State(STATE::UP, XMVector3Rotate(vUp, Qur));
 	Set_State(STATE::LOOK, XMVector3Rotate(vLook, Qur));
-}
-
-void CTransform::LookAtWithRoll(const _vector& vPosition, const _vector& vTarget, _float fRollDeg)
-{
-	// 1. 포지션 먼저 셋팅
-	Set_State(STATE::POSITION, vPosition);
-
-	// 2. Look 벡터 (타겟 방향)
-	_vector vLook = XMVector3Normalize(vTarget - vPosition);
-
-	// 3. 기본 Up 벡터
-	_vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-	// 4. Right, Up 계산
-	_vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vLook));
-	_vector vUp = XMVector3Cross(vLook, vRight);
-
-	// 5. Roll 회전 적용 (Z축 회전)
-	if (fRollDeg != 0.f)
-	{
-		_matrix matRoll = XMMatrixRotationAxis(vLook, XMConvertToRadians(fRollDeg));
-		vRight = XMVector3TransformNormal(vRight, matRoll);
-		vUp = XMVector3TransformNormal(vUp, matRoll);
-	}
-
-	// 6. 회전 방향 세팅
-	Set_State(STATE::LOOK, vLook);
-	Set_State(STATE::RIGHT, vRight);
-	Set_State(STATE::UP, vUp);
 }
 
 void CTransform::LookAtWithOutY(_fvector vAt)

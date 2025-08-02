@@ -6,6 +6,7 @@
 #include "Camera_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
 #include "PhysXController.h"
+#include "Observer_Player_Status.h"
 
 
 CTestAnimObject::CTestAnimObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -30,7 +31,7 @@ HRESULT CTestAnimObject::Initialize_Prototype()
 HRESULT CTestAnimObject::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC GameObjectDesc = {};
-	GameObjectDesc.fSpeedPerSec = 10.f;
+	GameObjectDesc.fSpeedPerSec = 5.f;
 	GameObjectDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
@@ -88,6 +89,18 @@ HRESULT CTestAnimObject::Initialize(void* pArg)
 
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
+
+	if (nullptr == m_pGameInstance->Find_Observer(TEXT("Player_Status")))
+	{
+		
+		m_pGameInstance->Add_Observer(TEXT("Player_Status"), new CObserver_Player_Status);
+
+	}
+
+	m_iCurrentHP = m_iMaxHP;
+	
+	Callback_HP();
+
 	return S_OK;
 }
 
@@ -111,9 +124,11 @@ void CTestAnimObject::Priority_Update(_float fTimeDelta)
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
 	/* [ 움직임 전용 함수 ] */
-//	SetMoveState(fTimeDelta);
+	//	SetMoveState(fTimeDelta);
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
+
+	Update_Stat();
 }
 
 void CTestAnimObject::Update(_float fTimeDelta)
@@ -195,6 +210,9 @@ void CTestAnimObject::Update(_float fTimeDelta)
 	}
 
 	Input_Test(fTimeDelta);
+
+	// test용
+	
 }
 
 void CTestAnimObject::Late_Update(_float fTimeDelta)
@@ -303,6 +321,11 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 	_bool bRightMousePress = m_pGameInstance->Mouse_Pressing(DIM::RBUTTON);
 	_bool bRightMouseUp = m_pGameInstance->Mouse_Up(DIM::RBUTTON);
 
+	if (m_pGameInstance->Key_Down(DIK_F))
+	{
+		m_pAnimator->SetTrigger("MainSkill");
+	}
+
 	if (m_pGameInstance->Key_Down(DIK_TAB))
 	{
 		_bool test = m_pAnimator->CheckBool("Move");
@@ -312,6 +335,15 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 		}
 		m_pAnimator->SetTrigger("EquipWeapon");
 		m_pAnimator->ApplyOverrideAnimController("TwoHand");
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_LSHIFT))
+	{
+		m_pAnimator->SetBool("Guard", true);
+	}
+	else
+	{
+		m_pAnimator->SetBool("Guard", false);
 	}
 
 	if (bSpaceDown)
@@ -675,6 +707,35 @@ void CTestAnimObject::RayCast()
 }
 
 
+void CTestAnimObject::Callback_HP()
+{
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_iCurrentHP);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_iMaxHP);
+}
+
+void CTestAnimObject::Callback_Stamina()
+{
+
+}
+
+void CTestAnimObject::Update_Stat()
+{
+
+	if (m_pGameInstance->Key_Down(DIK_V))
+	{
+		m_iCurrentHP += 10;
+		Callback_HP();
+		
+	}
+	else if (m_pGameInstance->Key_Down(DIK_B))
+	{
+		m_iCurrentHP -= 10;
+		Callback_HP();
+	}
+
+}
+
+
 CTestAnimObject* CTestAnimObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CTestAnimObject* pInstance = new CTestAnimObject(pDevice, pContext);
@@ -704,4 +765,5 @@ void CTestAnimObject::Free()
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pControllerCom);
+	
 }

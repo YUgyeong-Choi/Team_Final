@@ -869,7 +869,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
     PS_OUT Out;
     
-    vector finalColor = (0.f, 0.f,0.f,0.f);
+    vector finalColor = vector(0.f, 0.f, 0.f, 0.f);
     
     /* [ 기존 VTXMesh ] */
     vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -888,12 +888,12 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     
     /* [ 이펙트 + 글로우 ] */
-    float fGlowIntensity = 3.f;
+    //float fGlowIntensity = 3.f;
     
     vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
     vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
-    EffectBlendGlow.rgb *= fGlowIntensity;
-    EffectBlendGlow.a *= 1.5f;
+    //EffectBlendGlow.rgb *= fGlowIntensity;
+   // EffectBlendGlow.a *= 1.5f;
     EffectBlendDiffuse += EffectBlendGlow;
     finalColor += EffectBlendDiffuse;
     
@@ -1046,6 +1046,9 @@ PS_OUT PS_EFFECT_GLOW(PS_IN In)
     
     Out.vBackBuffer = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord);
     /* 기타 잡기술 */
+    Out.vBackBuffer.rgb *= 3.f;
+    Out.vBackBuffer.a *= 1.5f;
+    // 밖에서 값 변경해가면서 볼 수 있으면 좋겠는데 당장 안 될 것 같으므로 고정함
     
     return Out;
 }

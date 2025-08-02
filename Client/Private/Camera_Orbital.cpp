@@ -2,8 +2,9 @@
 #include "GameInstance.h"
 
 #include "PhysX_IgnoreSelfCallback.h"
-#include "TestAnimObject.h"
 #include "Camera_Manager.h"
+#include "Player.h"
+
 CCamera_Orbital::CCamera_Orbital(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
 {
@@ -70,7 +71,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 		_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-		//printf("x: %f, y: %f, z: %f\n", x, y, z);
+		//printf("m_fPitch: %f, m_fYaw: %f\n", m_fPitch, m_fYaw, z);
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
@@ -92,7 +93,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 		// 무시할 자기 자신 액터 설정
 		PxRigidActor* actor = nullptr;
-		if (CTestAnimObject* obj = dynamic_cast<CTestAnimObject*>(m_pPlayer))
+		if (CPlayer* obj = dynamic_cast<CPlayer*>(m_pPlayer))
 			actor = obj->Get_Actor();
 		CIgnoreSelfCallback callback(actor);
 
@@ -114,7 +115,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 		// 위치 보간 (LERP)
-		_float fInterpSpeed = 5.0f;
+		_float fInterpSpeed = 8.0f;
 		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
 
 		// 카메라 설정
@@ -131,6 +132,12 @@ void CCamera_Orbital::Late_Update(_float fTimeDelta)
 HRESULT CCamera_Orbital::Render()
 {
 	return S_OK;
+}
+
+void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
+{
+	m_fPitch = pitch;
+	m_fYaw = yaw;
 }
 
 CCamera_Orbital* CCamera_Orbital::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

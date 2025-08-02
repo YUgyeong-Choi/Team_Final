@@ -621,6 +621,20 @@ void CMapTool::Render_Asset()
 		}
 	}
 
+	ImGui::SameLine();
+	// 빨간색 버튼 스타일 적용
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.1f, 1.0f)); // 버튼 배경색
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.0f, 0.2f, 0.2f, 1.0f)); // 호버 시
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.6f, 0.0f, 0.0f, 1.0f)); // 클릭 시
+	if (ImGui::Button("Clear List"))
+	{
+		m_iSelectedModelIndex = -1;
+		m_ModelNames.clear();
+	}
+
+	ImGui::PopStyleColor(3); // 적용한 색상 3개 되돌리기
+
+
 	// 창 포커스 여부
 	const _bool bWindowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootAndChildWindows);
 
@@ -950,6 +964,24 @@ HRESULT CMapTool::Spawn_MapToolObject()
 	//방금 추가한서을 모델 그룹에 분류해서 저장
 	Add_ModelGroup(WStringToString(ModelName), m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
 
+	//포커스 변경
+	m_iFocusIndex = Find_HierarchyIndex_By_ID(MapToolObjDesc.iID);
+
+	Safe_Release(m_pFocusObject);
+	m_pFocusObject = Find_Object_By_Index(m_iFocusIndex);
+	Safe_AddRef(m_pFocusObject);
+
+	//선택된것들 모두 초기화 후 새로 추가한것 넣기
+	m_SelectedIndexies.clear();
+
+	for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);
+	m_SelectedObjects.clear();
+
+	m_SelectedIndexies.insert(m_iFocusIndex);
+	m_SelectedObjects.insert(m_pFocusObject);
+	Safe_AddRef(m_pFocusObject);
+
 	return S_OK;
 }
 
@@ -1020,6 +1052,24 @@ HRESULT CMapTool::Spawn_MapToolObject(string ModelName)
 
 	//방금 추가한서을 모델 그룹에 분류해서 저장
 	Add_ModelGroup(ModelName, m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
+
+	//포커스 변경
+	m_iFocusIndex = Find_HierarchyIndex_By_ID(MapToolObjDesc.iID);
+
+	Safe_Release(m_pFocusObject);
+	m_pFocusObject = Find_Object_By_Index(m_iFocusIndex);
+	Safe_AddRef(m_pFocusObject);
+
+	//선택된것들 모두 초기화 후 새로 추가한것 넣기
+	m_SelectedIndexies.clear();
+
+	for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);
+	m_SelectedObjects.clear();
+
+	m_SelectedIndexies.insert(m_iFocusIndex);
+	m_SelectedObjects.insert(m_pFocusObject);
+	Safe_AddRef(m_pFocusObject);
 
 	return S_OK;
 }

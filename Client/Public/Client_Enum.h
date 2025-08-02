@@ -3,6 +3,12 @@
 
 namespace Client
 {
+	enum class EPlayerState
+	{
+		IDLE, WALK, RUN, JUMP, FALL, LANDING, ATTACK, HIT, DEAD, END
+	};
+
+
 	enum class LEVEL { STATIC, LOADING, LOGO, KRAT_CENTERAL_STATION, KRAT_HOTEL, YG, CY, GL, DH, YW, JW,END };
 
 
@@ -30,7 +36,7 @@ namespace Client
 
 	enum DYNAMIC_UI_PASS_INDEX {
 		D_UI_DEFAULT = 0, D_UI_SOFTEFFECT, D_UI_SPRITE, D_UI_FADE,
-		D_UI_BUTTON,
+		D_UI_BUTTON, D_UI_HPBAR,
 		D_UI_END
 	};
 
@@ -39,7 +45,7 @@ namespace Client
 
 #pragma endregion
 
-#pragma region ÇÑ¿µ¿õ
+#pragma region YW
 	enum class COLLIDER_TYPE { NONE, CONVEX, TRIANGLE, END };
 #pragma endregion
 

@@ -176,6 +176,7 @@
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
+    <ClInclude Include="..\public\HP_Bar.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
     <ClInclude Include="..\Public\Level_KratHotel.h" />
@@ -191,9 +192,11 @@
     <ClInclude Include="..\Public\MapTool.h" />
     <ClInclude Include="..\public\MeshEffect.h" />
     <ClInclude Include="..\Public\MySequence.h" />
+    <ClInclude Include="..\Public\Observer_Player_Status.h" />
     <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PBRMesh.h" />
     <ClInclude Include="..\public\Player.h" />
+    <ClInclude Include="..\Public\PlayerState.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
@@ -271,6 +274,7 @@
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
+    <ClCompile Include="..\private\HP_Bar.cpp" />
     <ClCompile Include="..\Private\Level_CY.cpp" />
     <ClCompile Include="..\Private\Level_DH.cpp" />
     <ClCompile Include="..\Private\Level_KratCentralStation.cpp" />
@@ -286,6 +290,7 @@
     <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\private\MeshEffect.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
+    <ClCompile Include="..\Private\Observer_Player_Status.cpp" />
     <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\PBRMesh.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
