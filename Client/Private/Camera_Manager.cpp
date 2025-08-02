@@ -117,27 +117,22 @@ CCamera* CCamera_Manager::GetCurCam()
 void CCamera_Manager::Play_CutScene(CUTSCENE_TYPE cutSceneType)
 {
     // 플레이어 등 뒤에 위치하며 플레이어랑 똑같은 Loook벡터를 가진 컷신이 시작할 때와 끝났을 때의 Obital카메라 위치
-    _vector vPlayerLook = m_pCamera_Orbital->Get_PlayerLook();
-    _vector vLookBack = XMVector3Normalize(vPlayerLook * -1.f); 
-
-    XMFLOAT3 dir;
-    XMStoreFloat3(&dir, vLookBack);
-    _float fYaw = atan2f(dir.x, dir.z);
-    _float fPitch = asinf(dir.y);
-    _float x = 4.f * cosf(fPitch) * sinf(fYaw);
-    _float y = 4.f * sinf(fPitch);
-    _float z = 4.f * cosf(fPitch) * cosf(fYaw);
-    _vector vOffset = XMVectorSet(x, y, z, 0.f);
-
+    _vector vPlayerLook = XMVector3Normalize(m_pCamera_Orbital->Get_PlayerLook());
+    _vector vOffset = vPlayerLook * -2.5f+ XMVectorSet(0.f, 1.5f, 0.f, 0.f);
     _vector vTargetCamPos = m_pCamera_Orbital->Get_PlayerPos() + vOffset;
-    _vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-    _vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vPlayerLook));
-    _vector vUp = XMVector3Cross(vPlayerLook, vRight);
-    _matrix matWorld = XMMatrixIdentity(); 
-    matWorld.r[0] = XMVectorSetW(vRight, 0.f);        
-    matWorld.r[1] = XMVectorSetW(vUp, 0.f);        
-    matWorld.r[2] = XMVectorSetW(vPlayerLook, 0.f);       
-    matWorld.r[3] = XMVectorSetW(vTargetCamPos, 1.f); 
+
+    _vector vLook = XMVector3Normalize(vPlayerLook);
+    _vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+    _vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+    vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+
+    _matrix matWorld = XMMatrixIdentity();
+    matWorld.r[0] = XMVectorSetW(vRight, 0.f);
+    matWorld.r[1] = XMVectorSetW(vUp, 0.f);
+    matWorld.r[2] = XMVectorSetW(vLook, 0.f);
+    matWorld.r[3] = XMVectorSetW(vTargetCamPos, 1.f);
+
+    m_pCamera_CutScene->Set_InitOrbitalWorldMatrix(matWorld);
 
     _matrix oribtalMatrix = m_pCamera_Orbital->Get_TransfomCom()->Get_WorldMatrix();
     m_pCamera_CutScene->Get_TransfomCom()->Set_WorldMatrix(oribtalMatrix);
