@@ -68,7 +68,7 @@ private:
 	/* [ 오비탈 카메라 (어떤)위치 ->  오비탈 초기 위치 (오비탈 카메라의 Pitch와 Yaw도 설정)] */
 	_bool ReadyToOrbitalWorldMatrix(_float fTimeDelta);
 	/* [ 오비탈 초기 위치 ->  컷씬 초기 위치] */
-	_bool ReadyToCutScene(_float fTimeDelta);
+	_bool ReadyToCutScene(_float fTimeDelta, _matrix targetMat, _matrix currentMat);
 
 	/* [ 컷씬 끝나고 오비탈 위치로 보간 ] */
 	_bool ReadyToCutSceneOrbital(_float fTimeDelta);

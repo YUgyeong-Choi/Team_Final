@@ -49,7 +49,12 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadySetOrbitalPos && !m_bReadyCutScene)
 		{
-			_bool bFinish = ReadyToCutScene(fTimeDelta);
+			// 목표 행렬
+			_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
+			// 현재 행렬
+			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
+
+			_bool bFinish = ReadyToCutScene(fTimeDelta, targetMat, currentMat);
 			m_bReadyCutScene = bFinish;
 			__super::Priority_Update(fTimeDelta);
 			return;
@@ -74,6 +79,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
 					m_bReadyCutSceneOrbital = true;
+					__super::Priority_Update(fTimeDelta);
 					return;
 				}
 			}
@@ -81,13 +87,24 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadyCutSceneOrbital)
 		{
-			m_bActive = false;
-			m_bReadySetOrbitalPos = false;
-			m_bReadyCutScene = false;
-			m_bReadyCutSceneOrbital = false;
-			m_fElapsedTime = 0.f;
-			m_iCurrentFrame = 0;
-			CCamera_Manager::Get_Instance()->SetOrbitalCam();
+			// 목표 행렬
+			_matrix targetMat = m_initOrbitalPos;
+			// 현재 행렬
+			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
+
+			_bool bFinish = ReadyToCutScene(fTimeDelta, targetMat, currentMat);
+
+			if (bFinish)
+			{
+				m_bActive = false;
+				m_bReadySetOrbitalPos = false;
+				m_bReadyCutScene = false;
+				m_bReadyCutSceneOrbital = false;
+				m_fElapsedTime = 0.f;
+				m_iCurrentFrame = 0;
+				m_initOrbitalPos = {};
+				CCamera_Manager::Get_Instance()->SetOrbitalCam();
+			}
 		}
 	}
 	__super::Priority_Update(fTimeDelta);
@@ -413,22 +430,14 @@ _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 		_float fYaw = atan2f(XMVectorGetX(vDir), XMVectorGetZ(vDir));
 
 		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
-
-		m_initOrbitalPos = {};
 		return true;
 	}
 
 	return false;
 }
 
-_bool CCamera_CutScene::ReadyToCutScene(_float fTimeDelta)
+_bool CCamera_CutScene::ReadyToCutScene(_float fTimeDelta, _matrix targetMat, _matrix currentMat)
 {
-	// 목표 행렬
-	_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
-
-	// 현재 행렬
-	_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
-
 	// 분해
 	XMVECTOR curScale, curRotQuat, curTrans;
 	XMVECTOR tgtScale, tgtRotQuat, tgtTrans;
