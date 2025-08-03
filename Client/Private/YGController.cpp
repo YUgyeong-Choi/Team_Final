@@ -52,7 +52,6 @@ void CYGController::Priority_Update(_float fTimeDelta)
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
 	}
 
-	/*
 	_vector vMoveDir = XMVectorZero();
 
 	if (m_pGameInstance->Key_Pressing(DIK_W))
@@ -84,15 +83,6 @@ void CYGController::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 	}
 	SyncTransformWithController();
-	*/
-	if (KEY_PRESSING(DIK_W))
-		m_pTransformCom->Go_Front(fTimeDelta, m_pControllerCom);
-	if (KEY_PRESSING(DIK_S))
-		m_pTransformCom->Go_Backward(fTimeDelta, m_pControllerCom);
-	if (KEY_PRESSING(DIK_D))
-		m_pTransformCom->Go_Right(fTimeDelta, m_pControllerCom);
-	if (KEY_PRESSING(DIK_A))
-		m_pTransformCom->Go_Left(fTimeDelta, m_pControllerCom);
 }
 
 void CYGController::Update(_float fTimeDelta)

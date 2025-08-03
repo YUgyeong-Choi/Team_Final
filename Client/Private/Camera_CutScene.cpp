@@ -81,9 +81,9 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadyCutSceneOrbital)
 		{
-			m_initOrbitalPos = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalPosBackLookFront();
+			m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 			// 목표 행렬
-			_matrix targetMat = m_initOrbitalPos;
+			_matrix targetMat = m_initOrbitalMatrix;
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -97,7 +97,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				m_bReadyCutSceneOrbital = false;
 				m_fElapsedTime = 0.f;
 				m_iCurrentFrame = -1;
-				m_initOrbitalPos = {};
+				m_initOrbitalMatrix = {};
 				CCamera_Manager::Get_Instance()->SetOrbitalCam();
 			}
 		}
@@ -127,6 +127,10 @@ void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
 		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 	m_bReadyCutSceneOrbital = CameraFrameData.bReadyCutSceneOrbital;
 	m_bReadyCutScene = false;
+
+	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalMatrix);
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 }
 
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
@@ -137,6 +141,10 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 	m_bReadyCutSceneOrbital = m_CameraDatas.bReadyCutSceneOrbital;
 	m_bReadyCutScene = false;
+
+	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalMatrix);
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -355,6 +363,8 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 	data.iEndFrame = j.value("iEndFrame", 0);
 	data.bReadySetOrbitalPos = j.value("bStartBlend", false);
 	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
+	data.fPitch = j["Pitch"].get<float>();
+	data.fYaw = j["Yaw"].get<float>();
 
 	// 2. vecPosData
 	if (j.contains("vecPosData"))
@@ -412,7 +422,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 {
 	_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
-	_matrix targetMat = m_initOrbitalPos;
+	_matrix targetMat = m_initOrbitalMatrix;
 
 	XMVECTOR curScale, curRot, curTrans;
 	XMVECTOR tgtScale, tgtRot, tgtTrans;
@@ -437,21 +447,6 @@ _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 	XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
 	if (XMVectorGetX(diff) < 0.0001f)
 	{
-		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalPos);
-
-		XMVECTOR vCamPos = m_initOrbitalPos.r[3];  
-		XMVECTOR vPlayerPos = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_PlayerPos() + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
-
-		XMVECTOR vOffset = vCamPos - vPlayerPos;
-
-		_float fDistance = XMVectorGetX(XMVector3Length(vOffset));
-
-		XMVECTOR vDir = XMVector3Normalize(vOffset);
-
-		_float fPitch = asinf(XMVectorGetY(vDir));
-		_float fYaw = atan2f(XMVectorGetX(vDir), XMVectorGetZ(vDir));
-
-		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
 		return true;
 	}
 
@@ -484,22 +479,6 @@ _bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _m
 	XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
 	if (XMVectorGetX(diff) < 0.00001f)
 	{
-		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(targetMat);
-
-		XMVECTOR vCamPos = targetMat.r[3];
-		XMVECTOR vPlayerPos = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_PlayerPos() + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
-
-		XMVECTOR vOffset = vCamPos - vPlayerPos;
-
-		_float fDistance = XMVectorGetX(XMVector3Length(vOffset));
-
-		XMVECTOR vDir = XMVector3Normalize(vOffset) * 4.0f;
-
-		_float fPitch = asinf(XMVectorGetY(vDir));
-		_float fYaw = atan2f(XMVectorGetX(vDir), XMVectorGetZ(vDir));
-
-		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
-
 		return true; 
 	}
 	return false;

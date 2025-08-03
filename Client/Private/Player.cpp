@@ -80,7 +80,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 {
 	// ¹®¿©´Â ÄÆ¾À
 	if (KEY_DOWN(DIK_N))
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
 
 	if (KEY_DOWN(DIK_Y))
 	{

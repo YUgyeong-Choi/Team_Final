@@ -34,14 +34,14 @@ HRESULT CLevel_YG::Initialize()
 	if (FAILED(Ready_ImGuiTools()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
+	//if (FAILED(Ready_Layer_Object(TEXT("Layer_YG"))))
+	//	return E_FAIL;
+
+	if (FAILED(Ready_Layer_Station(TEXT("Layer_StaticMesh"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_Station(TEXT("Layer_StaticMesh"))))
-	//	return E_FAIL;
-
-	//if (FAILED(Ready_Player()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Player()))
+		return E_FAIL;
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YG));
 

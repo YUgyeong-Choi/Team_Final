@@ -72,6 +72,8 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 	j["iEndFrame"] = data.iEndFrame;
 	j["bStartBlend"] = data.bReadySetOrbitalPos;
 	j["bEndBlend"] = data.bReadyCutSceneOrbital;
+	j["Pitch"] = data.fPitch;
+	j["Yaw"] = data.fYaw;
 
 	// 1. Position Frame (WorldMatrix은 16개의 float 값으로 저장)
 	for (const auto& pos : data.vecWorldMatrixData)
@@ -137,6 +139,8 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 	data.iEndFrame = j.value("iEndFrame", 0);
 	data.bReadySetOrbitalPos = j.value("bStartBlend", false);
 	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
+	data.fPitch = j["Pitch"].get<float>();
+	data.fYaw = j["Yaw"].get<float>();
 
 	// 2. vecPosData
 	if (j.contains("vecPosData"))
@@ -416,12 +420,20 @@ HRESULT CYGTool::Render_CameraTool()
 		}
 	}
 
+	if (ImGui::Button("Apply Pitch Yaw"))
+	{
+		m_CameraDatas.fPitch = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch();
+		m_CameraDatas.fYaw = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw();
+	}
+	ImGui::Text("Pitch: %f", CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch());
+	ImGui::Text("Yaw: %f", CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw());
+
 	if (ImGui::Button("Play CutScene"))
 	{
 		CCamera_Orbital* pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 		CCamera_CutScene* pCamera_CutScene = CCamera_Manager::Get_Instance()->GetCutScene();
 
-		pCamera_CutScene->Set_InitOrbitalWorldMatrix(pCamera_Orbital->Get_OrbitalPosBackLookFront());
+		pCamera_CutScene->Set_InitOrbitalWorldMatrix(pCamera_Orbital->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw));
 		_matrix oribtalMatrix = pCamera_Orbital->Get_TransfomCom()->Get_WorldMatrix();
 		pCamera_CutScene->Get_TransfomCom()->Set_WorldMatrix(oribtalMatrix);
 

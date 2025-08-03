@@ -159,22 +159,28 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 	m_fYaw = yaw;
 }
 
-_matrix CCamera_Orbital::Get_OrbitalPosBackLookFront()
+_matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 {
-	_vector vPlayerLook = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
-	_vector vOffset = vPlayerLook * -4.f + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
-	_vector vTargetCamPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + vOffset;
+	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
+	m_vPlayerPosition += XMVectorSet(0.f, 1.5f, 0.f, 0.f);
 
-	_vector vLook = XMVector3Normalize(vPlayerLook);
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+	_float x = m_fDistance * cosf(pitch) * sinf(yaw);
+	_float y = m_fDistance * sinf(pitch);
+	_float z = m_fDistance * cosf(pitch) * cosf(yaw);
+	_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-	_matrix matWorld = XMMatrixIdentity();
-	matWorld.r[0] = XMVectorSetW(vRight, 0.f);
-	matWorld.r[1] = XMVectorSetW(vUp, 0.f);
-	matWorld.r[2] = XMVectorSetW(vLook, 0.f);
-	matWorld.r[3] = XMVectorSetW(vTargetCamPos, 1.f);
+	_vector vCamPos = m_vPlayerPosition + vOffset;
+
+	_vector vLook = XMVector3Normalize(m_vPlayerPosition - vCamPos);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Cross(vLook, vRight);
+
+	// 행렬 생성
+	_matrix matWorld;
+	matWorld.r[0] = vRight;                             // Right 
+	matWorld.r[1] = vUp;                                // Up
+	matWorld.r[2] = vLook;                              // Look
+	matWorld.r[3] = XMVectorSetW(vCamPos, 1.f);         // Position
 
 	return matWorld;
 }
