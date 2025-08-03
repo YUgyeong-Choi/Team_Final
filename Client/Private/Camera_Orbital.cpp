@@ -51,15 +51,15 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_X))
 	{
-		m_fMouseSensor -= 0.5f;
-		if (m_fMouseSensor == 0.f)
-			m_fMouseSensor = 0.5f;
+		m_fMouseSensor -= 0.1f;
+		if (m_fMouseSensor <  0.f)
+			m_fMouseSensor = 0.1f;
 		printf("mouseSenor %f\n", m_fMouseSensor);
 	}
 		
 	if (m_pGameInstance->Key_Down(DIK_C))
 	{
-		m_fMouseSensor += 0.5f;
+		m_fMouseSensor += 0.1f;
 		printf("mouseSenor %f\n", m_fMouseSensor);
 	}
 
@@ -130,15 +130,15 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		}
 		// --- 스프링암 Raycast 처리 끝 ---
 
-		// 현재 카메라 위치
-		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
+		//// 현재 카메라 위치
+		//_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-		// 위치 보간 (LERP)
-		_float fInterpSpeed = 5.0f;
-		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
+		//// 위치 보간 (LERP)
+		//_float fInterpSpeed = 5.0f;
+		//_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
 
 		// 카메라 설정
-		m_pTransformCom->Set_State(STATE::POSITION, vInterpolatedPos);
+		m_pTransformCom->Set_State(STATE::POSITION, m_vTargetCamPos);
 		m_pTransformCom->LookAt(m_vPlayerPosition);
 	}
 	__super::Update(fTimeDelta);

@@ -53,7 +53,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	m_pGameInstance->Set_IsChangeLevel(false);
 
-	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+	//CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 	return S_OK;
 }
 
