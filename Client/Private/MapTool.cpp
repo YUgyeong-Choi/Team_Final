@@ -1406,7 +1406,7 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_W))
 		{
-			pCamTransformCom->Go_Straight(fTimeDelta * 10.f);
+			pCamTransformCom->Go_Front(fTimeDelta * 10.f);
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_S))
 		{

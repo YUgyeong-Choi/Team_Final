@@ -2,6 +2,7 @@
 
 #include "Shader.h"
 #include "Navigation.h"
+#include "PhysXController.h"
 
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent { pDevice, pContext }
@@ -9,7 +10,7 @@ CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CTransform::CTransform(const CTransform& Prototype)
-	: CComponent{ Prototype }
+	: CComponent( Prototype )
 	, m_WorldMatrix { Prototype.m_WorldMatrix }
 {
 }
@@ -58,55 +59,89 @@ void CTransform::Scaling(const _float3& vScale)
 	Set_State(STATE::LOOK, XMVector3Normalize(Get_State(STATE::LOOK)) * vScale.z);
 }
 
-void CTransform::Go_Straight(_float fTimeDelta, CNavigation* pNavigation)
+void CTransform::Go_Backward(_float fTimeDelta, CPhysXController* pController, CNavigation* pNavigation)
 {
 	_vector		vPosition = Get_State(STATE::POSITION);
-	_vector		vLook = Get_State(STATE::LOOK);
-		
+	_vector		vLook = Get_State(STATE::LOOK) * -1;
+
 	vPosition += XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
 
-	
-	if(nullptr == pNavigation || true == pNavigation->isMove(vPosition))
-		Set_State(STATE::POSITION, vPosition);
-
+	if (pController)
+	{
+		PxVec3 moveDir = VectorToPxVec3(vLook);
+		pController->Move(fTimeDelta, moveDir, m_fSpeedPerSec);
+		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		Set_State(STATE::POSITION, PxVec3ToVector(pos));
+	}
+	else
+	{
+		if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))
+			Set_State(STATE::POSITION, vPosition);
+	}
 }
 
-void CTransform::Go_Backward(_float fTimeDelta)
-{
-	_vector		vPosition = Get_State(STATE::POSITION);
-	_vector		vLook = Get_State(STATE::LOOK);
-
-	vPosition -= XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
-
-	Set_State(STATE::POSITION, vPosition);
-}
-
-void CTransform::Go_Right(_float fTimeDelta)
+void CTransform::Go_Right(_float fTimeDelta, CPhysXController* pController, CNavigation* pNavigation)
 {
 	_vector		vPosition = Get_State(STATE::POSITION);
 	_vector		vRight = Get_State(STATE::RIGHT);
 
 	vPosition += XMVector3Normalize(vRight) * m_fSpeedPerSec * fTimeDelta;
 
-	Set_State(STATE::POSITION, vPosition);
+	if (pController)
+	{
+		PxVec3 moveDir = VectorToPxVec3(vRight);
+		pController->Move(fTimeDelta, moveDir, m_fSpeedPerSec);
+		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		Set_State(STATE::POSITION, PxVec3ToVector(pos));
+	}
+	else
+	{
+		if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))
+			Set_State(STATE::POSITION, vPosition);
+	}
 }
 
-void CTransform::Go_Left(_float fTimeDelta)
+void CTransform::Go_Left(_float fTimeDelta, CPhysXController* pController, CNavigation* pNavigation)
 {
 	_vector		vPosition = Get_State(STATE::POSITION);
-	_vector		vRight = Get_State(STATE::RIGHT);
+	_vector		vRight = Get_State(STATE::RIGHT) * -1;
 
-	vPosition -= XMVector3Normalize(vRight) * m_fSpeedPerSec * fTimeDelta;
+	vPosition += XMVector3Normalize(vRight) * m_fSpeedPerSec * fTimeDelta;
 
-	Set_State(STATE::POSITION, vPosition);
+	if (pController)
+	{
+		PxVec3 moveDir = VectorToPxVec3(vRight);
+		pController->Move(fTimeDelta, moveDir, m_fSpeedPerSec);
+		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		Set_State(STATE::POSITION, PxVec3ToVector(pos));
+	}
+	else
+	{
+		if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))
+			Set_State(STATE::POSITION, vPosition);
+	}
 }
 
-void CTransform::Go_Target(_fvector vTarget, _float fTimeDelta, _float fMinDistance)
+void CTransform::Go_Target(_float fTimeDelta, _fvector vTarget, _float fMinDistance, CPhysXController* pController, CNavigation* pNavigation)
 {
 	_vector		vMoveDir = vTarget - Get_State(STATE::POSITION);
 
-	if(fMinDistance <= XMVectorGetX(XMVector3Length(vMoveDir)))
-		Set_State(STATE::POSITION, Get_State(STATE::POSITION) + XMVector3Normalize(vMoveDir) * m_fSpeedPerSec * fTimeDelta);
+	if (fMinDistance <= XMVectorGetX(XMVector3Length(vMoveDir)))
+	{
+		if (pController)
+		{
+			PxVec3 moveDir = VectorToPxVec3(XMVector3Normalize(vMoveDir));
+			pController->Move(fTimeDelta, moveDir, m_fSpeedPerSec);
+			PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+			Set_State(STATE::POSITION, PxVec3ToVector(pos));
+		}
+		else
+		{
+			_vector vNextPos = Get_State(STATE::POSITION) + XMVector3Normalize(vMoveDir) * m_fSpeedPerSec * fTimeDelta;
+			if (nullptr == pNavigation || true == pNavigation->isMove(vNextPos))
+				Set_State(STATE::POSITION, vNextPos);
+		}
+	}
 }
 
 void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
@@ -159,24 +194,41 @@ void CTransform::Rotation(_float fX, _float fY, _float fZ)
 	Set_State(STATE::LOOK, XMVector4Transform(vLook, RotationMatrix));
 }
 
-void CTransform::Move(const _vector& vDirectionVector)
+void CTransform::Move(const _vector& vDirectionVector, CPhysXController* pController)
 {
 	_vector vPos = Get_State(STATE::POSITION) + vDirectionVector;
-	Set_State(STATE::POSITION, vPos);
+	if(pController)
+	{
+		PxTransform pxTransform(VectorToPxVec3(vPos), PxQuat(PxIdentity)); // 회전은 기본값
+		pController->Set_Transform(pxTransform);
+		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		Set_State(STATE::POSITION, PxVec3ToVector(pos));
+	}
+	else
+		Set_State(STATE::POSITION, vPos);
 }
 
-void CTransform::Go_Front(_float fTimeDelta, CNavigation* pNavigation)
+void CTransform::Go_Front(_float fTimeDelta, CPhysXController* pController, CNavigation* pNavigation)
 {
-	_vector		vLook = Get_State(STATE::LOOK);
 	_vector		vPosition = Get_State(STATE::POSITION);
+	_vector		vLook = Get_State(STATE::LOOK);
 
 	vPosition += XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
 
-	if (nullptr == pNavigation || pNavigation->isMove(vPosition))
-		Set_State(STATE::POSITION, vPosition);
+	if (pController)
+	{
+		pController->Move(fTimeDelta, VectorToPxVec3(vLook), m_fSpeedPerSec);
+		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		Set_State(STATE::POSITION, PxVec3ToVector(pos));
+	}
+	else
+	{
+		if (nullptr == pNavigation || true == pNavigation->isMove(vPosition))
+			Set_State(STATE::POSITION, vPosition);
+	}
 }
 
-bool CTransform::Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CNavigation* pNavigation)
+bool CTransform::Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CPhysXController* pController, CNavigation* pNavigation)
 {
 	// 현재 위치
 	_vector vMyPos = Get_State(STATE::POSITION);
@@ -203,19 +255,29 @@ bool CTransform::Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CNavig
 
 	if (fDistance > 0.1f)
 	{
-		Go_Front(fTimeDelta, pNavigation);
+		Go_Front(fTimeDelta, pController, pNavigation);
 	}
 	return false;
 }
 
-bool CTransform::Go_UpCustom(_float fTimeDelta, _float fSpeed, _float fMaxHight)
+bool CTransform::Go_UpCustom(_float fTimeDelta, _float fSpeed, _float fMaxHight, CPhysXController* pController)
 {
 	_vector		vPosition = Get_State(STATE::POSITION);
 
 	if (fMaxHight > XMVectorGetY(vPosition))
 	{
-		vPosition += _vector{ 0.f, 1.f, 0.f, 0.f } *fSpeed * fTimeDelta;
-		Set_State(STATE::POSITION, vPosition);
+		if (pController)
+		{
+			_vector moveDir = _vector{ 0.f, 1.f, 0.f, 0.f };
+			pController->Move(fTimeDelta, VectorToPxVec3(moveDir), fSpeed);
+			PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+			Set_State(STATE::POSITION, PxVec3ToVector(pos));
+		}
+		else
+		{
+			vPosition += _vector{ 0.f, 1.f, 0.f, 0.f } *fSpeed * fTimeDelta;
+			Set_State(STATE::POSITION, vPosition);
+		}
 		return false;
 	}
 	else
@@ -224,23 +286,42 @@ bool CTransform::Go_UpCustom(_float fTimeDelta, _float fSpeed, _float fMaxHight)
 	}
 }
 
-void CTransform::Go_DownCustom(_float fTimeDelta, _float fSpeed)
+void CTransform::Go_DownCustom(_float fTimeDelta, _float fSpeed, CPhysXController* pController)
 {
 	_vector		vPosition = Get_State(STATE::POSITION);
 
-	vPosition -= _vector{ 0.f, 1.f, 0.f, 0.f } *fSpeed * fTimeDelta;
-
-	Set_State(STATE::POSITION, vPosition);
+	if (pController)
+	{
+		_vector moveDir = _vector{ 0.f, 1.f, 0.f, 0.f } * -1;
+		pController->Move(fTimeDelta, VectorToPxVec3(moveDir), fSpeed);
+		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		Set_State(STATE::POSITION, PxVec3ToVector(pos));
+	}
+	else
+	{
+		vPosition -= _vector{ 0.f, 1.f, 0.f, 0.f } *fSpeed * fTimeDelta;
+		Set_State(STATE::POSITION, vPosition);
+	}
 }
 
-void CTransform::Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CNavigation* pNavigation)
+void CTransform::Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CPhysXController* pController, CNavigation* pNavigation)
 {
 	// 현재 위치 + 이동 방향 x 델타 타임 x 스피드퍼세크
 	_vector vPos = Get_State(STATE::POSITION);
 	_vector vNewPos = vPos + XMVector3Normalize(vMoveDir) * fTimeDelta * m_fSpeedPerSec;
 
-	if (nullptr == pNavigation || pNavigation->isMove(vNewPos))
-		Set_State(STATE::POSITION, vNewPos);
+	if (pController)
+	{
+		PxVec3 moveDir = VectorToPxVec3(XMVector3Normalize(vMoveDir));
+		pController->Move(fTimeDelta, moveDir, m_fSpeedPerSec);
+		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		Set_State(STATE::POSITION, PxVec3ToVector(pos));
+	}
+	else
+	{
+		if (nullptr == pNavigation || pNavigation->isMove(vNewPos))
+			Set_State(STATE::POSITION, vNewPos);
+	}
 }
 
 bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CNavigation* pNavigation)
@@ -387,7 +468,7 @@ bool CTransform::Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, 
 	return false;
 }
 
-bool CTransform::JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime)
+bool CTransform::JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime, CPhysXController* pController)
 {
 	if (!m_bSpecialMoving)
 	{
@@ -420,7 +501,17 @@ bool CTransform::JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJum
 	vInterp.y = fBaseY + fArc;
 
 	_vector vNewPos = XMVectorSet(vInterp.x, vInterp.y, vInterp.z, 1.f);
-	Set_State(STATE::POSITION, vNewPos);
+	if (pController)
+	{
+		PxTransform pxTransform(VectorToPxVec3(vNewPos), PxQuat(PxIdentity)); 
+		pController->Set_Transform(pxTransform);
+		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		Set_State(STATE::POSITION, PxVec3ToVector(pos));
+	}
+	else
+	{
+		Set_State(STATE::POSITION, vNewPos);
+	}
 
 	if (t >= 1.f)
 	{
@@ -533,7 +624,7 @@ void CTransform::LookAtWithOutY(_fvector vAt)
 	Set_State(STATE::LOOK, vLook * vScale.z);
 }
 
-bool CTransform::ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fMinDistance, CNavigation* pNavigation)
+bool CTransform::ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fMinDistance, CPhysXController* pController,CNavigation* pNavigation)
 {
 	_vector		vPosition = Get_State(STATE::POSITION);
 	vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vPosition));
@@ -543,7 +634,7 @@ bool CTransform::ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fM
 	//최소거리보다 길때는 포지션 갱신
 	if (fMinDistance <= XMVectorGetX(XMVector3Length(vMoveDir)))
 	{
-		Go_Dir(vMoveDir, fTimeDelta, pNavigation);
+		Go_Dir(vMoveDir, fTimeDelta, pController, pNavigation);
 		return false;
 	}
 	else
@@ -553,7 +644,7 @@ bool CTransform::ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fM
 	return false;
 }
 
-bool CTransform::ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _float fMinDistance, _float fSpeed)
+bool CTransform::ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _float fMinDistance, _float fSpeed, CPhysXController* pController)
 {
 	_vector vPosition = Get_State(STATE::POSITION);
 	_vector vMoveDir = vTargetPos - vPosition;
@@ -562,9 +653,19 @@ bool CTransform::ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _floa
 
 	if (fDistance >= fMinDistance)
 	{
-		_vector vMoveDirNorm = XMVector3Normalize(vMoveDir);
-		vPosition += vMoveDirNorm * fSpeed * fTimeDelta;
-		Set_State(STATE::POSITION, vPosition);
+		if (pController)
+		{
+			PxVec3 moveDir = VectorToPxVec3(XMVector3Normalize(vMoveDir));
+			pController->Move(fTimeDelta, moveDir, m_fSpeedPerSec);
+			PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+			Set_State(STATE::POSITION, PxVec3ToVector(pos));
+		}
+		else
+		{
+			_vector vMoveDirNorm = XMVector3Normalize(vMoveDir);
+			vPosition += vMoveDirNorm * fSpeed * fTimeDelta;
+			Set_State(STATE::POSITION, vPosition);
+		}
 	}
 	else
 	{

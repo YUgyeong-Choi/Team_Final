@@ -26,6 +26,8 @@ public:
     {
         static_cast<PxRigidDynamic*>(m_pActor)->setKinematicTarget(pose);
     }
+
+    void Shape_Detach();
 public:
     PxRigidActor* Get_Actor() override { return m_pActor; }
     PxShape* Get_Shape() { return m_pShape; }

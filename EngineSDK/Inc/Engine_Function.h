@@ -84,4 +84,16 @@ namespace Engine
 		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), &result[0], sizeNeeded);
 		return result;
 	}
+
+	static PxVec3 VectorToPxVec3(const _vector& vec)
+	{
+		PxVec3 pxVec3(XMVectorGetX(vec), XMVectorGetY(vec), XMVectorGetZ(vec));
+		return pxVec3;
+	}
+
+	static _vector PxVec3ToVector(const PxVec3& pxVec)
+	{
+		_vector vec = XMVectorSet(pxVec.x, pxVec.y, pxVec.z, 1.f);
+		return vec;
+	}
 }

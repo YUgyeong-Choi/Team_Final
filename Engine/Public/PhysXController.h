@@ -24,7 +24,7 @@ public:
     void Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery);
     void Set_SimulationFilterData(PxFilterData filter);
     void Set_QueryFilterData(PxFilterData filter);
-    void Move(const PxVec3& vDirection, _float fDeltaTime);
+    void Move(_float fDeltaTime, const PxVec3& vDirection, _float fSpeed);
 
     PxController* Get_Controller() const { return m_pController; }
 public:

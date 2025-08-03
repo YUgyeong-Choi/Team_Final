@@ -44,7 +44,7 @@ private:
 	HRESULT Ready_Collider();
 	void Update_ColliderPos();
 	void Ray();
-
+	void ChangeColliderSize();
 	PxVec3 m_vRayHitPos = {};
 	_bool m_bRayHit = false;
 

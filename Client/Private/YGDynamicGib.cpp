@@ -78,9 +78,12 @@ void CYGDynamicGib::Priority_Update(_float fTimeDelta)
 			// 위치 초기화
 			_fvector vPos{ 20.0f, 0.f, -10.0f, 1.0f };
 			m_pTransformCom->Set_State(STATE::POSITION, vPos);
+			m_pTransformCom->Set_State(STATE::RIGHT, XMVectorSet(1.f, 0.f, 0.f, 0.f));
+			m_pTransformCom->Set_State(STATE::UP, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			m_pTransformCom->Set_State(STATE::LOOK, XMVectorSet(0.f, 0.f, 1.f, 0.f));
 
 			// PhysX 액터에도 동기화
-			PxVec3 pxPos = PxVec3(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]);
+			PxVec3 pxPos = PxVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos));
 			PxQuat pxRot = PxQuat(PxIdentity); // 필요 시 쿼터니언 회전값도 설정
 			PxTransform pxTransform(pxPos, pxRot);
 			m_pPhysXActorCom->Set_Transform(pxTransform);

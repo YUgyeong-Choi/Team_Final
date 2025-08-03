@@ -83,6 +83,7 @@ void CPhysXController::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQ
 
     PxShape* pShape = nullptr;
     PxU32 shapeCount = pActor->getNbShapes();
+    
     if (shapeCount > 0)
     {
         pActor->getShapes(&pShape, 1);
@@ -131,10 +132,9 @@ void CPhysXController::Set_QueryFilterData(PxFilterData filter)
     }
 }
 
-void CPhysXController::Move(const PxVec3& vDirection, _float fDeltaTime)
+void CPhysXController::Move(_float fDeltaTime, const PxVec3& vDirection, _float fSpeed)
 {
-    const float speed = 5.f; // 원하는 이동 속도 설정
-    PxVec3 displacement = vDirection * speed * fDeltaTime;
+    PxVec3 displacement = vDirection * fSpeed * fDeltaTime;
 
     PxControllerFilters filters;
     PxControllerCollisionFlags result = m_pController->move(displacement, 0.001f, fDeltaTime, filters);

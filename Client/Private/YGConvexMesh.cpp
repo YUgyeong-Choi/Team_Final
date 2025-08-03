@@ -47,7 +47,10 @@ HRESULT CYGConvexMesh::Initialize(void* pArg)
 
 void CYGConvexMesh::Priority_Update(_float fTimeDelta)
 {
-
+	if (m_pGameInstance->Key_Down(DIK_B))
+	{
+		ChangeColliderSize();
+	}
 }
 
 void CYGConvexMesh::Update(_float fTimeDelta)
@@ -200,6 +203,55 @@ HRESULT CYGConvexMesh::Ready_Collider()
 
 	return S_OK;
 }
+
+void CYGConvexMesh::ChangeColliderSize()
+{
+	if (m_pPhysXActorCom == nullptr || m_pModelCom == nullptr)
+		return;
+
+	// 기존 shape 제거
+	m_pPhysXActorCom->Shape_Detach();
+
+	// 정점 가져오기
+	_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(2);
+	const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(2);
+
+	vector<_float3> scaledVertices(numVertices);
+	for (_uint i = 0; i < numVertices; ++i)
+	{
+		const _float3& v = pVertexPositions[i];
+		scaledVertices[i] = { v.x * 2.0f, v.y * 2.0f, v.z * 2.0f }; // 2배 스케일
+	}
+
+	// 3. Transform에서 S, R, T 분리
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 3-1. 스케일, 회전, 위치 변환
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	// 쿠킹 및 콜라이더 재생성
+	PxConvexMeshGeometry newGeom = m_pGameInstance->CookConvexMesh(reinterpret_cast<const PxVec3*>(scaledVertices.data()), numVertices, meshScale);
+
+	PxShape* pNewShape = PxRigidActorExt::createExclusiveShape(*m_pPhysXActorCom->Get_Actor(), newGeom, *m_pGameInstance->GetMaterial(L"Default"));
+	if (!pNewShape)
+		return; // 실패 처리
+
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+	// 필터 등 정보 재설정
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY; 
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+}
+
 
 CYGConvexMesh* CYGConvexMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

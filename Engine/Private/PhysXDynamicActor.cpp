@@ -93,6 +93,21 @@ void CPhysXDynamicActor::Set_QueryFilterData(PxFilterData _data)
 	m_pShape->setQueryFilterData(_data);
 }
 
+void CPhysXDynamicActor::Shape_Detach()
+{
+	if (m_pActor == nullptr)
+		return;
+
+	PxShape* shapes[8];
+	_uint count = m_pActor->getNbShapes();
+	m_pActor->getShapes(shapes, count);
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		m_pActor->detachShape(*shapes[i]);
+	}
+}
+
 
 CPhysXDynamicActor* CPhysXDynamicActor::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
