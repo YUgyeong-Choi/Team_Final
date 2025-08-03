@@ -99,7 +99,7 @@ void CPhysXActor::Add_RenderRay(DEBUGRAY_DATA _data)
     m_RenderRay.push_back(_data);
 }
 
-void CPhysXActor::DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, PxGeometryHolder geom, _float offSet)
+void CPhysXActor::DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds, _float offSet)
 {  
     m_pEffect->SetWorld(XMMatrixIdentity());
     m_pEffect->SetView(view);
@@ -144,12 +144,12 @@ void CPhysXActor::DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, Px
     }
     case PxGeometryType::eTRIANGLEMESH:
     {
-        DrawTriangleMesh(pose, geom);
+        DrawTriangleMesh(pose, geom, bounds);
         break;
     }
     case PxGeometryType::eCONVEXMESH:
     {
-        DrawConvexMesh(pose, geom);
+        DrawConvexMesh(pose, geom, bounds);
         break;
     }
     default:
@@ -161,7 +161,6 @@ void CPhysXActor::DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, Px
 
 void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, const PxTransform& pose, float radius, float halfHeight, FXMVECTOR color)
 {
-
     constexpr int segmentCount = 24;
     const float step = XM_2PI / segmentCount;
 
@@ -290,7 +289,7 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
 
 }
 
-void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom)
+void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds)
 {
     const PxTriangleMeshGeometry& meshGeom = geom.triangleMesh();
     const PxTriangleMesh* mesh = meshGeom.triangleMesh;
@@ -347,23 +346,22 @@ void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom)
 
 
     // === AABB 시각화 추가 ===
-  /*  PxBounds3 bounds = PxShapeExt::getWorldBounds(*m_pShape, *m_pActor);
-    BoundingBox aabb;
-    aabb.Center = XMFLOAT3(
-        (bounds.minimum.x + bounds.maximum.x) * 0.5f,
-        (bounds.minimum.y + bounds.maximum.y) * 0.5f,
-        (bounds.minimum.z + bounds.maximum.z) * 0.5f
-    );
-    aabb.Extents = XMFLOAT3(
-        (bounds.maximum.x - bounds.minimum.x) * 0.5f,
-        (bounds.maximum.y - bounds.minimum.y) * 0.5f,
-        (bounds.maximum.z - bounds.minimum.z) * 0.5f
-    );
-    DX::Draw(m_pBatch, aabb, Colors::Yellow);*/
+   BoundingBox aabb;
+   aabb.Center = XMFLOAT3(
+       (bounds.minimum.x + bounds.maximum.x) * 0.5f,
+       (bounds.minimum.y + bounds.maximum.y) * 0.5f,
+       (bounds.minimum.z + bounds.maximum.z) * 0.5f
+   );
+   aabb.Extents = XMFLOAT3(
+       (bounds.maximum.x - bounds.minimum.x) * 0.5f,
+       (bounds.maximum.y - bounds.minimum.y) * 0.5f,
+       (bounds.maximum.z - bounds.minimum.z) * 0.5f
+   );
+   DX::Draw(m_pBatch, aabb, Colors::Yellow);
 
 }
 
-void CPhysXActor::DrawConvexMesh(PxTransform pose, PxGeometryHolder geom)
+void CPhysXActor::DrawConvexMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds)
 {
     const PxConvexMeshGeometry& convexGeom = geom.convexMesh();
     const PxConvexMesh* convex = convexGeom.convexMesh;
@@ -411,6 +409,20 @@ void CPhysXActor::DrawConvexMesh(PxTransform pose, PxGeometryHolder geom)
             m_pBatch->DrawLine(VertexPositionColor(v2, m_vRenderColor), VertexPositionColor(v0, m_vRenderColor));
         }
     }
+
+    // === AABB 시각화 추가 ===
+    BoundingBox aabb;
+    aabb.Center = XMFLOAT3(
+        (bounds.minimum.x + bounds.maximum.x) * 0.5f,
+        (bounds.minimum.y + bounds.maximum.y) * 0.5f,
+        (bounds.minimum.z + bounds.maximum.z) * 0.5f
+    );
+    aabb.Extents = XMFLOAT3(
+        (bounds.maximum.x - bounds.minimum.x) * 0.5f,
+        (bounds.maximum.y - bounds.minimum.y) * 0.5f,
+        (bounds.maximum.z - bounds.minimum.z) * 0.5f
+    );
+    DX::Draw(m_pBatch, aabb, Colors::Yellow);
 }
 
 void CPhysXActor::DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox, PxVec3 hitPos)

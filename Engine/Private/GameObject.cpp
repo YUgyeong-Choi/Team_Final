@@ -125,6 +125,10 @@ HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& s
 
 HRESULT CGameObject::Replace_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
 {
+	// 둘다 nullptr이 아니면 실제 있는거니까
+	if (ppOut && *ppOut)
+		Safe_Release(*ppOut);
+
 	CComponent* pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
 	if (nullptr == pComponent)
 		return E_FAIL;
@@ -133,9 +137,12 @@ HRESULT CGameObject::Replace_Component(_uint iPrototypeLevelIndex, const _wstrin
 
 	m_Components.emplace(make_pair(strComponentTag, pComponent));
 
-	*ppOut = pComponent;
 
-	Safe_AddRef(pComponent);
+	if (ppOut)
+	{
+		*ppOut = pComponent;
+		Safe_AddRef(pComponent);   
+	}
 
 	return S_OK;
 }

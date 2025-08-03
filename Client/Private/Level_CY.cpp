@@ -151,13 +151,13 @@ HRESULT CLevel_CY::Ready_Sky(const _wstring strLayerTag)
 	return S_OK;
 }
 
-
 HRESULT CLevel_CY::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 {
 	CPBRMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
 	Desc.m_eLevelID = LEVEL::CY;
 	Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
+	Desc.InitPos = { 10.f, 5.f, 10.f };
 	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
@@ -172,14 +172,14 @@ HRESULT CLevel_CY::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 
 	Desc.szMeshID = TEXT("SM_BuildingC_Sewer_01");
 	lstrcpy(Desc.szName, TEXT("SM_BuildingC_Sewer_01"));
-	Desc.InitPos = _float3(10.f, 0.f, 0.f);
+	Desc.InitPos = _float3(20.f, 0.f, 0.f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	Desc.szMeshID = TEXT("SM_Cathedral_FloorBR_03");
 	lstrcpy(Desc.szName, TEXT("SM_Cathedral_FloorBR_03"));
-	Desc.InitPos = _float3(0.f, 0.f, 5.f);
+	Desc.InitPos = _float3(10.f, 5.f, 15.f);
 	Desc.InitScale = _float3(3.f, 3.f, 3.f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
@@ -188,7 +188,7 @@ HRESULT CLevel_CY::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 	Desc.szMeshID = TEXT("TestMap");
 	lstrcpy(Desc.szName, TEXT("TestMap"));
 	Desc.InitPos = _float3(0.f, 0.f, 0.f);
-	Desc.InitScale = _float3(10.f, 10.f, 10.f);
+	Desc.InitScale = _float3(12.f, 12.f, 12.f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
 		return E_FAIL;

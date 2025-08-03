@@ -10,6 +10,8 @@
 
 #include "PlayerState.h"
 
+#include "Observer_Player_Status.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -38,8 +40,12 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
 
+	/* [ 스테이트 시작 ] */
+	ReadyForState();
+
 	/* [ 초기화 위치값 ] */
 	m_pTransformCom->Set_State(STATE::POSITION, _vector{ m_InitPos.x, m_InitPos.y, m_InitPos.z });
+	m_pTransformCom->Rotation(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));
 	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
 
 	/* [ 위치 초기화 후 콜라이더 생성 ] */
@@ -49,6 +55,25 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 	SyncTransformWithController();
+
+
+	// 옵저버 찾아서 없으면 추가
+	if (nullptr == m_pGameInstance->Find_Observer(TEXT("Player_Status")))
+	{
+
+		m_pGameInstance->Add_Observer(TEXT("Player_Status"), new CObserver_Player_Status);
+
+	}
+
+	m_iCurrentHP = m_iMaxHP;
+
+	Callback_HP();
+	Callback_Mana();
+	Callback_Stamina();
+
+
+	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+
 	return S_OK;
 }
 
@@ -58,7 +83,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 {
 	// 문여는 컷씬
 	if (KEY_DOWN(DIK_N))
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 
 	if (KEY_DOWN(DIK_Y))
 	{
@@ -73,6 +98,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast();
 
+
+	// 옵저버 변수들 처리
+	Update_Stat();
+
 	__super::Priority_Update(fTimeDelta);
 }
 void CPlayer::Update(_float fTimeDelta)
@@ -81,9 +110,8 @@ void CPlayer::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 	/* [ 입력 ] */
-	//HandleInput();
-	//UpdateCurrentState(fTimeDelta);
-
+	HandleInput();
+	UpdateCurrentState(fTimeDelta);
 
 	// 바꿀 예정
 	Movement(fTimeDelta);
@@ -92,6 +120,21 @@ void CPlayer::Update(_float fTimeDelta)
 void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	if(KEY_DOWN(DIK_J))
+	{
+		/* [ 이곳은 애니메이션 실험실입니다. ] */
+		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
+		//m_pAnimator->SetInt("Combo", 0);
+		//m_pAnimator->SetTrigger("NormalAttack");
+
+		//m_pAnimator->SetBool("Move", true);
+		//m_pAnimator->SetBool("Run", true);
+		//m_pAnimator->SetTrigger("Hited");
+	}
+	
+	if (m_pAnimator->IsFinished())
+		int a = 0;
 }
 
 HRESULT CPlayer::Render()
@@ -109,10 +152,28 @@ void CPlayer::HandleInput()
 	m_Input.bLeft = KEY_PRESSING(DIK_A);
 	m_Input.bRight = KEY_PRESSING(DIK_D);
 
+	m_Input.bUp_Pressing = KEY_PRESSING(DIK_W);
+	m_Input.bDown_Pressing = KEY_PRESSING(DIK_S);
+	m_Input.bLeft_Pressing = KEY_PRESSING(DIK_A);
+	m_Input.bRight_Pressing = KEY_PRESSING(DIK_D);
+
 	/* [ 마우스 입력을 업데이트합니다. ] */
+	m_Input.bLeftMouseDown = MOUSE_DOWN(DIM::RBUTTON);
 	m_Input.bRightMouseDown = MOUSE_DOWN(DIM::RBUTTON);
 	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
 	m_Input.bRightMouseUp = MOUSE_UP(DIM::RBUTTON);
+
+	/* [ 특수키 입력을 업데이트합니다. ] */
+	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
+	m_Input.bCtrl = KEY_DOWN(DIK_LCONTROL);
+	m_Input.bTap = KEY_DOWN(DIK_TAB);
+	m_Input.bItem = KEY_DOWN(DIK_R);
+	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
+	m_Input.bSpaceDown = KEY_DOWN(DIK_SPACE);
+	
+	/* [ 뛰기 걷기를 토글합니다. ] */
+	if (KEY_DOWN(DIK_Z))
+		ToggleWalkRun();
 }
 
 EPlayerState CPlayer::EvaluateTransitions()
@@ -135,7 +196,7 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 		m_pCurrentState->Exit();
 
 		m_eCurrentState = eNextState;
-		m_pCurrentState = m_StateMap[m_eCurrentState];
+		m_pCurrentState = m_pStateArray[ENUM_CLASS(m_eCurrentState)];
 
 		m_pCurrentState->Enter();
 	}
@@ -159,6 +220,20 @@ void CPlayer::TriggerStateEffects()
 	default:
 		break;
 	}
+}
+
+void CPlayer::ReadyForState()
+{
+	m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)] = new CPlayer_Idle(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::WALK)] = new CPlayer_Walk(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::RUN)] = new CPlayer_Run(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::USEITEM)] = new CPlayer_Item(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::BACKSTEP)] = new CPlayer_BackStep(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::ROLLING)] = new CPlayer_Rolling(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::EQUIP)] = new CPlayer_Equip(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINT)] = new CPlayer_Sprint(this);
+
+	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }
 
 
@@ -205,6 +280,47 @@ void CPlayer::LoadPlayerFromJson()
 		json rootStates;
 		ifsStates >> rootStates;
 		m_pAnimator->Deserialize(rootStates);
+	}
+}
+
+void CPlayer::Callback_HP()
+{
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_iCurrentHP);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_iMaxHP);
+}
+
+void CPlayer::Callback_Stamina()
+{
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_iCurrentStamina);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxStamina"), &m_iMaxStamina);
+}
+
+void CPlayer::Callback_Mana()
+{
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_iCurrentMana);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_iMaxMana);
+}
+
+void CPlayer::Update_Stat()
+{
+	if (m_pGameInstance->Key_Down(DIK_V))
+	{
+		m_iCurrentHP += 10;
+		m_iCurrentStamina += 20;
+		m_iCurrentMana += 10;
+		Callback_HP();
+		Callback_Mana();
+		Callback_Stamina();
+
+	}
+	else if (m_pGameInstance->Key_Down(DIK_B))
+	{
+		m_iCurrentHP -= 10;
+		m_iCurrentStamina -= 20;
+		m_iCurrentMana -= 100;
+		Callback_HP();
+		Callback_Mana();
+		Callback_Stamina();
 	}
 }
 
@@ -448,7 +564,7 @@ void CPlayer::Movement(_float fTimeDelta)
 		SetMoveState(fTimeDelta);
 	}
 
-	SetPlayerState(fTimeDelta);
+	//SetPlayerState(fTimeDelta);
 }
 
 
@@ -589,4 +705,7 @@ void CPlayer::Free()
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pControllerCom);
+
+	for (size_t i = 0; i < ENUM_CLASS(EPlayerState::END); ++i)
+		Safe_Delete(m_pStateArray[i]);
 }

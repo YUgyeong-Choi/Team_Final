@@ -3,11 +3,11 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-NS_BEGIN(Engine)
-class CShader;
-class CTexture;
-class CVIBuffer_Rect;
-NS_END
+//NS_BEGIN(Engine)
+//class CShader;
+//class CTexture;
+//class CVIBuffer_Rect;
+//NS_END
 
 NS_BEGIN(Client)
 
@@ -27,6 +27,20 @@ public:
 	virtual HRESULT Render();
 
 private:
+	vector<class CEffectBase*>        m_Effects;
+
+	// 시퀀스 재생용
+	_float		m_fCurFrame = {};
+	_int		m_iCurFrame = {};
+	_int		m_iFirstFrame = { 0 };
+	_float		m_fTickPerSecond = { 60.f };
+
+	_float		m_fTimeAcc = {};
+
+	_int		m_iMaxFrame = {};
+	_bool		m_bLoop = { true };
+	_float		m_fLifeTimeAcc = {};
+	_float		m_fLifeTime = {};
 
 private:
 	_float				m_fFrame = { };

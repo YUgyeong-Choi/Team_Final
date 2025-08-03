@@ -46,7 +46,9 @@ HRESULT CPhysXStaticActor::Render()
 {
     PxTransform pose = PxShapeExt::getGlobalPose(*m_pShape, *m_pActor);
     PxGeometryHolder geom = m_pShape->getGeometry();
-    DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), pose, geom);
+    PxBounds3 bounds = PxShapeExt::getWorldBounds(*m_pShape, *m_pActor);
+
+    DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), pose, geom, bounds);
 
     for (auto& Ray : m_RenderRay) {
         DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);

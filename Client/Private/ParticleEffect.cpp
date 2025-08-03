@@ -23,24 +23,43 @@ HRESULT CParticleEffect::Initialize(void* pArg)
 {
 	if (pArg == nullptr)
 	{
-		MSG_BOX("파티클은 Desc가 필수");
+		MSG_BOX("이펙트는 DESC가 꼭 필요해용");
 		return E_FAIL;
 	}
 
 	DESC* pDesc = static_cast<DESC*>(pArg);
 
 	m_iNumInstance = pDesc->iNumInstance;
+	m_iShaderPass = pDesc->iShaderPass;
+	m_ePType =	pDesc->ePType;
+	m_iNumInstance = pDesc->iNumInstance;
+	m_isLoop =	pDesc->isLoop;
+	m_vCenter = pDesc->vCenter;
+	m_vLifeTime = pDesc->vLifeTime;
 	m_fMaxLifeTime = pDesc->vLifeTime.y;
 	m_vPivot = pDesc->vPivot;
-	m_ePType = pDesc->ePType;
-	m_iShaderPass = pDesc->iShaderPass;
+	m_vRange =	pDesc->vRange;
+	m_vSize = pDesc->vSize;
+	m_vSpeed =	pDesc->vSpeed;
+	m_bTool = pDesc->bTool;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (!m_bTool)
 	{
-		if (FAILED(Ready_Components(pArg)))
+		json j;
+		ifstream ifs(pDesc->pJsonFilePath);
+
+		if (!ifs.is_open())
+		{
+			return E_FAIL;
+		}
+		ifs >> j;
+
+		Deserialize(j);
+		Ready_Textures_Prototype();
+		if (FAILED(Ready_Components(nullptr)))
 			return E_FAIL;
 	}
 
@@ -54,6 +73,7 @@ void CParticleEffect::Priority_Update(_float fTimeDelta)
 
 void CParticleEffect::Update(_float fTimeDelta)
 {
+
 	m_pVIBufferCom->Update(fTimeDelta);
 	return;
 }
@@ -98,18 +118,16 @@ HRESULT CParticleEffect::Ready_Components(void* pArg)
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
-	DESC* pDesc = static_cast<DESC*>(pArg);
-
 	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-	VIBufferDesc.ePType =		pDesc->ePType;
-	VIBufferDesc.iNumInstance = pDesc->iNumInstance;
-	VIBufferDesc.isLoop =		pDesc->isLoop;
-	VIBufferDesc.vCenter =		pDesc->vCenter;
-	VIBufferDesc.vLifeTime =	pDesc->vLifeTime;
-	VIBufferDesc.vPivot =		pDesc->vPivot;
-	VIBufferDesc.vRange =		pDesc->vRange;
-	VIBufferDesc.vSize =		pDesc->vSize;
-	VIBufferDesc.vSpeed =		pDesc->vSpeed;
+	VIBufferDesc.ePType =		m_ePType;
+	VIBufferDesc.iNumInstance = m_iNumInstance;
+	VIBufferDesc.isLoop =		m_isLoop;
+	VIBufferDesc.vCenter =		m_vCenter;
+	VIBufferDesc.vLifeTime =	m_vLifeTime;
+	VIBufferDesc.vPivot =		m_vPivot;
+	VIBufferDesc.vRange =		m_vRange;
+	VIBufferDesc.vSize =		m_vSize;
+	VIBufferDesc.vSpeed =		m_vSpeed;
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
@@ -210,11 +228,17 @@ json CParticleEffect::Serialize()
 	json j = __super::Serialize();
 
 	j["NumInstance"] = m_iNumInstance;
+	j["Range"] = { m_vRange.x, m_vRange.y, m_vRange.z };
+	j["Size"] = { m_vSize.x, m_vSize.y };
+	j["Center"] = { m_vCenter.x, m_vCenter.y, m_vCenter.z };
 	j["Pivot"] = { m_vPivot.x, m_vPivot.y, m_vPivot.z };
-	j["MaxLifeTime"] = m_iNumInstance;
-	j[""] = m_iNumInstance;
-	j[""] = m_iNumInstance;
-	// VIBuffer에 필요한 정보들 넣을 것... 
+	j["LifeTime"] = { m_vLifeTime.x, m_vLifeTime.y };
+	j["MaxLifeTime"] = m_fMaxLifeTime;
+	j["Speed"] = { m_vSpeed.x, m_vSpeed.y };
+	j["PType"] = m_ePType;
+	j["Loop"] = m_isLoop;
+	j["Local"] = m_bLocal;
+	
 
 	return j;
 }
@@ -222,4 +246,37 @@ json CParticleEffect::Serialize()
 void CParticleEffect::Deserialize(const json& j)
 {
 	__super::Deserialize(j);
+
+	if (j.contains("NumInstance"))
+		m_iNumInstance = j["NumInstance"].get<_uint>();
+
+	if (j.contains("Range") && j["Range"].is_array() && j["Range"].size() == 3)
+		m_vRange = { j["Range"][0].get<_float>(), j["Range"][1].get<_float>(), j["Range"][2].get<_float>() };
+
+	if (j.contains("Size") && j["Size"].is_array() && j["Size"].size() == 2)
+		m_vSize = { j["Size"][0].get<_float>(), j["Size"][1].get<_float>() };
+
+	if (j.contains("Center") && j["Center"].is_array() && j["Center"].size() == 3)
+		m_vCenter = { j["Center"][0].get<_float>(), j["Center"][1].get<_float>(), j["Center"][2].get<_float>() };
+
+	if (j.contains("Pivot") && j["Pivot"].is_array() && j["Pivot"].size() == 3)
+		m_vPivot = { j["Pivot"][0].get<_float>(), j["Pivot"][1].get<_float>(), j["Pivot"][2].get<_float>() };
+
+	if (j.contains("LifeTime") && j["LifeTime"].is_array() && j["LifeTime"].size() == 2)
+		m_vLifeTime = { j["LifeTime"][0].get<_float>(), j["LifeTime"][1].get<_float>() };
+
+	if (j.contains("MaxLifeTime"))
+		m_fMaxLifeTime = j["MaxLifeTime"].get<_float>();
+
+	if (j.contains("Speed") && j["Speed"].is_array() && j["Speed"].size() == 2)
+		m_vSpeed = { j["Speed"][0].get<_float>(), j["Speed"][1].get<_float>() };
+
+	if (j.contains("PType"))
+		m_ePType = static_cast<PARTICLETYPE>(j["PType"].get<int>());
+
+	if (j.contains("Loop"))
+		m_isLoop = j["Loop"].get<_bool>();
+
+	if (j.contains("Local"))
+		m_bLocal = j["Local"].get<_bool>();
 }

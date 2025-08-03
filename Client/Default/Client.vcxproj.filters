@@ -213,9 +213,21 @@
     </Filter>
     <Filter Include="03. Observer\Player">
       <UniqueIdentifier>{0cf68e2e-7499-467e-8996-01dcada4ac10}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Unit\00.Player\PlayerBehavior">
       <UniqueIdentifier>{c6317318-96b2-4c47-a258-b55edf9c9eb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel">
+      <UniqueIdentifier>{cbc0df18-5fd5-4cd3-ae35-23bf397e69ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player">
+      <UniqueIdentifier>{21b0be92-1722-4dbf-9f8a-80c41ff5d6d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
+      <UniqueIdentifier>{58e701f2-137e-4b53-9f66-da65d354bf05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Mana">
+      <UniqueIdentifier>{367fcc09-a226-4aab-9b15-2cb35c437e7a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -512,9 +524,15 @@
     </ClInclude>
     <ClInclude Include="..\public\HP_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\PlayerState.h">
       <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Mana_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Mana</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Stamina_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -788,6 +806,12 @@
     </ClCompile>
     <ClCompile Include="..\private\HP_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Mana_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Mana</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Stamina_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
