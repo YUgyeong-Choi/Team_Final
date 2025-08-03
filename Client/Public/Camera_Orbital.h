@@ -60,6 +60,8 @@ private:
 
 private:
 	CGameObject*	m_pPlayer = { nullptr };
+
+	_bool m_bActive = true;
 public:
 	static CCamera_Orbital* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -26,7 +26,7 @@ HRESULT CCamera_Orbital::Initialize(void* pArg)
 		return E_FAIL;
 
 	CAMERA_ORBITAL_DESC* pDesc = static_cast<CAMERA_ORBITAL_DESC*>(pArg);
-	m_fMouseSensor = 0.3f;
+	m_fMouseSensor = 0.6f;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -44,6 +44,26 @@ void CCamera_Orbital::Priority_Update(_float fTimeDelta)
 void CCamera_Orbital::Update(_float fTimeDelta)
 {
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
+		return;
+
+	if (m_pGameInstance->Key_Down(DIK_T))
+		m_bActive = !m_bActive;
+
+	if (m_pGameInstance->Key_Down(DIK_X))
+	{
+		m_fMouseSensor -= 0.5f;
+		if (m_fMouseSensor == 0.f)
+			m_fMouseSensor = 0.5f;
+		printf("mouseSenor %f\n", m_fMouseSensor);
+	}
+		
+	if (m_pGameInstance->Key_Down(DIK_C))
+	{
+		m_fMouseSensor += 0.5f;
+		printf("mouseSenor %f\n", m_fMouseSensor);
+	}
+
+	if (!m_bActive)
 		return;
 
 	if (m_pPlayer)
@@ -114,7 +134,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 		// 위치 보간 (LERP)
-		_float fInterpSpeed = 8.0f;
+		_float fInterpSpeed = 5.0f;
 		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
 
 		// 카메라 설정

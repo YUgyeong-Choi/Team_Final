@@ -109,6 +109,10 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
 
+	// 컷씬일 때 못 움직이도록
+	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+		return;
+
 	/* [ 입력 ] */
 	HandleInput();
 	UpdateCurrentState(fTimeDelta);
@@ -158,10 +162,10 @@ void CPlayer::HandleInput()
 	m_Input.bRight_Pressing = KEY_PRESSING(DIK_D);
 
 	/* [ 마우스 입력을 업데이트합니다. ] */
-	m_Input.bLeftMouseDown = MOUSE_DOWN(DIM::RBUTTON);
-	m_Input.bRightMouseDown = MOUSE_DOWN(DIM::RBUTTON);
-	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
-	m_Input.bRightMouseUp = MOUSE_UP(DIM::RBUTTON);
+	m_Input.bLeftMouseDown		=false;//= MOUSE_DOWN(DIM::RBUTTON);
+	m_Input.bRightMouseDown		=false;//= MOUSE_DOWN(DIM::RBUTTON);
+	m_Input.bRightMousePress	=false;//= MOUSE_PRESSING(DIM::RBUTTON);
+	m_Input.bRightMouseUp		=false;//= MOUSE_UP(DIM::RBUTTON);
 
 	/* [ 특수키 입력을 업데이트합니다. ] */
 	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
