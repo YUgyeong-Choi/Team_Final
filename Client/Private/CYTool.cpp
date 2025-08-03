@@ -50,7 +50,6 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 	else
 	{
 		m_fCurFrame = static_cast<_float>(m_iCurFrame);
-
 	}
 	if (m_fCurFrame > m_pSequence->GetFrameMax())
 	{
@@ -114,6 +113,12 @@ HRESULT CCYTool::Render()
 		Save_Effect();
 	if (m_bOpenLoadEffectOnly)
 		Load_Effect();
+
+	if (m_bOpenSaveEffectContainer)
+		Save_EffectSet();
+	if (m_bOpenLoadEffectContainer)
+		Load_EffectSet();
+
 
 	return S_OK;
 }
@@ -320,10 +325,24 @@ HRESULT CCYTool::Edit_Preferences()
 
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+
+	ImGui::Begin("Type Window");
+
+	ImGui::Text("Select RenderGroup\n0. EFFECT_BLEND\t1. EFFECT_BLEND\t2. UVSprite\t3. UVSprite_Color");
+
+	//for (_uint i = 0; i < SE_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), m_eSelectedPass_SE == i)) {
+	//		m_eSelectedPass_SE = (SPRITEEFFECT_PASS_INDEX)i;
+	//		pSE->Set_ShaderPass(i);
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
+
 	switch (m_pSequence->m_Items[m_iSelected].iType)
 	{
 	case Client::EFF_SPRITE:
-		ImGui::Begin("TypeWindow");
 		if (FAILED(Window_Sprite()))
 		{
 			ImGui::End();
@@ -333,7 +352,6 @@ HRESULT CCYTool::Edit_Preferences()
 		ImGui::End();
 		break;
 	case Client::EFF_PARTICLE:
-		ImGui::Begin("TypeWindow");
 		if (FAILED(Window_Particle()))
 		{
 			ImGui::End();
@@ -343,7 +361,6 @@ HRESULT CCYTool::Edit_Preferences()
 		ImGui::End();
 		break;
 	case Client::EFF_MESH:
-		ImGui::Begin("TypeWindow");
 		if (FAILED(Window_Mesh()))
 		{
 			ImGui::End();
@@ -401,13 +418,13 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 5000, "%d");
-	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.1f, -1000.f, 1000.f, "%.1f");
-	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.1f, -1000.f, 1000.f, "%.1f");
-	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.1f, 0.1f, 1000.f, "%.1f");
-	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.05f, 0.01f, 1000.f, "%.2f");
+	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.01f, -1000.f, 1000.f, "%.2f");
+	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.01f, -1000.f, 1000.f, "%.2f");
+	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.01f, 0.01f, 1000.f, "%.2f");
+	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
-	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.1f, 0.f, 100.f, "%.1f");
-	ImGui::DragFloat("Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 100.f, "%.1f");
+	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");
+	ImGui::DragFloat("Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 200.f, "%.1f");
 	ImGui::ColorEdit4("Center Color##picker", reinterpret_cast<_float*>(pPE->Get_CenterColor()), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
 	ImGui::SameLine();
 	ImGui::Text("Center Color");
@@ -517,7 +534,7 @@ void CCYTool::Edit_Keyframes(CEffectBase* pEffect)
 	_int iIdx = {};
 	for (auto& Keyframe : KeyFrames)
 	{
-		ImGui::DragFloat(string("Frame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pEffect->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
+		ImGui::DragFloat(string("KeyFrame" + to_string(iIdx)).c_str(), &Keyframe.fTrackPosition, 1.f, 0.f, static_cast<_float>(*pEffect->Get_Duration_Ptr()/* + *m_pSequence->m_Items[m_iSelected].iStart*/), "%.0f");
 
 		ImGui::DragFloat3(string("Translation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vTranslation), 0.1f);
 
@@ -530,7 +547,9 @@ void CCYTool::Edit_Keyframes(CEffectBase* pEffect)
 		ImGui::DragFloat(string("Intensity##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.fIntensity), 0.01f, 0.f, 10.f, "%.2f");
 
 		ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&Keyframe.vColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
-
+		ImGui::SameLine();
+		if (ImGui::RadioButton(("Select Keyframe " + to_string(iIdx)).c_str(), m_iSelectedKeyframe == iIdx))
+			m_iSelectedKeyframe = iIdx;
 		_int iSelected = Keyframe.eInterpolationType;
 		if (ImGui::Combo(string("##interpolation type" + to_string(iIdx)).c_str(), &iSelected, m_InterpolationTypes, IM_ARRAYSIZE(m_InterpolationTypes)))
 		{
@@ -539,6 +558,7 @@ void CCYTool::Edit_Keyframes(CEffectBase* pEffect)
 			//:3
 			//:>
 		}
+
 		++iIdx;
 		ImGui::Separator();
 	}
@@ -606,8 +626,6 @@ HRESULT CCYTool::Save_EffectSet()
 	{
 		json jItem;
 		jItem["Name"] = Item.strName.data();
-		jItem["StartPos"] = *Item.iStart;
-		jItem["EndPos"] = *Item.iEnd;
 		jItem["EffectType"] = Item.iType;
 
 		jItem.push_back(Item.pEffect->Serialize());
@@ -639,7 +657,6 @@ HRESULT CCYTool::Save_Effect()
 			// 확장자가 없으면 .json 붙이기
 			if (savePath.extension().string() != ".json")
 				savePath += ".json";
-
 
 			ofstream ofs(savePath);
 
@@ -710,7 +727,6 @@ HRESULT CCYTool::Load_Effect()
 			}
 
 			ifstream ifs(loadPath);
-
 			if (!ifs.is_open())
 			{
 				MSG_BOX("File open Failed");
@@ -909,7 +925,7 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 
 HRESULT CCYTool::Guizmo_Tool()
 {
-	if (m_isGizmoEnable && m_iSelected != -1)
+	if (m_isGizmoEnable && m_iSelected != -1 && m_iSelectedKeyframe != -1)
 	{
 		// ImGui 프레임 내부에서 호출
 
@@ -919,7 +935,21 @@ HRESULT CCYTool::Guizmo_Tool()
 		ImGuiViewport* viewport = ImGui::GetMainViewport();
 		ImGuizmo::SetRect(viewport->Pos.x, viewport->Pos.y, viewport->Size.x, viewport->Size.y);
 
-		auto pObjTransformCom = m_pSequence->m_Items[m_iSelected].pEffect->Get_TransfomCom();
+		auto& curKeyframe = m_pSequence->m_Items[m_iSelected].pEffect->Get_KeyFrames()[m_iSelectedKeyframe];
+
+		_vector vCurKeyframeTranslation =	XMLoadFloat3(&curKeyframe.vTranslation);
+		_vector vCurKeyframeRotation =		XMLoadFloat4(&curKeyframe.vRotation);
+		_vector vCurKeyframeScale =			XMLoadFloat3(&curKeyframe.vScale);
+
+		_matrix matCurKFWorld = XMMatrixAffineTransformation(
+			vCurKeyframeScale,
+			XMVectorSet(0.f, 0.f, 0.f, 1.f),
+			vCurKeyframeRotation,
+			vCurKeyframeTranslation
+		);
+
+		_float4x4 matWorld = {};
+		XMStoreFloat4x4(&matWorld, matCurKFWorld);
 
 		_float4x4 matView = *m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW);
 		_float4x4 matProj = *m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ);
@@ -939,9 +969,13 @@ HRESULT CCYTool::Guizmo_Tool()
 			reinterpret_cast<const _float*>(&matView),
 			reinterpret_cast<const _float*>(&matProj),
 			m_eOperation, m_eMode,
-			reinterpret_cast<_float*>(&pObjTransformCom->Get_World4x4()),
-			nullptr, snapoffset);
-
+			reinterpret_cast<_float*>(&matWorld),
+			nullptr, snapoffset
+		);
+		XMMatrixDecompose(&vCurKeyframeScale, &vCurKeyframeRotation, &vCurKeyframeTranslation, XMLoadFloat4x4(&matWorld));
+		XMStoreFloat3(&curKeyframe.vTranslation, vCurKeyframeTranslation);
+		XMStoreFloat4(&curKeyframe.vRotation, vCurKeyframeRotation);
+		XMStoreFloat3(&curKeyframe.vScale, vCurKeyframeScale);
 	}
 	return S_OK;
 }
@@ -962,6 +996,7 @@ void CCYTool::Key_Input()
 		{
 			m_pSequence->Del(m_iSelected);
 			m_iSelected = - 1;
+			m_iSelectedKeyframe = 0;
 		}
 	}
 	if (KEY_PRESSING(DIK_LCONTROL))

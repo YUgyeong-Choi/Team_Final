@@ -64,21 +64,22 @@ private:
 	vector<EFFTEXTURE>			m_Textures;
 	_int						m_iSelectedTextureIdx = { -1 };
 
-	_bool			m_bOpenSaveEffectOnly = { false };
-	_bool			m_bOpenSaveEffectContainer = { false };
-	_bool			m_bOpenLoadEffectOnly = { false };
+	_bool						m_bOpenSaveEffectOnly = { false };
+	_bool						m_bOpenSaveEffectContainer = { false };
+	_bool						m_bOpenLoadEffectOnly = { false };
+	_bool						m_bOpenLoadEffectContainer = { false };
 
 	const ID3D11ShaderResourceView* m_pSlotSRV[4] = {};
-	string m_SlotTexNames[4] = {};
+	string						m_SlotTexNames[4] = {};
 
 	SPRITEEFFECT_PASS_INDEX		m_eSelectedPass_SE = { SE_DEFAULT };
 	MESHEFFECT_PASS_INDEX		m_eSelectedPass_ME = { ME_DEFAULT };
 	PARTICLEEFFECT_PASS_INDEX	m_eSelectedPass_PE = { PE_DEFAULT };
 
-	_bool					m_isGizmoEnable = { false };
-	ImGuizmo::OPERATION		m_eOperation = { ImGuizmo::TRANSLATE };
-	ImGuizmo::MODE			m_eMode = { ImGuizmo::WORLD };
-
+	_bool						m_isGizmoEnable = { false };
+	ImGuizmo::OPERATION			m_eOperation = { ImGuizmo::TRANSLATE };
+	ImGuizmo::MODE				m_eMode = { ImGuizmo::WORLD };
+	_int						m_iSelectedKeyframe = { 0 };
 #pragma endregion
 
 
@@ -89,7 +90,6 @@ private:
 	_bool			m_bAnimateSprite = { false };
 
 #pragma endregion
-
 
 #pragma region Sprite
 	// 스프라이트 이펙트 용 변수들
@@ -103,7 +103,6 @@ private:
 	vector<string>	m_ModelNames;
 	_int			m_iSelectedModelIdx = { -1 };
 #pragma endregion
-
 
 
 #pragma region Particle
