@@ -122,28 +122,33 @@ void CMapTool::Control(_float fTimeDelta)
 	if (GetForegroundWindow() != g_hWnd)
 		return;
 
-	//E 회전, R 크기, T는 위치
-	if (m_pGameInstance->Key_Down(DIK_E))
-		m_currentOperation = ImGuizmo::ROTATE;
-	else if (m_pGameInstance->Key_Down(DIK_R))
-		m_currentOperation = ImGuizmo::SCALE;
-	else if (m_pGameInstance->Key_Down(DIK_T))
-		m_currentOperation = ImGuizmo::TRANSLATE;
-	else if (m_pGameInstance->Mouse_Up(DIM::WHEELBUTTON))
+	if (ImGuizmo::IsUsing() == false)
 	{
-		//모든 오브젝트 선택 제거
+		//E 회전, R 크기, T는 위치
+		if (m_pGameInstance->Key_Down(DIK_E))
+			m_currentOperation = ImGuizmo::ROTATE;
+		else if (m_pGameInstance->Key_Down(DIK_R))
+			m_currentOperation = ImGuizmo::SCALE;
+		else if (m_pGameInstance->Key_Down(DIK_T))
+			m_currentOperation = ImGuizmo::TRANSLATE;
 
-		m_SelectedIndexies.clear();
+		if (m_pGameInstance->Mouse_Up(DIM::WHEELBUTTON))
+		{
+			//모든 오브젝트 선택 제거
 
-		for (CMapToolObject* pObj : m_SelectedObjects)
-			Safe_Release(pObj);
-		m_SelectedObjects.clear();
+			m_SelectedIndexies.clear();
 
-		m_iFocusIndex = -1;
-		Safe_Release(m_pFocusObject);
-		m_pFocusObject = nullptr;
+			for (CMapToolObject* pObj : m_SelectedObjects)
+				Safe_Release(pObj);
+			m_SelectedObjects.clear();
 
+			m_iFocusIndex = -1;
+			Safe_Release(m_pFocusObject);
+			m_pFocusObject = nullptr;
+
+		}
 	}
+	
 
 	//컨트롤 클릭 하면 피킹된 위치로 이동
 	if (m_pGameInstance->Key_Pressing(DIK_LALT) && m_pGameInstance->Mouse_Up(DIM::LBUTTON))

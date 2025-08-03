@@ -1,1 +1,66 @@
-[]
+[
+    {
+        "ModelName": "SM_BuildingA_Wall_YW",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_YW.bin"
+    },
+    {
+        "ModelName": "SM_Wall_ArchHalf01A",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_ArchHalf01A.bin"
+    },
+    {
+        "ModelName": "SM_Gate_Arch_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_Arch_01.bin"
+    },
+    {
+        "ModelName": "SM_BuildingA_Door_04",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_04.bin"
+    },
+    {
+        "ModelName": "SM_Wall_Uni_1FCol",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Uni_1FCol.bin"
+    },
+    {
+        "ModelName": "SM_Wall_PillarFrame01A",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrame01A.bin"
+    },
+    {
+        "ModelName": "SM_BuildingA_Wall_058",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_058.bin"
+    },
+    {
+        "ModelName": "SM_BuildingA_Wall_44",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_44.bin"
+    },
+    {
+        "ModelName": "SM_Station_TopDeco_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TopDeco_01.bin"
+    },
+    {
+        "ModelName": "SM_Floor_Block_05",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Floor_Block_05.bin"
+    },
+    {
+        "ModelName": "SM_Floor_Block_04",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Floor_Block_04.bin"
+    },
+    {
+        "ModelName": "SM_Floor_Block_03",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Floor_Block_03.bin"
+    },
+    {
+        "ModelName": "SM_Station_Arch_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Arch_01.bin"
+    },
+    {
+        "ModelName": "SM_Cathedral_ArchWall_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_ArchWall_01.bin"
+    },
+    {
+        "ModelName": "SM_Cathedral_ArchWall_02",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_ArchWall_02.bin"
+    },
+    {
+        "ModelName": "SM_Cathedral_Arch_11",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_Arch_11.bin"
+    }
+]

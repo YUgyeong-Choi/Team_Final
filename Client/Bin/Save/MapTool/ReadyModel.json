@@ -1,48 +1,38 @@
 [
     {
         "ModelName": "FloorB",
-        "ObjectCount": 10,
+        "ObjectCount": 14,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorB.bin"
     },
     {
-        "ModelName": "SM_BuildingA_ConerWall_05",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_ConerWall_05.bin"
-    },
-    {
-        "ModelName": "SM_BuildingA_TopWall_02",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_TopWall_02.bin"
-    },
-    {
-        "ModelName": "SM_BuildingA_TopWall_03",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_TopWall_03.bin"
-    },
-    {
-        "ModelName": "SM_BuildingA_TopWall_05",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_TopWall_05.bin"
+        "ModelName": "SM_BuildingA_Wall_058",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_058.bin"
     },
     {
         "ModelName": "SM_BuildingA_Wall_18",
-        "ObjectCount": 2,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_18.bin"
     },
     {
         "ModelName": "SM_BuildingA_Wall_23",
-        "ObjectCount": 8,
+        "ObjectCount": 10,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_23.bin"
     },
     {
         "ModelName": "SM_BuildingA_Wall_28",
-        "ObjectCount": 4,
+        "ObjectCount": 10,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_28.bin"
     },
     {
-        "ModelName": "SM_BuildingA_Wall_54",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_54.bin"
+        "ModelName": "SM_BuildingA_Wall_44",
+        "ObjectCount": 13,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_44.bin"
+    },
+    {
+        "ModelName": "SM_BuildingA_Wall_YW",
+        "ObjectCount": 14,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_YW.bin"
     },
     {
         "ModelName": "SM_CH_PROB_Corpse_01_Male",
@@ -75,24 +65,24 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_05_Female.bin"
     },
     {
+        "ModelName": "SM_Cathedral_ArchWall_01",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_ArchWall_01.bin"
+    },
+    {
+        "ModelName": "SM_Cathedral_Arch_09",
+        "ObjectCount": 17,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_Arch_09.bin"
+    },
+    {
         "ModelName": "SM_Cathedral_BrickWall_01",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_01.bin"
     },
     {
-        "ModelName": "SM_Cathedral_BrickWall_05",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_05.bin"
-    },
-    {
-        "ModelName": "SM_Cathedral_BrickWall_13",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_13.bin"
-    },
-    {
-        "ModelName": "SM_Cathedral_BrickWall_13a",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_13a.bin"
+        "ModelName": "SM_Cathedral_BrickWall_18",
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_18.bin"
     },
     {
         "ModelName": "SM_Exterior_Clock_01",
@@ -103,6 +93,11 @@
         "ModelName": "SM_Exterior_Clock_02",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Clock_02.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_IronStairs_01",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_IronStairs_01.bin"
     },
     {
         "ModelName": "SM_Exterior_Suitcase_01",
@@ -143,6 +138,11 @@
         "ModelName": "SM_Fence_Barrier_01",
         "ObjectCount": 75,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Fence_Barrier_01.bin"
+    },
+    {
+        "ModelName": "SM_Gate_Arch_01",
+        "ObjectCount": 24,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_Arch_01.bin"
     },
     {
         "ModelName": "SM_Interior_Bag_01",
@@ -285,11 +285,6 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_04b.bin"
     },
     {
-        "ModelName": "SM_Station_Clock_01",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Clock_01.bin"
-    },
-    {
         "ModelName": "SM_Station_Clock_02",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Clock_02.bin"
@@ -300,9 +295,9 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FStair_01.bin"
     },
     {
-        "ModelName": "SM_Station_Prop_10",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Prop_10.bin"
+        "ModelName": "SM_Station_FenceB_01",
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FenceB_01.bin"
     },
     {
         "ModelName": "SM_Station_Railing_01",
@@ -311,7 +306,7 @@
     },
     {
         "ModelName": "SM_Station_Railway_01",
-        "ObjectCount": 13,
+        "ObjectCount": 17,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Railway_01.bin"
     },
     {
@@ -335,13 +330,8 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Sign_02C.bin"
     },
     {
-        "ModelName": "SM_Station_TicketOffice_01",
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TicketOffice_01.bin"
-    },
-    {
         "ModelName": "SM_Station_TopDeco_01",
-        "ObjectCount": 0,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TopDeco_01.bin"
     },
     {
@@ -350,19 +340,14 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainStationRoof_01.bin"
     },
     {
-        "ModelName": "SM_Station_Windows_01",
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Windows_01.bin"
-    },
-    {
         "ModelName": "SM_Vehicle_Wagon_01",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Vehicle_Wagon_01.bin"
     },
     {
-        "ModelName": "SM_Wall_CastleWall_Gate01",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_CastleWall_Gate01.bin"
+        "ModelName": "SM_Wall_ArchHalf01A",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_ArchHalf01A.bin"
     },
     {
         "ModelName": "SM_Wall_MansionDoor02_A",
@@ -375,53 +360,18 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_MansionDoor02_B.bin"
     },
     {
-        "ModelName": "SM_Wall_Noble_BHwalldoor",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Noble_BHwalldoor.bin"
-    },
-    {
         "ModelName": "SM_Wall_PillarFrame01A",
-        "ObjectCount": 28,
+        "ObjectCount": 112,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrame01A.bin"
     },
     {
-        "ModelName": "SM_Wall_PillarFrame01B",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrame01B.bin"
-    },
-    {
-        "ModelName": "SM_Wall_PillarFrameBend01A",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrameBend01A.bin"
-    },
-    {
-        "ModelName": "SM_Wall_PipeBackground_01A",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PipeBackground_01A.bin"
-    },
-    {
-        "ModelName": "SM_Wall_PipeBackground_01B",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PipeBackground_01B.bin"
-    },
-    {
-        "ModelName": "SM_Wall_Rail_01",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Rail_01.bin"
-    },
-    {
-        "ModelName": "SM_Wall_RoundRail_01",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_RoundRail_01.bin"
-    },
-    {
-        "ModelName": "SM_Wall_Wharf_BridgeC",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Wharf_BridgeC.bin"
+        "ModelName": "SM_Wall_Uni_1FCol",
+        "ObjectCount": 10,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Uni_1FCol.bin"
     },
     {
         "ModelName": "Wall_Station_Flatform",
-        "ObjectCount": 15,
+        "ObjectCount": 18,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/Wall_Station_Flatform.bin"
     }
 ]
