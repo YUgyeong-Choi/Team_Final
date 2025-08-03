@@ -1009,6 +1009,30 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			return E_FAIL;
 	}
 
+	ImGui::BeginChild("CategoryCheckList", ImVec2(120, 60), true); //  박스 내에서 스크롤
+
+	ImGui::Checkbox("Show All Categories", &m_bShowAll);
+
+	if (ImGui::IsItemEdited())
+	{
+		for (auto& Pair : m_CategoryVisibility)
+		{
+			Pair.second = m_bShowAll;
+		}
+	}
+
+	for (auto& Pair : m_CategoryVisibility)
+	{
+		_bool& bIsVisible = Pair.second;
+		if (ImGui::Checkbox(Pair.first.c_str(), &bIsVisible))
+		{
+			_bool allChecked = all_of(m_CategoryVisibility.begin(), m_CategoryVisibility.end(),
+				[&](const auto& it) { return it.second; });
+			m_bShowAll = allChecked;
+		}
+	}
+	ImGui::EndChild();
+
 	_int iNumSelectedNodes = ImNodes::NumSelectedNodes();
 	_bool isAnyNodeSelected = iNumSelectedNodes > 0;
 	_int iNumSelectedLinks = ImNodes::NumSelectedLinks();
@@ -1073,7 +1097,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	}
 
 
-	ImNodes::MiniMap(0.3f, 3);
+	ImNodes::MiniMap(0.25f, 3);
 
 	// 정렬하기
 	if (ImGui::IsKeyDown(ImGuiKey_L))
@@ -1082,82 +1106,94 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		ApplyCategoryLayout(pCtrl);
 	//	ImNodes::EditorContextResetPanning(ImVec2(0.0f, 0.0f));
 	}
-	auto& transitions = pCtrl->GetTransitions();
-	for (auto& state : pCtrl->GetStates())
+
+	for (const auto& Pair : m_CategoryStates)
 	{
-		ImNodes::BeginNode(state.iNodeId);
-
-		ImNodes::BeginNodeTitleBar();
-		ImGui::TextUnformatted(state.stateName.c_str());
-
-		if (state.iNodeId == pCtrl->GetEntryNodeId())
+		auto& category = Pair.first; // 카테고리
+		auto& states = Pair.second; // 해당 카테고리의 상태들
+		_bool bIsVisible = m_bShowAll || m_CategoryVisibility[category];
+		auto& transitions = pCtrl->GetTransitions();
+		for (const auto& visState : states)
 		{
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.0f, 1.0f), "[ENTRY]"); // 녹색으로 Entry 표시
+			for (auto& state : pCtrl->GetStates())
+			{
+				if (state.stateName != visState || !bIsVisible)
+					continue;
+				ImNodes::BeginNode(state.iNodeId);
+
+				ImNodes::BeginNodeTitleBar();
+				ImGui::TextUnformatted(state.stateName.c_str());
+
+				if (state.iNodeId == pCtrl->GetEntryNodeId())
+				{
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.0f, 1.0f), "[ENTRY]"); // 녹색으로 Entry 표시
+				}
+				if (state.iNodeId == pCtrl->GetExitNodeId())
+				{
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f), "[EXIT]"); // 빨간색으로 Exit 표시
+				}
+				ImNodes::EndNodeTitleBar();
+
+				ImGui::BeginGroup();
+
+				// 현재 활성 상태인지 확인 (현재 재생 중인 애니메이션 상태)
+				_bool isCurrentState = (pCtrl->GetCurrentState() &&
+					pCtrl->GetCurrentState()->iNodeId == state.iNodeId);
+
+				if (isCurrentState)
+				{
+					ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "[ACTIVE]");
+
+					// 현재 애니메이션 진행률 표시
+					_float progress = m_pCurAnimator->GetCurrentAnimProgress();
+					ImGui::ProgressBar(progress, ImVec2(120, 0), "");
+					ImGui::SameLine();
+					ImGui::Text("%.1f%%", progress * 100.0f);
+				}
+				else
+				{
+					ImGui::Text("");
+					ImGui::Dummy(ImVec2(120, ImGui::GetFrameHeight())); // 진행바 크기만큼 
+				}
+
+				// Pin
+				ImGui::Columns(2, nullptr, false);
+				ImGui::SetColumnWidth(0, 60);
+				ImGui::SetColumnWidth(1, 60);
+
+				_int inCount = 0;
+				for (auto& t : transitions)
+					if (t.iToNodeId == state.iNodeId)
+						++inCount;
+
+				int pinId = state.iNodeId * 10 + 1;
+				ImNodes::BeginInputAttribute(pinId);
+				ImGui::TextColored(ImVec4(0.3f, 0.8f, 0.3f, 1.f), "In");
+				ImNodes::EndInputAttribute();
+
+				ImGui::NextColumn();
+				_int outCount = 0;
+				for (auto& t : transitions)
+					if (t.iFromNodeId == state.iNodeId)
+						++outCount;
+
+				pinId = state.iNodeId * 10 + 2;
+				ImNodes::BeginOutputAttribute(pinId);
+				ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
+				ImNodes::EndOutputAttribute();
+
+				ImGui::Columns(1);
+				ImGui::EndGroup();
+
+				ImNodes::EndNode();
+
+				// 노드 위치 저장
+				ImVec2 pos = ImNodes::GetNodeEditorSpacePos(state.iNodeId);
+				state.fNodePos = { pos.x, pos.y };
+			}
 		}
-		if (state.iNodeId == pCtrl->GetExitNodeId())
-		{
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f), "[EXIT]"); // 빨간색으로 Exit 표시
-		}
-		ImNodes::EndNodeTitleBar();
-
-		ImGui::BeginGroup();
-
-		// 현재 활성 상태인지 확인 (현재 재생 중인 애니메이션 상태)
-		_bool isCurrentState = (pCtrl->GetCurrentState() &&
-			pCtrl->GetCurrentState()->iNodeId == state.iNodeId);
-
-		if (isCurrentState)
-		{
-			ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "[ACTIVE]");
-
-			// 현재 애니메이션 진행률 표시
-			_float progress = m_pCurAnimator->GetCurrentAnimProgress();
-			ImGui::ProgressBar(progress, ImVec2(120, 0), "");
-			ImGui::SameLine();
-			ImGui::Text("%.1f%%", progress * 100.0f);
-		}
-		else
-		{
-			ImGui::Text(""); 
-			ImGui::Dummy(ImVec2(120, ImGui::GetFrameHeight())); // 진행바 크기만큼 
-		}
-
-		// Pin
-		ImGui::Columns(2, nullptr, false);
-		ImGui::SetColumnWidth(0, 60);
-		ImGui::SetColumnWidth(1, 60);
-
-		_int inCount = 0;
-		for (auto& t : transitions) 
-			if (t.iToNodeId == state.iNodeId) 
-				++inCount;
-
-		int pinId = state.iNodeId * 10 + 1;
-		ImNodes::BeginInputAttribute(pinId);
-		ImGui::TextColored(ImVec4(0.3f, 0.8f, 0.3f, 1.f), "In");
-		ImNodes::EndInputAttribute();
-
-		ImGui::NextColumn();
-		_int outCount = 0;
-		for (auto& t : transitions) 
-			if (t.iFromNodeId == state.iNodeId)
-				++outCount;
-
-		pinId = state.iNodeId * 10 + 2;
-		ImNodes::BeginOutputAttribute(pinId);
-		ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
-		ImNodes::EndOutputAttribute();
-
-		ImGui::Columns(1);
-		ImGui::EndGroup();
-
-		ImNodes::EndNode();
-
-		// 노드 위치 저장
-		ImVec2 pos = ImNodes::GetNodeEditorSpacePos(state.iNodeId);
-		state.fNodePos = { pos.x, pos.y };
 	}
 
 
@@ -1166,6 +1202,16 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		_bool bDrawLink = false;
 		_int startPinID = t.iFromNodeId * 10 + 2;  // Output Pin
 		_int endPinID = t.iToNodeId * 10 + 1;     // Input Pin
+		string fromName = pCtrl->GetStateNameByNodeId(t.iFromNodeId);
+		string toName = pCtrl->GetStateNameByNodeId(t.iToNodeId);
+		string fromCat = GetStateCategory(fromName);
+		string toCat = GetStateCategory(toName);
+
+		_bool fromVisible = m_bShowAll || m_CategoryVisibility[fromCat];
+		_bool toVisible = m_bShowAll || m_CategoryVisibility[toCat];
+
+		if (!fromVisible || !toVisible)
+			continue;
 
 		if (isAnyLinkSelected)
 		{
@@ -1790,19 +1836,24 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 
 	// 상태를 카테고리별로 분류
 	map<string, vector<_int>> categories;
-
+	m_CategoryStates.clear();
 	for (const auto& state : states)
 	{
 		string category = GetStateCategory(state.stateName);
 		categories[category].push_back(state.iNodeId);
+		if (m_CategoryVisibility.find(category) == m_CategoryVisibility.end())
+			m_CategoryVisibility[category] = true; // 카테고리 vis 초기화
+		m_CategoryStates[category].push_back(state.stateName); // 카테고리에 state 이름 추가
 	}
 
-	_float categorySpacing = 400.0f;
-	_float nodeSpacing = 150.0f;
+	_float categorySpacing = 500.0f;
+	_float nodeSpacing = 300.0f;
 	_int categoryIndex = 0;
 
 	for (auto& [categoryName, nodeIds] : categories)
 	{
+		if (!m_bShowAll && m_CategoryVisibility[categoryName] == false)
+			continue;
 		// 각 카테고리를 세로로 나열
 		_float categoryX = categoryIndex * categorySpacing;
 
@@ -1927,7 +1978,8 @@ void CAnimTool::SaveLoadAnimStates(_bool isSave)
 		{
 			MSG_BOX("애니메이터가 없습니다. 애니메이터를 먼저 생성해주세요.");
 		}
-		ApplyHierarchicalLayout(m_pCurAnimator->Get_CurrentAnimController());
+		m_CategoryStates.clear();
+		ApplyCategoryLayout(m_pCurAnimator->Get_CurrentAnimController());
 	}
 }
 
@@ -2042,19 +2094,20 @@ void CAnimTool::Manipulate(Operation op, const _float snapT[3], const _float sna
 
 string CAnimTool::GetStateCategory(const string& stateName)
 {
-	if (stateName.find("Walk") != string::npos ||
-		stateName.find("Run") != string::npos ||
-		stateName.find("Move") != string::npos)
-		return "Movement";
+	if (stateName.empty())
+		return "Other";
+	if (stateName.find("Guard") != string::npos)
+		return "Guard";
+	else if (stateName.find("Walk") != string::npos)
+		return "Walk";
+	else if(stateName.find("Run") != string::npos)
+		return "Run";
+	else if(stateName.find("Dash") != string::npos)
+		return "Dash";
 	else if (stateName.find("Attack") != string::npos ||
 		stateName.find("Skill") != string::npos)
-		return "Combat";
-	else if (stateName.find("Jump") != string::npos ||
-		stateName.find("Fall") != string::npos ||
-		stateName.find("Land") != string::npos)
-		return "Aerial";
-	else if (stateName.find("Idle") != string::npos ||
-		stateName.find("Stand") != string::npos)
+		return "Attack";
+	else if (stateName.find("Idle") != string::npos)
 		return "Idle";
 	else
 		return "Other";
