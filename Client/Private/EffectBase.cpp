@@ -82,7 +82,7 @@ void CEffectBase::Update(_float fTimeDelta)
 	//m_fTickAcc = 0.f;
 }
 
-void CEffectBase:: (_float fTimeDelta)
+void CEffectBase::Late_Update(_float fTimeDelta)
 {
 }
 

@@ -213,7 +213,7 @@
     </Filter>
     <Filter Include="03. Observer\Player">
       <UniqueIdentifier>{0cf68e2e-7499-467e-8996-01dcada4ac10}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Unit\00.Player\PlayerBehavior">
       <UniqueIdentifier>{c6317318-96b2-4c47-a258-b55edf9c9eb7}</UniqueIdentifier>
     </Filter>
@@ -512,10 +512,11 @@
     </ClInclude>
     <ClInclude Include="..\public\HP_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\PlayerState.h">
       <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Manager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -789,6 +790,7 @@
     <ClCompile Include="..\private\HP_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Effect_Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
