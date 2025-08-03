@@ -138,18 +138,19 @@ _bool CFrustum::Is_AABB_InFrustum(const _float3& vMin, const _float3& vMax)
 	{
 		const _vector& plane = XMLoadFloat4(&m_vWorldPlanes[i]);
 
-		_float3 pVertex = {
-			(plane.m128_f32[0] < 0.f) ? vMin.x : vMax.x,
-			(plane.m128_f32[1] < 0.f) ? vMin.y : vMax.y,
-			(plane.m128_f32[2] < 0.f) ? vMin.z : vMax.z,
+		_float3 nVertex = {
+			(plane.m128_f32[0] >= 0.f) ? vMin.x : vMax.x,
+			(plane.m128_f32[1] >= 0.f) ? vMin.y : vMax.y,
+			(plane.m128_f32[2] >= 0.f) ? vMin.z : vMax.z,
 		};
 
-		if (XMVectorGetX(XMPlaneDotCoord(plane, XMLoadFloat3(&pVertex))) > 0.f)
+		if (XMVectorGetX(XMPlaneDotCoord(plane, XMLoadFloat3(&nVertex))) > 0.f)
 			return false;
 	}
 
 	return true;
 }
+
 CFrustum* CFrustum::Create()
 {
 	CFrustum* pInstance = new CFrustum();

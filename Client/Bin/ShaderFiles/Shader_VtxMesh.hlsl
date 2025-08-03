@@ -83,7 +83,7 @@ PS_OUT PS_MAIN(PS_IN In)
     if (g_bTile)
     {
         // Triplanar Mapping 적용
-        float3 worldNormal = normalize(In.vNormal);
+        float3 worldNormal = normalize(In.vNormal.xyz);
         float3 blend = abs(worldNormal);
         blend = pow(blend, 3.0);
         blend /= (blend.x + blend.y + blend.z); // Normalize
@@ -140,7 +140,7 @@ PS_OUT PS_MAPTOOLOBJECT(PS_IN In)
     if (g_bTile)
     {
         // Triplanar Mapping: 법선 방향 기반 타일링
-        float3 worldNormal = normalize(In.vNormal);
+        float3 worldNormal = normalize(In.vNormal.xyz);
         float3 blend = abs(worldNormal);
         blend = pow(blend, 3.0f); // 부드러운 블렌딩을 위해 거듭제곱
         blend /= (blend.x + blend.y + blend.z); // 정규화

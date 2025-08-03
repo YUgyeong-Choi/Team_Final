@@ -151,9 +151,6 @@
     <Filter Include="01.Levels\LevelYW\MapTool\PreviewObject">
       <UniqueIdentifier>{7540b347-438e-4d48-b0f4-5406c3ce1d98}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelYW\MapTool\Camera_MapTool">
-      <UniqueIdentifier>{3ff3fcc4-4317-4ddd-8da4-8f2d1ed7043e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
       <UniqueIdentifier>{85e6703b-969f-44ff-8640-27151012a745}</UniqueIdentifier>
     </Filter>

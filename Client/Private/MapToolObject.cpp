@@ -87,7 +87,7 @@ void CMapToolObject::Update_ColliderPos()
 
 void CMapToolObject::Late_Update(_float fTimeDelta)
 {
-	if (true || m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 30.f))
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorConvexCom)/*true || m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 30.f)*/)
 	{
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 	}
