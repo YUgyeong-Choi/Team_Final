@@ -232,7 +232,7 @@ json CParticleEffect::Serialize()
 	j["Size"] = { m_vSize.x, m_vSize.y };
 	j["Center"] = { m_vCenter.x, m_vCenter.y, m_vCenter.z };
 	j["Pivot"] = { m_vPivot.x, m_vPivot.y, m_vPivot.z };
-	j["LifeTime"] = { m_vLifeTime.x, m_vLifeTime.y };
+	j["LifeTime_Particle"] = { m_vLifeTime.x, m_vLifeTime.y };
 	j["MaxLifeTime"] = m_fMaxLifeTime;
 	j["Speed"] = { m_vSpeed.x, m_vSpeed.y };
 	j["PType"] = m_ePType;
@@ -262,8 +262,8 @@ void CParticleEffect::Deserialize(const json& j)
 	if (j.contains("Pivot") && j["Pivot"].is_array() && j["Pivot"].size() == 3)
 		m_vPivot = { j["Pivot"][0].get<_float>(), j["Pivot"][1].get<_float>(), j["Pivot"][2].get<_float>() };
 
-	if (j.contains("LifeTime") && j["LifeTime"].is_array() && j["LifeTime"].size() == 2)
-		m_vLifeTime = { j["LifeTime"][0].get<_float>(), j["LifeTime"][1].get<_float>() };
+	if (j.contains("LifeTime_Particle") && j["LifeTime_Particle"].is_array() && j["LifeTime_Particle"].size() == 2)
+		m_vLifeTime = { j["LifeTime_Particle"][0].get<_float>(), j["LifeTime_Particle"][1].get<_float>() };
 
 	if (j.contains("MaxLifeTime"))
 		m_fMaxLifeTime = j["MaxLifeTime"].get<_float>();

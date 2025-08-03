@@ -15,7 +15,7 @@ public:
 	typedef struct tagParticleEffectDesc : public CEffectBase::DESC
 	{
 		/* Instance Buffer Desc */
-		_uint				iNumInstance;
+		_uint				iNumInstance = 1;
 		_float3				vRange;
 		_float2				vSize;
 		_float3				vCenter;

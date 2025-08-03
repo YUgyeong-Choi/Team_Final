@@ -1,11 +1,6 @@
 {
     "Animation": true,
-    "Billboard": false,
-    "Center": [
-        0.0,
-        0.0,
-        0.0
-    ],
+    "Billboard": true,
     "CenterColor": [
         1.0,
         1.0,
@@ -13,13 +8,13 @@
         1.0
     ],
     "Color": [
-        0.0,
-        0.23036670684814453,
+        1.0,
+        1.0,
         1.0,
         1.0
     ],
-    "Duration": 105,
-    "EndTrack": 112,
+    "Duration": 48,
+    "EndTrack": 52,
     "FlipUV": false,
     "KeyFrames": [
         {
@@ -51,9 +46,9 @@
         },
         {
             "Color": [
-                0.0,
-                0.23036670684814453,
                 1.0,
+                0.0,
+                0.0,
                 1.0
             ],
             "Intensity": 1.0,
@@ -69,54 +64,29 @@
                 1.0,
                 1.0
             ],
-            "TrackPosition": 49.0,
+            "TrackPosition": 24.0,
             "Translation": [
                 0.0,
-                0.0,
+                6.199999809265137,
                 0.0
             ]
         }
     ],
-    "LifeTime_Particle": [
-        2.0,
-        4.0
-    ],
-    "Local": true,
+    "LifeTime": 0.0,
     "Loop": true,
-    "MaxLifeTime": 4.0,
-    "NumInstance": 100,
     "NumKeyFrames": 2,
-    "PType": 0,
-    "Pivot": [
-        0.0,
-        0.0,
-        0.0
-    ],
-    "Range": [
-        5.0,
-        1.0,
-        5.0
-    ],
-    "RenderGroup": 6,
-    "ShaderPass": 1,
-    "Size": [
-        1.0,
-        2.0
-    ],
-    "Speed": [
-        5.0,
-        10.0
-    ],
-    "StartTrack": 7,
+    "RenderGroup": 0,
+    "ShaderPass": 3,
+    "StartTrack": 4,
     "TextureTags": [
-        "",
         "T_butterfly_01_C_GDH",
+        "",
         "",
         ""
     ],
     "TextureUsage": [
         true,
-        true,
+        false,
         false,
         false
     ],
