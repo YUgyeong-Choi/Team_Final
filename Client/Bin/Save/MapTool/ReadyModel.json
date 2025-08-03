@@ -225,11 +225,6 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainStationRoof_01.bin"
     },
     {
-        "ModelName": "SM_Wall_MansionDoor02",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_MansionDoor02.bin"
-    },
-    {
         "ModelName": "SM_Wall_MansionDoor02_A",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_MansionDoor02_A.bin"
@@ -241,12 +236,12 @@
     },
     {
         "ModelName": "SM_Wall_PillarFrame01A",
-        "ObjectCount": 10,
+        "ObjectCount": 31,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrame01A.bin"
     },
     {
         "ModelName": "SM_Wall_PillarFrameBend01A",
-        "ObjectCount": 1,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrameBend01A.bin"
     },
     {
