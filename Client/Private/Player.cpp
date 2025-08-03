@@ -185,7 +185,7 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 	{
 		m_pCurrentState->Exit();
 
-		m_eCurrentState = eNextState;
+		m_eCurrentState = eNextState; 
 		m_pCurrentState = m_pStateArray[ENUM_CLASS(m_eCurrentState)];
 
 		m_pCurrentState->Enter();

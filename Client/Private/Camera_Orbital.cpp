@@ -84,7 +84,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 기준점 위치 계산 (플레이어 + 높이)
 		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
 		m_vPlayerPosition += XMVectorSet(0.f, 2.f, 0.f, 0.f);
-		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.2f;
+		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
 		// 오비탈 카메라 방향 계산 (spherical to cartesian)
 		_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
