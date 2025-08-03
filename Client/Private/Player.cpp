@@ -40,6 +40,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
 
+	/* [ 스테이트 시작 ] */
+	ReadyForState();
+
 	/* [ 초기화 위치값 ] */
 	m_pTransformCom->Set_State(STATE::POSITION, _vector{ m_InitPos.x, m_InitPos.y, m_InitPos.z });
 	m_pTransformCom->Rotation(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));
@@ -107,9 +110,8 @@ void CPlayer::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 	/* [ 입력 ] */
-	//HandleInput();
-	//UpdateCurrentState(fTimeDelta);
-
+	HandleInput();
+	UpdateCurrentState(fTimeDelta);
 
 	// 바꿀 예정
 	Movement(fTimeDelta);
@@ -118,6 +120,21 @@ void CPlayer::Update(_float fTimeDelta)
 void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	if(KEY_DOWN(DIK_J))
+	{
+		/* [ 이곳은 애니메이션 실험실입니다. ] */
+		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
+		//m_pAnimator->SetInt("Combo", 0);
+		//m_pAnimator->SetTrigger("NormalAttack");
+
+		//m_pAnimator->SetBool("Move", true);
+		//m_pAnimator->SetBool("Run", true);
+		//m_pAnimator->SetTrigger("Hited");
+	}
+	
+	if (m_pAnimator->IsFinished())
+		int a = 0;
 }
 
 HRESULT CPlayer::Render()
@@ -135,10 +152,28 @@ void CPlayer::HandleInput()
 	m_Input.bLeft = KEY_PRESSING(DIK_A);
 	m_Input.bRight = KEY_PRESSING(DIK_D);
 
+	m_Input.bUp_Pressing = KEY_PRESSING(DIK_W);
+	m_Input.bDown_Pressing = KEY_PRESSING(DIK_S);
+	m_Input.bLeft_Pressing = KEY_PRESSING(DIK_A);
+	m_Input.bRight_Pressing = KEY_PRESSING(DIK_D);
+
 	/* [ 마우스 입력을 업데이트합니다. ] */
+	m_Input.bLeftMouseDown = MOUSE_DOWN(DIM::RBUTTON);
 	m_Input.bRightMouseDown = MOUSE_DOWN(DIM::RBUTTON);
 	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
 	m_Input.bRightMouseUp = MOUSE_UP(DIM::RBUTTON);
+
+	/* [ 특수키 입력을 업데이트합니다. ] */
+	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
+	m_Input.bCtrl = KEY_DOWN(DIK_LCONTROL);
+	m_Input.bTap = KEY_DOWN(DIK_TAB);
+	m_Input.bItem = KEY_DOWN(DIK_R);
+	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
+	m_Input.bSpaceDown = KEY_DOWN(DIK_SPACE);
+	
+	/* [ 뛰기 걷기를 토글합니다. ] */
+	if (KEY_DOWN(DIK_Z))
+		ToggleWalkRun();
 }
 
 EPlayerState CPlayer::EvaluateTransitions()
@@ -161,7 +196,7 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 		m_pCurrentState->Exit();
 
 		m_eCurrentState = eNextState;
-		m_pCurrentState = m_StateMap[m_eCurrentState];
+		m_pCurrentState = m_pStateArray[ENUM_CLASS(m_eCurrentState)];
 
 		m_pCurrentState->Enter();
 	}
@@ -185,6 +220,20 @@ void CPlayer::TriggerStateEffects()
 	default:
 		break;
 	}
+}
+
+void CPlayer::ReadyForState()
+{
+	m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)] = new CPlayer_Idle(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::WALK)] = new CPlayer_Walk(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::RUN)] = new CPlayer_Run(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::USEITEM)] = new CPlayer_Item(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::BACKSTEP)] = new CPlayer_BackStep(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::ROLLING)] = new CPlayer_Rolling(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::EQUIP)] = new CPlayer_Equip(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINT)] = new CPlayer_Sprint(this);
+
+	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }
 
 
@@ -515,7 +564,7 @@ void CPlayer::Movement(_float fTimeDelta)
 		SetMoveState(fTimeDelta);
 	}
 
-	SetPlayerState(fTimeDelta);
+	//SetPlayerState(fTimeDelta);
 }
 
 
@@ -656,4 +705,7 @@ void CPlayer::Free()
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pControllerCom);
+
+	for (size_t i = 0; i < ENUM_CLASS(EPlayerState::END); ++i)
+		Safe_Delete(m_pStateArray[i]);
 }

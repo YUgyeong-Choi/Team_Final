@@ -134,6 +134,12 @@ public:
 	/* [ 스케일을 가져온다 ] */
 	_vector Get_Scale() const;
 
+public:
+	void SetfSpeedPerSec(_float fSpeedPerSec) { m_fSpeedPerSec = fSpeedPerSec; }
+	_float GetfSpeedPerSec() const { return m_fSpeedPerSec; }
+
+	void SetfRotationPerSec(_float fRotationPerSec) { m_fRotationPerSec = fRotationPerSec; }
+	_float GetfRotationPerSec() const { return m_fRotationPerSec; }
 
 
 public:

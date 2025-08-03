@@ -20,10 +20,25 @@ public:
 		_bool bLeft;
 		_bool bRight;
 
+		_bool bUp_Pressing;
+		_bool bDown_Pressing;
+		_bool bLeft_Pressing;
+		_bool bRight_Pressing;
+
 		/* [ 마우스 입력 ] */
+		_bool bLeftMouseDown;
 		_bool bRightMouseDown;
 		_bool bRightMousePress;
 		_bool bRightMouseUp;
+
+		/* [ 특수키 입력 ] */
+		_bool bShift;
+		_bool bCtrl;
+		_bool bItem;
+		_bool bTap;
+		_bool bSpaceUP;
+		_bool bSpaceDown;
+
 	} m_Input;
 
 protected:
@@ -45,8 +60,9 @@ private:
 	EPlayerState	EvaluateTransitions();							// [2] 입력에 따라 상태 전이
 	void			UpdateCurrentState(_float fTimeDelta);			// [3] 현재 상태 로직 수행
 	void			TriggerStateEffects();							// [4] 애니메이션 적용
-
-
+	
+	
+	void			ReadyForState();
 
 private:/* [ 캐스케이드 전용함수 ] */
 	HRESULT UpdateShadowCamera();
@@ -55,6 +71,7 @@ private: /* [ 이동로직 ] */
 	void SetMoveState(_float fTimeDelta);
 	void SetPlayerState(_float fTimeDelta);
 	void Movement(_float fTimeDelta);
+	void ToggleWalkRun() { m_bWalk = !m_bWalk; }
 
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
@@ -71,14 +88,21 @@ private: /* 옵저버 관련*/
 
 private: /* [ 상태패턴 ] */
 	friend class CPlayer_Idle;
+	friend class CPlayer_Walk;
+	friend class CPlayer_Run;
+	friend class CPlayer_Item;
+	friend class CPlayer_BackStep;
+	friend class CPlayer_Rolling;
+	friend class CPlayer_Equip;
+	friend class CPlayer_Sprint;
 
 
 private: /* [ 상태 변수 ] */
 	EPlayerState  m_pPreviousState = { EPlayerState::END };
 	EPlayerState  m_eCurrentState = { EPlayerState::IDLE };
 
-	CPlayerState* m_pCurrentState;
-	map<EPlayerState, CPlayerState*> m_StateMap;
+	CPlayerState* m_pCurrentState = { nullptr };
+	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
 protected:
 	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
@@ -91,7 +115,9 @@ private: /* [ 락온 변수 ] */
 	CGameObject* m_pTarget = { nullptr };
 	CGameObject* m_pWeapon = { nullptr };
 
+
 private: /* [ 이동관련 변수 ] */
+	_bool    m_bWalk = { true };
 	_vector  m_PrevWorldDelta = XMVectorZero();
 	_vector  m_PrevWorldRotation = XMVectorZero();
 	_bool    m_bIsFirstFrame = true;
