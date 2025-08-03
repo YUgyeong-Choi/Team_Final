@@ -56,7 +56,7 @@ void CYGBox::Update(_float fTimeDelta)
 
 void CYGBox::Late_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f)) {
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 	}
 

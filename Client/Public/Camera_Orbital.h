@@ -38,9 +38,11 @@ public:
 	_vector Get_PlayerLook() { return m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK); }
 
 	void Set_PitchYaw(_float pitch, _float yaw);
+	_float Get_Pitch() { return m_fPitch; }
+	_float Get_Yaw() { return m_fYaw; }
 
 	// 플레이어 등 뒤에 위치하며 플레이어랑 같은 Look을 가진 위치 반환
-	_matrix Get_OrbitalPosBackLookFront();
+	_matrix Get_OrbitalWorldMatrix(_float pitch, _float yaw);
 private:
 	_float			m_fMouseSensor = { };
 
@@ -60,6 +62,8 @@ private:
 
 private:
 	CGameObject*	m_pPlayer = { nullptr };
+
+	_bool m_bActive = true;
 public:
 	static CCamera_Orbital* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -46,6 +46,9 @@ private:
 	CAMERA_FOVFRAME m_EditFovKey = {};
 	_int m_iChangeKeyFrame = 0;
 	CUTSCENE_TYPE m_eCutSceneType = CUTSCENE_TYPE::ONE;
+
+	_float m_fPitch = {};
+	_float m_fYaw = {};
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

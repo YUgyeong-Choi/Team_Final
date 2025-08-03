@@ -52,6 +52,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 
 	m_pGameInstance->Set_IsChangeLevel(false);
+
+	//CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 	return S_OK;
 }
 
@@ -216,7 +218,7 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::STATIC;
-	pDesc.InitPos = _float3(0.f, 5.f, 0.f);
+	pDesc.InitPos = _float3(0.f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");

@@ -40,6 +40,7 @@ private:
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Components();
 	HRESULT Ready_Collider();
+	void ChangeColliderSize();
 public:
 	static CYGConvexMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

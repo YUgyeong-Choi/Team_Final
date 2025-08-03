@@ -26,7 +26,7 @@ HRESULT CCamera_Orbital::Initialize(void* pArg)
 		return E_FAIL;
 
 	CAMERA_ORBITAL_DESC* pDesc = static_cast<CAMERA_ORBITAL_DESC*>(pArg);
-	m_fMouseSensor = 0.3f;
+	m_fMouseSensor = 0.6f;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -44,6 +44,26 @@ void CCamera_Orbital::Priority_Update(_float fTimeDelta)
 void CCamera_Orbital::Update(_float fTimeDelta)
 {
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
+		return;
+
+	if (m_pGameInstance->Key_Down(DIK_T))
+		m_bActive = !m_bActive;
+
+	if (m_pGameInstance->Key_Down(DIK_X))
+	{
+		m_fMouseSensor -= 0.1f;
+		if (m_fMouseSensor <  0.f)
+			m_fMouseSensor = 0.1f;
+		printf("mouseSenor %f\n", m_fMouseSensor);
+	}
+		
+	if (m_pGameInstance->Key_Down(DIK_C))
+	{
+		m_fMouseSensor += 0.1f;
+		printf("mouseSenor %f\n", m_fMouseSensor);
+	}
+
+	if (!m_bActive)
 		return;
 
 	if (m_pPlayer)
@@ -110,15 +130,15 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		}
 		// --- 스프링암 Raycast 처리 끝 ---
 
-		// 현재 카메라 위치
-		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
+		//// 현재 카메라 위치
+		//_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-		// 위치 보간 (LERP)
-		_float fInterpSpeed = 8.0f;
-		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
+		//// 위치 보간 (LERP)
+		//_float fInterpSpeed = 5.0f;
+		//_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
 
 		// 카메라 설정
-		m_pTransformCom->Set_State(STATE::POSITION, vInterpolatedPos);
+		m_pTransformCom->Set_State(STATE::POSITION, m_vTargetCamPos);
 		m_pTransformCom->LookAt(m_vPlayerPosition);
 	}
 	__super::Update(fTimeDelta);
@@ -139,22 +159,28 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 	m_fYaw = yaw;
 }
 
-_matrix CCamera_Orbital::Get_OrbitalPosBackLookFront()
+_matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 {
-	_vector vPlayerLook = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
-	_vector vOffset = vPlayerLook * -4.f + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
-	_vector vTargetCamPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + vOffset;
+	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
+	m_vPlayerPosition += XMVectorSet(0.f, 1.5f, 0.f, 0.f);
 
-	_vector vLook = XMVector3Normalize(vPlayerLook);
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
+	_float x = m_fDistance * cosf(pitch) * sinf(yaw);
+	_float y = m_fDistance * sinf(pitch);
+	_float z = m_fDistance * cosf(pitch) * cosf(yaw);
+	_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-	_matrix matWorld = XMMatrixIdentity();
-	matWorld.r[0] = XMVectorSetW(vRight, 0.f);
-	matWorld.r[1] = XMVectorSetW(vUp, 0.f);
-	matWorld.r[2] = XMVectorSetW(vLook, 0.f);
-	matWorld.r[3] = XMVectorSetW(vTargetCamPos, 1.f);
+	_vector vCamPos = m_vPlayerPosition + vOffset;
+
+	_vector vLook = XMVector3Normalize(m_vPlayerPosition - vCamPos);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Cross(vLook, vRight);
+
+	// 행렬 생성
+	_matrix matWorld;
+	matWorld.r[0] = vRight;                             // Right 
+	matWorld.r[1] = vUp;                                // Up
+	matWorld.r[2] = vLook;                              // Look
+	matWorld.r[3] = XMVectorSetW(vCamPos, 1.f);         // Position
 
 	return matWorld;
 }

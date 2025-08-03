@@ -64,7 +64,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_W))
 		{
-			m_pTransformCom->Go_Straight(fTimeDelta);
+			m_pTransformCom->Go_Front(fTimeDelta);
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_S))
 		{

@@ -67,9 +67,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 	Callback_Mana();
 	Callback_Stamina();
 
-
-	//CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
-
 	return S_OK;
 }
 
@@ -79,7 +76,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 {
 	// 문여는 컷씬
 	if (KEY_DOWN(DIK_N))
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
 
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
@@ -96,6 +93,10 @@ void CPlayer::Update(_float fTimeDelta)
 {
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
+
+	// 컷씬일 때 못 움직이도록
+	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+		return;
 
 	/* [ 입력 ] */
 	HandleInput();
@@ -150,6 +151,7 @@ void CPlayer::HandleInput()
 	m_Input.bRightMouseDown = MOUSE_DOWN(DIM::RBUTTON);
 	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
 	m_Input.bRightMouseUp = MOUSE_UP(DIM::RBUTTON);
+
 
 	/* [ 특수키 입력을 업데이트합니다. ] */
 	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
