@@ -1,0 +1,97 @@
+{
+    "Animation": true,
+    "Billboard": true,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        1.0,
+        0.5833333730697632,
+        0.5833333730697632,
+        1.0
+    ],
+    "Duration": 48,
+    "EndTrack": 62,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 24.0,
+            "Translation": [
+                0.0,
+                6.199999809265137,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 0.0,
+    "Loop": true,
+    "NumKeyFrames": 2,
+    "RenderGroup": 0,
+    "ShaderPass": 2,
+    "StartTrack": 14,
+    "TextureTags": [
+        "T_Arlcchino_03_C_GDH",
+        "",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        false,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}
