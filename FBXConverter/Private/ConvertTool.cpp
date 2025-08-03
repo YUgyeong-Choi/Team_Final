@@ -160,10 +160,34 @@ HRESULT CConvertTool::Convert_NonAnimFBX(const _char* pModelFilePath)
 	/*******************************************/
 
 	/**********메쉬 저장**********/
-	Write_NonAnimMeshData(ofs);
+	if (FAILED(Write_NonAnimMeshData(ofs)) ||
+		FAILED(Write_MaterialData(pModelFilePath, ofs)))
+	{
+		ofs.close();
+		remove(saveFileName);
 
-	/**********머테리얼 저장**********/
-	Write_MaterialData(pModelFilePath, ofs);
+		/*ofs.close();
+		_wstring msg = L"파일 \"" + ModelPath.stem().wstring() + L"\" 에 문제가 발생했습니다.\n삭제하시겠습니까?";
+		_int result = MessageBoxW(
+			nullptr,
+			msg.c_str(),
+			L"파일 삭제 확인",
+			MB_YESNO | MB_ICONWARNING | MB_TOPMOST
+		);
+		if (result == IDYES)
+		{
+			if (exists(saveFileName))
+			{
+				remove(saveFileName);
+				MSG_BOX("파일 삭제 완료");
+			}
+		}
+		else
+			MSG_BOX("파일 삭제 취소");*/
+		return E_FAIL;
+	}
+
+	ofs.close();
 
 	return S_OK;
 
@@ -532,6 +556,8 @@ HRESULT CConvertTool::Write_MaterialData(const _char* pModelFilePath, ostream& o
 				_splitpath_s(pModelFilePath, szDriveName, MAX_PATH, szDirName, MAX_PATH, szFBXName, MAX_PATH, nullptr, 0);
 				_splitpath_s(strTexturePath.data, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
+				if (string(szFileName) == "material_0" || string(szFileName) == "material_1")
+					return E_FAIL;
 				path relPath = strTexturePath.data;
 				path fbxTexturePath = (path)szDriveName / szDirName;
 				fbxTexturePath /= relPath;
