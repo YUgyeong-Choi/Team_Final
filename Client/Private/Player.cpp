@@ -71,9 +71,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 	Callback_Mana();
 	Callback_Stamina();
 
-
-	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
-
 	return S_OK;
 }
 

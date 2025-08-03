@@ -44,6 +44,9 @@ HRESULT CLevel_YG::Initialize()
 		return E_FAIL;
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YG));
+
+
+	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 	return S_OK;
 }
 
