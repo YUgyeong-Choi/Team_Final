@@ -175,6 +175,10 @@ private:
 	_int  m_iOverrideControllerIndex = -1;// 애니메이터에 등록된 오버라이드 컨트롤러
 	_float m_fOverrideBlendWeight = 1.f; // 오버라이드 블렌드 가중치
 
+	// 레이아웃
+	unordered_map<string, _bool> m_CategoryVisibility; // 카테고리별 보이기 상태
+	unordered_map<string, vector<string>> m_CategoryStates; // 카테고리별 상태 이름들
+	_bool m_bShowAll = true;
 
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
