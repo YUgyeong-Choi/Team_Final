@@ -50,7 +50,6 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 	else
 	{
 		m_fCurFrame = static_cast<_float>(m_iCurFrame);
-
 	}
 	if (m_fCurFrame > m_pSequence->GetFrameMax())
 	{
@@ -114,6 +113,12 @@ HRESULT CCYTool::Render()
 		Save_Effect();
 	if (m_bOpenLoadEffectOnly)
 		Load_Effect();
+
+	if (m_bOpenSaveEffectContainer)
+		Save_EffectSet();
+	if (m_bOpenLoadEffectContainer)
+		Load_EffectSet();
+
 
 	return S_OK;
 }
@@ -325,15 +330,15 @@ HRESULT CCYTool::Edit_Preferences()
 
 	ImGui::Text("Select RenderGroup\n0. EFFECT_BLEND\t1. EFFECT_BLEND\t2. UVSprite\t3. UVSprite_Color");
 
-	for (_uint i = 0; i < SE_END; i++)
-	{
-		if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), m_eSelectedPass_SE == i)) {
-			m_eSelectedPass_SE = (SPRITEEFFECT_PASS_INDEX)i;
-			pSE->Set_ShaderPass(i);
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
-	}
+	//for (_uint i = 0; i < SE_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), m_eSelectedPass_SE == i)) {
+	//		m_eSelectedPass_SE = (SPRITEEFFECT_PASS_INDEX)i;
+	//		pSE->Set_ShaderPass(i);
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
 
 	switch (m_pSequence->m_Items[m_iSelected].iType)
 	{
@@ -621,8 +626,6 @@ HRESULT CCYTool::Save_EffectSet()
 	{
 		json jItem;
 		jItem["Name"] = Item.strName.data();
-		jItem["StartPos"] = *Item.iStart;
-		jItem["EndPos"] = *Item.iEnd;
 		jItem["EffectType"] = Item.iType;
 
 		jItem.push_back(Item.pEffect->Serialize());
@@ -654,7 +657,6 @@ HRESULT CCYTool::Save_Effect()
 			// 확장자가 없으면 .json 붙이기
 			if (savePath.extension().string() != ".json")
 				savePath += ".json";
-
 
 			ofstream ofs(savePath);
 
@@ -725,7 +727,6 @@ HRESULT CCYTool::Load_Effect()
 			}
 
 			ifstream ifs(loadPath);
-
 			if (!ifs.is_open())
 			{
 				MSG_BOX("File open Failed");

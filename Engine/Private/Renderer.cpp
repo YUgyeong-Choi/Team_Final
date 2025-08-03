@@ -797,14 +797,14 @@ HRESULT CRenderer::Render_Effect_Blend()
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_EffectBlendObjects"))))
 		return E_FAIL;
 
-	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_DEFERED)])
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW)])
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render();
 
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_DEFERED)].clear();
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW)].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;

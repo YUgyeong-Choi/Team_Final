@@ -181,6 +181,8 @@ json CMeshEffect::Serialize()
 	json j = __super::Serialize();
 
 
+
+
 	return j;
 }
 

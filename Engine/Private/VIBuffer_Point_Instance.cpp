@@ -65,7 +65,7 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const DESC* pArg)
 
 #pragma endregion 
 	m_isTool = pArg->isTool;
-	if(m_isTool == false)
+	if(m_isTool == false) // 클라이언트 생성 시 
 		Make_InstanceBuffer(pArg);
 
 	return S_OK;
@@ -77,7 +77,7 @@ HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 	m_isTool = pDesc->isTool;
 
 	if (m_isTool == true)
-		Make_InstanceBuffer(pDesc);
+		Make_InstanceBuffer(pDesc); // 툴에서 생성 시
 
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
 		return E_FAIL;
