@@ -630,6 +630,7 @@ public:
     }
 };
 
+
 /* [ 이 클래스는 약공 상태입니다. ] */
 class CPlayer_WeakAttack final : public CPlayerState
 {
@@ -648,7 +649,7 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 약공은 무기 장착상태여야합니다.
-        m_pOwner->m_pAnimator->SetBool("Sprint", true);
+        //m_pOwner->m_pAnimator->SetBool("Sprint", true);
         m_pOwner->Get_TransfomCom()->Set_SpeedPreSec(5.f);
     }
 
@@ -661,8 +662,8 @@ public:
     {
         m_fStateTime = 0.f;
 
-        m_pOwner->m_pAnimator->SetBool("Move", false);
-        m_pOwner->m_pAnimator->SetBool("Sprint", false);
+        //m_pOwner->m_pAnimator->SetBool("Move", false);
+        //m_pOwner->m_pAnimator->SetBool("Sprint", false);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

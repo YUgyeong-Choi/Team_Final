@@ -64,7 +64,6 @@ protected:
 	_float3				m_vPivot;
 	_float2				m_vLifeTime;
 	_float2				m_vSpeed;
-	PARTICLETYPE		m_ePType;
 	_bool				m_isLoop;
 
 
