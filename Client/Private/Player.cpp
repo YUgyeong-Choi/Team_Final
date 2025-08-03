@@ -59,11 +59,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	// 옵저버 찾아서 없으면 추가
 	if (nullptr == m_pGameInstance->Find_Observer(TEXT("Player_Status")))
-	{
-
 		m_pGameInstance->Add_Observer(TEXT("Player_Status"), new CObserver_Player_Status);
-
-	}
 
 	m_iCurrentHP = m_iMaxHP;
 
@@ -72,7 +68,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	Callback_Stamina();
 
 
-	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+	//CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 
 	return S_OK;
 }
@@ -84,14 +80,6 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	// 문여는 컷씬
 	if (KEY_DOWN(DIK_N))
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
-
-	if (KEY_DOWN(DIK_Y))
-	{
-		if (m_fTimeScale == 1.f)
-			m_fTimeScale = 0.5f;
-		else
-			m_fTimeScale = 1.f;
-	}
 
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
@@ -121,7 +109,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	if(KEY_DOWN(DIK_J))
+	if(KEY_PRESSING(DIK_J))
 	{
 		/* [ 이곳은 애니메이션 실험실입니다. ] */
 		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
@@ -158,7 +146,7 @@ void CPlayer::HandleInput()
 	m_Input.bRight_Pressing = KEY_PRESSING(DIK_D);
 
 	/* [ 마우스 입력을 업데이트합니다. ] */
-	m_Input.bLeftMouseDown = MOUSE_DOWN(DIM::RBUTTON);
+	m_Input.bLeftMouseDown = MOUSE_DOWN(DIM::LBUTTON);
 	m_Input.bRightMouseDown = MOUSE_DOWN(DIM::RBUTTON);
 	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
 	m_Input.bRightMouseUp = MOUSE_UP(DIM::RBUTTON);
@@ -232,6 +220,8 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ROLLING)] = new CPlayer_Rolling(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::EQUIP)] = new CPlayer_Equip(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINT)] = new CPlayer_Sprint(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::WEAKATTACKA)] = new CPlayer_WeakAttackA(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::WEAKATTACKB)] = new CPlayer_WeakAttackB(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }
@@ -324,247 +314,12 @@ void CPlayer::Update_Stat()
 	}
 }
 
-void CPlayer::SetPlayerState(_float fTimeDelta)
-{
-	_bool bUp = m_pGameInstance->Key_Pressing(DIK_W);
-	_bool bDown = m_pGameInstance->Key_Pressing(DIK_S);
-	_bool bLeft = m_pGameInstance->Key_Pressing(DIK_D);
-	_bool bRight = m_pGameInstance->Key_Pressing(DIK_A);
-	_bool bMove = (bUp || bDown || bLeft || bRight);
-	static _bool bRunToggle = false;
-	static _bool bSpaceHeld = false;
-	static _bool bSprinting = false;
-	static _float fPressTime = 0.f;
-	const _float sprintTh = 0.8f;
-
-	static _bool bRightMouseHeld = false;
-	static _float fChargeTime = 0.f;
-	static _bool bCharging = false;
-	const _float chargeThreshold = 0.2f; // 0.2
-
-	_bool bSpaceDown = m_pGameInstance->Key_Down(DIK_SPACE);
-	_bool bSpacePress = m_pGameInstance->Key_Pressing(DIK_SPACE);
-	_bool bSpaceUp = m_pGameInstance->Key_Up(DIK_SPACE);
-
-	_bool bRightMouseDown = m_pGameInstance->Mouse_Down(DIM::RBUTTON);
-	_bool bRightMousePress = m_pGameInstance->Mouse_Pressing(DIM::RBUTTON);
-	_bool bRightMouseUp = m_pGameInstance->Mouse_Up(DIM::RBUTTON);
-
-	if (m_pGameInstance->Key_Down(DIK_TAB))
-	{
-		_bool test = m_pAnimator->CheckBool("Move");
-		if (test)
-		{
-			int a = 0;
-		}
-		m_pAnimator->SetTrigger("EquipWeapon");
-		m_pAnimator->ApplyOverrideAnimController("TwoHand");
-	}
-
-	if (bSpaceDown)
-	{
-		if (!bMove)
-		{
-			m_pAnimator->SetTrigger("Dash");
-		}
-		else
-		{
-
-			bSpaceHeld = true;
-			bSprinting = false;
-			fPressTime = 0.f;
-		}
-	}
-	if (bMove && bSpaceHeld && bSpacePress)
-	{
-		fPressTime += fTimeDelta;
-
-
-		if (!bSprinting && fPressTime >= sprintTh)
-		{
-			m_pAnimator->SetBool("Sprint", true);
-			bRunToggle = true;
-			bSprinting = true;
-		}
-	}
-	_int iCombo = m_pAnimator->GetInt("Combo");
-	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
-	{
-		if (m_pAnimator->GetCurrentAnim())
-		{
-			if (m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName.find("Attack") == string::npos)
-			{
-				if (iCombo == 0)
-					iCombo = 1;
-				else
-					iCombo = 0;
-				m_pAnimator->SetInt("Combo", iCombo);
-				m_pAnimator->SetTrigger("NormalAttack");
-			}
-		}
-	}
-
-	if (bRightMouseDown)
-	{
-		// 우클릭 시작
-		bRightMouseHeld = true;
-		fChargeTime = 0.f;
-		bCharging = false;
-		m_pAnimator->SetBool("Charge", false); // 차지 시작 시 false로 초기화
-	}
-
-	if (bRightMouseHeld && bRightMousePress)
-	{
-		// 우클릭을 계속 누르고 있는 동안
-		fChargeTime += fTimeDelta;
-
-		if (!bCharging && fChargeTime >= chargeThreshold)
-		{
-			// 0.5초 이상 누르면 차지 상태로 변경
-			bCharging = true;
-			m_pAnimator->SetBool("Charge", true);
-			cout << "Charge activated! Time: " << fChargeTime << endl; // 디버그용
-		}
-		else
-		{
-			//m_pAnimator->SetBool("Charge", false);
-		}
-	}
-
-	if (bRightMouseUp)
-	{
-		// 우클릭을 뗄 때
-		if (bRightMouseHeld)
-		{
-			if (m_pAnimator->GetCurrentAnim())
-			{
-				if (m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName.find("Attack") == string::npos)
-				{
-					if (iCombo == 0)
-						iCombo = 1;
-					else
-						iCombo = 0;
-					m_pAnimator->SetInt("Combo", iCombo);
-					m_pAnimator->SetTrigger("StrongAttack");
-				}
-			}
-		}
-
-		// 차지 상태 초기화
-		bRightMouseHeld = false;
-		fChargeTime = 0.f;
-		//if (bCharging)
-		//{
-		//	bCharging = false;
-		//	m_pAnimator->SetBool("Charge", false); // 공격 후 차지 해제
-		//}
-	}
-
-	if (bSpaceHeld && bSpaceUp)
-	{
-		if (bMove)
-		{
-			if (!bSprinting)
-			{
-
-				m_pAnimator->SetTrigger("Dash");
-			}
-			else
-			{
-				m_pAnimator->SetBool("Sprint", false);
-			}
-		}
-
-		bSpaceHeld = false;
-		bSprinting = false;
-		fPressTime = 0.f;
-	}
-
-	if (!bMove && bSprinting)
-	{
-		m_pAnimator->SetBool("Sprint", false);
-		bSprinting = false;
-		bSpaceHeld = false;
-		fPressTime = 0.f;
-	}
-
-	if (m_pAnimator)
-	{
-		m_pAnimator->SetBool("Move", bMove);
-
-		if (m_pGameInstance->Key_Down(DIK_Z))
-		{
-			bRunToggle = !bRunToggle;
-		}
-		m_pAnimator->SetBool("Run", bRunToggle);
-	}
-}
-
 void CPlayer::Movement(_float fTimeDelta)
 {
 	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
 		return;
 
-	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
-	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
-
-
-	if (bUseRoot)
-	{
-		_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
-		_float4 		rootMotionQuat = m_pAnimator->GetRootRotationDelta();
-		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
-
-		_vector vScale, vRotQuat, vTrans;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
-
-		PxControllerFilters filters;
-		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
-
-		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
-		vWorldDelta = XMVectorSetY(vWorldDelta, dy);
-
-		_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
-		_vector finalDelta;
-		if (fDeltaMag > m_fSmoothThreshold)
-		{
-			_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-			finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
-		}
-		else
-		{
-			finalDelta = vWorldDelta;
-		}
-		m_PrevWorldDelta = finalDelta;
-
-		PxVec3 pos{
-			XMVectorGetX(finalDelta),
-			XMVectorGetY(finalDelta),
-			XMVectorGetZ(finalDelta)
-		};
-
-		m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
-		SyncTransformWithController();
-		_vector vTmp{};
-		XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
-		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
-		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
-		_matrix newWorld =
-			XMMatrixScalingFromVector(vScale) *
-			XMMatrixRotationQuaternion(vNewRot) *
-			XMMatrixTranslationFromVector(vTrans);
-		m_pTransformCom->Set_WorldMatrix(newWorld);
-
-		// 현재 회전 값 디버그
-		_float4 rot;
-		XMStoreFloat4(&rot, vNewRot);
-	}
-	else
-	{
-		SetMoveState(fTimeDelta);
-	}
-
-	//SetPlayerState(fTimeDelta);
+	SetMoveState(fTimeDelta);
 }
 
 
@@ -646,6 +401,8 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 		if (fabsf(fAngle) > fMinAngle)
 		{
 			_float fClampedAngle = max(-fTurnSpeed * fTimeDelta, min(fTurnSpeed * fTimeDelta, fAngle));
+			if (!m_bMovable)
+				fClampedAngle = 0.f;
 			m_pTransformCom->TurnAngle(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
 		}
 	}
@@ -653,6 +410,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	/* [ 이동을 한다. ] */
 	_float3 moveVec = {};
 	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+	if (!m_bMovable)    fSpeed = 0.f;
 	_float fDist = fSpeed * fTimeDelta;
 	vInputDir *= fDist;
 	XMStoreFloat3(&moveVec, vInputDir);
@@ -667,6 +425,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 
 	PxControllerCollisionFlags collisionFlags =
 		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+	
 
 	// 4. 지면에 닿았으면 중력 속도 초기화
 	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)

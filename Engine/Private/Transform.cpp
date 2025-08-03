@@ -3,6 +3,8 @@
 #include "Shader.h"
 #include "Navigation.h"
 
+#include "PhysXController.h"
+
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent { pDevice, pContext }
 {
@@ -243,10 +245,9 @@ void CTransform::Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CNavigation*
 		Set_State(STATE::POSITION, vNewPos);
 }
 
-bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CNavigation* pNavigation)
+bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CPhysXController* pPhysXController, CNavigation* pNavigation)
 {
 	/* 특정 방향으로 Distance만큼 특정 시간안에 이동한다. */
-	const _float fSafetyMargin = 0.5f;
 
 	// 이동 중이 아니라면 초기화
 	if (!m_bSpecialMoving)
@@ -266,7 +267,79 @@ bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir
 	_float smoothT = (sinf(t * XM_PI - XM_PIDIV2) + 1.f) * 0.5f; // 이징 In-Out
 	_vector vNewPos = m_fSpecialMoveStartPos + m_vSpecialMoveOffset * smoothT;
 
-	if (pNavigation)
+	if (pPhysXController)
+	{
+		PxControllerFilters filters;
+
+		_vector vCurPos = Get_State(STATE::POSITION);
+		_vector vDelta = vNewPos - vCurPos;
+		_float fX = XMVectorGetX(vDelta);
+		_float fY = XMVectorGetY(vDelta);
+		_float fZ = XMVectorGetZ(vDelta);
+
+		PxVec3 pxMove = { fX, fY, fZ };
+		pPhysXController->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+	}
+	else if (pNavigation)
+	{
+		if (pNavigation->isMove(vNewPos))
+		{
+			_float NavigationY = pNavigation->Compute_NavigationY(vNewPos);
+			vNewPos = XMVectorSetY(vNewPos, NavigationY);
+			Set_State(STATE::POSITION, vNewPos);
+		}
+	}
+	else
+	{
+		Set_State(STATE::POSITION, vNewPos);
+	}
+
+	// 끝났으면 초기화
+	if (t >= 1.f)
+	{
+		m_bSpecialMoving = false;
+		m_fSpecialMoveDuration = 0.f;
+		return true;
+	}
+
+	return false;
+}
+bool CTransform::Move_SpecialB(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CPhysXController* pPhysXController, CNavigation* pNavigation)
+{
+	/* 특정 방향으로 Distance만큼 특정 시간안에 이동한다. */
+
+	// 이동 중이 아니라면 초기화
+	if (!m_bSpecialMoving)
+	{
+		m_bSpecialMoving = true;
+		m_fSpecialMoveElapsed = 0.f;
+		m_fSpecialMoveDuration = fTime;
+		m_fSpecialMoveStartPos = Get_State(STATE::POSITION);
+		m_vSpecialMoveOffset = XMVector3Normalize(vMoveDir) * fDistance;
+	}
+
+	// 매 프레임 델타 누적 + 보간 계산
+	m_fSpecialMoveElapsed += fTimeDelta;
+	_float t = m_fSpecialMoveElapsed / m_fSpecialMoveDuration;
+	t = min(t, 1.f);
+
+	_float smoothT = 1.f - powf(2.f, -10.f * t);
+	_vector vNewPos = m_fSpecialMoveStartPos + m_vSpecialMoveOffset * smoothT;
+
+	if (pPhysXController)
+	{
+		PxControllerFilters filters;
+
+		_vector vCurPos = Get_State(STATE::POSITION);
+		_vector vDelta = vNewPos - vCurPos;
+		_float fX = XMVectorGetX(vDelta);
+		_float fY = XMVectorGetY(vDelta);
+		_float fZ = XMVectorGetZ(vDelta);
+
+		PxVec3 pxMove = { fX, fY, fZ };
+		pPhysXController->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+	}
+	else if (pNavigation)
 	{
 		if (pNavigation->isMove(vNewPos))
 		{

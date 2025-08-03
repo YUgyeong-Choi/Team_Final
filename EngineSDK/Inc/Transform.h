@@ -3,6 +3,7 @@
 #include "Component.h"
 
 NS_BEGIN(Engine)
+class CPhysXController;
 
 class ENGINE_DLL CTransform final : public CComponent
 {
@@ -96,7 +97,10 @@ public:
 
 public:
 	/* [ 몇초동안 어느방향으로 몇만큼 이동할거니? ] */
-	bool Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CNavigation* pNavigation = nullptr);
+	bool Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance,
+		CPhysXController* pPhysXController = nullptr, CNavigation* pNavigation = nullptr);
+	bool Move_SpecialB(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance,
+		CPhysXController* pPhysXController = nullptr, CNavigation* pNavigation = nullptr);
 	/* [ 몇초동안 타겟 스케일만큼 스케일된다. ] */
 	bool Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetScale);
 	/* [ 몇초동안 어느방향으로 어느축을 기준으로 몇만큼 회전할거니? ] */
@@ -141,6 +145,7 @@ public:
 	void SetfRotationPerSec(_float fRotationPerSec) { m_fRotationPerSec = fRotationPerSec; }
 	_float GetfRotationPerSec() const { return m_fRotationPerSec; }
 
+	void SetbSpecialMoving() { m_bSpecialMoving = false; m_fSpecialMoveDuration = 0.f; }
 
 public:
 	void LookAt(_fvector vAt);

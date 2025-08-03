@@ -110,18 +110,18 @@ _bool CAnimController::Transition::Evaluates(CAnimController* pAnimController, C
 		switch (condition.type)
 		{
 		case ParamType::Bool:
-			cout << "Condition passed: " << condition.paramName << " is true." << endl; // 디버그용 출력
+			//cout << "Condition passed: " << condition.paramName << " is true." << endl; // 디버그용 출력
 			break;
 		case ParamType::Int:
-			cout << "Condition passed: " << condition.paramName << " is in range ("
-				<< condition.iThreshold << ")." << endl; // 디버그용 출력
+			//cout << "Condition passed: " << condition.paramName << " is in range ("
+			//	<< condition.iThreshold << ")." << endl; // 디버그용 출력
 			break;
 		case ParamType::Float:
-			cout << "Condition passed: " << condition.paramName << " is in range ("
-				<< condition.fThreshold << ")." << endl; // 디버그용 출력
+			//cout << "Condition passed: " << condition.paramName << " is in range ("
+			//	<< condition.fThreshold << ")." << endl; // 디버그용 출력
 			break;
 		case ParamType::Trigger:
-			cout << "Condition passed: " << condition.paramName << " trigger activated." << endl; // 디버그용 출력
+			//cout << "Condition passed: " << condition.paramName << " trigger activated." << endl; // 디버그용 출력
 			break;
 		}
 	}
