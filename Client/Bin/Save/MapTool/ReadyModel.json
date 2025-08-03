@@ -115,9 +115,24 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_04.bin"
     },
     {
-        "ModelName": "SM_Sign_AD_06",
+        "ModelName": "SM_Sign_AD_03",
         "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_AD_03.bin"
+    },
+    {
+        "ModelName": "SM_Sign_AD_06",
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_AD_06.bin"
+    },
+    {
+        "ModelName": "SM_Sign_AD_09",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_AD_09.bin"
+    },
+    {
+        "ModelName": "SM_Sign_AD_11",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_AD_11.bin"
     },
     {
         "ModelName": "SM_Station_1FRail_01",
@@ -236,13 +251,8 @@
     },
     {
         "ModelName": "SM_Wall_PillarFrame01A",
-        "ObjectCount": 31,
+        "ObjectCount": 28,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrame01A.bin"
-    },
-    {
-        "ModelName": "SM_Wall_PillarFrameBend01A",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrameBend01A.bin"
     },
     {
         "ModelName": "Wall_Station_Flatform",
