@@ -27,7 +27,7 @@ public:
 #ifdef _DEBUG
     // For Debug Render
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
-    void DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, PxGeometryHolder geom, _float offSet = 0.f);
+    void DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds, _float offSet = 0.f);
     void DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox = false, PxVec3 hitPos = { 0.f, 0.f, 0.f });
 
 protected:
@@ -52,8 +52,8 @@ protected:
     HRESULT ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 protected:
     void DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, const PxTransform& pose, float radius, float halfHeight, FXMVECTOR color);
-    void DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom);
-    void DrawConvexMesh(PxTransform pose, PxGeometryHolder geom);
+    void DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds);
+    void DrawConvexMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds);
 public:
     virtual CComponent* Clone(void* pArg) = 0;
     virtual void Free() override;
