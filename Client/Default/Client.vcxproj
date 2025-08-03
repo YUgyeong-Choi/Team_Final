@@ -196,7 +196,9 @@
     <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PBRMesh.h" />
     <ClInclude Include="..\public\Player.h" />
-    <ClInclude Include="..\Public\PlayerState.h" />
+    <ClInclude Include="..\Public\PlayerState.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\public\PreviewObject.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />

@@ -384,7 +384,7 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 				else
 					iCombo = 0;
 				m_pAnimator->SetInt("Combo", iCombo);
-		m_pAnimator->SetTrigger("NormalAttack");
+				m_pAnimator->SetTrigger("NormalAttack");
 			}
 		}
 	}
