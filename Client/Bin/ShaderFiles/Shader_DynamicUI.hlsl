@@ -3,7 +3,9 @@
 /* 상수테이블 ConstantTable */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
-texture2D g_DepthTexture;
+
+texture2D g_BackgroundTexture;
+texture2D g_GradationTexture;
 
 texture2D g_HoverTexture;
 texture2D g_HighlightTexture;
@@ -11,11 +13,12 @@ texture2D g_HighlightTexture;
 float2   g_fTexcoord;
 float2   g_fTileSize;
 float    g_Alpha;
-
 float4   g_Color;
 
 float4   g_ButtonFlag;
 
+float    g_BarRatio;
+float4   g_ManaDesc;
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
 
@@ -117,27 +120,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);   
    
-    
-    /*화면 전체 기준(0, 0 ~ 1, 1)으로 이펙트의 픽셀이 그려질 위치에 해당하는 좌표 */    
-    float2 vTexcoord;
-    
-    /*이펙트의 특정 픽셀(psin)이 화면 전체기준으로 어디에 존재하는지? */ 
-    /* 우선 투영공간상(-1, 1 -> 1, -1)의 픽셀의 위치를 구한다.*/    
-    vTexcoord.x = In.vProjPos.x / In.vProjPos.w;
-    vTexcoord.y = In.vProjPos.y / In.vProjPos.w;
-    
-    vTexcoord.x = vTexcoord.x * 0.5f + 0.5f;
-    vTexcoord.y = vTexcoord.y * -0.5f + 0.5f;    
-    
-    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, vTexcoord);
-    
-    float fOldViewZ = vDepthDesc.y * 500.f;
-    
-    Out.vColor.a = Out.vColor.a * saturate(fOldViewZ - In.vProjPos.w);
-    
-    Out.vColor *= g_Color;
     
     return Out;
 }
@@ -261,19 +244,138 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
 PS_OUT PS_MAIN_HPBAR(PS_IN In)
 {
     PS_OUT Out;
+ 
+    vector vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    vector vBack = g_BackgroundTexture.Sample(DefaultSampler, In.vTexcoord);
     
-    if (Out.vColor.a < 0.1f)
+    
+  
+    if (vBorder.a > 0.1f)
+    {
+        Out.vColor = vBorder;
+        return Out;
+    }
+    
+    float fMarginX = 0.06f;
+    float fMarginY = 0.3f;
+    bool isInsideX;
+    
+    if (g_BarRatio > 1 - 1.2 * fMarginX)
+        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= 1 - 1.2 * fMarginX;
+    else
+        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
+    bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
+  
+    if (isInsideX && isInsideY)
+    {
+        vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
+        
+        Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
+
+        
+
+    }
+    else
     {
         discard;
     }
-    
-  
-       
-  
 
+    return Out;
+}
+
+PS_OUT PS_MAIN_MANABAR(PS_IN In)
+{
+    PS_OUT Out;
+
+    float unitCount = g_ManaDesc.x; // 총 칸 수
+    float margin = g_ManaDesc.y; // 칸 사이 여백 (0~0.5)
+    int fullUnits = (int) g_ManaDesc.z; // 꽉 찬 칸 개수
+    float remainRatio = g_ManaDesc.w; // 마지막 칸의 비율 (0~1)
+
+    float fMarginY = 0.3f;
+
+// Y 범위 밖이면 버림
+    if (In.vTexcoord.y < fMarginY || In.vTexcoord.y > 1.0f - fMarginY)
+        discard;
+
+// 한 칸 너비
+    float unitWidth = 1.0 / unitCount;
+
+// 현재 픽셀이 속한 칸 인덱스
+    int unitIndex = (int) (In.vTexcoord.x / unitWidth);
+
+// 칸 내 상대 위치 (0~1)
+    float localX = (In.vTexcoord.x - unitIndex * unitWidth) / unitWidth;
+    float localY = (In.vTexcoord.y - fMarginY) / (1.0f - 2.0f * fMarginY);
+
+// 마진 영역 버리기
+    if (localX < margin || localX > 1.0f - margin)
+        discard;
+
+// 보더 샘플링
+    float2 borderUV = float2(localX, localY);
+    vector vBorder = g_Texture.Sample(DefaultSampler, borderUV);
+    if (vBorder.a > 0.1f)
+    {
+        Out.vColor = vBorder;
         return Out;
+    }
+
+// 테두리 기준 범위 계산
+    float borderThickness = 0.1f; 
+
+    float fillStartX = borderThickness * 0.7f;
+    float fillEndX = 1.0f - borderThickness * 0.7f;
+
+    float fillStartY = borderThickness * 3.f;
+    float fillEndY = 1.0f - borderThickness * 3.f;
+
+// 보더 안쪽이 아니면 버림
+    if (localX < fillStartX || localX > fillEndX ||
+    localY < fillStartY || localY > fillEndY)
+    {
+        discard;
+    }
+
+// 칸별 채움량 결정
+    float fillAmount = 0.0f;
+    if (unitIndex < fullUnits)
+    {
+        fillAmount = fillEndX;
+    }
+    else if (unitIndex == fullUnits)
+    {
+        fillAmount = fillStartX + remainRatio * (fillEndX - fillStartX);
+    }
+    else
+    {
+        fillAmount = fillStartX;
+    }
+
+// 채움 범위 넘어가면 버림
+    if (localX > fillAmount)
+        discard;
+
+// 채우기 색 계산
+   
+    vector vGradation = g_GradationTexture.Sample(DefaultSampler, borderUV);
+    if (unitIndex < fullUnits)
+    {
+    // 꽉 찬 칸은 그라데이션 강하게 (예: 1.0 ~ 1.5 배)
+        vector vGradation = g_GradationTexture.Sample(DefaultSampler, borderUV);
+        
+        Out.vColor = g_Color * (length(vGradation.rgb) * 0.3 + 0.7f);
+
+    }
+    else
+    {
+        Out.vColor = g_Color * 0.6f;
+
+    }
+   
+
+    return Out;
 }
 
 
@@ -353,6 +455,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_HPBAR();
+    }
+    pass ManaBar
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_MANABAR();
     }
    
 }

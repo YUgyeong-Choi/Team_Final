@@ -70,6 +70,8 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 	json j;
 
 	j["iEndFrame"] = data.iEndFrame;
+	j["bStartBlend"] = data.bReadySetOrbitalPos;
+	j["bEndBlend"] = data.bReadyCutSceneOrbital;
 
 	// 1. Position Frame (WorldMatrix은 16개의 float 값으로 저장)
 	for (const auto& pos : data.vecWorldMatrixData)
@@ -133,6 +135,8 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 
 	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
+	data.bReadySetOrbitalPos = j.value("bStartBlend", false);
+	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
 
 	// 2. vecPosData
 	if (j.contains("vecPosData"))
@@ -183,7 +187,6 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			data.vecFovData.push_back(fovFrame);
 		}
 	}
-
 	return data;
 }
 
@@ -267,6 +270,10 @@ HRESULT CYGTool::Render_CameraTool()
 		m_pSelectedKey->keyFrame = m_iCurrentFrame;
 	}
 
+	ImGui::Checkbox("StartBlend", &m_CameraDatas.bReadySetOrbitalPos);
+	ImGui::Checkbox("EndBlend", &m_CameraDatas.bReadyCutSceneOrbital);
+
+	ImGui::SeparatorText("=====");
 	if (m_pSelectedKey)
 	{
 		ImGui::SeparatorText("Current Key Info");
@@ -411,10 +418,20 @@ HRESULT CYGTool::Render_CameraTool()
 
 	if (ImGui::Button("Play CutScene"))
 	{
+		CCamera_Orbital* pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
+		CCamera_CutScene* pCamera_CutScene = CCamera_Manager::Get_Instance()->GetCutScene();
+
+		pCamera_CutScene->Set_InitOrbitalWorldMatrix(pCamera_Orbital->Get_OrbitalPosBackLookFront());
+		_matrix oribtalMatrix = pCamera_Orbital->Get_TransfomCom()->Get_WorldMatrix();
+		pCamera_CutScene->Get_TransfomCom()->Set_WorldMatrix(oribtalMatrix);
+
+		CCamera_Manager::Get_Instance()->SetCutSceneCam();
 		CCamera_Manager::Get_Instance()->GetCutScene()->Set_CameraFrame(m_CameraDatas);
 		CCamera_Manager::Get_Instance()->GetCutScene()->PlayCutScene();
-		CCamera_Manager::Get_Instance()->SetCutSceneCam();
 	}
+
+	ImGui::SameLine();
+	ImGui::Text("Current Frame: %d", CCamera_Manager::Get_Instance()->GetCutScene()->Get_CurrentFrame());
 
 	ImGui::SeparatorText("Save Data");
 

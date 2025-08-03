@@ -77,6 +77,7 @@ private:
 	void Control_PreviewObject(_float fTimeDelta);
 
 private:
+	void Detail_Name();
 	void Detail_Transform();
 	void Detail_Tile();
 	//컨백스 또는 트라이앵글 선택(기본 컨백스)

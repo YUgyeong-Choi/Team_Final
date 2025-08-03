@@ -56,12 +56,10 @@ void CYGBox::Update(_float fTimeDelta)
 
 void CYGBox::Late_Update(_float fTimeDelta)
 {
-	//if (m_pGameInstance->Is_In_Frustum(m_pPhysXActor)) {
-	//	
-	//}
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+	if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f)) {
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	}
 
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
 HRESULT CYGBox::Render()

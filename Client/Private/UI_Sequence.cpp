@@ -14,6 +14,8 @@ void CUI_Sequence::Add(_int type)
 		eDesc.strTypeTag = "UV";
 	else if (type == 2)
 		eDesc.strTypeTag = "Pos";
+	else if (type == 3)
+		eDesc.strTypeTag = "Scale";
 
 	// Èò»ö?
 	eDesc.color = 0xFFFFFFFF;

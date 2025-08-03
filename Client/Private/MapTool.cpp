@@ -115,6 +115,9 @@ HRESULT CMapTool::Render_ImGui()
 
 void CMapTool::Control(_float fTimeDelta)
 {
+	if (GetForegroundWindow() != g_hWnd)
+		return;
+
 	//E 회전, R 크기, T는 위치
 	if (m_pGameInstance->Key_Down(DIK_E))
 		m_currentOperation = ImGuizmo::ROTATE;
@@ -468,6 +471,9 @@ HRESULT CMapTool::Load_Map()
 
 HRESULT CMapTool::Render_MapTool()
 {
+	if (GetForegroundWindow() != g_hWnd)
+		return S_OK;
+
 	Render_Hierarchy();
 
 	Render_Asset();
@@ -822,6 +828,10 @@ void CMapTool::Render_Detail()
 
 	ImGui::Separator();
 
+	Detail_Name();
+
+	ImGui::Separator();
+
 	Detail_Transform();
 
 	ImGui::Separator();
@@ -1116,14 +1126,14 @@ HRESULT CMapTool::Duplicate_Selected_Object()
 #pragma region 해당 오브젝트 옆에다가 소환
 		_matrix SpawnWorldMatrix = pObj->Get_TransfomCom()->Get_WorldMatrix();
 
-		// x축으로 3.f 만큼 이동하는 변환 행렬
-		_matrix matOffset = XMMatrixTranslation(3.f, 0.f, 0.f);
+		//// x축으로 3.f 만큼 이동하는 변환 행렬
+		//_matrix matOffset = XMMatrixTranslation(3.f, 0.f, 0.f);
 
-		// 변환 적용: 기존 행렬에 offset을 곱해준다
-		_matrix matResult = matOffset * SpawnWorldMatrix;
+		//// 변환 적용: 기존 행렬에 offset을 곱해준다
+		//_matrix matResult = matOffset * SpawnWorldMatrix;
 
 		// 결과 저장
-		XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, matResult);
+		XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, SpawnWorldMatrix);
 #pragma endregion
 
 		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
@@ -1420,6 +1430,14 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 		m_pCamera_Free->Set_Moveable(true);
 	}
 
+}
+
+void CMapTool::Detail_Name()
+{
+	if (m_pFocusObject == nullptr)
+		return;
+
+	ImGui::Text(m_pFocusObject->Get_ModelName().c_str());
 }
 
 void CMapTool::Detail_Transform()

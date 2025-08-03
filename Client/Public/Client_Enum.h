@@ -36,7 +36,7 @@ namespace Client
 
 	enum DYNAMIC_UI_PASS_INDEX {
 		D_UI_DEFAULT = 0, D_UI_SOFTEFFECT, D_UI_SPRITE, D_UI_FADE,
-		D_UI_BUTTON, D_UI_HPBAR,
+		D_UI_BUTTON, D_UI_HPBAR, D_UI_MANABAR,
 		D_UI_END
 	};
 
@@ -49,6 +49,7 @@ namespace Client
 	enum class COLLIDER_TYPE { NONE, CONVEX, TRIANGLE, END };
 #pragma endregion
 
+#pragma region YG
 	enum INTERPOLATION_CAMERA
 	{
 		NONE,
@@ -60,6 +61,7 @@ namespace Client
 	{
 		ONE, TWO, THREE
 	};
+#pragma endregion
 }
 
 

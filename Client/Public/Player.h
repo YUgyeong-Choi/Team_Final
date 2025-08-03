@@ -60,6 +60,14 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	void LoadPlayerFromJson();
 
+private: /* 옵저버 관련*/
+	void Callback_HP();
+	void Callback_Stamina();
+	void Callback_Mana();
+
+	// 스탯 변화 테스트용
+	void Update_Stat();
+
 
 private: /* [ 상태패턴 ] */
 	friend class CPlayer_Idle;
@@ -90,6 +98,16 @@ private: /* [ 이동관련 변수 ] */
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
 	_float   m_fSmoothThreshold = 0.1f;
+
+private: // 옵저버 관련
+	// stat용
+	_int m_iCurrentHP = {};
+	_int m_iMaxHP = { 200 };
+	_int m_iCurrentStamina = {};
+	_int m_iMaxStamina = { 100 };
+	// 일단 한칸에 100씩
+	_int m_iCurrentMana = {};
+	_int m_iMaxMana = { 300 };
 
 
 public:

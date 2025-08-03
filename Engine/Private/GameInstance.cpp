@@ -138,13 +138,13 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pPipeLine->Update();
 
-	m_pFrustum->Transform_ToWorldSpace();
-
 	m_pObject_Manager->Update(fTimeDelta);	
 	m_pLevel_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 	m_pLevel_Manager->Late_Update(fTimeDelta);
+
+	m_pFrustum->Transform_ToWorldSpace();
 
  	m_pPhysX_Manager->Simulate(fTimeDelta);
 

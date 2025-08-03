@@ -190,6 +190,7 @@
     <ClInclude Include="..\Public\Level_YW.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\Mana_Bar.h" />
     <ClInclude Include="..\Public\MapTool.h" />
     <ClInclude Include="..\public\MeshEffect.h" />
     <ClInclude Include="..\Public\MySequence.h" />
@@ -202,6 +203,7 @@
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
     <ClInclude Include="..\Public\MapToolObject.h" />
+    <ClInclude Include="..\public\Stamina_Bar.h" />
     <ClInclude Include="..\public\StaticMesh.h" />
     <ClInclude Include="..\public\StaticMesh_Instance.h" />
     <ClInclude Include="..\public\Static_UI.h" />
@@ -289,6 +291,7 @@
     <ClCompile Include="..\Private\Level_YW.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\Mana_Bar.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\private\MeshEffect.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
@@ -300,6 +303,7 @@
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />
+    <ClCompile Include="..\private\Stamina_Bar.cpp" />
     <ClCompile Include="..\private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
