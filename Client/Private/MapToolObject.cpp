@@ -46,6 +46,22 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
+	switch (m_eColliderType)
+	{
+	case Client::COLLIDER_TYPE::NONE:
+		break;
+	case Client::COLLIDER_TYPE::CONVEX:
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
+		break;
+	case Client::COLLIDER_TYPE::TRIANGLE:
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
+		break;
+	case Client::COLLIDER_TYPE::END:
+		break;
+	default:
+		break;
+	}
+
 	return S_OK;
 }
 
@@ -56,7 +72,8 @@ void CMapToolObject::Priority_Update(_float fTimeDelta)
 
 void CMapToolObject::Update(_float fTimeDelta)
 {
-	Update_ColliderPos();
+	if(m_eColliderType == COLLIDER_TYPE::CONVEX)
+		Update_ColliderPos();
 }
 
 void CMapToolObject::Update_ColliderPos()
@@ -83,6 +100,50 @@ void CMapToolObject::Update_ColliderPos()
 	// PxTransform으로 생성
 	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
 	m_pPhysXActorConvexCom->Set_Transform(physxTransform);
+}
+
+void CMapToolObject::Set_Collider(COLLIDER_TYPE colliderType)
+{
+	if (m_eColliderType == colliderType)
+		return;
+
+	if (m_eColliderType == COLLIDER_TYPE::CONVEX)
+	{
+		if (colliderType == COLLIDER_TYPE::TRIANGLE)
+		{
+			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorConvexCom->Get_Actor());
+			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
+		}
+		else
+		{
+			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorConvexCom->Get_Actor());
+		}
+
+	}
+	else if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
+	{
+		if (colliderType == COLLIDER_TYPE::CONVEX)
+		{
+			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorTriangleCom->Get_Actor());
+			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
+		}
+		else
+		{
+			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorTriangleCom->Get_Actor());
+		}
+	}
+	else
+	{
+		if (colliderType == COLLIDER_TYPE::TRIANGLE)
+		{
+			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
+		}
+		else
+		{
+			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
+		}
+	}
+	m_eColliderType = colliderType;
 }
 
 void CMapToolObject::Late_Update(_float fTimeDelta)
@@ -258,7 +319,7 @@ HRESULT CMapToolObject::Ready_Collider()
 		m_pPhysXActorConvexCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorConvexCom->Set_Owner(this);
 		m_pPhysXActorConvexCom->Set_ColliderType(COLLIDERTYPE::B); // 이걸로 색깔을 바꿀 수 있다.
-		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
+		//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
 #pragma endregion
 
 #pragma region 트라이앵글 메쉬
@@ -272,13 +333,13 @@ HRESULT CMapToolObject::Ready_Collider()
 
 		PxTriangleMeshGeometry  TriangleGeom = m_pGameInstance->CookTriangleMesh(physxVertices.data(), numVertices, physxIndices.data(), numIndices / 3, meshScale);
 		m_pPhysXActorTriangleCom->Create_Collision(m_pGameInstance->GetPhysics(), TriangleGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorTriangleCom->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorTriangleCom->Set_ShapeFlag(false, false, false);
 
 		m_pPhysXActorTriangleCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorTriangleCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorTriangleCom->Set_Owner(this);
 		m_pPhysXActorTriangleCom->Set_ColliderType(COLLIDERTYPE::A);
-		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
+		//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
 #pragma endregion
 	}
 	else

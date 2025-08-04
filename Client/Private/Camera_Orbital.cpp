@@ -47,7 +47,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		return;
 
 	if (m_pGameInstance->Key_Down(DIK_T))
+	{
 		m_bActive = !m_bActive;
+		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	}
+		
 
 	if (m_pGameInstance->Key_Down(DIK_X))
 	{

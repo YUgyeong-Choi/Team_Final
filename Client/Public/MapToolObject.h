@@ -53,7 +53,7 @@ public:
 		m_bCanUndo = true;
 		XMStoreFloat4x4(&m_UndoWorldMatrix, WorldMatrix);
 	}
-
+	void Set_Collider(COLLIDER_TYPE colliderType);
 public:
 	const wstring& Get_ModelPrototypeTag() const {
 		return m_ModelPrototypeTag;
