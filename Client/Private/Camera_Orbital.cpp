@@ -99,7 +99,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
-		/*
+		
 		// --- 스프링암 Raycast 처리 시작 ---
 		_vector vRayDir = XMVector3Normalize(vOffset);
 		_float fTargetDist = XMVectorGetX(XMVector3Length(vOffset));
@@ -119,7 +119,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 무시할 자기 자신 액터 설정
 		PxRigidActor* actor = nullptr;
 		if (CPlayer* obj = dynamic_cast<CPlayer*>(m_pPlayer))
-			actor = obj->Get_Actor();
+			actor = obj->Get_Actor(obj->Get_Controller());
 		CIgnoreSelfCallback callback(actor);
 
 		if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fTargetDist, hit, hitFlags, filterData, &callback))
@@ -135,7 +135,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 			}
 		}
 		// --- 스프링암 Raycast 처리 끝 ---
-		*/
+		
 		// 현재 카메라 위치
 		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 

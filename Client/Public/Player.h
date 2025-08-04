@@ -57,6 +57,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	CPhysXController* Get_Controller() { return m_pControllerCom; }
 /* [ 입력 처리 ] */
 private: 
 	void			HandleInput();									// [1] 키 입력만 처리
