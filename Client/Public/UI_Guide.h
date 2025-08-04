@@ -4,12 +4,6 @@
 #include "UI_Container.h"
 #include "UI_Button.h"
 
-NS_BEGIN(Engine)
-
-
-NS_END
-
-
 NS_BEGIN(Client)
 
 class CUI_Guide  : public CUI_Container

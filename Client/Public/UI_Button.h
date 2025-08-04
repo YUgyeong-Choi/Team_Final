@@ -14,6 +14,9 @@ NS_END
 
 NS_BEGIN(Client)
 
+// 클릭만 체크하기 
+// 버튼을 담는 컨테이너를 만들어서 거기서 상호작용 구현
+
 class CUI_Button : public CDynamic_UI
 {
 public:

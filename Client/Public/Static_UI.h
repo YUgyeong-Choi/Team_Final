@@ -78,6 +78,7 @@ private:
 	_wstring		m_strTextureTag = {};
 	_int			m_iPassIndex = {};
 	_int			m_iTextureIndex = {};
+	// 특정 레벨에서만 필요한게 있으면 쓰려고, 저장 따로 안만들어서 static으로 만들고 json에서 값 바꿔...
 	_int			m_iTextureLevel = { ENUM_CLASS(LEVEL::STATIC)};
 	
 

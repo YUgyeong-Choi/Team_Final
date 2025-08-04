@@ -29,7 +29,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
-	// 플레이어 생성 전에 ui부터 일단
+	// 값 sync 맞추려고 플레이어 생성 전에 미리 생성해서 옵저버에 콜백 등록하기 위해
 	if (FAILED(Ready_UI()))
 		return E_FAIL;
 
