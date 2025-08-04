@@ -90,8 +90,6 @@ public:
                     m_bChargeStarted = true; 
             }
         }
-
-        printf("Player_State : %s \n", m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName.c_str());
     }
 
     virtual void Exit() override

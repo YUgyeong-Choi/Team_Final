@@ -5,6 +5,8 @@
 // 값을 받아오는 쪽에서 콜백 등록해야 편함
 // 람다로 할때 this로 변수 가져 올 수 있어서
 
+// 값을 저장하고 알려줄 옵저버를 구현하면 될듯
+
 NS_BEGIN(Engine)
 
 class ENGINE_DLL  CObserver abstract : public CBase
