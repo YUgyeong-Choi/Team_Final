@@ -46,11 +46,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	if (m_pGameInstance->Key_Down(DIK_T))
-	{
-		m_bActive = !m_bActive;
-		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_T))
+	//{
+	//	m_bActive = !m_bActive;
+	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	//}
 		
 
 	if (m_pGameInstance->Key_Down(DIK_X))
@@ -72,6 +72,8 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 	if (m_pPlayer)
 	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+
 		// 입력 처리
 		_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
 		_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMM::Y);
@@ -84,11 +86,13 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 회전값 누적
 		m_fYaw += MouseMoveX * fTimeDelta * m_fMouseSensor;
 		m_fPitch += MouseMoveY * fTimeDelta * m_fMouseSensor;
+		m_fPitch = clamp(m_fPitch, XMConvertToRadians(-50.f), XMConvertToRadians(60.f));
 
 		// 기준점 위치 계산 (플레이어 + 높이)
 		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
-		m_vPlayerPosition += XMVectorSet(0.f, 2.f, 0.f, 0.f);
-		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+		if(pPlayer->Get_PlayerState() != EPlayerState::IDLE)
+			m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
 		// 오비탈 카메라 방향 계산 (spherical to cartesian)
 		_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
@@ -117,9 +121,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
 		// 무시할 자기 자신 액터 설정
-		PxRigidActor* actor = nullptr;
-		if (CPlayer* obj = dynamic_cast<CPlayer*>(m_pPlayer))
-			actor = obj->Get_Actor(obj->Get_Controller());
+		PxRigidActor* actor = pPlayer->Get_Actor(pPlayer->Get_Controller());
 		CIgnoreSelfCallback callback(actor);
 
 		if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fTargetDist, hit, hitFlags, filterData, &callback))
@@ -168,7 +170,7 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 {
 	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
-	m_vPlayerPosition += XMVectorSet(0.f, 2.f, 0.f, 0.f);
+	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
 
 	_float x = m_fDistance * cosf(pitch) * sinf(yaw);
 	_float y = m_fDistance * sinf(pitch);

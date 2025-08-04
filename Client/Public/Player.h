@@ -59,6 +59,8 @@ public:
 
 public:
 	CPhysXController* Get_Controller() { return m_pControllerCom; }
+	EPlayerState Get_PlayerState() { return m_eCurrentState; }
+
 /* [ 입력 처리 ] */
 private: 
 	void			HandleInput();									// [1] 키 입력만 처리
