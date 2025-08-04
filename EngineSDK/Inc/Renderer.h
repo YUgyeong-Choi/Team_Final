@@ -36,6 +36,7 @@ private:
 	_float4x4					m_WorldMatrix{}, m_ViewMatrix{}, m_ProjMatrix{};
 
 	ID3D11DepthStencilView*		m_pShadowDSV = { nullptr };
+	ID3D11DepthStencilView*		m_pBlurDSV = { nullptr };
 	_uint						m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};
 
 private:
@@ -70,13 +71,14 @@ private:
 	HRESULT Render_NonLight();
 	HRESULT Render_UI_Deferred();
 	HRESULT Render_Effect_Blend();
-	HRESULT Render_Blur(const _wstring& strTargetTag, _bool bDownscale = true);
+	HRESULT Render_Blur(const _wstring& strTargetTag);
 	HRESULT Render_Effect_Glow();
 	HRESULT Render_Effect_NonLight();
 
 
 private:
-	HRESULT Ready_DepthStencilView(_uint iWidth, _uint iHeight);
+	HRESULT Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight);
+	HRESULT Ready_DepthStencilView_Blur(_uint iWidth, _uint iHeight);
 	HRESULT Change_ViewportDesc(_uint iWidth, _uint iHeight);
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
 

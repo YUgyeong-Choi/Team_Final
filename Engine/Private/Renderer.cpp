@@ -137,18 +137,26 @@ HRESULT CRenderer::Initialize()
 	//m_fDownscaledRatio = 0.0625f; // 1/16
 	//m_fDownscaledRatio = 0.125f;	// 1/8
 	m_fDownscaledRatio = 0.25f;		// 1/4
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Downscaled"), static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio), static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+
+	_uint iDownscaledWidth = static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio);
+	_uint iDownscaledHeight = static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio);
+
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Downscaled"), iDownscaledWidth, iDownscaledHeight, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effectblend_Downscaled"), TEXT("Target_Effect_Downscaled"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DownscaledBlurX"), static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio), static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DownscaledBlurX"), iDownscaledWidth, iDownscaledHeight, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DownscaledBlurY"), static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio), static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DownscaledBlurY"), iDownscaledWidth, iDownscaledHeight, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurX"), TEXT("Target_DownscaledBlurX"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurY"), TEXT("Target_DownscaledBlurY"))))
+		return E_FAIL;
+
+
+	if (FAILED(Ready_DepthStencilView_Blur(iDownscaledWidth, iDownscaledHeight)))
 		return E_FAIL;
 
 
@@ -201,7 +209,7 @@ HRESULT CRenderer::Initialize()
 	m_iOriginalViewportWidth = static_cast<_uint>(ViewportDesc.Width);
 	m_iOriginalViewportHeight = static_cast<_uint>(ViewportDesc.Height);
 
-	if (FAILED(Ready_DepthStencilView(g_iMiddleWidth, g_iMiddleHeight)))
+	if (FAILED(Ready_DepthStencilView_Shadow(g_iMiddleWidth, g_iMiddleHeight)))
 		return E_FAIL;
 
 #ifdef _DEBUG
@@ -323,7 +331,7 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Blur(TEXT("Target_Effect_Downscaled"))))
+	if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
 	{
 		MSG_BOX("Render_Blur Failed");
 		return E_FAIL;
@@ -809,50 +817,21 @@ HRESULT CRenderer::Render_Effect_Blend()
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
 
-	/* [ Downscale RT ] */
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Effectblend_Downscaled"));
-
-	// 다운스케일 복사
-	if (FAILED(Change_ViewportDesc(static_cast<_uint>(m_iOriginalViewportWidth * m_fDownscaledRatio), static_cast<_uint>(m_iOriginalViewportHeight * m_fDownscaledRatio))))
-		return E_FAIL;
-
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
-		return E_FAIL;
-
-	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::DOWNSCALE));
-	m_pVIBuffer->Bind_Buffers();
-	m_pVIBuffer->Render();
-
-	m_pGameInstance->End_MRT();
-
-	if (FAILED(Change_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag, _bool bDownscale)
+HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag)
 {
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
-
 	_float fCurVPSizeX = { static_cast<_float>(m_iOriginalViewportWidth) };
 	_float fCurVPSizeY = { static_cast<_float>(m_iOriginalViewportHeight) };
 
-	if (bDownscale)
-	{
-		// 뷰포트
-		if (FAILED(Change_ViewportDesc(static_cast<_uint>(m_iOriginalViewportWidth * m_fDownscaledRatio), static_cast<_uint>(m_iOriginalViewportHeight * m_fDownscaledRatio))))
-			return E_FAIL;
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"), m_pBlurDSV, true, true);
+	// 뷰포트
+	if (FAILED(Change_ViewportDesc(static_cast<_uint>(m_iOriginalViewportWidth * m_fDownscaledRatio), static_cast<_uint>(m_iOriginalViewportHeight * m_fDownscaledRatio))))
+		return E_FAIL;
 
-		fCurVPSizeX *= m_fDownscaledRatio;
-		fCurVPSizeY *= m_fDownscaledRatio;
-	}
+	fCurVPSizeX *= m_fDownscaledRatio;
+	fCurVPSizeY *= m_fDownscaledRatio;
 
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -872,7 +851,8 @@ HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag, _bool bDownscale)
 	m_pVIBuffer->Render();
 
 	m_pGameInstance->End_MRT();
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"));
+
+		m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"), m_pBlurDSV, true, true);
 
 	/* 백버퍼에 찍는다. */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurX"), m_pShader, "g_BlurXTexture")))
@@ -932,7 +912,7 @@ HRESULT CRenderer::Render_Effect_NonLight()
 
 
 
-HRESULT CRenderer::Ready_DepthStencilView(_uint iWidth, _uint iHeight)
+HRESULT CRenderer::Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight)
 {
 	ID3D11Texture2D* pDepthStencilTexture = nullptr;
 
@@ -960,6 +940,39 @@ HRESULT CRenderer::Ready_DepthStencilView(_uint iWidth, _uint iHeight)
 
 
 	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pShadowDSV)))
+		return E_FAIL;
+
+	Safe_Release(pDepthStencilTexture);
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Ready_DepthStencilView_Blur(_uint iWidth, _uint iHeight)
+{
+	ID3D11Texture2D* pDepthStencilTexture = nullptr;
+
+	D3D11_TEXTURE2D_DESC	TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = iWidth;
+	TextureDesc.Height = iHeight;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pBlurDSV)))
 		return E_FAIL;
 
 	Safe_Release(pDepthStencilTexture);
@@ -1054,6 +1067,7 @@ void CRenderer::Free()
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pShadowDSV);
+	Safe_Release(m_pBlurDSV);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

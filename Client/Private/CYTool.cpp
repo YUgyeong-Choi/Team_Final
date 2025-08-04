@@ -250,9 +250,12 @@ HRESULT CCYTool::SequenceWindow()
 			m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Load EffectContainer"))
-	{
-
+	if (ImGui::Button("Save EffectContainer")){
+		m_bOpenSaveEffectContainer = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load EffectContainer")){
+		m_bOpenLoadEffectContainer = true;
 	}
 
 	ImSequencer::Sequencer(
@@ -614,31 +617,203 @@ HRESULT CCYTool::Make_EffectModel_Prototypes(const string strModelFilePath)
 
 HRESULT CCYTool::Save_EffectSet()
 {
-	path SavePath = R"(../Bin/Save/Effect/EffectContainer/)";
-	ofstream ofs(SavePath);
-	if (!ofs.is_open())
-		return E_FAIL;
-	json jSave;
+	IGFD::FileDialogConfig config;
+	config.path = R"(../Bin/Save/Effect/EffectContainer/)";
 
-	auto& Items = m_pSequence->Get_Items();
+	IFILEDIALOG->OpenDialog("SaveEffectsetDialog", "Choose directory to save", ".json", config);
 
-	for (auto& Item : Items)
+	if (IFILEDIALOG->Display("SaveEffectsetDialog"))
 	{
-		json jItem;
-		jItem["Name"] = Item.strName.data();
-		jItem["EffectType"] = Item.iType;
+		if (IFILEDIALOG->IsOk())
+		{
+			path savePath = IFILEDIALOG->GetFilePathName();
 
-		jItem.push_back(Item.pEffect->Serialize());
+			ofstream ofs(savePath);
+			if (!ofs.is_open())
+				return E_FAIL;
+			json jSave;
 
-		jSave["EffectObject"].push_back(jItem);
+			auto& Items = m_pSequence->Get_Items();
+
+			for (auto& Item : Items)
+			{
+				json jItem;
+				jItem["Name"] = Item.strName.data();
+				jItem["EffectType"] = Item.iType;
+				jItem["EffectPreferences"].push_back(Item.pEffect->Serialize());
+
+				jSave["EffectObject"].push_back(jItem);
+			}
+			ofs << setw(4) << jSave;
+			ofs.close();
+		}
+		m_bOpenSaveEffectContainer = false;
+		IFILEDIALOG->Close();
 	}
-	//미완
+
 	return S_OK;
 }
 
 HRESULT CCYTool::Load_EffectSet()
 {
+	IGFD::FileDialogConfig config;
+	config.path = R"(../Bin/Save/Effect/EffectContainer/)";
+
+	json jLoad;
+	IFILEDIALOG->OpenDialog("LoadEffectsetDialog", "Choose File to Load", ".json", config);
+
+	if (IFILEDIALOG->Display("LoadEffectsetDialog"))
+	{
+		if (IFILEDIALOG->IsOk())
+		{
+			path loadPath = IFILEDIALOG->GetFilePathName();
+			string filename = IFILEDIALOG->GetCurrentFileName();
+			string prefix = filename.substr(0, 2);
+
+			// put extension '.json'
+			if (loadPath.extension().string() != ".json")
+				loadPath += ".json";
+
+			// Compare Prefix
+			if (prefix != "EC")
+			{
+				MSG_BOX("Filename should start with EC (EffectContainer)");
+				m_bOpenLoadEffectOnly = false;
+				IFILEDIALOG->Close();
+				return S_OK;
+			}
+
+			ifstream ifs(loadPath);
+			if (!ifs.is_open())
+			{
+				MSG_BOX("File open Failed");
+				m_bOpenLoadEffectOnly = false;
+				IFILEDIALOG->Close();
+				return E_FAIL;
+			}
+
+			ifs >> jLoad;
+			ifs.close();
+
+
+			if (!jLoad.contains("EffectObject") || !jLoad["EffectObject"].is_array())
+			{
+				m_bOpenLoadEffectOnly = false;
+				IFILEDIALOG->Close();
+				return E_FAIL;
+			}
+
+			Safe_Delete(m_pSequence);
+			m_pSequence = new CEffectSequence();
+
+
+			for (const auto& jItem : jLoad["EffectObject"])
+			{
+				// 이름
+				if (jItem.contains("Name"))
+					m_strSeqItemName = jItem["Name"].get<string>();
+
+				// 타입
+				if (jItem.contains("EffectType"))
+					m_eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<int>());
+
+				// Effect 객체 생성 및 역직렬화
+				if (jItem.contains("EffectPreferences") && jItem["EffectPreferences"].is_array() && !jItem["EffectPreferences"].empty())
+				{
+					json jData;
+
+					if (jItem["EffectPreferences"].is_array())
+					{
+						if (!jItem["EffectPreferences"].empty())
+							jData = jItem["EffectPreferences"][0];
+					}
+					else if (jItem["EffectPreferences"].is_object())
+					{
+						jData = jItem["EffectPreferences"];
+					}
+
+
+
+					CEffectBase* pInstance = { nullptr };
+
+					switch (m_eEffectType)
+					{
+					case Client::EFF_SPRITE:
+					{
+						m_eEffectType = EFF_SPRITE;
+						m_strSeqItemName = "Sprite";
+						m_iSeqItemColor = D3DCOLOR_ARGB(255, 200, 60, 40);
+						CToolSprite::DESC desc = {};
+						desc.bTool = true;
+						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
+					}
+					break;
+					case Client::EFF_PARTICLE:
+					{
+						m_eEffectType = EFF_PARTICLE;
+						m_strSeqItemName = "Particle";
+						m_iSeqItemColor = D3DCOLOR_ARGB(255, 60, 200, 80);
+						CToolParticle::DESC desc = {};
+						desc.fRotationPerSec = XMConvertToRadians(90.f);
+						desc.fSpeedPerSec = 5.f;
+						desc.bTool = true;
+						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
+					}
+					break;
+					case Client::EFF_MESH:
+					{
+						m_eEffectType = EFF_MESH;
+						m_strSeqItemName = "Mesh";
+						m_iSeqItemColor = D3DCOLOR_ARGB(255, 100, 100, 220);
+						CToolMeshEffect::DESC desc = {};
+						desc.fRotationPerSec = XMConvertToRadians(90.f);
+						desc.fSpeedPerSec = 5.f;
+						desc.bTool = true;
+						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
+					}
+					break;
+					case Client::EFF_TRAIL:
+					{
+						m_eEffectType = EFF_TRAIL;
+						m_strSeqItemName = "Trail";
+						m_iSeqItemColor = D3DCOLOR_ARGB(255, 170, 80, 250);
+					}
+						break;
+					}
+					if (pInstance != nullptr)
+					{
+						try
+						{
+							pInstance->Deserialize(jData);
+						}
+						catch (const nlohmann::json::type_error& e) {
+							std::cerr << "[JSON Type Error] " << e.what() << '\n';
+						}
+						catch (const std::exception& e) {
+							std::cerr << "[Exception] " << e.what() << '\n';
+						}
+						pInstance->Ready_Textures_Prototype_Tool();
+						m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+					}
+					else
+					{
+						MSG_BOX("Failed to make Effect");
+						m_bOpenLoadEffectContainer = false;
+						IFILEDIALOG->Close();
+						return E_FAIL;
+					}
+				}
+			}
+			m_bOpenLoadEffectContainer = false;
+			IFILEDIALOG->Close();
+		}
+	}
+
 	return S_OK;
+
 }
 
 HRESULT CCYTool::Save_Effect()
@@ -777,6 +952,10 @@ HRESULT CCYTool::Load_Effect()
 			{
 				pInstance->Deserialize(j);
 				pInstance->Ready_Textures_Prototype_Tool();
+				if (m_eEffectType == EFF_PARTICLE)
+					static_cast<CToolParticle*>(pInstance)->Change_InstanceBuffer(nullptr);
+				//if (m_eEffectType == EFF_MESH)
+					//static_cast<CToolMeshEffect*>(pInstance)->Change_Model();
 				m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 			}
 			else

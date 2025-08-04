@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Default\Client.vcxproj", "{1A60343E-798F-4669-AFCE-F8EFAF6A0AA7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6549A29-7A97-4C29-AF47-47CAC692EFB5} = {E6549A29-7A97-4C29-AF47-47CAC692EFB5}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Default\Engine.vcxproj", "{E6549A29-7A97-4C29-AF47-47CAC692EFB5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FBXConverter", "FBXConverter\Default\FBXConverter.vcxproj", "{24BA22CF-8CD6-449B-9113-E85E1C901AD5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6549A29-7A97-4C29-AF47-47CAC692EFB5} = {E6549A29-7A97-4C29-AF47-47CAC692EFB5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
