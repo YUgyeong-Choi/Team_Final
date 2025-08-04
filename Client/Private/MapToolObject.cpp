@@ -49,6 +49,7 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	switch (m_eColliderType)
 	{
 	case Client::COLLIDER_TYPE::NONE:
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
 		break;
 	case Client::COLLIDER_TYPE::CONVEX:
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
@@ -72,7 +73,7 @@ void CMapToolObject::Priority_Update(_float fTimeDelta)
 
 void CMapToolObject::Update(_float fTimeDelta)
 {
-	if(m_eColliderType == COLLIDER_TYPE::CONVEX)
+	if(m_eColliderType != COLLIDER_TYPE::TRIANGLE)
 		Update_ColliderPos();
 }
 
@@ -114,33 +115,19 @@ void CMapToolObject::Set_Collider(COLLIDER_TYPE colliderType)
 			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorConvexCom->Get_Actor());
 			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
 		}
-		else
-		{
-			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorConvexCom->Get_Actor());
-		}
 
 	}
 	else if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
 	{
-		if (colliderType == COLLIDER_TYPE::CONVEX)
-		{
-			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorTriangleCom->Get_Actor());
-			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
-		}
-		else
-		{
-			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorTriangleCom->Get_Actor());
-		}
+		m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorTriangleCom->Get_Actor());
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
 	}
 	else
 	{
 		if (colliderType == COLLIDER_TYPE::TRIANGLE)
 		{
+			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorConvexCom->Get_Actor());
 			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
-		}
-		else
-		{
-			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
 		}
 	}
 	m_eColliderType = colliderType;
