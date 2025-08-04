@@ -43,7 +43,7 @@ private:
 	CSound_Core* m_pBGM = { nullptr };
 
 private:
-	_bool m_bHold = {};
+	_bool m_bHold = { true };
 
 public:
 	static CLevel_KratCentralStation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

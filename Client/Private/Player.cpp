@@ -231,6 +231,62 @@ void CPlayer::TriggerStateEffects()
 	}
 }
 
+void CPlayer::RootMotionActive(_float fTimeDelta)
+{
+	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
+	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
+
+	if (bUseRoot)
+	{
+		_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+		_float4 		rootMotionQuat = m_pAnimator->GetRootRotationDelta();
+		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
+
+		_vector vScale, vRotQuat, vTrans;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
+
+		PxControllerFilters filters;
+		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
+
+		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
+		vWorldDelta = XMVectorSetY(vWorldDelta, dy);
+
+		_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
+		_vector finalDelta;
+		if (fDeltaMag > m_fSmoothThreshold)
+		{
+			_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
+			finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+		}
+		else
+		{
+			finalDelta = vWorldDelta;
+		}
+		m_PrevWorldDelta = finalDelta;
+
+		PxVec3 pos{
+			XMVectorGetX(finalDelta),
+			XMVectorGetY(finalDelta),
+			XMVectorGetZ(finalDelta)
+		};
+
+		m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
+		SyncTransformWithController();
+		_vector vTmp{};
+		XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
+		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
+		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
+		_matrix newWorld =
+			XMMatrixScalingFromVector(vScale) *
+			XMMatrixRotationQuaternion(vNewRot) *
+			XMMatrixTranslationFromVector(vTrans);
+		m_pTransformCom->Set_WorldMatrix(newWorld);
+
+		_float4 rot;
+		XMStoreFloat4(&rot, vNewRot);
+	}
+}
+
 void CPlayer::ReadyForState()
 {
 	m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)] = new CPlayer_Idle(this);
@@ -246,6 +302,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::STRONGATTACKA)] = new CPlayer_StrongAttackA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::STRONGATTACKB)] = new CPlayer_StrongAttackB(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::CHARGE)] = new CPlayer_Charge(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::GARD)] = new CPlayer_Gard(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }

@@ -223,6 +223,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Mana">
       <UniqueIdentifier>{367fcc09-a226-4aab-9b15-2cb35c437e7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\01.Weapon">
+      <UniqueIdentifier>{87bd98b7-f2e3-4aba-bbd8-673c9acc6bd4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -525,6 +528,10 @@
     <ClInclude Include="..\public\Stamina_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Manager.h" />
+    <ClInclude Include="..\public\Weapon.h">
+      <Filter>02.GameObjects\01.Unit\01.Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -800,6 +807,10 @@
     </ClCompile>
     <ClCompile Include="..\private\Stamina_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Manager.cpp" />
+    <ClCompile Include="..\private\Weapon.cpp">
+      <Filter>02.GameObjects\01.Unit\01.Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

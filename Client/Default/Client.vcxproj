@@ -226,6 +226,7 @@
     <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
     <ClInclude Include="..\public\Unit.h" />
+    <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\Public\YGBox.h" />
     <ClInclude Include="..\Public\YGController.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -325,6 +326,7 @@
     <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />
     <ClCompile Include="..\private\Unit.cpp" />
+    <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\Private\YGBox.cpp" />
     <ClCompile Include="..\Private\YGController.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

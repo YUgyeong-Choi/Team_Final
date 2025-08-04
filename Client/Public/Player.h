@@ -60,6 +60,9 @@ private:
 	EPlayerState	EvaluateTransitions();							// [2] 입력에 따라 상태 전이
 	void			UpdateCurrentState(_float fTimeDelta);			// [3] 현재 상태 로직 수행
 	void			TriggerStateEffects();							// [4] 애니메이션 적용
+
+private: /* [ 루트모션 활성화 ] */
+	void			RootMotionActive(_float fTimeDelta);
 	
 
 private:/* [ 캐스케이드 전용함수 ] */
@@ -98,6 +101,7 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_StrongAttackA;
 	friend class CPlayer_StrongAttackB;
 	friend class CPlayer_Charge;
+	friend class CPlayer_Gard;
 
 
 private: /* [ 상태 변수 ] */
@@ -124,6 +128,14 @@ private: /* [ 공격관련 변수 ] */
 private: /* [ 이동관련 변수 ] */
 	_bool    m_bWalk = { true };
 	_bool    m_bMovable = { true };
+
+private: /* [ 루트모션 관련 변수 ] */
+	_vector  m_PrevWorldDelta = XMVectorZero();
+	_vector  m_PrevWorldRotation = XMVectorZero();
+	_bool    m_bIsFirstFrame = true;
+	_float   m_fRotSmoothSpeed = 8.0f;
+	_float   m_fSmoothSpeed = 8.0f;
+	_float   m_fSmoothThreshold = 0.1f;
 
 private: // 옵저버 관련
 	// stat용
