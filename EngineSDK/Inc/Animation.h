@@ -2,6 +2,7 @@
 
 #include "Base.h"
 #include  "Serializable.h"
+#include <iostream>
 NS_BEGIN(Engine)
 
 class ENGINE_DLL CAnimation final : public CBase, public ISerializable
@@ -64,6 +65,7 @@ public:
 	{
 		m_fCurrentTrackPosition = 0.f;
 		m_CurrentKeyFrameIndices.assign(m_iNumChannels, 0u);
+		cout << "현재 리셋한 애니메이션 이름 " << m_AnimationName << endl;
 	}
 private:
 	/* 전체 재생 거리. */
