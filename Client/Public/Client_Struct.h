@@ -112,6 +112,10 @@ namespace Client
 	struct CAMERA_FRAMEDATA
 	{
 		_int iEndFrame;
+		_bool bReadySetOrbitalPos;
+		_bool bReadyCutSceneOrbital;
+		_float fPitch;
+		_float fYaw;
 		vector<CAMERA_WORLDFRAME> vecWorldMatrixData;
 		vector<CAMERA_ROTFRAME> vecRotData;
 		vector<CAMERA_FOVFRAME> vecFovData;

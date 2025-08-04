@@ -43,16 +43,17 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 		{
 			_bool bFinish = ReadyToOrbitalWorldMatrix(fTimeDelta);
 			m_bReadySetOrbitalPos = bFinish;
-			__super::Priority_Update(fTimeDelta);
-			return;
 		}
 
 		if (m_bReadySetOrbitalPos && !m_bReadyCutScene)
 		{
-			_bool bFinish = ReadyToCutScene(fTimeDelta);
+			// 목표 행렬
+			_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
+			// 현재 행렬
+			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
+
+			_bool bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
 			m_bReadyCutScene = bFinish;
-			__super::Priority_Update(fTimeDelta);
-			return;
 		}
 
 		if (m_bReadyCutScene && !m_bReadyCutSceneOrbital)
@@ -74,20 +75,31 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
 					m_bReadyCutSceneOrbital = true;
-					return;
 				}
 			}
 		}
 
 		if (m_bReadyCutSceneOrbital)
 		{
-			m_bActive = false;
-			m_bReadySetOrbitalPos = false;
-			m_bReadyCutScene = false;
-			m_bReadyCutSceneOrbital = false;
-			m_fElapsedTime = 0.f;
-			m_iCurrentFrame = 0;
-			CCamera_Manager::Get_Instance()->SetOrbitalCam();
+			m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+			// 목표 행렬
+			_matrix targetMat = m_initOrbitalMatrix;
+			// 현재 행렬
+			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
+
+			_bool bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
+
+			if (bFinish)
+			{
+				m_bActive = false;
+				m_bReadySetOrbitalPos = false;
+				m_bReadyCutScene = false;
+				m_bReadyCutSceneOrbital = false;
+				m_fElapsedTime = 0.f;
+				m_iCurrentFrame = -1;
+				m_initOrbitalMatrix = {};
+				CCamera_Manager::Get_Instance()->SetOrbitalCam();
+			}
 		}
 	}
 	__super::Priority_Update(fTimeDelta);
@@ -107,9 +119,32 @@ HRESULT CCamera_CutScene::Render()
 	return S_OK;
 }
 
+void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
+{
+	m_CameraDatas = CameraFrameData;
+	m_bReadySetOrbitalPos = CameraFrameData.bReadySetOrbitalPos;
+	if (m_bReadySetOrbitalPos)
+		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
+	m_bReadyCutSceneOrbital = CameraFrameData.bReadyCutSceneOrbital;
+	m_bReadyCutScene = false;
+
+	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalMatrix);
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+}
+
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 {
 	m_CameraDatas = m_CutSceneDatas[cutSceneType];
+	m_bReadySetOrbitalPos = m_CameraDatas.bReadySetOrbitalPos;
+	if (m_bReadySetOrbitalPos)
+		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
+	m_bReadyCutSceneOrbital = m_CameraDatas.bReadyCutSceneOrbital;
+	m_bReadyCutScene = false;
+
+	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalMatrix);
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -307,6 +342,16 @@ HRESULT CCamera_CutScene::InitDatas()
 
 		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::ONE, LoadCameraFrameData(j)));
 	}
+
+	std::ifstream inFile2("../Bin/Save/CutScene/two.json");
+	if (inFile2.is_open())
+	{
+		json j;
+		inFile2 >> j;
+		inFile2.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TWO, LoadCameraFrameData(j)));
+	}
 	return S_OK;
 }
 
@@ -316,6 +361,10 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 
 	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
+	data.bReadySetOrbitalPos = j.value("bStartBlend", false);
+	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
+	data.fPitch = j["Pitch"].get<float>();
+	data.fYaw = j["Yaw"].get<float>();
 
 	// 2. vecPosData
 	if (j.contains("vecPosData"))
@@ -373,7 +422,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 {
 	_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
-	_matrix targetMat = m_initOrbitalPos;
+	_matrix targetMat = m_initOrbitalMatrix;
 
 	XMVECTOR curScale, curRot, curTrans;
 	XMVECTOR tgtScale, tgtRot, tgtTrans;
@@ -398,46 +447,22 @@ _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 	XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
 	if (XMVectorGetX(diff) < 0.0001f)
 	{
-		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalPos);
-
-		XMVECTOR vCamPos = m_initOrbitalPos.r[3];  
-		XMVECTOR vPlayerPos = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_PlayerPos();
-
-		XMVECTOR vOffset = vCamPos - vPlayerPos;
-
-		_float fDistance = XMVectorGetX(XMVector3Length(vOffset));
-
-		XMVECTOR vDir = XMVector3Normalize(vOffset);
-
-		_float fPitch = asinf(XMVectorGetY(vDir));
-		_float fYaw = atan2f(XMVectorGetX(vDir), XMVectorGetZ(vDir));
-
-		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
-
-		m_initOrbitalPos = {};
 		return true;
 	}
 
 	return false;
 }
 
-_bool CCamera_CutScene::ReadyToCutScene(_float fTimeDelta)
+_bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat)
 {
-	// 목표 행렬
-	_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
-
-	// 현재 행렬
-	_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
-
-	// 분해
 	XMVECTOR curScale, curRotQuat, curTrans;
 	XMVECTOR tgtScale, tgtRotQuat, tgtTrans;
 	XMMatrixDecompose(&curScale, &curRotQuat, &curTrans, currentMat);
 	XMMatrixDecompose(&tgtScale, &tgtRotQuat, &tgtTrans, targetMat);
 
-	// 보간
-	_float blendSpeed = 2.f;
+	_float blendSpeed = 5.f;
 	_float t = fTimeDelta * blendSpeed;
+	t = min(t, 1.0f); // overshoot 방지
 
 	XMVECTOR lerpPos = XMVectorLerp(curTrans, tgtTrans, t);
 	XMVECTOR slerpRot = XMQuaternionSlerp(curRotQuat, tgtRotQuat, t);
@@ -452,16 +477,11 @@ _bool CCamera_CutScene::ReadyToCutScene(_float fTimeDelta)
 
 	// 차이 계산
 	XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
-	if (XMVectorGetX(diff) < 0.0001f)
+	if (XMVectorGetX(diff) < 0.00001f)
 	{
 		return true; 
 	}
 	return false;
-}
-
-_bool CCamera_CutScene::ReadyToCutSceneOrbital(_float fTimeDelta)
-{
-	return _bool();
 }
 
 CCamera_CutScene* CCamera_CutScene::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

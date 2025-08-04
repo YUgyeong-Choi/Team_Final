@@ -29,6 +29,8 @@ public:
     void Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery);
     void Set_SimulationFilterData(PxFilterData _data);
     void Set_QueryFilterData(PxFilterData _data);
+
+    void Shape_Detach();
 public:
     PxRigidActor* Get_Actor() override { return m_pActor; }
     PxShape* Get_Shape() { return m_pShape; }

@@ -110,18 +110,18 @@ _bool CAnimController::Transition::Evaluates(CAnimController* pAnimController, C
 		switch (condition.type)
 		{
 		case ParamType::Bool:
-			cout << "Condition passed: " << condition.paramName << " is true." << endl; // 디버그용 출력
+			//cout << "Condition passed: " << condition.paramName << " is true." << endl; // 디버그용 출력
 			break;
 		case ParamType::Int:
-			cout << "Condition passed: " << condition.paramName << " is in range ("
-				<< condition.iThreshold << ")." << endl; // 디버그용 출력
+			//cout << "Condition passed: " << condition.paramName << " is in range ("
+			//	<< condition.iThreshold << ")." << endl; // 디버그용 출력
 			break;
 		case ParamType::Float:
-			cout << "Condition passed: " << condition.paramName << " is in range ("
-				<< condition.fThreshold << ")." << endl; // 디버그용 출력
+			//cout << "Condition passed: " << condition.paramName << " is in range ("
+			//	<< condition.fThreshold << ")." << endl; // 디버그용 출력
 			break;
 		case ParamType::Trigger:
-			cout << "Condition passed: " << condition.paramName << " trigger activated." << endl; // 디버그용 출력
+			//cout << "Condition passed: " << condition.paramName << " trigger activated." << endl; // 디버그용 출력
 			break;
 		}
 	}
@@ -217,6 +217,8 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.pFromLowerAnim = fromState->clip; // 이전 통짜 애니메이션
 				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName); // 목표 하체
 				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName); // 목표 상체
+				//if (m_TransitionResult.pFromLowerAnim == m_TransitionResult.pToUpperAnim)
+				//	m_TransitionResult.pToUpperAnim = nullptr; // 상체가 하체와 동일한 경우 상체 애니메이션은 없음
 				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
 				m_TransitionResult.bBlendFullbody = false;
 			}

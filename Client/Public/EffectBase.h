@@ -70,7 +70,6 @@ protected:
 protected:
 	CShader*		m_pShaderCom = { nullptr };
 
-	// 지금 메쉬만 사용중, 다른 애들도 바꾸고 주석 지우기
 	_bool			m_bTextureUsage[TU_END];
 	CTexture*		m_pTextureCom[TU_END] = {nullptr};
 	_wstring		m_TextureTag[TU_END];
@@ -139,7 +138,8 @@ public:
 	_float* Get_Threshold() { return &m_fThreshold; }
 	_float4* Get_CenterColor() { return &m_vCenterColor; }
 #endif
-
+	_int Get_EndTrackPosition() { return m_iEndTrackPosition; }
+	_int Get_StartTrackPosition() { return m_iStartTrackPosition; }
 	HRESULT Set_InterpolationType(_uint iKeyFrameIndex, INTERPOLATION eType) { 
 		if (iKeyFrameIndex >= m_KeyFrames.size())
 			return E_FAIL;

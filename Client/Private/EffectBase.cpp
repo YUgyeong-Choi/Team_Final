@@ -43,7 +43,7 @@ HRESULT CEffectBase::Initialize(void* pArg)
 
 	for (_uint i = 0; i < TU_END; i++)
 	{
-		m_TextureTag[i] = L"";
+		m_TextureTag[i] = L""; // 혹시 몰라서 초기화 함
 	}
 
 
@@ -335,7 +335,6 @@ HRESULT CEffectBase::Ready_Textures_Prototype_Tool()
 		Change_Texture(m_TextureTag[TU_MASK3], TU_MASK3);
 	}
 
-
 	return S_OK;
 }
 
@@ -348,7 +347,6 @@ void CEffectBase::Free()
 	{
 		Safe_Release(m_pTextureCom[i]);
 	}
-
 }
 
 json CEffectBase::Serialize()

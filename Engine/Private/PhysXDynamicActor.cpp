@@ -52,7 +52,9 @@ HRESULT CPhysXDynamicActor::Render()
 {
 	PxTransform pose = PxShapeExt::getGlobalPose(*m_pShape, *m_pActor);
 	PxGeometryHolder geom = m_pShape->getGeometry();
-	DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ),pose, geom);
+	PxBounds3 bounds = PxShapeExt::getWorldBounds(*m_pShape, *m_pActor);
+
+	DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ),pose, geom, bounds);
 
 	for (auto& Ray : m_RenderRay) {
 		DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);
@@ -89,6 +91,21 @@ void CPhysXDynamicActor::Set_SimulationFilterData(PxFilterData _data)
 void CPhysXDynamicActor::Set_QueryFilterData(PxFilterData _data)
 {
 	m_pShape->setQueryFilterData(_data);
+}
+
+void CPhysXDynamicActor::Shape_Detach()
+{
+	if (m_pActor == nullptr)
+		return;
+
+	PxShape* shapes[8];
+	_uint count = m_pActor->getNbShapes();
+	m_pActor->getShapes(shapes, count);
+
+	for (_uint i = 0; i < count; ++i)
+	{
+		m_pActor->detachShape(*shapes[i]);
+	}
 }
 
 

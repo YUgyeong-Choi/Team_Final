@@ -82,25 +82,37 @@ _bool CFrustum::isIn_LocalSpace(_fvector vLocalPos, _float fRange)
 
 
 
-void CFrustum::Make_Plane(const _float4* p, _float4* out)
+void CFrustum::Make_Plane(const _float4* pPoints, _float4* pPlanes)
 {
-	// RIGHT   (near top-right, far bottom-right, far top-right)
-	XMStoreFloat4(&out[0], XMPlaneFromPoints(XMLoadFloat4(&p[1]), XMLoadFloat4(&p[6]), XMLoadFloat4(&p[5])));
+	XMStoreFloat4(&pPlanes[0], XMPlaneFromPoints(
+		XMLoadFloat4(&pPoints[1]),
+		XMLoadFloat4(&pPoints[5]),
+		XMLoadFloat4(&pPoints[6])));
 
-	// LEFT    (near top-left, far top-left, far bottom-left)
-	XMStoreFloat4(&out[1], XMPlaneFromPoints(XMLoadFloat4(&p[0]), XMLoadFloat4(&p[4]), XMLoadFloat4(&p[7])));
+	XMStoreFloat4(&pPlanes[1], XMPlaneFromPoints(
+		XMLoadFloat4(&pPoints[4]),
+		XMLoadFloat4(&pPoints[0]),
+		XMLoadFloat4(&pPoints[3])));
 
-	// BOTTOM  (far bottom-left, far bottom-right, near bottom-right)
-	XMStoreFloat4(&out[2], XMPlaneFromPoints(XMLoadFloat4(&p[7]), XMLoadFloat4(&p[6]), XMLoadFloat4(&p[2])));
+	XMStoreFloat4(&pPlanes[2], XMPlaneFromPoints(
+		XMLoadFloat4(&pPoints[4]),
+		XMLoadFloat4(&pPoints[5]),
+		XMLoadFloat4(&pPoints[1])));
 
-	// TOP     (near top-left, far top-right, far top-left)
-	XMStoreFloat4(&out[3], XMPlaneFromPoints(XMLoadFloat4(&p[0]), XMLoadFloat4(&p[5]), XMLoadFloat4(&p[4])));
+	XMStoreFloat4(&pPlanes[3], XMPlaneFromPoints(
+		XMLoadFloat4(&pPoints[3]),
+		XMLoadFloat4(&pPoints[2]),
+		XMLoadFloat4(&pPoints[6])));
 
-	// FAR     (far top-left, far top-right, far bottom-right)
-	XMStoreFloat4(&out[4], XMPlaneFromPoints(XMLoadFloat4(&p[4]), XMLoadFloat4(&p[5]), XMLoadFloat4(&p[6])));
+	XMStoreFloat4(&pPlanes[4], XMPlaneFromPoints(
+		XMLoadFloat4(&pPoints[5]),
+		XMLoadFloat4(&pPoints[4]),
+		XMLoadFloat4(&pPoints[7])));
 
-	// NEAR    (near top-left, near bottom-right, near top-right)
-	XMStoreFloat4(&out[5], XMPlaneFromPoints(XMLoadFloat4(&p[0]), XMLoadFloat4(&p[2]), XMLoadFloat4(&p[1])));
+	XMStoreFloat4(&pPlanes[5], XMPlaneFromPoints(
+		XMLoadFloat4(&pPoints[0]),
+		XMLoadFloat4(&pPoints[1]),
+		XMLoadFloat4(&pPoints[2])));
 }
 
 _bool CFrustum::isIn_PhysXAABB(CPhysXActor* pPhysXActor)
@@ -126,20 +138,19 @@ _bool CFrustum::Is_AABB_InFrustum(const _float3& vMin, const _float3& vMax)
 	{
 		const _vector& plane = XMLoadFloat4(&m_vWorldPlanes[i]);
 
-		// AABB의 negative vertex 선택 (가장 바깥쪽 점)
 		_float3 nVertex = {
-			(plane.m128_f32[0] < 0.f) ? vMax.x : vMin.x,
-			(plane.m128_f32[1] < 0.f) ? vMax.y : vMin.y,
-			(plane.m128_f32[2] < 0.f) ? vMax.z : vMin.z,
+			(plane.m128_f32[0] >= 0.f) ? vMin.x : vMax.x,
+			(plane.m128_f32[1] >= 0.f) ? vMin.y : vMax.y,
+			(plane.m128_f32[2] >= 0.f) ? vMin.z : vMax.z,
 		};
 
-		// 만약 negative vertex가 평면 바깥에 있다면 완전히 바깥
-		if (XMVectorGetX(XMPlaneDotCoord(plane, XMLoadFloat3(&nVertex))) < 0.f)
+		if (XMVectorGetX(XMPlaneDotCoord(plane, XMLoadFloat3(&nVertex))) > 0.f)
 			return false;
 	}
 
 	return true;
 }
+
 CFrustum* CFrustum::Create()
 {
 	CFrustum* pInstance = new CFrustum();

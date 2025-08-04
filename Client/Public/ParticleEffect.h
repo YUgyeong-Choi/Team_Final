@@ -55,9 +55,17 @@ protected:
 
 protected:
 	_uint				m_iNumInstance;
-	_float3				m_vPivot = {};
 	_float				m_fMaxLifeTime = {};
 	_bool				m_bLocal = { true };
+
+	_float3				m_vRange;
+	_float2				m_vSize;
+	_float3				m_vCenter;
+	_float3				m_vPivot;
+	_float2				m_vLifeTime;
+	_float2				m_vSpeed;
+	_bool				m_isLoop;
+
 
 protected:
 	HRESULT Ready_Components(void* pArg);

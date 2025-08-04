@@ -60,8 +60,9 @@ HRESULT CPhysXController::Render()
 
     PxTransform pose(PxVec3((float)extPos.x, (float)extPos.y, (float)extPos.z), PxQuat(PxIdentity));
     PxCapsuleGeometry capsuleGeom(radius, halfHeight);
+    PxBounds3 bounds = PxBounds3::empty();
 
-    DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), pose, capsuleGeom);
+    DebugRender(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), pose, capsuleGeom, bounds);
 
     for (auto& Ray : m_RenderRay) {
         DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);
@@ -82,6 +83,7 @@ void CPhysXController::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQ
 
     PxShape* pShape = nullptr;
     PxU32 shapeCount = pActor->getNbShapes();
+    
     if (shapeCount > 0)
     {
         pActor->getShapes(&pShape, 1);
@@ -130,10 +132,9 @@ void CPhysXController::Set_QueryFilterData(PxFilterData filter)
     }
 }
 
-void CPhysXController::Move(const PxVec3& vDirection, _float fDeltaTime)
+void CPhysXController::Move(_float fDeltaTime, const PxVec3& vDirection, _float fSpeed)
 {
-    const float speed = 5.f; // 원하는 이동 속도 설정
-    PxVec3 displacement = vDirection * speed * fDeltaTime;
+    PxVec3 displacement = vDirection * fSpeed * fDeltaTime;
 
     PxControllerFilters filters;
     PxControllerCollisionFlags result = m_pController->move(displacement, 0.001f, fDeltaTime, filters);

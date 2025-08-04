@@ -384,7 +384,7 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 				else
 					iCombo = 0;
 				m_pAnimator->SetInt("Combo", iCombo);
-		m_pAnimator->SetTrigger("NormalAttack");
+				m_pAnimator->SetTrigger("NormalAttack");
 			}
 		}
 	}
@@ -408,7 +408,7 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 			// 0.5초 이상 누르면 차지 상태로 변경
 			bCharging = true;
 			m_pAnimator->SetBool("Charge", true);
-			cout << "Charge activated! Time: " << fChargeTime << endl; // 디버그용
+			//cout << "Charge activated! Time: " << fChargeTime << endl; // 디버그용
 		}
 		else
 		{

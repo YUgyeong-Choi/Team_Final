@@ -3,6 +3,7 @@
 #include "Component.h"
 
 NS_BEGIN(Engine)
+class CPhysXController;
 
 class ENGINE_DLL CTransform final : public CComponent
 {
@@ -65,44 +66,44 @@ public:
 	void Scaling(_float fX = 1.f, _float fY = 1.f, _float fZ = 1.f);
 	void Scaling(const _float3& vScale);
 public:
-	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Go_Backward(_float fTimeDelta);
-	void Go_Right(_float fTimeDelta);
-	void Go_Left(_float fTimeDelta);
-	void Go_Target(_fvector vTarget, _float fTimeDelta, _float fMinDistance);
+	void Go_Backward(_float fTimeDelta, class CPhysXController* pController = nullptr, class CNavigation* pNavigation = nullptr);
+	void Go_Right(_float fTimeDelta, class CPhysXController* pController = nullptr, class CNavigation* pNavigation = nullptr);
+	void Go_Left(_float fTimeDelta, class CPhysXController* pController = nullptr, class CNavigation* pNavigation = nullptr);
+	void Go_Target(_float fTimeDelta, _fvector vTarget, _float fMinDistance, class CPhysXController* pController = nullptr, class CNavigation* pNavigation = nullptr);
 	void Turn(_fvector vAxis, _float fTimeDelta);
 	void TurnAngle(_fvector vAxis, _float fAngle);
 	void Rotation(_fvector vAxis, _float fRadian);
 	void Rotation(_float fX, _float fY, _float fZ);
-
-
 public:
 	/* [ 방향으로 이동 ] */
-	void Move(const _vector& vDirectionVector);
+	void Move(const _vector& vDirectionVector,class CPhysXController* pController = nullptr);
 	/* [ 앞으로 (네비) ] */
-	void Go_Front(_float fTimeDelta, CNavigation* pNavigation = nullptr);
+	void Go_Front(_float fTimeDelta, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
 	/* [ 지정된 위치로 앞으로 회전 후 이동 ] */
-	bool Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CNavigation* pNavigation = nullptr);
+	bool Go_FrontByPosition(_float fTimeDelta, _vector vPosition, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
 
 public:
 	/* [ 위로 (고점 도달시 정지) ] */
-	bool Go_UpCustom(_float fTimeDelta, _float fSpeed, _float fMaxHight);
+	bool Go_UpCustom(_float fTimeDelta, _float fSpeed, _float fMaxHight, class CPhysXController* pController = nullptr);
 	/* [ 아래로 (저점 도달시 정지) ] */
-	void Go_DownCustom(_float fTimeDelta, _float fSpeed);
+	void Go_DownCustom(_float fTimeDelta, _float fSpeed, class CPhysXController* pController = nullptr);
 
 public:
 	/* [ 방향으로 이동 (네비) ] */
-	void Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CNavigation* pNavigation = nullptr);
+	void Go_Dir(const _vector& vMoveDir, _float fTimeDelta, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
 
 public:
 	/* [ 몇초동안 어느방향으로 몇만큼 이동할거니? ] */
-	bool Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CNavigation* pNavigation = nullptr);
+	bool Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance,
+		CPhysXController* pPhysXController = nullptr, CNavigation* pNavigation = nullptr);
+	bool Move_SpecialB(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance,
+		CPhysXController* pPhysXController = nullptr, CNavigation* pNavigation = nullptr);
 	/* [ 몇초동안 타겟 스케일만큼 스케일된다. ] */
 	bool Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetScale);
 	/* [ 몇초동안 어느방향으로 어느축을 기준으로 몇만큼 회전할거니? ] */
 	bool Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, _float fAngleDegree);
 	/* [ 목표지점까지 얼마만큼 높이로 점프한다 ] */
-	bool JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime);
+	bool JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime, class CPhysXController* pController = nullptr);
 
 public:
 	/* [ 천천히 회전한다 ] */
@@ -116,9 +117,9 @@ public:
 	/* [ Y축을 제외하고 바라본다 ] */
 	void LookAtWithOutY(_fvector vAt);
 	/* [ Y축을 제외하고 쫓아간다 (네비) ] */
-	bool ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fMinDistance, CNavigation* pNavigation = nullptr);
+	bool ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fMinDistance, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
 	/* [ 쫓아간다 ] */
-	bool ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _float fMinDistance, _float fSpeed);
+	bool ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _float fMinDistance, _float fSpeed, class CPhysXController* pController = nullptr);
 
 public:
 	/* [ Y축을 고정하고 빌보드된다 ] */
@@ -134,7 +135,14 @@ public:
 	/* [ 스케일을 가져온다 ] */
 	_vector Get_Scale() const;
 
+public:
+	void SetfSpeedPerSec(_float fSpeedPerSec) { m_fSpeedPerSec = fSpeedPerSec; }
+	_float GetfSpeedPerSec() const { return m_fSpeedPerSec; }
 
+	void SetfRotationPerSec(_float fRotationPerSec) { m_fRotationPerSec = fRotationPerSec; }
+	_float GetfRotationPerSec() const { return m_fRotationPerSec; }
+
+	void SetbSpecialMoving() { m_bSpecialMoving = false; m_fSpecialMoveDuration = 0.f; }
 
 public:
 	void LookAt(_fvector vAt);

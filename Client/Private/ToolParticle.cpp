@@ -56,7 +56,7 @@ void CToolParticle::Late_Update(_float fTimeDelta)
 	// 아래 변수로 교체할 것 
 	//(RENDERGROUP)m_iRenderGroup;
 	// 임시로 고정 지정
-	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_DEFFERED;
+	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
 
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
@@ -136,15 +136,15 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 	DESC* pDesc = static_cast<DESC*>(pArg);
 
 	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-	VIBufferDesc.ePType = pDesc->ePType;
+	VIBufferDesc.ePType =		pDesc->ePType;
 	VIBufferDesc.iNumInstance = pDesc->iNumInstance;
-	VIBufferDesc.isLoop = pDesc->isLoop;
-	VIBufferDesc.vCenter = pDesc->vCenter;
-	VIBufferDesc.vLifeTime = pDesc->vLifeTime;
-	VIBufferDesc.vPivot = pDesc->vPivot;
-	VIBufferDesc.vRange = pDesc->vRange;
-	VIBufferDesc.vSize = pDesc->vSize;
-	VIBufferDesc.vSpeed = pDesc->vSpeed;
+	VIBufferDesc.isLoop =		pDesc->isLoop;
+	VIBufferDesc.vCenter =		pDesc->vCenter;
+	VIBufferDesc.vLifeTime =	pDesc->vLifeTime;
+	VIBufferDesc.vPivot =		pDesc->vPivot;
+	VIBufferDesc.vRange =		pDesc->vRange;
+	VIBufferDesc.vSize =		pDesc->vSize;
+	VIBufferDesc.vSpeed =		pDesc->vSpeed;
 	VIBufferDesc.isTool = true;
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),

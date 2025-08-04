@@ -36,10 +36,8 @@ public:
 	// 오비탈 초기 위치 : 플레이어 등 뒤에 위치하며 플레이어랑 같은 Look을 가진 위치
 
 	/* [ 컷씬 키프레임 설정 ] */
-	void Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
-	{
-		m_CameraDatas = CameraFrameData;
-	}
+	void Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData);
+
 	_int Get_CurrentFrame() { return m_iCurrentFrame; }
 
 	/* [ 컷씬 종류 ] */
@@ -49,7 +47,10 @@ public:
 	void PlayCutScene() { m_bActive = true; }
 
 	/* [ 오비탈 초기 위치 ] */
-	void Set_InitOrbitalWorldMatrix(_matrix initOrbitalPos) { m_initOrbitalPos = initOrbitalPos; }
+	void Set_InitOrbitalWorldMatrix(_matrix initOrbitalPos) { m_initOrbitalMatrix = initOrbitalPos; }
+
+	void Set_StartBlend(_bool bStartBlend) { m_bReadySetOrbitalPos = bStartBlend; }
+	void Set_EndBlend(_bool bEndBlend) { m_bReadyCutSceneOrbital = bEndBlend; }
 private:
 	/* [ 카메라 위치, 회전 보간 ] */
 	void Interp_WorldMatrixOnly(_int curFrame);
@@ -67,11 +68,10 @@ private:
 
 	/* [ 오비탈 카메라 (어떤)위치 ->  오비탈 초기 위치 (오비탈 카메라의 Pitch와 Yaw도 설정)] */
 	_bool ReadyToOrbitalWorldMatrix(_float fTimeDelta);
-	/* [ 오비탈 초기 위치 ->  컷씬 초기 위치] */
-	_bool ReadyToCutScene(_float fTimeDelta);
 
-	/* [ 컷씬 끝나고 오비탈 위치로 보간 ] */
-	_bool ReadyToCutSceneOrbital(_float fTimeDelta);
+	/* [ 오비탈 초기 위치 ->  컷씬 초기 위치] || [ 컷씬 끝 위치 ->  오비탈 초기 위치] */
+	_bool Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat);
+
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 
@@ -84,12 +84,12 @@ private:
 	CAMERA_FRAMEDATA m_CameraDatas;
 	_bool m_bActive = false;
 	_float m_fElapsedTime = 0.f;
-	_int   m_iCurrentFrame = 0;
+	_int   m_iCurrentFrame = -1;
 	_float m_fFrameSpeed = 60.f; // 1초에 60프레임 기준
 
 	unordered_map<CUTSCENE_TYPE, CAMERA_FRAMEDATA> m_CutSceneDatas;
 
-	_matrix m_initOrbitalPos = {};
+	_matrix m_initOrbitalMatrix = {};
 	_bool m_bReadySetOrbitalPos = false;
 	_bool m_bReadyCutScene = false;
 	_bool m_bReadyCutSceneOrbital = false;

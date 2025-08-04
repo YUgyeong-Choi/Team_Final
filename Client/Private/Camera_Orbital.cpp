@@ -26,7 +26,7 @@ HRESULT CCamera_Orbital::Initialize(void* pArg)
 		return E_FAIL;
 
 	CAMERA_ORBITAL_DESC* pDesc = static_cast<CAMERA_ORBITAL_DESC*>(pArg);
-	m_fMouseSensor = 0.3f;
+	m_fMouseSensor = 0.6f;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -46,6 +46,26 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
+	if (m_pGameInstance->Key_Down(DIK_T))
+		m_bActive = !m_bActive;
+
+	if (m_pGameInstance->Key_Down(DIK_X))
+	{
+		m_fMouseSensor -= 0.1f;
+		if (m_fMouseSensor <  0.f)
+			m_fMouseSensor = 0.1f;
+		printf("mouseSenor %f\n", m_fMouseSensor);
+	}
+		
+	if (m_pGameInstance->Key_Down(DIK_C))
+	{
+		m_fMouseSensor += 0.1f;
+		printf("mouseSenor %f\n", m_fMouseSensor);
+	}
+
+	if (!m_bActive)
+		return;
+
 	if (m_pPlayer)
 	{
 		// 입력 처리
@@ -63,7 +83,8 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 		// 기준점 위치 계산 (플레이어 + 높이)
 		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
-		m_vPlayerPosition += XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+		m_vPlayerPosition += XMVectorSet(0.f, 2.f, 0.f, 0.f);
+		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
 		// 오비탈 카메라 방향 계산 (spherical to cartesian)
 		_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
@@ -71,7 +92,6 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 		_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-		//printf("m_fPitch: %f, m_fYaw: %f\n", m_fPitch, m_fYaw, z);
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
@@ -115,7 +135,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 		// 위치 보간 (LERP)
-		_float fInterpSpeed = 8.0f;
+		_float fInterpSpeed = 5.0f;
 		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
 
 		// 카메라 설정
@@ -138,6 +158,32 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 {
 	m_fPitch = pitch;
 	m_fYaw = yaw;
+}
+
+_matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
+{
+	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
+	m_vPlayerPosition += XMVectorSet(0.f, 2.f, 0.f, 0.f);
+
+	_float x = m_fDistance * cosf(pitch) * sinf(yaw);
+	_float y = m_fDistance * sinf(pitch);
+	_float z = m_fDistance * cosf(pitch) * cosf(yaw);
+	_vector vOffset = XMVectorSet(x, y, z, 0.f);
+
+	_vector vCamPos = m_vPlayerPosition + vOffset;
+
+	_vector vLook = XMVector3Normalize(m_vPlayerPosition - vCamPos);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	_vector vUp = XMVector3Cross(vLook, vRight);
+
+	// 행렬 생성
+	_matrix matWorld;
+	matWorld.r[0] = vRight;                             // Right 
+	matWorld.r[1] = vUp;                                // Up
+	matWorld.r[2] = vLook;                              // Look
+	matWorld.r[3] = XMVectorSetW(vCamPos, 1.f);         // Position
+
+	return matWorld;
 }
 
 CCamera_Orbital* CCamera_Orbital::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

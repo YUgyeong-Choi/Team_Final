@@ -5,7 +5,8 @@ namespace Client
 {
 	enum class EPlayerState
 	{
-		IDLE, WALK, RUN, JUMP, FALL, LANDING, ATTACK, HIT, DEAD, END
+		IDLE, WALK, RUN, JUMP, FALL, LANDING, WEAKATTACKA, WEAKATTACKB, STRONGATTACK, CHARGE, HIT, DEAD, SWITCHWEAPON, GARD, BACKSTEP,
+		LEFTHANDATTACK, ROLLING, USEITEM, SHILD, EQUIP, SPRINT, END
 	};
 
 
@@ -49,6 +50,7 @@ namespace Client
 	enum class COLLIDER_TYPE { NONE, CONVEX, TRIANGLE, END };
 #pragma endregion
 
+#pragma region YG
 	enum INTERPOLATION_CAMERA
 	{
 		NONE,
@@ -60,6 +62,7 @@ namespace Client
 	{
 		ONE, TWO, THREE
 	};
+#pragma endregion
 }
 
 

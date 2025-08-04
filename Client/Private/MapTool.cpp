@@ -41,6 +41,10 @@ HRESULT CMapTool::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	//즐겨찾기 로드
+	if (FAILED(Load_Favorite()))
+		E_FAIL;
+
 	//MapData에 배치되어있는 모델들을 미리 불러들인다.
 	if (FAILED(Ready_Model()))
 		return E_FAIL;
@@ -115,28 +119,36 @@ HRESULT CMapTool::Render_ImGui()
 
 void CMapTool::Control(_float fTimeDelta)
 {
-	//E 회전, R 크기, T는 위치
-	if (m_pGameInstance->Key_Down(DIK_E))
-		m_currentOperation = ImGuizmo::ROTATE;
-	else if (m_pGameInstance->Key_Down(DIK_R))
-		m_currentOperation = ImGuizmo::SCALE;
-	else if (m_pGameInstance->Key_Down(DIK_T))
-		m_currentOperation = ImGuizmo::TRANSLATE;
-	else if (m_pGameInstance->Mouse_Up(DIM::WHEELBUTTON))
+	if (GetForegroundWindow() != g_hWnd)
+		return;
+
+	if (ImGuizmo::IsUsing() == false)
 	{
-		//모든 오브젝트 선택 제거
+		//E 회전, R 크기, T는 위치
+		if (m_pGameInstance->Key_Down(DIK_E))
+			m_currentOperation = ImGuizmo::ROTATE;
+		else if (m_pGameInstance->Key_Down(DIK_R))
+			m_currentOperation = ImGuizmo::SCALE;
+		else if (m_pGameInstance->Key_Down(DIK_T))
+			m_currentOperation = ImGuizmo::TRANSLATE;
 
-		m_SelectedIndexies.clear();
+		if (m_pGameInstance->Mouse_Up(DIM::WHEELBUTTON))
+		{
+			//모든 오브젝트 선택 제거
 
-		for (CMapToolObject* pObj : m_SelectedObjects)
-			Safe_Release(pObj);
-		m_SelectedObjects.clear();
+			m_SelectedIndexies.clear();
 
-		m_iFocusIndex = -1;
-		Safe_Release(m_pFocusObject);
-		m_pFocusObject = nullptr;
+			for (CMapToolObject* pObj : m_SelectedObjects)
+				Safe_Release(pObj);
+			m_SelectedObjects.clear();
 
+			m_iFocusIndex = -1;
+			Safe_Release(m_pFocusObject);
+			m_pFocusObject = nullptr;
+
+		}
 	}
+	
 
 	//컨트롤 클릭 하면 피킹된 위치로 이동
 	if (m_pGameInstance->Key_Pressing(DIK_LALT) && m_pGameInstance->Mouse_Up(DIM::LBUTTON))
@@ -466,8 +478,96 @@ HRESULT CMapTool::Load_Map()
 	return S_OK;
 }
 
+HRESULT CMapTool::Save_Favorite()
+{
+	//즐겨찾기 추가 삭제 시
+	//현재 즐겨찾기에 포함된 이름들을 저장한다.
+	filesystem::create_directories("../Bin/Save/MapTool");
+	ofstream Favorite("../Bin/Save/MapTool/Favorite.json");
+
+	json FavoritJsonArray = json::array();
+
+	//즐겨찾기 목록
+	//m_FavoriteModelNames;
+
+	for (string& ModelName : m_FavoriteModelNames)
+	{
+		//Json 파일에 모델의 이름과 파일경로 저장
+		filesystem::path path = filesystem::path(PATH_NONANIM) / (ModelName + ".bin"); //이렇게 하드코드 저장말고
+		string FullPath = path.generic_string();
+
+		json ObjectJson;
+		ObjectJson["ModelName"] = ModelName;
+		ObjectJson["Path"] = FullPath; // 또는 Path
+
+		FavoritJsonArray.push_back(ObjectJson);
+
+	}
+
+	// 파일에 JSON 쓰기
+	Favorite << FavoritJsonArray.dump(4);
+	Favorite.close();
+
+	//MSG_BOX("즐겨 찾기 저장 성공");
+
+	return S_OK;
+}
+
+HRESULT CMapTool::Load_Favorite()
+{
+	//레벨이 시작할 때
+	//제이슨에 저장된 이름의 모델들을 모두 로드하고
+	//즐겨 찾기 목록에 포함 시킨다.
+
+	ifstream inFile("../Bin/Save/MapTool/Favorite.json");
+	if (!inFile.is_open())
+	{
+		MSG_BOX("Favorite.json 파일을 열 수 없습니다.");
+		return S_OK;
+	}
+
+	json FavoriteJson;
+	try
+	{
+		inFile >> FavoriteJson;
+		inFile.close();
+	}
+	catch (const exception& e)
+	{
+		inFile.close();
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+		return E_FAIL;
+	}
+
+	// JSON 데이터 확인
+	for (const auto& element : FavoriteJson)
+	{
+		string ModelName = element.value("ModelName", "");
+		string Path = element.value("Path", "");
+
+		//모델 프로토 타입 생성
+		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+
+		const _char* pModelFilePath = Path.c_str();
+
+		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+		{
+			return E_FAIL;
+		}
+
+		if (FAILED(Add_Favorite(ModelName, false)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+
+}
+
 HRESULT CMapTool::Render_MapTool()
 {
+	if (GetForegroundWindow() != g_hWnd)
+		return S_OK;
+
 	Render_Hierarchy();
 
 	Render_Asset();
@@ -613,11 +713,8 @@ void CMapTool::Render_Asset()
 	{
 		if (false == m_ModelNames.empty())
 		{
-			// 이미 이름이 목록에 존재하면 중복 추가하지 않음
-			if (find(m_FavoriteModelNames.begin(), m_FavoriteModelNames.end(), m_ModelNames[m_iSelectedModelIndex]) == m_FavoriteModelNames.end())
-			{
-				m_FavoriteModelNames.push_back(m_ModelNames[m_iSelectedModelIndex]); // 이름 추가
-			}
+			if (FAILED(Add_Favorite(m_ModelNames[m_iSelectedModelIndex], true)))
+				MSG_BOX("즐겨찾기 추가 실패");
 		}
 	}
 
@@ -777,6 +874,11 @@ void CMapTool::Render_Favorite()
 			{
 				m_FavoriteModelNames.erase(iter);
 				m_iSelectedFavoriteModelIndex = -1;
+
+				if (FAILED(Save_Favorite()))
+				{
+					MSG_BOX("즐겨 찾기 저장 실패");
+				}
 			}
 		}
 	}
@@ -819,6 +921,10 @@ void CMapTool::Render_Detail()
 {
 #pragma region 디테일
 	ImGui::Begin("Detail", nullptr);
+
+	ImGui::Separator();
+
+	Detail_Name();
 
 	ImGui::Separator();
 
@@ -1116,14 +1222,14 @@ HRESULT CMapTool::Duplicate_Selected_Object()
 #pragma region 해당 오브젝트 옆에다가 소환
 		_matrix SpawnWorldMatrix = pObj->Get_TransfomCom()->Get_WorldMatrix();
 
-		// x축으로 3.f 만큼 이동하는 변환 행렬
-		_matrix matOffset = XMMatrixTranslation(3.f, 0.f, 0.f);
+		//// x축으로 3.f 만큼 이동하는 변환 행렬
+		//_matrix matOffset = XMMatrixTranslation(3.f, 0.f, 0.f);
 
-		// 변환 적용: 기존 행렬에 offset을 곱해준다
-		_matrix matResult = matOffset * SpawnWorldMatrix;
+		//// 변환 적용: 기존 행렬에 offset을 곱해준다
+		//_matrix matResult = matOffset * SpawnWorldMatrix;
 
 		// 결과 저장
-		XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, matResult);
+		XMStoreFloat4x4(&MapToolObjDesc.WorldMatrix, SpawnWorldMatrix);
 #pragma endregion
 
 		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
@@ -1396,7 +1502,7 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_W))
 		{
-			pCamTransformCom->Go_Straight(fTimeDelta * 10.f);
+			pCamTransformCom->Go_Front(fTimeDelta * 10.f);
 		}
 		if (m_pGameInstance->Key_Pressing(DIK_S))
 		{
@@ -1420,6 +1526,14 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 		m_pCamera_Free->Set_Moveable(true);
 	}
 
+}
+
+void CMapTool::Detail_Name()
+{
+	if (m_pFocusObject == nullptr)
+		return;
+
+	ImGui::Text(m_pFocusObject->Get_ModelName().c_str());
 }
 
 void CMapTool::Detail_Transform()
@@ -1608,6 +1722,26 @@ void CMapTool::Detail_Collider()
 		}
 
 	}
+}
+
+HRESULT CMapTool::Add_Favorite(const string& ModelName, _bool bSave)
+{
+	// 이미 이름이 목록에 존재하면 중복 추가하지 않음
+	if (find(m_FavoriteModelNames.begin(), m_FavoriteModelNames.end(), ModelName) == m_FavoriteModelNames.end())
+	{
+		m_FavoriteModelNames.push_back(ModelName); // 이름 추가
+
+		if (bSave)
+		{
+			if (FAILED(Save_Favorite()))
+			{
+				return E_FAIL;
+				MSG_BOX("즐겨 찾기 저장 실패");
+			}
+		}
+	}
+
+	return S_OK;
 }
 
 

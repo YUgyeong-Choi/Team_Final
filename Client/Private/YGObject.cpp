@@ -60,7 +60,7 @@ void CYGObject::Priority_Update(_float fTimeDelta)
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_W))
 	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
+		m_pTransformCom->Go_Front(fTimeDelta);
 	}
 	if (m_pGameInstance->Key_Pressing(DIK_S))
 	{
@@ -87,6 +87,10 @@ void CYGObject::Priority_Update(_float fTimeDelta)
 		m_bAttack = true;
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_B))
+	{
+		ChangeColliderSize();
+	}
 }
 
 void CYGObject::Update(_float fTimeDelta)
@@ -302,6 +306,7 @@ void CYGObject::Update_ColliderPos()
 	PxVec3 pos(vPos.x, vPos.y, vPos.z);
 	pos.y += 0.5f;
 
+	// 3. 회전 추출
 	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
 	XMFLOAT4 fQuat;
 	XMStoreFloat4(&fQuat, boneQuat);
@@ -391,6 +396,42 @@ void CYGObject::Ray()
 	}
 #endif
 
+}
+
+void CYGObject::ChangeColliderSize()
+{
+	if (m_pPhysXActorCom == nullptr || m_pModelCom == nullptr)
+		return;
+
+	// 기존 shape 제거
+	m_pPhysXActorCom->Shape_Detach();
+
+	// 정점 가져오기
+	_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(2);
+	const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(2);
+
+	vector<_float3> scaledVertices(numVertices);
+	for (_uint i = 0; i < numVertices; ++i)
+	{
+		const _float3& v = pVertexPositions[i];
+		scaledVertices[i] = { v.x * 2.0f, v.y * 2.0f, v.z * 2.0f }; // 2배 스케일
+	}
+
+	// 쿠킹 및 콜라이더 재생성
+	PxCapsuleGeometry newGeom = m_pGameInstance->CookCapsuleGeometry(reinterpret_cast<const PxVec3*>(scaledVertices.data()),numVertices, 1.0f);
+
+	PxShape* pNewShape = PxRigidActorExt::createExclusiveShape(*m_pPhysXActorCom->Get_Actor(), newGeom, *m_pGameInstance->GetMaterial(L"Default"));
+	if (!pNewShape)
+		return; // 실패 처리
+
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+	// 필터 등 정보 재설정
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 }
 
 CYGObject* CYGObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

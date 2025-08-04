@@ -75,77 +75,119 @@ struct PS_SKY_OUT
 
 PS_OUT PS_MAIN(PS_IN In)
 {
-    PS_OUT Out;    
-    
+    PS_OUT Out;
+
     vector vMtrlDiffuse;
     vector vNormalDesc;
+
     if (g_bTile)
     {
-        //벽지를 미리 발라 놓고 떼오는 느낌 스케일 상관 없이 타일링 적용 가능
-        float2 uv = In.vWorldPos.xz * g_TileDensity;
-        vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, uv);
-        vNormalDesc = g_NormalTexture.Sample(DefaultSampler, uv);
+        // Triplanar Mapping 적용
+        float3 worldNormal = normalize(In.vNormal.xyz);
+        float3 blend = abs(worldNormal);
+        blend = pow(blend, 3.0);
+        blend /= (blend.x + blend.y + blend.z); // Normalize
+
+        float2 uvXZ = In.vWorldPos.zx * g_TileDensity; // Y축 수직 면 (바닥)
+        float2 uvXY = In.vWorldPos.xy * g_TileDensity; // Z축 수직 면 (정면)
+        float2 uvYZ = In.vWorldPos.zy * g_TileDensity; // X축 수직 면 (측면)
+
+        float4 diffXZ = g_DiffuseTexture.Sample(DefaultSampler, uvXZ);
+        float4 diffXY = g_DiffuseTexture.Sample(DefaultSampler, uvXY);
+        float4 diffYZ = g_DiffuseTexture.Sample(DefaultSampler, uvYZ);
+
+        float4 normXZ = g_NormalTexture.Sample(DefaultSampler, uvXZ);
+        float4 normXY = g_NormalTexture.Sample(DefaultSampler, uvXY);
+        float4 normYZ = g_NormalTexture.Sample(DefaultSampler, uvYZ);
+
+        vMtrlDiffuse = diffXZ * blend.y + diffXY * blend.z + diffYZ * blend.x;
+        vNormalDesc = normXZ * blend.y + normXY * blend.z + normYZ * blend.x;
     }
-    else //기본
+    else // 기본 UV 방식
     {
         vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
         vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     }
-    
+
+    // 알파 테스트
     if (vMtrlDiffuse.a < 0.3f)
         discard;
-    
+
+    // Normal Map 변환 [-1, 1]
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
-    
+
+    // Tangent Space → World Space
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    
-    vNormal = mul(vNormal, WorldMatrix);    
-    
-   
+    vNormal = mul(vNormal, WorldMatrix);
+
+    // 출력
     Out.vDiffuse = vMtrlDiffuse;
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f); // encode to [0,1]
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
     Out.vPickPos = In.vWorldPos;
-    
+
     return Out;
 }
+
 
 PS_OUT PS_MAPTOOLOBJECT(PS_IN In)
 {
     PS_OUT Out;
-    
+
     vector vMtrlDiffuse;
     vector vNormalDesc;
+
     if (g_bTile)
     {
-        //벽지를 미리 발라 놓고 떼오는 느낌 스케일 상관 없이 타일링 적용 가능
-        float2 uv = In.vWorldPos.xz * g_TileDensity;
-        vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, uv);
-        vNormalDesc = g_NormalTexture.Sample(DefaultSampler, uv);
+        // Triplanar Mapping: 법선 방향 기반 타일링
+        float3 worldNormal = normalize(In.vNormal.xyz);
+        float3 blend = abs(worldNormal);
+        blend = pow(blend, 3.0f); // 부드러운 블렌딩을 위해 거듭제곱
+        blend /= (blend.x + blend.y + blend.z); // 정규화
+
+        float2 uvXZ = In.vWorldPos.zx * g_TileDensity; // 바닥
+        float2 uvXY = In.vWorldPos.xy * g_TileDensity; // 천장
+        float2 uvYZ = In.vWorldPos.zy * g_TileDensity; // 벽
+
+        float4 diffXZ = g_DiffuseTexture.Sample(DefaultSampler, uvXZ);
+        float4 diffXY = g_DiffuseTexture.Sample(DefaultSampler, uvXY);
+        float4 diffYZ = g_DiffuseTexture.Sample(DefaultSampler, uvYZ);
+
+        float4 normXZ = g_NormalTexture.Sample(DefaultSampler, uvXZ);
+        float4 normXY = g_NormalTexture.Sample(DefaultSampler, uvXY);
+        float4 normYZ = g_NormalTexture.Sample(DefaultSampler, uvYZ);
+
+        // 블렌딩
+        vMtrlDiffuse = diffXZ * blend.y + diffXY * blend.z + diffYZ * blend.x;
+        vNormalDesc = normXZ * blend.y + normXY * blend.z + normYZ * blend.x;
     }
-    else //기본
+    else
     {
+        // 기본 UV 기반 텍스처 샘플링
         vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
         vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     }
-    
+
+    // 알파 테스트
     if (vMtrlDiffuse.a < 0.3f)
         discard;
-    
+
+    // 노멀 맵 [-1, 1]로 변환
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
-    
+
+    // Tangent → World 변환
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    
     vNormal = mul(vNormal, WorldMatrix);
-    
-   
+
+    // 출력
     Out.vDiffuse = vMtrlDiffuse;
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, g_fID); //w값에다가 아이디를 저장하겠음
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f); // Encode to [0,1]
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, g_fID); // w: ID 저장
     Out.vPickPos = In.vWorldPos;
-    
+
     return Out;
 }
+
 
 PS_SKY_OUT PS_SKY_MAIN(PS_IN In)
 {

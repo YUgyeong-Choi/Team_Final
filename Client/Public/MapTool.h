@@ -31,6 +31,9 @@ private:
 	HRESULT Save_Map();
 	HRESULT Load_Map();
 
+	HRESULT Save_Favorite();
+	HRESULT Load_Favorite();
+
 private:
 	HRESULT Render_MapTool();
 
@@ -69,18 +72,23 @@ private:
 	void SelectByClick();
 	//드래그로 오브젝트 다중 선택하기
 	void SelectByDrag(const _float2& vMouseDragEnd);
-
-	//마우스 드랙 시작 포인트
-	_float2 m_vMouseDragStart = {};
-	_bool	m_bDragging = { false };
 private:
 	void Control_PreviewObject(_float fTimeDelta);
 
 private:
+	void Detail_Name();
 	void Detail_Transform();
 	void Detail_Tile();
 	//컨백스 또는 트라이앵글 선택(기본 컨백스)
 	void Detail_Collider();
+
+private:
+	HRESULT Add_Favorite(const string& ModelName, _bool bSave);
+
+private:
+	//마우스 드랙 시작 포인트
+	_float2 m_vMouseDragStart = {};
+	_bool	m_bDragging = { false };
 
 private:
 	//이전 프레임에 기즈모를 사용 중인가?
