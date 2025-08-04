@@ -83,7 +83,8 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 		// 기준점 위치 계산 (플레이어 + 높이)
 		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
-		m_vPlayerPosition += XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+		m_vPlayerPosition += XMVectorSet(0.f, 2.f, 0.f, 0.f);
+		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
 		// 오비탈 카메라 방향 계산 (spherical to cartesian)
 		_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
@@ -130,15 +131,15 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		}
 		// --- 스프링암 Raycast 처리 끝 ---
 
-		//// 현재 카메라 위치
-		//_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
+		// 현재 카메라 위치
+		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-		//// 위치 보간 (LERP)
-		//_float fInterpSpeed = 5.0f;
-		//_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
+		// 위치 보간 (LERP)
+		_float fInterpSpeed = 5.0f;
+		_vector vInterpolatedPos = XMVectorLerp(vCurrentPos, m_vTargetCamPos, fTimeDelta * fInterpSpeed);
 
 		// 카메라 설정
-		m_pTransformCom->Set_State(STATE::POSITION, m_vTargetCamPos);
+		m_pTransformCom->Set_State(STATE::POSITION, vInterpolatedPos);
 		m_pTransformCom->LookAt(m_vPlayerPosition);
 	}
 	__super::Update(fTimeDelta);
@@ -162,7 +163,7 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 {
 	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
-	m_vPlayerPosition += XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+	m_vPlayerPosition += XMVectorSet(0.f, 2.f, 0.f, 0.f);
 
 	_float x = m_fDistance * cosf(pitch) * sinf(yaw);
 	_float y = m_fDistance * sinf(pitch);

@@ -280,7 +280,6 @@ HRESULT CMapToolObject::Ready_Collider()
 		m_pPhysXActorTriangleCom->Set_ColliderType(COLLIDERTYPE::A);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
 #pragma endregion
-
 	}
 	else
 	{

@@ -39,13 +39,13 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 {
 	if (m_bActive)
 	{
-		if (!m_bReadySetOrbitalPos)
+		if (!m_bOrbitalToSetOrbital)
 		{
 			_bool bFinish = ReadyToOrbitalWorldMatrix(fTimeDelta);
-			m_bReadySetOrbitalPos = bFinish;
+			m_bOrbitalToSetOrbital = bFinish;
 		}
 
-		if (m_bReadySetOrbitalPos && !m_bReadyCutScene)
+		if (m_bOrbitalToSetOrbital && !m_bReadyCutScene)
 		{
 			// 목표 행렬
 			_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
@@ -92,7 +92,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			if (bFinish)
 			{
 				m_bActive = false;
-				m_bReadySetOrbitalPos = false;
+				m_bOrbitalToSetOrbital = false;
 				m_bReadyCutScene = false;
 				m_bReadyCutSceneOrbital = false;
 				m_fElapsedTime = 0.f;
@@ -122,8 +122,8 @@ HRESULT CCamera_CutScene::Render()
 void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
 {
 	m_CameraDatas = CameraFrameData;
-	m_bReadySetOrbitalPos = CameraFrameData.bReadySetOrbitalPos;
-	if (m_bReadySetOrbitalPos)
+	m_bOrbitalToSetOrbital = CameraFrameData.bOrbitalToSetOrbital;
+	if (m_bOrbitalToSetOrbital)
 		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 	m_bReadyCutSceneOrbital = CameraFrameData.bReadyCutSceneOrbital;
 	m_bReadyCutScene = false;
@@ -136,8 +136,8 @@ void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 {
 	m_CameraDatas = m_CutSceneDatas[cutSceneType];
-	m_bReadySetOrbitalPos = m_CameraDatas.bReadySetOrbitalPos;
-	if (m_bReadySetOrbitalPos)
+	m_bOrbitalToSetOrbital = m_CameraDatas.bOrbitalToSetOrbital;
+	if (m_bOrbitalToSetOrbital)
 		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 	m_bReadyCutSceneOrbital = m_CameraDatas.bReadyCutSceneOrbital;
 	m_bReadyCutScene = false;
@@ -361,7 +361,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 
 	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
-	data.bReadySetOrbitalPos = j.value("bStartBlend", false);
+	data.bOrbitalToSetOrbital = j.value("bStartBlend", false);
 	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
 	data.fPitch = j["Pitch"].get<float>();
 	data.fYaw = j["Yaw"].get<float>();
