@@ -86,7 +86,10 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 회전값 누적
 		m_fYaw += MouseMoveX * fTimeDelta * m_fMouseSensor;
 		m_fPitch += MouseMoveY * fTimeDelta * m_fMouseSensor;
-		m_fPitch = clamp(m_fPitch, XMConvertToRadians(-50.f), XMConvertToRadians(60.f));
+		if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
+			m_fPitch = clamp(m_fPitch, XMConvertToRadians(-30.f), XMConvertToRadians(60.f));
+		else
+			m_fPitch = clamp(m_fPitch, XMConvertToRadians(-50.f), XMConvertToRadians(60.f));
 
 		// 기준점 위치 계산 (플레이어 + 높이)
 		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
