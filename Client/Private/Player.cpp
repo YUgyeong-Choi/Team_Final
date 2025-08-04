@@ -87,6 +87,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	// 옵저버 변수들 처리
 	Update_Stat();
 
+
 	__super::Priority_Update(fTimeDelta);
 }
 void CPlayer::Update(_float fTimeDelta)
@@ -168,7 +169,7 @@ void CPlayer::HandleInput()
 	/* [ 마우스 입력을 업데이트합니다. ] */
 	m_Input.bLeftMouseDown = MOUSE_DOWN(DIM::LBUTTON);
 	m_Input.bRightMouseDown = MOUSE_DOWN(DIM::RBUTTON);
-	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
+ 	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
 	m_Input.bRightMouseUp = MOUSE_UP(DIM::RBUTTON);
 
 

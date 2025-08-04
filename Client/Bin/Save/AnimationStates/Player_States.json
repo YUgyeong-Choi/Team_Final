@@ -9,18 +9,10 @@
             "States": [
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Run_F",
+                    "ClipName": "AS_Pino_T_Walk_BL",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Run_F",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Guard_Walk_B",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Guard_Walk_B",
+                    "Name": "Walk_BL",
                     "UpperClipName": ""
                 },
                 {
@@ -33,10 +25,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Walk_BL",
+                    "ClipName": "AS_Pino_T_Guard_Walk_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Walk_BL",
+                    "Name": "Guard_Walk_B",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_F",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F",
                     "UpperClipName": ""
                 },
                 {
@@ -49,18 +49,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Run_F_Stop",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Run_F_Stop",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Dash_Normal_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Dash_Normal_B",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_F_Stop",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F_Stop",
                     "UpperClipName": ""
                 },
                 {
@@ -129,7 +129,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Bayonet_CA3",
+                    "ClipName": "AS_Pino_T_Bayonet_RA",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "ChargeStrongAttack",
@@ -185,6 +185,14 @@
                 },
                 {
                     "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Sit_Loop",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Sit_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Bayonet_NA4",
                     "LowerClipName": "",
                     "MaskBoneName": "",
@@ -213,6 +221,14 @@
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Guard_Walk_L",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Prop_SlidingDoor_Boss",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "SlidingDoor",
                     "UpperClipName": ""
                 },
                 {
@@ -261,6 +277,14 @@
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Run_FL",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Sit_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Sit_End",
                     "UpperClipName": ""
                 },
                 {
@@ -389,6 +413,14 @@
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Walk_R",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Prop_DoubleDoor_Push_TrainStation",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "DoubleDoor_Push_TrainStation",
                     "UpperClipName": ""
                 }
             ]

@@ -87,7 +87,7 @@
         {
             "ClipName": "AS_Pino_H_Dash_Normal_F",
             "Duration": 80.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },

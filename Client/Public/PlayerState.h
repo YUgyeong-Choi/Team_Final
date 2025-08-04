@@ -827,6 +827,7 @@ public:
     {
         m_fStateTime = 0.f;
         m_bMove = false;
+        m_bAttack = false;
 
         m_pOwner->m_bMovable = true;
     }
@@ -928,7 +929,7 @@ public:
     {
         m_fStateTime = 0.f;
         m_bMove = false;
-
+		m_bAttack = false;
         m_pOwner->m_bMovable = true;
     }
 
@@ -1033,7 +1034,7 @@ public:
     {
         m_fStateTime = 0.f;
         m_bMove = false;
-
+        m_bAttack = false;
         m_pOwner->m_bMovable = true;
     }
 
