@@ -112,7 +112,7 @@ namespace Client
 	struct CAMERA_FRAMEDATA
 	{
 		_int iEndFrame;
-		_bool bReadySetOrbitalPos;
+		_bool bOrbitalToSetOrbital;
 		_bool bReadyCutSceneOrbital;
 		_float fPitch;
 		_float fYaw;
