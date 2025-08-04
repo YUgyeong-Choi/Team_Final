@@ -272,7 +272,7 @@ HRESULT CMapToolObject::Ready_Collider()
 
 		PxTriangleMeshGeometry  TriangleGeom = m_pGameInstance->CookTriangleMesh(physxVertices.data(), numVertices, physxIndices.data(), numIndices / 3, meshScale);
 		m_pPhysXActorTriangleCom->Create_Collision(m_pGameInstance->GetPhysics(), TriangleGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorTriangleCom->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorTriangleCom->Set_ShapeFlag(false, false, false);
 
 		m_pPhysXActorTriangleCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorTriangleCom->Set_QueryFilterData(filterData);

@@ -1490,7 +1490,7 @@ void CMapTool::Control_PreviewObject(_float fTimeDelta)
 		_float3 vPos = {};
 		XMStoreFloat3(&vPos, pCamTransformCom->Get_State(STATE::POSITION));
 
-		printf("x: %0.1f, y: %0.1f, z: %0.1f\n", vPos.x, vPos.y, vPos.z);
+		//printf("x: %0.1f, y: %0.1f, z: %0.1f\n", vPos.x, vPos.y, vPos.z);
 
 		if (m_pGameInstance->Key_Pressing(DIK_A))
 		{
