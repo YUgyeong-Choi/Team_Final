@@ -90,8 +90,8 @@ void CAnimator::Update(_float fDeltaTime)
 		{
 			if (m_pBlendFromLowerAnim)
 				m_pBlendFromLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromLowerAnim->Get_isLoop(), &triggeredEvents);
-			if (m_pBlendToLowerAnim)
-				m_pBlendToLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToLowerAnim->Get_isLoop(), &triggeredEvents);
+			/*if (m_pBlendToLowerAnim)
+				m_pBlendToLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToLowerAnim->Get_isLoop(), &triggeredEvents);*/
 		}
 
 		if(bSameUpperAnim)

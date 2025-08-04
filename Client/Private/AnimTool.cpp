@@ -299,6 +299,9 @@ HRESULT CAnimTool::Render_Parameters()
 {
 	ImGui::Separator();
 
+	_float fRowH = ImGui::GetFrameHeightWithSpacing();
+	ImGui::BeginChild("ParamScrollRegion", ImVec2(0, fRowH * 5 + ImGui::GetStyle().FramePadding.y * 2), true);
+
 		// 컬럼 Name | Type | Value | Action
 		ImGui::Columns(4, "ParamColumns", true);
 		ImGui::Text("Name");   ImGui::NextColumn();
@@ -461,6 +464,7 @@ HRESULT CAnimTool::Render_Parameters()
 
 
 		ImGui::Columns(1);
+		ImGui::EndChild();
 
 		// 파라미터 추가 팝업
 		if (ImGui::Button("Add Parameter"))
