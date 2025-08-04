@@ -76,6 +76,12 @@ void CMapTool::Update(_float fTimeDelta)
 {
 	Control(fTimeDelta);
 
+	//포커스 된놈만 업데이트 시켜주자
+	if (m_pFocusObject != nullptr)
+	{
+		m_pFocusObject->Update_ColliderPos();
+	}
+
 }
 
 void CMapTool::Late_Update(_float fTimeDelta)

@@ -19114,12 +19114,12 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Station_StairA_01",
             "ObjectCount": 1,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "WorldMatrix": [
                         [
                             1.0751803358743928e-07,
@@ -22061,7 +22061,7 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Wall_PillarFrame01A",
             "ObjectCount": 143,
             "Objects": [
@@ -22443,7 +22443,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "WorldMatrix": [
                         [
                             1.3299999237060547,
@@ -22501,7 +22501,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "WorldMatrix": [
                         [
                             1.3299999237060547,

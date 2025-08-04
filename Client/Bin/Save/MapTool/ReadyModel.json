@@ -762,7 +762,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Sign_02C.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_StairA_01",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_StairA_01.bin"
@@ -852,7 +852,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_MansionDoor02_B.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Wall_PillarFrame01A",
         "ObjectCount": 143,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrame01A.bin"

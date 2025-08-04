@@ -53,6 +53,9 @@ public:
 	LEVEL Get_LevelID() const { return m_eLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 
+private:
+	void Update_ColliderPos();
+
 protected: /* [ 초기화 변수 ] */
 	const _tchar* m_szMeshID = { nullptr };
 	LEVEL			m_eLevelID = { LEVEL::END };

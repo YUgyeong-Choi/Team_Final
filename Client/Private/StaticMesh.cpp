@@ -48,6 +48,13 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
+	//if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
+	//	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+	//else
+	//	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	//Update_ColliderPos();
+
 	return S_OK;
 }
 
@@ -62,7 +69,21 @@ void CStaticMesh::Update(_float fTimeDelta)
 
 void CStaticMesh::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+
+	// 왜 이거 안되지?
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	{
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	}
+
+	// 왜 이거 안되지?
+	/*if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f))
+	{
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	}*/
+
+	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+
 }
 
 HRESULT CStaticMesh::Render()
@@ -103,6 +124,34 @@ HRESULT CStaticMesh::Render()
 	return S_OK;
 }
 
+void CStaticMesh::Update_ColliderPos()
+{
+	/*
+		스케일을 바꾸려면 m_pPhysXActorConvexCom 컴포넌트를 새로 만들어야 한다.
+		그렇다고 한다. 새로 만들어주는거로 해보자
+	*/
+	if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
+		return;
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
+
+	// 행렬 → 스케일, 회전, 위치 분해
+	_vector vScale, vRotationQuat, vTranslation;
+	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
+
+	// 위치 추출
+	_float3 vPos;
+	XMStoreFloat3(&vPos, vTranslation);
+
+	// 회전 추출
+	_float4 vRot;
+	XMStoreFloat4(&vRot, vRotationQuat);
+
+	// PxTransform으로 생성
+	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
+	m_pPhysXActorCom->Set_Transform(physxTransform);
+}
+
 HRESULT CStaticMesh::Ready_Components(void* pArg)
 {
 	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
@@ -119,13 +168,12 @@ HRESULT CStaticMesh::Ready_Components(void* pArg)
 
 	if (m_eColliderType == COLLIDER_TYPE::END)
 		return E_FAIL;
-	if (m_eColliderType != COLLIDER_TYPE::NONE)
-	{
-		/* For.Com_PhysX */
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
-			TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
-			return E_FAIL;
-	}
+
+	//피직스 AABB 컬링을 위해서는 충돌이 필요없어도 만들어야겠지?
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -185,7 +233,7 @@ HRESULT CStaticMesh::Ready_Collider()
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
 		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 
-		if (m_eColliderType == COLLIDER_TYPE::CONVEX)
+		if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)
 		{
 #pragma region 컨벡스 메쉬
 			PxConvexMeshGeometry  ConvexGeom = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
@@ -197,7 +245,11 @@ HRESULT CStaticMesh::Ready_Collider()
 			m_pPhysXActorCom->Set_QueryFilterData(filterData);
 			m_pPhysXActorCom->Set_Owner(this);
 			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::B); // 이걸로 색깔을 바꿀 수 있다.
-			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+			//충돌체가 있는 것만
+			if(m_eColliderType == COLLIDER_TYPE::CONVEX)
+				m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+			
 #pragma endregion
 		}
 		else if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
