@@ -10,6 +10,9 @@ NS_END
 
 NS_BEGIN(Client)
 
+// 기본적으로 bar는 담아줄 대상이 다르면 다르게 만들었음
+// 추가적인 조작이 필요하면 여기에 추가?
+
 class CMana_Bar : public CDynamic_UI
 {
 

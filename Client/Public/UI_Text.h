@@ -12,6 +12,8 @@ NS_END
 
 NS_BEGIN(Client)
 
+// text만 적어둘 거면 사용
+
 class CUI_Text final : public CUIObject
 {
 public:

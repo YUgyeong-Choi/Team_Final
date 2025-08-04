@@ -114,6 +114,7 @@ HRESULT CMana_Bar::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ManaDesc", &vManaDesc, sizeof(_float4))))
 		return E_FAIL;
 
+	return S_OK;
 }
 
 HRESULT CMana_Bar::Ready_Component(const wstring& strTextureTag)

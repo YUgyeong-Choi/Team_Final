@@ -214,7 +214,6 @@
     <ClInclude Include="..\Public\ToolParticle.h" />
     <ClInclude Include="..\public\UI_Bar_Loading.h" />
     <ClInclude Include="..\public\UI_Button.h" />
-    <ClInclude Include="..\public\UI_Canvus.h" />
     <ClInclude Include="..\Public\UI_Container.h" />
     <ClInclude Include="..\public\UI_Featrue_Scale.h" />
     <ClInclude Include="..\public\UI_Feature.h" />
@@ -313,7 +312,6 @@
     <ClCompile Include="..\Private\ToolParticle.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
-    <ClCompile Include="..\private\UI_Canvus.cpp" />
     <ClCompile Include="..\Private\UI_Container.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />

@@ -15,6 +15,10 @@ NS_END
 
 NS_BEGIN(Client)
 
+// 음 파일로는 저장 따로 안하고 그냥 코드에서 생성하도록?
+
+
+
 class CUI_Video final : public CUIObject
 {
 public:

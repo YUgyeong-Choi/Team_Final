@@ -126,7 +126,7 @@ HRESULT CLevel_Loading::Render()
 {
 	m_pLoader->Output_LoadingText();
 
-	_wstring text = L"하나둘삼넷오여섯칠팔아홉공 \n Test Test 중";
+	_wstring text = L"크라트 시의 어느 고성은 저주받은 기사의 전설 탓에 정신병원과 갱생 시설을 거치며 악명을 떨쳤다.\n 한 재력가 여성이 이곳을 사들여 대대적인 개축을 한 끝에 현재의 크라트 호텔이 탄생했다.\n\n '크기 수정 필요'";
 	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.25f, g_iWinSizeY * 0.725f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1350.f);
 
 	
