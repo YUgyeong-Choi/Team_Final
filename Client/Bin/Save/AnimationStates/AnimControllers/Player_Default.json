@@ -121,7 +121,7 @@
             "BlendWeight": 1.0,
             "Clip": "",
             "LowerClip": "AS_Pino_H_Walk_F",
-            "MaskBone": "Bip001-Spine2",
+            "MaskBone": "Bip001-Neck",
             "Name": "EquipWeapon_Walk_F",
             "NodeId": 38,
             "NodePos": [
@@ -623,6 +623,58 @@
                 0.0
             ],
             "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Prop_SlidingDoor_Boss",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "SlidingDoor",
+            "NodeId": 403,
+            "NodePos": [
+                0.0,
+                0.0
+            ],
+            "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Prop_DoubleDoor_Push_TrainStation",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "DoubleDoor_Push_TrainStation",
+            "NodeId": 404,
+            "NodePos": [
+                0.0,
+                0.0
+            ],
+            "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Sit_Loop",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "Sit_Loop",
+            "NodeId": 407,
+            "NodePos": [
+                0.0,
+                0.0
+            ],
+            "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Sit_End",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "Sit_End",
+            "NodeId": 408,
+            "NodePos": [
+                0.0,
+                0.0
+            ],
+            "UpperClip": ""
         }
     ],
     "ControllerName": "Player_Default",
@@ -735,6 +787,13 @@
         },
         "Run": {
             "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "SitEnd": {
+            "Type": 1,
             "bTriggered": false,
             "bValue": false,
             "fValue": 0.0,
@@ -1294,28 +1353,6 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 17
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.0,
-            "FromNodeId": 35,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 352,
-                "LinkId": 42,
-                "ToNodeId": 381
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 38
         },
         {
             "Conditions": [
@@ -9511,6 +9548,203 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 17
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 403,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 4032,
+                "LinkId": 405,
+                "ToNodeId": 171
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 17
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 404,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 4042,
+                "LinkId": 406,
+                "ToNodeId": 171
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 17
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 408,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 4082,
+                "LinkId": 409,
+                "ToNodeId": 171
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 17
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "SitEnd",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 407,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 4072,
+                "LinkId": 410,
+                "ToNodeId": 4081
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 408
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Equal",
+                    "ParamName": "Combo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Trigger",
+                    "ParamName": "NormalAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 47,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 472,
+                "LinkId": 411,
+                "ToNodeId": 481
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.8999999761581421,
+            "ToNodeId": 48
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "NormalAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 48,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 482,
+                "LinkId": 412,
+                "ToNodeId": 471
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.8999999761581421,
+            "ToNodeId": 47
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "StrongAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Equal",
+                    "ParamName": "Combo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 1
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 45,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 452,
+                "LinkId": 413,
+                "ToNodeId": 771
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.8999999761581421,
+            "ToNodeId": 77
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "StrongAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Equal",
+                    "ParamName": "Combo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 77,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 772,
+                "LinkId": 414,
+                "ToNodeId": 451
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.8500000238418579,
+            "ToNodeId": 45
         }
     ]
 }
