@@ -720,13 +720,29 @@ HRESULT CCYTool::Load_EffectSet()
 				// Effect 按眉 积己 棺 开流纺拳
 				if (jItem.contains("EffectPreferences") && jItem["EffectPreferences"].is_array() && !jItem["EffectPreferences"].empty())
 				{
-					json jData = jItem["EffectPreferences"][0];
+					json jData;
+
+					if (jItem["EffectPreferences"].is_array())
+					{
+						if (!jItem["EffectPreferences"].empty())
+							jData = jItem["EffectPreferences"][0];
+					}
+					else if (jItem["EffectPreferences"].is_object())
+					{
+						jData = jItem["EffectPreferences"];
+					}
+
+
+
 					CEffectBase* pInstance = { nullptr };
 
 					switch (m_eEffectType)
 					{
 					case Client::EFF_SPRITE:
 					{
+						m_eEffectType = EFF_SPRITE;
+						m_strSeqItemName = "Sprite";
+						m_iSeqItemColor = D3DCOLOR_ARGB(255, 200, 60, 40);
 						CToolSprite::DESC desc = {};
 						desc.bTool = true;
 						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
@@ -735,6 +751,9 @@ HRESULT CCYTool::Load_EffectSet()
 					break;
 					case Client::EFF_PARTICLE:
 					{
+						m_eEffectType = EFF_PARTICLE;
+						m_strSeqItemName = "Particle";
+						m_iSeqItemColor = D3DCOLOR_ARGB(255, 60, 200, 80);
 						CToolParticle::DESC desc = {};
 						desc.fRotationPerSec = XMConvertToRadians(90.f);
 						desc.fSpeedPerSec = 5.f;
@@ -745,6 +764,9 @@ HRESULT CCYTool::Load_EffectSet()
 					break;
 					case Client::EFF_MESH:
 					{
+						m_eEffectType = EFF_MESH;
+						m_strSeqItemName = "Mesh";
+						m_iSeqItemColor = D3DCOLOR_ARGB(255, 100, 100, 220);
 						CToolMeshEffect::DESC desc = {};
 						desc.fRotationPerSec = XMConvertToRadians(90.f);
 						desc.fSpeedPerSec = 5.f;
@@ -754,11 +776,25 @@ HRESULT CCYTool::Load_EffectSet()
 					}
 					break;
 					case Client::EFF_TRAIL:
+					{
+						m_eEffectType = EFF_TRAIL;
+						m_strSeqItemName = "Trail";
+						m_iSeqItemColor = D3DCOLOR_ARGB(255, 170, 80, 250);
+					}
 						break;
 					}
 					if (pInstance != nullptr)
 					{
-						pInstance->Deserialize(jData);
+						try
+						{
+							pInstance->Deserialize(jData);
+						}
+						catch (const nlohmann::json::type_error& e) {
+							std::cerr << "[JSON Type Error] " << e.what() << '\n';
+						}
+						catch (const std::exception& e) {
+							std::cerr << "[Exception] " << e.what() << '\n';
+						}
 						pInstance->Ready_Textures_Prototype_Tool();
 						m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 					}
