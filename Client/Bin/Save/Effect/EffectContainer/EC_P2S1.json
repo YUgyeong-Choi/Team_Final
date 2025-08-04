@@ -1,0 +1,375 @@
+{
+    "EffectObject": [
+        {
+            "EffectPreferences": [
+                {
+                    "Animation": true,
+                    "Billboard": false,
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "CenterColor": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Color": [
+                        0.9591836929321289,
+                        0.9685863852500916,
+                        1.0,
+                        1.0
+                    ],
+                    "Duration": 105,
+                    "EndTrack": 112,
+                    "FlipUV": false,
+                    "KeyFrames": [
+                        {
+                            "Color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Intensity": 1.0,
+                            "Interpolation": 0,
+                            "Rotation": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "TrackPosition": 0.0,
+                            "Translation": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "Color": [
+                                0.0,
+                                0.23036670684814453,
+                                1.0,
+                                1.0
+                            ],
+                            "Intensity": 1.0,
+                            "Interpolation": 0,
+                            "Rotation": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "TrackPosition": 49.0,
+                            "Translation": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
+                    ],
+                    "LifeTime": 0.0,
+                    "LifeTime_Particle": [
+                        2.0,
+                        4.0
+                    ],
+                    "Local": true,
+                    "Loop": true,
+                    "MaxLifeTime": 4.0,
+                    "NumInstance": 100,
+                    "NumKeyFrames": 2,
+                    "PType": 0,
+                    "Pivot": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Range": [
+                        5.0,
+                        1.0,
+                        5.0
+                    ],
+                    "RenderGroup": 6,
+                    "ShaderPass": 1,
+                    "Size": [
+                        1.0,
+                        2.0
+                    ],
+                    "Speed": [
+                        5.0,
+                        10.0
+                    ],
+                    "StartTrack": 7,
+                    "TextureTags": [
+                        "",
+                        "T_butterfly_01_C_GDH",
+                        "",
+                        ""
+                    ],
+                    "TextureUsage": [
+                        true,
+                        true,
+                        false,
+                        false
+                    ],
+                    "Threshold": 0.0,
+                    "TickPerSecond": 60.0,
+                    "TileX": 1,
+                    "TileY": 1
+                }
+            ],
+            "EffectType": 1,
+            "Name": "Particle"
+        },
+        {
+            "EffectPreferences": [
+                {
+                    "Animation": true,
+                    "Billboard": false,
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "CenterColor": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Duration": 105,
+                    "EndTrack": 132,
+                    "FlipUV": false,
+                    "KeyFrames": [
+                        {
+                            "Color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Intensity": 1.0,
+                            "Interpolation": 0,
+                            "Rotation": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "TrackPosition": 0.0,
+                            "Translation": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "Color": [
+                                0.0,
+                                0.23036670684814453,
+                                1.0,
+                                1.0
+                            ],
+                            "Intensity": 1.0,
+                            "Interpolation": 0,
+                            "Rotation": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "TrackPosition": 49.0,
+                            "Translation": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
+                    ],
+                    "LifeTime": 0.0,
+                    "LifeTime_Particle": [
+                        2.0,
+                        4.0
+                    ],
+                    "Local": true,
+                    "Loop": true,
+                    "MaxLifeTime": 4.0,
+                    "NumInstance": 100,
+                    "NumKeyFrames": 2,
+                    "PType": 0,
+                    "Pivot": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Range": [
+                        5.0,
+                        1.0,
+                        5.0
+                    ],
+                    "RenderGroup": 6,
+                    "ShaderPass": 1,
+                    "Size": [
+                        1.0,
+                        2.0
+                    ],
+                    "Speed": [
+                        5.0,
+                        10.0
+                    ],
+                    "StartTrack": 27,
+                    "TextureTags": [
+                        "",
+                        "T_butterfly_01_C_GDH",
+                        "",
+                        ""
+                    ],
+                    "TextureUsage": [
+                        true,
+                        true,
+                        false,
+                        false
+                    ],
+                    "Threshold": 0.0,
+                    "TickPerSecond": 60.0,
+                    "TileX": 1,
+                    "TileY": 1
+                }
+            ],
+            "EffectType": 1,
+            "Name": "Particle"
+        },
+        {
+            "EffectPreferences": [
+                {
+                    "Animation": true,
+                    "Billboard": true,
+                    "CenterColor": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Duration": 47,
+                    "EndTrack": 47,
+                    "FlipUV": false,
+                    "KeyFrames": [
+                        {
+                            "Color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Intensity": 1.0,
+                            "Interpolation": 0,
+                            "Rotation": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "TrackPosition": 0.0,
+                            "Translation": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "Color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Intensity": 1.0,
+                            "Interpolation": 0,
+                            "Rotation": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                3.0,
+                                3.0,
+                                3.0
+                            ],
+                            "TrackPosition": 22.0,
+                            "Translation": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
+                    ],
+                    "LifeTime": 0.0,
+                    "Loop": true,
+                    "NumKeyFrames": 2,
+                    "RenderGroup": 0,
+                    "ShaderPass": 3,
+                    "StartTrack": 0,
+                    "TextureTags": [
+                        "T_SubUV_Fire_10_9x9_SC_KMH",
+                        "",
+                        "",
+                        ""
+                    ],
+                    "TextureUsage": [
+                        true,
+                        false,
+                        false,
+                        false
+                    ],
+                    "Threshold": 0.0,
+                    "TickPerSecond": 60.0,
+                    "TileX": 9,
+                    "TileY": 9
+                }
+            ],
+            "EffectType": 0,
+            "Name": "Sprite"
+        }
+    ]
+}

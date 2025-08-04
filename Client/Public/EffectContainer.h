@@ -45,9 +45,13 @@ private:
 private:
 	_float				m_fFrame = { };
 
+
 private:
+	HRESULT Load_JsonFiles(const _wstring strJsonFilePath);
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
+
+	HRESULT Add_Effect(class CEffectBase* pEffect);
 
 public:
 	static CEffectContainer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

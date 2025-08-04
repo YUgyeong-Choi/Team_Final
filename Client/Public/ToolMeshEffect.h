@@ -7,6 +7,11 @@ NS_BEGIN(Client)
 
 class CToolMeshEffect final : public CMeshEffect
 {
+public:
+	typedef struct tagToolMEDesc : public CMeshEffect::DESC
+	{
+		_bool bLoadingInTool = { false };
+	}DESC;
 private:
 	CToolMeshEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CToolMeshEffect(const CToolMeshEffect& Prototype);
@@ -22,6 +27,9 @@ public:
 
 public:
 	HRESULT Change_Model(_wstring strModelName);
+
+private:
+	_bool m_bLoadingInTool = { false };
 
 private:
 	virtual HRESULT Ready_Components();

@@ -732,8 +732,6 @@ HRESULT CCYTool::Load_EffectSet()
 						jData = jItem["EffectPreferences"];
 					}
 
-
-
 					CEffectBase* pInstance = { nullptr };
 
 					switch (m_eEffectType)
@@ -745,8 +743,15 @@ HRESULT CCYTool::Load_EffectSet()
 						m_iSeqItemColor = D3DCOLOR_ARGB(255, 200, 60, 40);
 						CToolSprite::DESC desc = {};
 						desc.bTool = true;
+						desc.bLoadingInTool = true;
 						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
+						if (pInstance != nullptr)
+						{
+							pInstance->Deserialize(jData);
+							pInstance->Ready_Textures_Prototype_Tool();
+							m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+						}
 					}
 					break;
 					case Client::EFF_PARTICLE:
@@ -758,8 +763,16 @@ HRESULT CCYTool::Load_EffectSet()
 						desc.fRotationPerSec = XMConvertToRadians(90.f);
 						desc.fSpeedPerSec = 5.f;
 						desc.bTool = true;
+						desc.bLoadingInTool = true;
 						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
+						if (pInstance != nullptr)
+						{
+							pInstance->Deserialize(jData);
+							pInstance->Ready_Textures_Prototype_Tool();
+							static_cast<CToolParticle*>(pInstance)->Change_InstanceBuffer(nullptr);
+							m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+						}
 					}
 					break;
 					case Client::EFF_MESH:
@@ -771,8 +784,15 @@ HRESULT CCYTool::Load_EffectSet()
 						desc.fRotationPerSec = XMConvertToRadians(90.f);
 						desc.fSpeedPerSec = 5.f;
 						desc.bTool = true;
+						desc.bLoadingInTool = true;
 						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
+						if (pInstance != nullptr)
+						{
+							pInstance->Deserialize(jData);
+							pInstance->Ready_Textures_Prototype_Tool();
+							m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+						}
 					}
 					break;
 					case Client::EFF_TRAIL:
@@ -781,24 +801,10 @@ HRESULT CCYTool::Load_EffectSet()
 						m_strSeqItemName = "Trail";
 						m_iSeqItemColor = D3DCOLOR_ARGB(255, 170, 80, 250);
 					}
-						break;
+					break;
 					}
-					if (pInstance != nullptr)
-					{
-						try
-						{
-							pInstance->Deserialize(jData);
-						}
-						catch (const nlohmann::json::type_error& e) {
-							std::cerr << "[JSON Type Error] " << e.what() << '\n';
-						}
-						catch (const std::exception& e) {
-							std::cerr << "[Exception] " << e.what() << '\n';
-						}
-						pInstance->Ready_Textures_Prototype_Tool();
-						m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
-					}
-					else
+
+					if (pInstance == nullptr)
 					{
 						MSG_BOX("Failed to make Effect");
 						m_bOpenLoadEffectContainer = false;
@@ -806,12 +812,11 @@ HRESULT CCYTool::Load_EffectSet()
 						return E_FAIL;
 					}
 				}
+				m_bOpenLoadEffectContainer = false;
+				IFILEDIALOG->Close();
 			}
-			m_bOpenLoadEffectContainer = false;
-			IFILEDIALOG->Close();
 		}
 	}
-
 	return S_OK;
 
 }

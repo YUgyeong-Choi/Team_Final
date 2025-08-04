@@ -13,7 +13,7 @@ class ENGINE_DLL CVIBuffer_Instance abstract : public CVIBuffer
 public:
     typedef struct tagInstanceDesc
     {
-        _uint            iNumInstance;
+        _uint            iNumInstance = 1;
 
     }INSTANCE_DESC;
 protected:
