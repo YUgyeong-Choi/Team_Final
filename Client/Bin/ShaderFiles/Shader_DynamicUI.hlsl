@@ -120,6 +120,9 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
 {
     PS_OUT Out;
     
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    Out.vColor *= g_Color;
    
     
     return Out;
