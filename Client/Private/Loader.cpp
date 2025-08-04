@@ -398,6 +398,13 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Lift_02.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_Component_Model_Player"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
 
@@ -406,6 +413,10 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -482,6 +493,18 @@ HRESULT CLoader::Loading_For_DH()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_ToolMesh"),
 		CDH_ToolMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+#pragma region 맵 오브젝트
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

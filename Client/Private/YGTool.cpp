@@ -70,7 +70,7 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 	json j;
 
 	j["iEndFrame"] = data.iEndFrame;
-	j["bStartBlend"] = data.bReadySetOrbitalPos;
+	j["bStartBlend"] = data.bOrbitalToSetOrbital;
 	j["bEndBlend"] = data.bReadyCutSceneOrbital;
 	j["Pitch"] = data.fPitch;
 	j["Yaw"] = data.fYaw;
@@ -137,7 +137,7 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 
 	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
-	data.bReadySetOrbitalPos = j.value("bStartBlend", false);
+	data.bOrbitalToSetOrbital = j.value("bStartBlend", false);
 	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
 	data.fPitch = j["Pitch"].get<float>();
 	data.fYaw = j["Yaw"].get<float>();
@@ -274,7 +274,7 @@ HRESULT CYGTool::Render_CameraTool()
 		m_pSelectedKey->keyFrame = m_iCurrentFrame;
 	}
 
-	ImGui::Checkbox("StartBlend", &m_CameraDatas.bReadySetOrbitalPos);
+	ImGui::Checkbox("StartBlend", &m_CameraDatas.bOrbitalToSetOrbital);
 	ImGui::Checkbox("EndBlend", &m_CameraDatas.bReadyCutSceneOrbital);
 
 	ImGui::SeparatorText("=====");

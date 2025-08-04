@@ -209,6 +209,8 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.eType = ETransitionType::FullbodyToFullbody;
 				m_TransitionResult.pFromLowerAnim = fromState->clip;
 				m_TransitionResult.pToLowerAnim = toState->clip;
+				m_TransitionResult.pFromUpperAnim = fromState->clip; // 통짜 애니메이션은 상체도 동일
+				m_TransitionResult.pToUpperAnim = toState->clip; // 통짜 애니메이션은 상체도 동일
 				m_TransitionResult.bBlendFullbody = true;
 			}
 			else if (!bFromMasked && bToMasked) //  통짜 -> 상하체 분리
@@ -217,8 +219,7 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.pFromLowerAnim = fromState->clip; // 이전 통짜 애니메이션
 				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName); // 목표 하체
 				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName); // 목표 상체
-				//if (m_TransitionResult.pFromLowerAnim == m_TransitionResult.pToUpperAnim)
-				//	m_TransitionResult.pToUpperAnim = nullptr; // 상체가 하체와 동일한 경우 상체 애니메이션은 없음
+				m_TransitionResult.pFromUpperAnim = fromState->clip;
 				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
 				m_TransitionResult.bBlendFullbody = false;
 			}
@@ -228,6 +229,7 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip(); // 현재 재생 중인 하체 클립
 				m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip(); // 현재 재생 중인 상체 클립
 				m_TransitionResult.pToLowerAnim = toState->clip; // 목표 통짜 애니메이션
+				m_TransitionResult.pToUpperAnim = toState->clip; // 목표 통짜 애니메이션
 				m_TransitionResult.fBlendWeight = fromState->fBlendWeight; // 이전 상태의 블렌드 가중치
 				m_TransitionResult.bBlendFullbody = false;
 			}

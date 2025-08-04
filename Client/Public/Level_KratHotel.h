@@ -28,6 +28,7 @@ private:
 	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName);
 
 private:
+	HRESULT Ready_Player();
 	HRESULT Ready_Lights();
 	HRESULT Ready_Camera();
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);

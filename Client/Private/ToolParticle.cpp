@@ -26,8 +26,30 @@ HRESULT CToolParticle::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components(pArg)))
-		return E_FAIL;
+	DESC* pDesc = static_cast<DESC*>(pArg);
+	
+	if (m_bTool && (lstrlen(pDesc->pJsonFilePath) > 1)) // 툴 내에서 불러오기 한 경우
+	{
+		json j;
+
+		ifstream ifs(pDesc->pJsonFilePath);
+
+		if (!ifs.is_open())
+		{
+			return E_FAIL;
+		}
+		ifs >> j;
+
+		Deserialize(j);
+		Ready_Textures_Prototype();
+		if (FAILED(Ready_Components(nullptr)))
+			return E_FAIL;
+	}
+	else // 새로 생성인 경우
+	{
+		if (FAILED(Ready_Components(pArg)))
+			return E_FAIL;
+	}
 
 	for (_int i = 0; i < TU_END; i++)
 	{
@@ -112,7 +134,22 @@ void CToolParticle::Update_Tool(_float fTimeDelta, _float fCurFrame)
 
 HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 {
-	Safe_Release(m_pVIBufferCom);
+	//Safe_Release(m_pVIBufferCom);
+	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
+	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
+	{
+		VIBufferDesc.ePType = m_ePType;
+		VIBufferDesc.iNumInstance = m_iNumInstance;
+		VIBufferDesc.isLoop = m_isLoop;
+		VIBufferDesc.vCenter = m_vCenter;
+		VIBufferDesc.vLifeTime = m_vLifeTime;
+		VIBufferDesc.vPivot = m_vPivot;
+		VIBufferDesc.vRange = m_vRange;
+		VIBufferDesc.vSize = m_vSize;
+		VIBufferDesc.vSpeed = m_vSpeed;
+		VIBufferDesc.isTool = true;
+		pArg = &VIBufferDesc;
+	}
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
@@ -133,19 +170,35 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_DIFFUSE]))))
 		return E_FAIL;
 
-	DESC* pDesc = static_cast<DESC*>(pArg);
-
 	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-	VIBufferDesc.ePType =		pDesc->ePType;
-	VIBufferDesc.iNumInstance = pDesc->iNumInstance;
-	VIBufferDesc.isLoop =		pDesc->isLoop;
-	VIBufferDesc.vCenter =		pDesc->vCenter;
-	VIBufferDesc.vLifeTime =	pDesc->vLifeTime;
-	VIBufferDesc.vPivot =		pDesc->vPivot;
-	VIBufferDesc.vRange =		pDesc->vRange;
-	VIBufferDesc.vSize =		pDesc->vSize;
-	VIBufferDesc.vSpeed =		pDesc->vSpeed;
-	VIBufferDesc.isTool = true;
+	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
+	{
+		VIBufferDesc.ePType = m_ePType;
+		VIBufferDesc.iNumInstance = m_iNumInstance;
+		VIBufferDesc.isLoop = m_isLoop;
+		VIBufferDesc.vCenter = m_vCenter;
+		VIBufferDesc.vLifeTime = m_vLifeTime;
+		VIBufferDesc.vPivot = m_vPivot;
+		VIBufferDesc.vRange = m_vRange;
+		VIBufferDesc.vSize = m_vSize;
+		VIBufferDesc.vSpeed = m_vSpeed;
+		VIBufferDesc.isTool = true;
+	}
+	else // 툴에서 새로 생성할 경우
+	{
+		DESC* pDesc = static_cast<DESC*>(pArg);
+
+		VIBufferDesc.ePType = pDesc->ePType;
+		VIBufferDesc.iNumInstance = pDesc->iNumInstance;
+		VIBufferDesc.isLoop = pDesc->isLoop;
+		VIBufferDesc.vCenter = pDesc->vCenter;
+		VIBufferDesc.vLifeTime = pDesc->vLifeTime;
+		VIBufferDesc.vPivot = pDesc->vPivot;
+		VIBufferDesc.vRange = pDesc->vRange;
+		VIBufferDesc.vSize = pDesc->vSize;
+		VIBufferDesc.vSpeed = pDesc->vSpeed;
+		VIBufferDesc.isTool = true;
+	}
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &VIBufferDesc)))

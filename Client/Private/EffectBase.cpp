@@ -228,7 +228,7 @@ HRESULT CEffectBase::Change_Texture(_wstring strTextureName, TEXUSAGE eTex)
 		return E_FAIL;
 	}
 
-	Safe_Release(m_pTextureCom[eTex]);
+	//Safe_Release(m_pTextureCom[eTex]);
 	_wstring strTextureTag = L"Prototype_Component_Texture_" + strTextureName;
 	if (FAILED(Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
 		Tag, reinterpret_cast<CComponent**>(&m_pTextureCom[eTex]))))

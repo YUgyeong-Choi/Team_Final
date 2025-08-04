@@ -36,7 +36,7 @@
     },
     {
         "ModelName": "SM_CH_PROB_Corpse_01_Male",
-        "ObjectCount": 3,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_01_Male.bin"
     },
     {
@@ -46,12 +46,12 @@
     },
     {
         "ModelName": "SM_CH_PROB_Corpse_03_Female",
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_03_Female.bin"
     },
     {
         "ModelName": "SM_CH_PROB_Corpse_03_Male",
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_03_Male.bin"
     },
     {
@@ -96,22 +96,42 @@
     },
     {
         "ModelName": "SM_Exterior_IronStairs_01",
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_IronStairs_01.bin"
     },
     {
+        "ModelName": "SM_Exterior_ScaffoldingSet_02",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_ScaffoldingSet_02.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_ScaffoldingSet_03",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_ScaffoldingSet_03.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_ScaffoldingSet_12",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_ScaffoldingSet_12.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_ScaffoldingSet_13",
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_ScaffoldingSet_13.bin"
+    },
+    {
         "ModelName": "SM_Exterior_Suitcase_01",
-        "ObjectCount": 10,
+        "ObjectCount": 14,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_01.bin"
     },
     {
         "ModelName": "SM_Exterior_Suitcase_02",
-        "ObjectCount": 3,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_02.bin"
     },
     {
         "ModelName": "SM_Exterior_Suitcase_03",
-        "ObjectCount": 4,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_03.bin"
     },
     {
@@ -131,12 +151,12 @@
     },
     {
         "ModelName": "SM_Factory_Box_01",
-        "ObjectCount": 4,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Box_01.bin"
     },
     {
         "ModelName": "SM_Fence_Barrier_01",
-        "ObjectCount": 75,
+        "ObjectCount": 51,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Fence_Barrier_01.bin"
     },
     {
@@ -146,12 +166,12 @@
     },
     {
         "ModelName": "SM_Interior_Bag_01",
-        "ObjectCount": 7,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Bag_01.bin"
     },
     {
         "ModelName": "SM_Interior_Bag_02",
-        "ObjectCount": 10,
+        "ObjectCount": 12,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Bag_02.bin"
     },
     {
@@ -161,7 +181,7 @@
     },
     {
         "ModelName": "SM_Interior_Box_01",
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Box_01.bin"
     },
     {
@@ -171,12 +191,12 @@
     },
     {
         "ModelName": "SM_Interior_Box_06",
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Box_06.bin"
     },
     {
         "ModelName": "SM_Interior_Box_08",
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Box_08.bin"
     },
     {
@@ -346,7 +366,7 @@
     },
     {
         "ModelName": "SM_Wall_ArchHalf01A",
-        "ObjectCount": 2,
+        "ObjectCount": 42,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_ArchHalf01A.bin"
     },
     {
@@ -361,7 +381,7 @@
     },
     {
         "ModelName": "SM_Wall_PillarFrame01A",
-        "ObjectCount": 112,
+        "ObjectCount": 156,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_PillarFrame01A.bin"
     },
     {

@@ -92,7 +92,7 @@ HRESULT CToolMeshEffect::Render()
 
 HRESULT CToolMeshEffect::Change_Model(_wstring strModelName)
 {
-	Safe_Release(m_pModelCom);
+	//Safe_Release(m_pModelCom);
 	_wstring strModelTag = L"Prototype_Component_Model_" + strModelName;
 	return Replace_Component(ENUM_CLASS(LEVEL::CY), strModelTag.c_str(),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom));
