@@ -49,7 +49,7 @@ using namespace Client;
 #pragma region 한영웅
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
 #define PRE_TRANSFORMMATRIX_SCALE 0.004f
-#define INSTANCE_THRESHOLD 10 //이 갯수 초과 모델로드시 인스턴싱으로 로드한다.
+#define INSTANCE_THRESHOLD 30 //이 갯수 초과 모델로드시 인스턴싱으로 로드한다.
 #pragma endregion
 
 

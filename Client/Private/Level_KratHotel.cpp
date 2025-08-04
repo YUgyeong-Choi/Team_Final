@@ -9,6 +9,8 @@
 
 #include "SpriteEffect.h"
 
+#include "Player.h"
+
 CLevel_KratHotel::CLevel_KratHotel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -32,6 +34,10 @@ HRESULT CLevel_KratHotel::Initialize()
 	//제이슨으로 저장된 맵을 로드한다.
 	if (FAILED(LoadMap()))
 		return E_FAIL;
+
+	//if (FAILED(Ready_Player()))
+	//	return E_FAIL;
+	
 
 
 	// 이펙트 파싱 테스트입니다요
@@ -301,6 +307,23 @@ HRESULT CLevel_KratHotel::Load_StaticMesh_Instance(_uint iObjectCount, const jso
 	return S_OK;
 }
 
+HRESULT CLevel_KratHotel::Ready_Player()
+{
+	CPlayer::PLAYER_DESC pDesc{};
+	//pDesc.fSpeedPerSec = 1.f;
+	pDesc.fSpeedPerSec = 5.f;
+	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc.eLevelID = LEVEL::KRAT_HOTEL;
+	pDesc.InitPos = _float3(0.f, 0.978f, 1.f);
+	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pDesc.szName, TEXT("Player"));
+	pDesc.szMeshID = TEXT("Player");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_Player"),
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Player"), &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
 
 HRESULT CLevel_KratHotel::Ready_Lights()
 {

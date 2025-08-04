@@ -30,6 +30,13 @@ public:
 	virtual HRESULT Render() override;
 
 
+private:
+	//맵 로드하는 부분
+	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance);
+	HRESULT Ready_MapModel();
+	HRESULT LoadMap();
+	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName);
+	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName);
 
 private:
 	HRESULT Ready_Camera();

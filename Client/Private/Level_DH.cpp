@@ -5,6 +5,9 @@
 #include "Level_Loading.h"
 #include "PBRMesh.h"
 
+#include "StaticMesh.h"
+#include "StaticMesh_Instance.h"
+
 CLevel_DH::CLevel_DH(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -26,14 +29,27 @@ HRESULT CLevel_DH::Initialize()
 	if (FAILED(Ready_Shadow()))
 		return E_FAIL;
 
+
+#pragma region 맵 로드
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
+	if (FAILED(Ready_MapModel()))
+		return E_FAIL;
+
+	//제이슨으로 저장된 맵을 로드한다.
+	if (FAILED(LoadMap()))
+		return E_FAIL;
+#pragma endregion
+
+
+
 	//if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 	//	return E_FAIL;
 
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
+	//	return E_FAIL;
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::DH));
 	return S_OK;
@@ -80,6 +96,241 @@ HRESULT CLevel_DH::Render()
 	return S_OK;
 }
 
+#pragma region 맵 로드
+
+HRESULT CLevel_DH::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance)
+{
+	//이미 프로토타입이존재하는 지확인
+
+	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::DH), strPrototypeTag) != nullptr)
+	{
+		//MSG_BOX("이미 프로토타입이 존재함");
+		return S_OK;
+	}
+
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+
+	if (bInstance == false)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), strPrototypeTag,
+			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), strPrototypeTag,
+			CModel_Instance::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+			return E_FAIL;
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Ready_MapModel()
+{
+	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	if (!inFile.is_open())
+	{
+		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		return S_OK;
+	}
+
+	json ReadyModelJson;
+	try
+	{
+		inFile >> ReadyModelJson;
+		inFile.close();
+	}
+	catch (const exception& e)
+	{
+		inFile.close();
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+		return E_FAIL;
+	}
+
+	// JSON 데이터 확인
+	for (const auto& element : ReadyModelJson)
+	{
+		string ModelName = element.value("ModelName", "");
+		string Path = element.value("Path", "");
+
+		//갯수도 저장해서 인스턴스용 모델 프로토타입을 만들지 결정해야할듯
+		_uint iObjectCount = element["ObjectCount"];
+
+		wstring PrototypeTag = {};
+		_bool bInstance = false;
+		if (iObjectCount > INSTANCE_THRESHOLD)
+		{
+			//인스턴싱용 모델 프로토 타입 생성
+			PrototypeTag = L"Prototype_Component_Model_Instance" + StringToWString(ModelName);
+			bInstance = true;
+
+		}
+		else
+		{
+			//모델 프로토 타입 생성
+			PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+			bInstance = false;
+		}
+
+
+		const _char* pModelFilePath = Path.c_str();
+
+		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance)))
+		{
+			return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::LoadMap()
+{
+	ifstream inFile("../Bin/Save/MapTool/MapData.json");
+	if (!inFile.is_open())
+	{
+		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
+		return S_OK;
+	}
+
+	json MapDataJson;
+	inFile >> MapDataJson;
+	inFile.close();
+
+	_uint iModelCount = MapDataJson["ModelCount"];
+	const json& Models = MapDataJson["Models"];
+
+	for (_uint i = 0; i < iModelCount; ++i)
+	{
+		string ModelName = Models[i]["ModelName"];
+		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.
+		const json& objects = Models[i]["Objects"];
+
+		//일정 갯수 이상이면 인스턴싱오브젝트로 로드
+		if (iObjectCount > INSTANCE_THRESHOLD)
+		{
+			Load_StaticMesh_Instance(iObjectCount, objects, ModelName);
+		}
+		else
+		{
+			Load_StaticMesh(iObjectCount, objects, ModelName);
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName)
+{
+	for (_uint j = 0; j < iObjectCount; ++j)
+	{
+#pragma region 월드행렬
+		CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
+
+		const json& WorldMatrixJson = objects[j]["WorldMatrix"];
+		_float4x4 WorldMatrix = {};
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+		StaticMeshDesc.WorldMatrix = WorldMatrix;
+#pragma endregion
+
+#pragma region 타일링
+		//타일링
+		if (objects[j].contains("TileDensity"))
+		{
+			StaticMeshDesc.bUseTiling = true;
+
+			const json& TileDensityJson = objects[j]["TileDensity"];
+			StaticMeshDesc.vTileDensity = {
+				TileDensityJson[0].get<_float>(),
+				TileDensityJson[1].get<_float>()
+			};
+		}
+#pragma endregion
+
+#pragma region 콜라이더
+		//콜라이더
+		if (objects[j].contains("ColliderType") && objects[j]["ColliderType"].is_number_integer())
+		{
+			StaticMeshDesc.eColliderType = static_cast<COLLIDER_TYPE>(objects[j]["ColliderType"].get<_int>());
+		}
+		else
+			return E_FAIL;
+#pragma endregion
+
+		wstring LayerTag = TEXT("Layer_MapToolObject_");
+		LayerTag += StringToWString(ModelName);
+
+		StaticMeshDesc.iRender = 0;
+		StaticMeshDesc.m_eLevelID = LEVEL::DH;
+		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+		wstring wstrModelName = StringToWString(ModelName);
+		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
+		ModelPrototypeTag += wstrModelName;
+
+		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
+			ENUM_CLASS(LEVEL::DH), LayerTag, &StaticMeshDesc)))
+			return E_FAIL;
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName)
+{
+	vector<_float4x4> InstanceMatixs(iObjectCount);
+
+	for (_uint i = 0; i < iObjectCount; ++i)
+	{
+		const json& WorldMatrixJson = objects[i]["WorldMatrix"];
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				InstanceMatixs[i].m[row][col] = WorldMatrixJson[row][col];
+	}
+
+
+	//오브젝트 생성, 배치
+
+	wstring LayerTag = TEXT("Layer_MapToolObject_");
+	LayerTag += StringToWString(ModelName);
+
+	CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
+	StaticMeshInstanceDesc.iNumInstance = iObjectCount;//인스턴스 갯수랑
+	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
+
+	StaticMeshInstanceDesc.iRender = 0;
+	StaticMeshInstanceDesc.m_eLevelID = LEVEL::DH;
+	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+	wstring wstrModelName = StringToWString(ModelName);
+	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance"); //인스턴스 용 모델을 준비해야겠는디?
+	ModelPrototypeTag += wstrModelName;
+
+	lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		ENUM_CLASS(LEVEL::DH), LayerTag, &StaticMeshInstanceDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+#pragma endregion
+
+
 HRESULT CLevel_DH::Ready_Camera()
 {
 	m_pCamera_Manager->Initialize(LEVEL::STATIC);
@@ -90,6 +341,29 @@ HRESULT CLevel_DH::Ready_Camera()
 
 HRESULT CLevel_DH::Ready_Lights()
 {
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.fAmbient = 0.2f;
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
+	CShadow::SHADOW_DESC		Desc{};
+	Desc.vEye = _float4(0.f, 20.f, -15.f, 1.f);
+	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	Desc.fFovy = XMConvertToRadians(60.0f);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 500.f;
+
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
+		return E_FAIL;
+
+	return S_OK;
+
 	return S_OK;
 }
 
