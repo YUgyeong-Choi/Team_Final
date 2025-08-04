@@ -6,7 +6,7 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CAnimator;
-class CPhysXController;
+class CPhysXActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -47,9 +47,8 @@ protected: /* [ Setup 함수 ] */
 
 
 public: /* [ 피직스 관련 ] */
-	PxRigidActor* Get_Actor();
-	void SyncTransformWithController(); // 위치동기화(컨트롤러)
-	void RayCast();
+	PxRigidActor* Get_Actor(CPhysXActor* actor);
+	void RayCast(CPhysXActor* actor);
 
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
@@ -86,7 +85,6 @@ protected:              /* [ 컴포넌트 ] */
 	CModel*				m_pModelCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
 	CAnimator*			m_pAnimator = { nullptr };
-	CPhysXController*	m_pControllerCom = { nullptr };
 
 protected:				/* [ 레이캐스트 변수 ] */
 	PxVec3				m_vRayHitPos = {};

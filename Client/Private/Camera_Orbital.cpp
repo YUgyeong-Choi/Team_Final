@@ -99,6 +99,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
+		/*
 		// --- 스프링암 Raycast 처리 시작 ---
 		_vector vRayDir = XMVector3Normalize(vOffset);
 		_float fTargetDist = XMVectorGetX(XMVector3Length(vOffset));
@@ -134,7 +135,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 			}
 		}
 		// --- 스프링암 Raycast 처리 끝 ---
-
+		*/
 		// 현재 카메라 위치
 		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
 

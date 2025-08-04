@@ -126,11 +126,13 @@ void CCamera_Manager::Play_CutScene(CUTSCENE_TYPE cutSceneType)
 
 void CCamera_Manager::SetPlayer(CGameObject* pPlayer)
 {
-	m_pCamera_Orbital->SetPlayer(pPlayer);
-    m_pCamera_Orbital->Get_TransfomCom()->Set_WorldMatrix(m_pCamera_Orbital->Get_OrbitalWorldMatrix(0.112646, -1.535662));
-    m_pCamera_Orbital->Set_PitchYaw(0.112646, -1.535662);
+    m_pCamera_Orbital->SetPlayer(pPlayer);
+    if (pPlayer)
+    {
+        m_pCamera_Orbital->Get_TransfomCom()->Set_WorldMatrix(m_pCamera_Orbital->Get_OrbitalWorldMatrix(0.112646f, -1.535662f));
+        m_pCamera_Orbital->Set_PitchYaw(0.112646f, -1.535662f);
+    }
 }
-
 void CCamera_Manager::Shake_Camera(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot)
 {
     if (m_pCurCamera)

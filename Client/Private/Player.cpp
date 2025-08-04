@@ -49,7 +49,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
 
 	/* [ 위치 초기화 후 콜라이더 생성 ] */
-	if (FAILED(Ready_Collider()))
+	if (FAILED(Ready_Controller()))
 		return E_FAIL;
 
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
@@ -81,7 +81,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
 	/* [ 룩 벡터 레이케스트 ] */
-	RayCast();
+	RayCast(m_pControllerCom);
 
 
 	// 옵저버 변수들 처리
@@ -149,6 +149,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 HRESULT CPlayer::Render()
 {
 	__super::Render();
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		m_pGameInstance->Add_DebugComponent(m_pControllerCom);
+	}
+#endif
 
 	return S_OK;
 }
@@ -314,6 +320,29 @@ HRESULT CPlayer::Ready_Components()
 {
 	/* [ 따로 붙일 컴포넌트를 붙여보자 ] */
 
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Controller"),
+		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pControllerCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CPlayer::Ready_Controller()
+{
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxExtendedVec3 pos(positionVec.x, positionVec.y, positionVec.z);
+	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f);
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+	m_pControllerCom->Set_SimulationFilterData(filterData);
+	m_pControllerCom->Set_QueryFilterData(filterData);
+	m_pControllerCom->Set_Owner(this);
+	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
 	return S_OK;
 }
 void CPlayer::LoadPlayerFromJson()
@@ -404,6 +433,14 @@ void CPlayer::Movement(_float fTimeDelta)
 	SetMoveState(fTimeDelta);
 }
 
+void CPlayer::SyncTransformWithController()
+{
+	if (!m_pControllerCom) return;
+
+	PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
+	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 1.0f, (float)pos.z, 1.f);
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+}
 
 HRESULT CPlayer::UpdateShadowCamera()
 {

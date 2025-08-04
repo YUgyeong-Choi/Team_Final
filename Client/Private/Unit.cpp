@@ -73,11 +73,6 @@ HRESULT CUnit::Render()
 	if (FAILED(Bind_Shader()))
 		return E_FAIL;
 
-#ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
-		m_pGameInstance->Add_DebugComponent(m_pControllerCom);
-	}
-#endif
 	return S_OK;
 }
 
@@ -119,7 +114,6 @@ HRESULT CUnit::Bind_Shader()
 }
 HRESULT CUnit::Ready_Components()
 {
-
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
@@ -135,48 +129,23 @@ HRESULT CUnit::Ready_Components()
 	if (FAILED(m_pAnimator->Initialize(m_pModelCom)))
 		return E_FAIL;
 
-	/* For.Com_PhysX */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Controller"),
-		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pControllerCom))))
-		return E_FAIL;
-
 	return S_OK;
 }
 HRESULT CUnit::Ready_Collider()
 {
-	XMVECTOR S, R, T;
-	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
-	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-
-	PxExtendedVec3 pos(positionVec.x, positionVec.y, positionVec.z);
-	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f);
-	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
-	m_pControllerCom->Set_SimulationFilterData(filterData);
-	m_pControllerCom->Set_QueryFilterData(filterData);
-	m_pControllerCom->Set_Owner(this);
-	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
 	return S_OK;
 }
 
-PxRigidActor* CUnit::Get_Actor()
+PxRigidActor* CUnit::Get_Actor(CPhysXActor* actor)
 {
-	return m_pControllerCom->Get_Actor();
+	return actor->Get_Actor();
 }
 
-void CUnit::SyncTransformWithController()
-{
-	if (!m_pControllerCom) return;
 
-	PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
-	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 1.0f, (float)pos.z, 1.f);
-	m_pTransformCom->Set_State(STATE::POSITION, vPos);
-}
-void CUnit::RayCast()
+void CUnit::RayCast(CPhysXActor* actor)
 {
-	PxVec3 origin = m_pControllerCom->Get_Actor()->getGlobalPose().p;
+	PxVec3 origin = actor->Get_Actor()->getGlobalPose().p;
 	XMFLOAT3 fLook;
 	XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
 	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
@@ -188,7 +157,7 @@ void CUnit::RayCast()
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
-	CIgnoreSelfCallback callback(m_pControllerCom->Get_Actor());
+	CIgnoreSelfCallback callback(actor->Get_Actor());
 
 	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
 	{
@@ -196,7 +165,7 @@ void CUnit::RayCast()
 		{
 			PxRigidActor* hitActor = hit.block.actor;
 
-			if (hitActor == m_pControllerCom->Get_Actor())
+			if (hitActor == actor->Get_Actor())
 			{
 				printf(" Ray hit myself  skipping\n");
 				return;
@@ -205,7 +174,7 @@ void CUnit::RayCast()
 			PxVec3 hitNormal = hit.block.normal;
 
 			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
-			pHitActor->Get_Owner()->On_Hit(this, m_pControllerCom->Get_ColliderType());
+			pHitActor->Get_Owner()->On_Hit(this, actor->Get_ColliderType());
 
 			//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
 			//printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
@@ -217,14 +186,14 @@ void CUnit::RayCast()
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		DEBUGRAY_DATA _data{};
-		_data.vStartPos = m_pControllerCom->Get_Actor()->getGlobalPose().p;
+		_data.vStartPos = actor->Get_Actor()->getGlobalPose().p;
 		XMFLOAT3 fLook;
 		XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
 		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
 		_data.fRayLength = 10.f;
 		_data.bIsHit = m_bRayHit;
 		_data.vHitPos = m_vRayHitPos;
-		m_pControllerCom->Add_RenderRay(_data);
+		actor->Add_RenderRay(_data);
 
 		m_bRayHit = false;
 		m_vRayHitPos = {};
@@ -284,5 +253,4 @@ void CUnit::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pControllerCom);
 }

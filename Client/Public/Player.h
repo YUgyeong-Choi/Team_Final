@@ -2,6 +2,9 @@
 #include "Unit.h"
 #include "Client_Defines.h"
 
+NS_BEGIN(Engine)
+class CPhysXController;
+NS_END
 
 NS_BEGIN(Client)
 class CPlayerState;
@@ -72,9 +75,10 @@ private: /* [ 이동로직 ] */
 	void SetMoveState(_float fTimeDelta);
 	void Movement(_float fTimeDelta);
 	void ToggleWalkRun() { m_bWalk = !m_bWalk; }
-
+	void SyncTransformWithController(); // 위치동기화(컨트롤러)
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
+	HRESULT Ready_Controller();
 	void LoadPlayerFromJson();
 
 private: /* 옵저버 관련*/
@@ -113,7 +117,8 @@ private: /* [ 상태 변수 ] */
 
 protected:
 	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
-
+private:
+	CPhysXController* m_pControllerCom = { nullptr };
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
