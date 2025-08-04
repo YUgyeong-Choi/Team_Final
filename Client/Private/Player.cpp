@@ -109,19 +109,38 @@ void CPlayer::Update(_float fTimeDelta)
 void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-
-	if(KEY_PRESSING(DIK_J))
+	
+	/* [ 이곳은 애니메이션 실험실입니다. ] */
+	if(KEY_DOWN(DIK_Y))
 	{
-		/* [ 이곳은 애니메이션 실험실입니다. ] */
 		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
-		//m_pAnimator->SetInt("Combo", 0);
-		//m_pAnimator->SetTrigger("NormalAttack");
+		//m_pAnimator->SetInt("Combo", 1);
+		//string strName = m_pAnimator->GetCurrentAnimName();
+		//m_pAnimator->SetBool("Charge", true);
+		//m_pAnimator->SetTrigger("StrongAttack");
+		
+		m_pAnimator->SetBool("Move", true);
+		m_pAnimator->SetTrigger("Dash");
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(200.f);
 
-		//m_pAnimator->SetBool("Move", true);
 		//m_pAnimator->SetBool("Run", true);
 		//m_pAnimator->SetTrigger("Hited");
 	}
 	
+	//m_pAnimator->ApplyOverrideAnimController("TwoHand");
+	//m_pAnimator->SetBool("Charge", true);
+	//m_pAnimator->SetTrigger("StrongAttack");
+	//string strName = m_pAnimator->GetCurrentAnimName();
+
+	if (KEY_PRESSING(DIK_U))
+	{
+		m_pAnimator->SetBool("Move", false);
+	}
+	if (KEY_PRESSING(DIK_I))
+	{
+		m_pAnimator->SetBool("Move", true);
+	}
+
 	if (m_pAnimator->IsFinished())
 		int a = 0;
 }
@@ -224,6 +243,9 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINT)] = new CPlayer_Sprint(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::WEAKATTACKA)] = new CPlayer_WeakAttackA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::WEAKATTACKB)] = new CPlayer_WeakAttackB(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::STRONGATTACKA)] = new CPlayer_StrongAttackA(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::STRONGATTACKB)] = new CPlayer_StrongAttackB(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::CHARGE)] = new CPlayer_Charge(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }

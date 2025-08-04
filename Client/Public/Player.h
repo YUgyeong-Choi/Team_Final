@@ -95,6 +95,9 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_Sprint;
 	friend class CPlayer_WeakAttackA;
 	friend class CPlayer_WeakAttackB;
+	friend class CPlayer_StrongAttackA;
+	friend class CPlayer_StrongAttackB;
+	friend class CPlayer_Charge;
 
 
 private: /* [ 상태 변수 ] */
