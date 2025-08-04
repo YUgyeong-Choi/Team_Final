@@ -230,7 +230,7 @@ private:
     void MakeMaskBones(const string& maskBoneName);
 	void CollectBoneChildren(const _char* boneName);
     void CollectBoneChildren(const _char* boneName, const _char* stopBoneName);
-
+    void AddUniqueClip(CAnimation* pClip, array<CAnimation*, 4>& pArray, _int& clipCount);
 	_matrix LerpMatrix(const _matrix& src, const _matrix& dst, _float t);
     void ResetRootMotion();
 private:
@@ -271,6 +271,9 @@ private:
     _float4 m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
     _bool m_bFirstFrameAfterReset = false;
 	_bool m_bApplyRootMotion = true; // 루트 모션 적용 여부
+
+    array<CAnimation*, 4> m_pBlendAnimArray{nullptr,};
+	_int m_iBlendAnimCount = 0; // 현재 애니메이션 개수
 
 public:
 	static CAnimator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
