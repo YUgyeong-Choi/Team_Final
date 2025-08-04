@@ -35,8 +35,8 @@ HRESULT CLevel_KratHotel::Initialize()
 	if (FAILED(LoadMap()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Player()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Player()))
+		return E_FAIL;
 	
 
 

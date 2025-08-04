@@ -1718,7 +1718,7 @@ void CMapTool::Detail_Collider()
 
 		if (ImGui::Combo("Collider Type", &CurrentCollider, ColliderTypes, IM_ARRAYSIZE(ColliderTypes)))
 		{
-			m_pFocusObject->m_eColliderType = static_cast<COLLIDER_TYPE>(CurrentCollider);
+			m_pFocusObject->Set_Collider(static_cast<COLLIDER_TYPE>(CurrentCollider));
 		}
 
 	}

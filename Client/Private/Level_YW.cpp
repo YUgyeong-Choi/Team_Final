@@ -36,8 +36,8 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;	
 
-	if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
-		return E_FAIL;	
+	//if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
+	//	return E_FAIL;	
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
 	return S_OK;
