@@ -9,6 +9,8 @@
 #include "PhysXController.h"
 
 #include "PlayerState.h"
+#include "Bayonet.h"
+#include "Weapon.h"
 
 #include "Observer_Player_Status.h"
 
@@ -39,6 +41,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
@@ -115,8 +120,6 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 입력 ] */
 	HandleInput();
 	UpdateCurrentState(fTimeDelta);
-
-	// 바꿀 예정
 	Movement(fTimeDelta);
 }
 
@@ -128,31 +131,22 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if(KEY_DOWN(DIK_Y))
 	{
 		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
-		//m_pAnimator->SetInt("Combo", 1);
 		//string strName = m_pAnimator->GetCurrentAnimName();
 		//m_pAnimator->SetBool("Charge", true);
 		//m_pAnimator->SetTrigger("StrongAttack");
+		m_pAnimator->SetInt("Combo", 1);
+		m_pAnimator->SetTrigger("NormalAttack");
 		
 		//m_pAnimator->SetBool("HasLamp", true);
-		m_pAnimator->SetTrigger("Hited");
+		//m_pAnimator->SetTrigger("Hited");
 
 		//m_pAnimator->SetBool("Run", true);
 		//m_pAnimator->SetTrigger("Hited");
 	}
-	
-
-	//m_pAnimator->ApplyOverrideAnimController("TwoHand");
-	//m_pAnimator->SetBool("Charge", true);
-	//m_pAnimator->SetTrigger("StrongAttack");
-	//string strName = m_pAnimator->GetCurrentAnimName();
-
 	if (KEY_PRESSING(DIK_U))
 	{
-		m_pAnimator->SetBool("Move", false);
-	}
-	if (KEY_PRESSING(DIK_I))
-	{
-		m_pAnimator->SetBool("Move", true);
+		m_pAnimator->SetInt("Combo", 1);
+		m_pAnimator->SetTrigger("StrongAttack");
 	}
 
 	if (m_pAnimator->IsFinished())
@@ -232,6 +226,7 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 void CPlayer::TriggerStateEffects(_float fTimeDelta)
 {
 	string stateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+	//printf("Current State: %s\n", stateName.c_str());
 
 	// 상태가 바뀌었으면 초기화
 	if (m_strPrevStateName != stateName)
@@ -241,8 +236,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_iMoveStep = 0;
 		m_bMove = false;
 	}
-
+	
 	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
+	printf("Anim Category: %d\n", static_cast<int>(eCategory));
+
 	switch (eCategory)
 	{
 	case eAnimCategory::NORMAL_ATTACKA:
@@ -313,41 +310,112 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		}
 		break;
 	}
-	case eAnimCategory::CHARGE_ATTACK:
+	case eAnimCategory::CHARGE_ATTACKA:
 	{
+		RootMotionActive(fTimeDelta);
+
+		/* [ 차지 A 일 때 R버튼이 꾹 눌리면 체인지 변수가 켜진다. ] */
+		m_fChangeTimeElaped += fTimeDelta;
+
+		if (m_fChangeTimeElaped > 1.f)
+		{
+			if (MOUSE_PRESSING(DIM::RBUTTON))
+			{
+				m_fChangeTime += fTimeDelta;
+
+				if (m_fChangeTime >= 0.5f)
+				{
+					m_bIsChange = true;
+				}
+			}
+			else
+			{
+				m_fChangeTime = 0.f;
+				m_bIsChange = false;
+			}
+		}
+
+		break;
+	}
+	case eAnimCategory::CHARGE_ATTACKB:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
+	case eAnimCategory::IDLE:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::WALK:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::RUN:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fRunSpeed);
+		break;
+	}
+	case eAnimCategory::SPRINT:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		break;
+	}
+	case eAnimCategory::EQUIP:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::GUARD:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::ITEM_WALK:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::DASH_BACK:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+
 		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.4f;
+		_float  m_fDistance = 3.f;
 
-		_float fMoveTime = 0.2f;
-		_float fDistance = 1.f;
-		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-
-		if (m_iMoveStep == 0)
+		if (!m_bMove)
 		{
-			if (m_fMoveTime > 0.3f)
-			{
-				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, fMoveTime, vLook, fDistance, m_pControllerCom);
-				SyncTransformWithController();
-
-				if (m_bMove)
-				{
-					m_iMoveStep = 1;
-					m_bMove = false; // 다음 이동을 위해 다시 초기화
-				}
-			}
+			_vector vLook = m_pTransformCom->Get_State(STATE::LOOK) * -1.f;
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+			SyncTransformWithController();
 		}
-		else if (m_iMoveStep == 1)
+
+		break;
+	}
+	case eAnimCategory::DASH_FRONT:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.5f;
+		_float  m_fDistance = 3.5f;
+
+		if (!m_bMove)
 		{
-			if (m_fMoveTime > 0.7f)
-			{
-				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, fMoveTime, vLook, fDistance, m_pControllerCom);
-				SyncTransformWithController();
-
-				if (m_bMove)
-				{
-					m_iMoveStep = 2;
-				}
-			}
+			_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+			SyncTransformWithController();
 		}
+
+		break;
+	}
+	case eAnimCategory::SPRINT_ATTACK:
+	{
+		RootMotionActive(fTimeDelta);
+
 		break;
 	}
 
@@ -356,16 +424,19 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 }
 
-CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const std::string& stateName)
+CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 {
 	if (stateName == "Idle") return eAnimCategory::IDLE; 
 
 	if (stateName.find("Walk") == 0) return eAnimCategory::WALK;
 	if (stateName.find("Run") == 0) return eAnimCategory::RUN;
 
-	if (stateName.find("Dash_Normal") == 0) return eAnimCategory::DASH_NORMAL;
-	if (stateName.find("Dash_Focus") == 0) return eAnimCategory::DASH_FOCUS;
+	if (stateName.find("Dash_Normal_B") == 0 || stateName.find("Dash_Focus_B") == 0)
+		return eAnimCategory::DASH_BACK;
+	if (stateName.find("Dash_") == 0) return eAnimCategory::DASH_FRONT;
 
+	if (stateName.find("SprintNormalAttack") == 0 || stateName.find("SprintStrongAttack") == 0)
+		return eAnimCategory::SPRINT_ATTACK;
 	if (stateName.find("Sprint") == 0) return eAnimCategory::SPRINT;
 
 	if (stateName.find("Guard_Hit") == 0 || stateName.find("Guard_Break") == 0)
@@ -388,10 +459,10 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const std::string& state
 		return eAnimCategory::STRONG_ATTACKB;
 	if (stateName.find("StrongAttack") == 0)
 		return eAnimCategory::STRONG_ATTACKA;
+	if (stateName.find("ChargeStrongAttack2") == 0)
+		return eAnimCategory::CHARGE_ATTACKB;
 	if (stateName.find("ChargeStrongAttack") == 0)
-		return eAnimCategory::CHARGE_ATTACK;
-	if (stateName.find("SprintNormalAttack") == 0 || stateName.find("SprintStrongAttack") == 0)
-		return eAnimCategory::SPRINT_ATTACK;
+		return eAnimCategory::CHARGE_ATTACKA;
 
 	if (stateName.find("MainSkill") == 0)
 		return eAnimCategory::MAINSKILL;
@@ -478,11 +549,41 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::CHARGEA)] = new CPlayer_ChargeA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::CHARGEB)] = new CPlayer_ChargeB(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::GARD)] = new CPlayer_Gard(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINTATTACKA)] = new CPlayer_SprintAttackA(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINTATTACKB)] = new CPlayer_SprintAttackB(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }
 
 
+
+HRESULT CPlayer::Ready_Weapon()
+{
+	/* [ 무기 모델을 추가 ] */
+
+	CBayonet::BAYONET_DESC Desc{};
+	Desc.eLevelID = LEVEL::STATIC;
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.InitPos = { 0.f, 0.f, 0.f };
+	Desc.InitScale = { 1.f, 1.f, 1.f };
+	Desc.iRender = 0;
+	
+	Desc.szMeshID = TEXT("PlayerWeapon");
+	lstrcpy(Desc.szName, TEXT("PlayerWeapon"));
+
+	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_R"));
+	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PlayerWeapon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("Player_Weapon"), &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
+
+	return S_OK;
+}
 
 HRESULT CPlayer::Ready_Components()
 {
