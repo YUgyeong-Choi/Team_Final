@@ -11,3 +11,8 @@ static _float2 Get_MousePos()
 
 	return vMousePos;
 }
+
+CGameObject* Get_Player(_uint iLevelIndex)
+{
+	return CGameInstance::Get_Instance()->Get_LastObject(iLevelIndex, TEXT("Layer_Player"));
+}

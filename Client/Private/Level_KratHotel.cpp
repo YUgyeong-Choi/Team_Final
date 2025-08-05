@@ -331,7 +331,7 @@ HRESULT CLevel_KratHotel::Ready_Player()
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_Player"),
-		ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Player"), &pDesc)))
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
 
 	return S_OK;
