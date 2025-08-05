@@ -120,7 +120,7 @@
                 ""
             ],
             "TextureUsage": [
-                true,
+                false,
                 true,
                 false,
                 false
@@ -250,7 +250,7 @@
                 ""
             ],
             "TextureUsage": [
-                true,
+                false,
                 true,
                 false,
                 false

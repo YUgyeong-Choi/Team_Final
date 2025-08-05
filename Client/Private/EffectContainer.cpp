@@ -22,6 +22,19 @@ HRESULT CEffectContainer::Initialize_Prototype()
 HRESULT CEffectContainer::Initialize(void* pArg)
 {
 
+	if (pArg == nullptr)
+	{
+		MSG_BOX("EffectContainer must have Arguments");
+		return E_FAIL;
+	}
+
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
+	DESC* pDesc = static_cast<DESC*>(pArg);
+
+	Load_JsonFiles(pDesc->j);
+
     return S_OK;
 }
 
@@ -34,7 +47,7 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 	* 루프일 때는 전체 프레임 재생이 끝나면 0으로 다시 돌아감
 	* 아닐 땐 계속 증가하시다가 언젠가 죽겠지.. 
 	*/
-	if (m_iCurFrame > m_iMaxFrame && true == m_bLoop)
+	if (m_iCurFrame > 200 && true == m_bLoop)
 	{
 		m_fCurFrame = 0.f;
 		m_iCurFrame = 0;
@@ -43,8 +56,8 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 			pEffect->Reset_TrackPosition();
 		}
 	}
-	if (m_fLifeTimeAcc >= m_fLifeTime)
-		m_bDead = true;
+	//if (m_fLifeTimeAcc >= m_fLifeTime)
+	//	m_bDead = true;
 
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
@@ -91,160 +104,87 @@ void CEffectContainer::Late_Update(_float fTimeDelta)
 
 HRESULT CEffectContainer::Render()
 {
-#ifdef _DEBUG
 
-
-#endif
     return S_OK;
 }
 
-HRESULT CEffectContainer::Load_JsonFiles(const _wstring strJsonFilePath)
+HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 {
-	//json j;
-	//ifstream ifs(strJsonFilePath);
+	
+	if (!j.contains("EffectObject") || !j["EffectObject"].is_array())
+	{
+		return E_FAIL;
+	}
 
-	/************************************************/
-	//IGFD::FileDialogConfig config;
-	//config.path = R"(../Bin/Save/Effect/EffectContainer/)";
+	for (const auto& jItem : j["EffectObject"])
+	{
+		// 이름
+		//if (jItem.contains("Name"))
+		//	m_strSeqItemName = jItem["Name"].get<string>();
 
-	//json jLoad;
-	//IFILEDIALOG->OpenDialog("LoadEffectsetDialog", "Choose File to Load", ".json", config);
+		// 타입
+		EFFECT_TYPE eEffectType = {};
+		if (jItem.contains("EffectType"))
+			eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
 
-	//if (IFILEDIALOG->Display("LoadEffectsetDialog"))
-	//{
-	//	if (IFILEDIALOG->IsOk())
-	//	{
-	//		path loadPath = IFILEDIALOG->GetFilePathName();
-	//		string filename = IFILEDIALOG->GetCurrentFileName();
-	//		string prefix = filename.substr(0, 2);
+		// Effect 객체 생성 및 역직렬화
+		CEffectBase* pInstance = { nullptr };
 
-	//		// put extension '.json'
-	//		if (loadPath.extension().string() != ".json")
-	//			loadPath += ".json";
+		switch (eEffectType)
+		{
+		case Client::EFF_SPRITE:
+		{
+			CSpriteEffect::DESC desc = {};
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.bTool = false;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"), &desc));
+		}
+		break;
+		case Client::EFF_PARTICLE:
+		{
+			CParticleEffect::DESC desc = {};
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.bTool = false;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
+		}
+		break;
+		case Client::EFF_MESH:
+		{
+			CMeshEffect::DESC desc = {};
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.bTool = false;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"), &desc));
+		}
+		break;
+		case Client::EFF_TRAIL:
+		{
+			//CTrailEffect::DESC desc = {};
+			//desc.fRotationPerSec = XMConvertToRadians(90.f);
+			//desc.fSpeedPerSec = 5.f;
+			//desc.bTool = false;
+			//pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+			//	PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"), &desc));
+		}
+		break;
+		}
 
-	//		// Compare Prefix
-	//		if (prefix != "EC")
-	//		{
-	//			MSG_BOX("Filename should start with EC (EffectContainer)");
-	//			IFILEDIALOG->Close();
-	//			return S_OK;
-	//		}
 
-	//		ifstream ifs(loadPath);
-	//		if (!ifs.is_open())
-	//		{
-	//			MSG_BOX("File open Failed");
-	//			IFILEDIALOG->Close();
-	//			return E_FAIL;
-	//		}
-
-	//		ifs >> jLoad;
-	//		ifs.close();
-
-	//		if (!jLoad.contains("EffectObject") || !jLoad["EffectObject"].is_array())
-	//		{
-	//			IFILEDIALOG->Close();
-	//			return E_FAIL;
-	//		}
-
-	//		for (const auto& jItem : jLoad["EffectObject"])
-	//		{
-	//			// 이름
-	//			//if (jItem.contains("Name"))
-	//			//	m_strSeqItemName = jItem["Name"].get<string>();
-
-	//			// 타입
-	//			EFFECT_TYPE eEffectType = {};
-	//			if (jItem.contains("EffectType"))
-	//				EFFECT_TYPE eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<int>());
-
-	//			// Effect 객체 생성 및 역직렬화
-	//			if (jItem.contains("EffectPreferences") && jItem["EffectPreferences"].is_array() && !jItem["EffectPreferences"].empty())
-	//			{
-	//				json jData;
-
-	//				if (jItem["EffectPreferences"].is_array())
-	//				{
-	//					if (!jItem["EffectPreferences"].empty())
-	//						jData = jItem["EffectPreferences"][0];
-	//				}
-	//				else if (jItem["EffectPreferences"].is_object())
-	//				{
-	//					jData = jItem["EffectPreferences"];
-	//				}
-
-	//				CEffectBase* pInstance = { nullptr };
-
-	//				switch (eEffectType)
-	//				{
-	//				case Client::EFF_SPRITE:
-	//				{
-	//					CSpriteEffect::DESC desc = {};
-	//					desc.bTool = false;
-	//					pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-	//						PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ToolSprite"), &desc));
-	//					if (pInstance != nullptr)
-	//					{
-	//						pInstance->Deserialize(jData);
-	//						pInstance->Ready_Textures_Prototype_Tool();
-	//					}
-	//				}
-	//				break;
-	//				case Client::EFF_PARTICLE:
-	//				{
-	//					CParticleEffect::DESC desc = {};
-	//					desc.fRotationPerSec = XMConvertToRadians(90.f);
-	//					desc.fSpeedPerSec = 5.f;
-	//					desc.bTool = false;
-	//					pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-	//						PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
-	//					if (pInstance != nullptr)
-	//					{
-	//						pInstance->Deserialize(jData);
-	//						pInstance->Ready_Textures_Prototype_Tool();
-	//						static_cast<CToolParticle*>(pInstance)->Change_InstanceBuffer(nullptr);
-	//						m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
-	//					}
-	//				}
-	//				break;
-	//				case Client::EFF_MESH:
-	//				{
-	//					CMeshEffect::DESC desc = {};
-	//					desc.fRotationPerSec = XMConvertToRadians(90.f);
-	//					desc.fSpeedPerSec = 5.f;
-	//					desc.bTool = false;
-	//					pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-	//						PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
-	//					if (pInstance != nullptr)
-	//					{
-	//						pInstance->Deserialize(jData);
-	//						pInstance->Ready_Textures_Prototype_Tool();
-	//						m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
-	//					}
-	//				}
-	//				break;
-	//				case Client::EFF_TRAIL:
-	//				{
-	//				}
-	//				break;
-	//				}
-
-	//				if (pInstance == nullptr)
-	//				{
-	//					MSG_BOX("Failed to make Effect");
-	//					m_bOpenLoadEffectContainer = false;
-	//					IFILEDIALOG->Close();
-	//					return E_FAIL;
-	//				}
-	//			}
-	//			m_bOpenLoadEffectContainer = false;
-	//			IFILEDIALOG->Close();
-	//		}
-	//	}
-	//}
+		if (pInstance != nullptr)
+		{
+			if (FAILED(pInstance->Ready_Effect_Deserialize(jItem)))
+				return E_FAIL;
+			m_Effects.push_back(pInstance);
+		}
+		else
+			return E_FAIL;
+	}
 	return S_OK;
-
-
 }
 
 HRESULT CEffectContainer::Ready_Components()

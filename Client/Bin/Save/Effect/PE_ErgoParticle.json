@@ -1,0 +1,101 @@
+{
+    "Animation": true,
+    "Billboard": false,
+    "Center": [
+        0.0,
+        0.10999999940395355,
+        0.0
+    ],
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        0.3036649227142334,
+        0.6828212738037109,
+        1.0,
+        1.0
+    ],
+    "Duration": 200,
+    "EndTrack": 200,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.3036649227142334,
+                0.6828212738037109,
+                1.0,
+                1.0
+            ],
+            "Intensity": 0.8899999856948853,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 0.0,
+    "LifeTime_Particle": [
+        0.800000011920929,
+        1.399999976158142
+    ],
+    "Local": true,
+    "Loop": true,
+    "MaxLifeTime": 4.0,
+    "NumInstance": 25,
+    "NumKeyFrames": 1,
+    "PType": 0,
+    "Pivot": [
+        0.0,
+        0.05000000074505806,
+        0.0
+    ],
+    "Range": [
+        0.029999999329447746,
+        0.10000000149011612,
+        0.029999999329447746
+    ],
+    "RenderGroup": 6,
+    "ShaderPass": 1,
+    "Size": [
+        0.029999999329447746,
+        0.07999999821186066
+    ],
+    "Speed": [
+        0.10000000149011612,
+        0.20000000298023224
+    ],
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "T_Shere_05_C_HJS",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        true,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}

@@ -799,6 +799,7 @@ HRESULT CCYTool::Load_EffectSet()
 						{
 							pInstance->Deserialize(jData);
 							pInstance->Ready_Textures_Prototype_Tool();
+							static_cast<CToolMeshEffect*>(pInstance)->Change_Model(L"");
 							m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 						}
 					}
@@ -967,8 +968,8 @@ HRESULT CCYTool::Load_Effect()
 				pInstance->Ready_Textures_Prototype_Tool();
 				if (m_eEffectType == EFF_PARTICLE)
 					static_cast<CToolParticle*>(pInstance)->Change_InstanceBuffer(nullptr);
-				//if (m_eEffectType == EFF_MESH)
-					//static_cast<CToolMeshEffect*>(pInstance)->Change_Model();
+				if (m_eEffectType == EFF_MESH)
+					static_cast<CToolMeshEffect*>(pInstance)->Change_Model(L"");
 				m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 			}
 			else
@@ -1207,6 +1208,7 @@ void CCYTool::Key_Input()
 		}
 		if (KEY_DOWN(DIK_Q)) {
 			m_isGizmoEnable = !m_isGizmoEnable;
+			m_iSelectedKeyframe = 0;
 		}
 		
 		if (KEY_DOWN(DIK_T)) {

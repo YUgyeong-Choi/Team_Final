@@ -62,7 +62,9 @@ void CEffectBase::Update(_float fTimeDelta)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	m_fLifeTime += fTimeDelta;
-	if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
+
+		//if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
+	if (m_fCurrentTrackPosition > static_cast<_float>(m_iDuration))
 	{
 		if (m_isLoop)
 			m_fCurrentTrackPosition = 0.f;
@@ -75,8 +77,19 @@ void CEffectBase::Update(_float fTimeDelta)
 	if (m_bBillboard)
 		m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
 
-	m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+	if (m_bAnimation)
+		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+	else
+		m_iTileIdx = 0;
+
+	//m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
 	// 이부분 AnimationSpeed로 별개로 관리하자 
+	if (m_iTileX == 0)
+		m_iTileX = 1;
+	if (m_iTileY == 0)
+		m_iTileY = 1;
+	m_fTileSize.x = 1.0f / _float(m_iTileX);
+	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
 	//m_fTickAcc = 0.f;
@@ -335,6 +348,14 @@ HRESULT CEffectBase::Ready_Textures_Prototype_Tool()
 		Change_Texture(m_TextureTag[TU_MASK3], TU_MASK3);
 	}
 
+	return S_OK;
+}
+
+HRESULT CEffectBase::Ready_Effect_Deserialize(const json& j)
+{
+	Deserialize(j); // 자식으로 오버라이드되어서 실행되는지 꼭 확인
+	if (FAILED(Ready_Components())) // 얘가문제였네
+		return E_FAIL;
 	return S_OK;
 }
 

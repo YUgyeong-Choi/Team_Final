@@ -26,7 +26,6 @@ public:
 		_uint				iShaderPass = { 0 };
 		_bool				isLoop = { true };
 		_bool				bTool = { false };
-		_tchar				pJsonFilePath[MAX_PATH]; // 이펙트 매니저 생길 때 까지 임시방편
 	}DESC;
 
 	// Keyframes
@@ -65,6 +64,8 @@ protected:
 	/* Keyframe Interpolation */
 	void Update_Keyframes();
 	_float Interpolate_Ratio(_float fRatio);
+
+	virtual HRESULT Ready_Components() PURE;
 
 protected:
 	CShader*		m_pShaderCom = { nullptr };
@@ -136,10 +137,8 @@ public:
 
 	_float* Get_Threshold() { return &m_fThreshold; }
 	_float4* Get_CenterColor() { return &m_vCenterColor; }
-#endif
-	_int Get_EndTrackPosition() { return m_iEndTrackPosition; }
 	_int Get_StartTrackPosition() { return m_iStartTrackPosition; }
-	HRESULT Set_InterpolationType(_uint iKeyFrameIndex, INTERPOLATION eType) { 
+	HRESULT Set_InterpolationType(_uint iKeyFrameIndex, INTERPOLATION eType) {
 		if (iKeyFrameIndex >= m_KeyFrames.size())
 			return E_FAIL;
 		m_KeyFrames[iKeyFrameIndex].eInterpolationType = eType; return S_OK;
@@ -149,6 +148,8 @@ public:
 			return INTERPOLATION_END;
 		return m_KeyFrames[iKeyFrameIndex].eInterpolationType;
 	}
+#endif
+	_int Get_EndTrackPosition() { return m_iEndTrackPosition; }
 	void Reset_TrackPosition() { m_iCurKeyFrameIndex = 0; m_fCurrentTrackPosition = 0.f; /*m_fTickAcc = 0.f;*/ }
 
 	
@@ -158,6 +159,9 @@ public:
 
 	HRESULT Ready_Textures_Prototype();//이펙트매니저 이전 임시 함수
 	HRESULT Ready_Textures_Prototype_Tool();
+
+	virtual HRESULT Ready_Effect_Deserialize(const json& j);
+
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;
 	virtual void Free() override;

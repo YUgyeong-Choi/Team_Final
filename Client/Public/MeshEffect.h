@@ -32,9 +32,10 @@ public:
 
 protected:
 	CModel*			m_pModelCom = { nullptr };
+	_wstring		m_strModelTag;
 
 protected:
-	virtual HRESULT Ready_Components();
+	virtual HRESULT Ready_Components() override;
 	HRESULT Bind_ShaderResources();
 
 public:
@@ -43,8 +44,8 @@ public:
 	virtual void Free() override;
 
 public:
-	virtual json Serialize();
-	virtual void Deserialize(const json& j);
+	virtual json Serialize()override;
+	virtual void Deserialize(const json& j)override;
 };
 
 NS_END

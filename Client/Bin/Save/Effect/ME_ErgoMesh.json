@@ -1,0 +1,125 @@
+{
+    "Animation": true,
+    "Billboard": false,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        0.10498123615980148,
+        0.5073791742324829,
+        1.0,
+        1.0
+    ],
+    "Duration": 200,
+    "EndTrack": 200,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.10471206903457642,
+                0.5078262686729431,
+                1.0,
+                1.0
+            ],
+            "Intensity": 0.41999998688697815,
+            "Interpolation": 0,
+            "Rotation": [
+                -0.0,
+                0.0,
+                -0.0,
+                1.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                0.10588235408067703,
+                0.5058823823928833,
+                1.0,
+                1.0
+            ],
+            "Intensity": 0.41999998688697815,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                1.0,
+                0.0,
+                1.1250451734667877e-06
+            ],
+            "Scale": [
+                0.9999933242797852,
+                1.0,
+                0.9999933242797852
+            ],
+            "TrackPosition": 100.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                0.10588235408067703,
+                0.5058823823928833,
+                1.0,
+                1.0
+            ],
+            "Intensity": 0.41999998688697815,
+            "Interpolation": 0,
+            "Rotation": [
+                -0.0,
+                -0.010730920359492302,
+                -0.0,
+                0.999942421913147
+            ],
+            "Scale": [
+                0.9999914169311523,
+                1.0,
+                0.9999914169311523
+            ],
+            "TrackPosition": 200.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 0.0,
+    "Loop": true,
+    "ModelTag": "",
+    "NumKeyFrames": 3,
+    "RenderGroup": 6,
+    "ShaderPass": 3,
+    "StartTrack": 0,
+    "TextureTags": [
+        "T_Noise_02_C_LKM",
+        "T_Noise_01_C_GDH",
+        "T_Bullet_01_C_KMH",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        true,
+        true,
+        false
+    ],
+    "Threshold": 0.8999999761581421,
+    "TickPerSecond": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}

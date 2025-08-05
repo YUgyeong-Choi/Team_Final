@@ -30,16 +30,7 @@ HRESULT CParticleEffect::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (!m_bTool)
-	{
-		json j;
-
-		Deserialize(j);
-		Ready_Textures_Prototype();
-		if (FAILED(Ready_Components(nullptr)))
-			return E_FAIL;
-	}
-	else
+	if (m_bTool)/* 툴에 대한 예외처리 */
 	{
 		DESC* pDesc = static_cast<DESC*>(pArg);
 
@@ -71,15 +62,17 @@ void CParticleEffect::Priority_Update(_float fTimeDelta)
 
 void CParticleEffect::Update(_float fTimeDelta)
 {
-
+	__super::Update(fTimeDelta);
 	m_pVIBufferCom->Update(fTimeDelta);
-	return;
+	return; 
 }
 
 void CParticleEffect::Late_Update(_float fTimeDelta)
 {
 	/* WeightBlend */
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
+	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
+
+	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
 
 HRESULT CParticleEffect::Render()
@@ -104,21 +97,43 @@ void CParticleEffect::Set_Loop(_bool isLoop)
 	m_pVIBufferCom->Set_Loop(isLoop);
 }
 
-HRESULT CParticleEffect::Ready_Components(void* pArg)
+HRESULT CParticleEffect::Ready_Components()
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_ParticleEffect"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
+	_wstring TextureTag = TEXT("Prototype_Component_Texture_");
+	if (m_bTextureUsage[TU_DIFFUSE] == true) {
+		/* For.Com_Texture */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_DIFFUSE],
+			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_DIFFUSE]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK1] == true) {
+		/* For.Com_TextureMask1 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK1],
+			TEXT("Com_TextureMask1"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK1]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK2] == true) {
+		/* For.Com_TextureMask2 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK2],
+			TEXT("Com_TextureMask2"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK2]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK3] == true) {
+		/* For.Com_TextureMask3 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK3],
+			TEXT("Com_TextureMask3"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK3]))))
+			return E_FAIL;
+	}
 
-
+	_wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+	strPrototypeTag += m_strBufferTag;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
@@ -173,7 +188,6 @@ HRESULT CParticleEffect::Bind_ShaderResources()
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
-
 
 	return S_OK;
 }
@@ -267,4 +281,10 @@ void CParticleEffect::Deserialize(const json& j)
 
 	if (j.contains("Local"))
 		m_bLocal = j["Local"].get<_bool>();
+
+	if (j.contains("Name"))
+	{
+		m_strBufferTag = StringToWString(j["Name"].get<std::string>());
+	}
+
 }

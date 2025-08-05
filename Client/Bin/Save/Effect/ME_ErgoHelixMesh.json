@@ -1,0 +1,125 @@
+{
+    "Animation": true,
+    "Billboard": false,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        0.10471206903457642,
+        0.5078262686729431,
+        1.0,
+        0.0
+    ],
+    "Duration": 200,
+    "EndTrack": 200,
+    "FlipUV": true,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.10471206903457642,
+                0.5078262686729431,
+                1.0,
+                0.0
+            ],
+            "Intensity": 0.1899999976158142,
+            "Interpolation": 0,
+            "Rotation": [
+                -0.0,
+                0.0,
+                -0.0,
+                1.0
+            ],
+            "Scale": [
+                0.2800000309944153,
+                0.6851879954338074,
+                0.2800000309944153
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                0.10588235408067703,
+                0.5058823823928833,
+                1.0,
+                1.0
+            ],
+            "Intensity": 0.7799999713897705,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                1.0,
+                0.0,
+                1.1250463103351649e-06
+            ],
+            "Scale": [
+                0.10999927669763565,
+                0.43352583050727844,
+                0.10999927669763565
+            ],
+            "TrackPosition": 100.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                0.10588235408067703,
+                0.5058823823928833,
+                1.0,
+                0.0
+            ],
+            "Intensity": 0.27000001072883606,
+            "Interpolation": 0,
+            "Rotation": [
+                -0.0,
+                -0.010730919428169727,
+                -0.0,
+                0.999942421913147
+            ],
+            "Scale": [
+                0.0009999914327636361,
+                0.0010000000474974513,
+                0.0009999914327636361
+            ],
+            "TrackPosition": 200.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 0.0,
+    "Loop": true,
+    "ModelTag": "SM_Helix_03_GDH",
+    "NumKeyFrames": 3,
+    "RenderGroup": 6,
+    "ShaderPass": 1,
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "T_Aura_01_C_GDH",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        false,
+        true,
+        false,
+        false
+    ],
+    "Threshold": 0.8999999761581421,
+    "TickPerSecond": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}

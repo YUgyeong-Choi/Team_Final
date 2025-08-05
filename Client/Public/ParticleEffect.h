@@ -25,8 +25,11 @@ public:
 		_float2				vSpeed; 
 		PARTICLETYPE		ePType;
 
-		/*  */
+		/* Buffer Tag */
+		_wstring			strBufferTag;
 	}DESC;
+
+
 
 protected:
 	CParticleEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -51,6 +54,8 @@ public:
 
 protected:
 	CVIBuffer_Point_Instance*		m_pVIBufferCom = { nullptr };
+	_wstring						m_strBufferTag;
+
 	PARTICLETYPE					m_ePType = {}; // Particle Type
 	// 로컬/월드 분리할건지
 	// 변수로 처리할건지
@@ -68,10 +73,11 @@ protected:
 	_float2				m_vLifeTime;
 	_float2				m_vSpeed;
 	_bool				m_isLoop;
-
+	_bool				m_bGravity;
+	_float				m_fGravity;
 
 protected:
-	HRESULT Ready_Components(void* pArg);
+	virtual HRESULT Ready_Components() override;
 	HRESULT Bind_ShaderResources();
 
 public:
@@ -80,8 +86,8 @@ public:
 	virtual void Free() override;
 
 public:
-	virtual json Serialize();
-	virtual void Deserialize(const json& j);
+	virtual json Serialize() override;
+	virtual void Deserialize(const json& j)override;
 };
 
 NS_END

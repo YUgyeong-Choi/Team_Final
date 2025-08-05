@@ -7,6 +7,13 @@ NS_BEGIN(Client)
 
 class CEffectContainer final : public CGameObject
 {
+public:
+	typedef struct tagEffectContainerDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		json j;
+	}DESC;
+
+
 private:
 	CEffectContainer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CEffectContainer(const CEffectContainer& Prototype);
@@ -41,7 +48,8 @@ private:
 
 
 private:
-	HRESULT Load_JsonFiles(const _wstring strJsonFilePath);
+	//HRESULT Load_JsonFiles(const _wstring strJsonFilePath); //¾²Áö¸¶
+	HRESULT Load_JsonFiles(const json& j);
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 

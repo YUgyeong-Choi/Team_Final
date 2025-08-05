@@ -28,8 +28,7 @@ HRESULT CEffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
     m_pContext= pContext;
     Safe_AddRef(m_pContext);
 
-
-    //json j;
+    Ready_Prototypes();
 
     for (const auto& iter : directory_iterator(EffectFilePath))
     {
@@ -87,11 +86,28 @@ CEffectBase* CEffect_Manager::Make_Effect(const _wstring strEffectTag)
     return nullptr;
 }
 
-CEffectContainer* CEffect_Manager::Make_EffectContainer(const _wstring strECTag)
+HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring strECTag, void* pArg)
 {
+    auto	iter = m_ECJsonDescs.find(strECTag);
+    if (iter == m_ECJsonDescs.end())
+        return E_FAIL;
 
+    CEffectContainer::DESC ECDesc = {};
+    ECDesc.j = iter->second;
+    if (pArg == nullptr)
+    {
+        ECDesc.fRotationPerSec = XMConvertToRadians(90.f);
+        ECDesc.fSpeedPerSec = 10.f;
+    }
+    if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
+        iLevelIndex, TEXT("Layer_Effect"), &ECDesc)))
+        return E_FAIL;
 
+    return S_OK;
+}
 
+CEffectContainer* CEffect_Manager::Find_EffectContainer(const _wstring& strECTag)
+{
     return nullptr;
 }
 
@@ -118,7 +134,7 @@ HRESULT CEffect_Manager::Ready_Prototypes()
     //    return E_FAIL;
 
     /* For.Prototype_GameObject_CEffectContainer */
-    if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CEffectContainer"),
+    if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
         CEffectContainer::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
@@ -150,10 +166,8 @@ HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
         if (jItem.contains("EffectType"))
             eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<int>());
 
-
         /* 필요한 프로토타입 컴포넌트 생성 */
         Ready_Prototype_Components(jItem, eEffectType);
-
 
         /*switch (eEffectType)
         {
@@ -168,10 +182,9 @@ HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
         default:
             break;
         }*/
-
-
     }
 
+    m_ECJsonDescs.emplace(make_pair(path(strECPath).stem(), j));
 
     return S_OK;
 }
@@ -188,6 +201,21 @@ HRESULT CEffect_Manager::Ready_Prototype_Components(const json& j, EFFECT_TYPE e
 
 HRESULT CEffect_Manager::Ready_Prototype_Models(const json& j)
 {
+    string          ModelFileName;
+    string          ModelFilePath = "../Bin/Resources/Models/EffectMesh/";
+    _wstring        ModelPreTag = TEXT("Prototype_Component_Model_");
+
+    if (j.contains("ModelTag"))
+        ModelFileName = j["ModelTag"].get<string>();
+
+    ModelFilePath += (ModelFileName + ".bin");
+    ModelPreTag += StringToWString(ModelFileName);
+
+    _matrix		PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+    if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), ModelPreTag,
+        CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, ModelFilePath.c_str(), PreTransformMatrix))))
+        return E_FAIL;
+
 
     return S_OK;
 }
@@ -288,6 +316,7 @@ HRESULT CEffect_Manager::Ready_Prototype_VIBuffers(const json& j)
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
         CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, &VIBufferDesc))))
         return E_FAIL;
+
 
     return S_OK;
 }
