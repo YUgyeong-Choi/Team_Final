@@ -13,8 +13,10 @@ class ENGINE_DLL CAnimator final : public CComponent, public ISerializable
 public:
     struct BlendState
     {
-        CAnimation* srcAnim = nullptr;   // 이전 애니메이션
-        CAnimation* dstAnim = nullptr;   // 다음 애니메이션
+        CAnimation* fromLowerAnim = nullptr;   // 이전 하체 애니메이션
+        CAnimation* toLowerAnim = nullptr;   // 다음 하체 애니메이션
+		CAnimation* fromUpperAnim = nullptr;   // 이전 상체 애니메이션
+		CAnimation* toUpperAnim = nullptr;   // 다음 상체 애니메이션
         _float        elapsed = 0.f;       // 경과 시간
         _float        duration = 0.2f;      // 블렌드 총 시간
         _bool         isLoop = false;
@@ -38,9 +40,7 @@ public:
 	void PlayClip(class CAnimation* pAnim, _bool isLoop = true);
     void StopAnimation() { m_bPlaying = false; }
 
-    void StartTransition(CAnimation* from, CAnimation* to, _float duration = 0.2f);
-    void StartTransition(CAnimController::TransitionResult& transitionResult);
-    void Set_Animation(_uint iIndex, _float fadeDuration = 0.2f, _bool isLoop = false);
+    void StartTransition(const CAnimController::TransitionResult& transitionResult);
 	void Set_BlendState(BlendState blend) { m_Blend = blend; }
 	void Set_Model(class CModel* pModel) { m_pModel = pModel; }
 	void SetBlendDuration(_float duration) { m_Blend.duration = duration; }
@@ -60,7 +60,7 @@ public:
 		return nullptr;
 	}
     void SetCurrentAnimController(const string& name, const string& stateName = "");
-#ifdef _DEBUG
+#ifdef USE_IMGUI
     void SetCurrentAnimControllerForEditor(const string& name, const string& stateName = "")
     {
         // 에디터에서 애니메이션 컨트롤러 설정
@@ -70,10 +70,12 @@ public:
             m_pCurAnimController->SetState(stateName);
         }
     }
-#endif // DEBUG
+
+     unordered_map<string, Parameter>& GetParametersForEditor();
+#endif
 
 
-    unordered_map<string, Parameter>& GetParameters();
+   const  unordered_map<string, Parameter>& GetParameters() const;
 
     void AddParameter(const string& name, Parameter& parm);
 
@@ -215,24 +217,40 @@ public:
 			m_OverrideControllerMap[newName] = overrideCtrl;
 		}
 	}
-    void SetCurrentRootTransform(const _float3& pos, const _float4& rot);
-	void SetCurrentRootRotation(const _float4& rot);
-    void SetCurrentRootPosition(const _float3& pos);
+
+
 
     _float3& GetRootMotionDelta()  { return m_RootMotionDelta; }
     _float4& GetRootRotationDelta()  { return m_RootRotationDelta; }
     _float GetYAngleFromQuaternion(const _vector& quat);
 
 private:
-    // 기본 블렌딩
-    void UpdateBlend(_float fTimeDelta);
+    // 애니메이션 재생관련
+    void RefreshAndProcessTransition(_float fDeltaTime);
+    void UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>& triggeredEvents);
+	void UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<string>& triggeredEvents);
+    void AddUniqueClip(CAnimation* pClip, array<CAnimation*, 4>& pArray, _int& clipCount);
+
+    // 마스크 본 관련
     void UpdateMaskState();
     void MakeMaskBones(const string& maskBoneName);
 	void CollectBoneChildren(const _char* boneName);
     void CollectBoneChildren(const _char* boneName, const _char* stopBoneName);
-    void AddUniqueClip(CAnimation* pClip, array<CAnimation*, 4>& pArray, _int& clipCount);
-	_matrix LerpMatrix(const _matrix& src, const _matrix& dst, _float t);
+
+	
+
+    // 이벤트 처리
+    void DispatchAnimEvents(const vector<string>& triggeredEvents);
+
+    //루트모션
+    void RootMotionDecomposition();
     void ResetRootMotion();
+    void SetCurrentRootRotation(const _float4& rot);
+    void SetCurrentRootPosition(const _float3& pos);
+
+    // 행렬 계산
+    _matrix LerpMatrix(const _matrix& src, const _matrix& dst, _float t);
+	void CollectBoneMatrices(CAnimation* pAnim, vector<_matrix>& boneMatrices, size_t iBoneCount);
 private:
     _bool                       m_bPlaying = true;
 	_bool                       m_bIsFinished = false; // 애니메이션 재생 완료 여부
@@ -247,10 +265,10 @@ private:
 	CAnimation* m_pUpperClip = nullptr; // 상체 애니메이션 클립
 	CAnimation* m_pLowerClip = nullptr; // 하체 애니메이션 클립
 
-    CAnimation* m_pBlendFromLowerAnim = nullptr;
-    CAnimation* m_pBlendToLowerAnim = nullptr;
-    CAnimation* m_pBlendFromUpperAnim = nullptr; // 전환 중인 이전 상체 클립
-    CAnimation* m_pBlendToUpperAnim = nullptr;   // 전환 중인 목표 상체 클립
+    //CAnimation* m_pBlendFromLowerAnim = nullptr;
+    //CAnimation* m_pBlendToLowerAnim = nullptr;
+    //CAnimation* m_pBlendFromUpperAnim = nullptr; // 전환 중인 이전 상체 클립
+    //CAnimation* m_pBlendToUpperAnim = nullptr;   // 전환 중인 목표 상체 클립
     CAnimController::ETransitionType m_eCurrentTransitionType = CAnimController::ETransitionType::FullbodyToFullbody; // 현재 진행 중인 전환 타입
 
     unordered_map<string,unordered_set<_int>>         m_UpperMaskSetMap; // 한번씩만 매핑 해두기 이름 별로
