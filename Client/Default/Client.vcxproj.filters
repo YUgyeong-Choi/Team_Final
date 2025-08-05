@@ -223,6 +223,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Mana">
       <UniqueIdentifier>{367fcc09-a226-4aab-9b15-2cb35c437e7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07.Effect\Manager">
+      <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -525,6 +528,9 @@
     <ClInclude Include="..\public\Stamina_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Effect_Manager.h">
+      <Filter>02.GameObjects\07.Effect\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -800,6 +806,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Stamina_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Effect_Manager.cpp">
+      <Filter>02.GameObjects\07.Effect\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -890,17 +890,17 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     /* [ 이펙트 + 글로우 ] */
     //float fGlowIntensity = 3.f;
     
-    vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
-    vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
-    //EffectBlendGlow.rgb *= fGlowIntensity;
-   // EffectBlendGlow.a *= 1.5f;
-    EffectBlendDiffuse += EffectBlendGlow;
-    finalColor += EffectBlendDiffuse;
+    //vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
+    //vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
+    ////EffectBlendGlow.rgb *= fGlowIntensity;
+    //// EffectBlendGlow.a *= 1.5f;
+    //EffectBlendDiffuse += EffectBlendGlow;
+    //finalColor += EffectBlendDiffuse;
     
      //if (vDiffuse.a < 0.1f && vPBRFinal.a < 0.1f && EffectDiffuse.a < 0.1f)
      //   discard;   
-    if (finalColor.a < 0.003f)
-        discard;
+    //if (finalColor.a < 0.003f)
+    //    discard;
 
     Out.vBackBuffer = finalColor;
 
@@ -971,8 +971,16 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     else if (fShadowViewZC + fBias < vLightPosC.w)
         Out.vBackBuffer *= 0.5f;
     
-
-        
+    vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
+    vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
+    //EffectBlendGlow.rgb *= fGlowIntensity;
+    // EffectBlendGlow.a *= 1.5f;
+    EffectBlendDiffuse += EffectBlendGlow;
+    Out.vBackBuffer += EffectBlendDiffuse;
+       
+    if (Out.vBackBuffer.a < 0.003f)
+        discard;
+    
     return Out;    
 }
 
@@ -1046,8 +1054,8 @@ PS_OUT PS_EFFECT_GLOW(PS_IN In)
     
     Out.vBackBuffer = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord);
     /* 기타 잡기술 */
-    Out.vBackBuffer.rgb *= 3.f;
-    Out.vBackBuffer.a *= 1.5f;
+    Out.vBackBuffer.rgb *= 2.f;
+    Out.vBackBuffer.a *= 1.4f;
     // 밖에서 값 변경해가면서 볼 수 있으면 좋겠는데 당장 안 될 것 같으므로 고정함
     
     return Out;

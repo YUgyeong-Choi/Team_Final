@@ -27,41 +27,39 @@ HRESULT CParticleEffect::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-	DESC* pDesc = static_cast<DESC*>(pArg);
-
-	m_iNumInstance = pDesc->iNumInstance;
-	m_iShaderPass = pDesc->iShaderPass;
-	m_ePType =	pDesc->ePType;
-	m_iNumInstance = pDesc->iNumInstance;
-	m_isLoop =	pDesc->isLoop;
-	m_vCenter = pDesc->vCenter;
-	m_vLifeTime = pDesc->vLifeTime;
-	m_fMaxLifeTime = pDesc->vLifeTime.y;
-	m_vPivot = pDesc->vPivot;
-	m_vRange =	pDesc->vRange;
-	m_vSize = pDesc->vSize;
-	m_vSpeed =	pDesc->vSpeed;
-	m_bTool = pDesc->bTool;
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (!m_bTool)
 	{
 		json j;
-		ifstream ifs(pDesc->pJsonFilePath);
-
-		if (!ifs.is_open())
-		{
-			return E_FAIL;
-		}
-		ifs >> j;
 
 		Deserialize(j);
 		Ready_Textures_Prototype();
 		if (FAILED(Ready_Components(nullptr)))
 			return E_FAIL;
 	}
+	else
+	{
+		DESC* pDesc = static_cast<DESC*>(pArg);
+
+		m_iNumInstance = pDesc->iNumInstance;
+		m_iShaderPass = pDesc->iShaderPass;
+		m_ePType = pDesc->ePType;
+		m_iNumInstance = pDesc->iNumInstance;
+		m_isLoop = pDesc->isLoop;
+		m_vCenter = pDesc->vCenter;
+		m_vLifeTime = pDesc->vLifeTime;
+		m_fMaxLifeTime = pDesc->vLifeTime.y;
+		m_vPivot = pDesc->vPivot;
+		m_vRange = pDesc->vRange;
+		m_vSize = pDesc->vSize;
+		m_vSpeed = pDesc->vSpeed;
+		m_bTool = pDesc->bTool;
+	}
+
+
+
 
 	return S_OK;
 }
@@ -118,20 +116,10 @@ HRESULT CParticleEffect::Ready_Components(void* pArg)
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
-	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-	VIBufferDesc.ePType =		m_ePType;
-	VIBufferDesc.iNumInstance = m_iNumInstance;
-	VIBufferDesc.isLoop =		m_isLoop;
-	VIBufferDesc.vCenter =		m_vCenter;
-	VIBufferDesc.vLifeTime =	m_vLifeTime;
-	VIBufferDesc.vPivot =		m_vPivot;
-	VIBufferDesc.vRange =		m_vRange;
-	VIBufferDesc.vSize =		m_vSize;
-	VIBufferDesc.vSpeed =		m_vSpeed;
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &VIBufferDesc)))
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	return S_OK;

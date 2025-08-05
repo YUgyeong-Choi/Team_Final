@@ -132,7 +132,7 @@
                 }
             ],
             "EffectType": 1,
-            "Name": "Particle"
+            "Name": "Particle_2"
         },
         {
             "EffectPreferences": [
@@ -266,7 +266,7 @@
                 }
             ],
             "EffectType": 1,
-            "Name": "Particle"
+            "Name": "Particle_1"
         },
         {
             "EffectPreferences": [
