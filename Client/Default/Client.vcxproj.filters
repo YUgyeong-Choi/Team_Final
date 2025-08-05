@@ -259,6 +259,9 @@
     <Filter Include="02.GameObjects\07.Effect\Manager">
       <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\DecalTool">
+      <UniqueIdentifier>{e99bfc26-f71f-4ccd-b4ef-22da3b05d58a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -594,6 +597,9 @@
     <ClInclude Include="..\Public\Effect_Manager.h">
       <Filter>02.GameObjects\07.Effect\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\DecalTool.h">
+      <Filter>01.Levels\LevelYW\DecalTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -902,6 +908,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Manager.cpp">
       <Filter>02.GameObjects\07.Effect\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DecalTool.cpp">
+      <Filter>01.Levels\LevelYW\DecalTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

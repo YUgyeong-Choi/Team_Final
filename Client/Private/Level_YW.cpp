@@ -1,10 +1,11 @@
 #include "Level_YW.h"
 #include "GameInstance.h"
-#include "MapTool.h"
+
 #include "Camera_Manager.h"
 #include "Level_Loading.h"
 
-
+#include "MapTool.h"
+#include "DecalTool.h"
 
 #pragma region 다른 사람 거
 #include "PBRMesh.h"
@@ -51,7 +52,7 @@ void CLevel_YW::Update(_float fTimeDelta)
 			return;
 	}
 
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Update(fTimeDelta);
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	//__super::Update(fTimeDelta);
@@ -59,7 +60,7 @@ void CLevel_YW::Update(_float fTimeDelta)
 
 void CLevel_YW::Late_Update(_float fTimeDelta)
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Late_Update(fTimeDelta);
 }
 
 HRESULT CLevel_YW::Render()
@@ -133,7 +134,6 @@ HRESULT CLevel_YW::Ready_Camera()
 	return S_OK;
 }
 
-
 HRESULT CLevel_YW::Ready_Layer_Sky(const _wstring strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
@@ -150,6 +150,10 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CMapTool::Create(m_pDevice, m_pContext);
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
+		return E_FAIL;
+
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)] = CDecalTool::Create(m_pDevice, m_pContext);
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)])
 		return E_FAIL;
 
 	return S_OK;
@@ -180,8 +184,39 @@ HRESULT CLevel_YW::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])->Render_ImGui()))
-		return E_FAIL;
+	if (ImGui::Begin("Tool Selector"))
+	{
+		if (ImGui::BeginTabBar("##ToolTabs"))
+		{
+			if (ImGui::BeginTabItem("Map Tool"))
+			{
+				m_eActiveTool = IMGUITOOL::MAP;
+				
+				if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
+					return E_FAIL;
+
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Decal Tool"))
+			{
+				m_eActiveTool = IMGUITOOL::DECAL;
+
+				if (FAILED(static_cast<CDecalTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
+					return E_FAIL;
+
+				ImGui::EndTabItem();
+			}
+
+			// ... 다른 탭도 추가 가능
+
+			ImGui::EndTabBar();
+		}
+		ImGui::End();
+	}
+
+
+	
 	return S_OK;
 }
 
@@ -272,7 +307,13 @@ void CLevel_YW::Free()
 	//ImGui::GetIO().Fonts->Clear(); // 폰트 캐시 정리
 	ImGui::DestroyContext();
 
-	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
+	//Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
+
+	for (CGameObject* pTool : m_ImGuiTools)
+	{
+		Safe_Release(pTool);
+	}
+
 	Safe_Release(m_pCamera_Manager);
 
 	__super::Free();

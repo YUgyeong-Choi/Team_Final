@@ -15,6 +15,7 @@ class CLevel_YW final : public CLevel
 public:
 	enum class IMGUITOOL {
 		MAP,
+		DECAL,
 		END
 	};
 private:
@@ -40,8 +41,10 @@ private:
 	HRESULT Ready_Layer_DummyMap(const _wstring strLayerTag);
 	HRESULT Ready_Layer_PreviewObject(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
+
 private:
 	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)] = {};
+	IMGUITOOL	m_eActiveTool = { IMGUITOOL::MAP };
 
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
