@@ -213,6 +213,7 @@ HRESULT CLevel_Logo::Ready_Video()
 	eDesc.fY = g_iWinSizeY * 0.5f;
 	eDesc.fSizeX = g_iWinSizeX;
 	eDesc.fSizeY = g_iWinSizeY;
+	eDesc.fAlpha = 0.f;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
 		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Video"), &eDesc)))

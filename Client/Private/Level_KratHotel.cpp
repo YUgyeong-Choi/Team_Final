@@ -58,13 +58,22 @@ HRESULT CLevel_KratHotel::Initialize()
 	return S_OK;
 }
 
-void CLevel_KratHotel::Update(_float fTimeDelta)
+void CLevel_KratHotel::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
+		m_pGameInstance->Set_IsChangeLevel(true);
+		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
+		m_pGameInstance->ClearRenderObjects();
+		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_HOTEL));
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
+
+}
+
+void CLevel_KratHotel::Update(_float fTimeDelta)
+{
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);

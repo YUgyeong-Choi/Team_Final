@@ -50,7 +50,7 @@ HRESULT CLevel_YG::Initialize()
 	return S_OK;
 }
 
-void CLevel_YG::Update(_float fTimeDelta)
+void CLevel_YG::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
@@ -63,7 +63,10 @@ void CLevel_YG::Update(_float fTimeDelta)
 			return;
 		}
 	}
+}
 
+void CLevel_YG::Update(_float fTimeDelta)
+{
 	if (m_pGameInstance->Key_Down(DIK_U))
 	{
 		m_pGameInstance->Set_GameTimeScale(1.f);
