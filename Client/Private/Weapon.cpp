@@ -29,6 +29,9 @@ HRESULT CWeapon::Initialize_Prototype()
 HRESULT CWeapon::Initialize(void* pArg)
 {
 	WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
+	m_pParentWorldMatrix = pDesc->pParentWorldMatrix;
+	m_pSocketMatrix = pDesc->pSocketMatrix;
+
 	m_fSpeedPerSec = pDesc->fSpeedPerSec;
 	m_fRotationPerSec = pDesc->fRotationPerSec;
 
@@ -50,9 +53,15 @@ HRESULT CWeapon::Initialize(void* pArg)
 
 void CWeapon::Priority_Update(_float fTimeDelta)
 {
+	if (KEY_DOWN(DIK_CAPSLOCK))
+		PrintMatrix("World", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 }
+
 void CWeapon::Update(_float fTimeDelta)
 {
+	if (!m_bIsActive)
+		return;
+
 	/* [ 애니메이션 업데이트 ] */
 	if (m_pAnimator)
 		m_pAnimator->Update(fTimeDelta);
@@ -64,22 +73,86 @@ void CWeapon::Update(_float fTimeDelta)
 
 void CWeapon::Late_Update(_float fTimeDelta)
 {
+	_matrix		SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+	
+	for (size_t i = 0; i < 3; i++)
+		SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
+	
+	/* 무기 월드 1.f , 소켓 월드 , 부모 월드 0.02f */
+	XMStoreFloat4x4(&m_CombinedWorldMatrix,
+		XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *
+		SocketMatrix *
+		XMLoadFloat4x4(m_pParentWorldMatrix));
+
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
 HRESULT CWeapon::Render()
 {
+	if (!m_bIsActive)
+		return S_OK;
+
 	if (FAILED(Bind_Shader()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
+void CWeapon::SetWeaponWorldMatrix(_float fTimeDelta)
+{
+	if (KEY_PRESSING(DIK_1)) // 점점 커지게
+	{
+		_vector vScale = m_pTransformCom->Get_Scale(); // 현재 스케일 (_vector)
+
+		XMFLOAT3 f3Scale;
+		XMStoreFloat3(&f3Scale, vScale); // _vector → _float3
+
+		f3Scale.x *= 1.001f;
+		f3Scale.y *= 1.001f;
+		f3Scale.z *= 1.001f;
+
+		m_pTransformCom->Scaling(f3Scale); // 최종 반영
+	}
+
+	if (KEY_PRESSING(DIK_2)) // 점점 작아지게
+	{
+		_vector vScale = m_pTransformCom->Get_Scale();
+
+		XMFLOAT3 f3Scale;
+		XMStoreFloat3(&f3Scale, vScale);
+
+		f3Scale.x *= 0.999f;
+		f3Scale.y *= 0.999f;
+		f3Scale.z *= 0.999f;
+
+		m_pTransformCom->Scaling(f3Scale);
+	}
+
+	const _float fRotateSpeed = 5.f;
+	if (KEY_DOWN(DIK_3)) // Y축 좌회전
+	{
+		m_pTransformCom->RotationTimeDelta(fTimeDelta, XMVectorSet(0.f, 1.f, 0.f, 0.f), -fRotateSpeed);
+	}
+	if (KEY_DOWN(DIK_4)) // Y축 우회전
+	{
+		m_pTransformCom->RotationTimeDelta(fTimeDelta, XMVectorSet(0.f, 1.f, 0.f, 0.f), +fRotateSpeed);
+	}
+
+	if (KEY_DOWN(DIK_5)) // X축 회전
+	{
+		m_pTransformCom->RotationTimeDelta(fTimeDelta, XMVectorSet(1.f, 0.f, 0.f, 0.f), +fRotateSpeed);
+	}
+	if (KEY_DOWN(DIK_6)) // Z축 회전
+	{
+		m_pTransformCom->RotationTimeDelta(fTimeDelta, XMVectorSet(0.f, 0.f, 1.f, 0.f), +fRotateSpeed);
+	}
+}
+
 
 HRESULT CWeapon::Bind_Shader()
 {
 	/* [ 월드 스페이스 넘기기 ] */
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
 		return E_FAIL;
 
 	/* [ 뷰 , 투영 스페이스 넘기기 ] */

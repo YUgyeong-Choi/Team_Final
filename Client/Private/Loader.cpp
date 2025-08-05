@@ -48,6 +48,7 @@
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
 #include "Player.h"
+#include "Bayonet.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -445,6 +446,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	/* [ 메인 플레이어 로딩 ] */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PlayerWeapon"),
+		CBayonet::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
