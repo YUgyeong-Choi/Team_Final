@@ -1,12 +1,12 @@
 #include "DecalTool.h"
 
 CDecalTool::CDecalTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CGameObject(pDevice, pContext)
+	:CYWTool(pDevice, pContext)
 {
 }
 
 CDecalTool::CDecalTool(const CDecalTool& Prototype)
-	:CGameObject(Prototype)
+	:CYWTool(Prototype)
 {
 }
 

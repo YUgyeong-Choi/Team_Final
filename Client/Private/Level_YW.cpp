@@ -148,11 +148,11 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 	if (FAILED(Ready_Layer_PreviewObject(TEXT("Layer_PreviewObject"))))
 		return E_FAIL;
 
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CMapTool::Create(m_pDevice, m_pContext);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = reinterpret_cast<CYWTool*>(CMapTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
 
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)] = CDecalTool::Create(m_pDevice, m_pContext);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)] = reinterpret_cast<CYWTool*>(CDecalTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)])
 		return E_FAIL;
 
@@ -192,8 +192,8 @@ HRESULT CLevel_YW::ImGui_Render()
 			{
 				m_eActiveTool = IMGUITOOL::MAP;
 				
-				if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
-					return E_FAIL;
+				/*if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
+					return E_FAIL;*/
 
 				ImGui::EndTabItem();
 			}
@@ -202,8 +202,8 @@ HRESULT CLevel_YW::ImGui_Render()
 			{
 				m_eActiveTool = IMGUITOOL::DECAL;
 
-				if (FAILED(static_cast<CDecalTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
-					return E_FAIL;
+				/*if (FAILED(static_cast<CDecalTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
+					return E_FAIL;*/
 
 				ImGui::EndTabItem();
 			}
@@ -215,7 +215,8 @@ HRESULT CLevel_YW::ImGui_Render()
 		ImGui::End();
 	}
 
-
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Render_ImGui()))
+		return E_FAIL;
 	
 	return S_OK;
 }

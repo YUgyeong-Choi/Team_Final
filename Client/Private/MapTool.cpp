@@ -21,13 +21,13 @@
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
 
 CMapTool::CMapTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CYWTool(pDevice, pContext)
 {
 
 }
 
 CMapTool::CMapTool(const CMapTool& Prototype)
-	: CGameObject(Prototype)
+	: CYWTool(Prototype)
 {
 }
 

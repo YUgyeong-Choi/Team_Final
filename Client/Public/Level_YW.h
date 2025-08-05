@@ -43,7 +43,7 @@ private:
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 
 private:
-	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)] = {};
+	class CYWTool* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)] = {};
 	IMGUITOOL	m_eActiveTool = { IMGUITOOL::MAP };
 
 private:
