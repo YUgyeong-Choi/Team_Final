@@ -225,7 +225,7 @@
     </Filter>
     <Filter Include="02.GameObjects\03.Weapon">
       <UniqueIdentifier>{87bd98b7-f2e3-4aba-bbd8-673c9acc6bd4}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
       <UniqueIdentifier>{de7768fa-8c6d-44b8-afd6-e7895c20ad10}</UniqueIdentifier>
     </Filter>
@@ -558,9 +558,6 @@
     <ClInclude Include="..\public\Stamina_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Weapon.h">
-      <Filter>02.GameObjects\01.Unit\01.Weapon</Filter>
-	</ClInclude>
     <ClInclude Include="..\public\Icon_Weapon.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
     </ClInclude>
@@ -584,6 +581,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Portion.h">
       <Filter>02.GameObjects\03. Item\Portion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Grinder.h">
+      <Filter>02.GameObjects\03. Item\Grinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Weapon.h">
+      <Filter>02.GameObjects\03.Weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -861,9 +864,6 @@
     <ClCompile Include="..\private\Stamina_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Stamina</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Weapon.cpp">
-      <Filter>02.GameObjects\01.Unit\01.Weapon</Filter>
-	</ClCompile>
     <ClCompile Include="..\private\Icon_Weapon.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
     </ClCompile>
@@ -887,6 +887,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Grinder.cpp">
       <Filter>02.GameObjects\03. Item\Grinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Item.cpp">
+      <Filter>02.GameObjects\03. Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon.cpp">
+      <Filter>02.GameObjects\03.Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
