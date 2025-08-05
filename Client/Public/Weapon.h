@@ -15,14 +15,14 @@ class CWeapon : public CGameObject
 
 
 public:
-	typedef struct tagUnitDesc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct tagWeaponDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		const _tchar*	szMeshID;
 		LEVEL			eLevelID;
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
-	}UNIT_DESC;
+	}WEAPON_DESC;
 
 protected:
 	CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

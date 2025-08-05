@@ -5,7 +5,6 @@
 #include "GameInstance.h"
 #include "AnimController.h"
 #include "PhysX_IgnoreSelfCallback.h"
-#include "PhysXController.h"
 
 
 CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -29,7 +28,7 @@ HRESULT CWeapon::Initialize_Prototype()
 
 HRESULT CWeapon::Initialize(void* pArg)
 {
-	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
+	WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
 	m_fSpeedPerSec = pDesc->fSpeedPerSec;
 	m_fRotationPerSec = pDesc->fRotationPerSec;
 
@@ -96,10 +95,7 @@ HRESULT CWeapon::Bind_Shader()
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
-		{
-			// ÅØ½ºÃ³°¡ ¾ÆÁ÷ ¾È²ÅÇô¼­ Å»ÃâÇÏ¸é ¾ÈµÊ
-			//return E_FAIL;
-		}
+			return E_FAIL;
 
 		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
@@ -107,7 +103,7 @@ HRESULT CWeapon::Bind_Shader()
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))
-			return E_FAIL;
+			return E_FAIL; 
 	}
 
 	return S_OK;
