@@ -48,7 +48,7 @@ private:
 
 	_float			m_fYaw = 0.f;
 	_float			m_fPitch = 0.f;
-	_float			m_fDistance = 3.0f;
+	_float			m_fDistance = 3.f;
 	_float			m_fZoomSpeed = 0.5f;
 
 
