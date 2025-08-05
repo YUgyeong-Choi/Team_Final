@@ -259,6 +259,15 @@
     <Filter Include="03. Observer\PlayerStatus">
       <UniqueIdentifier>{0cf68e2e-7499-467e-8996-01dcada4ac10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Observer\Weapon">
+      <UniqueIdentifier>{94235d66-35fe-4e86-80c2-11bb8c0c2ea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\BackGround">
+      <UniqueIdentifier>{cc5cf640-b42e-4c48-8688-907f722393fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Durability">
+      <UniqueIdentifier>{b937d81f-49e7-432f-b470-3549c05b8af3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -594,6 +603,9 @@
     <ClInclude Include="..\Public\Effect_Manager.h">
       <Filter>02.GameObjects\07.Effect\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Durability_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Durability</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -902,6 +914,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Manager.cpp">
       <Filter>02.GameObjects\07.Effect\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Durability_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Durability</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

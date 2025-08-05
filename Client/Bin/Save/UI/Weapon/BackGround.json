@@ -1,0 +1,105 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 0.800000011920929,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 45.737998962402344,
+                "SizeX": 123.19999694824219,
+                "SizeY": 122.40000915527344,
+                "Texturetag": "Prototype_Component_Texture_Weapon_Background",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 1326.4000244140625,
+                "fY": 774.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 0.800000011920929,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 45.737998962402344,
+                "SizeX": 123.19999694824219,
+                "SizeY": 122.40000915527344,
+                "Texturetag": "Prototype_Component_Texture_Weapon_Background",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 1468.7999267578125,
+                "fY": 774.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 0.8999999761581421,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 12.800000190734863,
+                "SizeY": 13.5,
+                "Texturetag": "Prototype_Component_Texture_Cross",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 1396.800048828125,
+                "fY": 774.9000244140625,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.8999999761581421,
+                    "G": 0.8999999761581421,
+                    "R": 0.8999999761581421
+                },
+                "ProtoTag": "Prototype_GameObject_UI_HP_Bar",
+                "RotationZ": 0.0,
+                "SizeX": 299.20001220703125,
+                "SizeY": 40.5,
+                "Texturetag": "Prototype_Component_Texture_Bar_Border",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 1403.199951171875,
+                "fY": 693.0,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

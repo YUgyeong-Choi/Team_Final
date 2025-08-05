@@ -60,11 +60,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 	SyncTransformWithController();
 
-
-
 	m_iCurrentHP = m_iMaxHP;
 	m_iCurrentStamina = m_iMaxStamina;
-	m_iCurrentMana = m_iMaxMana * 0.5f;
+	m_iCurrentMana = _int(m_iMaxMana * 0.5f);
 
 	Callback_HP();
 	Callback_Mana();
@@ -598,8 +596,15 @@ void CPlayer::Update_Stat()
 	else if (m_pGameInstance->Key_Down(DIK_B))
 	{
 		m_iCurrentHP -= 10;
+		if (m_iCurrentHP < 0)
+			m_iCurrentHP = 0;
+
 		m_iCurrentStamina -= 20;
+		if (m_iCurrentStamina < 0)
+			m_iCurrentStamina = 0;
 		m_iCurrentMana -= 100;
+		if (m_iCurrentMana < 0)
+			m_iCurrentMana = 0;
 		Callback_HP();
 		Callback_Mana();
 		Callback_Stamina();

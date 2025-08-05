@@ -655,7 +655,7 @@ HRESULT CLoader::Loading_For_GL()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Guide/TeamPicture.dds")))))
 		return E_FAIL;
 
-	///* For.Prototype_Component_Texture_TeamPicture*/
+	/* For.Prototype_Component_Texture_TeamPicture*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Tutorial"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Guide/Tutorial_%d.dds"),2))))
 		return E_FAIL;
@@ -703,6 +703,16 @@ HRESULT CLoader::Loading_For_GL()
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Slot_Background"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot/SlotBg_%d.dds"),2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Weapon_Background"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Weapon_Bg.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Cross"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Icon_Cross.dds")))))
 		return E_FAIL;
 	
 	m_fRatio = 0.1f;
