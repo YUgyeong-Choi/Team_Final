@@ -154,6 +154,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\CameraSequence.h" />
     <ClInclude Include="..\public\Camera_CutScene.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="..\Public\Client_Function.h" />
     <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\CYTool.h" />
+    <ClInclude Include="..\public\DecalTool.h" />
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\DH_ToolMesh.h" />
     <ClInclude Include="..\public\Durability_Bar.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="..\Public\Level_YG.h" />
     <ClInclude Include="..\Public\Level_YW.h" />
     <ClInclude Include="..\Public\Loader.h" />
+    <ClInclude Include="..\Public\LockOn_Manager.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Mana_Bar.h" />
     <ClInclude Include="..\Public\MapTool.h" />
@@ -251,6 +254,7 @@
     <ClInclude Include="..\Public\YGObject.h" />
     <ClInclude Include="..\Public\YGTool.h" />
     <ClInclude Include="..\Public\YGTrrigerWithoutModel.h" />
+    <ClInclude Include="..\public\YWTool.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="imgui\backends\imgui_impl_dx11.h" />
@@ -272,6 +276,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\CameraSequence.cpp" />
     <ClCompile Include="..\private\Camera_CutScene.cpp" />
@@ -279,6 +284,7 @@
     <ClCompile Include="..\private\Camera_Manager.cpp" />
     <ClCompile Include="..\private\Camera_Orbital.cpp" />
     <ClCompile Include="..\Private\CYTool.cpp" />
+    <ClCompile Include="..\private\DecalTool.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
     <ClCompile Include="..\private\Durability_Bar.cpp" />
@@ -308,6 +314,7 @@
     <ClCompile Include="..\Private\Level_YG.cpp" />
     <ClCompile Include="..\Private\Level_YW.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
+    <ClCompile Include="..\Private\LockOn_Manager.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Mana_Bar.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />
@@ -361,6 +368,7 @@
     <ClCompile Include="..\Private\YGObject.cpp" />
     <ClCompile Include="..\Private\YGTool.cpp" />
     <ClCompile Include="..\Private\YGTriggerWithoutModel.cpp" />
+    <ClCompile Include="..\private\YWTool.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />

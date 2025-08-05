@@ -1,4 +1,5 @@
 #pragma once
+#ifdef USE_IMGUI
 #include "GameObject.h"
 #include "Animator.h"
 #include "Animation.h"
@@ -188,3 +189,4 @@ public:
 };
 
 NS_END
+#endif

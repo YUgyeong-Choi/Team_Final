@@ -141,8 +141,6 @@ HRESULT CLevel_Loading::Render()
 
 HRESULT CLevel_Loading::Ready_Loading()
 {
-	
-
 
 	CUI_Container::UI_CONTAINER_DESC eDesc = {};
 

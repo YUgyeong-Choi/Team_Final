@@ -1,8 +1,7 @@
 #include "YGBox.h"
 
 #include "GameInstance.h"
-#include "PhysX_IgnoreSelfCallback.h"
-
+#include "LockOn_Manager.h"
 CYGBox::CYGBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
 {
@@ -51,7 +50,9 @@ void CYGBox::Priority_Update(_float fTimeDelta)
 
 void CYGBox::Update(_float fTimeDelta)
 {
-
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
+		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+	}
 }
 
 void CYGBox::Late_Update(_float fTimeDelta)

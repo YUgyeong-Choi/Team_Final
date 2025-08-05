@@ -1,7 +1,7 @@
 #include "YGConvexMesh.h"
 
 #include "GameInstance.h"
-#include "PhysX_IgnoreSelfCallback.h"
+#include "LockOn_Manager.h"
 
 CYGConvexMesh::CYGConvexMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
@@ -21,7 +21,7 @@ HRESULT CYGConvexMesh::Initialize_Prototype()
 HRESULT CYGConvexMesh::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC _desc{};
-	lstrcpy(_desc.szName, TEXT("YGConvex"));
+	lstrcpy(_desc.szName, TEXT("YGBox"));
 	_desc.fRotationPerSec = 8.f;
 	_desc.fSpeedPerSec = 10.f;
 
@@ -55,7 +55,9 @@ void CYGConvexMesh::Priority_Update(_float fTimeDelta)
 
 void CYGConvexMesh::Update(_float fTimeDelta)
 {
-
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
+		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+	}
 }
 
 void CYGConvexMesh::Late_Update(_float fTimeDelta)

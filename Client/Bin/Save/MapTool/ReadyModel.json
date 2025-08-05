@@ -224,7 +224,7 @@
     {
         "Collision": false,
         "ModelName": "SM_Exterior_birdcage_01",
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_birdcage_01.bin"
     },
     {
@@ -326,19 +326,19 @@
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_01",
-        "ObjectCount": 1,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_01.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_02",
-        "ObjectCount": 2,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_02.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_03",
-        "ObjectCount": 1,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_03.bin"
     },
     {
@@ -356,49 +356,49 @@
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_06",
-        "ObjectCount": 4,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_06.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_11",
-        "ObjectCount": 1,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_11.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_12",
-        "ObjectCount": 2,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_12.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_13",
-        "ObjectCount": 2,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_13.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_14",
-        "ObjectCount": 1,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_14.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_15",
-        "ObjectCount": 1,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_15.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_16",
-        "ObjectCount": 1,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_16.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_17",
-        "ObjectCount": 1,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_17.bin"
     },
     {
@@ -464,8 +464,32 @@
     {
         "Collision": false,
         "ModelName": "SM_Interior_Candle_03",
-        "ObjectCount": 8,
+        "ObjectCount": 9,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Candle_03.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_ChairSet_03",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_ChairSet_03.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_ChairSet_04",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_ChairSet_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_ChairSet_05",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_ChairSet_05.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_ChairSet_07",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_ChairSet_07.bin"
     },
     {
         "Collision": false,
@@ -524,7 +548,7 @@
     {
         "Collision": false,
         "ModelName": "SM_LightProp_Light_02",
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_02.bin"
     },
     {
@@ -703,6 +727,12 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Station_Light_02",
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Station_Light_02_Lod2",
         "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02_Lod2.bin"
@@ -820,6 +850,12 @@
         "ModelName": "SM_Street_BookStore_03",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Street_BookStore_03.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Underdark_Lamp_01",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Underdark_Lamp_01.bin"
     },
     {
         "Collision": false,

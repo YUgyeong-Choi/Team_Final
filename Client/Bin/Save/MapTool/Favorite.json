@@ -38,5 +38,21 @@
     {
         "ModelName": "SM_LightProp_FloorLight_01",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_FloorLight_01.bin"
+    },
+    {
+        "ModelName": "SM_LightProp_Lamp_02",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Lamp_02.bin"
+    },
+    {
+        "ModelName": "SM_LightProp_StreetLamp_07",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_07.bin"
+    },
+    {
+        "ModelName": "SM_LightProp_StreetLamp_08",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_08.bin"
+    },
+    {
+        "ModelName": "SM_Station_Light_02",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
     }
 ]

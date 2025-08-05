@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 
 CMapToolObject::CMapToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CGameObject(pDevice, pContext)
 {
 
 }

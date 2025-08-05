@@ -1,11 +1,11 @@
 #pragma once
-#include "GameObject.h"
+#include "YWTool.h"
 
 #include "Client_Defines.h"
 
 NS_BEGIN(Client)
 
-class CMapTool final : public CGameObject
+class CMapTool final : public CYWTool
 {
 private:
 	CMapTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -19,7 +19,7 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
-	HRESULT	Render_ImGui();
+	virtual HRESULT	Render_ImGui() override;
 
 
 private:
@@ -27,7 +27,7 @@ private:
 	void Control(_float fTimeDelta);
 
 private:
-	HRESULT Ready_Model();
+	//HRESULT Ready_Model();
 	HRESULT Save_Map();
 	HRESULT Load_Map();
 

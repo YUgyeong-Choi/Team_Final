@@ -8,6 +8,7 @@ NS_END
 
 NS_BEGIN(Client)
 class CPlayerState;
+class CWeapon;
 
 class CPlayer : public CUnit
 {
@@ -35,11 +36,11 @@ public:
 		_bool bSpaceDown;
 
 	} m_Input;
-
+	
 	enum class eAnimCategory
 	{
-		NONE,IDLE,WALK,RUN,DASH_NORMAL,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
-		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACK,SPRINT_ATTACK,MAINSKILL,SIT,INTERACTION
+		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
+		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACKA,CHARGE_ATTACKB,SPRINT_ATTACK,MAINSKILL,SIT,INTERACTION
 	};
 
 protected:
@@ -64,10 +65,10 @@ private:
 	void			HandleInput();									// [1] 키 입력만 처리
 	EPlayerState	EvaluateTransitions();							// [2] 입력에 따라 상태 전이
 	void			UpdateCurrentState(_float fTimeDelta);			// [3] 현재 상태 로직 수행
-	void			TriggerStateEffects(_float fTimeDelta);							// [4] 애니메이션 적용
+	void			TriggerStateEffects(_float fTimeDelta);			// [4] 추가적인 셋팅
 
 private: /* [ 애니메이션 관련 ] */
-	eAnimCategory	GetAnimCategoryFromName(const std::string& stateName);
+	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
 
 private: /* [ 루트모션 활성화 ] */
 	void			RootMotionActive(_float fTimeDelta);
@@ -81,7 +82,9 @@ private: /* [ 이동로직 ] */
 	void Movement(_float fTimeDelta);
 	void ToggleWalkRun() { m_bWalk = !m_bWalk; }
 	void SyncTransformWithController(); // 위치동기화(컨트롤러)
+
 private: /* [ Setup 함수 ] */
+	HRESULT Ready_Weapon();
 	HRESULT Ready_Components();
 	HRESULT Ready_Controller();
 	void LoadPlayerFromJson();
@@ -121,6 +124,8 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_ChargeA;
 	friend class CPlayer_ChargeB;
 	friend class CPlayer_Gard;
+	friend class CPlayer_SprintAttackA;
+	friend class CPlayer_SprintAttackB;
 
 
 private: /* [ 상태 변수 ] */
@@ -132,24 +137,28 @@ private: /* [ 상태 변수 ] */
 
 protected:
 	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
-private:
 	CPhysXController* m_pControllerCom = { nullptr };
+
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
 
 private: /* [ 소유할 수 있는 객체 ] */
-	CGameObject* m_pTarget = { nullptr };
-	CGameObject* m_pWeapon = { nullptr };
+	CGameObject*	m_pTarget = { nullptr };
+	CWeapon*		m_pWeapon = { nullptr };
 
 private: /* [ 공격관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
+	_bool	m_bBackStepAttack = { false };
+	_bool 	m_bIsChange = { false };
+
+	_float 	m_fChangeTime = {};
+	_float 	m_fChangeTimeElaped = {};
 	_int 	m_iCurrentCombo = { 0 };
 
 private: /* [ 이동관련 변수 ] */
 	_bool    m_bWalk = { true };
 	_bool    m_bMovable = { true };
-
 
 	string	 m_strPrevStateName;
 	_bool    m_bMove = {};

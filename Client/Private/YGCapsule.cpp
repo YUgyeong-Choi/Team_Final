@@ -1,8 +1,8 @@
 #include "YGCapsule.h"
 
 #include "GameInstance.h"
+#include "LockOn_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
-
 CYGCapsule::CYGCapsule(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
 {
@@ -21,7 +21,7 @@ HRESULT CYGCapsule::Initialize_Prototype()
 HRESULT CYGCapsule::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC _desc{};
-	lstrcpy(_desc.szName, TEXT("YGCapsule"));
+	lstrcpy(_desc.szName, TEXT("YGBox"));
 	_desc.fRotationPerSec = 8.f;
 	_desc.fSpeedPerSec = 10.f;
 
@@ -60,6 +60,9 @@ void CYGCapsule::Update(_float fTimeDelta)
 {
 	Update_ColliderPos();
 	Ray();
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
+		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+	}
 }
 
 void CYGCapsule::Late_Update(_float fTimeDelta)

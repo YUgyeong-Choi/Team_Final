@@ -46,11 +46,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	//if (m_pGameInstance->Key_Down(DIK_T))
-	//{
-	//	m_bActive = !m_bActive;
-	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	//}
+	if (m_pGameInstance->Key_Down(DIK_T))
+	{
+		m_bActive = !m_bActive;
+		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	}
 		
 
 	if (m_pGameInstance->Key_Down(DIK_X))
@@ -94,8 +94,9 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 기준점 위치 계산 (플레이어 + 높이)
 		m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
 		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-		if(pPlayer->Get_PlayerState() != EPlayerState::IDLE)
-			m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+		
+		// 게임이랑 비슷하게
+		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
 		// 오비탈 카메라 방향 계산 (spherical to cartesian)
 		_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
@@ -106,7 +107,6 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		// 기본 목표 카메라 위치
 		m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
-		
 		// --- 스프링암 Raycast 처리 시작 ---
 		_vector vRayDir = XMVector3Normalize(vOffset);
 		_float fTargetDist = XMVectorGetX(XMVector3Length(vOffset));
@@ -172,8 +172,12 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 
 _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 {
+	if(!m_pPlayer)
+		return _matrix();
+
 	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
 	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
 	_float x = m_fDistance * cosf(pitch) * sinf(yaw);
 	_float y = m_fDistance * sinf(pitch);
