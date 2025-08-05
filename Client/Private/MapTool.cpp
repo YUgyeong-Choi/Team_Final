@@ -21,13 +21,13 @@
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
 
 CMapTool::CMapTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CYWTool(pDevice, pContext)
 {
 
 }
 
 CMapTool::CMapTool(const CMapTool& Prototype)
-	: CGameObject(Prototype)
+	: CYWTool(Prototype)
 {
 }
 
@@ -46,8 +46,8 @@ HRESULT CMapTool::Initialize(void* pArg)
 		E_FAIL;
 
 	//MapData에 배치되어있는 모델들을 미리 불러들인다.
-	if (FAILED(Ready_Model()))
-		return E_FAIL;
+	/*if (FAILED(Ready_Model()))
+		return E_FAIL;*/
 
 	//MapData를 따라 맵을 로드한다.
 	if (FAILED(Load_Map()))
@@ -260,47 +260,47 @@ void CMapTool::Control(_float fTimeDelta)
 
 }
 
-HRESULT CMapTool::Ready_Model()
-{
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
-	if (!inFile.is_open())
-	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
-		return S_OK;
-	}
-
-	json ReadyModelJson;
-	try
-	{
-		inFile >> ReadyModelJson;
-		inFile.close();
-	}
-	catch (const exception& e)
-	{
-		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-		return E_FAIL;
-	}
-
-	// JSON 데이터 확인
-	for (const auto& element : ReadyModelJson)
-	{
-		string ModelName = element.value("ModelName", "");
-		string Path = element.value("Path", "");
-
-		//모델 프로토 타입 생성
-		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-
-		const _char* pModelFilePath = Path.c_str();
-
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
-		{
-			return E_FAIL;
-		}
-	}
-
-	return S_OK;
-}
+//HRESULT CMapTool::Ready_Model()
+//{
+//	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+//	if (!inFile.is_open())
+//	{
+//		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+//		return S_OK;
+//	}
+//
+//	json ReadyModelJson;
+//	try
+//	{
+//		inFile >> ReadyModelJson;
+//		inFile.close();
+//	}
+//	catch (const exception& e)
+//	{
+//		inFile.close();
+//		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+//		return E_FAIL;
+//	}
+//
+//	// JSON 데이터 확인
+//	for (const auto& element : ReadyModelJson)
+//	{
+//		string ModelName = element.value("ModelName", "");
+//		string Path = element.value("Path", "");
+//
+//		//모델 프로토 타입 생성
+//		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+//
+//		const _char* pModelFilePath = Path.c_str();
+//
+//		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+//		{
+//			return E_FAIL;
+//		}
+//	}
+//
+//	return S_OK;
+//}
 
 HRESULT CMapTool::Save_Map()
 {

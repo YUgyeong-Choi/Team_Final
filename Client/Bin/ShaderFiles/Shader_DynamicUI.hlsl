@@ -21,6 +21,7 @@ float    g_BarRatio;
 float4   g_ManaDesc;
 
 texture2D g_ItemTexture;
+texture2D g_InputTexture;
 float4 g_ItemDesc;
 
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
@@ -396,6 +397,7 @@ PS_OUT PS_MAIN_ITEM_ICON(PS_IN In)
     
     vector vBack = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     vector vHighlight = g_HighlightTexture.Sample(DefaultSampler, In.vTexcoord);
+    vector vInput = g_InputTexture.Sample(DefaultSampler, In.vTexcoord);
 
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
@@ -413,7 +415,7 @@ PS_OUT PS_MAIN_ITEM_ICON(PS_IN In)
     if (g_ItemDesc.y == 1.f)
     {
         float2 center = float2(0.5f, 0.5f); // 텍스처 중앙
-        float scale = 0.75f; // 0.5배 축소 
+        float scale = 0.65f; // 0.5배 축소 
     
         float2 localUV = (In.vTexcoord - center) / scale + center;
 
@@ -430,6 +432,11 @@ PS_OUT PS_MAIN_ITEM_ICON(PS_IN In)
                 Out.vColor += glow;
             }
         }
+    }
+    
+    if (g_ItemDesc.z == 1.f)
+    {
+        Out.vColor += vInput * (1.f - g_ItemDesc.w) * 0.7f;
     }
   
     

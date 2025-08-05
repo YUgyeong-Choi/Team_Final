@@ -1,7 +1,7 @@
 #include "YGTriangleMesh.h"
 
 #include "GameInstance.h"
-#include "PhysX_IgnoreSelfCallback.h"
+#include "LockOn_Manager.h"
 
 CYGTriangleMesh::CYGTriangleMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
@@ -21,7 +21,7 @@ HRESULT CYGTriangleMesh::Initialize_Prototype()
 HRESULT CYGTriangleMesh::Initialize(void* pArg)
 {
 	CGameObject::GAMEOBJECT_DESC _desc{};
-	lstrcpy(_desc.szName, TEXT("YGTriangle"));
+	lstrcpy(_desc.szName, TEXT("YGBox"));
 	_desc.fRotationPerSec = 8.f;
 	_desc.fSpeedPerSec = 10.f;
 
@@ -53,7 +53,9 @@ void CYGTriangleMesh::Priority_Update(_float fTimeDelta)
 
 void CYGTriangleMesh::Update(_float fTimeDelta)
 {
-
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
+		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+	}
 }
 
 void CYGTriangleMesh::Late_Update(_float fTimeDelta)

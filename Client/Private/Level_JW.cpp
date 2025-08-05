@@ -31,14 +31,17 @@ HRESULT CLevel_JW::Initialize()
 	return S_OK;
 }
 
-void CLevel_JW::Update(_float fTimeDelta)
+void CLevel_JW::Priority_Update(_float fTimeDelta)
 {
-
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
+}
+
+void CLevel_JW::Update(_float fTimeDelta)
+{
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
 

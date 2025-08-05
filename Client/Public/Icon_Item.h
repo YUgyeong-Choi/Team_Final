@@ -17,6 +17,7 @@ private:
 public:
 	_bool Get_isSelect() { return m_isSelect; }
 	void  Set_isSelect(_bool isSelect) { m_isSelect = isSelect; }
+	void  Set_isInput(_bool isInput) { m_isInput = isInput; }
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -33,12 +34,17 @@ public:
 	HRESULT Ready_Component(_wstring& strTextureTag);
 
 private:
-	_bool     m_isSelect = {false};
+	_bool     m_isSelect = { false };
+	_bool     m_isInput = { false };
 	_bool     m_isUsable = {true};
 	_wstring  m_strCaption = {};
 	CTexture* m_pItemTextureCom = { nullptr };
 	CTexture* m_pEffectTextureCom = { nullptr };
+	CTexture* m_pInputTextureCom = { nullptr };
 	_int	  m_iItemIndex = { 0 };
+
+	_float	  m_fDuration = {0.3f};
+	_float    m_fInputTime = {};
 
 public:
 	static CIcon_Item* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

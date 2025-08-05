@@ -42,7 +42,6 @@ private:
 	_tchar						m_szLoadingText[MAX_PATH] = {};
 
 	atomic<float>&             m_fRatio;
-
 public:
 	HRESULT Loading_For_Logo();
 	HRESULT Loading_For_Static(); // 모두 사용하는 것들 Logo에서 처음에만 생성 
@@ -51,11 +50,23 @@ public:
 	HRESULT Loading_For_DH();
 	HRESULT Loading_For_JW();
 	HRESULT Loading_For_GL();
+
+#pragma region YW
 	HRESULT Loading_For_YW();
+
+	//<맵>에 필요한 모델들을 로딩한다.
+	HRESULT Loading_Models(_uint iLevelIndex);
+	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
+
+	//<맵툴>에 필요한 모델들을 로딩한다.
+	HRESULT Loading_Models_MapTool(_uint iLevelIndex);
+	HRESULT Load_Model_MapTool(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex);
+#pragma endregion
+
 	HRESULT Loading_For_CY();
 	HRESULT Loading_For_YG();
 
-
+	static _bool m_bLoadStatic;
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID, atomic<float>& fRatio);
 	virtual void Free() override;

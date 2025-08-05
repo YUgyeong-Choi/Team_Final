@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "YGTool.h"
 #include "Camera_Manager.h"
+#include "LockOn_Manager.h"
 #include "Level_Loading.h"
 
 #include "YGDynamicGib.h"
@@ -12,6 +13,7 @@
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
+	, m_pLockOn_Manager{ CLockOn_Manager::Get_Instance() }
 {
 
 }
@@ -50,7 +52,7 @@ HRESULT CLevel_YG::Initialize()
 	return S_OK;
 }
 
-void CLevel_YG::Update(_float fTimeDelta)
+void CLevel_YG::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
@@ -64,6 +66,12 @@ void CLevel_YG::Update(_float fTimeDelta)
 		}
 	}
 
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::CAMERA)]->Priority_Update(fTimeDelta);
+	CLockOn_Manager::Get_Instance()->Priority_Update(fTimeDelta);
+}
+
+void CLevel_YG::Update(_float fTimeDelta)
+{
 	if (m_pGameInstance->Key_Down(DIK_U))
 	{
 		m_pGameInstance->Set_GameTimeScale(1.f);
@@ -75,11 +83,17 @@ void CLevel_YG::Update(_float fTimeDelta)
 	}
 
 
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::CAMERA)]->Priority_Update(fTimeDelta);
+
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::CAMERA)]->Update(fTimeDelta);
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::CAMERA)]->Late_Update(fTimeDelta); 
+	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
+}
+
+void CLevel_YG::Late_Update(_float fTimeDelta)
+{
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::CAMERA)]->Late_Update(fTimeDelta);
+	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 }
 
 HRESULT CLevel_YG::Render()
@@ -182,7 +196,7 @@ HRESULT CLevel_YG::Ready_Player()
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
-		ENUM_CLASS(LEVEL::YG), TEXT("Player"), &pDesc)))
+		ENUM_CLASS(LEVEL::YG), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -229,9 +243,9 @@ HRESULT CLevel_YG::Ready_Layer_Object(const _wstring strLayerTag)
 	//	ENUM_CLASS(LEVEL::YG), strLayerTag)))
 	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGController"),
-		ENUM_CLASS(LEVEL::YG), strLayerTag)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGController"),
+	//	ENUM_CLASS(LEVEL::YG), strLayerTag)))
+	//	return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGCapsule"),
 		ENUM_CLASS(LEVEL::YG), strLayerTag)))

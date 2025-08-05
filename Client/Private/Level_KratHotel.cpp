@@ -28,8 +28,8 @@ HRESULT CLevel_KratHotel::Initialize()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Ready_MapModel(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
-		return E_FAIL;
+	/*if (FAILED(Ready_MapModel(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
+		return E_FAIL;*/
 
 	//제이슨으로 저장된 맵을 로드한다.
 	if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
@@ -58,13 +58,22 @@ HRESULT CLevel_KratHotel::Initialize()
 	return S_OK;
 }
 
-void CLevel_KratHotel::Update(_float fTimeDelta)
+void CLevel_KratHotel::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
+		m_pGameInstance->Set_IsChangeLevel(true);
+		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
+		m_pGameInstance->ClearRenderObjects();
+		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_HOTEL));
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
+
+}
+
+void CLevel_KratHotel::Update(_float fTimeDelta)
+{
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
@@ -77,97 +86,97 @@ HRESULT CLevel_KratHotel::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_KratHotel::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
-{
-	//이미 프로토타입이존재하는 지확인
-
-	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
-	{
-		//MSG_BOX("이미 프로토타입이 존재함");
-		return S_OK;
-	}
-
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
-
-	if (bInstance == false)
-	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
-			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
-			CModel_Instance::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-			return E_FAIL;
-	}
-
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratHotel::Ready_MapModel(_uint iLevelIndex)
-{
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
-	if (!inFile.is_open())
-	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
-		return S_OK;
-	}
-
-	json ReadyModelJson;
-	try
-	{
-		inFile >> ReadyModelJson;
-		inFile.close();
-	}
-	catch (const exception& e)
-	{
-		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-		return E_FAIL;
-	}
-
-	// JSON 데이터 확인
-	for (const auto& element : ReadyModelJson)
-	{
-		string ModelName = element.value("ModelName", "");
-		string Path = element.value("Path", "");
-
-		//갯수도 저장해서 인스턴스용 모델 프로토타입을 만들지 결정해야할듯(충돌여부로 판단하자)
-		_uint iObjectCount = element["ObjectCount"];
-
-		_bool bCollision = element["Collision"];
-
-		wstring PrototypeTag = {};
-		_bool bInstance = false;
-		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
-		{
-			//인스턴싱용 모델 프로토 타입 생성
-			PrototypeTag = L"Prototype_Component_Model_Instance" + StringToWString(ModelName);
-			bInstance = true;
-
-		}
-		else
-		{
-			//모델 프로토 타입 생성
-			PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-			bInstance = false;
-		}
-
-
-		const _char* pModelFilePath = Path.c_str();
-
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
-		{
-			return E_FAIL;
-		}
-	}
-
-	return S_OK;
-}
+//HRESULT CLevel_KratHotel::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
+//{
+//	//이미 프로토타입이존재하는 지확인
+//
+//	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
+//	{
+//		//MSG_BOX("이미 프로토타입이 존재함");
+//		return S_OK;
+//	}
+//
+//	_matrix		PreTransformMatrix = XMMatrixIdentity();
+//	PreTransformMatrix = XMMatrixIdentity();
+//	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+//
+//	if (bInstance == false)
+//	{
+//		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+//			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+//			return E_FAIL;
+//	}
+//	else
+//	{
+//		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+//			CModel_Instance::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+//			return E_FAIL;
+//	}
+//
+//
+//	return S_OK;
+//}
+//
+//HRESULT CLevel_KratHotel::Ready_MapModel(_uint iLevelIndex)
+//{
+//	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+//	if (!inFile.is_open())
+//	{
+//		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+//		return S_OK;
+//	}
+//
+//	json ReadyModelJson;
+//	try
+//	{
+//		inFile >> ReadyModelJson;
+//		inFile.close();
+//	}
+//	catch (const exception& e)
+//	{
+//		inFile.close();
+//		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+//		return E_FAIL;
+//	}
+//
+//	// JSON 데이터 확인
+//	for (const auto& element : ReadyModelJson)
+//	{
+//		string ModelName = element.value("ModelName", "");
+//		string Path = element.value("Path", "");
+//
+//		//갯수도 저장해서 인스턴스용 모델 프로토타입을 만들지 결정해야할듯(충돌여부로 판단하자)
+//		_uint iObjectCount = element["ObjectCount"];
+//
+//		_bool bCollision = element["Collision"];
+//
+//		wstring PrototypeTag = {};
+//		_bool bInstance = false;
+//		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
+//		{
+//			//인스턴싱용 모델 프로토 타입 생성
+//			PrototypeTag = L"Prototype_Component_Model_Instance" + StringToWString(ModelName);
+//			bInstance = true;
+//
+//		}
+//		else
+//		{
+//			//모델 프로토 타입 생성
+//			PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+//			bInstance = false;
+//		}
+//
+//
+//		const _char* pModelFilePath = Path.c_str();
+//
+//		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
+//		{
+//			return E_FAIL;
+//		}
+//	}
+//
+//	return S_OK;
+//}
 
 HRESULT CLevel_KratHotel::LoadMap(_uint iLevelIndex)
 {
@@ -322,7 +331,7 @@ HRESULT CLevel_KratHotel::Ready_Player()
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_Player"),
-		ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Player"), &pDesc)))
+		ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
 
 	return S_OK;

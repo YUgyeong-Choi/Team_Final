@@ -48,6 +48,7 @@
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
 #include "Player.h"
+#include "Bayonet.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -62,11 +63,15 @@
 #include "Panel_Player_LD.h"
 #include "Belt.h"
 #include "Ramp.h"
+#include "Grinder.h"
+#include "Portion.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
 #include "TestAnimObject.h"
 #pragma endregion
+
+_bool CLoader::m_bLoadStatic = false;
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, atomic<float>& fRatio)
 	: m_pDevice { pDevice }
@@ -115,7 +120,8 @@ HRESULT CLoader::Loading()
 	switch (m_eNextLevelID)
 	{
 	case LEVEL::LOGO:
-		hr = Loading_For_Static();
+		if(!m_bLoadStatic)
+			hr = Loading_For_Static();
 		hr = Loading_For_Logo();
 		break;
 
@@ -185,6 +191,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 HRESULT CLoader::Loading_For_Static()
 {
+	m_bLoadStatic = true;
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 	/* For.Prototype_Component_Texture_Button_Hover*/
@@ -295,6 +302,10 @@ HRESULT CLoader::Loading_For_Static()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot/SlotBg_Select.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Slot_Input"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot/SlotBg_Input.dds")))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
@@ -363,6 +374,13 @@ HRESULT CLoader::Loading_For_Static()
 		CRamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Grinder"),
+		CGrinder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"),
+		CPortion::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -416,6 +434,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PlayerWeapon"),
+		CBayonet::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
@@ -460,6 +481,10 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_Component_Model_Player"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -728,6 +753,8 @@ HRESULT CLoader::Loading_For_GL()
 	return S_OK;
 }
 
+#pragma region YW
+
 HRESULT CLoader::Loading_For_YW()
 {
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트을(를) 로딩중입니다."));
@@ -752,6 +779,9 @@ HRESULT CLoader::Loading_For_YW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
 
@@ -774,6 +804,165 @@ HRESULT CLoader::Loading_For_YW()
 	m_isFinished = true;
 	return S_OK;
 }
+
+HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
+{
+	//이미 프로토타입이존재하는 지확인
+
+	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
+	{
+		//MSG_BOX("이미 프로토타입이 존재함");
+		return S_OK;
+	}
+
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+
+	if (bInstance == false)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+			CModel_Instance::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+			return E_FAIL;
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_Models(_uint iLevelIndex)
+{
+	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	if (!inFile.is_open())
+	{
+		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		return S_OK;
+	}
+
+	json ReadyModelJson;
+	try
+	{
+		inFile >> ReadyModelJson;
+		inFile.close();
+	}
+	catch (const exception& e)
+	{
+		inFile.close();
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+		return E_FAIL;
+	}
+
+	// JSON 데이터 확인
+	for (const auto& element : ReadyModelJson)
+	{
+		string ModelName = element.value("ModelName", "");
+		string Path = element.value("Path", "");
+
+		//갯수도 저장해서 인스턴스용 모델 프로토타입을 만들지 결정해야할듯(충돌여부로 판단하자)
+		_uint iObjectCount = element["ObjectCount"];
+
+		_bool bCollision = element["Collision"];
+
+		wstring PrototypeTag = {};
+		_bool bInstance = false;
+		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
+		{
+			//인스턴싱용 모델 프로토 타입 생성
+			PrototypeTag = L"Prototype_Component_Model_Instance" + StringToWString(ModelName);
+			bInstance = true;
+
+		}
+		else
+		{
+			//모델 프로토 타입 생성
+			PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+			bInstance = false;
+		}
+
+
+		const _char* pModelFilePath = Path.c_str();
+
+		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
+		{
+			return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
+
+HRESULT CLoader::Loading_Models_MapTool(_uint iLevelIndex)
+{
+	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	if (!inFile.is_open())
+	{
+		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		return S_OK;
+	}
+
+	json ReadyModelJson;
+	try
+	{
+		inFile >> ReadyModelJson;
+		inFile.close();
+	}
+	catch (const exception& e)
+	{
+		inFile.close();
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+		return E_FAIL;
+	}
+
+	// JSON 데이터 확인
+	for (const auto& element : ReadyModelJson)
+	{
+		string ModelName = element.value("ModelName", "");
+		string Path = element.value("Path", "");
+
+		//모델 프로토 타입 생성
+		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+
+		const _char* pModelFilePath = Path.c_str();
+
+		if (FAILED(Load_Model_MapTool(PrototypeTag, pModelFilePath, iLevelIndex)))
+		{
+			return E_FAIL;
+		}
+	}
+
+	return S_OK;
+
+}
+
+HRESULT CLoader::Load_Model_MapTool(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex)
+{
+	//이미 프로토타입이존재하는 지확인
+
+	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
+	{
+		//MSG_BOX("이미 프로토타입이 존재함");
+		return S_OK;
+	}
+
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+		return E_FAIL;
+
+	return S_OK;
+}
+#pragma endregion
+
 
 HRESULT CLoader::Loading_For_CY()
 {

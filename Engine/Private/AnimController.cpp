@@ -270,6 +270,37 @@ _float CAnimController::GetStateLength(const string& name)
 	return 0.f;
 }
 
+size_t CAnimController::AddState(const string& stateName, CAnimation* defaultClip, _int nodeId, _bool bIsMaskBone, const string& initialMaskBone, const string& initialUpperClip, const string& initialLowerClip)
+{
+	AnimState newState;
+	newState.stateName = stateName;
+	newState.iNodeId = nodeId;
+	newState.fNodePos = { 0.f, 0.f }; // 이 위치는 나중에 ImGui에서 설정
+
+	if (bIsMaskBone)
+	{
+		newState.clip = nullptr; // 마스크 본 상태일 때는 일반 클립은 null
+		newState.maskBoneName = initialMaskBone;
+		newState.upperClipName = initialUpperClip;
+		newState.lowerClipName = initialLowerClip;
+	}
+	else
+	{
+		newState.clip = defaultClip; // 일반 상태일 때는 기본 클립 할당
+		newState.maskBoneName.clear(); // 마스크 본 이름 초기화
+		newState.upperClipName.clear();
+		newState.lowerClipName.clear();
+	}
+
+	m_States.push_back(newState);
+	if (m_States.size() == 1)
+	{
+		m_CurrentStateNodeId = nodeId;
+		SetEntry(stateName);
+	}
+	return m_States.size() - 1;
+}
+
 void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, const Condition& cond, _float duration,_bool bHasExitTime, _bool bBlendFullBody)
 {	
 	m_Transitions.emplace_back();
@@ -305,7 +336,7 @@ void CAnimController::AddTransitionMultiCondition(_int fromNode, _int toNode, co
 	tr.hasExitTime = bHasExitTime;
 }
 
-CAnimController::TransitionResult & CAnimController::CheckTransition()
+const CAnimController::TransitionResult & CAnimController::CheckTransition() const
 {
 	return m_TransitionResult;
 }

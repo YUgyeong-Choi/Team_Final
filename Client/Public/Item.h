@@ -31,6 +31,8 @@ public:
 	// 사용 효과 상속받아서 구현하기
 	virtual void Activate() = 0;
 
+	virtual ITEM_DESC Get_ItemDesc() { return ITEM_DESC(); };
+
 protected:
 	// 이거로 구분하던지 아니면 다른거로 구분하던지
 	// 그냥 enum해서 하는게 좋을수도?

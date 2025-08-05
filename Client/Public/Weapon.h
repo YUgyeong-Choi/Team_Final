@@ -22,6 +22,9 @@ public:
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
+
+		const _float4x4* pSocketMatrix = { nullptr };
+		const _float4x4* pParentWorldMatrix = { nullptr };
 	}WEAPON_DESC;
 
 protected:
@@ -37,6 +40,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+protected:
+	void SetWeaponWorldMatrix(_float fTimeDelta);
 
 protected: /* [ Setup 함수 ] */
 	HRESULT Bind_Shader();
@@ -54,10 +59,18 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
+public: /* [ 활성화 , 비활성화 ] */
+	void SetbIsActive(_bool IsActive) { m_bIsActive = IsActive; }
+	_bool GetbIsActive() const { return m_bIsActive; }
+
+protected:
+	const _float4x4*	m_pParentWorldMatrix = { nullptr };
+	const _float4x4*	m_pSocketMatrix = { nullptr };
+	_float4x4			m_CombinedWorldMatrix = {};
 
 protected:				/* [ 기본 속성 ] */
 	_float				m_bDamage = { 10.f };
-	_bool				m_isActive = { true };
+	_bool				m_bIsActive = {};
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);
 	_float3				m_InitPos = {};
