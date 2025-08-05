@@ -184,7 +184,7 @@ HRESULT CLevel_YW::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (ImGui::Begin("Tool Selector"))
+	if (ImGui::Begin("Tool Selector"), nullptr, ImGuiWindowFlags_NoCollapse)
 	{
 		if (ImGui::BeginTabBar("##ToolTabs"))
 		{
