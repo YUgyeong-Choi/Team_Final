@@ -260,47 +260,47 @@ void CMapTool::Control(_float fTimeDelta)
 
 }
 
-HRESULT CMapTool::Ready_Model()
-{
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
-	if (!inFile.is_open())
-	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
-		return S_OK;
-	}
-
-	json ReadyModelJson;
-	try
-	{
-		inFile >> ReadyModelJson;
-		inFile.close();
-	}
-	catch (const exception& e)
-	{
-		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-		return E_FAIL;
-	}
-
-	// JSON 데이터 확인
-	for (const auto& element : ReadyModelJson)
-	{
-		string ModelName = element.value("ModelName", "");
-		string Path = element.value("Path", "");
-
-		//모델 프로토 타입 생성
-		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-
-		const _char* pModelFilePath = Path.c_str();
-
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
-		{
-			return E_FAIL;
-		}
-	}
-
-	return S_OK;
-}
+//HRESULT CMapTool::Ready_Model()
+//{
+//	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+//	if (!inFile.is_open())
+//	{
+//		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+//		return S_OK;
+//	}
+//
+//	json ReadyModelJson;
+//	try
+//	{
+//		inFile >> ReadyModelJson;
+//		inFile.close();
+//	}
+//	catch (const exception& e)
+//	{
+//		inFile.close();
+//		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+//		return E_FAIL;
+//	}
+//
+//	// JSON 데이터 확인
+//	for (const auto& element : ReadyModelJson)
+//	{
+//		string ModelName = element.value("ModelName", "");
+//		string Path = element.value("Path", "");
+//
+//		//모델 프로토 타입 생성
+//		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+//
+//		const _char* pModelFilePath = Path.c_str();
+//
+//		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+//		{
+//			return E_FAIL;
+//		}
+//	}
+//
+//	return S_OK;
+//}
 
 HRESULT CMapTool::Save_Map()
 {

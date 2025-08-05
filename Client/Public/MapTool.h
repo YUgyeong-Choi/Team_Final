@@ -27,7 +27,7 @@ private:
 	void Control(_float fTimeDelta);
 
 private:
-	HRESULT Ready_Model();
+	//HRESULT Ready_Model();
 	HRESULT Save_Map();
 	HRESULT Load_Map();
 

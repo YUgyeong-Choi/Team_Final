@@ -53,11 +53,15 @@ public:
 	HRESULT Loading_For_GL();
 
 #pragma region YW
-	//맵에 필요한 모델들을 로딩한다.
-	HRESULT Loading_Models(_uint iLevelIndex);
-	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex);
-
 	HRESULT Loading_For_YW();
+
+	//<맵>에 필요한 모델들을 로딩한다.
+	HRESULT Loading_Models(_uint iLevelIndex);
+	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
+
+	//<맵툴>에 필요한 모델들을 로딩한다.
+	HRESULT Loading_Models_MapTool(_uint iLevelIndex);
+	HRESULT Load_Model_MapTool(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex);
 #pragma endregion
 
 	HRESULT Loading_For_CY();
