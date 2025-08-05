@@ -17,6 +17,8 @@ public:
 	CItem* Get_Current_Item() { return m_Items[m_iSelectIndex]; }
 	vector<CItem*>& Get_Items() { return m_Items; }
 
+	vector<CItem*>& Get_ViewItems() { return m_ViewItems; }
+
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -32,8 +34,9 @@ public:
 
 private:
 	vector<CItem*> m_Items;
+	vector<CItem*> m_ViewItems;
 	CItem*		   m_pSelectItem = { nullptr };
-	_int		   m_iSelectIndex = { 0 };
+	_int		   m_iSelectIndex = {};
 
 public:
 	static CBelt* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

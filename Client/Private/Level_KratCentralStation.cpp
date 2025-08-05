@@ -65,6 +65,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
 		m_pGameInstance->ClearRenderObjects();
 		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+		m_pGameInstance->Reset_All();
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}

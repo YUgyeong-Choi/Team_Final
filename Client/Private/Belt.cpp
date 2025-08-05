@@ -23,7 +23,7 @@ HRESULT CBelt::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_Items.resize(3);
-
+	
 
 
 	return S_OK;
@@ -67,6 +67,15 @@ void CBelt::Add_Item(CItem* pItem, _int iIndex)
 		return;
 
 	m_Items[iIndex] = pItem;
+
+	// 선택된 아이템이 없을 때 자동 설정
+	if (m_pSelectItem == nullptr && pItem != nullptr)
+	{
+		m_pSelectItem = pItem;
+		m_iSelectIndex = iIndex;
+
+	}
+	m_ViewItems.push_back(pItem);
 }
 
 void CBelt::Use_SelectItem()
@@ -85,35 +94,50 @@ void CBelt::DeselectItem()
 
 void CBelt::Change_Next_Item()
 {
-	size_t iCount = m_Items.size();
-	int nextIndex = (m_iSelectIndex + 1) % iCount;
+	size_t iSize = m_Items.size();
 
-	while (nextIndex != m_iSelectIndex)
+	int iCount = {};
+	for (auto& pItem : m_Items)
 	{
-		if (m_Items[nextIndex] != nullptr) // 아이템 있으면 반환
-		{
-			// 순서 바꿔서 저장
-			rotate(m_Items.begin(), m_Items.begin() + nextIndex, m_Items.end());
+		if (nullptr != pItem)
+			++iCount;
 
-			m_pSelectItem = m_Items[0];
-			m_iSelectIndex = 0;
-			return;
-		}
-			
-		nextIndex = (nextIndex + 1) % iCount;
 	}
 
-	// 다 돌고, 처음 인덱스 다시 체크
-	if (m_Items[m_iSelectIndex] != nullptr)
+	// 하나만 있거나 없어서 index 처리할 필요가 없음
+	if (1 >= iCount)
 	{
-		rotate(m_Items.begin(), m_Items.begin() + m_iSelectIndex, m_Items.end());
 
-		m_pSelectItem = m_Items[0];
-		m_iSelectIndex = 0;
 		return;
 	}
-	// 다 돌아도 없으면 벨트에 아이템이 없으니까 
-	m_pSelectItem = nullptr;
+		
+	
+
+	// index 바꾸는거 시작
+	int iStartIndex = (m_iSelectIndex + 1) % iSize;
+
+	for (int i = 0; i < iSize; ++i)
+	{
+		int iCheckIndex = (iStartIndex + i) % iSize;
+
+		if (m_Items[iCheckIndex] != nullptr)
+		{
+			// 선택 변경
+			m_pSelectItem = m_Items[iCheckIndex];
+			m_iSelectIndex = iCheckIndex;
+
+			// ViewItems 구성
+			m_ViewItems.clear();  
+			for (int j = 0; j < iSize; ++j)
+			{
+				int iViewIndex = (m_iSelectIndex + j) % iSize;
+				if (m_Items[iViewIndex] != nullptr)
+					m_ViewItems.push_back(m_Items[iViewIndex]);
+			}
+
+			return;
+		}
+	}
 }
 
 CBelt* CBelt::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

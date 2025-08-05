@@ -196,9 +196,6 @@
     <Filter Include="03. Observer">
       <UniqueIdentifier>{18a85b51-91ef-4e0f-b3a9-088ada422286}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Observer\Player">
-      <UniqueIdentifier>{0cf68e2e-7499-467e-8996-01dcada4ac10}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Unit\00.Player\PlayerBehavior">
       <UniqueIdentifier>{c6317318-96b2-4c47-a258-b55edf9c9eb7}</UniqueIdentifier>
     </Filter>
@@ -264,6 +261,9 @@
     </Filter>
     <Filter Include="01.Levels\LevelYW\YWTool\MapTool\PreviewObject">
       <UniqueIdentifier>{7540b347-438e-4d48-b0f4-5406c3ce1d98}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="03. Observer\PlayerStatus">
+      <UniqueIdentifier>{0cf68e2e-7499-467e-8996-01dcada4ac10}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -553,7 +553,7 @@
       <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Observer_Player_Status.h">
-      <Filter>03. Observer\Player</Filter>
+      <Filter>03. Observer\PlayerStatus</Filter>
     </ClInclude>
     <ClInclude Include="..\public\HP_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
@@ -871,7 +871,7 @@
       <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Observer_Player_Status.cpp">
-      <Filter>03. Observer\Player</Filter>
+      <Filter>03. Observer\PlayerStatus</Filter>
     </ClCompile>
     <ClCompile Include="..\private\HP_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>

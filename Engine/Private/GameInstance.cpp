@@ -200,7 +200,7 @@ void CGameInstance::Clear(_uint iLevelIndex)
 	/* 특정 레벨의 원형객을 삭제한다. */
 	m_pPrototype_Manager->Clear(iLevelIndex);
 
-	m_pObserver_Manager->Reset_All();
+ 
 }
 
 
@@ -773,6 +773,11 @@ void CGameInstance::Register_PushCallback(const _wstring& strTag, function<void(
 void CGameInstance::Reset(const _wstring& strTag)
 {
 	m_pObserver_Manager->Reset(strTag);
+}
+
+void CGameInstance::Reset_All()
+{
+	m_pObserver_Manager->Reset_All();
 }
 
 #pragma endregion

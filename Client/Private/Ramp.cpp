@@ -63,6 +63,22 @@ void CRamp::Activate()
 
 }
 
+ITEM_DESC CRamp::Get_ItemDesc()
+{
+	ITEM_DESC eDesc = {};
+
+	if (m_isLight)
+		eDesc.iItemIndex = 1;
+	else
+		eDesc.iItemIndex = 0;
+	eDesc.strPrototag = m_strProtoTag;
+	eDesc.isUsable = true;
+	eDesc.isConsumable = false;
+
+
+	return eDesc;
+}
+
 HRESULT CRamp::Ready_Components()
 {
     // 벨트에 있어야 되니까 ramp model이랑 쉐이더 필요할듯?
