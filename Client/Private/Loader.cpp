@@ -311,7 +311,7 @@ HRESULT CLoader::Loading_For_Static()
 	
 
 	lstrcpy(m_szLoadingText, TEXT("이펙트을(를) 로딩중입니다."));
-	CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"));
+	//CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"));
 
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));

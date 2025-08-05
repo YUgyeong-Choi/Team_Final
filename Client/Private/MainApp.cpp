@@ -392,6 +392,6 @@ void CMainApp::Free()
 
 	/* [ ΩÃ±€≈Ê ªË¡¶ ] */
 	CCamera_Manager::Destroy_Instance();
-	CEffect_Manager::Destroy_Instance();
+	//CEffect_Manager::Destroy_Instance();
 	
 }
