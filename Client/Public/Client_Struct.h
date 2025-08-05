@@ -80,6 +80,17 @@ namespace Client
 
 	}UI_FEATURE_SCALE_DESC;
 
+	// 옵저버에 던질 구조체
+
+	typedef struct tagItemDesc {
+		_wstring strPrototag;
+		_bool    isSelect;
+		_bool    isUsable;
+		_bool    isConsumable;
+		_int     iUseCount;
+		_int     iItemIndex;
+	}ITEM_DESC;
+
 #pragma endregion
 
 #pragma region YG

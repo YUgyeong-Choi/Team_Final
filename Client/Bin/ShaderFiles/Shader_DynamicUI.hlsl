@@ -19,6 +19,10 @@ float4   g_ButtonFlag;
 
 float    g_BarRatio;
 float4   g_ManaDesc;
+
+texture2D g_ItemTexture;
+float4 g_ItemDesc;
+
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
 
@@ -121,6 +125,9 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
     PS_OUT Out;
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    float4 vProjPos = In.vProjPos;
+    float4 vPos = In.vPosition;
     
     Out.vColor *= g_Color;
    
@@ -248,6 +255,8 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
 {
     PS_OUT Out;
  
+    Out.vColor = float4(0.f, 0.f, 0.f, 0.f);
+    
     vector vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
     vector vBack = g_BackgroundTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -381,6 +390,55 @@ PS_OUT PS_MAIN_MANABAR(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_ITEM_ICON(PS_IN In)
+{
+    PS_OUT Out;
+    
+    vector vBack = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    vector vHighlight = g_HighlightTexture.Sample(DefaultSampler, In.vTexcoord);
+
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    if (vBack.a < 0.01f)
+        discard;
+    
+  
+    
+    if (g_ItemDesc.x == 1.f)
+    {
+        Out.vColor = vBack + vHighlight * float4(1.f, 0.f, 0.f, 0.5f);
+
+    }
+    
+    if (g_ItemDesc.y == 1.f)
+    {
+        float2 center = float2(0.5f, 0.5f); // 텍스처 중앙
+        float scale = 0.75f; // 0.5배 축소 
+    
+        float2 localUV = (In.vTexcoord - center) / scale + center;
+
+        if (localUV.x >= 0.f && localUV.x <= 1.f &&
+        localUV.y >= 0.f && localUV.y <= 1.f)
+        {
+            vector vSmallItem = g_ItemTexture.Sample(DefaultSampler, localUV);
+
+            if (vSmallItem.a > 0.01f)
+            {
+                float glowStrength = smoothstep(0.15f, 0.6f, vSmallItem.a); // 부드럽게 올라감
+                vector glow = vSmallItem * glowStrength;
+
+                Out.vColor += glow;
+            }
+        }
+    }
+  
+    
+    Out.vColor *= g_Color;
+  
+    
+    return Out;
+}
+
 
 
 technique11 DefaultTechnique
@@ -469,6 +527,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_MANABAR();
+    }
+    pass IconItem
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ITEM_ICON();
+
     }
    
 }

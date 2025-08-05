@@ -329,10 +329,14 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 	
 	CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
-	eDesc.strFilePath = TEXT("../Bin/Save/UI/Panel_Player.json");
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Panel_Player_LU.json");
 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
-		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"), &eDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"), &eDesc)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Panel_Player_LD"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"))))
 		return E_FAIL;
 
 	return S_OK;
