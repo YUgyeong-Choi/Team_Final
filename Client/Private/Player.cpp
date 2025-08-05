@@ -120,14 +120,14 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetBool("Charge", true);
 		//m_pAnimator->SetTrigger("StrongAttack");
 		
-		m_pAnimator->SetBool("Move", true);
-		m_pAnimator->SetTrigger("Dash");
-		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(200.f);
+		//m_pAnimator->SetBool("HasLamp", true);
+		m_pAnimator->SetTrigger("Hited");
 
 		//m_pAnimator->SetBool("Run", true);
 		//m_pAnimator->SetTrigger("Hited");
 	}
 	
+
 	//m_pAnimator->ApplyOverrideAnimController("TwoHand");
 	//m_pAnimator->SetBool("Charge", true);
 	//m_pAnimator->SetTrigger("StrongAttack");
@@ -156,15 +156,10 @@ HRESULT CPlayer::Render()
 void CPlayer::HandleInput()
 {
 	/* [ 키 입력을 업데이트합니다. ] */
-	m_Input.bUp = KEY_PRESSING(DIK_W);
-	m_Input.bDown = KEY_PRESSING(DIK_S);
-	m_Input.bLeft = KEY_PRESSING(DIK_A);
-	m_Input.bRight = KEY_PRESSING(DIK_D);
-
-	m_Input.bUp_Pressing = KEY_PRESSING(DIK_W);
-	m_Input.bDown_Pressing = KEY_PRESSING(DIK_S);
-	m_Input.bLeft_Pressing = KEY_PRESSING(DIK_A);
-	m_Input.bRight_Pressing = KEY_PRESSING(DIK_D);
+	if(KEY_PRESSING(DIK_W) || KEY_PRESSING(DIK_S) || KEY_PRESSING(DIK_A) || KEY_PRESSING(DIK_D))
+		m_Input.bMove = true;
+	else
+		m_Input.bMove = false;
 
 	/* [ 마우스 입력을 업데이트합니다. ] */
 	m_Input.bLeftMouseDown = MOUSE_DOWN(DIM::LBUTTON);
@@ -212,24 +207,183 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 	}
 
 	m_pCurrentState->Execute(fTimeDelta);
-	TriggerStateEffects();
+	TriggerStateEffects(fTimeDelta);
 }
 
-void CPlayer::TriggerStateEffects()
+void CPlayer::TriggerStateEffects(_float fTimeDelta)
 {
-	switch (m_eCurrentState)
-	{
-	case EPlayerState::IDLE:
-		//m_SoundPlayer->Play("Idle");
-		break;
+	string stateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
-	case EPlayerState::WALK:
-		//m_SoundPlayer->Play("Walk");
+	// 상태가 바뀌었으면 초기화
+	if (m_strPrevStateName != stateName)
+	{
+		m_strPrevStateName = stateName;
+		m_fMoveTime = 0.f;
+		m_iMoveStep = 0;
+		m_bMove = false;
+	}
+
+	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
+	switch (eCategory)
+	{
+	case eAnimCategory::NORMAL_ATTACKA:
+	{
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.2f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.65f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 		break;
+	}
+	case eAnimCategory::NORMAL_ATTACKB:
+	{
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.3f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.55f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+		break;
+	}
+	case eAnimCategory::STRONG_ATTACKA:
+	{
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.3f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.25f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+		break;
+	}
+	case eAnimCategory::STRONG_ATTACKB:
+	{
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.2f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.4f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+		break;
+	}
+	case eAnimCategory::CHARGE_ATTACK:
+	{
+		m_fMoveTime += fTimeDelta;
+
+		_float fMoveTime = 0.2f;
+		_float fDistance = 1.f;
+		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+
+		if (m_iMoveStep == 0)
+		{
+			if (m_fMoveTime > 0.3f)
+			{
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, fMoveTime, vLook, fDistance, m_pControllerCom);
+				SyncTransformWithController();
+
+				if (m_bMove)
+				{
+					m_iMoveStep = 1;
+					m_bMove = false; // 다음 이동을 위해 다시 초기화
+				}
+			}
+		}
+		else if (m_iMoveStep == 1)
+		{
+			if (m_fMoveTime > 0.7f)
+			{
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, fMoveTime, vLook, fDistance, m_pControllerCom);
+				SyncTransformWithController();
+
+				if (m_bMove)
+				{
+					m_iMoveStep = 2;
+				}
+			}
+		}
+		break;
+	}
 
 	default:
 		break;
 	}
+}
+
+CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const std::string& stateName)
+{
+	if (stateName == "Idle") return eAnimCategory::IDLE; 
+
+	if (stateName.find("Walk") == 0) return eAnimCategory::WALK;
+	if (stateName.find("Run") == 0) return eAnimCategory::RUN;
+
+	if (stateName.find("Dash_Normal") == 0) return eAnimCategory::DASH_NORMAL;
+	if (stateName.find("Dash_Focus") == 0) return eAnimCategory::DASH_FOCUS;
+
+	if (stateName.find("Sprint") == 0) return eAnimCategory::SPRINT;
+
+	if (stateName.find("Guard_Hit") == 0 || stateName.find("Guard_Break") == 0)
+		return eAnimCategory::GUARD_HIT;
+	if (stateName.find("Guard") == 0) return eAnimCategory::GUARD;
+
+	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
+	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
+
+	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0)
+		return eAnimCategory::ITEM_WALK;
+	if (stateName.find("OnLamp") == 0 || stateName.find("FailItem") == 0)
+		return eAnimCategory::ITEM;
+
+	if (stateName.find("NormalAttack2") == 0)
+		return eAnimCategory::NORMAL_ATTACKA;
+	if (stateName.find("NormalAttack") == 0)
+		return eAnimCategory::NORMAL_ATTACKB;
+	if (stateName.find("StrongAttack2") == 0)
+		return eAnimCategory::STRONG_ATTACKB;
+	if (stateName.find("StrongAttack") == 0)
+		return eAnimCategory::STRONG_ATTACKA;
+	if (stateName.find("ChargeStrongAttack") == 0)
+		return eAnimCategory::CHARGE_ATTACK;
+	if (stateName.find("SprintNormalAttack") == 0 || stateName.find("SprintStrongAttack") == 0)
+		return eAnimCategory::SPRINT_ATTACK;
+
+	if (stateName.find("MainSkill") == 0)
+		return eAnimCategory::MAINSKILL;
+
+	if (stateName.find("Sit") == 0)
+		return eAnimCategory::SIT;
+
+	if (stateName.find("SlidingDoor") == 0 || stateName.find("DoubleDoor") == 0)
+		return eAnimCategory::INTERACTION;
+
+	return eAnimCategory::NONE;
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
@@ -302,7 +456,8 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::WEAKATTACKB)] = new CPlayer_WeakAttackB(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::STRONGATTACKA)] = new CPlayer_StrongAttackA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::STRONGATTACKB)] = new CPlayer_StrongAttackB(this);
-	m_pStateArray[ENUM_CLASS(EPlayerState::CHARGE)] = new CPlayer_Charge(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::CHARGEA)] = new CPlayer_ChargeA(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::CHARGEB)] = new CPlayer_ChargeB(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::GARD)] = new CPlayer_Gard(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
@@ -485,6 +640,12 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 			_float fClampedAngle = max(-fTurnSpeed * fTimeDelta, min(fTurnSpeed * fTimeDelta, fAngle));
 			if (!m_bMovable)
 				fClampedAngle = 0.f;
+
+			string strName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+			if (m_MovableStates.find(strName) == m_MovableStates.end())
+			{
+				fClampedAngle = 0.f;
+			}
 			m_pTransformCom->TurnAngle(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
 		}
 	}
@@ -493,6 +654,11 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	_float3 moveVec = {};
 	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
 	if (!m_bMovable)    fSpeed = 0.f;
+	string strName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+	if (m_MovableStates.find(strName) == m_MovableStates.end())
+	{
+		fSpeed = 0.f;
+	}
 	_float fDist = fSpeed * fTimeDelta;
 	vInputDir *= fDist;
 	XMStoreFloat3(&moveVec, vInputDir);

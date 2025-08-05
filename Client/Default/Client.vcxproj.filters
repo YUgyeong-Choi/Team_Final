@@ -223,7 +223,7 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Mana">
       <UniqueIdentifier>{367fcc09-a226-4aab-9b15-2cb35c437e7a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Unit\01.Weapon">
+    <Filter Include="02.GameObjects\03.Weapon">
       <UniqueIdentifier>{87bd98b7-f2e3-4aba-bbd8-673c9acc6bd4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -530,7 +530,7 @@
     </ClInclude>
     <ClInclude Include="..\public\Effect_Manager.h" />
     <ClInclude Include="..\public\Weapon.h">
-      <Filter>02.GameObjects\01.Unit\01.Weapon</Filter>
+      <Filter>02.GameObjects\03.Weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -810,7 +810,7 @@
     </ClCompile>
     <ClCompile Include="..\private\Effect_Manager.cpp" />
     <ClCompile Include="..\private\Weapon.cpp">
-      <Filter>02.GameObjects\01.Unit\01.Weapon</Filter>
+      <Filter>02.GameObjects\03.Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,18 @@ public:
     virtual const _tchar* GetStateName() const = 0;
 
 protected:
+    _int    GetCurrentCombo() 
+    {
+        int result = m_pOwner->m_iCurrentCombo;
+        m_pOwner->m_iCurrentCombo = (m_pOwner->m_iCurrentCombo + 1) % 2;
+        return result;
+    }
+	void    SetCurrentCombo(_int Combo)
+	{
+		m_pOwner->m_iCurrentCombo = Combo;
+	}
+
+protected:
 	CPlayer* m_pOwner;
 
 	CCamera_Manager* m_pCamera_Manager = { nullptr };
@@ -45,8 +57,6 @@ protected:
 	_bool  m_bDoTwo = {};
 	_bool  m_bDoThree = {};
 
-    //m_pAnimator->SetTrigger("EquipWeapon"); 단발성 트리거
-    //m_pAnimator->ApplyOverrideAnimController("TwoHand"); 컨트롤러 변경
 public:
 	virtual void Free()
 	{
@@ -67,10 +77,11 @@ public:
 public:
     virtual void Enter() override
     {
+		SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
-        // 아무것도 안켜면 Idle 입니다.
+        // 아이들 상태는 아무것도 안받음
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -102,6 +113,7 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (input.bTap) // 실드
             return EPlayerState::EQUIP;
@@ -119,7 +131,7 @@ public:
 			return EPlayerState::STRONGATTACKA;
         
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // 차징
-			return EPlayerState::CHARGE;
+			return EPlayerState::CHARGEA;
         
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // 약공
 			return EPlayerState::WEAKATTACKA;
@@ -130,7 +142,7 @@ public:
 		if (input.bSpaceDown) // 빽스탭
             return EPlayerState::BACKSTEP;
 
-        if (input.bDown || input.bLeft || input.bRight || input.bUp)
+        if (input.bMove)
         {
             if(m_pOwner->m_bWalk)
                 return EPlayerState::WALK;
@@ -152,6 +164,11 @@ public:
     }
 
 private:
+    unordered_set<string> m_StateNames = {
+        "Idle"
+    };
+
+private:
     _bool   m_bChargeStarted = {};
     _float  m_fChargeElapsed = 0.f;
 };
@@ -169,10 +186,10 @@ public:
 public:
     virtual void Enter() override
     {
+        SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
-        m_pOwner->m_pAnimator->SetBool("Move", true);
         m_pOwner->Get_TransfomCom()->Set_SpeedPreSec(g_fWalkSpeed);
 
         /* [ 디버깅 ] */
@@ -202,7 +219,6 @@ public:
 
     virtual void Exit() override
     {
-        m_pOwner->m_pAnimator->SetBool("Move", false);
         m_bChargeStarted = false;
         m_fChargeElapsed = 0.f;
         m_fSpaceHoldTime = 0.f;
@@ -212,6 +228,7 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
         
         if (m_fSpaceHoldTime > 0.5f)
             return EPlayerState::SPRINT;
@@ -229,7 +246,7 @@ public:
             return EPlayerState::STRONGATTACKA;
 
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // 차징
-            return EPlayerState::CHARGE;
+            return EPlayerState::CHARGEA;
 
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // 약공
             return EPlayerState::WEAKATTACKA;
@@ -238,7 +255,7 @@ public:
             return EPlayerState::ROLLING;
 
 		// 아무것도 안눌리면 Idle로 전환
-        if (!input.bDown_Pressing && !input.bLeft_Pressing && !input.bRight_Pressing && !input.bUp_Pressing)
+        if (!input.bMove)
         {
             return EPlayerState::IDLE;
         }
@@ -258,6 +275,11 @@ public:
     {
         return L"WALK";
     }
+
+private:
+    unordered_set<string> m_StateNames = {
+        "Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR"
+    };
 
 private:
 	_float m_fSpaceHoldTime = 0.f;
@@ -280,6 +302,7 @@ public:
 public:
     virtual void Enter() override
     {
+        SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
@@ -315,7 +338,6 @@ public:
 
     virtual void Exit() override
     {
-        m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetBool("Run", false);
         m_bChargeStarted = false;
         m_fChargeElapsed = 0.f;
@@ -325,6 +347,7 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (m_fSpaceHoldTime > 0.5f)
             return EPlayerState::SPRINT;
@@ -342,7 +365,7 @@ public:
             return EPlayerState::STRONGATTACKA;
 
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // 차징
-            return EPlayerState::CHARGE;
+            return EPlayerState::CHARGEA;
 
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // 약공
             return EPlayerState::WEAKATTACKA;
@@ -350,7 +373,7 @@ public:
         if (input.bSpaceUP) // 구르기
             return EPlayerState::ROLLING;
 
-        if (!input.bDown_Pressing && !input.bLeft_Pressing && !input.bRight_Pressing && !input.bUp_Pressing)
+        if (!input.bMove)
         {
             return EPlayerState::IDLE;
         }
@@ -369,6 +392,12 @@ public:
     {
         return L"RUN";
     }
+
+private:
+    unordered_set<string> m_StateNames = {
+        "Run_F", "Run_F_Stop", "Run_FR", "Run_FL", "Run_BR", "Run_BL", "Run_B", "Run_L", "Run_R"
+    };
+
 private:
     _float m_fSpaceHoldTime = 0.f;
 
@@ -393,14 +422,13 @@ public:
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
-        m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
-        m_pOwner->m_pAnimator->ApplyOverrideAnimController("TwoHand");
-        m_pOwner->m_pAnimator->SetInt("Combo", 0);
-        m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
-        // 원래는 걸으면서 아이템을 사용해야 하지만, 현재는 공격모션으로 대체합니다.
 
          // 아이템 사용 전 걷기 상태였는지 저장
+        m_pOwner->m_pAnimator->SetBool("HasLamp", true);
+        m_pOwner->m_pAnimator->SetTrigger("UseItem");
+        m_pOwner->Get_TransfomCom()->Set_SpeedPreSec(g_fWalkSpeed);
 		m_bPreWalk = m_pOwner->m_bWalk;
+		m_pOwner->m_bWalk = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -409,10 +437,6 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
-
-
-        // 아이템사용은 걷기로 모션이 바뀝니다.
-        m_pOwner->m_bWalk = true;
     }
 
     virtual void Exit() override
@@ -424,9 +448,11 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
-        if(m_pOwner->m_pAnimator->IsFinished())
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if(1.f < m_fStateTime)
 		{
-            if (input.bDown || input.bLeft || input.bRight || input.bUp)
+            if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
                     return EPlayerState::WALK;
@@ -450,6 +476,10 @@ public:
         return L"ITEM";
     }
 
+private:
+    unordered_set<string> m_StateNames = {
+        "OnLamp", "FailItem"
+    };
 
 private:
 	_bool m_bPreWalk = { false };
@@ -473,6 +503,7 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 백스탭은 무브 OFF 입니다.
+        m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetTrigger("Dash");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
@@ -489,9 +520,8 @@ public:
         {
             _vector vLook = m_pOwner->m_pTransformCom->Get_State(STATE::LOOK) * -1.f;
             
-            /* 해당 애니메이션이 진행중일 때 */
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_H_Dash_Normal_B" || strName == "AS_Pino_T_Dash_Normal_B")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
                 m_bMove = m_pOwner->m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pOwner->m_pControllerCom);
                 m_pOwner->SyncTransformWithController();
@@ -508,13 +538,14 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
-        
-        if (0.8f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
-        {   
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();            
-            if(strName == "AS_Pino_H_Dash_Normal_B" || strName == "AS_Pino_T_Dash_Normal_B")
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+        if (m_StateNames.find(strName) != m_StateNames.end())
+        {
+            if (0.4f < m_fStateTime)
                 return EPlayerState::IDLE;
-        }       
+        }
 
         return EPlayerState::BACKSTEP;
     }
@@ -528,6 +559,12 @@ public:
     {
         return L"BACKSTEP";
     }
+
+private:
+    unordered_set<string> m_StateNames = {
+        "Dash_Normal_B",
+        "Dash_Focus_B"
+    };
 
 private:
     _bool   m_bMove = {};
@@ -553,15 +590,10 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 구르기는 무브 ON 입니다.
-        m_pOwner->m_pAnimator->SetBool("Move", true);
         m_pOwner->m_pAnimator->SetTrigger("Dash");
         m_pOwner->Get_TransfomCom()->Set_SpeedPreSec(6.f);
 
         m_fPreSpeed = m_pOwner->Get_TransfomCom()->GetfSpeedPerSec();
-        m_pOwner->m_pTransformCom->Go_Front(0.01f, m_pOwner->m_pControllerCom);
-
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
-        m_pOwner->m_bMovable = false;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -570,16 +602,13 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
-
+		
         if (!m_bMove)
-        {
-            _vector vLook = m_pOwner->m_pTransformCom->Get_State(STATE::LOOK);
-
-            /* 해당 애니메이션이 진행중일 때 */
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_H_Dash_Normal_F")
+        {            
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
-                m_pOwner->m_pTransformCom->Go_Front(fTimeDelta, m_pOwner->m_pControllerCom );
+                m_pOwner->m_pTransformCom->Go_Front(fTimeDelta, m_pOwner->m_pControllerCom);
                 m_pOwner->SyncTransformWithController();
             }
         }
@@ -588,8 +617,6 @@ public:
     virtual void Exit() override
     {
 		m_pOwner->m_pTransformCom->Set_SpeedPreSec(m_fPreSpeed);
-        m_pOwner->m_pAnimator->SetBool("Move", false);
-        m_pOwner->m_bMovable = true;
         m_bMove = false;
 
         m_fStateTime = 0.f;
@@ -598,22 +625,25 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
-        if (0.65f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+        
+        string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+        if (m_StateNames.find(strName) != m_StateNames.end())
         {
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_H_Dash_Normal_F")
+            if (0.6f < m_fStateTime)
             {
-                if (input.bDown_Pressing || input.bLeft_Pressing || input.bRight_Pressing || input.bUp_Pressing)
+                if (input.bMove)
                 {
                     if (m_pOwner->m_bWalk)
                         return EPlayerState::WALK;
                     else
                         return EPlayerState::RUN;
                 }
-            }
 
-            return EPlayerState::IDLE;
+                return EPlayerState::IDLE;
+            }
         }
+        
 
         return EPlayerState::ROLLING;
     }
@@ -627,6 +657,14 @@ public:
     {
         return L"ROLLING";
     }
+
+private:
+	unordered_set<string> m_StateNames = {
+        "Dash_Normal_F",
+        "Dash_Focus_F",
+        "Dash_Focus_L",
+        "Dash_Focus_R"
+	};
 
 private:
     _bool   m_bMove = {};
@@ -676,6 +714,8 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
         if (m_pOwner->m_pAnimator->IsFinished())
         {
             return EPlayerState::IDLE;
@@ -693,6 +733,11 @@ public:
     {
         return L"EQUIP";
     }
+
+private:
+    unordered_set<string> m_StateNames = {
+        "EquipWeapon_Walk_F", "PutWeapon_Walk_F"
+    };
 };
 
 /* [ 이 클래스는 스프린트 상태입니다. ] */
@@ -713,7 +758,6 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 스프린트는 무브 ON 입니다.
-        m_pOwner->m_pAnimator->SetBool("Move", true);
         m_pOwner->m_pAnimator->SetBool("Sprint", true);
         m_pOwner->Get_TransfomCom()->Set_SpeedPreSec(g_fSprintSpeed);
 
@@ -730,16 +774,16 @@ public:
     {
         m_fStateTime = 0.f;
 
-        m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetBool("Sprint", false);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         //방향키가 아무것도 안눌렸다.
-        if (!input.bDown_Pressing && !input.bLeft_Pressing && !input.bRight_Pressing && !input.bUp_Pressing)
+        if (!input.bMove)
         {
             return EPlayerState::IDLE;
         }
@@ -760,6 +804,11 @@ public:
     {
         return L"SPRINT";
     }
+
+private:
+    unordered_set<string> m_StateNames = {
+        "Sprint", "Sprint_Stop"
+    };
 };
 
 
@@ -781,10 +830,11 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 약공은 무기 장착상태여야합니다.
-        m_pOwner->m_pAnimator->SetInt("Combo", 1);
+        _int iCurrentCombo = GetCurrentCombo();
+        _int iCombo = (iCurrentCombo + 1) % 2;
+        m_pOwner->m_pAnimator->SetInt("Combo", iCombo);
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
-		m_pOwner->m_bMovable = false;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -794,31 +844,16 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* 공격 애니메이션이 0.3 이상 진행되었을 때 */
-        if (0.3f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
+        if (0.8f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_NA3")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
                 if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttack = true;
-            }
-        }
+                    m_bAttackA = true;
 
-        // 약공 A 이동
-        if (!m_bMove)
-        {
-            _vector vLook = m_pOwner->m_pTransformCom->Get_State(STATE::LOOK);
-
-            /* 해당 애니메이션이 진행중일 때 */
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_NA3")
-            {
-                if (0.25f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
-                {
-                    m_bMove = m_pOwner->m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pOwner->m_pControllerCom);
-                    m_pOwner->SyncTransformWithController();
-                }
+                if (MOUSE_DOWN(DIM::RBUTTON))
+                    m_bAttackB = true;
             }
         }
     }
@@ -826,36 +861,38 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
-        m_bMove = false;
-        m_bAttack = false;
-
-        m_pOwner->m_bMovable = true;
+        m_bAttackA = false;
+        m_bAttackB = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (0.4f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
+        if (0.8f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_NA3")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
-                if (m_bAttack)
+                if (m_bAttackA)
                     return EPlayerState::WEAKATTACKB;
-
-                if (m_pOwner->m_pAnimator->IsFinished())
-                {
-                    if (input.bDown_Pressing || input.bLeft_Pressing || input.bRight_Pressing || input.bUp_Pressing)
-                    {
-                        if (m_pOwner->m_bWalk)
-                            return EPlayerState::WALK;
-                        else
-                            return EPlayerState::RUN;
-                    }
-                    return EPlayerState::IDLE;
-                }
+                if (m_bAttackB)
+                    return EPlayerState::STRONGATTACKB;
             }
+        }
+
+        
+        if (1.5f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                    return EPlayerState::WALK;
+                else
+                    return EPlayerState::RUN;
+            }
+            return EPlayerState::IDLE;
         }
 
         return EPlayerState::WEAKATTACKA;
@@ -872,10 +909,13 @@ public:
     }
 
 private:
-    _bool   m_bAttack = {};
-    _bool   m_bMove = {};
-    _float  m_fTime = 0.2f;
-    _float  m_fDistance = 1.f;
+    unordered_set<string> m_StateNames = {
+       "NormalAttack"
+    };
+
+private:
+    _bool   m_bAttackA = {};
+    _bool   m_bAttackB = {};
 };
 class CPlayer_WeakAttackB final : public CPlayerState
 {
@@ -894,10 +934,11 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 약공은 무기 장착상태여야합니다.
-        m_pOwner->m_pAnimator->SetInt("Combo", 0);
+        _int iCurrentCombo = GetCurrentCombo();
+        _int iCombo = (iCurrentCombo + 1) % 2;
+        m_pOwner->m_pAnimator->SetInt("Combo", iCombo);
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
-        m_pOwner->m_bMovable = false;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -907,20 +948,16 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        // 약공 B 이동
-        if (!m_bMove)
+        /* 공격 애니메이션이 0.8 이상 진행되었을 때 */
+        if (0.8f < m_fStateTime)
         {
-            _vector vLook = m_pOwner->m_pTransformCom->Get_State(STATE::LOOK);
-
-            /* 해당 애니메이션이 진행중일 때 */
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_NA4")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
-                if (0.15f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
-                {
-                    m_bMove = m_pOwner->m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pOwner->m_pControllerCom);
-                    m_pOwner->SyncTransformWithController();
-                }
+                if (MOUSE_DOWN(DIM::LBUTTON))
+                    m_bAttackA = true;
+                if (MOUSE_DOWN(DIM::RBUTTON))
+                    m_bAttackB = true;
             }
         }
     }
@@ -928,21 +965,26 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
-        m_bMove = false;
-		m_bAttack = false;
-        m_pOwner->m_bMovable = true;
+		m_bAttackA = false;
+		m_bAttackB = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (0.7f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
+        if (0.8f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_NA4")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
-                if (input.bDown_Pressing || input.bLeft_Pressing || input.bRight_Pressing || input.bUp_Pressing)
+                if (m_bAttackA)
+                    return EPlayerState::WEAKATTACKB;
+                if (m_bAttackB)
+                    return EPlayerState::STRONGATTACKB;
+
+                if (input.bMove)
                 {
                     if (m_pOwner->m_bWalk)
                         return EPlayerState::WALK;
@@ -966,11 +1008,15 @@ public:
         return L"WEAPATTACKB";
     }
 
+
 private:
-    _bool   m_bAttack = {};
-    _bool   m_bMove = {};
-    _float  m_fTime = 0.2f;
-    _float  m_fDistance = 1.f;
+    unordered_set<string> m_StateNames = {
+        "NormalAttack2"
+    };
+
+private:
+    _bool   m_bAttackA = {};
+    _bool   m_bAttackB = {};
 };
 
 /* [ 이 클래스는 강공 상태입니다. ] */
@@ -991,10 +1037,9 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 강공은 무기 장착상태여야합니다.
-        m_pOwner->m_pAnimator->SetInt("Combo", 0);
+        m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
-        m_pOwner->m_bMovable = false;        
         
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1004,28 +1049,16 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* 공격 애니메이션이 0.3 이상 진행되었을 때 */
-        if (0.3f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
+        /* 공격 애니메이션이 0.7 이상 진행되었을 때 */
+        if (0.7f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_SA4")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
                 if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttack = true;
-            }
-        }
-
-        // 강공 A 이동
-        if (!m_bMove)
-        {
-            _vector vLook = m_pOwner->m_pTransformCom->Get_State(STATE::LOOK);
-
-            /* 해당 애니메이션이 진행중일 때 */
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_SA4")
-            {
-                m_bMove = m_pOwner->m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pOwner->m_pControllerCom);
-                m_pOwner->SyncTransformWithController();
+                    m_bAttackB = true;
+                if (MOUSE_DOWN(DIM::LBUTTON))
+                    m_bAttackA = true;
             }
         }
     }
@@ -1033,26 +1066,28 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
-        m_bMove = false;
-        m_bAttack = false;
-        m_pOwner->m_bMovable = true;
+        m_bAttackB = false;
+        m_bAttackA = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (0.35f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
+        if (0.75f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_SA4")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
-                if (m_bAttack)
+                if (m_bAttackB)
                     return EPlayerState::STRONGATTACKB;
+                if (m_bAttackA)
+                    return EPlayerState::WEAKATTACKB;
         
                 if (m_pOwner->m_pAnimator->IsFinished())
                 {
-                    if (input.bDown_Pressing || input.bLeft_Pressing || input.bRight_Pressing || input.bUp_Pressing)
+                    if (input.bMove)
                     {
                         if (m_pOwner->m_bWalk)
                             return EPlayerState::WALK;
@@ -1078,11 +1113,13 @@ public:
     }
 
 private:
-    _bool   m_bAttack = {};
-    _bool   m_bMove = {};
+    unordered_set<string> m_StateNames = {
+        "StrongAttack"
+    };
 
-    _float  m_fTime = 0.3f;
-    _float  m_fDistance = 1.f;
+private:
+    _bool   m_bAttackA = {};
+    _bool   m_bAttackB = {};
     
 };
 class CPlayer_StrongAttackB final : public CPlayerState
@@ -1102,10 +1139,9 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 강공은 무기 장착상태여야합니다.
-        m_pOwner->m_pAnimator->SetInt("Combo", 1);
+        m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
-        m_pOwner->m_bMovable = false;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1115,19 +1151,16 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        // 강공 B 이동
-        if (!m_bMove)
+        /* 공격 애니메이션이 0.7 이상 진행되었을 때 */
+        if (0.7f < m_fStateTime)
         {
-            _vector vLook = m_pOwner->m_pTransformCom->Get_State(STATE::LOOK);
-
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_SA5")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
-                if (0.05f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
-                {
-                    m_bMove = m_pOwner->m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pOwner->m_pControllerCom);
-                    m_pOwner->SyncTransformWithController();
-                }
+                if (MOUSE_DOWN(DIM::RBUTTON))
+                    m_bAttackB = true;
+                if (MOUSE_DOWN(DIM::LBUTTON))
+                    m_bAttackA = true;
             }
         }
     }
@@ -1135,21 +1168,27 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
-        m_bMove = false;
-
-        m_pOwner->m_bMovable = true;
+        m_bAttackB = false;
+		m_bAttackA = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (0.4f < m_pOwner->m_pAnimator->GetCurrentAnimProgress())
+        if (1.f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-            if (strName == "AS_Pino_T_Bayonet_SA5")
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
             {
-                if (input.bDown_Pressing || input.bLeft_Pressing || input.bRight_Pressing || input.bUp_Pressing)
+                if (m_bAttackB)
+                    return EPlayerState::STRONGATTACKA;
+                if (m_bAttackA)
+                    return EPlayerState::WEAKATTACKA;
+
+
+                if (input.bMove)
                 {
                     if (m_pOwner->m_bWalk)
                         return EPlayerState::WALK;
@@ -1174,20 +1213,25 @@ public:
     }
 
 private:
-    _bool   m_bMove = {};
-    _float  m_fTime = 0.2f;
-    _float  m_fDistance = 1.f;
+    unordered_set<string> m_StateNames = {
+        "StrongAttack2"
+    };
+
+private:
+    _bool   m_bAttackA = {};
+    _bool   m_bAttackB = {};
+
 };
 
 /* [ 이 클래스는 차징 상태입니다. ] */
-class CPlayer_Charge final : public CPlayerState
+class CPlayer_ChargeA final : public CPlayerState
 {
 public:
-    CPlayer_Charge(CPlayer* pOwner)
+    CPlayer_ChargeA(CPlayer* pOwner)
         : CPlayerState(pOwner) {
     }
 
-    virtual ~CPlayer_Charge() = default;
+    virtual ~CPlayer_ChargeA() = default;
 
 public:
     virtual void Enter() override
@@ -1196,7 +1240,7 @@ public:
 
         /* [ 애니메이션 설정 ] */
 
-        // 강공은 무기 장착상태여야합니다.
+        // 차지는 무기 장착상태여야합니다.
         m_pOwner->m_pAnimator->SetInt("Combo", 0);
         m_pOwner->m_pAnimator->SetBool("Charge", true);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
@@ -1212,14 +1256,28 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* [ 이 애니메이션은 루트모션을 사용합니다. ] */
-        m_pOwner->RootMotionActive(fTimeDelta);
+        string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+        if (m_StateNames.find(strName) != m_StateNames.end())
+        {
+            if (MOUSE_PRESSING(DIM::RBUTTON))
+            {
+                if (!m_bChargeStarted)
+                {
+                    m_fChargeElapsed += fTimeDelta;
+
+                    if (m_fChargeElapsed >= 0.2f)
+                        m_bChargeStarted = true;
+                }
+            }
+        }
     }
 
     virtual void Exit() override
     {
         m_pOwner->m_pAnimator->SetBool("Charge", false);
         m_fStateTime = 0.f;
+        m_bChargeStarted = false;
+        m_fChargeElapsed = 0.f;
 
         m_pOwner->m_bMovable = true;
     }
@@ -1227,13 +1285,17 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        string strName = m_pOwner->m_pAnimator->GetCurrentAnimName();
-        if (strName == "AS_Pino_T_Bayonet_CA3")
+        string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+        if (m_StateNames.find(strName) != m_StateNames.end() && m_fStateTime > 1.f)
         {
-            if (m_pOwner->m_pAnimator->IsFinished())
+            if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped)
+                return EPlayerState::CHARGEB;
+
+            if (1.f < m_fStateTime)
             {
-                if (input.bDown_Pressing || input.bLeft_Pressing || input.bRight_Pressing || input.bUp_Pressing)
+                if (input.bMove)
                 {
                     if (m_pOwner->m_bWalk)
                         return EPlayerState::WALK;
@@ -1244,7 +1306,7 @@ public:
             }
         }
 
-        return EPlayerState::CHARGE;
+        return EPlayerState::CHARGEA;
     }
 
     virtual bool CanExit() const override
@@ -1258,12 +1320,101 @@ public:
     }
 
 private:
-    _bool   m_bAttack = {};
+    unordered_set<string> m_StateNames = {
+        "ChargeStrongAttack", "ChargeStrongAttack2"
+    };
 
-    _float  m_fTime = 0.3f;
-    _float  m_fDistance = 1.f;
+private:
+    _bool   m_bAttack = {};
+    _bool   m_bChargeStarted = {};
+    _float   m_fChargeElapsed = {};
 
 };
+class CPlayer_ChargeB final : public CPlayerState
+{
+public:
+    CPlayer_ChargeB(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_ChargeB() = default;
+
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 애니메이션 설정 ] */
+
+        // 차지는 무기 장착상태여야합니다.
+        m_pOwner->m_pAnimator->SetInt("Combo", 1);
+        m_pOwner->m_pAnimator->SetBool("Charge", true);
+        m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
+        m_pOwner->m_pTransformCom->SetbSpecialMoving();
+        m_pOwner->m_bMovable = false;
+
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+    }
+
+    virtual void Exit() override
+    {
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
+        m_fStateTime = 0.f;
+
+        m_pOwner->m_bMovable = true;
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+        if (m_StateNames.find(strName) != m_StateNames.end())
+        {
+            if (1.f < m_fStateTime)
+            {
+                if (input.bMove)
+                {
+                    if (m_pOwner->m_bWalk)
+                        return EPlayerState::WALK;
+                    else
+                        return EPlayerState::RUN;
+                }
+                return EPlayerState::IDLE;
+            }
+        }
+
+        return EPlayerState::CHARGEB;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"CHARGEB";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+        "ChargeStrongAttack", "ChargeStrongAttack2"
+    };
+
+private:
+    _bool   m_bAttack = {};
+
+};
+
 
 /* [ 이 클래스는 가드 상태입니다. ] */
 class CPlayer_Gard final : public CPlayerState
@@ -1293,17 +1444,10 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
-
-		/* [ 가드 상태에서는 이동할 수 있습니다. ] */
-        if (KEY_PRESSING(DIK_W) || KEY_PRESSING(DIK_A) || KEY_PRESSING(DIK_S) || KEY_PRESSING(DIK_D))
-            m_pOwner->m_pAnimator->SetBool("Move", true);
-        else
-			m_pOwner->m_pAnimator->SetBool("Move", false);
     }
 
     virtual void Exit() override
     {
-        m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetBool("Guard", false);
         m_fStateTime = 0.f;
 
@@ -1312,8 +1456,9 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (!KEY_PRESSING(DIK_W) && !KEY_PRESSING(DIK_A) && !KEY_PRESSING(DIK_S) && !KEY_PRESSING(DIK_D))
+        if (!KEY_PRESSING(DIK_LSHIFT))
             return EPlayerState::IDLE;
 
         return EPlayerState::GARD;
@@ -1328,6 +1473,11 @@ public:
     {
         return L"GARD";
     }
+
+private:
+    unordered_set<string> m_StateNames = {
+        "Guard", "Guard_Walk_B", "Guard_Walk_F", "Guard_Walk_L", "Guard_Walk_R", "Guard_Hit", "Guard_Break"
+    };
 
 private:
     _bool   m_bAttack = {};

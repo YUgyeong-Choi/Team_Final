@@ -15,15 +15,7 @@ public:
 
 	struct InputContext {
 		/* [ W,A,S,D 입력 ] */
-		_bool bUp;
-		_bool bDown;
-		_bool bLeft;
-		_bool bRight;
-
-		_bool bUp_Pressing;
-		_bool bDown_Pressing;
-		_bool bLeft_Pressing;
-		_bool bRight_Pressing;
+		_bool bMove;
 
 		/* [ 마우스 입력 ] */
 		_bool bLeftMouseDown;
@@ -40,6 +32,12 @@ public:
 		_bool bSpaceDown;
 
 	} m_Input;
+
+	enum class eAnimCategory
+	{
+		NONE,IDLE,WALK,RUN,DASH_NORMAL,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
+		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACK,SPRINT_ATTACK,MAINSKILL,SIT,INTERACTION
+	};
 
 protected:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -59,7 +57,10 @@ private:
 	void			HandleInput();									// [1] 키 입력만 처리
 	EPlayerState	EvaluateTransitions();							// [2] 입력에 따라 상태 전이
 	void			UpdateCurrentState(_float fTimeDelta);			// [3] 현재 상태 로직 수행
-	void			TriggerStateEffects();							// [4] 애니메이션 적용
+	void			TriggerStateEffects(_float fTimeDelta);							// [4] 애니메이션 적용
+
+private: /* [ 애니메이션 관련 ] */
+	eAnimCategory	GetAnimCategoryFromName(const std::string& stateName);
 
 private: /* [ 루트모션 활성화 ] */
 	void			RootMotionActive(_float fTimeDelta);
@@ -88,6 +89,7 @@ private: /* 옵저버 관련*/
 
 private: /* [ 상태패턴 ] */
 	void ReadyForState();
+	friend class CPlayerState;
 	friend class CPlayer_Idle;
 	friend class CPlayer_Walk;
 	friend class CPlayer_Run;
@@ -100,7 +102,8 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_WeakAttackB;
 	friend class CPlayer_StrongAttackA;
 	friend class CPlayer_StrongAttackB;
-	friend class CPlayer_Charge;
+	friend class CPlayer_ChargeA;
+	friend class CPlayer_ChargeB;
 	friend class CPlayer_Gard;
 
 
@@ -124,10 +127,27 @@ private: /* [ 소유할 수 있는 객체 ] */
 
 private: /* [ 공격관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
+	_int 	m_iCurrentCombo = { 0 };
 
 private: /* [ 이동관련 변수 ] */
 	_bool    m_bWalk = { true };
 	_bool    m_bMovable = { true };
+
+
+	string	 m_strPrevStateName;
+	_bool    m_bMove = {};
+	_float   m_fMoveTime = {};
+	_int	 m_iMoveStep = {};
+
+	unordered_set<string> m_MovableStates = {
+		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",
+		"Run_F", "Run_F_Stop", "Run_FR", "Run_FL", "Run_BR", "Run_BL", "Run_B", "Run_L", "Run_R",
+		"Sprint", "Sprint_Stop",
+		"Guard_Walk_B", "Guard_Walk_F", "Guard_Walk_L", "Guard_Walk_R",
+		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
+		"OnLamp_Walk", "FailItem_Walk"
+
+	};
 
 private: /* [ 루트모션 관련 변수 ] */
 	_vector  m_PrevWorldDelta = XMVectorZero();
