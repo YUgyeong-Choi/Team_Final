@@ -55,7 +55,6 @@ public:
 	//CPhysXStaticActor* Create_Terrain(const PxVec3* pVertices, PxU32 vertexCount, const PxU32* pIndices, PxU32 triangleCount);
 
 public:
-	void PrintCudaDeviceInfo();
 	static CPhysX_Manager* Create();
 	virtual void Free() override;
 
@@ -77,9 +76,6 @@ private:
 	PxDefaultErrorCallback m_ErrorCallback;
 
 	CPhysX_ContactReport* m_pContactCallback = { nullptr };
-
-	PxCudaContextManager* m_pCudaContextManager = {nullptr};
-
 };
 
 NS_END

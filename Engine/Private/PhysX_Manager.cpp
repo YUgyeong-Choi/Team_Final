@@ -117,11 +117,11 @@ void CPhysX_Manager::Shutdown()
 		material.second = nullptr;
 	}
 
-	if (m_pCudaContextManager)
-	{
-		m_pCudaContextManager->release();  
-		m_pCudaContextManager = nullptr;
-	}
+	//if (m_pCudaContextManager)
+	//{
+	//	m_pCudaContextManager->release();  
+	//	m_pCudaContextManager = nullptr;
+	//}
 
 	if (m_pDispatcher)
 	{
