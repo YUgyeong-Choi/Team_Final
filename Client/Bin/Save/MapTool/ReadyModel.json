@@ -116,7 +116,7 @@
     {
         "Collision": false,
         "ModelName": "SM_Cathedral_BrickWall_18",
-        "ObjectCount": 4,
+        "ObjectCount": 9,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_18.bin"
     },
     {
@@ -325,21 +325,9 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_Interior_Book_01",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_01.bin"
-    },
-    {
-        "Collision": false,
         "ModelName": "SM_Interior_Book_02",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_02.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Interior_Book_03",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_03.bin"
     },
     {
         "Collision": false,
@@ -361,12 +349,6 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_Interior_Book_11",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_11.bin"
-    },
-    {
-        "Collision": false,
         "ModelName": "SM_Interior_Book_12",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_12.bin"
@@ -376,30 +358,6 @@
         "ModelName": "SM_Interior_Book_13",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_13.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Interior_Book_14",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_14.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Interior_Book_15",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_15.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Interior_Book_16",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_16.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Interior_Book_17",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_17.bin"
     },
     {
         "Collision": false,
