@@ -6,5 +6,37 @@
     {
         "ModelName": "SM_BuildingA_Store_03",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Store_03.bin"
+    },
+    {
+        "ModelName": "SM_Wall_WindowBottom01A",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_WindowBottom01A.bin"
+    },
+    {
+        "ModelName": "SM_BuildingA_Store_02",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Store_02.bin"
+    },
+    {
+        "ModelName": "SM_Gate_BurningGate_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_BurningGate_01.bin"
+    },
+    {
+        "ModelName": "SM_Gate_IronGate_02",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_IronGate_02.bin"
+    },
+    {
+        "ModelName": "SM_Gate_Gate_04",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_Gate_04.bin"
+    },
+    {
+        "ModelName": "SM_LightProp_SpotLight_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_SpotLight_01.bin"
+    },
+    {
+        "ModelName": "SM_LightProp_SpotLight_02",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_SpotLight_02.bin"
+    },
+    {
+        "ModelName": "SM_LightProp_FloorLight_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_FloorLight_01.bin"
     }
 ]

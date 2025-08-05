@@ -46,21 +46,11 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
-	switch (m_eColliderType)
-	{
-	case Client::COLLIDER_TYPE::NONE:
-		break;
-	case Client::COLLIDER_TYPE::CONVEX:
-		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
-		break;
-	case Client::COLLIDER_TYPE::TRIANGLE:
+	if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
-		break;
-	case Client::COLLIDER_TYPE::END:
-		break;
-	default:
-		break;
-	}
+	else
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
+
 
 	return S_OK;
 }
@@ -72,86 +62,23 @@ void CMapToolObject::Priority_Update(_float fTimeDelta)
 
 void CMapToolObject::Update(_float fTimeDelta)
 {
-	if(m_eColliderType == COLLIDER_TYPE::CONVEX)
-		Update_ColliderPos();
-}
 
-void CMapToolObject::Update_ColliderPos()
-{
-	/*
-		스케일을 바꾸려면 m_pPhysXActorConvexCom 컴포넌트를 새로 만들어야 한다.
-		그렇다고 한다. 새로 만들어주는거로 해보자
-	*/
-
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
-
-	// 행렬 → 스케일, 회전, 위치 분해
-	_vector vScale, vRotationQuat, vTranslation;
-	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
-
-	// 위치 추출
-	_float3 vPos;
-	XMStoreFloat3(&vPos, vTranslation);
-
-	// 회전 추출
-	_float4 vRot;
-	XMStoreFloat4(&vRot, vRotationQuat);
-
-	// PxTransform으로 생성
-	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
-	m_pPhysXActorConvexCom->Set_Transform(physxTransform);
-}
-
-void CMapToolObject::Set_Collider(COLLIDER_TYPE colliderType)
-{
-	if (m_eColliderType == colliderType)
-		return;
-
-	if (m_eColliderType == COLLIDER_TYPE::CONVEX)
-	{
-		if (colliderType == COLLIDER_TYPE::TRIANGLE)
-		{
-			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorConvexCom->Get_Actor());
-			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
-		}
-		else
-		{
-			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorConvexCom->Get_Actor());
-		}
-
-	}
-	else if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
-	{
-		if (colliderType == COLLIDER_TYPE::CONVEX)
-		{
-			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorTriangleCom->Get_Actor());
-			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
-		}
-		else
-		{
-			m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorTriangleCom->Get_Actor());
-		}
-	}
-	else
-	{
-		if (colliderType == COLLIDER_TYPE::TRIANGLE)
-		{
-			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
-		}
-		else
-		{
-			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
-		}
-	}
-	m_eColliderType = colliderType;
+	//포커스 된 경우만 돌려주자
+	/*if(m_eColliderType != COLLIDER_TYPE::TRIANGLE)
+		Update_ColliderPos();*/
 }
 
 void CMapToolObject::Late_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorConvexCom)/*true || m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 30.f)*/)
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorConvexCom))
 	{
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 	}
+
+	//if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f))
+	//{
+	//	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	//}
 }
 
 HRESULT CMapToolObject::Render()
@@ -174,6 +101,55 @@ HRESULT CMapToolObject::Render()
 
 	return S_OK;
 }
+
+void CMapToolObject::Update_ColliderPos()
+{
+	/*
+		스케일을 바꾸려면 m_pPhysXActorConvexCom 컴포넌트를 새로 만들어야 한다.
+		그렇다고 한다. 새로 만들어주는거로 해보자
+	*/
+	if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
+		return;
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
+
+	// 행렬 → 스케일, 회전, 위치 분해
+	_vector vScale, vRotationQuat, vTranslation;
+	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
+
+	// 위치 추출
+	_float3 vPos;
+	XMStoreFloat3(&vPos, vTranslation);
+
+	// 회전 추출
+	_float4 vRot;
+	XMStoreFloat4(&vRot, vRotationQuat);
+
+	// PxTransform으로 생성
+	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
+	m_pPhysXActorConvexCom->Set_Transform(physxTransform);
+}
+
+void CMapToolObject::Set_Collider(COLLIDER_TYPE eColliderType)
+{
+	if (m_eColliderType == eColliderType)
+		return;
+
+	// 현재 콜라이더 제거
+	if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)
+		m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorConvexCom->Get_Actor());
+	else if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
+		m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorTriangleCom->Get_Actor());
+
+	// 새 콜라이더 추가
+	if (eColliderType == COLLIDER_TYPE::CONVEX || eColliderType == COLLIDER_TYPE::NONE)
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
+	else if (eColliderType == COLLIDER_TYPE::TRIANGLE)
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
+
+	m_eColliderType = eColliderType;
+}
+
 
 HRESULT CMapToolObject::Render_Collider()
 {

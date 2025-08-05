@@ -76,6 +76,12 @@ void CMapTool::Update(_float fTimeDelta)
 {
 	Control(fTimeDelta);
 
+	//포커스 된놈만 업데이트 시켜주자
+	if (m_pFocusObject != nullptr)
+	{
+		m_pFocusObject->Update_ColliderPos();
+	}
+
 }
 
 void CMapTool::Late_Update(_float fTimeDelta)
@@ -330,12 +336,11 @@ HRESULT CMapTool::Save_Map()
 		filesystem::path path = filesystem::path(PATH_NONANIM) / (strModelName + ".bin"); //이렇게 하드코드 저장말고
 		string FullPath = path.generic_string();
 
-		json ObjectJson;
-		ObjectJson["ModelName"] = strModelName;
-		ObjectJson["Path"] = FullPath; // 또는 Path
-		ObjectJson["ObjectCount"] = static_cast<_uint>(MapObjectList.size());//갯수 저장해서 인스턴싱 모델을 로드할지 결정 
-
-		ReadyModelJsonArray.push_back(ObjectJson);
+		json ReadyModelJson;
+		ReadyModelJson["ModelName"] = strModelName;
+		ReadyModelJson["Path"] = FullPath; // 또는 Path
+		ReadyModelJson["Collision"] = false;
+		ReadyModelJson["ObjectCount"] = static_cast<_uint>(MapObjectList.size());//갯수 저장해서 인스턴싱 모델을 로드할지 결정(아니 충돌여부로 할거야)
 
 		// 문자열 길이 계산
 		_uint iLength = static_cast<_uint>(ModelName.length());
@@ -347,6 +352,7 @@ HRESULT CMapTool::Save_Map()
 		json ModelJson;
 		ModelJson["ModelName"] = strModelName;
 		ModelJson["ObjectCount"] = static_cast<_uint>(MapObjectList.size());
+		ModelJson["Collision"] = false;
 		ModelJson["Objects"] = json::array();
 
 		for (CGameObject* pGameObject : MapObjectList)
@@ -378,10 +384,17 @@ HRESULT CMapTool::Save_Map()
 				ObjectJson["TileDensity"] = { pMapToolObject->m_TileDensity[0], pMapToolObject->m_TileDensity[1] };
 
 			ObjectJson["ColliderType"] = static_cast<_int>(pMapToolObject->m_eColliderType);
+			//한번이라도 충돌체가 있으면 인스턴싱으로 못부르게 만들 것임
+			if (pMapToolObject->m_eColliderType != COLLIDER_TYPE::NONE)
+			{
+				ModelJson["Collision"] = true;
+				ReadyModelJson["Collision"] = true;
+			}
 
 			ModelJson["Objects"].push_back(ObjectJson);
 		}
 
+		ReadyModelJsonArray.push_back(ReadyModelJson);
 		MapDataJson["Models"].push_back(ModelJson);
 	}
 
@@ -1714,7 +1727,7 @@ void CMapTool::Detail_Collider()
 	{
 		// 콜라이더 타입 선택 콤보박스
 		const _char* ColliderTypes[] = { "None", "Convex", "Triangle" };
-		_int CurrentCollider = static_cast<int>(m_pFocusObject->m_eColliderType);
+		_int CurrentCollider = static_cast<_int>(m_pFocusObject->m_eColliderType);
 
 		if (ImGui::Combo("Collider Type", &CurrentCollider, ColliderTypes, IM_ARRAYSIZE(ColliderTypes)))
 		{

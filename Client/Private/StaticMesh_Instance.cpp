@@ -63,7 +63,7 @@ void CStaticMesh_Instance::Update(_float fTimeDelta)
 
 void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
 HRESULT CStaticMesh_Instance::Render()
