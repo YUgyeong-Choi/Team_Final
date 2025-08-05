@@ -39,6 +39,8 @@ public:
 		return nullptr;
 	}
 
+	void Reset_All();
+
 private:
 
 	map<_wstring, CObserver*> m_pObservers = { };

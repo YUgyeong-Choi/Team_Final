@@ -86,6 +86,17 @@ void CObserver_Manager::Reset(const _wstring& strTag)
 	m_pObservers[strTag]->Reset();
 }
 
+void CObserver_Manager::Reset_All()
+{
+	for (auto& pObserver : m_pObservers)
+	{
+		pObserver.second->Reset();
+		Safe_Release(pObserver.second);
+	}
+
+	m_pObservers.clear();
+}
+
 CObserver_Manager* CObserver_Manager::Create()
 {
 	return new CObserver_Manager;
