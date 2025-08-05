@@ -46,8 +46,8 @@ HRESULT CMapTool::Initialize(void* pArg)
 		E_FAIL;
 
 	//MapData에 배치되어있는 모델들을 미리 불러들인다.
-	if (FAILED(Ready_Model()))
-		return E_FAIL;
+	/*if (FAILED(Ready_Model()))
+		return E_FAIL;*/
 
 	//MapData를 따라 맵을 로드한다.
 	if (FAILED(Load_Map()))

@@ -741,6 +741,71 @@ HRESULT CLoader::Loading_For_GL()
 	return S_OK;
 }
 
+#pragma region YW
+HRESULT CLoader::Ready_Model(_uint iLevelIndex)
+{
+	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	if (!inFile.is_open())
+	{
+		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		return S_OK;
+	}
+
+	json ReadyModelJson;
+	try
+	{
+		inFile >> ReadyModelJson;
+		inFile.close();
+	}
+	catch (const exception& e)
+	{
+		inFile.close();
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+		return E_FAIL;
+	}
+
+	// JSON 데이터 확인
+	for (const auto& element : ReadyModelJson)
+	{
+		string ModelName = element.value("ModelName", "");
+		string Path = element.value("Path", "");
+
+		//모델 프로토 타입 생성
+		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+
+		const _char* pModelFilePath = Path.c_str();
+
+		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, iLevelIndex)))
+		{
+			return E_FAIL;
+		}
+	}
+
+	return S_OK;
+
+}
+
+HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex)
+{
+	//이미 프로토타입이존재하는 지확인
+
+	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
+	{
+		//MSG_BOX("이미 프로토타입이 존재함");
+		return S_OK;
+	}
+
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLoader::Loading_For_YW()
 {
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트을(를) 로딩중입니다."));
@@ -765,6 +830,9 @@ HRESULT CLoader::Loading_For_YW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Model(ENUM_CLASS(LEVEL::YW))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
 
@@ -787,6 +855,8 @@ HRESULT CLoader::Loading_For_YW()
 	m_isFinished = true;
 	return S_OK;
 }
+#pragma endregion
+
 
 HRESULT CLoader::Loading_For_CY()
 {

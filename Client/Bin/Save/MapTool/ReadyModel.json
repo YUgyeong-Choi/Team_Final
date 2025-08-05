@@ -224,7 +224,7 @@
     {
         "Collision": false,
         "ModelName": "SM_Exterior_birdcage_01",
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_birdcage_01.bin"
     },
     {
@@ -524,7 +524,7 @@
     {
         "Collision": false,
         "ModelName": "SM_LightProp_Light_02",
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_02.bin"
     },
     {
@@ -700,6 +700,12 @@
         "ModelName": "SM_Station_FenceB_01",
         "ObjectCount": 28,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FenceB_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_Light_02",
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
     },
     {
         "Collision": false,
