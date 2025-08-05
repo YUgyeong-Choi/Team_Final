@@ -78,49 +78,65 @@ void CAnimator::Update(_float fDeltaTime)
 
 	if (m_Blend.active) //  블렌딩 중
 	{
-		_bool bSameLowerAnim = (m_pBlendFromLowerAnim == m_pBlendToLowerAnim);
-		_bool bSameUpperAnim = (m_pBlendFromUpperAnim == m_pBlendToUpperAnim);
+		//_bool bSameLowerAnim = (m_pBlendFromLowerAnim == m_pBlendToLowerAnim);
+		//_bool bSameUpperAnim = (m_pBlendFromUpperAnim == m_pBlendToUpperAnim);
 
-		if (bSameLowerAnim)
+		//if (bSameLowerAnim)
+		//{
+		//	if (m_pBlendFromLowerAnim) // 하체 애니메이션이 있다면
+		//		m_pBlendFromLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromLowerAnim->Get_isLoop(), &triggeredEvents);
+		//}
+		//else // 하체 애니메이션이 다르면
+		//{
+		//	if (m_pBlendFromLowerAnim)
+		//		m_pBlendFromLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromLowerAnim->Get_isLoop(), &triggeredEvents);
+		//	/*if (m_pBlendToLowerAnim)
+		//		m_pBlendToLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToLowerAnim->Get_isLoop(), &triggeredEvents);*/
+		//}
+
+		//if(bSameUpperAnim)
+		//{
+		//	if (m_pBlendFromUpperAnim) // 상체 애니메이션이 있다면
+		//		m_pBlendFromUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromUpperAnim->Get_isLoop(), &triggeredEvents);
+		//}
+		//else // 상체 애니메이션이 다르면
+		//{
+		//	if (m_pBlendFromUpperAnim)
+		//		m_pBlendFromUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromUpperAnim->Get_isLoop(), &triggeredEvents);
+		//	if (m_pBlendToUpperAnim)
+		//		m_pBlendToUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToUpperAnim->Get_isLoop(), &triggeredEvents);
+		//}
+
+		//unordered_set<CAnimation*> updateClips;
+		//if (m_pBlendFromLowerAnim) 
+		//	updateClips.insert(m_pBlendFromLowerAnim);
+		//if (m_pBlendToLowerAnim)   
+		//	updateClips.insert(m_pBlendToLowerAnim);
+		//if (m_pBlendFromUpperAnim)
+		//	updateClips.insert(m_pBlendFromUpperAnim);
+		//if (m_pBlendToUpperAnim)   
+		//	updateClips.insert(m_pBlendToUpperAnim);
+
+		m_iBlendAnimCount = 0;
+		AddUniqueClip(m_pBlendFromLowerAnim, m_pBlendAnimArray, m_iBlendAnimCount);
+		AddUniqueClip(m_pBlendToLowerAnim, m_pBlendAnimArray, m_iBlendAnimCount);
+		AddUniqueClip(m_pBlendFromUpperAnim, m_pBlendAnimArray, m_iBlendAnimCount);
+		AddUniqueClip(m_pBlendToUpperAnim, m_pBlendAnimArray, m_iBlendAnimCount);
+
+		for (_int i = 0; i < m_iBlendAnimCount; ++i)
 		{
-			if (m_pBlendFromLowerAnim) // 하체 애니메이션이 있다면
-				m_pBlendFromLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromLowerAnim->Get_isLoop(), &triggeredEvents);
-		}
-		else // 하체 애니메이션이 다르면
-		{
-			if (m_pBlendFromLowerAnim)
-				m_pBlendFromLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromLowerAnim->Get_isLoop(), &triggeredEvents);
-			/*if (m_pBlendToLowerAnim)
-				m_pBlendToLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToLowerAnim->Get_isLoop(), &triggeredEvents);*/
-		}
-
-		if(bSameUpperAnim)
-		{
-			if (m_pBlendFromUpperAnim) // 상체 애니메이션이 있다면
-				m_pBlendFromUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromUpperAnim->Get_isLoop(), &triggeredEvents);
-		}
-		else // 상체 애니메이션이 다르면
-		{
-			if (m_pBlendFromUpperAnim)
-				m_pBlendFromUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromUpperAnim->Get_isLoop(), &triggeredEvents);
-			if (m_pBlendToUpperAnim)
-				m_pBlendToUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToUpperAnim->Get_isLoop(), &triggeredEvents);
+			if (m_pBlendAnimArray[i])
+			{
+				m_pBlendAnimArray[i]->Update_Bones(
+					fDeltaTime,
+					m_Bones,
+					m_pBlendAnimArray[i]->Get_isLoop(),
+					&triggeredEvents
+				);
+			}
 		}
 
 
-
-		//if (m_pBlendFromLowerAnim && m_pBlendFromLowerAnim != m_pBlendToLowerAnim) // 하체 애니메이션이 다르면
-		//	m_pBlendFromLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromLowerAnim->Get_isLoop(), &triggeredEvents);
-
-		//if (m_pBlendToLowerAnim&&m_pBlendFromLowerAnim != m_pBlendToLowerAnim) // 타겟 하체 애니메이션
-		//	m_pBlendToLowerAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToLowerAnim->Get_isLoop(), &triggeredEvents);
-
-
-		//if (m_pBlendFromUpperAnim && m_pBlendFromUpperAnim != m_pBlendToUpperAnim) // 상체 애니메이션이 다르면
-		//	m_pBlendFromUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendFromUpperAnim->Get_isLoop(), &triggeredEvents);
-
-		//if (m_pBlendToUpperAnim && m_pBlendFromUpperAnim != m_pBlendToUpperAnim) // 타겟 상체 애니메이션
-		//	m_pBlendToUpperAnim->Update_Bones(fDeltaTime, m_Bones, m_pBlendToUpperAnim->Get_isLoop(), &triggeredEvents);
 		// 매트릭스 미리 가져오기
 		vector<_matrix> fromL(boneCount), toL(boneCount), fromU(boneCount), toU(boneCount);
 		for (size_t i = 0; i < boneCount; ++i)
@@ -147,7 +163,8 @@ void CAnimator::Update(_float fDeltaTime)
 		// 근데 만약 상하체 분리 블렌드면 블렌드 웨이트로
 		if (m_Blend.belendFullBody == false)
 		{
-	//		fBlendFactor = m_Blend.blendWeight;
+			//fBlendFactor = m_Blend.blendWeight;
+			//fBlendFactor = 0.5f;
 		}
 
 		for (size_t i = 0; i < boneCount; ++i)
@@ -163,21 +180,66 @@ void CAnimator::Update(_float fDeltaTime)
 				break;
 
 			case ET::FullbodyToMasked:
-				finalM = isUpperBone
-					? LerpMatrix(fromL[i], toU[i], fBlendFactor)
-					: LerpMatrix(fromL[i], toL[i], fBlendFactor);
-				break;
+				////finalM = isUpperBone
+				////	? LerpMatrix(fromL[i], toU[i], fBlendFactor)
+				////	: LerpMatrix(fromL[i], toL[i], fBlendFactor);
+				//if (isUpperBone)
+				//	finalM = LerpMatrix(fromU[i], toU[i], fBlendFactor);
+				//else
+				//	finalM = LerpMatrix(fromL[i], toL[i], fBlendFactor);
 
-			case ET::MaskedToFullbody:
 				if (isUpperBone)
 				{
-					// fromU(상체 마스크) → toU(풀바디) 로 부드럽게 블렌딩
-					finalM = LerpMatrix(fromU[i], toL[i], fBlendFactor);
+					// 상체 애니메이션이 실제로 같은지 확인
+					if (m_pBlendFromUpperAnim == m_pBlendToUpperAnim)
+					{
+						finalM = toU[i]; // 같으면 블렌딩 없이
+					}
+					else
+					{
+						finalM = LerpMatrix(fromU[i], toU[i], fBlendFactor);
+					}
 				}
 				else
 				{
-					// fromL(하체 마스크) → toL(풀바디) 도 마찬가지
 					finalM = LerpMatrix(fromL[i], toL[i], fBlendFactor);
+				}
+				break;
+
+			case ET::MaskedToFullbody:
+				//if (isUpperBone)
+				//{
+				//	finalM = LerpMatrix(fromU[i], toL[i], fBlendFactor);
+				//}
+				//else
+				//{
+				//	// fromL(하체 마스크) → toL(풀바디) 도 마찬가지
+				//	finalM = LerpMatrix(fromL[i], toL[i], fBlendFactor);
+				//}
+
+				if (isUpperBone)
+				{
+					// 상체 애니메이션 → 통짜 애니메이션
+					if (m_pBlendFromUpperAnim == m_pBlendToLowerAnim)
+					{
+						finalM = toL[i]; // 같으면 블렌딩 없이
+					}
+					else
+					{
+						finalM = LerpMatrix(fromU[i], toL[i], fBlendFactor);
+					}
+				}
+				else
+				{
+					// 하체 애니메이션 → 통짜 애니메이션
+					if (m_pBlendFromLowerAnim == m_pBlendToLowerAnim)
+					{
+						finalM = toL[i]; // 같으면 블렌딩 없이
+					}
+					else
+					{
+						finalM = LerpMatrix(fromL[i], toL[i], fBlendFactor);
+					}
 				}
 
 				break;
@@ -192,7 +254,8 @@ void CAnimator::Update(_float fDeltaTime)
 						finalM = LerpMatrix(fromU[i], toU[i], fBlendFactor);
 					}
 				}
-				else {
+				else 
+				{
 					if (m_pBlendFromLowerAnim == m_pBlendToLowerAnim)
 					{
 						// 하체 애니메이션이 같으면 블렌딩 없이 그대로 사용
@@ -212,6 +275,7 @@ void CAnimator::Update(_float fDeltaTime)
 		//  블렌드 끝났으면 정리
 		if (fBlendFactor >= 1.f)
 		{
+			m_Blend.elapsed = 0.f; 
 			m_Blend.active = false;
 			// 만약에 통짜의 무기 장착이였다
 			// 근데 블렌드하면 이전 하체는 무기 장착중인 하체 바뀌는 하체는 걷기 하체
@@ -238,28 +302,77 @@ void CAnimator::Update(_float fDeltaTime)
 			//}
 
 			// 리셋 설정 4가지 경우의 수 확인
-			_bool bSameLower = m_pBlendFromLowerAnim == m_pBlendToLowerAnim;
-			_bool bSameUpper = m_pBlendFromUpperAnim == m_pBlendToUpperAnim;
-
-			if (!bSameLower && !bSameUpper) // 하체/상체 애니메이션이 다르면
-			{
-				m_pBlendFromLowerAnim->ResetTrack();
-				m_pBlendFromUpperAnim->ResetTrack();
-			}
-			else if (!bSameLower && bSameUpper) // 하체 애니메이션만 다르고 상체는 같으면
-			{
-				m_pBlendFromLowerAnim->ResetTrack();
-			}
-			else if (bSameLower && !bSameUpper) // 상체 애니메이션만 다르고 하체는 같으면
-			{
-				m_pBlendFromUpperAnim->ResetTrack();
-			}
+			//_bool bSameLower = m_pBlendFromLowerAnim == m_pBlendToLowerAnim;
+			//_bool bSameUpper = m_pBlendFromUpperAnim == m_pBlendToUpperAnim;
 
 
+			//if (!bSameLower && !bSameUpper) // 하체/상체 애니메이션이 다르면
+			//{
+			//	m_pBlendFromLowerAnim->ResetTrack();
+			//	m_pBlendFromUpperAnim->ResetTrack();
+			//}
+			//else if (!bSameLower && bSameUpper) // 하체 애니메이션만 다르고 상체는 같으면
+			//{
+			//	m_pBlendFromLowerAnim->ResetTrack();
+			//}
+			//else if (bSameLower && !bSameUpper) // 상체 애니메이션만 다르고 하체는 같으면
+			//{
+			//	m_pBlendFromUpperAnim->ResetTrack();
+			//}
+
+		//// 1) 이전 하체 애니메이션이 새 하체/상체 어느 쪽에도 쓰이지 않으면 리셋
+		//	if (m_pBlendFromLowerAnim &&
+		//		m_pBlendFromLowerAnim != m_pBlendToLowerAnim &&
+		//		m_pBlendFromLowerAnim != m_pBlendToUpperAnim)
+		//	{
+		//		m_pBlendFromLowerAnim->ResetTrack();
+		//	}
+
+		//	// 2) 이전 상체 애니메이션이 새 하체/상체 어느 쪽에도 쓰이지 않으면 리셋
+		//	if (m_pBlendFromUpperAnim &&
+		//		m_pBlendFromUpperAnim != m_pBlendToLowerAnim &&
+		//		m_pBlendFromUpperAnim != m_pBlendToUpperAnim)
+		//	{
+		//		m_pBlendFromUpperAnim->ResetTrack();
+		//	}
+			_bool lowerChanged = (m_pBlendFromLowerAnim != m_pBlendToLowerAnim);
+			_bool upperChanged = (m_pBlendFromUpperAnim != m_pBlendToUpperAnim);
+			_bool lowerUpperSame = (m_pBlendFromLowerAnim != m_pBlendToUpperAnim);
+			_bool upperLowerSame = (m_pBlendFromUpperAnim != m_pBlendToLowerAnim);
+			unordered_set<CAnimation*> toReset;
+			if (lowerChanged)
+			{
+				if (lowerUpperSame)
+				{
+					toReset.insert(m_pBlendFromLowerAnim);
+				}
+			}
+			if (upperChanged)
+			{
+				if (upperLowerSame)
+				{
+					toReset.insert(m_pBlendFromUpperAnim);
+				}
+			}
+
+			for (auto* anim : toReset)
+			{
+				if(anim&& anim->Get_isLoop() == false)
+				anim->ResetTrack();
+
+			}
 			m_pCurrentAnim = m_pBlendToLowerAnim;
 		//	m_pLowerClip = m_pBlendToLowerAnim;
 		//	m_pUpperClip = m_pBlendToUpperAnim;
-			UpdateMaskState();
+			//UpdateMaskState();
+
+			if (m_eCurrentTransitionType == ET::MaskedToFullbody)
+			{
+				m_bPlayMask = false;
+				m_pLowerClip = nullptr;
+				m_pUpperClip = nullptr;
+				m_UpperMaskSet.clear();
+			}
 			return;
 		}
 	}
@@ -280,13 +393,18 @@ void CAnimator::Update(_float fDeltaTime)
 			}
 
 			// 상태에 설정된 가중치로 블렌드
-			_float fWeight = m_pCurAnimController->GetCurrentState()->fBlendWeight;
+			auto state = m_pCurAnimController->GetCurrentState();
+			if (state)
+			{
+
+			_float fWeight = state->fBlendWeight;
 			for (size_t i = 0; i < boneCount; ++i)
 			{
 				if (m_UpperMaskSet.count((int)i))
 					m_Bones[i]->Set_TransformationMatrix(LerpMatrix(lowerM[i], upperM[i], fWeight));
 				else
 					m_Bones[i]->Set_TransformationMatrix(lowerM[i]);
+			}
 			}
 		}
 		else if (m_pCurrentAnim)
@@ -337,6 +455,7 @@ void CAnimator::Update(_float fDeltaTime)
 		if (pAnim == nullptr)
 			return;
 		m_pCurrentAnim = pAnim;
+		m_pCurrentAnim->ResetTrack();
 		m_Blend.active = false;
 		m_bPlaying = true;
 		UpdateMaskState();
@@ -393,7 +512,7 @@ void CAnimator::Update(_float fDeltaTime)
 
 		m_bPlaying = true;
 		//if(transitionResult.bBlendFullbody == false)
-		//UpdateMaskState();
+		UpdateMaskState();
 
 	}
 
@@ -627,10 +746,14 @@ void CAnimator::Update(_float fDeltaTime)
 		}
 		else
 		{
-			m_bPlayMask = false;
-			m_pLowerClip = nullptr;
-			m_pUpperClip = nullptr;
-			m_UpperMaskSet.clear();
+			if (m_eCurrentTransitionType != ET::MaskedToFullbody &&
+				m_eCurrentTransitionType != ET::MaskedToMasked&& m_eCurrentTransitionType!=ET::FullbodyToMasked)
+			{
+				m_bPlayMask = false;
+				m_pLowerClip = nullptr;
+				m_pUpperClip = nullptr;
+				m_UpperMaskSet.clear();
+			}
 		}
 	}
 
@@ -713,6 +836,19 @@ void CAnimator::Update(_float fDeltaTime)
 			CollectBoneChildren(childName, stopBoneName);
 		}
 
+	}
+
+	void CAnimator::AddUniqueClip(CAnimation* pClip, array<CAnimation*,4>& pArray, _int& clipCount)
+	{
+		if (!pClip)
+			return;
+		// 중복 검사
+		for (_int i = 0; i < clipCount; ++i)
+		{
+			if (pArray[i] == pClip ) // 이미 존재하는 클립이거나 루프 애니메이션이면
+				return;
+		}
+		pArray[clipCount++] = pClip;
 	}
 
 	_matrix CAnimator::LerpMatrix(const _matrix& src, const _matrix& dst, _float t)

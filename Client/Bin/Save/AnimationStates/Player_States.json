@@ -137,6 +137,14 @@
                 },
                 {
                     "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_F",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "OnLamp_Walk",
+                    "UpperClipName": "AS_Pino_Item_Lamp"
+                },
+                {
+                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Bayonet_CA4",
                     "LowerClipName": "",
                     "MaskBoneName": "",
@@ -158,6 +166,14 @@
                     "MaskBoneName": "",
                     "Name": "SprintNormalAttack",
                     "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_F",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "FailItem_Walk",
+                    "UpperClipName": "AS_Pino_Fail_Item"
                 },
                 {
                     "BlendWeight": 1.0,
@@ -245,6 +261,14 @@
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Guard",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Fail_Item",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "FailItem",
                     "UpperClipName": ""
                 },
                 {
@@ -422,6 +446,22 @@
                     "MaskBoneName": "",
                     "Name": "DoubleDoor_Push_TrainStation",
                     "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Item_Lamp",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "OnLamp",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_FR",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "Guard_Walk_FR",
+                    "UpperClipName": "AS_Pino_T_Guard_Walk_F"
                 }
             ]
         }

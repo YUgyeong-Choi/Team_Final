@@ -212,7 +212,8 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
-        
+        if (input.bTap)                         // 장착 버튼 눌렀을 때
+            return EPlayerState::EQUIP;
         if (m_fSpaceHoldTime > 0.5f)
             return EPlayerState::SPRINT;
 
@@ -655,7 +656,6 @@ public:
         // 무기장착 모션입니다.
         m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
         m_pOwner->m_pAnimator->ApplyOverrideAnimController("TwoHand");
-        m_pOwner->m_bMovable = false;
         m_pOwner->m_bWeaponEquipped = true;
 
         /* [ 디버깅 ] */
@@ -665,6 +665,14 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+        bool bMoving =
+            KEY_PRESSING(DIK_W) ||
+            KEY_PRESSING(DIK_A) ||
+            KEY_PRESSING(DIK_S) ||
+            KEY_PRESSING(DIK_D);
+
+        // 2) 애니메이터에 Move 상태 반영
+        m_pOwner->m_pAnimator->SetBool("Move", bMoving);
     }
 
     virtual void Exit() override
@@ -675,12 +683,18 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         if (m_pOwner->m_pAnimator->IsFinished())
         {
+            // 장착 애니메이션 끝나면 이동 상태로 복귀
+            if (input.bDown_Pressing || input.bLeft_Pressing
+                || input.bRight_Pressing || input.bUp_Pressing)
+            {
+                return m_pOwner->m_bWalk
+                    ? EPlayerState::WALK
+                    : EPlayerState::RUN;
+            }
             return EPlayerState::IDLE;
         }
-
         return EPlayerState::EQUIP;
     }
 
