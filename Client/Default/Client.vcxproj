@@ -195,6 +195,7 @@
     <ClInclude Include="..\Public\Level_YG.h" />
     <ClInclude Include="..\Public\Level_YW.h" />
     <ClInclude Include="..\Public\Loader.h" />
+    <ClInclude Include="..\Public\LockOn_Manager.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Mana_Bar.h" />
     <ClInclude Include="..\Public\MapTool.h" />
@@ -309,6 +310,7 @@
     <ClCompile Include="..\Private\Level_YG.cpp" />
     <ClCompile Include="..\Private\Level_YW.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
+    <ClCompile Include="..\Private\LockOn_Manager.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Mana_Bar.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />

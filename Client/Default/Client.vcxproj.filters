@@ -264,6 +264,9 @@
 	</Filter>
     <Filter Include="03. Observer\PlayerStatus">
       <UniqueIdentifier>{0cf68e2e-7499-467e-8996-01dcada4ac10}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\09.LockOn">
+      <UniqueIdentifier>{cb18d279-3e6c-4d95-ad4e-0d35bac05877}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -605,6 +608,9 @@
     </ClInclude>
     <ClInclude Include="..\public\YWTool.h">
       <Filter>01.Levels\LevelYW\YWTool</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\LockOn_Manager.h">
+      <Filter>02.GameObjects\09.LockOn</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -920,6 +926,9 @@
     </ClCompile>
     <ClCompile Include="..\private\YWTool.cpp">
       <Filter>01.Levels\LevelYW\YWTool</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\LockOn_Manager.cpp">
+      <Filter>02.GameObjects\09.LockOn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

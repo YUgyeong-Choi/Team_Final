@@ -70,6 +70,8 @@
 #include "TestAnimObject.h"
 #pragma endregion
 
+_bool CLoader::m_bLoadStatic = false;
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, atomic<float>& fRatio)
 	: m_pDevice { pDevice }
 	, m_pContext { pContext }
@@ -117,7 +119,8 @@ HRESULT CLoader::Loading()
 	switch (m_eNextLevelID)
 	{
 	case LEVEL::LOGO:
-		hr = Loading_For_Static();
+		if(!m_bLoadStatic)
+			hr = Loading_For_Static();
 		hr = Loading_For_Logo();
 		break;
 
@@ -187,6 +190,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 HRESULT CLoader::Loading_For_Static()
 {
+	m_bLoadStatic = true;
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 	/* For.Prototype_Component_Texture_Button_Hover*/
@@ -317,7 +321,7 @@ HRESULT CLoader::Loading_For_Static()
 	
 
 	lstrcpy(m_szLoadingText, TEXT("이펙트을(를) 로딩중입니다."));
-	//CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"));
+	CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"));
 
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));

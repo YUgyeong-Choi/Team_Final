@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "AnimController.h"
 #include "Camera_Manager.h"
+#include "LockOn_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
 #include "PhysXController.h"
 
@@ -56,11 +57,14 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Controller()))
 		return E_FAIL;
 
-	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
-	CCamera_Manager::Get_Instance()->SetPlayer(this);
 	SyncTransformWithController();
 
+	/* [ 카메라 세팅 ] */
+	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
+	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
+	/* [ 락온 세팅 ] */
+	CLockOn_Manager::Get_Instance()->SetPlayer(this);
 
 	m_iCurrentHP = m_iMaxHP;
 	m_iCurrentStamina = m_iMaxStamina;
