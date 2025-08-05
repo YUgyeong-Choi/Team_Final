@@ -100,40 +100,11 @@ public:
 		}
 		return m_States.size() - 1;
     }
-	size_t AddState(const string& stateName,CAnimation* defaultClip, _int nodeId,_bool bIsMaskBone = false, const string& initialMaskBone = "",
-		const string& initialUpperClip = "", 
-		const string& initialLowerClip = "")
-	{
-		AnimState newState;
-		newState.stateName = stateName;
-		newState.iNodeId = nodeId;
-		newState.fNodePos = { 0.f, 0.f }; // 이 위치는 나중에 ImGui에서 설정
+	size_t AddState(const string& stateName, CAnimation* defaultClip, _int nodeId, _bool bIsMaskBone = false, const string& initialMaskBone = "",
+		const string& initialUpperClip = "",
+		const string& initialLowerClip = "");
 
-		if (bIsMaskBone)
-		{
-			newState.clip = nullptr; // 마스크 본 상태일 때는 일반 클립은 null
-			newState.maskBoneName = initialMaskBone;
-			newState.upperClipName = initialUpperClip;
-			newState.lowerClipName = initialLowerClip;
-		}
-		else
-		{
-			newState.clip = defaultClip; // 일반 상태일 때는 기본 클립 할당
-			newState.maskBoneName.clear(); // 마스크 본 이름 초기화
-			newState.upperClipName.clear();
-			newState.lowerClipName.clear();
-		}
-
-		m_States.push_back(newState);
-		if (m_States.size() == 1)
-		{
-			m_CurrentStateNodeId = nodeId;
-			SetEntry(stateName);
-		}
-		return m_States.size() - 1;
-	}
-
-	AnimState* GetCurrentState() {
+	const AnimState* GetCurrentState() const {
 		return FindStateByNodeId(m_CurrentStateNodeId);
 	}
 
@@ -142,16 +113,55 @@ public:
 	void AddTransitionMultiCondition(
 		_int fromNode, _int toNode, const Link& link,
 		const vector<Condition>& conditions, _float duration = 0.2f, _bool bHasExitTime = false, _bool bBlendFullBody = true);
-	TransitionResult& CheckTransition();
+	const TransitionResult& CheckTransition() const;
 	void ResetTransitionResult() { m_TransitionResult = TransitionResult{}; }
 
 	void SetState(const string& name);
 	void SetState(_int iNodeId);
-	vector<AnimState>& GetStates() { return m_States; }
-	AnimState* GetStateByName(const string& name)
+	const vector<AnimState>& GetStates() const { return m_States; }
+	const AnimState* GetStateByName(const string& name) const
 	{
 		return FindState(name);
 	}
+
+	const AnimState* GetStateByName(const string& name)
+	{
+		return FindState(name);
+	}
+
+	const CAnimation* GetStateAnimationByNodeId(_int nodeId) const
+	{
+		for (const auto& state : m_States)
+		{
+			if (state.iNodeId == nodeId)
+				return state.clip;
+		}
+		return nullptr; // 찾지 못했을 때 nullptr 반환
+	}
+	const vector<Transition>& GetTransitions() const  { return m_Transitions; }
+#ifdef USE_IMGUI
+
+
+	AnimState* GetCurrentStateForEditor() {
+		return FindStateByNodeId(m_CurrentStateNodeId);
+	}
+	AnimState* GetStateByNameForEditor(const string& name)
+	{
+		return FindState(name);
+	}
+
+	CAnimation* GetStateAnimationByNodeIdForEditor(_int nodeId) const
+	{
+		for (const auto& state : m_States)
+		{
+			if (state.iNodeId == nodeId)
+				return state.clip;
+		}
+		return nullptr; // 찾지 못했을 때 nullptr 반환
+	}
+	vector<Transition>& GetTransitionsForEditor() { return m_Transitions; }
+	vector<AnimState>& GetStatesForEditor()  { return m_States; }
+#endif
 
 	const string& GetStateNameByNodeId(_int nodeId) const
 	{
@@ -163,17 +173,9 @@ public:
 		static string empty = "";
 		return empty; // 찾지 못했을 때 빈 문자열 반환
 	}
-	CAnimation* GetStateAnimationByNodeId(_int nodeId) const
-	{
-		for (const auto& state : m_States)
-		{
-			if (state.iNodeId == nodeId)
-				return state.clip;
-		}
-		return nullptr; // 찾지 못했을 때 nullptr 반환
-	}
 
-	vector<Transition>& GetTransitions()  { return m_Transitions; }
+
+
 
 	void SetName(const string& name) { m_Name = name; }
 	const string& GetName() const { return m_Name; }
@@ -293,9 +295,14 @@ public:
 	void SetParamName(Parameter& param, const string& name) {
 		param.name = name; // 파라미터 이름 설정
 	}
-	unordered_map<string, Parameter>& GetParameters() {
+	const unordered_map<string, Parameter>& GetParameters()const {
 		return m_Params;
 	}
+#ifdef USE_IMGUI
+	unordered_map<string, Parameter>& GetParametersForEditor() {
+		return m_Params;
+	}
+#endif
 
 	void SetEntry(const string& entryStateName)
 	{
@@ -326,22 +333,40 @@ public:
 			m_ExitStateNodeId = m_ExitState->iNodeId; // Exit 상태 노드 ID 설정
 		}
 	}
-
-	AnimState* GetEntryState() const { return m_EntryState; }
-	AnimState* GetExitState() const { return m_ExitState; }
+#ifdef USE_IMGUI
+	AnimState* GetEntryStateForEditor() const { return m_EntryState; }
+	AnimState* GetExitStateForEditor() const { return m_ExitState; }
+#endif
+	const AnimState* GetEntryState() const { return m_EntryState; }
+	const AnimState* GetExitState() const { return m_ExitState; }
 	_int GetEntryNodeId() const { return m_EntryStateNodeId; }
 	_int GetExitNodeId() const { return m_ExitStateNodeId; }
 	void Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController);
 	void Applay_OverrideAnimController(const string& ctrlName, const OverrideAnimController& overrideController);
 	void Cancel_OverrideAnimController();
 private:
-	AnimState* FindState(const string& name) 
+	const AnimState* FindState(const string& name) const
 	{
 		for (auto& s : m_States)
 			if (s.stateName == name) 
 				return &s;
 		return nullptr;
 	}
+
+	AnimState* FindState(const string& name)
+	{
+		for (auto& s : m_States)
+			if (s.stateName == name)
+				return &s;
+		return nullptr;
+	}
+	const AnimState* FindStateByNodeId(_int iNodeId) const
+	{
+		for (auto& s : m_States)
+			if (s.iNodeId == iNodeId) return &s;
+		return nullptr;
+	}
+
 	AnimState* FindStateByNodeId(_int iNodeId)
 	{
 		for (auto& s : m_States)

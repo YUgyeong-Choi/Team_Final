@@ -42,7 +42,6 @@ private:
 	_tchar						m_szLoadingText[MAX_PATH] = {};
 
 	atomic<float>&             m_fRatio;
-
 public:
 	HRESULT Loading_For_Logo();
 	HRESULT Loading_For_Static(); // 모두 사용하는 것들 Logo에서 처음에만 생성 
@@ -67,7 +66,7 @@ public:
 	HRESULT Loading_For_CY();
 	HRESULT Loading_For_YG();
 
-
+	static _bool m_bLoadStatic;
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID, atomic<float>& fRatio);
 	virtual void Free() override;

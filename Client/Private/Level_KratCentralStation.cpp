@@ -53,11 +53,11 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	m_pGameInstance->Set_IsChangeLevel(false);
 
-	//CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 	return S_OK;
 }
 
-void CLevel_KratCentralStation::Update(_float fTimeDelta)
+void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
@@ -65,10 +65,14 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
 		m_pGameInstance->ClearRenderObjects();
 		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+		m_pGameInstance->Reset_All();
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
+}
 
+void CLevel_KratCentralStation::Update(_float fTimeDelta)
+{
 	if (KEY_DOWN(DIK_U))
 		m_pGameInstance->Set_GameTimeScale(1.f);
 	if (KEY_DOWN(DIK_I))
@@ -223,7 +227,7 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player"), &pDesc)))
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
 
 	return S_OK;

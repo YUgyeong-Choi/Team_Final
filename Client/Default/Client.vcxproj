@@ -154,6 +154,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\CameraSequence.h" />
     <ClInclude Include="..\public\Camera_CutScene.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="..\Public\Level_YG.h" />
     <ClInclude Include="..\Public\Level_YW.h" />
     <ClInclude Include="..\Public\Loader.h" />
+    <ClInclude Include="..\Public\LockOn_Manager.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Mana_Bar.h" />
     <ClInclude Include="..\Public\MapTool.h" />
@@ -273,6 +275,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\CameraSequence.cpp" />
     <ClCompile Include="..\private\Camera_CutScene.cpp" />
@@ -309,6 +312,7 @@
     <ClCompile Include="..\Private\Level_YG.cpp" />
     <ClCompile Include="..\Private\Level_YW.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
+    <ClCompile Include="..\Private\LockOn_Manager.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Mana_Bar.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />

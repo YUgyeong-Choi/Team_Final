@@ -1,7 +1,7 @@
 #include "YGTrrigerWithoutModel.h"
 
 #include "GameInstance.h"
-#include "PhysX_IgnoreSelfCallback.h"
+
 
 CYGTrrigerWithoutModel::CYGTrrigerWithoutModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }

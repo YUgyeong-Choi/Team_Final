@@ -1,7 +1,7 @@
 #include "YGShpere.h"
 
 #include "GameInstance.h"
-#include "PhysX_IgnoreSelfCallback.h"
+#include "LockOn_Manager.h"
 
 CYGShpere::CYGShpere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
@@ -52,7 +52,9 @@ void CYGShpere::Priority_Update(_float fTimeDelta)
 
 void CYGShpere::Update(_float fTimeDelta)
 {
-
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
+		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+	}
 }
 
 void CYGShpere::Late_Update(_float fTimeDelta)

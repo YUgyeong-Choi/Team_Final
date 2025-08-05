@@ -55,13 +55,17 @@ HRESULT CLevel_DH::Initialize()
 	return S_OK;
 }
 
-void CLevel_DH::Update(_float fTimeDelta)
+void CLevel_DH::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
+}
+
+void CLevel_DH::Update(_float fTimeDelta)
+{
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);

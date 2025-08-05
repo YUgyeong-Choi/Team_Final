@@ -51,6 +51,3 @@ using namespace Client;
 #define PRE_TRANSFORMMATRIX_SCALE 0.004f
 #define INSTANCE_THRESHOLD 30 //이 갯수 초과 모델로드시 인스턴싱으로 로드한다.
 #pragma endregion
-
-
-
