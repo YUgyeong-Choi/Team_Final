@@ -73,7 +73,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_iCurrentHP = m_iMaxHP;
 	m_iCurrentStamina = m_iMaxStamina;
-	m_iCurrentMana = m_iMaxMana * 0.5f;
+	m_iCurrentMana = static_cast<_int>(m_iMaxMana * 0.5f);
 
 	Callback_HP();
 	Callback_Mana();

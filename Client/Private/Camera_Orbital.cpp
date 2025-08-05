@@ -172,6 +172,9 @@ void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
 
 _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 {
+	if(!m_pPlayer)
+		return _matrix();
+
 	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
 	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
 	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
