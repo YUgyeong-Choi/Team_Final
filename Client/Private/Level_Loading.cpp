@@ -19,6 +19,7 @@
 #include "Dynamic_UI.h"
 #include "UI_Video.h"
 #include "UI_Text.h"
+#include "UI_Container.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -126,77 +127,48 @@ HRESULT CLevel_Loading::Render()
 {
 	m_pLoader->Output_LoadingText();
 
-	_wstring text = L"크라트 시의 어느 고성은 저주받은 기사의 전설 탓에 정신병원과 갱생 시설을 거치며 악명을 떨쳤다.\n 한 재력가 여성이 이곳을 사들여 대대적인 개축을 한 끝에 현재의 크라트 호텔이 탄생했다.\n\n '크기 수정 필요'";
-	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.25f, g_iWinSizeY * 0.725f), XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1350.f);
+	if (m_eNextLevelID != LEVEL::LOGO)
+	{
+		_int iPercent = int(floorf(m_fRatio * 100.f));
 
+		_wstring loadingText = L"거짓말하는 중 ...   " + to_wstring(iPercent) + L" %";
+		m_pGameInstance->Draw_Font(TEXT("Font_Bold"), loadingText.c_str(), _float2(g_iWinSizeX * 0.77f, g_iWinSizeY * 0.95f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1200.f);
+	}
 	
-	_int iPercent = int(floorf(m_fRatio * 100.f));
-	
-	_wstring loadingText = L"거짓말하는 중 ...   " + to_wstring(iPercent) + L" %";
-	m_pGameInstance->Draw_Font(TEXT("Font_Bold"), loadingText.c_str(), _float2(g_iWinSizeX * 0.77f, g_iWinSizeY * 0.95f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, _float2(0.f, 0.f), g_iWinSizeY / 1200.f);
 
 	return S_OK;
 }
 
 HRESULT CLevel_Loading::Ready_Loading()
 {
-	json j;
-
-	ifstream file("../Bin/Save/UI/Loading.json");
-
-	file >> j;
-
-	for (const auto& eUIJson : j)
-	{
-		string protoTag = eUIJson["ProtoTag"];
-
-		if ("Prototype_GameObject_Static_UI" == protoTag)
-		{
-
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Static"), nullptr));
-
-			CStatic_UI* pObj = static_cast<CStatic_UI*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Static")));
-
-			pObj->Deserialize(eUIJson);
-
-			pObj->Update_Data();
-
-			static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static")))->Set_isVignetting(true);
-
-		}
-		else if ("Prototype_GameObject_Dynamic_UI" == protoTag)
-		{
-
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Dynamic"), nullptr));
-
-			CDynamic_UI* pObj = static_cast<CDynamic_UI*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Dynamic")));
-
-			pObj->Deserialize(eUIJson);
-
-			pObj->Update_Data();
-
-		
-
-		}
-		else if ("Prototype_GameObject_UI_Text" == protoTag)
-		{
-			
-			(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), StringToWStringU8(protoTag), ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Text"), nullptr));
-
-			CUI_Text* pObj = static_cast<CUI_Text*> (m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background_Text")));
-
-			pObj->Deserialize(eUIJson);
-
-			pObj->Update_Data();
-
-			
-		}
-
-	}
-	file.close();
-
 	
-	static_cast<CUIObject*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_Background_Static")))->Set_isVignetting(false);
+
+
+	CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Loading/Background.json");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+		ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Loading_Background"), &eDesc)))
+		return E_FAIL;
+
+	auto pObj = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Loading_Background"));
+
+	auto Parts = static_cast<CUI_Container*>(pObj)->Get_PartUI();
+
+
+
+	for (_int i = 0; i < Parts.size() - 3; ++i)
+	{
+		Parts[i]->Set_isVignetting(true);
+	}
+
+
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Loading/Explain_0.json");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+		ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Loading_Explain"), &eDesc)))
+		return E_FAIL;
 
 	
 

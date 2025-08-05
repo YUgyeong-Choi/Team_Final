@@ -80,13 +80,17 @@ void CGLTool::Update(_float fTimeDelta)
 	// 시퀀스 업데이트 추가
 	for (auto& container : m_ContainerList)
 	{
-		for (auto& part : container->Get_PartUI())
+		if (nullptr != container)
 		{
-			if (auto pDynamicUI = dynamic_cast<CDynamic_UI*>(part))
+			for (auto& part : container->Get_PartUI())
 			{
-				pDynamicUI->Update_UI_From_Frame(m_iCurrentFrame);
+				if (auto pDynamicUI = dynamic_cast<CDynamic_UI*>(part))
+				{
+					pDynamicUI->Update_UI_From_Frame(m_iCurrentFrame);
+				}
 			}
 		}
+	
 	}
 	
 		

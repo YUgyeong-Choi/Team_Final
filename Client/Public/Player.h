@@ -78,6 +78,7 @@ private: /* [ Setup 함수 ] */
 	void LoadPlayerFromJson();
 
 private: /* 옵저버 관련*/
+	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
 	void Callback_HP();
 	void Callback_Stamina();
 	void Callback_Mana();
@@ -85,6 +86,13 @@ private: /* 옵저버 관련*/
 	// 스탯 변화 테스트용
 	void Update_Stat();
 
+	
+private: // 슬롯 용
+	void Callback_UpBelt();
+	void Callback_DownBelt();
+	void Use_Item();
+
+	void Update_Slot();
 
 private: /* [ 상태패턴 ] */
 	void ReadyForState();
@@ -146,6 +154,16 @@ private: // 옵저버 관련
 	// 일단 한칸에 100씩
 	_int m_iCurrentMana = {};
 	_int m_iMaxMana = { 300 };
+
+// 벨트 슬롯 
+private:
+	// 위에 슬롯, 아래 슬롯
+	class CBelt* m_pBelt_Up = { nullptr };
+	class CBelt* m_pBelt_Down = { nullptr };
+
+	// 어느 슬롯 선택했는지, 선택한 아이템은 무엇인지
+	_bool m_isSelectUpBelt = { true };
+	class CItem* m_pSelectItem = { nullptr };
 
 
 public:

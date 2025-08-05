@@ -1,0 +1,65 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Caption": "크라트 시의 어느 고성은 저주받은 기사의 전설 탓에 정신병원과 갱생 시설을 거치며 악명을 떨쳤다.\n한 재력가 여성이 이곳을 사들여 대대적인 개축을 한 끝에 현재의 크라트 호텔이 탄생했다.",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.10000000149011612,
+                    "G": 0.10000000149011612,
+                    "R": 0.10000000149011612
+                },
+                "FontOffset": {
+                    "X": 0.0,
+                    "Y": 0.0
+                },
+                "FontScale": 0.699999988079071,
+                "FontTag": "Font_Medium",
+                "IsCenter": true,
+                "ProtoTag": "Prototype_GameObject_UI_Text",
+                "RotationZ": 0.0,
+                "SizeX": 6.24999984211172e-06,
+                "SizeY": 1.1111111234640703e-05,
+                "fAlpha": 1.0,
+                "fOffset": 0.0,
+                "fX": 760.0,
+                "fY": 693.0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Static_UI",
+                "RotationZ": 0.0,
+                "SizeX": 1006.4000244140625,
+                "SizeY": 558.8999633789063,
+                "Texturetag": "Prototype_Component_Texture_Loading_Image",
+                "fAlpha": 1.0,
+                "fOffset": 0.0,
+                "fX": 774.4000244140625,
+                "fY": 376.20001220703125,
+                "iPassIndex": 4,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

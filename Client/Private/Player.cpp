@@ -12,6 +12,10 @@
 
 #include "Observer_Player_Status.h"
 
+#include "Belt.h"
+#include "Item.h"
+#include "Ramp.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -57,15 +61,23 @@ HRESULT CPlayer::Initialize(void* pArg)
 	SyncTransformWithController();
 
 
-	// 옵저버 찾아서 없으면 추가
-	if (nullptr == m_pGameInstance->Find_Observer(TEXT("Player_Status")))
-		m_pGameInstance->Add_Observer(TEXT("Player_Status"), new CObserver_Player_Status);
 
 	m_iCurrentHP = m_iMaxHP;
 
 	Callback_HP();
 	Callback_Mana();
 	Callback_Stamina();
+
+	m_pBelt_Up = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
+	m_pBelt_Down = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
+
+	auto pRamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Ramp"), nullptr);
+
+	m_pBelt_Down->Add_Item(static_cast<CRamp*>(pRamp), 0);
+
+	Callback_UpBelt();
+	Callback_DownBelt();
+	
 
 	return S_OK;
 }
@@ -86,6 +98,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	// 옵저버 변수들 처리
 	Update_Stat();
+	Update_Slot();
 
 
 	__super::Priority_Update(fTimeDelta);
@@ -396,6 +409,72 @@ void CPlayer::Update_Stat()
 	}
 }
 
+void CPlayer::Callback_UpBelt()
+{
+	m_pGameInstance->Notify(TEXT("Slot_Belts"), _wstring(L"ChangeUpBelt"), m_pBelt_Up);
+}
+
+void CPlayer::Callback_DownBelt()
+{
+	m_pGameInstance->Notify(TEXT("Slot_Belts"), _wstring(L"ChangeDownBelt"), m_pBelt_Down);
+}
+
+void CPlayer::Use_Item()
+{
+	if (nullptr == m_pSelectItem)
+		return;
+
+	m_pSelectItem->Activate();
+}
+
+void CPlayer::Update_Slot()
+{
+	if (m_pGameInstance->Key_Down(DIK_T))
+	{
+		if (m_isSelectUpBelt)
+		{
+			m_pBelt_Up->Change_Next_Item();
+		}
+		else
+		{
+			m_pSelectItem = m_pBelt_Up->Get_Current_Item();
+		}
+		
+		m_isSelectUpBelt = true;
+
+		Callback_UpBelt();
+	}
+	else if (m_pGameInstance->Key_Down(DIK_G))
+	{
+		if (!m_isSelectUpBelt)
+		{
+			m_pBelt_Down->Change_Next_Item();
+		}
+		else
+		{
+			m_pSelectItem = m_pBelt_Down->Get_Current_Item();
+		}
+			
+		m_isSelectUpBelt = false;
+
+
+		Callback_DownBelt();
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_R))
+	{
+		if (nullptr == m_pSelectItem)
+			return;
+
+		m_pSelectItem->Activate();
+
+		if (m_isSelectUpBelt)
+			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pSelectItem);
+		else
+			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pSelectItem);
+	}
+}
+
 void CPlayer::Movement(_float fTimeDelta)
 {
 	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
@@ -549,4 +628,7 @@ void CPlayer::Free()
 
 	for (size_t i = 0; i < ENUM_CLASS(EPlayerState::END); ++i)
 		Safe_Delete(m_pStateArray[i]);
+
+	Safe_Release(m_pBelt_Down);
+	Safe_Release(m_pBelt_Up);
 }

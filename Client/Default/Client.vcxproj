@@ -154,6 +154,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\CameraSequence.h" />
     <ClInclude Include="..\public\Camera_CutScene.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
@@ -172,12 +173,15 @@
     <ClInclude Include="..\Public\Effect_Class.h" />
     <ClInclude Include="..\public\EffectBase.h" />
     <ClInclude Include="..\Public\EffectSequence.h" />
-    <ClInclude Include="..\public\Effect_Manager.h" />
     <ClInclude Include="..\public\EventMag.h" />
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
+    <ClInclude Include="..\public\Grinder.h" />
     <ClInclude Include="..\public\HP_Bar.h" />
+    <ClInclude Include="..\public\Icon_Item.h" />
+    <ClInclude Include="..\public\Icon_Weapon.h" />
+    <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\Public\Level_CY.h" />
     <ClInclude Include="..\Public\Level_DH.h" />
     <ClInclude Include="..\Public\Level_KratHotel.h" />
@@ -195,13 +199,17 @@
     <ClInclude Include="..\public\MeshEffect.h" />
     <ClInclude Include="..\Public\MySequence.h" />
     <ClInclude Include="..\Public\Observer_Player_Status.h" />
+    <ClInclude Include="..\public\Observer_Slot.h" />
+    <ClInclude Include="..\public\Panel_Player_LD.h" />
     <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PBRMesh.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\Public\PlayerState.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\public\Portion.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
+    <ClInclude Include="..\public\Ramp.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
     <ClInclude Include="..\Public\MapToolObject.h" />
@@ -262,6 +270,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\CameraSequence.cpp" />
     <ClCompile Include="..\private\Camera_CutScene.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
@@ -275,12 +284,15 @@
     <ClCompile Include="..\Private\Effect_Class.cpp" />
     <ClCompile Include="..\private\EffectBase.cpp" />
     <ClCompile Include="..\Private\EffectSequence.cpp" />
-    <ClCompile Include="..\private\Effect_Manager.cpp" />
     <ClCompile Include="..\private\EventMag.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
+    <ClCompile Include="..\private\Grinder.cpp" />
     <ClCompile Include="..\private\HP_Bar.cpp" />
+    <ClCompile Include="..\private\Icon_Item.cpp" />
+    <ClCompile Include="..\private\Icon_Weapon.cpp" />
+    <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\Private\Level_CY.cpp" />
     <ClCompile Include="..\Private\Level_DH.cpp" />
     <ClCompile Include="..\Private\Level_KratCentralStation.cpp" />
@@ -298,10 +310,14 @@
     <ClCompile Include="..\private\MeshEffect.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
     <ClCompile Include="..\Private\Observer_Player_Status.cpp" />
+    <ClCompile Include="..\private\Observer_Slot.cpp" />
+    <ClCompile Include="..\private\Panel_Player_LD.cpp" />
     <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\PBRMesh.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\Portion.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
+    <ClCompile Include="..\private\Ramp.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />

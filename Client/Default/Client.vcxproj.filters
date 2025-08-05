@@ -225,6 +225,36 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Unit\01.Weapon">
       <UniqueIdentifier>{87bd98b7-f2e3-4aba-bbd8-673c9acc6bd4}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
+      <UniqueIdentifier>{de7768fa-8c6d-44b8-afd6-e7895c20ad10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\Weapon">
+      <UniqueIdentifier>{08aa5e06-5485-4229-9431-8542ea7c75c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Item">
+      <UniqueIdentifier>{19f9895f-95e4-4f19-8513-e9457ce85169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Item\Portion">
+      <UniqueIdentifier>{bcef0c42-54bd-40dd-a827-7ff316c89096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Item\Grinder">
+      <UniqueIdentifier>{311830bb-b1f9-45ff-a605-d0b0e6094773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Item\Belt">
+      <UniqueIdentifier>{af3572e6-708d-4733-8058-128ddec890f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Item\Ramp">
+      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\Item">
+      <UniqueIdentifier>{c0df1a5c-fcd8-485b-a342-280c94755189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Observer\Slot">
+      <UniqueIdentifier>{e266084c-38d3-42df-9999-4c7cde30193f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\LD">
+      <UniqueIdentifier>{7ff4fea0-434f-4203-abc5-95abed9014ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -531,6 +561,33 @@
     <ClInclude Include="..\public\Effect_Manager.h" />
     <ClInclude Include="..\public\Weapon.h">
       <Filter>02.GameObjects\01.Unit\01.Weapon</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\Icon_Weapon.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Item.h">
+      <Filter>02.GameObjects\03. Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Ramp.h">
+      <Filter>02.GameObjects\03. Item\Ramp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Belt.h">
+      <Filter>02.GameObjects\03. Item\Belt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Icon_Item.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_Slot.h">
+      <Filter>03. Observer\Slot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_Player_LD.h">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\LD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Portion.h">
+      <Filter>02.GameObjects\03. Item\Portion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Grinder.h">
+      <Filter>02.GameObjects\03. Item\Grinder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -811,6 +868,33 @@
     <ClCompile Include="..\private\Effect_Manager.cpp" />
     <ClCompile Include="..\private\Weapon.cpp">
       <Filter>02.GameObjects\01.Unit\01.Weapon</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\Icon_Weapon.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Ramp.cpp">
+      <Filter>02.GameObjects\03. Item\Ramp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Belt.cpp">
+      <Filter>02.GameObjects\03. Item\Belt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Icon_Item.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_Slot.cpp">
+      <Filter>03. Observer\Slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_Player_LD.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\LD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Portion.cpp">
+      <Filter>02.GameObjects\03. Item\Portion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Grinder.cpp">
+      <Filter>02.GameObjects\03. Item\Grinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Item.cpp">
+      <Filter>02.GameObjects\03. Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
