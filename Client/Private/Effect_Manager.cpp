@@ -150,11 +150,9 @@ HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
         if (jItem.contains("EffectType"))
             eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<int>());
 
-        json jData;
-
 
         /* 필요한 프로토타입 컴포넌트 생성 */
-        Ready_Prototype_Components(jData, eEffectType);
+        Ready_Prototype_Components(jItem, eEffectType);
 
 
         /*switch (eEffectType)
@@ -249,7 +247,7 @@ HRESULT CEffect_Manager::Ready_Prototype_VIBuffers(const json& j)
 
 
     /* 이거 지금 툴에서 저장 안 해줬으니 추가할 것 */
-    if (j.contains("Name") && j["Name"].is_array())
+    if (j.contains("Name"))
     {
         strPrototypeTag += StringToWString(j["Name"].get<std::string>());
     }
