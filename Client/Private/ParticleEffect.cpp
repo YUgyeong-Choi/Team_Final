@@ -49,9 +49,6 @@ HRESULT CParticleEffect::Initialize(void* pArg)
 		m_bTool = pDesc->bTool;
 	}
 
-
-
-
 	return S_OK;
 }
 
@@ -142,8 +139,16 @@ HRESULT CParticleEffect::Ready_Components()
 
 HRESULT CParticleEffect::Bind_ShaderResources()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
+	if (m_pSocketMatrix != nullptr)
+	{
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
@@ -286,5 +291,6 @@ void CParticleEffect::Deserialize(const json& j)
 	{
 		m_strBufferTag = StringToWString(j["Name"].get<std::string>());
 	}
+	m_bBillboard = false;
 
 }

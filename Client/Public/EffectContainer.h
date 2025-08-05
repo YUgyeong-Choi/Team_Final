@@ -11,6 +11,7 @@ public:
 	typedef struct tagEffectContainerDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		json j;
+		_float3	vPresetPosition = { 0.f,0.f,0.f };
 	}DESC;
 
 

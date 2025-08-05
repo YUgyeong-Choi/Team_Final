@@ -1,6 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Base.h"
+#include "GameInstance.h"
 #include <chrono>
 #include <random>
 
@@ -115,4 +116,48 @@ static _float3 QuaternionToEuler(_fvector q)
     _float roll = atan2f(fmat._12, fmat._22);
 
     return _float3(pitch, yaw, roll); // radian ±âÁØ
+}
+
+static _matrix Compute_Billboard(_fmatrix SrcMatrix)
+{
+    _float4x4 m_Return = {};
+    XMStoreFloat4x4(&m_Return, XMMatrixIdentity());
+
+    _float3	vScaled = _float3(XMVectorGetX(XMVector3Length(SrcMatrix.r[0])),
+        XMVectorGetX(XMVector3Length(SrcMatrix.r[1])),
+        XMVectorGetX(XMVector3Length(SrcMatrix.r[2])));
+
+    _vector	vPosition = SrcMatrix.r[3];
+
+    _matrix matCamWorld = CGameInstance::Get_Instance()->Get_Transform_Matrix_Inv(D3DTS::VIEW);
+
+    _vector vRight = matCamWorld.r[0]; // X axis
+    _vector vUp = matCamWorld.r[1]; // Y axis
+    _vector vLook = matCamWorld.r[2]; // Z axis
+
+    XMStoreFloat3((_float3*)&m_Return.m[0][0], XMVector3Normalize(vRight) * vScaled.x);
+    XMStoreFloat3((_float3*)&m_Return.m[1][0], XMVector3Normalize(vUp) * vScaled.y);
+    XMStoreFloat3((_float3*)&m_Return.m[2][0], XMVector3Normalize(vLook) * vScaled.z);
+    XMStoreFloat3((_float3*)&m_Return.m[3][0], vPosition);
+    m_Return._44 = 1.f;
+
+    return XMLoadFloat4x4(&m_Return);
+}
+
+static _matrix Turn_Billboard(_fmatrix SrcMatrix, _float fRotationPerSec, _float fTimeDelta)
+{
+    _matrix m_Return = XMMatrixIdentity();
+
+    _matrix	RotationMatrix = XMMatrixRotationAxis(SrcMatrix.r[2], fRotationPerSec * fTimeDelta);
+
+    //Set_State(STATE::RIGHT, XMVector4Transform(SrcMatrix.r[0], RotationMatrix));
+    //Set_State(STATE::UP, XMVector4Transform(SrcMatrix.r[1], RotationMatrix));
+    //Set_State(STATE::LOOK, XMVector4Transform(SrcMatrix.r[2], RotationMatrix));
+
+    m_Return.r[0] = XMVector4Transform(SrcMatrix.r[0], RotationMatrix);
+    m_Return.r[1] = XMVector4Transform(SrcMatrix.r[1], RotationMatrix);
+    m_Return.r[2] = XMVector4Transform(SrcMatrix.r[2], RotationMatrix);
+    m_Return.r[3] = SrcMatrix.r[3];
+
+    return m_Return;
 }

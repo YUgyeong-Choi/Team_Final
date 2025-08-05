@@ -74,8 +74,15 @@ void CEffectBase::Update(_float fTimeDelta)
 
 	Update_Keyframes();
 
+	if (m_pSocketMatrix != nullptr)
+	{
+		XMStoreFloat4x4(&m_CombinedWorldMatrix,
+			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
+		);
+	}
 	if (m_bBillboard)
-		m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
+		//m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
+		XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
 
 	if (m_bAnimation)
 		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
@@ -112,8 +119,17 @@ void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 
 	Update_Keyframes();
 
+	if (m_pSocketMatrix != nullptr)
+	{
+		XMStoreFloat4x4(&m_CombinedWorldMatrix,
+			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
+		);
+	}
+
 	if (m_bBillboard)
-		m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
+		//m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
+		XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+
 
 	if (m_bAnimation)
 		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);

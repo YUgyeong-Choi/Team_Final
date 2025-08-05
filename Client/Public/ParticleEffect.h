@@ -29,8 +29,6 @@ public:
 		_wstring			strBufferTag;
 	}DESC;
 
-
-
 protected:
 	CParticleEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CParticleEffect(const CParticleEffect& Prototype);

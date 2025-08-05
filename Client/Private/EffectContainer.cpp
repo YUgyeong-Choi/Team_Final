@@ -33,8 +33,8 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 
 	DESC* pDesc = static_cast<DESC*>(pArg);
 
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&pDesc->vPresetPosition), 1.f));
 	Load_JsonFiles(pDesc->j);
-
     return S_OK;
 }
 
@@ -138,6 +138,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			desc.fRotationPerSec = XMConvertToRadians(90.f);
 			desc.fSpeedPerSec = 5.f;
 			desc.bTool = false;
+			desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"), &desc));
 		}
@@ -147,6 +148,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			CParticleEffect::DESC desc = {};
 			desc.fRotationPerSec = XMConvertToRadians(90.f);
 			desc.fSpeedPerSec = 5.f;
+			desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			desc.bTool = false;
 			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
@@ -157,6 +159,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			CMeshEffect::DESC desc = {};
 			desc.fRotationPerSec = XMConvertToRadians(90.f);
 			desc.fSpeedPerSec = 5.f;
+			desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			desc.bTool = false;
 			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"), &desc));
@@ -167,6 +170,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			//CTrailEffect::DESC desc = {};
 			//desc.fRotationPerSec = XMConvertToRadians(90.f);
 			//desc.fSpeedPerSec = 5.f;
+			//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			//desc.bTool = false;
 			//pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 			//	PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"), &desc));

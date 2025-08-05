@@ -1,6 +1,8 @@
 ﻿#include "Level_KratCentralStation.h"
 #include "GameInstance.h"
 #include "Camera_Manager.h"
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
 
 #include "StaticMesh.h"
 #include "PBRMesh.h"
@@ -78,6 +80,34 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		ToggleHoldMouse();
 	if(m_bHold)
 		HoldMouse();
+
+	if (KEY_PRESSING(DIK_LSHIFT))
+	{
+		if (KEY_DOWN(DIK_Z))
+		{
+			auto PL = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player"));
+			CEffectContainer::DESC ECDesc = {};
+
+			ECDesc.vPresetPosition = { PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[0] ,
+			PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[1] + 0.1f ,
+			PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[2] };
+
+			if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1"), &ECDesc)))
+				MSG_BOX("조짐");
+			//if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1"))))
+			//	MSG_BOX("조짐");
+		}
+
+		if (KEY_DOWN(DIK_X))
+		{
+			auto PL = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player"));
+			cout << "Player Position : " << PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[0] << ", "
+				<< PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[1] << ", "
+				<< PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[2] << endl;
+		}
+	}
+
+
 
 	m_pCamera_Manager->Update(fTimeDelta);
 }

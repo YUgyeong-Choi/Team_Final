@@ -98,7 +98,10 @@ HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring 
     {
         ECDesc.fRotationPerSec = XMConvertToRadians(90.f);
         ECDesc.fSpeedPerSec = 10.f;
+        ECDesc.vPresetPosition = { 0.f, 0.f, 0.f };
     }
+    else
+        ECDesc.vPresetPosition = static_cast<CEffectContainer::DESC*>(pArg)->vPresetPosition;
     if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
         iLevelIndex, TEXT("Layer_Effect"), &ECDesc)))
         return E_FAIL;

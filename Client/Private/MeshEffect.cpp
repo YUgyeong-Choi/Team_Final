@@ -140,8 +140,17 @@ HRESULT CMeshEffect::Ready_Components()
 
 HRESULT CMeshEffect::Bind_ShaderResources()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
+	if (m_pSocketMatrix != nullptr)
+	{
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+			return E_FAIL;
+	}
+
 
 	/* dx9 : 장치에 뷰, 투영행렬을 저장해두면 렌더링시 알아서 정점에 Transform해주었다. */
 	/* dx11 : 셰이더에 뷰, 투영행렬을 저장해두고 우리가 직접 변환해주어야한다. */
@@ -219,4 +228,5 @@ void CMeshEffect::Deserialize(const json& j)
 	__super::Deserialize(j);
 	if (j.contains("ModelTag"))
 		m_strModelTag = StringToWString(j["ModelTag"].get<string>());
+	m_bBillboard = false;
 }

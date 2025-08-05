@@ -76,6 +76,8 @@ protected:
 
 protected:
 	const _float4x4*	m_pSocketMatrix = { nullptr };
+	_float4x4			m_CombinedWorldMatrix{};
+
 
 protected:
 	// Basic Effect Preferences
