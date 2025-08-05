@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;ENGINE_EXPORTS;_WINDOWS;_USRDLL;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../public/;../../PhysXSDK/Include/;../../PhysXSDK/Include/cooking/;../../PhysXSDK/Include/task/;../../PhysXSDK/Include/gpu/;../../CUDASDK/v12.9/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/;../../PhysXSDK/Include/;../../PhysXSDK/Include/cooking/;../../PhysXSDK/Include/task/;../../PhysXSDK/Include/gpu/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/MP</AdditionalOptions>
@@ -125,8 +125,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;dinput8.lib;dxguid.lib;DirectXTKd.lib;Effects11d.lib;assimp-vc140-mtd.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCooking_64.lib;PhysXVehicle2_static_64.lib;PhysXGpu_64.lib;fmodL_vc.lib;fmodstudioL_vc.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../ThirdPartyLib/;../../PhysXSDK/Debug/LIB/;../../FmodSDK/Lib/;../../CUDASDK/v12.9/lib/x64/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;dinput8.lib;dxguid.lib;DirectXTKd.lib;Effects11d.lib;assimp-vc140-mtd.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCooking_64.lib;PhysXVehicle2_static_64.lib;PhysXGpu_64.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../ThirdPartyLib/;../../PhysXSDK/Debug/LIB/;../../FmodSDK/Lib/</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
