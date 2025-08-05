@@ -46,11 +46,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	//if (m_pGameInstance->Key_Down(DIK_T))
-	//{
-	//	m_bActive = !m_bActive;
-	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	//}
+	if (m_pGameInstance->Key_Down(DIK_T))
+	{
+		m_bActive = !m_bActive;
+		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	}
 		
 
 	if (m_pGameInstance->Key_Down(DIK_X))
@@ -174,6 +174,7 @@ _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 {
 	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
 	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
 	_float x = m_fDistance * cosf(pitch) * sinf(yaw);
 	_float y = m_fDistance * sinf(pitch);

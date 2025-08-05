@@ -26,6 +26,7 @@ public:
 	virtual HRESULT Initialize() override;
 	virtual void Priority_Update(_float fTimeDelta) override;
 	virtual void Update(_float fTimeDelta) override;
+	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
 private:
@@ -44,6 +45,7 @@ private:
 
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+	class CLockOn_Manager* m_pLockOn_Manager = { nullptr };
 	class CGameObject* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)];
 public:
 	static CLevel_YG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -259,6 +259,9 @@
     <Filter Include="02.GameObjects\07.Effect\Manager">
       <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\09.LockOn">
+      <UniqueIdentifier>{cb18d279-3e6c-4d95-ad4e-0d35bac05877}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -594,6 +597,9 @@
     <ClInclude Include="..\Public\Effect_Manager.h">
       <Filter>02.GameObjects\07.Effect\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LockOn_Manager.h">
+      <Filter>02.GameObjects\09.LockOn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -902,6 +908,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Manager.cpp">
       <Filter>02.GameObjects\07.Effect\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LockOn_Manager.cpp">
+      <Filter>02.GameObjects\09.LockOn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

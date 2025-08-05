@@ -3,6 +3,7 @@
 #include "Level_Loading.h"
 #include "Camera_Manager.h"
 #include "Effect_Manager.h"
+#include "LockOn_Manager.h"
 
 #include "Static_UI.h"
 #include "Dynamic_UI.h"
@@ -393,5 +394,5 @@ void CMainApp::Free()
 	/* [ ΩÃ±€≈Ê ªË¡¶ ] */
 	CCamera_Manager::Destroy_Instance();
 	CEffect_Manager::Destroy_Instance();
-	
+	CLockOn_Manager::Destroy_Instance();
 }
