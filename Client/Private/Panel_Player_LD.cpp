@@ -54,88 +54,66 @@ HRESULT CPanel_Player_LD::Initialize(void* pArg)
 		{
 			m_BeltUpDescs.clear();
 
-			auto pObj = static_cast<CBelt*>(data);
+			auto pUpBelt = static_cast<CBelt*>(data);
 
-			for (auto& pItem : pObj->Get_Items())
+			auto& ViewItems = pUpBelt->Get_ViewItems();
+
+			for (auto& pView : ViewItems)
 			{
-				ITEM_DESC eDesc = {};
-
-				if (nullptr != pItem)
-				{
-					eDesc.strPrototag = pItem->Get_ProtoTag();
-					eDesc.isSelect = false;
-					eDesc.isUsable = pItem->Get_isUsable();
-					eDesc.isConsumable = pItem->Get_isConsumable();
-					eDesc.iUseCount = pItem->Get_UseCount();
-				}
-
-				m_BeltUpDescs.push_back(eDesc);
+				if (nullptr != pView)
+					m_BeltUpDescs.push_back(pView->Get_ItemDesc());
 			}
-
-			if (!m_BeltUpDescs.empty())
+			if (m_BeltUpDescs.size() > 0)
 				m_BeltUpDescs[0].isSelect = true;
+			
 
-			if (!m_BeltDownDescs.empty())
-				m_BeltDownDescs[0].isSelect = false;
-
-			// UI 갱신
-			for (_int i = 0; i < m_pBelt_Up->Get_PartUI().size(); ++i)
+			for (size_t i = 0; i < m_BeltUpDescs.size(); ++i)
 			{
 				static_cast<CIcon_Item*>(m_pBelt_Up->Get_PartUI()[i])->Update_ICon(&m_BeltUpDescs[i]);
 			}
 
-			if (!m_BeltDownDescs.empty())
+			if (m_BeltUpDescs.empty())
 			{
-				for (_int i = 0; i < m_pBelt_Down->Get_PartUI().size(); ++i)
-				{
-					static_cast<CIcon_Item*>(m_pBelt_Down->Get_PartUI()[i])->Update_ICon(&m_BeltDownDescs[i]);
-				}
+				ITEM_DESC eDesc = {};
+				eDesc.isSelect = true;
+				static_cast<CIcon_Item*>(m_pBelt_Up->Get_PartUI()[0])->Update_ICon(&eDesc);
+
 			}
-			
+			static_cast<CIcon_Item*>(m_pBelt_Up->Get_PartUI()[0])->Set_isInput(true);
+			static_cast<CIcon_Item*>(m_pBelt_Down->Get_PartUI()[0])->Set_isSelect(false);
 		}
 
 		else if (L"ChangeDownBelt" == eventType)
 		{
 			m_BeltDownDescs.clear();
 
-			auto pObj = static_cast<CBelt*>(data);
+			auto pUpBelt = static_cast<CBelt*>(data);
 
-			for (auto& pItem : pObj->Get_Items())
+			auto& ViewItems = pUpBelt->Get_ViewItems();
+
+			for (auto& pView : ViewItems)
 			{
-				ITEM_DESC eDesc = {};
-
-				if (nullptr != pItem)
-				{
-					eDesc.strPrototag = pItem->Get_ProtoTag();
-					eDesc.isSelect = false;
-					eDesc.isUsable = pItem->Get_isUsable();
-					eDesc.isConsumable = pItem->Get_isConsumable();
-					eDesc.iUseCount = pItem->Get_UseCount();
-				}
-
-				m_BeltDownDescs.push_back(eDesc);
+				if (nullptr != pView)
+					m_BeltDownDescs.push_back(pView->Get_ItemDesc());
 			}
-
-			if (!m_BeltDownDescs.empty())
+			if (m_BeltDownDescs.size() > 0)
 				m_BeltDownDescs[0].isSelect = true;
 
-			if (!m_BeltUpDescs.empty())
-				m_BeltUpDescs[0].isSelect = false;
 
-			// UI 갱신
-			if (!m_BeltUpDescs.empty())
+			for (size_t i = 0; i < m_BeltDownDescs.size(); ++i)
 			{
-				for (_int i = 0; i < m_pBelt_Down->Get_PartUI().size(); ++i)
-				{
-					static_cast<CIcon_Item*>(m_pBelt_Down->Get_PartUI()[i])->Update_ICon(&m_BeltDownDescs[i]);
-				}
+				static_cast<CIcon_Item*>(m_pBelt_Down->Get_PartUI()[i])->Update_ICon(&m_BeltDownDescs[i]);
 			}
-		
 
-			for (_int i = 0; i < m_pBelt_Up->Get_PartUI().size(); ++i)
+			if (m_BeltDownDescs.empty())
 			{
-				static_cast<CIcon_Item*>(m_pBelt_Up->Get_PartUI()[i])->Update_ICon(&m_BeltUpDescs[i]);
+				ITEM_DESC eDesc = {};
+				eDesc.isSelect = true;
+				static_cast<CIcon_Item*>(m_pBelt_Down->Get_PartUI()[0])->Update_ICon(&eDesc);
+
 			}
+			static_cast<CIcon_Item*>(m_pBelt_Down->Get_PartUI()[0])->Set_isInput(true);
+			static_cast<CIcon_Item*>(m_pBelt_Up->Get_PartUI()[0])->Set_isSelect(false);
 		}
 		
 
@@ -146,30 +124,12 @@ HRESULT CPanel_Player_LD::Initialize(void* pArg)
 		if (L"UseDownSelectItem" == eventType)
 		{
 
-			if (L"Prototype_GameObject_Ramp" == static_cast<CItem*>(data)->Get_ProtoTag())
-			{
-				ITEM_DESC eDesc = {};
-				auto pObj = static_cast<CRamp*>(data);
+			auto pObj = static_cast<CItem*>(data);
 
-				eDesc.strPrototag = L"Prototype_GameObject_Ramp";
-				eDesc.isSelect = false;
-				eDesc.isUsable = pObj->Get_isUsable();
-				eDesc.isConsumable = pObj->Get_isConsumable();
-				eDesc.iUseCount = pObj->Get_UseCount();
+			m_BeltDownDescs[0] = pObj->Get_ItemDesc();
 
+			m_BeltDownDescs[0].isSelect = true;
 
-				if (pObj->Get_isLight())
-				{
-
-					eDesc.iItemIndex = 1;
-				}
-				else
-				{
-					eDesc.iItemIndex = 0;
-				}
-
-				m_BeltDownDescs[0] = eDesc;
-			}
 			static_cast<CIcon_Item*>(m_pBelt_Down->Get_PartUI()[0])->Update_ICon(&m_BeltDownDescs[0]);
 		}
 
@@ -177,30 +137,12 @@ HRESULT CPanel_Player_LD::Initialize(void* pArg)
 		{
 			// 음 일단 다른거부터 해보자
 
-			if (L"Prototype_GameObject_Ramp" == static_cast<CItem*>(data)->Get_ProtoTag())
-			{
-				ITEM_DESC eDesc = {};
-				auto pObj = static_cast<CRamp*>(data);
 
-				eDesc.strPrototag = L"Prototype_GameObject_Ramp";
-				eDesc.isSelect = false;
-				eDesc.isUsable = pObj->Get_isUsable();
-				eDesc.isConsumable = pObj->Get_isConsumable();
-				eDesc.iUseCount = pObj->Get_UseCount();
+			auto pObj = static_cast<CItem*>(data);
 
+			m_BeltUpDescs[0] = pObj->Get_ItemDesc();
 
-				if (pObj->Get_isLight())
-				{
-
-					eDesc.iItemIndex = 1;
-				}
-				else
-				{
-					eDesc.iItemIndex = 0;
-				}
-
-				m_BeltUpDescs[0] = eDesc;
-			}
+			m_BeltUpDescs[0].isSelect = true;
 
 			static_cast<CIcon_Item*>(m_pBelt_Up->Get_PartUI()[0])->Update_ICon(&m_BeltUpDescs[0]);
 		}
@@ -242,8 +184,33 @@ void CPanel_Player_LD::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	m_pBelt_Up->Late_Update(fTimeDelta);
-	m_pBelt_Down->Late_Update(fTimeDelta);
+	// size 만큼만
+
+	if (m_BeltUpDescs.size() == 0)
+	{
+		m_pBelt_Up->Get_PartUI()[0]->Late_Update(fTimeDelta);
+	}
+	else
+	{
+		for (size_t i = 0; i < m_BeltUpDescs.size(); ++i)
+		{
+			m_pBelt_Up->Get_PartUI()[i]->Late_Update(fTimeDelta);
+		}
+	}
+
+
+	if (m_BeltDownDescs.size() == 0)
+	{
+		m_pBelt_Down->Get_PartUI()[0]->Late_Update(fTimeDelta);
+	}
+	else
+	{
+		for (size_t i = 0; i < m_BeltDownDescs.size(); ++i)
+		{
+			m_pBelt_Down->Get_PartUI()[i]->Late_Update(fTimeDelta);
+		}
+	}
+	
 
 }
 

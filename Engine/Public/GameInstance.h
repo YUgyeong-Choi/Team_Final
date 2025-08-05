@@ -215,6 +215,7 @@ public:
 	void Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
 	void Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
 	void Reset(const _wstring& strTag);
+	void Reset_All();
 #pragma endregion
 
 private:

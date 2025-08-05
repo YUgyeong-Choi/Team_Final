@@ -31,6 +31,9 @@ HRESULT CIcon_Item::Initialize(void* pArg)
 		TEXT("Com_Texture_Select"), reinterpret_cast<CComponent**>(&m_pEffectTextureCom))))
 		return E_FAIL;
 	
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Slot_Input"),
+		TEXT("Com_Texture_Input"), reinterpret_cast<CComponent**>(&m_pInputTextureCom))))
+		return E_FAIL;
 	// 콜백으로 아이템 바뀌면 아이템 정보 받아오도록 만들어두자
 
 
@@ -50,7 +53,16 @@ void CIcon_Item::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	
+	if (m_isInput)
+	{
+		m_fInputTime += fTimeDelta;
+
+		if (m_fInputTime >= m_fDuration)
+		{
+			m_fInputTime = 0.f;
+			m_isInput = false;
+		}
+	}
 }
 
 void CIcon_Item::Late_Update(_float fTimeDelta)
@@ -60,9 +72,9 @@ void CIcon_Item::Late_Update(_float fTimeDelta)
 
 HRESULT CIcon_Item::Render()
 {
-	if(FAILED(Bind_ShaderResources()))
+	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pShaderCom->Begin(D_UI_ICON_ITEM)))
 		return E_FAIL;
 
@@ -73,7 +85,7 @@ HRESULT CIcon_Item::Render()
 		return E_FAIL;
 
 	if (!m_strCaption.empty())
-		m_pGameInstance->Draw_Font_Centered(TEXT("Font_Medium"), m_strCaption.c_str(), {m_fX + m_fSizeX * 0.2f,m_fY + m_fSizeY * 0.25f});
+		m_pGameInstance->Draw_Font_Centered(TEXT("Font_Medium"), m_strCaption.c_str(), { m_fX + m_fSizeX * 0.2f,m_fY + m_fSizeY * 0.25f }, { 1.f,1.f,1.f,1.f }, 0.f,{0.f,0.f}, 0.8f);
 
 
 	return S_OK;
@@ -89,7 +101,7 @@ void CIcon_Item::Update_ICon(ITEM_DESC* pDesc)
 
 			m_strTextureTag = TEXT("Prototype_Component_Texture_Ramp");
 
-			m_iItemIndex = pDesc->iItemIndex;
+			
 		}
 		else if (pDesc->strPrototag.find(L"Portion") != pDesc->strPrototag.npos)
 		{
@@ -103,6 +115,7 @@ void CIcon_Item::Update_ICon(ITEM_DESC* pDesc)
 		Ready_Component(m_strTextureTag);
 	}
 
+	m_iItemIndex = pDesc->iItemIndex;
 	m_isUsable = pDesc->isUsable;
 	m_isSelect = pDesc->isSelect;
 	
@@ -179,9 +192,12 @@ HRESULT CIcon_Item::Bind_ShaderResources()
 	}
 	
 	
-	_float4  vIconDesc = { _float(m_isSelect) , _float(isItemEmpty), 0.f,0.f };
+	_float4  vIconDesc = { _float(m_isSelect) , _float(isItemEmpty), _float(m_isInput), m_fInputTime / m_fDuration};
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ItemDesc", &vIconDesc, sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pInputTextureCom->Bind_ShaderResource(m_pShaderCom, "g_InputTexture", 0)))
 		return E_FAIL;
 
 	return S_OK;
@@ -230,4 +246,5 @@ void CIcon_Item::Free()
 
 	Safe_Release(m_pItemTextureCom);
 	Safe_Release(m_pEffectTextureCom);
+	Safe_Release(m_pInputTextureCom);
 }

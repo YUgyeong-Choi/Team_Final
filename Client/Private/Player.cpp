@@ -63,6 +63,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	m_iCurrentHP = m_iMaxHP;
+	m_iCurrentStamina = m_iMaxStamina;
+	m_iCurrentMana = m_iMaxMana * 0.5f;
 
 	Callback_HP();
 	Callback_Mana();
@@ -73,11 +75,22 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	auto pRamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Ramp"), nullptr);
 
-	m_pBelt_Down->Add_Item(static_cast<CRamp*>(pRamp), 0);
+	m_pBelt_Down->Add_Item(static_cast<CItem*>(pRamp), 0);
 
-	Callback_UpBelt();
-	Callback_DownBelt();
+	auto pGrinder = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Grinder"), nullptr);
+
+	m_pBelt_Down->Add_Item(static_cast<CItem*>(pGrinder), 1);
+
+	auto pPortion = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"), nullptr);
+
+	m_pBelt_Up->Add_Item(static_cast<CItem*>(pPortion), 0);
+
+
+	m_pSelectItem = m_pBelt_Up->Get_Items()[0];
 	
+
+	Callback_DownBelt();
+	Callback_UpBelt();
 
 	return S_OK;
 }
@@ -618,6 +631,7 @@ void CPlayer::Update_Slot()
 		if (m_isSelectUpBelt)
 		{
 			m_pBelt_Up->Change_Next_Item();
+			m_pSelectItem = m_pBelt_Up->Get_Current_Item();
 		}
 		else
 		{
@@ -626,13 +640,14 @@ void CPlayer::Update_Slot()
 		
 		m_isSelectUpBelt = true;
 
-		Callback_UpBelt();
+ 		Callback_UpBelt();
 	}
 	else if (m_pGameInstance->Key_Down(DIK_G))
 	{
 		if (!m_isSelectUpBelt)
 		{
 			m_pBelt_Down->Change_Next_Item();
+				m_pSelectItem = m_pBelt_Down->Get_Current_Item();
 		}
 		else
 		{
