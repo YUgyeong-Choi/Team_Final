@@ -45,7 +45,6 @@ public:
 		virtual void Deserialize(const json& j) override;
 	}EFFKEYFRAME;
 
-	enum TEXUSAGE { TU_DIFFUSE, TU_MASK1, TU_MASK2, TU_MASK3, TU_END };
 
 protected:
 	CEffectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

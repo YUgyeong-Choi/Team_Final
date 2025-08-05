@@ -2,10 +2,11 @@
 
 #include "Client_Defines.h"
 #include "EffectBase.h"
+#include "VIBuffer_Point_Instance.h"
 
-NS_BEGIN(Engine)
-class CVIBuffer_Point_Instance;
-NS_END
+//NS_BEGIN(Engine)
+//class CVIBuffer_Point_Instance;
+//NS_END
 
 NS_BEGIN(Client)
 
@@ -23,6 +24,8 @@ public:
 		_float2				vLifeTime;
 		_float2				vSpeed; 
 		PARTICLETYPE		ePType;
+
+		/*  */
 	}DESC;
 
 protected:

@@ -17,8 +17,8 @@
                         1.0
                     ],
                     "Color": [
-                        0.9795918464660645,
-                        0.9842932224273682,
+                        0.9591836929321289,
+                        0.9685863852500916,
                         1.0,
                         1.0
                     ],
@@ -132,7 +132,7 @@
                 }
             ],
             "EffectType": 1,
-            "Name": "Particle"
+            "Name": "Particle_2"
         },
         {
             "EffectPreferences": [
@@ -266,7 +266,110 @@
                 }
             ],
             "EffectType": 1,
-            "Name": "Particle"
+            "Name": "Particle_1"
+        },
+        {
+            "EffectPreferences": [
+                {
+                    "Animation": true,
+                    "Billboard": true,
+                    "CenterColor": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Duration": 47,
+                    "EndTrack": 47,
+                    "FlipUV": false,
+                    "KeyFrames": [
+                        {
+                            "Color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Intensity": 1.0,
+                            "Interpolation": 0,
+                            "Rotation": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "TrackPosition": 0.0,
+                            "Translation": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        {
+                            "Color": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Intensity": 1.0,
+                            "Interpolation": 0,
+                            "Rotation": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                3.0,
+                                3.0,
+                                3.0
+                            ],
+                            "TrackPosition": 22.0,
+                            "Translation": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        }
+                    ],
+                    "LifeTime": 0.0,
+                    "Loop": true,
+                    "NumKeyFrames": 2,
+                    "RenderGroup": 0,
+                    "ShaderPass": 3,
+                    "StartTrack": 0,
+                    "TextureTags": [
+                        "T_SubUV_Fire_10_9x9_SC_KMH",
+                        "",
+                        "",
+                        ""
+                    ],
+                    "TextureUsage": [
+                        true,
+                        false,
+                        false,
+                        false
+                    ],
+                    "Threshold": 0.0,
+                    "TickPerSecond": 60.0,
+                    "TileX": 9,
+                    "TileY": 9
+                }
+            ],
+            "EffectType": 0,
+            "Name": "Sprite"
         }
     ]
 }

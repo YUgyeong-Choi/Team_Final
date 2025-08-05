@@ -212,16 +212,16 @@ HRESULT CEffectBase::Change_Texture(_wstring strTextureName, TEXUSAGE eTex)
 	_wstring Tag;
 	switch (eTex)
 	{
-	case Client::CEffectBase::TU_DIFFUSE:
+	case Client::TU_DIFFUSE:
 		Tag = TEXT("Com_Texture");
 		break;
-	case Client::CEffectBase::TU_MASK1:
+	case Client::TU_MASK1:
 		Tag = TEXT("Com_TextureMask1");
 		break;
-	case Client::CEffectBase::TU_MASK2:
+	case Client::TU_MASK2:
 		Tag = TEXT("Com_TextureMask2");
 		break;
-	case Client::CEffectBase::TU_MASK3:
+	case Client::TU_MASK3:
 		Tag = TEXT("Com_TextureMask3");
 		break;
 	default:
@@ -243,16 +243,16 @@ HRESULT CEffectBase::Delete_Texture(TEXUSAGE eTex)
 	_wstring Tag;
 	switch (eTex)
 	{
-	case Client::CEffectBase::TU_DIFFUSE:
+	case Client::TU_DIFFUSE:
 		Tag = TEXT("Com_Texture");
 		break;
-	case Client::CEffectBase::TU_MASK1:
+	case Client::TU_MASK1:
 		Tag = TEXT("Com_TextureMask1");
 		break;
-	case Client::CEffectBase::TU_MASK2:
+	case Client::TU_MASK2:
 		Tag = TEXT("Com_TextureMask2");
 		break;
-	case Client::CEffectBase::TU_MASK3:
+	case Client::TU_MASK3:
 		Tag = TEXT("Com_TextureMask3");
 		break;
 	default:

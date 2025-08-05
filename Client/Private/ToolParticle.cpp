@@ -27,21 +27,9 @@ HRESULT CToolParticle::Initialize(void* pArg)
 		return E_FAIL;
 
 	DESC* pDesc = static_cast<DESC*>(pArg);
-	
-	if (m_bTool && (lstrlen(pDesc->pJsonFilePath) > 1)) // 툴 내에서 불러오기 한 경우
+	m_bLoadingInTool = pDesc->bLoadingInTool;
+	if (m_bLoadingInTool) // 툴 내에서 불러오기 한 경우
 	{
-		json j;
-
-		ifstream ifs(pDesc->pJsonFilePath);
-
-		if (!ifs.is_open())
-		{
-			return E_FAIL;
-		}
-		ifs >> j;
-
-		Deserialize(j);
-		Ready_Textures_Prototype();
 		if (FAILED(Ready_Components(nullptr)))
 			return E_FAIL;
 	}
@@ -131,7 +119,6 @@ void CToolParticle::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	m_pVIBufferCom->Update_Tool(m_fCurrentTrackPosition);
 }
 
-
 HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 {
 	//Safe_Release(m_pVIBufferCom);
@@ -171,20 +158,7 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
-	{
-		VIBufferDesc.ePType = m_ePType;
-		VIBufferDesc.iNumInstance = m_iNumInstance;
-		VIBufferDesc.isLoop = m_isLoop;
-		VIBufferDesc.vCenter = m_vCenter;
-		VIBufferDesc.vLifeTime = m_vLifeTime;
-		VIBufferDesc.vPivot = m_vPivot;
-		VIBufferDesc.vRange = m_vRange;
-		VIBufferDesc.vSize = m_vSize;
-		VIBufferDesc.vSpeed = m_vSpeed;
-		VIBufferDesc.isTool = true;
-	}
-	else // 툴에서 새로 생성할 경우
+	if (pArg != nullptr) // 툴에서 새로 생성시
 	{
 		DESC* pDesc = static_cast<DESC*>(pArg);
 
@@ -198,11 +172,11 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 		VIBufferDesc.vSize = pDesc->vSize;
 		VIBufferDesc.vSpeed = pDesc->vSpeed;
 		VIBufferDesc.isTool = true;
+		/* For.Com_VIBuffer */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
+			TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &VIBufferDesc)))
+			return E_FAIL;
 	}
-	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &VIBufferDesc)))
-		return E_FAIL;
 
 	return S_OK;
 }

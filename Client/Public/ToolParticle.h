@@ -7,7 +7,11 @@ NS_BEGIN(Client)
 
 class CToolParticle final : public CParticleEffect
 {
-
+public:
+	typedef struct tagToolPEDesc : public CParticleEffect::DESC
+	{
+		_bool bLoadingInTool = { false };
+	}DESC;
 private:
 	CToolParticle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CToolParticle(const CToolParticle& Prototype);
@@ -24,6 +28,9 @@ public:
 
 public:
 	HRESULT Change_InstanceBuffer(void* pArg);
+
+private:
+	_bool m_bLoadingInTool = { false };
 
 private:
 	HRESULT Ready_Components(void* pArg);

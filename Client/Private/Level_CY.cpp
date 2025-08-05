@@ -110,7 +110,7 @@ HRESULT CLevel_CY::Ready_Lights()
 	LIGHT_DESC			LightDesc{};
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.fAmbient = 0.2f;
+	LightDesc.fAmbient = 0.3f;
 	LightDesc.fIntensity = 1.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);

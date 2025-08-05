@@ -255,6 +255,9 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\LD">
       <UniqueIdentifier>{7ff4fea0-434f-4203-abc5-95abed9014ee}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\07.Effect\Manager">
+      <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -587,6 +590,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Weapon.h">
       <Filter>02.GameObjects\03.Weapon</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\Effect_Manager.h">
+      <Filter>02.GameObjects\07.Effect\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -893,6 +899,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Weapon.cpp">
       <Filter>02.GameObjects\03.Weapon</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\Effect_Manager.cpp">
+      <Filter>02.GameObjects\07.Effect\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

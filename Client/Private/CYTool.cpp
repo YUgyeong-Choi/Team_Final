@@ -290,6 +290,14 @@ HRESULT CCYTool::Edit_Preferences()
 		m_bOpenSaveEffectOnly = true;
 	}
 
+	// 어차피 이름 변경하는 용도로만 쓰게 멤버변수로 안 넣었음 ..
+	static _char szNameBuffer[128] = {};
+	ImGui::InputText("Effect Name", szNameBuffer, IM_ARRAYSIZE(szNameBuffer));
+
+	// 버튼을 눌렀을 때 이름 반영
+	if (ImGui::Button("Apply Name"))
+		m_pSequence->m_Items[m_iSelected].strName = szNameBuffer;
+
 	ImGui::Text("StartTrackPos: %d", *pEffect->Get_StartTrackPosition_Ptr());
 	ImGui::Text("EndTrackPos: %d", *pEffect->Get_EndTrackPosition_Ptr());
 	ImGui::Text("Duration: %d", *pEffect->Get_Duration_Ptr());
@@ -638,9 +646,10 @@ HRESULT CCYTool::Save_EffectSet()
 			for (auto& Item : Items)
 			{
 				json jItem;
+				jItem = Item.pEffect->Serialize();
 				jItem["Name"] = Item.strName.data();
 				jItem["EffectType"] = Item.iType;
-				jItem["EffectPreferences"].push_back(Item.pEffect->Serialize());
+				//jItem["EffectPreferences"].push_back(Item.pEffect->Serialize());
 
 				jSave["EffectObject"].push_back(jItem);
 			}
@@ -718,11 +727,13 @@ HRESULT CCYTool::Load_EffectSet()
 					m_eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<int>());
 
 				// Effect 객체 생성 및 역직렬화
-				if (jItem.contains("EffectPreferences") && jItem["EffectPreferences"].is_array() && !jItem["EffectPreferences"].empty())
+				//if (jItem.contains("EffectPreferences") && jItem["EffectPreferences"].is_array() && !jItem["EffectPreferences"].empty())
 				{
-					json jData;
 
-					if (jItem["EffectPreferences"].is_array())
+					/* 이 부분도 수정해야하는데 다른게 우선같아서 땜빵처리 함 */
+					const json& jData = jItem;
+
+					/*if (jItem["EffectPreferences"].is_array())
 					{
 						if (!jItem["EffectPreferences"].empty())
 							jData = jItem["EffectPreferences"][0];
@@ -730,9 +741,7 @@ HRESULT CCYTool::Load_EffectSet()
 					else if (jItem["EffectPreferences"].is_object())
 					{
 						jData = jItem["EffectPreferences"];
-					}
-
-
+					}*/
 
 					CEffectBase* pInstance = { nullptr };
 
@@ -741,38 +750,57 @@ HRESULT CCYTool::Load_EffectSet()
 					case Client::EFF_SPRITE:
 					{
 						m_eEffectType = EFF_SPRITE;
-						m_strSeqItemName = "Sprite";
 						m_iSeqItemColor = D3DCOLOR_ARGB(255, 200, 60, 40);
 						CToolSprite::DESC desc = {};
 						desc.bTool = true;
+						desc.bLoadingInTool = true;
 						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"), &desc));
+						if (pInstance != nullptr)
+						{
+							pInstance->Deserialize(jData);
+							pInstance->Ready_Textures_Prototype_Tool();
+							m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+						}
 					}
 					break;
 					case Client::EFF_PARTICLE:
 					{
 						m_eEffectType = EFF_PARTICLE;
-						m_strSeqItemName = "Particle";
 						m_iSeqItemColor = D3DCOLOR_ARGB(255, 60, 200, 80);
 						CToolParticle::DESC desc = {};
 						desc.fRotationPerSec = XMConvertToRadians(90.f);
 						desc.fSpeedPerSec = 5.f;
 						desc.bTool = true;
+						desc.bLoadingInTool = true;
 						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
+						if (pInstance != nullptr)
+						{
+							pInstance->Deserialize(jData);
+							pInstance->Ready_Textures_Prototype_Tool();
+							static_cast<CToolParticle*>(pInstance)->Change_InstanceBuffer(nullptr);
+							m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+						}
 					}
 					break;
 					case Client::EFF_MESH:
 					{
 						m_eEffectType = EFF_MESH;
-						m_strSeqItemName = "Mesh";
 						m_iSeqItemColor = D3DCOLOR_ARGB(255, 100, 100, 220);
 						CToolMeshEffect::DESC desc = {};
 						desc.fRotationPerSec = XMConvertToRadians(90.f);
 						desc.fSpeedPerSec = 5.f;
 						desc.bTool = true;
+						desc.bLoadingInTool = true;
 						pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 							PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
+						if (pInstance != nullptr)
+						{
+							pInstance->Deserialize(jData);
+							pInstance->Ready_Textures_Prototype_Tool();
+							m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
+						}
 					}
 					break;
 					case Client::EFF_TRAIL:
@@ -781,24 +809,10 @@ HRESULT CCYTool::Load_EffectSet()
 						m_strSeqItemName = "Trail";
 						m_iSeqItemColor = D3DCOLOR_ARGB(255, 170, 80, 250);
 					}
-						break;
+					break;
 					}
-					if (pInstance != nullptr)
-					{
-						try
-						{
-							pInstance->Deserialize(jData);
-						}
-						catch (const nlohmann::json::type_error& e) {
-							std::cerr << "[JSON Type Error] " << e.what() << '\n';
-						}
-						catch (const std::exception& e) {
-							std::cerr << "[Exception] " << e.what() << '\n';
-						}
-						pInstance->Ready_Textures_Prototype_Tool();
-						m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
-					}
-					else
+
+					if (pInstance == nullptr)
 					{
 						MSG_BOX("Failed to make Effect");
 						m_bOpenLoadEffectContainer = false;
@@ -806,12 +820,11 @@ HRESULT CCYTool::Load_EffectSet()
 						return E_FAIL;
 					}
 				}
+				m_bOpenLoadEffectContainer = false;
+				IFILEDIALOG->Close();
 			}
-			m_bOpenLoadEffectContainer = false;
-			IFILEDIALOG->Close();
 		}
 	}
-
 	return S_OK;
 
 }
@@ -1055,7 +1068,7 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 	const _char* slotNames[4] = { "Diffuse", "Mask1", "Mask2", "Mask3" };
 	ImVec2 slotSize = ImVec2(48, 48);
 
-	for (_int slotIdx = 0; slotIdx < CEffectBase::TU_END; ++slotIdx) {
+	for (_int slotIdx = 0; slotIdx < TU_END; ++slotIdx) {
 		if (slotIdx > 0)
 			ImGui::SameLine(); // 가로 정렬
 		ImGui::BeginGroup();
@@ -1076,7 +1089,7 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 				m_pSlotSRV[slotIdx] = m_Textures[draggedIndex].pSRV;
 				m_SlotTexNames[slotIdx] = m_Textures[draggedIndex].name;
 
-				if (FAILED(pEffect->Change_Texture(StringToWString(m_SlotTexNames[slotIdx]), (CEffectBase::TEXUSAGE)slotIdx)))
+				if (FAILED(pEffect->Change_Texture(StringToWString(m_SlotTexNames[slotIdx]), (TEXUSAGE)slotIdx)))
 					return E_FAIL;
 			}
 			ImGui::EndDragDropTarget();
@@ -1088,7 +1101,7 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 			if (ImGui::Button("Clear")) {
 				m_pSlotSRV[slotIdx] = nullptr;
 				m_SlotTexNames[slotIdx].clear();
-				pEffect->Delete_Texture((CEffectBase::TEXUSAGE)slotIdx);
+				pEffect->Delete_Texture((TEXUSAGE)slotIdx);
 			}
 		}
 

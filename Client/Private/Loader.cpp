@@ -25,6 +25,7 @@
 #include "ToolSprite.h"
 #include "ToolParticle.h"
 #include "ToolMeshEffect.h"
+#include "Effect_Manager.h"
 #pragma endregion
 
 
@@ -307,6 +308,10 @@ HRESULT CLoader::Loading_For_Static()
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
+	
+
+	lstrcpy(m_szLoadingText, TEXT("이펙트을(를) 로딩중입니다."));
+	CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"));
 
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));

@@ -7,6 +7,11 @@ NS_BEGIN(Client)
 
 class CToolSprite final : public CSpriteEffect
 {
+public:
+	typedef struct tagToolSEDesc : public CSpriteEffect::DESC
+	{
+		_bool bLoadingInTool = { false };
+	}DESC;
 private:
 	CToolSprite(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CToolSprite(const CToolSprite& Prototype);
@@ -24,6 +29,9 @@ private:
 	virtual HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 
+private:
+	_bool m_bLoadingInTool = { false };
+	
 public:
 	static CToolSprite* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

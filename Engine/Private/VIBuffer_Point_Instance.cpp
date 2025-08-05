@@ -73,11 +73,14 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const DESC* pArg)
 
 HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 {
-	DESC* pDesc = static_cast<DESC*>(pArg);
-	m_isTool = pDesc->isTool;
+	if (pArg != nullptr)
+	{
+		DESC* pDesc = static_cast<DESC*>(pArg);
+		m_isTool = pDesc->isTool;
 
-	if (m_isTool == true)
-		Make_InstanceBuffer(pDesc); // 툴에서 생성 시
+		if (m_isTool == true)
+			Make_InstanceBuffer(pDesc); // 툴에서 생성 시
+	}
 
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
 		return E_FAIL;
