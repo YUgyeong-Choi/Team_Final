@@ -1,3 +1,4 @@
+#ifdef USE_IMGUI
 #include "Bone.h"
 #include "EventMag.h"
 #include "AnimTool.h"
@@ -310,7 +311,7 @@ HRESULT CAnimTool::Render_Parameters()
 		ImGui::Text("Action"); ImGui::NextColumn();
 		ImGui::Separator();
 
-		unordered_map<string, Parameter>& parameters = m_pCurAnimator->GetParameters();
+		unordered_map<string, Parameter>& parameters = m_pCurAnimator->GetParametersForEditor();
 		// 파라미터 타입들
 		const _char* typeNames[] = { "Bool", "Trigger", "Float", "Int" };
 
@@ -1088,7 +1089,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			}
 
 			size_t newIdx = pCtrl->AddState(m_NewStateName, selectedAnim, iNodeId, bMaskBone);
-			auto& newState = pCtrl->GetStates()[newIdx];
+			auto& newState = pCtrl->GetStatesForEditor()[newIdx];
 			newState.fNodePos = { mousePos.x, mousePos.y };
 			if (bMaskBone)
 			{
@@ -1116,10 +1117,10 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		auto& category = Pair.first; // 카테고리
 		auto& states = Pair.second; // 해당 카테고리의 상태들
 		_bool bIsVisible = m_bShowAll || m_CategoryVisibility[category];
-		auto& transitions = pCtrl->GetTransitions();
+		auto& transitions = pCtrl->GetTransitionsForEditor();
 		for (const auto& visState : states)
 		{
-			for (auto& state : pCtrl->GetStates())
+			for (auto& state : pCtrl->GetStatesForEditor())
 			{
 				if (state.stateName != visState || !bIsVisible)
 					continue;
@@ -1143,8 +1144,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				ImGui::BeginGroup();
 
 				// 현재 활성 상태인지 확인 (현재 재생 중인 애니메이션 상태)
-				_bool isCurrentState = (pCtrl->GetCurrentState() &&
-					pCtrl->GetCurrentState()->iNodeId == state.iNodeId);
+				_bool isCurrentState = (pCtrl->GetCurrentStateForEditor() &&
+					pCtrl->GetCurrentStateForEditor()->iNodeId == state.iNodeId);
 
 				if (isCurrentState)
 				{
@@ -1290,7 +1291,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	{
 		vector<int> selectedLinks(ImNodes::NumSelectedLinks());
 		ImNodes::GetSelectedLinks(selectedLinks.data());
-		auto& transitions = pCtrl->GetTransitions();
+		auto& transitions = pCtrl->GetTransitionsForEditor();
 
 		_bool bDeleteLink = false;
 		if (ImGui::IsKeyPressed(ImGuiKey_Delete))
@@ -1327,19 +1328,19 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				if (transition.link.iLinkId == linkId)
 				{
 					ImGui::Begin("Transition Info");
-					if (pCtrl->GetStateAnimationByNodeId(transition.iFromNodeId))
+					if (pCtrl->GetStateAnimationByNodeIdForEditor(transition.iFromNodeId))
 					{
 
-					auto FromNodeName = pCtrl->GetStateAnimationByNodeId(transition.iFromNodeId)->Get_Name();
+					auto FromNodeName = pCtrl->GetStateAnimationByNodeIdForEditor(transition.iFromNodeId)->Get_Name();
 					if (FromNodeName.empty())
 						FromNodeName = "Unknown";
 
 					ImGui::Text("From Node: %s", FromNodeName.c_str());
 					}
 
-					if (pCtrl->GetStateAnimationByNodeId(transition.iToNodeId))
+					if (pCtrl->GetStateAnimationByNodeIdForEditor(transition.iToNodeId))
 					{
-						auto ToNodeName = pCtrl->GetStateAnimationByNodeId(transition.iToNodeId)->Get_Name();
+						auto ToNodeName = pCtrl->GetStateAnimationByNodeIdForEditor(transition.iToNodeId)->Get_Name();
 						if (ToNodeName.empty())
 							ToNodeName = "Unknown";
 					ImGui::Text("To Node : %s", ToNodeName.c_str());
@@ -1366,7 +1367,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	{
 		vector<int> selectedNodes(ImNodes::NumSelectedNodes());
 		ImNodes::GetSelectedNodes(selectedNodes.data());
-		auto& states = pCtrl->GetStates();
+		auto& states = pCtrl->GetStatesForEditor();
 		for (_int nodeId: selectedNodes)
 		{
 
@@ -1406,7 +1407,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 	if (m_iSelectedNodeID != -1)
 	{
-		for (auto& state : pCtrl->GetStates())
+		for (auto& state : pCtrl->GetStatesForEditor())
 		{
 			if (state.iNodeId == m_iSelectedNodeID)
 			{
@@ -2141,7 +2142,7 @@ HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 {
 	// 파라미터 목록 준비
-	auto& parameters = m_pCurAnimator->GetParameters();
+	auto& parameters = m_pCurAnimator->GetParametersForEditor();
 	vector<string> paramNames;
 	paramNames.reserve(parameters.size());
 	for (auto& kv : parameters)
@@ -2356,3 +2357,4 @@ void CAnimTool::Free()
 	Safe_Release(m_pAnimShader);
 	Safe_Release(m_pGameInstance);
 }
+#endif

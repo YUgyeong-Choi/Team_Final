@@ -129,7 +129,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Bayonet_RA",
+                    "ClipName": "AS_Pino_T_Bayonet_CA3",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "ChargeStrongAttack",
@@ -153,7 +153,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Bayonet_SA5",
+                    "ClipName": "AS_Pino_T_Bayonet_SA6",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "StrongAttack2",

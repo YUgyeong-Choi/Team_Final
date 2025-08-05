@@ -838,9 +838,8 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 약공은 무기 장착상태여야합니다.
-        _int iCurrentCombo = GetCurrentCombo();
-        _int iCombo = (iCurrentCombo + 1) % 2;
-        m_pOwner->m_pAnimator->SetInt("Combo", iCombo);
+
+        m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
@@ -942,9 +941,8 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 약공은 무기 장착상태여야합니다.
-        _int iCurrentCombo = GetCurrentCombo();
-        _int iCombo = (iCurrentCombo + 1) % 2;
-        m_pOwner->m_pAnimator->SetInt("Combo", iCombo);
+
+        m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 

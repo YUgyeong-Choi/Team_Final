@@ -144,24 +144,24 @@ void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float f
 		return;
 	}
 
-	if (pAnimator && Bones[m_iBoneIndex]->Is_RootBone())
-	{
-		// ① rootDelta 계산용 원본 위치 전달
-		_float3 sampledRootPos;
-		XMStoreFloat3(&sampledRootPos, vPosition);
-		pAnimator->SetCurrentRootPosition(sampledRootPos);
+	//if (pAnimator && Bones[m_iBoneIndex]->Is_RootBone())
+	//{
+	//	// ① rootDelta 계산용 원본 위치 전달
+	//	_float3 sampledRootPos;
+	//	XMStoreFloat3(&sampledRootPos, vPosition);
+	//	pAnimator->SetCurrentRootPosition(sampledRootPos);
 
-		// ② in-place: translation만 날리고 Scale/Rotation은 그대로
-		XMVECTOR zeroTrans = XMVectorZero();
-		XMMATRIX inPlace =
-			XMMatrixScalingFromVector(vScale) *
-			XMMatrixRotationQuaternion(vRotation) *
-			XMMatrixTranslationFromVector(zeroTrans);
+	//	// ② in-place: translation만 날리고 Scale/Rotation은 그대로
+	//	XMVECTOR zeroTrans = XMVectorZero();
+	//	XMMATRIX inPlace =
+	//		XMMatrixScalingFromVector(vScale) *
+	//		XMMatrixRotationQuaternion(vRotation) *
+	//		XMMatrixTranslationFromVector(zeroTrans);
 
-		Bones[m_iBoneIndex]->Set_TransformationMatrix(inPlace);
-		XMStoreFloat4x4(&m_LocalTransformationMatrix, inPlace);
-		return;
-	}
+	//	Bones[m_iBoneIndex]->Set_TransformationMatrix(inPlace);
+	//	XMStoreFloat4x4(&m_LocalTransformationMatrix, inPlace);
+	//	return;
+	//}
 
 	// 나머지 뼈들은 기존 로컬 트랜스폼 그대로
 	XMMATRIX full =
