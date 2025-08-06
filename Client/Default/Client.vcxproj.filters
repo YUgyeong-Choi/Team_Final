@@ -301,6 +301,12 @@
     <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\Arm">
       <UniqueIdentifier>{942c9929-9177-4a5e-88d8-4858d642d97d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster">
+      <UniqueIdentifier>{0008dbe7-bde6-49da-8a19-6f7823aff587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Base">
+      <UniqueIdentifier>{640de79a-079e-4ddc-8f89-712cac910509}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">

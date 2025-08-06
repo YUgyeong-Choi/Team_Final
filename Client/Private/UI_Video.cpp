@@ -26,6 +26,8 @@ HRESULT CUI_Video::Initialize(void* pArg)
 
 	m_fFrameInterval = pDesc->fInterval;
 
+	m_isLoop = pDesc->isLoop;
+
 	if (FAILED(InitMediaFoundationAndCreateReader(m_strVideoPath.c_str(), m_pReader)))
 		return E_FAIL;
 
@@ -89,15 +91,24 @@ void CUI_Video::Update(_float fTimeDelta)
 		}
 		else if (hr == MF_E_END_OF_STREAM)
 		{
-			// 영상이 끝났을 경우: 루프 시작
-			m_pReader->Flush(MF_SOURCE_READER_FIRST_VIDEO_STREAM);
+			if (m_isLoop)
+			{
+				// 영상이 끝났을 경우: 루프 시작
+				m_pReader->Flush(MF_SOURCE_READER_FIRST_VIDEO_STREAM);
 
-			PROPVARIANT var;
-			PropVariantInit(&var);
-			var.vt = VT_I8;
-			var.hVal.QuadPart = 0; // 0부터 다시 시작
-			m_pReader->SetCurrentPosition(GUID_NULL, var);
-			PropVariantClear(&var);
+				PROPVARIANT var;
+				PropVariantInit(&var);
+				var.vt = VT_I8;
+				var.hVal.QuadPart = 0; // 0부터 다시 시작
+				m_pReader->SetCurrentPosition(GUID_NULL, var);
+				PropVariantClear(&var);
+			}
+			else
+			{
+				Set_bDead();
+				return;
+			}
+		
 		}
 		else
 		{

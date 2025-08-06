@@ -26,6 +26,7 @@ public:
 	{
 		_float	fInterval;
 		wstring strVideoPath;
+		_bool   isLoop = { true };
 	}VIDEO_UI_DESC;
 
 
@@ -54,7 +55,7 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:
-
+	_bool	 m_isLoop = {true};
 	_wstring m_strVideoPath = {};
 	_float   m_fPlaybackSpeed = {};
 

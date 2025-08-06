@@ -10,6 +10,7 @@
 #include "PBRMesh.h"
 #include "Level_Loading.h"
 #include "UI_Container.h"
+#include "UI_Video.h"
 
 #include "Player.h"
 #include "Wego.h"
@@ -22,14 +23,18 @@ CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D
 
 HRESULT CLevel_KratCentralStation::Initialize()
 {
+	if(FAILED(Ready_Video()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 	if (FAILED(Ready_Shadow()))
 		return E_FAIL;
-	if (FAILED(Ready_Camera()))
-		return E_FAIL;
 	/*if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 		return E_FAIL;*/
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 
@@ -46,17 +51,15 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 
-	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
-	m_pBGM->Set_Volume(1.f);
-	m_pBGM->Play();
 
 	m_pCamera_Manager->SetOrbitalCam();
+
+	
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 
 	m_pGameInstance->Set_IsChangeLevel(false);
 
-	//CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+
 	return S_OK;
 }
 
@@ -72,10 +75,43 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
+
+	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	{
+
+		if (nullptr == m_pStartVideo)
+			return;
+
+		m_pStartVideo->Set_bDead();
+
+		
+	
+	}
 }
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
+ 	if (nullptr != m_pStartVideo)
+	{
+		if (m_pStartVideo->Get_bDead())
+		{
+			/* [ 사운드 ] */
+			m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
+			m_pBGM->Set_Volume(1.f);
+			m_pBGM->Play();
+
+			
+			m_pStartVideo = nullptr;
+	
+
+
+			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+		}
+
+		return;
+	}
+	
+
 	if (KEY_DOWN(DIK_U))
 		m_pGameInstance->Set_GameTimeScale(1.f);
 	if (KEY_DOWN(DIK_I))
@@ -572,6 +608,33 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 	return S_OK;
 }
 
+HRESULT CLevel_KratCentralStation::Ready_Video()
+{
+	
+	CUI_Video::VIDEO_UI_DESC eDesc = {};
+	eDesc.fOffset = 0.0f;
+	eDesc.fInterval = 1.f;
+	eDesc.fSpeedPerSec = 120.f;
+	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Startscene.mp4");
+	eDesc.fX = g_iWinSizeX * 0.5f;
+	eDesc.fY = g_iWinSizeY * 0.5f;
+	eDesc.fSizeX = g_iWinSizeX;
+	eDesc.fSizeY = g_iWinSizeY;
+	eDesc.fAlpha = 1.f;
+	eDesc.isLoop = false;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
+		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video"), &eDesc)))
+		return E_FAIL;
+
+
+	m_pStartVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video")));
+
+	Safe_AddRef(m_pStartVideo);
+
+	return S_OK;
+}
+
 
 CLevel_KratCentralStation* CLevel_KratCentralStation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -596,4 +659,6 @@ void CLevel_KratCentralStation::Free()
 		m_pBGM->Stop();
 		Safe_Release(m_pBGM);
 	}
+
+	Safe_Release(m_pStartVideo);
 }

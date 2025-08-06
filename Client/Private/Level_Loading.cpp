@@ -61,6 +61,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 
 	if (true == m_pLoader->isFinished())
 	{
+
 		CLevel* pLevel = { nullptr };
 
 
