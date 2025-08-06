@@ -416,7 +416,7 @@ HRESULT CCYTool::Window_Particle()
 {
 	CToolParticle* pPE = dynamic_cast<CToolParticle*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-	ImGui::Text("Select Pass\n0. Default");
+	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest");
 	for (_uint i = 0; i < PE_END; i++)
 	{
 		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), m_eSelectedPass_PE == i)) {

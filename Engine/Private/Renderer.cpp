@@ -124,13 +124,17 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_EffectBlend_Diffuse"))))
 		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_PBR_Diffuse"))))
-	//	return E_FAIL;
 
 	// 다른 곳에서도 블러 사용할 수도 있으니까 블러용 렌더타겟은 별도로 두고 글로우 용 렌더타겟 따로 두겠습니다
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_Glow"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlend_Glow"), TEXT("Target_EffectBlend_Glow"))))
+		return E_FAIL;
+
+	// WB용 글로우 나눠두고 테스트 함 
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_WBGlow"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlend_WBGlow"), TEXT("Target_EffectBlend_WBGlow"))))
 		return E_FAIL;
 
 	// downscale 배율
@@ -177,6 +181,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Emissive"))))
 		return E_FAIL;
 
+	// Weighted Blend 연산이 끝난 결과물 담는 렌더타겟.
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Composite"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend_Composite"), TEXT("Target_Effect_WB_Composite"))))
@@ -278,12 +283,24 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Accumulation"), GetTargetX(2), GetTargetY(0), fSizeX, fSizeY)))
+#pragma region CY Debug
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Composite"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Revealage"), GetTargetX(3), GetTargetY(0), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_WBGlow"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Emissive"), GetTargetX(4), GetTargetY(0), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Revealage"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Emissive"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Accumulation"), GetTargetX(0), GetTargetY(4), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Diffuse"), GetTargetX(4), GetTargetY(0), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Glow"), GetTargetX(4), GetTargetY(1), fSizeX, fSizeY)))
+		return E_FAIL;
+
+#pragma endregion
+
 
 	m_StartTime = std::chrono::steady_clock::now();
 #endif
@@ -349,16 +366,39 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	//if (FAILED(Render_Effect_Blend()))
+	if (FAILED(Render_Effect_Blend()))
+	{
+		MSG_BOX("Render_Effect_Blend Failed");
+		return E_FAIL;
+	}
 	if (FAILED(Render_Effect_WB()))
 	{
 		MSG_BOX("Render_Effect_Blend Failed");
 		return E_FAIL;
 	}
+	
+	if (FAILED(Render_Effect_WB_Composite()))
+	{
+		MSG_BOX("Render_Effect_WB_Composite Failed");
+		return E_FAIL;
+	}
+
+	//if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
+	if (FAILED(Render_Blur(TEXT("Target_Effect_WB_Emissive"))))
+	{
+		MSG_BOX("Render_Blur - Target_Effect_WB_Emissive Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Effect_WBGlow()))
+	{
+		MSG_BOX("Render_Effect_WBGlow Failed");
+		return E_FAIL;
+	}
 
 	if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
 	{
-		MSG_BOX("Render_Blur Failed");
+		MSG_BOX("Render_Blur - Target_EffectBlend_Diffuse Failed");
 		return E_FAIL;
 	}
 
@@ -367,6 +407,7 @@ HRESULT CRenderer::Draw()
 		MSG_BOX("Render_Effect_Glow Failed");
 		return E_FAIL;
 	}
+
 
 	//if (FAILED(Render_Effect_NonLight()))
 	//	return E_FAIL;
@@ -723,7 +764,11 @@ HRESULT CRenderer::Render_BackBuffer()
 	/* [ Effect 렌더링용 ]*/
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Composite"), m_pShader, "g_EffectBlend_WBComposite")))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Glow"), m_pShader, "g_EffectBlend_Glow")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_WBGlow"), m_pShader, "g_EffectBlend_WBGlow")))
 		return E_FAIL;
 
 	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
@@ -919,6 +964,29 @@ HRESULT CRenderer::Render_Effect_Glow()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Effect_WBGlow()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_EffectBlend_WBGlow"))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurY"), m_pShader, "g_BlurYTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::EFFECT_GLOW));
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_Effect_NonLight()
 {
 	// 당장 안 쓰고 상황 봐서 사용할 것
@@ -940,19 +1008,42 @@ HRESULT CRenderer::Render_Effect_WB()
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Effect_WeightedBlend"))))
 		return E_FAIL;
 
-	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW)])
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WBTEST)])
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render();
 
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW)].clear();
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WBTEST)].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
 
+	return S_OK;
+}
 
+HRESULT CRenderer::Render_Effect_WB_Composite()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Effect_WeightedBlend_Composite"))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Accumulation"), m_pShader, "g_WB_Accumulation")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Revealage"), m_pShader, "g_WB_Revealage")))
+		return E_FAIL;
+
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::WB_COMPOSITE));
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
 	return S_OK;
 }
 
@@ -1075,17 +1166,32 @@ HRESULT CRenderer::Render_Debug()
 		m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
 		m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRFinal"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
-		//m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlendObjects"), m_pShader, m_pVIBuffer);
-		//m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlend_Glow"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Effect_WeightedBlend"), m_pShader, m_pVIBuffer);
+		switch (m_eDebugRT)
+		{
+		case Engine::CRenderer::DEBUGRT_DH:
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRFinal"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
+			break;
+		case Engine::CRenderer::DEBUGRT_YW:
+			/* 여기에 MRT 입력 */
+
+			break;
+		case Engine::CRenderer::DEBUGRT_CY:
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlendObjects"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlend_Glow"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Effect_WeightedBlend"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Effect_WeightedBlend_Composite"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlend_WBGlow"), m_pShader, m_pVIBuffer);
+			break;
+		default:
+			break;
+		}
 	}
 
 	return S_OK;
