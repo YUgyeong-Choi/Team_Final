@@ -1,0 +1,63 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_UI_Icon_Weapon",
+                "RotationZ": 0.0,
+                "SizeX": 100.80000305175781,
+                "SizeY": 113.4000015258789,
+                "Texturetag": "Prototype_Component_Texture_Weapon_Default",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 1337.60009765625,
+                "fY": 774.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_UI_Icon_Weapon",
+                "RotationZ": 0.0,
+                "SizeX": 112.0,
+                "SizeY": 126.0,
+                "Texturetag": "Prototype_Component_Texture_Weapon_Default",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 1454.4000244140625,
+                "fY": 774.9000244140625,
+                "iPassIndex": 1,
+                "iTextureIndex": 1,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

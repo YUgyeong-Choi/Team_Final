@@ -63,6 +63,10 @@ public: /* [ 활성화 , 비활성화 ] */
 	void SetbIsActive(_bool IsActive) { m_bIsActive = IsActive; }
 	_bool GetbIsActive() const { return m_bIsActive; }
 
+public:
+	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }
+	SKILL_DESC& Get_SkillDesc(_int iIndex) { return m_eSkillDesc[iIndex]; }
+
 protected:
 	const _float4x4*	m_pParentWorldMatrix = { nullptr };
 	const _float4x4*	m_pSocketMatrix = { nullptr };
@@ -93,6 +97,13 @@ protected:              /* [ 컴포넌트 ] */
 protected:				/* [ 레이캐스트 변수 ] */
 	PxVec3				m_vRayHitPos = {};
 	_bool				m_bRayHit = {};
+
+protected:		//		스킬용 변수?
+	// 0번은 날 스킬, 1번은 자루 스킬
+	SKILL_DESC			m_eSkillDesc[2];
+	// 내구도
+	_int				m_iDurability = {};
+	_int				m_iMaxDurability = {100};
 
 public:
 	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

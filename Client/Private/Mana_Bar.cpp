@@ -42,7 +42,9 @@ HRESULT CMana_Bar::Initialize(void* pArg)
 		}
 		else if (L"MaxMana" == eventType)
 		{
-			m_iMaxMana = *static_cast<int*>(data);
+
+			if(!m_isUseWeapon)
+				m_iMaxMana = *static_cast<int*>(data);
 
 
 		}
@@ -108,8 +110,20 @@ HRESULT CMana_Bar::Bind_ShaderResources()
 
 	// //
 	// 그릴 칸 수. 칸 사이 마진, 몇 칸 꽉 차있는지, 현재 칸에 얼마 비율로 차 있는지.
-	_float4 vManaDesc = {float(m_iMaxMana) / 100, 0.01f, float(m_iCurrentMana) / 100, float( m_iCurrentMana % 100) / 100.f };
+	_float4 vManaDesc = {};
 	
+	if (!m_isUseWeapon)
+	{
+		vManaDesc = { float(m_iMaxMana) / 100, 0.01f, float(m_iCurrentMana) / 100, float(m_iCurrentMana % 100) / 100.f };
+	}
+	else
+	{
+		if(float(m_iCurrentMana % 100) / 100.f < 1.f)
+			vManaDesc = { float(m_iMaxMana) / 100, 0.01f, float(m_iCurrentMana) / 100, 0.f };
+		else
+			vManaDesc = { float(m_iMaxMana) / 100, 0.01f, float(m_iCurrentMana) / 100, 1.f };
+	}
+
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ManaDesc", &vManaDesc, sizeof(_float4))))
 		return E_FAIL;

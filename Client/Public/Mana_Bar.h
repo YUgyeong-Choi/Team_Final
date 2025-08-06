@@ -23,6 +23,10 @@ private:
 	virtual ~CMana_Bar() = default;
 
 public:
+	void Set_isUseWeapon() { m_isUseWeapon = true; }
+	void Set_MaxMana(_int iMana) { m_iMaxMana = iMana; }
+
+public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Priority_Update(_float fTimeDelta);
@@ -41,7 +45,8 @@ private:
 private:
 	_int m_iCurrentMana = {};
 	_int m_iMaxMana = {300};
-	
+
+	_bool m_isUseWeapon = {false};
 
 public:
 	static CMana_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
