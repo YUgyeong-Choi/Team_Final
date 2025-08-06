@@ -996,6 +996,16 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector EffectBlendWBGlow = g_EffectBlend_WBGlow.Sample(DefaultSampler, In.vTexcoord);
     EffectBlendWBComposite += EffectBlendWBGlow;
     Out.vBackBuffer += EffectBlendWBComposite;
+    
+    /*****************/
+    //vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
+    //float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
+    //vector Final;
+    
+    //Final = vAccum.rgb + Out.vBackBuffer.rgb * fReveal;
+    //Final.a = 1 - fReveal;
+
+    //Out.vBackBuffer += Final;
        
     if (Out.vBackBuffer.a < 0.003f)
         discard;
@@ -1068,7 +1078,7 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
 }
 
 PS_OUT PS_EFFECT_GLOW(PS_IN In)
-{
+{   
     PS_OUT Out;
     
     Out.vBackBuffer = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -1084,13 +1094,23 @@ PS_OUT PS_WB_COMPOSITE(PS_IN In)
 {
     PS_OUT Out;
     
+    //vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
+    //float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).b;
+    //
+    //float3 vColor = vAccum.rgb / max(saturate(vAccum.a), 0.00001f); // 0 나누기 방지용
+    //float fAlpha = 1 - saturate(fReveal);
+    //Out.vBackBuffer = float4(vColor * fAlpha, fAlpha);
+    
+    /********************************************************************/
+
     vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
-    float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
-    
-    float3 vColor = vAccum.rgb / max(vAccum.a, 0.00001f); // 0 나누기 방지용
+    float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).b;
     float fAlpha = 1 - saturate(fReveal);
+    Out.vBackBuffer = float4(vAccum.rgb, fAlpha);
+
+    /********************************************************************/
+
     
-    Out.vBackBuffer = float4(vColor * fAlpha, fAlpha);
     
     return Out;
 }
@@ -1293,7 +1313,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_SoftAdd, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
