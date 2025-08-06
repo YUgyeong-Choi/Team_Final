@@ -160,6 +160,22 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 
+	/* [ Weighted Blend ] */
+	// 색상 합산을 위한 렌더타겟.
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Accumulation"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	// 알파 연산을 위한 렌더타겟.
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Revealage"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16_FLOAT, _float4(1.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_PreGlow"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16_FLOAT, _float4(1.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Accumulation"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Revealage"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_PreGlow"))))
+		return E_FAIL;
+
 
 	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
 	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Distort"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
@@ -906,6 +922,13 @@ HRESULT CRenderer::Render_Effect_NonLight()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Effect_WB()
+{
+
 
 	return S_OK;
 }

@@ -118,6 +118,7 @@ struct PS_OUT
     vector vColor : SV_TARGET0;
 };
 
+
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
@@ -165,6 +166,40 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
     return Out;
 }
 
+
+struct PS_OUT_WB
+{
+    vector vAccumulation : SV_TARGET0;
+    vector vRevealage : SV_TARGET1;
+    vector vPreGlow : SV_TARGET2;
+};
+
+PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
+{
+    PS_OUT_WB Out;
+    
+    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    if (mask < 0.003f)
+        discard;
+    float4 color;
+    float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    
+    color = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    Out.vColor.rgb = color.rgb * mask * g_fIntensity;
+    Out.vColor.a = color.a * mask;
+
+
+    Out.vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
+
+
+
+    if (In.vLifeTime.y >= In.vLifeTime.x)
+        discard;
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Default // 0
@@ -188,6 +223,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();    
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY();
+    }
+    pass MaskOnly_WBGlow //2
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN();    
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WBGLOW();
     }
  
 }
