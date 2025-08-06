@@ -62,7 +62,7 @@ public:
 	HRESULT Loading_Models_MapTool(_uint iLevelIndex);
 	HRESULT Load_Model_MapTool(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex);
 #pragma endregion
-
+	
 #pragma region GL
 	HRESULT Loading_For_UI_Texture();
 #pragma endregion
