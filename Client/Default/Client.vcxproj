@@ -168,6 +168,7 @@
     <ClInclude Include="..\Public\Client_Struct.h" />
     <ClInclude Include="..\Public\CYTool.h" />
     <ClInclude Include="..\public\DecalTool.h" />
+    <ClInclude Include="..\public\DecalToolObject.h" />
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\DH_ToolMesh.h" />
     <ClInclude Include="..\public\Dynamic_UI.h" />
@@ -284,6 +285,7 @@
     <ClCompile Include="..\private\Camera_Orbital.cpp" />
     <ClCompile Include="..\Private\CYTool.cpp" />
     <ClCompile Include="..\private\DecalTool.cpp" />
+    <ClCompile Include="..\private\DecalToolObject.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
     <ClCompile Include="..\private\Dynamic_UI.cpp" />

@@ -1,16 +1,16 @@
 #pragma once
-#include "YWTool.h"
+#include "GameObject.h"
 
 #include "Client_Defines.h"
 
 NS_BEGIN(Client)
 
-class CDecalTool final : public CYWTool
+class CDecalToolObject final : public CGameObject
 {
 private:
-	CDecalTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CDecalTool(const CDecalTool& Prototype);
-	virtual ~CDecalTool() = default;
+	CDecalToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CDecalToolObject(const CDecalToolObject& Prototype);
+	virtual ~CDecalToolObject() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -19,14 +19,13 @@ public:
 	virtual void Update(_float fTimeDelta)override;
 	virtual void Late_Update(_float fTimeDelta)override;
 	virtual HRESULT Render()override;
-	virtual HRESULT	Render_ImGui() override;
 
 private:
-	HRESULT Spawn_DecalObject();
+	HRESULT Spawn_DecalToolObject();
 
 
 public:
-	static CDecalTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
+	static CDecalToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
