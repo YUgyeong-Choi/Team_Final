@@ -47,6 +47,24 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 			return E_FAIL;
 
 	}
+	else
+	{
+		CStatic_UI::STATIC_UI_DESC eBackDesc = {};
+		eBackDesc.fOffset = 0.7f;
+		eBackDesc.fSpeedPerSec = 1.f;
+		eBackDesc.fX = g_iWinSizeX * 0.5f;
+		eBackDesc.fY = g_iWinSizeY * 0.5f;
+		eBackDesc.fSizeX = g_iWinSizeX;
+		eBackDesc.fSizeY = g_iWinSizeY;
+		eBackDesc.iPassIndex = 0;
+		eBackDesc.iTextureIndex = 0;
+		eBackDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+		eBackDesc.vColor = { 0.f,0.f,0.f,1.f };
+
+		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+			ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background"), &eBackDesc)))
+			return E_FAIL;
+	}
 
 	
 	return S_OK;
@@ -54,8 +72,6 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 
 void CLevel_Loading::Update(_float fTimeDelta)
 {
-
-
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 		if (true == m_pLoader->isFinished())

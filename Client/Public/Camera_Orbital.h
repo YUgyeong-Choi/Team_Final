@@ -34,6 +34,7 @@ public:
 
 public:
 	void SetPlayer(CGameObject* pPlayer) { m_pPlayer = pPlayer; }
+	void Set_InitCam();
 
 	void Set_PitchYaw(_float pitch, _float yaw);
 	_float Get_Pitch() { return m_fPitch; }
