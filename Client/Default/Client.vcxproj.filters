@@ -273,9 +273,18 @@
     </Filter>
     <Filter Include="01.Levels\LevelYW\YWTool\DecalTool\DecalToolObject">
       <UniqueIdentifier>{9ce5e829-c00c-4460-9c30-cfc0799dbff4}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Unit\01.Npc">
       <UniqueIdentifier>{47ab934b-78b7-44e1-8389-5d138d652ee2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Observer\Weapon">
+      <UniqueIdentifier>{1e5850b9-99a0-4042-a443-41b54a11553a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\RD">
+      <UniqueIdentifier>{15bb2e12-bf44-451a-962c-8efd8d082d9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Durability">
+      <UniqueIdentifier>{204442d3-c69d-4c7a-9141-09b4c54775d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -626,9 +635,18 @@
     </ClInclude>
     <ClInclude Include="..\public\DecalToolObject.h">
       <Filter>01.Levels\LevelYW\YWTool\DecalTool\DecalToolObject</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\Wego.h">
       <Filter>02.GameObjects\01.Unit\01.Npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_Weapon.h">
+      <Filter>03. Observer\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_Player_RD.h">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\RD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Durability_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Durability</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -953,9 +971,18 @@
     </ClCompile>
     <ClCompile Include="..\private\DecalToolObject.cpp">
       <Filter>01.Levels\LevelYW\YWTool\DecalTool\DecalToolObject</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\Wego.cpp">
       <Filter>02.GameObjects\01.Unit\01.Npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_Weapon.cpp">
+      <Filter>03. Observer\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_Player_RD.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\RD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Durability_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Durability</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

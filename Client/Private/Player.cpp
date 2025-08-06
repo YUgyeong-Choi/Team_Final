@@ -200,7 +200,7 @@ void CPlayer::HandleInput()
 
 	/* [ 특수키 입력을 업데이트합니다. ] */
 	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
-	m_Input.bCtrl = KEY_DOWN(DIK_LCONTROL);
+	m_Input.bCtrl = false;//KEY_DOWN(DIK_LCONTROL);
 	m_Input.bTap = KEY_DOWN(DIK_TAB);
 	m_Input.bItem = KEY_DOWN(DIK_R);
 	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
@@ -233,6 +233,7 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 		m_eCurrentState = eNextState; 
 		m_pCurrentState = m_pStateArray[ENUM_CLASS(m_eCurrentState)];
 
+		m_pCurrentState->Enter();
 	}
 
 	m_pCurrentState->Execute(fTimeDelta);
@@ -254,7 +255,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	
 	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
-	printf("Anim Category: %d\n", static_cast<int>(eCategory));
+	//printf("Anim Category: %d\n", static_cast<int>(eCategory));
 
 	switch (eCategory)
 	{
