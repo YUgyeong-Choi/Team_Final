@@ -177,8 +177,8 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
 struct PS_OUT_WB
 {
     vector vAccumulation : SV_TARGET0;
-    float fRevealage : SV_TARGET1;
-    float3 vEmissive : SV_TARGET2;
+    vector fRevealage : SV_TARGET1;
+    vector vEmissive : SV_TARGET2;
 };
 
 PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
@@ -201,20 +201,19 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     
     
     float fDepth = In.vProjPos.z / In.vProjPos.w;
+    
 
     // 1 - 깊이 = 멀 수록 연하게
     float fWeight = pow(saturate(1 - fDepth), g_fWeightPower);
-    
     float3 vPremulRGB = vColor.rgb * vColor.a;
     
     // rgb에 Premul * weight, a에 a * weight
-    //Out.vAccumulation = float4(vPremulRGB * fWeight, vColor.a * fWeight);
-    //Out.fRevealage = vColor.a;  
-    //Out.vEmissive = vPremulRGB * fWeight;
+    Out.vAccumulation = float4(vPremulRGB * fWeight, vColor.a * fWeight);
     
-    Out.vAccumulation = vColor;
-    Out.fRevealage = In.vProjPos.z;
-    Out.vEmissive = vPremulRGB * fWeight;
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * fWeight, 0.f);
+  
+    
     
     if (In.vLifeTime.y >= In.vLifeTime.x)
         discard;
