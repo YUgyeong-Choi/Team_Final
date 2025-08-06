@@ -273,6 +273,9 @@
     </Filter>
     <Filter Include="01.Levels\LevelYW\YWTool\DecalTool\DecalToolObject">
       <UniqueIdentifier>{9ce5e829-c00c-4460-9c30-cfc0799dbff4}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\01.Unit\01.Npc">
+      <UniqueIdentifier>{47ab934b-78b7-44e1-8389-5d138d652ee2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -623,6 +626,9 @@
     </ClInclude>
     <ClInclude Include="..\public\DecalToolObject.h">
       <Filter>01.Levels\LevelYW\YWTool\DecalTool\DecalToolObject</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\Wego.h">
+      <Filter>02.GameObjects\01.Unit\01.Npc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -947,6 +953,9 @@
     </ClCompile>
     <ClCompile Include="..\private\DecalToolObject.cpp">
       <Filter>01.Levels\LevelYW\YWTool\DecalTool\DecalToolObject</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\Wego.cpp">
+      <Filter>02.GameObjects\01.Unit\01.Npc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

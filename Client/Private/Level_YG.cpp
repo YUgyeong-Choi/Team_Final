@@ -9,7 +9,7 @@
 #include "YGDynamicObj.h"
 #include "PBRMesh.h"
 #include "Player.h"
-
+#include "Wego.h"
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -197,6 +197,20 @@ HRESULT CLevel_YG::Ready_Player()
 	pDesc.szMeshID = TEXT("Player");
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		ENUM_CLASS(LEVEL::YG), TEXT("Layer_Player"), &pDesc)))
+		return E_FAIL;
+
+
+	CUnit::UNIT_DESC pDesc2{};
+	//pDesc.fSpeedPerSec = 1.f;
+	pDesc2.fSpeedPerSec = 5.f;
+	pDesc2.fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc2.eLevelID = LEVEL::YG;
+	pDesc2.InitPos = _float3(1.f, 3.f, 1.f);
+	pDesc2.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pDesc2.szName, TEXT("Wego"));
+	pDesc2.szMeshID = TEXT("Wego");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_NPCWego"),
+		ENUM_CLASS(LEVEL::YG), TEXT("Layer_NPC"), &pDesc2)))
 		return E_FAIL;
 
 	return S_OK;
