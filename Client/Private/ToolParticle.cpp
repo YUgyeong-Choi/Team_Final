@@ -66,7 +66,11 @@ void CToolParticle::Late_Update(_float fTimeDelta)
 	// 아래 변수로 교체할 것 
 	//(RENDERGROUP)m_iRenderGroup;
 	// 임시로 고정 지정
-	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
+	if (m_iShaderPass != 2)
+		m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
+	else
+		m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_WBTEST;
+
 
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
@@ -75,7 +79,7 @@ HRESULT CToolParticle::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-	m_iShaderPass = 2.f;
+	//m_iShaderPass = 2.f;
  	if (FAILED(m_pShaderCom->Begin(m_iShaderPass)))
 		return E_FAIL;
 
