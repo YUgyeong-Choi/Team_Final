@@ -434,6 +434,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;
 
 	m_fRatio = 0.4f;
+
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
 
@@ -453,6 +458,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
@@ -497,8 +506,8 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
-		return E_FAIL;
+	/*if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
+		return E_FAIL;*/
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
@@ -834,13 +843,13 @@ HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelF
 
 	if (bInstance == false)
 	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
 			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
 			return E_FAIL;
 	}
 	else
 	{
-		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), strPrototypeTag,
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
 			CModel_Instance::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
 			return E_FAIL;
 	}
@@ -887,7 +896,7 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex)
 		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
 		{
 			//인스턴싱용 모델 프로토 타입 생성
-			PrototypeTag = L"Prototype_Component_Model_Instance" + StringToWString(ModelName);
+			PrototypeTag = L"Prototype_Component_Model_Instance_" + StringToWString(ModelName);
 			bInstance = true;
 
 		}
