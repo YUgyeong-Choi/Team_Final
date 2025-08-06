@@ -41,6 +41,26 @@ void CCustomFont::Draw_Centered(SpriteBatch* pBatch, const _tchar* pText, const 
 
 }
 
+void CCustomFont::Draw_Righted(SpriteBatch* pBatch, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale, _float fOffset)
+{
+	_float2 vFontDesc = {};
+	XMStoreFloat2(&vFontDesc, m_pFont->MeasureString(pText));
+
+
+	float textWidth = vFontDesc.x * fScale;
+	float textHeight = vFontDesc.y * fScale;
+
+	_vector vCenteredPos = XMLoadFloat2(&vPosition);
+
+	vCenteredPos -= {textWidth , textHeight * 0.5f, 0.f, 0.f};
+
+	_float2 vPos = {};
+
+	XMStoreFloat2(&vPos, vCenteredPos);
+
+	m_pFont->DrawString(pBatch, pText, vPos, vColor, fRotation, vOrigin, fScale, SpriteEffects_None, fOffset);
+}
+
 _float2 CCustomFont::Calc_Draw_Range(const _tchar* pText)
 {
 	_float2 vFontDesc = {};

@@ -62,14 +62,19 @@
 #include "Mana_Bar.h"
 #include "Stamina_Bar.h"
 #include "Durability_Bar.h"
+#include "Egro_Bar.h"
+#include "Legion_Bar.h"
 #include "Icon_Item.h"
 #include "Panel_Player_LD.h"
 #include "Panel_Player_RD.h"
+#include "Panel_Player_RU.h"
+#include "Panel_Player_Arm.h"
 #include "Belt.h"
 #include "Ramp.h"
 #include "Grinder.h"
 #include "Portion.h"
 #include "Icon_Weapon.h"
+#include "Icon_LegionArm.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -258,6 +263,14 @@ HRESULT CLoader::Loading_For_Static()
 		CDurability_Bar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Ergo_Bar"),
+		CErgo_Bar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Legion_Bar"),
+		CLegion_Bar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Panel_Player_LD"),
 		CPanel_Player_LD::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -266,12 +279,25 @@ HRESULT CLoader::Loading_For_Static()
 		CPanel_Player_RD::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Panel_Player_RU"),
+		CPanel_Player_RU::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Panel_Player_Arm"),
+		CPanel_Player_Arm::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Icon_Item"),
 		CIcon_Item::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Icon_Weapon"),
 		CIcon_Weapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Icon_LegionArm"),
+		CIcon_LegionArm::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"),
@@ -289,6 +315,8 @@ HRESULT CLoader::Loading_For_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"),
 		CPortion::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -947,6 +975,11 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_LeftCtrl"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_LeftCtrl.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_R"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_R.dds")))))
 		return E_FAIL;
@@ -965,6 +998,8 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_F"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_F.dds")))))
 		return E_FAIL;
+
+
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Arrow"),
@@ -1051,6 +1086,16 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Cross"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Icon_Cross.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Ergo"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Egro.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Arm"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Arm/Item_Arm_%d.dds"),1))))
 		return E_FAIL;
 
 	return S_OK;

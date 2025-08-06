@@ -44,6 +44,7 @@ namespace Client
 		D_UI_END
 	};
 
+	enum class TEXTALIGN{ LEFT, CENTER, RIGHT, END };
 	
 	enum class UI_TYPE {STATIC, DYNAMIC, TEXT , END};
 

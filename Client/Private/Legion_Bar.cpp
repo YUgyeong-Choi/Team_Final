@@ -1,22 +1,22 @@
-#include "Durability_Bar.h"
+#include "Legion_Bar.h"
 #include "GameInstance.h"
 
-CDurability_Bar::CDurability_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLegion_Bar::CLegion_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CDynamic_UI{pDevice, pContext}
 {
 }
 
-CDurability_Bar::CDurability_Bar(const CDurability_Bar& Prototype)
+CLegion_Bar::CLegion_Bar(const CLegion_Bar& Prototype)
     :CDynamic_UI{Prototype}
 {
 }
 
-HRESULT CDurability_Bar::Initialize_Prototype()
+HRESULT CLegion_Bar::Initialize_Prototype()
 {
     return S_OK;
 }
 
-HRESULT CDurability_Bar::Initialize(void* pArg)
+HRESULT CLegion_Bar::Initialize(void* pArg)
 {
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -33,24 +33,23 @@ HRESULT CDurability_Bar::Initialize(void* pArg)
     return S_OK;
 }
 
-void CDurability_Bar::Priority_Update(_float fTimeDelta)
+void CLegion_Bar::Priority_Update(_float fTimeDelta)
 {
-
 }
 
-void CDurability_Bar::Update(_float fTimeDelta)
+void CLegion_Bar::Update(_float fTimeDelta)
 {
     __super::Update(fTimeDelta);
 }
 
-void CDurability_Bar::Late_Update(_float fTimeDelta)
+void CLegion_Bar::Late_Update(_float fTimeDelta)
 {
     __super::Late_Update(fTimeDelta);
 }
 
-HRESULT CDurability_Bar::Render()
+HRESULT CLegion_Bar::Render()
 {
-    
+
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
@@ -67,7 +66,7 @@ HRESULT CDurability_Bar::Render()
     return S_OK;
 }
 
-HRESULT CDurability_Bar::Bind_ShaderResources()
+HRESULT CLegion_Bar::Bind_ShaderResources()
 {
     __super::Bind_ShaderResources();
 
@@ -85,7 +84,7 @@ HRESULT CDurability_Bar::Bind_ShaderResources()
     return S_OK;
 }
 
-HRESULT CDurability_Bar::Ready_Component(const wstring& strTextureTag)
+HRESULT CLegion_Bar::Ready_Component(const wstring& strTextureTag)
 {
     if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_DynamicUI"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -115,33 +114,33 @@ HRESULT CDurability_Bar::Ready_Component(const wstring& strTextureTag)
     return S_OK;
 }
 
-CDurability_Bar* CDurability_Bar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLegion_Bar* CLegion_Bar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    CDurability_Bar* pInstance = new CDurability_Bar(pDevice, pContext);
+    CLegion_Bar* pInstance = new CLegion_Bar(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
-        MSG_BOX("Failed to Created : CDurability_Bar");
+        MSG_BOX("Failed to Created : CLegion_Bar");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-CGameObject* CDurability_Bar::Clone(void* pArg)
+CGameObject* CLegion_Bar::Clone(void* pArg)
 {
-    CDurability_Bar* pInstance = new CDurability_Bar(*this);
+    CLegion_Bar* pInstance = new CLegion_Bar(*this);
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed to Cloned : CDurability_Bar");
+        MSG_BOX("Failed to Cloned : CLegion_Bar");
         Safe_Release(pInstance);
     }
 
     return pInstance;
 }
 
-void CDurability_Bar::Free()
+void CLegion_Bar::Free()
 {
     __super::Free();
 

@@ -512,6 +512,10 @@ void CGameInstance::Draw_Font_Centered(const _wstring& strFontTag, const _tchar*
 {
 	m_pFont_Manager->Draw_Centered(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale, fOffset);
 }
+void CGameInstance::Draw_Font_Righted(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale, _float fOffset)
+{
+	m_pFont_Manager->Draw_Righted(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale, fOffset);
+}
 _float2 CGameInstance::Calc_Draw_Range(const _wstring& strFontTag, const _tchar* pText)
 {
 	return m_pFont_Manager->Draw_Range(strFontTag, pText);
