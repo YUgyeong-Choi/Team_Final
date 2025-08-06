@@ -24,7 +24,6 @@ public:
         _bool         hasExitTime = false; // 이전 애니메이션 종료했을 때 블렌드 시작
 		_bool         belendFullBody = true; // 전체 바디 블렌드 여부
         _float 	      blendWeight = 0.f; // 블렌드 가중치 (0~1 사이)
-
     };
 
 private:
