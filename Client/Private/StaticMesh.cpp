@@ -115,16 +115,18 @@ HRESULT CStaticMesh::Render()
 					TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 					return E_FAIL;
 
-				if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
-					return E_FAIL;
+				/*if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+					return E_FAIL;*/
 				m_bDoOnce = true;
 			}
+
+			if (m_bDoOnce)
+			{
+				if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+					return E_FAIL;
+			}
 		}
-		else
-		{
-			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
-				return E_FAIL;
-		}
+		
 
 		m_pShaderCom->Begin(0);
 

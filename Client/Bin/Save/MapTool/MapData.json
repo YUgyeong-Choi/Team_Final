@@ -1,5 +1,5 @@
 {
-    "ModelCount": 165,
+    "ModelCount": 166,
     "Models": [
         {
             "Collision": true,
@@ -14285,6 +14285,12 @@
         {
             "Collision": false,
             "ModelName": "SM_LightProp_FloorLight_01",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_LightProp_FloorLight_02",
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -14309,7 +14315,7 @@
                             0.0
                         ],
                         [
-                            64.49143981933594,
+                            55.05045700073242,
                             -0.271459698677063,
                             -3.7796006202697754,
                             0.9999812245368958
@@ -14338,7 +14344,7 @@
                             0.0
                         ],
                         [
-                            55.05045700073242,
+                            64.444580078125,
                             -0.271459698677063,
                             -3.7796006202697754,
                             0.9999812245368958

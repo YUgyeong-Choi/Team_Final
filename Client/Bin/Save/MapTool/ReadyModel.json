@@ -572,8 +572,14 @@
     {
         "Collision": false,
         "ModelName": "SM_LightProp_FloorLight_01",
-        "ObjectCount": 2,
+        "ObjectCount": 0,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_FloorLight_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_LightProp_FloorLight_02",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_FloorLight_02.bin"
     },
     {
         "Collision": false,
