@@ -442,14 +442,8 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 
 HRESULT CLevel_KratHotel::Ready_TestEffect(const _wstring strLayerTag)
 {
-	CSpriteEffect::DESC SEDesc = {};
-	lstrcpy(SEDesc.pJsonFilePath, TEXT("../Bin/Save/Effect/SE_Test.json"));
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"),
-		ENUM_CLASS(LEVEL::KRAT_HOTEL), strLayerTag, &SEDesc)))
-		return E_FAIL;
-
-	return S_OK;
+	return S_OK; 
 }
 
 CLevel_KratHotel* CLevel_KratHotel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

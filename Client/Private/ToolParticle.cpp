@@ -137,6 +137,23 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 		VIBufferDesc.isTool = true;
 		pArg = &VIBufferDesc;
 	}
+	else
+	{
+		CVIBuffer_Point_Instance::DESC* pDesc = static_cast<CVIBuffer_Point_Instance::DESC*>(pArg);
+		m_ePType		= pDesc->ePType;
+		m_iNumInstance	= pDesc->iNumInstance;
+		m_isLoop		= pDesc->isLoop;
+		m_vCenter		= pDesc->vCenter;
+		m_vLifeTime		= pDesc->vLifeTime;
+		m_vPivot		= pDesc->vPivot;
+		m_vRange		= pDesc->vRange;
+		m_vSize			= pDesc->vSize;
+		m_vSpeed		= pDesc->vSpeed;
+		m_bGravity		= pDesc->bGravity;
+		m_fGravity		= pDesc->fGravity;
+	}
+
+
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),

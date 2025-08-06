@@ -133,51 +133,6 @@ PS_OUT_EFFECT PS_MAIN_MASK_NOISE(PS_IN In)
     Out.vColor.a = color.a * mask;
 
     return Out;
-    
-    
-    
-    
-    //float2 uv = In.vTexcoord;
-    //uv.x *= 3.0; // 타일링
-    //uv.x -= g_fTime * 2.f; // 가로 방향 스크롤 (휘감기듯)
-    //uv.y *= 0.5f;
-    //// 노이즈 왜곡 (선택)
-    //float2 noiseUV = uv * 8.0 + g_fTime * 0.2f;
-    //uv.x += (g_MaskTexture2.Sample(DefaultSampler, noiseUV).r/* - 0.5f*/) * 0.1f;
-    //
-    //float mask = g_MaskTexture1.Sample(DefaultSampler, uv).r;
-    //
-    //float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
-    //float4 color = lerp(g_vColor, g_vCenterColor, lerpFactor);
-    //
-    //Out.vColor.rgb = color.rgb * mask * g_fIntensity;
-    //Out.vColor.a = color.a * mask;
-    //
-    //return Out;
-  
-    
-    //float2 uv = In.vTexcoord;
-    //
-    //uv.x += g_fTime * g_fScrollSpeed; // ← U 방향으로 스크롤 (가로 방향)
-    //
-    //// 마스크의 밝기 정보 (흑백 텍스처)
-    //float mask = g_MaskTexture1.Sample(DefaultSampler, uv).r;
-    //
-    //
-    //
-    //// 중심부 기준 값과 비교해서 색상 결정
-    //float4 color;
-    //float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
-    //
-    //// 외곽은 보라색, 중심부는 흰색
-    //color = lerp(g_vColor, g_vCenterColor, lerpFactor);
-    //
-    //// 밝기 조절
-    //Out.vColor.rgb = color.rgb * mask * g_fIntensity;
-    //Out.vColor.a = color.a * mask;
-    /***********************************/
-    
-    return Out;
 }
 
 

@@ -32,9 +32,9 @@ HRESULT CToolMeshEffect::Initialize(void* pArg)
 	m_fIntensity = 3.0f;
 	m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
 
-	m_bTextureUsage[TU_DIFFUSE] = true;
+	m_bTextureUsage[TU_DIFFUSE] = false;
 	m_bTextureUsage[TU_MASK1] = true;
-	m_bTextureUsage[TU_MASK2] = true;
+	m_bTextureUsage[TU_MASK2] = false;
 	m_bTextureUsage[TU_MASK3] = false;
 
 	m_iShaderPass = ENUM_CLASS(ME_UVMASK);
@@ -54,7 +54,11 @@ void CToolMeshEffect::Update(_float fTimeDelta)
 
 void CToolMeshEffect::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
+	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
+
+	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
+
+	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
 
 HRESULT CToolMeshEffect::Render()
@@ -92,10 +96,29 @@ HRESULT CToolMeshEffect::Render()
 
 HRESULT CToolMeshEffect::Change_Model(_wstring strModelName)
 {
-	//Safe_Release(m_pModelCom);
-	_wstring strModelTag = L"Prototype_Component_Model_" + strModelName;
-	return Replace_Component(ENUM_CLASS(LEVEL::CY), strModelTag.c_str(),
-		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom));
+	if (strModelName.size() > 0)
+	{
+		_wstring strModelTag = L"Prototype_Component_Model_" + strModelName;
+		return Replace_Component(ENUM_CLASS(LEVEL::CY), strModelTag.c_str(),
+			TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom));
+		m_strModelTag = strModelName;
+	}
+	else
+	{
+		string          ModelFilePath = "../Bin/Resources/Models/EffectMesh/";
+		_wstring        ModelPreTag = TEXT("Prototype_Component_Model_");
+
+		ModelFilePath += (WStringToString(m_strModelTag) + ".bin");
+		ModelPreTag += m_strModelTag;
+
+		_matrix		PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), ModelPreTag,
+			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, ModelFilePath.c_str(), PreTransformMatrix))))
+			return E_FAIL;
+		return Replace_Component(ENUM_CLASS(LEVEL::CY), ModelPreTag,
+			TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom));
+	}
+	return S_OK;
 }
 
 HRESULT CToolMeshEffect::Ready_Components()

@@ -30,16 +30,17 @@ HRESULT CMeshEffect::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (!m_bTool)
-	{
-		if (FAILED(Ready_Components()))
-			return E_FAIL;
-	}
+	//if (!m_bTool)
+	//{
+	//	if (FAILED(Ready_Components()))
+	//		return E_FAIL;
+	//}
 	return S_OK;
 }
 
 void CMeshEffect::Priority_Update(_float fTimeDelta)
 {
+	m_fTimeAcc += fTimeDelta;
 
 }
 
@@ -53,7 +54,11 @@ void CMeshEffect::Update(_float fTimeDelta)
 
 void CMeshEffect::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
+	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
+
+	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
+
+	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
 
 HRESULT CMeshEffect::Render()
@@ -97,22 +102,55 @@ HRESULT CMeshEffect::Ready_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+
+	_wstring strPrototypeTag = TEXT("Prototype_Component_Model_");
+	strPrototypeTag += m_strModelTag;
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Model_ToolMeshEffect"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_DIFFUSE]))))
-		return E_FAIL;
+	_wstring TextureTag = TEXT("Prototype_Component_Texture_");
+	if (m_bTextureUsage[TU_DIFFUSE] == true) {
+		/* For.Com_Texture */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_DIFFUSE],
+			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_DIFFUSE]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK1] == true) {
+		/* For.Com_TextureMask1 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK1],
+			TEXT("Com_TextureMask1"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK1]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK2] == true) {
+		/* For.Com_TextureMask2 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK2],
+			TEXT("Com_TextureMask2"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK2]))))
+			return E_FAIL;
+	}
+	if (m_bTextureUsage[TU_MASK3] == true) {
+		/* For.Com_TextureMask3 */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TextureTag + m_TextureTag[TU_MASK3],
+			TEXT("Com_TextureMask3"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK3]))))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
 HRESULT CMeshEffect::Bind_ShaderResources()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
+	if (m_pSocketMatrix != nullptr)
+	{
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+			return E_FAIL;
+	}
+
 
 	/* dx9 : 장치에 뷰, 투영행렬을 저장해두면 렌더링시 알아서 정점에 Transform해주었다. */
 	/* dx11 : 셰이더에 뷰, 투영행렬을 저장해두고 우리가 직접 변환해주어야한다. */
@@ -180,8 +218,7 @@ json CMeshEffect::Serialize()
 {
 	json j = __super::Serialize();
 
-
-
+	j["ModelTag"] = WStringToString(m_strModelTag);
 
 	return j;
 }
@@ -189,4 +226,7 @@ json CMeshEffect::Serialize()
 void CMeshEffect::Deserialize(const json& j)
 {
 	__super::Deserialize(j);
+	if (j.contains("ModelTag"))
+		m_strModelTag = StringToWString(j["ModelTag"].get<string>());
+	m_bBillboard = false;
 }

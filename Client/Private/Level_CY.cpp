@@ -2,6 +2,8 @@
 #include "GameInstance.h"
 #include "CYTool.h"
 #include "Camera_Manager.h"
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
 
 #include "Level_Loading.h"
 #include "PBRMesh.h"
@@ -43,6 +45,22 @@ void CLevel_CY::Priority_Update(_float fTimeDelta)
 	{
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
+	}
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (KEY_DOWN(DIK_Z))
+		{
+			//EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::CY), TEXT("EC_NewP2S1_sujeongmore"));
+			CEffectContainer::DESC ECDesc = {};
+			ECDesc.vPresetPosition = {
+				m_pGameInstance->Compute_Random(-10.f, 10.f),
+				m_pGameInstance->Compute_Random(-10.f, 10.f),
+				m_pGameInstance->Compute_Random(-10.f, 10.f)
+			};
+			
+			if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::CY), TEXT("EC_ErgoItem_M3P1"), &ECDesc)))
+				MSG_BOX("Á¶Áü");
+		}
 	}
 }
 

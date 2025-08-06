@@ -44,7 +44,6 @@ void CToolSprite::Priority_Update(_float fTimeDelta)
 
 void CToolSprite::Update(_float fTimeDelta)
 {
-	//m_pTransformCom->BillboardToCameraFull(XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
 	__super::Update(fTimeDelta);
 }
 

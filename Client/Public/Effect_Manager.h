@@ -26,7 +26,9 @@ public:
 public:
     void Test();
     class CEffectBase* Make_Effect(const _wstring strEffectTag);
-    class CEffectContainer* Make_EffectContainer(const _wstring strECTag);
+    HRESULT Make_EffectContainer(_uint iLevelIndex, const _wstring strECTag, void* pArg = nullptr);
+    //class CEffectBase* Find_Effect(const _wstring& strEffectTag);
+    class CEffectContainer* Find_EffectContainer(const _wstring& strECTag);
 
 private:
     HRESULT Ready_Prototypes();
@@ -45,14 +47,15 @@ private:
 public:
     typedef struct tagEffectCloneDesc
     {
-        _wstring    strEffectTextureTag[TU_END];
+        //_wstring    strEffectTextureTag[TU_END];
         _wstring    strEffectVIBufferTag;
-
+        json        tEffectJson;
     }EFFECT_DESC;
 
 private:
-    map<const _wstring, CEffectContainer*>  m_ECPrototypes;
+    //map<const _wstring, CEffectContainer*>  m_ECPrototypes;
     map<const _wstring, EFFECT_DESC>        m_EffectCloneDescs;
+    map<const _wstring, const json>         m_ECJsonDescs;
 
 public:
     virtual void Free() override;
