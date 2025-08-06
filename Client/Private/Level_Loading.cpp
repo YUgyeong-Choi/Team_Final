@@ -21,6 +21,7 @@
 #include "UI_Text.h"
 #include "UI_Container.h"
 
+
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 {
@@ -56,52 +57,54 @@ void CLevel_Loading::Update(_float fTimeDelta)
 {
 
 
-	if (m_pGameInstance->Key_Down(DIK_SPACE))
+
+
+	if (true == m_pLoader->isFinished())
 	{
-		if (true == m_pLoader->isFinished())
+		CLevel* pLevel = { nullptr };
+
+
+		switch (m_eNextLevelID)
 		{
-			CLevel* pLevel = { nullptr };
-
-
-			switch (m_eNextLevelID)
-			{
-			case LEVEL::LOGO:
-				pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL::KRAT_CENTERAL_STATION:
-				pLevel = CLevel_KratCentralStation::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL::KRAT_HOTEL:
-				pLevel = CLevel_KratHotel::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL::DH:
-				pLevel = CLevel_DH::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL::JW:
-				pLevel = CLevel_JW::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL::GL:
-				pLevel = CLevel_GL::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL::YW:
-				pLevel = CLevel_YW::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL::CY:
-				pLevel = CLevel_CY::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL::YG:
-				pLevel = CLevel_YG::Create(m_pDevice, m_pContext);
-				break;
-			}
-
-			if (nullptr == pLevel)
-				return;
-
-			if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(m_eNextLevelID), pLevel)))
-				return;
-							
+		case LEVEL::LOGO:
+			pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::KRAT_CENTERAL_STATION:
+			pLevel = CLevel_KratCentralStation::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::KRAT_HOTEL:
+			pLevel = CLevel_KratHotel::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::DH:
+			pLevel = CLevel_DH::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::JW:
+			pLevel = CLevel_JW::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::GL:
+			pLevel = CLevel_GL::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::YW:
+			pLevel = CLevel_YW::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::CY:
+			pLevel = CLevel_CY::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::YG:
+			pLevel = CLevel_YG::Create(m_pDevice, m_pContext);
+			break;
 		}
-	}	
+
+		if (nullptr == pLevel)
+			return;
+
+		
+		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(m_eNextLevelID), pLevel)))
+			return;
+		
+		
+
+	}
 
 
 
@@ -121,6 +124,9 @@ void CLevel_Loading::Update(_float fTimeDelta)
 
 		}
 	}
+
+	
+
 }
 
 HRESULT CLevel_Loading::Render()
@@ -129,6 +135,8 @@ HRESULT CLevel_Loading::Render()
 
 	if (m_eNextLevelID != LEVEL::LOGO)
 	{
+		Update_Loding_Bar();
+
 		_int iPercent = int(floorf(m_fRatio * 100.f));
 
 		_wstring loadingText = L"거짓말하는 중 ...   " + to_wstring(iPercent) + L" %";
@@ -152,7 +160,7 @@ HRESULT CLevel_Loading::Ready_Loading()
 
 	auto pObj = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Loading_Background"));
 
-	auto Parts = static_cast<CUI_Container*>(pObj)->Get_PartUI();
+	auto& Parts = static_cast<CUI_Container*>(pObj)->Get_PartUI();
 
 
 
@@ -168,10 +176,27 @@ HRESULT CLevel_Loading::Ready_Loading()
 		ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Loading_Explain"), &eDesc)))
 		return E_FAIL;
 
+	m_pLoadingBar = static_cast<CUI_Bar_Loading*>(Parts.back());
+
 	
+	Safe_AddRef(m_pLoadingBar);
 
 
 	return S_OK;
+}
+
+void CLevel_Loading::Update_Loding_Bar()
+{
+	if (m_eNextLevelID == LEVEL::LOGO)
+		return;
+
+	if (nullptr == m_pLoadingBar)
+		return;
+
+
+
+	m_pLoadingBar->Update_From_Feature_Ratio(m_fRatio);
+
 }
 
 
@@ -195,4 +220,5 @@ void CLevel_Loading::Free()
 	__super::Free();
 
 	Safe_Release(m_pLoader);
+	Safe_Release(m_pLoadingBar);
 }

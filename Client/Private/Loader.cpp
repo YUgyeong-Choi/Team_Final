@@ -156,6 +156,8 @@ HRESULT CLoader::Loading()
 		break;
 	}
 
+	
+
 	if (FAILED(hr))
 		return E_FAIL;
 
@@ -370,6 +372,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	//	return E_FAIL;
 
 	m_fRatio = 1.f;
+	Sleep(250); // 안해주면 동기화 안하고 끝나서 안차던데 좋은 방법 있으면 알려주셈
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -674,7 +678,7 @@ HRESULT CLoader::Loading_For_GL()
 
 
 	m_fRatio = 0.9f;
-	Sleep(250);
+	
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

@@ -14,6 +14,7 @@
 #include "UI_Feature_Fade.h"
 #include "UI_Feature_Position.h"
 #include "UI_Featrue_Scale.h"
+#include "UI_Bar_Loading.h"
 
 #include "Sky.h"
 CMainApp::CMainApp()
@@ -361,6 +362,11 @@ HRESULT CMainApp::Ready_Loading()
 	/* For.Prototype_GameObject_Video_UI */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Text"),
 		CUI_Text::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Video_UI */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Bar_Loading"),
+		CUI_Bar_Loading::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	 
 	return S_OK;
