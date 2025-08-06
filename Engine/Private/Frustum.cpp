@@ -144,7 +144,7 @@ _bool CFrustum::Is_AABB_InFrustum(const _float3& vMin, const _float3& vMax)
 			(plane.m128_f32[2] >= 0.f) ? vMin.z : vMax.z,
 		};
 
-		if (XMVectorGetX(XMPlaneDotCoord(plane, XMLoadFloat3(&nVertex))) > 0.f)
+		if (XMVectorGetX(XMPlaneDotCoord(plane, XMLoadFloat3(&nVertex))) > 3.f)
 			return false;
 	}
 
