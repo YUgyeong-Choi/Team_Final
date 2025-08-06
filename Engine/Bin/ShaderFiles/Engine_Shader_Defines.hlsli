@@ -111,3 +111,27 @@ BlendState BS_SoftAdd
     DestBlend = Inv_Src_Alpha;
     BlendOp = Add;
 };
+
+BlendState BS_WBOIT
+{
+    // RTV0 : Accumulation (additive)
+    BlendEnable[0] = true;
+    SrcBlend[0] = One;
+    DestBlend[0] = One;
+    BlendOp[0] = Add;
+
+    // RTV1 : Revealage (multiplicative)
+    BlendEnable[1] = true;
+    SrcBlend[1] = Zero;
+    DestBlend[1] = Inv_Src_Alpha; // dest * (1 - srcAlpha)
+    BlendOp[1] = Add;
+    // Revealage는 이미 있던 알파 값에 1-srcAlpha만 계속해서 들고만 있으면 되므로
+    // SrcBlend는 무시한 후 DestBlend값을 남겨두는 의미로 BlendOP를 Add로 함.
+
+    // RTV2 : Emissive (Additive)
+    BlendEnable[2] = true;
+    SrcBlend[2] = One;
+    DestBlend[2] = One;
+    BlendOp[2] = Add;
+    // Emissive를 저장하긴 해야해서 명시적으로 블렌드 스테이트 지정함
+};

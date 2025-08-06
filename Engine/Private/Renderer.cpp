@@ -165,15 +165,16 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Accumulation"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	// 알파 연산을 위한 렌더타겟.
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Revealage"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16_FLOAT, _float4(1.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Revealage"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_PreGlow"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16_FLOAT, _float4(1.0f, 0.f, 0.f, 0.f))))
+	// 글로우가 필요한 이펙트를 따로 모아두는 렌더타겟.
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Emissive"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Accumulation"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Revealage"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_PreGlow"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Emissive"))))
 		return E_FAIL;
 
 
@@ -272,9 +273,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Diffuse"), GetTargetX(2), GetTargetY(0), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Accumulation"), GetTargetX(2), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Glow"), GetTargetX(3), GetTargetY(0), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Revealage"), GetTargetX(3), GetTargetY(0), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Emissive"), GetTargetX(4), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
 
 	m_StartTime = std::chrono::steady_clock::now();
@@ -341,7 +344,8 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Effect_Blend()))
+	//if (FAILED(Render_Effect_Blend()))
+	if (FAILED(Render_Effect_WB()))
 	{
 		MSG_BOX("Render_Effect_Blend Failed");
 		return E_FAIL;
@@ -928,6 +932,20 @@ HRESULT CRenderer::Render_Effect_NonLight()
 
 HRESULT CRenderer::Render_Effect_WB()
 {
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Effect_WeightedBlend"))))
+		return E_FAIL;
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW)].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return E_FAIL;
 
 
 	return S_OK;
@@ -1060,8 +1078,9 @@ HRESULT CRenderer::Render_Debug()
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlendObjects"), m_pShader, m_pVIBuffer);
-		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlend_Glow"), m_pShader, m_pVIBuffer);
+		//m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlendObjects"), m_pShader, m_pVIBuffer);
+		//m_pGameInstance->Render_MRT_Debug(TEXT("MRT_EffectBlend_Glow"), m_pShader, m_pVIBuffer);
+		m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Effect_WeightedBlend"), m_pShader, m_pVIBuffer);
 	}
 
 	return S_OK;
