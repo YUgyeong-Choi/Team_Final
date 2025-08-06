@@ -17,6 +17,11 @@ public:
         CAnimation* toLowerAnim = nullptr;   // 다음 하체 애니메이션
 		CAnimation* fromUpperAnim = nullptr;   // 이전 상체 애니메이션
 		CAnimation* toUpperAnim = nullptr;   // 다음 상체 애니메이션
+		vector<CAnimation*> fromBlendAnims; // 블렌드 트리용 애니메이션
+		vector<CAnimation*> toBlendAnims; // 블렌드 트리용 애니메이션
+		vector<_float2>      clipDirections;    // 각 클립의 기준 방향 (예: Front={0,1}, Right={1,0}…)
+		vector<_float>       fromBlendWeights;      // 계산된 가중치
+		vector<_float>       toBlendWeights;      // 계산된 가중치
         _float        elapsed = 0.f;       // 경과 시간
         _float        duration = 0.2f;      // 블렌드 총 시간
         _bool         isLoop = false;
@@ -229,7 +234,9 @@ private:
     void RefreshAndProcessTransition(_float fDeltaTime);
     void UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>& triggeredEvents);
 	void UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<string>& triggeredEvents);
+    void UpdateBlendTreePlayback(_float fDeltaTime, size_t iBoneCount, vector<string>& triggeredEvents);
     void AddUniqueClip(CAnimation* pClip, array<CAnimation*, 4>& pArray, _int& clipCount);
+    void AddUniqueClip(CAnimation* pClip, vector<CAnimation*>& pVec);
 
     // 마스크 본 관련
     void UpdateMaskState();

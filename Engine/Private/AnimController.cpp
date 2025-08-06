@@ -156,6 +156,9 @@ HRESULT CAnimController::Initialize(void* pArg)
 
 void CAnimController::Update(_float fTimeDelta)
 {
+
+	UpdateBlendTreeParameters();
+
 	m_TransitionResult.bTransition = false;
 	if (!m_pAnimator->IsBlending())
 	{
@@ -198,13 +201,65 @@ void CAnimController::Update(_float fTimeDelta)
 
 			_bool bFromMasked = fromState->maskBoneName.empty() == false; // 분리 상태인지
 			_bool bToMasked = toState->maskBoneName.empty() == false; // 분리 상태인지
-		
+			_bool bFromBlendTree = (fromState->stateType == EAnimStateType::BlendTree); // 블렌드 트리 상태인지
+			_bool bToBlendTree = (toState->stateType == EAnimStateType::BlendTree); // 블렌드 트리 상태인지
 		
 			// 통짜-> 분리
 			auto* fromClip = GetStateAnimationByNodeId(tr.iFromNodeId);
 			auto* toClip = GetStateAnimationByNodeId(tr.iToNodeId);
 
-			if (!bFromMasked && !bToMasked) //  통짜 -> 통짜
+			if (bFromBlendTree || bToBlendTree) // 블렌드 트리 상태면
+			{
+				if (bFromBlendTree && bToMasked) // 블렌드 트리 -> 마스크
+				{
+					m_TransitionResult.eType = ETransitionType::BlendTreeToMasked;
+					m_TransitionResult.pFromBlendTreeAnims = static_cast<BlendTreeState*>(fromState)->blendAnimations;
+					m_TransitionResult.pFromLowerAnim = nullptr; // 블렌드 트리는 단일 하체 클립이 X
+					m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
+					m_TransitionResult.pFromUpperAnim = nullptr; // 블렌드 트리는 단일 상체 클립이 X
+					m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
+					m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+					m_TransitionResult.bBlendFullbody = false;
+				}
+				else if (bFromBlendTree && !bToMasked) // 블렌드 트리 -> 통짜
+				{
+					m_TransitionResult.eType = ETransitionType::BlendTreeToFullbody;
+					m_TransitionResult.pFromBlendTreeAnims = static_cast<BlendTreeState*>(fromState)->blendAnimations;
+					m_TransitionResult.pFromLowerAnim = nullptr;
+					m_TransitionResult.pToLowerAnim = toState->clip;
+					m_TransitionResult.pFromUpperAnim = nullptr;
+					m_TransitionResult.pToUpperAnim = toState->clip;
+					m_TransitionResult.bBlendFullbody = true;
+				}
+				else if (bFromMasked && bToBlendTree) // 마스크에서 블렌드트리
+				{
+					m_TransitionResult.eType = ETransitionType::MaskedToBlendTree;
+					m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
+					m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
+					m_TransitionResult.pToLowerAnim = nullptr; // 목표 상태가 블렌드 트리이므로 단일 클립이 없습니다.
+					m_TransitionResult.pToUpperAnim = nullptr;
+					m_TransitionResult.pToBlendTreeAnims = static_cast<BlendTreeState*>(toState)->blendAnimations;
+					m_TransitionResult.bBlendFullbody = false;
+				}
+				else if (!bFromMasked && bToBlendTree) // 통짜에서 블렌드트리
+				{
+					m_TransitionResult.eType = ETransitionType::FullbodyToBlendTree;
+					m_TransitionResult.pFromLowerAnim = fromState->clip;
+					m_TransitionResult.pFromUpperAnim = fromState->clip;
+					m_TransitionResult.pToLowerAnim = nullptr;
+					m_TransitionResult.pToUpperAnim = nullptr;
+					m_TransitionResult.pToBlendTreeAnims = static_cast<BlendTreeState*>(toState)->blendAnimations;
+					m_TransitionResult.bBlendFullbody = true;
+				}
+				else if(bFromBlendTree&&bToBlendTree) // 블렌드 트리끼리
+				{
+					m_TransitionResult.eType = ETransitionType::BlendTreeToBlendTree;
+					m_TransitionResult.pFromBlendTreeAnims = static_cast<BlendTreeState*>(fromState)->blendAnimations;
+					m_TransitionResult.pToBlendTreeAnims = static_cast<BlendTreeState*>(toState)->blendAnimations;
+					m_TransitionResult.bBlendFullbody = true;
+				}
+			}
+			else if (!bFromMasked && !bToMasked) //  통짜 -> 통짜
 			{
 				m_TransitionResult.eType = ETransitionType::FullbodyToFullbody;
 				m_TransitionResult.pFromLowerAnim = fromState->clip;
@@ -242,6 +297,33 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
 				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
 				m_TransitionResult.bBlendFullbody = false;
+			}
+
+			// 블렌드 트리에서 다른 상태로 전환
+			if (m_TransitionResult.eType == ETransitionType::BlendTreeToFullbody ||
+				m_TransitionResult.eType == ETransitionType::BlendTreeToMasked)
+			{
+				// 블렌드 트리의 애니메이션 목록이 비어 있으면 실패
+				if (m_TransitionResult.pFromBlendTreeAnims.empty())
+					continue;
+			}
+
+			// 다른 상태에서 블렌드 트리로 전환
+			if (m_TransitionResult.eType == ETransitionType::FullbodyToBlendTree ||
+				m_TransitionResult.eType == ETransitionType::MaskedToBlendTree)
+			{
+				// 목표 블렌드 트리의 애니메이션 목록이 비어 있으면 실패
+				if (m_TransitionResult.pToBlendTreeAnims.empty())
+					continue;
+			}
+
+			// 블렌드 트리 간 전환
+			if (m_TransitionResult.eType == ETransitionType::BlendTreeToBlendTree)
+			{
+				// 이전 블렌드 트리의 애니메이션 목록이 비어 있거나,
+				// 목표 블렌드 트리의 애니메이션 목록이 비어 있으면 실패
+				if (m_TransitionResult.pFromBlendTreeAnims.empty() ||m_TransitionResult.pToBlendTreeAnims.empty())
+					continue;
 			}
 
 			//  유효 검사
@@ -419,6 +501,68 @@ void CAnimController::Cancel_OverrideAnimController()
 	if (m_OriginalAnimStates.empty())
 		return;
 	m_States = m_OriginalAnimStates["Default"]; // 원래 상태로 되돌리기
+}
+
+void CAnimController::UpdateBlendTreeParameters()
+{
+	AnimState* pCurrentState = FindStateByNodeId(m_CurrentStateNodeId);
+	if (pCurrentState == nullptr || pCurrentState->stateType != EAnimStateType::BlendTree)
+		return;
+
+	auto* pBlendState = static_cast<BlendTreeState*>(pCurrentState);
+
+	_float horizontalInput = GetFloat("Horizontal");
+	_float verticalInput = GetFloat("Vertical");
+	pBlendState->fDirection = { horizontalInput, verticalInput };
+
+	//  입력 방향 정규화
+	_float2 vInputDirection = pBlendState->fDirection;
+	const _float fEpsilon = 1e-5f;
+	_float fDirectionMagnitude = hypot(vInputDirection.x, vInputDirection.y);
+
+	pBlendState->blendWeights.clear();
+
+	if (fDirectionMagnitude > fEpsilon)
+	{
+		// 단위 방향 벡터
+		vInputDirection.x /= fDirectionMagnitude;
+		vInputDirection.y /= fDirectionMagnitude;
+
+		//  각 클립 기준 방향과의 코사인 유사도로 가중치 계산
+		for (size_t i = 0; i < pBlendState->blendAnimations.size(); ++i)
+		{
+			_float2 vClipDirection = pBlendState->clipDirections[i];
+			_float fClipDirMagnitude = hypot(vClipDirection.x, vClipDirection.y);
+
+			_float fRawWeight = 0.0f;
+			if (fClipDirMagnitude > fEpsilon)
+			{
+				// 내적을 이용한 코사인 유사도
+				fRawWeight = max((vClipDirection.x * vInputDirection.x + vClipDirection.y * vInputDirection.y)/ fClipDirMagnitude,0.0f);
+			}
+
+			pBlendState->blendWeights.push_back(fRawWeight);
+		}
+
+		//  가중치 합으로 정규화
+		_float fTotalWeight = accumulate(
+			pBlendState->blendWeights.begin(),
+			pBlendState->blendWeights.end(),
+			0.0f
+		);
+		if (fTotalWeight > fEpsilon)
+		{
+			for (auto& w : pBlendState->blendWeights)
+				w /= fTotalWeight;
+		}
+	}
+	else
+	{
+		// 입력이 거의 (0,0)이면 균등 분배
+		size_t iClipCount = pBlendState->blendAnimations.size();
+		_float fEqualWeight = 1.0f / max(iClipCount, size_t(1));
+		pBlendState->blendWeights.assign(iClipCount, fEqualWeight);
+	}
 }
 
 void CAnimController::ResetTransAndStates()

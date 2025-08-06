@@ -9,13 +9,19 @@ class ENGINE_DLL CAnimController final : public CBase, public ISerializable
 {
 public:
 	enum class EOp { IsTrue, IsFalse, Greater, Less,NotEqual,Equal,  Trigger, None};
+	enum class EAnimStateType {Normal, BlendTree};
 
 	enum class ETransitionType
 	{
 		FullbodyToFullbody,         // 통짜 -> 통짜
 		FullbodyToMasked,           // 통짜 -> 상하체 분리
 		MaskedToFullbody,           // 상하체 분리 -> 통짜
-		MaskedToMasked              // 상하체 분리 -> 상하체 분리
+		MaskedToMasked,           // 상하체 분리 -> 상하체 분리
+		FullbodyToBlendTree,
+		MaskedToBlendTree,
+		BlendTreeToFullbody,
+		BlendTreeToMasked,
+		BlendTreeToBlendTree,
 	};
 
 
@@ -43,6 +49,15 @@ public:
 		string upperClipName; // 상체 애니메이션 이름
 		string maskBoneName; // 마스크용 뼈 이름 (없으면 빈 문자열)
 		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
+		EAnimStateType            stateType = EAnimStateType::Normal;
+	};
+
+	struct BlendTreeState : public AnimState
+	{
+		vector<CAnimation*> blendAnimations; // 블렌드 트리용 애니메이션들
+		vector<_float2>      clipDirections;    // 각 클립의 기준 방향 (예: Front={0,1}, Right={1,0}…)
+		vector<_float>       blendWeights;      // 계산된 가중치
+		_float2 fDirection = { 0.f, 0.f }; // 방향 벡터 (블렌드 트리용)
 	};
 
 
@@ -70,6 +85,8 @@ public:
 		CAnimation* pToLowerAnim = nullptr;   // 전환 목표 하체/통짜 클립
 		CAnimation* pFromUpperAnim = nullptr; // 전환 시작 상체 클립 
 		CAnimation* pToUpperAnim = nullptr;   // 전환 목표 상체 클립 
+		vector<CAnimation*> pFromBlendTreeAnims; // 블렌드 트리용 애니메이션들
+		vector<CAnimation*> pToBlendTreeAnims; // 블렌드 트리용 애니메이션들
 		_float fDuration = 0.f; // 전환 시간
 		_float fBlendWeight = 1.f; // 마스크에 사용함
 	};
@@ -373,6 +390,7 @@ private:
 			if (s.iNodeId == iNodeId) return &s;
 		return nullptr;
 	}
+	void UpdateBlendTreeParameters();
 	void ResetTransAndStates();
 	void ChangeStates(const string& overrideCtrlName);// 오버라이드 애니메이션 컨트롤러를 적용할 때 상태들을 변경
 private:

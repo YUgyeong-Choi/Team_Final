@@ -58,7 +58,13 @@ void CAnimator::Update(_float fDeltaTime)
 	vector<string> triggeredEvents; // 이벤트를 한 번에 수집
 	size_t iBoneCount = m_Bones.size();
 
-	if (m_Blend.active) //  블렌딩 중
+	auto bBlendTreeState = m_pCurAnimController->GetCurrentState()->stateType == CAnimController::EAnimStateType::BlendTree;
+
+	if (m_Blend.active != true&&bBlendTreeState)
+	{
+		UpdateBlendTreePlayback(fDeltaTime, iBoneCount, triggeredEvents);
+	}
+	else if (m_Blend.active) //  블렌딩 중
 	{
 		UpdateBlend(fDeltaTime, iBoneCount, triggeredEvents);
 	}
@@ -157,32 +163,108 @@ void CAnimator::RefreshAndProcessTransition(_float fDeltaTime)
 void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>& triggeredEvents)
 {
 	m_iBlendAnimCount = 0;
-	AddUniqueClip(m_Blend.fromLowerAnim, m_pBlendAnimArray, m_iBlendAnimCount);
-	AddUniqueClip(m_Blend.toLowerAnim, m_pBlendAnimArray, m_iBlendAnimCount);
-	AddUniqueClip(m_Blend.fromUpperAnim, m_pBlendAnimArray, m_iBlendAnimCount);
-	AddUniqueClip(m_Blend.toUpperAnim, m_pBlendAnimArray, m_iBlendAnimCount);
 
+	m_iBlendAnimCount = 0;
 
-	for (_int i = 0; i < m_iBlendAnimCount; ++i)
+	// 모든 애니메이션 클립을 담을 유일한 벡터
+	vector<CAnimation*> allUniqueClips;
+
+	// 단일 클립들(Fullbody, Masked) 추가
+	AddUniqueClip(m_Blend.fromLowerAnim, allUniqueClips);
+	AddUniqueClip(m_Blend.toLowerAnim, allUniqueClips);
+	AddUniqueClip(m_Blend.fromUpperAnim, allUniqueClips);
+	AddUniqueClip(m_Blend.toUpperAnim, allUniqueClips);
+
+	// 블렌드 트리 클립들 추가
+	for (auto& anim : m_Blend.fromBlendAnims)
 	{
-		if (m_pBlendAnimArray[i])
+		AddUniqueClip(anim, allUniqueClips);
+	}
+	for (auto& anim : m_Blend.toBlendAnims)
+	{
+		AddUniqueClip(anim, allUniqueClips);
+	}
+
+	// 모든 고유 클립을 한 번에 업데이트
+	for (const auto& pAnim : allUniqueClips)
+	{
+		if (pAnim)
 		{
-			m_pBlendAnimArray[i]->Update_Bones(
+			pAnim->Update_Bones(
 				fDeltaTime,
 				m_Bones,
-				m_pBlendAnimArray[i]->Get_isLoop(),
+				pAnim->Get_isLoop(),
 				&triggeredEvents
 			);
 		}
 	}
+	//AddUniqueClip(m_Blend.fromLowerAnim, m_pBlendAnimArray, m_iBlendAnimCount);
+	//AddUniqueClip(m_Blend.toLowerAnim, m_pBlendAnimArray, m_iBlendAnimCount);
+	//AddUniqueClip(m_Blend.fromUpperAnim, m_pBlendAnimArray, m_iBlendAnimCount);
+	//AddUniqueClip(m_Blend.toUpperAnim, m_pBlendAnimArray, m_iBlendAnimCount);
 
-	// 매트릭스 미리 가져오기
+
+	////for (_int i = 0; i < m_iBlendAnimCount; ++i)
+	////{
+	////	if (m_pBlendAnimArray[i])
+	////	{
+	////		m_pBlendAnimArray[i]->Update_Bones(
+	////			fDeltaTime,
+	////			m_Bones,
+	////			m_pBlendAnimArray[i]->Get_isLoop(),
+	////			&triggeredEvents
+	////		);
+	////	}
+	////}
+
+	//// 매트릭스 미리 가져오기
 	vector<_matrix> fromL(iBoneCount), toL(iBoneCount), fromU(iBoneCount), toU(iBoneCount);
 
 	CollectBoneMatrices(m_Blend.fromLowerAnim, fromL, iBoneCount);
 	CollectBoneMatrices(m_Blend.toLowerAnim, toL, iBoneCount);
 	CollectBoneMatrices(m_Blend.fromUpperAnim, fromU, iBoneCount);
 	CollectBoneMatrices(m_Blend.toUpperAnim, toU, iBoneCount);
+
+	//vector<CAnimation*> uniqueBlendTreeAnims;
+	//// 위에 m_pBlendAnimArray들 먼저 넣어두고
+
+	//// 블렌드 트리 애니메이션들에서 중복 제거
+	//for (auto& anim : m_Blend.fromBlendAnims)
+	//{
+	//	if (find(uniqueBlendTreeAnims.begin(), uniqueBlendTreeAnims.end(), anim) == uniqueBlendTreeAnims.end())
+	//		uniqueBlendTreeAnims.push_back(anim);
+	//}
+	//for (auto& anim : m_Blend.toBlendAnims)
+	//{
+	//	if (find(uniqueBlendTreeAnims.begin(), uniqueBlendTreeAnims.end(), anim) == uniqueBlendTreeAnims.end())
+	//		uniqueBlendTreeAnims.push_back(anim);
+	//}
+
+	//// 블렌드 트리 매트릭스 모아두기
+	//vector<vector<_matrix>> blendFromMatrices(iBoneCount, vector<_matrix>(m_Blend.fromBlendAnims.size(), XMMatrixIdentity()));
+	//vector<vector<_matrix>> blendToMatrices(iBoneCount, vector<_matrix>(m_Blend.toBlendAnims.size(), XMMatrixIdentity()));
+
+
+
+	//for (const auto& pAnim : m_pBlendAnimArray)
+	//{
+	//	if (pAnim && find(uniqueBlendTreeAnims.begin(), uniqueBlendTreeAnims.end(), pAnim) == uniqueBlendTreeAnims.end())
+	//		uniqueBlendTreeAnims.push_back(pAnim);
+	//}
+
+	//for (const auto& pAnim : uniqueBlendTreeAnims)
+	//{
+	//	if (pAnim)
+	//	{
+	//		pAnim->Update_Bones(
+	//			fDeltaTime,
+	//			m_Bones,
+	//			pAnim->Get_isLoop(),
+	//			&triggeredEvents);
+	//	}
+	//}
+
+
 	//for (size_t i = 0; i < iBoneCount; ++i)
 	//{
 	//	fromU[i] = m_Blend.fromUpperAnim ? m_Blend.fromUpperAnim->GetBoneMatrix(static_cast<_uint>(i)) : XMMatrixIdentity();
@@ -202,6 +284,157 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 
 		switch (m_eCurrentTransitionType)
 		{
+		case ET::BlendTreeToFullbody:
+		{
+			vector<_matrix> fromAccumulatedMatrices(iBoneCount, XMMatrixIdentity());
+
+			// 블렌드 트리 애니메이션 목록과 가중치 목록은 `m_Blend`에 있어야 합니다.
+			auto& fromAnims = m_Blend.fromBlendAnims;
+			auto& fromWeights = m_Blend.fromBlendWeights; // 이 변수가 m_Blend에 있다고 가정
+
+			for (size_t k = 0; k < fromAnims.size(); ++k)
+			{
+				if (!fromAnims[k] || fromWeights.empty() || k >= fromWeights.size()) continue;
+
+				for (size_t i = 0; i < iBoneCount; ++i)
+				{
+					_matrix animMatrix = fromAnims[k]->GetBoneMatrix(static_cast<_uint>(i));
+					// Decompose, Slerp, Lerp를 사용하여 매트릭스 보간
+					_vector sS, sR, sT;
+					_vector dS, dR, dT;
+
+					// 현재 가중합된 매트릭스 분해
+					XMMatrixDecompose(&sS, &sR, &sT, fromAccumulatedMatrices[i]);
+					// 현재 애니메이션의 매트릭스 분해
+					XMMatrixDecompose(&dS, &dR, &dT, animMatrix);
+
+					_vector bS = XMVectorLerp(sS, dS, fromWeights[k]);
+					_vector bR = XMQuaternionSlerp(sR, dR, fromWeights[k]);
+					_vector bT = XMVectorLerp(sT, dT, fromWeights[k]);
+
+					fromAccumulatedMatrices[i] = XMMatrixScalingFromVector(bS) * XMMatrixRotationQuaternion(bR) * XMMatrixTranslationFromVector(bT);
+				}
+			}
+
+			// 목표(to) 풀바디 매트릭스
+			vector<_matrix> toMatrices(iBoneCount);
+			CollectBoneMatrices(m_Blend.toLowerAnim, toMatrices, iBoneCount);
+
+			// 최종 보간: 블렌드 트리 가중합 매트릭스 ↔ 풀바디 매트릭스
+			for (size_t i = 0; i < iBoneCount; ++i)
+			{
+				_matrix finalM = LerpMatrix(fromAccumulatedMatrices[i], toMatrices[i], fBlendFactor);
+				m_Bones[i]->Set_TransformationMatrix(finalM);
+			}
+		}
+		break;
+
+		case ET::FullbodyToBlendTree:
+		{
+			vector<_matrix> fromMatrices(iBoneCount);
+			CollectBoneMatrices(m_Blend.fromLowerAnim, fromMatrices, iBoneCount);
+
+			// 목표(to) 블렌드 트리의 매트릭스 가중합
+			vector<_matrix> toAccumulatedMatrices(iBoneCount, XMMatrixIdentity());
+
+			auto& toAnims = m_Blend.toBlendAnims;
+			auto& toWeights = m_Blend.toBlendWeights; // 이 변수가 m_Blend에 있다고 가정
+
+			for (size_t k = 0; k < toAnims.size(); ++k)
+			{
+				if (!toAnims[k] || toWeights.empty() || k >= toWeights.size()) continue;
+
+				for (size_t i = 0; i < iBoneCount; ++i)
+				{
+					_matrix animMatrix = toAnims[k]->GetBoneMatrix(static_cast<_uint>(i));
+					// Decompose, Slerp, Lerp를 사용하여 매트릭스 보간
+					_vector sS, sR, sT;
+					_vector dS, dR, dT;
+					XMMatrixDecompose(&sS, &sR, &sT, toAccumulatedMatrices[i]);
+					XMMatrixDecompose(&dS, &dR, &dT, animMatrix);
+					_vector bS = XMVectorLerp(sS, dS, toWeights[k]);
+					_vector bR = XMQuaternionSlerp(sR, dR, toWeights[k]);
+					_vector bT = XMVectorLerp(sT, dT, toWeights[k]);
+					toAccumulatedMatrices[i] = XMMatrixScalingFromVector(bS) * XMMatrixRotationQuaternion(bR) * XMMatrixTranslationFromVector(bT);
+				}
+			}
+
+			// 최종 보간: 풀바디 매트릭스 ↔ 블렌드 트리 가중합 매트릭스
+			for (size_t i = 0; i < iBoneCount; ++i)
+			{
+				_matrix finalM = LerpMatrix(fromMatrices[i], toAccumulatedMatrices[i], fBlendFactor);
+				m_Bones[i]->Set_TransformationMatrix(finalM);
+			}
+		}
+		break;
+		case ET::BlendTreeToBlendTree:
+
+		{
+			vector<_matrix> fromAccumulatedMatrices(iBoneCount, XMMatrixIdentity());
+
+			// 이전 블렌드 트리의 애니메이션 클립 목록과 가중치 목록을 가져옵니다.
+			// 이들은 CAnimController::TransitionResult를 통해 m_Blend에 저장되어 있어야 합니다.
+			const auto& fromAnims = m_Blend.fromBlendAnims;
+			const auto& fromWeights = m_Blend.fromBlendWeights; // m_Blend에 추가해야 하는 멤버
+
+			// 각 본에 대해, 모든 'from' 애니메이션을 가중합합니다.
+			for (size_t i = 0; i < iBoneCount; ++i)
+			{
+				// 첫 번째 애니메이션 매트릭스로 초기화
+				if (!fromAnims.empty() && fromAnims[0])
+				{
+					fromAccumulatedMatrices[i] = fromAnims[0]->GetBoneMatrix(static_cast<_uint>(i));
+				}
+
+				// 나머지 애니메이션들을 가중치에 따라 블렌딩
+				for (size_t k = 1; k < fromAnims.size(); ++k)
+				{
+					if (!fromAnims[k] || fromWeights.empty() || k >= fromWeights.size()) continue;
+
+					_matrix nextAnimMatrix = fromAnims[k]->GetBoneMatrix(static_cast<_uint>(i));
+
+					// 기존 매트릭스와 새 매트릭스를 가중치에 따라 보간
+					fromAccumulatedMatrices[i] = LerpMatrix(fromAccumulatedMatrices[i], nextAnimMatrix, fromWeights[k]);
+				}
+			}
+
+
+			// 2. 목표(to) 블렌드 트리의 최종 매트릭스 계산
+			vector<_matrix> toAccumulatedMatrices(iBoneCount, XMMatrixIdentity());
+
+			// 목표 블렌드 트리의 애니메이션 클립 목록과 가중치 목록을 가져옵니다.
+			const auto& toAnims = m_Blend.toBlendAnims;
+			const auto& toWeights = m_Blend.toBlendWeights; // m_Blend에 추가해야 하는 멤버
+
+			// 각 본에 대해, 모든 'to' 애니메이션을 가중합합니다.
+			for (size_t i = 0; i < iBoneCount; ++i)
+			{
+				// 첫 번째 애니메이션 매트릭스로 초기화
+				if (!toAnims.empty() && toAnims[0])
+				{
+					toAccumulatedMatrices[i] = toAnims[0]->GetBoneMatrix(static_cast<_uint>(i));
+				}
+
+				// 나머지 애니메이션들을 가중치에 따라 블렌딩
+				for (size_t k = 1; k < toAnims.size(); ++k)
+				{
+					if (!toAnims[k] || toWeights.empty() || k >= toWeights.size()) continue;
+
+					_matrix nextAnimMatrix = toAnims[k]->GetBoneMatrix(static_cast<_uint>(i));
+					toAccumulatedMatrices[i] = LerpMatrix(toAccumulatedMatrices[i], nextAnimMatrix, toWeights[k]);
+				}
+			}
+
+
+			// 3. 최종 보간
+			// '이전 블렌드 트리'의 결과 매트릭스 ↔ '목표 블렌드 트리'의 결과 매트릭스
+			for (size_t i = 0; i < iBoneCount; ++i)
+			{
+				_matrix finalM = LerpMatrix(fromAccumulatedMatrices[i], toAccumulatedMatrices[i], fBlendFactor);
+				m_Bones[i]->Set_TransformationMatrix(finalM);
+			}
+		}
+		break;
 		case ET::FullbodyToFullbody:
 			finalM = LerpMatrix(fromL[i], toL[i], fBlendFactor);
 			break;
@@ -372,6 +605,49 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 	}
 }
 
+void CAnimator::UpdateBlendTreePlayback(_float fDeltaTime, size_t iBoneCount, vector<string>& triggeredEvents)
+{
+	auto btState = static_cast<const CAnimController::BlendTreeState*>(m_pCurAnimController->GetCurrentState());
+	const auto& anims = btState->blendAnimations;
+	const auto& weights = btState->blendWeights;
+
+	vector<CAnimation*> uniqueAnims;
+	uniqueAnims.reserve(anims.size());
+	for (auto* anim : anims) {
+		if (anim && find(uniqueAnims.begin(), uniqueAnims.end(), anim) == uniqueAnims.end())
+			uniqueAnims.push_back(anim);
+	}
+
+	for (auto* anim : uniqueAnims)
+	{
+		anim->Update_Bones(fDeltaTime, m_Bones, anim->Get_isLoop(), &triggeredEvents);
+	}
+
+	vector<vector<_matrix>> animBones;
+	animBones.resize(anims.size(), vector<_matrix>(iBoneCount));
+	for (size_t k = 0; k < anims.size(); ++k) {
+		CollectBoneMatrices(anims[k], animBones[k], iBoneCount);
+	}
+
+	for (size_t bi = 0; bi < iBoneCount; ++bi) {
+		_vector accumS = XMVectorZero(), accumR = XMVectorZero(), accumT = XMVectorZero();
+		for (size_t k = 0; k < anims.size(); ++k) {
+			_vector s, r, t;
+			XMMatrixDecompose(&s, &r, &t, animBones[k][bi]);
+			float w = weights[k];
+			accumS = XMVectorAdd(accumS, XMVectorScale(s, w));
+			accumT = XMVectorAdd(accumT, XMVectorScale(t, w));
+			accumR = XMVectorAdd(accumR, XMVectorScale(r, w));
+		}
+		accumR = XMQuaternionNormalize(accumR);
+		_matrix finalM =
+			XMMatrixScalingFromVector(accumS) *
+			XMMatrixRotationQuaternion(accumR) *
+			XMMatrixTranslationFromVector(accumT);
+		m_Bones[bi]->Set_TransformationMatrix(finalM);
+	}
+}
+
 void CAnimator::UpdateMaskState()
 {
 	if (m_pCurAnimController == nullptr)
@@ -482,6 +758,17 @@ void CAnimator::AddUniqueClip(CAnimation* pClip, array<CAnimation*, 4>& pArray, 
 			return;
 	}
 	pArray[clipCount++] = pClip;
+}
+
+void CAnimator::AddUniqueClip(CAnimation* pClip, vector<CAnimation*>& pVec)
+{
+	if (!pClip) return;
+	for (const auto& existingClip : pVec)
+	{
+		if (existingClip == pClip)
+			return;
+	}
+	pVec.push_back(pClip);
 }
 
 void CAnimator::RootMotionDecomposition()
