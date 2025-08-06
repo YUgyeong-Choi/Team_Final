@@ -91,6 +91,15 @@ namespace Client
 		_int     iItemIndex;
 	}ITEM_DESC;
 
+
+	typedef struct tagSkillDesc {
+		_int  iSkillType; // 0 공격 1 방어 2 유틸
+		_int  iManaCost; // 한번에 사용할
+		_bool isCombo;
+		_int  iCountCombo; // 몇 콤보까지 되는지
+		
+	}SKILL_DESC;
+
 #pragma endregion
 
 #pragma region YG

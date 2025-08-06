@@ -166,6 +166,17 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		m_pAnimator->SetTrigger("StrongAttack");
 	}
 
+	if (KEY_DOWN(DIK_T))
+	{
+		static _bool bCharge = false;
+		static _int iTestCombo = 0;
+			m_pAnimator->SetInt("ArmCombo", iTestCombo++);
+			iTestCombo %= 2;
+		m_pAnimator->SetBool("Charge", bCharge);
+		bCharge = !bCharge;
+		m_pAnimator->SetTrigger("ArmAttack");
+	}
+
 	if (m_pAnimator->IsFinished())
 		int a = 0;
 }
@@ -200,7 +211,7 @@ void CPlayer::HandleInput()
 
 	/* [ 특수키 입력을 업데이트합니다. ] */
 	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
-	m_Input.bCtrl = KEY_DOWN(DIK_LCONTROL);
+	m_Input.bCtrl = false;//KEY_DOWN(DIK_LCONTROL);
 	m_Input.bTap = KEY_DOWN(DIK_TAB);
 	m_Input.bItem = KEY_DOWN(DIK_R);
 	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
@@ -233,6 +244,7 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 		m_eCurrentState = eNextState; 
 		m_pCurrentState = m_pStateArray[ENUM_CLASS(m_eCurrentState)];
 
+		m_pCurrentState->Enter();
 	}
 
 	m_pCurrentState->Execute(fTimeDelta);
@@ -254,7 +266,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	
 	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
-	printf("Anim Category: %d\n", static_cast<int>(eCategory));
+	//printf("Anim Category: %d\n", static_cast<int>(eCategory));
 
 	switch (eCategory)
 	{
@@ -598,6 +610,8 @@ HRESULT CPlayer::Ready_Weapon()
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
 
+	
+
 	return S_OK;
 }
 
@@ -702,8 +716,15 @@ void CPlayer::Update_Stat()
 	else if (m_pGameInstance->Key_Down(DIK_B))
 	{
 		m_iCurrentHP -= 10;
+		if (m_iCurrentHP < 0)
+			m_iCurrentHP = 0;
+
 		m_iCurrentStamina -= 20;
+		if (m_iCurrentStamina < 0)
+			m_iCurrentStamina = 0;
 		m_iCurrentMana -= 100;
+		if (m_iCurrentMana < 0)
+			m_iCurrentMana = 0;
 		Callback_HP();
 		Callback_Mana();
 		Callback_Stamina();
@@ -760,7 +781,7 @@ void CPlayer::Update_Slot()
 			
 		m_isSelectUpBelt = false;
 
-
+			
 		Callback_DownBelt();
 	}
 
@@ -775,6 +796,16 @@ void CPlayer::Update_Slot()
 			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pSelectItem);
 		else
 			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pSelectItem);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_TAB))
+	{	
+		if(m_bSwitch)
+			m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pWeapon);
+		else
+			m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
+
+		m_bSwitch = !m_bSwitch;
 	}
 }
 
@@ -813,7 +844,7 @@ HRESULT CPlayer::UpdateShadowCamera()
 	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
 	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
+	Desc.fFar = 1000.f;
 
 	Desc.fFovy = XMConvertToRadians(40.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))

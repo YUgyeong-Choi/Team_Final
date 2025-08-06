@@ -447,6 +447,68 @@ PS_OUT PS_MAIN_ITEM_ICON(PS_IN In)
 }
 
 
+PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
+{
+    PS_OUT Out;
+    Out.vColor = float4(0.f, 0.f, 0.f, 0.f);
+
+   
+    vector vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    vector vBack = g_BackgroundTexture.Sample(DefaultSampler, In.vTexcoord);
+
+    
+    float fMarginX = 0.06f;
+    float fMarginY = 0.3f;
+
+// Y 범위 밖이면 버림
+    if (In.vTexcoord.y < fMarginY || In.vTexcoord.y > 1.0f - fMarginY)
+        discard;
+    
+    if (In.vTexcoord.x < fMarginX || In.vTexcoord.x > 1.0f - fMarginX)
+        discard;
+    
+    if (vBorder.a > 0.1f)
+    {
+        Out.vColor = vBorder;
+        return Out;
+    }
+
+    float borderThickness = 0.1f;
+
+    float fillStartX = borderThickness * 0.65f;
+    float fillEndX = 1.0f - borderThickness * 0.7f;
+
+    float fillStartY = borderThickness * 3.6f;
+    float fillEndY = 1.0f - borderThickness * 3.35f;
+
+
+    if (In.vTexcoord.x < fillStartX || In.vTexcoord.x > fillEndX ||
+    In.vTexcoord.y < fillStartY || In.vTexcoord.y > fillEndY)
+    {
+        Out.vColor = float4(0.f, 0.f, 0.f, 0.7f);
+
+    }
+    else
+    {
+       bool isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
+        
+        if (isInsideX)
+            Out.vColor = g_Color;
+        else
+            Out.vColor = float4(0.f, 0.f, 0.f, 0.7f);
+    }
+
+   
+        
+     
+
+        
+
+   
+
+    return Out;
+}
+
 
 technique11 DefaultTechnique
 { 
@@ -545,6 +607,16 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_ITEM_ICON();
 
+    }
+    pass Durability
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_DURABILITYBAR();
     }
    
 }

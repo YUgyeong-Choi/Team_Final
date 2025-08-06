@@ -1942,9 +1942,9 @@ void CAnimTool::SaveLoadAnimStates(_bool isSave)
 	{
 		if (m_pCurAnimator)
 		{
-		json j = 	m_pCurAnimator->Serialize();
-		ofstream ofs(path);
-		ofs << j.dump(4);
+			json j = m_pCurAnimator->Serialize();
+			ofstream ofs(path);
+			ofs << j.dump(4);
 		}
 		else
 		{

@@ -42,8 +42,8 @@ HRESULT CLevel_DH::Initialize()
 
 
 
-	//if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
@@ -361,7 +361,7 @@ HRESULT CLevel_DH::Ready_Lights()
 	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 	Desc.fFovy = XMConvertToRadians(60.0f);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
+	Desc.fFar = 1000.f;
 
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
 		return E_FAIL;
@@ -377,7 +377,7 @@ HRESULT CLevel_DH::Ready_Shadow()
 	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 	Desc.fFovy = XMConvertToRadians(60.0f);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
+	Desc.fFar = 1000.f;
 
 	Desc.vEye = _float4(0.f, 100.f, -20.f, 1.f);
 	Desc.fFovy = XMConvertToRadians(40.0f);

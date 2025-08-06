@@ -22,6 +22,11 @@ vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 float g_fID;
 
 
+/* [ 타일링 전용 ] */
+bool g_bTile = false;
+float2 g_TileDensity = float2(1.0f, 1.0f);
+
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -109,17 +114,47 @@ struct PS_SKY_OUT
     vector vDiffuse : SV_TARGET0;
 };
 
+float4 Sample_TriplanarTexture(Texture2D tex, PS_IN In, out float2 dummyUV, out float3 blend)
+{
+    if (g_bTile)
+    {
+        float3 worldNormal = normalize(In.vNormal.xyz);
+        blend = abs(worldNormal);
+        blend = pow(blend, 3.0);
+        blend /= (blend.x + blend.y + blend.z); // normalize
+
+        float2 uvXZ = In.vWorldPos.zx * g_TileDensity; // Y축 평면
+        float2 uvXY = In.vWorldPos.xy * g_TileDensity; // Z축 평면
+        float2 uvYZ = In.vWorldPos.zy * g_TileDensity; // X축 평면
+
+        float4 sampleXZ = tex.Sample(DefaultSampler, uvXZ);
+        float4 sampleXY = tex.Sample(DefaultSampler, uvXY);
+        float4 sampleYZ = tex.Sample(DefaultSampler, uvYZ);
+
+        dummyUV = uvXZ; // 아무거나 반환 (디버깅용)
+        return sampleXZ * blend.y + sampleXY * blend.z + sampleYZ * blend.x;
+    }
+    else
+    {
+        dummyUV = In.vTexcoord;
+        blend = float3(0, 0, 0); // unused
+        return tex.Sample(DefaultSampler, In.vTexcoord);
+    }
+}
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
     
+    float2 vTriplanarUV;
+    float3 vTriplanarBlend;
+    
     // 디퓨즈 텍스처
-    vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+    float4 vMtrlDiffuse = Sample_TriplanarTexture(g_DiffuseTexture, In, vTriplanarUV, vTriplanarBlend);
     if (vMtrlDiffuse.a < 0.3f)
         discard;
     
     // 노말 텍스처
-    vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
+    vector vNormalDesc = Sample_TriplanarTexture(g_NormalTexture, In, vTriplanarUV, vTriplanarBlend);
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);

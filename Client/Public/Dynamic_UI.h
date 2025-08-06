@@ -39,7 +39,7 @@ public:
 	
 	_wstring& Get_StrTextureTag() { return m_strTextureTag; }
 
-	
+	void Set_iTextureIndex(_int iIndex) { m_iTextureIndex = iIndex; }
 
 	vector<class CUI_Feature*>& Get_Features();
 

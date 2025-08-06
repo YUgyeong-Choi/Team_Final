@@ -25,7 +25,7 @@ Texture2D g_ShadowTextureB;
 Texture2D g_ShadowTextureC;
 
 /* [ 볼륨메트리 포그 ] */
-float g_fFogSpeed = 0.5f;
+float g_fFogSpeed = 0.1f;
 float g_fFogPower = 1.5f;
 float g_fFogCutoff = 15.f;
 float g_fTime;
@@ -252,7 +252,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     Out.vShade = g_vLightDiffuse * saturate(fShade);
     
     vector  vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);    
-    float fViewZ = vDepthDesc.y * 500.f;
+    float fViewZ = vDepthDesc.y * 1000.f;
     
     vector vWorldPos;
     
@@ -286,7 +286,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     
         
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y * 500.f;
+    float fViewZ = vDepthDesc.y * 1000.f;
     
     vector vWorldPos;
     
@@ -335,7 +335,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
-    float3 Ambient = Albedo * g_fLightAmbient * AO;
+    float3 Ambient = Albedo * 0.1f * AO;
     
     // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;
@@ -446,8 +446,8 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
-
-    float fAtt = saturate((g_fLightRange - distance) / g_fLightRange);
+    
+    float fAtt = saturate(1.0 - pow(distance / g_fLightRange, 4.0));
 
     // [ 뷰, 하프 벡터 ]
     float3 V = normalize(g_vCamPosition.xyz - worldPos.xyz);
@@ -489,7 +489,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     radiance *= 3.5f;
 
     // [ 최종 조명 ]
-    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt + Ambient;
+    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt;//    +Ambient;
     float3 Specalur = Specular * radiance;
 
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
@@ -538,7 +538,7 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
 
-    float fAtt = saturate((g_fLightRange - distance) / g_fLightRange);
+    float fAtt = saturate(1.0 - pow(distance / g_fLightRange, 4.0));
     
     float3 SpotDir = normalize(-g_vLightDir.xyz);
     float3 ToPixel = normalize(worldPos.xyz - g_vLightPos.xyz);
@@ -589,7 +589,7 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     radiance *= 3.5f;
     
     // [ 최종 조명 ]
-    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt + Ambient;
+    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt;//    +Ambient;
     float3 Specalur = Specular * radiance;
 
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
@@ -671,7 +671,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
         float distanceToLight = length(g_vLightPos.xyz - worldPos);
         float softFalloff = saturate(1.0f - (distanceToLight / g_fFogCutoff));
 
-        float density = SampleFogDensity(worldPos, g_fTime);
+        float density = 0.3f; //SampleFogDensity(worldPos, g_fTime);
         float shadow = SampleShadowMap(worldPos);
         
         float transmittance = 1.0f - shadow;
@@ -761,9 +761,14 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
         int NumLights = max(g_iPointNum, 1);
         LightFog += density * transmittance * StepSize * 0.05f;
     }
-
+    
     float3 fogColor = g_vLightDiffuse.rgb;
     float3 finalFog = fogColor * (LightFog * g_fFogPower);
+    
+    float fadeRatio = saturate(viewZ / 500.0f);
+    float3 fadeFog = fogColor * fadeRatio * g_fFogPower;
+    
+    finalFog = lerp(finalFog, fadeFog, fadeRatio);
 
     Out.vVolumetric = float4(finalFog, 1.f);
     return Out;
@@ -849,17 +854,19 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
         float softFalloff = saturate(1.0f - (distanceToLight / g_fFogCutoff));
 
         // [ 밀도 + 그림자 ]
-        float density = SampleFogDensity(worldPos, g_fTime);
+        float density = 0.3f; //SampleFogDensity(worldPos, g_fTime);
         float shadow = SampleShadowMap(worldPos);
         float transmittance = 1.0f - shadow;
 
         // [ 누적 ]
-        LightFog += density * transmittance * softFalloff * spotFalloff * StepSize * 0.05f;
+        LightFog += density * transmittance * softFalloff * spotFalloff * StepSize * 0.05f;        
+        
     }
-
-    // [ 최종 적용 ]
+    
+    
+    // 정규화 적용
     float3 fogColor = g_vLightDiffuse.rgb;
-    float3 finalFog = fogColor * (LightFog * g_fFogPower * 100.f);
+    float3 finalFog = fogColor * (LightFog * g_fFogPower * 100.f / max(viewZ, 1.0f));
 
     Out.vVolumetric = float4(finalFog, 1.f);
     return Out;
@@ -881,7 +888,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vVolumetric = g_VolumetricTexture.Sample(DefaultSampler, In.vTexcoord);
-    float fViewZ = vDepthDesc.y * 500.f;
+    float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = vPBRFinal;
     finalColor = Out.vBackBuffer;
@@ -936,7 +943,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     uvA.y = vLightPosA.y / vLightPosA.w * -0.5f + 0.5f;
     
     float4 vDepthA = g_ShadowTextureA.Sample(DefaultSampler, uvA);
-    float fShadowViewZA = vDepthA.y * 500.f;
+    float fShadowViewZA = vDepthA.y * 1000.f;
     
     // 2. Cascade B
     vector vLightPosB;
@@ -948,7 +955,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     uvB.y = vLightPosB.y / vLightPosB.w * -0.5f + 0.5f;
     
     float4 vDepthB = g_ShadowTextureB.Sample(DefaultSampler, uvB);
-    float fShadowViewZB = vDepthB.y * 500.f;
+    float fShadowViewZB = vDepthB.y * 1000.f;
 
     // 3. Cascade C
     vector vLightPosC;
@@ -960,7 +967,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     uvC.y = vLightPosC.y / vLightPosC.w * -0.5f + 0.5f;
     
     float4 vDepthC = g_ShadowTextureC.Sample(DefaultSampler, uvC);
-    float fShadowViewZC = vDepthC.y * 500.f;
+    float fShadowViewZC = vDepthC.y * 1000.f;
 
     // --- 깊이 비교 ---
     float fBias = 0.1f;

@@ -1,6 +1,27 @@
 {
     "animations": [
         {
+            "ClipName": "AS_Pino_Arm_Normal_BackHand",
+            "Duration": 134.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Arm_Normal_ChargeAttack",
+            "Duration": 175.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Arm_Normal_Hook",
+            "Duration": 130.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
             "ClipName": "AS_Pino_Fail_Arm",
             "Duration": 155.0,
             "IsLoop": false,
@@ -10,6 +31,13 @@
         {
             "ClipName": "AS_Pino_Fail_Item",
             "Duration": 120.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Grinder_End",
+            "Duration": 53.0,
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

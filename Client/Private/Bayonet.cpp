@@ -34,6 +34,20 @@ HRESULT CBayonet::Initialize(void* pArg)
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	m_pTransformCom->Scaling(_float3{0.4f,0.4f,0.4f});
 
+	// 스킬 정보 세팅
+
+	m_eSkillDesc[0].iManaCost = 300;
+	m_eSkillDesc[0].iSkillType = 0;
+	m_eSkillDesc[0].iCountCombo = 3;
+	m_eSkillDesc[0].isCombo = true;
+
+	m_eSkillDesc[1].iManaCost = 100;
+	m_eSkillDesc[1].iSkillType = 1;
+	m_eSkillDesc[1].iCountCombo = 0;
+	m_eSkillDesc[1].isCombo = false;
+
+	m_iDurability = m_iMaxDurability;
+
 	return S_OK;
 }
 

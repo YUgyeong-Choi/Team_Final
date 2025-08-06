@@ -26,7 +26,7 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	Desc.vAt = _float3(0.f, 0.f, 0.f);
 	Desc.fFov = XMConvertToRadians(60.0f);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
+	Desc.fFar = 1000.f;
 	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
 	Desc.fSpeedPerSec = 10.0f;
 	lstrcpy(Desc.szName, TEXT("Camera"));

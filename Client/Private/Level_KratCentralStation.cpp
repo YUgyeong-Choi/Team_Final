@@ -5,12 +5,14 @@
 #include "EffectContainer.h"
 
 #include "StaticMesh.h"
+#include "StaticMesh_Instance.h"
+
 #include "PBRMesh.h"
 #include "Level_Loading.h"
 #include "UI_Container.h"
 
 #include "Player.h"
-
+#include "Wego.h"
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -26,9 +28,13 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
-	if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
+		return E_FAIL;*/
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+
+	//제이슨으로 저장된 맵을 로드한다. (왜 안되지 모델을 왜 못찾지)
+	if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
 		return E_FAIL;
 
 	// 값 sync 맞추려고 플레이어 생성 전에 미리 생성해서 옵저버에 콜백 등록하기 위해
@@ -38,12 +44,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	//애니메이션 오브젝트
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
-	/*if (FAILED(Ready_MapModel()))
-		return E_FAIL;
-	if (FAILED(LoadMap()))
-		return E_FAIL;*/
 
-	
 
 	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
@@ -55,7 +56,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	m_pGameInstance->Set_IsChangeLevel(false);
 
-	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+	//CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 	return S_OK;
 }
 
@@ -123,70 +124,7 @@ HRESULT CLevel_KratCentralStation::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
-{
-	//이미 프로토타입이존재하는 지확인
-
-	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
-	{
-		MSG_BOX("이미 프로토타입이 존재함");
-		return S_OK;
-	}
-
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag,
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_MapModel()
-{
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
-	if (!inFile.is_open())
-	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
-		return S_OK;
-	}
-
-	json ReadyModelJson;
-	try
-	{
-		inFile >> ReadyModelJson;
-		inFile.close();
-	}
-	catch (const exception& e)
-	{
-		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-		return E_FAIL;
-	}
-
-	// JSON 데이터 확인
-	for (const auto& element : ReadyModelJson)
-	{
-		string ModelName = element.value("ModelName", "");
-		string Path = element.value("Path", "");
-
-		//모델 프로토 타입 생성
-		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-
-		const _char* pModelFilePath = Path.c_str();
-
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
-		{
-			return E_FAIL;
-		}
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::LoadMap()
+HRESULT CLevel_KratCentralStation::LoadMap(_uint iLevelIndex)
 {
 	ifstream inFile("../Bin/Save/MapTool/MapData.json");
 	if (!inFile.is_open())
@@ -205,45 +143,250 @@ HRESULT CLevel_KratCentralStation::LoadMap()
 	for (_uint i = 0; i < iModelCount; ++i)
 	{
 		string ModelName = Models[i]["ModelName"];
-		_uint iObjectCount = Models[i]["ObjectCount"];
+		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.(아니 충돌여부로 인스턴싱 해야겠다.)
 		const json& objects = Models[i]["Objects"];
 
-		for (_uint j = 0; j < iObjectCount; ++j)
+		_bool bCollision = Models[i]["Collision"];
+		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
+		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
 		{
-			const json& WorldMatrixJson = objects[j]["WorldMatrix"];
-			_float4x4 WorldMatrix = {};
-
-			for (_int row = 0; row < 4; ++row)
-				for (_int col = 0; col < 4; ++col)
-					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-			//오브젝트 생성, 배치
-
-			wstring LayerTag = TEXT("Layer_MapToolObject_");
-			LayerTag += StringToWString(ModelName);
-
-			CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
-
-			StaticMeshDesc.iRender = 0;
-			StaticMeshDesc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-			//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
-
-			wstring wstrModelName = StringToWString(ModelName);
-			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
-			ModelPrototypeTag += wstrModelName;
-
-			lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-			StaticMeshDesc.WorldMatrix = WorldMatrix;
-
-			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
-				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), LayerTag, &StaticMeshDesc)))
-				return E_FAIL;
-
+			Load_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
+		}
+		else
+		{
+			Load_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex);
 		}
 	}
 
 	return S_OK;
 }
+
+HRESULT CLevel_KratCentralStation::Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
+{
+	for (_uint j = 0; j < iObjectCount; ++j)
+	{
+#pragma region 월드행렬
+		CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
+
+		const json& WorldMatrixJson = objects[j]["WorldMatrix"];
+		_float4x4 WorldMatrix = {};
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+		StaticMeshDesc.WorldMatrix = WorldMatrix;
+#pragma endregion
+
+#pragma region 타일링
+		//타일링
+		if (objects[j].contains("TileDensity"))
+		{
+			StaticMeshDesc.bUseTiling = true;
+
+			const json& TileDensityJson = objects[j]["TileDensity"];
+			StaticMeshDesc.vTileDensity = {
+				TileDensityJson[0].get<_float>(),
+				TileDensityJson[1].get<_float>()
+			};
+		}
+#pragma endregion
+
+#pragma region 콜라이더
+		//콜라이더
+		if (objects[j].contains("ColliderType") && objects[j]["ColliderType"].is_number_integer())
+		{
+			StaticMeshDesc.eColliderType = static_cast<COLLIDER_TYPE>(objects[j]["ColliderType"].get<_int>());
+		}
+		else
+			return E_FAIL;
+#pragma endregion
+
+		wstring LayerTag = TEXT("Layer_MapToolObject_");
+		LayerTag += StringToWString(ModelName);
+
+		StaticMeshDesc.iRender = 0;
+		StaticMeshDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
+		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+		wstring wstrModelName = StringToWString(ModelName);
+		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
+		ModelPrototypeTag += wstrModelName;
+
+		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+
+		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
+			iLevelIndex, LayerTag, &StaticMeshDesc)))
+			return E_FAIL;
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
+{
+	vector<_float4x4> InstanceMatixs(iObjectCount);
+
+	for (_uint i = 0; i < iObjectCount; ++i)
+	{
+		const json& WorldMatrixJson = objects[i]["WorldMatrix"];
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				InstanceMatixs[i].m[row][col] = WorldMatrixJson[row][col];
+	}
+
+
+	//오브젝트 생성, 배치
+
+	wstring LayerTag = TEXT("Layer_MapToolObject_");
+	LayerTag += StringToWString(ModelName);
+
+	CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
+	StaticMeshInstanceDesc.iNumInstance = iObjectCount;//인스턴스 갯수랑
+	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
+
+	StaticMeshInstanceDesc.iRender = 0;
+	StaticMeshInstanceDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
+	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+	wstring wstrModelName = StringToWString(ModelName);
+	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance_"); //인스턴스 용 모델을 준비해야겠는디?
+	ModelPrototypeTag += wstrModelName;
+
+	lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		iLevelIndex, LayerTag, &StaticMeshInstanceDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+
+//HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
+//{
+//	//이미 프로토타입이존재하는 지확인
+//
+//	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
+//	{
+//		MSG_BOX("이미 프로토타입이 존재함");
+//		return S_OK;
+//	}
+//
+//	_matrix		PreTransformMatrix = XMMatrixIdentity();
+//	PreTransformMatrix = XMMatrixIdentity();
+//	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+//
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag,
+//		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
+//		return E_FAIL;
+//
+//	return S_OK;
+//}
+//
+//HRESULT CLevel_KratCentralStation::Ready_MapModel()
+//{
+//	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+//	if (!inFile.is_open())
+//	{
+//		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+//		return S_OK;
+//	}
+//
+//	json ReadyModelJson;
+//	try
+//	{
+//		inFile >> ReadyModelJson;
+//		inFile.close();
+//	}
+//	catch (const exception& e)
+//	{
+//		inFile.close();
+//		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+//		return E_FAIL;
+//	}
+//
+//	// JSON 데이터 확인
+//	for (const auto& element : ReadyModelJson)
+//	{
+//		string ModelName = element.value("ModelName", "");
+//		string Path = element.value("Path", "");
+//
+//		//모델 프로토 타입 생성
+//		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+//
+//		const _char* pModelFilePath = Path.c_str();
+//
+//		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+//		{
+//			return E_FAIL;
+//		}
+//	}
+//
+//	return S_OK;
+//}
+//
+//HRESULT CLevel_KratCentralStation::LoadMap()
+//{
+//	ifstream inFile("../Bin/Save/MapTool/MapData.json");
+//	if (!inFile.is_open())
+//	{
+//		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
+//		return S_OK;
+//	}
+//
+//	json MapDataJson;
+//	inFile >> MapDataJson;
+//	inFile.close();
+//
+//	_uint iModelCount = MapDataJson["ModelCount"];
+//	const json& Models = MapDataJson["Models"];
+//
+//	for (_uint i = 0; i < iModelCount; ++i)
+//	{
+//		string ModelName = Models[i]["ModelName"];
+//		_uint iObjectCount = Models[i]["ObjectCount"];
+//		const json& objects = Models[i]["Objects"];
+//
+//		for (_uint j = 0; j < iObjectCount; ++j)
+//		{
+//			const json& WorldMatrixJson = objects[j]["WorldMatrix"];
+//			_float4x4 WorldMatrix = {};
+//
+//			for (_int row = 0; row < 4; ++row)
+//				for (_int col = 0; col < 4; ++col)
+//					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+//
+//			//오브젝트 생성, 배치
+//
+//			wstring LayerTag = TEXT("Layer_MapToolObject_");
+//			LayerTag += StringToWString(ModelName);
+//
+//			CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
+//
+//			StaticMeshDesc.iRender = 0;
+//			StaticMeshDesc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+//			//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
+//
+//			wstring wstrModelName = StringToWString(ModelName);
+//			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
+//			ModelPrototypeTag += wstrModelName;
+//
+//			lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+//			StaticMeshDesc.WorldMatrix = WorldMatrix;
+//
+//			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+//				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), LayerTag, &StaticMeshDesc)))
+//				return E_FAIL;
+//
+//		}
+//	}
+//
+//	return S_OK;
+//}
 
 HRESULT CLevel_KratCentralStation::Ready_Player()
 {
@@ -260,21 +403,60 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
 
+
+	//CWego::WEGO_DESC pWegoDesc{};
+	////pDesc.fSpeedPerSec = 1.f;
+	//pWegoDesc.fSpeedPerSec = 5.f;
+	//pWegoDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	//pWegoDesc.eLevelID = LEVEL::STATIC;
+	//pWegoDesc.InitPos = _float3(0.f, 0.978f, 1.f);
+	//pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
+	//lstrcpy(pWegoDesc.szName, TEXT("Wego"));
+	//pWegoDesc.szMeshID = TEXT("Wego");
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Wego"), &pDesc)))
+	//	return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT CLevel_KratCentralStation::Ready_Lights()
 {
+#pragma region 호텔에 있던 라이트 가져옴
 	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
+	LightDesc.fAmbient = 0.2f;
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
+	CShadow::SHADOW_DESC		Desc{};
+	Desc.vEye = _float4(0.f, 20.f, -15.f, 1.f);
+	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	Desc.fFovy = XMConvertToRadians(60.0f);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 500.f;
+
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
+		return E_FAIL;
+
+#pragma endregion
+
+#pragma region 원래 여기 있던 라이트
+	//LIGHT_DESC			LightDesc{};
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.fAmbient = 0.2f;
 	LightDesc.fIntensity = 1.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);	
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.fFogDensity = 0.f;
-	
+
 	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
 		return E_FAIL;
 
@@ -289,6 +471,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 
 	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
 		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -299,7 +482,7 @@ HRESULT CLevel_KratCentralStation::Ready_Shadow()
 	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 	Desc.fFovy = XMConvertToRadians(60.0f);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
+	Desc.fFar = 1000.f;
 
 	Desc.vEye = _float4(76.f, 57.f, -21.f, 1.f);
 	Desc.fFovy = XMConvertToRadians(40.0f);
@@ -370,6 +553,10 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Panel_Player_LD"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Panel_Player_RD"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"))))
 		return E_FAIL;
 

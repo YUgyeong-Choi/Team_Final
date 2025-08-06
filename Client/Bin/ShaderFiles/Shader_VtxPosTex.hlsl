@@ -119,7 +119,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
     
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, vTexcoord);
     
-    float fOldViewZ = vDepthDesc.y * 500.f;
+    float fOldViewZ = vDepthDesc.y * 1000.f;
     
     Out.vColor.a = Out.vColor.a * saturate(fOldViewZ - In.vProjPos.w);
     

@@ -186,12 +186,13 @@ private: /* [ 루트모션 관련 변수 ] */
 private: // 옵저버 관련
 	// stat용
 	_int m_iCurrentHP = {};
-	_int m_iMaxHP = { 200 };
 	_int m_iCurrentStamina = {};
 	_int m_iMaxStamina = { 100 };
 	// 일단 한칸에 100씩
 	_int m_iCurrentMana = {};
 	_int m_iMaxMana = { 300 };
+
+	_bool m_bSwitch = { true };
 
 // 벨트 슬롯 
 private:

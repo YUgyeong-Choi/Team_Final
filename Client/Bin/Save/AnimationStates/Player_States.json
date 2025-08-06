@@ -9,18 +9,10 @@
             "States": [
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Run_F",
+                    "ClipName": "AS_Pino_T_Walk_BL",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Run_F",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Guard_Walk_B",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Guard_Walk_B",
+                    "Name": "Walk_BL",
                     "UpperClipName": ""
                 },
                 {
@@ -33,10 +25,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Walk_BL",
+                    "ClipName": "AS_Pino_T_Guard_Walk_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Walk_BL",
+                    "Name": "Guard_Walk_B",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_F",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F",
                     "UpperClipName": ""
                 },
                 {
@@ -49,14 +49,6 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Run_F_Stop",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Run_F_Stop",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Dash_Normal_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",
@@ -65,10 +57,26 @@
                 },
                 {
                     "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_F_Stop",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F_Stop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Sprint",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Sprint",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Arm_Normal_Hook",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Arm_NormalAttack",
                     "UpperClipName": ""
                 },
                 {
@@ -313,6 +321,14 @@
                 },
                 {
                     "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Arm_Normal_BackHand",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Arm_NormalAttack2",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Run_FR",
                     "LowerClipName": "",
                     "MaskBoneName": "",
@@ -341,6 +357,14 @@
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "MainSkill",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Fail_Item",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Fail_Item",
                     "UpperClipName": ""
                 },
                 {
@@ -374,6 +398,14 @@
                     "MaskBoneName": "",
                     "Name": "Dash_Focus_B",
                     "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_F",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "Fail_Walk",
+                    "UpperClipName": "AS_Pino_Fail_Item"
                 },
                 {
                     "BlendWeight": 1.0,
@@ -462,6 +494,22 @@
                     "MaskBoneName": "Bip001-Spine2",
                     "Name": "Guard_Walk_FR",
                     "UpperClipName": "AS_Pino_T_Guard_Walk_F"
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Arm_Normal_ChargeAttack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Arm_ChargeAttack",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Fail_Arm",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Fail_Arm",
+                    "UpperClipName": ""
                 }
             ]
         }

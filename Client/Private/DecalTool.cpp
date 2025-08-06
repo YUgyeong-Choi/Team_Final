@@ -46,6 +46,11 @@ HRESULT	CDecalTool::Render_ImGui()
 	return S_OK;
 }
 
+HRESULT CDecalTool::Spawn_DecalObject()
+{
+	return S_OK;
+}
+
 CDecalTool* CDecalTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
 	CDecalTool* pInstance = new CDecalTool(pDevice, pContext);

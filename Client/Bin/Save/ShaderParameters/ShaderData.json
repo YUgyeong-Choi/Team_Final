@@ -1,16 +1,16 @@
 {
-    "AOIntensity": 0.8600000143051147,
-    "AOPower": 0.3100000023841858,
+    "AOIntensity": 1.0399999618530273,
+    "AOPower": 1.5700000524520874,
     "AlbedoTint": [
-        0.8134740591049194,
-        0.8204985857009888,
+        1.0,
+        1.0,
         1.0,
         1.0
     ],
     "DiffuseIntensity": 1.0,
-    "MetallicIntensity": 0.8399999737739563,
-    "NormalIntensity": 0.6499999761581421,
-    "ReflectionIntensity": 0.5400000214576721,
-    "RoughnessIntensity": 1.5299999713897705,
-    "SpecularIntensity": 4.059999942779541
+    "MetallicIntensity": 0.9599999785423279,
+    "NormalIntensity": 0.7200000286102295,
+    "ReflectionIntensity": 1.6799999475479126,
+    "RoughnessIntensity": 0.7799999713897705,
+    "SpecularIntensity": 7.829999923706055
 }

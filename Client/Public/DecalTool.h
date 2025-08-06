@@ -21,6 +21,10 @@ public:
 	virtual HRESULT Render()override;
 	virtual HRESULT	Render_ImGui() override;
 
+private:
+	HRESULT Spawn_DecalObject();
+
+
 public:
 	static CDecalTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
