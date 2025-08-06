@@ -51,6 +51,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 
+	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
+	m_pBGM->Set_Volume(1.f);
 
 	m_pCamera_Manager->SetOrbitalCam();
 
@@ -96,8 +98,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		if (m_pStartVideo->Get_bDead())
 		{
 			/* [ 사운드 ] */
-			m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
-			m_pBGM->Set_Volume(1.f);
 			m_pBGM->Play();
 
 			

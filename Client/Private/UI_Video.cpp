@@ -105,6 +105,7 @@ void CUI_Video::Update(_float fTimeDelta)
 			}
 			else
 			{
+				Safe_Release(m_pVideoSRV);
 				Set_bDead();
 				return;
 			}
