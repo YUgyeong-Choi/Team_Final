@@ -1088,7 +1088,7 @@ PS_OUT PS_WB_COMPOSITE(PS_IN In)
     float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
     
     float3 vColor = vAccum.rgb / max(vAccum.a, 0.00001f); // 0 나누기 방지용
-    float fAlpha = saturate(fReveal);
+    float fAlpha = 1 - saturate(fReveal);
     
     Out.vBackBuffer = float4(vColor * fAlpha, fAlpha);
     

@@ -186,8 +186,8 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     PS_OUT_WB Out;
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
-    //if (mask < 0.003f)
-    //   discard;
+    if (mask < 0.003f)
+       discard;
     float4 vPreColor;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
     
