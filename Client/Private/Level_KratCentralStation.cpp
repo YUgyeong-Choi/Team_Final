@@ -630,7 +630,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 	m_pStartVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video")));
 
-	Safe_AddRef(m_pStartVideo);
+	
 
 	return S_OK;
 }
