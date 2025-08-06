@@ -166,6 +166,17 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		m_pAnimator->SetTrigger("StrongAttack");
 	}
 
+	if (KEY_DOWN(DIK_T))
+	{
+		static _bool bCharge = false;
+		static _int iTestCombo = 0;
+			m_pAnimator->SetInt("ArmCombo", iTestCombo++);
+			iTestCombo %= 2;
+		m_pAnimator->SetBool("Charge", bCharge);
+		bCharge = !bCharge;
+		m_pAnimator->SetTrigger("ArmAttack");
+	}
+
 	if (m_pAnimator->IsFinished())
 		int a = 0;
 }
