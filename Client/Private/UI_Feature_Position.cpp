@@ -53,7 +53,7 @@ void CUI_Feature_Position::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
     {
         m_iCurrentFrame = iCurrentFrame;
 
-        if (m_iCurrentFrame >= m_iEndFrame)
+        if (m_iCurrentFrame > m_iEndFrame)
             return;
 
     }

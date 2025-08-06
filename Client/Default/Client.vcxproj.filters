@@ -7,9 +7,6 @@
     <Filter Include="00.MainApp">
       <UniqueIdentifier>{ffac1f7d-cb22-4ce8-a7fd-43cfb62fb4db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ShaderFiles">
-      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels">
       <UniqueIdentifier>{3b3aeff7-5170-4d23-a6bc-ca661d804d84}</UniqueIdentifier>
     </Filter>
@@ -151,9 +148,6 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\HP">
       <UniqueIdentifier>{754f49d2-926e-4330-905d-0dc51623fb1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ShaderFiles\Effect">
-      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelCY">
       <UniqueIdentifier>{fe0db61e-17b3-4a02-b250-2ba12840b64c}</UniqueIdentifier>
     </Filter>
@@ -204,9 +198,6 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Panel\Player">
       <UniqueIdentifier>{21b0be92-1722-4dbf-9f8a-80c41ff5d6d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
-      <UniqueIdentifier>{58e701f2-137e-4b53-9f66-da65d354bf05}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Mana">
       <UniqueIdentifier>{367fcc09-a226-4aab-9b15-2cb35c437e7a}</UniqueIdentifier>
@@ -285,6 +276,36 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Durability">
       <UniqueIdentifier>{204442d3-c69d-4c7a-9141-09b4c54775d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Egro">
+      <UniqueIdentifier>{10f0a836-f83b-4549-b109-16566ca11c30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles">
+      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Effect">
+      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\RU">
+      <UniqueIdentifier>{654c28ba-81f2-4605-92f6-c6577e62cc0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\LegionArm">
+      <UniqueIdentifier>{5f05da4b-d7e7-4354-ad22-0daec0c9d1d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Legion">
+      <UniqueIdentifier>{8da4136f-ffbc-41ad-a920-f955759a05f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
+      <UniqueIdentifier>{58e701f2-137e-4b53-9f66-da65d354bf05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\Arm">
+      <UniqueIdentifier>{942c9929-9177-4a5e-88d8-4858d642d97d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster">
+      <UniqueIdentifier>{0008dbe7-bde6-49da-8a19-6f7823aff587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Base">
+      <UniqueIdentifier>{640de79a-079e-4ddc-8f89-712cac910509}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -648,6 +669,21 @@
     <ClInclude Include="..\public\Durability_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Durability</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Egro_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Egro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_Player_RU.h">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\RU</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Icon_LegionArm.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon\LegionArm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Legion_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Legion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_Player_Arm.h">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\Arm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -983,6 +1019,21 @@
     </ClCompile>
     <ClCompile Include="..\private\Durability_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Durability</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Egro_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Egro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_Player_RU.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\RU</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Icon_LegionArm.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon\LegionArm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Legion_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\Legion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_Player_Arm.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\Arm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

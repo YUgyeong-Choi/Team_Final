@@ -55,10 +55,10 @@ void CUI_Feature_UV::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
 	}
 	else
 	{
-		if (m_iCurrentFrame >= m_iEndFrame)
-			return;
-
 		m_iCurrentFrame = iCurrentFrame;
+
+		if (m_iCurrentFrame > m_iEndFrame)
+			return;
 
 	}
 

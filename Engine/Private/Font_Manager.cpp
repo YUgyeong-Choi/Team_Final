@@ -56,6 +56,19 @@ void CFont_Manager::Draw_Centered(const _wstring& strFontTag, const _tchar* pTex
 	m_pBatch->End();
 }
 
+void CFont_Manager::Draw_Righted(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale, _float fOffset)
+{
+	CCustomFont* pFont = Find_Font(strFontTag);
+	if (nullptr == pFont)
+		return;
+
+	m_pBatch->Begin();
+
+	pFont->Draw_Righted(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale, fOffset);
+
+	m_pBatch->End();
+}
+
 _float2 CFont_Manager::Draw_Range(const _wstring& strFontTag, const _tchar* pText)
 {
 	CCustomFont* pFont = Find_Font(strFontTag);

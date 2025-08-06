@@ -38,7 +38,7 @@ private:
 	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 	HRESULT Ready_UI();
-
+	HRESULT Ready_Video();
 
 private:
 	void ToggleHoldMouse() { m_bHold = !m_bHold; }
@@ -46,6 +46,8 @@ private:
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	CSound_Core* m_pBGM = { nullptr };
+
+	class CUI_Video* m_pStartVideo = {nullptr};
 
 private:
 	_bool m_bHold = { true };

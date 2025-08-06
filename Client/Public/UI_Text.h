@@ -26,8 +26,8 @@ public:
 		_float2 fFontOffset = {};
 		// 크기
 		_float fFontScale = {};
-		// 중앙 정렬 할지 말지
-		_bool   isCenter = {};
+
+		TEXTALIGN eAlign = {};
 	}TEXT_UI_DESC;
 
 
@@ -38,11 +38,11 @@ public:
 		eDesc.strCaption = m_strCaption;
 		eDesc.fFontOffset = m_fFontOffset;
 		eDesc.fFontScale = m_fFontScale;
-		eDesc.isCenter = m_isCenter;
 		eDesc.fRotation = m_fRotation;
 		eDesc.vColor = m_vColor;
 		eDesc.fX = m_fX;
 		eDesc.fY = m_fY;
+		eDesc.eAlign = m_eAlignType;
 		
 
 		return eDesc;
@@ -51,6 +51,8 @@ public:
 
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
+
+	void Set_Caption(_wstring& strCaption) { m_strCaption = strCaption; }
 
 private:
 	CUI_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -81,8 +83,8 @@ private:
 	_float2 m_fFontOffset = {};
 	// 크기
 	_float m_fFontScale = {};
-	// 중앙 정렬 할지 말지
-	_bool   m_isCenter = {};
+
+	TEXTALIGN m_eAlignType = { TEXTALIGN::LEFT };
 
 	
 public:

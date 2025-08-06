@@ -608,7 +608,9 @@ void CGLTool::Input_Text()
 
 	// 만들때 필요한거 정리해서 넣자
 
-	ImGui::Checkbox("IsCenter", &m_eTextTempUIDesc.isCenter);
+	_int iAlignType = ENUM_CLASS(m_eTextTempUIDesc.eAlign);
+
+	ImGui::InputInt("IsCenter", &iAlignType);
 	ImGui::InputFloat4("Color", reinterpret_cast<float*>(&m_eTextTempUIDesc.vColor));
 	
 	ImGui::InputFloat("Offset", &m_eTextTempUIDesc.fOffset);
@@ -621,6 +623,9 @@ void CGLTool::Input_Text()
 	ImGui::SliderFloat("fY_Slider", &m_eTextTempUIDesc.fY, -0.5f, 1.5f);
 
 	ImGui::SliderFloat("Rotation", &m_eTextTempUIDesc.fRotation, 0.f, 360.f);
+
+
+	m_eTextTempUIDesc.eAlign = TEXTALIGN(iAlignType);
 
 	m_eTextUIDesc = m_eTextTempUIDesc;
 	m_eTextUIDesc.fX *= g_iWinSizeX;

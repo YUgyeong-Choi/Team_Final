@@ -12,7 +12,7 @@ json CUI_Text::Serialize()
 	j["FontOffset"]["X"] = m_fFontOffset.x;
 	j["FontOffset"]["Y"] = m_fFontOffset.y;
 	j["FontScale"] = m_fFontScale;
-	j["IsCenter"] = m_isCenter;
+	j["IsCenter"] = ENUM_CLASS(m_eAlignType);
 
 
 	return j;
@@ -30,7 +30,8 @@ void CUI_Text::Deserialize(const json& j)
 
 	m_fFontOffset = { j["FontOffset"]["X"].get<_float>(), j["FontOffset"]["Y"].get<_float>() };
 	m_fFontScale = j["FontScale"].get<_float>();
-	m_isCenter = j["IsCenter"].get<_bool>();
+
+	m_eAlignType = TEXTALIGN(j["IsCenter"].get<int>());
 }
 
 CUI_Text::CUI_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -72,7 +73,7 @@ HRESULT CUI_Text::Initialize(void* pArg)
 	m_fFontOffset = pDesc->fFontOffset;
 	m_fFontScale = pDesc->fFontScale;
 
-	m_isCenter = pDesc->isCenter;
+	m_eAlignType = pDesc->eAlign;
 
 
 
@@ -106,14 +107,24 @@ HRESULT CUI_Text::Render()
 	if(m_isFade)
 		m_vColor = { m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha };
 
-	if (m_isCenter)
+	switch (m_eAlignType)
 	{
-		m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale, m_fOffset);
-	}
-	else
-	{
+	case Client::TEXTALIGN::LEFT:
 		m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale, m_fOffset);
+		break;
+	case Client::TEXTALIGN::CENTER:
+		m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale, m_fOffset);
+		break;
+	case Client::TEXTALIGN::RIGHT:
+		m_pGameInstance->Draw_Font_Righted(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, m_fFontOffset, m_fFontScale, m_fOffset);
+		break;
+	case Client::TEXTALIGN::END:
+		break;
+	default:
+		break;
 	}
+
+
 
     return S_OK;
 }
@@ -123,7 +134,8 @@ void CUI_Text::Update_UI_From_Tool(TEXT_UI_DESC& eDesc)
 	m_strCaption = eDesc.strCaption;
 	m_fFontOffset = eDesc.fFontOffset;
 	m_fFontScale = eDesc.fFontScale;
-	m_isCenter = eDesc.isCenter;
+
+	m_eAlignType = eDesc.eAlign;
 
 	m_vColor = eDesc.vColor;
 	m_fX = eDesc.fX;
@@ -155,7 +167,7 @@ void CUI_Text::Update_UI_From_Tool(void* pArg)
 	m_strCaption = pDesc->strCaption;
 	m_fFontOffset = pDesc->fFontOffset;
 	m_fFontScale = pDesc->fFontScale;
-	m_isCenter = pDesc->isCenter;
+	m_eAlignType = pDesc->eAlign;
 
 	m_vColor = pDesc->vColor;
 	m_fX = pDesc->fX;

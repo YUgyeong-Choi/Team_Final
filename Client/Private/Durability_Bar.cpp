@@ -54,7 +54,6 @@ HRESULT CDurability_Bar::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    // µý°Å ¸¸µé¾î
     if (FAILED(m_pShaderCom->Begin(D_UI_DURABILITYBAR)))
         return E_FAIL;
 

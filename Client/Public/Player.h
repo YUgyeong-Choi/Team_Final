@@ -100,6 +100,7 @@ private: /* 옵저버 관련*/
 
 	
 private: // 슬롯 용
+	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
 	void Callback_UpBelt();
 	void Callback_DownBelt();
 	void Use_Item();
@@ -191,8 +192,15 @@ private: // 옵저버 관련
 	// 일단 한칸에 100씩
 	_int m_iCurrentMana = {};
 	_int m_iMaxMana = { 300 };
-
+	
+	// 나중에 없애기 
 	_bool m_bSwitch = { true };
+
+	// 레벨, 다음 레벨까지 필요한 에르고, 현재 가지고 있는 에르고
+	_int  m_iLevel = {};
+	_int  m_iRequiredErgo = {};
+	_int  m_iErgo = {};
+
 
 // 벨트 슬롯 
 private:

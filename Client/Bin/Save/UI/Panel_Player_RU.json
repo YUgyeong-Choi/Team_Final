@@ -1,0 +1,112 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+      "Parts": [
+        {
+          "Caption": "+47",
+          "Color": {
+            "A": 0.0,
+            "B": 0.0,
+            "G": 0.0,
+            "R": 0.0
+          },
+          "FontOffset": {
+            "X": 0.0,
+            "Y": 0.0
+          },
+          "FontScale": 0.699999988079071,
+          "FontTag": "Font_Medium",
+          "IsCenter": 2,
+          "ProtoTag": "Prototype_GameObject_UI_Text",
+          "RotationZ": 0.0,
+          "SizeX": 6.24999984211172e-06,
+          "SizeY": 1.1111111234640703e-05,
+          "fAlpha": 1.0,
+          "fOffset": 0.01,
+          "fX": 1496.0,
+          "fY": 37.79999923706055
+        },
+
+        {
+          "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+          },
+          "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+          "RotationZ": 0.0,
+          "SizeX": 24.0,
+          "SizeY": 22.5,
+          "Texturetag": "Prototype_Component_Texture_Ergo",
+          "fAlpha": 1.0,
+          "fDuration": 0.01600000075995922,
+          "fOffset": 0.01,
+          "fX": 1372.7999267578125,
+          "fY": 66.5999984741211,
+          "iPassIndex": 1,
+          "iTextureIndex": 0,
+          "iTextureLevel": 0
+        },
+        {
+          "Color": {
+            "A": 1.0,
+            "B": 0.800000011920929,
+            "G": 0.800000011920929,
+            "R": 0.800000011920929
+          },
+          "ProtoTag": "Prototype_GameObject_UI_Ergo_Bar",
+          "RotationZ": 0.0,
+          "SizeX": 160.0,
+          "SizeY": 9.0,
+          "Texturetag": "Prototype_Component_Texture_Bar_Border",
+          "fAlpha": 1.0,
+          "fDuration": 0.01600000075995922,
+          "fOffset": 0.01,
+          "fX": 1428.800048828125,
+          "fY": 81.0,
+          "iPassIndex": 0,
+          "iTextureIndex": 0,
+          "iTextureLevel": 0
+        },
+        {
+          "Caption": "0",
+          "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+          },
+          "FontOffset": {
+            "X": 0.0,
+            "Y": 0.0
+          },
+          "FontScale": 0.699999988079071,
+          "FontTag": "Font_Medium",
+          "IsCenter": 2,
+          "ProtoTag": "Prototype_GameObject_UI_Text",
+          "RotationZ": 0.0,
+          "SizeX": 6.24999984211172e-06,
+          "SizeY": 1.1111111234640703e-05,
+          "fAlpha": 1.0,
+          "fOffset": 0.01,
+          "fX": 1496.0,
+          "fY": 66.5999984741211
+        }
+      ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]
