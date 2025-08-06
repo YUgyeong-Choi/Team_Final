@@ -3,13 +3,19 @@
 #include "Client_Defines.h"
 
 NS_BEGIN(Engine)
-class CPhysXStaticActor;
+class CModel;
+class CShader;
+class CAnimator;
 NS_END
 
 NS_BEGIN(Client)
 
 class CWego : public CUnit
 {
+public:
+	typedef struct tagWegoDesc : public CUnit::tagUnitDesc
+	{
+	}WEGO_DESC;
 protected:
 	CWego(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CWego(const CWego& Prototype);
@@ -25,11 +31,6 @@ public:
 
 private: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components();
-	HRESULT Ready_Trigger();
-	HRESULT Ready_Collider();
-private:
-	CPhysXStaticActor* m_pTriggerBoxCom = { nullptr };
-	CPhysXStaticActor* m_pPhysXActorCom = { nullptr };
 public:
 	static CWego* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

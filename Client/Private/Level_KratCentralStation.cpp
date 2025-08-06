@@ -8,7 +8,7 @@
 #include "UI_Container.h"
 
 #include "Player.h"
-
+#include "Wego.h"
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -229,6 +229,20 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
+
+
+	//CWego::WEGO_DESC pWegoDesc{};
+	////pDesc.fSpeedPerSec = 1.f;
+	//pWegoDesc.fSpeedPerSec = 5.f;
+	//pWegoDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	//pWegoDesc.eLevelID = LEVEL::STATIC;
+	//pWegoDesc.InitPos = _float3(0.f, 0.978f, 1.f);
+	//pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
+	//lstrcpy(pWegoDesc.szName, TEXT("Wego"));
+	//pWegoDesc.szMeshID = TEXT("Wego");
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Wego"), &pDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
