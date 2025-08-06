@@ -166,6 +166,17 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		m_pAnimator->SetTrigger("StrongAttack");
 	}
 
+	if (KEY_DOWN(DIK_T))
+	{
+		static _bool bCharge = false;
+		static _int iTestCombo = 0;
+			m_pAnimator->SetInt("ArmCombo", iTestCombo++);
+			iTestCombo %= 2;
+		m_pAnimator->SetBool("Charge", bCharge);
+		bCharge = !bCharge;
+		m_pAnimator->SetTrigger("ArmAttack");
+	}
+
 	if (m_pAnimator->IsFinished())
 		int a = 0;
 }
@@ -200,7 +211,7 @@ void CPlayer::HandleInput()
 
 	/* [ 특수키 입력을 업데이트합니다. ] */
 	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
-	m_Input.bCtrl = KEY_DOWN(DIK_LCONTROL);
+	m_Input.bCtrl = false;
 	m_Input.bTap = KEY_DOWN(DIK_TAB);
 	m_Input.bItem = KEY_DOWN(DIK_R);
 	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
