@@ -54,5 +54,17 @@
     {
         "ModelName": "SM_Station_Light_02",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
+    },
+    {
+        "ModelName": "SM_Sign_Blueprint_02",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Blueprint_02.bin"
+    },
+    {
+        "ModelName": "SM_Sign_Blueprint_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Blueprint_01.bin"
+    },
+    {
+        "ModelName": "SM_Factory_Table_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Table_01.bin"
     }
 ]

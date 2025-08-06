@@ -613,76 +613,91 @@ void CMapTool::Render_Hierarchy()
 
 	if (ImGui::BeginListBox("##HierarchyList", ImVec2(-FLT_MIN, 300)))
 	{
-		_uint i = 0; // 전체 Hierarchy 항목 인덱스를 위한 카운터 (전역 인덱스)
-		for (auto& group : m_ModelGroups) // 모델 이름별로 그룹화된 GameObject 목록을 반복
+		_bool bHovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+
+		if (bHovered)
 		{
-			const string& ModelName = group.first; // 현재 그룹의 모델 이름
-			// 트리 노드 생성 (열려있게 기본 설정) - 모델 이름을 기준으로 그룹화된 항목
-			_bool bOpen = ImGui::TreeNodeEx(ModelName.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
-
-			for (auto pGameObject : group.second)
+			_uint i = 0; // 전체 Hierarchy 항목 인덱스를 위한 카운터 (전역 인덱스)
+			for (auto& group : m_ModelGroups) // 모델 이름별로 그룹화된 GameObject 목록을 반복
 			{
-				// 개별 오브젝트에 대한 이름 생성 (ID 값 주자 나중에)
-				string strHierarchyName = "(ID:" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID()) + ')' + ModelName;
+				const string& ModelName = group.first; // 현재 그룹의 모델 이름
+				// 트리 노드 생성 (열려있게 기본 설정) - 모델 이름을 기준으로 그룹화된 항목
+				_bool bOpen = ImGui::TreeNodeEx(ModelName.c_str());
 
-				// 현재 인덱스가 선택된 상태인지 확인
-				_bool isSelected = (m_SelectedIndexies.count(i) > 0);
-
-				if (bOpen) // 트리 노드가 열려 있을 때만 Selectable 항목을 그린다
+				for (auto pGameObject : group.second)
 				{
-					// 해당 항목이 클릭되면 인덱스를 기록하여 선택 상태로 만든다
-					if (ImGui::Selectable(strHierarchyName.c_str(), isSelected))
-					{
-						if (ImGui::GetIO().KeyCtrl)
-						{
-							// Ctrl 눌렀으면 선택 토글
-							if (isSelected)
-							{
-								m_SelectedObjects.erase(static_cast<CMapToolObject*>(pGameObject));
-								Safe_Release(pGameObject);
+					// 개별 오브젝트에 대한 이름 생성 (ID 값 주자 나중에)
+					string strHierarchyName = "(ID:" + to_string(static_cast<CMapToolObject*>(pGameObject)->Get_ID()) + ')' + ModelName;
 
-								m_SelectedIndexies.erase(i);
+					// 현재 인덱스가 선택된 상태인지 확인
+					_bool isSelected = (m_SelectedIndexies.count(i) > 0);
+
+					if (bOpen) // 트리 노드가 열려 있을 때만 Selectable 항목을 그린다
+					{
+						// 해당 항목이 클릭되면 인덱스를 기록하여 선택 상태로 만든다
+						if (ImGui::Selectable(strHierarchyName.c_str(), isSelected))
+						{
+							if (ImGui::GetIO().KeyCtrl)
+							{
+								// Ctrl 눌렀으면 선택 토글
+								if (isSelected)
+								{
+									m_SelectedObjects.erase(static_cast<CMapToolObject*>(pGameObject));
+									Safe_Release(pGameObject);
+
+									m_SelectedIndexies.erase(i);
+								}
+								else
+								{
+									m_SelectedObjects.insert(static_cast<CMapToolObject*>(pGameObject));
+									Safe_AddRef(pGameObject);
+
+									m_SelectedIndexies.insert(i);
+								}
 							}
 							else
 							{
+								for (CMapToolObject* pObj : m_SelectedObjects)
+									Safe_Release(pObj);
+								m_SelectedObjects.clear();
+
 								m_SelectedObjects.insert(static_cast<CMapToolObject*>(pGameObject));
 								Safe_AddRef(pGameObject);
 
+								// Ctrl 안 눌렀으면 단일 선택
+								m_SelectedIndexies.clear();
 								m_SelectedIndexies.insert(i);
 							}
+
+							//마지막 클릭한 항목
+							m_iFocusIndex = i;
+
+							Safe_Release(m_pFocusObject);
+							m_pFocusObject = static_cast<CMapToolObject*>(Get_Focused_Object());
+							Safe_AddRef(m_pFocusObject);
 						}
-						else
-						{
-							for (CMapToolObject* pObj : m_SelectedObjects)
-								Safe_Release(pObj);
-							m_SelectedObjects.clear();
-
-							m_SelectedObjects.insert(static_cast<CMapToolObject*>(pGameObject));
-							Safe_AddRef(pGameObject);
-
-							// Ctrl 안 눌렀으면 단일 선택
-							m_SelectedIndexies.clear();
-							m_SelectedIndexies.insert(i);
-						}
-
-						//마지막 클릭한 항목
-						m_iFocusIndex = i;
-
-						Safe_Release(m_pFocusObject);
-						m_pFocusObject = static_cast<CMapToolObject*>(Get_Focused_Object());
-						Safe_AddRef(m_pFocusObject);
 					}
+
+					// 포커스만 마지막 항목만
+					if (m_iFocusIndex == i)
+						ImGui::SetItemDefaultFocus();
+
+					++i; // 전체 인덱스 증가 (트리 노드 열려있든 말든 증가시켜야 함)
 				}
 
-				// 포커스만 마지막 항목만
-				if (m_iFocusIndex == i)
-					ImGui::SetItemDefaultFocus();
-
-				++i; // 전체 인덱스 증가 (트리 노드 열려있든 말든 증가시켜야 함)
+				if (bOpen)
+					ImGui::TreePop(); // 트리 노드 닫기 (트리 UI를 닫아줌)
 			}
 
-			if (bOpen)
-				ImGui::TreePop(); // 트리 노드 닫기 (트리 UI를 닫아줌)
+
+		}
+		else
+		{
+			for (auto& group : m_ModelGroups)
+			{
+				const string& ModelName = group.first;
+				ImGui::TreeNodeEx(ModelName.c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+			}
 		}
 
 		ImGui::EndListBox(); // 리스트박스 끝
@@ -1713,9 +1728,9 @@ void CMapTool::Detail_Collider()
 	ImGui::SameLine();
 
 	if (m_bRenderAllCollider)
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));  // 초록색
-	else
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.2f, 0.2f, 1.0f));  // 붉은색
+	else
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));  // 초록색
 
 	if (ImGui::Button(m_bRenderAllCollider ? "Show All" : "Focus Only"))
 	{
@@ -1731,7 +1746,13 @@ void CMapTool::Detail_Collider()
 
 		if (ImGui::Combo("Collider Type", &CurrentCollider, ColliderTypes, IM_ARRAYSIZE(ColliderTypes)))
 		{
-			m_pFocusObject->Set_Collider(static_cast<COLLIDER_TYPE>(CurrentCollider));
+			//m_pFocusObject->Set_Collider(static_cast<COLLIDER_TYPE>(CurrentCollider));
+
+			//선택된 애들 모두 변경
+			for (CMapToolObject* pObj : m_SelectedObjects)
+			{
+				pObj->Set_Collider(static_cast<COLLIDER_TYPE>(CurrentCollider));
+			}
 		}
 
 	}
