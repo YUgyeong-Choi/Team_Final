@@ -4,6 +4,19 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
+Texture2D g_ARMTexture;
+
+/* [ 조절용 파라미터 ] */
+float g_fDiffuseIntensity = 1;
+float g_fNormalIntensity = 1;
+float g_fAOIntensity = 1;
+float g_fAOPower = 1;
+float g_fRoughnessIntensity = 1;
+float g_fMetallicIntensity = 1;
+float g_fReflectionIntensity = 1;
+float g_fSpecularIntensity = 1;
+vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
+
 
 float g_fID;
 
@@ -68,12 +81,23 @@ struct PS_IN
     float4 vProjPos : TEXCOORD2;
 };
 
-struct PS_OUT
+struct PS_OUT_TOOL
 {
     vector vDiffuse : SV_TARGET0;
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
     vector vPickPos : SV_TARGET3;
+};
+
+struct PS_OUT
+{
+    vector vDiffuse : SV_TARGET0;
+    vector vNormal : SV_TARGET1;
+    vector vARM : SV_TARGET2;
+    vector vProjPos : SV_TARGET3;
+    vector vAO : SV_TARGET4;
+    vector vRoughness : SV_TARGET5;
+    vector vMetallic : SV_TARGET6;
 };
 
 struct PS_SKY_OUT
@@ -85,29 +109,40 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;    
     
+    // 디퓨즈 텍스처
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     if (vMtrlDiffuse.a < 0.3f)
         discard;
     
+    // 노말 텍스처
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    float3 vNormalSample = vNormalDesc.xyz * 2.f - 1.f;
+    float3 vNormalTS = normalize(lerp(float3(0, 0, 1), vNormalSample, g_fNormalIntensity));
+    float3x3 TBN = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    float3 vWorldNormal = mul(vNormalTS, TBN);
     
-    vNormal = mul(vNormal, WorldMatrix);    
-    
+    // ARM 텍스처
+    float3 vARM = g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
+    float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
+    float Roughness = vARM.g * g_fRoughnessIntensity;
+    float Metallic = vARM.b * g_fMetallicIntensity;
    
-    Out.vDiffuse = vMtrlDiffuse;
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
-    Out.vPickPos = In.vWorldPos;
-    
+    Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
+    Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
+    Out.vARM = float4(AO, Roughness, Metallic, 1.f);
+    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, g_fReflectionIntensity, g_fSpecularIntensity);
+    Out.vAO = float4(AO, AO, AO, 1.f);
+    Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
+    Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
     return Out;
 }
 
-PS_OUT PS_MAPTOOLOBJECT(PS_IN In)
+PS_OUT_TOOL PS_MAPTOOLOBJECT(PS_IN In)
 {
-    PS_OUT Out;
+    PS_OUT_TOOL Out;
     
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     if (vMtrlDiffuse.a < 0.3f)

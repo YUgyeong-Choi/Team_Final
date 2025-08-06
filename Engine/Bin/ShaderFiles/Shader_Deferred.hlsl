@@ -25,7 +25,7 @@ Texture2D g_ShadowTextureB;
 Texture2D g_ShadowTextureC;
 
 /* [ 볼륨메트리 포그 ] */
-float g_fFogSpeed = 0.5f;
+float g_fFogSpeed = 0.1f;
 float g_fFogPower = 1.5f;
 float g_fFogCutoff = 15.f;
 float g_fTime;
@@ -446,8 +446,8 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
-
-    float fAtt = saturate((g_fLightRange - distance) / g_fLightRange);
+    
+    float fAtt = saturate(1.0 - pow(distance / g_fLightRange, 4.0));
 
     // [ 뷰, 하프 벡터 ]
     float3 V = normalize(g_vCamPosition.xyz - worldPos.xyz);
@@ -489,7 +489,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     radiance *= 3.5f;
 
     // [ 최종 조명 ]
-    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt + Ambient;
+    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt;//    +Ambient;
     float3 Specalur = Specular * radiance;
 
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
@@ -538,7 +538,7 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
 
-    float fAtt = saturate((g_fLightRange - distance) / g_fLightRange);
+    float fAtt = saturate(1.0 / (distance * distance + 1.0));
     
     float3 SpotDir = normalize(-g_vLightDir.xyz);
     float3 ToPixel = normalize(worldPos.xyz - g_vLightPos.xyz);
@@ -761,9 +761,14 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
         int NumLights = max(g_iPointNum, 1);
         LightFog += density * transmittance * StepSize * 0.05f;
     }
-
+    
     float3 fogColor = g_vLightDiffuse.rgb;
     float3 finalFog = fogColor * (LightFog * g_fFogPower);
+    
+    float fadeRatio = saturate(viewZ / 500.0f);
+    float3 fadeFog = fogColor * fadeRatio * g_fFogPower;
+    
+    finalFog = lerp(finalFog, fadeFog, fadeRatio);
 
     Out.vVolumetric = float4(finalFog, 1.f);
     return Out;

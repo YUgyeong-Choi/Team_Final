@@ -62,6 +62,7 @@ protected: /* [ 초기화 변수 ] */
 	LEVEL			m_eLevelLight = { LEVEL::END };
 	_float3			m_InitPos = {};
 	_int			m_iRender = {};
+	_bool			m_bDoOnce = {};
 
 private:
 	_bool	m_bUseTiling = { false };

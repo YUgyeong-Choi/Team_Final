@@ -73,7 +73,11 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 	// 왜 이거 안되지?
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+		//_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
+		//CGameObject::Compute_ViewZ(&vTemp);
+
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
 
 	// 왜 이거 안되지?
@@ -99,6 +103,20 @@ HRESULT CStaticMesh::Render()
 			return E_FAIL;
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
 			return E_FAIL;
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
+		{
+			if (!m_bDoOnce)
+			{
+				/* Com_Texture */
+				if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_DefaultARM")),
+					TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+					return E_FAIL;
+
+				if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+					return E_FAIL;
+				m_bDoOnce = true;
+			}
+		}
 
 		m_pShaderCom->Begin(0);
 
@@ -157,7 +175,7 @@ HRESULT CStaticMesh::Ready_Components(void* pArg)
 	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh")),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

@@ -135,7 +135,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 
 		LightDesc.fAmbient = 0.2f;
 		LightDesc.fIntensity = 1.f;
-		LightDesc.fRange = 100.f;
+		LightDesc.fRange = 10.f;
 		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.fFogDensity = 0.f;
@@ -151,7 +151,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fOuterCosAngle = cosf(XMConvertToRadians(45.f));
 		LightDesc.fAmbient = 0.2f;
 		LightDesc.fIntensity = 1.f;
-		LightDesc.fRange = 100.f;
+		LightDesc.fRange = 10.f;
 		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.fFogDensity = 0.f;
