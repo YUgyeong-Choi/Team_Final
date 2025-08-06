@@ -71,6 +71,7 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 {
 
 	// 왜 이거 안되지?
+	/*
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
 		//_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
@@ -79,6 +80,7 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
+	*/
 
 	// 왜 이거 안되지?
 	/*if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f))
@@ -87,7 +89,8 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 	}*/
 
 	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
-
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
 HRESULT CStaticMesh::Render()
