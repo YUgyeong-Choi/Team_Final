@@ -120,6 +120,11 @@ HRESULT CStaticMesh::Render()
 				m_bDoOnce = true;
 			}
 		}
+		else
+		{
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+				return E_FAIL;
+		}
 
 		m_pShaderCom->Begin(0);
 
