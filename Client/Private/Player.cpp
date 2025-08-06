@@ -599,6 +599,8 @@ HRESULT CPlayer::Ready_Weapon()
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
 
+	
+
 	return S_OK;
 }
 
@@ -768,7 +770,7 @@ void CPlayer::Update_Slot()
 			
 		m_isSelectUpBelt = false;
 
-
+			
 		Callback_DownBelt();
 	}
 
@@ -783,6 +785,16 @@ void CPlayer::Update_Slot()
 			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pSelectItem);
 		else
 			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pSelectItem);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_TAB))
+	{	
+		if(m_bSwitch)
+			m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pWeapon);
+		else
+			m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
+
+		m_bSwitch = !m_bSwitch;
 	}
 }
 

@@ -85,6 +85,12 @@
     <Filter Include="01.Levels\LevelGL\UISequence">
       <UniqueIdentifier>{84d85fce-26e2-426d-b3c6-d47585fc318c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\MapTool">
+      <UniqueIdentifier>{d8e56a61-088b-4c0b-a489-2cc6726e9093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\MapTool\MapToolObject">
+      <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic">
       <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
     </Filter>
@@ -141,6 +147,9 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Static">
       <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\MapTool\PreviewObject">
+      <UniqueIdentifier>{7540b347-438e-4d48-b0f4-5406c3ce1d98}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
       <UniqueIdentifier>{85e6703b-969f-44ff-8640-27151012a745}</UniqueIdentifier>
@@ -247,21 +256,6 @@
     <Filter Include="02.GameObjects\07.Effect\Manager">
       <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool">
-      <UniqueIdentifier>{34b240a9-7dd2-4af1-af56-ac4236feb38c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool\DecalTool">
-      <UniqueIdentifier>{e99bfc26-f71f-4ccd-b4ef-22da3b05d58a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool\MapTool">
-      <UniqueIdentifier>{d8e56a61-088b-4c0b-a489-2cc6726e9093}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool\MapTool\MapToolObject">
-      <UniqueIdentifier>{fce6aaa1-a26a-4064-b229-338c8dc82272}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool\MapTool\PreviewObject">
-      <UniqueIdentifier>{7540b347-438e-4d48-b0f4-5406c3ce1d98}</UniqueIdentifier>
-	</Filter>
     <Filter Include="03. Observer\PlayerStatus">
       <UniqueIdentifier>{0cf68e2e-7499-467e-8996-01dcada4ac10}</UniqueIdentifier>
     </Filter>
@@ -274,11 +268,11 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Durability">
       <UniqueIdentifier>{b937d81f-49e7-432f-b470-3549c05b8af3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\09.LockOn">
-      <UniqueIdentifier>{cb18d279-3e6c-4d95-ad4e-0d35bac05877}</UniqueIdentifier>
-	</Filter>
-    <Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
-      <UniqueIdentifier>{abbca159-0435-45fc-ab65-08cd84a25567}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\03.Weapon\00. Bayonet">
+      <UniqueIdentifier>{842abb7b-d5d9-4f56-b193-f43ea87d6ba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\RD">
+      <UniqueIdentifier>{0b26f350-98d5-418b-90cd-d4c62c9ab2ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -385,10 +379,10 @@
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapTool.h">
-      <Filter>01.Levels\LevelYW\YWTool\MapTool</Filter>
+      <Filter>01.Levels\LevelYW\MapTool</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapToolObject.h">
-      <Filter>01.Levels\LevelYW\YWTool\MapTool\MapToolObject</Filter>
+      <Filter>01.Levels\LevelYW\MapTool\MapToolObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AnimTool.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
@@ -502,7 +496,7 @@
       <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PreviewObject.h">
-      <Filter>01.Levels\LevelYW\YWTool\MapTool\PreviewObject</Filter>
+      <Filter>01.Levels\LevelYW\MapTool\PreviewObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Bar_Loading.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
@@ -615,20 +609,20 @@
     <ClInclude Include="..\Public\Effect_Manager.h">
       <Filter>02.GameObjects\07.Effect\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\DecalTool.h">
-      <Filter>01.Levels\LevelYW\YWTool\DecalTool</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\YWTool.h">
-      <Filter>01.Levels\LevelYW\YWTool</Filter>
-	</ClInclude>
-    <ClInclude Include="..\Public\LockOn_Manager.h">
-      <Filter>02.GameObjects\09.LockOn</Filter>
-	</ClInclude>
-    <ClInclude Include="..\public\Bayonet.h">
-      <Filter>02.GameObjects\03.Weapon\00.Bayonet</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Durability_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Durability</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DecalTool.h" />
+    <ClInclude Include="..\Public\LockOn_Manager.h" />
+    <ClInclude Include="..\public\YWTool.h" />
+    <ClInclude Include="..\public\Bayonet.h">
+      <Filter>02.GameObjects\03.Weapon\00. Bayonet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_Weapon.h">
+      <Filter>03. Observer\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Panel_Player_RD.h">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\RD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -727,10 +721,10 @@
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapTool.cpp">
-      <Filter>01.Levels\LevelYW\YWTool\MapTool</Filter>
+      <Filter>01.Levels\LevelYW\MapTool</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapToolObject.cpp">
-      <Filter>01.Levels\LevelYW\YWTool\MapTool\MapToolObject</Filter>
+      <Filter>01.Levels\LevelYW\MapTool\MapToolObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AnimTool.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
@@ -838,7 +832,7 @@
       <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PreviewObject.cpp">
-      <Filter>01.Levels\LevelYW\YWTool\MapTool\PreviewObject</Filter>
+      <Filter>01.Levels\LevelYW\MapTool\PreviewObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Bar_Loading.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Loading</Filter>
@@ -939,20 +933,20 @@
     <ClCompile Include="..\Private\Effect_Manager.cpp">
       <Filter>02.GameObjects\07.Effect\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\DecalTool.cpp">
-      <Filter>01.Levels\LevelYW\YWTool\DecalTool</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\YWTool.cpp">
-      <Filter>01.Levels\LevelYW\YWTool</Filter>
-	</ClCompile>
-    <ClCompile Include="..\Private\LockOn_Manager.cpp">
-      <Filter>02.GameObjects\09.LockOn</Filter>
-	</ClCompile>
-    <ClCompile Include="..\private\Bayonet.cpp">
-      <Filter>02.GameObjects\03.Weapon\00.Bayonet</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Durability_Bar.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Durability</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DecalTool.cpp" />
+    <ClCompile Include="..\Private\LockOn_Manager.cpp" />
+    <ClCompile Include="..\private\YWTool.cpp" />
+    <ClCompile Include="..\private\Bayonet.cpp">
+      <Filter>02.GameObjects\03.Weapon\00. Bayonet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_Weapon.cpp">
+      <Filter>03. Observer\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Panel_Player_RD.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Panel\Player\RD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

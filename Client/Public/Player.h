@@ -192,6 +192,8 @@ private: // 옵저버 관련
 	_int m_iCurrentMana = {};
 	_int m_iMaxMana = { 300 };
 
+	_bool m_bSwitch = { true };
+
 // 벨트 슬롯 
 private:
 	// 위에 슬롯, 아래 슬롯
