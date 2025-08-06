@@ -1058,7 +1058,7 @@ HRESULT CMapTool::Spawn_MapToolObject()
 	vLook = XMVector3Normalize(vLook);
 
 	// °Å¸® ¼³Á¤
-	_float fDist = PRE_TRANSFORMMATRIX_SCALE * 500.f;
+	_float fDist = PRE_TRANSFORMMATRIX_SCALE * 1000.f;
 
 	// ·è º¤ÅÍ¿¡ °Å¸® °öÇÏ±â
 	_vector vOffset = XMVectorScale(vLook, fDist);
@@ -1147,7 +1147,7 @@ HRESULT CMapTool::Spawn_MapToolObject(string ModelName)
 	vLook = XMVector3Normalize(vLook);
 
 	// °Å¸® ¼³Á¤
-	_float fDist = PRE_TRANSFORMMATRIX_SCALE * 500.f;
+	_float fDist = PRE_TRANSFORMMATRIX_SCALE * 1000.f;
 
 	// ·è º¤ÅÍ¿¡ °Å¸® °öÇÏ±â
 	_vector vOffset = XMVectorScale(vLook, fDist);

@@ -16,7 +16,7 @@ HRESULT CCamera_Manager::Initialize(LEVEL eLevel)
     Desc.vAt = _float3(0.f, 0.f, 0.f);
     Desc.fFov = XMConvertToRadians(60.f);
     Desc.fNear = 0.01f;
-    Desc.fFar = 500.f;
+    Desc.fFar = 1000.f;
     Desc.fSpeedPerSec = 30.f;
     Desc.fRotationPerSec = XMConvertToRadians(180.f);
 
@@ -35,7 +35,7 @@ HRESULT CCamera_Manager::Initialize(LEVEL eLevel)
     OrbitalDesc.vAt = _float3(0.f, 0.f, 0.f);
     OrbitalDesc.fFov = XMConvertToRadians(60.f);
     OrbitalDesc.fNear = 0.01f;
-    OrbitalDesc.fFar = 500.f;
+    OrbitalDesc.fFar = 1000.f;
     OrbitalDesc.fMouseSensor = 0.07f;
     OrbitalDesc.fSpeedPerSec = 30.f;
     OrbitalDesc.fRotationPerSec = XMConvertToRadians(180.f);
@@ -55,7 +55,7 @@ HRESULT CCamera_Manager::Initialize(LEVEL eLevel)
     CutSceneDesc.vAt = _float3(0.f, 0.f, 0.f);
     CutSceneDesc.fFov = XMConvertToRadians(60.f);
     CutSceneDesc.fNear = 0.01f;
-    CutSceneDesc.fFar = 500.f;
+    CutSceneDesc.fFar = 1000.f;
     CutSceneDesc.fMouseSensor = 0.07f;
     CutSceneDesc.fSpeedPerSec = 30.f;
     CutSceneDesc.fRotationPerSec = XMConvertToRadians(180.f);

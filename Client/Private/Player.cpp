@@ -814,7 +814,7 @@ HRESULT CPlayer::UpdateShadowCamera()
 	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
 	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
 	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
+	Desc.fFar = 1000.f;
 
 	Desc.fFovy = XMConvertToRadians(40.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))

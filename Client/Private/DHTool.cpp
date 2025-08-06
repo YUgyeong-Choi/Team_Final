@@ -33,7 +33,7 @@ HRESULT CDHTool::Initialize(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	Add_Light(LIGHT_TYPE::POINT, LEVEL_TYPE::KRAT_CENTERAL_STATION);
+	//Add_Light(LIGHT_TYPE::POINT, LEVEL_TYPE::KRAT_CENTERAL_STATION);
 	return S_OK;
 }
 
@@ -63,6 +63,9 @@ void CDHTool::Update(_float fTimeDelta)
 
 	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
 		DeleteSelectedObject(); 
+
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_D))
+		Duplicate_Selected_Object();
 }
 
 void CDHTool::Late_Update(_float fTimeDelta)
@@ -833,6 +836,51 @@ void CDHTool::DeleteAllLights()
 	}
 
 	m_pSelectedObject = nullptr;
+}
+
+HRESULT CDHTool::Duplicate_Selected_Object()
+{
+	if (!m_pSelectedObject)
+		return E_FAIL;
+
+	/* [ 선택된 라이트의 정보추출 ] */
+	// 1. 기본 정보 추출
+	_matrix matLightWorld = m_pSelectedObject->Get_TransfomCom()->Get_WorldMatrix();
+	_float fIntensity = m_pSelectedObject->GetIntensity();
+	_float fRange = m_pSelectedObject->GetRange();
+	_float4 vColor = m_pSelectedObject->GetColor();
+
+	_float fInnerCosAngle = m_pSelectedObject->GetfInnerCosAngle();
+	_float fOuterCosAngle = m_pSelectedObject->GetfOuterCosAngle();
+	_float fFalloff = m_pSelectedObject->GetfFalloff();
+	_float fFogDensity = m_pSelectedObject->GetfFogDensity();
+	_float fFogCutOff = m_pSelectedObject->GetfFogCutOff();
+
+	LIGHT_TYPE eLightType = static_cast<LIGHT_TYPE>(m_pSelectedObject->GetLightType());
+	LEVEL_TYPE eLevelType = static_cast<LEVEL_TYPE>(m_iSelectedLevelType);
+
+
+	// 3. 라이트 생성
+	if (FAILED(Add_Light(eLightType, eLevelType)))
+		return E_FAIL;
+
+	// 4. 생성된 라이트 설정
+	CDH_ToolMesh* pNewLight = m_vecLights.back();
+
+	pNewLight->Get_TransfomCom()->Set_WorldMatrix(matLightWorld);
+	pNewLight->SetIntensity(fIntensity);
+	pNewLight->SetRange(fRange);
+	pNewLight->SetColor(vColor);
+	pNewLight->SetfInnerCosAngle(fInnerCosAngle);
+	pNewLight->SetfOuterCosAngle(fOuterCosAngle);
+	pNewLight->SetfFalloff(fFalloff);
+	pNewLight->SetfFogDensity(fFogDensity);
+	pNewLight->SetfFogCutOff(fFogCutOff);
+
+	//포커스 되는 오브젝트 변경
+	m_pSelectedObject = pNewLight;
+
+	return S_OK;
 }
 
 CDHTool* CDHTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

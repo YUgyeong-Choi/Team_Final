@@ -67,6 +67,11 @@ private:
 	void Load_Lights(LEVEL_TYPE eLType);
 	void DeleteAllLights();
 
+
+private:
+	HRESULT Duplicate_Selected_Object();
+
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	vector<class CDH_ToolMesh*> m_vecLights;
