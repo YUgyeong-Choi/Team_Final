@@ -240,12 +240,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_VolumeMesh.h">
       <Filter>01.Utility\04.Components\VIBuffer\VolumeMesh</Filter>
-	</ClInclude>
-    <ClInclude Include="..\public\ComputeShader.h">
-      <Filter>01.Utility\15.ComputeShader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\AnimComputeShader.h">
-      <Filter>01.Utility\15.ComputeShader\AnimComputeShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -461,12 +455,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_VolumeMesh.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\VolumeMesh</Filter>
-	</ClCompile>
-    <ClCompile Include="..\private\ComputeShader.cpp">
-      <Filter>01.Utility\15.ComputeShader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\AnimComputeShader.cpp">
-      <Filter>01.Utility\15.ComputeShader\AnimComputeShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -703,12 +691,9 @@
     </Filter>
     <Filter Include="01.Utility\04.Components\VIBuffer\VolumeMesh">
       <UniqueIdentifier>{1025dacf-2a03-4993-a62d-b93fb5e05d00}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Utility\15.ComputeShader">
       <UniqueIdentifier>{a353a404-6893-4556-a3b6-38194377b18d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\15.ComputeShader\AnimComputeShader">
-      <UniqueIdentifier>{7ec026fa-2a3f-4089-8eae-33f2082fe77b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
