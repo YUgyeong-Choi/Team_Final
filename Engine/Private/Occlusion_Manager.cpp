@@ -86,10 +86,6 @@ _bool COcclusion_Manager::IsVisible(CGameObject* pObj) const
     return iter->second.bVisible;
 }
 
-void COcclusion_Manager::Clear()
-{
-}
-
 HRESULT COcclusion_Manager::Ready_States()
 {
     D3D11_BLEND_DESC blendDesc{};
@@ -109,9 +105,32 @@ HRESULT COcclusion_Manager::Ready_States()
 }
 COcclusion_Manager* COcclusion_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	return nullptr;
+    return new COcclusion_Manager(pDevice, pContext);
 }
 
 void COcclusion_Manager::Free()
 {
+    __super::Free();
+
+    // 쿼리 해제
+    for (auto& pair : m_mapOcclusion)
+    {
+        if (pair.second.pQuery)
+            pair.second.pQuery->Release();
+    }
+    m_mapOcclusion.clear();
+
+    // 쉐이더 해제
+    Safe_Release(m_pShader);
+
+    // 큐브 버퍼 해제
+    Safe_Release(m_pCubeBuffer);
+
+    // 상태 객체 해제
+    Safe_Release(m_pBlendState);
+    Safe_Release(m_pDepthState);
+
+    // 디바이스/컨텍스트 해제
+    Safe_Release(m_pDevice);
+    Safe_Release(m_pContext);
 }

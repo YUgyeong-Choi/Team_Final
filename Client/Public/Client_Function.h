@@ -1,7 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
-#include "GameObject.h"
 #include "GameInstance.h"
+
 static _float2 Get_MousePos()
 {
 	POINT pt;
@@ -11,10 +11,4 @@ static _float2 Get_MousePos()
 	_float2 vMousePos = { static_cast<_float>(pt.x), static_cast<_float>(pt.y) };
 
 	return vMousePos;
-}
-
-/* 나중에 플레이어 static으로 가면 수정할 예정 */
-CGameObject* Get_Player(_uint iLevelIndex)
-{
-	return CGameInstance::Get_Instance()->Get_LastObject(iLevelIndex, TEXT("_Player"));
 }

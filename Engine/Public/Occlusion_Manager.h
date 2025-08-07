@@ -25,8 +25,6 @@ public:
     void End_Occlusion(CGameObject* pObj);
     _bool IsVisible(CGameObject* pObj) const;
 
-    void Clear();
-
 private:
     ID3D11Device* m_pDevice = nullptr;
     ID3D11DeviceContext* m_pContext = nullptr;

@@ -16,6 +16,14 @@ public:
         ID3D11Query* pQuery = nullptr;
         _bool bVisible = true;
     };
+private:
+    COcclusion_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    virtual ~COcclusion_Manager() = default;
+public:
+    HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    void Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX);
+    void End_Occlusion(CGameObject* pObj);
+    _bool IsVisible(CGameObject* pObj) const;
 
 private:
     ID3D11Device* m_pDevice = nullptr;
@@ -25,15 +33,6 @@ private:
     CShader* m_pShader = nullptr;
 
     map<CGameObject*, OCCLUSION_INFO> m_mapOcclusion;
-
-public:
-    HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    void Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX);
-    void End_Occlusion(CGameObject* pObj);
-    _bool IsVisible(CGameObject* pObj) const;
-
-    void Clear();
-
 private:
     HRESULT Ready_States(); // BlendState, DepthStencilState µî
 

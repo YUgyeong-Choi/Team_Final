@@ -241,7 +241,7 @@
     <ClInclude Include="..\public\Frustum.h">
       <Filter>01.Utility\12.Culling\Frustum</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Occlusion_Manager.h">
+    <ClInclude Include="..\Public\Occlusion_Manager.h">
       <Filter>01.Utility\12.Culling\Occlusion</Filter>
     </ClInclude>
   </ItemGroup>
@@ -459,7 +459,7 @@
     <ClCompile Include="..\private\Frustum.cpp">
       <Filter>01.Utility\12.Culling\Frustum</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Occlusion_Manager.cpp">
+    <ClCompile Include="..\Private\Occlusion_Manager.cpp">
       <Filter>01.Utility\12.Culling\Occlusion</Filter>
     </ClCompile>
   </ItemGroup>
