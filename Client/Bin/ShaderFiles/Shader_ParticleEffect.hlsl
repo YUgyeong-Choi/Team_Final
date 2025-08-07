@@ -2,8 +2,6 @@
 
 vector  g_vCamPosition;
 bool    g_bLocal;
-float   g_fEmissiveIntensity = 3.5f;
-float   g_fWeightPower = 5.f;
 
 //bool    g_size 
 
@@ -82,22 +80,22 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Out[0].vPosition = mul(float4(In[0].vPosition.xyz + vRight + vUp, 1.f), matVP);    
     Out[0].vTexcoord = float2(0.f, 0.f);
     Out[0].vLifeTime = In[0].vLifeTime;
-    Out[0].vProjPos = Out[0].vPosition;
+    Out[0].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     
     Out[1].vPosition = mul(float4(In[0].vPosition.xyz - vRight + vUp, 1.f), matVP);
     Out[1].vTexcoord = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
-    Out[1].vProjPos = Out[1].vPosition;
+    Out[1].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     
     Out[2].vPosition = mul(float4(In[0].vPosition.xyz - vRight - vUp, 1.f), matVP);
     Out[2].vTexcoord = float2(1.f, 1.f);
     Out[2].vLifeTime = In[0].vLifeTime;
-    Out[2].vProjPos = Out[2].vPosition;
+    Out[2].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     
     Out[3].vPosition = mul(float4(In[0].vPosition.xyz + vRight - vUp, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
     Out[3].vLifeTime = In[0].vLifeTime;
-    Out[3].vProjPos = Out[3].vPosition;
+    Out[3].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     
     Triangles.Append(Out[0]);
     Triangles.Append(Out[1]);
@@ -218,21 +216,18 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     */
     
     /********************************************************************/
-    //float fDepth = In.vPosition.z;
-    //float fWeight = pow(saturate(1 - fDepth), 0.5f);
+    //float fDepth = In.vProjPos.x / 1000.f;
+    //float fWeight = pow(saturate(1 - fDepth), 2.f);
     //float3 vPremulRGB = vColor.rgb * vColor.a;
     //Out.vAccumulation = float4(vPremulRGB * fWeight, vColor.a * fWeight);
     //Out.fRevealage = vColor.a;
-    //Out.vEmissive = float4(0.f, 0.f, 0.f, 0.f);
+    //Out.vEmissive = float4(vPremulRGB, vColor.a);
     /********************************************************************/
 
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
     Out.fRevealage = vColor.a;
-    Out.vEmissive = float4(0.f, 0.f, 0.f, 0.f);
-    
-    
-    
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
     
     
     if (In.vLifeTime.y >= In.vLifeTime.x)

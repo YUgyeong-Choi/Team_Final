@@ -66,10 +66,10 @@ void CToolParticle::Late_Update(_float fTimeDelta)
 	// 아래 변수로 교체할 것 
 	//(RENDERGROUP)m_iRenderGroup;
 	// 임시로 고정 지정
-	if (m_iShaderPass != 2)
-		m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
-	else
-		m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_WBTEST;
+	//if (m_iShaderPass != 2)
+	//	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
+	//else
+	//	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_WB;
 
 
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
@@ -229,6 +229,8 @@ HRESULT CToolParticle::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fThreshold", &m_fThreshold, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTime", &m_fTimeAcc, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissiveIntensity, sizeof(_float))))
 		return E_FAIL;
 
 	if (m_bTextureUsage[TU_DIFFUSE] == true) {

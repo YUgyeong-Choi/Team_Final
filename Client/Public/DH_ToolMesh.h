@@ -63,7 +63,14 @@ public:
 	void SetfFogCutOff(_float fFogCutoff) { m_pLight->Get_LightDesc()->fFogCutoff = fFogCutoff; }
 	_float GetfFogCutOff() { return m_pLight->Get_LightDesc()->fFogCutoff; }
 
+	void SetbVolumetric(_bool bVolumetric) { m_pLight->Get_LightDesc()->bIsVolumetric = bVolumetric; }
+	_bool GetbVolumetric() { return m_pLight->Get_LightDesc()->bIsVolumetric; }
+
 	_int GetLightType() { return static_cast<int>(m_pLight->Get_LightDesc()->eType); }
+
+public:
+	void SetDebug(_bool bDebug) { m_bDebug = bDebug; }
+	_bool GetDebug() const { return m_bDebug; }
 
 private:
 	_uint m_iID = { 0 };
@@ -79,6 +86,7 @@ protected: /* [ 초기화 변수 ] */
 
 private:
 	CLight* m_pLight = { nullptr };
+	_bool m_bDebug = { true };
 
 private:
 	HRESULT Ready_Components(void* pArg);

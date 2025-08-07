@@ -73,7 +73,7 @@ struct ImGui_ImplDX11_Data
     int                         IndexBufferSize;
     ImVector<DXGI_SWAP_CHAIN_DESC> SwapChainDescsForViewports;
 
-    ImGui_ImplDX11_Data()       { memset((void*)this, 0, sizeof(*this)); VertexBufferSize = 5000; IndexBufferSize = 10000; }
+    ImGui_ImplDX11_Data()       { memset((void*)this, 0, sizeof(*this)); VertexBufferSize = 10000; IndexBufferSize = 10000; }
 };
 
 struct VERTEX_CONSTANT_BUFFER_DX11
@@ -164,7 +164,7 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
     if (!bd->pVB || bd->VertexBufferSize < draw_data->TotalVtxCount)
     {
         if (bd->pVB) { bd->pVB->Release(); bd->pVB = nullptr; }
-        bd->VertexBufferSize = draw_data->TotalVtxCount + 5000;
+        bd->VertexBufferSize = draw_data->TotalVtxCount + 10000;
         D3D11_BUFFER_DESC desc = {};
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.ByteWidth = bd->VertexBufferSize * sizeof(ImDrawVert);
