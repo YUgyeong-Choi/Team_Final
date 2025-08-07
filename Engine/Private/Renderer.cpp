@@ -1101,22 +1101,6 @@ HRESULT CRenderer::Render_Effect_WB_Composite()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_Video()
-{
-	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_VIDEO)])
-	{
-		if (nullptr != pGameObject)
-			pGameObject->Render();
-
-		Safe_Release(pGameObject);
-	}
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_VIDEO)].clear();
-
-	return S_OK;
-}
-
-
-
 HRESULT CRenderer::Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight)
 {
 	ID3D11Texture2D* pDepthStencilTexture = nullptr;
