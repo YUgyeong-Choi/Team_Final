@@ -6,8 +6,6 @@ matrix g_WorldMatrixInv;
 matrix g_ProjMatrixInv;
 matrix g_ViewMatrixInv;
 
-//float2 g_InvScreenSize = float2(1.f / 1600.f, 1.f / 900.f);
-
 Texture2D g_DepthTexture;
 Texture2D g_Texture;
 
@@ -64,8 +62,10 @@ PS_OUT PS_DECAL(VS_OUT In)
     
     vPosition = mul(vPosition, g_ProjMatrixInv); //투영 역행렬
     vPosition = mul(vPosition, g_ViewMatrixInv); //뷰 역행렬
+    
     //월드로 왔음
-
+    //vPosition.w = 1.f;
+    
     // 데칼 로컬 공간으로 변환
     float3 vLocalPos = mul(float4(vPosition.xyz, 1.f), g_WorldMatrixInv).xyz;
 
@@ -83,6 +83,8 @@ PS_OUT PS_DECAL(VS_OUT In)
     // 마젠타 색상으로 고정 출력
     float4 magentaColor = float4(1.f, 0.f, 1.f, 1.f);
     Out.vDecal = magentaColor;
+    
+    //Out.vDecal = float4(vPosition.xyz * 0.1f, 1.0f); // 월드 위치 시각화
     
     return Out;
 }
@@ -113,7 +115,7 @@ technique11 DefaultTechnique
     pass Decal
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_None, 0);
+        SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_AlphaBlend, float4(0, 0, 0, 0), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_DECAL();
@@ -124,7 +126,7 @@ technique11 DefaultTechnique
     pass DebugCube // 디버깅용 큐브
     {
         SetRasterizerState(RS_Wireframe); // 와이어프레임으로 보이게
-        SetDepthStencilState(DSS_None, 0);
+        SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0, 0, 0, 0), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_DEBUG();

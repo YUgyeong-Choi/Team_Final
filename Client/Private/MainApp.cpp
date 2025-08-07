@@ -121,6 +121,13 @@ HRESULT CMainApp::Ready_Fonts()
 
 HRESULT CMainApp::Ready_Prototype_Component()
 {
+#pragma region 데칼
+	/* For.Prototype_Component_VIBuffer_VolumeMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),
+		CVIBuffer_VolumeMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 	/* For.Prototype_Component_VIBuffer_Rect*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
@@ -137,6 +144,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	// 클라이언트용은 Tag변경해서 Prototype 수업코드처럼 별개 생성 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
 		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, &PIDesc))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxPos */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPos"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPos.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxPosTex */

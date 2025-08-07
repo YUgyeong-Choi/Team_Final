@@ -310,6 +310,9 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Test">
       <UniqueIdentifier>{756bd14f-6752-4cce-ad10-ecb99a4e60bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\10.Decal">
+      <UniqueIdentifier>{a2ae0d1a-f92b-4332-981d-d6737b0842b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -690,6 +693,9 @@
     <ClInclude Include="..\public\Monster_Test.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Decal.h">
+      <Filter>02.GameObjects\10.Decal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1043,6 +1049,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Monster_Test.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp">
+      <Filter>02.GameObjects\10.Decal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

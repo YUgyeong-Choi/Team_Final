@@ -20,6 +20,9 @@
 #include "DecalToolObject.h"
 #include "MapToolObject.h"
 #include "PreviewObject.h"
+
+//다른 레벨에 넣은 것
+#include "Decal.h"
 #pragma endregion
 
 #pragma region LEVEL_CY
@@ -205,8 +208,27 @@ HRESULT CLoader::Loading_For_Logo()
 
 HRESULT CLoader::Loading_For_Static()
 {
+
 	m_bLoadStatic = true;
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
+
+#pragma region 데칼 테스트 텍스쳐
+	/* For.Prototype_Component_Texture_Blood_ARMT*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Blood_ARMT"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Blood_01_ARMT.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Blood_N*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Blood_N"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Blood_01_N.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Bloodstain_BC*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_BC.dds")))))
+		return E_FAIL;
+
+#pragma endregion
 
 	Loading_For_UI_Texture();
 
@@ -327,6 +349,9 @@ HRESULT CLoader::Loading_For_Static()
 
 HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
+	lstrcpy(m_szLoadingText, TEXT("컴포넌트을(를) 로딩중입니다."));
+
+
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 
@@ -407,6 +432,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
 		CMonster_Test::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Decal"),
+		CDecal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_fRatio = 1.f;
@@ -736,39 +765,7 @@ HRESULT CLoader::Loading_For_YW()
 		CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-#pragma region 데칼
-	/* For.Prototype_Component_VIBuffer_VolumeMesh */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),
-		CVIBuffer_VolumeMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Shader_VtxPos */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Shader_VtxPos"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPos.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements))))
-		return E_FAIL;
-#pragma endregion
-
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-
-#pragma region 데칼 테스트 텍스쳐
-	/* For.Prototype_Component_Texture_Blood_ARMT*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Blood_ARMT"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Blood_01_ARMT.dds")))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Blood_N*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Blood_N"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Blood_01_N.dds")))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Bloodstain_BC*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_BC.dds")))))
-		return E_FAIL;
-
-#pragma endregion
-
-
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 

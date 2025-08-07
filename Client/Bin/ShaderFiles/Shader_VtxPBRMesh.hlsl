@@ -172,7 +172,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
     Out.vARM = float4(AO, Roughness, Metallic, 1.f);
-    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, g_fReflectionIntensity, g_fSpecularIntensity);
+    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, g_fReflectionIntensity, g_fSpecularIntensity);
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
