@@ -21,6 +21,7 @@ private:
     virtual ~COcclusion_Manager() = default;
 public:
     HRESULT Initialize();
+    HRESULT Create_DepthStencilView();
     void Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX);
     void End_Occlusion(CGameObject* pObj);
     _bool IsVisible(CGameObject* pObj) const;

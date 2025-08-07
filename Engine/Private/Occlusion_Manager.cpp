@@ -18,6 +18,7 @@ COcclusion_Manager::COcclusion_Manager(ID3D11Device* pDevice, ID3D11DeviceContex
 HRESULT COcclusion_Manager::Initialize()
 {
     m_pCubeBuffer = CVIBuffer_Cube::Create(m_pDevice, m_pContext);
+
     if (FAILED(Ready_States()))
         return E_FAIL;
 
@@ -121,6 +122,7 @@ HRESULT COcclusion_Manager::Ready_States()
 
     return S_OK;
 }
+
 COcclusion_Manager* COcclusion_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     return new COcclusion_Manager(pDevice, pContext);

@@ -26,19 +26,23 @@ VS_OUT VS_MAIN(VS_IN In)
     return Out;
 }
 
-technique11 DefaultTechnique
+
+float4 PS_MAIN() : SV_Target
 {
 
+    return float4(1, 1, 1, 1);
+}
+
+technique11 DefaultTechnique
+{
     pass Default
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
-        PixelShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN(); 
     }
-
 }
