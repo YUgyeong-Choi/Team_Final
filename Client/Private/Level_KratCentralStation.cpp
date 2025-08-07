@@ -83,6 +83,11 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 			return;
 	}
 
+
+}
+
+void CLevel_KratCentralStation::Update(_float fTimeDelta)
+{
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 
@@ -91,13 +96,10 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 		m_pStartVideo->Set_bDead();
 
-		
-	
-	}
-}
 
-void CLevel_KratCentralStation::Update(_float fTimeDelta)
-{
+
+	}
+
  	if (nullptr != m_pStartVideo)
 	{
 		if (m_pStartVideo->Get_bDead())
@@ -105,7 +107,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			/* [ 사운드 ] */
 			m_pBGM->Play();
 
-			
 			m_pStartVideo = nullptr;
 	
 
@@ -623,7 +624,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
 	eDesc.fOffset = 0.0f;
 	eDesc.fInterval = 1.f;
-	eDesc.fSpeedPerSec = 120.f;
+	eDesc.fSpeedPerSec = 60.f;
 	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Startscene.mp4");
 	eDesc.fX = g_iWinSizeX * 0.5f;
 	eDesc.fY = g_iWinSizeY * 0.5f;
@@ -631,6 +632,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 	eDesc.fSizeY = g_iWinSizeY;
 	eDesc.fAlpha = 1.f;
 	eDesc.isLoop = false;
+	eDesc.isCull = true;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
 		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video"), &eDesc)))
