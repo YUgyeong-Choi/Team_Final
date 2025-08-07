@@ -2114,6 +2114,8 @@ string CAnimTool::GetStateCategory(const string& stateName)
 		return "Attack";
 	else if (stateName.find("Idle") != string::npos)
 		return "Idle";
+	else if (stateName.find("Spawn") != string::npos)
+		return "Spawn";
 	else
 		return "Other";
 }
