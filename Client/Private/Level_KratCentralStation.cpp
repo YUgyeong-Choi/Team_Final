@@ -26,35 +26,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if(FAILED(Ready_Video()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-	if (FAILED(Ready_Shadow()))
-		return E_FAIL;
-	/*if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
-		return E_FAIL;*/
-	if (FAILED(Ready_Camera()))
-		return E_FAIL;
+	
 
-	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
-		return E_FAIL;
-
-	//제이슨으로 저장된 맵을 로드한다. (왜 안되지 모델을 왜 못찾지)
-	if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
-		return E_FAIL;
-
-	// 값 sync 맞추려고 플레이어 생성 전에 미리 생성해서 옵저버에 콜백 등록하기 위해
-	if (FAILED(Ready_UI()))
-		return E_FAIL;
-
-	//애니메이션 오브젝트
-	if (FAILED(Ready_Player()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Monster()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Npc()))
-		return E_FAIL;
 
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
@@ -83,6 +56,8 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 			return;
 	}
 
+	
+
 
 }
 
@@ -96,27 +71,56 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 		m_pStartVideo->Set_bDead();
 
-
-
 	}
 
- 	if (nullptr != m_pStartVideo)
+	if (nullptr != m_pStartVideo)
 	{
 		if (m_pStartVideo->Get_bDead())
 		{
+
 			/* [ 사운드 ] */
 			m_pBGM->Play();
 
 			m_pStartVideo = nullptr;
-	
 
+			if (FAILED(Ready_Camera()))
+				return;
+
+			/*if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
+				return E_FAIL;*/
+
+				//제이슨으로 저장된 맵을 로드한다. (왜 안되지 모델을 왜 못찾지)
+			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+				return;
+
+
+			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+				return;
+
+			if (FAILED(Ready_Lights()))
+				return;
+			if (FAILED(Ready_Shadow()))
+				return;
+
+			if (FAILED(Ready_Monster()))
+				return;
+
+			if (FAILED(Ready_Npc()))
+				return;
+
+			// 값 sync 맞추려고 플레이어 생성 전에 미리 생성해서 옵저버에 콜백 등록하기 위해
+			if (FAILED(Ready_UI()))
+				return;
+
+			//애니메이션 오브젝트
+			if (FAILED(Ready_Player()))
+				return;
 
 			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 		}
 
 		return;
 	}
-	
 
 	if (KEY_DOWN(DIK_U))
 		m_pGameInstance->Set_GameTimeScale(1.f);
@@ -623,8 +627,8 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 	
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
 	eDesc.fOffset = 0.0f;
-	eDesc.fInterval = 1.f;
-	eDesc.fSpeedPerSec = 60.f;
+	eDesc.fInterval = 0.016f;
+	eDesc.fSpeedPerSec = 1.f;
 	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Startscene.mp4");
 	eDesc.fX = g_iWinSizeX * 0.5f;
 	eDesc.fY = g_iWinSizeY * 0.5f;
@@ -632,7 +636,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 	eDesc.fSizeY = g_iWinSizeY;
 	eDesc.fAlpha = 1.f;
 	eDesc.isLoop = false;
-	eDesc.isCull = true;
+
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
 		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video"), &eDesc)))

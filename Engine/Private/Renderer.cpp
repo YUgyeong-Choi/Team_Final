@@ -349,12 +349,7 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pRende
 HRESULT CRenderer::Draw()
 {
 
-	if (!m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_VIDEO)].empty())
-	{
-		Render_Video();
-
-		return S_OK;
-	}
+	
 	
 	if (FAILED(Render_Priority()))
 	{
@@ -484,11 +479,7 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Video()))
-	{
-		MSG_BOX("Render Priority Failed");
-		return E_FAIL;
-	}
+
 
 #ifdef _DEBUG
 
