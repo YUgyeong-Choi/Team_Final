@@ -428,7 +428,7 @@ HRESULT CCYTool::Window_Particle()
 	}
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 5000, "%d");
+	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 10000, "%d");
 	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.01f, -1000.f, 1000.f, "%.2f");
 	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.01f, -1000.f, 1000.f, "%.2f");
 	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.01f, 0.01f, 1000.f, "%.2f");

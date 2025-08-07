@@ -224,10 +224,8 @@ HRESULT CDHTool::Render_LightTool()
 
 	// 스타일 적용 (슬라이더 손잡이 색상 변경)
 	ImGui::PushStyleColor(ImGuiCol_SliderGrab, m_iLightMode == 0 ? pickColor : moveColor);
-
 	// 슬라이더 폭 지정
 	ImGui::PushItemWidth(265);
-
 	// 슬라이더 본체
 	ImGui::SliderInt("##LightModeSlider", &m_iLightMode, 0, 1,
 		m_iLightMode == 0 ? "Pick" : "Move");
@@ -235,10 +233,34 @@ HRESULT CDHTool::Render_LightTool()
 	// 스타일 원상복귀
 	ImGui::PopItemWidth();
 	ImGui::PopStyleColor();
-
 	// 선택된 모드 출력 (예시)
 	ImGui::Text("Current Mode: %s", m_iLightMode == 0 ? "Pick" : "Move");
 
+	// ------------------------------------------------------------------//
+	ImVec4 NoneColor = ImVec4(0.2f, 0.2f, 1.f, 1.f);
+	ImVec4 VolumeColor = ImVec4(0.2f, 0.6f, 1.f, 1.f);
+
+	// 스타일 적용 (슬라이더 손잡이 색상 변경)
+	ImGui::PushStyleColor(ImGuiCol_SliderGrab, m_iVolumetricMode == 0 ? NoneColor : VolumeColor);
+	ImGui::PushItemWidth(265);
+	if (ImGui::SliderInt("##VolumetricSlider", &m_iVolumetricMode, 0, 1,
+		m_iVolumetricMode == 0 ? "VOLUMETRIC" : "NONE"))
+	{
+		if(m_pSelectedObject)
+			m_pSelectedObject->SetbVolumetric(m_iVolumetricMode == 0);
+	}
+	else
+	{
+		if (m_pSelectedObject)
+			m_iVolumetricMode = m_pSelectedObject->GetbVolumetric() ? 0 : 1;
+		else
+			m_iVolumetricMode = 1; // 기본값 설정
+	}
+
+	// 스타일 원상복귀
+	ImGui::PopItemWidth();
+	ImGui::PopStyleColor();
+	ImGui::Text("Current Mode: %s", m_iVolumetricMode == 0 ? "VOLUMETRIC" : "NONE");
 
 	// ComboBox로 조명 타입 선택
 	ImGui::Text("Light Type");
@@ -340,7 +362,7 @@ HRESULT CDHTool::Render_LightTool()
 		float fRange = m_pSelectedObject->GetRange();
 
 		// 2. Range 슬라이더 UI
-		if (ImGui::SliderFloat("Range", &fRange, 0.1f, 100.0f, "%.1f"))
+		if (ImGui::SliderFloat("Range", &fRange, 0.01f, 20.0f, "%.1f"))
 		{
 			// 3. 값이 바뀌었을 때 다시 적용
 			m_pSelectedObject->SetRange(fRange);
@@ -350,7 +372,7 @@ HRESULT CDHTool::Render_LightTool()
 	{
 		// 선택된 오브젝트가 없을 경우 기본값만 표시 (비활성 상태)
 		static float fRange = 10.0f;
-		ImGui::SliderFloat("Range", &fRange, 0.1f, 100.0f, "%.1f");
+		ImGui::SliderFloat("Range", &fRange, 0.01f, 20.0f, "%.1f");
 	}
 
 	// SPOT(Range)
@@ -487,7 +509,7 @@ HRESULT CDHTool::Add_Light(LIGHT_TYPE eType, LEVEL_TYPE eLType)
 	Desc.iID = m_iID++;
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_ToolMesh"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ToolMesh"),
 		ENUM_CLASS(LEVEL::DH), L"Layer_ToolMesh", &pGameObject, &Desc)))
 		return E_FAIL;
 
@@ -680,6 +702,7 @@ HRESULT CDHTool::Load_Shader(
 	if (ShaderDataJson.contains("MetallicIntensity"))    Metallic = ShaderDataJson["MetallicIntensity"];
 	if (ShaderDataJson.contains("ReflectionIntensity"))  Reflection = ShaderDataJson["ReflectionIntensity"];
 	if (ShaderDataJson.contains("SpecularIntensity"))    Specular = ShaderDataJson["SpecularIntensity"];
+
 	if (ShaderDataJson.contains("AlbedoTint"))
 	{
 		const auto& TintArray = ShaderDataJson["AlbedoTint"];
@@ -720,6 +743,7 @@ void CDHTool::Save_Lights(LEVEL_TYPE eLType)
 		_float fFalloff = pToolMesh->GetfFalloff();
 		_float fFogDensity = pToolMesh->GetfFogDensity();
 		_float fFogCutOff = pToolMesh->GetfFogCutOff();
+		_bool  bVolumetric = pToolMesh->GetbVolumetric();
 
 		XMFLOAT4X4 matOut;
 		XMStoreFloat4x4(&matOut, matWorld);
@@ -744,6 +768,7 @@ void CDHTool::Save_Lights(LEVEL_TYPE eLType)
 		jLight["Falloff"] = fFalloff;
 		jLight["FogDensity"] = fFogDensity;
 		jLight["FogCutOff"] = fFogCutOff;
+		jLight["Volumetric"] = bVolumetric;
 
 		jLight["LightType"] = pToolMesh->GetLightType();
 		jLight["LevelType"] = static_cast<int>(eLType);
@@ -792,6 +817,7 @@ void CDHTool::Load_Lights(LEVEL_TYPE eLType)
 		_float fFalloff = jLight["Falloff"];
 		_float fFogDensity = jLight["FogDensity"];
 		_float fFogCutOff = jLight["FogCutOff"];
+		_int m_iVolumetricMode = jLight["Volumetric"].get<int>();
 
 		LIGHT_TYPE eLightType = static_cast<LIGHT_TYPE>(jLight["LightType"].get<int>());
 		LEVEL_TYPE eLevelType = static_cast<LEVEL_TYPE>(jLight["LevelType"].get<int>());
@@ -822,6 +848,7 @@ void CDHTool::Load_Lights(LEVEL_TYPE eLType)
 		pNewLight->SetfFalloff(fFalloff);
 		pNewLight->SetfFogDensity(fFogDensity);
 		pNewLight->SetfFogCutOff(fFogCutOff);
+		pNewLight->SetbVolumetric(m_iVolumetricMode);
 	}
 }
 

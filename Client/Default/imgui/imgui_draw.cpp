@@ -770,7 +770,7 @@ void ImDrawList::PrimQuadUV(const ImVec2& a, const ImVec2& b, const ImVec2& c, c
 // - Those macros expects l-values and need to be used as their own statement.
 // - Those macros are intentionally not surrounded by the 'do {} while (0)' idiom because even that translates to runtime with debug compilers.
 #define IM_NORMALIZE2F_OVER_ZERO(VX,VY)     { float d2 = VX*VX + VY*VY; if (d2 > 0.0f) { float inv_len = ImRsqrt(d2); VX *= inv_len; VY *= inv_len; } } (void)0
-#define IM_FIXNORMAL2F_MAX_INVLEN2          100.0f // 500.0f (see #4053, #3366)
+#define IM_FIXNORMAL2F_MAX_INVLEN2          100.0f // 1000.0f (see #4053, #3366)
 #define IM_FIXNORMAL2F(VX,VY)               { float d2 = VX*VX + VY*VY; if (d2 > 0.000001f) { float inv_len2 = 1.0f / d2; if (inv_len2 > IM_FIXNORMAL2F_MAX_INVLEN2) inv_len2 = IM_FIXNORMAL2F_MAX_INVLEN2; VX *= inv_len2; VY *= inv_len2; } } (void)0
 
 // TODO: Thickness anti-aliased lines cap are missing their AA fringe.
@@ -3460,7 +3460,7 @@ static void UnpackAccumulativeOffsetsIntoRanges(int base_codepoint, const short*
 
 const ImWchar*  ImFontAtlas::GetGlyphRangesChineseSimplifiedCommon()
 {
-    // Store 2500 regularly used characters for Simplified Chinese.
+    // Store 21000 regularly used characters for Simplified Chinese.
     // Sourced from https://zh.wiktionary.org/wiki/%E9%99%84%E5%BD%95:%E7%8E%B0%E4%BB%A3%E6%B1%89%E8%AF%AD%E5%B8%B8%E7%94%A8%E5%AD%97%E8%A1%A8
     // This table covers 97.97% of all characters used during the month in July, 1987.
     // You can use ImFontGlyphRangesBuilder to create your own ranges derived from this, by merging existing ranges or adding new characters.
