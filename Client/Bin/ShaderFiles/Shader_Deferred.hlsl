@@ -645,9 +645,9 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
     /* [ Volumetric Raymarching 기법 ] */
     float4 ViewSpacePosition = viewPos;
     
-    float StepSize = 0.5f;
+    //float StepSize = 0.5f;
     static const int NumStep = 100;
-        
+    float StepSize = viewZ / NumStep;
     // -----------------------------------------
     // 여기부터 Light 방향 볼륨광 추가
     // -----------------------------------------
@@ -808,8 +808,9 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
     /* [ Volumetric Raymarching 기법 ] */
     float4 ViewSpacePosition = viewPos;
 
-    float StepSize = 0.5f;
+    //float StepSize = 0.5f;
     static const int NumStep = 100;
+    float StepSize = viewZ / NumStep;
 
     float LightFog = 0.0f;
 
@@ -824,7 +825,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
         RayPos += RayDir * StepSize;
         float3 worldPos = mul(float4(RayPos, 1.0f), g_ViewMatrixInv).xyz;
 
-    // [ 차폐 체크 유지 ]
+        // [ 차폐 체크 유지 ]
         if (!bNoMeshBehind)
         {
             if (!bBlocked && RayPos.z > viewZ + 0.01f)
