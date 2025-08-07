@@ -66,6 +66,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	/* [ 카메라 세팅 ] */
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
+	m_pCamera_Manager = CCamera_Manager::Get_Instance();
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
 	/* [ 락온 세팅 ] */
@@ -99,7 +100,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	
 
 	Callback_DownBelt();
-	Callback_UpBelt();
+	Callback_UpBelt();	
 
 	return S_OK;
 }
@@ -108,13 +109,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	/*
-	_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
-	printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
-	*/
-	// 문여는 컷씬
-	if (KEY_DOWN(DIK_N))
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
 
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
@@ -147,6 +141,8 @@ void CPlayer::Update(_float fTimeDelta)
 void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	SitAnimationMove(fTimeDelta);
 	
 	/* [ 이곳은 애니메이션 실험실입니다. ] */
 	if(KEY_DOWN(DIK_Y))
@@ -155,14 +151,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//string strName = m_pAnimator->GetCurrentAnimName();
 		//m_pAnimator->SetBool("Charge", true);
 		//m_pAnimator->SetTrigger("StrongAttack");
-		m_pAnimator->SetInt("Combo", 1);
-		m_pAnimator->SetTrigger("NormalAttack");
+		//m_pAnimator->SetInt("Combo", 1);
 		
-		//m_pAnimator->SetBool("HasLamp", true);
-		//m_pAnimator->SetTrigger("Hited");
-
-		//m_pAnimator->SetBool("Run", true);
-		//m_pAnimator->SetTrigger("Hited");
 	}
 	if (KEY_PRESSING(DIK_U))
 	{
@@ -196,6 +186,31 @@ HRESULT CPlayer::Render()
 #endif
 
 	return S_OK;
+}
+
+CAnimController* CPlayer::GetCurrentAnimContrller()
+{
+	return m_pAnimator->Get_CurrentAnimController();
+}
+
+void CPlayer::SitAnimationMove(_float fTimeDelta)
+{
+	if (m_pCamera_Manager->Get_StartGame())
+	{
+		m_fSitTime += fTimeDelta;
+		_float  m_fTime = 1.5f;
+		_float  m_fDistance = 0.8f;
+
+		if (!m_bSit)
+		{
+			if (1.7f < m_fSitTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bSit = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+	}
 }
 
 void CPlayer::HandleInput()
@@ -450,7 +465,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
-
+	
 	default:
 		break;
 	}

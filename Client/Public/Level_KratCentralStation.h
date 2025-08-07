@@ -37,7 +37,7 @@ private:
 	HRESULT Ready_Lights();
 	HRESULT Ready_Shadow();
 	HRESULT Ready_Camera();
-	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
+	HRESULT Ready_Door();
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 	HRESULT Ready_UI();
 	HRESULT Ready_Video();
@@ -67,6 +67,9 @@ private:
 private:
 	_bool m_bHold = { true };
 	vector<class CDH_ToolMesh*> m_vecLights;
+
+private:
+	class CPlayer* m_pPlayer = { nullptr };
 
 public:
 	static CLevel_KratCentralStation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

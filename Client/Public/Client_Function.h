@@ -16,5 +16,5 @@ static _float2 Get_MousePos()
 /* 나중에 플레이어 static으로 가면 수정할 예정 */
 CGameObject* Get_Player(_uint iLevelIndex)
 {
-	return CGameInstance::Get_Instance()->Get_LastObject(iLevelIndex, TEXT("_Player"));
+	return CGameInstance::Get_Instance()->Get_LastObject(iLevelIndex, TEXT("Layer_Player"));
 }

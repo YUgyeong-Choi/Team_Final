@@ -4,6 +4,7 @@
 
 NS_BEGIN(Engine)
 class CPhysXController;
+class CAnimController;
 NS_END
 
 NS_BEGIN(Client)
@@ -59,6 +60,11 @@ public:
 public:
 	CPhysXController* Get_Controller() { return m_pControllerCom; }
 	EPlayerState Get_PlayerState() { return m_eCurrentState; }
+
+	CAnimController* GetCurrentAnimContrller();
+
+private:
+	void			SitAnimationMove(_float fTimeDelta);
 
 /* [ 입력 처리 ] */
 private: 
@@ -138,6 +144,7 @@ private: /* [ 상태 변수 ] */
 
 protected:
 	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	CPhysXController* m_pControllerCom = { nullptr };
 
 private: /* [ 그림자 변수 ] */
@@ -163,6 +170,8 @@ private: /* [ 이동관련 변수 ] */
 
 	string	 m_strPrevStateName;
 	_bool    m_bMove = {};
+	_bool    m_bSit = {};
+	_float   m_fSitTime = {};
 	_float   m_fMoveTime = {};
 	_int	 m_iMoveStep = {};
 

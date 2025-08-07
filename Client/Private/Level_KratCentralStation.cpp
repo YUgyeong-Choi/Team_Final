@@ -30,10 +30,13 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
+
 	if (FAILED(Ready_Shadow()))
 		return E_FAIL;
-	/*if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
-		return E_FAIL;*/
+
+	if (FAILED(Ready_Door()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 
@@ -83,7 +86,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 	m_pGameInstance->Set_IsChangeLevel(false);
 
-
 	return S_OK;
 }
 
@@ -126,8 +128,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 			m_pStartVideo = nullptr;
 	
-
-
+			/* [ 플레이어 제어 ] */
+			m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
 			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 		}
 
@@ -454,13 +456,17 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::STATIC;
-	pDesc.InitPos = _float3(0.f, 0.978f, 1.f);
+	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pDesc)))
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pGameObject, &pDesc)))
 		return E_FAIL;
+
+	m_pPlayer = dynamic_cast<CPlayer*>(pGameObject);
 
 	return S_OK;
 }
@@ -621,23 +627,26 @@ HRESULT CLevel_KratCentralStation::Ready_Camera()
 	return S_OK;
 }
 
-
-HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLayerTag)
+HRESULT CLevel_KratCentralStation::Ready_Door()
 {
-	CPBRMesh::STATICMESH_DESC Desc{};
+	CStaticMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
 	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.szMeshID = TEXT("Train");
-	lstrcpy(Desc.szName, TEXT("Train"));
+	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
+	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-		return E_FAIL;
+	/* 문자열 받는 곳 */
+	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
+	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
-	Desc.szMeshID = TEXT("Station");
-	lstrcpy(Desc.szName, TEXT("Station"));
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
+	_float3 vPosition = _float3(52.6f, 0.02f, -2.4f);
+	_matrix matWorld = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	_float4x4 matWorldFloat;
+	XMStoreFloat4x4(&matWorldFloat, matWorld);
+	Desc.WorldMatrix = matWorldFloat;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;
