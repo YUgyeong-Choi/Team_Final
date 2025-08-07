@@ -32,6 +32,7 @@ private:
 
 private:
 	HRESULT Ready_Player();
+	HRESULT Ready_Npc();
 	HRESULT Ready_Lights();
 	HRESULT Ready_Shadow();
 	HRESULT Ready_Camera();

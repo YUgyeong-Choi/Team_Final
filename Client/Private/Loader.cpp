@@ -347,9 +347,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Wego"),
-	//	CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Wego/Wego.bin", PreTransformMatrix))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Wego"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Wego/Wego.bin", PreTransformMatrix))))
+		return E_FAIL;
 	
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
@@ -383,6 +383,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CBayonet::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
+		CWego::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -395,9 +399,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTestAnimObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
-	//	CWego::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
 
 	m_fRatio = 1.f;
 	Sleep(250); // 안해주면 동기화 안하고 끝나서 안차던데 좋은 방법 있으면 알려주셈

@@ -169,8 +169,6 @@ void CCamera_Orbital::Set_InitCam()
 	{
 		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(0.112646f, -1.535662f));
 		Set_PitchYaw(0.112646f, -1.535662f);
-		m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
-		m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
 	}
 }
 

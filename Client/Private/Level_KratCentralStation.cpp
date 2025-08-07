@@ -50,11 +50,13 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Npc()))
+		return E_FAIL;
 
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
 
-	m_pCamera_Manager->SetOrbitalCam();
+	m_pCamera_Manager->SetCutSceneCam();
 
 	
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
@@ -439,19 +441,23 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
 
+	return S_OK;
+}
 
-	//CWego::WEGO_DESC pWegoDesc{};
-	////pDesc.fSpeedPerSec = 1.f;
-	//pWegoDesc.fSpeedPerSec = 5.f;
-	//pWegoDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	//pWegoDesc.eLevelID = LEVEL::STATIC;
-	//pWegoDesc.InitPos = _float3(0.f, 0.978f, 1.f);
-	//pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
-	//lstrcpy(pWegoDesc.szName, TEXT("Wego"));
-	//pWegoDesc.szMeshID = TEXT("Wego");
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Wego"), &pDesc)))
-	//	return E_FAIL;
+HRESULT CLevel_KratCentralStation::Ready_Npc()
+{
+	CWego::WEGO_DESC pWegoDesc{};
+	//pDesc.fSpeedPerSec = 1.f;
+	pWegoDesc.fSpeedPerSec = 5.f;
+	pWegoDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	pWegoDesc.eLevelID = LEVEL::STATIC;
+	pWegoDesc.InitPos = _float3(103.47f, 1.55f, -4.14f);
+	pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pWegoDesc.szName, TEXT("Wego"));
+	pWegoDesc.szMeshID = TEXT("Wego");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Wego"), &pWegoDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
