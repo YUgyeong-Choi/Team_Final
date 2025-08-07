@@ -81,7 +81,6 @@ private:
 	HRESULT Render_Effect_WB();
 	HRESULT Render_Effect_WB_Composite();
 
-
 private:
 	HRESULT Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight);
 	HRESULT Ready_DepthStencilView_Blur(_uint iWidth, _uint iHeight);

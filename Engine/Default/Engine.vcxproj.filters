@@ -241,6 +241,9 @@
     <ClInclude Include="..\Public\VIBuffer_VolumeMesh.h">
       <Filter>01.Utility\04.Components\VIBuffer\VolumeMesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Trail.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -455,6 +458,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_VolumeMesh.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\VolumeMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Trail.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -694,6 +700,9 @@
     </Filter>
     <Filter Include="01.Utility\15.ComputeShader">
       <UniqueIdentifier>{a353a404-6893-4556-a3b6-38194377b18d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Trail">
+      <UniqueIdentifier>{9c984c06-90d2-4f7f-b591-151eca3c4ffa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

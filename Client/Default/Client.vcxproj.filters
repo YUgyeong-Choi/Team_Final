@@ -1091,6 +1091,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPos.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTrail.hlsl">
+      <Filter>97.ShaderFiles\Effect</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Effect_Shader_Defines.hlsli">
