@@ -314,10 +314,30 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Text("Tile Y");
 	ImGui::SameLine();
 	ImGui::InputInt("##Tile Y", pEffect->Get_TileY());
-	ImGui::PopItemWidth();
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
-
+	ImGui::ColorEdit4("Center Color##picker", reinterpret_cast<_float*>(pEffect->Get_CenterColor()), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
+	ImGui::SameLine();
+	ImGui::Text("Center Color");
+	ImGui::SameLine();
+	ImGui::DragFloat("Glow Intensity", pEffect->Get_EmissiveIntensity_Ptr(), 0.05f, 0.0f, 10.f, "%.2f");
+	ImGui::PopItemWidth();
+	string strRGName;
+	for (_uint i = ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW); i < ENUM_CLASS(RENDERGROUP::RG_EFFECT_END); i++)
+	{
+		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW))strRGName = "RG_EFFECT_GLOW";
+		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB))strRGName = "RG_EFFECT_WB";
+		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL))strRGName = "RG_EFFECT_NL";
+		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_LIGHT))strRGName = "RG_EFFECT_LIGHT";
+		if (ImGui::RadioButton(strRGName.c_str(), m_iRenderGroup == i)) {
+			m_iRenderGroup = i;
+			pEffect->Set_RenderGroup(i);
+		}
+		if (i!= ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL))
+			ImGui::SameLine();
+	}
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 	// 텍스쳐 선택 창
 	if (FAILED(Draw_TextureBrowser(pEffect)))
 	{
@@ -328,6 +348,8 @@ HRESULT CCYTool::Edit_Preferences()
 
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
+	
+
 
 	// 키프레임 
 	Edit_Keyframes(pEffect);
@@ -339,17 +361,6 @@ HRESULT CCYTool::Edit_Preferences()
 
 	ImGui::Begin("Type Window");
 
-	ImGui::Text("Select RenderGroup\n0. EFFECT_BLEND\t1. EFFECT_BLEND\t2. UVSprite\t3. UVSprite_Color");
-
-	//for (_uint i = 0; i < SE_END; i++)
-	//{
-	//	if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), m_eSelectedPass_SE == i)) {
-	//		m_eSelectedPass_SE = (SPRITEEFFECT_PASS_INDEX)i;
-	//		pSE->Set_ShaderPass(i);
-	//	}
-	//	if (i % 6 != 0 || i == 0)
-	//		ImGui::SameLine();
-	//}
 
 	switch (m_pSequence->m_Items[m_iSelected].iType)
 	{
@@ -395,7 +406,7 @@ HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-	ImGui::Text("Select Pass\n0. Default\t1. SoftEffect\t2. UVSprite\t3. UVSprite_Color");
+	ImGui::Text("Select Pass\n0. Default\t1. SoftEffect\t2. UVSprite\t3. UVSprite_Color, 4. UVSprite_Color_WB");
 
 	for (_uint i = 0; i < SE_END; i++)
 	{
@@ -436,9 +447,7 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");
 	ImGui::DragFloat("Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 200.f, "%.1f");
-	ImGui::ColorEdit4("Center Color##picker", reinterpret_cast<_float*>(pPE->Get_CenterColor()), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
-	ImGui::SameLine();
-	ImGui::Text("Center Color");
+
 	// 아직안만듦
 	ImGui::Checkbox("Gravity", &m_bGravity);
 	ImGui::Checkbox("Loop", &m_isLoop);
@@ -486,7 +495,7 @@ HRESULT CCYTool::Window_Mesh()
 	if (pME == nullptr)
 		return E_FAIL;
 
-	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask");
+	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\t4. Mask Only WB");
 	for (_uint i = 0; i < ME_END; i++)
 	{
 		if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), m_eSelectedPass_ME == i)) {
@@ -1032,21 +1041,21 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 
 	// 텍스처 미리보기 목록 (드래그 가능)
 	ImGui::Text("Select a Texture:");
-	int columnCount = 4;
+	_int columnCount = 5;
 
-	ImGui::BeginChild("TextureGrid", ImVec2(400, 300), true);
+	ImGui::BeginChild("TextureGrid", ImVec2(400.f, 300.f), true);
 	ImGui::Columns(columnCount, nullptr, false);
 
-	for (int i = 0; i < m_Textures.size(); ++i) {
+	for (_int i = 0; i < m_Textures.size(); ++i) {
 		ImGui::PushID(i);
 
 		// 이미지 버튼
-		if (ImGui::ImageButton("##TexBtn", reinterpret_cast<ImTextureID>(m_Textures[i].pSRV), ImVec2(64, 64)))
+		if (ImGui::ImageButton("##TexBtn", reinterpret_cast<ImTextureID>(m_Textures[i].pSRV), ImVec2(64.f, 64.f)))
 			m_iSelectedTextureIdx = i;
 
 		// 드래그 소스 등록
 		if (ImGui::BeginDragDropSource()) {
-			ImGui::SetDragDropPayload("TEXTURE_PAYLOAD", &i, sizeof(int));
+			ImGui::SetDragDropPayload("TEXTURE_PAYLOAD", &i, sizeof(_int));
 			ImGui::Text("Dragging: %s", m_Textures[i].name.c_str());
 			ImGui::EndDragDropSource();
 		}
@@ -1067,7 +1076,7 @@ HRESULT CCYTool::Draw_TextureBrowser(CEffectBase* pEffect)
 	ImGui::BeginGroup();
 	ImGui::Text("Texture Slots:");
 	const _char* slotNames[4] = { "Diffuse", "Mask1", "Mask2", "Mask3" };
-	ImVec2 slotSize = ImVec2(48, 48);
+	ImVec2 slotSize = ImVec2(48.f, 48.f);
 
 	for (_int slotIdx = 0; slotIdx < TU_END; ++slotIdx) {
 		if (slotIdx > 0)
@@ -1181,19 +1190,20 @@ void CCYTool::Key_Input()
 		m_bPlaySequence = !m_bPlaySequence;
 	}
 
-	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
-	{
-		if (m_pSequence &&
-			!m_pSequence->m_Items.empty() && 
-			m_iSelected != -1)
-		{
-			m_pSequence->Del(m_iSelected);
-			m_iSelected = - 1;
-			m_iSelectedKeyframe = 0;
-		}
-	}
+	
 	if (KEY_PRESSING(DIK_LCONTROL))
 	{
+		if (ImGui::IsKeyPressed(ImGuiKey_Delete))
+		{
+			if (m_pSequence &&
+				!m_pSequence->m_Items.empty() &&
+				m_iSelected != -1)
+			{
+				m_pSequence->Del(m_iSelected);
+				m_iSelected = -1;
+				m_iSelectedKeyframe = 0;
+			}
+		}
 		if (m_isGizmoEnable)
 		{
 			if (KEY_DOWN(DIK_W)) {

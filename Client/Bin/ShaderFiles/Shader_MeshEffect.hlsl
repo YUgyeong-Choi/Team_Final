@@ -58,6 +58,7 @@ struct PS_OUT
     //vector vPickPos : SV_TARGET3;
 };
 
+
 struct PS_OUT_EFFECT
 {
     vector vColor : SV_TARGET0;
@@ -153,6 +154,40 @@ PS_OUT_EFFECT PS_MAIN_UVMASKONLY(PS_IN In)
     return Out;
 }
 
+struct PS_OUT_EFFECT_WB
+{
+    vector vAccumulation : SV_TARGET0;
+    vector fRevealage : SV_TARGET1;
+    vector vEmissive : SV_TARGET2;
+};
+
+PS_OUT_EFFECT_WB PS_MAIN_MASKONLY_WB(PS_IN In)
+{
+    PS_OUT_EFFECT_WB Out;
+    
+    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTileScroll(In.vTexcoord, g_fTileSize, g_fTileOffset, 1.2f, g_fTime)).r;
+    if (mask < 0.003f)
+        discard;
+    float4 vPreColor;
+    float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    
+    vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    vector vColor;
+    
+    vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
+    vColor.a = vPreColor.a * mask;
+    
+
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+        
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {   
     pass Default        // 0
@@ -169,8 +204,8 @@ technique11 DefaultTechnique
     pass MaskOnly       // 1
     {
         SetRasterizerState(RS_Cull_None);
-        SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
         VertexShader = compile vs_5_0 VS_MAIN();      
         GeometryShader = NULL;
@@ -197,6 +232,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_UVMASKONLY();
+    }
+   
+    pass MaskOnly_WB // 4
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WB();
     }
    
 }

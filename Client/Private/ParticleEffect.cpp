@@ -67,7 +67,7 @@ void CParticleEffect::Update(_float fTimeDelta)
 void CParticleEffect::Late_Update(_float fTimeDelta)
 {
 	/* WeightBlend */
-	m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
+	//m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
 
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
@@ -172,6 +172,8 @@ HRESULT CParticleEffect::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fThreshold", &m_fThreshold, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTime", &m_fTimeAcc, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissiveIntensity, sizeof(_float))))
 		return E_FAIL;
 
 	if (m_bTextureUsage[TU_DIFFUSE] == true) {

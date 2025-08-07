@@ -160,7 +160,7 @@ PS_OUT PS_MAIN_GRID_COLOR(PS_IN_BLEND In)
 {
     PS_OUT Out;    
     Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-    if (Out.vColor.a <= 0.01f)
+    if (Out.vColor.a <= 0.0003f)
         discard;
     
     Out.vColor = ColorAdjustment_Multiply(Out.vColor, g_vColor);
@@ -170,11 +170,39 @@ PS_OUT PS_MAIN_GRID_COLOR(PS_IN_BLEND In)
     return Out;
 }
 
+struct PS_OUT_EFFECT_WB
+{
+    vector vAccumulation : SV_TARGET0;
+    vector fRevealage : SV_TARGET1;
+    vector vEmissive : SV_TARGET2;
+};
+
+PS_OUT_EFFECT_WB PS_MAIN_GRID_COLOR_WB(PS_IN_BLEND In)
+{
+    PS_OUT_EFFECT_WB Out;
+    vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    if (vColor.a <= 0.0003f)
+        discard;
+      
+    vColor = ColorAdjustment_Multiply(vColor, g_vColor);
+    
+    vColor = SoftEffect(vColor, In.vProjPos);
+    
+    
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);   
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+        
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Default            // 0
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
@@ -185,7 +213,7 @@ technique11 DefaultTechnique
     }
     pass SoftEffectOnly     // 1
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);        
 
@@ -195,7 +223,7 @@ technique11 DefaultTechnique
     }
     pass UVSprite_Default   // 2
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -205,12 +233,22 @@ technique11 DefaultTechnique
     }
     pass UVSprite_Coloring  // 3
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN_BLEND();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_GRID_COLOR();
+    }
+    pass UVSprite_Coloring_WB // 4
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_BLEND();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_GRID_COLOR_WB();
     }
 }

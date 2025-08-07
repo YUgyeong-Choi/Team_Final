@@ -42,6 +42,7 @@ private:
 	HRESULT Ready_UI();
 	HRESULT Ready_Video();
 	HRESULT Ready_Monster();
+	HRESULT Ready_Effect();
 
 private:
 	HRESULT Load_Shader();
