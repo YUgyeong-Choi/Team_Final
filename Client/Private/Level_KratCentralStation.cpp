@@ -8,12 +8,14 @@
 #include "StaticMesh_Instance.h"
 
 #include "PBRMesh.h"
+#include "DH_ToolMesh.h"
 #include "Level_Loading.h"
 #include "UI_Container.h"
 #include "UI_Video.h"
 
 #include "Player.h"
 #include "Wego.h"
+
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -59,14 +61,29 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
 
+	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
 
+
+	/* [ 셰이더 값 세팅 ] */
+	if (FAILED(Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
+		TEXT("Com_ShaderPBR"), reinterpret_cast<CComponent**>(&m_pShaderComPBR))))
+		return E_FAIL;
+	if (FAILED(Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxAnimMesh")),
+		TEXT("Com_ShaderANIM"), reinterpret_cast<CComponent**>(&m_pShaderComANIM))))
+		return E_FAIL;
+	if (FAILED(Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh_Instance")),
+		TEXT("Com_ShaderPBR"), reinterpret_cast<CComponent**>(&m_pShaderComInstance))))
+		return E_FAIL;
+	if (FAILED(Load_Shader()))
+		return E_FAIL;
+
+	/* [ 카메라 셋팅 ] */
 	m_pCamera_Manager->SetCutSceneCam();
 
-	
+	/* [ 레벨 셋팅 ] */
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-
 	m_pGameInstance->Set_IsChangeLevel(false);
 
 
@@ -86,6 +103,11 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 			return;
 	}
 
+
+}
+
+void CLevel_KratCentralStation::Update(_float fTimeDelta)
+{
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 
@@ -94,13 +116,10 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 		m_pStartVideo->Set_bDead();
 
-		
-	
-	}
-}
 
-void CLevel_KratCentralStation::Update(_float fTimeDelta)
-{
+
+	}
+
  	if (nullptr != m_pStartVideo)
 	{
 		if (m_pStartVideo->Get_bDead())
@@ -108,7 +127,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			/* [ 사운드 ] */
 			m_pBGM->Play();
 
-			
 			m_pStartVideo = nullptr;
 	
 
@@ -443,59 +461,109 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 
 HRESULT CLevel_KratCentralStation::Ready_Lights()
 {
-#pragma region 호텔에 있던 라이트 가져옴
-	LIGHT_DESC			LightDesc{};
+	wstring basePath = L"../Bin/Save/LightInfomation/";
+	wstring fileName = L"Light_Information.json";
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
-	LightDesc.fAmbient = 0.2f;
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+	ifstream ifs(basePath + fileName);
+	if (!ifs.is_open())
 		return E_FAIL;
 
-	CShadow::SHADOW_DESC		Desc{};
-	Desc.vEye = _float4(0.f, 20.f, -15.f, 1.f);
-	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	Desc.fFovy = XMConvertToRadians(60.0f);
-	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
+	nlohmann::json jLights;
+	ifs >> jLights;
+	ifs.close();
 
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
-		return E_FAIL;
+	for (const auto& jLight : jLights)
+	{
+		// 1. 기본 정보 추출
+		vector<vector<float>> matrixArray = jLight["WorldMatrix"];
+		_float fIntensity = jLight["Intensity"];
+		_float fRange = jLight["Range"];
+		vector<float> colorVec = jLight["Color"];
 
-#pragma endregion
+		_float fInnerCosAngle = jLight["InnerCosAngle"];
+		_float fOuterCosAngle = jLight["OuterCosAngle"];
+		_float fFalloff = jLight["Falloff"];
+		_float fFogDensity = jLight["FogDensity"];
+		_float fFogCutOff = jLight["FogCutOff"];
+		_int m_iVolumetricMode = jLight["Volumetric"].get<int>();
 
-#pragma region 원래 여기 있던 라이트
-	//LIGHT_DESC			LightDesc{};
+		CDHTool::LIGHT_TYPE eLightType = static_cast<CDHTool::LIGHT_TYPE>(jLight["LightType"].get<int>());
+		CDHTool::LEVEL_TYPE eLevelType = static_cast<CDHTool::LEVEL_TYPE>(jLight["LevelType"].get<int>());
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 1.f;
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.fFogDensity = 0.f;
+		// 2. 행렬 복원
+		XMFLOAT4X4 mat;
+		mat._11 = matrixArray[0][0]; mat._12 = matrixArray[0][1]; mat._13 = matrixArray[0][2]; mat._14 = matrixArray[0][3];
+		mat._21 = matrixArray[1][0]; mat._22 = matrixArray[1][1]; mat._23 = matrixArray[1][2]; mat._24 = matrixArray[1][3];
+		mat._31 = matrixArray[2][0]; mat._32 = matrixArray[2][1]; mat._33 = matrixArray[2][2]; mat._34 = matrixArray[2][3];
+		mat._41 = matrixArray[3][0]; mat._42 = matrixArray[3][1]; mat._43 = matrixArray[3][2]; mat._44 = matrixArray[3][3];
+		_matrix matWorld = XMLoadFloat4x4(&mat);
 
-	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
-		return E_FAIL;
+		// 3. 라이트 생성
+		if (FAILED(Add_Light(eLightType, eLevelType)))
+			continue;
 
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 1.f;
-	LightDesc.fRange = 100.f;
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
-	LightDesc.fFogDensity = 0.f;
+		// 4. 생성된 라이트 설정
+		CDH_ToolMesh* pNewLight = m_vecLights.back();
+		if (!pNewLight)
+			continue;
 
-	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
-		return E_FAIL;
-#pragma endregion
+		pNewLight->Get_TransfomCom()->Set_WorldMatrix(matWorld);
+		pNewLight->SetIntensity(fIntensity);
+		pNewLight->SetRange(fRange);
+		pNewLight->SetColor(_float4(colorVec[0], colorVec[1], colorVec[2], colorVec[3]));
+		pNewLight->SetfInnerCosAngle(fInnerCosAngle);
+		pNewLight->SetfOuterCosAngle(fOuterCosAngle);
+		pNewLight->SetfFalloff(fFalloff);
+		pNewLight->SetfFogDensity(fFogDensity);
+		pNewLight->SetfFogCutOff(fFogCutOff);
+		pNewLight->SetbVolumetric(m_iVolumetricMode);
+
+		pNewLight->SetDebug(false);
+	}
 
 	return S_OK;
 }
+
+HRESULT CLevel_KratCentralStation::Add_Light(CDHTool::LIGHT_TYPE eType, CDHTool::LEVEL_TYPE eLType)
+{
+	CDH_ToolMesh::DHTOOL_DESC Desc{};
+	if (eType == CDHTool::LIGHT_TYPE::POINT)
+	{
+		Desc.szMeshID = TEXT("PointLight");
+		lstrcpy(Desc.szName, TEXT("PointLight"));
+	}
+	if (eType == CDHTool::LIGHT_TYPE::SPOT)
+	{
+		Desc.szMeshID = TEXT("SpotLight");
+		lstrcpy(Desc.szName, TEXT("SpotLight"));
+	}
+	if (eType == CDHTool::LIGHT_TYPE::DIRECTIONAL)
+	{
+		Desc.szMeshID = TEXT("DirrectionalLight");
+		lstrcpy(Desc.szName, TEXT("DirrectionalLight"));
+	}
+
+	if (eLType == CDHTool::LEVEL_TYPE::KRAT_CENTERAL_STATION)
+		Desc.eLEVEL = LEVEL::KRAT_CENTERAL_STATION;
+	if (eLType == CDHTool::LEVEL_TYPE::KRAT_HOTEL)
+		Desc.eLEVEL = LEVEL::KRAT_HOTEL;
+
+
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.m_vInitPos = _float3(0.f, 10.f, 10.f);
+	Desc.iID = 0;
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ToolMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_ToolMesh", &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_vecLights.push_back(dynamic_cast<CDH_ToolMesh*>(pGameObject));
+
+	return S_OK;
+}
+
 
 HRESULT CLevel_KratCentralStation::Ready_Shadow()
 {
@@ -599,7 +667,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
 	eDesc.fOffset = 0.0f;
 	eDesc.fInterval = 1.f;
-	eDesc.fSpeedPerSec = 120.f;
+	eDesc.fSpeedPerSec = 60.f;
 	eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Startscene.mp4");
 	eDesc.fX = g_iWinSizeX * 0.5f;
 	eDesc.fY = g_iWinSizeY * 0.5f;
@@ -607,6 +675,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 	eDesc.fSizeY = g_iWinSizeY;
 	eDesc.fAlpha = 1.f;
 	eDesc.isLoop = false;
+	eDesc.isCull = true;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
 		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video"), &eDesc)))
@@ -660,6 +729,148 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 }
 
 
+HRESULT CLevel_KratCentralStation::Load_Shader()
+{
+	// [1] 경로 준비
+	const string strPath = "../Bin/Save/ShaderParameters/ShaderData.json";
+
+	// [2] 파일 존재 여부 확인
+	if (!filesystem::exists(strPath))
+	{
+		MSG_BOX("셰이더 불러오기 실패: 저장된 파일이 없습니다.");
+		return E_FAIL;
+	}
+
+	// [3] JSON 파일 열기
+	ifstream ShaderDataFile(strPath);
+	if (!ShaderDataFile.is_open())
+	{
+		MSG_BOX("셰이더 불러오기 실패: 파일 열기 실패.");
+		return E_FAIL;
+	}
+
+	// [4] JSON 파싱
+	json ShaderDataJson;
+	ShaderDataFile >> ShaderDataJson;
+
+	// [5] 각 값이 존재할 경우에만 안전하게 불러오기	
+	if (ShaderDataJson.contains("DiffuseIntensity"))
+	{
+		_float fDiffuse = ShaderDataJson["DiffuseIntensity"];
+		if (FAILED(m_pShaderComPBR->Bind_RawValue("g_fDiffuseIntensity", &fDiffuse, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComANIM->Bind_RawValue("g_fDiffuseIntensity", &fDiffuse, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fDiffuseIntensity", &fDiffuse, sizeof(_float))))
+			return E_FAIL;
+	}
+	if (ShaderDataJson.contains("NormalIntensity"))
+	{
+		_float fNormal = ShaderDataJson["NormalIntensity"];
+		if (FAILED(m_pShaderComPBR->Bind_RawValue("g_fNormalIntensity", &fNormal, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComANIM->Bind_RawValue("g_fNormalIntensity", &fNormal, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fNormalIntensity", &fNormal, sizeof(_float))))
+			return E_FAIL;
+	}
+	if (ShaderDataJson.contains("AOIntensity"))
+	{
+		_float fAO = ShaderDataJson["AOIntensity"];
+		if (FAILED(m_pShaderComPBR->Bind_RawValue("g_fAOIntensity", &fAO, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComANIM->Bind_RawValue("g_fAOIntensity", &fAO, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fAOIntensity", &fAO, sizeof(_float))))
+			return E_FAIL;
+	}
+	if (ShaderDataJson.contains("AOPower"))
+	{
+		_float fAOPower = ShaderDataJson["AOPower"];
+		if (FAILED(m_pShaderComPBR->Bind_RawValue("g_fAOPower", &fAOPower, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComANIM->Bind_RawValue("g_fAOPower", &fAOPower, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fAOPower", &fAOPower, sizeof(_float))))
+			return E_FAIL;
+	}
+	if (ShaderDataJson.contains("RoughnessIntensity"))
+	{
+		_float fRoughness = ShaderDataJson["RoughnessIntensity"];
+		if (FAILED(m_pShaderComPBR->Bind_RawValue("g_fRoughnessIntensity", &fRoughness, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComANIM->Bind_RawValue("g_fRoughnessIntensity", &fRoughness, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fRoughnessIntensity", &fRoughness, sizeof(_float))))
+			return E_FAIL;
+	}
+	if (ShaderDataJson.contains("MetallicIntensity"))
+	{
+		_float fMetallic = ShaderDataJson["MetallicIntensity"];
+		if (FAILED(m_pShaderComPBR->Bind_RawValue("g_fMetallicIntensity", &fMetallic, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComANIM->Bind_RawValue("g_fMetallicIntensity", &fMetallic, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fMetallicIntensity", &fMetallic, sizeof(_float))))
+			return E_FAIL;
+	}
+	if (ShaderDataJson.contains("ReflectionIntensity"))
+	{
+		_float fReflection = ShaderDataJson["ReflectionIntensity"];
+		if (FAILED(m_pShaderComPBR->Bind_RawValue("g_fReflectionIntensity", &fReflection, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComANIM->Bind_RawValue("g_fReflectionIntensity", &fReflection, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fReflectionIntensity", &fReflection, sizeof(_float))))
+			return E_FAIL;
+	}
+	if (ShaderDataJson.contains("SpecularIntensity"))
+	{
+		_float fSpecular = ShaderDataJson["SpecularIntensity"];
+		if (FAILED(m_pShaderComPBR->Bind_RawValue("g_fSpecularIntensity", &fSpecular, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComANIM->Bind_RawValue("g_fSpecularIntensity", &fSpecular, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fSpecularIntensity", &fSpecular, sizeof(_float))))
+			return E_FAIL;
+	}
+
+	if (ShaderDataJson.contains("AlbedoTint"))
+	{
+		const auto& TintArray = ShaderDataJson["AlbedoTint"];
+		if (TintArray.is_array() && TintArray.size() == 4)
+		{
+			_float4 vTint = _float4(
+				TintArray[0].get<_float>(),
+				TintArray[1].get<_float>(),
+				TintArray[2].get<_float>(),
+				TintArray[3].get<_float>()
+			);
+
+			if (FAILED(m_pShaderComPBR->Bind_RawValue("g_vDiffuseTint", &vTint, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(m_pShaderComANIM->Bind_RawValue("g_vDiffuseTint", &vTint, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_vDiffuseTint", &vTint, sizeof(_float4))))
+				return E_FAIL;
+		}
+	}
+
+	ShaderDataFile.close();
+
+	return S_OK;
+}
+HRESULT CLevel_KratCentralStation::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
+{
+	CComponent* pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
+	if (nullptr == pComponent)
+		return E_FAIL;
+
+	*ppOut = pComponent;
+	return S_OK;
+}
+
+
 CLevel_KratCentralStation* CLevel_KratCentralStation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CLevel_KratCentralStation* pInstance = new CLevel_KratCentralStation(pDevice, pContext);
@@ -682,6 +893,9 @@ void CLevel_KratCentralStation::Free()
 	{
 		m_pBGM->Stop();
 		Safe_Release(m_pBGM);
+		Safe_Release(m_pShaderComPBR);
+		Safe_Release(m_pShaderComANIM);
+		Safe_Release(m_pShaderComInstance);
 	}
 
 	Safe_Release(m_pStartVideo);

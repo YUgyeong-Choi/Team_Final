@@ -68,6 +68,9 @@ void CDH_ToolMesh::Late_Update(_float fTimeDelta)
 
 HRESULT CDH_ToolMesh::Render()
 {
+	if (!m_bDebug)
+		return S_OK;
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -99,7 +102,7 @@ HRESULT CDH_ToolMesh::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::DH), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -140,6 +143,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.fFogDensity = 0.f;
 		LightDesc.fFogCutoff = 15.f;
+		LightDesc.bIsVolumetric = true;
 	}
 	if (m_szMeshID == TEXT("SpotLight"))
 	{
@@ -156,6 +160,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.fFogDensity = 0.f;
 		LightDesc.fFogCutoff = 15.f;
+		LightDesc.bIsVolumetric = true;
 
 	}
 	if (m_szMeshID == TEXT("DirrectionalLight"))
@@ -168,9 +173,11 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.fFogDensity = 0.f;
+		LightDesc.bIsVolumetric = true;
 	}
 
-	if (FAILED(m_pGameInstance->Add_LevelLightDataReturn(ENUM_CLASS(LEVEL::DH), LightDesc, &m_pLight)))
+	//m_eTargetLevel = LEVEL::DH;
+	if (FAILED(m_pGameInstance->Add_LevelLightDataReturn(ENUM_CLASS(m_eTargetLevel), LightDesc, &m_pLight)))
 		return E_FAIL;
 
 	return S_OK;

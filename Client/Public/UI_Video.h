@@ -27,6 +27,7 @@ public:
 		_float	fInterval;
 		wstring strVideoPath;
 		_bool   isLoop = { true };
+		_bool   isCull = { false };
 	}VIDEO_UI_DESC;
 
 
@@ -62,6 +63,8 @@ private:
 	_float   m_fFrameInterval = {};
 	_float   m_fElapsedTime = {};
 	_float   m_fDuration = {};
+
+	_bool	 m_isCull = { false };
 
 	ID3D11ShaderResourceView* m_pVideoSRV = { nullptr };
 

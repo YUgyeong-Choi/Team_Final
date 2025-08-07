@@ -80,6 +80,7 @@ private:
 	HRESULT Render_Effect_NonLight();
 	HRESULT Render_Effect_WB();
 	HRESULT Render_Effect_WB_Composite();
+	HRESULT Render_Video();
 
 
 private:

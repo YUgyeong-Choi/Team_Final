@@ -27,6 +27,7 @@ HRESULT CUI_Video::Initialize(void* pArg)
 	m_fFrameInterval = pDesc->fInterval;
 
 	m_isLoop = pDesc->isLoop;
+	m_isCull = pDesc->isCull;
 
 	if (FAILED(InitMediaFoundationAndCreateReader(m_strVideoPath.c_str(), m_pReader)))
 		return E_FAIL;
@@ -91,7 +92,7 @@ void CUI_Video::Update(_float fTimeDelta)
 			
 			delete[] pData;
 		}
-		else if (hr == MF_E_END_OF_STREAM)
+		else
 		{
 			if (m_isLoop)
 			{
@@ -107,17 +108,14 @@ void CUI_Video::Update(_float fTimeDelta)
 			}
 			else
 			{
+				m_isCull = false;
 				Safe_Release(m_pVideoSRV);
 				Set_bDead();
 				return;
 			}
 		
 		}
-		else
-		{
-			
-			cout << L"영상 프레임 읽기 실패\n";
-		}
+		
 	}
 
 	
@@ -127,7 +125,13 @@ void CUI_Video::Late_Update(_float fTimeDelta)
 {
 	if (m_bDead)
 		return;
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+
+	if(!m_isCull)
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+	else
+	{
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_VIDEO, this);
+	}
 }
 
 HRESULT CUI_Video::Render()

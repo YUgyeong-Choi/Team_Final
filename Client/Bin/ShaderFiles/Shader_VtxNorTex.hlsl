@@ -69,7 +69,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     Out.vDiffuse = vector(vMtrlDiffuse.rgb, 1.f);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, 0.f);
     Out.vPickPos = In.vWorldPos;
     
     return Out;

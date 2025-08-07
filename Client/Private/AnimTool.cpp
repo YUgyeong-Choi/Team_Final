@@ -1851,7 +1851,7 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 		m_CategoryStates[category].push_back(state.stateName); // 카테고리에 state 이름 추가
 	}
 
-	_float categorySpacing = 500.0f;
+	_float categorySpacing = 1000.0f;
 	_float nodeSpacing = 300.0f;
 	_int categoryIndex = 0;
 
