@@ -107,9 +107,6 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 			return;
 
 		m_pStartVideo->Set_bDead();
-
-		
-	
 	}
 }
 
