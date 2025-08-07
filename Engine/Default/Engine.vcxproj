@@ -169,6 +169,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
   <ItemGroup>
     <ClInclude Include="..\Public\Animation.h" />
     <ClInclude Include="..\Public\Animator.h" />
+    <ClInclude Include="..\public\AnimComputeShader.h" />
     <ClInclude Include="..\Public\AnimController.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\BlendObject.h" />
@@ -182,6 +183,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\Public\Channel.h" />
     <ClInclude Include="..\public\Collider.h" />
     <ClInclude Include="..\public\Component.h" />
+    <ClInclude Include="..\public\ComputeShader.h" />
     <ClInclude Include="..\public\ContainerObject.h" />
     <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
@@ -253,6 +255,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
   <ItemGroup>
     <ClCompile Include="..\Private\Animation.cpp" />
     <ClCompile Include="..\Private\Animator.cpp" />
+    <ClCompile Include="..\private\AnimComputeShader.cpp" />
     <ClCompile Include="..\Private\AnimController.cpp" />
     <ClCompile Include="..\Private\Base.cpp" />
     <ClCompile Include="..\Private\BlendObject.cpp" />
@@ -266,6 +269,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\Private\Channel.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
+    <ClCompile Include="..\private\ComputeShader.cpp" />
     <ClCompile Include="..\private\ContainerObject.cpp" />
     <ClCompile Include="..\private\CustomFont.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
@@ -329,6 +333,10 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BoneAnimationCS</EntryPointName>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
   </ItemGroup>
