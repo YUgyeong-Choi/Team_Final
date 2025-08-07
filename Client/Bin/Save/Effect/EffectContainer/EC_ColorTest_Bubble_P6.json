@@ -1,0 +1,622 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                50.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 117,
+            "EffectType": 1,
+            "EndTrack": 117,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "LifeTime_Particle": [
+                2.0,
+                4.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "Name": "Particle",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "PType": 0,
+            "Pivot": [
+                50.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                5.0,
+                1.0,
+                5.0
+            ],
+            "RenderGroup": 6,
+            "ShaderPass": 1,
+            "Size": [
+                1.0,
+                2.0
+            ],
+            "Speed": [
+                5.0,
+                10.0
+            ],
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Fire_02_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                50.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.2722513675689697,
+                1.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 116,
+            "EffectType": 1,
+            "EndTrack": 116,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.2722513675689697,
+                        1.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "LifeTime_Particle": [
+                2.0,
+                4.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "Name": "Particle",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "PType": 0,
+            "Pivot": [
+                50.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                5.0,
+                1.0,
+                5.0
+            ],
+            "RenderGroup": 6,
+            "ShaderPass": 1,
+            "Size": [
+                1.0,
+                2.0
+            ],
+            "Speed": [
+                5.0,
+                10.0
+            ],
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Fire_02_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                50.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.16753935813903809,
+                1.0,
+                1.0
+            ],
+            "Duration": 116,
+            "EffectType": 1,
+            "EndTrack": 116,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.16753935813903809,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "LifeTime_Particle": [
+                2.0,
+                4.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "Name": "Particle",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "PType": 0,
+            "Pivot": [
+                50.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                5.0,
+                1.0,
+                5.0
+            ],
+            "RenderGroup": 6,
+            "ShaderPass": 1,
+            "Size": [
+                1.0,
+                2.0
+            ],
+            "Speed": [
+                5.0,
+                10.0
+            ],
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Fire_02_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 117,
+            "EffectType": 1,
+            "EndTrack": 117,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "LifeTime_Particle": [
+                2.0,
+                4.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "Name": "Particle",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                5.0,
+                1.0,
+                5.0
+            ],
+            "RenderGroup": 7,
+            "ShaderPass": 2,
+            "Size": [
+                1.0,
+                2.0
+            ],
+            "Speed": [
+                5.0,
+                10.0
+            ],
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Bubble_01_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.2705882489681244,
+                1.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 117,
+            "EffectType": 1,
+            "EndTrack": 117,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.2705882489681244,
+                        1.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "LifeTime_Particle": [
+                2.0,
+                4.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "Name": "Particle",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                5.0,
+                1.0,
+                5.0
+            ],
+            "RenderGroup": 7,
+            "ShaderPass": 2,
+            "Size": [
+                1.0,
+                2.0
+            ],
+            "Speed": [
+                5.0,
+                10.0
+            ],
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Bubble_01_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.16862745583057404,
+                1.0,
+                1.0
+            ],
+            "Duration": 117,
+            "EffectType": 1,
+            "EndTrack": 117,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.16862745583057404,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "LifeTime_Particle": [
+                2.0,
+                4.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "Name": "Particle",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                5.0,
+                1.0,
+                5.0
+            ],
+            "RenderGroup": 7,
+            "ShaderPass": 2,
+            "Size": [
+                1.0,
+                2.0
+            ],
+            "Speed": [
+                5.0,
+                10.0
+            ],
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Bubble_01_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        }
+    ]
+}
