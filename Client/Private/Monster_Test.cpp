@@ -29,6 +29,10 @@ HRESULT CMonster_Test::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&m_InitPos), 1.f));
 
+	_vector vDir = { 0.f,1.f,0.f,0.f };
+
+	m_pTransformCom->Rotation(vDir, XMConvertToRadians(-90.f));
+
 	LoadAnimDataFromJson();
 
     return S_OK;
@@ -73,7 +77,7 @@ void CMonster_Test::RootMotionActive(_float fTimeDelta)
 
 void CMonster_Test::Update_State()
 {
-	if (m_pGameInstance->Key_Down(DIK_T))
+	if (m_pGameInstance->Key_Down(DIK_V))
 	{
 		m_pAnimator->SetBool("Detect", true);
 	}

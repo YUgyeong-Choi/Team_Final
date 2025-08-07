@@ -320,14 +320,14 @@
             "Duration": 246.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 75.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Idle_Spawn_01_Loop",
             "Duration": 59.0,
             "IsLoop": true,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 87.19999694824219
         },
         {
             "ClipName": "AS_KnockBack_Weak_B_01",
@@ -395,7 +395,7 @@
         {
             "ClipName": "AS_Run_C_F",
             "Duration": 42.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },

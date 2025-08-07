@@ -1,6 +1,6 @@
 {
     "Controllers": [
-        "Default"
+        "Buttler_Train_Default"
     ],
     "OverrideControllers": []
 }
