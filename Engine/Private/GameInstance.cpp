@@ -151,6 +151,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pObject_Manager->Late_Update(fTimeDelta);
 	m_pLevel_Manager->Late_Update(fTimeDelta);
 
+	m_pObject_Manager->Last_Update(fTimeDelta);
+
  	m_pPhysX_Manager->Simulate(fTimeDelta);
 
 
@@ -792,6 +794,23 @@ void CGameInstance::Reset_All()
 	m_pObserver_Manager->Reset_All();
 }
 
+#pragma endregion
+
+#pragma region OCCLUSION_MANAGER
+void CGameInstance::Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX)
+{
+	m_pOcclusion_Manager->Begin_Occlusion(pObj, pPhysX);
+}
+
+void CGameInstance::End_Occlusion(CGameObject* pObj)
+{
+	m_pOcclusion_Manager->End_Occlusion(pObj);
+}
+
+_bool CGameInstance::IsVisible(CGameObject* pObj) const
+{
+	return 	m_pOcclusion_Manager->IsVisible(pObj);
+}
 #pragma endregion
 
 void CGameInstance::Release_Engine()

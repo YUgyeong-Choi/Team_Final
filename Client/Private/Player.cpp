@@ -108,8 +108,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
-	printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
+	//_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
+	//printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
 
 	// ¹®¿©´Â ÄÆ¾À
 	if (KEY_DOWN(DIK_N))

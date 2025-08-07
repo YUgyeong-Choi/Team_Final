@@ -24,6 +24,7 @@ public:
 	void Priority_Update(_float fTimeDelta);
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);
+	void Last_Update(_float fTimeDelta);
 
 	CGameObject* Get_Object(_uint iIndex);
 	CGameObject* Get_LastObject();
