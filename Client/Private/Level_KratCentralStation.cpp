@@ -484,7 +484,7 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 
 HRESULT CLevel_KratCentralStation::Ready_Lights()
 {
-	wstring basePath = L"D:\\LieOfP\\Client\\Bin\\Save\\LightInfomation\\";
+	wstring basePath = L"../Bin/Save/LightInfomation/";
 	wstring fileName = L"Light_Information.json";
 
 	ifstream ifs(basePath + fileName);
