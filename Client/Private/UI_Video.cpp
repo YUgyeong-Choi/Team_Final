@@ -27,7 +27,7 @@ HRESULT CUI_Video::Initialize(void* pArg)
 	m_fFrameInterval = pDesc->fInterval;
 
 	m_isLoop = pDesc->isLoop;
-	m_isCull = pDesc->isCull;
+	
 
 	if (FAILED(InitMediaFoundationAndCreateReader(m_strVideoPath.c_str(), m_pReader)))
 		return E_FAIL;
@@ -80,23 +80,11 @@ void CUI_Video::Update(_float fTimeDelta)
 
 		HRESULT hr = ReadFrameToBuffer(m_pReader, &pData, &width, &height, &time);
 
-		if (SUCCEEDED(hr))
-		{
-			Safe_Release(m_pVideoSRV);
-			ID3D11ShaderResourceView* tempSRV = nullptr;
-			hr = UploadFrame(m_pDevice, m_pContext, pData, width, height, &tempSRV);
-			if (SUCCEEDED(hr))
-			{
-				m_pVideoSRV = tempSRV;
-			}
-			
-			delete[] pData;
-		}
-		else
+		if (FAILED(hr) || hr == MF_E_END_OF_STREAM || hr == S_FALSE || pData == nullptr)
 		{
 			if (m_isLoop)
 			{
-				// 영상이 끝났을 경우: 루프 시작
+				// 영상 루프 처리
 				m_pReader->Flush(MF_SOURCE_READER_FIRST_VIDEO_STREAM);
 
 				PROPVARIANT var;
@@ -108,12 +96,23 @@ void CUI_Video::Update(_float fTimeDelta)
 			}
 			else
 			{
-				m_isCull = false;
 				Safe_Release(m_pVideoSRV);
 				Set_bDead();
 				return;
 			}
-		
+		}
+		else
+		{
+			Safe_Release(m_pVideoSRV);
+
+			ID3D11ShaderResourceView* tempSRV = nullptr;
+			hr = UploadFrame(m_pDevice, m_pContext, pData, width, height, &tempSRV);
+			if (SUCCEEDED(hr))
+			{
+				m_pVideoSRV = tempSRV;
+			}
+
+			delete[] pData;
 		}
 		
 	}
@@ -126,12 +125,9 @@ void CUI_Video::Late_Update(_float fTimeDelta)
 	if (m_bDead)
 		return;
 
-	if(!m_isCull)
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
-	else
-	{
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_VIDEO, this);
-	}
+	
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+	
 }
 
 HRESULT CUI_Video::Render()
@@ -205,31 +201,41 @@ HRESULT CUI_Video::ReadFrameToBuffer(IMFSourceReader* pReader, BYTE** ppData, DW
 	if (!pReader || !ppData || !pWidth || !pHeight || !pTimeStamp)
 		return E_INVALIDARG;
 
+	*ppData = nullptr;
+	*pWidth = 0;
+	*pHeight = 0;
+	*pTimeStamp = 0;
+
 	IMFSample* pSample = nullptr;
 	IMFMediaBuffer* pBuffer = nullptr;
 	IMFMediaType* pMediaType = nullptr;
 
 	DWORD dwStreamFlags = 0;
 	LONGLONG llTimestamp = 0;
-	HRESULT hr = pReader->ReadSample(MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, nullptr, &dwStreamFlags, &llTimestamp, &pSample);
+
+	HRESULT hr = pReader->ReadSample(
+		MF_SOURCE_READER_FIRST_VIDEO_STREAM,
+		0,
+		nullptr,
+		&dwStreamFlags,
+		&llTimestamp,
+		&pSample);
 
 	if (FAILED(hr))
 		return hr;
 
-
-	// 스트림 끝 체크
+	// 스트림 끝
 	if (dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM)
 		return MF_E_END_OF_STREAM;
 
-	// 샘플 없으면 아직 프레임 없음 (일시적)
-	if (pSample == nullptr)
+	// 샘플이 없으면 처리하지 않음
+	if (!pSample)
 		return S_FALSE;
-
 
 	hr = pSample->ConvertToContiguousBuffer(&pBuffer);
 	if (FAILED(hr))
 	{
-		if (pSample) pSample->Release();
+		pSample->Release();
 		return hr;
 	}
 
@@ -241,6 +247,15 @@ HRESULT CUI_Video::ReadFrameToBuffer(IMFSourceReader* pReader, BYTE** ppData, DW
 		pBuffer->Release();
 		pSample->Release();
 		return hr;
+	}
+
+	// 버퍼가 비었는지 확인
+	if (curLen == 0 || !pSrc)
+	{
+		pBuffer->Unlock();
+		pBuffer->Release();
+		pSample->Release();
+		return S_FALSE;
 	}
 
 	hr = pReader->GetCurrentMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, &pMediaType);
@@ -263,19 +278,22 @@ HRESULT CUI_Video::ReadFrameToBuffer(IMFSourceReader* pReader, BYTE** ppData, DW
 		return hr;
 	}
 
+	// 데이터 복사
 	*ppData = new BYTE[curLen];
 	memcpy(*ppData, pSrc, curLen);
 	*pWidth = width;
 	*pHeight = height;
 	*pTimeStamp = llTimestamp;
 
-
-
-	pBuffer->Unlock();
-
+	// 해제
 	pMediaType->Release();
+	pBuffer->Unlock();
 	pBuffer->Release();
 	pSample->Release();
+
+	// 마지막 유효성 검사
+	if (*ppData == nullptr || *pWidth == 0 || *pHeight == 0)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -380,7 +398,7 @@ CGameObject* CUI_Video::Clone(void* pArg)
 	
 	return pClone;
 }
-
+	
 void CUI_Video::Free()
 {
 	__super::Free();
