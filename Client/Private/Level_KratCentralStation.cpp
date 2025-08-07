@@ -56,6 +56,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Npc()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
+
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
 
@@ -126,33 +129,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		ToggleHoldMouse();
 	if(m_bHold)
 		HoldMouse();
-
-	if (KEY_PRESSING(DIK_LSHIFT))
-	{
-		if (KEY_DOWN(DIK_Z))
-		{
-			auto PL = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player"));
-			CEffectContainer::DESC ECDesc = {};
-
-			ECDesc.vPresetPosition = { PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[0] ,
-			PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[1] + 0.1f ,
-			PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[2] };
-
-			if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1"), &ECDesc)))
-				MSG_BOX("조짐");
-			//if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1"))))
-			//	MSG_BOX("조짐");
-		}
-
-		if (KEY_DOWN(DIK_X))
-		{
-			auto PL = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player"));
-			cout << "Player Position : " << PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[0] << ", "
-				<< PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[1] << ", "
-				<< PL->Get_TransfomCom()->Get_State(STATE::POSITION).m128_f32[2] << endl;
-		}
-	}
-
 
 
 	m_pCamera_Manager->Update(fTimeDelta);
@@ -665,6 +641,21 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Effect()
+{
+	CEffectContainer::DESC ECDesc = {};
+	ECDesc.vPresetPosition = { 52.83, 0.09, 1.57 };
+	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+		MSG_BOX("이펙트 생성 실패");
+	ECDesc.vPresetPosition = { 69.25, -0.22, -8.17 };
+	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+		MSG_BOX("이펙트 생성 실패");
+	ECDesc.vPresetPosition = { 99.86, 0.64, -13.69 };
+	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+		MSG_BOX("이펙트 생성 실패");
 	return S_OK;
 }
 

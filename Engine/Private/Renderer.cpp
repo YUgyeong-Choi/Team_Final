@@ -415,7 +415,7 @@ HRESULT CRenderer::Draw()
 	}
 
 	//if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
-	if (FAILED(Render_Blur(TEXT("Target_Effect_WB_Accumulation"))))
+	if (FAILED(Render_Blur(TEXT("Target_Effect_WB_Emissive"))))
 	{
 		MSG_BOX("Render_Blur - Target_Effect_WB_Emissive Failed");
 		return E_FAIL;
@@ -1060,14 +1060,14 @@ HRESULT CRenderer::Render_Effect_WB()
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Effect_WeightedBlend"))))
 		return E_FAIL;
 
-	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WBTEST)])
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)])
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render();
 
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WBTEST)].clear();
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;

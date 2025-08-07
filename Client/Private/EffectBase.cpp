@@ -401,6 +401,7 @@ json CEffectBase::Serialize()
 	// Colors
 	j["Color"] = { m_vColor.x, m_vColor.y, m_vColor.z, m_vColor.w };
 	j["Threshold"] = m_fThreshold;
+	j["EmissiveIntensity"] = m_fEmissiveIntensity;
 	j["CenterColor"] = { m_vCenterColor.x, m_vCenterColor.y, m_vCenterColor.z, m_vCenterColor.w };
 
 	// Texture Usage
@@ -466,6 +467,9 @@ void CEffectBase::Deserialize(const json& j)
 
 	if (j.contains("Threshold"))
 		m_fThreshold = j["Threshold"].get<_float>();
+
+	if (j.contains("EmissiveIntensity"))
+		m_fEmissiveIntensity = j["EmissiveIntensity"].get<_float>();
 
 	if (j.contains("CenterColor") && j["CenterColor"].is_array() && j["CenterColor"].size() == 4)
 		m_vCenterColor = { j["CenterColor"][0].get<_float>(), j["CenterColor"][1].get<_float>(), j["CenterColor"][2].get<_float>(), j["CenterColor"][3].get<_float>() };

@@ -47,10 +47,12 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 	{
 		// 달리기 여부 체크
 		m_bSprint = (m_pGameInstance->Key_Pressing(DIK_LSHIFT)) != 0;
-
+		m_bSlow = (m_pGameInstance->Key_Pressing(DIK_LALT)) != 0;
 		// 속도 설정
 		if (m_bSprint)
 			m_pTransformCom->Set_SpeedPreSec(100.f);
+		else if (m_bSlow)
+			m_pTransformCom->Set_SpeedPreSec(5.f);
 		else
 			m_pTransformCom->Set_SpeedPreSec(10.f);
 

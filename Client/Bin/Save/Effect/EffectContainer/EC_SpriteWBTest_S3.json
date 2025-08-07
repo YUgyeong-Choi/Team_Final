@@ -1,0 +1,301 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 48,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 48.0,
+                    "Translation": [
+                        0.0,
+                        6.199999809265137,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_butterfly_01_C_GDH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.07209835946559906,
+                0.0,
+                0.9791666865348816,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 49,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.05235576629638672,
+                        0.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        -0.38268327713012695,
+                        -0.0,
+                        0.9238796234130859
+                    ],
+                    "Scale": [
+                        0.9999991059303284,
+                        1.0,
+                        0.9999991059303284
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 48.0,
+                    "Translation": [
+                        0.0,
+                        6.199999809265137,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 1,
+            "TextureTags": [
+                "T_butterfly_01_C_GDH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.1465967893600464,
+                1.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 50,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.1465967893600464,
+                        1.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.4999999403953552,
+                        -0.0,
+                        0.866025447845459
+                    ],
+                    "Scale": [
+                        0.9999991655349731,
+                        1.0,
+                        0.9999991655349731
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 48.0,
+                    "Translation": [
+                        0.0,
+                        6.199999809265137,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 2,
+            "TextureTags": [
+                "T_butterfly_01_C_GDH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        }
+    ]
+}
