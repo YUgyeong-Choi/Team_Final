@@ -14,6 +14,9 @@ Texture2D g_DepthTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
 
+//데칼 텍스쳐
+Texture2D g_DecalTexture;
+
 /* [ Blur ] */
 Texture2D g_PreBlurTexture;
 Texture2D g_BlurXTexture;
@@ -42,8 +45,15 @@ Texture2D g_VolumetricTexture;
 
 /* [ Effect ] */
 Texture2D g_EffectBlend_Diffuse;
+Texture2D g_EffectBlend_WBComposite;
 Texture2D g_EffectBlend_Glow;
+Texture2D g_EffectBlend_WBGlow;
 // Texture2D g_Effect_Distort;
+
+/* [ WeightedBlend Composite ] */
+Texture2D g_WB_Accumulation;
+Texture2D g_WB_Revealage;
+
 
 
 float PI = 3.14159265358979323846f;
@@ -884,6 +894,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
     Out.vBackBuffer = vDiffuse * vShade + vSpecular;   
     finalColor = Out.vBackBuffer;
+    
     /* [ PBR 매쉬 ] */
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -909,6 +920,10 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     //if (finalColor.a < 0.003f)
     //    discard;
 
+    //데칼 입히기
+    vector vDecal = g_DecalTexture.Sample(DefaultSampler, In.vTexcoord);
+    finalColor.rgb = finalColor.rgb * (1 - vDecal.a) + vDecal.rgb * vDecal.a;
+    
     Out.vBackBuffer = finalColor;
 
     
@@ -980,10 +995,15 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
     vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
-    //EffectBlendGlow.rgb *= fGlowIntensity;
-    // EffectBlendGlow.a *= 1.5f;
     EffectBlendDiffuse += EffectBlendGlow;
     Out.vBackBuffer += EffectBlendDiffuse;
+    //EffectBlendGlow.rgb *= fGlowIntensity;
+    // EffectBlendGlow.a *= 1.5f;
+    
+    vector EffectBlendWBComposite = g_EffectBlend_WBComposite.Sample(DefaultSampler, In.vTexcoord);
+    vector EffectBlendWBGlow = g_EffectBlend_WBGlow.Sample(DefaultSampler, In.vTexcoord);
+    EffectBlendWBComposite += EffectBlendWBGlow;
+    Out.vBackBuffer += EffectBlendWBComposite;
        
     if (Out.vBackBuffer.a < 0.003f)
         discard;
@@ -1061,9 +1081,24 @@ PS_OUT PS_EFFECT_GLOW(PS_IN In)
     
     Out.vBackBuffer = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord);
     /* 기타 잡기술 */
-    Out.vBackBuffer.rgb *= 2.f;
-    Out.vBackBuffer.a *= 1.4f;
+    Out.vBackBuffer.rgb *= 1.5f;
+    Out.vBackBuffer.a *= 1.2f;
     // 밖에서 값 변경해가면서 볼 수 있으면 좋겠는데 당장 안 될 것 같으므로 고정함
+    
+    return Out;
+}
+
+PS_OUT PS_WB_COMPOSITE(PS_IN In)
+{
+    PS_OUT Out;
+    
+    vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
+    float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
+    
+    float3 vColor = vAccum.rgb / max(vAccum.a, 0.00001f); // 0 나누기 방지용
+    float fAlpha = saturate(fReveal);
+    
+    Out.vBackBuffer = float4(vColor * fAlpha, fAlpha);
     
     return Out;
 }
@@ -1261,5 +1296,15 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_COPYONLY();
+    }
+    pass WB_Composite //15
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_WB_COMPOSITE();
     }
 }

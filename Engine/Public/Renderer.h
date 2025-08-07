@@ -22,6 +22,7 @@ public:
 	void Set_RenderTarget() { m_bRenderTarget = !m_bRenderTarget; }
 	void Set_RenderCollider() { m_bRenderCollider = !m_bRenderCollider; }
 	_bool Get_RenderCollider() { return m_bRenderCollider; }
+	void Change_DebugRT() { ++m_eDebugRT == DEBUGRT_END ? m_eDebugRT = DEBUGRT_DH : m_eDebugRT; }
 #endif
 
 private:
@@ -51,7 +52,8 @@ private:
 	list<class CComponent*>		m_DebugComponent;
 	_bool m_bRenderTarget = false;
 	_bool m_bRenderCollider = false;
-	
+	enum DEBUGRT { DEBUGRT_DH, DEBUGRT_YW, DEBUGRT_CY, DEBUGRT_END };
+	_uint m_eDebugRT = static_cast<_uint>(DEBUGRT_DH);
 #endif
 
 private:
@@ -61,6 +63,7 @@ private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();
 	HRESULT Render_NonBlend();
+	HRESULT Render_Decal();
 	HRESULT Render_PBRMesh();
 	HRESULT Render_Blend();
 	HRESULT Render_UI();
@@ -73,8 +76,10 @@ private:
 	HRESULT Render_Effect_Blend();
 	HRESULT Render_Blur(const _wstring& strTargetTag);
 	HRESULT Render_Effect_Glow();
+	HRESULT Render_Effect_WBGlow();
 	HRESULT Render_Effect_NonLight();
 	HRESULT Render_Effect_WB();
+	HRESULT Render_Effect_WB_Composite();
 
 
 private:

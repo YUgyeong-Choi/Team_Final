@@ -2,7 +2,7 @@
 
 vector  g_vCamPosition;
 bool    g_bLocal;
-float   g_fEmissiveIntensity;
+float   g_fEmissiveIntensity = 0.f;
 float   g_fWeightPower = 3.f;
 
 //bool    g_size 
@@ -163,7 +163,7 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
 
 
 
-    Out.vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
+    Out.vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
 
 
 
@@ -186,8 +186,8 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     PS_OUT_WB Out;
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
-    if (mask < 0.003f)
-        discard;
+    //if (mask < 0.003f)
+    //   discard;
     float4 vPreColor;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
     
@@ -197,21 +197,23 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     
     vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
     vColor.a = vPreColor.a * mask;
-    vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
+    vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
     
     
     float fDepth = In.vProjPos.z / In.vProjPos.w;
+    //float fDepth = In.vProjPos.w / 1000.f;
     
 
     // 1 - 깊이 = 멀 수록 연하게
     float fWeight = pow(saturate(1 - fDepth), g_fWeightPower);
+    fWeight = max(fWeight, 0.1f);
     float3 vPremulRGB = vColor.rgb * vColor.a;
     
     // rgb에 Premul * weight, a에 a * weight
     Out.vAccumulation = float4(vPremulRGB * fWeight, vColor.a * fWeight);
     
     Out.fRevealage = vColor.a;
-    Out.vEmissive = float4(vPremulRGB * fWeight, 0.f);
+    Out.vEmissive = float4(vPremulRGB * fWeight * g_fEmissiveIntensity, 0.f);
   
     
     

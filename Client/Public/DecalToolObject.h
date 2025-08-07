@@ -3,6 +3,12 @@
 
 #include "Client_Defines.h"
 
+NS_BEGIN(Engine)
+class CShader;
+class CTexture;
+class CVIBuffer_VolumeMesh;
+NS_END
+
 NS_BEGIN(Client)
 
 class CDecalToolObject final : public CGameObject
@@ -21,8 +27,12 @@ public:
 	virtual HRESULT Render()override;
 
 private:
-	HRESULT Spawn_DecalToolObject();
-
+	CShader* m_pShaderCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
+	CVIBuffer_VolumeMesh* m_pVIBufferCom = { nullptr };
+private:
+	HRESULT Ready_Components();
+	HRESULT Bind_ShaderResources();
 
 public:
 	static CDecalToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

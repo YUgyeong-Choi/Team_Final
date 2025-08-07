@@ -155,6 +155,9 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	if (Key_Down(DIK_F6))
 		m_pRenderer->Set_RenderCollider();
+	
+	if (Key_Down(DIK_EQUALS))
+		m_pRenderer->Change_DebugRT();
 #endif
 
 }

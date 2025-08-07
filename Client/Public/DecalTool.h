@@ -22,7 +22,21 @@ public:
 	virtual HRESULT	Render_ImGui() override;
 
 private:
+	//Åø Á¶ÀÛ
+	void Control(_float fTimeDelta);
+
+private:
 	HRESULT Spawn_DecalObject();
+
+private:
+	void Render_Detail();
+	void Detail_Transform();
+
+private:
+	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };
+
+private:
+	class CDecalToolObject* m_pFocusObject = { nullptr };
 
 
 public:

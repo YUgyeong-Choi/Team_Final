@@ -231,12 +231,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\PhysXController.h">
       <Filter>01.Utility\04.Components\PhysX\Controller</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\Mesh_Instance.h">
       <Filter>01.Utility\04.Components\Model_Instance\Mesh_Instance</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Model_Instance.h">
       <Filter>01.Utility\04.Components\Model_Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_VolumeMesh.h">
+      <Filter>01.Utility\04.Components\VIBuffer\VolumeMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,12 +446,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\PhysXController.cpp">
       <Filter>01.Utility\04.Components\PhysX\Controller</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\Mesh_Instance.cpp">
       <Filter>01.Utility\04.Components\Model_Instance\Mesh_Instance</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Model_Instance.cpp">
       <Filter>01.Utility\04.Components\Model_Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_VolumeMesh.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\VolumeMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -676,12 +682,15 @@
     </Filter>
     <Filter Include="01.Utility\04.Components\PhysX\Controller">
       <UniqueIdentifier>{4b7ce3b7-6e05-46a2-8ee6-4721dc5ec15c}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Utility\04.Components\Model_Instance">
       <UniqueIdentifier>{21c5063f-9481-48ea-9909-acb6cc2eb358}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\04.Components\Model_Instance\Mesh_Instance">
       <UniqueIdentifier>{5ab14028-17db-4feb-954f-409f9de4164b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\VolumeMesh">
+      <UniqueIdentifier>{1025dacf-2a03-4993-a62d-b93fb5e05d00}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
