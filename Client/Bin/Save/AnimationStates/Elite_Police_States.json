@@ -1,53 +1,6 @@
 {
-    "Anim States": [
-        {
-            "Clip": "AS_ATSC0_Skill_04",
-            "Name": "NewState",
-            "NodeId": 1,
-            "NodePos": [
-                537.0,
-                195.0
-            ]
-        },
-        {
-            "Clip": "AS_ATSC0_Skill_01",
-            "Name": "NewState",
-            "NodeId": 2,
-            "NodePos": [
-                173.0,
-                58.0
-            ]
-        }
-    ],
-    "Parameters": {
-        "Test": {
-            "Type": 1,
-            "bTriggered": true,
-            "bValue": false,
-            "fValue": 0.0,
-            "iValue": 0
-        }
-    },
-    "Transitions": [
-        {
-            "Condition": {
-                "MaxTime": 1.0,
-                "MinTime": 0.0,
-                "Op": 7,
-                "ParamName": "Test",
-                "Type": 1,
-                "fThreshold": 0.0,
-                "iThreshold": 0
-            },
-            "Duration": 0.5,
-            "FromNodeId": 2,
-            "HasExitTime": true,
-            "Link": {
-                "FromNodeId": 22,
-                "LinkId": 3,
-                "ToNodeId": 11
-            },
-            "ToNodeId": 1
-        }
-    ]
+  "Controllers": [
+    "Elite_Police_Default"
+  ],
+    "OverrideControllers": []
 }

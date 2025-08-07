@@ -39,6 +39,7 @@ private:
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 	HRESULT Ready_UI();
 	HRESULT Ready_Video();
+	HRESULT Ready_Monster();
 
 private:
 	void ToggleHoldMouse() { m_bHold = !m_bHold; }

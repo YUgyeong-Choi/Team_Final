@@ -307,6 +307,9 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Base">
       <UniqueIdentifier>{640de79a-079e-4ddc-8f89-712cac910509}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Test">
+      <UniqueIdentifier>{756bd14f-6752-4cce-ad10-ecb99a4e60bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -684,6 +687,9 @@
     <ClInclude Include="..\public\Panel_Player_Arm.h">
       <Filter>02.GameObjects\99.UI\Container\Panel\Player\Arm</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Monster_Test.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1034,6 +1040,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Panel_Player_Arm.cpp">
       <Filter>02.GameObjects\99.UI\Container\Panel\Player\Arm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_Test.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

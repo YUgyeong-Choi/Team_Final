@@ -50,6 +50,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Monster()))
+		return E_FAIL;
+
 
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(1.f);
@@ -631,6 +634,30 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 	m_pStartVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video")));
 
 	
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Monster()
+{
+	CUnit::UNIT_DESC pDesc{};
+	//pDesc.fSpeedPerSec = 1.f;
+	pDesc.fSpeedPerSec = 5.f;
+	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	pDesc.InitPos = _float3(100.f, 0.5f, -10.f);
+	pDesc.InitScale = _float3(1.5f, 1.5f, 1.5f);
+	lstrcpy(pDesc.szName, TEXT("Elite_Police"));
+	pDesc.szMeshID = TEXT("Elite_Police");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
+		return E_FAIL;
+
+	pDesc.InitPos = _float3(80.f, 0.5f, -5.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -1,0 +1,100 @@
+{
+    "Anim States": [
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Idle_C",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "Idle",
+            "NodeId": 1,
+            "NodePos": [
+                972.0,
+                540.0
+            ],
+            "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Idle_Spawn_01_Loop",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "Spawn",
+            "NodeId": 3,
+            "NodePos": [
+                631.089599609375,
+                -19.477294921875
+            ],
+            "UpperClip": ""
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Idle_Spawn_01_End",
+            "LowerClip": "",
+            "MaskBone": "",
+            "Name": "Spawn_End",
+            "NodeId": 4,
+            "NodePos": [
+                664.0,
+                409.0
+            ],
+            "UpperClip": ""
+        }
+    ],
+    "ControllerName": "Elite_Police_Default",
+    "EntryState": "Spawn",
+    "Parameters": {
+        "Detect": {
+            "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        }
+    },
+    "Transitions": [
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Detect",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 3,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 32,
+                "LinkId": 5,
+                "ToNodeId": 41
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 4
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 4,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 42,
+                "LinkId": 6,
+                "ToNodeId": 11
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 1
+        }
+    ]
+}
