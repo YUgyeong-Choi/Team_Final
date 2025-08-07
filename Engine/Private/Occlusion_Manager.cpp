@@ -5,14 +5,16 @@
 #include "Shader.h"
 #include "PhysXActor.h"
 
-HRESULT COcclusion_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+COcclusion_Manager::COcclusion_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    : m_pDevice{ pDevice }
+    , m_pContext{ pContext }
 {
-    m_pDevice = pDevice;
-    m_pContext = pContext;
-
     Safe_AddRef(m_pDevice);
     Safe_AddRef(m_pContext);
+}
 
+HRESULT COcclusion_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
     m_pCubeBuffer = CVIBuffer_Cube::Create(m_pDevice, m_pContext);
     if (FAILED(Ready_States()))
         return E_FAIL;

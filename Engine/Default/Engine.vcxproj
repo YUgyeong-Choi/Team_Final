@@ -212,7 +212,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\public\Observer.h" />
     <ClInclude Include="..\public\Observer_Manager.h" />
     <ClInclude Include="..\Public\Occlusion_Manager.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\public\PartObject.h" />
     <ClInclude Include="..\Public\PhysXActor.h" />
@@ -294,7 +294,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\private\Observer.cpp" />
     <ClCompile Include="..\private\Observer_Manager.cpp" />
     <ClCompile Include="..\Private\Occlusion_Manager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\private\PartObject.cpp" />
     <ClCompile Include="..\Private\PhysXActor.cpp" />
