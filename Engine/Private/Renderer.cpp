@@ -348,6 +348,13 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pRende
 
 HRESULT CRenderer::Draw()
 {
+
+	if (!m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_VIDEO)].empty())
+	{
+		Render_Video();
+
+		return S_OK;
+	}
 	
 	if (FAILED(Render_Priority()))
 	{
@@ -477,7 +484,11 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	
+	if (FAILED(Render_Video()))
+	{
+		MSG_BOX("Render Priority Failed");
+		return E_FAIL;
+	}
 
 #ifdef _DEBUG
 
@@ -1096,6 +1107,20 @@ HRESULT CRenderer::Render_Effect_WB_Composite()
 	m_pVIBuffer->Render();
 
 	m_pGameInstance->End_MRT();
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Video()
+{
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_VIDEO)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_VIDEO)].clear();
+
 	return S_OK;
 }
 
