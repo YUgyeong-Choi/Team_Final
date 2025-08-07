@@ -20,7 +20,7 @@ private:
     COcclusion_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual ~COcclusion_Manager() = default;
 public:
-    HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    HRESULT Initialize();
     void Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX);
     void End_Occlusion(CGameObject* pObj);
     _bool IsVisible(CGameObject* pObj) const;
@@ -38,7 +38,7 @@ private:
 
     ID3D11DepthStencilState* m_pDepthState = nullptr;
     ID3D11BlendState* m_pBlendState = nullptr;
-
+    class CGameInstance* m_pGameInstance = { nullptr };
 public:
     static COcclusion_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual void Free() override;

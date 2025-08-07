@@ -8,12 +8,14 @@
 COcclusion_Manager::COcclusion_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : m_pDevice{ pDevice }
     , m_pContext{ pContext }
+    , m_pGameInstance{ CGameInstance::Get_Instance() }
 {
     Safe_AddRef(m_pDevice);
     Safe_AddRef(m_pContext);
+    Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT COcclusion_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT COcclusion_Manager::Initialize()
 {
     m_pCubeBuffer = CVIBuffer_Cube::Create(m_pDevice, m_pContext);
     if (FAILED(Ready_States()))
@@ -41,16 +43,27 @@ void COcclusion_Manager::Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX)
             return;
     }
 
-    PxBounds3 bounds = pPhysX->Get_Actor()->getWorldBounds();
-    _float3 vCenter = { (bounds.minimum.x + bounds.maximum.x) * 0.5f,
-                        (bounds.minimum.y + bounds.maximum.y) * 0.5f,
-                        (bounds.minimum.z + bounds.maximum.z) * 0.5f };
-    _float3 vScale = { (bounds.maximum.x - bounds.minimum.x),
-                       (bounds.maximum.y - bounds.minimum.y),
-                       (bounds.maximum.z - bounds.minimum.z) };
+    PxTransform pose = pPhysX->Get_Actor()->getGlobalPose();
 
-    // Matrix 세팅
-    _matrix matWorld = XMMatrixScaling(vScale.x, vScale.y, vScale.z) * XMMatrixTranslation(vCenter.x, vCenter.y, vCenter.z);
+    PxVec3 pos = pose.p;
+    PxQuat rot = pose.q;
+
+    // Center와 Scale은 여전히 bounds로 구함
+    PxBounds3 bounds = pPhysX->Get_Actor()->getWorldBounds();
+
+    _float3 vScale = {
+        (bounds.maximum.x - bounds.minimum.x),
+        (bounds.maximum.y - bounds.minimum.y),
+        (bounds.maximum.z - bounds.minimum.z)
+    };
+
+    // 회전 쿼터니언 → 행렬
+    XMMATRIX matRotation = XMMatrixRotationQuaternion(XMLoadFloat4((XMFLOAT4*)&rot));
+    XMMATRIX matScale = XMMatrixScaling(vScale.x, vScale.y, vScale.z);
+    XMMATRIX matTrans = XMMatrixTranslation(pos.x, pos.y, pos.z);
+
+    // 최종 월드 행렬: S * R * T
+    _matrix matWorld = matScale * matRotation * matTrans;
 
     m_pContext->OMSetDepthStencilState(m_pDepthState, 0);
     m_pContext->OMSetBlendState(m_pBlendState, nullptr, 0xffffffff);
@@ -59,8 +72,11 @@ void COcclusion_Manager::Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX)
 
     // 쉐이더 매트릭스 세팅
     m_pShader->Bind_RawValue("g_WorldMatrix", &matWorld, sizeof(_matrix));
-    //m_pShader->Bind_RawValue("g_ViewMatrix", &CPipeLine::Get_Instance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW), sizeof(_matrix));
-    //m_pShader->Bind_RawValue("g_ProjMatrix", &CPipeLine::Get_Instance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ), sizeof(_matrix));
+    _float4x4 ViewMatrix, ProjViewMatrix;
+    XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+    XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+    m_pShader->Bind_RawValue("g_ViewMatrix", &ViewMatrix, sizeof(_matrix));
+    m_pShader->Bind_RawValue("g_ProjMatrix", &ProjViewMatrix, sizeof(_matrix));
 
     m_pShader->Begin(0); // PS는 안 써도 됨
     m_pCubeBuffer->Render();
@@ -135,4 +151,6 @@ void COcclusion_Manager::Free()
     // 디바이스/컨텍스트 해제
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
+
+    Safe_Release(m_pGameInstance);
 }

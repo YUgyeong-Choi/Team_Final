@@ -19,6 +19,7 @@
 #include "PhysX_Manager.h"
 #include "Sound_Device.h"
 #include "Observer_Manager.h"
+#include "Occlusion_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance);
 
@@ -121,6 +122,11 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	m_pObserver_Manager = CObserver_Manager::Create();
 	if (nullptr == m_pObserver_Manager)
 		return E_FAIL;
+
+	m_pOcclusion_Manager = COcclusion_Manager::Create(*ppDeviceOut, *ppContextOut);
+	if (nullptr == m_pOcclusion_Manager)
+		return E_FAIL;
+	m_pOcclusion_Manager->Initialize();
 
 	return S_OK;
 }
@@ -825,6 +831,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pSound_Device);
 
 	Safe_Release(m_pObserver_Manager);
+
+	Safe_Release(m_pOcclusion_Manager);
 
 	Destroy_Instance();
 }

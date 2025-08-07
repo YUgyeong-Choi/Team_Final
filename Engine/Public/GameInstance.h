@@ -236,8 +236,8 @@ private:
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
-	class CObserver_Manager* m_pObserver_Manager = { nullptr };
-
+	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
+	class COcclusion_Manager*	m_pOcclusion_Manager = { nullptr };
 
 private:
 	_uint					m_iCurrentLevelIndex = 0;

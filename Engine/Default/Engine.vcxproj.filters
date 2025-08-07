@@ -723,5 +723,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimCS.hlsl">
       <Filter>01.Utility\98.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Occlusion.hlsl">
+      <Filter>01.Utility\98.ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
