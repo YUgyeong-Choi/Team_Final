@@ -62,7 +62,7 @@
     {
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_02_Male",
-        "ObjectCount": 2,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_02_Male.bin"
     },
     {
@@ -568,12 +568,6 @@
         "ModelName": "SM_Interior_Table_10",
         "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_10.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_LightProp_FloorLight_01",
-        "ObjectCount": 0,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_FloorLight_01.bin"
     },
     {
         "Collision": false,

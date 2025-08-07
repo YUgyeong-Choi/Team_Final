@@ -14,6 +14,9 @@ Texture2D g_DepthTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
 
+//데칼 텍스쳐
+Texture2D g_DecalTexture;
+
 /* [ Blur ] */
 Texture2D g_PreBlurTexture;
 Texture2D g_BlurXTexture;
@@ -891,6 +894,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
     Out.vBackBuffer = vDiffuse * vShade + vSpecular;   
     finalColor = Out.vBackBuffer;
+    
     /* [ PBR 매쉬 ] */
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -916,6 +920,10 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     //if (finalColor.a < 0.003f)
     //    discard;
 
+    //데칼 입히기
+    vector vDecal = g_DecalTexture.Sample(DefaultSampler, In.vTexcoord);
+    finalColor.rgb = finalColor.rgb * (1 - vDecal.a) + vDecal.rgb * vDecal.a;
+    
     Out.vBackBuffer = finalColor;
 
     

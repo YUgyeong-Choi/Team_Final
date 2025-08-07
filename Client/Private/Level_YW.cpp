@@ -22,6 +22,9 @@ CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_YW::Initialize()
 {
+	if (FAILED(Ready_Layer_TestDecal(TEXT("Layer_TestDecal"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;
 
@@ -37,8 +40,8 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;	
 
-	if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
-		return E_FAIL;	
+	/*if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
+		return E_FAIL;*/	
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
 	return S_OK;
@@ -51,11 +54,13 @@ void CLevel_YW::Priority_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
+
+	m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Priority_Update(fTimeDelta);
 }
 
 void CLevel_YW::Update(_float fTimeDelta)
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Update(fTimeDelta);
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	//__super::Update(fTimeDelta);
@@ -255,6 +260,15 @@ HRESULT CLevel_YW::ImGui_Docking_Settings()
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
 	ImGui::End();
+
+	return S_OK;
+}
+
+HRESULT CLevel_YW::Ready_Layer_TestDecal(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
+		ENUM_CLASS(LEVEL::YW), strLayerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

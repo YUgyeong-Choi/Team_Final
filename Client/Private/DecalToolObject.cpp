@@ -25,6 +25,8 @@ HRESULT CDecalToolObject::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	//m_pTransformCom->Scaling(1.f, 0.1f, 1.f);
+
 	return S_OK;
 }
 
@@ -57,6 +59,17 @@ HRESULT CDecalToolObject::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
+#ifdef _DEBUG
+	if (FAILED(m_pShaderCom->Begin(1)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Render()))
+		return E_FAIL;
+#endif // _DEBUG
+
 	return S_OK;
 }
 
@@ -71,7 +84,7 @@ HRESULT CDecalToolObject::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Blood_ARMT"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

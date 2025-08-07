@@ -12,7 +12,6 @@ CVIBuffer_VolumeMesh::CVIBuffer_VolumeMesh(const CVIBuffer_VolumeMesh& Prototype
 
 HRESULT CVIBuffer_VolumeMesh::Initialize_Prototype()
 {
-
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = 8;
 	m_iVertexStride = sizeof(VTXPOS);

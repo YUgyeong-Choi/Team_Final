@@ -40,9 +40,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
 		return E_FAIL;
-	//µ¥Ä®
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
@@ -53,9 +51,15 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_PickPos"))))
 		return E_FAIL;
 
-	//µ¥Ä®
+
+#pragma region µ¥Ä®
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
 		return E_FAIL;
+#pragma endregion
+
+
 
 
 
@@ -308,6 +312,20 @@ HRESULT CRenderer::Initialize()
 
 #pragma endregion
 
+#pragma region YW Debug
+
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Diffuse"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Normal"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal"), GetTargetX(1), GetTargetY(0), fSizeX, fSizeY)))
+		return E_FAIL;
+
+#pragma endregion
 
 	m_StartTime = std::chrono::steady_clock::now();
 #endif
@@ -346,6 +364,12 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_NonBlend()))
 	{
 		MSG_BOX("Render_NonBlend Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Decal()))
+	{
+		MSG_BOX("Render_Decal Failed");
 		return E_FAIL;
 	}
 
@@ -555,6 +579,23 @@ HRESULT CRenderer::Render_NonBlend()
 
 	return S_OK;
 }
+HRESULT CRenderer::Render_Decal()
+{
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Decals"));
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_DECAL)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_DECAL)].clear();
+
+	m_pGameInstance->End_MRT();
+
+	return S_OK;
+}
 HRESULT CRenderer::Render_PBRMesh()
 {
 	/* [ PBR ·»´õ¸µ ] */
@@ -754,6 +795,10 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
+		return E_FAIL;
+
+	//µ¥Ä® ÅØ½ºÃÄ
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal"), m_pShader, "g_DecalTexture")))
 		return E_FAIL;
 
 	/* [ PBR ·»´õ¸µ¿ë ] */
@@ -1187,6 +1232,9 @@ HRESULT CRenderer::Render_Debug()
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
 			/* ¿©±â¿¡ MRT ÀÔ·Â */
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Decals"), m_pShader, m_pVIBuffer);
 
 			break;
 		case Engine::CRenderer::DEBUGRT_CY:

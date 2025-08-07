@@ -39,6 +39,7 @@ private:
 	HRESULT ImGui_Docking_Settings();
 
 private:
+	HRESULT Ready_Layer_TestDecal(const _wstring strLayerTag);
 	HRESULT Ready_Layer_DummyMap(const _wstring strLayerTag);
 	HRESULT Ready_Layer_PreviewObject(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);

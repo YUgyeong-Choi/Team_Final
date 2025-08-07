@@ -123,7 +123,7 @@ PS_OUT PS_MAIN(PS_IN In)
     // 출력
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f); // encode to [0,1]
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, 0.f);
     Out.vPickPos = In.vWorldPos;
 
     return Out;
@@ -182,7 +182,7 @@ PS_OUT PS_MAPTOOLOBJECT(PS_IN In)
     // 출력
     Out.vDiffuse = vMtrlDiffuse;
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f); // Encode to [0,1]
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, g_fID); // w: ID 저장
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, g_fID); // w: ID 저장
     Out.vPickPos = In.vWorldPos;
 
     return Out;
