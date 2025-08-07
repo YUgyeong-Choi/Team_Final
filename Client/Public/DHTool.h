@@ -86,6 +86,7 @@ private: /* [ 라이팅툴 관련 변수들 ] */
 private:
 	_uint m_iID = { 0 };
 	_int m_iLightMode = { 0 };
+	_int m_iVolumetricMode = { 0 };
 
 private:
 	_bool m_bPickColor = {};

@@ -653,13 +653,13 @@ namespace IMGUIZMO_NAMESPACE
       Colors[PLANE_X]               = ImVec4(0.666f, 0.000f, 0.000f, 0.380f);
       Colors[PLANE_Y]               = ImVec4(0.000f, 0.666f, 0.000f, 0.380f);
       Colors[PLANE_Z]               = ImVec4(0.000f, 0.000f, 0.666f, 0.380f);
-      Colors[SELECTION]             = ImVec4(1.000f, 0.500f, 0.062f, 0.541f);
+      Colors[SELECTION]             = ImVec4(1.000f, 0.1000f, 0.062f, 0.541f);
       Colors[INACTIVE]              = ImVec4(0.600f, 0.600f, 0.600f, 0.600f);
       Colors[TRANSLATION_LINE]      = ImVec4(0.666f, 0.666f, 0.666f, 0.666f);
       Colors[SCALE_LINE]            = ImVec4(0.250f, 0.250f, 0.250f, 1.000f);
-      Colors[ROTATION_USING_BORDER] = ImVec4(1.000f, 0.500f, 0.062f, 1.000f);
-      Colors[ROTATION_USING_FILL]   = ImVec4(1.000f, 0.500f, 0.062f, 0.500f);
-      Colors[HATCHED_AXIS_LINES]    = ImVec4(0.000f, 0.000f, 0.000f, 0.500f);
+      Colors[ROTATION_USING_BORDER] = ImVec4(1.000f, 0.1000f, 0.062f, 1.000f);
+      Colors[ROTATION_USING_FILL]   = ImVec4(1.000f, 0.1000f, 0.062f, 0.1000f);
+      Colors[HATCHED_AXIS_LINES]    = ImVec4(0.000f, 0.000f, 0.000f, 0.1000f);
       Colors[TEXT]                  = ImVec4(1.000f, 1.000f, 1.000f, 1.000f);
       Colors[TEXT_SHADOW]           = ImVec4(0.000f, 0.000f, 0.000f, 1.000f);
    }

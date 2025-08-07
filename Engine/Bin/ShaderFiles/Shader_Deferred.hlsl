@@ -30,6 +30,7 @@ float g_fFogPower = 1.5f;
 float g_fFogCutoff = 15.f;
 float g_fTime;
 int g_iPointNum = 1;
+bool g_bVolumetricFog = false;
 
 /* [ PBR 전용 ] */
 Texture2D g_PBR_Diffuse;
@@ -155,7 +156,7 @@ float3 ReconstructViewPosFromDepth(float2 uv)
 {
     // NDC 좌표 계산
     float z_ndc = g_PBR_Depth.SampleLevel(DefaultSampler, uv, 0.0f).x;
-    float z_view = g_PBR_Depth.SampleLevel(DefaultSampler, uv, 0.0f).y * 500.0f;
+    float z_view = g_PBR_Depth.SampleLevel(DefaultSampler, uv, 0.0f).y * 1000.0f;
 
     float4 ndcPos;
     ndcPos.x = uv.x * 2.0f - 1.0f;
@@ -340,7 +341,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
-    float viewZ = vDepthDesc.y * 500.0f;
+    float viewZ = vDepthDesc.y * 1000.0f;
     
     float4 ndcPos;
     ndcPos.x = vUV.x * 2.0f - 1.0f;
@@ -427,7 +428,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
-    float viewZ = vDepthDesc.y * 500.0f;
+    float viewZ = vDepthDesc.y * 1000.0f;
     
     float4 ndcPos;
     ndcPos.x = vUV.x * 2.0f - 1.0f;
@@ -518,7 +519,7 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
-    float viewZ = vDepthDesc.y * 500.0f;
+    float viewZ = vDepthDesc.y * 1000.0f;
     
     float4 ndcPos;
     ndcPos.x = vUV.x * 2.0f - 1.0f;
@@ -537,8 +538,8 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
-
-    float fAtt = saturate(1.0 - pow(distance / g_fLightRange, 4.0));
+    
+    float fAtt = saturate(1.0 - distance / g_fLightRange);
     
     float3 SpotDir = normalize(-g_vLightDir.xyz);
     float3 ToPixel = normalize(worldPos.xyz - g_vLightPos.xyz);
@@ -591,10 +592,9 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     // [ 최종 조명 ]
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt;//    +Ambient;
     float3 Specalur = Specular * radiance;
-
+    
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     Out.vSpecular = float4(Specular, 1.0f);
-    
     return Out;
 }
 
@@ -608,7 +608,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
     // [ 해당 뷰포트의 깊이값 포함 ViewPos ]
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
-    float viewZ = vDepthDesc.y * 500.0f;
+    float viewZ = vDepthDesc.y * 1000.0f;
     
     bool bNoMeshBehind = (z_ndc >= 0.999f || viewZ <= 0.001f);
     
@@ -700,9 +700,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
     // [ 해당 뷰포트의 깊이값 포함 ViewPos ]
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
-    float viewZ = vDepthDesc.y * 500.0f;
-    
-    bool bNoMeshBehind = (z_ndc >= 0.999f || viewZ <= 0.001f);
+    float viewZ = vDepthDesc.y * 1000.0f;
     
     float4 ndcPos;
     ndcPos.x = vUV.x * 2.0f - 1.0f;
@@ -713,21 +711,14 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
     float4 viewPos = mul(ndcPos, g_ProjMatrixInv);
     viewPos /= viewPos.w;
     
-    if (bNoMeshBehind)
-    {
-        viewPos.xyz = normalize(viewPos.xyz) * 50.0f;
-    }
-    else
-    {
-        float scaleZ = viewZ / max(viewPos.z, 0.0001f);
-        viewPos *= scaleZ;
-    }
+    float scaleZ = viewZ / max(viewPos.z, 0.0001f);
+    viewPos *= scaleZ;
 
     /* [ Volumetric Raymarching 기법 ] */
     float4 ViewSpacePosition = viewPos;
 
-    float StepSize = 0.5f;
-    static const int NumStep = 100;
+    float StepSize = 0.25f;
+    static const int NumStep = 50;
 
     float LightFog = 0.0f;
 
@@ -736,6 +727,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
     // 디렉셔널 라이트는 광원이 아닌 광선 방향만 있음
     float3 RayDirWorld = g_vLightDir.xyz;
     float3 RayOriginWorld = PixelWorldPos;
+    //float3 RayOriginWorld = PixelWorldPos - g_vLightDir.xyz * 30.0f;
     float3 RayPosWorld = RayOriginWorld;
 
     bool bBlocked = false;
@@ -745,27 +737,24 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
         float3 sampleViewPos = mul(float4(RayPosWorld, 1.0f), g_ViewMatrix).xyz;
 
         // 메쉬 차폐
-        if (!bNoMeshBehind)
-        {
-            if (!bBlocked && sampleViewPos.z > viewZ + 0.01f)
-                bBlocked = true;
+        if (!bBlocked && sampleViewPos.z > viewZ + 0.01f)
+            bBlocked = true;
 
-            if (bBlocked)
-                continue;
-        }
+        if (bBlocked)
+            continue;
 
         float density = SampleFogDensity(RayPosWorld, g_fTime);
         float shadow = SampleShadowMap(RayPosWorld);
         
         float transmittance = 1.0f - shadow;
         int NumLights = max(g_iPointNum, 1);
-        LightFog += density * transmittance * StepSize * 0.05f;
+        LightFog += density * transmittance * StepSize * 0.1f;
     }
     
     float3 fogColor = g_vLightDiffuse.rgb;
     float3 finalFog = fogColor * (LightFog * g_fFogPower);
     
-    float fadeRatio = saturate(viewZ / 500.0f);
+    float fadeRatio = saturate(viewZ / 1000.0f);
     float3 fadeFog = fogColor * fadeRatio * g_fFogPower;
     
     finalFog = lerp(finalFog, fadeFog, fadeRatio);
@@ -783,7 +772,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
     // [ 해당 뷰포트의 깊이값 포함 ViewPos ]
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
-    float viewZ = vDepthDesc.y * 500.0f;
+    float viewZ = vDepthDesc.y * 1000.0f;
     
     bool bNoMeshBehind = (z_ndc >= 0.999f || viewZ <= 0.001f);
     
@@ -867,7 +856,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
     // 정규화 적용
     float3 fogColor = g_vLightDiffuse.rgb;
     float3 finalFog = fogColor * (LightFog * g_fFogPower * 100.f / max(viewZ, 1.0f));
-
+    
     Out.vVolumetric = float4(finalFog, 1.f);
     return Out;
 }

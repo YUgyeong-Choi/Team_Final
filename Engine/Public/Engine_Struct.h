@@ -70,11 +70,11 @@ namespace Engine
 		TYPE				eType;
 		XMFLOAT4			vDirection;
 		XMFLOAT4			vPosition;
-		float				fIntensity;
-		float				fRange;
+		_float				fIntensity;
+		_float				fRange;
 
 		XMFLOAT4			vDiffuse;
-		float				fAmbient;
+		_float				fAmbient;
 		XMFLOAT4			vSpecular;
 
 		_float				fInnerCosAngle;
@@ -83,6 +83,8 @@ namespace Engine
 
 		_float				fFogDensity;
 		_float				fFogCutoff;
+
+		_bool				bIsVolumetric;
 	}LIGHT_DESC;
 
 
