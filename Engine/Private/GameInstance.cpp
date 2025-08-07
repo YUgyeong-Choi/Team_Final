@@ -20,6 +20,8 @@
 #include "Sound_Device.h"
 #include "Observer_Manager.h"
 
+#include "ComputeShader.h"
+
 IMPLEMENT_SINGLETON(CGameInstance);
 
 static PxDefaultAllocator gAllocator;
@@ -779,8 +781,8 @@ void CGameInstance::Reset_All()
 {
 	m_pObserver_Manager->Reset_All();
 }
-
 #pragma endregion
+
 
 void CGameInstance::Release_Engine()
 {
@@ -819,6 +821,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pSound_Device);
 
 	Safe_Release(m_pObserver_Manager);
+
+	CComputeShader::ReleaseCache(); // 캐싱해둔 컴퓨트 셰이더들 해제
 
 	Destroy_Instance();
 }

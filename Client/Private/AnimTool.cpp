@@ -1053,6 +1053,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		selectedLinkIds.clear();
 	}
 
+	ImGui::Checkbox("Show All Link", &m_bShowAllLink);
+
 	ImNodes::BeginNodeEditor();
 
 	// 우클릭으로 상대 추가 팝업
@@ -1243,7 +1245,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		}
 		else  // 아무것도 선택이 안됐는데 링크도 선택된게 없으면
 		{
-			bDrawLink = true;
+			bDrawLink = m_bShowAllLink;
 		}
 		if (bDrawLink)
 		{
@@ -1678,7 +1680,7 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 	{
 		m_pCurAnimator->Update(fTimeDelta* m_iPlaySpeed);
 	}
-	m_pCurModel->Update_Bones();
+//	m_pCurModel->Update_Bones();
 }
 
 void CAnimTool::SelectAnimation()
@@ -1851,7 +1853,7 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 		m_CategoryStates[category].push_back(state.stateName); // 카테고리에 state 이름 추가
 	}
 
-	_float categorySpacing = 500.0f;
+	_float categorySpacing = 600.0f;
 	_float nodeSpacing = 300.0f;
 	_int categoryIndex = 0;
 
@@ -2011,7 +2013,11 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 		auto pAnimator = CAnimator::Create(m_pDevice, m_pContext);
 		if (pAnimator)
 		{
-			pAnimator->Initialize(pModel);
+			CAnimator::ANIMATOR_DESC desc;
+			desc.pModel = pModel;
+
+			//pAnimator->Initialize_Test(pModel);
+			pAnimator->Initialize_Test(&desc);
 			m_LoadedAnimators[modelName] = pAnimator;
 			pAnimator->RegisterEventListener("TestEvent", [&](const string& eventName)
 				{
@@ -2101,6 +2107,8 @@ string CAnimTool::GetStateCategory(const string& stateName)
 {
 	if (stateName.empty())
 		return "Other";
+	if (stateName.find("Hit") != string::npos)
+		return "Hit";
 	if (stateName.find("Guard") != string::npos)
 		return "Guard";
 	else if (stateName.find("Walk") != string::npos)
@@ -2281,6 +2289,14 @@ HRESULT CAnimTool::Bind_Shader()
 	if (FAILED(m_pAnimShader->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
 		return E_FAIL;
 
+	if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
+		return E_FAIL;
+
+	if (KEY_PRESSING(DIK_I))
+	{
+		m_pCurAnimator->DebugComputeShader();
+	}
+
 	_uint		iNumMesh = m_pCurModel->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMesh; i++)
@@ -2291,7 +2307,7 @@ HRESULT CAnimTool::Bind_Shader()
 		}
 			//	return E_FAIL;
 
-		m_pCurModel->Bind_Bone_Matrices(m_pAnimShader, "g_BoneMatrices", i);
+	//	m_pCurModel->Bind_Bone_Matrices(m_pAnimShader, "g_BoneMatrices", i);
 
 		if (FAILED(m_pAnimShader->Begin(0)))
 			return E_FAIL;
@@ -2299,6 +2315,10 @@ HRESULT CAnimTool::Bind_Shader()
 		if (FAILED(m_pCurModel->Render(i)))
 			return E_FAIL;
 	}
+
+	ID3D11ShaderResourceView* nullSRV = nullptr;
+	// VS 단계 t0 슬롯에서 언바인드
+	m_pContext->VSSetShaderResources(0, 1, &nullSRV);
 
 	return S_OK;
 }
@@ -2357,4 +2377,7 @@ void CAnimTool::Free()
 	Safe_Release(m_pAnimShader);
 	Safe_Release(m_pGameInstance);
 }
+
+
+
 #endif

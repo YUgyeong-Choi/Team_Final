@@ -334,6 +334,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BoneAnimationCS</EntryPointName>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\Bin\ShaderFiles\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />

@@ -37,10 +37,6 @@ private:
 	HRESULT Render_AnimationSequence();
 	HRESULT Render_AnimStatesByNode();
 	HRESULT Render_AnimControllers();
-	HRESULT Render_SaveLoadButtons();
-	HRESULT Render_AddStatePopup(CAnimController* pCtrl, _int& iSpecificNodeId, CAnimation* pCurAnimation);
-	HRESULT Render_NodesAndLinks(CAnimController* pCtrl);
-	HRESULT Render_SelectedNodeInfo(CAnimController* pCtrl, _int& iSpecificNodeId, const vector<CAnimation*>& anims, const vector<string>& animNames);
 	HRESULT Render_Loaded_Models();
 	HRESULT Render_Load_Model();
 	HRESULT Render_AnimEvents();
@@ -69,13 +65,8 @@ private:
 		const _float snapS[3] = nullptr    // 스케일용 스냅 (factor)
 	);
 
-	vector<string> GetAnimNames();
-
 	string GetStateCategory(const string& stateName);
 
-	HRESULT Handle_LinkCreation(CAnimController* pCtrl, _int& iSpecificNodeId);
-	HRESULT Handle_LinkDeletion(CAnimController* pCtrl);
-	HRESULT Handle_NodeDeletion(CAnimController* pCtrl);
 	HRESULT Modify_Transition(CAnimController::Transition& transition);
 
 private:
@@ -180,6 +171,7 @@ private:
 	unordered_map<string, _bool> m_CategoryVisibility; // 카테고리별 보이기 상태
 	unordered_map<string, vector<string>> m_CategoryStates; // 카테고리별 상태 이름들
 	_bool m_bShowAll = true;
+	_bool m_bShowAllLink = false;
 
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

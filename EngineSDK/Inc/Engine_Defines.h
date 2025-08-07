@@ -3,6 +3,7 @@
 #pragma warning (disable : 4251)
 
 #include <d3d11.h>
+#include <wrl.h>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
 
@@ -26,7 +27,7 @@
 
 #include <d3dcompiler.h>
 using namespace DirectX;
-
+using Microsoft::WRL::ComPtr;
 #include <string>
 #include <map>
 #include <list>

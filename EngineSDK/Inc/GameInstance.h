@@ -11,7 +11,7 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
-	DECLARE_SINGLETON(CGameInstance);
+	DECLARE_SINGLETON(CGameInstance)
 
 private:
 	CGameInstance();
@@ -218,6 +218,7 @@ public:
 	void Reset_All();
 #pragma endregion
 
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -236,7 +237,6 @@ private:
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
 	class CObserver_Manager* m_pObserver_Manager = { nullptr };
-
 
 private:
 	_uint					m_iCurrentLevelIndex = 0;

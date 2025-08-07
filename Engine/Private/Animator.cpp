@@ -1,6 +1,7 @@
 #include "Animator.h"
 #include "AnimController.h"
 #include "Model.h"
+#include "GameInstance.h"
 #include "Bone.h"
 using ET = CAnimController::ETransitionType;
 CAnimator::CAnimator(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -46,6 +47,44 @@ HRESULT CAnimator::Initialize(void* pArg)
 	m_pCurAnimController->SetAnimator(this);
 	m_AnimControllers["Default"] = m_pCurAnimController;
 	m_pCurAnimController->SetName(m_pModel->Get_ModelName() + "_Default");
+	return S_OK;
+}
+
+HRESULT CAnimator::Initialize_Test(void* pArg)
+{
+	if (pArg == nullptr)
+		return E_FAIL;
+
+	ANIMATOR_DESC* pDesc = static_cast<ANIMATOR_DESC*>(pArg);
+	m_pModel = pDesc->pModel;
+	m_Bones = m_pModel->Get_Bones();
+
+	m_pCurAnimController = CAnimController::Create();
+	if (m_pCurAnimController == nullptr)
+		return E_FAIL;
+	// 디폴트 컨트롤러 생성해서 설정
+	m_pCurAnimController->SetAnimator(this);
+	m_AnimControllers["Default"] = m_pCurAnimController;
+	m_pCurAnimController->SetName(m_pModel->Get_ModelName() + "_Default");
+	_wstring csoFilepath = TEXT("../Bin/ShaderFiles/Shader_AnimCS.cso");
+
+	m_pAnimComputeShader = CAnimComputeShader::Create(m_pDevice, m_pContext, csoFilepath,static_cast<_uint>(m_Bones.size()));
+	
+	if (m_pAnimComputeShader == nullptr)
+	{
+		MSG_BOX("Failed to create CAnimComputeShader");
+		return E_FAIL;
+	}
+	vector<_int> boneParents;
+	boneParents.reserve(m_Bones.size());
+	for (const auto& bone : m_Bones)
+	{
+		boneParents.push_back(bone->Get_ParentBoneIndex());
+	}
+	m_pAnimComputeShader->SetParentIndices(boneParents);
+	m_pAnimComputeShader->BuildHierarchyLevels();
+	vector<_float> boneMask(m_Bones.size(), 0.f);
+	m_pAnimComputeShader->SetBoneMask(boneMask);
 	return S_OK;
 }
 
@@ -135,6 +174,31 @@ void CAnimator::SetCurrentRootPosition(const _float3& pos)
 
 }
 
+void CAnimator::DebugComputeShader()
+{
+	_int iBoneCount = static_cast<_int>(m_Bones.size());
+	vector<_float4x4> boneMatrices(iBoneCount);
+	if (SUCCEEDED(m_pAnimComputeShader->DownloadBoneMatrices(boneMatrices.data(), m_Bones.size())))
+	{
+		for (_int i = 0; i < iBoneCount; ++i)
+		{
+			_matrix tmpMatrix = XMLoadFloat4x4(&boneMatrices[i]);
+			// 디버그용 출력
+			cout << "Bone " << i << ": "
+				<< "Position: (" << tmpMatrix.r[3].m128_f32[0] << ", "
+				<< tmpMatrix.r[3].m128_f32[1] << ", "
+				<< tmpMatrix.r[3].m128_f32[2] << "), "
+				<< "Rotation: (" << tmpMatrix.r[0].m128_f32[0] << ", "
+				<< tmpMatrix.r[1].m128_f32[1] << ", "
+				<< tmpMatrix.r[2].m128_f32[2] << ")\n";
+		}
+	}
+	else
+	{
+		MSG_BOX("Failed to dispatch compute shader");
+	}
+}
+
 void CAnimator::RefreshAndProcessTransition(_float fDeltaTime)
 {
 	if (m_pCurAnimController)
@@ -171,7 +235,7 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 				fDeltaTime,
 				m_Bones,
 				m_pBlendAnimArray[i]->Get_isLoop(),
-				&triggeredEvents
+				&triggeredEvents, nullptr
 			);
 		}
 	}
@@ -334,8 +398,10 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 	if (m_bPlayMask && m_pLowerClip && m_pUpperClip)
 	{
 		// 하체/상체 업데이트
-		m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents);
-		m_bIsFinished = m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents);
+		vector<_float4x4> lowerLocalMatrices(iBoneCount);
+		m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents, &lowerLocalMatrices);
+		vector<_float4x4> upperLocalMatrices(iBoneCount);
+		m_bIsFinished = m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents, &upperLocalMatrices);
 
 		// 매트릭스 미리 가져오기
 		vector<_matrix> lowerM(iBoneCount), upperM(iBoneCount);
@@ -346,7 +412,7 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 		}
 
 		// 상태에 설정된 가중치로 블렌드
-		auto state = m_pCurAnimController->GetCurrentState();
+	/*	auto state = m_pCurAnimController->GetCurrentState();
 		if (state)
 		{
 
@@ -358,13 +424,46 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 				else
 					m_Bones[i]->Set_TransformationMatrix(lowerM[i]);
 			}
-		}
+		}*/
 	}
 	else if (m_pCurrentAnim)
 	{
 		// 단일 전체 애니메이션
-		m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents);
+		vector<_float4x4> vecLocalMat(iBoneCount);
+		m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents,&vecLocalMat);
+		if (!vecLocalMat.empty())
+		{
+		
+			vector<_float4x4> vecTransposedLocalMat(iBoneCount);
+			for (size_t i = 0; i < iBoneCount; ++i)
+			{
+				_matrix xmMatrix = XMLoadFloat4x4(&vecLocalMat[i]);
+				_matrix transposedXmMatrix = XMMatrixTranspose(xmMatrix);
+				XMStoreFloat4x4(&vecTransposedLocalMat[i], transposedXmMatrix);
+			}
 
+			// 로컬 행렬 업로드
+			m_pAnimComputeShader->UploadBoneMatrices(vecTransposedLocalMat.data());
+			_float4x4 preTransform = m_pModel->Get_PreTransformMatrix();
+			_matrix xmPreTransform = XMLoadFloat4x4(&preTransform);
+			_matrix transposedXmPreTransform = XMMatrixTranspose(xmPreTransform);
+			_float4x4 preTransformTransposed;
+			XMStoreFloat4x4(&preTransformTransposed, transposedXmPreTransform);
+			m_pAnimComputeShader->ExecuteHierarchical(preTransformTransposed);
+			if (GetKeyState('I') & 0x8000)
+			{
+				cout << "Animator::UpdateAnimation - Local Matrices:\n";
+
+				DebugComputeShader();
+				cout << "End Animator\n";
+
+			}
+
+		/*	for (size_t i = 0; i < iBoneCount; ++i)
+			{
+				m_Bones[i]->Set_TransformationMatrix(gpuResults[i]);
+			}*/
+		}
 		if (m_pCurrentAnim->IsRootMotionEnabled())
 		{
 			RootMotionDecomposition();
@@ -977,7 +1076,7 @@ CAnimator* CAnimator::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 CComponent* CAnimator::Clone(void* pArg)
 {
 	CAnimator* pInstance = new CAnimator(*this);
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize_Test(pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CAnimator");
 		Safe_Release(pInstance);
@@ -992,6 +1091,7 @@ void CAnimator::Free()
 	{
 		Safe_Release(Pair.second);
 	}
+	Safe_Release(m_pAnimComputeShader);
 }
 
 json CAnimator::Serialize()

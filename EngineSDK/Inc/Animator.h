@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "Animation.h"
 #include "AnimController.h"
+#include "AnimComputeShader.h"
 
 #include "Serializable.h"
 
@@ -10,6 +11,12 @@ using AnimEventCallback = function<void(const string&)>;
 class ENGINE_DLL CAnimator final : public CComponent, public ISerializable
 {
 	friend class CAnimController;
+public:
+    typedef struct tagAnimatorDesc
+    {
+		const _wstring wstrCSOFilePath = L"";
+		class CModel* pModel = nullptr; // 애니메이션이 적용될 모델
+	}ANIMATOR_DESC;
 public:
     struct BlendState
     {
@@ -34,6 +41,7 @@ private:
 public:
     virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+    HRESULT Initialize_Test(void* pArg);
     void Update(_float fDeltaTime);
 
 	void PlayClip(class CAnimation* pAnim, _bool isLoop = true);
@@ -222,7 +230,14 @@ public:
     _float3& GetRootMotionDelta()  { return m_RootMotionDelta; }
     _float4& GetRootRotationDelta()  { return m_RootRotationDelta; }
     _float GetYAngleFromQuaternion(const _vector& quat);
-
+    ID3D11ShaderResourceView* GetFinalBoneMatricesSRV() const {
+        if (m_pAnimComputeShader == nullptr)
+            return nullptr;
+        return m_pAnimComputeShader->GetOutputBoneSRV();
+    }
+#ifdef _DEBUG
+    void DebugComputeShader();
+#endif
 private:
     // 애니메이션 재생관련
     void RefreshAndProcessTransition(_float fDeltaTime);
@@ -250,6 +265,8 @@ private:
     // 행렬 계산
     _matrix LerpMatrix(const _matrix& src, const _matrix& dst, _float t);
 	void CollectBoneMatrices(CAnimation* pAnim, vector<_matrix>& boneMatrices, size_t iBoneCount);
+
+
 private:
     _bool                       m_bPlaying = true;
 	_bool                       m_bIsFinished = false; // 애니메이션 재생 완료 여부
@@ -263,11 +280,6 @@ private:
 
 	CAnimation* m_pUpperClip = nullptr; // 상체 애니메이션 클립
 	CAnimation* m_pLowerClip = nullptr; // 하체 애니메이션 클립
-
-    //CAnimation* m_pBlendFromLowerAnim = nullptr;
-    //CAnimation* m_pBlendToLowerAnim = nullptr;
-    //CAnimation* m_pBlendFromUpperAnim = nullptr; // 전환 중인 이전 상체 클립
-    //CAnimation* m_pBlendToUpperAnim = nullptr;   // 전환 중인 목표 상체 클립
     CAnimController::ETransitionType m_eCurrentTransitionType = CAnimController::ETransitionType::FullbodyToFullbody; // 현재 진행 중인 전환 타입
 
     unordered_map<string,unordered_set<_int>>         m_UpperMaskSetMap; // 한번씩만 매핑 해두기 이름 별로
@@ -291,6 +303,11 @@ private:
 
     array<CAnimation*, 4> m_pBlendAnimArray{nullptr,};
 	_int m_iBlendAnimCount = 0; // 현재 애니메이션 개수
+
+    // 컴퓨트 셰이더
+	CAnimComputeShader* m_pAnimComputeShader = nullptr; // 애니메이션 컴퓨트 셰이더
+    vector<_matrix> m_vLocalBoneMatrices;
+	vector<_matrix> m_vFinalBoneMatrices; // 최종 본 행렬들 (GPU에서 받아온 행렬)
 
 public:
 	static CAnimator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

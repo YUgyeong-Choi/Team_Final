@@ -277,14 +277,14 @@
             "ClipName": "AS_Pino_Prop_DoubleDoor_Push_TrainStation",
             "Duration": 680.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Pino_Prop_SlidingDoor_Boss",
             "Duration": 616.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.099998474121094
         },
         {
