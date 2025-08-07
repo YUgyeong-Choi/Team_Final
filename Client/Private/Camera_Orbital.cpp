@@ -46,11 +46,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	//if (m_pGameInstance->Key_Down(DIK_T))
-	//{
-	//	m_bActive = !m_bActive;
-	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	//}
+	if (m_pGameInstance->Key_Down(DIK_T))
+	{
+		m_bActive = !m_bActive;
+		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	}
 
 	if (m_pGameInstance->Key_Down(DIK_X))
 	{
@@ -167,10 +167,8 @@ void CCamera_Orbital::Set_InitCam()
 {
 	if (m_pPlayer)
 	{
-		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(0.112646f, -1.535662f));
-		Set_PitchYaw(0.112646f, -1.535662f);
-		m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
-		m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
+		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(0.093079f, -1.587195f));
+		Set_PitchYaw(0.093079f, -1.587195f);
 	}
 }
 

@@ -32,6 +32,10 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 	if (FAILED(InitDatas()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_WorldMatrix(m_CutSceneDatas[CUTSCENE_TYPE::TWO].vecWorldMatrixData.front().WorldMatrix);
+	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
+	m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
+
 	return S_OK;
 }
 

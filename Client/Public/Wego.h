@@ -3,12 +3,11 @@
 #include "Client_Defines.h"
 
 NS_BEGIN(Engine)
-class CModel;
-class CShader;
-class CAnimator;
+class CPhysXController;
 NS_END
 
 NS_BEGIN(Client)
+
 
 class CWego : public CUnit
 {
@@ -31,6 +30,8 @@ public:
 
 private: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components();
+	HRESULT Ready_Controller();
+	CPhysXController* m_pControllerCom = { nullptr };
 public:
 	static CWego* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

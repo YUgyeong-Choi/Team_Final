@@ -63,6 +63,8 @@ void CUI_Video::Priority_Update(_float fTimeDelta)
 
 void CUI_Video::Update(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
 	m_fElapsedTime += fTimeDelta * m_fPlaybackSpeed;
 
 	Fade(fTimeDelta);
@@ -123,6 +125,8 @@ void CUI_Video::Update(_float fTimeDelta)
 
 void CUI_Video::Late_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 }
 

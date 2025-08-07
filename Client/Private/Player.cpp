@@ -44,8 +44,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Weapon()))
-		return E_FAIL;
+	//if (FAILED(Ready_Weapon()))
+	//	return E_FAIL;
 
 	/* [ ÇÃ·¹ÀÌ¾î Á¦ÀÌ½¼ ·Îµù ] */
 	LoadPlayerFromJson();
@@ -108,6 +108,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+	_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
+	printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
+
 	// ¹®¿©´Â ÄÆ¾À
 	if (KEY_DOWN(DIK_N))
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
