@@ -13,7 +13,7 @@ NS_BEGIN(Client)
 class CMonster_Base : public CUnit
 {
 public:
-	enum class STATE_MONSTER { IDLE, WALK, RUN, DEAD, HIT, GROGGY, FATAL, ATTACK, END };
+	enum class STATE_MONSTER { IDLE, WALK, RUN, TURN, DEAD, HIT, GROGGY, FATAL, ATTACK, END };
 	enum class MONSTER_DIR { F, B, L, R, END };
 
 protected:
@@ -38,6 +38,8 @@ private: /* [ Setup ÇÔ¼ö ] */
 	void    LoadAnimDataFromJson();
 
 	void    Update_Collider();
+
+	
 
 
 private:
