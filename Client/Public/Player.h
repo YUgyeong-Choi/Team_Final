@@ -4,6 +4,7 @@
 
 NS_BEGIN(Engine)
 class CPhysXController;
+class CPhysXDynamicActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -72,6 +73,19 @@ private: /* [ 애니메이션 관련 ] */
 
 private: /* [ 루트모션 활성화 ] */
 	void			RootMotionActive(_float fTimeDelta);
+
+private: /* [ actor 업뎃. ]*/
+	void    Update_Collider_Actor();
+
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
+	/* Ray로 인항 충돌(HitPos& HitNormal) */
+	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
+	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	
 
 private:/* [ 캐스케이드 전용함수 ] */
@@ -88,6 +102,8 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Controller();
 	void LoadPlayerFromJson();
+
+	HRESULT Ready_Actor();
 
 private: /* 옵저버 관련*/
 	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
@@ -139,6 +155,7 @@ private: /* [ 상태 변수 ] */
 protected:
 	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
 	CPhysXController* m_pControllerCom = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};

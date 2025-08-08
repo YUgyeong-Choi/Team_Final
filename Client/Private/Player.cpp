@@ -101,6 +101,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	Callback_DownBelt();
 	Callback_UpBelt();
 
+	if (FAILED(Ready_Actor()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -143,6 +146,9 @@ void CPlayer::Update(_float fTimeDelta)
 	HandleInput();
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
+
+
+	Update_Collider_Actor();
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -565,6 +571,54 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 	}
 }
 
+void CPlayer::Update_Collider_Actor()
+{
+	// 1. 월드 행렬 가져오기
+	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	// 2. 위치 추출
+	_float4 vPos;
+	XMStoreFloat4(&vPos, worldMatrix.r[3]);
+
+	PxVec3 pos(vPos.x, vPos.y, vPos.z);
+	pos.y += 0.5f;
+
+	// 3. 회전 추출
+	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
+	XMFLOAT4 fQuat;
+	XMStoreFloat4(&fQuat, boneQuat);
+	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
+
+	// 4. PhysX Transform 적용
+	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
+
+	// 무기 추가
+}
+
+void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
 void CPlayer::ReadyForState()
 {
 	m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)] = new CPlayer_Idle(this);
@@ -629,6 +683,11 @@ HRESULT CPlayer::Ready_Components()
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pControllerCom))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), 
+		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 HRESULT CPlayer::Ready_Controller()
@@ -686,6 +745,37 @@ void CPlayer::LoadPlayerFromJson()
 		ifsStates >> rootStates;
 		m_pAnimator->Deserialize(rootStates);
 	}
+}
+
+HRESULT CPlayer::Ready_Actor()
+{
+	// 3. Transform에서 S, R, T 분리
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 3-1. 스케일, 회전, 위치 변환
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.4f, 1.f);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | FILTER_MONSTERWEAPON; 
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::E);
+	m_pPhysXActorCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	return S_OK;
 }
 
 void CPlayer::Callback_HP()
@@ -983,6 +1073,7 @@ void CPlayer::Free()
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pControllerCom);
+	Safe_Release(m_pPhysXActorCom);
 
 	for (size_t i = 0; i < ENUM_CLASS(EPlayerState::END); ++i)
 		Safe_Delete(m_pStateArray[i]);

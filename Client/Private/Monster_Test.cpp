@@ -80,8 +80,9 @@ HRESULT CMonster_Test::Render()
 
 void CMonster_Test::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	
+	m_pAnimator->SetBool("Detect", true);
 }
+
 
 void CMonster_Test::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
@@ -93,7 +94,7 @@ void CMonster_Test::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eCollider
 
 void CMonster_Test::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	m_pAnimator->SetBool("Detect", true);
+
 }
 
 void CMonster_Test::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -143,7 +144,7 @@ HRESULT CMonster_Test::Ready_Actor()
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
-	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PALYER);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER);
 	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
