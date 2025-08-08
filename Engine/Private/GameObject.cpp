@@ -75,6 +75,10 @@ void CGameObject::Late_Update(_float fTimeDelta)
 
 }
 
+void CGameObject::Last_Update(_float fTimeDelta)
+{
+}
+
 HRESULT CGameObject::Render()
 {
 

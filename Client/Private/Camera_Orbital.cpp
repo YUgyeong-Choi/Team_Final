@@ -46,11 +46,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	if (m_pGameInstance->Key_Down(DIK_T))
-	{
-		m_bActive = !m_bActive;
-		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_T))
+	//{
+	//	m_bActive = !m_bActive;
+	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	//}
 
 	if (m_pGameInstance->Key_Down(DIK_X))
 	{
@@ -124,7 +124,9 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 		// 무시할 자기 자신 액터 설정
 		PxRigidActor* actor = pPlayer->Get_Actor(pPlayer->Get_Controller());
-		CIgnoreSelfCallback callback(actor);
+		unordered_set<PxActor*> ignoreActors;
+		ignoreActors.insert(actor);
+		CIgnoreSelfCallback callback(ignoreActors);
 
 		if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fTargetDist, hit, hitFlags, filterData, &callback))
 		{

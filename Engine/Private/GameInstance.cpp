@@ -19,6 +19,7 @@
 #include "PhysX_Manager.h"
 #include "Sound_Device.h"
 #include "Observer_Manager.h"
+#include "Occlusion_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance);
 
@@ -122,6 +123,11 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pObserver_Manager)
 		return E_FAIL;
 
+	m_pOcclusion_Manager = COcclusion_Manager::Create(*ppDeviceOut, *ppContextOut);
+	if (nullptr == m_pOcclusion_Manager)
+		return E_FAIL;
+	m_pOcclusion_Manager->Initialize();
+
 	return S_OK;
 }
 
@@ -144,6 +150,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 	m_pLevel_Manager->Late_Update(fTimeDelta);
+
+	m_pObject_Manager->Last_Update(fTimeDelta);
 
  	m_pPhysX_Manager->Simulate(fTimeDelta);
 
@@ -788,6 +796,23 @@ void CGameInstance::Reset_All()
 
 #pragma endregion
 
+#pragma region OCCLUSION_MANAGER
+void CGameInstance::Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX)
+{
+	m_pOcclusion_Manager->Begin_Occlusion(pObj, pPhysX);
+}
+
+void CGameInstance::End_Occlusion(CGameObject* pObj)
+{
+	m_pOcclusion_Manager->End_Occlusion(pObj);
+}
+
+_bool CGameInstance::IsVisible(CGameObject* pObj) const
+{
+	return 	m_pOcclusion_Manager->IsVisible(pObj);
+}
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
 	Safe_Release(m_pFrustum);
@@ -825,6 +850,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pSound_Device);
 
 	Safe_Release(m_pObserver_Manager);
+
+	Safe_Release(m_pOcclusion_Manager);
 
 	Destroy_Instance();
 }

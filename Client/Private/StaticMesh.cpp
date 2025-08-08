@@ -76,6 +76,7 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 	{
 		//_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
 		//CGameObject::Compute_ViewZ(&vTemp);
+		//m_pGameInstance->Begin_Occlusion(this, m_pPhysXActorCom);
 
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
@@ -89,6 +90,21 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 	}*/
 
 	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+}
+
+void CStaticMesh::Last_Update(_float fTimeDelta)
+{
+	/*
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	{
+		m_pGameInstance->End_Occlusion(this);
+		if (m_pGameInstance->IsVisible(this))
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		}
+	}
+	*/
 }
 
 HRESULT CStaticMesh::Render()

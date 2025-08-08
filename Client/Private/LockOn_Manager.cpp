@@ -42,7 +42,9 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
         CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
-        CIgnoreSelfCallback callback(pPlayer->Get_Actor(pPlayer->Get_Controller()));
+        unordered_set<PxActor*> ignoreActors;
+        ignoreActors.insert(pPlayer->Get_Actor(pPlayer->Get_Controller()));
+        CIgnoreSelfCallback callback(ignoreActors);
 
         bool bRemove = false;
 

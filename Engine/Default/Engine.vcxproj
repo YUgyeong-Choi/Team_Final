@@ -211,6 +211,9 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\Observer.h" />
     <ClInclude Include="..\public\Observer_Manager.h" />
+    <ClInclude Include="..\Public\Occlusion_Manager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\public\PartObject.h" />
     <ClInclude Include="..\Public\PhysXActor.h" />
     <ClInclude Include="..\Public\PhysXController.h">
@@ -290,6 +293,9 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\Observer.cpp" />
     <ClCompile Include="..\private\Observer_Manager.cpp" />
+    <ClCompile Include="..\Private\Occlusion_Manager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\private\PartObject.cpp" />
     <ClCompile Include="..\Private\PhysXActor.cpp" />
     <ClCompile Include="..\Private\PhysXController.cpp">
@@ -335,6 +341,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Occlusion.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
