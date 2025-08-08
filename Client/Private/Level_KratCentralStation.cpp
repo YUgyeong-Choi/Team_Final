@@ -28,8 +28,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if(FAILED(Ready_Video()))
 		return E_FAIL;
 
-
-
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
 
@@ -117,8 +115,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 			if (FAILED(Ready_Lights()))
 				return;
-			if (FAILED(Ready_Shadow()))
-				return;
 
 			if (FAILED(Ready_Monster()))
 				return;
@@ -135,7 +131,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 				return;
 
 			if (FAILED(Ready_Door()))
-				return E_FAIL;
+				return;
 
 
 			/* [ 플레이어 제어 ] */
