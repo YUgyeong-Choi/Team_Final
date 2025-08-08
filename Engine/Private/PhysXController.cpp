@@ -1,5 +1,7 @@
 #include "PhysXController.h"
 #include "GameInstance.h"
+
+#include "PhysX_IgnoreSelfCallback.h"
 CPhysXController::CPhysXController(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CPhysXActor{ pDevice, pContext }
 {
@@ -139,7 +141,9 @@ void CPhysXController::Move(_float fDeltaTime, const PxVec3& vDirection, _float 
 {
     PxVec3 displacement = vDirection * fSpeed * fDeltaTime;
 
+    CIgnoreSelfCallback filter(m_ignoreActors);
     PxControllerFilters filters;
+    filters.mFilterCallback = &filter; 
     PxControllerCollisionFlags result = m_pController->move(displacement, 0.001f, fDeltaTime, filters);
 
     // 예시: 땅에 닿았는지 확인

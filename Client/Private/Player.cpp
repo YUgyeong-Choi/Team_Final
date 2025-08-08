@@ -554,10 +554,7 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 			XMVectorGetZ(finalDelta)
 		};
 
-
-		unordered_set<PxActor*> ignoreList;
-		ignoreList.insert(m_pPhysXActorCom->Get_Actor()); // 자기 본체
-		CIgnoreSelfCallback filter(ignoreList);
+		CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 		PxControllerFilters filters;
 		filters.mFilterCallback = &filter; 
 
@@ -711,6 +708,9 @@ HRESULT CPlayer::Ready_Controller()
 	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f, m_pHitReport);
 	m_pControllerCom->Set_Owner(this);
 	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
+
+	m_pControllerCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+
 	return S_OK;
 }
 void CPlayer::LoadPlayerFromJson()
@@ -762,11 +762,11 @@ HRESULT CPlayer::Ready_Actor()
 	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
 	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-
+	positionVec += PxVec3{ 0.f,0.5f,0.f };
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.4f, 1.f);
+	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.4f, 0.8f);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 
@@ -776,7 +776,7 @@ HRESULT CPlayer::Ready_Actor()
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
-	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::E);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PALYER);
 	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
@@ -1036,10 +1036,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 
 	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
 
-	unordered_set<PxActor*> ignoreList;
-	ignoreList.insert(m_pPhysXActorCom->Get_Actor()); // 자기 본체
-	CIgnoreSelfCallback filter(ignoreList);
-
+	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 	PxControllerFilters filters;
 	filters.mFilterCallback = &filter; // 필터 콜백 지정
 	PxControllerCollisionFlags collisionFlags =

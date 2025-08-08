@@ -10,8 +10,8 @@ static PxFilterFlags CustomFilterShader(
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
 	
-	printf("filerData0 world0: %d , filterData1 world1: %d\n", filterData0.word0, filterData1.word1);
-	printf("filterData1 world0: %d ,filterData0 world1: %d\n", filterData1.word0, filterData0.word1);
+	//printf("filerData0 world0: %d , filterData1 world1: %d\n", filterData0.word0, filterData1.word1);
+	//printf("filterData1 world0: %d ,filterData0 world1: %d\n", filterData1.word0, filterData0.word1);
 
 	if ((filterData0.word0 & filterData1.word1) == 0 &&
 		(filterData1.word0 & filterData0.word1) == 0)
@@ -22,6 +22,7 @@ static PxFilterFlags CustomFilterShader(
 	pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
 	pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND;
 	pairFlags |= PxPairFlag::eNOTIFY_TOUCH_LOST;
+	pairFlags |= PxPairFlag::eNOTIFY_TOUCH_PERSISTS;
 
 	return PxFilterFlag::eDEFAULT;
 }
