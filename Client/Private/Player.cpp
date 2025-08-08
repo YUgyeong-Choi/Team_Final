@@ -45,8 +45,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Weapon()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Weapon()))
+		return E_FAIL;
 
 	//if (FAILED(Ready_Lamp()))
 	//	return E_FAIL;
