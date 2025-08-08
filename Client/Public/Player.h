@@ -106,6 +106,7 @@ private: /* [ 이동로직 ] */
 
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Weapon();
+	HRESULT Ready_Lamp();
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
@@ -124,6 +125,9 @@ private: /* [ 상호작용 관련 ] */
 	void Interaction_Door();
 
 	void Play_CutScene_Door();
+
+private:
+	void ItemWeaponOFF(_float fTimeDelta);
 
 	
 private: // 슬롯 용
@@ -170,9 +174,14 @@ protected:
 	CPhysXController* m_pControllerCom = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
+
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
+
+private: /* [ 램프 온 오프 ] */
+	_bool m_bLampOnOff = { false };
+	class CDH_ToolMesh* m_pLamp = { nullptr };
 
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*	m_pTarget = { nullptr };
@@ -198,6 +207,10 @@ private: /* [ 이동관련 변수 ] */
 	_float   m_fSitTime = {};
 	_float   m_fMoveTime = {};
 	_int	 m_iMoveStep = {};
+
+private:
+	_bool	 m_bItemSwitch = {};
+	_float	 m_fItemTime = 0.f;
 
 	unordered_set<string> m_MovableStates = {
 		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",

@@ -12,6 +12,7 @@
 #include "PlayerState.h"
 #include "Bayonet.h"
 #include "Weapon.h"
+#include "DH_ToolMesh.h"
 
 #include "Observer_Player_Status.h"
 
@@ -45,6 +46,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	//if (FAILED(Ready_Weapon()))
+	//	return E_FAIL;
+
+	//if (FAILED(Ready_Lamp()))
 	//	return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
@@ -149,6 +153,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
+	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 	
 	/* [ 이곳은 애니메이션 실험실입니다. ] */
@@ -699,6 +704,27 @@ HRESULT CPlayer::Ready_Weapon()
 	return S_OK;
 }
 
+HRESULT CPlayer::Ready_Lamp()
+{
+	CDH_ToolMesh::tagDH_ToolDesc Desc{};
+	Desc.eLEVEL = LEVEL::STATIC;
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.iID = 0;
+	Desc.m_vInitPos = { 0.f, 0.f, 0.f };
+	Desc.szMeshID = TEXT("PointLight");
+	lstrcpy(Desc.szName, TEXT("PointLight"));
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ToolMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_ToolMesh", &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pLamp = dynamic_cast<CDH_ToolMesh*>(pGameObject);
+
+	return S_OK;
+}
+
 HRESULT CPlayer::Ready_Components()
 {
 	/* [ 따로 붙일 컴포넌트를 붙여보자 ] */
@@ -888,6 +914,22 @@ void CPlayer::Play_CutScene_Door()
 {	
 	m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::ONE);
 	m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+}
+
+void CPlayer::ItemWeaponOFF(_float fTimeDelta)
+{
+	if (m_bItemSwitch)
+	{
+		m_fItemTime += fTimeDelta;
+
+		if (m_fItemTime >= 2.f)
+		{
+			m_pWeapon->SetbIsActive(true);
+
+			m_bItemSwitch = false;
+			m_fItemTime = 0.f;
+		}
+	}
 }
 
 void CPlayer::Callback_UpBelt()

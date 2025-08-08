@@ -47,13 +47,14 @@ HRESULT CUnit::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 	return S_OK;
 }
 
 void CUnit::Priority_Update(_float fTimeDelta)
 {
+	if (!m_pPlayer)
+		m_pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
 }
 void CUnit::Update(_float fTimeDelta)
 {
@@ -69,8 +70,17 @@ void CUnit::Update(_float fTimeDelta)
 void CUnit::Late_Update(_float fTimeDelta)
 {
 	_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vCam = m_pCamera_Orbital->GetPosition();
-	CGameObject::Compute_ViewZ(vCam,&vTemp);
+
+	if (m_pPlayer)
+	{
+		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		CGameObject::Compute_ViewZ(vPlayerPos, &vTemp);
+	}
+	else
+	{
+		_vector vCam = m_pCamera_Orbital->GetPosition();
+		CGameObject::Compute_ViewZ(vCam, &vTemp);
+	}
 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
@@ -119,9 +129,9 @@ HRESULT CUnit::Render_Shadow()
 
 void CUnit::SetCascadeShadow()
 {
-	if (m_fViewZ < 28.3f)
+	if (m_fViewZ < 5.f)
 		m_eShadow = SHADOW::SHADOWA;
-	else if (m_fViewZ < 40.f)
+	else if (m_fViewZ < 20.f)
 		m_eShadow = SHADOW::SHADOWB;
 	else
 		m_eShadow = SHADOW::SHADOWC;

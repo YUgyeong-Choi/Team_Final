@@ -425,6 +425,9 @@ public:
         m_pOwner->m_pAnimator->SetTrigger("UseItem");
 		m_bPreWalk = m_pOwner->m_bWalk;
 		m_pOwner->m_bWalk = true;
+        m_pOwner->m_pWeapon->SetbIsActive(false);
+        m_pOwner->m_bItemSwitch = true;
+        m_pOwner->m_fItemTime = 0.f;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -433,12 +436,20 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        if (1.f < m_fStateTime && !m_bDoOnce)
+        {
+            // 램프 온오프 토글
+			m_pOwner->m_bLampOnOff = !m_pOwner->m_bLampOnOff;
+			m_bDoOnce = true;
+        }
     }
 
     virtual void Exit() override
     {
 		m_pOwner->m_bWalk = m_bPreWalk;
         m_fStateTime = 0.f;
+        m_bDoOnce = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
