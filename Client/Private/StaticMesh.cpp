@@ -270,8 +270,8 @@ HRESULT CStaticMesh::Ready_Collider()
 		PxMeshScale meshScale(scaleVec);
 
 		PxFilterData filterData{};
-		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		filterData.word0 = WORLDFILTER::FILTER_EFFECTGIB;
+		filterData.word1 = WORLDFILTER::FILTER_EFFECTGIB;
 
 		if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)
 		{

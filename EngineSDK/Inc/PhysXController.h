@@ -35,7 +35,6 @@ public:
 
 private:
     PxController* m_pController = nullptr;
-
 public:
     static CPhysXController* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg) override;

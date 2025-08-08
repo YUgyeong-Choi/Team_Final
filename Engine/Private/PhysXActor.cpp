@@ -493,6 +493,9 @@ void CPhysXActor::Set_RenderColor()
     case COLLIDERTYPE::E:
         m_vRenderColor = Colors::SaddleBrown;
         break;
+    case COLLIDERTYPE::MONSTER:
+        m_vRenderColor = Colors::BlueViolet;
+        break;
     }
 }
 

@@ -81,15 +81,18 @@ HRESULT CMonster_Test::Render()
 void CMonster_Test::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	m_pAnimator->SetBool("Detect", true);
+	printf("몬스터 충돌됨\n");
 }
 
 
 void CMonster_Test::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	printf("몬스터 충돌중\n");
 }
 
 void CMonster_Test::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	printf("몬스터 충돌 나감\n");
 }
 
 void CMonster_Test::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -120,8 +123,6 @@ HRESULT CMonster_Test::Ready_Components()
 
 HRESULT CMonster_Test::Ready_Actor()
 {
-	
-
 	// 3. Transform에서 S, R, T 분리
 	XMVECTOR S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
@@ -134,7 +135,8 @@ HRESULT CMonster_Test::Ready_Actor()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.6f, 1.5f);
+	PxVec3 halfExtents = PxVec3(0.5f, 0.5f, 0.5f);
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 
