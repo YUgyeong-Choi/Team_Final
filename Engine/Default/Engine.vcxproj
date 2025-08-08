@@ -214,6 +214,8 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\Public\Occlusion_Manager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\public\Octree.h" />
+    <ClInclude Include="..\public\Octree_Manager.h" />
     <ClInclude Include="..\public\PartObject.h" />
     <ClInclude Include="..\Public\PhysXActor.h" />
     <ClInclude Include="..\Public\PhysXController.h">
@@ -297,6 +299,8 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\Private\Occlusion_Manager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\private\Octree.cpp" />
+    <ClCompile Include="..\private\Octree_Manager.cpp" />
     <ClCompile Include="..\private\PartObject.cpp" />
     <ClCompile Include="..\Private\PhysXActor.cpp" />
     <ClCompile Include="..\Private\PhysXController.cpp">

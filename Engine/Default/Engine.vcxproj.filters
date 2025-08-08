@@ -243,9 +243,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Occlusion_Manager.h">
       <Filter>01.Utility\12.Culling\Occlusion</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Trail.h">
       <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Octree.h">
+      <Filter>01.Utility\12.Culling\Octree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Octree_Manager.h">
+      <Filter>01.Utility\12.Culling\Octree\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -464,9 +470,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Occlusion_Manager.cpp">
       <Filter>01.Utility\12.Culling\Occlusion</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Trail.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Octree.cpp">
+      <Filter>01.Utility\12.Culling\Octree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Octree_Manager.cpp">
+      <Filter>01.Utility\12.Culling\Octree\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -712,9 +724,15 @@
     </Filter>
     <Filter Include="01.Utility\12.Culling\Occlusion">
       <UniqueIdentifier>{4cd57423-aff8-4bac-883b-c6786aaaa97f}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Utility\04.Components\VIBuffer\Trail">
       <UniqueIdentifier>{9c984c06-90d2-4f7f-b591-151eca3c4ffa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\12.Culling\Octree">
+      <UniqueIdentifier>{4ee232e8-5ec9-4a8a-b041-9fb7267a9714}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\12.Culling\Octree\Manager">
+      <UniqueIdentifier>{44eaedf2-0f6f-4691-bfb5-0945eb22b8e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

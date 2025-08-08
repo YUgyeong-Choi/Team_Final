@@ -81,6 +81,7 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
+
 	
 
 	// 왜 이거 안되지?
