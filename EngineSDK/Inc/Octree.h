@@ -11,6 +11,8 @@ private:
     virtual ~COctree() = default;
 public:
     COctree* Insert(CGameObject* pObj, const _float3& objMin, const _float3& objMax);
+    COctree* Insert_DistanceBased(CGameObject* pObj, const _float3& objMin, const _float3& objMax, const _float3& objCenter, const _float3& camPos);
+
     void Subdivide();
 
     void Set_Activated(_bool bFlag) { m_bActivated = bFlag; }

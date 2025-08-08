@@ -1,6 +1,6 @@
 #include "StaticMesh.h"
 #include "GameInstance.h"
-
+#include "Octree.h"
 CStaticMesh::CStaticMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -55,6 +55,12 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 
 	//Update_ColliderPos();
 
+	//PxBounds3 bounds = m_pPhysXActorCom->Get_Actor()->getWorldBounds();
+	//_float3 vMin = { bounds.minimum.x, bounds.minimum.y, bounds.minimum.z };
+	//_float3 vMax = { bounds.maximum.x, bounds.maximum.y, bounds.maximum.z };
+
+	//m_pMyNode = m_pGameInstance->Octree_Insert(this, vMin, vMax);
+
 	return S_OK;
 }
 
@@ -71,7 +77,7 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 {
 
 	// 왜 이거 안되지?
-	
+	/*
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
 		//_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
@@ -81,8 +87,16 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
+	*/
 
-	
+	//if (m_pMyNode && m_pMyNode->IsActivated())
+	//{
+	//	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	//	{
+	//		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+	//		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	//	}
+	//}
 
 	// 왜 이거 안되지?
 	/*if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f))

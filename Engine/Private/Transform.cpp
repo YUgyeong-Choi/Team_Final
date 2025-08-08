@@ -219,6 +219,7 @@ void CTransform::Go_Front(_float fTimeDelta, CPhysXController* pController, CNav
 	{
 		pController->Move(fTimeDelta, VectorToPxVec3(vLook), m_fSpeedPerSec);
 		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		pos.y -= 0.9f; // 이거 해줘야함...
 		Set_State(STATE::POSITION, PxVec3ToVector(pos));
 	}
 	else
