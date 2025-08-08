@@ -554,7 +554,10 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 			XMVectorGetZ(finalDelta)
 		};
 
-		CIgnoreSelfCallback filter(m_pPhysXActorCom->Get_Actor());
+
+		unordered_set<PxActor*> ignoreList;
+		ignoreList.insert(m_pPhysXActorCom->Get_Actor()); // 자기 본체
+		CIgnoreSelfCallback filter(ignoreList);
 		PxControllerFilters filters;
 		filters.mFilterCallback = &filter; 
 
@@ -1035,7 +1038,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 
 	unordered_set<PxActor*> ignoreList;
 	ignoreList.insert(m_pPhysXActorCom->Get_Actor()); // 자기 본체
-	CIgnoreSelfCallback filter(m_pPhysXActorCom->Get_Actor());
+	CIgnoreSelfCallback filter(ignoreList);
 
 	PxControllerFilters filters;
 	filters.mFilterCallback = &filter; // 필터 콜백 지정
