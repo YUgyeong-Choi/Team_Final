@@ -6,6 +6,7 @@
 #include "AnimController.h"
 #include "PhysX_IgnoreSelfCallback.h"
 #include "PhysXController.h"
+#include "Camera_Manager.h"
 
 
 CUnit::CUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -46,6 +47,8 @@ HRESULT CUnit::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 	return S_OK;
 }
 
@@ -65,6 +68,11 @@ void CUnit::Update(_float fTimeDelta)
 
 void CUnit::Late_Update(_float fTimeDelta)
 {
+	_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vCam = m_pCamera_Orbital->GetPosition();
+	CGameObject::Compute_ViewZ(vCam,&vTemp);
+
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -75,6 +83,50 @@ HRESULT CUnit::Render()
 
 	return S_OK;
 }
+
+HRESULT CUnit::Render_Shadow()
+{
+	/* [ 월드 스페이스 넘기기 ] */
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
+		return E_FAIL;
+
+	SetCascadeShadow();
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Light_ViewMatrix(m_eShadow))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Light_ProjMatrix(m_eShadow))))
+		return E_FAIL;
+
+	_int iCascadeCount = ENUM_CLASS(m_eShadow);
+	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMesh; i++)
+	{
+		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		switch (iCascadeCount)
+		{
+		case 0: m_pShaderCom->Begin(3); break;
+		case 1: m_pShaderCom->Begin(4); break;
+		case 2: m_pShaderCom->Begin(5); break;
+		}
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+void CUnit::SetCascadeShadow()
+{
+	if (m_fViewZ < 28.3f)
+		m_eShadow = SHADOW::SHADOWA;
+	else if (m_fViewZ < 40.f)
+		m_eShadow = SHADOW::SHADOWB;
+	else
+		m_eShadow = SHADOW::SHADOWC;
+}
+
 
 
 HRESULT CUnit::Bind_Shader()

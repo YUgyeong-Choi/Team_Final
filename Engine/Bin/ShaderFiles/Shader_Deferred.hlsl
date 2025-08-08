@@ -947,7 +947,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     uvA.x = vLightPosA.x / vLightPosA.w * 0.5f + 0.5f;
     uvA.y = vLightPosA.y / vLightPosA.w * -0.5f + 0.5f;
     
-    float4 vDepthA = g_ShadowTextureA.Sample(DefaultSampler, uvA);
+    float4 vDepthA = g_ShadowTextureA.Sample(LinearClampSampler, uvA);
     float fShadowViewZA = vDepthA.y * 1000.f;
     
     // 2. Cascade B
@@ -959,7 +959,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     uvB.x = vLightPosB.x / vLightPosB.w * 0.5f + 0.5f;
     uvB.y = vLightPosB.y / vLightPosB.w * -0.5f + 0.5f;
     
-    float4 vDepthB = g_ShadowTextureB.Sample(DefaultSampler, uvB);
+    float4 vDepthB = g_ShadowTextureB.Sample(LinearClampSampler, uvB);
     float fShadowViewZB = vDepthB.y * 1000.f;
 
     // 3. Cascade C
@@ -971,7 +971,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     uvC.x = vLightPosC.x / vLightPosC.w * 0.5f + 0.5f;
     uvC.y = vLightPosC.y / vLightPosC.w * -0.5f + 0.5f;
     
-    float4 vDepthC = g_ShadowTextureC.Sample(DefaultSampler, uvC);
+    float4 vDepthC = g_ShadowTextureC.Sample(LinearClampSampler, uvC);
     float fShadowViewZC = vDepthC.y * 1000.f;
 
     // --- ±Ì¿Ã ∫Ò±≥ ---

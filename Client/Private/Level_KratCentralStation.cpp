@@ -31,9 +31,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Shadow()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Door()))
 		return E_FAIL;
 
@@ -590,31 +587,6 @@ HRESULT CLevel_KratCentralStation::Add_Light(CDHTool::LIGHT_TYPE eType, CDHTool:
 		return E_FAIL;
 
 	m_vecLights.push_back(dynamic_cast<CDH_ToolMesh*>(pGameObject));
-
-	return S_OK;
-}
-
-
-HRESULT CLevel_KratCentralStation::Ready_Shadow()
-{
-	CShadow::SHADOW_DESC		Desc{};
-	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	Desc.fFovy = XMConvertToRadians(60.0f);
-	Desc.fNear = 0.1f;
-	Desc.fFar = 1000.f;
-
-	Desc.vEye = _float4(76.f, 57.f, -21.f, 1.f);
-	Desc.fFovy = XMConvertToRadians(40.0f);
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
-		return E_FAIL;
-
-	Desc.fFovy = XMConvertToRadians(80.0f);
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
-		return E_FAIL;
-
-	Desc.fFovy = XMConvertToRadians(120.0f);
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWC)))
-		return E_FAIL;
 
 	return S_OK;
 }

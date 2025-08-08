@@ -41,7 +41,7 @@ public:
 	enum class eAnimCategory
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
-		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACKA,CHARGE_ATTACKB,SPRINT_ATTACK,MAINSKILL,SIT,INTERACTION
+		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACKA,CHARGE_ATTACKB,SPRINT_ATTACK,MAINSKILL,SIT,FIRSTDOOR
 	};
 
 protected:
@@ -104,6 +104,11 @@ private: /* 옵저버 관련*/
 	// 스탯 변화 테스트용
 	void Update_Stat();
 
+private: /* [ 상호작용 관련 ] */
+	void Interaction_Door();
+
+	void Play_CutScene_Door();
+
 	
 private: // 슬롯 용
 	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
@@ -143,7 +148,6 @@ private: /* [ 상태 변수 ] */
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
 protected:
-	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	CPhysXController* m_pControllerCom = { nullptr };
 
@@ -159,6 +163,7 @@ private: /* [ 공격관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
 	_bool	m_bBackStepAttack = { false };
 	_bool 	m_bIsChange = { false };
+	_bool	m_bCutsceneDoor = { false };
 
 	_float 	m_fChangeTime = {};
 	_float 	m_fChangeTimeElaped = {};

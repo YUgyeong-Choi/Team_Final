@@ -65,7 +65,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 	SyncTransformWithController();
 
 	/* [ 카메라 세팅 ] */
-	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
 	m_pCamera_Manager = CCamera_Manager::Get_Instance();
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
@@ -120,7 +119,8 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	Update_Stat();
 	Update_Slot();
 
-
+	/* [ 상호작용 ] */
+	Interaction_Door();
 	__super::Priority_Update(fTimeDelta);
 }
 void CPlayer::Update(_float fTimeDelta)
@@ -152,7 +152,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetBool("Charge", true);
 		//m_pAnimator->SetTrigger("StrongAttack");
 		//m_pAnimator->SetInt("Combo", 1);
-		
+		m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 	}
 	if (KEY_PRESSING(DIK_U))
 	{
@@ -465,7 +465,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
-	
+	case eAnimCategory::FIRSTDOOR:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
+
 	default:
 		break;
 	}
@@ -517,8 +523,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Sit") == 0)
 		return eAnimCategory::SIT;
 
-	if (stateName.find("SlidingDoor") == 0 || stateName.find("DoubleDoor") == 0)
-		return eAnimCategory::INTERACTION;
+	if (stateName.find("SlidingDoor") == 0)
+		return eAnimCategory::FIRSTDOOR;
 
 	return eAnimCategory::NONE;
 }
@@ -750,6 +756,44 @@ void CPlayer::Update_Stat()
 	}
 }
 
+void CPlayer::Interaction_Door()
+{
+	if (KEY_DOWN(DIK_E))
+	{
+		_float3 vTriggerCenter = _float3(52.6f, 0.02f, -2.4f);
+		_float fTriggerRadius = 20.f; // 3미터 반경
+
+		// 플레이어 위치에서 거리 계산
+		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+		_float3 vPlayerPos = {
+			XMVectorGetX(vPosition),
+			XMVectorGetY(vPosition),
+			XMVectorGetZ(vPosition)
+		};
+
+		_float fDistSq =
+			powf(vPlayerPos.x - vTriggerCenter.x, 2) +
+			powf(vPlayerPos.y - vTriggerCenter.y, 2) +
+			powf(vPlayerPos.z - vTriggerCenter.z, 2);
+
+		// 거리 조건 검사 (제곱된 거리 비교로 최적화)
+		if (fDistSq <= fTriggerRadius * fTriggerRadius)
+		{
+			if (!m_bCutsceneDoor)
+			{
+				Play_CutScene_Door();
+				m_bCutsceneDoor = true;
+			}
+		}
+	}
+}
+
+void CPlayer::Play_CutScene_Door()
+{	
+	m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::ONE);
+	m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+}
+
 void CPlayer::Callback_UpBelt()
 {
 	m_pGameInstance->Notify(TEXT("Slot_Belts"), _wstring(L"ChangeUpBelt"), m_pBelt_Up);
@@ -849,15 +893,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 {
 	CShadow::SHADOW_DESC Desc{};
 
-	// 1. 카메라 고정 위치 (예: 공중에 떠있는 위치)
-	_vector vFixedEye = XMVectorSet(76.f, 57.f, -21.f, 1.f);
-
-	// 2. 플레이어 현재 위치를 타겟으로 설정
 	_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vTargetEye = vPlayerPos + XMVectorSet(-3.f, 30.f, 0.f, 0.f);
 	_vector vTargetAt = vPlayerPos;
 
-	// 3. 적용
-	m_vShadowCam_Eye = vFixedEye;
+	m_vShadowCam_Eye = vTargetEye;
 	m_vShadowCam_At = vTargetAt;
 
 	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
@@ -865,15 +905,40 @@ HRESULT CPlayer::UpdateShadowCamera()
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 
-	Desc.fFovy = XMConvertToRadians(40.0f);
+	Desc.fFovy = XMConvertToRadians(20.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
 		return E_FAIL;
+
+	vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+	vTargetEye = vPlayerPos + XMVectorSet(-3.f, 40.f, 0.f, 0.f);
+	vTargetAt = vPlayerPos;
+
+	m_vShadowCam_Eye = vTargetEye;
+	m_vShadowCam_At = vTargetAt;
+
+	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
+	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 1000.f;
 	Desc.fFovy = XMConvertToRadians(80.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
 		return E_FAIL;
+
+	vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+	vTargetEye = vPlayerPos + XMVectorSet(-3.f, 60.f, 0.f, 0.f);
+	vTargetAt = vPlayerPos;
+
+	m_vShadowCam_Eye = vTargetEye;
+	m_vShadowCam_At = vTargetAt;
+
+	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
+	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 1000.f;
 	Desc.fFovy = XMConvertToRadians(120.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWC)))
 		return E_FAIL;
+
 
 	return S_OK;
 }

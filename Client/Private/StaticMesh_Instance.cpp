@@ -63,7 +63,6 @@ void CStaticMesh_Instance::Update(_float fTimeDelta)
 
 void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 

@@ -1,0 +1,16 @@
+{
+    "AOIntensity": 1.0,
+    "AOPower": 1.0,
+    "AlbedoTint": [
+        0.7920341491699219,
+        0.8671422004699707,
+        1.0,
+        1.0
+    ],
+    "DiffuseIntensity": 1.0,
+    "MetallicIntensity": 0.3700000047683716,
+    "NormalIntensity": 1.0,
+    "ReflectionIntensity": 0.9200000166893005,
+    "RoughnessIntensity": 0.9599999785423279,
+    "SpecularIntensity": 0.8600000143051147
+}

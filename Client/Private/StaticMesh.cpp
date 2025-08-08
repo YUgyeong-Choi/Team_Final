@@ -74,10 +74,6 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 	
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
-		//_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
-		//CGameObject::Compute_ViewZ(&vTemp);
-
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
 	

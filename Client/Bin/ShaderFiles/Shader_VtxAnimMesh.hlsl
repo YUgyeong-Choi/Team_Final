@@ -120,7 +120,6 @@ struct VS_OUT_SHADOW
     float4 vProjPos : TEXCOORD0;
 };
 
-
 VS_OUT_SHADOW VS_MAIN_SHADOW(VS_IN In)
 {
     VS_OUT_SHADOW Out;
@@ -248,29 +247,65 @@ PS_OUT_NONPICK PS_MAIN_NONPICK(PS_IN In)
     return Out;
 }
 
-struct PS_IN_SHADOW
+struct PS_IN_SHADOW_OLD
 {
     float4 vPosition : SV_POSITION;
     float4 vProjPos : TEXCOORD0;
 };
 
-struct PS_OUT_SHADOW
+struct PS_OUT_SHADOW_OLD
 {
     vector vShadow : SV_TARGET0;    
 };
 
-PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
+PS_OUT_SHADOW_OLD PS_MAIN_SHADOW(PS_IN_SHADOW_OLD In)
 {
-    PS_OUT_SHADOW Out;
+    PS_OUT_SHADOW_OLD Out;
     
     Out.vShadow = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, 0.f);
     
     return Out;
 }
 
+struct PS_IN_SHADOW
+{
+    float4 vPosition : SV_POSITION;
+    float4 vProjPos : TEXCOORD0;
+};
+struct PS_OUT_SHADOW
+{
+    float4 vShadowA : SV_TARGET0;
+    float4 vShadowB : SV_TARGET1;
+    float4 vShadowC : SV_TARGET2;
+};
+
+float4 PS_Cascade0(VS_OUT_SHADOW In) : SV_TARGET0
+{
+    float depthZ = In.vProjPos.z / In.vProjPos.w;
+    float depthW = In.vProjPos.w / 1000.0f;    
+    return float4(depthZ, depthW, 0.f, 0.f);
+}
+
+// SV_TARGET1에만 쓰는 버전
+float4 PS_Cascade1(VS_OUT_SHADOW In) : SV_TARGET1
+{
+    float depthZ = In.vProjPos.z / In.vProjPos.w;
+    float depthW = In.vProjPos.w / 1000.0f;
+    return float4(depthZ, depthW, 0.f, 0.f);
+}
+
+// SV_TARGET2에만 쓰는 버전
+float4 PS_Cascade2(VS_OUT_SHADOW In) : SV_TARGET2
+{
+    float depthZ = In.vProjPos.z / In.vProjPos.w;
+    float depthW = In.vProjPos.w / 1000.0f;
+    //return float4(depthZ, depthW, 0.f, 0.f);
+    return float4(1.f, 0.f, 0.f, 1.f);
+}
+
 technique11 DefaultTechnique
 {   
-    pass Default
+    pass Default // 0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -281,7 +316,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();      
     }
 
-    pass NonPick
+    pass NonPick // 1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -292,7 +327,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_NONPICK();
     }
 
-    pass Shadow
+    pass Shadow // 2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -302,7 +337,35 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
     }
-   
+    pass ShadowPass0 //3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+        PixelShader = compile ps_5_0 PS_Cascade0(); // SV_TARGET0 전용
+    }
+
+    pass ShadowPass1 //4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+        PixelShader = compile ps_5_0 PS_Cascade1(); // SV_TARGET1 전용
+    }
+
+    pass ShadowPass2 //5
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+        PixelShader = compile ps_5_0 PS_Cascade2(); // SV_TARGET2 전용
+    }
    
    
 }
