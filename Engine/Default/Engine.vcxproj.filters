@@ -243,6 +243,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Occlusion_Manager.h">
       <Filter>01.Utility\12.Culling\Occlusion</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Trail.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -461,6 +464,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Occlusion_Manager.cpp">
       <Filter>01.Utility\12.Culling\Occlusion</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Trail.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -706,6 +712,9 @@
     </Filter>
     <Filter Include="01.Utility\12.Culling\Occlusion">
       <UniqueIdentifier>{4cd57423-aff8-4bac-883b-c6786aaaa97f}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Trail">
+      <UniqueIdentifier>{9c984c06-90d2-4f7f-b591-151eca3c4ffa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

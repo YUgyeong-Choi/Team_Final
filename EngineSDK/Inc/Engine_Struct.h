@@ -187,6 +187,17 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXPOS_PARTICLE_INSTANCE;
 
+	typedef struct ENGINE_DLL tagVertexPointTrail
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vPSize;
+		XMFLOAT2		vLifeTime;
+
+
+		static const unsigned int					iNumElements = { 3 };
+		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXPOS_TRAIL;
+
 #pragma region Model_Binary
 
 	typedef struct tagBoneData

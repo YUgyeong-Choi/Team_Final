@@ -6,7 +6,7 @@ CVIBuffer::CVIBuffer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CVIBuffer::CVIBuffer(const CVIBuffer& Prototype)
-	: CComponent{ Prototype }
+	: CComponent( Prototype )
 	, m_pVB { Prototype.m_pVB }
 	, m_pIB { Prototype.m_pIB }
 	, m_iNumVertices { Prototype.m_iNumVertices }

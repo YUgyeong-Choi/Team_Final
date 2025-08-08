@@ -427,6 +427,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTrail.hlsl" />
     <FxCompile Include="Shader_Compute_Particle.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
