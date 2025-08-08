@@ -700,8 +700,8 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	pDesc.InitPos = _float3(85.f, 0.f, -7.5f);
-	pDesc.InitScale = _float3(1.5f, 1.5f, 1.5f);
+	pDesc.InitPos = _float3(87.5f, 0.f, -7.5f);
+	pDesc.InitScale = _float3(2.f, 2.f, 2.f);
 	lstrcpy(pDesc.szName, TEXT("Elite_Police"));
 	pDesc.szMeshID = TEXT("Elite_Police");
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),

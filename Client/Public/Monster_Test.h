@@ -43,6 +43,7 @@ public:
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
+	HRESULT Ready_Weapon();
 
 	void	Add_PartObject();
 	void	RootMotionActive(_float fTimeDelta);
@@ -56,6 +57,7 @@ private: /* [ Setup 함수 ] */
 private:
 
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
+	class CWeapon_Monster* m_pWeapon = {nullptr};
 
 	CGameObject*	m_pTarget = { nullptr };
 	STATE_MONSTER	m_eCurrentState = {};

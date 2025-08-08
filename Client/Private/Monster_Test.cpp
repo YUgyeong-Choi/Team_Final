@@ -1,5 +1,6 @@
 #include "Monster_Test.h"
 #include "GameInstance.h"
+#include "Weapon_Monster.h"
 
 CMonster_Test::CMonster_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUnit{pDevice, pContext}
@@ -37,6 +38,9 @@ HRESULT CMonster_Test::Initialize(void* pArg)
 	LoadAnimDataFromJson();
 
 	if (FAILED(Ready_Actor()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
 
     return S_OK;
@@ -153,6 +157,34 @@ HRESULT CMonster_Test::Ready_Actor()
 	return S_OK;
 }
 
+HRESULT CMonster_Test::Ready_Weapon()
+{
+
+	CWeapon_Monster::WEAPON_DESC Desc{};
+	Desc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.InitPos = { 0.f, 0.f, 0.f };
+	Desc.InitScale = { 1.f, 1.f, 1.f };
+	Desc.iRender = 0;
+
+	Desc.szMeshID = TEXT("Elite_Police_Weapon");
+	lstrcpy(Desc.szName, TEXT("Elite_Police_Weapon"));
+
+	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_R"));
+	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Weapon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Monster_Weapon"), &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pWeapon = dynamic_cast<CWeapon_Monster*>(pGameObject);
+
+
+	return S_OK;
+}
+
 void CMonster_Test::RootMotionActive(_float fTimeDelta)
 {
 
@@ -256,5 +288,6 @@ void CMonster_Test::Free()
     __super::Free();
 
 	Safe_Release(m_pPhysXActorCom);
+	Safe_Release(m_pWeapon);
     
 }
