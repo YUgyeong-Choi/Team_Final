@@ -20,20 +20,20 @@ HRESULT CCamera_Free::Initialize_Prototype()
 
 HRESULT CCamera_Free::Initialize(void* pArg)
 {
-	CCamera::CAMERA_DESC			Desc{};
+	/*CCamera::CAMERA_DESC			Desc{};*/
 
-	Desc.vEye = _float3(0.f, 20.f, -15.f);
+	/*Desc.vEye = _float3(0.f, 20.f, -15.f);
 	Desc.vAt = _float3(0.f, 0.f, 0.f);
 	Desc.fFov = XMConvertToRadians(60.0f);
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
 	Desc.fSpeedPerSec = 10.0f;
-	lstrcpy(Desc.szName, TEXT("Camera"));
+	lstrcpy(Desc.szName, TEXT("Camera"));*/
 
 	m_fSensor = 0.1f;
 
-	if (FAILED(__super::Initialize(&Desc)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -52,7 +52,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		if (m_bSprint)
 			m_pTransformCom->Set_SpeedPreSec(100.f);
 		else if (m_bSlow)
-			m_pTransformCom->Set_SpeedPreSec(5.f);
+			m_pTransformCom->Set_SpeedPreSec(1.f);
 		else
 			m_pTransformCom->Set_SpeedPreSec(10.f);
 

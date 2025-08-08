@@ -354,7 +354,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Bag_03.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Interior_BarCounter_04",
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_BarCounter_04.bin"
@@ -582,7 +582,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_02.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_LightProp_SpotLight_01",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_SpotLight_01.bin"
@@ -756,7 +756,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_04a.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_BlueFairy_04b",
         "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_BlueFairy_04b.bin"
@@ -876,13 +876,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainCarpet_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_TrainCurtain_01",
         "ObjectCount": 23,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainCurtain_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_TrainCurtain_03",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainCurtain_03.bin"

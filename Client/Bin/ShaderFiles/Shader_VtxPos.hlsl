@@ -5,6 +5,7 @@ matrix g_ViewMatrix, g_ProjMatrix, g_WorldMatrix;
 matrix g_WorldMatrixInv;
 matrix g_ProjMatrixInv;
 matrix g_ViewMatrixInv;
+//matrix g_ViewProjMatrixInv; //투영과 뷰의 역행렬을 합친 행렬
 
 Texture2D g_DepthTexture;
 Texture2D g_Texture;
@@ -30,8 +31,8 @@ VS_OUT VS_DECAL(VS_IN In)
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
     
-    float4 ProjPos = mul(vector(In.vPosition, 1.f), matWVP);
-    
+    //float4 ProjPos = mul(vector(In.vPosition, 1.f), matWVP);
+    float4 ProjPos = mul(vector(In.vPosition, 1.f), matWV); //matWV로 하면 이쁘게 보이긴하는데... 카메라가 멀어지면 안보임
     Out.vPosition = ProjPos;
     Out.vTexcoord.x = (ProjPos.x / ProjPos.w) * 0.5f + 0.5f; // -1~1 -> 0~1
     Out.vTexcoord.y = (ProjPos.y / ProjPos.w) * -0.5f + 0.5f; // -1~1 -> 0~1
@@ -48,6 +49,7 @@ PS_OUT PS_DECAL(VS_OUT In)
 {
     PS_OUT Out;
 
+    /* In.vTexcoord 월드 값을 추론할 위치에 고대로 그려져야 하는데 다른데 그려진다. 어떻게해야할까*/
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f; //(Near~Far)
     
@@ -62,9 +64,9 @@ PS_OUT PS_DECAL(VS_OUT In)
     
     vPosition = mul(vPosition, g_ProjMatrixInv); //투영 역행렬
     vPosition = mul(vPosition, g_ViewMatrixInv); //뷰 역행렬
+    //vPosition = mul(vPosition, g_ViewProjMatrixInv); // 뷰와 투영 역행렬을 합친 행렬
     
     //월드로 왔음
-    //vPosition.w = 1.f;
     
     // 데칼 로컬 공간으로 변환
     float3 vLocalPos = mul(float4(vPosition.xyz, 1.f), g_WorldMatrixInv).xyz;
@@ -76,13 +78,13 @@ PS_OUT PS_DECAL(VS_OUT In)
     clip(0.5 - abs(vLocalPos.xyz));
 
     // 텍스처 좌표 계산 (0 ~ 1)
-    //float2 vTexcoord = vLocalPos.xz + 0.5f;
-    //float4 vColor = g_Texture.Sample(DefaultSampler, vTexcoord);
-    //Out.vDecal = vColor;
+    float2 vTexcoord = vLocalPos.xz + 0.5f;
+    float4 vColor = g_Texture.Sample(DefaultSampler, vTexcoord);
+    Out.vDecal = vColor;
     
     // 마젠타 색상으로 고정 출력
-    float4 magentaColor = float4(1.f, 0.f, 1.f, 1.f);
-    Out.vDecal = magentaColor;
+    //float4 magentaColor = float4(1.f, 0.f, 1.f, 1.f);
+    //Out.vDecal = magentaColor;
     
     //Out.vDecal = float4(vPosition.xyz * 0.1f, 1.0f); // 월드 위치 시각화
     
@@ -95,11 +97,13 @@ struct VS_OUT_DEBUG
 };
 
 VS_OUT_DEBUG VS_DEBUG(VS_IN In)
-{
+{ 
     VS_OUT_DEBUG Out;
-    float4 worldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-    Out.vPosition = mul(worldPos, g_ViewMatrix);
-    Out.vPosition = mul(Out.vPosition, g_ProjMatrix);
+    matrix matWV, matWVP;
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+    float4 ProjPos = mul(vector(In.vPosition, 1.f), matWVP);
+    Out.vPosition = ProjPos;
     return Out;
 }
 
