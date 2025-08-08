@@ -504,7 +504,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_ChairSet_04.bin"
     },
     {
-        "Collision": true,
+        "Collision": false,
         "ModelName": "SM_Interior_ChairSet_05",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_ChairSet_05.bin"

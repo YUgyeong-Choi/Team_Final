@@ -85,11 +85,9 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
-void CGameObject::Compute_ViewZ(const _vector* pPos)
+void CGameObject::Compute_ViewZ(_vector pCamPos , const _vector* pTargetPos)
 {
-	_vector vCamPos = XMLoadFloat4(m_pGameInstance->Get_CamPosition());
-
-	_vector vDiff = vCamPos - *pPos;
+	_vector vDiff = pCamPos - *pTargetPos;
 	m_fViewZ = XMVectorGetX(XMVector3Length(vDiff));
 }
 

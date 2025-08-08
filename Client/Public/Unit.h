@@ -38,6 +38,8 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Shadow() override;
+	void SetCascadeShadow();
 
 
 protected: /* [ Setup 함수 ] */
@@ -62,6 +64,9 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
+
+protected: /* [ 플레이어 ] */
+	CGameObject* m_pPlayer = { nullptr };
 
 protected:				/* [ 기본 속성 ] */
 	_int 				m_iHP = 100;
@@ -94,6 +99,8 @@ protected:				/* [ 중력관련 변수 ] */
 	_bool				m_bOnGround = {};
 	PxVec3				m_vVelocity = PxVec3{ 0.f, 0.f, 0.f };
 	_float3				m_vGravityVelocity = _float3{ 0.f, 0.f, 0.f };
+
+	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
 
 public:
 	static CUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

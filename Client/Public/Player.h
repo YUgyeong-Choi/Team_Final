@@ -6,6 +6,7 @@
 NS_BEGIN(Engine)
 class CPhysXController;
 class CPhysXDynamicActor;
+class CAnimController;
 NS_END
 
 NS_BEGIN(Client)
@@ -42,7 +43,7 @@ public:
 	enum class eAnimCategory
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
-		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACKA,CHARGE_ATTACKB,SPRINT_ATTACK,MAINSKILL,SIT,INTERACTION
+		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACKA,CHARGE_ATTACKB,SPRINT_ATTACK,MAINSKILL,SIT,FIRSTDOOR
 	};
 
 protected:
@@ -61,6 +62,11 @@ public:
 public:
 	CPhysXController* Get_Controller() { return m_pControllerCom; }
 	EPlayerState Get_PlayerState() { return m_eCurrentState; }
+
+	CAnimController* GetCurrentAnimContrller();
+
+private:
+	void			SitAnimationMove(_float fTimeDelta);
 
 /* [ 입력 처리 ] */
 private: 
@@ -114,6 +120,11 @@ private: /* 옵저버 관련*/
 	// 스탯 변화 테스트용
 	void Update_Stat();
 
+private: /* [ 상호작용 관련 ] */
+	void Interaction_Door();
+
+	void Play_CutScene_Door();
+
 	
 private: // 슬롯 용
 	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
@@ -153,7 +164,7 @@ private: /* [ 상태 변수 ] */
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
 protected:
-	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 
 	/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
@@ -171,6 +182,7 @@ private: /* [ 공격관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
 	_bool	m_bBackStepAttack = { false };
 	_bool 	m_bIsChange = { false };
+	_bool	m_bCutsceneDoor = { false };
 
 	_float 	m_fChangeTime = {};
 	_float 	m_fChangeTimeElaped = {};
@@ -182,6 +194,8 @@ private: /* [ 이동관련 변수 ] */
 
 	string	 m_strPrevStateName;
 	_bool    m_bMove = {};
+	_bool    m_bSit = {};
+	_float   m_fSitTime = {};
 	_float   m_fMoveTime = {};
 	_int	 m_iMoveStep = {};
 

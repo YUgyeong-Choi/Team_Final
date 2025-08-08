@@ -11,6 +11,7 @@ public:
 	{
 		_float4			vEye, vAt;
 		_float			fFovy, fNear, fFar;
+		_float			fOrthoWidth, fOrthoHeight;
 	}SHADOW_DESC;
 
 private:

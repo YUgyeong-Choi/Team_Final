@@ -122,6 +122,7 @@ void CCamera_Manager::Play_CutScene(CUTSCENE_TYPE cutSceneType)
     SetCutSceneCam();
     m_pCamera_CutScene->Set_CutSceneData(cutSceneType);
     m_pCamera_CutScene->PlayCutScene();
+    m_bStartGame = true;
 }
 
 void CCamera_Manager::SetPlayer(CGameObject* pPlayer)

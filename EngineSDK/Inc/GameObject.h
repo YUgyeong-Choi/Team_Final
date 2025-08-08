@@ -33,7 +33,7 @@ public:
 	virtual HRESULT Render_Shadow() { return S_OK; }
 
 public:
-	void Compute_ViewZ(const _vector* pPos);
+	void Compute_ViewZ(_vector pCamPos, const _vector* pTargetPos);
 public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
