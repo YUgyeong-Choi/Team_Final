@@ -1,4 +1,5 @@
 #include "Effect_Shader_Defines.hlsli"
+vector g_vCamPosition;
 
 struct VS_IN
 {
@@ -99,31 +100,31 @@ struct PS_OUT
 
 PS_OUT PS_MAIN(PS_IN In)
 {
-    PS_OUT Out;    
+    PS_OUT Out;
     
     Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     
-    return Out;    
+    return Out;
 }
 
 technique11 DefaultTechnique
 {
-    pass Default            // 0
+    pass Default // 0
     {
         SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
-        VertexShader = compile vs_5_0 VS_MAIN();    
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();      
+        PixelShader = compile ps_5_0 PS_MAIN();
     }
-    pass SoftEffectOnly     // 1
+    pass SoftEffectOnly // 1
     {
         SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);        
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN_BLEND();
         GeometryShader = NULL;

@@ -1228,7 +1228,6 @@ void CCYTool::Key_Input()
 				newKF.fTrackPosition = static_cast<_float>(m_iCurFrame - *m_pSequence->m_Items[m_iSelected].iStart);
 				m_pSequence->m_Items[m_iSelected].pEffect->Add_KeyFrame(newKF);
 			}
-
 		}
 	}
 }

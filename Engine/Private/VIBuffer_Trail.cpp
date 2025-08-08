@@ -15,7 +15,7 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = m_iMaxNodeCount;
 	m_iVertexStride = sizeof(VTXPOS_TRAIL);
-	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_POINTLIST;
+	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
 
 	D3D11_BUFFER_DESC			VBBufferDesc{};
 	VBBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
@@ -30,13 +30,13 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	VTXPOS_TRAIL* pVertices = new VTXPOS_TRAIL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXPOS_TRAIL) * m_iNumVertices);
 
-	m_pVertexPositions = new _float3[m_iNumVertices];
-	ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iNumVertices);
+	//m_pVertexPositions = new _float3[m_iNumVertices];
+	//ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iNumVertices);
 
 	for (_uint i = 0; i < m_iNumVertices; i++)
 	{
-		pVertices[i].vPosition = _float3(0.f, 0.f, 0.f);
-		m_pVertexPositions[i] = pVertices[i].vPosition;
+		pVertices[i].vInnerPos = _float3(0.f, 0.f, 0.f);
+		//m_pVertexPositions[i] = pVertices[i].vInnerPos;
 	}
 
 	VBInitialData.pSysMem = pVertices;
