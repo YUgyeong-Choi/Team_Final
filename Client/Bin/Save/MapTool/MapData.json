@@ -13046,12 +13046,12 @@
             ]
         },
         {
-            "Collision": true,
+            "Collision": false,
             "ModelName": "SM_Interior_ChairSet_05",
             "ObjectCount": 1,
             "Objects": [
                 {
-                    "ColliderType": 1,
+                    "ColliderType": 0,
                     "WorldMatrix": [
                         [
                             1.0,

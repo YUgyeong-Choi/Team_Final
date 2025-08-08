@@ -124,7 +124,9 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 		// 무시할 자기 자신 액터 설정
 		PxRigidActor* actor = pPlayer->Get_Actor(pPlayer->Get_Controller());
-		CIgnoreSelfCallback callback(actor);
+		unordered_set<PxActor*> ignoreActors;
+		ignoreActors.insert(actor);
+		CIgnoreSelfCallback callback(ignoreActors);
 
 		if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fTargetDist, hit, hitFlags, filterData, &callback))
 		{
@@ -167,8 +169,8 @@ void CCamera_Orbital::Set_InitCam()
 {
 	if (m_pPlayer)
 	{
-		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(0.093079f, -1.587195f));
-		Set_PitchYaw(0.093079f, -1.587195f);
+		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(0.232652f, -1.561575f));
+		Set_PitchYaw(0.232652f, -1.561575f);
 	}
 }
 

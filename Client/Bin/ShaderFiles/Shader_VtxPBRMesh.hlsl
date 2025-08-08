@@ -190,7 +190,7 @@ PS_OUT PS_TOOL_MAIN(PS_IN In)
         discard;
     
     Out.vDiffuse = vMtrlDiffuse;
-    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 500.0f, 0.f, g_fID);
+    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, g_fID);
     
      // 노멀은 -1~1 범위를 0~1로 맵핑해서 컬러로 보기 좋게
     vector vNormal = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -220,7 +220,7 @@ struct PS_OUT_SHADOW
 float4 PS_Cascade0(VS_SHADOW_OUT In) : SV_TARGET0
 {
     float depthZ = In.vProjPos.z / In.vProjPos.w;
-    float depthW = In.vProjPos.w / 500.0f;
+    float depthW = In.vProjPos.w / 1000.0f;
     return float4(depthZ, depthW, 0.f, 0.f);
 }
 
@@ -228,7 +228,7 @@ float4 PS_Cascade0(VS_SHADOW_OUT In) : SV_TARGET0
 float4 PS_Cascade1(VS_SHADOW_OUT In) : SV_TARGET1
 {
     float depthZ = In.vProjPos.z / In.vProjPos.w;
-    float depthW = In.vProjPos.w / 500.0f;
+    float depthW = In.vProjPos.w / 1000.0f;
     return float4(depthZ, depthW, 0.f, 0.f);
 }
 
@@ -236,7 +236,7 @@ float4 PS_Cascade1(VS_SHADOW_OUT In) : SV_TARGET1
 float4 PS_Cascade2(VS_SHADOW_OUT In) : SV_TARGET2
 {
     float depthZ = In.vProjPos.z / In.vProjPos.w;
-    float depthW = In.vProjPos.w / 500.0f;
+    float depthW = In.vProjPos.w / 1000.0f;
     return float4(depthZ, depthW, 0.f, 0.f);
 }
 

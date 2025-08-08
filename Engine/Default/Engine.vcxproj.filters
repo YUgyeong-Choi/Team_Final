@@ -160,9 +160,6 @@
     <ClInclude Include="..\public\Shadow.h">
       <Filter>01.Utility\11.Shadow</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Frustum.h">
-      <Filter>01.Utility\12.Frustum</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\QuadTree.h">
       <Filter>01.Utility\04.Components\VIBuffer\Terrain\QuadTree</Filter>
     </ClInclude>
@@ -240,6 +237,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_VolumeMesh.h">
       <Filter>01.Utility\04.Components\VIBuffer\VolumeMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Frustum.h">
+      <Filter>01.Utility\12.Culling\Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Occlusion_Manager.h">
+      <Filter>01.Utility\12.Culling\Occlusion</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Trail.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -387,9 +393,6 @@
     <ClCompile Include="..\private\Shadow.cpp">
       <Filter>01.Utility\11.Shadow</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Frustum.cpp">
-      <Filter>01.Utility\12.Frustum</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\QuadTree.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Terrain\QuadTree</Filter>
     </ClCompile>
@@ -456,6 +459,15 @@
     <ClCompile Include="..\Private\VIBuffer_VolumeMesh.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\VolumeMesh</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Frustum.cpp">
+      <Filter>01.Utility\12.Culling\Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Occlusion_Manager.cpp">
+      <Filter>01.Utility\12.Culling\Occlusion</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Trail.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -483,7 +495,7 @@
       <UniqueIdentifier>{c5c38433-b538-4e7b-891b-4809c69188f3}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\02.Prototypes">
-      <UniqueIdentifier>{d2429872-c1dd-4c52-8409-10ceab500df6}</UniqueIdentifier>
+      <UniqueIdentifier>{d2429872-c1dd-4c52-8409-10ceab1000df6}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\03.GameObject">
       <UniqueIdentifier>{8542546c-1517-43a4-a3ed-c7e1ed5245ec}</UniqueIdentifier>
@@ -632,9 +644,6 @@
     <Filter Include="01.Utility\11.Shadow">
       <UniqueIdentifier>{2cce6eba-56a5-4a7a-8e9b-937d540f8182}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\12.Frustum">
-      <UniqueIdentifier>{e80e3074-b6f5-4cd1-b625-b0cda6fa648b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\04.Components\VIBuffer\Terrain\QuadTree">
       <UniqueIdentifier>{b7f46b40-83fc-47c0-a502-f9d2a355c7d8}</UniqueIdentifier>
     </Filter>
@@ -695,6 +704,18 @@
     <Filter Include="01.Utility\15.ComputeShader">
       <UniqueIdentifier>{a353a404-6893-4556-a3b6-38194377b18d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\12.Culling">
+      <UniqueIdentifier>{e80e3074-b6f5-4cd1-b625-b0cda6fa648b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\12.Culling\Frustum">
+      <UniqueIdentifier>{b71cbfdd-1a9c-4bc1-b060-5e742cca1891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\12.Culling\Occlusion">
+      <UniqueIdentifier>{4cd57423-aff8-4bac-883b-c6786aaaa97f}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Trail">
+      <UniqueIdentifier>{9c984c06-90d2-4f7f-b591-151eca3c4ffa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">
@@ -709,6 +730,9 @@
       <Filter>01.Utility\98.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimCS.hlsl">
+      <Filter>01.Utility\98.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Occlusion.hlsl">
       <Filter>01.Utility\98.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

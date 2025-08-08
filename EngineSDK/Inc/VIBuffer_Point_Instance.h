@@ -22,7 +22,7 @@ public:
 		_float4			vDirection = {0.f, 1.f, 0.f, 0.f};
 		_bool			isTool = { false };
 	}DESC;
-	
+
 private:
 	CVIBuffer_Point_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CVIBuffer_Point_Instance(const CVIBuffer_Point_Instance& Prototype);

@@ -219,6 +219,12 @@ public:
 	void Reset_All();
 #pragma endregion
 
+#pragma region OCCLUSION_MANAGER
+	void Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX);
+	void End_Occlusion(CGameObject* pObj);
+	_bool IsVisible(CGameObject* pObj) const;
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -236,8 +242,8 @@ private:
 	class CFrustum*				m_pFrustum = { nullptr };
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
-	class CObserver_Manager* m_pObserver_Manager = { nullptr };
-
+	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
+	class COcclusion_Manager*	m_pOcclusion_Manager = { nullptr };
 
 private:
 	_uint					m_iCurrentLevelIndex = 0;

@@ -24,6 +24,10 @@ float g_fIntensity;
 vector g_vCenterColor;
 
 
+/******  WeightedBlend variables  ******/
+float g_fEmissiveIntensity = 0.f;
+float g_fWeightPower = 5.f;
+
 float g_fTime;
 
 

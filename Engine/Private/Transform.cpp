@@ -3,9 +3,7 @@
 #include "Shader.h"
 #include "Navigation.h"
 #include "PhysXController.h"
-
-#include "PhysXController.h"
-
+#include "PhysX_IgnoreSelfCallback.h"
 CTransform::CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent { pDevice, pContext }
 {
@@ -350,7 +348,9 @@ bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir
 
 	if (pPhysXController)
 	{
+		CIgnoreSelfCallback filter(pPhysXController->Get_IngoreActors());
 		PxControllerFilters filters;
+		filters.mFilterCallback = &filter;
 
 		_vector vCurPos = Get_State(STATE::POSITION);
 		_vector vDelta = vNewPos - vCurPos;

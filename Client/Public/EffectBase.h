@@ -17,7 +17,7 @@ class CEffectBase abstract : public CBlendObject, public ISerializable // ºí·»µå
 public:
 	typedef struct tagEffectBaseDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		const _float4x4*	pSocketMatrix = { nullptr };
+		const _float4x4* pSocketMatrix = { nullptr };
 		_int				iTileX = {};
 		_int				iTileY = {};
 		_bool				bBillboard = { true };
@@ -31,9 +31,9 @@ public:
 	// Keyframes
 	typedef struct tagEffectKeyFrame : public Engine::ISerializable
 	{
-		_float3			vScale = {1.f, 1.f, 1.f};
+		_float3			vScale = { 1.f, 1.f, 1.f };
 		_float4			vRotation = { 0.f, 0.f, 0.f, 0.f };
-		_float3			vTranslation = {0.f, 0.f, 0.f};
+		_float3			vTranslation = { 0.f, 0.f, 0.f };
 		_float4			vColor = { 1.f, 1.f, 1.f, 1.f };
 		_float			fIntensity = { 1.f };
 
@@ -68,14 +68,14 @@ protected:
 	virtual HRESULT Ready_Components() PURE;
 
 protected:
-	CShader*		m_pShaderCom = { nullptr };
+	CShader* m_pShaderCom = { nullptr };
 
 	_bool			m_bTextureUsage[TU_END];
-	CTexture*		m_pTextureCom[TU_END] = {nullptr};
+	CTexture* m_pTextureCom[TU_END] = { nullptr };
 	_wstring		m_TextureTag[TU_END];
 
 protected:
-	const _float4x4*	m_pSocketMatrix = { nullptr };
+	const _float4x4* m_pSocketMatrix = { nullptr };
 	_float4x4			m_CombinedWorldMatrix{};
 
 
@@ -93,7 +93,8 @@ protected:
 	_float4				m_vColor = { 1.f, 1.f, 1.f, 1.f };
 	_float				m_fIntensity = {};
 	_float				m_fThreshold = {};
-	_float4				m_vCenterColor = {1.f, 1.f, 1.f, 1.f};
+	_float4				m_vCenterColor = { 1.f, 1.f, 1.f, 1.f };
+	_float				m_fEmissiveIntensity = { 0.f };
 	//_float			m_fUVScrollSpeed = {};
 
 
@@ -131,11 +132,13 @@ public:
 	_bool* Get_Billboard_Ptr() { return &m_bBillboard; }
 	_bool* Get_Animation_Ptr() { return &m_bAnimation; }
 	_bool* Get_FlipUV_Ptr() { return &m_bFlipUV; }
+	_float* Get_EmissiveIntensity_Ptr() { return &m_fEmissiveIntensity; }
 	void Set_TileXY(_int iX, _int iY) { m_iTileX = iX; m_iTileY = iY; }
 	void Set_Billboard(_bool bBillboard) { m_bBillboard = bBillboard; }
 	HRESULT Change_Texture(_wstring strTextureName, TEXUSAGE eTex = TU_DIFFUSE);
 	HRESULT Delete_Texture(TEXUSAGE eTex);
 	void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
+	void Set_RenderGroup(_uint iRG) { m_iRenderGroup = iRG; }
 
 	_float* Get_Threshold() { return &m_fThreshold; }
 	_float4* Get_CenterColor() { return &m_vCenterColor; }

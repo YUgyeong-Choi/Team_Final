@@ -24,6 +24,7 @@ public:
 	void Priority_Update(_float fTimeDelta);
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);
+	void Last_Update(_float fTimeDelta);
 	void Clear(_uint iLevelIndex);
 
 	list<class CGameObject*>& Get_ObjectList(_uint iLevelIndex, const _wstring& strLayerTag);

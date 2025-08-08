@@ -1,5 +1,7 @@
 #include "PhysXController.h"
 #include "GameInstance.h"
+
+#include "PhysX_IgnoreSelfCallback.h"
 CPhysXController::CPhysXController(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CPhysXActor{ pDevice, pContext }
 {
@@ -21,7 +23,7 @@ HRESULT CPhysXController::Initialize(void* pArg)
     return S_OK;
 }
 
-HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMaterial* pMaterial, const PxExtendedVec3& pos, float radius, float height)
+HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMaterial* pMaterial, const PxExtendedVec3& pos, float radius, float height, CPhysXControllerHitReport* pReport)
 {
     PxCapsuleControllerDesc desc;
     desc.material = pMaterial;
@@ -34,6 +36,9 @@ HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMat
     desc.slopeLimit = cosf(PxPi / 4); // 45도
 
     desc.userData = this;
+
+    if (pReport)
+        desc.reportCallback = pReport;
 
     m_pController = pManager->createController(desc);
 
@@ -136,7 +141,9 @@ void CPhysXController::Move(_float fDeltaTime, const PxVec3& vDirection, _float 
 {
     PxVec3 displacement = vDirection * fSpeed * fDeltaTime;
 
+    CIgnoreSelfCallback filter(m_ignoreActors);
     PxControllerFilters filters;
+    filters.mFilterCallback = &filter; 
     PxControllerCollisionFlags result = m_pController->move(displacement, 0.001f, fDeltaTime, filters);
 
     // 예시: 땅에 닿았는지 확인

@@ -76,6 +76,7 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 	{
 		//_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
 		//CGameObject::Compute_ViewZ(&vTemp);
+		//m_pGameInstance->Begin_Occlusion(this, m_pPhysXActorCom);
 
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
@@ -89,6 +90,21 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 	}*/
 
 	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+}
+
+void CStaticMesh::Last_Update(_float fTimeDelta)
+{
+	/*
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	{
+		m_pGameInstance->End_Occlusion(this);
+		if (m_pGameInstance->IsVisible(this))
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		}
+	}
+	*/
 }
 
 HRESULT CStaticMesh::Render()
@@ -112,17 +128,11 @@ HRESULT CStaticMesh::Render()
 				if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_DefaultARM")),
 					TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 					return E_FAIL;
-
-				/*if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
-					return E_FAIL;*/
 				m_bDoOnce = true;
 			}
 
-			if (m_bDoOnce)
-			{
-				if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
-					return E_FAIL;
-			}
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+				return E_FAIL;
 		}
 		
 
@@ -260,8 +270,8 @@ HRESULT CStaticMesh::Ready_Collider()
 		PxMeshScale meshScale(scaleVec);
 
 		PxFilterData filterData{};
-		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		filterData.word0 = WORLDFILTER::FILTER_EFFECTGIB;
+		filterData.word1 = WORLDFILTER::FILTER_EFFECTGIB;
 
 		if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)
 		{

@@ -70,11 +70,11 @@ namespace Engine
 		TYPE				eType;
 		XMFLOAT4			vDirection;
 		XMFLOAT4			vPosition;
-		float				fIntensity;
-		float				fRange;
+		_float				fIntensity;
+		_float				fRange;
 
 		XMFLOAT4			vDiffuse;
-		float				fAmbient;
+		_float				fAmbient;
 		XMFLOAT4			vSpecular;
 
 		_float				fInnerCosAngle;
@@ -83,6 +83,8 @@ namespace Engine
 
 		_float				fFogDensity;
 		_float				fFogCutoff;
+
+		_bool				bIsVolumetric;
 	}LIGHT_DESC;
 
 
@@ -184,6 +186,17 @@ namespace Engine
 		static const unsigned int					iNumElements = { 6 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXPOS_PARTICLE_INSTANCE;
+
+	typedef struct ENGINE_DLL tagVertexPointTrail
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vPSize;
+		XMFLOAT2		vLifeTime;
+
+
+		static const unsigned int					iNumElements = { 3 };
+		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXPOS_TRAIL;
 
 #pragma region Model_Binary
 

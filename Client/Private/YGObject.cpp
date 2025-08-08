@@ -350,7 +350,9 @@ void CYGObject::Ray()
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
-	CIgnoreSelfCallback callback(m_pPhysXActorCom->Get_Actor());
+	unordered_set<PxActor*> ignoreActors;
+	ignoreActors.insert(m_pPhysXActorCom->Get_Actor());
+	CIgnoreSelfCallback callback(ignoreActors);
 
 	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
 	{

@@ -70,6 +70,8 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		/* 빛정보를 쉐이더에 던진다. */
 		if (FAILED(pShader->Bind_RawValue("g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4))))
 			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fLightRange", &m_LightDesc.fRange, sizeof(_float))))
+			return E_FAIL;
 		if (FAILED(pShader->Bind_RawValue("g_fInnerCosAngle", &m_LightDesc.fInnerCosAngle, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(pShader->Bind_RawValue("g_fOuterCosAngle", &m_LightDesc.fOuterCosAngle, sizeof(_float))))
@@ -111,6 +113,9 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
 	/* [ 볼륨메트릭 전용 렌더 ] */
+	if(!m_LightDesc.bIsVolumetric)
+		return S_OK; // 볼륨메트릭이 아닌 라이트는 렌더링하지 않는다.
+
 	_uint iPassIndex = {};
 
 	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
@@ -123,8 +128,20 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	}
 	else if (LIGHT_DESC::TYPE_SPOT == m_LightDesc.eType)
 	{
+		_vector vLightPos = XMLoadFloat4(&m_LightDesc.vPosition);
+		_vector vLightDir = XMVector3Normalize(XMLoadFloat4(&m_LightDesc.vDirection));
+		_float  fRange = 2000.f;
+
+		_vector vFrustumTestPos = vLightPos + vLightDir * (fRange * 0.5f);
+		_float  fFrustumRadius = fRange * 0.5f;
+
+		if (!m_pGameInstance->isIn_Frustum_WorldSpace(vFrustumTestPos, fFrustumRadius))
+			return S_OK;
+
 		/* 빛정보를 쉐이더에 던진다. */
 		if (FAILED(pShader->Bind_RawValue("g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4))))
+			return E_FAIL;		
+		if (FAILED(pShader->Bind_RawValue("g_fLightRange", &m_LightDesc.fRange, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(pShader->Bind_RawValue("g_fInnerCosAngle", &m_LightDesc.fInnerCosAngle, sizeof(_float))))
 			return E_FAIL;
@@ -141,6 +158,10 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	}
 	else
 	{
+		_vector vPosition = XMLoadFloat4(&m_LightDesc.vPosition);
+		if (!m_pGameInstance->isIn_Frustum_WorldSpace(vPosition, 1.f))
+			return S_OK;
+
 		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))
 			return E_FAIL;
 		if (FAILED(pShader->Bind_RawValue("g_fLightRange", &m_LightDesc.fRange, sizeof(_float))))

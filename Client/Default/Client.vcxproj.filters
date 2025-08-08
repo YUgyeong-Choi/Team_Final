@@ -259,9 +259,6 @@
     <Filter Include="02.GameObjects\09.LockOn">
       <UniqueIdentifier>{cb18d279-3e6c-4d95-ad4e-0d35bac05877}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
-      <UniqueIdentifier>{abbca159-0435-45fc-ab65-08cd84a25567}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelYW\YWTool\DecalTool\DecalToolObject">
       <UniqueIdentifier>{9ce5e829-c00c-4460-9c30-cfc0799dbff4}</UniqueIdentifier>
     </Filter>
@@ -310,8 +307,11 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Test">
       <UniqueIdentifier>{756bd14f-6752-4cce-ad10-ecb99a4e60bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\10.Decal">
-      <UniqueIdentifier>{a2ae0d1a-f92b-4332-981d-d6737b0842b6}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
+      <UniqueIdentifier>{abbca159-0435-45fc-ab65-08cd84a25567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Weapon\99. Monster">
+      <UniqueIdentifier>{c592ffc8-b53a-43c4-9123-ad8352b7a2f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -693,8 +693,11 @@
     <ClInclude Include="..\public\Monster_Test.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Decal.h">
-      <Filter>02.GameObjects\10.Decal</Filter>
+    <ClInclude Include="..\public\Monster_Base.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Weapon_Monster.h">
+      <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1050,8 +1053,11 @@
     <ClCompile Include="..\private\Monster_Test.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Decal.cpp">
-      <Filter>02.GameObjects\10.Decal</Filter>
+    <ClCompile Include="..\private\Monster_Base.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon_Monster.cpp">
+      <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1099,6 +1105,9 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPos.hlsl">
       <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTrail.hlsl">
+      <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

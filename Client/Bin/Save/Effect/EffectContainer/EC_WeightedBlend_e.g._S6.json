@@ -1,0 +1,436 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 48,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 7,
+            "ShaderPass": 3,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_LensFlare_01_C_KMH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                1.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 48,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.38268351554870605,
+                        -0.0,
+                        0.9238794445991516
+                    ],
+                    "Scale": [
+                        0.9999988675117493,
+                        1.0,
+                        0.9999988675117493
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.10000000149011612
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 7,
+            "ShaderPass": 3,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_LensFlare_01_C_KMH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.0,
+                1.0,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 48,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        -0.3824581205844879,
+                        -0.0,
+                        0.9239728450775146
+                    ],
+                    "Scale": [
+                        0.9999996423721313,
+                        1.0,
+                        0.9999996423721313
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        -0.10000000149011612
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 7,
+            "ShaderPass": 3,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_LensFlare_01_C_KMH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 48,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_LensFlare_01_C_KMH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                1.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 48,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        1.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.3826834559440613,
+                        -0.0,
+                        0.9238795042037964
+                    ],
+                    "Scale": [
+                        0.9999992847442627,
+                        1.0,
+                        0.9999992847442627
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        1.0,
+                        0.0,
+                        0.10000000149011612
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_LensFlare_01_C_KMH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.0,
+                1.0,
+                1.0
+            ],
+            "Duration": 48,
+            "EffectType": 0,
+            "EndTrack": 48,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        -0.3825240433216095,
+                        -0.0,
+                        0.9239455461502075
+                    ],
+                    "Scale": [
+                        0.9999996423721313,
+                        1.0,
+                        0.9999996423721313
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        1.0,
+                        0.0,
+                        -0.10000000149011612
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_LensFlare_01_C_KMH",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        }
+    ]
+}

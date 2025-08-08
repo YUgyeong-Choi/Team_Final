@@ -84,6 +84,18 @@ void CLayer::Late_Update(_float fTimeDelta)
 	}
 }
 
+void CLayer::Last_Update(_float fTimeDelta)
+{
+	for (auto& pGameObject : m_GameObjects)
+	{
+		if (nullptr != pGameObject)
+		{
+			_float fScaledDelta = pGameObject->Get_TimeScale() * fTimeDelta;
+			pGameObject->Last_Update(fScaledDelta);
+		}
+	}
+}
+
 CGameObject* CLayer::Get_Object(_uint iIndex)
 {
 	if (m_GameObjects.size() <= iIndex)

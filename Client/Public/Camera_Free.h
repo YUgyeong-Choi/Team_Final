@@ -32,6 +32,7 @@ public:
 private:
 	_float				m_fSensor{};
 	_bool				m_bSprint = false;
+	_bool				m_bSlow = false;
 
 	//맵툴에서 프리뷰랑 같이움직여서 불값 하나 추가
 	_bool				m_bMoveable = { true };

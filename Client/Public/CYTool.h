@@ -80,14 +80,16 @@ private:
 	ImGuizmo::OPERATION			m_eOperation = { ImGuizmo::TRANSLATE };
 	ImGuizmo::MODE				m_eMode = { ImGuizmo::WORLD };
 	_int						m_iSelectedKeyframe = { 0 };
+
+	_uint						m_iRenderGroup = ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB);
 #pragma endregion
 
 
 #pragma region BaseEffect
 	// 공통 이펙트 용 변수들
-	_int			m_iSelectedInterpolationType = { 0 };
-	const _char*	m_InterpolationTypes[5] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
-	_bool			m_bAnimateSprite = { false };
+	_int						m_iSelectedInterpolationType = { 0 };
+	const _char*				m_InterpolationTypes[5] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
+	_bool						m_bAnimateSprite = { false };
 
 #pragma endregion
 
@@ -100,8 +102,8 @@ private:
 
 #pragma region Mesh
 	// 메쉬 이펙트 용 변수들
-	vector<string>	m_ModelNames;
-	_int			m_iSelectedModelIdx = { -1 };
+	vector<string>			m_ModelNames;
+	_int					m_iSelectedModelIdx = { -1 };
 #pragma endregion
 
 

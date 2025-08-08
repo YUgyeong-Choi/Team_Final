@@ -24,6 +24,10 @@ public:
     virtual void On_TriggerEnter(CPhysXActor* pOther);
     virtual void On_TriggerExit(CPhysXActor* pOther);
     virtual HRESULT Render() = 0;
+
+    void Add_IngoreActors(PxActor* pActor) { m_ignoreActors.insert(pActor); }
+    unordered_set<PxActor*> Get_IngoreActors() { return m_ignoreActors; }
+
 #ifdef _DEBUG
     // For Debug Render
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
@@ -43,6 +47,9 @@ protected:
 
     // 어떤 콜라이더 타입인지
     COLLIDERTYPE m_eColliderType = COLLIDERTYPE::A;
+
+    // 컨트롤러에서 무시할 자기 Actor 넣는 곳
+    unordered_set<PxActor*> m_ignoreActors;
 
     // For Debug Render
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };

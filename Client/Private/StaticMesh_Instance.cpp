@@ -63,7 +63,6 @@ void CStaticMesh_Instance::Update(_float fTimeDelta)
 
 void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -90,11 +89,11 @@ HRESULT CStaticMesh_Instance::Render()
 				if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_DefaultARM")),
 					TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 					return E_FAIL;
-
-				if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
-					return E_FAIL;
 				m_bDoOnce = true;
 			}
+
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+				return E_FAIL;
 		}
 
 		m_pShaderCom->Begin(0);

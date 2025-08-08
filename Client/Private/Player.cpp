@@ -12,6 +12,7 @@
 #include "PlayerState.h"
 #include "Bayonet.h"
 #include "Weapon.h"
+#include "DH_ToolMesh.h"
 
 #include "Observer_Player_Status.h"
 
@@ -47,6 +48,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
 
+	//if (FAILED(Ready_Lamp()))
+	//	return E_FAIL;
+
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
 
@@ -59,13 +63,17 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
 
 	/* [ 위치 초기화 후 콜라이더 생성 ] */
+	if (FAILED(Ready_Actor()))
+		return E_FAIL;
+
+	/* [ 위치 초기화 후 컨트롤러 생성 (콜라이더 생성 후) ] */
 	if (FAILED(Ready_Controller()))
 		return E_FAIL;
 
 	SyncTransformWithController();
 
 	/* [ 카메라 세팅 ] */
-	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
+	m_pCamera_Manager = CCamera_Manager::Get_Instance();
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
 	/* [ 락온 세팅 ] */
@@ -99,7 +107,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	
 
 	Callback_DownBelt();
-	Callback_UpBelt();
+	Callback_UpBelt();	
 
 	return S_OK;
 }
@@ -108,12 +116,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
-	printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
-
-	// 문여는 컷씬
-	if (KEY_DOWN(DIK_N))
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
 
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
@@ -125,7 +127,8 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	Update_Stat();
 	Update_Slot();
 
-
+	/* [ 상호작용 ] */
+	Interaction_Door();
 	__super::Priority_Update(fTimeDelta);
 }
 void CPlayer::Update(_float fTimeDelta)
@@ -141,11 +144,17 @@ void CPlayer::Update(_float fTimeDelta)
 	HandleInput();
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
+
+
+	Update_Collider_Actor();
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	ItemWeaponOFF(fTimeDelta);
+	SitAnimationMove(fTimeDelta);
 	
 	/* [ 이곳은 애니메이션 실험실입니다. ] */
 	if(KEY_DOWN(DIK_Y))
@@ -154,14 +163,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//string strName = m_pAnimator->GetCurrentAnimName();
 		//m_pAnimator->SetBool("Charge", true);
 		//m_pAnimator->SetTrigger("StrongAttack");
-		m_pAnimator->SetInt("Combo", 1);
-		m_pAnimator->SetTrigger("NormalAttack");
-		
-		//m_pAnimator->SetBool("HasLamp", true);
-		//m_pAnimator->SetTrigger("Hited");
-
-		//m_pAnimator->SetBool("Run", true);
-		//m_pAnimator->SetTrigger("Hited");
+		//m_pAnimator->SetInt("Combo", 1);
+		m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 	}
 	if (KEY_PRESSING(DIK_U))
 	{
@@ -191,10 +194,36 @@ HRESULT CPlayer::Render()
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		m_pGameInstance->Add_DebugComponent(m_pControllerCom);
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif
 
 	return S_OK;
+}
+
+CAnimController* CPlayer::GetCurrentAnimContrller()
+{
+	return m_pAnimator->Get_CurrentAnimController();
+}
+
+void CPlayer::SitAnimationMove(_float fTimeDelta)
+{
+	if (m_pCamera_Manager->Get_StartGame())
+	{
+		m_fSitTime += fTimeDelta;
+		_float  m_fTime = 1.5f;
+		_float  m_fDistance = 0.8f;
+
+		if (!m_bSit)
+		{
+			if (1.7f < m_fSitTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bSit = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+	}
 }
 
 void CPlayer::HandleInput()
@@ -449,6 +478,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
+	case eAnimCategory::FIRSTDOOR:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
 
 	default:
 		break;
@@ -501,8 +536,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Sit") == 0)
 		return eAnimCategory::SIT;
 
-	if (stateName.find("SlidingDoor") == 0 || stateName.find("DoubleDoor") == 0)
-		return eAnimCategory::INTERACTION;
+	if (stateName.find("SlidingDoor") == 0)
+		return eAnimCategory::FIRSTDOOR;
 
 	return eAnimCategory::NONE;
 }
@@ -521,7 +556,6 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 		_vector vScale, vRotQuat, vTrans;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
 
-		PxControllerFilters filters;
 		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
 
 		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
@@ -546,6 +580,10 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 			XMVectorGetZ(finalDelta)
 		};
 
+		CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
+		PxControllerFilters filters;
+		filters.mFilterCallback = &filter; 
+
 		m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
 		SyncTransformWithController();
 		_vector vTmp{};
@@ -561,6 +599,54 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 		_float4 rot;
 		XMStoreFloat4(&rot, vNewRot);
 	}
+}
+
+void CPlayer::Update_Collider_Actor()
+{
+	// 1. 월드 행렬 가져오기
+	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	// 2. 위치 추출
+	_float4 vPos;
+	XMStoreFloat4(&vPos, worldMatrix.r[3]);
+
+	PxVec3 pos(vPos.x, vPos.y, vPos.z);
+	pos.y += 0.5f;
+
+	// 3. 회전 추출
+	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
+	XMFLOAT4 fQuat;
+	XMStoreFloat4(&fQuat, boneQuat);
+	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
+
+	// 4. PhysX Transform 적용
+	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
+
+	// 무기 추가
+}
+
+void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CPlayer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
 }
 
 void CPlayer::ReadyForState()
@@ -618,6 +704,27 @@ HRESULT CPlayer::Ready_Weapon()
 	return S_OK;
 }
 
+HRESULT CPlayer::Ready_Lamp()
+{
+	CDH_ToolMesh::tagDH_ToolDesc Desc{};
+	Desc.eLEVEL = LEVEL::STATIC;
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.iID = 0;
+	Desc.m_vInitPos = { 0.f, 0.f, 0.f };
+	Desc.szMeshID = TEXT("PointLight");
+	lstrcpy(Desc.szName, TEXT("PointLight"));
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ToolMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_ToolMesh", &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pLamp = dynamic_cast<CDH_ToolMesh*>(pGameObject);
+
+	return S_OK;
+}
+
 HRESULT CPlayer::Ready_Components()
 {
 	/* [ 따로 붙일 컴포넌트를 붙여보자 ] */
@@ -627,24 +734,30 @@ HRESULT CPlayer::Ready_Components()
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pControllerCom))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), 
+		TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 HRESULT CPlayer::Ready_Controller()
 {
+	m_pHitReport = new CPhysXControllerHitReport();
+	m_pHitReport->AddIgnoreActor(m_pPhysXActorCom->Get_Actor());
+
 	XMVECTOR S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 
 	PxExtendedVec3 pos(positionVec.x, positionVec.y, positionVec.z);
-	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f);
-	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
-	m_pControllerCom->Set_SimulationFilterData(filterData);
-	m_pControllerCom->Set_QueryFilterData(filterData);
+	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f, m_pHitReport);
 	m_pControllerCom->Set_Owner(this);
 	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
+
+	m_pControllerCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+
 	return S_OK;
 }
 void CPlayer::LoadPlayerFromJson()
@@ -684,6 +797,37 @@ void CPlayer::LoadPlayerFromJson()
 		ifsStates >> rootStates;
 		m_pAnimator->Deserialize(rootStates);
 	}
+}
+
+HRESULT CPlayer::Ready_Actor()
+{
+	// 3. Transform에서 S, R, T 분리
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 3-1. 스케일, 회전, 위치 변환
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+	positionVec += PxVec3{ 0.f,0.5f,0.f };
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.4f, 0.8f);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | FILTER_MONSTERWEAPON; 
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PALYER);
+	m_pPhysXActorCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	return S_OK;
 }
 
 void CPlayer::Callback_HP()
@@ -731,6 +875,60 @@ void CPlayer::Update_Stat()
 		Callback_HP();
 		Callback_Mana();
 		Callback_Stamina();
+	}
+}
+
+void CPlayer::Interaction_Door()
+{
+	if (KEY_DOWN(DIK_E))
+	{
+		_float3 vTriggerCenter = _float3(52.6f, 0.02f, -2.4f);
+		_float fTriggerRadius = 20.f; // 3미터 반경
+
+		// 플레이어 위치에서 거리 계산
+		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+		_float3 vPlayerPos = {
+			XMVectorGetX(vPosition),
+			XMVectorGetY(vPosition),
+			XMVectorGetZ(vPosition)
+		};
+
+		_float fDistSq =
+			powf(vPlayerPos.x - vTriggerCenter.x, 2) +
+			powf(vPlayerPos.y - vTriggerCenter.y, 2) +
+			powf(vPlayerPos.z - vTriggerCenter.z, 2);
+
+		// 거리 조건 검사 (제곱된 거리 비교로 최적화)
+		if (fDistSq <= fTriggerRadius * fTriggerRadius)
+		{
+			if (!m_bCutsceneDoor)
+			{
+				Play_CutScene_Door();
+				m_bCutsceneDoor = true;
+			}
+		}
+	}
+}
+
+void CPlayer::Play_CutScene_Door()
+{	
+	m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::ONE);
+	m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+}
+
+void CPlayer::ItemWeaponOFF(_float fTimeDelta)
+{
+	if (m_bItemSwitch)
+	{
+		m_fItemTime += fTimeDelta;
+
+		if (m_fItemTime >= 2.f)
+		{
+			m_pWeapon->SetbIsActive(true);
+
+			m_bItemSwitch = false;
+			m_fItemTime = 0.f;
+		}
 	}
 }
 
@@ -833,15 +1031,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 {
 	CShadow::SHADOW_DESC Desc{};
 
-	// 1. 카메라 고정 위치 (예: 공중에 떠있는 위치)
-	_vector vFixedEye = XMVectorSet(76.f, 57.f, -21.f, 1.f);
-
-	// 2. 플레이어 현재 위치를 타겟으로 설정
 	_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vTargetEye = vPlayerPos + XMVectorSet(-3.f, 30.f, 0.f, 0.f);
 	_vector vTargetAt = vPlayerPos;
 
-	// 3. 적용
-	m_vShadowCam_Eye = vFixedEye;
+	m_vShadowCam_Eye = vTargetEye;
 	m_vShadowCam_At = vTargetAt;
 
 	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
@@ -849,15 +1043,40 @@ HRESULT CPlayer::UpdateShadowCamera()
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 
-	Desc.fFovy = XMConvertToRadians(40.0f);
+	Desc.fFovy = XMConvertToRadians(20.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
 		return E_FAIL;
+
+	vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+	vTargetEye = vPlayerPos + XMVectorSet(-3.f, 40.f, 0.f, 0.f);
+	vTargetAt = vPlayerPos;
+
+	m_vShadowCam_Eye = vTargetEye;
+	m_vShadowCam_At = vTargetAt;
+
+	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
+	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 1000.f;
 	Desc.fFovy = XMConvertToRadians(80.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
 		return E_FAIL;
+
+	vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+	vTargetEye = vPlayerPos + XMVectorSet(-3.f, 60.f, 0.f, 0.f);
+	vTargetAt = vPlayerPos;
+
+	m_vShadowCam_Eye = vTargetEye;
+	m_vShadowCam_At = vTargetAt;
+
+	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
+	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 1000.f;
 	Desc.fFovy = XMConvertToRadians(120.0f);
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWC)))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -938,8 +1157,10 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
 
 	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
-	PxControllerFilters filters;
 
+	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
+	PxControllerFilters filters;
+	filters.mFilterCallback = &filter; // 필터 콜백 지정
 	PxControllerCollisionFlags collisionFlags =
 		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 	
@@ -981,10 +1202,13 @@ void CPlayer::Free()
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pControllerCom);
+	Safe_Release(m_pPhysXActorCom);
 
 	for (size_t i = 0; i < ENUM_CLASS(EPlayerState::END); ++i)
 		Safe_Delete(m_pStateArray[i]);
 
 	Safe_Release(m_pBelt_Down);
 	Safe_Release(m_pBelt_Up);
+
+	Safe_Delete(m_pHitReport);
 }
