@@ -2,8 +2,9 @@
 
 #include "PxPhysicsAPI.h"
 #include "PhysXActor.h"
-using namespace physx;
+#include <unordered_set>
 
+using namespace physx;
 
 // 컨트롤러 충돌 콜백 전용 클래스
 class CPhysXControllerHitReport : public PxUserControllerHitReport
@@ -12,7 +13,29 @@ public:
     CPhysXControllerHitReport() = default;
     virtual ~CPhysXControllerHitReport() = default;
 
-    // 컨트롤러 vs 액터 충돌
+    // ===== Ignore 관리 =====
+    void AddIgnoreActor(PxActor* actor)
+    {
+        if (actor)
+            m_IgnoreActors.insert(actor);
+    }
+
+    void RemoveIgnoreActor(PxActor* actor)
+    {
+        m_IgnoreActors.erase(actor);
+    }
+
+    void ClearIgnoreActors()
+    {
+        m_IgnoreActors.clear();
+    }
+
+    bool IsIgnored(PxActor* actor) const
+    {
+        return (actor && m_IgnoreActors.find(actor) != m_IgnoreActors.end());
+    }
+
+    // ===== 충돌 콜백 =====
     void onShapeHit(const PxControllerShapeHit& hit) override
     {
         PxRigidActor* pHitActor = hit.actor;
@@ -21,23 +44,29 @@ public:
         if (!pHitActor || !pController)
             return;
 
+        // Ignore 목록에 있으면 무시
+        if (IsIgnored(pHitActor))
+            return;
+
         CPhysXActor* pOther = static_cast<CPhysXActor*>(pHitActor->userData);
         CPhysXActor* pSelf = static_cast<CPhysXActor*>(pController->getActor()->userData);
 
         if (pSelf && pOther)
         {
             pSelf->On_Enter(pOther);
-            // On_Stay/Exit는 사용자 코드에서 추적
         }
     }
 
-    // 컨트롤러 vs 컨트롤러 충돌
     void onControllerHit(const PxControllersHit& hit) override
     {
         PxController* pA = hit.controller;
         PxController* pB = hit.other;
 
         if (!pA || !pB)
+            return;
+
+        // Ignore 목록에 있으면 무시
+        if (IsIgnored(pB->getActor()))
             return;
 
         CPhysXActor* actorA = static_cast<CPhysXActor*>(pA->getActor()->userData);
@@ -50,9 +79,11 @@ public:
         }
     }
 
-    // 컨트롤러 vs 장애물 (옵션 사용 시)
     void onObstacleHit(const PxControllerObstacleHit& hit) override
     {
-        // 기본은 무시. 필요 시 처리 가능.
+        // 필요 시 구현
     }
+
+private:
+    unordered_set<PxActor*> m_IgnoreActors;
 };

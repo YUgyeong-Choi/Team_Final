@@ -21,7 +21,7 @@ HRESULT CPhysXController::Initialize(void* pArg)
     return S_OK;
 }
 
-HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMaterial* pMaterial, const PxExtendedVec3& pos, float radius, float height)
+HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMaterial* pMaterial, const PxExtendedVec3& pos, float radius, float height, CPhysXControllerHitReport* pReport)
 {
     PxCapsuleControllerDesc desc;
     desc.material = pMaterial;
@@ -34,6 +34,9 @@ HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMat
     desc.slopeLimit = cosf(PxPi / 4); // 45µµ
 
     desc.userData = this;
+
+    if (pReport)
+        desc.reportCallback = pReport;
 
     m_pController = pManager->createController(desc);
 

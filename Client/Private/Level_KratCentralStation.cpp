@@ -716,13 +716,13 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
 	CEffectContainer::DESC ECDesc = {};
-	ECDesc.vPresetPosition = { 52.83, 0.09, 1.57 };
+	ECDesc.vPresetPosition = { 52.83f, 0.09f, 1.57f };
 	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
 		MSG_BOX("이펙트 생성 실패");
-	ECDesc.vPresetPosition = { 69.25, -0.22, -8.17 };
+	ECDesc.vPresetPosition = { 69.25f, -0.22f, -8.17f };
 	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
 		MSG_BOX("이펙트 생성 실패");
-	ECDesc.vPresetPosition = { 99.86, 0.64, -13.69 };
+	ECDesc.vPresetPosition = { 99.86f, 0.64f, -13.69f };
 	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
 		MSG_BOX("이펙트 생성 실패");
 	return S_OK;

@@ -37,6 +37,7 @@ namespace Engine
 	{
 		PALYER,
 		TRIGGER,
+		MONSTER,
 		A,
 		B,
 		C,

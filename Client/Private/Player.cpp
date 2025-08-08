@@ -59,6 +59,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
 
 	/* [ 위치 초기화 후 콜라이더 생성 ] */
+	if (FAILED(Ready_Actor()))
+		return E_FAIL;
+
+	/* [ 위치 초기화 후 컨트롤러 생성 (콜라이더 생성 후) ] */
 	if (FAILED(Ready_Controller()))
 		return E_FAIL;
 
@@ -100,9 +104,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	Callback_DownBelt();
 	Callback_UpBelt();
-
-	if (FAILED(Ready_Actor()))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -199,6 +200,7 @@ HRESULT CPlayer::Render()
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		m_pGameInstance->Add_DebugComponent(m_pControllerCom);
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif
 
@@ -529,7 +531,6 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 		_vector vScale, vRotQuat, vTrans;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
 
-		PxControllerFilters filters;
 		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
 
 		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
@@ -553,6 +554,10 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 			XMVectorGetY(finalDelta),
 			XMVectorGetZ(finalDelta)
 		};
+
+		CIgnoreSelfCallback filter(m_pPhysXActorCom->Get_Actor());
+		PxControllerFilters filters;
+		filters.mFilterCallback = &filter; 
 
 		m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
 		SyncTransformWithController();
@@ -684,7 +689,7 @@ HRESULT CPlayer::Ready_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), 
-		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
 
@@ -692,18 +697,16 @@ HRESULT CPlayer::Ready_Components()
 }
 HRESULT CPlayer::Ready_Controller()
 {
+	m_pHitReport = new CPhysXControllerHitReport();
+	m_pHitReport->AddIgnoreActor(m_pPhysXActorCom->Get_Actor());
+
 	XMVECTOR S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 
 	PxExtendedVec3 pos(positionVec.x, positionVec.y, positionVec.z);
-	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f);
-	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
-	m_pControllerCom->Set_SimulationFilterData(filterData);
-	m_pControllerCom->Set_QueryFilterData(filterData);
+	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f, m_pHitReport);
 	m_pControllerCom->Set_Owner(this);
 	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
 	return S_OK;
@@ -1030,8 +1033,13 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
 
 	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
-	PxControllerFilters filters;
 
+	unordered_set<PxActor*> ignoreList;
+	ignoreList.insert(m_pPhysXActorCom->Get_Actor()); // 자기 본체
+	CIgnoreSelfCallback filter(m_pPhysXActorCom->Get_Actor());
+
+	PxControllerFilters filters;
+	filters.mFilterCallback = &filter; // 필터 콜백 지정
 	PxControllerCollisionFlags collisionFlags =
 		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 	
@@ -1080,4 +1088,6 @@ void CPlayer::Free()
 
 	Safe_Release(m_pBelt_Down);
 	Safe_Release(m_pBelt_Up);
+
+	Safe_Delete(m_pHitReport);
 }

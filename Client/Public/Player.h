@@ -1,6 +1,7 @@
 #pragma once
 #include "Unit.h"
 #include "Client_Defines.h"
+#include "PhysX_ControllerReport.h"
 
 NS_BEGIN(Engine)
 class CPhysXController;
@@ -100,10 +101,9 @@ private: /* [ 이동로직 ] */
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Weapon();
 	HRESULT Ready_Components();
+	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
 	void LoadPlayerFromJson();
-
-	HRESULT Ready_Actor();
 
 private: /* 옵저버 관련*/
 	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
@@ -154,9 +154,11 @@ private: /* [ 상태 변수 ] */
 
 protected:
 	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
+
+	/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
-
+	CPhysXControllerHitReport* m_pHitReport = { nullptr };
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
