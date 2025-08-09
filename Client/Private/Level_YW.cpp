@@ -22,8 +22,8 @@ CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_YW::Initialize()
 {
-	if (FAILED(Ready_Layer_TestDecal(TEXT("Layer_TestDecal"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Layer_TestDecal(TEXT("Layer_TestDecal"))))
+		return E_FAIL;*/
 
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;

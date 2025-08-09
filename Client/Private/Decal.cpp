@@ -1,51 +1,53 @@
 #include "GameInstance.h"
 
-#include "DecalToolObject.h"
+#include "Decal.h"
 
-CDecalToolObject::CDecalToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CDecal::CDecal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
 {
 }
 
-CDecalToolObject::CDecalToolObject(const CDecalToolObject& Prototype)
+CDecal::CDecal(const CDecal& Prototype)
 	:CGameObject(Prototype)
 {
 }
 
-HRESULT CDecalToolObject::Initialize_Prototype()
+HRESULT CDecal::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CDecalToolObject::Initialize(void* pArg)
+HRESULT CDecal::Initialize(void* pArg)
 {
+	DECAL_DESC* pDesc = static_cast<DECAL_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//m_pTransformCom->Scaling(1.f, 0.1f, 1.f);
+	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
 	return S_OK;
 }
 
-void CDecalToolObject::Priority_Update(_float fTimeDelta)
+void CDecal::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CDecalToolObject::Update(_float fTimeDelta)
+void CDecal::Update(_float fTimeDelta)
 {
 }
 
-void CDecalToolObject::Late_Update(_float fTimeDelta)
+void CDecal::Late_Update(_float fTimeDelta)
 {
 	//컬링? 인스턴싱?
 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_DECAL, this);
 }
 
-HRESULT CDecalToolObject::Render()
+HRESULT CDecal::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -60,38 +62,38 @@ HRESULT CDecalToolObject::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	if (FAILED(m_pShaderCom->Begin(1)))
-		return E_FAIL;
+	//if (FAILED(m_pShaderCom->Begin(1)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
-		return E_FAIL;
+	//if (FAILED(m_pVIBufferCom->Bind_Buffers()))
+	//	return E_FAIL;
 
-	if (FAILED(m_pVIBufferCom->Render()))
-		return E_FAIL;
+	//if (FAILED(m_pVIBufferCom->Render()))
+	//	return E_FAIL;
 #endif // _DEBUG
 
 	return S_OK;
 }
 
-HRESULT CDecalToolObject::Ready_Components()
+HRESULT CDecal::Ready_Components()
 {
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Shader_VtxPos"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPos"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Blood_ARMT"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Blood_ARMT"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CDecalToolObject::Bind_ShaderResources()
+HRESULT CDecal::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -100,7 +102,7 @@ HRESULT CDecalToolObject::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
@@ -124,26 +126,26 @@ HRESULT CDecalToolObject::Bind_ShaderResources()
 	return S_OK;
 }
 
-CDecalToolObject* CDecalToolObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
+CDecal* CDecal::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
-	CDecalToolObject* pInstance = new CDecalToolObject(pDevice, pContext);
+	CDecal* pInstance = new CDecal(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CDecalToolObject");
+		MSG_BOX("Failed to Created : CDecal");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CDecalToolObject::Clone(void* pArg)
+CGameObject* CDecal::Clone(void* pArg)
 {
-	CDecalToolObject* pInstance = new CDecalToolObject(*this);
+	CDecal* pInstance = new CDecal(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CDecalToolObject");
+		MSG_BOX("Failed to Cloned : CDecal");
 		Safe_Release(pInstance);
 	}
 
@@ -151,7 +153,7 @@ CGameObject* CDecalToolObject::Clone(void* pArg)
 }
 
 
-void CDecalToolObject::Free()
+void CDecal::Free()
 {
 	__super::Free();
 

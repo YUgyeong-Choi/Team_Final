@@ -369,15 +369,15 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Decal()))
-	{
-		MSG_BOX("Render_Decal Failed");
-		return E_FAIL;
-	}
-
 	if (FAILED(Render_PBRMesh()))
 	{
 		MSG_BOX("Render_PBRMesh Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Decal()))
+	{
+		MSG_BOX("Render_Decal Failed");
 		return E_FAIL;
 	}
 
