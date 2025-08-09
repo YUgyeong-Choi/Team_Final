@@ -20,12 +20,16 @@ public:
 private:
     void Traverse(COctree* pNode, CFrustum* pFrustum);
 
+    void Update_Dynamic();
+
 private:
     COctree* m_pRoot = nullptr;
     vector<COctree*> m_vecActivatedNodes;
 
     unordered_map<CGameObject*, COctree*> m_mapObjToNode;
     class CGameInstance* m_pGameInstance = nullptr;
+
+    _float3 m_vLastCamPos;
 public:
     static COctree_Manager* Create();
     virtual void Free() override;

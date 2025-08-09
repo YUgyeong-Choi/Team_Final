@@ -20,7 +20,6 @@
 #include "Sound_Device.h"
 #include "Observer_Manager.h"
 #include "Occlusion_Manager.h"
-#include "Octree_Manager.h"
 IMPLEMENT_SINGLETON(CGameInstance);
 
 static PxDefaultAllocator gAllocator;
@@ -130,12 +129,6 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	m_pOcclusion_Manager->Initialize();
 	*/
 
-	m_pOctree_Manager = COctree_Manager::Create();
-	if (nullptr == m_pOctree_Manager)
-		return E_FAIL;
-	_float3 vWorldMin = { -150.f, -100.f, -150.f };
-	_float3 vWorldMax = { 150.f,  100.f,  150.f };
-	m_pOctree_Manager->Build(vWorldMin, vWorldMax);
 
 	return S_OK;
 }
@@ -156,7 +149,6 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pPipeLine->Update();
 	m_pFrustum->Transform_ToWorldSpace();
-	m_pOctree_Manager->CollectVisibleObjects(m_pFrustum);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 	m_pLevel_Manager->Late_Update(fTimeDelta);
@@ -823,12 +815,6 @@ _bool CGameInstance::IsVisible(CGameObject* pObj) const
 }
 #pragma endregion
 
-#pragma region OCTREE_MANAGER
-COctree* CGameInstance::Octree_Insert(CGameObject* pObj, const _float3& objMin, const _float3& objMax)
-{
-	return m_pOctree_Manager->Insert(pObj, objMin, objMax);
-}
-#pragma endregion
 
 void CGameInstance::Release_Engine()
 {
@@ -870,7 +856,6 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pOcclusion_Manager);
 
-	Safe_Release(m_pOctree_Manager);
 
 	Destroy_Instance();
 }

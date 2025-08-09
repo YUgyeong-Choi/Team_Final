@@ -5,7 +5,6 @@
 /* 엔진 개발자가 클라개밫자에게 보여주고싶은 함수를 ... */
 #include "Prototype_Manager.h"
 #include "Shadow.h"
-#include "Octree.h"
 NS_BEGIN(Engine)
 
 
@@ -225,10 +224,6 @@ public:
 	_bool IsVisible(CGameObject* pObj) const;
 #pragma endregion
 
-#pragma region OCTREE_MANAGER
-	COctree* Octree_Insert(CGameObject* pObj, const _float3& objMin, const _float3& objMax);
-#pragma endregion
-
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -248,7 +243,6 @@ private:
 	class CSound_Device*		m_pSound_Device = { nullptr };
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
 	class COcclusion_Manager*	m_pOcclusion_Manager = { nullptr };
-	class COctree_Manager*		m_pOctree_Manager = { nullptr };
 private:
 	_uint					m_iCurrentLevelIndex = 0;
 	float m_fTimeScale = 1.f; // 업데이트 속도

@@ -247,12 +247,6 @@
     <ClInclude Include="..\Public\VIBuffer_Trail.h">
       <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Octree.h">
-      <Filter>01.Utility\12.Culling\Octree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Octree_Manager.h">
-      <Filter>01.Utility\12.Culling\Octree\Manager</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -473,12 +467,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Trail.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Octree.cpp">
-      <Filter>01.Utility\12.Culling\Octree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Octree_Manager.cpp">
-      <Filter>01.Utility\12.Culling\Octree\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -72,8 +72,6 @@ private:
 
 private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
-private:
-	COctree* m_pMyNode = nullptr;
 protected:
 
 	CShader*		m_pShaderCom = { nullptr };
