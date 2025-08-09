@@ -30,6 +30,9 @@ private:
 	void Control(_float fTimeDelta);
 
 private:
+	void Render_CellList();
+
+private:
 	void Make_Clockwise(_float3* Points);
 
 private:

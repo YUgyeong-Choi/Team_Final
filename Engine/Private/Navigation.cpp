@@ -218,7 +218,20 @@ HRESULT CNavigation::Add_Cell(const _float3* pPoints)
 
 HRESULT CNavigation::Delete_Cell()
 {
+	if (m_iIndex == -1)
+		return S_OK;
+
+	Safe_Release(m_Cells[m_iIndex]);
+
 	m_Cells.erase(m_Cells.begin() + m_iIndex);
+	//삭제된 셀의 뒤 쪽 셀들의 인덱스를 앞당겨야한다.
+	for (auto iter = m_Cells.begin() + m_iIndex; iter != m_Cells.end(); ++iter)
+	{
+		_int iIndex = (*iter)->Get_Index();
+		(*iter)->Set_Index(--iIndex);
+	}
+
+	m_iIndex = -1;
 
 	if (FAILED(SetUp_Neighbors()))
 		return E_FAIL;
@@ -264,48 +277,41 @@ HRESULT CNavigation::Render()
 
 	_float4		vColor = {};
 
-	_int* pNeighborIndices = nullptr;
-	if (m_iIndex != -1)
-	{
-		pNeighborIndices = m_Cells[m_iIndex]->Get_NeighborIndices();
-	}
+	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+	vColor = _float4(0.f, 1.f, 0.f, 1.f);
+	m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
+	m_pShader->Begin(0);
 
+	//모두다 초록색으로 출력
 	for (auto& pCell : m_Cells)
 	{
 		//선택된 거랑 같으면 제외
 		if (pCell->Get_Index() == m_iIndex)
 		{
+			pCell->Get_NeighborIndices();
 			continue;
 		}
 
-		//선택된 셀의 이웃인지 검사
-		for (_int i = 0; i < CCell::LINE_END; ++i)
-		{
-			if (pNeighborIndices && pNeighborIndices[i] == pCell->Get_Index())
-			{
-				_float4x4		WorldMatrix = m_WorldMatrix;
-				WorldMatrix.m[3][1] += 0.1f;
-
-				m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
-
-				vColor = _float4(0.f, 0.f, 1.f, 1.f); // 이웃은 파란색
-				break;
-			}
-			else
-			{
-				m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
-				vColor = _float4(0.f, 1.f, 0.f, 1.f); // 기본은 초록색
-
-			}
-		}
-
-		m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
-		m_pShader->Begin(0);
 		pCell->Render();
 	}
 
 	if (m_iIndex != -1)
 	{
+		//이웃 파란색으로
+		_int* pNeighborIndices = m_Cells[m_iIndex]->Get_NeighborIndices();
+
+		for (_int i = 0; i < 3; ++i)
+		{
+			if (pNeighborIndices[i] != -1)
+			{
+				vColor = _float4(0.f, 0.f, 1.f, 1.f);
+				m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
+				m_pShader->Begin(0);
+				m_Cells[pNeighborIndices[i]]->Render();
+
+			}
+		}
+
 		/*_float4x4		WorldMatrix = m_WorldMatrix;
 		WorldMatrix.m[3][1] += 0.1f;
 
@@ -319,11 +325,7 @@ HRESULT CNavigation::Render()
 		m_pShader->Begin(0);
 
 		m_Cells[m_iIndex]->Render();
-
-
-		//선택된 것의 이웃을 파란색으로
 	}
-
 
 	return S_OK;
 }
@@ -334,6 +336,8 @@ HRESULT CNavigation::SetUp_Neighbors()
 {
 	for (auto& pSourCell : m_Cells)
 	{
+		pSourCell->Clear_Neighbors();
+
 		for (auto& pDestCell : m_Cells)
 		{
 			if (pSourCell == pDestCell)

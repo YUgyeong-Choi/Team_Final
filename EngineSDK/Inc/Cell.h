@@ -20,20 +20,36 @@ public:
 		return XMLoadFloat3(&m_vPoints[ePoint]);
 	}
 
+	void Clear_Neighbors() {
+
+		for (_int i = 0; i < LINE_END; ++i)
+		{
+			m_iNeighborIndices[i] = -1;
+		}
+	}
+
 public:
 	void Set_Neighbor(LINE eLine, CCell* pCell) {
 		m_iNeighborIndices[eLine] = pCell->m_iIndex;
-		m_pNeighbor[eLine] = pCell;
+		//m_pNeighbors[eLine] = pCell;
 	}
 
 	_int Get_Index() const {
 		return m_iIndex;
 	}
 
+	void Set_Index(_int iIndex) {
+		m_iIndex = iIndex;
+	}
+
 	//이웃의 인덱스를 반환한다.
 	_int* Get_NeighborIndices() {
 		return m_iNeighborIndices;
 	}
+
+	//CCell** Get_Neighbors() {
+	//	return m_pNeighbors;
+	//}
 
 public:
 	HRESULT Initialize(const _float3* pPoints, _int iIndex);
@@ -54,7 +70,7 @@ private:
 	_float3			m_vPoints[POINT_END] = {};
 	_float3			m_vNormals[LINE_END] = {};
 	_int			m_iNeighborIndices[LINE_END] = { -1, -1, -1 };
-	CCell*			m_pNeighbor[LINE_END] = { nullptr, nullptr, nullptr };
+	//CCell*			m_pNeighbors[LINE_END] = { nullptr, nullptr, nullptr };
 	_int			m_iIndex = {};
 
 #ifdef _DEBUG

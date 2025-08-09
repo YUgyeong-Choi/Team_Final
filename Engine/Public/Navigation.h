@@ -42,6 +42,19 @@ public:
 public:
 	HRESULT Save();
 
+public:
+	vector<class CCell*>& Get_Cells() {
+		return m_Cells;
+	}
+
+	_int Get_Index() {
+		return m_iIndex;
+	}
+
+	void Set_Index(_int iIndex) {
+		m_iIndex = iIndex;
+	}
+
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render() override;

@@ -1,6 +1,7 @@
 #include "GameInstance.h"
 
 #include "NavTool.h"
+#include "Cell.h"
 
 CNavTool::CNavTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CYWTool(pDevice, pContext)
@@ -53,9 +54,7 @@ HRESULT CNavTool::Render()
 
 HRESULT	CNavTool::Render_ImGui()
 {
-	ImGui::Begin("Nav Tool", nullptr);
-
-	ImGui::End();
+	Render_CellList();
 
 	return S_OK;
 }
@@ -95,6 +94,11 @@ void CNavTool::Control(_float fTimeDelta)
 		}
 	}
 
+	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
+	{
+		m_pNavigationCom->Delete_Cell();
+	}
+
 	//Ctrl + 클릭(점 찍기)
 	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
 	{
@@ -114,6 +118,47 @@ void CNavTool::Control(_float fTimeDelta)
 			}
 		}
 	}
+
+}
+
+void CNavTool::Render_CellList()
+{
+	if (ImGui::Begin("Nav Tool"))
+	{
+		// 테이블로 표시 (ImGui 1.80+)
+		if (ImGui::BeginTable("CellList", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+		{
+			ImGui::TableSetupColumn("Index");
+			ImGui::TableSetupColumn("Neighbor Count");
+			ImGui::TableHeadersRow();
+
+			for (size_t i = 0; i < m_pNavigationCom->Get_Cells().size(); ++i)
+			{
+				ImGui::TableNextRow();
+
+				// Index 셀
+				ImGui::TableSetColumnIndex(0);
+				bool isSelected = (m_pNavigationCom->Get_Index() == static_cast<_int>(i));
+				if (ImGui::Selectable(std::to_string(i).c_str(), isSelected, ImGuiSelectableFlags_SpanAllColumns))
+				{
+					m_pNavigationCom->Set_Index(static_cast<_int>(i)); // 클릭 시 선택
+				}
+
+				// Neighbor Count 셀
+				ImGui::TableSetColumnIndex(1);
+				int neighborCount = 0;
+				for (int n = 0; n < 3; ++n)
+				{
+					if (m_pNavigationCom->m_Cells[i]->Get_Neighbors()[n])
+						neighborCount++;
+				}
+				ImGui::Text("%d", neighborCount);
+			}
+
+			ImGui::EndTable();
+		}
+	}
+	ImGui::End();
 
 }
 
