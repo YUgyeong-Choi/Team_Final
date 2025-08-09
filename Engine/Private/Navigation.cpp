@@ -188,6 +188,38 @@ HRESULT CNavigation::Select_Cell(_fvector vWorldPos)
 	return E_FAIL;
 }
 
+HRESULT CNavigation::Snap(_float3* vWorldPos, _float fSnapThreshold)
+{
+	_float fMinDist = FLT_MAX;
+	_vector fMinDistPoint = {};
+
+	for (CCell* pCell : m_Cells)
+	{
+		for (_int i = 0; i < CCell::POINT_END; ++i)
+		{
+			_vector vPoint = pCell->Get_Point(static_cast<CCell::POINT>(i));
+
+			_float fDist = XMVectorGetX(XMVector3Length(XMLoadFloat3(vWorldPos) - vPoint));
+
+			if (fDist < fSnapThreshold && fDist < fMinDist)
+			{
+				fMinDist = fDist;
+				fMinDistPoint = vPoint;
+			}
+		}
+	}
+
+	if (fMinDist != FLT_MAX)
+	{
+		XMStoreFloat3(vWorldPos, fMinDistPoint);
+
+		return S_OK;
+	}
+
+
+	return E_FAIL;
+}
+
 _float CNavigation::Compute_NavigationY(const _vector pTransform)
 {
 	_matrix		WorldMatrixInv = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));

@@ -39,6 +39,9 @@ public:
 	//월드포지션으로 셀을 선택한다.
 	HRESULT Select_Cell(_fvector vWorldPos);
 
+	//가장 가까운 점으로 스냅해준다.(fDist보다 가까울 경우만)
+	HRESULT Snap(_float3* vWorldPos, _float fSnapThreshold);
+
 public:
 	HRESULT Save();
 

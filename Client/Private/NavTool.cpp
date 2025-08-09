@@ -94,6 +94,7 @@ void CNavTool::Control(_float fTimeDelta)
 		}
 	}
 
+	//셀 삭제
 	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
 	{
 		m_pNavigationCom->Delete_Cell();
@@ -102,64 +103,73 @@ void CNavTool::Control(_float fTimeDelta)
 	//Ctrl + 클릭(점 찍기)
 	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
 	{
-		_float4 WorldPos = {};
-		if (m_pGameInstance->Picking(&WorldPos))
-		{
-			_float3 Point = { WorldPos.x, WorldPos.y, WorldPos.z };
-			m_Points.push_back(Point);
-
-			if (m_Points.size() == 3)
-			{
-				Make_Clockwise(m_Points.data());
-
-				if (FAILED(m_pNavigationCom->Add_Cell(m_Points.data())))
-					return;
-				m_Points.clear();
-			}
-		}
+		Add_Point();	
 	}
 
 }
 
 void CNavTool::Render_CellList()
 {
-	if (ImGui::Begin("Nav Tool"))
+	if (ImGui::Begin("Cell List"))
 	{
-		// 테이블로 표시 (ImGui 1.80+)
-		if (ImGui::BeginTable("CellList", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+		for (size_t i = 0; i < m_pNavigationCom->Get_Cells().size(); ++i)
 		{
-			ImGui::TableSetupColumn("Index");
-			ImGui::TableSetupColumn("Neighbor Count");
-			ImGui::TableHeadersRow();
-
-			for (size_t i = 0; i < m_pNavigationCom->Get_Cells().size(); ++i)
+			bool isSelected = (m_pNavigationCom->Get_Index() == static_cast<_int>(i));
+			if (ImGui::Selectable(std::to_string(i).c_str(), isSelected))
 			{
-				ImGui::TableNextRow();
-
-				// Index 셀
-				ImGui::TableSetColumnIndex(0);
-				bool isSelected = (m_pNavigationCom->Get_Index() == static_cast<_int>(i));
-				if (ImGui::Selectable(std::to_string(i).c_str(), isSelected, ImGuiSelectableFlags_SpanAllColumns))
-				{
-					m_pNavigationCom->Set_Index(static_cast<_int>(i)); // 클릭 시 선택
-				}
-
-				// Neighbor Count 셀
-				ImGui::TableSetColumnIndex(1);
-				int neighborCount = 0;
-				for (int n = 0; n < 3; ++n)
-				{
-					if (m_pNavigationCom->m_Cells[i]->Get_Neighbors()[n])
-						neighborCount++;
-				}
-				ImGui::Text("%d", neighborCount);
+				m_pNavigationCom->Set_Index(static_cast<_int>(i));
 			}
-
-			ImGui::EndTable();
 		}
 	}
 	ImGui::End();
 
+
+}
+
+void CNavTool::Add_Point()
+{
+	_float4 WorldPos = {};
+	if (m_pGameInstance->Picking(&WorldPos))
+	{
+		_float3 NewPoint = { WorldPos.x, WorldPos.y, WorldPos.z };
+
+		//이 포인트를 스냅해야한다.
+		//모든 셀을 순회하여 가장 가까운 점으로 변경
+
+		//처음 그리는 셀이면 스냅 기능 끄기
+		if (m_pNavigationCom->Get_Cells().size() != 0)
+		{
+			//스냅
+			m_pNavigationCom->Snap(&NewPoint, 1.f);
+		}
+
+		//모두 스냅하되 일정 거리 이하로 가까워 졌을 때만(스냅할 때 같은점이 들어오면 안됨)
+		for (_float3& Point : m_Points)
+		{
+			if (XMVector3NearEqual(XMLoadFloat3(&Point), XMLoadFloat3(&NewPoint), XMVectorReplicate(0.0001f)))
+			{
+				MSG_BOX("이미 같은 점 있음");
+				return;
+			}
+
+		}
+
+
+		m_Points.push_back(NewPoint);
+
+		if (m_Points.size() == 3)
+		{
+			Make_Clockwise(m_Points.data());
+
+			if (FAILED(m_pNavigationCom->Add_Cell(m_Points.data())))
+			{
+				MSG_BOX("셀 추가 실패");
+				return;
+			}
+				
+			m_Points.clear();
+		}
+	}
 }
 
 void CNavTool::Make_Clockwise(_float3* Points)

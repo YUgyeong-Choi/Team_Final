@@ -33,6 +33,10 @@ private:
 	void Render_CellList();
 
 private:
+	//포인트 추가
+	void Add_Point();
+	
+	//포인트들을 시계방향으로 정렬
 	void Make_Clockwise(_float3* Points);
 
 private:
