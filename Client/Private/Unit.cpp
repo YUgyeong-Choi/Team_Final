@@ -218,8 +218,7 @@ void CUnit::RayCast(CPhysXActor* actor)
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
-	unordered_set<PxActor*> ignoreActors;
-	ignoreActors.insert(actor->Get_Actor());
+	unordered_set<PxActor*> ignoreActors = actor->Get_IngoreActors();
 	CIgnoreSelfCallback callback(ignoreActors);
 
 	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))

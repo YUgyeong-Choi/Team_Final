@@ -41,13 +41,16 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         m_bStartLockOn = false;
     }
 
+    PxVec3 hitPos = PxVec3();
+    _bool bHit = false;
+
     if (m_bActive)
     {
         wprintf(L"LockOnTarget: %s\n", m_pBestTarget->Get_Name().c_str());
 
-        _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,5.f,0.f,0.f };
+        _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
-        _vector targetPos = m_pBestTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,5.f,0.f,0.f };
+        _vector targetPos = m_pBestTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
         PxVec3 origin = VectorToPxVec3(playerPos);
         PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
@@ -60,12 +63,10 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
         CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
-        unordered_set<PxActor*> ignoreActors;
-        ignoreActors.insert(pPlayer->Get_Actor(pPlayer->Get_Controller()));
+        unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
         CIgnoreSelfCallback callback(ignoreActors);
 
         bool bRemove = false;
-
         // 레이캐스트 수행
         if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
         {
@@ -79,10 +80,9 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
                     // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
                     bRemove = true;
                 }
-                else
-                {
-                    _int a = 10;
-                }
+
+                bHit = true;
+                hitPos = hit.block.position;
             }
             else
             {
@@ -90,12 +90,30 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
                 bRemove = true;
             }
         }
+        else
+        {
+            bRemove = true;
+        }
+
         if (bRemove)
         {
             m_bActive = false;
             m_pBestTarget = nullptr;
         }
 
+#ifdef _DEBUG
+        if (m_pGameInstance->Get_RenderCollider()) {
+            DEBUGRAY_DATA _data{};
+
+            _data.vStartPos = origin;
+            _data.vDirection = direction;
+            _data.fRayLength = 10.f;
+            _data.bIsHit = bHit;
+            _data.vHitPos = hitPos;
+            pPlayer->Get_Controller()->Add_RenderRay(_data);
+        }
+
+#endif
     }
 
     return S_OK;
@@ -103,12 +121,12 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
 void CLockOn_Manager::CheckBehindWall()
 {
-    _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,5.f,0.f,0.f };
+    _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
     for (size_t i = 0; i < m_vecTarget.size(); )
     {
         CGameObject* pTarget = m_vecTarget[i];
-        _vector targetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,5.f,0.f,0.f };
+        _vector targetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
         PxVec3 origin = VectorToPxVec3(playerPos);
         PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
@@ -121,8 +139,7 @@ void CLockOn_Manager::CheckBehindWall()
         filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
         CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
-        unordered_set<PxActor*> ignoreActors;
-        ignoreActors.insert(pPlayer->Get_Actor(pPlayer->Get_Controller()));
+        unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
         CIgnoreSelfCallback callback(ignoreActors);
 
         bool bRemove = false;
@@ -147,6 +164,10 @@ void CLockOn_Manager::CheckBehindWall()
                 bRemove = true;
             }
         }
+        else
+        {
+            bRemove = true;
+        } 
 
         if (bRemove)
             m_vecTarget.erase(m_vecTarget.begin() + i);
