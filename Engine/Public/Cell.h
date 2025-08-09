@@ -23,6 +23,16 @@ public:
 public:
 	void Set_Neighbor(LINE eLine, CCell* pCell) {
 		m_iNeighborIndices[eLine] = pCell->m_iIndex;
+		m_pNeighbor[eLine] = pCell;
+	}
+
+	_int Get_Index() const {
+		return m_iIndex;
+	}
+
+	//이웃의 인덱스를 반환한다.
+	_int* Get_NeighborIndices() {
+		return m_iNeighborIndices;
 	}
 
 public:
@@ -44,6 +54,7 @@ private:
 	_float3			m_vPoints[POINT_END] = {};
 	_float3			m_vNormals[LINE_END] = {};
 	_int			m_iNeighborIndices[LINE_END] = { -1, -1, -1 };
+	CCell*			m_pNeighbor[LINE_END] = { nullptr, nullptr, nullptr };
 	_int			m_iIndex = {};
 
 #ifdef _DEBUG

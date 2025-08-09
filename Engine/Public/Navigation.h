@@ -26,8 +26,21 @@ public:
 	_bool isMove(_fvector vWorldPos);
 	_vector SetUp_Height(_fvector vWorldPos);
 
+
 public:
 	_float Compute_NavigationY(const _vector pTransform);
+
+public:
+	HRESULT Add_Cell(const _float3* pPoints);
+	
+	//선택된 셀을 삭제한다.
+	HRESULT Delete_Cell();
+
+	//월드포지션으로 셀을 선택한다.
+	HRESULT Select_Cell(_fvector vWorldPos);
+
+public:
+	HRESULT Save();
 
 #ifdef _DEBUG
 public:

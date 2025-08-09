@@ -30,6 +30,13 @@ private:
 	void Control(_float fTimeDelta);
 
 private:
+	void Make_Clockwise(_float3* Points);
+
+private:
+	//삼각형 만들기 위한 포인트
+	vector<_float3> m_Points;
+
+private:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 private:

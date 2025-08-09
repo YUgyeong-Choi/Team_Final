@@ -39,7 +39,7 @@ void CNavTool::Update(_float fTimeDelta)
 
 void CNavTool::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
 }
 
 HRESULT CNavTool::Render()
@@ -65,12 +65,69 @@ void CNavTool::Control(_float fTimeDelta)
 	if (GetForegroundWindow() != g_hWnd)
 		return;
 
-	//Ctrl + S 맵 저장
-	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	//Test T
+	if (m_pGameInstance->Key_Down(DIK_T))
 	{
-		
+		/*if (FAILED(m_pNavigationCom->Set_Index(1)))
+			return;*/
 	}
 
+	//Ctrl + S 저장
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	{
+		if (FAILED(m_pNavigationCom->Save()))
+		{
+			MSG_BOX("네비게이션 저장 실패");
+		}
+		else
+		{
+			MSG_BOX("네비게이션 저장 성공");
+		}
+	}
+
+	//셀 선택
+	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+	{
+		_float4 WorldPos = {};
+		if (m_pGameInstance->Picking(&WorldPos))
+		{
+			m_pNavigationCom->Select_Cell(XMLoadFloat4(&WorldPos));
+		}
+	}
+
+	//Ctrl + 클릭(점 찍기)
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+	{
+		_float4 WorldPos = {};
+		if (m_pGameInstance->Picking(&WorldPos))
+		{
+			_float3 Point = { WorldPos.x, WorldPos.y, WorldPos.z };
+			m_Points.push_back(Point);
+
+			if (m_Points.size() == 3)
+			{
+				Make_Clockwise(m_Points.data());
+
+				if (FAILED(m_pNavigationCom->Add_Cell(m_Points.data())))
+					return;
+				m_Points.clear();
+			}
+		}
+	}
+
+}
+
+void CNavTool::Make_Clockwise(_float3* Points)
+{
+	_vector AB =  XMLoadFloat3(&Points[1]) - XMLoadFloat3(&Points[0]);
+	_vector AC = XMLoadFloat3(&Points[2]) - XMLoadFloat3(&Points[0]);
+	_vector normal = XMVector3Cross(AB, AC);
+
+	// Y축 (0,1,0) 기준 내적
+	if (XMVectorGetX(XMVector3Dot(normal, { 0.f, 1.f, 0.f })) < 0)
+	{
+		swap(Points[1], Points[2]);
+	}
 }
 
 HRESULT CNavTool::Ready_Components()

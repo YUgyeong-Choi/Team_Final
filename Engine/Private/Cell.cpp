@@ -45,7 +45,9 @@ _bool CCell::isIn(_fvector vLocalPos, _int* pNeighborIndex)
 
 		if (0 < XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDir), XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])))))
 		{
-			*pNeighborIndex = m_iNeighborIndices[i];
+			if(pNeighborIndex)
+				*pNeighborIndex = m_iNeighborIndices[i];
+
 			return false;
 		}
 			
