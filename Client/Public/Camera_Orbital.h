@@ -41,6 +41,7 @@ public:
 	_float Get_Yaw() { return m_fYaw; }
 
 	_matrix Get_OrbitalWorldMatrix(_float pitch, _float yaw);
+	void Set_OrbitalPosBackLookFront();
 private:
 	_float			m_fMouseSensor = { };
 

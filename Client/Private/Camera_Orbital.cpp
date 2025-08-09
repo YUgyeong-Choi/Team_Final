@@ -210,6 +210,26 @@ _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 	return matWorld;
 }
 
+void CCamera_Orbital::Set_OrbitalPosBackLookFront()
+{
+	// 플레이어의 현재 forward
+	XMVECTOR L = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
+
+	// 뒤쪽(카메라가 위치할 방향)
+	XMVECTOR B = -L;
+
+	const _float bx = XMVectorGetX(B);
+	const _float by = XMVectorGetY(B);
+	const _float bz = XMVectorGetZ(B);
+
+	// 월드(Y-up) 기준 오비탈 각도 (너의 구면좌표식과 일치)
+	m_fYaw = atan2f(bx, bz);                                   // 수평각
+	m_fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));                 // 수직각
+
+	// 살짝 위에서 보이게 10도 띄우고 싶다면
+	m_fPitch += XMConvertToRadians(10.f);
+}
+
 CCamera_Orbital* CCamera_Orbital::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CCamera_Orbital* pGameInstance = new CCamera_Orbital(pDevice, pContext);

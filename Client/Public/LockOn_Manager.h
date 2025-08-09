@@ -29,7 +29,7 @@ public:
 
     void Set_Active() { m_bStartLockOn = true; }
 private:
-    void CheckBehindWall();
+    void RemoveBehindWallTargets();
     CGameObject* Find_ClosestToLookTarget();
 private:
     CGameInstance* m_pGameInstance = { nullptr };

@@ -4,6 +4,8 @@
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Player.h"
 
+#include "Camera_Manager.h"
+
 IMPLEMENT_SINGLETON(CLockOn_Manager)
 
 CLockOn_Manager::CLockOn_Manager() 
@@ -26,7 +28,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 {
     if (m_bStartLockOn)
     {
-        CheckBehindWall();
+        RemoveBehindWallTargets();
         CGameObject* pTarget = Find_ClosestToLookTarget();
         if (pTarget)
         {
@@ -36,6 +38,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         }
         else
         {
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_OrbitalPosBackLookFront();
             // 오비탈 카메라 플레이어 시야에 맞게
         }
         m_bStartLockOn = false;
@@ -46,7 +49,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
     if (m_bActive)
     {
-        wprintf(L"LockOnTarget: %s\n", m_pBestTarget->Get_Name().c_str());
+        //wprintf(L"LockOnTarget: %s\n", m_pBestTarget->Get_Name().c_str());
 
         _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
@@ -66,7 +69,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
         CIgnoreSelfCallback callback(ignoreActors);
 
-        bool bRemove = false;
+        _bool bRemove = false;
         // 레이캐스트 수행
         if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
         {
@@ -75,7 +78,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
                 PxRigidActor* hitActor = hit.block.actor;
                 CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-                if (pHitActor && pHitActor->Get_Owner()->Get_Name() != L"Elite_Police")
+                if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
                 {
                     // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
                     bRemove = true;
@@ -119,7 +122,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
     return S_OK;
 }
 
-void CLockOn_Manager::CheckBehindWall()
+void CLockOn_Manager::RemoveBehindWallTargets()
 {
     _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
