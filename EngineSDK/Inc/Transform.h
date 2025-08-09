@@ -110,6 +110,8 @@ public:
 	void RotationTimeDelta(_float fTimeDelta, _fvector Axis, _float fSpeedPerSec);
 	/* [ 해당 방향으로 즉시 회전한다 ] */
 	bool RotateToDirectionImmediately(const _fvector& vTargetDir);
+	/* [ 해당 방향으로 천천히 회전한다 ] */
+	bool RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fTimeDelta);
 	/* [ 쿼터니언 회전 ] */
 	void Quaternion_Turn(const _vector& vAngle);
 

@@ -219,6 +219,7 @@ void CTransform::Go_Front(_float fTimeDelta, CPhysXController* pController, CNav
 	{
 		pController->Move(fTimeDelta, VectorToPxVec3(vLook), m_fSpeedPerSec);
 		PxVec3 pos = pController->Get_Actor()->getGlobalPose().p;
+		pos.y -= 0.9f;
 		Set_State(STATE::POSITION, PxVec3ToVector(pos));
 	}
 	else
@@ -250,7 +251,7 @@ bool CTransform::Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CPhysX
 
 	// 목표까지의 거리
 	_float fDistance = XMVectorGetX(XMVector3Length(XMVectorSubtract(vPosition, vMyPos)));
-	if (fDistance < 0.3f)
+	if (fDistance <= 0.1f)
 		return true;
 
 	if (fDistance > 0.1f)
@@ -650,6 +651,55 @@ bool CTransform::RotateToDirectionImmediately(const _fvector& vTargetDir)
 	Set_State(STATE::RIGHT, vRight * XMVectorGetX(vScale));
 	Set_State(STATE::UP, vUp * XMVectorGetY(vScale));
 	Set_State(STATE::LOOK, vLook * XMVectorGetZ(vScale));
+
+	return true;
+}
+
+bool CTransform::RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fTimeDelta)
+{
+	_float3 fScale = Compute_Scaled();
+	_vector vScale = XMLoadFloat3(&fScale);
+
+	// 현재 LOOK 방향
+	_vector vCurrentLook = XMVector3Normalize(Get_State(STATE::LOOK));
+
+	// 목표 방향
+	_vector vTargetLook = XMVector3Normalize(vTargetDir);
+
+	// 내적해서 각도 차이 확인
+	_float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, vTargetLook));
+	fDot = max(-1.f, min(1.f, fDot)); // Clamp
+
+	_float fAngle = acosf(fDot); // 현재 각도 차이 (라디안)
+
+	// 거의 정면이면 회전하지 않음
+	if (fAngle < 0.01f)
+		return false;
+
+	// 회전 축 계산
+	_vector vAxis = XMVector3Normalize(XMVector3Cross(vCurrentLook, vTargetLook));
+
+	// 한 프레임 회전할 각도 계산
+	_float fStep = m_fSpeedPerSec * fTimeDelta;
+	fStep = min(fStep, fAngle); // 과회전 방지
+
+	// 회전 행렬 생성
+	_matrix matRot = XMMatrixRotationAxis(vAxis, fStep);
+
+	// 현재 basis 벡터들 (Right, Up, Look)
+	_vector vRight = Get_State(STATE::RIGHT);
+	_vector vUp = Get_State(STATE::UP);
+	_vector vLook = Get_State(STATE::LOOK);
+
+	// 회전 적용
+	vRight = XMVector3TransformNormal(vRight, matRot);
+	vUp = XMVector3TransformNormal(vUp, matRot);
+	vLook = XMVector3TransformNormal(vLook, matRot);
+
+	// 회전 후에도 스케일 유지
+	Set_State(STATE::RIGHT, XMVector3Normalize(vRight) * XMVectorGetX(vScale));
+	Set_State(STATE::UP, XMVector3Normalize(vUp) * XMVectorGetY(vScale));
+	Set_State(STATE::LOOK, XMVector3Normalize(vLook) * XMVectorGetZ(vScale));
 
 	return true;
 }

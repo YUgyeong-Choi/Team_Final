@@ -33,7 +33,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
-	m_pBGM->Set_Volume(1.f);
+	m_pBGM->Set_Volume(0.f);
 
 
 	/* [ 셰이더 값 세팅 ] */
@@ -128,9 +128,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 			//애니메이션 오브젝트
 			if (FAILED(Ready_Player()))
-				return;
-
-			if (FAILED(Ready_Door()))
 				return;
 
 
@@ -576,31 +573,6 @@ HRESULT CLevel_KratCentralStation::Ready_Camera()
 {
 	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Door()
-{
-	CStaticMesh::STATICMESH_DESC Desc{};
-	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
-	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
-
-	/* 문자열 받는 곳 */
-	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
-	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
-	_float3 vPosition = _float3(52.6f, 0.02f, -2.4f);
-	_matrix matWorld = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
-	_float4x4 matWorldFloat;
-	XMStoreFloat4x4(&matWorldFloat, matWorld);
-	Desc.WorldMatrix = matWorldFloat;
-
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
-		return E_FAIL;
 
 	return S_OK;
 }
