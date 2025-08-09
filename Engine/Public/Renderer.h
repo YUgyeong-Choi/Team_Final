@@ -85,8 +85,6 @@ private:
 	HRESULT Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight);
 	HRESULT Ready_DepthStencilView_Blur(_uint iWidth, _uint iHeight);
 	HRESULT Change_ViewportDesc(_uint iWidth, _uint iHeight);
-	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
-
 
 #ifdef _DEBUG
 private:

@@ -10,11 +10,14 @@ CCollider::CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CCollider::CCollider(const CCollider& Prototype)
-	: CComponent{ Prototype }
+	: CComponent( Prototype )
 	, m_eType { Prototype.m_eType }
 	, m_pBounding { Prototype.m_pBounding }
-	, m_pBatch { Prototype.m_pBatch }
-	, m_pEffect { Prototype.m_pEffect }
+#ifdef _DEBUG
+	, m_pBatch{ Prototype.m_pBatch }
+	, m_pEffect{ Prototype.m_pEffect }
+#endif
+
 #ifdef _DEBUG
 	, m_pInputLayout { Prototype.m_pInputLayout}
 #endif

@@ -94,9 +94,10 @@ HRESULT CMainApp::Render()
 		m_fTimeAcc = 0.f;
 		m_iRenderCount = 0;
 	}
-#endif
 
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+#endif
+
 
 	m_pGameInstance->End_Draw();
 

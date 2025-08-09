@@ -61,10 +61,10 @@ public:
 
 #pragma region RENDERER
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
+	void ClearRenderObjects();
 #ifdef _DEBUG
 	_bool Get_RenderCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
-	void ClearRenderObjects();
 #endif
 
 

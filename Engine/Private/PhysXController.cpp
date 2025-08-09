@@ -14,7 +14,9 @@ CPhysXController::CPhysXController(const CPhysXController& Prototype)
 
 HRESULT CPhysXController::Initialize_Prototype()
 {
+#ifdef DEBUG
     ReadyForDebugDraw(m_pDevice, m_pContext);
+#endif
     return S_OK;
 }
 
@@ -54,6 +56,7 @@ HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMat
 
 HRESULT CPhysXController::Render()
 {
+#ifdef DEBUG
     if (!m_pController)
         return E_FAIL;
 
@@ -73,7 +76,7 @@ HRESULT CPhysXController::Render()
         DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);
     }
     m_RenderRay.clear();
-
+#endif
     return S_OK;
 }
 

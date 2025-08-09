@@ -174,9 +174,8 @@ public:
 			it->second.name = name; // 이름 설정
         }
     }
-#ifdef _DEBUG
+
     auto& GetOverrideAnimControllersMap() { return m_OverrideControllerMap; }
-#endif // _DEBUG
 
 	void ApplyOverrideAnimController(const string& ctrlName)
     {

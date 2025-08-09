@@ -12,7 +12,9 @@ CPhysXStaticActor::CPhysXStaticActor(const CPhysXStaticActor& Prototype)
 
 HRESULT CPhysXStaticActor::Initialize_Prototype()
 {
+#ifdef DEBUG
     ReadyForDebugDraw(m_pDevice, m_pContext);
+#endif
     return S_OK;
 }
 
@@ -44,6 +46,7 @@ HRESULT CPhysXStaticActor::Create_Collision(PxPhysics* physics, const PxGeometry
 
 HRESULT CPhysXStaticActor::Render()
 {
+#ifdef DEBUG
     PxTransform pose = PxShapeExt::getGlobalPose(*m_pShape, *m_pActor);
     PxGeometryHolder geom = m_pShape->getGeometry();
     PxBounds3 bounds = PxShapeExt::getWorldBounds(*m_pShape, *m_pActor);
@@ -54,7 +57,7 @@ HRESULT CPhysXStaticActor::Render()
         DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);
     }
     m_RenderRay.clear();
-
+#endif
     return S_OK;
 }
 
