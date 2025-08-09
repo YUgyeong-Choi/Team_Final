@@ -36,7 +36,6 @@ private:
 	HRESULT Ready_Npc();
 	HRESULT Ready_Lights();
 	HRESULT Ready_Camera();
-	HRESULT Ready_Door();
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 	HRESULT Ready_UI();
 	HRESULT Ready_Video();

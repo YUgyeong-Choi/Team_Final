@@ -13,6 +13,7 @@
 #include "Bayonet.h"
 #include "Weapon.h"
 #include "DH_ToolMesh.h"
+#include "StaticMesh.h"
 
 #include "Observer_Player_Status.h"
 
@@ -48,8 +49,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Lamp()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lamp()))
+		return E_FAIL;
+
+	if (FAILED(Ready_StationDoor()))
+		return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
@@ -116,12 +120,16 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+	if (KEY_DOWN(DIK_CAPSLOCK))
+	{
+		_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
+		printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
+	}
 
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast(m_pControllerCom);
-
 
 	// 옵저버 변수들 처리
 	Update_Stat();
@@ -142,9 +150,9 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 입력 ] */
 	HandleInput();
+	SlidDoorMove(fTimeDelta);
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
-
 
 	Update_Collider_Actor();
 }
@@ -152,10 +160,12 @@ void CPlayer::Update(_float fTimeDelta)
 void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-
+	
+	/* [ 특수행동 ] */
+	ItemLampON(fTimeDelta);
 	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
-	
+
 	/* [ 이곳은 애니메이션 실험실입니다. ] */
 	if(KEY_DOWN(DIK_Y))
 	{
@@ -168,8 +178,9 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_PRESSING(DIK_U))
 	{
-		m_pAnimator->SetInt("Combo", 1);
-		m_pAnimator->SetTrigger("StrongAttack");
+		_bool ab = m_pTransformCom->RotateToDirectionSmoothly(_fvector{ 0.f, 0.f, -1.f, 0.f }, fTimeDelta);
+		if (ab)
+			int a = 0;
 	}
 
 	if (KEY_DOWN(DIK_T))
@@ -707,7 +718,7 @@ HRESULT CPlayer::Ready_Weapon()
 HRESULT CPlayer::Ready_Lamp()
 {
 	CDH_ToolMesh::tagDH_ToolDesc Desc{};
-	Desc.eLEVEL = LEVEL::STATIC;
+	Desc.eLEVEL = LEVEL::KRAT_CENTERAL_STATION; // 생성레벨
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.iID = 0;
@@ -721,6 +732,38 @@ HRESULT CPlayer::Ready_Lamp()
 		return E_FAIL;
 
 	m_pLamp = dynamic_cast<CDH_ToolMesh*>(pGameObject);
+
+	m_pLamp->SetDebug(false);
+	m_pLamp->SetbVolumetric(false);
+	m_pLamp->SetRange(3.f);
+	m_pLamp->SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
+	return S_OK;
+}
+
+HRESULT CPlayer::Ready_StationDoor()
+{
+	CStaticMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
+	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
+
+	/* 문자열 받는 곳 */
+	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
+	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	_float3 vPosition = _float3(52.6f, 0.02f, -2.4f);
+	_matrix matWorld = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	_float4x4 matWorldFloat;
+	XMStoreFloat4x4(&matWorldFloat, matWorld);
+	Desc.WorldMatrix = matWorldFloat;
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pInterectionStuff = pGameObject;
 
 	return S_OK;
 }
@@ -883,7 +926,7 @@ void CPlayer::Interaction_Door()
 	if (KEY_DOWN(DIK_E))
 	{
 		_float3 vTriggerCenter = _float3(52.6f, 0.02f, -2.4f);
-		_float fTriggerRadius = 20.f; // 3미터 반경
+		_float fTriggerRadius = 5.f; // 3미터 반경
 
 		// 플레이어 위치에서 거리 계산
 		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
@@ -912,8 +955,10 @@ void CPlayer::Interaction_Door()
 
 void CPlayer::Play_CutScene_Door()
 {	
-	m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::ONE);
-	m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+	//m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::ONE);
+	m_bInteraction[0] = true;
+	m_bInteractionMove[0] = true;
+	m_bInteractionRotate[0] = true;
 }
 
 void CPlayer::ItemWeaponOFF(_float fTimeDelta)
@@ -924,11 +969,89 @@ void CPlayer::ItemWeaponOFF(_float fTimeDelta)
 
 		if (m_fItemTime >= 2.f)
 		{
-			m_pWeapon->SetbIsActive(true);
+			if(m_bWeaponEquipped)
+				m_pWeapon->SetbIsActive(true);
 
 			m_bItemSwitch = false;
 			m_fItemTime = 0.f;
 		}
+	}
+}
+void CPlayer::ItemLampON(_float fTimeDelta)
+{
+	if(m_bLampOnOff)
+	{
+		m_pLamp->SetIntensity(1.5f);
+		_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
+		_vector vPosition = matWorld.r[3];
+		//vPosition = XMVectorSetX(vPosition, XMVectorGetX(vPosition) - 1.f);
+		vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
+		vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 1.f);
+
+		matWorld.r[3] = vPosition;
+
+		m_pLamp->Get_TransfomCom()->Set_WorldMatrix(matWorld);
+	}
+	else
+	{
+		m_pLamp->SetIntensity(0.f);
+	}
+}
+void CPlayer::SlidDoorMove(_float fTimeDelta)
+{
+	if (m_bInteractionMove[0])
+	{
+		/* [ 위치로 이동 ] */
+		m_Input.bMove = true;
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+		_bool SetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ 53.8f, XMVectorGetY(vPosition), -1.6f, 1.f}, m_pControllerCom);
+		if (SetPosition)
+		{
+			m_bInteractionMove[0] = false; // 이동 완료
+		}
+	}
+
+	if (m_bInteractionRotate[0])
+	{
+		// 이동 완료 시 회전
+		_bool vRotate = m_pTransformCom->RotateToDirectionSmoothly(_fvector{ 0.f , 0.f, -1.f, 0.f }, fTimeDelta);
+		if (!vRotate)
+		{
+			m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+			m_bInteractionRotate[0] = false; // 회전 완료
+		}
+	}
+
+	if (m_bInteraction[0] && !m_bInteractionMove[0] && !m_bInteractionRotate[0])
+	{
+		m_fInteractionTime[0] += fTimeDelta;
+
+		//손 뼈의 컴바인드 행렬
+		const _float4x4* pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_L"));
+		_matrix matSocketLocal = XMLoadFloat4x4(pSocketMatrix);
+
+		_matrix matSocketWorld = matSocketLocal * m_pTransformCom->Get_WorldMatrix();
+		_vector vHandWorldPos = matSocketWorld.r[3];
+
+		_float fCurrentHandX = XMVectorGetX(vHandWorldPos);
+
+		static _float fStartHandX = fCurrentHandX;
+		_float fDeltaX = fCurrentHandX - fStartHandX;
+
+		// 문 위치 적용
+		CTransform* DoorTransCom = m_pInterectionStuff->Get_TransfomCom();
+		static _vector vDoorStartPos = DoorTransCom->Get_State(STATE::POSITION);
+
+		_vector vNewDoorPos = vDoorStartPos + XMVectorSet(fDeltaX, 0.f, 0.f, 0.f);
+		DoorTransCom->Set_State(STATE::POSITION, vNewDoorPos);
+
+		// 컷씬이 끝날 조건 넣어주면 좋음
+		if (fDeltaX <= -2.2f)
+		{
+			m_bInteraction[0] = false; // 컷씬 종료
+		}
+		
 	}
 }
 
