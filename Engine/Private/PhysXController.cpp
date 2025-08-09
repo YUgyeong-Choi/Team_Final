@@ -14,7 +14,7 @@ CPhysXController::CPhysXController(const CPhysXController& Prototype)
 
 HRESULT CPhysXController::Initialize_Prototype()
 {
-#ifdef DEBUG
+#ifdef _DEBUG
     ReadyForDebugDraw(m_pDevice, m_pContext);
 #endif
     return S_OK;
@@ -56,7 +56,7 @@ HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMat
 
 HRESULT CPhysXController::Render()
 {
-#ifdef DEBUG
+#ifdef _DEBUG
     if (!m_pController)
         return E_FAIL;
 

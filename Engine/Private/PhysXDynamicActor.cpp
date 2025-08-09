@@ -14,7 +14,7 @@ CPhysXDynamicActor::CPhysXDynamicActor(const CPhysXDynamicActor& Prototype)
 
 HRESULT CPhysXDynamicActor::Initialize_Prototype()
 {
-#ifdef DEBUG
+#ifdef _DEBUG
 	ReadyForDebugDraw(m_pDevice, m_pContext);
 #endif
 	return S_OK;
@@ -52,7 +52,7 @@ HRESULT CPhysXDynamicActor::Create_Collision(PxPhysics* physics, const PxGeometr
 
 HRESULT CPhysXDynamicActor::Render()
 {
-#ifdef DEBUG
+#ifdef _DEBUG
 	PxTransform pose = PxShapeExt::getGlobalPose(*m_pShape, *m_pActor);
 	PxGeometryHolder geom = m_pShape->getGeometry();
 	PxBounds3 bounds = PxShapeExt::getWorldBounds(*m_pShape, *m_pActor);
