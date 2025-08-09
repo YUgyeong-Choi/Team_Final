@@ -121,7 +121,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 	}
 
 
-
+	/*
 	if (m_eNextLevelID == LEVEL::LOGO)
 	{
 		if (true == m_pLoader->isFinished())
@@ -138,7 +138,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 
 		}
 	}
-
+	*/
 	
 
 }

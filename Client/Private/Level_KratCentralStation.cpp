@@ -649,6 +649,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
+	/*
 	CUnit::UNIT_DESC pDesc{};
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
@@ -662,7 +663,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
 		return E_FAIL;
 
-
+	*/
 
 	return S_OK;
 }

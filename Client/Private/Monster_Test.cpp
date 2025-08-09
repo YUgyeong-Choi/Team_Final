@@ -161,7 +161,7 @@ HRESULT CMonster_Test::Ready_Weapon()
 {
 
 	CWeapon_Monster::WEAPON_DESC Desc{};
-	Desc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.eLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };
@@ -175,7 +175,7 @@ HRESULT CMonster_Test::Ready_Weapon()
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Weapon"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Monster_Weapon"), &pGameObject, &Desc)))
 		return E_FAIL;
 

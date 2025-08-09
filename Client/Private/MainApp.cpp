@@ -72,9 +72,9 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Update(_float fTimeDelta)
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	m_fTimeAcc += fTimeDelta;
-#endif
+//#endif
 
 	m_pGameInstance->Update_Engine(fTimeDelta);
 }
@@ -85,7 +85,7 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	++m_iRenderCount;
 
 	if (m_fTimeAcc >= 1.f)
@@ -96,7 +96,7 @@ HRESULT CMainApp::Render()
 	}
 
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-#endif
+//#endif
 
 
 	m_pGameInstance->End_Draw();
@@ -403,12 +403,15 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
-	m_pGameInstance->Release_Engine();
-
-	Safe_Release(m_pGameInstance);
-
 	/* [ 싱글톤 삭제 ] */
 	CCamera_Manager::Destroy_Instance();
 	CEffect_Manager::Destroy_Instance();
 	CLockOn_Manager::Destroy_Instance();
+
+	if (m_pGameInstance) {
+		m_pGameInstance->Release_Engine(); 
+		m_pGameInstance = nullptr;       
+	}
+	
+	// Safe_Release(m_pGameInstance); 이거하니까 오류남 DestoryInstance뒤에 해줘서
 }

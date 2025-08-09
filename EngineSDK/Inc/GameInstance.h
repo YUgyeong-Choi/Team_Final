@@ -66,8 +66,6 @@ public:
 	_bool Get_RenderCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
 #endif
-
-
 #pragma endregion
 
 #pragma region TIMER_MANAGER

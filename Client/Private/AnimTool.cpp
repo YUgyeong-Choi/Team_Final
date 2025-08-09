@@ -2357,6 +2357,7 @@ void CAnimTool::Free()
 	Safe_Release(m_pEventMag);
 	Safe_Delete(m_pMySequence);
 	Safe_Release(m_pAnimShader);
-	Safe_Release(m_pGameInstance);
+	
+
 }
 #endif
