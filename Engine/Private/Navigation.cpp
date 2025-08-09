@@ -190,6 +190,12 @@ HRESULT CNavigation::Select_Cell(_fvector vWorldPos)
 
 HRESULT CNavigation::Snap(_float3* vWorldPos, _float fSnapThreshold)
 {
+	//Ã³À½ ±×¸®´Â ¼¿ÀÌ¸é ½º³À ±â´É ²ô±â
+	if (m_Cells.size() == 0)
+	{
+		return E_FAIL;
+	}
+
 	_float fMinDist = FLT_MAX;
 	_vector fMinDistPoint = {};
 

@@ -31,6 +31,7 @@ private:
 
 private:
 	void Render_CellList();
+	void Render_Settings();
 
 private:
 	//포인트 추가
@@ -38,6 +39,9 @@ private:
 	
 	//포인트들을 시계방향으로 정렬
 	void Make_Clockwise(_float3* Points);
+
+private:
+	_float m_fSnapThreshold = { 0.5f }; //스냅 거리
 
 private:
 	//삼각형 만들기 위한 포인트

@@ -55,6 +55,7 @@ HRESULT CNavTool::Render()
 HRESULT	CNavTool::Render_ImGui()
 {
 	Render_CellList();
+	Render_Settings();
 
 	return S_OK;
 }
@@ -122,7 +123,16 @@ void CNavTool::Render_CellList()
 		}
 	}
 	ImGui::End();
+}
 
+void CNavTool::Render_Settings()
+{
+	if (ImGui::Begin("Settings"))
+	{
+		ImGui::Text("Snap");
+		ImGui::SliderFloat("##SnapThreshold", &m_fSnapThreshold, 0.0f, 2.0f, "%.3f");
+	}
+	ImGui::End();
 
 }
 
@@ -135,13 +145,9 @@ void CNavTool::Add_Point()
 
 		//이 포인트를 스냅해야한다.
 		//모든 셀을 순회하여 가장 가까운 점으로 변경
+		//스냅
+		m_pNavigationCom->Snap(&NewPoint, m_fSnapThreshold);
 
-		//처음 그리는 셀이면 스냅 기능 끄기
-		if (m_pNavigationCom->Get_Cells().size() != 0)
-		{
-			//스냅
-			m_pNavigationCom->Snap(&NewPoint, 1.f);
-		}
 
 		//모두 스냅하되 일정 거리 이하로 가까워 졌을 때만(스냅할 때 같은점이 들어오면 안됨)
 		for (_float3& Point : m_Points)
