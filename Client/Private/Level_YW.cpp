@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 
 #include "MapTool.h"
+#include "NavTool.h"
 #include "DecalTool.h"
 
 #pragma region 다른 사람 거
@@ -160,6 +161,10 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
 
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext));
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)])
+		return E_FAIL;
+
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)] = reinterpret_cast<CYWTool*>(CDecalTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)])
 		return E_FAIL;
@@ -199,9 +204,13 @@ HRESULT CLevel_YW::ImGui_Render()
 			if (ImGui::BeginTabItem("Map Tool"))
 			{
 				m_eActiveTool = IMGUITOOL::MAP;
-				
-				/*if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
-					return E_FAIL;*/
+
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Nav Tool"))
+			{
+				m_eActiveTool = IMGUITOOL::NAV;
 
 				ImGui::EndTabItem();
 			}
@@ -209,9 +218,6 @@ HRESULT CLevel_YW::ImGui_Render()
 			if (ImGui::BeginTabItem("Decal Tool"))
 			{
 				m_eActiveTool = IMGUITOOL::DECAL;
-
-				/*if (FAILED(static_cast<CDecalTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
-					return E_FAIL;*/
 
 				ImGui::EndTabItem();
 			}

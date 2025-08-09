@@ -313,6 +313,12 @@
     <Filter Include="02.GameObjects\03.Weapon\99. Monster">
       <UniqueIdentifier>{c592ffc8-b53a-43c4-9123-ad8352b7a2f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\NavTool">
+      <UniqueIdentifier>{fb47ea16-04a8-482d-8ea8-15112d892ac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.Nav">
+      <UniqueIdentifier>{a6ec052f-24ca-4b62-ada4-db0358cc29f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -699,6 +705,13 @@
     <ClInclude Include="..\public\Weapon_Monster.h">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Decal.h" />
+    <ClInclude Include="..\public\NavTool.h">
+      <Filter>01.Levels\LevelYW\YWTool\NavTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Nav.h">
+      <Filter>02.GameObjects\10.Nav</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1058,6 +1071,13 @@
     </ClCompile>
     <ClCompile Include="..\private\Weapon_Monster.cpp">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp" />
+    <ClCompile Include="..\private\NavTool.cpp">
+      <Filter>01.Levels\LevelYW\YWTool\NavTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Nav.cpp">
+      <Filter>02.GameObjects\10.Nav</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

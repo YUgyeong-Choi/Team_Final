@@ -4,8 +4,13 @@
 #include "Effect_Manager.h"
 #include "EffectContainer.h"
 
+#pragma region YW
 #include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
+#include "Nav.h"
+#pragma endregion
+
+
 
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
@@ -55,6 +60,11 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	/* [ 레벨 셋팅 ] */
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 	m_pGameInstance->Set_IsChangeLevel(false);
+
+
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -296,6 +306,18 @@ HRESULT CLevel_KratCentralStation::Load_StaticMesh_Instance(_uint iObjectCount, 
 
 	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh_Instance"),
 		iLevelIndex, LayerTag, &StaticMeshInstanceDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
+{
+	CNav::NAV_DESC NavDesc = {};
+	NavDesc.iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Nav"),
+		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag, &NavDesc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -15,6 +15,7 @@ class CLevel_YW final : public CLevel
 public:
 	enum class IMGUITOOL {
 		MAP,
+		NAV,
 		DECAL,
 		END
 	};

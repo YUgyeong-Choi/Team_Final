@@ -32,7 +32,7 @@ CNavigation::CNavigation(const CNavigation& Prototype)
 
 HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 {
-	_ulong	dwByte = {};
+	/*_ulong	dwByte = {};
 	HANDLE	hFile = CreateFile(pNavigationDataFile, GENERIC_READ, 0, nullptr,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
@@ -55,7 +55,48 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 		m_Cells.push_back(pCell);
 	}
 
-	CloseHandle(hFile);
+	CloseHandle(hFile);*/
+
+	ifstream ifs(pNavigationDataFile);
+	if (!ifs.is_open())
+		return E_FAIL;
+
+	json j;
+	try
+	{
+		ifs >> j;
+	}
+	catch (const exception& e)
+	{
+		cerr << "JSON parse error: " << e.what() << "\n";
+		return E_FAIL;
+	}
+
+	if (!j.contains("cells") || !j["cells"].is_array())
+		return E_FAIL;
+
+	for (auto& cellJson : j["cells"])
+	{
+		if (!cellJson.contains("points") || !cellJson["points"].is_array())
+			continue;
+
+		if (cellJson["points"].size() != 3)
+			continue; // 꼭 3개의 점만 허용
+
+		_float3 vPoints[3] = {};
+		for (int i = 0; i < 3; ++i)
+		{
+			vPoints[i].x = cellJson["points"][i].value("x", 0.0f);
+			vPoints[i].y = cellJson["points"][i].value("y", 0.0f);
+			vPoints[i].z = cellJson["points"][i].value("z", 0.0f);
+		}
+
+		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, static_cast<_int>(m_Cells.size()));
+		if (nullptr == pCell)
+			return E_FAIL;
+
+		m_Cells.push_back(pCell);
+	}
 
 	if (FAILED(SetUp_Neighbors()))
 		return E_FAIL;

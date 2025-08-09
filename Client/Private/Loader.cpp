@@ -8,12 +8,13 @@
 
 
 #pragma region LEVEL_KRAT_CENTERAL_STATION
-#
+#include "StaticMesh.h"
+#include "StaticMesh_Instance.h"
+#include "Nav.h"
 #pragma endregion
 
 #pragma region LEVEL_KRAT_HOTEL
-#include "StaticMesh.h"
-#include "StaticMesh_Instance.h"
+
 #pragma endregion
 
 #pragma region LEVEL_YW
@@ -400,6 +401,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Save/NavTool/Navigation.json")))))
+		return E_FAIL;
+
 
 	m_fRatio = 0.6f;
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -437,6 +443,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Weapon"),
 		CWeapon_Monster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//네비게이션 컴포넌트 작동시켜주는 녀석
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Nav"),
+		CNav::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_fRatio = 1.f;
@@ -803,6 +814,10 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Save/NavTool/Navigation.json")))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
