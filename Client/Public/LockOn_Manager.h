@@ -26,7 +26,10 @@ public:
 public:
     void SetPlayer(CGameObject* pPlayer);
     void Add_LockOnTarget(CGameObject* pTarget);
+
+    void Set_Active() { m_bStartLockOn = true; }
 private:
+    void CheckBehindWall();
     CGameObject* Find_ClosestToLookTarget();
 private:
     CGameInstance* m_pGameInstance = { nullptr };
@@ -34,6 +37,9 @@ private:
     CGameObject* m_pPlayer = { nullptr };
     CGameObject* m_pBestTarget = { nullptr };
     vector<CGameObject*> m_vecTarget;
+
+    _bool m_bActive = false;
+    _bool m_bStartLockOn = false;
 public:
     virtual void Free() override;
 

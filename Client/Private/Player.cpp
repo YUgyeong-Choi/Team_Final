@@ -155,6 +155,10 @@ void CPlayer::Update(_float fTimeDelta)
 	Movement(fTimeDelta);
 
 	Update_Collider_Actor();
+
+	// 락온관련
+	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
+		CLockOn_Manager::Get_Instance()->Set_Active();
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)

@@ -24,7 +24,86 @@ HRESULT CLockOn_Manager::Priority_Update(_float fTimeDelta)
 
 HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 {
-    _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{0.f,5.f,0.f,0.f};
+    if (m_bStartLockOn)
+    {
+        CheckBehindWall();
+        CGameObject* pTarget = Find_ClosestToLookTarget();
+        if (pTarget)
+        {
+            m_bActive = true;
+            m_pBestTarget = pTarget;
+            // 타겟 락온 카메라에 넘겨주기 ?
+        }
+        else
+        {
+            // 오비탈 카메라 플레이어 시야에 맞게
+        }
+        m_bStartLockOn = false;
+    }
+
+    if (m_bActive)
+    {
+        wprintf(L"LockOnTarget: %s\n", m_pBestTarget->Get_Name().c_str());
+
+        _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,5.f,0.f,0.f };
+
+        _vector targetPos = m_pBestTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,5.f,0.f,0.f };
+
+        PxVec3 origin = VectorToPxVec3(playerPos);
+        PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
+        direction.normalize(); // 방향 벡터 정규화
+        _float fRayLength = 10.f;
+
+        PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+        PxRaycastBuffer hit;
+        PxQueryFilterData filterData;
+        filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+        CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
+        unordered_set<PxActor*> ignoreActors;
+        ignoreActors.insert(pPlayer->Get_Actor(pPlayer->Get_Controller()));
+        CIgnoreSelfCallback callback(ignoreActors);
+
+        bool bRemove = false;
+
+        // 레이캐스트 수행
+        if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+        {
+            if (hit.hasBlock)
+            {
+                PxRigidActor* hitActor = hit.block.actor;
+                CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+
+                if (pHitActor && pHitActor->Get_Owner()->Get_Name() != L"Elite_Police")
+                {
+                    // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
+                    bRemove = true;
+                }
+                else
+                {
+                    _int a = 10;
+                }
+            }
+            else
+            {
+                // 레이에 아무것도 맞지 않음 → 거리 밖으로 간 것 → 제거
+                bRemove = true;
+            }
+        }
+        if (bRemove)
+        {
+            m_bActive = false;
+            m_pBestTarget = nullptr;
+        }
+
+    }
+
+    return S_OK;
+}
+
+void CLockOn_Manager::CheckBehindWall()
+{
+    _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,5.f,0.f,0.f };
 
     for (size_t i = 0; i < m_vecTarget.size(); )
     {
@@ -56,7 +135,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
                 PxRigidActor* hitActor = hit.block.actor;
                 CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-                if (pHitActor && pHitActor->Get_Owner()->Get_Name() != L"YGBox")
+                if (pHitActor && pHitActor->Get_Owner()->Get_Name() != L"Elite_Police")
                 {
                     // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
                     bRemove = true;
@@ -74,10 +153,6 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         else
             ++i;
     }
-
-    m_pBestTarget = Find_ClosestToLookTarget();
-
-    return S_OK;
 }
 
 CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()

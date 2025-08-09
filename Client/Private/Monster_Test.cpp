@@ -1,7 +1,7 @@
 #include "Monster_Test.h"
 #include "GameInstance.h"
 #include "Weapon_Monster.h"
-
+#include "LockOn_Manager.h"
 CMonster_Test::CMonster_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUnit{pDevice, pContext}
 {
@@ -58,6 +58,11 @@ void CMonster_Test::Update(_float fTimeDelta)
 	
 	// 움직이고 부르기
 	Update_Collider();
+
+	// 움직이고 부르기 나중에 몬스터 부모 생기면 거기서 통합적으로 불러주면 됨
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
+		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+	}
 }
 
 void CMonster_Test::Late_Update(_float fTimeDelta)
