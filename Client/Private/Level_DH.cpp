@@ -32,12 +32,13 @@ HRESULT CLevel_DH::Initialize()
 
 #pragma region 맵 로드
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Ready_MapModel()))
-		return E_FAIL;
+	//if (FAILED(Ready_MapModel()))
+	//	return E_FAIL;
 
 	//제이슨으로 저장된 맵을 로드한다.
-	if (FAILED(LoadMap()))
+	if (FAILED(LoadMap(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
+
 #pragma endregion
 
 
@@ -199,12 +200,17 @@ HRESULT CLevel_DH::Ready_MapModel()
 
 	return S_OK;
 }
-HRESULT CLevel_DH::LoadMap()
+
+
+HRESULT CLevel_DH::LoadMap(_uint iLevelIndex, const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/Map_STATION.json");
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
+
+	ifstream inFile(MapPath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("Map_STATION.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Map_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
 		return S_OK;
 	}
 
@@ -218,24 +224,25 @@ HRESULT CLevel_DH::LoadMap()
 	for (_uint i = 0; i < iModelCount; ++i)
 	{
 		string ModelName = Models[i]["ModelName"];
-		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.
+		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.(아니 충돌여부로 인스턴싱 해야겠다.)
 		const json& objects = Models[i]["Objects"];
 
-		//일정 갯수 이상이면 인스턴싱오브젝트로 로드
-		if (iObjectCount > INSTANCE_THRESHOLD)
+		_bool bCollision = Models[i]["Collision"];
+		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
+		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
 		{
-			Load_StaticMesh_Instance(iObjectCount, objects, ModelName);
+			Load_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
 		}
 		else
 		{
-			Load_StaticMesh(iObjectCount, objects, ModelName);
+			Load_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex);
 		}
 	}
 
 	return S_OK;
 }
 
-HRESULT CLevel_DH::Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName)
+HRESULT CLevel_DH::Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
 {
 	for (_uint j = 0; j < iObjectCount; ++j)
 	{
@@ -280,7 +287,7 @@ HRESULT CLevel_DH::Load_StaticMesh(_uint iObjectCount, const json& objects, stri
 		LayerTag += StringToWString(ModelName);
 
 		StaticMeshDesc.iRender = 0;
-		StaticMeshDesc.m_eLevelID = LEVEL::DH;
+		StaticMeshDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
 		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 		wstring wstrModelName = StringToWString(ModelName);
@@ -289,16 +296,19 @@ HRESULT CLevel_DH::Load_StaticMesh(_uint iObjectCount, const json& objects, stri
 
 		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
-
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
-			ENUM_CLASS(LEVEL::DH), LayerTag, &StaticMeshDesc)))
+		CGameObject* pGameObject = nullptr;
+		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
+			iLevelIndex, LayerTag, &pGameObject, &StaticMeshDesc)))
 			return E_FAIL;
+
+		CStaticMesh* pStaticMesh = dynamic_cast<CStaticMesh*>(pGameObject);
+		//m_vecOctoTreeObjects.push_back(pStaticMesh);
 	}
 
 	return S_OK;
 }
 
-HRESULT CLevel_DH::Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName)
+HRESULT CLevel_DH::Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
 {
 	vector<_float4x4> InstanceMatixs(iObjectCount);
 
@@ -322,17 +332,17 @@ HRESULT CLevel_DH::Load_StaticMesh_Instance(_uint iObjectCount, const json& obje
 	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
 
 	StaticMeshInstanceDesc.iRender = 0;
-	StaticMeshInstanceDesc.m_eLevelID = LEVEL::DH;
+	StaticMeshInstanceDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
 	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 	wstring wstrModelName = StringToWString(ModelName);
-	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance"); //인스턴스 용 모델을 준비해야겠는디?
+	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance_"); //인스턴스 용 모델을 준비해야겠는디?
 	ModelPrototypeTag += wstrModelName;
 
 	lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		ENUM_CLASS(LEVEL::DH), LayerTag, &StaticMeshInstanceDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		iLevelIndex, LayerTag, &StaticMeshInstanceDesc)))
 		return E_FAIL;
 
 	return S_OK;

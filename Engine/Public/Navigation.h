@@ -43,7 +43,7 @@ public:
 	HRESULT Snap(_float3* vWorldPos, _float fSnapThreshold);
 
 public:
-	HRESULT Save();
+	HRESULT Save(const _char* Map);
 
 public:
 	vector<class CCell*>& Get_Cells() {

@@ -31,6 +31,9 @@ public:
 	virtual HRESULT Render()override;
 
 private:
+	_bool m_bVisible = { false }; //·»´õ¸µ ¿©ºÎ
+
+private:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 private:

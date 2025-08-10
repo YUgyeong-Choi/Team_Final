@@ -401,11 +401,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
-	/* Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Save/NavTool/Navigation.json")))))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 		return E_FAIL;
-
 
 	m_fRatio = 0.6f;
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -556,6 +553,10 @@ HRESULT CLoader::Loading_For_DH()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_SM_Station_Floor_01"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Floor_01.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -816,11 +817,14 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
-	/* Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Save/NavTool/Navigation.json")))))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION")))
 		return E_FAIL;
 
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
+		return E_FAIL;
+
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
@@ -1006,6 +1010,32 @@ HRESULT CLoader::Load_Model_MapTool(const wstring& strPrototypeTag, const _char*
 	if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
 		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map)
+{
+	wstring wsResourcePath = L"../Bin/Save/NavTool/Nav_" + StringToWString(Map) + L".json";
+
+	// 파일 열기
+	ifstream inFile(wsResourcePath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Nav_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	wstring wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);
+
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(
+		iLevelIndex,
+		wsPrototypeTag.c_str(),
+		CNavigation::Create(m_pDevice, m_pContext, wsResourcePath.c_str())
+	)))
+		return E_FAIL;
+
 
 	return S_OK;
 }

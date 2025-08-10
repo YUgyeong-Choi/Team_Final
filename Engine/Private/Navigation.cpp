@@ -277,7 +277,7 @@ HRESULT CNavigation::Delete_Cell()
 	return S_OK;
 }
 
-HRESULT CNavigation::Save()
+HRESULT CNavigation::Save(const _char* Map)
 {
 	json Json;
 	Json["cells"] = json::array();
@@ -296,7 +296,8 @@ HRESULT CNavigation::Save()
 		Json["cells"].push_back(CellJson);
 	}
 
-	ofstream ofs("../Bin/Save/NavTool/Navigation.json");
+	string NavPath = string("../Bin/Save/NavTool/Nav_") + Map + ".json";
+	ofstream ofs(NavPath);
 	if (!ofs.is_open())
 		return E_FAIL;
 

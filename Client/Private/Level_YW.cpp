@@ -182,21 +182,19 @@ void CLevel_YW::Render_File()
 
 	if (bRequestLoad)
 	{
-		//맵 로드
-		static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])->Load(Maps[iMapIndex]);
-
-		// 네비게이션 로드
+		//모든 툴 로드
+		for (CYWTool* Tool : m_ImGuiTools)
+		{
+			Tool->Load(Maps[iMapIndex]);
+		}
 	}
 
 	ImGui::SameLine();
 
 	if (ImGui::Button("Save Map"))
 	{
-		//맵 저장
-		if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])->Save(Maps[iMapIndex])))
-			MSG_BOX("맵 저장 실패");
-
-		// 네비게이션 저장
+		//활성화 된 툴 저장
+		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(Maps[iMapIndex]);
 	}
 
 	ImGui::End();
@@ -217,6 +215,7 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 	if (FAILED(Ready_Layer_PreviewObject(TEXT("Layer_PreviewObject"))))
 		return E_FAIL;
 
+#pragma region 맵툴
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = reinterpret_cast<CYWTool*>(CMapTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
@@ -224,10 +223,17 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 	//MapData를 따라 맵을 로드한다.
 	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Load(Maps[iMapIndex])))
 		return E_FAIL;
+#pragma endregion
 
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext));
+#pragma region 네비툴
+	CNavTool::NAVTOOL_DESC Desc{};
+	Desc.wsMapName = StringToWString(Maps[iMapIndex]);
+
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext, &Desc));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)])
 		return E_FAIL;
+#pragma endregion
+
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)] = reinterpret_cast<CYWTool*>(CDecalTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)])
