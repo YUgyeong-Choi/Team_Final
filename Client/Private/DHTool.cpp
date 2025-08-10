@@ -424,7 +424,7 @@ HRESULT CDHTool::Render_LightTool()
 	else
 	{
 		static float fFogDensity = 1.f;
-		ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 5.0f, "%.1f");
+		ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 20.0f, "%.1f");
 	}
 	// FogCutOff
 	if (m_pSelectedObject != nullptr)
