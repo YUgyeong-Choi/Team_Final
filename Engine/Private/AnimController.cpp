@@ -241,6 +241,7 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
 				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
 				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+
 				m_TransitionResult.bBlendFullbody = false;
 			}
 
@@ -253,6 +254,9 @@ void CAnimController::Update(_float fTimeDelta)
 				continue;
 			if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim)) 
 				continue;
+
+			m_TransitionResult.fUpperStartTime = toState->fUpperStartTime;
+			m_TransitionResult.fLowerStartTime = toState->fLowerStartTime;
 
 			m_TransitionResult.bTransition = true;
 			m_TransitionResult.fDuration = tr.duration;
@@ -525,7 +529,9 @@ json CAnimController::Serialize()
 			{"MaskBone",state.maskBoneName},
 			{"LowerClip", state.lowerClipName},
 			{"UpperClip", state.upperClipName},
-			{"BlendWeight", state.fBlendWeight}
+			{"BlendWeight", state.fBlendWeight},
+			{"LowerStartTime", state.fLowerStartTime},
+			{"UpperStartTime", state.fUpperStartTime}
 			});
 	}
 
@@ -693,8 +699,23 @@ void CAnimController::Deserialize(const json& j)
 					clip = pModel ? pModel->GetAnimationClipByName(clipName): nullptr;
 					clip->Set_Bones(m_pAnimator->GetModel()->Get_Bones()); // 애니메이션에 모델의 본 정보 설정
 				}
+				_float fLowerStartTime = 0.f;
+				_float fUpperStartTime = 0.f;
+				if (state.contains("LowerStartTime") && state["LowerStartTime"].is_number())
+				{
+					fLowerStartTime = state["LowerStartTime"];
+				}
+				if (state.contains("UpperStartTime") && state["UpperStartTime"].is_number())
+				{
+					fUpperStartTime = state["UpperStartTime"];
+				}
 		
 				AddState(name, clip, nodeId, maskBoneName.empty() == false, maskBoneName, upperClipName, lowerClipName);
+				AnimState& newState = m_States.back();
+				newState.fLowerStartTime = fLowerStartTime; // 노드 위치 설정
+				newState.fUpperStartTime = fUpperStartTime; // 마스크 본 이름 설정
+				newState.fNodePos = pos; // 노드 위치 설정
+
 
 				//m_States.push_back({ name, clip, nodeId, pos ,lowerClipName, upperClipName,maskBoneName,fBlendWeight });
 			}

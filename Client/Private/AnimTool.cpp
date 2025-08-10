@@ -1470,8 +1470,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				}
 
 				auto& transitions = pCtrl->GetTransitions();
-				// 트랜지션 리스트
 
+				// 트랜지션 리스트
 				for (const auto& transition : transitions)
 				{
 					if (transition.iFromNodeId == state.iNodeId)
@@ -1524,8 +1524,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::Text("Lower Clip: %s", state.lowerClipName.c_str());
 
 					// 마스크 본 선택
-
-
 					auto& bones = m_pCurModel->Get_Bones();
 
 					if (m_vecMaskBoneNames.empty())
@@ -1606,6 +1604,31 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				{
 					pCtrl->SetEntry(state.stateName);
 				}
+
+				// 애니메이션 StartTime 정하기
+				// 마스크 본이 아니면 LowerStartTime만 설정 아니면 Upper까지
+				if (state.clip)
+				{
+					_float fStartTime = state.fLowerStartTime;
+					if (ImGui::DragFloat("Start Time", &fStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fLowerStartTime = fStartTime;
+					}
+				}
+				else if (state.maskBoneName.empty() == false)
+				{
+					_float fUpperStartTime = state.fUpperStartTime;
+					if (ImGui::DragFloat("Upper Start Time", &fUpperStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fUpperStartTime = fUpperStartTime;
+					}
+					_float fLowerStartTime = state.fLowerStartTime;
+					if (ImGui::DragFloat("Lower Start Time", &fLowerStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fLowerStartTime = fLowerStartTime;
+					}
+				}
+
 				ImGui::End();
 			break;
 			}
@@ -2296,36 +2319,36 @@ HRESULT CAnimTool::Bind_Shader()
 		return E_FAIL;
 
 
-	//m_pContext->Flush();
-	if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
-		return E_FAIL;
+	////m_pContext->Flush();
+	//if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
+	//	return E_FAIL;
 
 	
-	if (KEY_PRESSING(DIK_I))
-	{
-		auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
-		for (int i = 0;i<20;i++)
-		{
-			auto mat = tmp[i];
-			cout << "---------GPU 계산---------------" << endl;
-			cout << mat.m[0][0] << " " << mat.m[0][1] << " " << mat.m[0][2] << " " << mat.m[0][3] << endl;
-			cout << mat.m[1][0] << " " << mat.m[1][1] << " " << mat.m[1][2] << " " << mat.m[1][3] << endl;
-			cout << mat.m[2][0] << " " << mat.m[2][1] << " " << mat.m[2][2] << " " << mat.m[2][3] << endl;
-			cout << mat.m[3][0] << " " << mat.m[3][1] << " " << mat.m[3][2] << " " << mat.m[3][3] << endl;
-			cout << "------------------------" << endl;
+	//if (KEY_PRESSING(DIK_I))
+	//{
+	//	auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
+	//	for (int i = 0;i<20;i++)
+	//	{
+	//		auto mat = tmp[i];
+	//		cout << "---------GPU 계산---------------" << endl;
+	//		cout << mat.m[0][0] << " " << mat.m[0][1] << " " << mat.m[0][2] << " " << mat.m[0][3] << endl;
+	//		cout << mat.m[1][0] << " " << mat.m[1][1] << " " << mat.m[1][2] << " " << mat.m[1][3] << endl;
+	//		cout << mat.m[2][0] << " " << mat.m[2][1] << " " << mat.m[2][2] << " " << mat.m[2][3] << endl;
+	//		cout << mat.m[3][0] << " " << mat.m[3][1] << " " << mat.m[3][2] << " " << mat.m[3][3] << endl;
+	//		cout << "------------------------" << endl;
 
-			auto mat2 = *m_pCurModel->Get_Bones()[i]->Get_CombinedTransformationMatrix();
+	//		auto mat2 = *m_pCurModel->Get_Bones()[i]->Get_CombinedTransformationMatrix();
 
-			cout << "---------CPU 계산---------------" << endl;
-			cout << mat2.m[0][0] << " " << mat2.m[0][1] << " " << mat2.m[0][2] << " " << mat2.m[0][3] << endl;
-			cout << mat2.m[1][0] << " " << mat2.m[1][1] << " " << mat2.m[1][2] << " " << mat2.m[1][3] << endl;
-			cout << mat2.m[2][0] << " " << mat2.m[2][1] << " " << mat2.m[2][2] << " " << mat2.m[2][3] << endl;
-			cout << mat2.m[3][0] << " " << mat2.m[3][1] << " " << mat2.m[3][2] << " " << mat2.m[3][3] << endl;
-			cout << "------------------------" << endl;
+	//		cout << "---------CPU 계산---------------" << endl;
+	//		cout << mat2.m[0][0] << " " << mat2.m[0][1] << " " << mat2.m[0][2] << " " << mat2.m[0][3] << endl;
+	//		cout << mat2.m[1][0] << " " << mat2.m[1][1] << " " << mat2.m[1][2] << " " << mat2.m[1][3] << endl;
+	//		cout << mat2.m[2][0] << " " << mat2.m[2][1] << " " << mat2.m[2][2] << " " << mat2.m[2][3] << endl;
+	//		cout << mat2.m[3][0] << " " << mat2.m[3][1] << " " << mat2.m[3][2] << " " << mat2.m[3][3] << endl;
+	//		cout << "------------------------" << endl;
 
-		}
-	//	m_pCurAnimator->DebugComputeShader();
-	}
+	//	}
+	////	m_pCurAnimator->DebugComputeShader();
+	//}
 	//auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
 	//for (int i = 0;i<m_pCurModel->Get_Bones().size();i++)
 	//{

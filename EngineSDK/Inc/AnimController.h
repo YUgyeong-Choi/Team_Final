@@ -43,6 +43,8 @@ public:
 		string upperClipName; // 상체 애니메이션 이름
 		string maskBoneName; // 마스크용 뼈 이름 (없으면 빈 문자열)
 		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
+		_float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
+		_float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
 	};
 
 
@@ -72,6 +74,8 @@ public:
 		CAnimation* pToUpperAnim = nullptr;   // 전환 목표 상체 클립 
 		_float fDuration = 0.f; // 전환 시간
 		_float fBlendWeight = 1.f; // 마스크에 사용함
+		_float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
+		_float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
 	};
 
 

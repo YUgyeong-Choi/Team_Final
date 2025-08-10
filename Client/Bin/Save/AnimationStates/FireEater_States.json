@@ -1,46 +1,6 @@
 {
-    "Anim States": [
-        {
-            "Clip": "",
-            "Name": "Idle",
-            "NodeId": 1,
-            "NodePos": [
-                419.0,
-                109.0
-            ]
-        },
-        {
-            "Clip": "AS_Walk_C_L",
-            "Name": "NewState",
-            "NodeId": 2,
-            "NodePos": [
-                712.0,
-                118.0
-            ]
-        }
+    "Controllers": [
+        "FireEater_Default"
     ],
-    "Transitions": [
-        {
-            "Conditions": [
-                {
-                    "Op": 7,
-                    "ParamName": "",
-                    "Type": 0,
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.5,
-            "FromNodeId": 1,
-            "HasExitTime": true,
-            "Link": {
-                "FromNodeId": 12,
-                "LinkId": 3,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        }
-    ]
+    "OverrideControllers": []
 }
