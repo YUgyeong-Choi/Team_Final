@@ -130,13 +130,6 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pQaudTree_Manager)
 		return E_FAIL;
 
-	/*
-	m_pOcclusion_Manager = COcclusion_Manager::Create(*ppDeviceOut, *ppContextOut);
-	if (nullptr == m_pOcclusion_Manager)
-		return E_FAIL;
-	m_pOcclusion_Manager->Initialize();
-	*/
-
 
 	return S_OK;
 }

@@ -10,7 +10,7 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CGameInstance final : public CBase
 {
-	DECLARE_SINGLETON(CGameInstance);
+	DECLARE_SINGLETON(CGameInstance)
 
 private:
 	CGameInstance();
@@ -216,11 +216,6 @@ public:
 	void Reset_All();
 #pragma endregion
 
-#pragma region OCCLUSION_MANAGER
-	void Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX);
-	void End_Occlusion(CGameObject* pObj);
-	_bool IsVisible(CGameObject* pObj) const;
-#pragma endregion
 
 #pragma region OctoTree_MANAGER
 	HRESULT Ready_OctoTree(const vector<AABBBOX>& staticBounds, const map<Handle, _uint>& handleToIndex);
@@ -252,8 +247,8 @@ private:
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
-	class COcclusion_Manager*	m_pOcclusion_Manager = { nullptr };
 	class COctoTree_Manager*	m_pQaudTree_Manager = { nullptr };
+
 private:
 	_uint					m_iCurrentLevelIndex = 0;
 	float m_fTimeScale = 1.f; // 업데이트 속도

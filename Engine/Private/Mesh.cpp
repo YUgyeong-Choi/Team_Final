@@ -379,7 +379,7 @@ HRESULT CMesh::Ready_Anim_Mesh(ifstream& ifs, const vector<class CBone*>& Bones)
 
 	{
 		// t1: Local°ÊGlobal (uint)
-		m_iNumBones = m_BoneIndices.size();
+		m_iNumBones = static_cast<_int>(m_BoneIndices.size());
 		D3D11_BUFFER_DESC bd{};
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.ByteWidth = sizeof(_uint) * m_iNumBones;

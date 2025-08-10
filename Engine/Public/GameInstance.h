@@ -248,7 +248,6 @@ private:
 	class CSound_Device*		m_pSound_Device = { nullptr };
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
 	class COctoTree_Manager*	m_pQaudTree_Manager = { nullptr };
-	class CObserver_Manager* m_pObserver_Manager = { nullptr };
 
 private:
 	_uint					m_iCurrentLevelIndex = 0;
