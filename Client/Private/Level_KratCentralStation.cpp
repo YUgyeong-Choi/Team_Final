@@ -68,7 +68,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
@@ -750,6 +749,8 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 
 HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 {
+	m_pGameInstance->ClearIndexToObj();
+
 	vector<AABBBOX> staticBounds;
 	map<Handle, _uint> handleToIndex;
 

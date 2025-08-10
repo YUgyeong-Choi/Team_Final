@@ -76,6 +76,7 @@ public:
 
 	vector<class CGameObject*> GetIndexToObj() const { return m_vecIndexToObj; }
 	void PushBackIndexToObj(class CGameObject* vec) { m_vecIndexToObj.push_back(vec); }
+	void ClearIndexToObj() { m_vecIndexToObj.clear(); }
 
 public:
 	void InitIndexToHandle(const map<Handle, _uint>& handleToIndex, size_t count);
