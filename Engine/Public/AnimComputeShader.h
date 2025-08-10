@@ -24,7 +24,6 @@ private:
 public:
 	 HRESULT Initialize_AnimComputeShader(const _wstring& wstrFilePath,_uint iBoneCount);
 	 void UploadBoneMatrices(const _float4x4* pBoneMatrices); // GPU 버퍼로 넘기기 
-	 void Execute(_uint iThreadGroupX, _uint iThreadGroupY, _uint iThreadGroupZ); // 컴퓨트
 	 void ExecuteHierarchical(const _float4x4& preTransform); // 계층적 계산 실행
 	 HRESULT DownloadBoneMatrices(_float4x4* pOutBoneMatrices, _uint iCount); // GPU 버퍼에서 계산 정보 가져오기
 	 
@@ -45,6 +44,7 @@ public:
 	void   SetCSParams(const ANIM_CS_DESC& desc);
 	void   SetParentIndices(const vector<_int>& parents);
 	void   SetBoneMask(const vector<_float>& mask);
+
 private:
 	_uint m_iBoneCount{ 0 }; // 뼈대 개수
 	ID3D11Buffer* m_pCSParamBuffer = nullptr;
@@ -60,6 +60,9 @@ private:
 	ID3D11ShaderResourceView* m_pOutputBoneSRVForVS{ nullptr }; // 뼈대 SRV for VS
 
 	ID3D11UnorderedAccessView* m_pOutputBoneUAV{ nullptr }; // 뼈대 UAV
+
+	ID3D11Buffer* m_pOutputBufferForVS = nullptr;                // 추가 멤버
+	ID3D11ShaderResourceView* m_pOutputBoneSRV_VSOnly = nullptr; // 추가 멤버
 
 	vector<_int> m_BoneLevels;          // 각 뼈의 계층 레벨 (0=루트, 1=1단계...)
 	vector<_int> m_ParentIndices; // 부모 인덱스 배열

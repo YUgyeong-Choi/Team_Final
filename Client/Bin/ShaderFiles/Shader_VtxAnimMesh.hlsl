@@ -1,11 +1,19 @@
 
 #include "Engine_Shader_Defines.hlsli"
-
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+#pragma pack_matrix(row_major)
+ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 matrix g_BoneMatrices[512];
-StructuredBuffer<matrix> g_FinalBoneMatrices : register(t0);
 
+//
+//// 모든 뼈 컴바인드 매트릭스
+//StructuredBuffer<matrix> g_FinalBoneMatrices : register(t0);
+//
+//// 메시별 로컬 뼈 인덱스
+//StructuredBuffer<uint>     g_LocalToGlobal    : register(t1);
+//
+//// 지금 메시의 뼈 오프셋들
+//StructuredBuffer<matrix> g_Offsets          : register(t2);
 texture2D g_DiffuseTexture;
 
 struct VS_IN
@@ -30,16 +38,49 @@ struct VS_OUT
 VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out;    
-    
+    //
     float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
-        
-    matrix BoneMatrix = g_FinalBoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
-        g_FinalBoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
-        g_FinalBoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
-        g_FinalBoneMatrices[In.vBlendIndices.w] * fWeightW;
-    
-    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);    
+
+
+    matrix BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+        g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+        g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+        g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
     vector vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
+
+
+    //float4 w = In.vBlendWeights;
+    //w.w = 1.0 - (w.x + w.y + w.z);
+
+    //uint4 meshLocalIndices = In.vBlendIndices;  // 메시 내 로컬 본 인덱스
+
+    //// CPU와 동일한 계산: 메시 로컬 인덱스 i에 대해
+    //// offset[i] * globalBone[m_BoneIndices[i]]
+
+    //// 각 메시 로컬 인덱스에 대해 해당하는 글로벌 인덱스 찾기
+    //uint globalIndex0 = g_LocalToGlobal[meshLocalIndices.x];
+    //uint globalIndex1 = g_LocalToGlobal[meshLocalIndices.y];
+    //uint globalIndex2 = g_LocalToGlobal[meshLocalIndices.z];
+    //uint globalIndex3 = g_LocalToGlobal[meshLocalIndices.w];
+
+    //// CPU와 동일한 순서: offset * globalBone
+    //matrix skinMatrix0 = mul(g_Offsets[meshLocalIndices.x], g_FinalBoneMatrices[globalIndex0]);
+    //matrix skinMatrix1 = mul(g_Offsets[meshLocalIndices.y], g_FinalBoneMatrices[globalIndex1]);
+    //matrix skinMatrix2 = mul(g_Offsets[meshLocalIndices.z], g_FinalBoneMatrices[globalIndex2]);
+    //matrix skinMatrix3 = mul(g_Offsets[meshLocalIndices.w], g_FinalBoneMatrices[globalIndex3]);
+
+    //// 가중합
+    //matrix finalSkinMatrix = skinMatrix0 * w.x +
+    //    skinMatrix1 * w.y +
+    //    skinMatrix2 * w.z +
+    //    skinMatrix3 * w.w;
+
+    //// 스키닝 적용
+    //vector vPosition = mul(vector(In.vPosition, 1.f), finalSkinMatrix);
+    //vector vNormal = mul(vector(In.vNormal, 0.f), finalSkinMatrix);
+  
     
     matrix matWV, matWVP;
     

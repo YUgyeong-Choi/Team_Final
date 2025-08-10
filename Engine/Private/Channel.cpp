@@ -88,6 +88,7 @@ void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float f
 	{
 		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
 		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
+		//vRotation = XMVector3Normalize(vRotation);
 		vPosition = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vTranslation), 1.f);
 	}
 	else
@@ -172,6 +173,7 @@ void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float f
 	{
 		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
 		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
+		vRotation = XMQuaternionNormalize(vRotation);
 		vPosition = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vTranslation), 1.f);
 	}
 	else
@@ -217,6 +219,7 @@ void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float f
 
 		vScale = XMVectorLerp(vSourScale, vDestScale, fRatio);
 		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio);
+		vRotation = XMQuaternionNormalize(vRotation);
 		vPosition = XMVectorLerp(vSourTranslation, vDestTranslation, fRatio);
 	}
 
@@ -234,10 +237,11 @@ void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float f
 			XMVectorZero(),
 			vRotation,
 			vPosition);
-	if (outLocalMatrices && m_iBoneIndex < outLocalMatrices->size())
-	{
-		XMStoreFloat4x4(&(*outLocalMatrices)[m_iBoneIndex] ,TransformationMatrix);
-	}
+	//if (outLocalMatrices && m_iBoneIndex < outLocalMatrices->size())
+	//{
+	//	XMStoreFloat4x4(&(*outLocalMatrices)[m_iBoneIndex] , localMatrix);
+	//}
+	Bones[m_iBoneIndex]->Set_TransformationMatrix(localMatrix);
 	XMStoreFloat4x4(&m_LocalTransformationMatrix, localMatrix);
 }
 

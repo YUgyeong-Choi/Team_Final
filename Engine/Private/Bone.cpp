@@ -62,7 +62,7 @@ void CBone::Update_CombinedTransformationMatrix(const vector<CBone*>& Bones, _fm
 
 	_int iOriginalParentBoneIndex = m_iParentBoneIndex; // 원래 부모 뼈 인덱스 저장
 	_int iUseParentBoneIndex = (m_bApplyRootMotion && m_iParentBoneIndex == 1) ? -1 : iOriginalParentBoneIndex; // 트랜스레이션 뼈가 부모면 -1로 설정
-
+	m_iUseParentIndex = iUseParentBoneIndex; // 사용될 부모 뼈 인덱스 저장
 	if (-1 == iUseParentBoneIndex)
 	{
 		XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_TransformationMatrix) * PreTransformMatrix);

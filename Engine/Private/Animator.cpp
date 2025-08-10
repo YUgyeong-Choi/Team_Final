@@ -75,16 +75,7 @@ HRESULT CAnimator::Initialize_Test(void* pArg)
 		MSG_BOX("Failed to create CAnimComputeShader");
 		return E_FAIL;
 	}
-	vector<_int> boneParents;
-	boneParents.reserve(m_Bones.size());
-	for (const auto& bone : m_Bones)
-	{
-		boneParents.push_back(bone->Get_ParentBoneIndex());
-	}
-	m_pAnimComputeShader->SetParentIndices(boneParents);
-	m_pAnimComputeShader->BuildHierarchyLevels();
-	vector<_float> boneMask(m_Bones.size(), 0.f);
-	m_pAnimComputeShader->SetBoneMask(boneMask);
+
 	return S_OK;
 }
 
@@ -178,7 +169,7 @@ void CAnimator::DebugComputeShader()
 {
 	_int iBoneCount = static_cast<_int>(m_Bones.size());
 	vector<_float4x4> boneMatrices(iBoneCount);
-	if (SUCCEEDED(m_pAnimComputeShader->DownloadBoneMatrices(boneMatrices.data(), m_Bones.size())))
+	if (SUCCEEDED(m_pAnimComputeShader->DownloadBoneMatrices(boneMatrices.data(),static_cast<_uint>(m_Bones.size()))))
 	{
 		for (_int i = 0; i < iBoneCount; ++i)
 		{
@@ -412,7 +403,7 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 		}
 
 		// 상태에 설정된 가중치로 블렌드
-	/*	auto state = m_pCurAnimController->GetCurrentState();
+		auto state = m_pCurAnimController->GetCurrentState();
 		if (state)
 		{
 
@@ -424,46 +415,47 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 				else
 					m_Bones[i]->Set_TransformationMatrix(lowerM[i]);
 			}
-		}*/
+		}
 	}
 	else if (m_pCurrentAnim)
 	{
 		// 단일 전체 애니메이션
 		vector<_float4x4> vecLocalMat(iBoneCount);
-		m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents,&vecLocalMat);
-		if (!vecLocalMat.empty())
-		{
-		
-			vector<_float4x4> vecTransposedLocalMat(iBoneCount);
-			for (size_t i = 0; i < iBoneCount; ++i)
-			{
-				_matrix xmMatrix = XMLoadFloat4x4(&vecLocalMat[i]);
-				_matrix transposedXmMatrix = XMMatrixTranspose(xmMatrix);
-				XMStoreFloat4x4(&vecTransposedLocalMat[i], transposedXmMatrix);
-			}
 
-			// 로컬 행렬 업로드
-			m_pAnimComputeShader->UploadBoneMatrices(vecTransposedLocalMat.data());
-			_float4x4 preTransform = m_pModel->Get_PreTransformMatrix();
-			_matrix xmPreTransform = XMLoadFloat4x4(&preTransform);
-			_matrix transposedXmPreTransform = XMMatrixTranspose(xmPreTransform);
-			_float4x4 preTransformTransposed;
-			XMStoreFloat4x4(&preTransformTransposed, transposedXmPreTransform);
-			m_pAnimComputeShader->ExecuteHierarchical(preTransformTransposed);
-			if (GetKeyState('I') & 0x8000)
-			{
-				cout << "Animator::UpdateAnimation - Local Matrices:\n";
+		//m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents,&vecLocalMat);
+		m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents, nullptr);
+		//for (size_t i = 0; i < iBoneCount; ++i)
+		//{
+		//	vecLocalMat[i] = *m_Bones[i]->Get_TransformationMatrix();
+		//}
+		//if (!vecLocalMat.empty())
+		//{
+		//	//vector<_int> parentsForCS(m_Bones.size());
+		//	//for (_uint i = 0; i < m_Bones.size(); ++i)
+		//	//{
+		//	//	int p = m_Bones[i]->Get_ParentBoneIndex();               // 원본 부모
+		//	//	if (m_bApplyRootMotion && p == 1) p = -1; // CPU와 동일 규칙
+		//	//	parentsForCS[i] = p;
+		//	//}
 
-				DebugComputeShader();
-				cout << "End Animator\n";
-
-			}
-
-		/*	for (size_t i = 0; i < iBoneCount; ++i)
-			{
-				m_Bones[i]->Set_TransformationMatrix(gpuResults[i]);
-			}*/
-		}
+		//	//// 이 parentsForCS로 레벨 계산 + GPU 업로드
+		//	//BuildHierarchyLevelsFrom(parentsForCS);
+		//	//UploadParentsBuffer(parentsForCS); // g_Parents (t2)
+		//	//vector<_int> boneParents;
+		//	//boneParents.reserve(m_Bones.size());
+		//	//for (const auto& bone : m_Bones)
+		//	//{
+		//	//	boneParents.push_back(bone->Get_UseParentIndex());
+		//	//}
+		//	//m_pAnimComputeShader->SetParentIndices(parentsForCS);
+		//	//m_pAnimComputeShader->BuildHierarchyLevels();
+		//	//vector<_float> boneMask(m_Bones.size(), 0.f);
+		//	//m_pAnimComputeShader->SetBoneMask(boneMask);
+		//	//// 로컬 행렬 업로드
+		//	//m_pAnimComputeShader->UploadBoneMatrices(vecLocalMat.data());
+		//	//_float4x4 preTransform = m_pModel->Get_PreTransformMatrix();
+		//	//m_pAnimComputeShader->ExecuteHierarchical(preTransform);
+		//}
 		if (m_pCurrentAnim->IsRootMotionEnabled())
 		{
 			RootMotionDecomposition();
@@ -1076,7 +1068,7 @@ CAnimator* CAnimator::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 CComponent* CAnimator::Clone(void* pArg)
 {
 	CAnimator* pInstance = new CAnimator(*this);
-	if (FAILED(pInstance->Initialize_Test(pArg)))
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CAnimator");
 		Safe_Release(pInstance);

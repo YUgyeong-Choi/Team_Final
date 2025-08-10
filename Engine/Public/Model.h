@@ -58,10 +58,19 @@ public:
 	{
 		return m_ModelName;
 	}
-
+	const class CMesh* Get_Mesh(_uint iMeshIndex)
+	{
+		if (iMeshIndex >= m_iNumMeshes)
+			return nullptr;
+		return m_Meshes[iMeshIndex];
+	}
 public:
 	virtual HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iMeshIndex, aiTextureType eType, _uint iTextureIndex = 0);
 	HRESULT Bind_Bone_Matrices(class CShader* pShader, const _char* pConstantName, _uint iMeshIndex);
+	HRESULT Bind_SkinningSRVs(class CShader* pShader, _uint iMeshIndex)
+	{
+		return m_Meshes[iMeshIndex]->Bind_SkinningSRVs(pShader);
+	}
 	const auto& Get_PreTransformMatrix() const { return m_PreTransformMatrix; }
 
 public:

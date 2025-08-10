@@ -235,8 +235,20 @@ public:
             return nullptr;
         return m_pAnimComputeShader->GetOutputBoneSRV();
     }
+	ID3D11UnorderedAccessView* GetFinalBoneMatricesUAV() const {
+		if (m_pAnimComputeShader == nullptr)
+			return nullptr;
+		return m_pAnimComputeShader->GetOutputBoneUAV();
+	}
 #ifdef _DEBUG
     void DebugComputeShader();
+	vector<_float4x4> DebugGetFinalBoneMatrices() const {
+		if (m_pAnimComputeShader == nullptr)
+			return {};
+		vector<_float4x4> matrices(m_Bones.size());
+        m_pAnimComputeShader->DownloadBoneMatrices(matrices.data(),static_cast<_uint>(m_Bones.size()));
+		return matrices;
+	}
 #endif
 private:
     // 애니메이션 재생관련

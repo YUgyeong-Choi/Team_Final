@@ -1075,7 +1075,9 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 		if (ImGui::Button("Add State"))
 		{
-			const ImVec2 mousePos = ImNodes::EditorContextGetPanning(); // 현재 마우스 위치
+			ImVec2 mouse = ImGui::GetMousePosOnOpeningCurrentPopup();
+			ImVec2 canvasPos = ImNodes::EditorContextGetPanning();
+			ImVec2 editorPos = ImVec2(mouse.x - canvasPos.x, mouse.y - canvasPos.y);
 			CAnimation* selectedAnim = m_pCurAnimation;
 
 			//size_t newIdx = pCtrl->AddState(stateName, selectedAnim, m_iSpeicificNodeId++);
@@ -1092,7 +1094,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 			size_t newIdx = pCtrl->AddState(m_NewStateName, selectedAnim, iNodeId, bMaskBone);
 			auto& newState = pCtrl->GetStatesForEditor()[newIdx];
-			newState.fNodePos = { mousePos.x, mousePos.y };
+			newState.fNodePos = { editorPos.x, editorPos.y };
 			if (bMaskBone)
 			{
 				newState.maskBoneName = "Bip001-Spine2";
@@ -1680,7 +1682,8 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 	{
 		m_pCurAnimator->Update(fTimeDelta* m_iPlaySpeed);
 	}
-//	m_pCurModel->Update_Bones();
+
+	m_pCurModel->Update_Bones();
 }
 
 void CAnimTool::SelectAnimation()
@@ -2289,13 +2292,44 @@ HRESULT CAnimTool::Bind_Shader()
 	if (FAILED(m_pAnimShader->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
 		return E_FAIL;
 
+
+	//m_pContext->Flush();
 	if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
 		return E_FAIL;
 
+	
 	if (KEY_PRESSING(DIK_I))
 	{
-		m_pCurAnimator->DebugComputeShader();
+		auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
+		for (int i = 0;i<20;i++)
+		{
+			auto mat = tmp[i];
+			cout << "---------GPU 계산---------------" << endl;
+			cout << mat.m[0][0] << " " << mat.m[0][1] << " " << mat.m[0][2] << " " << mat.m[0][3] << endl;
+			cout << mat.m[1][0] << " " << mat.m[1][1] << " " << mat.m[1][2] << " " << mat.m[1][3] << endl;
+			cout << mat.m[2][0] << " " << mat.m[2][1] << " " << mat.m[2][2] << " " << mat.m[2][3] << endl;
+			cout << mat.m[3][0] << " " << mat.m[3][1] << " " << mat.m[3][2] << " " << mat.m[3][3] << endl;
+			cout << "------------------------" << endl;
+
+			auto mat2 = *m_pCurModel->Get_Bones()[i]->Get_CombinedTransformationMatrix();
+
+			cout << "---------CPU 계산---------------" << endl;
+			cout << mat2.m[0][0] << " " << mat2.m[0][1] << " " << mat2.m[0][2] << " " << mat2.m[0][3] << endl;
+			cout << mat2.m[1][0] << " " << mat2.m[1][1] << " " << mat2.m[1][2] << " " << mat2.m[1][3] << endl;
+			cout << mat2.m[2][0] << " " << mat2.m[2][1] << " " << mat2.m[2][2] << " " << mat2.m[2][3] << endl;
+			cout << mat2.m[3][0] << " " << mat2.m[3][1] << " " << mat2.m[3][2] << " " << mat2.m[3][3] << endl;
+			cout << "------------------------" << endl;
+
+		}
+	//	m_pCurAnimator->DebugComputeShader();
 	}
+	//auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
+	//for (int i = 0;i<m_pCurModel->Get_Bones().size();i++)
+	//{
+	//	auto& bone = m_pCurModel->Get_Bones()[i];
+	//	// bone->Get_CombinedTransformationMatrix()는 CPU에서 계산된 본 행렬
+	//	bone->Set_CombinedTransformationMatrix(XMLoadFloat4x4(&tmp[i]));
+	//}
 
 	_uint		iNumMesh = m_pCurModel->Get_NumMeshes();
 
@@ -2307,7 +2341,8 @@ HRESULT CAnimTool::Bind_Shader()
 		}
 			//	return E_FAIL;
 
-	//	m_pCurModel->Bind_Bone_Matrices(m_pAnimShader, "g_BoneMatrices", i);
+		//m_pCurModel->Bind_SkinningSRVs(m_pAnimShader, i);
+		m_pCurModel->Bind_Bone_Matrices(m_pAnimShader, "g_BoneMatrices", i);
 
 		if (FAILED(m_pAnimShader->Begin(0)))
 			return E_FAIL;
@@ -2316,9 +2351,19 @@ HRESULT CAnimTool::Bind_Shader()
 			return E_FAIL;
 	}
 
-	ID3D11ShaderResourceView* nullSRV = nullptr;
-	// VS 단계 t0 슬롯에서 언바인드
-	m_pContext->VSSetShaderResources(0, 1, &nullSRV);
+	//ID3D11ShaderResourceView* cur[3]{};
+	//m_pContext->VSGetShaderResources(0, 3, cur);
+	//auto* expect = m_pCurAnimator->GetFinalBoneMatricesSRV();
+	//assert(cur[0] == expect); // ★ 이제 통과해야 정상
+	//for (auto& s : cur) if (s) s->Release();
+	//ID3D11UnorderedAccessView* nullUAV = nullptr;
+	//UINT counts = 0;
+	//m_pContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, &counts);
+	//ID3D11ShaderResourceView* nullSRV[3]{ nullptr, nullptr, nullptr };
+
+
+	//// VS 단계 t0,t1,t2 슬롯에서 언바인드
+	//m_pContext->VSSetShaderResources(0, 3, nullSRV);
 
 	return S_OK;
 }
