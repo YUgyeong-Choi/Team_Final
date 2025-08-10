@@ -207,35 +207,33 @@ void CCamera_Orbital::Update_TargetCameraMatrix(_float fTimeDelta)
 
 void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 {
-	// 1) 플레이어/타겟 위치
+
 	XMVECTOR vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
 	XMVECTOR vTargetPos = m_pLockOnTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.3f, 0.f, 0.f);
-
-	// 2) 중점(0.5) + 전방(F)
 	XMVECTOR vMid = (vPlayerPos + vTargetPos) * 0.5f;
 
-	XMVECTOR vF = XMVector3Normalize(vTargetPos - vPlayerPos);
-	if (XMVector3Less(XMVector3LengthSq(vF), XMVectorReplicate(1e-6f))) {
-		// 둘이 거의 같은 위치면 플레이어 LOOK 사용
-		vF = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
+	// 플레이어와 타겟이 가까울 때 예외 처리
+	XMVECTOR vCamForward = XMVector3Normalize(vTargetPos - vPlayerPos);
+	_float fDistance = XMVectorGetX(XMVector3LengthSq(vCamForward));
+	if (fDistance < 0.0001f) {
+		vCamForward = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
 	}
 
-	// 3) 거리 목표(dTarget)
-	float span = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos)); // 둘 사이 거리
-	const float kFrame = 0.85f;   // 화면 여유(작을수록 더 멀게)
-	const float pad = 1.0f;     // 근접 패딩
+
+	_float span = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos)); 
+
 	const float dMin = 3.0f;     // 최소
 	const float dMax = 6.0f;     // 최대(기본)
 
-	float r = 0.5f * span + pad;                // 화면에 둘 다 담기 위한 반지름
-	float dFov = (r / kFrame) / tanf(m_fFov * 0.5f);
+	float r = 0.5f * span + m_fPadding;                // 화면에 둘 다 담기 위한 반지름
+	float dFov = (r / m_fFrame) / tanf(m_fFov * 0.5f);
 	float dTarget = std::clamp(dFov, dMin, dMax);
 
 	// 3-1) 플레이어 최소 이격(깊이) 1차 보장: dTarget 산출 직후
 	{
 		const float minPlayerDepth = 1.2f; // F축 최소 깊이
-		XMVECTOR vDesiredPre = vMid - vF * dTarget;
-		float playerDepth = XMVectorGetX(XMVector3Dot(vPlayerPos - vDesiredPre, vF));
+		XMVECTOR vDesiredPre = vMid - vCamForward * dTarget;
+		float playerDepth = XMVectorGetX(XMVector3Dot(vPlayerPos - vDesiredPre, vCamForward));
 		if (playerDepth < minPlayerDepth) {
 			dTarget += (minPlayerDepth - playerDepth);
 			dTarget = std::min(dTarget, dMax); // 그래도 dMax는 넘지 않게
@@ -248,7 +246,7 @@ void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 	dCurr = dCurr + (dTarget - dCurr) * aDist;
 
 	// 5) 목표 카메라 위치 = 중점에서 -F로 dCurr
-	XMVECTOR vDesired = vMid - vF * dCurr;
+	XMVECTOR vDesired = vMid - vCamForward * dCurr;
 
 	// 6) 스프링암(충돌 보정)
 	XMVECTOR vDir = XMVector3Normalize(vDesired - vMid);
@@ -289,12 +287,12 @@ void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 		float minDepth = minDepthNear + (minDepthFar - minDepthNear) * tSpan;
 
 		// 현재 카메라에서 플레이어까지 F축 깊이
-		float currDepth = XMVectorGetX(XMVector3Dot(vPlayerPos - vCamPos, vF));
+		float currDepth = XMVectorGetX(XMVector3Dot(vPlayerPos - vCamPos, vCamForward));
 		if (currDepth < minDepth) {
 			float needBack = minDepth - currDepth;
 			float maxExtra = 2.0f; // dMax 초과 허용 한도(과하게 뒤로 빠지는 것 방지)
 			float extra = std::min(needBack, maxExtra);
-			vCamPos -= vF * extra; // 뒤로( -F 방향 ) 살짝 더 빼줌
+			vCamPos -= vCamForward * extra; // 뒤로( -F 방향 ) 살짝 더 빼줌
 			// 필요하다면 여기서 한 번 더 레이캐스트로 재확인해도 됨(맵 구조에 따라)
 		}
 	}
