@@ -45,6 +45,16 @@ HRESULT	CYWTool::Render_ImGui()
 	return S_OK;
 }
 
+HRESULT CYWTool::Save(const _char* Map)
+{
+	return S_OK;
+}
+
+HRESULT CYWTool::Load(const _char* Map)
+{
+	return S_OK;
+}
+
 void CYWTool::Free()
 {
 	__super::Free();

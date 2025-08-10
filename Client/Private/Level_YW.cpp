@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 
 #include "MapTool.h"
+#include "NavTool.h"
 #include "DecalTool.h"
 
 #pragma region 다른 사람 거
@@ -60,6 +61,8 @@ void CLevel_YW::Priority_Update(_float fTimeDelta)
 
 void CLevel_YW::Update(_float fTimeDelta)
 {
+	Control();
+
 	m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Update(fTimeDelta);
 
 	m_pCamera_Manager->Update(fTimeDelta);
@@ -151,6 +154,64 @@ HRESULT CLevel_YW::Ready_Layer_Sky(const _wstring strLayerTag)
 	return S_OK;
 }
 
+void CLevel_YW::Render_File()
+{
+	ImGui::Begin("File");
+
+	//콤보박스에서 레벨을 선택 하면 그 맵이 로드되도록
+	//저장할 때도 콤보박스에 선택된 파일에 저장하도록
+	ImGui::Text("Load Map");
+	_bool bRequestLoad = false;
+	if (ImGui::BeginCombo("##MapCombo", Maps[iMapIndex]))
+	{
+		for (_int i = 0; i < IM_ARRAYSIZE(Maps); i++)
+		{
+			_bool bSelected = (iMapIndex == i);
+			if (ImGui::Selectable(Maps[i], bSelected))
+			{
+				iMapIndex = i;
+				bRequestLoad = true; // 로드 요청
+			}
+
+
+			if (bSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	if (bRequestLoad)
+	{
+		//맵 로드
+		static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])->Load(Maps[iMapIndex]);
+
+		// 네비게이션 로드
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Save Map"))
+	{
+		//맵 저장
+		if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])->Save(Maps[iMapIndex])))
+			MSG_BOX("맵 저장 실패");
+
+		// 네비게이션 저장
+	}
+
+	ImGui::End();
+}
+
+void CLevel_YW::Control()
+{
+	//컨트롤 S 를 눌렀을 때 현재 활성화된 툴을 저장시킨다.
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	{
+		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(Maps[iMapIndex]);
+	}
+}
+
+
 HRESULT CLevel_YW::Ready_ImGuiTools()
 {
 	if (FAILED(Ready_Layer_PreviewObject(TEXT("Layer_PreviewObject"))))
@@ -158,6 +219,14 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = reinterpret_cast<CYWTool*>(CMapTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
+		return E_FAIL;
+
+	//MapData를 따라 맵을 로드한다.
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Load(Maps[iMapIndex])))
+		return E_FAIL;
+
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext));
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)])
 		return E_FAIL;
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)] = reinterpret_cast<CYWTool*>(CDecalTool::Create(m_pDevice, m_pContext));
@@ -199,9 +268,13 @@ HRESULT CLevel_YW::ImGui_Render()
 			if (ImGui::BeginTabItem("Map Tool"))
 			{
 				m_eActiveTool = IMGUITOOL::MAP;
-				
-				/*if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
-					return E_FAIL;*/
+
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Nav Tool"))
+			{
+				m_eActiveTool = IMGUITOOL::NAV;
 
 				ImGui::EndTabItem();
 			}
@@ -209,9 +282,6 @@ HRESULT CLevel_YW::ImGui_Render()
 			if (ImGui::BeginTabItem("Decal Tool"))
 			{
 				m_eActiveTool = IMGUITOOL::DECAL;
-
-				/*if (FAILED(static_cast<CDecalTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
-					return E_FAIL;*/
 
 				ImGui::EndTabItem();
 			}
@@ -221,10 +291,19 @@ HRESULT CLevel_YW::ImGui_Render()
 			ImGui::EndTabBar();
 		}
 		ImGui::End();
+
+
 	}
+
+	//여기서 맵을 선택하면 맵과, 네비게이션 등등... 로드 되도록 하는 게 좋아보인다.
+	Render_File();
+
+
 
 	if (FAILED(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Render_ImGui()))
 		return E_FAIL;
+
+
 	
 	return S_OK;
 }

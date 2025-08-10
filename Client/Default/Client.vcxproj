@@ -213,6 +213,8 @@
     <ClInclude Include="..\public\Monster_Base.h" />
     <ClInclude Include="..\public\Monster_Test.h" />
     <ClInclude Include="..\Public\MySequence.h" />
+    <ClInclude Include="..\public\Nav.h" />
+    <ClInclude Include="..\public\NavTool.h" />
     <ClInclude Include="..\Public\Observer_Player_Status.h" />
     <ClInclude Include="..\public\Observer_Slot.h" />
     <ClInclude Include="..\public\Observer_Weapon.h" />
@@ -343,6 +345,8 @@
     <ClCompile Include="..\private\Monster_Base.cpp" />
     <ClCompile Include="..\private\Monster_Test.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
+    <ClCompile Include="..\private\Nav.cpp" />
+    <ClCompile Include="..\private\NavTool.cpp" />
     <ClCompile Include="..\Private\Observer_Player_Status.cpp" />
     <ClCompile Include="..\private\Observer_Slot.cpp" />
     <ClCompile Include="..\private\Observer_Weapon.cpp" />

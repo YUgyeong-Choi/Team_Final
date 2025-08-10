@@ -32,7 +32,7 @@ CNavigation::CNavigation(const CNavigation& Prototype)
 
 HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 {
-	_ulong	dwByte = {};
+	/*_ulong	dwByte = {};
 	HANDLE	hFile = CreateFile(pNavigationDataFile, GENERIC_READ, 0, nullptr,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
@@ -55,7 +55,48 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 		m_Cells.push_back(pCell);
 	}
 
-	CloseHandle(hFile);
+	CloseHandle(hFile);*/
+
+	ifstream ifs(pNavigationDataFile);
+	if (!ifs.is_open())
+		return E_FAIL;
+
+	json j;
+	try
+	{
+		ifs >> j;
+	}
+	catch (const exception& e)
+	{
+		cerr << "JSON parse error: " << e.what() << "\n";
+		return E_FAIL;
+	}
+
+	if (!j.contains("cells") || !j["cells"].is_array())
+		return E_FAIL;
+
+	for (auto& cellJson : j["cells"])
+	{
+		if (!cellJson.contains("points") || !cellJson["points"].is_array())
+			continue;
+
+		if (cellJson["points"].size() != 3)
+			continue; // 꼭 3개의 점만 허용
+
+		_float3 vPoints[3] = {};
+		for (int i = 0; i < 3; ++i)
+		{
+			vPoints[i].x = cellJson["points"][i].value("x", 0.0f);
+			vPoints[i].y = cellJson["points"][i].value("y", 0.0f);
+			vPoints[i].z = cellJson["points"][i].value("z", 0.0f);
+		}
+
+		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, static_cast<_int>(m_Cells.size()));
+		if (nullptr == pCell)
+			return E_FAIL;
+
+		m_Cells.push_back(pCell);
+	}
 
 	if (FAILED(SetUp_Neighbors()))
 		return E_FAIL;
@@ -131,6 +172,60 @@ _vector CNavigation::SetUp_Height(_fvector vWorldPos)
 	return XMVector3TransformCoord(vLocalPos, XMLoadFloat4x4(&m_WorldMatrix));
 }
 
+HRESULT CNavigation::Select_Cell(_fvector vWorldPos)
+{
+	//월드 포지션을 던지면 모든 셀을 안에 있는지 확인하고 그 셀의 인덱스를 던져주자
+	for (CCell* pCell : m_Cells)
+	{
+		if (pCell->isIn(XMVector3TransformCoord(vWorldPos, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix))), nullptr))
+		{
+			m_iIndex = pCell->Get_Index();
+			return S_OK;
+		}
+	}
+
+
+	return E_FAIL;
+}
+
+HRESULT CNavigation::Snap(_float3* vWorldPos, _float fSnapThreshold)
+{
+	//처음 그리는 셀이면 스냅 기능 끄기
+	if (m_Cells.size() == 0)
+	{
+		return E_FAIL;
+	}
+
+	_float fMinDist = FLT_MAX;
+	_vector fMinDistPoint = {};
+
+	for (CCell* pCell : m_Cells)
+	{
+		for (_int i = 0; i < CCell::POINT_END; ++i)
+		{
+			_vector vPoint = pCell->Get_Point(static_cast<CCell::POINT>(i));
+
+			_float fDist = XMVectorGetX(XMVector3Length(XMLoadFloat3(vWorldPos) - vPoint));
+
+			if (fDist < fSnapThreshold && fDist < fMinDist)
+			{
+				fMinDist = fDist;
+				fMinDistPoint = vPoint;
+			}
+		}
+	}
+
+	if (fMinDist != FLT_MAX)
+	{
+		XMStoreFloat3(vWorldPos, fMinDistPoint);
+
+		return S_OK;
+	}
+
+
+	return E_FAIL;
+}
+
 _float CNavigation::Compute_NavigationY(const _vector pTransform)
 {
 	_matrix		WorldMatrixInv = XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
@@ -146,6 +241,72 @@ _float CNavigation::Compute_NavigationY(const _vector pTransform)
 	return 0.f;
 }
 
+HRESULT CNavigation::Add_Cell(const _float3* pPoints)
+{
+	CCell* pCell = CCell::Create(m_pDevice, m_pContext, pPoints, static_cast<_int>(m_Cells.size()));
+	if (nullptr == pCell)
+		return E_FAIL;
+	m_Cells.push_back(pCell);
+
+	if (FAILED(SetUp_Neighbors()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CNavigation::Delete_Cell()
+{
+	if (m_iIndex == -1)
+		return S_OK;
+
+	Safe_Release(m_Cells[m_iIndex]);
+
+	m_Cells.erase(m_Cells.begin() + m_iIndex);
+	//삭제된 셀의 뒤 쪽 셀들의 인덱스를 앞당겨야한다.
+	for (auto iter = m_Cells.begin() + m_iIndex; iter != m_Cells.end(); ++iter)
+	{
+		_int iIndex = (*iter)->Get_Index();
+		(*iter)->Set_Index(--iIndex);
+	}
+
+	m_iIndex = -1;
+
+	if (FAILED(SetUp_Neighbors()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CNavigation::Save()
+{
+	json Json;
+	Json["cells"] = json::array();
+	
+	for (auto& pCell : m_Cells)
+	{
+		json CellJson;
+		CellJson["points"] = json::array();
+		for (int i = 0; i < CCell::POINT_END; ++i)
+		{
+			_float3 Point = { XMVectorGetX(pCell->Get_Point(static_cast<CCell::POINT>(i))),
+							  XMVectorGetY(pCell->Get_Point(static_cast<CCell::POINT>(i))),
+							  XMVectorGetZ(pCell->Get_Point(static_cast<CCell::POINT>(i))) };
+			CellJson["points"].push_back({ {"x", Point.x}, {"y", Point.y}, {"z", Point.z} });
+		}
+		Json["cells"].push_back(CellJson);
+	}
+
+	ofstream ofs("../Bin/Save/NavTool/Navigation.json");
+	if (!ofs.is_open())
+		return E_FAIL;
+
+	ofs << Json.dump(4); // 4 spaces for indentation
+
+	ofs.close();
+
+	return S_OK;
+}
+
 #ifdef _DEBUG
 HRESULT CNavigation::Render()
 {	
@@ -154,36 +315,55 @@ HRESULT CNavigation::Render()
 
 	_float4		vColor = {};
 
-	if (-1 == m_iIndex)
+	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+	vColor = _float4(0.f, 1.f, 0.f, 1.f);
+	m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
+	m_pShader->Begin(0);
+
+	//모두다 초록색으로 출력
+	for (auto& pCell : m_Cells)
 	{
-		m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+		//선택된 거랑 같으면 제외
+		if (pCell->Get_Index() == m_iIndex)
+		{
+			pCell->Get_NeighborIndices();
+			continue;
+		}
 
-		vColor = _float4(0.f, 1.f, 0.f, 1.f);		
-
-		m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
-
-		m_pShader->Begin(0);
-
-		for (auto& pCell : m_Cells)
-			pCell->Render();
+		pCell->Render();
 	}
-	else
+
+	if (m_iIndex != -1)
 	{
-		_float4x4		WorldMatrix = m_WorldMatrix;
+		//이웃 파란색으로
+		_int* pNeighborIndices = m_Cells[m_iIndex]->Get_NeighborIndices();
+
+		for (_int i = 0; i < 3; ++i)
+		{
+			if (pNeighborIndices[i] != -1)
+			{
+				vColor = _float4(0.f, 0.f, 1.f, 1.f);
+				m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
+				m_pShader->Begin(0);
+				m_Cells[pNeighborIndices[i]]->Render();
+
+			}
+		}
+
+		/*_float4x4		WorldMatrix = m_WorldMatrix;
 		WorldMatrix.m[3][1] += 0.1f;
 
-		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
+		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);*/
 
+		//선택된것만 빨간색으로 
 		vColor = _float4(1.f, 0.f, 0.f, 1.f);
 
 		m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
 
 		m_pShader->Begin(0);
-		
+
 		m_Cells[m_iIndex]->Render();
 	}
-
-	
 
 	return S_OK;
 }
@@ -194,6 +374,8 @@ HRESULT CNavigation::SetUp_Neighbors()
 {
 	for (auto& pSourCell : m_Cells)
 	{
+		pSourCell->Clear_Neighbors();
+
 		for (auto& pDestCell : m_Cells)
 		{
 			if (pSourCell == pDestCell)

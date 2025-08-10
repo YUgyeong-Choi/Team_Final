@@ -5,8 +5,13 @@
 #include "EffectContainer.h"
 #include "Client_Function.h"
 
+#pragma region YW
 #include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
+#include "Nav.h"
+#pragma endregion
+
+
 
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
@@ -59,6 +64,11 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 	m_pGameInstance->Set_IsChangeLevel(false);
 
+
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -108,8 +118,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			/*if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 				return E_FAIL;*/
 
-				//제이슨으로 저장된 맵을 로드한다. (왜 안되지 모델을 왜 못찾지)
-			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+			//제이슨으로 저장된 맵을 로드한다.
+			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 				return;
 
 
@@ -179,12 +189,15 @@ HRESULT CLevel_KratCentralStation::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::LoadMap(_uint iLevelIndex)
+HRESULT CLevel_KratCentralStation::LoadMap(_uint iLevelIndex, const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/MapData.json");
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
+
+	ifstream inFile(MapPath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Map_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
 		return S_OK;
 	}
 
@@ -317,6 +330,18 @@ HRESULT CLevel_KratCentralStation::Load_StaticMesh_Instance(_uint iObjectCount, 
 
 	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh_Instance"),
 		iLevelIndex, LayerTag, &StaticMeshInstanceDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
+{
+	CNav::NAV_DESC NavDesc = {};
+	NavDesc.iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Nav"),
+		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag, &NavDesc)))
 		return E_FAIL;
 
 	return S_OK;

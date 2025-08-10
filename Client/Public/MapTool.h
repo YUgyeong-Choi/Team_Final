@@ -20,16 +20,17 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 	virtual HRESULT	Render_ImGui() override;
-
+	virtual HRESULT Load(const _char* Map) override;
+	virtual HRESULT Save(const _char* Map) override;
 
 private:
 	//∏ ≈¯ ¡∂¿€
 	void Control(_float fTimeDelta);
 
 private:
-	//HRESULT Ready_Model();
-	HRESULT Save_Map();
-	HRESULT Load_Map();
+	HRESULT Ready_Model(const _char* Map);
+
+
 
 	HRESULT Save_Favorite();
 	HRESULT Load_Favorite();
@@ -50,6 +51,7 @@ private:
 	HRESULT Duplicate_Selected_Object();
 	HRESULT Undo_Selected_Object();
 	void	DeleteMapToolObject();
+	void	Clear_Map();
 	
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 

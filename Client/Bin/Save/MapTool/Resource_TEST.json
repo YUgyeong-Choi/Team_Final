@@ -1,0 +1,8 @@
+[
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_TicketOffice_01",
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TicketOffice_01.bin"
+    }
+]

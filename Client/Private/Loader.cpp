@@ -8,12 +8,13 @@
 
 
 #pragma region LEVEL_KRAT_CENTERAL_STATION
-#
+#include "StaticMesh.h"
+#include "StaticMesh_Instance.h"
+#include "Nav.h"
 #pragma endregion
 
 #pragma region LEVEL_KRAT_HOTEL
-#include "StaticMesh.h"
-#include "StaticMesh_Instance.h"
+
 #pragma endregion
 
 #pragma region LEVEL_YW
@@ -395,10 +396,15 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	m_fRatio = 0.4f;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
+
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Save/NavTool/Navigation.json")))))
+		return E_FAIL;
 
 
 	m_fRatio = 0.6f;
@@ -437,6 +443,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
 		CWeapon_Monster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//네비게이션 컴포넌트 작동시켜주는 녀석
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Nav"),
+		CNav::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_fRatio = 1.f;
@@ -798,11 +809,15 @@ HRESULT CLoader::Loading_For_YW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW))))
+	if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Save/NavTool/Navigation.json")))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -859,19 +874,23 @@ HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelF
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Models(_uint iLevelIndex)
+HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+
+	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+
 		return S_OK;
 	}
 
-	json ReadyModelJson;
+	json ResourceJson;
 	try
 	{
-		inFile >> ReadyModelJson;
+		inFile >> ResourceJson;
 		inFile.close();
 	}
 	catch (const exception& e)
@@ -882,7 +901,7 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex)
 	}
 
 	// JSON 데이터 확인
-	for (const auto& element : ReadyModelJson)
+	for (const auto& element : ResourceJson)
 	{
 		string ModelName = element.value("ModelName", "");
 		string Path = element.value("Path", "");
@@ -921,12 +940,16 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex)
 }
 
 
-HRESULT CLoader::Loading_Models_MapTool(_uint iLevelIndex)
+HRESULT CLoader::Loading_Models_MapTool(_uint iLevelIndex, const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+
+	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+
 		return S_OK;
 	}
 
@@ -1304,7 +1327,7 @@ HRESULT CLoader::Loading_For_YG()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::YG))))
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::YG), "STATION")))
 		return E_FAIL;
 
 
