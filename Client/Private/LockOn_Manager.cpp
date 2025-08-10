@@ -34,12 +34,11 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         {
             m_bActive = true;
             m_pBestTarget = pTarget;
-            // 타겟 락온 카메라에 넘겨주기 ?
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, true);
         }
         else
         {
             CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_OrbitalPosBackLookFront();
-            // 오비탈 카메라 플레이어 시야에 맞게
         }
         m_bStartLockOn = false;
     }
@@ -102,6 +101,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         {
             m_bActive = false;
             m_pBestTarget = nullptr;
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
         }
 
 #ifdef _DEBUG
@@ -115,7 +115,6 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
             _data.vHitPos = hitPos;
             pPlayer->Get_Controller()->Add_RenderRay(_data);
         }
-
 #endif
     }
 
