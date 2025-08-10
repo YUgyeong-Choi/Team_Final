@@ -610,11 +610,16 @@ FrustumHit COctoTree_Manager::Frustum::OctoIsInAABB(const _float3& bmin, const _
         _float fSignedCenterDist = XMVectorGetX(XMVector3Dot(vNormal, vCenter)) + XMVectorGetW(vPlane);
         _float fProjRadius = XMVectorGetX(XMVector3Dot(XMVectorAbs(vNormal), vHalfExtent));
 
-        if (fSignedCenterDist + fProjRadius < -fEpsilon)
-            return FrustumHit::Outside;     // 확실히 바깥
 
-        if (fSignedCenterDist - fProjRadius < fEpsilon)
-            bAnyIntersect = true;           // 한 면이라도 걸침
+        const _float fOutsideEps = static_cast<_float>(1e-4f);
+        const _float fInsideSlack = -static_cast<_float>(0.35f) * XMVectorGetX(XMVector3Length(vHalfExtent));
+
+        if (fSignedCenterDist + fProjRadius < -fOutsideEps)
+            return FrustumHit::Outside;
+
+        if (fSignedCenterDist - fProjRadius < fInsideSlack)
+            bAnyIntersect = true;
+
     }
 
     return bAnyIntersect ? FrustumHit::Intersect : FrustumHit::Inside;

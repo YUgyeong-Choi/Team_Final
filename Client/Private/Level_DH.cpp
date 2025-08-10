@@ -72,6 +72,12 @@ void CLevel_DH::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 }
 
+void CLevel_DH::Late_Update(_float fTimeDelta)
+{
+	__super::Late_Update(fTimeDelta);
+
+}
+
 HRESULT CLevel_DH::Render()
 {
 	SetWindowText(g_hWnd, TEXT("동하 레벨입니다."));
@@ -99,6 +105,8 @@ HRESULT CLevel_DH::Render()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	return S_OK;
 }
+
+
 
 #pragma region 맵 로드
 
@@ -286,7 +294,6 @@ HRESULT CLevel_DH::Load_StaticMesh(_uint iObjectCount, const json& objects, stri
 		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
 			ENUM_CLASS(LEVEL::DH), LayerTag, &StaticMeshDesc)))
 			return E_FAIL;
-
 	}
 
 	return S_OK;
