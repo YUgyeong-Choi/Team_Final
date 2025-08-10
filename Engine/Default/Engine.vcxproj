@@ -167,6 +167,10 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
+    <PostBuildEvent>
+      <Command>CD $(SolutionDir)
+CALL $(SolutionDir)\UpdateLib.bat</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Animation.h" />
