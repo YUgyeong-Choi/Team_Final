@@ -74,6 +74,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Controller()))
 		return E_FAIL;
 
+	// 서로는 충돌 무시하게
+	m_pControllerCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pControllerCom->Add_IngoreActors(m_pControllerCom->Get_Actor());
+
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pControllerCom->Get_Actor());
+
 	SyncTransformWithController();
 
 	/* [ 카메라 세팅 ] */
@@ -155,6 +162,10 @@ void CPlayer::Update(_float fTimeDelta)
 	Movement(fTimeDelta);
 
 	Update_Collider_Actor();
+
+	// 락온관련
+	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
+		CLockOn_Manager::Get_Instance()->Set_Active();
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -799,8 +810,6 @@ HRESULT CPlayer::Ready_Controller()
 	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f, m_pHitReport);
 	m_pControllerCom->Set_Owner(this);
 	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
-
-	m_pControllerCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }

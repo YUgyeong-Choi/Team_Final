@@ -17,6 +17,8 @@
 #include "Player.h"
 #include "Wego.h"
 
+#include "LockOn_Manager.h"
+
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -159,6 +161,12 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		m_pGameInstance->ToggleDebugOctoTree();
 
 	m_pCamera_Manager->Update(fTimeDelta);
+	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
+}
+
+void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
+{
+	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 }
 
 void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
@@ -685,6 +693,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
+	
 	CUnit::UNIT_DESC pDesc{};
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
@@ -698,7 +707,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
 		return E_FAIL;
 
-
+	
 
 	return S_OK;
 }

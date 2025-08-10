@@ -326,17 +326,17 @@ HRESULT CGameInstance::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pR
 	return m_pRenderer->Add_RenderGroup(eRenderGroup, pRenderObject);
 }
 
-#ifdef _DEBUG
-HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
-{
-	return m_pRenderer->Add_DebugComponent(pDebugCom);
-}
-
 void CGameInstance::ClearRenderObjects()
 {
 	return m_pRenderer->ClearRenderObjects();
 }
 
+
+#ifdef _DEBUG
+HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
+{
+	return m_pRenderer->Add_DebugComponent(pDebugCom);
+}
 
 _bool CGameInstance::Get_RenderCollider()
 {

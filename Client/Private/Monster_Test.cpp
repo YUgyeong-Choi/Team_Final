@@ -1,7 +1,7 @@
 #include "Monster_Test.h"
 #include "GameInstance.h"
 #include "Weapon_Monster.h"
-
+#include "LockOn_Manager.h"
 CMonster_Test::CMonster_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUnit{pDevice, pContext}
 {
@@ -58,6 +58,11 @@ void CMonster_Test::Update(_float fTimeDelta)
 	
 	// 움직이고 부르기
 	Update_Collider();
+
+	// 움직이고 부르기 나중에 몬스터 부모 생기면 거기서 통합적으로 불러주면 됨
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
+		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+	}
 }
 
 void CMonster_Test::Late_Update(_float fTimeDelta)
@@ -91,7 +96,7 @@ void CMonster_Test::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 
 void CMonster_Test::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("몬스터 충돌중\n");
+	//printf("몬스터 충돌중\n");
 }
 
 void CMonster_Test::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -161,7 +166,7 @@ HRESULT CMonster_Test::Ready_Weapon()
 {
 
 	CWeapon_Monster::WEAPON_DESC Desc{};
-	Desc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.eLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };
@@ -175,7 +180,7 @@ HRESULT CMonster_Test::Ready_Weapon()
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Weapon"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Monster_Weapon"), &pGameObject, &Desc)))
 		return E_FAIL;
 

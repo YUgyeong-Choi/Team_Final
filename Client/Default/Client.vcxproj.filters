@@ -699,6 +699,7 @@
     <ClInclude Include="..\public\Weapon_Monster.h">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Decal.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1059,6 +1060,7 @@
     <ClCompile Include="..\private\Weapon_Monster.cpp">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">

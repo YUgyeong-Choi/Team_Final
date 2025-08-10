@@ -1186,16 +1186,6 @@ HRESULT CRenderer::Change_ViewportDesc(_uint iWidth, _uint iHeight)
 	return S_OK;
 }
 
-HRESULT CRenderer::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
-{
-	CComponent* pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
-	if (nullptr == pComponent)
-		return E_FAIL;
-
-	*ppOut = pComponent;
-
-	return S_OK;
-}
 
 
 #ifdef _DEBUG
