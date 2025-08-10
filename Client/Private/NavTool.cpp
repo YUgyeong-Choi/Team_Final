@@ -20,7 +20,7 @@ HRESULT CNavTool::Initialize_Prototype()
 
 HRESULT CNavTool::Initialize(void* pArg)
 {
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	return S_OK;
@@ -60,6 +60,36 @@ HRESULT	CNavTool::Render_ImGui()
 	return S_OK;
 }
 
+HRESULT CNavTool::Load(const _char* Map)
+{
+	//기존 네비게이션 제거
+	Remove_Component(TEXT("Com_Navigation"));
+	Safe_Release(m_pNavigationCom);
+
+	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + StringToWString(Map);
+
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), wsPrototypeTag.c_str(),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CNavTool::Save(const _char* Map)
+{
+	if (FAILED(m_pNavigationCom->Save(Map)))
+	{
+		MSG_BOX("네비게이션 저장 실패");
+	}
+	else
+	{
+		MSG_BOX("네비게이션 저장 성공");
+	}
+
+	return S_OK;
+}
+
 void CNavTool::Control(_float fTimeDelta)
 {
 	if (GetForegroundWindow() != g_hWnd)
@@ -73,17 +103,17 @@ void CNavTool::Control(_float fTimeDelta)
 	}
 
 	//Ctrl + S 저장
-	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
-	{
-		if (FAILED(m_pNavigationCom->Save()))
-		{
-			MSG_BOX("네비게이션 저장 실패");
-		}
-		else
-		{
-			MSG_BOX("네비게이션 저장 성공");
-		}
-	}
+	//if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	//{
+	//	if (FAILED(m_pNavigationCom->Save()))
+	//	{
+	//		MSG_BOX("네비게이션 저장 실패");
+	//	}
+	//	else
+	//	{
+	//		MSG_BOX("네비게이션 저장 성공");
+	//	}
+	//}
 
 	//셀 선택
 	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
@@ -191,10 +221,13 @@ void CNavTool::Make_Clockwise(_float3* Points)
 	}
 }
 
-HRESULT CNavTool::Ready_Components()
+HRESULT CNavTool::Ready_Components(void* pArg)
 {
+	NAVTOOL_DESC* pDesc = static_cast<NAVTOOL_DESC*>(pArg);
+	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsMapName;
+
 	/* For.Com_Navigation */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Navigation"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 

@@ -61,6 +61,10 @@ public:
 	//<맵툴>에 필요한 모델들을 로딩한다.
 	HRESULT Loading_Models_MapTool(_uint iLevelIndex, const _char* Map);
 	HRESULT Load_Model_MapTool(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex);
+
+	//네비게이션을 로딩한다.
+	HRESULT Loading_Navigation(_uint iLevelIndex, const _char* Map);
+
 #pragma endregion
 	
 #pragma region GL

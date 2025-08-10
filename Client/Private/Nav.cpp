@@ -27,6 +27,8 @@ HRESULT CNav::Initialize(void* pArg)
 
 void CNav::Priority_Update(_float fTimeDelta)
 {
+	if(m_pGameInstance->Key_Down(DIK_N))
+		m_bVisible = !m_bVisible;
 }
 
 void CNav::Update(_float fTimeDelta)
@@ -37,7 +39,8 @@ void CNav::Update(_float fTimeDelta)
 
 void CNav::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
+	if(m_bVisible)
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
 }
 
 HRESULT CNav::Render()
@@ -52,9 +55,22 @@ HRESULT CNav::Render()
 HRESULT CNav::Ready_Components(void* pArg)
 {
 	NAV_DESC* Desc = static_cast<NAV_DESC*>(pArg);
+	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_");
 
-	/* For.Com_Navigation */
-	if (FAILED(__super::Add_Component(Desc->iLevelIndex, TEXT("Prototype_Component_Navigation"),
+	switch (Desc->iLevelIndex)
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		wsPrototypeTag += TEXT("STATION");
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		wsPrototypeTag += TEXT("HOTEL");
+		break;
+	default:
+		return E_FAIL;
+		break;
+	}
+
+	if (FAILED(__super::Add_Component(Desc->iLevelIndex, wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 
