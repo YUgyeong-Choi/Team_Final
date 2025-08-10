@@ -40,19 +40,25 @@ public:
 	_float Get_Pitch() { return m_fPitch; }
 	_float Get_Yaw() { return m_fYaw; }
 
+	/* [ 락온 시작 설정 ] */
+	void Set_LockOn(CGameObject* pTarget, _bool bActive);
+
+	/* [ 직접 주는 pitch & yaw 값대로 오비탈 위치 가져옴 ] */
 	_matrix Get_OrbitalWorldMatrix(_float pitch, _float yaw);
+
+	/* [ 플레이어 뒤로 카메라 셋 ] */
 	void Set_OrbitalPosBackLookFront();
 private:
-	_float			m_fMouseSensor = { };
-
+	void Update_CameraMatrix(_float fTimeDelta);
+	void Update_CameraLockOnMatrix(_float fTimeDelta);
 private:
-	_bool			m_bRockOn = false;
+	_bool			m_bLockOn = false;
 
 	_float			m_fYaw = 0.f;
 	_float			m_fPitch = 0.f;
 	_float			m_fDistance = 3.f;
 	_float			m_fZoomSpeed = 0.5f;
-
+	_float			m_fMouseSensor = { };
 
 	_vector			m_vTargetCamPos = {};
 	_vector			m_vCorrectedCamPos = {};
@@ -61,8 +67,8 @@ private:
 
 private:
 	CGameObject*	m_pPlayer = { nullptr };
-
-	_bool m_bActive = true;
+	// 락온이 안될 때는 항상 nullptr
+	CGameObject*	m_pLockOnTarget = { nullptr }; 
 public:
 	static CCamera_Orbital* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
