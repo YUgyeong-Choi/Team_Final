@@ -36,7 +36,7 @@ public:
 	void SetPlayer(CGameObject* pPlayer) { m_pPlayer = pPlayer; }
 	void Set_InitCam();
 
-	void Set_PitchYaw(_float pitch, _float yaw);
+	void Set_PitchYaw(_float fPitch, _float fYaw);
 	_float Get_Pitch() { return m_fPitch; }
 	_float Get_Yaw() { return m_fYaw; }
 
@@ -44,25 +44,31 @@ public:
 	void Set_LockOn(CGameObject* pTarget, _bool bActive);
 
 	/* [ 직접 주는 pitch & yaw 값대로 오비탈 위치 가져옴 ] */
-	_matrix Get_OrbitalWorldMatrix(_float pitch, _float yaw);
+	_matrix Get_OrbitalWorldMatrix(_float fPitch, _float fYaw);
 
-	/* [ 플레이어 뒤로 카메라 셋 ] */
-	void Set_OrbitalPosBackLookFront();
+	/* [ 방향 벡터로 Yaw Pich 가지고오기 ] */
+	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed);
 private:
 	void Update_CameraMatrix(_float fTimeDelta);
-	void Update_CameraLockOnMatrix(_float fTimeDelta);
+	void Update_TargetCameraMatrix(_float fTimeDelta);
+	void Update_LockOnCameraMatrix(_float fTimeDelta);
+
+	void Set_CameraMatrix();
 private:
 	_bool			m_bLockOn = false;
+	_bool			m_bSetPitchYaw = false;
 
 	_float			m_fYaw = 0.f;
 	_float			m_fPitch = 0.f;
+	_float			m_fTargetYaw = 0.f;
+	_float			m_fTargetPitch = 0.f;
+	_float			m_fTargetLerpSpeed = 0.f;
+
 	_float			m_fDistance = 3.f;
 	_float			m_fZoomSpeed = 0.5f;
 	_float			m_fMouseSensor = { };
 
 	_vector			m_vTargetCamPos = {};
-	_vector			m_vCorrectedCamPos = {};
-
 	_vector			m_vPlayerPosition = {};
 
 private:

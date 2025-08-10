@@ -38,7 +38,8 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         }
         else
         {
-            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_OrbitalPosBackLookFront();
+            XMVECTOR backDir = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -1;
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir,15.f);
         }
         m_bStartLockOn = false;
     }
@@ -102,6 +103,17 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
             m_bActive = false;
             m_pBestTarget = nullptr;
             CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
+
+            // Pitch Yaw ¿ª°è»ê
+            XMVECTOR camerakDir = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Get_State(STATE::LOOK) * -1);
+            const _float bx = XMVectorGetX(camerakDir);
+            const _float by = XMVectorGetY(camerakDir);
+            const _float bz = XMVectorGetZ(camerakDir);
+
+            _float fYaw = atan2f(bx, bz);
+            _float fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
+            
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
         }
 
 #ifdef _DEBUG

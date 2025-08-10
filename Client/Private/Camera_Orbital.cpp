@@ -73,11 +73,14 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 	if (m_bLockOn)
 	{
-		Update_CameraLockOnMatrix(fTimeDelta);
+		Update_LockOnCameraMatrix(fTimeDelta);
 	}
 	else
 	{
-		Update_CameraMatrix(fTimeDelta);
+		if (m_bSetPitchYaw)
+			Update_TargetCameraMatrix(fTimeDelta);
+		else
+			Update_CameraMatrix(fTimeDelta);
 	}
 	
 	__super::Update(fTimeDelta);
@@ -101,10 +104,10 @@ void CCamera_Orbital::Set_InitCam()
 	}
 }
 
-void CCamera_Orbital::Set_PitchYaw(_float pitch, _float yaw)
+void CCamera_Orbital::Set_PitchYaw(_float fPitch, _float fYaw)
 {
-	m_fPitch = pitch;
-	m_fYaw = yaw;
+	m_fPitch = fPitch;
+	m_fYaw = fYaw;
 }
 
 void CCamera_Orbital::Set_LockOn(CGameObject* pTarget, _bool bActive)
@@ -113,18 +116,17 @@ void CCamera_Orbital::Set_LockOn(CGameObject* pTarget, _bool bActive)
 	m_bLockOn = bActive;
 }
 
-_matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
+_matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float fPitch, _float fYaw)
 {
 	if(!m_pPlayer)
 		return _matrix();
 
-	m_vPlayerPosition = static_cast<CTransform*>(m_pPlayer->Get_TransfomCom())->Get_State(STATE::POSITION);
-	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+	m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
 	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
-	_float x = m_fDistance * cosf(pitch) * sinf(yaw);
-	_float y = m_fDistance * sinf(pitch);
-	_float z = m_fDistance * cosf(pitch) * cosf(yaw);
+	_float x = m_fDistance * cosf(fPitch) * sinf(fYaw);
+	_float y = m_fDistance * sinf(fPitch);
+	_float z = m_fDistance * cosf(fPitch) * cosf(fYaw);
 	_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
 	_vector vCamPos = m_vPlayerPosition + vOffset;
@@ -135,27 +137,30 @@ _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float pitch, _float yaw)
 
 	// 행렬 생성
 	_matrix matWorld;
-	matWorld.r[0] = vRight;                             // Right 
-	matWorld.r[1] = vUp;                                // Up
-	matWorld.r[2] = vLook;                              // Look
-	matWorld.r[3] = XMVectorSetW(vCamPos, 1.f);         // Position
+	matWorld.r[0] = vRight;                          
+	matWorld.r[1] = vUp;                              
+	matWorld.r[2] = vLook;                            
+	matWorld.r[3] = XMVectorSetW(vCamPos, 1.f);        
 
 	return matWorld;
 }
 
-void CCamera_Orbital::Set_OrbitalPosBackLookFront()
+void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 {
-	XMVECTOR cameraPos = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -1;
+	const _float bx = XMVectorGetX(vDir);
+	const _float by = XMVectorGetY(vDir);
+	const _float bz = XMVectorGetZ(vDir);
 
-	const _float bx = XMVectorGetX(cameraPos);
-	const _float by = XMVectorGetY(cameraPos);
-	const _float bz = XMVectorGetZ(cameraPos);
-
-	m_fYaw = atan2f(bx, bz);                                   
-	m_fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));                 
+	// Pitch Yaw 역계산
+	m_fTargetYaw = atan2f(bx, bz);
+	m_fTargetPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
 
 	// 살짝 위에서 보이게 
-	m_fPitch += XMConvertToRadians(10.f);
+	m_fTargetPitch += XMConvertToRadians(10.f);
+
+	m_fTargetLerpSpeed = fLerpSpeed;
+
+	m_bSetPitchYaw = true;
 }
 
 void CCamera_Orbital::Update_CameraMatrix(_float fTimeDelta)
@@ -170,64 +175,163 @@ void CCamera_Orbital::Update_CameraMatrix(_float fTimeDelta)
 	m_fDistance -= iWheelDelta * fTimeDelta * m_fZoomSpeed;
 	m_fDistance = clamp(m_fDistance, 2.f, 5.5f);
 
-	_float afterYaw = m_fYaw;
-	_float afterPitch = m_fPitch;
+	//  Yaw Pitch 설정
+	_float fAfterYaw = m_fYaw;
+	_float fAfterPitch = m_fPitch;
 
-	// 회전값 누적
-	afterYaw += MouseMoveX * fTimeDelta * m_fMouseSensor;
-	afterPitch += MouseMoveY * fTimeDelta * m_fMouseSensor;
+	fAfterYaw += MouseMoveX * fTimeDelta * m_fMouseSensor;
+	fAfterPitch += MouseMoveY * fTimeDelta * m_fMouseSensor;
 
 	// 카메라 Pitch 제한
 	if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
-		afterPitch = clamp(afterPitch, XMConvertToRadians(-30.f), XMConvertToRadians(60.f));
+		fAfterPitch = clamp(fAfterPitch, XMConvertToRadians(-30.f), XMConvertToRadians(60.f));
 	else
-		afterPitch = clamp(afterPitch, XMConvertToRadians(-50.f), XMConvertToRadians(60.f));
+		fAfterPitch = clamp(fAfterPitch, XMConvertToRadians(-50.f), XMConvertToRadians(60.f));
 
-	m_fYaw = LerpFloat(m_fYaw, afterYaw, fTimeDelta * 5.f);
-	m_fPitch = LerpFloat(m_fPitch, afterPitch, fTimeDelta * 5.f);
+	m_fYaw = LerpFloat(m_fYaw, fAfterYaw, fTimeDelta * 5.f);
+	m_fPitch = LerpFloat(m_fPitch, fAfterPitch, fTimeDelta * 5.f);
 
-	// 기준점 위치 계산 (플레이어 + 높이)
+	// 카메라 설정
+	Set_CameraMatrix();
+}
+
+void CCamera_Orbital::Update_TargetCameraMatrix(_float fTimeDelta)
+{
+	// Yaw 와 Pitch 설정
+	m_fYaw = LerpFloat(m_fYaw, m_fTargetYaw, fTimeDelta * m_fTargetLerpSpeed);
+	m_fPitch = LerpFloat(m_fPitch, m_fTargetPitch, fTimeDelta * m_fTargetLerpSpeed);
+
+	// 카메라 설정
+	Set_CameraMatrix();
+
+	if (fabs(m_fYaw - m_fTargetYaw) < 0.001f && fabs(m_fPitch - m_fTargetPitch) < 0.001f)
+	{
+		m_bSetPitchYaw = false;
+	}
+}
+
+void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
+{
+	XMVECTOR vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+	XMVECTOR vTargetPos = m_pLockOnTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.3f, 0.f, 0.f);
+
+	// 중점
+	XMVECTOR vMid = (vPlayerPos + vTargetPos) * 0.5f;
+
+	// 플레이어 타겟 방향
+	XMVECTOR vF = XMVector3Normalize(vTargetPos - vPlayerPos);
+	if (XMVector3Less(XMVector3LengthSq(vF), XMVectorReplicate(1e-6f))) {
+		// 둘이 거의 같은 위치면 플레이어의 LOOK을 사용
+		vF = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
+	}
+
+	// ===== 거리 계산 =====
+	float span = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos)); // 둘 사이 거리
+	const float kFrame = 0.85f;   // 화면 여유
+	const float pad = 1.0f;    // 근접 패딩(둘이 붙어도 이만큼은 확보)
+	const float dMin = 3.0f;    // 카메라 최솟값(너무 들이대지 않기)
+	const float dMax = 8.0f;   // 최댓값
+
+	// 세로 FOV 기반 필요 거리 (반지름span/2 + pad)
+	float r = 0.5f * span + pad;
+	float dFov = (r / kFrame) / tanf(m_fFov * 0.5f);
+
+	// 최종 목표 거리: 바닥/최대 포함
+	float dTarget = std::clamp(dFov, dMin, dMax);
+
+	// 거리 스무딩(프레임 독립 지수보간)
+	static float dCurr = dMin; // 멤버로 빼도 됨
+	float aDist = 1.0f - expf(-8.0f * fTimeDelta); // 속도 계수 8
+	dCurr = dCurr + (dTarget - dCurr) * aDist;
+
+	// 목표 카메라 위치 = 중점에서 -F로 dCurr
+	XMVECTOR vDesired = vMid - vF * dCurr;
+
+	// ===== 스프링암(충돌 보정) =====
+	XMVECTOR vDir = XMVector3Normalize(vDesired - vMid);
+	float rayLen = XMVectorGetX(XMVector3Length(vDesired - vMid));
+
+	XMFLOAT3 fC, fDir; XMStoreFloat3(&fC, vMid); XMStoreFloat3(&fDir, vDir);
+	PxVec3 origin(fC.x, fC.y, fC.z), direction(fDir.x, fDir.y, fDir.z);
+
+	PxRaycastBuffer hit;
+	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+	PxQueryFilterData filter; filter.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+	// 자기 자신/타겟 무시
+	unordered_set<PxActor*> ignore;
+	ignore = static_cast<CPlayer*>(m_pPlayer)->Get_Controller()->Get_IngoreActors();
+	CIgnoreSelfCallback cb(ignore);
+
+	XMVECTOR vCamPos = vDesired;
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, rayLen, hit, hitFlags, filter, &cb) && hit.hasBlock)
+	{
+		float pullPad = 0.3f;  // 표면 여유
+		float minDist = 0.8f;  // 너무 붙지 않기
+		float hitDist = max(hit.block.distance - pullPad, minDist);
+		vCamPos = vMid + vDir * hitDist;
+	}
+
+	// ===== 위치/시선 보간 =====
+	XMVECTOR vCur = m_pTransformCom->Get_State(STATE::POSITION);
+	float aPos = 1.0f - expf(-10.0f * fTimeDelta); // 위치 스무스
+	XMVECTOR vPos = XMVectorLerp(vCur, vCamPos, aPos);
+
+	// 시선은 중점으로(조금 스무스)
+	XMVECTOR Fcur = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
+	XMVECTOR Fdes = XMVector3Normalize(vMid - vPos);
+	float aAim = 1.0f - expf(-12.0f * fTimeDelta);
+	XMVECTOR F = XMVector3Normalize(XMVectorLerp(Fcur, Fdes, aAim));
+
+	// 월드 행렬 세팅
+	XMVECTOR UpW = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	XMVECTOR Rw = XMVector3Normalize(XMVector3Cross(UpW, F));
+	XMVECTOR Uw = XMVector3Normalize(XMVector3Cross(F, Rw));
+
+	_matrix W = XMMatrixIdentity();
+	W.r[0] = XMVectorSetW(Rw, 0.f);
+	W.r[1] = XMVectorSetW(Uw, 0.f);
+	W.r[2] = XMVectorSetW(F, 0.f);
+	W.r[3] = XMVectorSetW(vPos, 1.f);
+	m_pTransformCom->Set_WorldMatrix(W);
+}
+
+void CCamera_Orbital::Set_CameraMatrix()
+{
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+
+	// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
 	m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-
-	// 플레이어가 보는 방향보다 조금 뒤에
 	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 
-	// 오비탈 카메라 방향 계산 (spherical to cartesian)
+	// 방향 계산
 	_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
 	_float y = m_fDistance * sinf(m_fPitch);
 	_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 	_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-	// 기본 목표 카메라 위치
+	// 목표 카메라 위치
 	m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
 	// --- 스프링암 Raycast 처리 시작 ---
 	_vector vRayDir = XMVector3Normalize(vOffset);
-	_float fTargetDist = XMVectorGetX(XMVector3Length(vOffset));
 
-	XMFLOAT3 fStart, fDir;
-	XMStoreFloat3(&fStart, m_vPlayerPosition);
-	XMStoreFloat3(&fDir, vRayDir);
-
-	PxVec3 origin(fStart.x, fStart.y, fStart.z);
-	PxVec3 direction(fDir.x, fDir.y, fDir.z);
+	PxVec3 origin = VectorToPxVec3(m_vPlayerPosition);
+	PxVec3 direction = VectorToPxVec3(vRayDir);
 
 	PxRaycastBuffer hit;
 	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
-	PxRigidActor* actor = pPlayer->Get_Actor(pPlayer->Get_Controller());
-	unordered_set<PxActor*> ignoreActors;
-	ignoreActors.insert(actor);
+	unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
 	CIgnoreSelfCallback callback(ignoreActors);
 
-	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fTargetDist, hit, hitFlags, filterData, &callback))
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, m_fDistance, hit, hitFlags, filterData, &callback))
 	{
 		if (hit.hasBlock)
 		{
-			// 스프링암 보정 거리
 			_float fHitDist = hit.block.distance - 0.3f; // 여유 거리
 			fHitDist = max(fHitDist, 0.5f);              // 너무 가까워지지 않게 제한
 
@@ -236,47 +340,10 @@ void CCamera_Orbital::Update_CameraMatrix(_float fTimeDelta)
 		}
 	}
 	// --- 스프링암 Raycast 처리 끝 ---
-	
+
 	// 카메라 설정
 	m_pTransformCom->Set_State(STATE::POSITION, m_vTargetCamPos);
 	m_pTransformCom->LookAt(m_vPlayerPosition);
-}
-
-void CCamera_Orbital::Update_CameraLockOnMatrix(_float fTimeDelta)
-{
-	//_vector P = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	//_vector T = m_pLockOnTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.3f, 0.f, 0.f);
-
-	// 플레이어와 타겟 위치
-	XMVECTOR vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	XMVECTOR vTargetPos = m_pLockOnTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.3f, 0.f, 0.f);
-
-	// 두 점 중점 계산
-	XMVECTOR vMid = (vPlayerPos + vTargetPos) * 0.5f;
-
-	// 두 캐릭터 간 거리
-	float fDistance = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos));
-
-	// m_fFov는 세로 기준이므로 세로 FOV로 거리 계산
-	// 삼각함수로 거리 확보:  tan(FOV/2) = (높이/2) / 거리
-	float fRequiredDist = (fDistance * 0.5f) / tanf(m_fFov * 0.5f);
-
-	// 카메라 방향(플레이어-타겟 바라보는 방향 반대)
-	XMVECTOR vForward = XMVector3Normalize(vMid - vPlayerPos);
-	XMVECTOR vCamDir = -vForward;
-
-	// 최종 카메라 위치 = 중점 + 뒤로 뺀 값 + 살짝 위로 올리기
-	XMVECTOR vCamPos = vMid + vCamDir * fRequiredDist + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
-
-	// Up 벡터
-	XMVECTOR vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-	// 월드 행렬 구성
-	XMMATRIX matView = XMMatrixLookAtLH(vCamPos, vMid, vUp);
-	XMMATRIX matWorld = XMMatrixInverse(nullptr, matView);
-
-	// 트랜스폼에 적용
-	m_pTransformCom->Set_WorldMatrix(matWorld);
 }
 
 CCamera_Orbital* CCamera_Orbital::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -290,7 +357,6 @@ CCamera_Orbital* CCamera_Orbital::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 	}
 	return pGameInstance;
 }
-
 
 CGameObject* CCamera_Orbital::Clone(void* pArg)
 {
