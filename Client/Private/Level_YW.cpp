@@ -61,6 +61,8 @@ void CLevel_YW::Priority_Update(_float fTimeDelta)
 
 void CLevel_YW::Update(_float fTimeDelta)
 {
+	Control();
+
 	m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Update(fTimeDelta);
 
 	m_pCamera_Manager->Update(fTimeDelta);
@@ -180,25 +182,33 @@ void CLevel_YW::Render_File()
 
 	if (bRequestLoad)
 	{
-		//Load_Map(Maps[iMapIndex]);
+		//맵 로드
+		static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])->Load(Maps[iMapIndex]);
+
+		// 네비게이션 로드
 	}
 
 	ImGui::SameLine();
 
 	if (ImGui::Button("Save Map"))
 	{
-		/*if (FAILED(Save_Map(Maps[iMapIndex])))
-			MSG_BOX("맵 저장 실패");*/
+		//맵 저장
+		if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])->Save(Maps[iMapIndex])))
+			MSG_BOX("맵 저장 실패");
+
+		// 네비게이션 저장
 	}
 
-	//ImGui::Separator();
-
-	//if (ImGui::Button("Load Map"))
-	//{
-
-	//}
-
 	ImGui::End();
+}
+
+void CLevel_YW::Control()
+{
+	//컨트롤 S 를 눌렀을 때 현재 활성화된 툴을 저장시킨다.
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	{
+		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(Maps[iMapIndex]);
+	}
 }
 
 
@@ -209,6 +219,10 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = reinterpret_cast<CYWTool*>(CMapTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
+		return E_FAIL;
+
+	//MapData를 따라 맵을 로드한다.
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Load(Maps[iMapIndex])))
 		return E_FAIL;
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext));
@@ -277,12 +291,14 @@ HRESULT CLevel_YW::ImGui_Render()
 			ImGui::EndTabBar();
 		}
 		ImGui::End();
+
+
 	}
 
+	//여기서 맵을 선택하면 맵과, 네비게이션 등등... 로드 되도록 하는 게 좋아보인다.
+	Render_File();
 
-	//여기서 맵을 선택하면
-	//맵과, 네비게이션 등등... 로드 되도록 하는 게 좋아보인다.
-	//Render_File();
+
 
 	if (FAILED(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Render_ImGui()))
 		return E_FAIL;

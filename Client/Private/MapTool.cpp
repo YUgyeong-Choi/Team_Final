@@ -49,10 +49,6 @@ HRESULT CMapTool::Initialize(void* pArg)
 	/*if (FAILED(Ready_Model()))
 		return E_FAIL;*/
 
-	//MapData를 따라 맵을 로드한다.
-	if (FAILED(Load_Map(Maps[iMapIndex])))
-		return E_FAIL;
-
 	m_pPreviewObject = static_cast<CPreviewObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_PreviewObject")));
 	if (m_pPreviewObject == nullptr)
 		return E_FAIL;
@@ -172,12 +168,6 @@ void CMapTool::Control(_float fTimeDelta)
 
 			}
 		}
-	}
-
-	//Ctrl + S 맵 저장
-	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
-	{
-		Save_Map(Maps[iMapIndex]);
 	}
 
 	//Ctrl + D 선택된 오브젝트 복제
@@ -306,7 +296,7 @@ HRESULT CMapTool::Ready_Model(const _char* Map)
 	return S_OK;
 }
 
-HRESULT CMapTool::Save_Map(const _char* Map)
+HRESULT CMapTool::Save(const _char* Map)
 {
 	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
 	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
@@ -417,7 +407,7 @@ HRESULT CMapTool::Save_Map(const _char* Map)
 	return S_OK;
 }
 
-HRESULT CMapTool::Load_Map(const _char* Map)
+HRESULT CMapTool::Load(const _char* Map)
 {
 	//현재 맵에 배치된 오브젝트를 모두 삭제하자
 	Clear_Map();
@@ -607,7 +597,7 @@ HRESULT CMapTool::Render_MapTool()
 
 	Render_Detail();
 
-	Render_File();
+	//Render_File();
 
 	//드래그 사각형 그리기
 	if (m_bDragging && ImGui::GetIO().WantCaptureMouse == false)
@@ -1032,55 +1022,6 @@ void CMapTool::Render_Preview()
 		// 창이 닫힌 상태일 때
 		m_bPreviewHovered = false;
 	}
-
-	ImGui::End();
-}
-
-void CMapTool::Render_File()
-{
-	ImGui::Begin("File");
-
-	//콤보박스에서 레벨을 선택 하면 그 맵이 로드되도록
-	//저장할 때도 콤보박스에 선택된 파일에 저장하도록
-	ImGui::Text("Load Map");
-	_bool bRequestLoad = false;
-	if (ImGui::BeginCombo("##MapCombo", Maps[iMapIndex]))
-	{
-		for (_int i = 0; i < IM_ARRAYSIZE(Maps); i++)
-		{
-			_bool bSelected = (iMapIndex == i);
-			if (ImGui::Selectable(Maps[i], bSelected))
-			{
-				iMapIndex = i;
-				bRequestLoad = true; // 로드 요청
-			}
-
-
-			if (bSelected)
-				ImGui::SetItemDefaultFocus();
-		}
-		ImGui::EndCombo();
-	}
-
-	if (bRequestLoad)
-	{
-		Load_Map(Maps[iMapIndex]);
-	}
-
-	ImGui::SameLine();
-
-	if (ImGui::Button("Save Map"))
-	{
-		if (FAILED(Save_Map(Maps[iMapIndex])))
-			MSG_BOX("맵 저장 실패");
-	}
-
-	//ImGui::Separator();
-
-	//if (ImGui::Button("Load Map"))
-	//{
-
-	//}
 
 	ImGui::End();
 }

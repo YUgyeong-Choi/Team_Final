@@ -49,6 +49,10 @@ private:
 	void Render_File();
 
 private:
+	//툴 조작
+	void Control();
+
+private:
 #pragma region 맵 종류
 	enum class Map {
 		STATION,

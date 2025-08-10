@@ -1,16 +1,10 @@
 {
-    "ModelCount": 2,
+    "ModelCount": 1,
     "Models": [
         {
             "Collision": false,
-            "ModelName": "FloorA",
-            "ObjectCount": 0,
-            "Objects": []
-        },
-        {
-            "Collision": false,
             "ModelName": "SM_Station_TicketOffice_01",
-            "ObjectCount": 1,
+            "ObjectCount": 2,
             "Objects": [
                 {
                     "ColliderType": 0,
@@ -37,6 +31,35 @@
                             0.991972804069519,
                             0.2866288125514984,
                             -0.17658449709415436,
+                            0.9999999403953552
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            0.991972804069519,
+                            0.2866288125514984,
+                            -0.8515465259552002,
                             0.9999999403953552
                         ]
                     ]

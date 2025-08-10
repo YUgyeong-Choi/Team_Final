@@ -20,7 +20,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta)override;
 	virtual HRESULT Render() override;
 	virtual HRESULT	Render_ImGui();
-
+	virtual HRESULT Save(const _char* Map); //void Arg·Î ¹Ù²ÜÁö´Â ¾ÆÁ÷ °í¹Î
+	virtual HRESULT Load(const _char* Map);
 public:
 	virtual void Free() override;
 
