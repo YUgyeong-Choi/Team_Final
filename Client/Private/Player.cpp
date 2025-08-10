@@ -744,6 +744,7 @@ HRESULT CPlayer::Ready_StationDoor()
 {
 	CStaticMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
+	Desc.bUseOctoTree = false;
 	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));

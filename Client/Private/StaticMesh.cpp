@@ -26,6 +26,8 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 
 	m_eLevelID = StaicMeshDESC->m_eLevelID;
 
+	m_bUseOctoTree = StaicMeshDESC->bUseOctoTree;
+
 	m_szMeshID = StaicMeshDESC->szMeshID;
 
 	m_iRender = StaicMeshDESC->iRender;
@@ -62,24 +64,19 @@ void CStaticMesh::Update(_float fTimeDelta)
 
 void CStaticMesh::Late_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	/* [ 쿼드트리를 사용하지않을 경우 절두체랑 직접 비교한다. ] */
+	if (!m_bUseOctoTree)
 	{
-		//_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
-		//CGameObject::Compute_ViewZ(&vTemp);
-		//m_pGameInstance->Begin_Occlusion(this, m_pPhysXActorCom);
-
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		}
 	}
 
-
-	// 왜 이거 안되지?
-	/*if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f))
-	{
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
-	}*/
-
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	//if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	//{
+	//	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	//}
 }
 
 void CStaticMesh::Last_Update(_float fTimeDelta)
@@ -106,10 +103,8 @@ HRESULT CStaticMesh::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
-			return E_FAIL;
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
-			return E_FAIL;
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
 			if (!m_bDoOnce)
@@ -152,6 +147,15 @@ HRESULT CStaticMesh::Render()
 #endif
 
 	return S_OK;
+}
+
+AABBBOX CStaticMesh::GetWorldAABB() const
+{
+	PxBounds3 wb = m_pPhysXActorCom->Get_Actor()->getWorldBounds();
+	AABBBOX worldBox{ {wb.minimum.x, wb.minimum.y, wb.minimum.z},
+					  {wb.maximum.x, wb.maximum.y, wb.maximum.z} };
+
+	return worldBox;
 }
 
 void CStaticMesh::Update_ColliderPos()

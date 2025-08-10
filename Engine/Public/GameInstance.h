@@ -224,6 +224,18 @@ public:
 	_bool IsVisible(CGameObject* pObj) const;
 #pragma endregion
 
+#pragma region OctoTree_MANAGER
+	HRESULT Ready_OctoTree(const vector<AABBBOX>& staticBounds, const map<Handle, _uint>& handleToIndex);
+	void InitIndexToHandle(const map<Handle, _uint>& handleToIndex, size_t count);
+	void BeginQueryFrame(const XMMATRIX& view, const XMMATRIX& proj);
+	vector<class CGameObject*> GetIndexToObj() const;
+	void PushBackIndexToObj(class CGameObject* vec);
+	vector<_uint> GetCulledStaticObjects() const;
+	Handle StaticIndexToHandle(_uint idx) const;
+	void ToggleDebugOctoTree();
+	void QueryVisible();
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -243,6 +255,7 @@ private:
 	class CSound_Device*		m_pSound_Device = { nullptr };
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
 	class COcclusion_Manager*	m_pOcclusion_Manager = { nullptr };
+	class COctoTree_Manager*	m_pQaudTree_Manager = { nullptr };
 private:
 	_uint					m_iCurrentLevelIndex = 0;
 	float m_fTimeScale = 1.f; // 업데이트 속도

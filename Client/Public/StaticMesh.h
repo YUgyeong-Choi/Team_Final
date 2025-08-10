@@ -31,6 +31,8 @@ public:
 			0.f, 0.f, 0.f, 1.f
 		);
 
+
+		_bool		bUseOctoTree = { true };
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
@@ -52,6 +54,9 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	AABBBOX GetWorldAABB() const;
+
+public:
 	LEVEL Get_LevelID() const { return m_eLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 
@@ -67,6 +72,7 @@ protected: /* [ 초기화 변수 ] */
 	_bool			m_bDoOnce = {};
 
 private:
+	_bool	m_bUseOctoTree = { true };
 	_bool	m_bUseTiling = { false };
 	_float2	m_vTileDensity = { 1.0f, 1.0f };
 

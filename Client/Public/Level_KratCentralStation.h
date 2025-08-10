@@ -20,8 +20,8 @@ public:
 	virtual HRESULT Initialize() override;
 	virtual void Priority_Update(_float fTimeDelta) override;
 	virtual void Update(_float fTimeDelta) override;
+	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
 
 #pragma region YW
 private:
@@ -49,6 +49,7 @@ private:
 	HRESULT Ready_Video();
 	HRESULT Ready_Monster();
 	HRESULT Ready_Effect();
+	HRESULT Ready_OctoTree();
 
 private:
 	HRESULT Load_Shader();
@@ -56,6 +57,7 @@ private:
 
 
 	HRESULT Add_Light(CDHTool::LIGHT_TYPE eType, CDHTool::LEVEL_TYPE eLType);
+	HRESULT Add_RenderGroup_OctoTree();
 
 private:
 	void ToggleHoldMouse() { m_bHold = !m_bHold; }
@@ -70,6 +72,9 @@ private:
 	CSound_Core* m_pBGM = { nullptr };
 
 	class CUI_Video* m_pStartVideo = {nullptr};
+
+private:
+	vector<class CStaticMesh*> m_vecOctoTreeObjects;
 
 private:
 	_bool m_bHold = { true };

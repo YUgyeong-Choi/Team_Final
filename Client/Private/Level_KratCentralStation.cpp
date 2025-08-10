@@ -3,6 +3,7 @@
 #include "Camera_Manager.h"
 #include "Effect_Manager.h"
 #include "EffectContainer.h"
+#include "Client_Function.h"
 
 #include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
@@ -130,6 +131,11 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Player()))
 				return;
 
+			/* [ 옥토트리 설정 ] */
+			if (FAILED(Ready_OctoTree()))
+				return;
+
+			
 
 			/* [ 플레이어 제어 ] */
 			m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
@@ -149,8 +155,17 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if(m_bHold)
 		HoldMouse();
 
+	if(KEY_DOWN(DIK_F7))
+		m_pGameInstance->ToggleDebugOctoTree();
 
 	m_pCamera_Manager->Update(fTimeDelta);
+}
+
+void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
+{
+	__super::Late_Update(fTimeDelta);
+
+	Add_RenderGroup_OctoTree();
 }
 
 HRESULT CLevel_KratCentralStation::Render()
@@ -251,11 +266,13 @@ HRESULT CLevel_KratCentralStation::Load_StaticMesh(_uint iObjectCount, const jso
 
 		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
-
-		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
-			iLevelIndex, LayerTag, &StaticMeshDesc)))
+		CGameObject* pGameObject = nullptr;
+		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
+			iLevelIndex, LayerTag, &pGameObject, &StaticMeshDesc)))
 			return E_FAIL;
 
+		CStaticMesh* pStaticMesh = dynamic_cast<CStaticMesh*>(pGameObject);
+		m_vecOctoTreeObjects.push_back(pStaticMesh);
 	}
 
 	return S_OK;
@@ -569,6 +586,25 @@ HRESULT CLevel_KratCentralStation::Add_Light(CDHTool::LIGHT_TYPE eType, CDHTool:
 	return S_OK;
 }
 
+HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
+{
+	_matrix matView = XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW));
+	_matrix matProj = XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ));
+
+	m_pGameInstance->BeginQueryFrame(matView, matProj);
+	m_pGameInstance->QueryVisible();
+
+	vector<class CGameObject*> AllStaticMesh = m_pGameInstance->GetIndexToObj();
+	const auto& VisitCell = m_pGameInstance->GetCulledStaticObjects();
+	for (_uint idx : VisitCell)
+	{
+		CGameObject* StaticMesh = AllStaticMesh[idx];
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, StaticMesh);
+	}
+
+	return S_OK;
+}
+
 HRESULT CLevel_KratCentralStation::Ready_Camera()
 {
 	m_pCamera_Manager->Initialize(LEVEL::STATIC);
@@ -679,6 +715,30 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	ECDesc.vPresetPosition = { 99.86f, 0.64f, -13.69f };
 	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
 		MSG_BOX("이펙트 생성 실패");
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_OctoTree()
+{
+	vector<AABBBOX> staticBounds;
+	map<Handle, _uint> handleToIndex;
+
+	staticBounds.reserve(m_vecOctoTreeObjects.size());
+	_uint nextHandleId = 1000; // 핸들 ID 인데 1000부터 시작임
+
+	for (auto* OctoTreeObjects : m_vecOctoTreeObjects)
+	{
+		AABBBOX worldBox = OctoTreeObjects->GetWorldAABB();
+		_uint idx = static_cast<_uint>(staticBounds.size());
+		staticBounds.push_back(worldBox);
+
+		Handle h{ nextHandleId++ };
+		handleToIndex[h] = idx;
+		m_pGameInstance->PushBackIndexToObj(OctoTreeObjects);
+	}
+	if (FAILED(m_pGameInstance->Ready_OctoTree(staticBounds, handleToIndex)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

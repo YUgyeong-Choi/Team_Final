@@ -160,9 +160,6 @@
     <ClInclude Include="..\public\Shadow.h">
       <Filter>01.Utility\11.Shadow</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\QuadTree.h">
-      <Filter>01.Utility\04.Components\VIBuffer\Terrain\QuadTree</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PhysX_Manager.h">
       <Filter>01.Utility\13.PhysX</Filter>
     </ClInclude>
@@ -246,6 +243,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Trail.h">
       <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\QuadTree.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Terrain\QuadTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\OctoTree_Manager.h">
+      <Filter>01.Utility\16.OctoTree_Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -393,9 +396,6 @@
     <ClCompile Include="..\private\Shadow.cpp">
       <Filter>01.Utility\11.Shadow</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\QuadTree.cpp">
-      <Filter>01.Utility\04.Components\VIBuffer\Terrain\QuadTree</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PhysX_Manager.cpp">
       <Filter>01.Utility\13.PhysX</Filter>
     </ClCompile>
@@ -467,6 +467,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Trail.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\QuadTree.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Terrain\QuadTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OctoTree_Manager.cpp">
+      <Filter>01.Utility\16.OctoTree_Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -644,9 +650,6 @@
     <Filter Include="01.Utility\11.Shadow">
       <UniqueIdentifier>{2cce6eba-56a5-4a7a-8e9b-937d540f8182}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\04.Components\VIBuffer\Terrain\QuadTree">
-      <UniqueIdentifier>{b7f46b40-83fc-47c0-a502-f9d2a355c7d8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\04.Components\PhysX">
       <UniqueIdentifier>{a8580ee3-64b7-4e79-9e2d-00edfb71ab78}</UniqueIdentifier>
     </Filter>
@@ -721,6 +724,12 @@
     </Filter>
     <Filter Include="01.Utility\12.Culling\Octree\Manager">
       <UniqueIdentifier>{44eaedf2-0f6f-4691-bfb5-0945eb22b8e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\16.OctoTree_Manager">
+      <UniqueIdentifier>{12cd3458-aa6b-436d-9169-7d941f4b6aad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Terrain\QuadTree">
+      <UniqueIdentifier>{b7f46b40-83fc-47c0-a502-f9d2a355c7d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
