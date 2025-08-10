@@ -85,6 +85,7 @@ namespace Engine
 		_float				fFogCutoff;
 
 		_bool				bIsVolumetric;
+		_bool				bIsPlayerFar;
 	}LIGHT_DESC;
 
 

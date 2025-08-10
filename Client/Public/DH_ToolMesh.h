@@ -68,9 +68,17 @@ public:
 
 	_int GetLightType() { return static_cast<int>(m_pLight->Get_LightDesc()->eType); }
 
+public: /* [ 플레이어와의 거리 측정 ] */
+	void SetIsPlayerFar(_bool bPlayerFar) { m_pLight->Get_LightDesc()->bIsPlayerFar = bPlayerFar; }
+	_bool GetIsPlayerFar() { return m_pLight->Get_LightDesc()->bIsPlayerFar; }
+
 public:
 	void SetDebug(_bool bDebug) { m_bDebug = bDebug; }
 	_bool GetDebug() const { return m_bDebug; }
+
+
+protected: /* [ 플레이어 ] */
+	CGameObject* m_pPlayer = { nullptr };
 
 private:
 	_uint m_iID = { 0 };

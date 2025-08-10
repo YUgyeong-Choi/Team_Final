@@ -143,10 +143,10 @@ HRESULT CLevel_DH::Load_Model(const wstring& strPrototypeTag, const _char* pMode
 
 HRESULT CLevel_DH::Ready_MapModel()
 {
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	ifstream inFile("../Bin/Save/MapTool/Resource_STATION.json");
 	if (!inFile.is_open())
 	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		MSG_BOX("Resource_STATION.json 파일을 열 수 없습니다.");
 		return S_OK;
 	}
 
@@ -184,7 +184,7 @@ HRESULT CLevel_DH::Ready_MapModel()
 		else
 		{
 			//모델 프로토 타입 생성
-			PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+			PrototypeTag = L"Prototype_ComponentModel" + StringToWString(ModelName);
 			bInstance = false;
 		}
 
@@ -199,13 +199,12 @@ HRESULT CLevel_DH::Ready_MapModel()
 
 	return S_OK;
 }
-
 HRESULT CLevel_DH::LoadMap()
 {
-	ifstream inFile("../Bin/Save/MapTool/MapData.json");
+	ifstream inFile("../Bin/Save/MapTool/Map_STATION.json");
 	if (!inFile.is_open())
 	{
-		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
+		MSG_BOX("Map_STATION.json 파일을 열 수 없습니다.");
 		return S_OK;
 	}
 

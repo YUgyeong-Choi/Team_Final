@@ -88,8 +88,8 @@ private: /* [ 절두체 변수들 ] */
 private: /* [ 쿼드트리 변수들 ] */
 	AABBBOX m_WorldBounds;
 
-	_uint	m_iMaxDepth =  8;
-	_uint	m_iMaxObjects = 32;
+	_uint	m_iMaxDepth =  6;
+	_uint	m_iMaxObjects = 16;
 	
 	_float	m_fMinCellSize = 10.f;
 
