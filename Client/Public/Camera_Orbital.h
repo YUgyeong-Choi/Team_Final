@@ -56,7 +56,7 @@ private:
 	/* [ 락온 되었을 때 ] */
 	void Update_LockOnCameraMatrix(_float fTimeDelta);
 
-	void Set_CameraMatrix();
+	void Set_CameraMatrix(_float fTimeDelta);
 private:
 	_bool			m_bLockOn = false;
 	_bool			m_bSetPitchYaw = false;

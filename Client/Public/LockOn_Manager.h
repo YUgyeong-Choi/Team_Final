@@ -27,7 +27,7 @@ public:
     void SetPlayer(CGameObject* pPlayer);
     void Add_LockOnTarget(CGameObject* pTarget);
 
-    void Set_Active() { m_bStartLockOn = true; }
+    void Set_Active();
 private:
     void RemoveBehindWallTargets();
     CGameObject* Find_ClosestToLookTarget();
