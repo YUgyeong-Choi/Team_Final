@@ -191,7 +191,7 @@ void CLevel_YW::Render_File()
 
 	ImGui::SameLine();
 
-	if (ImGui::Button("Save Map"))
+	if (ImGui::Button("Save"))
 	{
 		//활성화 된 툴 저장
 		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(Maps[iMapIndex]);

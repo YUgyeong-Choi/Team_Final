@@ -1,6 +1,12 @@
 [
     {
-        "Collision": false,
+        "Collision": true,
+        "ModelName": "FloorA",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorA.bin"
+    },
+    {
+        "Collision": true,
         "ModelName": "SM_Station_TicketOffice_01",
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TicketOffice_01.bin"
