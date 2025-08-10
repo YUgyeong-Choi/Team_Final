@@ -28,7 +28,7 @@ private:
 	//HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 	//HRESULT Ready_MapModel();
 	//HRESULT LoadMap();
-	HRESULT LoadMap(_uint iLevelIndex);
+	HRESULT LoadMap(_uint iLevelIndex, const _char* Map);
 	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 

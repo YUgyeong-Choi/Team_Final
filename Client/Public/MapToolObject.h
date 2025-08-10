@@ -60,7 +60,7 @@ public:
 	}
 
 	_uint Get_ID() const {
-		return m_iID;
+	return m_iID;
 	}
 
 	const string& Get_ModelName() const {

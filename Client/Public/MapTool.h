@@ -27,9 +27,9 @@ private:
 	void Control(_float fTimeDelta);
 
 private:
-	//HRESULT Ready_Model();
-	HRESULT Save_Map();
-	HRESULT Load_Map();
+	HRESULT Ready_Model(const _char* Map);
+	HRESULT Save_Map(const _char* Map);
+	HRESULT Load_Map(const _char* Map);
 
 	HRESULT Save_Favorite();
 	HRESULT Load_Favorite();
@@ -43,6 +43,7 @@ private:
 	void Render_Favorite();
 	void Render_Detail();
 	void Render_Preview();
+	void Render_File();
 
 private:
 	HRESULT Spawn_MapToolObject();
@@ -50,6 +51,7 @@ private:
 	HRESULT Duplicate_Selected_Object();
 	HRESULT Undo_Selected_Object();
 	void	DeleteMapToolObject();
+	void	Clear_Map();
 	
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
@@ -84,6 +86,24 @@ private:
 
 private:
 	HRESULT Add_Favorite(const string& ModelName, _bool bSave);
+
+private:
+#pragma region 맵 종류
+	enum class Map {
+		STATION,
+		HOTEL,
+		TEST,
+		END
+	};
+
+	const _char* Maps[static_cast<_int>(Map::END)] = {
+		"STATION",
+		"HOTEL",
+		"TEST"
+	};
+#pragma endregion
+	//가장 최근에 선택된 맵(초기값으로 두고 일단)으로 바꿔야지
+	_int iMapIndex = static_cast<_int>(Map::STATION);
 
 private:
 	//마우스 드랙 시작 포인트

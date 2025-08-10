@@ -37,7 +37,7 @@ private:
 	HRESULT Ready_Layer_Station(const _wstring strLayerTag);
 	HRESULT Ready_Player();
 
-	HRESULT LoadMap(_uint iLevelIndex);
+	HRESULT LoadMap(_uint iLevelIndex, const _char* Map);
 	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 private:

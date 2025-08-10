@@ -50,7 +50,7 @@ HRESULT CMapTool::Initialize(void* pArg)
 		return E_FAIL;*/
 
 	//MapData를 따라 맵을 로드한다.
-	if (FAILED(Load_Map()))
+	if (FAILED(Load_Map(Maps[iMapIndex])))
 		return E_FAIL;
 
 	m_pPreviewObject = static_cast<CPreviewObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_PreviewObject")));
@@ -177,7 +177,7 @@ void CMapTool::Control(_float fTimeDelta)
 	//Ctrl + S 맵 저장
 	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
 	{
-		Save_Map();
+		Save_Map(Maps[iMapIndex]);
 	}
 
 	//Ctrl + D 선택된 오브젝트 복제
@@ -260,53 +260,60 @@ void CMapTool::Control(_float fTimeDelta)
 
 }
 
-//HRESULT CMapTool::Ready_Model()
-//{
-//	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
-//	if (!inFile.is_open())
-//	{
-//		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
-//		return S_OK;
-//	}
-//
-//	json ReadyModelJson;
-//	try
-//	{
-//		inFile >> ReadyModelJson;
-//		inFile.close();
-//	}
-//	catch (const exception& e)
-//	{
-//		inFile.close();
-//		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-//		return E_FAIL;
-//	}
-//
-//	// JSON 데이터 확인
-//	for (const auto& element : ReadyModelJson)
-//	{
-//		string ModelName = element.value("ModelName", "");
-//		string Path = element.value("Path", "");
-//
-//		//모델 프로토 타입 생성
-//		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-//
-//		const _char* pModelFilePath = Path.c_str();
-//
-//		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
-//		{
-//			return E_FAIL;
-//		}
-//	}
-//
-//	return S_OK;
-//}
-
-HRESULT CMapTool::Save_Map()
+HRESULT CMapTool::Ready_Model(const _char* Map)
 {
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+
+	ifstream inFile(ResourcePath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+
+		return S_OK;
+	}
+
+	json ReadyModelJson;
+	try
+	{
+		inFile >> ReadyModelJson;
+		inFile.close();
+	}
+	catch (const exception& e)
+	{
+		inFile.close();
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+		return E_FAIL;
+	}
+
+	// JSON 데이터 확인
+	for (const auto& element : ReadyModelJson)
+	{
+		string ModelName = element.value("ModelName", "");
+		string Path = element.value("Path", "");
+
+		//모델 프로토 타입 생성
+		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+
+		const _char* pModelFilePath = Path.c_str();
+
+		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+		{
+			return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapTool::Save_Map(const _char* Map)
+{
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+
 	filesystem::create_directories("../Bin/Save/MapTool");
-	ofstream MapDataFile("../Bin/Save/MapTool/MapData.json");
-	ofstream ReadyModelFile("../Bin/Save/MapTool/ReadyModel.json");
+	ofstream MapDataFile(MapPath); //맵별로 데이터를 저장해야지, Map_Station; Map_Hotel; Map_Test;
+	ofstream ReadyModelFile(ResourcePath);//맵별로도 리소스 저장, Resource_Station; Resource_Hotel; Resoucce_Test;
 
 	json ReadyModelJsonArray = json::array();
 	json MapDataJson; // 모델과 오브젝트 정보 저장용
@@ -410,12 +417,22 @@ HRESULT CMapTool::Save_Map()
 	return S_OK;
 }
 
-HRESULT CMapTool::Load_Map()
+HRESULT CMapTool::Load_Map(const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/MapData.json");
+	//현재 맵에 배치된 오브젝트를 모두 삭제하자
+	Clear_Map();
+
+	//로드 맵 하기전에 모델을 준비하자
+	Ready_Model(Map);
+
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
+	//string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json"; //나중에 쓸듯 맵 바꿀때
+
+	ifstream inFile(MapPath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Map_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
 		return S_OK;
 	}
 
@@ -590,6 +607,8 @@ HRESULT CMapTool::Render_MapTool()
 
 	Render_Detail();
 
+	Render_File();
+
 	//드래그 사각형 그리기
 	if (m_bDragging && ImGui::GetIO().WantCaptureMouse == false)
 	{
@@ -704,22 +723,12 @@ void CMapTool::Render_Hierarchy()
 
 	}
 #pragma endregion
+
 	if (ImGui::Button("Delete"))
 	{
 		DeleteMapToolObject();
 	}
 
-	if (ImGui::Button("Save Map"))
-	{
-		if (FAILED(Save_Map()))
-			MSG_BOX("맵 저장 실패");
-	}
-
-
-	//if (ImGui::Button("Load Map"))
-	//{
-
-	//}
 	ImGui::End();
 }
 
@@ -1027,6 +1036,58 @@ void CMapTool::Render_Preview()
 	ImGui::End();
 }
 
+void CMapTool::Render_File()
+{
+	if (ImGui::Begin("File"))
+	{
+		//콤보박스에서 레벨을 선택 하면 그 맵이 로드되도록
+		//저장할 때도 콤보박스에 선택된 파일에 저장하도록
+		ImGui::Text("Load Map");
+		_bool bRequestLoad = false;
+		if (ImGui::BeginCombo("##MapCombo", Maps[iMapIndex]))
+		{
+			for (_int i = 0; i < IM_ARRAYSIZE(Maps); i++)
+			{
+				_bool bSelected = (iMapIndex == i);
+				if (ImGui::Selectable(Maps[i], bSelected))
+				{
+					iMapIndex = i;
+					bRequestLoad = true; // 로드 요청
+				}
+
+
+				if (bSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		if (bRequestLoad)
+		{
+			Load_Map(Maps[iMapIndex]);
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Save Map"))
+		{
+			if (FAILED(Save_Map(Maps[iMapIndex])))
+				MSG_BOX("맵 저장 실패");
+		}
+
+		//ImGui::Separator();
+
+		//if (ImGui::Button("Load Map"))
+		//{
+
+		//}
+
+
+		ImGui::End();
+	}
+
+}
+
 HRESULT CMapTool::Spawn_MapToolObject()
 {
 	if (m_iSelectedModelIndex == -1)
@@ -1314,6 +1375,29 @@ void CMapTool::DeleteMapToolObject()
 	//포커스 릴리즈
 	Safe_Release(m_pFocusObject);
 	m_pFocusObject = nullptr;
+}
+
+void CMapTool::Clear_Map()
+{
+	for (auto Group : m_ModelGroups)
+	{
+		for (auto pObj : Group.second)
+		{
+			pObj->Set_bDead();
+			Safe_Release(pObj);
+		}
+			
+		Group.second.clear();
+	}
+	m_ModelGroups.clear();
+
+	Safe_Release(m_pFocusObject);
+
+	for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);
+	m_SelectedObjects.clear();
+
+
 }
 
 HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)

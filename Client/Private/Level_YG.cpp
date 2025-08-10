@@ -48,7 +48,7 @@ HRESULT CLevel_YG::Initialize()
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
 
-	if (FAILED(LoadMap(ENUM_CLASS(LEVEL::YG))))
+	if (FAILED(LoadMap(ENUM_CLASS(LEVEL::YG), "STATION")))
 		return E_FAIL;
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YG));
@@ -223,12 +223,15 @@ HRESULT CLevel_YG::Ready_Player()
 	return S_OK;
 }
 
-HRESULT CLevel_YG::LoadMap(_uint iLevelIndex)
+HRESULT CLevel_YG::LoadMap(_uint iLevelIndex, const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/MapData.json");
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
+
+	ifstream inFile(MapPath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Map_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
 		return S_OK;
 	}
 

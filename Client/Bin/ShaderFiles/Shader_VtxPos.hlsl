@@ -31,8 +31,8 @@ VS_OUT VS_DECAL(VS_IN In)
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
     
-    //float4 ProjPos = mul(vector(In.vPosition, 1.f), matWVP);
-    float4 ProjPos = mul(vector(In.vPosition, 1.f), matWV); //matWV로 하면 이쁘게 보이긴하는데... 카메라가 멀어지면 안보임
+    float4 ProjPos = mul(vector(In.vPosition, 1.f), matWVP);
+    //float4 ProjPos = mul(vector(In.vPosition, 1.f), matWV); //matWV로 하면 이쁘게 보이긴하는데... 카메라가 멀어지면 안보임
     Out.vPosition = ProjPos;
     Out.vTexcoord.x = (ProjPos.x / ProjPos.w) * 0.5f + 0.5f; // -1~1 -> 0~1
     Out.vTexcoord.y = (ProjPos.y / ProjPos.w) * -0.5f + 0.5f; // -1~1 -> 0~1
@@ -75,7 +75,7 @@ PS_OUT PS_DECAL(VS_OUT In)
     //if (any(abs(vLocalPos) > 0.5f))
     //    discard;
     
-    clip(0.5 - abs(vLocalPos.xyz));
+    //clip(0.5 - abs(vLocalPos.xyz));
 
     // 텍스처 좌표 계산 (0 ~ 1)
     float2 vTexcoord = vLocalPos.xz + 0.5f;
