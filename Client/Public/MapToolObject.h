@@ -15,6 +15,15 @@ NS_BEGIN(Client)
 class CMapToolObject final : public CGameObject
 {
 	friend class CMapTool;
+	
+public:
+	enum class LOD
+	{
+		LOD0 = 0,
+		LOD1,
+		LOD2,
+		END
+	};
 
 public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
@@ -85,8 +94,11 @@ private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
 
 private:
+	LOD m_eLOD = LOD::LOD0; // 현재 LOD 상태
+
+private:
 	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
+	CModel* m_pModelCom[ENUM_CLASS(LOD::END)] = {nullptr};
 	CPhysXDynamicActor* m_pPhysXActorConvexCom = { nullptr };
 	CPhysXStaticActor*	m_pPhysXActorTriangleCom = { nullptr };
 

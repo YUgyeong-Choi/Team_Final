@@ -1038,54 +1038,51 @@ void CMapTool::Render_Preview()
 
 void CMapTool::Render_File()
 {
-	if (ImGui::Begin("File"))
+	ImGui::Begin("File");
+
+	//콤보박스에서 레벨을 선택 하면 그 맵이 로드되도록
+	//저장할 때도 콤보박스에 선택된 파일에 저장하도록
+	ImGui::Text("Load Map");
+	_bool bRequestLoad = false;
+	if (ImGui::BeginCombo("##MapCombo", Maps[iMapIndex]))
 	{
-		//콤보박스에서 레벨을 선택 하면 그 맵이 로드되도록
-		//저장할 때도 콤보박스에 선택된 파일에 저장하도록
-		ImGui::Text("Load Map");
-		_bool bRequestLoad = false;
-		if (ImGui::BeginCombo("##MapCombo", Maps[iMapIndex]))
+		for (_int i = 0; i < IM_ARRAYSIZE(Maps); i++)
 		{
-			for (_int i = 0; i < IM_ARRAYSIZE(Maps); i++)
+			_bool bSelected = (iMapIndex == i);
+			if (ImGui::Selectable(Maps[i], bSelected))
 			{
-				_bool bSelected = (iMapIndex == i);
-				if (ImGui::Selectable(Maps[i], bSelected))
-				{
-					iMapIndex = i;
-					bRequestLoad = true; // 로드 요청
-				}
-
-
-				if (bSelected)
-					ImGui::SetItemDefaultFocus();
+				iMapIndex = i;
+				bRequestLoad = true; // 로드 요청
 			}
-			ImGui::EndCombo();
+
+
+			if (bSelected)
+				ImGui::SetItemDefaultFocus();
 		}
-
-		if (bRequestLoad)
-		{
-			Load_Map(Maps[iMapIndex]);
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Save Map"))
-		{
-			if (FAILED(Save_Map(Maps[iMapIndex])))
-				MSG_BOX("맵 저장 실패");
-		}
-
-		//ImGui::Separator();
-
-		//if (ImGui::Button("Load Map"))
-		//{
-
-		//}
-
-
-		ImGui::End();
+		ImGui::EndCombo();
 	}
 
+	if (bRequestLoad)
+	{
+		Load_Map(Maps[iMapIndex]);
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Save Map"))
+	{
+		if (FAILED(Save_Map(Maps[iMapIndex])))
+			MSG_BOX("맵 저장 실패");
+	}
+
+	//ImGui::Separator();
+
+	//if (ImGui::Button("Load Map"))
+	//{
+
+	//}
+
+	ImGui::End();
 }
 
 HRESULT CMapTool::Spawn_MapToolObject()
@@ -1392,6 +1389,7 @@ void CMapTool::Clear_Map()
 	m_ModelGroups.clear();
 
 	Safe_Release(m_pFocusObject);
+	m_pFocusObject = nullptr;
 
 	for (CMapToolObject* pObj : m_SelectedObjects)
 		Safe_Release(pObj);
@@ -1399,27 +1397,64 @@ void CMapTool::Clear_Map()
 
 
 }
-
 HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
 {
-	//이미 프로토타입이존재하는 지확인
-	
-	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::YW), strPrototypeTag) != nullptr)
+	_matrix PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+
+	// 파일 경로에서 디렉토리, 파일명, 확장자 분리
+	wstring wsBasePath = filesystem::path(pModelFilePath).parent_path();
+	wstring wsFilename = filesystem::path(pModelFilePath).stem();	// 확장자 뺀 파일명
+	wstring wsExtension = filesystem::path(pModelFilePath).extension();
+
+	// LOD0 모델 경로 생성
+	string strModelPathLod0 = (filesystem::path(wsBasePath) / filesystem::path(wsFilename + wsExtension)).string();
+
+	// LOD1, LOD2 파일명 생성 (_Lod1, _Lod2 붙임)
+	wstring wsLod1Name = wsFilename + L"_Lod1" + wsExtension;
+	wstring wsLod2Name = wsFilename + L"_Lod2" + wsExtension;
+
+	// LOD1, LOD2 경로 생성
+	filesystem::path Lod1Path = filesystem::path(wsBasePath) / wsLod1Name;
+	filesystem::path Lod2Path = filesystem::path(wsBasePath) / wsLod2Name;
+	string strModelPathLod1 = Lod1Path.string();
+	string strModelPathLod2 = Lod2Path.string();
+
+	// LOD0 프로토타입 존재 여부 확인 후 없으면 로드
+	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::YW), strPrototypeTag) == nullptr)
 	{
-		//MSG_BOX("이미 프로토타입이 존재함");
-		return S_OK;
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), strPrototypeTag,
+			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod0.c_str(), PreTransformMatrix))))
+			return E_FAIL;
 	}
 
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+	// LOD1 프로토타입 태그 생성 및 로드 (파일 존재하면)
+	wstring wsPrototypeTagLod1 = strPrototypeTag + L"_Lod1";
+	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::YW), wsPrototypeTagLod1) == nullptr)
+	{
+		if (filesystem::exists(strModelPathLod1))
+		{
+			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), wsPrototypeTagLod1,
+				CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod1.c_str(), PreTransformMatrix))))
+				return S_OK; // 실패해도 무시
+		}
+	}
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), strPrototypeTag,
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-		return E_FAIL;
+	// LOD2 프로토타입 태그 생성 및 로드 (파일 존재하면)
+	wstring wsPrototypeTagLod2 = strPrototypeTag + L"_Lod2";
+	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::YW), wsPrototypeTagLod2) == nullptr)
+	{
+		if (filesystem::exists(strModelPathLod2))
+		{
+			if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), wsPrototypeTagLod2,
+				CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod2.c_str(), PreTransformMatrix))))
+				return S_OK; // 실패해도 무시
+		}
+	}
 
 	return S_OK;
 }
+
+
 
 void CMapTool::Add_ModelGroup(string ModelName, CGameObject* pMapToolObject)
 {

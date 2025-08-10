@@ -152,6 +152,56 @@ HRESULT CLevel_YW::Ready_Layer_Sky(const _wstring strLayerTag)
 	return S_OK;
 }
 
+void CLevel_YW::Render_File()
+{
+	ImGui::Begin("File");
+
+	//콤보박스에서 레벨을 선택 하면 그 맵이 로드되도록
+	//저장할 때도 콤보박스에 선택된 파일에 저장하도록
+	ImGui::Text("Load Map");
+	_bool bRequestLoad = false;
+	if (ImGui::BeginCombo("##MapCombo", Maps[iMapIndex]))
+	{
+		for (_int i = 0; i < IM_ARRAYSIZE(Maps); i++)
+		{
+			_bool bSelected = (iMapIndex == i);
+			if (ImGui::Selectable(Maps[i], bSelected))
+			{
+				iMapIndex = i;
+				bRequestLoad = true; // 로드 요청
+			}
+
+
+			if (bSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	if (bRequestLoad)
+	{
+		//Load_Map(Maps[iMapIndex]);
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Save Map"))
+	{
+		/*if (FAILED(Save_Map(Maps[iMapIndex])))
+			MSG_BOX("맵 저장 실패");*/
+	}
+
+	//ImGui::Separator();
+
+	//if (ImGui::Button("Load Map"))
+	//{
+
+	//}
+
+	ImGui::End();
+}
+
+
 HRESULT CLevel_YW::Ready_ImGuiTools()
 {
 	if (FAILED(Ready_Layer_PreviewObject(TEXT("Layer_PreviewObject"))))
@@ -229,8 +279,15 @@ HRESULT CLevel_YW::ImGui_Render()
 		ImGui::End();
 	}
 
+
+	//여기서 맵을 선택하면
+	//맵과, 네비게이션 등등... 로드 되도록 하는 게 좋아보인다.
+	//Render_File();
+
 	if (FAILED(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Render_ImGui()))
 		return E_FAIL;
+
+
 	
 	return S_OK;
 }

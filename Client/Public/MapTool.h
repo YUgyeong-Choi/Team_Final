@@ -103,7 +103,7 @@ private:
 	};
 #pragma endregion
 	//가장 최근에 선택된 맵(초기값으로 두고 일단)으로 바꿔야지
-	_int iMapIndex = static_cast<_int>(Map::STATION);
+	_int iMapIndex = static_cast<_int>(Map::TEST);
 
 private:
 	//마우스 드랙 시작 포인트
