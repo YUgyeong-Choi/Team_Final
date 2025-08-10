@@ -167,10 +167,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 {
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
-}
-
-void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
-{
 	__super::Late_Update(fTimeDelta);
 
 	Add_RenderGroup_OctoTree();

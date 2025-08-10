@@ -547,6 +547,7 @@ void COctoTree_Manager::Free()
 
     Safe_Delete(m_pBatch);
     Safe_Delete(m_pEffect);
+    Safe_Release(m_pGameInstance);
 }
 
 void COctoTree_Manager::Frustum::BuildFromViewProj(const XMFLOAT4X4& vp)
