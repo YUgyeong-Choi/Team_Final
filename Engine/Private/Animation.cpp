@@ -126,7 +126,7 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 //	return false;
 //}
 
-_bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents, CAnimator* pAnimator)
+_bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents,vector<_float4x4>* outLocalMatrices)
 {
 	m_isLoop = isLoop;
 	_float prevPos = m_fCurrentTrackPosition;
@@ -165,7 +165,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 		m_Channels[i]->Update_TransformationMatrix(
 			m_CurrentKeyFrameIndices[i],
 			m_fCurrentTrackPosition,
-			Bones, bIsReverse, pAnimator
+			Bones, bIsReverse, outLocalMatrices
 		);
 	}
 

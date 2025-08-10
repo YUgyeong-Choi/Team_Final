@@ -20,7 +20,10 @@
 #include "PhysX_Manager.h"
 #include "Sound_Device.h"
 #include "Observer_Manager.h"
-#include "Occlusion_Manager.h"
+
+#include "ComputeShader.h"
+
+
 IMPLEMENT_SINGLETON(CGameInstance);
 
 static PxDefaultAllocator gAllocator;
@@ -802,24 +805,10 @@ void CGameInstance::Reset_All()
 {
 	m_pObserver_Manager->Reset_All();
 }
-
 #pragma endregion
 
-#pragma region OCCLUSION_MANAGER
-void CGameInstance::Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX)
-{
-	m_pOcclusion_Manager->Begin_Occlusion(pObj, pPhysX);
-}
+#pragma region OCTOTREE_MANAGER
 
-void CGameInstance::End_Occlusion(CGameObject* pObj)
-{
-	m_pOcclusion_Manager->End_Occlusion(pObj);
-}
-
-_bool CGameInstance::IsVisible(CGameObject* pObj) const
-{
-	return 	m_pOcclusion_Manager->IsVisible(pObj);
-}
 HRESULT CGameInstance::Ready_OctoTree(const vector<AABBBOX>& staticBounds, const map<Handle, _uint>& handleToIndex)
 {
 	return m_pQaudTree_Manager->Ready_OctoTree(staticBounds, handleToIndex);
@@ -897,9 +886,9 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pObserver_Manager);
 
-	Safe_Release(m_pOcclusion_Manager);
-
 	Safe_Release(m_pQaudTree_Manager);
+
+	CComputeShader::ReleaseCache(); // Ä³½ÌÇØµÐ ÄÄÇ»Æ® ¼ÎÀÌ´õµé ÇØÁ¦
 
 
 	Destroy_Instance();

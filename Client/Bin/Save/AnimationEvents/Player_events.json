@@ -266,6 +266,41 @@
             "RootMotion": true,
             "TickPerSecond": 55.0
         },
+        {
+            "ClipName": "AS_Pino_Prop_DoubleDoor_Boss",
+            "Duration": 578.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Prop_DoubleDoor_Push_TrainStation",
+            "Duration": 680.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Prop_SlidingDoor_Boss",
+            "Duration": 616.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.099998474121094
+        },
+        {
+            "ClipName": "AS_Pino_Sit_End",
+            "Duration": 250.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Sit_Loop",
+            "Duration": 250.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
       {
         "ClipName": "AS_Pino_Prop_DoubleDoor_Boss",
         "Duration": 578.0,
