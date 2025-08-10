@@ -75,6 +75,9 @@ private:
 	_vector			m_vPlayerPosition = {};
 
 private:
+	const float m_fPadding = 1.0f;     // 플레이어 움직임에 따라 카메라 움직임 민감도
+	const float m_fFrame = 0.85f;   // 작을 수록 플레이어보다 더 멀리
+private:
 	CGameObject*	m_pPlayer = { nullptr };
 	// 락온이 안될 때는 항상 nullptr
 	CGameObject*	m_pLockOnTarget = { nullptr }; 
