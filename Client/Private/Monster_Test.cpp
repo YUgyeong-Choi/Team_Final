@@ -96,7 +96,7 @@ void CMonster_Test::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 
 void CMonster_Test::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	printf("몬스터 충돌중\n");
+	//printf("몬스터 충돌중\n");
 }
 
 void CMonster_Test::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

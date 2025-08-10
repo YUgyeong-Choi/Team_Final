@@ -49,8 +49,11 @@ public:
 	/* [ 방향 벡터로 Yaw Pich 가지고오기 ] */
 	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed);
 private:
+	/* [ 평소에 실행 ] */
 	void Update_CameraMatrix(_float fTimeDelta);
+	/* [ TargetPitch & Yaw 로 보간 ] */
 	void Update_TargetCameraMatrix(_float fTimeDelta);
+	/* [ 락온 되었을 때 ] */
 	void Update_LockOnCameraMatrix(_float fTimeDelta);
 
 	void Set_CameraMatrix();

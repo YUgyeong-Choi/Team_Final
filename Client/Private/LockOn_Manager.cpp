@@ -145,7 +145,7 @@ void CLockOn_Manager::RemoveBehindWallTargets()
         PxVec3 origin = VectorToPxVec3(playerPos);
         PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
         direction.normalize(); // 방향 벡터 정규화
-        _float fRayLength = 10.f;
+        _float fRayLength = 7.f;
 
         PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
         PxRaycastBuffer hit;
