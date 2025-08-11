@@ -18,6 +18,7 @@ Texture2D g_ShadowTexture;
 Texture2D g_DecalAMRT;
 Texture2D g_DecalN;
 Texture2D g_DecalBC;
+Texture2D g_DecalVolumeMesh;
 
 /* [ Blur ] */
 Texture2D g_PreBlurTexture;
@@ -259,14 +260,16 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     
     //데칼
-    vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
     
+    //SRC
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-    
+    //DES
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
     
-    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalBCDesc.a), 0.f)); // 알파 값에 따라 혼합
+    //ARMT로 알파값 보간
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
     
     float fShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_fLightAmbient * g_fMtrlAmbient);
     
@@ -921,8 +924,13 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     //    discard;
 
     //데칼 입히기
-    vector vDecal = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
-    finalColor.rgb = finalColor.rgb * (1 - vDecal.a) + vDecal.rgb * vDecal.a;
+    vector vDecalARMT = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalBC = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
+    finalColor.rgb = finalColor.rgb * (1 - vDecalARMT.a) + vDecalBC.rgb * vDecalARMT.a;
+    
+    vector vDecalVolumeMesh = g_DecalVolumeMesh.Sample(DefaultSampler, In.vTexcoord);
+    
+    finalColor = finalColor * (1 - vDecalVolumeMesh.a) + vDecalVolumeMesh.a * vDecalVolumeMesh;
     
     Out.vBackBuffer = finalColor;
 

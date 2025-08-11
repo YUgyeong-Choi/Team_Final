@@ -62,6 +62,12 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_BC"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+#ifdef _DEBUG
+	//º¼·ý¸Þ½¬ µð¹ö±× ·»´õ¿ë
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_VolumeMesh"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+#endif // _DEBUG
+
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal_AMRT"))))
 		return E_FAIL;
 
@@ -70,6 +76,12 @@ HRESULT CRenderer::Initialize()
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal_BC"))))
 		return E_FAIL;
+
+#ifdef _DEBUG
+	//º¼·ý¸Þ½¬ µð¹ö±× ·»´õ¿ë
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal_VolumeMesh"))))
+		return E_FAIL;
+#endif // _DEBUG
 #pragma endregion
 
 
@@ -823,6 +835,10 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_BC"), m_pShader, "g_DecalBC")))
 		return E_FAIL;
+#ifdef _DEBUG
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_VolumeMesh"), m_pShader, "g_DecalVolumeMesh")))
+		return E_FAIL;
+#endif _DEBUG
 
 	/* [ PBR ·»´õ¸µ¿ë ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Final"), m_pShader, "g_PBR_Final")))
