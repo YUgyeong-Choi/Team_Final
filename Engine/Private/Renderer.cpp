@@ -309,20 +309,20 @@ HRESULT CRenderer::Initialize()
 
 #pragma region YW Debug
 
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Diffuse"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Normal"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_AMRT"), GetTargetX(1), GetTargetY(0), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_N"), GetTargetX(1), GetTargetY(1), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_BC"), GetTargetX(1), GetTargetY(2), fSizeX, fSizeY)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Diffuse"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Normal"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_AMRT"), GetTargetX(1), GetTargetY(0), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_N"), GetTargetX(1), GetTargetY(1), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_BC"), GetTargetX(1), GetTargetY(2), fSizeX, fSizeY)))
+	//	return E_FAIL;
 
 #pragma endregion
 

@@ -840,9 +840,9 @@ void CAnimator::SetCurrentAnimController(const string& name, const string& state
 	}
 }
 
-_float CAnimator::GetStateLengthByName(const string& name) const
+_float CAnimator::GetStateClipLengthByName(const string& name) const
 {
-	return m_pCurAnimController->GetStateLength(name);
+	return m_pCurAnimController->GetStateClipLength(name);
 }
 
 _bool CAnimator::ExisitsParameter(const string& name) const

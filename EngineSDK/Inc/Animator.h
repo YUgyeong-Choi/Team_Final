@@ -134,7 +134,7 @@ public:
 			: 0.f;
 	}
 
-    _float GetStateLengthByName(const string& name) const;
+    _float GetStateClipLengthByName(const string& name) const;
 	_bool IsFinished() const { return m_bIsFinished; }
     class CModel* GetModel() const { return m_pModel; }
 public:

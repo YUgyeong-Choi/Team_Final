@@ -319,6 +319,12 @@
     <Filter Include="02.GameObjects\10.Nav">
       <UniqueIdentifier>{a6ec052f-24ca-4b62-ada4-db0358cc29f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss">
+      <UniqueIdentifier>{e085ecdf-fce6-4c5e-830b-3aa32d251fbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\Fuoco">
+      <UniqueIdentifier>{d9857476-da8f-4f1b-bcaa-d6c49b41d4a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -711,6 +717,10 @@
     <ClInclude Include="..\public\Nav.h">
       <Filter>02.GameObjects\10.Nav</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Decal.h" />
+    <ClInclude Include="..\public\Fuoco.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1076,6 +1086,10 @@
     </ClCompile>
     <ClCompile Include="..\private\Nav.cpp">
       <Filter>02.GameObjects\10.Nav</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp" />
+    <ClCompile Include="..\private\Fuoco.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

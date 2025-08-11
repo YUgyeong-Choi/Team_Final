@@ -190,7 +190,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (KEY_PRESSING(DIK_U))
 	{
 		m_pAnimator->SetTrigger("PutWeapon");
-		m_pAnimator->CancelOverrideAnimController();
+
 	}
 
 	if (KEY_DOWN(DIK_T))
