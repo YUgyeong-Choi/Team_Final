@@ -75,8 +75,10 @@ private:
 	_vector			m_vPlayerPosition = {};
 
 private:
-	const float m_fPadding = 1.0f;     // 플레이어 움직임에 따라 카메라 움직임 민감도
-	const float m_fFrame = 0.85f;   // 작을 수록 플레이어보다 더 멀리
+	const _float m_fPadding = 1.0f;     // 플레이어 & 타겟이 가까울 때를 위한 최소 반지름
+	const _float m_fFrame = 0.85f;   // 화면 높이의 안에 들어오도록 여유를 위한 변수
+	const _float m_fDistanceMin = 3.0f;     //  카메라 거리가 너무 가까워 지는거 방지
+	const _float m_fDistanceMax = 6.0f;     // 카메라 거리가 너무 멀어져서 지는거 방지
 private:
 	CGameObject*	m_pPlayer = { nullptr };
 	// 락온이 안될 때는 항상 nullptr

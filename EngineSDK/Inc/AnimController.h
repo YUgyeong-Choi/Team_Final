@@ -23,7 +23,7 @@ public:
 	{
 		string			paramName;
 		ParamType type	= ParamType::Bool; // 파라미터 타입
-		EOp          op;
+		EOp          op = EOp::None; // 연산자
 		_int         iThreshold = 0; // int에 값 비교할 때
 		_float       fThreshold = 0.f; // float이나 int에 값 비교할 때
 		// Evaluate 구현은 CPP에서
@@ -36,13 +36,15 @@ public:
 		string stateName;
 		class CAnimation* clip = nullptr; // 현재 애니메이션
 		_int iNodeId; // 툴상에서의 노드 ID
-		_float2 fNodePos; // 툴상에서의 노드 위치
+		_float2 fNodePos{ 0.f, 0.f };
 
 		// 상하체 분리 애니메이션인 경우
 		string lowerClipName; // 하체 애니메이션 이름
 		string upperClipName; // 상체 애니메이션 이름
 		string maskBoneName; // 마스크용 뼈 이름 (없으면 빈 문자열)
 		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
+		_float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
+		_float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
 	};
 
 
@@ -72,6 +74,8 @@ public:
 		CAnimation* pToUpperAnim = nullptr;   // 전환 목표 상체 클립 
 		_float fDuration = 0.f; // 전환 시간
 		_float fBlendWeight = 1.f; // 마스크에 사용함
+		_float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
+		_float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
 	};
 
 
@@ -374,7 +378,38 @@ private:
 		return nullptr;
 	}
 	void ResetTransAndStates();
-	void ChangeStates(const string& overrideCtrlName);// 오버라이드 애니메이션 컨트롤러를 적용할 때 상태들을 변경
+	void ChangeStatesForOverride(const string& overrideCtrlName);// 오버라이드 애니메이션 컨트롤러를 적용할 때 상태들을 변경
+	void ChangeStatesForDefault();
+	_int ConvertExitNodeToExitStateNodeId(_int iNodeId) const
+	{
+		if (iNodeId == m_iCExitStateNodeID)
+		{
+
+			auto it = FindState(m_ExitStateName);
+			if (it != nullptr)
+				return it->iNodeId;
+			else
+			{
+#ifdef _DEBUG
+				cout << "Exit state not found: " << m_ExitStateName << endl; // 디버그용 출력
+#endif // _DEBUG
+
+				return -1; // Exit 상태가 없으면 -1 반환
+			}
+		}
+		else
+			return iNodeId;
+	}
+
+	_int ConvertAnyStateNodeIdToAnyState(_int iNodeId) const
+	{
+		if (iNodeId == m_iCAnyStateNodeID)
+		{
+			// AnyState에서 넘어가는거라면 현재 재생중인 애니메이션의 노드 ID 넘기기
+			return m_CurrentStateNodeId;
+		}
+		return iNodeId; // AnyState가 아닌 경우 그대로 반환
+	}
 private:
 	
 	_bool m_bOverrideAnimController = false; // 오버라이드 애니메이션 컨트롤러 사용 중인지
@@ -388,6 +423,7 @@ private:
 	_int m_ExitStateNodeId = -1;
 	AnimState*			   m_EntryState{ nullptr };
 	AnimState*			   m_ExitState{nullptr};
+	AnimState*			   m_AnyState{ nullptr }; // Any 상태 (모든 상태를 포함하는 상태)
 	string				   m_EntryStateName{};
 	string				   m_ExitStateName{};
 	vector<AnimState>      m_States;
@@ -400,6 +436,12 @@ private:
 	TransitionResult       m_TransitionResult{}; // 트래지션을 한 결과 (애니메이터에서 요청)
 	string 				   m_Name; // 컨트롤러 이름
 
+	const _int m_iCExitStateNodeID = 100000;
+	const _int m_iCAnyStateNodeID = 100001;
+
+	_bool m_bChangeDefaultController = false; // 기본 컨트롤러로 변경 여부
+	CAnimation* m_pTmpUpperAnimForChagned = nullptr; // 디폴트로 변경시 없는 애니메이션 잠깐 채워서 넣기
+	CAnimation* m_pTmpLowerAnimForChagned = nullptr; // 디폴트로 변경시 없는 애니메이션 잠깐 채워서 넣기
 public:
 	static CAnimController* Create();
 	CAnimController* Clone();
