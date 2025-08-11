@@ -13,12 +13,12 @@ Texture2D g_Texture;
 struct VS_IN
 {
     float3 vPosition : POSITION;
+    //float2 vTexcoord : TEXCOORD0;
 };
 
 struct VS_OUT
 {
     float4 vPosition : SV_POSITION;
-    float2 vTexcoord : TEXCOORD0;
 };
 
 VS_OUT VS_DECAL(VS_IN In)
@@ -34,29 +34,38 @@ VS_OUT VS_DECAL(VS_IN In)
     float4 ProjPos = mul(vector(In.vPosition, 1.f), matWVP);
     //float4 ProjPos = mul(vector(In.vPosition, 1.f), matWV); //matWV로 하면 이쁘게 보이긴하는데... 카메라가 멀어지면 안보임
     Out.vPosition = ProjPos;
-    Out.vTexcoord.x = (ProjPos.x / ProjPos.w) * 0.5f + 0.5f; // -1~1 -> 0~1
-    Out.vTexcoord.y = (ProjPos.y / ProjPos.w) * -0.5f + 0.5f; // -1~1 -> 0~1
+    //Out.vTexcoord = In.vTexcoord;
     
     return Out;
 }
+
+struct PS_IN
+{
+    float4 vPosition : SV_POSITION;
+};
 
 struct PS_OUT
 {
     float4 vDecal : SV_Target0;
 };
 
-PS_OUT PS_DECAL(VS_OUT In)
+PS_OUT PS_DECAL(PS_IN In)
 {
     PS_OUT Out;
 
+    float2 vUV = In.vPosition.xy / float2(1600.f, 900.f);
+    
+    //Out.vDecal = g_DepthTexture.Sample(DefaultSampler, vUV);
+    //return Out;
+    
     /* In.vTexcoord 월드 값을 추론할 위치에 고대로 그려져야 하는데 다른데 그려진다. 어떻게해야할까*/
-    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, vUV);
     float fViewZ = vDepthDesc.y * 1000.f; //(Near~Far)
     
     vector vPosition;
 
-    vPosition.x = In.vTexcoord.x * 2.f - 1.f;
-    vPosition.y = In.vTexcoord.y * -2.f + 1.f;
+    vPosition.x = vUV.x * 2.f - 1.f;
+    vPosition.y = vUV.y * -2.f + 1.f;
     vPosition.z = vDepthDesc.x; //투영 스페이스의 깊이(0~1)
     vPosition.w = 1.f;
 
@@ -75,7 +84,7 @@ PS_OUT PS_DECAL(VS_OUT In)
     //if (any(abs(vLocalPos) > 0.5f))
     //    discard;
     
-    //clip(0.5 - abs(vLocalPos.xyz));
+    clip(0.5 - abs(vLocalPos.xyz));
 
     // 텍스처 좌표 계산 (0 ~ 1)
     float2 vTexcoord = vLocalPos.xz + 0.5f;

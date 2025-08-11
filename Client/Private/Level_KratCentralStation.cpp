@@ -117,7 +117,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 
 			//제이슨으로 저장된 맵을 로드한다.
-			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 				return;
 
 
