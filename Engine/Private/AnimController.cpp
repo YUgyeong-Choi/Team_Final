@@ -165,6 +165,98 @@ void CAnimController::Update(_float fTimeDelta)
 	{
 		for (auto& tr : m_Transitions)
 		{
+
+			if (tr.iFromNodeId == m_iCAnyStateNodeID)
+			{
+				// AnyState에서 현재 상태로의 전환은 무시 (무한루프 방지)
+				if (tr.iToNodeId == m_CurrentStateNodeId)
+					continue;
+
+				if (!tr.Evaluates(this, m_pAnimator))
+					continue;
+
+				// AnyState 전환 실행 - 현재 상태를 From으로 취급
+				AnimState* fromState = FindStateByNodeId(m_CurrentStateNodeId); // 현재 상태
+				AnimState* toState = FindStateByNodeId(ConvertExitNodeToExitStateNodeId(tr.iToNodeId));
+
+				if (!fromState || !toState)
+					continue;
+
+				// 나머지 전환 로직은 기존과 동일
+				m_TransitionResult = TransitionResult{};
+
+				_bool bFromMasked = fromState->maskBoneName.empty() == false;
+				_bool bToMasked = toState->maskBoneName.empty() == false;
+
+				if (!bFromMasked && !bToMasked) //  통짜 -> 통짜
+				{
+					m_TransitionResult.eType = ETransitionType::FullbodyToFullbody;
+					m_TransitionResult.pFromLowerAnim = fromState->clip;
+					m_TransitionResult.pToLowerAnim = toState->clip;
+					m_TransitionResult.pFromUpperAnim = fromState->clip;
+					m_TransitionResult.pToUpperAnim = toState->clip;
+					m_TransitionResult.bBlendFullbody = true;
+				}
+				else if (!bFromMasked && bToMasked) //  통짜 -> 상하체 분리
+				{
+					m_TransitionResult.eType = ETransitionType::FullbodyToMasked;
+					m_TransitionResult.pFromLowerAnim = fromState->clip;
+					m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
+					m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
+					m_TransitionResult.pFromUpperAnim = fromState->clip;
+					m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+					m_TransitionResult.bBlendFullbody = false;
+				}
+				else if (bFromMasked && !bToMasked) //  상하체 분리 -> 통짜
+				{
+					m_TransitionResult.eType = ETransitionType::MaskedToFullbody;
+					m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
+					m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
+					m_TransitionResult.pToLowerAnim = toState->clip;
+					m_TransitionResult.pToUpperAnim = toState->clip;
+					m_TransitionResult.fBlendWeight = fromState->fBlendWeight;
+					m_TransitionResult.bBlendFullbody = false;
+				}
+				else  // 상하체 분리 -> 상하체 분리
+				{
+					m_TransitionResult.eType = ETransitionType::MaskedToMasked;
+					m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
+					m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
+					m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
+					m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
+					m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+					m_TransitionResult.bBlendFullbody = false;
+				}
+
+				// 유효 검사
+				if (m_bChangeDefaultController == false)
+				{
+					if (!m_TransitionResult.pFromLowerAnim || !m_TransitionResult.pToLowerAnim)
+						continue;
+					if (m_TransitionResult.eType == ETransitionType::FullbodyToMasked && !m_TransitionResult.pToUpperAnim)
+						continue;
+					if (m_TransitionResult.eType == ETransitionType::MaskedToFullbody && !m_TransitionResult.pFromUpperAnim)
+						continue;
+					if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim))
+						continue;
+				}
+				else
+				{
+					m_bChangeDefaultController = false;
+					m_TransitionResult.pFromLowerAnim = m_pTmpLowerAnimForChagned;
+					m_TransitionResult.pFromUpperAnim = m_pTmpUpperAnimForChagned;
+					m_pTmpLowerAnimForChagned = nullptr;
+					m_pTmpUpperAnimForChagned = nullptr;
+				}
+
+				m_TransitionResult.fUpperStartTime = toState->fUpperStartTime;
+				m_TransitionResult.fLowerStartTime = toState->fLowerStartTime;
+				m_TransitionResult.bTransition = true;
+				m_TransitionResult.fDuration = tr.duration;
+				m_CurrentStateNodeId = tr.iToNodeId;
+				return; // AnyState 전환이 실행되면 즉시 종료
+			}
+
 			if (tr.iFromNodeId != m_CurrentStateNodeId)
 				continue;
 			if (tr.hasExitTime)
