@@ -92,7 +92,7 @@ public:
 public:
 
 	void SetAnimator(class CAnimator* animator) { m_pAnimator = animator; }
-	_float GetStateLength(const string& name);
+	_float GetStateClipLength(const string& name);
 
 	size_t  AddState(const string& name, class CAnimation* clip,_int iNodeId)
 	{
@@ -127,6 +127,10 @@ public:
 	{
 		return FindState(name);
 	}
+	const AnimState* GetStateByNodeId(_int nodeId) const
+	{
+		return FindStateByNodeId(nodeId);
+	}
 
 	const AnimState* GetStateByName(const string& name)
 	{
@@ -152,6 +156,10 @@ public:
 	AnimState* GetStateByNameForEditor(const string& name)
 	{
 		return FindState(name);
+	}
+	AnimState* GetStateByNodeIdForEditor(_int nodeId)
+	{
+		return FindStateByNodeId(nodeId);
 	}
 
 	CAnimation* GetStateAnimationByNodeIdForEditor(_int nodeId) const
@@ -282,7 +290,7 @@ public:
 		if (p.bTriggered)
 		{
 			cout << "Trigger: " << name << endl; // 디버그용 출력
-			p.bTriggered = false;
+			//p.bTriggered = false;
 			return true;
 		}
 		return false;
@@ -323,20 +331,7 @@ public:
 			m_CurrentStateNodeId = m_EntryStateNodeId; // 현재 상태를 Entry 상태로 설정
 		}
 	}
-	void SetExit(const string& exitStateName)
-	{
-		m_ExitStateName = exitStateName;
-		m_ExitState = FindState(exitStateName);
-		if (m_ExitState == nullptr)
-		{
-			cout << "Exit state not found: " << exitStateName << endl; // 디버그용 출력
-			return;
-		}
-		else
-		{
-			m_ExitStateNodeId = m_ExitState->iNodeId; // Exit 상태 노드 ID 설정
-		}
-	}
+
 #ifdef USE_IMGUI
 	AnimState* GetEntryStateForEditor() const { return m_EntryState; }
 	AnimState* GetExitStateForEditor() const { return m_ExitState; }
@@ -382,34 +377,52 @@ private:
 	void ChangeStatesForDefault();
 	_int ConvertExitNodeToExitStateNodeId(_int iNodeId) const
 	{
-		if (iNodeId == m_iCExitStateNodeID)
+		if (iNodeId != EXIT_STATE_NODE_ID)
+			return iNodeId;
+
+		_int bestId = -1;
+		int bestSpecificity = -1; // 조건 개수
+
+		for (const auto& tr : m_Transitions)
 		{
+			if (tr.iFromNodeId != EXIT_STATE_NODE_ID)
+				continue;
 
-			auto it = FindState(m_ExitStateName);
-			if (it != nullptr)
-				return it->iNodeId;
-			else
+			// Exit Out 자체의 시간창/조건도 평가
+			if (!tr.Evaluates(const_cast<CAnimController*>(this), m_pAnimator))
+				continue;
+
+			int spec = static_cast<int>(tr.conditions.size());
+			if (spec > bestSpecificity)
 			{
-#ifdef _DEBUG
-				cout << "Exit state not found: " << m_ExitStateName << endl; // 디버그용 출력
-#endif // _DEBUG
-
-				return -1; // Exit 상태가 없으면 -1 반환
+				bestSpecificity = spec;
+				bestId = tr.iToNodeId;
 			}
 		}
-		else
-			return iNodeId;
+		return bestId; // 없으면 -1
 	}
 
 	_int ConvertAnyStateNodeIdToAnyState(_int iNodeId) const
 	{
-		if (iNodeId == m_iCAnyStateNodeID)
+		if (iNodeId == ANYSTATE_NODE_ID)
 		{
 			// AnyState에서 넘어가는거라면 현재 재생중인 애니메이션의 노드 ID 넘기기
 			return m_CurrentStateNodeId;
 		}
 		return iNodeId; // AnyState가 아닌 경우 그대로 반환
 	}
+
+	void ConsumeTrigger(const Transition& trans)
+	{
+		for (auto& cond : trans.conditions)
+		{
+			if (cond.type == ParamType::Trigger)
+			{
+				ResetTrigger(cond.paramName); // 트리거를 소비
+			}
+		}
+	}
+
 private:
 	
 	_bool m_bOverrideAnimController = false; // 오버라이드 애니메이션 컨트롤러 사용 중인지
@@ -425,7 +438,6 @@ private:
 	AnimState*			   m_ExitState{nullptr};
 	AnimState*			   m_AnyState{ nullptr }; // Any 상태 (모든 상태를 포함하는 상태)
 	string				   m_EntryStateName{};
-	string				   m_ExitStateName{};
 	vector<AnimState>      m_States;
 	vector<Transition>     m_Transitions;
 	vector<Condition>	   m_Conditions; // 아직 쓰는 곳 없음
@@ -436,12 +448,9 @@ private:
 	TransitionResult       m_TransitionResult{}; // 트래지션을 한 결과 (애니메이터에서 요청)
 	string 				   m_Name; // 컨트롤러 이름
 
-	const _int m_iCExitStateNodeID = 100000;
-	const _int m_iCAnyStateNodeID = 100001;
+	const _int EXIT_STATE_NODE_ID = 100000;
+	const _int ANYSTATE_NODE_ID = 100001;
 
-	_bool m_bChangeDefaultController = false; // 기본 컨트롤러로 변경 여부
-	CAnimation* m_pTmpUpperAnimForChagned = nullptr; // 디폴트로 변경시 없는 애니메이션 잠깐 채워서 넣기
-	CAnimation* m_pTmpLowerAnimForChagned = nullptr; // 디폴트로 변경시 없는 애니메이션 잠깐 채워서 넣기
 public:
 	static CAnimController* Create();
 	CAnimController* Clone();

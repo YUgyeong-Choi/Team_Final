@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\Egro_Bar.h" />
     <ClInclude Include="..\public\EventMag.h" />
     <ClInclude Include="..\Public\Explosion.h" />
+    <ClInclude Include="..\public\Fuoco.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
     <ClInclude Include="..\public\Grinder.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="..\private\Egro_Bar.cpp" />
     <ClCompile Include="..\private\EventMag.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
+    <ClCompile Include="..\private\Fuoco.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
     <ClCompile Include="..\private\Grinder.cpp" />

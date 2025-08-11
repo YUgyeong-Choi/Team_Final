@@ -726,7 +726,10 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
 		return E_FAIL;
 
-	
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
