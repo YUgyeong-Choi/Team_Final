@@ -8,7 +8,10 @@ matrix g_ViewMatrixInv;
 
 Texture2D g_DepthTexture;
 
-Texture2D g_Texture;
+Texture2D g_ARMT;
+Texture2D g_N;
+Texture2D g_BC;
+
 
 struct VS_IN
 {
@@ -43,7 +46,9 @@ struct PS_IN
 
 struct PS_OUT
 {
-    float4 vDecal : SV_Target0;
+    float4 vARMT : SV_Target0;
+    float4 vN : SV_Target1;
+    float4 vBC : SV_Target2;
 };
 
 PS_OUT PS_DECAL(PS_IN In)
@@ -78,8 +83,10 @@ PS_OUT PS_DECAL(PS_IN In)
 
     // 텍스처 좌표 계산 (0 ~ 1)
     float2 vTexcoord = vLocalPos.xz + 0.5f;
-    float4 vColor = g_Texture.Sample(DefaultSampler, vTexcoord);
-    Out.vDecal = vColor;
+    
+    Out.vARMT = g_ARMT.Sample(DefaultSampler, vTexcoord);
+    Out.vN = g_N.Sample(DefaultSampler, vTexcoord);
+    Out.vBC = g_BC.Sample(DefaultSampler, vTexcoord);
     
     return Out;
 }

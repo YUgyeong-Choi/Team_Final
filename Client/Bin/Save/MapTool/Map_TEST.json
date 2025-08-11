@@ -8,6 +8,7 @@
             "Objects": [
                 {
                     "ColliderType": 1,
+                    "LightShape": 0,
                     "WorldMatrix": [
                         [
                             3.4800000190734863,
@@ -29,7 +30,7 @@
                         ],
                         [
                             0.0,
-                            0.0,
+                            -1.6931203603744507,
                             0.0,
                             1.0
                         ]
@@ -37,6 +38,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "LightShape": 0,
                     "WorldMatrix": [
                         [
                             3.5745997428894043,
@@ -73,6 +75,7 @@
             "Objects": [
                 {
                     "ColliderType": 1,
+                    "LightShape": 0,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -102,6 +105,7 @@
                 },
                 {
                     "ColliderType": 1,
+                    "LightShape": 0,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -131,6 +135,7 @@
                 },
                 {
                     "ColliderType": 1,
+                    "LightShape": 0,
                     "WorldMatrix": [
                         [
                             1.0,
