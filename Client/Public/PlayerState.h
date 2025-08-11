@@ -157,6 +157,9 @@ public:
         if (input.bTap) // 무기교체
             return EPlayerState::SWITCHWEAPON;
 
+        if (input.bSkill)
+            return EPlayerState::MAINSKILL;
+
 		if (input.bSpaceDown) // 빽스탭
             return EPlayerState::BACKSTEP;
 
@@ -256,6 +259,9 @@ public:
 
         if (input.bItem) // 아이템 사용
             return EPlayerState::USEITEM;
+
+        if (input.bSkill)
+            return EPlayerState::MAINSKILL;
 
         if (input.bCtrl) // 컨트롤 왼팔공격
             return EPlayerState::ARMATTACKA;
@@ -378,6 +384,9 @@ public:
 
         if (input.bCtrl) // 컨트롤 왼팔공격
             return EPlayerState::ARMATTACKA;
+
+        if (input.bSkill)
+            return EPlayerState::MAINSKILL;
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // 강공
             return EPlayerState::STRONGATTACKA;
@@ -875,7 +884,6 @@ public:
         // 약공은 무기 장착상태여야합니다.        
         m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -895,6 +903,12 @@ public:
 
                 if (MOUSE_DOWN(DIM::RBUTTON))
                     m_bAttackB = true;
+
+                if (KEY_DOWN(DIK_LCONTROL))
+                    m_bArmAttack = true;
+
+                if (KEY_DOWN(DIK_F))
+                    m_bSkill = true;
             }
         }
     }
@@ -904,6 +918,8 @@ public:
         m_fStateTime = 0.f;
         m_bAttackA = false;
         m_bAttackB = false;
+        m_bArmAttack = false;
+        m_bSkill = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -917,6 +933,8 @@ public:
                 return EPlayerState::WEAKATTACKB;
             if (m_bAttackB)
                 return EPlayerState::STRONGATTACKB;
+            if (m_bSkill)
+                return EPlayerState::MAINSKILL;
         }
 
         
@@ -953,6 +971,8 @@ private:
 private:
     _bool   m_bAttackA = {};
     _bool   m_bAttackB = {};
+    _bool   m_bArmAttack = {};
+    _bool   m_bSkill = {};
 };
 class CPlayer_WeakAttackB final : public CPlayerState
 {
@@ -973,7 +993,6 @@ public:
         // 약공은 무기 장착상태여야합니다.
         m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -993,6 +1012,10 @@ public:
                     m_bAttackA = true;
                 if (MOUSE_DOWN(DIM::RBUTTON))
                     m_bAttackB = true;
+                if (KEY_DOWN(DIK_LCONTROL))
+					m_bArmAttack = true;
+                if (KEY_DOWN(DIK_F))
+                    m_bSkill = true;
             }
         }
     }
@@ -1002,6 +1025,8 @@ public:
         m_fStateTime = 0.f;
 		m_bAttackA = false;
 		m_bAttackB = false;
+        m_bArmAttack = false;
+        m_bSkill = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -1011,14 +1036,15 @@ public:
 
         if (0.8f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (m_bAttackA)
-                    return EPlayerState::WEAKATTACKB;
-                if (m_bAttackB)
-                    return EPlayerState::STRONGATTACKB;
-            }
+            if (m_bAttackA)
+                return EPlayerState::WEAKATTACKB;
+            if (m_bAttackB)
+                return EPlayerState::STRONGATTACKB;
+            if (m_bArmAttack)
+                return EPlayerState::ARMATTACKA;
+            if (m_bSkill)
+                return EPlayerState::MAINSKILL;
+
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -1051,6 +1077,8 @@ private:
 private:
     _bool   m_bAttackA = {};
     _bool   m_bAttackB = {};
+    _bool   m_bArmAttack = {};
+    _bool   m_bSkill = {};
 };
 
 /* [ 이 클래스는 강공 상태입니다. ] */
@@ -1073,7 +1101,6 @@ public:
         // 강공은 무기 장착상태여야합니다.
         m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
         
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1093,6 +1120,10 @@ public:
                     m_bAttackB = true;
                 if (MOUSE_DOWN(DIM::LBUTTON))
                     m_bAttackA = true;
+                if (KEY_DOWN(DIK_LCONTROL))
+                    m_bArmAttack = true;
+				if (KEY_DOWN(DIK_F))
+					m_bSkill = true;
             }
         }
     }
@@ -1102,6 +1133,8 @@ public:
         m_fStateTime = 0.f;
         m_bAttackB = false;
         m_bAttackA = false;
+        m_bArmAttack = false;
+        m_bSkill = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -1111,14 +1144,14 @@ public:
 
         if (0.75f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (m_bAttackB)
-                    return EPlayerState::STRONGATTACKB;
-                if (m_bAttackA)
-                    return EPlayerState::WEAKATTACKB;
-            }
+            if (m_bAttackB)
+                return EPlayerState::STRONGATTACKB;
+            if (m_bAttackA)
+                return EPlayerState::WEAKATTACKB;
+            if (m_bArmAttack)
+                return EPlayerState::ARMATTACKA;
+			if (m_bSkill)
+				return EPlayerState::MAINSKILL;
         }
         if (1.5f < m_fStateTime)
         {
@@ -1153,6 +1186,8 @@ private:
 private:
     _bool   m_bAttackA = {};
     _bool   m_bAttackB = {};
+    _bool   m_bArmAttack = {};
+    _bool   m_bSkill = {};
     
 };
 class CPlayer_StrongAttackB final : public CPlayerState
@@ -1174,7 +1209,6 @@ public:
         // 강공은 무기 장착상태여야합니다.
         m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1194,6 +1228,10 @@ public:
                     m_bAttackB = true;
                 if (MOUSE_DOWN(DIM::LBUTTON))
                     m_bAttackA = true;
+                if (KEY_DOWN(DIK_LCONTROL))
+                    m_bArmAttack = true;
+				if (KEY_DOWN(DIK_F))
+					m_bSkill = true;
             }
         }
     }
@@ -1203,6 +1241,8 @@ public:
         m_fStateTime = 0.f;
         m_bAttackB = false;
 		m_bAttackA = false;
+        m_bArmAttack = false;
+        m_bSkill = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -1212,14 +1252,14 @@ public:
 
         if (1.f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (m_bAttackB)
-                    return EPlayerState::STRONGATTACKA;
-                if (m_bAttackA)
-                    return EPlayerState::WEAKATTACKA;
-            }
+            if (m_bAttackB)
+                return EPlayerState::STRONGATTACKA;
+            if (m_bAttackA)
+                return EPlayerState::WEAKATTACKA;
+            if (m_bArmAttack)
+                return EPlayerState::ARMATTACKA;
+			if (m_bSkill)
+				return EPlayerState::MAINSKILL;
         }
 
         if (2.5f < m_fStateTime)
@@ -1255,6 +1295,8 @@ private:
 private:
     _bool   m_bAttackA = {};
     _bool   m_bAttackB = {};
+    _bool   m_bArmAttack = {};
+    _bool   m_bSkill = {};
 
 };
 
@@ -1927,5 +1969,172 @@ private:
 
 };
 
+/* [ 이 클래스는 스킬 상태입니다. ] */
+class CPlayer_MainSkill final : public CPlayerState
+{
+public:
+    CPlayer_MainSkill(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_MainSkill() = default;
+
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 애니메이션 설정 ] */
+        m_pOwner->m_pAnimator->SetTrigger("MainSkill");
+        m_pOwner->m_pTransformCom->SetbSpecialMoving();
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+
+        //1. F를 다시 눌렀을 경우 최대 3콤보까지 진행이된다.
+        if (0.5f < m_fStateTime && m_iSkillCount == 0)
+        {
+            if (KEY_DOWN(DIK_F))
+            {
+                m_pOwner->m_pAnimator->SetTrigger("MainSkill");
+                m_iSkillCount++;
+            }
+
+            if (MOUSE_DOWN(DIM::LBUTTON))
+				m_bAttackA = true;
+            else if (MOUSE_DOWN(DIM::RBUTTON))
+				m_bAttackB = true;
+        }
+        else if (1.5f < m_fStateTime && m_iSkillCount == 1)
+        {
+            if (KEY_DOWN(DIK_F))
+            {
+                m_pOwner->m_pAnimator->SetTrigger("MainSkill");
+                m_iSkillCount++;
+            }
+
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
+            else if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
+        }
+        else if (2.5f < m_fStateTime && m_iSkillCount == 2)
+        {
+            if (KEY_DOWN(DIK_F))
+            {
+                m_pOwner->m_pAnimator->SetTrigger("MainSkill");
+                m_iSkillCount++;
+            }
+
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
+            else if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
+        }
+    }
+
+    virtual void Exit() override
+    {
+        m_fStateTime = 0.f;
+        m_iSkillCount = 0;
+        m_bAttackA = false;
+        m_bAttackB = false;
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+
+        //1. 스킬의 진행도에 따라 탈출 조건이 달라진다.
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (1.f < m_fStateTime && m_iSkillCount == 0)
+        {
+            if(m_bAttackA)
+				return EPlayerState::WEAKATTACKA;
+			if (m_bAttackB)
+				return EPlayerState::STRONGATTACKA;
+
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+        if (2.f < m_fStateTime && m_iSkillCount == 1)
+        {
+            if (m_bAttackA)
+                return EPlayerState::WEAKATTACKA;
+            if (m_bAttackB)
+                return EPlayerState::STRONGATTACKA;
+
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+        if (3.5f < m_fStateTime && m_iSkillCount >= 2)
+        {
+            if (m_bAttackA)
+                return EPlayerState::WEAKATTACKA;
+            if (m_bAttackB)
+                return EPlayerState::STRONGATTACKA;
+
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+
+        return EPlayerState::MAINSKILL;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"MAINSKILL";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "MainSkill", "MainSkill2", "MainSkill3"
+    };
+
+	_int m_iSkillCount = 0;
+	_bool m_bAttackA = false;
+	_bool m_bAttackB = false;
+};
 
 NS_END

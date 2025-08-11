@@ -186,11 +186,11 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetTrigger("StrongAttack");
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+		//m_pAnimator->CancelOverrideAnimController();
 	}
-	if (KEY_PRESSING(DIK_U))
+	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetTrigger("PutWeapon");
-		m_pAnimator->CancelOverrideAnimController();
+		m_pAnimator->SetTrigger("MainSkill");
 	}
 
 	if (KEY_DOWN(DIK_T))
@@ -203,9 +203,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		bCharge = !bCharge;
 		m_pAnimator->SetTrigger("ArmAttack");
 	}
-
-	if (m_pAnimator->IsFinished())
-		int a = 0;
 }
 
 HRESULT CPlayer::Render()
@@ -268,6 +265,7 @@ void CPlayer::HandleInput()
 	m_Input.bCtrlPress = KEY_PRESSING(DIK_LCONTROL);
 	m_Input.bTap = KEY_DOWN(DIK_TAB);
 	m_Input.bItem = KEY_DOWN(DIK_R);
+	m_Input.bSkill = KEY_DOWN(DIK_F);
 	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
 	m_Input.bSpaceDown = KEY_DOWN(DIK_SPACE);
 	
@@ -317,6 +315,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_fMoveTime = 0.f;
 		m_iMoveStep = 0;
 		m_bMove = false;
+		m_bMoveReset = false;
 	}
 	
 	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
@@ -326,6 +325,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 	case eAnimCategory::NORMAL_ATTACKA:
 	{
+		// 이동초기화
+		if (!m_bMoveReset)
+		{
+			m_pTransformCom->SetbSpecialMoving();
+			m_bMoveReset = true;
+		}
+
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.2f;
 		_float  m_fDistance = 1.f;
@@ -343,6 +349,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::NORMAL_ATTACKB:
 	{
+		// 이동초기화
+		if (!m_bMoveReset)
+		{
+			m_pTransformCom->SetbSpecialMoving();
+			m_bMoveReset = true;
+		}
+
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.3f;
 		_float  m_fDistance = 1.f;
@@ -360,6 +373,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::STRONG_ATTACKA:
 	{
+		// 이동초기화
+		if (!m_bMoveReset)
+		{
+			m_pTransformCom->SetbSpecialMoving();
+			m_bMoveReset = true;
+		}
+
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.3f;
 		_float  m_fDistance = 1.f;
@@ -377,6 +397,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::STRONG_ATTACKB:
 	{
+		// 이동초기화
+		if (!m_bMoveReset)
+		{
+			m_pTransformCom->SetbSpecialMoving();
+			m_bMoveReset = true;
+		}
+
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.2f;
 		_float  m_fDistance = 1.f;
@@ -539,6 +566,24 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
+	case eAnimCategory::MAINSKILLA:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
+	case eAnimCategory::MAINSKILLB:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
+	case eAnimCategory::MAINSKILLC:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
 
 	default:
 		break;
@@ -588,8 +633,12 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("ChargeStrongAttack") == 0)
 		return eAnimCategory::CHARGE_ATTACKA;
 
+	if (stateName.find("MainSkill3") == 0)
+		return eAnimCategory::MAINSKILLC;
+	if (stateName.find("MainSkill2") == 0)
+		return eAnimCategory::MAINSKILLB;
 	if (stateName.find("MainSkill") == 0)
-		return eAnimCategory::MAINSKILL;
+		return eAnimCategory::MAINSKILLA;
 
 	if (stateName.find("Sit") == 0)
 		return eAnimCategory::SIT;
@@ -737,6 +786,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKA)] = new CPlayer_ArmAttackA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKB)] = new CPlayer_ArmAttackB(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKCHARGE)] = new CPlayer_ArmCharge(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::MAINSKILL)] = new CPlayer_MainSkill(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }

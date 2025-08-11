@@ -36,6 +36,7 @@ public:
 		_bool bCtrlPress;
 		_bool bItem;
 		_bool bTap;
+		_bool bSkill;
 		_bool bSpaceUP;
 		_bool bSpaceDown;
 
@@ -44,7 +45,7 @@ public:
 	enum class eAnimCategory
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
-		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILL, SIT, FIRSTDOOR,
+		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,
 		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, END
 	};
 
@@ -166,6 +167,7 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_ArmAttackA;
 	friend class CPlayer_ArmAttackB;
 	friend class CPlayer_ArmCharge;
+	friend class CPlayer_MainSkill;
 
 
 private: /* [ 상태 변수 ] */
@@ -211,6 +213,7 @@ private: /* [ 이동관련 변수 ] */
 	_bool    m_bMovable = { true };
 
 	string	 m_strPrevStateName;
+	_bool    m_bMoveReset = {};
 	_bool    m_bMove = {};
 	_bool    m_bSit = {};
 	_float   m_fSitTime = {};
