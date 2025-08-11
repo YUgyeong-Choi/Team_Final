@@ -9,18 +9,10 @@
             "States": [
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Run_F",
+                    "ClipName": "AS_Pino_T_Walk_BL",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Run_F",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Guard_Walk_B",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Guard_Walk_B",
+                    "Name": "Walk_BL",
                     "UpperClipName": ""
                 },
                 {
@@ -33,10 +25,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Walk_BL",
+                    "ClipName": "AS_Pino_T_Guard_Walk_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Walk_BL",
+                    "Name": "Guard_Walk_B",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_F",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F",
                     "UpperClipName": ""
                 },
                 {
@@ -49,18 +49,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Run_F_Stop",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Run_F_Stop",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Dash_Normal_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Dash_Normal_B",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_F_Stop",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F_Stop",
                     "UpperClipName": ""
                 },
                 {
