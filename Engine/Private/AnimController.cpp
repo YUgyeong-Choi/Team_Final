@@ -146,6 +146,10 @@ CAnimController::CAnimController(const CAnimController& Prototype)
 
 HRESULT CAnimController::Initialize_Prototype()
 {
+	m_States.emplace_back(AnimState{ "AnyState", nullptr, m_iCAnyStateNodeID, {0.f, 0.f} });
+	m_AnyState = &m_States.back(); // AnyState는 항상 첫번째 상태로 초기화
+	m_States.emplace_back(AnimState{ "ExitState", nullptr, m_iCExitStateNodeID, {0.f, 0.f} });
+	m_ExitState = &m_States.back(); // ExitState는 항상 두번째 상태로 초기화
 	return S_OK;
 }
 
@@ -165,7 +169,6 @@ void CAnimController::Update(_float fTimeDelta)
 				continue;
 			if (tr.hasExitTime)
 			{
-				
 				AnimState* currentAnimState = FindStateByNodeId(m_CurrentStateNodeId);
 				if (currentAnimState && currentAnimState->maskBoneName.empty() == false) // 현재 상태가 상하체 분리 상태라면
 				{
@@ -189,11 +192,13 @@ void CAnimController::Update(_float fTimeDelta)
 			}
 			if (!tr.Evaluates(this,m_pAnimator))
 				continue;
-			AnimState* fromState = FindStateByNodeId(tr.iFromNodeId);
-			AnimState* toState = FindStateByNodeId(tr.iToNodeId); 
+
+			AnimState* fromState = FindStateByNodeId(ConvertAnyStateNodeIdToAnyState(tr.iFromNodeId));
+			AnimState* toState = FindStateByNodeId(ConvertExitNodeToExitStateNodeId(tr.iToNodeId));
 
 			if (!fromState || !toState) // 애니메이션 상태가 없으면
 				continue;
+
 			m_TransitionResult = TransitionResult{}; // 초기화
 
 			_bool bFromMasked = fromState->maskBoneName.empty() == false; // 분리 상태인지
@@ -246,6 +251,9 @@ void CAnimController::Update(_float fTimeDelta)
 			}
 
 			//  유효 검사
+			if (m_bChangeDefaultController == false)
+			{
+
 			if (!m_TransitionResult.pFromLowerAnim || !m_TransitionResult.pToLowerAnim) 
 				continue; // 최소한 하체/통짜 클립은 있어야 함
 			if (m_TransitionResult.eType == ETransitionType::FullbodyToMasked && !m_TransitionResult.pToUpperAnim)
@@ -254,7 +262,15 @@ void CAnimController::Update(_float fTimeDelta)
 				continue;
 			if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim)) 
 				continue;
-
+			}
+			else
+			{
+				m_bChangeDefaultController = false;
+				m_TransitionResult.pFromLowerAnim = m_pTmpLowerAnimForChagned;
+				m_TransitionResult.pFromUpperAnim = m_pTmpUpperAnimForChagned;
+				m_pTmpLowerAnimForChagned = nullptr; // 다음 프레임부터는 초기화
+				m_pTmpUpperAnimForChagned = nullptr; // 다음 프레임부터는 초기화
+			}
 			m_TransitionResult.fUpperStartTime = toState->fUpperStartTime;
 			m_TransitionResult.fLowerStartTime = toState->fLowerStartTime;
 
@@ -414,7 +430,7 @@ void CAnimController::Applay_OverrideAnimController(const string& ctrlName, cons
 
 	m_OverrideAnimControllers[ctrlName] = overrideController;
 
-	ChangeStates(ctrlName); // 오버라이드 애니메이션 컨트롤러의 상태로 변경
+	ChangeStatesForOverride(ctrlName); // 오버라이드 애니메이션 컨트롤러의 상태로 변경
 	m_bOverrideAnimController = true; // 오버라이드 애니메이션 컨트롤러 사용 중으로 설
 }
 
@@ -422,22 +438,24 @@ void CAnimController::Cancel_OverrideAnimController()
 {
 	if (m_OriginalAnimStates.empty())
 		return;
-	m_States = m_OriginalAnimStates["Default"]; // 원래 상태로 되돌리기
+	ChangeStatesForDefault(); // 오버라이드 애니메이션 컨트롤러의 상태를 원래 상태로 변경
+//	m_States = m_OriginalAnimStates["Default"]; // 원래 상태로 되돌리기
+//	m_bChangeDefaultController = true;
 }
 
 void CAnimController::ResetTransAndStates()
 {
-	//for ( auto& state : m_States)
-	//{
-	//	if (state.clip)
-	//		Safe_Release(state.clip);
-	//}
 	m_States.clear();
 	m_Transitions.clear();
 	m_CurrentStateNodeId = 0;
+
+	m_States.emplace_back(AnimState{ "AnyState", nullptr, m_iCAnyStateNodeID, {0.f, 0.f} });
+	m_AnyState = &m_States.back(); // AnyState는 항상 첫번째 상태로 초기화
+	m_States.emplace_back(AnimState{ "ExitState", nullptr, m_iCExitStateNodeID, {0.f, 0.f} });
+	m_ExitState = &m_States.back(); // ExitState는 항상 두번째 상태로 초기화
 }
 
-void CAnimController::ChangeStates(const string& overrideCtrlName)
+void CAnimController::ChangeStatesForOverride(const string& overrideCtrlName)
 {
 	auto it = m_OverrideAnimControllers.find(overrideCtrlName);
 
@@ -464,11 +482,41 @@ void CAnimController::ChangeStates(const string& overrideCtrlName)
 				state.lowerClipName = overrideState.lowerClipName;
 				state.maskBoneName = overrideState.maskBoneName;
 				state.fBlendWeight = overrideState.fBlendWeight;
+				state.iNodeId = state.iNodeId; // 노드 ID는 그대로 유지
+				state.fLowerStartTime = state.fLowerStartTime;
+				state.fUpperStartTime = state.fUpperStartTime;
 			}
 		}
 		// 오버라이드한 컨트롤러 이름 설정
 		overrideCtrl.controllerName = m_Name;
 	}
+}
+
+void CAnimController::ChangeStatesForDefault()
+{
+	// 현재 오버라이드 컨트롤러 상태를 지금 상태꺼로 넘기기
+	if (m_OriginalAnimStates.empty())
+		return; // 원본 애니메이션 상태가 없으면 아무것도 하지 않음
+
+	// 현재 오버라이드 컨트롤러 애니메이션 상태 가져오기
+	auto pAnimState = FindStateByNodeId(m_CurrentStateNodeId);
+
+	if (pAnimState)
+	{
+		if (pAnimState->maskBoneName.empty())
+		{
+			m_pTmpLowerAnimForChagned = pAnimState->clip; // 현재 상태의 애니메이션 클립을 임시로 저장
+			m_pTmpUpperAnimForChagned = pAnimState->clip; 
+		}
+		else
+		{
+			m_pTmpLowerAnimForChagned = m_pAnimator->GetModel()->GetAnimationClipByName(pAnimState->lowerClipName);
+			m_pTmpUpperAnimForChagned = m_pAnimator->GetModel()->GetAnimationClipByName(pAnimState->upperClipName); 
+		}
+	}
+	m_bChangeDefaultController = true;
+	m_States = m_OriginalAnimStates["Default"]; // 원래 상태로 되돌리기
+	m_bOverrideAnimController = false; // 오버라이드 애니메이션 컨트롤러 사용 중이 아님
 }
 
 CAnimController* CAnimController::Create()
@@ -521,6 +569,8 @@ json CAnimController::Serialize()
 
 	for (const auto& state : m_States)
 	{
+		if (state.iNodeId == m_iCAnyStateNodeID || state.iNodeId == m_iCExitStateNodeID)
+			continue; // AnyState와 ExitState는 제외
 		j["Anim States"].push_back({
 			{"NodeId", state.iNodeId},
 			{"Name", state.stateName},
@@ -642,6 +692,8 @@ json CAnimController::Serialize()
 		j["ExitState"] = m_ExitStateName;
 	}
 
+
+
 	return j;
 }
 
@@ -668,6 +720,8 @@ void CAnimController::Deserialize(const json& j)
 				string maskBoneName = "";
 				string lowerClipName = "";
 				string upperClipName = "";
+				if (nodeId == m_iCAnyStateNodeID || nodeId == m_iCExitStateNodeID)
+					continue;
 				if (state.contains("MaskBone") && state["MaskBone"].is_string())
 				{
 					maskBoneName = state["MaskBone"];

@@ -1128,6 +1128,28 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			{
 				if (state.stateName != visState || !bIsVisible)
 					continue;
+
+				_bool isAny = (state.iNodeId == ANY_NODE_ID);
+				_bool isExit = (state.iNodeId == EXIT_NODE_ID);
+
+				
+				if ((isAny || isExit) && !m_bShowAll) 
+					bIsVisible = true;
+
+				if (isAny) 
+				{
+					ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(60, 140, 170, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(75, 160, 190, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(90, 180, 210, 255));
+					ImNodes::PushColorStyle(ImNodesCol_NodeOutline, IM_COL32(60, 140, 170, 255));
+				}
+				else if (isExit)
+				{
+					ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(185, 70, 70, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(205, 90, 90, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(225, 110, 110, 255));
+					ImNodes::PushColorStyle(ImNodesCol_NodeOutline, IM_COL32(185, 70, 70, 255));
+				}
 				ImNodes::BeginNode(state.iNodeId);
 
 				ImNodes::BeginNodeTitleBar();
@@ -1172,7 +1194,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				ImGui::SetColumnWidth(0, 60);
 				ImGui::SetColumnWidth(1, 60);
 
-				_int inCount = 0;
+				/*_int inCount = 0;
 				for (auto& t : transitions)
 					if (t.iToNodeId == state.iNodeId)
 						++inCount;
@@ -1191,7 +1213,24 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				pinId = state.iNodeId * 10 + 2;
 				ImNodes::BeginOutputAttribute(pinId);
 				ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
-				ImNodes::EndOutputAttribute();
+				ImNodes::EndOutputAttribute();*/
+
+				if (!isAny)
+				{
+					const _int inPin = state.iNodeId * 10 + 1;
+					ImNodes::BeginInputAttribute(inPin);
+					ImGui::TextColored(ImVec4(0.3f, 0.8f, 0.3f, 1.f), "In");
+					ImNodes::EndInputAttribute();
+				}
+
+				ImGui::NextColumn();
+				if (!isExit)
+				{
+					const _int outPin = state.iNodeId * 10 + 2;
+					ImNodes::BeginOutputAttribute(outPin);
+					ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
+					ImNodes::EndOutputAttribute();
+				}
 
 				ImGui::Columns(1);
 				ImGui::EndGroup();
@@ -1201,6 +1240,14 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				// 노드 위치 저장
 				ImVec2 pos = ImNodes::GetNodeEditorSpacePos(state.iNodeId);
 				state.fNodePos = { pos.x, pos.y };
+
+				if (isAny || isExit)
+				{
+					ImNodes::PopColorStyle(); // NodeOutline
+					ImNodes::PopColorStyle(); // TitleBarSelected
+					ImNodes::PopColorStyle(); // TitleBarHovered
+					ImNodes::PopColorStyle(); // TitleBar
+				}
 			}
 		}
 	}
@@ -1603,6 +1650,11 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				if (Button("Set Entry This State"))
 				{
 					pCtrl->SetEntry(state.stateName);
+				}
+
+				if (Button("Set Exit This State"))
+				{
+					pCtrl->SetExit(state.stateName);
 				}
 
 				// 애니메이션 StartTime 정하기
@@ -2446,8 +2498,7 @@ void CAnimTool::Free()
 	Safe_Release(m_pEventMag);
 	Safe_Delete(m_pMySequence);
 	Safe_Release(m_pAnimShader);
-	
-
+	Safe_Release(m_pGameInstance);
 }
 
 

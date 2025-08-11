@@ -45,6 +45,7 @@ HRESULT CAnimator::Initialize(void* pArg)
 		return E_FAIL;
 	// 디폴트 컨트롤러 생성해서 설정
 	m_pCurAnimController->SetAnimator(this);
+	m_pCurAnimController->Initialize_Prototype();
 	m_AnimControllers["Default"] = m_pCurAnimController;
 	m_pCurAnimController->SetName(m_pModel->Get_ModelName() + "_Default");
 	return S_OK;

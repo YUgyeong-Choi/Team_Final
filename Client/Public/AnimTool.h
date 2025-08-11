@@ -173,6 +173,9 @@ private:
 	_bool m_bShowAll = true;
 	_bool m_bShowAllLink = false;
 
+	static constexpr _int ANY_NODE_ID = 100001;
+	static constexpr _int EXIT_NODE_ID = 100000;
+
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
