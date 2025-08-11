@@ -16,6 +16,8 @@ Texture2D g_ShadowTexture;
 
 //데칼 텍스쳐
 Texture2D g_DecalAMRT;
+Texture2D g_DecalN;
+Texture2D g_DecalBC;
 
 /* [ Blur ] */
 Texture2D g_PreBlurTexture;
@@ -256,7 +258,14 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     
+    vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
+    
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+    
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalBCDesc.a), 0.f)); // 알파 값에 따라 혼합
     
     float fShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_fLightAmbient * g_fMtrlAmbient);
     
