@@ -17,7 +17,7 @@ Texture2D g_ShadowTexture;
 Texture2D g_Emissive;
 
 //데칼 텍스쳐
-Texture2D g_DecalTexture;
+Texture2D g_DecalAMRT;
 
 /* [ Blur ] */
 Texture2D g_PreBlurTexture;
@@ -915,7 +915,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     //    discard;
 
     //데칼 입히기
-    vector vDecal = g_DecalTexture.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecal = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
     finalColor.rgb = finalColor.rgb * (1 - vDecal.a) + vDecal.rgb * vDecal.a;
     
     Out.vBackBuffer = finalColor;

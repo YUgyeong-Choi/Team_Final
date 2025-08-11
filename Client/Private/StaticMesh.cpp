@@ -41,6 +41,9 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	//충돌체 종류
 	m_eColliderType = StaicMeshDESC->eColliderType;
 
+	//라이트 모양
+	m_iLightShape = StaicMeshDESC->iLightShape;
+
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
 		return E_FAIL;
 
