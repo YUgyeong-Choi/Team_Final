@@ -33,6 +33,7 @@ private:
 	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 
 	HRESULT Ready_Nav(const _wstring strLayerTag);
+	HRESULT Ready_Static_Decal(const _wstring strLayerTag);
 #pragma endregion
 
 

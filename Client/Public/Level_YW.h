@@ -32,6 +32,7 @@ public:
 
 private:
 	HRESULT Ready_Lights();
+
 	HRESULT Ready_Camera();
 	HRESULT Ready_ImGuiTools();
 private:

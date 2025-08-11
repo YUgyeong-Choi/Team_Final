@@ -107,7 +107,7 @@ VS_OUT_DEBUG VS_DEBUG(VS_IN In)
     return Out;
 }
 
-float4 PS_DEBUG(VS_OUT_DEBUG In) : SV_Target
+float4 PS_DEBUG(VS_OUT_DEBUG In) : SV_Target3
 {
     return float4(1.f, 0.f, 0.f, 1.f); // »¡°£ ¼±
 }

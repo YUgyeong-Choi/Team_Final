@@ -127,6 +127,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),
 		CVIBuffer_VolumeMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxPos */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Decal"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Decal.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements))))
+		return E_FAIL;
 #pragma endregion
 
 	/* For.Prototype_Component_VIBuffer_Rect*/

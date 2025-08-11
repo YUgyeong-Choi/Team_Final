@@ -115,6 +115,9 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 				return;
 
+			//데칼 소환
+			if (FAILED(Ready_Static_Decal(TEXT("Layer_StaticDecal"))))
+				return;
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 				return;
@@ -345,128 +348,14 @@ HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
 	return S_OK;
 }
 
+HRESULT CLevel_KratCentralStation::Ready_Static_Decal(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Static_Decal"),
+		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag)))
+		return E_FAIL;
 
-//HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
-//{
-//	//이미 프로토타입이존재하는 지확인
-//
-//	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
-//	{
-//		MSG_BOX("이미 프로토타입이 존재함");
-//		return S_OK;
-//	}
-//
-//	_matrix		PreTransformMatrix = XMMatrixIdentity();
-//	PreTransformMatrix = XMMatrixIdentity();
-//	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
-//
-//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag,
-//		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-//		return E_FAIL;
-//
-//	return S_OK;
-//}
-//
-//HRESULT CLevel_KratCentralStation::Ready_MapModel()
-//{
-//	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
-//	if (!inFile.is_open())
-//	{
-//		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
-//		return S_OK;
-//	}
-//
-//	json ReadyModelJson;
-//	try
-//	{
-//		inFile >> ReadyModelJson;
-//		inFile.close();
-//	}
-//	catch (const exception& e)
-//	{
-//		inFile.close();
-//		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-//		return E_FAIL;
-//	}
-//
-//	// JSON 데이터 확인
-//	for (const auto& element : ReadyModelJson)
-//	{
-//		string ModelName = element.value("ModelName", "");
-//		string Path = element.value("Path", "");
-//
-//		//모델 프로토 타입 생성
-//		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-//
-//		const _char* pModelFilePath = Path.c_str();
-//
-//		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
-//		{
-//			return E_FAIL;
-//		}
-//	}
-//
-//	return S_OK;
-//}
-//
-//HRESULT CLevel_KratCentralStation::LoadMap()
-//{
-//	ifstream inFile("../Bin/Save/MapTool/MapData.json");
-//	if (!inFile.is_open())
-//	{
-//		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
-//		return S_OK;
-//	}
-//
-//	json MapDataJson;
-//	inFile >> MapDataJson;
-//	inFile.close();
-//
-//	_uint iModelCount = MapDataJson["ModelCount"];
-//	const json& Models = MapDataJson["Models"];
-//
-//	for (_uint i = 0; i < iModelCount; ++i)
-//	{
-//		string ModelName = Models[i]["ModelName"];
-//		_uint iObjectCount = Models[i]["ObjectCount"];
-//		const json& objects = Models[i]["Objects"];
-//
-//		for (_uint j = 0; j < iObjectCount; ++j)
-//		{
-//			const json& WorldMatrixJson = objects[j]["WorldMatrix"];
-//			_float4x4 WorldMatrix = {};
-//
-//			for (_int row = 0; row < 4; ++row)
-//				for (_int col = 0; col < 4; ++col)
-//					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-//
-//			//오브젝트 생성, 배치
-//
-//			wstring LayerTag = TEXT("Layer_MapToolObject_");
-//			LayerTag += StringToWString(ModelName);
-//
-//			CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
-//
-//			StaticMeshDesc.iRender = 0;
-//			StaticMeshDesc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-//			//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
-//
-//			wstring wstrModelName = StringToWString(ModelName);
-//			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
-//			ModelPrototypeTag += wstrModelName;
-//
-//			lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-//			StaticMeshDesc.WorldMatrix = WorldMatrix;
-//
-//			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
-//				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), LayerTag, &StaticMeshDesc)))
-//				return E_FAIL;
-//
-//		}
-//	}
-//
-//	return S_OK;
-//}
+	return S_OK;
+}
 
 HRESULT CLevel_KratCentralStation::Ready_Player()
 {

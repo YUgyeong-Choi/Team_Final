@@ -11,21 +11,18 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CDecal final : public CGameObject
+class CDecal abstract : public CGameObject
 {
-public:
-	typedef struct tagDecalDesc : public CGameObject::GAMEOBJECT_DESC
+protected:
+	enum class TEXTURE_TYPE
 	{
-		_float4x4	WorldMatrix = _float4x4(
-			1.f, 0.f, 0.f, 0.f,
-			0.f, 1.f, 0.f, 0.f,
-			0.f, 0.f, 1.f, 0.f,
-			0.f, 0.f, 0.f, 1.f
-		);
+		ARMT,
+		N,
+		BC,
+		END
+	};
 
-	}DECAL_DESC;
-
-private:
+protected:
 	CDecal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDecal(const CDecal& Prototype);
 	virtual ~CDecal() = default;
@@ -38,17 +35,15 @@ public:
 	virtual void Late_Update(_float fTimeDelta)override;
 	virtual HRESULT Render()override;
 
-private:
+protected:
 	CShader* m_pShaderCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
+	CTexture* m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::END)] = { nullptr };
 	CVIBuffer_VolumeMesh* m_pVIBufferCom = { nullptr };
-private:
-	HRESULT Ready_Components();
+protected:
+	virtual HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CDecal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
-	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
 };

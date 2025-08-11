@@ -70,19 +70,19 @@ void CMapToolObject::Update(_float fTimeDelta)
 
 	_float fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(STATE::POSITION) - XMLoadFloat4(pCamPos)));
 
-	if (fDistance < 1.f)
+	/*if (fDistance < 1.f)
 		m_eLOD = LOD::LOD0;
 	else if (fDistance < 2.f)
 		m_eLOD = LOD::LOD1;
 	else
-		m_eLOD = LOD::LOD2;
+		m_eLOD = LOD::LOD2;*/
 }
 
 void CMapToolObject::Late_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorConvexCom))
 	{
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
 
 	//if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f))
@@ -105,11 +105,20 @@ HRESULT CMapToolObject::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		_float Emissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
+		{
+
+		}
+
 		m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 
 		m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
-		m_pShaderCom->Begin(2);
+		m_pShaderCom->Begin(1);
 
 		m_pModelCom[ENUM_CLASS(m_eLOD)]->Render(i);
 	}
@@ -218,7 +227,7 @@ HRESULT CMapToolObject::Ready_Components(void* pArg)
 	m_ModelPrototypeTag = pDesc->szModelPrototypeTag;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPBRMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
