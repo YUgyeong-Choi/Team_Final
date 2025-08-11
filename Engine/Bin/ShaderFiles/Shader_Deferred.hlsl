@@ -366,15 +366,19 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float Metallic = vARMDesc.b;
     float3 Ambient = Albedo * 0.1f * AO;
     
-    /* [ 데칼 ] */
+    /* [ 데칼 ARM 불러오기 ] */
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
-    //SRC
-    //float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-    //DES
+
+    /* Normal 블렌딩 */
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    //ARMT로 알파값 보간
-    Normal = normalize(vector(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a));
+
+    /* ARM 블렌딩 */
+    AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g, vDecalAMRTDesc.a);
+    Metallic = lerp(Metallic, vDecalAMRTDesc.b, vDecalAMRTDesc.a);
+
     
     // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;

@@ -22,6 +22,8 @@ HRESULT CStatic_Decal::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(5.f, 0.f, 0.f, 1.f));
+
 	return S_OK;
 }
 
@@ -40,7 +42,19 @@ void CStatic_Decal::Late_Update(_float fTimeDelta)
 
 HRESULT CStatic_Decal::Render()
 {
-	return __super::Render();
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Begin(0)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Render()))
+		return E_FAIL;
+
+	return S_OK;
 
 }
 
