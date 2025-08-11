@@ -262,12 +262,10 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     //데칼
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
-    
     //SRC
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
     //DES
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    
     //ARMT로 알파값 보간
     vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
     
@@ -305,10 +303,17 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     PS_OUT_LIGHT Out;
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
-    
+
+    //데칼
+    vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
+    //SRC
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+    //DES
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    //ARMT로 알파값 보간
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
     
-        
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     
@@ -360,6 +365,16 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
     float3 Ambient = Albedo * 0.1f * AO;
+    
+    /* [ 데칼 ] */
+    vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
+    //SRC
+    //float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+    //DES
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    //ARMT로 알파값 보간
+    Normal = normalize(vector(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
     
     // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;
@@ -928,8 +943,8 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vDecalBC = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     finalColor.rgb = finalColor.rgb * (1 - vDecalARMT.a) + vDecalBC.rgb * vDecalARMT.a;
     
+    //데칼 볼륨메쉬(디버그)
     vector vDecalVolumeMesh = g_DecalVolumeMesh.Sample(DefaultSampler, In.vTexcoord);
-    
     finalColor = finalColor * (1 - vDecalVolumeMesh.a) + vDecalVolumeMesh.a * vDecalVolumeMesh;
     
     Out.vBackBuffer = finalColor;

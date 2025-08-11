@@ -98,7 +98,7 @@ private:
 	_int	m_iLightShape = { 0 }; // 라이트 모양
 
 private:
-	LOD m_eLOD = LOD::LOD0; // 현재 LOD 상태
+	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태
 
 private:
 	CShader* m_pShaderCom = { nullptr };

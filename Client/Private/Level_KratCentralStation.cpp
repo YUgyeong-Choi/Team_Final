@@ -115,6 +115,9 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 				return;
 
+			//데칼 소환
+			if (FAILED(Ready_Static_Decal(TEXT("Layer_StaticDecal"))))
+				return;
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 				return;
@@ -340,6 +343,15 @@ HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Nav"),
 		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag, &NavDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Static_Decal(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Static_Decal"),
+		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag)))
 		return E_FAIL;
 
 	return S_OK;

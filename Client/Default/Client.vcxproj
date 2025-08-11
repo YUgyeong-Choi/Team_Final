@@ -237,6 +237,7 @@
     <ClInclude Include="..\public\Stamina_Bar.h" />
     <ClInclude Include="..\public\StaticMesh.h" />
     <ClInclude Include="..\public\StaticMesh_Instance.h" />
+    <ClInclude Include="..\public\Static_Decal.h" />
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\public\TestAnimObject.h" />
     <ClInclude Include="..\Public\ToolMeshEffect.h" />
@@ -366,6 +367,7 @@
     <ClCompile Include="..\private\Stamina_Bar.cpp" />
     <ClCompile Include="..\private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
+    <ClCompile Include="..\private\Static_Decal.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\private\TestAnimObject.cpp" />
     <ClCompile Include="..\Private\ToolMeshEffect.cpp" />
@@ -434,7 +436,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh_Instance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPBRMesh.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPos.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Decal.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl" />

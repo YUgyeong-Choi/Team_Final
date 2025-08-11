@@ -11,12 +11,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CDecalToolObject final : public CDecal
+class CStatic_Decal final : public CDecal
 {
 private:
-	CDecalToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CDecalToolObject(const CDecalToolObject& Prototype);
-	virtual ~CDecalToolObject() = default;
+	CStatic_Decal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CStatic_Decal(const CStatic_Decal& Prototype);
+	virtual ~CStatic_Decal() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -31,7 +31,7 @@ private:
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CDecalToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
+	static CStatic_Decal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
