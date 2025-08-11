@@ -2145,7 +2145,7 @@ string CAnimTool::GetStateCategory(const string& stateName)
 	else if(stateName.find("Dash") != string::npos)
 		return "Dash";
 	else if (stateName.find("Attack") != string::npos ||
-		stateName.find("Skill") != string::npos)
+		stateName.find("Skill") != string::npos|| stateName.find("Atk") != string::npos)
 		return "Attack";
 	else if (stateName.find("Idle") != string::npos)
 		return "Idle";

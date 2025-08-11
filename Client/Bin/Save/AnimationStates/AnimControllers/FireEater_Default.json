@@ -9,8 +9,8 @@
             "Name": "Idle",
             "NodeId": 1,
             "NodePos": [
-                773.0,
-                -957.0
+                600.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -24,8 +24,8 @@
             "Name": "Skill1_Start",
             "NodeId": 2,
             "NodePos": [
-                173.0,
-                -957.0
+                0.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -36,26 +36,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Skill4_Start",
+            "Name": "Atk_Swing_Start",
             "NodeId": 3,
             "NodePos": [
-                473.0,
-                -957.0
-            ],
-            "UpperClip": "",
-            "UpperStartTime": 0.0
-        },
-        {
-            "BlendWeight": 1.0,
-            "Clip": "AS_ATLBoss0_Skill_04_Left",
-            "LowerClip": "",
-            "LowerStartTime": 0.0,
-            "MaskBone": "",
-            "Name": "Skill4_Left",
-            "NodeId": 4,
-            "NodePos": [
-                773.0,
-                -957.0
+                300.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -66,11 +51,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Skill4_End",
+            "Name": "Atk_Swing_End",
             "NodeId": 6,
             "NodePos": [
-                1073.0,
-                -957.0
+                600.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +69,8 @@
             "Name": "Skill1_Loop",
             "NodeId": 11,
             "NodePos": [
-                173.0,
-                -657.0
+                900.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -99,8 +84,8 @@
             "Name": "Skill1_Left_End",
             "NodeId": 13,
             "NodePos": [
-                473.0,
-                -657.0
+                1200.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -114,8 +99,8 @@
             "Name": "Skill1_End",
             "NodeId": 14,
             "NodePos": [
-                773.0,
-                -657.0
+                0.0,
+                300.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +114,8 @@
             "Name": "Skill1_Right_End",
             "NodeId": 15,
             "NodePos": [
-                1073.0,
-                -657.0
+                300.0,
+                300.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -141,11 +126,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Skill6",
+            "Name": "Atk_Foot",
             "NodeId": 18,
             "NodePos": [
-                173.0,
-                -357.0
+                600.0,
+                300.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -156,11 +141,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Skill5_Start",
+            "Name": "Atk_Slam_Fury_Start",
             "NodeId": 19,
             "NodePos": [
-                473.0,
-                -357.0
+                900.0,
+                300.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -171,11 +156,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Skill5_Attack",
+            "Name": "Atk_Slam_Fury",
             "NodeId": 21,
             "NodePos": [
-                773.0,
-                -357.0
+                971.0,
+                159.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -186,11 +171,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Skill5_End",
+            "Name": "Atk_Slam_Fury_End",
             "NodeId": 22,
             "NodePos": [
-                1073.0,
-                -357.0
+                0.0,
+                600.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -204,8 +189,8 @@
             "Name": "Skill9",
             "NodeId": 27,
             "NodePos": [
-                173.0,
-                -57.0
+                300.0,
+                600.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -216,11 +201,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Skill8",
+            "Name": "Akt_Slam",
             "NodeId": 30,
             "NodePos": [
-                473.0,
-                -57.0
+                1200.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -231,11 +216,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Skill2_Start",
+            "Name": "Atk_Uppercut_Start",
             "NodeId": 33,
             "NodePos": [
-                773.0,
-                -57.0
+                600.0,
+                600.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -249,8 +234,8 @@
             "Name": "Skill2_End",
             "NodeId": 34,
             "NodePos": [
-                1073.0,
-                -57.0
+                900.0,
+                600.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -261,18 +246,183 @@
             "LowerClip": "AS_ATLBoss0_Skill_02_Start",
             "LowerStartTime": 0.0,
             "MaskBone": "Bip001-Spine",
-            "Name": "Skill2_FrontAttack",
+            "Name": "Atk_Uppercut_Front",
             "NodeId": 39,
             "NodePos": [
-                173.0,
-                243.0
+                1200.0,
+                600.0
             ],
             "UpperClip": "AS_ATLBoss0_Skill_05_Attack",
             "UpperStartTime": 0.5099999904632568
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_FireEater_C00",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "CutScene",
+            "NodeId": 42,
+            "NodePos": [
+                1200.0,
+                300.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_Right",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_R",
+            "NodeId": 45,
+            "NodePos": [
+                0.0,
+                900.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_Left",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_L_Com1",
+            "NodeId": 46,
+            "NodePos": [
+                300.0,
+                900.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_Right",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_R_Com1",
+            "NodeId": 47,
+            "NodePos": [
+                600.0,
+                900.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_Right",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_R_Com2",
+            "NodeId": 48,
+            "NodePos": [
+                900.0,
+                900.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_Left",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_L_Com2",
+            "NodeId": 49,
+            "NodePos": [
+                1200.0,
+                900.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_Right",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_Seq",
+            "NodeId": 50,
+            "NodePos": [
+                0.0,
+                1200.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_Right",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_Seq2",
+            "NodeId": 51,
+            "NodePos": [
+                300.0,
+                1200.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_Right",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_Seq3",
+            "NodeId": 52,
+            "NodePos": [
+                600.0,
+                1200.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_End",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_SeqReset",
+            "NodeId": 53,
+            "NodePos": [
+                900.0,
+                1200.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATLBoss0_Skill_04_End",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Atk_Swing_SeqReset2",
+            "NodeId": 54,
+            "NodePos": [
+                1200.0,
+                1200.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
         }
     ],
     "ControllerName": "FireEater_Default",
-    "EntryState": "Idle",
+    "EntryState": "CutScene",
     "Parameters": {
         "Attack": {
             "Type": 1,
@@ -281,10 +431,24 @@
             "fValue": 0.0,
             "iValue": 0
         },
+        "IsCombo": {
+            "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
         "IsFront": {
             "Type": 0,
             "bTriggered": false,
-            "bValue": true,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "IsHit": {
+            "Type": 0,
+            "bTriggered": false,
+            "bValue": false,
             "fValue": 0.0,
             "iValue": 0
         },
@@ -294,53 +458,16 @@
             "bValue": false,
             "fValue": 0.0,
             "iValue": 2
+        },
+        "SwingCombo": {
+            "Type": 3,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
         }
     },
     "Transitions": [
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 3,
-            "HasExitTime": true,
-            "Link": {
-                "FromNodeId": 32,
-                "LinkId": 5,
-                "ToNodeId": 41
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 4
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.1550000011920929,
-            "FromNodeId": 4,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 42,
-                "LinkId": 7,
-                "ToNodeId": 61
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.9490000009536743,
-            "ToNodeId": 6
-        },
         {
             "Conditions": [
                 {
@@ -462,7 +589,7 @@
             "Conditions": [
                 {
                     "Op": "IsTrue",
-                    "ParamName": "",
+                    "ParamName": "IsHit",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -815,6 +942,379 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 34
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 42,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 422,
+                "LinkId": 43,
+                "ToNodeId": 11
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 1
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "IsHit",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 18,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 182,
+                "LinkId": 44,
+                "ToNodeId": 11
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 1
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 46,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 462,
+                "LinkId": 55,
+                "ToNodeId": 471
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 47
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 45,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 452,
+                "LinkId": 56,
+                "ToNodeId": 61
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 6
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "IsCombo",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 3,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 32,
+                "LinkId": 57,
+                "ToNodeId": 451
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 45
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "IsCombo",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Equal",
+                    "ParamName": "SwingCombo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 1
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 3,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 32,
+                "LinkId": 58,
+                "ToNodeId": 481
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 48
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 48,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 482,
+                "LinkId": 59,
+                "ToNodeId": 491
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 49
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 49,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 492,
+                "LinkId": 60,
+                "ToNodeId": 61
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 6
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 50,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 502,
+                "LinkId": 61,
+                "ToNodeId": 531
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.6499999761581421,
+            "ToNodeId": 53
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 53,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 532,
+                "LinkId": 62,
+                "ToNodeId": 511
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 51
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 51,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 512,
+                "LinkId": 63,
+                "ToNodeId": 541
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.6460000276565552,
+            "ToNodeId": 54
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 54,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 542,
+                "LinkId": 64,
+                "ToNodeId": 521
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 52
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 52,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 522,
+                "LinkId": 65,
+                "ToNodeId": 61
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 6
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "IsCombo",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Equal",
+                    "ParamName": "SwingCombo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 2
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 3,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 32,
+                "LinkId": 66,
+                "ToNodeId": 501
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 50
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 47,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 472,
+                "LinkId": 67,
+                "ToNodeId": 61
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 6
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "IsCombo",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Equal",
+                    "ParamName": "SwingCombo",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 3,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 32,
+                "LinkId": 68,
+                "ToNodeId": 461
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 46
         }
     ]
 }
