@@ -70,6 +70,10 @@ namespace Engine
 	const unsigned int g_iMiddleWidth = 3200;
 	const unsigned int g_iMiddleHeight = 1800;
 
+
+	const unsigned int g_iSmallWidth = 800;
+	const unsigned int g_iSmallHeight = 450;
+
 	extern _bool g_bSceneChanging;
 }
 

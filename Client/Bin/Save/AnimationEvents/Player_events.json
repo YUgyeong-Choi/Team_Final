@@ -4,7 +4,7 @@
             "ClipName": "AS_Pino_Arm_Normal_BackHand",
             "Duration": 134.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -18,7 +18,7 @@
             "ClipName": "AS_Pino_Arm_Normal_Hook",
             "Duration": 130.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {

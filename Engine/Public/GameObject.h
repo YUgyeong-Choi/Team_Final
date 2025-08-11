@@ -71,6 +71,7 @@ protected:
 	
 	_float	m_fViewZ = {};
 	_bool m_bCloned = {};
+	_bool m_bEmissive = {};
 
 	_bool m_isActive = { true };
 

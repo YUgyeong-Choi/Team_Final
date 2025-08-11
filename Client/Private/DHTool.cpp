@@ -418,7 +418,7 @@ HRESULT CDHTool::Render_LightTool()
 	if (m_pSelectedObject != nullptr)
 	{
 		float fFogDensity = m_pSelectedObject->GetfFogDensity();
-		if (ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 30.0f, "%.1f"))
+		if (ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 100.0f, "%.1f"))
 			m_pSelectedObject->SetfFogDensity(fFogDensity);
 	}
 	else

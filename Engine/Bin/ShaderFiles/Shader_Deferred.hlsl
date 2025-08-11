@@ -10,9 +10,11 @@ Texture2D g_RenderTargetTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
+Texture2D g_UnitFilter;
 Texture2D g_DepthTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
+Texture2D g_Emissive;
 
 //데칼 텍스쳐
 Texture2D g_DecalAMRT;
@@ -245,6 +247,7 @@ struct PS_OUT_PBR
 {
     vector vSpecular    : SV_TARGET0;
     vector vFinal       : SV_TARGET1;
+    vector vUnit        : SV_TARGET2;
 };
 
 struct PS_OUT_VOLUMETRIC
@@ -356,6 +359,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
+    float IsUnit = vARMDesc.a;
     float3 Ambient = Albedo * 0.1f * AO;
     
     // [ ViewPos 복원 ]
@@ -422,8 +426,9 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO + Ambient;
     float3 Specalur = Specular * radiance;
 
-    Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     Out.vSpecular = float4(Specular, 1.0f);
+    Out.vUnit = float4(IsUnit, 0.0f, 0.0f, 0.0f);
+    Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     
     return Out;
 }
@@ -443,6 +448,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
+    float IsUnit = vARMDesc.a;
     float3 Ambient = Albedo * g_fLightAmbient * AO;
 
     // [ ViewPos 복원 ]
@@ -513,8 +519,9 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt;//    +Ambient;
     float3 Specalur = Specular * radiance;
 
-    Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     Out.vSpecular = float4(Specular, 1.0f);
+    Out.vUnit = float4(IsUnit, 0.0f, 0.0f, 0.0f);
+    Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     
     return Out;
 }
@@ -534,6 +541,7 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
+    float IsUnit = vARMDesc.a;
     float3 Ambient = Albedo * g_fLightAmbient * AO;
 
     // [ ViewPos 복원 ]
@@ -613,8 +621,9 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt;//    +Ambient;
     float3 Specalur = Specular * radiance;
     
-    Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     Out.vSpecular = float4(Specular, 1.0f);
+    Out.vUnit = float4(IsUnit, 0.0f, 0.0f, 0.0f);
+    Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
     return Out;
 }
 
@@ -884,24 +893,19 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
 
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
-    PS_OUT Out;
+    PS_OUT Out = (PS_OUT)0;
     
     vector finalColor = vector(0.f, 0.f, 0.f, 0.f);
-    
-    /* [ 기존 VTXMesh ] */
-    vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
-    vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
-    vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
-    Out.vBackBuffer = vDiffuse * vShade + vSpecular;   
-    finalColor = Out.vBackBuffer;
     
     /* [ PBR 매쉬 ] */
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vVolumetric = g_VolumetricTexture.Sample(DefaultSampler, In.vTexcoord);
+    vector vUnit = g_UnitFilter.Sample(DefaultSampler, In.vTexcoord);
+    //vector vEmissive = g_Emissive.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
-        Out.vBackBuffer = vPBRFinal;
+        Out.vBackBuffer = vPBRFinal;//+vEmissive;
     finalColor = Out.vBackBuffer;
     
     
@@ -948,50 +952,53 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vPosition = mul(vPosition, g_ProjMatrixInv);
     vPosition = mul(vPosition, g_ViewMatrixInv);
     
-    // 1. Cascade A
-    vector vLightPosA;
-    vLightPosA = mul(vPosition, g_LightViewMatrixA);
-    vLightPosA = mul(vLightPosA, g_LightProjMatrixA);
+    if (vUnit.r > 0.01f)
+    {
+        // 1. Cascade A
+        vector vLightPosA;
+        vLightPosA = mul(vPosition, g_LightViewMatrixA);
+        vLightPosA = mul(vLightPosA, g_LightProjMatrixA);
     
-    float2 uvA;
-    uvA.x = vLightPosA.x / vLightPosA.w * 0.5f + 0.5f;
-    uvA.y = vLightPosA.y / vLightPosA.w * -0.5f + 0.5f;
+        float2 uvA;
+        uvA.x = vLightPosA.x / vLightPosA.w * 0.5f + 0.5f;
+        uvA.y = vLightPosA.y / vLightPosA.w * -0.5f + 0.5f;
     
-    float4 vDepthA = g_ShadowTextureA.Sample(LinearClampSampler, uvA);
-    float fShadowViewZA = vDepthA.y * 1000.f;
+        float4 vDepthA = g_ShadowTextureA.Sample(LinearClampSampler, uvA);
+        float fShadowViewZA = vDepthA.y * 1000.f;
     
-    // 2. Cascade B
-    vector vLightPosB;
-    vLightPosB = mul(vPosition, g_LightViewMatrixB);
-    vLightPosB = mul(vLightPosB, g_LightProjMatrixB);
+        // 2. Cascade B
+        vector vLightPosB;
+        vLightPosB = mul(vPosition, g_LightViewMatrixB);
+        vLightPosB = mul(vLightPosB, g_LightProjMatrixB);
     
-    float2 uvB;
-    uvB.x = vLightPosB.x / vLightPosB.w * 0.5f + 0.5f;
-    uvB.y = vLightPosB.y / vLightPosB.w * -0.5f + 0.5f;
+        float2 uvB;
+        uvB.x = vLightPosB.x / vLightPosB.w * 0.5f + 0.5f;
+        uvB.y = vLightPosB.y / vLightPosB.w * -0.5f + 0.5f;
     
-    float4 vDepthB = g_ShadowTextureB.Sample(LinearClampSampler, uvB);
-    float fShadowViewZB = vDepthB.y * 1000.f;
+        float4 vDepthB = g_ShadowTextureB.Sample(LinearClampSampler, uvB);
+        float fShadowViewZB = vDepthB.y * 1000.f;
 
-    // 3. Cascade C
-    vector vLightPosC;
-    vLightPosC = mul(vPosition, g_LightViewMatrixC);
-    vLightPosC = mul(vLightPosC, g_LightProjMatrixC);
+        // 3. Cascade C
+        vector vLightPosC;
+        vLightPosC = mul(vPosition, g_LightViewMatrixC);
+        vLightPosC = mul(vLightPosC, g_LightProjMatrixC);
     
-    float2 uvC;
-    uvC.x = vLightPosC.x / vLightPosC.w * 0.5f + 0.5f;
-    uvC.y = vLightPosC.y / vLightPosC.w * -0.5f + 0.5f;
+        float2 uvC;
+        uvC.x = vLightPosC.x / vLightPosC.w * 0.5f + 0.5f;
+        uvC.y = vLightPosC.y / vLightPosC.w * -0.5f + 0.5f;
     
-    float4 vDepthC = g_ShadowTextureC.Sample(LinearClampSampler, uvC);
-    float fShadowViewZC = vDepthC.y * 1000.f;
+        float4 vDepthC = g_ShadowTextureC.Sample(LinearClampSampler, uvC);
+        float fShadowViewZC = vDepthC.y * 1000.f;
 
-    // --- 깊이 비교 ---
-    float fBias = 0.1f;
-    if (fShadowViewZA + fBias < vLightPosA.w)
-        Out.vBackBuffer *= 0.5f;
-    else if (fShadowViewZB + fBias < vLightPosB.w)
-        Out.vBackBuffer *= 0.5f;
-    else if (fShadowViewZC + fBias < vLightPosC.w)
-        Out.vBackBuffer *= 0.5f;
+        // --- 깊이 비교 ---
+        float fBias = 0.1f;
+        if (fShadowViewZA + fBias < vLightPosA.w)
+            Out.vBackBuffer *= 0.5f;
+        else if (fShadowViewZB + fBias < vLightPosB.w)
+            Out.vBackBuffer *= 0.5f;
+        else if (fShadowViewZC + fBias < vLightPosC.w)
+            Out.vBackBuffer *= 0.5f;
+    }
     
     vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
     vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);

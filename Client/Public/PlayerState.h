@@ -99,8 +99,19 @@ public:
             {
                 m_fChargeElapsed += fTimeDelta;
 
-                if (m_fChargeElapsed >= 0.2f)
+                if (m_fChargeElapsed >= 0.3f)
                     m_bChargeStarted = true; 
+            }
+        }
+
+        if (KEY_PRESSING(DIK_LCONTROL))
+        {
+            if (!m_bChargeArm)
+            {
+                m_fChargeArm += fTimeDelta;
+
+                if (m_fChargeArm >= 0.3f)
+                    m_bChargeArm = true;
             }
         }
     }
@@ -110,6 +121,8 @@ public:
         m_fStateTime = 0.f;
         m_bChargeStarted = false;
         m_fChargeElapsed = 0.f;
+        m_bChargeArm = false;
+        m_fChargeArm = 0.f;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -126,8 +139,11 @@ public:
         if (input.bItem) // 아이템 사용
 			return EPlayerState::USEITEM;
 
-        if (input.bCtrl) // 컨트롤 왼팔공격
-			return EPlayerState::LEFTHANDATTACK;
+        if (input.bCtrl) // 왼팔공격
+			return EPlayerState::ARMATTACKA;
+
+        if (m_bChargeArm && m_pOwner->m_bWeaponEquipped) // 차징
+            return EPlayerState::ARMATTACKCHARGE;
 
 		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // 강공
 			return EPlayerState::STRONGATTACKA;
@@ -172,7 +188,9 @@ private:
 
 private:
     _bool   m_bChargeStarted = {};
+    _bool   m_bChargeArm = {};
     _float  m_fChargeElapsed = 0.f;
+    _float  m_fChargeArm = 0.f;
 };
 
 /* [ 이 클래스는 천천히 걷는 상태입니다. ] */
@@ -188,6 +206,7 @@ public:
 public:
     virtual void Enter() override
     {
+        m_pOwner->m_pAnimator->SetBool("Sprint", false);
         SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
@@ -239,7 +258,7 @@ public:
             return EPlayerState::USEITEM;
 
         if (input.bCtrl) // 컨트롤 왼팔공격
-            return EPlayerState::LEFTHANDATTACK;
+            return EPlayerState::ARMATTACKA;
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // 강공
             return EPlayerState::STRONGATTACKA;
@@ -301,6 +320,7 @@ public:
 public:
     virtual void Enter() override
     {
+        m_pOwner->m_pAnimator->SetBool("Sprint", false);
         SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
@@ -357,7 +377,7 @@ public:
             return EPlayerState::USEITEM;
 
         if (input.bCtrl) // 컨트롤 왼팔공격
-            return EPlayerState::LEFTHANDATTACK;
+            return EPlayerState::ARMATTACKA;
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // 강공
             return EPlayerState::STRONGATTACKA;
@@ -672,9 +692,16 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 무기장착 모션입니다.
-        m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
-        m_pOwner->m_pAnimator->ApplyOverrideAnimController("TwoHand");
-        
+        if (!m_pOwner->m_bWeaponEquipped)
+        {
+            m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
+            m_pOwner->m_pAnimator->ApplyOverrideAnimController("TwoHand");
+        }
+        else
+        {
+            m_pOwner->m_pAnimator->SetTrigger("PutWeapon");
+            m_pOwner->m_pAnimator->CancelOverrideAnimController();
+        }
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -686,11 +713,24 @@ public:
 
         if(0.5f < m_fStateTime && !m_pOwner->m_bWeaponEquipped)
         {
-            m_pOwner->m_bWeaponEquipped = true;
-            m_pOwner->m_pWeapon->SetbIsActive(true);
+            if (!m_bDoOnce)
+            {
+                m_pOwner->m_bWeaponEquipped = true;
+                m_pOwner->m_pWeapon->SetbIsActive(true);
+				m_bDoOnce = true;
+            }
+        }
+        else if (0.5f < m_fStateTime && m_pOwner->m_bWeaponEquipped)
+        {
+            if (!m_bDoOnce)
+            {
+                m_pOwner->m_bWeaponEquipped = false;
+                m_pOwner->m_pWeapon->SetbIsActive(false);
+                m_bDoOnce = true;
+            }
         }
 
-        bool bMoving =
+        _bool bMoving =
             KEY_PRESSING(DIK_W) ||
             KEY_PRESSING(DIK_A) ||
             KEY_PRESSING(DIK_S) ||
@@ -703,6 +743,7 @@ public:
     {
         m_pOwner->m_bMovable = true;
         m_fStateTime = 0.f;
+        m_bDoOnce = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -872,14 +913,10 @@ public:
 
         if (0.8f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (m_bAttackA)
-                    return EPlayerState::WEAKATTACKB;
-                if (m_bAttackB)
-                    return EPlayerState::STRONGATTACKB;
-            }
+            if (m_bAttackA)
+                return EPlayerState::WEAKATTACKB;
+            if (m_bAttackB)
+                return EPlayerState::STRONGATTACKB;
         }
 
         
@@ -981,16 +1018,15 @@ public:
                     return EPlayerState::WEAKATTACKB;
                 if (m_bAttackB)
                     return EPlayerState::STRONGATTACKB;
-
-                if (input.bMove)
-                {
-                    if (m_pOwner->m_bWalk)
-                        return EPlayerState::WALK;
-                    else
-                        return EPlayerState::RUN; 
-                }
-                return EPlayerState::IDLE;
             }
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                    return EPlayerState::WALK;
+                else
+                    return EPlayerState::RUN;
+            }
+            return EPlayerState::IDLE;
         }
 
         return EPlayerState::WEAKATTACKB;
@@ -1082,19 +1118,18 @@ public:
                     return EPlayerState::STRONGATTACKB;
                 if (m_bAttackA)
                     return EPlayerState::WEAKATTACKB;
-        
-                if (1.5f < m_fStateTime)
-                {
-                    if (input.bMove)
-                    {
-                        if (m_pOwner->m_bWalk)
-                            return EPlayerState::WALK;
-                        else
-                            return EPlayerState::RUN;
-                    }
-                    return EPlayerState::IDLE;
-                }
             }
+        }
+        if (1.5f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                    return EPlayerState::WALK;
+                else
+                    return EPlayerState::RUN;
+            }
+            return EPlayerState::IDLE;
         }
         
         return EPlayerState::STRONGATTACKA;
@@ -1595,7 +1630,7 @@ public:
             return EPlayerState::IDLE;
         }
 
-        return EPlayerState::SPRINTATTACKA;
+        return EPlayerState::SPRINTATTACKB;
     }
 
     virtual bool CanExit() const override
@@ -1605,8 +1640,291 @@ public:
 
     virtual const _tchar* GetStateName() const override
     {
-        return L"SPRINTATTACKA";
+        return L"SPRINTATTACKB";
     }
+};
+
+/* [ 이 클래스는 왼팔공격 상태입니다. ] */
+class CPlayer_ArmAttackA final : public CPlayerState
+{
+public:
+    CPlayer_ArmAttackA(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_ArmAttackA() = default;
+
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 애니메이션 설정 ] */
+        m_pOwner->m_pAnimator->SetInt("ArmCombo", 0);
+        m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
+        m_pOwner->m_pTransformCom->SetbSpecialMoving();
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+
+        if (0.5f < m_fStateTime)
+        {
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
+            {
+                if (MOUSE_DOWN(DIM::LBUTTON))
+                    m_bAttackA = true;
+
+                if (MOUSE_DOWN(DIM::RBUTTON))
+                    m_bAttackB = true;
+
+                if (KEY_UP(DIK_LCONTROL))
+                    m_bArmAttack = true;
+            }
+        }
+    }
+
+    virtual void Exit() override
+    {
+        m_fStateTime = 0.f;
+        m_bAttackA = false;
+        m_bAttackB = false;
+        m_bArmAttack = false;
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (1.f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+
+        if (0.5f < m_fStateTime)
+        {
+            if (m_bAttackA)
+                return EPlayerState::WEAKATTACKB;
+            if (m_bAttackB)
+                return EPlayerState::STRONGATTACKB;
+            if (m_bArmAttack)
+                return EPlayerState::ARMATTACKB;
+        }
+
+        return EPlayerState::ARMATTACKA;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"ARMATTACKA";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "Arm_NormalAttack"
+    };
+
+	_bool m_bAttackA = {};
+	_bool m_bAttackB = {};
+	_bool m_bArmAttack = {};
+};
+class CPlayer_ArmAttackB final : public CPlayerState
+{
+public:
+    CPlayer_ArmAttackB(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_ArmAttackB() = default;
+
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 애니메이션 설정 ] */
+        m_pOwner->m_pAnimator->SetInt("ArmCombo", 1);
+        m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
+        m_pOwner->m_pTransformCom->SetbSpecialMoving();
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+
+        if (0.5f < m_fStateTime)
+        {
+            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+            if (m_StateNames.find(strName) != m_StateNames.end())
+            {
+                if (MOUSE_DOWN(DIM::LBUTTON))
+                    m_bAttackA = true;
+
+                if (MOUSE_DOWN(DIM::RBUTTON))
+                    m_bAttackB = true;
+            }
+        }
+    }
+
+    virtual void Exit() override
+    {
+        m_fStateTime = 0.f;
+
+        m_bAttackA = false;
+        m_bAttackB = false;
+        m_bArmAttack = false;
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (1.f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+
+        if (0.5f < m_fStateTime)
+        {
+            if (m_bAttackA)
+                return EPlayerState::WEAKATTACKA;
+            if (m_bAttackB)
+                return EPlayerState::STRONGATTACKA;
+        }
+
+        return EPlayerState::ARMATTACKB;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"ARMATTACKB";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "Arm_NormalAttack2"
+    };
+
+    _bool m_bAttackA = {};
+    _bool m_bAttackB = {};
+    _bool m_bArmAttack = {};
+};
+class CPlayer_ArmCharge final : public CPlayerState
+{
+public:
+    CPlayer_ArmCharge(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_ArmCharge() = default;
+
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 애니메이션 설정 ] */
+        m_pOwner->m_pAnimator->SetBool("Charge", true);
+        m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
+        m_pOwner->m_pTransformCom->SetbSpecialMoving();
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+    }
+
+    virtual void Exit() override
+    {
+        m_fStateTime = 0.f;
+
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (2.f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+
+        return EPlayerState::ARMATTACKCHARGE;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"ARMATTACKCHARGE";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "Arm_ChargeAttack"
+    };
+
 };
 
 
