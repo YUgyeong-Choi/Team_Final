@@ -36,6 +36,7 @@ public:
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
+		_int		iLightShape = { 0 };
 
 	}STATICMESH_DESC;
 
@@ -78,6 +79,10 @@ private:
 
 private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
+
+private:
+	_int m_iLightShape = { 0 };
+
 protected:
 
 	CShader*		m_pShaderCom = { nullptr };

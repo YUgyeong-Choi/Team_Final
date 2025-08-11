@@ -283,6 +283,10 @@ HRESULT CLevel_DH::Load_StaticMesh(_uint iObjectCount, const json& objects, stri
 			return E_FAIL;
 #pragma endregion
 
+#pragma region 라이트모양
+		StaticMeshDesc.iLightShape = objects[j].value("LightShape", 0);
+#pragma endregion
+
 		wstring LayerTag = TEXT("Layer_MapToolObject_");
 		LayerTag += StringToWString(ModelName);
 
