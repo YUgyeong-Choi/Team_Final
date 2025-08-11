@@ -1166,7 +1166,7 @@ HRESULT CPlayer::UpdateShadowCamera()
 	CShadow::SHADOW_DESC Desc{};
 
 	_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vTargetEye = vPlayerPos + XMVectorSet(-3.f, 30.f, 0.f, 0.f);
+	_vector vTargetEye = vPlayerPos + XMVectorSet(-10.f, 30.f, 10.f, 0.f);
 	_vector vTargetAt = vPlayerPos;
 
 	m_vShadowCam_Eye = vTargetEye;
@@ -1182,7 +1182,7 @@ HRESULT CPlayer::UpdateShadowCamera()
 		return E_FAIL;
 
 	vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-	vTargetEye = vPlayerPos + XMVectorSet(-3.f, 40.f, 0.f, 0.f);
+	vTargetEye = vPlayerPos + XMVectorSet(-10.f, 40.f, 10.f, 0.f);
 	vTargetAt = vPlayerPos;
 
 	m_vShadowCam_Eye = vTargetEye;
@@ -1197,7 +1197,7 @@ HRESULT CPlayer::UpdateShadowCamera()
 		return E_FAIL;
 
 	vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-	vTargetEye = vPlayerPos + XMVectorSet(-3.f, 60.f, 0.f, 0.f);
+	vTargetEye = vPlayerPos + XMVectorSet(-10.f, 60.f, 10.f, 0.f);
 	vTargetAt = vPlayerPos;
 
 	m_vShadowCam_Eye = vTargetEye;

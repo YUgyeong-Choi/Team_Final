@@ -1,6 +1,8 @@
 #include "StaticMesh.h"
 #include "GameInstance.h"
 
+
+
 CStaticMesh::CStaticMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -103,8 +105,28 @@ HRESULT CStaticMesh::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+		_float Emissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
 			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+		{
+			return E_FAIL;
+			//if (!m_bEmissive)
+			//{
+			//	/* Com_Emissive */
+			//	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_Emissive")),
+			//		TEXT("Com_Emissive"), reinterpret_cast<CComponent**>(&m_pEmissiveCom))))
+			//		return E_FAIL;
+			//	m_bEmissive = true;
+			//}
+
+			//Emissive = 1.f;
+			//if (FAILED(m_pEmissiveCom->Bind_ShaderResource(m_pShaderCom, "g_Emissive", 0)))
+			//	return E_FAIL;
+			//if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
+			//	return E_FAIL;
+		}
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
@@ -192,6 +214,7 @@ void CStaticMesh::Update_ColliderPos()
 HRESULT CStaticMesh::Ready_Components(void* pArg)
 {
 	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
+	m_szMeshFullID = StaicMeshDESC->szModelPrototypeTag;
 
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
@@ -355,6 +378,7 @@ void CStaticMesh::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pEmissiveCom);
 
 	Safe_Release(m_pPhysXActorCom);
 }
