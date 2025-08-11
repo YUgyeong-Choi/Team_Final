@@ -83,9 +83,20 @@ HRESULT CDecalToolObject::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Blood_ARMT"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+
+	/* For.Com_Texture_ARMT */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_ARMT"),
+		TEXT("Com_Texture_ARMT"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]))))
+		return E_FAIL;
+
+	/* For.Com_Texture_N */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_N"),
+		TEXT("Com_Texture_N"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::N)]))))
+		return E_FAIL;
+
+	/* For.Com_Texture_BC */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
+		TEXT("Com_Texture_BC"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::BC)]))))
 		return E_FAIL;
 
 	return S_OK;
@@ -103,7 +114,13 @@ HRESULT CDecalToolObject::Bind_ShaderResources()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]->Bind_ShaderResource(m_pShaderCom, "g_ARMT", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::N)]->Bind_ShaderResource(m_pShaderCom, "g_N", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::BC)]->Bind_ShaderResource(m_pShaderCom, "g_BC", 0)))
 		return E_FAIL;
 
 	_float4x4 WorldMatrixInv = {};
@@ -155,7 +172,11 @@ void CDecalToolObject::Free()
 {
 	__super::Free();
 
+	for (_int i = 0; i < ENUM_CLASS(TEXTURE_TYPE::END); ++i)
+	{
+		Safe_Release(m_pTextureCom[i]);
+	}
+
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pTextureCom);
 }

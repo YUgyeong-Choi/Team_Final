@@ -388,6 +388,8 @@ HRESULT CMapTool::Save(const _char* Map)
 				ReadyModelJson["Collision"] = true;
 			}
 
+			ObjectJson["LightShape"] = pMapToolObject->m_iLightShape;
+
 			ModelJson["Objects"].push_back(ObjectJson);
 		}
 
@@ -484,6 +486,10 @@ HRESULT CMapTool::Load(const _char* Map)
 			}
 			else
 				return E_FAIL;
+
+			//라이트 모양
+			MapToolObjDesc.iLightShape = Objects[j].value("LightShape", 0);
+
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 				ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
@@ -964,6 +970,10 @@ void CMapTool::Render_Detail()
 	ImGui::Separator();
 
 	Detail_Tile();
+
+	ImGui::Separator();
+	
+	Detail_LightShape();
 
 
 
@@ -1815,6 +1825,15 @@ void CMapTool::Detail_Collider()
 			}
 		}
 
+	}
+}
+
+void CMapTool::Detail_LightShape()
+{
+	ImGui::Text("Light Shape");
+	if (m_pFocusObject)
+	{
+		ImGui::InputInt("Light Shape", &m_pFocusObject->m_iLightShape);
 	}
 }
 

@@ -36,6 +36,7 @@ public:
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
+		_int		iLightShape = { 0 };
 
 	}STATICMESH_DESC;
 
@@ -64,7 +65,8 @@ private:
 	void Update_ColliderPos();
 
 protected: /* [ 초기화 변수 ] */
-	const _tchar* m_szMeshID = { nullptr };
+	const _tchar*	m_szMeshID = { nullptr };
+	const _tchar*	m_szMeshFullID = { nullptr };
 	LEVEL			m_eLevelID = { LEVEL::END };
 	LEVEL			m_eLevelLight = { LEVEL::END };
 	_float3			m_InitPos = {};
@@ -78,11 +80,16 @@ private:
 
 private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
+
+private:
+	_int m_iLightShape = { 0 };
+
 protected:
 
 	CShader*		m_pShaderCom = { nullptr };
 	CModel*			m_pModelCom = { nullptr };
 	CTexture*		m_pTextureCom = { nullptr };
+	CTexture*		m_pEmissiveCom = { nullptr };
 	CPhysXStaticActor* m_pPhysXActorCom = { nullptr };
 
 protected:

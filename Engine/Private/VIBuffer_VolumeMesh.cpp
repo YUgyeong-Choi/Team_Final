@@ -37,13 +37,35 @@ HRESULT CVIBuffer_VolumeMesh::Initialize_Prototype()
 	ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iNumVertices);
 
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
+	//pVertices[0].vTexcoord = _float2(0.f, 0.f);
+
 	pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
+	//pVertices[1].vTexcoord = _float2(1.f, 0.f);
+
+
 	pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
+	//pVertices[2].vTexcoord = _float2(1.f, 1.f);
+
+
 	pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
+	//pVertices[3].vTexcoord = _float2(0.f, 1.f);
+
+
 	pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
+	//pVertices[4].vTexcoord = _float2(1.f, 0.f);
+
+
 	pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
+	//pVertices[5].vTexcoord = _float2(0.f, 0.f);
+
+
 	pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
+	//pVertices[6].vTexcoord = _float2(0.f, 1.f);
+
+
 	pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
+	//pVertices[7].vTexcoord = _float2(1.f, 1.f);
+
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 		m_pVertexPositions[i] = pVertices[i].vPosition;

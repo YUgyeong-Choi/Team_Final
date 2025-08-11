@@ -6,6 +6,7 @@ matrix g_ViewMatrix, g_ProjMatrix;
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 Texture2D g_ARMTexture;
+Texture2D g_Emissive;
 
 /* [ 조절용 파라미터 ] */
 float g_fDiffuseIntensity = 1;
@@ -16,6 +17,7 @@ float g_fRoughnessIntensity = 1;
 float g_fMetallicIntensity = 1;
 float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
+float g_fEmissiveIntensity = 0;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
 /* [ 피킹변수 ] */
@@ -107,6 +109,7 @@ struct PS_OUT
     vector vAO          : SV_TARGET4;
     vector vRoughness   : SV_TARGET5;
     vector vMetallic    : SV_TARGET6;
+    //vector vEmissive    : SV_TARGET7;
 };
 
 struct PS_SKY_OUT
@@ -168,6 +171,9 @@ PS_OUT PS_MAIN(PS_IN In)
     float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
     float Roughness = vARM.g * g_fRoughnessIntensity;
     float Metallic = vARM.b * g_fMetallicIntensity;
+    
+    // 이미시브 텍스처
+    vector vEmissive = g_Emissive.Sample(DefaultSampler, In.vTexcoord);
    
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
@@ -176,6 +182,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
+    //Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, vEmissive.a);
     
     return Out;
 }
@@ -201,6 +208,7 @@ PS_OUT PS_TOOL_MAIN(PS_IN In)
     Out.vAO = vector(Out.vARM.r, Out.vARM.r, Out.vARM.r, 1.f);
     Out.vRoughness = vector(Out.vARM.g, Out.vARM.g, Out.vARM.g, 1.f);
     Out.vMetallic = vector(Out.vARM.b, Out.vARM.b, Out.vARM.b, 1.f);
+    //Out.vEmissive = vector(0.f, 0.f, 0.f, 1.f);
 
     return Out;
 }
