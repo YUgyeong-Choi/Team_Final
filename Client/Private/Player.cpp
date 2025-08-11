@@ -185,13 +185,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetBool("Charge", true);
 		//m_pAnimator->SetTrigger("StrongAttack");
 		//m_pAnimator->SetInt("Combo", 1);
-		m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 	}
 	if (KEY_PRESSING(DIK_U))
 	{
-		_bool ab = m_pTransformCom->RotateToDirectionSmoothly(_fvector{ 0.f, 0.f, -1.f, 0.f }, fTimeDelta);
-		if (ab)
-			int a = 0;
+		m_pAnimator->SetTrigger("PutWeapon");
+		m_pAnimator->CancelOverrideAnimController();
 	}
 
 	if (KEY_DOWN(DIK_T))
@@ -265,7 +264,8 @@ void CPlayer::HandleInput()
 
 	/* [ 특수키 입력을 업데이트합니다. ] */
 	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
-	m_Input.bCtrl = false;//KEY_DOWN(DIK_LCONTROL);
+	m_Input.bCtrl = KEY_UP(DIK_LCONTROL);
+	m_Input.bCtrlPress = KEY_PRESSING(DIK_LCONTROL);
 	m_Input.bTap = KEY_DOWN(DIK_TAB);
 	m_Input.bItem = KEY_DOWN(DIK_R);
 	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
@@ -494,13 +494,46 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
-	case eAnimCategory::SPRINT_ATTACK:
+	case eAnimCategory::SPRINT_ATTACKA:
 	{
 		RootMotionActive(fTimeDelta);
 
 		break;
 	}
+	case eAnimCategory::SPRINT_ATTACKB:
+	{
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.5f;
+		_float  m_fDistance = 2.5f;
+
+		if (!m_bMove)
+		{
+			_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+			SyncTransformWithController();
+		}
+
+		break;
+	}
 	case eAnimCategory::FIRSTDOOR:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
+	case eAnimCategory::ARM_ATTACKA:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
+	case eAnimCategory::ARM_ATTACKB:
+	{
+		RootMotionActive(fTimeDelta);
+
+		break;
+	}
+	case eAnimCategory::ARM_ATTACKCHARGE:
 	{
 		RootMotionActive(fTimeDelta);
 
@@ -523,9 +556,12 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::DASH_BACK;
 	if (stateName.find("Dash_") == 0) return eAnimCategory::DASH_FRONT;
 
-	if (stateName.find("SprintNormalAttack") == 0 || stateName.find("SprintStrongAttack") == 0)
-		return eAnimCategory::SPRINT_ATTACK;
-	if (stateName.find("Sprint") == 0) return eAnimCategory::SPRINT;
+	if (stateName.find("SprintNormalAttack") == 0)
+		return eAnimCategory::SPRINT_ATTACKA;
+	if (stateName.find("SprintStrongAttack") == 0)
+		return eAnimCategory::SPRINT_ATTACKB;
+	if (stateName.find("Sprint") == 0)
+		return eAnimCategory::SPRINT;
 
 	if (stateName.find("Guard_Hit") == 0 || stateName.find("Guard_Break") == 0)
 		return eAnimCategory::GUARD_HIT;
@@ -560,6 +596,14 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 
 	if (stateName.find("SlidingDoor") == 0)
 		return eAnimCategory::FIRSTDOOR;
+	if (stateName.find("Arm_NormalAttack") == 0)
+		return eAnimCategory::ARM_ATTACKA;
+	if (stateName.find("Arm_NormalAttack2") == 0)
+		return eAnimCategory::ARM_ATTACKA;
+	if (stateName.find("Arm_ChargeAttack") == 0)
+		return eAnimCategory::ARM_ATTACKA;
+	if (stateName.find("Fail_Arm") == 0)
+		return eAnimCategory::ARM_FAIL;
 
 	return eAnimCategory::NONE;
 }
@@ -690,6 +734,9 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::GARD)] = new CPlayer_Gard(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINTATTACKA)] = new CPlayer_SprintAttackA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINTATTACKB)] = new CPlayer_SprintAttackB(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKA)] = new CPlayer_ArmAttackA(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKB)] = new CPlayer_ArmAttackB(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKCHARGE)] = new CPlayer_ArmCharge(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }
@@ -997,7 +1044,7 @@ void CPlayer::ItemLampON(_float fTimeDelta)
 		_vector vPosition = matWorld.r[3];
 		//vPosition = XMVectorSetX(vPosition, XMVectorGetX(vPosition) - 1.f);
 		vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
-		vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 1.f);
+		//vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 1.f);
 
 		matWorld.r[3] = vPosition;
 

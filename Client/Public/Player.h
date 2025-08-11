@@ -33,6 +33,7 @@ public:
 		/* [ 특수키 입력 ] */
 		_bool bShift;
 		_bool bCtrl;
+		_bool bCtrlPress;
 		_bool bItem;
 		_bool bTap;
 		_bool bSpaceUP;
@@ -43,7 +44,8 @@ public:
 	enum class eAnimCategory
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
-		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACKA,CHARGE_ATTACKB,SPRINT_ATTACK,MAINSKILL,SIT,FIRSTDOOR
+		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILL, SIT, FIRSTDOOR,
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, END
 	};
 
 protected:
@@ -161,6 +163,9 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_Gard;
 	friend class CPlayer_SprintAttackA;
 	friend class CPlayer_SprintAttackB;
+	friend class CPlayer_ArmAttackA;
+	friend class CPlayer_ArmAttackB;
+	friend class CPlayer_ArmCharge;
 
 
 private: /* [ 상태 변수 ] */
