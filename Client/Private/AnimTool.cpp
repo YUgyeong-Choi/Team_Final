@@ -1128,6 +1128,28 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			{
 				if (state.stateName != visState || !bIsVisible)
 					continue;
+
+				_bool isAny = (state.iNodeId == ANY_NODE_ID);
+				_bool isExit = (state.iNodeId == EXIT_NODE_ID);
+
+				
+				if ((isAny || isExit) && !m_bShowAll) 
+					bIsVisible = true;
+
+				if (isAny) 
+				{
+					ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(60, 140, 170, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(75, 160, 190, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(90, 180, 210, 255));
+					ImNodes::PushColorStyle(ImNodesCol_NodeOutline, IM_COL32(60, 140, 170, 255));
+				}
+				else if (isExit)
+				{
+					ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(185, 70, 70, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(205, 90, 90, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(225, 110, 110, 255));
+					ImNodes::PushColorStyle(ImNodesCol_NodeOutline, IM_COL32(185, 70, 70, 255));
+				}
 				ImNodes::BeginNode(state.iNodeId);
 
 				ImNodes::BeginNodeTitleBar();
@@ -1172,7 +1194,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				ImGui::SetColumnWidth(0, 60);
 				ImGui::SetColumnWidth(1, 60);
 
-				_int inCount = 0;
+				/*_int inCount = 0;
 				for (auto& t : transitions)
 					if (t.iToNodeId == state.iNodeId)
 						++inCount;
@@ -1191,7 +1213,24 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				pinId = state.iNodeId * 10 + 2;
 				ImNodes::BeginOutputAttribute(pinId);
 				ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
-				ImNodes::EndOutputAttribute();
+				ImNodes::EndOutputAttribute();*/
+
+				if (!isAny)
+				{
+					const _int inPin = state.iNodeId * 10 + 1;
+					ImNodes::BeginInputAttribute(inPin);
+					ImGui::TextColored(ImVec4(0.3f, 0.8f, 0.3f, 1.f), "In");
+					ImNodes::EndInputAttribute();
+				}
+
+				ImGui::NextColumn();
+				if (!isExit)
+				{
+					const _int outPin = state.iNodeId * 10 + 2;
+					ImNodes::BeginOutputAttribute(outPin);
+					ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
+					ImNodes::EndOutputAttribute();
+				}
 
 				ImGui::Columns(1);
 				ImGui::EndGroup();
@@ -1201,6 +1240,14 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				// 노드 위치 저장
 				ImVec2 pos = ImNodes::GetNodeEditorSpacePos(state.iNodeId);
 				state.fNodePos = { pos.x, pos.y };
+
+				if (isAny || isExit)
+				{
+					ImNodes::PopColorStyle(); // NodeOutline
+					ImNodes::PopColorStyle(); // TitleBarSelected
+					ImNodes::PopColorStyle(); // TitleBarHovered
+					ImNodes::PopColorStyle(); // TitleBar
+				}
 			}
 		}
 	}
@@ -1470,8 +1517,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				}
 
 				auto& transitions = pCtrl->GetTransitions();
-				// 트랜지션 리스트
 
+				// 트랜지션 리스트
 				for (const auto& transition : transitions)
 				{
 					if (transition.iFromNodeId == state.iNodeId)
@@ -1524,8 +1571,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::Text("Lower Clip: %s", state.lowerClipName.c_str());
 
 					// 마스크 본 선택
-
-
 					auto& bones = m_pCurModel->Get_Bones();
 
 					if (m_vecMaskBoneNames.empty())
@@ -1606,6 +1651,36 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				{
 					pCtrl->SetEntry(state.stateName);
 				}
+
+				if (Button("Set Exit This State"))
+				{
+					pCtrl->SetExit(state.stateName);
+				}
+
+				// 애니메이션 StartTime 정하기
+				// 마스크 본이 아니면 LowerStartTime만 설정 아니면 Upper까지
+				if (state.clip)
+				{
+					_float fStartTime = state.fLowerStartTime;
+					if (ImGui::DragFloat("Start Time", &fStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fLowerStartTime = fStartTime;
+					}
+				}
+				else if (state.maskBoneName.empty() == false)
+				{
+					_float fUpperStartTime = state.fUpperStartTime;
+					if (ImGui::DragFloat("Upper Start Time", &fUpperStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fUpperStartTime = fUpperStartTime;
+					}
+					_float fLowerStartTime = state.fLowerStartTime;
+					if (ImGui::DragFloat("Lower Start Time", &fLowerStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fLowerStartTime = fLowerStartTime;
+					}
+				}
+
 				ImGui::End();
 			break;
 			}
@@ -2122,7 +2197,7 @@ string CAnimTool::GetStateCategory(const string& stateName)
 	else if(stateName.find("Dash") != string::npos)
 		return "Dash";
 	else if (stateName.find("Attack") != string::npos ||
-		stateName.find("Skill") != string::npos)
+		stateName.find("Skill") != string::npos|| stateName.find("Atk") != string::npos)
 		return "Attack";
 	else if (stateName.find("Idle") != string::npos)
 		return "Idle";
@@ -2296,36 +2371,36 @@ HRESULT CAnimTool::Bind_Shader()
 		return E_FAIL;
 
 
-	//m_pContext->Flush();
-	if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
-		return E_FAIL;
+	////m_pContext->Flush();
+	//if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
+	//	return E_FAIL;
 
 	
-	if (KEY_PRESSING(DIK_I))
-	{
-		auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
-		for (int i = 0;i<20;i++)
-		{
-			auto mat = tmp[i];
-			cout << "---------GPU 계산---------------" << endl;
-			cout << mat.m[0][0] << " " << mat.m[0][1] << " " << mat.m[0][2] << " " << mat.m[0][3] << endl;
-			cout << mat.m[1][0] << " " << mat.m[1][1] << " " << mat.m[1][2] << " " << mat.m[1][3] << endl;
-			cout << mat.m[2][0] << " " << mat.m[2][1] << " " << mat.m[2][2] << " " << mat.m[2][3] << endl;
-			cout << mat.m[3][0] << " " << mat.m[3][1] << " " << mat.m[3][2] << " " << mat.m[3][3] << endl;
-			cout << "------------------------" << endl;
+	//if (KEY_PRESSING(DIK_I))
+	//{
+	//	auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
+	//	for (int i = 0;i<20;i++)
+	//	{
+	//		auto mat = tmp[i];
+	//		cout << "---------GPU 계산---------------" << endl;
+	//		cout << mat.m[0][0] << " " << mat.m[0][1] << " " << mat.m[0][2] << " " << mat.m[0][3] << endl;
+	//		cout << mat.m[1][0] << " " << mat.m[1][1] << " " << mat.m[1][2] << " " << mat.m[1][3] << endl;
+	//		cout << mat.m[2][0] << " " << mat.m[2][1] << " " << mat.m[2][2] << " " << mat.m[2][3] << endl;
+	//		cout << mat.m[3][0] << " " << mat.m[3][1] << " " << mat.m[3][2] << " " << mat.m[3][3] << endl;
+	//		cout << "------------------------" << endl;
 
-			auto mat2 = *m_pCurModel->Get_Bones()[i]->Get_CombinedTransformationMatrix();
+	//		auto mat2 = *m_pCurModel->Get_Bones()[i]->Get_CombinedTransformationMatrix();
 
-			cout << "---------CPU 계산---------------" << endl;
-			cout << mat2.m[0][0] << " " << mat2.m[0][1] << " " << mat2.m[0][2] << " " << mat2.m[0][3] << endl;
-			cout << mat2.m[1][0] << " " << mat2.m[1][1] << " " << mat2.m[1][2] << " " << mat2.m[1][3] << endl;
-			cout << mat2.m[2][0] << " " << mat2.m[2][1] << " " << mat2.m[2][2] << " " << mat2.m[2][3] << endl;
-			cout << mat2.m[3][0] << " " << mat2.m[3][1] << " " << mat2.m[3][2] << " " << mat2.m[3][3] << endl;
-			cout << "------------------------" << endl;
+	//		cout << "---------CPU 계산---------------" << endl;
+	//		cout << mat2.m[0][0] << " " << mat2.m[0][1] << " " << mat2.m[0][2] << " " << mat2.m[0][3] << endl;
+	//		cout << mat2.m[1][0] << " " << mat2.m[1][1] << " " << mat2.m[1][2] << " " << mat2.m[1][3] << endl;
+	//		cout << mat2.m[2][0] << " " << mat2.m[2][1] << " " << mat2.m[2][2] << " " << mat2.m[2][3] << endl;
+	//		cout << mat2.m[3][0] << " " << mat2.m[3][1] << " " << mat2.m[3][2] << " " << mat2.m[3][3] << endl;
+	//		cout << "------------------------" << endl;
 
-		}
-	//	m_pCurAnimator->DebugComputeShader();
-	}
+	//	}
+	////	m_pCurAnimator->DebugComputeShader();
+	//}
 	//auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
 	//for (int i = 0;i<m_pCurModel->Get_Bones().size();i++)
 	//{
@@ -2423,8 +2498,7 @@ void CAnimTool::Free()
 	Safe_Release(m_pEventMag);
 	Safe_Delete(m_pMySequence);
 	Safe_Release(m_pAnimShader);
-	
-
+	Safe_Release(m_pGameInstance);
 }
 
 

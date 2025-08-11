@@ -834,6 +834,10 @@ void CGameInstance::ToggleDebugOctoTree()
 {
 	m_pQaudTree_Manager->ToggleDebugCells();
 }
+void CGameInstance::ClearIndexToObj()
+{
+	m_pQaudTree_Manager->ClearIndexToObj();
+}
 void CGameInstance::QueryVisible()
 {
 	m_pQaudTree_Manager->QueryVisible();

@@ -68,7 +68,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
@@ -84,10 +83,6 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
-
-	
-
-
 }
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
@@ -753,6 +748,8 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 
 HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 {
+	m_pGameInstance->ClearIndexToObj();
+
 	vector<AABBBOX> staticBounds;
 	map<Handle, _uint> handleToIndex;
 

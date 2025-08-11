@@ -45,6 +45,7 @@ HRESULT CAnimator::Initialize(void* pArg)
 		return E_FAIL;
 	// 디폴트 컨트롤러 생성해서 설정
 	m_pCurAnimController->SetAnimator(this);
+	m_pCurAnimController->Initialize_Prototype();
 	m_AnimControllers["Default"] = m_pCurAnimController;
 	m_pCurAnimController->SetName(m_pModel->Get_ModelName() + "_Default");
 	return S_OK;
@@ -126,6 +127,43 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 	m_Blend.toUpperAnim = transitionResult.pToUpperAnim;
 	m_eCurrentTransitionType = transitionResult.eType; // 현재 전환 타입 저장
 	m_Blend.blendWeight = transitionResult.fBlendWeight; // 상하체 블렌드 가중치 
+
+
+
+	// 정규화 했다고 치고
+	transitionResult.fLowerStartTime;
+	transitionResult.fUpperStartTime;
+
+	//// 전체 기준으로 다시 곱해서 트랙 포지션 설정
+	// 이건 이전 애니메이션이랑 To가 다를 때
+
+	
+
+	// 기존에 무기 뽑기는 통짜
+	// 무기를 뽑으면서 걸으면 위에는 그대로 쓰고 하체만 달라지고
+	// 다시 돌아오면 상체는 같은데 하체가 달라짐
+	// 이전 상체랑 하체 중에 다음 상체랑 같은 게 없으면 처리
+
+
+
+	if (m_eCurrentTransitionType != ET::FullbodyToFullbody)
+	{
+		_bool bFromLowerAnimSame = (transitionResult.pFromLowerAnim == transitionResult.pToLowerAnim);
+		_bool bToUpperLowerSame = (transitionResult.pFromUpperAnim == transitionResult.pToUpperAnim);
+		_bool bFromAnimSameToUpper = (transitionResult.pFromLowerAnim == transitionResult.pToUpperAnim);
+		_bool bFromAnimSameToLower = (transitionResult.pFromUpperAnim == transitionResult.pToLowerAnim);
+		if (bFromLowerAnimSame == false && bFromAnimSameToLower == false) // 이전 하체랑도 다르고 이전 상체랑도 다른 하체라면
+		{
+			_float fLowerStartTime = transitionResult.fLowerStartTime * m_Blend.toLowerAnim->GetDuration();
+			m_Blend.toLowerAnim->SetCurrentTrackPosition(fLowerStartTime);
+		}
+		if (bToUpperLowerSame == false && bFromAnimSameToUpper == false)
+		{
+			_float fUpperStartTime = transitionResult.fUpperStartTime * m_Blend.toUpperAnim->GetDuration();
+			m_Blend.toUpperAnim->SetCurrentTrackPosition(fUpperStartTime);
+		}
+	}
+	
 
 	m_bPlaying = true;
 	UpdateMaskState();

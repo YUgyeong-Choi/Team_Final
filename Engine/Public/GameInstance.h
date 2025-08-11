@@ -226,6 +226,7 @@ public:
 	vector<_uint> GetCulledStaticObjects() const;
 	Handle StaticIndexToHandle(_uint idx) const;
 	void ToggleDebugOctoTree();
+	void ClearIndexToObj();
 	void QueryVisible();
 #pragma endregion
 
