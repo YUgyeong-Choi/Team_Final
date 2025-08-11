@@ -5,15 +5,14 @@ matrix g_ViewMatrix, g_ProjMatrix, g_WorldMatrix;
 matrix g_WorldMatrixInv;
 matrix g_ProjMatrixInv;
 matrix g_ViewMatrixInv;
-//matrix g_ViewProjMatrixInv; //투영과 뷰의 역행렬을 합친 행렬
 
 Texture2D g_DepthTexture;
+
 Texture2D g_Texture;
 
 struct VS_IN
 {
     float3 vPosition : POSITION;
-    //float2 vTexcoord : TEXCOORD0;
 };
 
 struct VS_OUT
@@ -32,9 +31,7 @@ VS_OUT VS_DECAL(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
     
     float4 ProjPos = mul(vector(In.vPosition, 1.f), matWVP);
-    //float4 ProjPos = mul(vector(In.vPosition, 1.f), matWV); //matWV로 하면 이쁘게 보이긴하는데... 카메라가 멀어지면 안보임
     Out.vPosition = ProjPos;
-    //Out.vTexcoord = In.vTexcoord;
     
     return Out;
 }
@@ -53,12 +50,8 @@ PS_OUT PS_DECAL(PS_IN In)
 {
     PS_OUT Out;
 
-    float2 vUV = In.vPosition.xy / float2(1600.f, 900.f);
+    float2 vUV = In.vPosition.xy / float2(1600.f, 900.f); //이것으로 해결했음 으아아악
     
-    //Out.vDecal = g_DepthTexture.Sample(DefaultSampler, vUV);
-    //return Out;
-    
-    /* In.vTexcoord 월드 값을 추론할 위치에 고대로 그려져야 하는데 다른데 그려진다. 어떻게해야할까*/
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, vUV);
     float fViewZ = vDepthDesc.y * 1000.f; //(Near~Far)
     
@@ -73,16 +66,13 @@ PS_OUT PS_DECAL(PS_IN In)
     
     vPosition = mul(vPosition, g_ProjMatrixInv); //투영 역행렬
     vPosition = mul(vPosition, g_ViewMatrixInv); //뷰 역행렬
-    //vPosition = mul(vPosition, g_ViewProjMatrixInv); // 뷰와 투영 역행렬을 합친 행렬
     
     //월드로 왔음
     
     // 데칼 로컬 공간으로 변환
     float3 vLocalPos = mul(float4(vPosition.xyz, 1.f), g_WorldMatrixInv).xyz;
-
-    // 데칼 범위 바깥이면 버리기
-    //if (any(abs(vLocalPos) > 0.5f))
-    //    discard;
+    
+    //일정 각도이상 기울어진 표면은 데칼을 적용하지 않음 
     
     clip(0.5 - abs(vLocalPos.xyz));
 
@@ -90,12 +80,6 @@ PS_OUT PS_DECAL(PS_IN In)
     float2 vTexcoord = vLocalPos.xz + 0.5f;
     float4 vColor = g_Texture.Sample(DefaultSampler, vTexcoord);
     Out.vDecal = vColor;
-    
-    // 마젠타 색상으로 고정 출력
-    //float4 magentaColor = float4(1.f, 0.f, 1.f, 1.f);
-    //Out.vDecal = magentaColor;
-    
-    //Out.vDecal = float4(vPosition.xyz * 0.1f, 1.0f); // 월드 위치 시각화
     
     return Out;
 }

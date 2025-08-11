@@ -40,6 +40,7 @@ public:
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
+		_int		iLightShape = { 0 }; //라이트 모양
 	}MAPTOOLOBJ_DESC;
 
 private:
@@ -92,6 +93,9 @@ private:
 
 private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
+
+private:
+	_int	m_iLightShape = { 0 }; // 라이트 모양
 
 private:
 	LOD m_eLOD = LOD::LOD0; // 현재 LOD 상태

@@ -40,6 +40,9 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	//콜라이더 종류
 	m_eColliderType = pDesc->eColliderType;
 
+	//자체 발광 여부
+	m_iLightShape = pDesc->iLightShape;
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
