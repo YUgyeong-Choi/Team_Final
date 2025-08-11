@@ -819,6 +819,10 @@ HRESULT CRenderer::Render_BackBuffer()
 	//µ¥Ä® ÅØ½ºÃÄ
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_AMRT"), m_pShader, "g_DecalAMRT")))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_N"), m_pShader, "g_DecalN")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_BC"), m_pShader, "g_DecalBC")))
+		return E_FAIL;
 
 	/* [ PBR ·»´õ¸µ¿ë ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Final"), m_pShader, "g_PBR_Final")))

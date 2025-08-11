@@ -258,6 +258,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     
+    //µ¥Ä®
     vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
     
