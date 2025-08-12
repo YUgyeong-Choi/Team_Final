@@ -309,8 +309,8 @@
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolTrail%3f">
       <UniqueIdentifier>{15ae98e9-5562-47c1-89a7-afdbb157f889}</UniqueIdentifier>
-	</Filter>
-	<Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
+    </Filter>
+    <Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
       <UniqueIdentifier>{abbca159-0435-45fc-ab65-08cd84a25567}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\03.Weapon\99. Monster">
@@ -716,8 +716,8 @@
     </ClInclude>
     <ClInclude Include="..\Public\TrailEffect.h">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Trail</Filter>
-	</ClInclude>
-	<ClInclude Include="..\public\Monster_Base.h">
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_Base.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Weapon_Monster.h">
@@ -738,6 +738,9 @@
     <ClInclude Include="..\public\Decal.h" />
     <ClInclude Include="..\public\Fuoco.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolTrail.h">
+      <Filter>01.Levels\LevelCY\Tool\ToolTrail%3f</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1095,8 +1098,8 @@
     </ClCompile>
     <ClCompile Include="..\Private\TrailEffect.cpp">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Trail</Filter>
-	</ClCompile>
-	<ClCompile Include="..\private\Monster_Base.cpp">
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_Base.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Weapon_Monster.cpp">
@@ -1117,6 +1120,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Static_Decal.cpp">
       <Filter>02.GameObjects\11.Decal\Static_Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolTrail.cpp">
+      <Filter>01.Levels\LevelCY\Tool\ToolTrail%3f</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

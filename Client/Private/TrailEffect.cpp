@@ -22,15 +22,26 @@ HRESULT CTrailEffect::Initialize_Prototype()
 
 HRESULT CTrailEffect::Initialize(void* pArg)
 {
-	if (nullptr == pArg)
-		return E_FAIL;
-
 	DESC* pDesc = static_cast<DESC*>(pArg);
+
+	if (!pDesc ||
+		!pDesc->pParentCombinedMatrix ||
+		!pDesc->pInnerSocketMatrix ||
+		!pDesc->pOuterSocketMatrix)
+	{
+		MSG_BOX("트레일은 무조건 뼈 소켓 매트릭스를 받아와야함.");
+		return E_FAIL;
+	}
+
+	pDesc->pParentCombinedMatrix = m_pParentCombinedMatrix;
+	pDesc->pInnerSocketMatrix = m_pInnerSocketMatrix;
+	pDesc->pOuterSocketMatrix = m_pOuterSocketMatrix;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-
+	// 부모 모델, 부모 모델의 뼈 소켓매트릭스
+		
 	return S_OK;
 }
 
@@ -42,13 +53,27 @@ void CTrailEffect::Priority_Update(_float fTimeDelta)
 void CTrailEffect::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-
 }
 
 void CTrailEffect::Late_Update(_float fTimeDelta)
 {
+	if (!m_pParentCombinedMatrix || !m_pInnerSocketMatrix || !m_pOuterSocketMatrix)
+		return;
+
+	_matrix matCombined = XMLoadFloat4x4(m_pParentCombinedMatrix);
+	_matrix matInner = XMLoadFloat4x4(m_pInnerSocketMatrix);
+	_matrix matOuter = XMLoadFloat4x4(m_pOuterSocketMatrix);
+
+	_matrix matInnerWorld = XMMatrixMultiply(matInner, matCombined);
+	_matrix matOuterWorld = XMMatrixMultiply(matOuter, matCombined);
+
+	// 월드 좌표 추출
+	XMStoreFloat3(&m_vInnerPos, XMVector3TransformCoord(XMVectorZero(), matInnerWorld));
+	XMStoreFloat3(&m_vOuterPos, XMVector3TransformCoord(XMVectorZero(), matOuterWorld));
+
+	m_pVIBufferCom->Update_Trail(m_vInnerPos, m_vOuterPos, fTimeDelta);
+
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
 }
 
 HRESULT CTrailEffect::Render()
@@ -111,16 +136,17 @@ HRESULT CTrailEffect::Ready_Components()
 
 HRESULT CTrailEffect::Bind_ShaderResources()
 {
-	if (m_pSocketMatrix != nullptr)
-	{
-		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-			return E_FAIL;
-	}
+	// 월드를 바인딩 해 줄 필요가 없는지 고민하는데 왜 니가 아니라고 단정지어
+	//if (m_pSocketMatrix != nullptr)
+	//{
+	//	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+	//		return E_FAIL;
+	//}
+	//else
+	//{
+	//	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	//		return E_FAIL;
+	//}
 	/* dx9 : 장치에 뷰, 투영행렬을 저장해두면 렌더링시 알아서 정점에 Transform해주었다. */
 	/* dx11 : 셰이더에 뷰, 투영행렬을 저장해두고 우리가 직접 변환해주어야한다. */
 
@@ -202,8 +228,6 @@ void CTrailEffect::Free()
 	__super::Free();
 
 	Safe_Release(m_pVIBufferCom);
-	//Safe_Release(m_pShaderCom);
-	//Safe_Release(m_pTextureCom);
 }
 
 json CTrailEffect::Serialize()

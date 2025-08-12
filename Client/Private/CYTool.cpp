@@ -3,9 +3,11 @@
 #include "EffectSequence.h"
 #include "ToolParticle.h"
 #include "ToolSprite.h"
+#include "ToolTrail.h"
 #include "ToolMeshEffect.h"
 #include "Client_Calculation.h"
-
+#include "Player.h"
+#include "Weapon.h"
 
 //ImGuiFileDialog g_ImGuiFileDialog;
 //ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
@@ -244,6 +246,24 @@ HRESULT CCYTool::SequenceWindow()
 		}
 			break;
 		case Client::EFF_TRAIL:
+		{
+			CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player_Weapon"), 0);
+
+			CToolTrail::DESC desc = {};
+			desc.bAnimation = true;
+			desc.fRotationPerSec = 0.f;
+			desc.fSpeedPerSec = 5.f;
+			desc.iTileX = 4;
+			desc.iTileY = 1;
+			desc.bBillboard = false;
+			desc.bTool = true;
+			desc.iShaderPass = ENUM_CLASS(ME_MASKONLY);
+			desc.pInnerSocketMatrix = static_cast<CWeapon*>(TestWeapon);
+			desc.pOuterSocketMatrix;
+			desc.pParentCombinedMatrix;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
+		}
 			break;
 		}
 		if (pInstance != nullptr)
