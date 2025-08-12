@@ -19,6 +19,7 @@ HRESULT CMonster_Test::Initialize_Prototype()
 
 HRESULT CMonster_Test::Initialize(void* pArg)
 {
+	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
@@ -30,6 +31,7 @@ HRESULT CMonster_Test::Initialize(void* pArg)
     //m_pAnimator->SetPlaying(true);
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&m_InitPos), 1.f));
+	m_pTransformCom->Scaling(pDesc->InitScale);
 
 	_vector vDir = { 0.f,1.f,0.f,0.f };
 
@@ -63,6 +65,12 @@ void CMonster_Test::Update(_float fTimeDelta)
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
 		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
 	}
+
+	if (m_isLookAt)
+	{
+		m_pTransformCom->LookAtWithOutY(m_pTarget->Get_TransfomCom()->Get_State(STATE::POSITION));
+	}
+
 }
 
 void CMonster_Test::Late_Update(_float fTimeDelta)

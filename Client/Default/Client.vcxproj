@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
+    <ClInclude Include="..\public\Buttler_Train.h" />
     <ClInclude Include="..\Public\CameraSequence.h" />
     <ClInclude Include="..\public\Camera_CutScene.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
@@ -302,6 +303,7 @@
   <ItemGroup>
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
+    <ClCompile Include="..\private\Buttler_Train.cpp" />
     <ClCompile Include="..\Private\CameraSequence.cpp" />
     <ClCompile Include="..\private\Camera_CutScene.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />

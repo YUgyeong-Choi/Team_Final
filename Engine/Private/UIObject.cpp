@@ -1,4 +1,5 @@
 #include "UIObject.h"
+#include "GameInstance.h"
 
 json CUIObject::Serialize()
 {

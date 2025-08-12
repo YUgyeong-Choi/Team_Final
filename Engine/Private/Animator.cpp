@@ -202,7 +202,7 @@ void CAnimator::SetCurrentRootPosition(const _float3& pos)
 	};
 
 }
-
+#ifdef _DEBUG
 void CAnimator::DebugComputeShader()
 {
 	_int iBoneCount = static_cast<_int>(m_Bones.size());
@@ -227,6 +227,7 @@ void CAnimator::DebugComputeShader()
 		MSG_BOX("Failed to dispatch compute shader");
 	}
 }
+#endif
 
 void CAnimator::RefreshAndProcessTransition(_float fDeltaTime)
 {
