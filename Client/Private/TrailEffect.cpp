@@ -33,9 +33,9 @@ HRESULT CTrailEffect::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-	pDesc->pParentCombinedMatrix = m_pParentCombinedMatrix;
-	pDesc->pInnerSocketMatrix = m_pInnerSocketMatrix;
-	pDesc->pOuterSocketMatrix = m_pOuterSocketMatrix;
+	m_pParentCombinedMatrix = pDesc->pParentCombinedMatrix;
+	m_pInnerSocketMatrix = pDesc->pInnerSocketMatrix;
+	m_pOuterSocketMatrix = pDesc->pOuterSocketMatrix;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -96,12 +96,12 @@ HRESULT CTrailEffect::Render()
 HRESULT CTrailEffect::Ready_Components()
 {
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_SpriteEffect"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_TrailEffect"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Trail"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 

@@ -41,7 +41,7 @@ struct GS_OUT
     float fFade : TEXCOORD1; //??
 };
 
-[maxvertexcount(4)] 
+[maxvertexcount(6)] 
 void GS_MAIN(line VS_OUT input[2], inout TriangleStream<GS_OUT> Triangles)
 {
     float3 Outer0 = input[0].vOuterPos;
@@ -84,20 +84,42 @@ void GS_MAIN(line VS_OUT input[2], inout TriangleStream<GS_OUT> Triangles)
     // 출력: TriangleStrip 사용하지 않음 → 직접 TriangleList 생성
     GS_OUT outVert[4];
     
-    for (int i = 0; i < 4; i++)
-    {
-        outVert[i].vPosition = mul(float4(verts[i], 1.f), matVP);
-        outVert[i].vTexcoord = uv[i];
-        outVert[i].fFade = fades[i];
-    }
+    //for (int i = 0; i < 4; i++)
+    //{
+    //    outVert[i].vPosition = mul(float4(verts[i], 1.f), matVP);
+    //    outVert[i].vTexcoord = uv[i];
+    //    outVert[i].fFade = fades[i];
+    //}
+    // FXC에서 for문에 대해 겁나게 보수적으로 작동해서 중간에 끊기는지에 대해 확신을 못하는 이슈로 빌드 시에 경고 뜸.. 
+    // 웬만하면 명시적으로 적기
+    
+    outVert[0].vPosition = mul(float4(verts[0], 1.f), matVP);
+    outVert[0].vTexcoord = uv[0];
+    outVert[0].fFade = fades[0];
+    
+    outVert[1].vPosition = mul(float4(verts[1], 1.f), matVP);
+    outVert[1].vTexcoord = uv[1];
+    outVert[1].fFade = fades[1];
+    
+    outVert[2].vPosition = mul(float4(verts[2], 1.f), matVP);
+    outVert[2].vTexcoord = uv[2];
+    outVert[2].fFade = fades[2];
+    
+    outVert[3].vPosition = mul(float4(verts[3], 1.f), matVP);
+    outVert[3].vTexcoord = uv[3];
+    outVert[3].fFade = fades[3];
+    
+    
     
     Triangles.Append(outVert[0]);
     Triangles.Append(outVert[1]);
     Triangles.Append(outVert[2]);
+    Triangles.RestartStrip();
     
     Triangles.Append(outVert[0]);
     Triangles.Append(outVert[2]);
     Triangles.Append(outVert[3]);
+    Triangles.RestartStrip();
 }
 
 
@@ -117,9 +139,8 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;
-    
     Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
-    
+    Out.vColor.a *= In.fFade; // 페이드 효과 적용
     return Out;
 }
 
@@ -129,7 +150,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -148,3 +169,4 @@ technique11 DefaultTechnique
     //}
 
 }
+

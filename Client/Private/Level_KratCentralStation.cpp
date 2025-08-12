@@ -41,9 +41,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if(FAILED(Ready_Video()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Effect()))
-		return E_FAIL;
-
 	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(0.f);
@@ -105,6 +102,9 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		if (m_pStartVideo->Get_bDead())
 		{
 
+			if (FAILED(Ready_Effect()))
+				return ;
+
 			/* [ 사운드 ] */
 			m_pBGM->Play();
 
@@ -119,8 +119,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 				return;
 
 			//데칼 소환
-			if (FAILED(Ready_Static_Decal(TEXT("Layer_StaticDecal"))))
-				return;
+			//if (FAILED(Ready_Static_Decal(TEXT("Layer_StaticDecal"))))
+			//	return;
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 				return;
@@ -169,6 +169,20 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 	if(KEY_DOWN(DIK_F7))
 		m_pGameInstance->ToggleDebugOctoTree();
+
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (KEY_DOWN(DIK_Z))
+		{
+			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"),
+				m_pGameInstance->Compute_Random(-1.f, 1.f),
+				m_pGameInstance->Compute_Random(-1.f, 1.f),
+				m_pGameInstance->Compute_Random(-1.f, 1.f))))
+				MSG_BOX("조짐");
+		}
+	}
+
+
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
@@ -630,16 +644,15 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
-	CEffectContainer::DESC ECDesc = {};
-	ECDesc.vPresetPosition = { 52.83f, 0.09f, 1.57f };
-	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 52.83f, 0.09f, 1.57f)))
 		MSG_BOX("이펙트 생성 실패");
-	ECDesc.vPresetPosition = { 69.25f, -0.22f, -8.17f };
-	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 69.25f, -0.22f, -8.17f)))
 		MSG_BOX("이펙트 생성 실패");
-	ECDesc.vPresetPosition = { 99.86f, 0.64f, -13.69f };
-	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 99.86f, 0.64f, -13.69f)))
 		MSG_BOX("이펙트 생성 실패");
+	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 0.f, 0.f, 0.f)))
+		MSG_BOX("이펙트 생성 실패");
+
 	return S_OK;
 }
 

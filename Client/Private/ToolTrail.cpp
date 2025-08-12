@@ -27,13 +27,13 @@ HRESULT CToolTrail::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-	for (_int i = 0; i < TU_END; i++)
-	{
-		m_bTextureUsage[i] = false;
-	}
+
 	m_bTextureUsage[TU_DIFFUSE] = true;
+	m_bTextureUsage[TU_MASK1] = true;
+	m_bTextureUsage[TU_MASK2] = true;
+	m_bTextureUsage[TU_MASK3] = false;
 
-
+	m_iShaderPass = 0;
 	return S_OK;
 }
 
@@ -49,7 +49,7 @@ void CToolTrail::Update(_float fTimeDelta)
 
 void CToolTrail::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
+	__super::Late_Update(fTimeDelta);
 }
 
 HRESULT CToolTrail::Render()
@@ -69,21 +69,55 @@ HRESULT CToolTrail::Render()
 	return S_OK;
 }
 
+void CToolTrail::Update_Tool(_float fTimeDelta, _float fCurFrame)
+{
+	m_fCurrentTrackPosition = fCurFrame;
+	if (m_fCurrentTrackPosition > static_cast<_float>(m_iDuration))
+		m_fCurrentTrackPosition = 0;
+
+	Update_Keyframes();
+
+	if (m_bAnimation)
+		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+	else
+		m_iTileIdx = 0;
+
+	if (m_iTileX == 0)
+		m_iTileX = 1;
+	if (m_iTileY == 0)
+		m_iTileY = 1;
+
+	m_fTileSize.x = 1.0f / _float(m_iTileX);
+	m_fTileSize.y = 1.0f / _float(m_iTileY);
+	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
+	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
+}
+
 HRESULT CToolTrail::Ready_Components()
 {
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_SpriteEffect"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_TrailEffect"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Trail"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Mask_27_C_GDH"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_DIFFUSE]))))
+		return E_FAIL;
+	
+	/* For.Com_TextureMask1 */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Trail_01_C_GDH"),
+		TEXT("Com_TextureMask1"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK1]))))
+		return E_FAIL;
+	
+	/* For.Com_TextureMask2 */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Slash_01_C_RSW"),
+		TEXT("Com_TextureMask2"), reinterpret_cast<CComponent**>(&m_pTextureCom[TU_MASK2]))))
 		return E_FAIL;
 
 	return S_OK;
@@ -91,9 +125,6 @@ HRESULT CToolTrail::Ready_Components()
 
 HRESULT CToolTrail::Bind_ShaderResources()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-
 	/* dx9 : 장치에 뷰, 투영행렬을 저장해두면 렌더링시 알아서 정점에 Transform해주었다. */
 	/* dx11 : 셰이더에 뷰, 투영행렬을 저장해두고 우리가 직접 변환해주어야한다. */
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bFlipUV", &m_bFlipUV, sizeof(_bool))))

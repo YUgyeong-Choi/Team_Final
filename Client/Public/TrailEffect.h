@@ -14,9 +14,9 @@ class CTrailEffect : public CEffectBase
 public:
 	typedef struct tagTrailEffectDesc : public CEffectBase::DESC
 	{
-		const _float4x4* pParentCombinedMatrix = { nullptr }; // 부모 모델의 월드 매트릭스
-		const _float4x4* pInnerSocketMatrix = { nullptr };
-		const _float4x4* pOuterSocketMatrix = { nullptr };
+		_float4x4* pParentCombinedMatrix = { nullptr }; // 부모 모델의 월드 매트릭스
+		_float4x4* pInnerSocketMatrix = { nullptr };
+		_float4x4* pOuterSocketMatrix = { nullptr };
 	}DESC;
 
 protected:
