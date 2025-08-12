@@ -4,7 +4,7 @@
             "ClipName": "AS_ATSA0_Skill_01_End",
             "Duration": 213.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -18,7 +18,7 @@
             "ClipName": "AS_ATSA0_Skill_01_Start",
             "Duration": 184.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -570,7 +570,7 @@
         {
             "ClipName": "AS_Idle_Spawn_01_Loop",
             "Duration": 59.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -675,7 +675,7 @@
         {
             "ClipName": "AS_Run_C_F",
             "Duration": 42.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },

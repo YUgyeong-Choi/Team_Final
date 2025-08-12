@@ -19,6 +19,7 @@
 #include "UI_Container.h"
 #include "UI_Video.h"
 
+#include "Monster_Base.h"
 #include "Player.h"
 #include "Wego.h"
 
@@ -33,6 +34,10 @@ CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D
 
 HRESULT CLevel_KratCentralStation::Initialize()
 {
+	/* [ 레벨 셋팅 ] */
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+	m_pGameInstance->Set_IsChangeLevel(false);
+
 	if(FAILED(Ready_Video()))
 		return E_FAIL;
 
@@ -60,9 +65,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	/* [ 카메라 셋팅 ] */
 	m_pCamera_Manager->SetCutSceneCam();
 
-	/* [ 레벨 셋팅 ] */
-	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-	m_pGameInstance->Set_IsChangeLevel(false);
+	
 
 
 	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
@@ -143,7 +146,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_OctoTree()))
 				return;
 
-			
+			if (FAILED(Ready_Monster()))
+				return;
 
 			/* [ 플레이어 제어 ] */
 			m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
@@ -601,23 +605,24 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
-	
-	CUnit::UNIT_DESC pDesc{};
+	CMonster_Base::MONSTER_BASE_DESC pDesc{};
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	pDesc.InitPos = _float3(87.5f, 0.f, -7.5f);
-	pDesc.InitScale = _float3(2.f, 2.f, 2.f);
-	lstrcpy(pDesc.szName, TEXT("Elite_Police"));
-	pDesc.szMeshID = TEXT("Elite_Police");
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
+	pDesc.InitPos = _float3(105.5f, 0.f, -7.5f);
+	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pDesc.szName, TEXT("Buttler_Train"));
+	pDesc.szMeshID = TEXT("Buttler_Train");
+	pDesc.fHeight = 1.f;
+	pDesc.vExtent = {0.5f,1.f,0.5f};
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &pDesc)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
+	//	return E_FAIL;
 
 
 	return S_OK;
