@@ -86,7 +86,7 @@ CEffectBase* CEffect_Manager::Make_Effect(const _wstring strEffectTag)
     return nullptr;
 }
 
-HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring strECTag, void* pArg)
+HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring strECTag, const _float3& vPresetPos)
 {
     auto	iter = m_ECJsonDescs.find(strECTag);
     if (iter == m_ECJsonDescs.end())
@@ -94,14 +94,12 @@ HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring 
 
     CEffectContainer::DESC ECDesc = {};
     ECDesc.j = iter->second;
-    if (pArg == nullptr)
-    {
-        ECDesc.fRotationPerSec = XMConvertToRadians(90.f);
-        ECDesc.fSpeedPerSec = 10.f;
-        ECDesc.vPresetPosition = { 0.f, 0.f, 0.f };
-    }
-    else
-        ECDesc.vPresetPosition = static_cast<CEffectContainer::DESC*>(pArg)->vPresetPosition;
+
+    ECDesc.fRotationPerSec = XMConvertToRadians(90.f); // 수정하고싶으면 툴에서 수정해서 파싱하던가 하쇼
+    ECDesc.fSpeedPerSec = 10.f;
+
+    ECDesc.vPresetPosition = vPresetPos;
+
     if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
         iLevelIndex, TEXT("Layer_Effect"), &ECDesc)))
         return E_FAIL;

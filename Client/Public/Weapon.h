@@ -66,6 +66,7 @@ public: /* [ 활성화 , 비활성화 ] */
 public:
 	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }
 	SKILL_DESC& Get_SkillDesc(_int iIndex) { return m_eSkillDesc[iIndex]; }
+	const _float4x4* Get_CombinedWorldMatrix() const { return &m_CombinedWorldMatrix; }
 
 protected:
 	const _float4x4*	m_pParentWorldMatrix = { nullptr };

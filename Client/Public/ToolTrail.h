@@ -25,6 +25,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	virtual void Update_Tool(_float fTimeDelta, _float fCurFrame);
+
 private:
 	virtual HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

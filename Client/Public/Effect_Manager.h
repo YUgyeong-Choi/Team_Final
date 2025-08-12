@@ -26,7 +26,7 @@ public:
 public:
     void Test();
     class CEffectBase* Make_Effect(const _wstring strEffectTag);
-    HRESULT Make_EffectContainer(_uint iLevelIndex, const _wstring strECTag, void* pArg = nullptr);
+    HRESULT Make_EffectContainer(_uint iLevelIndex, const _wstring strECTag, const _float3& vPresetPos = {0.f, 0.f , 0.f});
     //class CEffectBase* Find_Effect(const _wstring& strEffectTag);
     class CEffectContainer* Find_EffectContainer(const _wstring& strECTag);
 

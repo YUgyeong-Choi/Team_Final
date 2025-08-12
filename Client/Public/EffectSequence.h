@@ -53,9 +53,9 @@ public:
 
     vector<SequenceItem>        m_Items;
 
-    _int m_iFrameMax = { 200 };
-    _int m_iFrameMin = { 0 };
-
+    _int    m_iFrameMax = { 200 };
+    _int    m_iFrameMin = { 0 };
+	_bool   m_bLoop = { true }; // 시퀀스 반복 여부
 
 public:
     vector<SequenceItem>& Get_Items() { return m_Items; }

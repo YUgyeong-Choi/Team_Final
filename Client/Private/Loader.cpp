@@ -28,6 +28,7 @@
 #include "ToolSprite.h"
 #include "ToolParticle.h"
 #include "ToolMeshEffect.h"
+#include "ToolTrail.h"
 #include "Effect_Manager.h"
 #pragma endregion
 
@@ -1261,10 +1262,27 @@ HRESULT CLoader::Loading_For_CY()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
-	/* For.Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
-		return E_FAIL;
+
+	//안해도될거같은데
+	///* For.Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS */ // sprite용 
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Texture_T_Mask_27_C_GDH */ // trail용 마스크 이미지
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Mask_27_C_GDH"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Mask_27_C_GDH.dds"), 1))))
+	//	return E_FAIL;
+	//
+	///* For.Prototype_Component_Texture_T_Trail_01_C_GDH */ // trail용 마스크 이미지 2..
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Trail_01_C_GDH"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Trail_01_C_GDH.dds"), 1))))
+	//	return E_FAIL;
+	//
+	///* For.Prototype_Component_Texture_T_Slash_01_C_RSW */ // 아마 trail용 디스토션 이미지 
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Slash_01_C_RSW"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Slash_01_C_RSW.dds"), 1))))
+	//	return E_FAIL;
 
 
 	//_wstring strFileName
@@ -1342,6 +1360,10 @@ HRESULT CLoader::Loading_For_CY()
 	/* For.Prototype_GameObject_ToolMeshEffect */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"),
 		CToolMeshEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_ToolTrailEffect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolTrailEffect"),
+		CToolTrail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_ToolMesh */

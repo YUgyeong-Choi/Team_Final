@@ -55,6 +55,9 @@ using namespace Client;
 #pragma region MANAGER
 
 #define EFFECT_MANAGER CEffect_Manager::Get_Instance()
+#define MAKE_EFFECT(LEVEL, EFFECT_NAME, PRESETPOSX, PRESETPOSY, PRESETPOSZ)\
+		EFFECT_MANAGER->Make_EffectContainer(LEVEL, EFFECT_NAME, _float3{ PRESETPOSX, PRESETPOSY, PRESETPOSZ})
+
 #define CAMERA_MANAGER CCamera_Manager::Get_Instance()
 
 #pragma endregion
