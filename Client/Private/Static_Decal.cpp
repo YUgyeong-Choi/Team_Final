@@ -22,7 +22,7 @@ HRESULT CStatic_Decal::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(5.f, 0.f, 0.f, 1.f));
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(5.f, 0.f, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -58,7 +58,7 @@ HRESULT CStatic_Decal::Render()
 
 }
 
-HRESULT CStatic_Decal::Ready_Components()
+HRESULT CStatic_Decal::Ready_Components(void* Arg)
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Decal"),

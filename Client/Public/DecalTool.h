@@ -29,8 +29,10 @@ private:
 
 private:
 	void Clear_All_Decal();
-	
+	HRESULT Ready_Texture(const _char* Map);
+
 private:
+
 	//가장 가까운 데칼 오브젝트를 가져옴
 	class CDecalToolObject* Get_ClosestDecalObject(_fvector vPosition);
 

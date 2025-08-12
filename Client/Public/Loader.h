@@ -58,12 +58,15 @@ public:
 	HRESULT Loading_Models(_uint iLevelIndex, const _char* Map);
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
 
-	//<맵툴>에 필요한 모델들을 로딩한다.
+	//<맵툴>에 필요한 모델들을 로딩한다.(필요 없어질 듯)
 	HRESULT Loading_Models_MapTool(_uint iLevelIndex, const _char* Map);
 	HRESULT Load_Model_MapTool(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex);
 
 	//네비게이션을 로딩한다.
 	HRESULT Loading_Navigation(_uint iLevelIndex, const _char* Map);
+
+	//<데칼툴>에 필요한 텍스쳐들을 로딩한다.(필요 없어질 듯)
+	HRESULT Loading_Textures_DecalTool(_uint iLevelIndex, const _char* Map);
 
 #pragma endregion
 	

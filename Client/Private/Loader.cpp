@@ -813,24 +813,22 @@ HRESULT CLoader::Loading_For_YW()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 #pragma region 데칼 테스트 텍스쳐
-	/* For.Prototype_Component_Texture_Blood_ARMT*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_ARMT"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_ARMT.dds")))))
-		return E_FAIL;
+	///* For.Prototype_Component_Texture_Blood_ARMT*/
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_ARMT"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_ARMT.dds")))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Blood_N*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_N"),
+	/* For.Prototype_Component_Texture_DefaultDecalTexture*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_DefaultDecal"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_N.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Bloodstain_BC*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_BC.dds")))))
-		return E_FAIL;
+	///* For.Prototype_Component_Texture_Bloodstain_BC*/
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_BC.dds")))))
+	//	return E_FAIL;
 
 #pragma endregion
-
-
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
@@ -845,8 +843,8 @@ HRESULT CLoader::Loading_For_YW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
-		return E_FAIL;
+	//if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
+	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
@@ -1070,6 +1068,10 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map)
 		return E_FAIL;
 
 
+	return S_OK;
+}
+HRESULT CLoader::Loading_Textures_DecalTool(_uint iLevelIndex, const _char* Map)
+{
 	return S_OK;
 }
 #pragma endregion
