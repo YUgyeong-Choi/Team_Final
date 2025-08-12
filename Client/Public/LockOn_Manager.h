@@ -28,6 +28,9 @@ public:
     void Add_LockOnTarget(CGameObject* pTarget);
 
     void Set_Active();
+
+    CGameObject* Get_Target() { return m_pBestTarget; }
+
 private:
     void RemoveBehindWallTargets();
     CGameObject* Find_ClosestToLookTarget();

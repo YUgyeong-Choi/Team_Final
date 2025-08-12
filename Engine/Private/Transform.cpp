@@ -803,7 +803,7 @@ void CTransform::BillboardToCameraY(_fvector vCameraPos)
 	_vector vMyPos = Get_State(STATE::POSITION);
 
 	// Y는 고정된 상태로 카메라를 바라보는 Look 벡터
-	_vector vLook = vMyPos - vCameraPos;
+	_vector vLook = - vMyPos + vCameraPos;
 	vLook = XMVectorSetY(vLook, 0.f);  // Y 고정
 	vLook = XMVector3Normalize(vLook);
 

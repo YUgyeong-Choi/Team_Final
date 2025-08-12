@@ -260,10 +260,6 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
     
     vector vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    vector vBack = g_BackgroundTexture.Sample(DefaultSampler, In.vTexcoord);
-    
-    
-  
     if (vBorder.a > 0.1f)
     {
         Out.vColor = vBorder;

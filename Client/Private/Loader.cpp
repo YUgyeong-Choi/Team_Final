@@ -80,6 +80,7 @@
 #include "Monster_Test.h"
 #include "Weapon_Monster.h"
 #include "Buttler_Train.h"
+#include "UI_MonsterHP_Bar.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -460,6 +461,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTestAnimObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// 몬스터 관련
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
 		CMonster_Test::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -476,7 +479,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CWeapon_Monster::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"),
+		CUI_MonsterHP_Bar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	m_fRatio = 1.f;
 	Sleep(250); // 안해주면 동기화 안하고 끝나서 안차던데 좋은 방법 있으면 알려주셈

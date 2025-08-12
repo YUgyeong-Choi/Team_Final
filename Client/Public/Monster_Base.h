@@ -1,6 +1,7 @@
 #pragma once
 #include "Unit.h"
 #include "Client_Defines.h"
+#include "UI_MonsterHP_Bar.h"
 
 NS_BEGIN(Engine)
 class CModel;
@@ -77,9 +78,9 @@ protected:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CNavigation* m_pNaviCom = { nullptr };
 	
-	vector<class CPartObject*> m_PartObjects; // hp 바, 필요하면 무기 넣기
+	CUI_MonsterHP_Bar* m_pHPBar = {nullptr};
 
-
+	
 	
 
 	// 특정 상태에만 계속 바라보게 해야?
