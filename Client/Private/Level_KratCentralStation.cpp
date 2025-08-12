@@ -120,7 +120,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 				return;
 
 			//데칼 소환
-			if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)/*, true*/)))
+			if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
 				return;
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))

@@ -350,7 +350,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 	//스테이션 레벨에 필요한 텍스쳐를 로드한다.
-	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)/*, true*/))) // true 면 테스트 데칼 준비
+	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) // true 면 테스트 데칼 준비
 		return E_FAIL;
 
 	m_fRatio = 0.1f;
