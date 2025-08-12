@@ -4,6 +4,7 @@
 #include "VIBuffer_Rect_Instance.h"
 #include "VIBuffer_VolumeMesh.h" //µ¥Ä® º¼·ý ¸Þ½¬
 #include "VIBuffer_Terrain.h"
+#include "VIBuffer_Trail.h"
 #include "VIBuffer_Cell.h"
 #include "VIBuffer_Cube.h"
 #include "VIBuffer_Rect.h"

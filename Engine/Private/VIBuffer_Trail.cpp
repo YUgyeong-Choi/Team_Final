@@ -21,7 +21,7 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	VBBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
 	VBBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	VBBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	VBBufferDesc.CPUAccessFlags = /*D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE*/0;
+	VBBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
 	VBBufferDesc.StructureByteStride = m_iVertexStride;
 	VBBufferDesc.MiscFlags = 0;
 
@@ -30,6 +30,7 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	VTXPOS_TRAIL* pVertices = new VTXPOS_TRAIL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXPOS_TRAIL) * m_iNumVertices);
 
+	// 굳이 저장 할 필요가 없을 것 같음
 	//m_pVertexPositions = new _float3[m_iNumVertices];
 	//ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iNumVertices);
 
@@ -51,12 +52,34 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 
 HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 {
+	// 여기서 종류 정해야하나?
 	return S_OK;
 }
 
-void CVIBuffer_Trail::Update_Trail(const _float3& vPosition, _float fTimeDelta)
+void CVIBuffer_Trail::Update_Trail(const _float3& vInnerPos, const _float3& vOuterPos, _float fTimeDelta)
 {
+	// 1. 시간 업데이트
+	for (auto& node : m_TrailNodes)
+		node.vLifeTime.y += fTimeDelta;
 
+	// 2. 오래된 노드 제거
+	m_TrailNodes.erase( // 제거 할 원소를 모두 모아서 뒤로 보낸 후 범위로 지정하는 algorithm 함수
+		remove_if(m_TrailNodes.begin(), m_TrailNodes.end(),
+			[](const VTXPOS_TRAIL& node) { return node.vLifeTime.y >= node.vLifeTime.x; }),
+		m_TrailNodes.end()
+	);
+
+	// 3. 트레일 활성 상태일 경우에만 노드 추가
+	if (m_bTrailActive)
+	{
+		VTXPOS_TRAIL newNode;
+		newNode.vInnerPos = vInnerPos;
+		newNode.vOuterPos = vOuterPos;
+		newNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
+		m_TrailNodes.push_back(newNode);
+	}
+
+	Update_Buffers();
 }
 
 HRESULT CVIBuffer_Trail::Update_Buffers()
@@ -72,14 +95,14 @@ HRESULT CVIBuffer_Trail::Update_Buffers()
 	VTXPOS_TRAIL* pVertices = static_cast<VTXPOS_TRAIL*>(subres.pData);
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
-		pVertices[i].vPosition = m_TrailNodes[i].vPosition;
-		pVertices[i].vPSize = m_TrailNodes[i].vPSize;
-		pVertices[i].vLifeTime = m_TrailNodes[i].vLifeTime;
-
-		m_pVertexPositions[i] = m_TrailNodes[i].vPosition; // 디버깅/선택용
+		pVertices[i].vInnerPos= m_TrailNodes[i].vInnerPos;
+		pVertices[i].vOuterPos= m_TrailNodes[i].vOuterPos;
+		pVertices[i].vLifeTime= m_TrailNodes[i].vLifeTime;
 	}
 
 	m_pContext->Unmap(m_pVB, 0);
+
+
 	return S_OK;
 }
 

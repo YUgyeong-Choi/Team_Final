@@ -121,7 +121,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	UpdateShadowCamera();
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast(m_pControllerCom);
-
+		
 
 	// 옵저버 변수들 처리
 	Update_Stat();
