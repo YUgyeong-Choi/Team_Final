@@ -25,19 +25,17 @@ public:
 
 #pragma region YW
 private:
-	//HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
-	//HRESULT Ready_MapModel();
-	//HRESULT LoadMap();
-	HRESULT LoadMap(_uint iLevelIndex, const _char* Map);
-	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
-	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
+	//맵 소환(true면 테스트 맵 소환)
+	HRESULT Ready_Map(_uint iLevelIndex, _bool bTest = false);
+	HRESULT Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
+	HRESULT Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 
+	//네비게이션 소환
 	HRESULT Ready_Nav(const _wstring strLayerTag);
-	HRESULT Ready_Static_Decal(const _wstring strLayerTag);
+
+	//스태틱 데칼을 소환한다. (true면 테스트 데칼 소환)
+	HRESULT Ready_Static_Decal(_uint iLevelIndex, _bool bTest = false);
 #pragma endregion
-
-
-
 
 private:
 	HRESULT Ready_Player();

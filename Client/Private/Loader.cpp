@@ -349,23 +349,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
-#pragma region 데칼 테스트 텍스쳐
-	/* For.Prototype_Component_Texture_Blood_ARMT*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_ARMT"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_ARMT.dds")))))
+	//스테이션 레벨에 필요한 텍스쳐를 로드한다.
+	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)/*, true*/))) // true 면 테스트 데칼 준비
 		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Blood_N*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_N"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_N.dds")))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Bloodstain_BC*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_BC.dds")))))
-		return E_FAIL;
-#pragma endregion
-
 
 	m_fRatio = 0.1f;
 
@@ -423,12 +409,12 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	m_fRatio = 0.4f;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //STATION //TEST
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)/*, true*/))) //true면 테스트 맵 준비[테스트 맵을 키고 싶으면 true 하시오]
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
 		return E_FAIL;
 
 	m_fRatio = 0.6f;
@@ -812,21 +798,12 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
-#pragma region 데칼 테스트 텍스쳐
-	///* For.Prototype_Component_Texture_Blood_ARMT*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_ARMT"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_ARMT.dds")))))
-	//	return E_FAIL;
+#pragma region 데칼 디폴트 텍스쳐
 
 	/* For.Prototype_Component_Texture_DefaultDecalTexture*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_DefaultDecal"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_N.dds")))))
 		return E_FAIL;
-
-	///* For.Prototype_Component_Texture_Bloodstain_BC*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_BC.dds")))))
-	//	return E_FAIL;
 
 #pragma endregion
 
@@ -911,9 +888,26 @@ HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelF
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
+HRESULT CLoader::Loading_Models(_uint iLevelIndex, _bool bTest)
 {
-	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+	string Map = {};
+	switch (iLevelIndex)
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		Map = "STATION";
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		Map = "HOTEL";
+		break;
+	default:
+		Map = "TEST";
+		break;
+	}
+
+	if (bTest)
+		Map = "TEST";
+
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map.c_str() + ".json";
 
 	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
@@ -976,76 +970,25 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
 	return S_OK;
 }
 
-
-HRESULT CLoader::Loading_Models_MapTool(_uint iLevelIndex, const _char* Map)
+HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, _bool bTest)
 {
-	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
-
-	ifstream inFile(ResourcePath);
-	if (!inFile.is_open())
+	string Map = {};
+	switch (iLevelIndex)
 	{
-		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-
-		return S_OK;
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		Map = "STATION";
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		Map = "HOTEL";
+		break;
+	default:
+		Map = "TEST";
+		break;
 	}
 
-	json ReadyModelJson;
-	try
-	{
-		inFile >> ReadyModelJson;
-		inFile.close();
-	}
-	catch (const exception& e)
-	{
-		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-		return E_FAIL;
-	}
+	if (bTest)
+		Map = "TEST";
 
-	// JSON 데이터 확인
-	for (const auto& element : ReadyModelJson)
-	{
-		string ModelName = element.value("ModelName", "");
-		string Path = element.value("Path", "");
-
-		//모델 프로토 타입 생성
-		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-
-		const _char* pModelFilePath = Path.c_str();
-
-		if (FAILED(Load_Model_MapTool(PrototypeTag, pModelFilePath, iLevelIndex)))
-		{
-			return E_FAIL;
-		}
-	}
-
-	return S_OK;
-
-}
-
-HRESULT CLoader::Load_Model_MapTool(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex)
-{
-	//이미 프로토타입이존재하는 지확인
-
-	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
-	{
-		//MSG_BOX("이미 프로토타입이 존재함");
-		return S_OK;
-	}
-
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
-
-	if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-		return E_FAIL;
-
-	return S_OK;
-}
-HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map)
-{
 	wstring wsResourcePath = L"../Bin/Save/NavTool/Nav_" + StringToWString(Map) + L".json";
 
 	// 파일 열기
@@ -1070,8 +1013,61 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map)
 
 	return S_OK;
 }
-HRESULT CLoader::Loading_Textures_DecalTool(_uint iLevelIndex, const _char* Map)
+HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, _bool bTest)
 {
+	string Map = {};
+	switch (iLevelIndex)
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		Map = "STATION";
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		Map = "HOTEL";
+		break;
+	default:
+		Map = "TEST";
+		break;
+	}
+
+	if (bTest)
+		Map = "TEST";
+
+	string ResourcePath = string("../Bin/Save/DecalTool/Resource_") + Map + ".json";
+
+	ifstream inFile(ResourcePath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+
+		return S_OK;
+	}
+
+	json ReadyTextureJson;
+	try
+	{
+		inFile >> ReadyTextureJson;
+		inFile.close();
+	}
+	catch (const exception& e)
+	{
+		inFile.close();
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
+		return E_FAIL;
+	}
+
+	//텍스쳐 프로토타입 생성
+	for (auto& [PrototypeTag, Path] : ReadyTextureJson.items())
+	{
+		//이미 있으면 넘기고
+		if (m_pGameInstance->Find_Prototype(iLevelIndex, StringToWString(PrototypeTag)) != nullptr)
+			continue;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, StringToWString(PrototypeTag),
+			CTexture::Create(m_pDevice, m_pContext, StringToWString(Path).c_str()))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 #pragma endregion

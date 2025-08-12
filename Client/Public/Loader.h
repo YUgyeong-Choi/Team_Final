@@ -55,18 +55,14 @@ public:
 	HRESULT Loading_For_YW();
 
 	//<맵>에 필요한 모델들을 로딩한다.
-	HRESULT Loading_Models(_uint iLevelIndex, const _char* Map);
+	HRESULT Loading_Models(_uint iLevelIndex, _bool bTest = false);
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
 
-	//<맵툴>에 필요한 모델들을 로딩한다.(필요 없어질 듯)
-	HRESULT Loading_Models_MapTool(_uint iLevelIndex, const _char* Map);
-	HRESULT Load_Model_MapTool(const wstring& strPrototypeTag, const _char* pModelFilePath, _uint iLevelIndex);
-
 	//네비게이션을 로딩한다.
-	HRESULT Loading_Navigation(_uint iLevelIndex, const _char* Map);
+	HRESULT Loading_Navigation(_uint iLevelIndex, _bool bTest = false);
 
-	//<데칼툴>에 필요한 텍스쳐들을 로딩한다.(필요 없어질 듯)
-	HRESULT Loading_Textures_DecalTool(_uint iLevelIndex, const _char* Map);
+	//필요한 데칼 텍스쳐를 로딩한다.
+	HRESULT Loading_Decal_Textures(_uint iLevelIndex, _bool bTest = false);
 
 #pragma endregion
 	
