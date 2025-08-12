@@ -243,53 +243,118 @@ void CDecalTool::Control(_float fTimeDelta)
 		else if (m_pGameInstance->Key_Down(DIK_T))
 			m_currentOperation = ImGuizmo::TRANSLATE;
 
-		//if (m_pGameInstance->Mouse_Up(DIM::WHEELBUTTON))
-		//{
-		//	//모든 오브젝트 선택 제거
-		//	m_pFocusObject = nullptr;
-
-		//}
+		//포커스 비우기
+		if (m_pGameInstance->Mouse_Up(DIM::WHEELBUTTON))
+		{
+			Safe_Release(m_pFocusObject);
+			m_pFocusObject = nullptr;
+		}
 	}
 
 	//클릭하면 가장 가까운 데칼을 포커스 한다.
 	if (m_pGameInstance->Mouse_Up(DIM::LBUTTON) && ImGuizmo::IsOver() == false)
 	{
-		//알트키 누르고 있으면 피킹하지 않음(오브젝트 붙이고나서 오브젝트 변경되는거 막기 위함임)
-		if (m_pGameInstance->Key_Pressing(DIK_LALT))
-			return;
-
-		// ImGui가 마우스 입력을 가져가면 피킹을 하지 않음
-		if (ImGui::GetIO().WantCaptureMouse)
-			return;
-
-		_float4 vWorldPos = {};
-		if (m_pGameInstance->Picking(&vWorldPos))
-		{
-			Safe_Release(m_pFocusObject);
-			m_pFocusObject = Get_ClosestDecalObject(XMLoadFloat4(&vWorldPos));
-			Safe_AddRef(m_pFocusObject);
-		}
-		
+		Select_Decal();
 	}
 
 	//F 키누르면 해당 오브젝트 위치로 이동
 	if (m_pGameInstance->Key_Down(DIK_F))
 	{
-		if (nullptr == m_pFocusObject)
-			return;
-
-		_vector vObjectPos = m_pFocusObject->Get_TransfomCom()->Get_State(STATE::POSITION);
-		_vector vCameraPos = XMVectorAdd(vObjectPos, XMVectorSet(0.f, 3.f, -3.f, 0.f));
-
-		CTransform* pCameraTransformCom = CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom();
-
-		//여유를 두고 이동한후
-		pCameraTransformCom->Set_State(STATE::POSITION, vCameraPos);
-
-		//LookAt 하자
-		pCameraTransformCom->LookAt(vObjectPos);
+		Focus();
 	}
 
+	//딜리트키 누르면 현재 선택된거 삭제
+	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
+	{
+		Delete_FocusObject();
+	}
+
+	//알트 클릭하면 해당 위치로 데칼 이동
+	if (m_pGameInstance->Key_Pressing(DIK_LALT) && m_pGameInstance->Mouse_Up(DIM::LBUTTON))
+	{
+		SnapTo();
+	}
+
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_D))
+	{
+		Duplicate();
+	}
+}
+
+void CDecalTool::Select_Decal()
+{
+	//알트키 누르고 있으면 피킹하지 않음(오브젝트 붙이고나서 오브젝트 변경되는거 막기 위함임)
+	if (m_pGameInstance->Key_Pressing(DIK_LALT))
+		return;
+
+	// ImGui가 마우스 입력을 가져가면 피킹을 하지 않음
+	if (ImGui::GetIO().WantCaptureMouse)
+		return;
+
+	_float4 vWorldPos = {};
+	if (m_pGameInstance->Picking(&vWorldPos))
+	{
+		Safe_Release(m_pFocusObject);
+		m_pFocusObject = Get_ClosestDecalObject(XMLoadFloat4(&vWorldPos));
+		Safe_AddRef(m_pFocusObject);
+	}
+}
+
+void CDecalTool::Focus()
+{
+	if (nullptr == m_pFocusObject)
+		return;
+
+	_vector vObjectPos = m_pFocusObject->Get_TransfomCom()->Get_State(STATE::POSITION);
+	_vector vCameraPos = XMVectorAdd(vObjectPos, XMVectorSet(0.f, 3.f, -3.f, 0.f));
+
+	CTransform* pCameraTransformCom = CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom();
+
+	//여유를 두고 이동한후
+	pCameraTransformCom->Set_State(STATE::POSITION, vCameraPos);
+
+	//LookAt 하자
+	pCameraTransformCom->LookAt(vObjectPos);
+}
+
+void CDecalTool::SnapTo()
+{
+	if (m_pFocusObject)
+	{
+		CTransform* pTransform = m_pFocusObject->Get_TransfomCom();
+
+		_float4 vPickedPos = {};
+		if (m_pGameInstance->Picking(&vPickedPos))
+		{
+			pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
+
+		}
+	}
+}
+
+void CDecalTool::Duplicate()
+{
+	if (m_pFocusObject == nullptr)
+		return;
+
+	CDecalToolObject::DECALTOOLOBJECT_DESC Desc = {};
+	Desc.FilePath[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)] = m_pFocusObject->m_FilePath[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)];
+	Desc.FilePath[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)] = m_pFocusObject->m_FilePath[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)];
+	Desc.FilePath[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)] = m_pFocusObject->m_FilePath[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)];
+
+	Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)] = m_pFocusObject->m_PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)];
+	Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)] = m_pFocusObject->m_PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)];
+	Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)] = m_pFocusObject->m_PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)];
+
+	Desc.WorldMatrix = m_pFocusObject->Get_TransfomCom()->Get_World4x4();
+
+	//소환하고 포커스 변경
+	m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"), &Desc);
+
+	Safe_Release(m_pFocusObject);
+	m_pFocusObject = static_cast<CDecalToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal")));
+	Safe_AddRef(m_pFocusObject);
 }
 
 void CDecalTool::Clear_All_Decal()
@@ -371,7 +436,47 @@ CDecalToolObject* CDecalTool::Get_ClosestDecalObject(_fvector vPosition)
 
 HRESULT CDecalTool::Spawn_DecalObject()
 {
+#pragma region 카메라 앞에다가 소환
+	//카메라 앞에다가 소환
+	//카메라 위치에서, 뷰행렬 Look 만큼 앞으로
+	// 카메라 위치
+	_float4 CamPos = *m_pGameInstance->Get_CamPosition();
+
+	// 위치만 반영한 행렬 생성
+	_matrix matWorld = XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
+
+	// 카메라 월드 행렬 (뷰 행렬 역행렬)
+	_matrix CamWorldMatrix = XMMatrixInverse(nullptr, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	_float4x4 CamWM = {};
+	XMStoreFloat4x4(&CamWM, CamWorldMatrix);
+
+	// 룩 벡터 추출 (3번째 행)
+	_vector vLook = XMVectorSet(CamWM._31, CamWM._32, CamWM._33, 0.f);
+
+	// 룩 벡터 정규화
+	vLook = XMVector3Normalize(vLook);
+
+	// 거리 설정
+	_float fDist = PRE_TRANSFORMMATRIX_SCALE * 1000.f;
+
+	// 룩 벡터에 거리 곱하기
+	_vector vOffset = XMVectorScale(vLook, fDist);
+
+	// 카메라 위치 벡터
+	_vector vCamPos = XMLoadFloat4(&CamPos);
+
+	// 최종 위치 계산 (카메라 위치 + 룩 * 거리)
+	_vector vSpawnPos = XMVectorAdd(vCamPos, vOffset);
+
+	// 최종 월드 행렬 생성 (위치만)
+	_matrix SpawnWorldMatrix = XMMatrixTranslationFromVector(vSpawnPos);
+
+#pragma endregion
+
 	CDecalToolObject::DECALTOOLOBJECT_DESC DecalDesc = {};
+
+	// 오브젝트 월드 행렬에 적용
+	XMStoreFloat4x4(&DecalDesc.WorldMatrix, SpawnWorldMatrix);
 
 	//소환하고 포커스 변경
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
@@ -383,6 +488,13 @@ HRESULT CDecalTool::Spawn_DecalObject()
 	Safe_AddRef(m_pFocusObject);
 
 	return S_OK;
+}
+
+void CDecalTool::Delete_FocusObject()
+{
+	Safe_Release(m_pFocusObject);
+	m_pFocusObject->Set_bDead();
+	m_pFocusObject = nullptr;
 }
 
 

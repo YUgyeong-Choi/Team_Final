@@ -54,9 +54,9 @@
                 0.0
             ],
             [
-                1.6159776449203491,
-                -0.9152888655662537,
-                2.5104386806488037,
+                3.2634761333465576,
+                -1.174460768699646,
+                7.738221168518066,
                 1.0
             ]
         ]
@@ -86,6 +86,68 @@
             ],
             [
                 -1.239902138710022,
+                -0.9154011011123657,
+                2.7818379402160645,
+                1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_Bloodstain_01_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_Bloodstain_01_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_Bloodstain_01_N.dds",
+        "WorldMatrix": [
+            [
+                1.9799998998641968,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.9799998998641968,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.9799998998641968,
+                0.0
+            ],
+            [
+                -2.085627555847168,
+                -1.174460768699646,
+                8.857000350952148,
+                1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_Crack_04_ARMK.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_Crack_02_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_Bloodstain_01_N.dds",
+        "WorldMatrix": [
+            [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+            ],
+            [
+                -5.111127853393555,
                 -0.9154011011123657,
                 2.7818379402160645,
                 1.0
