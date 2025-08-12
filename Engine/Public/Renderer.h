@@ -84,7 +84,7 @@ private:
 
 private:
 	HRESULT Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight);
-	HRESULT Ready_DepthStencilView_Volumetric(_uint iWidth, _uint iHeight);
+	//HRESULT Ready_DepthStencilView_Volumetric(_uint iWidth, _uint iHeight);
 	HRESULT Ready_DepthStencilView_Blur(_uint iWidth, _uint iHeight);
 	HRESULT Change_ViewportDesc(_uint iWidth, _uint iHeight);
 

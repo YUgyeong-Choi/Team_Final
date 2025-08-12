@@ -46,6 +46,28 @@ HRESULT CDecalToolObject::Render()
 
 }
 
+HRESULT CDecalToolObject::Set_ARM_Texture(string TexturePath, string FileName)
+{
+	//프로토타입을 만들고
+	wstring wstrPrototypeTag = TEXT("Prototype_Component_Texture_") + StringToWString(FileName);
+	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::YW), wstrPrototypeTag) == nullptr)
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), wstrPrototypeTag,
+			CTexture::Create(m_pDevice, m_pContext, StringToWString(TexturePath).c_str()))))
+			return E_FAIL;
+	}
+
+	//갈아끼자
+	Remove_Component(TEXT("Com_Texture_ARMT"));
+	Safe_Release(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]);
+	/* For.Com_Texture_ARMT */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), wstrPrototypeTag,
+		TEXT("Com_Texture_ARMT"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CDecalToolObject::Ready_Components()
 {
 	return __super::Ready_Components();

@@ -152,7 +152,7 @@ void CMapTool::Control(_float fTimeDelta)
 	}
 	
 
-	//컨트롤 클릭 하면 피킹된 위치로 이동
+	//알트 클릭 하면 피킹된 위치로 이동
 	if (m_pGameInstance->Key_Pressing(DIK_LALT) && m_pGameInstance->Mouse_Up(DIM::LBUTTON))
 	{
 		if (m_pFocusObject)

@@ -13,6 +13,17 @@ NS_BEGIN(Client)
 
 class CDecal abstract : public CGameObject
 {
+public:
+	typedef struct tagDecalDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		_float4x4	WorldMatrix = _float4x4(
+			1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			0.f, 0.f, 0.f, 1.f
+		);
+	} DECAL_DESC;
+
 protected:
 	enum class TEXTURE_TYPE
 	{

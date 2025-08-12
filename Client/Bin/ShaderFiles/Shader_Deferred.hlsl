@@ -8,10 +8,10 @@ matrix g_LightViewMatrixC, g_LightProjMatrixC;
 matrix g_ViewMatrixInv, g_ProjMatrixInv;
 Texture2D g_RenderTargetTexture;
 Texture2D g_NormalTexture;
-Texture2D g_DiffuseTexture;
-Texture2D g_ShadeTexture;
+//Texture2D g_DiffuseTexture;
+//Texture2D g_ShadeTexture;
 Texture2D g_DepthTexture;
-Texture2D g_SpecularTexture;
+//Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
 
 //데칼 텍스쳐
@@ -911,11 +911,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector finalColor = vector(0.f, 0.f, 0.f, 0.f);
     
     /* [ 기존 VTXMesh ] */
-    vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
-    vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
-    vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
-    Out.vBackBuffer = vDiffuse * vShade + vSpecular;
-    finalColor = Out.vBackBuffer;
+    //vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+    //vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
+    //vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
+    //Out.vBackBuffer = vDiffuse * vShade + vSpecular;
+    //finalColor = Out.vBackBuffer;
     
     /* [ PBR 매쉬 ] */
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);

@@ -26,9 +26,13 @@ public:
 	virtual void Late_Update(_float fTimeDelta)override;
 	virtual HRESULT Render()override;
 
+public:
+	HRESULT Set_ARM_Texture(string TexturePath, string FileName);
+
 private:
 	virtual HRESULT Ready_Components() override;
 	HRESULT Bind_ShaderResources();
+
 
 public:
 	static CDecalToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
