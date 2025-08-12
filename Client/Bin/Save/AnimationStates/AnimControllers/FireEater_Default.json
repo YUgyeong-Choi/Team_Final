@@ -9,8 +9,8 @@
             "Name": "Idle",
             "NodeId": 1,
             "NodePos": [
-                1158.0,
-                -206.0
+                -457.0,
+                -181.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -21,11 +21,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Atk_SlamCom",
+            "Name": "Skill1_Start",
             "NodeId": 2,
             "NodePos": [
-                -958.0,
-                -91.0
+                385.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -39,8 +39,8 @@
             "Name": "Atk_Swing_Start",
             "NodeId": 3,
             "NodePos": [
-                482.0,
-                -91.0
+                -1655.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Atk_Swing_End",
             "NodeId": 6,
             "NodePos": [
-                482.0,
-                79.0
+                -1655.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -66,11 +66,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Atk_SlamCom_Loop",
+            "Name": "Skill1_Loop",
             "NodeId": 11,
             "NodePos": [
-                -238.0,
-                -91.0
+                385.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -81,11 +81,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Atk_SlamCom_L_End",
+            "Name": "Skill1_Left_End",
             "NodeId": 13,
             "NodePos": [
-                -238.0,
-                79.0
+                597.0,
+                245.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -96,11 +96,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Atk_SlamCom_End",
+            "Name": "Skill1_End",
             "NodeId": 14,
             "NodePos": [
-                -238.0,
-                249.0
+                385.0,
+                414.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -111,11 +111,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Atk_SlamCom_R_End",
+            "Name": "Skill1_Right_End",
             "NodeId": 15,
             "NodePos": [
-                -238.0,
-                419.0
+                1105.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "Atk_Foot",
             "NodeId": 18,
             "NodePos": [
-                -958.0,
-                79.0
+                -2735.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -144,8 +144,8 @@
             "Name": "Atk_Slam_Fury_Start",
             "NodeId": 19,
             "NodePos": [
-                -802.0,
-                -195.0
+                -2375.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -159,8 +159,8 @@
             "Name": "Atk_Slam_Fury",
             "NodeId": 21,
             "NodePos": [
-                -585.0,
-                61.0
+                -2375.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -174,8 +174,8 @@
             "Name": "Atk_Slam_Fury_End",
             "NodeId": 22,
             "NodePos": [
-                -598.0,
-                249.0
+                -2375.0,
+                414.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -189,8 +189,8 @@
             "Name": "Atk_Strike_Fury",
             "NodeId": 27,
             "NodePos": [
-                -128.0,
-                -42.0
+                -2015.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -204,8 +204,8 @@
             "Name": "Atk_Slam",
             "NodeId": 30,
             "NodePos": [
-                -958.0,
-                249.0
+                -2735.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -219,8 +219,8 @@
             "Name": "Atk_Uppercut_Start",
             "NodeId": 33,
             "NodePos": [
-                966.0,
-                -149.0
+                -975.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -234,8 +234,8 @@
             "Name": "Atk_Uppercut_End",
             "NodeId": 34,
             "NodePos": [
-                1193.0,
-                97.0
+                -975.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -249,10 +249,10 @@
             "Name": "Atk_Uppercut_Front",
             "NodeId": 39,
             "NodePos": [
-                1162.0,
-                248.0
+                -975.0,
+                414.0
             ],
-            "UpperClip": "AS_ATLBoss0_Skill_05_Start",
+            "UpperClip": "AS_ATLBoss0_Skill_05_Attack",
             "UpperStartTime": 0.5099999904632568
         },
         {
@@ -264,8 +264,8 @@
             "Name": "CutScene",
             "NodeId": 42,
             "NodePos": [
-                1922.0,
-                -91.0
+                145.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -279,8 +279,8 @@
             "Name": "Atk_Swing_R",
             "NodeId": 45,
             "NodePos": [
-                482.0,
-                249.0
+                -1655.0,
+                414.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -294,8 +294,8 @@
             "Name": "Atk_Swing_L_Com1",
             "NodeId": 46,
             "NodePos": [
-                482.0,
-                419.0
+                -1655.0,
+                584.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -309,8 +309,8 @@
             "Name": "Atk_Swing_R_Com1",
             "NodeId": 47,
             "NodePos": [
-                482.0,
-                589.0
+                -1655.0,
+                754.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -324,8 +324,8 @@
             "Name": "Atk_Swing_R_Com2",
             "NodeId": 48,
             "NodePos": [
-                482.0,
-                759.0
+                -1655.0,
+                924.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -339,8 +339,8 @@
             "Name": "Atk_Swing_L_Com2",
             "NodeId": 49,
             "NodePos": [
-                802.0,
-                -91.0
+                -1335.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -354,8 +354,8 @@
             "Name": "Atk_Swing_Seq",
             "NodeId": 50,
             "NodePos": [
-                801.0,
-                79.0
+                -1335.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -369,8 +369,8 @@
             "Name": "Atk_Swing_Seq2",
             "NodeId": 51,
             "NodePos": [
-                799.0,
-                250.0
+                -1335.0,
+                414.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -384,8 +384,8 @@
             "Name": "Atk_Swing_Seq3",
             "NodeId": 52,
             "NodePos": [
-                809.0,
-                472.0
+                -1335.0,
+                584.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -399,8 +399,8 @@
             "Name": "Atk_Swing_SeqReset",
             "NodeId": 53,
             "NodePos": [
-                1067.0,
-                567.0
+                -1335.0,
+                754.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -414,8 +414,8 @@
             "Name": "Atk_Swing_SeqReset2",
             "NodeId": 54,
             "NodePos": [
-                802.0,
-                629.0
+                -1335.0,
+                924.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -429,8 +429,8 @@
             "Name": "P2_Atk_FireEat",
             "NodeId": 69,
             "NodePos": [
-                1415.0,
-                -79.0
+                -615.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -444,8 +444,8 @@
             "Name": "P2_Atk_FlameFiled",
             "NodeId": 70,
             "NodePos": [
-                1538.0,
-                90.0
+                -615.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -459,8 +459,8 @@
             "Name": "P2_Atk_FireBall_B",
             "NodeId": 74,
             "NodePos": [
-                1522.0,
-                249.0
+                -615.0,
+                414.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -474,8 +474,8 @@
             "Name": "P2_Atk_Flame_L",
             "NodeId": 77,
             "NodePos": [
-                1522.0,
-                419.0
+                -615.0,
+                584.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -489,8 +489,8 @@
             "Name": "P2_Atk_Flame_R",
             "NodeId": 78,
             "NodePos": [
-                1522.0,
-                589.0
+                -615.0,
+                754.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -504,8 +504,8 @@
             "Name": "P2_Atk_Flame_Start",
             "NodeId": 79,
             "NodePos": [
-                1522.0,
-                759.0
+                -615.0,
+                924.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -519,8 +519,8 @@
             "Name": "P2_Atk_Flame_End",
             "NodeId": 82,
             "NodePos": [
-                1842.0,
-                -91.0
+                -295.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -534,8 +534,8 @@
             "Name": "P2_Atk_FireBall_Start",
             "NodeId": 87,
             "NodePos": [
-                1842.0,
-                79.0
+                -295.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -549,8 +549,8 @@
             "Name": "P2_Atk_FireBall_L",
             "NodeId": 88,
             "NodePos": [
-                1842.0,
-                249.0
+                -295.0,
+                414.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -564,8 +564,8 @@
             "Name": "P2_Atk_FireBall_R",
             "NodeId": 89,
             "NodePos": [
-                1842.0,
-                419.0
+                -295.0,
+                584.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -579,8 +579,8 @@
             "Name": "P2_Atk_FireBall_End",
             "NodeId": 90,
             "NodePos": [
-                1842.0,
-                589.0
+                -295.0,
+                754.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -594,8 +594,8 @@
             "Name": "P2_Atk_FireBall_F",
             "NodeId": 99,
             "NodePos": [
-                1842.0,
-                759.0
+                -295.0,
+                924.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -609,8 +609,8 @@
             "Name": "Special_Die",
             "NodeId": 102,
             "NodePos": [
-                -503.0,
-                -210.0
+                -2015.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -624,8 +624,8 @@
             "Name": "Groggy_Start",
             "NodeId": 103,
             "NodePos": [
-                2642.0,
-                -91.0
+                865.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -639,8 +639,8 @@
             "Name": "Groggy_Loop",
             "NodeId": 104,
             "NodePos": [
-                2642.0,
-                79.0
+                865.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -654,8 +654,8 @@
             "Name": "Groggy_End",
             "NodeId": 105,
             "NodePos": [
-                2642.0,
-                249.0
+                865.0,
+                414.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -669,8 +669,8 @@
             "Name": "Dead_F",
             "NodeId": 110,
             "NodePos": [
-                2282.0,
-                -91.0
+                18.0,
+                320.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -684,8 +684,8 @@
             "Name": "Dead_B",
             "NodeId": 111,
             "NodePos": [
-                2282.0,
-                79.0
+                11.0,
+                457.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -699,8 +699,8 @@
             "Name": "P2_Atk_FireOil",
             "NodeId": 114,
             "NodePos": [
-                2162.0,
-                -91.0
+                25.0,
+                74.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -714,8 +714,8 @@
             "Name": "Walk_F",
             "NodeId": 117,
             "NodePos": [
-                2642.0,
-                -91.0
+                595.0,
+                -17.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -729,8 +729,8 @@
             "Name": "Walk_B",
             "NodeId": 121,
             "NodePos": [
-                2642.0,
-                79.0
+                865.0,
+                244.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -744,8 +744,8 @@
             "Name": "Walk_R",
             "NodeId": 122,
             "NodePos": [
-                2642.0,
-                249.0
+                864.0,
+                414.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -759,8 +759,8 @@
             "Name": "Walk_L",
             "NodeId": 123,
             "NodePos": [
-                2642.0,
-                419.0
+                865.0,
+                584.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -774,8 +774,8 @@
             "Name": "Turn_R",
             "NodeId": 100012,
             "NodePos": [
-                3002.0,
-                -91.0
+                1376.0,
+                135.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -789,8 +789,8 @@
             "Name": "Turn_L",
             "NodeId": 100013,
             "NodePos": [
-                3002.0,
-                79.0
+                1371.0,
+                393.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -870,7 +870,7 @@
             "iValue": 0
         },
         "Phase2Start": {
-            "Type": 1,
+            "Type": 0,
             "bTriggered": false,
             "bValue": false,
             "fValue": 0.0,
@@ -881,7 +881,7 @@
             "bTriggered": false,
             "bValue": false,
             "fValue": 0.0,
-            "iValue": 0
+            "iValue": 11
         },
         "SpecialDie": {
             "Type": 1,
@@ -898,7 +898,7 @@
             "iValue": 0
         },
         "Turn": {
-            "Type": 1,
+            "Type": 0,
             "bTriggered": false,
             "bValue": false,
             "fValue": 0.0,
@@ -968,17 +968,10 @@
             "Conditions": [
                 {
                     "Op": "IsTrue",
-                    "ParamName": "IsCombo",
+                    "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "Direction",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 1
                 }
             ],
             "Duration": 0.20000000298023224,
@@ -996,16 +989,9 @@
         {
             "Conditions": [
                 {
-                    "Op": "IsTrue",
-                    "ParamName": "IsCombo",
+                    "Op": "None",
+                    "ParamName": "",
                     "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "Direction",
-                    "Type": "Int",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
@@ -1136,7 +1122,7 @@
             ],
             "Duration": 0.20000000298023224,
             "FromNodeId": 1,
-            "HasExitTime": false,
+            "HasExitTime": true,
             "Link": {
                 "FromNodeId": 12,
                 "LinkId": 29,
@@ -1450,7 +1436,7 @@
                 "ToNodeId": 531
             },
             "MaxTime": 1.0,
-            "MinTime": 0.4909999966621399,
+            "MinTime": 0.6499999761581421,
             "ToNodeId": 53
         },
         {
@@ -1463,7 +1449,7 @@
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.125,
+            "Duration": 0.20000000298023224,
             "FromNodeId": 53,
             "HasExitTime": false,
             "Link": {
@@ -1494,7 +1480,7 @@
                 "ToNodeId": 541
             },
             "MaxTime": 1.0,
-            "MinTime": 0.4819999933242798,
+            "MinTime": 0.6460000276565552,
             "ToNodeId": 54
         },
         {
@@ -1646,9 +1632,9 @@
         {
             "Conditions": [
                 {
-                    "Op": "Trigger",
+                    "Op": "IsTrue",
                     "ParamName": "Phase2Start",
-                    "Type": "Trigger",
+                    "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
@@ -1858,7 +1844,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "IsTrue",
+                    "Op": "None",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -1867,28 +1853,28 @@
             ],
             "Duration": 0.20000000298023224,
             "FromNodeId": 89,
-            "HasExitTime": false,
+            "HasExitTime": true,
             "Link": {
                 "FromNodeId": 892,
                 "LinkId": 93,
                 "ToNodeId": 901
             },
             "MaxTime": 1.0,
-            "MinTime": 0.8500000238418579,
+            "MinTime": 0.0,
             "ToNodeId": 90
         },
         {
             "Conditions": [],
             "Duration": 0.20000000298023224,
             "FromNodeId": 88,
-            "HasExitTime": false,
+            "HasExitTime": true,
             "Link": {
                 "FromNodeId": 882,
                 "LinkId": 94,
                 "ToNodeId": 901
             },
             "MaxTime": 1.0,
-            "MinTime": 0.800000011920929,
+            "MinTime": 0.0,
             "ToNodeId": 90
         },
         {
@@ -1945,7 +1931,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "IsTrue",
+                    "Op": "None",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -2900,6 +2886,64 @@
         {
             "Conditions": [
                 {
+                    "Op": "Equal",
+                    "ParamName": "TurnDir",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 1
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Turn",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100000,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1000002,
+                "LinkId": 100014,
+                "ToNodeId": 1000131
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100013
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Equal",
+                    "ParamName": "TurnDir",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Turn",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100000,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1000002,
+                "LinkId": 100015,
+                "ToNodeId": 1000121
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100012
+        },
+        {
+            "Conditions": [
+                {
                     "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
@@ -3006,398 +3050,6 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 100000
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "None",
-                    "ParamName": "",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 114,
-            "HasExitTime": true,
-            "Link": {
-                "FromNodeId": 1142,
-                "LinkId": 100021,
-                "ToNodeId": 1000001
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100000
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 117,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1172,
-                "LinkId": 100022,
-                "ToNodeId": 1000121
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100012
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 1
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 117,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1172,
-                "LinkId": 100023,
-                "ToNodeId": 1000131
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100013
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 1
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 1,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 12,
-                "LinkId": 100024,
-                "ToNodeId": 1000131
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100013
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 1,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 12,
-                "LinkId": 100025,
-                "ToNodeId": 1000121
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100012
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 123,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1232,
-                "LinkId": 100026,
-                "ToNodeId": 1000121
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100012
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 1
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 123,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1232,
-                "LinkId": 100027,
-                "ToNodeId": 1000131
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100013
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 121,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1212,
-                "LinkId": 100028,
-                "ToNodeId": 1000121
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100012
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 1
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 121,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1212,
-                "LinkId": 100029,
-                "ToNodeId": 1000131
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100013
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 122,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1222,
-                "LinkId": 100030,
-                "ToNodeId": 1000121
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100012
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Turn",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Equal",
-                    "ParamName": "TurnDir",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 1
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 122,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1222,
-                "LinkId": 100031,
-                "ToNodeId": 1000131
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100013
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Equal",
-                    "ParamName": "SkillType",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 1
-                },
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Attack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 1,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 12,
-                "LinkId": 100032,
-                "ToNodeId": 21
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 2
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "IsCombo",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 11,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 112,
-                "LinkId": 100033,
-                "ToNodeId": 141
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.9509999752044678,
-            "ToNodeId": 14
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "Equal",
-                    "ParamName": "SkillType",
-                    "Type": "Int",
-                    "fThreshold": 0.0,
-                    "iThreshold": 7
-                },
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Attack",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 1,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 12,
-                "LinkId": 100034,
-                "ToNodeId": 691
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 69
         }
     ]
 }
