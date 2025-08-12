@@ -423,7 +423,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	m_fRatio = 0.4f;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION"))) //STATION //TEST
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //STATION //TEST
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
