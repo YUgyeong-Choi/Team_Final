@@ -258,7 +258,7 @@ HRESULT CCYTool::SequenceWindow()
 			desc.bBillboard = false;
 			desc.bTool = true;
 			desc.iShaderPass = ENUM_CLASS(ME_MASKONLY);
-			desc.pInnerSocketMatrix = static_cast<CWeapon*>(TestWeapon);
+			// desc.pInnerSocketMatrix = static_cast<CWeapon*>(TestWeapon);
 			desc.pOuterSocketMatrix;
 			desc.pParentCombinedMatrix;
 			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(

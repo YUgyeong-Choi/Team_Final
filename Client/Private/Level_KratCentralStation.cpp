@@ -139,9 +139,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Player()))
 				return;
 
-			if (FAILED(Ready_Monster()))
-				return;
-
 			/* [ 옥토트리 설정 ] */
 			if (FAILED(Ready_OctoTree()))
 				return;
@@ -354,9 +351,9 @@ HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
 
 HRESULT CLevel_KratCentralStation::Ready_Static_Decal(const _wstring strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Static_Decal"),
-		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Static_Decal"),
+	//	m_pGameInstance->GetCurrentLevelIndex(), strLayerTag)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -620,9 +617,9 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &pDesc)))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
+		return E_FAIL;
 
 
 	return S_OK;
