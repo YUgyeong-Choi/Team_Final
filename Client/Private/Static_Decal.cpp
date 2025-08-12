@@ -22,7 +22,8 @@ HRESULT CStatic_Decal::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(5.f, 0.f, 0.f, 1.f));
+	if (FAILED(Ready_Components(pArg)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -58,8 +59,9 @@ HRESULT CStatic_Decal::Render()
 
 }
 
-HRESULT CStatic_Decal::Ready_Components()
+HRESULT CStatic_Decal::Ready_Components(void* pArg)
 {
+
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Decal"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -69,18 +71,20 @@ HRESULT CStatic_Decal::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
+	DECAL_DESC* pDesc = static_cast<DECAL_DESC*>(pArg);
+
 	/* For.Com_Texture_ARMT */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_ARMT"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::ARMT)],
 		TEXT("Com_Texture_ARMT"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]))))
 		return E_FAIL;
 
 	/* For.Com_Texture_N */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_N"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::N)],
 		TEXT("Com_Texture_N"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::N)]))))
 		return E_FAIL;
 
 	/* For.Com_Texture_BC */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::BC)],
 		TEXT("Com_Texture_BC"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::BC)]))))
 		return E_FAIL;
 

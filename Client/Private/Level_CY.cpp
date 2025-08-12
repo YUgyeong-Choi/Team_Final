@@ -58,15 +58,11 @@ void CLevel_CY::Priority_Update(_float fTimeDelta)
 	{
 		if (KEY_DOWN(DIK_Z))
 		{
-			//EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::CY), TEXT("EC_NewP2S1_sujeongmore"));
-			CEffectContainer::DESC ECDesc = {};
-			ECDesc.vPresetPosition = {
+
+			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::CY), TEXT("EC_ErgoItem_M3P1"),
 				m_pGameInstance->Compute_Random(-10.f, 10.f),
 				m_pGameInstance->Compute_Random(-10.f, 10.f),
-				m_pGameInstance->Compute_Random(-10.f, 10.f)
-			};
-			
-			if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::CY), TEXT("EC_ErgoItem_M3P1"), &ECDesc)))
+				m_pGameInstance->Compute_Random(-10.f, 10.f))))
 				MSG_BOX("Á¶Áü");
 		}
 	}
@@ -106,7 +102,8 @@ HRESULT CLevel_CY::Render()
 
 	ImGui::NewFrame();
 
-	ImGui_Render();
+	if (FAILED(ImGui_Render()))
+		int a = 0;
 	//·»´õ¸µ 
 
 	ImGui::Render();

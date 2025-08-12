@@ -55,10 +55,18 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 	}
 	if (m_fCurFrame > m_pSequence->GetFrameMax())
 	{
-		m_fCurFrame = static_cast<_float>(m_pSequence->GetFrameMin());
-		for (auto& pItem : m_pSequence->m_Items)
+		if (m_pSequence->m_bLoop == true)
 		{
-			pItem.pEffect->Reset_TrackPosition();
+			m_fCurFrame = static_cast<_float>(m_pSequence->GetFrameMin());
+			for (auto& pItem : m_pSequence->m_Items)
+			{
+				pItem.pEffect->Reset_TrackPosition();
+			}
+		}
+		else
+		{
+			m_fCurFrame = static_cast<_float>(m_pSequence->GetFrameMax());
+			m_bPlaySequence = false;
 		}
 	}
 	for (auto& pItem : m_pSequence->m_Items)
@@ -66,7 +74,7 @@ void CCYTool::Priority_Update(_float fTimeDelta)
 		if (m_iCurFrame >= *pItem.iStart && m_iCurFrame <= *pItem.iEnd)
 		{
 			pItem.pEffect->Priority_Update(fTimeDelta);
-			// 이펙트를 재생 생정보통다리 치킨~
+			// 이펙트를 재생
 			//PlaySpriteEffect(pItem.iType, m_iCurFrame - pItem.iStart);
 		}
 	}
@@ -247,7 +255,12 @@ HRESULT CCYTool::SequenceWindow()
 			break;
 		case Client::EFF_TRAIL:
 		{
+			if (GET_PLAYER(ENUM_CLASS(LEVEL::CY))== nullptr)
+				break;
 			CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player_Weapon"), 0);
+			CModel* pWeaponModelCom = static_cast<CModel*>(TestWeapon->Get_Component(TEXT("Com_Model")));
+			_uint iInnerBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_B");
+			_uint iOuterBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade");
 
 			CToolTrail::DESC desc = {};
 			desc.bAnimation = true;
@@ -258,11 +271,11 @@ HRESULT CCYTool::SequenceWindow()
 			desc.bBillboard = false;
 			desc.bTool = true;
 			desc.iShaderPass = ENUM_CLASS(ME_MASKONLY);
-			// desc.pInnerSocketMatrix = static_cast<CWeapon*>(TestWeapon);
-			desc.pOuterSocketMatrix;
-			desc.pParentCombinedMatrix;
+			desc.pInnerSocketMatrix = const_cast<_float4x4*>(pWeaponModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
+			desc.pOuterSocketMatrix = const_cast<_float4x4*>(pWeaponModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
+			desc.pParentCombinedMatrix = const_cast<_float4x4*>(static_cast<CWeapon*>(TestWeapon)->Get_CombinedWorldMatrix());
 			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolMeshEffect"), &desc));
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolTrailEffect"), &desc));
 		}
 			break;
 		}
@@ -277,6 +290,12 @@ HRESULT CCYTool::SequenceWindow()
 	if (ImGui::Button("Load EffectContainer")){
 		m_bOpenLoadEffectContainer = true;
 	}
+	ImGui::SameLine();
+	ImGui::PushItemWidth(100);
+	ImGui::DragInt("MaxFrame", &m_pSequence->m_iFrameMax, 1.0f, 10, 1000, "%d");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+	ImGui::Checkbox("Loop", &m_pSequence->m_bLoop);
 
 	ImSequencer::Sequencer(
 		m_pSequence,
@@ -404,6 +423,15 @@ HRESULT CCYTool::Edit_Preferences()
 		break;
 	case Client::EFF_MESH:
 		if (FAILED(Window_Mesh()))
+		{
+			ImGui::End();
+			ImGui::End();
+			return E_FAIL;
+		}
+		ImGui::End();
+		break;
+	case Client::EFF_TRAIL:
+		if (FAILED(Window_Trail()))
 		{
 			ImGui::End();
 			ImGui::End();
@@ -566,6 +594,26 @@ HRESULT CCYTool::Window_Mesh()
 	return S_OK;
 }
 
+HRESULT CCYTool::Window_Trail()
+{
+	CToolTrail* pTE = dynamic_cast<CToolTrail*>(m_pSequence->m_Items[m_iSelected].pEffect);
+
+	ImGui::Text("Select Pass\n0. Default");
+
+	for (_uint i = 0; i < TE_END; i++)
+	{
+		if (ImGui::RadioButton((to_string(i) + "##TE").c_str(), m_eSelectedPass_TE == i)) {
+			m_eSelectedPass_TE = (TRAILEFFECT_PASS_INDEX)i;
+			pTE->Set_ShaderPass(i);
+		}
+		if (i % 6 != 0 || i == 0)
+			ImGui::SameLine();
+	}
+	ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+	return S_OK;
+}
+
 void CCYTool::Edit_Keyframes(CEffectBase* pEffect)
 {
 	ImGui::Begin("Edit Keyframes");
@@ -670,6 +718,9 @@ HRESULT CCYTool::Save_EffectSet()
 				return E_FAIL;
 			json jSave;
 
+			jSave["MaxFrame"] = m_pSequence->m_iFrameMax;
+			jSave["Loop"] = m_pSequence->m_bLoop;
+
 			auto& Items = m_pSequence->Get_Items();
 
 			for (auto& Item : Items)
@@ -744,6 +795,10 @@ HRESULT CCYTool::Load_EffectSet()
 			Safe_Delete(m_pSequence);
 			m_pSequence = new CEffectSequence();
 
+			if (jLoad.contains("MaxFrame"))
+				m_pSequence->m_iFrameMax = jLoad["MaxFrame"].get<_int>();
+			if (jLoad.contains("Loop"))
+				m_pSequence->m_bLoop = jLoad["Loop"].get<_bool>();
 
 			for (const auto& jItem : jLoad["EffectObject"])
 			{
@@ -753,24 +808,11 @@ HRESULT CCYTool::Load_EffectSet()
 
 				// 타입
 				if (jItem.contains("EffectType"))
-					m_eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<int>());
+					m_eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
 
-				// Effect 객체 생성 및 역직렬화
-				//if (jItem.contains("EffectPreferences") && jItem["EffectPreferences"].is_array() && !jItem["EffectPreferences"].empty())
 				{
-
 					/* 이 부분도 수정해야하는데 다른게 우선같아서 땜빵처리 함 */
 					const json& jData = jItem;
-
-					/*if (jItem["EffectPreferences"].is_array())
-					{
-						if (!jItem["EffectPreferences"].empty())
-							jData = jItem["EffectPreferences"][0];
-					}
-					else if (jItem["EffectPreferences"].is_object())
-					{
-						jData = jItem["EffectPreferences"];
-					}*/
 
 					CEffectBase* pInstance = { nullptr };
 

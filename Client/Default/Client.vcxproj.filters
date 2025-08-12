@@ -1252,7 +1252,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Decal.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTrail.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_TrailEffect.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
   </ItemGroup>

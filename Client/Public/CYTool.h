@@ -32,6 +32,7 @@ private:
 	HRESULT Window_Sprite();
 	HRESULT Window_Particle();
 	HRESULT Window_Mesh();
+	HRESULT Window_Trail();
 
 	void Edit_Keyframes(class CEffectBase* pEffect);
 
@@ -75,6 +76,7 @@ private:
 	SPRITEEFFECT_PASS_INDEX		m_eSelectedPass_SE = { SE_DEFAULT };
 	MESHEFFECT_PASS_INDEX		m_eSelectedPass_ME = { ME_DEFAULT };
 	PARTICLEEFFECT_PASS_INDEX	m_eSelectedPass_PE = { PE_DEFAULT };
+	TRAILEFFECT_PASS_INDEX		m_eSelectedPass_TE = { TE_DEFAULT };
 
 	_bool						m_isGizmoEnable = { false };
 	ImGuizmo::OPERATION			m_eOperation = { ImGuizmo::TRANSLATE };
@@ -82,6 +84,7 @@ private:
 	_int						m_iSelectedKeyframe = { 0 };
 
 	_uint						m_iRenderGroup = ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB);
+
 #pragma endregion
 
 

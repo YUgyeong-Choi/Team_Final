@@ -96,4 +96,17 @@ namespace Engine
 		_vector vec = XMVectorSet(pxVec.x, pxVec.y, pxVec.z, 1.f);
 		return vec;
 	}
+
+#include <filesystem>
+#include <string>
+	namespace fs = std::filesystem;
+	// 절대 경로 -> 상대 경로 변환
+	static std::string ToRelativePath(const std::string& absolutePath)
+	{
+		fs::path absPath = fs::absolute(absolutePath);
+		fs::path currentDir = fs::current_path();
+
+		// 상대 경로 반환
+		return fs::relative(absPath, currentDir).string();
+	}
 }

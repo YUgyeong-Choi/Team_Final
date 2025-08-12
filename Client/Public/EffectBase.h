@@ -68,14 +68,14 @@ protected:
 	virtual HRESULT Ready_Components() PURE;
 
 protected:
-	CShader* m_pShaderCom = { nullptr };
+	CShader*			m_pShaderCom = { nullptr };
 
-	_bool			m_bTextureUsage[TU_END];
-	CTexture* m_pTextureCom[TU_END] = { nullptr };
-	_wstring		m_TextureTag[TU_END];
+	_bool				m_bTextureUsage[TU_END];
+	CTexture*			m_pTextureCom[TU_END] = { nullptr };
+	_wstring			m_TextureTag[TU_END];
 
 protected:
-	const _float4x4* m_pSocketMatrix = { nullptr };
+	const _float4x4*	m_pSocketMatrix = { nullptr };
 	_float4x4			m_CombinedWorldMatrix{};
 
 

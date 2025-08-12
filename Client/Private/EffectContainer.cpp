@@ -47,13 +47,20 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 	* 루프일 때는 전체 프레임 재생이 끝나면 0으로 다시 돌아감
 	* 아닐 땐 계속 증가하시다가 언젠가 죽겠지.. 
 	*/
-	if (m_iCurFrame > 200 && true == m_bLoop)
+	if (m_iCurFrame > m_iMaxFrame)
 	{
-		m_fCurFrame = 0.f;
-		m_iCurFrame = 0;
-		for (auto& pEffect : m_Effects)
+		if (true == m_bLoop)
 		{
-			pEffect->Reset_TrackPosition();
+			m_fCurFrame = 0.f;
+			m_iCurFrame = 0;
+			for (auto& pEffect : m_Effects)
+			{
+				pEffect->Reset_TrackPosition();
+			}
+		}
+		else
+		{
+			m_bDead = true;
 		}
 	}
 	//if (m_fLifeTimeAcc >= m_fLifeTime)
@@ -114,6 +121,15 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 	{
 		return E_FAIL;
 	}
+
+	if (j.contains("MaxFrame"))
+		m_iMaxFrame = j["MaxFrame"].get<_int>();
+	else
+		m_iMaxFrame = 200;
+	if (j.contains("Loop"))
+		m_bLoop = j["Loop"].get<_bool>();
+	else
+		m_bLoop = true;
 
 	for (const auto& jItem : j["EffectObject"])
 	{

@@ -13,6 +13,14 @@ NS_BEGIN(Client)
 
 class CDecalToolObject final : public CDecal
 {
+	friend class CDecalTool;
+
+public:
+	typedef struct tagDecalToolObjectDesc : public DECAL_DESC
+	{
+		wstring FilePath[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
+	}DECALTOOLOBJECT_DESC;
+
 private:
 	CDecalToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDecalToolObject(const CDecalToolObject& Prototype);
@@ -27,10 +35,14 @@ public:
 	virtual HRESULT Render()override;
 
 public:
-	HRESULT Set_ARM_Texture(string TexturePath, string FileName);
+	HRESULT Set_Texture(TEXTURE_TYPE eType, string TexturePath, string FileName);
 
 private:
-	virtual HRESULT Ready_Components() override;
+	wstring m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
+	wstring m_FilePath[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
+
+private:
+	virtual HRESULT Ready_Components(void* Arg) override;
 	HRESULT Bind_ShaderResources();
 
 

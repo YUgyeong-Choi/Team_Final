@@ -224,7 +224,6 @@ void CMapTool::Control(_float fTimeDelta)
 	//딜리트키 누르면 현재 선택된거 삭제
 	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
 	{
-		printf("Delete\n");
 		DeleteMapToolObject();
 	}
 	

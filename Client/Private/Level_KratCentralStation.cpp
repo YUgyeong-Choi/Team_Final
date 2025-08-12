@@ -9,6 +9,7 @@
 #include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
 #include "Nav.h"
+#include "Static_Decal.h"
 #pragma endregion
 
 
@@ -39,9 +40,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->Set_IsChangeLevel(false);
 
 	if(FAILED(Ready_Video()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Effect()))
 		return E_FAIL;
 
 	/* [ 사운드 ] */
@@ -105,6 +103,9 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		if (m_pStartVideo->Get_bDead())
 		{
 
+			if (FAILED(Ready_Effect()))
+				return ;
+
 			/* [ 사운드 ] */
 			m_pBGM->Play();
 
@@ -113,14 +114,15 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Camera()))
 				return;
 
-
 			//제이슨으로 저장된 맵을 로드한다.
-			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+			//true면 테스트맵 소환, 기본(false) [테스트 맵을 키고 싶으면 true 하시오] [Loader.cpp 도 똑같이 적용 필요!!!!!]
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)/*, true*/))) 
 				return;
 
 			//데칼 소환
-			if (FAILED(Ready_Static_Decal(TEXT("Layer_StaticDecal"))))
+			if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
 				return;
+
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 				return;
@@ -167,6 +169,20 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if(KEY_DOWN(DIK_F7))
 		m_pGameInstance->ToggleDebugOctoTree();
 
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (KEY_DOWN(DIK_Z))
+		{
+			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"),
+				m_pGameInstance->Compute_Random(-1.f, 1.f),
+				m_pGameInstance->Compute_Random(-1.f, 1.f),
+				m_pGameInstance->Compute_Random(-1.f, 1.f))))
+				MSG_BOX("조짐");
+		}
+	}
+
+
+
 	m_pCamera_Manager->Update(fTimeDelta);
 	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
 }
@@ -186,9 +202,27 @@ HRESULT CLevel_KratCentralStation::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::LoadMap(_uint iLevelIndex, const _char* Map)
+HRESULT CLevel_KratCentralStation::Ready_Map(_uint iLevelIndex, _bool bTest)
 {
-	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
+
+	string Map = {};
+	switch (iLevelIndex)
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		Map = "STATION";
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		Map = "HOTEL";
+		break;
+	default:
+		Map = "TEST";
+		break;
+	}
+
+	if (bTest)
+		Map = "TEST";
+
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map.c_str() + ".json";
 
 	ifstream inFile(MapPath);
 	if (!inFile.is_open())
@@ -215,18 +249,18 @@ HRESULT CLevel_KratCentralStation::LoadMap(_uint iLevelIndex, const _char* Map)
 		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
 		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
 		{
-			Load_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
+			Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
 		}
 		else
 		{
-			Load_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex);
+			Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex);
 		}
 	}
 
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
+HRESULT CLevel_KratCentralStation::Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
 {
 	for (_uint j = 0; j < iObjectCount; ++j)
 	{
@@ -297,7 +331,7 @@ HRESULT CLevel_KratCentralStation::Load_StaticMesh(_uint iObjectCount, const jso
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
+HRESULT CLevel_KratCentralStation::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
 {
 	vector<_float4x4> InstanceMatixs(iObjectCount);
 
@@ -349,13 +383,71 @@ HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_Static_Decal(const _wstring strLayerTag)
+HRESULT CLevel_KratCentralStation::Ready_Static_Decal(_uint iLevelIndex, _bool bTest)
 {
-	//if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Static_Decal"),
-	//	m_pGameInstance->GetCurrentLevelIndex(), strLayerTag)))
-	//	return E_FAIL;
+	string Map = {};
+	switch (iLevelIndex)
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		Map = "STATION";
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		Map = "HOTEL";
+		break;
+	default:
+		Map = "TEST";
+		break;
+	}
+
+	if(bTest)
+		Map = "TEST";
+
+	//현재 맵에 필요한 데칼 텍스쳐를 로드한다.
+
+	string DecalDataPath = string("../Bin/Save/DecalTool/Decal_") + Map.c_str() + ".json";
+	//string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json"; //나중에 쓸듯 맵 바꿀때
+
+	ifstream inFile(DecalDataPath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Decal_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	// JSON 파싱
+	json JSON;
+	inFile >> JSON;
+
+	// 데이터 만큼 Decal 소환
+	for (auto& item : JSON)
+	{
+		// 4x4 행렬 읽기
+		_float4x4 WorldMatrix;
+		for (_int iRow = 0; iRow < 4; ++iRow)
+		{
+			for (_int iCol = 0; iCol < 4; ++iCol)
+			{
+				WorldMatrix.m[iRow][iCol] = item["WorldMatrix"][iRow][iCol].get<_float>();
+			}
+		}
+
+		//텍스쳐 프로토타입 이름 전달
+		CStatic_Decal::DECAL_DESC Desc = {};
+		Desc.WorldMatrix = WorldMatrix;
+		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)] = StringToWString(item["ARMT"].get<string>());
+		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)] = StringToWString(item["N"].get<string>());
+		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)] = StringToWString(item["BC"].get<string>());
+
+		// Decal 객체 생성
+		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Static_Decal"),
+			iLevelIndex, TEXT("Layer_Decal"), &Desc)))
+			return E_FAIL;
+
+	}
 
 	return S_OK;
+
 }
 
 HRESULT CLevel_KratCentralStation::Ready_Player()
@@ -617,9 +709,9 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &pDesc)))
 		return E_FAIL;
 
-	/*if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
-		return E_FAIL;*/
+		return E_FAIL;
 
 
 	return S_OK;
@@ -627,16 +719,15 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
-	CEffectContainer::DESC ECDesc = {};
-	ECDesc.vPresetPosition = { 52.83f, 0.09f, 1.57f };
-	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 52.83f, 0.09f, 1.57f)))
 		MSG_BOX("이펙트 생성 실패");
-	ECDesc.vPresetPosition = { 69.25f, -0.22f, -8.17f };
-	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 69.25f, -0.22f, -8.17f)))
 		MSG_BOX("이펙트 생성 실패");
-	ECDesc.vPresetPosition = { 99.86f, 0.64f, -13.69f };
-	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
+	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 99.86f, 0.64f, -13.69f)))
 		MSG_BOX("이펙트 생성 실패");
+	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 0.f, 0.f, 0.f)))
+		MSG_BOX("이펙트 생성 실패");
+
 	return S_OK;
 }
 

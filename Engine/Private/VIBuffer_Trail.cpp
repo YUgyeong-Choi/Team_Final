@@ -7,6 +7,10 @@ CVIBuffer_Trail::CVIBuffer_Trail(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 CVIBuffer_Trail::CVIBuffer_Trail(const CVIBuffer_Trail& Prototype)
 	: CVIBuffer( Prototype )
+	, m_iMaxNodeCount{ Prototype.m_iMaxNodeCount }
+	, m_fLifeDuration{ Prototype.m_fLifeDuration }
+	, m_bTrailActive{ Prototype.m_bTrailActive }
+	, m_TrailNodes{ Prototype.m_TrailNodes }
 {
 }
 
@@ -21,7 +25,7 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	VBBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
 	VBBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	VBBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	VBBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+	VBBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	VBBufferDesc.StructureByteStride = m_iVertexStride;
 	VBBufferDesc.MiscFlags = 0;
 
@@ -37,6 +41,8 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	for (_uint i = 0; i < m_iNumVertices; i++)
 	{
 		pVertices[i].vInnerPos = _float3(0.f, 0.f, 0.f);
+		pVertices[i].vOuterPos = _float3(0.f, 0.f, 0.f);
+		pVertices[i].vLifeTime = _float2(0.f, 0.f);
 		//m_pVertexPositions[i] = pVertices[i].vInnerPos;
 	}
 

@@ -143,7 +143,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	Update_Slot();
 
 	/* [ 상호작용 ] */
-	Interaction_Door();
+	//Interaction_Door();
 	__super::Priority_Update(fTimeDelta);
 }
 void CPlayer::Update(_float fTimeDelta)
@@ -157,7 +157,7 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 입력 ] */
 	HandleInput();
-	SlidDoorMove(fTimeDelta);
+	//SlidDoorMove(fTimeDelta);
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
 
