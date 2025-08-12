@@ -358,6 +358,18 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
       <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Monster">
+      <UniqueIdentifier>{3ee88807-5483-4c39-969c-48cf776b8700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\World">
+      <UniqueIdentifier>{c622a759-7795-4101-a76e-892f83c691ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\World\MonsterHP">
+      <UniqueIdentifier>{92e16183-4e96-4a54-898b-955af720b2ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\World\LockOn">
+      <UniqueIdentifier>{a5c9a283-4d2f-4672-a079-61ef465b301d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -781,6 +793,12 @@
     <ClInclude Include="..\Public\ToolTrail.h">
       <Filter>01.Levels\LevelCY\Tool\ToolTrail%3f</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_MonsterHP_Bar.h">
+      <Filter>02.GameObjects\99.UI\World\MonsterHP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_LockOn_Icon.h">
+      <Filter>02.GameObjects\99.UI\World\LockOn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1177,6 +1195,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ToolTrail.cpp">
       <Filter>01.Levels\LevelCY\Tool\ToolTrail%3f</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_MonsterHP_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\World\MonsterHP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_LockOn_Icon.cpp">
+      <Filter>02.GameObjects\99.UI\World\LockOn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

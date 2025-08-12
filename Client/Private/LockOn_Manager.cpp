@@ -70,6 +70,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         CIgnoreSelfCallback callback(ignoreActors);
 
         _bool bRemove = false;
+
         // 레이캐스트 수행
         if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
         {
@@ -166,7 +167,8 @@ void CLockOn_Manager::RemoveBehindWallTargets()
                 PxRigidActor* hitActor = hit.block.actor;
                 CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-                if (pHitActor && pHitActor->Get_Owner()->Get_Name() != L"Elite_Police")
+                
+                if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
                 {
                     // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
                     bRemove = true;

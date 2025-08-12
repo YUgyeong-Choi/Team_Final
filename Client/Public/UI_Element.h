@@ -56,6 +56,9 @@ public:
 	virtual HRESULT Render();
 
 private:
+	HRESULT Ready_Component(void* pArg);
+
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };

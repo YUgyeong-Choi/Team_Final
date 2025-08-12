@@ -280,7 +280,7 @@ CMonster_Test* CMonster_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 	CMonster_Test* pInstance = new CMonster_Test(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer");
+		MSG_BOX("Failed to Created : CMonster_Test");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
