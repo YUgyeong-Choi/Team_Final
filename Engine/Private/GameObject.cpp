@@ -75,17 +75,19 @@ void CGameObject::Late_Update(_float fTimeDelta)
 
 }
 
+void CGameObject::Last_Update(_float fTimeDelta)
+{
+}
+
 HRESULT CGameObject::Render()
 {
 
 	return S_OK;
 }
 
-void CGameObject::Compute_ViewZ(const _vector* pPos)
+void CGameObject::Compute_ViewZ(_vector pCamPos , const _vector* pTargetPos)
 {
-	_vector vCamPos = XMLoadFloat4(m_pGameInstance->Get_CamPosition());
-
-	_vector vDiff = vCamPos - *pPos;
+	_vector vDiff = pCamPos - *pTargetPos;
 	m_fViewZ = XMVectorGetX(XMVector3Length(vDiff));
 }
 
@@ -163,11 +165,12 @@ void CGameObject::Free()
 	__super::Free();
 
 	Safe_Release(m_pGameInstance);
-	Safe_Release(m_pTransformCom);
 
 	for (auto& Pair : m_Components)
 		Safe_Release(Pair.second);
 	m_Components.clear();
+
+	Safe_Release(m_pTransformCom);
 
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);

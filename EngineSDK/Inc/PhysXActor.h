@@ -24,6 +24,10 @@ public:
     virtual void On_TriggerEnter(CPhysXActor* pOther);
     virtual void On_TriggerExit(CPhysXActor* pOther);
     virtual HRESULT Render() = 0;
+
+    void Add_IngoreActors(PxActor* pActor) { m_ignoreActors.insert(pActor); }
+    unordered_set<PxActor*> Get_IngoreActors() { return m_ignoreActors; }
+
 #ifdef _DEBUG
     // For Debug Render
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
@@ -44,6 +48,9 @@ protected:
     // 어떤 콜라이더 타입인지
     COLLIDERTYPE m_eColliderType = COLLIDERTYPE::A;
 
+    // 컨트롤러에서 무시할 자기 Actor 넣는 곳
+    unordered_set<PxActor*> m_ignoreActors;
+#ifdef _DEBUG
     // For Debug Render
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
     BasicEffect* m_pEffect = { nullptr };
@@ -54,6 +61,7 @@ protected:
     void DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, const PxTransform& pose, float radius, float halfHeight, FXMVECTOR color);
     void DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds);
     void DrawConvexMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds);
+#endif
 public:
     virtual CComponent* Clone(void* pArg) = 0;
     virtual void Free() override;

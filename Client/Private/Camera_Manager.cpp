@@ -122,12 +122,12 @@ void CCamera_Manager::Play_CutScene(CUTSCENE_TYPE cutSceneType)
     SetCutSceneCam();
     m_pCamera_CutScene->Set_CutSceneData(cutSceneType);
     m_pCamera_CutScene->PlayCutScene();
+    m_bStartGame = true;
 }
 
 void CCamera_Manager::SetPlayer(CGameObject* pPlayer)
 {
     m_pCamera_Orbital->SetPlayer(pPlayer);
-    m_pCamera_Orbital->Set_InitCam();
 }
 void CCamera_Manager::Shake_Camera(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot)
 {

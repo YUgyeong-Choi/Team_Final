@@ -38,6 +38,7 @@ private:
 
 	ID3D11DepthStencilView*		m_pShadowDSV = { nullptr };
 	ID3D11DepthStencilView*		m_pBlurDSV = { nullptr };
+	ID3D11DepthStencilView*		m_pVolumetricDSV = { nullptr };
 	_uint						m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};
 
 private:
@@ -83,10 +84,9 @@ private:
 
 private:
 	HRESULT Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight);
+	HRESULT Ready_DepthStencilView_Volumetric(_uint iWidth, _uint iHeight);
 	HRESULT Ready_DepthStencilView_Blur(_uint iWidth, _uint iHeight);
 	HRESULT Change_ViewportDesc(_uint iWidth, _uint iHeight);
-	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
-
 
 #ifdef _DEBUG
 private:

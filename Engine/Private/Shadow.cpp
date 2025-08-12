@@ -15,9 +15,18 @@ HRESULT CShadow::Ready_Light_For_Shadow(const SHADOW_DESC& Desc, SHADOW eShadow)
 	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
 
 	m_AspectRatio = ViewportDesc.Width / ViewportDesc.Height;
-	/* 광원의 정보를 대신할 카메라로 바라본 장면을 그려주기위한 뷰, 투영행렬 만들었다. */
+	
 	XMStoreFloat4x4(&m_LightViewMatrix[ENUM_CLASS(eShadow)], XMMatrixLookAtLH(XMLoadFloat4(&Desc.vEye), XMLoadFloat4(&Desc.vAt), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
 	XMStoreFloat4x4(&m_LightProjMatrix[ENUM_CLASS(eShadow)], XMMatrixPerspectiveFovLH(Desc.fFovy, m_AspectRatio, Desc.fNear, Desc.fFar));
+
+	/* 직교 시도 실패.. */
+	//XMStoreFloat4x4(&m_LightViewMatrix[ENUM_CLASS(eShadow)],
+	//	XMMatrixLookAtLH(XMLoadFloat4(&Desc.vEye), XMLoadFloat4(&Desc.vAt), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	//	
+	//_float fWidth = Desc.fOrthoWidth;
+	//_float fHeight = Desc.fOrthoHeight;
+	//XMStoreFloat4x4(&m_LightProjMatrix[ENUM_CLASS(eShadow)],
+	//	XMMatrixOrthographicLH(fWidth, fHeight, Desc.fNear, Desc.fFar));
 
 	return S_OK;
 }

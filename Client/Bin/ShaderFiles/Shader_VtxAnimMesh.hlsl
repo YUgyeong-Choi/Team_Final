@@ -1,11 +1,20 @@
 
 #include "Engine_Shader_Defines.hlsli"
-
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+#pragma pack_matrix(row_major)
+ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 matrix g_BoneMatrices[512];
 matrix g_BoneMatrices2[256];
 
+//
+//// 모든 뼈 컴바인드 매트릭스
+//StructuredBuffer<matrix> g_FinalBoneMatrices : register(t0);
+//
+//// 메시별 로컬 뼈 인덱스
+//StructuredBuffer<uint>     g_LocalToGlobal    : register(t1);
+//
+//// 지금 메시의 뼈 오프셋들
+//StructuredBuffer<matrix> g_Offsets          : register(t2);
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 Texture2D g_ARMTexture;
@@ -57,16 +66,49 @@ struct VS_OUT_PBR
 VS_OUT_PBR VS_MAIN(VS_IN In)
 {
     VS_OUT_PBR Out;
-    
+    //
     float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
-        
+
+
     matrix BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
-        g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y + 
-        g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z + 
+        g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+        g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
         g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
-    
-    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);    
+
+    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
     vector vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
+
+
+    //float4 w = In.vBlendWeights;
+    //w.w = 1.0 - (w.x + w.y + w.z);
+
+    //uint4 meshLocalIndices = In.vBlendIndices;  // 메시 내 로컬 본 인덱스
+
+    //// CPU와 동일한 계산: 메시 로컬 인덱스 i에 대해
+    //// offset[i] * globalBone[m_BoneIndices[i]]
+
+    //// 각 메시 로컬 인덱스에 대해 해당하는 글로벌 인덱스 찾기
+    //uint globalIndex0 = g_LocalToGlobal[meshLocalIndices.x];
+    //uint globalIndex1 = g_LocalToGlobal[meshLocalIndices.y];
+    //uint globalIndex2 = g_LocalToGlobal[meshLocalIndices.z];
+    //uint globalIndex3 = g_LocalToGlobal[meshLocalIndices.w];
+
+    //// CPU와 동일한 순서: offset * globalBone
+    //matrix skinMatrix0 = mul(g_Offsets[meshLocalIndices.x], g_FinalBoneMatrices[globalIndex0]);
+    //matrix skinMatrix1 = mul(g_Offsets[meshLocalIndices.y], g_FinalBoneMatrices[globalIndex1]);
+    //matrix skinMatrix2 = mul(g_Offsets[meshLocalIndices.z], g_FinalBoneMatrices[globalIndex2]);
+    //matrix skinMatrix3 = mul(g_Offsets[meshLocalIndices.w], g_FinalBoneMatrices[globalIndex3]);
+
+    //// 가중합
+    //matrix finalSkinMatrix = skinMatrix0 * w.x +
+    //    skinMatrix1 * w.y +
+    //    skinMatrix2 * w.z +
+    //    skinMatrix3 * w.w;
+
+    //// 스키닝 적용
+    //vector vPosition = mul(vector(In.vPosition, 1.f), finalSkinMatrix);
+    //vector vNormal = mul(vector(In.vNormal, 0.f), finalSkinMatrix);
+  
     
     matrix matWV, matWVP;
     
@@ -76,7 +118,7 @@ VS_OUT_PBR VS_MAIN(VS_IN In)
     
     Out.vPosition = mul(vPosition, matWVP);
     Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
-    Out.vTexcoord = In.vTexcoord;    
+    Out.vTexcoord = In.vTexcoord;
     Out.vWorldPos = mul(vPosition, g_WorldMatrix);
     Out.vProjPos = Out.vPosition;
     Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
@@ -186,6 +228,7 @@ struct PS_OUT_PBR
     vector vMetallic : SV_TARGET6;
 };
 
+
 struct PS_OUT_NONPICK
 {
     vector vDiffuse : SV_TARGET0;
@@ -219,9 +262,10 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     float Roughness = vARM.g * g_fRoughnessIntensity;
     float Metallic = vARM.b * g_fMetallicIntensity;
    
+    float fIsUnit = 0.f;
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
-    Out.vARM = float4(AO, Roughness, Metallic, 1.f);
+    Out.vARM = float4(AO, Roughness, Metallic, fIsUnit);
     Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, g_fReflectionIntensity, g_fSpecularIntensity);
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
@@ -248,6 +292,28 @@ PS_OUT_NONPICK PS_MAIN_NONPICK(PS_IN In)
     return Out;
 }
 
+struct PS_IN_SHADOW_OLD
+{
+    float4 vPosition : SV_POSITION;
+    float4 vProjPos : TEXCOORD0;
+};
+
+struct PS_OUT_SHADOW_OLD
+{
+    vector vShadow : SV_TARGET0;
+};
+
+PS_OUT_SHADOW_OLD PS_MAIN_SHADOW(PS_IN_SHADOW_OLD In)
+{
+    PS_OUT_SHADOW_OLD Out;
+    
+    Out.vShadow = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, 0.f);
+    
+    return Out;
+}
+
+
+
 struct PS_IN_SHADOW
 {
     float4 vPosition : SV_POSITION;
@@ -256,21 +322,38 @@ struct PS_IN_SHADOW
 
 struct PS_OUT_SHADOW
 {
-    vector vShadow : SV_TARGET0;    
+    float4 vShadowA : SV_TARGET0;
+    float4 vShadowB : SV_TARGET1;
+    float4 vShadowC : SV_TARGET2;
 };
 
-PS_OUT_SHADOW PS_MAIN_SHADOW(PS_IN_SHADOW In)
+float4 PS_Cascade0(VS_OUT_SHADOW In) : SV_TARGET0
 {
-    PS_OUT_SHADOW Out;
-    
-    Out.vShadow = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, 0.f);
-    
-    return Out;
+    float depthZ = In.vProjPos.z / In.vProjPos.w;
+    float depthW = In.vProjPos.w / 1000.0f;
+    return float4(depthZ, depthW, 0.f, 0.f);
+}
+
+// SV_TARGET1에만 쓰는 버전
+float4 PS_Cascade1(VS_OUT_SHADOW In) : SV_TARGET1
+{
+    float depthZ = In.vProjPos.z / In.vProjPos.w;
+    float depthW = In.vProjPos.w / 1000.0f;
+    return float4(depthZ, depthW, 0.f, 0.f);
+}
+
+// SV_TARGET2에만 쓰는 버전
+float4 PS_Cascade2(VS_OUT_SHADOW In) : SV_TARGET2
+{
+    float depthZ = In.vProjPos.z / In.vProjPos.w;
+    float depthW = In.vProjPos.w / 1000.0f;
+    //return float4(depthZ, depthW, 0.f, 0.f);
+    return float4(1.f, 0.f, 0.f, 1.f);
 }
 
 technique11 DefaultTechnique
 {   
-    pass Default
+    pass Default //0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -281,7 +364,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();      
     }
 
-    pass NonPick
+    pass NonPick //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -292,7 +375,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_NONPICK();
     }
 
-    pass Shadow
+    pass Shadow // 2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -302,6 +385,36 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
     }
+    pass ShadowPass0 //3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+        PixelShader = compile ps_5_0 PS_Cascade0(); // SV_TARGET0 전용
+    }
+
+    pass ShadowPass1 //4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+        PixelShader = compile ps_5_0 PS_Cascade1(); // SV_TARGET1 전용
+    }
+
+    pass ShadowPass2 //5
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+        PixelShader = compile ps_5_0 PS_Cascade2(); // SV_TARGET2 전용
+    }
+   
    
    
    

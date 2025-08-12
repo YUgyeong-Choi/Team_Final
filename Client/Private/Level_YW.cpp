@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 
 #include "MapTool.h"
+#include "NavTool.h"
 #include "DecalTool.h"
 
 #pragma region 다른 사람 거
@@ -22,8 +23,8 @@ CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_YW::Initialize()
 {
-	if (FAILED(Ready_Layer_TestDecal(TEXT("Layer_TestDecal"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Layer_TestDecal(TEXT("Layer_TestDecal"))))
+		return E_FAIL;*/
 
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;
@@ -60,6 +61,8 @@ void CLevel_YW::Priority_Update(_float fTimeDelta)
 
 void CLevel_YW::Update(_float fTimeDelta)
 {
+	Control();
+
 	m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Update(fTimeDelta);
 
 	m_pCamera_Manager->Update(fTimeDelta);
@@ -109,25 +112,26 @@ HRESULT CLevel_YW::Ready_Lights()
 {
 	LIGHT_DESC			LightDesc{};
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
-	LightDesc.fAmbient = 0.8f;
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
+	//LightDesc.fAmbient = 0.8f;
+	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+	//	return E_FAIL;
 
 	//LIGHT_DESC			LightDesc{};
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 0.5f;
+	LightDesc.fAmbient = 0.3f;
+	LightDesc.fIntensity = 1.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.fFogDensity = 0.f;
 
-	if (FAILED(m_pGameInstance->Add_LevelLightData(_uint(LEVEL::YW), LightDesc)))
+	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::YW), LightDesc)))
 		return E_FAIL;
 
 
@@ -151,14 +155,86 @@ HRESULT CLevel_YW::Ready_Layer_Sky(const _wstring strLayerTag)
 	return S_OK;
 }
 
+void CLevel_YW::Render_File()
+{
+	ImGui::Begin("File");
+
+	//콤보박스에서 레벨을 선택 하면 그 맵이 로드되도록
+	//저장할 때도 콤보박스에 선택된 파일에 저장하도록
+	ImGui::Text("Load Map");
+	_bool bRequestLoad = false;
+	if (ImGui::BeginCombo("##MapCombo", Maps[iMapIndex]))
+	{
+		for (_int i = 0; i < IM_ARRAYSIZE(Maps); i++)
+		{
+			_bool bSelected = (iMapIndex == i);
+			if (ImGui::Selectable(Maps[i], bSelected))
+			{
+				iMapIndex = i;
+				bRequestLoad = true; // 로드 요청
+			}
+
+
+			if (bSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	if (bRequestLoad)
+	{
+		//모든 툴 로드
+		for (CYWTool* Tool : m_ImGuiTools)
+		{
+			Tool->Load(Maps[iMapIndex]);
+		}
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Save"))
+	{
+		//활성화 된 툴 저장
+		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(Maps[iMapIndex]);
+	}
+
+	ImGui::End();
+}
+
+void CLevel_YW::Control()
+{
+	//컨트롤 S 를 눌렀을 때 현재 활성화된 툴을 저장시킨다.
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	{
+		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(Maps[iMapIndex]);
+	}
+}
+
+
 HRESULT CLevel_YW::Ready_ImGuiTools()
 {
 	if (FAILED(Ready_Layer_PreviewObject(TEXT("Layer_PreviewObject"))))
 		return E_FAIL;
 
+#pragma region 맵툴
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = reinterpret_cast<CYWTool*>(CMapTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
+
+	//MapData를 따라 맵을 로드한다.
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Load(Maps[iMapIndex])))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region 네비툴
+	CNavTool::NAVTOOL_DESC Desc{};
+	Desc.wsMapName = StringToWString(Maps[iMapIndex]);
+
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext, &Desc));
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)])
+		return E_FAIL;
+#pragma endregion
+
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)] = reinterpret_cast<CYWTool*>(CDecalTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)])
@@ -199,9 +275,13 @@ HRESULT CLevel_YW::ImGui_Render()
 			if (ImGui::BeginTabItem("Map Tool"))
 			{
 				m_eActiveTool = IMGUITOOL::MAP;
-				
-				/*if (FAILED(static_cast<CMapTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
-					return E_FAIL;*/
+
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Nav Tool"))
+			{
+				m_eActiveTool = IMGUITOOL::NAV;
 
 				ImGui::EndTabItem();
 			}
@@ -209,9 +289,6 @@ HRESULT CLevel_YW::ImGui_Render()
 			if (ImGui::BeginTabItem("Decal Tool"))
 			{
 				m_eActiveTool = IMGUITOOL::DECAL;
-
-				/*if (FAILED(static_cast<CDecalTool*>(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)])->Render_ImGui()))
-					return E_FAIL;*/
 
 				ImGui::EndTabItem();
 			}
@@ -221,10 +298,19 @@ HRESULT CLevel_YW::ImGui_Render()
 			ImGui::EndTabBar();
 		}
 		ImGui::End();
+
+
 	}
+
+	//여기서 맵을 선택하면 맵과, 네비게이션 등등... 로드 되도록 하는 게 좋아보인다.
+	Render_File();
+
+
 
 	if (FAILED(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Render_ImGui()))
 		return E_FAIL;
+
+
 	
 	return S_OK;
 }

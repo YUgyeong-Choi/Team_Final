@@ -76,7 +76,7 @@ struct GS_OUTa
 //    Triangles.Append(Out[0]);
 //    Triangles.Append(Out[1]);
 //    Triangles.Append(Out[2]);
-//    //Triangles.ReOuterStrip(); // 이걸 안 써도 내가 밖에서 셰이더/버퍼쪽에서 만들 때 TriangleList임을 명시해서 괜찮다는 발언이 있는데 테스트해봄
+//    //Triangles.RestartStrip(); // 이걸 안 써도 내가 밖에서 셰이더/버퍼쪽에서 만들 때 TriangleList임을 명시해서 괜찮다는 발언이 있는데 테스트해봄
 //    
 //    Triangles.Append(Out[0]);
 //    Triangles.Append(Out[2]);

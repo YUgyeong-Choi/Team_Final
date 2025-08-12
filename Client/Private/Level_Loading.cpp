@@ -62,7 +62,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 		eBackDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
 		eBackDesc.vColor = { 0.f,0.f,0.f,1.f };
 
-		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
 			ENUM_CLASS(LEVEL::LOADING), TEXT("Layer_Background"), &eBackDesc)))
 			return E_FAIL;
 	}
@@ -121,7 +121,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 	}
 
 
-
+	/*
 	if (m_eNextLevelID == LEVEL::LOGO)
 	{
 		if (true == m_pLoader->isFinished())
@@ -138,7 +138,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 
 		}
 	}
-
+	*/
 	
 
 }

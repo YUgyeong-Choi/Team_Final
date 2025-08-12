@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Decal.h"
 
 #include "Client_Defines.h"
 
@@ -11,7 +11,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CDecalToolObject final : public CGameObject
+class CDecalToolObject final : public CDecal
 {
 private:
 	CDecalToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -27,11 +27,7 @@ public:
 	virtual HRESULT Render()override;
 
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
-	CVIBuffer_VolumeMesh* m_pVIBufferCom = { nullptr };
-private:
-	HRESULT Ready_Components();
+	virtual HRESULT Ready_Components() override;
 	HRESULT Bind_ShaderResources();
 
 public:

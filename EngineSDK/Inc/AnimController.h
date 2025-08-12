@@ -23,7 +23,7 @@ public:
 	{
 		string			paramName;
 		ParamType type	= ParamType::Bool; // 파라미터 타입
-		EOp          op;
+		EOp          op = EOp::None; // 연산자
 		_int         iThreshold = 0; // int에 값 비교할 때
 		_float       fThreshold = 0.f; // float이나 int에 값 비교할 때
 		// Evaluate 구현은 CPP에서
@@ -36,13 +36,15 @@ public:
 		string stateName;
 		class CAnimation* clip = nullptr; // 현재 애니메이션
 		_int iNodeId; // 툴상에서의 노드 ID
-		_float2 fNodePos; // 툴상에서의 노드 위치
+		_float2 fNodePos{ 0.f, 0.f };
 
 		// 상하체 분리 애니메이션인 경우
 		string lowerClipName; // 하체 애니메이션 이름
 		string upperClipName; // 상체 애니메이션 이름
 		string maskBoneName; // 마스크용 뼈 이름 (없으면 빈 문자열)
 		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
+		_float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
+		_float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
 	};
 
 
@@ -72,6 +74,8 @@ public:
 		CAnimation* pToUpperAnim = nullptr;   // 전환 목표 상체 클립 
 		_float fDuration = 0.f; // 전환 시간
 		_float fBlendWeight = 1.f; // 마스크에 사용함
+		_float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
+		_float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
 	};
 
 
@@ -88,7 +92,7 @@ public:
 public:
 
 	void SetAnimator(class CAnimator* animator) { m_pAnimator = animator; }
-	_float GetStateLength(const string& name);
+	_float GetStateClipLength(const string& name);
 
 	size_t  AddState(const string& name, class CAnimation* clip,_int iNodeId)
 	{
@@ -123,6 +127,10 @@ public:
 	{
 		return FindState(name);
 	}
+	const AnimState* GetStateByNodeId(_int nodeId) const
+	{
+		return FindStateByNodeId(nodeId);
+	}
 
 	const AnimState* GetStateByName(const string& name)
 	{
@@ -148,6 +156,10 @@ public:
 	AnimState* GetStateByNameForEditor(const string& name)
 	{
 		return FindState(name);
+	}
+	AnimState* GetStateByNodeIdForEditor(_int nodeId)
+	{
+		return FindStateByNodeId(nodeId);
 	}
 
 	CAnimation* GetStateAnimationByNodeIdForEditor(_int nodeId) const
@@ -278,7 +290,7 @@ public:
 		if (p.bTriggered)
 		{
 			cout << "Trigger: " << name << endl; // 디버그용 출력
-			p.bTriggered = false;
+			//p.bTriggered = false;
 			return true;
 		}
 		return false;
@@ -319,20 +331,7 @@ public:
 			m_CurrentStateNodeId = m_EntryStateNodeId; // 현재 상태를 Entry 상태로 설정
 		}
 	}
-	void SetExit(const string& exitStateName)
-	{
-		m_ExitStateName = exitStateName;
-		m_ExitState = FindState(exitStateName);
-		if (m_ExitState == nullptr)
-		{
-			cout << "Exit state not found: " << exitStateName << endl; // 디버그용 출력
-			return;
-		}
-		else
-		{
-			m_ExitStateNodeId = m_ExitState->iNodeId; // Exit 상태 노드 ID 설정
-		}
-	}
+
 #ifdef USE_IMGUI
 	AnimState* GetEntryStateForEditor() const { return m_EntryState; }
 	AnimState* GetExitStateForEditor() const { return m_ExitState; }
@@ -374,7 +373,56 @@ private:
 		return nullptr;
 	}
 	void ResetTransAndStates();
-	void ChangeStates(const string& overrideCtrlName);// 오버라이드 애니메이션 컨트롤러를 적용할 때 상태들을 변경
+	void ChangeStatesForOverride(const string& overrideCtrlName);// 오버라이드 애니메이션 컨트롤러를 적용할 때 상태들을 변경
+	void ChangeStatesForDefault();
+	_int ConvertExitNodeToExitStateNodeId(_int iNodeId) const
+	{
+		if (iNodeId != EXIT_STATE_NODE_ID)
+			return iNodeId;
+
+		_int bestId = -1;
+		int bestSpecificity = -1; // 조건 개수
+
+		for (const auto& tr : m_Transitions)
+		{
+			if (tr.iFromNodeId != EXIT_STATE_NODE_ID)
+				continue;
+
+			// Exit Out 자체의 시간창/조건도 평가
+			if (!tr.Evaluates(const_cast<CAnimController*>(this), m_pAnimator))
+				continue;
+
+			int spec = static_cast<int>(tr.conditions.size());
+			if (spec > bestSpecificity)
+			{
+				bestSpecificity = spec;
+				bestId = tr.iToNodeId;
+			}
+		}
+		return bestId; // 없으면 -1
+	}
+
+	_int ConvertAnyStateNodeIdToAnyState(_int iNodeId) const
+	{
+		if (iNodeId == ANYSTATE_NODE_ID)
+		{
+			// AnyState에서 넘어가는거라면 현재 재생중인 애니메이션의 노드 ID 넘기기
+			return m_CurrentStateNodeId;
+		}
+		return iNodeId; // AnyState가 아닌 경우 그대로 반환
+	}
+
+	void ConsumeTrigger(const Transition& trans)
+	{
+		for (auto& cond : trans.conditions)
+		{
+			if (cond.type == ParamType::Trigger)
+			{
+				ResetTrigger(cond.paramName); // 트리거를 소비
+			}
+		}
+	}
+
 private:
 	
 	_bool m_bOverrideAnimController = false; // 오버라이드 애니메이션 컨트롤러 사용 중인지
@@ -388,8 +436,8 @@ private:
 	_int m_ExitStateNodeId = -1;
 	AnimState*			   m_EntryState{ nullptr };
 	AnimState*			   m_ExitState{nullptr};
+	AnimState*			   m_AnyState{ nullptr }; // Any 상태 (모든 상태를 포함하는 상태)
 	string				   m_EntryStateName{};
-	string				   m_ExitStateName{};
 	vector<AnimState>      m_States;
 	vector<Transition>     m_Transitions;
 	vector<Condition>	   m_Conditions; // 아직 쓰는 곳 없음
@@ -399,6 +447,9 @@ private:
 	unordered_map<string, vector<AnimState>> m_OriginalAnimStates; // 원본 애니메이션 상태들 (복사본을 만들 때 사용)
 	TransitionResult       m_TransitionResult{}; // 트래지션을 한 결과 (애니메이터에서 요청)
 	string 				   m_Name; // 컨트롤러 이름
+
+	const _int EXIT_STATE_NODE_ID = 100000;
+	const _int ANYSTATE_NODE_ID = 100001;
 
 public:
 	static CAnimController* Create();

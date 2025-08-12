@@ -1,9 +1,12 @@
 #pragma once
 #include "Unit.h"
 #include "Client_Defines.h"
+#include "PhysX_ControllerReport.h"
 
 NS_BEGIN(Engine)
 class CPhysXController;
+class CPhysXDynamicActor;
+class CAnimController;
 NS_END
 
 NS_BEGIN(Client)
@@ -30,8 +33,10 @@ public:
 		/* [ 특수키 입력 ] */
 		_bool bShift;
 		_bool bCtrl;
+		_bool bCtrlPress;
 		_bool bItem;
 		_bool bTap;
+		_bool bSkill;
 		_bool bSpaceUP;
 		_bool bSpaceDown;
 
@@ -40,7 +45,8 @@ public:
 	enum class eAnimCategory
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
-		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACKA,CHARGE_ATTACKB,SPRINT_ATTACK,MAINSKILL,SIT,INTERACTION
+		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, END
 	};
 
 protected:
@@ -60,6 +66,11 @@ public:
 	CPhysXController* Get_Controller() { return m_pControllerCom; }
 	EPlayerState Get_PlayerState() { return m_eCurrentState; }
 
+	CAnimController* GetCurrentAnimContrller();
+
+private:
+	void			SitAnimationMove(_float fTimeDelta);
+
 /* [ 입력 처리 ] */
 private: 
 	void			HandleInput();									// [1] 키 입력만 처리
@@ -72,6 +83,19 @@ private: /* [ 애니메이션 관련 ] */
 
 private: /* [ 루트모션 활성화 ] */
 	void			RootMotionActive(_float fTimeDelta);
+
+private: /* [ actor 업뎃. ]*/
+	void    Update_Collider_Actor();
+
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
+	/* Ray로 인항 충돌(HitPos& HitNormal) */
+	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
+	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	
 
 private:/* [ 캐스케이드 전용함수 ] */
@@ -85,7 +109,10 @@ private: /* [ 이동로직 ] */
 
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Weapon();
+	HRESULT Ready_Lamp();
+	HRESULT Ready_StationDoor();
 	HRESULT Ready_Components();
+	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
 	void LoadPlayerFromJson();
 
@@ -97,6 +124,16 @@ private: /* 옵저버 관련*/
 
 	// 스탯 변화 테스트용
 	void Update_Stat();
+
+private: /* [ 상호작용 관련 ] */
+	void Interaction_Door();
+
+	void Play_CutScene_Door();
+
+private:
+	void ItemWeaponOFF(_float fTimeDelta);
+	void ItemLampON(_float fTimeDelta);
+	void SlidDoorMove(_float fTimeDelta);
 
 	
 private: // 슬롯 용
@@ -127,6 +164,10 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_Gard;
 	friend class CPlayer_SprintAttackA;
 	friend class CPlayer_SprintAttackB;
+	friend class CPlayer_ArmAttackA;
+	friend class CPlayer_ArmAttackB;
+	friend class CPlayer_ArmCharge;
+	friend class CPlayer_MainSkill;
 
 
 private: /* [ 상태 변수 ] */
@@ -137,21 +178,31 @@ private: /* [ 상태 변수 ] */
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
 protected:
-	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+
+	/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
+	CPhysXControllerHitReport* m_pHitReport = { nullptr };
 
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
 
+private: /* [ 램프 온 오프 ] */
+	_bool m_bLampOnOff = { false };
+	class CDH_ToolMesh* m_pLamp = { nullptr };
+
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*	m_pTarget = { nullptr };
 	CWeapon*		m_pWeapon = { nullptr };
+	CGameObject*	m_pInterectionStuff = { nullptr };
 
 private: /* [ 공격관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
 	_bool	m_bBackStepAttack = { false };
 	_bool 	m_bIsChange = { false };
+	_bool	m_bCutsceneDoor = { false };
 
 	_float 	m_fChangeTime = {};
 	_float 	m_fChangeTimeElaped = {};
@@ -162,9 +213,23 @@ private: /* [ 이동관련 변수 ] */
 	_bool    m_bMovable = { true };
 
 	string	 m_strPrevStateName;
+	_bool    m_bMoveReset = {};
 	_bool    m_bMove = {};
+	_bool    m_bSit = {};
+	_float   m_fSitTime = {};
 	_float   m_fMoveTime = {};
 	_int	 m_iMoveStep = {};
+
+private: /* [ 인터렉션 관련변수 ] */
+	_bool  m_bInteraction[9] = { false };
+	_bool  m_bInteractionMove[9] = { false };
+	_bool  m_bInteractionRotate[9] = { false };
+	_float m_fInteractionTime[9] = { 0 };
+
+
+private: /* [ 아이템 사용 관련 변수 ] */
+	_bool	 m_bItemSwitch = {};
+	_float	 m_fItemTime = {};
 
 	unordered_set<string> m_MovableStates = {
 		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",

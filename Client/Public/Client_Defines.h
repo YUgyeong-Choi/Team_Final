@@ -58,3 +58,5 @@ using namespace Client;
 #define CAMERA_MANAGER CCamera_Manager::Get_Instance()
 
 #pragma endregion
+
+#define GET_PLAYER(iLevelIndex) static_cast<CPlayer*>(CGameInstance::Get_Instance()->Get_LastObject(iLevelIndex, TEXT("Layer_Player")))

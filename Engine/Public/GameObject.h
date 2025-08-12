@@ -28,11 +28,12 @@ public:
 	virtual void Priority_Update(_float fTimeDelta);
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
+	virtual void Last_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 	virtual HRESULT Render_Shadow() { return S_OK; }
 
 public:
-	void Compute_ViewZ(const _vector* pPos);
+	void Compute_ViewZ(_vector pCamPos, const _vector* pTargetPos);
 public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
@@ -70,6 +71,7 @@ protected:
 	
 	_float	m_fViewZ = {};
 	_bool m_bCloned = {};
+	_bool m_bEmissive = {};
 
 	_bool m_isActive = { true };
 

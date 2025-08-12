@@ -1,5 +1,7 @@
 #include "PhysXController.h"
 #include "GameInstance.h"
+
+#include "PhysX_IgnoreSelfCallback.h"
 CPhysXController::CPhysXController(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CPhysXActor{ pDevice, pContext }
 {
@@ -12,7 +14,9 @@ CPhysXController::CPhysXController(const CPhysXController& Prototype)
 
 HRESULT CPhysXController::Initialize_Prototype()
 {
+#ifdef _DEBUG
     ReadyForDebugDraw(m_pDevice, m_pContext);
+#endif
     return S_OK;
 }
 
@@ -21,7 +25,7 @@ HRESULT CPhysXController::Initialize(void* pArg)
     return S_OK;
 }
 
-HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMaterial* pMaterial, const PxExtendedVec3& pos, float radius, float height)
+HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMaterial* pMaterial, const PxExtendedVec3& pos, float radius, float height, CPhysXControllerHitReport* pReport)
 {
     PxCapsuleControllerDesc desc;
     desc.material = pMaterial;
@@ -34,6 +38,9 @@ HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMat
     desc.slopeLimit = cosf(PxPi / 4); // 45도
 
     desc.userData = this;
+
+    if (pReport)
+        desc.reportCallback = pReport;
 
     m_pController = pManager->createController(desc);
 
@@ -49,6 +56,7 @@ HRESULT CPhysXController::Create_Controller(PxControllerManager* pManager, PxMat
 
 HRESULT CPhysXController::Render()
 {
+#ifdef _DEBUG
     if (!m_pController)
         return E_FAIL;
 
@@ -68,7 +76,7 @@ HRESULT CPhysXController::Render()
         DrawRay(m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW), m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ), Ray.vStartPos, Ray.vDirection, Ray.fRayLength, Ray.bIsHit, Ray.vHitPos);
     }
     m_RenderRay.clear();
-
+#endif
     return S_OK;
 }
 
@@ -136,7 +144,9 @@ void CPhysXController::Move(_float fDeltaTime, const PxVec3& vDirection, _float 
 {
     PxVec3 displacement = vDirection * fSpeed * fDeltaTime;
 
+    CIgnoreSelfCallback filter(m_ignoreActors);
     PxControllerFilters filters;
+    filters.mFilterCallback = &filter; 
     PxControllerCollisionFlags result = m_pController->move(displacement, 0.001f, fDeltaTime, filters);
 
     // 예시: 땅에 닿았는지 확인

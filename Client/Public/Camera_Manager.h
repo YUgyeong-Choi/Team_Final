@@ -49,6 +49,10 @@ public:
     void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene;}
     void	Shake_Camera(_float fIntensity = 1.f, _float fDuration = 1.f, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
 
+public:
+	void Set_StartGame(_bool bStart) { m_bStartGame = bStart; }
+	_bool Get_StartGame() const { return m_bStartGame; }
+
 private:
     CCamera_Free* m_pCamera_Free = { nullptr };
     CCamera_Orbital* m_pCamera_Orbital = { nullptr };
@@ -58,6 +62,9 @@ private:
     _vector m_vCurCamRight = {};
     _vector m_vCurCamUp = {};
     _vector m_vCurCamLook = {};
+
+private:
+    _bool m_bStartGame = {};
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };

@@ -161,3 +161,8 @@ static _matrix Turn_Billboard(_fmatrix SrcMatrix, _float fRotationPerSec, _float
 
     return m_Return;
 }
+
+static _float LerpFloat(_float a, _float b, _float t)
+{
+    return a + (b - a) * t;
+}

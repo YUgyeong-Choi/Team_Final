@@ -1,0 +1,112 @@
+{
+    "ModelCount": 3,
+    "Models": [
+        {
+            "Collision": false,
+            "ModelName": "FloorA",
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_BuildingA_Door_12",
+            "ObjectCount": 2,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            0.9816825985908508,
+                            10.095391273498535,
+                            -0.4692729711532593,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            -3.960304021835327,
+                            10.095391273498535,
+                            -0.4692729711532593,
+                            1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Station_TicketOffice_01",
+            "ObjectCount": 0,
+            "Objects": []
+        }
+    ]
+}

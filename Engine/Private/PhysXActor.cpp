@@ -8,9 +8,9 @@ CPhysXActor::CPhysXActor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CPhysXActor::CPhysXActor(const CPhysXActor& Prototype)
     : CComponent(Prototype )
+#ifdef _DEBUG
     , m_pBatch{ Prototype.m_pBatch }
     , m_pEffect{ Prototype.m_pEffect }
-#ifdef _DEBUG
     , m_pInputLayout{ Prototype.m_pInputLayout }
 #endif
 {
@@ -34,7 +34,9 @@ void CPhysXActor::On_Enter(CPhysXActor* pOther)
     if (m_pOwner && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_CollisionEnter(m_pOwner, m_eColliderType);
+#ifdef _DEBUG
         m_vRenderColor = Colors::Red;
+#endif
     }
 }
 
@@ -51,7 +53,9 @@ void CPhysXActor::On_Exit(CPhysXActor* pOther)
     if (m_pOwner && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_CollisionExit(m_pOwner, m_eColliderType);
+#ifdef _DEBUG
         Set_RenderColor();
+#endif
     }
 }
 
@@ -60,8 +64,10 @@ void CPhysXActor::On_TriggerEnter(CPhysXActor* pOther)
 {
     if (m_pOwner && pOther->Get_Owner())
     {
-        m_vRenderColor = Colors::Red;
         pOther->Get_Owner()->On_TriggerEnter(m_pOwner, m_eColliderType);
+#ifdef _DEBUG
+        m_vRenderColor = Colors::Red;
+#endif
     }
 }
 
@@ -70,13 +76,16 @@ void CPhysXActor::On_TriggerExit(CPhysXActor* pOther)
     if (m_pOwner && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_TriggerExit(m_pOwner, m_eColliderType);
+#ifdef _DEBUG
         Set_RenderColor();
+#endif
     }
 }
 
+#ifdef _DEBUG
 HRESULT CPhysXActor::ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-#ifdef _DEBUG
+
     m_pBatch = new PrimitiveBatch<VertexPositionColor>(pContext);
     m_pEffect = new BasicEffect(pDevice);
 
@@ -90,7 +99,6 @@ HRESULT CPhysXActor::ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContex
     if (FAILED(pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount,
         pShaderByteCode, iShaderByteCodeLength, &m_pInputLayout)))
         return E_FAIL;
-#endif
     return S_OK;
 }
 
@@ -493,9 +501,12 @@ void CPhysXActor::Set_RenderColor()
     case COLLIDERTYPE::E:
         m_vRenderColor = Colors::SaddleBrown;
         break;
+    case COLLIDERTYPE::MONSTER:
+        m_vRenderColor = Colors::BlueViolet;
+        break;
     }
 }
-
+#endif
 
 void CPhysXActor::Free()
 {

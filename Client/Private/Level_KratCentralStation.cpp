@@ -3,9 +3,15 @@
 #include "Camera_Manager.h"
 #include "Effect_Manager.h"
 #include "EffectContainer.h"
+#include "Client_Function.h"
 
+#pragma region YW
 #include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
+#include "Nav.h"
+#pragma endregion
+
+
 
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
@@ -15,6 +21,8 @@
 
 #include "Player.h"
 #include "Wego.h"
+
+#include "LockOn_Manager.h"
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -28,15 +36,12 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if(FAILED(Ready_Video()))
 		return E_FAIL;
 
-	
-
-
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
 
 	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
-	m_pBGM->Set_Volume(1.f);
+	m_pBGM->Set_Volume(0.f);
 
 
 	/* [ 셰이더 값 세팅 ] */
@@ -60,6 +65,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->Set_IsChangeLevel(false);
 
 
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -75,10 +83,6 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
-
-	
-
-
 }
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
@@ -106,20 +110,19 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Camera()))
 				return;
 
-			/*if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
-				return E_FAIL;*/
 
-				//제이슨으로 저장된 맵을 로드한다. (왜 안되지 모델을 왜 못찾지)
-			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+			//제이슨으로 저장된 맵을 로드한다.
+			if (FAILED(LoadMap(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 				return;
 
+			//데칼 소환
+			if (FAILED(Ready_Static_Decal(TEXT("Layer_StaticDecal"))))
+				return;
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 				return;
 
 			if (FAILED(Ready_Lights()))
-				return;
-			if (FAILED(Ready_Shadow()))
 				return;
 
 			if (FAILED(Ready_Monster()))
@@ -136,6 +139,14 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Player()))
 				return;
 
+			/* [ 옥토트리 설정 ] */
+			if (FAILED(Ready_OctoTree()))
+				return;
+
+			
+
+			/* [ 플레이어 제어 ] */
+			m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
 			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
 		}
 
@@ -152,8 +163,19 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if(m_bHold)
 		HoldMouse();
 
+	if(KEY_DOWN(DIK_F7))
+		m_pGameInstance->ToggleDebugOctoTree();
 
 	m_pCamera_Manager->Update(fTimeDelta);
+	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
+}
+
+void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
+{
+	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
+	__super::Late_Update(fTimeDelta);
+
+	Add_RenderGroup_OctoTree();
 }
 
 HRESULT CLevel_KratCentralStation::Render()
@@ -163,12 +185,15 @@ HRESULT CLevel_KratCentralStation::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::LoadMap(_uint iLevelIndex)
+HRESULT CLevel_KratCentralStation::LoadMap(_uint iLevelIndex, const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/MapData.json");
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
+
+	ifstream inFile(MapPath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Map_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
 		return S_OK;
 	}
 
@@ -241,6 +266,11 @@ HRESULT CLevel_KratCentralStation::Load_StaticMesh(_uint iObjectCount, const jso
 			return E_FAIL;
 #pragma endregion
 
+#pragma region 라이트모양
+		StaticMeshDesc.iLightShape = objects[j].value("LightShape", 0);
+#pragma endregion
+
+
 		wstring LayerTag = TEXT("Layer_MapToolObject_");
 		LayerTag += StringToWString(ModelName);
 
@@ -254,11 +284,13 @@ HRESULT CLevel_KratCentralStation::Load_StaticMesh(_uint iObjectCount, const jso
 
 		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
-
-		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
-			iLevelIndex, LayerTag, &StaticMeshDesc)))
+		CGameObject* pGameObject = nullptr;
+		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
+			iLevelIndex, LayerTag, &pGameObject, &StaticMeshDesc)))
 			return E_FAIL;
 
+		CStaticMesh* pStaticMesh = dynamic_cast<CStaticMesh*>(pGameObject);
+		m_vecOctoTreeObjects.push_back(pStaticMesh);
 	}
 
 	return S_OK;
@@ -304,128 +336,26 @@ HRESULT CLevel_KratCentralStation::Load_StaticMesh_Instance(_uint iObjectCount, 
 	return S_OK;
 }
 
+HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
+{
+	CNav::NAV_DESC NavDesc = {};
+	NavDesc.iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
 
-//HRESULT CLevel_KratCentralStation::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
-//{
-//	//이미 프로토타입이존재하는 지확인
-//
-//	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag) != nullptr)
-//	{
-//		MSG_BOX("이미 프로토타입이 존재함");
-//		return S_OK;
-//	}
-//
-//	_matrix		PreTransformMatrix = XMMatrixIdentity();
-//	PreTransformMatrix = XMMatrixIdentity();
-//	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
-//
-//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strPrototypeTag,
-//		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-//		return E_FAIL;
-//
-//	return S_OK;
-//}
-//
-//HRESULT CLevel_KratCentralStation::Ready_MapModel()
-//{
-//	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
-//	if (!inFile.is_open())
-//	{
-//		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
-//		return S_OK;
-//	}
-//
-//	json ReadyModelJson;
-//	try
-//	{
-//		inFile >> ReadyModelJson;
-//		inFile.close();
-//	}
-//	catch (const exception& e)
-//	{
-//		inFile.close();
-//		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-//		return E_FAIL;
-//	}
-//
-//	// JSON 데이터 확인
-//	for (const auto& element : ReadyModelJson)
-//	{
-//		string ModelName = element.value("ModelName", "");
-//		string Path = element.value("Path", "");
-//
-//		//모델 프로토 타입 생성
-//		wstring PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-//
-//		const _char* pModelFilePath = Path.c_str();
-//
-//		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
-//		{
-//			return E_FAIL;
-//		}
-//	}
-//
-//	return S_OK;
-//}
-//
-//HRESULT CLevel_KratCentralStation::LoadMap()
-//{
-//	ifstream inFile("../Bin/Save/MapTool/MapData.json");
-//	if (!inFile.is_open())
-//	{
-//		MSG_BOX("MapData.json 파일을 열 수 없습니다.");
-//		return S_OK;
-//	}
-//
-//	json MapDataJson;
-//	inFile >> MapDataJson;
-//	inFile.close();
-//
-//	_uint iModelCount = MapDataJson["ModelCount"];
-//	const json& Models = MapDataJson["Models"];
-//
-//	for (_uint i = 0; i < iModelCount; ++i)
-//	{
-//		string ModelName = Models[i]["ModelName"];
-//		_uint iObjectCount = Models[i]["ObjectCount"];
-//		const json& objects = Models[i]["Objects"];
-//
-//		for (_uint j = 0; j < iObjectCount; ++j)
-//		{
-//			const json& WorldMatrixJson = objects[j]["WorldMatrix"];
-//			_float4x4 WorldMatrix = {};
-//
-//			for (_int row = 0; row < 4; ++row)
-//				for (_int col = 0; col < 4; ++col)
-//					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-//
-//			//오브젝트 생성, 배치
-//
-//			wstring LayerTag = TEXT("Layer_MapToolObject_");
-//			LayerTag += StringToWString(ModelName);
-//
-//			CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
-//
-//			StaticMeshDesc.iRender = 0;
-//			StaticMeshDesc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-//			//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
-//
-//			wstring wstrModelName = StringToWString(ModelName);
-//			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
-//			ModelPrototypeTag += wstrModelName;
-//
-//			lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-//			StaticMeshDesc.WorldMatrix = WorldMatrix;
-//
-//			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
-//				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), LayerTag, &StaticMeshDesc)))
-//				return E_FAIL;
-//
-//		}
-//	}
-//
-//	return S_OK;
-//}
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Nav"),
+		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag, &NavDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Static_Decal(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Static_Decal"),
+		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
 
 HRESULT CLevel_KratCentralStation::Ready_Player()
 {
@@ -434,13 +364,17 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::STATIC;
-	pDesc.InitPos = _float3(0.f, 0.978f, 1.f);
+	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pDesc)))
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pGameObject, &pDesc)))
 		return E_FAIL;
+
+	m_pPlayer = dynamic_cast<CPlayer*>(pGameObject);
 
 	return S_OK;
 }
@@ -568,27 +502,21 @@ HRESULT CLevel_KratCentralStation::Add_Light(CDHTool::LIGHT_TYPE eType, CDHTool:
 	return S_OK;
 }
 
-
-HRESULT CLevel_KratCentralStation::Ready_Shadow()
+HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 {
-	CShadow::SHADOW_DESC		Desc{};
-	Desc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	Desc.fFovy = XMConvertToRadians(60.0f);
-	Desc.fNear = 0.1f;
-	Desc.fFar = 1000.f;
+	_matrix matView = XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW));
+	_matrix matProj = XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ));
 
-	Desc.vEye = _float4(76.f, 57.f, -21.f, 1.f);
-	Desc.fFovy = XMConvertToRadians(40.0f);
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
-		return E_FAIL;
+	m_pGameInstance->BeginQueryFrame(matView, matProj);
+	m_pGameInstance->QueryVisible();
 
-	Desc.fFovy = XMConvertToRadians(80.0f);
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
-		return E_FAIL;
-
-	Desc.fFovy = XMConvertToRadians(120.0f);
-	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWC)))
-		return E_FAIL;
+	vector<class CGameObject*> AllStaticMesh = m_pGameInstance->GetIndexToObj();
+	const auto& VisitCell = m_pGameInstance->GetCulledStaticObjects();
+	for (_uint idx : VisitCell)
+	{
+		CGameObject* StaticMesh = AllStaticMesh[idx];
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, StaticMesh);
+	}
 
 	return S_OK;
 }
@@ -597,28 +525,6 @@ HRESULT CLevel_KratCentralStation::Ready_Camera()
 {
 	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
-
-	return S_OK;
-}
-
-
-HRESULT CLevel_KratCentralStation::Ready_Layer_StaticMesh(const _wstring strLayerTag)
-{
-	CPBRMesh::STATICMESH_DESC Desc{};
-	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.szMeshID = TEXT("Train");
-	lstrcpy(Desc.szName, TEXT("Train"));
-
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-		return E_FAIL;
-
-	Desc.szMeshID = TEXT("Station");
-	lstrcpy(Desc.szName, TEXT("Station"));
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), strLayerTag, &Desc)))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -695,24 +601,24 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
+	
 	CUnit::UNIT_DESC pDesc{};
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	pDesc.InitPos = _float3(100.f, 0.5f, -10.f);
-	pDesc.InitScale = _float3(1.5f, 1.5f, 1.5f);
+	pDesc.InitPos = _float3(87.5f, 0.f, -7.5f);
+	pDesc.InitScale = _float3(2.f, 2.f, 2.f);
 	lstrcpy(pDesc.szName, TEXT("Elite_Police"));
 	pDesc.szMeshID = TEXT("Elite_Police");
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
 		return E_FAIL;
 
-	pDesc.InitPos = _float3(80.f, 0.5f, -5.f);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &pDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -720,15 +626,41 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
 	CEffectContainer::DESC ECDesc = {};
-	ECDesc.vPresetPosition = { 52.83, 0.09, 1.57 };
+	ECDesc.vPresetPosition = { 52.83f, 0.09f, 1.57f };
 	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
 		MSG_BOX("이펙트 생성 실패");
-	ECDesc.vPresetPosition = { 69.25, -0.22, -8.17 };
+	ECDesc.vPresetPosition = { 69.25f, -0.22f, -8.17f };
 	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
 		MSG_BOX("이펙트 생성 실패");
-	ECDesc.vPresetPosition = { 99.86, 0.64, -13.69 };
+	ECDesc.vPresetPosition = { 99.86f, 0.64f, -13.69f };
 	if (FAILED(EFFECT_MANAGER->Make_EffectContainer(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc)))
 		MSG_BOX("이펙트 생성 실패");
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_OctoTree()
+{
+	m_pGameInstance->ClearIndexToObj();
+
+	vector<AABBBOX> staticBounds;
+	map<Handle, _uint> handleToIndex;
+
+	staticBounds.reserve(m_vecOctoTreeObjects.size());
+	_uint nextHandleId = 1000; // 핸들 ID 인데 1000부터 시작임
+
+	for (auto* OctoTreeObjects : m_vecOctoTreeObjects)
+	{
+		AABBBOX worldBox = OctoTreeObjects->GetWorldAABB();
+		_uint idx = static_cast<_uint>(staticBounds.size());
+		staticBounds.push_back(worldBox);
+
+		Handle h{ nextHandleId++ };
+		handleToIndex[h] = idx;
+		m_pGameInstance->PushBackIndexToObj(OctoTreeObjects);
+	}
+	if (FAILED(m_pGameInstance->Ready_OctoTree(staticBounds, handleToIndex)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

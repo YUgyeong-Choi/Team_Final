@@ -1,6 +1,6 @@
 #pragma once
 #include "PhysXActor.h"
-
+#include "PhysX_ControllerReport.h"
 NS_BEGIN(Engine)
 class ENGINE_DLL CPhysXController : public CPhysXActor
 {
@@ -12,7 +12,7 @@ private:
 public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg);
-    HRESULT Create_Controller(PxControllerManager* pManager, PxMaterial* pMaterial, const PxExtendedVec3& pos, float radius = 0.4f, float height = 1.7f);
+    HRESULT Create_Controller(PxControllerManager* pManager, PxMaterial* pMaterial, const PxExtendedVec3& pos, float radius = 0.4f, float height = 1.7f, CPhysXControllerHitReport* pReport = nullptr);
     virtual HRESULT Render() override;
 public:
     void Set_Transform(const PxTransform& pose)
@@ -35,7 +35,6 @@ public:
 
 private:
     PxController* m_pController = nullptr;
-
 public:
     static CPhysXController* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg) override;

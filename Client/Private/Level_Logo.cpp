@@ -163,21 +163,9 @@ void CLevel_Logo::Update(_float fTimeDelta)
 
 HRESULT CLevel_Logo::Render()
 {
-	_wstring text = L"F1 : 동하, F2 : 장원, F3 : 경래, F4 : 영웅, F5 : 채영, F6 : 유경 , F7 : 클라크 스테이션 , F8 : 클라크 호텔";
-
-	SetWindowText(g_hWnd, TEXT("로고레벨입니다."));
-
-	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 860.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-
-	text = L"F5 : 렌더타겟 OnOff";
-	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 830.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-
-	text = L"F6 : 콜라이더 렌더 OnOff";
-	m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(0.f, 800.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-
 	if(!m_isReady)
 	{
-		text = L"아무 버튼이나 누르세요.";
+		_wstring text = L"아무 버튼이나 누르세요.";
 		m_pGameInstance->Draw_Font_Centered(TEXT("Font_Medium"), text.c_str(), _float2(g_iWinSizeX * 0.2f, g_iWinSizeY * 0.5f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 	}
 	

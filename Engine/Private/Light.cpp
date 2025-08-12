@@ -112,6 +112,7 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 }
 HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
+	//return S_OK;
 	/* [ 볼륨메트릭 전용 렌더 ] */
 	if(!m_LightDesc.bIsVolumetric)
 		return S_OK; // 볼륨메트릭이 아닌 라이트는 렌더링하지 않는다.
@@ -128,6 +129,9 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	}
 	else if (LIGHT_DESC::TYPE_SPOT == m_LightDesc.eType)
 	{
+		if (m_LightDesc.bIsPlayerFar)
+			return S_OK; // 볼륨 메트리는 맞지만 플레이어가 멀리 있지 않으면 렌더링하지 않는다.
+
 		_vector vLightPos = XMLoadFloat4(&m_LightDesc.vPosition);
 		_vector vLightDir = XMVector3Normalize(XMLoadFloat4(&m_LightDesc.vDirection));
 		_float  fRange = 2000.f;
@@ -158,6 +162,9 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	}
 	else
 	{
+		if (m_LightDesc.bIsPlayerFar)
+			return S_OK; // 볼륨 메트리는 맞지만 플레이어가 멀리 있지 않으면 렌더링하지 않는다.
+
 		_vector vPosition = XMLoadFloat4(&m_LightDesc.vPosition);
 		if (!m_pGameInstance->isIn_Frustum_WorldSpace(vPosition, 1.f))
 			return S_OK;

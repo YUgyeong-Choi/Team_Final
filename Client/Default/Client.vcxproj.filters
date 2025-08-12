@@ -256,9 +256,6 @@
     <Filter Include="02.GameObjects\09.LockOn">
       <UniqueIdentifier>{cb18d279-3e6c-4d95-ad4e-0d35bac05877}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
-      <UniqueIdentifier>{abbca159-0435-45fc-ab65-08cd84a25567}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelYW\YWTool\DecalTool\DecalToolObject">
       <UniqueIdentifier>{9ce5e829-c00c-4460-9c30-cfc0799dbff4}</UniqueIdentifier>
     </Filter>
@@ -312,6 +309,30 @@
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolTrail%3f">
       <UniqueIdentifier>{15ae98e9-5562-47c1-89a7-afdbb157f889}</UniqueIdentifier>
+	</Filter>
+	<Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
+      <UniqueIdentifier>{abbca159-0435-45fc-ab65-08cd84a25567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Weapon\99. Monster">
+      <UniqueIdentifier>{c592ffc8-b53a-43c4-9123-ad8352b7a2f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\NavTool">
+      <UniqueIdentifier>{fb47ea16-04a8-482d-8ea8-15112d892ac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.Nav">
+      <UniqueIdentifier>{a6ec052f-24ca-4b62-ada4-db0358cc29f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11.Decal">
+      <UniqueIdentifier>{0a277024-54fc-40e1-bd4a-bbb2aab389ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11.Decal\Static_Decal">
+      <UniqueIdentifier>{63ea44a1-2c81-4dd5-9e5f-30d93f45d959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss">
+      <UniqueIdentifier>{e085ecdf-fce6-4c5e-830b-3aa32d251fbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\Fuoco">
+      <UniqueIdentifier>{d9857476-da8f-4f1b-bcaa-d6c49b41d4a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -695,6 +716,28 @@
     </ClInclude>
     <ClInclude Include="..\Public\TrailEffect.h">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Trail</Filter>
+	</ClInclude>
+	<ClInclude Include="..\public\Monster_Base.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Weapon_Monster.h">
+      <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\NavTool.h">
+      <Filter>01.Levels\LevelYW\YWTool\NavTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Nav.h">
+      <Filter>02.GameObjects\10.Nav</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Decal.h">
+      <Filter>02.GameObjects\11.Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Static_Decal.h">
+      <Filter>02.GameObjects\11.Decal\Static_Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Decal.h" />
+    <ClInclude Include="..\public\Fuoco.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1052,6 +1095,28 @@
     </ClCompile>
     <ClCompile Include="..\Private\TrailEffect.cpp">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Trail</Filter>
+	</ClCompile>
+	<ClCompile Include="..\private\Monster_Base.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon_Monster.cpp">
+      <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\NavTool.cpp">
+      <Filter>01.Levels\LevelYW\YWTool\NavTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Nav.cpp">
+      <Filter>02.GameObjects\10.Nav</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp" />
+    <ClCompile Include="..\private\Fuoco.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp">
+      <Filter>02.GameObjects\11.Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Static_Decal.cpp">
+      <Filter>02.GameObjects\11.Decal\Static_Decal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1097,7 +1162,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_ParticleEffect.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPos.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Decal.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTrail.hlsl">
