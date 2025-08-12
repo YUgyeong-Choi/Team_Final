@@ -237,8 +237,6 @@ _float CNavigation::Compute_NavigationY(const _vector pTransform)
 	vPosition = XMVectorSetY(vPosition, fHeight);
 
 	return XMVectorGetY(XMVector3TransformCoord(vPosition, XMLoadFloat4x4(&m_WorldMatrix)));
-
-	return 0.f;
 }
 
 HRESULT CNavigation::Add_Cell(const _float3* pPoints)
