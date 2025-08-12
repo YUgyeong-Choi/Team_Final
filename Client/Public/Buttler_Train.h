@@ -39,6 +39,7 @@ private:
 
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
+	
 
 public:
 	static CButtler_Train* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

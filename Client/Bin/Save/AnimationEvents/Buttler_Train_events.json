@@ -570,7 +570,7 @@
         {
             "ClipName": "AS_Idle_Spawn_01_Loop",
             "Duration": 59.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -675,17 +675,17 @@
         {
             "ClipName": "AS_Run_C_F",
             "Duration": 42.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
-        {
-            "ClipName": "AS_Run_C_F_Root",
-            "Duration": 43.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 55.0
-        },
+      {
+        "ClipName": "AS_Run_C_F_Root",
+        "Duration": 43.0,
+        "IsLoop": true,
+        "RootMotion": false,
+        "TickPerSecond": 55.0
+      },
         {
             "ClipName": "AS_Turn_C_L",
             "Duration": 60.0,

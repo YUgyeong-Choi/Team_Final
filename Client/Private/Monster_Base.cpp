@@ -55,6 +55,8 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	m_pAnimator->SetBool("Detect", false);
 
+	
+
 	return S_OK;
 }
 
@@ -98,12 +100,22 @@ void CMonster_Base::Update(_float fTimeDelta)
 	{
 		m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 	}
+
+	m_pHPBar->Update(fTimeDelta);
 }
 
 void CMonster_Base::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
+	// 더 좋은 방법 있으면 바꾸기
+	if (this == CLockOn_Manager::Get_Instance()->Get_Target())
+		m_pHPBar->Set_RenderTime(2.f);
+
+
+	m_pHPBar->Late_Update(fTimeDelta);
+
+	
 }
 
 HRESULT CMonster_Base::Render()
@@ -213,6 +225,19 @@ HRESULT CMonster_Base::Ready_PartObject()
 {
 	// 체력바 넣기
 
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+
+	eDesc.fSizeX = 1.f;
+	eDesc.fSizeY = 1.f;
+	eDesc.fHeight = 2.25f;
+	eDesc.pHP = &m_iHP;
+	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, 
+											   ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+
+	//Safe_AddRef(m_pHPBar);
+
 	return S_OK;
 }
 
@@ -234,8 +259,7 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 
 		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
 
-		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
-		vWorldDelta = XMVectorSetY(vWorldDelta, dy);
+
 
 		_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
 		_vector finalDelta;
@@ -250,28 +274,33 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 		}
 		m_PrevWorldDelta = finalDelta;
 
-		PxVec3 pos{
-			XMVectorGetX(finalDelta),
-			XMVectorGetY(finalDelta),
-			XMVectorGetZ(finalDelta)
-		};
+		m_PrevWorldDelta.m128_f32[3] = 0;
 
-		CIgnoreSelfCallback filter(m_pPhysXActorCom->Get_IngoreActors());
-		PxControllerFilters filters;
-		filters.mFilterCallback = &filter;
+		vTrans += m_PrevWorldDelta;
 
-		_vector vTmp{};
-		XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
+		// 네비 이동 가능 여부 체크 후 위치 재설정
+		if (!m_pNaviCom->isMove(vTrans))
+		{
+			vTrans -= m_PrevWorldDelta;
+			m_pTransformCom->Set_State(STATE::POSITION, vTrans);
+		}
+
+		// 이제 충돌 테스트 해서 충돌하면 돌아가게
+
+
+
+		// 회전 보정
 		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
 		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
+	
+
+		// 월드 행렬 재생성 및 세팅
 		_matrix newWorld =
 			XMMatrixScalingFromVector(vScale) *
 			XMMatrixRotationQuaternion(vNewRot) *
 			XMMatrixTranslationFromVector(vTrans);
 		m_pTransformCom->Set_WorldMatrix(newWorld);
 
-		_float4 rot;
-		XMStoreFloat4(&rot, vNewRot);
 	}
 }
 
@@ -423,5 +452,5 @@ void CMonster_Base::Free()
 	Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pNaviCom);
-
+	Safe_Release(m_pHPBar);
 }

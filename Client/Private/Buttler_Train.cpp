@@ -28,6 +28,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_fDetectDist = 10.f;
 	
+	m_iHP = 300;
 
 	return S_OK;
 }
@@ -50,6 +51,9 @@ void CButtler_Train::Late_Update(_float fTimeDelta)
 	__super::Late_Update(fTimeDelta);
 
 	Update_State();
+
+
+	
 }
 
 HRESULT CButtler_Train::Render()
@@ -69,6 +73,8 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 		m_pAnimator->SetTrigger("Hit");
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 	}
+
+	m_pHPBar->Set_RenderTime(2.f);
 
 }
 
@@ -113,6 +119,18 @@ void CButtler_Train::Update_State()
 		m_isLookAt = true;
 	else
 		m_isLookAt = false;
+
+	if (m_strStateName.find("Attack") != m_strStateName.npos)
+	{
+		if (m_strStateName.find("Light") != m_strStateName.npos)
+		{
+			m_pAnimator->SetBool("UseLightAttack", false);
+		}
+		else
+		{
+			m_pAnimator->SetBool("UseLightAttack", true);
+		}
+	}
 
 	
 	if (m_iHP <= 0)

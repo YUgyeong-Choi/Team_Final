@@ -1,7 +1,8 @@
 #include "Fuoco.h"
 #include "Bone.h"
 #include "GameInstance.h"
-#include <Client_Calculation.h>
+#include "LockOn_Manager.h"
+#include "Client_Calculation.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -22,12 +23,12 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 	UNIT_DESC UnitDesc{};
 	UnitDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	UnitDesc.fRotationPerSec = XMConvertToRadians(90.f);
-	UnitDesc.fSpeedPerSec = 20.f;
+	UnitDesc.fRotationPerSec = XMConvertToRadians(720.f);
+	UnitDesc.fSpeedPerSec = 3.f;
 	lstrcpy(UnitDesc.szName, TEXT("FireEater"));
 	UnitDesc.szMeshID = TEXT("FireEater");
-	//UnitDesc.InitPos = _float3(5.f, 0.f, 0.f);
-	UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
+	UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
+	//UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
 	UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
 
 	if (FAILED(__super::Initialize(&UnitDesc)))
@@ -44,17 +45,24 @@ HRESULT CFuoco::Initialize(void* pArg)
 		return E_FAIL;
 	
 	m_pPlayer = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"),0);
+	m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
+	_float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
 
 	return S_OK;
 }
 
 void CFuoco::Priority_Update(_float fTimeDelta)
 {
+#ifdef _DEBUG
 	if (KEY_DOWN(DIK_TAB))
 	{
 		cout << "현재 플레이어와의 거리 : " << Get_DistanceToPlayer() << endl;
 		cout << "현재 애니메이션 상태 : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
+		if (m_bStartPhase2 == false)
+			m_bStartPhase2 = true;
 	}
+#endif
 }
 
 void CFuoco::Update(_float fTimeDelta)
@@ -62,6 +70,11 @@ void CFuoco::Update(_float fTimeDelta)
 	UpdateBossState(fTimeDelta); // 상태 업데이트
 	__super::Update(fTimeDelta); // 애니메이션 재생
 	Update_Collider(); // 콜라이더 업데이트
+
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) 
+	{
+		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+	}
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)
@@ -80,6 +93,16 @@ void CFuoco::Late_Update(_float fTimeDelta)
 
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (pOther)
+	{
+		if (eColliderType == COLLIDERTYPE::PALYER)
+		{
+			if (m_pAnimator->GetInt("SkillType") == FootAtk)
+			{
+				m_pAnimator->SetBool("IsHit", true);
+			}
+		}
+	}
 }
 
 void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -88,6 +111,13 @@ void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (pOther)
+	{
+		if (eColliderType == COLLIDERTYPE::PALYER)
+		{
+			m_pAnimator->SetBool("IsHit", false);
+		}
+	}
 }
 
 void CFuoco::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -162,6 +192,27 @@ HRESULT CFuoco::Ready_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX3"), reinterpret_cast<CComponent**>(&m_pPhysXActorComForFoot))))
+		return E_FAIL;
+
+
+
+	_wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_");
+
+	switch (m_pGameInstance->GetCurrentLevelIndex())
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		wsPrototypeTag += TEXT("STATION");
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		wsPrototypeTag += TEXT("HOTEL");
+		break;
+	default:
+		return E_FAIL;
+		break;
+	}
+
+	if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -308,11 +359,25 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 		return;
 	_uint iCurrentAnimStateNodeID = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->iNodeId;
 	if (iCurrentAnimStateNodeID == ENUM_CLASS(BossStateID::CUTSCENE))
+	{
 		return; // 컷신 중에는 상태 업데이트를 하지 않음
+	}
 
 	_float fDistance = Get_DistanceToPlayer();
-	_bool bCanMove = fDistance >= CHASING_DISTANCE&& m_eCurrentState!= EFuocoState::ATTACK;
+	_bool bCanMove = fDistance >= CHASING_DISTANCE && m_eCurrentState != EFuocoState::ATTACK &&
+		m_eCurrentState != EFuocoState::GROGGY && m_eCurrentState != EFuocoState::DEAD && !m_bIsFirstAttack;
 	m_pAnimator->SetBool("Move", bCanMove);
+
+	if (bCanMove)
+	{
+		m_pAnimator->SetInt("MoveDir", 0);
+	}
+	else
+	{
+		_int iMoveDir = GetRandomInt(1, 3);
+		m_pAnimator->SetInt("MoveDir", iMoveDir);
+	}
+
 
 	UpdateAttackPattern(fDistance, fTimeDelta); // 공격 패턴 업데이트
 
@@ -336,6 +401,10 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 	  case ENUM_CLASS(BossStateID::DEAD_F):
 	  case ENUM_CLASS(BossStateID::SPECIAL_DIE):
 		  m_eCurrentState = EFuocoState::DEAD;
+	  case ENUM_CLASS(BossStateID::TURN_L):
+	  case ENUM_CLASS(BossStateID::TURN_R):
+		  m_eCurrentState = EFuocoState::TURN;
+		  break;
 	  default:
 		  m_eCurrentState = EFuocoState::ATTACK;
 			  break;
@@ -348,64 +417,112 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 {
 	_bool bIsRootMotion = m_pAnimator->GetCurrentAnim()->IsRootMotionEnabled();
 	_float fDistance = Get_DistanceToPlayer();
-	if (ATTACK_DISTANCE >= fDistance)
-	{
-		return;
-	}
 
 	if (bIsRootMotion)
 	{
-		_float3 vDelta = m_pAnimator->GetRootMotionDelta();
-		_vector vCurrentPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_vector vNewPos = vCurrentPos + XMLoadFloat3(&vDelta);
-		m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
+		ApplyRootMotionDelta(fTimeDelta); // 루트 모션 적용
 	}
 	else
 	{
-		_vector vTargetDirection = GetTargetDirection();
-		if (XMVector3Equal(vTargetDirection, XMVectorZero()))
-			return; // 방향이 0이면 이동하지 않음
-		// 이동 속도 적용
-		vTargetDirection = XMVector3Normalize(vTargetDirection);
-		m_pTransformCom->Go_Dir(vTargetDirection, fTimeDelta);
-
+		UpdateNormalMove(fTimeDelta);
 	}
+	
 	_vector vDir = GetTargetDirection();
+	if (XMVector3Equal(vDir, XMVectorZero()))
+		return; // 방향이 0이면 회전하지 않음
+	vDir = XMVectorSetY(vDir, 0.f);
 	vDir = XMVector3Normalize(vDir);
-	vDir = XMVectorSetZ(vDir, 0.f); // Z축은 0으로 설정하여 평면 이동
-	vDir = XMVectorSetX(vDir, 0.f);
-	vDir = XMVectorNegate(vDir); // 플레이어 방향을 바라보도록 반전
+
+
 	// 현재 상태에서 많이 회전했으면 애니메이터 Turn true
 	_vector vCurrentLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vCurrentLook = XMVectorSetY(vCurrentLook, 0.f);
+	vCurrentLook = XMVector3Normalize(vCurrentLook);
 	_float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, vDir));
-	//if (fDot < 0.5f) // 0.5f는 회전 임계값, 필요에 따라 조정
-	//{
-	//	m_pAnimator->SetBool("Turn", true);
-	//}
-	//else
-	//{
-	//	m_pAnimator->SetBool("Turn", false);
-	//}
-	m_pTransformCom->Turn(vDir, fTimeDelta);
+	fDot = clamp(fDot, -1.f, 1.f);
+	_vector vCross = XMVector3Cross(vCurrentLook, vDir);
+	_float fSign = (XMVectorGetY(vCross) < 0.f) ? -1.f : 1.f;
+	_float fYaw = acosf(fDot) * fSign; // 회전 각도 (라디안 단위) -180~180
+
+
+	_bool bIsTurn = abs(XMConvertToDegrees(fYaw)) > MINIMUM_TURN_ANGLE &&( m_eCurrentState == EFuocoState::IDLE||
+		m_eCurrentState == EFuocoState::WALK);
+	
+	if (bIsTurn)
+	{
+		m_pAnimator->SetTrigger("Turn");
+		m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: 오른쪽, 1: 왼쪽
+#ifdef _DEBUG
+		cout << "회전 각도: " << XMConvertToDegrees(fYaw) << "도" << endl;
+		cout << "회전 방향 : " << ((fYaw >= 0.f) ? "오른쪽" : "왼쪽") << endl;
+#endif
+		m_eCurrentState = EFuocoState::TURN; // 회전 상태로 전환
+		m_pAnimator->SetBool("Move", false); // 회전 중에는 이동하지 않음
+	}
+
+	if (m_eCurrentState == EFuocoState::TURN)
+	{
+		m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta);
+	}
 }
 
 void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
-	if (m_eCurrentState == EFuocoState::ATTACK)
+	// 퓨리 돌진 9번
+	if (m_bIsFirstAttack)
+	{
+		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetInt("SkillType", StrikeFury);
+		m_bIsFirstAttack = false;
+		m_pAnimator->SetBool("Move", false);
+		m_fAttackCooldown = 3.f;
+		m_fTurnTimeDuringAttack = 1.f;
 		return;
+	}
+
+	if (m_bStartPhase2)
+	{
+		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetInt("SkillType", StrikeFury);
+		m_pAnimator->SetTrigger("Phase2Start");
+		m_pAnimator->SetBool("Move", false);
+		m_bStartPhase2 = false;
+		m_bIsPhase2 = true;
+		m_fAttackCooldown = 10.f;
+	}
+
+	if (false == UpdateTurnDuringAttack(fTimeDelta))
+	{
+		return;
+	}
+
+	if (m_eCurrentState == EFuocoState::ATTACK)
+	{
+		return;
+	}
+
 	if (m_fAttackCooldown >= 0.f)
 	{
 		m_fAttackCooldown -= fTimeDelta;
 		return;
 	}
 
-	_int iSkillType = GetRandomInt(0, 14);
-	m_pAnimator->SetInt("SkillType", iSkillType);
+	EBossAttackPattern eSkillType = BAP_NONE; 
+	while (!IsValidAttackType(eSkillType))
+	{
+		eSkillType = static_cast<EBossAttackPattern>(GetRandomInt(1, m_bIsPhase2 ? 14 : 9));
+	}
+
+	SetupAttackByType(eSkillType);
+
+	m_pAnimator->SetInt("SkillType", eSkillType);
 	m_pAnimator->SetTrigger("Attack");
 
 
-	m_fAttackCooldown = 5.f;
+	m_fAttackCooldown = 3.f;
 }
+
+
 
 _float CFuoco::Get_DistanceToPlayer() const
 {
@@ -443,6 +560,124 @@ _vector CFuoco::GetTargetDirection() const
 	return XMVector3Normalize(vToPlayer); // 플레이어 방향 벡터 반환
 }
 
+void CFuoco::ApplyRootMotionDelta(_float fTimeDelta)
+{
+	_float3	 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+	_float4  rootMotionQuat = m_pAnimator->GetRootRotationDelta();
+	_vector vLocal = XMLoadFloat3(&rootMotionDelta);
+	_vector vRotQuat = XMQuaternionNormalize(XMLoadFloat4(&rootMotionQuat));
+
+	_vector vScale, vCurRotQuat, vTrans;
+	XMMatrixDecompose(&vScale, &vCurRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
+	_vector vNewRotQut = XMQuaternionNormalize(XMQuaternionMultiply(vRotQuat, vCurRotQuat));
+
+	_vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vNewRotQut));
+	vWorldDelta = XMVectorSetY(vWorldDelta, 0.f);
+	_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
+	_vector finalDelta = vWorldDelta;
+	if (fDeltaMag > m_fSmoothThreshold)
+	{
+		_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
+		finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+	}
+
+	m_PrevWorldDelta = finalDelta;
+	_vector vNext = XMVectorAdd(vTrans, finalDelta);
+	if (m_pNaviCom)
+	{
+		if (m_pNaviCom->isMove(vNext))
+		{
+			_float fY = m_pNaviCom->Compute_NavigationY(vNext);
+			vTrans = XMVectorSetY(vNext, fY);
+		}
+	}
+	_matrix newWorld = XMMatrixScalingFromVector(vScale) * XMMatrixRotationQuaternion(vNewRotQut) * XMMatrixTranslationFromVector(vTrans);
+	m_pTransformCom->Set_WorldMatrix(newWorld);
+}
+
+void CFuoco::UpdateNormalMove(_float fTimeDelta)
+{
+	if (m_eCurrentState == EFuocoState::WALK || m_eCurrentState == EFuocoState::RUN)
+	{
+		_vector vTargetPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+		_int iMoveDir = m_pAnimator->GetInt("MoveDir");
+
+		switch (iMoveDir)
+		{
+		case ENUM_CLASS(EMoveDirection::FRONT):
+			m_pTransformCom->ChaseWithOutY(vTargetPos, fTimeDelta, CHASING_DISTANCE, nullptr, m_pNaviCom);
+			break;
+		case ENUM_CLASS(EMoveDirection::BACK):
+			m_pTransformCom->Go_Backward(fTimeDelta, nullptr, m_pNaviCom);
+			break;
+		case ENUM_CLASS(EMoveDirection::LEFT):
+			m_pTransformCom->Go_Left(fTimeDelta, nullptr, m_pNaviCom);
+			break;
+		case ENUM_CLASS(EMoveDirection::RIGHT):
+			m_pTransformCom->Go_Right(fTimeDelta, nullptr, m_pNaviCom);
+			break;
+		}
+
+		_float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
+		m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
+	}
+}
+
+_bool CFuoco::UpdateTurnDuringAttack(_float fTimeDelta)
+{
+	if (m_fTurnTimeDuringAttack >= 0.f)
+	{
+		_vector vDir = GetTargetDirection();
+		vDir = XMVectorSetY(vDir, 0.f);
+		vDir = XMVector3Normalize(vDir);
+		m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta);
+		m_fTurnTimeDuringAttack -= fTimeDelta;
+		return false;
+	}
+	return true;
+}
+
+void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
+{
+
+	switch (ePattern)
+	{
+	case Client::CFuoco::SwingAtk:
+	{
+		_bool bIsCombo = GetRandomInt(0, 1) == 1;
+		m_pAnimator->SetBool("IsCombo", bIsCombo);
+		if (bIsCombo)
+		{
+			_int iComboType = GetRandomInt(1, 2);
+			m_pAnimator->SetInt("SwingCombo", iComboType);
+		}
+	}
+		break;
+	case Client::CFuoco::FootAtk:
+		break;
+	case Client::CFuoco::SlamAtk:
+		break;
+	case Client::CFuoco::Uppercut:
+		m_pAnimator->SetBool("IsFront", IsTargetInFront());
+		break;
+	case Client::CFuoco::StrikeFury:
+		break;
+	case Client::CFuoco::P2_FireOil:
+		break;
+	case Client::CFuoco::P2_FireBall:
+	{
+		_int iDir = GetRandomInt(0, 2);
+		m_pAnimator->SetInt("Direction", iDir);
+	}
+		break;
+	case Client::CFuoco::P2_FireBall_B:
+		break;
+	default:
+		break;
+	}
+}
+
 CFuoco* CFuoco::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CFuoco* pInstance = new CFuoco(pDevice, pContext);
@@ -467,9 +702,10 @@ CGameObject* CFuoco::Clone(void* pArg)
 
 void CFuoco::Free()
 {
+	__super::Free();
+	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pPhysXActorComForArm);
 	Safe_Release(m_pPhysXActorComForFoot);
 
-	__super::Free();
 }

@@ -325,6 +325,8 @@ HRESULT CDynamic_UI::Ready_Components_File(const wstring& strTextureTag)
 
 HRESULT CDynamic_UI::Bind_ShaderResources()
 {
+
+
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 

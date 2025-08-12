@@ -14,6 +14,15 @@ NS_BEGIN(Client)
 class CDecal abstract : public CGameObject
 {
 public:
+	enum class TEXTURE_TYPE
+	{
+		ARMT,
+		N,
+		BC,
+		END
+	};
+
+public:
 	typedef struct tagDecalDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_float4x4	WorldMatrix = _float4x4(
@@ -22,16 +31,9 @@ public:
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
 		);
-	} DECAL_DESC;
 
-protected:
-	enum class TEXTURE_TYPE
-	{
-		ARMT,
-		N,
-		BC,
-		END
-	};
+		wstring PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
+	} DECAL_DESC;
 
 protected:
 	CDecal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -51,7 +53,7 @@ protected:
 	CTexture* m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::END)] = { nullptr };
 	CVIBuffer_VolumeMesh* m_pVIBufferCom = { nullptr };
 protected:
-	virtual HRESULT Ready_Components();
+	virtual HRESULT Ready_Components(void* Arg);
 	HRESULT Bind_ShaderResources();
 
 public:

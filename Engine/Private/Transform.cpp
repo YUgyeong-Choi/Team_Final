@@ -679,7 +679,8 @@ bool CTransform::RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fT
 	_vector vAxis = XMVector3Normalize(XMVector3Cross(vCurrentLook, vTargetLook));
 
 	// 한 프레임 회전할 각도 계산
-	_float fStep = m_fSpeedPerSec * fTimeDelta;
+	//_float fStep = m_fSpeedPerSec * fTimeDelta;
+	_float fStep = m_fRotationPerSec * fTimeDelta;
 	fStep = min(fStep, fAngle); // 과회전 방지
 
 	// 회전 행렬 생성
@@ -802,7 +803,7 @@ void CTransform::BillboardToCameraY(_fvector vCameraPos)
 	_vector vMyPos = Get_State(STATE::POSITION);
 
 	// Y는 고정된 상태로 카메라를 바라보는 Look 벡터
-	_vector vLook = vMyPos - vCameraPos;
+	_vector vLook = - vMyPos + vCameraPos;
 	vLook = XMVectorSetY(vLook, 0.f);  // Y 고정
 	vLook = XMVector3Normalize(vLook);
 
