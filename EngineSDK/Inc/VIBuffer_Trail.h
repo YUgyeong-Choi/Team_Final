@@ -21,7 +21,7 @@ public:
 	virtual HRESULT Render();
 
 public:
-	void Set_TrailActive(_bool bActive) { m_bTrailActive = bActive; }
+	void Set_TrailActive(_bool bActive) { m_bTrailActive = bActive; if (bActive == true) m_TrailNodes.clear();}
 
 #ifdef USE_IMGUI
 	void Set_MaxNodeCount(_uint iCnt) { m_iMaxNodeCount = iCnt; }

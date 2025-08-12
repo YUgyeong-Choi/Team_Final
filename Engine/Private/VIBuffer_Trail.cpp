@@ -19,7 +19,7 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = m_iMaxNodeCount;
 	m_iVertexStride = sizeof(VTXPOS_TRAIL);
-	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_LINELIST;
+	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
 
 	D3D11_BUFFER_DESC			VBBufferDesc{};
 	VBBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
@@ -38,13 +38,13 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 	//m_pVertexPositions = new _float3[m_iNumVertices];
 	//ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iNumVertices);
 
-	for (_uint i = 0; i < m_iNumVertices; i++)
-	{
-		pVertices[i].vInnerPos = _float3(0.f, 0.f, 0.f);
-		pVertices[i].vOuterPos = _float3(0.f, 0.f, 0.f);
-		pVertices[i].vLifeTime = _float2(0.f, 0.f);
-		//m_pVertexPositions[i] = pVertices[i].vInnerPos;
-	}
+	//for (_uint i = 0; i < m_iNumVertices; i++)
+	//{
+	//	pVertices[i].vInnerPos = _float3(0.f, 0.f, 0.f);
+	//	pVertices[i].vOuterPos = _float3(0.f, 0.f, 0.f);
+	//	pVertices[i].vLifeTime = _float2(0.f, 0.f);
+	//	//m_pVertexPositions[i] = pVertices[i].vInnerPos;
+	//}
 
 	VBInitialData.pSysMem = pVertices;
 
@@ -78,11 +78,22 @@ void CVIBuffer_Trail::Update_Trail(const _float3& vInnerPos, const _float3& vOut
 	// 3. 트레일 활성 상태일 경우에만 노드 추가
 	if (m_bTrailActive)
 	{
-		VTXPOS_TRAIL newNode;
-		newNode.vInnerPos = vInnerPos;
-		newNode.vOuterPos = vOuterPos;
-		newNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
-		m_TrailNodes.push_back(newNode);
+		if (m_TrailNodes.empty())
+		{
+			VTXPOS_TRAIL firstNode;
+			firstNode.vInnerPos = vInnerPos;
+			firstNode.vOuterPos = vOuterPos;
+			firstNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
+			m_TrailNodes.push_back(firstNode);
+		}
+		else
+		{
+			VTXPOS_TRAIL newNode;
+			newNode.vInnerPos = vInnerPos;
+			newNode.vOuterPos = vOuterPos;
+			newNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
+			m_TrailNodes.push_back(newNode);
+		}
 	}
 
 	Update_Buffers();
@@ -108,6 +119,7 @@ HRESULT CVIBuffer_Trail::Update_Buffers()
 
 	m_pContext->Unmap(m_pVB, 0);
 
+	m_iNumVertices = (_uint)m_TrailNodes.size();
 
 	return S_OK;
 }
@@ -128,6 +140,8 @@ HRESULT CVIBuffer_Trail::Bind_Buffers()
 
 HRESULT CVIBuffer_Trail::Render()
 {
+	if (m_TrailNodes.size() < 2)
+		return S_OK;
 	m_pContext->Draw(m_iNumVertices, 0);
 
 	return S_OK;
