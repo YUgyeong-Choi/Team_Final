@@ -1116,6 +1116,9 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	//	ImNodes::EditorContextResetPanning(ImVec2(0.0f, 0.0f));
 	}
 
+	m_DrawnInPins.clear();
+	m_DrawnOutPins.clear();
+
 	for (const auto& Pair : m_CategoryStates)
 	{
 		auto& category = Pair.first; // 카테고리
@@ -1202,6 +1205,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImNodes::BeginInputAttribute(inPin);
 					ImGui::TextColored(ImVec4(0.3f, 0.8f, 0.3f, 1.f), "In");
 					ImNodes::EndInputAttribute();
+					m_DrawnInPins.insert(inPin);
 				}
 
 				ImGui::NextColumn();
@@ -1210,6 +1214,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				ImNodes::BeginOutputAttribute(outPin);
 				ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
 				ImNodes::EndOutputAttribute();
+				m_DrawnOutPins.insert(outPin);
 				ImGui::Columns(1);
 				ImGui::EndGroup();
 
@@ -1279,12 +1284,16 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		//	ImNodes::Link(t.link.iLinkId, startPinID, endPinID);
 		//}
 
-		const bool fromIsSpecial = (t.iFromNodeId == ANY_NODE_ID || t.iFromNodeId == EXIT_NODE_ID);
-		const bool toIsSpecial = (t.iToNodeId == ANY_NODE_ID || t.iToNodeId == EXIT_NODE_ID);
+
+		const _bool fromIsSpecial = (t.iFromNodeId == ANY_NODE_ID || t.iFromNodeId == EXIT_NODE_ID);
+		const _bool toIsSpecial = (t.iToNodeId == ANY_NODE_ID || t.iToNodeId == EXIT_NODE_ID);
 
 		const _int startPinID = t.iFromNodeId * 10 + 2; // Out
 		const _int endPinID = t.iToNodeId * 10 + 1; // In
-
+		 _bool startDrawn = (m_DrawnInPins.count(endPinID) > 0);
+		 _bool endDrawn = (m_DrawnOutPins.count(startPinID) > 0);
+		if (!startDrawn || !endDrawn)
+			continue; //노드 그린거 없으면 안그리기
 		// 카테고리 기반 가시성
 		string fromName = pCtrl->GetStateNameByNodeId(t.iFromNodeId);
 		string toName = pCtrl->GetStateNameByNodeId(t.iToNodeId);

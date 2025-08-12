@@ -48,6 +48,10 @@ HRESULT CUnit::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
+
+	_vector vInitPos = XMVectorSetW(XMLoadFloat3(&pDesc->InitPos), 1.f);
+	m_pTransformCom->Set_State(STATE::POSITION, vInitPos);
+	m_pTransformCom->Scaling(pDesc->InitScale);
 	return S_OK;
 }
 

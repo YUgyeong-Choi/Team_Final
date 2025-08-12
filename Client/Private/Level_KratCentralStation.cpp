@@ -125,9 +125,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Lights()))
 				return;
 
-			if (FAILED(Ready_Monster()))
-				return;
-
 			if (FAILED(Ready_Npc()))
 				return;
 
@@ -137,6 +134,9 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 			//애니메이션 오브젝트
 			if (FAILED(Ready_Player()))
+				return;
+
+			if (FAILED(Ready_Monster()))
 				return;
 
 			/* [ 옥토트리 설정 ] */

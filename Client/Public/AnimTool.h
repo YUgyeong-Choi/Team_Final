@@ -176,6 +176,9 @@ private:
 	static constexpr _int ANY_NODE_ID = 100001;
 	static constexpr _int EXIT_NODE_ID = 100000;
 
+	unordered_set<_int> m_DrawnInPins;
+	unordered_set<_int> m_DrawnOutPins;
+
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

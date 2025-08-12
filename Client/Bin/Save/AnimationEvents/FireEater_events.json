@@ -39,14 +39,14 @@
             "ClipName": "AS_ATLBoss0_Skill_02_End",
             "Duration": 44.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_02_Start",
             "Duration": 106.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -60,14 +60,14 @@
             "ClipName": "AS_ATLBoss0_Skill_04_End",
             "Duration": 75.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_04_Left",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -88,14 +88,14 @@
             "ClipName": "AS_ATLBoss0_Skill_04_Right",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_04_Start",
             "Duration": 40.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -109,7 +109,7 @@
             "ClipName": "AS_ATLBoss0_Skill_05_End",
             "Duration": 80.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -172,7 +172,7 @@
             "ClipName": "AS_ATLBoss0_Skill_11_Left",
             "Duration": 85.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -186,49 +186,49 @@
             "ClipName": "AS_ATLBoss0_Skill_11_Right",
             "Duration": 85.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Start",
             "Duration": 60.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_End",
             "Duration": 114.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Left",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Right",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Start",
             "Duration": 55.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_13",
             "Duration": 140.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
