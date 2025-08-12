@@ -145,9 +145,6 @@
     <Filter Include="01.Levels\LevelCY\Tool\ToolParticle">
       <UniqueIdentifier>{8965fe92-8566-43de-91a1-1c9d4df84dfc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelCY\Tool\ToolEffect">
-      <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\00.StaticMesh\StaticMesh_Instance">
       <UniqueIdentifier>{3dc06d4f-f034-42de-b5d0-7cc25f51a15f}</UniqueIdentifier>
     </Filter>
@@ -291,6 +288,12 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Test">
       <UniqueIdentifier>{756bd14f-6752-4cce-ad10-ecb99a4e60bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\ToolSprite">
+      <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelCY\Tool\ToolTrail%3f">
+      <UniqueIdentifier>{15ae98e9-5562-47c1-89a7-afdbb157f889}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
       <UniqueIdentifier>{abbca159-0435-45fc-ab65-08cd84a25567}</UniqueIdentifier>
@@ -484,7 +487,7 @@
       <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolSprite.h">
-      <Filter>01.Levels\LevelCY\Tool\ToolEffect</Filter>
+      <Filter>01.Levels\LevelCY\Tool\ToolSprite</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\EffectSequence.h">
       <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
@@ -735,6 +738,9 @@
     <ClInclude Include="..\public\Monster_Test.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TrailEffect.h">
+      <Filter>02.GameObjects\07.Effect\EffectContainer\Trail</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Monster_Base.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
     </ClInclude>
@@ -771,6 +777,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Decal.h">
       <Filter>02.GameObjects\11.Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ToolTrail.h">
+      <Filter>01.Levels\LevelCY\Tool\ToolTrail%3f</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -890,7 +899,7 @@
       <Filter>01.Levels\LevelCY\Tool\ToolParticle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolSprite.cpp">
-      <Filter>01.Levels\LevelCY\Tool\ToolEffect</Filter>
+      <Filter>01.Levels\LevelCY\Tool\ToolSprite</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\EffectSequence.cpp">
       <Filter>01.Levels\LevelCY\Tool\EffectSequence</Filter>
@@ -1126,6 +1135,9 @@
     <ClCompile Include="..\private\Monster_Test.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TrailEffect.cpp">
+      <Filter>02.GameObjects\07.Effect\EffectContainer\Trail</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\Monster_Base.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
     </ClCompile>
@@ -1162,6 +1174,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Buttler_Train.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Train</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ToolTrail.cpp">
+      <Filter>01.Levels\LevelCY\Tool\ToolTrail%3f</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

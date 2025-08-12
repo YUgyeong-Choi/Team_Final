@@ -1,4 +1,4 @@
-#include "EffectBase.h"
+ï»¿#include "EffectBase.h"
 #include "Client_Calculation.h"
 #include "GameInstance.h"
 #include "Camera_Manager.h"
@@ -25,17 +25,16 @@ HRESULT CEffectBase::Initialize(void* pArg)
 {
 	if (pArg == nullptr)
 	{
-		MSG_BOX("ÀÌÆåÆ®´Â DESC°¡ ²À ÇÊ¿äÇØ¿ë");
+		MSG_BOX("ì´í™íŠ¸ëŠ” DESCê°€ ê¼­ í•„ìš”í•´ìš©");
 		return E_FAIL;
 	}
-
 	DESC* pDesc = static_cast<DESC*>(pArg);
 	m_pSocketMatrix = pDesc->pSocketMatrix;
 	m_bTool = pDesc->bTool;
 
 	m_iTileX = pDesc->iTileX;
 	m_iTileY = pDesc->iTileY;
-	m_fTickPerSecond = 60.f; // 60ÇÁ·¹ÀÓÀ¸·Î Àç»ı
+	m_fTickPerSecond = 60.f; // 60í”„ë ˆì„ìœ¼ë¡œ ì¬ìƒ
 	m_bBillboard = pDesc->bBillboard;
 	m_iShaderPass = pDesc->iShaderPass;
 	m_bAnimation = pDesc->bAnimation;
@@ -43,7 +42,7 @@ HRESULT CEffectBase::Initialize(void* pArg)
 
 	for (_uint i = 0; i < TU_END; i++)
 	{
-		m_TextureTag[i] = L""; // È¤½Ã ¸ô¶ó¼­ ÃÊ±âÈ­ ÇÔ
+		m_TextureTag[i] = L""; // í˜¹ì‹œ ëª°ë¼ì„œ ì´ˆê¸°í™” í•¨
 	}
 
 
@@ -90,7 +89,7 @@ void CEffectBase::Update(_float fTimeDelta)
 		m_iTileIdx = 0;
 
 	//m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
-	// ÀÌºÎºĞ AnimationSpeed·Î º°°³·Î °ü¸®ÇÏÀÚ 
+	// ì´ë¶€ë¶„ AnimationSpeedë¡œ ë³„ê°œë¡œ ê´€ë¦¬í•˜ì 
 	if (m_iTileX == 0)
 		m_iTileX = 1;
 	if (m_iTileY == 0)
@@ -369,8 +368,8 @@ HRESULT CEffectBase::Ready_Textures_Prototype_Tool()
 
 HRESULT CEffectBase::Ready_Effect_Deserialize(const json& j)
 {
-	Deserialize(j); // ÀÚ½ÄÀ¸·Î ¿À¹ö¶óÀÌµåµÇ¾î¼­ ½ÇÇàµÇ´ÂÁö ²À È®ÀÎ
-	if (FAILED(Ready_Components())) // ¾ê°¡¹®Á¦¿´³×
+	Deserialize(j); // ìì‹ìœ¼ë¡œ ì˜¤ë²„ë¼ì´ë“œë˜ì–´ì„œ ì‹¤í–‰ë˜ëŠ”ì§€ ê¼­ í™•ì¸
+	if (FAILED(Ready_Components())) // ì–˜ê°€ë¬¸ì œì˜€ë„¤
 		return E_FAIL;
 	return S_OK;
 }
@@ -428,7 +427,7 @@ json CEffectBase::Serialize()
 
 	json keyFramesJson = json::array();
 	for (auto& key : m_KeyFrames)
-		keyFramesJson.push_back(key.Serialize()); // EFFKEYFRAME¿¡ Serialize() ÇÔ¼ö ÇÊ¿ä
+		keyFramesJson.push_back(key.Serialize()); // EFFKEYFRAMEì— Serialize() í•¨ìˆ˜ í•„ìš”
 	j["KeyFrames"] = keyFramesJson;
 
 	// UV Grid
@@ -536,7 +535,7 @@ json CEffectBase::tagEffectKeyFrame::Serialize()
 	j["Color"] = { vColor.x, vColor.y, vColor.z, vColor.w };
 	j["Intensity"] = fIntensity;
 	j["TrackPosition"] = fTrackPosition;
-	j["Interpolation"] = static_cast<int>(eInterpolationType); // Á¤¼ö ÀúÀå
+	j["Interpolation"] = static_cast<int>(eInterpolationType); // ì •ìˆ˜ ì €ì¥
 
 	return j;
 }

@@ -192,8 +192,8 @@ namespace Engine
 
 	typedef struct ENGINE_DLL tagVertexPointTrail
 	{
-		XMFLOAT3		vPosition;
-		XMFLOAT2		vPSize;
+		XMFLOAT3		vOuterPos;
+		XMFLOAT3		vInnerPos;
 		XMFLOAT2		vLifeTime;
 
 

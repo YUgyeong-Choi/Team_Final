@@ -14,7 +14,7 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
-	void Update_Trail(const _float3& vPosition, _float fTimeDelta);
+	void Update_Trail(const _float3& vInnerPos, const _float3& vOuterPos, _float fTimeDelta);
 	HRESULT Update_Buffers();
 
 	virtual HRESULT Bind_Buffers();

@@ -110,7 +110,6 @@ HRESULT CEffectContainer::Render()
 
 HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 {
-	
 	if (!j.contains("EffectObject") || !j["EffectObject"].is_array())
 	{
 		return E_FAIL;

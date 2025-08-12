@@ -17,7 +17,7 @@ class CEffectBase abstract : public CBlendObject, public ISerializable // ºí·»µå
 public:
 	typedef struct tagEffectBaseDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		const _float4x4* pSocketMatrix = { nullptr };
+		const _float4x4*	pSocketMatrix = { nullptr };
 		_int				iTileX = {};
 		_int				iTileY = {};
 		_bool				bBillboard = { true };

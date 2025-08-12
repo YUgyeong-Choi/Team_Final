@@ -35,6 +35,10 @@ private:
 
 	HRESULT Ready_Layer_StaticMesh(const _wstring strLayerTag);
 
+	HRESULT Ready_Layer_DummyMap(const _wstring strLayerTag);
+
+	HRESULT Ready_Player();
+
 private:
 	HRESULT Ready_ImGui();
 	HRESULT ImGui_Render();
