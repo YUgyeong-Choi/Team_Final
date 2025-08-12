@@ -24,8 +24,8 @@ HRESULT CRenderer::Initialize()
 
 	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
 
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Normal"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Shade"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
@@ -42,8 +42,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
+	//	return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Normal"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
@@ -821,12 +821,12 @@ HRESULT CRenderer::Render_BackBuffer()
 {
 	//m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false);
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+	/*if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	//µ¥Ä® ÅØ½ºÃÄ
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_AMRT"), m_pShader, "g_DecalAMRT")))
