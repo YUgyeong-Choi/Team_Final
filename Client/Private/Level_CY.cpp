@@ -102,7 +102,7 @@ HRESULT CLevel_CY::Render()
 
 	ImGui::NewFrame();
 
-	if (FAILED(ImGui_Render()));
+	if (FAILED(ImGui_Render()))
 		int a = 0;
 	//·»´õ¸µ 
 
