@@ -67,6 +67,15 @@ void CPicking::Update()
 
 _bool CPicking::Picking(_float4* pOut)
 {
+	POINT			ptMouse{};
+
+	GetCursorPos(&ptMouse);
+	ScreenToClient(m_hWnd, &ptMouse);
+
+	// 마우스가 클라이언트 영역 밖이면 무시
+	if (ptMouse.x < 0 || ptMouse.y < 0 || ptMouse.x >= static_cast<_long>(m_iWidth) || ptMouse.y >= static_cast<_long>(m_iHeight))
+		return false;
+
 	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PBR_Depth"), m_pTexture)))
 		return false;
 	
@@ -78,16 +87,11 @@ _bool CPicking::Picking(_float4* pOut)
 	
 	m_pContext->Unmap(m_pTexture, 0);	
 
-	POINT			ptMouse{};
-
-	GetCursorPos(&ptMouse);
-	ScreenToClient(m_hWnd, &ptMouse);
-
-	// 마우스가 클라이언트 영역 밖이면 무시
-	if (ptMouse.x < 0 || ptMouse.y < 0 || ptMouse.x >= static_cast<_long>(m_iWidth) || ptMouse.y >= static_cast<_long>(m_iHeight))
-		return false;
-
 	_uint			iIndex = ptMouse.y * m_iWidth + ptMouse.x;
+
+	//깊이 값이 초기값이면 피킹 안된것으로 판단.
+	if (XMScalarNearEqual(m_pWorldPostions[iIndex].y, 1.f, ai_epsilon))
+		return false;
 
 #pragma region Depth 값으로 월드 포지션 추론(렌더타겟 없어서 어쩔 수 없이 CPU로 계산함)	
 	//현재 뎁스를 가져왔으니, 이것으로 월드를 추론해보자(클릭한 인덱스의 월드 포지션을 구한다)
@@ -124,7 +128,7 @@ _bool CPicking::Picking(_float4* pOut)
 
 	*pOut = m_pWorldPostions[iIndex];
 
-	return static_cast<_bool>(m_pWorldPostions[iIndex].w);	
+	return true;
 }
 
 _bool CPicking::PickByClick(_int* pOut)

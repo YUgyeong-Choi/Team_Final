@@ -3,6 +3,10 @@
 #include "DecalTool.h"
 #include "DecalToolObject.h"
 
+#include "Camera_Manager.h"
+#include "ImGuiFileDialog.h"
+
+
 CDecalTool::CDecalTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CYWTool(pDevice, pContext)
 {
@@ -63,11 +67,97 @@ HRESULT	CDecalTool::Render_ImGui()
 
 HRESULT CDecalTool::Save(const _char* Map)
 {
+	string DecalFilePath = string("../Bin/Save/DecalTool/Decal_") + Map + ".json";
+	filesystem::create_directories("../Bin/Save/DecalTool");
+	ofstream DecalDataFile(DecalFilePath);
+
+	if (!DecalDataFile.is_open())
+		return E_FAIL;
+
+	// 전체 데칼 데이터를 담을 JSON
+	json DecalList = json::array();
+
+	for (CGameObject* pObj : m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal")))
+	{
+		// 월드 행렬 얻기
+		_matrix matWorld = pObj->Get_TransfomCom()->Get_WorldMatrix();
+		_float4x4 matWorldFloat4x4;
+		XMStoreFloat4x4(&matWorldFloat4x4, matWorld);
+
+		// 4x4 행렬을 배열로 저장
+		json MatrixJson = json::array();
+		for (_int i = 0; i < 4; ++i)
+		{
+			json Row = json::array();
+			for (_int j = 0; j < 4; ++j)
+			{
+				Row.push_back(matWorldFloat4x4.m[i][j]);
+			}
+			MatrixJson.push_back(Row);
+		}
+
+		// 디칼 개체 정보 추가
+		json DecalJson;
+		DecalJson["WorldMatrix"] = MatrixJson;
+
+		// 필요한 경우, 오브젝트 이름이나 ID도 저장 가능
+		// DecalJson["Name"] = pObj->Get_Name(); 또는 ID 등
+
+		// 리스트에 추가
+		DecalList.push_back(DecalJson);
+	}
+
+	// JSON 파일에 기록
+	DecalDataFile << DecalList.dump(4); // 들여쓰기 4칸으로 보기 좋게 출력
+	DecalDataFile.close();
+
+	MSG_BOX("데칼 저장 성공!");
+
 	return S_OK;
 }
 
 HRESULT CDecalTool::Load(const _char* Map)
 {
+	//현재 맵에 배치된 오브젝트를 모두 삭제하자
+	Clear_All_Decal();
+
+	string DecalDataPath = string("../Bin/Save/DecalTool/Decal_") + Map + ".json";
+	//string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json"; //나중에 쓸듯 맵 바꿀때
+
+	ifstream inFile(DecalDataPath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Decal_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+
+	// JSON 파싱
+	json JSON;
+	inFile >> JSON;
+
+	// 데이터 만큼 Decal 소환
+	for (auto& item : JSON)
+	{
+		// 4x4 행렬 읽기
+		_float4x4 WorldMatrix;
+		for (_int iRow = 0; iRow < 4; ++iRow)
+		{
+			for (_int iCol = 0; iCol < 4; ++iCol)
+			{
+				WorldMatrix.m[iRow][iCol] = item["WorldMatrix"][iRow][iCol].get<_float>();
+			}
+		}
+
+		CDecal::DECAL_DESC DecalDesc = {};
+		DecalDesc.WorldMatrix = WorldMatrix;
+
+		// Decal 객체 생성
+		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
+			ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"), &DecalDesc);
+	}
+
 	return S_OK;
 }
 
@@ -105,77 +195,83 @@ void CDecalTool::Control(_float fTimeDelta)
 		if (ImGui::GetIO().WantCaptureMouse)
 			return;
 
+		_float4 vWorldPos = {};
+		if (m_pGameInstance->Picking(&vWorldPos))
+		{
+			Safe_Release(m_pFocusObject);
+			m_pFocusObject = Get_ClosestDecalObject(XMLoadFloat4(&vWorldPos));
+			Safe_AddRef(m_pFocusObject);
+		}
 		
-		//m_pGameInstance->Picking();
+	}
 
-		//Get_ClosestDecalObject();
+	//F 키누르면 해당 오브젝트 위치로 이동
+	if (m_pGameInstance->Key_Down(DIK_F))
+	{
+		if (nullptr == m_pFocusObject)
+			return;
+
+		_vector vObjectPos = m_pFocusObject->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vCameraPos = XMVectorAdd(vObjectPos, XMVectorSet(0.f, 3.f, -3.f, 0.f));
+
+		CTransform* pCameraTransformCom = CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom();
+
+		//여유를 두고 이동한후
+		pCameraTransformCom->Set_State(STATE::POSITION, vCameraPos);
+
+		//LookAt 하자
+		pCameraTransformCom->LookAt(vObjectPos);
 	}
 
 }
 
+void CDecalTool::Clear_All_Decal()
+{
+	Safe_Release(m_pFocusObject);
+	m_pFocusObject = nullptr;
+
+	list<CGameObject*> List = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"));
+
+	for (CGameObject* pObj : List)
+	{
+		pObj->Set_bDead();
+	}
+}
+
 CDecalToolObject* CDecalTool::Get_ClosestDecalObject(_fvector vPosition)
 {
-	return nullptr;
+	list<CGameObject*> List = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"));
+
+	_float fMinDistance = FLT_MAX;
+	CGameObject* pClosestObject = nullptr;
+
+	for (CGameObject* pObj : List)
+	{
+		_float fDist = XMVectorGetX(XMVector3LengthSq(vPosition - pObj->Get_TransfomCom()->Get_State(STATE::POSITION)));
+
+		if (fDist < fMinDistance)
+		{
+			fMinDistance = fDist;
+			pClosestObject = pObj;
+		}
+
+	}
+
+	return  static_cast<CDecalToolObject*>(pClosestObject);
 }
 
 HRESULT CDecalTool::Spawn_DecalObject()
 {
+	CDecal::DECAL_DESC DecalDesc = {};
+
 	//소환하고 포커스 변경
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
-		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"))))
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"), &DecalDesc)))
 		return E_FAIL;
 
 	Safe_Release(m_pFocusObject);
 	m_pFocusObject = static_cast<CDecalToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal")));
 	Safe_AddRef(m_pFocusObject);
-
-	return S_OK;
-}
-
-HRESULT CDecalTool::Save()
-{
-	filesystem::create_directories("../Bin/Save/DecalTool");
-	ofstream DecalDataFile("../Bin/Save/DecalTool/DecalData.json");
-
-	if (!DecalDataFile.is_open())
-		return E_FAIL;
-
-	// 전체 디칼 데이터를 담을 JSON
-	json DecalList = json::array();
-
-	for (CGameObject* pObj : m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal")))
-	{
-		// 월드 행렬 얻기
-		_matrix matWorld = pObj->Get_TransfomCom()->Get_WorldMatrix();
-		_float4x4 matWorldFloat4x4;
-		XMStoreFloat4x4(&matWorldFloat4x4, matWorld);
-
-		// 4x4 행렬을 배열로 저장
-		json MatrixJson = json::array();
-		for (_int i = 0; i < 4; ++i)
-		{
-			json Row = json::array();
-			for (_int j = 0; j < 4; ++j)
-			{
-				Row.push_back(matWorldFloat4x4.m[i][j]);
-			}
-			MatrixJson.push_back(Row);
-		}
-
-		// 디칼 개체 정보 추가
-		json DecalJson;
-		DecalJson["WorldMatrix"] = MatrixJson;
-
-		// 필요한 경우, 오브젝트 이름이나 ID도 저장 가능
-		// DecalJson["Name"] = pObj->Get_Name(); 또는 ID 등
-
-		// 리스트에 추가
-		DecalList.push_back(DecalJson);
-	}
-
-	// JSON 파일에 기록
-	DecalDataFile << DecalList.dump(4); // 들여쓰기 4칸으로 보기 좋게 출력
-	DecalDataFile.close();
 
 	return S_OK;
 }
@@ -193,6 +289,11 @@ void CDecalTool::Render_Detail()
 	ImGui::Separator();
 
 	Detail_Transform();
+
+	ImGui::Separator();
+
+	Detail_Texture();
+
 
 	ImGui::End();
 #pragma endregion
@@ -300,6 +401,87 @@ void CDecalTool::Detail_Transform()
 #pragma endregion
 	}
 }
+
+
+void CDecalTool::Detail_Texture()
+{
+	//여기서 데칼의 ARM, N, BC 세개의 텍스쳐를 갈아 낄 수 있게 하고싶다.
+	//Imgui 솔루션 탐색기를 열어서 dds텍스쳐를 찾아서 꽂아넣어야지
+
+	/*CDecalToolObject* pSelectedDecal = Get_Selected_Decal();
+	if (!pSelectedDecal)
+		return;*/
+
+
+
+	IGFD::FileDialogConfig Config;
+	Config.path = "../Bin/Resources/Textures/Decal/";
+
+#pragma region ARM 텍스처
+	ImGui::TextWrapped("Current ARM Texture: %s", "armPathStr.c_str()");
+	// ARM 텍스처 선택 버튼
+	if (ImGui::Button("Change ARM Texture"))
+	{
+		ImGuiFileDialog::Instance()->OpenDialog("ChooseARMTexture", "Select ARM Texture (.dds)", ".dds", Config);
+	}
+	if (ImGuiFileDialog::Instance()->Display("ChooseARMTexture"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			string filePath = ImGuiFileDialog::Instance()->GetFilePathName();
+			string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+
+			//파일 이름을 가져와서, 프로토타입을 만들고, 갈아껴주자
+			if (m_pFocusObject)
+			{
+				if(FAILED(m_pFocusObject->Set_ARM_Texture(filePath, fileName)))
+					MSG_BOX("ARM 텍스쳐 갈아끼기 실패");
+			}
+		}
+		ImGuiFileDialog::Instance()->Close();
+	}
+#pragma endregion
+	ImGui::Separator();
+#pragma region Normal 텍스쳐
+	ImGui::TextWrapped("Current Normal Texture: %s", "normalPathStr.c_str()");
+	// Normal 텍스처 선택 버튼
+	if (ImGui::Button("Change Normal Texture"))
+	{
+		ImGuiFileDialog::Instance()->OpenDialog("ChooseNormalTexture", "Select Normal Texture (.dds)", ".dds", Config);
+	}
+	if (ImGuiFileDialog::Instance()->Display("ChooseNormalTexture"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			string filePath = ImGuiFileDialog::Instance()->GetFilePathName();
+			//pSelectedDecal->Set_Normal_Texture(StringToWString(filePath));
+		}
+		ImGuiFileDialog::Instance()->Close();
+	}
+#pragma endregion
+	ImGui::Separator();
+#pragma region BaseColor 텍스쳐
+	ImGui::TextWrapped("Current BaseColor Texture: %s", "baseColorPathStr.c_str()");
+	// BaseColor 텍스처 선택 버튼
+	if (ImGui::Button("Change BaseColor Texture"))
+	{
+		ImGuiFileDialog::Instance()->OpenDialog("ChooseBaseColorTexture", "Select BaseColor Texture (.dds)", ".dds", Config);
+	}
+	if (ImGuiFileDialog::Instance()->Display("ChooseBaseColorTexture"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			string filePath = ImGuiFileDialog::Instance()->GetFilePathName();
+			//pSelectedDecal->Set_BaseColor_Texture(StringToWString(filePath));
+		}
+		ImGuiFileDialog::Instance()->Close();
+	}
+#pragma endregion
+
+
+	
+}
+
 
 CDecalTool* CDecalTool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {

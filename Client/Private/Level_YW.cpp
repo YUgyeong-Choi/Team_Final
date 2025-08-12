@@ -235,10 +235,15 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 		return E_FAIL;
 #pragma endregion
 
-
+#pragma region µ¥Ä® Åø
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)] = reinterpret_cast<CYWTool*>(CDecalTool::Create(m_pDevice, m_pContext));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)])
 		return E_FAIL;
+
+	//µ¥Ä® Åø ·Îµù
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)]->Load(Maps[iMapIndex])))
+		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }

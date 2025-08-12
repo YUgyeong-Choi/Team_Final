@@ -25,7 +25,9 @@ HRESULT CDecal::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//m_pTransformCom->Scaling(1.f, 0.1f, 1.f);
+	DECAL_DESC* pDesc = static_cast<DECAL_DESC*>(pArg);
+
+	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
 	return S_OK;
 }
