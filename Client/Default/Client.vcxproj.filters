@@ -370,6 +370,9 @@
     <Filter Include="02.GameObjects\99.UI\World\LockOn">
       <UniqueIdentifier>{a5c9a283-4d2f-4672-a079-61ef465b301d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\World\Fatal">
+      <UniqueIdentifier>{f3d18659-20ad-4a08-8688-7e68b1eb696b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">

@@ -40,8 +40,7 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
     m_pTransformCom->Scaling(0.08f, 0.025f, 1.f);
 
-    XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-   // XMStoreFloat4x4(&m_ProjMatrix, XMMatrixIdentity());
+   
 
 
     return S_OK;

@@ -236,7 +236,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, 
 											   ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 
-	Safe_AddRef(m_pHPBar);
+
 
 	return S_OK;
 }
