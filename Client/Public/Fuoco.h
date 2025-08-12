@@ -4,10 +4,11 @@
 #include "PhysX_ControllerReport.h"
 
 NS_BEGIN(Engine)
+class CBone;
+class CNavigation;
 class CPhysXController;
 class CPhysXDynamicActor;
 class CAnimController;
-class CBone;
 NS_END
 
 NS_BEGIN(Client)
@@ -17,13 +18,13 @@ class CFuoco : public CUnit
     enum class BossStateID : _uint
     {
         IDLE = 1,
-        SKILL1_START = 2,
+        ATK_SLAM_COMBO_START = 2,
         ATK_SWING_START = 3,
         ATK_SWING_END = 6,
-        SKILL1_LOOP = 11,
-        SKILL1_LEFT_END = 13,
-        SKILL1_END = 14,
-        SKILL1_RIGHT_END = 15,
+        ATK_SLAM_COMBO_LOOP = 11,
+        ATK_SLAM_COMBO_LEFT_END = 13,
+        ATK_SLAM_COMBO_END = 14,
+        ATK_SLAM_COMBO_RIGHT_END = 15,
         ATK_FOOT = 18,
         ATK_SLAM_FURY_START = 19,
         ATK_SLAM_FURY = 21,
@@ -71,24 +72,47 @@ class CFuoco : public CUnit
         TURN_L = 100013
     };
 
+    enum EBossAttackPattern :_int
+    {
+        BAP_NONE = 0,
+        SlamCombo = 1,
+		Uppercut = 2,
+        SwingAtk = 4,
+        FootAtk = 6,
+        FlameFiled = 7,
+        SlamAtk = 8,
+        StrikeFury = 9,
+        P2_FireOil = 10,
+        P2_FireBall = 11,
+        P2_FireBall_B = 13,
+    };
+
 	enum class EFuocoState
 	{
 		IDLE,
 		WALK,
 		RUN,
+        TURN,
 		ATTACK,
         GROGGY,
         DEAD,
 		NONE
 	};
 
-	enum class EDirection
+	enum class EMoveDirection
 	{
 		FRONT,
 		RIGHT,
 		BACK,
 		LEFT
 	};
+
+	enum class EAttackDirection
+	{
+		FRONT,
+		LEFT,
+		RIGHT
+    };
 
 private:
 	CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -126,21 +150,46 @@ private:
 	_float Get_DistanceToPlayer() const;
 	_bool  IsTargetInFront() const;
 	_vector GetTargetDirection() const;
+    void ApplyRootMotionDelta(_float fTimeDelta);
+    void UpdateNormalMove(_float fTimeDelta);
+	_bool UpdateTurnDuringAttack(_float fTimeDelta);
+    void SetupAttackByType(EBossAttackPattern ePattern);
 
+	_bool IsValidAttackType(EBossAttackPattern ePattern) const
+	{
+		return ePattern == EBossAttackPattern::SwingAtk ||
+			ePattern == EBossAttackPattern::FootAtk ||
+			ePattern == EBossAttackPattern::SlamAtk ||
+			ePattern == EBossAttackPattern::Uppercut ||
+			ePattern == EBossAttackPattern::StrikeFury ||
+			ePattern == EBossAttackPattern::P2_FireOil ||
+			ePattern == EBossAttackPattern::P2_FireBall ||
+			ePattern == EBossAttackPattern::P2_FireBall_B;
+	}
 
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForFoot = { nullptr };
-
+    CNavigation* m_pNaviCom = { nullptr };
 	CBone* m_pFistBone{ nullptr };
 	CBone* m_pFootBone{ nullptr };
 	EFuocoState m_eCurrentState = EFuocoState::NONE;
-    _bool m_bIsFirstAttack{ false }; // 컷씬하고 돌진 처리
+    _bool m_bIsFirstAttack{ true }; // 컷씬하고 돌진 처리
+    _bool m_bIsPhase2{ false };
+    _bool m_bStartPhase2 = false;
 	_float m_fAttackCooldown = 0.f; // 공격 쿨타임
 
-    const _float CHASING_DISTANCE = 50.f;
-	const _float ATTACK_DISTANCE = 7.f;
+    _vector  m_PrevWorldDelta = XMVectorZero();
+    _vector  m_PrevWorldRotation = XMVectorZero();
+    _float   m_fRotSmoothSpeed = 8.0f;
+    _float   m_fSmoothSpeed = 8.0f;
+    _float   m_fSmoothThreshold = 0.1f;
+
+    _float m_fTurnTimeDuringAttack = 0.f;
+    const _float CHASING_DISTANCE = 3.f;
+	const _float ATTACK_DISTANCE = 7.f; // 이건 나중에 원거리 공격을 좀 처리할 때 다시 사용
+    const _float MINIMUM_TURN_ANGLE = 35.f;
 
 public:
 	static CFuoco* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

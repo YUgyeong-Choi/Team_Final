@@ -679,7 +679,8 @@ bool CTransform::RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fT
 	_vector vAxis = XMVector3Normalize(XMVector3Cross(vCurrentLook, vTargetLook));
 
 	// 한 프레임 회전할 각도 계산
-	_float fStep = m_fSpeedPerSec * fTimeDelta;
+	//_float fStep = m_fSpeedPerSec * fTimeDelta;
+	_float fStep = m_fRotationPerSec * fTimeDelta;
 	fStep = min(fStep, fAngle); // 과회전 방지
 
 	// 회전 행렬 생성
