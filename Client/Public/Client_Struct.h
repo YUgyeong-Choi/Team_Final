@@ -12,8 +12,10 @@ namespace Client
 
 
 #pragma region GL
-	// 각 ui 기능에 필요한 정보를 담아서 저장하고, json으로 불러오기 위해
 
+	// 지워야됨?
+
+	// 각 ui 기능에 필요한 정보를 담아서 저장하고, json으로 불러오기 위해
 
 	// tool에서 사용하고, 이거 기반으로 seqeunce를 만들어서 조작하기
 	// 저장은 type따라서 필요한거만 저장하고, 불러오기
@@ -40,7 +42,6 @@ namespace Client
 		_float2			fEndScale{};
 		
 	}UI_FEATURE_TOOL_DESC;
-
 
 	// 객체 에서 사용할 구조체
 	typedef struct tagFeatureUI{
@@ -79,6 +80,8 @@ namespace Client
 		_float2 fEndScale{};
 
 	}UI_FEATURE_SCALE_DESC;
+
+	// 여기까지?
 
 	// 옵저버에 던질 구조체
 

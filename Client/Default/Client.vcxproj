@@ -181,6 +181,9 @@
     <ClInclude Include="..\public\Egro_Bar.h" />
     <ClInclude Include="..\public\EventMag.h" />
     <ClInclude Include="..\Public\Explosion.h" />
+    <ClInclude Include="..\public\UI_Component.h" />
+    <ClInclude Include="..\public\UI_Component_Text.h" />
+    <ClInclude Include="..\public\UI_Feature_Click.h" />
     <ClInclude Include="..\Public\GLTool.h" />
     <ClInclude Include="..\Public\AnimTool.h" />
     <ClInclude Include="..\public\Grinder.h" />
@@ -239,6 +242,7 @@
     <ClInclude Include="..\public\UI_Bar_Loading.h" />
     <ClInclude Include="..\public\UI_Button.h" />
     <ClInclude Include="..\Public\UI_Container.h" />
+    <ClInclude Include="..\public\UI_Element.h" />
     <ClInclude Include="..\public\UI_Featrue_Scale.h" />
     <ClInclude Include="..\public\UI_Feature.h" />
     <ClInclude Include="..\public\UI_Feature_Fade.h" />
@@ -364,9 +368,13 @@
     <ClCompile Include="..\Private\ToolParticle.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
+    <ClCompile Include="..\private\UI_Component.cpp" />
+    <ClCompile Include="..\private\UI_Component_Text.cpp" />
     <ClCompile Include="..\Private\UI_Container.cpp" />
+    <ClCompile Include="..\private\UI_Element.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
+    <ClCompile Include="..\private\UI_Feature_Click.cpp" />
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
     <ClCompile Include="..\Private\UI_Feature_Position.cpp" />
     <ClCompile Include="..\private\UI_Feature_UV.cpp" />

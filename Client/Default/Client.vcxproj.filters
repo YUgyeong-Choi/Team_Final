@@ -88,23 +88,8 @@
     <Filter Include="02.GameObjects\00.StaticMesh">
       <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature">
-      <UniqueIdentifier>{352f8db1-0649-441d-9b02-807cefb57c48}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Video">
       <UniqueIdentifier>{23a91808-8324-4249-8518-c3ecc5b47f25}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Fade">
-      <UniqueIdentifier>{1f820ca1-801b-4471-a6a4-62a75a29c844}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\UV">
-      <UniqueIdentifier>{316b5174-4657-45ad-91c2-3422eb303f38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Position">
-      <UniqueIdentifier>{fe249679-3cc4-4bb7-84c3-374afcb03f04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Scale">
-      <UniqueIdentifier>{4537235e-4674-48ab-8d72-0aaf855c27fc}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\0_Level_KratCentralStation">
       <UniqueIdentifier>{a3f64273-696d-4106-b58f-efef5e5d53fe}</UniqueIdentifier>
@@ -312,6 +297,39 @@
     </Filter>
     <Filter Include="02.GameObjects\03.Weapon\99. Monster">
       <UniqueIdentifier>{c592ffc8-b53a-43c4-9123-ad8352b7a2f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Element">
+      <UniqueIdentifier>{d72f2c3b-44c8-4ed6-9e56-a971259aa170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Component">
+      <UniqueIdentifier>{264dbc4a-185d-49f3-a140-fa6917159057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Component\Text">
+      <UniqueIdentifier>{4af0f939-cc6e-4cff-bec3-32514c8447dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Component\Click">
+      <UniqueIdentifier>{2a29387b-5a45-44ae-85d7-c980f9c4b983}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature">
+      <UniqueIdentifier>{352f8db1-0649-441d-9b02-807cefb57c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Text">
+      <UniqueIdentifier>{149f0ea7-6859-42ca-ba58-38bdbb4a711f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Fade">
+      <UniqueIdentifier>{1f820ca1-801b-4471-a6a4-62a75a29c844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Position">
+      <UniqueIdentifier>{fe249679-3cc4-4bb7-84c3-374afcb03f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Scale">
+      <UniqueIdentifier>{4537235e-4674-48ab-8d72-0aaf855c27fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\UV">
+      <UniqueIdentifier>{316b5174-4657-45ad-91c2-3422eb303f38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Click">
+      <UniqueIdentifier>{563b9a86-eb9e-4b76-b71f-0cbd6f539b67}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -699,6 +717,18 @@
     <ClInclude Include="..\public\Weapon_Monster.h">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Element.h">
+      <Filter>02.GameObjects\99.UI\Element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Feature_Click.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Click</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Component.h">
+      <Filter>02.GameObjects\99.UI\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Component_Text.h">
+      <Filter>02.GameObjects\99.UI\Component\Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1058,6 +1088,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Weapon_Monster.cpp">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Element.cpp">
+      <Filter>02.GameObjects\99.UI\Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Feature_Click.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Click</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Component.cpp">
+      <Filter>02.GameObjects\99.UI\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Component_Text.cpp">
+      <Filter>02.GameObjects\99.UI\Component\Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

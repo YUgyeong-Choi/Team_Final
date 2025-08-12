@@ -35,6 +35,7 @@ public:
 	virtual HRESULT Bind_ShaderResources(class CShader* pShader) = 0;
 
 
+
 protected:
 	_int   m_iStartFrame = {0};
 	_int   m_iEndFrame = {60};
@@ -45,7 +46,8 @@ protected:
 
 	_wstring m_strProtoTag = {};
 	
-	
+	// 툴에서 사용?
+	UI_FEATRE_DESC* m_pDesc = {};
 
 public:
 	virtual CComponent* Clone(void* pArg) = 0;
