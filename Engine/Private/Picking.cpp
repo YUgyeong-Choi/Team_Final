@@ -67,7 +67,7 @@ void CPicking::Update()
 
 _bool CPicking::Picking(_float4* pOut)
 {
-	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PickPos"), m_pTexture)))
+	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PBR_Depth"), m_pTexture)))
 		return false;
 	
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
@@ -89,7 +89,38 @@ _bool CPicking::Picking(_float4* pOut)
 
 	_uint			iIndex = ptMouse.y * m_iWidth + ptMouse.x;
 
-	// *pOut = m_pWorldPostions[iIndex].w > 0.f ? m_pWorldPostions[iIndex] : *pOut;
+#pragma region Depth 값으로 월드 포지션 추론(렌더타겟 없어서 어쩔 수 없이 CPU로 계산함)	
+	//현재 뎁스를 가져왔으니, 이것으로 월드를 추론해보자(클릭한 인덱스의 월드 포지션을 구한다)
+	_matrix InvProj = m_pGameInstance->Get_Transform_Matrix_Inv(D3DTS::PROJ);
+	_matrix InvView = m_pGameInstance->Get_Transform_Matrix_Inv(D3DTS::VIEW);
+
+	_float2 UV;
+	UV.x = (ptMouse.x) / static_cast<_float>(m_iWidth);
+	UV.y = (ptMouse.y) / static_cast<_float>(m_iHeight);
+
+	_float zOverW = m_pWorldPostions[iIndex].x; // z/w
+	_float viewZ = m_pWorldPostions[iIndex].y; // 뷰스페이스 상 깊이(Near/Far ~ 1)
+
+	// 1. UV -> NDC
+	_float ndcX = (UV.x - 0.5f) * 2.f;
+	_float ndcY = (UV.y - 0.5f) * -2.f;
+	_float ndcZ = zOverW;
+
+	// 2. 클립 공간 좌표 (z/w를 그대로 넣고 w=1)
+	_vector clipPos = XMVectorSet(ndcX, ndcY, ndcZ, 1.f);
+
+	// 3. NDC -> 뷰 공간
+	_vector viewPos = XMVector4Transform(clipPos, InvProj);
+	viewPos /= XMVectorGetW(viewPos);
+
+	// z는 우리가 가진 viewZ로 대체 가능
+	XMVectorSetZ(viewPos, viewZ);
+
+	// 4. 뷰 공간 -> 월드 공간
+	_vector worldPos = XMVector4Transform(viewPos, InvView);
+
+	XMStoreFloat4(&m_pWorldPostions[iIndex], worldPos);
+#pragma endregion
 
 	*pOut = m_pWorldPostions[iIndex];
 

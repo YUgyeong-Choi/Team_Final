@@ -61,6 +61,16 @@ HRESULT	CDecalTool::Render_ImGui()
 	return S_OK;
 }
 
+HRESULT CDecalTool::Save(const _char* Map)
+{
+	return S_OK;
+}
+
+HRESULT CDecalTool::Load(const _char* Map)
+{
+	return S_OK;
+}
+
 void CDecalTool::Control(_float fTimeDelta)
 {
 	if (GetForegroundWindow() != g_hWnd)
@@ -84,12 +94,28 @@ void CDecalTool::Control(_float fTimeDelta)
 		//}
 	}
 
-	//Ctrl + S 맵 저장
-	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	//클릭하면 가장 가까운 데칼을 포커스 한다.
+	if (m_pGameInstance->Mouse_Up(DIM::LBUTTON) && ImGuizmo::IsOver() == false)
 	{
-		Save();
+		//알트키 누르고 있으면 피킹하지 않음(오브젝트 붙이고나서 오브젝트 변경되는거 막기 위함임)
+		if (m_pGameInstance->Key_Pressing(DIK_LALT))
+			return;
+
+		// ImGui가 마우스 입력을 가져가면 피킹을 하지 않음
+		if (ImGui::GetIO().WantCaptureMouse)
+			return;
+
+		
+		//m_pGameInstance->Picking();
+
+		//Get_ClosestDecalObject();
 	}
 
+}
+
+CDecalToolObject* CDecalTool::Get_ClosestDecalObject(_fvector vPosition)
+{
+	return nullptr;
 }
 
 HRESULT CDecalTool::Spawn_DecalObject()
