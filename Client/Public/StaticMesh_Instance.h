@@ -34,6 +34,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+
 private:
 	CModel_Instance* m_pModelCom = { nullptr };
 	_uint	m_iNumInstance = { 0 };

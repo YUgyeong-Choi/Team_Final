@@ -50,7 +50,7 @@ protected:
 
     // 컨트롤러에서 무시할 자기 Actor 넣는 곳
     unordered_set<PxActor*> m_ignoreActors;
-
+#ifdef _DEBUG
     // For Debug Render
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
     BasicEffect* m_pEffect = { nullptr };
@@ -61,6 +61,7 @@ protected:
     void DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, const PxTransform& pose, float radius, float halfHeight, FXMVECTOR color);
     void DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds);
     void DrawConvexMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds);
+#endif
 public:
     virtual CComponent* Clone(void* pArg) = 0;
     virtual void Free() override;

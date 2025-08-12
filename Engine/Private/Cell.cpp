@@ -45,7 +45,9 @@ _bool CCell::isIn(_fvector vLocalPos, _int* pNeighborIndex)
 
 		if (0 < XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDir), XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])))))
 		{
-			*pNeighborIndex = m_iNeighborIndices[i];
+			if(pNeighborIndex)
+				*pNeighborIndex = m_iNeighborIndices[i];
+
 			return false;
 		}
 			
@@ -124,9 +126,9 @@ void CCell::Free()
 {
 	__super::Free();
 
-
+#ifdef _DEBUG
 	Safe_Release(m_pVIBuffer);
-
+#endif
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 }

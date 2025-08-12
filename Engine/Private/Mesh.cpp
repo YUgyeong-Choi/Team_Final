@@ -174,14 +174,14 @@ HRESULT CMesh::Ready_NonAnim_Mesh(ifstream& ifs, _fmatrix PreTransformMatrix)
 
 	for (size_t i = 0; i < m_iNumVertices; i++)
 	{
-		ifs.read(reinterpret_cast<char*>(&pVertices[i].vPosition), sizeof(_float3));		// Æ÷Áö¼õ
+		ifs.read(reinterpret_cast<char*>(&pVertices[i].vPosition), sizeof(_float3));		
 		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), PreTransformMatrix));
 	
-		ifs.read(reinterpret_cast<char*>(&pVertices[i].vNormal), sizeof(_float3));			// À×µ¦½º
+		ifs.read(reinterpret_cast<char*>(&pVertices[i].vNormal), sizeof(_float3));			
 		XMStoreFloat3(&pVertices[i].vNormal, XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].vNormal), PreTransformMatrix));
 	
-		ifs.read(reinterpret_cast<char*>(&pVertices[i].vTangent), sizeof(_float3));			// ¶¥Á­¶ß
-		ifs.read(reinterpret_cast<char*>(&pVertices[i].vTexcoord), sizeof(_float2));		// ‹õ,²Ù ¾ó¸¶³ª±Í¿±½À¤¤±î
+		ifs.read(reinterpret_cast<char*>(&pVertices[i].vTangent), sizeof(_float3));			
+		ifs.read(reinterpret_cast<char*>(&pVertices[i].vTexcoord), sizeof(_float2));		
 	}
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
@@ -224,9 +224,6 @@ HRESULT CMesh::Ready_Anim_Mesh(const aiMesh* pAIMesh, const vector<class CBone*>
 	}
 
 	/* ÀÌ Á¤Á¡ÀÌ ¿µÇâÀ» ¹Þ´Â »ÀÀÇ Á¤º¸¸¦ ÀúÀåÇÒ ¶§? */
-	/* ¹º¸»ÀÎÁö ¾ËÁö? */
-
-
 
 	m_iNumBones = pAIMesh->mNumBones;
 
@@ -379,6 +376,51 @@ HRESULT CMesh::Ready_Anim_Mesh(ifstream& ifs, const vector<class CBone*>& Bones)
 
 	Safe_Delete_Array(pVertices);
 
+
+	{
+		// t1: Local¡æGlobal (uint)
+		m_iNumBones = static_cast<_int>(m_BoneIndices.size());
+		D3D11_BUFFER_DESC bd{};
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth = sizeof(_uint) * m_iNumBones;
+		bd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		bd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		bd.StructureByteStride = sizeof(_uint);
+
+		D3D11_SUBRESOURCE_DATA initL2G{ m_BoneIndices.data(), 0, 0 };
+		if (FAILED((m_pDevice->CreateBuffer(&bd, &initL2G, &m_pLocalToGlobalBuffer))))
+			return E_FAIL;
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC sd{};
+		sd.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+		sd.Format = DXGI_FORMAT_UNKNOWN;
+		sd.BufferEx.FirstElement = 0;
+		sd.BufferEx.NumElements = m_iNumBones;
+		if (FAILED((m_pDevice->CreateShaderResourceView(m_pLocalToGlobalBuffer, &sd, &m_pLocalToGlobalSRV))))
+			return E_FAIL;
+	}
+	{
+		// t2: Offsets (float4x4)
+		D3D11_BUFFER_DESC bd{};
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.ByteWidth = sizeof(_float4x4) * offSize;
+		bd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		bd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		bd.StructureByteStride = sizeof(_float4x4);
+
+		D3D11_SUBRESOURCE_DATA initOff{ m_OffsetMatrices.data(), 0, 0 };
+		if (FAILED(m_pDevice->CreateBuffer(&bd, &initOff, &m_pOffsetsBuffer)))
+		return E_FAIL;
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC sd{};
+		sd.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+		sd.Format = DXGI_FORMAT_UNKNOWN;
+		sd.BufferEx.FirstElement = 0;
+		sd.BufferEx.NumElements = offSize;
+		if (FAILED(m_pDevice->CreateShaderResourceView(m_pOffsetsBuffer, &sd, &m_pOffsetsSRV)))
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -400,6 +442,15 @@ HRESULT CMesh::Bind_Bone_Matrices(CShader* pShader, const _char* pConstantName, 
 	}
 
 	return pShader->Bind_Matrices(pConstantName, m_BoneMatrices, m_iNumBones);	
+}
+
+HRESULT CMesh::Bind_SkinningSRVs(CShader* pShader)
+{
+	if (FAILED(pShader->Bind_SRV("g_LocalToGlobal", m_pLocalToGlobalSRV))) 
+		return E_FAIL; // VS:t1
+	if (FAILED(pShader->Bind_SRV("g_Offsets", m_pOffsetsSRV)))       
+		return E_FAIL; // VS:t2
+	return S_OK;
 }
 
 CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
@@ -443,5 +494,9 @@ CComponent* CMesh::Clone(void* pArg)
 
 void CMesh::Free()
 {
+	Safe_Release(m_pLocalToGlobalBuffer);
+	Safe_Release(m_pLocalToGlobalSRV);
+	Safe_Release(m_pOffsetsBuffer);
+	Safe_Release(m_pOffsetsSRV);
 	__super::Free();
 }

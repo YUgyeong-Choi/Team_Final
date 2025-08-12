@@ -98,7 +98,7 @@ _bool CPicking::Picking(_float4* pOut)
 
 _bool CPicking::PickByClick(_int* pOut)
 {
-	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_Depth"), m_pTexture)))
+	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PBR_Depth"), m_pTexture)))
 		return false;
 
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
@@ -130,7 +130,7 @@ _bool CPicking::PickByClick(_int* pOut)
 
 _bool CPicking::PickInRect(const _float2& vStart, const _float2& vEnd, set<_int>* pOut)
 {
-	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_Depth"), m_pTexture)))
+	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PBR_Depth"), m_pTexture)))
 		return false;
 
 	D3D11_MAPPED_SUBRESOURCE SubResource{};

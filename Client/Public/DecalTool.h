@@ -27,6 +27,7 @@ private:
 
 private:
 	HRESULT Spawn_DecalObject();
+	HRESULT Save();
 
 private:
 	void Render_Detail();

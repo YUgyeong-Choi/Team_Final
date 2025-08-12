@@ -77,10 +77,31 @@ HRESULT CStaticMesh_Instance::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		_float Emissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
+			return E_FAIL;
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+		{
 			return E_FAIL;
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
-			return E_FAIL;
+			//if (!m_bEmissive)
+			//{
+			//	/* Com_Emissive */
+			//	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_Emissive")),
+			//		TEXT("Com_Emissive"), reinterpret_cast<CComponent**>(&m_pEmissiveCom))))
+			//		return E_FAIL;
+			//	m_bEmissive = true;
+			//}
+
+			//Emissive = 1.f;
+			//if (FAILED(m_pEmissiveCom->Bind_ShaderResource(m_pShaderCom, "g_Emissive", 0)))
+			//	return E_FAIL;
+			//if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
+			//	return E_FAIL;
+		}
+
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
 			if (!m_bDoOnce)
@@ -107,6 +128,7 @@ HRESULT CStaticMesh_Instance::Render()
 HRESULT CStaticMesh_Instance::Ready_Components(void* pArg)
 {
 	STATICMESHINSTANCE_DESC* Desc = static_cast<STATICMESHINSTANCE_DESC*>(pArg);
+	m_szMeshFullID = Desc->szModelPrototypeTag;
 
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh_Instance")),

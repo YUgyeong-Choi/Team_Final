@@ -184,7 +184,6 @@ HRESULT CWeapon::Bind_Shader()
 }
 HRESULT CWeapon::Ready_Components()
 {
-
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))

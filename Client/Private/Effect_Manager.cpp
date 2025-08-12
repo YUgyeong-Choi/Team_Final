@@ -326,8 +326,8 @@ HRESULT CEffect_Manager::Ready_Prototype_VIBuffers(const json& j)
 
 void CEffect_Manager::Free()
 {
-    Safe_Release(m_pGameInstance);
-
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
+
+    Safe_Release(m_pGameInstance);
 }

@@ -165,11 +165,12 @@ void CGameObject::Free()
 	__super::Free();
 
 	Safe_Release(m_pGameInstance);
-	Safe_Release(m_pTransformCom);
 
 	for (auto& Pair : m_Components)
 		Safe_Release(Pair.second);
 	m_Components.clear();
+
+	Safe_Release(m_pTransformCom);
 
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);

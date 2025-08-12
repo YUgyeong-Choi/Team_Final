@@ -298,6 +298,24 @@
     <Filter Include="02.GameObjects\03.Weapon\99. Monster">
       <UniqueIdentifier>{c592ffc8-b53a-43c4-9123-ad8352b7a2f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\NavTool">
+      <UniqueIdentifier>{fb47ea16-04a8-482d-8ea8-15112d892ac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.Nav">
+      <UniqueIdentifier>{a6ec052f-24ca-4b62-ada4-db0358cc29f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11.Decal">
+      <UniqueIdentifier>{0a277024-54fc-40e1-bd4a-bbb2aab389ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11.Decal\Static_Decal">
+      <UniqueIdentifier>{63ea44a1-2c81-4dd5-9e5f-30d93f45d959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss">
+      <UniqueIdentifier>{e085ecdf-fce6-4c5e-830b-3aa32d251fbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\Fuoco">
+      <UniqueIdentifier>{d9857476-da8f-4f1b-bcaa-d6c49b41d4a6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Element">
       <UniqueIdentifier>{d72f2c3b-44c8-4ed6-9e56-a971259aa170}</UniqueIdentifier>
     </Filter>
@@ -717,6 +735,22 @@
     <ClInclude Include="..\public\Weapon_Monster.h">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\NavTool.h">
+      <Filter>01.Levels\LevelYW\YWTool\NavTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Nav.h">
+      <Filter>02.GameObjects\10.Nav</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Decal.h">
+      <Filter>02.GameObjects\11.Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Static_Decal.h">
+      <Filter>02.GameObjects\11.Decal\Static_Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Decal.h" />
+    <ClInclude Include="..\public\Fuoco.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\UI_Element.h">
       <Filter>02.GameObjects\99.UI\Element</Filter>
     </ClInclude>
@@ -1089,6 +1123,22 @@
     <ClCompile Include="..\private\Weapon_Monster.cpp">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\NavTool.cpp">
+      <Filter>01.Levels\LevelYW\YWTool\NavTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Nav.cpp">
+      <Filter>02.GameObjects\10.Nav</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp" />
+    <ClCompile Include="..\private\Fuoco.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Decal.cpp">
+      <Filter>02.GameObjects\11.Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Static_Decal.cpp">
+      <Filter>02.GameObjects\11.Decal\Static_Decal</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\UI_Element.cpp">
       <Filter>02.GameObjects\99.UI\Element</Filter>
     </ClCompile>
@@ -1145,7 +1195,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_ParticleEffect.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPos.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Decal.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTrail.hlsl">

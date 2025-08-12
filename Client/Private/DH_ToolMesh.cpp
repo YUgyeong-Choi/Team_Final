@@ -49,6 +49,29 @@ void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 {
 	if (m_bDead)
 		m_pGameInstance->Remove_Light(ENUM_CLASS(LEVEL::DH), m_pLight);
+
+	/* [ 플레이어 찾기 ] */
+	if (!m_pPlayer)
+		m_pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+
+	/* [ 플레이어와 거리 측정 ] */
+	if (m_pPlayer)
+	{
+		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vMyPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+		_vector vDiff = XMVectorSubtract(vPlayerPos, vMyPos);
+		vDiff = XMVectorSetY(vDiff, 0.f);
+
+		_float fDistSq = XMVectorGetX(XMVector3LengthSq(vDiff));
+		const _float fTh = 25.f;
+		const _float fThSq = fTh * fTh;
+
+		if (fDistSq > fThSq)
+			SetIsPlayerFar(true);
+		else
+			SetIsPlayerFar(false);
+	}
 }
 
 void CDH_ToolMesh::Update(_float fTimeDelta)
@@ -144,6 +167,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fFogDensity = 0.f;
 		LightDesc.fFogCutoff = 15.f;
 		LightDesc.bIsVolumetric = true;
+		LightDesc.bIsPlayerFar = false;
 	}
 	if (m_szMeshID == TEXT("SpotLight"))
 	{
@@ -161,6 +185,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fFogDensity = 0.f;
 		LightDesc.fFogCutoff = 15.f;
 		LightDesc.bIsVolumetric = true;
+		LightDesc.bIsPlayerFar = false;
 
 	}
 	if (m_szMeshID == TEXT("DirrectionalLight"))
@@ -174,6 +199,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 		LightDesc.fFogDensity = 0.f;
 		LightDesc.bIsVolumetric = true;
+		LightDesc.bIsPlayerFar = false;
 	}
 
 	//m_eTargetLevel = LEVEL::DH;

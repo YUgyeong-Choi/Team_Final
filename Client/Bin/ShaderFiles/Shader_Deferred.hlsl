@@ -15,7 +15,10 @@ Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
 
 //데칼 텍스쳐
-Texture2D g_DecalTexture;
+Texture2D g_DecalAMRT;
+Texture2D g_DecalN;
+Texture2D g_DecalBC;
+Texture2D g_DecalVolumeMesh;
 
 /* [ Blur ] */
 Texture2D g_PreBlurTexture;
@@ -64,14 +67,14 @@ vector g_vLightDir;
 vector g_vLightPos;
 vector g_vLightDiffuse;
 vector g_vLightSpecular;
-float  g_fLightAmbient;
-float  g_fLightRange;
-float  g_fInnerCosAngle;
-float  g_fOuterCosAngle;
-float  g_fFalloff;
-float  g_fLightIntencity = 1.f;
+float g_fLightAmbient;
+float g_fLightRange;
+float g_fInnerCosAngle;
+float g_fOuterCosAngle;
+float g_fFalloff;
+float g_fLightIntencity = 1.f;
 
-float  g_fMtrlAmbient = 1.f;
+float g_fMtrlAmbient = 1.f;
 vector g_vMtrlSpecular = 1.f;
 
 vector g_vCamPosition;
@@ -215,7 +218,7 @@ VS_OUT VS_MAIN(VS_IN In)
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
-    float2 vTexcoord : TEXCOORD0;    
+    float2 vTexcoord : TEXCOORD0;
 };
 
 struct PS_OUT
@@ -241,8 +244,8 @@ struct PS_OUT_LIGHT
 
 struct PS_OUT_PBR
 {
-    vector vSpecular    : SV_TARGET0;
-    vector vFinal       : SV_TARGET1;
+    vector vSpecular : SV_TARGET0;
+    vector vFinal : SV_TARGET1;
 };
 
 struct PS_OUT_VOLUMETRIC
@@ -256,13 +259,21 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     
+    //데칼
+    vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
+    //SRC
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+    //DES
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    //ARMT로 알파값 보간
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
     
     float fShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_fLightAmbient * g_fMtrlAmbient);
     
     Out.vShade = g_vLightDiffuse * saturate(fShade);
     
-    vector  vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);    
+    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     
     vector vWorldPos;
@@ -277,7 +288,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     vWorldPos = vWorldPos * fViewZ;
     
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);          
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
     
     vector vReflect = reflect(normalize(g_vLightDir), vNormal);
     vector vLook = vWorldPos - g_vCamPosition;
@@ -292,10 +303,17 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     PS_OUT_LIGHT Out;
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
-    
+
+    //데칼
+    vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
+    //SRC
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+    //DES
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    //ARMT로 알파값 보간
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
     
-        
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     
@@ -347,6 +365,20 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
     float3 Ambient = Albedo * 0.1f * AO;
+    
+    /* [ 데칼 ARM 불러오기 ] */
+    vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
+
+    /* Normal 블렌딩 */
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a));
+
+    /* ARM 블렌딩 */
+    AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g, vDecalAMRTDesc.a);
+    Metallic = lerp(Metallic, vDecalAMRTDesc.b, vDecalAMRTDesc.a);
+
     
     // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;
@@ -500,7 +532,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     radiance *= 3.5f;
 
     // [ 최종 조명 ]
-    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt;//    +Ambient;
+    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt; //    +Ambient;
     float3 Specalur = Specular * radiance;
 
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
@@ -600,7 +632,7 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     radiance *= 3.5f;
     
     // [ 최종 조명 ]
-    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt;//    +Ambient;
+    float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO * fAtt; //    +Ambient;
     float3 Specalur = Specular * radiance;
     
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
@@ -640,7 +672,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
     {
         float scaleZ = viewZ / max(viewPos.z, 0.0001f);
         viewPos *= scaleZ;
-    }   
+    }
 
     /* [ Volumetric Raymarching 기법 ] */
     float4 ViewSpacePosition = viewPos;
@@ -656,7 +688,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
 
     float3 PixelWorldPos = mul(float4(ViewSpacePosition.xyz, 1.0f), g_ViewMatrixInv).xyz;
     float3 LightSamplePos = PixelWorldPos;
-    float3 RayOrigin = float3(0.f,0.f,0.f);
+    float3 RayOrigin = float3(0.f, 0.f, 0.f);
     float3 RayDir = normalize(ViewSpacePosition.xyz);
     float3 RayPos = RayOrigin;
     
@@ -859,7 +891,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
         float transmittance = 1.0f - shadow;
 
         // [ 누적 ]
-        LightFog += density * transmittance * softFalloff * spotFalloff * StepSize * 0.05f;        
+        LightFog += density * transmittance * softFalloff * spotFalloff * StepSize * 0.05f;
         
     }
     
@@ -882,7 +914,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
-    Out.vBackBuffer = vDiffuse * vShade + vSpecular;   
+    Out.vBackBuffer = vDiffuse * vShade + vSpecular;
     finalColor = Out.vBackBuffer;
     
     /* [ PBR 매쉬 ] */
@@ -911,8 +943,13 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     //    discard;
 
     //데칼 입히기
-    vector vDecal = g_DecalTexture.Sample(DefaultSampler, In.vTexcoord);
-    finalColor.rgb = finalColor.rgb * (1 - vDecal.a) + vDecal.rgb * vDecal.a;
+    vector vDecalARMT = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalBC = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
+    finalColor.rgb = finalColor.rgb * (1 - vDecalARMT.a) + vDecalBC.rgb * vDecalARMT.a;
+    
+    //데칼 볼륨메쉬(디버그)
+    vector vDecalVolumeMesh = g_DecalVolumeMesh.Sample(DefaultSampler, In.vTexcoord);
+    finalColor = finalColor * (1 - vDecalVolumeMesh.a) + vDecalVolumeMesh.a * vDecalVolumeMesh;
     
     Out.vBackBuffer = finalColor;
 
@@ -1008,7 +1045,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     if (Out.vBackBuffer.a < 0.003f)
         discard;
     
-    return Out;    
+    return Out;
 }
 
 float g_f7Weights[7] =
@@ -1020,7 +1057,7 @@ float g_f13Weights[13] =
 {
     0.01855, 0.03416, 0.05634, 0.08316, 0.10971, 0.12962,
     0.13703,
-    0.12962, 0.10971, 0.08316, 0.05634, 0.03416, 0.01855 
+    0.12962, 0.10971, 0.08316, 0.05634, 0.03416, 0.01855
 };
 
 float g_f21Weights[21] =
@@ -1076,7 +1113,7 @@ PS_OUT PS_MAIN_BLURY(PS_IN In)
 }
 
 PS_OUT PS_EFFECT_GLOW(PS_IN In)
-{   
+{
     PS_OUT Out;
     
     Out.vBackBuffer = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -1200,7 +1237,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);        
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -1300,7 +1337,7 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_EFFECT_GLOW();
-    }   
+    }
     pass Downscale_Copy //14 다운스케일 용으로 만들었는데 그냥 카피만 해주는 패스임
     {
         SetRasterizerState(RS_Default);

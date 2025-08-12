@@ -3,6 +3,7 @@
 #pragma warning (disable : 4251)
 
 #include <d3d11.h>
+#include <wrl.h>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
 
@@ -26,7 +27,7 @@
 
 #include <d3dcompiler.h>
 using namespace DirectX;
-
+using Microsoft::WRL::ComPtr;
 #include <string>
 #include <map>
 #include <list>
@@ -68,6 +69,10 @@ namespace Engine
 
 	const unsigned int g_iMiddleWidth = 3200;
 	const unsigned int g_iMiddleHeight = 1800;
+
+
+	const unsigned int g_iSmallWidth = 800;
+	const unsigned int g_iSmallHeight = 450;
 
 	extern _bool g_bSceneChanging;
 }

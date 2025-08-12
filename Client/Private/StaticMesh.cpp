@@ -1,6 +1,8 @@
 #include "StaticMesh.h"
 #include "GameInstance.h"
 
+
+
 CStaticMesh::CStaticMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -26,6 +28,8 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 
 	m_eLevelID = StaicMeshDESC->m_eLevelID;
 
+	m_bUseOctoTree = StaicMeshDESC->bUseOctoTree;
+
 	m_szMeshID = StaicMeshDESC->szMeshID;
 
 	m_iRender = StaicMeshDESC->iRender;
@@ -37,6 +41,9 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	//충돌체 종류
 	m_eColliderType = StaicMeshDESC->eColliderType;
 
+	//라이트 모양
+	m_iLightShape = StaicMeshDESC->iLightShape;
+
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
 		return E_FAIL;
 
@@ -47,13 +54,6 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
-
-	//if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
-	//	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
-	//else
-	//	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
-
-	//Update_ColliderPos();
 
 	return S_OK;
 }
@@ -69,27 +69,19 @@ void CStaticMesh::Update(_float fTimeDelta)
 
 void CStaticMesh::Late_Update(_float fTimeDelta)
 {
-
-	// 왜 이거 안되지?
-	
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	/* [ 쿼드트리를 사용하지않을 경우 절두체랑 직접 비교한다. ] */
+	if (!m_bUseOctoTree)
 	{
-		//_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
-		//CGameObject::Compute_ViewZ(&vTemp);
-		//m_pGameInstance->Begin_Occlusion(this, m_pPhysXActorCom);
-
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		}
 	}
-	
 
-	// 왜 이거 안되지?
-	/*if (m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 1.f))
-	{
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
-	}*/
-
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	//if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	//{
+	//	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	//}
 }
 
 void CStaticMesh::Last_Update(_float fTimeDelta)
@@ -116,10 +108,31 @@ HRESULT CStaticMesh::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		_float Emissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
+			return E_FAIL;
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+		{
 			return E_FAIL;
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
-			return E_FAIL;
+			//if (!m_bEmissive)
+			//{
+			//	/* Com_Emissive */
+			//	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_Emissive")),
+			//		TEXT("Com_Emissive"), reinterpret_cast<CComponent**>(&m_pEmissiveCom))))
+			//		return E_FAIL;
+			//	m_bEmissive = true;
+			//}
+
+			//Emissive = 1.f;
+			//if (FAILED(m_pEmissiveCom->Bind_ShaderResource(m_pShaderCom, "g_Emissive", 0)))
+			//	return E_FAIL;
+			//if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
+			//	return E_FAIL;
+		}
+
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
 			if (!m_bDoOnce)
@@ -164,6 +177,15 @@ HRESULT CStaticMesh::Render()
 	return S_OK;
 }
 
+AABBBOX CStaticMesh::GetWorldAABB() const
+{
+	PxBounds3 wb = m_pPhysXActorCom->Get_Actor()->getWorldBounds();
+	AABBBOX worldBox{ {wb.minimum.x, wb.minimum.y, wb.minimum.z},
+					  {wb.maximum.x, wb.maximum.y, wb.maximum.z} };
+
+	return worldBox;
+}
+
 void CStaticMesh::Update_ColliderPos()
 {
 	/*
@@ -195,6 +217,7 @@ void CStaticMesh::Update_ColliderPos()
 HRESULT CStaticMesh::Ready_Components(void* pArg)
 {
 	CStaticMesh::STATICMESH_DESC* StaicMeshDESC = static_cast<STATICMESH_DESC*>(pArg);
+	m_szMeshFullID = StaicMeshDESC->szModelPrototypeTag;
 
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
@@ -358,6 +381,7 @@ void CStaticMesh::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pEmissiveCom);
 
 	Safe_Release(m_pPhysXActorCom);
 }

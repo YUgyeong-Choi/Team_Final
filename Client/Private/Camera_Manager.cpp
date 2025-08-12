@@ -128,7 +128,6 @@ void CCamera_Manager::Play_CutScene(CUTSCENE_TYPE cutSceneType)
 void CCamera_Manager::SetPlayer(CGameObject* pPlayer)
 {
     m_pCamera_Orbital->SetPlayer(pPlayer);
-    m_pCamera_Orbital->Set_InitCam();
 }
 void CCamera_Manager::Shake_Camera(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot)
 {

@@ -33,8 +33,10 @@ public:
 		/* [ 특수키 입력 ] */
 		_bool bShift;
 		_bool bCtrl;
+		_bool bCtrlPress;
 		_bool bItem;
 		_bool bTap;
+		_bool bSkill;
 		_bool bSpaceUP;
 		_bool bSpaceDown;
 
@@ -43,7 +45,8 @@ public:
 	enum class eAnimCategory
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
-		STRONG_ATTACKA,STRONG_ATTACKB,CHARGE_ATTACKA,CHARGE_ATTACKB,SPRINT_ATTACK,MAINSKILL,SIT,FIRSTDOOR
+		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, END
 	};
 
 protected:
@@ -106,6 +109,8 @@ private: /* [ 이동로직 ] */
 
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Weapon();
+	HRESULT Ready_Lamp();
+	HRESULT Ready_StationDoor();
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
@@ -124,6 +129,11 @@ private: /* [ 상호작용 관련 ] */
 	void Interaction_Door();
 
 	void Play_CutScene_Door();
+
+private:
+	void ItemWeaponOFF(_float fTimeDelta);
+	void ItemLampON(_float fTimeDelta);
+	void SlidDoorMove(_float fTimeDelta);
 
 	
 private: // 슬롯 용
@@ -154,6 +164,10 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_Gard;
 	friend class CPlayer_SprintAttackA;
 	friend class CPlayer_SprintAttackB;
+	friend class CPlayer_ArmAttackA;
+	friend class CPlayer_ArmAttackB;
+	friend class CPlayer_ArmCharge;
+	friend class CPlayer_MainSkill;
 
 
 private: /* [ 상태 변수 ] */
@@ -170,13 +184,19 @@ protected:
 	CPhysXController* m_pControllerCom = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
+
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
 
+private: /* [ 램프 온 오프 ] */
+	_bool m_bLampOnOff = { false };
+	class CDH_ToolMesh* m_pLamp = { nullptr };
+
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*	m_pTarget = { nullptr };
 	CWeapon*		m_pWeapon = { nullptr };
+	CGameObject*	m_pInterectionStuff = { nullptr };
 
 private: /* [ 공격관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
@@ -193,11 +213,23 @@ private: /* [ 이동관련 변수 ] */
 	_bool    m_bMovable = { true };
 
 	string	 m_strPrevStateName;
+	_bool    m_bMoveReset = {};
 	_bool    m_bMove = {};
 	_bool    m_bSit = {};
 	_float   m_fSitTime = {};
 	_float   m_fMoveTime = {};
 	_int	 m_iMoveStep = {};
+
+private: /* [ 인터렉션 관련변수 ] */
+	_bool  m_bInteraction[9] = { false };
+	_bool  m_bInteractionMove[9] = { false };
+	_bool  m_bInteractionRotate[9] = { false };
+	_float m_fInteractionTime[9] = { 0 };
+
+
+private: /* [ 아이템 사용 관련 변수 ] */
+	_bool	 m_bItemSwitch = {};
+	_float	 m_fItemTime = {};
 
 	unordered_set<string> m_MovableStates = {
 		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",

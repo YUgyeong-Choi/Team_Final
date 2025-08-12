@@ -20,8 +20,8 @@ HRESULT CDecalTool::Initialize_Prototype()
 
 HRESULT CDecalTool::Initialize(void* pArg)
 {
-	m_pFocusObject = static_cast<CDecalToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_TestDecal")));
-	Safe_AddRef(m_pFocusObject);
+	/*m_pFocusObject = static_cast<CDecalToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_TestDecal")));
+	Safe_AddRef(m_pFocusObject);*/
 
 
 	return S_OK;
@@ -48,8 +48,15 @@ HRESULT CDecalTool::Render()
 HRESULT	CDecalTool::Render_ImGui()
 {
 	ImGui::Begin("Decal Tool", nullptr);
-	Render_Detail();
+
+	if(ImGui::Button("Spawn Decal"))
+	{
+		Spawn_DecalObject();
+	}
+
 	ImGui::End();
+
+	Render_Detail();
 
 	return S_OK;
 }
@@ -76,12 +83,77 @@ void CDecalTool::Control(_float fTimeDelta)
 
 		//}
 	}
+
+	//Ctrl + S 맵 저장
+	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
+	{
+		Save();
+	}
+
 }
 
 HRESULT CDecalTool::Spawn_DecalObject()
 {
+	//소환하고 포커스 변경
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"))))
+		return E_FAIL;
+
+	Safe_Release(m_pFocusObject);
+	m_pFocusObject = static_cast<CDecalToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal")));
+	Safe_AddRef(m_pFocusObject);
+
 	return S_OK;
 }
+
+HRESULT CDecalTool::Save()
+{
+	filesystem::create_directories("../Bin/Save/DecalTool");
+	ofstream DecalDataFile("../Bin/Save/DecalTool/DecalData.json");
+
+	if (!DecalDataFile.is_open())
+		return E_FAIL;
+
+	// 전체 디칼 데이터를 담을 JSON
+	json DecalList = json::array();
+
+	for (CGameObject* pObj : m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal")))
+	{
+		// 월드 행렬 얻기
+		_matrix matWorld = pObj->Get_TransfomCom()->Get_WorldMatrix();
+		_float4x4 matWorldFloat4x4;
+		XMStoreFloat4x4(&matWorldFloat4x4, matWorld);
+
+		// 4x4 행렬을 배열로 저장
+		json MatrixJson = json::array();
+		for (_int i = 0; i < 4; ++i)
+		{
+			json Row = json::array();
+			for (_int j = 0; j < 4; ++j)
+			{
+				Row.push_back(matWorldFloat4x4.m[i][j]);
+			}
+			MatrixJson.push_back(Row);
+		}
+
+		// 디칼 개체 정보 추가
+		json DecalJson;
+		DecalJson["WorldMatrix"] = MatrixJson;
+
+		// 필요한 경우, 오브젝트 이름이나 ID도 저장 가능
+		// DecalJson["Name"] = pObj->Get_Name(); 또는 ID 등
+
+		// 리스트에 추가
+		DecalList.push_back(DecalJson);
+	}
+
+	// JSON 파일에 기록
+	DecalDataFile << DecalList.dump(4); // 들여쓰기 4칸으로 보기 좋게 출력
+	DecalDataFile.close();
+
+	return S_OK;
+}
+
 
 void CDecalTool::Render_Detail()
 {

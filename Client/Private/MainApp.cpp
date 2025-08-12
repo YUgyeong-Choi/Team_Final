@@ -72,9 +72,9 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Update(_float fTimeDelta)
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	m_fTimeAcc += fTimeDelta;
-#endif
+//#endif
 
 	m_pGameInstance->Update_Engine(fTimeDelta);
 }
@@ -85,7 +85,7 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	++m_iRenderCount;
 
 	if (m_fTimeAcc >= 1.f)
@@ -94,9 +94,10 @@ HRESULT CMainApp::Render()
 		m_fTimeAcc = 0.f;
 		m_iRenderCount = 0;
 	}
-#endif
 
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+//#endif
+
 
 	m_pGameInstance->End_Draw();
 
@@ -121,6 +122,18 @@ HRESULT CMainApp::Ready_Fonts()
 
 HRESULT CMainApp::Ready_Prototype_Component()
 {
+#pragma region 데칼
+	/* For.Prototype_Component_VIBuffer_VolumeMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),
+		CVIBuffer_VolumeMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxPos */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Decal"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Decal.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements))))
+		return E_FAIL;
+#pragma endregion
+
 	/* For.Prototype_Component_VIBuffer_Rect*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
@@ -249,6 +262,9 @@ HRESULT CMainApp::Ready_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_DefaultARM"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ARM_Default.png")))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Emissive"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Emissive.dds")))))
 		return E_FAIL;
 
 	return S_OK;
@@ -390,12 +406,15 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
-	m_pGameInstance->Release_Engine();
-
-	Safe_Release(m_pGameInstance);
-
 	/* [ 싱글톤 삭제 ] */
 	CCamera_Manager::Destroy_Instance();
 	CEffect_Manager::Destroy_Instance();
 	CLockOn_Manager::Destroy_Instance();
+
+	if (m_pGameInstance) {
+		m_pGameInstance->Release_Engine(); 
+		m_pGameInstance = nullptr;       
+	}
+	
+	// Safe_Release(m_pGameInstance); 이거하니까 오류남 DestoryInstance뒤에 해줘서
 }

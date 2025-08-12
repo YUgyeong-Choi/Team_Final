@@ -23,8 +23,10 @@ public:
 
 public:
 	HRESULT Bind_Bone_Matrices(class CShader* pShader, const _char* pConstantName, const vector<class CBone*>& Bones);
-
-
+	HRESULT Bind_SkinningSRVs(class CShader* pShader);
+	ID3D11Buffer* GetLocalToGlobalBuffer() const { return m_pLocalToGlobalBuffer; }
+	ID3D11Buffer* GetOffsetsBuffer()      const { return m_pOffsetsBuffer; }
+	UINT          GetNumBones()           const { return m_iNumBones; }
 private:
 	_char			m_szName[MAX_PATH] = {};
 	_uint			m_iMaterialIndex = {};
@@ -37,6 +39,11 @@ private:
 	vector<_int>			m_BoneIndices;
 	_float4x4				m_BoneMatrices[g_iMaxNumBones] = {};
 	vector<_float4x4>		m_OffsetMatrices;
+
+	ID3D11Buffer* m_pLocalToGlobalBuffer = nullptr;
+	ID3D11ShaderResourceView* m_pLocalToGlobalSRV = nullptr;
+	ID3D11Buffer* m_pOffsetsBuffer = nullptr;
+	ID3D11ShaderResourceView* m_pOffsetsSRV = nullptr;
 
 private:
 	HRESULT Ready_NonAnim_Mesh(const aiMesh* pAIMesh, _fmatrix PreTransformMatrix);

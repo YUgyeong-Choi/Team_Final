@@ -24,6 +24,9 @@ public:
 	void Set_TransformationMatrix(_fmatrix TransformationMatrix) {
 		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
 	}
+	void Set_CombinedTransformationMatrix(_fmatrix CombinedTransformationMatrix) {
+		XMStoreFloat4x4(&m_CombinedTransformationMatrix, CombinedTransformationMatrix);
+	}
 
 	const _float4x4& Get_LocalBindPose() const { return m_LocalBindPoseMatrix; }
 
@@ -61,6 +64,10 @@ public:
 		m_bApplyRootMotion = bApply;
 	}
 
+	_int Get_UseParentIndex() const {
+		return m_iUseParentIndex;
+	}
+
 private:
 	_char					m_szName[MAX_PATH] = {};
 
@@ -75,6 +82,7 @@ private:
 	_int					m_iParentBoneIndex = { -1 };
 	_int	                m_iPrevParentBoneIndex = { -1 }; // ¿Ã¿¸ ∫Œ∏ ª¿ ¿Œµ¶Ω∫.
 	_int					m_iBoneIndex = { -1 }; // ¿Ã ª¿¿« ¿Œµ¶Ω∫. (∏µ®ø°º≠¿« ¿Œµ¶Ω∫)
+	_int                    m_iUseParentIndex = { -1 };
 	_bool                   m_bApplyRootMotion = true;
 
 	_float4x4  m_LocalBindPoseMatrix = {};

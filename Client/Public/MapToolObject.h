@@ -15,6 +15,15 @@ NS_BEGIN(Client)
 class CMapToolObject final : public CGameObject
 {
 	friend class CMapTool;
+	
+public:
+	enum class LOD
+	{
+		LOD0 = 0,
+		LOD1,
+		LOD2,
+		END
+	};
 
 public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
@@ -31,6 +40,7 @@ public:
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
+		_int		iLightShape = { 0 }; //라이트 모양
 	}MAPTOOLOBJ_DESC;
 
 private:
@@ -60,7 +70,7 @@ public:
 	}
 
 	_uint Get_ID() const {
-		return m_iID;
+	return m_iID;
 	}
 
 	const string& Get_ModelName() const {
@@ -85,8 +95,14 @@ private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
 
 private:
+	_int	m_iLightShape = { 0 }; // 라이트 모양
+
+private:
+	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태
+
+private:
 	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
+	CModel* m_pModelCom[ENUM_CLASS(LOD::END)] = {nullptr};
 	CPhysXDynamicActor* m_pPhysXActorConvexCom = { nullptr };
 	CPhysXStaticActor*	m_pPhysXActorTriangleCom = { nullptr };
 

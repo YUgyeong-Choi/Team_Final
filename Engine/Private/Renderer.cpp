@@ -6,15 +6,15 @@
 
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: m_pDevice { pDevice }
-	, m_pContext { pContext }
-	, m_pGameInstance { CGameInstance::Get_Instance()}
+	: m_pDevice{ pDevice }
+	, m_pContext{ pContext }
+	, m_pGameInstance{ CGameInstance::Get_Instance() }
 {
 
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
-	
+
 }
 
 HRESULT CRenderer::Initialize()
@@ -45,7 +45,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Normal"))))
-		return E_FAIL;		
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_PickPos"))))
@@ -53,10 +53,35 @@ HRESULT CRenderer::Initialize()
 
 
 #pragma region 데칼
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_AMRT"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
+
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_N"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_BC"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+#ifdef _DEBUG
+	//볼륨메쉬 디버그 렌더용
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_VolumeMesh"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+#endif // _DEBUG
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal_AMRT"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal_N"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal_BC"))))
+		return E_FAIL;
+
+#ifdef _DEBUG
+	//볼륨메쉬 디버그 렌더용
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal_VolumeMesh"))))
+		return E_FAIL;
+#endif // _DEBUG
 #pragma endregion
 
 
@@ -183,7 +208,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Revealage"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(1.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	// 글로우가 필요한 이펙트를 따로 모아두는 렌더타겟.
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Emissive"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT , _float4(0.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Emissive"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Accumulation"))))
 		return E_FAIL;
@@ -314,15 +339,19 @@ HRESULT CRenderer::Initialize()
 
 #pragma region YW Debug
 
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Diffuse"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Diffuse"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Normal"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
+	//	return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
+		return E_FAIL;*/
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_AMRT"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Normal"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_N"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Depth"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Shade"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal"), GetTargetX(1), GetTargetY(0), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Decal_BC"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
 
 #pragma endregion
@@ -335,7 +364,7 @@ HRESULT CRenderer::Initialize()
 
 HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pRenderObject)
 {
-	if (eRenderGroup >=	RENDERGROUP::RG_END ||
+	if (eRenderGroup >= RENDERGROUP::RG_END ||
 		nullptr == pRenderObject)
 		return E_FAIL;
 
@@ -349,8 +378,8 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pRende
 HRESULT CRenderer::Draw()
 {
 
-	
-	
+
+
 	if (FAILED(Render_Priority()))
 	{
 		MSG_BOX("Render Priority Failed");
@@ -362,22 +391,22 @@ HRESULT CRenderer::Draw()
 		MSG_BOX("Render_Shadow Failed");
 		return E_FAIL;
 	}
-	
+
 	if (FAILED(Render_NonBlend()))
 	{
 		MSG_BOX("Render_NonBlend Failed");
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Decal()))
-	{
-		MSG_BOX("Render_Decal Failed");
-		return E_FAIL;
-	}
-
 	if (FAILED(Render_PBRMesh()))
 	{
 		MSG_BOX("Render_PBRMesh Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Decal()))
+	{
+		MSG_BOX("Render_Decal Failed");
 		return E_FAIL;
 	}
 
@@ -409,7 +438,7 @@ HRESULT CRenderer::Draw()
 		MSG_BOX("Render_Effect_Blend Failed");
 		return E_FAIL;
 	}
-	
+
 	if (FAILED(Render_Effect_WB_Composite()))
 	{
 		MSG_BOX("Render_Effect_WB_Composite Failed");
@@ -465,14 +494,14 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	
+
 	if (FAILED(Render_UI_Deferred()))
 	{
 		MSG_BOX("Render_UI_Deferred Failed");
 		return E_FAIL;
 	}
-	
-	
+
+
 	if (FAILED(Render_UI()))
 	{
 		MSG_BOX("Render_UI Failed");
@@ -491,7 +520,7 @@ HRESULT CRenderer::Draw()
 	}
 
 #endif
-	
+
 
 	return S_OK;
 }
@@ -639,9 +668,9 @@ HRESULT CRenderer::Render_Blend()
 HRESULT CRenderer::Render_UI()
 {
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
-	{
-		return dynamic_cast<CUIObject*>(pSour)->Get_Depth() > dynamic_cast<CUIObject*>(pDest)->Get_Depth();
-	});
+		{
+			return dynamic_cast<CUIObject*>(pSour)->Get_Depth() > dynamic_cast<CUIObject*>(pDest)->Get_Depth();
+		});
 
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI)])
@@ -656,9 +685,9 @@ HRESULT CRenderer::Render_UI()
 
 	//
 
-	
 
-	
+
+
 
 	return S_OK;
 }
@@ -670,7 +699,7 @@ HRESULT CRenderer::Render_Lights()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
-		return E_FAIL;	
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
 		return E_FAIL;
 
@@ -728,7 +757,7 @@ HRESULT CRenderer::Render_PBRLights()
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
-		return E_FAIL; 
+		return E_FAIL;
 
 	m_pGameInstance->Render_PBR_Lights(m_pShader, m_pVIBuffer, m_iCurrentRenderLevel);
 
@@ -743,7 +772,7 @@ HRESULT CRenderer::Render_Volumetric()
 {
 	/* [ 렌더타겟 클리어 x , 뎁스 클리어 x ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Volumetric"));
-		
+
 	/* [ 볼륨메트리를 위한 매핑 ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_DepthTexture")))
 		return E_FAIL;
@@ -800,8 +829,16 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 
 	//데칼 텍스쳐
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal"), m_pShader, "g_DecalTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_AMRT"), m_pShader, "g_DecalAMRT")))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_N"), m_pShader, "g_DecalN")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_BC"), m_pShader, "g_DecalBC")))
+		return E_FAIL;
+#ifdef _DEBUG
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_VolumeMesh"), m_pShader, "g_DecalVolumeMesh")))
+		return E_FAIL;
+#endif _DEBUG
 
 	/* [ PBR 렌더링용 ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Final"), m_pShader, "g_PBR_Final")))
@@ -976,7 +1013,7 @@ HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag)
 
 	m_pGameInstance->End_MRT();
 
-		m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"), m_pBlurDSV, true, true);
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"), m_pBlurDSV, true, true);
 
 	/* 백버퍼에 찍는다. */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurX"), m_pShader, "g_BlurXTexture")))
@@ -1119,7 +1156,7 @@ HRESULT CRenderer::Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight)
 	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.SampleDesc.Count = 1;
 
-	TextureDesc.Usage = D3D11_USAGE_DEFAULT;	
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
 	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	TextureDesc.CPUAccessFlags = 0;
 	TextureDesc.MiscFlags = 0;
@@ -1179,23 +1216,13 @@ HRESULT CRenderer::Change_ViewportDesc(_uint iWidth, _uint iHeight)
 	ViewportDesc.Width = static_cast<_float>(iWidth);
 	ViewportDesc.Height = static_cast<_float>(iHeight);
 	ViewportDesc.MinDepth = 0.f;
-	ViewportDesc.MaxDepth = 1.f;	
+	ViewportDesc.MaxDepth = 1.f;
 
 	m_pContext->RSSetViewports(iNumViewports, &ViewportDesc);
 
 	return S_OK;
 }
 
-HRESULT CRenderer::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
-{
-	CComponent* pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
-	if (nullptr == pComponent)
-		return E_FAIL;
-
-	*ppOut = pComponent;
-
-	return S_OK;
-}
 
 
 #ifdef _DEBUG
@@ -1232,7 +1259,9 @@ HRESULT CRenderer::Render_Debug()
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
 			/* 여기에 MRT 입력 */
-			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+			//m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRFinal"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Decals"), m_pShader, m_pVIBuffer);
 
@@ -1288,5 +1317,5 @@ void CRenderer::Free()
 		for (auto& pGameObject : ObjectList)
 			Safe_Release(pGameObject);
 		ObjectList.clear();
-	}		
+	}
 }

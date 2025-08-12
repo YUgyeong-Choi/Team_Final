@@ -8,12 +8,14 @@
 
 
 #pragma region LEVEL_KRAT_CENTERAL_STATION
-#
+#include "StaticMesh.h"
+#include "StaticMesh_Instance.h"
+#include "Nav.h"
+#include "Static_Decal.h"
 #pragma endregion
 
 #pragma region LEVEL_KRAT_HOTEL
-#include "StaticMesh.h"
-#include "StaticMesh_Instance.h"
+
 #pragma endregion
 
 #pragma region LEVEL_YW
@@ -47,7 +49,6 @@
 #pragma endregion
 
 #pragma region LEVEL_DH
-#include "StaticMesh.h"
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
 #include "Player.h"
@@ -81,6 +82,7 @@
 #pragma endregion
 
 #pragma region LEVEL_JW
+#include "Fuoco.h"
 #include "TestAnimObject.h"
 #pragma endregion
 
@@ -346,6 +348,23 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+#pragma region 데칼 테스트 텍스쳐
+	/* For.Prototype_Component_Texture_Blood_ARMT*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_ARMT"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_ARMT.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Blood_N*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_N"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_N.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Bloodstain_BC*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_Bloodstain_BC"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_BC.dds")))))
+		return E_FAIL;
+#pragma endregion
+
 
 	m_fRatio = 0.1f;
 
@@ -370,12 +389,16 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Elite_Police/Elite_Police.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Elite_Police_Weapon"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Elite_Police_Weapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Club/Elite_Police_Weapon.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Wego"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Wego/Wego.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_FireEater"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FireEater/FireEater.bin", PreTransformMatrix))))
 		return E_FAIL;
 	
 	PreTransformMatrix = XMMatrixIdentity();
@@ -395,17 +418,40 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	m_fRatio = 0.4f;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
 
 	m_fRatio = 0.6f;
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
 	m_fRatio = 0.7f;
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+#pragma region YW
+	//스태틱 데칼
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		CStatic_Decal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//네비게이션 컴포넌트 작동시켜주는 녀석
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Nav"),
+		CNav::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 
 	/* [ 메인 플레이어 로딩 ] */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
@@ -419,14 +465,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CWego::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
-		CStaticMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
 		CTestAnimObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -435,9 +473,15 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CMonster_Test::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Weapon"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+		CFuoco::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
 		CWeapon_Monster::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
 
 	m_fRatio = 1.f;
 	Sleep(250); // 안해주면 동기화 안하고 끝나서 안차던데 좋은 방법 있으면 알려주셈
@@ -518,7 +562,9 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-	
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
+		return E_FAIL;
+
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_TestMap"),
@@ -543,6 +589,10 @@ HRESULT CLoader::Loading_For_DH()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_SM_Station_Floor_01"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Floor_01.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -751,29 +801,17 @@ HRESULT CLoader::Loading_For_YW()
 		CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-#pragma region 데칼
-	/* For.Prototype_Component_VIBuffer_VolumeMesh */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),
-		CVIBuffer_VolumeMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Shader_VtxPos */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Shader_VtxPos"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPos.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements))))
-		return E_FAIL;
-#pragma endregion
-
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 #pragma region 데칼 테스트 텍스쳐
 	/* For.Prototype_Component_Texture_Blood_ARMT*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Blood_ARMT"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Blood_01_ARMT.dds")))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_ARMT"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_ARMT.dds")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Blood_N*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Blood_N"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Blood_01_N.dds")))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_Bloodstain_N"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_N.dds")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Bloodstain_BC*/
@@ -798,12 +836,19 @@ HRESULT CLoader::Loading_For_YW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW))))
+	if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION")))
+		return E_FAIL;
 
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
+		return E_FAIL;
+
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
@@ -859,19 +904,23 @@ HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelF
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Models(_uint iLevelIndex)
+HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+
+	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+
 		return S_OK;
 	}
 
-	json ReadyModelJson;
+	json ResourceJson;
 	try
 	{
-		inFile >> ReadyModelJson;
+		inFile >> ResourceJson;
 		inFile.close();
 	}
 	catch (const exception& e)
@@ -882,7 +931,7 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex)
 	}
 
 	// JSON 데이터 확인
-	for (const auto& element : ReadyModelJson)
+	for (const auto& element : ResourceJson)
 	{
 		string ModelName = element.value("ModelName", "");
 		string Path = element.value("Path", "");
@@ -921,12 +970,16 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex)
 }
 
 
-HRESULT CLoader::Loading_Models_MapTool(_uint iLevelIndex)
+HRESULT CLoader::Loading_Models_MapTool(_uint iLevelIndex, const _char* Map)
 {
-	ifstream inFile("../Bin/Save/MapTool/ReadyModel.json");
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+
+	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
 	{
-		MSG_BOX("ReadyModel.json 파일을 열 수 없습니다.");
+		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+
 		return S_OK;
 	}
 
@@ -981,6 +1034,32 @@ HRESULT CLoader::Load_Model_MapTool(const wstring& strPrototypeTag, const _char*
 	if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
 		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map)
+{
+	wstring wsResourcePath = L"../Bin/Save/NavTool/Nav_" + StringToWString(Map) + L".json";
+
+	// 파일 열기
+	ifstream inFile(wsResourcePath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Nav_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	wstring wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);
+
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(
+		iLevelIndex,
+		wsPrototypeTag.c_str(),
+		CNavigation::Create(m_pDevice, m_pContext, wsResourcePath.c_str())
+	)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -1303,6 +1382,10 @@ HRESULT CLoader::Loading_For_YG()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Barrel"), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/TestPhysX/Barrel/lootbarrel.bin"))))
 		return E_FAIL;
 
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::YG), "STATION")))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
@@ -1376,6 +1459,15 @@ HRESULT CLoader::Loading_For_YG()
 	/* For.Prototype_GameObject_NPCWego */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_NPCWego"),
 		CWego::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

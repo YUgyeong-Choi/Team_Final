@@ -15,11 +15,14 @@
 #include "Object_Manager.h"
 #include "Target_Manager.h"
 #include "Prototype_Manager.h"
+#include "OctoTree_Manager.h"
 
 #include "PhysX_Manager.h"
 #include "Sound_Device.h"
 #include "Observer_Manager.h"
-#include "Occlusion_Manager.h"
+
+#include "ComputeShader.h"
+
 
 IMPLEMENT_SINGLETON(CGameInstance);
 
@@ -123,10 +126,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pObserver_Manager)
 		return E_FAIL;
 
-	m_pOcclusion_Manager = COcclusion_Manager::Create(*ppDeviceOut, *ppContextOut);
-	if (nullptr == m_pOcclusion_Manager)
+	m_pQaudTree_Manager = COctoTree_Manager::Create(*ppDeviceOut, *ppContextOut);
+	if (nullptr == m_pQaudTree_Manager)
 		return E_FAIL;
-	m_pOcclusion_Manager->Initialize();
+
 
 	return S_OK;
 }
@@ -189,6 +192,7 @@ HRESULT CGameInstance::Draw()
 	m_pRenderer->Draw();
 
 	m_pLevel_Manager->Render();
+	m_pQaudTree_Manager->DebugDrawCells();
 
 	return S_OK;
 }
@@ -318,17 +322,17 @@ HRESULT CGameInstance::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pR
 	return m_pRenderer->Add_RenderGroup(eRenderGroup, pRenderObject);
 }
 
-#ifdef _DEBUG
-HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
-{
-	return m_pRenderer->Add_DebugComponent(pDebugCom);
-}
-
 void CGameInstance::ClearRenderObjects()
 {
 	return m_pRenderer->ClearRenderObjects();
 }
 
+
+#ifdef _DEBUG
+HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
+{
+	return m_pRenderer->Add_DebugComponent(pDebugCom);
+}
 
 _bool CGameInstance::Get_RenderCollider()
 {
@@ -654,6 +658,7 @@ _bool CGameInstance::isIn_PhysXAABB(CPhysXActor* pPhysXActor)
 	return m_pFrustum->isIn_PhysXAABB(pPhysXActor);
 }
 
+
 PxTriangleMeshGeometry CGameInstance::CookTriangleMesh(const PxVec3* vertices, PxU32 vertexCount, const PxU32* indices, PxU32 triangleCount, PxMeshScale geomScale)
 {
 	return m_pPhysX_Manager->CookTriangleMesh(vertices, vertexCount, indices, triangleCount, geomScale);
@@ -793,25 +798,52 @@ void CGameInstance::Reset_All()
 {
 	m_pObserver_Manager->Reset_All();
 }
-
 #pragma endregion
 
-#pragma region OCCLUSION_MANAGER
-void CGameInstance::Begin_Occlusion(CGameObject* pObj, CPhysXActor* pPhysX)
-{
-	m_pOcclusion_Manager->Begin_Occlusion(pObj, pPhysX);
-}
+#pragma region OCTOTREE_MANAGER
 
-void CGameInstance::End_Occlusion(CGameObject* pObj)
+HRESULT CGameInstance::Ready_OctoTree(const vector<AABBBOX>& staticBounds, const map<Handle, _uint>& handleToIndex)
 {
-	m_pOcclusion_Manager->End_Occlusion(pObj);
+	return m_pQaudTree_Manager->Ready_OctoTree(staticBounds, handleToIndex);
 }
-
-_bool CGameInstance::IsVisible(CGameObject* pObj) const
+void CGameInstance::InitIndexToHandle(const map<Handle, _uint>& handleToIndex, size_t count)
 {
-	return 	m_pOcclusion_Manager->IsVisible(pObj);
+	m_pQaudTree_Manager->InitIndexToHandle(handleToIndex, count);
+}
+void CGameInstance::BeginQueryFrame(const XMMATRIX& view, const XMMATRIX& proj)
+{
+	m_pQaudTree_Manager->BeginQueryFrame(view, proj);
+}
+vector<class CGameObject*> CGameInstance::GetIndexToObj() const
+{
+	return m_pQaudTree_Manager->GetIndexToObj();
+}
+void CGameInstance::PushBackIndexToObj(CGameObject* vec)
+{
+	m_pQaudTree_Manager->PushBackIndexToObj(vec);
+}
+vector<_uint> CGameInstance::GetCulledStaticObjects() const
+{
+	return m_pQaudTree_Manager->GetCulledStaticObjects();
+}
+Handle CGameInstance::StaticIndexToHandle(_uint idx) const
+{
+	return m_pQaudTree_Manager->StaticIndexToHandle(idx);
+}
+void CGameInstance::ToggleDebugOctoTree()
+{
+	m_pQaudTree_Manager->ToggleDebugCells();
+}
+void CGameInstance::ClearIndexToObj()
+{
+	m_pQaudTree_Manager->ClearIndexToObj();
+}
+void CGameInstance::QueryVisible()
+{
+	m_pQaudTree_Manager->QueryVisible();
 }
 #pragma endregion
+
 
 void CGameInstance::Release_Engine()
 {
@@ -851,7 +883,10 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pObserver_Manager);
 
-	Safe_Release(m_pOcclusion_Manager);
+	Safe_Release(m_pQaudTree_Manager);
+
+	CComputeShader::ReleaseCache(); // Ä³½ÌÇØµÐ ÄÄÇ»Æ® ¼ÎÀÌ´õµé ÇØÁ¦
+
 
 	Destroy_Instance();
 }

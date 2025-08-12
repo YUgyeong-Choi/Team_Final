@@ -102,6 +102,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				m_fElapsedTime = 0.f;
 				m_iCurrentFrame = -1;
 				m_initOrbitalMatrix = {};
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_InitCam();
 				CCamera_Manager::Get_Instance()->SetOrbitalCam();
 			}
 		}

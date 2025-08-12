@@ -4,349 +4,414 @@
             "ClipName": "AS_ATLBoss0_Skill_01_End",
             "Duration": 60.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Left_End",
             "Duration": 142.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Loop",
             "Duration": 130.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Right_End",
             "Duration": 125.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Start",
             "Duration": 30.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_02_End",
             "Duration": 44.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_02_Start",
             "Duration": 106.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_03",
             "Duration": 183.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_04_End",
             "Duration": 75.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_04_Left",
             "Duration": 120.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_04_Left_New",
             "Duration": 120.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_04_Left_P2_Start",
             "Duration": 120.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_04_Right",
             "Duration": 120.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_04_Start",
             "Duration": 40.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_05_Attack",
             "Duration": 130.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_05_End",
             "Duration": 80.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_05_Start",
             "Duration": 40.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_06",
             "Duration": 106.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_06_New",
             "Duration": 105.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_07",
             "Duration": 90.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_08",
             "Duration": 145.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_09",
             "Duration": 210.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_10",
             "Duration": 180.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_End",
             "Duration": 70.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Left",
             "Duration": 85.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Loop",
             "Duration": 65.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Right",
             "Duration": 85.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Start",
             "Duration": 60.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_End",
             "Duration": 114.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Left",
             "Duration": 120.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Right",
             "Duration": 120.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Start",
             "Duration": 55.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_13",
             "Duration": 140.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_14",
             "Duration": 400.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Fatal_NPC_Hit_End",
             "Duration": 248.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Fatal_NPC_Hit_ing",
             "Duration": 68.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Fatal_NPC_Hit_Start",
             "Duration": 34.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_FireEater_C00",
+            "Duration": 651.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Groggy_End",
             "Duration": 100.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Groggy_Loop",
             "Duration": 180.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Groggy_Start",
             "Duration": 80.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_Dead_B",
             "Duration": 240.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_Dead_F",
             "Duration": 265.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Idle_C",
             "Duration": 480.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Idle_Loco",
             "Duration": 120.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Paralyzation_End",
             "Duration": 115.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Paralyzation_Loop",
             "Duration": 210.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Paralyzation_Start",
             "Duration": 110.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Run_C_F",
             "Duration": 80.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Run_C_F_Root",
             "Duration": 80.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Special_Die",
             "Duration": 541.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Turn_C_L",
             "Duration": 90.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Turn_C_R",
             "Duration": 90.0,
             "IsLoop": false,
-            "TickPerSecond": 30.0
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_B",
             "Duration": 120.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_F",
             "Duration": 120.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_F_Root",
             "Duration": 120.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_L",
             "Duration": 120.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_R",
             "Duration": 120.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_R_Root",
             "Duration": 120.0,
-            "IsLoop": false,
-            "TickPerSecond": 30.0
+            "IsLoop": true,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         }
     ]
 }

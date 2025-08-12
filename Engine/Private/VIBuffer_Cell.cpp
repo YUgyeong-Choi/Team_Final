@@ -6,7 +6,7 @@ CVIBuffer_Cell::CVIBuffer_Cell(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 }
 
 CVIBuffer_Cell::CVIBuffer_Cell(const CVIBuffer_Cell& Prototype)
-	: CVIBuffer{ Prototype }
+	: CVIBuffer(Prototype)
 {
 }
 
