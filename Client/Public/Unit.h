@@ -52,6 +52,9 @@ public: /* [ 피직스 관련 ] */
 	PxRigidActor* Get_Actor(CPhysXActor* actor);
 	void RayCast(CPhysXActor* actor);
 
+#ifdef USE_IMGUI
+	class CAnimator* Get_Animator() const { return m_pAnimator; }
+#endif
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);

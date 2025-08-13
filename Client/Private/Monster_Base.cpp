@@ -50,8 +50,8 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	m_pPlayer = Find_Player(m_pGameInstance->GetCurrentLevelIndex());
 	
 	m_fHeight = pDesc->fHeight;
-
-	m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
+	if(m_pNaviCom)
+		m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
 
 	m_pAnimator->SetBool("Detect", false);
 
@@ -81,6 +81,9 @@ void CMonster_Base::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 	
+	if (m_pNaviCom)
+	{
+
 	float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
 
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -89,6 +92,7 @@ void CMonster_Base::Update(_float fTimeDelta)
 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
+	}
 	// 움직이고 부르기
 	Update_Collider();
 
@@ -166,7 +170,13 @@ HRESULT CMonster_Base::Ready_Components()
 
 	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_");
 
-	switch (m_pGameInstance->GetCurrentLevelIndex())
+	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+	if (iLevelIndex == ENUM_CLASS(LEVEL::JW))
+	{
+		return S_OK;
+	}
+
+	switch (iLevelIndex)
 	{
 	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
 		wsPrototypeTag += TEXT("STATION");
@@ -176,10 +186,10 @@ HRESULT CMonster_Base::Ready_Components()
 		break;
 	default:
 		return E_FAIL;
-		break;
 	}
 
-	if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
+
+	if (FAILED(__super::Add_Component(iLevelIndex, wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
 		return E_FAIL;
 	

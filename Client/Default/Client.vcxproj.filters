@@ -799,6 +799,9 @@
     <ClInclude Include="..\public\UI_LockOn_Icon.h">
       <Filter>02.GameObjects\99.UI\World\LockOn</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\EditorObjectFactory.h">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1201,6 +1204,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_LockOn_Icon.cpp">
       <Filter>02.GameObjects\99.UI\World\LockOn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EditorObjectFactory.cpp">
+      <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
