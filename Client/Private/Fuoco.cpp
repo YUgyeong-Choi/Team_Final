@@ -23,7 +23,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 	UNIT_DESC UnitDesc{};
 	UnitDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	UnitDesc.fRotationPerSec = XMConvertToRadians(720.f);
+	UnitDesc.fRotationPerSec = XMConvertToRadians(120.f);
 	UnitDesc.fSpeedPerSec = 3.f;
 	lstrcpy(UnitDesc.szName, TEXT("FireEater"));
 	UnitDesc.szMeshID = TEXT("FireEater");
@@ -45,10 +45,13 @@ HRESULT CFuoco::Initialize(void* pArg)
 		return E_FAIL;
 	
 	m_pPlayer = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"),0);
+
+	if (m_pNaviCom)
+	{
 	m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
 	_float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
-
+	}
 	return S_OK;
 }
 
@@ -59,8 +62,10 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	{
 		cout << "현재 플레이어와의 거리 : " << Get_DistanceToPlayer() << endl;
 		cout << "현재 애니메이션 상태 : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
-		if (m_bStartPhase2 == false)
-			m_bStartPhase2 = true;
+		//if (m_bStartPhase2 == false)
+		//	m_bStartPhase2 = true;
+		m_pAnimator->SetInt("SkillType", FootAtk);
+		m_pAnimator->SetTrigger("Attack");	
 	}
 #endif
 }
@@ -95,11 +100,12 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (pOther)
 	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
+		if (eColliderType == COLLIDERTYPE::PALYER)
 		{
 			if (m_pAnimator->GetInt("SkillType") == FootAtk)
 			{
 				m_pAnimator->SetBool("IsHit", true);
+				SetTurnTimeDuringAttack(2.f); // 퓨리 어택 
 			}
 		}
 	}
@@ -113,10 +119,11 @@ void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (pOther)
 	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			m_pAnimator->SetBool("IsHit", false);
-		}
+		//if (eColliderType == COLLIDERTYPE::PALYER)
+		//{
+		//	if (m_pAnimator->CheckBool("IsHit"))
+		//		m_pAnimator->SetBool("IsHit", false);
+		//}
 	}
 }
 
@@ -195,10 +202,14 @@ HRESULT CFuoco::Ready_Components()
 		return E_FAIL;
 
 
-
+	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+	if (iLevelIndex == ENUM_CLASS(LEVEL::JW))
+	{
+		return S_OK;
+	}
 	_wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_");
 
-	switch (m_pGameInstance->GetCurrentLevelIndex())
+	switch (iLevelIndex)
 	{
 	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
 		wsPrototypeTag += TEXT("STATION");
@@ -208,10 +219,10 @@ HRESULT CFuoco::Ready_Components()
 		break;
 	default:
 		return E_FAIL;
-		break;
 	}
 
-	if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
+
+	if (FAILED(__super::Add_Component(iLevelIndex, wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
 		return E_FAIL;
 
@@ -228,9 +239,8 @@ HRESULT CFuoco::Ready_Actor()
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 
 	PxTransform pose(positionVec, rotationQuat);
-	PxMeshScale meshScale(scaleVec);
 
-	PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y, scaleVec.z * 0.8f);
+	PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y*1.7f, scaleVec.z * 0.8f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
@@ -249,7 +259,7 @@ HRESULT CFuoco::Ready_Actor()
 
 	for (auto& pBone : vecBones)
 	{
-		if (!strcmp(pBone->Get_Name(), "Bone001-Ring-Finger01"))
+		if (!strcmp(pBone->Get_Name(), "Bone001-Fist01"))
 		{
 			m_pFistBone = pBone;
 		}
@@ -264,15 +274,13 @@ HRESULT CFuoco::Ready_Actor()
 		auto fistLocalMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
 		auto fistWorldMatrix = XMLoadFloat4x4(fistLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
 		XMMatrixDecompose(&S, &R, &T, fistWorldMatrix);
-		PxVec3 armScaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S)) * 0.5f;
+
 		PxQuat armRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 armPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 		PxTransform armPose(armPositionVec, armRotationQuat);
-		PxMeshScale armMeshScale(armScaleVec);
-		PxVec3 armHalfExtents = PxVec3(armScaleVec.x, armScaleVec.y, armScaleVec.z);
-		PxBoxGeometry armGeom = m_pGameInstance->CookBoxGeometry(armHalfExtents);
+		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(0.8f);
 		m_pPhysXActorComForArm->Create_Collision(m_pGameInstance->GetPhysics(), armGeom, armPose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorComForArm->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorComForArm->Set_ShapeFlag(true, true, true);
 		PxFilterData armFilterData{};
 		armFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
 		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
@@ -289,15 +297,13 @@ HRESULT CFuoco::Ready_Actor()
 		auto footLocalMatrix = m_pFootBone->Get_CombinedTransformationMatrix();
 		auto footWorldMatrix = XMLoadFloat4x4(footLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
 		XMMatrixDecompose(&S, &R, &T, footWorldMatrix);
-		PxVec3 footScaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S)) * 0.5f;
+
 		PxQuat footRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 footPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 		PxTransform footPose(footPositionVec, footRotationQuat);
-		PxMeshScale footMeshScale(footScaleVec);
-		PxVec3 footHalfExtents = PxVec3(footScaleVec.x, footScaleVec.y, footScaleVec.z);
-		PxBoxGeometry footGeom = m_pGameInstance->CookBoxGeometry(footHalfExtents);
+		PxSphereGeometry footGeom = m_pGameInstance->CookSphereGeometry(0.8f);
 		m_pPhysXActorComForFoot->Create_Collision(m_pGameInstance->GetPhysics(), footGeom, footPose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorComForFoot->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorComForFoot->Set_ShapeFlag(true, true, true);
 		PxFilterData footFilterData{};
 		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
 		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
@@ -320,7 +326,7 @@ void CFuoco::Update_Collider()
 	_float4 vPos;
 	XMStoreFloat4(&vPos, worldMatrix.r[3]);
 
-	PxVec3 pos(vPos.x, vPos.y, vPos.z);
+	PxVec3 pos(vPos.x, vPos.y+2.f, vPos.z);
 	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
 	XMFLOAT4 fQuat;
 	XMStoreFloat4(&fQuat, boneQuat);
@@ -409,7 +415,11 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 		  m_eCurrentState = EFuocoState::ATTACK;
 			  break;
 	}
-
+	if (m_eCurrentState != EFuocoState::ATTACK)
+	{
+		m_pAnimator->SetBool("IsHit", false);
+		m_pAnimator->SetBool("IsFront", IsTargetInFront());
+	}
 	UpdateMove(fTimeDelta);
 }
 
@@ -435,9 +445,7 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 
 
 	// 현재 상태에서 많이 회전했으면 애니메이터 Turn true
-	_vector vCurrentLook = m_pTransformCom->Get_State(STATE::LOOK);
-	vCurrentLook = XMVectorSetY(vCurrentLook, 0.f);
-	vCurrentLook = XMVector3Normalize(vCurrentLook);
+	_vector vCurrentLook = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
 	_float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, vDir));
 	fDot = clamp(fDot, -1.f, 1.f);
 	_vector vCross = XMVector3Cross(vCurrentLook, vDir);
@@ -456,7 +464,6 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 		cout << "회전 각도: " << XMConvertToDegrees(fYaw) << "도" << endl;
 		cout << "회전 방향 : " << ((fYaw >= 0.f) ? "오른쪽" : "왼쪽") << endl;
 #endif
-		m_eCurrentState = EFuocoState::TURN; // 회전 상태로 전환
 		m_pAnimator->SetBool("Move", false); // 회전 중에는 이동하지 않음
 	}
 
@@ -476,7 +483,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		m_bIsFirstAttack = false;
 		m_pAnimator->SetBool("Move", false);
 		m_fAttackCooldown = 3.f;
-		m_fTurnTimeDuringAttack = 1.f;
+		SetTurnTimeDuringAttack(1.f);
 		return;
 	}
 
@@ -544,10 +551,13 @@ _bool CFuoco::IsTargetInFront() const
 
 	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 	_vector vThisPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vForward = m_pTransformCom->Get_State(STATE::LOOK);
-	_vector vToPlayer = vPlayerPos - vThisPos;
-	_float fDot = XMVectorGetX(XMVector3Dot(vForward, vToPlayer));
-	return fDot > 0.f; // 앞쪽에 있으면 true
+	_vector vForward = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
+	_vector vToPlayerXZ = XMVectorSetY(vPlayerPos - vThisPos, 0.f);
+	_float fDot = XMVectorGetX(XMVector3Dot(vForward, vToPlayerXZ));
+	fDot = clamp(fDot, -1.f, 1.f); // -1 ~ 1 사이로 제한
+	_float fAngle = cosf(XMConvertToRadians(30.f)); // 시야각 60도 기준
+
+	return fDot > fAngle; // 앞쪽에 있으면 true
 }
 
 _vector CFuoco::GetTargetDirection() const
@@ -626,15 +636,18 @@ void CFuoco::UpdateNormalMove(_float fTimeDelta)
 
 _bool CFuoco::UpdateTurnDuringAttack(_float fTimeDelta)
 {
-	if (m_fTurnTimeDuringAttack >= 0.f)
+	if (m_fTurnTimeDuringAttack >= 0.000001f)
 	{
 		_vector vDir = GetTargetDirection();
 		vDir = XMVectorSetY(vDir, 0.f);
 		vDir = XMVector3Normalize(vDir);
 		m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta);
 		m_fTurnTimeDuringAttack -= fTimeDelta;
+		cout << "회전 시간 남음: " << m_fTurnTimeDuringAttack << endl;
 		return false;
 	}
+
+	m_fTurnTimeDuringAttack = 0.f; // 초기화
 	return true;
 }
 

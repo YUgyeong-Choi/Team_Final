@@ -610,6 +610,16 @@ HRESULT CCYTool::Window_Trail()
 			ImGui::SameLine();
 	}
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
+	if (ImGui::Button("Enable Trail"))
+	{
+		pTE->Set_TrailActive(true);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Disable Trail"))
+	{
+		pTE->Set_TrailActive(false);
+	}
+
 
 	return S_OK;
 }

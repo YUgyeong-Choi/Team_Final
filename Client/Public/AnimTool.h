@@ -38,17 +38,21 @@ private:
 	HRESULT Render_AnimStatesByNode();
 	HRESULT Render_AnimControllers();
 	HRESULT Render_Loaded_Models();
+	HRESULT Render_SpawnedObject();
+	HRESULT Render_Spawn_Object();
 	HRESULT Render_Load_Model();
 	HRESULT Render_AnimEvents();
 	HRESULT Render_Parameters();
 	HRESULT Bind_Shader();
 
 	void UpdateCurrentModel(_float fTimeDelta);
+	void UpdateCurrentObject(_float fTimeDelta);
 	void CreateModel(const string& fileName,const string& filePath);
 	
 	void Setting_Sequence();
 
 	void SelectAnimation();
+	void SelectAnimationForObject();
 	void Setting_AnimationProperties();
 	void ApplyHierarchicalLayout(class CAnimController* pCtrl);
 	void ApplyCategoryLayout(class CAnimController* pCtrl);
@@ -68,6 +72,8 @@ private:
 	string GetStateCategory(const string& stateName);
 
 	HRESULT Modify_Transition(CAnimController::Transition& transition);
+
+	HRESULT Register_Objects();
 
 private:
 	CAnimator* m_pCurAnimator = nullptr; // 현재 모델의 애니메이터
@@ -93,6 +99,7 @@ private:
 	// 레벨 렌더와 렌더러와의 렌더 구분용
 	_bool m_bRenerLevel = false;
 
+	_bool m_bIsObject{ false };
 
 
 	// 애니메이션 시퀀스용
@@ -178,6 +185,20 @@ private:
 
 	unordered_set<_int> m_DrawnInPins;
 	unordered_set<_int> m_DrawnOutPins;
+
+
+	// 오브젝트들 
+	_bool m_bIsObjectToolActive = false; // 오브젝트 툴 활성화 여부
+	_bool m_bIsObjectSelected = false; // 오브젝트가 선택되었는지 여부
+	_int m_iSelectedObjectIndex = -1; // 선택된 오브젝트 인덱스
+	_int m_iSelectedSpawnIndex = -1;
+	CGameObject* m_pSelectedObject = nullptr; // 선택된 오브젝트
+	string m_stSelectedObjectName; // 선택된 오브젝트 이름
+	vector<CGameObject*> m_vecObjects; // 로드된 오브젝트들
+	vector<string> m_vecObjectNames; // 오브젝트 이름들
+	class CEditorObjectFactory* m_pEditorObjectFactory = nullptr; // 에디터 오브젝트 팩토리
+	unordered_map<string, void*> m_SpawnObjectDesc;
+
 
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

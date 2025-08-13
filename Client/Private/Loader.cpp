@@ -105,7 +105,7 @@ CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, atomic<fl
 
 _uint APIENTRY LoadingMain(void* pArg)
 {
-	/* ÀÚ¿ø·ÎµùÇÑ´Ù. */
+	/* ï¿½Ú¿ï¿½ï¿½Îµï¿½ï¿½Ñ´ï¿½. */
 	CLoader*		pLoader = static_cast<CLoader*>(pArg);
 
 	if (FAILED(pLoader->Loading()))
@@ -184,7 +184,7 @@ HRESULT CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Logo()
 {	
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	/* For.Prototype_Component_Texture_TeamPicture*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_Component_Texture_TeamPicture"),
@@ -192,18 +192,18 @@ HRESULT CLoader::Loading_For_Logo()
 		return E_FAIL;
 
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	
 
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_isFinished = true;
 
@@ -213,11 +213,11 @@ HRESULT CLoader::Loading_For_Logo()
 HRESULT CLoader::Loading_For_Static()
 {
 	m_bLoadStatic = true;
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	Loading_For_UI_Texture();
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	_matrix PreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_SkyBox"),
@@ -240,17 +240,17 @@ HRESULT CLoader::Loading_For_Static()
 		CPBRMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	
 
-	lstrcpy(m_szLoadingText, TEXT("ÀÌÆåÆ®À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"));
 
 
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ToolMesh"),
 		CDH_ToolMesh::Create(m_pDevice, m_pContext))))
@@ -346,27 +346,27 @@ HRESULT CLoader::Loading_For_Static()
 		return E_FAIL;
 
 
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	return S_OK;
 }
 
 HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
-	//½ºÅ×ÀÌ¼Ç ·¹º§¿¡ ÇÊ¿äÇÑ ÅØ½ºÃÄ¸¦ ·ÎµåÇÑ´Ù.
-	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) // true ¸é Å×½ºÆ® µ¥Ä® ÁØºñ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½ï¿½Ä¸ï¿½ ï¿½Îµï¿½ï¿½Ñ´ï¿½.
+	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) // true ï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½ï¿½Ä® ï¿½Øºï¿½
 		return E_FAIL;
 
 	m_fRatio = 0.1f;
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	m_fRatio = 0.2f;
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
-	/* [ ¸ÞÀÎ ÇÃ·¹ÀÌ¾î ·Îµù ] */
+	/* [ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Îµï¿½ ] */
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 
@@ -418,28 +418,28 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	m_fRatio = 0.4f;
 
-	//¸ÊÀ» »ý¼ºÇÏ±âÀ§ÇÑ ¸ðµ¨ ÇÁ·ÎÅäÅ¸ÀÔÀ» ÁØºñÇÑ´Ù.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION) /*, true*/))) //true¸é Å×½ºÆ® ¸Ê ÁØºñ[Å×½ºÆ® ¸ÊÀ» Å°°í ½ÍÀ¸¸é true ÇÏ½Ã¿À]
-		return E_FAIL;
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ï¿½Ñ´ï¿½.
 
-	lstrcpy(m_szLoadingText, TEXT("³×ºñ°ÔÀÌ¼ÇÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION) /*, true*/))) //trueï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½ï¿½ ï¿½Øºï¿½[ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ true ï¿½Ï½Ã¿ï¿½]
+
+	lstrcpy(m_szLoadingText, TEXT("ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
 		return E_FAIL;
 
 	m_fRatio = 0.6f;
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	m_fRatio = 0.7f;
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 #pragma region YW
-	//½ºÅÂÆ½ µ¥Ä®
+	//ï¿½ï¿½ï¿½ï¿½Æ½ ï¿½ï¿½Ä®
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//³×ºñ°ÔÀÌ¼Ç ÄÄÆ÷³ÍÆ® ÀÛµ¿½ÃÄÑÁÖ´Â ³à¼®
+	//ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ûµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½à¼®
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Nav"),
 		CNav::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -454,7 +454,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 #pragma endregion
 
 
-	/* [ ¸ÞÀÎ ÇÃ·¹ÀÌ¾î ·Îµù ] */
+	/* [ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Îµï¿½ ] */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -470,7 +470,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTestAnimObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	// ¸ó½ºÅÍ °ü·Ã
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
 		CMonster_Test::Create(m_pDevice, m_pContext))))
@@ -495,9 +495,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	
 
 	m_fRatio = 1.f;
-	Sleep(250); // ¾ÈÇØÁÖ¸é µ¿±âÈ­ ¾ÈÇÏ°í ³¡³ª¼­ ¾ÈÂ÷´øµ¥ ÁÁÀº ¹æ¹ý ÀÖÀ¸¸é ¾Ë·ÁÁÖ¼À
+	Sleep(250); // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ ï¿½ï¿½ï¿½ï¿½È­ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ö¼ï¿½
 
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_isFinished = true;
 
@@ -506,15 +506,15 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 HRESULT CLoader::Loading_For_KRAT_HOTEL()
 {
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
-	//Á¦ÀÌ½¼ ÆÄÀÏ ¾ÈÀÐ°í ·ÎµåÇÏ°í ½ÍÀº ¸ðµ¨ Á÷Á¢ ·Îµå½ÃÄÑ³ö¾ßÇÔ
+	//ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð°ï¿½ ï¿½Îµï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½Ñ³ï¿½ï¿½ï¿½ï¿½ï¿½
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_Component_Model_SM_BuildingA_Lift_01"),
@@ -531,18 +531,18 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	//¸ÊÀ» »ý¼ºÇÏ±âÀ§ÇÑ ¸ðµ¨ ÇÁ·ÎÅäÅ¸ÀÔÀ» ÁØºñÇÑ´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ï¿½Ñ´ï¿½.
 	/*if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
 		return E_FAIL;*/
 
-	lstrcpy(m_szLoadingText, TEXT("³×ºñ°ÔÀÌ¼ÇÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
 
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -555,7 +555,7 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_isFinished = true;
 
@@ -566,13 +566,13 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 
 HRESULT CLoader::Loading_For_DH()
 {
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
@@ -602,20 +602,20 @@ HRESULT CLoader::Loading_For_DH()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Floor_01.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	//¸ÊÀ» »ý¼ºÇÏ±âÀ§ÇÑ ¸ðµ¨ ÇÁ·ÎÅäÅ¸ÀÔÀ» ÁØºñÇÑ´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ï¿½Ñ´ï¿½.
 	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("³×ºñ°ÔÀÌ¼ÇÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
 
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
-#pragma region ¸Ê ¿ÀºêÁ§Æ®
+#pragma region ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -627,7 +627,7 @@ HRESULT CLoader::Loading_For_DH()
 #pragma endregion
 
 
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_isFinished = true;
 	return S_OK;
@@ -635,25 +635,33 @@ HRESULT CLoader::Loading_For_DH()
 
 HRESULT CLoader::Loading_For_JW()
 {
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_FireEater"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FireEater/FireEater.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Buttler_Train"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Train/Buttler_Train.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("³×ºñ°ÔÀÌ¼ÇÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
-
-
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
-
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_isFinished = true;
 	return S_OK;
@@ -661,7 +669,7 @@ HRESULT CLoader::Loading_For_JW()
 
 HRESULT CLoader::Loading_For_GL()
 {
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	/* For.Prototype_Component_Texture_Button_Hover*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Hover"),
@@ -756,7 +764,7 @@ HRESULT CLoader::Loading_For_GL()
 	m_fRatio = 0.1f;
 
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	m_fRatio = 0.3f;
 	
@@ -764,19 +772,19 @@ HRESULT CLoader::Loading_For_GL()
 	
 
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	m_fRatio = 0.5f;
 	
-	lstrcpy(m_szLoadingText, TEXT("³×ºñ°ÔÀÌ¼ÇÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	m_fRatio = 0.6f;
 	
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	m_fRatio = 0.7f;
 
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button"),
 		CUI_Button::Create(m_pDevice, m_pContext))))
@@ -794,7 +802,7 @@ HRESULT CLoader::Loading_For_GL()
 	m_fRatio = 0.9f;
 	
 
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_fRatio = 1.f;
 
@@ -806,15 +814,15 @@ HRESULT CLoader::Loading_For_GL()
 
 HRESULT CLoader::Loading_For_YW()
 {
-	lstrcpy(m_szLoadingText, TEXT("ÄÄÆ÷³ÍÆ®À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	/* For.Prototype_Component_Transform */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Transform"),
 		CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
-#pragma region µ¥Ä® µðÆúÆ® ÅØ½ºÃÄ
+#pragma region ï¿½ï¿½Ä® ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ø½ï¿½ï¿½ï¿½
 
 	/* For.Prototype_Component_Texture_DefaultDecalTexture*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_DefaultDecal"),
@@ -823,10 +831,10 @@ HRESULT CLoader::Loading_For_YW()
 
 #pragma endregion
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Train"),
@@ -839,7 +847,7 @@ HRESULT CLoader::Loading_For_YW()
 	//if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
 	//	return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("³×ºñ°ÔÀÌ¼ÇÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION")))
 		return E_FAIL;
@@ -850,10 +858,10 @@ HRESULT CLoader::Loading_For_YW()
 	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
 		CDecalToolObject::Create(m_pDevice, m_pContext))))
@@ -867,7 +875,7 @@ HRESULT CLoader::Loading_For_YW()
 		CPreviewObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_isFinished = true;
 	return S_OK;
@@ -875,11 +883,11 @@ HRESULT CLoader::Loading_For_YW()
 
 HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
 {
-	//ÀÌ¹Ì ÇÁ·ÎÅäÅ¸ÀÔÀÌÁ¸ÀçÇÏ´Â ÁöÈ®ÀÎ
+	//ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½È®ï¿½ï¿½
 
 	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
 	{
-		//MSG_BOX("ÀÌ¹Ì ÇÁ·ÎÅäÅ¸ÀÔÀÌ Á¸ÀçÇÔ");
+		//MSG_BOX("ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		return S_OK;
 	}
 
@@ -928,8 +936,8 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, _bool bTest)
 	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
 	{
-		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"¿¡·¯", MB_OK);
+		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"ï¿½ï¿½ï¿½ï¿½", MB_OK);
 
 		return S_OK;
 	}
@@ -943,17 +951,17 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, _bool bTest)
 	catch (const exception& e)
 	{
 		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON ÆÄ½Ì ½ÇÆÐ", MB_OK);
+		MessageBoxA(nullptr, e.what(), "JSON ï¿½Ä½ï¿½ ï¿½ï¿½ï¿½ï¿½", MB_OK);
 		return E_FAIL;
 	}
 
-	// JSON µ¥ÀÌÅÍ È®ÀÎ
+	// JSON ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	for (const auto& element : ResourceJson)
 	{
 		string ModelName = element.value("ModelName", "");
 		string Path = element.value("Path", "");
 
-		//°¹¼öµµ ÀúÀåÇØ¼­ ÀÎ½ºÅÏ½º¿ë ¸ðµ¨ ÇÁ·ÎÅäÅ¸ÀÔÀ» ¸¸µéÁö °áÁ¤ÇØ¾ßÇÒµí(Ãæµ¹¿©ºÎ·Î ÆÇ´ÜÇÏÀÚ)
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Òµï¿½(ï¿½æµ¹ï¿½ï¿½ï¿½Î·ï¿½ ï¿½Ç´ï¿½ï¿½ï¿½ï¿½ï¿½)
 		_uint iObjectCount = element["ObjectCount"];
 
 		_bool bCollision = element["Collision"];
@@ -962,14 +970,14 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, _bool bTest)
 		_bool bInstance = false;
 		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
 		{
-			//ÀÎ½ºÅÏ½Ì¿ë ¸ðµ¨ ÇÁ·ÎÅä Å¸ÀÔ »ý¼º
+			//ï¿½Î½ï¿½ï¿½Ï½Ì¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			PrototypeTag = L"Prototype_Component_Model_Instance_" + StringToWString(ModelName);
 			bInstance = true;
 
 		}
 		else
 		{
-			//¸ðµ¨ ÇÁ·ÎÅä Å¸ÀÔ »ý¼º
+			//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
 			bInstance = false;
 		}
@@ -1007,12 +1015,12 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, _bool bTest)
 
 	wstring wsResourcePath = L"../Bin/Save/NavTool/Nav_" + StringToWString(Map) + L".json";
 
-	// ÆÄÀÏ ¿­±â
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	ifstream inFile(wsResourcePath);
 	if (!inFile.is_open())
 	{
-		wstring ErrorMessage = L"Nav_" + StringToWString(Map) + L".json ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù.";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"¿¡·¯", MB_OK);
+		wstring ErrorMessage = L"Nav_" + StringToWString(Map) + L".json ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"ï¿½ï¿½ï¿½ï¿½", MB_OK);
 		return S_OK;
 	}
 
@@ -1053,8 +1061,8 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, _bool bTest)
 	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
 	{
-		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"¿¡·¯", MB_OK);
+		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"ï¿½ï¿½ï¿½ï¿½", MB_OK);
 
 		return S_OK;
 	}
@@ -1068,14 +1076,14 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, _bool bTest)
 	catch (const exception& e)
 	{
 		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON ÆÄ½Ì ½ÇÆÐ", MB_OK);
+		MessageBoxA(nullptr, e.what(), "JSON ï¿½Ä½ï¿½ ï¿½ï¿½ï¿½ï¿½", MB_OK);
 		return E_FAIL;
 	}
 
-	//ÅØ½ºÃÄ ÇÁ·ÎÅäÅ¸ÀÔ »ý¼º
+	//ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	for (auto& [PrototypeTag, Path] : ReadyTextureJson.items())
 	{
-		//ÀÌ¹Ì ÀÖÀ¸¸é ³Ñ±â°í
+		//ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ±ï¿½ï¿½
 		if (m_pGameInstance->Find_Prototype(iLevelIndex, StringToWString(PrototypeTag)) != nullptr)
 			continue;
 
@@ -1280,26 +1288,26 @@ HRESULT CLoader::Loading_For_UI_Texture()
 
 HRESULT CLoader::Loading_For_CY()
 {
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	//¾ÈÇØµµµÉ°Å°°Àºµ¥
-	///* For.Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS */ // sprite¿ë 
+	//ï¿½ï¿½ï¿½Øµï¿½ï¿½É°Å°ï¿½ï¿½ï¿½ï¿½ï¿½
+	///* For.Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS */ // spriteï¿½ï¿½ 
 	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
 	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
 	//	return E_FAIL;
 
-	///* For.Prototype_Component_Texture_T_Mask_27_C_GDH */ // trail¿ë ¸¶½ºÅ© ÀÌ¹ÌÁö
+	///* For.Prototype_Component_Texture_T_Mask_27_C_GDH */ // trailï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å© ï¿½Ì¹ï¿½ï¿½ï¿½
 	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Mask_27_C_GDH"),
 	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Mask_27_C_GDH.dds"), 1))))
 	//	return E_FAIL;
 	//
-	///* For.Prototype_Component_Texture_T_Trail_01_C_GDH */ // trail¿ë ¸¶½ºÅ© ÀÌ¹ÌÁö 2..
+	///* For.Prototype_Component_Texture_T_Trail_01_C_GDH */ // trailï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å© ï¿½Ì¹ï¿½ï¿½ï¿½ 2..
 	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Trail_01_C_GDH"),
 	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Trail_01_C_GDH.dds"), 1))))
 	//	return E_FAIL;
 	//
-	///* For.Prototype_Component_Texture_T_Slash_01_C_RSW */ // ¾Æ¸¶ trail¿ë µð½ºÅä¼Ç ÀÌ¹ÌÁö 
+	///* For.Prototype_Component_Texture_T_Slash_01_C_RSW */ // ï¿½Æ¸ï¿½ trailï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ 
 	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Slash_01_C_RSW"),
 	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Slash_01_C_RSW.dds"), 1))))
 	//	return E_FAIL;
@@ -1312,10 +1320,10 @@ HRESULT CLoader::Loading_For_CY()
 	//	return E_FAIL;
 
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	_matrix		PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Model_ToolMeshEffect"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/EffectMesh/SM_Swirl_01_RSW.bin", PreTransformMatrix))))
@@ -1361,14 +1369,14 @@ HRESULT CLoader::Loading_For_CY()
 		return E_FAIL;
 
 
-	lstrcpy(m_szLoadingText, TEXT("³×ºñ°ÔÀÌ¼ÇÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
 
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
- 	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+ 	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	/* For.Prototype_GameObject_ToolSprite */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolSprite"),
 		CToolSprite::Create(m_pDevice, m_pContext))))
@@ -1392,7 +1400,7 @@ HRESULT CLoader::Loading_For_CY()
 	//	return E_FAIL;
 
 
-	/* [ ¸ÞÀÎ ÇÃ·¹ÀÌ¾î ·Îµù ] */
+	/* [ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Îµï¿½ ] */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -1400,7 +1408,7 @@ HRESULT CLoader::Loading_For_CY()
 		CBayonet::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_isFinished = true;
 	return S_OK;
@@ -1408,13 +1416,13 @@ HRESULT CLoader::Loading_For_CY()
 
 HRESULT CLoader::Loading_For_YG()
 {
-	lstrcpy(m_szLoadingText, TEXT("ÅØ½ºÃÄÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¼ÎÀÌ´õÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¸ðµ¨À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Finoa"),CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,"../Bin/Resources/Models/TestPhysX/FionaNonAnimBin/Fiona.bin", PreTransformMatrix))))
@@ -1462,19 +1470,19 @@ HRESULT CLoader::Loading_For_YG()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Barrel"), CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/TestPhysX/Barrel/lootbarrel.bin"))))
 		return E_FAIL;
 
-	//¸ÊÀ» »ý¼ºÇÏ±âÀ§ÇÑ ¸ðµ¨ ÇÁ·ÎÅäÅ¸ÀÔÀ» ÁØºñÇÑ´Ù.
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Øºï¿½ï¿½Ñ´ï¿½.
 	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::YG), "STATION")))
 		return E_FAIL;
 
 
-	lstrcpy(m_szLoadingText, TEXT("³×ºñ°ÔÀÌ¼ÇÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
 
-	lstrcpy(m_szLoadingText, TEXT("»ç¿îµåÀ»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("¿øÇü°´Ã¼À»(¸¦) ·ÎµùÁßÀÔ´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½(ï¿½ï¿½) ï¿½Îµï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½."));
 
 	/* For.Prototype_GameObject_YGObject */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGObject"),
@@ -1531,7 +1539,7 @@ HRESULT CLoader::Loading_For_YG()
 		CYGController::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* [ ¸ÞÀÎ ÇÃ·¹ÀÌ¾î ·Îµù ] */
+	/* [ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Îµï¿½ ] */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -1550,7 +1558,7 @@ HRESULT CLoader::Loading_For_YG()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("·ÎµùÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù."));
+	lstrcpy(m_szLoadingText, TEXT("ï¿½Îµï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
 	m_isFinished = true;
 	return S_OK;
