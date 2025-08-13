@@ -270,7 +270,7 @@ HRESULT CCYTool::SequenceWindow()
 			desc.iTileY = 1;
 			desc.bBillboard = false;
 			desc.bTool = true;
-			desc.iShaderPass = ENUM_CLASS(ME_MASKONLY);
+			desc.iShaderPass = ENUM_CLASS(TE_DEFAULT);
 			desc.pInnerSocketMatrix = const_cast<_float4x4*>(pWeaponModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
 			desc.pOuterSocketMatrix = const_cast<_float4x4*>(pWeaponModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
 			desc.pParentCombinedMatrix = const_cast<_float4x4*>(static_cast<CWeapon*>(TestWeapon)->Get_CombinedWorldMatrix());

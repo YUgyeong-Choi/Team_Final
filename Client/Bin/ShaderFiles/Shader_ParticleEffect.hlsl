@@ -196,6 +196,10 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
     vColor.a = vPreColor.a * mask;
     //vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x); // 0 ~ 1
+    float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
+    fade = 1.0 - fade; // 남은 생명에 비례해 감소
+    vColor.a *= fade;
     
     /*
     //float fDepth = In.vProjPos.z / In.vProjPos.w;

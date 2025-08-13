@@ -173,7 +173,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	{
 		if (KEY_DOWN(DIK_Z))
 		{
-			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"),
+			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_TestFireCracker_P2"),
 				m_pGameInstance->Compute_Random(-1.f, 1.f),
 				m_pGameInstance->Compute_Random(-1.f, 1.f),
 				m_pGameInstance->Compute_Random(-1.f, 1.f))))

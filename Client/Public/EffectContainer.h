@@ -10,10 +10,10 @@ class CEffectContainer final : public CGameObject
 public:
 	typedef struct tagEffectContainerDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		json j;
-		_float3	vPresetPosition = { 0.f,0.f,0.f };
+		json		j;
+		_float3		vPresetPosition = { 0.f,0.f,0.f };
+		_float4x4*	pSocketMatrix = { nullptr }; // 소켓 매트릭스
 	}DESC;
-
 
 private:
 	CEffectContainer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -46,6 +46,7 @@ private:
 
 private:
 	_float				m_fFrame = { };
+	const _float4x4*	m_pSocketMatrix = { nullptr };
 
 
 private:
@@ -54,7 +55,7 @@ private:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
 
-	HRESULT Add_Effect(class CEffectBase* pEffect);
+	//HRESULT Add_Effect(class CEffectBase* pEffect);
 
 public:
 	static CEffectContainer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

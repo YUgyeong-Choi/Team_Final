@@ -99,3 +99,10 @@ float4 SoftEffect(float4 vOrigColor, float4 vProjPos)
     
     return vOrigColor;
 }
+
+vector ColorAdjustment_Multiply(float4 vOrigColor, float4 vMultiplyColor)
+{
+    vector vResColor = vOrigColor * vMultiplyColor;
+    
+    return vResColor;
+}
