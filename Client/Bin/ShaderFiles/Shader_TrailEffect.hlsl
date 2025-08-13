@@ -1,6 +1,8 @@
 #include "Effect_Shader_Defines.hlsli"
 vector g_vCamPosition;
 
+Texture2D g_DistortionTexture;
+
 struct VS_IN
 {
     float3 vOuterPos : POSITION0;
@@ -152,7 +154,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
     Out.fRevealage = vColor.a;
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
-    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, In.vTexcoord);
+    Out.vDistortion = g_DistortionTexture.Sample(DefaultSampler, In.vTexcoord);
     
     return Out;
 }

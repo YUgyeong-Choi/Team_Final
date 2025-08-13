@@ -231,7 +231,7 @@ HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
 	D3D11_MAPPED_SUBRESOURCE subres;
 	if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &subres)))
 		return E_FAIL;
-	VTXPOS_TRAIL* pVertices = static_cast<VTXPOS_TRAIL*>(subres.pData);
+
 	memcpy(subres.pData, smoothNodes.data(), sizeof(VTXPOS_TRAIL) * m_iNumVertices);
 
 	m_pContext->Unmap(m_pVB, 0);
