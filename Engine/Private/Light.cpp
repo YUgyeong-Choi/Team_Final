@@ -112,7 +112,7 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 }
 HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
-	return S_OK;
+	//return S_OK;
 	/* [ 볼륨메트릭 전용 렌더 ] */
 	if(!m_LightDesc.bIsVolumetric)
 		return S_OK; // 볼륨메트릭이 아닌 라이트는 렌더링하지 않는다.
