@@ -29,10 +29,17 @@ public:
 #endif
 
 private:
+	HRESULT Interpolate_TrailNodes();
+
+private:
 	vector<VTXPOS_TRAIL>	m_TrailNodes;
 	_uint					m_iMaxNodeCount = { 256 }; // 임시로 개수 지정함
 	_float					m_fLifeDuration = { 1.f };
 	_bool					m_bTrailActive = true;
+	_float					m_fNodeAccTime = { 0.f };
+	_float					m_fNodeInterval = { 0.0166f }; // 60 FPS 기준, 1초에 60번 노드 추가
+	_int					m_Subdivisions = 5; // 캣멀롬 보간을 위한 세분화 단계
+
 
 public:
 	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

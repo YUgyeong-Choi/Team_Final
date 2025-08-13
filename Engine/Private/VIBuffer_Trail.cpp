@@ -75,27 +75,30 @@ void CVIBuffer_Trail::Update_Trail(const _float3& vInnerPos, const _float3& vOut
 		m_TrailNodes.end()
 	);
 
+	m_fNodeAccTime += fTimeDelta;
 	// 3. 트레일 활성 상태일 경우에만 노드 추가
-	if (m_bTrailActive)
+	if (m_bTrailActive && m_fNodeAccTime >= m_fNodeInterval)
 	{
-		if (m_TrailNodes.empty())
-		{
-			VTXPOS_TRAIL firstNode;
-			firstNode.vInnerPos = vInnerPos;
-			firstNode.vOuterPos = vOuterPos;
-			firstNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
-			m_TrailNodes.push_back(firstNode);
-		}
-		else
-		{
+//		if (m_TrailNodes.empty())
+//		{
+//			VTXPOS_TRAIL firstNode;
+//			firstNode.vInnerPos = vInnerPos;
+//			firstNode.vOuterPos = vOuterPos;
+//			firstNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
+//			m_TrailNodes.push_back(firstNode);
+//		}
+//		else
+//		{
 			VTXPOS_TRAIL newNode;
 			newNode.vInnerPos = vInnerPos;
 			newNode.vOuterPos = vOuterPos;
 			newNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
 			m_TrailNodes.push_back(newNode);
-		}
-	}
+//		}
 
+		m_fNodeAccTime = 0.f;
+	}
+	
 	Update_Buffers();
 }
 
@@ -105,21 +108,24 @@ HRESULT CVIBuffer_Trail::Update_Buffers()
 	if (m_iNumVertices == 0)
 		return S_OK;
 
-	D3D11_MAPPED_SUBRESOURCE subres;
-	if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &subres)))
+	if (FAILED(Interpolate_TrailNodes()))
 		return E_FAIL;
 
-	VTXPOS_TRAIL* pVertices = static_cast<VTXPOS_TRAIL*>(subres.pData);
-	for (_uint i = 0; i < m_iNumVertices; ++i)
-	{
-		pVertices[i].vInnerPos= m_TrailNodes[i].vInnerPos;
-		pVertices[i].vOuterPos= m_TrailNodes[i].vOuterPos;
-		pVertices[i].vLifeTime= m_TrailNodes[i].vLifeTime;
-	}
 
-	m_pContext->Unmap(m_pVB, 0);
+	//D3D11_MAPPED_SUBRESOURCE subres;
+	//if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &subres)))
+	//	return E_FAIL;
 
-	m_iNumVertices = (_uint)m_TrailNodes.size();
+	//VTXPOS_TRAIL* pVertices = static_cast<VTXPOS_TRAIL*>(subres.pData);
+	//for (_uint i = 0; i < m_iNumVertices; ++i)
+	//{
+	//	pVertices[i].vInnerPos= m_TrailNodes[i].vInnerPos;
+	//	pVertices[i].vOuterPos= m_TrailNodes[i].vOuterPos;
+	//	pVertices[i].vLifeTime= m_TrailNodes[i].vLifeTime;
+	//}
+
+	//m_pContext->Unmap(m_pVB, 0);
+
 
 	return S_OK;
 }
@@ -144,6 +150,91 @@ HRESULT CVIBuffer_Trail::Render()
 		return S_OK;
 
 	m_pContext->Draw(m_iNumVertices, 0);
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
+{
+	// 원본 노드가 너무 적으면 그릴 필요 없음
+	if (m_TrailNodes.size() < 4)
+	{
+		m_iNumVertices = 0;
+		return S_OK;
+	}
+
+	// 보간 후 예상 정점 수 계산
+	_uint smoothCount = (_uint)(m_TrailNodes.size() - 3) * (m_Subdivisions + 1);
+
+	// 1) 버퍼 크기 부족 시 재생성
+	if (smoothCount > m_iMaxNodeCount)
+	{
+		m_iMaxNodeCount = (_uint)smoothCount;
+
+		Safe_Release(m_pVB);
+
+		D3D11_BUFFER_DESC vbDesc = {};
+		vbDesc.ByteWidth = (_uint)(m_iMaxNodeCount * sizeof(VTXPOS_TRAIL));
+		vbDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vbDesc.Usage = D3D11_USAGE_DYNAMIC;
+		vbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		vbDesc.StructureByteStride = sizeof(VTXPOS_TRAIL);
+		
+		if (FAILED(m_pDevice->CreateBuffer(&vbDesc, nullptr, &m_pVB)))
+			return E_FAIL;
+	}
+
+	// 2) 보간된 노드 생성
+	vector<VTXPOS_TRAIL> smoothNodes;
+	smoothNodes.reserve(smoothCount);
+
+	for (size_t i = 0; i + 3 < m_TrailNodes.size(); ++i)
+	{
+		const auto& P0 = m_TrailNodes[i + 0];
+		const auto& P1 = m_TrailNodes[i + 1];
+		const auto& P2 = m_TrailNodes[i + 2];
+		const auto& P3 = m_TrailNodes[i + 3];
+
+		for (_int s = 0; s <= m_Subdivisions; ++s)
+		{
+			 _float t = (_float)s / (_float)m_Subdivisions;
+
+			// Inner pos 보간
+			XMVECTOR i0 = XMLoadFloat3(&P0.vInnerPos);
+			XMVECTOR i1 = XMLoadFloat3(&P1.vInnerPos);
+			XMVECTOR i2 = XMLoadFloat3(&P2.vInnerPos);
+			XMVECTOR i3 = XMLoadFloat3(&P3.vInnerPos);
+			XMFLOAT3 inner;
+			XMStoreFloat3(&inner, XMVectorCatmullRom(i0, i1, i2, i3, t));
+
+			// Outer pos 보간
+			XMVECTOR o0 = XMLoadFloat3(&P0.vOuterPos);
+			XMVECTOR o1 = XMLoadFloat3(&P1.vOuterPos);
+			XMVECTOR o2 = XMLoadFloat3(&P2.vOuterPos);
+			XMVECTOR o3 = XMLoadFloat3(&P3.vOuterPos);
+			XMFLOAT3 outer;
+			XMStoreFloat3(&outer, XMVectorCatmullRom(o0, o1, o2, o3, t));
+
+			// LifeTime (간단히 P1 기준)
+			VTXPOS_TRAIL node;
+			node.vInnerPos = inner;
+			node.vOuterPos = outer;
+			node.vLifeTime = P1.vLifeTime;
+
+			smoothNodes.push_back(node);
+		}
+	}
+
+	m_iNumVertices = (_uint)smoothNodes.size();
+
+	// 3) GPU 버퍼에 쓰기
+	D3D11_MAPPED_SUBRESOURCE subres;
+	if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &subres)))
+		return E_FAIL;
+
+	memcpy(subres.pData, smoothNodes.data(), sizeof(VTXPOS_TRAIL) * m_iNumVertices);
+
+	m_pContext->Unmap(m_pVB, 0);
 
 	return S_OK;
 }
