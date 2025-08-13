@@ -71,6 +71,13 @@ public: /* [ Setup 함수 ] */
 
 	MONSTER_DIR Calc_HitDir(_vector vOtherPos);
 
+	// 계속 lookat하지 말고 idle에서는 turn 시키고
+	// 빠져나가는 조건을 생각?
+
+	_bool Check_Turn();
+
+	MONSTER_DIR Calc_TurnDir(_vector vOtherPos);
+
 protected:
 
 

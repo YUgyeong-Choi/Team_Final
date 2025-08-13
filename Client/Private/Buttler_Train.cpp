@@ -43,6 +43,23 @@ void CButtler_Train::Update(_float fTimeDelta)
 {
 	Calc_Pos(fTimeDelta);
 
+	if (m_strStateName.find("Turn") != m_strStateName.npos)
+	{
+		_vector vAxis{};
+		if (m_strStateName.find("Right") != m_strStateName.npos)
+		{
+			vAxis = { 0.f,1.f,0.f,0.f };
+			
+		}
+		else
+		{
+			vAxis = { 0.f,-1.f,0.f,0.f };
+			
+		}
+
+		m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 0.6f);
+	}
+
 	__super::Update(fTimeDelta);
 }
 
@@ -113,7 +130,11 @@ void CButtler_Train::Update_State()
 
     m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
-	
+	if (m_strStateName.find("Idle") != m_strStateName.npos || m_strStateName.find("Turn") != m_strStateName.npos)
+	{
+		m_pAnimator->SetBool("IsTurn", Check_Turn());
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+	}
 
 	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk") != m_strStateName.npos)
 		m_isLookAt = true;
@@ -147,7 +168,7 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 		m_pTransformCom->Go_Dir(m_pTransformCom->Get_State(STATE::LOOK), fTimeDelta, nullptr, m_pNaviCom);
 	}
 
-	else if (m_strStateName.find("Attack") != m_strStateName.npos )
+	else if (m_strStateName.find("Attack") != m_strStateName.npos || m_strStateName.find("Hit") != m_strStateName.npos)
 	{
 		RootMotionActive(fTimeDelta);
 	}
@@ -156,6 +177,30 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 
 HRESULT CButtler_Train::Ready_Weapon()
 {
+	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
+	Desc.eLevelID = LEVEL::STATIC;
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.InitPos = { 0.15f, 0.f, 0.f };
+	Desc.InitScale = { 1.f, 0.6f, 1.f };
+	Desc.iRender = 0;
+
+	Desc.szMeshID = TEXT("Buttler_Train_Weapon");
+	lstrcpy(Desc.szName, TEXT("Buttler_Train_Weapon"));
+	Desc.vAxis = { 0.f,1.f,0.f,0.f };
+	Desc.fRotationDegree = {90.f};
+
+	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
+	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Monster_Weapon"), &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pWeapon = dynamic_cast<CWeapon_Monster*>(pGameObject);
+
+
 	return S_OK;
 }
 

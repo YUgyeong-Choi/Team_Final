@@ -39,6 +39,8 @@ private:
 
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
+
+	_int m_iAttackCount = {};
 	
 
 public:

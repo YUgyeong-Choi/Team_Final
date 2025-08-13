@@ -43,11 +43,13 @@ void CLevel_JW::Priority_Update(_float fTimeDelta)
 void CLevel_JW::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
-
-
 	m_pCamera_Manager->Update(fTimeDelta);
 //	__super::Update(fTimeDelta);
+}
+
+void CLevel_JW::Late_Update(_float fTimeDelta)
+{
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
 }
 
 HRESULT CLevel_JW::Render()

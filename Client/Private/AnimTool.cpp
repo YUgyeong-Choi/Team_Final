@@ -2,7 +2,10 @@
 #include "Bone.h"
 #include "EventMag.h"
 #include "AnimTool.h"
-
+#include "Buttler_Train.h"
+#include "Player.h"
+#include "Fuoco.h"
+#include "EditorObjectFactory.h"
 #include "GameInstance.h"
 #include <queue>
 
@@ -45,6 +48,11 @@ HRESULT CAnimTool::Initialize(void* pArg)
 
 	m_pMySequence = new CMySequence();
 
+	m_pEditorObjectFactory = CEditorObjectFactory::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pEditorObjectFactory)
+		return E_FAIL;
+	if(FAILED(Register_Objects()))
+		return E_FAIL;
 
 	ImNodesStyle& style = ImNodes::GetStyle();
 
@@ -131,16 +139,31 @@ HRESULT CAnimTool::Initialize(void* pArg)
 
 void CAnimTool::Priority_Update(_float fTimeDelta)
 {
-
+	if (m_pSelectedObject)
+	{
+		m_pSelectedObject->Priority_Update(fTimeDelta);
+	}
 }
 
 void CAnimTool::Update(_float fTimeDelta)
 {
-	UpdateCurrentModel(fTimeDelta);
+	if(m_bIsObject == false)
+		UpdateCurrentModel(fTimeDelta);
+	else
+		UpdateCurrentObject(fTimeDelta);
+
+	if (m_pSelectedObject)
+	{
+		m_pSelectedObject->Update(fTimeDelta);
+	}
 }
 
 void CAnimTool::Late_Update(_float fTimeDelta)
 {
+	if (m_pSelectedObject)
+	{
+		m_pSelectedObject->Last_Update(fTimeDelta);
+	}
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 	m_bRenerLevel = false;
 }
@@ -149,8 +172,26 @@ HRESULT CAnimTool::Render()
 {
 	if (m_bRenerLevel)
 	{
+		if (ImGui::Checkbox("Load Object", &m_bIsObject))
+		{
+			m_pCurAnimation = nullptr;
+			m_pCurAnimator = nullptr;
+			m_pCurModel = nullptr;
+			m_pSelectedObject = nullptr; // 오브젝트 선택 초기화
+			m_stSelectedModelName.clear();
+			m_stSelectedObjectName.clear();
+		}
+	;
+		if (m_bIsObject == false)
+		{
 		if (FAILED(Render_Load_Model()))
 			return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(Render_Spawn_Object()))
+				return E_FAIL;
+		}
 
 		Setting_Sequence();
 		if (m_bUseAnimSequence)
@@ -230,6 +271,15 @@ HRESULT CAnimTool::Render_Load_Model()
 
 HRESULT CAnimTool::Render_AnimEvents()
 {
+	if (ImGui::Button("Save All Clips Events to JSON"))
+	{
+		SaveLoadEvents();
+	}
+
+	if (ImGui::Button("Load All Clips Events from JSON"))
+	{
+		SaveLoadEvents(false);
+	}
 	if (m_pCurAnimation == nullptr || m_pCurAnimator == nullptr || m_pMySequence == nullptr)
 	{
 		return S_OK;
@@ -284,15 +334,7 @@ HRESULT CAnimTool::Render_AnimEvents()
 		}
 		ImGui::Separator();
 	}
-	if (ImGui::Button("Save All Clips Events to JSON"))
-	{
-		SaveLoadEvents();
-	}
 
-	if (ImGui::Button("Load All Clips Events from JSON"))
-	{
-		SaveLoadEvents(false);
-	}
 	return S_OK;
 }
 
@@ -1723,6 +1765,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	return S_OK;
 }
 
+
 HRESULT CAnimTool::Render_Loaded_Models()
 {
 	if (m_LoadedModels.empty())
@@ -1767,6 +1810,100 @@ HRESULT CAnimTool::Render_Loaded_Models()
 	return S_OK;
 }
 
+HRESULT CAnimTool::Render_Spawn_Object()
+{
+	_bool open = true;
+	Begin("Spawn Object", &open, NULL);
+	ImGui::Checkbox("Load Object", &m_bIsObjectToolActive);
+	if (!m_bIsObjectToolActive)
+	{
+		ImGui::End();
+		return S_OK;
+	}
+	if (ImGui::BeginCombo("Object List", m_iSelectedSpawnIndex >= 0 ? m_vecObjectNames[m_iSelectedSpawnIndex].c_str() : "Object Name"))
+	{
+		for (_int i = 0; i < m_vecObjectNames.size(); ++i)
+		{
+			_bool isSelected = (i == m_iSelectedSpawnIndex);
+			if (ImGui::Selectable(m_vecObjectNames[i].c_str(), isSelected))
+			{
+				m_iSelectedSpawnIndex = i;
+
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::Button("Spawn"))
+	{
+		if (m_iSelectedSpawnIndex >= 0 && m_iSelectedSpawnIndex < m_vecObjectNames.size())
+		{
+			auto pObj = m_pEditorObjectFactory->CreateObject(StringToWString(m_vecObjectNames[m_iSelectedSpawnIndex]));
+			if (pObj)
+			{
+				m_vecObjects.emplace_back(pObj);
+				pObj->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+			}
+		}
+	}
+
+	if (FAILED(Render_SpawnedObject()))
+	{
+		ImGui::End();
+		return E_FAIL;
+	}
+
+	ImGui::End();
+	return S_OK;
+}
+
+
+HRESULT CAnimTool::Render_SpawnedObject()
+{
+	if (m_vecObjects.empty())
+	{
+		return S_OK;
+	}
+
+	if (ImGui::BeginCombo("Objects", m_iSelectedObjectIndex >= 0 ? m_vecObjectNames[m_iSelectedObjectIndex].c_str() : "Select Object"))
+	{
+		for (_int i = 0; i < m_vecObjectNames.size(); ++i)
+		{
+			_bool isSelected = (i == m_iSelectedObjectIndex);
+			if (ImGui::Selectable(m_vecObjectNames[i].c_str(), isSelected))
+			{
+				if (i < 0 || i >= m_vecObjects.size())
+				{
+					continue; // 유효하지 않은 인덱스는 무시
+				}
+				m_iSelectedObjectIndex = i;
+				m_pCurModel = dynamic_cast<CModel*>(m_vecObjects[m_iSelectedObjectIndex]->Get_Component(TEXT("Com_Model")));
+				m_pSelectedObject = m_vecObjects[m_iSelectedObjectIndex];
+				m_pCurAnimator = dynamic_cast<CUnit*>(m_vecObjects[m_iSelectedObjectIndex])->Get_Animator();
+				m_pCurAnimation = nullptr;
+				m_stSelectedObjectName = m_vecObjectNames[i];
+				m_stSelectedModelName = m_pCurModel->Get_ModelName();
+				m_vecMaskBoneNames.clear(); // 마스크 본 이름 초기화
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	// 시퀀스 바꾸기
+	if (m_pMySequence)
+	{
+		m_pMySequence->SetAnimator(m_pCurAnimator);
+	}
+	// 선택된 모델의 애니메이션들
+	SelectAnimationForObject();
+	return S_OK;
+}
+
+
 void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 {
 	if (m_pCurModel == nullptr || m_pCurAnimator == nullptr)
@@ -1795,6 +1932,10 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 	m_pCurModel->Update_Bones();
 }
 
+void CAnimTool::UpdateCurrentObject(_float fTimeDelta)
+{
+}
+
 void CAnimTool::SelectAnimation()
 {
 	if (m_pCurModel == nullptr || m_pCurAnimator == nullptr)
@@ -1803,6 +1944,42 @@ void CAnimTool::SelectAnimation()
 	}
 
 	vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
+
+	vector<string> animNames;
+	animNames.reserve(anims.size());
+	for (const auto& anim : anims)
+	{
+		animNames.push_back(anim->Get_Name());
+	}
+
+	if (ImGui::BeginCombo("Animations", m_iSelectedAnimIndex >= 0 ? animNames[m_iSelectedAnimIndex].c_str() : "Select Animation"))
+	{
+		for (_int i = 0; i < animNames.size(); ++i)
+		{
+			_bool isSelected = (i == m_iSelectedAnimIndex);
+			if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+			{
+				m_iSelectedAnimIndex = i;
+				m_pCurAnimation = anims[m_iSelectedAnimIndex];
+				m_pCurAnimator->PlayClip(anims[m_iSelectedAnimIndex], false);
+			}
+			if (isSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	// 애니메이션 프로퍼티들 설정
+	Setting_AnimationProperties();
+}
+
+void CAnimTool::SelectAnimationForObject()
+{
+	if (m_pCurModel == nullptr || m_pCurAnimator == nullptr)
+	{
+		return;
+	}
+	vector<CAnimation*> anims = m_pCurModel->GetAnimations();
 
 	vector<string> animNames;
 	animNames.reserve(anims.size());
@@ -2145,6 +2322,10 @@ void CAnimTool::Test_AnimEvents()
 
 }
 
+void CAnimTool::Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController)
+{
+}
+
 void CAnimTool::SaveLoadEvents(_bool isSave)
 {
 	if (m_pCurModel == nullptr)
@@ -2154,10 +2335,21 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 	{
 		json root;
 		root["animations"] = json::array();
-		for (auto* anim : m_LoadedAnimations[m_stSelectedModelName])
+		if (m_bIsObject)
 		{
-			root["animations"].push_back(anim->Serialize());
+			for (auto* anim : m_pCurModel->GetAnimations())
+			{
+				root["animations"].push_back(anim->Serialize());
+			}
 		}
+		else
+		{
+			for (auto* anim : m_LoadedAnimations[m_stSelectedModelName])
+			{
+				root["animations"].push_back(anim->Serialize());
+			}
+		}
+	
 	
 		ofstream ofs(path);
 		ofs << root.dump(4);
@@ -2174,6 +2366,11 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 		{
 			auto& animationsJson = root["animations"];
 			auto& clonedAnims = m_LoadedAnimations[m_stSelectedModelName];
+
+			if (m_bIsObject)
+			{
+				clonedAnims = m_pCurModel->GetAnimations();
+			}
 
 			for (const auto& animData : animationsJson)
 			{
@@ -2283,6 +2480,8 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 		}
 
 		// 모델 불러오면 처음 애니메이션 관련 정보들 불러오기 
+		m_pCurModel = m_LoadedModels[modelName];
+		m_stSelectedModelName = modelName;
 		SaveLoadEvents(false);
 	}
 }
@@ -2536,6 +2735,33 @@ if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 return S_OK;
 }
 
+HRESULT CAnimTool::Register_Objects()
+{
+	if (FAILED(m_pEditorObjectFactory->RegisterObject<CFuoco>(TEXT("Fuoco"))))
+		return E_FAIL;
+	m_vecObjectNames.push_back("Fuoco");
+
+	CMonster_Base::MONSTER_BASE_DESC* pDesc = new CMonster_Base::MONSTER_BASE_DESC();
+	//pDesc.fSpeedPerSec = 1.f;
+	pDesc->fSpeedPerSec = 5.f;
+	pDesc->fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc->eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	pDesc->InitPos = _float3(105.5f, 0.f, -7.5f);
+	pDesc->InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pDesc->szName, TEXT("Buttler_Train"));
+	pDesc->szMeshID = TEXT("Buttler_Train");
+	pDesc->fHeight = 1.f;
+	pDesc->vExtent = { 0.5f,1.f,0.5f };
+	if (FAILED(m_pEditorObjectFactory->RegisterObject<CButtler_Train>(TEXT("Buttler_Train"),pDesc)))
+		return E_FAIL;
+	m_vecObjectNames.push_back("Buttler_Train");
+	m_SpawnObjectDesc["Buttler_Train"] = pDesc;
+
+
+
+	return S_OK;
+}
+
 HRESULT CAnimTool::Bind_Shader()
 {
 	if (m_pCurModel == nullptr || m_pCurAnimator == nullptr)
@@ -2672,17 +2898,21 @@ void CAnimTool::Free()
 		Safe_Release(pair.second);
 	}
 
-	//for (auto& pair : m_LoadedAnimations)
-	//{
-	//	for (auto& anim : pair.second)
-	//		Safe_Release(anim);
-	//	pair.second.clear();
-	//}
+	for (auto& obj : m_vecObjects)
+	{
+		Safe_Release(obj);
+	}
+	for (auto& Pair : m_SpawnObjectDesc)
+	{
+		Safe_Delete(Pair.second);
+	}
+
 	ImNodes::DestroyContext();
 	Safe_Release(m_pEventMag);
 	Safe_Delete(m_pMySequence);
 	Safe_Release(m_pAnimShader);
 	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pEditorObjectFactory);
 }
 
 

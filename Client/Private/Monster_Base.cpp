@@ -4,6 +4,7 @@
 #include "PhysX_ControllerReport.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
+
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUnit{pDevice, pContext}
 {
@@ -50,8 +51,8 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	m_pPlayer = Find_Player(m_pGameInstance->GetCurrentLevelIndex());
 	
 	m_fHeight = pDesc->fHeight;
-
-	m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
+	if(m_pNaviCom)
+		m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
 
 	m_pAnimator->SetBool("Detect", false);
 
@@ -81,6 +82,9 @@ void CMonster_Base::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 	
+	if (m_pNaviCom)
+	{
+
 	float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
 
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -89,6 +93,7 @@ void CMonster_Base::Update(_float fTimeDelta)
 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
+	}
 	// 움직이고 부르기
 	Update_Collider();
 
@@ -166,7 +171,13 @@ HRESULT CMonster_Base::Ready_Components()
 
 	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_");
 
-	switch (m_pGameInstance->GetCurrentLevelIndex())
+	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+	if (iLevelIndex == ENUM_CLASS(LEVEL::JW))
+	{
+		return S_OK;
+	}
+
+	switch (iLevelIndex)
 	{
 	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
 		wsPrototypeTag += TEXT("STATION");
@@ -176,10 +187,10 @@ HRESULT CMonster_Base::Ready_Components()
 		break;
 	default:
 		return E_FAIL;
-		break;
 	}
 
-	if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
+
+	if (FAILED(__super::Add_Component(iLevelIndex, wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
 		return E_FAIL;
 	
@@ -236,7 +247,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, 
 											   ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 
-	//Safe_AddRef(m_pHPBar);
+
 
 	return S_OK;
 }
@@ -392,6 +403,8 @@ _bool CMonster_Base::Check_Detect()
 	{
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
+		m_pAnimator->SetBool("IsTurn", Check_Turn());
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		return true;
 	}
 	
@@ -422,6 +435,45 @@ CMonster_Base::MONSTER_DIR CMonster_Base::Calc_HitDir(_vector vOtherPos)
 
 
 	return MONSTER_DIR::END;
+}
+
+_bool CMonster_Base::Check_Turn()
+{
+	if (nullptr == m_pPlayer)
+		return false;
+
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+
+	vLook = XMVector3Normalize(vLook);
+	vDir = XMVector3Normalize(vDir);
+	
+	_float fDot = XMVectorGetX(XMVector3Dot(vLook, vDir));
+
+	if (fDot < 0.f)
+		return true;
+
+	if (fDot < 0.8f)
+		return true;
+
+	return false;
+
+}
+
+CMonster_Base::MONSTER_DIR CMonster_Base::Calc_TurnDir(_vector vOtherPos)
+{
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vLook = XMVector3Normalize(vLook);
+
+	_vector vDir = vOtherPos - m_pTransformCom->Get_State(STATE::POSITION);
+	vDir = XMVector3Normalize(vDir);
+
+
+	if (XMVectorGetY(XMVector3Cross(vLook, vDir)) < 0)
+		return MONSTER_DIR::L;
+	else
+		return MONSTER_DIR::R;
 }
 
 CMonster_Base* CMonster_Base::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

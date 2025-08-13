@@ -116,8 +116,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 			//제이슨으로 저장된 맵을 로드한다.
 			//true면 테스트맵 소환, 기본(false) [테스트 맵을 키고 싶으면 true 하시오] [Loader.cpp 도 똑같이 적용 필요!!!!!]
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)/*, true*/))) 
-				return;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION) /*, true*/)))
+
 
 			//데칼 소환
 			if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
@@ -661,6 +661,17 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 		return E_FAIL;
 
 
+	CUIObject::UIOBJECT_DESC eLockonDesc = {};
+	
+	eLockonDesc.fSizeX = 50.f;
+	eLockonDesc.fSizeY = 50.f;
+	
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LockOn_Icon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -699,7 +710,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	pDesc.InitPos = _float3(105.5f, 0.f, -7.5f);
+	pDesc.InitPos = _float3(85.5f, 0.f, -7.5f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Buttler_Train"));
 	pDesc.szMeshID = TEXT("Buttler_Train");
