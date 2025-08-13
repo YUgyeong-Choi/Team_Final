@@ -154,6 +154,12 @@ private:
     void UpdateNormalMove(_float fTimeDelta);
 	_bool UpdateTurnDuringAttack(_float fTimeDelta);
     void SetupAttackByType(EBossAttackPattern ePattern);
+    void SetTurnTimeDuringAttack(_float fTime)
+    {
+        if (m_fTurnTimeDuringAttack != 0.f)
+            return;
+		m_fTurnTimeDuringAttack = fTime;
+    }
 
 	_bool IsValidAttackType(EBossAttackPattern ePattern) const
 	{
