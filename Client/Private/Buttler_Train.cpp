@@ -85,7 +85,7 @@ HRESULT CButtler_Train::Render()
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	// 
-	if (eColliderType == COLLIDERTYPE::PALYER)
+	if (eColliderType == COLLIDERTYPE::PLAYER)
 	{
 		m_pAnimator->SetTrigger("Hit");
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
@@ -168,7 +168,7 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 		m_pTransformCom->Go_Dir(m_pTransformCom->Get_State(STATE::LOOK), fTimeDelta, nullptr, m_pNaviCom);
 	}
 
-	else if (m_strStateName.find("Attack") != m_strStateName.npos || m_strStateName.find("Hit") != m_strStateName.npos)
+	else if (m_strStateName.find("Attack") != m_strStateName.npos)
 	{
 		RootMotionActive(fTimeDelta);
 	}
@@ -181,7 +181,7 @@ HRESULT CButtler_Train::Ready_Weapon()
 	Desc.eLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
-	Desc.InitPos = { 0.15f, 0.f, 0.f };
+	Desc.InitPos = { 0.125f, 0.f, 0.f };
 	Desc.InitScale = { 1.f, 0.6f, 1.f };
 	Desc.iRender = 0;
 

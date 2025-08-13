@@ -37,7 +37,7 @@ namespace Engine
 
 	enum class COLLIDERTYPE 
 	{
-		PALYER,
+		PLAYER,
 		TRIGGER,
 		MONSTER,
 		A,
