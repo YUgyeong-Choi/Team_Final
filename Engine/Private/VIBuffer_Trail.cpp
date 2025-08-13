@@ -164,12 +164,12 @@ HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
 	}
 
 	// 보간 후 예상 정점 수 계산
-	_uint smoothCount = (_uint)(m_TrailNodes.size() - 3) * (m_Subdivisions + 1);
+	_uint iSmoothCount = (_uint)(m_TrailNodes.size() - 3) * (m_Subdivisions + 1);
 
 	// 1) 버퍼 크기 부족 시 재생성
-	if (smoothCount > m_iMaxNodeCount)
+	if (iSmoothCount > m_iMaxNodeCount)
 	{
-		m_iMaxNodeCount = (_uint)smoothCount;
+		m_iMaxNodeCount = (_uint)iSmoothCount;
 
 		Safe_Release(m_pVB);
 
@@ -185,8 +185,11 @@ HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
 	}
 
 	// 2) 보간된 노드 생성
-	vector<VTXPOS_TRAIL> smoothNodes;
-	smoothNodes.reserve(smoothCount);
+	vector<VTXPOS_TRAIL> SmoothNodes;
+	SmoothNodes.reserve(iSmoothCount);
+
+	_uint outIndex = 0;
+	const _float invDen = 1.0f / max(1, (iSmoothCount - 1));
 
 	for (size_t i = 0; i + 3 < m_TrailNodes.size(); ++i)
 	{
@@ -220,19 +223,21 @@ HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
 			node.vInnerPos = inner;
 			node.vOuterPos = outer;
 			node.vLifeTime = P1.vLifeTime;
-
-			smoothNodes.push_back(node);
+			node.fVCoord = (_float)outIndex * invDen;
+			++outIndex;
+			SmoothNodes.push_back(node);
 		}
 	}
 
-	m_iNumVertices = (_uint)smoothNodes.size();
+
+	m_iNumVertices = (_uint)SmoothNodes.size();
 
 	// 3) GPU 버퍼에 쓰기
 	D3D11_MAPPED_SUBRESOURCE subres;
 	if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &subres)))
 		return E_FAIL;
-	VTXPOS_TRAIL* pVertices = static_cast<VTXPOS_TRAIL*>(subres.pData);
-	memcpy(subres.pData, smoothNodes.data(), sizeof(VTXPOS_TRAIL) * m_iNumVertices);
+
+	memcpy(subres.pData, SmoothNodes.data(), sizeof(VTXPOS_TRAIL) * m_iNumVertices);
 
 	m_pContext->Unmap(m_pVB, 0);
 

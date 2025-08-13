@@ -195,9 +195,9 @@ namespace Engine
 		XMFLOAT3		vOuterPos;
 		XMFLOAT3		vInnerPos;
 		XMFLOAT2		vLifeTime;
+		float			fVCoord;
 
-
-		static const unsigned int					iNumElements = { 3 };
+		static const unsigned int					iNumElements = { 4 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXPOS_TRAIL;
 

@@ -21,7 +21,6 @@ HRESULT CEffectContainer::Initialize_Prototype()
 
 HRESULT CEffectContainer::Initialize(void* pArg)
 {
-
 	if (pArg == nullptr)
 	{
 		MSG_BOX("EffectContainer must have Arguments");
@@ -60,11 +59,16 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 		}
 		else
 		{
+			/*
+			*  이부분 삭제 대신 각 이펙트들의 Loop상태를 해제한 후 시간이 지나면 죽도록 변경할 것 
+			*/
 			m_bDead = true;
+			//for (auto& pEffect : m_Effects)
+			//{
+			//	// 근데 파티클만 해제해주면 되긴 함 
+			//}
 		}
 	}
-	//if (m_fLifeTimeAcc >= m_fLifeTime)
-	//	m_bDead = true;
 
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)

@@ -1,0 +1,214 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.44795918464660645,
+                0.23036646842956543,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0628272294998169,
+                0.0,
+                1.0
+            ],
+            "Duration": 199,
+            "EffectType": 1,
+            "EmissiveIntensity": 1.0,
+            "EndTrack": 199,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0628272294998169,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.430000066757202,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "LifeTime_Particle": [
+                0.23000000417232513,
+                1.7200000286102295
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "Name": "Firecraker_FireParticle",
+            "NumInstance": 1500,
+            "NumKeyFrames": 1,
+            "PType": 0,
+            "Pivot": [
+                0.20000000298023224,
+                -0.05000000074505806,
+                0.0
+            ],
+            "Range": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "RenderGroup": 8,
+            "ShaderPass": 2,
+            "Size": [
+                0.019999999552965164,
+                0.05000000074505806
+            ],
+            "Speed": [
+                7.150000095367432,
+                14.720000267028809
+            ],
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Shere_07_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+      {
+        "Animation": true,
+        "Billboard": false,
+        "Center": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "CenterColor": [
+          0.32460731267929077,
+          0.31950879096984863,
+          0.31950879096984863,
+          0.18324607610702515
+        ],
+        "Color": [
+          0.4345549941062927,
+          0.4345549941062927,
+          0.4345549941062927,
+          0.24607330560684204
+        ],
+        "Duration": 199,
+        "EffectType": 1,
+        "EmissiveIntensity": 0.0,
+        "EndTrack": 199,
+        "FlipUV": false,
+        "KeyFrames": [
+          {
+            "Color": [
+              0.4345549941062927,
+              0.4345549941062927,
+              0.4345549941062927,
+              0.24607330560684204
+            ],
+            "Intensity": 0.5699999928474426,
+            "Interpolation": 0,
+            "Rotation": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Scale": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "LifeTime": 0.0,
+        "LifeTime_Particle": [
+          0.41999998688697815,
+          1.4500000476837158
+        ],
+        "Local": true,
+        "Loop": true,
+        "MaxLifeTime": 1.7200000286102295,
+        "Name": "Firecracker_SmokeParticle",
+        "NumInstance": 10,
+        "NumKeyFrames": 1,
+        "PType": 0,
+        "Pivot": [
+          0.44999998807907104,
+          -0.20999999344348907,
+          0.0
+        ],
+        "Range": [
+          0.5,
+          0.1599999964237213,
+          0.5
+        ],
+        "RenderGroup": 8,
+        "ShaderPass": 2,
+        "Size": [
+          0.3199999928474426,
+          2.359999895095825
+        ],
+        "Speed": [
+          0.5699999928474426,
+          1.7699999809265137
+        ],
+        "StartTrack": 0,
+        "TextureTags": [
+          "",
+          "T_Acid_Decal_C_KJS",
+          "",
+          ""
+        ],
+        "TextureUsage": [
+          false,
+          true,
+          false,
+          false
+        ],
+        "Threshold": 0.0,
+        "TickPerSecond": 60.0,
+        "TileX": 1,
+        "TileY": 1
+      }
+    ],
+    "Loop": false,
+    "MaxFrame": 200
+}

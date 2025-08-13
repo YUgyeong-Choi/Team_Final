@@ -6,6 +6,7 @@ struct VS_IN
     float3 vOuterPos : POSITION0;
     float3 vInnerPos : POSITION1;
     float2 vLifeTime : TEXCOORD0;
+    float fVCoord : TEXCOORD1;
 };
 
 struct VS_OUT
@@ -13,6 +14,7 @@ struct VS_OUT
     float3 vOuterPos : POSITION0;
     float3 vInnerPos : POSITION1;
     float2 vLifeTime : TEXCOORD0;
+    float fVCoord : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -23,7 +25,7 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vOuterPos = In.vOuterPos;
     Out.vInnerPos = In.vInnerPos;
     Out.vLifeTime = In.vLifeTime;   
-    
+    Out.fVCoord = In.fVCoord;
     return Out;
 }   
 
@@ -32,13 +34,14 @@ struct GS_IN
     float3 vOuterPos : POSITION0;
     float3 vInnerPos : POSITION1;
     float2 vLifeTime : TEXCOORD0;
+    float fVCoord : TEXCOORD1;
 };
 
 struct GS_OUT
 {
     float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
-    float fFade : TEXCOORD1; //??
+    float2 vLifeTime : TEXCOORD1;
 };
 
 [maxvertexcount(6)] 
@@ -49,20 +52,23 @@ void GS_MAIN(line VS_OUT input[2], inout TriangleStream<GS_OUT> Triangles)
 
     float3 Outer1 = input[1].vOuterPos;
     float3 Inner1 = input[1].vInnerPos;
-
-    float fade0 = 1.0 - saturate(input[0].vLifeTime.y / input[0].vLifeTime.x); // 이걸왜여기서함성격이상하네
-    float fade1 = 1.0 - saturate(input[1].vLifeTime.y / input[1].vLifeTime.x);
-
-    // 최종 변환 행렬
+    
+    float v0 = input[0].fVCoord;
+    float v1 = input[1].fVCoord;
+    
+    
+    //float fade0 = 1.0 - saturate(input[0].vLifeTime.y / input[0].vLifeTime.x); // 이걸왜여기서함성격이상하네
+    //float fade1 = 1.0 - saturate(input[1].vLifeTime.y / input[1].vLifeTime.x);
+    
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
     // UVs (좌→우, 상→하)
     float2 uv[4] =
     {
-        float2(0, 0), // Outer0
-        float2(1, 0), // Inner0
-        float2(1, 1), // Inner1
-        float2(0, 1) // Outer1
+        float2(0, v0), // Outer0
+        float2(1, v0), // Inner0
+        float2(1, v1), // Inner1
+        float2(0, v1) // Outer1
     };
 
     
@@ -72,14 +78,6 @@ void GS_MAIN(line VS_OUT input[2], inout TriangleStream<GS_OUT> Triangles)
         Inner0,
         Inner1,
         Outer1
-    };
-
-    float fades[4] =
-    {
-        fade0,
-        fade0,
-        fade1,
-        fade1
     };
 
     // 출력: TriangleStrip 사용하지 않음 → 직접 TriangleList 생성
@@ -96,21 +94,19 @@ void GS_MAIN(line VS_OUT input[2], inout TriangleStream<GS_OUT> Triangles)
     
     outVert[0].vPosition = mul(float4(verts[0], 1.f), matVP);
     outVert[0].vTexcoord = uv[0];
-    outVert[0].fFade = fades[0];
+    outVert[0].vLifeTime = input[0].vLifeTime;
     
     outVert[1].vPosition = mul(float4(verts[1], 1.f), matVP);
     outVert[1].vTexcoord = uv[1];
-    outVert[1].fFade = fades[1];
+    outVert[1].vLifeTime = input[0].vLifeTime;
     
     outVert[2].vPosition = mul(float4(verts[2], 1.f), matVP);
     outVert[2].vTexcoord = uv[2];
-    outVert[2].fFade = fades[2];
+    outVert[2].vLifeTime = input[1].vLifeTime;
     
     outVert[3].vPosition = mul(float4(verts[3], 1.f), matVP);
     outVert[3].vTexcoord = uv[3];
-    outVert[3].fFade = fades[3];
-    
-    
+    outVert[3].vLifeTime = input[1].vLifeTime;
     
     
     
@@ -131,7 +127,7 @@ struct PS_IN
 {
     float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
-    float fFade : TEXCOORD1; //??
+    float2 vLifeTime : TEXCOORD1;
 };
 
 struct PS_OUT
@@ -146,8 +142,12 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;
     vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-    vColor.a *= In.fFade; // 페이드 효과 적용
         
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x);
+    float fade = 1.0 - smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
+    vColor.a = fade * g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+
+    
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
     Out.fRevealage = vColor.a;
