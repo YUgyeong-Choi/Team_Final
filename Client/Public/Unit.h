@@ -42,11 +42,13 @@ public:
 	void SetCascadeShadow();
 
 
+
 protected: /* [ Setup 함수 ] */
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();
 	HRESULT Ready_Collider();
 
+	virtual void Register_Events() {}
 
 public: /* [ 피직스 관련 ] */
 	PxRigidActor* Get_Actor(CPhysXActor* actor);
