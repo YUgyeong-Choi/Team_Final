@@ -1,4 +1,4 @@
-#include "Fuoco.h"
+ï»¿#include "Fuoco.h"
 #include "Bone.h"
 #include "GameInstance.h"
 #include "LockOn_Manager.h"
@@ -52,6 +52,9 @@ HRESULT CFuoco::Initialize(void* pArg)
 	_float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
 	}
+
+	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine1");
+
 	return S_OK;
 }
 
@@ -60,8 +63,8 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_TAB))
 	{
-		cout << "ÇöÀç ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸® : " << Get_DistanceToPlayer() << endl;
-		cout << "ÇöÀç ¾Ö´Ï¸ÞÀÌ¼Ç »óÅÂ : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
+		cout << "í˜„ìž¬ í”Œë ˆì´ì–´ì™€ì˜ ê±°ë¦¬ : " << Get_DistanceToPlayer() << endl;
+		cout << "í˜„ìž¬ ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœ : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
 		m_pAnimator->SetInt("SkillType", FootAtk);
@@ -72,14 +75,20 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 void CFuoco::Update(_float fTimeDelta)
 {
-	UpdateBossState(fTimeDelta); // »óÅÂ ¾÷µ¥ÀÌÆ®
-	__super::Update(fTimeDelta); // ¾Ö´Ï¸ÞÀÌ¼Ç Àç»ý
-	Update_Collider(); // ÄÝ¶óÀÌ´õ ¾÷µ¥ÀÌÆ®
+	UpdateBossState(fTimeDelta); // ìƒíƒœ ì—…ë°ì´íŠ¸
+	__super::Update(fTimeDelta); // ì• ë‹ˆë©”ì´ì…˜ ìž¬ìƒ
+	Update_Collider(); // ì½œë¼ì´ë” ì—…ë°ì´íŠ¸
 
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) 
 	{
 		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
 	}
+
+	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
+
+	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
+
+	XMStoreFloat4(&m_vLockonPos, vLockonPos);
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)
@@ -100,12 +109,12 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (pOther)
 	{
-		if (eColliderType == COLLIDERTYPE::PALYER)
+		if (eColliderType == COLLIDERTYPE::PLAYER)
 		{
 			if (m_pAnimator->GetInt("SkillType") == FootAtk)
 			{
 				m_pAnimator->SetBool("IsHit", true);
-				SetTurnTimeDuringAttack(2.f); // Ç»¸® ¾îÅÃ 
+				SetTurnTimeDuringAttack(2.f); // í“¨ë¦¬ ì–´íƒ 
 			}
 		}
 	}
@@ -247,7 +256,7 @@ HRESULT CFuoco::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ÀÏ´Ü º¸·ù
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ì¼ë‹¨ ë³´ë¥˜
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
@@ -283,7 +292,7 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForArm->Set_ShapeFlag(true, true, true);
 		PxFilterData armFilterData{};
 		armFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ÀÏ´Ü º¸·ù
+		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ì¼ë‹¨ ë³´ë¥˜
 		m_pPhysXActorComForArm->Set_SimulationFilterData(armFilterData);
 		m_pPhysXActorComForArm->Set_QueryFilterData(armFilterData);
 		m_pPhysXActorComForArm->Set_Owner(this);
@@ -306,7 +315,7 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForFoot->Set_ShapeFlag(true, true, true);
 		PxFilterData footFilterData{};
 		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ÀÏ´Ü º¸·ù
+		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ì¼ë‹¨ ë³´ë¥˜
 		m_pPhysXActorComForFoot->Set_SimulationFilterData(footFilterData);
 		m_pPhysXActorComForFoot->Set_QueryFilterData(footFilterData);
 		m_pPhysXActorComForFoot->Set_Owner(this);
@@ -366,7 +375,7 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 	_uint iCurrentAnimStateNodeID = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->iNodeId;
 	if (iCurrentAnimStateNodeID == ENUM_CLASS(BossStateID::CUTSCENE))
 	{
-		return; // ÄÆ½Å Áß¿¡´Â »óÅÂ ¾÷µ¥ÀÌÆ®¸¦ ÇÏÁö ¾ÊÀ½
+		return; // ì»·ì‹  ì¤‘ì—ëŠ” ìƒíƒœ ì—…ë°ì´íŠ¸ë¥¼ í•˜ì§€ ì•ŠìŒ
 	}
 
 	_float fDistance = Get_DistanceToPlayer();
@@ -385,7 +394,7 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 	}
 
 
-	UpdateAttackPattern(fDistance, fTimeDelta); // °ø°Ý ÆÐÅÏ ¾÷µ¥ÀÌÆ®
+	UpdateAttackPattern(fDistance, fTimeDelta); // ê³µê²© íŒ¨í„´ ì—…ë°ì´íŠ¸
 
 	switch (iCurrentAnimStateNodeID)
 	{
@@ -430,7 +439,7 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 
 	if (bIsRootMotion)
 	{
-		ApplyRootMotionDelta(fTimeDelta); // ·çÆ® ¸ð¼Ç Àû¿ë
+		ApplyRootMotionDelta(fTimeDelta); // ë£¨íŠ¸ ëª¨ì…˜ ì ìš©
 	}
 	else
 	{
@@ -439,18 +448,18 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 	
 	_vector vDir = GetTargetDirection();
 	if (XMVector3Equal(vDir, XMVectorZero()))
-		return; // ¹æÇâÀÌ 0ÀÌ¸é È¸ÀüÇÏÁö ¾ÊÀ½
+		return; // ë°©í–¥ì´ 0ì´ë©´ íšŒì „í•˜ì§€ ì•ŠìŒ
 	vDir = XMVectorSetY(vDir, 0.f);
 	vDir = XMVector3Normalize(vDir);
 
 
-	// ÇöÀç »óÅÂ¿¡¼­ ¸¹ÀÌ È¸ÀüÇßÀ¸¸é ¾Ö´Ï¸ÞÀÌÅÍ Turn true
+	// í˜„ìž¬ ìƒíƒœì—ì„œ ë§Žì´ íšŒì „í–ˆìœ¼ë©´ ì• ë‹ˆë©”ì´í„° Turn true
 	_vector vCurrentLook = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
 	_float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, vDir));
 	fDot = clamp(fDot, -1.f, 1.f);
 	_vector vCross = XMVector3Cross(vCurrentLook, vDir);
 	_float fSign = (XMVectorGetY(vCross) < 0.f) ? -1.f : 1.f;
-	_float fYaw = acosf(fDot) * fSign; // È¸Àü °¢µµ (¶óµð¾È ´ÜÀ§) -180~180
+	_float fYaw = acosf(fDot) * fSign; // íšŒì „ ê°ë„ (ë¼ë””ì•ˆ ë‹¨ìœ„) -180~180
 
 
 	_bool bIsTurn = abs(XMConvertToDegrees(fYaw)) > MINIMUM_TURN_ANGLE &&( m_eCurrentState == EFuocoState::IDLE||
@@ -459,12 +468,12 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 	if (bIsTurn)
 	{
 		m_pAnimator->SetTrigger("Turn");
-		m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: ¿À¸¥ÂÊ, 1: ¿ÞÂÊ
+		m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: ì˜¤ë¥¸ìª½, 1: ì™¼ìª½
 #ifdef _DEBUG
-		cout << "È¸Àü °¢µµ: " << XMConvertToDegrees(fYaw) << "µµ" << endl;
-		cout << "È¸Àü ¹æÇâ : " << ((fYaw >= 0.f) ? "¿À¸¥ÂÊ" : "¿ÞÂÊ") << endl;
+		cout << "íšŒì „ ê°ë„: " << XMConvertToDegrees(fYaw) << "ë„" << endl;
+		cout << "íšŒì „ ë°©í–¥ : " << ((fYaw >= 0.f) ? "ì˜¤ë¥¸ìª½" : "ì™¼ìª½") << endl;
 #endif
-		m_pAnimator->SetBool("Move", false); // È¸Àü Áß¿¡´Â ÀÌµ¿ÇÏÁö ¾ÊÀ½
+		m_pAnimator->SetBool("Move", false); // íšŒì „ ì¤‘ì—ëŠ” ì´ë™í•˜ì§€ ì•ŠìŒ
 	}
 
 	if (m_eCurrentState == EFuocoState::TURN)
@@ -475,7 +484,7 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 
 void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
-	// Ç»¸® µ¹Áø 9¹ø
+	// í“¨ë¦¬ ëŒì§„ 9ë²ˆ
 	if (m_bIsFirstAttack)
 	{
 		m_pAnimator->SetTrigger("Attack");
@@ -554,10 +563,10 @@ _bool CFuoco::IsTargetInFront() const
 	_vector vForward = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
 	_vector vToPlayerXZ = XMVectorSetY(vPlayerPos - vThisPos, 0.f);
 	_float fDot = XMVectorGetX(XMVector3Dot(vForward, vToPlayerXZ));
-	fDot = clamp(fDot, -1.f, 1.f); // -1 ~ 1 »çÀÌ·Î Á¦ÇÑ
-	_float fAngle = cosf(XMConvertToRadians(30.f)); // ½Ã¾ß°¢ 60µµ ±âÁØ
+	fDot = clamp(fDot, -1.f, 1.f); // -1 ~ 1 ì‚¬ì´ë¡œ ì œí•œ
+	_float fAngle = cosf(XMConvertToRadians(30.f)); // ì‹œì•¼ê° 60ë„ ê¸°ì¤€
 
-	return fDot > fAngle; // ¾ÕÂÊ¿¡ ÀÖÀ¸¸é true
+	return fDot > fAngle; // ì•žìª½ì— ìžˆìœ¼ë©´ true
 }
 
 _vector CFuoco::GetTargetDirection() const
@@ -567,7 +576,7 @@ _vector CFuoco::GetTargetDirection() const
 	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 	_vector vThisPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vToPlayer = vPlayerPos - vThisPos;
-	return XMVector3Normalize(vToPlayer); // ÇÃ·¹ÀÌ¾î ¹æÇâ º¤ÅÍ ¹ÝÈ¯
+	return XMVector3Normalize(vToPlayer); // í”Œë ˆì´ì–´ ë°©í–¥ ë²¡í„° ë°˜í™˜
 }
 
 void CFuoco::ApplyRootMotionDelta(_float fTimeDelta)
@@ -643,11 +652,11 @@ _bool CFuoco::UpdateTurnDuringAttack(_float fTimeDelta)
 		vDir = XMVector3Normalize(vDir);
 		m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta);
 		m_fTurnTimeDuringAttack -= fTimeDelta;
-		cout << "È¸Àü ½Ã°£ ³²À½: " << m_fTurnTimeDuringAttack << endl;
+		cout << "íšŒì „ ì‹œê°„ ë‚¨ìŒ: " << m_fTurnTimeDuringAttack << endl;
 		return false;
 	}
 
-	m_fTurnTimeDuringAttack = 0.f; // ÃÊ±âÈ­
+	m_fTurnTimeDuringAttack = 0.f; // ì´ˆê¸°í™”
 	return true;
 }
 

@@ -1,4 +1,4 @@
-#include "Buttler_Train.h"
+﻿#include "Buttler_Train.h"
 #include "GameInstance.h"
 #include "Weapon_Monster.h"
 
@@ -30,6 +30,9 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	
 	m_iHP = 300;
 
+	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
+
+	
 	return S_OK;
 }
 
@@ -61,6 +64,7 @@ void CButtler_Train::Update(_float fTimeDelta)
 	}
 
 	__super::Update(fTimeDelta);
+
 }
 
 void CButtler_Train::Late_Update(_float fTimeDelta)

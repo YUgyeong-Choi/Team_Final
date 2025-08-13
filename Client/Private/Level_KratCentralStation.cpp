@@ -706,7 +706,6 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
 	CMonster_Base::MONSTER_BASE_DESC pDesc{};
-	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
