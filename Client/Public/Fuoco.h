@@ -68,6 +68,7 @@ class CFuoco : public CUnit
         WALK_B = 121,
         WALK_R = 122,
         WALK_L = 123,
+        RUN_F = 100035,
         TURN_R = 100012,
         TURN_L = 100013
     };
@@ -79,7 +80,7 @@ class CFuoco : public CUnit
 		Uppercut = 2,
         SwingAtk = 4,
         FootAtk = 6,
-        FlameFiled = 7,
+        P2_FlameFiled = 7,
         SlamAtk = 8,
         StrikeFury = 9,
         P2_FireOil = 10,
@@ -147,18 +148,19 @@ private:
     void UpdateMove(_float fTimeDelta);
     void UpdateAttackPattern(_float fDistance,_float fTimeDelta);
 
-	_float Get_DistanceToPlayer() const;
 	_bool  IsTargetInFront() const;
 	_vector GetTargetDirection() const;
+	_bool UpdateTurnDuringAttack(_float fTimeDelta);
+	_float Get_DistanceToPlayer() const;
     void ApplyRootMotionDelta(_float fTimeDelta);
     void UpdateNormalMove(_float fTimeDelta);
-	_bool UpdateTurnDuringAttack(_float fTimeDelta);
     void SetupAttackByType(EBossAttackPattern ePattern);
-    void SetTurnTimeDuringAttack(_float fTime)
+    void SetTurnTimeDuringAttack(_float fTime,_float fAddtivRotSpeed = 0.f)
     {
         if (m_fTurnTimeDuringAttack != 0.f)
             return;
 		m_fTurnTimeDuringAttack = fTime;
+		m_fAddtiveRotSpeed = fAddtivRotSpeed;
     }
 
 	_bool IsValidAttackType(EBossAttackPattern ePattern) const
@@ -172,6 +174,13 @@ private:
 			ePattern == EBossAttackPattern::P2_FireBall ||
 			ePattern == EBossAttackPattern::P2_FireBall_B;
 	}
+
+    virtual void Register_Events() override;
+
+	void Ready_AttackPatternWeightForPhase1();
+	void Ready_AttackPatternWeightForPhase2();
+
+	EBossAttackPattern GetRandomAttackPattern();
 
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
@@ -192,10 +201,21 @@ private:
     _float   m_fSmoothSpeed = 8.0f;
     _float   m_fSmoothThreshold = 0.1f;
 
+    _float m_fWalkSpeed = 3.f;
+	_float m_fRunSpeed = 5.f;
+
+	_float m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
+	_float m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
     _float m_fTurnTimeDuringAttack = 0.f;
     const _float CHASING_DISTANCE = 3.f;
 	const _float ATTACK_DISTANCE = 7.f; // 이건 나중에 원거리 공격을 좀 처리할 때 다시 사용
     const _float MINIMUM_TURN_ANGLE = 35.f;
+
+	EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
+	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
+    vector<pair<_float, EBossAttackPattern>> m_vecAttackPatternWeight;
+    deque<EBossAttackPattern> m_RecentPatterns;
+    _uint m_iPatternLimit = 2;
 
 public:
 	static CFuoco* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
