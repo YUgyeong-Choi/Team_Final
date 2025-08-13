@@ -1,4 +1,4 @@
-#include "Weapon_Monster.h"
+ï»¿#include "Weapon_Monster.h"
 
 #include "Animator.h"
 #include "Animation.h"
@@ -53,6 +53,9 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 
 void CWeapon_Monster::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
+
 	__super::Priority_Update(fTimeDelta);
 
 
@@ -79,7 +82,7 @@ HRESULT CWeapon_Monster::Render()
 
 HRESULT CWeapon_Monster::Ready_Components()
 {
-	/* [ µû·Î Ãß°¡ÇÒ ÄÄÆ÷³ÍÆ®°¡ ÀÖ½À´Ï±î? ] */
+	/* [ ë”°ë¡œ ì¶”ê°€í•  ì»´í¬ë„ŒíŠ¸ê°€ ìˆìŠµë‹ˆê¹Œ? ] */
 
 	return S_OK;
 }

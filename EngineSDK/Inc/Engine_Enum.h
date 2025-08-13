@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 namespace Engine
 {
@@ -40,6 +40,8 @@ namespace Engine
 		PLAYER,
 		TRIGGER,
 		MONSTER,
+		PLAYER_WEAPON,
+		MONSTER_WEAPON,
 		A,
 		B,
 		C,

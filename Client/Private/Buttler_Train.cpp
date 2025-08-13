@@ -40,10 +40,19 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 {
 
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_strStateName.find("Dead") != m_strStateName.npos)
+	{
+		if (m_pAnimator->IsFinished())
+		{
+			m_pWeapon->Set_bDead();
+		}
+	}
 }
 
 void CButtler_Train::Update(_float fTimeDelta)
 {
+
 	Calc_Pos(fTimeDelta);
 
 	if (m_strStateName.find("Turn") != m_strStateName.npos)
@@ -88,14 +97,8 @@ HRESULT CButtler_Train::Render()
 
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	// 
-	if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		m_pAnimator->SetTrigger("Hit");
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
-	}
 
-	m_pHPBar->Set_RenderTime(2.f);
+	ReceiveDamage(pOther, eColliderType);
 
 }
 
@@ -126,6 +129,12 @@ void CButtler_Train::Update_State()
 	if (!m_isDetect)
 		return;
 
+
+	if (m_iHP <= 0)
+		return;
+
+	
+
 	_vector vDist = {};
 	vDist = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 
@@ -133,6 +142,7 @@ void CButtler_Train::Update_State()
 	m_pAnimator->SetFloat("Distance", XMVectorGetX(XMVector3Length(vDist)));
 
     m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+
 
 	if (m_strStateName.find("Idle") != m_strStateName.npos || m_strStateName.find("Turn") != m_strStateName.npos)
 	{
@@ -158,11 +168,54 @@ void CButtler_Train::Update_State()
 	}
 
 	
-	if (m_iHP <= 0)
+	
+
+}
+
+void CButtler_Train::Attack(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CButtler_Train::AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	
+
+	if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
 	{
-		
+		auto pWeapon = static_cast<CWeapon*>(pOther);
+
+		if (false == pWeapon->GetisAttack())
+			return;
+
+		m_iHP -= pWeapon->Get_CurrentDamage();
+
+		m_pAnimator->SetTrigger("Hit");
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		m_pHPBar->Set_RenderTime(2.f);
+	}
+	else if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		m_iHP -= 300;
+
+		m_pAnimator->SetTrigger("Hit");
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		m_pHPBar->Set_RenderTime(2.f);
 	}
 
+
+	if (m_iHP <= 0)
+	{
+		if (m_strStateName == "Dead")
+			return;
+
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		m_pAnimator->SetTrigger("Dead");
+		m_strStateName = "Dead";
+	}
 }
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
@@ -203,6 +256,8 @@ HRESULT CButtler_Train::Ready_Weapon()
 		return E_FAIL;
 
 	m_pWeapon = dynamic_cast<CWeapon_Monster*>(pGameObject);
+
+	Safe_AddRef(m_pWeapon);
 
 
 	return S_OK;

@@ -70,6 +70,18 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 public:
 	_float4& Get_LockonPos() { return m_vLockonPos; }
 
+public:
+	// 데미지를 준다
+	virtual void Attack(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+	// 무기를 통해 데미지를 준다
+	virtual void AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+	// 데미지를 받는다
+	virtual void ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+
+	// 이거 일단 나중에? 
+	// 데미지를 무기를 통해 받는다? 플레이어 타격 판정 후하게 주려면 괜찮을지도? 
+	virtual void ReceiveDamageWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+
 
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };

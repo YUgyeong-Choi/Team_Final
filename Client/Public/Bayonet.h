@@ -33,9 +33,11 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void 	Update_Collider();
 
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
+	HRESULT Ready_Actor();
 
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
@@ -50,7 +52,7 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 private:
-
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
 public:
 	static CBayonet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

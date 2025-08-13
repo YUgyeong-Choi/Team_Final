@@ -69,7 +69,7 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	{
 		if (m_pAnimator->IsFinished())
 		{
-			// 렉돌 나중에?
+			m_pHPBar->Set_bDead();
 			Set_bDead();
 		}
 	}
@@ -98,7 +98,8 @@ void CMonster_Base::Update(_float fTimeDelta)
 	Update_Collider();
 
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
-		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+		if(!m_bDead)
+			CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
 	}
 
 	if (m_isLookAt)
@@ -392,7 +393,7 @@ CGameObject* CMonster_Base::Find_Player(_int iLevel)
 	if (nullptr == pPlayer)
 		return nullptr;
 
-	
+	Safe_AddRef(pPlayer);
 
 	return pPlayer;
 }

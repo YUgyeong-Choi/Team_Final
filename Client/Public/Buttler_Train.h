@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Monster_Base.h"
 #include "Client_Defines.h"
@@ -24,7 +24,7 @@ public:
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-	/* Ray�� ���� �浹(HitPos& HitNormal) */
+	/* Ray로 인항 충돌(HitPos& HitNormal) */
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -32,7 +32,15 @@ public:
 
 	virtual void	Update_State();
 
+	// 데미지를 준다
+	virtual void Attack(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	// 무기를 통해 데미지를 준다
+	virtual void AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	// 데미지를 받는다
+	virtual void ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
 	void Calc_Pos(_float fTimeDelta);
+
 
 private:
 	HRESULT Ready_Weapon(); 

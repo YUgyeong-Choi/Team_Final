@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "GameObject.h"
 #include "Client_Defines.h"
 
@@ -11,13 +11,13 @@ NS_END
 NS_BEGIN(Client)
 class CWeapon : public CGameObject
 {
-	/* [ ¸ğµç ¹«±â°´Ã¼ÀÇ ºÎ¸ğÅ¬·¡½ºÀÔ´Ï´Ù. ] */
+	/* [ ëª¨ë“  ë¬´ê¸°ê°ì²´ì˜ ë¶€ëª¨í´ë˜ìŠ¤ì…ë‹ˆë‹¤. ] */
 
 
 public:
 	typedef struct tagWeaponDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		const _tchar*	szMeshID;
+		const _tchar* szMeshID;
 		LEVEL			eLevelID;
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
@@ -43,25 +43,39 @@ public:
 protected:
 	void SetWeaponWorldMatrix(_float fTimeDelta);
 
-protected: /* [ Setup ÇÔ¼ö ] */
+protected: /* [ Setup í•¨ìˆ˜ ] */
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();
 
 
-protected: /* [ Ãæµ¹ ½Ã °øÅëÀ¸·Î ½ÇÇà ] */
+protected: /* [ ì¶©ëŒ ì‹œ ê³µí†µìœ¼ë¡œ ì‹¤í–‰ ] */
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-	/* Ray·Î ÀÎÇ× Ãæµ¹(HitPos& HitNormal) */
+	/* Rayë¡œ ì¸í•­ ì¶©ëŒ(HitPos& HitNormal) */
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-public: /* [ È°¼ºÈ­ , ºñÈ°¼ºÈ­ ] */
+public: /* [ í™œì„±í™” , ë¹„í™œì„±í™” ] */
 	void SetbIsActive(_bool IsActive) { m_bIsActive = IsActive; }
 	_bool GetbIsActive() const { return m_bIsActive; }
+
+	// ë ˆë²¨ ì—…ì´ë‚˜ ê°•í™” ì‹œ ê³µê²©ë ¥ì„ ë°”ê¾¸ë„ë¡
+	void SetBasicDamage(_float fDamage) { m_bDamage = fDamage; }
+
+	// ìƒíƒœì— ë”°ë¼ ê³µê²© í•  ìˆ˜ ìˆëŠ”ì§€ ì—†ëŠ”ì§€
+	// ë°ë¯¸ì§€ ë°°ìœ¨ì„ ì¤˜ì„œ ê³µê²©í•  ìˆ˜ ìˆë„ë¡
+	void SetisAttack(_bool isAttack) { m_isAttack = isAttack; }
+	_bool GetisAttack() { return m_isAttack; }
+	
+	// ìƒíƒœ ë§ˆë‹¤ ë°°ìœ¨ì„ ë°”ê¿”ì£¼ê¸°
+	void SetDamageRatio(_float fRatio) { m_fDamageRatio = fRatio; }
+
+	// ê¸°ë³¸ ë°ë¯¸ì§€ì— ë°°ìœ¨ì„ ê³±í•´ì„œ ë°ë¯¸ì§€ë¥¼ ì¤„ ìˆ˜ ìˆê²Œ
+	_int Get_CurrentDamage() { return _int(m_bDamage * m_fDamageRatio); }
 
 public:
 	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }
@@ -73,36 +87,39 @@ protected:
 	const _float4x4*	m_pSocketMatrix = { nullptr };
 	_float4x4			m_CombinedWorldMatrix = {};
 
-protected:				/* [ ±âº» ¼Ó¼º ] */
+protected:				/* [ ê¸°ë³¸ ì†ì„± ] */
 	_float				m_bDamage = { 10.f };
 	_bool				m_bIsActive = {};
+	_bool				m_isAttack = {};
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);
 	_float3				m_InitPos = {};
 	_float3				m_InitScale = {};
 	_int				m_iRender = {};
+	
+	_float				m_fDamageRatio = {1.f};
 
-protected: 				/* [ ±âº» Å¸ÀÔ ] */
+protected: 				/* [ ê¸°ë³¸ íƒ€ì… ] */
 	const _tchar*		m_szName = { nullptr };
 	const _tchar*		m_szMeshID = { nullptr };
 	LEVEL				m_eLevelID = { LEVEL::END };
 
-protected:				/* [ ±×¸²ÀÚ °ü·Ã ] */
+protected:				/* [ ê·¸ë¦¼ì ê´€ë ¨ ] */
 	SHADOW				m_eShadow = SHADOW::SHADOW_END;
 
-protected:              /* [ ÄÄÆ÷³ÍÆ® ] */
+protected:              /* [ ì»´í¬ë„ŒíŠ¸ ] */
 	CModel*				m_pModelCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
 	CAnimator*			m_pAnimator = { nullptr };
 
-protected:				/* [ ·¹ÀÌÄ³½ºÆ® º¯¼ö ] */
+protected:				/* [ ë ˆì´ìºìŠ¤íŠ¸ ë³€ìˆ˜ ] */
 	PxVec3				m_vRayHitPos = {};
 	_bool				m_bRayHit = {};
 
-protected:		//		½ºÅ³¿ë º¯¼ö?
-	// 0¹øÀº ³¯ ½ºÅ³, 1¹øÀº ÀÚ·ç ½ºÅ³
+protected:		//		ìŠ¤í‚¬ìš© ë³€ìˆ˜?
+	// 0ë²ˆì€ ë‚  ìŠ¤í‚¬, 1ë²ˆì€ ìë£¨ ìŠ¤í‚¬
 	SKILL_DESC			m_eSkillDesc[2];
-	// ³»±¸µµ
+	// ë‚´êµ¬ë„
 	_int				m_iDurability = {};
 	_int				m_iMaxDurability = {100};
 
