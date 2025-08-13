@@ -142,6 +142,7 @@ HRESULT CVIBuffer_Trail::Render()
 {
 	if (m_TrailNodes.size() < 2)
 		return S_OK;
+
 	m_pContext->Draw(m_iNumVertices, 0);
 
 	return S_OK;

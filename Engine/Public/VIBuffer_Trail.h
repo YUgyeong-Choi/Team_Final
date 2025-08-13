@@ -30,7 +30,7 @@ public:
 
 private:
 	vector<VTXPOS_TRAIL>	m_TrailNodes;
-	_uint					m_iMaxNodeCount = { 64 }; // 임시로 개수 지정함
+	_uint					m_iMaxNodeCount = { 128 }; // 임시로 개수 지정함
 	_float					m_fLifeDuration = { 1.f };
 	_bool					m_bTrailActive = true;
 
