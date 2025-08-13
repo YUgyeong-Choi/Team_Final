@@ -208,13 +208,20 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Revealage"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(1.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	// 글로우가 필요한 이펙트를 따로 모아두는 렌더타겟.
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Emissive"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Emissive"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+	// 디스토션 용 렌더타겟.
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Distortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Accumulation"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Revealage"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Emissive"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Distortion"))))
 		return E_FAIL;
 
 	// Weighted Blend 연산이 끝난 결과물 담는 렌더타겟.
@@ -224,11 +231,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 
-	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_Distort"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 1.f, 0.f))))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_Effect_Distort"))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AfterDistortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
+		return E_FAIL;
 
 #pragma endregion
 
@@ -322,13 +326,15 @@ HRESULT CRenderer::Initialize()
 #pragma region CY Debug
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Composite"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_WBGlow"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_WBGlow"), GetTargetX(1), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Accumulation"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Accumulation"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Revealage"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Revealage"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Emissive"), GetTargetX(0), GetTargetY(4), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Emissive"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Distortion"), GetTargetX(0), GetTargetY(4), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Diffuse"), GetTargetX(4), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
@@ -862,9 +868,6 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_WBGlow"), m_pShader, "g_EffectBlend_WBGlow")))
 		return E_FAIL;
 
-	// 트레일 적용 후 디스토션 렌더타겟에 넣고 나면 주석을 푸세요 // 
-	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_Distort"), m_pShader, "g_Effect_Distort")))
-	//	return E_FAIL;
 
 	/* [ 볼륨메트릭 포그 ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Volumetric"), m_pShader, "g_VolumetricTexture")))
@@ -1135,6 +1138,13 @@ HRESULT CRenderer::Render_Effect_WB_Composite()
 	m_pVIBuffer->Render();
 
 	m_pGameInstance->End_MRT();
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Distortion()
+{
+	// final 렌더타겟 써야함
+
 	return S_OK;
 }
 

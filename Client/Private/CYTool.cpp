@@ -619,6 +619,8 @@ HRESULT CCYTool::Window_Trail()
 	{
 		pTE->Set_TrailActive(false);
 	}
+
+
 	return S_OK;
 }
 
