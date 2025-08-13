@@ -65,61 +65,66 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
 
 void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
 {
-    XMFLOAT4X4 parentMatrix = *m_pParentMatrix;
+    if (m_fRenderTime > 0.f)
+    {
+        XMFLOAT4X4 parentMatrix = *m_pParentMatrix;
 
 
-    parentMatrix._11 = 1.0f; parentMatrix._12 = 0.0f; parentMatrix._13 = 0.0f;
-    parentMatrix._21 = 0.0f; parentMatrix._22 = 1.0f; parentMatrix._23 = 0.0f;
-    parentMatrix._31 = 0.0f; parentMatrix._32 = 0.0f; parentMatrix._33 = 1.0f;
-    // 위치는 유지
-    // parentMatrix._41, _42, _43 는 그대로 둠
+        parentMatrix._11 = 1.0f; parentMatrix._12 = 0.0f; parentMatrix._13 = 0.0f;
+        parentMatrix._21 = 0.0f; parentMatrix._22 = 1.0f; parentMatrix._23 = 0.0f;
+        parentMatrix._31 = 0.0f; parentMatrix._32 = 0.0f; parentMatrix._33 = 1.0f;
+        // 위치는 유지
+        // parentMatrix._41, _42, _43 는 그대로 둠
 
-    // 결합
-    XMStoreFloat4x4(
-        &m_CombinedWorldMatrix,
-        XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&parentMatrix)
-    );
+        // 결합
+        XMStoreFloat4x4(
+            &m_CombinedWorldMatrix,
+            XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&parentMatrix)
+        );
 
-   // 
-    _vector camPos = XMLoadFloat4(m_pGameInstance->Get_CamPosition());
-    _vector vWorldPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
+        // 
+        _vector camPos = XMLoadFloat4(m_pGameInstance->Get_CamPosition());
+        _vector vWorldPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
 
-    _float vDist = XMVectorGetX(XMVector3Length(camPos - vWorldPos));
+        _float vDist = XMVectorGetX(XMVector3Length(camPos - vWorldPos));
 
-    _matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
-    _matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);
+        _matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
+        _matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);
 
-    _vector vClipPos = XMVector4Transform(vWorldPos, ViewMat * ProjMat);
+        _vector vClipPos = XMVector4Transform(vWorldPos, ViewMat * ProjMat);
 
-    vClipPos.m128_f32[0] /= vClipPos.m128_f32[3];
-    vClipPos.m128_f32[1] /= vClipPos.m128_f32[3];
-    vClipPos.m128_f32[2] /= vClipPos.m128_f32[3];
-  
-    _vector vScale = m_pTransformCom->Get_Scale();
+        vClipPos.m128_f32[0] /= vClipPos.m128_f32[3];
+        vClipPos.m128_f32[1] /= vClipPos.m128_f32[3];
+        vClipPos.m128_f32[2] /= vClipPos.m128_f32[3];
 
-    _float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
-    _float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
-    
+        _vector vScale = m_pTransformCom->Get_Scale();
 
-    XMFLOAT4X4 world{};
-    world._11 = vScale.m128_f32[0] * g_iWinSizeX;  // 픽셀 단위 스케일
-    world._22 = vScale.m128_f32[1] * g_iWinSizeY;
-    world._33 = 1.f;
-    world._44 = 1.f;
-    world._41 = fX - 0.5f * g_iWinSizeX;
-    world._42 = -fY +0.5f * g_iWinSizeY;
-    world._43 = 0.f;
+        _float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
+        _float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
 
 
-    //  가까운게 그려질 수 있도록
-    m_fOffset = vDist * 0.001f;
+        XMFLOAT4X4 world{};
+        world._11 = vScale.m128_f32[0] * g_iWinSizeX;  // 픽셀 단위 스케일
+        world._22 = vScale.m128_f32[1] * g_iWinSizeY;
+        world._33 = 1.f;
+        world._44 = 1.f;
+        world._41 = fX - 0.5f * g_iWinSizeX;
+        world._42 = -fY + 0.5f * g_iWinSizeY;
+        world._43 = 0.f;
+
+
+        //  가까운게 그려질 수 있도록
+        m_fOffset = vDist * 0.001f;
+
+
+        XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(&world));
+
+
+
+        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+    }
 
    
-    XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(&world));
-
-
-    if(m_fRenderTime > 0.f)
-        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 }
 
 HRESULT CUI_MonsterHP_Bar::Render()

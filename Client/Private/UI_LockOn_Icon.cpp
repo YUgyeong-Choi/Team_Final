@@ -25,6 +25,8 @@ HRESULT CUI_LockOn_Icon::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_fOffset = 0.01f;
+
 	return S_OK;
 }
 
@@ -43,10 +45,32 @@ void CUI_LockOn_Icon::Update(_float fTimeDelta)
 	}
 	else
 	{
+		m_isRender = true;
+
 		// 위치 가져와서 직교로 그리자
 
 		// 회전 값 다 빼고, z 위치 0.01로, 위에 페이탈 이미지 덧그리도록?
-		
+
+		_vector vWorldPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+		// 일단 상수로 보정
+		vWorldPos.m128_f32[1] += 1.f;
+
+		_matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
+		_matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);
+
+		_vector vClipPos = XMVector4Transform(vWorldPos, ViewMat * ProjMat);
+
+		vClipPos.m128_f32[0] /= vClipPos.m128_f32[3];
+		vClipPos.m128_f32[1] /= vClipPos.m128_f32[3];
+		vClipPos.m128_f32[2] /= vClipPos.m128_f32[3];
+
+		_float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
+		_float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
+
+		_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.01f,1.f};
+	
+		m_pTransformCom->Set_State(STATE::POSITION, vPos);
 	}
 
 }
@@ -90,7 +114,7 @@ HRESULT CUI_LockOn_Icon::Ready_Components()
 
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_LockOn_Icon"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_LockOn"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
