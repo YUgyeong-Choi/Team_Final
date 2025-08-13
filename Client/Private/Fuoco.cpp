@@ -105,7 +105,7 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (pOther)
 	{
-		if (eColliderType == COLLIDERTYPE::PALYER)
+		if (eColliderType == COLLIDERTYPE::PLAYER)
 		{
 			if (m_pAnimator->GetInt("SkillType") == FootAtk)
 			{
