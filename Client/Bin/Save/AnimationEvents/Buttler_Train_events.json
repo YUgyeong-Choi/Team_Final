@@ -395,14 +395,14 @@
         {
             "ClipName": "AS_Groggy_End",
             "Duration": 52.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Groggy_Loop",
             "Duration": 120.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -424,7 +424,7 @@
             "ClipName": "AS_Hit_B_01",
             "Duration": 88.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -508,7 +508,7 @@
             "ClipName": "AS_Hit_L_01",
             "Duration": 83.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -536,7 +536,7 @@
             "ClipName": "AS_Hit_R_01",
             "Duration": 83.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -679,24 +679,24 @@
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
-      {
-        "ClipName": "AS_Run_C_F_Root",
-        "Duration": 43.0,
-        "IsLoop": true,
-        "RootMotion": false,
-        "TickPerSecond": 55.0
-      },
+        {
+            "ClipName": "AS_Run_C_F_Root",
+            "Duration": 43.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
         {
             "ClipName": "AS_Turn_C_L",
             "Duration": 60.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Turn_C_R",
             "Duration": 60.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -717,7 +717,7 @@
         {
             "ClipName": "AS_Walk_C_F",
             "Duration": 120.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },

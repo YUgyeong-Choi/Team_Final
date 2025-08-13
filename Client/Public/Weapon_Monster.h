@@ -11,11 +11,14 @@ NS_END
 NS_BEGIN(Client)
 class CWeapon_Monster : public CWeapon
 {
-	/* [ 모든 무기객체의 부모클래스입니다. ] */
-
-
 public:
-	
+	/* [ 모든 무기객체의 부모클래스입니다. ] */
+	typedef struct eTagMonsterWeaponDesc : public WEAPON_DESC {
+		_float4 vAxis;
+		_float  fRotationDegree; // 라디안 변환 해주기
+		
+	}MONSTER_WEAPON_DESC;
+
 
 protected:
 	CWeapon_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

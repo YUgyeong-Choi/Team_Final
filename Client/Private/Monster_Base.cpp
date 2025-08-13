@@ -4,6 +4,7 @@
 #include "PhysX_ControllerReport.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
+
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUnit{pDevice, pContext}
 {
@@ -392,6 +393,8 @@ _bool CMonster_Base::Check_Detect()
 	{
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
+		m_pAnimator->SetBool("IsTurn", Check_Turn());
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		return true;
 	}
 	
@@ -422,6 +425,45 @@ CMonster_Base::MONSTER_DIR CMonster_Base::Calc_HitDir(_vector vOtherPos)
 
 
 	return MONSTER_DIR::END;
+}
+
+_bool CMonster_Base::Check_Turn()
+{
+	if (nullptr == m_pPlayer)
+		return false;
+
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+
+	vLook = XMVector3Normalize(vLook);
+	vDir = XMVector3Normalize(vDir);
+	
+	_float fDot = XMVectorGetX(XMVector3Dot(vLook, vDir));
+
+	if (fDot < 0.f)
+		return true;
+
+	if (fDot < 0.8f)
+		return true;
+
+	return false;
+
+}
+
+CMonster_Base::MONSTER_DIR CMonster_Base::Calc_TurnDir(_vector vOtherPos)
+{
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vLook = XMVector3Normalize(vLook);
+
+	_vector vDir = vOtherPos - m_pTransformCom->Get_State(STATE::POSITION);
+	vDir = XMVector3Normalize(vDir);
+
+
+	if (XMVectorGetY(XMVector3Cross(vLook, vDir)) < 0)
+		return MONSTER_DIR::L;
+	else
+		return MONSTER_DIR::R;
 }
 
 CMonster_Base* CMonster_Base::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

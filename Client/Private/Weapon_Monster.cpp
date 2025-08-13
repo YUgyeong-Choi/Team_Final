@@ -22,7 +22,7 @@ HRESULT CWeapon_Monster::Initialize_Prototype()
 
 HRESULT CWeapon_Monster::Initialize(void* pArg)
 {
-	WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
+	MONSTER_WEAPON_DESC* pDesc = static_cast<MONSTER_WEAPON_DESC*>(pArg);
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -30,12 +30,19 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	/* [ 바이오닛 위치 셋팅 ] */
-	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-90.f));
-	m_pTransformCom->Scaling( 1.5f,0.6f,1.5f );
+	_matrix MatHandle = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Handle")));
 
-	// 스킬 정보 세팅
+	m_pTransformCom->Set_WorldMatrix(MatHandle);
 	
+	m_pTransformCom->Rotation(XMLoadFloat4(&pDesc->vAxis), XMConvertToRadians(pDesc->fRotationDegree));
+
+	// offset
+
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	vPos += XMVectorSetW(XMLoadFloat3(&pDesc->InitPos), 0.f);
+	 
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	m_iDurability = m_iMaxDurability;
 
@@ -47,10 +54,15 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 void CWeapon_Monster::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+
+	
+
 }
 void CWeapon_Monster::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+
 }
 
 void CWeapon_Monster::Late_Update(_float fTimeDelta)
