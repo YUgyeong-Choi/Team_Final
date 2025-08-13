@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "GameObject.h"
 #include "Client_Defines.h"
 
@@ -12,8 +12,8 @@ NS_END
 NS_BEGIN(Client)
 class CUnit : public CGameObject
 {
-	/* [ ¸ğµç ¿òÁ÷ÀÌ´Â °´Ã¼ÀÇ ºÎ¸ğÅ¬·¡½ºÀÔ´Ï´Ù. ] */
-	/*  ( ÇÃ·¹ÀÌ¾î, ¸ó½ºÅÍ, º¸½º¸ó½ºÅÍ, NPC )  */
+	/* [ ëª¨ë“  ì›€ì§ì´ëŠ” ê°ì²´ì˜ ë¶€ëª¨í´ë˜ìŠ¤ì…ë‹ˆë‹¤. ] */
+	/*  ( í”Œë ˆì´ì–´, ëª¬ìŠ¤í„°, ë³´ìŠ¤ëª¬ìŠ¤í„°, NPC )  */
 
 
 public:
@@ -42,13 +42,15 @@ public:
 	void SetCascadeShadow();
 
 
-protected: /* [ Setup ÇÔ¼ö ] */
+
+protected: /* [ Setup í•¨ìˆ˜ ] */
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();
 	HRESULT Ready_Collider();
 
+	virtual void Register_Events() {}
 
-public: /* [ ÇÇÁ÷½º °ü·Ã ] */
+public: /* [ í”¼ì§ìŠ¤ ê´€ë ¨ ] */
 	PxRigidActor* Get_Actor(CPhysXActor* actor);
 	void RayCast(CPhysXActor* actor);
 
@@ -56,22 +58,37 @@ public: /* [ ÇÇÁ÷½º °ü·Ã ] */
 	class CAnimator* Get_Animator() const { return m_pAnimator; }
 #endif
 
-protected: /* [ Ãæµ¹ ½Ã °øÅëÀ¸·Î ½ÇÇà ] */
+protected: /* [ ì¶©ëŒ ì‹œ ê³µí†µìœ¼ë¡œ ì‹¤í–‰ ] */
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-	/* Ray·Î ÀÎÇ× Ãæµ¹(HitPos& HitNormal) */
+	/* Rayë¡œ ì¸í•­ ì¶©ëŒ(HitPos& HitNormal) */
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
+public:
+	_float4& Get_LockonPos() { return m_vLockonPos; }
 
-protected: /* [ ÇÃ·¹ÀÌ¾î ] */
+public:
+	// ë°ë¯¸ì§€ë¥¼ ì¤€ë‹¤
+	virtual void Attack(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+	// ë¬´ê¸°ë¥¼ í†µí•´ ë°ë¯¸ì§€ë¥¼ ì¤€ë‹¤
+	virtual void AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+	// ë°ë¯¸ì§€ë¥¼ ë°›ëŠ”ë‹¤
+	virtual void ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+
+	// ì´ê±° ì¼ë‹¨ ë‚˜ì¤‘ì—? 
+	// ë°ë¯¸ì§€ë¥¼ ë¬´ê¸°ë¥¼ í†µí•´ ë°›ëŠ”ë‹¤? í”Œë ˆì´ì–´ íƒ€ê²© íŒì • í›„í•˜ê²Œ ì£¼ë ¤ë©´ ê´œì°®ì„ì§€ë„? 
+	virtual void ReceiveDamageWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+
+
+protected: /* [ í”Œë ˆì´ì–´ ] */
 	CGameObject* m_pPlayer = { nullptr };
 
-protected:				/* [ ±âº» ¼Ó¼º ] */
+protected:				/* [ ê¸°ë³¸ ì†ì„± ] */
 	_int 				m_iHP = 100;
 	_int 				m_iMaxHP = 100;
 	_bool				m_isActive = { true };
@@ -81,29 +98,34 @@ protected:				/* [ ±âº» ¼Ó¼º ] */
 	_float3				m_InitScale = {};
 	_int				m_iRender = {};
 
-protected: 				/* [ ±âº» Å¸ÀÔ ] */
+protected: 				/* [ ê¸°ë³¸ íƒ€ì… ] */
 	const _tchar*		m_szName = { nullptr };
 	const _tchar*		m_szMeshID = { nullptr };
 	LEVEL				m_eLevelID = { LEVEL::END };
 
-protected:				/* [ ±×¸²ÀÚ °ü·Ã ] */
+protected:				/* [ ê·¸ë¦¼ì ê´€ë ¨ ] */
 	SHADOW				m_eShadow = SHADOW::SHADOW_END;
 
-protected:              /* [ ÄÄÆ÷³ÍÆ® ] */
+protected:              /* [ ì»´í¬ë„ŒíŠ¸ ] */
 	CModel*				m_pModelCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
 	CAnimator*			m_pAnimator = { nullptr };
 
-protected:				/* [ ·¹ÀÌÄ³½ºÆ® º¯¼ö ] */
+protected:				/* [ ë ˆì´ìºìŠ¤íŠ¸ ë³€ìˆ˜ ] */
 	PxVec3				m_vRayHitPos = {};
 	_bool				m_bRayHit = {};
 
-protected:				/* [ Áß·Â°ü·Ã º¯¼ö ] */
+protected:				/* [ ì¤‘ë ¥ê´€ë ¨ ë³€ìˆ˜ ] */
 	_bool				m_bOnGround = {};
 	PxVec3				m_vVelocity = PxVec3{ 0.f, 0.f, 0.f };
 	_float3				m_vGravityVelocity = _float3{ 0.f, 0.f, 0.f };
 
 	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
+
+	
+protected: // .... 
+	_float4			    m_vLockonPos = {};
+	_int				m_iLockonBoneIndex = {};
 
 public:
 	static CUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

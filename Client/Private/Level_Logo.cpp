@@ -163,6 +163,8 @@ void CLevel_Logo::Update(_float fTimeDelta)
 
 HRESULT CLevel_Logo::Render()
 {
+	SetWindowText(g_hWnd, TEXT("로고 레벨입니다."));
+
 	if(!m_isReady)
 	{
 		_wstring text = L"아무 버튼이나 누르세요.";

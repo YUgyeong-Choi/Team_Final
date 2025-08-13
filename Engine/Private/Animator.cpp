@@ -575,16 +575,16 @@ void CAnimator::CollectBoneChildren(const _char* boneName)
 	for (int childIdx : m_pModel->GetBoneChildren(boneName))
 	{
 		const char* childName = m_pModel->Get_Bones()[childIdx]->Get_Name();
-#ifdef _DEBUG
-		cout << "Child bone: " << childName << endl;
-#endif // _DEBUG
+//#ifdef _DEBUG
+//		cout << "Child bone: " << childName << endl;
+//#endif // _DEBUG
 		CollectBoneChildren(childName, "Neck");
 	}
 }
 
 void CAnimator::CollectBoneChildren(const _char* boneName, const _char* stopBoneName)
 {
-	int idx = m_pModel->Find_BoneIndex(boneName);
+	_int idx = m_pModel->Find_BoneIndex(boneName);
 	// 유효 인덱스인지, 이미 추가된 본인지 확인
 	if (idx < 0 || m_UpperMaskSet.count(idx))
 		return;

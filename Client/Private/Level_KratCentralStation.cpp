@@ -116,7 +116,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 			//제이슨으로 저장된 맵을 로드한다.
 			//true면 테스트맵 소환, 기본(false) [테스트 맵을 키고 싶으면 true 하시오] [Loader.cpp 도 똑같이 적용 필요!!!!!]
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION) /*, true*/)))
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION) , true)))
 
 
 			//데칼 소환
@@ -706,7 +706,6 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
 	CMonster_Base::MONSTER_BASE_DESC pDesc{};
-	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;

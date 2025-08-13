@@ -30,6 +30,7 @@ using namespace ImGui;
 #include <mfobjects.h>
 #include <mferror.h>
 #include <iostream>
+#include <queue>
 
 // 로딩 비율 설정하기 위한?
 #include <atomic>

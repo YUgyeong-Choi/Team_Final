@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Weapon.h"
 #include "Client_Defines.h"
 
@@ -6,12 +6,13 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CAnimator;
+class CPhysXDynamicActor;
 NS_END
 
 NS_BEGIN(Client)
 class CBayonet : public CWeapon
 {
-	/* [ ¸ğµç ¹«±â°´Ã¼ÀÇ ºÎ¸ğÅ¬·¡½ºÀÔ´Ï´Ù. ] */
+	/* [ ëª¨ë“  ë¬´ê¸°ê°ì²´ì˜ ë¶€ëª¨í´ë˜ìŠ¤ì…ë‹ˆë‹¤. ] */
 
 
 public:
@@ -32,21 +33,26 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void 	Update_Collider();
 
-protected: /* [ Setup ÇÔ¼ö ] */
+protected: /* [ Setup í•¨ìˆ˜ ] */
 	HRESULT Ready_Components();
+	HRESULT Ready_Actor();
 
 
-protected: /* [ Ãæµ¹ ½Ã °øÅëÀ¸·Î ½ÇÇà ] */
+protected: /* [ ì¶©ëŒ ì‹œ ê³µí†µìœ¼ë¡œ ì‹¤í–‰ ] */
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-	/* Ray·Î ÀÎÇ× Ãæµ¹(HitPos& HitNormal) */
+	/* Rayë¡œ ì¸í•­ ì¶©ëŒ(HitPos& HitNormal) */
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
+private:
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
 public:
 	static CBayonet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

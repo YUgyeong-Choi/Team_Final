@@ -1,4 +1,4 @@
-#include "UI_MonsterHP_Bar.h"
+ï»¿#include "UI_MonsterHP_Bar.h"
 #include "GameInstance.h"
 #include "Camera_Manager.h"
 
@@ -48,6 +48,8 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
 void CUI_MonsterHP_Bar::Priority_Update(_float fTimeDelta)
 {
+    if (m_bDead)
+        return;
 }
 
 void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
@@ -73,10 +75,10 @@ void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
         parentMatrix._11 = 1.0f; parentMatrix._12 = 0.0f; parentMatrix._13 = 0.0f;
         parentMatrix._21 = 0.0f; parentMatrix._22 = 1.0f; parentMatrix._23 = 0.0f;
         parentMatrix._31 = 0.0f; parentMatrix._32 = 0.0f; parentMatrix._33 = 1.0f;
-        // À§Ä¡´Â À¯Áö
-        // parentMatrix._41, _42, _43 ´Â ±×´ë·Î µÒ
+        // ìœ„ì¹˜ëŠ” ìœ ì§€
+        // parentMatrix._41, _42, _43 ëŠ” ê·¸ëŒ€ë¡œ ë‘ 
 
-        // °áÇÕ
+        // ê²°í•©
         XMStoreFloat4x4(
             &m_CombinedWorldMatrix,
             XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&parentMatrix)
@@ -104,7 +106,7 @@ void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
 
 
         XMFLOAT4X4 world{};
-        world._11 = vScale.m128_f32[0] * g_iWinSizeX;  // ÇÈ¼¿ ´ÜÀ§ ½ºÄÉÀÏ
+        world._11 = vScale.m128_f32[0] * g_iWinSizeX;  // í”½ì…€ ë‹¨ìœ„ ìŠ¤ì¼€ì¼
         world._22 = vScale.m128_f32[1] * g_iWinSizeY;
         world._33 = 1.f;
         world._44 = 1.f;
@@ -113,7 +115,7 @@ void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
         world._43 = 0.f;
 
 
-        //  °¡±î¿î°Ô ±×·ÁÁú ¼ö ÀÖµµ·Ï
+        //  ê°€ê¹Œìš´ê²Œ ê·¸ë ¤ì§ˆ ìˆ˜ ìžˆë„ë¡
         m_fOffset = vDist * 0.001f;
 
 
@@ -145,7 +147,7 @@ HRESULT CUI_MonsterHP_Bar::Render()
     if (FAILED(m_pVIBufferCom->Render()))
         return E_FAIL;
 
-    // Á÷±³ À§Ä¡ ±¸ÇØ¼­ ¹ÞÀº µ¥¹ÌÁö Âï±â
+    // ì§êµ ìœ„ì¹˜ êµ¬í•´ì„œ ë°›ì€ ë°ë¯¸ì§€ ì°ê¸°
     
 
 

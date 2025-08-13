@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Client_Defines.h"
 #include "Base.h"
@@ -43,6 +43,7 @@ private:
 
     _bool m_bActive = false;
     _bool m_bStartLockOn = false;
+    //_float4 m_vTargetpos = {};
 public:
     virtual void Free() override;
 

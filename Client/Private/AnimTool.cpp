@@ -1979,7 +1979,7 @@ void CAnimTool::SelectAnimationForObject()
 	{
 		return;
 	}
-	vector<CAnimation*> anims = m_pCurModel->GetAnimations();
+	vector<CAnimation*>& anims = m_pCurModel->GetAnimations();
 
 	vector<string> animNames;
 	animNames.reserve(anims.size());

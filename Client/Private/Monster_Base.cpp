@@ -1,4 +1,4 @@
-#include "Monster_Base.h"
+ï»¿#include "Monster_Base.h"
 #include "GameInstance.h"
 #include "LockOn_Manager.h"
 #include "PhysX_ControllerReport.h"
@@ -63,13 +63,13 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 void CMonster_Base::Priority_Update(_float fTimeDelta)
 {
-	// Á×´Â Á¶°Ç ¸¸µé¾î¼­ ´Ù °°ÀÌ ¾²±â
+	// ì£½ëŠ” ì¡°ê±´ ë§Œë“¤ì–´ì„œ ë‹¤ ê°™ì´ ì“°ê¸°
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
 		if (m_pAnimator->IsFinished())
 		{
-			// ·ºµ¹ ³ªÁß¿¡?
+			m_pHPBar->Set_bDead();
 			Set_bDead();
 		}
 	}
@@ -94,11 +94,12 @@ void CMonster_Base::Update(_float fTimeDelta)
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	}
-	// ¿òÁ÷ÀÌ°í ºÎ¸£±â
+	// ì›€ì§ì´ê³  ë¶€ë¥´ê¸°
 	Update_Collider();
 
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
-		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+		if(!m_bDead)
+			CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
 	}
 
 	if (m_isLookAt)
@@ -107,13 +108,19 @@ void CMonster_Base::Update(_float fTimeDelta)
 	}
 
 	m_pHPBar->Update(fTimeDelta);
+
+	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
+
+	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
+
+	XMStoreFloat4(&m_vLockonPos, vLockonPos);
 }
 
 void CMonster_Base::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	// ´õ ÁÁÀº ¹æ¹ı ÀÖÀ¸¸é ¹Ù²Ù±â
+	// ë” ì¢‹ì€ ë°©ë²• ìˆìœ¼ë©´ ë°”ê¾¸ê¸°
 	if (this == CLockOn_Manager::Get_Instance()->Get_Target())
 		m_pHPBar->Set_RenderTime(2.f);
 
@@ -202,11 +209,11 @@ HRESULT CMonster_Base::Ready_Actor(void* pArg)
 {
 	MONSTER_BASE_DESC* pDesc = static_cast<MONSTER_BASE_DESC*>(pArg);
 
-	// 3. Transform¿¡¼­ S, R, T ºĞ¸®
+	// 3. Transformì—ì„œ S, R, T ë¶„ë¦¬
 	XMVECTOR S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
-	// 3-1. ½ºÄÉÀÏ, È¸Àü, À§Ä¡ º¯È¯
+	// 3-1. ìŠ¤ì¼€ì¼, íšŒì „, ìœ„ì¹˜ ë³€í™˜
 	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
 	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
@@ -221,7 +228,7 @@ HRESULT CMonster_Base::Ready_Actor(void* pArg)
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ÀÏ´Ü º¸·ù
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ì¼ë‹¨ ë³´ë¥˜
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
@@ -234,7 +241,7 @@ HRESULT CMonster_Base::Ready_Actor(void* pArg)
 
 HRESULT CMonster_Base::Ready_PartObject()
 {
-	// Ã¼·Â¹Ù ³Ö±â
+	// ì²´ë ¥ë°” ë„£ê¸°
 
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
@@ -289,23 +296,23 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 
 		vTrans += m_PrevWorldDelta;
 
-		// ³×ºñ ÀÌµ¿ °¡´É ¿©ºÎ Ã¼Å© ÈÄ À§Ä¡ Àç¼³Á¤
+		// ë„¤ë¹„ ì´ë™ ê°€ëŠ¥ ì—¬ë¶€ ì²´í¬ í›„ ìœ„ì¹˜ ì¬ì„¤ì •
 		if (!m_pNaviCom->isMove(vTrans))
 		{
 			vTrans -= m_PrevWorldDelta;
 			m_pTransformCom->Set_State(STATE::POSITION, vTrans);
 		}
 
-		// ÀÌÁ¦ Ãæµ¹ Å×½ºÆ® ÇØ¼­ Ãæµ¹ÇÏ¸é µ¹¾Æ°¡°Ô
+		// ì´ì œ ì¶©ëŒ í…ŒìŠ¤íŠ¸ í•´ì„œ ì¶©ëŒí•˜ë©´ ëŒì•„ê°€ê²Œ
 
 
 
-		// È¸Àü º¸Á¤
+		// íšŒì „ ë³´ì •
 		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
 		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
 	
 
-		// ¿ùµå Çà·Ä Àç»ı¼º ¹× ¼¼ÆÃ
+		// ì›”ë“œ í–‰ë ¬ ì¬ìƒì„± ë° ì„¸íŒ…
 		_matrix newWorld =
 			XMMatrixScalingFromVector(vScale) *
 			XMMatrixRotationQuaternion(vNewRot) *
@@ -358,23 +365,23 @@ void CMonster_Base::LoadAnimDataFromJson()
 
 void CMonster_Base::Update_Collider()
 {
-	// 1. ¿ùµå Çà·Ä °¡Á®¿À±â
+	// 1. ì›”ë“œ í–‰ë ¬ ê°€ì ¸ì˜¤ê¸°
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	// 2. À§Ä¡ ÃßÃâ
+	// 2. ìœ„ì¹˜ ì¶”ì¶œ
 	_float4 vPos;
 	XMStoreFloat4(&vPos, worldMatrix.r[3]);
 
 	PxVec3 pos(vPos.x, vPos.y, vPos.z);
 	pos.y += m_fHeight;
 
-	// 3. È¸Àü ÃßÃâ
+	// 3. íšŒì „ ì¶”ì¶œ
 	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
 	XMFLOAT4 fQuat;
 	XMStoreFloat4(&fQuat, boneQuat);
 	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
 
-	// 4. PhysX Transform Àû¿ë
+	// 4. PhysX Transform ì ìš©
 	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
 
 }
@@ -424,7 +431,7 @@ CMonster_Base::MONSTER_DIR CMonster_Base::Calc_HitDir(_vector vOtherPos)
 		return MONSTER_DIR::B;
 	else
 	{
-		// ¿ÜÀûÇØ¼­ ¿ŞÂÊ ¿À¸¥ÂÊ, ±âÁØÀº vLook
+		// ì™¸ì í•´ì„œ ì™¼ìª½ ì˜¤ë¥¸ìª½, ê¸°ì¤€ì€ vLook
 
 		if (XMVectorGetY(XMVector3Cross(vLook, vDir)) < 0)
 			return MONSTER_DIR::L; 

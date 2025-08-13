@@ -1,4 +1,4 @@
-#include "LockOn_Manager.h"
+ï»¿#include "LockOn_Manager.h"
 #include "GameInstance.h"
 
 #include "PhysX_IgnoreSelfCallback.h"
@@ -57,7 +57,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
         PxVec3 origin = VectorToPxVec3(playerPos);
         PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
-        direction.normalize(); // ¹æÇâ º¤ÅÍ Á¤±ÔÈ­
+        direction.normalize(); // ë°©í–¥ ë²¡í„° ì •ê·œí™”
         _float fRayLength = 10.f;
 
         PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
@@ -71,7 +71,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
         _bool bRemove = false;
 
-        // ·¹ÀÌÄ³½ºÆ® ¼öÇà
+        // ë ˆì´ìºìŠ¤íŠ¸ ìˆ˜í–‰
         if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
         {
             if (hit.hasBlock)
@@ -81,7 +81,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
                 if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
                 {
-                    // ´Ù¸¥ ¿ÀºêÁ§Æ®(º® µî)°¡ ·¹ÀÌ¿¡ ¸ÕÀú °É¸² ¡æ Å¸°Ù¿¡¼­ Á¦°Å
+                    // ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸(ë²½ ë“±)ê°€ ë ˆì´ì— ë¨¼ì € ê±¸ë¦¼ â†’ íƒ€ê²Ÿì—ì„œ ì œê±°
                     bRemove = true;
                 }
 
@@ -90,7 +90,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
             }
             else
             {
-                // ·¹ÀÌ¿¡ ¾Æ¹«°Íµµ ¸ÂÁö ¾ÊÀ½ ¡æ °Å¸® ¹ÛÀ¸·Î °£ °Í ¡æ Á¦°Å
+                // ë ˆì´ì— ì•„ë¬´ê²ƒë„ ë§žì§€ ì•ŠìŒ â†’ ê±°ë¦¬ ë°–ìœ¼ë¡œ ê°„ ê²ƒ â†’ ì œê±°
                 bRemove = true;
             }
         }
@@ -105,7 +105,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
             m_pBestTarget = nullptr;
             CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
 
-            // Pitch Yaw ¿ª°è»ê
+            // Pitch Yaw ì—­ê³„ì‚°
             XMVECTOR camerakDir = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Get_State(STATE::LOOK) * -1);
             const _float bx = XMVectorGetX(camerakDir);
             const _float by = XMVectorGetY(camerakDir);
@@ -145,7 +145,7 @@ void CLockOn_Manager::RemoveBehindWallTargets()
 
         PxVec3 origin = VectorToPxVec3(playerPos);
         PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
-        direction.normalize(); // ¹æÇâ º¤ÅÍ Á¤±ÔÈ­
+        direction.normalize(); // ë°©í–¥ ë²¡í„° ì •ê·œí™”
         _float fRayLength = 7.f;
 
         PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
@@ -159,7 +159,7 @@ void CLockOn_Manager::RemoveBehindWallTargets()
 
         bool bRemove = false;
 
-        // ·¹ÀÌÄ³½ºÆ® ¼öÇà
+        // ë ˆì´ìºìŠ¤íŠ¸ ìˆ˜í–‰
         if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
         {
             if (hit.hasBlock)
@@ -170,13 +170,13 @@ void CLockOn_Manager::RemoveBehindWallTargets()
                 
                 if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
                 {
-                    // ´Ù¸¥ ¿ÀºêÁ§Æ®(º® µî)°¡ ·¹ÀÌ¿¡ ¸ÕÀú °É¸² ¡æ Å¸°Ù¿¡¼­ Á¦°Å
+                    // ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸(ë²½ ë“±)ê°€ ë ˆì´ì— ë¨¼ì € ê±¸ë¦¼ â†’ íƒ€ê²Ÿì—ì„œ ì œê±°
                     bRemove = true;
                 }
             }
             else
             {
-                // ·¹ÀÌ¿¡ ¾Æ¹«°Íµµ ¸ÂÁö ¾ÊÀ½ ¡æ °Å¸® ¹ÛÀ¸·Î °£ °Í ¡æ Á¦°Å
+                // ë ˆì´ì— ì•„ë¬´ê²ƒë„ ë§žì§€ ì•ŠìŒ â†’ ê±°ë¦¬ ë°–ìœ¼ë¡œ ê°„ ê²ƒ â†’ ì œê±°
                 bRemove = true;
             }
         }
@@ -201,7 +201,7 @@ CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()
     const _vector vPlayerLook = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
 
     CGameObject* pBestTarget = nullptr;
-    float fMinAngle = XM_PI; // 180µµ
+    float fMinAngle = XM_PI; // 180ë„
 
     for (auto& pTarget : m_vecTarget)
     {
@@ -257,7 +257,7 @@ void CLockOn_Manager::Set_Active()
         m_pBestTarget = nullptr;
         CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
 
-        // Pitch Yaw ¿ª°è»ê
+        // Pitch Yaw ì—­ê³„ì‚°
         XMVECTOR camerakDir = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Get_State(STATE::LOOK) * -1);
         const _float bx = XMVectorGetX(camerakDir);
         const _float by = XMVectorGetY(camerakDir);
@@ -276,4 +276,5 @@ void CLockOn_Manager::Free()
 {
     __super::Free();
 
+    
 }

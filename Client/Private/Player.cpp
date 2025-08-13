@@ -1,4 +1,4 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 
 #include "Animator.h"
 #include "Animation.h"
@@ -55,26 +55,26 @@ HRESULT CPlayer::Initialize(void* pArg)
 	//if (FAILED(Ready_StationDoor()))
 	//	return E_FAIL;
 
-	/* [ ÇÃ·¹ÀÌ¾î Á¦ÀÌ½¼ ·Îµù ] */
+	/* [ í”Œë ˆì´ì–´ ì œì´ìŠ¨ ë¡œë”© ] */
 	LoadPlayerFromJson();
 
-	/* [ ½ºÅ×ÀÌÆ® ½ÃÀÛ ] */
+	/* [ ìŠ¤í…Œì´íŠ¸ ì‹œì‘ ] */
 	ReadyForState();
 
-	/* [ ÃÊ±âÈ­ À§Ä¡°ª ] */
+	/* [ ì´ˆê¸°í™” ìœ„ì¹˜ê°’ ] */
 	m_pTransformCom->Set_State(STATE::POSITION, _vector{ m_InitPos.x, m_InitPos.y, m_InitPos.z });
 	m_pTransformCom->Rotation(XMConvertToRadians(0.f), XMConvertToRadians(90.f), XMConvertToRadians(0.f));
 	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
 
-	/* [ À§Ä¡ ÃÊ±âÈ­ ÈÄ Äİ¶óÀÌ´õ »ı¼º ] */
+	/* [ ìœ„ì¹˜ ì´ˆê¸°í™” í›„ ì½œë¼ì´ë” ìƒì„± ] */
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 
-	/* [ À§Ä¡ ÃÊ±âÈ­ ÈÄ ÄÁÆ®·Ñ·¯ »ı¼º (Äİ¶óÀÌ´õ »ı¼º ÈÄ) ] */
+	/* [ ìœ„ì¹˜ ì´ˆê¸°í™” í›„ ì»¨íŠ¸ë¡¤ëŸ¬ ìƒì„± (ì½œë¼ì´ë” ìƒì„± í›„) ] */
 	if (FAILED(Ready_Controller()))
 		return E_FAIL;
 
-	// ¼­·Î´Â Ãæµ¹ ¹«½ÃÇÏ°Ô
+	// ì„œë¡œëŠ” ì¶©ëŒ ë¬´ì‹œí•˜ê²Œ
 	m_pControllerCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 	m_pControllerCom->Add_IngoreActors(m_pControllerCom->Get_Actor());
 
@@ -83,11 +83,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	SyncTransformWithController();
 
-	/* [ Ä«¸Ş¶ó ¼¼ÆÃ ] */
+	/* [ ì¹´ë©”ë¼ ì„¸íŒ… ] */
 	m_pCamera_Manager = CCamera_Manager::Get_Instance();
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
-	/* [ ¶ô¿Â ¼¼ÆÃ ] */
+	/* [ ë½ì˜¨ ì„¸íŒ… ] */
 	CLockOn_Manager::Get_Instance()->SetPlayer(this);
 
 	m_iCurrentHP = m_iMaxHP;
@@ -133,29 +133,29 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
 	}
 
-	/* [ Ä³½ºÄÉÀÌµå Àü¿ë ¾÷µ¥ÀÌÆ® ÇÔ¼ö ] */
+	/* [ ìºìŠ¤ì¼€ì´ë“œ ì „ìš© ì—…ë°ì´íŠ¸ í•¨ìˆ˜ ] */
 	UpdateShadowCamera();
-	/* [ ·è º¤ÅÍ ·¹ÀÌÄÉ½ºÆ® ] */
+	/* [ ë£© ë²¡í„° ë ˆì´ì¼€ìŠ¤íŠ¸ ] */
 	RayCast(m_pControllerCom);
 
-	// ¿ÉÀú¹ö º¯¼öµé Ã³¸®
+	// ì˜µì €ë²„ ë³€ìˆ˜ë“¤ ì²˜ë¦¬
 	Update_Stat();
 	Update_Slot();
 
-	/* [ »óÈ£ÀÛ¿ë ] */
+	/* [ ìƒí˜¸ì‘ìš© ] */
 	//Interaction_Door();
 	__super::Priority_Update(fTimeDelta);
 }
 void CPlayer::Update(_float fTimeDelta)
 {
-	/* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¾÷µ¥ÀÌÆ® ] */
+	/* [ ì• ë‹ˆë©”ì´ì…˜ ì—…ë°ì´íŠ¸ ] */
 	__super::Update(fTimeDelta);
 
-	// ÄÆ¾ÀÀÏ ¶§ ¸ø ¿òÁ÷ÀÌµµ·Ï
+	// ì»·ì”¬ì¼ ë•Œ ëª» ì›€ì§ì´ë„ë¡
 	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
 		return;
 
-	/* [ ÀÔ·Â ] */
+	/* [ ì…ë ¥ ] */
 	HandleInput();
 	//SlidDoorMove(fTimeDelta);
 	UpdateCurrentState(fTimeDelta);
@@ -163,7 +163,7 @@ void CPlayer::Update(_float fTimeDelta)
 
 	Update_Collider_Actor();
 
-	// ¶ô¿Â°ü·Ã
+	// ë½ì˜¨ê´€ë ¨
 	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
 		CLockOn_Manager::Get_Instance()->Set_Active();
 }
@@ -172,12 +172,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 	
-	/* [ Æ¯¼öÇàµ¿ ] */
+	/* [ íŠ¹ìˆ˜í–‰ë™ ] */
 	ItemLampON(fTimeDelta);
 	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 
-	/* [ ÀÌ°÷Àº ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇè½ÇÀÔ´Ï´Ù. ] */
+	/* [ ì´ê³³ì€ ì• ë‹ˆë©”ì´ì…˜ ì‹¤í—˜ì‹¤ì…ë‹ˆë‹¤. ] */
 	if(KEY_DOWN(DIK_Y))
 	{
 		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
@@ -246,20 +246,20 @@ void CPlayer::SitAnimationMove(_float fTimeDelta)
 
 void CPlayer::HandleInput()
 {
-	/* [ Å° ÀÔ·ÂÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù. ] */
+	/* [ í‚¤ ì…ë ¥ì„ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤. ] */
 	if(KEY_PRESSING(DIK_W) || KEY_PRESSING(DIK_S) || KEY_PRESSING(DIK_A) || KEY_PRESSING(DIK_D))
 		m_Input.bMove = true;
 	else
 		m_Input.bMove = false;
 
-	/* [ ¸¶¿ì½º ÀÔ·ÂÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù. ] */
+	/* [ ë§ˆìš°ìŠ¤ ì…ë ¥ì„ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤. ] */
 	m_Input.bLeftMouseDown = MOUSE_DOWN(DIM::LBUTTON);
 	m_Input.bRightMouseDown = MOUSE_DOWN(DIM::RBUTTON);
  	m_Input.bRightMousePress = MOUSE_PRESSING(DIM::RBUTTON);
 	m_Input.bRightMouseUp = MOUSE_UP(DIM::RBUTTON);
 
 
-	/* [ Æ¯¼öÅ° ÀÔ·ÂÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù. ] */
+	/* [ íŠ¹ìˆ˜í‚¤ ì…ë ¥ì„ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤. ] */
 	m_Input.bShift = KEY_PRESSING(DIK_LSHIFT);
 	m_Input.bCtrl = KEY_UP(DIK_LCONTROL);
 	m_Input.bCtrlPress = KEY_PRESSING(DIK_LCONTROL);
@@ -269,7 +269,7 @@ void CPlayer::HandleInput()
 	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
 	m_Input.bSpaceDown = KEY_DOWN(DIK_SPACE);
 	
-	/* [ ¶Ù±â °È±â¸¦ Åä±ÛÇÕ´Ï´Ù. ] */
+	/* [ ë›°ê¸° ê±·ê¸°ë¥¼ í† ê¸€í•©ë‹ˆë‹¤. ] */
 	if (KEY_DOWN(DIK_Z))
 		ToggleWalkRun();
 }
@@ -308,7 +308,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	string stateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 	//printf("Current State: %s\n", stateName.c_str());
 
-	// »óÅÂ°¡ ¹Ù²î¾úÀ¸¸é ÃÊ±âÈ­
+	// ìƒíƒœê°€ ë°”ë€Œì—ˆìœ¼ë©´ ì´ˆê¸°í™”
 	if (m_strPrevStateName != stateName)
 	{
 		m_strPrevStateName = stateName;
@@ -325,7 +325,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 	case eAnimCategory::NORMAL_ATTACKA:
 	{
-		// ÀÌµ¿ÃÊ±âÈ­
+		// ì´ë™ì´ˆê¸°í™”
 		if (!m_bMoveReset)
 		{
 			m_pTransformCom->SetbSpecialMoving();
@@ -349,7 +349,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::NORMAL_ATTACKB:
 	{
-		// ÀÌµ¿ÃÊ±âÈ­
+		// ì´ë™ì´ˆê¸°í™”
 		if (!m_bMoveReset)
 		{
 			m_pTransformCom->SetbSpecialMoving();
@@ -373,7 +373,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::STRONG_ATTACKA:
 	{
-		// ÀÌµ¿ÃÊ±âÈ­
+		// ì´ë™ì´ˆê¸°í™”
 		if (!m_bMoveReset)
 		{
 			m_pTransformCom->SetbSpecialMoving();
@@ -397,7 +397,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::STRONG_ATTACKB:
 	{
-		// ÀÌµ¿ÃÊ±âÈ­
+		// ì´ë™ì´ˆê¸°í™”
 		if (!m_bMoveReset)
 		{
 			m_pTransformCom->SetbSpecialMoving();
@@ -423,7 +423,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		RootMotionActive(fTimeDelta);
 
-		/* [ Â÷Áö A ÀÏ ¶§ R¹öÆ°ÀÌ ²Ú ´­¸®¸é Ã¼ÀÎÁö º¯¼ö°¡ ÄÑÁø´Ù. ] */
+		/* [ ì°¨ì§€ A ì¼ ë•Œ Rë²„íŠ¼ì´ ê¾¹ ëˆŒë¦¬ë©´ ì²´ì¸ì§€ ë³€ìˆ˜ê°€ ì¼œì§„ë‹¤. ] */
 		m_fChangeTimeElaped += fTimeDelta;
 
 		if (m_fChangeTimeElaped > 1.f)
@@ -718,26 +718,26 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 
 void CPlayer::Update_Collider_Actor()
 {
-	// 1. ¿ùµå Çà·Ä °¡Á®¿À±â
+	// 1. ì›”ë“œ í–‰ë ¬ ê°€ì ¸ì˜¤ê¸°
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	// 2. À§Ä¡ ÃßÃâ
+	// 2. ìœ„ì¹˜ ì¶”ì¶œ
 	_float4 vPos;
 	XMStoreFloat4(&vPos, worldMatrix.r[3]);
 
 	PxVec3 pos(vPos.x, vPos.y, vPos.z);
 	pos.y += 0.5f;
 
-	// 3. È¸Àü ÃßÃâ
+	// 3. íšŒì „ ì¶”ì¶œ
 	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
 	XMFLOAT4 fQuat;
 	XMStoreFloat4(&fQuat, boneQuat);
 	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
 
-	// 4. PhysX Transform Àû¿ë
+	// 4. PhysX Transform ì ìš©
 	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
 
-	// ¹«±â Ãß°¡
+	// ë¬´ê¸° ì¶”ê°€
 }
 
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -795,7 +795,7 @@ void CPlayer::ReadyForState()
 
 HRESULT CPlayer::Ready_Weapon()
 {
-	/* [ ¹«±â ¸ğµ¨À» Ãß°¡ ] */
+	/* [ ë¬´ê¸° ëª¨ë¸ì„ ì¶”ê°€ ] */
 
 	CBayonet::BAYONET_DESC Desc{};
 	Desc.eLevelID = LEVEL::STATIC;
@@ -826,7 +826,7 @@ HRESULT CPlayer::Ready_Weapon()
 HRESULT CPlayer::Ready_Lamp()
 {
 	CDH_ToolMesh::tagDH_ToolDesc Desc{};
-	Desc.eLEVEL = LEVEL::KRAT_CENTERAL_STATION; // »ı¼º·¹º§
+	Desc.eLEVEL = LEVEL::KRAT_CENTERAL_STATION; // ìƒì„±ë ˆë²¨
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.iID = 0;
@@ -857,7 +857,7 @@ HRESULT CPlayer::Ready_StationDoor()
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
 
-	/* ¹®ÀÚ¿­ ¹Ş´Â °÷ */
+	/* ë¬¸ìì—´ ë°›ëŠ” ê³³ */
 	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
 	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
@@ -880,7 +880,7 @@ HRESULT CPlayer::Ready_StationDoor()
 
 HRESULT CPlayer::Ready_Components()
 {
-	/* [ µû·Î ºÙÀÏ ÄÄÆ÷³ÍÆ®¸¦ ºÙ¿©º¸ÀÚ ] */
+	/* [ ë”°ë¡œ ë¶™ì¼ ì»´í¬ë„ŒíŠ¸ë¥¼ ë¶™ì—¬ë³´ì ] */
 
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Controller"),
@@ -952,11 +952,11 @@ void CPlayer::LoadPlayerFromJson()
 
 HRESULT CPlayer::Ready_Actor()
 {
-	// 3. Transform¿¡¼­ S, R, T ºĞ¸®
+	// 3. Transformì—ì„œ S, R, T ë¶„ë¦¬
 	XMVECTOR S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
-	// 3-1. ½ºÄÉÀÏ, È¸Àü, À§Ä¡ º¯È¯
+	// 3-1. ìŠ¤ì¼€ì¼, íšŒì „, ìœ„ì¹˜ ë³€í™˜
 	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
 	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
@@ -974,7 +974,7 @@ HRESULT CPlayer::Ready_Actor()
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
-	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PALYER);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PLAYER);
 	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
@@ -1034,9 +1034,9 @@ void CPlayer::Interaction_Door()
 	if (KEY_DOWN(DIK_E))
 	{
 		_float3 vTriggerCenter = _float3(52.6f, 0.02f, -2.4f);
-		_float fTriggerRadius = 5.f; // 3¹ÌÅÍ ¹İ°æ
+		_float fTriggerRadius = 5.f; // 3ë¯¸í„° ë°˜ê²½
 
-		// ÇÃ·¹ÀÌ¾î À§Ä¡¿¡¼­ °Å¸® °è»ê
+		// í”Œë ˆì´ì–´ ìœ„ì¹˜ì—ì„œ ê±°ë¦¬ ê³„ì‚°
 		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 		_float3 vPlayerPos = {
 			XMVectorGetX(vPosition),
@@ -1049,7 +1049,7 @@ void CPlayer::Interaction_Door()
 			powf(vPlayerPos.y - vTriggerCenter.y, 2) +
 			powf(vPlayerPos.z - vTriggerCenter.z, 2);
 
-		// °Å¸® Á¶°Ç °Ë»ç (Á¦°öµÈ °Å¸® ºñ±³·Î ÃÖÀûÈ­)
+		// ê±°ë¦¬ ì¡°ê±´ ê²€ì‚¬ (ì œê³±ëœ ê±°ë¦¬ ë¹„êµë¡œ ìµœì í™”)
 		if (fDistSq <= fTriggerRadius * fTriggerRadius)
 		{
 			if (!m_bCutsceneDoor)
@@ -1109,25 +1109,25 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 {
 	if (m_bInteractionMove[0])
 	{
-		/* [ À§Ä¡·Î ÀÌµ¿ ] */
+		/* [ ìœ„ì¹˜ë¡œ ì´ë™ ] */
 		m_Input.bMove = true;
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 		_bool SetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ 53.8f, XMVectorGetY(vPosition), -1.6f, 1.f}, m_pControllerCom);
 		if (SetPosition)
 		{
-			m_bInteractionMove[0] = false; // ÀÌµ¿ ¿Ï·á
+			m_bInteractionMove[0] = false; // ì´ë™ ì™„ë£Œ
 		}
 	}
 
 	if (m_bInteractionRotate[0])
 	{
-		// ÀÌµ¿ ¿Ï·á ½Ã È¸Àü
+		// ì´ë™ ì™„ë£Œ ì‹œ íšŒì „
 		_bool vRotate = m_pTransformCom->RotateToDirectionSmoothly(_fvector{ 0.f , 0.f, -1.f, 0.f }, fTimeDelta);
 		if (!vRotate)
 		{
 			m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
-			m_bInteractionRotate[0] = false; // È¸Àü ¿Ï·á
+			m_bInteractionRotate[0] = false; // íšŒì „ ì™„ë£Œ
 		}
 	}
 
@@ -1135,7 +1135,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	{
 		m_fInteractionTime[0] += fTimeDelta;
 
-		//¼Õ »ÀÀÇ ÄÄ¹ÙÀÎµå Çà·Ä
+		//ì† ë¼ˆì˜ ì»´ë°”ì¸ë“œ í–‰ë ¬
 		const _float4x4* pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_L"));
 		_matrix matSocketLocal = XMLoadFloat4x4(pSocketMatrix);
 
@@ -1147,17 +1147,17 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 		static _float fStartHandX = fCurrentHandX;
 		_float fDeltaX = fCurrentHandX - fStartHandX;
 
-		// ¹® À§Ä¡ Àû¿ë
+		// ë¬¸ ìœ„ì¹˜ ì ìš©
 		CTransform* DoorTransCom = m_pInterectionStuff->Get_TransfomCom();
 		static _vector vDoorStartPos = DoorTransCom->Get_State(STATE::POSITION);
 
 		_vector vNewDoorPos = vDoorStartPos + XMVectorSet(fDeltaX, 0.f, 0.f, 0.f);
 		DoorTransCom->Set_State(STATE::POSITION, vNewDoorPos);
 
-		// ÄÆ¾ÀÀÌ ³¡³¯ Á¶°Ç ³Ö¾îÁÖ¸é ÁÁÀ½
+		// ì»·ì”¬ì´ ëë‚  ì¡°ê±´ ë„£ì–´ì£¼ë©´ ì¢‹ìŒ
 		if (fDeltaX <= -2.2f)
 		{
-			m_bInteraction[0] = false; // ÄÆ¾À Á¾·á
+			m_bInteraction[0] = false; // ì»·ì”¬ ì¢…ë£Œ
 		}
 		
 	}
@@ -1331,10 +1331,10 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	if (KEY_PRESSING(DIK_D)) vInputDir += vCamRight;
 	if (KEY_PRESSING(DIK_A)) vInputDir -= vCamRight;
 
-	/* [ ÀÔ·Â°ªÀÌ ÀÖÀ¸¸é? ] */
+	/* [ ì…ë ¥ê°’ì´ ìˆìœ¼ë©´? ] */
 	if (!XMVector3Equal(vInputDir, XMVectorZero()))
 	{
-		/* [ È¸ÀüÀ» ½ÃÅ²´Ù. ] */
+		/* [ íšŒì „ì„ ì‹œí‚¨ë‹¤. ] */
 		vInputDir = XMVector3Normalize(vInputDir);
 
 		_vector vPlayerLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -1350,7 +1350,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 		if (XMVectorGetY(vCross) < 0.f)
 			fAngle = -fAngle;
 
-		// È¸Àü°¢À» Á÷Á¢ °è»êÇßÀ¸´Ï ±×´ë·Î »ç¿ë °¡´É
+		// íšŒì „ê°ì„ ì§ì ‘ ê³„ì‚°í–ˆìœ¼ë‹ˆ ê·¸ëŒ€ë¡œ ì‚¬ìš© ê°€ëŠ¥
 		const _float fTurnSpeed = XMConvertToRadians(720.f);
 		const _float fMinAngle = XMConvertToRadians(0.5f);
 
@@ -1369,7 +1369,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 		}
 	}
 
-	/* [ ÀÌµ¿À» ÇÑ´Ù. ] */
+	/* [ ì´ë™ì„ í•œë‹¤. ] */
 	_float3 moveVec = {};
 	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
 	if (!m_bMovable)    fSpeed = 0.f;
@@ -1382,7 +1382,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	vInputDir *= fDist;
 	XMStoreFloat3(&moveVec, vInputDir);
 
-	// Áß·Â Àû¿ë
+	// ì¤‘ë ¥ ì ìš©
 	constexpr _float fGravity = -9.81f;
 	m_vGravityVelocity.y += fGravity * fTimeDelta;
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
@@ -1391,12 +1391,12 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 
 	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 	PxControllerFilters filters;
-	filters.mFilterCallback = &filter; // ÇÊÅÍ Äİ¹é ÁöÁ¤
+	filters.mFilterCallback = &filter; // í•„í„° ì½œë°± ì§€ì •
 	PxControllerCollisionFlags collisionFlags =
 		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 	
 
-	// 4. Áö¸é¿¡ ´ê¾ÒÀ¸¸é Áß·Â ¼Óµµ ÃÊ±âÈ­
+	// 4. ì§€ë©´ì— ë‹¿ì•˜ìœ¼ë©´ ì¤‘ë ¥ ì†ë„ ì´ˆê¸°í™”
 	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
 		m_vGravityVelocity.y = 0.f;
 

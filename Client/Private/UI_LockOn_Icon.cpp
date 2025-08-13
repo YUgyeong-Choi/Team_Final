@@ -1,6 +1,7 @@
-#include "UI_LockOn_Icon.h"
+ï»¿#include "UI_LockOn_Icon.h"
 #include "GameInstance.h"
 #include "LockOn_Manager.h"
+#include "Unit.h"
 
 CUI_LockOn_Icon::CUI_LockOn_Icon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUIObject{ pDevice, pContext }
@@ -47,14 +48,13 @@ void CUI_LockOn_Icon::Update(_float fTimeDelta)
 	{
 		m_isRender = true;
 
-		// À§Ä¡ °¡Á®¿Í¼­ Á÷±³·Î ±×¸®ÀÚ
+		// ìœ„ì¹˜ ê°€ì ¸ì™€ì„œ ì§êµë¡œ ê·¸ë¦¬ìž
 
-		// È¸Àü °ª ´Ù »©°í, z À§Ä¡ 0.01·Î, À§¿¡ ÆäÀÌÅ» ÀÌ¹ÌÁö µ¡±×¸®µµ·Ï?
+		// íšŒì „ ê°’ ë‹¤ ë¹¼ê³ , z ìœ„ì¹˜ 0.01ë¡œ, ìœ„ì— íŽ˜ì´íƒˆ ì´ë¯¸ì§€ ë§ê·¸ë¦¬ë„ë¡?
 
-		_vector vWorldPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vWorldPos = XMLoadFloat4(&static_cast<CUnit*>(pTarget)->Get_LockonPos());
 
-		// ÀÏ´Ü »ó¼ö·Î º¸Á¤
-		vWorldPos.m128_f32[1] += 1.f;
+
 
 		_matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
 		_matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);

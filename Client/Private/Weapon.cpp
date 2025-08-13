@@ -1,4 +1,4 @@
-#include "Weapon.h"
+ï»¿#include "Weapon.h"
 
 #include "Animator.h"
 #include "Animation.h"
@@ -53,6 +53,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 
 void CWeapon::Priority_Update(_float fTimeDelta)
 {
+
 	if (KEY_DOWN(DIK_CAPSLOCK))
 		PrintMatrix("World", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 }
@@ -62,12 +63,15 @@ void CWeapon::Update(_float fTimeDelta)
 	if (!m_bIsActive)
 		return;
 
-	/* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¾÷µ¥ÀÌÆ® ] */
+	/* [ ì• ë‹ˆë©”ì´ì…˜ ì—…ë°ì´íŠ¸ ] */
 	if (m_pAnimator)
 		m_pAnimator->Update(fTimeDelta);
 	
 	if (m_pModelCom)
 		m_pModelCom->Update_Bones();
+
+	// ìƒíƒœì— ë”°ë¥¸ ë°ë¯¸ì§€ ì—…ë°ì´íŠ¸
+
 
 }
 
@@ -78,7 +82,7 @@ void CWeapon::Late_Update(_float fTimeDelta)
 	for (size_t i = 0; i < 3; i++)
 		SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
 	
-	/* ¹«±â ¿ùµå 1.f , ¼ÒÄÏ ¿ùµå , ºÎ¸ğ ¿ùµå 0.02f */
+	/* ë¬´ê¸° ì›”ë“œ 1.f , ì†Œì¼“ ì›”ë“œ , ë¶€ëª¨ ì›”ë“œ 0.02f */
 	XMStoreFloat4x4(&m_CombinedWorldMatrix,
 		XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *
 		SocketMatrix *
@@ -100,21 +104,21 @@ HRESULT CWeapon::Render()
 
 void CWeapon::SetWeaponWorldMatrix(_float fTimeDelta)
 {
-	if (KEY_PRESSING(DIK_1)) // Á¡Á¡ Ä¿Áö°Ô
+	if (KEY_PRESSING(DIK_1)) // ì ì  ì»¤ì§€ê²Œ
 	{
-		_vector vScale = m_pTransformCom->Get_Scale(); // ÇöÀç ½ºÄÉÀÏ (_vector)
+		_vector vScale = m_pTransformCom->Get_Scale(); // í˜„ì¬ ìŠ¤ì¼€ì¼ (_vector)
 
 		XMFLOAT3 f3Scale;
-		XMStoreFloat3(&f3Scale, vScale); // _vector ¡æ _float3
+		XMStoreFloat3(&f3Scale, vScale); // _vector â†’ _float3
 
 		f3Scale.x *= 1.001f;
 		f3Scale.y *= 1.001f;
 		f3Scale.z *= 1.001f;
 
-		m_pTransformCom->Scaling(f3Scale); // ÃÖÁ¾ ¹İ¿µ
+		m_pTransformCom->Scaling(f3Scale); // ìµœì¢… ë°˜ì˜
 	}
 
-	if (KEY_PRESSING(DIK_2)) // Á¡Á¡ ÀÛ¾ÆÁö°Ô
+	if (KEY_PRESSING(DIK_2)) // ì ì  ì‘ì•„ì§€ê²Œ
 	{
 		_vector vScale = m_pTransformCom->Get_Scale();
 
@@ -129,20 +133,20 @@ void CWeapon::SetWeaponWorldMatrix(_float fTimeDelta)
 	}
 
 	const _float fRotateSpeed = 5.f;
-	if (KEY_DOWN(DIK_3)) // YÃà ÁÂÈ¸Àü
+	if (KEY_DOWN(DIK_3)) // Yì¶• ì¢ŒíšŒì „
 	{
 		m_pTransformCom->RotationTimeDelta(fTimeDelta, XMVectorSet(0.f, 1.f, 0.f, 0.f), -fRotateSpeed);
 	}
-	if (KEY_DOWN(DIK_4)) // YÃà ¿ìÈ¸Àü
+	if (KEY_DOWN(DIK_4)) // Yì¶• ìš°íšŒì „
 	{
 		m_pTransformCom->RotationTimeDelta(fTimeDelta, XMVectorSet(0.f, 1.f, 0.f, 0.f), +fRotateSpeed);
 	}
 
-	if (KEY_DOWN(DIK_5)) // XÃà È¸Àü
+	if (KEY_DOWN(DIK_5)) // Xì¶• íšŒì „
 	{
 		m_pTransformCom->RotationTimeDelta(fTimeDelta, XMVectorSet(1.f, 0.f, 0.f, 0.f), +fRotateSpeed);
 	}
-	if (KEY_DOWN(DIK_6)) // ZÃà È¸Àü
+	if (KEY_DOWN(DIK_6)) // Zì¶• íšŒì „
 	{
 		m_pTransformCom->RotationTimeDelta(fTimeDelta, XMVectorSet(0.f, 0.f, 1.f, 0.f), +fRotateSpeed);
 	}
@@ -151,11 +155,11 @@ void CWeapon::SetWeaponWorldMatrix(_float fTimeDelta)
 
 HRESULT CWeapon::Bind_Shader()
 {
-	/* [ ¿ùµå ½ºÆäÀÌ½º ³Ñ±â±â ] */
+	/* [ ì›”ë“œ ìŠ¤í˜ì´ìŠ¤ ë„˜ê¸°ê¸° ] */
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
 		return E_FAIL;
 
-	/* [ ºä , Åõ¿µ ½ºÆäÀÌ½º ³Ñ±â±â ] */
+	/* [ ë·° , íˆ¬ì˜ ìŠ¤í˜ì´ìŠ¤ ë„˜ê¸°ê¸° ] */
 	_float4x4 ViewMatrix, ProjViewMatrix;
 	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
 	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));

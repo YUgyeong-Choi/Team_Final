@@ -1,4 +1,4 @@
-#include "Bayonet.h"
+ï»¿#include "Bayonet.h"
 
 #include "Animator.h"
 #include "Animation.h"
@@ -30,11 +30,11 @@ HRESULT CBayonet::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	/* [ ¹ÙÀÌ¿À´Ö À§Ä¡ ¼ÂÆÃ ] */
+	/* [ ë°”ì´ì˜¤ë‹› ìœ„ì¹˜ ì…‹íŒ… ] */
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	m_pTransformCom->Scaling(_float3{0.4f,0.4f,0.4f});
 
-	// ½ºÅ³ Á¤º¸ ¼¼ÆÃ
+	// ìŠ¤í‚¬ ì •ë³´ ì„¸íŒ…
 
 	m_eSkillDesc[0].iManaCost = 300;
 	m_eSkillDesc[0].iSkillType = 0;
@@ -48,6 +48,9 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	m_iDurability = m_iMaxDurability;
 
+	if (FAILED(Ready_Actor()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -58,29 +61,100 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+
+	
 }
 
 void CBayonet::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	//Update_Collider();
 }
 
 HRESULT CBayonet::Render()
 {
 	__super::Render();
 
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+	}
+#endif
+
 	return S_OK;
+}
+
+void CBayonet::Update_Collider()
+{
+	if (!m_isActive)
+		return;
+
+	// 1. ì›”ë“œ í–‰ë ¬ ê°€ì ¸ì˜¤ê¸°
+	_matrix worldMatrix = XMLoadFloat4x4(&m_CombinedWorldMatrix);
+
+	// 2. ìœ„ì¹˜ ì¶”ì¶œ
+	_float4 vPos;
+	XMStoreFloat4(&vPos, worldMatrix.r[3]);
+
+	PxVec3 pos(vPos.x, vPos.y, vPos.z);
+	pos.y += 0.5f;
+
+	// 3. íšŒì „ ì¶”ì¶œ
+	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
+	XMFLOAT4 fQuat;
+	XMStoreFloat4(&fQuat, boneQuat);
+	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
+
+	// 4. PhysX Transform ì ìš©
+	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
 }
 
 HRESULT CBayonet::Ready_Components()
 {
-	/* [ µû·Î Ãß°¡ÇÒ ÄÄÆ÷³ÍÆ®°¡ ÀÖ½À´Ï±î? ] */
+	/* [ ë”°ë¡œ ì¶”ê°€í•  ì»´í¬ë„ŒíŠ¸ê°€ ìˆìŠµë‹ˆê¹Œ? ] */
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBayonet::Ready_Actor()
+{
+	// 3. Transformì—ì„œ S, R, T ë¶„ë¦¬
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 3-1. ìŠ¤ì¼€ì¼, íšŒì „, ìœ„ì¹˜ ë³€í™˜
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxVec3 halfExtents = PxVec3(0.2f, 0.2f, 0.2f);
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON; 
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | FILTER_MONSTERWEAPON; // ì¼ë‹¨ ë³´ë¥˜
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PLAYER_WEAPON);
+	m_pPhysXActorCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }
 
 void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	// ë‚´êµ¬ë„ë‚˜ ì´ëŸ°ê±° í•˜ë©´ ë ë“¯?
 }
 
 void CBayonet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -128,4 +202,6 @@ CGameObject* CBayonet::Clone(void* pArg)
 void CBayonet::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pPhysXActorCom);
 }

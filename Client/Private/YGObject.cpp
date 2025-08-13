@@ -249,7 +249,7 @@ HRESULT CYGObject::Ready_Collider()
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
-		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PALYER);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PLAYER);
 		m_pPhysXActorCom->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 	}
@@ -287,7 +287,7 @@ HRESULT CYGObject::Ready_Collider()
 	m_pPhysXActorWeaponCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorWeaponCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorWeaponCom->Set_Owner(this);
-	m_pPhysXActorWeaponCom->Set_ColliderType(COLLIDERTYPE::PALYER);
+	m_pPhysXActorWeaponCom->Set_ColliderType(COLLIDERTYPE::PLAYER);
 	m_pPhysXActorWeaponCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorWeaponCom->Get_Actor());
 

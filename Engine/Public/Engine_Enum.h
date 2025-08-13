@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 namespace Engine
 {
@@ -37,9 +37,11 @@ namespace Engine
 
 	enum class COLLIDERTYPE 
 	{
-		PALYER,
+		PLAYER,
 		TRIGGER,
 		MONSTER,
+		PLAYER_WEAPON,
+		MONSTER_WEAPON,
 		A,
 		B,
 		C,

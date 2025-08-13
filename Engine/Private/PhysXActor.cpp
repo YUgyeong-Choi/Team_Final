@@ -480,7 +480,7 @@ void CPhysXActor::Set_RenderColor()
 {
     switch (m_eColliderType) 
     {
-    case COLLIDERTYPE::PALYER:
+    case COLLIDERTYPE::PLAYER:
         m_vRenderColor = Colors::Green;
         break;
     case COLLIDERTYPE::TRIGGER:
