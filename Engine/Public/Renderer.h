@@ -81,6 +81,7 @@ private:
 	HRESULT Render_Effect_NonLight();
 	HRESULT Render_Effect_WB();
 	HRESULT Render_Effect_WB_Composite();
+	HRESULT Render_Distortion();
 
 private:
 	HRESULT Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight);

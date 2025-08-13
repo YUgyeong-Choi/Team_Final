@@ -32,6 +32,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	void Set_TrailActive(_bool bActive);
+	
 protected:
 	CVIBuffer_Trail*		m_pVIBufferCom = { nullptr };
 	_float4x4*				m_pParentCombinedMatrix = { nullptr };

@@ -1,6 +1,8 @@
 #include "Effect_Shader_Defines.hlsli"
 vector g_vCamPosition;
 
+Texture2D g_DistortionTexture;
+
 struct VS_IN
 {
     float3 vOuterPos : POSITION0;
@@ -65,6 +67,7 @@ void GS_MAIN(line VS_OUT input[2], inout TriangleStream<GS_OUT> Triangles)
         float2(0, 1) // Outer1
     };
 
+    
     float3 verts[4] =
     {
         Outer0,
@@ -111,6 +114,8 @@ void GS_MAIN(line VS_OUT input[2], inout TriangleStream<GS_OUT> Triangles)
     
     
     
+    
+    
     Triangles.Append(outVert[0]);
     Triangles.Append(outVert[1]);
     Triangles.Append(outVert[2]);
@@ -133,14 +138,24 @@ struct PS_IN
 
 struct PS_OUT
 {
-    vector vColor : SV_TARGET0;
+    vector vAccumulation : SV_TARGET0;
+    vector fRevealage : SV_TARGET1;
+    vector vEmissive : SV_TARGET2;
+    vector vDistortion : SV_TARGET3;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;
-    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
-    Out.vColor.a *= In.fFade; // 페이드 효과 적용
+    vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    vColor.a *= In.fFade; // 페이드 효과 적용
+        
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+    Out.vDistortion = g_DistortionTexture.Sample(DefaultSampler, In.vTexcoord);
+    
     return Out;
 }
 
@@ -150,7 +165,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
         VertexShader = compile vs_5_0 VS_MAIN();

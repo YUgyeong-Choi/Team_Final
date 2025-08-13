@@ -93,6 +93,12 @@ HRESULT CTrailEffect::Render()
 	return S_OK;
 }
 
+void CTrailEffect::Set_TrailActive(_bool bActive)
+{
+	if (m_pVIBufferCom)
+		m_pVIBufferCom->Set_TrailActive(bActive);
+}
+
 HRESULT CTrailEffect::Ready_Components()
 {
 	/* For.Com_Shader */
