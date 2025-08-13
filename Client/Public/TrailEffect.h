@@ -40,6 +40,7 @@ protected:
 	_float4x4*				m_pParentCombinedMatrix = { nullptr };
 	_float4x4*				m_pInnerSocketMatrix	= { nullptr };
 	_float4x4*				m_pOuterSocketMatrix	= { nullptr };
+
 	_float3					m_vInnerPos = { 0.f, 0.f, 0.f }; // 안쪽 위치
 	_float3					m_vOuterPos = { 0.f, 0.f, 0.f }; // 바깥쪽 위치
 

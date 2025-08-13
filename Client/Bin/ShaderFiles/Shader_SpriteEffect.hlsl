@@ -87,15 +87,6 @@ struct PS_IN_BLEND
 };
 
 
-
-vector ColorAdjustment_Multiply(float4 vOrigColor, float4 vMultiplyColor)
-{
-    vector vResColor =  vOrigColor * vMultiplyColor;
-    
-    return vResColor;
-}
-
-
 vector ColorAdjustment_Hue(float4 vOrigColor, float4 vMultiplyColor)
 {
     vector vResColor =  vOrigColor * vMultiplyColor;

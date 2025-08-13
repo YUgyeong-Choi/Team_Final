@@ -38,7 +38,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Shadow"), g_iMaxWidth, g_iMaxHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
 		return E_FAIL;
 
 
@@ -500,6 +500,12 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
+	if (FAILED(Render_Distortion()))
+	{
+		MSG_BOX("Render_Distortion Failed");
+		return E_FAIL;
+	}
+
 
 	if (FAILED(Render_UI_Deferred()))
 	{
@@ -558,7 +564,7 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pDebugCom)
 
 HRESULT CRenderer::Render_Priority()
 {
-	//m_pGameInstance->Begin_MRT(TEXT("MRT_Final"));
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_PRIORITY)])
 	{
@@ -569,7 +575,7 @@ HRESULT CRenderer::Render_Priority()
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_PRIORITY)].clear();
 
-	//m_pGameInstance->End_MRT();
+	m_pGameInstance->End_MRT();
 
 	return S_OK;
 }
@@ -825,7 +831,7 @@ HRESULT CRenderer::Render_Volumetric()
 
 HRESULT CRenderer::Render_BackBuffer()
 {
-	//m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false);
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, false);
 
 	/*if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
@@ -903,7 +909,7 @@ HRESULT CRenderer::Render_BackBuffer()
 	m_pVIBuffer->Bind_Buffers();
 	m_pVIBuffer->Render();
 
-	//m_pGameInstance->End_MRT();
+	m_pGameInstance->End_MRT();
 
 	return S_OK;
 }
@@ -1144,6 +1150,22 @@ HRESULT CRenderer::Render_Effect_WB_Composite()
 HRESULT CRenderer::Render_Distortion()
 {
 	// final ·»´õÅ¸°Ù ½á¾ßÇÔ
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Distortion"), m_pShader, "g_Effect_Distort")))
+		return E_FAIL;
+
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::DISTORTION));
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
 
 	return S_OK;
 }

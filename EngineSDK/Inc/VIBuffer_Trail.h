@@ -6,13 +6,22 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CVIBuffer_Trail final : public CVIBuffer
 {
+public:
+	typedef struct tagTrailBufferDesc
+	{
+		_uint	iMaxNodeCount = { 350 };
+		_uint	Subdivisions = { 5 };
+		_float	fLifeDuration = { 1.f };
+		_float	fNodeInterval = { 0.0166f };
+	}DESC;
+
 private:
 	CVIBuffer_Trail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CVIBuffer_Trail(const CVIBuffer_Trail& Prototype);
 	virtual ~CVIBuffer_Trail() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
+	virtual HRESULT Initialize_Prototype(const DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
 	void Update_Trail(const _float3& vInnerPos, const _float3& vOuterPos, _float fTimeDelta);
 	HRESULT Update_Buffers();
@@ -42,7 +51,7 @@ private:
 
 
 public:
-	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc = nullptr);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 

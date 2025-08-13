@@ -14,8 +14,16 @@ CVIBuffer_Trail::CVIBuffer_Trail(const CVIBuffer_Trail& Prototype)
 {
 }
 
-HRESULT CVIBuffer_Trail::Initialize_Prototype()
+HRESULT CVIBuffer_Trail::Initialize_Prototype(const DESC* pDesc)
 {
+	if (pDesc != nullptr)
+	{
+		m_iMaxNodeCount = pDesc->iMaxNodeCount;
+		m_fLifeDuration = pDesc->fLifeDuration;
+		m_fNodeInterval = pDesc->fNodeInterval;
+		m_Subdivisions = pDesc->Subdivisions;
+	}
+
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = m_iMaxNodeCount;
 	m_iVertexStride = sizeof(VTXPOS_TRAIL);
@@ -33,18 +41,6 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 
 	VTXPOS_TRAIL* pVertices = new VTXPOS_TRAIL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXPOS_TRAIL) * m_iNumVertices);
-
-	// 굳이 저장 할 필요가 없을 것 같음
-	//m_pVertexPositions = new _float3[m_iNumVertices];
-	//ZeroMemory(m_pVertexPositions, sizeof(_float3) * m_iNumVertices);
-
-	//for (_uint i = 0; i < m_iNumVertices; i++)
-	//{
-	//	pVertices[i].vInnerPos = _float3(0.f, 0.f, 0.f);
-	//	pVertices[i].vOuterPos = _float3(0.f, 0.f, 0.f);
-	//	pVertices[i].vLifeTime = _float2(0.f, 0.f);
-	//	//m_pVertexPositions[i] = pVertices[i].vInnerPos;
-	//}
 
 	VBInitialData.pSysMem = pVertices;
 
@@ -244,11 +240,24 @@ HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
 	return S_OK;
 }
 
-CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+//CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+//{
+//	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(pDevice, pContext);
+//
+//	if (FAILED(pInstance->Initialize_Prototype()))
+//	{
+//		MSG_BOX("Failed to Created : CVIBuffer_Trail");
+//		Safe_Release(pInstance);
+//	}
+//
+//	return pInstance;
+//}
+
+CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc)
 {
 	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->Initialize_Prototype(pDesc)))
 	{
 		MSG_BOX("Failed to Created : CVIBuffer_Trail");
 		Safe_Release(pInstance);

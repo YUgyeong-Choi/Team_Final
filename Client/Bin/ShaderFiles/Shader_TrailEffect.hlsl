@@ -17,6 +17,7 @@ struct VS_OUT
     float fVCoord : TEXCOORD1;
 };
 
+
 VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out;
@@ -28,6 +29,36 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.fVCoord = In.fVCoord;
     return Out;
 }   
+
+VS_OUT VS_MAIN_DROP(VS_IN In)
+{
+    VS_OUT Out;
+    
+    // 지금 월드 상태 가정하고 적음 아니 근데 아 로컬주고 여기서 곱하면 플레이어 무조건 따라다니잖아 진짜 고민한보람없네
+    Out.vOuterPos = In.vOuterPos;
+    Out.vInnerPos = In.vInnerPos;
+    Out.vLifeTime = In.vLifeTime;
+    Out.fVCoord = In.fVCoord;
+    
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x);
+    
+    float3 vOuterPos = In.vOuterPos;
+    float3 vInnerPos = In.vInnerPos;
+
+    if (lifeRatio >= 0.8f)
+    {
+        float fade = smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
+
+        vOuterPos = float3(In.vOuterPos.x, In.vOuterPos.y - fade * 10.f, In.vOuterPos.z);
+        vInnerPos = float3(In.vInnerPos.x, In.vInnerPos.y - fade * 10.f, In.vInnerPos.z);
+    }
+
+    Out.vOuterPos = vOuterPos;
+    Out.vInnerPos = vInnerPos;
+    
+    
+    return Out;
+}
 
 struct GS_IN
 {
@@ -142,18 +173,22 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;
     vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-        
+    vColor = ColorAdjustment_Multiply(vColor, g_vColor);
+    float fMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x);
     float fade = 1.0 - smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
-    vColor.a = fade * g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    vColor.a *= fade * fMask;
 
     
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
     Out.fRevealage = vColor.a;
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
-    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, In.vTexcoord);
     
+    //float2 vInvertUV = float2(1.f - In.vTexcoord.x, In.vTexcoord.y);
+    float2 vInvertUV = float2(In.vTexcoord.x, In.vTexcoord.y);
+    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(vInvertUV, g_fTileSize, g_fTileOffset));
+    Out.vDistortion.a *= fade * fMask;
     return Out;
 }
 
@@ -170,16 +205,16 @@ technique11 DefaultTechnique
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN();
     }
-    //pass SoftEffectOnly // 1
-    //{
-    //    SetRasterizerState(RS_Cull_None);
-    //    SetDepthStencilState(DSS_Default, 0);
-    //    SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+    pass Drop // 1
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-    //    VertexShader = compile vs_5_0 VS_MAIN_BLEND();
-    //    GeometryShader = NULL;
-    //    PixelShader = compile ps_5_0 PS_MAIN_SOFTEFFECT();
-    //}
+        VertexShader = compile vs_5_0 VS_MAIN_DROP();
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN();
+    }
 
 }
 

@@ -13,6 +13,7 @@ Texture2D g_NormalTexture;
 Texture2D g_DepthTexture;
 //Texture2D g_SpecularTexture;
 Texture2D g_ShadowTexture;
+Texture2D g_FinalTexture;
 
 //데칼 텍스쳐
 Texture2D g_DecalAMRT;
@@ -52,7 +53,7 @@ Texture2D g_EffectBlend_Diffuse;
 Texture2D g_EffectBlend_WBComposite;
 Texture2D g_EffectBlend_Glow;
 Texture2D g_EffectBlend_WBGlow;
-// Texture2D g_Effect_Distort;
+Texture2D g_Effect_Distort;
 
 /* [ WeightedBlend Composite ] */
 Texture2D g_WB_Accumulation;
@@ -1183,6 +1184,30 @@ PS_OUT PS_MAIN_VIGNETTING(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_DISTORTION(PS_IN In)
+{
+    PS_OUT Out;
+    
+    //vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
+    float2 vDistortion = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord).rg;
+    vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환
+
+    // 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
+    float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
+    float fStrength = 10.f; // 강도 조절 변수
+    float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
+
+    // 가장자리 아티팩트 줄이기
+    uv = saturate(uv);
+
+    // 흔든 UV로 최종 씬 샘플
+    vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
+
+    Out.vBackBuffer = vFinalColor;
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Debug //0
@@ -1357,5 +1382,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_WB_COMPOSITE();
+    }
+
+    pass Distortion // 16
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_DISTORTION();
     }
 }
