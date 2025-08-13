@@ -45,12 +45,12 @@ VS_OUT VS_MAIN_DROP(VS_IN In)
     float3 vOuterPos = In.vOuterPos;
     float3 vInnerPos = In.vInnerPos;
 
-    if (lifeRatio >= 0.8f)
+    if (lifeRatio >= 0.5f)
     {
-        float fade = smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
+        float fade = smoothstep(0.5, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
 
-        vOuterPos = float3(In.vOuterPos.x, In.vOuterPos.y - fade * 10.f, In.vOuterPos.z);
-        vInnerPos = float3(In.vInnerPos.x, In.vInnerPos.y - fade * 10.f, In.vInnerPos.z);
+        vOuterPos = float3(In.vOuterPos.x, In.vOuterPos.y - fade * 0.8f, In.vOuterPos.z);
+        vInnerPos = float3(In.vInnerPos.x, In.vInnerPos.y - fade * 0.8f, In.vInnerPos.z);
     }
 
     Out.vOuterPos = vOuterPos;

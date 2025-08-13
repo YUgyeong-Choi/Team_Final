@@ -211,7 +211,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Emissive"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	// 디스토션 용 렌더타겟.
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Distortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Distortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.5f, 0.5f, 0.f, 0.f))))
 		return E_FAIL;
 
 
@@ -230,9 +230,9 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend_Composite"), TEXT("Target_Effect_WB_Composite"))))
 		return E_FAIL;
 
-
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AfterDistortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
-		return E_FAIL;
+	// 디스토션 이후의 처리도 있을 수 있으므로 일단 적어둠
+	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AfterDistortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
+	//	return E_FAIL;
 
 #pragma endregion
 
