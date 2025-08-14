@@ -51,10 +51,10 @@ public:
         CPhysXActor* pOther = static_cast<CPhysXActor*>(pHitActor->userData);
         CPhysXActor* pSelf = static_cast<CPhysXActor*>(pController->getActor()->userData);
 
-        if (pSelf && pOther)
-        {
-            pSelf->On_Enter(pOther);
-        }
+        //if (pSelf && pOther)
+        //{
+        //    pSelf->On_Enter(pOther);
+        //}
     }
 
     void onControllerHit(const PxControllersHit& hit) override
@@ -72,11 +72,11 @@ public:
         CPhysXActor* actorA = static_cast<CPhysXActor*>(pA->getActor()->userData);
         CPhysXActor* actorB = static_cast<CPhysXActor*>(pB->getActor()->userData);
 
-        if (actorA && actorB)
-        {
-            actorA->On_Enter(actorB);
-            actorB->On_Enter(actorA);
-        }
+        //if (actorA && actorB)
+        //{
+        //    actorA->On_Enter(actorB);
+        //    actorB->On_Enter(actorA);
+        //}
     }
 
     void onObstacleHit(const PxControllerObstacleHit& hit) override
