@@ -69,6 +69,7 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	{
 		if (m_pAnimator->IsFinished())
 		{
+			CLockOn_Manager::Get_Instance()->Set_Active();
 			m_pHPBar->Set_bDead();
 			Set_bDead();
 		}
