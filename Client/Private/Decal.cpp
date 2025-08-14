@@ -115,6 +115,9 @@ HRESULT CDecal::Bind_ShaderResources()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
 
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_WorldPos"), m_pShaderCom, "g_WorldPosTexture")))
+	//	return E_FAIL;
+
 	if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]->Bind_ShaderResource(m_pShaderCom, "g_ARMT", 0)))
 		return E_FAIL;
 
@@ -124,20 +127,26 @@ HRESULT CDecal::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::BC)]->Bind_ShaderResource(m_pShaderCom, "g_BC", 0)))
 		return E_FAIL;
 
-	_float4x4 WorldMatrixInv = {};
-	XMStoreFloat4x4(&WorldMatrixInv, m_pTransformCom->Get_WorldMatrix_Inverse());
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrixInv", &WorldMatrixInv)))
-		return E_FAIL;
+	//_float4x4 WorldMatrixInv = {};
+	//XMStoreFloat4x4(&WorldMatrixInv, m_pTransformCom->Get_WorldMatrix_Inverse());
+	//if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrixInv", &WorldMatrixInv)))
+	//	return E_FAIL;
 
-	_float4x4 ViewMatrixInv = {};
-	XMStoreFloat4x4(&ViewMatrixInv, m_pGameInstance->Get_Transform_Matrix_Inv(D3DTS::VIEW));
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrixInv", &ViewMatrixInv)))
-		return E_FAIL;
+	//_float4x4 ViewMatrixInv = {};
+	//XMStoreFloat4x4(&ViewMatrixInv, m_pGameInstance->Get_Transform_Matrix_Inv(D3DTS::VIEW));
+	//if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrixInv", &ViewMatrixInv)))
+	//	return E_FAIL;
 
 	_float4x4 ProjMatrixInv = {};
 	XMStoreFloat4x4(&ProjMatrixInv, m_pGameInstance->Get_Transform_Matrix_Inv(D3DTS::PROJ));
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrixInv", &ProjMatrixInv)))
 		return E_FAIL;
+
+	_float4x4 ViewWorldMatrixInv = {};
+	XMStoreFloat4x4(&ViewWorldMatrixInv, m_pGameInstance->Get_Transform_Matrix_Inv(D3DTS::VIEW) * m_pTransformCom->Get_WorldMatrix_Inverse());
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewWorldMatrixInv", &ViewWorldMatrixInv)))
+		return E_FAIL;
+	
 
 	return S_OK;
 }
