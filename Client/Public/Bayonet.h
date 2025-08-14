@@ -38,7 +38,7 @@ public:
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
-
+	HRESULT Ready_Effect();
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -53,6 +53,9 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
+	class CTrailEffect* m_pWeaponTrailEffect = { nullptr };
+	class CTrailEffect* m_pHitTrailEffect = { nullptr };
+	class CEffectContainer* m_pEffectContainer = { nullptr };
 
 public:
 	static CBayonet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

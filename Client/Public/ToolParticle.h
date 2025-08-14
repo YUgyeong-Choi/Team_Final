@@ -32,6 +32,17 @@ public:
 private:
 	_bool m_bLoadingInTool = { false };
 
+
+	_float3				m_vRange;
+	_float2				m_vSize;
+	_float3				m_vCenter;
+	_float3				m_vPivot;
+	_float2				m_vLifeTime;
+	_float2				m_vSpeed;
+	_bool				m_isLoop;
+	_bool				m_bGravity;
+	_float				m_fGravity;
+
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
@@ -41,6 +52,9 @@ public:
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
+public:
+	virtual json Serialize() override;
+	virtual void Deserialize(const json& j)override;
 };
 
 NS_END

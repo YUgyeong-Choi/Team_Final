@@ -108,7 +108,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Camera()))
 				return;
 
-
+			//제이슨으로 저장된 맵을 로드한다.
 			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))  //TEST, STATION (Loader.cpp와 동일해야함)
 				return;
 

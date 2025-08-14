@@ -4,6 +4,8 @@
 #include "Animation.h"
 #include "GameInstance.h"
 #include "AnimController.h"
+#include "TrailEffect.h"
+#include "EffectContainer.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
 
@@ -161,6 +163,42 @@ HRESULT CBayonet::Ready_Actor()
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PLAYER_WEAPON);
 	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	return S_OK;
+}
+
+HRESULT CBayonet::Ready_Effect()
+{
+	//class CTrailEffect* m_pWeaponTrailEffect = { nullptr };
+	//class CTrailEffect* m_pHitTrailEffect = { nullptr };
+	//class CEffectContainer* m_pEffectContainer = { nullptr };
+
+	//CBayonet::BAYONET_DESC Desc{};
+	//Desc.eLevelID = LEVEL::STATIC;
+	//Desc.fRotationPerSec = 0.f;
+	//Desc.fSpeedPerSec = 0.f;
+	//Desc.InitPos = { 0.f, 0.f, 0.f };
+	//Desc.InitScale = { 1.f, 1.f, 1.f };
+	//Desc.iRender = 0;
+
+	//Desc.szMeshID = TEXT("PlayerWeapon");
+	//lstrcpy(Desc.szName, TEXT("PlayerWeapon"));
+
+	//Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_R"));
+	//Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+	//CGameObject* pGameObject = nullptr;
+	//if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PlayerWeapon"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player_Weapon"), &pGameObject, &Desc)))
+	//	return E_FAIL;
+
+	//m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
+
+
+
+
+
+
 
 	return S_OK;
 }

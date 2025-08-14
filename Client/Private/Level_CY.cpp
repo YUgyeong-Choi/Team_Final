@@ -312,8 +312,8 @@ HRESULT CLevel_CY::ImGui_Docking_Settings()
 		ImGuiWindowFlags_NoBringToFrontOnFocus |
 		ImGuiWindowFlags_NoNavFocus |
 		ImGuiWindowFlags_NoBackground |
-		ImGuiWindowFlags_NoDecoration |
-		ImGuiWindowFlags_MenuBar;
+		ImGuiWindowFlags_NoDecoration /*|
+		ImGuiWindowFlags_MenuBar*/;
 
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -322,7 +322,18 @@ HRESULT CLevel_CY::ImGui_Docking_Settings()
 	ImGui::Begin("DockSpace", nullptr, window_flags);
 	ImGui::PopStyleVar(3);
 
+	// 툴바메뉴 여기
 
+	//_bool test;
+	//if (ImGui::BeginMenuBar()) {
+	//	if (ImGui::BeginMenu("File")) {
+	//		if (ImGui::MenuItem("Open", "Ctrl+O", &test)) { /* 파일 열기 로직 */ }
+	//		if (ImGui::MenuItem("Save", "Ctrl+S", &test)) { /* 파일 저장 로직 */ }
+	//		ImGui::EndMenu();
+	//	}
+	//}
+	//ImGui::EndMenuBar();
+	
 	ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);

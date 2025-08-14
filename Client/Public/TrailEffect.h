@@ -44,6 +44,8 @@ protected:
 	_float3					m_vInnerPos = { 0.f, 0.f, 0.f }; // 안쪽 위치
 	_float3					m_vOuterPos = { 0.f, 0.f, 0.f }; // 바깥쪽 위치
 
+	_bool					m_bTrailActive = true;
+
 protected:
 	virtual HRESULT Ready_Components() override;
 	HRESULT Bind_ShaderResources();
