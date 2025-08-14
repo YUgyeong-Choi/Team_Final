@@ -69,16 +69,17 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	{
 		if (m_pAnimator->IsFinished())
 		{
+			m_pPhysXActorCom->Set_Owner(nullptr);
+			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			CLockOn_Manager::Get_Instance()->Set_Active();
 			m_pHPBar->Set_bDead();
 			Set_bDead();
+			if (nullptr != m_pPhysXActorCom)
+				m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
 		}
 	}
 
-	if (m_bDead)
-	{
-		m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
-	}
+	
 
 
 }
@@ -120,6 +121,8 @@ void CMonster_Base::Update(_float fTimeDelta)
 	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
 
 	XMStoreFloat4(&m_vLockonPos, vLockonPos);
+
+	
 }
 
 void CMonster_Base::Late_Update(_float fTimeDelta)
@@ -133,7 +136,7 @@ void CMonster_Base::Late_Update(_float fTimeDelta)
 
 	m_pHPBar->Late_Update(fTimeDelta);
 
-	
+
 }
 
 HRESULT CMonster_Base::Render()

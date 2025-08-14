@@ -535,14 +535,14 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
         vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
         Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
         
-        if (vHighlight.a > 0.001f)
-            Out.vColor += vHighlight * 2.f ;
+        if (vHighlight.a > 0.1f)
+            Out.vColor += vHighlight ;
 
     }
     else
     {
     // discard 대신 하이라이트 색 채우기
-        Out.vColor = vHighlight * 4.f;
+        discard;
 
     // 필요하면 강도 조절
     // Out.vColor.rgb *= 1.5f; 

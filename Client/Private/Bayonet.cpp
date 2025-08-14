@@ -54,8 +54,10 @@ HRESULT CBayonet::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	m_iBladeBoneIndex = m_pModelCom->Find_BoneIndex("BN_Blade");
 	m_iHandleIndex = m_pModelCom->Find_BoneIndex("BN_Handle");
+
+	// 나중에 지울거
+	m_isAttack = true;
 
 	return S_OK;
 }
@@ -106,16 +108,16 @@ void CBayonet::Update_Collider()
 		SocketMat.r[i] = XMVector3Normalize(SocketMat.r[i]);
 
 	// 3. Blade 본 월드 행렬
-	_matrix BladeMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex));
+	_matrix HandleMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex));
 
 	for (size_t i = 0; i < 3; i++)
-		BladeMat.r[i] = XMVector3Normalize(BladeMat.r[i]);
+		HandleMat.r[i] = XMVector3Normalize(HandleMat.r[i]);
 
-	_matrix WeaponWorld = BladeMat * SocketMat * ParentWorld;
+	_matrix WeaponWorld = HandleMat * SocketMat * ParentWorld;
 
 	_vector localOffset = XMVectorSet(0.f, -0.5f, 0.f, 1.f);
 	_vector worldPos = XMVector4Transform(localOffset, WeaponWorld);
-
+	
 	// 6. PhysX 적용
 	_vector finalPos = WeaponWorld.r[3];
 
@@ -213,7 +215,7 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 void CBayonet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	m_isAttack =false;
+	//m_isAttack =false;
 }
 
 void CBayonet::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

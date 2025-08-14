@@ -101,8 +101,7 @@ HRESULT CButtler_Train::Render()
 
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	if (pOther->Get_bDead())
-		return;
+	
 
 	ReceiveDamage(pOther, eColliderType);
 
@@ -223,8 +222,6 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 	if (m_iHP <= 0)
 	{
-		
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pAnimator->SetTrigger("Dead");
