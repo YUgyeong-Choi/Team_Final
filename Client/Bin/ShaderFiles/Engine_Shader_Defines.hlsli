@@ -128,7 +128,6 @@ BlendState BS_WBOIT
     SrcBlendAlpha[1] = Zero;
     DestBlendAlpha[1] = Inv_Src_Alpha;
     BlendOpAlpha[1] = Add;
-    //RenderTargetWriteMask[1] = RED;
     // Revealage는 이미 있던 알파 값에 1-srcAlpha만 계속해서 들고만 있으면 되므로
     // SrcBlend는 무시한 후 DestBlend값을 남겨두는 의미로 BlendOP를 Add로 함.
 
