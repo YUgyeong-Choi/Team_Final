@@ -68,6 +68,7 @@ public:
 	void ClearRenderObjects();
 #ifdef _DEBUG
 	_bool Get_RenderCollider();
+	_bool Get_RenderMapCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
 #endif
 #pragma endregion

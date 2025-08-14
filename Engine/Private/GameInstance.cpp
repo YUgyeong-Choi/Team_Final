@@ -169,6 +169,9 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	
 	if (Key_Down(DIK_EQUALS))
 		m_pRenderer->Change_DebugRT();
+
+	if (Key_Down(DIK_M))
+		m_pRenderer->Set_RenderMapCollider();
 #endif
 
 }
@@ -345,6 +348,11 @@ HRESULT CGameInstance::Add_DebugComponent(CComponent* pDebugCom)
 _bool CGameInstance::Get_RenderCollider()
 {
 	return m_pRenderer->Get_RenderCollider();
+}
+
+_bool CGameInstance::Get_RenderMapCollider()
+{
+	return m_pRenderer->Get_RenderMapCollider();
 }
 
 #endif
