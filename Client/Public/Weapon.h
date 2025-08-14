@@ -77,6 +77,9 @@ public: /* [ 활성화 , 비활성화 ] */
 	// 기본 데미지에 배율을 곱해서 데미지를 줄 수 있게
 	_int Get_CurrentDamage() { return _int(m_bDamage * m_fDamageRatio); }
 
+
+	void Clear_CollisionObj() { m_CollisonObjects.clear(); }
+
 public:
 	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }
 	SKILL_DESC& Get_SkillDesc(_int iIndex) { return m_eSkillDesc[iIndex]; }
@@ -88,7 +91,7 @@ protected:
 	_float4x4			m_CombinedWorldMatrix = {};
 
 protected:				/* [ 기본 속성 ] */
-	_float				m_bDamage = { 10.f };
+	_float				m_bDamage = { 100.f };
 	_bool				m_bIsActive = {};
 	_bool				m_isAttack = {};
 	_float				m_fSpeedPerSec = 5.f;
@@ -122,6 +125,13 @@ protected:		//		스킬용 변수?
 	// 내구도
 	_int				m_iDurability = {};
 	_int				m_iMaxDurability = {100};
+
+protected:
+	_int				m_iBladeBoneIndex = {};
+	_float4				m_vBladePos = {};
+
+	
+	vector<CGameObject*> m_CollisonObjects;
 
 public:
 	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -48,6 +48,8 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			m_pWeapon->Set_bDead();
 		}
 	}
+
+	
 }
 
 void CButtler_Train::Update(_float fTimeDelta)
@@ -165,9 +167,11 @@ void CButtler_Train::Update_State()
 			m_pAnimator->SetBool("UseLightAttack", true);
 		}
 
+		// 이게 잘 안되네 
+		// 이벤트로 바꿔
 		if (m_pAnimator->IsFinished())
 		{
-			++m_iAttackCount;
+			//++m_iAttackCount;
 		}
 	}
 
@@ -213,18 +217,12 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pHPBar->Set_RenderTime(2.f);
 	}
-	else if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		m_iHP -= 100;
-
-		m_pAnimator->SetTrigger("Hit");
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
-		m_pHPBar->Set_RenderTime(2.f);
-	}
 
 	if (m_iHP <= 0)
 	{
 		
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pAnimator->SetTrigger("Dead");
 		m_strStateName = "Dead";

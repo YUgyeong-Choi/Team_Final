@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PxPhysicsAPI.h"
 #include "PhysXActor.h"
@@ -6,14 +6,14 @@
 
 using namespace physx;
 
-// ÄÁÆ®·Ñ·¯ Ãæµ¹ ÄÝ¹é Àü¿ë Å¬·¡½º
+// ì»¨íŠ¸ë¡¤ëŸ¬ ì¶©ëŒ ì½œë°± ì „ìš© í´ëž˜ìŠ¤
 class CPhysXControllerHitReport : public PxUserControllerHitReport
 {
 public:
     CPhysXControllerHitReport() = default;
     virtual ~CPhysXControllerHitReport() = default;
 
-    // ===== Ignore °ü¸® =====
+    // ===== Ignore ê´€ë¦¬ =====
     void AddIgnoreActor(PxActor* actor)
     {
         if (actor)
@@ -35,7 +35,7 @@ public:
         return (actor && m_IgnoreActors.find(actor) != m_IgnoreActors.end());
     }
 
-    // ===== Ãæµ¹ ÄÝ¹é =====
+    // ===== ì¶©ëŒ ì½œë°± =====
     void onShapeHit(const PxControllerShapeHit& hit) override
     {
         PxRigidActor* pHitActor = hit.actor;
@@ -44,7 +44,7 @@ public:
         if (!pHitActor || !pController)
             return;
 
-        // Ignore ¸ñ·Ï¿¡ ÀÖÀ¸¸é ¹«½Ã
+        // Ignore ëª©ë¡ì— ìžˆìœ¼ë©´ ë¬´ì‹œ
         if (IsIgnored(pHitActor))
             return;
 
@@ -53,7 +53,7 @@ public:
 
         //if (pSelf && pOther)
         //{
-        //    pSelf->On_Enter(pOther);
+        //    pSelf->On_Enter(pOther); 
         //}
     }
 
@@ -65,7 +65,7 @@ public:
         if (!pA || !pB)
             return;
 
-        // Ignore ¸ñ·Ï¿¡ ÀÖÀ¸¸é ¹«½Ã
+        // Ignore ëª©ë¡ì— ìžˆìœ¼ë©´ ë¬´ì‹œ
         if (IsIgnored(pB->getActor()))
             return;
 
@@ -81,7 +81,7 @@ public:
 
     void onObstacleHit(const PxControllerObstacleHit& hit) override
     {
-        // ÇÊ¿ä ½Ã ±¸Çö
+        // í•„ìš” ì‹œ êµ¬í˜„
     }
 
 private:

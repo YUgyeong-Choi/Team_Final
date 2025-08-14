@@ -75,6 +75,11 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 		}
 	}
 
+	if (m_bDead)
+	{
+		m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
+	}
+
 
 }
 

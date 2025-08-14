@@ -51,6 +51,10 @@ HRESULT CBayonet::Initialize(void* pArg)
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 
+
+	m_iBladeBoneIndex = m_pModelCom->Find_BoneIndex("BN_Blade");
+	
+
 	return S_OK;
 }
 
@@ -90,15 +94,24 @@ void CBayonet::Update_Collider()
 	if (!m_isActive)
 		return;
 
+
 	// 1. 월드 행렬 가져오기
 	_matrix worldMatrix = XMLoadFloat4x4(&m_CombinedWorldMatrix);
 
 	// 2. 위치 추출
-	_float4 vPos;
-	XMStoreFloat4(&vPos, worldMatrix.r[3]);
+	// 이제 날 있는 위치로 바꿀거
 
-	PxVec3 pos(vPos.x, vPos.y, vPos.z);
-	pos.y += 0.5f;
+	_matrix BladeMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iBladeBoneIndex));
+
+	_vector vTempPos = XMVector3TransformCoord(BladeMat.r[3], m_pTransformCom->Get_WorldMatrix());
+
+	_vector vBladePos = XMVector3TransformCoord(vTempPos, XMLoadFloat4x4(m_pParentWorldMatrix));
+
+	
+
+	PxVec3 pos(vBladePos.m128_f32[0], vBladePos.m128_f32[1], vBladePos.m128_f32[2]);
+
+	pos.y += 1.75f;
 
 	// 3. 회전 추출
 	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
@@ -134,7 +147,7 @@ HRESULT CBayonet::Ready_Actor()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxVec3 halfExtents = PxVec3(0.2f, 0.2f, 0.2f);
+	PxVec3 halfExtents = PxVec3(0.8f, 0.2f, 0.2f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
@@ -159,6 +172,7 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 void CBayonet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	m_isAttack =false;
 }
 
 void CBayonet::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
