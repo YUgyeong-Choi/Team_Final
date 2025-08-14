@@ -49,6 +49,9 @@ private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
 
 	_int m_iAttackCount = {};
+
+	_bool  m_isBackWalk = {};
+	_float m_fDuration = {};
 	
 
 public:
