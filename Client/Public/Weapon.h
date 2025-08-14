@@ -128,6 +128,7 @@ protected:		//		스킬용 변수?
 
 protected:
 	_int				m_iBladeBoneIndex = {};
+	_int				m_iHandleIndex = {};
 	_float4				m_vBladePos = {};
 
 	

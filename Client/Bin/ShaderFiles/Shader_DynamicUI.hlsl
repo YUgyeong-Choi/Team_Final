@@ -500,16 +500,23 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     Out.vColor = float4(0, 0, 0, 0);
 
     float4 vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
-    float2 highlightUV = (In.vTexcoord - 0.5f) * 0.75f + 0.5f;
-// In.vTexcoord 중심(0.5,0.5) 기준으로 1.5배 확대
+    float2 highlightUV;
+    highlightUV.x = In.vTexcoord.x; // X 그대로
+    highlightUV.y = (In.vTexcoord.y - 0.5f) * 0.6f + 0.5f; // Y를 0.6배 축소 → 텍스처가 화면에서 더 길게 보임
+
     float4 vHighlight = (g_Groggy == 1.f) ? g_HighlightTexture.Sample(DefaultSampler, highlightUV) : float4(0, 0, 0, 0);
-// Border 우선
+
+
+
+
     if (vBorder.a > 0.1f)
     {
     // 
         Out.vColor = vHighlight * 4.f; 
         Out.vColor += vBorder;
+        return Out;
     }
+  
 
 // 내부 영역
     float fMarginX = 0.06f;
@@ -528,8 +535,8 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
         vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
         Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
         
-        if (vHighlight.a > 0.5f)
-            Out.vColor += vHighlight ;
+        if (vHighlight.a > 0.001f)
+            Out.vColor += vHighlight * 2.f ;
 
     }
     else
