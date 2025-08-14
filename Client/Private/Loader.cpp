@@ -419,7 +419,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	m_fRatio = 0.4f;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), true))) //true면 테스트 맵 준비[테스트 맵을 키고 싶으면 true 하시오]
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) //true면 테스트 맵 준비[테스트 맵을 키고 싶으면 true 하시오]
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -1291,35 +1291,6 @@ HRESULT CLoader::Loading_For_CY()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 
-	//안해도될거같은데
-	///* For.Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS */ // sprite용 
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
-	//	return E_FAIL;
-
-	///* For.Prototype_Component_Texture_T_Mask_27_C_GDH */ // trail용 마스크 이미지
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Mask_27_C_GDH"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Mask_27_C_GDH.dds"), 1))))
-	//	return E_FAIL;
-	//
-	///* For.Prototype_Component_Texture_T_Trail_01_C_GDH */ // trail용 마스크 이미지 2..
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Trail_01_C_GDH"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Trail_01_C_GDH.dds"), 1))))
-	//	return E_FAIL;
-	//
-	///* For.Prototype_Component_Texture_T_Slash_01_C_RSW */ // 아마 trail용 디스토션 이미지 
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Slash_01_C_RSW"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Slash_01_C_RSW.dds"), 1))))
-	//	return E_FAIL;
-
-
-	//_wstring strFileName
-	///* For.Prototype_Component_Texture */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), _wstring("Prototype_Component_Texture_") + ,
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
-	//	return E_FAIL;
-
-
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
 
@@ -1366,6 +1337,11 @@ HRESULT CLoader::Loading_For_CY()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlayerWeapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_ToolTrail */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
+		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

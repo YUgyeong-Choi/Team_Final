@@ -32,12 +32,13 @@ public:
 
 private:
     HRESULT Ready_Prototypes();
-    HRESULT Ready_Effect(const _wstring strEffectPath);
+    HRESULT Ready_Effect(EFFECT_TYPE eEffType, void* pArg);
     HRESULT Ready_EffectContainer(const _wstring strECPath);
     HRESULT Ready_Prototype_Components(const json& j, EFFECT_TYPE eEffType);
     HRESULT Ready_Prototype_Models(const json& j);
-    HRESULT Ready_Prototype_Textures(const json& j);
-    HRESULT Ready_Prototype_VIBuffers(const json& j);
+    HRESULT Ready_Prototype_Textures(const json& j);    
+    HRESULT Ready_Prototype_Particle_VIBuffers(const json& j);
+    HRESULT Ready_Prototype_Trail_VIBuffers(const json& j); // 트레일 추가하면 이게 2p트레일
 
 private:
     ID3D11Device*           m_pDevice = { nullptr };

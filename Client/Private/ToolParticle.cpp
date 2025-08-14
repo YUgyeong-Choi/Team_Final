@@ -26,8 +26,27 @@ HRESULT CToolParticle::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+
 	DESC* pDesc = static_cast<DESC*>(pArg);
 	m_bLoadingInTool = pDesc->bLoadingInTool;
+
+	if (m_bTool)
+	{
+		m_iNumInstance = pDesc->iNumInstance;
+		m_iShaderPass = pDesc->iShaderPass;
+		m_ePType = pDesc->ePType;
+		m_iNumInstance = pDesc->iNumInstance;
+		m_isLoop = pDesc->isLoop;
+		m_vCenter = pDesc->vCenter;
+		m_vLifeTime = pDesc->vLifeTime;
+		m_fMaxLifeTime = pDesc->vLifeTime.y;
+		m_vPivot = pDesc->vPivot;
+		m_vRange = pDesc->vRange;
+		m_vSize = pDesc->vSize;
+		m_vSpeed = pDesc->vSpeed;
+		m_bTool = pDesc->bTool;
+	}
+
 	if (m_bLoadingInTool) // 툴 내에서 불러오기 한 경우
 	{
 		if (FAILED(Ready_Components(nullptr)))
@@ -125,7 +144,6 @@ void CToolParticle::Update_Tool(_float fTimeDelta, _float fCurFrame)
 
 HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 {
-	//Safe_Release(m_pVIBufferCom);
 	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
 	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
 	{
@@ -163,6 +181,7 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), pArg)))
 		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -287,4 +306,42 @@ void CToolParticle::Free()
 	__super::Free();
 
 	Safe_Release(m_pVIBufferCom);
+}
+
+json CToolParticle::Serialize()
+{
+	json j = __super::Serialize();
+
+	j["Range"] = { m_vRange.x, m_vRange.y, m_vRange.z };
+	j["Size"] = { m_vSize.x, m_vSize.y };
+	j["Center"] = { m_vCenter.x, m_vCenter.y, m_vCenter.z };
+	j["Pivot"] = { m_vPivot.x, m_vPivot.y, m_vPivot.z };
+	j["LifeTime_Particle"] = { m_vLifeTime.x, m_vLifeTime.y };
+	j["Speed"] = { m_vSpeed.x, m_vSpeed.y };
+
+	return j;
+}
+
+void CToolParticle::Deserialize(const json& j)
+{
+	__super::Deserialize(j);
+
+	if (j.contains("Range") && j["Range"].is_array() && j["Range"].size() == 3)
+		m_vRange = { j["Range"][0].get<_float>(), j["Range"][1].get<_float>(), j["Range"][2].get<_float>() };
+
+	if (j.contains("Size") && j["Size"].is_array() && j["Size"].size() == 2)
+		m_vSize = { j["Size"][0].get<_float>(), j["Size"][1].get<_float>() };
+
+	if (j.contains("Center") && j["Center"].is_array() && j["Center"].size() == 3)
+		m_vCenter = { j["Center"][0].get<_float>(), j["Center"][1].get<_float>(), j["Center"][2].get<_float>() };
+
+	if (j.contains("Pivot") && j["Pivot"].is_array() && j["Pivot"].size() == 3)
+		m_vPivot = { j["Pivot"][0].get<_float>(), j["Pivot"][1].get<_float>(), j["Pivot"][2].get<_float>() };
+
+	if (j.contains("LifeTime_Particle") && j["LifeTime_Particle"].is_array() && j["LifeTime_Particle"].size() == 2)
+		m_vLifeTime = { j["LifeTime_Particle"][0].get<_float>(), j["LifeTime_Particle"][1].get<_float>() };
+
+	if (j.contains("Speed") && j["Speed"].is_array() && j["Speed"].size() == 2)
+		m_vSpeed = { j["Speed"][0].get<_float>(), j["Speed"][1].get<_float>() };
+
 }

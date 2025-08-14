@@ -152,11 +152,6 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, &PIDesc))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_VIBuffer_Trail */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Trail"),
-		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_Shader_VtxPosTex */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPosTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))

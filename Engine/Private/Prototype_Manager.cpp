@@ -58,6 +58,41 @@ void CPrototype_Manager::Clear(_uint iLevelIndex)
 	m_pPrototypes[iLevelIndex].clear();	
 }
 
+HRESULT CPrototype_Manager::Delete_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag)
+{
+	auto iter = m_pPrototypes[iPrototypeLevelIndex].find(strPrototypeTag);
+	if (iter != m_pPrototypes[iPrototypeLevelIndex].end())
+	{
+		Safe_Release(iter->second);
+		m_pPrototypes[iPrototypeLevelIndex].erase(iter);
+	}
+
+	return S_OK;
+}
+
+HRESULT CPrototype_Manager::Replace_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, CBase* pPrototype)
+{
+	if (nullptr == m_pPrototypes)
+		return E_FAIL;
+	if (iPrototypeLevelIndex >= m_iNumLevels)
+	{
+		Safe_Release(pPrototype);
+		return E_FAIL;
+	}
+
+	if (nullptr != Find_Prototype(iPrototypeLevelIndex, strPrototypeTag))
+	{
+		auto iter = m_pPrototypes[iPrototypeLevelIndex].find(strPrototypeTag);
+		if (iter != m_pPrototypes[iPrototypeLevelIndex].end())
+			Safe_Release(iter->second);
+		m_pPrototypes[iPrototypeLevelIndex].erase(iter);
+	}
+
+	m_pPrototypes[iPrototypeLevelIndex].emplace(strPrototypeTag, pPrototype);
+
+	return S_OK;
+}
+
 CBase* CPrototype_Manager::Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag)
 {
 	auto	iter = m_pPrototypes[iLevelIndex].find(strPrototypeTag);

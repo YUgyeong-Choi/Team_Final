@@ -18,7 +18,6 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype(const DESC* pDesc)
 {
 	if (pDesc != nullptr)
 	{
-		m_iMaxNodeCount = pDesc->iMaxNodeCount;
 		m_fLifeDuration = pDesc->fLifeDuration;
 		m_fNodeInterval = pDesc->fNodeInterval;
 		m_Subdivisions = pDesc->Subdivisions;
@@ -48,6 +47,23 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype(const DESC* pDesc)
 		return E_FAIL;
 
 	Safe_Delete_Array(pVertices);
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_Trail::Initialize_Prototype(const _wstring& strJsonFilePath)
+{
+	json j;
+	ifstream ifs(strJsonFilePath);
+	if (!ifs.is_open())
+	{
+		MSG_BOX("Failed to open JSON file for CVIBuffer_Trail");
+		return E_FAIL;
+	}
+	ifs >> j;
+	ifs.close();
+
+
 
 	return S_OK;
 }
@@ -252,6 +268,19 @@ HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
 //
 //	return pInstance;
 //}
+
+CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& strJsonFilePath)
+{
+	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype(strJsonFilePath)))
+	{
+		MSG_BOX("Failed to Created : CVIBuffer_Trail");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
 
 CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc)
 {

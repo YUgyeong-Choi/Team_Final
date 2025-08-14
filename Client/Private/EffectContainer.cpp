@@ -186,6 +186,8 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 		break;
 		case Client::EFF_TRAIL:
 		{
+
+			// 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
 			//CTrailEffect::DESC desc = {};
 			//desc.fRotationPerSec = XMConvertToRadians(90.f);
 			//desc.fSpeedPerSec = 5.f;

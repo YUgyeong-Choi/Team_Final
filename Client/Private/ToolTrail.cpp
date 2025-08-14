@@ -93,6 +93,49 @@ void CToolTrail::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
 }
 
+void CToolTrail::Change_TrailBuffer(void* pArg)
+{
+	//Safe_Release(m_pVIBufferCom);
+	CVIBuffer_Trail::DESC* pDesc = static_cast<CVIBuffer_Trail::DESC*>(pArg);
+	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
+	{
+		pDesc->fLifeDuration = m_fLifeDuration;
+		pDesc->fNodeInterval = m_fNodeInterval;
+		pDesc->Subdivisions = m_Subdivisions;
+
+		//pArg = &VIBufferDesc;
+	}
+	else
+	{
+		CVIBuffer_Trail::DESC* pDesc = static_cast<CVIBuffer_Trail::DESC*>(pArg);
+		m_fLifeDuration = pDesc->fLifeDuration;
+		m_fNodeInterval = pDesc->fNodeInterval;
+		m_Subdivisions = pDesc->Subdivisions;
+	}
+
+	/* 이렇게 하지 마세요 */
+	//Safe_Release(m_pVIBufferCom);
+	//__super::Remove_Component(TEXT("Prototype_Component_VIBuffer_ToolTrail"));
+
+
+	if (FAILED(m_pGameInstance->Replace_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
+		CVIBuffer_Trail::Create(m_pDevice, m_pContext, pDesc))))
+	{
+		MSG_BOX("아무튼실패함");
+		return ;
+	}
+
+	/* For.Com_VIBuffer */
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), pArg)))
+	{
+		MSG_BOX("아무튼실패함");
+		return ;
+	}
+
+
+}
+
 HRESULT CToolTrail::Ready_Components()
 {
 	/* For.Com_Shader */
@@ -101,7 +144,7 @@ HRESULT CToolTrail::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Trail"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
@@ -204,4 +247,30 @@ void CToolTrail::Free()
 {
 	__super::Free();
 
+}
+
+json CToolTrail::Serialize()
+{
+	json j = __super::Serialize();
+
+	
+	j["LifeDuration"] = m_fLifeDuration;
+	j["NodeInterval"] = m_fNodeInterval;
+	j["Subdivisions"] = m_Subdivisions;
+
+	return j;
+}
+
+void CToolTrail::Deserialize(const json& j)
+{
+	__super::Deserialize(j);
+
+	if (j.contains("LifeDuration"))
+		m_fLifeDuration = j["LifeDuration"].get<_float>();
+
+	if (j.contains("NodeInterval"))
+		m_fNodeInterval = j["NodeInterval"].get<_float>();
+
+	if (j.contains("Subdivisions"))
+		m_Subdivisions = j["Subdivisions"].get<_int>();
 }

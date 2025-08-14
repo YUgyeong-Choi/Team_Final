@@ -9,7 +9,6 @@ class ENGINE_DLL CVIBuffer_Trail final : public CVIBuffer
 public:
 	typedef struct tagTrailBufferDesc
 	{
-		_uint	iMaxNodeCount = { 300 };
 		_uint	Subdivisions = { 4 };
 		_float	fLifeDuration = { 0.5f };
 		_float	fNodeInterval = { 0.0166f };
@@ -22,12 +21,13 @@ private:
 
 public:
 	virtual HRESULT Initialize_Prototype(const DESC* pDesc);
+	virtual HRESULT Initialize_Prototype(const _wstring& strJsonFilePath);
 	virtual HRESULT Initialize(void* pArg);
 	void Update_Trail(const _float3& vInnerPos, const _float3& vOuterPos, _float fTimeDelta);
 	HRESULT Update_Buffers();
 
 	virtual HRESULT Bind_Buffers();
-	virtual HRESULT Render();
+	virtual HRESULT Render(); 
 
 public:
 	void Set_TrailActive(_bool bActive) { m_bTrailActive = bActive; if (bActive == true) m_TrailNodes.clear();}
@@ -51,6 +51,7 @@ private:
 
 
 public:
+	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& strJsonFilePath);
 	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc = nullptr);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
