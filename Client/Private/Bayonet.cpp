@@ -69,7 +69,7 @@ void CBayonet::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	//Update_Collider();
+	Update_Collider();
 }
 
 HRESULT CBayonet::Render()

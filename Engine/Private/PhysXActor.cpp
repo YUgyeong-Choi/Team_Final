@@ -504,6 +504,12 @@ void CPhysXActor::Set_RenderColor()
     case COLLIDERTYPE::MONSTER:
         m_vRenderColor = Colors::BlueViolet;
         break;
+    case COLLIDERTYPE::PLAYER_WEAPON:
+        m_vRenderColor = Colors::BlueViolet;
+        break;
+    case COLLIDERTYPE::MONSTER_WEAPON:
+        m_vRenderColor = Colors::BlueViolet;
+        break;
     }
 }
 #endif
