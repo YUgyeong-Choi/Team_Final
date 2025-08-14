@@ -32,6 +32,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 
+	m_isCanGroggy = true;
 	
 	return S_OK;
 }

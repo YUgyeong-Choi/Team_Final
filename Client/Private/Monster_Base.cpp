@@ -255,6 +255,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 	eDesc.fSizeY = 1.f;
 	eDesc.fHeight = 2.25f;
 	eDesc.pHP = &m_iHP;
+	eDesc.pIsGroggy = &m_isCanGroggy;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, 

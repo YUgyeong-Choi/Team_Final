@@ -1237,9 +1237,6 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPBRMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
@@ -1260,6 +1257,9 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_TrailEffect.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
