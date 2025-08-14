@@ -69,16 +69,11 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	{
 		if (m_pAnimator->IsFinished())
 		{
-			
-			CLockOn_Manager::Get_Instance()->Set_Active();
 			m_pHPBar->Set_bDead();
 			Set_bDead();
 			if (nullptr != m_pPhysXActorCom)
 			{
-				m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
-				m_pPhysXActorCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
-				m_pPhysXActorCom->Get_Actor()->userData = nullptr;
-				m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
+				m_pPhysXActorCom->RemovePhysX();
 			}
 			
 		}

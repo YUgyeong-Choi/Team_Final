@@ -28,6 +28,8 @@ public:
     void Add_IngoreActors(PxActor* pActor) { m_ignoreActors.insert(pActor); }
     unordered_set<PxActor*> Get_IngoreActors() { return m_ignoreActors; }
 
+    virtual void RemovePhysX() {};
+
 #ifdef _DEBUG
     // For Debug Render
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);

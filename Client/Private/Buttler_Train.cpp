@@ -1,7 +1,7 @@
 ﻿#include "Buttler_Train.h"
 #include "GameInstance.h"
 #include "Weapon_Monster.h"
-
+#include "LockOn_Manager.h"
 CButtler_Train::CButtler_Train(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster_Base{pDevice, pContext}
 {
@@ -226,6 +226,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pAnimator->SetTrigger("Dead");
 		m_strStateName = "Dead";
+
+		CLockOn_Manager::Get_Instance()->Set_Off(this);
 	}
 	
 }

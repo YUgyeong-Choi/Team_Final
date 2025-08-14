@@ -102,6 +102,8 @@ HRESULT CPhysXActor::ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContex
     return S_OK;
 }
 
+
+
 void CPhysXActor::Add_RenderRay(DEBUGRAY_DATA _data)
 {
     m_RenderRay.push_back(_data);
