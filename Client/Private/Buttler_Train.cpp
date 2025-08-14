@@ -98,7 +98,7 @@ HRESULT CButtler_Train::Render()
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 
-	ReceiveDamage(pOther, eColliderType);
+	//ReceiveDamage(pOther, eColliderType);
 
 }
 

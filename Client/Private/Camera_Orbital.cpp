@@ -175,8 +175,8 @@ void CCamera_Orbital::Update_CameraMatrix(_float fTimeDelta)
 	_float fAfterYaw = m_fYaw;
 	_float fAfterPitch = m_fPitch;
 
-	fAfterYaw += MouseMoveX * fTimeDelta * m_fMouseSensor;
-	fAfterPitch += MouseMoveY * fTimeDelta * m_fMouseSensor;
+	fAfterYaw += MouseMoveX * 0.008f * m_fMouseSensor;
+	fAfterPitch += MouseMoveY * 0.008f * m_fMouseSensor;
 
 	// 카메라 Pitch 제한
 	if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
@@ -184,8 +184,8 @@ void CCamera_Orbital::Update_CameraMatrix(_float fTimeDelta)
 	else
 		fAfterPitch = clamp(fAfterPitch, XMConvertToRadians(-50.f), XMConvertToRadians(60.f));
 
-	m_fYaw = LerpFloat(m_fYaw, fAfterYaw, fTimeDelta * 5.f);
-	m_fPitch = LerpFloat(m_fPitch, fAfterPitch, fTimeDelta * 5.f);
+	m_fYaw = LerpFloat(m_fYaw, fAfterYaw, m_fMouseSensor);
+	m_fPitch = LerpFloat(m_fPitch, fAfterPitch, m_fMouseSensor);
 
 	// 카메라 설정
 	Set_CameraMatrix(fTimeDelta);
@@ -208,43 +208,38 @@ void CCamera_Orbital::Update_TargetCameraMatrix(_float fTimeDelta)
 
 void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 {
-	const XMVECTOR vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION)+ XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	const XMVECTOR vTargetPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
-	const XMVECTOR vCenter = (vPlayerPos + vTargetPos) * 0.5f;
-
+	/*
+	const _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION)+ XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+	const _vector vTargetPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
+	const _vector vCenter = (vPlayerPos + vTargetPos) * 0.5f;
+	
 	// 플레이어에서 타겟 방향, 너무 가까우면 플레이어 LOOK 사용
-	XMVECTOR vCamForward = XMVector3Normalize(vTargetPos - vPlayerPos);
-	const float fSpanPT = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos)); 
+	_vector vCamForward = XMVector3Normalize(vTargetPos - vPlayerPos);
+	const _float fSpanPT = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos)); 
 	if (fSpanPT < 0.0000001f)
 		vCamForward = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
 
 	// 플레이어와 타겟이 사이의 반지름
-	const float fRadius = 0.5f * fSpanPT + m_fPadding;
-	float       fWantDist = (fRadius / m_fFrame) / tanf(m_fFov *   0.5f);
+	const _float fRadius = 0.5f * fSpanPT + m_fPadding;
+	_float       fWantDist = (fRadius / m_fFrame) / tanf(m_fFov *   0.5f);
 	fWantDist = clamp(fWantDist, m_fDistanceMin, m_fDistanceMax);
 
-	// ===== 2) 플레이어 최소 깊이(1차) 보장 =====
-	const float kMinPlayerDepth = 1.2f;
-	const XMVECTOR vDesiredPre = vCenter - vCamForward * fWantDist;
-	const float fPlayerDepthPre = XMVectorGetX(XMVector3Dot(vPlayerPos - vDesiredPre, vCamForward));
+	// 플레이어와 카메라간의 최소 거리
+	const _vector vDesiredPre = vCenter - vCamForward * fWantDist;
+	const _float fPlayerDepthPre = XMVectorGetX(XMVector3Dot(vPlayerPos - vDesiredPre, vCamForward));
 	if (fPlayerDepthPre < kMinPlayerDepth) {
 		fWantDist += (kMinPlayerDepth - fPlayerDepthPre);
 		fWantDist = min(fWantDist, m_fDistanceMax);
 	}
 
-	// ===== 3) 거리 스무딩 (프레임 독립 지수보간) =====
-	static float dCurr = m_fDistanceMin; // 필요하면 멤버로 이동
-	auto Smooth = [](float curr, float target, float speed, float dt) {
-		const float a = 1.f - expf(-speed * dt);
-		return curr + (target - curr) * a;
-		};
-	dCurr = Smooth(dCurr, fWantDist, 8.0f, fTimeDelta);
+	// 거리 보간 & 충돌 보정 전 카메라 위치
+	_float fCurDistance = m_fDistanceMin;
+	fCurDistance = SmoothExp(fCurDistance, fWantDist, 8.0f, fTimeDelta);
+	const _vector vDesired = vCenter - vCamForward * fCurDistance;
 
-	// 목표 카메라 위치(충돌 보정 전)
-	const XMVECTOR vDesired = vCenter - vCamForward * dCurr;
-
-	// ===== 4) 스프링암 충돌 보정 =====
-	XMVECTOR vDir = XMVector3Normalize(vDesired - vCenter);       // center→desired
+#pragma region 스프링암
+	// 스프링암 충돌 보정
+	XMVECTOR vDir = XMVector3Normalize(vDesired - vCenter);     
 	float    fRayLen = XMVectorGetX(XMVector3Length(vDesired - vCenter));
 
 	XMFLOAT3 fC, fD; XMStoreFloat3(&fC, vCenter); XMStoreFloat3(&fD, vDir);
@@ -254,7 +249,6 @@ void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 	PxHitFlags        hitFlags = PxHitFlag::eDEFAULT;
 	PxQueryFilterData filter; filter.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
-	// 자기 자신/타겟 무시
 	unordered_set<PxActor*> ignore = static_cast<CPlayer*>(m_pPlayer)->Get_Controller()->Get_IngoreActors();
 	CIgnoreSelfCallback cb(ignore);
 
@@ -266,11 +260,12 @@ void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 		const float hitDist = max(hit.block.distance - kPullPad, kMinDist);
 		vCamPos = vCenter + vDir * hitDist;
 	}
+#pragma endregion
 
 	// ===== 5) 플레이어 여유 깊이(2차) 보장 =====
 	{
-		const float minDepthNear = 1.2f;
-		const float minDepthFar = 3.0f;
+		const float minDepthNear = 3.f;
+		const float minDepthFar = 6.0f;
 		const float span0 = 2.0f * m_fDistanceMin;
 		const float span1 = 2.0f * m_fDistanceMax;
 
@@ -310,6 +305,39 @@ void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 	W.r[3] = XMVectorSetW(vPosNext, 1.f);
 
 	m_pTransformCom->Set_WorldMatrix(W);
+	*/
+
+	// 플레이어와 타겟 위치
+	XMVECTOR vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+	XMVECTOR vTargetPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
+
+	// 두 점 중점 계산
+	XMVECTOR vMid = (vPlayerPos + vTargetPos) * 0.5f;
+
+	// 두 캐릭터 간 거리
+	float fDistance = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos));
+
+	// m_fFov는 세로 기준이므로 세로 FOV로 거리 계산
+	// 삼각함수로 거리 확보:  tan(FOV/2) = (높이/2) / 거리
+	float fRequiredDist = (fDistance * 0.5f) / tanf(m_fFov * 0.5f);
+
+	// 카메라 방향(플레이어-타겟 바라보는 방향 반대)
+	XMVECTOR vForward = XMVector3Normalize(vMid - vPlayerPos);
+	XMVECTOR vCamDir = -vForward;
+
+	// 최종 카메라 위치 = 중점 + 뒤로 뺀 값 + 살짝 위로 올리기
+	XMVECTOR vCamPos = vMid + vCamDir * fRequiredDist + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
+
+	// Up 벡터
+	XMVECTOR vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	// 월드 행렬 구성
+	XMMATRIX matView = XMMatrixLookAtLH(vCamPos, vMid, vUp);
+	XMMATRIX matWorld = XMMatrixInverse(nullptr, matView);
+
+	// 트랜스폼에 적용
+	m_pTransformCom->Set_WorldMatrix(matWorld);
+
 }
 void CCamera_Orbital::Set_CameraMatrix(_float fTimeDelta)
 {
