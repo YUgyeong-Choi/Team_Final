@@ -32,7 +32,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 
-	m_isCanGroggy = true;
+	
 	
 	return S_OK;
 }
@@ -104,7 +104,7 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	if (pOther->Get_bDead())
 		return;
 
-	//ReceiveDamage(pOther, eColliderType);
+	ReceiveDamage(pOther, eColliderType);
 
 }
 
@@ -217,6 +217,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		m_pAnimator->SetTrigger("Hit");
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pHPBar->Set_RenderTime(2.f);
+
+		m_isCanGroggy = true;
 	}
 
 	if (m_iHP <= 0)

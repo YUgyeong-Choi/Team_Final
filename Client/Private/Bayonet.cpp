@@ -55,7 +55,7 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 
 	m_iBladeBoneIndex = m_pModelCom->Find_BoneIndex("BN_Blade");
-	
+	m_iHandleIndex = m_pModelCom->Find_BoneIndex("BN_Handle");
 
 	return S_OK;
 }
@@ -66,7 +66,7 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 }
 void CBayonet::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
+		__super::Update(fTimeDelta);
 
 	
 }
@@ -96,33 +96,36 @@ void CBayonet::Update_Collider()
 	if (!m_isActive)
 		return;
 
+	// 1. 부모 행렬
+	_matrix ParentWorld = XMLoadFloat4x4(m_pParentWorldMatrix);
 
-	// 1. 월드 행렬 가져오기
-	_matrix worldMatrix = XMLoadFloat4x4(&m_CombinedWorldMatrix);
+	// 2. Socket 월드 행렬 
+	_matrix SocketMat = XMLoadFloat4x4(m_pSocketMatrix);
 
-	// 2. 위치 추출
-	// 이제 날 있는 위치로 바꿀거
+	for (size_t i = 0; i < 3; i++)
+		SocketMat.r[i] = XMVector3Normalize(SocketMat.r[i]);
 
-	_matrix BladeMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iBladeBoneIndex));
+	// 3. Blade 본 월드 행렬
+	_matrix BladeMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex));
 
-	_vector vTempPos = XMVector3TransformCoord(BladeMat.r[3], m_pTransformCom->Get_WorldMatrix());
+	for (size_t i = 0; i < 3; i++)
+		BladeMat.r[i] = XMVector3Normalize(BladeMat.r[i]);
 
-	_vector vBladePos = XMVector3TransformCoord(vTempPos, XMLoadFloat4x4(m_pParentWorldMatrix));
+	_matrix WeaponWorld = BladeMat * SocketMat * ParentWorld;
 
-	
+	_vector localOffset = XMVectorSet(0.f, -0.5f, 0.f, 1.f);
+	_vector worldPos = XMVector4Transform(localOffset, WeaponWorld);
 
-	PxVec3 pos(vBladePos.m128_f32[0], vBladePos.m128_f32[1], vBladePos.m128_f32[2]);
+	// 6. PhysX 적용
+	_vector finalPos = WeaponWorld.r[3];
 
-	pos.y += 1.75f;
+	_vector finalRot = XMQuaternionRotationMatrix(WeaponWorld);
 
-	// 3. 회전 추출
-	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
-	XMFLOAT4 fQuat;
-	XMStoreFloat4(&fQuat, boneQuat);
-	PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
+	PxVec3 physxPos(XMVectorGetX(worldPos), XMVectorGetY(worldPos), XMVectorGetZ(worldPos));
+	PxQuat physxRot(XMVectorGetX(finalRot), XMVectorGetY(finalRot), XMVectorGetZ(finalRot), XMVectorGetW(finalRot));
 
-	// 4. PhysX Transform 적용
-	m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
+	m_pPhysXActorCom->Set_Transform(PxTransform(physxPos, physxRot));
+
 }
 
 HRESULT CBayonet::Ready_Components()
@@ -149,7 +152,7 @@ HRESULT CBayonet::Ready_Actor()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxVec3 halfExtents = PxVec3(0.8f, 0.2f, 0.2f);
+	PxVec3 halfExtents = PxVec3(0.2f, 0.8f, 0.2f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
