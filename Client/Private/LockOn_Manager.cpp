@@ -253,8 +253,8 @@ CGameObject* CLockOn_Manager::Change_ToLookTarget()
         return nullptr;
 
     // 마우스 X 이동량으로 좌/우 선호 결정
-    const _float mouseX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
-    const float  kDeadZone = 50.f;
+    const _long mouseX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
+    const _float  kDeadZone = 50.f;
     int sidePref = 0;
     if (mouseX <= -kDeadZone) sidePref = +1;    // 왼쪽
     else if (mouseX >= kDeadZone) sidePref = -1; // 오른쪽
@@ -271,7 +271,7 @@ CGameObject* CLockOn_Manager::Change_ToLookTarget()
     CGameObject* pCurrent = m_pBestTarget;
 
     CGameObject* best = nullptr;
-    float bestAngle = XM_PI;
+    _float bestAngle = XM_PI;
 
     for (auto* t : m_vecTarget)
     {
@@ -281,14 +281,14 @@ CGameObject* CLockOn_Manager::Change_ToLookTarget()
         const _vector V = XMVector3Normalize(T - P);
 
         // 좌/우 판정
-        const float side = XMVectorGetX(XMVector3Dot(V, R));
+        const _float side = XMVectorGetX(XMVector3Dot(V, R));
         if ((sidePref > 0 && side <= 0.f) || (sidePref < 0 && side >= 0.f))
             continue;
 
         // 각도 계산
-        float fDot = XMVectorGetX(XMVector3Dot(F, V));
+        _float fDot = XMVectorGetX(XMVector3Dot(F, V));
         fDot = clamp(fDot, -1.f, 1.f);
-        float fAngle = acosf(fDot);
+        _float fAngle = acosf(fDot);
 
         if (fAngle < bestAngle)
         {
