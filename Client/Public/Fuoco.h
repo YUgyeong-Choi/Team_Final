@@ -77,8 +77,9 @@ class CFuoco : public CUnit
     {
         BAP_NONE = 0,
         SlamCombo = 1,
-		Uppercut = 2,
+        Uppercut = 2,
         SwingAtk = 4,
+        SlamFury = 5,
         FootAtk = 6,
         P2_FlameFiled = 7,
         SlamAtk = 8,
@@ -88,32 +89,11 @@ class CFuoco : public CUnit
         P2_FireBall_B = 13,
     };
 
-	enum class EFuocoState
-	{
-		IDLE,
-		WALK,
-		RUN,
-        TURN,
-		ATTACK,
-        GROGGY,
-        DEAD,
-		NONE
-	};
+	enum class EFuocoState{
+        IDLE,WALK,RUN,TURN,ATTACK,GROGGY,DEAD,NONE};
 
-	enum class EMoveDirection
-	{
-		FRONT,
-		RIGHT,
-		BACK,
-		LEFT
-	};
-
-	enum class EAttackDirection
-	{
-		FRONT,
-		LEFT,
-		RIGHT
-    };
+	enum class EMoveDirection	{
+        FRONT, RIGHT, BACK, LEFT};
 
 private:
 	CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -148,14 +128,14 @@ private:
     void UpdateMove(_float fTimeDelta);
     void UpdateAttackPattern(_float fDistance,_float fTimeDelta);
 
-	_bool  IsTargetInFront() const;
+	_bool  IsTargetInFront(_float fDectedAngle = 60.f) const;
 	_vector GetTargetDirection() const;
 	_bool UpdateTurnDuringAttack(_float fTimeDelta);
 	_float Get_DistanceToPlayer() const;
-    void ApplyRootMotionDelta(_float fTimeDelta);
-    void UpdateNormalMove(_float fTimeDelta);
+
+    // 공견 패턴
     void SetupAttackByType(EBossAttackPattern ePattern);
-    void SetTurnTimeDuringAttack(_float fTime,_float fAddtivRotSpeed = 0.f)
+    void SetTurnTimeDuringAttack(_float fTime,_float fAddtivRotSpeed = 1.f)
     {
         if (m_fTurnTimeDuringAttack != 0.f)
             return;
@@ -163,9 +143,16 @@ private:
 		m_fAddtiveRotSpeed = fAddtivRotSpeed;
     }
 
+    // 이동
+    void ApplyRootMotionDelta(_float fTimeDelta);
+    void UpdateNormalMove(_float fTimeDelta);
+
+
 	_bool IsValidAttackType(EBossAttackPattern ePattern) const
 	{
 		return ePattern == EBossAttackPattern::SwingAtk ||
+			ePattern == EBossAttackPattern::SlamFury ||
+			ePattern == EBossAttackPattern::SlamCombo ||
 			ePattern == EBossAttackPattern::FootAtk ||
 			ePattern == EBossAttackPattern::SlamAtk ||
 			ePattern == EBossAttackPattern::Uppercut ||
@@ -181,42 +168,86 @@ private:
 	void Ready_AttackPatternWeightForPhase2();
 
 	EBossAttackPattern GetRandomAttackPattern();
+	void UpdatePatternWeight(EBossAttackPattern ePattern);
 
+    _bool CheckConditionFlameFiled();
+ 
+	_float CalculateCurrentHpRatio() const
+	{
+		return m_fHP / m_fMaxHP;
+	}
+
+#ifdef _DEBUG
+    function<void()> PatterDebugFunc = [this]() {    cout << "=== Attack Pattern Weights ===" << endl;
+    for (const auto& [pattern, weight] : m_PatternWeightMap)
+    {
+        cout << "Pattern " << static_cast<_int>(pattern)
+            << ": Weight=" << weight
+            << ", Consecutive=" << m_PatternCountMap[pattern]
+            << ", Previous=" << static_cast<_int>(m_ePrevAttackPattern) <<
+                ", Current=" << static_cast<_int>(m_eCurAttackPattern)
+                << endl;
+    }
+    cout << "===============================" << endl;
+        };
+#endif
 private:
+	// 컴포넌트 관련
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForFoot = { nullptr };
     CNavigation* m_pNaviCom = { nullptr };
 	CBone* m_pFistBone{ nullptr };
 	CBone* m_pFootBone{ nullptr };
-	EFuocoState m_eCurrentState = EFuocoState::NONE;
+	
+    // 상태 관련
+    EFuocoState m_eCurrentState = EFuocoState::NONE;
     _bool m_bIsFirstAttack{ true }; // 컷씬하고 돌진 처리
     _bool m_bIsPhase2{ false };
     _bool m_bStartPhase2 = false;
-	_float m_fAttackCooldown = 0.f; // 공격 쿨타임
+    _bool m_bUsedFlameFiledOnLowHp = false;
+
+    // 체력
+	_float m_fHP = 100.f;
+	_float m_fMaxHP = 100.f;
+
+    // 이동 관련
+
+	_vector m_vRotationXDir = XMVectorZero(); // X축 회전 방향
+	_float m_fRotationTimeForX = 0.f; // X축 회전 시간
 
     _vector  m_PrevWorldDelta = XMVectorZero();
     _vector  m_PrevWorldRotation = XMVectorZero();
     _float   m_fRotSmoothSpeed = 8.0f;
     _float   m_fSmoothSpeed = 8.0f;
     _float   m_fSmoothThreshold = 0.1f;
-
     _float m_fWalkSpeed = 3.f;
 	_float m_fRunSpeed = 5.f;
 
 	_float m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
 	_float m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
     _float m_fTurnTimeDuringAttack = 0.f;
-    const _float CHASING_DISTANCE = 3.f;
-	const _float ATTACK_DISTANCE = 7.f; // 이건 나중에 원거리 공격을 좀 처리할 때 다시 사용
+
+
+    // 공격 관련
+    _int m_iPatternLimit = 2;
+    _float m_fBasePatternWeight = 100.f;
+    _float m_fMinWeight = 10.f;
+    _float m_fMaxWeight = 150.f;
+    _float m_fWeightDecreaseRate = 0.3f;
+	_float m_fWeightIncreaseRate = 0.1f;
+    _float m_fAttackCooldown = 0.f; // 공격 쿨타임
+    _float m_fAttckDleay = 2.5f;
+
+    EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
+    EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
+    unordered_map<EBossAttackPattern, _float> m_PatternWeightMap;
+    unordered_map<EBossAttackPattern, _int> m_PatternCountMap;// 연속 횟수
+
+    // 상수
+    const _float CHASING_DISTANCE = 3.1f;
+    const _float ATTACK_DISTANCE = 5.f;
     const _float MINIMUM_TURN_ANGLE = 35.f;
-
-	EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
-	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
-    vector<pair<_float, EBossAttackPattern>> m_vecAttackPatternWeight;
-    deque<EBossAttackPattern> m_RecentPatterns;
-    _uint m_iPatternLimit = 2;
-
 public:
 	static CFuoco* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

@@ -415,6 +415,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	m_fRatio = 0.4f;
 
+
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) //true�� �׽�Ʈ �� �غ�[�׽�Ʈ ���� Ű�� ������ true �Ͻÿ�]
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("�׺���̼���(��) �ε����Դϴ�."));
 
 	m_fRatio = 0.6f;

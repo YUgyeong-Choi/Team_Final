@@ -172,18 +172,15 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 
 void CAnimator::SetCurrentRootRotation(const _float4& rot)
 {
+	_float4 convertRot = { rot.y, rot.x, rot.z, rot.w };
 	m_PrevRootRotation = m_CurrentRootRotation;
-	m_CurrentRootRotation = rot;
+	m_CurrentRootRotation = convertRot;
 
 	// 회전 델타 계산
 	_vector prevRotInverse = XMQuaternionInverse(XMLoadFloat4(&m_PrevRootRotation));
 	_vector currentRot = XMLoadFloat4(&m_CurrentRootRotation);
 	_vector deltaRot = XMQuaternionMultiply(prevRotInverse, currentRot);
 
-	// Y축 회전만 추출 (캐릭터 회전은 보통 Y축만 사용)
-	_float yAngle = GetYAngleFromQuaternion(deltaRot);
-
-	//	XMStoreFloat4(&m_RootRotationDelta, XMQuaternionRotationAxis(XMVectorSet(0, 1, 0, 0), yAngle));
 	XMStoreFloat4(&m_RootRotationDelta, deltaRot);
 }
 
@@ -614,27 +611,7 @@ void CAnimator::AddUniqueClip(CAnimation* pClip, array<CAnimation*, 4>& pArray, 
 	pArray[clipCount++] = pClip;
 }
 
-void CAnimator::RootMotionDecomposition()
-{
-	CBone* rootBone = m_Bones[1];
 
-	// 꺼내온 조합 행렬
-	_matrix rootMat = XMLoadFloat4x4(rootBone->Get_CombinedTransformationMatrix());
-	_matrix pelvisMat = XMLoadFloat4x4(rootBone->Get_TransformationMatrix());
-
-	// 위치·회전·스케일 분해
-	_vector rootScale, rootRotQuat, rootTrans;
-	XMMatrixDecompose(&rootScale, &rootRotQuat, &rootTrans, rootMat);
-
-	_vector pelvisScale, pelvisRotQuat, pelvisTrans;
-	XMMatrixDecompose(&pelvisScale, &pelvisRotQuat, &pelvisTrans, pelvisMat);
-
-	_float3 rootPos;      XMStoreFloat3(&rootPos, rootTrans);
-	_float4 pelvisRot;    XMStoreFloat4(&pelvisRot, pelvisRotQuat);
-
-	this->SetCurrentRootPosition(rootPos);
-	this->SetCurrentRootRotation(pelvisRot);
-}
 
 _matrix CAnimator::LerpMatrix(const _matrix& src, const _matrix& dst, _float t)
 {
@@ -653,6 +630,30 @@ void CAnimator::CollectBoneMatrices(CAnimation* pAnim, vector<_matrix>& boneMatr
 	{
 		boneMatrices[i] = pAnim ? pAnim->GetBoneMatrix(static_cast<_uint>(i)) : XMMatrixIdentity();
 	}
+}
+
+
+void CAnimator::RootMotionDecomposition()
+{
+	CBone* rootBone = m_Bones[1];
+	CBone* pelvisBone = m_Bones[1];
+
+	// 꺼내온 조합 행렬
+	_matrix rootMat = XMLoadFloat4x4(rootBone->Get_CombinedTransformationMatrix());
+	_matrix pelvisMat = XMLoadFloat4x4(pelvisBone->Get_TransformationMatrix());
+
+	// 위치·회전·스케일 분해
+	_vector rootScale, rootRotQuat, rootTrans;
+	XMMatrixDecompose(&rootScale, &rootRotQuat, &rootTrans, rootMat);
+
+	_vector pelvisScale, pelvisRotQuat, pelvisTrans;
+	XMMatrixDecompose(&pelvisScale, &pelvisRotQuat, &pelvisTrans, pelvisMat);
+
+	_float3 rootPos;      XMStoreFloat3(&rootPos, rootTrans);
+	_float4 pelvisRot;    XMStoreFloat4(&pelvisRot, pelvisRotQuat);
+
+	this->SetCurrentRootPosition(rootPos);
+	this->SetCurrentRootRotation(pelvisRot);
 }
 
 void CAnimator::ResetRootMotion()
