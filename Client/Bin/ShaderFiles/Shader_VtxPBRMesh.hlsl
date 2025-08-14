@@ -105,7 +105,7 @@ struct PS_OUT
     vector vDiffuse     : SV_TARGET0;
     vector vNormal      : SV_TARGET1;
     vector vARM         : SV_TARGET2;
-    vector vProjPos     : SV_TARGET3;
+    vector vDepth     : SV_TARGET3;
     vector vAO          : SV_TARGET4;
     vector vRoughness   : SV_TARGET5;
     vector vMetallic    : SV_TARGET6;
@@ -178,7 +178,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
     Out.vARM = float4(AO, Roughness, Metallic, 1.f);
-    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, g_fReflectionIntensity, g_fSpecularIntensity);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, g_fReflectionIntensity, g_fSpecularIntensity);
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
@@ -221,7 +221,7 @@ PS_OUT PS_TOOL_MAIN(PS_IN In)
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
     Out.vARM = float4(AO, Roughness, Metallic, 1.f);
-    Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, g_fID);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, g_fID);
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
