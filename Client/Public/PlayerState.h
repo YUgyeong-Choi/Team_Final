@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Base.h"
 #include "Client_Defines.h"
 #include "Camera_Manager.h"
@@ -14,7 +14,7 @@ _float g_fWalkSpeed = 1.5f;
 _float g_fRunSpeed = 3.5f;
 _float g_fSprintSpeed = 6.f;
 
-/* [ ÇÃ·¹ÀÌ¾îÀÇ »óÅÂ¸¦ Á¤ÀÇÇÏ´Â Ãß»ó Å¬·¡½ºÀÔ´Ï´Ù. ] */
+/* [ í”Œë ˆì´ì–´ì˜ ìƒíƒœë¥¼ ì •ì˜í•˜ëŠ” ì¶”ìƒ í´ë˜ìŠ¤ì…ë‹ˆë‹¤. ] */
 class CPlayerState abstract : public CBase
 {
 public:
@@ -66,7 +66,7 @@ public:
 	}
 };
 
-/* [ ÀÌ Å¬·¡½º´Â °¡¸¸È÷ ¼­ÀÖ´Â »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ê°€ë§Œíˆ ì„œìˆëŠ” ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_Idle final : public CPlayerState
 {
 public:
@@ -82,10 +82,10 @@ public:
 		SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
-        // ¾ÆÀÌµé »óÅÂ´Â ¾Æ¹«°Íµµ ¾È¹ŞÀ½
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
+        // ì•„ì´ë“¤ ìƒíƒœëŠ” ì•„ë¬´ê²ƒë„ ì•ˆë°›ìŒ
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -127,40 +127,40 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (input.bTap) // ½Çµå
+        if (input.bTap) // ì‹¤ë“œ
             return EPlayerState::EQUIP;
 
-        if (input.bShift && m_pOwner->m_bWeaponEquipped) // °¡µå
+        if (input.bShift && m_pOwner->m_bWeaponEquipped) // ê°€ë“œ
             return EPlayerState::GARD;
         
-        if (input.bItem) // ¾ÆÀÌÅÛ »ç¿ë
+        if (input.bItem) // ì•„ì´í…œ ì‚¬ìš©
 			return EPlayerState::USEITEM;
 
-        if (input.bCtrl) // ¿ŞÆÈ°ø°İ
+        if (input.bCtrl) // ì™¼íŒ”ê³µê²©
 			return EPlayerState::ARMATTACKA;
 
-        if (m_bChargeArm && m_pOwner->m_bWeaponEquipped) // Â÷Â¡
+        if (m_bChargeArm && m_pOwner->m_bWeaponEquipped) // ì°¨ì§•
             return EPlayerState::ARMATTACKCHARGE;
 
-		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // °­°ø
+		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // ê°•ê³µ
 			return EPlayerState::STRONGATTACKA;
         
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // Â÷Â¡
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // ì°¨ì§•
 			return EPlayerState::CHARGEA;
         
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // ¾à°ø
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // ì•½ê³µ
 			return EPlayerState::WEAKATTACKA;
 
-        if (input.bTap) // ¹«±â±³Ã¼
+        if (input.bTap) // ë¬´ê¸°êµì²´
             return EPlayerState::SWITCHWEAPON;
 
         if (input.bSkill)
             return EPlayerState::MAINSKILL;
 
-		if (input.bSpaceDown) // »ª½ºÅÇ
+		if (input.bSpaceDown) // ë¹½ìŠ¤íƒ­
             return EPlayerState::BACKSTEP;
 
         if (input.bMove)
@@ -196,7 +196,7 @@ private:
     _float  m_fChargeArm = 0.f;
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ÃµÃµÈ÷ °È´Â »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ì²œì²œíˆ ê±·ëŠ” ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_Walk final : public CPlayerState
 {
 public:
@@ -213,7 +213,7 @@ public:
         SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -248,37 +248,37 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
         
         if (m_fSpaceHoldTime > 0.5f)
             return EPlayerState::SPRINT;
 
-        if (input.bShift && m_pOwner->m_bWeaponEquipped) // °¡µå
+        if (input.bShift && m_pOwner->m_bWeaponEquipped) // ê°€ë“œ
             return EPlayerState::GARD;
 
-        if (input.bItem) // ¾ÆÀÌÅÛ »ç¿ë
+        if (input.bItem) // ì•„ì´í…œ ì‚¬ìš©
             return EPlayerState::USEITEM;
 
         if (input.bSkill)
             return EPlayerState::MAINSKILL;
 
-        if (input.bCtrl) // ÄÁÆ®·Ñ ¿ŞÆÈ°ø°İ
+        if (input.bCtrl) // ì»¨íŠ¸ë¡¤ ì™¼íŒ”ê³µê²©
             return EPlayerState::ARMATTACKA;
 
-        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // °­°ø
+        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // ê°•ê³µ
             return EPlayerState::STRONGATTACKA;
 
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // Â÷Â¡
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // ì°¨ì§•
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // ¾à°ø
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // ì•½ê³µ
             return EPlayerState::WEAKATTACKA;
 
-        if (input.bSpaceUP) // ±¸¸£±â
+        if (input.bSpaceUP) // êµ¬ë¥´ê¸°
             return EPlayerState::ROLLING;
 
-		// ¾Æ¹«°Íµµ ¾È´­¸®¸é Idle·Î ÀüÈ¯
+		// ì•„ë¬´ê²ƒë„ ì•ˆëˆŒë¦¬ë©´ Idleë¡œ ì „í™˜
         if (!input.bMove)
         {
             return EPlayerState::IDLE;
@@ -313,7 +313,7 @@ private:
     _float  m_fChargeElapsed = 0.f;
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ¶Ù´Â »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ë›°ëŠ” ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_Run final : public CPlayerState
 {
 public:
@@ -330,12 +330,12 @@ public:
         SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
         m_pOwner->m_pAnimator->SetBool("Move", true);
         m_pOwner->m_pAnimator->SetBool("Run", true);
         m_pOwner->m_bWalk = false; 
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -370,34 +370,34 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (m_fSpaceHoldTime > 0.5f)
             return EPlayerState::SPRINT;
 
-        if (input.bShift && m_pOwner->m_bWeaponEquipped) // °¡µå
+        if (input.bShift && m_pOwner->m_bWeaponEquipped) // ê°€ë“œ
             return EPlayerState::GARD;
 
-        if (input.bItem) // ¾ÆÀÌÅÛ »ç¿ë
+        if (input.bItem) // ì•„ì´í…œ ì‚¬ìš©
             return EPlayerState::USEITEM;
 
-        if (input.bCtrl) // ÄÁÆ®·Ñ ¿ŞÆÈ°ø°İ
+        if (input.bCtrl) // ì»¨íŠ¸ë¡¤ ì™¼íŒ”ê³µê²©
             return EPlayerState::ARMATTACKA;
 
         if (input.bSkill)
             return EPlayerState::MAINSKILL;
 
-        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // °­°ø
+        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // ê°•ê³µ
             return EPlayerState::STRONGATTACKA;
 
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // Â÷Â¡
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // ì°¨ì§•
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // ¾à°ø
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // ì•½ê³µ
             return EPlayerState::WEAKATTACKA;
 
-        if (input.bSpaceUP) // ±¸¸£±â
+        if (input.bSpaceUP) // êµ¬ë¥´ê¸°
             return EPlayerState::ROLLING;
 
         if (!input.bMove)
@@ -433,7 +433,7 @@ private:
     _float  m_fChargeElapsed = 0.f;
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ¾ÆÀÌÅÛ »ç¿ë »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ì•„ì´í…œ ì‚¬ìš© ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_Item final : public CPlayerState
 {
 public:
@@ -448,9 +448,9 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-         // ¾ÆÀÌÅÛ »ç¿ë Àü °È±â »óÅÂ¿´´ÂÁö ÀúÀå
+         // ì•„ì´í…œ ì‚¬ìš© ì „ ê±·ê¸° ìƒíƒœì˜€ëŠ”ì§€ ì €ì¥
         m_pOwner->m_pAnimator->SetBool("HasLamp", true);
         m_pOwner->m_pAnimator->SetTrigger("UseItem");
 		m_bPreWalk = m_pOwner->m_bWalk;
@@ -459,7 +459,7 @@ public:
         m_pOwner->m_bItemSwitch = true;
         m_pOwner->m_fItemTime = 0.f;
         
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -469,7 +469,7 @@ public:
 
         if (1.f < m_fStateTime && !m_bDoOnce)
         {
-            // ·¥ÇÁ ¿Â¿ÀÇÁ Åä±Û
+            // ë¨í”„ ì˜¨ì˜¤í”„ í† ê¸€
 			m_pOwner->m_bLampOnOff = !m_pOwner->m_bLampOnOff;
 			m_bDoOnce = true;
         }
@@ -484,7 +484,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if(1.f < m_fStateTime)
@@ -522,7 +522,7 @@ private:
 	_bool m_bPreWalk = { false };
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ¹é½ºÅÇ »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ë°±ìŠ¤íƒ­ ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_BackStep final : public CPlayerState
 {
 public:
@@ -537,14 +537,14 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // ¹é½ºÅÇÀº ¹«ºê OFF ÀÔ´Ï´Ù.
+        // ë°±ìŠ¤íƒ­ì€ ë¬´ë¸Œ OFF ì…ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetTrigger("Dash");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -569,7 +569,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (m_pOwner->m_bBackStepAttack)
@@ -604,7 +604,7 @@ private:
     
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ±¸¸£±â »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” êµ¬ë¥´ê¸° ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_Rolling final : public CPlayerState
 {
 public:
@@ -619,12 +619,12 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // ±¸¸£±â´Â ¹«ºê ON ÀÔ´Ï´Ù.
+        // êµ¬ë¥´ê¸°ëŠ” ë¬´ë¸Œ ON ì…ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetTrigger("Dash");
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -640,7 +640,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
         
         string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
@@ -683,7 +683,7 @@ private:
 	};
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ¹«±âÀåÂø »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ë¬´ê¸°ì¥ì°© ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_Equip final : public CPlayerState
 {
 public:
@@ -698,9 +698,9 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // ¹«±âÀåÂø ¸ğ¼ÇÀÔ´Ï´Ù.
+        // ë¬´ê¸°ì¥ì°© ëª¨ì…˜ì…ë‹ˆë‹¤.
         if (!m_pOwner->m_bWeaponEquipped)
         {
             m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
@@ -712,7 +712,7 @@ public:
             m_pOwner->m_pAnimator->CancelOverrideAnimController();
         }
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -758,7 +758,7 @@ public:
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
 
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (1.f < m_fStateTime)
@@ -785,7 +785,7 @@ private:
     };
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ½ºÇÁ¸°Æ® »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ìŠ¤í”„ë¦°íŠ¸ ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_Sprint final : public CPlayerState
 {
 public:
@@ -800,12 +800,12 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // ½ºÇÁ¸°Æ®´Â ¹«ºê ON ÀÔ´Ï´Ù.
+        // ìŠ¤í”„ë¦°íŠ¸ëŠ” ë¬´ë¸Œ ON ì…ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetBool("Sprint", true);
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -821,24 +821,24 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        //¹æÇâÅ°°¡ ¾Æ¹«°Íµµ ¾È´­·È´Ù.
+        //ë°©í–¥í‚¤ê°€ ì•„ë¬´ê²ƒë„ ì•ˆëˆŒë ¸ë‹¤.
         if (!input.bMove)
         {
             m_pOwner->m_pAnimator->SetBool("Sprint", false);
             return EPlayerState::IDLE;
         }
 
-        //½ºÆäÀÌ½º¹Ù°¡ ¶¼¾îÁ³´Ù.
+        //ìŠ¤í˜ì´ìŠ¤ë°”ê°€ ë–¼ì–´ì¡Œë‹¤.
         if(input.bSpaceUP)
         {
             m_pOwner->m_pAnimator->SetBool("Sprint", false);
             return EPlayerState::RUN;
         }
 
-        //¿ŞÅ¬¸¯ or ¿ìÅ¬¸¯ (¾à°ø , °­°ø)
+        //ì™¼í´ë¦­ or ìš°í´ë¦­ (ì•½ê³µ , ê°•ê³µ)
         if (input.bLeftMouseDown)
             return EPlayerState::SPRINTATTACKA;
         if (input.bRightMouseDown)
@@ -864,7 +864,7 @@ private:
 };
 
 
-/* [ ÀÌ Å¬·¡½º´Â ¾à°ø »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ì•½ê³µ ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_WeakAttackA final : public CPlayerState
 {
 public:
@@ -879,13 +879,13 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // ¾à°øÀº ¹«±â ÀåÂø»óÅÂ¿©¾ßÇÕ´Ï´Ù.        
+        // ì•½ê³µì€ ë¬´ê¸° ì¥ì°©ìƒíƒœì—¬ì•¼í•©ë‹ˆë‹¤.        
         m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -924,7 +924,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (0.8f < m_fStateTime)
@@ -988,13 +988,13 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // ¾à°øÀº ¹«±â ÀåÂø»óÅÂ¿©¾ßÇÕ´Ï´Ù.
+        // ì•½ê³µì€ ë¬´ê¸° ì¥ì°©ìƒíƒœì—¬ì•¼í•©ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1002,7 +1002,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* °ø°İ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ 0.8 ÀÌ»ó ÁøÇàµÇ¾úÀ» ¶§ */
+        /* ê³µê²© ì• ë‹ˆë©”ì´ì…˜ì´ 0.8 ì´ìƒ ì§„í–‰ë˜ì—ˆì„ ë•Œ */
         if (0.8f < m_fStateTime)
         {
             string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
@@ -1031,7 +1031,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (0.8f < m_fStateTime)
@@ -1081,7 +1081,7 @@ private:
     _bool   m_bSkill = {};
 };
 
-/* [ ÀÌ Å¬·¡½º´Â °­°ø »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ê°•ê³µ ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_StrongAttackA final : public CPlayerState
 {
 public:
@@ -1096,21 +1096,24 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // °­°øÀº ¹«±â ÀåÂø»óÅÂ¿©¾ßÇÕ´Ï´Ù.
+        // ê°•ê³µì€ ë¬´ê¸° ì¥ì°©ìƒíƒœì—¬ì•¼í•©ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
+
+        m_pOwner->m_pWeapon->SetisAttack(true);
+        m_pOwner->m_pWeapon->SetDamageRatio(1.f);
     }
 
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
 
-        /* °ø°İ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ 0.7 ÀÌ»ó ÁøÇàµÇ¾úÀ» ¶§ */
+        /* ê³µê²© ì• ë‹ˆë©”ì´ì…˜ì´ 0.7 ì´ìƒ ì§„í–‰ë˜ì—ˆì„ ë•Œ */
         if (0.7f < m_fStateTime)
         {
             string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
@@ -1135,11 +1138,13 @@ public:
         m_bAttackA = false;
         m_bArmAttack = false;
         m_bSkill = false;
+
+        m_pOwner->m_pWeapon->SetisAttack(false);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (0.75f < m_fStateTime)
@@ -1204,21 +1209,24 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // °­°øÀº ¹«±â ÀåÂø»óÅÂ¿©¾ßÇÕ´Ï´Ù.
+        // ê°•ê³µì€ ë¬´ê¸° ì¥ì°©ìƒíƒœì—¬ì•¼í•©ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
+
+        m_pOwner->m_pWeapon->SetisAttack(true);
+        m_pOwner->m_pWeapon->SetDamageRatio(1.5f);
     }
 
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
 
-        /* °ø°İ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ 0.7 ÀÌ»ó ÁøÇàµÇ¾úÀ» ¶§ */
+        /* ê³µê²© ì• ë‹ˆë©”ì´ì…˜ì´ 0.7 ì´ìƒ ì§„í–‰ë˜ì—ˆì„ ë•Œ */
         if (0.7f < m_fStateTime)
         {
             string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
@@ -1243,11 +1251,14 @@ public:
 		m_bAttackA = false;
         m_bArmAttack = false;
         m_bSkill = false;
+
+        m_pOwner->m_pWeapon->SetisAttack(false);
+        m_pOwner->m_pWeapon->SetDamageRatio(1.f);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (1.f < m_fStateTime)
@@ -1300,7 +1311,7 @@ private:
 
 };
 
-/* [ ÀÌ Å¬·¡½º´Â Â÷Â¡ »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ì°¨ì§• ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_ChargeA final : public CPlayerState
 {
 public:
@@ -1315,9 +1326,9 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // Â÷Áö´Â ¹«±â ÀåÂø»óÅÂ¿©¾ßÇÕ´Ï´Ù.
+        // ì°¨ì§€ëŠ” ë¬´ê¸° ì¥ì°©ìƒíƒœì—¬ì•¼í•©ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetInt("Combo", 0);
         m_pOwner->m_pAnimator->SetBool("Charge", true);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
@@ -1325,7 +1336,7 @@ public:
         m_pOwner->m_bMovable = false;
         
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1343,7 +1354,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (2.5f < m_fStateTime)
@@ -1407,16 +1418,16 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // Â÷Áö´Â ¹«±â ÀåÂø»óÅÂ¿©¾ßÇÕ´Ï´Ù.
+        // ì°¨ì§€ëŠ” ë¬´ê¸° ì¥ì°©ìƒíƒœì—¬ì•¼í•©ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetInt("Combo", 1);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
         m_pOwner->m_bMovable = false;
 
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1435,7 +1446,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (2.f < m_fStateTime)
@@ -1474,7 +1485,7 @@ private:
 };
 
 
-/* [ ÀÌ Å¬·¡½º´Â °¡µå »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ê°€ë“œ ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_Gard final : public CPlayerState
 {
 public:
@@ -1489,12 +1500,12 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
 
-        // °¡µå´Â ¾ÆÀÌµé , °È±â »óÅÂÀÔ´Ï´Ù.
+        // ê°€ë“œëŠ” ì•„ì´ë“¤ , ê±·ê¸° ìƒíƒœì…ë‹ˆë‹¤.
         m_pOwner->m_pAnimator->SetBool("Guard", true);
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1512,7 +1523,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (!KEY_PRESSING(DIK_LSHIFT))
@@ -1546,7 +1557,7 @@ private:
 };
 
 
-/* [ ÀÌ Å¬·¡½º´Â ´ë½¬°ø°İ »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ëŒ€ì‰¬ê³µê²© ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_SprintAttackA final : public CPlayerState
 {
 public:
@@ -1561,11 +1572,11 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1581,7 +1592,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (1.f < m_fStateTime)
@@ -1630,11 +1641,11 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1650,7 +1661,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (1.f < m_fStateTime)
@@ -1686,7 +1697,7 @@ public:
     }
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ¿ŞÆÈ°ø°İ »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ì™¼íŒ”ê³µê²© ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_ArmAttackA final : public CPlayerState
 {
 public:
@@ -1701,12 +1712,12 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
         m_pOwner->m_pAnimator->SetInt("ArmCombo", 0);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1741,7 +1752,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (1.f < m_fStateTime)
@@ -1806,12 +1817,12 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
         m_pOwner->m_pAnimator->SetInt("ArmCombo", 1);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1844,7 +1855,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (1.f < m_fStateTime)
@@ -1907,12 +1918,12 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
         m_pOwner->m_pAnimator->SetBool("Charge", true);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1930,7 +1941,7 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (2.f < m_fStateTime)
@@ -1969,7 +1980,7 @@ private:
 
 };
 
-/* [ ÀÌ Å¬·¡½º´Â ½ºÅ³ »óÅÂÀÔ´Ï´Ù. ] */
+/* [ ì´ í´ë˜ìŠ¤ëŠ” ìŠ¤í‚¬ ìƒíƒœì…ë‹ˆë‹¤. ] */
 class CPlayer_MainSkill final : public CPlayerState
 {
 public:
@@ -1984,11 +1995,11 @@ public:
     {
         m_fStateTime = 0.f;
 
-        /* [ ¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤ ] */
+        /* [ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ] */
         m_pOwner->m_pAnimator->SetTrigger("MainSkill");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
-        /* [ µğ¹ö±ë ] */
+        /* [ ë””ë²„ê¹… ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
@@ -1996,7 +2007,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        //1. F¸¦ ´Ù½Ã ´­·¶À» °æ¿ì ÃÖ´ë 3ÄŞº¸±îÁö ÁøÇàÀÌµÈ´Ù.
+        //1. Fë¥¼ ë‹¤ì‹œ ëˆŒë €ì„ ê²½ìš° ìµœëŒ€ 3ì½¤ë³´ê¹Œì§€ ì§„í–‰ì´ëœë‹¤.
         if (0.5f < m_fStateTime && m_iSkillCount == 0)
         {
             if (KEY_DOWN(DIK_F))
@@ -2048,9 +2059,9 @@ public:
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
-        /* [ Å° ÀÎÇ²À» ¹Ş¾Æ¼­ ÀÌ »óÅÂ¸¦ À¯ÁöÇÒÁö °áÁ¤ÇÕ´Ï´Ù. ] */
+        /* [ í‚¤ ì¸í’‹ì„ ë°›ì•„ì„œ ì´ ìƒíƒœë¥¼ ìœ ì§€í• ì§€ ê²°ì •í•©ë‹ˆë‹¤. ] */
 
-        //1. ½ºÅ³ÀÇ ÁøÇàµµ¿¡ µû¶ó Å»Ãâ Á¶°ÇÀÌ ´Ş¶óÁø´Ù.
+        //1. ìŠ¤í‚¬ì˜ ì§„í–‰ë„ì— ë”°ë¼ íƒˆì¶œ ì¡°ê±´ì´ ë‹¬ë¼ì§„ë‹¤.
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
         if (1.f < m_fStateTime && m_iSkillCount == 0)

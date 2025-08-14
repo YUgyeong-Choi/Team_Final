@@ -1,4 +1,4 @@
-#include "PhysXActor.h"
+ï»¿#include "PhysXActor.h"
 #include "DebugDraw.h"
 #include "GameInstance.h"
 CPhysXActor::CPhysXActor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -175,8 +175,8 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
     XMMATRIX rot = XMMatrixRotationQuaternion(XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&pose.q)));
     XMVECTOR origin = XMLoadFloat3(reinterpret_cast<const XMFLOAT3*>(&pose.p));
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-   // À§ ¹İ±¸
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   // ìœ„ ë°˜êµ¬
     for (int i = 0; i < segmentCount / 2; ++i)
     {
         float theta0 = XM_PI * i / (segmentCount / 2);
@@ -187,7 +187,7 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
         float y1 = radius * sinf(theta1);
         float r1 = radius * cosf(theta1);
 
-        // Z ¹æÇâ ¼¼·Î ´Ü¸é
+        // Z ë°©í–¥ ì„¸ë¡œ ë‹¨ë©´
         XMVECTOR p0 = XMVectorSet(0, halfHeight + y0, r0, 1);
         XMVECTOR p1 = XMVectorSet(0, halfHeight + y1, r1, 1);
 
@@ -196,7 +196,7 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
         pBatch->DrawLine(VertexPositionColor(p0, color), VertexPositionColor(p1, color));
     }
 
-    //  X ¹æÇâ ¼¼·Î ´Ü¸é (À§ ¹İ±¸, XY Æò¸é)
+    //  X ë°©í–¥ ì„¸ë¡œ ë‹¨ë©´ (ìœ„ ë°˜êµ¬, XY í‰ë©´)
     for (int i = 0; i < segmentCount / 2; ++i)
     {
         float theta0 = XM_PI * i / (segmentCount / 2);
@@ -215,7 +215,7 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
         pBatch->DrawLine(VertexPositionColor(p0, color), VertexPositionColor(p1, color));
     }
 
-    // ¾Æ·¡ ¹İ±¸
+    // ì•„ë˜ ë°˜êµ¬
     for (int i = 0; i < segmentCount / 2; ++i)
     {
         float theta0 = XM_PI * i / (segmentCount / 2);
@@ -226,7 +226,7 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
         float y1 = radius * sinf(theta1);
         float r1 = radius * cosf(theta1);
 
-        // Z ¹æÇâ ¼¼·Î ´Ü¸é
+        // Z ë°©í–¥ ì„¸ë¡œ ë‹¨ë©´
         XMVECTOR p0 = XMVectorSet(0, -halfHeight - y0, r0, 1);
         XMVECTOR p1 = XMVectorSet(0, -halfHeight - y1, r1, 1);
 
@@ -235,7 +235,7 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
         pBatch->DrawLine(VertexPositionColor(p0, color), VertexPositionColor(p1, color));
     }
 
-    //  X ¹æÇâ ¼¼·Î ´Ü¸é (¾Æ·¡ ¹İ±¸, XY Æò¸é)
+    //  X ë°©í–¥ ì„¸ë¡œ ë‹¨ë©´ (ì•„ë˜ ë°˜êµ¬, XY í‰ë©´)
     for (int i = 0; i < segmentCount / 2; ++i)
     {
         float theta0 = XM_PI * i / (segmentCount / 2);
@@ -254,7 +254,7 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
         pBatch->DrawLine(VertexPositionColor(p0, color), VertexPositionColor(p1, color));
     }
 
-    // 3. ¼öÆò ¸µ (À§/¾Æ·¡ XZ Æò¸é)
+    // 3. ìˆ˜í‰ ë§ (ìœ„/ì•„ë˜ XZ í‰ë©´)
     for (int i = 0; i < segmentCount; ++i)
     {
         float theta0 = step * i;
@@ -279,7 +279,7 @@ void CPhysXActor::DrawDebugCapsule(PrimitiveBatch<VertexPositionColor>* pBatch, 
         pBatch->DrawLine(VertexPositionColor(pb0, color), VertexPositionColor(pb1, color));
     }
 
-    //  ¼¼·Î ¶óÀÎ 4°³ Ãß°¡
+    //  ì„¸ë¡œ ë¼ì¸ 4ê°œ ì¶”ê°€
     for (int i = 0; i < 4; ++i)
     {
         float angle = XM_PIDIV2 * i; // 0, 90, 180, 270
@@ -312,10 +312,10 @@ void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom, PxBo
 
     const bool use16bit = mesh->getTriangleMeshFlags().isSet(PxTriangleMeshFlag::e16_BIT_INDICES);
 
-    // pose¸¦ ¿ùµå Çà·Ä·Î º¯È¯
-    const PxVec3& scale = meshGeom.scale.scale; // ¿©±â°¡ ÇÙ½É!
+    // poseë¥¼ ì›”ë“œ í–‰ë ¬ë¡œ ë³€í™˜
+    const PxVec3& scale = meshGeom.scale.scale; // ì—¬ê¸°ê°€ í•µì‹¬!
     XMMATRIX matPose = XMMatrixAffineTransformation(
-        XMVectorSet(scale.x, scale.y, scale.z, 0.f),  // ½ÇÁ¦ ½ºÄÉÀÏ ¹İ¿µ
+        XMVectorSet(scale.x, scale.y, scale.z, 0.f),  // ì‹¤ì œ ìŠ¤ì¼€ì¼ ë°˜ì˜
         XMVectorZero(),
         XMVectorSet(pose.q.x, pose.q.y, pose.q.z, pose.q.w),
         XMVectorSet(pose.p.x, pose.p.y, pose.p.z, 1.f));
@@ -339,21 +339,21 @@ void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom, PxBo
         }
 
         if (i0 >= numVerts || i1 >= numVerts || i2 >= numVerts)
-            continue; // ¹æ¾î ÄÚµå
+            continue; // ë°©ì–´ ì½”ë“œ
 
-        // Á¤Á¡  XMVECTOR  pose Àû¿ë
+        // ì •ì   XMVECTOR  pose ì ìš©
         XMVECTOR v0 = XMVector3TransformCoord(XMLoadFloat3((XMFLOAT3*)&verts[i0]), matPose);
         XMVECTOR v1 = XMVector3TransformCoord(XMLoadFloat3((XMFLOAT3*)&verts[i1]), matPose);
         XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3((XMFLOAT3*)&verts[i2]), matPose);
 
-        // »ï°¢Çü Å×µÎ¸® ¼±À¸·Î ·»´õ
+        // ì‚¼ê°í˜• í…Œë‘ë¦¬ ì„ ìœ¼ë¡œ ë Œë”
         m_pBatch->DrawLine(VertexPositionColor(v0, m_vRenderColor), VertexPositionColor(v1, m_vRenderColor));
         m_pBatch->DrawLine(VertexPositionColor(v1, m_vRenderColor), VertexPositionColor(v2, m_vRenderColor));
         m_pBatch->DrawLine(VertexPositionColor(v2, m_vRenderColor), VertexPositionColor(v0, m_vRenderColor));
     }
 
 
-    // === AABB ½Ã°¢È­ Ãß°¡ ===
+    // === AABB ì‹œê°í™” ì¶”ê°€ ===
    BoundingBox aabb;
    aabb.Center = XMFLOAT3(
        (bounds.minimum.x + bounds.maximum.x) * 0.5f,
@@ -383,7 +383,7 @@ void CPhysXActor::DrawConvexMesh(PxTransform pose, PxGeometryHolder geom, PxBoun
 
     PxHullPolygon poly;
 
-    // ¿ùµå º¯È¯ Çà·Ä »ı¼º
+    // ì›”ë“œ ë³€í™˜ í–‰ë ¬ ìƒì„±
     const PxVec3& scale = convexGeom.scale.scale;
     XMMATRIX matPose = XMMatrixAffineTransformation(
         XMVectorSet(scale.x, scale.y, scale.z, 0.f),
@@ -418,7 +418,7 @@ void CPhysXActor::DrawConvexMesh(PxTransform pose, PxGeometryHolder geom, PxBoun
         }
     }
 
-    // === AABB ½Ã°¢È­ Ãß°¡ ===
+    // === AABB ì‹œê°í™” ì¶”ê°€ ===
     BoundingBox aabb;
     aabb.Center = XMFLOAT3(
         (bounds.minimum.x + bounds.maximum.x) * 0.5f,
@@ -456,7 +456,7 @@ void CPhysXActor::DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, co
 
     if (drawHitBox)
     {
-        // °£´ÜÇÑ ¹Ú½ºÇüÅÂ ¼±µé·Î hit Ç¥½Ã
+        // ê°„ë‹¨í•œ ë°•ìŠ¤í˜•íƒœ ì„ ë“¤ë¡œ hit í‘œì‹œ
         float size = 0.1f;
         float x = hitPos.x;
         float y = hitPos.y;

@@ -10,19 +10,21 @@ texture2D g_GradationTexture;
 texture2D g_HoverTexture;
 texture2D g_HighlightTexture;
 
-float2   g_fTexcoord;
-float2   g_fTileSize;
-float    g_Alpha;
-float4   g_Color;
+float2 g_fTexcoord;
+float2 g_fTileSize;
+float g_Alpha;
+float4 g_Color;
 
-float4   g_ButtonFlag;
+float4 g_ButtonFlag;
 
-float    g_BarRatio;
-float4   g_ManaDesc;
+float g_BarRatio;
+float4 g_ManaDesc;
 
 texture2D g_ItemTexture;
 texture2D g_InputTexture;
 float4 g_ItemDesc;
+
+float g_Groggy;
 
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
@@ -38,7 +40,7 @@ struct VS_OUT
     /* SV_ : ShaderValue약자 */
     /* 내가 해야할 연산은 다 했으니 이제 니(장치)가 알아서 추가적인 연산을 해라. */     
     float4 vPosition : SV_POSITION;
-    float2 vTexcoord : TEXCOORD0;    
+    float2 vTexcoord : TEXCOORD0;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -52,14 +54,14 @@ VS_OUT VS_MAIN(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
     
     Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
-    Out.vTexcoord = In.vTexcoord;    
+    Out.vTexcoord = In.vTexcoord;
     
     return Out;
 }
 
 struct VS_OUT_BLEND
-{  
-    float4 vPosition : SV_POSITION;    
+{
+    float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
     
@@ -104,20 +106,20 @@ struct PS_OUT
 
 PS_OUT PS_MAIN(PS_IN In)
 {
-    PS_OUT Out;    
+    PS_OUT Out;
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
     Out.vColor *= g_Color;
     
-    return Out;    
+    return Out;
 }
 
 struct PS_IN_BLEND
 {
     float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
-    float4 vProjPos : TEXCOORD1;    
+    float4 vProjPos : TEXCOORD1;
 };
 
 
@@ -142,7 +144,7 @@ PS_OUT PS_MAIN_DISCARD_DARK(PS_IN In)
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    if(length(Out.vColor.rgb) < 0.2f)
+    if (length(Out.vColor.rgb) < 0.2f)
         discard;
     
     Out.vColor *= g_Color;
@@ -159,7 +161,7 @@ PS_OUT PS_MAIN_SPRITE(PS_IN In)
     
     Out.vColor = g_Texture.Sample(DefaultSampler, finalUV);
     
-    if(Out.vColor.a <0.1f)
+    if (Out.vColor.a < 0.1f)
         discard;
    
     Out.vColor.a = g_Alpha;
@@ -194,13 +196,13 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
     float4 vHover = { 0.f, 0.f, 0.f, 0.f };
     float4 vHighlight = { 0.f, 0.f, 0.f, 0.f };
     
-    if(g_ButtonFlag.x == 1.f)
+    if (g_ButtonFlag.x == 1.f)
     {
         vTexture = g_Texture.Sample(DefaultSampler, In.vTexcoord);
 
     }
     
-    if(g_ButtonFlag.y == 1.f)
+    if (g_ButtonFlag.y == 1.f)
     {
         float2 vTexcoord = In.vTexcoord;
         vTexcoord.x *= 2.5f;
@@ -210,7 +212,7 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
 
     }
     
-    if(g_ButtonFlag.z == 1.f)
+    if (g_ButtonFlag.z == 1.f)
     {
         if (In.vTexcoord.y > 0.95f)
         {
@@ -220,16 +222,16 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
 
     }
     
-    Out.vColor  = vTexture + vHighlight ;
+    Out.vColor = vTexture + vHighlight;
     
     if (Out.vColor.a < 0.001f)
     {
         if (length(vHover.rgb) > 0.5f)
         {
             
-            if(In.vTexcoord.x < 0.4f)
+            if (In.vTexcoord.x < 0.4f)
             {
-                Out.vColor += vHover ;
+                Out.vColor += vHover;
 
             }
               
@@ -243,11 +245,6 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
     
         Out.vColor *= g_Color;
     }
-    
-   
-   
-    
-  
     
     return Out;
 }
@@ -332,7 +329,7 @@ PS_OUT PS_MAIN_MANABAR(PS_IN In)
     }
 
 // 테두리 기준 범위 계산
-    float borderThickness = 0.1f; 
+    float borderThickness = 0.1f;
 
     float fillStartX = borderThickness * 0.7f;
     float fillEndX = 1.0f - borderThickness * 0.7f;
@@ -456,7 +453,7 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
     float fMarginX = 0.06f;
     float fMarginY = 0.3f;
 
-// Y 범위 밖이면 버림
+    // Y 범위 밖이면 버림
     if (In.vTexcoord.y < fMarginY || In.vTexcoord.y > 1.0f - fMarginY)
         discard;
     
@@ -486,7 +483,7 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
     }
     else
     {
-       bool isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
+        bool isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
         
         if (isInsideX)
             Out.vColor = g_Color;
@@ -494,20 +491,65 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
             Out.vColor = float4(0.f, 0.f, 0.f, 0.7f);
     }
 
-   
-        
-     
+    return Out;
+}
 
-        
+PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
+{
+    PS_OUT Out;
+    Out.vColor = float4(0, 0, 0, 0);
 
-   
+    float4 vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    float2 highlightUV = (In.vTexcoord - 0.5f) * 0.75f + 0.5f;
+// In.vTexcoord 중심(0.5,0.5) 기준으로 1.5배 확대
+    float4 vHighlight = (g_Groggy == 1.f) ? g_HighlightTexture.Sample(DefaultSampler, highlightUV) : float4(0, 0, 0, 0);
+// Border 우선
+    if (vBorder.a > 0.1f)
+    {
+    // 
+        Out.vColor = vHighlight * 4.f; 
+        Out.vColor += vBorder;
+    }
+
+// 내부 영역
+    float fMarginX = 0.06f;
+    float fMarginY = 0.3f;
+    bool isInsideX;
+
+    if (g_BarRatio > 1 - 1.2 * fMarginX)
+        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= 1 - 1.2 * fMarginX;
+    else
+        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
+
+    bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
+
+    if (isInsideX && isInsideY)
+    {
+        vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
+        Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
+        
+        if (vHighlight.a > 0.5f)
+            Out.vColor += vHighlight ;
+
+    }
+    else
+    {
+    // discard 대신 하이라이트 색 채우기
+        Out.vColor = vHighlight * 4.f;
+
+    // 필요하면 강도 조절
+    // Out.vColor.rgb *= 1.5f; 
+    }
+    
+    
+    if(Out.vColor.a < 0.001f)
+        discard;
 
     return Out;
 }
 
-
 technique11 DefaultTechnique
-{ 
+{
     /* 패스를 생성하는 기준을 뭘로? */ 
     /* 같은 모델을 그릴때 각기 다른 렌더스테이츠를 먹여야하거나. 
     완전히 다른 쉐이딩 기법을 적용해야하거나 */ 
@@ -516,22 +558,22 @@ technique11 DefaultTechnique
     /* 어떤 쉐이더를 사용할건지? */ 
     /* 진입점 함수 결정 */
     /* 렌더스테이츠에 대한 설정*/ 
-    pass Default/* 명암 + 스펙큘러 + 그림자 + ssao + 림라이트 */ 
+    pass Default /* 명암 + 스펙큘러 + 그림자 + ssao + 림라이트 */
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
-        VertexShader = compile vs_5_0 VS_MAIN();    
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();      
+        PixelShader = compile ps_5_0 PS_MAIN();
     }
     pass SoftEffect
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);        
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN_BLEND();
         GeometryShader = NULL;
@@ -615,4 +657,14 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DURABILITYBAR();
     }
    
+    pass Monster_HP_Bar
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_HPBAR_MONSTER();
+    }
 }
