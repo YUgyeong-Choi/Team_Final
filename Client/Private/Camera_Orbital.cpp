@@ -208,135 +208,120 @@ void CCamera_Orbital::Update_TargetCameraMatrix(_float fTimeDelta)
 
 void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 {
-	/*
-	const _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION)+ XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	const _vector vTargetPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
-	const _vector vCenter = (vPlayerPos + vTargetPos) * 0.5f;
-	
-	// 플레이어에서 타겟 방향, 너무 가까우면 플레이어 LOOK 사용
-	_vector vCamForward = XMVector3Normalize(vTargetPos - vPlayerPos);
-	const _float fSpanPT = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos)); 
-	if (fSpanPT < 0.0000001f)
-		vCamForward = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
+	// 1) 플레이어/타겟 위치
+	XMVECTOR vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+	XMVECTOR vTargetPos = m_pLockOnTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.3f, 0.f, 0.f);
 
-	// 플레이어와 타겟이 사이의 반지름
-	const _float fRadius = 0.5f * fSpanPT + m_fPadding;
-	_float       fWantDist = (fRadius / m_fFrame) / tanf(m_fFov *   0.5f);
-	fWantDist = clamp(fWantDist, m_fDistanceMin, m_fDistanceMax);
+	// 2) 중점(0.5) + 전방(F)
+	XMVECTOR vMid = (vPlayerPos + vTargetPos) * 0.5f;
 
-	// 플레이어와 카메라간의 최소 거리
-	const _vector vDesiredPre = vCenter - vCamForward * fWantDist;
-	const _float fPlayerDepthPre = XMVectorGetX(XMVector3Dot(vPlayerPos - vDesiredPre, vCamForward));
-	if (fPlayerDepthPre < kMinPlayerDepth) {
-		fWantDist += (kMinPlayerDepth - fPlayerDepthPre);
-		fWantDist = min(fWantDist, m_fDistanceMax);
+	XMVECTOR vF = XMVector3Normalize(vTargetPos - vPlayerPos);
+	if (XMVector3Less(XMVector3LengthSq(vF), XMVectorReplicate(1e-6f))) {
+		// 둘이 거의 같은 위치면 플레이어 LOOK 사용
+		vF = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
 	}
 
-	// 거리 보간 & 충돌 보정 전 카메라 위치
-	_float fCurDistance = m_fDistanceMin;
-	fCurDistance = SmoothExp(fCurDistance, fWantDist, 8.0f, fTimeDelta);
-	const _vector vDesired = vCenter - vCamForward * fCurDistance;
+	// 3) 거리 목표(dTarget)
+	float span = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos)); // 둘 사이 거리
+	const float kFrame = 0.85f;   // 화면 여유(작을수록 더 멀게)
+	const float pad = 1.0f;     // 근접 패딩
+	const float dMin = 3.0f;     // 최소
+	const float dMax = 6.0f;     // 최대(기본)
 
-#pragma region 스프링암
-	// 스프링암 충돌 보정
-	XMVECTOR vDir = XMVector3Normalize(vDesired - vCenter);     
-	float    fRayLen = XMVectorGetX(XMVector3Length(vDesired - vCenter));
+	float r = 0.5f * span + pad;                // 화면에 둘 다 담기 위한 반지름
+	float dFov = (r / kFrame) / tanf(m_fFov * 0.5f);
+	float dTarget = std::clamp(dFov, dMin, dMax);
 
-	XMFLOAT3 fC, fD; XMStoreFloat3(&fC, vCenter); XMStoreFloat3(&fD, vDir);
-	PxVec3 origin(fC.x, fC.y, fC.z), direction(fD.x, fD.y, fD.z);
+	// 3-1) 플레이어 최소 이격(깊이) 1차 보장: dTarget 산출 직후
+	{
+		const float minPlayerDepth = 1.2f; // F축 최소 깊이
+		XMVECTOR vDesiredPre = vMid - vF * dTarget;
+		float playerDepth = XMVectorGetX(XMVector3Dot(vPlayerPos - vDesiredPre, vF));
+		if (playerDepth < minPlayerDepth) {
+			dTarget += (minPlayerDepth - playerDepth);
+			dTarget = std::min(dTarget, dMax); // 그래도 dMax는 넘지 않게
+		}
+	}
+
+	// 4) 거리 스무딩(프레임 독립 지수보간)
+	static float dCurr = dMin; // 멤버변수로 빼도 됨
+	float aDist = 1.0f - expf(-8.0f * fTimeDelta); // 응답속도 8
+	dCurr = dCurr + (dTarget - dCurr) * aDist;
+
+	// 5) 목표 카메라 위치 = 중점에서 -F로 dCurr
+	XMVECTOR vDesired = vMid - vF * dCurr;
+
+	// 6) 스프링암(충돌 보정)
+	XMVECTOR vDir = XMVector3Normalize(vDesired - vMid);
+	float    rayLen = XMVectorGetX(XMVector3Length(vDesired - vMid));
+
+	XMFLOAT3 fC, fDir; XMStoreFloat3(&fC, vMid); XMStoreFloat3(&fDir, vDir);
+	PxVec3 origin(fC.x, fC.y, fC.z), direction(fDir.x, fDir.y, fDir.z);
 
 	PxRaycastBuffer   hit;
 	PxHitFlags        hitFlags = PxHitFlag::eDEFAULT;
-	PxQueryFilterData filter; filter.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+	PxQueryFilterData filter;    filter.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
+	// 자기 자신/타겟 무시
 	unordered_set<PxActor*> ignore = static_cast<CPlayer*>(m_pPlayer)->Get_Controller()->Get_IngoreActors();
 	CIgnoreSelfCallback cb(ignore);
 
 	XMVECTOR vCamPos = vDesired;
-	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLen, hit, hitFlags, filter, &cb) && hit.hasBlock)
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, rayLen, hit, hitFlags, filter, &cb) && hit.hasBlock)
 	{
-		const float kPullPad = 0.3f;  // 표면 여유
-		const float kMinDist = 0.8f;  // 너무 붙지 않기
-		const float hitDist = max(hit.block.distance - kPullPad, kMinDist);
-		vCamPos = vCenter + vDir * hitDist;
+		float pullPad = 0.3f;  // 표면 여유
+		float minDist = 0.8f;  // 너무 붙지 않기
+		float hitDist = max(hit.block.distance - pullPad, minDist);
+		vCamPos = vMid + vDir * hitDist;
 	}
-#pragma endregion
 
-	// ===== 5) 플레이어 여유 깊이(2차) 보장 =====
+	// 6-1) ★충돌 보정 이후 ‘플레이어 여유 깊이’ 2차 보장 (여기가 핵심 추가 블록)
 	{
-		const float minDepthNear = 3.f;
-		const float minDepthFar = 6.0f;
-		const float span0 = 2.0f * m_fDistanceMin;
-		const float span1 = 2.0f * m_fDistanceMax;
+		// span이 커질수록 여유를 조금 더 키워서 화면 압박 완화
+		float minDepthNear = 1.2f;    // 근거리 기본 여유
+		float minDepthFar = 3.0f;    // 원거리 때 여유 상한
+		float spanFor0 = 2.0f * dMin; // 이 이하 → near 쪽
+		float spanFor1 = 2.0f * dMax; // 이 이상 → far 쪽
 
 		float tSpan = 0.f;
-		if (span1 > span0)
-			tSpan = std::clamp((fSpanPT - span0) / (span1 - span0), 0.f, 1.f);
+		if (spanFor1 > spanFor0)
+			tSpan = std::clamp((span - spanFor0) / (spanFor1 - spanFor0), 0.f, 1.f);
 
-		const float minDepth = minDepthNear + (minDepthFar - minDepthNear) * tSpan;
+		float minDepth = minDepthNear + (minDepthFar - minDepthNear) * tSpan;
 
-		const float currDepth = XMVectorGetX(XMVector3Dot(vPlayerPos - vCamPos, vCamForward));
+		// 현재 카메라에서 플레이어까지 F축 깊이
+		float currDepth = XMVectorGetX(XMVector3Dot(vPlayerPos - vCamPos, vF));
 		if (currDepth < minDepth) {
-			const float needBack = minDepth - currDepth;
-			const float maxExtra = 2.0f;
-			const float extra = std::min(needBack, maxExtra);
-			vCamPos -= vCamForward * extra; // 뒤로(-F)
-			// 필요하면 여기서 재-레이캐스트
+			float needBack = minDepth - currDepth;
+			float maxExtra = 2.0f; // dMax 초과 허용 한도(과하게 뒤로 빠지는 것 방지)
+			float extra = std::min(needBack, maxExtra);
+			vCamPos -= vF * extra; // 뒤로( -F 방향 ) 살짝 더 빼줌
+			// 필요하다면 여기서 한 번 더 레이캐스트로 재확인해도 됨(맵 구조에 따라)
 		}
 	}
 
-	// ===== 6) 위치/시선 스무딩 =====
-	const XMVECTOR vPosCurr = m_pTransformCom->Get_State(STATE::POSITION);
-	const XMVECTOR vPosNext = XMVectorLerp(vPosCurr, vCamPos, (1.f - expf(-10.f * fTimeDelta)));
+	// 7) 위치/시선 보간
+	XMVECTOR vCur = m_pTransformCom->Get_State(STATE::POSITION);
+	float aPos = 1.0f - expf(-10.0f * fTimeDelta); // 위치 스무딩
+	XMVECTOR vPos = XMVectorLerp(vCur, vCamPos, aPos);
 
-	const XMVECTOR Fcur = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
-	const XMVECTOR Fdes = XMVector3Normalize(vCenter - vPosNext);
-	const XMVECTOR F = XMVector3Normalize(XMVectorLerp(Fcur, Fdes, (1.f - expf(-12.f * fTimeDelta))));
+	// 시선은 중점으로(조금 스무스)
+	XMVECTOR Fcur = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
+	XMVECTOR Fdes = XMVector3Normalize(vMid - vPos);
+	float aAim = 1.0f - expf(-12.0f * fTimeDelta);
+	XMVECTOR F = XMVector3Normalize(XMVectorLerp(Fcur, Fdes, aAim));
 
-	// ===== 7) 월드 행렬 구성 =====
-	const XMVECTOR Up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	const XMVECTOR R = XMVector3Normalize(XMVector3Cross(Up, F));
-	const XMVECTOR U = XMVector3Normalize(XMVector3Cross(F, R));
+	// 8) 월드 행렬 세팅
+	XMVECTOR UpW = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	XMVECTOR Rw = XMVector3Normalize(XMVector3Cross(UpW, F));
+	XMVECTOR Uw = XMVector3Normalize(XMVector3Cross(F, Rw));
 
 	_matrix W = XMMatrixIdentity();
-	W.r[0] = XMVectorSetW(R, 0.f);
-	W.r[1] = XMVectorSetW(U, 0.f);
+	W.r[0] = XMVectorSetW(Rw, 0.f);
+	W.r[1] = XMVectorSetW(Uw, 0.f);
 	W.r[2] = XMVectorSetW(F, 0.f);
-	W.r[3] = XMVectorSetW(vPosNext, 1.f);
-
+	W.r[3] = XMVectorSetW(vPos, 1.f);
 	m_pTransformCom->Set_WorldMatrix(W);
-	*/
-
-	// 플레이어와 타겟 위치
-	XMVECTOR vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	XMVECTOR vTargetPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
-
-	// 두 점 중점 계산
-	XMVECTOR vMid = (vPlayerPos + vTargetPos) * 0.5f;
-
-	// 두 캐릭터 간 거리
-	float fDistance = XMVectorGetX(XMVector3Length(vTargetPos - vPlayerPos));
-
-	// m_fFov는 세로 기준이므로 세로 FOV로 거리 계산
-	// 삼각함수로 거리 확보:  tan(FOV/2) = (높이/2) / 거리
-	float fRequiredDist = (fDistance * 0.5f) / tanf(m_fFov * 0.5f);
-
-	// 카메라 방향(플레이어-타겟 바라보는 방향 반대)
-	XMVECTOR vForward = XMVector3Normalize(vMid - vPlayerPos);
-	XMVECTOR vCamDir = -vForward;
-
-	// 최종 카메라 위치 = 중점 + 뒤로 뺀 값 + 살짝 위로 올리기
-	XMVECTOR vCamPos = vMid + vCamDir * fRequiredDist + XMVectorSet(0.f, 1.5f, 0.f, 0.f);
-
-	// Up 벡터
-	XMVECTOR vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-	// 월드 행렬 구성
-	XMMATRIX matView = XMMatrixLookAtLH(vCamPos, vMid, vUp);
-	XMMATRIX matWorld = XMMatrixInverse(nullptr, matView);
-
-	// 트랜스폼에 적용
-	m_pTransformCom->Set_WorldMatrix(matWorld);
 
 }
 void CCamera_Orbital::Set_CameraMatrix(_float fTimeDelta)
