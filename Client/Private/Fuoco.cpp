@@ -70,9 +70,13 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		cout << "현재 플레이어와의 거리 : " << Get_DistanceToPlayer() << endl;
 		cout << "현재 애니메이션 상태 : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
 		cout << "현재 이동 방향 " << m_pAnimator->GetInt("MoveDir") << endl;
+
+		m_pAnimator->SetInt("SkillType", Uppercut);
+		m_pAnimator->SetTrigger("Attack");
+	//	m_pAnimator->SetTrigger("Paralyzation");
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
-		m_fHP -= 10.f;
+		//m_fHP -= 10.f;
 	}
 #endif
 
@@ -84,7 +88,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 void CFuoco::Update(_float fTimeDelta)
 {
-
+	
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
 		m_pAnimator->SetTrigger("SpecialDie");
@@ -129,7 +133,7 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			if (m_pAnimator->GetInt("SkillType") == FootAtk)
 			{
 				m_pAnimator->SetBool("IsHit", true);
-				SetTurnTimeDuringAttack(2.f); // 퓨리 어택 
+				SetTurnTimeDuringAttack(2.f,1.2f); // 퓨리 어택 
 			}
 		}
 	}
@@ -407,8 +411,9 @@ void CFuoco::UpdateMovement(_float fDistance,_float fTimeDelta)
 		m_eCurrentState == EFuocoState::RUN) &&
 		m_eCurrentState != EFuocoState::GROGGY &&
 		m_eCurrentState != EFuocoState::DEAD &&
+		m_eCurrentState!=EFuocoState::PARALYZATION&&
 		!m_bIsFirstAttack &&
-		m_fAttackCooldown > 0.5f;
+		m_fAttackCooldown > 1.f;
 
 	m_pAnimator->SetBool("Move", bCanMove);
 	if (bCanMove)
@@ -560,6 +565,11 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::TURN_L):
 	case ENUM_CLASS(BossStateID::TURN_R):
 		m_eCurrentState = EFuocoState::TURN;
+		break;
+	case ENUM_CLASS(BossStateID::PARALYZATION_START):
+	case ENUM_CLASS(BossStateID::PARALYZATION_LOOP):
+	case ENUM_CLASS(BossStateID::PARALYZATION_END):
+		m_eCurrentState = EFuocoState::PARALYZATION;
 		break;
 	default:
 		m_eCurrentState = EFuocoState::ATTACK;

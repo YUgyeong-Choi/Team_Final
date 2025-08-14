@@ -70,7 +70,11 @@ class CFuoco : public CUnit
         WALK_L = 123,
         RUN_F = 100035,
         TURN_R = 100012,
-        TURN_L = 100013
+        TURN_L = 100013,
+        PARALYZATION_START = 100043,
+        PARALYZATION_LOOP = 100044,
+        PARALYZATION_END = 100045
+
     };
 
     enum EBossAttackPattern :_int
@@ -90,7 +94,7 @@ class CFuoco : public CUnit
     };
 
 	enum class EFuocoState{
-        IDLE,WALK,RUN,TURN,ATTACK,GROGGY,DEAD,NONE};
+        IDLE,WALK,RUN,TURN,ATTACK,GROGGY,PARALYZATION,DEAD,NONE};
 
 	enum class EMoveDirection	{
         FRONT, RIGHT, BACK, LEFT};
@@ -269,8 +273,8 @@ private:
     };
 
     // »ó¼ö
-    const _float CHASING_DISTANCE = 3.1f;
-	const _float ATTACK_DISTANCE_CLOSE = 1.f;
+    const _float CHASING_DISTANCE = 2.f;
+	const _float ATTACK_DISTANCE_CLOSE = 0.f;
     const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
     const _float MINIMUM_TURN_ANGLE = 35.f;

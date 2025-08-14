@@ -335,6 +335,12 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_13",
             "Duration": 140.0,
+            "Events": [
+                {
+                    "EventName": "Turnning",
+                    "Time": 5.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -370,6 +376,12 @@
         {
             "ClipName": "AS_FireEater_C00",
             "Duration": 651.0,
+            "Events": [
+                {
+                    "EventName": "CameraShake",
+                    "Time": 252.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

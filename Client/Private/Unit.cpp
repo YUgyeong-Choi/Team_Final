@@ -242,6 +242,7 @@ void CUnit::RayCast(CPhysXActor* actor)
 			PxVec3 hitNormal = hit.block.normal;
 
 			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+			if(pHitActor)
 			pHitActor->Get_Owner()->On_Hit(this, actor->Get_ColliderType());
 
 			//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
