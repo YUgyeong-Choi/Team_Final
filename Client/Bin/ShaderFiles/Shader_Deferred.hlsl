@@ -1157,12 +1157,12 @@ PS_OUT PS_WB_COMPOSITE(PS_IN In)
     /* [ 이쪽이 맞는 것 같은데 나눗셈 연산이 쉽지 않음 ] */
     //vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
 
-    //float4 fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord);
+    //float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
     //
-    //float3 vColor = vAccum.rgb / max(saturate(vAccum.a), 0.00001f); // 0 나누기 방지용
-    //float fAlpha = 1 - saturate(fReveal.r);
+    //float3 vColor = vAccum.rgb / max(vAccum.a, 1e-3); // 0 나누기 방지용
+    //float fAlpha = 1 - saturate(fReveal);
     //Out.vBackBuffer = float4(vColor * fAlpha, fAlpha);
-
+    ////Out.vBackBuffer = float4(fAlpha, fAlpha, fAlpha, 1.f);
     
     /********************************************************************/
 

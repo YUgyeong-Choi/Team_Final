@@ -127,9 +127,8 @@ protected:		//		스킬용 변수?
 	_int				m_iMaxDurability = {100};
 
 protected:
-	_int				m_iBladeBoneIndex = {};
 	_int				m_iHandleIndex = {};
-	_float4				m_vBladePos = {};
+
 
 	
 	vector<CGameObject*> m_CollisonObjects;
