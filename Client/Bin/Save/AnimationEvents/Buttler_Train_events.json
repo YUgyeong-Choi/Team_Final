@@ -703,7 +703,7 @@
         {
             "ClipName": "AS_Walk_C_B",
             "Duration": 120.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },

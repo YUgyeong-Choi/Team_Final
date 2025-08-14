@@ -9,8 +9,8 @@
             "Name": "Spawn_Loop",
             "NodeId": 2,
             "NodePos": [
-                4427.46728515625,
-                498.542236328125
+                4946.642578125,
+                -194.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -24,8 +24,8 @@
             "Name": "Spawn_End",
             "NodeId": 3,
             "NodePos": [
-                4427.46728515625,
-                668.542236328125
+                4946.642578125,
+                -24.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -39,8 +39,8 @@
             "Name": "Idle",
             "NodeId": 5,
             "NodePos": [
-                2267.467529296875,
-                498.542236328125
+                2786.642333984375,
+                -322.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Run",
             "NodeId": 7,
             "NodePos": [
-                3707.467529296875,
-                498.542236328125
+                4226.642578125,
+                -194.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -69,8 +69,8 @@
             "Name": "Hit_R",
             "NodeId": 11,
             "NodePos": [
-                1547.467529296875,
-                498.542236328125
+                2066.642333984375,
+                -194.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Hit_L",
             "NodeId": 13,
             "NodePos": [
-                1547.467529296875,
-                668.542236328125
+                2066.642333984375,
+                -24.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -99,8 +99,8 @@
             "Name": "Hit_B",
             "NodeId": 16,
             "NodePos": [
-                1547.467529296875,
-                838.542236328125
+                2066.642333984375,
+                145.8062744140625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -114,8 +114,8 @@
             "Name": "Dead_B",
             "NodeId": 18,
             "NodePos": [
-                2987.467529296875,
-                498.542236328125
+                3506.642333984375,
+                -194.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "Dead_F",
             "NodeId": 19,
             "NodePos": [
-                2987.467529296875,
-                668.542236328125
+                3506.642333984375,
+                -24.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -144,8 +144,8 @@
             "Name": "Attack_Light",
             "NodeId": 20,
             "NodePos": [
-                369.4674987792969,
-                268.542236328125
+                626.642333984375,
+                -194.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -159,8 +159,8 @@
             "Name": "Attack_Heavy",
             "NodeId": 22,
             "NodePos": [
-                191.46749877929688,
-                336.542236328125
+                580.642333984375,
+                121.8062744140625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -174,8 +174,8 @@
             "Name": "Groggy_In",
             "NodeId": 100005,
             "NodePos": [
-                3347.467529296875,
-                498.542236328125
+                3866.642333984375,
+                -194.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -189,8 +189,8 @@
             "Name": "Groggy_Loop",
             "NodeId": 100006,
             "NodePos": [
-                3347.467529296875,
-                668.542236328125
+                3866.642333984375,
+                -24.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -204,8 +204,8 @@
             "Name": "Groggy_Out",
             "NodeId": 100007,
             "NodePos": [
-                3347.467529296875,
-                838.542236328125
+                3866.642333984375,
+                145.8062744140625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -219,8 +219,8 @@
             "Name": "Walk",
             "NodeId": 100012,
             "NodePos": [
-                5147.46728515625,
-                498.542236328125
+                3112.67724609375,
+                -535.0281372070313
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -234,8 +234,8 @@
             "Name": "Turn_Left",
             "NodeId": 100016,
             "NodePos": [
-                3707.467529296875,
-                498.542236328125
+                4226.642578125,
+                -194.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -249,8 +249,8 @@
             "Name": "Turn_Right",
             "NodeId": 100021,
             "NodePos": [
-                3707.467529296875,
-                668.542236328125
+                4226.642578125,
+                -24.1937255859375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -264,8 +264,8 @@
             "Name": "Walk_B",
             "NodeId": 100026,
             "NodePos": [
-                5147.46728515625,
-                668.542236328125
+                354.01123046875,
+                370.22100830078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -274,6 +274,13 @@
     "ControllerName": "Buttler_Train_Default",
     "EntryState": "Spawn_Loop",
     "Parameters": {
+        "Back": {
+            "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
         "Dead": {
             "Type": 1,
             "bTriggered": false,
@@ -299,7 +306,7 @@
             "Type": 2,
             "bTriggered": false,
             "bValue": false,
-            "fValue": 5.0,
+            "fValue": 2.0,
             "iValue": 0
         },
         "GroogyTime": {
@@ -326,18 +333,11 @@
         "IsTurn": {
             "Type": 0,
             "bTriggered": false,
-            "bValue": true,
-            "fValue": 0.0,
-            "iValue": 0
-        },
-        "UseLightAttack": {
-            "Type": 0,
-            "bTriggered": false,
             "bValue": false,
             "fValue": 0.0,
             "iValue": 0
         },
-        "isBack": {
+        "UseLightAttack": {
             "Type": 0,
             "bTriggered": false,
             "bValue": false,
@@ -1061,30 +1061,8 @@
         {
             "Conditions": [
                 {
-                    "Op": "IsTrue",
-                    "ParamName": "isBack",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 5,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 52,
-                "LinkId": 100027,
-                "ToNodeId": 1000261
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100026
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "isBack",
+                    "Op": "None",
+                    "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -1092,15 +1070,37 @@
             ],
             "Duration": 0.20000000298023224,
             "FromNodeId": 100026,
-            "HasExitTime": false,
+            "HasExitTime": true,
             "Link": {
                 "FromNodeId": 1000262,
-                "LinkId": 100028,
+                "LinkId": 100029,
                 "ToNodeId": 51
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 5
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "Back",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100001,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1000012,
+                "LinkId": 100030,
+                "ToNodeId": 1000261
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100026
         }
     ]
 }

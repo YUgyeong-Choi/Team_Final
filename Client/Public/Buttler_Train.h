@@ -50,7 +50,7 @@ private:
 
 	_int m_iAttackCount = {};
 
-	_bool  m_isBackWalk = {};
+	
 	_float m_fDuration = {};
 	
 

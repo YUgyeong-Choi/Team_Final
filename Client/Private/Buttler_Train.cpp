@@ -72,19 +72,6 @@ void CButtler_Train::Update(_float fTimeDelta)
 		m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 0.6f);
 	}
 	
-	if (m_isBackWalk)
-	{
-		m_fDuration += fTimeDelta;
-
-		if (m_fDuration >= 3.f)
-		{
-			m_isBackWalk = false;
-			
-			m_pAnimator->SetBool("isBack", false);
-
-			m_fDuration = 0.f;
-		}
-	}
 
 	__super::Update(fTimeDelta);
 
@@ -142,7 +129,7 @@ void CButtler_Train::Update_State()
 {
 	 Check_Detect();
 
-	if (!m_isDetect || m_iHP <= 0 || m_isBackWalk)
+	if (!m_isDetect || m_iHP <= 0)
 		return;
 
 
@@ -154,8 +141,6 @@ void CButtler_Train::Update_State()
 	m_pAnimator->SetFloat("Distance", XMVectorGetX(XMVector3Length(vDist)));
 
     m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-
-	
 
 
 	if (m_strStateName.find("Idle") != m_strStateName.npos || m_strStateName.find("Turn") != m_strStateName.npos)
@@ -190,13 +175,12 @@ void CButtler_Train::Update_State()
 	{
 		// 뒤로 가게 하기
 
-		m_isBackWalk = true;
 
-		m_pAnimator->SetBool("isBack", true);
+		m_pAnimator->SetTrigger("Back");
 
 		m_iAttackCount = 0;
 
-		m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+		
 	}
 	
 	
@@ -254,10 +238,17 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	{
 		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-		if(!m_isBackWalk)
-			m_pTransformCom->Go_Dir(vLook, fTimeDelta, nullptr, m_pNaviCom);
+		if (m_strStateName.find("Walk_B") != m_strStateName.npos)
+		{
+			vLook *= -1.f;
+
+			m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
+		}
 		else
-			m_pTransformCom->Go_Dir(-vLook, fTimeDelta, nullptr, m_pNaviCom);
+		{
+			m_pTransformCom->Go_Dir(vLook, fTimeDelta, nullptr, m_pNaviCom);
+		}
+			
 
 	}
 
