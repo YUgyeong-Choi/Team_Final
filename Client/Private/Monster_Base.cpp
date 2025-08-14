@@ -182,7 +182,6 @@ HRESULT CMonster_Base::Ready_Components()
 
 	m_pGameInstance->GetCurrentLevelIndex();
 
-	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_");
 
 	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
 	if (iLevelIndex == ENUM_CLASS(LEVEL::JW))
@@ -190,19 +189,8 @@ HRESULT CMonster_Base::Ready_Components()
 		return S_OK;
 	}
 
-	switch (iLevelIndex)
-	{
-	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
-		wsPrototypeTag += TEXT("STATION");
-		break;
-	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
-		wsPrototypeTag += TEXT("HOTEL");
-		break;
-	default:
-		return E_FAIL;
-	}
-
-
+	//네비게이션 가져오기
+	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation");
 	if (FAILED(__super::Add_Component(iLevelIndex, wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
 		return E_FAIL;

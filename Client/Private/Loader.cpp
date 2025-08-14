@@ -353,11 +353,8 @@ HRESULT CLoader::Loading_For_Static()
 
 HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
-	lstrcpy(m_szLoadingText, TEXT("�ؽ�����(��) �ε����Դϴ�."));
 
-	//�����̼� ������ �ʿ��� �ؽ��ĸ� �ε��Ѵ�.
-	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) // true �� �׽�Ʈ ��Į �غ�
-		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("�ؽ�����(��) �ε����Դϴ�."));
 
 	m_fRatio = 0.1f;
 
@@ -418,14 +415,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	m_fRatio = 0.4f;
 
-	//���� �����ϱ����� �� ������Ÿ���� �غ��Ѵ�.
-
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), true))) //true�� �׽�Ʈ �� �غ�[�׽�Ʈ ���� Ű�� ������ true �Ͻÿ�]
-
 	lstrcpy(m_szLoadingText, TEXT("�׺���̼���(��) �ε����Դϴ�."));
-
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
-		return E_FAIL;
 
 	m_fRatio = 0.6f;
 	lstrcpy(m_szLoadingText, TEXT("������(��) �ε����Դϴ�."));
@@ -434,6 +424,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	lstrcpy(m_szLoadingText, TEXT("������ü��(��) �ε����Դϴ�."));
 
 #pragma region YW
+	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중."));
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //STATION, TEST (레벨과 동일해야함)
+		return E_FAIL;
+
 	//����ƽ ��Į
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
@@ -849,13 +843,13 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("�׺���̼���(��) �ε����Դϴ�."));
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION")))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION", true)))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL", true)))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST", true)))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("������(��) �ε����Դϴ�."));
@@ -878,6 +872,23 @@ HRESULT CLoader::Loading_For_YW()
 	lstrcpy(m_szLoadingText, TEXT("�ε��� �Ϸ�Ǿ����ϴ�."));
 
 	m_isFinished = true;
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
+{
+	//맵
+	if(FAILED(Loading_Models(iLevelIndex, Map)))
+		return E_FAIL;
+
+	//네비
+	if (FAILED(Loading_Navigation(iLevelIndex, Map)))
+		return E_FAIL;
+	
+	//데칼
+	if (FAILED(Loading_Decal_Textures(iLevelIndex, Map)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -912,26 +923,10 @@ HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelF
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Models(_uint iLevelIndex, _bool bTest)
+HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
 {
-	string Map = {};
-	switch (iLevelIndex)
-	{
-	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
-		Map = "STATION";
-		break;
-	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
-		Map = "HOTEL";
-		break;
-	default:
-		Map = "TEST";
-		break;
-	}
 
-	if (bTest)
-		Map = "TEST";
-
-	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map.c_str() + ".json";
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
 
 	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
@@ -951,7 +946,7 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, _bool bTest)
 	catch (const exception& e)
 	{
 		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON �Ľ� ����", MB_OK);
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
 		return E_FAIL;
 	}
 
@@ -994,24 +989,8 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, _bool bTest)
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, _bool bTest)
+HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map, _bool bForTool)
 {
-	string Map = {};
-	switch (iLevelIndex)
-	{
-	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
-		Map = "STATION";
-		break;
-	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
-		Map = "HOTEL";
-		break;
-	default:
-		Map = "TEST";
-		break;
-	}
-
-	if (bTest)
-		Map = "TEST";
 
 	wstring wsResourcePath = L"../Bin/Save/NavTool/Nav_" + StringToWString(Map) + L".json";
 
@@ -1024,7 +1003,12 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, _bool bTest)
 		return S_OK;
 	}
 
-	wstring wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);
+	wstring wsPrototypeTag = {};
+
+	if(bForTool)
+		wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);// 툴을 위한 로딩
+	else
+		wsPrototypeTag = L"Prototype_Component_Navigation";//실제 맵을 위한 로딩
 
 	/* Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Prototype(
@@ -1037,25 +1021,8 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, _bool bTest)
 
 	return S_OK;
 }
-HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, _bool bTest)
+HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 {
-	string Map = {};
-	switch (iLevelIndex)
-	{
-	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
-		Map = "STATION";
-		break;
-	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
-		Map = "HOTEL";
-		break;
-	default:
-		Map = "TEST";
-		break;
-	}
-
-	if (bTest)
-		Map = "TEST";
-
 	string ResourcePath = string("../Bin/Save/DecalTool/Resource_") + Map + ".json";
 
 	ifstream inFile(ResourcePath);
@@ -1076,7 +1043,7 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, _bool bTest)
 	catch (const exception& e)
 	{
 		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON �Ľ� ����", MB_OK);
+		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
 		return E_FAIL;
 	}
 

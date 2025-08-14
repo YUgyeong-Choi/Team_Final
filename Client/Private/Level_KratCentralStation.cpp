@@ -63,12 +63,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	/* [ 카메라 셋팅 ] */
 	m_pCamera_Manager->SetCutSceneCam();
 
-	
-
-
-	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -114,15 +108,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Camera()))
 				return;
 
-			//제이슨으로 저장된 맵을 로드한다.
-			//true면 테스트맵 소환, 기본(false) [테스트 맵을 키고 싶으면 true 하시오] [Loader.cpp 도 똑같이 적용 필요!!!!!]
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION) , true)))
-
-
-			//데칼 소환
-			if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))  //TEST, STATION (Loader.cpp와 동일해야함)
 				return;
-
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 				return;
@@ -202,27 +189,26 @@ HRESULT CLevel_KratCentralStation::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_Map(_uint iLevelIndex, _bool bTest)
+HRESULT CLevel_KratCentralStation::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
+	//어떤 맵을 소환 시킬 것인지?
+	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
+		return E_FAIL;
 
-	string Map = {};
-	switch (iLevelIndex)
-	{
-	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
-		Map = "STATION";
-		break;
-	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
-		Map = "HOTEL";
-		break;
-	default:
-		Map = "TEST";
-		break;
-	}
+	//네비 소환
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
+		return E_FAIL;
 
-	if (bTest)
-		Map = "TEST";
+	//어떤 데칼을 소환 시킬 것인지?
+	if (FAILED(Ready_Static_Decal(iLevelIndex, Map))) //TEST, STATION
+		return E_FAIL;
 
-	string MapPath = string("../Bin/Save/MapTool/Map_") + Map.c_str() + ".json";
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Meshs(_uint iLevelIndex, const _char* Map)
+{
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
 
 	ifstream inFile(MapPath);
 	if (!inFile.is_open())
@@ -383,28 +369,10 @@ HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_Static_Decal(_uint iLevelIndex, _bool bTest)
+HRESULT CLevel_KratCentralStation::Ready_Static_Decal(_uint iLevelIndex, const _char* Map)
 {
-	string Map = {};
-	switch (iLevelIndex)
-	{
-	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
-		Map = "STATION";
-		break;
-	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
-		Map = "HOTEL";
-		break;
-	default:
-		Map = "TEST";
-		break;
-	}
-
-	if(bTest)
-		Map = "TEST";
-
 	//현재 맵에 필요한 데칼 텍스쳐를 로드한다.
-
-	string DecalDataPath = string("../Bin/Save/DecalTool/Decal_") + Map.c_str() + ".json";
+	string DecalDataPath = string("../Bin/Save/DecalTool/Decal_") + Map + ".json";
 	//string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json"; //나중에 쓸듯 맵 바꿀때
 
 	ifstream inFile(DecalDataPath);
