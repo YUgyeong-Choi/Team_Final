@@ -25,8 +25,11 @@ public:
 
 #pragma region YW
 private:
-	//맵 소환(true면 테스트 맵 소환)
+	//맵 소환(메쉬, 네비, 데칼 등...)
 	HRESULT Ready_Map(_uint iLevelIndex, const _char* Map);
+
+	//메쉬 소환
+	HRESULT Ready_Meshs(_uint iLevelIndex, const _char* Map);
 	HRESULT Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 	HRESULT Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 

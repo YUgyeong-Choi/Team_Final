@@ -63,12 +63,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	/* [ 카메라 셋팅 ] */
 	m_pCamera_Manager->SetCutSceneCam();
 
-	
-
-
-	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -114,15 +108,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Camera()))
 				return;
 
-			//제이슨으로 저장된 맵을 로드한다.
-			//true면 테스트맵 소환, 기본(false) [테스트 맵을 키고 싶으면 true 하시오] [Loader.cpp 도 똑같이 적용 필요!!!!!]
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //TEST, STAION
-
-
-			//데칼 소환
-				if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //TEST, STATION
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))  //TEST, STATION (Loader.cpp와 동일해야함)
 				return;
-
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 				return;
@@ -204,7 +191,23 @@ HRESULT CLevel_KratCentralStation::Render()
 
 HRESULT CLevel_KratCentralStation::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
+	//어떤 맵을 소환 시킬 것인지?
+	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
+		return E_FAIL;
 
+	//네비 소환
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
+		return E_FAIL;
+
+	//어떤 데칼을 소환 시킬 것인지?
+	if (FAILED(Ready_Static_Decal(iLevelIndex, Map))) //TEST, STATION
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Meshs(_uint iLevelIndex, const _char* Map)
+{
 	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
 
 	ifstream inFile(MapPath);

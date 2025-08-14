@@ -335,8 +335,8 @@ HRESULT CLevel_YW::ImGui_Docking_Settings()
 		ImGuiWindowFlags_NoBringToFrontOnFocus |
 		ImGuiWindowFlags_NoNavFocus |
 		ImGuiWindowFlags_NoBackground |
-		ImGuiWindowFlags_NoDecoration |
-		ImGuiWindowFlags_MenuBar;
+		ImGuiWindowFlags_NoDecoration;
+		//ImGuiWindowFlags_MenuBar;
 
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);

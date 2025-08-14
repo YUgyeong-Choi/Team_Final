@@ -54,6 +54,9 @@ public:
 #pragma region YW
 	HRESULT Loading_For_YW();
 
+	//여기서 맵에 필요한것들 모드 로드(맵, 데칼, 네비 등등...)
+	HRESULT Load_Map(_uint iLevelIndex, const _char* Map);
+
 	//<맵>에 필요한 모델들을 로딩한다.
 	HRESULT Loading_Models(_uint iLevelIndex, const _char* Map);
 	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
