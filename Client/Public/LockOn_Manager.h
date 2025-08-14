@@ -33,7 +33,10 @@ public:
 
 private:
     void RemoveBehindWallTargets();
+    // 각도가 제일 작은거 <- 가운데 있 는 것
     CGameObject* Find_ClosestToLookTarget();
+    CGameObject* Change_ToLookTarget();
+    
 private:
     CGameInstance* m_pGameInstance = { nullptr };
 private:
@@ -44,9 +47,11 @@ private:
     _bool m_bActive = false;
     _bool m_bStartLockOn = false;
     //_float4 m_vTargetpos = {};
+
+    _float m_fCoolChangeTarget = {};
+    _bool m_bCanChangeTarget = true;
 public:
     virtual void Free() override;
-
 };
 
 NS_END

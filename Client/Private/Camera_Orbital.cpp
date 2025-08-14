@@ -302,9 +302,10 @@ void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 	worldMatrix.r[1] = XMVectorSetW(vUp, 0.f);
 	worldMatrix.r[2] = XMVectorSetW(vLook, 0.f);
 	worldMatrix.r[3] = XMVectorSetW(vPos, 1.f);
-	m_pTransformCom->Set_WorldMatrix(worldMatrix);
 
+	m_pTransformCom->Set_WorldMatrix(worldMatrix);
 }
+
 void CCamera_Orbital::Set_CameraMatrix(_float fTimeDelta)
 {
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);

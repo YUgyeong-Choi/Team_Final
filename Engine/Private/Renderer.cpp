@@ -1271,15 +1271,12 @@ HRESULT CRenderer::Change_ViewportDesc(_uint iWidth, _uint iHeight)
 
 HRESULT CRenderer::Render_Debug()
 {
-	if (m_bRenderCollider)
+	for (auto& pDebugCom : m_DebugComponent)
 	{
-		for (auto& pDebugCom : m_DebugComponent)
-		{
-			pDebugCom->Render();
-			Safe_Release(pDebugCom);
-		}
-		m_DebugComponent.clear();
+		pDebugCom->Render();
+		Safe_Release(pDebugCom);
 	}
+	m_DebugComponent.clear();
 
 	if (m_bRenderTarget)
 	{

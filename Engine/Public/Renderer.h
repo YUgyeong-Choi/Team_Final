@@ -22,6 +22,8 @@ public:
 	void Set_RenderTarget() { m_bRenderTarget = !m_bRenderTarget; }
 	void Set_RenderCollider() { m_bRenderCollider = !m_bRenderCollider; }
 	_bool Get_RenderCollider() { return m_bRenderCollider; }
+	void Set_RenderMapCollider() { m_bRenderMapCollider = !m_bRenderMapCollider; }
+	_bool Get_RenderMapCollider() { return m_bRenderMapCollider; }
 	void Change_DebugRT() { ++m_eDebugRT == DEBUGRT_END ? m_eDebugRT = DEBUGRT_DH : m_eDebugRT; }
 #endif
 
@@ -53,6 +55,7 @@ private:
 	list<class CComponent*>		m_DebugComponent;
 	_bool m_bRenderTarget = false;
 	_bool m_bRenderCollider = false;
+	_bool m_bRenderMapCollider = false;
 	enum DEBUGRT { DEBUGRT_DH, DEBUGRT_YW, DEBUGRT_CY, DEBUGRT_END };
 	_uint m_eDebugRT = static_cast<_uint>(DEBUGRT_DH);
 #endif

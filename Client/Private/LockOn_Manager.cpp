@@ -26,6 +26,9 @@ HRESULT CLockOn_Manager::Priority_Update(_float fTimeDelta)
 
 HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 {
+    if (!m_pPlayer)
+        return S_OK;
+
     if (m_bStartLockOn)
     {
         RemoveBehindWallTargets();
@@ -42,6 +45,28 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
             CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir,15.f);
         }
         m_bStartLockOn = false;
+    }
+
+    if (m_bActive && m_bCanChangeTarget)
+    {
+        CGameObject* pObj = Change_ToLookTarget();
+        if (pObj)
+        {
+            m_bCanChangeTarget = false;
+            m_pBestTarget = pObj;
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, true);
+        }
+    }
+
+    if (!m_bCanChangeTarget)
+    {
+        m_fCoolChangeTarget += fTimeDelta;
+        if (m_fCoolChangeTarget > 1.f)
+        {
+            printf("타겟 변경 가능\n");
+            m_fCoolChangeTarget = 0.f;
+            m_bCanChangeTarget = true;
+        }
     }
 
     PxVec3 hitPos = PxVec3();
@@ -220,6 +245,60 @@ CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()
     }
 
     return pBestTarget;
+}
+
+CGameObject* CLockOn_Manager::Change_ToLookTarget()
+{
+    if (!m_pPlayer || m_vecTarget.empty())
+        return nullptr;
+
+    // 마우스 X 이동량으로 좌/우 선호 결정
+    const _long mouseX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
+    const _float  kDeadZone = 50.f;
+    int sidePref = 0;
+    if (mouseX <= -kDeadZone) sidePref = +1;    // 왼쪽
+    else if (mouseX >= kDeadZone) sidePref = -1; // 오른쪽
+    else
+        return nullptr; // 미세 이동이면 현재 대상 유지
+
+    // 플레이어 기준 벡터
+    const _vector P = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+    const _vector F = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
+    const _vector Up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+    const _vector R = XMVector3Normalize(XMVector3Cross(Up, F));
+
+    // 현재 락온 대상 제외
+    CGameObject* pCurrent = m_pBestTarget;
+
+    CGameObject* best = nullptr;
+    _float bestAngle = XM_PI;
+
+    for (auto* t : m_vecTarget)
+    {
+        if (t == pCurrent) continue;
+
+        const _vector T = t->Get_TransfomCom()->Get_State(STATE::POSITION);
+        const _vector V = XMVector3Normalize(T - P);
+
+        // 좌/우 판정
+        const _float side = XMVectorGetX(XMVector3Dot(V, R));
+        if ((sidePref > 0 && side <= 0.f) || (sidePref < 0 && side >= 0.f))
+            continue;
+
+        // 각도 계산
+        _float fDot = XMVectorGetX(XMVector3Dot(F, V));
+        fDot = clamp(fDot, -1.f, 1.f);
+        _float fAngle = acosf(fDot);
+
+        if (fAngle < bestAngle)
+        {
+            bestAngle = fAngle;
+            best = t;
+        }
+    }
+
+    // 선호 방향에 후보가 없으면 현재 대상 유지
+    return best ? best : nullptr;
 }
 
 HRESULT CLockOn_Manager::Late_Update(_float fTimeDelta)

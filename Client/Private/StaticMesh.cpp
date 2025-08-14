@@ -165,11 +165,11 @@ HRESULT CStaticMesh::Render()
 
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
-		/*if (m_pGameInstance->Get_RenderCollider())
+		if (m_pGameInstance->Get_RenderMapCollider())
 		{
 			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
 				return E_FAIL;
-		}*/
+		}
 	}
 
 #endif
