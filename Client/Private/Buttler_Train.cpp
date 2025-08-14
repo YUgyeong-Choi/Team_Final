@@ -71,6 +71,20 @@ void CButtler_Train::Update(_float fTimeDelta)
 
 		m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 0.6f);
 	}
+	
+	if (m_isBackWalk)
+	{
+		m_fDuration += fTimeDelta;
+
+		if (m_fDuration >= 3.f)
+		{
+			m_isBackWalk = false;
+			
+			m_pAnimator->SetBool("isBack", false);
+
+			m_fDuration = 0.f;
+		}
+	}
 
 	__super::Update(fTimeDelta);
 
@@ -128,14 +142,10 @@ void CButtler_Train::Update_State()
 {
 	 Check_Detect();
 
-	if (!m_isDetect)
+	if (!m_isDetect || m_iHP <= 0 || m_isBackWalk)
 		return;
 
 
-	if (m_iHP <= 0)
-		return;
-
-	
 
 	_vector vDist = {};
 	vDist = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
@@ -144,6 +154,8 @@ void CButtler_Train::Update_State()
 	m_pAnimator->SetFloat("Distance", XMVectorGetX(XMVector3Length(vDist)));
 
     m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+
+	
 
 
 	if (m_strStateName.find("Idle") != m_strStateName.npos || m_strStateName.find("Turn") != m_strStateName.npos)
@@ -167,8 +179,25 @@ void CButtler_Train::Update_State()
 		{
 			m_pAnimator->SetBool("UseLightAttack", true);
 		}
+
+		if (m_pAnimator->IsFinished())
+		{
+			++m_iAttackCount;
+		}
 	}
 
+	if (m_iAttackCount == 3)
+	{
+		// 뒤로 가게 하기
+
+		m_isBackWalk = true;
+
+		m_pAnimator->SetBool("isBack", true);
+
+		m_iAttackCount = 0;
+
+		m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+	}
 	
 	
 
@@ -202,7 +231,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER)
 	{
-		m_iHP -= 300;
+		m_iHP -= 100;
 
 		m_pAnimator->SetTrigger("Hit");
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
@@ -212,7 +241,6 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 	if (m_iHP <= 0)
 	{
 		
-
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pAnimator->SetTrigger("Dead");
 		m_strStateName = "Dead";
@@ -224,7 +252,13 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
 	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk") != m_strStateName.npos)
 	{
-		m_pTransformCom->Go_Dir(m_pTransformCom->Get_State(STATE::LOOK), fTimeDelta, nullptr, m_pNaviCom);
+		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+
+		if(!m_isBackWalk)
+			m_pTransformCom->Go_Dir(vLook, fTimeDelta, nullptr, m_pNaviCom);
+		else
+			m_pTransformCom->Go_Dir(-vLook, fTimeDelta, nullptr, m_pNaviCom);
+
 	}
 
 	else if (m_strStateName.find("Attack") != m_strStateName.npos)

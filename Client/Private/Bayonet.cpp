@@ -69,7 +69,7 @@ void CBayonet::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	Update_Collider();
+	//Update_Collider();
 }
 
 HRESULT CBayonet::Render()
@@ -146,7 +146,7 @@ HRESULT CBayonet::Ready_Actor()
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PLAYER_WEAPON);
-	m_pPhysXActorCom->Set_Kinematic(false);
+	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
