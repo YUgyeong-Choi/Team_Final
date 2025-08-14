@@ -359,25 +359,25 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     vector vARMDesc = g_PBR_ARM.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_PBR_Depth.Sample(DefaultSampler, In.vTexcoord);
     
+    /* [ 데칼 ARM 불러오기 ] */
+    vector vDecalNDesc = g_DecalN.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
+    
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a); //데칼 디퓨즈 추가
+    
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a)); //데칼 노말 추가
+    
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
     float3 Ambient = Albedo * 0.1f * AO;
     
-    /* [ 데칼 ARM 불러오기 ] */
-    vector vDecalNDesc = g_DecalN.Sample(DefaultSampler, In.vTexcoord);
-    vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
-    
-    vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
-    
-    Albedo = vDecalBCDesc.rgb;
 
-    /* Normal 블렌딩 */
-    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a));
 
     /* ARM 블렌딩 */
     AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a);
@@ -464,9 +464,19 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     vector vARMDesc = g_PBR_ARM.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_PBR_Depth.Sample(DefaultSampler, In.vTexcoord);
 
-    // [ 변수 정리 ]
+    /* [ 데칼 ARM 불러오기 ] */
+    vector vDecalNDesc = g_DecalN.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
+    
+    /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a); //데칼 디퓨즈 추가
+    
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a)); //데칼 노말 추가
+    
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
@@ -555,9 +565,19 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     vector vARMDesc = g_PBR_ARM.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_PBR_Depth.Sample(DefaultSampler, In.vTexcoord);
 
-    // [ 변수 정리 ]
+    /* [ 데칼 ARM 불러오기 ] */
+    vector vDecalNDesc = g_DecalN.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
+    
+    /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a); //데칼 디퓨즈 추가
+    
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
+    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a)); //데칼 노말 추가
+    
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
@@ -952,9 +972,9 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     //vector vDecalBC = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     //finalColor.rgb = finalColor.rgb * (1 - vDecalARMT.a) + vDecalBC.rgb * vDecalARMT.a;
     
-    ////데칼 볼륨메쉬(디버그)
-    //vector vDecalVolumeMesh = g_DecalVolumeMesh.Sample(DefaultSampler, In.vTexcoord);
-    //finalColor = finalColor * (1 - vDecalVolumeMesh.a) + vDecalVolumeMesh.a * vDecalVolumeMesh;
+    //데칼 볼륨메쉬(디버그)
+    vector vDecalVolumeMesh = g_DecalVolumeMesh.Sample(DefaultSampler, In.vTexcoord);
+    finalColor = finalColor * (1 - vDecalVolumeMesh.a) + vDecalVolumeMesh.a * vDecalVolumeMesh;
     
     Out.vBackBuffer = finalColor;
 
@@ -1135,23 +1155,22 @@ PS_OUT PS_WB_COMPOSITE(PS_IN In)
     PS_OUT Out;
     
     /* [ 이쪽이 맞는 것 같은데 나눗셈 연산이 쉽지 않음 ] */
-    vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
-    float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
-    
-    float3 vColor = vAccum.rgb / max(vAccum.a, 1e-3); // 0 나누기 방지용
-    float fAlpha = 1 - saturate(fReveal);
+    //vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
+    //float4 fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord);
+    //
+    //float3 vColor = vAccum.rgb / max(saturate(vAccum.a), 0.00001f); // 0 나누기 방지용
+    //float fAlpha = 1 - saturate(fReveal.r);
     //Out.vBackBuffer = float4(vColor * fAlpha, fAlpha);
-    Out.vBackBuffer = float4(fAlpha, fAlpha, fAlpha, 1.f);
     
     /********************************************************************/
 
     /* [ 컴팩트 버전 ] */
     /* [ Reveal의 값에 이미 각 픽셀에 적용 될 알파의 상태가 계산되어 있으므로 거리 별 가중치를 고려하지 않고 사용 ] */
     /* [ 근데 이러면 Weighted Blend OIT라고 하긴 뭐하고 그냥 Order-Independent만 지킨 느낌이라 고쳐야 할 듯... 언젠가... ] */
-    //vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
-    //float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
-    //float fAlpha = 1 - saturate(fReveal);
-    //Out.vBackBuffer = float4(vAccum.rgb, fAlpha);
+    vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
+    float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
+    float fAlpha = 1 - saturate(fReveal);
+    Out.vBackBuffer = float4(vAccum.rgb, fAlpha);
 
     /********************************************************************/
 
@@ -1194,21 +1213,25 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
     PS_OUT Out;
     
     //vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
-    float2 vDistortion = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord).gr;
-    vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환 
+  //  float2 vDistortion = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord).rg;
+  //  vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환
 
-   	// 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
-   	float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
-   	float fStrength = 10.f; // 강도 조절 변수
-   	float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
-	
-   	// 가장자리 아티팩트 줄이기
-  	  uv = saturate(uv);
-	
-   	// 흔든 UV로 최종 씬 샘플
-   	vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
-	
-   	Out.vBackBuffer = vFinalColor;
+  //  // 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
+  //  float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
+  //  float fStrength = 10.f; // 강도 조절 변수
+  //  float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
+
+  //  // 가장자리 아티팩트 줄이기
+  ////  uv = saturate(uv);
+
+  //  // 흔든 UV로 최종 씬 샘플
+  //  vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
+
+  //  Out.vBackBuffer = vFinalColor;
+
+    vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
+
+    Out.vBackBuffer = vFinalColor;
 
     return Out;
     
@@ -1383,7 +1406,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_SoftAdd, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
