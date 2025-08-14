@@ -166,3 +166,12 @@ static _float LerpFloat(_float a, _float b, _float t)
 {
     return a + (b - a) * t;
 }
+
+/* [ 프레임 독립 지수 보간 ] */
+// speed: 보간 속도 (값이 클수록 빠르게 목표에 도달)
+// dt: 프레임 시간(delta time)
+static _float SmoothExp(_float curr, _float target, _float speed, _float dt)
+{
+    const _float a = 1.f - expf(-speed * dt);
+    return curr + (target - curr) * a;
+}

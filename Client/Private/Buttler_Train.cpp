@@ -103,7 +103,7 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	if (pOther->Get_bDead())
 		return;
 
-	ReceiveDamage(pOther, eColliderType);
+	//ReceiveDamage(pOther, eColliderType);
 
 }
 
