@@ -47,12 +47,26 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         m_bStartLockOn = false;
     }
 
-    if (m_bActive)
+    if (m_bActive && m_bCanChangeTarget)
     {
         CGameObject* pObj = Change_ToLookTarget();
         if (pObj)
+        {
+            m_bCanChangeTarget = false;
             m_pBestTarget = pObj;
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, true);
+        }
+    }
 
+    if (!m_bCanChangeTarget)
+    {
+        m_fCoolChangeTarget += fTimeDelta;
+        if (m_fCoolChangeTarget > 1.f)
+        {
+            printf("타겟 변경 가능\n");
+            m_fCoolChangeTarget = 0.f;
+            m_bCanChangeTarget = true;
+        }
     }
 
     PxVec3 hitPos = PxVec3();
@@ -242,58 +256,49 @@ CGameObject* CLockOn_Manager::Change_ToLookTarget()
     const _float mouseX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
     const float  kDeadZone = 50.f;
     int sidePref = 0;
-    if (mouseX <= -kDeadZone) sidePref = -1;   // 왼쪽 선호
-    else if (mouseX >= kDeadZone) sidePref = +1; // 오른쪽 선호
-    else return nullptr; // 미세 이동이면 변경하지 않음
+    if (mouseX <= -kDeadZone) sidePref = +1;    // 왼쪽
+    else if (mouseX >= kDeadZone) sidePref = -1; // 오른쪽
+    else
+        return nullptr; // 미세 이동이면 현재 대상 유지
 
     // 플레이어 기준 벡터
     const _vector P = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
     const _vector F = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
     const _vector Up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-    const _vector R = XMVector3Normalize(XMVector3Cross(Up, F)); // 오른쪽 벡터
+    const _vector R = XMVector3Normalize(XMVector3Cross(Up, F));
 
     // 현재 락온 대상 제외
     CGameObject* pCurrent = m_pBestTarget;
 
-    auto AngleToLook = [&](CGameObject* t)->float {
-        const _vector T = t->Get_TransfomCom()->Get_State(STATE::POSITION);
-        const _vector V = XMVector3Normalize(T - P);
-        float dotLF = XMVectorGetX(XMVector3Dot(F, V));
-        dotLF = clamp(dotLF, -1.f, 1.f);
-        return acosf(dotLF); // 0~pi
-        };
-
     CGameObject* best = nullptr;
     float bestAngle = XM_PI;
 
-    // 1) 선호 방향에서만 검색 (현재 락온 대상 제외)
     for (auto* t : m_vecTarget)
     {
-        if (t == pCurrent) continue; // ★현재 락온 대상 제외
+        if (t == pCurrent) continue;
 
         const _vector T = t->Get_TransfomCom()->Get_State(STATE::POSITION);
         const _vector V = XMVector3Normalize(T - P);
 
-        const float side = XMVectorGetX(XMVector3Dot(V, R)); // +오른쪽 / -왼쪽
+        // 좌/우 판정
+        const float side = XMVectorGetX(XMVector3Dot(V, R));
         if ((sidePref > 0 && side <= 0.f) || (sidePref < 0 && side >= 0.f))
-            continue; // 선호 반대쪽은 스킵
+            continue;
 
-        const float ang = AngleToLook(t);
-        if (ang < bestAngle) { bestAngle = ang; best = t; }
+        // 각도 계산
+        float fDot = XMVectorGetX(XMVector3Dot(F, V));
+        fDot = clamp(fDot, -1.f, 1.f);
+        float fAngle = acosf(fDot);
+
+        if (fAngle < bestAngle)
+        {
+            bestAngle = fAngle;
+            best = t;
+        }
     }
 
-    if (best) return best;
-
-    // 2) 선호쪽에 후보 없으면 전체에서(역시 제외하고) 각도 최소로 fallback
-    for (auto* t : m_vecTarget)
-    {
-        if (t == pCurrent) continue; // ★현재 락온 대상 제외
-
-        const float ang = AngleToLook(t);
-        if (ang < bestAngle) { bestAngle = ang; best = t; }
-    }
-
-    return best; // 없으면 nullptr
+    // 선호 방향에 후보가 없으면 현재 대상 유지
+    return best ? best : nullptr;
 }
 
 HRESULT CLockOn_Manager::Late_Update(_float fTimeDelta)

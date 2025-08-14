@@ -47,6 +47,9 @@ private:
     _bool m_bActive = false;
     _bool m_bStartLockOn = false;
     //_float4 m_vTargetpos = {};
+
+    _float m_fCoolChangeTarget = {};
+    _bool m_bCanChangeTarget = true;
 public:
     virtual void Free() override;
 };
