@@ -420,8 +420,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	//���� �����ϱ����� �� ������Ÿ���� �غ��Ѵ�.
 
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), true))) //true�� �׽�Ʈ �� �غ�[�׽�Ʈ ���� Ű�� ������ true �Ͻÿ�]
-
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) //true�� �׽�Ʈ �� �غ�[�׽�Ʈ ���� Ű�� ������ true �Ͻÿ�]
+		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("�׺���̼���(��) �ε����Դϴ�."));
 
 	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))

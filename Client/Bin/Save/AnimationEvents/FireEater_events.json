@@ -17,6 +17,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Loop",
             "Duration": 130.0,
+            "Events": [
+                {
+                    "EventName": "Turnning",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "Turnning",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -46,6 +56,10 @@
             "ClipName": "AS_ATLBoss0_Skill_02_Start",
             "Duration": 106.0,
             "Events": [
+                {
+                    "EventName": "IsFront",
+                    "Time": 80.0
+                },
                 {
                     "EventName": "IsFront",
                     "Time": 80.0
@@ -104,6 +118,10 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 28.0
+                },
+                {
+                    "EventName": "CameraShake",
+                    "Time": 28.0
                 }
             ],
             "IsLoop": false,
@@ -114,6 +132,18 @@
             "ClipName": "AS_ATLBoss0_Skill_05_Attack",
             "Duration": 130.0,
             "Events": [
+                {
+                    "EventName": "CameraShake",
+                    "Time": 22.0
+                },
+                {
+                    "EventName": "CameraShake",
+                    "Time": 48.0
+                },
+                {
+                    "EventName": "CameraShake",
+                    "Time": 106.0
+                },
                 {
                     "EventName": "CameraShake",
                     "Time": 22.0
@@ -142,6 +172,14 @@
             "ClipName": "AS_ATLBoss0_Skill_05_Start",
             "Duration": 40.0,
             "Events": [
+                {
+                    "EventName": "CameraShake",
+                    "Time": 14.0
+                },
+                {
+                    "EventName": "CameraShake",
+                    "Time": 35.0
+                },
                 {
                     "EventName": "CameraShake",
                     "Time": 14.0
@@ -183,6 +221,10 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 42.0
+                },
+                {
+                    "EventName": "CameraShake",
+                    "Time": 42.0
                 }
             ],
             "IsLoop": false,
@@ -217,6 +259,10 @@
                 {
                     "EventName": "Turnning",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "Turnning",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -234,6 +280,10 @@
             "ClipName": "AS_ATLBoss0_Skill_11_Right",
             "Duration": 85.0,
             "Events": [
+                {
+                    "EventName": "Turnning",
+                    "Time": 1.0
+                },
                 {
                     "EventName": "Turnning",
                     "Time": 1.0
@@ -344,6 +394,12 @@
         {
             "ClipName": "AS_Hit_Dead_B",
             "Duration": 240.0,
+            "Events": [
+                {
+                    "EventName": "CollidersOff",
+                    "Time": 10.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -351,6 +407,12 @@
         {
             "ClipName": "AS_Hit_Dead_F",
             "Duration": 265.0,
+            "Events": [
+                {
+                    "EventName": "CollidersOff",
+                    "Time": 10.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -407,6 +469,12 @@
         {
             "ClipName": "AS_Special_Die",
             "Duration": 541.0,
+            "Events": [
+                {
+                    "EventName": "CollidersOff",
+                    "Time": 10.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -436,6 +504,14 @@
             "ClipName": "AS_Walk_C_F",
             "Duration": 120.0,
             "Events": [
+                {
+                    "EventName": "EC_ErgoItem_M3P1_WB_FRAMELOOPTEST",
+                    "Time": 40.0
+                },
+                {
+                    "EventName": "EC_ErgoItem_M3P1_WB_FRAMELOOPTEST",
+                    "Time": 80.0
+                },
                 {
                     "EventName": "EC_ErgoItem_M3P1_WB_FRAMELOOPTEST",
                     "Time": 40.0
