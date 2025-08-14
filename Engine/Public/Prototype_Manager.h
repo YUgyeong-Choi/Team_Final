@@ -47,7 +47,8 @@ public:
 	HRESULT Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 	void Clear(_uint iLevelIndex);
-
+	HRESULT Delete_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag);
+	HRESULT Replace_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 	//프로토타입이 존재하는지 확인하기 위해 public으로 올렸으요
 	class CBase* Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag);
 

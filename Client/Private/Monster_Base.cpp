@@ -69,9 +69,15 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	{
 		if (m_pAnimator->IsFinished())
 		{
+			CLockOn_Manager::Get_Instance()->Set_Active();
 			m_pHPBar->Set_bDead();
 			Set_bDead();
 		}
+	}
+
+	if (m_bDead)
+	{
+		m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
 	}
 
 
@@ -237,6 +243,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 	eDesc.fSizeY = 1.f;
 	eDesc.fHeight = 2.25f;
 	eDesc.pHP = &m_iHP;
+	eDesc.pIsGroggy = &m_isCanGroggy;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, 

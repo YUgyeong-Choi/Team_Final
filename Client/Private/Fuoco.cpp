@@ -1,4 +1,4 @@
-#include "Fuoco.h"
+ï»¿#include "Fuoco.h"
 #include "Bone.h"
 #include "GameInstance.h"
 #include "Effect_Manager.h"
@@ -45,16 +45,20 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 	if (FAILED(this->Ready_Actor()))
 		return E_FAIL;
-	
-	m_pPlayer = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"),0);
+
+	m_pPlayer = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), 0);
 
 	if (m_pNaviCom)
 	{
-	m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
-	_float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
+		m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
+		_float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
+		m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
 	}
 	Ready_AttackPatternWeightForPhase1();
+
+
+	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine1");
+
 	return S_OK;
 }
 
@@ -63,28 +67,43 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_TAB))
 	{
-		cout << "ÇöÀç ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸® : " << Get_DistanceToPlayer() << endl;
-		cout << "ÇöÀç ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
-		cout << "ÇöÀç ÀÌµ¿ ¹æÇâ " << m_pAnimator->GetInt("MoveDir") << endl;
+		cout << "í˜„ì¬ í”Œë ˆì´ì–´ì™€ì˜ ê±°ë¦¬ : " << Get_DistanceToPlayer() << endl;
+		cout << "í˜„ì¬ ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœ : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
+		cout << "í˜„ì¬ ì´ë™ ë°©í–¥ " << m_pAnimator->GetInt("MoveDir") << endl;
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
-		m_pAnimator->SetInt("SkillType", P2_FireBall);
-		m_pAnimator->SetTrigger("Attack");	
+		m_fHP -= 10.f;
+		cout << "ï¿½ï¿½ï¿½ï¿½ HP : " << m_fHP << endl;
 	}
 #endif
 
+	if (CalculateCurrentHpRatio() <= 0.5f&&m_bIsPhase2 == false)
+	{
+		Ready_AttackPatternWeightForPhase2();
+	}
 }
 
 void CFuoco::Update(_float fTimeDelta)
 {
-	UpdateBossState(fTimeDelta); // »óÅÂ ¾÷µ¥ÀÌÆ®
-	__super::Update(fTimeDelta); // ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
-	Update_Collider(); // Äİ¶óÀÌ´õ ¾÷µ¥ÀÌÆ®
 
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) 
+	if (CalculateCurrentHpRatio() <= 0.f)
+	{
+		m_pAnimator->SetTrigger("SpecialDie");
+	}
+	UpdateBossState(fTimeDelta); // ìƒíƒœ ì—…ë°ì´íŠ¸
+	__super::Update(fTimeDelta); // ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
+	Update_Collider(); // ì½œë¼ì´ë” ì—…ë°ì´íŠ¸
+
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
 		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
 	}
+
+	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
+
+	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
+
+	XMStoreFloat4(&m_vLockonPos, vLockonPos);
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)
@@ -101,6 +120,7 @@ void CFuoco::Late_Update(_float fTimeDelta)
 #endif
 }
 
+
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (pOther)
@@ -110,7 +130,7 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			if (m_pAnimator->GetInt("SkillType") == FootAtk)
 			{
 				m_pAnimator->SetBool("IsHit", true);
-				SetTurnTimeDuringAttack(2.f); // Ç»¸® ¾îÅÃ 
+				SetTurnTimeDuringAttack(2.f); // í“¨ë¦¬ ì–´íƒ 
 			}
 		}
 	}
@@ -143,6 +163,7 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CFuoco::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
+
 
 HRESULT CFuoco::LoadFromJson()
 {
@@ -213,7 +234,7 @@ HRESULT CFuoco::Ready_Components()
 		return S_OK;
 	}
 
-	//³×ºñ°ÔÀÌ¼Ç °¡Á®¿À±â
+	//ï¿½×ºï¿½ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	_wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation");
 	if (FAILED(__super::Add_Component(iLevelIndex, wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
@@ -233,14 +254,14 @@ HRESULT CFuoco::Ready_Actor()
 
 	PxTransform pose(positionVec, rotationQuat);
 
-	PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y*1.7f, scaleVec.z * 0.8f);
+	PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y * 1.7f, scaleVec.z * 0.8f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ÀÏ´Ü º¸·ù
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ì¼ë‹¨ ë³´ë¥˜
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
@@ -276,7 +297,7 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForArm->Set_ShapeFlag(true, true, true);
 		PxFilterData armFilterData{};
 		armFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ÀÏ´Ü º¸·ù
+		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ì¼ë‹¨ ë³´ë¥˜
 		m_pPhysXActorComForArm->Set_SimulationFilterData(armFilterData);
 		m_pPhysXActorComForArm->Set_QueryFilterData(armFilterData);
 		m_pPhysXActorComForArm->Set_Owner(this);
@@ -299,7 +320,7 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForFoot->Set_ShapeFlag(true, true, true);
 		PxFilterData footFilterData{};
 		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ÀÏ´Ü º¸·ù
+		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // ì¼ë‹¨ ë³´ë¥˜
 		m_pPhysXActorComForFoot->Set_SimulationFilterData(footFilterData);
 		m_pPhysXActorComForFoot->Set_QueryFilterData(footFilterData);
 		m_pPhysXActorComForFoot->Set_Owner(this);
@@ -319,7 +340,7 @@ void CFuoco::Update_Collider()
 	_float4 vPos;
 	XMStoreFloat4(&vPos, worldMatrix.r[3]);
 
-	PxVec3 pos(vPos.x, vPos.y+2.f, vPos.z);
+	PxVec3 pos(vPos.x, vPos.y + 2.f, vPos.z);
 	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
 	XMFLOAT4 fQuat;
 	XMStoreFloat4(&fQuat, boneQuat);
@@ -354,27 +375,74 @@ void CFuoco::Update_Collider()
 
 void CFuoco::UpdateBossState(_float fTimeDelta)
 {
+
 	if (!m_pPlayer)
 		return;
+
 	_uint iCurrentAnimStateNodeID = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->iNodeId;
 	if (iCurrentAnimStateNodeID == ENUM_CLASS(BossStateID::CUTSCENE))
 	{
-		return; // ÄÆ½Å Áß¿¡´Â »óÅÂ ¾÷µ¥ÀÌÆ®¸¦ ÇÏÁö ¾ÊÀ½
+		return; // ì»·ì‹  ì¤‘ì—ëŠ” ìƒíƒœ ì—…ë°ì´íŠ¸ë¥¼ í•˜ì§€ ì•ŠìŒ
 	}
 
-	_float fDistance = Get_DistanceToPlayer();
-	_bool bCanMove = m_eCurrentState != EFuocoState::ATTACK &&
-		m_eCurrentState != EFuocoState::GROGGY && m_eCurrentState != EFuocoState::DEAD && !m_bIsFirstAttack;
+	switch (iCurrentAnimStateNodeID)
+	{
+	case ENUM_CLASS(BossStateID::IDLE):
+		m_eCurrentState = EFuocoState::IDLE;
+		break;
+	case ENUM_CLASS(BossStateID::WALK_B):
+	case ENUM_CLASS(BossStateID::WALK_F):
+	case ENUM_CLASS(BossStateID::WALK_R):
+	case ENUM_CLASS(BossStateID::WALK_L):
+	{
+		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_eCurrentState = EFuocoState::WALK;
 
-	//_bool bCanMove = (m_eCurrentState == EFuocoState::IDLE || m_eCurrentState == EFuocoState::WALK) &&
-	//	m_eCurrentState != EFuocoState::GROGGY &&
-	//	m_eCurrentState != EFuocoState::DEAD &&
-	//	m_fAttackCooldown > 1.f;
+	}
+	break;
+	case ENUM_CLASS(BossStateID::RUN_F):
+		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
+		m_eCurrentState = EFuocoState::RUN;
+		break;
+	case ENUM_CLASS(BossStateID::GROGGY_END):
+	case ENUM_CLASS(BossStateID::GROGGY_START):
+	case ENUM_CLASS(BossStateID::GROGGY_LOOP):
+		m_eCurrentState = EFuocoState::GROGGY;
+		break;
+	case ENUM_CLASS(BossStateID::DEAD_B):
+	case ENUM_CLASS(BossStateID::DEAD_F):
+	case ENUM_CLASS(BossStateID::SPECIAL_DIE):
+		m_eCurrentState = EFuocoState::DEAD;
+		break;
+	case ENUM_CLASS(BossStateID::TURN_L):
+	case ENUM_CLASS(BossStateID::TURN_R):
+		m_eCurrentState = EFuocoState::TURN;
+		break;
+	default:
+		m_eCurrentState = EFuocoState::ATTACK;
+		break;
+	}
+
+	if (m_eCurrentState != EFuocoState::ATTACK)
+	{
+		m_pAnimator->SetBool("IsHit", false);
+	}
+	_float fDistance = Get_DistanceToPlayer();
+	/*_bool bCanMove = m_eCurrentState != EFuocoState::ATTACK &&
+		m_eCurrentState != EFuocoState::GROGGY && m_eCurrentState != EFuocoState::DEAD && !m_bIsFirstAttack;*/
+
+	_bool bCanMove = (m_eCurrentState == EFuocoState::IDLE ||
+		m_eCurrentState == EFuocoState::WALK ||
+		m_eCurrentState == EFuocoState::RUN) &&
+		m_eCurrentState != EFuocoState::GROGGY &&
+		m_eCurrentState != EFuocoState::DEAD &&
+		!m_bIsFirstAttack &&
+		m_fAttackCooldown > 0.5f;
 
 	m_pAnimator->SetBool("Move", bCanMove);
 	if (bCanMove)
 	{
-		// °¡±î¿ì¸é 
+		// ê°€ê¹Œìš°ë©´ 
 		if (fDistance < CHASING_DISTANCE)
 		{
 			if (m_fChangeMoveDirCooldown > 0.f)
@@ -385,10 +453,10 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 			{
 				_int iMoveDir = GetRandomInt(1, 3);
 				m_pAnimator->SetInt("MoveDir", iMoveDir);
-				m_fChangeMoveDirCooldown = 3.f;
+				m_fChangeMoveDirCooldown = 2.5f;
 			}
 		}
-		else if(fDistance>=CHASING_DISTANCE)
+		else if (fDistance >= CHASING_DISTANCE)
 		{
 			m_pAnimator->SetInt("MoveDir", 0);
 		}
@@ -396,48 +464,8 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 	}
 
 
-	UpdateAttackPattern(fDistance, fTimeDelta); // °ø°İ ÆĞÅÏ ¾÷µ¥ÀÌÆ®
+	UpdateAttackPattern(fDistance, fTimeDelta);// ê³µê²© íŒ¨í„´ ì—…ë°ì´íŠ¸
 
-	switch (iCurrentAnimStateNodeID)
-	{
-	  case ENUM_CLASS(BossStateID::IDLE):
-		  m_eCurrentState = EFuocoState::IDLE;
-		break;
-	  case ENUM_CLASS(BossStateID::WALK_B):
-	  case ENUM_CLASS(BossStateID::WALK_F):
-	  case ENUM_CLASS(BossStateID::WALK_R):
-	  case ENUM_CLASS(BossStateID::WALK_L):
-	  {
-		  m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
-		  m_eCurrentState = EFuocoState::WALK;
-
-	  }
-		  break;
-	  case ENUM_CLASS(BossStateID::RUN_F):
-		  m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
-		  m_eCurrentState = EFuocoState::RUN;
-		  break;
-	  case ENUM_CLASS(BossStateID::GROGGY_END):
-	  case ENUM_CLASS(BossStateID::GROGGY_START):
-	  case ENUM_CLASS(BossStateID::GROGGY_LOOP):
-		  m_eCurrentState = EFuocoState::GROGGY;
-		  break;
-	  case ENUM_CLASS(BossStateID::DEAD_B):
-	  case ENUM_CLASS(BossStateID::DEAD_F):
-	  case ENUM_CLASS(BossStateID::SPECIAL_DIE):
-		  m_eCurrentState = EFuocoState::DEAD;
-	  case ENUM_CLASS(BossStateID::TURN_L):
-	  case ENUM_CLASS(BossStateID::TURN_R):
-		  m_eCurrentState = EFuocoState::TURN;
-		  break;
-	  default:
-		  m_eCurrentState = EFuocoState::ATTACK;
-			  break;
-	}
-	if (m_eCurrentState != EFuocoState::ATTACK)
-	{
-		m_pAnimator->SetBool("IsHit", false);
-	}
 	UpdateMove(fTimeDelta);
 }
 
@@ -448,41 +476,41 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 
 	if (bIsRootMotion)
 	{
-		ApplyRootMotionDelta(fTimeDelta); // ·çÆ® ¸ğ¼Ç Àû¿ë
+		ApplyRootMotionDelta(fTimeDelta); // ë£¨íŠ¸ ëª¨ì…˜ ì ìš©
 	}
 	else
 	{
 		UpdateNormalMove(fTimeDelta);
 	}
-	
+
 	_vector vDir = GetTargetDirection();
 	if (XMVector3Equal(vDir, XMVectorZero()))
-		return; // ¹æÇâÀÌ 0ÀÌ¸é È¸ÀüÇÏÁö ¾ÊÀ½
+		return; // ë°©í–¥ì´ 0ì´ë©´ íšŒì „í•˜ì§€ ì•ŠìŒ
 	vDir = XMVectorSetY(vDir, 0.f);
 	vDir = XMVector3Normalize(vDir);
 
 
-	// ÇöÀç »óÅÂ¿¡¼­ ¸¹ÀÌ È¸ÀüÇßÀ¸¸é ¾Ö´Ï¸ŞÀÌÅÍ Turn true
+	// í˜„ì¬ ìƒíƒœì—ì„œ ë§ì´ íšŒì „í–ˆìœ¼ë©´ ì• ë‹ˆë©”ì´í„° Turn true
 	_vector vCurrentLook = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
 	_float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, vDir));
 	fDot = clamp(fDot, -1.f, 1.f);
 	_vector vCross = XMVector3Cross(vCurrentLook, vDir);
 	_float fSign = (XMVectorGetY(vCross) < 0.f) ? -1.f : 1.f;
-	_float fYaw = acosf(fDot) * fSign; // È¸Àü °¢µµ (¶óµğ¾È ´ÜÀ§) -180~180
+	_float fYaw = acosf(fDot) * fSign; // íšŒì „ ê°ë„ (ë¼ë””ì•ˆ ë‹¨ìœ„) -180~180
 
 
-	_bool bIsTurn = abs(XMConvertToDegrees(fYaw)) > MINIMUM_TURN_ANGLE &&( m_eCurrentState == EFuocoState::IDLE||
-		m_eCurrentState == EFuocoState::WALK);
-	
+	_bool bIsTurn = abs(XMConvertToDegrees(fYaw)) > MINIMUM_TURN_ANGLE && (m_eCurrentState == EFuocoState::IDLE ||
+		m_eCurrentState == EFuocoState::WALK || m_eCurrentState == EFuocoState::RUN);
+
 	if (bIsTurn)
 	{
 		m_pAnimator->SetTrigger("Turn");
-		m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: ¿À¸¥ÂÊ, 1: ¿ŞÂÊ
+		m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: ì˜¤ë¥¸ìª½, 1: ì™¼ìª½
 //#ifdef _DEBUG
-//		cout << "È¸Àü °¢µµ: " << XMConvertToDegrees(fYaw) << "µµ" << endl;
-//		cout << "È¸Àü ¹æÇâ : " << ((fYaw >= 0.f) ? "¿À¸¥ÂÊ" : "¿ŞÂÊ") << endl;
+//		cout << "íšŒì „ ê°ë„: " << XMConvertToDegrees(fYaw) << "ë„" << endl;
+//		cout << "íšŒì „ ë°©í–¥ : " << ((fYaw >= 0.f) ? "ì˜¤ë¥¸ìª½" : "ì™¼ìª½") << endl;
 //#endif
-		m_pAnimator->SetBool("Move", false); // È¸Àü Áß¿¡´Â ÀÌµ¿ÇÏÁö ¾ÊÀ½
+		m_pAnimator->SetBool("Move", false); // íšŒì „ ì¤‘ì—ëŠ” ì´ë™í•˜ì§€ ì•ŠìŒ
 	}
 
 	if (m_eCurrentState == EFuocoState::TURN)
@@ -493,35 +521,29 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 
 void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
-	// Ç»¸® µ¹Áø 9¹ø
+	// í“¨ë¦¬ ëŒì§„ 9ë²ˆ
 	if (m_bIsFirstAttack)
 	{
 		m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType", StrikeFury);
 		m_bIsFirstAttack = false;
 		m_pAnimator->SetBool("Move", false);
-		m_fAttackCooldown = 3.f;
-		SetTurnTimeDuringAttack(1.f);
+		m_fAttackCooldown = m_fAttckDleay;
+		SetTurnTimeDuringAttack(2.f);
 		return;
 	}
 
-	if (m_bStartPhase2)
+	if (CheckConditionFlameFiled())
 	{
-		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", StrikeFury);
-		m_pAnimator->SetTrigger("Phase2Start");
-		m_pAnimator->SetBool("Move", false);
-		m_bStartPhase2 = false;
-		m_bIsPhase2 = true;
 		m_fAttackCooldown = 10.f;
+		return;
 	}
-
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
 	{
 		return;
 	}
 
-	if (m_eCurrentState == EFuocoState::ATTACK)
+	if (m_eCurrentState == EFuocoState::ATTACK || fDistance > ATTACK_DISTANCE)
 	{
 		return;
 	}
@@ -531,7 +553,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		m_fAttackCooldown -= fTimeDelta;
 		return;
 	}
-
+	m_pAnimator->SetBool("Move", false);
 	EBossAttackPattern eSkillType = GetRandomAttackPattern();
 	while (!IsValidAttackType(eSkillType))
 	{
@@ -545,7 +567,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	m_pAnimator->SetTrigger("Attack");
 
 
-	m_fAttackCooldown = 3.f;
+	m_fAttackCooldown = m_fAttckDleay;
 }
 
 
@@ -563,7 +585,7 @@ _float CFuoco::Get_DistanceToPlayer() const
 	return fDistance;
 }
 
-_bool CFuoco::IsTargetInFront() const
+_bool CFuoco::IsTargetInFront(_float fDectedAngle) const
 {
 	if (!m_pPlayer)
 		return false;
@@ -573,10 +595,10 @@ _bool CFuoco::IsTargetInFront() const
 	_vector vForward = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
 	_vector vToPlayerXZ = XMVectorSetY(vPlayerPos - vThisPos, 0.f);
 	_float fDot = XMVectorGetX(XMVector3Dot(vForward, vToPlayerXZ));
-	fDot = clamp(fDot, -1.f, 1.f); // -1 ~ 1 »çÀÌ·Î Á¦ÇÑ
-	_float fAngle = cosf(XMConvertToRadians(30.f)); // ½Ã¾ß°¢ 60µµ ±âÁØ
+	fDot = clamp(fDot, -1.f, 1.f); // -1 ~ 1 ì‚¬ì´ë¡œ ì œí•œ
+	_float fAngle = cosf(XMConvertToRadians(30.f)); // ì‹œì•¼ê° 60ë„ ê¸°ì¤€
 
-	return fDot > fAngle; // ¾ÕÂÊ¿¡ ÀÖÀ¸¸é true
+	return fDot > fAngle; // ì•ìª½ì— ìˆìœ¼ë©´ true
 }
 
 _vector CFuoco::GetTargetDirection() const
@@ -586,7 +608,7 @@ _vector CFuoco::GetTargetDirection() const
 	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 	_vector vThisPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vToPlayer = vPlayerPos - vThisPos;
-	return XMVector3Normalize(vToPlayer); // ÇÃ·¹ÀÌ¾î ¹æÇâ º¤ÅÍ ¹İÈ¯
+	return XMVector3Normalize(vToPlayer); // í”Œë ˆì´ì–´ ë°©í–¥ ë²¡í„° ë°˜í™˜
 }
 
 void CFuoco::ApplyRootMotionDelta(_float fTimeDelta)
@@ -655,19 +677,18 @@ void CFuoco::UpdateNormalMove(_float fTimeDelta)
 
 _bool CFuoco::UpdateTurnDuringAttack(_float fTimeDelta)
 {
-	if (m_fTurnTimeDuringAttack >= 0.000001f)
+	if (m_fTurnTimeDuringAttack >= 0.001f)
 	{
 		_vector vDir = GetTargetDirection();
 		vDir = XMVectorSetY(vDir, 0.f);
 		vDir = XMVector3Normalize(vDir);
-		m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta*m_fAddtiveRotSpeed);
+		m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta * m_fAddtiveRotSpeed);
 		m_fTurnTimeDuringAttack -= fTimeDelta;
-		cout << "È¸Àü ½Ã°£ ³²À½: " << m_fTurnTimeDuringAttack << endl;
 		return false;
 	}
 
 	m_fAddtiveRotSpeed = 1.f;
-	m_fTurnTimeDuringAttack = 0.f; // ÃÊ±âÈ­
+	m_fTurnTimeDuringAttack = 0.f; // ì´ˆê¸°í™”
 	return true;
 }
 
@@ -676,6 +697,17 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 
 	switch (ePattern)
 	{
+	case Client::CFuoco::SlamCombo:
+	{
+		_bool bIsCombo = GetRandomInt(0, 1) == 1;
+		m_pAnimator->SetBool("IsCombo", bIsCombo);
+		if (bIsCombo)
+		{
+			_int iDir = GetRandomInt(0, 1);
+			m_pAnimator->SetInt("Direction", iDir);
+		}
+	}
+	break;
 	case Client::CFuoco::SwingAtk:
 	{
 		_bool bIsCombo = GetRandomInt(0, 1) == 1;
@@ -686,7 +718,7 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 			m_pAnimator->SetInt("SwingCombo", iComboType);
 		}
 	}
-		break;
+	break;
 	case Client::CFuoco::FootAtk:
 		break;
 	case Client::CFuoco::SlamAtk:
@@ -703,7 +735,7 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 		_int iDir = GetRandomInt(0, 2);
 		m_pAnimator->SetInt("Direction", iDir);
 	}
-		break;
+	break;
 	case Client::CFuoco::P2_FireBall_B:
 		break;
 	default:
@@ -716,7 +748,7 @@ void CFuoco::Register_Events()
 	if (nullptr == m_pAnimator)
 		return;
 
-	// Å×½ºÆ®
+	// í…ŒìŠ¤íŠ¸
 	m_pAnimator->RegisterEventListener(
 		"EC_ErgoItem_M3P1_WB_FRAMELOOPTEST",
 		[this](const string& eventName)
@@ -724,13 +756,13 @@ void CFuoco::Register_Events()
 			auto vPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_float3 pos = { XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos) };
 			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), pos.x, pos.y, pos.z)))
-				MSG_BOX("ÀÌÆåÆ® »ı¼º ½ÇÆĞ");
+				MSG_BOX("ì´í™íŠ¸ ìƒì„± ì‹¤íŒ¨");
 		});
-
+	////////////////
 	m_pAnimator->RegisterEventListener("CameraShake",
 		[this](const string& eventName)
 		{
-			CCamera_Manager::Get_Instance()->Shake_Camera(0.15f,0.2f);
+			CCamera_Manager::Get_Instance()->Shake_Camera(0.15f, 0.2f);
 		});
 	m_pAnimator->RegisterEventListener("IsFront",
 		[this](const string& eventName)
@@ -746,11 +778,15 @@ void CFuoco::Register_Events()
 		});
 	m_pAnimator->RegisterEventListener("Turnning", [this](const string&)
 		{
-			_bool bIsFront = IsTargetInFront();
+			_bool bIsFront = IsTargetInFront(180.f);
 
 			if (bIsFront == false)
 			{
-				SetTurnTimeDuringAttack(2.5f,1.2f);
+				SetTurnTimeDuringAttack(2.5f, 1.4f);
+			}
+			else
+			{
+				SetTurnTimeDuringAttack(1.5f);
 			}
 
 		});
@@ -759,40 +795,58 @@ void CFuoco::Register_Events()
 		{
 			m_pAnimator->GetCurrentAnim()->ResetTrack();
 		});
+
+	m_pAnimator->RegisterEventListener("SlowAnimSpeed", [this](const string&) {
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(
+			m_pAnimator->GetCurrentAnim()->GetTickPerSecond() * 0.5f);
+		});
+	m_pAnimator->RegisterEventListener("ResetAnimSpeed", [this](const string&) {
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(
+			m_pAnimator->GetCurrentAnim()->GetTickPerSecond()*1.5f);
+		});
+
+	m_pAnimator->RegisterEventListener("CollidersOff", [this](const string&) {
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+		m_pPhysXActorComForArm->Set_ShapeFlag(false, false, false);
+		m_pPhysXActorComForFoot->Set_ShapeFlag(false, false, false);
+		});
 }
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
 {
-	
-	m_vecAttackPatternWeight.reserve(12);
-	m_vecAttackPatternWeight.push_back({ 0.2f,SlamCombo });
-	m_vecAttackPatternWeight.push_back({ 0.2f, SwingAtk });
-	m_vecAttackPatternWeight.push_back({ 0.2f, FootAtk });
-	m_vecAttackPatternWeight.push_back({ 0.2f, Uppercut });
-	m_vecAttackPatternWeight.push_back({ 0.2f, StrikeFury });
-	m_vecAttackPatternWeight.push_back({ 0.2f, SlamAtk });
+	vector<EBossAttackPattern> m_vecBossPatterns = {
+		SlamCombo, SwingAtk, FootAtk, Uppercut, StrikeFury, SlamAtk,SlamFury
+	};
+
+	for (const auto& pattern : m_vecBossPatterns)
+	{
+		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
+		m_PatternCountMap[pattern] = 0; // ï¿½Ê±ï¿½È­
+	}
 }
 
 void CFuoco::Ready_AttackPatternWeightForPhase2()
 {
-	m_vecAttackPatternWeight.clear();
-	m_vecAttackPatternWeight.push_back({ 0.2f,SlamCombo });
-	m_vecAttackPatternWeight.push_back({ 0.2f, SwingAtk });
-	m_vecAttackPatternWeight.push_back({ 0.2f, FootAtk });
-	m_vecAttackPatternWeight.push_back({ 0.2f, Uppercut });
-	m_vecAttackPatternWeight.push_back({ 0.2f, StrikeFury });
-	m_vecAttackPatternWeight.push_back({ 0.2f, SlamAtk });
-	m_vecAttackPatternWeight.push_back({ 0.2f, P2_FireOil });
-	m_vecAttackPatternWeight.push_back({ 0.2f, P2_FireBall });
-	m_vecAttackPatternWeight.push_back({ 0.2f, P2_FireBall_B });
-	m_vecAttackPatternWeight.push_back({ 0.2f, P2_FlameFiled });
+	m_bStartPhase2 = true;
+	vector<EBossAttackPattern> m_vecBossPatterns = {
+		SlamCombo, SwingAtk, FootAtk,SlamFury, Uppercut, StrikeFury, SlamAtk,
+		P2_FireOil, P2_FireBall, P2_FireBall_B, P2_FlameFiled
+	};
+	m_PatternWeightMap.clear();
+	m_PatternCountMap.clear();
+	for (const auto& pattern : m_vecBossPatterns)
+	{
+		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
+		m_PatternCountMap[pattern] = 0; // ï¿½Ê±ï¿½È­
+	}
 }
 
 CFuoco::EBossAttackPattern CFuoco::GetRandomAttackPattern()
 {
 	EBossAttackPattern ePattern = BAP_NONE;
-
-	// ³»¸² Â÷¼ø Á¤·Ä
+	
+	/* í˜¹ì‹œ ëª°ë¼ ì£¼ì„
+	// ë‚´ë¦¼ ì°¨ìˆœ ì •ë ¬
 	sort(m_vecAttackPatternWeight.begin(), m_vecAttackPatternWeight.end(),
 		[](const pair<_float, EBossAttackPattern>& A, const pair<_float, EBossAttackPattern>& B)
 		{
@@ -800,18 +854,77 @@ CFuoco::EBossAttackPattern CFuoco::GetRandomAttackPattern()
 		});
 	_float fTotalWeight = accumulate(m_vecAttackPatternWeight.begin(), m_vecAttackPatternWeight.end(), 0.f,
 		[](_float fAcc, const pair<_float, EBossAttackPattern>& Pair) { return fAcc + Pair.first; });
+	*/
+
+	_float fTotalWeight = accumulate(m_PatternWeightMap.begin(), m_PatternWeightMap.end(), 0.f,
+		[](_float fAcc, const pair<EBossAttackPattern, _float>& Pair) { return fAcc + Pair.second; });
+
+
 	_float fRandomVal = static_cast<_float>(rand()) / RAND_MAX * fTotalWeight;
 	_float fCurWeight = 0.f;
-	for (const auto& [weight, pattern] : m_vecAttackPatternWeight)
+	for (const auto& [pattern, weight] : m_PatternWeightMap)
 	{
 		fCurWeight += weight;
 		if (fRandomVal <= fCurWeight)
 		{
 			ePattern = pattern;
+			m_ePrevAttackPattern = m_eCurAttackPattern;
+			m_eCurAttackPattern = ePattern; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+#ifdef _DEBUG
+			PatterDebugFunc();
+#endif
+			UpdatePatternWeight(ePattern); // ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 			break;
 		}
 	}
 	return ePattern;
+}
+
+void CFuoco::UpdatePatternWeight(EBossAttackPattern ePattern)
+{
+	for (auto& [pattern, weight] : m_PatternWeightMap)
+	{
+		if (pattern == ePattern)
+		{
+			// ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+			m_PatternCountMap[pattern]++;
+			if (m_PatternCountMap[pattern] >= m_iPatternLimit)
+			{
+				weight *= (1.f - m_fWeightDecreaseRate); // ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+			}
+			weight = max(weight, m_fMinWeight); // ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+		}
+		else
+		{
+			m_PatternCountMap[pattern] = 0; // ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½Æ® ï¿½Ê±ï¿½È­
+			weight += (m_fMaxWeight - weight) * m_fWeightIncreaseRate; // ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+			weight = min(weight, m_fMaxWeight); // ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
+		}
+	}
+}
+
+_bool CFuoco::CheckConditionFlameFiled()
+{
+	if (m_bStartPhase2 || (!m_bUsedFlameFiledOnLowHp && CalculateCurrentHpRatio() <= 0.2f))
+	{
+		if (CalculateCurrentHpRatio() <= 0.2f && !m_bUsedFlameFiledOnLowHp)
+		{
+			m_pAnimator->SetInt("SkillType", P2_FlameFiled);
+			m_bUsedFlameFiledOnLowHp = true;
+		}
+		else
+		{
+			m_pAnimator->SetInt("SkillType", StrikeFury);
+			m_pAnimator->SetTrigger("Phase2Start");
+			m_bStartPhase2 = false;
+			m_bIsPhase2 = true;
+		}
+		m_pAnimator->SetBool("Move", false);
+		m_pAnimator->SetTrigger("Attack");
+		cout << "Flame Filed ï¿½ßµï¿½" << endl;
+		return true;
+	}
+	return false;
 }
 
 CFuoco* CFuoco::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

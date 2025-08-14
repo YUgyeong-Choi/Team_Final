@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Client_Defines.h"
 #include "UIObject.h"
@@ -20,6 +20,7 @@ public:
 	{
 		_float fHeight;
 		_int* pHP;
+		_bool* pIsGroggy;
 		const _float4x4* pParentMatrix;
 
 	}HPBAR_DESC;
@@ -53,6 +54,7 @@ private:
 
 private:
 	_int* m_pHP = { nullptr };
+	_bool* m_isGroggy = {nullptr};
 	_int  m_iMaxHP = {};
 	_int  m_iDamage = {};
 

@@ -32,6 +32,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 
+	m_isCanGroggy = true;
 	
 	return S_OK;
 }
@@ -48,6 +49,8 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			m_pWeapon->Set_bDead();
 		}
 	}
+
+	
 }
 
 void CButtler_Train::Update(_float fTimeDelta)
@@ -71,6 +74,7 @@ void CButtler_Train::Update(_float fTimeDelta)
 
 		m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 0.6f);
 	}
+	
 
 	__super::Update(fTimeDelta);
 
@@ -97,8 +101,10 @@ HRESULT CButtler_Train::Render()
 
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (pOther->Get_bDead())
+		return;
 
-	ReceiveDamage(pOther, eColliderType);
+	//ReceiveDamage(pOther, eColliderType);
 
 }
 
@@ -126,14 +132,10 @@ void CButtler_Train::Update_State()
 {
 	 Check_Detect();
 
-	if (!m_isDetect)
+	if (!m_isDetect || m_iHP <= 0)
 		return;
 
 
-	if (m_iHP <= 0)
-		return;
-
-	
 
 	_vector vDist = {};
 	vDist = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
@@ -165,8 +167,26 @@ void CButtler_Train::Update_State()
 		{
 			m_pAnimator->SetBool("UseLightAttack", true);
 		}
+
+		// 이게 잘 안되네 
+		// 이벤트로 바꿔
+		if (m_pAnimator->IsFinished())
+		{
+			//++m_iAttackCount;
+		}
 	}
 
+	if (m_iAttackCount == 3)
+	{
+		// 뒤로 가게 하기
+
+
+		m_pAnimator->SetTrigger("Back");
+
+		m_iAttackCount = 0;
+
+		
+	}
 	
 	
 
@@ -182,7 +202,8 @@ void CButtler_Train::AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eCollide
 
 void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	
+	if (m_strStateName == "Dead")
+		return;
 
 	if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
 	{
@@ -197,32 +218,37 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pHPBar->Set_RenderTime(2.f);
 	}
-	else if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		m_iHP -= 300;
-
-		m_pAnimator->SetTrigger("Hit");
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
-		m_pHPBar->Set_RenderTime(2.f);
-	}
-
 
 	if (m_iHP <= 0)
 	{
-		if (m_strStateName == "Dead")
-			return;
+		
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pAnimator->SetTrigger("Dead");
 		m_strStateName = "Dead";
 	}
+	
 }
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
 	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk") != m_strStateName.npos)
 	{
-		m_pTransformCom->Go_Dir(m_pTransformCom->Get_State(STATE::LOOK), fTimeDelta, nullptr, m_pNaviCom);
+		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+
+		if (m_strStateName.find("Walk_B") != m_strStateName.npos)
+		{
+			vLook *= -1.f;
+
+			m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
+		}
+		else
+		{
+			m_pTransformCom->Go_Dir(vLook, fTimeDelta, nullptr, m_pNaviCom);
+		}
+			
+
 	}
 
 	else if (m_strStateName.find("Attack") != m_strStateName.npos)

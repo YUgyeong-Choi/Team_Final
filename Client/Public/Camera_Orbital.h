@@ -77,8 +77,10 @@ private:
 private:
 	const _float m_fPadding = 1.0f;     // 플레이어 & 타겟이 가까울 때를 위한 최소 반지름
 	const _float m_fFrame = 0.85f;   // 화면 높이의 안에 들어오도록 여유를 위한 변수
-	const _float m_fDistanceMin = 3.0f;     //  카메라 거리가 너무 가까워 지는거 방지
-	const _float m_fDistanceMax = 6.0f;     // 카메라 거리가 너무 멀어져서 지는거 방지
+	const _float m_fDistanceMin = 3.0f;     //  플레이어 & 타겟이 너무 가까워 지는거 방지
+	const _float m_fDistanceMax = 6.0f;     // 플레이어 & 타겟이 멀어져서 지는거 방지
+	const _float fMinPlayerDepth = 1.2f;    // 플레이어 카메라간의 최소 거리
+	_float m_fCurDistance = 3.0f; //m_fDistanceMin 같도록
 private:
 	CGameObject*	m_pPlayer = { nullptr };
 	// 락온이 안될 때는 항상 nullptr

@@ -39,7 +39,7 @@ void CUI_LockOn_Icon::Update(_float fTimeDelta)
 {
 	auto pTarget = CLockOn_Manager::Get_Instance()->Get_Target();
 
-	if (nullptr == pTarget)
+	if (nullptr == pTarget || pTarget->Get_bDead())
 	{
 		m_isRender = false;
 		return;

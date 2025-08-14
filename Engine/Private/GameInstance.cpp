@@ -256,6 +256,14 @@ class CBase* CGameInstance::Find_Prototype(_uint iLevelIndex, const _wstring& st
 {
 	return m_pPrototype_Manager->Find_Prototype(iLevelIndex, strPrototypeTag);
 }
+HRESULT CGameInstance::Delete_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag)
+{
+	return m_pPrototype_Manager->Delete_Prototype(iPrototypeLevelIndex, strPrototypeTag);
+}
+HRESULT CGameInstance::Replace_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, CBase* pPrototype)
+{
+	return m_pPrototype_Manager->Replace_Prototype(iPrototypeLevelIndex, strPrototypeTag, pPrototype);
+}
 #pragma endregion
 
 #pragma region OBJECT_MANAGER

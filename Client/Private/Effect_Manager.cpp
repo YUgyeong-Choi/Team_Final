@@ -4,6 +4,7 @@
 #include "ParticleEffect.h"
 #include "SpriteEffect.h"
 #include "MeshEffect.h"
+#include "TrailEffect.h"
 
 IMPLEMENT_SINGLETON(CEffect_Manager)
 
@@ -142,6 +143,42 @@ HRESULT CEffect_Manager::Ready_Prototypes()
     return S_OK;
 }
 
+HRESULT CEffect_Manager::Ready_Effect(EFFECT_TYPE eEffType, void* pArg)
+{
+    switch (eEffType)
+    {
+    case Client::EFF_SPRITE:
+    {
+
+    }
+        break;
+    case Client::EFF_PARTICLE:
+    {
+
+    }
+        break;
+    case Client::EFF_MESH:
+    {
+
+    }
+        break;
+    case Client::EFF_TRAIL:
+    {
+
+    }
+        break;
+    case Client::EFF_ONETRAIL:
+    {
+
+    }
+        break;
+    default:
+        break;
+    }
+
+    return S_OK;
+}
+
 
 HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
 {
@@ -195,8 +232,12 @@ HRESULT CEffect_Manager::Ready_Prototype_Components(const json& j, EFFECT_TYPE e
     Ready_Prototype_Textures(j);
     if (eEffType == EFF_MESH)
         Ready_Prototype_Models(j);
-    if (eEffType == EFF_PARTICLE)
-        Ready_Prototype_VIBuffers(j);
+    else if (eEffType == EFF_PARTICLE)
+        Ready_Prototype_Particle_VIBuffers(j);
+    else if (eEffType == EFF_TRAIL)
+		Ready_Prototype_Trail_VIBuffers(j);
+  //  else if (eEffType == EFF_ONETRAIL)
+		//Ready_Prototype_Trail_VIBuffers(j);
     return S_OK;
 }
 
@@ -268,19 +309,18 @@ HRESULT CEffect_Manager::Ready_Prototype_Textures(const json& j)
     return S_OK;
 }
 
-HRESULT CEffect_Manager::Ready_Prototype_VIBuffers(const json& j)
+HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 {
     CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
     _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
     /* 이 버퍼 어디 저장해둬야 할 것 같다 */
+    //왜저장하려했더라;
 
 
-    /* 이거 지금 툴에서 저장 안 해줬으니 추가할 것 */
     if (j.contains("Name"))
     {
         strPrototypeTag += StringToWString(j["Name"].get<std::string>());
     }
-    // 태그씩이나 저장 안해도 될 것 같고 파티클 시퀀스 하나의 이름만 정의해도 괜찮을 듯 
 
     if (j.contains("NumInstance"))
         VIBufferDesc.iNumInstance = j["NumInstance"].get<_uint>();
@@ -318,6 +358,32 @@ HRESULT CEffect_Manager::Ready_Prototype_VIBuffers(const json& j)
         CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, &VIBufferDesc))))
         return E_FAIL;
 
+
+    return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Prototype_Trail_VIBuffers(const json& j)
+{
+    CVIBuffer_Trail::DESC VIBufferDesc = {};
+    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+
+    if (j.contains("Name"))
+    {
+        strPrototypeTag += StringToWString(j["Name"].get<std::string>());
+    }
+
+    if (j.contains("LifeDuration"))
+        VIBufferDesc.fLifeDuration = j["LifeDuration"].get<_float>();
+
+    if (j.contains("NodeInterval"))
+        VIBufferDesc.fNodeInterval = j["NodeInterval"].get<_float>();
+
+    if (j.contains("Subdivisions"))
+        VIBufferDesc.Subdivisions = j["Subdivisions"].get<_int>();
+
+    if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
+        CVIBuffer_Trail::Create(m_pDevice, m_pContext, &VIBufferDesc))))
+        return E_FAIL;
 
     return S_OK;
 }

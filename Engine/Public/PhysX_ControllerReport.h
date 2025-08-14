@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PxPhysicsAPI.h"
 #include "PhysXActor.h"
@@ -6,14 +6,14 @@
 
 using namespace physx;
 
-// ÄÁÆ®·Ñ·¯ Ãæµ¹ Äİ¹é Àü¿ë Å¬·¡½º
+// ì»¨íŠ¸ë¡¤ëŸ¬ ì¶©ëŒ ì½œë°± ì „ìš© í´ë˜ìŠ¤
 class CPhysXControllerHitReport : public PxUserControllerHitReport
 {
 public:
     CPhysXControllerHitReport() = default;
     virtual ~CPhysXControllerHitReport() = default;
 
-    // ===== Ignore °ü¸® =====
+    // ===== Ignore ê´€ë¦¬ =====
     void AddIgnoreActor(PxActor* actor)
     {
         if (actor)
@@ -35,7 +35,7 @@ public:
         return (actor && m_IgnoreActors.find(actor) != m_IgnoreActors.end());
     }
 
-    // ===== Ãæµ¹ Äİ¹é =====
+    // ===== ì¶©ëŒ ì½œë°± =====
     void onShapeHit(const PxControllerShapeHit& hit) override
     {
         PxRigidActor* pHitActor = hit.actor;
@@ -44,17 +44,17 @@ public:
         if (!pHitActor || !pController)
             return;
 
-        // Ignore ¸ñ·Ï¿¡ ÀÖÀ¸¸é ¹«½Ã
+        // Ignore ëª©ë¡ì— ìˆìœ¼ë©´ ë¬´ì‹œ
         if (IsIgnored(pHitActor))
             return;
 
         CPhysXActor* pOther = static_cast<CPhysXActor*>(pHitActor->userData);
         CPhysXActor* pSelf = static_cast<CPhysXActor*>(pController->getActor()->userData);
 
-        if (pSelf && pOther)
-        {
-            pSelf->On_Enter(pOther);
-        }
+        //if (pSelf && pOther)
+        //{
+        //    pSelf->On_Enter(pOther); 
+        //}
     }
 
     void onControllerHit(const PxControllersHit& hit) override
@@ -65,23 +65,23 @@ public:
         if (!pA || !pB)
             return;
 
-        // Ignore ¸ñ·Ï¿¡ ÀÖÀ¸¸é ¹«½Ã
+        // Ignore ëª©ë¡ì— ìˆìœ¼ë©´ ë¬´ì‹œ
         if (IsIgnored(pB->getActor()))
             return;
 
         CPhysXActor* actorA = static_cast<CPhysXActor*>(pA->getActor()->userData);
         CPhysXActor* actorB = static_cast<CPhysXActor*>(pB->getActor()->userData);
 
-        if (actorA && actorB)
-        {
-            actorA->On_Enter(actorB);
-            actorB->On_Enter(actorA);
-        }
+        //if (actorA && actorB)
+        //{
+        //    actorA->On_Enter(actorB);
+        //    actorB->On_Enter(actorA);
+        //}
     }
 
     void onObstacleHit(const PxControllerObstacleHit& hit) override
     {
-        // ÇÊ¿ä ½Ã ±¸Çö
+        // í•„ìš” ì‹œ êµ¬í˜„
     }
 
 private:

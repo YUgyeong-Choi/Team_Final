@@ -40,6 +40,10 @@ public:
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg = nullptr);
 	const map<const _wstring, class CBase*>* Get_Prototypes();
 	class CBase* Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag);
+	// 프로토타입 삭제
+	HRESULT Delete_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag);
+	// 프로토타입 이미 있었다면 삭제 후 재생성
+	HRESULT Replace_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 #pragma endregion
 
 #pragma region OBJECT_MANAGER

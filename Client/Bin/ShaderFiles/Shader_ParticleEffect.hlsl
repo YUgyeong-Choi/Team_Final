@@ -201,7 +201,7 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     fade = 1.0 - fade; // 남은 생명에 비례해 감소
     vColor.a *= fade;
     
-    /*
+    
     //float fDepth = In.vProjPos.z / In.vProjPos.w;
     float fDepth = In.vPosition.z;
     
@@ -214,10 +214,10 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     Out.vAccumulation = float4(vPremulRGB * fWeight, vColor.a * fWeight);
     
     Out.fRevealage = vColor.a;
-    //Out.vEmissive = float4(vPremulRGB * fWeight * g_fEmissiveIntensity, 0.f);
+    Out.vEmissive = float4(vPremulRGB * fWeight * g_fEmissiveIntensity, 0.f);
     //Out.vEmissive = float4(fDepth, fWeight,0.f, 1.f);
-    Out.vEmissive = float4(0.f, 0.f, 0.f, 0.f);
-    */
+    //Out.vEmissive = float4(0.f, 0.f, 0.f, 0.f);
+    
     
     /********************************************************************/
     //float fDepth = In.vProjPos.x / 1000.f;
@@ -228,10 +228,10 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     //Out.vEmissive = float4(vPremulRGB, vColor.a);
     /********************************************************************/
 
-    float3 vPremulRGB = vColor.rgb * vColor.a;
-    Out.vAccumulation = float4(vPremulRGB, vColor.a);
-    Out.fRevealage = vColor.a;
-    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+    //float3 vPremulRGB = vColor.rgb * vColor.a;
+    //Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    //Out.fRevealage = vColor.a;
+    //Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
     
     
     if (In.vLifeTime.y >= In.vLifeTime.x)

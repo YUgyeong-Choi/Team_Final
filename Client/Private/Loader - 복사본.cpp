@@ -353,9 +353,11 @@ HRESULT CLoader::Loading_For_Static()
 
 HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
-
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+	//스테이션 레벨에 필요한 텍스쳐를 로드한다.
+	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) // true 면 테스트 데칼 준비
+		return E_FAIL;
 
 	m_fRatio = 0.1f;
 
@@ -416,9 +418,14 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	m_fRatio = 0.4f;
 
-
+	//맵을 생성하기위한 모델 프로토타입을 준비한다.
+	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), true))) //true면 테스트 맵 준비[테스트 맵을 키고 싶으면 true 하시오]
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
+
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+		return E_FAIL;
 
 	m_fRatio = 0.6f;
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -427,11 +434,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
 #pragma region YW
-
-	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중."));
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //STATION, TEST (레벨과 동일해야함)
-		return E_FAIL;
-
 	//스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
@@ -847,13 +849,13 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION", true)))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION")))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL", true)))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST", true)))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -876,23 +878,6 @@ HRESULT CLoader::Loading_For_YW()
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
-	return S_OK;
-}
-
-HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
-{
-	//맵
-	if(FAILED(Loading_Models(iLevelIndex, Map)))
-		return E_FAIL;
-
-	//네비
-	if (FAILED(Loading_Navigation(iLevelIndex, Map)))
-		return E_FAIL;
-	
-	//데칼
-	if (FAILED(Loading_Decal_Textures(iLevelIndex, Map)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -927,10 +912,26 @@ HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelF
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
+HRESULT CLoader::Loading_Models(_uint iLevelIndex, _bool bTest)
 {
+	string Map = {};
+	switch (iLevelIndex)
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		Map = "STATION";
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		Map = "HOTEL";
+		break;
+	default:
+		Map = "TEST";
+		break;
+	}
 
-	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+	if (bTest)
+		Map = "TEST";
+
+	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map.c_str() + ".json";
 
 	ifstream inFile(ResourcePath);
 	if (!inFile.is_open())
@@ -993,8 +994,24 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map, _bool bForTool)
+HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, _bool bTest)
 {
+	string Map = {};
+	switch (iLevelIndex)
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		Map = "STATION";
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		Map = "HOTEL";
+		break;
+	default:
+		Map = "TEST";
+		break;
+	}
+
+	if (bTest)
+		Map = "TEST";
 
 	wstring wsResourcePath = L"../Bin/Save/NavTool/Nav_" + StringToWString(Map) + L".json";
 
@@ -1007,12 +1024,7 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map, _bool b
 		return S_OK;
 	}
 
-	wstring wsPrototypeTag = {};
-
-	if(bForTool)
-		wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);// 툴을 위한 로딩
-	else
-		wsPrototypeTag = L"Prototype_Component_Navigation";//실제 맵을 위한 로딩
+	wstring wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);
 
 	/* Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Prototype(
@@ -1025,8 +1037,25 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map, _bool b
 
 	return S_OK;
 }
-HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
+HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, _bool bTest)
 {
+	string Map = {};
+	switch (iLevelIndex)
+	{
+	case ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION):
+		Map = "STATION";
+		break;
+	case ENUM_CLASS(LEVEL::KRAT_HOTEL):
+		Map = "HOTEL";
+		break;
+	default:
+		Map = "TEST";
+		break;
+	}
+
+	if (bTest)
+		Map = "TEST";
+
 	string ResourcePath = string("../Bin/Save/DecalTool/Resource_") + Map + ".json";
 
 	ifstream inFile(ResourcePath);
@@ -1167,11 +1196,6 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/SideGra.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Bar_Background*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Paralyze"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/UIT_Gauge_ParalyzeEnable.dds")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_Texture_Bar_Gradation*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Gradation_Right"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Gradation_Right.dds")))))
@@ -1267,6 +1291,35 @@ HRESULT CLoader::Loading_For_CY()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 
+	//안해도될거같은데
+	///* For.Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS */ // sprite용 
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_SubUV_Explosion_01_8x8_SC_HJS"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Texture_T_Mask_27_C_GDH */ // trail용 마스크 이미지
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Mask_27_C_GDH"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Mask_27_C_GDH.dds"), 1))))
+	//	return E_FAIL;
+	//
+	///* For.Prototype_Component_Texture_T_Trail_01_C_GDH */ // trail용 마스크 이미지 2..
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Trail_01_C_GDH"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Trail_01_C_GDH.dds"), 1))))
+	//	return E_FAIL;
+	//
+	///* For.Prototype_Component_Texture_T_Slash_01_C_RSW */ // 아마 trail용 디스토션 이미지 
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_T_Slash_01_C_RSW"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/SubUV/T_Slash_01_C_RSW.dds"), 1))))
+	//	return E_FAIL;
+
+
+	//_wstring strFileName
+	///* For.Prototype_Component_Texture */
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), _wstring("Prototype_Component_Texture_") + ,
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_SubUV_Explosion_01_8x8_SC_HJS.dds"), 1))))
+	//	return E_FAIL;
+
+
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
 
@@ -1313,11 +1366,6 @@ HRESULT CLoader::Loading_For_CY()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlayerWeapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_VIBuffer_ToolTrail */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
-		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

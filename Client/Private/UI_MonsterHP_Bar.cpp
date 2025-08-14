@@ -30,6 +30,8 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
     m_pHP = pDesc->pHP;
 
+    m_isGroggy = pDesc->pIsGroggy;
+
     m_iMaxHP = 300;
 
     m_pParentMatrix = pDesc->pParentMatrix;
@@ -138,7 +140,7 @@ HRESULT CUI_MonsterHP_Bar::Render()
     if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
         return E_FAIL;
 
-    if (FAILED(m_pShaderCom->Begin(D_UI_HPBAR)))
+    if (FAILED(m_pShaderCom->Begin(D_UI_HPBAR_MONSTER)))
         return E_FAIL;
 
     if (FAILED(m_pVIBufferCom->Bind_Buffers()))
@@ -173,7 +175,12 @@ HRESULT CUI_MonsterHP_Bar::Ready_Components()
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Gradation"),
         TEXT("Com_Texture_Gradation"), reinterpret_cast<CComponent**>(&m_pGradationCom))))
         return E_FAIL;
+    
 
+        /* For.Com_Texture */
+        if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Paralyze"),
+            TEXT("Com_Texture_Blur"), reinterpret_cast<CComponent**>(&m_pBlurTextureCom))))
+            return E_FAIL;
     return S_OK;
 }
 
@@ -199,12 +206,20 @@ HRESULT CUI_MonsterHP_Bar::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &fAlpha, sizeof(_float))))
         return E_FAIL;
 
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &fAlpha, sizeof(_float))))
+        return E_FAIL;
+
     if (FAILED(m_pGradationCom->Bind_ShaderResource(m_pShaderCom, "g_GradationTexture", 0)))
+        return E_FAIL;
+
+    if (FAILED(m_pBlurTextureCom->Bind_ShaderResource(m_pShaderCom, "g_HighlightTexture", 0)))
         return E_FAIL;
 
     _float fRatio = *m_pHP / _float(m_iMaxHP);
 
-    if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &fRatio, sizeof(_float))))
+    _float fGroogy = _float(*m_isGroggy);
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_Groggy", &(fGroogy), sizeof(_float))))
         return E_FAIL;
 
     return S_OK;
