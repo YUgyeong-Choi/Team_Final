@@ -172,31 +172,33 @@ PS_OUT_EFFECT_WB PS_MAIN_GRID_COLOR_WB(PS_IN_BLEND In)
 {
     PS_OUT_EFFECT_WB Out;
     vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-    if (vColor.a <= 0.0003f)
+    if (vColor.a <= 0.003f)
         discard;
-      
+
     vColor = ColorAdjustment_Multiply(vColor, g_vColor);
-    
+
     vColor = SoftEffect(vColor, In.vProjPos);
-    
-    
-    //float3 vPremulRGB = vColor.rgb * vColor.a;
-    //Out.vAccumulation = float4(vPremulRGB, vColor.a);   
-    //Out.fRevealage = vColor.a;
-    //Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
-        /*****/
-    float z_ndc = saturate(In.vProjPos.z / In.vProjPos.w); // D3D는 0..1
-    // 1 - 깊이 = 멀 수록 연하게
-    //float fWeight = pow(1.0f - z_ndc, 0.5f);
-    
-    
-    float fWeight = max(1.0 - z_ndc, 0.05f); // pow 대신 선형도 권장
-    //float fWeight = 1.f;
+
+
     float3 vPremulRGB = vColor.rgb * vColor.a;
-    Out.vAccumulation = float4(vPremulRGB * fWeight, vColor.a * fWeight);
-    
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);   
     Out.fRevealage = vColor.a;
-    Out.vEmissive = float4(vPremulRGB * fWeight * g_fEmissiveIntensity, 0.f);
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+
+    /*****/
+    
+    //float z_ndc = saturate(In.vProjPos.z / In.vProjPos.w); // D3D는 0..1
+    //// 1 - 깊이 = 멀 수록 연하게
+    //float fWeight = pow(1.0f - z_ndc, 0.5f);
+    //
+    //
+    ////float fWeight = max(1.0 - z_ndc, 0.05f); // pow 대신 선형도 권장
+    ////float fWeight = 1.f;
+    //float3 vPremulRGB = vColor.rgb * vColor.a;
+    //Out.vAccumulation = float4(vPremulRGB * fWeight, vColor.a * fWeight);
+    //
+    //Out.fRevealage = vColor.aaaa;
+    //Out.vEmissive = float4(vPremulRGB * fWeight * g_fEmissiveIntensity, 0.f);
     
     return Out;
 }
