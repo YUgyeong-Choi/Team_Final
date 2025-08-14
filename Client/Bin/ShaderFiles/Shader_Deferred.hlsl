@@ -368,8 +368,12 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float3 Ambient = Albedo * 0.1f * AO;
     
     /* [ µ¥Ä® ARM ºÒ·¯¿À±â ] */
-    vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
-    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
+    vector vDecalNDesc = g_DecalN.Sample(DefaultSampler, In.vTexcoord);
+    vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
+    
+    vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
+    
+    Albedo = vDecalBCDesc.rgb;
 
     /* Normal ºí·»µù */
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
@@ -944,13 +948,13 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     //    discard;
 
     //µ¥Ä® ÀÔÈ÷±â
-    vector vDecalARMT = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
-    vector vDecalBC = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
-    finalColor.rgb = finalColor.rgb * (1 - vDecalARMT.a) + vDecalBC.rgb * vDecalARMT.a;
+    //vector vDecalARMT = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
+    //vector vDecalBC = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
+    //finalColor.rgb = finalColor.rgb * (1 - vDecalARMT.a) + vDecalBC.rgb * vDecalARMT.a;
     
-    //µ¥Ä® º¼·ý¸Þ½¬(µð¹ö±×)
-    vector vDecalVolumeMesh = g_DecalVolumeMesh.Sample(DefaultSampler, In.vTexcoord);
-    finalColor = finalColor * (1 - vDecalVolumeMesh.a) + vDecalVolumeMesh.a * vDecalVolumeMesh;
+    ////µ¥Ä® º¼·ý¸Þ½¬(µð¹ö±×)
+    //vector vDecalVolumeMesh = g_DecalVolumeMesh.Sample(DefaultSampler, In.vTexcoord);
+    //finalColor = finalColor * (1 - vDecalVolumeMesh.a) + vDecalVolumeMesh.a * vDecalVolumeMesh;
     
     Out.vBackBuffer = finalColor;
 
