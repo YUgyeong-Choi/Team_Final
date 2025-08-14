@@ -1105,8 +1105,8 @@ public:
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
 
-        m_pOwner->m_pWeapon->SetisAttack(true);
-        m_pOwner->m_pWeapon->SetDamageRatio(1.f);
+       // m_pOwner->m_pWeapon->SetisAttack(true);
+       // m_pOwner->m_pWeapon->SetDamageRatio(1.f);
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -1139,7 +1139,7 @@ public:
         m_bArmAttack = false;
         m_bSkill = false;
 
-        m_pOwner->m_pWeapon->SetisAttack(false);
+       // m_pOwner->m_pWeapon->SetisAttack(false);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -1218,8 +1218,8 @@ public:
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
 
-        m_pOwner->m_pWeapon->SetisAttack(true);
-        m_pOwner->m_pWeapon->SetDamageRatio(1.5f);
+      //  m_pOwner->m_pWeapon->SetisAttack(true);
+       // m_pOwner->m_pWeapon->SetDamageRatio(1.5f);
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -1252,8 +1252,8 @@ public:
         m_bArmAttack = false;
         m_bSkill = false;
 
-        m_pOwner->m_pWeapon->SetisAttack(false);
-        m_pOwner->m_pWeapon->SetDamageRatio(1.f);
+        //m_pOwner->m_pWeapon->SetisAttack(false);
+       // m_pOwner->m_pWeapon->SetDamageRatio(1.f);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

@@ -56,6 +56,9 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	m_iHandleIndex = m_pModelCom->Find_BoneIndex("BN_Handle");
 
+	// 나중에 지울거
+	m_isAttack = true;
+
 	return S_OK;
 }
 
@@ -212,7 +215,7 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 void CBayonet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	m_isAttack =false;
+	//m_isAttack =false;
 }
 
 void CBayonet::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
