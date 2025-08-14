@@ -73,7 +73,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
 		m_fHP -= 10.f;
-		cout << "���� HP : " << m_fHP << endl;
 	}
 #endif
 
@@ -385,43 +384,7 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 		return; // 컷신 중에는 상태 업데이트를 하지 않음
 	}
 
-	switch (iCurrentAnimStateNodeID)
-	{
-	case ENUM_CLASS(BossStateID::IDLE):
-		m_eCurrentState = EFuocoState::IDLE;
-		break;
-	case ENUM_CLASS(BossStateID::WALK_B):
-	case ENUM_CLASS(BossStateID::WALK_F):
-	case ENUM_CLASS(BossStateID::WALK_R):
-	case ENUM_CLASS(BossStateID::WALK_L):
-	{
-		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
-		m_eCurrentState = EFuocoState::WALK;
-
-	}
-	break;
-	case ENUM_CLASS(BossStateID::RUN_F):
-		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
-		m_eCurrentState = EFuocoState::RUN;
-		break;
-	case ENUM_CLASS(BossStateID::GROGGY_END):
-	case ENUM_CLASS(BossStateID::GROGGY_START):
-	case ENUM_CLASS(BossStateID::GROGGY_LOOP):
-		m_eCurrentState = EFuocoState::GROGGY;
-		break;
-	case ENUM_CLASS(BossStateID::DEAD_B):
-	case ENUM_CLASS(BossStateID::DEAD_F):
-	case ENUM_CLASS(BossStateID::SPECIAL_DIE):
-		m_eCurrentState = EFuocoState::DEAD;
-		break;
-	case ENUM_CLASS(BossStateID::TURN_L):
-	case ENUM_CLASS(BossStateID::TURN_R):
-		m_eCurrentState = EFuocoState::TURN;
-		break;
-	default:
-		m_eCurrentState = EFuocoState::ATTACK;
-		break;
-	}
+	UpdateStateByNodeID(iCurrentAnimStateNodeID); // 애니메이션 상태에 따라 현재 상태 업데이트
 
 	if (m_eCurrentState != EFuocoState::ATTACK)
 	{
@@ -431,6 +394,14 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 	/*_bool bCanMove = m_eCurrentState != EFuocoState::ATTACK &&
 		m_eCurrentState != EFuocoState::GROGGY && m_eCurrentState != EFuocoState::DEAD && !m_bIsFirstAttack;*/
 
+	// 공격이 우선순위
+	UpdateAttackPattern(fDistance, fTimeDelta);// 공격 패턴 업데이트
+
+	UpdateMovement(fDistance,fTimeDelta);
+}
+
+void CFuoco::UpdateMovement(_float fDistance,_float fTimeDelta)
+{
 	_bool bCanMove = (m_eCurrentState == EFuocoState::IDLE ||
 		m_eCurrentState == EFuocoState::WALK ||
 		m_eCurrentState == EFuocoState::RUN) &&
@@ -462,17 +433,7 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 		}
 		m_pAnimator->SetFloat("Distance", abs(fDistance));
 	}
-
-
-	UpdateAttackPattern(fDistance, fTimeDelta);// 공격 패턴 업데이트
-
-	UpdateMove(fTimeDelta);
-}
-
-void CFuoco::UpdateMove(_float fTimeDelta)
-{
 	_bool bIsRootMotion = m_pAnimator->GetCurrentAnim()->IsRootMotionEnabled();
-	_float fDistance = Get_DistanceToPlayer();
 
 	if (bIsRootMotion)
 	{
@@ -506,10 +467,6 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 	{
 		m_pAnimator->SetTrigger("Turn");
 		m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: 오른쪽, 1: 왼쪽
-//#ifdef _DEBUG
-//		cout << "회전 각도: " << XMConvertToDegrees(fYaw) << "도" << endl;
-//		cout << "회전 방향 : " << ((fYaw >= 0.f) ? "오른쪽" : "왼쪽") << endl;
-//#endif
 		m_pAnimator->SetBool("Move", false); // 회전 중에는 이동하지 않음
 	}
 
@@ -543,7 +500,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	}
 
-	if (m_eCurrentState == EFuocoState::ATTACK || fDistance > ATTACK_DISTANCE)
+	if (m_eCurrentState == EFuocoState::ATTACK)
 	{
 		return;
 	}
@@ -554,7 +511,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	}
 	m_pAnimator->SetBool("Move", false);
-	EBossAttackPattern eSkillType = GetRandomAttackPattern();
+	EBossAttackPattern eSkillType = GetRandomAttackPattern(fDistance);
 	while (!IsValidAttackType(eSkillType))
 	{
 		eSkillType = static_cast<EBossAttackPattern>(GetRandomInt(1, m_bIsPhase2 ? 14 : 9));
@@ -568,6 +525,46 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 
 	m_fAttackCooldown = m_fAttckDleay;
+}
+
+void CFuoco::UpdateStateByNodeID(_uint iNodeID)
+{
+	switch (iNodeID)
+	{
+	case ENUM_CLASS(BossStateID::IDLE):
+		m_eCurrentState = EFuocoState::IDLE;
+		break;
+	case ENUM_CLASS(BossStateID::WALK_B):
+	case ENUM_CLASS(BossStateID::WALK_F):
+	case ENUM_CLASS(BossStateID::WALK_R):
+	case ENUM_CLASS(BossStateID::WALK_L):
+	{
+		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_eCurrentState = EFuocoState::WALK;
+	}
+	break;
+	case ENUM_CLASS(BossStateID::RUN_F):
+		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
+		m_eCurrentState = EFuocoState::RUN;
+		break;
+	case ENUM_CLASS(BossStateID::GROGGY_END):
+	case ENUM_CLASS(BossStateID::GROGGY_START):
+	case ENUM_CLASS(BossStateID::GROGGY_LOOP):
+		m_eCurrentState = EFuocoState::GROGGY;
+		break;
+	case ENUM_CLASS(BossStateID::DEAD_B):
+	case ENUM_CLASS(BossStateID::DEAD_F):
+	case ENUM_CLASS(BossStateID::SPECIAL_DIE):
+		m_eCurrentState = EFuocoState::DEAD;
+		break;
+	case ENUM_CLASS(BossStateID::TURN_L):
+	case ENUM_CLASS(BossStateID::TURN_R):
+		m_eCurrentState = EFuocoState::TURN;
+		break;
+	default:
+		m_eCurrentState = EFuocoState::ATTACK;
+		break;
+	}
 }
 
 
@@ -748,17 +745,6 @@ void CFuoco::Register_Events()
 	if (nullptr == m_pAnimator)
 		return;
 
-	// 테스트
-	m_pAnimator->RegisterEventListener(
-		"EC_ErgoItem_M3P1_WB_FRAMELOOPTEST",
-		[this](const string& eventName)
-		{
-			auto vPos = m_pTransformCom->Get_State(STATE::POSITION);
-			_float3 pos = { XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos) };
-			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), pos.x, pos.y, pos.z)))
-				MSG_BOX("이펙트 생성 실패");
-		});
-	////////////////
 	m_pAnimator->RegisterEventListener("CameraShake",
 		[this](const string& eventName)
 		{
@@ -821,7 +807,7 @@ void CFuoco::Ready_AttackPatternWeightForPhase1()
 	for (const auto& pattern : m_vecBossPatterns)
 	{
 		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
-		m_PatternCountMap[pattern] = 0; // �ʱ�ȭ
+		m_PatternCountMap[pattern] = 0; 
 	}
 }
 
@@ -837,47 +823,77 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	for (const auto& pattern : m_vecBossPatterns)
 	{
 		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
-		m_PatternCountMap[pattern] = 0; // �ʱ�ȭ
+		m_PatternCountMap[pattern] = 0; 
 	}
 }
 
-CFuoco::EBossAttackPattern CFuoco::GetRandomAttackPattern()
+CFuoco::EBossAttackPattern CFuoco::GetRandomAttackPattern(_float fDistance)
 {
 	EBossAttackPattern ePattern = BAP_NONE;
-	
-	/* 혹시 몰라 주석
-	// 내림 차순 정렬
-	sort(m_vecAttackPatternWeight.begin(), m_vecAttackPatternWeight.end(),
-		[](const pair<_float, EBossAttackPattern>& A, const pair<_float, EBossAttackPattern>& B)
-		{
-			return A.first > B.first;
-		});
-	_float fTotalWeight = accumulate(m_vecAttackPatternWeight.begin(), m_vecAttackPatternWeight.end(), 0.f,
-		[](_float fAcc, const pair<_float, EBossAttackPattern>& Pair) { return fAcc + Pair.first; });
-	*/
+	m_PatternWeighForDisttMap = m_PatternWeightMap;
+	ChosePatternWeightByDistance(fDistance);
 
-	_float fTotalWeight = accumulate(m_PatternWeightMap.begin(), m_PatternWeightMap.end(), 0.f,
+
+	_float fTotalWeight = accumulate(m_PatternWeighForDisttMap.begin(), m_PatternWeighForDisttMap.end(), 0.f,
 		[](_float fAcc, const pair<EBossAttackPattern, _float>& Pair) { return fAcc + Pair.second; });
-
 
 	_float fRandomVal = static_cast<_float>(rand()) / RAND_MAX * fTotalWeight;
 	_float fCurWeight = 0.f;
-	for (const auto& [pattern, weight] : m_PatternWeightMap)
+	for (const auto& [pattern, weight] : m_PatternWeighForDisttMap)
 	{
 		fCurWeight += weight;
 		if (fRandomVal <= fCurWeight)
 		{
 			ePattern = pattern;
 			m_ePrevAttackPattern = m_eCurAttackPattern;
-			m_eCurAttackPattern = ePattern; // ���� ���� ���� ������Ʈ
+			m_eCurAttackPattern = ePattern; 
 #ifdef _DEBUG
 			PatterDebugFunc();
 #endif
-			UpdatePatternWeight(ePattern); // ����ġ ������Ʈ
+			UpdatePatternWeight(ePattern); 
 			break;
 		}
 	}
 	return ePattern;
+}
+
+void CFuoco::ChosePatternWeightByDistance(_float fDistance)
+{
+	if (fDistance >= ATTACK_DISTANCE_CLOSE&& fDistance <ATTACK_DISTANCE_MIDDLE)
+	{
+
+		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
+		{
+			auto it = find(m_vecCloseAttackPatterns.begin(), m_vecCloseAttackPatterns.end(), pattern);
+			if (it  == m_vecCloseAttackPatterns.end())
+			{
+				m_PatternWeighForDisttMap[pattern] *= 0.f;
+			}
+		}
+
+	}
+	else if (fDistance >=ATTACK_DISTANCE_MIDDLE && fDistance < ATTACK_DISTANCE_FAR)
+	{
+		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
+		{
+			auto it = find(m_vecMiddleAttackPatterns.begin(), m_vecMiddleAttackPatterns.end(), pattern);
+			if (it == m_vecMiddleAttackPatterns.end())
+			{
+				m_PatternWeighForDisttMap[pattern] *= 0.f;
+			}
+		}
+	}
+	else if (fDistance >= ATTACK_DISTANCE_FAR)
+	{
+		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
+		{
+			auto it = find(m_vecFarAttackPatterns.begin(), m_vecFarAttackPatterns.end(), pattern);
+			if (it == m_vecFarAttackPatterns.end())
+			{
+				m_PatternWeighForDisttMap[pattern] *= 0.f;
+			}
+		}
+	}
 }
 
 void CFuoco::UpdatePatternWeight(EBossAttackPattern ePattern)
@@ -886,19 +902,24 @@ void CFuoco::UpdatePatternWeight(EBossAttackPattern ePattern)
 	{
 		if (pattern == ePattern)
 		{
-			// ����ġ ����
+
 			m_PatternCountMap[pattern]++;
 			if (m_PatternCountMap[pattern] >= m_iPatternLimit)
 			{
-				weight *= (1.f - m_fWeightDecreaseRate); // ����ġ ����
+				weight *= (1.f - m_fWeightDecreaseRate); 
 			}
-			weight = max(weight, m_fMinWeight); // �ּ� ����ġ ����
+			weight = max(weight, m_fMinWeight);
 		}
 		else
 		{
-			m_PatternCountMap[pattern] = 0; // �ٸ� ������ ī��Ʈ �ʱ�ȭ
-			weight += (m_fMaxWeight - weight) * m_fWeightIncreaseRate; // ����ġ ����
-			weight = min(weight, m_fMaxWeight); // �ִ� ����ġ ����
+			m_PatternCountMap[pattern] = 0; 
+			weight += (m_fMaxWeight - weight) * m_fWeightIncreaseRate; 
+			weight = min(weight, m_fMaxWeight); 
+		}
+
+		if(weight<=0.f)
+		{
+			weight = m_fMinWeight; // 최소 가중치로 설정
 		}
 	}
 }
@@ -921,11 +942,13 @@ _bool CFuoco::CheckConditionFlameFiled()
 		}
 		m_pAnimator->SetBool("Move", false);
 		m_pAnimator->SetTrigger("Attack");
-		cout << "Flame Filed �ߵ�" << endl;
+
 		return true;
 	}
 	return false;
 }
+
+
 
 CFuoco* CFuoco::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

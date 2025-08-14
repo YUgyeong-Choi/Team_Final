@@ -267,6 +267,7 @@ void CAnimation::Deserialize(const json& j)
 
 	if (j.contains("Events") && j["Events"].is_array())
 	{
+		m_events.clear(); // 기존 이벤트 초기화
 		for (const auto& event : j["Events"])
 		{
 			if (event.contains("Time") && event.contains("EventName"))

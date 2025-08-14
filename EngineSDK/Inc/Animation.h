@@ -58,7 +58,23 @@ public:
 	_bool IsRootMotionEnabled() const { return m_bUseRootMotion; }
 	void SetUseRootMotion(_bool bUseRootMotion) { m_bUseRootMotion = bUseRootMotion; }
 
-	void AddEvent(AnimationEvent vEvent) { m_events.push_back(vEvent); }
+	void AddEvent(AnimationEvent vEvent) {
+		if (vEvent.fTime < 0.f || vEvent.fTime > m_fDuration)
+			return; // 유효하지 않은 시간 범위의 이벤트는 추가하지 않음
+		auto it = find_if(m_events.begin(), m_events.end(), [&,this](const AnimationEvent& event)
+			{
+				if (event.name == vEvent.name)
+				{
+					if (abs(event.fTime- vEvent.fTime) <= 1e-4f)
+					{
+						return true; // 중복 이벤트
+					}
+				}
+				return false;
+			});
+		if (it != m_events.end())
+			return; // 중복 이벤트는 추가하지 않음
+		m_events.push_back(vEvent); }
 	vector<AnimationEvent>& GetEvents() { return m_events; }
 
 public:

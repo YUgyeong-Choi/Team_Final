@@ -2276,7 +2276,7 @@
                     "Op": "Less",
                     "ParamName": "Distance",
                     "Type": "Float",
-                    "fThreshold": 7.0,
+                    "fThreshold": 10.0,
                     "iThreshold": 0
                 }
             ],
@@ -3485,7 +3485,7 @@
                     "Op": "Less",
                     "ParamName": "Distance",
                     "Type": "Float",
-                    "fThreshold": 7.0,
+                    "fThreshold": 10.0,
                     "iThreshold": 0
                 },
                 {
