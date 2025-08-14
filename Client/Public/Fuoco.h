@@ -215,6 +215,9 @@ private:
 	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
     vector<pair<_float, EBossAttackPattern>> m_vecAttackPatternWeight;
     deque<EBossAttackPattern> m_RecentPatterns;
+#ifdef _DEBUG
+	unordered_map<_int, EBossAttackPattern> m_DebugPatternMap;
+#endif // _DEBUG
     _uint m_iPatternLimit = 2;
 
 public:

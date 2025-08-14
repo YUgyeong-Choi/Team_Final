@@ -45,14 +45,14 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 	if (FAILED(this->Ready_Actor()))
 		return E_FAIL;
-	
-	m_pPlayer = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"),0);
+
+	m_pPlayer = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), 0);
 
 	if (m_pNaviCom)
 	{
-	m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
-	_float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
+		m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
+		_float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
+		m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
 	}
 	Ready_AttackPatternWeightForPhase1();
 	return S_OK;
@@ -69,7 +69,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
 		m_pAnimator->SetInt("SkillType", P2_FireBall);
-		m_pAnimator->SetTrigger("Attack");	
+		m_pAnimator->SetTrigger("Attack");
 	}
 #endif
 
@@ -81,7 +81,7 @@ void CFuoco::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta); // 애니메이션 재생
 	Update_Collider(); // 콜라이더 업데이트
 
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) 
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
 		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
 	}
@@ -245,7 +245,7 @@ HRESULT CFuoco::Ready_Actor()
 
 	PxTransform pose(positionVec, rotationQuat);
 
-	PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y*1.7f, scaleVec.z * 0.8f);
+	PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y * 1.7f, scaleVec.z * 0.8f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
@@ -331,7 +331,7 @@ void CFuoco::Update_Collider()
 	_float4 vPos;
 	XMStoreFloat4(&vPos, worldMatrix.r[3]);
 
-	PxVec3 pos(vPos.x, vPos.y+2.f, vPos.z);
+	PxVec3 pos(vPos.x, vPos.y + 2.f, vPos.z);
 	XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
 	XMFLOAT4 fQuat;
 	XMStoreFloat4(&fQuat, boneQuat);
@@ -400,7 +400,7 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 				m_fChangeMoveDirCooldown = 3.f;
 			}
 		}
-		else if(fDistance>=CHASING_DISTANCE)
+		else if (fDistance >= CHASING_DISTANCE)
 		{
 			m_pAnimator->SetInt("MoveDir", 0);
 		}
@@ -412,39 +412,39 @@ void CFuoco::UpdateBossState(_float fTimeDelta)
 
 	switch (iCurrentAnimStateNodeID)
 	{
-	  case ENUM_CLASS(BossStateID::IDLE):
-		  m_eCurrentState = EFuocoState::IDLE;
+	case ENUM_CLASS(BossStateID::IDLE):
+		m_eCurrentState = EFuocoState::IDLE;
 		break;
-	  case ENUM_CLASS(BossStateID::WALK_B):
-	  case ENUM_CLASS(BossStateID::WALK_F):
-	  case ENUM_CLASS(BossStateID::WALK_R):
-	  case ENUM_CLASS(BossStateID::WALK_L):
-	  {
-		  m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
-		  m_eCurrentState = EFuocoState::WALK;
+	case ENUM_CLASS(BossStateID::WALK_B):
+	case ENUM_CLASS(BossStateID::WALK_F):
+	case ENUM_CLASS(BossStateID::WALK_R):
+	case ENUM_CLASS(BossStateID::WALK_L):
+	{
+		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_eCurrentState = EFuocoState::WALK;
 
-	  }
-		  break;
-	  case ENUM_CLASS(BossStateID::RUN_F):
-		  m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
-		  m_eCurrentState = EFuocoState::RUN;
-		  break;
-	  case ENUM_CLASS(BossStateID::GROGGY_END):
-	  case ENUM_CLASS(BossStateID::GROGGY_START):
-	  case ENUM_CLASS(BossStateID::GROGGY_LOOP):
-		  m_eCurrentState = EFuocoState::GROGGY;
-		  break;
-	  case ENUM_CLASS(BossStateID::DEAD_B):
-	  case ENUM_CLASS(BossStateID::DEAD_F):
-	  case ENUM_CLASS(BossStateID::SPECIAL_DIE):
-		  m_eCurrentState = EFuocoState::DEAD;
-	  case ENUM_CLASS(BossStateID::TURN_L):
-	  case ENUM_CLASS(BossStateID::TURN_R):
-		  m_eCurrentState = EFuocoState::TURN;
-		  break;
-	  default:
-		  m_eCurrentState = EFuocoState::ATTACK;
-			  break;
+	}
+	break;
+	case ENUM_CLASS(BossStateID::RUN_F):
+		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
+		m_eCurrentState = EFuocoState::RUN;
+		break;
+	case ENUM_CLASS(BossStateID::GROGGY_END):
+	case ENUM_CLASS(BossStateID::GROGGY_START):
+	case ENUM_CLASS(BossStateID::GROGGY_LOOP):
+		m_eCurrentState = EFuocoState::GROGGY;
+		break;
+	case ENUM_CLASS(BossStateID::DEAD_B):
+	case ENUM_CLASS(BossStateID::DEAD_F):
+	case ENUM_CLASS(BossStateID::SPECIAL_DIE):
+		m_eCurrentState = EFuocoState::DEAD;
+	case ENUM_CLASS(BossStateID::TURN_L):
+	case ENUM_CLASS(BossStateID::TURN_R):
+		m_eCurrentState = EFuocoState::TURN;
+		break;
+	default:
+		m_eCurrentState = EFuocoState::ATTACK;
+		break;
 	}
 	if (m_eCurrentState != EFuocoState::ATTACK)
 	{
@@ -466,7 +466,7 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 	{
 		UpdateNormalMove(fTimeDelta);
 	}
-	
+
 	_vector vDir = GetTargetDirection();
 	if (XMVector3Equal(vDir, XMVectorZero()))
 		return; // 방향이 0이면 회전하지 않음
@@ -483,17 +483,17 @@ void CFuoco::UpdateMove(_float fTimeDelta)
 	_float fYaw = acosf(fDot) * fSign; // 회전 각도 (라디안 단위) -180~180
 
 
-	_bool bIsTurn = abs(XMConvertToDegrees(fYaw)) > MINIMUM_TURN_ANGLE &&( m_eCurrentState == EFuocoState::IDLE||
+	_bool bIsTurn = abs(XMConvertToDegrees(fYaw)) > MINIMUM_TURN_ANGLE && (m_eCurrentState == EFuocoState::IDLE ||
 		m_eCurrentState == EFuocoState::WALK);
-	
+
 	if (bIsTurn)
 	{
 		m_pAnimator->SetTrigger("Turn");
 		m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: 오른쪽, 1: 왼쪽
-//#ifdef _DEBUG
-//		cout << "회전 각도: " << XMConvertToDegrees(fYaw) << "도" << endl;
-//		cout << "회전 방향 : " << ((fYaw >= 0.f) ? "오른쪽" : "왼쪽") << endl;
-//#endif
+		//#ifdef _DEBUG
+		//		cout << "회전 각도: " << XMConvertToDegrees(fYaw) << "도" << endl;
+		//		cout << "회전 방향 : " << ((fYaw >= 0.f) ? "오른쪽" : "왼쪽") << endl;
+		//#endif
 		m_pAnimator->SetBool("Move", false); // 회전 중에는 이동하지 않음
 	}
 
@@ -513,7 +513,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		m_bIsFirstAttack = false;
 		m_pAnimator->SetBool("Move", false);
 		m_fAttackCooldown = 3.f;
-		SetTurnTimeDuringAttack(1.f);
+		SetTurnTimeDuringAttack(2.f);
 		return;
 	}
 
@@ -672,7 +672,7 @@ _bool CFuoco::UpdateTurnDuringAttack(_float fTimeDelta)
 		_vector vDir = GetTargetDirection();
 		vDir = XMVectorSetY(vDir, 0.f);
 		vDir = XMVector3Normalize(vDir);
-		m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta*m_fAddtiveRotSpeed);
+		m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta * m_fAddtiveRotSpeed);
 		m_fTurnTimeDuringAttack -= fTimeDelta;
 		cout << "회전 시간 남음: " << m_fTurnTimeDuringAttack << endl;
 		return false;
@@ -698,7 +698,7 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 			m_pAnimator->SetInt("SwingCombo", iComboType);
 		}
 	}
-		break;
+	break;
 	case Client::CFuoco::FootAtk:
 		break;
 	case Client::CFuoco::SlamAtk:
@@ -715,7 +715,7 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 		_int iDir = GetRandomInt(0, 2);
 		m_pAnimator->SetInt("Direction", iDir);
 	}
-		break;
+	break;
 	case Client::CFuoco::P2_FireBall_B:
 		break;
 	default:
@@ -742,7 +742,7 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("CameraShake",
 		[this](const string& eventName)
 		{
-			CCamera_Manager::Get_Instance()->Shake_Camera(0.15f,0.2f);
+			CCamera_Manager::Get_Instance()->Shake_Camera(0.15f, 0.2f);
 		});
 	m_pAnimator->RegisterEventListener("IsFront",
 		[this](const string& eventName)
@@ -762,7 +762,7 @@ void CFuoco::Register_Events()
 
 			if (bIsFront == false)
 			{
-				SetTurnTimeDuringAttack(2.5f,1.2f);
+				SetTurnTimeDuringAttack(2.5f, 1.2f);
 			}
 
 		});
@@ -775,7 +775,7 @@ void CFuoco::Register_Events()
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
 {
-	
+
 	m_vecAttackPatternWeight.reserve(12);
 	m_vecAttackPatternWeight.push_back({ 0.2f,SlamCombo });
 	m_vecAttackPatternWeight.push_back({ 0.2f, SwingAtk });
@@ -804,12 +804,14 @@ CFuoco::EBossAttackPattern CFuoco::GetRandomAttackPattern()
 {
 	EBossAttackPattern ePattern = BAP_NONE;
 
-	// 내림 차순 정렬
-	sort(m_vecAttackPatternWeight.begin(), m_vecAttackPatternWeight.end(),
-		[](const pair<_float, EBossAttackPattern>& A, const pair<_float, EBossAttackPattern>& B)
-		{
-			return A.first > B.first;
-		});
+	vector<pair<_float, EBossAttackPattern>> vecPatternPool;
+	vecPatternPool.reserve(m_vecAttackPatternWeight.size());
+
+	for (const auto& [weight, pattern] : m_vecAttackPatternWeight)
+	{
+
+	}
+
 	_float fTotalWeight = accumulate(m_vecAttackPatternWeight.begin(), m_vecAttackPatternWeight.end(), 0.f,
 		[](_float fAcc, const pair<_float, EBossAttackPattern>& Pair) { return fAcc + Pair.first; });
 	_float fRandomVal = static_cast<_float>(rand()) / RAND_MAX * fTotalWeight;
