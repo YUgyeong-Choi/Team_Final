@@ -356,9 +356,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
-	//스테이션 레벨에 필요한 텍스쳐를 로드한다.
-	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) // true 면 테스트 데칼 준비
-		return E_FAIL;
 
 	m_fRatio = 0.1f;
 
@@ -420,10 +417,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	m_fRatio = 0.4f;
 
 
-
-	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION)))) //true면 테스트 맵 준비[테스트 맵을 키고 싶으면 true 하시오]
-		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 

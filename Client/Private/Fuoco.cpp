@@ -927,49 +927,6 @@ _bool CFuoco::CheckConditionFlameFiled()
 	return false;
 }
 
-void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-	if (pOther)
-	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			if (m_pAnimator->GetInt("SkillType") == FootAtk)
-			{
-				m_pAnimator->SetBool("IsHit", true);
-				SetTurnTimeDuringAttack(2.f); // ǻ�� ���� 
-			}
-		}
-	}
-}
-
-void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
-void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-	if (pOther)
-	{
-		//if (eColliderType == COLLIDERTYPE::PALYER)
-		//{
-		//	if (m_pAnimator->CheckBool("IsHit"))
-		//		m_pAnimator->SetBool("IsHit", false);
-		//}
-	}
-}
-
-void CFuoco::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
-void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
-void CFuoco::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
 CFuoco* CFuoco::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CFuoco* pInstance = new CFuoco(pDevice, pContext);

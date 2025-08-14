@@ -112,10 +112,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))  //TEST, STATION (Loader.cpp와 동일해야함)
 				return;
 
-			//데칼 소환
-			if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
-				return;
-
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 				return;
 
