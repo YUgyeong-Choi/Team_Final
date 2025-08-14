@@ -160,7 +160,7 @@ void CNavTool::Render_Settings()
 	if (ImGui::Begin("Settings"))
 	{
 		ImGui::Text("Snap");
-		ImGui::SliderFloat("##SnapThreshold", &m_fSnapThreshold, 0.0f, 2.0f, "%.3f");
+		ImGui::SliderFloat("##SnapThreshold", &m_fSnapThreshold, 0.0f, 10.0f, "%.3f");
 	}
 	ImGui::End();
 
