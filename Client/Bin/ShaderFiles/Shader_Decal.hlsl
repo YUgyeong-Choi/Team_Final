@@ -2,15 +2,21 @@
 
 matrix g_ViewMatrix, g_ProjMatrix, g_WorldMatrix;
 
-matrix g_WorldMatrixInv;
+//matrix g_WorldMatrixInv;
 matrix g_ProjMatrixInv;
-matrix g_ViewMatrixInv;
+//matrix g_ViewMatrixInv;
+matrix g_ViewWorldMatrixInv;
 
 Texture2D g_DepthTexture;
+//Texture2D g_WorldPosTexture;
 
 Texture2D g_ARMT;
 Texture2D g_N;
 Texture2D g_BC;
+
+//float g_Near = 0.001f;
+float g_Far = 1000.f;
+float2 g_ScreenSize = float2(1600.f, 900.f);
 
 
 struct VS_IN
@@ -55,10 +61,10 @@ PS_OUT PS_DECAL(PS_IN In)
 {
     PS_OUT Out;
 
-    float2 vUV = In.vPosition.xy / float2(1600.f, 900.f); //이것으로 해결했음 으아아악
+    float2 vUV = In.vPosition.xy / g_ScreenSize; //이것으로 해결했음 으아아악(왜곡되는거)
     
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, vUV);
-    float fViewZ = vDepthDesc.y * 1000.f; //(Near~Far)
+    float fViewZ = vDepthDesc.y * g_Far; //(Near~Far)
     
     vector vPosition;
 
@@ -70,12 +76,13 @@ PS_OUT PS_DECAL(PS_IN In)
     vPosition = vPosition * fViewZ; //w나누던 연산을 역으로 곱하는 부분
     
     vPosition = mul(vPosition, g_ProjMatrixInv); //투영 역행렬
-    vPosition = mul(vPosition, g_ViewMatrixInv); //뷰 역행렬
+    //vPosition = mul(vPosition, g_ViewMatrixInv); //뷰 역행렬
     
     //월드로 왔음
+    //vector vWorldPosDesc = g_WorldPosTexture.Sample(PointSampler, vUV); //테스트
     
     // 데칼 로컬 공간으로 변환
-    float3 vLocalPos = mul(float4(vPosition.xyz, 1.f), g_WorldMatrixInv).xyz;
+    float3 vLocalPos = mul(float4(vPosition.xyz, 1.f), g_ViewWorldMatrixInv).xyz; //뷰*월드 역행렬로 한방에하니까 떨림이 사라졌다!!!!!!!
     
     //일정 각도이상 기울어진 표면은 데칼을 적용하지 않음 
     
