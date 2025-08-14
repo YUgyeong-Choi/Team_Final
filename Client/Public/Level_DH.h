@@ -34,7 +34,7 @@ public:
 
 private:
 	//맵 로드하는 부분
-	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance);
+	HRESULT Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance);
 	HRESULT Ready_MapModel();
 	HRESULT LoadMap(_uint iLevelIndex, const _char* Map);
 	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);

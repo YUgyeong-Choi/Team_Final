@@ -536,7 +536,7 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	/*if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
+	/*if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
 		return E_FAIL;*/
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -577,7 +577,7 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
+	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
@@ -607,7 +607,7 @@ HRESULT CLoader::Loading_For_DH()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
+	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -888,7 +888,7 @@ HRESULT CLoader::Loading_For_YW()
 HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 {
 	//맵
-	if(FAILED(Loading_Models(iLevelIndex, Map)))
+	if(FAILED(Loading_Meshs(iLevelIndex, Map)))
 		return E_FAIL;
 
 	//네비
@@ -902,7 +902,7 @@ HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 	return S_OK;
 }
 
-HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
+HRESULT CLoader::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
 {
 	//이미 프로토타입이존재하는 지확인
 
@@ -933,7 +933,7 @@ HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelF
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
+HRESULT CLoader::Loading_Meshs(_uint iLevelIndex, const _char* Map)
 {
 
 	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
@@ -990,7 +990,7 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
 
 		const _char* pModelFilePath = Path.c_str();
 
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
+		if (FAILED(Load_Mesh(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
 		{
 			return E_FAIL;
 		}
@@ -1656,7 +1656,7 @@ HRESULT CLoader::Loading_For_YG()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::YG), "STATION")))
+	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::YG), "STATION")))
 		return E_FAIL;
 
 
