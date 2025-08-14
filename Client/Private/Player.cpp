@@ -77,9 +77,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 서로는 충돌 무시하게
 	m_pControllerCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 	m_pControllerCom->Add_IngoreActors(m_pControllerCom->Get_Actor());
+	m_pControllerCom->Add_IngoreActors(static_cast<CBayonet*>(m_pWeapon)->Get_PhysXActor()->Get_Actor());
 
 	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 	m_pPhysXActorCom->Add_IngoreActors(m_pControllerCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(static_cast<CBayonet*>(m_pWeapon)->Get_PhysXActor()->Get_Actor());
 
 	SyncTransformWithController();
 
