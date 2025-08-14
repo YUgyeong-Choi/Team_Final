@@ -2,7 +2,7 @@
     {
         "Collision": true,
         "ModelName": "FloorB",
-        "ObjectCount": 12,
+        "ObjectCount": 13,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorB.bin"
     },
     {

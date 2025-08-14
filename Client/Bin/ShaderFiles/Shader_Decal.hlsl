@@ -57,7 +57,7 @@ PS_OUT PS_DECAL(PS_IN In)
 
     float2 vUV = In.vPosition.xy / float2(1600.f, 900.f); //이것으로 해결했음 으아아악
     
-    vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, vUV);
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, vUV);
     float fViewZ = vDepthDesc.y * 1000.f; //(Near~Far)
     
     vector vPosition;
@@ -79,7 +79,7 @@ PS_OUT PS_DECAL(PS_IN In)
     
     //일정 각도이상 기울어진 표면은 데칼을 적용하지 않음 
     
-    clip(0.5 - abs(vLocalPos.xyz));
+    clip(0.5f - abs(vLocalPos.xyz));
 
     // 텍스처 좌표 계산 (0 ~ 1)
     float2 vTexcoord = vLocalPos.xz + 0.5f;

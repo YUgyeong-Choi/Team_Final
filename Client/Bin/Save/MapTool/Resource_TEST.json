@@ -2,8 +2,20 @@
     {
         "Collision": true,
         "ModelName": "FloorA",
-        "ObjectCount": 1,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorA.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_CH_PROB_Corpse_01_Female",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_01_Female.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_CH_PROB_Corpse_04_Female",
+        "ObjectCount": 9,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
         "Collision": true,
