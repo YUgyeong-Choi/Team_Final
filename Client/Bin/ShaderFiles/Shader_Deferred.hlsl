@@ -1190,22 +1190,23 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
     
     //vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
     float2 vDistortion = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord).rg;
-    vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환 왜? 
+    vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환 
 
-    // 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
-    float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
-    float fStrength = 10.f; // 강도 조절 변수
-    float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
+   	// 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
+   	float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
+   	float fStrength = 10.f; // 강도 조절 변수
+   	float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
+	
+   	// 가장자리 아티팩트 줄이기
+  	  uv = saturate(uv);
+	
+   	// 흔든 UV로 최종 씬 샘플
+   	vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
+	
+   	Out.vBackBuffer = vFinalColor;
 
-    // 가장자리 아티팩트 줄이기
-    uv = saturate(uv);
-
-    // 흔든 UV로 최종 씬 샘플
-    vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
-
-    Out.vBackBuffer = vFinalColor;
-    
     return Out;
+    
 }
 
 technique11 DefaultTechnique

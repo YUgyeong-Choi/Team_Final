@@ -9,9 +9,9 @@ class ENGINE_DLL CVIBuffer_Trail final : public CVIBuffer
 public:
 	typedef struct tagTrailBufferDesc
 	{
-		_uint	iMaxNodeCount = { 350 };
-		_uint	Subdivisions = { 5 };
-		_float	fLifeDuration = { 1.f };
+		_uint	iMaxNodeCount = { 300 };
+		_uint	Subdivisions = { 4 };
+		_float	fLifeDuration = { 0.5f };
 		_float	fNodeInterval = { 0.0166f };
 	}DESC;
 
@@ -42,12 +42,12 @@ private:
 
 private:
 	vector<VTXPOS_TRAIL>	m_TrailNodes;
-	_uint					m_iMaxNodeCount = { 350 }; // 임시로 개수 지정함
-	_float					m_fLifeDuration = { 1.f };
+	_uint					m_iMaxNodeCount = { 300 }; // 임시로 개수 지정함
+	_float					m_fLifeDuration = { 0.5f };
 	_bool					m_bTrailActive = true;
 	_float					m_fNodeAccTime = { 0.f };
 	_float					m_fNodeInterval = { 0.0166f }; // 60 FPS 기준, 1초에 60번 노드 추가
-	_int					m_Subdivisions = 5; // 캣멀롬 보간을 위한 세분화 단계
+	_int					m_Subdivisions = 4; // 캣멀롬 보간을 위한 세분화 단계
 
 
 public:

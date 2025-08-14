@@ -1198,16 +1198,12 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
    	float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
 	
    	// 가장자리 아티팩트 줄이기
-  /	  uv = saturate(uv);
+  	  uv = saturate(uv);
 	
    	// 흔든 UV로 최종 씬 샘플
    	vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
 	
    	Out.vBackBuffer = vFinalColor;
-
-    vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
-
-    Out.vBackBuffer = vFinalColor;
 
     return Out;
     
