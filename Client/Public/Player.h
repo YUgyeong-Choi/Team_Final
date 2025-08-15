@@ -182,7 +182,7 @@ protected:
 
 	/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
-	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
+	//CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
 
 private: /* [ 그림자 변수 ] */

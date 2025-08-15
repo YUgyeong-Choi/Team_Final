@@ -78,8 +78,13 @@ public:
 	void PushBackIndexToObj(class CGameObject* vec) { m_vecIndexToObj.push_back(vec); }
 	void ClearIndexToObj() { m_vecIndexToObj.clear(); }
 
+
 public:
 	void InitIndexToHandle(const map<Handle, _uint>& handleToIndex, size_t count);
+
+public:
+	HRESULT SetObjectType(const vector<OCTOTREEOBJECTTYPE>& vTypes);
+	const vector<OCTOTREEOBJECTTYPE>& GetObjectType() const { return m_ObjectType; }
 
 private: /* [ 절두체 변수들 ] */
 	XMFLOAT4 planes[6];
@@ -93,6 +98,7 @@ private: /* [ 쿼드트리 변수들 ] */
 	_uint	m_iMaxObjects = 16;
 	
 	_float	m_fMinCellSize = 10.f;
+	vector<OCTOTREEOBJECTTYPE> m_ObjectType;
 
 	_bool	m_IncludeBorderAsInside = { true };
 

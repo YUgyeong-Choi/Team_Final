@@ -7,6 +7,7 @@ class CModel;
 class CShader;
 class CAnimator;
 class CPhysXActor;
+class CPhysXDynamicActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -39,6 +40,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
+
 	void SetCascadeShadow();
 
 
@@ -85,9 +87,14 @@ public:
 	// 데미지를 무기를 통해 받는다? 플레이어 타격 판정 후하게 주려면 괜찮을지도? 
 	virtual void ReceiveDamageWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
 
+	AABBBOX GetWorldAABB() const;
 
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };
+	_bool m_bIsPlayer = { false };
+
+protected: /* [ 기본 충돌체 ] */
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
 protected:				/* [ 기본 속성 ] */
 	_int 				m_iHP = 100;

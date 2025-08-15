@@ -51,6 +51,9 @@ public:
 	void Set_isActive(_bool isActive) { m_isActive = isActive; }
 	_bool Get_isActive() { return m_isActive; }
 
+	void Set_bLightOnOff(_bool bLight) { m_bLightOnOff = bLight; }
+	_bool Get_bLightOnOff() { return m_bLightOnOff; }
+
 	virtual _float Get_TimeScale() { return m_fTimeScale; }
 
 	void PrintMatrix(const char* szName, const _matrix& mat);
@@ -72,6 +75,7 @@ protected:
 	_float	m_fViewZ = {};
 	_bool m_bCloned = {};
 	_bool m_bEmissive = {};
+	_bool m_bLightOnOff = {};
 
 	_bool m_isActive = { true };
 

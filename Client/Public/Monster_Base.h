@@ -82,7 +82,7 @@ protected:
 
 
 	STATE_MONSTER	m_eCurrentState = {};
-	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
+	//CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CNavigation* m_pNaviCom = { nullptr };
 	
 	CUI_MonsterHP_Bar* m_pHPBar = {nullptr};
