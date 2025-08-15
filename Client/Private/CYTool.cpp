@@ -619,7 +619,7 @@ HRESULT CCYTool::Window_Trail()
 {
 	CToolTrail* pTE = dynamic_cast<CToolTrail*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-	ImGui::Text("Select Pass\n0. Default");
+	ImGui::Text("Select Pass\n0. Default\n1.Drop");
 
 	for (_uint i = 0; i < TE_END; i++)
 	{
@@ -640,6 +640,11 @@ HRESULT CCYTool::Window_Trail()
 	{
 		pTE->Set_TrailActive(false);
 	}
+	ImGui::Dummy(ImVec2(0.0f, 2.0f));
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(0.0f, 2.0f));
+	//ImGui::DragFloat()
+
 
 
 	return S_OK;
@@ -955,6 +960,8 @@ HRESULT CCYTool::Save_Effect()
 				return E_FAIL;
 
 			json jSave = m_pSequence->m_Items[m_iSelected].pEffect->Serialize();
+			jSave["Name"] = m_pSequence->m_Items[m_iSelected].strName.data();
+			jSave["EffectType"] = m_pSequence->m_Items[m_iSelected].iType;
 
 			ofs << setw(4) << jSave;
 			ofs.close();
@@ -1062,6 +1069,24 @@ HRESULT CCYTool::Load_Effect()
 			}
 			break;
 			case Client::EFF_TRAIL:
+			{
+				CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player_Weapon"), 0);
+				CModel* pWeaponModelCom = static_cast<CModel*>(TestWeapon->Get_Component(TEXT("Com_Model")));
+				_uint iInnerBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade");
+				_uint iOuterBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_B");
+
+				CToolTrail::DESC desc = {};
+				desc.bAnimation = true;
+				desc.fRotationPerSec = 0.f;
+				desc.fSpeedPerSec = 5.f;
+				desc.bTool = true;
+				desc.pInnerSocketMatrix = const_cast<_float4x4*>(pWeaponModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
+				desc.pOuterSocketMatrix = const_cast<_float4x4*>(pWeaponModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
+				desc.pParentCombinedMatrix = const_cast<_float4x4*>(static_cast<CWeapon*>(TestWeapon)->Get_CombinedWorldMatrix());
+
+				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolTrailEffect"), &desc));
+			}
 				break;
 			}
 			if (pInstance != nullptr)
@@ -1072,6 +1097,13 @@ HRESULT CCYTool::Load_Effect()
 					static_cast<CToolParticle*>(pInstance)->Change_InstanceBuffer(nullptr);
 				if (m_eEffectType == EFF_MESH)
 					static_cast<CToolMeshEffect*>(pInstance)->Change_Model(L"");
+				if (m_eEffectType == EFF_TRAIL)
+					static_cast<CToolTrail*>(pInstance)->Change_TrailBuffer(nullptr);
+
+				// ¿Ã∏ß
+				if (j.contains("Name"))
+					m_strSeqItemName = j["Name"].get<string>();
+
 				m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 			}
 			else

@@ -1157,12 +1157,12 @@ PS_OUT PS_WB_COMPOSITE(PS_IN In)
     /* [ 이쪽이 맞는 것 같은데 나눗셈 연산이 쉽지 않음 ] */
     //vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
 
-    //float4 fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord);
+    //float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
     //
-    //float3 vColor = vAccum.rgb / max(saturate(vAccum.a), 0.00001f); // 0 나누기 방지용
-    //float fAlpha = 1 - saturate(fReveal.r);
+    //float3 vColor = vAccum.rgb / max(vAccum.a, 1e-3); // 0 나누기 방지용
+    //float fAlpha = 1 - saturate(fReveal);
     //Out.vBackBuffer = float4(vColor * fAlpha, fAlpha);
-
+    ////Out.vBackBuffer = float4(fAlpha, fAlpha, fAlpha, 1.f);
     
     /********************************************************************/
 
@@ -1214,26 +1214,25 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
 {
     PS_OUT Out;
     
-    //vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
-  //  float2 vDistortion = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord).rg;
-  //  vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환
-
-  //  // 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
-  //  float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
-  //  float fStrength = 10.f; // 강도 조절 변수
-  //  float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
-
-  //  // 가장자리 아티팩트 줄이기
-  ////  uv = saturate(uv);
-
-  //  // 흔든 UV로 최종 씬 샘플
-  //  vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
-
-  //  Out.vBackBuffer = vFinalColor;
-
-    vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
-
+    float2 vDistortion = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord).rg;
+    vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환
+    
+    // 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
+    float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
+    float fStrength = 10.f; // 강도 조절 변수
+    float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
+    
+    // 가장자리 아티팩트 줄이기
+      uv = saturate(uv);
+    
+    // 흔든 UV로 최종 씬 샘플
+    vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
+    
     Out.vBackBuffer = vFinalColor;
+
+    //vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
+    //
+    //Out.vBackBuffer = vFinalColor;
 
     return Out;
     

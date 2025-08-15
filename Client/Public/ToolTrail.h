@@ -27,6 +27,10 @@ public:
 
 	virtual void Update_Tool(_float fTimeDelta, _float fCurFrame);
 	void Change_TrailBuffer(void* pArg);
+	_uint* Get_MaxNodeCount_Ptr() ;
+	_float* Get_LifeDuration_Ptr();
+	_uint* Get_Subdivisions_Ptr() ;
+	_float* Get_NodeInterval_Ptr();
 
 private:
 	virtual HRESULT Ready_Components();

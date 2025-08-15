@@ -24,10 +24,16 @@ CEffect_Manager::CEffect_Manager()
 
 HRESULT CEffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring EffectFilePath)
 {
-    m_pDevice = pDevice;
-    Safe_AddRef(m_pDevice);
-    m_pContext= pContext;
-    Safe_AddRef(m_pContext);
+    if (!m_pDevice)
+    {
+        m_pDevice = pDevice;
+        Safe_AddRef(m_pDevice);
+    }
+	if (!m_pContext)
+	{
+		m_pContext = pContext;
+		Safe_AddRef(m_pContext);
+	}
 
     Ready_Prototypes();
 
@@ -77,17 +83,103 @@ HRESULT CEffect_Manager::Render()
     return S_OK;
 }
 
-void CEffect_Manager::Test()
+
+CGameObject* CEffect_Manager::Make_Effect(_uint iLevelIndex, const _wstring& strEffectTag, const _wstring& strLayerTag, const _float3& vPresetPos, void* pArg)
 {
+    auto	iter = m_ECJsonDescs.find(strEffectTag);
+    if (iter == m_ECJsonDescs.end())
+        return nullptr;
+
+    json jItem = iter->second;
+
+    // 이름
+    //if (jItem.contains("Name"))
+    //	m_strSeqItemName = jItem["Name"].get<string>();
+
+    // 타입
+    EFFECT_TYPE eEffectType = {};
+    _wstring prefix = strEffectTag.substr(0, 2);
+    if (prefix == L"SE")
+        eEffectType = EFF_SPRITE;
+    if (prefix == L"PE")
+        eEffectType = EFF_PARTICLE;
+    if (prefix == L"ME")
+        eEffectType = EFF_MESH;
+    if (prefix == L"TE")
+        eEffectType = EFF_TRAIL;
+
+
+
+
+    // Effect 객체 생성 및 역직렬화
+    CGameObject* pInstance = { nullptr };
+
+    switch (eEffectType)
+    {
+    case Client::EFF_SPRITE:
+    {
+        CSpriteEffect::DESC desc = {};
+        desc.fRotationPerSec = XMConvertToRadians(90.f);
+        desc.fSpeedPerSec = 5.f;
+        desc.bTool = false;
+        pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+            PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"), &desc));
+    }
+    break;
+    case Client::EFF_PARTICLE:
+    {
+        CParticleEffect::DESC desc = {};
+        desc.fRotationPerSec = XMConvertToRadians(90.f);
+        desc.fSpeedPerSec = 5.f;
+        desc.bTool = false;
+        pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+            PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
+    }
+    break;
+    case Client::EFF_MESH:
+    {
+        CMeshEffect::DESC desc = {};
+        desc.fRotationPerSec = XMConvertToRadians(90.f);
+        desc.fSpeedPerSec = 5.f;
+        desc.bTool = false;
+        pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+            PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"), &desc));
+    }
+    break;
+    case Client::EFF_TRAIL:
+    {
+        if (pArg == nullptr)
+        {
+			MSG_BOX("CEffect_Manager::Make_Effect - pArg is nullptr");
+			return nullptr;
+        }
+
+        // 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
+        CTrailEffect::DESC* pDesc = static_cast<CTrailEffect::DESC*>(pArg);
+        if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"),
+            iLevelIndex, strLayerTag, &pInstance, pArg)))
+            return nullptr;
+    }
+    break;
+    }
+        
+    if (pInstance != nullptr)
+    {
+        if (FAILED(static_cast<CEffectBase*>(pInstance)->Ready_Effect_Deserialize(jItem)))
+        {
+            Safe_Release(pInstance);
+            return nullptr;
+        }
+    }
+    else
+        return nullptr;
+
+
+    return pInstance;
 }
 
-CEffectBase* CEffect_Manager::Make_Effect(const _wstring strEffectTag)
-{
 
-    return nullptr;
-}
-
-HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring strECTag, const _float3& vPresetPos)
+HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, const _float3& vPresetPos)
 {
     auto	iter = m_ECJsonDescs.find(strECTag);
     if (iter == m_ECJsonDescs.end())
@@ -131,9 +223,9 @@ HRESULT CEffect_Manager::Ready_Prototypes()
         return E_FAIL;
 
     ///* For.Prototype_GameObject_TrailEffect */
-    //if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"),
-    //    CTrailEffect::Create(m_pDevice, m_pContext))))
-    //    return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"),
+        CTrailEffect::Create(m_pDevice, m_pContext))))
+        return E_FAIL;
 
     /* For.Prototype_GameObject_CEffectContainer */
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
@@ -143,38 +235,57 @@ HRESULT CEffect_Manager::Ready_Prototypes()
     return S_OK;
 }
 
-HRESULT CEffect_Manager::Ready_Effect(EFFECT_TYPE eEffType, void* pArg)
+HRESULT CEffect_Manager::Ready_Effect(const _wstring strEffectPath)
 {
-    switch (eEffType)
+    json jItem;
+    ifstream ifs(strEffectPath);
+    if (!ifs.is_open())
     {
-    case Client::EFF_SPRITE:
-    {
+        MSG_BOX("Effect Filepath Open Failed");
+        return E_FAIL;
+    }
 
-    }
-        break;
-    case Client::EFF_PARTICLE:
-    {
+    ifs >> jItem;
+    ifs.close();
 
-    }
-        break;
-    case Client::EFF_MESH:
-    {
+    EFFECT_TYPE eEffectType = {};
+    if (jItem.contains("EffectType"))
+        eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
 
-    }
-        break;
-    case Client::EFF_TRAIL:
-    {
+    /* 필요한 프로토타입 컴포넌트 생성 */
+    Ready_Prototype_Components(jItem, eEffectType);
 
-    }
-        break;
-    case Client::EFF_ONETRAIL:
-    {
+    //switch (eEffectType)
+    //{
+    //case Client::EFF_SPRITE:
+    //{
 
-    }
-        break;
-    default:
-        break;
-    }
+    //}
+    //    break;
+    //case Client::EFF_PARTICLE:
+    //{
+
+    //}
+    //    break;
+    //case Client::EFF_MESH:
+    //{
+
+    //}
+    //    break;
+    //case Client::EFF_TRAIL:
+    //{
+
+    //}
+    //    break;
+    //case Client::EFF_ONETRAIL:
+    //{
+
+    //}
+    //    break;
+    //default:
+    //    break;
+    //}
+    m_ECJsonDescs.emplace(make_pair(path(strEffectPath).stem(), jItem));
 
     return S_OK;
 }
@@ -202,7 +313,7 @@ HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
     {
         EFFECT_TYPE eEffectType = {};
         if (jItem.contains("EffectType"))
-            eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<int>());
+            eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
 
         /* 필요한 프로토타입 컴포넌트 생성 */
         Ready_Prototype_Components(jItem, eEffectType);

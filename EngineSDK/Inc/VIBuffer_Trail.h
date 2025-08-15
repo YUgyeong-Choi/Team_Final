@@ -35,6 +35,10 @@ public:
 #ifdef USE_IMGUI
 	void Set_MaxNodeCount(_uint iCnt) { m_iMaxNodeCount = iCnt; }
 	void Set_LifeDuration(_float fLifeDuration) { m_fLifeDuration = fLifeDuration; }
+	_uint* Get_MaxNodeCount_Ptr() { return &m_iMaxNodeCount; }
+	_float* Get_LifeDuration_Ptr() { return &m_fLifeDuration; }
+	_uint* Get_Subdivisions_Ptr() { return &m_Subdivisions; }
+	_float* Get_NodeInterval_Ptr() { return &m_fNodeInterval; }
 #endif
 
 private:
@@ -47,7 +51,7 @@ private:
 	_bool					m_bTrailActive = true;
 	_float					m_fNodeAccTime = { 0.f };
 	_float					m_fNodeInterval = { 0.0166f }; // 60 FPS 기준, 1초에 60번 노드 추가
-	_int					m_Subdivisions = 4; // 캣멀롬 보간을 위한 세분화 단계
+	_uint					m_Subdivisions = 4; // 캣멀롬 보간을 위한 세분화 단계
 
 
 public:

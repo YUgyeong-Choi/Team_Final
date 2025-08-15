@@ -96,13 +96,14 @@ void CToolTrail::Update_Tool(_float fTimeDelta, _float fCurFrame)
 void CToolTrail::Change_TrailBuffer(void* pArg)
 {
 	//Safe_Release(m_pVIBufferCom);
-	CVIBuffer_Trail::DESC* pDesc = static_cast<CVIBuffer_Trail::DESC*>(pArg);
+	CVIBuffer_Trail::DESC* pDesc = nullptr;
+	CVIBuffer_Trail::DESC Desc = {};
 	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
 	{
-		pDesc->fLifeDuration = m_fLifeDuration;
-		pDesc->fNodeInterval = m_fNodeInterval;
-		pDesc->Subdivisions = m_Subdivisions;
-
+		Desc.fLifeDuration = m_fLifeDuration;
+		Desc.fNodeInterval = m_fNodeInterval;
+		Desc.Subdivisions = m_Subdivisions;
+		pDesc = &Desc;
 		//pArg = &VIBufferDesc;
 	}
 	else
@@ -134,6 +135,29 @@ void CToolTrail::Change_TrailBuffer(void* pArg)
 	}
 
 
+}
+
+_uint* CToolTrail::Get_MaxNodeCount_Ptr()
+{
+	return m_pVIBufferCom->Get_MaxNodeCount_Ptr();
+}
+
+
+_float* CToolTrail::Get_LifeDuration_Ptr()
+{
+	return m_pVIBufferCom->Get_LifeDuration_Ptr();
+}
+
+
+_uint* CToolTrail::Get_Subdivisions_Ptr()
+{
+	return m_pVIBufferCom->Get_Subdivisions_Ptr();
+}
+
+
+_float* CToolTrail::Get_NodeInterval_Ptr()
+{
+	return m_pVIBufferCom->Get_NodeInterval_Ptr();
 }
 
 HRESULT CToolTrail::Ready_Components()

@@ -52,7 +52,28 @@ void CTrailEffect::Priority_Update(_float fTimeDelta)
 
 void CTrailEffect::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
+	Update_Keyframes();
+
+	if (m_pSocketMatrix != nullptr)
+	{
+		XMStoreFloat4x4(&m_CombinedWorldMatrix,
+			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
+		);
+	}
+
+	if (m_bAnimation)
+		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+	else
+		m_iTileIdx = 0;
+
+	if (m_iTileX == 0)
+		m_iTileX = 1;
+	if (m_iTileY == 0)
+		m_iTileY = 1;
+	m_fTileSize.x = 1.0f / _float(m_iTileX);
+	m_fTileSize.y = 1.0f / _float(m_iTileY);
+	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
+	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
 }
 
 void CTrailEffect::Late_Update(_float fTimeDelta)
@@ -106,8 +127,10 @@ HRESULT CTrailEffect::Ready_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	_wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+	strPrototypeTag += m_strBufferTag;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
@@ -249,4 +272,9 @@ json CTrailEffect::Serialize()
 void CTrailEffect::Deserialize(const json& j)
 {
 	__super::Deserialize(j);
+
+	if (j.contains("Name"))
+	{
+		m_strBufferTag = StringToWString(j["Name"].get<std::string>());
+	}
 }
