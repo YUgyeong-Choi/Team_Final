@@ -109,7 +109,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 				return;
 
 			//제이슨으로 저장된 맵을 로드한다.
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))  //TEST, STATION (Loader.cpp와 동일해야함)
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))  //TEST, STATION (Loader.cpp와 동일해야함)
 				return;
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
