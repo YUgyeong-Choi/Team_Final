@@ -55,10 +55,14 @@ private:
 	void Update_TargetCameraMatrix(_float fTimeDelta);
 	/* [ 락온 되었을 때 ] */
 	void Update_LockOnCameraMatrix(_float fTimeDelta);
+	/* [ 락온 시작과 종료 ] */
+	void Update_LockOnTransition(_float fTimeDelta);
 
 	void Set_CameraMatrix(_float fTimeDelta);
 private:
 	_bool			m_bLockOn = false;
+	_bool			m_bLockOnTransition = false;
+	_bool			m_bLockOnTransitionStart = false;
 	_bool			m_bSetPitchYaw = false;
 
 	_float			m_fYaw = 0.f;

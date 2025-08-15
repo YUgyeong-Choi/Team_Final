@@ -33,7 +33,8 @@ namespace Engine
 		FILTER_MONSTERBODY = 1 << 2,
 		FILTER_MONSTERWEAPON = 1 << 3,
 		FILTER_EFFECTGIB = 1 << 4,
-		FILTER_DYNAMICOBJ = 1 << 5
+		FILTER_DYNAMICOBJ = 1 << 5,
+		FILTER_NPC = 1 << 6
 	};
 
 	enum class COLLIDERTYPE 
@@ -43,6 +44,7 @@ namespace Engine
 		MONSTER,
 		PLAYER_WEAPON,
 		MONSTER_WEAPON,
+		NPC,
 		A,
 		B,
 		C,
