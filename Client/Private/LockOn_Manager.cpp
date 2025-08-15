@@ -231,46 +231,67 @@ CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()
         return nullptr;
 
     const _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-    _vector       vPlayerLook = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
+    _vector       vPlayerLook = CCamera_Manager::Get_Instance()->GetCurCam()->Get_TransfomCom()->Get_State(STATE::LOOK);
     vPlayerLook = XMVector3Normalize(vPlayerLook);
 
-    // 가중치만 추가
-    const float wAngle = 0.65f;   // 각도 가중치(클수록 정면 우선)
-    const float wDist = 0.35f;   // 거리 가중치(클수록 가까운 대상 우선)
+    // ===== 설정 =====
+    const _float wAngle = 0.65f;                     // 각도 가중치(정면 우선)
+    const _float wDist = 0.35f;                     // 거리 가중치(가까운 대상 우선)
+    const _float cosHalfFov = cosf(XMConvertToRadians(60.f)); // 정면 ±45°
 
-    // 1) 최대 거리 구해서 거리 정규화 스케일 확보
-    float maxDist2 = 1e-6f;
-    for (auto& pTarget : m_vecTarget)
-    {
-        if (!pTarget) continue;
-        const _vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
-        const _vector vDelta = vTargetPos - vPlayerPos;
-        const float   dist2 = XMVectorGetX(XMVector3LengthSq(vDelta));
-        if (dist2 > maxDist2) maxDist2 = dist2;
-    }
-
-    // 2) 각도+거리 합산 점수 최소인 타깃 선택
-    CGameObject* pBestTarget = nullptr;
-    float bestScore = FLT_MAX;
-
+    // ===== 1) FOV(±45°) 안의 타깃만 대상으로 최대 거리 계산 =====
+    _float maxDist2 = 0.f;
+    int inFovCount = 0;
     for (auto& pTarget : m_vecTarget)
     {
         if (!pTarget) continue;
 
         const _vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
         const _vector vDelta = vTargetPos - vPlayerPos;
-        const float   dist2 = XMVectorGetX(XMVector3LengthSq(vDelta));
         const _vector vToTarget = XMVector3Normalize(vDelta);
 
-        float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget));
+        const _float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget)); // [-1,1]
+        if (fDot < cosHalfFov)          // FOV 밖 → 스킵
+            continue;
+
+        const _float dist2 = XMVectorGetX(XMVector3LengthSq(vDelta));
+        if (dist2 > maxDist2) maxDist2 = dist2;
+        ++inFovCount;
+    }
+
+    if (inFovCount == 0)                // FOV 안에 아무도 없으면 락온 불가
+        return nullptr;
+
+    if (maxDist2 < 1e-12f)              // 안전 가드
+        maxDist2 = 1e-12f;
+
+    // ===== 2) 후보들 중 각도+거리 점수 최소 선택 =====
+    CGameObject* pBestTarget = nullptr;
+    _float bestScore = FLT_MAX;
+
+    for (auto& pTarget : m_vecTarget)
+    {
+        if (!pTarget) continue;
+
+        const _vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+        const _vector vDelta = vTargetPos - vPlayerPos;
+        const _vector vToTarget = XMVector3Normalize(vDelta);
+
+        _float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget));
+        if (fDot < cosHalfFov)          // FOV 밖 → 스킵
+            continue;
+
         fDot = clamp(fDot, -1.f, 1.f);
-        const float fAngle = acosf(fDot);            // [0, π]
 
-        // 정규화: 각도 → 0(front)~1(180°), 거리 → 0(가깝)~1(가장 멀리)
-        const float angleNorm = fAngle / XM_PI;
-        const float distNorm = sqrtf(dist2 / maxDist2); // = (dist / maxDist)
+        // 각도 정규화: 0(정면) ~ 1(반대)
+        const _float fAngle = acosf(fDot);          // [0, π]
+        const _float angleNorm = fAngle / XM_PI;
 
-        const float score = wAngle * angleNorm + wDist * distNorm;
+        // 거리 정규화: 0(가깝) ~ 1(가장 멀리) (FOV 내 최대거리 기준)
+        const _float dist2 = XMVectorGetX(XMVector3LengthSq(vDelta));
+        const _float distNorm = sqrtf(dist2 / maxDist2);
+
+        const _float score = wAngle * angleNorm + wDist * distNorm;
 
         if (score < bestScore) {
             bestScore = score;

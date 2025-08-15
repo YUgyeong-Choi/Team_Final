@@ -120,9 +120,10 @@ void CCamera_Orbital::Set_PitchYaw(_float fPitch, _float fYaw)
 
 void CCamera_Orbital::Set_LockOn(CGameObject* pTarget, _bool bActive)
 {
-	m_pLockOnTarget = pTarget;
+
 	if (bActive)
 	{
+		m_pLockOnTarget = pTarget;
 		m_bLockOnTransition = true;
 		m_bLockOnTransitionStart = true;
 	}
@@ -312,11 +313,13 @@ void CCamera_Orbital::Update_LockOnTransition(_float fTimeDelta)
 	}
 	else
 	{
-		vTargetPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-		vTargetLook = vTargetPos - m_pTransformCom->Get_State(STATE::POSITION);
+		m_bLockOnTransition = false;
+		m_bLockOn = false;
+		m_pLockOnTarget = nullptr;
+		return;
 	}
 	
-	m_pTransformCom->LookAt(vTargetLook);
+	m_pTransformCom->RotateToDirectionSmoothly(vTargetLook, fTimeDelta);
 
 	_vector vCamLook = m_pTransformCom->Get_State(STATE::LOOK);
 
