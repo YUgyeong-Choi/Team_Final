@@ -73,7 +73,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		return;
 
 	if (m_bLockOnTransition)
+	{
 		Update_LockOnTransition(fTimeDelta);
+		return;
+	}
+		
 
 	if (m_bLockOn)
 	{
@@ -312,7 +316,7 @@ void CCamera_Orbital::Update_LockOnTransition(_float fTimeDelta)
 		vTargetLook = vTargetPos - m_pTransformCom->Get_State(STATE::POSITION);
 	}
 	
-	m_pTransformCom->RotateToDirectionSmoothly(vTargetLook, fTimeDelta);
+	m_pTransformCom->LookAt(vTargetLook);
 
 	_vector vCamLook = m_pTransformCom->Get_State(STATE::LOOK);
 
