@@ -3,7 +3,7 @@
 
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Player.h"
-
+#include "Unit.h"
 #include "Camera_Manager.h"
 
 IMPLEMENT_SINGLETON(CLockOn_Manager)
@@ -31,7 +31,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
     if (m_bStartLockOn)
     {
-        RemoveBehindWallTargets();
+        RemoveSomeTargets();
         CGameObject* pTarget = Find_ClosestToLookTarget();
         if (pTarget)
         {
@@ -159,7 +159,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
     return S_OK;
 }
 
-void CLockOn_Manager::RemoveBehindWallTargets()
+void CLockOn_Manager::RemoveSomeTargets()
 {
     _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
@@ -168,47 +168,55 @@ void CLockOn_Manager::RemoveBehindWallTargets()
         CGameObject* pTarget = m_vecTarget[i];
         _vector targetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
-        PxVec3 origin = VectorToPxVec3(playerPos);
-        PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
-        direction.normalize(); // 방향 벡터 정규화
-        _float fRayLength = 7.f;
-
-        PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
-        PxRaycastBuffer hit;
-        PxQueryFilterData filterData;
-        filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
-
-        CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
-        unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
-        CIgnoreSelfCallback callback(ignoreActors);
-
         bool bRemove = false;
 
-        // 레이캐스트 수행
-        if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
-        {
-            if (hit.hasBlock)
-            {
-                PxRigidActor* hitActor = hit.block.actor;
-                CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+        // HP 0 이하 제거
+        CUnit* pUnit = static_cast<CUnit*>(pTarget);
+        if (!pUnit || pUnit->Get_HP() <= 0.f) {
+            bRemove = true;
+        }
 
-                
-                if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
+        // 벽 뒤 체크
+        if (!bRemove)
+        {
+            PxVec3 origin = VectorToPxVec3(playerPos);
+            PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
+            direction.normalize();
+            _float fRayLength = 7.f;
+
+            PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+            PxRaycastBuffer hit;
+            PxQueryFilterData filterData;
+            filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+            CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
+            unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
+            CIgnoreSelfCallback callback(ignoreActors);
+
+            if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+            {
+                if (hit.hasBlock)
                 {
-                    // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
+                    PxRigidActor* hitActor = hit.block.actor;
+                    CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+
+                    if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
+                    {
+                        // 벽 등 다른 오브젝트가 먼저 막음 → 제거
+                        bRemove = true;
+                    }
+                }
+                else
+                {
+                    // 아무것도 맞지 않음 → 거리 밖 등 → 제거
                     bRemove = true;
                 }
             }
             else
             {
-                // 레이에 아무것도 맞지 않음 → 거리 밖으로 간 것 → 제거
                 bRemove = true;
             }
         }
-        else
-        {
-            bRemove = true;
-        } 
 
         if (bRemove)
             m_vecTarget.erase(m_vecTarget.begin() + i);

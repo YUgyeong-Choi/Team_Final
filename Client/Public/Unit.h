@@ -71,7 +71,8 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 
 public:
 	_float4& Get_LockonPos() { return m_vLockonPos; }
-
+	//락온에서 hp 0이하인거는 제외할라고(죽는모션할떄 락온되서)
+	_int Get_HP() { return m_iHP; } 
 public:
 	// 데미지를 준다
 	virtual void Attack(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
