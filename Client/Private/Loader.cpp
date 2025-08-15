@@ -430,7 +430,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 #pragma region YW
 
 	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중."));
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //STATION, TEST (레벨과 동일해야함)
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION"))) //STATION, TEST (레벨과 동일해야함)
 		return E_FAIL;
 
 	//스태틱 데칼	

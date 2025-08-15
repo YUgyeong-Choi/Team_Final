@@ -188,6 +188,8 @@
     <ClInclude Include="..\public\EventMag.h" />
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\public\Elite_Police.h" />
+    <ClInclude Include="..\Public\FireBall.h" />
+    <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\public\UI_Component.h" />
     <ClInclude Include="..\public\UI_Component_Text.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
@@ -332,6 +334,7 @@
     <ClCompile Include="..\private\Egro_Bar.cpp" />
     <ClCompile Include="..\private\EventMag.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
+    <ClCompile Include="..\Private\FireBall.cpp" />
     <ClCompile Include="..\private\Fuoco.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />
@@ -377,6 +380,7 @@
     <ClCompile Include="..\private\Portion.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="..\private\Lamp.cpp" />
+    <ClCompile Include="..\Private\Projectile.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />

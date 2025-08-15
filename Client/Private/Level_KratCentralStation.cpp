@@ -151,7 +151,7 @@ void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 				return;
 
 			//제이슨으로 저장된 맵을 로드한다.
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))  //TEST, STATION (Loader.cpp와 동일해야함)
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))  //TEST, STATION (Loader.cpp와 동일해야함)
 				return;
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
@@ -186,12 +186,6 @@ void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 		return;
 	}
 
-	m_pCamera_Manager->Update(fTimeDelta);
-	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
-}
-
-void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
-{
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 	__super::Late_Update(fTimeDelta);
 
@@ -786,9 +780,9 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &pDesc)))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
+		return E_FAIL;
 
 
 	return S_OK;

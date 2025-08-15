@@ -820,10 +820,10 @@
     <ClInclude Include="..\public\Elite_Police.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Police\Elite</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Projectile.h">
+    <ClInclude Include="..\Public\Projectile.h">
       <Filter>02.GameObjects\12.Projectile</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\FireBall.h">
+    <ClInclude Include="..\Public\FireBall.h">
       <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1235,10 +1235,10 @@
     <ClCompile Include="..\private\Elite_Police.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Police\Elite</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Projectile.cpp">
+    <ClCompile Include="..\Private\Projectile.cpp">
       <Filter>02.GameObjects\12.Projectile</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\FireBall.cpp">
+    <ClCompile Include="..\Private\FireBall.cpp">
       <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
     </ClCompile>
   </ItemGroup>
