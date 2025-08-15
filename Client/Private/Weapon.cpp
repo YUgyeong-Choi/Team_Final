@@ -230,6 +230,13 @@ void CWeapon::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
+void CWeapon::Calc_Durability(_int iDelta)
+{
+	m_iDurability -= iDelta;
+
+	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_iDurability);
+}
+
 CWeapon* CWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CWeapon* pInstance = new CWeapon(pDevice, pContext);

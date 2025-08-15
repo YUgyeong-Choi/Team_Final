@@ -41,7 +41,7 @@ private:
 	CTexture* m_pGradationCom = { nullptr };
 
 private:
-	_int m_iCurrentStamina = {};
+	_float m_fCurrentStamina = {};
 	_int m_iMaxStamina = {};
 	_float m_fRatio = { 1.f };
 

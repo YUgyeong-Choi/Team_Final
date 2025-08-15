@@ -1,5 +1,6 @@
 #include "Durability_Bar.h"
 #include "GameInstance.h"
+#include "Observer_Weapon.h"
 
 CDurability_Bar::CDurability_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CDynamic_UI{pDevice, pContext}
@@ -24,6 +25,31 @@ HRESULT CDurability_Bar::Initialize(void* pArg)
     m_strProtoTag = TEXT("Prototype_GameObject_UI_Durability_Bar");
 
     // 콜백을 등록
+    if (nullptr == m_pGameInstance->Find_Observer(TEXT("Weapon_Status")))
+    {
+
+        m_pGameInstance->Add_Observer(TEXT("Weapon_Status"), new CObserver_Weapon);
+
+    }
+
+    m_pGameInstance->Register_PushCallback(TEXT("Weapon_Status"), [this](_wstring eventType, void* data) {
+        if (L"Durablity" == eventType)
+        {
+            m_iDurablity = *static_cast<int*>(data);
+
+
+        }
+        else if (L"MaxDurablity" == eventType)
+        {
+            m_iMaxDurablity = *static_cast<int*>(data);
+
+            m_iDurablity = m_iMaxDurablity;
+        }
+
+        m_fRatio = float(m_iDurablity) / m_iMaxDurablity;
+
+        });
+
 
     Ready_Component(m_strTextureTag);
 

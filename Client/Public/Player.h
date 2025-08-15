@@ -109,7 +109,6 @@ private: /* [ 이동로직 ] */
 
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Weapon();
-	HRESULT Ready_Lamp();
 	HRESULT Ready_StationDoor();
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
@@ -132,12 +131,11 @@ private: /* [ 상호작용 관련 ] */
 
 private:
 	void ItemWeaponOFF(_float fTimeDelta);
-	void ItemLampON(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
 
 	
 private: // 슬롯 용
-	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
+	// 빼지 말죠
 	void Callback_UpBelt();
 	void Callback_DownBelt();
 	void Use_Item();
@@ -190,8 +188,7 @@ private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_At = {};
 
 private: /* [ 램프 온 오프 ] */
-	_bool m_bLampOnOff = { false };
-	class CDH_ToolMesh* m_pLamp = { nullptr };
+
 
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*	m_pTarget = { nullptr };
@@ -252,7 +249,7 @@ private: /* [ 루트모션 관련 변수 ] */
 private: // 옵저버 관련
 	// stat용
 	_int m_iCurrentHP = {};
-	_int m_iCurrentStamina = {};
+	_float m_fCurrentStamina = {};
 	_int m_iMaxStamina = { 100 };
 	// 일단 한칸에 100씩
 	_int m_iCurrentMana = {};

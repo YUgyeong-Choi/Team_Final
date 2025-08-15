@@ -29,6 +29,7 @@ public:
     void Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery);
     void Set_SimulationFilterData(PxFilterData _data);
     void Set_QueryFilterData(PxFilterData _data);
+    virtual void RemovePhysX() override;
 
     void Shape_Detach();
 public:

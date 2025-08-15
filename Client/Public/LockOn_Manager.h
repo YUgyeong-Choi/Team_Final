@@ -28,6 +28,7 @@ public:
     void Add_LockOnTarget(CGameObject* pTarget);
 
     void Set_Active();
+    void Set_Off(CGameObject* pObj);
 
     CGameObject* Get_Target() { return m_pBestTarget; }
 

@@ -96,10 +96,10 @@ void CIcon_Item::Update_ICon(ITEM_DESC* pDesc)
 	if (!pDesc->strPrototag.empty())
 	{
 		// 아이템 프로토타입 이름 따라서 텍스처 정해줘서 replace하기
-		if (pDesc->strPrototag.find(L"Ramp") != pDesc->strPrototag.npos)
+		if (pDesc->strPrototag.find(L"Lamp") != pDesc->strPrototag.npos)
 		{
 
-			m_strTextureTag = TEXT("Prototype_Component_Texture_Ramp");
+			m_strTextureTag = TEXT("Prototype_Component_Texture_Lamp");
 
 			
 		}

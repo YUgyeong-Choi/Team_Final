@@ -349,6 +349,28 @@ void CLockOn_Manager::Set_Active()
     }
 }
 
+void CLockOn_Manager::Set_Off(CGameObject* pObj)
+{
+    if (m_pBestTarget != pObj)
+        return;
+
+    m_bActive = false;
+    m_pBestTarget = nullptr;
+    CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
+
+    // Pitch Yaw 역계산
+    XMVECTOR camerakDir = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Get_State(STATE::LOOK) * -1);
+    const _float bx = XMVectorGetX(camerakDir);
+    const _float by = XMVectorGetY(camerakDir);
+    const _float bz = XMVectorGetZ(camerakDir);
+
+    _float fYaw = atan2f(bx, bz);
+    _float fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
+
+    CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
+
+}
+
 
 
 void CLockOn_Manager::Free()

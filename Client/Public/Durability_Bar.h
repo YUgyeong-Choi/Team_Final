@@ -41,8 +41,8 @@ private:
 	CTexture* m_pGradationCom = { nullptr };
 
 private:
-	_int m_iCurrentHP = {};
-	_int m_iMaxHP = {};
+	_int m_iDurablity = {};
+	_int m_iMaxDurablity = {};
 	_float m_fRatio = { 1.f };
 
 public:

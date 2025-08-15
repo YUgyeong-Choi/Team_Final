@@ -26,7 +26,7 @@ public:
     {
         static_cast<PxRigidDynamic*>(m_pActor)->setKinematicTarget(pose);
     }
-
+    virtual void RemovePhysX() override;
     void Shape_Detach();
 public:
     PxRigidActor* Get_Actor() override { return m_pActor; }
