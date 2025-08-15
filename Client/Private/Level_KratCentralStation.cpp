@@ -94,7 +94,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if(KEY_DOWN(DIK_H))
 		ToggleHoldMouse();
 	if(m_bHold)
-		HoldMouse();
+		HoldMouse(); 
 
 	if(KEY_DOWN(DIK_F7))
 		m_pGameInstance->ToggleDebugOctoTree();

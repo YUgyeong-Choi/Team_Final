@@ -811,7 +811,7 @@
     <ClInclude Include="..\public\EditorObjectFactory.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Police_Elite.h">
+    <ClInclude Include="..\public\Elite_Police.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Police\Elite</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1220,7 +1220,7 @@
     <ClCompile Include="..\private\EditorObjectFactory.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Police_Elite.cpp">
+    <ClCompile Include="..\private\Elite_Police.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Police\Elite</Filter>
     </ClCompile>
   </ItemGroup>
