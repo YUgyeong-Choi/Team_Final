@@ -187,6 +187,7 @@
     <ClInclude Include="..\public\Egro_Bar.h" />
     <ClInclude Include="..\public\EventMag.h" />
     <ClInclude Include="..\Public\Explosion.h" />
+    <ClInclude Include="..\public\Police_Elite.h" />
     <ClInclude Include="..\public\UI_Component.h" />
     <ClInclude Include="..\public\UI_Component_Text.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
@@ -372,6 +373,7 @@
     <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\PBRMesh.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\Police_Elite.cpp" />
     <ClCompile Include="..\private\Portion.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="..\private\Lamp.cpp" />

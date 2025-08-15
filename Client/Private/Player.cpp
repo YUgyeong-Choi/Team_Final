@@ -849,6 +849,8 @@ HRESULT CPlayer::Ready_Weapon()
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
 
+
+	// 옵저버 추가
 	
 
 	return S_OK;

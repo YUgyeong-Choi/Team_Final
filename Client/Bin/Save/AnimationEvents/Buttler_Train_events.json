@@ -739,21 +739,21 @@
             "ClipName": "AS_Walk_C_L_Root",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_R",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_R_Root",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         }
     ]

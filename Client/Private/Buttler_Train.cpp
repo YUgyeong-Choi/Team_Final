@@ -74,7 +74,7 @@ void CButtler_Train::Update(_float fTimeDelta)
 
 		}
 
-		m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 0.6f);
+		m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 1.f);
 	}
 
 
@@ -112,7 +112,12 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 {
 	
 
-	ReceiveDamage(pOther, eColliderType);
+	// 이걸르 무기에 옮겨야됨
+	// 무기가 상태마다 한번씩 데미지 주고
+	// 이제 초기화하면 다시 데미지 줄 수 있게
+	// 수정 해야됨
+	// 플레이어 상태 좀 잡히면 다시 
+	//ReceiveDamage(pOther, eColliderType);
 
 }
 
@@ -140,8 +145,14 @@ void CButtler_Train::Update_State()
 {
 	 Check_Detect();
 
-	if (!m_isDetect || m_iHP <= 0)
-		return;
+	 m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+
+	 if (!m_isDetect || m_iHP <= 0)
+	 {
+		 m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+		 return;
+	 }
+		
 
 
 
@@ -231,7 +242,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		m_iGroggyThreshold -= pWeapon->Get_CurrentDamage();
 		m_pHPBar->Set_RenderTime(2.f);
 
-		if (m_iHP < 0)
+		if (m_iHP <= 0)
 		{
 
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
@@ -271,7 +282,12 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
-	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk") != m_strStateName.npos )
+	if (m_strStateName.find("Run") != m_strStateName.npos)
+	{
+		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+		m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
+	}
+	else if (m_strStateName.find("Walk") != m_strStateName.npos)
 	{
 		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
@@ -281,14 +297,16 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 
 			m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
 		}
-		else
+		else if (m_strStateName.find("Walk_F") != m_strStateName.npos)
 		{
 			m_pTransformCom->Go_Dir(vLook, fTimeDelta, nullptr, m_pNaviCom);
 		}
-			
-
+		else
+		{
+			m_isLookAt = false;
+			RootMotionActive(fTimeDelta);
+		}
 	}
-
 	else if (m_strStateName.find("Attack") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
 	{
 		RootMotionActive(fTimeDelta);

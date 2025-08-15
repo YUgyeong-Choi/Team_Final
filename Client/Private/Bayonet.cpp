@@ -50,6 +50,9 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	m_iDurability = m_iMaxDurability;
 
+	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_iDurability);
+	m_pGameInstance->Notify(L"Weapon_Status", L"MaxDurablity", &m_iDurability);
+
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 
@@ -211,6 +214,9 @@ HRESULT CBayonet::Ready_Effect()
 void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	// 내구도나 이런거 하면 될듯?
+
+	Calc_Durability(5);
+	
 }
 
 void CBayonet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)

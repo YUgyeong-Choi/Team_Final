@@ -466,7 +466,7 @@ public:
         printf("Player_State : %ls \n", GetStateName());
     }
 
-    // 지속 아이템(그라인더 이런거) 만 넣을수 있게?
+    // 지속 아이템(그라인더 이런거)는 여기에 넣기
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
@@ -483,7 +483,7 @@ public:
 
     virtual void Exit() override
     {
-        // 한번 효과 발동되는
+        // 한번 효과 발동되는건 여기에 넣기
         if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
         {
             m_pOwner->Use_Item();
