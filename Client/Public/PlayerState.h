@@ -486,7 +486,7 @@ public:
         // 한번 효과 발동되는
         if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
         {
-            m_pOwner->m_pSelectItem->Activate();
+            m_pOwner->Use_Item();
         }
 
 		m_pOwner->m_bWalk = m_bPreWalk;

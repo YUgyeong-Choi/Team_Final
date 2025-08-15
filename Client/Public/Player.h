@@ -135,7 +135,7 @@ private:
 
 	
 private: // 슬롯 용
-	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
+	// 빼지 말죠
 	void Callback_UpBelt();
 	void Callback_DownBelt();
 	void Use_Item();
