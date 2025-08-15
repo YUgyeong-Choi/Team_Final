@@ -40,6 +40,7 @@ class CFuoco : public CUnit
         ATK_SWING_R_COM1 = 47,
         ATK_SWING_R_COM2 = 48,
         ATK_SWING_L_COM2 = 49,
+        ATK_SWING_SEQ_START = 100050,
         ATK_SWING_SEQ = 50,
         ATK_SWING_SEQ2 = 51,
         ATK_SWING_SEQ3 = 52,
@@ -70,7 +71,11 @@ class CFuoco : public CUnit
         WALK_L = 123,
         RUN_F = 100035,
         TURN_R = 100012,
-        TURN_L = 100013
+        TURN_L = 100013,
+        PARALYZATION_START = 100043,
+        PARALYZATION_LOOP = 100044,
+        PARALYZATION_END = 100045
+
     };
 
     enum EBossAttackPattern :_int
@@ -78,22 +83,29 @@ class CFuoco : public CUnit
         BAP_NONE = 0,
         SlamCombo = 1,
         Uppercut = 2,
+        SwingAtkSeq = 3,
         SwingAtk = 4,
         SlamFury = 5,
         FootAtk = 6,
-        P2_FlameFiled = 7,
+        P2_FlameField = 7,
         SlamAtk = 8,
         StrikeFury = 9,
         P2_FireOil = 10,
         P2_FireBall = 11,
+        P2_FireFlame = 12,
         P2_FireBall_B = 13,
     };
 
 	enum class EFuocoState{
-        IDLE,WALK,RUN,TURN,ATTACK,GROGGY,DEAD,NONE};
+        IDLE,WALK,RUN,TURN,ATTACK,GROGGY,PARALYZATION,DEAD,NONE};
 
 	enum class EMoveDirection	{
         FRONT, RIGHT, BACK, LEFT};
+
+    enum class ProjectileType {
+        FireBall,
+        Oil
+    };
 
 private:
 	CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -122,6 +134,7 @@ private:
 	HRESULT LoadFromJson();
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
+	void Ready_BoneInformation();
 
 	void Update_Collider();
 	void UpdateBossState(_float fTimeDelta);
@@ -133,6 +146,15 @@ private:
 	_bool UpdateTurnDuringAttack(_float fTimeDelta);
 	_float Get_DistanceToPlayer() const;
 	_vector GetTargetDirection() const;
+    _int GetYawSignFromDiretion() {
+        // 플레이어 방향 기준
+        _vector vDir = GetTargetDirection();
+        vDir = XMVectorSetY(vDir, 0.f);
+        _vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
+        _vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+        _vector vCross = XMVector3Cross(vLook, vDir);
+		return (XMVectorGetY(vCross) < 0.f) ? 1 : 0; 
+    }
 
     // 공견 패턴
     void SetupAttackByType(EBossAttackPattern ePattern);
@@ -152,13 +174,15 @@ private:
 	_bool IsValidAttackType(EBossAttackPattern ePattern) const
 	{
 		return ePattern == EBossAttackPattern::SwingAtk ||
+            ePattern == EBossAttackPattern::SwingAtkSeq||
 			ePattern == EBossAttackPattern::SlamFury ||
 			ePattern == EBossAttackPattern::SlamCombo ||
 			ePattern == EBossAttackPattern::FootAtk ||
 			ePattern == EBossAttackPattern::SlamAtk ||
 			ePattern == EBossAttackPattern::Uppercut ||
 			ePattern == EBossAttackPattern::StrikeFury ||
-            ePattern == EBossAttackPattern::P2_FlameFiled ||
+            ePattern == EBossAttackPattern::P2_FlameField ||
+            ePattern == EBossAttackPattern::P2_FireFlame ||
 			ePattern == EBossAttackPattern::P2_FireOil ||
 			ePattern == EBossAttackPattern::P2_FireBall ||
 			ePattern == EBossAttackPattern::P2_FireBall_B;
@@ -172,7 +196,7 @@ private:
 	EBossAttackPattern GetRandomAttackPattern(_float fDistance);
 	void UpdatePatternWeight(EBossAttackPattern ePattern);
 
-    _bool CheckConditionFlameFiled();
+    _bool CheckConditionFlameField();
  
 	_float CalculateCurrentHpRatio() const
 	{
@@ -180,6 +204,7 @@ private:
 	}
 
 	void ChosePatternWeightByDistance(_float fDistance);
+	void FireProjectile(ProjectileType type, _float fSpeed = 10.f);
 
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {    cout << "=== Attack Pattern Weights ===" << endl;
@@ -188,7 +213,8 @@ private:
         cout << "Pattern " << static_cast<_int>(pattern)
             << ": Weight=" << weight
             << ", Consecutive=" << m_PatternCountMap[pattern]
-            << ", Previous=" << static_cast<_int>(m_ePrevAttackPattern) <<
+            <<"\n"
+            << ", Previous=" << static_cast<_int>(m_ePrevAttackPattern) <<"\n"<<
                 ", Current=" << static_cast<_int>(m_eCurAttackPattern)
                 << endl;
     }
@@ -203,6 +229,8 @@ private:
     CNavigation* m_pNaviCom = { nullptr };
 	CBone* m_pFistBone{ nullptr };
 	CBone* m_pFootBone{ nullptr };
+	CBone* m_pLeftBone{ nullptr };
+	CBone* m_pCannonBone{ nullptr };
 	
     // 상태 관련
     EFuocoState m_eCurrentState = EFuocoState::NONE;
@@ -225,55 +253,62 @@ private:
     _float   m_fRotSmoothSpeed = 8.0f;
     _float   m_fSmoothSpeed = 8.0f;
     _float   m_fSmoothThreshold = 0.1f;
-    _float m_fWalkSpeed = 3.f;
-	_float m_fRunSpeed = 5.f;
+    _float   m_fWalkSpeed = 3.f;
+	_float   m_fRunSpeed = 6.f;
+	_float   m_fRootMotionAddtiveScale = 1.35f; // 루트 모션 추가 배율
 
 	_float m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
-	_float m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
+	_float m_fAddtiveRotSpeed = 1.f; // 회전 속h도 추가값
     _float m_fTurnTimeDuringAttack = 0.f;
 
 
     // 공격 관련
-    _int m_iPatternLimit = 2;
+    _int   m_iPatternLimit = 3;
+    _int   m_iFireBallComboCount = 0;
     _float m_fBasePatternWeight = 100.f;
-    _float m_fMinWeight = 10.f;
+    _float m_fMinWeight = 50.f;
     _float m_fMaxWeight = 150.f;
-    _float m_fWeightDecreaseRate = 0.3f;
-	_float m_fWeightIncreaseRate = 0.1f;
+    _float m_fWeightDecreaseRate = 0.15f;
+	_float m_fWeightIncreaseRate = 0.12f;
     _float m_fAttackCooldown = 0.f; // 공격 쿨타임
-    _float m_fAttckDleay = 2.5f;
+    _float m_fAttckDleay = 4.f;
 
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
     EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
     unordered_map<EBossAttackPattern, _float> m_PatternWeightMap;
     unordered_map<EBossAttackPattern, _float> m_PatternWeighForDisttMap;
-    unordered_map<EBossAttackPattern, _int> m_PatternCountMap;// 연속 횟수
+    unordered_map<EBossAttackPattern, _int> m_PatternCountMap;// 패턴 연속 횟수
 
 	vector<EBossAttackPattern> m_vecCloseAttackPatterns = {
-		EBossAttackPattern::SlamCombo, EBossAttackPattern::Uppercut,
-		EBossAttackPattern::SwingAtk, EBossAttackPattern::SlamFury,
-		EBossAttackPattern::FootAtk,EBossAttackPattern::StrikeFury
+	  SlamCombo, Uppercut, SlamAtk, SwingAtk, 
+      SlamFury, P2_FireBall,
+	  SwingAtkSeq,FootAtk,
+      StrikeFury,  P2_FireOil,
+      P2_FireBall_B, P2_FireFlame,
 	};
 
     vector<EBossAttackPattern> m_vecMiddleAttackPatterns = {
-    EBossAttackPattern::StrikeFury,  EBossAttackPattern::SwingAtk,
-    EBossAttackPattern::SlamFury, EBossAttackPattern::P2_FireOil,
-     EBossAttackPattern::P2_FlameFiled,
-    EBossAttackPattern::P2_FireBall, EBossAttackPattern::P2_FireBall_B
+     SlamCombo,
+     StrikeFury, SwingAtk,
+     SlamFury, P2_FireOil
+    ,SwingAtkSeq, P2_FireBall,
+     P2_FireBall_B, P2_FireFlame
+
     };
 
     vector<EBossAttackPattern> m_vecFarAttackPatterns = {
-         EBossAttackPattern::P2_FlameFiled,
-    EBossAttackPattern::P2_FireOil,EBossAttackPattern::StrikeFury,
-    EBossAttackPattern::P2_FireBall, EBossAttackPattern::P2_FireBall_B
+     P2_FireOil,StrikeFury,
+     P2_FireBall, P2_FireBall_B,
+     P2_FireFlame
     };
 
     // 상수
-    const _float CHASING_DISTANCE = 3.1f;
-	const _float ATTACK_DISTANCE_CLOSE = 1.f;
-    const _float ATTACK_DISTANCE_MIDDLE = 7.f;
+    const _float CHASING_DISTANCE = 1.5f;
+	const _float ATTACK_DISTANCE_CLOSE = 0.f;
+    const _float ATTACK_DISTANCE_MIDDLE = 10.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
     const _float MINIMUM_TURN_ANGLE = 35.f;
+    const _int LIMIT_FIREBALL_COMBO_COUNT = 3;
 public:
 	static CFuoco* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

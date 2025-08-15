@@ -162,7 +162,7 @@ void CAnimTool::Late_Update(_float fTimeDelta)
 {
 	if (m_pSelectedObject)
 	{
-		m_pSelectedObject->Last_Update(fTimeDelta);
+		m_pSelectedObject->Late_Update(fTimeDelta);
 	}
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 	m_bRenerLevel = false;
@@ -211,6 +211,7 @@ HRESULT CAnimTool::Render()
 		m_bRenerLevel = true;
 	}
 
+	if(m_bIsObject == false)
 	if (FAILED(Bind_Shader()))
 		return E_FAIL;
 
@@ -741,7 +742,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 
 					// 저장된 오버라이드 상태에서 애니메이션 인덱스 찾기
 					auto& selectedState = m_NewOverrideAnimController.states[stateNames[i]];
-					vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName];
+					vector<CAnimation*>& anims = m_bIsObject ? m_pCurModel->GetAnimations(): m_LoadedAnimations[m_stSelectedModelName];
 
 					// 메인 애니메이션 인덱스 찾기
 					m_iOverrideAnimIndex = -1;
@@ -788,7 +789,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 			auto& selectedState = m_NewOverrideAnimController.states[stateNames[m_iSelectedOverrideStateIndex]];
 
 			// 상태 이름
-			vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
+			vector<CAnimation*>& anims =m_bIsObject ? m_pCurModel->GetAnimations(): m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
 
 			vector<string> animNames;
 			animNames.reserve(anims.size());
@@ -1527,7 +1528,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 
 
-	vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
+	vector<CAnimation*>& anims = m_bIsObject ? m_pCurModel->GetAnimations() : m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
 
 	vector<string> animNames;
 	animNames.reserve(anims.size()+1);
@@ -1845,6 +1846,7 @@ HRESULT CAnimTool::Render_Spawn_Object()
 			{
 				m_vecObjects.emplace_back(pObj);
 				pObj->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+				pObj->Get_TransfomCom()->Scaling(_float3(5.f, 5.f, 5.f));
 			}
 		}
 	}
@@ -1867,12 +1869,12 @@ HRESULT CAnimTool::Render_SpawnedObject()
 		return S_OK;
 	}
 
-	if (ImGui::BeginCombo("Objects", m_iSelectedObjectIndex >= 0 ? m_vecObjectNames[m_iSelectedObjectIndex].c_str() : "Select Object"))
+	if (ImGui::BeginCombo("Objects", m_iSelectedObjectIndex >= 0 ? WStringToString(m_vecObjects[m_iSelectedObjectIndex]->Get_Name()).c_str() : "Select Object"))
 	{
-		for (_int i = 0; i < m_vecObjectNames.size(); ++i)
+		for (_int i = 0; i < m_vecObjects.size(); ++i)
 		{
 			_bool isSelected = (i == m_iSelectedObjectIndex);
-			if (ImGui::Selectable(m_vecObjectNames[i].c_str(), isSelected))
+			if (ImGui::Selectable(WStringToString(m_vecObjects[i]->Get_Name()).c_str(), isSelected))
 			{
 				if (i < 0 || i >= m_vecObjects.size())
 				{
@@ -1883,7 +1885,7 @@ HRESULT CAnimTool::Render_SpawnedObject()
 				m_pSelectedObject = m_vecObjects[m_iSelectedObjectIndex];
 				m_pCurAnimator = dynamic_cast<CUnit*>(m_vecObjects[m_iSelectedObjectIndex])->Get_Animator();
 				m_pCurAnimation = nullptr;
-				m_stSelectedObjectName = m_vecObjectNames[i];
+				m_stSelectedObjectName = WStringToString(m_vecObjects[m_iSelectedObjectIndex]->Get_Name());
 				m_stSelectedModelName = m_pCurModel->Get_ModelName();
 				m_vecMaskBoneNames.clear(); // 마스크 본 이름 초기화
 			}
@@ -2044,7 +2046,7 @@ void CAnimTool::Setting_AnimationProperties()
 		{
 			m_pCurAnimation->SetTickPerSecond(fTickPerSecond);
 
-			auto& anims = m_LoadedAnimations[m_stSelectedModelName];
+			auto& anims =m_bIsObject ? m_pCurModel->GetAnimations() : m_LoadedAnimations[m_stSelectedModelName];
 			auto it = find_if(anims.begin(), anims.end(),
 				[&](CAnimation* anim) { return anim->Get_Name() == m_pCurAnimation->Get_Name(); });
 
@@ -2746,7 +2748,7 @@ HRESULT CAnimTool::Register_Objects()
 	pDesc->fSpeedPerSec = 5.f;
 	pDesc->fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc->eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	pDesc->InitPos = _float3(105.5f, 0.f, -7.5f);
+	pDesc->InitPos = _float3(0.f,0.f,0.f);
 	pDesc->InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc->szName, TEXT("Buttler_Train"));
 	pDesc->szMeshID = TEXT("Buttler_Train");
@@ -2757,6 +2759,19 @@ HRESULT CAnimTool::Register_Objects()
 	m_vecObjectNames.push_back("Buttler_Train");
 	m_SpawnObjectDesc["Buttler_Train"] = pDesc;
 
+	CPlayer::PLAYER_DESC* pPlayerDesc = new CPlayer::PLAYER_DESC();
+	//pDesc.fSpeedPerSec = 1.f;
+	pPlayerDesc->fSpeedPerSec = 5.f;
+	pPlayerDesc->fRotationPerSec = XMConvertToRadians(600.0f);
+	pPlayerDesc->eLevelID = LEVEL::STATIC;
+	pPlayerDesc->InitPos = _float3(0.f, 0.f, 0.f);
+	pPlayerDesc->InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pPlayerDesc->szName, TEXT("Player"));
+	pPlayerDesc->szMeshID = TEXT("Player");
+	if (FAILED(m_pEditorObjectFactory->RegisterObject<CPlayer>(TEXT("Player"), pPlayerDesc)))
+		return E_FAIL;
+	m_vecObjectNames.push_back("Player");
+	m_SpawnObjectDesc["Player"] = pPlayerDesc;
 
 
 	return S_OK;

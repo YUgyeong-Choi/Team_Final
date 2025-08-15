@@ -183,8 +183,6 @@ HRESULT CMonster_Base::Ready_Components()
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
-	m_pGameInstance->GetCurrentLevelIndex();
-
 
 	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
 	if (iLevelIndex == ENUM_CLASS(LEVEL::JW))
