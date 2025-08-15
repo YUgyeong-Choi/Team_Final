@@ -501,56 +501,55 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
 
     float4 vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     float2 highlightUV;
-    highlightUV.x = In.vTexcoord.x; // X 그대로
-    highlightUV.y = (In.vTexcoord.y - 0.5f) * 0.6f + 0.5f; // Y를 0.6배 축소 → 텍스처가 화면에서 더 길게 보임
+    // 축소하고 가운데 정렬
+    highlightUV.x = (In.vTexcoord.x - 0.5f) * 0.9f + 0.5f;
+    highlightUV.y = (In.vTexcoord.y - 0.5f) * 0.5f + 0.5f; 
 
     float4 vHighlight = (g_Groggy == 1.f) ? g_HighlightTexture.Sample(DefaultSampler, highlightUV) : float4(0, 0, 0, 0);
-
-
-
-
-    if (vBorder.a > 0.1f)
-    {
-    // 
-        Out.vColor = vHighlight * 4.f; 
-        Out.vColor += vBorder;
-        return Out;
-    }
-  
-
-// 내부 영역
+    
     float fMarginX = 0.06f;
     float fMarginY = 0.3f;
     bool isInsideX;
 
     if (g_BarRatio > 1 - 1.2 * fMarginX)
-        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= 1 - 1.2 * fMarginX;
+        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= 1 - 1.2h * fMarginX;
     else
         isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
 
     bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
+
+
+    if(vHighlight.a > 0.0001f)
+    {
+        Out.vColor += vHighlight * 2.f;
+    }
+    
+
+    if (vBorder.a > 0.001f)
+    {
+    // 
+        
+        Out.vColor += vBorder;
+        return Out;
+    }
+  
 
     if (isInsideX && isInsideY)
     {
         vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
         Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
         
-        if (vHighlight.a > 0.1f)
-            Out.vColor += vHighlight ;
-
+        
+       
     }
     else
     {
-    // discard 대신 하이라이트 색 채우기
-        discard;
-
-    // 필요하면 강도 조절
-    // Out.vColor.rgb *= 1.5f; 
+        if (isInsideY)
+            Out.vColor += vHighlight * 2.f;
+   
     }
     
     
-    if(Out.vColor.a < 0.001f)
-        discard;
 
     return Out;
 }

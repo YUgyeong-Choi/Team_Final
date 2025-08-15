@@ -31,6 +31,7 @@ private:
 
 public:
 	void Set_RenderTime(_float fTime) { m_fRenderTime = fTime; }
+	void Set_MaxHp(_int iHp) { m_iMaxHP = iHp; }
 
 public:
 	virtual HRESULT Initialize_Prototype();

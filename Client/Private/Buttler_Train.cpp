@@ -30,6 +30,8 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	
 	m_iHP = 300;
 
+	m_pHPBar->Set_MaxHp(m_iHP);
+
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 
 	
@@ -64,17 +66,24 @@ void CButtler_Train::Update(_float fTimeDelta)
 		if (m_strStateName.find("Right") != m_strStateName.npos)
 		{
 			vAxis = { 0.f,1.f,0.f,0.f };
-			
+
 		}
 		else
 		{
 			vAxis = { 0.f,-1.f,0.f,0.f };
-			
+
 		}
 
 		m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 0.6f);
 	}
-	
+
+
+	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
+	{
+		m_fDuration += fTimeDelta;
+
+		m_pAnimator->SetFloat("GroggyTime", m_fDuration);
+	}
 
 	__super::Update(fTimeDelta);
 
@@ -186,7 +195,13 @@ void CButtler_Train::Update_State()
 
 		
 	}
-	
+
+
+	if (m_strStateName.find("Groggy_Out") != m_strStateName.npos)
+	{
+		m_fDuration = 0.f;
+		m_iGroggyThreshold = 100;
+	}
 	
 
 }
@@ -211,19 +226,38 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		if (false == pWeapon->GetisAttack())
 			return;
 
-		m_iHP -= pWeapon->Get_CurrentDamage();
+		m_iHP -= pWeapon->Get_CurrentDamage() / 2;
 
-		m_pAnimator->SetTrigger("Hit");
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		m_iGroggyThreshold -= pWeapon->Get_CurrentDamage();
 		m_pHPBar->Set_RenderTime(2.f);
 
-		m_isCanGroggy = true;
+		if (!m_isCanGroggy)
+		{
+			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos)
+				return;
+
+			m_pAnimator->SetTrigger("Hit");
+			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+			if(m_iGroggyThreshold < 0)
+				m_isCanGroggy = true;
+		}
+		else
+		{
+			if (m_strStateName.find("KnockBack") == m_strStateName.npos && m_strStateName.find("Groggy") == m_strStateName.npos)
+			{
+				m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+				m_pAnimator->SetTrigger("Groggy");
+				m_isCanGroggy = false;
+			}
+	
+		}
+		
 	}
 
 	if (m_iHP <= 0)
 	{
 
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(pOther->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		m_pAnimator->SetTrigger("Dead");
 		m_strStateName = "Dead";
 
@@ -234,7 +268,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
-	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk") != m_strStateName.npos)
+	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk") != m_strStateName.npos )
 	{
 		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
@@ -252,7 +286,7 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 
 	}
 
-	else if (m_strStateName.find("Attack") != m_strStateName.npos)
+	else if (m_strStateName.find("Attack") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
 	{
 		RootMotionActive(fTimeDelta);
 	}

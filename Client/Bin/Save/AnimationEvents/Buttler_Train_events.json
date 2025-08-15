@@ -395,7 +395,7 @@
         {
             "ClipName": "AS_Groggy_End",
             "Duration": 52.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -592,7 +592,7 @@
             "ClipName": "AS_KnockBack_Weak_B",
             "Duration": 135.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -620,7 +620,7 @@
             "ClipName": "AS_KnockBack_Weak_L",
             "Duration": 135.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -648,7 +648,7 @@
             "ClipName": "AS_KnockBack_Weak_R",
             "Duration": 135.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
