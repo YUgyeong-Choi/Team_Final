@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CVIBuffer_Trail final : public CVIBuffer
+class ENGINE_DLL CVIBuffer_SwordTrail final : public CVIBuffer
 {
 public:
 	typedef struct tagTrailBufferDesc
@@ -15,9 +15,9 @@ public:
 	}DESC;
 
 private:
-	CVIBuffer_Trail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CVIBuffer_Trail(const CVIBuffer_Trail& Prototype);
-	virtual ~CVIBuffer_Trail() = default;
+	CVIBuffer_SwordTrail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CVIBuffer_SwordTrail(const CVIBuffer_SwordTrail& Prototype);
+	virtual ~CVIBuffer_SwordTrail() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype(const DESC* pDesc);
@@ -37,7 +37,7 @@ public:
 	void Set_LifeDuration(_float fLifeDuration) { m_fLifeDuration = fLifeDuration; }
 	_uint* Get_MaxNodeCount_Ptr() { return &m_iMaxNodeCount; }
 	_float* Get_LifeDuration_Ptr() { return &m_fLifeDuration; }
-	_uint* Get_Subdivisions_Ptr() { return &m_Subdivisions; }
+	_int* Get_Subdivisions_Ptr() { return &m_Subdivisions; }
 	_float* Get_NodeInterval_Ptr() { return &m_fNodeInterval; }
 #endif
 
@@ -51,12 +51,12 @@ private:
 	_bool					m_bTrailActive = true;
 	_float					m_fNodeAccTime = { 0.f };
 	_float					m_fNodeInterval = { 0.0166f }; // 60 FPS 기준, 1초에 60번 노드 추가
-	_uint					m_Subdivisions = 4; // 캣멀롬 보간을 위한 세분화 단계
+	_int					m_Subdivisions = 4; // 캣멀롬 보간을 위한 세분화 단계
 
 
 public:
-	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& strJsonFilePath);
-	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc = nullptr);
+	static CVIBuffer_SwordTrail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& strJsonFilePath);
+	static CVIBuffer_SwordTrail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc = nullptr);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 

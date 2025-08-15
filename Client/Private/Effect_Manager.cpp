@@ -4,7 +4,7 @@
 #include "ParticleEffect.h"
 #include "SpriteEffect.h"
 #include "MeshEffect.h"
-#include "TrailEffect.h"
+#include "SwordTrailEffect.h"
 
 IMPLEMENT_SINGLETON(CEffect_Manager)
 
@@ -155,7 +155,7 @@ CGameObject* CEffect_Manager::Make_Effect(_uint iLevelIndex, const _wstring& str
         }
 
         // 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
-        CTrailEffect::DESC* pDesc = static_cast<CTrailEffect::DESC*>(pArg);
+        CSwordTrailEffect::DESC* pDesc = static_cast<CSwordTrailEffect::DESC*>(pArg);
         if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"),
             iLevelIndex, strLayerTag, &pInstance, pArg)))
             return nullptr;
@@ -224,7 +224,7 @@ HRESULT CEffect_Manager::Ready_Prototypes()
 
     ///* For.Prototype_GameObject_TrailEffect */
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"),
-        CTrailEffect::Create(m_pDevice, m_pContext))))
+        CSwordTrailEffect::Create(m_pDevice, m_pContext))))
         return E_FAIL;
 
     /* For.Prototype_GameObject_CEffectContainer */
@@ -475,7 +475,7 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 
 HRESULT CEffect_Manager::Ready_Prototype_Trail_VIBuffers(const json& j)
 {
-    CVIBuffer_Trail::DESC VIBufferDesc = {};
+    CVIBuffer_SwordTrail::DESC VIBufferDesc = {};
     _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
 
     if (j.contains("Name"))
@@ -493,7 +493,7 @@ HRESULT CEffect_Manager::Ready_Prototype_Trail_VIBuffers(const json& j)
         VIBufferDesc.Subdivisions = j["Subdivisions"].get<_int>();
 
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
-        CVIBuffer_Trail::Create(m_pDevice, m_pContext, &VIBufferDesc))))
+        CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext, &VIBufferDesc))))
         return E_FAIL;
 
     return S_OK;

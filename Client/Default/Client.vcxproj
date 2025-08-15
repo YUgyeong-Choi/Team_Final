@@ -250,7 +250,7 @@
     <ClInclude Include="..\Public\ToolSprite.h" />
     <ClInclude Include="..\Public\ToolParticle.h" />
     <ClInclude Include="..\Public\ToolTrail.h" />
-    <ClInclude Include="..\Public\TrailEffect.h" />
+    <ClInclude Include="..\Public\SwordTrailEffect.h" />
     <ClInclude Include="..\public\UI_Bar_Loading.h" />
     <ClInclude Include="..\public\UI_Button.h" />
     <ClInclude Include="..\Public\UI_Container.h" />
@@ -388,7 +388,7 @@
     <ClCompile Include="..\Private\ToolSprite.cpp" />
     <ClCompile Include="..\Private\ToolParticle.cpp" />
     <ClCompile Include="..\Private\ToolTrail.cpp" />
-    <ClCompile Include="..\Private\TrailEffect.cpp" />
+    <ClCompile Include="..\Private\SwordTrailEffect.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\private\UI_Component.cpp" />

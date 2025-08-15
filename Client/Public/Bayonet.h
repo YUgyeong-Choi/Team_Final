@@ -53,8 +53,8 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
-	class CTrailEffect* m_pWeaponTrailEffect = { nullptr };
-	class CTrailEffect* m_pHitTrailEffect = { nullptr };
+	class CSwordTrailEffect* m_pWeaponTrailEffect = { nullptr };
+	class CSwordTrailEffect* m_pHitTrailEffect = { nullptr };
 	class CEffectContainer* m_pEffectContainer = { nullptr };
 
 public:

@@ -1,11 +1,11 @@
-#include "VIBuffer_Trail.h"
+#include "VIBuffer_SwordTrail.h"
 
-CVIBuffer_Trail::CVIBuffer_Trail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CVIBuffer_SwordTrail::CVIBuffer_SwordTrail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer{ pDevice, pContext }
 {
 }
 
-CVIBuffer_Trail::CVIBuffer_Trail(const CVIBuffer_Trail& Prototype)
+CVIBuffer_SwordTrail::CVIBuffer_SwordTrail(const CVIBuffer_SwordTrail& Prototype)
 	: CVIBuffer( Prototype )
 	, m_iMaxNodeCount{ Prototype.m_iMaxNodeCount }
 	, m_fLifeDuration{ Prototype.m_fLifeDuration }
@@ -14,7 +14,7 @@ CVIBuffer_Trail::CVIBuffer_Trail(const CVIBuffer_Trail& Prototype)
 {
 }
 
-HRESULT CVIBuffer_Trail::Initialize_Prototype(const DESC* pDesc)
+HRESULT CVIBuffer_SwordTrail::Initialize_Prototype(const DESC* pDesc)
 {
 	if (pDesc != nullptr)
 	{
@@ -51,13 +51,13 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype(const DESC* pDesc)
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Trail::Initialize_Prototype(const _wstring& strJsonFilePath)
+HRESULT CVIBuffer_SwordTrail::Initialize_Prototype(const _wstring& strJsonFilePath)
 {
 	json j;
 	ifstream ifs(strJsonFilePath);
 	if (!ifs.is_open())
 	{
-		MSG_BOX("Failed to open JSON file for CVIBuffer_Trail");
+		MSG_BOX("Failed to open JSON file for CVIBuffer_SwordTrail");
 		return E_FAIL;
 	}
 	ifs >> j;
@@ -68,13 +68,13 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype(const _wstring& strJsonFilePath)
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Trail::Initialize(void* pArg)
+HRESULT CVIBuffer_SwordTrail::Initialize(void* pArg)
 {
 	// 여기서 종류 정해야하나?
 	return S_OK;
 }
 
-void CVIBuffer_Trail::Update_Trail(const _float3& vInnerPos, const _float3& vOuterPos, _float fTimeDelta)
+void CVIBuffer_SwordTrail::Update_Trail(const _float3& vInnerPos, const _float3& vOuterPos, _float fTimeDelta)
 {
 	// 1. 시간 업데이트
 	for (auto& node : m_TrailNodes)
@@ -114,7 +114,7 @@ void CVIBuffer_Trail::Update_Trail(const _float3& vInnerPos, const _float3& vOut
 	Update_Buffers();
 }
 
-HRESULT CVIBuffer_Trail::Update_Buffers()
+HRESULT CVIBuffer_SwordTrail::Update_Buffers()
 {
 	m_iNumVertices = (_uint)m_TrailNodes.size();
 	if (m_iNumVertices == 0)
@@ -143,7 +143,7 @@ HRESULT CVIBuffer_Trail::Update_Buffers()
 }
 
 
-HRESULT CVIBuffer_Trail::Bind_Buffers()
+HRESULT CVIBuffer_SwordTrail::Bind_Buffers()
 {
 	ID3D11Buffer* pVertexBuffers[] = { m_pVB };
 	_uint		iVertexStrides[] = { m_iVertexStride };
@@ -156,7 +156,7 @@ HRESULT CVIBuffer_Trail::Bind_Buffers()
 }
 
 
-HRESULT CVIBuffer_Trail::Render()
+HRESULT CVIBuffer_SwordTrail::Render()
 {
 	if (m_TrailNodes.size() < 2)
 		return S_OK;
@@ -166,7 +166,7 @@ HRESULT CVIBuffer_Trail::Render()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
+HRESULT CVIBuffer_SwordTrail::Interpolate_TrailNodes()
 {
 	// 원본 노드가 너무 적으면 그릴 필요 없음
 	if (m_TrailNodes.size() < 4)
@@ -256,59 +256,59 @@ HRESULT CVIBuffer_Trail::Interpolate_TrailNodes()
 	return S_OK;
 }
 
-//CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+//CVIBuffer_SwordTrail* CVIBuffer_SwordTrail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 //{
-//	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(pDevice, pContext);
+//	CVIBuffer_SwordTrail* pInstance = new CVIBuffer_SwordTrail(pDevice, pContext);
 //
 //	if (FAILED(pInstance->Initialize_Prototype()))
 //	{
-//		MSG_BOX("Failed to Created : CVIBuffer_Trail");
+//		MSG_BOX("Failed to Created : CVIBuffer_SwordTrail");
 //		Safe_Release(pInstance);
 //	}
 //
 //	return pInstance;
 //}
 
-CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& strJsonFilePath)
+CVIBuffer_SwordTrail* CVIBuffer_SwordTrail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& strJsonFilePath)
 {
-	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(pDevice, pContext);
+	CVIBuffer_SwordTrail* pInstance = new CVIBuffer_SwordTrail(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype(strJsonFilePath)))
 	{
-		MSG_BOX("Failed to Created : CVIBuffer_Trail");
+		MSG_BOX("Failed to Created : CVIBuffer_SwordTrail");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc)
+CVIBuffer_SwordTrail* CVIBuffer_SwordTrail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc)
 {
-	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(pDevice, pContext);
+	CVIBuffer_SwordTrail* pInstance = new CVIBuffer_SwordTrail(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype(pDesc)))
 	{
-		MSG_BOX("Failed to Created : CVIBuffer_Trail");
+		MSG_BOX("Failed to Created : CVIBuffer_SwordTrail");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CComponent* CVIBuffer_Trail::Clone(void* pArg)
+CComponent* CVIBuffer_SwordTrail::Clone(void* pArg)
 {
-	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(*this);
+	CVIBuffer_SwordTrail* pInstance = new CVIBuffer_SwordTrail(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed to Cloned : CVIBuffer_SwordTrail");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CVIBuffer_Trail::Free()
+void CVIBuffer_SwordTrail::Free()
 {
 	__super::Free();
 

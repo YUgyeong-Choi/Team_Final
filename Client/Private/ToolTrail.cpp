@@ -3,13 +3,13 @@
 #include "GameInstance.h"
 
 CToolTrail::CToolTrail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CTrailEffect { pDevice, pContext }
+	: CSwordTrailEffect { pDevice, pContext }
 {
 
 }
 
 CToolTrail::CToolTrail(const CToolTrail& Prototype)
-	: CTrailEffect( Prototype )
+	: CSwordTrailEffect( Prototype )
 {
 
 }
@@ -96,8 +96,8 @@ void CToolTrail::Update_Tool(_float fTimeDelta, _float fCurFrame)
 void CToolTrail::Change_TrailBuffer(void* pArg)
 {
 	//Safe_Release(m_pVIBufferCom);
-	CVIBuffer_Trail::DESC* pDesc = nullptr;
-	CVIBuffer_Trail::DESC Desc = {};
+	CVIBuffer_SwordTrail::DESC* pDesc = nullptr;
+	CVIBuffer_SwordTrail::DESC Desc = {};
 	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
 	{
 		Desc.fLifeDuration = m_fLifeDuration;
@@ -108,7 +108,7 @@ void CToolTrail::Change_TrailBuffer(void* pArg)
 	}
 	else
 	{
-		CVIBuffer_Trail::DESC* pDesc = static_cast<CVIBuffer_Trail::DESC*>(pArg);
+		CVIBuffer_SwordTrail::DESC* pDesc = static_cast<CVIBuffer_SwordTrail::DESC*>(pArg);
 		m_fLifeDuration = pDesc->fLifeDuration;
 		m_fNodeInterval = pDesc->fNodeInterval;
 		m_Subdivisions = pDesc->Subdivisions;
@@ -120,7 +120,7 @@ void CToolTrail::Change_TrailBuffer(void* pArg)
 
 
 	if (FAILED(m_pGameInstance->Replace_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
-		CVIBuffer_Trail::Create(m_pDevice, m_pContext, pDesc))))
+		CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext, pDesc))))
 	{
 		MSG_BOX("아무튼실패함");
 		return ;
@@ -149,7 +149,7 @@ _float* CToolTrail::Get_LifeDuration_Ptr()
 }
 
 
-_uint* CToolTrail::Get_Subdivisions_Ptr()
+_int* CToolTrail::Get_Subdivisions_Ptr()
 {
 	return m_pVIBufferCom->Get_Subdivisions_Ptr();
 }

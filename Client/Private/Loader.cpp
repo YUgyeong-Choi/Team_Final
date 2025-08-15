@@ -1319,7 +1319,7 @@ HRESULT CLoader::Loading_For_CY()
 
 	/* For.Prototype_Component_VIBuffer_ToolTrail */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
-		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

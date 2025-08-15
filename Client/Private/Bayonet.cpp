@@ -4,7 +4,7 @@
 #include "Animation.h"
 #include "GameInstance.h"
 #include "AnimController.h"
-#include "TrailEffect.h"
+#include "SwordTrailEffect.h"
 #include "Effect_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
@@ -184,12 +184,12 @@ HRESULT CBayonet::Ready_Effect()
 	_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade");
 	_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
 
-	CTrailEffect::DESC desc = {};
+	CSwordTrailEffect::DESC desc = {};
 	desc.pInnerSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
 	desc.pOuterSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
 	desc.pParentCombinedMatrix = &m_CombinedWorldMatrix;
 
-	m_pWeaponTrailEffect = dynamic_cast<CTrailEffect*>(EFFECT_MANAGER->Make_Effect(ENUM_CLASS(LEVEL::STATIC), TEXT("TE_Test"), TEXT("Layer_Effect"), _float3{0.f, 0.f, 0.f}, &desc));
+	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(EFFECT_MANAGER->Make_Effect(ENUM_CLASS(LEVEL::STATIC), TEXT("TE_Test"), TEXT("Layer_Effect"), _float3{0.f, 0.f, 0.f}, &desc));
 	if (m_pWeaponTrailEffect)
 		m_pWeaponTrailEffect->Set_TrailActive(false);
 	else

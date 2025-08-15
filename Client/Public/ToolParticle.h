@@ -3,6 +3,10 @@
 #include "Client_Defines.h"
 #include "ParticleEffect.h"
 
+NS_BEGIN(Engine)
+#include "VIBuffer_Point_Instance.h"
+NS_END
+
 NS_BEGIN(Client)
 
 class CToolParticle final : public CParticleEffect
@@ -28,6 +32,7 @@ public:
 
 public:
 	HRESULT Change_InstanceBuffer(void* pArg);
+	const CVIBuffer_Point_Instance::DESC Get_InstanceBufferDesc();
 
 private:
 	_bool m_bLoadingInTool = { false };

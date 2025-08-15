@@ -286,7 +286,7 @@ HRESULT CCYTool::SequenceWindow()
 			desc.bAnimation = true;
 			desc.fRotationPerSec = 0.f;
 			desc.fSpeedPerSec = 5.f;
-			desc.iTileX = 4;
+			desc.iTileX = 1;
 			desc.iTileY = 1;
 			desc.bBillboard = false;
 			desc.bTool = true;
@@ -495,6 +495,24 @@ HRESULT CCYTool::Window_Sprite()
 HRESULT CCYTool::Window_Particle()
 {
 	CToolParticle* pPE = dynamic_cast<CToolParticle*>(m_pSequence->m_Items[m_iSelected].pEffect);
+	if (m_iLastSelected != m_iSelected)
+	{
+		auto& desc = pPE->Get_InstanceBufferDesc();
+
+		m_eParticleType = desc.ePType;
+		m_iNumInstance = desc.iNumInstance;
+		m_isLoop = desc.isLoop;
+		m_vCenter = desc.vCenter;
+		m_vLifeTime = desc.vLifeTime;
+		m_vPivot = desc.vPivot;
+		m_vRange = desc.vRange;
+		m_vSize = desc.vSize;
+		m_vSpeed = desc.vSpeed;
+		m_bGravity = desc.bGravity;
+		m_fGravity = desc.fGravity;
+
+		m_iLastSelected = m_iSelected;
+	}
 
 	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest");
 	for (_uint i = 0; i < PE_END; i++)
@@ -514,21 +532,48 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
-	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");
-	ImGui::DragFloat("Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 200.f, "%.1f");
+	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");	
+	ImGui::DragFloat("##Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 200.f, "%.1f"); ImGui::SameLine();
+	ImGui::Checkbox("Gravity", &m_bGravity); 
 
-	// 아직안만듦
-	ImGui::Checkbox("Gravity", &m_bGravity);
-	ImGui::Checkbox("Loop", &m_isLoop);
-	//ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
+	// --- 자전(Spin) ---
+	ImGui::InputFloat3("Spin Axis", &m_vRotationAxis.x);
+	ImGui::SameLine();
+	if (ImGui::Button("Normalize##spin")) {
+		_vector a = XMVector3Normalize(XMLoadFloat3(&m_vRotationAxis));
+		XMStoreFloat3(&m_vRotationAxis, a);
+	}
+	ImGui::DragFloat2("Spin Speed (deg/s)", reinterpret_cast<_float*>(&m_vRotationSpeed), 0.1f, -2000.f, 2000.f);
+
+	// --- 공전(Orbit) ---
+	ImGui::InputFloat3("Orbit Axis", &m_vOrbitAxis.x);
+	ImGui::SameLine();
+	if (ImGui::Button("Normalize##orbit")) {
+		_vector a = XMVector3Normalize(XMLoadFloat3(&m_vOrbitAxis));
+		XMStoreFloat3(&m_vOrbitAxis, a);
+	}
+	ImGui::DragFloat2("Orbit Speed (deg/s)", reinterpret_cast<_float*>(&m_vOrbitSpeed), 0.1f, -2000.f, 2000.f);
+
+
+	/**************************************************/
+	
+	ImGui::Checkbox("Loop", &m_isLoop); ImGui::SameLine();
+	ImGui::Checkbox("Spin", &m_bSpin); ImGui::SameLine();
+	ImGui::Checkbox("Orbit", &m_bOrbit); ImGui::SameLine();
+	ImGui::Checkbox("Prewarm", &m_bOrbit); 
+
 	//ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
-
-	if (ImGui::RadioButton("Explosion", m_eParticleType == PTYPE_SPREAD)) {
+	ImGui::SeparatorText("Particle Type");
+	if (ImGui::RadioButton("Spread", m_eParticleType == PTYPE_SPREAD)) {
 		m_eParticleType = PTYPE_SPREAD;
 	}
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Directional", m_eParticleType == PTYPE_DIRECTIONAL)) {
 		m_eParticleType = PTYPE_DIRECTIONAL;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Random", m_eParticleType == PTYPE_ALLRANDOM)) {
+		m_eParticleType = PTYPE_ALLRANDOM;
 	}
 
 	if(ImGui::Button("Update Particle"))
@@ -545,15 +590,19 @@ HRESULT CCYTool::Window_Particle()
 		desc.vSpeed = m_vSpeed;
 		desc.bGravity = m_bGravity;
 		desc.fGravity = m_fGravity;
+		desc.vRotationAxis = m_vRotationAxis;
+		desc.vOrbitAxis = m_vOrbitAxis;
+		desc.vRotationSpeed = m_vRotationSpeed;
+		desc.vOrbitSpeed = m_vOrbitSpeed;
+		desc.bOrbit = m_bOrbit;
+		desc.bSpin = m_bSpin;
 		desc.isTool = true;
 		pPE->Change_InstanceBuffer(&desc);
 	}
 
-	// Gravity
 	// Accel, Decel
 	// Random? <- 랜덤한 방향을 잡을 인터벌, 랜덤한 방향각도 최대치 설정 필요
 	// Rotation Speed
-	// Loop
 
 	return S_OK;
 }
@@ -643,9 +692,11 @@ HRESULT CCYTool::Window_Trail()
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
-	//ImGui::DragFloat()
-
-
+	ImGui::DragFloat("LifeDuration##Trail", pTE->Get_LifeDuration_Ptr(), 0.01f, 0.f, 100.f, "%.2f");
+	static _int fNodeIntervalFPS = 60;
+	ImGui::DragInt("NodeInterval##Trail", &fNodeIntervalFPS, 1, 1, 1024);
+	*pTE->Get_NodeInterval_Ptr() = 1.f / (_float)fNodeIntervalFPS;
+	ImGui::DragInt("CatmullRomDiv##Trail", pTE->Get_Subdivisions_Ptr(), 1, 0, 10);
 
 	return S_OK;
 }
