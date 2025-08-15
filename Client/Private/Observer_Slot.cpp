@@ -1,6 +1,6 @@
 #include "Observer_Slot.h"
 #include "Belt.h"
-#include "Ramp.h"
+#include "Lamp.h"
 
 CObserver_Slot::CObserver_Slot()
 {

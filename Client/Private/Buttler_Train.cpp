@@ -231,6 +231,17 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		m_iGroggyThreshold -= pWeapon->Get_CurrentDamage();
 		m_pHPBar->Set_RenderTime(2.f);
 
+		if (m_iHP < 0)
+		{
+
+			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+			m_pAnimator->SetTrigger("Dead");
+			m_strStateName = "Dead";
+
+			CLockOn_Manager::Get_Instance()->Set_Off(this);
+			return;
+		}
+
 		if (!m_isCanGroggy)
 		{
 			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos)
@@ -254,15 +265,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		
 	}
 
-	if (m_iHP <= 0)
-	{
 
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-		m_pAnimator->SetTrigger("Dead");
-		m_strStateName = "Dead";
-
-		CLockOn_Manager::Get_Instance()->Set_Off(this);
-	}
 	
 }
 

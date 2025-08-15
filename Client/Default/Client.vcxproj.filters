@@ -684,7 +684,7 @@
     <ClInclude Include="..\public\Item.h">
       <Filter>02.GameObjects\03. Item</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Ramp.h">
+    <ClInclude Include="..\public\Lamp.h">
       <Filter>02.GameObjects\03. Item\Ramp</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Belt.h">
@@ -1087,7 +1087,7 @@
     <ClCompile Include="..\private\Icon_Weapon.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Ramp.cpp">
+    <ClCompile Include="..\private\Lamp.cpp">
       <Filter>02.GameObjects\03. Item\Ramp</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Belt.cpp">

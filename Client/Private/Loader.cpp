@@ -73,7 +73,7 @@
 #include "Panel_Player_RU.h"
 #include "Panel_Player_Arm.h"
 #include "Belt.h"
-#include "Ramp.h"
+#include "Lamp.h"
 #include "Grinder.h"
 #include "Portion.h"
 #include "Icon_Weapon.h"
@@ -329,8 +329,8 @@ HRESULT CLoader::Loading_For_Static()
 		CBelt::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Ramp"),
-		CRamp::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"),
+		CLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Grinder"),
@@ -1177,7 +1177,7 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Gradation_Right.dds")))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Ramp"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Lamp"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot/Item/Item_Lamp_%d.dds"), 2))))
 		return E_FAIL;
 

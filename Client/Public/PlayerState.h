@@ -8,6 +8,7 @@
 
 #include "Player.h"
 #include "Weapon.h"
+#include "Item.h"
 NS_BEGIN(Client)
 
 _float g_fWalkSpeed = 1.5f;
@@ -358,6 +359,8 @@ public:
                     m_bChargeStarted = true;
             }
         }
+
+       
     }
 
     virtual void Exit() override
@@ -463,6 +466,7 @@ public:
         printf("Player_State : %ls \n", GetStateName());
     }
 
+    // 지속 아이템(그라인더 이런거) 만 넣을수 있게?
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
@@ -470,13 +474,21 @@ public:
         if (1.f < m_fStateTime && !m_bDoOnce)
         {
             // 램프 온오프 토글
-			m_pOwner->m_bLampOnOff = !m_pOwner->m_bLampOnOff;
-			m_bDoOnce = true;
+           
+            m_bDoOnce = true;
         }
+
+        
     }
 
     virtual void Exit() override
     {
+        // 한번 효과 발동되는
+        if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+        {
+            m_pOwner->m_pSelectItem->Activate();
+        }
+
 		m_pOwner->m_bWalk = m_bPreWalk;
         m_fStateTime = 0.f;
         m_bDoOnce = false;
@@ -546,6 +558,8 @@ public:
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
+
+        m_pOwner->m_fCurrentStamina -= 20.f;
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -626,6 +640,8 @@ public:
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
+
+        m_pOwner->m_fCurrentStamina -= 20.f;
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -812,12 +828,16 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        m_pOwner->m_fCurrentStamina -= 15 * fTimeDelta;
     }
 
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
     }
+
+    
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {

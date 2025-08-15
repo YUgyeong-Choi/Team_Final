@@ -37,18 +37,18 @@ HRESULT CStamina_Bar::Initialize(void* pArg)
 	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
 		if (L"CurrentStamina" == eventType)
 		{
-			m_iCurrentStamina = *static_cast<int*>(data);
+			m_fCurrentStamina = *static_cast<_float*>(data);
 
 
 		}
 		else if (L"MaxStamina" == eventType)
 		{
-			m_iMaxStamina = *static_cast<int*>(data);
+			m_iMaxStamina = *static_cast<_int*>(data);
 
 
 		}
 
-		m_fRatio = float(m_iCurrentStamina) / m_iMaxStamina;
+		m_fRatio = (m_fCurrentStamina) / m_iMaxStamina;
 
 		});
 

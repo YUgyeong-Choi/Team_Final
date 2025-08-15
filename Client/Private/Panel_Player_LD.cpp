@@ -3,7 +3,7 @@
 #include "Icon_Item.h"
 #include "Belt.h"
 #include "Observer_Slot.h"
-#include "Ramp.h"
+#include "Lamp.h"
 
 CPanel_Player_LD::CPanel_Player_LD(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUI_Container{pDevice, pContext}

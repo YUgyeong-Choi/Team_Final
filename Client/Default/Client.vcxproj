@@ -236,7 +236,7 @@
     </ClInclude>
     <ClInclude Include="..\public\Portion.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
-    <ClInclude Include="..\public\Ramp.h" />
+    <ClInclude Include="..\public\Lamp.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SpriteEffect.h" />
     <ClInclude Include="..\Public\MapToolObject.h" />
@@ -374,7 +374,7 @@
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Portion.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
-    <ClCompile Include="..\private\Ramp.cpp" />
+    <ClCompile Include="..\private\Lamp.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />
