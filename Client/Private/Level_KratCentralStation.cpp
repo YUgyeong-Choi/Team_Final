@@ -82,6 +82,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
+
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 

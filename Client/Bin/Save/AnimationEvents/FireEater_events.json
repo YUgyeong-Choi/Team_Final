@@ -60,11 +60,7 @@
             "Events": [
                 {
                     "EventName": "IsFront",
-                    "Time": 80.0
-                },
-                {
-                    "EventName": "Turnning",
-                    "Time": 13.0
+                    "Time": 90.0
                 }
             ],
             "IsLoop": false,
@@ -132,10 +128,6 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 28.0
-                },
-                {
-                    "EventName": "Turnning",
-                    "Time": 12.238485336303711
                 }
             ],
             "IsLoop": false,
@@ -194,6 +186,10 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 18.0
+                },
+                {
+                    "EventName": "Turnning",
+                    "Time": 6.0
                 }
             ],
             "IsLoop": false,
@@ -241,6 +237,20 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_10",
             "Duration": 180.0,
+            "Events": [
+                {
+                    "EventName": "Turnning",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "FireOilFirst",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "FireOilSecond",
+                    "Time": 126.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -259,25 +269,41 @@
                 {
                     "EventName": "Turnning",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "FireBall",
+                    "Time": 50.0
+                },
+                {
+                    "EventName": "FireBallCombo",
+                    "Time": 75.0
                 }
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
-        {
-            "ClipName": "AS_ATLBoss0_Skill_11_Loop",
-            "Duration": 65.0,
-            "Events": [
-                {
-                    "EventName": "Turnning",
-                    "Time": 1.0
-                }
-            ],
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 55.0
-        },
+      {
+        "ClipName": "AS_ATLBoss0_Skill_11_Loop",
+        "Duration": 65.0,
+        "Events": [
+          {
+            "EventName": "Turnning",
+            "Time": 1.0
+          },
+          {
+            "EventName": "FireBall",
+            "Time": 15.0
+          },
+          {
+            "EventName": "FireBallCombo",
+            "Time": 60.029998779296875
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": false,
+        "TickPerSecond": 60.0
+      },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Right",
             "Duration": 85.0,
@@ -285,11 +311,19 @@
                 {
                     "EventName": "Turnning",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "FireBall",
+                    "Time": 50.0
+                },
+                {
+                    "EventName": "FireBallCombo",
+                    "Time": 75.0
                 }
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Start",
@@ -339,6 +373,14 @@
                 {
                     "EventName": "Turnning",
                     "Time": 5.0
+                },
+                {
+                    "EventName": "FireBall",
+                    "Time": 57.0
+                },
+                {
+                    "EventName": "FireBall",
+                    "Time": 89.0
                 }
             ],
             "IsLoop": false,
@@ -500,14 +542,14 @@
             "Duration": 90.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 65.0
         },
         {
             "ClipName": "AS_Turn_C_R",
             "Duration": 90.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 65.0
         },
         {
             "ClipName": "AS_Walk_C_B",
@@ -519,16 +561,6 @@
         {
             "ClipName": "AS_Walk_C_F",
             "Duration": 120.0,
-            "Events": [
-                {
-                    "EventName": "EC_ErgoItem_M3P1_WB_FRAMELOOPTEST",
-                    "Time": 40.0
-                },
-                {
-                    "EventName": "EC_ErgoItem_M3P1_WB_FRAMELOOPTEST",
-                    "Time": 80.0
-                }
-            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0

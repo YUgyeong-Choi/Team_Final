@@ -17,6 +17,19 @@ static PxFilterFlags CustomFilterShader(
 		(filterData1.word0 & filterData0.word1) == 0)
 		return PxFilterFlag::eKILL; 
 
+	const _bool k0 = PxFilterObjectIsKinematic(attributes0);
+	const _bool k1 = PxFilterObjectIsKinematic(attributes1);
+
+	if (k0 && k1) // 둘 다 Kinematic이면 충돌 없음
+	{
+		pairFlags = PxPairFlag::eDETECT_DISCRETE_CONTACT
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND
+			| PxPairFlag::eNOTIFY_TOUCH_PERSISTS
+			| PxPairFlag::eNOTIFY_TOUCH_LOST
+			| PxPairFlag::eNOTIFY_CONTACT_POINTS;
+		return PxFilterFlag::eDEFAULT;
+	}
+
 	pairFlags |= PxPairFlag::eCONTACT_DEFAULT;
 	pairFlags |= PxPairFlag::eDETECT_DISCRETE_CONTACT;
 	pairFlags |= PxPairFlag::eNOTIFY_CONTACT_POINTS;
