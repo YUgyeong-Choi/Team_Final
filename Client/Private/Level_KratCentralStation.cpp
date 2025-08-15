@@ -109,7 +109,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 				return;
 
 			//제이슨으로 저장된 맵을 로드한다.
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))  //TEST, STATION (Loader.cpp와 동일해야함)
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))  //TEST, STATION (Loader.cpp와 동일해야함)
 				return;
 
 			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
@@ -574,10 +574,25 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 
 	vector<class CGameObject*> AllStaticMesh = m_pGameInstance->GetIndexToObj();
 	const auto& VisitCell = m_pGameInstance->GetCulledStaticObjects();
-	for (_uint idx : VisitCell)
+	const auto& vTypeTable = m_pGameInstance->GetObjectType();
+
+	for (_uint i = 0; i < static_cast<_uint>(AllStaticMesh.size()); ++i)
+		AllStaticMesh[i]->Set_bLightOnOff(false);
+
+
+	for (_uint iIdx : VisitCell)
 	{
-		CGameObject* StaticMesh = AllStaticMesh[idx];
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, StaticMesh);
+		CGameObject* pObj = AllStaticMesh[iIdx];
+
+		if (vTypeTable[iIdx] == OCTOTREEOBJECTTYPE::MESH)
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, pObj);
+		}
+		else
+		{
+			//만약 조명오브젝트라면? 
+			pObj->Set_bLightOnOff(true);
+		}
 	}
 
 	return S_OK;
@@ -715,9 +730,14 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 	m_pGameInstance->ClearIndexToObj();
 
 	vector<AABBBOX> staticBounds;
+	vector<OCTOTREEOBJECTTYPE>  vObjectType;
 	map<Handle, _uint> handleToIndex;
 
-	staticBounds.reserve(m_vecOctoTreeObjects.size());
+	//용량 확보: 메쉬 + 라이트
+	const _uint iReserve = static_cast<_uint>(m_vecOctoTreeObjects.size() + m_vecLights.size());
+	staticBounds.reserve(iReserve);
+	vObjectType.reserve(iReserve);
+
 	_uint nextHandleId = 1000; // 핸들 ID 인데 1000부터 시작임
 
 	for (auto* OctoTreeObjects : m_vecOctoTreeObjects)
@@ -725,13 +745,35 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 		AABBBOX worldBox = OctoTreeObjects->GetWorldAABB();
 		_uint idx = static_cast<_uint>(staticBounds.size());
 		staticBounds.push_back(worldBox);
+		vObjectType.push_back(OCTOTREEOBJECTTYPE::MESH);
 
 		Handle h{ nextHandleId++ };
 		handleToIndex[h] = idx;
 		m_pGameInstance->PushBackIndexToObj(OctoTreeObjects);
 	}
+
+	for (CDH_ToolMesh* pLightMesh : m_vecLights)
+	{
+		_vector vPosVec = pLightMesh->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_float3 vCenter{};
+		XMStoreFloat3(&vCenter, vPosVec);
+
+		_float  fRange = pLightMesh->GetRange();
+		AABBBOX tLightBox = MakeLightAABB_Point(vCenter, fRange);
+
+		const _uint iIdx = static_cast<_uint>(staticBounds.size());
+		staticBounds.push_back(tLightBox);
+		vObjectType.push_back(OCTOTREEOBJECTTYPE::LIGHT);
+
+		handleToIndex[Handle{ nextHandleId++ }] = iIdx;
+		m_pGameInstance->PushBackIndexToObj(pLightMesh);
+	}
+
+
 	if (FAILED(m_pGameInstance->Ready_OctoTree(staticBounds, handleToIndex)))
 		return E_FAIL;
+
+	m_pGameInstance->SetObjectType(vObjectType);
 
 	return S_OK;
 }

@@ -126,8 +126,8 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pObserver_Manager)
 		return E_FAIL;
 
-	m_pQaudTree_Manager = COctoTree_Manager::Create(*ppDeviceOut, *ppContextOut);
-	if (nullptr == m_pQaudTree_Manager)
+	m_pOctoTree_Manager = COctoTree_Manager::Create(*ppDeviceOut, *ppContextOut);
+	if (nullptr == m_pOctoTree_Manager)
 		return E_FAIL;
 
 
@@ -195,7 +195,7 @@ HRESULT CGameInstance::Draw()
 	m_pRenderer->Draw();
 
 	m_pLevel_Manager->Render();
-	m_pQaudTree_Manager->DebugDrawCells();
+	m_pOctoTree_Manager->DebugDrawCells();
 
 	return S_OK;
 }
@@ -820,43 +820,51 @@ void CGameInstance::Reset_All()
 
 HRESULT CGameInstance::Ready_OctoTree(const vector<AABBBOX>& staticBounds, const map<Handle, _uint>& handleToIndex)
 {
-	return m_pQaudTree_Manager->Ready_OctoTree(staticBounds, handleToIndex);
+	return m_pOctoTree_Manager->Ready_OctoTree(staticBounds, handleToIndex);
 }
 void CGameInstance::InitIndexToHandle(const map<Handle, _uint>& handleToIndex, size_t count)
 {
-	m_pQaudTree_Manager->InitIndexToHandle(handleToIndex, count);
+	m_pOctoTree_Manager->InitIndexToHandle(handleToIndex, count);
 }
 void CGameInstance::BeginQueryFrame(const XMMATRIX& view, const XMMATRIX& proj)
 {
-	m_pQaudTree_Manager->BeginQueryFrame(view, proj);
+	m_pOctoTree_Manager->BeginQueryFrame(view, proj);
+}
+HRESULT CGameInstance::SetObjectType(const vector<OCTOTREEOBJECTTYPE>& vTypes)
+{
+	return m_pOctoTree_Manager->SetObjectType(vTypes);
+}
+const vector<OCTOTREEOBJECTTYPE>& CGameInstance::GetObjectType()
+{
+	return m_pOctoTree_Manager->GetObjectType();
 }
 vector<class CGameObject*> CGameInstance::GetIndexToObj() const
 {
-	return m_pQaudTree_Manager->GetIndexToObj();
+	return m_pOctoTree_Manager->GetIndexToObj();
 }
 void CGameInstance::PushBackIndexToObj(CGameObject* vec)
 {
-	m_pQaudTree_Manager->PushBackIndexToObj(vec);
+	m_pOctoTree_Manager->PushBackIndexToObj(vec);
 }
 vector<_uint> CGameInstance::GetCulledStaticObjects() const
 {
-	return m_pQaudTree_Manager->GetCulledStaticObjects();
+	return m_pOctoTree_Manager->GetCulledStaticObjects();
 }
 Handle CGameInstance::StaticIndexToHandle(_uint idx) const
 {
-	return m_pQaudTree_Manager->StaticIndexToHandle(idx);
+	return m_pOctoTree_Manager->StaticIndexToHandle(idx);
 }
 void CGameInstance::ToggleDebugOctoTree()
 {
-	m_pQaudTree_Manager->ToggleDebugCells();
+	m_pOctoTree_Manager->ToggleDebugCells();
 }
 void CGameInstance::ClearIndexToObj()
 {
-	m_pQaudTree_Manager->ClearIndexToObj();
+	m_pOctoTree_Manager->ClearIndexToObj();
 }
 void CGameInstance::QueryVisible()
 {
-	m_pQaudTree_Manager->QueryVisible();
+	m_pOctoTree_Manager->QueryVisible();
 }
 #pragma endregion
 
@@ -899,7 +907,7 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pObserver_Manager);
 
-	Safe_Release(m_pQaudTree_Manager);
+	Safe_Release(m_pOctoTree_Manager);
 
 	CComputeShader::ReleaseCache(); // Ä³½ÌÇØµÐ ÄÄÇ»Æ® ¼ÎÀÌ´õµé ÇØÁ¦
 

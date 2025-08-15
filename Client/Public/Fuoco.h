@@ -197,7 +197,7 @@ private:
 #endif
 private:
 	// 컴포넌트 관련
-	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
+	//CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForFoot = { nullptr };
     CNavigation* m_pNaviCom = { nullptr };

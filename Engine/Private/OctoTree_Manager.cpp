@@ -510,7 +510,6 @@ _bool COctoTree_Manager::ComputeWorldBounds(const vector<AABBBOX>& arr, AABBBOX&
 
     return true;
 }
-
 void COctoTree_Manager::InitIndexToHandle(const map<Handle, _uint>& handleToIndex, size_t count)
 {
     m_StaticIndexToHandle.resize(count);
@@ -522,6 +521,25 @@ void COctoTree_Manager::InitIndexToHandle(const map<Handle, _uint>& handleToInde
 
         m_StaticIndexToHandle[idx] = h;
     }
+}
+
+HRESULT COctoTree_Manager::SetObjectType(const vector<OCTOTREEOBJECTTYPE>& vTypes)
+{
+    const _uint iExpected = static_cast<_uint>(m_StaticObjectBounds.size());
+    const _uint iGiven = static_cast<_uint>(vTypes.size());
+
+    // 인덱스 정렬(평행 배열) 보장 체크
+    if (iExpected != iGiven)
+    {
+#ifdef _DEBUG
+        OutputDebugStringW(L"[OctoTree] SetObjectType: size mismatch (Bounds vs Types)\n");
+#endif
+        return E_FAIL;
+    }
+
+    // 그대로 복사(동일 인덱스 정렬 유지)
+    m_ObjectType = vTypes;
+    return S_OK;
 }
 
 COctoTree_Manager* COctoTree_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -595,32 +613,46 @@ void COctoTree_Manager::Frustum::BuildFromViewProj(const XMFLOAT4X4& vp)
 }
 FrustumHit COctoTree_Manager::Frustum::OctoIsInAABB(const _float3& bmin, const _float3& bmax) const
 {
-    const _float fEpsilon = 1e-4f;
+    const _float fOutsideEps = static_cast<_float>(1e-4f);
+
+    const _float fPadNearWorld = static_cast<_float>(1.0f);
+    const _float fPadOtherWorld = static_cast<_float>(0.15f); 
+    const _float fPadRatio = static_cast<_float>(0.15f);
 
     XMVECTOR vMin = XMLoadFloat3(&bmin);
     XMVECTOR vMax = XMLoadFloat3(&bmax);
     XMVECTOR vCenter = 0.5f * (vMin + vMax);
     XMVECTOR vHalfExtent = 0.5f * (vMax - vMin);
 
+    const _float fHalfDiag = XMVectorGetX(XMVector3Length(vHalfExtent));
+    const _float fInsideSlack = -static_cast<_float>(0.35f) * fHalfDiag;
+
     _bool bAnyIntersect = false;
+
     for (int iPlane = 0; iPlane < 6; ++iPlane)
     {
         XMVECTOR vPlane = XMLoadFloat4(&planes[iPlane].p);
-        XMVECTOR vNormal = XMVectorSetW(vPlane, 0.f);
+        XMVECTOR vNormal = XMVector3Normalize(XMVectorSetW(vPlane, 0.f));
 
         _float fSignedCenterDist = XMVectorGetX(XMVector3Dot(vNormal, vCenter)) + XMVectorGetW(vPlane);
         _float fProjRadius = XMVectorGetX(XMVector3Dot(XMVectorAbs(vNormal), vHalfExtent));
 
+        fProjRadius += fPadRatio * fHalfDiag;
 
-        const _float fOutsideEps = static_cast<_float>(1e-4f);
-        const _float fInsideSlack = -static_cast<_float>(0.35f) * XMVectorGetX(XMVector3Length(vHalfExtent));
+        if (iPlane == static_cast<_int>(PlaneID::Near))
+        {
+            fProjRadius += fPadNearWorld;
+        }
+        else
+        {
+            fProjRadius += fPadOtherWorld;
+        }
 
         if (fSignedCenterDist + fProjRadius < -fOutsideEps)
             return FrustumHit::Outside;
 
         if (fSignedCenterDist - fProjRadius < fInsideSlack)
             bAnyIntersect = true;
-
     }
 
     return bAnyIntersect ? FrustumHit::Intersect : FrustumHit::Inside;

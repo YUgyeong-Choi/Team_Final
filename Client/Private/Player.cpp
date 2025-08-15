@@ -38,7 +38,7 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void* pArg)
 {
 	PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
-
+	m_bIsPlayer = true;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -47,7 +47,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_Weapon()))
-		return E_FAIL;
+		return E_FAIL; 
 
 	if (FAILED(Ready_Lamp()))
 		return E_FAIL;
