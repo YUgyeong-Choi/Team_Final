@@ -82,6 +82,43 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
+	if (nullptr != m_pStartVideo)
+		return;
+
+
+	if (KEY_DOWN(DIK_U))
+		m_pGameInstance->Set_GameTimeScale(1.f);
+	if (KEY_DOWN(DIK_I))
+		m_pGameInstance->Set_GameTimeScale(0.5f);
+
+	if(KEY_DOWN(DIK_H))
+		ToggleHoldMouse();
+	if(m_bHold)
+		HoldMouse();
+
+	if(KEY_DOWN(DIK_F7))
+		m_pGameInstance->ToggleDebugOctoTree();
+
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (KEY_DOWN(DIK_Z))
+		{
+			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_TestFireCracker_P2"),
+				m_pGameInstance->Compute_Random(-1.f, 1.f),
+				m_pGameInstance->Compute_Random(-1.f, 1.f),
+				m_pGameInstance->Compute_Random(-1.f, 1.f))))
+				MSG_BOX("조짐");
+		}
+	}
+
+
+
+	m_pCamera_Manager->Update(fTimeDelta);
+	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
+}
+
+void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
+{
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 
@@ -98,7 +135,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		{
 
 			if (FAILED(Ready_Effect()))
-				return ;
+				return;
 
 			/* [ 사운드 ] */
 			m_pBGM->Play();
@@ -144,39 +181,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		return;
 	}
 
-	if (KEY_DOWN(DIK_U))
-		m_pGameInstance->Set_GameTimeScale(1.f);
-	if (KEY_DOWN(DIK_I))
-		m_pGameInstance->Set_GameTimeScale(0.5f);
 
-	if(KEY_DOWN(DIK_H))
-		ToggleHoldMouse();
-	if(m_bHold)
-		HoldMouse();
-
-	if(KEY_DOWN(DIK_F7))
-		m_pGameInstance->ToggleDebugOctoTree();
-
-	if (KEY_PRESSING(DIK_LCONTROL))
-	{
-		if (KEY_DOWN(DIK_Z))
-		{
-			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_TestFireCracker_P2"),
-				m_pGameInstance->Compute_Random(-1.f, 1.f),
-				m_pGameInstance->Compute_Random(-1.f, 1.f),
-				m_pGameInstance->Compute_Random(-1.f, 1.f))))
-				MSG_BOX("조짐");
-		}
-	}
-
-
-
-	m_pCamera_Manager->Update(fTimeDelta);
-	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
-}
-
-void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
-{
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 	__super::Late_Update(fTimeDelta);
 
