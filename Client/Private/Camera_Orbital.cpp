@@ -319,13 +319,12 @@ void CCamera_Orbital::Update_LockOnTransition(_float fTimeDelta)
 		return;
 	}
 	
-	m_pTransformCom->RotateToDirectionSmoothly(vTargetLook, fTimeDelta);
+	m_pTransformCom->RotateToDirectionSmoothly(vTargetLook, fTimeDelta * 0.5f);
 
 	_vector vCamLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-	const float cosEps = cosf(XMConvertToRadians(1.0f));
 	float d = XMVectorGetX(XMVector3Dot(vTargetLook, vCamLook));
-	if (d >= cosEps)
+	if (d <= 10.f)
 	{
 		// 둘이 거의 동일 → 전환 완료
 		m_bLockOnTransition = false;

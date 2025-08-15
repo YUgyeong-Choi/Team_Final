@@ -115,8 +115,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		}
 	}
 
-
-
 	m_pCamera_Manager->Update(fTimeDelta);
 	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
 }
