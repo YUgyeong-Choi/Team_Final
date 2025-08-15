@@ -363,6 +363,25 @@ namespace Engine
 		return vCorner;
 	}
 
+	typedef struct ENGINE_DLL Area
+	{
+		enum class EAreaType : _int { ROOM, LOBBY, OUTDOOR, INDOOR , END};
+
+		_int iAreaState;
+		_int iAreaId;
+		AABBBOX vBounds;
+		vector<_uint> vecAdjacent;
+
+		EAreaType eType;
+		_int iPriority;
+
+		bool ContainsPoint(const _float3& point) const
+		{
+			return (point.x >= vBounds.vMin.x && point.x <= vBounds.vMax.x &&
+				point.y >= vBounds.vMin.y && point.y <= vBounds.vMax.y &&
+				point.z >= vBounds.vMin.z && point.z <= vBounds.vMax.z);
+		}
+	}AREA;
 
 	typedef struct ENGINE_DLL Handle
 	{

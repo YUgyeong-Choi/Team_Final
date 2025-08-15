@@ -253,6 +253,9 @@
     <ClInclude Include="..\Public\AnimComputeShader.h">
       <Filter>01.Utility\15.ComputeShader\AnimComputeShader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Area_Manager.h">
+      <Filter>01.Utility\17.Area_Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -479,6 +482,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\AnimComputeShader.cpp">
       <Filter>01.Utility\15.ComputeShader\AnimComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Area_Manager.cpp">
+      <Filter>01.Utility\17.Area_Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -730,6 +736,9 @@
     </Filter>
     <Filter Include="01.Utility\15.ComputeShader\AnimComputeShader">
       <UniqueIdentifier>{9f92335b-38ec-4da0-b9ad-bf317f31edd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\17.Area_Manager">
+      <UniqueIdentifier>{eff55819-2b7c-49ab-b0c0-da49622d9f88}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

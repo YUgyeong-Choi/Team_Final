@@ -63,6 +63,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	/* [ 카메라 셋팅 ] */
 	m_pCamera_Manager->SetCutSceneCam();
 
+	/* [ Area 셋팅 ] */
+	SetArea();
+
 	return S_OK;
 }
 
@@ -154,8 +157,10 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if(m_bHold)
 		HoldMouse();
 
-	if(KEY_DOWN(DIK_F7))
+	if (KEY_DOWN(DIK_F7))
 		m_pGameInstance->ToggleDebugOctoTree();
+	if (KEY_DOWN(DIK_F8))
+		m_pGameInstance->ToggleDebugArea();
 
 	if (KEY_PRESSING(DIK_LCONTROL))
 	{
@@ -594,6 +599,74 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 			pObj->Set_bLightOnOff(true);
 		}
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::SetArea()
+{
+	m_pGameInstance->Reset_Parm();
+
+	/* [ 레벨의 구역을 나눠준다. ] */
+	auto FnToAABB = [](_float3 a, _float3 b, _float3& outMin, _float3& outMax)
+		{
+			outMin = _float3{
+				static_cast<_float>(min(a.x, b.x)),
+				static_cast<_float>(min(a.y, b.y)),
+				static_cast<_float>(min(a.z, b.z))
+			};
+			outMax = _float3{
+				static_cast<_float>(max(a.x, b.x)),
+				static_cast<_float>(max(a.y, b.y)),
+				static_cast<_float>(max(a.z, b.z))
+			};
+		};
+
+	// --- 입력으로 받은 3개 구역의 두 점(마지막 1.00은 무시) ---
+	// Area 1 (우선순위 최상)
+	_float3 a1p0 = _float3{ 35.73f, -2.87f,  4.97f };
+	_float3 a1p1 = _float3{ -10.57f,  9.92f, -4.62f };
+	_float3 a1Min, a1Max; 
+	FnToAABB(a1p0, a1p1, a1Min, a1Max);
+
+	// Area 2
+	_float3 a2p0 = _float3{ 61.82f, -5.39f,  8.25f };
+	_float3 a2p1 = _float3{ 32.16f,  8.91f, -4.62f };
+	_float3 a2Min, a2Max; 
+	FnToAABB(a2p0, a2p1, a2Min, a2Max);
+
+	// Area 3 (우선순위 최하)
+	_float3 a3p0 = _float3{ 119.81f, -5.63f,  32.20f };
+	_float3 a3p1 = _float3{ -40.69f, 52.55f, -61.73f };
+	_float3 a3Min, a3Max; 
+	FnToAABB(a3p0, a3p1, a3Min, a3Max);
+
+	{
+		const vector<_uint> vecAdj1 = { static_cast<_uint>(2) };
+		if (!m_pGameInstance->AddArea_AABB(
+			static_cast<_int>(1), a1Min, a1Max, vecAdj1,
+			AREA::EAreaType::ROOM, static_cast<_int>(3)))
+			return E_FAIL;
+	}
+	{
+		const vector<_uint> vecAdj2 = { static_cast<_uint>(1), static_cast<_uint>(3) };
+		if (!m_pGameInstance->AddArea_AABB(
+			static_cast<_int>(2), a2Min, a2Max, vecAdj2,
+			AREA::EAreaType::INDOOR, static_cast<_int>(2)))
+			return E_FAIL;
+	}
+	{
+		const vector<_uint> vecAdj3 = { static_cast<_uint>(1), static_cast<_uint>(2) };
+		if (!m_pGameInstance->AddArea_AABB(
+			static_cast<_int>(3), a3Min, a3Max, vecAdj3,
+			AREA::EAreaType::OUTDOOR, static_cast<_int>(1)))
+			return E_FAIL;
+	}
+
+	// 3) 파티션 확정 (ID→Index 매핑/검증)
+	if (FAILED(m_pGameInstance->FinalizePartition()))
+		return E_FAIL;
+
 
 	return S_OK;
 }

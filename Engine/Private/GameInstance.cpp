@@ -16,6 +16,7 @@
 #include "Target_Manager.h"
 #include "Prototype_Manager.h"
 #include "OctoTree_Manager.h"
+#include "Area_Manager.h"
 
 #include "PhysX_Manager.h"
 #include "Sound_Device.h"
@@ -130,6 +131,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pOctoTree_Manager)
 		return E_FAIL;
 
+	m_pArea_Manager = CArea_Manager::Create(*ppDeviceOut, *ppContextOut);
+	if (nullptr == m_pArea_Manager)
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -196,6 +201,7 @@ HRESULT CGameInstance::Draw()
 
 	m_pLevel_Manager->Render();
 	m_pOctoTree_Manager->DebugDrawCells();
+	m_pArea_Manager->DebugDrawCells();
 
 	return S_OK;
 }
@@ -866,6 +872,30 @@ void CGameInstance::QueryVisible()
 {
 	m_pOctoTree_Manager->QueryVisible();
 }
+_bool CGameInstance::AddArea_AABB(_int iAreaId, const _float3& vMin, const _float3& vMax, const vector<_uint>& vecAdjacentIds, AREA::EAreaType eType, _int iPriority)
+{
+	return m_pArea_Manager->AddArea_AABB(iAreaId,vMin,vMax,vecAdjacentIds, eType, iPriority);
+}
+HRESULT CGameInstance::FinalizePartition()
+{
+	return m_pArea_Manager->FinalizePartition();
+}
+_int CGameInstance::FindAreaContainingPoint(const _float3& vPoint) const
+{
+	return m_pArea_Manager->FindAreaContainingPoint(vPoint);
+}
+HRESULT CGameInstance::Reset_Parm()
+{
+	return m_pArea_Manager->Reset_Parm();
+}
+void CGameInstance::SetPlayerPosition(const _vector& vPos)
+{
+	m_pArea_Manager->SetPlayerPosition(vPos); 
+}
+void CGameInstance::ToggleDebugArea()
+{
+	m_pArea_Manager->ToggleDebugCells();
+}
 #pragma endregion
 
 
@@ -908,6 +938,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pObserver_Manager);
 
 	Safe_Release(m_pOctoTree_Manager);
+
+	Safe_Release(m_pArea_Manager);
 
 	CComputeShader::ReleaseCache(); // Ä³½ÌÇØµÐ ÄÄÇ»Æ® ¼ÎÀÌ´õµé ÇØÁ¦
 

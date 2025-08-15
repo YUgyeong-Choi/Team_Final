@@ -135,49 +135,45 @@ HRESULT CUnit::Render_Shadow()
 
 void CUnit::SetCascadeShadow()
 {
-	//if (m_pPhysXActorCom && !m_bIsPlayer)
-	//{
-	//	// 월드 AABB 구하기
-	//	AABBBOX tWorldAABB = GetWorldAABB();
+	if (m_pPhysXActorCom && !m_bIsPlayer)
+	{
+		// 월드 AABB 구하기
+		AABBBOX tWorldAABB = GetWorldAABB();
 
-	//	// 뷰 행렬
-	//	_float4x4 tView = {};
-	//	XMStoreFloat4x4(&tView, XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW)));
+		// 뷰 행렬
+		_float4x4 tView = {};
+		XMStoreFloat4x4(&tView, XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW)));
 
-	//	// 8코너를 뷰공간으로 변환하여 Z범위 계산
-	//	_float fZMin = 1e9f, fZMax = -1e9f;
-	//	for (_uint i = 0; i < 8; ++i)
-	//	{
-	//		_float3 vCorner = ExtractAABBWorldCorner(tWorldAABB.vMin, tWorldAABB.vMax, i);
-	//		_vector vCornerVS = XMVector3TransformCoord(XMLoadFloat3(&vCorner), XMLoadFloat4x4(&tView));
-	//		_float  fZ = XMVectorGetZ(vCornerVS);
-	//		fZMin = min(fZMin, fZ);
-	//		fZMax = max(fZMax, fZ);
-	//	}
+		// 8코너를 뷰공간으로 변환하여 Z범위 계산
+		_float fZMin = 1e9f, fZMax = -1e9f;
+		for (_uint i = 0; i < 8; ++i)
+		{
+			_float3 vCorner = ExtractAABBWorldCorner(tWorldAABB.vMin, tWorldAABB.vMax, i);
+			_vector vCornerVS = XMVector3TransformCoord(XMLoadFloat3(&vCorner), XMLoadFloat4x4(&tView));
+			_float  fZ = XMVectorGetZ(vCornerVS);
+			fZMin = min(fZMin, fZ);
+			fZMax = max(fZMax, fZ);
+		}
 
-	//	// 완전 포함 → 해당 캐스케이드
-	//	if (fZMax <= 5.f)        m_eShadow = SHADOW::SHADOWA;
-	//	else if (fZMin >= 5.f && fZMax <= 20.f) m_eShadow = SHADOW::SHADOWB;
-	//	else if (fZMin >= 20.f)  m_eShadow = SHADOW::SHADOWC;
-	//	else
-	//	{
-	//		// 걸침 → 최소 Z 기준으로만 분기
-	//		if (fZMin < 5.f)         m_eShadow = SHADOW::SHADOWA;
-	//		else if (fZMin < 20.f)   m_eShadow = SHADOW::SHADOWB;
-	//		else                     m_eShadow = SHADOW::SHADOWC;
-	//	}
-	//}
-	//else
-	//{
-	//	// AABB 없으면 기존 방식
-	//	if (m_fViewZ < 5.f)         m_eShadow = SHADOW::SHADOWA;
-	//	else if (m_fViewZ < 20.f)   m_eShadow = SHADOW::SHADOWB;
-	//	else                        m_eShadow = SHADOW::SHADOWC;
-	//}
-
-	if (m_fViewZ < 5.f)         m_eShadow = SHADOW::SHADOWA;
-	else if (m_fViewZ < 20.f)   m_eShadow = SHADOW::SHADOWB;
-	else                        m_eShadow = SHADOW::SHADOWC;
+		// 완전 포함 → 해당 캐스케이드
+		if (fZMax <= 5.f)        m_eShadow = SHADOW::SHADOWA;
+		else if (fZMin >= 5.f && fZMax <= 20.f) m_eShadow = SHADOW::SHADOWB;
+		else if (fZMin >= 20.f)  m_eShadow = SHADOW::SHADOWC;
+		else
+		{
+			// 걸침 → 최소 Z 기준으로만 분기
+			if (fZMin < 5.f)         m_eShadow = SHADOW::SHADOWA;
+			else if (fZMin < 20.f)   m_eShadow = SHADOW::SHADOWB;
+			else                     m_eShadow = SHADOW::SHADOWC;
+		}
+	}
+	else
+	{
+		// AABB 없으면 기존 방식
+		if (m_fViewZ < 5.f)         m_eShadow = SHADOW::SHADOWA;
+		else if (m_fViewZ < 20.f)   m_eShadow = SHADOW::SHADOWB;
+		else                        m_eShadow = SHADOW::SHADOWC;
+	}
 }
 
 HRESULT CUnit::Bind_Shader()
