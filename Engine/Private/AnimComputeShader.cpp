@@ -283,7 +283,7 @@ void CAnimComputeShader::BuildHierarchyLevels()
 	{
 		int bone = q.front(); q.pop();
 		int level = m_BoneLevels[bone];
-		m_iMaxLevel = max(m_iMaxLevel, level);
+		//m_iMaxLevel = max(m_iMaxLevel, level);
 
 		// 자식 찾기: m_ParentIndices에서 bone이 부모인 인덱스들
 		for (_uint i = 0; i < m_iBoneCount; ++i)
