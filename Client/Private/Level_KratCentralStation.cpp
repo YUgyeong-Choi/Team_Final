@@ -448,7 +448,7 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 	pWegoDesc.fSpeedPerSec = 5.f;
 	pWegoDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pWegoDesc.eLevelID = LEVEL::STATIC;
-	pWegoDesc.InitPos = _float3(103.47f, 1.55f, -4.14f);
+	pWegoDesc.InitPos = _float3(54.638927f, -0.221457f, -10.478647f);
 	pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pWegoDesc.szName, TEXT("Wego"));
 	pWegoDesc.szMeshID = TEXT("Wego");
@@ -703,9 +703,9 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &pDesc)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
+	//	return E_FAIL;
 
 
 	return S_OK;

@@ -31,18 +31,12 @@ HRESULT CWego::Initialize(void* pArg)
 		return E_FAIL;
 
 	/* [ 초기화 위치값 ] */
-	m_pTransformCom->Set_State(STATE::POSITION, _vector{ m_InitPos.x, m_InitPos.y, m_InitPos.z });
-	m_pTransformCom->Rotation(XMConvertToRadians(0.f), XMConvertToRadians(-110.f), XMConvertToRadians(0.f));
+	m_pTransformCom->Set_State(STATE::POSITION, _vector{ m_InitPos.x, m_InitPos.y, m_InitPos.z, 1.f });
 	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
 
-	/* [ 위치 초기화 후 콜라이더 생성 ] */
-	if (FAILED(Ready_Controller()))
-		return E_FAIL;
+	Ready_Collider();
+	Ready_Trigger();
 
-
-	PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
-	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.9f, (float)pos.z, 1.f);
-	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 	return S_OK;
 }
 
@@ -66,38 +60,116 @@ HRESULT CWego::Render()
 	__super::Render();
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
-		m_pGameInstance->Add_DebugComponent(m_pControllerCom);
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+		m_pGameInstance->Add_DebugComponent(m_pPhysXTriggerCom);
 	}
 #endif
+
+	wstring text = L"말을 건다";
+	if (m_bInTrigger)
+		m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(10.f, 10.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
 	return S_OK;
 }
 
-HRESULT CWego::Ready_Components()
 
-{	/* For.Com_PhysX */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Controller"),
-		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pControllerCom))))
+void CWego::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CWego::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CWego::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CWego::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CWego::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	m_bInTrigger = true;
+}
+
+void CWego::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	m_bInTrigger = false;
+}
+
+HRESULT CWego::Ready_Components()
+{
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"),
+		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"),
+		TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXTriggerCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CWego::Ready_Controller()
+HRESULT CWego::Ready_Collider()
 {
 	XMVECTOR S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+	positionVec.y += 0.5f;
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxVec3 halfExtents = { 0.2f,1.f,0.2f };
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+	PxFilterData filterData{};
+	filterData.word0 = 0;
+	filterData.word1 = 0; // 일단 보류
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::NPC);
+	m_pPhysXActorCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	return S_OK;
+}
+
+HRESULT CWego::Ready_Trigger()
+{
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 
-	PxExtendedVec3 pos(positionVec.x, positionVec.y, positionVec.z);
-	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f);
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxVec3 halfExtents = { 1.f,0.2f,1.f };
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
+	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, false);
+
 	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
-	m_pControllerCom->Set_SimulationFilterData(filterData);
-	m_pControllerCom->Set_QueryFilterData(filterData);
-	m_pControllerCom->Set_Owner(this);
-	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
+	filterData.word0 = WORLDFILTER::FILTER_NPC;
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; // 일단 보류
+	m_pPhysXTriggerCom->Set_SimulationFilterData(filterData);
+	m_pPhysXTriggerCom->Set_QueryFilterData(filterData);
+	m_pPhysXTriggerCom->Set_Owner(this);
+	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::NPC);
+	m_pPhysXTriggerCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
+
 	return S_OK;
 }
 
@@ -129,5 +201,6 @@ void CWego::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pControllerCom);
+	Safe_Release(m_pPhysXActorCom);
+	Safe_Release(m_pPhysXTriggerCom);
 }
