@@ -70,13 +70,13 @@ void CStaticMesh::Update(_float fTimeDelta)
 void CStaticMesh::Late_Update(_float fTimeDelta)
 {
 	/* [ 쿼드트리를 사용하지않을 경우 절두체랑 직접 비교한다. ] */
-	if (!m_bUseOctoTree)
-	{
+	//if (!m_bUseOctoTree)
+	//{
 		if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 		{
 			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 		}
-	}
+	//}
 
 	//if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	//{

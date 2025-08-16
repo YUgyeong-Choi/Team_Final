@@ -86,7 +86,7 @@ HRESULT CLevel_KratHotel::Render()
 	return S_OK;
 }
 
-//HRESULT CLevel_KratHotel::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
+//HRESULT CLevel_KratHotel::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
 //{
 //	//이미 프로토타입이존재하는 지확인
 //
@@ -169,7 +169,7 @@ HRESULT CLevel_KratHotel::Render()
 //
 //		const _char* pModelFilePath = Path.c_str();
 //
-//		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
+//		if (FAILED(Load_Mesh(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
 //		{
 //			return E_FAIL;
 //		}

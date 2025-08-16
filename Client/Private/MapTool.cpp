@@ -286,7 +286,7 @@ HRESULT CMapTool::Ready_Model(const _char* Map)
 
 		const _char* pModelFilePath = Path.c_str();
 
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+		if (FAILED(Load_Mesh(PrototypeTag, pModelFilePath)))
 		{
 			return E_FAIL;
 		}
@@ -575,7 +575,7 @@ HRESULT CMapTool::Load_Favorite()
 
 		const _char* pModelFilePath = Path.c_str();
 
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+		if (FAILED(Load_Mesh(PrototypeTag, pModelFilePath)))
 		{
 			return E_FAIL;
 		}
@@ -850,7 +850,7 @@ void CMapTool::Render_Asset()
 						string ModelFilePath = ModelPath.string();
 						const _char* pModelFilePath = ModelFilePath.c_str();
 
-						if (FAILED(Load_Model(PrototypeTag, pModelFilePath)))
+						if (FAILED(Load_Mesh(PrototypeTag, pModelFilePath)))
 						{
 							MSG_BOX("로드 실패");
 						}
@@ -1347,7 +1347,7 @@ void CMapTool::Clear_Map()
 
 
 }
-HRESULT CMapTool::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath)
+HRESULT CMapTool::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath)
 {
 	_matrix PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
 
