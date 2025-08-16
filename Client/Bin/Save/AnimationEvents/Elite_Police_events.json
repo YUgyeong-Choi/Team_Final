@@ -4,7 +4,7 @@
             "ClipName": "AS_ATSC0_Skill_01",
             "Duration": 154.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -18,7 +18,7 @@
             "ClipName": "AS_ATSC0_Skill_02",
             "Duration": 144.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -46,7 +46,7 @@
             "ClipName": "AS_ATSC0_Skill_04",
             "Duration": 141.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -60,7 +60,7 @@
             "ClipName": "AS_ATSC0_Skill_05",
             "Duration": 162.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -74,7 +74,7 @@
             "ClipName": "AS_ATSC0_Skill_06",
             "Duration": 150.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {

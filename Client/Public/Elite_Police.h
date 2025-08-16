@@ -33,6 +33,8 @@ public:
 
 	virtual void	Update_State();
 
+	void Update_AttackType();
+
 private: /* [ Setup ÇÔ¼ö ] */
 
 	HRESULT Ready_Weapon();

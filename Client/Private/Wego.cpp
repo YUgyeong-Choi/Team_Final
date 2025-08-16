@@ -1,10 +1,7 @@
 #include "Wego.h"
 
-#include "Animator.h"
-#include "Animation.h"
 #include "GameInstance.h"
-#include "AnimController.h"
-#include "PhysX_IgnoreSelfCallback.h"
+#include "Camera_Manager.h"
 CWego::CWego(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -37,12 +34,35 @@ HRESULT CWego::Initialize(void* pArg)
 	Ready_Collider();
 	Ready_Trigger();
 
+	// NPC 대화 데이터 
+	LoadNpcTalkData("../Bin/Save/Npc/Wego.json");
+
 	return S_OK;
 }
 
 void CWego::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bInTrigger)
+	{
+		if (m_pGameInstance->Key_Down(DIK_E) && !m_bTalkActive)
+		{
+			m_bTalkActive = true;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true);
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+		}
+	}
+
+	if (m_bTalkActive)
+	{
+		if (m_pGameInstance->Key_Down(DIK_Q) && m_bTalkActive)
+		{
+			m_bTalkActive = false;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false);
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+		}
+	}
 }
 
 void CWego::Update(_float fTimeDelta)
@@ -189,6 +209,37 @@ HRESULT CWego::Ready_Trigger()
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
 
 	return S_OK;
+}
+
+void CWego::LoadNpcTalkData(string filePath)
+{
+	ifstream inFile(filePath);
+	if (inFile.is_open())
+	{
+		json j;
+		inFile >> j;
+		inFile.close();
+
+		// j가 배열 형태일 것으로 가정
+		for (const auto& item : j)
+		{
+			int type = item["Type"];
+			WEGOTALKTYPE talkType = (type == 0) ? WEGOTALKTYPE::ONE : WEGOTALKTYPE::TWO;
+
+			// Words 배열 읽기
+			vector<wstring> words;
+			for (const auto& word : item["Words"])
+			{
+				// string -> wstring 변환
+				string s = word.get<std::string>();
+				wstring ws(s.begin(), s.end());
+				words.push_back(ws);
+			}
+
+			// 맵에 저장
+			m_NpcTalk[talkType] = std::move(words);
+		}
+	}
 }
 
 CWego* CWego::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
