@@ -48,6 +48,8 @@ public:
 
 	/* [ 방향 벡터로 Yaw Pich 가지고오기 ] */
 	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed);
+	
+	void Set_ActiveTalk(_bool bActive) { m_bTalkNpc = bActive; }
 private:
 	/* [ 평소에 실행 ] */
 	void Update_CameraMatrix(_float fTimeDelta);
@@ -60,9 +62,6 @@ private:
 
 	void Set_CameraMatrix(_float fTimeDelta);
 private:
-	_bool			m_bLockOn = false;
-	_bool			m_bLockOnTransition = false;
-	_bool			m_bLockOnTransitionStart = false;
 	_bool			m_bSetPitchYaw = false;
 
 	_float			m_fYaw = 0.f;
@@ -77,7 +76,12 @@ private:
 
 	_vector			m_vTargetCamPos = {};
 	_vector			m_vPlayerPosition = {};
-
+private:
+	_bool			m_bLockOn = false;
+	_bool			m_bLockOnTransition = false;
+	_bool			m_bLockOnTransitionStart = false;
+private:
+	_bool			m_bTalkNpc = false;
 private:
 	const _float m_fPadding = 1.0f;     // 플레이어 & 타겟이 가까울 때를 위한 최소 반지름
 	const _float m_fFrame = 0.5f;   // 화면 높이의 안에 들어오도록 여유를 위한 변수

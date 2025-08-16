@@ -44,9 +44,9 @@ public:
     void SetPlayer(CGameObject* pPlayer);
 
 public:
-    void	SetFreeCam() { m_pCurCamera = m_pCamera_Free;}
-    void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital;}
-    void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene;}
+    void	SetFreeCam() { m_pCurCamera = m_pCamera_Free; m_bMoveable = false; }
+    void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital; m_bMoveable = true; }
+    void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene; m_bMoveable = false; }
     void	Shake_Camera(_float fIntensity = 1.f, _float fDuration = 1.f, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
 
 public:

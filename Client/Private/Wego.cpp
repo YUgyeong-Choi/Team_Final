@@ -1,10 +1,7 @@
 #include "Wego.h"
 
-#include "Animator.h"
-#include "Animation.h"
 #include "GameInstance.h"
-#include "AnimController.h"
-#include "PhysX_IgnoreSelfCallback.h"
+#include "Camera_Manager.h"
 CWego::CWego(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -43,6 +40,26 @@ HRESULT CWego::Initialize(void* pArg)
 void CWego::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bInTrigger)
+	{
+		if (m_pGameInstance->Key_Down(DIK_E) && !m_bTalkActive)
+		{
+			m_bTalkActive = true;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true);
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+		}
+	}
+
+	if (m_bTalkActive)
+	{
+		if (m_pGameInstance->Key_Down(DIK_Q) && m_bTalkActive)
+		{
+			m_bTalkActive = false;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false);
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+		}
+	}
 }
 
 void CWego::Update(_float fTimeDelta)
@@ -64,11 +81,6 @@ HRESULT CWego::Render()
 		m_pGameInstance->Add_DebugComponent(m_pPhysXTriggerCom);
 	}
 #endif
-
-	wstring text = L"말을 건다";
-	if (m_bInTrigger)
-		m_pGameInstance->Draw_Font(TEXT("Font_151"), text.c_str(), _float2(10.f, 10.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-
 	return S_OK;
 }
 

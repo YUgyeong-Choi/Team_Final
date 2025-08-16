@@ -41,6 +41,7 @@ private:
 	CPhysXDynamicActor* m_pPhysXTriggerCom = { nullptr };
 
 	_bool m_bInTrigger = false;
+	_bool m_bTalkActive = false;
 public:
 	static CWego* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
