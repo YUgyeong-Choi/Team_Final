@@ -68,6 +68,17 @@ vector<CUIObject*>& CUI_Container::Get_PartUI()
 	return m_PartObjects;
 }
 
+void CUI_Container::Set_isReverse(_bool isReverse)
+{
+	m_isReverse = isReverse;
+
+	for (auto& pObj : m_PartObjects)
+	{
+		if (nullptr != pObj)
+			pObj->Set_isReverse(isReverse);
+	}
+}
+
 HRESULT CUI_Container::Initialize_Prototype()
 {
 	return S_OK;

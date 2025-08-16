@@ -219,6 +219,14 @@ HRESULT CPanel_Player_LD::Render()
 	return S_OK;
 }
 
+void CPanel_Player_LD::Set_isReverse(_bool isReverse)
+{
+	__super::Set_isReverse(isReverse);
+
+	m_pBelt_Up->Set_isReverse(isReverse);
+	m_pBelt_Down->Set_isReverse(isReverse);
+}
+
 CPanel_Player_LD* CPanel_Player_LD::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CPanel_Player_LD* pInstance = new CPanel_Player_LD(pDevice, pContext);

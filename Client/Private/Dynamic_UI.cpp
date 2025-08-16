@@ -179,7 +179,7 @@ void CDynamic_UI::Update(_float fTimeDelta)
 			if (nullptr == pFeature || Get_bDead())
 				continue;
 
-			pFeature->Update(m_iCurrentFrame, this);
+			pFeature->Update(m_iCurrentFrame, this, m_isReverse);
 		}
 			
 	}
@@ -227,7 +227,7 @@ void CDynamic_UI::Update_UI_From_Frame(_int& iCurrentFrame)
 		if (nullptr == pFeature || Get_bDead())
 			continue;
 
-		pFeature->Update(iCurrentFrame, this);
+		pFeature->Update(iCurrentFrame, this, m_isReverse);
 	}
 
 }

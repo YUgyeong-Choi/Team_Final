@@ -13,8 +13,6 @@ private:
 	CIcon_LegionArm(const CIcon_LegionArm& Prototype);
 	virtual ~CIcon_LegionArm() = default;
 
-public:
-
 
 public:
 	virtual HRESULT Initialize_Prototype();

@@ -14,8 +14,6 @@ private:
 	CIcon_Weapon(const CIcon_Weapon& Prototype);
 	virtual ~CIcon_Weapon() = default;
 
-public:
-	
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -27,7 +25,7 @@ public:
 
 	void Update_ICon(_wstring& strTextureTag);
 
-	HRESULT Bind_ShaderResources();
+	
 	
 
 private:

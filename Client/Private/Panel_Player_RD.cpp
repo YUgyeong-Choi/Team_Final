@@ -15,6 +15,16 @@ CPanel_Player_RD::CPanel_Player_RD(const CPanel_Player_RD& Prototype)
 {
 }
 
+void CPanel_Player_RD::Set_isReverse(_bool isReverse)
+{
+	__super::Set_isReverse(isReverse);
+
+	m_pSkillType->Set_isReverse(isReverse);
+	m_pManaCost->Set_isReverse(isReverse);
+	m_pKeyIcon->Set_isReverse(isReverse);
+	m_pWeaponTexture->Set_isReverse(isReverse);
+}
+
 HRESULT CPanel_Player_RD::Initialize_Prototype()
 {
 	return S_OK;

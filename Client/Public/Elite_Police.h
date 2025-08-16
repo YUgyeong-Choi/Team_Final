@@ -9,7 +9,7 @@ NS_BEGIN(Client)
 class CElite_Police final : public CMonster_Base
 {
 public:
-	typedef enum ATTACKTYPE {ATTACK_A, ATTACK_B, ATTACK_C, ATTACK_D, ATTACK_END};
+	enum ATTACKTYPE {ATTACK_A, ATTACK_B, ATTACK_C, ATTACK_D, ATTACK_END};
 
 private:
 	CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
