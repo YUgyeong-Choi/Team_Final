@@ -77,8 +77,8 @@ private:
 private:
 	_bool			m_bLockOn = false;
 private:
-	_bool			m_bTalkNpcStart = false;
-	_bool			m_bTalkNpcEnd = false;
+	_bool			m_bTalkStart = false;
+	_bool			m_bTalkEnd = false;
 	_bool			m_bTalkActive = false;
 private:
 	const _float m_fPadding = 1.0f;     // 플레이어 & 타겟이 가까울 때를 위한 최소 반지름
