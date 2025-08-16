@@ -47,6 +47,7 @@
 #include "YGController.h"
 
 #include "Wego.h"
+#include "DynamicMesh.h"
 #pragma endregion
 
 #pragma region LEVEL_DH

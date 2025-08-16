@@ -49,8 +49,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL; 
 
-	//if (FAILED(Ready_StationDoor()))
-	//	return E_FAIL;
+	if (FAILED(Ready_StationDoor()))
+		return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
@@ -145,7 +145,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	Update_Slot();
 
 	/* [ 상호작용 ] */
-	//Interaction_Door();
+	Interaction_Door();
 
 	m_pBelt_Up->Priority_Update(fTimeDelta);
 	m_pBelt_Down->Priority_Update(fTimeDelta);
@@ -163,7 +163,7 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 입력 ] */
 	HandleInput();
-	//SlidDoorMove(fTimeDelta);
+	SlidDoorMove(fTimeDelta);
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
 
@@ -880,7 +880,7 @@ HRESULT CPlayer::Ready_StationDoor()
 	//Desc.eColliderType = COLLIDER_TYPE::CONVEX;
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DynamicMesh"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &pGameObject, &Desc)))
 		return E_FAIL;
 

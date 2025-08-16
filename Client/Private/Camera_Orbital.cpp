@@ -72,25 +72,25 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (!m_pPlayer)
 		return;
 
-	if (m_bTalkNpcStart)
+	if (m_bTalkStart)
 	{
 		m_fDistance = LerpFloat(m_fDistance, 1.7f, fTimeDelta * 2.f);
 
 		if (fabsf(m_fDistance - 1.7f) < 0.01f)
 		{
 			m_fDistance = 1.7f;
-			m_bTalkNpcStart = false;
+			m_bTalkStart = false;
 		}
 	}
 
-	if (m_bTalkNpcEnd)
+	if (m_bTalkEnd)
 	{
 		m_fDistance = LerpFloat(m_fDistance, 3.f, fTimeDelta * 2.f); 
 
 		if (fabsf(m_fDistance - 3.f) < 0.01f)
 		{
 			m_fDistance = 3.f;
-			m_bTalkNpcEnd = false;
+			m_bTalkEnd = false;
 		}
 	}
 		
@@ -201,16 +201,16 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget)
 {
 	if (bActive)
-	{
-		m_bTalkNpcStart = true;
-		m_bTalkNpcEnd = false;
+	{  
+		m_bTalkStart = true;
+		m_bTalkEnd = false;
 		m_bTalkActive = true;
 		m_pNpcTalkTarget = pTarget;
 	}
 	else
 	{
-		m_bTalkNpcStart = false;
-		m_bTalkNpcEnd = true;
+		m_bTalkStart = false;
+		m_bTalkEnd = true;
 		m_bTalkActive = false;
 		m_pNpcTalkTarget = pTarget;
 	}
