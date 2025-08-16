@@ -7,16 +7,15 @@ NS_BEGIN(Engine)
 class CShader;
 class CTexture;
 class CModel;
-class CPhysXStaticActor;
-class COctree;
+class CPhysXDynamicActor;
 NS_END
 
 NS_BEGIN(Client)
 
-class CStaticMesh : public CGameObject
+class CDynamicMesh : public CGameObject
 {
 public:
-	typedef struct tagStaticMeshDesc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct tagDynamicMeshDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		const _tchar*	szMeshID;
 
@@ -31,19 +30,12 @@ public:
 			0.f, 0.f, 0.f, 1.f
 		);
 
-
-		_bool		bUseOctoTree = { true };
-		_bool		bUseTiling = { false };
-		_float2		vTileDensity = { 1.f, 1.f };
-		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
-		_int		iLightShape = { 0 };
-
-	}STATICMESH_DESC;
+	}DYNAMICMESH_DESC;
 
 protected:
-	CStaticMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CStaticMesh(const CStaticMesh& Prototype);
-	virtual ~CStaticMesh() = default;
+	CDynamicMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CDynamicMesh(const CDynamicMesh& Prototype);
+	virtual ~CDynamicMesh() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -71,25 +63,13 @@ protected: /* [ 초기화 변수 ] */
 	_float3			m_InitPos = {};
 	_int			m_iRender = {};
 	_bool			m_bDoOnce = {};
-
-private:
-	_bool	m_bUseOctoTree = { true };
-	_bool	m_bUseTiling = { false };
-	_float2	m_vTileDensity = { 1.0f, 1.0f };
-
-private:
-	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
-
-private:
-	_int m_iLightShape = { 0 };
-
 protected:
 
 	CShader*		m_pShaderCom = { nullptr };
 	CModel*			m_pModelCom = { nullptr };
 	CTexture*		m_pTextureCom = { nullptr };
 	CTexture*		m_pEmissiveCom = { nullptr };
-	CPhysXStaticActor* m_pPhysXActorCom = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
 protected:
 	HRESULT Ready_Components(void* pArg);
@@ -97,7 +77,7 @@ protected:
 	HRESULT Ready_Collider();
 
 public:
-	static CStaticMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CDynamicMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
