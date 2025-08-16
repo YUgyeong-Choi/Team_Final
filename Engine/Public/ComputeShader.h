@@ -17,7 +17,7 @@ public:
 	void Dispatch(_uint iGroupX, _uint iGroupY = 1, _uint iGroupZ = 1)
 	{
 		m_pContext->Dispatch(iGroupX, iGroupY, iGroupZ);
-
+			
 	}
 
 	static void           ReleaseCache();

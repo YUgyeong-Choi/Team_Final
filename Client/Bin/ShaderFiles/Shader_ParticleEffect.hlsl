@@ -3,6 +3,17 @@
 vector  g_vCamPosition;
 bool    g_bLocal;
 
+/* [ InstanceBuffer ] */
+struct ParticleInst
+{
+    float4 Right;
+    float4 Up;
+    float4 Look;
+    float4 Translation;
+    float2 LifeTime; // x=max, y=acc
+};
+
+StructuredBuffer<ParticleInst> Particle_SRV : register(t0);
 //bool    g_size 
 
 struct VS_IN
@@ -46,6 +57,39 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vLifeTime = In.vLifeTime;
     return Out;
 }
+
+VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
+{   
+    VS_OUT Out;
+    
+    matrix matWV, matWVP;
+    
+    ParticleInst particle = Particle_SRV[instanceID];
+    
+    row_major float4x4 TransformMatrix = float4x4(
+        particle.Right,
+        particle.Up,
+        particle.Look,
+        particle.Translation
+    );
+    
+    // 이부분에서 transform 곱하는거로 로컬월드분기.......
+    // 로컬쓸려면 곱하고, 각자 월드상태 가지려면 처음부터 월드 상태의 좌표 든 채로 이부분스킵
+    vector vPosition = mul(vector(0.f, 0.f, 0.f, 1.f), TransformMatrix);
+    
+    if (g_bLocal == 0)
+        Out.vPosition = mul(vPosition, g_WorldMatrix);
+    else
+        Out.vPosition = vPosition;
+    
+    Out.vPSize = float2(length(particle.Right.xyz), length(particle.Up.xyz));
+
+    Out.vLifeTime = particle.LifeTime;
+    return Out;
+}
+
+
+
 
 /* 그리는 형태에 따라서 호출된다. */ 
 
@@ -249,7 +293,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
-        VertexShader = compile vs_5_0 VS_MAIN();    
+        VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN();      
     }
@@ -260,7 +304,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
-        VertexShader = compile vs_5_0 VS_MAIN();    
+        VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY();
     }
@@ -271,7 +315,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
-        VertexShader = compile vs_5_0 VS_MAIN();    
+        VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WBGLOW();
     }

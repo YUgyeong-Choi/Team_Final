@@ -473,4 +473,32 @@ namespace Engine
 		_float		fOrbitSpeed = {}; // 공전 속도
 	}PARTICLEDESC;
 
+	typedef struct tagParticleCBuffer {
+		_float		fDeltaTime;       // dt (tool이면 무시)
+		_float		fTrackTime;       // tool 절대시간(초) = curTrackPos/60.f
+		_uint		iParticleType;    // 0:SPREAD, 1:DIRECTIONAL
+		_uint		iNumInstances;
+
+		_uint		bIsTool;			// uint == bool
+		_uint		bIsLoop;
+		_uint		bUseGravity;
+		_uint		bUseSpin;
+
+		_uint		bUseOrbit;
+		_float		fGravity;        // e.g. 9.8
+		_float2		_pad0;
+
+		_float3		vPivot;          // vPivot
+		_float		_pad1;
+
+		_float3		vCenter;         // vCenter
+		_float		_pad2;
+
+		_float3		vOrbitAxis;      // normalized
+		_float		_pad3;
+
+		_float3		vRotationAxis;   // normalized
+		_float		_pad4;
+	}PARTICLECBUFFER;
+
 } 
