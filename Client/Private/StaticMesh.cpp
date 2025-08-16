@@ -70,13 +70,13 @@ void CStaticMesh::Update(_float fTimeDelta)
 void CStaticMesh::Late_Update(_float fTimeDelta)
 {
 	/* [ 쿼드트리를 사용하지않을 경우 절두체랑 직접 비교한다. ] */
-	//if (!m_bUseOctoTree)
-	//{
+	if (!m_bUseOctoTree)
+	{
 		if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 		{
 			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 		}
-	//}
+	}
 
 	//if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	//{
@@ -175,15 +175,6 @@ HRESULT CStaticMesh::Render()
 #endif
 
 	return S_OK;
-}
-
-AABBBOX CStaticMesh::GetWorldAABB() const
-{
-	PxBounds3 wb = m_pPhysXActorCom->Get_Actor()->getWorldBounds();
-	AABBBOX worldBox{ {wb.minimum.x, wb.minimum.y, wb.minimum.z},
-					  {wb.maximum.x, wb.maximum.y, wb.maximum.z} };
-
-	return worldBox;
 }
 
 void CStaticMesh::Update_ColliderPos()

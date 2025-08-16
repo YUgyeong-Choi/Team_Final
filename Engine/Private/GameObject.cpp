@@ -90,7 +90,14 @@ void CGameObject::Compute_ViewZ(_vector pCamPos , const _vector* pTargetPos)
 	_vector vDiff = pCamPos - *pTargetPos;
 	m_fViewZ = XMVectorGetX(XMVector3Length(vDiff));
 }
+AABBBOX CGameObject::GetWorldAABB() const
+{
+	PxBounds3 wb = m_pPhysXActorCom->Get_Actor()->getWorldBounds();
+	AABBBOX worldBox{ {wb.minimum.x, wb.minimum.y, wb.minimum.z},
+					  {wb.maximum.x, wb.maximum.y, wb.maximum.z} };
 
+	return worldBox;
+}
 
 _bool CGameObject::Get_bDead()
 {

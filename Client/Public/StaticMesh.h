@@ -55,9 +55,6 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	AABBBOX GetWorldAABB() const;
-
-public:
 	LEVEL Get_LevelID() const { return m_eLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 
@@ -90,7 +87,6 @@ protected:
 	CModel*			m_pModelCom = { nullptr };
 	CTexture*		m_pTextureCom = { nullptr };
 	CTexture*		m_pEmissiveCom = { nullptr };
-	CPhysXStaticActor* m_pPhysXActorCom = { nullptr };
 
 protected:
 	HRESULT Ready_Components(void* pArg);

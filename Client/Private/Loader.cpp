@@ -448,7 +448,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	string Map = "TEST"; //STATION, TEST
+	string Map = "STATION"; //STATION, TEST
 
 	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
 	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
@@ -1129,6 +1129,7 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 	_uint iModelCount = MapDataJson["ModelCount"];
 	const json& Models = MapDataJson["Models"];
 
+	m_pGameInstance->ClaerOctoTreeObjects();
 	for (_uint i = 0; i < iModelCount; ++i)
 	{
 		string ModelName = Models[i]["ModelName"];
@@ -1214,8 +1215,7 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 			iLevelIndex, LayerTag, &pGameObject, &StaticMeshDesc)))
 			return E_FAIL;
 
-		//CStaticMesh* pStaticMesh = dynamic_cast<CStaticMesh*>(pGameObject);
-		//m_vecOctoTreeObjects.push_back(pStaticMesh);
+		m_pGameInstance->PushOctoTreeObjects(pGameObject);
 	}
 
 	return S_OK;
