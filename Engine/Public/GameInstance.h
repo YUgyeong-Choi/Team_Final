@@ -222,10 +222,12 @@ public:
 #pragma endregion
 
 
-#pragma region OctoTree_MANAGER
+#pragma region OCTOTREE_MANAGER
 	HRESULT Ready_OctoTree(const vector<AABBBOX>& staticBounds, const map<Handle, _uint>& handleToIndex);
 	void InitIndexToHandle(const map<Handle, _uint>& handleToIndex, size_t count);
 	void BeginQueryFrame(const XMMATRIX& view, const XMMATRIX& proj);
+	HRESULT SetObjectType(const vector<OCTOTREEOBJECTTYPE>& vTypes);
+	const vector<OCTOTREEOBJECTTYPE>& GetObjectType();
 	vector<class CGameObject*> GetIndexToObj() const;
 	void PushBackIndexToObj(class CGameObject* vec);
 	vector<_uint> GetCulledStaticObjects() const;
@@ -233,6 +235,15 @@ public:
 	void ToggleDebugOctoTree();
 	void ClearIndexToObj();
 	void QueryVisible();
+#pragma endregion
+
+#pragma region AREA_MANAGER
+	_bool AddArea_AABB(_int iAreaId, const _float3& vMin, const _float3& vMax, const vector<_uint>& vecAdjacentIds, AREA::EAreaType eType, _int iPriority);
+	HRESULT FinalizePartition();
+	_int FindAreaContainingPoint(const _float3& vPoint) const;
+	HRESULT Reset_Parm();
+	void SetPlayerPosition(const _vector& vPos);
+	void ToggleDebugArea();
 #pragma endregion
 
 private:
@@ -253,7 +264,8 @@ private:
 	class CPhysX_Manager*		m_pPhysX_Manager = { nullptr };
 	class CSound_Device*		m_pSound_Device = { nullptr };
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
-	class COctoTree_Manager*	m_pQaudTree_Manager = { nullptr };
+	class COctoTree_Manager*	m_pOctoTree_Manager = { nullptr };
+	class CArea_Manager*		m_pArea_Manager = { nullptr };
 
 private:
 	_uint					m_iCurrentLevelIndex = 0;

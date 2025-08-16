@@ -88,6 +88,8 @@ namespace Engine
 
 		_bool				bIsVolumetric;
 		_bool				bIsPlayerFar;
+		_bool				bIsUse;
+
 	}LIGHT_DESC;
 
 
@@ -266,6 +268,14 @@ namespace Engine
 		b.vMax.z = (max)(b.vMax.z, o.vMax.z);
 	}
 
+	inline AABBBOX MakeLightAABB_Point(const _float3& vCenter, _float fRange)
+	{
+		AABBBOX tBox{};
+		tBox.vMin = { vCenter.x - fRange, vCenter.y - fRange, vCenter.z - fRange };
+		tBox.vMax = { vCenter.x + fRange, vCenter.y + fRange, vCenter.z + fRange };
+		return tBox;
+	}
+
 	/*---------------------------
 		포함/교차 판정
 	---------------------------*/
@@ -339,6 +349,39 @@ namespace Engine
 		return box;
 	}
 
+	inline _float3 ExtractAABBWorldCorner(const _float3& vMin, const _float3& vMax, _int iIndex)
+	{
+		_float3 vCorner;
+
+		// X
+		vCorner.x = (iIndex & 1) ? vMax.x : vMin.x;
+		// Y
+		vCorner.y = (iIndex & 2) ? vMax.y : vMin.y;
+		// Z
+		vCorner.z = (iIndex & 4) ? vMax.z : vMin.z;
+
+		return vCorner;
+	}
+
+	typedef struct ENGINE_DLL Area
+	{
+		enum class EAreaType : _int { ROOM, LOBBY, OUTDOOR, INDOOR , END};
+
+		_int iAreaState;
+		_int iAreaId;
+		AABBBOX vBounds;
+		vector<_uint> vecAdjacent;
+
+		EAreaType eType;
+		_int iPriority;
+
+		bool ContainsPoint(const _float3& point) const
+		{
+			return (point.x >= vBounds.vMin.x && point.x <= vBounds.vMax.x &&
+				point.y >= vBounds.vMin.y && point.y <= vBounds.vMax.y &&
+				point.z >= vBounds.vMin.z && point.z <= vBounds.vMax.z);
+		}
+	}AREA;
 
 	typedef struct ENGINE_DLL Handle
 	{

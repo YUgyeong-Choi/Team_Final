@@ -19,7 +19,7 @@
 
 #include "Belt.h"
 #include "Item.h"
-#include "Ramp.h"
+#include "Lamp.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -38,7 +38,7 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void* pArg)
 {
 	PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
-
+	m_bIsPlayer = true;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -47,10 +47,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_Weapon()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Lamp()))
-		return E_FAIL;
+		return E_FAIL; 
 
 	//if (FAILED(Ready_StationDoor()))
 	//	return E_FAIL;
@@ -93,7 +90,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	CLockOn_Manager::Get_Instance()->SetPlayer(this);
 
 	m_iCurrentHP = m_iMaxHP;
-	m_iCurrentStamina = m_iMaxStamina;
+	m_fCurrentStamina = _float(m_iMaxStamina);
 	m_iCurrentMana = static_cast<_int>(m_iMaxMana * 0.5f);
 
 	Callback_HP();
@@ -103,9 +100,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pBelt_Up = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
 	m_pBelt_Down = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
 
-	auto pRamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Ramp"), nullptr);
+	auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
 
-	m_pBelt_Down->Add_Item(static_cast<CItem*>(pRamp), 0);
+	m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 0);
 
 	auto pGrinder = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Grinder"), nullptr);
 
@@ -135,6 +132,8 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
 	}
 
+	/* [ 플레이어가 속한 구역탐색 ] */
+	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
 	/* [ 룩 벡터 레이케스트 ] */
@@ -146,6 +145,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	/* [ 상호작용 ] */
 	//Interaction_Door();
+
+	m_pBelt_Up->Priority_Update(fTimeDelta);
+	m_pBelt_Down->Priority_Update(fTimeDelta);
+
 	__super::Priority_Update(fTimeDelta);
 }
 void CPlayer::Update(_float fTimeDelta)
@@ -168,6 +171,31 @@ void CPlayer::Update(_float fTimeDelta)
 	// 락온관련
 	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
 		CLockOn_Manager::Get_Instance()->Set_Active();
+
+	
+	// 상태 따라서 스테미나 업데이트
+	if (m_pCurrentState->GetStateName() == L"IDLE" || m_pCurrentState->GetStateName() == L"WALK" || m_pCurrentState->GetStateName() == L"RUN" || 
+		m_pCurrentState->GetStateName() == L"ITEM" || m_pCurrentState->GetStateName() == L"EQUIP")
+	{
+
+		if (m_fCurrentStamina < m_iMaxStamina)
+		{
+			m_fCurrentStamina += 10 * fTimeDelta;
+		}
+		else
+		{
+			m_fCurrentStamina = _float(m_iMaxStamina);
+		}
+	}
+
+	if (m_fCurrentStamina < 0.f)
+		m_fCurrentStamina = 0.f;
+	
+
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_fCurrentStamina);
+
+	m_pBelt_Up->Update(fTimeDelta);
+	m_pBelt_Down->Update(fTimeDelta);
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -175,7 +203,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	__super::Late_Update(fTimeDelta);
 	
 	/* [ 특수행동 ] */
-	ItemLampON(fTimeDelta);
 	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 
@@ -205,6 +232,10 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		bCharge = !bCharge;
 		m_pAnimator->SetTrigger("ArmAttack");
 	}
+
+
+	m_pBelt_Up->Late_Update(fTimeDelta);
+	m_pBelt_Down->Late_Update(fTimeDelta);
 }
 
 HRESULT CPlayer::Render()
@@ -820,33 +851,10 @@ HRESULT CPlayer::Ready_Weapon()
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
 
+
+	// 옵저버 추가
 	
 
-	return S_OK;
-}
-
-HRESULT CPlayer::Ready_Lamp()
-{
-	CDH_ToolMesh::tagDH_ToolDesc Desc{};
-	Desc.eLEVEL = LEVEL::KRAT_CENTERAL_STATION; // 생성레벨
-	Desc.fRotationPerSec = 0.f;
-	Desc.fSpeedPerSec = 0.f;
-	Desc.iID = 0;
-	Desc.m_vInitPos = { 0.f, 0.f, 0.f };
-	Desc.szMeshID = TEXT("PointLight");
-	lstrcpy(Desc.szName, TEXT("PointLight"));
-
-	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ToolMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_ToolMesh", &pGameObject, &Desc)))
-		return E_FAIL;
-
-	m_pLamp = dynamic_cast<CDH_ToolMesh*>(pGameObject);
-
-	m_pLamp->SetDebug(false);
-	m_pLamp->SetbVolumetric(false);
-	m_pLamp->SetRange(3.f);
-	m_pLamp->SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
 	return S_OK;
 }
 
@@ -991,7 +999,7 @@ void CPlayer::Callback_HP()
 
 void CPlayer::Callback_Stamina()
 {
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_iCurrentStamina);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_fCurrentStamina);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxStamina"), &m_iMaxStamina);
 }
 
@@ -1006,7 +1014,7 @@ void CPlayer::Update_Stat()
 	if (m_pGameInstance->Key_Down(DIK_V))
 	{
 		m_iCurrentHP += 10;
-		m_iCurrentStamina += 20;
+		m_fCurrentStamina += 20;
 		m_iCurrentMana += 10;
 		Callback_HP();
 		Callback_Mana();
@@ -1019,9 +1027,9 @@ void CPlayer::Update_Stat()
 		if (m_iCurrentHP < 0)
 			m_iCurrentHP = 0;
 
-		m_iCurrentStamina -= 20;
-		if (m_iCurrentStamina < 0)
-			m_iCurrentStamina = 0;
+		m_fCurrentStamina -= 20;
+		if (m_fCurrentStamina < 0)
+			m_fCurrentStamina = 0;
 		m_iCurrentMana -= 100;
 		if (m_iCurrentMana < 0)
 			m_iCurrentMana = 0;
@@ -1087,26 +1095,8 @@ void CPlayer::ItemWeaponOFF(_float fTimeDelta)
 		}
 	}
 }
-void CPlayer::ItemLampON(_float fTimeDelta)
-{
-	if(m_bLampOnOff)
-	{
-		m_pLamp->SetIntensity(1.5f);
-		_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
-		_vector vPosition = matWorld.r[3];
-		//vPosition = XMVectorSetX(vPosition, XMVectorGetX(vPosition) - 1.f);
-		vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
-		//vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + 1.f);
 
-		matWorld.r[3] = vPosition;
 
-		m_pLamp->Get_TransfomCom()->Set_WorldMatrix(matWorld);
-	}
-	else
-	{
-		m_pLamp->SetIntensity(0.f);
-	}
-}
 void CPlayer::SlidDoorMove(_float fTimeDelta)
 {
 	if (m_bInteractionMove[0])
@@ -1223,8 +1213,6 @@ void CPlayer::Update_Slot()
 	{
 		if (nullptr == m_pSelectItem)
 			return;
-
-		m_pSelectItem->Activate();
 
 		if (m_isSelectUpBelt)
 			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pSelectItem);

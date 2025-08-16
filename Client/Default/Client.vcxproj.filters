@@ -259,12 +259,6 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Egro">
       <UniqueIdentifier>{10f0a836-f83b-4549-b109-16566ca11c30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ShaderFiles">
-      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.ShaderFiles\Effect">
-      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\RU">
       <UniqueIdentifier>{654c28ba-81f2-4605-92f6-c6577e62cc0b}</UniqueIdentifier>
     </Filter>
@@ -375,6 +369,24 @@
     </Filter>
     <Filter Include="02.GameObjects\07.Effect\EffectContainer\Trail\Ri">
       <UniqueIdentifier>{04d321e1-21ea-4da5-a8ed-f09e79edc950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Police">
+      <UniqueIdentifier>{f7b1672f-ca66-4fb8-b159-34e1261f8845}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Police\Elite">
+      <UniqueIdentifier>{82b1cf39-051c-489b-9344-d6882109340c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles">
+      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Effect">
+      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Projectile">
+      <UniqueIdentifier>{5d4debaf-81fb-45f4-9dc8-a565ee4fb8a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Projectile\Fuoco">
+      <UniqueIdentifier>{857ac3d0-7a88-456d-8659-01d2ab5485b3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -684,7 +696,7 @@
     <ClInclude Include="..\public\Item.h">
       <Filter>02.GameObjects\03. Item</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Ramp.h">
+    <ClInclude Include="..\public\Lamp.h">
       <Filter>02.GameObjects\03. Item\Ramp</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Belt.h">
@@ -807,6 +819,15 @@
     </ClInclude>
     <ClInclude Include="..\public\EditorObjectFactory.h">
       <Filter>01.Levels\LevelJW\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Elite_Police.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Police\Elite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Projectile.h">
+      <Filter>02.GameObjects\12.Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FireBall.h">
+      <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1087,7 +1108,7 @@
     <ClCompile Include="..\private\Icon_Weapon.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Ramp.cpp">
+    <ClCompile Include="..\private\Lamp.cpp">
       <Filter>02.GameObjects\03. Item\Ramp</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Belt.cpp">
@@ -1214,6 +1235,15 @@
     <ClCompile Include="..\private\EditorObjectFactory.cpp">
       <Filter>01.Levels\LevelJW\Tool</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Elite_Police.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Police\Elite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Projectile.cpp">
+      <Filter>02.GameObjects\12.Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FireBall.cpp">
+      <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
@@ -1240,6 +1270,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPBRMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
@@ -1260,9 +1293,6 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_TrailEffect.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_DynamicUI.hlsl">
-      <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

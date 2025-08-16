@@ -63,6 +63,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	/* [ 카메라 셋팅 ] */
 	m_pCamera_Manager->SetCutSceneCam();
 
+	/* [ Area 셋팅 ] */
+	SetArea();
+
 	return S_OK;
 }
 
@@ -78,10 +81,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
-}
 
-void CLevel_KratCentralStation::Update(_float fTimeDelta)
-{
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
 
@@ -98,7 +98,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		{
 
 			if (FAILED(Ready_Effect()))
-				return ;
+				return;
 
 			/* [ 사운드 ] */
 			m_pBGM->Play();
@@ -143,6 +143,14 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 		return;
 	}
+}
+
+void CLevel_KratCentralStation::Update(_float fTimeDelta)
+{
+
+	if (nullptr != m_pStartVideo)
+		return;
+
 
 	if (KEY_DOWN(DIK_U))
 		m_pGameInstance->Set_GameTimeScale(1.f);
@@ -152,10 +160,12 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if(KEY_DOWN(DIK_H))
 		ToggleHoldMouse();
 	if(m_bHold)
-		HoldMouse();
+		HoldMouse(); 
 
-	if(KEY_DOWN(DIK_F7))
+	if (KEY_DOWN(DIK_F7))
 		m_pGameInstance->ToggleDebugOctoTree();
+	if (KEY_DOWN(DIK_F8))
+		m_pGameInstance->ToggleDebugArea();
 
 	if (KEY_PRESSING(DIK_LCONTROL))
 	{
@@ -177,6 +187,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 {
+
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 	__super::Late_Update(fTimeDelta);
 
@@ -448,7 +459,7 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 	pWegoDesc.fSpeedPerSec = 5.f;
 	pWegoDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pWegoDesc.eLevelID = LEVEL::STATIC;
-	pWegoDesc.InitPos = _float3(103.47f, 1.55f, -4.14f);
+	pWegoDesc.InitPos = _float3(54.638927f, -0.221457f, -10.478647f);
 	pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pWegoDesc.szName, TEXT("Wego"));
 	pWegoDesc.szMeshID = TEXT("Wego");
@@ -574,11 +585,94 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 
 	vector<class CGameObject*> AllStaticMesh = m_pGameInstance->GetIndexToObj();
 	const auto& VisitCell = m_pGameInstance->GetCulledStaticObjects();
-	for (_uint idx : VisitCell)
+	const auto& vTypeTable = m_pGameInstance->GetObjectType();
+
+	for (_uint i = 0; i < static_cast<_uint>(AllStaticMesh.size()); ++i)
+		AllStaticMesh[i]->Set_bLightOnOff(false);
+
+
+	for (_uint iIdx : VisitCell)
 	{
-		CGameObject* StaticMesh = AllStaticMesh[idx];
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, StaticMesh);
+		CGameObject* pObj = AllStaticMesh[iIdx];
+
+		if (vTypeTable[iIdx] == OCTOTREEOBJECTTYPE::MESH)
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, pObj);
+		}
+		else
+		{
+			//만약 조명오브젝트라면? 
+			pObj->Set_bLightOnOff(true);
+		}
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::SetArea()
+{
+	m_pGameInstance->Reset_Parm();
+
+	/* [ 레벨의 구역을 나눠준다. ] */
+	auto FnToAABB = [](_float3 a, _float3 b, _float3& outMin, _float3& outMax)
+		{
+			outMin = _float3{
+				static_cast<_float>(min(a.x, b.x)),
+				static_cast<_float>(min(a.y, b.y)),
+				static_cast<_float>(min(a.z, b.z))
+			};
+			outMax = _float3{
+				static_cast<_float>(max(a.x, b.x)),
+				static_cast<_float>(max(a.y, b.y)),
+				static_cast<_float>(max(a.z, b.z))
+			};
+		};
+
+	// --- 입력으로 받은 3개 구역의 두 점(마지막 1.00은 무시) ---
+	// Area 1 (우선순위 최상)
+	_float3 a1p0 = _float3{ 35.73f, -2.87f,  4.97f };
+	_float3 a1p1 = _float3{ -10.57f,  9.92f, -4.62f };
+	_float3 a1Min, a1Max; 
+	FnToAABB(a1p0, a1p1, a1Min, a1Max);
+
+	// Area 2
+	_float3 a2p0 = _float3{ 61.82f, -5.39f,  8.25f };
+	_float3 a2p1 = _float3{ 32.16f,  8.91f, -4.62f };
+	_float3 a2Min, a2Max; 
+	FnToAABB(a2p0, a2p1, a2Min, a2Max);
+
+	// Area 3 (우선순위 최하)
+	_float3 a3p0 = _float3{ 119.81f, -5.63f,  32.20f };
+	_float3 a3p1 = _float3{ -40.69f, 52.55f, -61.73f };
+	_float3 a3Min, a3Max; 
+	FnToAABB(a3p0, a3p1, a3Min, a3Max);
+
+	{
+		const vector<_uint> vecAdj1 = { static_cast<_uint>(2) };
+		if (!m_pGameInstance->AddArea_AABB(
+			static_cast<_int>(1), a1Min, a1Max, vecAdj1,
+			AREA::EAreaType::ROOM, static_cast<_int>(3)))
+			return E_FAIL;
+	}
+	{
+		const vector<_uint> vecAdj2 = { static_cast<_uint>(1), static_cast<_uint>(3) };
+		if (!m_pGameInstance->AddArea_AABB(
+			static_cast<_int>(2), a2Min, a2Max, vecAdj2,
+			AREA::EAreaType::INDOOR, static_cast<_int>(2)))
+			return E_FAIL;
+	}
+	{
+		const vector<_uint> vecAdj3 = { static_cast<_uint>(1), static_cast<_uint>(2) };
+		if (!m_pGameInstance->AddArea_AABB(
+			static_cast<_int>(3), a3Min, a3Max, vecAdj3,
+			AREA::EAreaType::OUTDOOR, static_cast<_int>(1)))
+			return E_FAIL;
+	}
+
+	// 3) 파티션 확정 (ID→Index 매핑/검증)
+	if (FAILED(m_pGameInstance->FinalizePartition()))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -715,9 +809,14 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 	m_pGameInstance->ClearIndexToObj();
 
 	vector<AABBBOX> staticBounds;
+	vector<OCTOTREEOBJECTTYPE>  vObjectType;
 	map<Handle, _uint> handleToIndex;
 
-	staticBounds.reserve(m_vecOctoTreeObjects.size());
+	//용량 확보: 메쉬 + 라이트
+	const _uint iReserve = static_cast<_uint>(m_vecOctoTreeObjects.size() + m_vecLights.size());
+	staticBounds.reserve(iReserve);
+	vObjectType.reserve(iReserve);
+
 	_uint nextHandleId = 1000; // 핸들 ID 인데 1000부터 시작임
 
 	for (auto* OctoTreeObjects : m_vecOctoTreeObjects)
@@ -725,13 +824,35 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 		AABBBOX worldBox = OctoTreeObjects->GetWorldAABB();
 		_uint idx = static_cast<_uint>(staticBounds.size());
 		staticBounds.push_back(worldBox);
+		vObjectType.push_back(OCTOTREEOBJECTTYPE::MESH);
 
 		Handle h{ nextHandleId++ };
 		handleToIndex[h] = idx;
 		m_pGameInstance->PushBackIndexToObj(OctoTreeObjects);
 	}
+
+	for (CDH_ToolMesh* pLightMesh : m_vecLights)
+	{
+		_vector vPosVec = pLightMesh->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_float3 vCenter{};
+		XMStoreFloat3(&vCenter, vPosVec);
+
+		_float  fRange = pLightMesh->GetRange();
+		AABBBOX tLightBox = MakeLightAABB_Point(vCenter, fRange);
+
+		const _uint iIdx = static_cast<_uint>(staticBounds.size());
+		staticBounds.push_back(tLightBox);
+		vObjectType.push_back(OCTOTREEOBJECTTYPE::LIGHT);
+
+		handleToIndex[Handle{ nextHandleId++ }] = iIdx;
+		m_pGameInstance->PushBackIndexToObj(pLightMesh);
+	}
+
+
 	if (FAILED(m_pGameInstance->Ready_OctoTree(staticBounds, handleToIndex)))
 		return E_FAIL;
+
+	m_pGameInstance->SetObjectType(vObjectType);
 
 	return S_OK;
 }

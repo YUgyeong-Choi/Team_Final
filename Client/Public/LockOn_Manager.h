@@ -28,11 +28,13 @@ public:
     void Add_LockOnTarget(CGameObject* pTarget);
 
     void Set_Active();
+    void Set_Off(CGameObject* pObj);
 
     CGameObject* Get_Target() { return m_pBestTarget; }
 
 private:
-    void RemoveBehindWallTargets();
+    // Hp가 0이하 제외, 벽 뒤에 있는 것 제외
+    void RemoveSomeTargets();
     // 각도가 제일 작은거 <- 가운데 있 는 것
     CGameObject* Find_ClosestToLookTarget();
     CGameObject* Change_ToLookTarget();

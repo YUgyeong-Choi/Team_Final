@@ -31,7 +31,7 @@ void CPhysXActor::Set_ColliderType(COLLIDERTYPE eColliderType)
 
 void CPhysXActor::On_Enter(CPhysXActor* pOther)
 {
-    if (m_pOwner && pOther->Get_Owner())
+    if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_CollisionEnter(m_pOwner, m_eColliderType);
 #ifdef _DEBUG
@@ -42,7 +42,7 @@ void CPhysXActor::On_Enter(CPhysXActor* pOther)
 
 void CPhysXActor::On_Stay(CPhysXActor* pOther)
 {
-    if (m_pOwner && pOther->Get_Owner())
+    if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_CollisionStay(m_pOwner, m_eColliderType);
     }
@@ -50,7 +50,7 @@ void CPhysXActor::On_Stay(CPhysXActor* pOther)
 
 void CPhysXActor::On_Exit(CPhysXActor* pOther)
 {
-    if (m_pOwner && pOther->Get_Owner())
+    if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_CollisionExit(m_pOwner, m_eColliderType);
 #ifdef _DEBUG
@@ -62,7 +62,7 @@ void CPhysXActor::On_Exit(CPhysXActor* pOther)
 
 void CPhysXActor::On_TriggerEnter(CPhysXActor* pOther)
 {
-    if (m_pOwner && pOther->Get_Owner())
+    if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_TriggerEnter(m_pOwner, m_eColliderType);
 #ifdef _DEBUG
@@ -73,7 +73,7 @@ void CPhysXActor::On_TriggerEnter(CPhysXActor* pOther)
 
 void CPhysXActor::On_TriggerExit(CPhysXActor* pOther)
 {
-    if (m_pOwner && pOther->Get_Owner())
+    if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_TriggerExit(m_pOwner, m_eColliderType);
 #ifdef _DEBUG
@@ -101,6 +101,8 @@ HRESULT CPhysXActor::ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContex
         return E_FAIL;
     return S_OK;
 }
+
+
 
 void CPhysXActor::Add_RenderRay(DEBUGRAY_DATA _data)
 {
@@ -508,6 +510,9 @@ void CPhysXActor::Set_RenderColor()
         m_vRenderColor = Colors::BlueViolet;
         break;
     case COLLIDERTYPE::MONSTER_WEAPON:
+        m_vRenderColor = Colors::BlueViolet;
+        break;
+    case COLLIDERTYPE::NPC:
         m_vRenderColor = Colors::BlueViolet;
         break;
     }

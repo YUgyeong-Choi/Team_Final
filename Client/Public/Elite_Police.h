@@ -1,18 +1,17 @@
 #pragma once
-#include "Unit.h"
+
+#include "Monster_Base.h"
 #include "Client_Defines.h"
 
 NS_BEGIN(Client)
-class CWego : public CUnit
+
+
+class CElite_Police final : public CMonster_Base
 {
-public:
-	typedef struct tagWegoDesc : public CUnit::tagUnitDesc
-	{
-	}WEGO_DESC;
-protected:
-	CWego(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CWego(const CWego& Prototype);
-	virtual ~CWego() = default;
+private:
+	CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CElite_Police(const CElite_Police& Prototype);
+	virtual ~CElite_Police() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -22,7 +21,6 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -33,19 +31,7 @@ public:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-private: /* [ Setup ÇÔ¼ö ] */
-	HRESULT Ready_Components();
-	HRESULT Ready_Collider();
-	HRESULT Ready_Trigger();
-private:
-	CPhysXDynamicActor* m_pPhysXTriggerCom = { nullptr };
-
-	_bool m_bInTrigger = false;
-public:
-	static CWego* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg = nullptr) override;
-	virtual void Free() override;
+	virtual void	Update_State();
 };
 
 NS_END
-

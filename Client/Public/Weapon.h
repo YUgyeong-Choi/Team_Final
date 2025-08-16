@@ -80,6 +80,8 @@ public: /* [ 활성화 , 비활성화 ] */
 
 	void Clear_CollisionObj() { m_CollisonObjects.clear(); }
 
+	void Calc_Durability(_int iDelta);
+
 public:
 	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }
 	SKILL_DESC& Get_SkillDesc(_int iIndex) { return m_eSkillDesc[iIndex]; }
@@ -127,9 +129,8 @@ protected:		//		스킬용 변수?
 	_int				m_iMaxDurability = {100};
 
 protected:
-	_int				m_iBladeBoneIndex = {};
 	_int				m_iHandleIndex = {};
-	_float4				m_vBladePos = {};
+
 
 	
 	vector<CGameObject*> m_CollisonObjects;

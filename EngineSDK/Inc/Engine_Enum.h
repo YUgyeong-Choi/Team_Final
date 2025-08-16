@@ -9,6 +9,7 @@ namespace Engine
 	enum class D3DTS { VIEW, PROJ, END };
 
 	enum class FrustumHit { Outside, Intersect, Inside };
+	enum class OCTOTREEOBJECTTYPE { MESH, LIGHT, END };
 
 	enum class RENDERGROUP{ RG_PRIORITY, RG_SHADOW, RG_NONBLEND, RG_PBRMESH, RG_DECAL, RG_NONLIGHT, RG_BLEND,
 							RG_EFFECT_GLOW, RG_EFFECT_WB, RG_EFFECT_NL, RG_EFFECT_LIGHT, RG_EFFECT_END,
@@ -32,7 +33,8 @@ namespace Engine
 		FILTER_MONSTERBODY = 1 << 2,
 		FILTER_MONSTERWEAPON = 1 << 3,
 		FILTER_EFFECTGIB = 1 << 4,
-		FILTER_DYNAMICOBJ = 1 << 5
+		FILTER_DYNAMICOBJ = 1 << 5,
+		FILTER_NPC = 1 << 6
 	};
 
 	enum class COLLIDERTYPE 
@@ -42,6 +44,7 @@ namespace Engine
 		MONSTER,
 		PLAYER_WEAPON,
 		MONSTER_WEAPON,
+		NPC,
 		A,
 		B,
 		C,

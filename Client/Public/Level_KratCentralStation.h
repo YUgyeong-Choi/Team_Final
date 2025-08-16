@@ -61,6 +61,9 @@ private:
 	HRESULT Add_RenderGroup_OctoTree();
 
 private:
+	HRESULT SetArea();
+
+private:
 	void ToggleHoldMouse() { m_bHold = !m_bHold; }
 
 private:

@@ -3,7 +3,7 @@
 
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Player.h"
-
+#include "Unit.h"
 #include "Camera_Manager.h"
 
 IMPLEMENT_SINGLETON(CLockOn_Manager)
@@ -31,7 +31,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
     if (m_bStartLockOn)
     {
-        RemoveBehindWallTargets();
+        RemoveSomeTargets();
         CGameObject* pTarget = Find_ClosestToLookTarget();
         if (pTarget)
         {
@@ -159,7 +159,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
     return S_OK;
 }
 
-void CLockOn_Manager::RemoveBehindWallTargets()
+void CLockOn_Manager::RemoveSomeTargets()
 {
     _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
@@ -168,47 +168,55 @@ void CLockOn_Manager::RemoveBehindWallTargets()
         CGameObject* pTarget = m_vecTarget[i];
         _vector targetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
 
-        PxVec3 origin = VectorToPxVec3(playerPos);
-        PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
-        direction.normalize(); // 방향 벡터 정규화
-        _float fRayLength = 7.f;
-
-        PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
-        PxRaycastBuffer hit;
-        PxQueryFilterData filterData;
-        filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
-
-        CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
-        unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
-        CIgnoreSelfCallback callback(ignoreActors);
-
         bool bRemove = false;
 
-        // 레이캐스트 수행
-        if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
-        {
-            if (hit.hasBlock)
-            {
-                PxRigidActor* hitActor = hit.block.actor;
-                CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+        // HP 0 이하 제거
+        CUnit* pUnit = static_cast<CUnit*>(pTarget);
+        if (!pUnit || pUnit->Get_HP() <= 0.f) {
+            bRemove = true;
+        }
 
-                
-                if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
+        // 벽 뒤 체크
+        if (!bRemove)
+        {
+            PxVec3 origin = VectorToPxVec3(playerPos);
+            PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
+            direction.normalize();
+            _float fRayLength = 7.f;
+
+            PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+            PxRaycastBuffer hit;
+            PxQueryFilterData filterData;
+            filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+            CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
+            unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
+            CIgnoreSelfCallback callback(ignoreActors);
+
+            if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+            {
+                if (hit.hasBlock)
                 {
-                    // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
+                    PxRigidActor* hitActor = hit.block.actor;
+                    CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+
+                    if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
+                    {
+                        // 벽 등 다른 오브젝트가 먼저 막음 → 제거
+                        bRemove = true;
+                    }
+                }
+                else
+                {
+                    // 아무것도 맞지 않음 → 거리 밖 등 → 제거
                     bRemove = true;
                 }
             }
             else
             {
-                // 레이에 아무것도 맞지 않음 → 거리 밖으로 간 것 → 제거
                 bRemove = true;
             }
         }
-        else
-        {
-            bRemove = true;
-        } 
 
         if (bRemove)
             m_vecTarget.erase(m_vecTarget.begin() + i);
@@ -223,26 +231,76 @@ CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()
         return nullptr;
 
     const _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-    const _vector vPlayerLook = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
+    _vector       vPlayerLook = CCamera_Manager::Get_Instance()->GetCurCam()->Get_TransfomCom()->Get_State(STATE::LOOK);
+    vPlayerLook = XMVector3Normalize(vPlayerLook);
 
+    // ===== 설정 =====
+    const _float wAngle = 0.65f;                     // 각도 가중치(정면 우선)
+    const _float wDist = 0.35f;                     // 거리 가중치(가까운 대상 우선)
+    const _float cosHalfFov = cosf(XMConvertToRadians(60.f)); // 정면 ±45°
+
+    // ===== 1) FOV(±45°) 안의 타깃만 대상으로 최대 거리 계산 =====
+    _float maxDist2 = 0.f;
+    int inFovCount = 0;
+    for (auto& pTarget : m_vecTarget)
+    {
+        if (!pTarget) continue;
+
+        const _vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+        const _vector vDelta = vTargetPos - vPlayerPos;
+        const _vector vToTarget = XMVector3Normalize(vDelta);
+
+        const _float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget)); // [-1,1]
+        if (fDot < cosHalfFov)          // FOV 밖 → 스킵
+            continue;
+
+        const _float dist2 = XMVectorGetX(XMVector3LengthSq(vDelta));
+        if (dist2 > maxDist2) maxDist2 = dist2;
+        ++inFovCount;
+    }
+
+    if (inFovCount == 0)                // FOV 안에 아무도 없으면 락온 불가
+        return nullptr;
+
+    if (maxDist2 < 1e-12f)              // 안전 가드
+        maxDist2 = 1e-12f;
+
+    // ===== 2) 후보들 중 각도+거리 점수 최소 선택 =====
     CGameObject* pBestTarget = nullptr;
-    float fMinAngle = XM_PI; // 180도
+    _float bestScore = FLT_MAX;
 
     for (auto& pTarget : m_vecTarget)
     {
+        if (!pTarget) continue;
+
         const _vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
-        const _vector vToTarget = XMVector3Normalize(vTargetPos - vPlayerPos);
+        const _vector vDelta = vTargetPos - vPlayerPos;
+        const _vector vToTarget = XMVector3Normalize(vDelta);
 
-        float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget));
-        fDot = clamp(fDot, -1.f, 1.f); 
-        float fAngle = acosf(fDot);   
+        _float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget));
+        if (fDot < cosHalfFov)          // FOV 밖 → 스킵
+            continue;
 
-        if (fAngle < fMinAngle)
-        {
-            fMinAngle = fAngle;
+        fDot = clamp(fDot, -1.f, 1.f);
+
+        // 각도 정규화: 0(정면) ~ 1(반대)
+        const _float fAngle = acosf(fDot);          // [0, π]
+        const _float angleNorm = fAngle / XM_PI;
+
+        // 거리 정규화: 0(가깝) ~ 1(가장 멀리) (FOV 내 최대거리 기준)
+        const _float dist2 = XMVectorGetX(XMVector3LengthSq(vDelta));
+        const _float distNorm = sqrtf(dist2 / maxDist2);
+
+        const _float score = wAngle * angleNorm + wDist * distNorm;
+
+        if (score < bestScore) {
+            bestScore = score;
             pBestTarget = pTarget;
         }
     }
+
+    if (pBestTarget)
+        wprintf(L"TargetName %s\n", pBestTarget->Get_Name().c_str());
 
     return pBestTarget;
 }
@@ -335,18 +393,28 @@ void CLockOn_Manager::Set_Active()
         m_bActive = false;
         m_pBestTarget = nullptr;
         CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
-
-        // Pitch Yaw 역계산
-        XMVECTOR camerakDir = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Get_State(STATE::LOOK) * -1);
-        const _float bx = XMVectorGetX(camerakDir);
-        const _float by = XMVectorGetY(camerakDir);
-        const _float bz = XMVectorGetZ(camerakDir);
-
-        _float fYaw = atan2f(bx, bz);
-        _float fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
-
-        CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
     }
+}
+
+void CLockOn_Manager::Set_Off(CGameObject* pObj)
+{
+    if (m_pBestTarget != pObj)
+        return;
+
+    m_bActive = false;
+    m_pBestTarget = nullptr;
+    CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
+
+    // Pitch Yaw 역계산
+    XMVECTOR camerakDir = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Get_State(STATE::LOOK) * -1);
+    const _float bx = XMVectorGetX(camerakDir);
+    const _float by = XMVectorGetY(camerakDir);
+    const _float bz = XMVectorGetZ(camerakDir);
+
+    _float fYaw = atan2f(bx, bz);
+    _float fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
+
+    CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
 }
 
 

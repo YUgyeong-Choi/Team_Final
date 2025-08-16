@@ -256,6 +256,9 @@
     <ClInclude Include="..\public\ParticleComputeShader.h">
       <Filter>01.Utility\15.ComputeShader\ParticleComputeShader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Area_Manager.h">
+      <Filter>01.Utility\17.Area_Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -485,6 +488,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ParticleComputeShader.cpp">
       <Filter>01.Utility\15.ComputeShader\ParticleComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Area_Manager.cpp">
+      <Filter>01.Utility\17.Area_Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -739,6 +745,9 @@
     </Filter>
     <Filter Include="01.Utility\15.ComputeShader\ParticleComputeShader">
       <UniqueIdentifier>{f928b127-179e-44f9-9edc-37bdaa121474}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\17.Area_Manager">
+      <UniqueIdentifier>{eff55819-2b7c-49ab-b0c0-da49622d9f88}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

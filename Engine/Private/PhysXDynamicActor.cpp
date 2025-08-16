@@ -96,6 +96,13 @@ void CPhysXDynamicActor::Set_QueryFilterData(PxFilterData _data)
 	m_pShape->setQueryFilterData(_data);
 }
 
+void CPhysXDynamicActor::RemovePhysX()
+{
+	Set_ShapeFlag(false, false, false);
+	Get_Actor()->userData = nullptr;
+	m_pGameInstance->Get_Scene()->removeActor(*Get_Actor());
+}
+
 void CPhysXDynamicActor::Shape_Detach()
 {
 	if (m_pActor == nullptr)

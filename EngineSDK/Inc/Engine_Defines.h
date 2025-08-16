@@ -33,6 +33,7 @@ using Microsoft::WRL::ComPtr;
 #include <list>
 #include <vector>
 #include <set>
+#include <unordered_set>
 #include <unordered_map>
 #include <cmath>
 #include <chrono>
