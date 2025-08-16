@@ -329,7 +329,13 @@ void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 	m_fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
 
 	// 살짝 위에서 보이게 
-	m_fPitch += XMConvertToRadians(10.f);
+	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+	float dist = XMVectorGetX(XMVector3Length(vTargetLookPos - vPlayerPos));
+	const float maxDist = 10.f; // 원하는 거리값으로 조정
+	float t = 1.f - clamp(dist / maxDist, 0.f, 1.f); // 0~1
+	float pitchOffset = XMConvertToRadians(10.f) * t;
+
+	m_fPitch += pitchOffset;
 
 	Set_CameraMatrix(fTimeDelta);
 }
