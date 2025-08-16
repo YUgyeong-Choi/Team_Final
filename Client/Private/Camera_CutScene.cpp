@@ -41,6 +41,9 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 
 void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 {
+	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
+		return;
+
 	if (m_bActive)
 	{
 		if (!m_bOrbitalToSetOrbital)
@@ -112,11 +115,15 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 void CCamera_CutScene::Update(_float fTimeDelta)
 {
+	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
+		return;
 	__super::Update(fTimeDelta);
 }
 
 void CCamera_CutScene::Late_Update(_float fTimeDelta)
 {
+	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
+		return;
 }
 
 HRESULT CCamera_CutScene::Render()

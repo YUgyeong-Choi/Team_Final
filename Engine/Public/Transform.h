@@ -114,7 +114,6 @@ public:
 	bool RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fTimeDelta);
 	/* [ 쿼터니언 회전 ] */
 	void Quaternion_Turn(const _vector& vAngle);
-
 public:
 	/* [ Y축을 제외하고 바라본다 ] */
 	void LookAtWithOutY(_fvector vAt);

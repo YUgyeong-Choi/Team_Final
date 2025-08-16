@@ -57,8 +57,6 @@ private:
 	void Update_TargetCameraMatrix(_float fTimeDelta);
 	/* [ 락온 되었을 때 ] */
 	void Update_LockOnCameraMatrix(_float fTimeDelta);
-	/* [ 락온 시작과 종료 ] */
-	void Update_LockOnTransition(_float fTimeDelta);
 
 	void Set_CameraMatrix(_float fTimeDelta);
 private:
@@ -78,8 +76,6 @@ private:
 	_vector			m_vPlayerPosition = {};
 private:
 	_bool			m_bLockOn = false;
-	_bool			m_bLockOnTransition = false;
-	_bool			m_bLockOnTransitionStart = false;
 private:
 	_bool			m_bTalkNpcStart = false;
 	_bool			m_bTalkNpcEnd = false;
@@ -98,6 +94,11 @@ private:
 
 	// Npc 대화용 타겟
 	CGameObject* m_pNpcTalkTarget = { nullptr };
+
+	// 멤버 변수
+	_vector m_vPrevLookTarget = XMVectorZero();
+	bool m_bPrevLookInit = false;
+	float m_fLookLerpSpeed = 8.f; // 값 클수록 빠르게 붙음
 public:
 	static CCamera_Orbital* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

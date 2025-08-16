@@ -47,6 +47,7 @@ private:
 	_bool m_bInTrigger = false;
 	_bool m_bTalkActive = false;
 
+
 	WEGOTALKTYPE m_curTalkType = WEGOTALKTYPE::ONE;
 	_int m_curTalkIndex = 0;
 

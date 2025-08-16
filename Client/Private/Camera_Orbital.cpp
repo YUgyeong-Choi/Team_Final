@@ -93,12 +93,6 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 			m_bTalkNpcEnd = false;
 		}
 	}
-
-	if (m_bLockOnTransition)
-	{
-		Update_LockOnTransition(fTimeDelta);
-		return;
-	}
 		
 
 	if (m_bLockOn)
@@ -118,6 +112,8 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 void CCamera_Orbital::Late_Update(_float fTimeDelta)
 {
+	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
+		return;
 }
 
 HRESULT CCamera_Orbital::Render()
@@ -146,16 +142,13 @@ void CCamera_Orbital::Set_LockOn(CGameObject* pTarget, _bool bActive)
 	if (bActive)
 	{
 		m_pLockOnTarget = pTarget;
-		m_bLockOnTransition = true;
-		m_bLockOnTransitionStart = true;
+		m_bLockOn = true;
 	}
 	else
 	{
-		m_bLockOnTransition = true;
-		m_bLockOnTransitionStart = false;
+		m_pLockOnTarget = pTarget;
 		m_bLockOn = false;
 	}
-	//m_bLockOn = bActive;
 }
 
 _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float fPitch, _float fYaw)
@@ -248,6 +241,29 @@ void CCamera_Orbital::Update_CameraMatrix(_float fTimeDelta)
 
 	// 카메라 설정
 	Set_CameraMatrix(fTimeDelta);
+
+	_vector vTargetLookPos;
+	if (m_bTalkActive)
+	{
+		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+		vTargetLookPos = (targetPos + m_vPlayerPosition) * 0.5f;
+	}
+	else
+	{
+		vTargetLookPos = m_vPlayerPosition;
+	}
+
+	// 초기화 (첫 프레임)
+	if (!m_bPrevLookInit) {
+		m_vPrevLookTarget = vTargetLookPos;
+		m_bPrevLookInit = true;
+	}
+
+	// 보간
+	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
+	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
+
+	m_pTransformCom->LookAt(m_vPrevLookTarget);
 }
 
 void CCamera_Orbital::Update_TargetCameraMatrix(_float fTimeDelta)
@@ -259,6 +275,29 @@ void CCamera_Orbital::Update_TargetCameraMatrix(_float fTimeDelta)
 	// 카메라 설정
 	Set_CameraMatrix(fTimeDelta);
 
+	_vector vTargetLookPos;
+	if (m_bTalkActive)
+	{
+		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+		vTargetLookPos = (targetPos + m_vPlayerPosition) * 0.5f;
+	}
+	else
+	{
+		vTargetLookPos = m_vPlayerPosition;
+	}
+
+	// 초기화 (첫 프레임)
+	if (!m_bPrevLookInit) {
+		m_vPrevLookTarget = vTargetLookPos;
+		m_bPrevLookInit = true;
+	}
+
+	// 보간
+	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
+	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
+
+	m_pTransformCom->LookAt(m_vPrevLookTarget);
+
 	if (fabs(m_fYaw - m_fTargetYaw) < 0.001f && fabs(m_fPitch - m_fTargetPitch) < 0.001f)
 	{
 		m_bSetPitchYaw = false;
@@ -267,8 +306,17 @@ void CCamera_Orbital::Update_TargetCameraMatrix(_float fTimeDelta)
 
 void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 {
-	_vector vTargetPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
-	m_pTransformCom->LookAt(vTargetPos);
+	_vector vTargetLookPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
+
+	// 보간량 (지수 감쇠)
+	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
+
+	// 보간된 목표 계산
+	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
+
+	// 보간된 위치를 바라보도록 회전
+	m_pTransformCom->LookAt(m_vPrevLookTarget);
+
 
 	_vector vCamLook = m_pTransformCom->Get_State(STATE::LOOK) * -1;
 
@@ -283,164 +331,7 @@ void CCamera_Orbital::Update_LockOnCameraMatrix(_float fTimeDelta)
 	// 살짝 위에서 보이게 
 	m_fPitch += XMConvertToRadians(10.f);
 
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
-
-	// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
-	m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
-
-	// 방향 계산
-	_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
-	_float y = m_fDistance * sinf(m_fPitch);
-	_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
-	_vector vOffset = XMVectorSet(x, y, z, 0.f);
-
-	// 목표 카메라 위치
-	m_vTargetCamPos = m_vPlayerPosition + vOffset;
-
-	// --- 스프링암 Raycast 처리 시작 ---
-	_vector vRayDir = XMVector3Normalize(vOffset);
-
-	PxVec3 origin = VectorToPxVec3(m_vPlayerPosition);
-	PxVec3 direction = VectorToPxVec3(vRayDir);
-
-	PxRaycastBuffer hit;
-	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
-	PxQueryFilterData filterData;
-	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
-
-	unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
-	CIgnoreSelfCallback callback(ignoreActors);
-
-	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, m_fDistance, hit, hitFlags, filterData, &callback))
-	{
-		if (hit.hasBlock)
-		{
-			_float fHitDist = hit.block.distance - 0.3f; // 여유 거리
-			fHitDist = max(fHitDist, 0.5f);              // 너무 가까워지지 않게 제한
-
-			// 보정된 카메라 위치
-			m_vTargetCamPos = m_vPlayerPosition + vRayDir * fHitDist;
-		}
-	}
-	// --- 스프링암 Raycast 처리 끝 ---
-
-	// 카메라 설정
-	const _float kPos = 12.f; // 응답 속도(높을수록 빠름)
-	const _float a = 1.f - expf(-kPos * fTimeDelta);
-
-	_vector vCurPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vNewPos = XMVectorLerp(vCurPos, m_vTargetCamPos, a);
-
-	// 아주 가까워지면 스냅
-	if (XMVectorGetX(XMVector3LengthSq(vNewPos - m_vTargetCamPos)) < 1e-6f)
-		vNewPos = m_vTargetCamPos;
-
-	// 카메라 설정
-	m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
-}
-
-void CCamera_Orbital::Update_LockOnTransition(_float fTimeDelta)
-{
-	_vector vTargetPos;
-	_vector	vTargetLook;
-	
-	if (m_bLockOnTransitionStart)
-	{
-		vTargetPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
-		vTargetLook = vTargetPos - m_pTransformCom->Get_State(STATE::POSITION);
-	}
-	else
-	{
-		m_bLockOnTransition = false;
-		m_bLockOn = false;
-		m_pLockOnTarget = nullptr;
-		return;
-	}
-	
-	m_pTransformCom->RotateToDirectionSmoothly(vTargetLook, fTimeDelta * 0.5f);
-
-	_vector vCamLook = m_pTransformCom->Get_State(STATE::LOOK);
-
-	float d = XMVectorGetX(XMVector3Dot(vTargetLook, vCamLook));
-	if (d <= 10.f)
-	{
-		// 둘이 거의 동일 → 전환 완료
-		m_bLockOnTransition = false;
-		if(m_bLockOnTransitionStart)
-			m_bLockOn = true;
-	}
-		
-	vCamLook = m_pTransformCom->Get_State(STATE::LOOK) * -1;
-
-	const _float bx = XMVectorGetX(vCamLook);
-	const _float by = XMVectorGetY(vCamLook);
-	const _float bz = XMVectorGetZ(vCamLook);
-
-	// Pitch Yaw 역계산
-	m_fYaw = atan2f(bx, bz);
-	m_fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
-
-	// 살짝 위에서 보이게 
-	m_fPitch += XMConvertToRadians(10.f);
-
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
-
-	// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
-	m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
-
-	// 방향 계산
-	_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
-	_float y = m_fDistance * sinf(m_fPitch);
-	_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
-	_vector vOffset = XMVectorSet(x, y, z, 0.f);
-
-	// 목표 카메라 위치
-	m_vTargetCamPos = m_vPlayerPosition + vOffset;
-
-	// --- 스프링암 Raycast 처리 시작 ---
-	_vector vRayDir = XMVector3Normalize(vOffset);
-
-	PxVec3 origin = VectorToPxVec3(m_vPlayerPosition);
-	PxVec3 direction = VectorToPxVec3(vRayDir);
-
-	PxRaycastBuffer hit;
-	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
-	PxQueryFilterData filterData;
-	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
-
-	unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
-	CIgnoreSelfCallback callback(ignoreActors);
-
-	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, m_fDistance, hit, hitFlags, filterData, &callback))
-	{
-		if (hit.hasBlock)
-		{
-			_float fHitDist = hit.block.distance - 0.3f; // 여유 거리
-			fHitDist = max(fHitDist, 0.5f);              // 너무 가까워지지 않게 제한
-
-			// 보정된 카메라 위치
-			m_vTargetCamPos = m_vPlayerPosition + vRayDir * fHitDist;
-		}
-	}
-	// --- 스프링암 Raycast 처리 끝 ---
-
-	// 카메라 설정
-	const _float kPos = 12.f; // 응답 속도(높을수록 빠름)
-	const _float a = 1.f - expf(-kPos * fTimeDelta);
-
-	_vector vCurPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vNewPos = XMVectorLerp(vCurPos, m_vTargetCamPos, a);
-
-	// 아주 가까워지면 스냅
-	if (XMVectorGetX(XMVector3LengthSq(vNewPos - m_vTargetCamPos)) < 1e-6f)
-		vNewPos = m_vTargetCamPos;
-
-	// 카메라 설정
-	m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
+	Set_CameraMatrix(fTimeDelta);
 }
 
 void CCamera_Orbital::Set_CameraMatrix(_float fTimeDelta)
@@ -501,19 +392,6 @@ void CCamera_Orbital::Set_CameraMatrix(_float fTimeDelta)
 
 	// 카메라 설정
 	m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
-
-	if (m_bTalkActive)
-	{
-		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-		_vector centerPos = (targetPos + m_vPlayerPosition) * 0.5f;
-
-		m_pTransformCom->LookAt(centerPos);
-	}
-	else
-	{
-		m_pTransformCom->LookAt(m_vPlayerPosition);
-	}
-		
 }
 
 
