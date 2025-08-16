@@ -54,6 +54,9 @@ private:
 
     _float m_fCoolChangeTarget = {};
     _bool m_bCanChangeTarget = true;
+
+    _bool m_bCheckCancle = false;
+    _float m_fCancleCount = {};
 public:
     virtual void Free() override;
 };
