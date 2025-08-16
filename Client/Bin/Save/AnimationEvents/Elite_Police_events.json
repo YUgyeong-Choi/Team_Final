@@ -32,7 +32,7 @@
             "ClipName": "AS_ATSC0_Skill_03",
             "Duration": 180.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {

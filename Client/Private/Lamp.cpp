@@ -35,15 +35,16 @@ HRESULT CLamp::Initialize(void* pArg)
 
 	m_pTransformCom->SetUp_Scale(0.35f, 0.35f, 0.35f);
 
-
+	
 
 	m_bDebug = false;
 
-	SetbVolumetric(false);
+	SetbVolumetric(true);
 	SetRange(3.f);
 	SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
 
 	SetIsPlayerFar(true);
+	SetIntensity(1.5f);
 
 	m_isLight = false;
 
@@ -90,7 +91,7 @@ void CLamp::Late_Update(_float fTimeDelta)
 		XMStoreFloat4(&m_pLight->Get_LightDesc()->vPosition, vLightPos);
 
 		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-		XMStoreFloat4(&m_pLight->Get_LightDesc()->vDirection, XMVectorSetW(vLook, 0.f));
+		XMStoreFloat4(&m_pLight->Get_LightDesc()->vDirection, vLook);
 	}
 	
 
@@ -133,12 +134,13 @@ void CLamp::Activate()
 
 	if (m_isLight)
 	{
-		SetIntensity(1.5f);
 		
+		m_pLight->Get_LightDesc()->bIsUse = true;
 	}
 	else
 	{
-		SetIntensity(0.f);
+		
+		m_pLight->Get_LightDesc()->bIsUse = false;
 	}
 
 

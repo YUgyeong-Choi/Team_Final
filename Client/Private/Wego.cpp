@@ -69,6 +69,7 @@ HRESULT CWego::Render()
 	
 	if (m_bInTrigger)
 	{
+		// ui text를 파트로 가지게 해서 출력하게 해야겟다
 		_float4x4 viewMat, projMat;
 
 		XMStoreFloat4x4(&viewMat, XMMatrixIdentity());

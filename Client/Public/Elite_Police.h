@@ -32,6 +32,31 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void	Update_State();
+
+private: /* [ Setup ÇÔ¼ö ] */
+
+	HRESULT Ready_Weapon();
+
+
+
+private:
+
+	
+	class CWeapon_Monster* m_pWeapon = { nullptr };
+
+	
+
+
+
+
+
+
+
+public:
+	static CElite_Police* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg = nullptr) override;
+	virtual void Free() override;
 };
+
 
 NS_END
