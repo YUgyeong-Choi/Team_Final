@@ -155,7 +155,7 @@ HRESULT CLevel_KratCentralStation::Render()
 
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
-	/* [ 옥토트리 및 공간분할 ] */
+	/* [ 해야할 준비들 ] */
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 	if (FAILED(Ready_OctoTree()))
