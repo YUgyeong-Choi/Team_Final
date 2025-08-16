@@ -408,16 +408,11 @@ HRESULT CModel::Add_Animations(const string& filepath)
 				auto idx = static_cast<uint32_t>(m_Animations.size() - 1);
 				string originalAnimName = pAnim->Get_Name();
 				string finalAnimName;
-				if (animPath.find("P2") != string::npos)
+				_int iCount = static_cast<_int>(m_AnimationMap.count(originalAnimName));
+				if ( iCount> 0)
 				{
-					if (originalAnimName.find("P2") == string::npos)
-					{
-						finalAnimName = "P2_" + originalAnimName;
-					}
-					else
-					{
-						finalAnimName = originalAnimName;
-					}
+					finalAnimName = originalAnimName + "_" + to_string(iCount);
+					pAnim->Set_Name(finalAnimName);
 				}
 				else
 				{

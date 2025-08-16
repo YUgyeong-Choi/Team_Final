@@ -260,6 +260,7 @@ void CAnimation::Deserialize(const json& j)
 		m_fTickPerSecond = j["TickPerSecond"].get<_float>();
 	}
 
+
 	if (j.contains("IsLoop") && j["IsLoop"].is_boolean())
 	{
 		m_isLoop = j["IsLoop"].get<_bool>();

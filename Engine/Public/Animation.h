@@ -23,6 +23,8 @@ public:
 
 	/* 애니메이션의 이름을 반환. */
 	const string& Get_Name() { return m_AnimationName; }
+	/* 애니메이션의 이름을 설정. */
+	void Set_Name(const string& name) { m_AnimationName = name; }
 
 	void SetLoop(_bool isLoop) { m_isLoop = isLoop; }
 	_bool Get_isLoop() { return m_isLoop; }
