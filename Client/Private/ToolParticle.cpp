@@ -185,6 +185,23 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 	return S_OK;
 }
 
+const CVIBuffer_Point_Instance::DESC CToolParticle::Get_InstanceBufferDesc()
+{
+	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
+	VIBufferDesc.ePType = m_ePType;
+	VIBufferDesc.iNumInstance = m_iNumInstance;
+	VIBufferDesc.isLoop = m_isLoop;
+	VIBufferDesc.vCenter = m_vCenter;
+	VIBufferDesc.vLifeTime = m_vLifeTime;
+	VIBufferDesc.vPivot = m_vPivot;
+	VIBufferDesc.vRange = m_vRange;
+	VIBufferDesc.vSize = m_vSize;
+	VIBufferDesc.vSpeed = m_vSpeed;
+	VIBufferDesc.isTool = true;
+
+	return VIBufferDesc;
+}
+
 HRESULT CToolParticle::Ready_Components(void* pArg)
 {
 	/* For.Com_Shader */

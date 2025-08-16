@@ -24,16 +24,16 @@ public:
     virtual HRESULT Render();
 
 public:
-    void Test();
-    class CEffectBase* Make_Effect(const _wstring strEffectTag);
-    HRESULT Make_EffectContainer(_uint iLevelIndex, const _wstring strECTag, const _float3& vPresetPos = {0.f, 0.f , 0.f});
+    class CGameObject* Make_Effect(_uint iLevelIndex, const _wstring& strEffectTag, const _wstring& strLayerTag, const _float3& vPresetPos = { 0.f, 0.f, 0.f }, void* pArg = nullptr);
+    HRESULT Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, const _float3& vPresetPos = {0.f, 0.f , 0.f});
+    /* EC도 EC주소 반환할 수 있는 함수 별개로 만들기*/
     //class CEffectBase* Find_Effect(const _wstring& strEffectTag);
     class CEffectContainer* Find_EffectContainer(const _wstring& strECTag);
+    HRESULT Ready_Effect(const _wstring strEffectPath);
+    HRESULT Ready_EffectContainer(const _wstring strECPath);
 
 private:
     HRESULT Ready_Prototypes();
-    HRESULT Ready_Effect(EFFECT_TYPE eEffType, void* pArg);
-    HRESULT Ready_EffectContainer(const _wstring strECPath);
     HRESULT Ready_Prototype_Components(const json& j, EFFECT_TYPE eEffType);
     HRESULT Ready_Prototype_Models(const json& j);
     HRESULT Ready_Prototype_Textures(const json& j);    

@@ -472,17 +472,17 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
-	{
-		MSG_BOX("Render_Blur - Target_EffectBlend_Diffuse Failed");
-		return E_FAIL;
-	}
-
-	if (FAILED(Render_Effect_Glow()))
-	{
-		MSG_BOX("Render_Effect_Glow Failed");
-		return E_FAIL;
-	}
+	//if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
+	//{
+	//	MSG_BOX("Render_Blur - Target_EffectBlend_Diffuse Failed");
+	//	return E_FAIL;
+	//}
+	//
+	//if (FAILED(Render_Effect_Glow()))
+	//{
+	//	MSG_BOX("Render_Effect_Glow Failed");
+	//	return E_FAIL;
+	//}
 
 
 	//if (FAILED(Render_Effect_NonLight()))

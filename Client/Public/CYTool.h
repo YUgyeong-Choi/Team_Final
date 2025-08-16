@@ -126,7 +126,12 @@ private:
 	_bool					m_bGravity = { false };
 	_float					m_fGravity = { 9.8f };
 	_bool					m_bOrbit = { false };
-	_float					m_fRotationSpeed = {};
+	_bool					m_bSpin = { false };
+	_float3					m_vRotationAxis = {}; // 자전용, xyz 축 w 속도
+	_float3					m_vOrbitAxis = {};	// 공전용, xyz 축 w 속도
+	_float2					m_vRotationSpeed = {}; // 자전 속도
+	_float2					m_vOrbitSpeed = {}; // 공전 속도
+
 	class CToolParticle*	m_pToolParticle = { nullptr };
 
 #pragma endregion
@@ -140,6 +145,7 @@ private:
 	_float		m_fCurFrame = {};
 	_bool		m_bExpanded = { true };
 	_int		m_iSelected = { -1 };
+	_int		m_iLastSelected = { -1 };
 	_int		m_iFirstFrame = { 0 };
 	_uint		m_iSeqItemColor = { D3DCOLOR_ARGB(255, 200, 60, 40) };
 	EFFECT_TYPE	m_eEffectType = EFF_SPRITE;

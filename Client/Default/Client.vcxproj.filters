@@ -367,6 +367,9 @@
     <Filter Include="02.GameObjects\99.UI\World\Fatal">
       <UniqueIdentifier>{f3d18659-20ad-4a08-8688-7e68b1eb696b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07.Effect\EffectContainer\Trail\Ri">
+      <UniqueIdentifier>{04d321e1-21ea-4da5-a8ed-f09e79edc950}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Police">
       <UniqueIdentifier>{f7b1672f-ca66-4fb8-b159-34e1261f8845}</UniqueIdentifier>
     </Filter>
@@ -765,7 +768,7 @@
     <ClInclude Include="..\public\Monster_Test.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TrailEffect.h">
+    <ClInclude Include="..\Public\SwordTrailEffect.h">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Trail</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Monster_Base.h">
@@ -1180,7 +1183,7 @@
     <ClCompile Include="..\private\Monster_Test.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Test</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\TrailEffect.cpp">
+    <ClCompile Include="..\Private\SwordTrailEffect.cpp">
       <Filter>02.GameObjects\07.Effect\EffectContainer\Trail</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Monster_Base.cpp">
@@ -1274,9 +1277,6 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SpriteEffect.hlsl">
-      <Filter>97.ShaderFiles\Effect</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader_Compute_Particle.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
