@@ -1279,9 +1279,6 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SpriteEffect.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>
-    <FxCompile Include="Shader_Compute_Particle.hlsl">
-      <Filter>97.ShaderFiles\Effect</Filter>
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
       <Filter>97.ShaderFiles\Effect</Filter>
     </FxCompile>

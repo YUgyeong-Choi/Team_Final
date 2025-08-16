@@ -75,14 +75,10 @@ void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	if (m_pWeaponTrailEffect)
-	{
-		if (KEY_DOWN(DIK_9))
-			m_pWeaponTrailEffect->Set_TrailActive(false);
-		if (KEY_DOWN(DIK_0))
-			m_pWeaponTrailEffect->Set_TrailActive(true);
-	}
-	
+	if (KEY_DOWN(DIK_9))
+		Set_WeaponTrail_Active(false);
+	if (KEY_DOWN(DIK_0))
+		Set_WeaponTrail_Active(true);
 }
 
 void CBayonet::Late_Update(_float fTimeDelta)
@@ -194,7 +190,7 @@ HRESULT CBayonet::Ready_Effect()
 	desc.pOuterSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
 	desc.pParentCombinedMatrix = &m_CombinedWorldMatrix;
 
-	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(EFFECT_MANAGER->Make_Effect(ENUM_CLASS(LEVEL::STATIC), TEXT("TE_Test"), TEXT("Layer_Effect"), _float3{0.f, 0.f, 0.f}, &desc));
+	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(LEVEL::STATIC), TEXT("TE_Test"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (m_pWeaponTrailEffect)
 		m_pWeaponTrailEffect->Set_TrailActive(false);
 	else

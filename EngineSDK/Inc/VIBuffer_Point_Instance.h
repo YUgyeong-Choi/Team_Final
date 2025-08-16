@@ -48,7 +48,8 @@ public:
 
 	void Set_Loop(_bool isLoop) { m_isLoop = isLoop; }
 
-protected:
+
+private:	
 	VTXPOS_PARTICLE_INSTANCE*	m_pVertexInstances = { nullptr };
 	_float3						m_vPivot = {};
 	_bool						m_bGravity = { false };
@@ -60,22 +61,22 @@ protected:
 	_bool						m_isTool = { false };
 	_bool						m_bSpin = { false }; // 자전 여부
 	_bool						m_bOrbit = { false }; // 공전 여부
-	_float3						m_vRotationAxis = {};       // 자전용, xyz 축 w 속도
-	_float3						m_vOrbitAxis = {};			// 공전용, xyz 축 w 속도
-	_float						m_fOrbitRadius = {};				// 공전 반지름 (radius로 결정된 초기 위치 - 중심점 길이로 사용)
-	//_float4						m_vOrbitCenter = {};              // 공전 중심점 (선택적)
-
-	typedef struct tagCSMembers {
-		_float4		vDirection = {};
-		_float		vSpeeds = {};
-		_float		fRotationSpeed = {}; // 자전 속도
-		_float		fOrbitSpeed = {}; // 공전 속도
-
-	}PARTICLEDESC;
+	_float3						m_vRotationAxis = {};// 자전용, xyz 축 w 속도
+	_float3						m_vOrbitAxis = {};	// 공전용, xyz 축 w 속도
+	_float						m_fOrbitRadius = {};// 공전 반지름 (radius로 결정된 초기 위치 - 중심점 길이로 사용)
+	//_float4						m_vOrbitCenter = {};    // 공전 중심점 (선택적)
 
 	PARTICLEDESC*				m_pParticleDesc = { nullptr };
 
-protected:
+private:
+	/* [CS] */
+	class CParticleComputeShader* m_pParticleCS = { nullptr };
+		
+
+private:
+	//HRESULT Set_ComputeShader
+
+private:
 	// 잘 몰겠지만 일단 추가하는 변수들
 
 	enum PSCALING{

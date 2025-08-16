@@ -1,6 +1,7 @@
 #include "VIBuffer_Point_Instance.h"
 
 #include "GameInstance.h"
+#include "ParticleComputeShader.h"
 
 CVIBuffer_Point_Instance::CVIBuffer_Point_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer_Instance{ pDevice, pContext }
@@ -85,6 +86,13 @@ HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
 		return E_FAIL;
 
+	//m_pParticleCS = CParticleComputeShader::Create(m_pDevice, m_pContext, TEXT(""), m_pVBInstance, m_pParticleDesc, m_iNumInstance);
+	//if (!m_pParticleCS){
+	//	return E_FAIL;
+	//}
+	//if (FAILED(m_pParticleCS->))
+	//	return E_FAIL;	
+
 	return S_OK;
 }
 
@@ -103,6 +111,11 @@ void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 	default:
 		break;
 	}
+
+	/* [ CS ] */
+
+
+
 }
 void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 {
@@ -321,6 +334,15 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_vRotationAxis = pDesc->vRotationAxis;
 
 #pragma region INSTANCEBUFFER
+	/* [ CS ] */
+	//m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
+	//m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER  | D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	//m_VBInstanceDesc.Usage = D3D11_USAGE_DEFAULT;
+	//m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
+	//m_VBInstanceDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	/**************************************************************************/
+	/* [ 기존 CPU 처리] */
 	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
 	m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_VBInstanceDesc.Usage = D3D11_USAGE_DYNAMIC;

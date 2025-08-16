@@ -61,8 +61,8 @@ void CLamp::Priority_Update(_float fTimeDelta)
 	if (nullptr == m_pParentWorldMatrix)
 	{
 		auto pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
-
-		m_pParentWorldMatrix = pPlayer->Get_TransfomCom()->Get_WorldMatrix_Ptr();
+		if (pPlayer)
+			m_pParentWorldMatrix = pPlayer->Get_TransfomCom()->Get_WorldMatrix_Ptr();
 	}
 	
 }

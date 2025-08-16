@@ -82,6 +82,9 @@ public: /* [ 활성화 , 비활성화 ] */
 
 	void Calc_Durability(_int iDelta);
 
+	// 트레일 이펙트 온 오프
+	void Set_WeaponTrail_Active(_bool bActive);
+
 public:
 	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }
 	SKILL_DESC& Get_SkillDesc(_int iIndex) { return m_eSkillDesc[iIndex]; }
@@ -131,6 +134,8 @@ protected:		//		스킬용 변수?
 protected:
 	_int				m_iHandleIndex = {};
 
+protected:				/* [ 무기들이 보통 공통적으로 트레일 이펙트를 갖고 있기 때문에 추가합니다. ] */
+	class CSwordTrailEffect* m_pWeaponTrailEffect = { nullptr };	// 각자 이펙트가 있을 경우에 Ready_Effect든 뭐든 해서 만들어 사용.
 
 	
 	vector<CGameObject*> m_CollisonObjects;

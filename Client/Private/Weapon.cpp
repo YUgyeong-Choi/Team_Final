@@ -4,6 +4,8 @@
 #include "Animation.h"
 #include "GameInstance.h"
 #include "AnimController.h"
+#include "Effect_Manager.h"
+#include "SwordTrailEffect.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
 
@@ -235,6 +237,12 @@ void CWeapon::Calc_Durability(_int iDelta)
 	m_iDurability -= iDelta;
 
 	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_iDurability);
+}
+
+void CWeapon::Set_WeaponTrail_Active(_bool bActive)
+{
+	if (m_pWeaponTrailEffect)
+		m_pWeaponTrailEffect->Set_TrailActive(bActive);
 }
 
 CWeapon* CWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
