@@ -38,7 +38,7 @@ HRESULT CUI_Feature_Fade::Initialize(void* pArg)
     return S_OK;
 }
 
-void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
+void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isReverse)
 {
     // 나머지, loop면 나머지 연산해서 계속 프레임을 돌리고, 아니면 그냥 씀
 
@@ -47,26 +47,33 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
 
     if (iCurrentFrame < m_iStartFrame)
         return;
-   
+
     if (m_isLoop)
     {
-         m_iCurrentFrame = (iCurrentFrame - m_iStartFrame) % m_iRange;    
+        m_iCurrentFrame = (iCurrentFrame - m_iStartFrame) % m_iRange;
     }
     else
     {
         m_iCurrentFrame = iCurrentFrame;
     }
 
- 
     if (m_iCurrentFrame > m_iEndFrame)
     {
         return;
     }
 
     _float t = std::clamp(float(m_iCurrentFrame) / m_iRange, 0.f, 1.f);
-    m_fCurrentAlpha = LERP(m_fStartAlpha, m_fEndAlpha, t);
-    
-    
+
+    if (!isReverse)
+    {
+        // 정방향
+        m_fCurrentAlpha = LERP(m_fStartAlpha, m_fEndAlpha, t);
+    }
+    else
+    {
+        // 역방향 (LERP 순서 반전)
+        m_fCurrentAlpha = LERP(m_fEndAlpha, m_fStartAlpha, t);
+    }
   
 
  

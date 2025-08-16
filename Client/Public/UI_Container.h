@@ -28,6 +28,7 @@ public:
 	virtual void Deserialize(const json& j);
 
 	vector<class CUIObject*>& Get_PartUI();
+	void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -47,6 +48,8 @@ public:
 protected:
 	_wstring							m_strFilePath = {};
 	vector<class CUIObject*>			m_PartObjects;
+
+	_bool								m_isReverse = {false};
 
 protected:
 

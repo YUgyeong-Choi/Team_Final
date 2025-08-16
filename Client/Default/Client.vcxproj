@@ -177,6 +177,7 @@
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\DH_ToolMesh.h" />
     <ClInclude Include="..\public\Durability_Bar.h" />
+    <ClInclude Include="..\public\Dynamic_Text_UI.h" />
     <ClInclude Include="..\public\Dynamic_UI.h" />
     <ClInclude Include="..\public\EditorObjectFactory.h" />
     <ClInclude Include="..\public\EffectContainer.h" />
@@ -324,6 +325,7 @@
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
     <ClCompile Include="..\private\Durability_Bar.cpp" />
+    <ClCompile Include="..\private\Dynamic_Text_UI.cpp" />
     <ClCompile Include="..\private\Dynamic_UI.cpp" />
     <ClCompile Include="..\private\EditorObjectFactory.cpp" />
     <ClCompile Include="..\private\EffectContainer.cpp" />

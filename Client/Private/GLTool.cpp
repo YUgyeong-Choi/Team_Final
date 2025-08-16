@@ -520,6 +520,27 @@ void CGLTool::Input_Dynamic_Desc()
 
 	ImGui::SliderFloat("Rotation", &eDynamicUITempDesc.fRotation, 0.f, 360.f);
 
+	if (m_pSelectConatinerPart->Get_ProtoTag().find(L"Text") != m_pSelectConatinerPart->Get_ProtoTag().npos)
+	{
+		size_t buf_size = m_strInput.size() + 512;
+		char* buf = new char[buf_size];
+		memcpy(buf, m_strInput.c_str(), m_strInput.size() + 1);
+
+		if (ImGui::InputTextMultiline("##multiline", buf, buf_size, ImVec2(-FLT_MIN, 200)))
+		{
+			m_strInput = buf;
+		}
+
+		delete[] buf;
+
+		eDynamicUITempDesc.strText = m_strInput;
+
+		_int iAlignType = ENUM_CLASS(eDynamicUITempDesc.iAlignType);
+		ImGui::InputInt("IsCenter", &iAlignType);
+		eDynamicUITempDesc.iAlignType = (iAlignType);
+
+	}
+
 	eDynamicUIDesc = eDynamicUITempDesc;
 	eDynamicUIDesc.fSizeX *= g_iWinSizeX;
 	eDynamicUIDesc.fSizeY *= g_iWinSizeY;
@@ -548,6 +569,9 @@ void CGLTool::Input_Dynamic_Desc()
 	{
 		(m_pSelectConatinerPart)->Update_UI_From_Tool(&eDynamicUIDesc);
 	}
+
+
+
 
 }
 
@@ -791,6 +815,8 @@ HRESULT CGLTool::Render_SelectOptionTool()
 
 					ImGui::EndTabItem();
 				}
+
+				
 			}
 
 			

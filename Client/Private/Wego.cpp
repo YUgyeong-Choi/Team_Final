@@ -104,6 +104,8 @@ void CWego::Late_Update(_float fTimeDelta)
 
 HRESULT CWego::Render()
 {
+
+
 	__super::Render();
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
@@ -111,6 +113,27 @@ HRESULT CWego::Render()
 		m_pGameInstance->Add_DebugComponent(m_pPhysXTriggerCom);
 	}
 #endif
+	
+	if (m_bInTrigger)
+	{
+		// ui text를 파트로 가지게 해서 출력하게 해야겟다
+		_float4x4 viewMat, projMat;
+
+		XMStoreFloat4x4(&viewMat, XMMatrixIdentity());
+		XMStoreFloat4x4(&projMat, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.0f, 1.f));
+
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &viewMat)))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &projMat)))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
+		wstring text = L"말을 건다";
+
+		m_pGameInstance->Draw_Font_Centered(TEXT("Font_Bold"), text.c_str(), _float2(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, { 0.f,0.f }, 5.f, 0.f);
+	}
+	
+
 	return S_OK;
 }
 

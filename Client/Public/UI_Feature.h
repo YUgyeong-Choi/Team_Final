@@ -31,7 +31,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 	//현재 프레임 기준으로 변경한다, 현재 프레임은 ui 객체에서 변환하고 넘겨주는 식으로??
-	virtual void Update(_int& iCurrentFrame, CDynamic_UI* pUI) = 0;
+	virtual void Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool isReverse = false) = 0;
 	virtual HRESULT Bind_ShaderResources(class CShader* pShader) = 0;
 
 

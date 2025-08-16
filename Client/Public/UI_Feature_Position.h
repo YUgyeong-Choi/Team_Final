@@ -17,7 +17,7 @@ public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 
-	virtual void Update(_int& iCurrentFrame, CDynamic_UI* pUI);
+	virtual void Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool isReverse = false);
 	virtual HRESULT Bind_ShaderResources(class CShader* pShader);
 
 	virtual UI_FEATURE_TOOL_DESC Get_Desc_From_Tool() override;

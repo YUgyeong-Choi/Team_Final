@@ -40,7 +40,7 @@ HRESULT CUI_Feature_UV::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUI_Feature_UV::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
+void CUI_Feature_UV::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool isReverse)
 {
 	if (iCurrentFrame < m_iStartFrame)
 		return;
