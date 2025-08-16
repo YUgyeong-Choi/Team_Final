@@ -1949,10 +1949,15 @@ void CAnimTool::SelectAnimation()
 
 	vector<string> animNames;
 	animNames.reserve(anims.size());
-	for (const auto& anim : anims)
+	auto animsNameByIndexMap = m_pCurModel->GetAnimationsByIndex();
+	for (_int i = 0; i < static_cast<_int>(anims.size()); i++)
 	{
-		animNames.push_back(anim->Get_Name());
+		animNames.push_back(animsNameByIndexMap[i]);
 	}
+	//for (const auto& anim : anims)
+	//{
+	//	animNames.push_back(anim->Get_Name());
+	//}
 
 	if (ImGui::BeginCombo("Animations", m_iSelectedAnimIndex >= 0 ? animNames[m_iSelectedAnimIndex].c_str() : "Select Animation"))
 	{
@@ -2058,6 +2063,26 @@ void CAnimTool::Setting_AnimationProperties()
 		}
 	}
 
+	// 현재 모델의 모든 애니메이션 속도 조절
+	if (m_pCurModel)
+	{
+		_bool bChanged = false;
+		bChanged |= ImGui::DragFloat("Set All Anim Tick Per Second ", &m_fAllAnimTickperSec, 0.1f, 0.1f, 100.f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+		if (bChanged)
+		{
+			if (m_bIsObject)
+			{
+				m_pCurModel->Set_Animation_TickPerSecond_All(m_fAllAnimTickperSec);
+			}
+			else
+			{
+				for (auto& anim : m_LoadedAnimations[m_stSelectedModelName])
+				{
+					anim->SetTickPerSecond(m_fAllAnimTickperSec);
+				}
+			}
+		}
+	}
 }
 
 void CAnimTool::ApplyHierarchicalLayout(CAnimController* pCtrl)

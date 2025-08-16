@@ -190,7 +190,7 @@ void CLevel_KratCentralStation::Ready_Level()
 	if (FAILED(Ready_Camera()))
 		return;
 
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))  //TEST, STATION (Loader.cpp와 동일해야함)
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))  //TEST, STATION (Loader.cpp와 동일해야함)
 		return;
 
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
