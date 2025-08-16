@@ -655,36 +655,60 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a2Min, a2Max; 
 	FnToAABB(a2p0, a2p1, a2Min, a2Max);
 
-	// Area 3 (우선순위 최하)
+	// Area 3
 	_float3 a3p0 = _float3{ 119.81f, -5.63f,  32.20f };
 	_float3 a3p1 = _float3{ -40.69f, 52.55f, -61.73f };
 	_float3 a3Min, a3Max; 
 	FnToAABB(a3p0, a3p1, a3Min, a3Max);
 
+	// Area 4
+	_float3 a4p0 = _float3{ 120.04f, - 5.32f, 4.66f };
+	_float3 a4p1 = _float3{ 95.67f, 15.49f, -21.39f };
+	_float3 a4Min, a4Max;
+	FnToAABB(a4p0, a4p1, a4Min, a4Max);
+
+	// Area 5
+	_float3 a5p0 = _float3{ 110.f, -5.63f,  32.20f };
+	_float3 a5p1 = _float3{ 26.53f,  49.64f, -52.41f };
+	_float3 a5Min, a5Max;
+	FnToAABB(a5p0, a5p1, a5Min, a5Max);
+
 	{
 		/* [ 1번 구역 ] */
-		const vector<_uint> vecAdj1 = { static_cast<_uint>(2) };
+		const vector<_uint> vecAdj1 = { 2 };
 		if (!m_pGameInstance->AddArea_AABB(
-			static_cast<_int>(1), a1Min, a1Max, vecAdj1,
-			AREA::EAreaType::LOBBY, static_cast<_int>(3)))
+			1, a1Min, a1Max, vecAdj1, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 	{
 		/* [ 2번 구역 ] */
-		const vector<_uint> vecAdj2 = { static_cast<_uint>(1), static_cast<_uint>(3) };
+		const vector<_uint> vecAdj2 = { 1, 3 };
 		if (!m_pGameInstance->AddArea_AABB(
-			static_cast<_int>(2), a2Min, a2Max, vecAdj2,
-			AREA::EAreaType::ROOM, static_cast<_int>(2)))
+			2, a2Min, a2Max, vecAdj2, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
 	}
 	{
 		/* [ 3번 구역 ] */
-		const vector<_uint> vecAdj3 = { static_cast<_uint>(1), static_cast<_uint>(2) };
+		const vector<_uint> vecAdj3 = { 1, 2 };
 		if (!m_pGameInstance->AddArea_AABB(
-			static_cast<_int>(3), a3Min, a3Max, vecAdj3,
-			AREA::EAreaType::OUTDOOR, static_cast<_int>(1)))
+			3, a3Min, a3Max, vecAdj3, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
+	{
+		/* [ 4번 구역 ] */
+		const vector<_uint> vecAdj4 = { 5, 2 };
+		if (!m_pGameInstance->AddArea_AABB(
+			4, a4Min, a4Max, vecAdj4, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	} 
+	{
+		/* [ 5번 구역 ] */
+		const vector<_uint> vecAdj5 = { 3 , 4 };
+		if (!m_pGameInstance->AddArea_AABB(
+			5, a5Min, a5Max, vecAdj5, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+
 
 	// 3) 파티션 확정 (ID→Index 매핑/검증)
 	if (FAILED(m_pGameInstance->FinalizePartition()))

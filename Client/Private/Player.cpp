@@ -134,6 +134,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
+	m_pGameInstance->FindAreaContainingPoint();
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
 	/* [ 룩 벡터 레이케스트 ] */

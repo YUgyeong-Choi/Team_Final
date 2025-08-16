@@ -317,7 +317,21 @@ void COctoTree_Manager::BeginQueryFrame(const XMMATRIX& view, const XMMATRIX& pr
 }
 void COctoTree_Manager::QueryVisible()
 {
-    if (m_Nodes.empty()) return;
+    if (m_Nodes.empty()) 
+        return;
+
+    vector<AABBBOX> CurrentBounds;
+    m_pGameInstance->GetActiveAreaBounds(CurrentBounds);
+    if (CurrentBounds.empty())
+        return;
+
+    AABBBOX tAreaUnion = CurrentBounds[0];
+    for (_uint iArea = 1; iArea < static_cast<_uint>(CurrentBounds.size()); ++iArea)
+    {
+		// 현재 영역들의 AABB를 합친다 (1차 핉터)
+        AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
+    }
+
 
     // 트리 탐색 시작
     m_TempNodeStack.clear();
@@ -332,7 +346,29 @@ void COctoTree_Manager::QueryVisible()
         const Node& node = m_Nodes[nodeId];
         ++m_StatVisitedNodes;
 
-        // 해당 노드를 검사
+        // 1차 필터 - Union 으로 초초기 컷
+        if (!AABB_IntersectsAABB(node.AABBBounds, tAreaUnion))
+        {
+            ++m_StatVisitedNodes;
+            continue;
+        }
+        // 2차 필터 - 개별 Area 정밀 체크
+        _bool bOverlapAnyArea = false;
+        for (const AABBBOX& tAreaBox : CurrentBounds)
+        {
+            if (AABB_IntersectsAABB(node.AABBBounds, tAreaBox))
+            {
+                bOverlapAnyArea = true;
+                break;
+            }
+        }
+        if (!bOverlapAnyArea)
+        {
+            ++m_StatVisitedNodes;
+            continue;
+        }
+
+        // 2차 필터 - 프러스텀
         FrustumHit hit = m_Frustum.OctoIsInAABB(node.AABBBounds.vMin, node.AABBBounds.vMax);
 
 

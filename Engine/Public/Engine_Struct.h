@@ -279,7 +279,7 @@ namespace Engine
 	/*---------------------------
 		포함/교차 판정
 	---------------------------*/
-	inline bool AABB_ContainsPoint(const AABBBOX& b, const XMFLOAT3& p, float eps = 0.0f)
+	inline _bool AABB_ContainsPoint(const AABBBOX& b, const XMFLOAT3& p, float eps = 0.0f)
 	{
 		return (p.x >= b.vMin.x - eps && p.x <= b.vMax.x + eps) &&
 			(p.y >= b.vMin.y - eps && p.y <= b.vMax.y + eps) &&
@@ -287,7 +287,7 @@ namespace Engine
 	}
 
 	// a가 b를 완전히 포함?
-	inline bool AABB_ContainsAABB(const AABBBOX& a, const AABBBOX& b, float eps = 0.0f)
+	inline _bool AABB_ContainsAABB(const AABBBOX& a, const AABBBOX& b, float eps = 0.0f)
 	{
 		return (b.vMin.x >= a.vMin.x - eps) && (b.vMax.x <= a.vMax.x + eps) &&
 			//(b.vMin.y >= a.vMin.y - eps) && (b.vMax.y <= a.vMax.y + eps) &&
@@ -295,7 +295,7 @@ namespace Engine
 	}
 
 	// 교차(겹침) 여부
-	inline bool AABB_IntersectsAABB(const AABBBOX& a, const AABBBOX& b)
+	inline _bool AABB_IntersectsAABB(const AABBBOX& a, const AABBBOX& b)
 	{
 		if (a.vMax.x < b.vMin.x || a.vMin.x > b.vMax.x) return false;
 		if (a.vMax.y < b.vMin.y || a.vMin.y > b.vMax.y) return false;
@@ -304,7 +304,7 @@ namespace Engine
 	}
 
 	// 점과 상자 거리
-	inline float AABB_DistanceSqToPoint(const AABBBOX& b, const XMFLOAT3& p)
+	inline _float AABB_DistanceSqToPoint(const AABBBOX& b, const XMFLOAT3& p)
 	{
 		float dx = 0.f, dy = 0.f, dz = 0.f;
 
