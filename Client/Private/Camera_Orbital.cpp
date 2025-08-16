@@ -72,6 +72,28 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (!m_pPlayer)
 		return;
 
+	if (m_bTalkNpcStart)
+	{
+		m_fDistance = LerpFloat(m_fDistance, 1.7f, fTimeDelta * 2.f);
+
+		if (fabsf(m_fDistance - 1.7f) < 0.01f)
+		{
+			m_fDistance = 1.7f;
+			m_bTalkNpcStart = false;
+		}
+	}
+
+	if (m_bTalkNpcEnd)
+	{
+		m_fDistance = LerpFloat(m_fDistance, 3.f, fTimeDelta * 2.f); 
+
+		if (fabsf(m_fDistance - 3.f) < 0.01f)
+		{
+			m_fDistance = 3.f;
+			m_bTalkNpcEnd = false;
+		}
+	}
+
 	if (m_bLockOnTransition)
 	{
 		Update_LockOnTransition(fTimeDelta);
@@ -181,6 +203,20 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 	m_fTargetLerpSpeed = fLerpSpeed;
 
 	m_bSetPitchYaw = true;
+}
+
+void CCamera_Orbital::Set_ActiveTalk(_bool bActive)
+{
+	if (bActive)
+	{
+		m_bTalkNpcStart = true;
+		m_bTalkNpcEnd = false;
+	}
+	else
+	{
+		m_bTalkNpcStart = false;
+		m_bTalkNpcEnd = true;
+	}
 }
 
 void CCamera_Orbital::Update_CameraMatrix(_float fTimeDelta)
