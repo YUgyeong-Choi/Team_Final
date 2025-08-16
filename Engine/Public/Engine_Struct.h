@@ -185,10 +185,9 @@ namespace Engine
 		XMFLOAT4		vTranslation;
 
 		XMFLOAT2		vLifeTime;
-		//XMFLOAT4		vDirection;			// CS에 옮길 것
 		
 
-		static const unsigned int					iNumElements = { 6 };
+		static const unsigned int					iNumElements = { 6 };	
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXPOS_PARTICLE_INSTANCE;
 
@@ -279,7 +278,7 @@ namespace Engine
 	/*---------------------------
 		포함/교차 판정
 	---------------------------*/
-	inline bool AABB_ContainsPoint(const AABBBOX& b, const XMFLOAT3& p, float eps = 0.0f)
+	inline _bool AABB_ContainsPoint(const AABBBOX& b, const XMFLOAT3& p, float eps = 0.0f)
 	{
 		return (p.x >= b.vMin.x - eps && p.x <= b.vMax.x + eps) &&
 			(p.y >= b.vMin.y - eps && p.y <= b.vMax.y + eps) &&
@@ -287,7 +286,7 @@ namespace Engine
 	}
 
 	// a가 b를 완전히 포함?
-	inline bool AABB_ContainsAABB(const AABBBOX& a, const AABBBOX& b, float eps = 0.0f)
+	inline _bool AABB_ContainsAABB(const AABBBOX& a, const AABBBOX& b, float eps = 0.0f)
 	{
 		return (b.vMin.x >= a.vMin.x - eps) && (b.vMax.x <= a.vMax.x + eps) &&
 			//(b.vMin.y >= a.vMin.y - eps) && (b.vMax.y <= a.vMax.y + eps) &&
@@ -295,7 +294,7 @@ namespace Engine
 	}
 
 	// 교차(겹침) 여부
-	inline bool AABB_IntersectsAABB(const AABBBOX& a, const AABBBOX& b)
+	inline _bool AABB_IntersectsAABB(const AABBBOX& a, const AABBBOX& b)
 	{
 		if (a.vMax.x < b.vMin.x || a.vMin.x > b.vMax.x) return false;
 		if (a.vMax.y < b.vMin.y || a.vMin.y > b.vMax.y) return false;
@@ -304,7 +303,7 @@ namespace Engine
 	}
 
 	// 점과 상자 거리
-	inline float AABB_DistanceSqToPoint(const AABBBOX& b, const XMFLOAT3& p)
+	inline _float AABB_DistanceSqToPoint(const AABBBOX& b, const XMFLOAT3& p)
 	{
 		float dx = 0.f, dy = 0.f, dz = 0.f;
 
@@ -365,7 +364,7 @@ namespace Engine
 
 	typedef struct ENGINE_DLL Area
 	{
-		enum class EAreaType : _int { ROOM, LOBBY, OUTDOOR, INDOOR , END};
+		enum class EAreaType : _int { ROOM, LOBBY, INDOOR, OUTDOOR, END};
 
 		_int iAreaState;
 		_int iAreaId;
@@ -467,4 +466,11 @@ namespace Engine
 		PxVec3 vHitPos = {};
 	}DEBUGRAY_DATA;
 
-}
+	typedef struct tagParticleDesc {
+		_float4		vDirection = {};
+		_float		vSpeeds = {};
+		_float		fRotationSpeed = {}; // 자전 속도
+		_float		fOrbitSpeed = {}; // 공전 속도
+	}PARTICLEDESC;
+
+} 

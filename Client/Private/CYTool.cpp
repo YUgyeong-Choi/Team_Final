@@ -286,7 +286,7 @@ HRESULT CCYTool::SequenceWindow()
 			desc.bAnimation = true;
 			desc.fRotationPerSec = 0.f;
 			desc.fSpeedPerSec = 5.f;
-			desc.iTileX = 4;
+			desc.iTileX = 1;
 			desc.iTileY = 1;
 			desc.bBillboard = false;
 			desc.bTool = true;
@@ -495,6 +495,24 @@ HRESULT CCYTool::Window_Sprite()
 HRESULT CCYTool::Window_Particle()
 {
 	CToolParticle* pPE = dynamic_cast<CToolParticle*>(m_pSequence->m_Items[m_iSelected].pEffect);
+	if (m_iLastSelected != m_iSelected)
+	{
+		auto& desc = pPE->Get_InstanceBufferDesc();
+
+		m_eParticleType = desc.ePType;
+		m_iNumInstance = desc.iNumInstance;
+		m_isLoop = desc.isLoop;
+		m_vCenter = desc.vCenter;
+		m_vLifeTime = desc.vLifeTime;
+		m_vPivot = desc.vPivot;
+		m_vRange = desc.vRange;
+		m_vSize = desc.vSize;
+		m_vSpeed = desc.vSpeed;
+		m_bGravity = desc.bGravity;
+		m_fGravity = desc.fGravity;
+
+		m_iLastSelected = m_iSelected;
+	}
 
 	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest");
 	for (_uint i = 0; i < PE_END; i++)
@@ -514,21 +532,48 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
-	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");
-	ImGui::DragFloat("Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 200.f, "%.1f");
+	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");	
+	ImGui::DragFloat("##Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 200.f, "%.1f"); ImGui::SameLine();
+	ImGui::Checkbox("Gravity", &m_bGravity); 
 
-	// 아직안만듦
-	ImGui::Checkbox("Gravity", &m_bGravity);
-	ImGui::Checkbox("Loop", &m_isLoop);
-	//ImGui::Checkbox("Orbit Pivot", &m_bOrbit);
+	// --- 자전(Spin) ---
+	ImGui::InputFloat3("Spin Axis", &m_vRotationAxis.x);
+	ImGui::SameLine();
+	if (ImGui::Button("Normalize##spin")) {
+		_vector a = XMVector3Normalize(XMLoadFloat3(&m_vRotationAxis));
+		XMStoreFloat3(&m_vRotationAxis, a);
+	}
+	ImGui::DragFloat2("Spin Speed (deg/s)", reinterpret_cast<_float*>(&m_vRotationSpeed), 0.1f, -2000.f, 2000.f);
+
+	// --- 공전(Orbit) ---
+	ImGui::InputFloat3("Orbit Axis", &m_vOrbitAxis.x);
+	ImGui::SameLine();
+	if (ImGui::Button("Normalize##orbit")) {
+		_vector a = XMVector3Normalize(XMLoadFloat3(&m_vOrbitAxis));
+		XMStoreFloat3(&m_vOrbitAxis, a);
+	}
+	ImGui::DragFloat2("Orbit Speed (deg/s)", reinterpret_cast<_float*>(&m_vOrbitSpeed), 0.1f, -2000.f, 2000.f);
+
+
+	/**************************************************/
+	
+	ImGui::Checkbox("Loop", &m_isLoop); ImGui::SameLine();
+	ImGui::Checkbox("Spin", &m_bSpin); ImGui::SameLine();
+	ImGui::Checkbox("Orbit", &m_bOrbit); ImGui::SameLine();
+	ImGui::Checkbox("Prewarm", &m_bOrbit); 
+
 	//ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
-
-	if (ImGui::RadioButton("Explosion", m_eParticleType == PTYPE_SPREAD)) {
+	ImGui::SeparatorText("Particle Type");
+	if (ImGui::RadioButton("Spread", m_eParticleType == PTYPE_SPREAD)) {
 		m_eParticleType = PTYPE_SPREAD;
 	}
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Directional", m_eParticleType == PTYPE_DIRECTIONAL)) {
 		m_eParticleType = PTYPE_DIRECTIONAL;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Random", m_eParticleType == PTYPE_ALLRANDOM)) {
+		m_eParticleType = PTYPE_ALLRANDOM;
 	}
 
 	if(ImGui::Button("Update Particle"))
@@ -545,15 +590,19 @@ HRESULT CCYTool::Window_Particle()
 		desc.vSpeed = m_vSpeed;
 		desc.bGravity = m_bGravity;
 		desc.fGravity = m_fGravity;
+		desc.vRotationAxis = m_vRotationAxis;
+		desc.vOrbitAxis = m_vOrbitAxis;
+		desc.vRotationSpeed = m_vRotationSpeed;
+		desc.vOrbitSpeed = m_vOrbitSpeed;
+		desc.bOrbit = m_bOrbit;
+		desc.bSpin = m_bSpin;
 		desc.isTool = true;
 		pPE->Change_InstanceBuffer(&desc);
 	}
 
-	// Gravity
 	// Accel, Decel
 	// Random? <- 랜덤한 방향을 잡을 인터벌, 랜덤한 방향각도 최대치 설정 필요
 	// Rotation Speed
-	// Loop
 
 	return S_OK;
 }
@@ -619,7 +668,7 @@ HRESULT CCYTool::Window_Trail()
 {
 	CToolTrail* pTE = dynamic_cast<CToolTrail*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-	ImGui::Text("Select Pass\n0. Default");
+	ImGui::Text("Select Pass\n0. Default\n1.Drop");
 
 	for (_uint i = 0; i < TE_END; i++)
 	{
@@ -640,7 +689,14 @@ HRESULT CCYTool::Window_Trail()
 	{
 		pTE->Set_TrailActive(false);
 	}
-
+	ImGui::Dummy(ImVec2(0.0f, 2.0f));
+	ImGui::Separator();
+	ImGui::Dummy(ImVec2(0.0f, 2.0f));
+	ImGui::DragFloat("LifeDuration##Trail", pTE->Get_LifeDuration_Ptr(), 0.01f, 0.f, 100.f, "%.2f");
+	static _int fNodeIntervalFPS = 60;
+	ImGui::DragInt("NodeInterval##Trail", &fNodeIntervalFPS, 1, 1, 1024);
+	*pTE->Get_NodeInterval_Ptr() = 1.f / (_float)fNodeIntervalFPS;
+	ImGui::DragInt("CatmullRomDiv##Trail", pTE->Get_Subdivisions_Ptr(), 1, 0, 10);
 
 	return S_OK;
 }
@@ -955,6 +1011,8 @@ HRESULT CCYTool::Save_Effect()
 				return E_FAIL;
 
 			json jSave = m_pSequence->m_Items[m_iSelected].pEffect->Serialize();
+			jSave["Name"] = m_pSequence->m_Items[m_iSelected].strName.data();
+			jSave["EffectType"] = m_pSequence->m_Items[m_iSelected].iType;
 
 			ofs << setw(4) << jSave;
 			ofs.close();
@@ -1062,6 +1120,24 @@ HRESULT CCYTool::Load_Effect()
 			}
 			break;
 			case Client::EFF_TRAIL:
+			{
+				CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player_Weapon"), 0);
+				CModel* pWeaponModelCom = static_cast<CModel*>(TestWeapon->Get_Component(TEXT("Com_Model")));
+				_uint iInnerBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade");
+				_uint iOuterBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_B");
+
+				CToolTrail::DESC desc = {};
+				desc.bAnimation = true;
+				desc.fRotationPerSec = 0.f;
+				desc.fSpeedPerSec = 5.f;
+				desc.bTool = true;
+				desc.pInnerSocketMatrix = const_cast<_float4x4*>(pWeaponModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
+				desc.pOuterSocketMatrix = const_cast<_float4x4*>(pWeaponModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
+				desc.pParentCombinedMatrix = const_cast<_float4x4*>(static_cast<CWeapon*>(TestWeapon)->Get_CombinedWorldMatrix());
+
+				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolTrailEffect"), &desc));
+			}
 				break;
 			}
 			if (pInstance != nullptr)
@@ -1072,6 +1148,13 @@ HRESULT CCYTool::Load_Effect()
 					static_cast<CToolParticle*>(pInstance)->Change_InstanceBuffer(nullptr);
 				if (m_eEffectType == EFF_MESH)
 					static_cast<CToolMeshEffect*>(pInstance)->Change_Model(L"");
+				if (m_eEffectType == EFF_TRAIL)
+					static_cast<CToolTrail*>(pInstance)->Change_TrailBuffer(nullptr);
+
+				// 이름
+				if (j.contains("Name"))
+					m_strSeqItemName = j["Name"].get<string>();
+
 				m_pSequence->Add(m_strSeqItemName, pInstance, m_eEffectType, m_iSeqItemColor);
 			}
 			else

@@ -10,6 +10,8 @@ NS_END
 
 NS_BEGIN(Client)
 
+extern _bool g_ReadyAgain;
+
 class CLevel_KratCentralStation final : public CLevel
 {
 private:
@@ -22,6 +24,8 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+	void Ready_Level();
 
 #pragma region YW
 private:
@@ -61,7 +65,7 @@ private:
 	HRESULT Add_RenderGroup_OctoTree();
 
 private:
-	HRESULT SetArea();
+	HRESULT Separate_Area();
 
 private:
 	void ToggleHoldMouse() { m_bHold = !m_bHold; }

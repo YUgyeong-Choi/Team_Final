@@ -1,0 +1,76 @@
+{
+  "Animation": false,
+  "Billboard": false,
+  "CenterColor": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "Color": [
+    0.6753926277160645,
+    0.811353862285614,
+    1.0,
+    0.45026177167892456
+  ],
+  "Duration": 20,
+  "EffectType": 3,
+  "EmissiveIntensity": 0.0,
+  "EndTrack": 20,
+  "FlipUV": false,
+  "KeyFrames": [
+    {
+      "Color": [
+        0.6753926277160645,
+        0.811353862285614,
+        1.0,
+        0.45026177167892456
+      ],
+      "Intensity": 1.0,
+      "Interpolation": 0,
+      "Rotation": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "TrackPosition": 0.0,
+      "Translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "LifeDuration": 0.5,
+  "LifeTime": 0.0,
+  "Loop": true,
+  "Name": "Player_WeaponTrail",
+  "NodeInterval": 0.016599999740719795,
+  "NumKeyFrames": 1,
+  "RenderGroup": 8,
+  "ShaderPass": 0,
+  "StartTrack": 0,
+  "Subdivisions": 4,
+  "TextureTags": [
+    "T_Beam_Mask_01_C_GDH",
+    "T_Mask_05_C_LGS",
+    "T_Slash_01_C_RSW",
+    ""
+  ],
+  "TextureUsage": [
+    true,
+    true,
+    true,
+    false
+  ],
+  "Threshold": 0.0,
+  "TickPerSecond": 60.0,
+  "TileX": 1,
+  "TileY": 1
+}

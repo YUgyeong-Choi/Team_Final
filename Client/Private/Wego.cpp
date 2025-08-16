@@ -44,22 +44,49 @@ void CWego::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
+	// Talk 진행
+	if (m_bTalkActive)
+	{
+		if (m_pGameInstance->Key_Down(DIK_E))
+		{
+			++m_curTalkIndex;
+			if (m_curTalkIndex >= m_NpcTalkData[m_curTalkType].size())
+			{
+				if (m_curTalkType == WEGOTALKTYPE::ONE)
+					m_curTalkType = WEGOTALKTYPE::TWO;
+
+				m_curTalkIndex = 0;
+				m_bTalkActive = false;
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr);
+				CCamera_Manager::Get_Instance()->SetbMoveable(true);
+				return;
+			}
+
+			wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
+		}
+	}
+
+	// Talk 활성화
 	if (m_bInTrigger)
 	{
 		if (m_pGameInstance->Key_Down(DIK_E) && !m_bTalkActive)
 		{
 			m_bTalkActive = true;
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this);
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+
+			wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
 		}
 	}
 
+	// Talk 비활성화
 	if (m_bTalkActive)
 	{
-		if (m_pGameInstance->Key_Down(DIK_Q) && m_bTalkActive)
+		if (m_pGameInstance->Key_Down(DIK_Q))
 		{
+			m_curTalkIndex = 0;
 			m_bTalkActive = false;
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr);
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 		}
 	}
@@ -237,7 +264,7 @@ void CWego::LoadNpcTalkData(string filePath)
 			}
 
 			// 맵에 저장
-			m_NpcTalk[talkType] = std::move(words);
+			m_NpcTalkData[talkType] = std::move(words);
 		}
 	}
 }

@@ -1,27 +1,6 @@
 {
     "animations": [
         {
-            "ClipName": "AS_Pino_Arm_Normal_BackHand",
-            "Duration": 134.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 55.0
-        },
-        {
-            "ClipName": "AS_Pino_Arm_Normal_ChargeAttack",
-            "Duration": 175.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 55.0
-        },
-        {
-            "ClipName": "AS_Pino_Arm_Normal_Hook",
-            "Duration": 130.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 55.0
-        },
-        {
             "ClipName": "AS_Pino_Fail_Arm",
             "Duration": 155.0,
             "IsLoop": false,
@@ -52,7 +31,7 @@
         {
             "ClipName": "AS_Pino_Grinder_Loop",
             "Duration": 28.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -270,7 +249,7 @@
             "ClipName": "AS_Pino_Prop_DoubleDoor_Boss",
             "Duration": 578.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -291,51 +270,16 @@
             "ClipName": "AS_Pino_Sit_End",
             "Duration": 250.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Pino_Sit_Loop",
             "Duration": 250.0,
             "IsLoop": true,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
-      {
-        "ClipName": "AS_Pino_Prop_DoubleDoor_Boss",
-        "Duration": 578.0,
-        "IsLoop": false,
-        "RootMotion": true,
-        "TickPerSecond": 55.0
-      },
-      {
-        "ClipName": "AS_Pino_Prop_DoubleDoor_Push_TrainStation",
-        "Duration": 680.0,
-        "IsLoop": false,
-        "RootMotion": true,
-        "TickPerSecond": 55.0
-      },
-      {
-        "ClipName": "AS_Pino_Prop_SlidingDoor_Boss",
-        "Duration": 616.0,
-        "IsLoop": false,
-        "RootMotion": true,
-        "TickPerSecond": 55.099998474121094
-      },
-      {
-        "ClipName": "AS_Pino_Sit_End",
-        "Duration": 250.0,
-        "IsLoop": false,
-        "RootMotion": true,
-        "TickPerSecond": 55.0
-      },
-      {
-        "ClipName": "AS_Pino_Sit_Loop",
-        "Duration": 250.0,
-        "IsLoop": true,
-        "RootMotion": true,
-        "TickPerSecond": 55.0
-      },
         {
             "ClipName": "AS_Pino_Teleport_End",
             "Duration": 120.0,
@@ -348,6 +292,27 @@
             "Duration": 180.0,
             "IsLoop": false,
             "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Arm_Normal_BackHand",
+            "Duration": 134.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Arm_Normal_ChargeAttack",
+            "Duration": 175.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Arm_Normal_Hook",
+            "Duration": 130.0,
+            "IsLoop": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -1041,7 +1006,7 @@
             "Duration": 244.0,
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 80.0
         },
         {
             "ClipName": "AS_Pino_T_Bayonet_DNA",
@@ -1090,7 +1055,7 @@
             "Duration": 147.0,
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 80.0
         },
         {
             "ClipName": "AS_Pino_T_Bayonet_NA3",
@@ -1174,7 +1139,7 @@
             "Duration": 160.0,
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 80.0
         }
     ]
 }

@@ -238,7 +238,7 @@
     <ClInclude Include="..\public\Frustum.h">
       <Filter>01.Utility\12.Culling\Frustum</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\VIBuffer_Trail.h">
+    <ClInclude Include="..\Public\VIBuffer_SwordTrail.h">
       <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
     </ClInclude>
     <ClInclude Include="..\public\QuadTree.h">
@@ -252,6 +252,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\AnimComputeShader.h">
       <Filter>01.Utility\15.ComputeShader\AnimComputeShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ParticleComputeShader.h">
+      <Filter>01.Utility\15.ComputeShader\ParticleComputeShader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Area_Manager.h">
       <Filter>01.Utility\17.Area_Manager</Filter>
@@ -468,7 +471,7 @@
     <ClCompile Include="..\private\Frustum.cpp">
       <Filter>01.Utility\12.Culling\Frustum</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\VIBuffer_Trail.cpp">
+    <ClCompile Include="..\Private\VIBuffer_SwordTrail.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Trail</Filter>
     </ClCompile>
     <ClCompile Include="..\private\QuadTree.cpp">
@@ -482,6 +485,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\AnimComputeShader.cpp">
       <Filter>01.Utility\15.ComputeShader\AnimComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ParticleComputeShader.cpp">
+      <Filter>01.Utility\15.ComputeShader\ParticleComputeShader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Area_Manager.cpp">
       <Filter>01.Utility\17.Area_Manager</Filter>
@@ -737,6 +743,9 @@
     <Filter Include="01.Utility\15.ComputeShader\AnimComputeShader">
       <UniqueIdentifier>{9f92335b-38ec-4da0-b9ad-bf317f31edd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\15.ComputeShader\ParticleComputeShader">
+      <UniqueIdentifier>{f928b127-179e-44f9-9edc-37bdaa121474}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01.Utility\17.Area_Manager">
       <UniqueIdentifier>{eff55819-2b7c-49ab-b0c0-da49622d9f88}</UniqueIdentifier>
     </Filter>
@@ -757,6 +766,9 @@
       <Filter>01.Utility\98.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Occlusion.hlsl">
+      <Filter>01.Utility\98.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Particle.hlsl">
       <Filter>01.Utility\98.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #include "VIBuffer_Point_Instance.h"
 
 #include "GameInstance.h"
+#include "ParticleComputeShader.h"
 
 CVIBuffer_Point_Instance::CVIBuffer_Point_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer_Instance{ pDevice, pContext }
@@ -85,6 +86,13 @@ HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
 		return E_FAIL;
 
+	//m_pParticleCS = CParticleComputeShader::Create(m_pDevice, m_pContext, TEXT(""), m_pVBInstance, m_pParticleDesc, m_iNumInstance);
+	//if (!m_pParticleCS){
+	//	return E_FAIL;
+	//}
+	//if (FAILED(m_pParticleCS->))
+	//	return E_FAIL;	
+
 	return S_OK;
 }
 
@@ -103,6 +111,11 @@ void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 	default:
 		break;
 	}
+
+	/* [ CS ] */
+
+
+
 }
 void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 {
@@ -243,10 +256,10 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 			}
 
 			// 자전
-			if (m_pParticleDesc[i].vRotationAxis_Speed.w != 0.f)
+			if (m_bSpin)
 			{
-				_float angle = m_pParticleDesc[i].vRotationAxis_Speed.w * trackTime;
-				_vector axis = XMLoadFloat3((_float3*)&m_pParticleDesc[i].vRotationAxis_Speed);
+				_float angle = XMConvertToRadians(m_pParticleDesc[i].fRotationSpeed) * trackTime;
+				_vector axis = XMLoadFloat3(&m_vRotationAxis);
 				_matrix rot = XMMatrixRotationAxis(axis, angle);
 				//_vector rot = XMMatrixRotationAxis(axis, angle);
 
@@ -259,23 +272,17 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 				XMStoreFloat4(&pVertices[i].vLook, vLook);
 			}
 			// 공전
-			if (m_pParticleDesc[i].vOrbitAxis_Radius_Speed.w != 0.f)
+			if (m_bOrbit)
 			{
-				_float angle = m_pParticleDesc[i].vOrbitAxis_Radius_Speed.w * trackTime;
-				_vector axis = XMLoadFloat3((_float3*)&m_pParticleDesc[i].vOrbitAxis_Radius_Speed);
+				_float angle = XMConvertToRadians(m_pParticleDesc[i].fOrbitSpeed) * trackTime;
+				_vector axis = XMLoadFloat3(&m_vOrbitAxis);
 				_matrix orbitRot = XMMatrixRotationAxis(axis, angle);
 
-				_vector center = XMLoadFloat4(&m_pParticleDesc[i].vOrbitCenter);
-				_vector pos = XMLoadFloat4(&m_pVertexInstances[i].vTranslation);
-				_vector offset = pos - center;
+				_vector center = XMVectorSetW(XMLoadFloat3(&m_vCenter), 1.f);
+				_vector offset = vNew - center;
 				offset = XMVector3TransformNormal(offset, orbitRot);
-				pos = center + offset;
-
-				XMStoreFloat4(&pVertices[i].vTranslation, pos);
+				vNew = center + offset;
 			}
-
-
-
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vNew);
 		}
@@ -320,9 +327,22 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_bGravity = pDesc->bGravity;
 	m_fGravity = pDesc->fGravity;
 	m_vDirection = pDesc->vDirection;
-
+	m_vCenter = pDesc->vCenter;
+	m_bOrbit = pDesc->bOrbit;
+	m_bSpin = pDesc->bSpin;
+	m_vOrbitAxis = pDesc->vOrbitAxis;
+	m_vRotationAxis = pDesc->vRotationAxis;
 
 #pragma region INSTANCEBUFFER
+	/* [ CS ] */
+	//m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
+	//m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER  | D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	//m_VBInstanceDesc.Usage = D3D11_USAGE_DEFAULT;
+	//m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
+	//m_VBInstanceDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	/**************************************************************************/
+	/* [ 기존 CPU 처리] */
 	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
 	m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_VBInstanceDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -338,6 +358,8 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
 		m_pParticleDesc[i].vSpeeds = m_pGameInstance->Compute_Random(pDesc->vSpeed.x, pDesc->vSpeed.y);
+		m_pParticleDesc[i].fRotationSpeed = m_pGameInstance->Compute_Random(pDesc->vRotationSpeed.x, pDesc->vRotationSpeed.y);
+		m_pParticleDesc[i].fOrbitSpeed = m_pGameInstance->Compute_Random(pDesc->vOrbitSpeed.x, pDesc->vOrbitSpeed.y);
 		_float	fSize = m_pGameInstance->Compute_Random(pDesc->vSize.x, pDesc->vSize.y);
 
 		m_pVertexInstances[i].vRight = _float4(fSize, 0.f, 0.f, 0.f);
@@ -361,14 +383,22 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 		switch (m_ePType)
 		{
 		case Engine::PTYPE_SPREAD:
+		{
 			_vector vStart = XMLoadFloat4(&m_pVertexInstances[i].vTranslation);
 			_vector vPivot = XMLoadFloat3(&m_vPivot);
 			vDir = XMVectorSetW(XMVector3Normalize(vStart - vPivot), 0.f);
+		}
 			break;
 		case Engine::PTYPE_DIRECTIONAL:
-			vDir = XMVector3Normalize(XMLoadFloat4(&m_vDirection));
+		{
+			_vector vPivot = XMLoadFloat3(&m_vPivot);
+			_vector vCenter = XMLoadFloat3(&pDesc->vCenter);
+			vDir = XMVectorSetW(XMVector3Normalize(vCenter - vPivot), 0.f);
+			//vDir = XMVector3Normalize(XMLoadFloat4(&m_vDirection));
+		}
 			break;
 		case Engine::PTYPE_ALLRANDOM:
+		{
 			vDir = XMVector3Normalize(
 				XMVectorSet(
 					m_pGameInstance->Compute_Random(-1.f, 1.f),
@@ -376,12 +406,11 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 					m_pGameInstance->Compute_Random(-1.f, 1.f),
 					0.f)
 			);
+		}
 			break;
 		default:
 			break;
 		}
-
-		
 
 		//XMStoreFloat4(&m_pVertexInstances[i].vDirection, vDir);
 		XMStoreFloat4(&m_pParticleDesc[i].vDirection, vDir);

@@ -101,8 +101,11 @@ HRESULT CArea_Manager::FinalizePartition()
 }
 
 
-_int CArea_Manager::FindAreaContainingPoint(const _float3& vPoint) const
+_int CArea_Manager::FindAreaContainingPoint()
 {
+    XMFLOAT3 vPoint;
+    XMStoreFloat3(&vPoint, m_vPlayerPos);
+
     auto FnVolume = [](const AREA& a) -> _double 
         {
         const _double dx = static_cast<_double>(a.vBounds.vMax.x - a.vBounds.vMin.x);
@@ -112,46 +115,52 @@ _int CArea_Manager::FindAreaContainingPoint(const _float3& vPoint) const
         };
     auto FnIsBetter = [&](const AREA& cand, const AREA* pBest) -> _bool 
         {
-        if (pBest == nullptr) return true;
-        if (cand.iPriority != pBest->iPriority) return (cand.iPriority > pBest->iPriority);
+        if (pBest == nullptr) 
+            return true;
+
+        if (cand.iPriority != pBest->iPriority) 
+            return (cand.iPriority < pBest->iPriority);
+
         const _double vC = FnVolume(cand), vB = FnVolume(*pBest);
-        if (vC != vB) return (vC < vB); 
+        if (vC != vB) 
+            return (vC < vB); 
+
         return (cand.iAreaId < pBest->iAreaId);
         };
 
     /* [ 해당 위치가 어디 구역에 위치하는지 탐색 ] */
-    if (m_iCurrentAreaId != static_cast<_int>(-1))
+    if (m_iCurrentAreaId != -1)
     {
         auto it = m_mapAreaIdToIndex.find(m_iCurrentAreaId);
         if (it != m_mapAreaIdToIndex.end())
         {
             // 현재 구역안에 있는지 탐색 (스티키 우선)
             const AREA& tCur = m_vecAreas[it->second];
+            
             if (tCur.ContainsPoint(vPoint))
-                return m_iCurrentAreaId;
-
-            // 인접 구역들 중 '포함되는' 후보 중에서 iPriority 기준 베스트 선택
-            const AREA* pBestAdj = nullptr;
-            _int iBestAdjId = static_cast<_int>(-1);
-
-            for (const _uint iAdjId : tCur.vecAdjacent)
             {
-                auto itAdj = m_mapAreaIdToIndex.find(static_cast<_int>(iAdjId));
-                if (itAdj != m_mapAreaIdToIndex.end())
+                const AREA* pBest = &tCur;
+                _int iBestId = m_iCurrentAreaId;
+
+                // 현재의 인접들 중, 같은 지점에 '겹쳐 들어온' 후보가 있으면 비교
+                for (const _uint iAdjId : tCur.vecAdjacent)
                 {
+                    auto itAdj = m_mapAreaIdToIndex.find(static_cast<_int>(iAdjId));
+                    if (itAdj == m_mapAreaIdToIndex.end()) continue;
+
                     const AREA& tAdj = m_vecAreas[itAdj->second];
-                    if (tAdj.ContainsPoint(vPoint))
+                    if (!tAdj.ContainsPoint(vPoint)) continue;
+
+                    if (FnIsBetter(tAdj, pBest)) // iPriority >, 볼륨<, ID<
                     {
-                        if (FnIsBetter(tAdj, pBestAdj))
-                        {
-                            pBestAdj = &tAdj;
-                            iBestAdjId = static_cast<_int>(iAdjId);
-                        }
+                        pBest = &tAdj;
+                        iBestId = static_cast<_int>(iAdjId);
                     }
                 }
+
+				m_iCurrentAreaId = iBestId;
+                return iBestId;
             }
-            if (pBestAdj != nullptr)
-                return iBestAdjId;
         }
     }
 
@@ -172,11 +181,63 @@ _int CArea_Manager::FindAreaContainingPoint(const _float3& vPoint) const
     }
 
     if (pBest != nullptr)
+    {
+		m_iCurrentAreaId = iBestId;
         return iBestId;
+    }
 
     // 아예 없다면 -1 반환
-    return static_cast<_int>(-1);
+	m_iCurrentAreaId = -1;
+    return -1;
 }
+
+const AABBBOX* CArea_Manager::GetAreaBounds(_int iAreaId) const
+{
+    auto it = m_mapAreaIdToIndex.find(iAreaId);
+
+    if (it == m_mapAreaIdToIndex.end())
+        return nullptr;
+
+    return &m_vecAreas[it->second].vBounds;
+}
+
+void CArea_Manager::GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad) const
+{
+    vecOutBounds.clear();
+
+    if (m_iCurrentAreaId < 0) 
+        return;
+
+    auto FnExpand = [](const AABBBOX& tBox, _float fExpand) -> AABBBOX
+        {
+        AABBBOX tOut = tBox;
+        tOut.vMin.x -= fExpand; tOut.vMin.y -= fExpand; tOut.vMin.z -= fExpand;
+        tOut.vMax.x += fExpand; tOut.vMax.y += fExpand; tOut.vMax.z += fExpand;
+        return tOut;
+        };
+
+    // 현재 Area
+    {
+        const AABBBOX* pCur = GetAreaBounds(m_iCurrentAreaId);
+        if (pCur)
+            vecOutBounds.push_back(FnExpand(*pCur, fPad));
+    }
+
+    // 인접 Area
+    auto it = m_mapAreaIdToIndex.find(m_iCurrentAreaId);
+    if (it != m_mapAreaIdToIndex.end())
+    {
+        const AREA& tCur = m_vecAreas[it->second];
+        for (const _uint iAdj : tCur.vecAdjacent)
+        {
+            const AABBBOX* pAdj = GetAreaBounds(iAdj);
+            if (pAdj)
+                vecOutBounds.push_back(FnExpand(*pAdj, fPad));
+        }
+    }
+}
+
+
 
 void CArea_Manager::DebugDrawCells()
 {
@@ -194,8 +255,7 @@ void CArea_Manager::DebugDrawCells()
         XMFLOAT3 vPos;
         XMStoreFloat3(&vPos, m_vPlayerPos);        
 
-        const _bool bOverlapped =
-            tArea.ContainsPoint(vPos) && (tArea.iAreaId != m_iCurrentAreaId);
+        const _bool bOverlapped = tArea.ContainsPoint(vPos);
 
         XMFLOAT4 col = GetAreaDebugColor(
             tArea,
@@ -231,7 +291,6 @@ void CArea_Manager::RenderDebugLines(const vector<DebugLine>& lines)
 
     m_pBatch->End();
 }
-
 XMFLOAT4 CArea_Manager::BaseColorByType(AREA::EAreaType eType)
 {
     switch (eType)
@@ -256,14 +315,14 @@ XMFLOAT4 CArea_Manager::GetAreaDebugColor(const AREA& tArea, _int iCurrentAreaId
 {
     // 1) 플레이어가 들어있는 '대표' 구역 → 항상 초록 (최우선)
     if (tArea.iAreaId == iCurrentAreaId)
-        return XMFLOAT4(0.20f, 1.00f, 0.20f, 1.00f);
+        return XMFLOAT4(0.f, 1.f, 0.f, 1.f);
 
     // 2) 기본색은 우선순위 기반
     XMFLOAT4 tCol = BaseColorByType(tArea.eType);
 
-    // 3) 겹치는 구역은 살짝 하이라이트(선택: 밝기만 살짝 올림)
+    // 3) 겹치는 구역은 빨간색으로
     if (bOverlapped)
-        return Lerp(tCol, XMFLOAT4(1.f, 1.f, 1.f, 1.f), 0.25f);
+        return XMFLOAT4(1.f, 0.f, 0.f, 1.f);
 
     // 4) 일반 구역은 고유색 그대로
     return tCol;

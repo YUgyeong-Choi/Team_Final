@@ -876,13 +876,17 @@ _bool CGameInstance::AddArea_AABB(_int iAreaId, const _float3& vMin, const _floa
 {
 	return m_pArea_Manager->AddArea_AABB(iAreaId,vMin,vMax,vecAdjacentIds, eType, iPriority);
 }
+void CGameInstance::GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad) const
+{
+	m_pArea_Manager->GetActiveAreaBounds(vecOutBounds, fPad);
+}
 HRESULT CGameInstance::FinalizePartition()
 {
 	return m_pArea_Manager->FinalizePartition();
 }
-_int CGameInstance::FindAreaContainingPoint(const _float3& vPoint) const
+_int CGameInstance::FindAreaContainingPoint()
 {
-	return m_pArea_Manager->FindAreaContainingPoint(vPoint);
+	return m_pArea_Manager->FindAreaContainingPoint();
 }
 HRESULT CGameInstance::Reset_Parm()
 {

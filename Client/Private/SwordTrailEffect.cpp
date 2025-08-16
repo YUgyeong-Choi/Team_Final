@@ -1,26 +1,26 @@
-#include "TrailEffect.h"
+#include "SwordTrailEffect.h"
 
 #include "GameInstance.h"
 
-CTrailEffect::CTrailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CSwordTrailEffect::CSwordTrailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEffectBase{ pDevice, pContext }
 {
 
 }
 
-CTrailEffect::CTrailEffect(const CTrailEffect& Prototype)
+CSwordTrailEffect::CSwordTrailEffect(const CSwordTrailEffect& Prototype)
 	: CEffectBase( Prototype )
 {
 
 }
 
-HRESULT CTrailEffect::Initialize_Prototype()
+HRESULT CSwordTrailEffect::Initialize_Prototype()
 {
 	//m_KeyFrames.push_back(EFFKEYFRAME{});
 	return S_OK;
 }
 
-HRESULT CTrailEffect::Initialize(void* pArg)
+HRESULT CSwordTrailEffect::Initialize(void* pArg)
 {
 	DESC* pDesc = static_cast<DESC*>(pArg);
 
@@ -45,17 +45,38 @@ HRESULT CTrailEffect::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CTrailEffect::Priority_Update(_float fTimeDelta)
+void CSwordTrailEffect::Priority_Update(_float fTimeDelta)
 {
 
 }
 
-void CTrailEffect::Update(_float fTimeDelta)
+void CSwordTrailEffect::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
+	Update_Keyframes();
+
+	if (m_pSocketMatrix != nullptr)
+	{
+		XMStoreFloat4x4(&m_CombinedWorldMatrix,
+			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
+		);
+	}
+
+	if (m_bAnimation)
+		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+	else
+		m_iTileIdx = 0;
+
+	if (m_iTileX == 0)
+		m_iTileX = 1;
+	if (m_iTileY == 0)
+		m_iTileY = 1;
+	m_fTileSize.x = 1.0f / _float(m_iTileX);
+	m_fTileSize.y = 1.0f / _float(m_iTileY);
+	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
+	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
 }
 
-void CTrailEffect::Late_Update(_float fTimeDelta)
+void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 {
 	if (!m_pParentCombinedMatrix || !m_pInnerSocketMatrix || !m_pOuterSocketMatrix)
 		return;
@@ -76,7 +97,7 @@ void CTrailEffect::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
 
-HRESULT CTrailEffect::Render()
+HRESULT CSwordTrailEffect::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -93,21 +114,23 @@ HRESULT CTrailEffect::Render()
 	return S_OK;
 }
 
-void CTrailEffect::Set_TrailActive(_bool bActive)
+void CSwordTrailEffect::Set_TrailActive(_bool bActive)
 {
 	if (m_pVIBufferCom)
 		m_pVIBufferCom->Set_TrailActive(bActive);
 }
 
-HRESULT CTrailEffect::Ready_Components()
+HRESULT CSwordTrailEffect::Ready_Components()
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_TrailEffect"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	_wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+	strPrototypeTag += m_strBufferTag;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
@@ -140,7 +163,7 @@ HRESULT CTrailEffect::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CTrailEffect::Bind_ShaderResources()
+HRESULT CSwordTrailEffect::Bind_ShaderResources()
 {
 	// 월드를 바인딩 해 줄 필요가 없는지 고민하는데 왜 니가 아니라고 단정지어
 	//if (m_pSocketMatrix != nullptr)
@@ -203,9 +226,9 @@ HRESULT CTrailEffect::Bind_ShaderResources()
 	return S_OK;
 }
 
-CTrailEffect* CTrailEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CSwordTrailEffect* CSwordTrailEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CTrailEffect* pInstance = new CTrailEffect(pDevice, pContext);
+	CSwordTrailEffect* pInstance = new CSwordTrailEffect(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -216,27 +239,27 @@ CTrailEffect* CTrailEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	return pInstance;
 }
 
-CGameObject* CTrailEffect::Clone(void* pArg)
+CGameObject* CSwordTrailEffect::Clone(void* pArg)
 {
-	CTrailEffect* pInstance = new CTrailEffect(*this);
+	CSwordTrailEffect* pInstance = new CSwordTrailEffect(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CTrailEffect");
+		MSG_BOX("Failed to Cloned : CSwordTrailEffect");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CTrailEffect::Free()
+void CSwordTrailEffect::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pVIBufferCom);
 }
 
-json CTrailEffect::Serialize()
+json CSwordTrailEffect::Serialize()
 {
 	json j = __super::Serialize();
 
@@ -246,7 +269,12 @@ json CTrailEffect::Serialize()
 	return j;
 }
 
-void CTrailEffect::Deserialize(const json& j)
+void CSwordTrailEffect::Deserialize(const json& j)
 {
 	__super::Deserialize(j);
+
+	if (j.contains("Name"))
+	{
+		m_strBufferTag = StringToWString(j["Name"].get<std::string>());
+	}
 }

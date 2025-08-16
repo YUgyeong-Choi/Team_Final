@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "TrailEffect.h"
+#include "SwordTrailEffect.h"
 
 NS_BEGIN(Client)
 
-class CToolTrail final : public CTrailEffect
+class CToolTrail final : public CSwordTrailEffect
 {
 public:
-	typedef struct tagToolTEDesc : public CTrailEffect::DESC
+	typedef struct tagToolTEDesc : public CSwordTrailEffect::DESC
 	{
 		_bool bLoadingInTool = { false };
 	}DESC;
@@ -27,6 +27,10 @@ public:
 
 	virtual void Update_Tool(_float fTimeDelta, _float fCurFrame);
 	void Change_TrailBuffer(void* pArg);
+	_uint* Get_MaxNodeCount_Ptr() ;
+	_float* Get_LifeDuration_Ptr();
+	_int* Get_Subdivisions_Ptr() ;
+	_float* Get_NodeInterval_Ptr();
 
 private:
 	virtual HRESULT Ready_Components();

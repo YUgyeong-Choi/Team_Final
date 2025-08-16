@@ -22,7 +22,11 @@ public:
 public:
 	_bool AddArea_AABB(_int iAreaId, const _float3& vMin, const _float3& vMax, const vector<_uint>& vecAdjacentIds, AREA::EAreaType eType, _int iPriority);
 	HRESULT FinalizePartition();
-	_int FindAreaContainingPoint(const _float3& vPoint) const;
+	_int FindAreaContainingPoint();
+
+public:
+	const AABBBOX* GetAreaBounds(_int iAreaId) const;
+	void           GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad = 0.f) const;
 
 
 public: /* [ µð¹ö±ë ÇÔ¼ö ]*/

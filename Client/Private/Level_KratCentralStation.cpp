@@ -26,6 +26,10 @@
 
 #include "LockOn_Manager.h"
 
+NS_BEGIN(Client)
+_bool g_ReadyAgain = false;
+NS_END
+
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -64,7 +68,14 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pCamera_Manager->SetCutSceneCam();
 
 	/* [ Area 셋팅 ] */
-	SetArea();
+	Separate_Area();
+
+	if (g_ReadyAgain)
+	{
+		m_pStartVideo->Set_bDead();
+		Ready_Level();
+		m_pCamera_Manager->SetOrbitalCam();
+	}
 
 	return S_OK;
 }
@@ -92,53 +103,16 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 	}
 
-	if (nullptr != m_pStartVideo)
+	if (nullptr != m_pStartVideo && !g_ReadyAgain)
 	{
 		if (m_pStartVideo->Get_bDead())
 		{
-
-			if (FAILED(Ready_Effect()))
-				return;
-
-			/* [ 사운드 ] */
-			m_pBGM->Play();
-
-			m_pStartVideo = nullptr;
-
-			if (FAILED(Ready_Camera()))
-				return;
-
-			//제이슨으로 저장된 맵을 로드한다.
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))  //TEST, STATION (Loader.cpp와 동일해야함)
-				return;
-
-			if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
-				return;
-
-			if (FAILED(Ready_Lights()))
-				return;
-
-			if (FAILED(Ready_Npc()))
-				return;
-
-			// 값 sync 맞추려고 플레이어 생성 전에 미리 생성해서 옵저버에 콜백 등록하기 위해
-			if (FAILED(Ready_UI()))
-				return;
-
-			//애니메이션 오브젝트
-			if (FAILED(Ready_Player()))
-				return;
-
-			/* [ 옥토트리 설정 ] */
-			if (FAILED(Ready_OctoTree()))
-				return;
-
-			if (FAILED(Ready_Monster()))
-				return;
+			Ready_Level();
 
 			/* [ 플레이어 제어 ] */
 			m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
 			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+			g_ReadyAgain = true;
 		}
 
 		return;
@@ -160,7 +134,9 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if(KEY_DOWN(DIK_H))
 		ToggleHoldMouse();
 	if(m_bHold)
-		HoldMouse(); 
+		HoldMouse();
+	else
+		ShowCursor(TRUE);
 
 	if (KEY_DOWN(DIK_F7))
 		m_pGameInstance->ToggleDebugOctoTree();
@@ -199,6 +175,44 @@ HRESULT CLevel_KratCentralStation::Render()
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
 
 	return S_OK;
+}
+
+void CLevel_KratCentralStation::Ready_Level()
+{
+	m_pStartVideo = nullptr;
+
+	/* [ 사운드 ] */
+	m_pBGM->Play();
+
+	if (FAILED(Ready_Effect()))
+		return;
+
+	if (FAILED(Ready_Camera()))
+		return;
+
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))  //TEST, STATION (Loader.cpp와 동일해야함)
+		return;
+
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return;
+
+	if (FAILED(Ready_Lights()))
+		return;
+
+	if (FAILED(Ready_Npc()))
+		return;
+
+	if (FAILED(Ready_UI()))
+		return;
+
+	if (FAILED(Ready_Player()))
+		return;
+
+	if (FAILED(Ready_OctoTree()))
+		return;
+
+	if (FAILED(Ready_Monster()))
+		return;
 }
 
 HRESULT CLevel_KratCentralStation::Ready_Map(_uint iLevelIndex, const _char* Map)
@@ -609,7 +623,7 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::SetArea()
+HRESULT CLevel_KratCentralStation::Separate_Area()
 {
 	m_pGameInstance->Reset_Parm();
 
@@ -641,33 +655,60 @@ HRESULT CLevel_KratCentralStation::SetArea()
 	_float3 a2Min, a2Max; 
 	FnToAABB(a2p0, a2p1, a2Min, a2Max);
 
-	// Area 3 (우선순위 최하)
+	// Area 3
 	_float3 a3p0 = _float3{ 119.81f, -5.63f,  32.20f };
 	_float3 a3p1 = _float3{ -40.69f, 52.55f, -61.73f };
 	_float3 a3Min, a3Max; 
 	FnToAABB(a3p0, a3p1, a3Min, a3Max);
 
+	// Area 4
+	_float3 a4p0 = _float3{ 120.04f, - 5.32f, 4.66f };
+	_float3 a4p1 = _float3{ 95.67f, 15.49f, -21.39f };
+	_float3 a4Min, a4Max;
+	FnToAABB(a4p0, a4p1, a4Min, a4Max);
+
+	// Area 5
+	_float3 a5p0 = _float3{ 110.f, -5.63f,  32.20f };
+	_float3 a5p1 = _float3{ 26.53f,  49.64f, -52.41f };
+	_float3 a5Min, a5Max;
+	FnToAABB(a5p0, a5p1, a5Min, a5Max);
+
 	{
-		const vector<_uint> vecAdj1 = { static_cast<_uint>(2) };
+		/* [ 1번 구역 ] */
+		const vector<_uint> vecAdj1 = { 2 };
 		if (!m_pGameInstance->AddArea_AABB(
-			static_cast<_int>(1), a1Min, a1Max, vecAdj1,
-			AREA::EAreaType::ROOM, static_cast<_int>(3)))
+			1, a1Min, a1Max, vecAdj1, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 	{
-		const vector<_uint> vecAdj2 = { static_cast<_uint>(1), static_cast<_uint>(3) };
+		/* [ 2번 구역 ] */
+		const vector<_uint> vecAdj2 = { 1, 3 };
 		if (!m_pGameInstance->AddArea_AABB(
-			static_cast<_int>(2), a2Min, a2Max, vecAdj2,
-			AREA::EAreaType::INDOOR, static_cast<_int>(2)))
+			2, a2Min, a2Max, vecAdj2, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
 	}
 	{
-		const vector<_uint> vecAdj3 = { static_cast<_uint>(1), static_cast<_uint>(2) };
+		/* [ 3번 구역 ] */
+		const vector<_uint> vecAdj3 = { 1, 2 };
 		if (!m_pGameInstance->AddArea_AABB(
-			static_cast<_int>(3), a3Min, a3Max, vecAdj3,
-			AREA::EAreaType::OUTDOOR, static_cast<_int>(1)))
+			3, a3Min, a3Max, vecAdj3, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
+	{
+		/* [ 4번 구역 ] */
+		const vector<_uint> vecAdj4 = { 5, 2 };
+		if (!m_pGameInstance->AddArea_AABB(
+			4, a4Min, a4Max, vecAdj4, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	} 
+	{
+		/* [ 5번 구역 ] */
+		const vector<_uint> vecAdj5 = { 3 , 4 };
+		if (!m_pGameInstance->AddArea_AABB(
+			5, a5Min, a5Max, vecAdj5, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+
 
 	// 3) 파티션 확정 (ID→Index 매핑/검증)
 	if (FAILED(m_pGameInstance->FinalizePartition()))
@@ -782,9 +823,9 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &pDesc)))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
+		return E_FAIL;
 
 
 	return S_OK;
@@ -1022,10 +1063,9 @@ void CLevel_KratCentralStation::Free()
 	{
 		m_pBGM->Stop();
 		Safe_Release(m_pBGM);
-		Safe_Release(m_pShaderComPBR);
-		Safe_Release(m_pShaderComANIM);
-		Safe_Release(m_pShaderComInstance);
 	}
-
+	Safe_Release(m_pShaderComPBR);
+	Safe_Release(m_pShaderComANIM);
+	Safe_Release(m_pShaderComInstance);
 	Safe_Release(m_pStartVideo);
 }

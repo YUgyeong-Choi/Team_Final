@@ -4,12 +4,12 @@
 #include "EffectBase.h"
 
 NS_BEGIN(Engine)
-class CVIBuffer_Trail;
+class CVIBuffer_SwordTrail;
 NS_END
 
 NS_BEGIN(Client)
 
-class CTrailEffect : public CEffectBase
+class CSwordTrailEffect : public CEffectBase
 {
 public:
 	typedef struct tagTrailEffectDesc : public CEffectBase::DESC
@@ -20,9 +20,9 @@ public:
 	}DESC;
 
 protected:
-	CTrailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CTrailEffect(const CTrailEffect& Prototype);
-	virtual ~CTrailEffect() = default;
+	CSwordTrailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CSwordTrailEffect(const CSwordTrailEffect& Prototype);
+	virtual ~CSwordTrailEffect() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -36,7 +36,7 @@ public:
 	void Set_TrailActive(_bool bActive);
 	
 protected:
-	CVIBuffer_Trail*		m_pVIBufferCom = { nullptr };
+	CVIBuffer_SwordTrail*		m_pVIBufferCom = { nullptr };
 	_float4x4*				m_pParentCombinedMatrix = { nullptr };
 	_float4x4*				m_pInnerSocketMatrix	= { nullptr };
 	_float4x4*				m_pOuterSocketMatrix	= { nullptr };
@@ -45,13 +45,14 @@ protected:
 	_float3					m_vOuterPos = { 0.f, 0.f, 0.f }; // ¹Ù±ùÂÊ À§Ä¡
 
 	_bool					m_bTrailActive = true;
+	_wstring				m_strBufferTag;
 
 protected:
 	virtual HRESULT Ready_Components() override;
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CTrailEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CSwordTrailEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

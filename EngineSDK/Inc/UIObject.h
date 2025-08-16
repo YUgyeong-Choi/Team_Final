@@ -32,6 +32,8 @@ public:
 
 	_wstring Get_ProtoTag() { return m_strProtoTag; }
 
+	void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; }
+
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
 
@@ -90,7 +92,7 @@ protected:
 
 	_float			m_fRotation = {};
 
-
+	_bool			m_isReverse = { false };
 	
 
 public:

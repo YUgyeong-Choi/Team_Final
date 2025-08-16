@@ -247,8 +247,10 @@ HRESULT CLoader::Loading_For_Static()
 	
 
 	lstrcpy(m_szLoadingText, TEXT("이펙트을(를) 로딩중입니다."));
-	CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"));
-
+	if (FAILED(CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"))))
+		return E_FAIL;
+	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_Test.json"))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
@@ -1345,7 +1347,7 @@ HRESULT CLoader::Loading_For_CY()
 
 	/* For.Prototype_Component_VIBuffer_ToolTrail */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
-		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
