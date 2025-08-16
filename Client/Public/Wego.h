@@ -5,6 +5,8 @@
 NS_BEGIN(Client)
 class CWego : public CUnit
 {
+private:
+	enum WEGOTALKTYPE {ONE, TWO};
 public:
 	typedef struct tagWegoDesc : public CUnit::tagUnitDesc
 	{
@@ -37,11 +39,14 @@ private: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Collider();
 	HRESULT Ready_Trigger();
+
+	void LoadNpcTalkData(string filePath);
 private:
 	CPhysXDynamicActor* m_pPhysXTriggerCom = { nullptr };
 
 	_bool m_bInTrigger = false;
 	_bool m_bTalkActive = false;
+	unordered_map<WEGOTALKTYPE, vector<wstring>> m_NpcTalk;
 public:
 	static CWego* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
