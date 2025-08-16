@@ -7,6 +7,7 @@
 #include "Camera_Manager.h"
 #include "Client_Calculation.h"
 #include <Player.h>
+#include <PhysX_IgnoreSelfCallback.h>
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -71,9 +72,11 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		cout << "현재 애니메이션 상태 : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
 		cout << "현재 이동 방향 " << m_pAnimator->GetInt("MoveDir") << endl;
 
-		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", P2_FireBall);
+		//m_pAnimator->SetTrigger("Attack");
+		//m_pAnimator->SetInt("SkillType", P2_FireFlame);
 		//m_pAnimator->SetTrigger("Paralyzation");
+		m_pAnimator->SetTrigger("Fatal");
+		//m_pAnimator->SetTrigger("Groggy");
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
 	//	m_fHP -= 10.f;
@@ -93,6 +96,18 @@ void CFuoco::Update(_float fTimeDelta)
 	{
 		m_pAnimator->SetTrigger("SpecialDie");
 	}
+
+	if (m_fFireFlameDuration > 0.f)
+	{
+		m_fFireFlameDuration -= fTimeDelta;
+		FlamethrowerAttack();
+		if (m_fFireFlameDuration <= 0.f)
+		{
+			m_fFireFlameDuration = 0.f;
+		}
+	}
+
+
 	UpdateBossState(fTimeDelta); // 상태 업데이트
 	__super::Update(fTimeDelta); // 애니메이션 재생
 	Update_Collider(); // 콜라이더 업데이트
@@ -217,7 +232,7 @@ HRESULT CFuoco::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON; // 일단 보류
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
@@ -253,7 +268,7 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForArm->Set_ShapeFlag(true, true, true);
 		PxFilterData armFilterData{};
 		armFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
+		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; // 일단 보류
 		m_pPhysXActorComForArm->Set_SimulationFilterData(armFilterData);
 		m_pPhysXActorComForArm->Set_QueryFilterData(armFilterData);
 		m_pPhysXActorComForArm->Set_Owner(this);
@@ -276,7 +291,7 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForFoot->Set_ShapeFlag(true, true, true);
 		PxFilterData footFilterData{};
 		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
+		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; // 일단 보류
 		m_pPhysXActorComForFoot->Set_SimulationFilterData(footFilterData);
 		m_pPhysXActorComForFoot->Set_QueryFilterData(footFilterData);
 		m_pPhysXActorComForFoot->Set_Owner(this);
@@ -388,6 +403,7 @@ void CFuoco::UpdateMovement(_float fDistance, _float fTimeDelta)
 		m_eCurrentState != EFuocoState::DEAD &&
 		m_eCurrentState != EFuocoState::PARALYZATION &&
 		m_eCurrentState != EFuocoState::ATTACK &&
+		m_eCurrentState != EFuocoState::FATAL &&
 		!m_bIsFirstAttack;
 
 	m_pAnimator->SetBool("Move", bCanMove);
@@ -533,9 +549,9 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
 		m_eCurrentState = EFuocoState::RUN;
 		break;
-	case ENUM_CLASS(BossStateID::GROGGY_END):
 	case ENUM_CLASS(BossStateID::GROGGY_START):
 	case ENUM_CLASS(BossStateID::GROGGY_LOOP):
+	case ENUM_CLASS(BossStateID::GROGGY_END):
 		m_eCurrentState = EFuocoState::GROGGY;
 		break;
 	case ENUM_CLASS(BossStateID::DEAD_B):
@@ -551,6 +567,11 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::PARALYZATION_LOOP):
 	case ENUM_CLASS(BossStateID::PARALYZATION_END):
 		m_eCurrentState = EFuocoState::PARALYZATION;
+		break;
+	case ENUM_CLASS(BossStateID::FATAL_START):
+	case ENUM_CLASS(BossStateID::FATAL_LOOP):
+	case ENUM_CLASS(BossStateID::FATAL_END):
+		m_eCurrentState = EFuocoState::FATAL;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
@@ -869,6 +890,12 @@ void CFuoco::Register_Events()
 				m_iFireBallComboCount = 0;
 			}
 		});
+
+	m_pAnimator->RegisterEventListener("Flamethrower", [this](const string& eventName)
+		{
+			m_fFireFlameDuration = 1.5f;
+			FlamethrowerAttack();
+		});
 }
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
@@ -887,7 +914,8 @@ void CFuoco::Ready_AttackPatternWeightForPhase1()
 
 void CFuoco::Ready_AttackPatternWeightForPhase2()
 {
-	m_pAnimator->SetTrigger("Paralyzation");
+//	m_pAnimator->SetTrigger("Paralyzation");
+	m_pAnimator->SetTrigger("Groggy");
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
 		SlamCombo,Uppercut,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
@@ -1061,6 +1089,92 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 	default:
 		break;
 	}
+}
+
+void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDistance)
+{
+	if (!m_pLeftBone)
+		return;
+
+	auto handLocalMatrix = m_pLeftBone->Get_CombinedTransformationMatrix();
+	auto handWorldMatrix = XMLoadFloat4x4(handLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
+	_vector vOrigin = XMVector3TransformCoord(XMVectorSet(0.f, 0.f, 100.f, 1.f), handWorldMatrix); // 손 위치에서 시작
+	_float4x4 worldMatrix{};
+	XMStoreFloat4x4(&worldMatrix, handWorldMatrix);
+
+	PxVec3 origin(XMVectorGetX(vOrigin), XMVectorGetY(vOrigin), XMVectorGetZ(vOrigin));
+	PxVec3 vDir = PxVec3(worldMatrix._31, worldMatrix._32, worldMatrix._33); // 손의 Look 방향
+	PxVec3 vRight = PxVec3(worldMatrix._11, worldMatrix._12, worldMatrix._13); // 손의 Up 방향
+	vDir.normalize();
+	vRight.normalize();
+
+	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
+	PxQueryFilterData filterData;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC| PxQueryFlag::ePREFILTER; // 
+	unordered_set<PxActor*> ignoreActors;
+	ignoreActors.insert(m_pPhysXActorCom->Get_Actor());
+	ignoreActors.insert(m_pPhysXActorComForArm->Get_Actor());
+	ignoreActors.insert(m_pPhysXActorComForFoot->Get_Actor());
+	
+	CIgnoreSelfCallback callback(ignoreActors);
+
+	for (_int i = 0; i < iRayCount; i++)
+	{
+		_float fCurAngle = -fConeAngle * 0.5f + (fConeAngle / (iRayCount - 1)) * i; // -세타 ~ 세타
+		PxQuat vRot = PxQuat(XMConvertToRadians(fCurAngle), vRight); // 회전 쿼터니언 생성
+		PxVec3 vRayDir = vRot.rotate(vDir); // Look 방향을 회전
+
+		PxRaycastBuffer hit;
+		if (m_pGameInstance->Get_Scene()->raycast(origin, vRayDir, fDistance, hit, hitFlags, filterData, &callback))
+		{
+			if (hit.hasBlock)
+			{
+				PxRigidActor* hitActor = hit.block.actor;
+				PxVec3 hitPos = hit.block.position;
+				PxVec3 hitNormal = hit.block.normal;
+				CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+
+				if (pHitActor&& pHitActor->Get_Owner())
+				{
+					if (nullptr == pHitActor->Get_Owner())
+						return;
+					// 데미지 계산 나중에 생각해보기
+					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::MONSTER_WEAPON);
+				}
+
+				//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
+				//printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
+				m_bRayHit = true;
+				m_vRayHitPos = hitPos;
+			}
+#ifdef _DEBUG
+			if (m_pGameInstance->Get_RenderCollider()) {
+				DEBUGRAY_DATA _data{};
+				_data.vStartPos = origin;
+				XMFLOAT3 fLook;
+				XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+				_data.vDirection = vRayDir;
+				_data.fRayLength = 10.f;
+				_data.bIsHit = fDistance;
+				_data.vHitPos = m_vRayHitPos;
+				m_pPhysXActorCom->Add_RenderRay(_data);
+			}
+#endif
+		}
+#ifdef _DEBUG
+		else if(m_pGameInstance->Get_RenderCollider()) {
+			DEBUGRAY_DATA _data{};
+			_data.vStartPos = origin;
+			_data.vDirection = vRayDir; // 회전된 방향 사용
+			_data.fRayLength = fDistance;
+			_data.bIsHit = false;
+			_data.vHitPos = PxVec3(0, 0, 0);
+			m_pPhysXActorCom->Add_RenderRay(_data);
+		}
+#endif // _DEBUG
+
+	}
+
 }
 
 void CFuoco::UpdatePatternWeight(EBossAttackPattern ePattern)

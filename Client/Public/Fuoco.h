@@ -74,8 +74,10 @@ class CFuoco : public CUnit
         TURN_L = 100013,
         PARALYZATION_START = 100043,
         PARALYZATION_LOOP = 100044,
-        PARALYZATION_END = 100045
-
+        PARALYZATION_END = 100045,
+        FATAL_START = 100076,
+		FATAL_LOOP = 100077,
+		FATAL_END = 100078
     };
 
     enum EBossAttackPattern :_int
@@ -97,7 +99,7 @@ class CFuoco : public CUnit
     };
 
 	enum class EFuocoState{
-        IDLE,WALK,RUN,TURN,ATTACK,GROGGY,PARALYZATION,DEAD,NONE};
+        IDLE,WALK,RUN,TURN,ATTACK,GROGGY,PARALYZATION,FATAL,DEAD,NONE};
 
 	enum class EMoveDirection	{
         FRONT, RIGHT, BACK, LEFT};
@@ -205,6 +207,7 @@ private:
 
 	void ChosePatternWeightByDistance(_float fDistance);
 	void FireProjectile(ProjectileType type, _float fSpeed = 10.f);
+	void FlamethrowerAttack(_float fConeAngle = 10.f, _int iRayCount = 7, _float fDistance = 15.f);
 
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {    cout << "=== Attack Pattern Weights ===" << endl;
@@ -272,6 +275,7 @@ private:
 	_float m_fWeightIncreaseRate = 0.12f;
     _float m_fAttackCooldown = 0.f; // °ø°Ý ÄðÅ¸ÀÓ
     _float m_fAttckDleay = 4.f;
+    _float m_fFireFlameDuration = 0.f;
 
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
     EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
