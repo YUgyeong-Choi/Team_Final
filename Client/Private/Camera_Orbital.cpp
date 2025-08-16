@@ -205,17 +205,21 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 	m_bSetPitchYaw = true;
 }
 
-void CCamera_Orbital::Set_ActiveTalk(_bool bActive)
+void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget)
 {
 	if (bActive)
 	{
 		m_bTalkNpcStart = true;
 		m_bTalkNpcEnd = false;
+		m_bTalkActive = true;
+		m_pNpcTalkTarget = pTarget;
 	}
 	else
 	{
 		m_bTalkNpcStart = false;
 		m_bTalkNpcEnd = true;
+		m_bTalkActive = false;
+		m_pNpcTalkTarget = pTarget;
 	}
 }
 
@@ -497,7 +501,19 @@ void CCamera_Orbital::Set_CameraMatrix(_float fTimeDelta)
 
 	// 카메라 설정
 	m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
-	m_pTransformCom->LookAt(m_vPlayerPosition);
+
+	if (m_bTalkActive)
+	{
+		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+		_vector centerPos = (targetPos + m_vPlayerPosition) * 0.5f;
+
+		m_pTransformCom->LookAt(centerPos);
+	}
+	else
+	{
+		m_pTransformCom->LookAt(m_vPlayerPosition);
+	}
+		
 }
 
 

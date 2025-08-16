@@ -57,7 +57,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 
 				m_curTalkIndex = 0;
 				m_bTalkActive = false;
-				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false);
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr);
 				CCamera_Manager::Get_Instance()->SetbMoveable(true);
 				return;
 			}
@@ -72,7 +72,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 		if (m_pGameInstance->Key_Down(DIK_E) && !m_bTalkActive)
 		{
 			m_bTalkActive = true;
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this);
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 
 			wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
@@ -86,7 +86,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 		{
 			m_curTalkIndex = 0;
 			m_bTalkActive = false;
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr);
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 		}
 	}

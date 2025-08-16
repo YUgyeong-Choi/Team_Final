@@ -49,7 +49,7 @@ public:
 	/* [ 방향 벡터로 Yaw Pich 가지고오기 ] */
 	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed);
 	
-	void Set_ActiveTalk(_bool bActive);
+	void Set_ActiveTalk(_bool bActive, CGameObject*  pTarget);
 private:
 	/* [ 평소에 실행 ] */
 	void Update_CameraMatrix(_float fTimeDelta);
@@ -83,6 +83,7 @@ private:
 private:
 	_bool			m_bTalkNpcStart = false;
 	_bool			m_bTalkNpcEnd = false;
+	_bool			m_bTalkActive = false;
 private:
 	const _float m_fPadding = 1.0f;     // 플레이어 & 타겟이 가까울 때를 위한 최소 반지름
 	const _float m_fFrame = 0.5f;   // 화면 높이의 안에 들어오도록 여유를 위한 변수
@@ -94,6 +95,9 @@ private:
 	CGameObject*	m_pPlayer = { nullptr };
 	// 락온이 안될 때는 항상 nullptr
 	CGameObject*	m_pLockOnTarget = { nullptr }; 
+
+	// Npc 대화용 타겟
+	CGameObject* m_pNpcTalkTarget = { nullptr };
 public:
 	static CCamera_Orbital* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
