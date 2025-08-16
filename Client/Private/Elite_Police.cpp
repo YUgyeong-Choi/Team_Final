@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Weapon_Monster.h"
 #include "LockOn_Manager.h"
+#include "Client_Calculation.h"
 
 CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster_Base{pDevice, pContext}
@@ -107,6 +108,20 @@ void CElite_Police::Update_State()
 		m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 		return;
 	}
+}
+
+_int CElite_Police::Update_AttackType()
+{
+
+	// °Å¸®·Î?
+	_vector vDist = {};
+	vDist = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+	if (XMVectorGetX(vDist) > 8.f)
+		return ATTACK_END;
+
+	else
+		return GetRandomInt(ATTACK_A, ATTACK_D);
 }
 
 HRESULT CElite_Police::Ready_Weapon()

@@ -59,6 +59,7 @@
 #pragma region LEVEL_GL
 #include "UI_Container.h"
 #include "Dynamic_UI.h"
+#include "Dynamic_Text_UI.h"
 #include "UI_Text.h"
 #include "UI_Guide.h"
 #include "HP_Bar.h"
@@ -83,6 +84,7 @@
 #include "Buttler_Train.h"
 #include "UI_MonsterHP_Bar.h"
 #include "UI_LockOn_Icon.h"
+
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -264,6 +266,11 @@ HRESULT CLoader::Loading_For_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Text"),
 		CUI_Text::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_Text_UI"),
+		CDynamic_Text_UI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 		CUI_Container::Create(m_pDevice, m_pContext))))

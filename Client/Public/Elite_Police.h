@@ -8,6 +8,9 @@ NS_BEGIN(Client)
 
 class CElite_Police final : public CMonster_Base
 {
+public:
+	typedef enum ATTACKTYPE {ATTACK_A, ATTACK_B, ATTACK_C, ATTACK_D, ATTACK_END};
+
 private:
 	CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CElite_Police(const CElite_Police& Prototype);
@@ -33,7 +36,7 @@ public:
 
 	virtual void	Update_State();
 
-	void Update_AttackType();
+	_int Update_AttackType();
 
 private: /* [ Setup ÇÔ¼ö ] */
 

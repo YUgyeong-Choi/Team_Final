@@ -385,6 +385,9 @@
     <Filter Include="02.GameObjects\12.Projectile\Fuoco">
       <UniqueIdentifier>{857ac3d0-7a88-456d-8659-01d2ab5485b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Text">
+      <UniqueIdentifier>{390fc19e-aa96-482f-a915-8e70584e6967}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -826,6 +829,9 @@
     <ClInclude Include="..\Public\FireBall.h">
       <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Dynamic_Text_UI.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1240,6 +1246,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\FireBall.cpp">
       <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Dynamic_Text_UI.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
