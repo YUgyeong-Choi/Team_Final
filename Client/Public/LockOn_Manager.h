@@ -26,13 +26,13 @@ public:
     virtual HRESULT Late_Update(_float fTimeDelta);
     virtual HRESULT Render();
 public:
-    void SetPlayer(CGameObject* pPlayer);
+    void SetPlayer(CUnit* pPlayer);
     void Add_LockOnTarget(CUnit* pTarget);
 
     void Set_Active();
-    void Set_Off(CGameObject* pObj);
+    void Set_Off(CUnit* pObj);
 
-    CGameObject* Get_Target() { return m_pBestTarget; }
+    CUnit* Get_Target() { return m_pBestTarget; }
 
 private:
     // Hp가 0이하 제외, 벽 뒤에 있는 것 제외

@@ -88,6 +88,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	/* [ 락온 세팅 ] */
 	CLockOn_Manager::Get_Instance()->SetPlayer(this);
+	m_vRayOffset = { 0.f, 1.7f, 0.f, 0.f };
 
 	m_iCurrentHP = m_iMaxHP;
 	m_fCurrentStamina = _float(m_iMaxStamina);

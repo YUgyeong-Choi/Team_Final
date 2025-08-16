@@ -371,9 +371,9 @@ HRESULT CLockOn_Manager::Render()
 }
 
 
-void CLockOn_Manager::SetPlayer(CGameObject* pPlayer)
+void CLockOn_Manager::SetPlayer(CUnit* pPlayer)
 {
-    m_pPlayer = static_cast<CUnit*>(pPlayer);
+    m_pPlayer = pPlayer;
 }
 
 void CLockOn_Manager::Add_LockOnTarget(CUnit* pTarget)
@@ -396,7 +396,7 @@ void CLockOn_Manager::Set_Active()
     }
 }
 
-void CLockOn_Manager::Set_Off(CGameObject* pObj)
+void CLockOn_Manager::Set_Off(CUnit* pObj)
 {
     if (m_pBestTarget != pObj)
         return;

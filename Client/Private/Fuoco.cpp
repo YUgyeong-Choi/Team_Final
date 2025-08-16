@@ -60,6 +60,8 @@ HRESULT CFuoco::Initialize(void* pArg)
 	Ready_AttackPatternWeightForPhase1();
 	Ready_BoneInformation();
 
+	// 래이캐스트 머리쪽에 할려고 둔 offset !!!!
+	m_vRayOffset = { 0.f, 3.3f, 0.f, 0.f };
 	return S_OK;
 }
 

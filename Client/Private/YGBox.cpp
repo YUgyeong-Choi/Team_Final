@@ -50,9 +50,6 @@ void CYGBox::Priority_Update(_float fTimeDelta)
 
 void CYGBox::Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
-		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
-	}
 }
 
 void CYGBox::Late_Update(_float fTimeDelta)
