@@ -365,7 +365,7 @@ namespace Engine
 
 	typedef struct ENGINE_DLL Area
 	{
-		enum class EAreaType : _int { ROOM, LOBBY, OUTDOOR, INDOOR , END};
+		enum class EAreaType : _int { ROOM, LOBBY, INDOOR, OUTDOOR, END};
 
 		_int iAreaState;
 		_int iAreaId;

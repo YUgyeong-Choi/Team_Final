@@ -178,6 +178,8 @@ _int CArea_Manager::FindAreaContainingPoint(const _float3& vPoint) const
     return static_cast<_int>(-1);
 }
 
+
+
 void CArea_Manager::DebugDrawCells()
 {
     if (!m_DebugDrawCells)
@@ -194,8 +196,7 @@ void CArea_Manager::DebugDrawCells()
         XMFLOAT3 vPos;
         XMStoreFloat3(&vPos, m_vPlayerPos);        
 
-        const _bool bOverlapped =
-            tArea.ContainsPoint(vPos) && (tArea.iAreaId != m_iCurrentAreaId);
+        const _bool bOverlapped = tArea.ContainsPoint(vPos);
 
         XMFLOAT4 col = GetAreaDebugColor(
             tArea,
@@ -231,7 +232,6 @@ void CArea_Manager::RenderDebugLines(const vector<DebugLine>& lines)
 
     m_pBatch->End();
 }
-
 XMFLOAT4 CArea_Manager::BaseColorByType(AREA::EAreaType eType)
 {
     switch (eType)
@@ -256,14 +256,14 @@ XMFLOAT4 CArea_Manager::GetAreaDebugColor(const AREA& tArea, _int iCurrentAreaId
 {
     // 1) 플레이어가 들어있는 '대표' 구역 → 항상 초록 (최우선)
     if (tArea.iAreaId == iCurrentAreaId)
-        return XMFLOAT4(0.20f, 1.00f, 0.20f, 1.00f);
+        return XMFLOAT4(0.f, 1.f, 0.f, 1.f);
 
     // 2) 기본색은 우선순위 기반
     XMFLOAT4 tCol = BaseColorByType(tArea.eType);
 
-    // 3) 겹치는 구역은 살짝 하이라이트(선택: 밝기만 살짝 올림)
+    // 3) 겹치는 구역은 빨간색으로
     if (bOverlapped)
-        return Lerp(tCol, XMFLOAT4(1.f, 1.f, 1.f, 1.f), 0.25f);
+        return XMFLOAT4(1.f, 0.f, 0.f, 1.f);
 
     // 4) 일반 구역은 고유색 그대로
     return tCol;

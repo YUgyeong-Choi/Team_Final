@@ -46,7 +46,7 @@ void CLevel::HoldMouse()
 
     // 마우스를 화면 중앙으로 이동
     SetCursorPos(screenWidth / 2, screenHeight / 2);
-    ShowCursor(TRUE);
+    ShowCursor(FALSE);
 }
 
 void CLevel::Free()

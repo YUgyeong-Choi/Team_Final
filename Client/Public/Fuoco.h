@@ -210,13 +210,13 @@ private:
     function<void()> PatterDebugFunc = [this]() {    cout << "=== Attack Pattern Weights ===" << endl;
     for (const auto& [pattern, weight] : m_PatternWeightMap)
     {
-        cout << "Pattern " << static_cast<_int>(pattern)
+       /* cout << "Pattern " << static_cast<_int>(pattern)
             << ": Weight=" << weight
             << ", Consecutive=" << m_PatternCountMap[pattern]
             <<"\n"
             << ", Previous=" << static_cast<_int>(m_ePrevAttackPattern) <<"\n"<<
                 ", Current=" << static_cast<_int>(m_eCurAttackPattern)
-                << endl;
+                << endl;*/
     }
     cout << "===============================" << endl;
         };
