@@ -145,23 +145,23 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 	// 이전 상체랑 하체 중에 다음 상체랑 같은 게 없으면 처리
 
 
-
+	_bool bFromLowerAnimSame = (transitionResult.pFromLowerAnim == transitionResult.pToLowerAnim);
+	_bool bToUpperLowerSame = (transitionResult.pFromUpperAnim == transitionResult.pToUpperAnim);
+	_bool bFromAnimSameToUpper = (transitionResult.pFromLowerAnim == transitionResult.pToUpperAnim);
+	_bool bFromAnimSameToLower = (transitionResult.pFromUpperAnim == transitionResult.pToLowerAnim);
+	if (bFromLowerAnimSame == false && bFromAnimSameToLower == false) // 이전 하체랑도 다르고 이전 상체랑도 다른 하체라면
+	{
+		_float fLowerStartTime = transitionResult.fLowerStartTime * m_Blend.toLowerAnim->GetDuration();
+		m_Blend.toLowerAnim->SetCurrentTrackPosition(fLowerStartTime);
+	}
+	if (bToUpperLowerSame == false && bFromAnimSameToUpper == false)
+	{
+		_float fUpperStartTime = transitionResult.fUpperStartTime * m_Blend.toUpperAnim->GetDuration();
+		m_Blend.toUpperAnim->SetCurrentTrackPosition(fUpperStartTime);
+	}
 	if (m_eCurrentTransitionType != ET::FullbodyToFullbody)
 	{
-		_bool bFromLowerAnimSame = (transitionResult.pFromLowerAnim == transitionResult.pToLowerAnim);
-		_bool bToUpperLowerSame = (transitionResult.pFromUpperAnim == transitionResult.pToUpperAnim);
-		_bool bFromAnimSameToUpper = (transitionResult.pFromLowerAnim == transitionResult.pToUpperAnim);
-		_bool bFromAnimSameToLower = (transitionResult.pFromUpperAnim == transitionResult.pToLowerAnim);
-		if (bFromLowerAnimSame == false && bFromAnimSameToLower == false) // 이전 하체랑도 다르고 이전 상체랑도 다른 하체라면
-		{
-			_float fLowerStartTime = transitionResult.fLowerStartTime * m_Blend.toLowerAnim->GetDuration();
-			m_Blend.toLowerAnim->SetCurrentTrackPosition(fLowerStartTime);
-		}
-		if (bToUpperLowerSame == false && bFromAnimSameToUpper == false)
-		{
-			_float fUpperStartTime = transitionResult.fUpperStartTime * m_Blend.toUpperAnim->GetDuration();
-			m_Blend.toUpperAnim->SetCurrentTrackPosition(fUpperStartTime);
-		}
+		
 	}
 	
 

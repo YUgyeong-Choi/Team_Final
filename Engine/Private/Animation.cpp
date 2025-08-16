@@ -99,7 +99,7 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 	//}
 	m_CurrentKeyFrameIndices.resize(m_iNumChannels);
 	m_Bones = Bones; // 뼈대 정보 저장
-	m_fTickPerSecond = 55.f;
+	//m_fTickPerSecond = 55.f;
 	return S_OK;
 }
 
@@ -284,5 +284,5 @@ void CAnimation::Deserialize(const json& j)
 		m_bUseRootMotion = j["RootMotion"].get<_bool>();
 	}
 
-	m_fTickPerSecond = max(m_fTickPerSecond, 55.f); // 최소값 설정
+//	m_fTickPerSecond = max(m_fTickPerSecond, 55.f); // 최소값 설정
 }

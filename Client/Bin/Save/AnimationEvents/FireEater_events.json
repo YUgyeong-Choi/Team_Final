@@ -283,27 +283,27 @@
             "RootMotion": true,
             "TickPerSecond": 60.0
         },
-      {
-        "ClipName": "AS_ATLBoss0_Skill_11_Loop",
-        "Duration": 65.0,
-        "Events": [
-          {
-            "EventName": "Turnning",
-            "Time": 1.0
-          },
-          {
-            "EventName": "FireBall",
-            "Time": 15.0
-          },
-          {
-            "EventName": "FireBallCombo",
-            "Time": 60.029998779296875
-          }
-        ],
-        "IsLoop": false,
-        "RootMotion": false,
-        "TickPerSecond": 60.0
-      },
+        {
+            "ClipName": "AS_ATLBoss0_Skill_11_Loop",
+            "Duration": 65.0,
+            "Events": [
+                {
+                    "EventName": "Turnning",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "FireBall",
+                    "Time": 15.0
+                },
+                {
+                    "EventName": "FireBallCombo",
+                    "Time": 60.029998779296875
+                }
+            ],
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 60.0
+        },
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Right",
             "Duration": 85.0,
@@ -342,16 +342,28 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Left",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "Flamethrower",
+                    "Time": 2.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 30.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Right",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "Flamethrower",
+                    "Time": 2.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 30.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Start",
