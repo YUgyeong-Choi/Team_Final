@@ -49,8 +49,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL; 
 
-	if (FAILED(Ready_StationDoor()))
-		return E_FAIL;
+	if (m_iLevelID == ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))
+	{
+		if (FAILED(Ready_StationDoor()))
+			return E_FAIL;
+	}
 
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();

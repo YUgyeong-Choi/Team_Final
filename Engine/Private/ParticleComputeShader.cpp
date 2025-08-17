@@ -123,7 +123,7 @@ HRESULT CParticleComputeShader::Dispatch_ParticleCS(const PARTICLECBUFFER& tCBuf
 	Bind();
 
 	const _uint iThreadX = 128;
-	UINT groups = (m_iNumInstance + iThreadX - 1) / iThreadX; // ¿Ã¸² ³ª´°¼À
+	_uint groups = (m_tParticleCBuffer.iNumInstances + iThreadX - 1) / iThreadX; // ¿Ã¸² ³ª´°¼À
 
 	Dispatch(groups, 1, 1);
 
