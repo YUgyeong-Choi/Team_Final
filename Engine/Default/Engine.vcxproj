@@ -178,7 +178,6 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\Public\AnimComputeShader.h" />
     <ClInclude Include="..\Public\AnimController.h" />
     <ClInclude Include="..\Public\Area_Manager.h" />
-    <ClInclude Include="..\public\AStar.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\BlendObject.h" />
     <ClInclude Include="..\Public\Bone.h" />
@@ -269,7 +268,6 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\Private\AnimComputeShader.cpp" />
     <ClCompile Include="..\Private\AnimController.cpp" />
     <ClCompile Include="..\Private\Area_Manager.cpp" />
-    <ClCompile Include="..\private\AStar.cpp" />
     <ClCompile Include="..\Private\Base.cpp" />
     <ClCompile Include="..\Private\BlendObject.cpp" />
     <ClCompile Include="..\Private\Bone.cpp" />
