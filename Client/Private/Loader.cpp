@@ -456,7 +456,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	string Map = "TEST"; //STATION, TEST
+	string Map = "STATION"; //STATION, TEST
 
 	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
 	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
