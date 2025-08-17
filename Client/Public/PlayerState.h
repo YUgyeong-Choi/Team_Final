@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "Client_Defines.h"
 #include "Camera_Manager.h"
+#include "LockOn_Manager.h"
 #include "DH_ToolMesh.h"
 
 #include "GameInstance.h"
@@ -56,6 +57,33 @@ protected:
 
 		return false;
 	}
+
+protected: /* [ 락온 관련 ] */
+    void LockOnMovement()
+    {
+        if (m_pOwner->m_bIsLockOn)
+        {
+            if (KEY_PRESSING(DIK_W))
+                m_pOwner->m_pAnimator->SetBool("Front", true);
+            else
+                m_pOwner->m_pAnimator->SetBool("Front", false);
+
+            if (KEY_PRESSING(DIK_A))
+                m_pOwner->m_pAnimator->SetBool("Left", true);
+            else
+                m_pOwner->m_pAnimator->SetBool("Left", false);
+
+            if (KEY_PRESSING(DIK_S))
+                m_pOwner->m_pAnimator->SetBool("Back", true);
+            else
+                m_pOwner->m_pAnimator->SetBool("Back", false);
+
+            if (KEY_PRESSING(DIK_D))
+                m_pOwner->m_pAnimator->SetBool("Right", true);
+            else
+                m_pOwner->m_pAnimator->SetBool("Right", false);
+        }
+    }
 
 protected:
 	CPlayer* m_pOwner;
@@ -246,6 +274,7 @@ public:
                     m_bChargeStarted = true;
             }
         }
+        
     }
 
     virtual void Exit() override
@@ -261,7 +290,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
         
-        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(10.f))
+        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(30.f))
             return EPlayerState::SPRINT;
 
         if (input.bShift && m_pOwner->m_bWeaponEquipped) // 가드
@@ -385,7 +414,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(10.f))
+        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(30.f))
             return EPlayerState::SPRINT;
 
         if (input.bShift && m_pOwner->m_bWeaponEquipped) // 가드
@@ -480,6 +509,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
+        LockOnMovement();
     }
 
     virtual void Exit() override
@@ -840,8 +870,11 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (IsStaminaEnough(10.f))
-            return EPlayerState::IDLE;
+        if (!IsStaminaEnough(10.f))
+        {
+            m_pOwner->m_pAnimator->SetBool("Sprint", false);
+            return EPlayerState::RUN;
+        }
 
         //방향키가 아무것도 안눌렸다.
         if (!input.bMove)
@@ -1531,6 +1564,8 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        LockOnMovement();
     }
 
     virtual void Exit() override

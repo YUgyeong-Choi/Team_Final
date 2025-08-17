@@ -651,9 +651,9 @@ FrustumHit COctoTree_Manager::Frustum::OctoIsInAABB(const _float3& bmin, const _
 {
     const _float fOutsideEps = static_cast<_float>(1e-4f);
 
-    const _float fPadNearWorld = static_cast<_float>(1.0f);
-    const _float fPadOtherWorld = static_cast<_float>(0.15f); 
-    const _float fPadRatio = static_cast<_float>(0.15f);
+    const _float fPadNearWorld = 1.0f;
+    const _float fPadOtherWorld = 0.15f; 
+    const _float fPadRatio = 0.35f;
 
     XMVECTOR vMin = XMLoadFloat3(&bmin);
     XMVECTOR vMax = XMLoadFloat3(&bmax);
@@ -661,7 +661,7 @@ FrustumHit COctoTree_Manager::Frustum::OctoIsInAABB(const _float3& bmin, const _
     XMVECTOR vHalfExtent = 0.5f * (vMax - vMin);
 
     const _float fHalfDiag = XMVectorGetX(XMVector3Length(vHalfExtent));
-    const _float fInsideSlack = -static_cast<_float>(0.35f) * fHalfDiag;
+    const _float fInsideSlack = -0.35f * fHalfDiag;
 
     _bool bAnyIntersect = false;
 

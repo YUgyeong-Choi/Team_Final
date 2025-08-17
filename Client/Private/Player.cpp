@@ -87,7 +87,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	CCamera_Manager::Get_Instance()->SetPlayer(this);
 
 	/* [ 락온 세팅 ] */
-	CLockOn_Manager::Get_Instance()->SetPlayer(this);
+	m_pLockOn_Manager = CLockOn_Manager::Get_Instance();
+	m_pLockOn_Manager->SetPlayer(this);
 	m_vRayOffset = { 0.f, 1.7f, 0.f, 0.f };
 
 	if (FAILED(Ready_UIParameters()))
@@ -144,7 +145,21 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 락온 관련 ] */
 	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
-		CLockOn_Manager::Get_Instance()->Set_Active();
+		m_pLockOn_Manager->Set_Active();
+
+	CUnit* pTarget = m_pLockOn_Manager->Get_Target();
+	if (pTarget)
+	{
+		/* [ 타겟이 있다면 ] */
+		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+		m_pTransformCom->LookAtWithOutY(vTargetPos);
+		m_bIsLockOn = true;
+	}
+	else
+	{
+		/* [ 타겟이 없다면 ] */
+		m_bIsLockOn = false;
+	}
 
 	/* [ 아이템 ] */
 	Update_Slot(fTimeDelta);
@@ -171,8 +186,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		m_fStamina = 50.f;
-		Callback_Stamina();
+		m_pAnimator->SetBool("Back", true);
 	}
 
 	/* [ 아이템 ] */

@@ -128,7 +128,6 @@ private: /* [ 상호작용 관련 ] */
 private:
 	void ItemWeaponOFF(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
-
 	
 private: /* [ 슬룻 함수 ] */
 	void Callback_UpBelt();
@@ -172,10 +171,9 @@ private: /* [ 상태 변수 ] */
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
-private: /*  */
-
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
+	class CLockOn_Manager* m_pLockOn_Manager = { nullptr };
 
 	/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
@@ -264,6 +262,7 @@ private: /* [ 리전 암 내구도 ] */
 private: /* [ 현재 상태 ] */
 	_bool	bIsGuarding = { false };
 	_bool	bIsInvincible = { false };
+	_bool	m_bIsLockOn = { false };
 
 private: /* [ 현재 플레이어 레벨 ] */
 	_int	m_iLevel = { 0 };
