@@ -403,14 +403,11 @@
     <Filter Include="02.GameObjects\14. AStar">
       <UniqueIdentifier>{b465af8a-30b0-4d99-982d-fc5de51f5df9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Mesh\DynamicMesh">
-      <UniqueIdentifier>{e7f685f9-8dbf-49c7-9c65-0a63d04e86a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Script">
       <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.Mesh\DynamicMesh\Door">
-      <UniqueIdentifier>{50e928b3-d44f-4079-9150-80a889504b3b}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\13. DynamicMesh\00.Door">
+      <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -866,7 +863,7 @@
       <Filter>02.GameObjects\14. AStar</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DoorMesh.h">
-      <Filter>02.GameObjects\00.Mesh\DynamicMesh\Door</Filter>
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1296,7 +1293,7 @@
       <Filter>02.GameObjects\14. AStar</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DoorMesh.cpp">
-      <Filter>02.GameObjects\00.Mesh\DynamicMesh\Door</Filter>
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

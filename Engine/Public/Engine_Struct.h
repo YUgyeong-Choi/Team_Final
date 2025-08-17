@@ -480,21 +480,22 @@ namespace Engine
 		_float2		_pad0;
 	}PARTICLEDESC;
 
-	typedef struct tagParticleValDesc{
-		_float4		vRight;
-		_float4		vUp;
-		_float4		vLook;
-		_float4		vTranslation; // WorldMatrix
-
-		_float4		vDirection = {};
-
-		_float2		vLifeTime;
-		_float		vSpeeds = {};
-		_float		fRotationSpeed = {}; // 자전 속도
-
-		_float		fOrbitSpeed = {}; // 공전 속도
-
-	}PARTICLEVALDESC;
+	/* PARTICLEDESC + VTXPOSINSTANCE */
+	//typedef struct tagParticleValDesc{
+	//	_float4		vRight;
+	//	_float4		vUp;
+	//	_float4		vLook;
+	//	_float4		vTranslation; // WorldMatrix
+	//
+	//	_float4		vDirection = {};
+	//
+	//	_float2		vLifeTime;
+	//	_float		vSpeeds = {};
+	//	_float		fRotationSpeed = {}; // 자전 속도
+	//
+	//	_float		fOrbitSpeed = {}; // 공전 속도
+	//
+	//}PARTICLEVALDESC;
 
 	typedef struct tagParticleCBuffer {
 		_float		fDeltaTime;       // dt (tool이면 무시)

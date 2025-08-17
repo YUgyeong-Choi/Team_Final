@@ -157,6 +157,17 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 		VIBufferDesc.vSize = m_vSize;
 		VIBufferDesc.vSpeed = m_vSpeed;
 		VIBufferDesc.isTool = true;
+
+		VIBufferDesc.bSpin = m_bSpin;
+		VIBufferDesc.bOrbit = m_bOrbit;
+		VIBufferDesc.vRotationAxis = m_vRotationAxis;
+		VIBufferDesc.vOrbitAxis = m_vOrbitAxis;
+		VIBufferDesc.vRotationSpeed = m_vRotationSpeed;
+		VIBufferDesc.vOrbitSpeed = m_vOrbitSpeed;
+		VIBufferDesc.vAccel = m_vAccel;
+		VIBufferDesc.fMaxSpeed = m_fMaxSpeed;
+		VIBufferDesc.fMinSpeed = m_fMinSpeed;
+
 		pArg = &VIBufferDesc;
 	}
 	else
@@ -173,6 +184,16 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 		m_vSpeed		= pDesc->vSpeed;
 		m_bGravity		= pDesc->bGravity;
 		m_fGravity		= pDesc->fGravity;
+
+		m_bSpin			= pDesc->bSpin;
+		m_bOrbit		= pDesc->bOrbit;
+		m_vRotationAxis = pDesc->vRotationAxis;
+		m_vOrbitAxis	= pDesc->vOrbitAxis;
+		m_vRotationSpeed= pDesc->vRotationSpeed;
+		m_vOrbitSpeed	= pDesc->vOrbitSpeed;
+		m_vAccel		= pDesc->vAccel;
+		m_fMaxSpeed		= pDesc->fMaxSpeed;
+		m_fMinSpeed		= pDesc->fMinSpeed;
 	}
 
 
@@ -219,15 +240,16 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 	{
 		DESC* pDesc = static_cast<DESC*>(pArg);
 
-		VIBufferDesc.ePType = pDesc->ePType;
 		VIBufferDesc.iNumInstance = pDesc->iNumInstance;
-		VIBufferDesc.isLoop = pDesc->isLoop;
-		VIBufferDesc.vCenter = pDesc->vCenter;
-		VIBufferDesc.vLifeTime = pDesc->vLifeTime;
 		VIBufferDesc.vPivot = pDesc->vPivot;
+		VIBufferDesc.vLifeTime = pDesc->vLifeTime;
+		VIBufferDesc.vSpeed = pDesc->vSpeed;
+		VIBufferDesc.isLoop = pDesc->isLoop;
+		VIBufferDesc.ePType = pDesc->ePType;
 		VIBufferDesc.vRange = pDesc->vRange;
 		VIBufferDesc.vSize = pDesc->vSize;
-		VIBufferDesc.vSpeed = pDesc->vSpeed;
+		VIBufferDesc.vCenter = pDesc->vCenter;
+
 		VIBufferDesc.isTool = true;
 		/* For.Com_VIBuffer */
 		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),

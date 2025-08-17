@@ -552,7 +552,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	CMonster_Base::MONSTER_BASE_DESC pDesc{};
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(180.0f);
-	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	pDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	pDesc.InitPos = _float3(85.5f, 0.f, -7.5f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Buttler_Train"));
@@ -643,7 +643,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 {
 	CDoorMesh::DOORMESH_DESC Desc{};
 	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
 

@@ -17,12 +17,12 @@ public:
 	{
 		/* Instance Buffer Desc */
 		_uint				iNumInstance = 1;
-		_float3				vRange;
-		_float2				vSize;
-		_float3				vCenter;
 		_float3				vPivot;
 		_float2				vLifeTime;
 		_float2				vSpeed; 
+		_float3				vRange;
+		_float3				vCenter;
+		_float2				vSize;
 		PARTICLETYPE		ePType;
 
 		/* Buffer Tag */
