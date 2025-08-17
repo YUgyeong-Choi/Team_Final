@@ -44,3 +44,21 @@ void CAStar::Adjust_Route()
 void CAStar::Add_Requester(CGameObject*)
 {
 }
+
+CAStar* CAStar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CAStar* pInstance = new CAStar(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Created : CAStar");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CAStar::Free()
+{
+	__super::Free();
+}

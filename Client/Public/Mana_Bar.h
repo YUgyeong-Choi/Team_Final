@@ -24,7 +24,7 @@ private:
 
 public:
 	void Set_isUseWeapon() { m_isUseWeapon = true; }
-	void Set_MaxMana(_int iMana) { m_iMaxMana = iMana; }
+	void Set_MaxMana(_float fMana) { m_fMaxMana = fMana; }
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -43,8 +43,8 @@ private:
 	CTexture* m_pGradationCom = { nullptr };
 
 private:
-	_int m_iCurrentMana = {};
-	_int m_iMaxMana = {300};
+	_float m_fCurrentMana = {};
+	_float m_fMaxMana = {300};
 
 	_bool m_isUseWeapon = {false};
 

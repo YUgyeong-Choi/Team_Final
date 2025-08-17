@@ -104,8 +104,8 @@ HRESULT CPanel_Player_RD::Initialize(void* pArg)
 			static_cast<CDynamic_UI*>(m_pSkillType->Get_PartUI()[0])->Set_iTextureIndex(weaponDesc[0].iSkillType);
 			static_cast<CDynamic_UI*>(m_pSkillType->Get_PartUI()[1])->Set_iTextureIndex(weaponDesc[1].iSkillType);
 
-			static_cast<CMana_Bar*>(m_pManaCost->Get_PartUI()[0])->Set_MaxMana(weaponDesc[0].iManaCost);
-			static_cast<CMana_Bar*>(m_pManaCost->Get_PartUI()[1])->Set_MaxMana(weaponDesc[1].iManaCost);
+			static_cast<CMana_Bar*>(m_pManaCost->Get_PartUI()[0])->Set_MaxMana(weaponDesc[0].fManaCost);
+			static_cast<CMana_Bar*>(m_pManaCost->Get_PartUI()[1])->Set_MaxMana(weaponDesc[1].fManaCost);
 
 		}
 
