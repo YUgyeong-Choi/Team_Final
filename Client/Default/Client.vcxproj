@@ -177,6 +177,7 @@
     <ClInclude Include="..\public\DecalToolObject.h" />
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\DH_ToolMesh.h" />
+    <ClInclude Include="..\Public\DoorMesh.h" />
     <ClInclude Include="..\public\Durability_Bar.h" />
     <ClInclude Include="..\Public\DynamicMesh.h" />
     <ClInclude Include="..\public\Dynamic_Text_UI.h" />
@@ -328,6 +329,7 @@
     <ClCompile Include="..\private\DecalToolObject.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
+    <ClCompile Include="..\Private\DoorMesh.cpp" />
     <ClCompile Include="..\private\Durability_Bar.cpp" />
     <ClCompile Include="..\Private\DynamicMesh.cpp" />
     <ClCompile Include="..\private\Dynamic_Text_UI.cpp" />

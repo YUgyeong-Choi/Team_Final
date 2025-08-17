@@ -12,7 +12,7 @@
 #include "Static_Decal.h"
 #pragma endregion
 
-
+#include "DoorMesh.h"
 
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
@@ -25,7 +25,6 @@
 #include "Wego.h"
 
 #include "LockOn_Manager.h"
-
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -175,6 +174,10 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
 	if (FAILED(Ready_Monster()))
+		return E_FAIL;
+
+	// 문 같이 상호작용 하는 것들
+	if (FAILED(Ready_Interact()))
 		return E_FAIL;
 
 	return S_OK;
@@ -631,6 +634,36 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 		return E_FAIL;
 
 	m_pGameInstance->SetObjectType(vObjectType);
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Interact()
+{
+	CDoorMesh::DOORMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
+	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
+
+	/* 문자열 받는 곳 */
+	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
+	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	_float3 vPosition = _float3(52.6f, 0.02f, -2.4f);
+	_matrix matWorld = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	_float4x4 matWorldFloat;
+	XMStoreFloat4x4(&matWorldFloat, matWorld);
+	Desc.WorldMatrix = matWorldFloat;
+
+	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
+	Desc.vTriggerOffset = _vector();
+	Desc.vTriggerSize = _vector({ 1.f,0.2f,1.f, 0.f });
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &pGameObject, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

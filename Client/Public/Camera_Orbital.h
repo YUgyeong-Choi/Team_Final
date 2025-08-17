@@ -40,25 +40,25 @@ public:
 	_float Get_Pitch() { return m_fPitch; }
 	_float Get_Yaw() { return m_fYaw; }
 
-	/* [ 락온 시작 설정 ] */
-	void Set_LockOn(CGameObject* pTarget, _bool bActive);
-
 	/* [ 직접 주는 pitch & yaw 값대로 오비탈 위치 가져옴 ] */
 	_matrix Get_OrbitalWorldMatrix(_float fPitch, _float fYaw);
 
 	/* [ 방향 벡터로 Yaw Pich 가지고오기 ] */
 	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed);
 	
+	void Set_LockOn(CGameObject* pTarget, _bool bActive);
 	void Set_ActiveTalk(_bool bActive, CGameObject*  pTarget);
 private:
+	// 카메라 Look 관련
 	/* [ 평소에 실행 ] */
-	void Update_CameraMatrix(_float fTimeDelta);
+	void Update_CameraLook(_float fTimeDelta);
 	/* [ TargetPitch & Yaw 로 보간 ] */
-	void Update_TargetCameraMatrix(_float fTimeDelta);
+	void Update_TargetCameraLook(_float fTimeDelta);
 	/* [ 락온 되었을 때 ] */
-	void Update_LockOnCameraMatrix(_float fTimeDelta);
+	void Update_LockOnCameraLook(_float fTimeDelta);
 
-	void Set_CameraMatrix(_float fTimeDelta);
+	// 카메라 Pos 관련
+	void Update_CameraPos(_float fTimeDelta);
 private:
 	_bool			m_bSetPitchYaw = false;
 
@@ -95,7 +95,7 @@ private:
 	// Npc 대화용 타겟
 	CGameObject* m_pNpcTalkTarget = { nullptr };
 
-	// 멤버 변수
+	// Look 보간을 위한 변수들
 	_vector m_vPrevLookTarget = XMVectorZero();
 	bool m_bPrevLookInit = false;
 	float m_fLookLerpSpeed = 8.f; // 값 클수록 빠르게 붙음

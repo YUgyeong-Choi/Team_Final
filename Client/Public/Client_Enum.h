@@ -67,6 +67,11 @@ namespace Client
 	{
 		ONE, TWO, THREE
 	};
+
+	enum INTERACT_TYPE
+	{
+		TUTORIALDOOR,
+	};
 #pragma endregion
 }
 
