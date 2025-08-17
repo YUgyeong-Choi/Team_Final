@@ -387,6 +387,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
 		m_pParticleDesc[i].vSpeeds = m_pGameInstance->Compute_Random(pDesc->vSpeed.x, pDesc->vSpeed.y);
+		m_pParticleDesc[i].fAccel = m_pGameInstance->Compute_Random(pDesc->vAccel.x, pDesc->vAccel.y);
 		m_pParticleDesc[i].fRotationSpeed = m_pGameInstance->Compute_Random(pDesc->vRotationSpeed.x, pDesc->vRotationSpeed.y);
 		m_pParticleDesc[i].fOrbitSpeed = m_pGameInstance->Compute_Random(pDesc->vOrbitSpeed.x, pDesc->vOrbitSpeed.y);
 		_float	fSize = m_pGameInstance->Compute_Random(pDesc->vSize.x, pDesc->vSize.y);

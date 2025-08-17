@@ -134,6 +134,10 @@ HRESULT CParticleComputeShader::Dispatch_ParticleCS(const PARTICLECBUFFER& tCBuf
 void CParticleComputeShader::Bind()
 {
 	__super::Bind();
+
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	m_pContext->VSSetShaderResources(0, 1, nullSRV);
+
 	m_pContext->UpdateSubresource(m_pCBuffer, 0, nullptr, &m_tParticleCBuffer, 0, 0);
 
 	ID3D11UnorderedAccessView* uavs[] = { m_pVBInstanceUAV };

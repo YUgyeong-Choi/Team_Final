@@ -18,10 +18,15 @@ struct ParticleInst
 struct ParticleParam
 {
     float4 Direction; // normalized dir (w=unused)
+
     float Speed;
     float RotationSpeed; // degrees/sec
     float OrbitSpeed; // degrees/sec
-    float _pad;
+    float fAccel; // 가속도 (+면 가속, -면 감속)
+
+    float fMaxSpeed; // 최대 속도 (옵션)
+    float fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
+    float2 _pad;
 };
 
 
@@ -69,81 +74,6 @@ float3 rotateAroundAxis(float3 v, float3 axis, float angleRad)
     return v * c + cross(axis, v) * s + axis * dot(axis, v) * (1.0f - c);
 }
 
-//[numthreads(128, 1, 1)]
-//void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
-//{
-//    uint i = dispatchThreadId.x;
-//    ParticleInst inst = gInst[i];
-//    ParticleParam pp = gParam[i];
-//
-//    // === 시간 계산 ===
-//    float t;
-//    if (IsTool != 0)
-//    {
-//        t = TrackTime;
-//        if (IsLoop != 0)
-//            t = fmod(t, inst.LifeTime.x);
-//        inst.LifeTime.y = t;
-//    }
-//    else
-//    {
-//        inst.LifeTime.y += DeltaTime;
-//        t = inst.LifeTime.y;
-//    }
-//
-//    // === 기본 위치 이동 ===
-//    float3 pos = inst.Translation.xyz;
-//
-//    if (ParticleType == 0)
-//    {
-//        // SPREAD: pivot -> start방향
-//        float3 dir = normalize(inst.Translation.xyz - Pivot);
-//        pos += dir * pp.Speed * (IsTool != 0 ? t : DeltaTime);
-//    }
-//    else if (ParticleType == 1)
-//    {
-//        // DIRECTIONAL: center - pivot 방향(고정)
-//        float3 dir = normalize(Center - Pivot);
-//        pos += dir * pp.Speed * (IsTool != 0 ? t : DeltaTime);
-//    }
-//
-//    // === 공통 처리 ===
-//
-//    // 중력
-//    if (UseGravity != 0)
-//    {
-//        float dt = (IsTool != 0 ? t : DeltaTime);
-//        pos.y -= 0.5f * Gravity * dt * dt;
-//    }
-//
-//    // 자전(로컬 basis 회전)
-//    if (UseSpin != 0)
-//    {
-//        float angle = radians(pp.RotationSpeed) * (IsTool != 0 ? t : DeltaTime);
-//        inst.Right.xyz = rotateAroundAxis(inst.Right.xyz, RotationAxis, angle);
-//        inst.Up.xyz = rotateAroundAxis(inst.Up.xyz, RotationAxis, angle);
-//        inst.Look.xyz = rotateAroundAxis(inst.Look.xyz, RotationAxis, angle);
-//    }
-//
-//    // 공전(센터 기준 오프셋 회전)
-//    if (UseOrbit != 0)
-//    {
-//        float angle = radians(pp.OrbitSpeed) * (IsTool != 0 ? t : DeltaTime);
-//        float3 offset = pos - Center;
-//        offset = rotateAroundAxis(offset, OrbitAxis, angle);
-//        pos = Center + offset;
-//    }
-//
-//    // === 루프 처리 ===
-//    if (IsTool == 0 && IsLoop != 0 && inst.LifeTime.y >= inst.LifeTime.x)
-//    {
-//        inst.LifeTime.y = 0.0f;
-//        inst = gInitInst[i]; // ★ 초기값 복원
-//    }
-//
-//    inst.Translation = float4(pos, 1.0f);
-//    gInst[i] = inst;
-//}
 
 
 [numthreads(128, 1, 1)]
@@ -169,8 +99,14 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         float3 pos = init.Translation.xyz;
 
         // 이동: 초기위치 + (방향 * 속도 * t)
+        //float3 dir = normalize(pp.Direction.xyz);
+        //pos += dir * pp.Speed * t;
+
+        // 이동: 초기위치 + v0*t + 0.5*a*t^2 (가속 추가 버전)
         float3 dir = normalize(pp.Direction.xyz);
-        pos += dir * pp.Speed * t;
+        float v0 = pp.Speed;
+        float accel = pp.fAccel;
+        pos += dir * (v0 * t + 0.5f * accel * t * t);
 
         // 중력: 절대시간 적용 (s = 1/2 g t^2)
         if (UseGravity != 0)
@@ -216,6 +152,13 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
 
         float3 pos = inst.Translation.xyz;
         float3 dir = normalize(pp.Direction.xyz);
+
+        //// 이동: Δs = v * Δt
+        //pos += dir * pp.Speed * DeltaTime;
+        
+        // 가속 추가 버전
+        // 속도 갱신: v = v + a*Δt (최소/최대 속도 제한 포함)
+        pp.Speed = clamp(pp.Speed + pp.fAccel * DeltaTime, pp.fMinSpeed, pp.fMaxSpeed);
 
         // 이동: Δs = v * Δt
         pos += dir * pp.Speed * DeltaTime;
@@ -264,89 +207,3 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         return;
     }
 }
-
-//[numthreads(128, 1, 1)]
-//void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
-//{
-//    const uint i = dispatchThreadId.x;
-//    if (i >= NumInstances)
-//        return;
-//    ParticleInst inst = gInst[i];
-//    ParticleParam pp = gParam[i];
-
-//    // === 시간 계산 ===
-//    float t;
-//    if (IsTool != 0) // tool이다
-//    {
-//        t = TrackTime;
-//        if (IsLoop != 0)
-//            t = fmod(t, inst.LifeTime.x);
-//        inst.LifeTime.y = t;
-//    }
-//    else
-//    {
-//        inst.LifeTime.y += DeltaTime;
-//        t = inst.LifeTime.y;
-//    }
-
-//    // === 기본 위치 이동 ===
-    
-//    float3 pos;
-//    if (IsTool != 0)
-//        pos = gInitInst[i].Translation.xyz;
-//    else
-//        pos = inst.Translation.xyz;
-    
-
-//    if (ParticleType == 0)
-//    {
-//        // SPREAD: pivot -> start방향
-//        float3 dir = normalize(pp.Direction.xyz);
-//        //float3 dir = normalize(inst.Translation.xyz - Pivot);
-//        pos += dir * pp.Speed * (IsTool != 0 ? t : DeltaTime);
-//    }
-//    else if (ParticleType == 1)
-//    {
-//        // DIRECTIONAL: center - pivot 방향(고정)
-//        //float3 dir = normalize(Center - Pivot);
-//        float3 dir = pp.Direction;
-//        pos += dir * pp.Speed * (IsTool != 0 ? t : DeltaTime);
-//    }
-
-//    // === 공통 처리 ===
-
-//    // 중력
-//    if (UseGravity != 0)
-//    {
-//        float dt = (IsTool != 0 ? t : DeltaTime);
-//        pos.y -= 0.5f * Gravity * dt * dt;
-//    }
-
-//    // 자전(로컬 basis 회전)
-//    //if (UseSpin != 0)
-//    //{
-//    //    float angle = radians(pp.RotationSpeed) * (IsTool != 0 ? t : DeltaTime);
-//    //    inst.Right.xyz = rotateAroundAxis(inst.Right.xyz, RotationAxis, angle);
-//    //    inst.Up.xyz = rotateAroundAxis(inst.Up.xyz, RotationAxis, angle);
-//    //    inst.Look.xyz = rotateAroundAxis(inst.Look.xyz, RotationAxis, angle);
-//    //}
-
-//    // 공전(센터 기준 오프셋 회전)
-//    if (UseOrbit != 0)
-//    {
-//        float angle = radians(pp.OrbitSpeed) * (IsTool != 0 ? t : DeltaTime);
-//        float3 offset = pos - Center;
-//        offset = rotateAroundAxis(offset, OrbitAxis, angle);
-//        pos = Center + offset;
-//    }
-
-//    // === 루프 처리 ===
-//    if (IsTool == 0 && IsLoop != 0 && inst.LifeTime.y >= inst.LifeTime.x)
-//    {
-//        inst.LifeTime.y = 0.0f;
-//        inst = gInitInst[i]; // ★ 초기값 복원
-//    }
-
-//    inst.Translation = float4(pos, 1.0f);
-//    gInst[i] = inst;
-//}

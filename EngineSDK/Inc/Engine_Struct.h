@@ -176,7 +176,7 @@ namespace Engine
 		static const unsigned int					iNumElements = { 7 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXRECT_PARTICLE_INSTANCE;
-
+	
 	typedef struct ENGINE_DLL tagVertexPointParticleInstance
 	{
 		XMFLOAT4		vRight;
@@ -467,6 +467,8 @@ namespace Engine
 		PxVec3 vHitPos = {};
 	}DEBUGRAY_DATA;
 
+
+	/* [ 여기 수정할 땐 꼭 CS hlsl도 동시에 수정해주기 바람.... ] */
 	typedef struct tagParticleDesc {
 		_float4		vDirection = {};
 
