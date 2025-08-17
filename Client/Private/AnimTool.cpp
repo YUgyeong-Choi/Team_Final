@@ -2794,7 +2794,7 @@ HRESULT CAnimTool::Register_Objects()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc->fSpeedPerSec = 5.f;
 	pDesc->fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc->eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	pDesc->eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	pDesc->InitPos = _float3(0.f,0.f,0.f);
 	pDesc->InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc->szName, TEXT("Buttler_Train"));
@@ -2810,7 +2810,7 @@ HRESULT CAnimTool::Register_Objects()
 	//pDesc.fSpeedPerSec = 1.f;
 	pPlayerDesc->fSpeedPerSec = 5.f;
 	pPlayerDesc->fRotationPerSec = XMConvertToRadians(600.0f);
-	pPlayerDesc->eLevelID = LEVEL::STATIC;
+	pPlayerDesc->eMeshLevelID = LEVEL::STATIC;
 	pPlayerDesc->InitPos = _float3(0.f, 0.f, 0.f);
 	pPlayerDesc->InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pPlayerDesc->szName, TEXT("Player"));

@@ -19,7 +19,7 @@ public:
 	{
 		const _tchar* szMeshID;
 
-		LEVEL			m_eLevelID;
+		LEVEL			m_eMeshLevelID;
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
@@ -58,7 +58,7 @@ private:
 
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 public:
-	LEVEL Get_LevelID() const { return m_eLevelID; }
+	LEVEL Get_LevelID() const { return m_eMeshLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 
 public:
@@ -75,7 +75,7 @@ private:
 
 protected: /* [ 초기화 변수 ] */
 	const _tchar*	m_szMeshID = { nullptr };
-	LEVEL			m_eLevelID = { LEVEL::END };
+	LEVEL			m_eMeshLevelID = { LEVEL::END };
 	LEVEL			m_eLevelLight = { LEVEL::END };
 	_float3			m_InitPos = {};
 	_int			m_iRender = {};

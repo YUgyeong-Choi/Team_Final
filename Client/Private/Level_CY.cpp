@@ -181,7 +181,7 @@ HRESULT CLevel_CY::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 {
 	CPBRMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::CY;
+	Desc.m_eMeshLevelID = LEVEL::CY;
 //	Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
 //	Desc.InitPos = { 10.f, 5.f, 10.f };
 //	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
@@ -226,7 +226,7 @@ HRESULT CLevel_CY::Ready_Layer_DummyMap(const _wstring strLayerTag)
 {
 	CPBRMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::CY;
+	Desc.m_eMeshLevelID = LEVEL::CY;
 	Desc.szMeshID = TEXT("Train");
 	lstrcpy(Desc.szName, TEXT("Train"));
 
@@ -250,11 +250,12 @@ HRESULT CLevel_CY::Ready_Player()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc.eLevelID = LEVEL::STATIC;
+	pDesc.eMeshLevelID = LEVEL::STATIC;
 	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
+	pDesc.iLevelID = ENUM_CLASS(LEVEL::CY);
 
 	CGameObject* pGameObject = nullptr;
  	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),

@@ -189,14 +189,14 @@ HRESULT CBayonet::Ready_Effect()
 	desc.pInnerSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
 	desc.pOuterSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
 	desc.pParentCombinedMatrix = &m_CombinedWorldMatrix;
-
-	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_eLevelID), TEXT("TE_Test"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	desc.iLevelID = m_iLevelID;
+	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (m_pWeaponTrailEffect)
 		m_pWeaponTrailEffect->Set_TrailActive(false);
 	else
 		MSG_BOX("무기 트레일 사망");
 
-	return S_OK;
+	return S_OK;	
 }
 
 void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)

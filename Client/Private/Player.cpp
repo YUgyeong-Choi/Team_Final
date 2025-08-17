@@ -910,12 +910,13 @@ HRESULT CPlayer::Ready_Weapon()
 	/* [ 무기 모델을 추가 ] */
 
 	CBayonet::BAYONET_DESC Desc{};
-	Desc.eLevelID = LEVEL::STATIC;
+	Desc.eMeshLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };
 	Desc.InitScale = { 1.f, 1.f, 1.f };
 	Desc.iRender = 0;
+	Desc.iLevelID = m_iLevelID;
 	
 	Desc.szMeshID = TEXT("PlayerWeapon");
 	lstrcpy(Desc.szName, TEXT("PlayerWeapon"));
@@ -938,7 +939,7 @@ HRESULT CPlayer::Ready_StationDoor()
 	CStaticMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
 	Desc.bUseOctoTree = false;
-	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
 

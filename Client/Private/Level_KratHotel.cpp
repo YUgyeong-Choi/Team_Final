@@ -260,7 +260,7 @@ HRESULT CLevel_KratHotel::Render()
 //		LayerTag += StringToWString(ModelName);
 //
 //		StaticMeshDesc.iRender = 0;
-//		StaticMeshDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
+//		StaticMeshDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
 //		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
 //
 //		wstring wstrModelName = StringToWString(ModelName);
@@ -303,7 +303,7 @@ HRESULT CLevel_KratHotel::Render()
 //	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
 //
 //	StaticMeshInstanceDesc.iRender = 0;
-//	StaticMeshInstanceDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
+//	StaticMeshInstanceDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
 //	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
 //
 //	wstring wstrModelName = StringToWString(ModelName);
@@ -325,11 +325,12 @@ HRESULT CLevel_KratHotel::Ready_Player()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc.eLevelID = LEVEL::KRAT_HOTEL;
+	pDesc.eMeshLevelID = LEVEL::KRAT_HOTEL;
 	pDesc.InitPos = _float3(0.f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
+	pDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_HOTEL);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Prototype_GameObject_Player"),
 		ENUM_CLASS(LEVEL::KRAT_HOTEL), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
@@ -407,7 +408,7 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 {
 	CStaticMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::KRAT_HOTEL;
+	Desc.m_eMeshLevelID = LEVEL::KRAT_HOTEL;
 
 	Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
 	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
@@ -419,7 +420,7 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 
 	CStaticMesh_Instance::STATICMESHINSTANCE_DESC InstanceDesc{};
 	InstanceDesc.iRender = 0;
-	InstanceDesc.m_eLevelID = LEVEL::KRAT_HOTEL;
+	InstanceDesc.m_eMeshLevelID = LEVEL::KRAT_HOTEL;
 
 	InstanceDesc.szMeshID = TEXT("SM_BuildingA_Lift_02");
 	lstrcpy(InstanceDesc.szName, TEXT("SM_BuildingA_Lift_02"));

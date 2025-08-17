@@ -368,7 +368,7 @@ HRESULT CLevel_YW::Ready_Layer_DummyMap(const _wstring strLayerTag)
 {
 	CPBRMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::YW;
+	Desc.m_eMeshLevelID = LEVEL::YW;
 	Desc.szMeshID = TEXT("Train");
 	lstrcpy(Desc.szName, TEXT("Train"));
 

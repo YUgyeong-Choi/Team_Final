@@ -127,7 +127,7 @@ _int CElite_Police::Update_AttackType()
 HRESULT CElite_Police::Ready_Weapon()
 {
 	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
-	Desc.eLevelID = LEVEL::STATIC;
+	Desc.eMeshLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.125f, 0.f, 0.f };

@@ -24,7 +24,7 @@ HRESULT CDynamicMesh::Initialize(void* pArg)
 {
 	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
 
-	m_eLevelID = StaicMeshDESC->m_eLevelID;
+	m_eMeshLevelID = StaicMeshDESC->m_eMeshLevelID;
 
 	m_szMeshID = StaicMeshDESC->szMeshID;
 
@@ -159,7 +159,7 @@ HRESULT CDynamicMesh::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), StaicMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), StaicMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

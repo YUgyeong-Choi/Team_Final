@@ -174,7 +174,7 @@ HRESULT CMonster_Test::Ready_Weapon()
 {
 
 	CWeapon_Monster::WEAPON_DESC Desc{};
-	Desc.eLevelID = LEVEL::STATIC;
+	Desc.eMeshLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };

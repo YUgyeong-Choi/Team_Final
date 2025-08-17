@@ -55,6 +55,7 @@ HRESULT CGameObject::Initialize(void* pArg)
 	if (nullptr != pArg)
 	{
 		GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+		m_iLevelID = pDesc->iLevelID;
 		lstrcpy(m_szName, pDesc->szName);
 	}
 

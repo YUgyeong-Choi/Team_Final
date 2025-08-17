@@ -318,7 +318,7 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 HRESULT CButtler_Train::Ready_Weapon()
 {
 	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
-	Desc.eLevelID = LEVEL::STATIC;
+	Desc.eMeshLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.125f, 0.f, 0.f };
