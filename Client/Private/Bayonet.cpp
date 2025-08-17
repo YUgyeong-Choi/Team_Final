@@ -190,7 +190,7 @@ HRESULT CBayonet::Ready_Effect()
 	desc.pOuterSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
 	desc.pParentCombinedMatrix = &m_CombinedWorldMatrix;
 
-	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(LEVEL::STATIC), TEXT("TE_Test"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TE_Test"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (m_pWeaponTrailEffect)
 		m_pWeaponTrailEffect->Set_TrailActive(false);
 	else
