@@ -88,6 +88,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	/* [ 락온 세팅 ] */
 	CLockOn_Manager::Get_Instance()->SetPlayer(this);
+	m_vRayOffset = { 0.f, 1.7f, 0.f, 0.f };
 
 	if (FAILED(Ready_UIParameters()))
 		return E_FAIL;

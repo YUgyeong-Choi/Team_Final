@@ -32,8 +32,9 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_pHPBar->Set_MaxHp(m_fHp);
 
+	// 락온 용
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
-
+	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
 	
 	
 	return S_OK;

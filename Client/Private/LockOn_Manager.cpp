@@ -32,7 +32,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
     if (m_bStartLockOn)
     {
         RemoveSomeTargets();
-        CGameObject* pTarget = Find_ClosestToLookTarget();
+        CUnit* pTarget = Find_ClosestToLookTarget();
         if (pTarget)
         {
             m_bActive = true;
@@ -49,7 +49,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
     if (m_bActive && m_bCanChangeTarget)
     {
-        CGameObject* pObj = Change_ToLookTarget();
+        CUnit* pObj = Change_ToLookTarget();
         if (pObj)
         {
             m_bCanChangeTarget = false;
@@ -72,13 +72,40 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
     PxVec3 hitPos = PxVec3();
     _bool bHit = false;
 
+    // 락온이 계속 되어도 되는 지
     if (m_bActive)
     {
+        // 가려져도 조금은 괜찮도록
+        if (m_bCheckCancle)
+        {
+            m_fCancleCount += fTimeDelta;
+            if (m_fCancleCount > 0.5f) 
+            {
+                m_bActive = false;
+                m_pBestTarget = nullptr;
+                CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
+
+                // Pitch Yaw 역계산
+                XMVECTOR camerakDir = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Get_State(STATE::LOOK) * -1);
+                const _float bx = XMVectorGetX(camerakDir);
+                const _float by = XMVectorGetY(camerakDir);
+                const _float bz = XMVectorGetZ(camerakDir);
+
+                _float fYaw = atan2f(bx, bz);
+                _float fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
+
+                CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
+                m_fCancleCount = {};
+                m_bCheckCancle = false;
+                return S_OK;
+            }
+        }
+
         //wprintf(L"LockOnTarget: %s\n", m_pBestTarget->Get_Name().c_str());
 
-        _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
+        _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + m_pPlayer->Get_RayOffset();
 
-        _vector targetPos = m_pBestTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
+        _vector targetPos = m_pBestTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + m_pBestTarget->Get_RayOffset();
 
         PxVec3 origin = VectorToPxVec3(playerPos);
         PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
@@ -126,20 +153,13 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
         if (bRemove)
         {
-            m_bActive = false;
-            m_pBestTarget = nullptr;
-            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_LockOn(m_pBestTarget, false);
-
-            // Pitch Yaw 역계산
-            XMVECTOR camerakDir = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Get_State(STATE::LOOK) * -1);
-            const _float bx = XMVectorGetX(camerakDir);
-            const _float by = XMVectorGetY(camerakDir);
-            const _float bz = XMVectorGetZ(camerakDir);
-
-            _float fYaw = atan2f(bx, bz);
-            _float fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
-            
-            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
+            if (!m_bCheckCancle)
+                m_fCancleCount = {};
+            m_bCheckCancle = true;
+        }
+        else
+        {
+            m_bCheckCancle = false;
         }
 
 #ifdef _DEBUG
@@ -161,12 +181,12 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
 void CLockOn_Manager::RemoveSomeTargets()
 {
-    _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
+    _vector playerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + m_pPlayer->Get_RayOffset();
 
     for (size_t i = 0; i < m_vecTarget.size(); )
     {
-        CGameObject* pTarget = m_vecTarget[i];
-        _vector targetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + _vector{ 0.f,0.5f,0.f,0.f };
+        CUnit* pTarget = m_vecTarget[i];
+        _vector targetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + pTarget->Get_RayOffset();
 
         bool bRemove = false;
 
@@ -182,7 +202,7 @@ void CLockOn_Manager::RemoveSomeTargets()
             PxVec3 origin = VectorToPxVec3(playerPos);
             PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
             direction.normalize();
-            _float fRayLength = 7.f;
+            _float fRayLength = 10.f;
 
             PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
             PxRaycastBuffer hit;
@@ -225,7 +245,7 @@ void CLockOn_Manager::RemoveSomeTargets()
     }
 }
 
-CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()
+CUnit* CLockOn_Manager::Find_ClosestToLookTarget()
 {
     if (!m_pPlayer || m_vecTarget.empty())
         return nullptr;
@@ -235,11 +255,11 @@ CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()
     vPlayerLook = XMVector3Normalize(vPlayerLook);
 
     // ===== 설정 =====
-    const _float wAngle = 0.65f;                     // 각도 가중치(정면 우선)
-    const _float wDist = 0.35f;                     // 거리 가중치(가까운 대상 우선)
-    const _float cosHalfFov = cosf(XMConvertToRadians(60.f)); // 정면 ±45°
+    const _float wAngle = 0.35f;                     // 각도 가중치(정면 우선)
+    const _float wDist = 0.65f;                     // 거리 가중치(가까운 대상 우선)
+    const _float cosHalfFov = cosf(XMConvertToRadians(70.f)); // -70 ~ 70 시야각에 있는 것만
 
-    // ===== 1) FOV(±45°) 안의 타깃만 대상으로 최대 거리 계산 =====
+    // ===== 1) FOV 안의 타깃만 대상으로 최대 거리 계산 =====
     _float maxDist2 = 0.f;
     int inFovCount = 0;
     for (auto& pTarget : m_vecTarget)
@@ -266,7 +286,7 @@ CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()
         maxDist2 = 1e-12f;
 
     // ===== 2) 후보들 중 각도+거리 점수 최소 선택 =====
-    CGameObject* pBestTarget = nullptr;
+    CUnit* pBestTarget = nullptr;
     _float bestScore = FLT_MAX;
 
     for (auto& pTarget : m_vecTarget)
@@ -301,11 +321,11 @@ CGameObject* CLockOn_Manager::Find_ClosestToLookTarget()
 
     if (pBestTarget)
         wprintf(L"TargetName %s\n", pBestTarget->Get_Name().c_str());
-
+    
     return pBestTarget;
 }
 
-CGameObject* CLockOn_Manager::Change_ToLookTarget()
+CUnit* CLockOn_Manager::Change_ToLookTarget()
 {
     if (!m_pPlayer || m_vecTarget.empty())
         return nullptr;
@@ -328,14 +348,14 @@ CGameObject* CLockOn_Manager::Change_ToLookTarget()
     // 현재 락온 대상 제외
     CGameObject* pCurrent = m_pBestTarget;
 
-    CGameObject* best = nullptr;
+    CUnit* best = nullptr;
     _float bestAngle = XM_PI;
 
-    for (auto* t : m_vecTarget)
+    for (auto* target : m_vecTarget)
     {
-        if (t == pCurrent) continue;
+        if (target == pCurrent) continue;
 
-        const _vector T = t->Get_TransfomCom()->Get_State(STATE::POSITION);
+        const _vector T = target->Get_TransfomCom()->Get_State(STATE::POSITION);
         const _vector V = XMVector3Normalize(T - P);
 
         // 좌/우 판정
@@ -351,7 +371,7 @@ CGameObject* CLockOn_Manager::Change_ToLookTarget()
         if (fAngle < bestAngle)
         {
             bestAngle = fAngle;
-            best = t;
+            best = target;
         }
     }
 
@@ -371,12 +391,12 @@ HRESULT CLockOn_Manager::Render()
 }
 
 
-void CLockOn_Manager::SetPlayer(CGameObject* pPlayer)
+void CLockOn_Manager::SetPlayer(CUnit* pPlayer)
 {
     m_pPlayer = pPlayer;
 }
 
-void CLockOn_Manager::Add_LockOnTarget(CGameObject* pTarget)
+void CLockOn_Manager::Add_LockOnTarget(CUnit* pTarget)
 {
     m_vecTarget.push_back(pTarget);
 }
@@ -396,7 +416,7 @@ void CLockOn_Manager::Set_Active()
     }
 }
 
-void CLockOn_Manager::Set_Off(CGameObject* pObj)
+void CLockOn_Manager::Set_Off(CUnit* pObj)
 {
     if (m_pBestTarget != pObj)
         return;

@@ -70,7 +70,7 @@ void CLevel_DH::Update(_float fTimeDelta)
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
-	__super::Update(fTimeDelta);
+	//__super::Update(fTimeDelta);
 }
 
 void CLevel_DH::Late_Update(_float fTimeDelta)

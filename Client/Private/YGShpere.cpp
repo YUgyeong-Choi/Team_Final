@@ -53,7 +53,7 @@ void CYGShpere::Priority_Update(_float fTimeDelta)
 void CYGShpere::Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
-		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
+		//CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
 	}
 }
 

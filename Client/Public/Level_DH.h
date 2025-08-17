@@ -39,8 +39,6 @@ private:
 	HRESULT LoadMap(_uint iLevelIndex, const _char* Map);
 	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
-	HRESULT Load_StaticMesh(_uint iObjectCount, const json& objects, string ModelName);
-	HRESULT Load_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName);
 
 private:
 	HRESULT Ready_Camera();
