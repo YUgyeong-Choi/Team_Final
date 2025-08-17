@@ -10,8 +10,6 @@ NS_END
 
 NS_BEGIN(Client)
 
-extern _bool g_ReadyAgain;
-
 class CLevel_KratCentralStation final : public CLevel
 {
 private:
@@ -25,23 +23,11 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void Ready_Level();
+	HRESULT Ready_Level();
 
 #pragma region YW
 private:
-	//맵 소환(메쉬, 네비, 데칼 등...)
-	HRESULT Ready_Map(_uint iLevelIndex, const _char* Map);
 
-	//메쉬 소환
-	HRESULT Ready_Meshs(_uint iLevelIndex, const _char* Map);
-	HRESULT Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
-	HRESULT Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
-
-	//네비게이션 소환
-	HRESULT Ready_Nav(const _wstring strLayerTag);
-
-	//스태틱 데칼을 소환한다. (true면 테스트 데칼 소환)
-	HRESULT Ready_Static_Decal(_uint iLevelIndex, const _char* Map);
 #pragma endregion
 
 private:
@@ -79,10 +65,7 @@ private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	CSound_Core* m_pBGM = { nullptr };
 
-	class CUI_Video* m_pStartVideo = {nullptr};
-
-private:
-	vector<class CStaticMesh*> m_vecOctoTreeObjects;
+	class CUI_Video* m_pStartVideo = { nullptr };
 
 private:
 	_bool m_bHold = { true };

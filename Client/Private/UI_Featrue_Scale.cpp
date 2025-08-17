@@ -38,43 +38,41 @@ HRESULT CUI_Feature_Scale::Initialize(void* pArg)
 	
 }
 
-void CUI_Feature_Scale::Update(_int& iCurrentFrame, CDynamic_UI* pUI)
+void CUI_Feature_Scale::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool isReverse)
 {
 
-    if (m_iStartFrame == m_iEndFrame)
-        return;
-
-    if (iCurrentFrame < m_iStartFrame)
+    if (m_iStartFrame == m_iEndFrame || iCurrentFrame < m_iStartFrame)
         return;
 
     if (m_isLoop)
-    {
         m_iCurrentFrame = iCurrentFrame % m_iRange;
-    }
-    else
-    {
+    else {
         m_iCurrentFrame = iCurrentFrame;
-
         if (m_iCurrentFrame > m_iEndFrame)
             return;
-
     }
 
-    _float t = std::clamp(float(m_iCurrentFrame) / m_iRange, 0.f, 1.f);
+    float t = std::clamp(float(m_iCurrentFrame) / m_iRange, 0.f, 1.f);
 
-   
-    m_fCurrentScale.x = LERP( m_fStartScale.x, m_fEndScale.x, t);
-    m_fCurrentScale.y = LERP( m_fStartScale.y, m_fEndScale.y, t);
-   
+    if (!isReverse) {
+        m_fCurrentScale.x = LERP(m_fStartScale.x, m_fEndScale.x, t);
+        m_fCurrentScale.y = LERP(m_fStartScale.y, m_fEndScale.y, t);
+    }
+    else {
+        m_fCurrentScale.x = LERP(m_fEndScale.x, m_fStartScale.x, t);
+        m_fCurrentScale.y = LERP(m_fEndScale.y, m_fStartScale.y, t);
+    }
 
     m_fCurrentScale.x *= g_iWinSizeX;
     m_fCurrentScale.y *= g_iWinSizeY;
 
     pUI->Get_TransfomCom()->Scaling(m_fCurrentScale.x, m_fCurrentScale.y);
 
+}
+
 
   
-}
+
 
 HRESULT CUI_Feature_Scale::Bind_ShaderResources(CShader* pShader)
 {

@@ -393,8 +393,8 @@ HRESULT CModel::Add_Animations(const string& filepath)
 		// 확장자가 ".anim" 일 때만 처리
 		if (!entry.is_directory() && entry.path().extension() == ".anim")
 		{
-			std::string animPath = entry.path().string();
-			std::ifstream ifs(animPath, std::ios::binary);
+			string animPath = entry.path().string();
+			ifstream ifs(animPath, std::ios::binary);
 			if (!ifs.is_open())
 				continue;
 
@@ -406,8 +406,20 @@ HRESULT CModel::Add_Animations(const string& filepath)
 			{
 				this->m_Animations.push_back(pAnim);
 				auto idx = static_cast<uint32_t>(m_Animations.size() - 1);
-				this->m_AnimationMap[pAnim->Get_Name()] = idx;
-				this->m_AnimationNameMap[idx] = pAnim->Get_Name();
+				string originalAnimName = pAnim->Get_Name();
+				string finalAnimName;
+				_int iCount = static_cast<_int>(m_AnimationMap.count(originalAnimName));
+				if ( iCount> 0)
+				{
+					finalAnimName = originalAnimName + "_" + to_string(iCount);
+					pAnim->Set_Name(finalAnimName);
+				}
+				else
+				{
+					finalAnimName = originalAnimName;
+				}
+				m_AnimationMap[finalAnimName] = idx;
+				m_AnimationNameMap[idx] = finalAnimName;
 			}
 		}
 	}

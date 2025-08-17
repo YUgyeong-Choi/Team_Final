@@ -113,20 +113,16 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
+	HRESULT Ready_UIParameters();
 	void LoadPlayerFromJson();
 
-private: /* 옵저버 관련*/
-	// 테스트 용이라 나중에 함수에 넣는 식으로 바꾸기
+private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
 	void Callback_Mana();
 
-	// 스탯 변화 테스트용
-	void Update_Stat();
-
 private: /* [ 상호작용 관련 ] */
 	void Interaction_Door();
-
 	void Play_CutScene_Door();
 
 private:
@@ -134,13 +130,14 @@ private:
 	void SlidDoorMove(_float fTimeDelta);
 
 	
-private: // 슬롯 용
-	// 빼지 말죠
+private: /* [ 슬룻 함수 ] */
 	void Callback_UpBelt();
 	void Callback_DownBelt();
 	void Use_Item();
 
-	void Update_Slot();
+	void PriorityUpdate_Slot(_float fTimeDelta);
+	void Update_Slot(_float fTimeDelta);
+	void LateUpdate_Slot(_float fTimeDelta);
 
 private: /* [ 상태패턴 ] */
 	void ReadyForState();
@@ -175,20 +172,18 @@ private: /* [ 상태 변수 ] */
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
+private: /*  */
+
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 
 	/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
-	//CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
 
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
-
-private: /* [ 램프 온 오프 ] */
-
 
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*	m_pTarget = { nullptr };
@@ -223,11 +218,6 @@ private: /* [ 인터렉션 관련변수 ] */
 	_bool  m_bInteractionRotate[9] = { false };
 	_float m_fInteractionTime[9] = { 0 };
 
-
-private: /* [ 아이템 사용 관련 변수 ] */
-	_bool	 m_bItemSwitch = {};
-	_float	 m_fItemTime = {};
-
 	unordered_set<string> m_MovableStates = {
 		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",
 		"Run_F", "Run_F_Stop", "Run_FR", "Run_FL", "Run_BR", "Run_BL", "Run_B", "Run_L", "Run_R",
@@ -246,29 +236,48 @@ private: /* [ 루트모션 관련 변수 ] */
 	_float   m_fSmoothSpeed = 8.0f;
 	_float   m_fSmoothThreshold = 0.1f;
 
-private: // 옵저버 관련
-	_int	m_iCurrentHP = {};
-	_int	m_iMaxStamina = { 100 };
-	_int	m_iCurrentMana = {};
-	_int	m_iMaxMana = { 300 };
-	_int	m_iLevel = {};
-	_int	m_iRequiredErgo = {};
-	_int	m_iErgo = {};
+private: /* [ 플레이어 변수 ] */
+	_float  m_fSetTime = {};
+	_bool   m_bSetOnce = {};
+	_bool   m_bSetTwo = {};
 
-	_float	m_fCurrentStamina = {};
-
+	_float	m_fMaxHP = { 100.f };
+	_float	m_fHP = { 100.f };
 	
-	// 나중에 없애기 
+	_float	m_fMaxStamina = { 100.f };
+	_float	m_fStamina = { 100.f };
+	
+	_float	m_fMaxMana = { 300.f };
+	_float	m_fMana = { 150.f };
+	
+	_float	m_fMaxErgo = { 100.f };
+	_float	m_fErgo = { 0.f };
+
+private: /* [ 무기 내구도 ] */
+	_float	m_fWeaponDurabilityMax;
+	_float	m_fWeaponDurability;
+
+private: /* [ 리전 암 내구도 ] */
+	_float  m_fLegionArmEnergy;
+	_float  m_fMaxLegionArmEnergy;
+
+private: /* [ 현재 상태 ] */
+	_bool	bIsGuarding = { false };
+	_bool	bIsInvincible = { false };
+
+private: /* [ 현재 플레이어 레벨 ] */
+	_int	m_iLevel = { 0 };
+
+private: /* [ 아이템 사용 관련 변수 ] */
+	_bool	 m_bItemSwitch = {};
+	_float	 m_fItemTime = {};
+	
+private: /* [ 벨트 슬롯 ] */
 	_bool m_bSwitch = { true };
 	
-
-// 벨트 슬롯 
-private:
-	// 위에 슬롯, 아래 슬롯
 	class CBelt* m_pBelt_Up = { nullptr };
 	class CBelt* m_pBelt_Down = { nullptr };
 
-	// 어느 슬롯 선택했는지, 선택한 아이템은 무엇인지
 	_bool m_isSelectUpBelt = { true };
 	class CItem* m_pSelectItem = { nullptr };
 

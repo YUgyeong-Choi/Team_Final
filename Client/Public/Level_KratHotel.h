@@ -22,7 +22,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	/*HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
+	/*HRESULT Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
 	HRESULT Ready_MapModel(_uint iLevelIndex);*/
 
 	/*HRESULT LoadMap(_uint iLevelIndex);

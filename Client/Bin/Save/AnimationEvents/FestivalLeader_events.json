@@ -1,0 +1,711 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_Debuff_Fire_End",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Debuff_Fire_Loop",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Debuff_Fire_Start",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit",
+            "Duration": 395.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_End",
+            "Duration": 358.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Ing",
+            "Duration": 180.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Start",
+            "Duration": 35.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fury_Attack_Start_P1",
+            "Duration": 168.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Groggy_End",
+            "Duration": 108.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Groggy_Loop",
+            "Duration": 180.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Groggy_Start",
+            "Duration": 125.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Hit_Dead_F",
+            "Duration": 300.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Hit_Dead_F_NoCage",
+            "Duration": 300.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Idle_C",
+            "Duration": 337.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Idle_Loco",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Paralyzation_End",
+            "Duration": 86.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Paralyzation_Loop",
+            "Duration": 156.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Paralyzation_Start",
+            "Duration": 70.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Run_C_F",
+            "Duration": 73.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Turn_C_L",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Turn_C_R",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Walk_C_B",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Walk_C_F",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Walk_C_L",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Walk_C_R",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Dead_Loop",
+            "Duration": 60.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Dead_Start",
+            "Duration": 300.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_End_1",
+            "Duration": 358.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Ing_1",
+            "Duration": 180.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_1",
+            "Duration": 395.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Start_1",
+            "Duration": 35.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Fury_Attack_Start_P2",
+            "Duration": 168.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Groggy_End_1",
+            "Duration": 108.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Groggy_Loop_1",
+            "Duration": 180.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Groggy_Start_1",
+            "Duration": 125.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Idle_C_1",
+            "Duration": 337.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Idle_Loco_1",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Paralyzation_End_1",
+            "Duration": 86.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Paralyzation_Loop_1",
+            "Duration": 156.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Paralyzation_Start_1",
+            "Duration": 70.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Run_C_F_1",
+            "Duration": 73.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Special_Die_Loop",
+            "Duration": 40.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Special_Die",
+            "Duration": 240.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Turn_C_L_1",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Turn_C_R_1",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Walk_C_B_1",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Walk_C_F_1",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Walk_C_L_1",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_Walk_C_R_1",
+            "Duration": 120.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_01_Attack",
+            "Duration": 24.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_01_End",
+            "Duration": 72.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_01_Start",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_02_Attack",
+            "Duration": 78.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_02_End",
+            "Duration": 140.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_02_Start",
+            "Duration": 84.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_04_Attack",
+            "Duration": 24.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_04_End",
+            "Duration": 42.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_04_Start",
+            "Duration": 36.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_05",
+            "Duration": 148.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_06_Attack",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_06_End",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_06_Start",
+            "Duration": 90.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_07_Attack1",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_07_Attack2",
+            "Duration": 36.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_07_Attack3",
+            "Duration": 48.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_07_End",
+            "Duration": 90.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_07_Start1",
+            "Duration": 90.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_07_Start2",
+            "Duration": 78.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_07_Start3",
+            "Duration": 102.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_08_Attack",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_08_End",
+            "Duration": 102.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_08_Start",
+            "Duration": 120.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_15",
+            "Duration": 440.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_01_Attack_1",
+            "Duration": 24.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_01_End_1",
+            "Duration": 72.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_01_Start_1",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_02_Attack_1",
+            "Duration": 78.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_02_End_1",
+            "Duration": 140.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_02_Start_1",
+            "Duration": 84.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_04_Attack_1",
+            "Duration": 24.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_04_End_1",
+            "Duration": 42.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_04_Start_1",
+            "Duration": 36.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_05_1",
+            "Duration": 148.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_09_Attack",
+            "Duration": 36.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_09_End",
+            "Duration": 128.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_09_Start",
+            "Duration": 90.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_10_Attack",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_10_End",
+            "Duration": 126.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_10_Start",
+            "Duration": 84.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_11_Attack",
+            "Duration": 48.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_11_End",
+            "Duration": 150.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_11_Start",
+            "Duration": 90.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_12_Attack_Dash",
+            "Duration": 79.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_12_Attack",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_12_Attack_Sub",
+            "Duration": 55.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_12_End",
+            "Duration": 125.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_12_Start",
+            "Duration": 120.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_13_Attack",
+            "Duration": 36.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_13_End",
+            "Duration": 93.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_13_Start",
+            "Duration": 42.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        },
+        {
+            "ClipName": "AS_ATHBoss0_Skill_14",
+            "Duration": 260.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 65.0
+        }
+    ]
+}

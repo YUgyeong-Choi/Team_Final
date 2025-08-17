@@ -872,6 +872,18 @@ void CGameInstance::QueryVisible()
 {
 	m_pOctoTree_Manager->QueryVisible();
 }
+void CGameInstance::PushOctoTreeObjects(class CGameObject* pObject)
+{
+	m_pOctoTree_Manager->PushOctoTreeObjects(pObject);
+}
+vector<class CGameObject*> CGameInstance::GetOctoTreeObjects() const
+{
+	return m_pOctoTree_Manager->GetOctoTreeObjects();	
+}
+void CGameInstance::ClaerOctoTreeObjects()
+{
+	m_pOctoTree_Manager->ClaerOctoTreeObjects();
+}
 _bool CGameInstance::AddArea_AABB(_int iAreaId, const _float3& vMin, const _float3& vMax, const vector<_uint>& vecAdjacentIds, AREA::EAreaType eType, _int iPriority)
 {
 	return m_pArea_Manager->AddArea_AABB(iAreaId,vMin,vMax,vecAdjacentIds, eType, iPriority);

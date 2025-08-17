@@ -196,7 +196,6 @@ HRESULT CBayonet::Ready_Effect()
 	else
 		MSG_BOX("무기 트레일 사망");
 
-
 	return S_OK;
 }
 

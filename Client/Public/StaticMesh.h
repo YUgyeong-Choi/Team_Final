@@ -51,11 +51,7 @@ public:
 	virtual void Priority_Update(_float fTimeDelta) override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
-	virtual void Last_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
-public:
-	AABBBOX GetWorldAABB() const;
 
 public:
 	LEVEL Get_LevelID() const { return m_eLevelID; }
@@ -90,7 +86,6 @@ protected:
 	CModel*			m_pModelCom = { nullptr };
 	CTexture*		m_pTextureCom = { nullptr };
 	CTexture*		m_pEmissiveCom = { nullptr };
-	CPhysXStaticActor* m_pPhysXActorCom = { nullptr };
 
 protected:
 	HRESULT Ready_Components(void* pArg);

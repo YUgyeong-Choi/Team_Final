@@ -47,6 +47,7 @@
 #include "YGController.h"
 
 #include "Wego.h"
+#include "DynamicMesh.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -59,6 +60,7 @@
 #pragma region LEVEL_GL
 #include "UI_Container.h"
 #include "Dynamic_UI.h"
+#include "Dynamic_Text_UI.h"
 #include "UI_Text.h"
 #include "UI_Guide.h"
 #include "HP_Bar.h"
@@ -83,6 +85,7 @@
 #include "Buttler_Train.h"
 #include "UI_MonsterHP_Bar.h"
 #include "UI_LockOn_Icon.h"
+
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -267,6 +270,11 @@ HRESULT CLoader::Loading_For_Static()
 		CUI_Text::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_Text_UI"),
+		CDynamic_Text_UI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 		CUI_Container::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -430,11 +438,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
 #pragma region YW
-
-	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중."));
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION"))) //STATION, TEST (레벨과 동일해야함)
-		return E_FAIL;
-
 	//스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
@@ -451,6 +454,17 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh_Instance"),
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	string Map = "STATION"; //STATION, TEST
+
+	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+	//제이슨으로 저장된 맵을 로드한다.
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
 		return E_FAIL;
 #pragma endregion
 
@@ -477,7 +491,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;
 
 
-	// 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DynamicMesh"),
+		CDynamicMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
 		CMonster_Test::Create(m_pDevice, m_pContext))))
@@ -539,7 +555,7 @@ HRESULT CLoader::Loading_For_KRAT_HOTEL()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	/*if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
+	/*if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_HOTEL))))
 		return E_FAIL;*/
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -580,7 +596,7 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
+	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
@@ -610,7 +626,7 @@ HRESULT CLoader::Loading_For_DH()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::DH), "STATION")))
+	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -905,7 +921,7 @@ HRESULT CLoader::Loading_For_YW()
 HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 {
 	//맵
-	if(FAILED(Loading_Models(iLevelIndex, Map)))
+	if(FAILED(Loading_Meshs(iLevelIndex, Map)))
 		return E_FAIL;
 
 	//네비
@@ -919,7 +935,7 @@ HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 	return S_OK;
 }
 
-HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
+HRESULT CLoader::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
 {
 	//이미 프로토타입이존재하는 지확인
 
@@ -950,7 +966,7 @@ HRESULT CLoader::Load_Model(const wstring& strPrototypeTag, const _char* pModelF
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
+HRESULT CLoader::Loading_Meshs(_uint iLevelIndex, const _char* Map)
 {
 
 	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
@@ -1007,7 +1023,7 @@ HRESULT CLoader::Loading_Models(_uint iLevelIndex, const _char* Map)
 
 		const _char* pModelFilePath = Path.c_str();
 
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
+		if (FAILED(Load_Mesh(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
 		{
 			return E_FAIL;
 		}
@@ -1087,6 +1103,233 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 	}
 
 	return S_OK;
+}
+HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
+{
+	//어떤 맵을 소환 시킬 것인지?
+	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
+		return E_FAIL;
+
+	//네비 소환
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex)))
+		return E_FAIL;
+
+	//어떤 데칼을 소환 시킬 것인지?
+	if (FAILED(Ready_Static_Decal(iLevelIndex, Map))) //TEST, STATION
+		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
+{
+	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
+
+	ifstream inFile(MapPath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Map_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json MapDataJson;
+	inFile >> MapDataJson;
+	inFile.close();
+
+	_uint iModelCount = MapDataJson["ModelCount"];
+	const json& Models = MapDataJson["Models"];
+
+	m_pGameInstance->ClaerOctoTreeObjects();
+	for (_uint i = 0; i < iModelCount; ++i)
+	{
+		string ModelName = Models[i]["ModelName"];
+		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.(아니 충돌여부로 인스턴싱 해야겠다.)
+		const json& objects = Models[i]["Objects"];
+
+		_bool bCollision = Models[i]["Collision"];
+		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
+		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
+		{
+			Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
+		}
+		else
+		{
+			Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex);
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
+{
+	for (_uint j = 0; j < iObjectCount; ++j)
+	{
+#pragma region 월드행렬
+		CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
+
+		const json& WorldMatrixJson = objects[j]["WorldMatrix"];
+		_float4x4 WorldMatrix = {};
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+		StaticMeshDesc.WorldMatrix = WorldMatrix;
+#pragma endregion
+
+#pragma region 타일링
+		//타일링
+		if (objects[j].contains("TileDensity"))
+		{
+			StaticMeshDesc.bUseTiling = true;
+
+			const json& TileDensityJson = objects[j]["TileDensity"];
+			StaticMeshDesc.vTileDensity = {
+				TileDensityJson[0].get<_float>(),
+				TileDensityJson[1].get<_float>()
+			};
+		}
+#pragma endregion
+
+#pragma region 콜라이더
+		//콜라이더
+		if (objects[j].contains("ColliderType") && objects[j]["ColliderType"].is_number_integer())
+		{
+			StaticMeshDesc.eColliderType = static_cast<COLLIDER_TYPE>(objects[j]["ColliderType"].get<_int>());
+		}
+		else
+			return E_FAIL;
+#pragma endregion
+
+#pragma region 라이트모양
+		StaticMeshDesc.iLightShape = objects[j].value("LightShape", 0);
+#pragma endregion
+
+
+		wstring LayerTag = TEXT("Layer_MapToolObject_");
+		LayerTag += StringToWString(ModelName);
+
+		StaticMeshDesc.iRender = 0;
+		StaticMeshDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
+		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+		wstring wstrModelName = StringToWString(ModelName);
+		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
+		ModelPrototypeTag += wstrModelName;
+
+		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+		CGameObject* pGameObject = nullptr;
+		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
+			iLevelIndex, LayerTag, &pGameObject, &StaticMeshDesc)))
+			return E_FAIL;
+
+		m_pGameInstance->PushOctoTreeObjects(pGameObject);
+	}
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
+{
+	vector<_float4x4> InstanceMatixs(iObjectCount);
+
+	for (_uint i = 0; i < iObjectCount; ++i)
+	{
+		const json& WorldMatrixJson = objects[i]["WorldMatrix"];
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				InstanceMatixs[i].m[row][col] = WorldMatrixJson[row][col];
+	}
+
+
+	//오브젝트 생성, 배치
+
+	wstring LayerTag = TEXT("Layer_MapToolObject_");
+	LayerTag += StringToWString(ModelName);
+
+	CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
+	StaticMeshInstanceDesc.iNumInstance = iObjectCount;//인스턴스 갯수랑
+	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
+
+	StaticMeshInstanceDesc.iRender = 0;
+	StaticMeshInstanceDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
+	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+	wstring wstrModelName = StringToWString(ModelName);
+	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance_"); //인스턴스 용 모델을 준비해야겠는디?
+	ModelPrototypeTag += wstrModelName;
+
+	lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		iLevelIndex, LayerTag, &StaticMeshInstanceDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex)
+{
+	CNav::NAV_DESC NavDesc = {};
+	NavDesc.iLevelIndex = iLevelIndex;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Nav"),
+		iLevelIndex, strLayerTag, &NavDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Static_Decal(_uint iLevelIndex, const _char* Map)
+{
+	//현재 맵에 필요한 데칼 텍스쳐를 로드한다.
+	string DecalDataPath = string("../Bin/Save/DecalTool/Decal_") + Map + ".json";
+	//string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json"; //나중에 쓸듯 맵 바꿀때
+
+	ifstream inFile(DecalDataPath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Decal_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	// JSON 파싱
+	json JSON;
+	inFile >> JSON;
+
+	// 데이터 만큼 Decal 소환
+	for (auto& item : JSON)
+	{
+		// 4x4 행렬 읽기
+		_float4x4 WorldMatrix;
+		for (_int iRow = 0; iRow < 4; ++iRow)
+		{
+			for (_int iCol = 0; iCol < 4; ++iCol)
+			{
+				WorldMatrix.m[iRow][iCol] = item["WorldMatrix"][iRow][iCol].get<_float>();
+			}
+		}
+
+		//텍스쳐 프로토타입 이름 전달
+		CStatic_Decal::DECAL_DESC Desc = {};
+		Desc.WorldMatrix = WorldMatrix;
+		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)] = StringToWString(item["ARMT"].get<string>());
+		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)] = StringToWString(item["N"].get<string>());
+		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)] = StringToWString(item["BC"].get<string>());
+
+		// Decal 객체 생성
+		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Static_Decal"),
+			iLevelIndex, TEXT("Layer_Decal"), &Desc)))
+			return E_FAIL;
+
+	}
+
+	return S_OK;
+
 }
 #pragma endregion
 
@@ -1446,7 +1689,7 @@ HRESULT CLoader::Loading_For_YG()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Models(ENUM_CLASS(LEVEL::YG), "STATION")))
+	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::YG), "STATION")))
 		return E_FAIL;
 
 

@@ -1,6 +1,6 @@
 {
-  "Controllers": [
-    "Elite_Police_Default"
-  ],
+    "Controllers": [
+        "Elite_Police_Default"
+    ],
     "OverrideControllers": []
 }

@@ -42,7 +42,7 @@ private:
 
 private:
 	_float m_fCurrentStamina = {};
-	_int m_iMaxStamina = {};
+	_float m_fMaxStamina = {};
 	_float m_fRatio = { 1.f };
 
 public:

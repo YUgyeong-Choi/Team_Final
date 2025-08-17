@@ -31,6 +31,9 @@ public:
 		
 		vector<UI_FEATRE_DESC*> FeatureDescs;
 
+		string strText = {};
+		_int iAlignType = {};
+
 	}DYNAMIC_UI_DESC;
 
 
@@ -45,6 +48,8 @@ public:
 
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
+
+	void Set_Pos(_float fX, _float fY) { m_fX = fX; m_fY = fY; }
 
 protected:
 	CDynamic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -95,6 +100,7 @@ protected:
 	_int			m_iPassIndex = {};
 	_int			m_iTextureIndex = {};
 	_int			m_iTextureLevel = { ENUM_CLASS(LEVEL::STATIC) };
+	
 
 private:
 	

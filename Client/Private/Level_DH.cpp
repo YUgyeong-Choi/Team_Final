@@ -111,7 +111,7 @@ HRESULT CLevel_DH::Render()
 
 #pragma region 맵 로드
 
-HRESULT CLevel_DH::Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance)
+HRESULT CLevel_DH::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance)
 {
 	//이미 프로토타입이존재하는 지확인
 
@@ -192,7 +192,7 @@ HRESULT CLevel_DH::Ready_MapModel()
 
 		const _char* pModelFilePath = Path.c_str();
 
-		if (FAILED(Load_Model(PrototypeTag, pModelFilePath, bInstance)))
+		if (FAILED(Load_Mesh(PrototypeTag, pModelFilePath, bInstance)))
 		{
 			return E_FAIL;
 		}

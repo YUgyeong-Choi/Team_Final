@@ -8,7 +8,7 @@ CStamina_Bar::CStamina_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CStamina_Bar::CStamina_Bar(const CStamina_Bar& Prototype)
-    :CDynamic_UI{Prototype}
+    :CDynamic_UI (Prototype)
 {
 }
 
@@ -43,12 +43,12 @@ HRESULT CStamina_Bar::Initialize(void* pArg)
 		}
 		else if (L"MaxStamina" == eventType)
 		{
-			m_iMaxStamina = *static_cast<_int*>(data);
+			m_fMaxStamina = *static_cast<_float*>(data);
 
 
 		}
 
-		m_fRatio = (m_fCurrentStamina) / m_iMaxStamina;
+		m_fRatio = (m_fCurrentStamina) / m_fMaxStamina;
 
 		});
 

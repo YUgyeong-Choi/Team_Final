@@ -200,6 +200,9 @@ private:
 	unordered_map<string, void*> m_SpawnObjectDesc;
 
 
+	_float m_fAllAnimTickperSec = 55.f;
+
+
 public:
 	static CAnimTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

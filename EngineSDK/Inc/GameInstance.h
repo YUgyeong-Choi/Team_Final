@@ -5,6 +5,8 @@
 /* 엔진 개발자가 클라개밫자에게 보여주고싶은 함수를 ... */
 #include "Prototype_Manager.h"
 #include "Shadow.h"
+
+
 NS_BEGIN(Engine)
 
 
@@ -235,6 +237,10 @@ public:
 	void ToggleDebugOctoTree();
 	void ClearIndexToObj();
 	void QueryVisible();
+
+	void PushOctoTreeObjects(class CGameObject* pObject);
+	vector<class CGameObject*> GetOctoTreeObjects() const;
+	void ClaerOctoTreeObjects();
 #pragma endregion
 
 #pragma region AREA_MANAGER

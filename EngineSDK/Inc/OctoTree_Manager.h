@@ -2,8 +2,9 @@
 
 #include "Base.h"
 
-NS_BEGIN(Engine)
 
+
+NS_BEGIN(Engine)
 
 class COctoTree_Manager final : public CBase
 {
@@ -86,6 +87,11 @@ public:
 	HRESULT SetObjectType(const vector<OCTOTREEOBJECTTYPE>& vTypes);
 	const vector<OCTOTREEOBJECTTYPE>& GetObjectType() const { return m_ObjectType; }
 
+public:
+	void PushOctoTreeObjects(class CGameObject* pObject){m_vecOctoTreeObjects.push_back(pObject);}
+	vector<class CGameObject*> GetOctoTreeObjects() const { return m_vecOctoTreeObjects; }
+	void ClaerOctoTreeObjects() { m_vecOctoTreeObjects.clear(); }
+
 private: /* [ 절두체 변수들 ] */
 	XMFLOAT4 planes[6];
 	XMFLOAT4 m_DebugPlane;
@@ -104,6 +110,9 @@ private: /* [ 쿼드트리 변수들 ] */
 
 	uint64_t			m_FrameId;
 	vector<uint64_t>    m_LastSeenFrame;
+
+private:
+	vector<class CGameObject*> m_vecOctoTreeObjects;
 
 private: /* [ 쿼드트리 노드들 ] */
 	vector<Node>					m_Nodes;

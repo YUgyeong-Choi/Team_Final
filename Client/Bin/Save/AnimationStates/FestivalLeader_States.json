@@ -1,0 +1,29 @@
+{
+    "Controllers": [
+        "FestivalLeader_Default"
+    ],
+    "OverrideControllers": [
+        {
+            "Controller": "FestivalLeader_Default",
+            "Name": "Phase2",
+            "States": [
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "AnyState",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "ExitState",
+                    "UpperClipName": ""
+                }
+            ]
+        }
+    ]
+}

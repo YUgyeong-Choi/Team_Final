@@ -49,6 +49,15 @@ protected:
 	}
 
 protected:
+	_bool   IsStaminaEnough(_float fStaminaCost)
+	{
+		if (m_pOwner->m_fStamina >= fStaminaCost)
+			return true;
+
+		return false;
+	}
+
+protected:
 	CPlayer* m_pOwner;
 
 	CCamera_Manager* m_pCamera_Manager = { nullptr };
@@ -146,13 +155,13 @@ public:
         if (m_bChargeArm && m_pOwner->m_bWeaponEquipped) // 차징
             return EPlayerState::ARMATTACKCHARGE;
 
-		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // 강공
+		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
 			return EPlayerState::STRONGATTACKA;
         
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // 차징
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(40.f)) // 차징
 			return EPlayerState::CHARGEA;
         
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // 약공
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 약공
 			return EPlayerState::WEAKATTACKA;
 
         if (input.bTap) // 무기교체
@@ -161,7 +170,7 @@ public:
         if (input.bSkill)
             return EPlayerState::MAINSKILL;
 
-		if (input.bSpaceDown) // 빽스탭
+		if (input.bSpaceDown && IsStaminaEnough(20.f)) // 빽스탭
             return EPlayerState::BACKSTEP;
 
         if (input.bMove)
@@ -252,7 +261,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
         
-        if (m_fSpaceHoldTime > 0.5f)
+        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(10.f))
             return EPlayerState::SPRINT;
 
         if (input.bShift && m_pOwner->m_bWeaponEquipped) // 가드
@@ -267,16 +276,16 @@ public:
         if (input.bCtrl) // 컨트롤 왼팔공격
             return EPlayerState::ARMATTACKA;
 
-        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // 강공
+        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
             return EPlayerState::STRONGATTACKA;
 
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // 차징
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(40.f)) // 차징
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // 약공
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 약공
             return EPlayerState::WEAKATTACKA;
 
-        if (input.bSpaceUP) // 구르기
+        if (input.bSpaceUP && IsStaminaEnough(20.f)) // 구르기
             return EPlayerState::ROLLING;
 
 		// 아무것도 안눌리면 Idle로 전환
@@ -376,7 +385,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (m_fSpaceHoldTime > 0.5f)
+        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(10.f))
             return EPlayerState::SPRINT;
 
         if (input.bShift && m_pOwner->m_bWeaponEquipped) // 가드
@@ -391,16 +400,16 @@ public:
         if (input.bSkill)
             return EPlayerState::MAINSKILL;
 
-        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped) // 강공
+        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
             return EPlayerState::STRONGATTACKA;
 
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped) // 차징
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(40.f)) // 차징
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped) // 약공
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 약공
             return EPlayerState::WEAKATTACKA;
 
-        if (input.bSpaceUP) // 구르기
+        if (input.bSpaceUP && IsStaminaEnough(20.f)) // 구르기
             return EPlayerState::ROLLING;
 
         if (!input.bMove)
@@ -471,14 +480,6 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (1.f < m_fStateTime && !m_bDoOnce)
-        {
-            // 램프 온오프 토글
-           
-            m_bDoOnce = true;
-        }
-
-        
     }
 
     virtual void Exit() override
@@ -558,8 +559,6 @@ public:
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
-
-        m_pOwner->m_fCurrentStamina -= 20.f;
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -640,8 +639,6 @@ public:
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
-
-        m_pOwner->m_fCurrentStamina -= 20.f;
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -829,7 +826,6 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        m_pOwner->m_fCurrentStamina -= 15 * fTimeDelta;
     }
 
     virtual void Exit() override
@@ -843,6 +839,9 @@ public:
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (IsStaminaEnough(10.f))
+            return EPlayerState::IDLE;
 
         //방향키가 아무것도 안눌렸다.
         if (!input.bMove)
@@ -859,9 +858,9 @@ public:
         }
 
         //왼클릭 or 우클릭 (약공 , 강공)
-        if (input.bLeftMouseDown)
+        if (input.bLeftMouseDown && IsStaminaEnough(20.f))
             return EPlayerState::SPRINTATTACKA;
-        if (input.bRightMouseDown)
+        if (input.bRightMouseDown && IsStaminaEnough(20.f))
             return EPlayerState::SPRINTATTACKB;
 
         return EPlayerState::SPRINT;
@@ -949,9 +948,9 @@ public:
 
         if (0.8f < m_fStateTime)
         {
-            if (m_bAttackA)
+            if (m_bAttackA && IsStaminaEnough(20.f))
                 return EPlayerState::WEAKATTACKB;
-            if (m_bAttackB)
+            if (m_bAttackB && IsStaminaEnough(20.f))
                 return EPlayerState::STRONGATTACKB;
             if (m_bSkill)
                 return EPlayerState::MAINSKILL;
@@ -1056,10 +1055,10 @@ public:
 
         if (0.8f < m_fStateTime)
         {
-            if (m_bAttackA)
-                return EPlayerState::WEAKATTACKB;
-            if (m_bAttackB)
-                return EPlayerState::STRONGATTACKB;
+            if (m_bAttackA && IsStaminaEnough(20.f))
+                return EPlayerState::WEAKATTACKA;
+            if (m_bAttackB && IsStaminaEnough(20.f))
+                return EPlayerState::STRONGATTACKA;
             if (m_bArmAttack)
                 return EPlayerState::ARMATTACKA;
             if (m_bSkill)
@@ -1169,9 +1168,9 @@ public:
 
         if (0.75f < m_fStateTime)
         {
-            if (m_bAttackB)
+            if (m_bAttackB && IsStaminaEnough(20.f))
                 return EPlayerState::STRONGATTACKB;
-            if (m_bAttackA)
+            if (m_bAttackA && IsStaminaEnough(20.f))
                 return EPlayerState::WEAKATTACKB;
             if (m_bArmAttack)
                 return EPlayerState::ARMATTACKA;
@@ -1283,9 +1282,9 @@ public:
 
         if (1.f < m_fStateTime)
         {
-            if (m_bAttackB)
+            if (m_bAttackB && IsStaminaEnough(20.f))
                 return EPlayerState::STRONGATTACKA;
-            if (m_bAttackA)
+            if (m_bAttackA && IsStaminaEnough(20.f))
                 return EPlayerState::WEAKATTACKA;
             if (m_bArmAttack)
                 return EPlayerState::ARMATTACKA;
@@ -1379,7 +1378,7 @@ public:
 
         if (2.5f < m_fStateTime)
         {
-            if (m_pOwner->m_bIsChange && m_pOwner->m_bWeaponEquipped)
+            if (m_pOwner->m_bIsChange && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
             {
                 m_pOwner->m_bIsChange = false;
                 return EPlayerState::CHARGEB;

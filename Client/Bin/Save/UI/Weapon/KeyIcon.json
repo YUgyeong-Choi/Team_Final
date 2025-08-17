@@ -15,6 +15,22 @@
                     "G": 1.0,
                     "R": 1.0
                 },
+                "Features": [
+                    {
+                        "EndPos": {
+                            "X": 0.8079999804496765,
+                            "Y": 0.9589999914169312
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 1.100000023841858,
+                            "Y": 1.100000023841858
+                        },
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 32.0,
@@ -22,8 +38,8 @@
                 "Texturetag": "Prototype_Component_Texture_Icon_Key_F",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.01,
-                "fX": 1292.800048828125,
+                "fOffset": 0.009999999776482582,
+                "fX": 1372.7999267578125,
                 "fY": 863.0999755859375,
                 "iPassIndex": 1,
                 "iTextureIndex": 0,
@@ -36,6 +52,22 @@
                     "G": 1.0,
                     "R": 1.0
                 },
+                "Features": [
+                    {
+                        "EndPos": {
+                            "X": 0.8339999914169312,
+                            "Y": 0.9589999914169312
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 1.100000023841858,
+                            "Y": 1.100000023841858
+                        },
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 32.0,
@@ -43,7 +75,7 @@
                 "Texturetag": "Prototype_Component_Texture_Icon_Key_F",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.01,
+                "fOffset": 0.009999999776482582,
                 "fX": 1334.4000244140625,
                 "fY": 863.0999755859375,
                 "iPassIndex": 1,
@@ -57,6 +89,22 @@
                     "G": 1.0,
                     "R": 1.0
                 },
+                "Features": [
+                    {
+                        "EndPos": {
+                            "X": 0.8600000143051147,
+                            "Y": 0.9589999914169312
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 1.100000023841858,
+                            "Y": 1.100000023841858
+                        },
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 32.0,
@@ -64,7 +112,7 @@
                 "Texturetag": "Prototype_Component_Texture_Icon_Key_F",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.01,
+                "fOffset": 0.009999999776482582,
                 "fX": 1376.0,
                 "fY": 863.0999755859375,
                 "iPassIndex": 1,
@@ -78,6 +126,22 @@
                     "G": 1.0,
                     "R": 1.0
                 },
+                "Features": [
+                    {
+                        "EndPos": {
+                            "X": 0.9269999861717224,
+                            "Y": 0.9589999914169312
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 1.100000023841858,
+                            "Y": 1.100000023841858
+                        },
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 32.0,
@@ -85,7 +149,7 @@
                 "Texturetag": "Prototype_Component_Texture_Icon_Key_F",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.01,
+                "fOffset": 0.009999999776482582,
                 "fX": 1483.199951171875,
                 "fY": 863.0999755859375,
                 "iPassIndex": 1,
@@ -99,6 +163,22 @@
                     "G": 1.0,
                     "R": 1.0
                 },
+                "Features": [
+                    {
+                        "EndPos": {
+                            "X": 0.8209999799728394,
+                            "Y": 0.9589999914169312
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 1.100000023841858,
+                            "Y": 1.100000023841858
+                        },
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 132.78700256347656,
                 "SizeX": 11.200000762939453,
@@ -106,7 +186,7 @@
                 "Texturetag": "Prototype_Component_Texture_Direction",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.01,
+                "fOffset": 0.009999999776482582,
                 "fX": 1313.5999755859375,
                 "fY": 863.0999755859375,
                 "iPassIndex": 1,
@@ -120,6 +200,22 @@
                     "G": 1.0,
                     "R": 1.0
                 },
+                "Features": [
+                    {
+                        "EndPos": {
+                            "X": 0.847000002861023,
+                            "Y": 0.9589999914169312
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 1.100000023841858,
+                            "Y": 1.100000023841858
+                        },
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 134.26199340820313,
                 "SizeX": 11.200000762939453,
@@ -127,7 +223,7 @@
                 "Texturetag": "Prototype_Component_Texture_Direction",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.01,
+                "fOffset": 0.009999999776482582,
                 "fX": 1355.199951171875,
                 "fY": 863.0999755859375,
                 "iPassIndex": 1,
@@ -141,6 +237,22 @@
                     "G": 1.0,
                     "R": 1.0
                 },
+                "Features": [
+                    {
+                        "EndPos": {
+                            "X": 0.8980000019073486,
+                            "Y": 0.9589999914169312
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 1.100000023841858,
+                            "Y": 1.100000023841858
+                        },
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 32.0,
@@ -148,7 +260,7 @@
                 "Texturetag": "Prototype_Component_Texture_Icon_Key_LeftShift",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.01,
+                "fOffset": 0.009999999776482582,
                 "fX": 1436.800048828125,
                 "fY": 863.0999755859375,
                 "iPassIndex": 1,
@@ -162,6 +274,22 @@
                     "G": 1.0,
                     "R": 1.0
                 },
+                "Features": [
+                    {
+                        "EndPos": {
+                            "X": 0.9129999876022339,
+                            "Y": 0.9589999914169312
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 1.100000023841858,
+                            "Y": 1.100000023841858
+                        },
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 9.600000381469727,
@@ -169,8 +297,8 @@
                 "Texturetag": "Prototype_Component_Texture_Cross",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.01,
-                "fX": 1460.0,
+                "fOffset": 0.009999999776482582,
+                "fX": 1460.7999267578125,
                 "fY": 863.0999755859375,
                 "iPassIndex": 1,
                 "iTextureIndex": 0,

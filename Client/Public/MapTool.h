@@ -53,7 +53,7 @@ private:
 	void	DeleteMapToolObject();
 	void	Clear_Map();
 	
-	HRESULT Load_Model(const wstring& strPrototypeTag, const _char* pModelFilePath);
+	HRESULT Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath);
 
 private:
 	//모델 그룹에 추가 제거
