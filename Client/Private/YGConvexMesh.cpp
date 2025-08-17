@@ -55,9 +55,7 @@ void CYGConvexMesh::Priority_Update(_float fTimeDelta)
 
 void CYGConvexMesh::Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
-		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
-	}
+
 }
 
 void CYGConvexMesh::Late_Update(_float fTimeDelta)

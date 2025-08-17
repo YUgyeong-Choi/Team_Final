@@ -60,9 +60,7 @@ void CYGCapsule::Update(_float fTimeDelta)
 {
 	Update_ColliderPos();
 	Ray();
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom)) {
-		CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
-	}
+
 }
 
 void CYGCapsule::Late_Update(_float fTimeDelta)
