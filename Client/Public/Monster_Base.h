@@ -97,7 +97,7 @@ protected:
 
 	// 행동 결정을 위한 변수들
 	MONSTER_DIR		m_eDir = { MONSTER_DIR::END };
-	_int			m_iGroggyThreshold = {};
+	_float			m_fGroggyThreshold = {};
 	_bool			m_isCanGroggy = {};
 	_bool			m_isDetect = { false };
 	_float			m_fDetectDist = {};

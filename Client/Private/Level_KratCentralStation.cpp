@@ -547,7 +547,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
 	CMonster_Base::MONSTER_BASE_DESC pDesc{};
 	pDesc.fSpeedPerSec = 5.f;
-	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc.fRotationPerSec = XMConvertToRadians(180.0f);
 	pDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	pDesc.InitPos = _float3(85.5f, 0.f, -7.5f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
@@ -559,9 +559,9 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &pDesc)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
+	//	return E_FAIL;
 
 
 	return S_OK;

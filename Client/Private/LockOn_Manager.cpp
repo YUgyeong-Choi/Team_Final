@@ -163,7 +163,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         }
 
 #ifdef _DEBUG
-        if (m_pGameInstance->Get_RenderCollider()) {
+     /*   if (m_pGameInstance->Get_RenderCollider()) {
             DEBUGRAY_DATA _data{};
 
             _data.vStartPos = origin;
@@ -172,7 +172,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
             _data.bIsHit = bHit;
             _data.vHitPos = hitPos;
             pPlayer->Get_Controller()->Add_RenderRay(_data);
-        }
+        }*/
 #endif
     }
 

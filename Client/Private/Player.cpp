@@ -293,6 +293,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bMoveReset = false;
 		m_bSetOnce = false;
 		m_bSetTwo = false;
+
+		m_pWeapon->SetisAttack(false);
+		m_pWeapon->Clear_CollisionObj();
+
 	}
 	
 	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
@@ -331,8 +335,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+				m_pWeapon->SetisAttack(true);
 			}
 		}
+
 		break;
 	}
 	case eAnimCategory::NORMAL_ATTACKB:
@@ -366,6 +372,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -401,6 +408,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -436,6 +444,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -466,13 +475,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 1.5f)
+		if (m_fSetTime > 1.f)
 		{
 			if (!m_bSetOnce && m_fStamina >= 0.f)
 			{
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+				m_pWeapon->SetisAttack(true);
+				m_pWeapon->Clear_CollisionObj();
 			}
 		}
 		if (m_fSetTime > 1.8f)
@@ -482,6 +493,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetTwo = true;
+				m_pWeapon->SetisAttack(true);
+				m_pWeapon->Clear_CollisionObj();
 			}
 		}
 
@@ -500,6 +513,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -628,6 +642,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 20.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
+			m_pWeapon->SetisAttack(true);
 		}
 
 		break;
@@ -650,6 +665,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 20.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
+			m_pWeapon->SetisAttack(true);
 		}
 
 		break;
@@ -681,18 +697,21 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::MAINSKILLA:
 	{
 		RootMotionActive(fTimeDelta);
+		m_pWeapon->SetisAttack(true);
 
 		break;
 	}
 	case eAnimCategory::MAINSKILLB:
 	{
 		RootMotionActive(fTimeDelta);
+		m_pWeapon->SetisAttack(true);
 
 		break;
 	}
 	case eAnimCategory::MAINSKILLC:
 	{
 		RootMotionActive(fTimeDelta);
+		m_pWeapon->SetisAttack(true);
 
 		break;
 	}
@@ -1098,18 +1117,36 @@ HRESULT CPlayer::Ready_Actor()
 
 void CPlayer::Callback_HP()
 {
+	if (m_fHP < 0.f)
+		m_fHP = 0.f;
+
+	if (m_fHP >= m_fMaxHP)
+		m_fHP = m_fMaxHP;
+
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHP);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_fMaxHP);
 }
 
 void CPlayer::Callback_Stamina()
 {
+	if (m_fStamina < 0.f)
+		m_fStamina = 0.f;
+
+	if (m_fStamina >= m_fMaxStamina)
+		m_fStamina = m_fMaxStamina;
+
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_fStamina);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxStamina"), &m_fMaxStamina);
 }
 
 void CPlayer::Callback_Mana()
 {
+	if (m_fMana < 0.f)
+		m_fMana = 0.f;
+
+	if (m_fMana >= m_fMaxMana)
+		m_fMana = m_fMaxMana;
+
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
 }
@@ -1228,6 +1265,23 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 		}
 		
 	}
+}
+
+void CPlayer::Active_Weapon()
+{
+	if (nullptr == m_pWeapon)
+		return;
+	
+	m_pWeapon->SetisAttack(true);
+}
+
+void CPlayer::Reset_Weapon()
+{
+	if (nullptr == m_pWeapon)
+		return;
+
+	m_pWeapon->SetisAttack(true);
+	m_pWeapon->Clear_CollisionObj();
 }
 
 void CPlayer::Callback_UpBelt()

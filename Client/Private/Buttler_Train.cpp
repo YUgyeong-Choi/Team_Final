@@ -2,6 +2,9 @@
 #include "GameInstance.h"
 #include "Weapon_Monster.h"
 #include "LockOn_Manager.h"
+#include "PhysX_IgnoreSelfCallback.h"
+#include "Client_Calculation.h"
+
 CButtler_Train::CButtler_Train(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster_Base{pDevice, pContext}
 {
@@ -61,22 +64,7 @@ void CButtler_Train::Update(_float fTimeDelta)
 
 	Calc_Pos(fTimeDelta);
 
-	if (m_strStateName.find("Turn") != m_strStateName.npos)
-	{
-		_vector vAxis{};
-		if (m_strStateName.find("Right") != m_strStateName.npos)
-		{
-			vAxis = { 0.f,1.f,0.f,0.f };
 
-		}
-		else
-		{
-			vAxis = { 0.f,-1.f,0.f,0.f };
-
-		}
-
-		m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 1.f);
-	}
 
 
 	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
@@ -124,10 +112,12 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -166,10 +156,10 @@ void CButtler_Train::Update_State()
     m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
 
-	if (m_strStateName.find("Idle") != m_strStateName.npos || m_strStateName.find("Turn") != m_strStateName.npos)
+	if (m_strStateName.find("Idle") != m_strStateName.npos)
 	{
-		m_pAnimator->SetBool("IsTurn", Check_Turn());
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+
 	}
 
 	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk") != m_strStateName.npos)
@@ -188,21 +178,16 @@ void CButtler_Train::Update_State()
 			m_pAnimator->SetBool("UseLightAttack", true);
 		}
 
-		// 이게 잘 안되네 
-		// 이벤트로 바꿔
-		if (m_pAnimator->IsFinished())
-		{
-			//++m_iAttackCount;
-		}
+		
 	}
 
-	if (m_iAttackCount == 3)
+	if (m_iAttackCount == 10)
 	{
 		// 뒤로 가게 하기
-
-
-		m_pAnimator->SetTrigger("Back");
-
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		m_pAnimator->SetBool("IsBack", true);
+		//m_pAnimator->SetInt("Dir", _int(Calc_Ray()));
+		
 		m_iAttackCount = 0;
 
 		
@@ -212,9 +197,26 @@ void CButtler_Train::Update_State()
 	if (m_strStateName.find("Groggy_Out") != m_strStateName.npos)
 	{
 		m_fDuration = 0.f;
-		m_iGroggyThreshold = 100;
+		m_fGroggyThreshold = 100;
 	}
 	
+
+	if (m_strStateName.find("Attack") != m_strStateName.npos)
+	{
+		if (m_pAnimator->IsFinished())
+		{
+			++m_iAttackCount;
+		}
+	}
+
+	if (m_strStateName.find("Walk") != m_strStateName.npos)
+	{
+		if (m_strStateName.find("F") == m_strStateName.npos)
+		{
+			if (m_pAnimator->IsFinished())
+				m_pAnimator->SetBool("IsBack", false);
+		}
+	}
 
 }
 
@@ -238,9 +240,17 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		if (false == pWeapon->GetisAttack())
 			return;
 
-		m_fHp -= pWeapon->Get_CurrentDamage() / 2;
+		if (pWeapon->Find_CollisonObj(this))
+		{
+			return;
+		}
 
-		m_iGroggyThreshold -= pWeapon->Get_CurrentDamage();
+		pWeapon->Add_CollisonObj(this);
+		pWeapon->Calc_Durability(3);
+
+		m_fHp -= pWeapon->Get_CurrentDamage() / 10.f;
+
+		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage();
 		m_pHPBar->Set_RenderTime(2.f);
 
 		if (m_fHp <= 0)
@@ -262,7 +272,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 			m_pAnimator->SetTrigger("Hit");
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-			if(m_iGroggyThreshold < 0)
+			if(m_fGroggyThreshold < 0)
 				m_isCanGroggy = true;
 		}
 		else
@@ -293,15 +303,9 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	{
 		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-		if (m_strStateName.find("Walk_B") != m_strStateName.npos)
+		if (m_strStateName.find("Walk_F") != m_strStateName.npos)
 		{
-			vLook *= -1.f;
-
-			m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
-		}
-		else if (m_strStateName.find("Walk_F") != m_strStateName.npos)
-		{
-			m_pTransformCom->Go_Dir(vLook, fTimeDelta, nullptr, m_pNaviCom);
+			m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.25f, nullptr, m_pNaviCom);
 		}
 		else
 		{
@@ -311,9 +315,86 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	}
 	else if (m_strStateName.find("Attack") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
 	{
+		m_isLookAt = true;
 		RootMotionActive(fTimeDelta);
 	}
 
+}
+
+CMonster_Base::MONSTER_DIR CButtler_Train::Calc_Ray()
+{
+	PxVec3 origin = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
+	origin.y += 2.f;
+	XMFLOAT3 fLook;
+	XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK) * -1);
+	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
+	direction.normalize();
+	_float fRayLength = 1.f;
+
+	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+	PxRaycastBuffer hit;
+	PxQueryFilterData filterData;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+	unordered_set<PxActor*> ignoreActors = m_pPhysXActorCom->Get_IngoreActors();
+	CIgnoreSelfCallback callback(ignoreActors);
+
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+	{
+		if (hit.hasBlock)
+		{
+			PxRigidActor* hitActor = hit.block.actor;
+
+			if (hitActor != m_pPhysXActorCom->Get_Actor())
+			{
+				PxVec3 hitPos = hit.block.position;
+				PxVec3 hitNormal = hit.block.normal;
+
+				CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+
+				if (pHitActor)
+				{
+					if (nullptr == pHitActor->Get_Owner())
+						return MONSTER_DIR::B;
+					pHitActor->Get_Owner()->On_Hit(this, m_pPhysXActorCom->Get_ColliderType());
+				}
+
+				//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
+				//printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
+				m_bRayHit = true;
+				m_vRayHitPos = hitPos;
+
+				return MONSTER_DIR(GetRandomInt(2, 3));
+			}
+
+			
+			
+		}
+	}
+
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
+		_data.vStartPos.y += 2.f;
+		XMFLOAT3 fLook;
+		XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK) * -1.f);
+		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
+		_data.fRayLength = 1.f;
+		_data.bIsHit = m_bRayHit;
+		_data.vHitPos = m_vRayHitPos;
+		m_pPhysXActorCom->Add_RenderRay(_data);
+
+		m_bRayHit = false;
+		m_vRayHitPos = {};
+	}
+#endif
+
+
+	return MONSTER_DIR::B;
 }
 
 HRESULT CButtler_Train::Ready_Weapon()

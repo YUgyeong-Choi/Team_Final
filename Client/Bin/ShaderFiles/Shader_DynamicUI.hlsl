@@ -483,7 +483,7 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
     }
     else
     {
-        bool isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
+        bool isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio - fMarginX;
         
         if (isInsideX)
             Out.vColor = g_Color;
@@ -501,55 +501,47 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
 
     float4 vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     float2 highlightUV;
-    // 축소하고 가운데 정렬
+// 축소하고 가운데 정렬
     highlightUV.x = (In.vTexcoord.x - 0.5f) * 0.9f + 0.5f;
-    highlightUV.y = (In.vTexcoord.y - 0.5f) * 0.5f + 0.5f; 
+    highlightUV.y = (In.vTexcoord.y - 0.5f) * 0.5f + 0.5f;
 
     float4 vHighlight = (g_Groggy == 1.f) ? g_HighlightTexture.Sample(DefaultSampler, highlightUV) : float4(0, 0, 0, 0);
-    
+
     float fMarginX = 0.06f;
     float fMarginY = 0.3f;
-    bool isInsideX;
 
-    if (g_BarRatio > 1 - 1.2 * fMarginX)
-        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= 1 - 1.2h * fMarginX;
-    else
-        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
+// 채워질 수 있는 X 범위
+    float minX = fMarginX;
+    float maxX = 1 - 1.2f * fMarginX;
 
+// 비율에 따라 실제 채워지는 위치
+    float filledX = minX + (maxX - minX) * g_BarRatio;
+
+    bool isInsideX = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
     bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
 
 
-    if(vHighlight.a > 0.0001f)
+    if (vHighlight.a > 0.0001f)
     {
         Out.vColor += vHighlight * 2.f;
     }
-    
 
     if (vBorder.a > 0.001f)
     {
-    // 
-        
         Out.vColor += vBorder;
         return Out;
     }
-  
 
     if (isInsideX && isInsideY)
     {
         vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
         Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
-        
-        
-       
     }
     else
     {
         if (isInsideY)
             Out.vColor += vHighlight * 2.f;
-   
     }
-    
-    
 
     return Out;
 }

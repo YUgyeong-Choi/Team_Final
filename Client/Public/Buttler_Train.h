@@ -13,6 +13,9 @@ private:
 	virtual ~CButtler_Train() = default;
 
 public:
+	void Add_AttackCount() { ++m_iAttackCount; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Update(_float fTimeDelta) override;
@@ -40,6 +43,9 @@ public:
 	virtual void ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	void Calc_Pos(_float fTimeDelta);
+
+	// 뒷 방향으로 레이를 쏘고 너무 가까우면 왼쪽, 오른쪽 다 쏴보고 다 가까우면 뒤로 감
+	MONSTER_DIR Calc_Ray();
 
 
 private:

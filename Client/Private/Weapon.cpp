@@ -232,11 +232,28 @@ void CWeapon::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
+
+
 void CWeapon::Calc_Durability(_int iDelta)
 {
 	m_iDurability -= iDelta;
 
 	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_iDurability);
+}
+
+_bool CWeapon::Find_CollisonObj(CGameObject* pObj)
+{
+	if (m_CollisonObjects.empty())
+		return false;
+
+	
+
+	return find(m_CollisonObjects.begin(), m_CollisonObjects.end(), pObj) != m_CollisonObjects.end();
+}
+
+void CWeapon::Add_CollisonObj(CGameObject* pObj)
+{
+	m_CollisonObjects.push_back(pObj);
 }
 
 void CWeapon::Set_WeaponTrail_Active(_bool bActive)

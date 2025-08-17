@@ -129,6 +129,9 @@ private:
 	void ItemWeaponOFF(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
 
+	void Active_Weapon();
+	void Reset_Weapon();
+
 	
 private: /* [ ½½·í ÇÔ¼ö ] */
 	void Callback_UpBelt();
