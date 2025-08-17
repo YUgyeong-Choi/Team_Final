@@ -403,6 +403,9 @@
     <Filter Include="02.GameObjects\99.UI\Container\Script">
       <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Mesh\DynamicMesh\Door">
+      <UniqueIdentifier>{50e928b3-d44f-4079-9150-80a889504b3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -850,6 +853,9 @@
     <ClInclude Include="..\Public\DynamicMesh.h">
       <Filter>02.GameObjects\00.Mesh\DynamicMesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DoorMesh.h">
+      <Filter>02.GameObjects\00.Mesh\DynamicMesh\Door</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1270,6 +1276,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\DynamicMesh.cpp">
       <Filter>02.GameObjects\00.Mesh\DynamicMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DoorMesh.cpp">
+      <Filter>02.GameObjects\00.Mesh\DynamicMesh\Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

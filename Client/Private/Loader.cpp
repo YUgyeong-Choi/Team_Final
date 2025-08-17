@@ -47,7 +47,7 @@
 #include "YGController.h"
 
 #include "Wego.h"
-#include "DynamicMesh.h"
+#include "DoorMesh.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -456,7 +456,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	string Map = "TEST"; //STATION, TEST
+	string Map = "STATION"; //STATION, TEST
 
 	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
 	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
@@ -491,8 +491,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DynamicMesh"),
-		CDynamicMesh::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
+		CDoorMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),

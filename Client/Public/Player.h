@@ -109,7 +109,6 @@ private: /* [ 이동로직 ] */
 
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Weapon();
-	HRESULT Ready_StationDoor();
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
@@ -121,8 +120,9 @@ private: /* [ 옵저버 관련 ] */
 	void Callback_Stamina();
 	void Callback_Mana();
 
-private: /* [ 상호작용 관련 ] */
-	void Interaction_Door();
+public: /* [ 상호작용 관련 ] */
+	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj);
+private:
 	void Play_CutScene_Door();
 
 private:
@@ -194,7 +194,6 @@ private: /* [ 공격관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
 	_bool	m_bBackStepAttack = { false };
 	_bool 	m_bIsChange = { false };
-	_bool	m_bCutsceneDoor = { false };
 
 	_float 	m_fChangeTime = {};
 	_float 	m_fChangeTimeElaped = {};

@@ -49,8 +49,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL; 
 
-	if (FAILED(Ready_StationDoor()))
-		return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
@@ -114,10 +112,6 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	UpdateShadowCamera();
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast(m_pControllerCom);
-
-
-	/* [ 상호작용 ] */
-	Interaction_Door();
 
 	/* [ 아이템 ] */
 	PriorityUpdate_Slot(fTimeDelta);
@@ -933,35 +927,6 @@ HRESULT CPlayer::Ready_Weapon()
 	return S_OK;
 }
 
-HRESULT CPlayer::Ready_StationDoor()
-{
-	CStaticMesh::STATICMESH_DESC Desc{};
-	Desc.iRender = 0;
-	Desc.bUseOctoTree = false;
-	Desc.m_eLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
-	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
-
-	/* 문자열 받는 곳 */
-	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
-	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
-	_float3 vPosition = _float3(52.6f, 0.02f, -2.4f);
-	_matrix matWorld = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
-	_float4x4 matWorldFloat;
-	XMStoreFloat4x4(&matWorldFloat, matWorld);
-	Desc.WorldMatrix = matWorldFloat;
-	//Desc.eColliderType = COLLIDER_TYPE::CONVEX;
-
-	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DynamicMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &pGameObject, &Desc)))
-		return E_FAIL;
-
-	m_pInterectionStuff = pGameObject;
-
-	return S_OK;
-}
 
 HRESULT CPlayer::Ready_Components()
 {
@@ -1114,35 +1079,16 @@ void CPlayer::Callback_Mana()
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
 }
 
-void CPlayer::Interaction_Door()
+void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 {
-	if (KEY_DOWN(DIK_E))
+	m_pInterectionStuff = pObj;
+	switch (eType)
 	{
-		_float3 vTriggerCenter = _float3(52.6f, 0.02f, -2.4f);
-		_float fTriggerRadius = 5.f; // 3미터 반경
-
-		// 플레이어 위치에서 거리 계산
-		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
-		_float3 vPlayerPos = {
-			XMVectorGetX(vPosition),
-			XMVectorGetY(vPosition),
-			XMVectorGetZ(vPosition)
-		};
-
-		_float fDistSq =
-			powf(vPlayerPos.x - vTriggerCenter.x, 2) +
-			powf(vPlayerPos.y - vTriggerCenter.y, 2) +
-			powf(vPlayerPos.z - vTriggerCenter.z, 2);
-
-		// 거리 조건 검사 (제곱된 거리 비교로 최적화)
-		if (fDistSq <= fTriggerRadius * fTriggerRadius)
-		{
-			if (!m_bCutsceneDoor)
-			{
-				Play_CutScene_Door();
-				m_bCutsceneDoor = true;
-			}
-		}
+	case Client::TUTORIALDOOR:
+		Play_CutScene_Door();
+		break;
+	default:
+		break;
 	}
 }
 
