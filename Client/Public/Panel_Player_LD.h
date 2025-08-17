@@ -22,6 +22,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual void Set_isReverse(_bool isReverse);
 
 private:
 	CUI_Container* m_pBelt_Up = { nullptr };

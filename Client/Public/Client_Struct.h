@@ -97,7 +97,7 @@ namespace Client
 
 	typedef struct tagSkillDesc {
 		_int  iSkillType; // 0 공격 1 방어 2 유틸
-		_int  iManaCost; // 한번에 사용할
+		_float  fManaCost; // 한번에 사용할
 		_bool isCombo;
 		_int  iCountCombo; // 몇 콤보까지 되는지
 		

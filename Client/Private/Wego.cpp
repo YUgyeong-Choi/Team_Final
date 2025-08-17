@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Camera_Manager.h"
+#include "UIObject.h"
 CWego::CWego(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -76,6 +77,13 @@ void CWego::Priority_Update(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 
 			wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
+
+			auto& objList =m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"));
+
+			for (auto& obj : objList)
+			{
+				static_cast<CUIObject*>(obj)->Set_isReverse(true);
+			}
 		}
 	}
 
@@ -88,6 +96,13 @@ void CWego::Priority_Update(_float fTimeDelta)
 			m_bTalkActive = false;
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr);
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+
+			auto& objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"));
+
+			for (auto& obj : objList)
+			{
+				static_cast<CUIObject*>(obj)->Set_isReverse(false);
+			}
 		}
 	}
 }

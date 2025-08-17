@@ -18,7 +18,6 @@ public:
 	_bool Get_isSelect() { return m_isSelect; }
 	void  Set_isSelect(_bool isSelect) { m_isSelect = isSelect; }
 	void  Set_isInput(_bool isInput) { m_isInput = isInput; }
-
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);

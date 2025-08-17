@@ -15,6 +15,16 @@ CPanel_Player_RD::CPanel_Player_RD(const CPanel_Player_RD& Prototype)
 {
 }
 
+void CPanel_Player_RD::Set_isReverse(_bool isReverse)
+{
+	__super::Set_isReverse(isReverse);
+
+	m_pSkillType->Set_isReverse(isReverse);
+	m_pManaCost->Set_isReverse(isReverse);
+	m_pKeyIcon->Set_isReverse(isReverse);
+	m_pWeaponTexture->Set_isReverse(isReverse);
+}
+
 HRESULT CPanel_Player_RD::Initialize_Prototype()
 {
 	return S_OK;
@@ -94,8 +104,8 @@ HRESULT CPanel_Player_RD::Initialize(void* pArg)
 			static_cast<CDynamic_UI*>(m_pSkillType->Get_PartUI()[0])->Set_iTextureIndex(weaponDesc[0].iSkillType);
 			static_cast<CDynamic_UI*>(m_pSkillType->Get_PartUI()[1])->Set_iTextureIndex(weaponDesc[1].iSkillType);
 
-			static_cast<CMana_Bar*>(m_pManaCost->Get_PartUI()[0])->Set_MaxMana(weaponDesc[0].iManaCost);
-			static_cast<CMana_Bar*>(m_pManaCost->Get_PartUI()[1])->Set_MaxMana(weaponDesc[1].iManaCost);
+			static_cast<CMana_Bar*>(m_pManaCost->Get_PartUI()[0])->Set_MaxMana(weaponDesc[0].fManaCost);
+			static_cast<CMana_Bar*>(m_pManaCost->Get_PartUI()[1])->Set_MaxMana(weaponDesc[1].fManaCost);
 
 		}
 

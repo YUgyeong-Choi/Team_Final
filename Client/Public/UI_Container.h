@@ -28,7 +28,7 @@ public:
 	virtual void Deserialize(const json& j);
 
 	vector<class CUIObject*>& Get_PartUI();
-	void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; }
+	virtual void Set_isReverse(_bool isReverse);
 
 public:
 	virtual HRESULT Initialize_Prototype() override;

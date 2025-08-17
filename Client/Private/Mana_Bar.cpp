@@ -36,7 +36,7 @@ HRESULT CMana_Bar::Initialize(void* pArg)
 	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
 		if (L"CurrentMana" == eventType)
 		{
-			m_iCurrentMana = *static_cast<int*>(data);
+			m_fCurrentMana = *static_cast<_float*>(data);
 
 
 		}
@@ -44,7 +44,7 @@ HRESULT CMana_Bar::Initialize(void* pArg)
 		{
 
 			if(!m_isUseWeapon)
-				m_iMaxMana = *static_cast<int*>(data);
+				m_fMaxMana = *static_cast<_float*>(data);
 
 
 		}
@@ -114,14 +114,14 @@ HRESULT CMana_Bar::Bind_ShaderResources()
 	
 	if (!m_isUseWeapon)
 	{
-		vManaDesc = { float(m_iMaxMana) / 100, 0.01f, float(m_iCurrentMana) / 100, float(m_iCurrentMana % 100) / 100.f };
+		vManaDesc = { (m_fMaxMana) / 100, 0.01f, (m_fCurrentMana) / 100, (_int(m_fCurrentMana) % 100) / 100.f };
 	}
 	else
 	{
-		if(float(m_iCurrentMana % 100) / 100.f < 1.f)
-			vManaDesc = { float(m_iMaxMana) / 100, 0.01f, float(m_iCurrentMana) / 100, 0.f };
+		if((_int(m_fCurrentMana) % 100) / 100.f < 1.f)
+			vManaDesc = { (m_fMaxMana) / 100, 0.01f, (m_fCurrentMana) / 100, 0.f };
 		else
-			vManaDesc = { float(m_iMaxMana) / 100, 0.01f, float(m_iCurrentMana) / 100, 1.f };
+			vManaDesc = { (m_fMaxMana) / 100, 0.01f, (m_fCurrentMana) / 100, 1.f };
 	}
 
 

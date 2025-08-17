@@ -16,6 +16,8 @@ private:
 	virtual ~CPanel_Player_RD() = default;
 
 public:
+	virtual void Set_isReverse(_bool isReverse);
+
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Update(_float fTimeDelta) override;

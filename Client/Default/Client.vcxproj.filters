@@ -400,6 +400,9 @@
     <Filter Include="02.GameObjects\00.Mesh\DynamicMesh">
       <UniqueIdentifier>{e7f685f9-8dbf-49c7-9c65-0a63d04e86a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script">
+      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">

@@ -51,6 +51,8 @@ public:
 
 	void Set_Pos(_float fX, _float fY) { m_fX = fX; m_fY = fY; }
 
+	virtual void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; m_iCurrentFrame = 0; Reset(); }
+
 protected:
 	CDynamic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDynamic_UI(const CDynamic_UI& Prototype);

@@ -79,12 +79,6 @@ void CIcon_Weapon::Update_ICon(_wstring& strTextureTag)
 	
 }
 
-HRESULT CIcon_Weapon::Bind_ShaderResources()
-{
-	__super::Bind_ShaderResources();
-
-	return S_OK;
-}
 
 
 CIcon_Weapon* CIcon_Weapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
