@@ -418,6 +418,8 @@ void CLevel_YW::Free()
 
 	//Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
 
+	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YW));
+
 	for (CGameObject* pTool : m_ImGuiTools)
 	{
 		Safe_Release(pTool);

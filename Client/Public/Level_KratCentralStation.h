@@ -26,6 +26,7 @@ public:
 	HRESULT Ready_Level();
 
 private:
+	HRESULT Add_MapActor(); //맵 액터 추가(콜라이더 활성화)
 	HRESULT Ready_Player();
 	HRESULT Ready_Npc();
 	HRESULT Ready_Lights();
