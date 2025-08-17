@@ -53,6 +53,11 @@ public:
 			return m_Animations[it->second];
 		return nullptr;
 	}
+#ifdef USE_IMGUI
+	unordered_map<string, _uint>& GetAnimationsByName()  { return m_AnimationMap; }
+	unordered_map<_uint, string>& GetAnimationsByIndex() { return m_AnimationNameMap; }
+#endif // USE_IMGUI
+
 
 	const string& Get_ModelName() const
 	{

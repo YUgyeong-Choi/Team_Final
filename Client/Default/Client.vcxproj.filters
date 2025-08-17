@@ -85,9 +85,6 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic">
       <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\00.StaticMesh">
-      <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Video">
       <UniqueIdentifier>{23a91808-8324-4249-8518-c3ecc5b47f25}</UniqueIdentifier>
     </Filter>
@@ -144,9 +141,6 @@
     </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolParticle">
       <UniqueIdentifier>{8965fe92-8566-43de-91a1-1c9d4df84dfc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\00.StaticMesh\StaticMesh_Instance">
-      <UniqueIdentifier>{3dc06d4f-f034-42de-b5d0-7cc25f51a15f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Button">
       <UniqueIdentifier>{2b0fcbb9-ea95-4cc2-a9ea-66880efc5920}</UniqueIdentifier>
@@ -391,6 +385,21 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Text">
       <UniqueIdentifier>{390fc19e-aa96-482f-a915-8e70584e6967}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Mesh">
+      <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Mesh\StaticMesh_Instance">
+      <UniqueIdentifier>{3dc06d4f-f034-42de-b5d0-7cc25f51a15f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Mesh\StaticMesh">
+      <UniqueIdentifier>{998cbf8e-1b9e-4f8c-9ddc-f21b2465b23b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Mesh\PBRMesh">
+      <UniqueIdentifier>{ead8c12f-85d3-4c40-acf1-d14ccacfd109}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Mesh\DynamicMesh">
+      <UniqueIdentifier>{e7f685f9-8dbf-49c7-9c65-0a63d04e86a8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Script">
       <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
     </Filter>
@@ -555,9 +564,6 @@
     <ClInclude Include="..\public\Static_UI.h">
       <Filter>02.GameObjects\99.UI\Static</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\StaticMesh.h">
-      <Filter>02.GameObjects\00.StaticMesh</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Dynamic_UI.h">
       <Filter>02.GameObjects\99.UI\Dynamic</Filter>
     </ClInclude>
@@ -612,9 +618,6 @@
     <ClInclude Include="..\Public\YGFloor.h">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\PBRMesh.h">
-      <Filter>02.GameObjects\00.StaticMesh</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\PreviewObject.h">
       <Filter>01.Levels\LevelYW\YWTool\MapTool\PreviewObject</Filter>
     </ClInclude>
@@ -643,7 +646,7 @@
       <Filter>01.Levels\LevelDH\Tool</Filter>
     </ClInclude>
     <ClInclude Include="..\public\StaticMesh_Instance.h">
-      <Filter>02.GameObjects\00.StaticMesh\StaticMesh_Instance</Filter>
+      <Filter>02.GameObjects\00.Mesh\StaticMesh_Instance</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Button.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Button</Filter>
@@ -838,6 +841,15 @@
     <ClInclude Include="..\public\Dynamic_Text_UI.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Text</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StaticMesh.h">
+      <Filter>02.GameObjects\00.Mesh\StaticMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PBRMesh.h">
+      <Filter>02.GameObjects\00.Mesh\PBRMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DynamicMesh.h">
+      <Filter>02.GameObjects\00.Mesh\DynamicMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -988,9 +1000,6 @@
     <ClCompile Include="..\private\Static_UI.cpp">
       <Filter>02.GameObjects\99.UI\Static</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\StaticMesh.cpp">
-      <Filter>02.GameObjects\00.StaticMesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Dynamic_UI.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic</Filter>
     </ClCompile>
@@ -1042,9 +1051,6 @@
     <ClCompile Include="..\Private\YGFloor.cpp">
       <Filter>02.GameObjects\08.TestObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PBRMesh.cpp">
-      <Filter>02.GameObjects\00.StaticMesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\PreviewObject.cpp">
       <Filter>01.Levels\LevelYW\YWTool\MapTool\PreviewObject</Filter>
     </ClCompile>
@@ -1067,7 +1073,7 @@
       <Filter>01.Levels\LevelDH\Tool</Filter>
     </ClCompile>
     <ClCompile Include="..\private\StaticMesh_Instance.cpp">
-      <Filter>02.GameObjects\00.StaticMesh\StaticMesh_Instance</Filter>
+      <Filter>02.GameObjects\00.Mesh\StaticMesh_Instance</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Button.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Button</Filter>
@@ -1255,6 +1261,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Dynamic_Text_UI.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StaticMesh.cpp">
+      <Filter>02.GameObjects\00.Mesh\StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PBRMesh.cpp">
+      <Filter>02.GameObjects\00.Mesh\PBRMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DynamicMesh.cpp">
+      <Filter>02.GameObjects\00.Mesh\DynamicMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

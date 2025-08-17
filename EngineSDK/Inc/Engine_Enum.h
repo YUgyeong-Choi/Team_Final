@@ -34,7 +34,8 @@ namespace Engine
 		FILTER_MONSTERWEAPON = 1 << 3,
 		FILTER_EFFECTGIB = 1 << 4,
 		FILTER_DYNAMICOBJ = 1 << 5,
-		FILTER_NPC = 1 << 6
+		FILTER_NPC = 1 << 6,
+		FILTER_MAP = 1 << 7
 	};
 
 	enum class COLLIDERTYPE 

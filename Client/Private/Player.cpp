@@ -49,8 +49,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL; 
 
-	//if (FAILED(Ready_StationDoor()))
-	//	return E_FAIL;
+	if (FAILED(Ready_StationDoor()))
+		return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
@@ -89,35 +89,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* [ 락온 세팅 ] */
 	CLockOn_Manager::Get_Instance()->SetPlayer(this);
 
-	m_iCurrentHP = m_iMaxHP;
-	m_fCurrentStamina = _float(m_iMaxStamina);
-	m_iCurrentMana = static_cast<_int>(m_iMaxMana * 0.5f);
-
-	Callback_HP();
-	Callback_Mana();
-	Callback_Stamina();
-
-	m_pBelt_Up = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
-	m_pBelt_Down = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
-
-	auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
-
-	m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 0);
-
-	auto pGrinder = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Grinder"), nullptr);
-
-	m_pBelt_Down->Add_Item(static_cast<CItem*>(pGrinder), 1);
-
-	auto pPortion = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"), nullptr);
-
-	m_pBelt_Up->Add_Item(static_cast<CItem*>(pPortion), 0);
-
-
-	m_pSelectItem = m_pBelt_Up->Get_Items()[0];
-	
-
-	Callback_DownBelt();
-	Callback_UpBelt();	
+	if (FAILED(Ready_UIParameters()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -126,6 +99,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
 		_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -140,18 +114,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast(m_pControllerCom);
 
-	// 옵저버 변수들 처리
-	Update_Stat();
-	Update_Slot();
 
 	/* [ 상호작용 ] */
-	//Interaction_Door();
+	Interaction_Door();
 
-	m_pBelt_Up->Priority_Update(fTimeDelta);
-	m_pBelt_Down->Priority_Update(fTimeDelta);
+	/* [ 아이템 ] */
+	PriorityUpdate_Slot(fTimeDelta);
 
 	__super::Priority_Update(fTimeDelta);
 }
+
 void CPlayer::Update(_float fTimeDelta)
 {
 	/* [ 애니메이션 업데이트 ] */
@@ -163,40 +135,18 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 입력 ] */
 	HandleInput();
-	//SlidDoorMove(fTimeDelta);
+	SlidDoorMove(fTimeDelta);
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
 
 	Update_Collider_Actor();
 
-	// 락온관련
+	/* [ 락온 관련 ] */
 	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
 		CLockOn_Manager::Get_Instance()->Set_Active();
 
-	
-	// 상태 따라서 스테미나 업데이트
-	if (m_pCurrentState->GetStateName() == L"IDLE" || m_pCurrentState->GetStateName() == L"WALK" || m_pCurrentState->GetStateName() == L"RUN" || 
-		m_pCurrentState->GetStateName() == L"ITEM" || m_pCurrentState->GetStateName() == L"EQUIP")
-	{
-
-		if (m_fCurrentStamina < m_iMaxStamina)
-		{
-			m_fCurrentStamina += 10 * fTimeDelta;
-		}
-		else
-		{
-			m_fCurrentStamina = _float(m_iMaxStamina);
-		}
-	}
-
-	if (m_fCurrentStamina < 0.f)
-		m_fCurrentStamina = 0.f;
-	
-
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_fCurrentStamina);
-
-	m_pBelt_Up->Update(fTimeDelta);
-	m_pBelt_Down->Update(fTimeDelta);
+	/* [ 아이템 ] */
+	Update_Slot(fTimeDelta);
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -220,23 +170,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetTrigger("MainSkill");
+		m_fStamina = 50.f;
+		Callback_Stamina();
 	}
 
-	if (KEY_DOWN(DIK_T))
-	{
-		static _bool bCharge = false;
-		static _int iTestCombo = 0;
-			m_pAnimator->SetInt("ArmCombo", iTestCombo++);
-			iTestCombo %= 2;
-		m_pAnimator->SetBool("Charge", bCharge);
-		bCharge = !bCharge;
-		m_pAnimator->SetTrigger("ArmAttack");
-	}
-
-
-	m_pBelt_Up->Late_Update(fTimeDelta);
-	m_pBelt_Down->Late_Update(fTimeDelta);
+	/* [ 아이템 ] */
+	LateUpdate_Slot(fTimeDelta);
 }
 
 HRESULT CPlayer::Render()
@@ -347,9 +286,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		m_strPrevStateName = stateName;
 		m_fMoveTime = 0.f;
+		m_fSetTime = 0.f;
 		m_iMoveStep = 0;
 		m_bMove = false;
 		m_bMoveReset = false;
+		m_bSetOnce = false;
+		m_bSetTwo = false;
 	}
 	
 	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
@@ -379,6 +321,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				SyncTransformWithController();
 			}
 		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetOnce && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetOnce = true;
+			}
+		}
 		break;
 	}
 	case eAnimCategory::NORMAL_ATTACKB:
@@ -401,6 +354,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 				SyncTransformWithController();
+			}
+		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.7f)
+		{
+			if (!m_bSetOnce && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetOnce = true;
 			}
 		}
 		break;
@@ -427,6 +391,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				SyncTransformWithController();
 			}
 		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.5f)
+		{
+			if (!m_bSetOnce && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetOnce = true;
+			}
+		}
 		break;
 	}
 	case eAnimCategory::STRONG_ATTACKB:
@@ -451,6 +426,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				SyncTransformWithController();
 			}
 		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.5f)
+		{
+			if (!m_bSetOnce && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetOnce = true;
+			}
+		}
 		break;
 	}
 	case eAnimCategory::CHARGE_ATTACKA:
@@ -459,6 +445,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		/* [ 차지 A 일 때 R버튼이 꾹 눌리면 체인지 변수가 켜진다. ] */
 		m_fChangeTimeElaped += fTimeDelta;
+		m_fSetTime += fTimeDelta;
 
 		if (m_fChangeTimeElaped > 1.f)
 		{
@@ -478,32 +465,94 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
+		if (m_fSetTime > 1.5f)
+		{
+			if (!m_bSetOnce && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetOnce = true;
+			}
+		}
+		if (m_fSetTime > 1.8f)
+		{
+			if (!m_bSetTwo && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetTwo = true;
+			}
+		}
+
 		break;
 	}
 	case eAnimCategory::CHARGE_ATTACKB:
 	{
 		RootMotionActive(fTimeDelta);
 
+		m_fSetTime += fTimeDelta;
+
+		if (m_fSetTime > 1.f)
+		{
+			if (!m_bSetOnce && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetOnce = true;
+			}
+		}
 		break;
 	}
 	case eAnimCategory::IDLE:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+
+		if (m_fStamina <= m_fMaxStamina)
+		{
+			m_fStamina += fTimeDelta * 20.f;
+			Callback_Stamina();
+		}
 		break;
 	}
 	case eAnimCategory::WALK:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+
+		if (m_fStamina <= m_fMaxStamina)
+		{
+			m_fStamina += fTimeDelta * 20.f;
+			Callback_Stamina();
+		}
+
 		break;
 	}
 	case eAnimCategory::RUN:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fRunSpeed);
+
+		if (m_fStamina <= m_fMaxStamina)
+		{
+			m_fStamina += fTimeDelta * 20.f;
+			Callback_Stamina();
+		}
+
+		if (m_fStamina <= m_fMaxStamina)
+		{
+			m_fStamina += fTimeDelta * 20.f;
+			Callback_Stamina();
+		}
+
 		break;
 	}
 	case eAnimCategory::SPRINT:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+
+		if (m_fStamina >= 0.f)
+		{
+			m_fStamina -= fTimeDelta * 15.f;
+			Callback_Stamina();
+		}
 		break;
 	}
 	case eAnimCategory::EQUIP:
@@ -536,6 +585,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			SyncTransformWithController();
 		}
 
+		if (!m_bSetOnce && m_fStamina >= 0.f)
+		{
+			m_fStamina -= 30.f;
+			Callback_Stamina();
+			m_bSetOnce = true;
+		}
+
 		break;
 	}
 	case eAnimCategory::DASH_FRONT:
@@ -553,11 +609,25 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			SyncTransformWithController();
 		}
 
+		if (!m_bSetOnce && m_fStamina >= 0.f)
+		{
+			m_fStamina -= 30.f;
+			Callback_Stamina();
+			m_bSetOnce = true;
+		}
+
 		break;
 	}
 	case eAnimCategory::SPRINT_ATTACKA:
 	{
 		RootMotionActive(fTimeDelta);
+
+		if (!m_bSetOnce && m_fStamina >= 0.f)
+		{
+			m_fStamina -= 20.f;
+			Callback_Stamina();
+			m_bSetOnce = true;
+		}
 
 		break;
 	}
@@ -572,6 +642,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
+		}
+
+		if (!m_bSetOnce && m_fStamina >= 0.f)
+		{
+			m_fStamina -= 20.f;
+			Callback_Stamina();
+			m_bSetOnce = true;
 		}
 
 		break;
@@ -852,10 +929,6 @@ HRESULT CPlayer::Ready_Weapon()
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
 
-
-	// 옵저버 추가
-	
-
 	return S_OK;
 }
 
@@ -880,7 +953,7 @@ HRESULT CPlayer::Ready_StationDoor()
 	//Desc.eColliderType = COLLIDER_TYPE::CONVEX;
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DynamicMesh"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &pGameObject, &Desc)))
 		return E_FAIL;
 
@@ -919,6 +992,36 @@ HRESULT CPlayer::Ready_Controller()
 	m_pControllerCom->Create_Controller(m_pGameInstance->Get_ControllerManager(), m_pGameInstance->GetMaterial(L"Default"), pos, 0.4f, 1.0f, m_pHitReport);
 	m_pControllerCom->Set_Owner(this);
 	m_pControllerCom->Set_ColliderType(COLLIDERTYPE::E);
+
+	return S_OK;
+}
+HRESULT CPlayer::Ready_UIParameters()
+{
+	Callback_HP();
+	Callback_Mana();
+	Callback_Stamina();
+
+	m_pBelt_Up = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
+	m_pBelt_Down = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
+
+	auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
+
+	m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 0);
+
+	auto pGrinder = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Grinder"), nullptr);
+
+	m_pBelt_Down->Add_Item(static_cast<CItem*>(pGrinder), 1);
+
+	auto pPortion = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"), nullptr);
+
+	m_pBelt_Up->Add_Item(static_cast<CItem*>(pPortion), 0);
+
+
+	m_pSelectItem = m_pBelt_Up->Get_Items()[0];
+
+
+	Callback_DownBelt();
+	Callback_UpBelt();
 
 	return S_OK;
 }
@@ -994,50 +1097,20 @@ HRESULT CPlayer::Ready_Actor()
 
 void CPlayer::Callback_HP()
 {
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_iCurrentHP);
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_iMaxHP);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHP);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_fMaxHP);
 }
 
 void CPlayer::Callback_Stamina()
 {
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_fCurrentStamina);
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxStamina"), &m_iMaxStamina);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentStamina"), &m_fStamina);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxStamina"), &m_fMaxStamina);
 }
 
 void CPlayer::Callback_Mana()
 {
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_iCurrentMana);
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_iMaxMana);
-}
-
-void CPlayer::Update_Stat()
-{
-	if (m_pGameInstance->Key_Down(DIK_V))
-	{
-		m_iCurrentHP += 10;
-		m_fCurrentStamina += 20;
-		m_iCurrentMana += 10;
-		Callback_HP();
-		Callback_Mana();
-		Callback_Stamina();
-
-	}
-	else if (m_pGameInstance->Key_Down(DIK_B))
-	{
-		m_iCurrentHP -= 10;
-		if (m_iCurrentHP < 0)
-			m_iCurrentHP = 0;
-
-		m_fCurrentStamina -= 20;
-		if (m_fCurrentStamina < 0)
-			m_fCurrentStamina = 0;
-		m_iCurrentMana -= 100;
-		if (m_iCurrentMana < 0)
-			m_iCurrentMana = 0;
-		Callback_HP();
-		Callback_Mana();
-		Callback_Stamina();
-	}
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
 }
 
 void CPlayer::Interaction_Door()
@@ -1174,7 +1247,7 @@ void CPlayer::Use_Item()
 	m_pSelectItem->Activate();
 }
 
-void CPlayer::Update_Slot()
+void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_T))
 	{
@@ -1230,6 +1303,21 @@ void CPlayer::Update_Slot()
 
 		m_bSwitch = !m_bSwitch;
 	}
+
+	m_pBelt_Up->Priority_Update(fTimeDelta);
+	m_pBelt_Down->Priority_Update(fTimeDelta);
+}
+
+void CPlayer::Update_Slot(_float fTimeDelta)
+{
+	m_pBelt_Up->Update(fTimeDelta);
+	m_pBelt_Down->Update(fTimeDelta);
+}
+
+void CPlayer::LateUpdate_Slot(_float fTimeDelta)
+{
+	m_pBelt_Up->Late_Update(fTimeDelta);
+	m_pBelt_Down->Late_Update(fTimeDelta);
 }
 
 void CPlayer::Movement(_float fTimeDelta)

@@ -34,6 +34,7 @@ public:
 
 public:
 	void Compute_ViewZ(_vector pCamPos, const _vector* pTargetPos);
+	AABBBOX GetWorldAABB() const;
 public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
@@ -69,6 +70,7 @@ protected:
 	_tchar										m_szName[MAX_PATH] = {};
 	map<const _wstring, class CComponent*>		m_Components;
 	class CTransform*							m_pTransformCom = { nullptr };
+	class CPhysXStaticActor*					m_pPhysXActorCom = { nullptr };
 
 	_bool m_bDead = {};
 	

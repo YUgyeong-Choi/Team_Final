@@ -84,21 +84,6 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 	//}
 }
 
-void CStaticMesh::Last_Update(_float fTimeDelta)
-{
-	/*
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
-	{
-		m_pGameInstance->End_Occlusion(this);
-		if (m_pGameInstance->IsVisible(this))
-		{
-			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
-			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-		}
-	}
-	*/
-}
-
 HRESULT CStaticMesh::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
@@ -175,15 +160,6 @@ HRESULT CStaticMesh::Render()
 #endif
 
 	return S_OK;
-}
-
-AABBBOX CStaticMesh::GetWorldAABB() const
-{
-	PxBounds3 wb = m_pPhysXActorCom->Get_Actor()->getWorldBounds();
-	AABBBOX worldBox{ {wb.minimum.x, wb.minimum.y, wb.minimum.z},
-					  {wb.maximum.x, wb.maximum.y, wb.maximum.z} };
-
-	return worldBox;
 }
 
 void CStaticMesh::Update_ColliderPos()

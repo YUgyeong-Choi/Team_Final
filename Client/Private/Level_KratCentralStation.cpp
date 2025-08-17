@@ -26,9 +26,6 @@
 
 #include "LockOn_Manager.h"
 
-NS_BEGIN(Client)
-_bool g_ReadyAgain = false;
-NS_END
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -46,11 +43,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if(FAILED(Ready_Video()))
 		return E_FAIL;
 
-	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
-	m_pBGM->Set_Volume(0.f);
-
-
 	/* [ 셰이더 값 세팅 ] */
 	if (FAILED(Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
 		TEXT("Com_ShaderPBR"), reinterpret_cast<CComponent**>(&m_pShaderComPBR))))
@@ -64,18 +56,15 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Load_Shader()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Level()))
+		return E_FAIL;
+
 	/* [ 카메라 셋팅 ] */
-	m_pCamera_Manager->SetCutSceneCam();
+	m_pCamera_Manager->GetCurCam()->Get_TransfomCom()->Set_State(STATE::POSITION, _fvector{ 0.f, -30.f, 0.f, 1.f });
 
-	/* [ Area 셋팅 ] */
-	Separate_Area();
-
-	if (g_ReadyAgain)
-	{
-		m_pStartVideo->Set_bDead();
-		Ready_Level();
-		m_pCamera_Manager->SetOrbitalCam();
-	}
+	/* [ 사운드 ] */
+	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
+	m_pBGM->Set_Volume(0.f);
 
 	return S_OK;
 }
@@ -93,35 +82,22 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 			return;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_pStartVideo)
 	{
-
-		if (nullptr == m_pStartVideo)
-			return;
-
 		m_pStartVideo->Set_bDead();
+		m_pStartVideo = nullptr;
 
-	}
+		m_pBGM->Play();
 
-	if (nullptr != m_pStartVideo && !g_ReadyAgain)
-	{
-		if (m_pStartVideo->Get_bDead())
-		{
-			Ready_Level();
-
-			/* [ 플레이어 제어 ] */
-			m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
-			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
-			g_ReadyAgain = true;
-		}
-
-		return;
+		/* [ 플레이어 제어 ] */
+		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+		m_pCamera_Manager->GetFreeCam()->Get_TransfomCom()->Set_State(STATE::POSITION, _fvector{ 0.f, 0.f,0.f,1.f });
 	}
 }
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
-
 	if (nullptr != m_pStartVideo)
 		return;
 
@@ -177,271 +153,31 @@ HRESULT CLevel_KratCentralStation::Render()
 	return S_OK;
 }
 
-void CLevel_KratCentralStation::Ready_Level()
+HRESULT CLevel_KratCentralStation::Ready_Level()
 {
-	m_pStartVideo = nullptr;
-
-	/* [ 사운드 ] */
-	m_pBGM->Play();
-
-	if (FAILED(Ready_Effect()))
-		return;
-
-	if (FAILED(Ready_Camera()))
-		return;
-
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))  //TEST, STATION (Loader.cpp와 동일해야함)
-		return;
-
-	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
-		return;
-
+	/* [ 해야할 준비들 ] */
 	if (FAILED(Ready_Lights()))
-		return;
-
-	if (FAILED(Ready_Npc()))
-		return;
-
-	if (FAILED(Ready_UI()))
-		return;
-
-	if (FAILED(Ready_Player()))
-		return;
-
+		return E_FAIL;
 	if (FAILED(Ready_OctoTree()))
-		return;
-
+		return E_FAIL;
+	if (FAILED(Separate_Area()))
+		return E_FAIL;
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+	if (FAILED(Ready_Npc()))
+		return E_FAIL;
+	if (FAILED(Ready_UI()))
+		return E_FAIL;
+	if (FAILED(Ready_Player()))
+		return E_FAIL;
 	if (FAILED(Ready_Monster()))
-		return;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Map(_uint iLevelIndex, const _char* Map)
-{
-	//어떤 맵을 소환 시킬 것인지?
-	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
-		return E_FAIL;
-
-	//네비 소환
-	if (FAILED(Ready_Nav(TEXT("Layer_Nav"))))
-		return E_FAIL;
-
-	//어떤 데칼을 소환 시킬 것인지?
-	if (FAILED(Ready_Static_Decal(iLevelIndex, Map))) //TEST, STATION
 		return E_FAIL;
 
 	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Meshs(_uint iLevelIndex, const _char* Map)
-{
-	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
-
-	ifstream inFile(MapPath);
-	if (!inFile.is_open())
-	{
-		wstring ErrorMessage = L"Map_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	json MapDataJson;
-	inFile >> MapDataJson;
-	inFile.close();
-
-	_uint iModelCount = MapDataJson["ModelCount"];
-	const json& Models = MapDataJson["Models"];
-
-	for (_uint i = 0; i < iModelCount; ++i)
-	{
-		string ModelName = Models[i]["ModelName"];
-		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.(아니 충돌여부로 인스턴싱 해야겠다.)
-		const json& objects = Models[i]["Objects"];
-
-		_bool bCollision = Models[i]["Collision"];
-		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
-		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
-		{
-			Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
-		}
-		else
-		{
-			Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex);
-		}
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
-{
-	for (_uint j = 0; j < iObjectCount; ++j)
-	{
-#pragma region 월드행렬
-		CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
-
-		const json& WorldMatrixJson = objects[j]["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
-
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-		StaticMeshDesc.WorldMatrix = WorldMatrix;
-#pragma endregion
-
-#pragma region 타일링
-		//타일링
-		if (objects[j].contains("TileDensity"))
-		{
-			StaticMeshDesc.bUseTiling = true;
-
-			const json& TileDensityJson = objects[j]["TileDensity"];
-			StaticMeshDesc.vTileDensity = {
-				TileDensityJson[0].get<_float>(),
-				TileDensityJson[1].get<_float>()
-			};
-		}
-#pragma endregion
-
-#pragma region 콜라이더
-		//콜라이더
-		if (objects[j].contains("ColliderType") && objects[j]["ColliderType"].is_number_integer())
-		{
-			StaticMeshDesc.eColliderType = static_cast<COLLIDER_TYPE>(objects[j]["ColliderType"].get<_int>());
-		}
-		else
-			return E_FAIL;
-#pragma endregion
-
-#pragma region 라이트모양
-		StaticMeshDesc.iLightShape = objects[j].value("LightShape", 0);
-#pragma endregion
-
-
-		wstring LayerTag = TEXT("Layer_MapToolObject_");
-		LayerTag += StringToWString(ModelName);
-
-		StaticMeshDesc.iRender = 0;
-		StaticMeshDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
-		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
-
-		wstring wstrModelName = StringToWString(ModelName);
-		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
-		ModelPrototypeTag += wstrModelName;
-
-		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
-		CGameObject* pGameObject = nullptr;
-		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
-			iLevelIndex, LayerTag, &pGameObject, &StaticMeshDesc)))
-			return E_FAIL;
-
-		CStaticMesh* pStaticMesh = dynamic_cast<CStaticMesh*>(pGameObject);
-		m_vecOctoTreeObjects.push_back(pStaticMesh);
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
-{
-	vector<_float4x4> InstanceMatixs(iObjectCount);
-
-	for (_uint i = 0; i < iObjectCount; ++i)
-	{
-		const json& WorldMatrixJson = objects[i]["WorldMatrix"];
-
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				InstanceMatixs[i].m[row][col] = WorldMatrixJson[row][col];
-	}
-
-
-	//오브젝트 생성, 배치
-
-	wstring LayerTag = TEXT("Layer_MapToolObject_");
-	LayerTag += StringToWString(ModelName);
-
-	CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
-	StaticMeshInstanceDesc.iNumInstance = iObjectCount;//인스턴스 갯수랑
-	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
-
-	StaticMeshInstanceDesc.iRender = 0;
-	StaticMeshInstanceDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
-	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
-
-	wstring wstrModelName = StringToWString(ModelName);
-	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance_"); //인스턴스 용 모델을 준비해야겠는디?
-	ModelPrototypeTag += wstrModelName;
-
-	lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
-	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		iLevelIndex, LayerTag, &StaticMeshInstanceDesc)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Nav(const _wstring strLayerTag)
-{
-	CNav::NAV_DESC NavDesc = {};
-	NavDesc.iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
-
-	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Nav"),
-		m_pGameInstance->GetCurrentLevelIndex(), strLayerTag, &NavDesc)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Static_Decal(_uint iLevelIndex, const _char* Map)
-{
-	//현재 맵에 필요한 데칼 텍스쳐를 로드한다.
-	string DecalDataPath = string("../Bin/Save/DecalTool/Decal_") + Map + ".json";
-	//string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json"; //나중에 쓸듯 맵 바꿀때
-
-	ifstream inFile(DecalDataPath);
-	if (!inFile.is_open())
-	{
-		wstring ErrorMessage = L"Decal_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	// JSON 파싱
-	json JSON;
-	inFile >> JSON;
-
-	// 데이터 만큼 Decal 소환
-	for (auto& item : JSON)
-	{
-		// 4x4 행렬 읽기
-		_float4x4 WorldMatrix;
-		for (_int iRow = 0; iRow < 4; ++iRow)
-		{
-			for (_int iCol = 0; iCol < 4; ++iCol)
-			{
-				WorldMatrix.m[iRow][iCol] = item["WorldMatrix"][iRow][iCol].get<_float>();
-			}
-		}
-
-		//텍스쳐 프로토타입 이름 전달
-		CStatic_Decal::DECAL_DESC Desc = {};
-		Desc.WorldMatrix = WorldMatrix;
-		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)] = StringToWString(item["ARMT"].get<string>());
-		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)] = StringToWString(item["N"].get<string>());
-		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)] = StringToWString(item["BC"].get<string>());
-
-		// Decal 객체 생성
-		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Static_Decal"),
-			iLevelIndex, TEXT("Layer_Decal"), &Desc)))
-			return E_FAIL;
-
-	}
-
-	return S_OK;
-
 }
 
 HRESULT CLevel_KratCentralStation::Ready_Player()
@@ -854,13 +590,14 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 	map<Handle, _uint> handleToIndex;
 
 	//용량 확보: 메쉬 + 라이트
-	const _uint iReserve = static_cast<_uint>(m_vecOctoTreeObjects.size() + m_vecLights.size());
+	vector<class CGameObject*> OctoObject = m_pGameInstance->GetOctoTreeObjects();
+	const _uint iReserve = static_cast<_uint>(OctoObject.size() + m_vecLights.size());
 	staticBounds.reserve(iReserve);
 	vObjectType.reserve(iReserve);
 
 	_uint nextHandleId = 1000; // 핸들 ID 인데 1000부터 시작임
 
-	for (auto* OctoTreeObjects : m_vecOctoTreeObjects)
+	for (auto* OctoTreeObjects : OctoObject)
 	{
 		AABBBOX worldBox = OctoTreeObjects->GetWorldAABB();
 		_uint idx = static_cast<_uint>(staticBounds.size());

@@ -1533,9 +1533,10 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	vector<string> animNames;
 	animNames.reserve(anims.size()+1);
 	animNames.push_back("None");
-	for (const auto& anim : anims)
+	auto& animsByName = m_pCurModel->GetAnimationsByIndex();
+	for (_int i = 0; i < anims.size(); ++i)
 	{
-		animNames.push_back(anim->Get_Name());
+		animNames.push_back(animsByName[i]);
 	}
 
 	if (m_iSelectedNodeID != -1)
@@ -1945,14 +1946,19 @@ void CAnimTool::SelectAnimation()
 		return;
 	}
 
-	vector<CAnimation*> anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
+	vector<CAnimation*>& anims = m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
 
 	vector<string> animNames;
 	animNames.reserve(anims.size());
-	for (const auto& anim : anims)
+	auto animsNameByIndexMap = m_pCurModel->GetAnimationsByIndex();
+	for (_int i = 0; i < static_cast<_int>(anims.size()); i++)
 	{
-		animNames.push_back(anim->Get_Name());
+		animNames.push_back(animsNameByIndexMap[i]);
 	}
+	//for (const auto& anim : anims)
+	//{
+	//	animNames.push_back(anim->Get_Name());
+	//}
 
 	if (ImGui::BeginCombo("Animations", m_iSelectedAnimIndex >= 0 ? animNames[m_iSelectedAnimIndex].c_str() : "Select Animation"))
 	{
@@ -1985,9 +1991,10 @@ void CAnimTool::SelectAnimationForObject()
 
 	vector<string> animNames;
 	animNames.reserve(anims.size());
-	for (const auto& anim : anims)
+	auto animsNameByIndexMap = m_pCurModel->GetAnimationsByIndex();
+	for (_int i = 0; i < static_cast<_int>(anims.size()); i++)
 	{
-		animNames.push_back(anim->Get_Name());
+		animNames.push_back(animsNameByIndexMap[i]);
 	}
 
 	if (ImGui::BeginCombo("Animations", m_iSelectedAnimIndex >= 0 ? animNames[m_iSelectedAnimIndex].c_str() : "Select Animation"))
@@ -2058,6 +2065,26 @@ void CAnimTool::Setting_AnimationProperties()
 		}
 	}
 
+	// 현재 모델의 모든 애니메이션 속도 조절
+	if (m_pCurModel)
+	{
+		_bool bChanged = false;
+		bChanged |= ImGui::DragFloat("Set All Anim Tick Per Second ", &m_fAllAnimTickperSec, 0.1f, 0.1f, 100.f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+		if (bChanged)
+		{
+			if (m_bIsObject)
+			{
+				m_pCurModel->Set_Animation_TickPerSecond_All(m_fAllAnimTickperSec);
+			}
+			else
+			{
+				for (auto& anim : m_LoadedAnimations[m_stSelectedModelName])
+				{
+					anim->SetTickPerSecond(m_fAllAnimTickperSec);
+				}
+			}
+		}
+	}
 }
 
 void CAnimTool::ApplyHierarchicalLayout(CAnimController* pCtrl)
@@ -2367,12 +2394,32 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 		if (root.contains("animations"))
 		{
 			auto& animationsJson = root["animations"];
+			// 애니메이션 이름 중복용
+			vector<json> animJsonVec;
+			for (const auto& animData : animationsJson)
+			{
+				animJsonVec.push_back(animData);
+			}
 			auto& clonedAnims = m_LoadedAnimations[m_stSelectedModelName];
 
 			if (m_bIsObject)
 			{
 				clonedAnims = m_pCurModel->GetAnimations();
 			}
+
+			//for (auto& pAnim : clonedAnims)
+			//{
+			//	const string& clipName = pAnim->Get_Name();
+			//	for (auto it = animJsonVec.begin(); it != animJsonVec.end();++it)
+			//	{
+			//		if ((*it)["ClipName"] == clipName)
+			//		{
+			//			pAnim->Deserialize(*it);
+			//			it = animJsonVec.erase(it); // 중복된 애니메이션 제거
+			//			break;
+			//		}
+			//	}
+			//}
 
 			for (const auto& animData : animationsJson)
 			{
@@ -2384,6 +2431,10 @@ void CAnimTool::SaveLoadEvents(_bool isSave)
 					{
 						pAnim->Deserialize(animData);
 						break;
+					}
+					else
+					{
+						int a = 0;
 					}
 				}
 			}
@@ -2472,13 +2523,9 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 			CAnimator::ANIMATOR_DESC desc;
 			desc.pModel = pModel;
 
-			//pAnimator->Initialize_Test(pModel);
-			pAnimator->Initialize_Test(&desc);
+			pAnimator->Initialize(pModel);
+			//pAnimator->Initialize_Test(&desc);
 			m_LoadedAnimators[modelName] = pAnimator;
-			pAnimator->RegisterEventListener("TestEvent", [&](const string& eventName)
-				{
-					MSG_BOX("애니메이션 이벤트 발생");
-				});
 		}
 
 		// 모델 불러오면 처음 애니메이션 관련 정보들 불러오기 
