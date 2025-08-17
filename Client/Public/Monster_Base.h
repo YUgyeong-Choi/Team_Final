@@ -88,6 +88,8 @@ protected:
 	CUI_MonsterHP_Bar* m_pHPBar = {nullptr};
 
 	
+	_float			m_fHp = {};
+	_float			m_fMaxHp = {};
 	
 
 	// 특정 상태에만 계속 바라보게 해야?
@@ -95,13 +97,15 @@ protected:
 
 	// 행동 결정을 위한 변수들
 	MONSTER_DIR		m_eDir = { MONSTER_DIR::END };
-	_int			m_iStamina = {100};
-	_int			m_iGroggyThreshold = {};
+	_float			m_fGroggyThreshold = {};
 	_bool			m_isCanGroggy = {};
 	_bool			m_isDetect = { false };
 	_float			m_fDetectDist = {};
-	_float			m_fHeight = {};
 	string			m_strStateName = {};
+
+	//
+	_float			m_fHeight = {};
+	
 
 private: /* [ 루트모션 관련 변수 ] */
 	_vector  m_PrevWorldDelta = XMVectorZero();

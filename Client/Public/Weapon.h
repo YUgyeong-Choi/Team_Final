@@ -68,19 +68,22 @@ public: /* [ 활성화 , 비활성화 ] */
 
 	// 상태에 따라 공격 할 수 있는지 없는지
 	// 데미지 배율을 줘서 공격할 수 있도록
-	void SetisAttack(_bool isAttack) { m_isAttack = isAttack; }
+	virtual void SetisAttack(_bool isAttack) { m_isAttack = isAttack; }
 	_bool GetisAttack() { return m_isAttack; }
 	
 	// 상태 마다 배율을 바꿔주기
 	void SetDamageRatio(_float fRatio) { m_fDamageRatio = fRatio; }
 
 	// 기본 데미지에 배율을 곱해서 데미지를 줄 수 있게
-	_int Get_CurrentDamage() { return _int(m_bDamage * m_fDamageRatio); }
+	_float Get_CurrentDamage() { return m_bDamage * m_fDamageRatio; }
 
 
 	void Clear_CollisionObj() { m_CollisonObjects.clear(); }
 
 	void Calc_Durability(_int iDelta);
+
+	_bool Find_CollisonObj(CGameObject* pObj);
+	void Add_CollisonObj(CGameObject* pObj);
 
 	// 트레일 이펙트 온 오프
 	void Set_WeaponTrail_Active(_bool bActive);

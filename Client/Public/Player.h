@@ -128,6 +128,7 @@ private: /* [ 상호작용 관련 ] */
 private:
 	void ItemWeaponOFF(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
+
 	
 private: /* [ 슬룻 함수 ] */
 	void Callback_UpBelt();

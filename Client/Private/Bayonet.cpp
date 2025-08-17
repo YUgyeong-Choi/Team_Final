@@ -61,8 +61,6 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	m_iHandleIndex = m_pModelCom->Find_BoneIndex("BN_Handle");
 
-	// 나중에 지울거
-	m_isAttack = true;
 
 	return S_OK;
 }
@@ -138,6 +136,8 @@ void CBayonet::Update_Collider()
 
 }
 
+
+
 HRESULT CBayonet::Ready_Components()
 {
 	/* [ 따로 추가할 컴포넌트가 있습니까? ] */
@@ -162,7 +162,7 @@ HRESULT CBayonet::Ready_Actor()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxVec3 halfExtents = PxVec3(0.2f, 0.8f, 0.2f);
+	PxVec3 halfExtents = PxVec3(0.2f, 1.f, 0.2f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
@@ -203,7 +203,10 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 {
 	// 내구도나 이런거 하면 될듯?
 
-	Calc_Durability(5);
+	
+		
+
+	// 가드 때 충돌하고, 퍼펙트 가드가 아니면 감소하도록
 	
 }
 

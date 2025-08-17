@@ -259,9 +259,6 @@
     <ClInclude Include="..\Public\Area_Manager.h">
       <Filter>01.Utility\17.Area_Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AStar.h">
-      <Filter>01.Utility\04.Components\Navigation\AStar</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -494,9 +491,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Area_Manager.cpp">
       <Filter>01.Utility\17.Area_Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\AStar.cpp">
-      <Filter>01.Utility\04.Components\Navigation\AStar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -754,9 +748,6 @@
     </Filter>
     <Filter Include="01.Utility\17.Area_Manager">
       <UniqueIdentifier>{eff55819-2b7c-49ab-b0c0-da49622d9f88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\04.Components\Navigation\AStar">
-      <UniqueIdentifier>{403ab3ea-d2b0-44c0-8353-6232bd3deee4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -56,6 +56,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	m_pAnimator->SetBool("Detect", false);
 
+	m_bUseLockon = true;
 	
 
 	return S_OK;
@@ -65,10 +66,14 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 {
 	// 죽는 조건 만들어서 다 같이 쓰기
 
+	if (!m_isDetect)
+		return;
+
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
 		if (m_pAnimator->IsFinished())
 		{
+			m_bUseLockon = false;
 			m_pHPBar->Set_bDead();
 			Set_bDead();
 			if (nullptr != m_pPhysXActorCom)
@@ -87,7 +92,6 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 void CMonster_Base::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-
 	
 	if (m_pNaviCom)
 	{
@@ -111,7 +115,13 @@ void CMonster_Base::Update(_float fTimeDelta)
 
 	if (m_isLookAt)
 	{
-		m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
+
+		//m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 1.f);
+		_vector vLook = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+		vLook.m128_f32[1] = 0.f;
+		vLook = XMVector3Normalize(vLook);
+		m_pTransformCom->RotateToDirectionSmoothly(vLook, fTimeDelta);
+		
 	}
 
 	m_pHPBar->Update(fTimeDelta);
@@ -243,7 +253,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
 	eDesc.fHeight = 2.25f;
-	eDesc.pHP = &m_iHP;
+	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_isCanGroggy;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
@@ -406,7 +416,7 @@ _bool CMonster_Base::Check_Detect()
 	{
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
-		m_pAnimator->SetBool("IsTurn", Check_Turn());
+		
 		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		return true;
 	}
@@ -457,10 +467,10 @@ _bool CMonster_Base::Check_Turn()
 	if (fDot < 0.f)
 		return true;
 
-	if (fDot < 0.8f)
-		return true;
+	if (fDot > 0.95f)
+		return false;
 
-	return false;
+	return true;
 
 }
 

@@ -35,6 +35,8 @@ public:
 
 	void 	Update_Collider();
 	CPhysXDynamicActor* Get_PhysXActor() { return m_pPhysXActorCom; }
+
+	
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();

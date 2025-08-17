@@ -29,9 +29,9 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 	m_fDetectDist = 10.f;
 
-	m_iHP = 300;
+	m_fHp = 300;
 
-	m_pHPBar->Set_MaxHp(m_iHP);
+	m_pHPBar->Set_MaxHp(m_fHp);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 
@@ -103,7 +103,7 @@ void CElite_Police::Update_State()
 
 	m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
-	if (!m_isDetect || m_iHP <= 0)
+	if (!m_isDetect || m_fHp <= 0)
 	{
 		m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 		return;

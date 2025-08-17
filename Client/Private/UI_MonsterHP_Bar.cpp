@@ -32,7 +32,7 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
     m_isGroggy = pDesc->pIsGroggy;
 
-    m_iMaxHP = *m_pHP;
+    m_fMaxHP = *m_pHP;
 
     m_pParentMatrix = pDesc->pParentMatrix;
     
@@ -206,8 +206,6 @@ HRESULT CUI_MonsterHP_Bar::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &fAlpha, sizeof(_float))))
         return E_FAIL;
 
-    if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &fAlpha, sizeof(_float))))
-        return E_FAIL;
 
     if (FAILED(m_pGradationCom->Bind_ShaderResource(m_pShaderCom, "g_GradationTexture", 0)))
         return E_FAIL;
@@ -215,7 +213,7 @@ HRESULT CUI_MonsterHP_Bar::Bind_ShaderResources()
     if (FAILED(m_pBlurTextureCom->Bind_ShaderResource(m_pShaderCom, "g_HighlightTexture", 0)))
         return E_FAIL;
 
-    _float fRatio = *m_pHP / _float(m_iMaxHP);
+    _float fRatio = *m_pHP / (m_fMaxHP);
 
     if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &(fRatio), sizeof(_float))))   
         return E_FAIL;

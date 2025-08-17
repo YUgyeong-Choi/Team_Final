@@ -565,14 +565,14 @@
             "Duration": 246.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 80.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Idle_Spawn_01_Loop",
             "Duration": 59.0,
             "IsLoop": true,
             "RootMotion": false,
-            "TickPerSecond": 59.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Idle_Spawn_02_End",
@@ -682,7 +682,7 @@
         {
             "ClipName": "AS_Run_C_F_Root",
             "Duration": 43.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -711,7 +711,7 @@
             "ClipName": "AS_Walk_C_B_Root",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
@@ -724,7 +724,7 @@
         {
             "ClipName": "AS_Walk_C_F_Root",
             "Duration": 120.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },

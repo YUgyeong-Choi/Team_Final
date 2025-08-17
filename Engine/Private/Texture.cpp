@@ -60,7 +60,7 @@ HRESULT CTexture::Initialize(void* pArg)
 
 HRESULT CTexture::Bind_ShaderResource(CShader* pShader, const _char* pConstantName, _uint iTextureIndex)
 {
-	if (iTextureIndex >= m_iNumTextures)
+ 	if (iTextureIndex >= m_iNumTextures)
 		return E_FAIL;
 
 	return pShader->Bind_SRV(pConstantName, m_SRVs[iTextureIndex]);	

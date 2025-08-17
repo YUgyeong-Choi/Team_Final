@@ -19,7 +19,7 @@ public:
 	typedef struct tagHpDesc : public  CUIObject::UIOBJECT_DESC
 	{
 		_float fHeight;
-		_int* pHP;
+		_float* pHP;
 		_bool* pIsGroggy;
 		const _float4x4* pParentMatrix;
 
@@ -31,7 +31,7 @@ private:
 
 public:
 	void Set_RenderTime(_float fTime) { m_fRenderTime = fTime; }
-	void Set_MaxHp(_int iHp) { m_iMaxHP = iHp; }
+	void Set_MaxHp(_float iHp) { m_fMaxHP = iHp; }
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -54,9 +54,9 @@ private:
 	HRESULT Bind_ShaderResources();
 
 private:
-	_int* m_pHP = { nullptr };
+	_float* m_pHP = { nullptr };
 	_bool* m_isGroggy = {nullptr};
-	_int  m_iMaxHP = {};
+	_float  m_fMaxHP = {};
 	_int  m_iDamage = {};
 
 	_float m_fRenderTime = { };
