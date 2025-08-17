@@ -56,6 +56,10 @@ private:
 	vector<_float3> m_Points;
 
 private:
+	_bool m_bUseDSS = { true };
+
+
+private:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 private:

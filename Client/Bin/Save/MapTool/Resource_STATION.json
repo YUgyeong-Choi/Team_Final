@@ -108,13 +108,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_Arch_12.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Cathedral_BrickWall_01",
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Cathedral_BrickWall_18",
         "ObjectCount": 9,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_18.bin"
@@ -142,12 +142,6 @@
         "ModelName": "SM_Exterior_Clock_02",
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Clock_02.bin"
-    },
-    {
-        "Collision": true,
-        "ModelName": "SM_Exterior_DecoBoxes_01",
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_DecoBoxes_01.bin"
     },
     {
         "Collision": false,
@@ -218,7 +212,7 @@
     {
         "Collision": false,
         "ModelName": "SM_Exterior_TrashPaper_02",
-        "ObjectCount": 11,
+        "ObjectCount": 12,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_TrashPaper_02.bin"
     },
     {
@@ -292,6 +286,12 @@
         "ModelName": "SM_Factory_Table_01",
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Table_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_Tarp_01",
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Tarp_01.bin"
     },
     {
         "Collision": true,
@@ -380,7 +380,7 @@
     {
         "Collision": false,
         "ModelName": "SM_Interior_Book_02",
-        "ObjectCount": 2,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Book_02.bin"
     },
     {
@@ -470,7 +470,7 @@
     {
         "Collision": true,
         "ModelName": "SM_Interior_Box_02",
-        "ObjectCount": 10,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Box_02.bin"
     },
     {
@@ -482,7 +482,7 @@
     {
         "Collision": true,
         "ModelName": "SM_Interior_Box_08",
-        "ObjectCount": 7,
+        "ObjectCount": 12,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Box_08.bin"
     },
     {

@@ -30,6 +30,11 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	IMGUITOOL Get_AciveTool() const {
+		return m_eActiveTool;
+	}
+
 private:
 	HRESULT Ready_Lights();
 

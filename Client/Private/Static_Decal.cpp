@@ -38,7 +38,9 @@ void CStatic_Decal::Update(_float fTimeDelta)
 
 void CStatic_Decal::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_DECAL, this);
+	if(m_pGameInstance->isIn_Frustum_WorldSpace(m_pTransformCom->Get_State(STATE::POSITION), 10.f))
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_DECAL, this);
+
 }
 
 HRESULT CStatic_Decal::Render()

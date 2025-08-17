@@ -1,6 +1,7 @@
 #include "GameInstance.h"
 
 #include "DecalToolObject.h"
+#include "Level_YW.h"
 
 CDecalToolObject::CDecalToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CDecal(pDevice, pContext)
@@ -52,7 +53,38 @@ void CDecalToolObject::Late_Update(_float fTimeDelta)
 
 HRESULT CDecalToolObject::Render()
 {
-	return __super::Render();
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Begin(0)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Render()))
+		return E_FAIL;
+
+
+	
+#ifdef _DEBUG
+
+	if (CLevel_YW::IMGUITOOL::DECAL == static_cast<CLevel_YW*>(m_pGameInstance->Get_CurrentLevel())->Get_AciveTool())
+	{
+		if (FAILED(m_pShaderCom->Begin(1)))
+			return E_FAIL;
+
+		if (FAILED(m_pVIBufferCom->Bind_Buffers()))
+			return E_FAIL;
+
+		if (FAILED(m_pVIBufferCom->Render()))
+			return E_FAIL;
+	}
+
+#endif // _DEBUG
+
+
+	return S_OK;
 
 }
 

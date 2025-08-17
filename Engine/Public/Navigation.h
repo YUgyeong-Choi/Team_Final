@@ -9,6 +9,13 @@ NS_BEGIN(Engine)
 class ENGINE_DLL CNavigation final : public CComponent
 {
 public:
+	enum class ShaderPass
+	{
+		DSS_DEFAULT = 0,
+		DSS_NONE = 1,
+	};
+
+public:
 	typedef struct tagNavigationDesc
 	{
 		_int			iIndex = { -1 };
@@ -26,6 +33,10 @@ public:
 	_bool isMove(_fvector vWorldPos);
 	_vector SetUp_Height(_fvector vWorldPos);
 
+public:
+	void Set_ShaderPass(ShaderPass eShaderPass) {
+		m_iShaderPass = ENUM_CLASS(eShaderPass);
+	}
 
 public:
 	_float Compute_NavigationY(const _vector pTransform);
@@ -72,6 +83,7 @@ private:
 
 #ifdef _DEBUG
 	class CShader* m_pShader = { nullptr };
+	_uint m_iShaderPass = { ENUM_CLASS(ShaderPass::DSS_DEFAULT)};
 #endif
 
 private:
