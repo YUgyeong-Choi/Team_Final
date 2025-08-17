@@ -317,7 +317,7 @@ HRESULT CNavigation::Render()
 	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
 	vColor = _float4(0.f, 1.f, 0.f, 1.f);
 	m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
-	m_pShader->Begin(0);
+	m_pShader->Begin(m_iShaderPass);
 
 	//모두다 초록색으로 출력
 	for (auto& pCell : m_Cells)
@@ -343,7 +343,7 @@ HRESULT CNavigation::Render()
 			{
 				vColor = _float4(0.f, 0.f, 1.f, 1.f);
 				m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
-				m_pShader->Begin(0);
+				m_pShader->Begin(m_iShaderPass);
 				m_Cells[pNeighborIndices[i]]->Render();
 
 			}
@@ -359,7 +359,7 @@ HRESULT CNavigation::Render()
 
 		m_pShader->Bind_RawValue("g_vColor", &vColor, sizeof(_float4));
 
-		m_pShader->Begin(0);
+		m_pShader->Begin(m_iShaderPass);
 
 		m_Cells[m_iIndex]->Render();
 	}

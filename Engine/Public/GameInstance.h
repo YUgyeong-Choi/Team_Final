@@ -35,6 +35,7 @@ public:
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
+	class CLevel* Get_CurrentLevel() const;
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

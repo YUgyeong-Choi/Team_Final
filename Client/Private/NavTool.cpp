@@ -2,6 +2,7 @@
 
 #include "NavTool.h"
 #include "Cell.h"
+#include "Navigation.h"
 
 CNavTool::CNavTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CYWTool(pDevice, pContext)
@@ -161,6 +162,17 @@ void CNavTool::Render_Settings()
 	{
 		ImGui::Text("Snap");
 		ImGui::SliderFloat("##SnapThreshold", &m_fSnapThreshold, 0.0f, 10.0f, "%.3f");
+
+		ImGui::Separator();
+
+		if (ImGui::Checkbox("Use DSS_DEFAULT", &m_bUseDSS))
+		{
+			if (m_bUseDSS)
+				m_pNavigationCom->Set_ShaderPass(CNavigation::ShaderPass::DSS_DEFAULT);
+			else
+				m_pNavigationCom->Set_ShaderPass(CNavigation::ShaderPass::DSS_NONE);
+		}
+
 	}
 	ImGui::End();
 

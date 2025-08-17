@@ -25,11 +25,6 @@ public:
 
 	HRESULT Ready_Level();
 
-#pragma region YW
-private:
-
-#pragma endregion
-
 private:
 	HRESULT Ready_Player();
 	HRESULT Ready_Npc();

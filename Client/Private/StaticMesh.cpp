@@ -286,8 +286,12 @@ HRESULT CStaticMesh::Ready_Collider()
 			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::B); // 이걸로 색깔을 바꿀 수 있다.
 
 			//충돌체가 있는 것만
-			if(m_eColliderType == COLLIDER_TYPE::CONVEX)
+			if (m_eColliderType == COLLIDER_TYPE::CONVEX)
+			{
+				m_pGameInstance->Get_Scene()->lockWrite();
 				m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+				m_pGameInstance->Get_Scene()->unlockWrite();
+			}
 			
 #pragma endregion
 		}
@@ -310,7 +314,10 @@ HRESULT CStaticMesh::Ready_Collider()
 			m_pPhysXActorCom->Set_QueryFilterData(filterData);
 			m_pPhysXActorCom->Set_Owner(this);
 			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::A);
+
+			m_pGameInstance->Get_Scene()->lockWrite();
 			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+			m_pGameInstance->Get_Scene()->unlockWrite();
 #pragma endregion
 		}
 	}
