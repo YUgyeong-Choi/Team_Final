@@ -16,7 +16,7 @@ class CTerrain final : public CGameObject
 public:
 	typedef struct tagTerrainDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		LEVEL		eLevelID = {LEVEL::END};
+		LEVEL		eMeshLevelID = {LEVEL::END};
 		_bool		isToolver = { false };
 	}DESC;
 
@@ -37,7 +37,7 @@ private:
 	CShader*			m_pShaderCom = { nullptr };
 	CTexture*			m_pTextureCom = { nullptr };
 	CVIBuffer_Terrain*	m_pVIBufferCom = { nullptr };
-	LEVEL				m_eLevelID = { LEVEL::END };
+	LEVEL				m_eMeshLevelID = { LEVEL::END };
 	_bool				m_isToolver = { false };
 
 private:

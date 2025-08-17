@@ -27,7 +27,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 {
 
 	UNIT_DESC UnitDesc{};
-	UnitDesc.eLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	UnitDesc.fRotationPerSec = XMConvertToRadians(140.f);
 	UnitDesc.fSpeedPerSec = m_fWalkSpeed;
 	lstrcpy(UnitDesc.szName, TEXT("FireEater"));

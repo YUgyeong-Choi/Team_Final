@@ -25,11 +25,11 @@ HRESULT CTerrain::Initialize(void* pArg)
 
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
-	m_eLevelID = LEVEL::GAMEPLAY;
+	m_eMeshLevelID = LEVEL::GAMEPLAY;
 	if (pArg != nullptr)
 	{
 		DESC* terDesc = static_cast<DESC*>(pArg);
-		m_eLevelID = terDesc->eLevelID;
+		m_eMeshLevelID = terDesc->eMeshLevelID;
 		m_isToolver = terDesc->isToolver;
 	}
 
@@ -92,7 +92,7 @@ HRESULT CTerrain::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), TEXT("Prototype_Component_Texture_Terrain"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), TEXT("Prototype_Component_Texture_Terrain"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -100,13 +100,13 @@ HRESULT CTerrain::Ready_Components()
 	/* For.Com_VIBuffer */
 	if (m_isToolver)
 	{
-		if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), TEXT("Prototype_Component_VIBuffer_Terrain_Toolver"),
+		if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), TEXT("Prototype_Component_VIBuffer_Terrain_Toolver"),
 			TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 			return E_FAIL;
 	}
 	else
 	{
-		if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), TEXT("Prototype_Component_VIBuffer_Terrain"),
+		if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), TEXT("Prototype_Component_VIBuffer_Terrain"),
 			TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 			return E_FAIL;
 	}

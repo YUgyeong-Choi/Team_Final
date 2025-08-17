@@ -174,7 +174,7 @@ HRESULT CLevel_YG::Ready_Layer_Station(const _wstring strLayerTag)
 {
 	CPBRMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
-	Desc.m_eLevelID = LEVEL::YG;
+	Desc.m_eMeshLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("Train");
 	lstrcpy(Desc.szName, TEXT("Train"));
 
@@ -197,11 +197,12 @@ HRESULT CLevel_YG::Ready_Player()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc.eLevelID = LEVEL::STATIC;
+	pDesc.eMeshLevelID = LEVEL::STATIC;
 	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
+	pDesc.iLevelID = ENUM_CLASS(LEVEL::YG);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		ENUM_CLASS(LEVEL::YG), TEXT("Layer_Player"), &pDesc)))
 		return E_FAIL;
@@ -211,7 +212,7 @@ HRESULT CLevel_YG::Ready_Player()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc2.fSpeedPerSec = 5.f;
 	pDesc2.fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc2.eLevelID = LEVEL::YG;
+	pDesc2.eMeshLevelID = LEVEL::YG;
 	pDesc2.InitPos = _float3(1.f, 3.f, 1.f);
 	pDesc2.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc2.szName, TEXT("Wego"));
@@ -308,7 +309,7 @@ HRESULT CLevel_YG::Load_StaticMesh(_uint iObjectCount, const json& objects, stri
 		LayerTag += StringToWString(ModelName);
 
 		StaticMeshDesc.iRender = 0;
-		StaticMeshDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
+		StaticMeshDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
 		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 		wstring wstrModelName = StringToWString(ModelName);
@@ -351,7 +352,7 @@ HRESULT CLevel_YG::Load_StaticMesh_Instance(_uint iObjectCount, const json& obje
 	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
 
 	StaticMeshInstanceDesc.iRender = 0;
-	StaticMeshInstanceDesc.m_eLevelID = static_cast<LEVEL>(iLevelIndex);
+	StaticMeshInstanceDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
 	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 	wstring wstrModelName = StringToWString(ModelName);

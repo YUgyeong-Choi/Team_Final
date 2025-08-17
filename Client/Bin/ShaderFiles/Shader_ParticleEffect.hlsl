@@ -11,6 +11,7 @@ struct ParticleInst
     float4 Look;
     float4 Translation;
     float2 LifeTime; // x=max, y=acc
+    float2 _pad;
 };
 
 StructuredBuffer<ParticleInst> Particle_SRV : register(t0);

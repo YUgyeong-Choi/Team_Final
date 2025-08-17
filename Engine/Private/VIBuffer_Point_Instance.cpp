@@ -379,6 +379,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	//m_VBInstanceDesc.MiscFlags = 0;
 
 	m_pVertexInstances = new VTXPOS_PARTICLE_INSTANCE[m_iNumInstance];
+	ZeroMemory(m_pVertexInstances, sizeof(VTXPOS_PARTICLE_INSTANCE) * m_iNumInstance);
 	//m_pSpeeds = new _float[m_iNumInstance];
 	m_pParticleDesc = new PARTICLEDESC[m_iNumInstance];
 	ZeroMemory(m_pParticleDesc, sizeof(PARTICLEDESC) * m_iNumInstance);

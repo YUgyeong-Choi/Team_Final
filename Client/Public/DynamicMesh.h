@@ -19,7 +19,7 @@ public:
 	{
 		const _tchar*	szMeshID;
 
-		LEVEL			m_eLevelID;
+		LEVEL			m_eMeshLevelID;
 		_int			iRender = 0;
 
 		_tchar		szModelPrototypeTag[MAX_PATH] = { 0 };
@@ -49,7 +49,7 @@ public:
 	AABBBOX GetWorldAABB() const;
 
 public:
-	LEVEL Get_LevelID() const { return m_eLevelID; }
+	LEVEL Get_LevelID() const { return m_eMeshLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 
 protected:
@@ -58,7 +58,7 @@ protected:
 protected: /* [ 초기화 변수 ] */
 	const _tchar*	m_szMeshID = { nullptr };
 	const _tchar*	m_szMeshFullID = { nullptr };
-	LEVEL			m_eLevelID = { LEVEL::END };
+	LEVEL			m_eMeshLevelID = { LEVEL::END };
 	LEVEL			m_eLevelLight = { LEVEL::END };
 	_float3			m_InitPos = {};
 	_int			m_iRender = {};

@@ -10,6 +10,7 @@ public:
 	typedef struct tagGameObjectDesc : public CTransform::TRANSFORM_DESC
 	{
 		_tchar		szName[MAX_PATH];
+		_uint		iLevelID = { 0 }; // 기본 static
 	}GAMEOBJECT_DESC;
 
 protected:
@@ -73,7 +74,7 @@ protected:
 	class CPhysXStaticActor*					m_pPhysXActorCom = { nullptr };
 
 	_bool m_bDead = {};
-	
+	_uint m_iLevelID = {}; // 이 객체가 현재 어느 레벨에 생성되었는지에 대한 변수
 	_float	m_fViewZ = {};
 	_bool m_bCloned = {};
 	_bool m_bEmissive = {};

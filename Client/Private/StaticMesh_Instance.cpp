@@ -28,7 +28,7 @@ HRESULT CStaticMesh_Instance::Initialize(void* pArg)
 
 	m_iNumInstance = InstanceDesc->iNumInstance;
 
-	m_eLevelID = InstanceDesc->m_eLevelID;
+	m_eMeshLevelID = InstanceDesc->m_eMeshLevelID;
 
 	m_szMeshID = InstanceDesc->szMeshID;
 
@@ -140,7 +140,7 @@ HRESULT CStaticMesh_Instance::Ready_Components(void* pArg)
 	ComDesc.pInstanceMatrixs = Desc->pInstanceMatrixs;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), Desc->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), Desc->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom), &ComDesc)))
 		return E_FAIL;
 

@@ -30,7 +30,7 @@ HRESULT CParticleComputeShader::Initialize_ParticleComputeShader(const _wstring&
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 	srvDesc.Format = DXGI_FORMAT_UNKNOWN;  // StructuredBuffer는 반드시 UNKNOWN
-	srvDesc.Buffer.FirstElement = 0;
+	//srvDesc.Buffer.FirstElement = 0;
 	srvDesc.Buffer.NumElements = m_iNumInstance;
 
 	if (FAILED(m_pDevice->CreateShaderResourceView(m_pVBInstance, &srvDesc, &m_pVBInstanceSRV)))
@@ -59,7 +59,7 @@ HRESULT CParticleComputeShader::Initialize_ParticleComputeShader(const _wstring&
 	D3D11_SHADER_RESOURCE_VIEW_DESC PDsrvDesc = {};
 	PDsrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 	PDsrvDesc.Format = DXGI_FORMAT_UNKNOWN; // StructuredBuffer는 반드시 UNKNOWN
-	PDsrvDesc.Buffer.FirstElement = 0;
+	//PDsrvDesc.Buffer.FirstElement = 0;
 	PDsrvDesc.Buffer.NumElements = m_iNumInstance;
 
 	hr = m_pDevice->CreateShaderResourceView(m_pParticleDescBuffer, &PDsrvDesc, &m_pParticleDescSRV);
@@ -87,7 +87,7 @@ HRESULT CParticleComputeShader::Initialize_ParticleComputeShader(const _wstring&
 	D3D11_SHADER_RESOURCE_VIEW_DESC PIsrvDesc{};
 	PIsrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 	PIsrvDesc.Format = DXGI_FORMAT_UNKNOWN; // StructuredBuffer는 UNKNOWN
-	PIsrvDesc.Buffer.FirstElement = 0;
+	//PIsrvDesc.Buffer.FirstElement = 0;
 	PIsrvDesc.Buffer.NumElements = m_iNumInstance;
 
 	hr = m_pDevice->CreateShaderResourceView(m_pInitInstanceBuffer, &PIsrvDesc, &m_pInitInstanceSRV);
@@ -123,7 +123,7 @@ HRESULT CParticleComputeShader::Dispatch_ParticleCS(const PARTICLECBUFFER& tCBuf
 	Bind();
 
 	const _uint iThreadX = 128;
-	UINT groups = (m_iNumInstance + iThreadX - 1) / iThreadX; // 올림 나눗셈
+	_uint groups = (m_tParticleCBuffer.iNumInstances + iThreadX - 1) / iThreadX; // 올림 나눗셈
 
 	Dispatch(groups, 1, 1);
 
@@ -136,6 +136,8 @@ HRESULT CParticleComputeShader::Dispatch_ParticleCS(const PARTICLECBUFFER& tCBuf
 void CParticleComputeShader::Bind()
 {
 	__super::Bind();
+	m_pContext->UpdateSubresource(m_pCBuffer, 0, nullptr, &m_tParticleCBuffer, 0, 0);
+
 	ID3D11UnorderedAccessView* uavs[] = { m_pVBInstanceUAV };
 	UINT initialCounts[] = { 0 };
 	m_pContext->CSSetUnorderedAccessViews(0, 1, uavs, initialCounts);
@@ -147,7 +149,6 @@ void CParticleComputeShader::Bind()
 	// t0이 파티클 개별 속성
 	// t1이 초기 상태
 
-	m_pContext->UpdateSubresource(m_pCBuffer, 0, nullptr, &m_tParticleCBuffer, 0, 0);
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pCBuffer);
 	// b0에 바인딩
 
@@ -162,7 +163,6 @@ void CParticleComputeShader::Unbind()
 	m_pContext->CSSetUnorderedAccessViews(0, 1, nullUAV, nullptr);
 	m_pContext->CSSetShaderResources(0, 2, nullSRV);
 	m_pContext->CSSetConstantBuffers(0, 1, nullCB);
-	m_pContext->CSSetShader(nullptr, nullptr, 0);
 
 	__super::Unbind();
 }

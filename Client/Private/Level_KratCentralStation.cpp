@@ -161,8 +161,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Separate_Area()))
 		return E_FAIL;
-	//if (FAILED(Ready_Effect()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
@@ -189,11 +189,12 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc.eLevelID = LEVEL::STATIC;
+	pDesc.eMeshLevelID = LEVEL::STATIC;
 	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
+	pDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
@@ -211,7 +212,7 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 	//pDesc.fSpeedPerSec = 1.f;
 	pWegoDesc.fSpeedPerSec = 5.f;
 	pWegoDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	pWegoDesc.eLevelID = LEVEL::STATIC;
+	pWegoDesc.eMeshLevelID = LEVEL::STATIC;
 	pWegoDesc.InitPos = _float3(54.638927f, -0.221457f, -10.478647f);
 	pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pWegoDesc.szName, TEXT("Wego"));

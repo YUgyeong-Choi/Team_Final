@@ -40,7 +40,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 	m_InitPos = pDesc->InitPos;
 	m_InitScale = pDesc->InitScale;
 	m_szMeshID = pDesc->szMeshID;
-	m_eLevelID = pDesc->eLevelID;
+	m_eMeshLevelID = pDesc->eMeshLevelID;
 	m_iRender = pDesc->iRender;
 	m_szName = pDesc->szName;
 
@@ -191,7 +191,7 @@ HRESULT CWeapon::Bind_Shader()
 HRESULT CWeapon::Ready_Components()
 {
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eLevelID), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

@@ -18,7 +18,7 @@ public:
 	typedef struct tagWeaponDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		const _tchar* szMeshID;
-		LEVEL			eLevelID;
+		LEVEL			eMeshLevelID;
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
@@ -113,7 +113,7 @@ protected:				/* [ 기본 속성 ] */
 protected: 				/* [ 기본 타입 ] */
 	const _tchar*		m_szName = { nullptr };
 	const _tchar*		m_szMeshID = { nullptr };
-	LEVEL				m_eLevelID = { LEVEL::END };
+	LEVEL				m_eMeshLevelID = { LEVEL::END };
 
 protected:				/* [ 그림자 관련 ] */
 	SHADOW				m_eShadow = SHADOW::SHADOW_END;
