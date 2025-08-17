@@ -12,12 +12,13 @@ CVIBuffer_Point_Instance::CVIBuffer_Point_Instance(const CVIBuffer_Point_Instanc
 	: CVIBuffer_Instance( Prototype )
 	, m_pVertexInstances{ Prototype.m_pVertexInstances }
 	, m_pParticleDesc(Prototype.m_pParticleDesc)
-	, m_vPivot{ Prototype.m_vPivot }
-	, m_isLoop{ Prototype.m_isLoop }
-	, m_bGravity{ Prototype.m_bGravity }
-	, m_fGravity{ Prototype.m_fGravity }
-	, m_vDirection{ Prototype.m_vDirection }
-	, m_ePType{ Prototype.m_ePType }
+	//, m_vPivot{ Prototype.m_vPivot }
+	//, m_isLoop{ Prototype.m_isLoop }
+	//, m_bGravity{ Prototype.m_bGravity }
+	//, m_fGravity{ Prototype.m_fGravity }
+	//, m_vDirection{ Prototype.m_vDirection }
+	//, m_ePType{ Prototype.m_ePType }
+	, m_tCBuffer{ Prototype.m_tCBuffer }
 {
 }
 
@@ -26,7 +27,7 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const DESC* pArg)
 	m_iNumIndexPerInstance = 1;
 	m_iVertexInstanceStride = sizeof(VTXPOS_PARTICLE_INSTANCE);
 
-	m_iNumVertexBuffers = 2;
+	m_iNumVertexBuffers = 1;
 	m_iNumVertices = 1;
 	m_iVertexStride = sizeof(VTXPOS);
 	m_iNumIndices = m_iNumIndexPerInstance;
@@ -65,31 +66,39 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const DESC* pArg)
 	Safe_Delete_Array(pVertices);
 
 #pragma endregion 
-	m_isTool = pArg->isTool;
-	if(m_isTool == false) // 클라이언트 생성 시 
+	ZeroMemory(&m_tCBuffer, sizeof(PARTICLECBUFFER));
+	m_tCBuffer.bIsTool = pArg->isTool?1:0;
+	if(m_tCBuffer.bIsTool == 0) // 클라이언트 생성 시 
 		Make_InstanceBuffer(pArg);
+
 
 	return S_OK;
 }
 
 HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 {
-	if (pArg != nullptr)
+	if (pArg != nullptr)	
 	{
-		DESC* pDesc = static_cast<DESC*>(pArg);
-		m_isTool = pDesc->isTool;
+ 		DESC* pDesc = static_cast<DESC*>(pArg);
+		m_tCBuffer.bIsTool = pDesc->isTool?1:0;
 
-		if (m_isTool == true)
+		if (m_tCBuffer.bIsTool == 1)
 			Make_InstanceBuffer(pDesc); // 툴에서 생성 시
 	}
 
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstanceDesc, &m_VBInstanceSubresourceData, &m_pVBInstance)))
 		return E_FAIL;
 
-	//m_pParticleCS = CParticleComputeShader::Create(m_pDevice, m_pContext, TEXT(""), m_pVBInstance, m_pParticleDesc, m_iNumInstance);
-	//if (!m_pParticleCS){
-	//	return E_FAIL;
-	//}
+	CParticleComputeShader::DESC csDesc = {};
+	csDesc.iNumInstance = m_iNumInstance;
+	csDesc.pParticleDesc = m_pParticleDesc;
+	csDesc.pVBInstanceBuffer = m_pVBInstance;
+	csDesc.pVertexInstances = m_pVertexInstances;
+
+	m_pParticleCS = CParticleComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Compute_Particle.cso"), &csDesc);
+	if (!m_pParticleCS){
+		return E_FAIL;
+	}
 	//if (FAILED(m_pParticleCS->))
 	//	return E_FAIL;	
 
@@ -98,64 +107,71 @@ HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 
 void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 {
-	switch (m_ePType)
-	{
-	case Engine::PTYPE_SPREAD:
-		Spread(fTimeDelta);
-		break;
-	case Engine::PTYPE_DIRECTIONAL:
-		Directional(fTimeDelta);
-		break;
-	case Engine::PTYPE_END:
-		break;
-	default:
-		break;
-	}
+	//switch (m_ePType)
+	//{
+	//case Engine::PTYPE_SPREAD:
+	//	Spread(fTimeDelta);
+	//	break;
+	//case Engine::PTYPE_DIRECTIONAL:
+	//	Directional(fTimeDelta);
+	//	break;
+	//case Engine::PTYPE_END:
+	//	break;
+	//default:
+	//	break;
+	//}
+
+	m_tCBuffer.fDeltaTime = fTimeDelta;
 
 	/* [ CS ] */
-
+	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
 
 
 }
 void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 {
-	switch (m_ePType)
-	{
-	case Engine::PTYPE_SPREAD:
-		Spread(fCurTrackPos / 60.f, true);
-		break;
-	case Engine::PTYPE_DIRECTIONAL:
-		Directional(fCurTrackPos / 60.f, true);
-		break;
-	case Engine::PTYPE_END:
-		break;
-	default:
-		break;
-	}
+	//switch (m_ePType)
+	//{
+	//case Engine::PTYPE_SPREAD:
+	//	Spread(fCurTrackPos / 60.f, true);
+	//	break;
+	//case Engine::PTYPE_DIRECTIONAL:
+	//	Directional(fCurTrackPos / 60.f, true);
+	//	break;
+	//case Engine::PTYPE_END:
+	//	break;
+	//default:
+	//	break;
+	//}
+	m_tCBuffer.fTrackTime = fCurTrackPos / 60.f;
+
+	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
+
 }
 
 HRESULT CVIBuffer_Point_Instance::Bind_Buffers()
 {
-	// 여기는 cs로 변경하기 
 	ID3D11Buffer* pVertexBuffers[] = {
 		   m_pVB,
-		   m_pVBInstance,
+		   //m_pVBInstance,
 	};
 
 	_uint		iVertexStrides[] = {
 		m_iVertexStride,
-		m_iVertexInstanceStride
+		//m_iVertexInstanceStride
 
 	};
 
 	_uint		iOffsets[] = {
 		0,
-		0
+		//0
 	};
 
 	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iVertexStrides, iOffsets);
 	//m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0); // 파티클 Indexbuffer 삭제 예정
 	m_pContext->IASetPrimitiveTopology(m_ePrimitiveTopology);
+
+	m_pParticleCS->Bind_InstanceSRV();
 	
 	return S_OK;
 }
@@ -182,7 +198,7 @@ void CVIBuffer_Point_Instance::Directional(_float fTimeDelta, _bool bTool)
 			_float trackTime = fTimeDelta; // fTimeDelta는 누적 시간으로 들어옴 (trackPos / 60.0f)
 
 			// 루프 적용 시: trackTime을 주기 내로 제한
-			if (m_isLoop)
+			if (m_tCBuffer.bIsLoop)
 			{
 				trackTime = fmodf(trackTime, m_pVertexInstances[i].vLifeTime.x);
 			}
@@ -213,7 +229,7 @@ void CVIBuffer_Point_Instance::Directional(_float fTimeDelta, _bool bTool)
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
 
 
-			if (true == m_isLoop &&
+			if (1 == m_tCBuffer.bIsLoop &&
 				pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
 			{
 				pVertices[i].vLifeTime.y = 0.f;
@@ -240,7 +256,7 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 		for (size_t i = 0; i < m_iNumInstance; i++)
 		{
 			_float trackTime = fTimeDelta;
-			if (m_isLoop)
+			if (m_tCBuffer.bIsLoop)
 				trackTime = fmodf(trackTime, m_pVertexInstances[i].vLifeTime.x);
 
 			pVertices[i].vLifeTime.y = trackTime;
@@ -249,17 +265,17 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 			_vector vDir = XMLoadFloat4(&m_pParticleDesc[i].vDirection);
 			_vector vNew = vStart + vDir * m_pParticleDesc[i].vSpeeds * trackTime;
 
-			if (m_bGravity)
+			if (m_tCBuffer.bUseGravity)
 			{
-				_float gOffset = 0.5f * m_fGravity * trackTime * trackTime;
+				_float gOffset = 0.5f * m_tCBuffer.fGravity * trackTime * trackTime;
 				vNew = XMVectorSetY(vNew, XMVectorGetY(vNew) - gOffset);
 			}
 
 			// 자전
-			if (m_bSpin)
+			if (m_tCBuffer.bUseSpin)
 			{
 				_float angle = XMConvertToRadians(m_pParticleDesc[i].fRotationSpeed) * trackTime;
-				_vector axis = XMLoadFloat3(&m_vRotationAxis);
+				_vector axis = XMLoadFloat3(&m_tCBuffer.vRotationAxis);
 				_matrix rot = XMMatrixRotationAxis(axis, angle);
 				//_vector rot = XMMatrixRotationAxis(axis, angle);
 
@@ -272,13 +288,13 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 				XMStoreFloat4(&pVertices[i].vLook, vLook);
 			}
 			// 공전
-			if (m_bOrbit)
+			if (m_tCBuffer.bUseOrbit)
 			{
 				_float angle = XMConvertToRadians(m_pParticleDesc[i].fOrbitSpeed) * trackTime;
-				_vector axis = XMLoadFloat3(&m_vOrbitAxis);
+				_vector axis = XMLoadFloat3(&m_tCBuffer.vOrbitAxis);
 				_matrix orbitRot = XMMatrixRotationAxis(axis, angle);
 
-				_vector center = XMVectorSetW(XMLoadFloat3(&m_vCenter), 1.f);
+				_vector center = XMVectorSetW(XMLoadFloat3(&m_tCBuffer.vCenter), 1.f);
 				_vector offset = vNew - center;
 				offset = XMVector3TransformNormal(offset, orbitRot);
 				vNew = center + offset;
@@ -297,16 +313,16 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 			_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
 			vPos += vDir * m_pParticleDesc[i].vSpeeds * fTimeDelta;
 
-			if (m_bGravity)
+			if (m_tCBuffer.bUseGravity)
 			{
 				_float t = pVertices[i].vLifeTime.y;
-				_float gOffset = 0.5f * m_fGravity * fTimeDelta * fTimeDelta;
+				_float gOffset = 0.5f * m_tCBuffer.fGravity * fTimeDelta * fTimeDelta;
 				vPos = XMVectorSetY(vPos, XMVectorGetY(vPos) - gOffset);
 			}
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
 
-			if (m_isLoop && pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+			if (m_tCBuffer.bIsLoop && pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
 			{
 				pVertices[i].vLifeTime.y = 0.f;
 				pVertices[i].vTranslation = m_pVertexInstances[i].vTranslation;
@@ -320,35 +336,47 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 {
 	// desc 변수 저장
-	m_vPivot = pDesc->vPivot;
-	m_isLoop = pDesc->isLoop;
-	m_iNumInstance = pDesc->iNumInstance;
-	m_ePType = pDesc->ePType;
-	m_bGravity = pDesc->bGravity;
-	m_fGravity = pDesc->fGravity;
-	m_vDirection = pDesc->vDirection;
-	m_vCenter = pDesc->vCenter;
-	m_bOrbit = pDesc->bOrbit;
-	m_bSpin = pDesc->bSpin;
-	m_vOrbitAxis = pDesc->vOrbitAxis;
-	m_vRotationAxis = pDesc->vRotationAxis;
+	//m_vPivot = pDesc->vPivot;//
+	//m_isLoop = pDesc->isLoop;//
+	//m_iNumInstance = pDesc->iNumInstance;//
+	//m_ePType = pDesc->ePType;//
+	//m_bGravity = pDesc->bGravity;//
+	//m_fGravity = pDesc->fGravity;//
+	//m_vDirection = pDesc->vDirection; // 필요가없을듯
+	//m_vCenter = pDesc->vCenter;//
+	//m_bOrbit = pDesc->bOrbit;//
+	//m_bSpin = pDesc->bSpin;//
+	//m_vOrbitAxis = pDesc->vOrbitAxis;//
+	//m_vRotationAxis = pDesc->vRotationAxis;//
+	m_tCBuffer.iNumInstances = m_iNumInstance = pDesc->iNumInstance;
+	m_tCBuffer.iParticleType = pDesc->ePType;
+	m_tCBuffer.bIsTool = pDesc->isTool ? 1 : 0;
+	m_tCBuffer.bIsLoop = pDesc->isLoop ? 1 : 0;
+	m_tCBuffer.bUseGravity = pDesc->bGravity ? 1 : 0;
+	m_tCBuffer.bUseSpin = pDesc->bSpin ? 1 : 0;
+	m_tCBuffer.bUseOrbit = pDesc->bOrbit ? 1 : 0;
+	m_tCBuffer.fGravity = pDesc->fGravity;
+	m_tCBuffer.vPivot = pDesc->vPivot;
+	m_tCBuffer.vCenter = pDesc->vCenter;
+	m_tCBuffer.vOrbitAxis = pDesc->vOrbitAxis;
+	m_tCBuffer.vRotationAxis = pDesc->vRotationAxis;
 
 #pragma region INSTANCEBUFFER
 	/* [ CS ] */
-	//m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
-	//m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER  | D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	//m_VBInstanceDesc.Usage = D3D11_USAGE_DEFAULT;
-	//m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
-	//m_VBInstanceDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
+	m_VBInstanceDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	m_VBInstanceDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_VBInstanceDesc.CPUAccessFlags = 0;
+	m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
+	m_VBInstanceDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	/**************************************************************************/
 	/* [ 기존 CPU 처리] */
-	m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
-	m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_VBInstanceDesc.Usage = D3D11_USAGE_DYNAMIC;
-	m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
-	m_VBInstanceDesc.MiscFlags = 0;
+	//m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
+	//m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	//m_VBInstanceDesc.Usage = D3D11_USAGE_DYNAMIC;
+	//m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
+	//m_VBInstanceDesc.MiscFlags = 0;
 
 	m_pVertexInstances = new VTXPOS_PARTICLE_INSTANCE[m_iNumInstance];
 	//m_pSpeeds = new _float[m_iNumInstance];
@@ -380,18 +408,18 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 		_vector vDir = {};
 
 
-		switch (m_ePType)
+		switch (m_tCBuffer.iParticleType)
 		{
 		case Engine::PTYPE_SPREAD:
 		{
 			_vector vStart = XMLoadFloat4(&m_pVertexInstances[i].vTranslation);
-			_vector vPivot = XMLoadFloat3(&m_vPivot);
+			_vector vPivot = XMLoadFloat3(&m_tCBuffer.vPivot);
 			vDir = XMVectorSetW(XMVector3Normalize(vStart - vPivot), 0.f);
 		}
 			break;
 		case Engine::PTYPE_DIRECTIONAL:
 		{
-			_vector vPivot = XMLoadFloat3(&m_vPivot);
+			_vector vPivot = XMLoadFloat3(&m_tCBuffer.vPivot);
 			_vector vCenter = XMLoadFloat3(&pDesc->vCenter);
 			vDir = XMVectorSetW(XMVector3Normalize(vCenter - vPivot), 0.f);
 			//vDir = XMVector3Normalize(XMLoadFloat4(&m_vDirection));
@@ -456,14 +484,15 @@ void CVIBuffer_Point_Instance::Free()
 	// 클라일 때 프로토타입에서 삭제
 	// 툴일 땐 클론에서 삭제
 
-	if (false == m_isTool && false == m_isCloned)
+	if (false == m_tCBuffer.bIsTool && false == m_isCloned)
 	{
 		Safe_Delete_Array(m_pVertexInstances);
 		Safe_Delete_Array(m_pParticleDesc);
 	}
-	if (m_isTool && m_isCloned)
+	if (m_tCBuffer.bIsTool && m_isCloned)
 	{
 		Safe_Delete_Array(m_pVertexInstances);
 		Safe_Delete_Array(m_pParticleDesc);
 	}
+		Safe_Release(m_pParticleCS);
 }
