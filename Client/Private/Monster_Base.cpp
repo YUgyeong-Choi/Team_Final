@@ -56,6 +56,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	m_pAnimator->SetBool("Detect", false);
 
+	m_bUseLockon = true;
 	
 
 	return S_OK;
@@ -69,6 +70,7 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	{
 		if (m_pAnimator->IsFinished())
 		{
+			m_bUseLockon = false;
 			m_pHPBar->Set_bDead();
 			Set_bDead();
 			if (nullptr != m_pPhysXActorCom)
@@ -243,7 +245,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
 	eDesc.fHeight = 2.25f;
-	eDesc.pHP = &m_iHP;
+	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_isCanGroggy;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 

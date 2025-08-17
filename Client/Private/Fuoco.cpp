@@ -60,6 +60,8 @@ HRESULT CFuoco::Initialize(void* pArg)
 	Ready_AttackPatternWeightForPhase1();
 	Ready_BoneInformation();
 
+	m_bUseLockon = true;
+
 	return S_OK;
 }
 
@@ -95,6 +97,7 @@ void CFuoco::Update(_float fTimeDelta)
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
 		m_pAnimator->SetTrigger("SpecialDie");
+		m_bUseLockon = false;
 	}
 
 	if (m_fFireFlameDuration > 0.f)

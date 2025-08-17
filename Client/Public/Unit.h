@@ -74,7 +74,7 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 public:
 	_float4& Get_LockonPos() { return m_vLockonPos; }
 	//락온에서 hp 0이하인거는 제외할라고(죽는모션할떄 락온되서)
-	_int Get_HP() { return m_iHP; } 
+	_bool Get_UseLockon() { return m_bUseLockon; }
 public:
 	// 데미지를 준다
 	virtual void Attack(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
@@ -97,14 +97,14 @@ protected: /* [ 기본 충돌체 ] */
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
 protected:				/* [ 기본 속성 ] */
-	_int 				m_iHP = 100;
-	_int 				m_iMaxHP = 100;
+
 	_bool				m_isActive = { true };
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);
 	_float3				m_InitPos = {};
 	_float3				m_InitScale = {};
 	_int				m_iRender = {};
+	_bool				m_bUseLockon = {};
 
 protected: 				/* [ 기본 타입 ] */
 	const _tchar*		m_szName = { nullptr };

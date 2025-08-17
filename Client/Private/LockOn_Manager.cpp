@@ -172,7 +172,7 @@ void CLockOn_Manager::RemoveSomeTargets()
 
         // HP 0 이하 제거
         CUnit* pUnit = static_cast<CUnit*>(pTarget);
-        if (!pUnit || pUnit->Get_HP() <= 0.f) {
+        if (!pUnit || !pUnit->Get_UseLockon()) {
             bRemove = true;
         }
 

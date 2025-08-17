@@ -36,18 +36,18 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
 		if (L"CurrentHP" == eventType)
 		{
-			m_iCurrentHP = *static_cast<int*>(data);
+			m_fCurrentHP = *static_cast<_float*>(data);
 
 
 		}
 		else if (L"MaxHP" == eventType)
 		{
-			m_iMaxHP = *static_cast<int*>(data);
+			m_fMaxHP = *static_cast<_float*>(data);
 
 
 		}
 			
-		m_fRatio = float(m_iCurrentHP) / m_iMaxHP;
+		m_fRatio = (m_fCurrentHP) / m_fMaxHP;
 		
 		});
 

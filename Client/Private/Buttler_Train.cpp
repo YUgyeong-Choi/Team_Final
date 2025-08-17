@@ -28,9 +28,9 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_fDetectDist = 10.f;
 	
-	m_iHP = 300;
+	m_fHp = 300;
 
-	m_pHPBar->Set_MaxHp(m_iHP);
+	m_pHPBar->Set_MaxHp(m_fHp);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 
@@ -117,7 +117,7 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	// 이제 초기화하면 다시 데미지 줄 수 있게
 	// 수정 해야됨
 	// 플레이어 상태 좀 잡히면 다시 
-	//ReceiveDamage(pOther, eColliderType);
+	ReceiveDamage(pOther, eColliderType);
 
 }
 
@@ -147,7 +147,7 @@ void CButtler_Train::Update_State()
 
 	 m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
-	 if (!m_isDetect || m_iHP <= 0)
+	 if (!m_isDetect || m_fHp <= 0)
 	 {
 		 m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 		 return;
@@ -237,12 +237,12 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		if (false == pWeapon->GetisAttack())
 			return;
 
-		m_iHP -= pWeapon->Get_CurrentDamage() / 2;
+		m_fHp -= pWeapon->Get_CurrentDamage() / 2;
 
 		m_iGroggyThreshold -= pWeapon->Get_CurrentDamage();
 		m_pHPBar->Set_RenderTime(2.f);
 
-		if (m_iHP <= 0)
+		if (m_fHp <= 0)
 		{
 
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
@@ -250,6 +250,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			m_strStateName = "Dead";
 
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
+			m_bUseLockon = false;
 			return;
 		}
 
