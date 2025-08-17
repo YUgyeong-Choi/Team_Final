@@ -37,7 +37,6 @@ public:
 private:
 	_bool m_bLoadingInTool = { false };
 
-
 	_float3				m_vRange;
 	_float2				m_vSize;
 	_float3				m_vCenter;
@@ -47,6 +46,16 @@ private:
 	_bool				m_isLoop;
 	_bool				m_bGravity;
 	_float				m_fGravity;
+
+	_bool				m_bSpin = { false }; 
+	_bool				m_bOrbit = { false };
+	_float3				m_vRotationAxis = {};
+	_float3				m_vOrbitAxis = {};	
+	_float2				m_vRotationSpeed = {}; 
+	_float2				m_vOrbitSpeed = {}; 
+	_float2				m_vAccel = {};
+	_float				m_fMaxSpeed = {};
+	_float				m_fMinSpeed = {};
 
 private:
 	HRESULT Ready_Components(void* pArg);

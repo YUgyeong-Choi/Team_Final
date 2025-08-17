@@ -19,13 +19,18 @@ public:
 		_float3			vCenter;
 		_bool			bGravity = { false };
 		_float			fGravity = { 9.8f };
-		_float4			vDirection = {0.f, 1.f, 0.f, 0.f}; // 쓰지말죠	
+		//_float4			vDirection = {0.f, 1.f, 0.f, 0.f}; // 쓰지말죠	
 		_bool			bSpin = { false }; // 자전 여부
 		_bool			bOrbit = { false }; // 공전 여부
 		_float3			vRotationAxis = {};       // 자전용, xyz 축 w 속도
 		_float3			vOrbitAxis = {};			// 공전용, xyz 축 w 속도
 		_float2			vRotationSpeed = {}; // 자전 속도
 		_float2			vOrbitSpeed = {}; // 공전 속도
+
+		_float2			vAccel = {};        // 가속도 (+면 가속, -면 감속)
+		_float			fMaxSpeed = { 1000.f };	// 필요한지
+		_float			fMinSpeed = { 0.f };
+
 		_bool			isTool = { false };
 	}DESC;
 
@@ -65,16 +70,14 @@ private:
 	//_float3						m_vOrbitAxis = {};	// 공전용, xyz 축 w 속도
 	//_float						m_fOrbitRadius = {};// 공전 반지름 (radius로 결정된 초기 위치 - 중심점 길이로 사용)
 	//_float4						m_vOrbitCenter = {};    // 공전 중심점 (선택적)
+	/* PARTICLECBUFFER 구조체로 통합됨 !! */
+	PARTICLECBUFFER				m_tCBuffer = {};
 
 	PARTICLEDESC*				m_pParticleDesc = { nullptr };	
-	PARTICLECBUFFER				m_tCBuffer = {};
 
 private:
 	/* [CS] */
 	class CParticleComputeShader* m_pParticleCS = { nullptr };
-		
-
-private:
 
 
 private:

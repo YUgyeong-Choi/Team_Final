@@ -495,5 +495,6 @@ void CVIBuffer_Point_Instance::Free()
 		Safe_Delete_Array(m_pVertexInstances);
 		Safe_Delete_Array(m_pParticleDesc);
 	}
+	if (m_isCloned)
 		Safe_Release(m_pParticleCS);
 }

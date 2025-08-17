@@ -3,8 +3,6 @@
 CParticleComputeShader::CParticleComputeShader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComputeShader(pDevice, pContext)
 {
-	Safe_AddRef(m_pDevice);
-	Safe_AddRef(m_pContext);
 }
 
 HRESULT CParticleComputeShader::Initialize_ParticleComputeShader(const _wstring& wstrFilePath, DESC* pDesc)
@@ -193,6 +191,8 @@ void CParticleComputeShader::Free()
 	Safe_Release(m_pVBInstanceSRV);
 	Safe_Release(m_pParticleDescBuffer);
 	Safe_Release(m_pParticleDescSRV);
+	Safe_Release(m_pInitInstanceBuffer);
+	Safe_Release(m_pInitInstanceSRV);
 	Safe_Release(m_pCBuffer);
 
 }

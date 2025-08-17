@@ -460,6 +460,9 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
     if (j.contains("Loop"))
         VIBufferDesc.isLoop = j["Loop"].get<_bool>();
 
+    if (j.contains("Accel") && j["Accel"].is_array() && j["Accel"].size() == 2)
+        VIBufferDesc.vAccel = { j["Accel"][0].get<_float>(), j["Accel"][1].get<_float>() };
+
     //if (j.contains("Local"))
     //    VIBufferDesc.bLocal = j["Local"].get<_bool>();
 
