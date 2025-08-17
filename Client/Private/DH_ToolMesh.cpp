@@ -173,6 +173,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fFogCutoff = 15.f;
 		LightDesc.bIsVolumetric = true;
 		LightDesc.bIsPlayerFar = false;
+		LightDesc.bIsUse = true;
 	}
 	if (m_szMeshID == TEXT("SpotLight"))
 	{
@@ -191,6 +192,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fFogCutoff = 15.f;
 		LightDesc.bIsVolumetric = true;
 		LightDesc.bIsPlayerFar = false;
+		LightDesc.bIsUse = true;
 
 	}
 	if (m_szMeshID == TEXT("DirrectionalLight"))
@@ -205,6 +207,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.fFogDensity = 0.f;
 		LightDesc.bIsVolumetric = true;
 		LightDesc.bIsPlayerFar = false;
+		LightDesc.bIsUse = true;
 	}
 
 	//m_eTargetLevel = LEVEL::DH;

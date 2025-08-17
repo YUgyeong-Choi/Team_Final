@@ -74,6 +74,7 @@ private:
 
 private:
 	CShader* m_pShaderCom = { nullptr };
+	CShader* m_pShaderComInstance = { nullptr };
 	vector<class CDH_ToolMesh*> m_vecLights;
 
 

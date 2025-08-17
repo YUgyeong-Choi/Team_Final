@@ -505,8 +505,9 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float4 worldPos = mul(viewPos, g_ViewMatrixInv);
 
     // [ 라이트 방향 및 감쇠 ]
-    //float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
     float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
+    //float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
+    
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
     
@@ -802,9 +803,9 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
 
     /* [ Volumetric Raymarching 기법 ] */
     float4 ViewSpacePosition = viewPos;
-
-    float StepSize = 0.25f;
+        
     static const int NumStep = 50;
+    float StepSize = 0.25f;
 
     float LightFog = 0.0f;
 
