@@ -36,7 +36,7 @@ namespace Engine
 		FILTER_DYNAMICOBJ = 1 << 5,
 		FILTER_NPC = 1 << 6,
 		FILTER_MAP = 1 << 7,
-		FILTER_INTERACT = 1 << 8,
+		FILTER_INTERACT = 1 << 8
 	};
 
 	enum class COLLIDERTYPE 
