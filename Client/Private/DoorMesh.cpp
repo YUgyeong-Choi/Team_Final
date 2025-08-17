@@ -41,12 +41,13 @@ void CDoorMesh::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_bCanActive)
+	if (m_bCanActive && !m_bFinish)
 	{
 		if (KEY_DOWN(DIK_E))
 		{
 			CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player")));
 			pPlayer->Interaction_Door(m_eInteractType, this);
+			m_bFinish = true;
 		}
 	}
 }
