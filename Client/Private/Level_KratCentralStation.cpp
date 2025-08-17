@@ -162,8 +162,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Separate_Area()))
 		return E_FAIL;
-	//if (FAILED(Ready_Effect()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))

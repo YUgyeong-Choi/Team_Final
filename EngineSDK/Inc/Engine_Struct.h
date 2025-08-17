@@ -48,7 +48,7 @@ namespace Engine
 			string maskBoneName; // 마스크 본 이름 (없으면 빈 문자열)
 			float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
 			float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
-			float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
+			float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간	
 		};
 
 		unordered_map<string, OverrideState> states; // 상태 이름, OverrideState
@@ -185,7 +185,8 @@ namespace Engine
 		XMFLOAT4		vTranslation;
 
 		XMFLOAT2		vLifeTime;
-		
+		XMFLOAT2		_pad0;
+
 
 		static const unsigned int					iNumElements = { 6 };	
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
@@ -473,6 +474,22 @@ namespace Engine
 		_float		fOrbitSpeed = {}; // 공전 속도
 		_float		_pad0;
 	}PARTICLEDESC;
+
+	typedef struct tagParticleValDesc{
+		_float4		vRight;
+		_float4		vUp;
+		_float4		vLook;
+		_float4		vTranslation; // WorldMatrix
+
+		_float4		vDirection = {};
+
+		_float2		vLifeTime;
+		_float		vSpeeds = {};
+		_float		fRotationSpeed = {}; // 자전 속도
+
+		_float		fOrbitSpeed = {}; // 공전 속도
+
+	}PARTICLEVALDESC;
 
 	typedef struct tagParticleCBuffer {
 		_float		fDeltaTime;       // dt (tool이면 무시)
