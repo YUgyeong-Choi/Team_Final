@@ -45,7 +45,7 @@ private:
 	CAMERA_ROTFRAME m_EditRotKey = {};
 	CAMERA_FOVFRAME m_EditFovKey = {};
 	_int m_iChangeKeyFrame = 0;
-	CUTSCENE_TYPE m_eCutSceneType = CUTSCENE_TYPE::ONE;
+	CUTSCENE_TYPE m_eCutSceneType = CUTSCENE_TYPE::WAKEUP;
 
 	_float m_fPitch = {};
 	_float m_fYaw = {};

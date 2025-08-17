@@ -90,7 +90,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 		/* [ 플레이어 제어 ] */
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 		m_pCamera_Manager->GetFreeCam()->Get_TransfomCom()->Set_State(STATE::POSITION, _fvector{ 0.f, 0.f,0.f,1.f });
 	}
 }
