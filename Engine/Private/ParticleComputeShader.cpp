@@ -170,7 +170,7 @@ void CParticleComputeShader::Unbind()
 void CParticleComputeShader::Bind_InstanceSRV()
 {
 	ID3D11ShaderResourceView* srvs[] = { m_pVBInstanceSRV };
-	m_pContext->VSSetShaderResources(0, _countof(srvs), srvs);
+	m_pContext->VSSetShaderResources(0, 1, srvs);
 }
 
 CParticleComputeShader* CParticleComputeShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& wstrFilePath, DESC* pDesc)

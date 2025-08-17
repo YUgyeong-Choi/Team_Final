@@ -471,6 +471,7 @@ namespace Engine
 		_float		vSpeeds = {};
 		_float		fRotationSpeed = {}; // 자전 속도
 		_float		fOrbitSpeed = {}; // 공전 속도
+		_float		_pad0;
 	}PARTICLEDESC;
 
 	typedef struct tagParticleCBuffer {

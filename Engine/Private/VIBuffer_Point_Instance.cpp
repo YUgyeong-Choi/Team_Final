@@ -66,11 +66,11 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(const DESC* pArg)
 	Safe_Delete_Array(pVertices);
 
 #pragma endregion 
+	ZeroMemory(&m_tCBuffer, sizeof(PARTICLECBUFFER));
 	m_tCBuffer.bIsTool = pArg->isTool?1:0;
 	if(m_tCBuffer.bIsTool == 0) // 클라이언트 생성 시 
 		Make_InstanceBuffer(pArg);
 
-	ZeroMemory(&m_tCBuffer, sizeof(PARTICLECBUFFER));
 
 	return S_OK;
 }

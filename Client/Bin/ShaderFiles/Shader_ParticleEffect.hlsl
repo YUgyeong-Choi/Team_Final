@@ -16,15 +16,15 @@ struct ParticleInst
 StructuredBuffer<ParticleInst> Particle_SRV : register(t0);
 //bool    g_size 
 
-struct VS_IN
-{
-    float3 vPosition : POSITION;       
-    
-    row_major float4x4 TransformMatrix : WORLD;
-    
-    float2 vLifeTime : TEXCOORD0;    
-    //float4 vDirection : TEXCOORD1;
-};
+//struct VS_IN
+//{
+//    float3 vPosition : POSITION;       
+//    
+//    row_major float4x4 TransformMatrix : WORLD;
+//    
+//    float2 vLifeTime : TEXCOORD0;    
+//    //float4 vDirection : TEXCOORD1;
+//};
 
 struct VS_OUT
 {
@@ -37,26 +37,26 @@ struct VS_OUT
     float2 vLifeTime : TEXCOORD0;
 };
 
-VS_OUT VS_MAIN(VS_IN In)
-{
-    VS_OUT Out;
-    
-    matrix matWV, matWVP;
-   
-    // 이부분에서 transform 곱하는거로 로컬월드분기.......
-    // 로컬쓸려면 곱하고, 각자 월드상태 가지려면 처음부터 월드 상태의 좌표 든 채로 이부분스킵
-    vector vPosition = mul(vector(In.vPosition, 1.f), In.TransformMatrix);    
-    
-    if (g_bLocal == 0)
-        Out.vPosition = mul(vPosition, g_WorldMatrix);
-    else
-        Out.vPosition = vPosition;
-    
-    Out.vPSize = float2(length(In.TransformMatrix._11_12_13), length(In.TransformMatrix._21_22_23));
-    
-    Out.vLifeTime = In.vLifeTime;
-    return Out;
-}
+//VS_OUT VS_MAIN(VS_IN In)
+//{
+//    VS_OUT Out;
+//    
+//    matrix matWV, matWVP;
+//   
+//    // 이부분에서 transform 곱하는거로 로컬월드분기.......
+//    // 로컬쓸려면 곱하고, 각자 월드상태 가지려면 처음부터 월드 상태의 좌표 든 채로 이부분스킵
+//    vector vPosition = mul(vector(In.vPosition, 1.f), In.TransformMatrix);    
+//    
+//    if (g_bLocal == 0)
+//        Out.vPosition = mul(vPosition, g_WorldMatrix);
+//    else
+//        Out.vPosition = vPosition;
+//    
+//    Out.vPSize = float2(length(In.TransformMatrix._11_12_13), length(In.TransformMatrix._21_22_23));
+//    
+//    Out.vLifeTime = In.vLifeTime;
+//    return Out;
+//}
 
 VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
 {   
