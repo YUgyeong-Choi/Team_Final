@@ -61,7 +61,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
     if (!m_bCanChangeTarget)
     {
         m_fCoolChangeTarget += fTimeDelta;
-        if (m_fCoolChangeTarget > 1.f)
+        if (m_fCoolChangeTarget > 0.7f)
         {
             printf("타겟 변경 가능\n");
             m_fCoolChangeTarget = 0.f;
@@ -195,6 +195,13 @@ void CLockOn_Manager::RemoveSomeTargets()
         if (!pUnit || pUnit->Get_HP() <= 0.f) {
             bRemove = true;
         }
+
+        // 거리 기준 제거 (3D 거리)
+        _vector delta = targetPos - playerPos;
+        float distSq = XMVectorGetX(XMVector3Length(delta));
+        if (distSq > 10.f)
+            bRemove = true;
+
 
         // 벽 뒤 체크
         if (!bRemove)
@@ -338,6 +345,8 @@ CUnit* CLockOn_Manager::Change_ToLookTarget()
     else if (mouseX >= kDeadZone) sidePref = -1; // 오른쪽
     else
         return nullptr; // 미세 이동이면 현재 대상 유지
+
+    RemoveSomeTargets();
 
     // 플레이어 기준 벡터
     const _vector P = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
