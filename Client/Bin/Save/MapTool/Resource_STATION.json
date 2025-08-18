@@ -559,14 +559,8 @@
     },
     {
         "Collision": true,
-        "ModelName": "SM_Interior_Table_09",
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_09.bin"
-    },
-    {
-        "Collision": true,
         "ModelName": "SM_Interior_Table_10",
-        "ObjectCount": 4,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_10.bin"
     },
     {
