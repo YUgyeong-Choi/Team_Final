@@ -148,11 +148,13 @@ void CPlayer::Update(_float fTimeDelta)
 		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
 		m_pTransformCom->LookAtWithOutY(vTargetPos);
 		m_bIsLockOn = true;
+		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 	}
 	else
 	{
 		/* [ 타겟이 없다면 ] */
 		m_bIsLockOn = false;
+		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 	}
 
 	/* [ 아이템 ] */
@@ -180,7 +182,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetBool("Back", true);
+		m_pAnimator->SetBool("FocusOn", true);
 	}
 
 	/* [ 아이템 ] */

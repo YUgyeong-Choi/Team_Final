@@ -82,6 +82,12 @@ protected: /* [ 락온 관련 ] */
                 m_pOwner->m_pAnimator->SetBool("Right", true);
             else
                 m_pOwner->m_pAnimator->SetBool("Right", false);
+
+            _bool left = m_pOwner->m_pAnimator->CheckBool("Left");
+            _bool right = m_pOwner->m_pAnimator->CheckBool("Right");
+            _bool front = m_pOwner->m_pAnimator->CheckBool("Front");
+            _bool back = m_pOwner->m_pAnimator->CheckBool("Back");
+            cout << "Left: " << left << ", Right: " << right << ", Front: " << front << ", Back: " << back << endl;
         }
     }
 
@@ -274,6 +280,7 @@ public:
                     m_bChargeStarted = true;
             }
         }
+        LockOnMovement();
         
     }
 
@@ -397,7 +404,7 @@ public:
                     m_bChargeStarted = true;
             }
         }
-
+		LockOnMovement();
        
     }
 

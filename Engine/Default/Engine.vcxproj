@@ -353,7 +353,10 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\Bin\ShaderFiles\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Particle.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Particle.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CSMain</EntryPointName>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Occlusion.hlsl" />
   </ItemGroup>
