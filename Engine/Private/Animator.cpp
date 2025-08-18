@@ -675,7 +675,7 @@ void CAnimator::DispatchAnimEvents(const vector<string>& triggeredEvents)
 		if (it != m_eventListeners.end())
 		{
 			for (auto& cb : it->second)
-				cb(name);
+				cb();
 		}
 	}
 }
@@ -692,7 +692,7 @@ const string CAnimator::GetCurrentAnimName() const
 	return m_pCurrentAnim->Get_Name();
 }
 
-void CAnimator::RegisterEventListener(const string& eventName, AnimEventCallback cb)
+void CAnimator::RegisterEventListener(const string& eventName, AnimEventCallback&& cb)
 {
 	m_eventListeners[eventName].push_back(move(cb));
 }

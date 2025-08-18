@@ -796,12 +796,12 @@ void CFuoco::Register_Events()
 		return;
 
 	m_pAnimator->RegisterEventListener("CameraShake",
-		[this](const string& eventName)
+		[this]()
 		{
 			CCamera_Manager::Get_Instance()->Shake_Camera(0.15f, 0.2f);
 		});
 	m_pAnimator->RegisterEventListener("IsFront",
-		[this](const string& eventName)
+		[this]()
 		{
 			if (IsTargetInFront(40.f))
 			{
@@ -812,7 +812,7 @@ void CFuoco::Register_Events()
 				m_pAnimator->SetBool("IsFront", false);
 			}
 		});
-	m_pAnimator->RegisterEventListener("Turnning", [this](const string&)
+	m_pAnimator->RegisterEventListener("Turnning", [this]()
 		{
 			_bool bIsFront = IsTargetInFront(180.f);
 
@@ -827,41 +827,41 @@ void CFuoco::Register_Events()
 
 		});
 
-	m_pAnimator->RegisterEventListener("ResetAnim", [this](const string& eventName)
+	m_pAnimator->RegisterEventListener("ResetAnim", [this]()
 		{
 			m_pAnimator->GetCurrentAnim()->ResetTrack();
 		});
 
-	m_pAnimator->RegisterEventListener("SlowAnimSpeed", [this](const string&) {
+	m_pAnimator->RegisterEventListener("SlowAnimSpeed", [this]() {
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(
 			m_pAnimator->GetCurrentAnim()->GetTickPerSecond() * 0.5f);
 		});
-	m_pAnimator->RegisterEventListener("ResetAnimSpeed", [this](const string&) {
+	m_pAnimator->RegisterEventListener("ResetAnimSpeed", [this]() {
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(
 			m_pAnimator->GetCurrentAnim()->GetTickPerSecond() * 1.5f);
 		});
 
-	m_pAnimator->RegisterEventListener("CollidersOff", [this](const string&) {
+	m_pAnimator->RegisterEventListener("CollidersOff", [this]() {
 		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 		m_pPhysXActorComForArm->Set_ShapeFlag(false, false, false);
 		m_pPhysXActorComForFoot->Set_ShapeFlag(false, false, false);
 		});
 
-	m_pAnimator->RegisterEventListener("FireBall", [this](const string& eventName)
+	m_pAnimator->RegisterEventListener("FireBall", [this]()
 		{
 			FireProjectile(ProjectileType::FireBall, 25.f);
 		});
 
-	m_pAnimator->RegisterEventListener("FireOilFirst", [this](const string& eventName)
+	m_pAnimator->RegisterEventListener("FireOilFirst", [this]()
 		{
 			FireProjectile(ProjectileType::Oil);
 		});
-	m_pAnimator->RegisterEventListener("FireOilSecond", [this](const string& eventName)
+	m_pAnimator->RegisterEventListener("FireOilSecond", [this]()
 		{
 			FireProjectile(ProjectileType::Oil, 5.f);
 		});
 
-	m_pAnimator->RegisterEventListener("FireBallCombo", [this](const string& eventName)
+	m_pAnimator->RegisterEventListener("FireBallCombo", [this]()
 		{
 			_bool bIsCombo = GetRandomInt(0, 1) == 1;
 			if (m_iFireBallComboCount == LIMIT_FIREBALL_COMBO_COUNT)
@@ -896,7 +896,7 @@ void CFuoco::Register_Events()
 			}
 		});
 
-	m_pAnimator->RegisterEventListener("Flamethrower", [this](const string& eventName)
+	m_pAnimator->RegisterEventListener("Flamethrower", [this]()
 		{
 			m_fFireFlameDuration = 1.5f;
 			FlamethrowerAttack();

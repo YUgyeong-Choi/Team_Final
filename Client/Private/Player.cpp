@@ -843,14 +843,14 @@ _vector CPlayer::ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _b
 
 void CPlayer::Register_Events()
 {
-	m_pAnimator->RegisterEventListener("OnSwordTraill", [this](const string&)
+	m_pAnimator->RegisterEventListener("OnSwordTrail", [this]()
 		{
 			if (m_pWeapon)
 			{
 				m_pWeapon->Set_WeaponTrail_Active(true);
 			}
 		});
-	m_pAnimator->RegisterEventListener("OffSwordTraill", [this](const string&)
+	m_pAnimator->RegisterEventListener("OffSwordTrail", [this]()
 		{
 			if (m_pWeapon)
 			{

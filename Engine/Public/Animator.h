@@ -7,7 +7,7 @@
 #include "Serializable.h"
 
 NS_BEGIN(Engine)
-using AnimEventCallback = function<void(const string&)>;
+using AnimEventCallback = function<void()>;
 class ENGINE_DLL CAnimator final : public CComponent, public ISerializable
 {
 	friend class CAnimController;
@@ -88,7 +88,7 @@ public:
 
     void AddParameter(const string& name, Parameter& parm);
 
-    void RegisterEventListener(const string& eventName, AnimEventCallback cb);
+    void RegisterEventListener(const string& eventName, AnimEventCallback&& cb);
     void RegisterAnimController(const string& name, class CAnimController* pController);
     void UnregisterAnimController(const string& name);
     void RenameAnimController(const string& oldName, const string& newName);

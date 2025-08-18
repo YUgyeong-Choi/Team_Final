@@ -1013,11 +1013,11 @@
             "Duration": 275.0,
             "Events": [
                 {
-                    "EventName": "OnSwordTraill",
+                    "EventName": "OnSwordTrail",
                     "Time": 64.0
                 },
                 {
-                    "EventName": "OffSwordTraill",
+                    "EventName": "OffSwordTrail",
                     "Time": 173.0
                 }
             ],
@@ -1093,11 +1093,11 @@
             "Duration": 158.0,
             "Events": [
                 {
-                    "EventName": "OnSwordTraill",
+                    "EventName": "OnSwordTrail",
                     "Time": 25.0
                 },
                 {
-                    "EventName": "OffSwordTraill",
+                    "EventName": "OffSwordTrail",
                     "Time": 44.0
                 }
             ],
@@ -1138,11 +1138,11 @@
             "Duration": 147.0,
             "Events": [
                 {
-                    "EventName": "OnSwordTraill",
+                    "EventName": "OnSwordTrail",
                     "Time": 13.0
                 },
                 {
-                    "EventName": "OffSwordTraill",
+                    "EventName": "OffSwordTrail",
                     "Time": 53.0
                 }
             ],
@@ -1169,11 +1169,11 @@
             "Duration": 120.0,
             "Events": [
                 {
-                    "EventName": "OnSwordTraill",
+                    "EventName": "OnSwordTrail",
                     "Time": 20.0
                 },
                 {
-                    "EventName": "OffSwordTraill",
+                    "EventName": "OffSwordTrail",
                     "Time": 74.0
                 }
             ],
