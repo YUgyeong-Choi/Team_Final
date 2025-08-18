@@ -409,6 +409,9 @@
     <Filter Include="02.GameObjects\13. DynamicMesh\00.Door">
       <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool">
+      <UniqueIdentifier>{88d6ea73-d443-4025-98e7-ede08337e842}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -868,6 +871,9 @@
     <ClInclude Include="..\public\UI_Script.h">
       <Filter>02.GameObjects\99.UI\Container\Script</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MonsterTool.h">
+      <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1300,6 +1306,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Script.cpp">
       <Filter>02.GameObjects\99.UI\Container\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MonsterTool.cpp">
+      <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,7 @@ public:
 		MAP,
 		NAV,
 		DECAL,
+		MONSTER,
 		END
 	};
 private:
