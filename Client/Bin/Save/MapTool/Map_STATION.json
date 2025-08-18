@@ -1,5 +1,5 @@
 {
-    "ModelCount": 165,
+    "ModelCount": 164,
     "Models": [
         {
             "Collision": true,
@@ -14618,45 +14618,8 @@
         },
         {
             "Collision": true,
-            "ModelName": "SM_Interior_Table_09",
-            "ObjectCount": 1,
-            "Objects": [
-                {
-                    "ColliderType": 1,
-                    "LightShape": 0,
-                    "WorldMatrix": [
-                        [
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            1.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            0.0,
-                            1.0,
-                            0.0
-                        ],
-                        [
-                            1.2215031385421753,
-                            0.02010170742869377,
-                            2.5161972045898438,
-                            1.0
-                        ]
-                    ]
-                }
-            ]
-        },
-        {
-            "Collision": true,
             "ModelName": "SM_Interior_Table_10",
-            "ObjectCount": 4,
+            "ObjectCount": 5,
             "Objects": [
                 {
                     "ColliderType": 1,
@@ -14774,6 +14737,36 @@
                             30.80508041381836,
                             0.02016739547252655,
                             -1.2139132022857666,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            1.2215031385421753,
+                            0.02010170742869377,
+                            2.5161972045898438,
                             1.0
                         ]
                     ]

@@ -898,6 +898,9 @@ HRESULT CLoader::Loading_For_YW()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Station"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Hotel"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Hotel.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	//if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
 	//	return E_FAIL;
@@ -917,6 +920,11 @@ HRESULT CLoader::Loading_For_YW()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+	//더미 소환하려고 추가함
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
 		CDecalToolObject::Create(m_pDevice, m_pContext))))
@@ -957,7 +965,7 @@ HRESULT CLoader::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFi
 {
 	//이미 프로토타입이존재하는 지확인
 
-	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
+	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr /*&& bInstance == false*//*인스턴싱되는 녀석들은 무조건 다시만들어야해*//*버퍼를 추가하던가*/)
 	{
 		//MSG_BOX("이미 프로토타입이 존재함");
 		return S_OK;
