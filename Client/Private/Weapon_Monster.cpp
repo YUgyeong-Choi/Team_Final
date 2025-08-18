@@ -36,6 +36,10 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 	
 	m_pTransformCom->Rotation(XMLoadFloat4(&pDesc->vAxis), XMConvertToRadians(pDesc->fRotationDegree));
 
+	m_vLocalOffset = pDesc->vLocalOffset;
+
+	m_physxExtent = pDesc->vPhsyxExtent;
+
 	// offset
 
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -47,6 +51,9 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 	m_iDurability = m_iMaxDurability;
 
 	m_bIsActive = true;
+
+	if (FAILED(Ready_Actor()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -66,29 +73,115 @@ void CWeapon_Monster::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
+	
+
 }
 
 void CWeapon_Monster::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	Update_Collider();
 }
 
 HRESULT CWeapon_Monster::Render()
 {
 	__super::Render();
 
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+	}
+#endif
+
+
+
 	return S_OK;
+}
+
+void CWeapon_Monster::Update_Collider()
+{
+	if (!m_isActive)
+		return;
+
+	// 1. 부모 행렬
+	_matrix ParentWorld = XMLoadFloat4x4(m_pParentWorldMatrix);
+
+	// 2. Socket 월드 행렬 
+	_matrix SocketMat = XMLoadFloat4x4(m_pSocketMatrix);
+
+	for (size_t i = 0; i < 3; i++)
+		SocketMat.r[i] = XMVector3Normalize(SocketMat.r[i]);
+
+	// 3. Blade 본 월드 행렬
+	_matrix HandleMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex));
+
+	for (size_t i = 0; i < 3; i++)
+		HandleMat.r[i] = XMVector3Normalize(HandleMat.r[i]);
+
+	_matrix WeaponWorld = HandleMat * SocketMat * ParentWorld;
+
+
+
+	_vector localOffset = XMLoadFloat4(&m_vLocalOffset);
+	_vector worldPos = XMVector4Transform(localOffset, WeaponWorld);
+
+	// 6. PhysX 적용
+	_vector finalPos = WeaponWorld.r[3];
+
+	_vector finalRot = XMQuaternionRotationMatrix(WeaponWorld);
+
+	PxVec3 physxPos(XMVectorGetX(worldPos), XMVectorGetY(worldPos), XMVectorGetZ(worldPos));
+	PxQuat physxRot(XMVectorGetX(finalRot), XMVectorGetY(finalRot), XMVectorGetZ(finalRot), XMVectorGetW(finalRot));
+
+	m_pPhysXActorCom->Set_Transform(PxTransform(physxPos, physxRot));
 }
 
 HRESULT CWeapon_Monster::Ready_Components()
 {
 	/* [ 따로 추가할 컴포넌트가 있습니까? ] */
 
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CWeapon_Monster::Ready_Actor()
+{
+	// 3. Transform에서 S, R, T 분리
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 3-1. 스케일, 회전, 위치 변환
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(m_physxExtent);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorCom->Set_ShapeFlag(false, true, true);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; 
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
+	m_pPhysXActorCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
 	return S_OK;
 }
 
 void CWeapon_Monster::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	
 }
 
 void CWeapon_Monster::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -105,6 +198,10 @@ void CWeapon_Monster::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CWeapon_Monster::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		int a = 10;
+	}
 }
 
 void CWeapon_Monster::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -136,4 +233,6 @@ CGameObject* CWeapon_Monster::Clone(void* pArg)
 void CWeapon_Monster::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pPhysXActorCom);
 }
