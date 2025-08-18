@@ -3,18 +3,7 @@
 vector  g_vCamPosition;
 bool    g_bLocal;
 
-/* [ InstanceBuffer ] */
-//struct ParticleInst
-//{
-//    float4 Right;
-//    float4 Up;
-//    float4 Look;
-//    float4 Translation;
-//    float2 LifeTime; // x=max, y=acc
-//    float2 _pad;
-//};
 
-//저희는오늘부터이거로씁니다
 struct ParticleParam
 {
     float4 Right;
@@ -23,6 +12,7 @@ struct ParticleParam
     float4 Translation;
 
     float4 Direction; // normalized dir (w=unused)
+    float4 VelocityDir; // 실제 이동한 방향 벡터, w = length
 
     float2 LifeTime; // x=max, y=acc
     float Speed;
@@ -34,51 +24,19 @@ struct ParticleParam
     float fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
 };
 
-
 StructuredBuffer<ParticleParam> Particle_SRV : register(t0);
-//bool    g_size 
 
-//struct VS_IN
-//{
-//    float3 vPosition : POSITION;       
-//    
-//    row_major float4x4 TransformMatrix : WORLD;
-//    
-//    float2 vLifeTime : TEXCOORD0;    
-//    //float4 vDirection : TEXCOORD1;
-//};
 
 struct VS_OUT
 {
     /* SV_ : ShaderValue약자 */
     /* 내가 해야할 연산은 다 했으니 이제 니(장치)가 알아서 추가적인 연산을 해라. */     
     float4 vPosition : POSITION;
-    
     float2 vPSize : PSIZE;
-    
     float2 vLifeTime : TEXCOORD0;
+    float fSpeed : TEXCOORD1;
+    float3 vDir : TEXCOORD2;
 };
-
-//VS_OUT VS_MAIN(VS_IN In)
-//{
-//    VS_OUT Out;
-//    
-//    matrix matWV, matWVP;
-//   
-//    // 이부분에서 transform 곱하는거로 로컬월드분기.......
-//    // 로컬쓸려면 곱하고, 각자 월드상태 가지려면 처음부터 월드 상태의 좌표 든 채로 이부분스킵
-//    vector vPosition = mul(vector(In.vPosition, 1.f), In.TransformMatrix);    
-//    
-//    if (g_bLocal == 0)
-//        Out.vPosition = mul(vPosition, g_WorldMatrix);
-//    else
-//        Out.vPosition = vPosition;
-//    
-//    Out.vPSize = float2(length(In.TransformMatrix._11_12_13), length(In.TransformMatrix._21_22_23));
-//    
-//    Out.vLifeTime = In.vLifeTime;
-//    return Out;
-//}
 
 VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
 {   
@@ -107,10 +65,11 @@ VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
     Out.vPSize = float2(length(particle.Right.xyz), length(particle.Up.xyz));
 
     Out.vLifeTime = particle.LifeTime;
+    Out.fSpeed = particle.Speed;
+    Out.vDir = normalize(particle.VelocityDir.xyz);
+    
     return Out;
 }
-
-
 
 
 /* 그리는 형태에 따라서 호출된다. */ 
@@ -122,6 +81,8 @@ struct GS_IN
     float2 vPSize : PSIZE;
     
     float2 vLifeTime : TEXCOORD0;
+    float fSpeed : TEXCOORD1;
+    float3 vDir : TEXCOORD2;
 };
 
 struct GS_OUT
@@ -159,6 +120,64 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Out[2].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     
     Out[3].vPosition = mul(float4(In[0].vPosition.xyz + vRight - vUp, 1.f), matVP);
+    Out[3].vTexcoord = float2(0.f, 1.f);
+    Out[3].vLifeTime = In[0].vLifeTime;
+    Out[3].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    
+    Triangles.Append(Out[0]);
+    Triangles.Append(Out[1]);
+    Triangles.Append(Out[2]);
+    Triangles.RestartStrip();
+    
+    Triangles.Append(Out[0]);
+    Triangles.Append(Out[2]);
+    Triangles.Append(Out[3]);
+    Triangles.RestartStrip();
+}
+
+
+[maxvertexcount(6)]
+void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
+{
+    GS_OUT Out[4];
+    // === 카메라 → 파티클 벡터 ===
+    float3 vLook = normalize(g_vCamPosition.xyz - In[0].vPosition.xyz);
+
+    // === 카메라 빌보드 기준 벡터 ===
+    float3 vRight = normalize(cross(float3(0, 1, 0), vLook));
+    float3 vUp = normalize(cross(vLook, vRight));
+
+    // === 기본 사이즈 반영 ===
+    vRight *= In[0].vPSize.x * 0.5f;
+    vUp *= In[0].vPSize.y * 0.5f;
+
+    // === 속도 방향 Stretch (길이만 늘림) ===
+    float3 vDir = normalize(In[0].vDir);
+    float stretchFactor = 0.02f * In[0].fSpeed; // 튜닝값
+    float3 vStretch = vDir * stretchFactor;
+
+    // 최종 Up에 더해줌 (Y축 Up + 속도 꼬리)
+    float3 upStretch = vUp + vStretch;
+
+    // === VP 변환 ===
+    matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
+    
+    Out[0].vPosition = mul(float4(In[0].vPosition.xyz + vRight + upStretch, 1.f), matVP);
+    Out[0].vTexcoord = float2(0.f, 0.f);
+    Out[0].vLifeTime = In[0].vLifeTime;
+    Out[0].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    
+    Out[1].vPosition = mul(float4(In[0].vPosition.xyz - vRight + upStretch, 1.f), matVP);
+    Out[1].vTexcoord = float2(1.f, 0.f);
+    Out[1].vLifeTime = In[0].vLifeTime;
+    Out[1].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    
+    Out[2].vPosition = mul(float4(In[0].vPosition.xyz - vRight - upStretch, 1.f), matVP);
+    Out[2].vTexcoord = float2(1.f, 1.f);
+    Out[2].vLifeTime = In[0].vLifeTime;
+    Out[2].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    
+    Out[3].vPosition = mul(float4(In[0].vPosition.xyz + vRight - upStretch, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
     Out[3].vLifeTime = In[0].vLifeTime;
     Out[3].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
@@ -339,6 +358,17 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WBGLOW();
+    }
+    pass MaskOnly_WBGlow_VStretch //3
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN_CS();
+        GeometryShader = compile gs_5_0 GS_MAIN_VSTRETCH();
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WBGLOW();
     }
  

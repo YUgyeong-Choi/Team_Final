@@ -11,7 +11,8 @@ struct ParticleParam
     float4      Translation;
 
     float4      Direction;  // normalized dir (w=unused)
-
+    float4      VelocityDir; // 실제 이동한 방향 벡터, w = length
+    
     float2      LifeTime;   // x=max, y=acc
     float       Speed;
     float       RotationSpeed; // degrees/sec
@@ -110,7 +111,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         return;
 
     ParticleParam pp = gInst[i];
-
+    float3 prevPos = pp.Translation.xyz;
     const bool TOOL = (IsTool != 0);
 
     if (TOOL)
@@ -206,6 +207,9 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
 
         pp.Translation = float4(pos, 1.0f);
         pp.LifeTime.y = t; // 툴은 절대시간을 그대로 보관
+        float3 velocity = pos - init.Translation.xyz;
+        pp.VelocityDir = float4(normalize(velocity), length(velocity));
+        // 툴모드 이전프레임 계산 할 수는 있는데 일단 임시로 안함 초기위치랑만 비교
         gInst[i] = pp;
         return;
     }
@@ -271,6 +275,8 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         }
 
         pp.Translation = float4(pos, 1.0f);
+        float3 velocity = pos - prevPos;
+        pp.VelocityDir = float4(normalize(velocity), length(velocity));
         gInst[i] = pp;
         return;
     }

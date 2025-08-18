@@ -527,7 +527,7 @@ HRESULT CCYTool::Window_Particle()
 		m_iLastSelected = m_iSelected;
 	}
 
-	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest");
+	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t 3. vstretch");
 	for (_uint i = 0; i < PE_END; i++)
 	{
 		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), m_eSelectedPass_PE == i)) {
