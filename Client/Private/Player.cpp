@@ -889,6 +889,7 @@ void CPlayer::Update_Collider_Actor()
 
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
