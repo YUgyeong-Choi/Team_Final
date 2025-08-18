@@ -80,6 +80,8 @@ private:
 	_bool			m_bTalkStart = false;
 	_bool			m_bTalkEnd = false;
 	_bool			m_bTalkActive = false;
+
+	_bool m_bActive = false;
 private:
 	const _float m_fPadding = 1.0f;     // 플레이어 & 타겟이 가까울 때를 위한 최소 반지름
 	const _float m_fFrame = 0.5f;   // 화면 높이의 안에 들어오도록 여유를 위한 변수

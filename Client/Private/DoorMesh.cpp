@@ -45,7 +45,7 @@ void CDoorMesh::Priority_Update(_float fTimeDelta)
 	{
 		if (KEY_DOWN(DIK_E))
 		{
-			CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player")));
+			CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_Player")));
 			pPlayer->Interaction_Door(m_eInteractType, this);
 			m_bFinish = true;
 		}

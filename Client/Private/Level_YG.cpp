@@ -95,6 +95,11 @@ void CLevel_YG::Priority_Update(_float fTimeDelta)
 		}
 	}
 
+	if (KEY_DOWN(DIK_U))
+		m_pGameInstance->Set_GameTimeScale(1.f);
+	if (KEY_DOWN(DIK_I))
+		m_pGameInstance->Set_GameTimeScale(0.f);
+
 	//if (KEY_DOWN(DIK_H))
 	//	ToggleHoldMouse();
 	//if (m_bHold)
