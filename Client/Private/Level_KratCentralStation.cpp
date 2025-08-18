@@ -90,7 +90,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 		/* [ 플레이어 제어 ] */
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 		m_pCamera_Manager->GetFreeCam()->Get_TransfomCom()->Set_State(STATE::POSITION, _fvector{ 0.f, 0.f,0.f,1.f });
 	}
 }
@@ -691,8 +691,8 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.WorldMatrix = matWorldFloat;
 
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
-	Desc.vTriggerOffset = _vector();
-	Desc.vTriggerSize = _vector({ 1.f,0.2f,1.f, 0.f });
+	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
+	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),

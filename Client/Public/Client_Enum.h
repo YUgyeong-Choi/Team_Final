@@ -65,7 +65,7 @@ namespace Client
 
 	enum class CUTSCENE_TYPE
 	{
-		ONE, TWO, THREE
+		WAKEUP, TUTORIALDOOR, THREE
 	};
 
 	enum INTERACT_TYPE

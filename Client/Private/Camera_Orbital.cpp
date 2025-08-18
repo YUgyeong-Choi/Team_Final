@@ -49,11 +49,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	//if (m_pGameInstance->Key_Down(DIK_T))
-	//{
-	//	m_bActive = !m_bActive;
-	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	//}
+	if (m_pGameInstance->Key_Down(DIK_T))
+	{
+		m_bActive = !m_bActive;
+		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	}
 
 	if (m_pGameInstance->Key_Down(DIK_X))
 	{
@@ -93,7 +93,9 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 			m_bTalkEnd = false;
 		}
 	}
-		
+	
+	if (m_bActive)
+		return;
 
 	if (m_bLockOn)
 	{
