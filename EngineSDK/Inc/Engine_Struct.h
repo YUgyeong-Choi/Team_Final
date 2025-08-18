@@ -302,6 +302,13 @@ namespace Engine
 		if (a.vMax.z < b.vMin.z || a.vMin.z > b.vMax.z) return false;
 		return true;
 	}
+	inline _bool AABB_IntersectsAABB_Eps(const AABBBOX& tA, const AABBBOX& tB, const _float fEps)
+	{
+		if (tA.vMax.x < tB.vMin.x - fEps || tA.vMin.x > tB.vMax.x + fEps) return false;
+		if (tA.vMax.y < tB.vMin.y - fEps || tA.vMin.y > tB.vMax.y + fEps) return false;
+		if (tA.vMax.z < tB.vMin.z - fEps || tA.vMin.z > tB.vMax.z + fEps) return false;
+		return true;
+	}
 
 	// 점과 상자 거리
 	inline _float AABB_DistanceSqToPoint(const AABBBOX& b, const XMFLOAT3& p)
