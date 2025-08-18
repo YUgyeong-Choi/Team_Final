@@ -180,6 +180,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_U))
 	{
+		m_pAnimator->SetBool("FocusOn", true);
 		m_pAnimator->SetBool("Back", true);
 	}
 

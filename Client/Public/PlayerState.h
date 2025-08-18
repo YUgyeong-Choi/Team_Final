@@ -686,21 +686,17 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
         
-        string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-        if (m_StateNames.find(strName) != m_StateNames.end())
+        if (0.6f < m_fStateTime)
         {
-            if (0.6f < m_fStateTime)
+            if (input.bMove)
             {
-                if (input.bMove)
-                {
-                    if (m_pOwner->m_bWalk)
-                        return EPlayerState::WALK;
-                    else
-                        return EPlayerState::RUN;
-                }
-
-                return EPlayerState::IDLE;
+                if (m_pOwner->m_bWalk)
+                    return EPlayerState::WALK;
+                else
+                    return EPlayerState::RUN;
             }
+
+            return EPlayerState::IDLE;
         }
         
 
