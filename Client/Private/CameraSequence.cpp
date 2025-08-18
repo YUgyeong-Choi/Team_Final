@@ -19,7 +19,6 @@ void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
     CAMERA_KEY newKey;
     newKey.startFrame = startFrame;
     newKey.endFrame = endFrame;
-
     newKey.type = type;
 
     switch (type)
@@ -36,17 +35,20 @@ void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
     // 기본 카메라 파라미터 초기화
     XMStoreFloat3(&newKey.position, XMVectorZero());
     XMStoreFloat3(&newKey.rotation, XMVectorZero());
+    newKey.interpWorldPos = INTERPOLATION_CAMERA::NONE;
+
+    XMStoreFloat3(&newKey.offSetPosition, XMVectorZero());
+    newKey.interpOffSetPos = INTERPOLATION_CAMERA::NONE;
+
     XMStoreFloat3(&newKey.offSetRotation, XMVectorZero());
+    newKey.interpOffSetRot = INTERPOLATION_CAMERA::NONE;
+
     newKey.fFov = 60.f;
-
-    //newKey.lookAtTarget = XMVectorZero();
-    //newKey.bLookAt = false;
-
-    // 보간 타입 초기화
-    newKey.interpPosition = INTERPOLATION_CAMERA::NONE;
-    newKey.interpRotation = INTERPOLATION_CAMERA::NONE;
     newKey.interpFov = INTERPOLATION_CAMERA::NONE;
-    //newKey.interpLookAt = INTERPOLATION_CAMERA::NONE;
+
+    newKey.eTarget = TARGET_CAMERA::NONE;
+    newKey.fPitch = 0.f;
+    newKey.fYaw = 0.f;
 
     // 추가
     m_vecKeys.push_back(newKey);

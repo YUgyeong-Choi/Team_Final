@@ -18,12 +18,20 @@ public:
 
         XMFLOAT3 position;
         XMFLOAT3 rotation;  
-        XMFLOAT3 offSetRotation;
-        _float fFov;
+        INTERPOLATION_CAMERA interpWorldPos;
 
-        INTERPOLATION_CAMERA interpPosition;
-        INTERPOLATION_CAMERA interpRotation;
+        XMFLOAT3 offSetPosition;
+        INTERPOLATION_CAMERA interpOffSetPos;
+
+        XMFLOAT3 offSetRotation;
+        INTERPOLATION_CAMERA interpOffSetRot;
+
+        _float fFov;
         INTERPOLATION_CAMERA interpFov;
+
+        TARGET_CAMERA eTarget;
+        _float fPitch;
+        _float fYaw;
 
         //_bool bLookAt = false;
         //_vector lookAtTarget;
