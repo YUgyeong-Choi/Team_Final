@@ -898,6 +898,9 @@ HRESULT CLoader::Loading_For_YW()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Station"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Hotel"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Hotel.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	//if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
 	//	return E_FAIL;
@@ -917,6 +920,11 @@ HRESULT CLoader::Loading_For_YW()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+	//더미 소환하려고 추가함
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
 		CDecalToolObject::Create(m_pDevice, m_pContext))))
@@ -957,7 +965,7 @@ HRESULT CLoader::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFi
 {
 	//이미 프로토타입이존재하는 지확인
 
-	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
+	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr /*&& bInstance == false*//*인스턴싱되는 녀석들은 무조건 다시만들어야해*//*버퍼를 추가하던가*/)
 	{
 		//MSG_BOX("이미 프로토타입이 존재함");
 		return S_OK;
@@ -1124,9 +1132,20 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 }
 HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
+	m_pGameInstance->ClaerOctoTreeObjects();
+
 	//어떤 맵을 소환 시킬 것인지?
 	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
 		return E_FAIL;
+
+#pragma region 호텔 소환 테스트
+	if (FAILED(Loading_Meshs(iLevelIndex, "HOTEL")))
+		return E_FAIL;
+
+	//여기서 호텔 소환해보자
+	if (FAILED(Ready_Meshs(iLevelIndex, "HOTEL"))) //TEST, HOTEL
+		return E_FAIL;
+#pragma endregion
 
 	//네비 소환
 	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex)))
@@ -1158,7 +1177,6 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 	_uint iModelCount = MapDataJson["ModelCount"];
 	const json& Models = MapDataJson["Models"];
 
-	m_pGameInstance->ClaerOctoTreeObjects();
 	for (_uint i = 0; i < iModelCount; ++i)
 	{
 		string ModelName = Models[i]["ModelName"];
