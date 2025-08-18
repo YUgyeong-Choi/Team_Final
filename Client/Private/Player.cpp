@@ -814,6 +814,24 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	return eAnimCategory::NONE;
 }
 
+void CPlayer::Register_Events()
+{
+	m_pAnimator->RegisterEventListener("OnSwordTraill", [this](const string&) 
+		{
+		if (m_pWeapon)
+		{
+			m_pWeapon->Set_WeaponTrail_Active(true);
+		}
+		});
+	m_pAnimator->RegisterEventListener("OffSwordTraill", [this](const string&) 
+		{
+		if (m_pWeapon)
+		{
+			m_pWeapon->Set_WeaponTrail_Active(false);
+		}
+		});
+}
+
 _vector CPlayer::ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight)
 {
 	_vector vRight = m_pTransformCom->Get_State(STATE::RIGHT);

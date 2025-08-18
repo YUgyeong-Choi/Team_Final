@@ -116,6 +116,10 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_UIParameters();
 	void LoadPlayerFromJson();
 
+private: /* [ 애니메이션 관련 ] */
+	eAnimCategory    GetAnimCategoryFromName(const string& stateName);
+	virtual void Register_Events() override;
+
 private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
