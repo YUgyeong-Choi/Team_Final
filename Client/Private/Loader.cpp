@@ -15,6 +15,7 @@
 #pragma endregion
 
 #pragma region LEVEL_KRAT_HOTEL
+#include <future>
 
 #pragma endregion
 
@@ -465,7 +466,88 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+	m_pGameInstance->ClaerOctoTreeObjects();
+
+#pragma region 이것을 멀티스레드로(일단 이렇게 놔둠 문제 생길 시 확인)
+
+	auto futureStation = std::async(std::launch::async, [&] {
+		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+			return E_FAIL;
+		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION");
+		});
+
+	/*auto futureHotel = std::async(std::launch::async, [&] {
+		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+			return E_FAIL;
+		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
+		});*/
+
+	//auto futureTest = std::async(std::launch::async, [&] {
+	//	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+	//		return E_FAIL;
+	//	return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST");
+	//	});
+
+	if (FAILED(futureStation.get())) return E_FAIL;
+	//if (FAILED(futureHotel.get())) return E_FAIL;
+	//if (FAILED(futureTest.get())) return E_FAIL;
+
+
+
+	/*auto futureStation = std::async(std::launch::async, [&] {
+		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION");
+		});
+
+	auto futureHotel = std::async(std::launch::async, [&] {
+		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
+		});
+
+	auto futureTest = std::async(std::launch::async, [&] {
+		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST");
+		});
+
+	if (FAILED(futureStation.get()))
+		return E_FAIL;
+	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+
+	if (FAILED(futureHotel.get()))
+		return E_FAIL;
+	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+
+	if (FAILED(futureTest.get()))
+		return E_FAIL;
+	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+		return E_FAIL;*/
+
+
+	////맵
+	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
+
+	////어떤 맵을 소환 시킬 것인지?
+	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION"))) //TEST, STAION
+	//	return E_FAIL;
+
+	////맵
+	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
+
+	////어떤 맵을 소환 시킬 것인지?
+	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL"))) //TEST, STAION, HOTEL
+	//	return E_FAIL;
+
+	////맵
+	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+	//	return E_FAIL;
+
+	////어떤 맵을 소환 시킬 것인지?
+	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //TEST, STAION
+	//	return E_FAIL;
+
+#pragma endregion
+	//lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 	//제이슨으로 저장된 맵을 로드한다.
 	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
 		return E_FAIL;
@@ -898,6 +980,9 @@ HRESULT CLoader::Loading_For_YW()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Station"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Station.bin", PreTransformMatrix))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Hotel"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Hotel.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	//if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
 	//	return E_FAIL;
@@ -917,6 +1002,11 @@ HRESULT CLoader::Loading_For_YW()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+	//더미 소환하려고 추가함
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
 		CDecalToolObject::Create(m_pDevice, m_pContext))))
@@ -939,8 +1029,8 @@ HRESULT CLoader::Loading_For_YW()
 HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 {
 	//맵
-	if(FAILED(Loading_Meshs(iLevelIndex, Map)))
-		return E_FAIL;
+	//if(FAILED(Loading_Meshs(iLevelIndex, Map)))
+	//	return E_FAIL;
 
 	//네비
 	if (FAILED(Loading_Navigation(iLevelIndex, Map)))
@@ -957,7 +1047,7 @@ HRESULT CLoader::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFi
 {
 	//이미 프로토타입이존재하는 지확인
 
-	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr)
+	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr /*&& bInstance == false*//*인스턴싱되는 녀석들은 무조건 다시만들어야해*//*버퍼를 추가하던가*/)
 	{
 		//MSG_BOX("이미 프로토타입이 존재함");
 		return S_OK;
@@ -1124,9 +1214,27 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 }
 HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
+	//m_pGameInstance->ClaerOctoTreeObjects();
+
 	//어떤 맵을 소환 시킬 것인지?
-	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
-		return E_FAIL;
+	//if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
+	//	return E_FAIL;
+
+#pragma region 호텔 소환 테스트
+	//if (FAILED(Loading_Meshs(iLevelIndex, "HOTEL")))
+	//	return E_FAIL;
+
+	////여기서 호텔 소환해보자
+	//if (FAILED(Ready_Meshs(iLevelIndex, "HOTEL"))) //TEST, HOTEL
+	//	return E_FAIL;
+
+	//if (FAILED(Loading_Meshs(iLevelIndex, "TEST")))
+	//	return E_FAIL;
+
+	////여기서 호텔 소환해보자
+	//if (FAILED(Ready_Meshs(iLevelIndex, "TEST"))) //TEST, HOTEL
+	//	return E_FAIL;
+#pragma endregion
 
 	//네비 소환
 	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex)))
@@ -1158,7 +1266,6 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 	_uint iModelCount = MapDataJson["ModelCount"];
 	const json& Models = MapDataJson["Models"];
 
-	m_pGameInstance->ClaerOctoTreeObjects();
 	for (_uint i = 0; i < iModelCount; ++i)
 	{
 		string ModelName = Models[i]["ModelName"];

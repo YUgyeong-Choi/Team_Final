@@ -15,6 +15,13 @@
             "TickPerSecond": 55.0
         },
         {
+            "ClipName": "AS_Pino_Fatal_Middle_Swing",
+            "Duration": 252.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 60.0
+        },
+        {
             "ClipName": "AS_Pino_Grinder_End",
             "Duration": 53.0,
             "IsLoop": false,
@@ -234,6 +241,13 @@
         {
             "ClipName": "AS_Pino_Item_Lamp",
             "Duration": 160.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Item_Pulse",
+            "Duration": 90.0,
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -997,6 +1011,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_CA3",
             "Duration": 275.0,
+            "Events": [
+                {
+                    "EventName": "OnSwordTraill",
+                    "Time": 64.0
+                },
+                {
+                    "EventName": "OffSwordTraill",
+                    "Time": 173.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -1067,6 +1091,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_NA4",
             "Duration": 158.0,
+            "Events": [
+                {
+                    "EventName": "OnSwordTraill",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "OffSwordTraill",
+                    "Time": 44.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -1102,6 +1136,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_SA4",
             "Duration": 147.0,
+            "Events": [
+                {
+                    "EventName": "OnSwordTraill",
+                    "Time": 13.0
+                },
+                {
+                    "EventName": "OffSwordTraill",
+                    "Time": 53.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -1123,6 +1167,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_SNA",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "OnSwordTraill",
+                    "Time": 20.0
+                },
+                {
+                    "EventName": "OffSwordTraill",
+                    "Time": 74.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0

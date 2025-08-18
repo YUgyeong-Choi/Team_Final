@@ -298,7 +298,7 @@ XMFLOAT4 CArea_Manager::BaseColorByType(AREA::EAreaType eType)
     case AREA::EAreaType::ROOM:    return XMFLOAT4(0.20f, 0.80f, 1.00f, 1.0f);
     case AREA::EAreaType::INDOOR:  return XMFLOAT4(0.60f, 0.40f, 0.95f, 1.0f);
     case AREA::EAreaType::LOBBY:   return XMFLOAT4(1.00f, 0.55f, 0.10f, 1.0f);
-    case AREA::EAreaType::OUTDOOR: return XMFLOAT4(0.15f, 0.85f, 0.35f, 1.0f);
+    case AREA::EAreaType::OUTDOOR: return XMFLOAT4(0.15f, 0.00f, 0.85f, 1.0f);
     default:                       return XMFLOAT4(0.70f, 0.70f, 0.70f, 1.0f);
     }
 }

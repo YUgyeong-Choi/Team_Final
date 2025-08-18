@@ -60,8 +60,6 @@ void CCamera::Priority_Update(_float fTimeDelta)
 
 void CCamera::Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_K))
-		StartShake(0.4f, 0.4f);
 }
 
 void CCamera::Late_Update(_float fTimeDelta)

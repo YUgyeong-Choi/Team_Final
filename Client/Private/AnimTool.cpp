@@ -2612,7 +2612,10 @@ string CAnimTool::GetStateCategory(const string& stateName)
 {
 	if (stateName.empty())
 		return "Other";
-	if (stateName.find("Hit") != string::npos)
+	if (stateName.find("Item") != string::npos || stateName.find("Heal") != string::npos ||
+		stateName.find("Grinder") != string::npos)
+		return "Item"; 
+	else if (stateName.find("Hit") != string::npos)
 		return "Hit";
 	if (stateName.find("Guard") != string::npos)
 		return "Guard";

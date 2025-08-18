@@ -99,11 +99,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	if (KEY_DOWN(DIK_J))
-		m_fTimeScale = 1.f;
-	if (KEY_DOWN(DIK_K))
-		m_fTimeScale = 0.f;
-
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
@@ -143,24 +138,7 @@ void CPlayer::Update(_float fTimeDelta)
 	Update_Collider_Actor();
 
 	/* [ 락온 관련 ] */
-	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
-		m_pLockOn_Manager->Set_Active();
-
-	CUnit* pTarget = m_pLockOn_Manager->Get_Target();
-	if (pTarget)
-	{
-		/* [ 타겟이 있다면 ] */
-		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
-		m_pTransformCom->LookAtWithOutY(vTargetPos);
-		m_bIsLockOn = true;
-		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
-	}
-	else
-	{
-		/* [ 타겟이 없다면 ] */
-		m_bIsLockOn = false;
-		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
-	}
+	LockOnState();
 
 	/* [ 아이템 ] */
 	Update_Slot(fTimeDelta);
@@ -179,17 +157,17 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	{
 		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
 		//string strName = m_pAnimator->GetCurrentAnimName();
-		//m_pAnimator->SetBool("Charge", true);
 		//m_pAnimator->SetTrigger("StrongAttack");
+		//m_pAnimator->SetBool("Charge", true);
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetBool("FocusOn", true);
-		m_pAnimator->SetBool("Back", true);
+		//m_pAnimator->SetBool("FocusOn", true);
 	}
+
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -649,6 +627,35 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
+	case eAnimCategory::DASH_FOCUS:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.5f;
+		_float  m_fDistance = 3.5f;
+		
+		if (!m_bMove)
+		{
+			if (!m_bMoveReset)
+			{
+				m_vMoveDir = ComputeLatchedMoveDir(m_bSwitchFront, m_bSwitchBack, m_bSwitchLeft, m_bSwitchRight);
+				m_bMoveReset = true;
+			}
+
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, m_vMoveDir, m_fDistance, m_pControllerCom);
+			SyncTransformWithController();
+		}
+
+		if (!m_bSetOnce && m_fStamina >= 0.f)
+		{
+			m_fStamina -= 30.f;
+			Callback_Stamina();
+			m_bSetOnce = true;
+		}
+
+		break;
+	}
 	case eAnimCategory::SPRINT_ATTACKA:
 	{
 		RootMotionActive(fTimeDelta);
@@ -744,9 +751,12 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Walk") == 0) return eAnimCategory::WALK;
 	if (stateName.find("Run") == 0) return eAnimCategory::RUN;
 
-	if (stateName.find("Dash_Normal_B") == 0 || stateName.find("Dash_Focus_B") == 0)
+	if (stateName.find("Dash_Normal_B") == 0)
 		return eAnimCategory::DASH_BACK;
-	if (stateName.find("Dash_") == 0) return eAnimCategory::DASH_FRONT;
+	if (stateName.find("Dash_Normal_F") == 0)
+		return eAnimCategory::DASH_FRONT;
+	if (stateName.find("Dash_") == 0)
+		return eAnimCategory::DASH_FOCUS;
 
 	if (stateName.find("SprintNormalAttack") == 0)
 		return eAnimCategory::SPRINT_ATTACKA;
@@ -802,6 +812,51 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::ARM_FAIL;
 
 	return eAnimCategory::NONE;
+}
+
+_vector CPlayer::ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight)
+{
+	_vector vRight = m_pTransformCom->Get_State(STATE::RIGHT);
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+
+	vRight = XMVectorSet(XMVectorGetX(vRight), 0.f, XMVectorGetZ(vRight), 0.f);
+	vLook  = XMVectorSet(XMVectorGetX(vLook),  0.f, XMVectorGetZ(vLook),  0.f);
+
+	_vector vDir = XMVectorZero();
+
+	if (bSwitchLeft && !bSwitchRight) vDir = XMVectorAdd(vDir, XMVectorNegate(vRight));
+	if (bSwitchRight && !bSwitchLeft) vDir = XMVectorAdd(vDir, vRight);
+	if (bSwitchFront && !bSwitchBack) vDir = XMVectorAdd(vDir, vLook);
+	if (bSwitchBack && !bSwitchFront) vDir = XMVectorAdd(vDir, XMVectorNegate(vLook));
+
+	if (XMVector3Equal(vDir, XMVectorZero()))
+		vDir = vLook;
+
+	_float fLen = XMVectorGetX(XMVector3Length(vDir));
+	if (fLen <= static_cast<_float>(1e-6f))
+		vDir = vLook;
+	else
+		vDir = XMVectorScale(vDir, 1.f / fLen);
+
+	return vDir;
+}
+
+void CPlayer::Register_Events()
+{
+	m_pAnimator->RegisterEventListener("OnSwordTraill", [this](const string&)
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->Set_WeaponTrail_Active(true);
+			}
+		});
+	m_pAnimator->RegisterEventListener("OffSwordTraill", [this](const string&)
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->Set_WeaponTrail_Active(false);
+			}
+		});
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
@@ -1256,6 +1311,36 @@ void CPlayer::Reset_Weapon()
 
 	m_pWeapon->SetisAttack(true);
 	m_pWeapon->Clear_CollisionObj();
+}
+
+void CPlayer::LockOnState()
+{
+	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
+		m_pLockOn_Manager->Set_Active();
+
+	CUnit* pTarget = m_pLockOn_Manager->Get_Target();
+	if (pTarget && m_bWeaponEquipped && !m_pAnimator->CheckBool("Sprint"))
+	{
+		if (m_bUseLamp)
+			m_pLockOn_Manager->Set_Off(nullptr);
+
+		/* [ 타겟이 있다면 ] */
+		m_bIsLockOn = true;
+		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
+		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+		m_pTransformCom->LookAtWithOutY(vTargetPos);
+	}
+	else
+	{
+		/* [ 타겟이 없다면 ] */
+		m_bIsLockOn = false;
+		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
+
+		m_pAnimator->SetBool("Front", false);
+		m_pAnimator->SetBool("Front", false);
+		m_pAnimator->SetBool("Left", false);
+		m_pAnimator->SetBool("Right", false);
+	}
 }
 
 void CPlayer::Callback_UpBelt()
