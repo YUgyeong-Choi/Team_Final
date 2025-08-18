@@ -460,9 +460,32 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
     if (j.contains("Loop"))
         VIBufferDesc.isLoop = j["Loop"].get<_bool>();
 
+    if (j.contains("Spin"))
+        VIBufferDesc.bSpin = j["Spin"].get<_bool>();
+
+    if (j.contains("Orbit"))
+        VIBufferDesc.bOrbit = j["Orbit"].get<_bool>();
+
+    if (j.contains("RotationAxis") && j["RotationAxis"].is_array() && j["RotationAxis"].size() == 3)
+        VIBufferDesc.vRotationAxis = { j["RotationAxis"][0].get<_float>(), j["RotationAxis"][1].get<_float>(), j["RotationAxis"][2].get<_float>() };
+
+    if (j.contains("OrbitAxis") && j["OrbitAxis"].is_array() && j["OrbitAxis"].size() == 3)
+        VIBufferDesc.vOrbitAxis = { j["OrbitAxis"][0].get<_float>(), j["OrbitAxis"][1].get<_float>(), j["OrbitAxis"][2].get<_float>() };
+
+    if (j.contains("RotationSpeed") && j["RotationSpeed"].is_array() && j["RotationSpeed"].size() == 2)
+        VIBufferDesc.vRotationSpeed = { j["RotationSpeed"][0].get<_float>(), j["RotationSpeed"][1].get<_float>() };
+
+    if (j.contains("OrbitSpeed") && j["OrbitSpeed"].is_array() && j["OrbitSpeed"].size() == 2)
+        VIBufferDesc.vOrbitSpeed = { j["OrbitSpeed"][0].get<_float>(), j["OrbitSpeed"][1].get<_float>() };
+
     if (j.contains("Accel") && j["Accel"].is_array() && j["Accel"].size() == 2)
         VIBufferDesc.vAccel = { j["Accel"][0].get<_float>(), j["Accel"][1].get<_float>() };
 
+    if (j.contains("MaxSpeed"))
+        VIBufferDesc.fMaxSpeed = j["MaxSpeed"].get<_float>();
+
+    if (j.contains("MinSpeed"))
+        VIBufferDesc.fMinSpeed = j["MinSpeed"].get<_float>();
     //if (j.contains("Local"))
     //    VIBufferDesc.bLocal = j["Local"].get<_bool>();
 

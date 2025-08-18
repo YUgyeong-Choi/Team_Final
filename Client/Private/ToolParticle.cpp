@@ -32,18 +32,19 @@ HRESULT CToolParticle::Initialize(void* pArg)
 
 	if (m_bTool)
 	{
-		m_iNumInstance = pDesc->iNumInstance;
+		m_tDesc.iNumInstance = pDesc->iNumInstance;
+		m_tDesc.ePType = pDesc->ePType;
+		m_tDesc.iNumInstance = pDesc->iNumInstance;
+		m_tDesc.isLoop = pDesc->isLoop;
+		m_tDesc.vCenter = pDesc->vCenter;
+		m_tDesc.vLifeTime = pDesc->vLifeTime;
+		m_tDesc.vPivot = pDesc->vPivot;
+		m_tDesc.vRange = pDesc->vRange;
+		m_tDesc.vSize = pDesc->vSize;
+		m_tDesc.vSpeed = pDesc->vSpeed;
+
 		m_iShaderPass = pDesc->iShaderPass;
-		m_ePType = pDesc->ePType;
-		m_iNumInstance = pDesc->iNumInstance;
-		m_isLoop = pDesc->isLoop;
-		m_vCenter = pDesc->vCenter;
-		m_vLifeTime = pDesc->vLifeTime;
 		m_fMaxLifeTime = pDesc->vLifeTime.y;
-		m_vPivot = pDesc->vPivot;
-		m_vRange = pDesc->vRange;
-		m_vSize = pDesc->vSize;
-		m_vSpeed = pDesc->vSpeed;
 		m_bTool = pDesc->bTool;
 	}
 
@@ -147,28 +148,33 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
 	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
 	{
-		VIBufferDesc.ePType = m_ePType;
-		VIBufferDesc.iNumInstance = m_iNumInstance;
-		VIBufferDesc.isLoop = m_isLoop;
-		VIBufferDesc.vCenter = m_vCenter;
-		VIBufferDesc.vLifeTime = m_vLifeTime;
-		VIBufferDesc.vPivot = m_vPivot;
-		VIBufferDesc.vRange = m_vRange;
-		VIBufferDesc.vSize = m_vSize;
-		VIBufferDesc.vSpeed = m_vSpeed;
-		VIBufferDesc.isTool = true;
+		//VIBufferDesc.ePType = m_ePType;
+		//VIBufferDesc.iNumInstance = m_iNumInstance;
+		//VIBufferDesc.isLoop = m_isLoop;
+		//VIBufferDesc.vCenter = m_tDesc.vCenter;
+		//VIBufferDesc.vLifeTime = m_tDesc.vLifeTime;
+		//VIBufferDesc.vPivot = m_tDesc.vPivot;
+		//VIBufferDesc.vRange = m_tDesc.vRange;
+		//VIBufferDesc.vSize = m_tDesc.vSize;
+		//VIBufferDesc.vSpeed = m_tDesc.vSpeed;
+		//VIBufferDesc.isTool = true;
 
-		VIBufferDesc.bSpin = m_bSpin;
-		VIBufferDesc.bOrbit = m_bOrbit;
-		VIBufferDesc.vRotationAxis = m_vRotationAxis;
-		VIBufferDesc.vOrbitAxis = m_vOrbitAxis;
-		VIBufferDesc.vRotationSpeed = m_vRotationSpeed;
-		VIBufferDesc.vOrbitSpeed = m_vOrbitSpeed;
-		VIBufferDesc.vAccel = m_vAccel;
-		VIBufferDesc.fMaxSpeed = m_fMaxSpeed;
-		VIBufferDesc.fMinSpeed = m_fMinSpeed;
+		//VIBufferDesc.bSpin = m_tDesc.bSpin;
+		//VIBufferDesc.bOrbit = m_tDesc.bOrbit;
+		//VIBufferDesc.vRotationAxis = m_tDesc.vRotationAxis;
+		//VIBufferDesc.vOrbitAxis = m_tDesc.vOrbitAxis;
+		//VIBufferDesc.vRotationSpeed = m_tDesc.vRotationSpeed;
+		//VIBufferDesc.vOrbitSpeed = m_tDesc.vOrbitSpeed;
+		//VIBufferDesc.vAccel = m_tDesc.vAccel;
+		//VIBufferDesc.fMaxSpeed = m_tDesc.fMaxSpeed;
+		//VIBufferDesc.fMinSpeed = m_tDesc.fMinSpeed;
 
-		pArg = &VIBufferDesc;
+		//pArg = &VIBufferDesc;
+		m_tDesc.ePType = m_ePType;
+		m_tDesc.iNumInstance = m_iNumInstance;
+		m_tDesc.isLoop = m_isLoop;
+		m_tDesc.isTool = true;
+		pArg = &m_tDesc;
 	}
 	else
 	{
@@ -176,24 +182,26 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 		m_ePType		= pDesc->ePType;
 		m_iNumInstance	= pDesc->iNumInstance;
 		m_isLoop		= pDesc->isLoop;
-		m_vCenter		= pDesc->vCenter;
-		m_vLifeTime		= pDesc->vLifeTime;
-		m_vPivot		= pDesc->vPivot;
-		m_vRange		= pDesc->vRange;
-		m_vSize			= pDesc->vSize;
-		m_vSpeed		= pDesc->vSpeed;
-		m_bGravity		= pDesc->bGravity;
-		m_fGravity		= pDesc->fGravity;
+		//m_tDesc.vCenter		= pDesc->vCenter;
+		//m_tDesc.vLifeTime		= pDesc->vLifeTime;
+		//m_tDesc.vPivot		= pDesc->vPivot;
+		//m_tDesc.vRange		= pDesc->vRange;
+		//m_tDesc.vSize			= pDesc->vSize;
+		//m_tDesc.vSpeed		= pDesc->vSpeed;
+		//m_tDesc.bGravity		= pDesc->bGravity;
+		//m_tDesc.fGravity		= pDesc->fGravity;
+		//
+		//m_tDesc.bSpin			= pDesc->bSpin;
+		//m_tDesc.bOrbit		= pDesc->bOrbit;
+		//m_tDesc.vRotationAxis = pDesc->vRotationAxis;
+		//m_tDesc.vOrbitAxis	= pDesc->vOrbitAxis;
+		//m_tDesc.vRotationSpeed= pDesc->vRotationSpeed;
+		//m_tDesc.vOrbitSpeed	= pDesc->vOrbitSpeed;
+		//m_tDesc.vAccel		= pDesc->vAccel;
+		//m_tDesc.fMaxSpeed		= pDesc->fMaxSpeed;
+		//m_tDesc.fMinSpeed		= pDesc->fMinSpeed;
 
-		m_bSpin			= pDesc->bSpin;
-		m_bOrbit		= pDesc->bOrbit;
-		m_vRotationAxis = pDesc->vRotationAxis;
-		m_vOrbitAxis	= pDesc->vOrbitAxis;
-		m_vRotationSpeed= pDesc->vRotationSpeed;
-		m_vOrbitSpeed	= pDesc->vOrbitSpeed;
-		m_vAccel		= pDesc->vAccel;
-		m_fMaxSpeed		= pDesc->fMaxSpeed;
-		m_fMinSpeed		= pDesc->fMinSpeed;
+		m_tDesc = *pDesc;
 	}
 
 
@@ -208,19 +216,22 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 
 const CVIBuffer_Point_Instance::DESC CToolParticle::Get_InstanceBufferDesc()
 {
-	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-	VIBufferDesc.ePType = m_ePType;
-	VIBufferDesc.iNumInstance = m_iNumInstance;
-	VIBufferDesc.isLoop = m_isLoop;
-	VIBufferDesc.vCenter = m_vCenter;
-	VIBufferDesc.vLifeTime = m_vLifeTime;
-	VIBufferDesc.vPivot = m_vPivot;
-	VIBufferDesc.vRange = m_vRange;
-	VIBufferDesc.vSize = m_vSize;
-	VIBufferDesc.vSpeed = m_vSpeed;
-	VIBufferDesc.isTool = true;
+	//CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
+	//VIBufferDesc.ePType = m_ePType;
+	//VIBufferDesc.iNumInstance = m_iNumInstance;
+	//VIBufferDesc.isLoop = m_isLoop;
+	//VIBufferDesc.vCenter = m_vCenter;
+	//VIBufferDesc.vLifeTime = m_vLifeTime;
+	//VIBufferDesc.vPivot = m_vPivot;
+	//VIBufferDesc.vRange = m_vRange;
+	//VIBufferDesc.vSize = m_vSize;
+	//VIBufferDesc.vSpeed = m_vSpeed;
 
-	return VIBufferDesc;
+	//VIBufferDesc.isTool = true;
+
+	//return VIBufferDesc;
+
+	return m_tDesc;
 }
 
 HRESULT CToolParticle::Ready_Components(void* pArg)
@@ -249,6 +260,7 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 		VIBufferDesc.vRange = pDesc->vRange;
 		VIBufferDesc.vSize = pDesc->vSize;
 		VIBufferDesc.vCenter = pDesc->vCenter;
+
 
 		VIBufferDesc.isTool = true;
 		/* For.Com_VIBuffer */
@@ -351,12 +363,25 @@ json CToolParticle::Serialize()
 {
 	json j = __super::Serialize();
 
-	j["Range"] = { m_vRange.x, m_vRange.y, m_vRange.z };
-	j["Size"] = { m_vSize.x, m_vSize.y };
-	j["Center"] = { m_vCenter.x, m_vCenter.y, m_vCenter.z };
-	j["Pivot"] = { m_vPivot.x, m_vPivot.y, m_vPivot.z };
-	j["LifeTime_Particle"] = { m_vLifeTime.x, m_vLifeTime.y };
-	j["Speed"] = { m_vSpeed.x, m_vSpeed.y };
+	j["Range"] = { m_tDesc.vRange.x, m_tDesc.vRange.y, m_tDesc.vRange.z };
+	j["Size"] = { m_tDesc.vSize.x, m_tDesc.vSize.y };
+	j["Center"] = { m_tDesc.vCenter.x, m_tDesc.vCenter.y, m_tDesc.vCenter.z };
+	j["Pivot"] = { m_tDesc.vPivot.x, m_tDesc.vPivot.y, m_tDesc.vPivot.z };
+	j["LifeTime_Particle"] = { m_tDesc.vLifeTime.x, m_tDesc.vLifeTime.y };
+	j["Speed"] = { m_tDesc.vSpeed.x, m_tDesc.vSpeed.y };
+
+	j["Spin"] = m_tDesc.bSpin;
+	j["Orbit"] = m_tDesc.bOrbit;
+	j["RotationAxis"] = { m_tDesc.vRotationAxis.x, m_tDesc.vRotationAxis.y, m_tDesc.vRotationAxis.z };
+	j["OrbitAxis"] = { m_tDesc.vOrbitAxis.x, m_tDesc.vOrbitAxis.y, m_tDesc.vOrbitAxis.z };
+	j["RotationSpeed"] = { m_tDesc.vRotationSpeed.x, m_tDesc.vRotationSpeed.y };
+	j["OrbitSpeed"] = { m_tDesc.vOrbitSpeed.x, m_tDesc.vOrbitSpeed.y };
+
+	j["Accel"] = { m_tDesc.vAccel.x, m_tDesc.vAccel.y };
+	j["MaxSpeed"] = m_tDesc.fMaxSpeed;
+	j["MinSpeed"] = m_tDesc.fMinSpeed;
+
+
 
 	return j;
 }
@@ -366,21 +391,48 @@ void CToolParticle::Deserialize(const json& j)
 	__super::Deserialize(j);
 
 	if (j.contains("Range") && j["Range"].is_array() && j["Range"].size() == 3)
-		m_vRange = { j["Range"][0].get<_float>(), j["Range"][1].get<_float>(), j["Range"][2].get<_float>() };
+		m_tDesc.vRange = { j["Range"][0].get<_float>(), j["Range"][1].get<_float>(), j["Range"][2].get<_float>() };
 
 	if (j.contains("Size") && j["Size"].is_array() && j["Size"].size() == 2)
-		m_vSize = { j["Size"][0].get<_float>(), j["Size"][1].get<_float>() };
+		m_tDesc.vSize = { j["Size"][0].get<_float>(), j["Size"][1].get<_float>() };
 
 	if (j.contains("Center") && j["Center"].is_array() && j["Center"].size() == 3)
-		m_vCenter = { j["Center"][0].get<_float>(), j["Center"][1].get<_float>(), j["Center"][2].get<_float>() };
+		m_tDesc.vCenter = { j["Center"][0].get<_float>(), j["Center"][1].get<_float>(), j["Center"][2].get<_float>() };
 
 	if (j.contains("Pivot") && j["Pivot"].is_array() && j["Pivot"].size() == 3)
-		m_vPivot = { j["Pivot"][0].get<_float>(), j["Pivot"][1].get<_float>(), j["Pivot"][2].get<_float>() };
+		m_tDesc.vPivot = { j["Pivot"][0].get<_float>(), j["Pivot"][1].get<_float>(), j["Pivot"][2].get<_float>() };
 
 	if (j.contains("LifeTime_Particle") && j["LifeTime_Particle"].is_array() && j["LifeTime_Particle"].size() == 2)
-		m_vLifeTime = { j["LifeTime_Particle"][0].get<_float>(), j["LifeTime_Particle"][1].get<_float>() };
+		m_tDesc.vLifeTime = { j["LifeTime_Particle"][0].get<_float>(), j["LifeTime_Particle"][1].get<_float>() };
 
 	if (j.contains("Speed") && j["Speed"].is_array() && j["Speed"].size() == 2)
-		m_vSpeed = { j["Speed"][0].get<_float>(), j["Speed"][1].get<_float>() };
+		m_tDesc.vSpeed = { j["Speed"][0].get<_float>(), j["Speed"][1].get<_float>() };
 
+
+	if (j.contains("Spin"))
+		m_tDesc.bSpin = j["Spin"].get<_bool>();
+
+	if (j.contains("Orbit"))
+		m_tDesc.bOrbit = j["Orbit"].get<_bool>();
+
+	if (j.contains("RotationAxis") && j["RotationAxis"].is_array() && j["RotationAxis"].size() == 3)
+		m_tDesc.vRotationAxis = { j["RotationAxis"][0].get<_float>(), j["RotationAxis"][1].get<_float>(), j["RotationAxis"][2].get<_float>() };
+
+	if (j.contains("OrbitAxis") && j["OrbitAxis"].is_array() && j["OrbitAxis"].size() == 3)
+		m_tDesc.vOrbitAxis = { j["OrbitAxis"][0].get<_float>(), j["OrbitAxis"][1].get<_float>(), j["OrbitAxis"][2].get<_float>() };
+
+	if (j.contains("RotationSpeed") && j["RotationSpeed"].is_array() && j["RotationSpeed"].size() == 2)
+		m_tDesc.vRotationSpeed = { j["RotationSpeed"][0].get<_float>(), j["RotationSpeed"][1].get<_float>() };
+
+	if (j.contains("OrbitSpeed") && j["OrbitSpeed"].is_array() && j["OrbitSpeed"].size() == 2)
+		m_tDesc.vOrbitSpeed = { j["OrbitSpeed"][0].get<_float>(), j["OrbitSpeed"][1].get<_float>() };
+
+	if (j.contains("Accel") && j["Accel"].is_array() && j["Accel"].size() == 2)
+		m_tDesc.vAccel = { j["Accel"][0].get<_float>(), j["Accel"][1].get<_float>() };
+
+	if (j.contains("MaxSpeed"))
+		m_tDesc.fMaxSpeed = j["MaxSpeed"].get<_float>();
+
+	if (j.contains("MinSpeed"))
+		m_tDesc.fMinSpeed = j["MinSpeed"].get<_float>();
 }

@@ -209,7 +209,7 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	
 	/* For.Prototype_Component_Shader_ParticleEffect */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_ParticleEffect"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_ParticleEffect.hlsl"), VTXPOS_PARTICLE_INSTANCE::Elements, VTXPOS_PARTICLE_INSTANCE::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_ParticleEffect.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements))))
 		return E_FAIL;
 	
 	/* For.Prototype_Component_Shader_TrailEffect */
