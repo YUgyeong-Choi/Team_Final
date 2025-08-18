@@ -54,6 +54,9 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	HRESULT Add_Actor();
+
+public:
 	LEVEL Get_LevelID() const { return m_eMeshLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 

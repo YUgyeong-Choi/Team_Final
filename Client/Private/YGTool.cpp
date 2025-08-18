@@ -205,7 +205,7 @@ HRESULT CYGTool::Render_CameraTool()
 		m_CameraSequence->Set_EndFrame(m_iEndFrame);
 		m_CameraDatas.iEndFrame = m_iEndFrame;
 
-		const char* CutsceneTypeNames[] = { "ONE", "TWO", "THREE" };
+		const char* CutsceneTypeNames[] = { "WakeUp", "TutorialDoor", "THREE" };
 		int currentCutsceneType = static_cast<int>(m_eCutSceneType); // 현재 값 저장
 
 		if (ImGui::Combo("Load Type", &currentCutsceneType, CutsceneTypeNames, IM_ARRAYSIZE(CutsceneTypeNames)))
@@ -218,11 +218,11 @@ HRESULT CYGTool::Render_CameraTool()
 			string filePath;
 			switch (m_eCutSceneType)
 			{
-			case Client::CUTSCENE_TYPE::ONE:
-				filePath = "../Bin/Save/CutScene/one.json";
+			case Client::CUTSCENE_TYPE::WAKEUP:
+				filePath = "../Bin/Save/CutScene/WakeUp.json";
 				break;
-			case Client::CUTSCENE_TYPE::TWO:
-				filePath = "../Bin/Save/CutScene/two.json";
+			case Client::CUTSCENE_TYPE::TUTORIALDOOR:
+				filePath = "../Bin/Save/CutScene/TutorialDoor.json";
 				break;
 			case Client::CUTSCENE_TYPE::THREE:
 				filePath = "../Bin/Save/CutScene/three.json";
@@ -447,7 +447,7 @@ HRESULT CYGTool::Render_CameraTool()
 
 	ImGui::SeparatorText("Save Data");
 
-	const char* CutsceneTypeNames[] = { "ONE", "TWO", "THREE" };
+	const char* CutsceneTypeNames[] = { "WakeUp", "TutorialDoor", "THREE" };
 	int currentCutsceneType = static_cast<int>(m_eCutSceneType); // 현재 값 저장
 
 	ImGui::SeparatorText("Cutscene Type");
@@ -461,11 +461,11 @@ HRESULT CYGTool::Render_CameraTool()
 		string filePath;
 		switch (m_eCutSceneType)
 		{
-		case Client::CUTSCENE_TYPE::ONE:
-			filePath = "../Bin/Save/CutScene/one.json";
+		case Client::CUTSCENE_TYPE::WAKEUP:
+			filePath = "../Bin/Save/CutScene/WakeUp.json";
 			break;
-		case Client::CUTSCENE_TYPE::TWO:
-			filePath = "../Bin/Save/CutScene/two.json";
+		case Client::CUTSCENE_TYPE::TUTORIALDOOR:
+			filePath = "../Bin/Save/CutScene/TutorialDoor.json";
 			break;
 		case Client::CUTSCENE_TYPE::THREE:
 			filePath = "../Bin/Save/CutScene/three.json";

@@ -99,6 +99,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+	if (KEY_DOWN(DIK_J))
+		m_fTimeScale = 1.f;
+	if (KEY_DOWN(DIK_K))
+		m_fTimeScale = 0.f;
+
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
@@ -148,11 +153,13 @@ void CPlayer::Update(_float fTimeDelta)
 		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
 		m_pTransformCom->LookAtWithOutY(vTargetPos);
 		m_bIsLockOn = true;
+		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 	}
 	else
 	{
 		/* [ 타겟이 없다면 ] */
 		m_bIsLockOn = false;
+		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 	}
 
 	/* [ 아이템 ] */
@@ -180,6 +187,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_U))
 	{
+		m_pAnimator->SetBool("FocusOn", true);
 		m_pAnimator->SetBool("Back", true);
 	}
 
@@ -1222,6 +1230,10 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 		// 컷씬이 끝날 조건 넣어주면 좋음
 		if (fDeltaX <= -2.2f)
 		{
+			// 임의로 추가해 둔 것
+			_vector finishPos = vNewDoorPos + _vector({-0.7f, 0.f, 0.f, 0.f});
+			DoorTransCom->Set_State(STATE::POSITION, finishPos);
+
 			m_bInteraction[0] = false; // 컷씬 종료
 		}
 		

@@ -33,6 +33,13 @@ HRESULT CAStar_Manager::Render()
 	return E_NOTIMPL;
 }
 
+HRESULT CAStar_Manager::Replace_NaviMesh()
+{
+
+
+	return S_OK;
+}
+
 void CAStar_Manager::Free()
 {
 	__super::Free();

@@ -109,7 +109,7 @@ void CTestAnimObject::Priority_Update(_float fTimeDelta)
 	// 문여는 컷씬
 	if (m_pGameInstance->Key_Down(DIK_N))
 	{
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::ONE);
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 	}
 
 	// 속도 느려지고 안느려지고

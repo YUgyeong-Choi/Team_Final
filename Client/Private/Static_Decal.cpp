@@ -74,19 +74,19 @@ HRESULT CStatic_Decal::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	DECAL_DESC* pDesc = static_cast<DECAL_DESC*>(pArg);
-
+	
 	/* For.Com_Texture_ARMT */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::ARMT)],
+	if (FAILED(__super::Add_Component(pDesc->iLevelID, pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::ARMT)],
 		TEXT("Com_Texture_ARMT"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]))))
 		return E_FAIL;
 
 	/* For.Com_Texture_N */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::N)],
+	if (FAILED(__super::Add_Component(pDesc->iLevelID, pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::N)],
 		TEXT("Com_Texture_N"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::N)]))))
 		return E_FAIL;
 
 	/* For.Com_Texture_BC */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::BC)],
+	if (FAILED(__super::Add_Component(pDesc->iLevelID, pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::BC)],
 		TEXT("Com_Texture_BC"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::BC)]))))
 		return E_FAIL;
 
