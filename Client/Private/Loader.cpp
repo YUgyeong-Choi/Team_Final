@@ -1138,6 +1138,7 @@ HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 
 	return S_OK;
 }
+
 HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 {
 	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
@@ -1225,8 +1226,8 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 #pragma endregion
 
 
-		wstring LayerTag = TEXT("Layer_MapToolObject_");
-		LayerTag += StringToWString(ModelName);
+		wstring LayerTag = TEXT("Layer_StaticMesh");
+		//LayerTag += StringToWString(ModelName);
 
 		StaticMeshDesc.iRender = 0;
 		StaticMeshDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
@@ -1265,8 +1266,8 @@ HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objec
 
 	//오브젝트 생성, 배치
 
-	wstring LayerTag = TEXT("Layer_MapToolObject_");
-	LayerTag += StringToWString(ModelName);
+	wstring LayerTag = TEXT("Layer_StaticMesh_Instance");
+	//LayerTag += StringToWString(ModelName);
 
 	CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
 	StaticMeshInstanceDesc.iNumInstance = iObjectCount;//인스턴스 갯수랑
@@ -1338,6 +1339,7 @@ HRESULT CLoader::Ready_Static_Decal(_uint iLevelIndex, const _char* Map)
 		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)] = StringToWString(item["ARMT"].get<string>());
 		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)] = StringToWString(item["N"].get<string>());
 		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)] = StringToWString(item["BC"].get<string>());
+		Desc.iLevelID = iLevelIndex;
 
 		// Decal 객체 생성
 		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Static_Decal"),

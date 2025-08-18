@@ -162,6 +162,23 @@ HRESULT CStaticMesh::Render()
 	return S_OK;
 }
 
+HRESULT CStaticMesh::Add_Actor()
+{
+	if (m_eColliderType == COLLIDER_TYPE::END)
+		return E_FAIL; //치명적 오류
+
+	HRESULT hr = { S_OK };
+	//충돌체가 있는 것만
+	if (m_eColliderType != COLLIDER_TYPE::NONE)
+	{
+		//m_pGameInstance->Get_Scene()->lockWrite();
+		hr = m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+		//m_pGameInstance->Get_Scene()->unlockWrite();
+	}
+
+	return hr;
+}
+
 void CStaticMesh::Update_ColliderPos()
 {
 	/*
@@ -286,12 +303,12 @@ HRESULT CStaticMesh::Ready_Collider()
 			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::B); // 이걸로 색깔을 바꿀 수 있다.
 
 			//충돌체가 있는 것만
-			if (m_eColliderType == COLLIDER_TYPE::CONVEX)
+			/*if (m_eColliderType == COLLIDER_TYPE::CONVEX)
 			{
 				m_pGameInstance->Get_Scene()->lockWrite();
 				m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 				m_pGameInstance->Get_Scene()->unlockWrite();
-			}
+			}*/
 			
 #pragma endregion
 		}
@@ -315,9 +332,9 @@ HRESULT CStaticMesh::Ready_Collider()
 			m_pPhysXActorCom->Set_Owner(this);
 			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::A);
 
-			m_pGameInstance->Get_Scene()->lockWrite();
+			/*m_pGameInstance->Get_Scene()->lockWrite();
 			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
-			m_pGameInstance->Get_Scene()->unlockWrite();
+			m_pGameInstance->Get_Scene()->unlockWrite();*/
 #pragma endregion
 		}
 	}
