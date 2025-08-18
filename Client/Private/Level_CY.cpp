@@ -76,10 +76,9 @@ void CLevel_CY::Priority_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_BACKSLASH))
 	{
-		static _bool mapactive = { true };
-		mapactive = !mapactive;
-		if (pMap)
-			pMap->Set_isActive(mapactive);
+		static _bool Active = { true };
+		Active = !Active;
+		CCamera_Manager::Get_Instance()->SetbMoveable(Active);
 	}
 
 
