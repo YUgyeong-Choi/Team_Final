@@ -4,5 +4,3 @@ xcopy /y .\Engine\Bin\*.lib				.\EngineSDK\Lib\
 xcopy /y .\Engine\ThirdPartyLib\*.lib	.\EngineSDK\Lib\
 xcopy /y .\Engine\Bin\*.dll				.\Client\Bin\
 xcopy /y .\Engine\Bin\ShaderFiles\*.*	.\Client\Bin\ShaderFiles\
-
-fxc /T cs_5_0 /E CSMain ./Client/Bin/ShaderFiles/Shader_Compute_Particle.hlsl /Fo ./Client/Bin/ShaderFiles/Shader_Compute_Particle.cso

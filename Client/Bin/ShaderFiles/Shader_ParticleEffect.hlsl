@@ -4,17 +4,38 @@ vector  g_vCamPosition;
 bool    g_bLocal;
 
 /* [ InstanceBuffer ] */
-struct ParticleInst
+//struct ParticleInst
+//{
+//    float4 Right;
+//    float4 Up;
+//    float4 Look;
+//    float4 Translation;
+//    float2 LifeTime; // x=max, y=acc
+//    float2 _pad;
+//};
+
+//저희는오늘부터이거로씁니다
+struct ParticleParam
 {
     float4 Right;
     float4 Up;
     float4 Look;
     float4 Translation;
+
+    float4 Direction; // normalized dir (w=unused)
+
     float2 LifeTime; // x=max, y=acc
-    float2 _pad;
+    float Speed;
+    float RotationSpeed; // degrees/sec
+
+    float OrbitSpeed; // degrees/sec
+    float fAccel; // 가속도 (+면 가속, -면 감속)
+    float fMaxSpeed; // 최대 속도 (옵션)
+    float fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
 };
 
-StructuredBuffer<ParticleInst> Particle_SRV : register(t0);
+
+StructuredBuffer<ParticleParam> Particle_SRV : register(t0);
 //bool    g_size 
 
 //struct VS_IN
@@ -65,7 +86,7 @@ VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
     
     matrix matWV, matWVP;
     
-    ParticleInst particle = Particle_SRV[instanceID];
+    ParticleParam particle = Particle_SRV[instanceID];
     
     row_major float4x4 TransformMatrix = float4x4(
         particle.Right,

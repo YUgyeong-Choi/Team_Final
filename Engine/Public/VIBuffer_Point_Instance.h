@@ -19,7 +19,6 @@ public:
 		_float3			vCenter;
 		_bool			bGravity = { false };
 		_float			fGravity = { 9.8f };
-		//_float4			vDirection = {0.f, 1.f, 0.f, 0.f}; // 쓰지말죠	
 		_bool			bSpin = { false }; // 자전 여부
 		_bool			bOrbit = { false }; // 공전 여부
 		_float3			vRotationAxis = {};       // 자전용, xyz 축 w 속도
@@ -31,6 +30,7 @@ public:
 		_float			fMaxSpeed = { 1000.f };	// 필요한지
 		_float			fMinSpeed = { 0.f };
 
+		//_float4			vDirection = {0.f, 1.f, 0.f, 0.f}; // 쓰지말죠	
 		_bool			isTool = { false };
 	}DESC;
 
@@ -55,25 +55,13 @@ public:
 
 
 private:	
-	VTXPOS_PARTICLE_INSTANCE*	m_pVertexInstances = { nullptr };
-	//_float3						m_vPivot = {};
-	//_bool						m_bGravity = { false };
-	//_float						m_fGravity = { 9.8f };
-	//_bool						m_isLoop = { false };
-	//_float4						m_vDirection = {};
-	//PARTICLETYPE				m_ePType;
-	//_float3						m_vCenter = {};
-	//_bool						m_isTool = { false };
-	//_bool						m_bSpin = { false }; // 자전 여부
-	//_bool						m_bOrbit = { false }; // 공전 여부
-	//_float3						m_vRotationAxis = {};// 자전용, xyz 축 w 속도
-	//_float3						m_vOrbitAxis = {};	// 공전용, xyz 축 w 속도
-	//_float						m_fOrbitRadius = {};// 공전 반지름 (radius로 결정된 초기 위치 - 중심점 길이로 사용)
-	//_float4						m_vOrbitCenter = {};    // 공전 중심점 (선택적)
 	/* PARTICLECBUFFER 구조체로 통합됨 !! */
 	PARTICLECBUFFER				m_tCBuffer = {};
 
-	PARTICLEDESC*				m_pParticleDesc = { nullptr };	
+	//VTXPOS_PARTICLE_INSTANCE*	m_pVertexInstances = { nullptr };
+	//PARTICLEDESC*				m_pParticleDesc = { nullptr };	
+	// + => PPDESC 통합함
+	PPDESC* m_pParticleParamDesc = { nullptr };
 
 private:
 	/* [CS] */
@@ -93,8 +81,6 @@ private:
 		PFADE_OUT = 1 << 1,
 		PFADE_DEFAULT = 1 << 2
 	};
-
-
 
 protected:
 	HRESULT Make_InstanceBuffer(const DESC* pDesc);
