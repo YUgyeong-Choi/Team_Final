@@ -80,18 +80,19 @@ private:
 
 private: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
+	_vector ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
 
 private: /* [ 루트모션 활성화 ] */
 	void			RootMotionActive(_float fTimeDelta);
 
-private: /* [ actor 업뎃. ]*/
+private: /* [ Actor 업데이트 ] */
 	void    Update_Collider_Actor();
 
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-	/* Ray로 인항 충돌(HitPos& HitNormal) */
+	/* [ Ray로 인항 충돌(HitPos& HitNormal) ] */
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -132,7 +133,9 @@ private:
 	void Active_Weapon();
 	void Reset_Weapon();
 
-	
+private: /* [ 락온 함수 ] */
+	void LockOnState();
+
 private: /* [ 슬룻 함수 ] */
 	void Callback_UpBelt();
 	void Callback_DownBelt();
@@ -213,6 +216,12 @@ private: /* [ 이동관련 변수 ] */
 	_float   m_fMoveTime = {};
 	_int	 m_iMoveStep = {};
 
+	_vector	 m_vMoveDir = {};
+	_bool	 m_bSwitchLeft = {};
+	_bool	 m_bSwitchRight = {};
+	_bool	 m_bSwitchFront = {};
+	_bool	 m_bSwitchBack = {};
+
 private: /* [ 인터렉션 관련변수 ] */
 	_bool  m_bInteraction[9] = { false };
 	_bool  m_bInteractionMove[9] = { false };
@@ -225,7 +234,9 @@ private: /* [ 인터렉션 관련변수 ] */
 		"Sprint", "Sprint_Stop",
 		"Guard_Walk_B", "Guard_Walk_F", "Guard_Walk_L", "Guard_Walk_R",
 		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
-		"OnLamp_Walk", "FailItem_Walk"
+		"OnLamp_Walk", "FailItem_Walk",
+		"Grinder_Start", "Grinder_Loop", "Grinder_End", "Grinder_Loop_Walk_F", "Grinder_Loop_Walk_R", "Grinder_Loop_Walk_L" , "Grinder_Loop_Walk_B",
+		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR"
 
 	};
 
@@ -275,6 +286,9 @@ private: /* [ 아이템 사용 관련 변수 ] */
 	_float	 m_fItemTime = {};
 	
 private: /* [ 벨트 슬롯 ] */
+	_bool	 m_bUseLamp = {};
+	_bool	 m_bUseGrinder = {};
+
 	_bool m_bSwitch = { true };
 	
 	class CBelt* m_pBelt_Up = { nullptr };

@@ -83,11 +83,10 @@ protected: /* [ 락온 관련 ] */
             else
                 m_pOwner->m_pAnimator->SetBool("Right", false);
 
-            _bool left = m_pOwner->m_pAnimator->CheckBool("Left");
-            _bool right = m_pOwner->m_pAnimator->CheckBool("Right");
-            _bool front = m_pOwner->m_pAnimator->CheckBool("Front");
-            _bool back = m_pOwner->m_pAnimator->CheckBool("Back");
-            cout << "Left: " << left << ", Right: " << right << ", Front: " << front << ", Back: " << back << endl;
+            m_pOwner->m_bSwitchLeft = m_pOwner->m_pAnimator->CheckBool("Left");
+            m_pOwner->m_bSwitchRight = m_pOwner->m_pAnimator->CheckBool("Right");
+            m_pOwner->m_bSwitchFront = m_pOwner->m_pAnimator->CheckBool("Front");
+            m_pOwner->m_bSwitchBack = m_pOwner->m_pAnimator->CheckBool("Back");
         }
     }
 
@@ -280,8 +279,9 @@ public:
                     m_bChargeStarted = true;
             }
         }
-        LockOnMovement();
-        
+
+
+        LockOnMovement();        
     }
 
     virtual void Exit() override
@@ -404,8 +404,9 @@ public:
                     m_bChargeStarted = true;
             }
         }
+
+
 		LockOnMovement();
-       
     }
 
     virtual void Exit() override
@@ -497,37 +498,71 @@ public:
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
+        m_pOwner->m_fItemTime = 0.f;
 
          // 아이템 사용 전 걷기 상태였는지 저장
-        m_pOwner->m_pAnimator->SetBool("HasLamp", true);
-        m_pOwner->m_pAnimator->SetTrigger("UseItem");
 		m_bPreWalk = m_pOwner->m_bWalk;
 		m_pOwner->m_bWalk = true;
-        m_pOwner->m_pWeapon->SetbIsActive(false);
-        m_pOwner->m_bItemSwitch = true;
-        m_pOwner->m_fItemTime = 0.f;
+
+        /* [ 램프전용 스위치들 ] */
+        if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+        {
+            m_pOwner->m_pWeapon->SetbIsActive(false);
+            m_pOwner->m_pAnimator->SetBool("HasLamp", true);
+            m_pOwner->m_pAnimator->SetTrigger("UseItem");
+
+            m_pOwner->m_bUseLamp = true;
+            m_pOwner->m_bItemSwitch = true;
+        }
+        else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
+        {
+            if (m_pOwner->m_bWeaponEquipped)
+            {
+                m_pOwner->m_pAnimator->SetTrigger("Grinder");
+                m_pOwner->m_bUseGrinder = true;
+            }
+        }
+
         
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
 
-    // 지속 아이템(그라인더 이런거)는 여기에 넣기
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
 
-        LockOnMovement();
+        /* [ 그라인더만 이동가능 ] */
+        if(m_pOwner->m_bUseGrinder)
+        {
+            if (KEY_PRESSING(DIK_R))
+            {
+                m_pOwner->m_pAnimator->SetBool("Grinding", true);
+            }
+            else
+            {
+                m_pOwner->m_pAnimator->SetBool("Grinding", false);
+                m_pOwner->m_bUseGrinder = false;
+            }
+            LockOnMovement();
+        }
+        else
+        {
+            m_fGrinderTime += fTimeDelta;
+        }
     }
 
     virtual void Exit() override
     {
-        // 한번 효과 발동되는건 여기에 넣기
         if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
-        {
             m_pOwner->Use_Item();
-        }
 
+
+        m_pOwner->m_pAnimator->SetBool("Grinding", false);
+        m_pOwner->m_bUseLamp = false;
+        m_pOwner->m_bUseGrinder = false;
 		m_pOwner->m_bWalk = m_bPreWalk;
+        m_fGrinderTime = 0.f;
         m_fStateTime = 0.f;
         m_bDoOnce = false;
     }
@@ -537,7 +572,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if(1.f < m_fStateTime)
+        if(1.f < m_fStateTime && m_pOwner->m_bUseLamp)
 		{
             if (input.bMove)
             {
@@ -549,6 +584,19 @@ public:
         
             return EPlayerState::IDLE;
 		}
+
+        if (1.f < m_fGrinderTime && !m_pOwner->m_bUseGrinder)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                    return EPlayerState::WALK;
+                else
+                    return EPlayerState::RUN;
+            }
+
+            return EPlayerState::IDLE;
+        }
         
         return EPlayerState::USEITEM;
     }
@@ -570,6 +618,7 @@ private:
 
 private:
 	_bool m_bPreWalk = { false };
+    _float m_fGrinderTime = {};
 };
 
 /* [ 이 클래스는 백스탭 상태입니다. ] */

@@ -427,8 +427,11 @@ void CLockOn_Manager::Set_Active()
 
 void CLockOn_Manager::Set_Off(CUnit* pObj)
 {
-    if (m_pBestTarget != pObj)
-        return;
+    if (pObj != nullptr)
+    {
+        if (m_pBestTarget != pObj)
+            return;
+    }
 
     m_bActive = false;
     m_pBestTarget = nullptr;
