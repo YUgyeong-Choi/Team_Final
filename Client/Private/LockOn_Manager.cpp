@@ -110,6 +110,8 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         PxVec3 origin = VectorToPxVec3(playerPos);
         PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
         direction.normalize(); // 방향 벡터 정규화
+        origin -= direction * 0.5f;
+
         _float fRayLength = 10.f;
 
         PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
@@ -131,7 +133,8 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
                 PxRigidActor* hitActor = hit.block.actor;
                 CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-                if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
+                _bool isMonster = !(pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON);
+                if (pHitActor && isMonster)
                 {
                     // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
                     bRemove = true;
@@ -163,7 +166,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         }
 
 #ifdef _DEBUG
-     /*   if (m_pGameInstance->Get_RenderCollider()) {
+        if (m_pGameInstance->Get_RenderCollider()) {
             DEBUGRAY_DATA _data{};
 
             _data.vStartPos = origin;
@@ -172,7 +175,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
             _data.bIsHit = bHit;
             _data.vHitPos = hitPos;
             pPlayer->Get_Controller()->Add_RenderRay(_data);
-        }*/
+        }
 #endif
     }
 

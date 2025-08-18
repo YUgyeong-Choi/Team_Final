@@ -56,11 +56,19 @@ namespace Client
 #pragma endregion
 
 #pragma region YG
-	enum INTERPOLATION_CAMERA
+	enum class INTERPOLATION_CAMERA
 	{
 		NONE,
 		LERP,
 		CATMULLROM
+	};
+
+	enum class TARGET_CAMERA
+	{
+		NONE,
+		PLAYER,
+		BOSS1,
+		BOSS2
 	};
 
 	enum class CUTSCENE_TYPE
