@@ -49,6 +49,7 @@ void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
     newKey.eTarget = TARGET_CAMERA::NONE;
     newKey.fPitch = 0.f;
     newKey.fYaw = 0.f;
+    newKey.fDistance = 0.f;
 
     // Ãß°¡
     m_vecKeys.push_back(newKey);

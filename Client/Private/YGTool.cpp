@@ -40,7 +40,7 @@ HRESULT CYGTool::Initialize(void* pArg)
 
 void CYGTool::Priority_Update(_float fTimeDelta)
 {
-
+	ShowCursor(TRUE);
 }
 
 void CYGTool::Update(_float fTimeDelta)
@@ -76,23 +76,33 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 	j["Pitch"] = data.fPitch;
 	j["Yaw"] = data.fYaw;
 
-	// 1. Position Frame (WorldMatrix은 16개의 float 값으로 저장)
-	for (const auto& pos : data.vecWorldMatrixData)
+	// 1. Matrix Position Frame (WorldMatrix은 16개의 float 값으로 저장)
+	for (const auto& matrixPos : data.vecWorldMatrixData)
 	{
 		XMFLOAT4X4 mat;
-		XMStoreFloat4x4(&mat, pos.WorldMatrix);
+		XMStoreFloat4x4(&mat, matrixPos.WorldMatrix);
 
 		std::vector<float> matValues(16);
 		memcpy(matValues.data(), &mat, sizeof(float) * 16);
 
-		j["vecPosData"].push_back({
-			{ "keyFrame", pos.iKeyFrame },
+		j["vecMatrixPosData"].push_back({
+			{ "keyFrame", matrixPos.iKeyFrame },
 			{ "worldMatrix", matValues },
-			{ "interpPosition", pos.interpMatrixPos }
+			{ "interpMatrixPosition", matrixPos.interpMatrixPos }
 			});
 	}
 
-	// 2. Rotation Frame
+	// 2. Offset Position Frame
+	for (const auto& pos : data.vecOffSetPosData)
+	{
+		j["vecPosData"].push_back({
+			{ "keyFrame", pos.iKeyFrame },
+			{ "position", { pos.offSetPos.x, pos.offSetPos.y, pos.offSetPos.z } },
+			{ "interpPosition", pos.interpOffSetPos }
+			});
+	}
+
+	// 3. Offset Rotation Frame
 	for (const auto& rot : data.vecOffSetRotData)
 	{
 		j["vecRotData"].push_back({
@@ -102,13 +112,25 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 			});
 	}
 
-	// 3. FOV Frame
+	// 4. FOV Frame
 	for (const auto& fov : data.vecFovData)
 	{
 		j["vecFovData"].push_back({
 			{ "keyFrame", fov.iKeyFrame },
 			{ "fFov", fov.fFov },
 			{ "interpFov", fov.interpFov }
+			});
+	}
+
+	// 5. Target Frame
+	for (const auto& target : data.vecTargetData)
+	{
+		j["vecTargetData"].push_back({
+			{ "keyFrame", target.iKeyFrame },
+			{ "targetType", static_cast<_int>(target.eTarget)},
+			{ "pitch", target.fPitch },
+			{ "yaw", target.fYaw },
+			{ "distance", target.fDistance }
 			});
 	}
 
@@ -136,21 +158,20 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 {
 	CAMERA_FRAMEDATA data;
 
-	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
 	data.bOrbitalToSetOrbital = j.value("bStartBlend", false);
 	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
 	data.fPitch = j["Pitch"].get<float>();
 	data.fYaw = j["Yaw"].get<float>();
 
-	// 2. vecPosData
-	if (j.contains("vecPosData"))
+	// 1. vecMatrixPosData
+	if (j.contains("vecMatrixPosData"))
 	{
-		for (const auto& posJson : j["vecPosData"])
+		for (const auto& posJson : j["vecMatrixPosData"])
 		{
 			CAMERA_WORLDFRAME posFrame;
 			posFrame.iKeyFrame = posJson["keyFrame"];
-			posFrame.interpMatrixPos = posJson["interpPosition"];
+			posFrame.interpMatrixPos = posJson["interpMatrixPosition"];
 
 			const std::vector<float>& matValues = posJson["worldMatrix"];
 			XMFLOAT4X4 mat;
@@ -158,6 +179,24 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			posFrame.WorldMatrix = XMLoadFloat4x4(&mat);
 
 			data.vecWorldMatrixData.push_back(posFrame);
+		}
+	}
+
+	// 2. vecPosData
+	if (j.contains("vecPosData"))
+	{
+		for (const auto& rotJson : j["vecPosData"])
+		{
+			CAMERA_POSFRAME posFrame;
+			posFrame.iKeyFrame = rotJson["keyFrame"];
+			posFrame.offSetPos = XMFLOAT3(
+				rotJson["position"][0],
+				rotJson["position"][1],
+				rotJson["position"][2]
+			);
+			posFrame.interpOffSetPos = rotJson["interpPosition"];
+
+			data.vecOffSetPosData.push_back(posFrame);
 		}
 	}
 
@@ -190,6 +229,22 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			fovFrame.interpFov = fovJson["interpFov"];
 
 			data.vecFovData.push_back(fovFrame);
+		}
+	}
+	
+	// 5. vecTargetData
+	if (j.contains("vecTargetData"))
+	{
+		for (const auto& fovJson : j["vecTargetData"])
+		{
+			CAMERA_TARGETFRAME targetFrame;
+			targetFrame.iKeyFrame = fovJson["keyFrame"];
+			targetFrame.eTarget = static_cast<TARGET_CAMERA>(fovJson["targetType"]);
+			targetFrame.fPitch = fovJson["pitch"];
+			targetFrame.fYaw = fovJson["yaw"];
+			targetFrame.fDistance = fovJson["distance"];
+
+			data.vecTargetData.push_back(targetFrame);
 		}
 	}
 	return data;
@@ -304,7 +359,7 @@ HRESULT CYGTool::Render_CameraTool()
 				m_pSelectedKey->position = pos;
 
 			XMFLOAT3 rot = m_pSelectedKey->rotation;
-			if (ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rot), 0.5f))
+			if (ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rot), 0.1f))
 				m_pSelectedKey->rotation = rot;
 
 			_int interpPos = static_cast<int>(m_pSelectedKey->interpWorldPos);
@@ -316,7 +371,7 @@ HRESULT CYGTool::Render_CameraTool()
 		{
 			// Offset Pos
 			XMFLOAT3 offSetPos = m_pSelectedKey->offSetPosition;
-			if (ImGui::DragFloat3("Offset Position", reinterpret_cast<float*>(&offSetPos), 0.5f))
+			if (ImGui::DragFloat3("Offset Position", reinterpret_cast<float*>(&offSetPos), 0.1f))
 				m_pSelectedKey->offSetPosition = offSetPos;
 
 			_int interpRot = static_cast<int>(m_pSelectedKey->interpOffSetPos);
@@ -328,7 +383,7 @@ HRESULT CYGTool::Render_CameraTool()
 		{
 			// Offset Rot
 			XMFLOAT3 offSetRot = m_pSelectedKey->offSetRotation;
-			if (ImGui::DragFloat3("Offset Rotation", reinterpret_cast<float*>(&offSetRot), 0.5f))
+			if (ImGui::DragFloat3("Offset Rotation", reinterpret_cast<float*>(&offSetRot), 0.1f))
 				m_pSelectedKey->offSetRotation = offSetRot;
 
 			_int interpRot = static_cast<int>(m_pSelectedKey->interpOffSetRot);
@@ -406,6 +461,29 @@ HRESULT CYGTool::Render_CameraTool()
 				}
 				break;
 			}
+			case 1:
+			{
+				_bool exist = false;
+				for (auto& keyframe : m_CameraDatas.vecOffSetPosData)
+				{
+					if (keyframe.iKeyFrame == m_pSelectedKey->keyFrame)
+					{
+						exist = true;
+						break;
+					}
+				}
+
+				if (!exist)
+				{
+					CAMERA_POSFRAME posFrame;
+					posFrame.iKeyFrame = m_pSelectedKey->keyFrame;
+					posFrame.offSetPos = m_pSelectedKey->offSetPosition;
+					posFrame.interpOffSetPos = m_pSelectedKey->interpOffSetPos;
+					m_CameraDatas.vecOffSetPosData.push_back(posFrame);
+					m_CameraSequence->Add_KeyFrame(1, m_pSelectedKey->keyFrame);
+				}
+				break;
+			}
 			case 2:
 			{
 				_bool exist = false;
@@ -449,6 +527,31 @@ HRESULT CYGTool::Render_CameraTool()
 					fovFrame.interpFov = m_pSelectedKey->interpFov;
 					m_CameraDatas.vecFovData.push_back(fovFrame);
 					m_CameraSequence->Add_KeyFrame(3, m_pSelectedKey->keyFrame);
+				}
+				break;
+			}
+			case 4:
+			{
+				_bool exist = false;
+				for (auto& keyframe : m_CameraDatas.vecTargetData)
+				{
+					if (keyframe.iKeyFrame == m_pSelectedKey->keyFrame)
+					{
+						exist = true;
+						break;
+					}
+				}
+
+				if (!exist)
+				{
+					CAMERA_TARGETFRAME targetFrame;
+					targetFrame.iKeyFrame = m_pSelectedKey->keyFrame;
+					targetFrame.eTarget = m_pSelectedKey->eTarget;
+					targetFrame.fPitch = m_pSelectedKey->fPitch;
+					targetFrame.fYaw = m_pSelectedKey->fYaw;
+					targetFrame.fDistance = m_pSelectedKey->fDistance;
+					m_CameraDatas.vecTargetData.push_back(targetFrame);
+					m_CameraSequence->Add_KeyFrame(4, m_pSelectedKey->keyFrame);
 				}
 				break;
 			}

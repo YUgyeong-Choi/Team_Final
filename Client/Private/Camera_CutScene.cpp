@@ -77,6 +77,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				Interp_WorldMatrixOnly(m_iCurrentFrame);
 				Interp_Fov(m_iCurrentFrame);
 				Interp_OffsetRot(m_iCurrentFrame);
+				Interp_OffsetPos(m_iCurrentFrame);
 
 				// 종료 조건
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
@@ -336,6 +337,62 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().offSetRot);
 }
 
+void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
+{
+	const auto& vec = m_CameraDatas.vecOffSetPosData;
+	if (vec.size() < 1)
+		return;
+
+	for (size_t i = 0; i < vec.size() - 1; ++i)
+	{
+		const auto& a = vec[i];
+		const auto& b = vec[i + 1];
+
+		if (curFrame >= a.iKeyFrame && curFrame <= b.iKeyFrame)
+		{
+			const INTERPOLATION_CAMERA interp = a.interpOffSetPos;
+			float t = float(curFrame - a.iKeyFrame) / float(max(1, b.iKeyFrame - a.iKeyFrame));
+
+			XMVECTOR rotA = XMLoadFloat3(&a.offSetPos);
+			XMVECTOR rotB = XMLoadFloat3(&b.offSetPos);
+			XMVECTOR result = {};
+
+			switch (interp)
+			{
+			case INTERPOLATION_CAMERA::NONE:
+				m_vCurrentShakePos = { 0.f, 0.f, 0.f, 0.f };
+				break;
+			case INTERPOLATION_CAMERA::LERP:
+			default:
+				result = XMVectorLerp(rotA, rotB, t);
+				break;
+			case INTERPOLATION_CAMERA::CATMULLROM:
+			{
+				XMVECTOR p1 = rotA;
+				XMVECTOR p2 = rotB;
+				XMVECTOR p0 = (i == 0) ? p1 : XMLoadFloat3(&vec[i - 1].offSetPos);
+				XMVECTOR p3 = (i + 2 < vec.size()) ? XMLoadFloat3(&vec[i + 2].offSetPos) : p2;
+				result = XMVectorCatmullRom(p0, p1, p2, p3, t);
+				break;
+			}
+			}
+
+			// 오프셋 위치 저장 (최종 위치는 update에서 적용)
+			m_vCurrentShakePos = result;
+			return;
+		}
+	}
+
+	// 범위 바깥이면 시작/끝값
+	if (curFrame <= vec.front().iKeyFrame)
+		m_vCurrentShakePos = XMLoadFloat3(&vec.front().offSetPos);
+	else if (curFrame >= vec.back().iKeyFrame)
+		if (vec.back().interpOffSetPos == INTERPOLATION_CAMERA::NONE)
+			m_vCurrentShakePos = { 0.f, 0.f, 0.f, 0.f };
+		else
+			m_vCurrentShakePos = XMLoadFloat3(&vec.back().offSetPos);
+}
+
 XMVECTOR CCamera_CutScene::XMMatrixDecompose_T(const _matrix& m)
 {
 	XMVECTOR scale, rot, trans;
@@ -345,7 +402,8 @@ XMVECTOR CCamera_CutScene::XMMatrixDecompose_T(const _matrix& m)
 
 HRESULT CCamera_CutScene::InitDatas()
 {
-	std::ifstream inFile("../Bin/Save/CutScene/WakeUp.json");
+
+	ifstream inFile("../Bin/Save/CutScene/WakeUp.json");
 	if (inFile.is_open())
 	{
 		json j;
@@ -355,15 +413,15 @@ HRESULT CCamera_CutScene::InitDatas()
 		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::WAKEUP, LoadCameraFrameData(j)));
 	}
 
-	std::ifstream inFile2("../Bin/Save/CutScene/TutorialDoor.json");
-	if (inFile2.is_open())
-	{
-		json j;
-		inFile2 >> j;
-		inFile2.close();
+	//ifstream inFile2("../Bin/Save/CutScene/TutorialDoor.json");
+	//if (inFile2.is_open())
+	//{
+	//	json j;
+	//	inFile2 >> j;
+	//	inFile2.close();
 
-		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TUTORIALDOOR, LoadCameraFrameData(j)));
-	}
+	//	m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TUTORIALDOOR, LoadCameraFrameData(j)));
+	//}
 	return S_OK;
 }
 
@@ -371,21 +429,20 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 {
 	CAMERA_FRAMEDATA data;
 
-	// 1. iEndFrame
 	data.iEndFrame = j.value("iEndFrame", 0);
 	data.bOrbitalToSetOrbital = j.value("bStartBlend", false);
 	data.bReadyCutSceneOrbital = j.value("bEndBlend", false);
 	data.fPitch = j["Pitch"].get<float>();
 	data.fYaw = j["Yaw"].get<float>();
 
-	// 2. vecPosData
-	if (j.contains("vecPosData"))
+	// 1. vecMatrixPosData
+	if (j.contains("vecMatrixPosData"))
 	{
-		for (const auto& posJson : j["vecPosData"])
+		for (const auto& posJson : j["vecMatrixPosData"])
 		{
 			CAMERA_WORLDFRAME posFrame;
 			posFrame.iKeyFrame = posJson["keyFrame"];
-			posFrame.interpMatrixPos = posJson["interpPosition"];
+			posFrame.interpMatrixPos = posJson["interpMatrixPosition"];
 
 			const std::vector<float>& matValues = posJson["worldMatrix"];
 			XMFLOAT4X4 mat;
@@ -393,6 +450,24 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 			posFrame.WorldMatrix = XMLoadFloat4x4(&mat);
 
 			data.vecWorldMatrixData.push_back(posFrame);
+		}
+	}
+
+	// 2. vecPosData
+	if (j.contains("vecPosData"))
+	{
+		for (const auto& rotJson : j["vecPosData"])
+		{
+			CAMERA_POSFRAME posFrame;
+			posFrame.iKeyFrame = rotJson["keyFrame"];
+			posFrame.offSetPos = XMFLOAT3(
+				rotJson["position"][0],
+				rotJson["position"][1],
+				rotJson["position"][2]
+			);
+			posFrame.interpOffSetPos = rotJson["interpPosition"];
+
+			data.vecOffSetPosData.push_back(posFrame);
 		}
 	}
 
@@ -428,6 +503,21 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 		}
 	}
 
+	// 5. vecTargetData
+	if (j.contains("vecTargetData"))
+	{
+		for (const auto& fovJson : j["vecTargetData"])
+		{
+			CAMERA_TARGETFRAME targetFrame;
+			targetFrame.iKeyFrame = fovJson["keyFrame"];
+			targetFrame.eTarget = static_cast<TARGET_CAMERA>(fovJson["targetType"]);
+			targetFrame.fPitch = fovJson["pitch"];
+			targetFrame.fYaw = fovJson["yaw"];
+			targetFrame.fDistance = fovJson["distance"];
+
+			data.vecTargetData.push_back(targetFrame);
+		}
+	}
 	return data;
 }
 
