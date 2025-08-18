@@ -45,6 +45,10 @@ HRESULT CLevel_YW::Initialize()
 		return E_FAIL;*/	
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
+
+	// 무조건 커서를 보이게 만들기
+	while (ShowCursor(TRUE) < 0);
+
 	return S_OK;
 }
 
@@ -110,6 +114,8 @@ HRESULT CLevel_YW::Render()
 
 HRESULT CLevel_YW::Ready_Lights()
 {
+	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YW));
+
 	LIGHT_DESC			LightDesc{};
 
 	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
@@ -417,8 +423,6 @@ void CLevel_YW::Free()
 	ImGui::DestroyContext();
 
 	//Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
-
-	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YW));
 
 	for (CGameObject* pTool : m_ImGuiTools)
 	{

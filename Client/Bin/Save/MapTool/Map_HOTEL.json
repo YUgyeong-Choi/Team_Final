@@ -1,5 +1,5 @@
 {
-    "ModelCount": 3,
+    "ModelCount": 2,
     "Models": [
         {
             "Collision": false,
@@ -8,6 +8,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
+                    "LightShape": 0,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -28,7 +29,7 @@
                             0.0
                         ],
                         [
-                            0.0,
+                            0.0589449405670166,
                             0.0,
                             0.0,
                             1.0
@@ -39,11 +40,12 @@
         },
         {
             "Collision": false,
-            "ModelName": "SM_BuildingA_Door_12",
+            "ModelName": "SM_BuildingA_Door_01",
             "ObjectCount": 2,
             "Objects": [
                 {
                     "ColliderType": 0,
+                    "LightShape": 0,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -64,15 +66,16 @@
                             0.0
                         ],
                         [
-                            0.9816825985908508,
-                            10.095391273498535,
-                            -0.4692729711532593,
-                            1.0
+                            2.5286881923675537,
+                            3.1755683422088623,
+                            -0.4929649829864502,
+                            1.0000001192092896
                         ]
                     ]
                 },
                 {
                     "ColliderType": 0,
+                    "LightShape": 0,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -93,20 +96,14 @@
                             0.0
                         ],
                         [
-                            -3.960304021835327,
-                            10.095391273498535,
-                            -0.4692729711532593,
-                            1.0
+                            -2.297149181365967,
+                            3.1755683422088623,
+                            -0.4929649829864502,
+                            1.0000001192092896
                         ]
                     ]
                 }
             ]
-        },
-        {
-            "Collision": false,
-            "ModelName": "SM_Station_TicketOffice_01",
-            "ObjectCount": 0,
-            "Objects": []
         }
     ]
 }
