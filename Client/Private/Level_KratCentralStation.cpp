@@ -181,8 +181,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	// 문 같이 상호작용 하는 것들
-	if (FAILED(Ready_Interact()))
-		return E_FAIL;
+	//if (FAILED(Ready_Interact()))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -230,18 +230,19 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 
 HRESULT CLevel_KratCentralStation::Ready_Dummy()
 {
-	CStaticMesh::STATICMESH_DESC Desc{};
+	CPBRMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
 	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("Hotel");
 	lstrcpy(Desc.szName, TEXT("Hotel"));
-	lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Hotel"));
+	//lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Hotel"));
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Dummy"), &pGameObject, &Desc)))
 		return E_FAIL;
 
-	m_pGameInstance->PushOctoTreeObjects(pGameObject);
+	//m_pGameInstance->PushOctoTreeObjects(pGameObject);
 
 	return S_OK;
 }
@@ -360,8 +361,8 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 	m_pGameInstance->QueryVisible();
 
 	vector<class CGameObject*> AllStaticMesh = m_pGameInstance->GetIndexToObj();
-	const auto& VisitCell = m_pGameInstance->GetCulledStaticObjects();
-	const auto& vTypeTable = m_pGameInstance->GetObjectType();
+	vector<_uint> VisitCell = m_pGameInstance->GetCulledStaticObjects();
+	vector<OCTOTREEOBJECTTYPE> vTypeTable = m_pGameInstance->GetObjectType();
 
 	for (_uint i = 0; i < static_cast<_uint>(AllStaticMesh.size()); ++i)
 		AllStaticMesh[i]->Set_bLightOnOff(false);

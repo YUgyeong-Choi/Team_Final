@@ -29,6 +29,7 @@ private:
 	HRESULT Render_CameraSequence();
 	void Render_SetInfos();
 
+	/* [ ½ÃÄö½º °ü·Ã ] */
 	CCameraSequence* m_CameraSequence;
 	_int m_iCurrentFrame = 0;
 	_bool m_bExpanded = true;
@@ -41,9 +42,11 @@ private:
 	CCameraSequence::CAMERA_KEY* m_pSelectedKey = nullptr;
 
 	_int m_iEditKey = -1;
-	CAMERA_WORLDFRAME m_EditPosKey = {};
-	CAMERA_ROTFRAME m_EditRotKey = {};
+	CAMERA_WORLDFRAME m_EditMatrixPosKey = {};
+	CAMERA_POSFRAME m_EditOffSetPosKey = {};
+	CAMERA_ROTFRAME m_EditOffSetRotKey = {};
 	CAMERA_FOVFRAME m_EditFovKey = {};
+	CAMERA_TARGETFRAME m_EditTargetKey = {};
 	_int m_iChangeKeyFrame = 0;
 	CUTSCENE_TYPE m_eCutSceneType = CUTSCENE_TYPE::WAKEUP;
 

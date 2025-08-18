@@ -331,7 +331,7 @@ void COctoTree_Manager::QueryVisible()
 		// 현재 영역들의 AABB를 합친다 (1차 핉터)
         AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
     }
-
+    AABB_Inflate(tAreaUnion, 10.f);
 
     // 트리 탐색 시작
     m_TempNodeStack.clear();
@@ -356,7 +356,7 @@ void COctoTree_Manager::QueryVisible()
         _bool bOverlapAnyArea = false;
         for (const AABBBOX& tAreaBox : CurrentBounds)
         {
-            if (AABB_IntersectsAABB(node.AABBBounds, tAreaBox))
+            if (AABB_IntersectsAABB_Eps(node.AABBBounds, tAreaBox, 10.f))
             {
                 bOverlapAnyArea = true;
                 break;
@@ -655,6 +655,11 @@ FrustumHit COctoTree_Manager::Frustum::OctoIsInAABB(const _float3& bmin, const _
     const _float fPadOtherWorld = 0.15f; 
     const _float fPadRatio = 0.35f;
 
+    const _float fPadTiltWorld = 10.0f;
+    const _float fPadTiltRatio = 0.25f;
+    const _float fOutsideEpsTilt = 0.02f;
+    const _float fInsideSlackTiltK = -0.15f;
+
     XMVECTOR vMin = XMLoadFloat3(&bmin);
     XMVECTOR vMax = XMLoadFloat3(&bmax);
     XMVECTOR vCenter = 0.5f * (vMin + vMax);
@@ -684,10 +689,20 @@ FrustumHit COctoTree_Manager::Frustum::OctoIsInAABB(const _float3& bmin, const _
             fProjRadius += fPadOtherWorld;
         }
 
-        if (fSignedCenterDist + fProjRadius < -fOutsideEps)
+        const _bool bTopOrBottom =
+            (iPlane == static_cast<_int>(PlaneID::Top)) || (iPlane == static_cast<_int>(PlaneID::Bottom));
+
+        if (bTopOrBottom)
+        {
+            fProjRadius += fPadTiltWorld + fPadTiltRatio * fHalfDiag;
+        }
+        const _float fThisOutsideEps = bTopOrBottom ? fOutsideEpsTilt : fOutsideEps;
+        const _float fThisInsideSlack = bTopOrBottom ? (fInsideSlackTiltK * fHalfDiag) : fInsideSlack;
+
+        if (fSignedCenterDist + fProjRadius < -fThisOutsideEps)
             return FrustumHit::Outside;
 
-        if (fSignedCenterDist - fProjRadius < fInsideSlack)
+        if (fSignedCenterDist - fProjRadius < fThisInsideSlack)
             bAnyIntersect = true;
     }
 

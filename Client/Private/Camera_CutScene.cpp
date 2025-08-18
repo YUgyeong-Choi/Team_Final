@@ -170,10 +170,10 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 		const auto& a = vec[i];
 		const auto& b = vec[i + 1];
 
-		if (curFrame >= a.keyFrame && curFrame <= b.keyFrame)
+		if (curFrame >= a.iKeyFrame && curFrame <= b.iKeyFrame)
 		{
-			const float t = float(curFrame - a.keyFrame) / float(max(1, b.keyFrame - a.keyFrame));
-			const INTERPOLATION_CAMERA interp = a.interpPosition;
+			const float t = float(curFrame - a.iKeyFrame) / float(max(1, b.iKeyFrame - a.iKeyFrame));
+			const INTERPOLATION_CAMERA interp = a.interpMatrixPos;
 
 			// Decompose A
 			XMVECTOR sA, rA, tA;
@@ -223,7 +223,7 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 	}
 
 	// 범위 밖이면 고정
-	const _matrix& m = (curFrame <= vec.front().keyFrame) ? vec.front().WorldMatrix : vec.back().WorldMatrix;
+	const _matrix& m = (curFrame <= vec.front().iKeyFrame) ? vec.front().WorldMatrix : vec.back().WorldMatrix;
 	m_pTransformCom->Set_WorldMatrix(m);
 }
 
@@ -238,10 +238,10 @@ void CCamera_CutScene::Interp_Fov(_int curFrame)
 		const auto& a = vec[i];
 		const auto& b = vec[i + 1];
 
-		if (curFrame >= a.keyFrame && curFrame <= b.keyFrame)
+		if (curFrame >= a.iKeyFrame && curFrame <= b.iKeyFrame)
 		{
 			const INTERPOLATION_CAMERA interp = a.interpFov;
-			float t = float(curFrame - a.keyFrame) / float(max(1, b.keyFrame - a.keyFrame));
+			float t = float(curFrame - a.iKeyFrame) / float(max(1, b.iKeyFrame - a.iKeyFrame));
 
 			_float result = a.fFov;
 
@@ -274,15 +274,15 @@ void CCamera_CutScene::Interp_Fov(_int curFrame)
 	}
 
 	// 경계 외에서는 처음 또는 마지막 값 고정
-	if (curFrame <= vec.front().keyFrame)
+	if (curFrame <= vec.front().iKeyFrame)
 		Set_FOV(XMConvertToRadians(vec.front().fFov));
-	else if (curFrame >= vec.back().keyFrame)
+	else if (curFrame >= vec.back().iKeyFrame)
 		Set_FOV(XMConvertToRadians(vec.back().fFov));
 }
 
 void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 {
-	const auto& vec = m_CameraDatas.vecRotData;
+	const auto& vec = m_CameraDatas.vecOffSetRotData;
 	if (vec.size() < 1)
 		return;
 
@@ -291,10 +291,10 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 		const auto& a = vec[i];
 		const auto& b = vec[i + 1];
 
-		if (curFrame >= a.keyFrame && curFrame <= b.keyFrame)
+		if (curFrame >= a.iKeyFrame && curFrame <= b.iKeyFrame)
 		{
-			const INTERPOLATION_CAMERA interp = a.interpRotation;
-			float t = float(curFrame - a.keyFrame) / float(max(1, b.keyFrame - a.keyFrame));
+			const INTERPOLATION_CAMERA interp = a.interpOffSetRot;
+			float t = float(curFrame - a.iKeyFrame) / float(max(1, b.iKeyFrame - a.iKeyFrame));
 
 			XMVECTOR rotA = XMLoadFloat3(&a.offSetRot);
 			XMVECTOR rotB = XMLoadFloat3(&b.offSetRot);
@@ -327,10 +327,10 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 	}
 
 	// 범위 바깥이면 시작/끝값
-	if (curFrame <= vec.front().keyFrame)
+	if (curFrame <= vec.front().iKeyFrame)
 		m_vCurrentShakeRot = XMLoadFloat3(&vec.front().offSetRot);
-	else if (curFrame >= vec.back().keyFrame)
-		if (vec.back().interpRotation == INTERPOLATION_CAMERA::NONE)
+	else if (curFrame >= vec.back().iKeyFrame)
+		if (vec.back().interpOffSetRot == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
 		else
 			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().offSetRot);
@@ -384,8 +384,8 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 		for (const auto& posJson : j["vecPosData"])
 		{
 			CAMERA_WORLDFRAME posFrame;
-			posFrame.keyFrame = posJson["keyFrame"];
-			posFrame.interpPosition = posJson["interpPosition"];
+			posFrame.iKeyFrame = posJson["keyFrame"];
+			posFrame.interpMatrixPos = posJson["interpPosition"];
 
 			const std::vector<float>& matValues = posJson["worldMatrix"];
 			XMFLOAT4X4 mat;
@@ -402,15 +402,15 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 		for (const auto& rotJson : j["vecRotData"])
 		{
 			CAMERA_ROTFRAME rotFrame;
-			rotFrame.keyFrame = rotJson["keyFrame"];
+			rotFrame.iKeyFrame = rotJson["keyFrame"];
 			rotFrame.offSetRot = XMFLOAT3(
 				rotJson["rotation"][0],
 				rotJson["rotation"][1],
 				rotJson["rotation"][2]
 			);
-			rotFrame.interpRotation = rotJson["interpRotation"];
+			rotFrame.interpOffSetRot = rotJson["interpRotation"];
 
-			data.vecRotData.push_back(rotFrame);
+			data.vecOffSetRotData.push_back(rotFrame);
 		}
 	}
 
@@ -420,7 +420,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 		for (const auto& fovJson : j["vecFovData"])
 		{
 			CAMERA_FOVFRAME fovFrame;
-			fovFrame.keyFrame = fovJson["keyFrame"];
+			fovFrame.iKeyFrame = fovJson["keyFrame"];
 			fovFrame.fFov = fovJson["fFov"];
 			fovFrame.interpFov = fovJson["interpFov"];
 

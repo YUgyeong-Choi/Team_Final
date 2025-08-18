@@ -18,12 +18,20 @@ public:
 
         XMFLOAT3 position;
         XMFLOAT3 rotation;  
-        XMFLOAT3 offSetRotation;
-        _float fFov;
+        INTERPOLATION_CAMERA interpWorldPos;
 
-        INTERPOLATION_CAMERA interpPosition;
-        INTERPOLATION_CAMERA interpRotation;
+        XMFLOAT3 offSetPosition;
+        INTERPOLATION_CAMERA interpOffSetPos;
+
+        XMFLOAT3 offSetRotation;
+        INTERPOLATION_CAMERA interpOffSetRot;
+
+        _float fFov;
         INTERPOLATION_CAMERA interpFov;
+
+        TARGET_CAMERA eTarget;
+        _float fPitch;
+        _float fYaw;
 
         //_bool bLookAt = false;
         //_vector lookAtTarget;
@@ -44,9 +52,11 @@ public:
     {
         switch (typeIndex)
         {
-        case 0: return "Position";
-        case 1: return "Rotation";
-        case 2: return "Fov";
+        case 0: return "MatrixPos";
+        case 1: return "OffSetPos";
+        case 2: return "OffSetRot";
+        case 3: return "Fov";
+        case 4: return "Target";
         default: return "Unknown";
         }
     }
@@ -65,11 +75,15 @@ public:
         static char label[64];
         switch (index)
         {
-        case 0: return "Position";
+        case 0: return "MatrixPos";
             sprintf_s(label, "Camera Key %d", index);
-        case 1: return "Rotation";
+        case 1: return "OffSetPos";
             sprintf_s(label, "Camera Key %d", index);
-        case 2: return "Fov";
+        case 2: return "OffSetRot";
+            sprintf_s(label, "Camera Key %d", index);
+        case 3: return "Fov";
+            sprintf_s(label, "Camera Key %d", index);
+        case 4: return "Target";
             sprintf_s(label, "Camera Key %d", index);
         default: return "Unknown";
         }
@@ -101,9 +115,11 @@ public:
     }
 public:
     vector<CAMERA_KEY> m_vecKeys;
-    vector<_int> m_vecPosKeyFrames;
-    vector<_int> m_vecRotKeyFrames;
+    vector<_int> m_vecMatrixPosKeyFrames;
+    vector<_int> m_vecOffSetPosKeyFrames;
+    vector<_int> m_vecOffSetRotKeyFrames;
     vector<_int> m_vecFovKeyFrames;
+    vector<_int> m_vecTargetKeyFrames;
     _int m_iFrameMax = { 80 };
     _int m_iFrameMin = { 0 };
 };
