@@ -10,12 +10,23 @@ CModel_Instance::CModel_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 }
 
-CModel_Instance::CModel_Instance(const CModel_Instance& Prototype)
+CModel_Instance::CModel_Instance(const CModel_Instance& Prototype, void* pArg)
 	: CModel(Prototype)
-	, m_Meshes{ Prototype.m_Meshes }
+	//, m_Meshes{ Prototype.m_Meshes }
 {
-	for (auto& pMesh : m_Meshes)
-		Safe_AddRef(pMesh);
+	//for (auto& pMesh : m_Meshes)
+	//	Safe_AddRef(pMesh);
+
+	m_Meshes.reserve(Prototype.m_Meshes.size());
+
+	for (auto& pMesh : Prototype.m_Meshes)
+	{
+		// 얕은 복사 대신 Clone 호출
+		CMesh_Instance* pClonedMesh = static_cast<CMesh_Instance*>(pMesh->Clone(pArg));
+
+		if (pClonedMesh)
+			m_Meshes.push_back(pClonedMesh);
+	}
 }
 
 HRESULT CModel_Instance::Initialize_Prototype(MODEL eType, const _char* pModelFilePath, _fmatrix PreTransformMatrix)
@@ -140,13 +151,13 @@ CModel_Instance* CModel_Instance::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 
 CComponent* CModel_Instance::Clone(void* pArg)
 {
-	CModel_Instance* pInstance = new CModel_Instance(*this);
+	CModel_Instance* pInstance = new CModel_Instance(*this, pArg);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	/*if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CModel_Instance");
 		Safe_Release(pInstance);
-	}
+	}*/
 
 	return pInstance;
 }

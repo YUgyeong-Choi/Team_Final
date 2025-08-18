@@ -13,6 +13,7 @@
 #include "DH_ToolMesh.h"
 #include "UI_Container.h"
 #include "DoorMesh.h"
+#include "StaticMesh.h"
 
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -57,6 +58,9 @@ HRESULT CLevel_YG::Initialize()
 
 	// 문 같이 상호작용 하는 것들
 	if (FAILED(Ready_Interact()))
+		return E_FAIL;
+
+	if (FAILED(Add_MapActor()))
 		return E_FAIL;
 
 	/* [ 카메라 셋팅 ] */
@@ -681,6 +685,20 @@ HRESULT CLevel_YG::Ready_Interact()
 	return S_OK;
 }
 
+HRESULT CLevel_YG::Add_MapActor()
+{
+	//여기서 액터를 추가해준다. 메인스레드에서 액터를 추가하는 것이 안전하다고 한다.
+
+	list<CGameObject*> ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_StaticMesh"));
+
+	for (CGameObject* pObj : ObjList)
+	{
+		if (FAILED(static_cast<CStaticMesh*>(pObj)->Add_Actor()))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
 
 HRESULT CLevel_YG::Ready_ImGuiTools()
 {

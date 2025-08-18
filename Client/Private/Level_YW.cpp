@@ -10,6 +10,7 @@
 
 #pragma region 다른 사람 거
 #include "PBRMesh.h"
+#include "StaticMesh.h"
 #pragma endregion
 
 
@@ -41,10 +42,14 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;	
 
-	/*if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
-		return E_FAIL;*/	
+	if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
+		return E_FAIL;	
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
+
+	// 무조건 커서를 보이게 만들기
+	while (ShowCursor(TRUE) < 0);
+
 	return S_OK;
 }
 
@@ -110,6 +115,8 @@ HRESULT CLevel_YW::Render()
 
 HRESULT CLevel_YW::Ready_Lights()
 {
+	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YW));
+
 	LIGHT_DESC			LightDesc{};
 
 	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
@@ -366,20 +373,32 @@ HRESULT CLevel_YW::Ready_Layer_TestDecal(const _wstring strLayerTag)
 
 HRESULT CLevel_YW::Ready_Layer_DummyMap(const _wstring strLayerTag)
 {
-	CPBRMesh::STATICMESH_DESC Desc{};
+	//CPBRMesh::STATICMESH_DESC Desc{};
+	//Desc.iRender = 0;
+	//Desc.m_eMeshLevelID = LEVEL::YW;
+	//Desc.szMeshID = TEXT("Train");
+	//lstrcpy(Desc.szName, TEXT("Train"));
+
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+	//	ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
+	//	return E_FAIL;
+
+	//Desc.szMeshID = TEXT("Station");
+	//lstrcpy(Desc.szName, TEXT("Station"));
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+	//	ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
+	//	return E_FAIL;
+
+
+	CStaticMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
 	Desc.m_eMeshLevelID = LEVEL::YW;
-	Desc.szMeshID = TEXT("Train");
-	lstrcpy(Desc.szName, TEXT("Train"));
+	lstrcpy(Desc.szName, TEXT("Hotel"));
+	lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Hotel"));
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
-		return E_FAIL;
-
-	Desc.szMeshID = TEXT("Station");
-	lstrcpy(Desc.szName, TEXT("Station"));
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Dummy"), &pGameObject, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -417,8 +436,6 @@ void CLevel_YW::Free()
 	ImGui::DestroyContext();
 
 	//Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
-
-	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YW));
 
 	for (CGameObject* pTool : m_ImGuiTools)
 	{

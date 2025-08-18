@@ -108,28 +108,36 @@ namespace Client
 #pragma region YG
 	struct CAMERA_WORLDFRAME
 	{
-		_int keyFrame;
+		_int iKeyFrame;
 		_matrix WorldMatrix;
-		INTERPOLATION_CAMERA interpPosition;
+		INTERPOLATION_CAMERA interpMatrixPos;
 	};
 
 	struct CAMERA_POSFRAME
 	{
-		_int keyFrame;
+		_int iKeyFrame;
 		XMFLOAT3 offSetPos;
-		INTERPOLATION_CAMERA interpPosition;
+		INTERPOLATION_CAMERA interpOffSetPos;
 	};
 	struct CAMERA_ROTFRAME
 	{
-		_int keyFrame;
+		_int iKeyFrame;
 		XMFLOAT3 offSetRot;
-		INTERPOLATION_CAMERA interpRotation;
+		INTERPOLATION_CAMERA interpOffSetRot;
 	};
 	struct CAMERA_FOVFRAME
 	{
-		_int keyFrame;
+		_int iKeyFrame;
 		_float fFov;
 		INTERPOLATION_CAMERA interpFov;
+	};
+
+	struct CAMERA_TARGETFRAME
+	{
+		_int iKeyFrame;
+		_wstring strLayerName;
+		_float fPitch;
+		_float fYaw;
 	};
 
 	struct CAMERA_FRAMEDATA
@@ -140,8 +148,10 @@ namespace Client
 		_float fPitch;
 		_float fYaw;
 		vector<CAMERA_WORLDFRAME> vecWorldMatrixData;
-		vector<CAMERA_ROTFRAME> vecRotData;
+		vector<CAMERA_POSFRAME> vecOffSetPosData;
+		vector<CAMERA_ROTFRAME> vecOffSetRotData;
 		vector<CAMERA_FOVFRAME> vecFovData;
+		vector<CAMERA_TARGETFRAME> vecTargetData;
 	};
 
 #pragma endregion
