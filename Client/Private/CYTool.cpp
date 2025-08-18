@@ -510,6 +510,13 @@ HRESULT CCYTool::Window_Particle()
 		m_vSpeed = desc.vSpeed;
 		m_bGravity = desc.bGravity;
 		m_fGravity = desc.fGravity;
+		m_vRotationAxis = desc.vRotationAxis;
+		m_vRotationSpeed = desc.vRotationSpeed;
+		m_vOrbitAxis = desc.vOrbitAxis;
+		m_vOrbitSpeed = desc.vOrbitSpeed;
+		m_bOrbit = desc.bOrbit;
+		m_bSpin = desc.bSpin;
+		m_vAccel = desc.vAccel;
 
 		m_iLastSelected = m_iSelected;
 	}
@@ -554,13 +561,16 @@ HRESULT CCYTool::Window_Particle()
 	}
 	ImGui::DragFloat2("Orbit Speed (deg/s)", reinterpret_cast<_float*>(&m_vOrbitSpeed), 0.1f, -2000.f, 2000.f);
 
+	// 가감속
+	ImGui::DragFloat2("Accel", reinterpret_cast<_float*>(&m_vAccel), 0.01f, -1000.f, 1000.f, "%.2f");
+	// max / min speed는 그냥 1000 / 0으로 고정하고 쓰겠음 당장은
 
 	/**************************************************/
 	
 	ImGui::Checkbox("Loop", &m_isLoop); ImGui::SameLine();
 	ImGui::Checkbox("Spin", &m_bSpin); ImGui::SameLine();
-	ImGui::Checkbox("Orbit", &m_bOrbit); ImGui::SameLine();
-	ImGui::Checkbox("Prewarm", &m_bOrbit); 
+	ImGui::Checkbox("Orbit", &m_bOrbit);/* ImGui::SameLine();*/
+	//ImGui::Checkbox("Prewarm", &m_bOrbit); 
 
 	//ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
 	ImGui::SeparatorText("Particle Type");
@@ -596,6 +606,9 @@ HRESULT CCYTool::Window_Particle()
 		desc.vOrbitSpeed = m_vOrbitSpeed;
 		desc.bOrbit = m_bOrbit;
 		desc.bSpin = m_bSpin;
+		desc.vAccel = m_vAccel;
+		desc.fMaxSpeed = 1000.f;
+		desc.fMinSpeed = 0.f;
 		desc.isTool = true;
 		pPE->Change_InstanceBuffer(&desc);
 	}

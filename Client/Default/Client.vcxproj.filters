@@ -865,6 +865,9 @@
     <ClInclude Include="..\Public\DoorMesh.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Script.h">
+      <Filter>02.GameObjects\99.UI\Container\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1294,6 +1297,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\DoorMesh.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Script.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

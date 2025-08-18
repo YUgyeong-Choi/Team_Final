@@ -32,7 +32,7 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 	if (FAILED(InitDatas()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_WorldMatrix(m_CutSceneDatas[CUTSCENE_TYPE::TWO].vecWorldMatrixData.front().WorldMatrix);
+	m_pTransformCom->Set_WorldMatrix(m_CutSceneDatas[CUTSCENE_TYPE::WAKEUP].vecWorldMatrixData.front().WorldMatrix);
 	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
 	m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
 
@@ -345,24 +345,24 @@ XMVECTOR CCamera_CutScene::XMMatrixDecompose_T(const _matrix& m)
 
 HRESULT CCamera_CutScene::InitDatas()
 {
-	std::ifstream inFile("../Bin/Save/CutScene/one.json");
+	std::ifstream inFile("../Bin/Save/CutScene/WakeUp.json");
 	if (inFile.is_open())
 	{
 		json j;
 		inFile >> j;
 		inFile.close();
 
-		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::ONE, LoadCameraFrameData(j)));
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::WAKEUP, LoadCameraFrameData(j)));
 	}
 
-	std::ifstream inFile2("../Bin/Save/CutScene/two.json");
+	std::ifstream inFile2("../Bin/Save/CutScene/TutorialDoor.json");
 	if (inFile2.is_open())
 	{
 		json j;
 		inFile2 >> j;
 		inFile2.close();
 
-		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TWO, LoadCameraFrameData(j)));
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TUTORIALDOOR, LoadCameraFrameData(j)));
 	}
 	return S_OK;
 }

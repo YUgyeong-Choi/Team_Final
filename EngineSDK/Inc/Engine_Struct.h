@@ -176,7 +176,7 @@ namespace Engine
 		static const unsigned int					iNumElements = { 7 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXRECT_PARTICLE_INSTANCE;
-
+	
 	typedef struct ENGINE_DLL tagVertexPointParticleInstance
 	{
 		XMFLOAT4		vRight;
@@ -467,35 +467,40 @@ namespace Engine
 		PxVec3 vHitPos = {};
 	}DEBUGRAY_DATA;
 
-	typedef struct tagParticleDesc {
-		_float4		vDirection = {};
 
-		_float		vSpeeds = {};
-		_float		fRotationSpeed = {}; // 자전 속도
-		_float		fOrbitSpeed = {}; // 공전 속도
-		_float		fAccel;        // 가속도 (+면 가속, -면 감속)
+	/* [ 여기 수정할 땐 꼭 CS hlsl도 동시에 수정해주기 바람.... ] */
+	//typedef struct tagParticleDesc {
+	//	_float4		vDirection = {};
 
-		_float		fMaxSpeed;     // 최대 속도 (옵션)
-		_float		fMinSpeed;     // 최소 속도 (옵션, 감속 시 멈춤 방지)
-		_float2		_pad0;
-	}PARTICLEDESC;
+	//	_float		fSpeed = {};
+	//	_float		fRotationSpeed = {}; // 자전 속도
+	//	_float		fOrbitSpeed = {}; // 공전 속도
+	//	_float		fAccel;        // 가속도 (+면 가속, -면 감속)
+
+	//	_float		fMaxSpeed;     // 최대 속도 (옵션)
+	//	_float		fMinSpeed;     // 최소 속도 (옵션, 감속 시 멈춤 방지)
+	//	_float2		_pad0;
+	//}PARTICLEDESC;
 
 	/* PARTICLEDESC + VTXPOSINSTANCE */
-	//typedef struct tagParticleValDesc{
-	//	_float4		vRight;
-	//	_float4		vUp;
-	//	_float4		vLook;
-	//	_float4		vTranslation; // WorldMatrix
-	//
-	//	_float4		vDirection = {};
-	//
-	//	_float2		vLifeTime;
-	//	_float		vSpeeds = {};
-	//	_float		fRotationSpeed = {}; // 자전 속도
-	//
-	//	_float		fOrbitSpeed = {}; // 공전 속도
-	//
-	//}PARTICLEVALDESC;
+	typedef struct tagParticleParamDesc{
+		_float4		vRight;
+		_float4		vUp;
+		_float4		vLook;
+		_float4		vTranslation; // WorldMatrix
+	
+		_float4		vDirection = {};
+	
+		_float2		vLifeTime;
+		_float		fSpeed = {};
+		_float		fRotationSpeed = {}; // 자전 속도
+	
+		_float		fOrbitSpeed = {}; // 공전 속도
+		_float		fAccel;        // 가속도 (+면 가속, -면 감속
+		_float		fMaxSpeed;     // 최대 속도 (옵션)
+		_float		fMinSpeed;     // 최소 속도 (옵션, 감속 시 멈춤 방지)
+
+	}PPDESC;
 
 	typedef struct tagParticleCBuffer {
 		_float		fDeltaTime;       // dt (tool이면 무시)

@@ -132,6 +132,10 @@ private:
 	_float2					m_vRotationSpeed = {}; // 자전 속도
 	_float2					m_vOrbitSpeed = {}; // 공전 속도
 
+	_float2					m_vAccel = {};        // 가속도 (+면 가속, -면 감속)
+	_float					m_fMaxSpeed = { 1000.f };	
+	_float					m_fMinSpeed = { 0.f };
+
 	class CToolParticle*	m_pToolParticle = { nullptr };
 
 #pragma endregion

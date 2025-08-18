@@ -90,7 +90,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 		/* [ 플레이어 제어 ] */
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
-		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::TWO);
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 		m_pCamera_Manager->GetFreeCam()->Get_TransfomCom()->Set_State(STATE::POSITION, _fvector{ 0.f, 0.f,0.f,1.f });
 	}
 }
@@ -155,6 +155,8 @@ HRESULT CLevel_KratCentralStation::Render()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
+	if (FAILED(Ready_Dummy()))
+		return E_FAIL;
 	if (FAILED(Add_MapActor()))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Ready_Lights()))
@@ -222,6 +224,24 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Wego"), &pWegoDesc)))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Dummy()
+{
+	CStaticMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	lstrcpy(Desc.szName, TEXT("Hotel"));
+	lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Hotel"));
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Dummy"), &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pGameInstance->PushOctoTreeObjects(pGameObject);
 
 	return S_OK;
 }
@@ -415,6 +435,12 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a5Min, a5Max;
 	FnToAABB(a5p0, a5p1, a5Min, a5Max);
 
+	// Area 6
+	_float3 a6p0 = _float3{ 186.83f, -0.18f, 24.92f };
+	_float3 a6p1 = _float3{ 113.46f, 48.18f, -75.18f };
+	_float3 a6Min, a6Max;
+	FnToAABB(a6p0, a6p1, a6Min, a6Max);
+
 	{
 		/* [ 1번 구역 ] */
 		const vector<_uint> vecAdj1 = { 2 };
@@ -438,7 +464,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 4번 구역 ] */
-		const vector<_uint> vecAdj4 = { 5, 2 };
+		const vector<_uint> vecAdj4 = { 5, 2, 4 };
 		if (!m_pGameInstance->AddArea_AABB(
 			4, a4Min, a4Max, vecAdj4, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;
@@ -448,6 +474,13 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 		const vector<_uint> vecAdj5 = { 3 , 4 };
 		if (!m_pGameInstance->AddArea_AABB(
 			5, a5Min, a5Max, vecAdj5, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 6번 구역 ] */
+		const vector<_uint> vecAdj6 = { 4 };
+		if (!m_pGameInstance->AddArea_AABB(
+			6, a6Min, a6Max, vecAdj6, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 
@@ -660,8 +693,8 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.WorldMatrix = matWorldFloat;
 
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
-	Desc.vTriggerOffset = _vector();
-	Desc.vTriggerSize = _vector({ 1.f,0.2f,1.f, 0.f });
+	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
+	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),

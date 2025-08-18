@@ -7,6 +7,7 @@
 NS_BEGIN(Engine)
 class CGameInstance;
 class CGameObject;
+class CNavigation;
 NS_END
 
 NS_BEGIN(Client)
@@ -21,12 +22,14 @@ private:
     virtual ~CAStar_Manager() = default;
 
 public:
-    virtual HRESULT Initialize(LEVEL eLevel);
-    virtual HRESULT Priority_Update(_float fTimeDelta);
-    virtual HRESULT Update(_float fTimeDelta);
+    virtual HRESULT Initialize(LEVEL eLevel); // 그 레벨 네비 찾아와서 박아
+    virtual HRESULT Priority_Update(_float fTimeDelta); // 대상 죽었는지 체크해
+    virtual HRESULT Update(_float fTimeDelta); // 경로 찾아
     virtual HRESULT Late_Update(_float fTimeDelta);
     virtual HRESULT Render();
 public:
+
+    HRESULT Replace_NaviMesh(); // 레벨 바뀌면 그 레벨에 맞는 네비 찾아서 박아
  
     // 막혀있는 경우는 false
     _bool Find_Route();
@@ -39,6 +42,8 @@ public:
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };
+
+    CNavigation* m_pNaviCom = { nullptr };
 
 public:
     virtual void Free() override;

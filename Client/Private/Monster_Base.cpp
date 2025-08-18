@@ -113,7 +113,7 @@ void CMonster_Base::Update(_float fTimeDelta)
 			CLockOn_Manager::Get_Instance()->Add_LockOnTarget(this);
 	}
 
-	if (m_isLookAt)
+	if (m_isLookAt && m_pPlayer)
 	{
 
 		//m_pTransformCom->RotationTimeDelta(fTimeDelta, vAxis, 1.f);
@@ -124,7 +124,8 @@ void CMonster_Base::Update(_float fTimeDelta)
 		
 	}
 
-	m_pHPBar->Update(fTimeDelta);
+	if (nullptr != m_pHPBar)
+		m_pHPBar->Update(fTimeDelta);
 
 	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
 
@@ -139,12 +140,17 @@ void CMonster_Base::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	// 더 좋은 방법 있으면 바꾸기
-	if (this == CLockOn_Manager::Get_Instance()->Get_Target())
-		m_pHPBar->Set_RenderTime(2.f);
+	if (nullptr != m_pHPBar)
+	{
+		// 더 좋은 방법 있으면 바꾸기
+		if (this == CLockOn_Manager::Get_Instance()->Get_Target())
+			m_pHPBar->Set_RenderTime(2.f);
 
 
-	m_pHPBar->Late_Update(fTimeDelta);
+		m_pHPBar->Late_Update(fTimeDelta);
+	}
+
+
 
 
 }
@@ -303,7 +309,7 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 		vTrans += m_PrevWorldDelta;
 
 		// 네비 이동 가능 여부 체크 후 위치 재설정
-		if (!m_pNaviCom->isMove(vTrans))
+		if (nullptr != m_pNaviCom && !m_pNaviCom->isMove(vTrans))
 		{
 			vTrans -= m_PrevWorldDelta;
 			m_pTransformCom->Set_State(STATE::POSITION, vTrans);
@@ -417,7 +423,7 @@ _bool CMonster_Base::Check_Detect()
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
 		
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		return true;
 	}
 	

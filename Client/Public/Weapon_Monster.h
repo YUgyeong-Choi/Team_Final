@@ -6,6 +6,7 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CAnimator;
+class CPhysXDynamicActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -16,6 +17,8 @@ public:
 	typedef struct eTagMonsterWeaponDesc : public WEAPON_DESC {
 		_float4 vAxis;
 		_float  fRotationDegree; // 라디안 변환 해주기
+		_float4 vLocalOffset; // 피직스 보정해 줄 오프셋
+		PxVec3 vPhsyxExtent;
 		
 	}MONSTER_WEAPON_DESC;
 
@@ -34,8 +37,13 @@ public:
 	virtual HRESULT Render() override;
 
 
+	void 	Update_Collider();
+	CPhysXDynamicActor* Get_PhysXActor() { return m_pPhysXActorCom; }
+
+
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
+	HRESULT Ready_Actor();
 
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
@@ -48,6 +56,12 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
+private:
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
+	_float4	m_vLocalOffset = {};
+
+	PxVec3 m_physxExtent = {};
 
 public:
 	static CWeapon_Monster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
