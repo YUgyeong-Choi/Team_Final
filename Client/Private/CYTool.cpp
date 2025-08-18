@@ -88,7 +88,10 @@ void CCYTool::Update(_float fTimeDelta)
 		{
 			if (m_iCurFrame >= *pItem.iStart && m_fCurFrame <= *pItem.iEnd)
 			{
-				pItem.pEffect->Update_Tool(fTimeDelta, static_cast<_float>(m_iCurFrame - *pItem.iStart));
+				if (m_bUpdateRuntimeMode)
+					pItem.pEffect->Update(fTimeDelta);
+				else
+					pItem.pEffect->Update_Tool(fTimeDelta, static_cast<_float>(m_iCurFrame - *pItem.iStart));
 				// 이펙트를 재생
 				//PlaySpriteEffect(pItem.iType, m_fCurFrame - pItem.iStart);
 			}
@@ -317,6 +320,8 @@ HRESULT CCYTool::SequenceWindow()
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 	ImGui::Checkbox("Loop", &m_pSequence->m_bLoop);
+	ImGui::SameLine();
+	ImGui::Checkbox("Update_RuntimeMode", &m_bUpdateRuntimeMode);
 
 	ImSequencer::Sequencer(
 		m_pSequence,
@@ -517,7 +522,8 @@ HRESULT CCYTool::Window_Particle()
 		m_bOrbit = desc.bOrbit;
 		m_bSpin = desc.bSpin;
 		m_vAccel = desc.vAccel;
-
+		m_vMin_MaxSpeed.x = desc.fMinSpeed;
+		m_vMin_MaxSpeed.y = desc.fMaxSpeed;
 		m_iLastSelected = m_iSelected;
 	}
 
@@ -563,7 +569,7 @@ HRESULT CCYTool::Window_Particle()
 
 	// 가감속
 	ImGui::DragFloat2("Accel", reinterpret_cast<_float*>(&m_vAccel), 0.01f, -1000.f, 1000.f, "%.2f");
-	// max / min speed는 그냥 1000 / 0으로 고정하고 쓰겠음 당장은
+	ImGui::DragFloat2("Min/Max Speed", reinterpret_cast<_float*>(&m_vMin_MaxSpeed), 0.01f, -1000.f, 1000.f, "%.2f");
 
 	/**************************************************/
 	
@@ -607,8 +613,8 @@ HRESULT CCYTool::Window_Particle()
 		desc.bOrbit = m_bOrbit;
 		desc.bSpin = m_bSpin;
 		desc.vAccel = m_vAccel;
-		desc.fMaxSpeed = 1000.f;
-		desc.fMinSpeed = 0.f;
+		desc.fMinSpeed = m_vMin_MaxSpeed.x;
+		desc.fMaxSpeed = m_vMin_MaxSpeed.y;
 		desc.isTool = true;
 		pPE->Change_InstanceBuffer(&desc);
 	}

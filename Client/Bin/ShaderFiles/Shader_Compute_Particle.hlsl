@@ -260,8 +260,10 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         // 루프: 위치/라이프만 초기화(기하 기준은 유지하고 싶으면 아래처럼 Translation만 복원)
         if (IsLoop != 0 && pp.LifeTime.y >= pp.LifeTime.x)
         {
+            //pp = gInitInst[i];
             pp.LifeTime.y = 0.0f;
             pos = gInitInst[i].Translation.xyz; // 위치만 리셋
+            pp.Speed = gInitInst[i].Speed;
             // 필요 시 basis도 초기화 원하면 아래 주석 해제
             // pp.Right = gInitInst[i].Right;
             // pp.Up    = gInitInst[i].Up;

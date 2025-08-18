@@ -75,7 +75,7 @@ void CToolParticle::Priority_Update(_float fTimeDelta)
 
 void CToolParticle::Update(_float fTimeDelta)
 {
-
+	__super::Update(fTimeDelta);
 	return ;
 }
 
