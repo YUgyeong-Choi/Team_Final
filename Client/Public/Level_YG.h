@@ -38,7 +38,7 @@ private:
 	HRESULT Ready_Layer_Sky(const _wstring strLayerTag);
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();
-
+	HRESULT Add_MapActor(); //맵 액터 추가(콜라이더 활성화)
 private:
 	HRESULT Load_Shader();
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);

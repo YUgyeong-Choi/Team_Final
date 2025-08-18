@@ -1,8 +1,7 @@
 #include "YGTool.h"
 #include "GameInstance.h"
 #include "Client_Calculation.h"
-//ImGuiFileDialog g_ImGuiFileDialog;
-//ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
+
 #include "Camera.h"
 #include "Camera_Manager.h"
 
@@ -34,6 +33,8 @@ HRESULT CYGTool::Initialize(void* pArg)
 	m_CameraSequence->Add(0,10,0);
 	m_CameraSequence->Add(0,10,1);
 	m_CameraSequence->Add(0,10,2);
+	m_CameraSequence->Add(0,10,3);
+	m_CameraSequence->Add(0,10,4);
 	return S_OK;
 }
 
@@ -252,12 +253,12 @@ HRESULT CYGTool::Render_CameraTool()
 
 				for (auto& pos : m_CameraDatas.vecRotData)
 				{
-					m_CameraSequence->Add_KeyFrame(1, pos.keyFrame);
+					m_CameraSequence->Add_KeyFrame(2, pos.keyFrame);
 				}
 
 				for (auto& pos : m_CameraDatas.vecFovData)
 				{
-					m_CameraSequence->Add_KeyFrame(2, pos.keyFrame);
+					m_CameraSequence->Add_KeyFrame(3, pos.keyFrame);
 				}
 
 				m_iEndFrame = m_CameraDatas.iEndFrame;
@@ -299,7 +300,7 @@ HRESULT CYGTool::Render_CameraTool()
 			if (ImGui::Combo("Interp Position", &interpPos, interpNames, IM_ARRAYSIZE(interpNames)))
 				m_pSelectedKey->interpPosition = static_cast<INTERPOLATION_CAMERA>(interpPos);
 		}
-		else if (m_iSelected == 1)
+		else if (m_iSelected == 2)
 		{
 			// Offset Rot
 			XMFLOAT3 offSetRot = m_pSelectedKey->offSetRotation;
@@ -311,7 +312,7 @@ HRESULT CYGTool::Render_CameraTool()
 			if (ImGui::Combo("Interp Rotation", &interpRot, interpNames, IM_ARRAYSIZE(interpNames)))
 				m_pSelectedKey->interpRotation = static_cast<INTERPOLATION_CAMERA>(interpRot);
 		}
-		else if (m_iSelected == 2)
+		else if (m_iSelected == 3)
 		{
 			// Fov
 			ImGui::DragFloat("FOV", &m_pSelectedKey->fFov, 0.1f, 1.0f, 179.0f);
@@ -366,9 +367,9 @@ HRESULT CYGTool::Render_CameraTool()
 					m_CameraDatas.vecWorldMatrixData.push_back(posFrame);
 					m_CameraSequence->Add_KeyFrame(0, m_pSelectedKey->keyFrame);
 				}
-			}
 				break;
-			case 1:
+			}
+			case 2:
 			{
 				_bool exist = false;
 				for (auto& keyframe : m_CameraDatas.vecRotData)
@@ -387,11 +388,11 @@ HRESULT CYGTool::Render_CameraTool()
 					rotFrame.offSetRot = m_pSelectedKey->offSetRotation;
 					rotFrame.interpRotation = m_pSelectedKey->interpRotation;
 					m_CameraDatas.vecRotData.push_back(rotFrame);
-					m_CameraSequence->Add_KeyFrame(1, m_pSelectedKey->keyFrame);
+					m_CameraSequence->Add_KeyFrame(2, m_pSelectedKey->keyFrame);
 				}
-			}
 				break;
-			case 2:
+			}
+			case 3:
 			{
 				_bool exist = false;
 				for (auto& keyframe : m_CameraDatas.vecFovData)
@@ -410,10 +411,10 @@ HRESULT CYGTool::Render_CameraTool()
 					fovFrame.fFov = m_pSelectedKey->fFov;
 					fovFrame.interpFov = m_pSelectedKey->interpFov;
 					m_CameraDatas.vecFovData.push_back(fovFrame);
-					m_CameraSequence->Add_KeyFrame(2, m_pSelectedKey->keyFrame);
+					m_CameraSequence->Add_KeyFrame(3, m_pSelectedKey->keyFrame);
 				}
-			}
 				break;
+			}
 			default:
 				break;
 			}
@@ -653,7 +654,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		ImGui::DragInt("OffsetRot Key", &m_iChangeKeyFrame);
 		if (ImGui::Button("OffsetRot Change KeyFrame"))
 		{
-			m_CameraSequence->Change_KeyFrame(1, m_EditRotKey.keyFrame, m_iChangeKeyFrame);
+			m_CameraSequence->Change_KeyFrame(2, m_EditRotKey.keyFrame, m_iChangeKeyFrame);
 			m_EditRotKey.keyFrame = m_iChangeKeyFrame;
 		}
 
@@ -666,7 +667,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecRotData.size()))
 			{
-				m_CameraSequence->Delete_KeyFrame(1, m_CameraDatas.vecRotData[m_iEditKey].keyFrame);
+				m_CameraSequence->Delete_KeyFrame(2, m_CameraDatas.vecRotData[m_iEditKey].keyFrame);
 				m_CameraDatas.vecRotData.erase(m_CameraDatas.vecRotData.begin() + m_iEditKey);
 				m_iEditKey = -1;
 				m_EditRotKey = {};
@@ -711,7 +712,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		ImGui::DragInt("Fov Key", &m_iChangeKeyFrame);
 		if (ImGui::Button("Fov Change KeyFrame"))
 		{
-			m_CameraSequence->Change_KeyFrame(1, m_EditFovKey.keyFrame, m_iChangeKeyFrame);
+			m_CameraSequence->Change_KeyFrame(3, m_EditFovKey.keyFrame, m_iChangeKeyFrame);
 			m_EditFovKey.keyFrame = m_iChangeKeyFrame;
 		}
 
@@ -724,7 +725,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecFovData.size()))
 			{
-				m_CameraSequence->Delete_KeyFrame(2, m_CameraDatas.vecFovData[m_iEditKey].keyFrame);
+				m_CameraSequence->Delete_KeyFrame(3, m_CameraDatas.vecFovData[m_iEditKey].keyFrame);
 				m_CameraDatas.vecFovData.erase(m_CameraDatas.vecFovData.begin() + m_iEditKey);
 				m_iEditKey = -1;
 				m_EditFovKey = {};
