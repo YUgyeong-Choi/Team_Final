@@ -175,6 +175,27 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	SitAnimationMove(fTimeDelta);
 
 	/* [ 이곳은 애니메이션 실험실입니다. ] */
+
+	// 그라인더 테스트 (이런 느낌으로 사용하면 괜찮을 거 같아요.
+	// 주석은 나중에 삭제하셔도 됩니다.
+
+	/*if (KEY_DOWN(DIK_R))
+	{
+		if (m_pAnimator->CheckBool("Grinding") == false)
+		{
+			m_pAnimator->SetTrigger("Grinder");
+		}
+	}
+
+	if (KEY_PRESSING(DIK_R))
+	{
+		m_pAnimator->SetBool("Grinding", true);
+	}
+
+	if (KEY_UP(DIK_R))
+	{
+		m_pAnimator->SetBool("Grinding", false);
+	}*/
 	if(KEY_DOWN(DIK_Y))
 	{
 		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
@@ -184,6 +205,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
+		m_pAnimator->SetTrigger("Fatal");
 	}
 	if (KEY_DOWN(DIK_U))
 	{
@@ -802,6 +824,22 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::ARM_FAIL;
 
 	return eAnimCategory::NONE;
+}
+
+void CPlayer::Register_Events()
+{
+	m_pAnimator->RegisterEventListener("OnSwordTraill", [this](const string& ) {
+		if (m_pWeapon)
+		{
+			m_pWeapon->Set_WeaponTrail_Active(true);
+		}
+		});
+	m_pAnimator->RegisterEventListener("OffSwordTraill", [this](const string&) {
+		if (m_pWeapon)
+		{
+			m_pWeapon->Set_WeaponTrail_Active(false);
+		}
+		});
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)

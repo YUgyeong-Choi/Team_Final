@@ -80,6 +80,7 @@ private:
 
 private: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
+	virtual void Register_Events() override;
 
 private: /* [ 루트모션 활성화 ] */
 	void			RootMotionActive(_float fTimeDelta);
