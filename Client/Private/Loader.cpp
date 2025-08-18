@@ -470,11 +470,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #pragma region 이것을 멀티스레드로(일단 이렇게 놔둠 문제 생길 시 확인)
 
-	auto futureStation = std::async(std::launch::async, [&] {
+	/*auto futureStation = std::async(std::launch::async, [&] {
 		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 			return E_FAIL;
 		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION");
-		});
+		});*/
 
 	/*auto futureHotel = std::async(std::launch::async, [&] {
 		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
@@ -488,7 +488,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	//	return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST");
 	//	});
 
-	if (FAILED(futureStation.get())) return E_FAIL;
+	//if (FAILED(futureStation.get())) return E_FAIL;
 	//if (FAILED(futureHotel.get())) return E_FAIL;
 	//if (FAILED(futureTest.get())) return E_FAIL;
 
@@ -522,13 +522,13 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;*/
 
 
-	////맵
-	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
+	//맵
+	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
 
-	////어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION"))) //TEST, STAION
-	//	return E_FAIL;
+	//어떤 맵을 소환 시킬 것인지?
+	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION"))) //TEST, STAION
+		return E_FAIL;
 
 	////맵
 	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))

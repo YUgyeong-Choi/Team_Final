@@ -10,7 +10,7 @@ class ENGINE_DLL CModel_Instance final : public CModel
 {
 protected:
 	CModel_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CModel_Instance(const CModel_Instance& Prototype, void* pArg);
+	CModel_Instance(const CModel_Instance& Prototype/*, void* pArg*/);
 	virtual ~CModel_Instance() = default;
 
 public:
