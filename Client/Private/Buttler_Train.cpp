@@ -33,11 +33,38 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	
 	m_fHp = 300;
 
-	m_pHPBar->Set_MaxHp(m_fHp);
+	if(nullptr != m_pHPBar)
+		m_pHPBar->Set_MaxHp(m_fHp);
 
 	// 락온 용
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
+
+	m_pAnimator->RegisterEventListener("AddAttackCount", [this](const string callbackName) {
+
+			++m_iAttackCount;
+
+		});
+
+	m_pAnimator->RegisterEventListener("BackMoveEnd", [this](const string callbackName) {
+		
+			m_pAnimator->SetBool("IsBack", false);
+
+		});
+
+	m_pAnimator->RegisterEventListener("NotLookAt", [this](const string callbackName) {
+
+		m_isLookAt = false;
+
+		});
+
+	m_pAnimator->RegisterEventListener("LookAt", [this](const string callbackName) {
+
+		m_isLookAt = true;
+
+		});
+
+
 	
 	
 	return S_OK;
@@ -155,6 +182,8 @@ void CButtler_Train::Update_State()
 
     m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
+	
+
 
 	if (m_strStateName.find("Idle") != m_strStateName.npos)
 	{
@@ -162,10 +191,6 @@ void CButtler_Train::Update_State()
 
 	}
 
-	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk") != m_strStateName.npos)
-		m_isLookAt = true;
-	else
-		m_isLookAt = false;
 
 	if (m_strStateName.find("Attack") != m_strStateName.npos)
 	{
@@ -181,12 +206,15 @@ void CButtler_Train::Update_State()
 		
 	}
 
-	if (m_iAttackCount == 10)
+	if (m_iAttackCount == 3)
 	{
 		// 뒤로 가게 하기
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+
+		if (XMVectorGetX(XMVector3Length(vDist)) < 1.f)
+			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+		else
+			m_pAnimator->SetInt("Dir", ENUM_CLASS(MONSTER_DIR::B));
 		m_pAnimator->SetBool("IsBack", true);
-		//m_pAnimator->SetInt("Dir", _int(Calc_Ray()));
 		
 		m_iAttackCount = 0;
 
@@ -201,22 +229,9 @@ void CButtler_Train::Update_State()
 	}
 	
 
-	if (m_strStateName.find("Attack") != m_strStateName.npos)
-	{
-		if (m_pAnimator->IsFinished())
-		{
-			++m_iAttackCount;
-		}
-	}
+	
 
-	if (m_strStateName.find("Walk") != m_strStateName.npos)
-	{
-		if (m_strStateName.find("F") == m_strStateName.npos)
-		{
-			if (m_pAnimator->IsFinished())
-				m_pAnimator->SetBool("IsBack", false);
-		}
-	}
+
 
 }
 
@@ -250,8 +265,10 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		m_fHp -= pWeapon->Get_CurrentDamage() / 10.f;
 
-		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage();
-		m_pHPBar->Set_RenderTime(2.f);
+		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 2.f;
+
+		if (nullptr != m_pHPBar)
+			m_pHPBar->Set_RenderTime(2.f);
 
 		if (m_fHp <= 0)
 		{
@@ -267,12 +284,12 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		if (!m_isCanGroggy)
 		{
-			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos)
+			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos || m_strStateName.find("Hit") != m_strStateName.npos)
 				return;
 
 			m_pAnimator->SetTrigger("Hit");
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-			if(m_fGroggyThreshold < 0)
+			if(m_fGroggyThreshold <= 0)
 				m_isCanGroggy = true;
 		}
 		else
@@ -294,108 +311,20 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
-	if (m_strStateName.find("Run") != m_strStateName.npos)
+	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
 	{
 		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 		m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
 	}
-	else if (m_strStateName.find("Walk") != m_strStateName.npos)
+	else 
 	{
-		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-
-		if (m_strStateName.find("Walk_F") != m_strStateName.npos)
-		{
-			m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.25f, nullptr, m_pNaviCom);
-		}
-		else
-		{
-			m_isLookAt = false;
-			RootMotionActive(fTimeDelta);
-		}
-	}
-	else if (m_strStateName.find("Attack") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
-	{
-		m_isLookAt = true;
 		RootMotionActive(fTimeDelta);
 	}
 
 }
 
-CMonster_Base::MONSTER_DIR CButtler_Train::Calc_Ray()
-{
-	PxVec3 origin = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
-	origin.y += 2.f;
-	XMFLOAT3 fLook;
-	XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK) * -1);
-	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
-	direction.normalize();
-	_float fRayLength = 1.f;
-
-	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
-	PxRaycastBuffer hit;
-	PxQueryFilterData filterData;
-	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
-
-	unordered_set<PxActor*> ignoreActors = m_pPhysXActorCom->Get_IngoreActors();
-	CIgnoreSelfCallback callback(ignoreActors);
-
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
-
-	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
-	{
-		if (hit.hasBlock)
-		{
-			PxRigidActor* hitActor = hit.block.actor;
-
-			if (hitActor != m_pPhysXActorCom->Get_Actor())
-			{
-				PxVec3 hitPos = hit.block.position;
-				PxVec3 hitNormal = hit.block.normal;
-
-				CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
-
-				if (pHitActor)
-				{
-					if (nullptr == pHitActor->Get_Owner())
-						return MONSTER_DIR::B;
-					pHitActor->Get_Owner()->On_Hit(this, m_pPhysXActorCom->Get_ColliderType());
-				}
-
-				//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
-				//printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
-				m_bRayHit = true;
-				m_vRayHitPos = hitPos;
-
-				return MONSTER_DIR(GetRandomInt(2, 3));
-			}
-
-			
-			
-		}
-	}
 
 
-#ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
-		DEBUGRAY_DATA _data{};
-		_data.vStartPos = m_pPhysXActorCom->Get_Actor()->getGlobalPose().p;
-		_data.vStartPos.y += 2.f;
-		XMFLOAT3 fLook;
-		XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK) * -1.f);
-		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
-		_data.fRayLength = 1.f;
-		_data.bIsHit = m_bRayHit;
-		_data.vHitPos = m_vRayHitPos;
-		m_pPhysXActorCom->Add_RenderRay(_data);
-
-		m_bRayHit = false;
-		m_vRayHitPos = {};
-	}
-#endif
-
-
-	return MONSTER_DIR::B;
-}
 
 HRESULT CButtler_Train::Ready_Weapon()
 {

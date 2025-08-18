@@ -18,7 +18,7 @@ public:
 		_uint	iDepth;
 		_uint	iFirstObj;
 		_uint	iObjCount;
-		_bool	bIsLeaf;
+		_bool	bIsLeaf; 
 	};
 
 
