@@ -476,11 +476,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION");
 		});
 
-	auto futureHotel = std::async(std::launch::async, [&] {
+	/*auto futureHotel = std::async(std::launch::async, [&] {
 		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
 			return E_FAIL;
 		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
-		});
+		});*/
 
 	//auto futureTest = std::async(std::launch::async, [&] {
 	//	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
@@ -489,7 +489,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	//	});
 
 	if (FAILED(futureStation.get())) return E_FAIL;
-	if (FAILED(futureHotel.get())) return E_FAIL;
+	//if (FAILED(futureHotel.get())) return E_FAIL;
 	//if (FAILED(futureTest.get())) return E_FAIL;
 
 
