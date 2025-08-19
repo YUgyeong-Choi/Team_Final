@@ -63,11 +63,16 @@ HRESULT	CNavTool::Render_ImGui()
 
 HRESULT CNavTool::Load(const _char* Map)
 {
+	//이제 내비게이션은 스테이션에서만 할듯?
+	//여기서 강제로 스테이션으로 바꿔주자
+
+	wstring wsMap = L"STATION";
+
 	//기존 네비게이션 제거
 	Remove_Component(TEXT("Com_Navigation"));
 	Safe_Release(m_pNavigationCom);
 
-	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + StringToWString(Map);
+	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + wsMap;//StringToWString(Map);
 
 	/* For.Com_Navigation */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), wsPrototypeTag.c_str(),
@@ -79,7 +84,12 @@ HRESULT CNavTool::Load(const _char* Map)
 
 HRESULT CNavTool::Save(const _char* Map)
 {
-	if (FAILED(m_pNavigationCom->Save(Map)))
+	//이제 내비게이션은 스테이션에서만 할듯?
+	//여기서 강제로 스테이션으로 바꿔주자
+
+	string sMap = "STATION";
+
+	if (FAILED(m_pNavigationCom->Save(sMap.c_str()/*Map*/)))
 	{
 		MSG_BOX("네비게이션 저장 실패");
 	}

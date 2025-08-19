@@ -7,11 +7,13 @@
 #include "MapTool.h"
 #include "NavTool.h"
 #include "DecalTool.h"
+#include "MonsterTool.h"
 
-#pragma region 다른 사람 거
 #include "PBRMesh.h"
-#include "StaticMesh.h"
-#pragma endregion
+
+//임시
+#include "MonsterToolObject.h"
+
 
 
 
@@ -24,8 +26,17 @@ CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_YW::Initialize()
 {
-	/*if (FAILED(Ready_Layer_TestDecal(TEXT("Layer_TestDecal"))))
-		return E_FAIL;*/
+	CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
+	Desc.fSpeedPerSec = 5.f;
+	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	Desc.eMeshLevelID = LEVEL::YW;
+	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
+	Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(Desc.szName, TEXT("Buttler_Train"));
+	Desc.szMeshID = TEXT("Buttler_Train");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
+		return E_FAIL;
 
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;
@@ -235,7 +246,7 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 
 #pragma region 네비툴
 	CNavTool::NAVTOOL_DESC Desc{};
-	Desc.wsMapName = StringToWString(Maps[iMapIndex]);
+	Desc.wsMapName = L"STATION"; //StringToWString(Maps[iMapIndex]); //무조건 스테이션만 쓸 듯
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext, &Desc));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)])
@@ -249,6 +260,16 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 
 	//데칼 툴 로딩
 	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)]->Load(Maps[iMapIndex])))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region 몬스터 툴
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MONSTER)] = reinterpret_cast<CYWTool*>(CMonsterTool::Create(m_pDevice, m_pContext));
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MONSTER)])
+		return E_FAIL;
+
+	//데칼 툴 로딩
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MONSTER)]->Load(Maps[iMapIndex])))
 		return E_FAIL;
 #pragma endregion
 
@@ -284,28 +305,33 @@ HRESULT CLevel_YW::ImGui_Render()
 	{
 		if (ImGui::BeginTabBar("##ToolTabs"))
 		{
-			if (ImGui::BeginTabItem("Map Tool"))
+			if (ImGui::BeginTabItem("Map"))
 			{
 				m_eActiveTool = IMGUITOOL::MAP;
 
 				ImGui::EndTabItem();
 			}
 
-			if (ImGui::BeginTabItem("Nav Tool"))
+			if (ImGui::BeginTabItem("Nav"))
 			{
 				m_eActiveTool = IMGUITOOL::NAV;
 
 				ImGui::EndTabItem();
 			}
 
-			if (ImGui::BeginTabItem("Decal Tool"))
+			if (ImGui::BeginTabItem("Decal"))
 			{
 				m_eActiveTool = IMGUITOOL::DECAL;
 
 				ImGui::EndTabItem();
 			}
 
-			// ... 다른 탭도 추가 가능
+			if (ImGui::BeginTabItem("Monster"))
+			{
+				m_eActiveTool = IMGUITOOL::MONSTER;
+
+				ImGui::EndTabItem();
+			}
 
 			ImGui::EndTabBar();
 		}
@@ -373,11 +399,11 @@ HRESULT CLevel_YW::Ready_Layer_TestDecal(const _wstring strLayerTag)
 
 HRESULT CLevel_YW::Ready_Layer_DummyMap(const _wstring strLayerTag)
 {
-	//CPBRMesh::STATICMESH_DESC Desc{};
-	//Desc.iRender = 0;
-	//Desc.m_eMeshLevelID = LEVEL::YW;
-	//Desc.szMeshID = TEXT("Train");
-	//lstrcpy(Desc.szName, TEXT("Train"));
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eMeshLevelID = LEVEL::YW;
+	Desc.szMeshID = TEXT("Train");
+	lstrcpy(Desc.szName, TEXT("Train"));
 
 	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 	//	ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
@@ -389,8 +415,14 @@ HRESULT CLevel_YW::Ready_Layer_DummyMap(const _wstring strLayerTag)
 	//	ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
 	//	return E_FAIL;
 
+	Desc.szMeshID = TEXT("Hotel");
+	lstrcpy(Desc.szName, TEXT("Hotel"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
+		return E_FAIL;
 
-	CStaticMesh::STATICMESH_DESC Desc{};
+
+	/*CStaticMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
 	Desc.m_eMeshLevelID = LEVEL::YW;
 	lstrcpy(Desc.szName, TEXT("Hotel"));
@@ -400,6 +432,8 @@ HRESULT CLevel_YW::Ready_Layer_DummyMap(const _wstring strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
 		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Dummy"), &pGameObject, &Desc)))
 		return E_FAIL;
+
+	m_pGameInstance->PushOctoTreeObjects(pGameObject);*/
 
 	return S_OK;
 }

@@ -592,18 +592,18 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
-	CMonster_Base::MONSTER_BASE_DESC pDesc{};
-	pDesc.fSpeedPerSec = 5.f;
-	pDesc.fRotationPerSec = XMConvertToRadians(180.0f);
-	pDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	pDesc.InitPos = _float3(85.5f, 0.f, -7.5f);
-	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
-	lstrcpy(pDesc.szName, TEXT("Buttler_Train"));
-	pDesc.szMeshID = TEXT("Buttler_Train");
-	pDesc.fHeight = 1.f;
-	pDesc.vExtent = {0.5f,1.f,0.5f};
+	CMonster_Base::MONSTER_BASE_DESC Desc{};
+	Desc.fSpeedPerSec = 5.f;
+	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
+	Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(Desc.szName, TEXT("Buttler_Train"));
+	Desc.szMeshID = TEXT("Buttler_Train");
+	Desc.fHeight = 1.f;
+	Desc.vExtent = {0.5f,1.f,0.5f};
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &pDesc)))
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
 		return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),

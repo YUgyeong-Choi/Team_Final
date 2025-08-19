@@ -23,6 +23,7 @@
 #include "DecalToolObject.h"
 #include "MapToolObject.h"
 #include "PreviewObject.h"
+#include "MonsterToolObject.h"
 #pragma endregion
 
 #pragma region LEVEL_CY
@@ -984,7 +985,12 @@ HRESULT CLoader::Loading_For_YW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Hotel.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	//if (FAILED(Loading_Models_MapTool(ENUM_CLASS(LEVEL::YW), "STATION")))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Buttler_Train"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Train/Buttler_Train.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Buttler_Train_Weapon"),
+	//	CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon_Buttler/SK_WP_MOB_ButtlerTrain_01.bin", PreTransformMatrix))))
 	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -1003,11 +1009,6 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-	//더미 소환하려고 추가함
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_StaticMesh"),
-		CStaticMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
 		CDecalToolObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -1018,6 +1019,10 @@ HRESULT CLoader::Loading_For_YW()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_PreviewObject"),
 		CPreviewObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
+		CMonsterToolObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -1114,7 +1119,7 @@ HRESULT CLoader::Loading_Meshs(_uint iLevelIndex, const _char* Map)
 
 		wstring PrototypeTag = {};
 		_bool bInstance = false;
-		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
+		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD)
 		{
 			//인스턴싱용 모델 프로토 타입 생성
 			PrototypeTag = L"Prototype_Component_Model_Instance_" + StringToWString(ModelName);
@@ -1220,22 +1225,6 @@ HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 	//if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
 	//	return E_FAIL;
 
-#pragma region 호텔 소환 테스트
-	//if (FAILED(Loading_Meshs(iLevelIndex, "HOTEL")))
-	//	return E_FAIL;
-
-	////여기서 호텔 소환해보자
-	//if (FAILED(Ready_Meshs(iLevelIndex, "HOTEL"))) //TEST, HOTEL
-	//	return E_FAIL;
-
-	//if (FAILED(Loading_Meshs(iLevelIndex, "TEST")))
-	//	return E_FAIL;
-
-	////여기서 호텔 소환해보자
-	//if (FAILED(Ready_Meshs(iLevelIndex, "TEST"))) //TEST, HOTEL
-	//	return E_FAIL;
-#pragma endregion
-
 	//네비 소환
 	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex)))
 		return E_FAIL;
@@ -1274,7 +1263,7 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 
 		_bool bCollision = Models[i]["Collision"];
 		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
-		if (bCollision == false /*iObjectCount > INSTANCE_THRESHOLD*/)
+		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD)
 		{
 			Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
 		}
