@@ -14453,7 +14453,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "LightShape": 2,
+                    "LightShape": 8,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -15079,7 +15079,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "LightShape": 3,
+                    "LightShape": 9,
                     "WorldMatrix": [
                         [
                             -4.371138828673793e-08,
@@ -15169,7 +15169,7 @@
                 },
                 {
                     "ColliderType": 0,
-                    "LightShape": 3,
+                    "LightShape": 9,
                     "WorldMatrix": [
                         [
                             -4.371138828673793e-08,

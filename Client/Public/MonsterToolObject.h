@@ -43,6 +43,10 @@ public:
 
 	void SetCascadeShadow();
 
+private:
+	void LoadAnimDataFromJson();
+
+
 protected: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();
