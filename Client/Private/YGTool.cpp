@@ -257,7 +257,7 @@ HRESULT CYGTool::Render_CameraTool()
 	ImGui::Begin("Sequence Tool", &open, NULL);
 	if (ImGui::CollapsingHeader("Sequence Info"))
 	{
-		ImGui::InputInt("End Frame", &m_iEndFrame, 10, 0);
+		ImGui::InputInt("End Frame", &m_iEndFrame, 1, 0);
 		m_CameraSequence->Set_EndFrame(m_iEndFrame);
 		m_CameraDatas.iEndFrame = m_iEndFrame;
 
@@ -579,7 +579,7 @@ HRESULT CYGTool::Render_CameraTool()
 					auto& v = m_CameraDatas.vecTargetData;
 					auto it = std::lower_bound(
 						v.begin(), v.end(), targetFrame.iKeyFrame,
-						[](const CAMERA_FOVFRAME& a, int key) { return a.iKeyFrame < key; });
+						[](const CAMERA_TARGETFRAME& a, int key) { return a.iKeyFrame < key; });
 					v.insert(it, targetFrame);
 
 					m_CameraSequence->Add_KeyFrame(4, m_pSelectedKey->keyFrame);
@@ -721,7 +721,7 @@ void CYGTool::Render_SetInfos()
 
 HRESULT CYGTool::Render_CameraFrame()
 {
-	SetNextWindowSize(ImVec2(200, 300));
+	ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiWindowFlags_HorizontalScrollbar);
 	_bool open = true;
 	ImGui::Begin("Camera Frame", &open, NULL);
 	ImGui::Text("CutScene Frames:");
@@ -744,8 +744,10 @@ HRESULT CYGTool::Render_CameraFrame()
 				// 선택됨 → 인덱스 및 포인터 저장
 				m_iEditKey = static_cast<int>(i);
 				m_EditMatrixPosKey = m_CameraDatas.vecWorldMatrixData[i];
+				m_EditOffSetPosKey = {};
 				m_EditOffSetRotKey = {};
 				m_EditFovKey = {};
+				m_EditTargetKey = {};
 				m_iChangeKeyFrame = m_EditMatrixPosKey.iKeyFrame;
 			}
 		}
@@ -817,6 +819,66 @@ HRESULT CYGTool::Render_CameraFrame()
 		}
 	}
 
+	if (ImGui::CollapsingHeader("OffsetPos Info"))
+	{
+		ImGui::BeginChild("OffsetPosFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+		// 리스트 출력
+		for (size_t i = 0; i < m_CameraDatas.vecOffSetPosData.size(); ++i)
+		{
+			const auto& desc = m_CameraDatas.vecOffSetPosData[i];
+			char label[32];
+			sprintf_s(label, "KeyFrame: %d", desc.iKeyFrame);
+
+			bool bSelected = (m_iEditKey == static_cast<int>(i));
+
+			if (ImGui::Selectable(label, bSelected))
+			{
+				// 선택됨 → 인덱스 및 포인터 저장
+				m_iEditKey = static_cast<int>(i);
+				m_EditMatrixPosKey = {};
+				m_EditOffSetPosKey = m_CameraDatas.vecOffSetPosData[i];
+				m_EditOffSetRotKey = {};
+				m_EditFovKey = {};
+				m_EditTargetKey = {};
+				m_iChangeKeyFrame = m_EditOffSetPosKey.iKeyFrame;
+			}
+		}
+		ImGui::EndChild();
+
+		ImGui::SeparatorText("Edit OffsetPos Key Info");
+
+		ImGui::DragFloat3("Offset Position", reinterpret_cast<float*>(&m_EditOffSetPosKey.offSetPos), 0.1f);
+
+		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
+		int interpOffsetRot = static_cast<int>(m_EditOffSetPosKey.interpOffSetPos);
+		if (ImGui::Combo("OffsetRot Interp", &interpOffsetRot, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_EditOffSetPosKey.interpOffSetPos = static_cast<INTERPOLATION_CAMERA>(interpOffsetRot);
+
+		ImGui::DragInt("OffsetPos Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("OffsetPos Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(1, m_EditOffSetPosKey.iKeyFrame, m_iChangeKeyFrame);
+			m_EditOffSetPosKey.iKeyFrame = m_iChangeKeyFrame;
+		}
+
+		if (ImGui::Button("OffsetPos Apply"))
+		{
+			m_CameraDatas.vecOffSetPosData[m_iEditKey] = m_EditOffSetPosKey;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("OffsetPos Delete"))
+		{
+			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecOffSetPosData.size()))
+			{
+				m_CameraSequence->Delete_KeyFrame(1, m_CameraDatas.vecOffSetPosData[m_iEditKey].iKeyFrame);
+				m_CameraDatas.vecOffSetPosData.erase(m_CameraDatas.vecOffSetPosData.begin() + m_iEditKey);
+				m_iEditKey = -1;
+				m_EditOffSetPosKey = {};
+			}
+		}
+	}
+
 	if (ImGui::CollapsingHeader("OffsetRot Info"))
 	{
 		ImGui::BeginChild("OffsetRotFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
@@ -835,8 +897,10 @@ HRESULT CYGTool::Render_CameraFrame()
 				// 선택됨 → 인덱스 및 포인터 저장
 				m_iEditKey = static_cast<int>(i);
 				m_EditMatrixPosKey = {};
+				m_EditOffSetPosKey = {};
 				m_EditOffSetRotKey = m_CameraDatas.vecOffSetRotData[i];;
 				m_EditFovKey = {};
+				m_EditTargetKey = {};
 				m_iChangeKeyFrame = m_EditOffSetRotKey.iKeyFrame;
 			}
 		}
@@ -862,7 +926,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			m_CameraDatas.vecOffSetRotData[m_iEditKey] = m_EditOffSetRotKey;
 		}
-
+		ImGui::SameLine();
 		if (ImGui::Button("OffsetRot Delete"))
 		{
 			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecOffSetRotData.size()))
@@ -893,8 +957,10 @@ HRESULT CYGTool::Render_CameraFrame()
 				// 선택됨 → 인덱스 및 포인터 저장
 				m_iEditKey = static_cast<int>(i);
 				m_EditMatrixPosKey = {};
+				m_EditOffSetPosKey = {};
 				m_EditOffSetRotKey = {};
 				m_EditFovKey = m_CameraDatas.vecFovData[i];
+				m_EditTargetKey = {};
 				m_iChangeKeyFrame = m_EditFovKey.iKeyFrame;
 			}
 		}
@@ -920,7 +986,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			m_CameraDatas.vecFovData[m_iEditKey] = m_EditFovKey;
 		}
-
+		ImGui::SameLine();
 		if (ImGui::Button("Fov Delete"))
 		{
 			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecFovData.size()))
@@ -933,6 +999,67 @@ HRESULT CYGTool::Render_CameraFrame()
 		}
 	}
 
+	if (ImGui::CollapsingHeader("Target Info"))
+	{
+		ImGui::BeginChild("TargetFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+		// 리스트 출력
+		for (size_t i = 0; i < m_CameraDatas.vecTargetData.size(); ++i)
+		{
+			const auto& desc = m_CameraDatas.vecTargetData[i];
+			char label[32];
+			sprintf_s(label, "KeyFrame: %d", desc.iKeyFrame);
+
+			bool bSelected = (m_iEditKey == static_cast<int>(i));
+
+			if (ImGui::Selectable(label, bSelected))
+			{
+				// 선택됨 → 인덱스 및 포인터 저장
+				m_iEditKey = static_cast<int>(i);
+				m_EditMatrixPosKey = {};
+				m_EditOffSetPosKey = {};
+				m_EditOffSetRotKey = {};
+				m_EditFovKey = {};
+				m_EditTargetKey = m_CameraDatas.vecTargetData[i];
+				m_iChangeKeyFrame = m_EditTargetKey.iKeyFrame;
+			}
+		}
+		ImGui::EndChild();
+
+
+		ImGui::SeparatorText("Edit Target Key Info");
+		ImGui::DragFloat("fPitch", &m_EditTargetKey.fPitch, 0.f, -89.0f, 89.0f);
+		ImGui::DragFloat("fYaw", &m_EditTargetKey.fYaw, 0.f, -180.0f, 180.0f);
+		ImGui::DragFloat("fDistance", &m_EditTargetKey.fDistance, 0.f, 1.0f, 179.0f);
+
+		const char* targetNames[] = { "None", "Layer_Player", "Layer_Boss1" };
+		_int target = static_cast<int>(m_pSelectedKey->eTarget);
+		if (ImGui::Combo("Target", &target, targetNames, IM_ARRAYSIZE(targetNames)))
+			m_EditTargetKey.eTarget = static_cast<TARGET_CAMERA>(target);
+
+		ImGui::DragInt("Target Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("Target Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(4, m_EditTargetKey.iKeyFrame, m_iChangeKeyFrame);
+			m_EditTargetKey.iKeyFrame = m_iChangeKeyFrame;
+		}
+
+		if (ImGui::Button("Target Apply"))
+		{
+			m_CameraDatas.vecTargetData[m_iEditKey] = m_EditTargetKey;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Target Delete"))
+		{
+			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecTargetData.size()))
+			{
+				m_CameraSequence->Delete_KeyFrame(4, m_CameraDatas.vecTargetData[m_iEditKey].iKeyFrame);
+				m_CameraDatas.vecTargetData.erase(m_CameraDatas.vecTargetData.begin() + m_iEditKey);
+				m_iEditKey = -1;
+				m_EditTargetKey = {};
+			}
+		}
+	}
 
 	ImGui::End();
 	
