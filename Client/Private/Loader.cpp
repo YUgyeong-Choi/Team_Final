@@ -1283,7 +1283,7 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 		_bool bNoInstancing = Models[i]["NoInstancing"];
 
 		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
-		if (bCollision == false && /*iObjectCount > INSTANCE_THRESHOLD &&*/ bNoInstancing == false)
+		if (bCollision == false /*&& iObjectCount > INSTANCE_THRESHOLD*/ && bNoInstancing == false)
 		{
 			if (FAILED(Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex)))
 				return E_FAIL;
@@ -1394,6 +1394,9 @@ HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objec
 	StaticMeshInstanceDesc.iRender = 0;
 	StaticMeshInstanceDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
 	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+	StaticMeshInstanceDesc.iLightShape = objects[0].value("LightShape", 100); //오브젝트중 하나 가져와서 라이트모양을 넣어주자.
+	cout << StaticMeshInstanceDesc.iLightShape << endl;
 
 	wstring wstrModelName = StringToWString(ModelName);
 	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance_"); //인스턴스 용 모델을 준비해야겠는디?

@@ -116,8 +116,6 @@ HRESULT CStaticMesh::Render()
 			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
 				return E_FAIL;
 
-
-
 			/* [ 이미시브 1차 필터 ] */
 			if (m_iLightShape == 9 || m_iLightShape == 6)
 				SetEmissive();
