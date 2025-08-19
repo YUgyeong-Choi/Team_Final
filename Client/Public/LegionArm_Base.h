@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "Weapon.h"
 
 NS_BEGIN(Engine)
 
@@ -13,22 +13,14 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CLegionArm_Base abstract : public CGameObject
+class CLegionArm_Base abstract : public CWeapon
 {
 public:
-	typedef struct eArmDesc : public GAMEOBJECT_DESC
+	typedef struct eArmDesc : public WEAPON_DESC
 	{
-		_int			iRender = 0;
-		_float3 		InitPos = { 0.f, 0.f, 0.f };
-		_float3 		InitScale = { 1.f, 1.f, 1.f };
-
-		const _float4x4* pSocketMatrix = { nullptr };
-		const _float4x4* pParentWorldMatrix = { nullptr };
-
 
 	}ARM_DESC;
 
-	_wstring Get_Prototag() { return m_strPrototag; }
 
 protected:
 	CLegionArm_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -46,18 +38,13 @@ public:
 	// 팔 사용 효과 만들기
 	virtual void Activate() {}
 
-protected:              /* [ 컴포넌트 ] */
+protected:              /* [ 컴포넌트 ], 나중에 필요할거 같아서 일단 넣어만 둠 */
 	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CAnimator* m_pAnimator = { nullptr };
 
-protected:
-	const _float4x4* m_pParentWorldMatrix = { nullptr };
-	const _float4x4* m_pSocketMatrix = { nullptr };
-	_float4x4			m_CombinedWorldMatrix = {};
 
 protected:
-	_wstring m_strPrototag = {};
 	
 /* [ 리전 암 내구도 ] */
 	_float  m_fLegionArmEnergy;

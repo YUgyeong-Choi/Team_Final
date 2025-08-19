@@ -139,6 +139,11 @@ void CWeapon_Monster::Update_Collider()
 	m_pPhysXActorCom->Set_Transform(PxTransform(physxPos, physxRot));
 }
 
+void CWeapon_Monster::Collider_Off()
+{
+	m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+}
+
 HRESULT CWeapon_Monster::Ready_Components()
 {
 	/* [ 따로 추가할 컴포넌트가 있습니까? ] */
