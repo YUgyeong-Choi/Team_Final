@@ -960,6 +960,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		return;
 
 	bIsHit = true;
+	m_fHP -= 10.f;
+	Callback_HP();
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -1016,7 +1018,7 @@ HRESULT CPlayer::Ready_Weapon()
 	/* [ 무기 모델을 추가 ] */
 
 	CBayonet::BAYONET_DESC Desc{};
-	Desc.eMeshLevelID = LEVEL::STATIC;
+	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };
@@ -1429,15 +1431,11 @@ void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)
 			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pSelectItem);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_TAB))
-	{	
-		if(m_bSwitch)
-			m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pWeapon);
-		else
-			m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
 
-		m_bSwitch = !m_bSwitch;
-	}
+	if (m_pWeapon->GetbIsActive())
+		m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pWeapon);
+	if (!m_pWeapon->GetbIsActive())
+		m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
 
 	m_pBelt_Up->Priority_Update(fTimeDelta);
 	m_pBelt_Down->Priority_Update(fTimeDelta);

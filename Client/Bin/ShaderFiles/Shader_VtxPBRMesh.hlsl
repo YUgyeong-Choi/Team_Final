@@ -109,7 +109,7 @@ struct PS_OUT
     vector vAO          : SV_TARGET4;
     vector vRoughness   : SV_TARGET5;
     vector vMetallic    : SV_TARGET6;
-    //vector vEmissive    : SV_TARGET7;
+    vector vEmissive    : SV_TARGET7;
     //vector vWorldPos : SV_TARGET7;
 };
 
@@ -183,7 +183,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
-    //Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, vEmissive.a);
+    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, vEmissive.a);
     //Out.vWorldPos = In.vWorldPos; //Å×½ºÆ®(¿µ¿õ)
     
     return Out;
@@ -227,7 +227,7 @@ PS_OUT PS_TOOL_MAIN(PS_IN In)
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
-    //Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, vEmissive.a);
+    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, vEmissive.a);
     //Out.vWorldPos = In.vWorldPos; //Å×½ºÆ®(¿µ¿õ)
     
     return Out;

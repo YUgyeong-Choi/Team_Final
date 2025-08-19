@@ -75,6 +75,7 @@ protected: /* [ 초기화 변수 ] */
 private:
 	_bool	m_bUseOctoTree = { true };
 	_bool	m_bUseTiling = { false };
+	_float  m_fEmissive = {};
 	_float2	m_vTileDensity = { 1.0f, 1.0f };
 
 private:

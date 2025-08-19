@@ -46,6 +46,7 @@ Texture2D g_PBR_ARM;
 Texture2D g_PBR_Depth;
 Texture2D g_PBR_Final;
 Texture2D g_PBR_UnitMask;
+Texture2D g_PBR_Emissive;
 
 Texture2D g_VolumetricTexture;
 
@@ -973,9 +974,10 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vVolumetric = g_VolumetricTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
+    vector vEmissive = g_PBR_Emissive.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
-        Out.vBackBuffer = vPBRFinal;
+        Out.vBackBuffer = vPBRFinal + vEmissive;
     finalColor = Out.vBackBuffer;
     
     
