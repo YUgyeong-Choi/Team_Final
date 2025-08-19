@@ -99,11 +99,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	//if (KEY_DOWN(DIK_J))
-	//	m_fTimeScale = 1.f;
-	//if (KEY_DOWN(DIK_K))
-	//	m_fTimeScale = 0.f;
-
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{

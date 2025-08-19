@@ -335,7 +335,7 @@ HRESULT CYGTool::Render_CameraTool()
 
 	ImGui::SeparatorText("=====");
 
-	ImGui::Text("Current Frame: %d", m_iCurrentFrame);
+	ImGui::DragInt("Current Frame", &m_iCurrentFrame, 0, 1, m_iEndFrame);
 	if (m_iCurrentFrame < m_iEndFrame)
 	{
 		m_pSelectedKey = m_CameraSequence->GetKeyAtFrame(m_iCurrentFrame);
@@ -371,7 +371,7 @@ HRESULT CYGTool::Render_CameraTool()
 		{
 			// Offset Pos
 			XMFLOAT3 offSetPos = m_pSelectedKey->offSetPosition;
-			if (ImGui::DragFloat3("Offset Position", reinterpret_cast<float*>(&offSetPos), 0.1f))
+			if (ImGui::DragFloat3("Offset Position", reinterpret_cast<float*>(&offSetPos), 0.05f))
 				m_pSelectedKey->offSetPosition = offSetPos;
 
 			_int interpRot = static_cast<int>(m_pSelectedKey->interpOffSetPos);
@@ -724,7 +724,12 @@ HRESULT CYGTool::Render_CameraFrame()
 	ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiWindowFlags_HorizontalScrollbar);
 	_bool open = true;
 	ImGui::Begin("Camera Frame", &open, NULL);
-	ImGui::Text("CutScene Frames:");
+
+	if (auto* cut = CCamera_Manager::Get_Instance()->GetCutScene())
+	{
+		_int cur = cut->Get_CurrentFrame();       
+		ImGui::Text("CutScene Frame: %d", cur);
+	}
 
 	if (ImGui::CollapsingHeader("WorldPosRot Info"))
 	{
