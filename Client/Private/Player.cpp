@@ -130,9 +130,9 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
 
-	// 컷씬일 때 못 움직이도록
-	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-		return; 
+	//// 컷씬일 때 못 움직이도록
+	//if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+	//	return; 
 	
 	/* [ 입력 ] */
 	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만
@@ -1024,7 +1024,7 @@ HRESULT CPlayer::Ready_Weapon()
 	/* [ 무기 모델을 추가 ] */
 
 	CBayonet::BAYONET_DESC Desc{};
-	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.eMeshLevelID = static_cast<LEVEL>(m_pGameInstance->GetCurrentLevelIndex());
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };

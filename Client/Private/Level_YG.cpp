@@ -190,12 +190,12 @@ HRESULT CLevel_YG::Ready_Player()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc.eMeshLevelID = LEVEL::STATIC;
+	pDesc.eMeshLevelID = LEVEL::YG;
 	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
-	pDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	pDesc.iLevelID = ENUM_CLASS(LEVEL::YG);
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
