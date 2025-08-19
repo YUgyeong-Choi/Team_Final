@@ -72,6 +72,12 @@ HRESULT CParticleEffect::Render()
 	return S_OK;
 }
 
+_float CParticleEffect::Ready_Death()
+{
+	m_pVIBufferCom->Set_Loop(false);
+	return m_fMaxLifeTime;
+}
+
 void CParticleEffect::Set_Loop(_bool isLoop)
 {
 	m_pVIBufferCom->Set_Loop(isLoop);

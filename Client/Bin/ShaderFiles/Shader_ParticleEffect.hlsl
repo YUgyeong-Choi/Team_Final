@@ -153,7 +153,7 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 
     // === 속도 방향 Stretch (길이만 늘림) ===
     float3 vDir = normalize(In[0].vDir);
-    float stretchFactor = 0.02f * In[0].fSpeed; // 튜닝값
+    float stretchFactor = 0.015f * In[0].fSpeed; // 튜닝값
     float3 vStretch = vDir * stretchFactor;
 
     // 최종 Up에 더해줌 (Y축 Up + 속도 꼬리)

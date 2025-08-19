@@ -179,11 +179,11 @@ CGameObject* CEffect_Manager::Make_Effect(_uint iLevelIndex, const _wstring& str
 }
 
 
-HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, const _float3& vPresetPos)
+CGameObject* CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, const _float3& vPresetPos)
 {
     auto	iter = m_ECJsonDescs.find(strECTag);
     if (iter == m_ECJsonDescs.end())
-        return E_FAIL;
+        return nullptr;
 
     CEffectContainer::DESC ECDesc = {};
     ECDesc.j = iter->second;
@@ -192,12 +192,12 @@ HRESULT CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring&
     ECDesc.fSpeedPerSec = 10.f;
 
     ECDesc.vPresetPosition = vPresetPos;
+    CGameObject* pInstance = { nullptr };
+    if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
+        iLevelIndex, TEXT("Layer_Effect"), &pInstance , &ECDesc)))
+        return nullptr;
 
-    if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
-        iLevelIndex, TEXT("Layer_Effect"), &ECDesc)))
-        return E_FAIL;
-
-    return S_OK;
+    return pInstance;
 }
 
 CEffectContainer* CEffect_Manager::Find_EffectContainer(const _wstring& strECTag)
@@ -486,6 +486,12 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 
     if (j.contains("MinSpeed"))
         VIBufferDesc.fMinSpeed = j["MinSpeed"].get<_float>();
+
+    if (j.contains("IsGravity"))
+        VIBufferDesc.bGravity = j["IsGravity"].get<_bool>();
+    if (j.contains("Gravity"))
+        VIBufferDesc.fGravity = j["Gravity"].get<_float>();
+
     //if (j.contains("Local"))
     //    VIBufferDesc.bLocal = j["Local"].get<_bool>();
 

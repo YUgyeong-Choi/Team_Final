@@ -122,10 +122,21 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	{
 		if (KEY_DOWN(DIK_Z))
 		{
-			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_TestFireCracker_P2"),
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_TestGrinder_VStretch_wls_P2"),
 				m_pGameInstance->Compute_Random(-1.f, 1.f),
 				m_pGameInstance->Compute_Random(-1.f, 1.f),
-				m_pGameInstance->Compute_Random(-1.f, 1.f))))
+				m_pGameInstance->Compute_Random(-1.f, 1.f)))
+				MSG_BOX("조짐");
+		}
+		if (KEY_DOWN(DIK_X))
+		{
+			_float3 pos = {};
+			if (m_pPlayer)
+				XMStoreFloat3(&pos, m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_AttackHit_Thrust_Spiral_2"),
+				pos.x,
+				pos.y + 1.f,
+				pos.z))
 				MSG_BOX("조짐");
 		}
 	}
@@ -609,13 +620,13 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
-	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 52.83f, 0.09f, 1.57f)))
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 52.83f, 0.09f, 1.57f))
 		MSG_BOX("이펙트 생성 실패");
-	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 69.25f, -0.22f, -8.17f)))
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 69.25f, -0.22f, -8.17f))
 		MSG_BOX("이펙트 생성 실패");
-	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 99.86f, 0.64f, -13.69f)))
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 99.86f, 0.64f, -13.69f))
 		MSG_BOX("이펙트 생성 실패");
-	if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 0.f, 0.f, 0.f)))
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 0.f, 0.f, 0.f))
 		MSG_BOX("이펙트 생성 실패");
 
 	return S_OK;

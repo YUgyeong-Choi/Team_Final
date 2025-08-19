@@ -28,6 +28,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	void End_Effect();
+
 private:
 	vector<class CEffectBase*>        m_Effects;
 
@@ -48,6 +50,9 @@ private:
 	_float				m_fFrame = { };
 	const _float4x4*	m_pSocketMatrix = { nullptr };
 
+	_bool				m_bReadyDeath = { false };
+	_float				m_fDeadInterval = { 5.f };
+	_float				m_fDeadTimeAcc = {};
 
 private:
 	//HRESULT Load_JsonFiles(const _wstring strJsonFilePath); //¾²Áö¸¶
