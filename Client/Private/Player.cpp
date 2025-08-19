@@ -180,7 +180,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	{
 		//m_fHP -= 10.f;
 		//Callback_HP();
-		m_pAnimator->SetTrigger("Hited");
+
+		m_pAnimator->SetTrigger("Knockback");
 	}
 
 
