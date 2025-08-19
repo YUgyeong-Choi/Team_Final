@@ -799,6 +799,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			m_CameraSequence->Change_KeyFrame(0, m_EditMatrixPosKey.iKeyFrame, m_iChangeKeyFrame);
 			m_EditMatrixPosKey.iKeyFrame = m_iChangeKeyFrame;
+			m_CameraDatas.vecWorldMatrixData[m_iEditKey].iKeyFrame = m_EditMatrixPosKey.iKeyFrame;
 		}
 
 		if (ImGui::Button("WorldPosRot Apply"))
@@ -860,6 +861,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			m_CameraSequence->Change_KeyFrame(1, m_EditOffSetPosKey.iKeyFrame, m_iChangeKeyFrame);
 			m_EditOffSetPosKey.iKeyFrame = m_iChangeKeyFrame;
+			m_CameraDatas.vecOffSetPosData[m_iEditKey].iKeyFrame = m_EditOffSetPosKey.iKeyFrame;
 		}
 
 		if (ImGui::Button("OffsetPos Apply"))
@@ -920,6 +922,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			m_CameraSequence->Change_KeyFrame(2, m_EditOffSetRotKey.iKeyFrame, m_iChangeKeyFrame);
 			m_EditOffSetRotKey.iKeyFrame = m_iChangeKeyFrame;
+			m_CameraDatas.vecOffSetRotData[m_iEditKey].iKeyFrame = m_EditOffSetRotKey.iKeyFrame;
 		}
 
 		if (ImGui::Button("OffsetRot Apply"))
@@ -980,6 +983,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			m_CameraSequence->Change_KeyFrame(3, m_EditFovKey.iKeyFrame, m_iChangeKeyFrame);
 			m_EditFovKey.iKeyFrame = m_iChangeKeyFrame;
+			m_CameraDatas.vecFovData[m_iEditKey].iKeyFrame = m_EditFovKey.iKeyFrame;
 		}
 
 		if (ImGui::Button("Fov Apply"))
@@ -1033,7 +1037,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		ImGui::DragFloat("fDistance", &m_EditTargetKey.fDistance, 0.f, 1.0f, 179.0f);
 
 		const char* targetNames[] = { "None", "Layer_Player", "Layer_Boss1" };
-		_int target = static_cast<int>(m_pSelectedKey->eTarget);
+		_int target = static_cast<int>(m_EditTargetKey.eTarget);
 		if (ImGui::Combo("Target", &target, targetNames, IM_ARRAYSIZE(targetNames)))
 			m_EditTargetKey.eTarget = static_cast<TARGET_CAMERA>(target);
 
@@ -1042,6 +1046,7 @@ HRESULT CYGTool::Render_CameraFrame()
 		{
 			m_CameraSequence->Change_KeyFrame(4, m_EditTargetKey.iKeyFrame, m_iChangeKeyFrame);
 			m_EditTargetKey.iKeyFrame = m_iChangeKeyFrame;
+			m_CameraDatas.vecTargetData[m_iEditKey].iKeyFrame = m_EditTargetKey.iKeyFrame;
 		}
 
 		if (ImGui::Button("Target Apply"))

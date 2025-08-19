@@ -130,12 +130,11 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
 
-	// 컷씬일 때 못 움직이도록
-	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-		return;
 
 	/* [ 입력 ] */
-	HandleInput();
+	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만
+		HandleInput();
+
 	SlidDoorMove(fTimeDelta);
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
@@ -1225,7 +1224,6 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 
 void CPlayer::Play_CutScene_Door()
 {	
-	//m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::ONE);
 	m_bInteraction[0] = true;
 	m_bInteractionMove[0] = true;
 	m_bInteractionRotate[0] = true;
@@ -1272,6 +1270,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 		{
 			m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 			m_bInteractionRotate[0] = false; // 회전 완료
+			m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::TUTORIALDOOR);
 		}
 	}
 

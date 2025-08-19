@@ -199,8 +199,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	// 문 같이 상호작용 하는 것들
-	//if (FAILED(Ready_Interact()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Interact()))
+		return E_FAIL;
 
 	return S_OK;
 }
