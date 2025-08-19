@@ -56,6 +56,8 @@ private:
 private:
 	class CDecalToolObject* m_pFocusObject = { nullptr };
 
+private:
+	_int m_iID = { -1 }; //-1, -2 몬스터 아이디는 음수로하자
 
 public:
 	static CMonsterTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

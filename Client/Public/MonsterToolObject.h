@@ -15,7 +15,7 @@ class CMonsterToolObject : public CGameObject
 {
 	/* [ 모든 움직이는 객체의 부모클래스입니다. ] */
 	/*  ( 플레이어, 몬스터, 보스몬스터, NPC )  */
-
+	friend class CMonsterTool;
 
 public:
 	typedef struct tagMonsterToolObjectDesc : public CGameObject::GAMEOBJECT_DESC

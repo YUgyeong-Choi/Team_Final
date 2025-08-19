@@ -23200,13 +23200,13 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Underdark_Lamp_01",
             "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 2,
                     "WorldMatrix": [
                         [
@@ -23236,7 +23236,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 2,
                     "WorldMatrix": [
                         [

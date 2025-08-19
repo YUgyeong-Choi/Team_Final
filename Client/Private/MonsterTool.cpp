@@ -55,7 +55,7 @@ HRESULT	CMonsterTool::Render_ImGui()
 
 	if (ImGui::Button("Spawn Monster"))
 	{
-		//Spawn_DecalObject();
+		Spawn_DecalObject();
 	}
 
 	ImGui::End();
@@ -331,6 +331,20 @@ HRESULT CMonsterTool::Spawn_DecalObject()
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
 		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"), &DecalDesc)))
 		return E_FAIL;
+
+
+	/*CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
+	Desc.fSpeedPerSec = 5.f;
+	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	Desc.eMeshLevelID = LEVEL::YW;
+	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
+	Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(Desc.szName, TEXT("MonsterToolObject"));
+	Desc.szMeshID = TEXT("Buttler_Train");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
+		return E_FAIL;*/
+
 
 	Safe_Release(m_pFocusObject);
 	m_pFocusObject = static_cast<CDecalToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal")));
