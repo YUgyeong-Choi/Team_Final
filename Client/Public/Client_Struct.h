@@ -135,9 +135,10 @@ namespace Client
 	struct CAMERA_TARGETFRAME
 	{
 		_int iKeyFrame;
-		_wstring strLayerName;
+		TARGET_CAMERA eTarget;
 		_float fPitch;
 		_float fYaw;
+		_float fDistance;
 	};
 
 	struct CAMERA_FRAMEDATA

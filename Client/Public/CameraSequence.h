@@ -32,6 +32,7 @@ public:
         TARGET_CAMERA eTarget;
         _float fPitch;
         _float fYaw;
+        _float fDistance;
 
         //_bool bLookAt = false;
         //_vector lookAtTarget;

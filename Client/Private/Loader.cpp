@@ -1841,14 +1841,33 @@ HRESULT CLoader::Loading_For_YG()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
 	string Map = "STATION"; //STATION, TEST
 
 	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
 	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), Map.c_str())))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-	//제이슨으로 저장된 맵을 로드한다.
+	m_pGameInstance->ClaerOctoTreeObjects();
+
+#pragma region 이것을 멀티스레드로(일단 이렇게 놔둠 문제 생길 시 확인)
+
+	auto futureStation = std::async(std::launch::async, [&] {
+		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::YG), "STATION")))
+			return E_FAIL;
+		return Ready_Meshs(ENUM_CLASS(LEVEL::YG), "STATION");
+		});
+
+	auto futureHotel = std::async(std::launch::async, [&] {
+		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::YG), "HOTEL")))
+			return E_FAIL;
+		return Ready_Meshs(ENUM_CLASS(LEVEL::YG), "HOTEL");
+		});
+
+
+	if (FAILED(futureStation.get())) return E_FAIL;
+	if (FAILED(futureHotel.get())) return E_FAIL;
+
 	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), Map.c_str())))
 		return E_FAIL;
 #pragma endregion
