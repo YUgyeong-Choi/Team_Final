@@ -77,10 +77,7 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 		}
 	}
-	//else if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
-	//{
-	//	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-	//}
+
 }
 
 HRESULT CStaticMesh::Render()
