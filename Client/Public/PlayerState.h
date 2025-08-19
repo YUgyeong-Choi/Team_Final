@@ -2219,7 +2219,7 @@ public:
     {
         m_fStateTime = 0.f;
 
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
+        m_pOwner->m_pAnimator->SetBool("Fail", false);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
