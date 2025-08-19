@@ -11,7 +11,7 @@ CButtler_Train::CButtler_Train(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 }
 
 CButtler_Train::CButtler_Train(const CButtler_Train& Prototype)
-	:CMonster_Base{Prototype}
+	:CMonster_Base (Prototype)
 {
 }
 
@@ -39,34 +39,6 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	// 락온 용
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
-
-	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
-	//Register_Events();
-
-			++m_iAttackCount;
-
-		});
-
-	m_pAnimator->RegisterEventListener("BackMoveEnd", [this]() {
-		
-			m_pAnimator->SetBool("IsBack", false);
-
-		});
-
-	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
-
-		m_isLookAt = false;
-
-		});
-
-	m_pAnimator->RegisterEventListener("LookAt", [this]() {
-
-		m_isLookAt = true;
-
-		});
-
-
-	
 	
 	return S_OK;
 }
@@ -326,37 +298,37 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 
 void CButtler_Train::Register_Events()
 {
-	m_pAnimator->RegisterEventListener("AddAttackCount", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
 
 		++m_iAttackCount;
 
 		});
 
-	m_pAnimator->RegisterEventListener("BackMoveEnd", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("BackMoveEnd", [this]() {
 
 		m_pAnimator->SetBool("IsBack", false);
 
 		});
 
-	m_pAnimator->RegisterEventListener("NotLookAt", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
 
 		m_isLookAt = false;
 
 		});
 
-	m_pAnimator->RegisterEventListener("LookAt", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("LookAt", [this]() {
 
 		m_isLookAt = true;
 
 		});
 
-	m_pAnimator->RegisterEventListener("AttackOn", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
 
 		m_pWeapon->SetisAttack(true);
 
 		});
 
-	m_pAnimator->RegisterEventListener("AttackOff", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("AttackOff", [this]() {
 
 		m_pWeapon->SetisAttack(false);
 

@@ -172,9 +172,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		m_fHP -= 10.f;
-		Callback_HP();
-		//m_pAnimator->SetTrigger("Hited");
+		//m_fHP -= 10.f;
+		//Callback_HP();
+		 
+		//m_pAnimator->SetTrigger("UseItem");
+		//m_pAnimator->SetTrigger("Pulse");
+		m_pAnimator->SetTrigger("Hited");
 	}
 
 
