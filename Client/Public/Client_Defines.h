@@ -35,13 +35,7 @@ using namespace ImGui;
 // 로딩 비율 설정하기 위한?
 #include <atomic>
 
-// 영상 용
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libswscale/swscale.h>
-#include <libavutil/imgutils.h>
-}
+
 
 namespace Client
 {
