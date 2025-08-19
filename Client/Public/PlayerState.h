@@ -262,10 +262,20 @@ public:
 			return EPlayerState::USEITEM;
 
         if (input.bCtrl) // 왼팔공격
-			return EPlayerState::ARMATTACKA;
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKA;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
         if (m_bChargeArm && m_pOwner->m_bWeaponEquipped) // 차징
-            return EPlayerState::ARMATTACKCHARGE;
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKCHARGE;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
 		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
 			return EPlayerState::STRONGATTACKA;
@@ -388,8 +398,13 @@ public:
         if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
-        if (input.bCtrl) // 컨트롤 왼팔공격
-            return EPlayerState::ARMATTACKA;
+        if (input.bCtrl) // 왼팔공격
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKA;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
             return EPlayerState::STRONGATTACKA;
@@ -510,8 +525,13 @@ public:
         if (input.bItem) // 아이템 사용
             return EPlayerState::USEITEM;
 
-        if (input.bCtrl) // 컨트롤 왼팔공격
-            return EPlayerState::ARMATTACKA;
+        if (input.bCtrl) // 왼팔공격
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKA;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
         if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
@@ -1144,6 +1164,13 @@ public:
                 return EPlayerState::WEAKATTACKB;
             if (m_bAttackB && IsStaminaEnough(20.f))
                 return EPlayerState::STRONGATTACKB;
+            if (m_bArmAttack)
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKA;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
         }
@@ -1252,7 +1279,12 @@ public:
             if (m_bAttackB && IsStaminaEnough(20.f))
                 return EPlayerState::STRONGATTACKA;
             if (m_bArmAttack)
-                return EPlayerState::ARMATTACKA;
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKA;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
 
@@ -1365,7 +1397,12 @@ public:
             if (m_bAttackA && IsStaminaEnough(20.f))
                 return EPlayerState::WEAKATTACKB;
             if (m_bArmAttack)
-                return EPlayerState::ARMATTACKA;
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKA;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
         }
@@ -1479,7 +1516,12 @@ public:
             if (m_bAttackA && IsStaminaEnough(20.f))
                 return EPlayerState::WEAKATTACKA;
             if (m_bArmAttack)
-                return EPlayerState::ARMATTACKA;
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKA;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
         }
@@ -1928,7 +1970,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetInt("ArmCombo", 0);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1987,7 +2028,12 @@ public:
             if (m_bAttackB)
                 return EPlayerState::STRONGATTACKB;
             if (m_bArmAttack)
-                return EPlayerState::ARMATTACKB;
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKB;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
         }
 
         return EPlayerState::ARMATTACKA;
@@ -2029,7 +2075,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetInt("ArmCombo", 1);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2130,7 +2175,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetBool("Charge", true);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2243,7 +2287,7 @@ public:
             return EPlayerState::IDLE;
         }
 
-        return EPlayerState::ARMATTACKCHARGE;
+        return EPlayerState::ARMFAIL;
     }
 
     virtual bool CanExit() const override

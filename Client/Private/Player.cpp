@@ -713,18 +713,36 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::ARM_ATTACKA:
 	{
+		if (!m_bSetOnce)
+		{
+			m_fLegionArmEnergy -= 20.f;
+			m_bSetOnce = true;
+		}
+
 		RootMotionActive(fTimeDelta);
 
 		break;
 	}
 	case eAnimCategory::ARM_ATTACKB:
 	{
+		if (!m_bSetOnce)
+		{
+			m_fLegionArmEnergy -= 20.f;
+			m_bSetOnce = true;
+		}
+
 		RootMotionActive(fTimeDelta);
 
 		break;
 	}
 	case eAnimCategory::ARM_ATTACKCHARGE:
 	{
+		if (!m_bSetOnce)
+		{
+			m_fLegionArmEnergy -= 20.f;
+			m_bSetOnce = true;
+		}
+
 		RootMotionActive(fTimeDelta);
 
 		break;
@@ -822,9 +840,9 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Arm_NormalAttack") == 0)
 		return eAnimCategory::ARM_ATTACKA;
 	if (stateName.find("Arm_NormalAttack2") == 0)
-		return eAnimCategory::ARM_ATTACKA;
+		return eAnimCategory::ARM_ATTACKB;
 	if (stateName.find("Arm_ChargeAttack") == 0)
-		return eAnimCategory::ARM_ATTACKA;
+		return eAnimCategory::ARM_ATTACKCHARGE;
 	if (stateName.find("Fail_Arm") == 0)
 		return eAnimCategory::ARM_FAIL;
 
