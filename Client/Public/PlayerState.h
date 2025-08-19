@@ -596,6 +596,7 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
         {
+            m_pOwner->m_pAnimator->SetBool("HasLamp", false);
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_pAnimator->SetTrigger("Pulse");
             m_pOwner->m_pAnimator->SetTrigger("UseItem");
