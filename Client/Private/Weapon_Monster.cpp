@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "AnimController.h"
 #include "PhysX_IgnoreSelfCallback.h"
+#include "Unit.h"
 
 
 CWeapon_Monster::CWeapon_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -198,10 +199,23 @@ void CWeapon_Monster::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CWeapon_Monster::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (!m_isAttack)
+		return;
+
+
 	if (eColliderType == COLLIDERTYPE::PLAYER)
 	{
-		int a = 10;
+		//
+		static_cast<CUnit*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
 	}
+	else if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
+	{
+		//static_cast<CWeapon*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
+		
+		// 상대 무기가 가드 상태면? 림라이트 이런거??
+		
+	}
+
 }
 
 void CWeapon_Monster::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

@@ -72,6 +72,9 @@ private:
 
 	IMFSourceReader*		  m_pReader = { nullptr };
 
+	ID3D11Texture2D*		  m_pTexture = { nullptr };
+
+
 private:
 	HRESULT Ready_Components();
 

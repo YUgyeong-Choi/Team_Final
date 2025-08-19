@@ -47,8 +47,6 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	if (FAILED(Ready_PartObject()))
 		return E_FAIL;
-
-	m_pPlayer = Find_Player(m_pGameInstance->GetCurrentLevelIndex());
 	
 	m_fHeight = pDesc->fHeight;
 	if(m_pNaviCom)
@@ -68,6 +66,9 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 
 	if (!m_isDetect)
 		return;
+
+	if(nullptr == m_pPlayer)
+		m_pPlayer = Find_Player(m_pGameInstance->GetCurrentLevelIndex());
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
@@ -414,6 +415,9 @@ _bool CMonster_Base::Check_Detect()
 {
 	if (nullptr == m_pPlayer)
 		return false;
+
+	if (true == m_isDetect)
+		return true;
 
 	_vector vDir = {};
 	vDir = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);

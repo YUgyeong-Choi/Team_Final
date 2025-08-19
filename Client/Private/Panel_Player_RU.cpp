@@ -54,7 +54,7 @@ CPanel_Player_RU* CPanel_Player_RU::Create(ID3D11Device* pDevice, ID3D11DeviceCo
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPanel_Player_RD");
+		MSG_BOX("Failed to Created : CPanel_Player_RU");
 		Safe_Release(pInstance);
 	}
 

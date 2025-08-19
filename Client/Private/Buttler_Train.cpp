@@ -40,30 +40,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
 
-	m_pAnimator->RegisterEventListener("AddAttackCount", [this](const string callbackName) {
-
-			++m_iAttackCount;
-
-		});
-
-	m_pAnimator->RegisterEventListener("BackMoveEnd", [this](const string callbackName) {
-		
-			m_pAnimator->SetBool("IsBack", false);
-
-		});
-
-	m_pAnimator->RegisterEventListener("NotLookAt", [this](const string callbackName) {
-
-		m_isLookAt = false;
-
-		});
-
-	m_pAnimator->RegisterEventListener("LookAt", [this](const string callbackName) {
-
-		m_isLookAt = true;
-
-		});
-
+	//Register_Events();
 
 	
 	
@@ -240,7 +217,7 @@ void CButtler_Train::Attack(CGameObject* pOther, COLLIDERTYPE eColliderType)
 }
 
 void CButtler_Train::AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
+{ 
 }
 
 void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -263,9 +240,9 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3);
 
-		m_fHp -= pWeapon->Get_CurrentDamage() / 10.f;
+		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
 
-		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 2.f;
+		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
@@ -320,6 +297,46 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	{
 		RootMotionActive(fTimeDelta);
 	}
+
+}
+
+void CButtler_Train::Register_Events()
+{
+	m_pAnimator->RegisterEventListener("AddAttackCount", [this](const string callbackName) {
+
+		++m_iAttackCount;
+
+		});
+
+	m_pAnimator->RegisterEventListener("BackMoveEnd", [this](const string callbackName) {
+
+		m_pAnimator->SetBool("IsBack", false);
+
+		});
+
+	m_pAnimator->RegisterEventListener("NotLookAt", [this](const string callbackName) {
+
+		m_isLookAt = false;
+
+		});
+
+	m_pAnimator->RegisterEventListener("LookAt", [this](const string callbackName) {
+
+		m_isLookAt = true;
+
+		});
+
+	m_pAnimator->RegisterEventListener("AttackOn", [this](const string callbackName) {
+
+		m_pWeapon->SetisAttack(true);
+
+		});
+
+	m_pAnimator->RegisterEventListener("AttackOff", [this](const string callbackName) {
+
+		m_pWeapon->SetisAttack(false);
+
+		});
 
 }
 
