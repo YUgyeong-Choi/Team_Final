@@ -38,6 +38,13 @@ HRESULT CUI_Video::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	BYTE* pData = nullptr;
+	DWORD width = 0, height = 0;
+	LONGLONG time = 0;
+
+	HRESULT hr = ReadFrameToBuffer(&pData, &width, &height, &time);
+
+	hr = UploadFrame(m_pDevice, m_pContext, pData, width, height, &m_pVideoSRV);
 
 
 	return S_OK;

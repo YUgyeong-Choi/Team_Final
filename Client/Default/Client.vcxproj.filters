@@ -883,7 +883,7 @@
     <ClInclude Include="..\public\UI_Script.h">
       <Filter>02.GameObjects\99.UI\Container\Script</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Player_Arm_Base.h">
+    <ClInclude Include="..\public\LegionArm_Base.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MonsterTool.h">
@@ -892,7 +892,7 @@
     <ClInclude Include="..\Public\MonsterToolObject.h">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Player_Arm_Steel.h">
+    <ClInclude Include="..\public\LegionArm_Steel.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1328,7 +1328,7 @@
     <ClCompile Include="..\private\UI_Script.cpp">
       <Filter>02.GameObjects\99.UI\Container\Script</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Player_Arm_Base.cpp">
+    <ClCompile Include="..\private\LegionArm_Base.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MonsterToolObject.cpp">
@@ -1337,7 +1337,7 @@
     <ClCompile Include="..\Private\MonsterTool.cpp">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Player_Arm_Steel.cpp">
+    <ClCompile Include="..\private\LegionArm_Steel.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
     </ClCompile>
   </ItemGroup>

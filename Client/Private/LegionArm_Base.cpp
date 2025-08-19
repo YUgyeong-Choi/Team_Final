@@ -1,21 +1,21 @@
-#include "Player_Arm_Base.h"
+#include "LegionArm_Base.h"
 
-CPlayer_Arm_Base::CPlayer_Arm_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLegionArm_Base::CLegionArm_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject{pDevice, pContext}
 {
 }
 
-CPlayer_Arm_Base::CPlayer_Arm_Base(const CPlayer_Arm_Base& Prototype)
+CLegionArm_Base::CLegionArm_Base(const CLegionArm_Base& Prototype)
 	:CGameObject{Prototype}
 {
 }
 
-HRESULT CPlayer_Arm_Base::Initialize_Prototype()
+HRESULT CLegionArm_Base::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CPlayer_Arm_Base::Initialize(void* pArg)
+HRESULT CLegionArm_Base::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -28,15 +28,15 @@ HRESULT CPlayer_Arm_Base::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CPlayer_Arm_Base::Priority_Update(_float fTimeDelta)
+void CLegionArm_Base::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CPlayer_Arm_Base::Update(_float fTimeDelta)
+void CLegionArm_Base::Update(_float fTimeDelta)
 {
 }
 
-void CPlayer_Arm_Base::Late_Update(_float fTimeDelta)
+void CLegionArm_Base::Late_Update(_float fTimeDelta)
 {
 	_matrix		SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
@@ -50,16 +50,12 @@ void CPlayer_Arm_Base::Late_Update(_float fTimeDelta)
 		XMLoadFloat4x4(m_pParentWorldMatrix));
 }
 
-HRESULT CPlayer_Arm_Base::Render()
+HRESULT CLegionArm_Base::Render()
 {
 	return S_OK;
 }
 
-CGameObject* CPlayer_Arm_Base::Clone(void* pArg)
+void CLegionArm_Base::Free()
 {
-	return nullptr;
-}
-
-void CPlayer_Arm_Base::Free()
-{
+	__super::Free();
 }

@@ -195,8 +195,8 @@
     <ClInclude Include="..\Public\FireBall.h" />
     <ClInclude Include="..\Public\MonsterTool.h" />
     <ClInclude Include="..\Public\MonsterToolObject.h" />
-    <ClInclude Include="..\public\Player_Arm_Base.h" />
-    <ClInclude Include="..\public\Player_Arm_Steel.h" />
+    <ClInclude Include="..\public\LegionArm_Base.h" />
+    <ClInclude Include="..\public\LegionArm_Steel.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\public\UI_Component.h" />
     <ClInclude Include="..\public\UI_Component_Text.h" />
@@ -393,8 +393,8 @@
     <ClCompile Include="..\private\PBRMesh.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Elite_Police.cpp" />
-    <ClCompile Include="..\private\Player_Arm_Base.cpp" />
-    <ClCompile Include="..\private\Player_Arm_Steel.cpp" />
+    <ClCompile Include="..\private\LegionArm_Base.cpp" />
+    <ClCompile Include="..\private\LegionArm_Steel.cpp" />
     <ClCompile Include="..\private\Portion.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="..\private\Lamp.cpp" />

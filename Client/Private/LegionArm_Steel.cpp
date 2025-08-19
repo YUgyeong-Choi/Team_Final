@@ -1,22 +1,22 @@
-#include "Player_Arm_Steel.h"
+#include "LegionArm_Steel.h"
 #include "GameInstance.h"
 
-CPlayer_Arm_Steel::CPlayer_Arm_Steel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CPlayer_Arm_Base{pDevice, pContext}
+CLegionArm_Steel::CLegionArm_Steel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	:CLegionArm_Base{pDevice, pContext}
 {
 }
 
-CPlayer_Arm_Steel::CPlayer_Arm_Steel(const CPlayer_Arm_Steel& Prototype)
-	:CPlayer_Arm_Base{Prototype}
+CLegionArm_Steel::CLegionArm_Steel(const CLegionArm_Steel& Prototype)
+	:CLegionArm_Base{Prototype}
 {
 }
 
-HRESULT CPlayer_Arm_Steel::Initialize_Prototype()
+HRESULT CLegionArm_Steel::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CPlayer_Arm_Steel::Initialize(void* pArg)
+HRESULT CLegionArm_Steel::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -32,17 +32,17 @@ HRESULT CPlayer_Arm_Steel::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CPlayer_Arm_Steel::Priority_Update(_float fTimeDelta)
+void CLegionArm_Steel::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 }
 
-void CPlayer_Arm_Steel::Update(_float fTimeDelta)
+void CLegionArm_Steel::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 }
 
-void CPlayer_Arm_Steel::Late_Update(_float fTimeDelta)
+void CLegionArm_Steel::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
@@ -53,7 +53,7 @@ void CPlayer_Arm_Steel::Late_Update(_float fTimeDelta)
 #endif
 }
 
-HRESULT CPlayer_Arm_Steel::Render()
+HRESULT CLegionArm_Steel::Render()
 {
 
 
@@ -66,14 +66,14 @@ HRESULT CPlayer_Arm_Steel::Render()
 	return S_OK;
 }
 
-void CPlayer_Arm_Steel::Activate()
+void CLegionArm_Steel::Activate()
 {
 
 	m_isAttack = !m_isAttack;
 
 }
 
-void CPlayer_Arm_Steel::Update_Collider()
+void CLegionArm_Steel::Update_Collider()
 {
 	
 	_float4 vlocalOffset =  {0.f,0.f,0.f,1.f};
@@ -88,7 +88,7 @@ void CPlayer_Arm_Steel::Update_Collider()
 	m_pActorCom->Set_Transform(PxTransform(physxPos, physxRot));
 }
 
-HRESULT CPlayer_Arm_Steel::Ready_Actor()
+HRESULT CLegionArm_Steel::Ready_Actor()
 {
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pActorCom))))
@@ -124,28 +124,28 @@ HRESULT CPlayer_Arm_Steel::Ready_Actor()
 	return S_OK;
 }
 
-CPlayer_Arm_Steel* CPlayer_Arm_Steel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLegionArm_Steel* CLegionArm_Steel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CPlayer_Arm_Steel* pInstance = new CPlayer_Arm_Steel(pDevice, pContext);
+	CLegionArm_Steel* pInstance = new CLegionArm_Steel(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer_Arm_Steel");
+		MSG_BOX("Failed to Created : CLegionArm_Steel");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
-CGameObject* CPlayer_Arm_Steel::Clone(void* pArg)
+CGameObject* CLegionArm_Steel::Clone(void* pArg)
 {
-	CPlayer_Arm_Steel* pInstance = new CPlayer_Arm_Steel(*this);
+	CLegionArm_Steel* pInstance = new CLegionArm_Steel(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer_Arm_Steel");
+		MSG_BOX("Failed to Cloned : CLegionArm_Steel");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CPlayer_Arm_Steel::Free()
+void CLegionArm_Steel::Free()
 {
 
 	__super::Free();
