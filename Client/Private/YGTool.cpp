@@ -453,11 +453,17 @@ HRESULT CYGTool::Render_CameraTool()
 					std::memcpy(&worldMat, matrix, sizeof(float) * 16);
 					_matrix finalMat = XMLoadFloat4x4(&worldMat);
 
-					CAMERA_WORLDFRAME posFrame;
-					posFrame.iKeyFrame = m_pSelectedKey->keyFrame;
-					posFrame.WorldMatrix = finalMat;
-					posFrame.interpMatrixPos = m_pSelectedKey->interpWorldPos;
-					m_CameraDatas.vecWorldMatrixData.push_back(posFrame);
+					CAMERA_WORLDFRAME matrixFrame;
+					matrixFrame.iKeyFrame = m_pSelectedKey->keyFrame;
+					matrixFrame.WorldMatrix = finalMat;
+					matrixFrame.interpMatrixPos = m_pSelectedKey->interpWorldPos;
+
+					auto& v = m_CameraDatas.vecWorldMatrixData;
+					auto it = std::lower_bound(
+						v.begin(), v.end(), matrixFrame.iKeyFrame,
+						[](const CAMERA_WORLDFRAME& a, int key) { return a.iKeyFrame < key; });
+					v.insert(it, matrixFrame);
+
 					m_CameraSequence->Add_KeyFrame(0, m_pSelectedKey->keyFrame);
 				}
 				break;
@@ -480,7 +486,13 @@ HRESULT CYGTool::Render_CameraTool()
 					posFrame.iKeyFrame = m_pSelectedKey->keyFrame;
 					posFrame.offSetPos = m_pSelectedKey->offSetPosition;
 					posFrame.interpOffSetPos = m_pSelectedKey->interpOffSetPos;
-					m_CameraDatas.vecOffSetPosData.push_back(posFrame);
+
+					auto& v = m_CameraDatas.vecOffSetPosData;
+					auto it = std::lower_bound(
+						v.begin(), v.end(), posFrame.iKeyFrame,
+						[](const CAMERA_POSFRAME& a, int key) { return a.iKeyFrame < key; });
+					v.insert(it, posFrame);
+
 					m_CameraSequence->Add_KeyFrame(1, m_pSelectedKey->keyFrame);
 				}
 				break;
@@ -503,7 +515,13 @@ HRESULT CYGTool::Render_CameraTool()
 					rotFrame.iKeyFrame = m_pSelectedKey->keyFrame;
 					rotFrame.offSetRot = m_pSelectedKey->offSetRotation;
 					rotFrame.interpOffSetRot = m_pSelectedKey->interpOffSetRot;
-					m_CameraDatas.vecOffSetRotData.push_back(rotFrame);
+
+					auto& v = m_CameraDatas.vecOffSetRotData;
+					auto it = std::lower_bound(
+						v.begin(), v.end(), rotFrame.iKeyFrame,
+						[](const CAMERA_ROTFRAME& a, int key) { return a.iKeyFrame < key; });
+					v.insert(it, rotFrame);
+
 					m_CameraSequence->Add_KeyFrame(2, m_pSelectedKey->keyFrame);
 				}
 				break;
@@ -526,7 +544,13 @@ HRESULT CYGTool::Render_CameraTool()
 					fovFrame.iKeyFrame = m_pSelectedKey->keyFrame;
 					fovFrame.fFov = m_pSelectedKey->fFov;
 					fovFrame.interpFov = m_pSelectedKey->interpFov;
-					m_CameraDatas.vecFovData.push_back(fovFrame);
+
+					auto& v = m_CameraDatas.vecFovData;
+					auto it = std::lower_bound(
+						v.begin(), v.end(), fovFrame.iKeyFrame,
+						[](const CAMERA_FOVFRAME& a, int key) { return a.iKeyFrame < key; });
+					v.insert(it, fovFrame);
+
 					m_CameraSequence->Add_KeyFrame(3, m_pSelectedKey->keyFrame);
 				}
 				break;
@@ -551,7 +575,13 @@ HRESULT CYGTool::Render_CameraTool()
 					targetFrame.fPitch = m_pSelectedKey->fPitch;
 					targetFrame.fYaw = m_pSelectedKey->fYaw;
 					targetFrame.fDistance = m_pSelectedKey->fDistance;
-					m_CameraDatas.vecTargetData.push_back(targetFrame);
+
+					auto& v = m_CameraDatas.vecTargetData;
+					auto it = std::lower_bound(
+						v.begin(), v.end(), targetFrame.iKeyFrame,
+						[](const CAMERA_FOVFRAME& a, int key) { return a.iKeyFrame < key; });
+					v.insert(it, targetFrame);
+
 					m_CameraSequence->Add_KeyFrame(4, m_pSelectedKey->keyFrame);
 				}
 				break;
@@ -902,6 +932,7 @@ HRESULT CYGTool::Render_CameraFrame()
 			}
 		}
 	}
+
 
 	ImGui::End();
 	
