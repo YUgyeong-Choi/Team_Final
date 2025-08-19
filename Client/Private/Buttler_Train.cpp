@@ -40,7 +40,31 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
 
+	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
 	//Register_Events();
+
+			++m_iAttackCount;
+
+		});
+
+	m_pAnimator->RegisterEventListener("BackMoveEnd", [this]() {
+		
+			m_pAnimator->SetBool("IsBack", false);
+
+		});
+
+	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
+
+		m_isLookAt = false;
+
+		});
+
+	m_pAnimator->RegisterEventListener("LookAt", [this]() {
+
+		m_isLookAt = true;
+
+		});
+
 
 	
 	
