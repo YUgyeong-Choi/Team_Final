@@ -62,7 +62,7 @@ void CLevel_CY::Priority_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
-	if (KEY_PRESSING(DIK_LCONTROL))
+	/*if (KEY_PRESSING(DIK_LCONTROL))
 	{
 		if (KEY_DOWN(DIK_Z))
 		{
@@ -73,7 +73,7 @@ void CLevel_CY::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->Compute_Random(-10.f, 10.f))))
 				MSG_BOX("Á¶Áü");
 		}
-	}
+	}*/
 	if (KEY_DOWN(DIK_BACKSLASH))
 	{
 		static _bool Active = { true };

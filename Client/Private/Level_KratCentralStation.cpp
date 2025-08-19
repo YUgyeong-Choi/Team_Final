@@ -372,6 +372,7 @@ HRESULT CLevel_KratCentralStation::Add_Light(CDHTool::LIGHT_TYPE eType, CDHTool:
 
 HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 {
+	return S_OK;
 	_matrix matView = XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW));
 	_matrix matProj = XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ));
 
