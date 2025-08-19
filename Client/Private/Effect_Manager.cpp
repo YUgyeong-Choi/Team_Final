@@ -174,24 +174,31 @@ CGameObject* CEffect_Manager::Make_Effect(_uint iLevelIndex, const _wstring& str
     else
         return nullptr;
 
-
     return pInstance;
 }
 
 
-CGameObject* CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, const _float3& vPresetPos)
+CGameObject* CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, void* pArg)
 {
     auto	iter = m_ECJsonDescs.find(strECTag);
     if (iter == m_ECJsonDescs.end())
         return nullptr;
-
+    
     CEffectContainer::DESC ECDesc = {};
-    ECDesc.j = iter->second;
+    XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixIdentity());
 
+    if (pArg != nullptr)
+    {
+        CEffectContainer::DESC* pDesc = static_cast<CEffectContainer::DESC*>(pArg);
+        ECDesc.pParentMatrix = pDesc->pParentMatrix;
+        ECDesc.pSocketMatrix = pDesc->pParentMatrix;
+        ECDesc.PresetMatrix = pDesc->PresetMatrix;
+    }
+    ECDesc.j = iter->second;
+    ECDesc.iLevelID = iLevelIndex;
     ECDesc.fRotationPerSec = XMConvertToRadians(90.f); // 수정하고싶으면 툴에서 수정해서 파싱하던가 하쇼
     ECDesc.fSpeedPerSec = 10.f;
 
-    ECDesc.vPresetPosition = vPresetPos;
     CGameObject* pInstance = { nullptr };
     if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
         iLevelIndex, TEXT("Layer_Effect"), &pInstance , &ECDesc)))

@@ -480,9 +480,9 @@ HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-	ImGui::Text("Select Pass\n0. Default\t1. SoftEffect\t2. UVSprite\t3. UVSprite_Color, 4. UVSprite_Color_WB");
+	ImGui::Text("Select Pass\n4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnly");
 
-	for (_uint i = 0; i < SE_END; i++)
+	for (_uint i = SE_UVSPRITE_COLOR_WB; i < SE_END; i++)
 	{
 		if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), m_eSelectedPass_SE == i)) {
 			m_eSelectedPass_SE = (SPRITEEFFECT_PASS_INDEX)i;

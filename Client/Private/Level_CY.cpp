@@ -62,18 +62,7 @@ void CLevel_CY::Priority_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
-	/*if (KEY_PRESSING(DIK_LCONTROL))
-	{
-		if (KEY_DOWN(DIK_Z))
-		{
 
-			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::CY), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"),
-				m_pGameInstance->Compute_Random(-10.f, 10.f),
-				m_pGameInstance->Compute_Random(-10.f, 10.f),
-				m_pGameInstance->Compute_Random(-10.f, 10.f))))
-				MSG_BOX("Á¶Áü");
-		}
-	}*/
 	if (KEY_DOWN(DIK_BACKSLASH))
 	{
 		static _bool Active = { true };
@@ -92,8 +81,6 @@ void CLevel_CY::Update(_float fTimeDelta)
 	//__super::Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
-
-
 }
 
 HRESULT CLevel_CY::Render()

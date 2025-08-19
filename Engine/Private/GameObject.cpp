@@ -138,6 +138,8 @@ HRESULT CGameObject::Replace_Component(_uint iPrototypeLevelIndex, const _wstrin
 	if (ppOut && *ppOut)
 		Safe_Release(*ppOut);
 
+	*ppOut = nullptr;
+
 	CComponent* pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
 	if (nullptr == pComponent)
 		return E_FAIL;

@@ -125,28 +125,28 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_F8))
 		m_pGameInstance->ToggleDebugArea();
 
-	if (KEY_PRESSING(DIK_LCONTROL))
-	{
-		if (KEY_DOWN(DIK_Z))
-		{
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_TestGrinder_VStretch_wls_P2"),
-				m_pGameInstance->Compute_Random(-1.f, 1.f),
-				m_pGameInstance->Compute_Random(-1.f, 1.f),
-				m_pGameInstance->Compute_Random(-1.f, 1.f)))
-				MSG_BOX("조짐");
-		}
-		if (KEY_DOWN(DIK_X))
-		{
-			_float3 pos = {};
-			if (m_pPlayer)
-				XMStoreFloat3(&pos, m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_AttackHit_Thrust_Spiral_2"),
-				pos.x,
-				pos.y + 1.f,
-				pos.z))
-				MSG_BOX("조짐");
-		}
-	}
+	//if (KEY_PRESSING(DIK_LCONTROL))
+	//{
+	//	if (KEY_DOWN(DIK_Z))
+	//	{
+	//		if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_TestGrinder_VStretch_wls_P2"),
+	//			m_pGameInstance->Compute_Random(-1.f, 1.f),
+	//			m_pGameInstance->Compute_Random(-1.f, 1.f),
+	//			m_pGameInstance->Compute_Random(-1.f, 1.f)))
+	//			MSG_BOX("조짐");
+	//	}
+	//	if (KEY_DOWN(DIK_X))
+	//	{
+	//		_float3 pos = {};
+	//		if (m_pPlayer)
+	//			XMStoreFloat3(&pos, m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
+	//		if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_AttackHit_Thrust_Spiral_2"),
+	//			pos.x,
+	//			pos.y + 1.f,
+	//			pos.z))
+	//			MSG_BOX("조짐");
+	//	}
+	//}
 
 
 
@@ -627,14 +627,28 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 52.83f, 0.09f, 1.57f))
-		MSG_BOX("이펙트 생성 실패");
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 69.25f, -0.22f, -8.17f))
-		MSG_BOX("이펙트 생성 실패");
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), 99.86f, 0.64f, -13.69f))
-		MSG_BOX("이펙트 생성 실패");
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), 0.f, 0.f, 0.f))
-		MSG_BOX("이펙트 생성 실패");
+	//_matrix presetmat = XMMatrixIdentity();
+	//CEffectContainer::DESC ECDesc = {};
+
+	//presetmat = XMMatrixTranslation(52.83f, 0.09f, 1.57f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
+	//	MSG_BOX("이펙트 생성 실패");
+
+	//presetmat = XMMatrixTranslation(69.25f, -0.22f, -8.17f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
+	//	MSG_BOX("이펙트 생성 실패");
+
+	//presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
+	//	MSG_BOX("이펙트 생성 실패");
+
+	//presetmat = XMMatrixTranslation(0.f, 0.f, 0.f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
+	//	MSG_BOX("이펙트 생성 실패");
 
 	return S_OK;
 }

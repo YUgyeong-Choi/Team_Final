@@ -14,13 +14,6 @@ class CEffectBase;
 class CEffect_Manager final : public CBase
 {
     DECLARE_SINGLETON(CEffect_Manager)
-public:
-    typedef struct tagEffectManagerDesc
-    {
-        _float3 vPresetPos = {};
-        _float4x4* pSocketMatrix = { nullptr };         // 우선적으로 사용되는 부모 행렬 (e.g. 뼈소켓매트릭스, 혹은 단순히 부모 행렬 - 이 경우 웬만하면 EC의 트랜스폼을 조정하시오 - )
-        _float4x4* pParentCombinedMatrix = { nullptr }; // 위의 행렬이 별개로 부모 행렬을 또 들어야 하는 경우 사용할 것.. (뼈 소켓일 경우 -> 부모 객체의 월드 매트릭스)
-    }EFFDESC;
 private:
     CEffect_Manager();
     virtual ~CEffect_Manager() = default;
@@ -32,9 +25,7 @@ public:
 
 public:
     class CGameObject* Make_Effect(_uint iLevelIndex, const _wstring& strEffectTag, const _wstring& strLayerTag, const _float3& vPresetPos = { 0.f, 0.f, 0.f }, void* pArg = nullptr);
-    class CGameObject* Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, const _float3& vPresetPos = {0.f, 0.f, 0.f});
-    /* EC도 EC주소 반환할 수 있는 함수 별개로 만들기*/
-    //class CEffectBase* Find_Effect(const _wstring& strEffectTag);
+    class CGameObject* Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, void* pArg = nullptr);
     class CEffectContainer* Find_EffectContainer(const _wstring& strECTag);
     HRESULT Ready_Effect(const _wstring strEffectPath);
     HRESULT Ready_EffectContainer(const _wstring strECPath);

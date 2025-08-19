@@ -243,11 +243,7 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
     Out.vColor.rgb = color.rgb * mask * g_fIntensity;
     Out.vColor.a = color.a * mask;
     
-
-
-
     Out.vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
-
 
 
     if (In.vLifeTime.y >= In.vLifeTime.x)

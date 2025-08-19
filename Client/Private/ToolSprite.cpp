@@ -39,6 +39,7 @@ HRESULT CToolSprite::Initialize(void* pArg)
 
 void CToolSprite::Priority_Update(_float fTimeDelta)
 {
+	m_fTimeAcc += fTimeDelta;
 
 }
 

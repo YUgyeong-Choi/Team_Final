@@ -31,14 +31,17 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 		return E_FAIL;
 
 	DESC* pDesc = static_cast<DESC*>(pArg);
-
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&pDesc->vPresetPosition), 1.f));
+	m_pTransformCom->Set_WorldMatrix(pDesc->PresetMatrix);
+	m_pSocketMatrix = pDesc->pSocketMatrix;
+	m_pParentMatrix = pDesc->pParentMatrix;
 	Load_JsonFiles(pDesc->j);
     return S_OK;
 }
 
 void CEffectContainer::Priority_Update(_float fTimeDelta)
 {
+	if (m_isActive == false)
+		return;
 	m_fCurFrame += m_fTickPerSecond * fTimeDelta;
 	m_iCurFrame = static_cast<_int>(m_fCurFrame); // 캐스팅을 너무 많이 하는 것 같아서 그냥 별도로 저장
 	//m_fLifeTimeAcc += fTimeDelta;
@@ -75,13 +78,6 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 			{
 				End_Effect();
 			}
-			/*
-			*  이부분 삭제 대신 각 이펙트들의 Loop상태를 해제한 후 시간이 지나면 죽도록 변경할 것 
-			*/
-			//for (auto& pEffect : m_Effects)
-			//{
-			//	// 근데 파티클만 해제해주면 되긴 함 
-			//}
 		}
 	}
 
@@ -104,6 +100,59 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 
 void CEffectContainer::Update(_float fTimeDelta)
 {
+	if (m_isActive == false)
+		return;
+	// EC의 combinedworldmatrix 갱신
+	_matrix matSocket = XMMatrixIdentity();
+	_matrix matParent = XMMatrixIdentity();
+
+	if (m_pSocketMatrix != nullptr)
+	{
+		matSocket = XMLoadFloat4x4(m_pSocketMatrix);
+		for (_uint i = 0; i < 3; i++)
+			matSocket.r[i] = XMVector3Normalize(matSocket.r[i]);
+	}
+
+	if (m_pParentMatrix != nullptr)
+	{
+		matParent = XMLoadFloat4x4(m_pParentMatrix);
+		//for (_uint i = 0; i < 3; i++)
+		//	matParent.r[i] = XMVector3Normalize(matParent.r[i]);
+	}
+
+	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
+	for (_uint i = 0; i < 3; i++)
+		matWorld.r[i] = XMVector3Normalize(matWorld.r[i]);
+
+
+	XMStoreFloat4x4(&m_CombinedWorldMatrix, matWorld * matSocket * matParent);
+
+
+
+	//for (_uint i = 0; i < 3; i++)
+	//	matSocket.r[i] = XMVector3Normalize(matSocket.r[i]);
+
+
+	//// 1. 부모 행렬
+	//_matrix ParentWorld = XMLoadFloat4x4(m_pParentWorldMatrix);
+
+	//// 2. Socket 월드 행렬 
+	//_matrix SocketMat = XMLoadFloat4x4(m_pSocketMatrix);
+
+	//for (size_t i = 0; i < 3; i++)
+	//	SocketMat.r[i] = XMVector3Normalize(SocketMat.r[i]);
+
+	//// 3. Blade 본 월드 행렬
+	//_matrix HandleMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex));
+
+	//for (size_t i = 0; i < 3; i++)
+	//	HandleMat.r[i] = XMVector3Normalize(HandleMat.r[i]);
+
+	//_matrix WeaponWorld = HandleMat * SocketMat * ParentWorld;
+
+
+
+
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
@@ -117,6 +166,8 @@ void CEffectContainer::Update(_float fTimeDelta)
 
 void CEffectContainer::Late_Update(_float fTimeDelta)
 {
+	if (m_isActive == false)
+		return;
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
@@ -184,7 +235,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 				desc.fRotationPerSec = XMConvertToRadians(90.f);
 				desc.fSpeedPerSec = 5.f;
 				desc.bTool = false;
-				desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+				desc.pSocketMatrix = &m_CombinedWorldMatrix;
 				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"), &desc));
 			}
@@ -194,7 +245,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 				CParticleEffect::DESC desc = {};
 				desc.fRotationPerSec = XMConvertToRadians(90.f);
 				desc.fSpeedPerSec = 5.f;
-				desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+				desc.pSocketMatrix = &m_CombinedWorldMatrix;
 				desc.bTool = false;
 				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
@@ -205,7 +256,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 				CMeshEffect::DESC desc = {};
 				desc.fRotationPerSec = XMConvertToRadians(90.f);
 				desc.fSpeedPerSec = 5.f;
-				desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+				desc.pSocketMatrix = &m_CombinedWorldMatrix;
 				desc.bTool = false;
 				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"), &desc));
