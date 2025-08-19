@@ -78,12 +78,20 @@ HRESULT CStaticMesh_Instance::Render()
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
-			return E_FAIL;
+		{
+			/* [ 렌더링을 생략해야할 때 ] */
+			if (m_mapVisibleLight.find(m_iLightShape) != m_mapVisibleLight.end())
+				continue;
+		}
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
+			/* [ 렌더링을 생략해야할 때 ] */
+			if (m_mapVisibleLight.find(m_iLightShape) != m_mapVisibleLight.end())
+				continue;
+
 			if (!m_bDoOnce)
 			{
 				/* Com_Texture */

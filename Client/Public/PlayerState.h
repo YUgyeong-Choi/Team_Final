@@ -49,7 +49,7 @@ protected:
 		m_pOwner->m_iCurrentCombo = Combo;
 	}
 
-protected:
+protected: /* [ 필요 자원 ] */
 	_bool   IsStaminaEnough(_float fStaminaCost)
 	{
 		if (m_pOwner->m_fStamina >= fStaminaCost)
@@ -57,6 +57,13 @@ protected:
 
 		return false;
 	}
+    _bool   IsManaEnough(_float fManaCost)
+    {
+        if (m_pOwner->m_fMana >= fManaCost)
+            return true;
+
+        return false;
+    }
 
 protected: /* [ 락온 관련 ] */
     void LockOnMovement()
@@ -265,7 +272,7 @@ public:
         if (input.bTap) // 무기교체
             return EPlayerState::SWITCHWEAPON;
 
-        if (input.bSkill)
+        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
 		if (input.bSpaceDown && IsStaminaEnough(20.f)) // 빽스탭
@@ -371,7 +378,7 @@ public:
         if (input.bItem) // 아이템 사용
             return EPlayerState::USEITEM;
 
-        if (input.bSkill)
+        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
         if (input.bCtrl) // 컨트롤 왼팔공격
@@ -499,7 +506,7 @@ public:
         if (input.bCtrl) // 컨트롤 왼팔공격
             return EPlayerState::ARMATTACKA;
 
-        if (input.bSkill)
+        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
@@ -1132,7 +1139,7 @@ public:
                 return EPlayerState::WEAKATTACKB;
             if (m_bAttackB && IsStaminaEnough(20.f))
                 return EPlayerState::STRONGATTACKB;
-            if (m_bSkill)
+            if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
         }
 
@@ -1241,7 +1248,7 @@ public:
                 return EPlayerState::STRONGATTACKA;
             if (m_bArmAttack)
                 return EPlayerState::ARMATTACKA;
-            if (m_bSkill)
+            if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
 
             if (input.bMove)
@@ -1354,7 +1361,7 @@ public:
                 return EPlayerState::WEAKATTACKB;
             if (m_bArmAttack)
                 return EPlayerState::ARMATTACKA;
-			if (m_bSkill)
+			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
         }
         if (1.5f < m_fStateTime)
@@ -1468,7 +1475,7 @@ public:
                 return EPlayerState::WEAKATTACKA;
             if (m_bArmAttack)
                 return EPlayerState::ARMATTACKA;
-			if (m_bSkill)
+			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
         }
 
@@ -2199,6 +2206,8 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("MainSkill");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
+        m_pOwner->m_fMana -= 100.f;
+        m_pOwner->Callback_Mana();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2209,11 +2218,13 @@ public:
         m_fStateTime += fTimeDelta;
 
         //1. F를 다시 눌렀을 경우 최대 3콤보까지 진행이된다.
-        if (0.5f < m_fStateTime && m_iSkillCount == 0)
+        if (1.f < m_fStateTime && m_iSkillCount == 0 && IsManaEnough(100.f))
         {
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
+                m_pOwner->m_fMana -= 100.f;
+                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 
@@ -2222,24 +2233,13 @@ public:
             else if (MOUSE_DOWN(DIM::RBUTTON))
 				m_bAttackB = true;
         }
-        else if (1.5f < m_fStateTime && m_iSkillCount == 1)
+        else if (2.5f < m_fStateTime && m_iSkillCount == 1 && IsManaEnough(100.f))
         {
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
-                m_iSkillCount++;
-            }
-
-            if (MOUSE_DOWN(DIM::LBUTTON))
-                m_bAttackA = true;
-            else if (MOUSE_DOWN(DIM::RBUTTON))
-                m_bAttackB = true;
-        }
-        else if (2.5f < m_fStateTime && m_iSkillCount == 2)
-        {
-            if (KEY_DOWN(DIK_F))
-            {
-                m_pOwner->m_pAnimator->SetTrigger("MainSkill");
+                m_pOwner->m_fMana -= 100.f;
+                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 

@@ -132,8 +132,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 	// 컷씬일 때 못 움직이도록
 	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-		return;
-
+		return; 
+	
 	/* [ 입력 ] */
 	HandleInput();
 	SlidDoorMove(fTimeDelta);

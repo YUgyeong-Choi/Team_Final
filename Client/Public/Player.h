@@ -264,7 +264,7 @@ private: /* [ 플레이어 변수 ] */
 	_float	m_fStamina = { 100.f };
 	
 	_float	m_fMaxMana = { 300.f };
-	_float	m_fMana = { 150.f };
+	_float	m_fMana = { 300.f };
 	
 	_float	m_fMaxErgo = { 100.f };
 	_float	m_fErgo = { 0.f };

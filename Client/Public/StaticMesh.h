@@ -53,6 +53,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+private:
+	HRESULT SetEmissive();
+
 public:
 	HRESULT Add_Actor();
 
@@ -81,8 +84,10 @@ private:
 private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
 
-private:
+protected:
 	_int m_iLightShape = { 0 };
+
+	unordered_set<_int> m_mapVisibleLight = { 1, 3, 4, 6 };
 
 protected:
 
