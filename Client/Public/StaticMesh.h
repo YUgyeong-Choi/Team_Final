@@ -32,7 +32,7 @@ public:
 		);
 
 
-		_bool		bUseOctoTree = { true };
+		_bool		bUseOctoTree = { true }; // 병합 할때 true 필요, false
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };

@@ -29,20 +29,6 @@ HRESULT CLevel_DH::Initialize()
 	if (FAILED(Ready_Shadow()))
 		return E_FAIL;
 
-
-#pragma region 맵 로드
-	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	//if (FAILED(Ready_MapModel()))
-	//	return E_FAIL;
-
-	//제이슨으로 저장된 맵을 로드한다.
-	if (FAILED(LoadMap(ENUM_CLASS(LEVEL::DH), "STATION")))
-		return E_FAIL;
-
-#pragma endregion
-
-
-
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 

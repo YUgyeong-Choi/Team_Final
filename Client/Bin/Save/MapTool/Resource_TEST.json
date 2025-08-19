@@ -2,24 +2,28 @@
     {
         "Collision": true,
         "ModelName": "FloorA",
+        "NoInstancing": false,
         "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorA.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_01_Female",
+        "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_01_Female.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_04_Female",
+        "NoInstancing": false,
         "ObjectCount": 9,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
         "Collision": true,
         "ModelName": "SM_Station_TicketOffice_01",
+        "NoInstancing": true,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TicketOffice_01.bin"
     }
