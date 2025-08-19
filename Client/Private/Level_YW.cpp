@@ -9,10 +9,11 @@
 #include "DecalTool.h"
 #include "MonsterTool.h"
 
-#pragma region 다른 사람 거
 #include "PBRMesh.h"
-#include "StaticMesh.h"
-#pragma endregion
+
+//임시
+#include "MonsterToolObject.h"
+
 
 
 
@@ -25,8 +26,17 @@ CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_YW::Initialize()
 {
-	/*if (FAILED(Ready_Layer_TestDecal(TEXT("Layer_TestDecal"))))
-		return E_FAIL;*/
+	CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
+	Desc.fSpeedPerSec = 5.f;
+	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	Desc.eMeshLevelID = LEVEL::YW;
+	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
+	Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(Desc.szName, TEXT("Buttler_Train"));
+	Desc.szMeshID = TEXT("Buttler_Train");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
+		return E_FAIL;
 
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;

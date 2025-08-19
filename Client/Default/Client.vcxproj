@@ -194,6 +194,7 @@
     <ClInclude Include="..\public\Elite_Police.h" />
     <ClInclude Include="..\Public\FireBall.h" />
     <ClInclude Include="..\public\MonsterTool.h" />
+    <ClInclude Include="..\public\MonsterToolObject.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\public\UI_Component.h" />
     <ClInclude Include="..\public\UI_Component_Text.h" />
@@ -373,6 +374,7 @@
     <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\private\MeshEffect.cpp" />
     <ClCompile Include="..\private\MonsterTool.cpp" />
+    <ClCompile Include="..\private\MonsterToolObject.cpp" />
     <ClCompile Include="..\private\Monster_Base.cpp" />
     <ClCompile Include="..\private\Monster_Test.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
