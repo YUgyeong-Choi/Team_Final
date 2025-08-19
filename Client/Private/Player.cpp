@@ -166,6 +166,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_U))
 	{
 		//m_pAnimator->SetBool("FocusOn", true);
+		m_pAnimator->SetTrigger("Hited");
 	}
 
 
@@ -738,6 +739,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
+	case eAnimCategory::GRINDER:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	}
 
 	default:
 		break;
@@ -772,6 +777,7 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
 
+	if (stateName == "Grinder") return eAnimCategory::GRINDER; 
 	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0)
 		return eAnimCategory::ITEM_WALK;
 	if (stateName.find("OnLamp") == 0 || stateName.find("FailItem") == 0)
@@ -944,6 +950,11 @@ void CPlayer::Update_Collider_Actor()
 
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	/* [ 플레이어 피격 ] */
+	if (bIsInvincible)
+		return;
+
+	bIsHit = true;
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -1282,16 +1293,22 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 		_vector vNewDoorPos = vDoorStartPos + XMVectorSet(fDeltaX, 0.f, 0.f, 0.f);
 		DoorTransCom->Set_State(STATE::POSITION, vNewDoorPos);
 
-		// 컷씬이 끝날 조건 넣어주면 좋음
 		if (fDeltaX <= -2.2f)
 		{
-			// 임의로 추가해 둔 것
-			_vector finishPos = vNewDoorPos + _vector({-0.7f, 0.f, 0.f, 0.f});
-			DoorTransCom->Set_State(STATE::POSITION, finishPos);
-
-			m_bInteraction[0] = false; // 컷씬 종료
+			m_bInteraction[0] = false;
+			m_bInteractionProb[0] = true;
 		}
-		
+	}
+
+	if (m_bInteractionProb[0])
+	{
+		CTransform* DoorTransCom = m_pInterectionStuff->Get_TransfomCom();
+
+		if (!m_bInteractionProbMove[0])
+		{
+			_vector vDir = { -1.f,0.f,0.f,0.f };
+			m_bInteractionProbMove[0] = DoorTransCom->Move_SpecialB(fTimeDelta, 0.5f, vDir, 1.f);
+		}
 	}
 }
 

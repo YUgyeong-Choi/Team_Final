@@ -46,7 +46,7 @@ public:
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
 		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,
-		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, END
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, END
 	};
 
 protected:
@@ -226,6 +226,8 @@ private: /* [ 이동관련 변수 ] */
 
 private: /* [ 인터렉션 관련변수 ] */
 	_bool  m_bInteraction[9] = { false };
+	_bool  m_bInteractionProb[9] = { false };
+	_bool  m_bInteractionProbMove[9] = { false };
 	_bool  m_bInteractionMove[9] = { false };
 	_bool  m_bInteractionRotate[9] = { false };
 	_float m_fInteractionTime[9] = { 0 };
@@ -237,7 +239,7 @@ private: /* [ 인터렉션 관련변수 ] */
 		"Guard_Walk_B", "Guard_Walk_F", "Guard_Walk_L", "Guard_Walk_R",
 		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
 		"OnLamp_Walk", "FailItem_Walk",
-		"Grinder_Start", "Grinder_Loop", "Grinder_End", "Grinder_Loop_Walk_F", "Grinder_Loop_Walk_R", "Grinder_Loop_Walk_L" , "Grinder_Loop_Walk_B",
+		"Grinder_Start", "Grinder_Loop", "Grinder_Loop_Walk_F", "Grinder_Loop_Walk_R", "Grinder_Loop_Walk_L" , "Grinder_Loop_Walk_B",//"Grinder_End"
 		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR"
 
 	};
@@ -277,6 +279,7 @@ private: /* [ 리전 암 내구도 ] */
 
 private: /* [ 현재 상태 ] */
 	_bool	bIsGuarding = { false };
+	_bool	bIsHit = { false };
 	_bool	bIsInvincible = { false };
 	_bool	m_bIsLockOn = { false };
 
@@ -290,6 +293,7 @@ private: /* [ 아이템 사용 관련 변수 ] */
 private: /* [ 벨트 슬롯 ] */
 	_bool	 m_bUseLamp = {};
 	_bool	 m_bUseGrinder = {};
+	_bool	 m_bUsePulse = {};
 
 	_bool m_bSwitch = { true };
 	

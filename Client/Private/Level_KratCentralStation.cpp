@@ -58,9 +58,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Level()))
 		return E_FAIL;
 
-	/* [ 카메라 셋팅 ] */
-	m_pCamera_Manager->GetCurCam()->Get_TransfomCom()->Set_State(STATE::POSITION, _fvector{ 0.f, -30.f, 0.f, 1.f });
-
 	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
 	m_pBGM->Set_Volume(0.f);
@@ -85,13 +82,23 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 	{
 		m_pStartVideo->Set_bDead();
 		m_pStartVideo = nullptr;
+		m_bEndVideo = true;
 
 		m_pBGM->Play();
 
 		/* [ 플레이어 제어 ] */
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
-		m_pCamera_Manager->GetFreeCam()->Get_TransfomCom()->Set_State(STATE::POSITION, _fvector{ 0.f, 0.f,0.f,1.f });
+	}
+	if ((m_pStartVideo == nullptr || m_pStartVideo->Get_bDead()) && !m_bEndVideo)
+	{
+		m_pStartVideo = nullptr;
+		m_pBGM->Play();
+
+		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
+		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
+
+		m_bEndVideo = true;
 	}
 }
 

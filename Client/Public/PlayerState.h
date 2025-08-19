@@ -89,6 +89,71 @@ protected: /* [ 락온 관련 ] */
             m_pOwner->m_bSwitchBack = m_pOwner->m_pAnimator->CheckBool("Back");
         }
     }
+    void LockOnMovement4Way()
+    {
+        if (m_pOwner->m_bIsLockOn)
+        {
+            static _uint iPressSeq = 0;
+            static _uint iTickLeft = 0;
+            static _uint iTickRight = 0;
+            static _uint iTickFront = 0;
+            static _uint iTickBack = 0;
+
+            // A
+            if (KEY_DOWN(DIK_A))              iTickLeft = ++iPressSeq;
+            else if (!KEY_PRESSING(DIK_A))    iTickLeft = 0;
+
+            // D
+            if (KEY_DOWN(DIK_D))              iTickRight = ++iPressSeq;
+            else if (!KEY_PRESSING(DIK_D))    iTickRight = 0;
+
+            // W
+            if (KEY_DOWN(DIK_W))              iTickFront = ++iPressSeq;
+            else if (!KEY_PRESSING(DIK_W))    iTickFront = 0;
+
+            // S
+            if (KEY_DOWN(DIK_S))              iTickBack = ++iPressSeq;
+            else if (!KEY_PRESSING(DIK_S))    iTickBack = 0;
+
+            const _bool bLeftPressed = (iTickLeft != 0);
+            const _bool bRightPressed = (iTickRight != 0);
+            const _bool bFrontPressed = (iTickFront != 0);
+            const _bool bBackPressed = (iTickBack != 0);
+
+            _bool bSetLeft = false;
+            _bool bSetRight = false;
+            _bool bSetFront = false;
+            _bool bSetBack = false;
+
+            if (bLeftPressed || bRightPressed)
+            {
+                bSetLeft = bLeftPressed && (!bRightPressed || (iTickLeft <= iTickRight));
+                bSetRight = bRightPressed && (!bLeftPressed || (iTickRight < iTickLeft));
+            }
+            else if (bFrontPressed || bBackPressed)
+            {
+                bSetFront = bFrontPressed && (!bBackPressed || (iTickFront <= iTickBack));
+                bSetBack = bBackPressed && (!bFrontPressed || (iTickBack < iTickFront));
+            }
+
+            m_pOwner->m_pAnimator->SetBool("Left", bSetLeft);
+            m_pOwner->m_pAnimator->SetBool("Right", bSetRight);
+            m_pOwner->m_pAnimator->SetBool("Front", bSetFront);
+            m_pOwner->m_pAnimator->SetBool("Back", bSetBack);
+
+            m_pOwner->m_bSwitchLeft = m_pOwner->m_pAnimator->CheckBool("Left");
+            m_pOwner->m_bSwitchRight = m_pOwner->m_pAnimator->CheckBool("Right");
+            m_pOwner->m_bSwitchFront = m_pOwner->m_pAnimator->CheckBool("Front");
+            m_pOwner->m_bSwitchBack = m_pOwner->m_pAnimator->CheckBool("Back");
+        }
+        else
+        {
+            m_pOwner->m_pAnimator->SetBool("Left", false);
+            m_pOwner->m_pAnimator->SetBool("Right", false);
+            m_pOwner->m_pAnimator->SetBool("Front", false);
+            m_pOwner->m_pAnimator->SetBool("Back", false);
+        }
+    }
 
 protected:
 	CPlayer* m_pOwner;
@@ -297,7 +362,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
         
-        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(30.f))
+        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(40.f))
             return EPlayerState::SPRINT;
 
         if (input.bShift && m_pOwner->m_bWeaponEquipped) // 가드
@@ -422,7 +487,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(30.f))
+        if (m_fSpaceHoldTime > 0.5f && IsStaminaEnough(40.f))
             return EPlayerState::SPRINT;
 
         if (input.bShift && m_pOwner->m_bWeaponEquipped) // 가드
@@ -522,6 +587,14 @@ public:
                 m_pOwner->m_bUseGrinder = true;
             }
         }
+        else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
+        {
+            m_pOwner->m_pWeapon->SetbIsActive(false);
+            m_pOwner->m_pAnimator->SetTrigger("Pulse");
+            m_pOwner->m_pAnimator->SetTrigger("UseItem");
+            m_pOwner->m_bUsePulse = true;
+            m_pOwner->m_bItemSwitch = true;
+        }
 
         
         /* [ 디버깅 ] */
@@ -532,7 +605,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* [ 그라인더만 이동가능 ] */
+        /* [ 그라인더 : 이동가능 ] */
         if(m_pOwner->m_bUseGrinder)
         {
             if (KEY_PRESSING(DIK_R))
@@ -544,11 +617,18 @@ public:
                 m_pOwner->m_pAnimator->SetBool("Grinding", false);
                 m_pOwner->m_bUseGrinder = false;
             }
-            LockOnMovement();
+            LockOnMovement4Way();
         }
         else
         {
             m_fGrinderTime += fTimeDelta;
+        }
+
+        /* [ 펄스 : 이동가능 ] */
+        if (m_pOwner->m_bUsePulse)
+        {
+            m_fPulseTime += fTimeDelta;
+            LockOnMovement();
         }
     }
 
@@ -563,6 +643,7 @@ public:
         m_pOwner->m_bUseGrinder = false;
 		m_pOwner->m_bWalk = m_bPreWalk;
         m_fGrinderTime = 0.f;
+        m_fPulseTime = 0.f;
         m_fStateTime = 0.f;
         m_bDoOnce = false;
     }
@@ -619,6 +700,7 @@ private:
 private:
 	_bool m_bPreWalk = { false };
     _float m_fGrinderTime = {};
+    _float m_fPulseTime = {};
 };
 
 /* [ 이 클래스는 백스탭 상태입니다. ] */
@@ -657,6 +739,12 @@ public:
             {
                 m_pOwner->m_bBackStepAttack = true;
                 m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
+            }
+
+            if (KEY_DOWN(DIK_SPACE))
+            {
+                m_fStateTime = 0.f;
+                m_pOwner->m_pAnimator->SetTrigger("Dash");
             }
         }
     }
@@ -730,6 +818,14 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        if (KEY_DOWN(DIK_SPACE))
+        {
+            m_fStateTime = 0.f;
+            m_pOwner->m_pAnimator->SetTrigger("Dash");
+        }
+
+        LockOnMovement();
     }
 
     virtual void Exit() override
@@ -742,7 +838,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
         
-        if (0.6f < m_fStateTime)
+        if (0.4f < m_fStateTime)
         {
             if (input.bMove)
             {
@@ -806,6 +902,9 @@ public:
             m_pOwner->m_pAnimator->SetTrigger("PutWeapon");
             m_pOwner->m_pAnimator->CancelOverrideAnimController();
         }
+
+        m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+        m_pOwner->m_bWalk = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -999,21 +1098,17 @@ public:
 
         if (0.8f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
 
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
+            if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
 
-                if (KEY_DOWN(DIK_LCONTROL))
-                    m_bArmAttack = true;
+            if (KEY_DOWN(DIK_LCONTROL))
+                m_bArmAttack = true;
 
-                if (KEY_DOWN(DIK_F))
-                    m_bSkill = true;
-            }
+            if (KEY_DOWN(DIK_F))
+                m_bSkill = true;
         }
     }
 

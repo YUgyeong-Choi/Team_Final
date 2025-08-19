@@ -64,6 +64,7 @@ private:
 	CSound_Core* m_pBGM = { nullptr };
 
 	class CUI_Video* m_pStartVideo = { nullptr };
+	_bool m_bEndVideo = {};
 
 private:
 	_bool m_bHold = { true };
