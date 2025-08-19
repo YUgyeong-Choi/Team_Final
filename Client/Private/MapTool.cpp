@@ -1842,7 +1842,27 @@ void CMapTool::Detail_LightShape()
 	ImGui::Text("Light Shape");
 	if (m_pFocusObject)
 	{
-		ImGui::InputInt("Light Shape", &m_pFocusObject->m_iLightShape);
+		if (ImGui::InputInt("Light Shape", &m_pFocusObject->m_iLightShape))
+		{
+			//체크 박스를 눌렀을 때
+			//포커스된 오브젝트와 같은 모델들을 같은 속성 부여 시킨다.
+			auto iter = m_ModelGroups.find(m_pFocusObject->Get_ModelName());
+			if (iter != m_ModelGroups.end())
+			{
+				// it->second 가 해당 모델 이름의 리스트
+				list<CGameObject*>& ObjectList = iter->second;
+
+				for (auto* pObj : ObjectList)
+				{
+					static_cast<CMapToolObject*>(pObj)->m_iLightShape = m_pFocusObject->m_iLightShape;
+				}
+			}
+			else
+			{
+				//치명적 오류
+				MSG_BOX("Detail_No Instancing Error : 모델 그룹을 찾을 수 없음");
+			}
+		}
 	}
 }
 
