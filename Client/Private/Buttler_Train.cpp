@@ -217,7 +217,7 @@ void CButtler_Train::Attack(CGameObject* pOther, COLLIDERTYPE eColliderType)
 }
 
 void CButtler_Train::AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
+{ 
 }
 
 void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -240,9 +240,9 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3);
 
-		m_fHp -= pWeapon->Get_CurrentDamage() / 10.f;
+		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
 
-		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 2.f;
+		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
@@ -323,6 +323,18 @@ void CButtler_Train::Register_Events()
 	m_pAnimator->RegisterEventListener("LookAt", [this](const string callbackName) {
 
 		m_isLookAt = true;
+
+		});
+
+	m_pAnimator->RegisterEventListener("AttackOn", [this](const string callbackName) {
+
+		m_pWeapon->SetisAttack(true);
+
+		});
+
+	m_pAnimator->RegisterEventListener("AttackOff", [this](const string callbackName) {
+
+		m_pWeapon->SetisAttack(false);
 
 		});
 

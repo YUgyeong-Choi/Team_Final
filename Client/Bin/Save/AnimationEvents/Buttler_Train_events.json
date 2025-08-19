@@ -15,6 +15,14 @@
                 {
                     "EventName": "LookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "AttackOn",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 3.0
                 }
             ],
             "IsLoop": false,
@@ -39,6 +47,14 @@
                 {
                     "EventName": "LookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "AttackOn",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 3.0
                 }
             ],
             "IsLoop": false,

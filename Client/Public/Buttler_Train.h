@@ -44,7 +44,7 @@ public:
 
 	void Calc_Pos(_float fTimeDelta);
 
-	// 뒷 방향으로 레이를 쏘고 너무 가까우면 왼쪽, 오른쪽 다 쏴보고 다 가까우면 뒤로 감
+	
 	virtual void Register_Events();
 
 
