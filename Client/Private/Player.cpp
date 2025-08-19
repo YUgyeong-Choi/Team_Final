@@ -99,10 +99,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	if (KEY_DOWN(DIK_J))
-		m_fTimeScale = 1.f;
-	if (KEY_DOWN(DIK_K))
-		m_fTimeScale = 0.f;
+	//if (KEY_DOWN(DIK_J))
+	//	m_fTimeScale = 1.f;
+	//if (KEY_DOWN(DIK_K))
+	//	m_fTimeScale = 0.f;
 
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
@@ -135,7 +135,9 @@ void CPlayer::Update(_float fTimeDelta)
 		return; 
 	
 	/* [ 입력 ] */
-	HandleInput();
+	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만
+		HandleInput();
+
 	SlidDoorMove(fTimeDelta);
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
@@ -1228,7 +1230,6 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 
 void CPlayer::Play_CutScene_Door()
 {	
-	//m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::ONE);
 	m_bInteraction[0] = true;
 	m_bInteractionMove[0] = true;
 	m_bInteractionRotate[0] = true;
@@ -1275,6 +1276,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 		{
 			m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 			m_bInteractionRotate[0] = false; // 회전 완료
+			m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::TUTORIALDOOR);
 		}
 	}
 
