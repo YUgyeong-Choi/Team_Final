@@ -64,6 +64,13 @@ protected: /* [ 필요 자원 ] */
 
         return false;
     }
+    _bool   IsLegionArmEnergyEnough(_float fLegionArmEnergy)
+    {
+        if (m_pOwner->m_fLegionArmEnergy >= fLegionArmEnergy)
+            return true;
+
+        return false;
+    }
 
 protected: /* [ 락온 관련 ] */
     void LockOnMovement()
@@ -596,11 +603,9 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
         {
-            m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_pAnimator->SetTrigger("Pulse");
             m_pOwner->m_pAnimator->SetTrigger("UseItem");
             m_pOwner->m_bUsePulse = true;
-            m_pOwner->m_bItemSwitch = true;
         }
 
         
@@ -1935,18 +1940,14 @@ public:
 
         if (0.5f < m_fStateTime)
         {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
 
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
+            if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
 
-                if (KEY_UP(DIK_LCONTROL))
-                    m_bArmAttack = true;
-            }
+            if (KEY_UP(DIK_LCONTROL))
+                m_bArmAttack = true;
         }
     }
 
@@ -2184,6 +2185,80 @@ public:
 private:
     unordered_set<string> m_StateNames = {
        "Arm_ChargeAttack"
+    };
+
+};
+class CPlayer_ArmFail final : public CPlayerState
+{
+public:
+    CPlayer_ArmFail(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_ArmFail() = default;
+
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 애니메이션 설정 ] */
+        m_pOwner->m_pAnimator->SetBool("Fail", true);
+        m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+    }
+
+    virtual void Exit() override
+    {
+        m_fStateTime = 0.f;
+
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (2.f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+
+        return EPlayerState::ARMATTACKCHARGE;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"ARMATTACKFAIL";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "Fail_Arm"
     };
 
 };

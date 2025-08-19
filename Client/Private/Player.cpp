@@ -1009,6 +1009,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKA)] = new CPlayer_ArmAttackA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKB)] = new CPlayer_ArmAttackB(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKCHARGE)] = new CPlayer_ArmCharge(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::ARMFAIL)] = new CPlayer_ArmFail(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::MAINSKILL)] = new CPlayer_MainSkill(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
@@ -1366,6 +1367,7 @@ void CPlayer::LockOnState()
 		m_pAnimator->SetBool("Front", false);
 		m_pAnimator->SetBool("Left", false);
 		m_pAnimator->SetBool("Right", false);
+		m_pAnimator->SetBool("Back", false);
 	}
 }
 

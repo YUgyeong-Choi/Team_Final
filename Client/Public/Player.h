@@ -171,6 +171,7 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_ArmAttackB;
 	friend class CPlayer_ArmCharge;
 	friend class CPlayer_MainSkill;
+	friend class CPlayer_ArmFail;
 
 
 private: /* [ 상태 변수 ] */
@@ -270,12 +271,12 @@ private: /* [ 플레이어 변수 ] */
 	_float	m_fErgo = { 0.f };
 
 private: /* [ 무기 내구도 ] */
-	_float	m_fWeaponDurabilityMax;
-	_float	m_fWeaponDurability;
+	_float	m_fWeaponDurabilityMax = { 100.f };
+	_float	m_fWeaponDurability = { 100.f };
 
 private: /* [ 리전 암 내구도 ] */
-	_float  m_fLegionArmEnergy;
-	_float  m_fMaxLegionArmEnergy;
+	_float  m_fLegionArmEnergy = { 100.f };
+	_float  m_fMaxLegionArmEnergy = { 100.f };
 
 private: /* [ 현재 상태 ] */
 	_bool	bIsGuarding = { false };
