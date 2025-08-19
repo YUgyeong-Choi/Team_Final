@@ -46,6 +46,7 @@ HRESULT CUI_Video::Initialize(void* pArg)
 
 	hr = UploadFrame(m_pDevice, m_pContext, pData, width, height, &m_pVideoSRV);
 
+	Safe_Delete_Array(pData);
 
 	return S_OK;
 }
@@ -98,6 +99,7 @@ void CUI_Video::Update(_float fTimeDelta)
 			if (SUCCEEDED(hr))
 			{
 				m_pVideoSRV = tempSRV;
+				Safe_Delete_Array(pData);
 			}
 
 			Safe_Delete_Array(pData);
@@ -390,5 +392,4 @@ void CUI_Video::Free()
 
 	Release_FFmpeg();
 	
-	MFShutdown();
 }
