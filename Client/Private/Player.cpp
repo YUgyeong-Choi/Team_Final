@@ -125,9 +125,9 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
 
-	//// 컷씬일 때 못 움직이도록
-	//if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-	//	return; 
+	// 컷씬일 때 못 움직이도록
+	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+		return; 
 	
 	/* [ 입력 ] */
 	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만

@@ -49,25 +49,25 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	if (m_pGameInstance->Key_Down(DIK_T))
-	{
-		m_bActive = !m_bActive;
-		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_T))
+	//{
+	//	m_bActive = !m_bActive;
+	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	//}
 
-	if (m_pGameInstance->Key_Down(DIK_X))
-	{
-		m_fMouseSensor -= 0.1f;
-		if (m_fMouseSensor <  0.f)
-			m_fMouseSensor = 0.1f;
-		printf("mouseSenor %f\n", m_fMouseSensor);
-	}
-		
-	if (m_pGameInstance->Key_Down(DIK_C))
-	{
-		m_fMouseSensor += 0.1f;
-		printf("mouseSenor %f\n", m_fMouseSensor);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_X))
+	//{
+	//	m_fMouseSensor -= 0.1f;
+	//	if (m_fMouseSensor <  0.f)
+	//		m_fMouseSensor = 0.1f;
+	//	printf("mouseSenor %f\n", m_fMouseSensor);
+	//}
+	//	
+	//if (m_pGameInstance->Key_Down(DIK_C))
+	//{
+	//	m_fMouseSensor += 0.1f;
+	//	printf("mouseSenor %f\n", m_fMouseSensor);
+	//}
 
 	if (!m_pPlayer)
 		return;
