@@ -38,7 +38,15 @@ HRESULT CUI_Video::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	BYTE* pData = nullptr;
+	DWORD width = 0, height = 0;
+	LONGLONG time = 0;
 
+	HRESULT hr = ReadFrameToBuffer(&pData, &width, &height, &time);
+
+	hr = UploadFrame(m_pDevice, m_pContext, pData, width, height, &m_pVideoSRV);
+
+	Safe_Delete_Array(pData);
 
 	return S_OK;
 }
@@ -91,6 +99,7 @@ void CUI_Video::Update(_float fTimeDelta)
 			if (SUCCEEDED(hr))
 			{
 				m_pVideoSRV = tempSRV;
+				Safe_Delete_Array(pData);
 			}
 
 			Safe_Delete_Array(pData);
@@ -383,5 +392,4 @@ void CUI_Video::Free()
 
 	Release_FFmpeg();
 	
-	MFShutdown();
 }

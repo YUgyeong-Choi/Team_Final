@@ -21,8 +21,8 @@
 #include "Item.h"
 #include "Lamp.h"
 
-#include "Player_Arm_Base.h"
-#include "Player_Arm_Steel.h"
+#include "LegionArm_Base.h"
+#include "LegionArm_Steel.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -93,6 +93,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_vRayOffset = { 0.f, 1.7f, 0.f, 0.f };
 
 	if (FAILED(Ready_UIParameters()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Arm()))
 		return E_FAIL;
 
 	return S_OK;
@@ -1131,6 +1134,33 @@ HRESULT CPlayer::Ready_UIParameters()
 
 	return S_OK;
 }
+
+HRESULT CPlayer::Ready_Arm()
+{
+	CLegionArm_Base::ARM_DESC eDesc{};
+	
+	eDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	eDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
+	
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LegionArm_Steel"),
+		m_iLevelID, TEXT("Player_Weapon"), &pGameObject, &eDesc)))
+		return E_FAIL;
+
+	m_pLegionArm = dynamic_cast<CLegionArm_Base*>(pGameObject);
+
+	if (m_pLegionArm->Get_Prototag().find(L"Steel") != _wstring::npos)
+	{
+		m_pPhysXActorCom->Add_IngoreActors(dynamic_cast<CLegionArm_Steel*>(m_pLegionArm)->Get_Actor()->Get_Actor());
+		m_pControllerCom->Add_IngoreActors(dynamic_cast<CLegionArm_Steel*>(m_pLegionArm)->Get_Actor()->Get_Actor());
+	}
+
+
+	return S_OK;
+}
+
+
 void CPlayer::LoadPlayerFromJson()
 {
 	string path = "../Bin/Save/AnimationEvents/" + m_pModelCom->Get_ModelName() + "_events.json";

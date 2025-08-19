@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include  "Player_Arm_Base.h"
+#include  "LegionArm_Base.h"
 
 // 공격 상태면 이제 팔 콜라이더를 충돌 가능하게 바꾼다
 
@@ -13,12 +13,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CPlayer_Arm_Steel : public CPlayer_Arm_Base
+class CLegionArm_Steel : public CLegionArm_Base
 {
 private:
-	CPlayer_Arm_Steel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPlayer_Arm_Steel(const CPlayer_Arm_Steel& Prototype);
-	virtual ~CPlayer_Arm_Steel() = default;
+	CLegionArm_Steel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CLegionArm_Steel(const CLegionArm_Steel& Prototype);
+	virtual ~CLegionArm_Steel() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -56,7 +56,7 @@ private:
 	
 
 public:
-	static CPlayer_Arm_Steel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CLegionArm_Steel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

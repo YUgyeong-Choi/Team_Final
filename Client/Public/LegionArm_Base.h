@@ -13,7 +13,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CPlayer_Arm_Base abstract : public CGameObject
+class CLegionArm_Base abstract : public CGameObject
 {
 public:
 	typedef struct eArmDesc : public GAMEOBJECT_DESC
@@ -31,9 +31,9 @@ public:
 	_wstring Get_Prototag() { return m_strPrototag; }
 
 protected:
-	CPlayer_Arm_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPlayer_Arm_Base(const CPlayer_Arm_Base& Prototype);
-	virtual ~CPlayer_Arm_Base() = default;
+	CLegionArm_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CLegionArm_Base(const CLegionArm_Base& Prototype);
+	virtual ~CLegionArm_Base() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
