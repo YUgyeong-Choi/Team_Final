@@ -18,7 +18,12 @@ public:
 	{
 		//인스턴스 갯수
 		_uint iNumInstance = { 0 };
+
+		//행렬
 		vector<_float4x4>* pInstanceMatrixs = { nullptr };
+
+		//라이트 모양
+		_int iLightShape = { 0 };
 	}STATICMESHINSTANCE_DESC;
 
 private:
@@ -34,10 +39,16 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+private:
+	HRESULT SetEmissive();
+
 
 private:
 	CModel_Instance* m_pModelCom = { nullptr };
 	_uint	m_iNumInstance = { 0 };
+private:
+	_int m_iLightShape = { 0 };
+	_float  m_fEmissive = {};
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

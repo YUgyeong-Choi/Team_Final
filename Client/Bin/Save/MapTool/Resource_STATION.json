@@ -667,7 +667,7 @@
     {
         "Collision": false,
         "ModelName": "SM_LightProp_Light_02",
-        "NoInstancing": true,
+        "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_02.bin"
     },
@@ -905,16 +905,9 @@
     {
         "Collision": false,
         "ModelName": "SM_Station_Light_02",
-        "NoInstancing": true,
-        "ObjectCount": 6,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_Light_02_Lod2",
         "NoInstancing": false,
-        "ObjectCount": 9,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02_Lod2.bin"
+        "ObjectCount": 20,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
     },
     {
         "Collision": false,
@@ -1080,7 +1073,7 @@
     {
         "Collision": false,
         "ModelName": "SM_Underdark_Lamp_01",
-        "NoInstancing": true,
+        "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Underdark_Lamp_01.bin"
     },
