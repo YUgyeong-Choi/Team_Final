@@ -12,6 +12,7 @@ NS_END
 NS_BEGIN(Client)
 class CPlayerState;
 class CWeapon;
+class CPlayer_Arm_Base;
 
 class CPlayer : public CUnit
 {
@@ -115,6 +116,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
 	HRESULT Ready_UIParameters();
+	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
 
 
@@ -274,6 +276,7 @@ private: /* [ 무기 내구도 ] */
 	_float	m_fWeaponDurability;
 
 private: /* [ 리전 암 내구도 ] */
+	CPlayer_Arm_Base* m_pLegionArm = { nullptr };
 	_float  m_fLegionArmEnergy;
 	_float  m_fMaxLegionArmEnergy;
 

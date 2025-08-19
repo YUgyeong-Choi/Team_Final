@@ -65,10 +65,14 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	// 죽는 조건 만들어서 다 같이 쓰기
 
 	if (!m_isDetect)
+	{
+		if (nullptr == m_pPlayer)
+			m_pPlayer = Find_Player(m_pGameInstance->GetCurrentLevelIndex());
 		return;
+	}
+		
 
-	if(nullptr == m_pPlayer)
-		m_pPlayer = Find_Player(m_pGameInstance->GetCurrentLevelIndex());
+	
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
@@ -416,7 +420,7 @@ _bool CMonster_Base::Check_Detect()
 	if (nullptr == m_pPlayer)
 		return false;
 
-	if (true == m_isDetect)
+ 	if (true == m_isDetect)
 		return true;
 
 	_vector vDir = {};

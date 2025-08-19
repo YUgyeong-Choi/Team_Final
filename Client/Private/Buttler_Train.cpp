@@ -30,6 +30,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 
 	m_fDetectDist = 10.f;
+	m_fGroggyThreshold = 100;
 	
 	m_fHp = 300;
 

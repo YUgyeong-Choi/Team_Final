@@ -90,6 +90,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 	}
+
 	if ((m_pStartVideo == nullptr || m_pStartVideo->Get_bDead()) && !m_bEndVideo)
 	{
 		m_pStartVideo = nullptr;
@@ -593,6 +594,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video"), &eDesc)))
 		return E_FAIL;
 
+	Safe_AddRef(m_pStartVideo);
 
 	m_pStartVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video")));
 
