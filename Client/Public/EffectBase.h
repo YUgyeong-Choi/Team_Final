@@ -60,6 +60,8 @@ public:
 
 	virtual void Update_Tool(_float fTimeDelta, _float fCurFrame);
 
+	virtual _float Ready_Death() { return 0; }
+
 protected:
 	/* Keyframe Interpolation */
 	void Update_Keyframes();

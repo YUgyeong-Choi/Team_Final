@@ -475,7 +475,6 @@ namespace Engine
 	}DEBUGRAY_DATA;
 
 
-	/* [ 여기 수정할 땐 꼭 CS hlsl도 동시에 수정해주기 바람.... ] */
 	//typedef struct tagParticleDesc {
 	//	_float4		vDirection = {};
 
@@ -497,6 +496,7 @@ namespace Engine
 		_float4		vTranslation; // WorldMatrix
 	
 		_float4		vDirection = {};
+		_float4		vVelocityDir = {}; // xyz = 현재 이동방향, w=속도 크기 
 	
 		_float2		vLifeTime;
 		_float		fSpeed = {};
@@ -508,6 +508,7 @@ namespace Engine
 		_float		fMinSpeed;     // 최소 속도 (옵션, 감속 시 멈춤 방지)
 
 	}PPDESC;
+	/* [ 이 구조체를 수정하면 ParticleVS와 CS hlsl 내부 구조체도 반드시 수정하시오 !! ] */
 
 	typedef struct tagParticleCBuffer {
 		_float		fDeltaTime;       // dt (tool이면 무시)

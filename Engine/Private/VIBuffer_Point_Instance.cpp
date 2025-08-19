@@ -122,7 +122,7 @@ void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 	//}
 
 	m_tCBuffer.fDeltaTime = fTimeDelta;
-
+	m_tCBuffer.bIsTool = false;
 	/* [ CS ] */
 	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
 
@@ -144,6 +144,7 @@ void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 	//	break;
 	//}
 	m_tCBuffer.fTrackTime = fCurTrackPos / 60.f;
+	m_tCBuffer.bIsTool = true;
 
 	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
 
@@ -371,7 +372,8 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
-		m_pParticleParamDesc[i].fMaxSpeed = 1000.f;
+		m_pParticleParamDesc[i].fMaxSpeed = pDesc->fMaxSpeed;
+		m_pParticleParamDesc[i].fMinSpeed = pDesc->fMinSpeed;
 		m_pParticleParamDesc[i].fSpeed = m_pGameInstance->Compute_Random(pDesc->vSpeed.x, pDesc->vSpeed.y);
 		m_pParticleParamDesc[i].fAccel = m_pGameInstance->Compute_Random(pDesc->vAccel.x, pDesc->vAccel.y);
 		m_pParticleParamDesc[i].fRotationSpeed = m_pGameInstance->Compute_Random(pDesc->vRotationSpeed.x, pDesc->vRotationSpeed.y);
@@ -476,7 +478,7 @@ void CVIBuffer_Point_Instance::Free()
 		Safe_Delete_Array(m_pParticleParamDesc);
 	}
 	if (m_tCBuffer.bIsTool && m_isCloned)
-	{
+	{	
 		Safe_Delete_Array(m_pParticleParamDesc);
 	}
 	if (m_isCloned)

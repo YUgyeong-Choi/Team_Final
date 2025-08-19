@@ -29,8 +29,6 @@
             "EmissiveIntensity": 0.44999998807907104,
             "EndTrack": 102,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
-            "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
@@ -60,7 +58,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1306.280517578125,
+            "LifeTime": 1162.5687255859375,
             "LifeTime_Particle": [
                 0.009999999776482582,
                 0.15000000596046448
@@ -106,8 +104,8 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.009999999776482582,
-                0.019999999552965164
+                0.019999999552965164,
+                0.029999999329447746
             ],
             "Speed": [
                 5.0,
@@ -122,7 +120,7 @@
                 ""
             ],
             "TextureUsage": [
-                false,
+                true,
                 true,
                 false,
                 false
@@ -161,8 +159,6 @@
             "EmissiveIntensity": 0.0,
             "EndTrack": 102,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
-            "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
@@ -192,7 +188,7 @@
                     ]
                 }
             ],
-            "LifeTime": 839.94091796875,
+            "LifeTime": 743.4033813476563,
             "LifeTime_Particle": [
                 0.5,
                 1.0

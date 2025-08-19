@@ -75,7 +75,7 @@ void CToolParticle::Priority_Update(_float fTimeDelta)
 
 void CToolParticle::Update(_float fTimeDelta)
 {
-
+	__super::Update(fTimeDelta);
 	return ;
 }
 
@@ -381,6 +381,8 @@ json CToolParticle::Serialize()
 	j["MaxSpeed"] = m_tDesc.fMaxSpeed;
 	j["MinSpeed"] = m_tDesc.fMinSpeed;
 
+	j["IsGravity"] = m_tDesc.bGravity;
+	j["Gravity"] = m_tDesc.fGravity;
 
 
 	return j;
@@ -435,4 +437,10 @@ void CToolParticle::Deserialize(const json& j)
 
 	if (j.contains("MinSpeed"))
 		m_tDesc.fMinSpeed = j["MinSpeed"].get<_float>();
+
+
+	if (j.contains("IsGravity"))
+		m_tDesc.bGravity = j["IsGravity"].get<_bool>();
+	if (j.contains("Gravity"))
+		m_tDesc.fGravity = j["Gravity"].get<_float>();
 }

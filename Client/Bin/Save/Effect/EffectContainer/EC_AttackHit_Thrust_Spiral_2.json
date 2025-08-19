@@ -9,7 +9,7 @@
             "Billboard": false,
             "Center": [
                 0.0,
-                1.0,
+                0.0,
                 0.0
             ],
             "CenterColor": [
@@ -60,7 +60,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1306.280517578125,
+            "LifeTime": 1348.233154296875,
             "LifeTime_Particle": [
                 0.009999999776482582,
                 0.15000000596046448
@@ -86,7 +86,7 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                1.0,
+                0.0,
                 0.0
             ],
             "Range": [
@@ -141,12 +141,12 @@
             "Billboard": false,
             "Center": [
                 0.0,
-                1.0,
+                0.0,
                 0.0
             ],
             "CenterColor": [
                 1.0,
-                0.0,
+                0.40837693214416504,
                 0.0,
                 1.0
             ],
@@ -161,8 +161,8 @@
             "EmissiveIntensity": 0.0,
             "EndTrack": 102,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
-            "IsGravity": false,
+            "Gravity": 4.0,
+            "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [
@@ -192,7 +192,7 @@
                     ]
                 }
             ],
-            "LifeTime": 839.94091796875,
+            "LifeTime": 881.9030151367188,
             "LifeTime_Particle": [
                 0.5,
                 1.0
@@ -218,7 +218,7 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                0.9900000095367432,
+                -0.009999999776482582,
                 0.0
             ],
             "Range": [
@@ -265,6 +265,6 @@
             "TileY": 1
         }
     ],
-    "Loop": false,
+    "Loop": true,
     "MaxFrame": 65
 }

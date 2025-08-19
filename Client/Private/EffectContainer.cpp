@@ -41,12 +41,22 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 {
 	m_fCurFrame += m_fTickPerSecond * fTimeDelta;
 	m_iCurFrame = static_cast<_int>(m_fCurFrame); // 캐스팅을 너무 많이 하는 것 같아서 그냥 별도로 저장
-	m_fLifeTimeAcc += fTimeDelta;
+	//m_fLifeTimeAcc += fTimeDelta;
 	/*
 	* 루프일 때는 전체 프레임 재생이 끝나면 0으로 다시 돌아감
 	* 아닐 땐 계속 증가하시다가 언젠가 죽겠지.. 
 	*/
-	if (m_iCurFrame > m_iMaxFrame)
+	if (m_bReadyDeath == true)
+	{
+		m_fDeadTimeAcc += fTimeDelta;
+		m_fCurFrame = 1.f;
+		m_iCurFrame = 1;
+		if (m_fDeadTimeAcc > m_fDeadInterval)
+		{
+			m_bDead = true;
+		}
+	}
+	else if (m_iCurFrame > m_iMaxFrame)
 	{
 		if (true == m_bLoop)
 		{
@@ -59,10 +69,15 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 		}
 		else
 		{
+			m_fCurFrame = 0.f;
+			m_iCurFrame = 0;
+ 			if (m_bReadyDeath == false)
+			{
+				End_Effect();
+			}
 			/*
 			*  이부분 삭제 대신 각 이펙트들의 Loop상태를 해제한 후 시간이 지나면 죽도록 변경할 것 
 			*/
-			m_bDead = true;
 			//for (auto& pEffect : m_Effects)
 			//{
 			//	// 근데 파티클만 해제해주면 되긴 함 
@@ -117,6 +132,18 @@ HRESULT CEffectContainer::Render()
 {
 
     return S_OK;
+}
+
+void CEffectContainer::End_Effect()
+{
+	for (auto& pEffect : m_Effects)
+	{
+		_float fDeathTime = pEffect->Ready_Death();
+		if (m_fDeadInterval < fDeathTime)
+			m_fDeadInterval = fDeathTime;
+	}
+	m_bLoop = false;
+	m_bReadyDeath = true;
 }
 
 HRESULT CEffectContainer::Load_JsonFiles(const json& j)

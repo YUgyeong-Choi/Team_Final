@@ -42,6 +42,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	virtual _float Ready_Death();
+
 	void Set_PType(PARTICLETYPE ePType) { m_ePType = ePType; }
 	void Set_Loop(_bool isLoop);
 

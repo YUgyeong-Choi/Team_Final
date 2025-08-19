@@ -1032,7 +1032,7 @@ HRESULT CPlayer::Ready_Weapon()
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PlayerWeapon"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),TEXT("Player_Weapon"), &pGameObject, &Desc)))
+		m_iLevelID, TEXT("Player_Weapon"), &pGameObject, &Desc)))
 		return E_FAIL;
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);

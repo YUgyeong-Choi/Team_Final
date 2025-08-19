@@ -9,6 +9,8 @@
 #include "PBRMesh.h"
 #include "Player.h"
 
+static CGameObject* pMap = { nullptr };
+
 CLevel_CY::CLevel_CY(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -65,13 +67,21 @@ void CLevel_CY::Priority_Update(_float fTimeDelta)
 		if (KEY_DOWN(DIK_Z))
 		{
 
-			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::CY), TEXT("EC_ErgoItem_M3P1"),
+			if (FAILED(MAKE_EFFECT(ENUM_CLASS(LEVEL::CY), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"),
 				m_pGameInstance->Compute_Random(-10.f, 10.f),
 				m_pGameInstance->Compute_Random(-10.f, 10.f),
 				m_pGameInstance->Compute_Random(-10.f, 10.f))))
 				MSG_BOX("Á¶Áü");
 		}
 	}
+	if (KEY_DOWN(DIK_BACKSLASH))
+	{
+		static _bool Active = { true };
+		Active = !Active;
+		CCamera_Manager::Get_Instance()->SetbMoveable(Active);
+	}
+
+
 }
 
 void CLevel_CY::Update(_float fTimeDelta)
@@ -236,15 +246,15 @@ HRESULT CLevel_CY::Ready_Layer_DummyMap(const _wstring strLayerTag)
 	Desc.szMeshID = TEXT("Train");
 	lstrcpy(Desc.szName, TEXT("Train"));
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::CY), strLayerTag, &pMap, &Desc)))
 		return E_FAIL;
 
-	Desc.szMeshID = TEXT("Station");
-	lstrcpy(Desc.szName, TEXT("Station"));
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
-		return E_FAIL;
+	//Desc.szMeshID = TEXT("Station");
+	//lstrcpy(Desc.szName, TEXT("Station"));
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+	//	ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

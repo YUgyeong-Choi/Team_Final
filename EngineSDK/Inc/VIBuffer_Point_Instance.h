@@ -9,20 +9,25 @@ class ENGINE_DLL CVIBuffer_Point_Instance final : public CVIBuffer_Instance
 public:
 	typedef struct tagPointInstance : public CVIBuffer_Instance::INSTANCE_DESC
 	{
-		_float3			vPivot;
-		_float2			vLifeTime;
-		_float2			vSpeed;
-		_bool			isLoop;
+		/* --- CBuffer Parameters --- */
+		// numinstances
 		PARTICLETYPE	ePType;
-		_float3			vRange;
-		_float2			vSize;
-		_float3			vCenter;
+		_bool			isTool = { false };
+		_bool			isLoop;
 		_bool			bGravity = { false };
-		_float			fGravity = { 9.8f };
 		_bool			bSpin = { false }; // 자전 여부
 		_bool			bOrbit = { false }; // 공전 여부
-		_float3			vRotationAxis = {};       // 자전용, xyz 축 w 속도
+		_float			fGravity = { 9.8f };
+		_float3			vPivot;
+		_float3			vCenter;
 		_float3			vOrbitAxis = {};			// 공전용, xyz 축 w 속도
+		_float3			vRotationAxis = {};       // 자전용, xyz 축 w 속도
+
+		/* --- Particle Parameters --- */
+		_float2			vLifeTime;
+		_float2			vSpeed;
+		_float3			vRange;
+		_float2			vSize;
 		_float2			vRotationSpeed = {}; // 자전 속도
 		_float2			vOrbitSpeed = {}; // 공전 속도
 
@@ -31,7 +36,6 @@ public:
 		_float			fMinSpeed = { 0.f };
 
 		//_float4			vDirection = {0.f, 1.f, 0.f, 0.f}; // 쓰지말죠	
-		_bool			isTool = { false };
 	}DESC;
 
 private:
