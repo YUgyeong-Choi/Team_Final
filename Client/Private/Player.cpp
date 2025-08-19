@@ -99,10 +99,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	if (KEY_DOWN(DIK_J))
-		m_fTimeScale = 1.f;
-	if (KEY_DOWN(DIK_K))
-		m_fTimeScale = 0.f;
+	//if (KEY_DOWN(DIK_J))
+	//	m_fTimeScale = 1.f;
+	//if (KEY_DOWN(DIK_K))
+	//	m_fTimeScale = 0.f;
 
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
@@ -129,7 +129,6 @@ void CPlayer::Update(_float fTimeDelta)
 {
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
-
 
 	/* [ 입력 ] */
 	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만
