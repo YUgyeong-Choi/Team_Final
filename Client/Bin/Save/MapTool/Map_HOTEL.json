@@ -4,6 +4,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_01_Female",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -101,6 +102,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_04_Female",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -198,6 +200,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Cathedral_BrickWall_18",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -265,6 +268,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_Clock_02",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -362,6 +366,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Table_10",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -489,6 +494,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Table_11",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -586,6 +592,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Table_12",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -623,6 +630,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Table_13",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {

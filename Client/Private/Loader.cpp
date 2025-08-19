@@ -464,7 +464,15 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	string Map = "STATION"; //STATION, TEST
 
 	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+	//	return E_FAIL;
+
+	//네비
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+		return E_FAIL;
+
+	//데칼
+	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
 		return E_FAIL;
 
 	m_pGameInstance->ClaerOctoTreeObjects();
@@ -483,75 +491,24 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
 		});
 
-	//auto futureTest = std::async(std::launch::async, [&] {
-	//	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
-	//		return E_FAIL;
-	//	return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST");
-	//	});
-
-	if (FAILED(futureStation.get())) return E_FAIL;
-	if (FAILED(futureHotel.get())) return E_FAIL;
-	//if (FAILED(futureTest.get())) return E_FAIL;
-
-
-
-	/*auto futureStation = std::async(std::launch::async, [&] {
-		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION");
-		});
-
-	auto futureHotel = std::async(std::launch::async, [&] {
-		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
-		});
-
-	auto futureTest = std::async(std::launch::async, [&] {
-		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST");
-		});
-
-	if (FAILED(futureStation.get()))
+	if (FAILED(futureStation.get())) 
 		return E_FAIL;
-	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	if (FAILED(futureHotel.get())) 
 		return E_FAIL;
-
-	if (FAILED(futureHotel.get()))
-		return E_FAIL;
-	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-
-	if (FAILED(futureTest.get()))
-		return E_FAIL;
-	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
-		return E_FAIL;*/
-
-
-	////맵
-	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
-
-	////어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION"))) //TEST, STAION
-	//	return E_FAIL;
-
-	////맵
-	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
-
-	////어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL"))) //TEST, STAION, HOTEL
-	//	return E_FAIL;
-
-	////맵
-	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
-	//	return E_FAIL;
-
-	////어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //TEST, STAION
-	//	return E_FAIL;
 
 #pragma endregion
+	//네비 소환
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+		return E_FAIL;
+
+	//어떤 데칼을 소환 시킬 것인지?
+	if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str()))) //TEST, STATION
+		return E_FAIL;
+
 	//lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 	//제이슨으로 저장된 맵을 로드한다.
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
-		return E_FAIL;
+	/*if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+		return E_FAIL;*/
 #pragma endregion
 
 
@@ -731,7 +688,31 @@ HRESULT CLoader::Loading_For_DH()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//스태틱 데칼	
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
+		CStatic_Decal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//네비게이션 컴포넌트 작동시켜주는 녀석
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Nav"),
+		CNav::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
+
+#pragma region 맵 로드
+	string Map = "STATION"; //STATION, TEST
+
+	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+	//제이슨으로 저장된 맵을 로드한다.
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+		return E_FAIL;
+#pragma endregion
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -1032,8 +1013,8 @@ HRESULT CLoader::Loading_For_YW()
 HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 {
 	//맵
-	//if(FAILED(Loading_Meshs(iLevelIndex, Map)))
-	//	return E_FAIL;
+	if(FAILED(Loading_Meshs(iLevelIndex, Map)))
+		return E_FAIL;
 
 	//네비
 	if (FAILED(Loading_Navigation(iLevelIndex, Map)))
@@ -1115,9 +1096,11 @@ HRESULT CLoader::Loading_Meshs(_uint iLevelIndex, const _char* Map)
 
 		_bool bCollision = element["Collision"];
 
+		_bool bNoInstancing = element["NoInstancing"];
+
 		wstring PrototypeTag = {};
 		_bool bInstance = false;
-		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD)
+		if (bCollision == false /*&& iObjectCount > INSTANCE_THRESHOLD*/ && bNoInstancing == false)
 		{
 			//인스턴싱용 모델 프로토 타입 생성
 			PrototypeTag = L"Prototype_Component_Model_Instance_" + StringToWString(ModelName);
@@ -1217,11 +1200,11 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 }
 HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
-	//m_pGameInstance->ClaerOctoTreeObjects();
+	m_pGameInstance->ClaerOctoTreeObjects();
 
 	//어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
-	//	return E_FAIL;
+	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
+		return E_FAIL;
 
 	//네비 소환
 	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex)))
@@ -1260,14 +1243,18 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 		const json& objects = Models[i]["Objects"];
 
 		_bool bCollision = Models[i]["Collision"];
+		_bool bNoInstancing = Models[i]["NoInstancing"];
+
 		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
-		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD)
+		if (bCollision == false && /*iObjectCount > INSTANCE_THRESHOLD &&*/ bNoInstancing == false)
 		{
-			Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
+			if (FAILED(Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex)))
+				return E_FAIL;
 		}
 		else
 		{
-			Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex);
+			if (FAILED(Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex)))
+				return E_FAIL;
 		}
 	}
 

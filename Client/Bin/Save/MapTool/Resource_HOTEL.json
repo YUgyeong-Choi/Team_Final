@@ -2,48 +2,56 @@
     {
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_01_Female",
+        "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_01_Female.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_04_Female",
+        "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
         "Collision": true,
         "ModelName": "SM_Cathedral_BrickWall_18",
+        "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_18.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Exterior_Clock_02",
+        "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Clock_02.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Table_10",
+        "NoInstancing": false,
         "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_10.bin"
     },
     {
         "Collision": true,
         "ModelName": "SM_Interior_Table_11",
+        "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_11.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Table_12",
+        "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_12.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Interior_Table_13",
+        "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_13.bin"
     }
