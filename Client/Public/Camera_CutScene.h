@@ -60,6 +60,8 @@ private:
 	void Interp_OffsetRot(_int curFrame);
 	/* [ 카메라 OffsetPos 보간 ] */
 	void Interp_OffsetPos(_int curFrame);
+	/* [ 카메라 Target 보간 ] */
+	void Interp_Target(_int curFrame);
 
 	/* [ 컷씬 데이터 로드 ] */
 	HRESULT InitDatas();

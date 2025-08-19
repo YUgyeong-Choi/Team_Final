@@ -404,15 +404,16 @@ HRESULT CYGTool::Render_CameraTool()
 		else if (m_iSelected == 4)
 		{
 			// Target
-			const char* targetNames[] = { "Layer_Player", "Layer_Boss1" };
+			const char* targetNames[] = { "None", "Layer_Player", "Layer_Boss1" };
 			_int target = static_cast<int>(m_pSelectedKey->eTarget);
 
 			if (ImGui::Combo("Target", &target, targetNames, IM_ARRAYSIZE(targetNames)))
 				m_pSelectedKey->eTarget = static_cast<TARGET_CAMERA>(target);
 
 
-			ImGui::DragFloat("fPitch", &m_pSelectedKey->fPitch, 0.1f, 1.0f, 179.0f);
-			ImGui::DragFloat("fYaw", &m_pSelectedKey->fYaw, 0.1f, 1.0f, 179.0f);
+			ImGui::DragFloat("fPitch", &m_pSelectedKey->fPitch, 0.f, -89.0f, 89.0f);
+			ImGui::DragFloat("fYaw", &m_pSelectedKey->fYaw, 0.f, -180.0f, 180.0f);
+			ImGui::DragFloat("fDistance", &m_pSelectedKey->fDistance, 0.f, 1.0f, 179.0f);
 		}
 	}
 
@@ -657,6 +658,35 @@ void CYGTool::Render_SetInfos()
 			}
 		}
 	}
+
+	if (m_pSelectedKey && m_iSelected == 4)
+	{
+		if (ImGui::Button("Set TargetMatrix"))
+		{
+			CGameObject* pTargetObj = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YG), TEXT("Layer_Player"));
+			_float fPitch = XMConvertToRadians(m_pSelectedKey->fPitch);
+			_float fYaw = XMConvertToRadians(m_pSelectedKey->fYaw);
+
+			_vector vtargetPos;
+			// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
+			vtargetPos = pTargetObj->Get_TransfomCom()->Get_State(STATE::POSITION);
+			vtargetPos += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+			vtargetPos += XMVector3Normalize(pTargetObj->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+
+			// 방향 계산
+			_float x = m_pSelectedKey->fDistance * cosf(fPitch) * sinf(fYaw);
+			_float y = m_pSelectedKey->fDistance * sinf(fPitch);
+			_float z = m_pSelectedKey->fDistance * cosf(fPitch) * cosf(fYaw);
+			_vector vOffset = XMVectorSet(x, y, z, 0.f);
+
+			// 목표 카메라 위치
+			_vector vTargetCamPos = vtargetPos + vOffset;
+
+			CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom()->Set_State(STATE::POSITION, vTargetCamPos);
+			CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom()->LookAt(vtargetPos);
+		}
+	}
+	
 }
 
 HRESULT CYGTool::Render_CameraFrame()
