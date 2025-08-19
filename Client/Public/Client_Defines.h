@@ -23,7 +23,7 @@ using namespace ImNodes;
 using namespace ImGui;
 //#endif
 
-// 영상 용
+// 영상 용 - 잘 되면 지우기
 #include <mfapi.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
@@ -34,6 +34,8 @@ using namespace ImGui;
 
 // 로딩 비율 설정하기 위한?
 #include <atomic>
+
+
 
 namespace Client
 {

@@ -87,7 +87,7 @@
 #include "Buttler_Train.h"
 #include "UI_MonsterHP_Bar.h"
 #include "UI_LockOn_Icon.h"
-
+#include "Player_Arm_Steel.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -356,6 +356,10 @@ HRESULT CLoader::Loading_For_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LockOn_Icon"),
 		CUI_LockOn_Icon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LegionArm_Steel"),
+		CPlayer_Arm_Steel::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

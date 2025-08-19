@@ -416,7 +416,7 @@ _bool CMonster_Base::Check_Detect()
 	if (nullptr == m_pPlayer)
 		return false;
 
-	if (true == m_isDetect)
+ 	if (true == m_isDetect)
 		return true;
 
 	_vector vDir = {};
