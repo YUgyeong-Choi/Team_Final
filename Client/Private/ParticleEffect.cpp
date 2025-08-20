@@ -32,7 +32,7 @@ HRESULT CParticleEffect::Initialize(void* pArg)
 
 
 	m_eEffectType = EFF_PARTICLE;
-
+	m_bFirst = true;
 	return S_OK;
 }
 
@@ -47,6 +47,11 @@ void CParticleEffect::Update(_float fTimeDelta)
 
 	if (m_pSocketMatrix != nullptr)
 	{
+		if (m_bFirst)
+		{
+			m_pVIBufferCom->Set_CombinedMatrix(m_CombinedWorldMatrix);
+			m_bFirst = false;
+		}
 		m_pVIBufferCom->Set_Center((_float3)(m_CombinedWorldMatrix.m[3]));
 		XMMATRIX socketWorld = XMLoadFloat4x4(m_pSocketMatrix);
 		XMVECTOR rotQuat = XMQuaternionRotationMatrix(socketWorld);
@@ -98,6 +103,7 @@ void CParticleEffect::Set_Loop(_bool isLoop)
 {
 	m_pVIBufferCom->Set_Loop(isLoop);
 }
+
 
 HRESULT CParticleEffect::Ready_Components()
 {

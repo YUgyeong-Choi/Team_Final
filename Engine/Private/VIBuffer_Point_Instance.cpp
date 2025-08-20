@@ -120,6 +120,12 @@ void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 	//default:
 	//	break;
 	//}
+	m_tCBuffer.isFirst = 0;
+	if (m_bFirst == true)
+	{
+		m_tCBuffer.isFirst = 1;
+		m_bFirst = false;
+	}
 
 	m_tCBuffer.fDeltaTime = fTimeDelta;
 	m_tCBuffer.bIsTool = false;

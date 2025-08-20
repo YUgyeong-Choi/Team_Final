@@ -12,19 +12,19 @@ struct ParticleParam
     float4 Translation;
 
     float3 vInitOffset;
-    float _pad0;
+    float  vIsFirst;
     
     float4 Direction; // normalized dir (w=unused)
     float4 VelocityDir; // 실제 이동한 방향 벡터, w = length
 
     float2 LifeTime; // x=max, y=acc
-    float Speed;
-    float RotationSpeed; // degrees/sec
+    float  Speed;
+    float  RotationSpeed; // degrees/sec
 
-    float OrbitSpeed; // degrees/sec
-    float fAccel; // 가속도 (+면 가속, -면 감속)
-    float fMaxSpeed; // 최대 속도 (옵션)
-    float fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
+    float  OrbitSpeed; // degrees/sec
+    float  fAccel; // 가속도 (+면 가속, -면 감속)
+    float  fMaxSpeed; // 최대 속도 (옵션)
+    float  fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
 };
 
 StructuredBuffer<ParticleParam> Particle_SRV : register(t0);
@@ -194,138 +194,6 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Triangles.Append(Out[3]);
     Triangles.RestartStrip();
 }
-
-
-
-//[maxvertexcount(6)]
-//void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Tri)
-//{
-//    GS_OUT Out[4];
-
-//    float3 camToP = g_vCamPosition.xyz - In[0].vPosition.xyz;
-//    float3 viewDir = normalize(camToP);
-
-//    // 카메라 빌보드 기본 축
-//    float3 right = normalize(cross(float3(0, 1, 0), viewDir));
-//    float3 up = normalize(cross(viewDir, right));
-
-//    right *= In[0].vPSize.x * 0.5f;
-//    up *= In[0].vPSize.y * 0.5f;
-
-//    float3 v = In[0].vDir.xyz;
-//    float vLen = max(In[0].vDir.w, 1e-6);
-//    v /= vLen;
-//    v = normalize(v - viewDir * dot(v, viewDir));
-
-//    float StretchScale = 1.f;
-//    float3 vStretch = v * (StretchScale * In[0].vDir.w);
-    
-//    float speed = In[0].vDir.w;
-//    if (speed < 1e-3f)
-//    {
-//    // 그냥 빌보드처럼 Up만 씀
-//        vStretch = 0;
-//    }
-//    else
-//    {
-//        float3 v = normalize(In[0].vDir.xyz);
-//        float stretchFactor = 0.02f * speed; // 튜닝값
-//        vStretch = v * stretchFactor;
-//    }
-//    float3 upStretch = up + vStretch;
-
-//    matrix VP = mul(g_ViewMatrix, g_ProjMatrix);
-
-//    Out[0].vPosition = mul(float4(In[0].vPosition.xyz + right + upStretch, 1), VP);
-//    Out[0].vTexcoord = float2(0, 0);
-//    Out[0].vLifeTime = In[0].vLifeTime;
-//    Out[0].vProjPos = float4(length(camToP), 0, 0, 0);
-
-//    Out[1].vPosition = mul(float4(In[0].vPosition.xyz - right + upStretch, 1), VP);
-//    Out[1].vTexcoord = float2(1, 0);
-//    Out[1].vLifeTime = In[0].vLifeTime;
-//    Out[1].vProjPos = Out[0].vProjPos;
-
-//    Out[2].vPosition = mul(float4(In[0].vPosition.xyz - right - upStretch, 1), VP);
-//    Out[2].vTexcoord = float2(1, 1);
-//    Out[2].vLifeTime = In[0].vLifeTime;
-//    Out[2].vProjPos = Out[0].vProjPos;
-
-//    Out[3].vPosition = mul(float4(In[0].vPosition.xyz + right - upStretch, 1), VP);
-//    Out[3].vTexcoord = float2(0, 1);
-//    Out[3].vLifeTime = In[0].vLifeTime;
-//    Out[3].vProjPos = Out[0].vProjPos;
-
-//    Tri.Append(Out[0]);
-//    Tri.Append(Out[1]);
-//    Tri.Append(Out[2]);
-//    Tri.RestartStrip();
-//    Tri.Append(Out[0]);
-//    Tri.Append(Out[2]);
-//    Tri.Append(Out[3]);
-//    Tri.RestartStrip();
-//}
-
-//[maxvertexcount(6)]
-//void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Tri)
-//{
-//    GS_OUT Out[4];
-
-//    float3 pos = In[0].vPosition.xyz;
-//    float3 camToP = normalize(g_vCamPosition.xyz - pos);
-
-//    // === 1. 속도 방향 ===
-//    float3 vDir = normalize(In[0].vDir.xyz);
-//    float speed = In[0].vDir.w;
-
-//    // === 2. Quad 가로축: 속도와 카메라벡터의 외적을 이용해 직교 벡터 생성 ===
-//    float3 right = normalize(cross(vDir, camToP));
-//    // 혹시 속도와 카메라가 평행하면 right=0 되니, 방어코드 필요할 수도 있음
-//    if (all(abs(right) < 1e-6))
-//        right = float3(1, 0, 0);
-
-//    // === 3. 크기 적용 ===
-//    float stretchLen = 0.1f * speed; // 튜닝값: 속도가 클수록 더 길게
-//    float3 vStretch = vDir * stretchLen;
-
-//    right *= In[0].vPSize.x * 0.5f; // 가로폭 (파티클 크기 기반)
-
-//    // === 4. Quad 꼭짓점 계산 ===
-//    float3 p0 = pos - right; // 시작-왼쪽
-//    float3 p1 = pos + right; // 시작-오른쪽
-//    float3 p2 = pos + vStretch + right; // 끝-오른쪽
-//    float3 p3 = pos + vStretch - right; // 끝-왼쪽
-
-//    matrix VP = mul(g_ViewMatrix, g_ProjMatrix);
-
-//    // === 5. 출력 ===
-//    Out[0].vPosition = mul(float4(p0, 1), VP);
-//    Out[0].vTexcoord = float2(0, 1);
-//    Out[1].vPosition = mul(float4(p1, 1), VP);
-//    Out[1].vTexcoord = float2(1, 1);
-//    Out[2].vPosition = mul(float4(p2, 1), VP);
-//    Out[2].vTexcoord = float2(1, 0);
-//    Out[3].vPosition = mul(float4(p3, 1), VP);
-//    Out[3].vTexcoord = float2(0, 0);
-
-//    [unroll]
-//    for (int i = 0; i < 4; ++i)
-//    {
-//        Out[i].vLifeTime = In[0].vLifeTime;
-//        Out[i].vProjPos = float4(length(camToP), 0, 0, 0);
-//    }
-
-//    // 두 삼각형 스트립 출력
-//    Tri.Append(Out[0]);
-//    Tri.Append(Out[1]);
-//    Tri.Append(Out[2]);
-//    Tri.RestartStrip();
-//    Tri.Append(Out[0]);
-//    Tri.Append(Out[2]);
-//    Tri.Append(Out[3]);
-//    Tri.RestartStrip();
-//}
-
 
 struct PS_IN
 {

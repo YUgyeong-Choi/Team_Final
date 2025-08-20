@@ -58,7 +58,8 @@ public:
 	void Set_Loop(_bool isLoop) { m_tCBuffer.bIsLoop = isLoop; }
 	void Set_Center(const _float3& vCenter) { m_tCBuffer.vCenter = vCenter; }
 	void Set_SocketRotation(const _float4& vRot) { m_tCBuffer.vSocketRot = vRot; }
-
+	void Set_CombinedMatrix(const _float4x4& matCombined) { m_bFirst = true; m_tCBuffer.g_CombinedMatrix = matCombined; }
+	void Set_First(_bool bFirst) { m_bFirst = bFirst; }
 
 private:	
 	/* PARTICLECBUFFER 구조체로 통합됨 !! */
@@ -71,8 +72,8 @@ private:
 
 private:
 	/* [CS] */
-	class CParticleComputeShader* m_pParticleCS = { nullptr };
-
+	class CParticleComputeShader*	m_pParticleCS = { nullptr };
+	_bool							m_bFirst = { true };
 
 private:
 	// 잘 몰겠지만 일단 추가하는 변수들

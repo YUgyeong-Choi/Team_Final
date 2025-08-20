@@ -29,8 +29,8 @@
             "EmissiveIntensity": 1.75,
             "EndTrack": 200,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
-            "IsGravity": false,
+            "Gravity": 20.800000190734863,
+            "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [

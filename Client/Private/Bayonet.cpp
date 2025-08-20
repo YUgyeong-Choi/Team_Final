@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "AnimController.h"
 #include "SwordTrailEffect.h"
+#include "EffectContainer.h"
 #include "Effect_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
@@ -95,6 +96,12 @@ void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
+	if (KEY_DOWN(DIK_8))
+	{
+		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<unsigned int>(m_iLevelID), L"EC_AttackHit_Basic_Spark_1_P2S1"))
+			MSG_BOX("이펙트 생성 실패함");
+	}
+
 	if (KEY_DOWN(DIK_9))
 		Set_WeaponTrail_Active(false);
 	if (KEY_DOWN(DIK_0))
@@ -162,11 +169,11 @@ void CBayonet::SetisAttack(_bool isAttack)
 {
 	if (isAttack)
 	{
-		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+		//m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 	}
 	else
 	{
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+		//m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 	}
 }
 
@@ -238,8 +245,12 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 {
 	// 내구도나 이런거 하면 될듯?
 
-	
-		
+	CEffectContainer::DESC desc = {};
+
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(HitPos.m128_f32[0], HitPos.m128_f32[1], HitPos.m128_f32[2]));
+
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S1"), &desc))
+		MSG_BOX("이펙트 생성 실패함");
 
 	// 가드 때 충돌하고, 퍼펙트 가드가 아니면 감소하도록
 	

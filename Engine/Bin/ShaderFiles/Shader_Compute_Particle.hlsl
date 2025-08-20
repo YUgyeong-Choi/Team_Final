@@ -1,7 +1,4 @@
 
-
-/********************************************************/
-
 /* [ 파티클 개별 속성 통합본 ] */
 struct ParticleParam
 {
@@ -30,33 +27,35 @@ struct ParticleParam
 /* [ Constant Buffer ] */
 cbuffer ParticleCB : register(b0)
 {
-    float DeltaTime;
-    float TrackTime;
-    uint ParticleType;
-    uint NumInstances;
+    float   DeltaTime;
+    float   TrackTime;
+    uint    ParticleType;
+    uint    NumInstances;
 
-    uint IsTool;
-    uint IsLoop;
-    uint UseGravity;
-    uint UseSpin;
+    uint    IsTool;
+    uint    IsLoop;
+    uint    UseGravity;
+    uint    UseSpin;
 
-    uint UseOrbit;
-    float Gravity;
-    float2 _pad0;
+    uint    UseOrbit;
+    float   Gravity;
+    float2  _pad0;
 
-    float3 Pivot;
-    float _pad1;
+    float3  Pivot;
+    uint    isFirst;
 
-    float3 Center;
-    float _pad2;
+    float3  Center;
+    float   _pad2;
 
-    float3 OrbitAxis;
-    float _pad3;
+    float3  OrbitAxis;
+    float   _pad3;
 
-    float3 RotationAxis;
-    float _pad4;
+    float3  RotationAxis;
+    float   _pad4;
     
-	float4 vSocketRot;
+	float4  vSocketRot;
+
+    row_major float4x4 g_CombinedMatrix;
 };
 
 // t는 SRV, u는 UAV, b는 Constant Buffer
@@ -197,6 +196,12 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
     {
         // --- 런타임 모드: 증분(Δt) 업데이트 ---
         pp.LifeTime.y += DeltaTime;
+        
+        if (isFirst == 1)
+        {
+            pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
+        }
+        
         float t = pp.LifeTime.y;
         float tPrev = max(t - DeltaTime, 0.0f);
 

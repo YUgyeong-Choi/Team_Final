@@ -57,6 +57,7 @@ protected:
 	_wstring						m_strBufferTag;
 
 	PARTICLETYPE					m_ePType = {}; // Particle Type
+	_bool							m_bFirst = { true };
 	// 로컬/월드 분리할건지
 	// 변수로 처리할건지
 	// 일단 변수로
