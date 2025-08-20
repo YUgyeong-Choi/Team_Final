@@ -25,6 +25,12 @@ public:
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
+		_float4x4	WorldMatrix = _float4x4(
+			1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			0.f, 0.f, 0.f, 1.f
+		);
 	}MONSTERTOOLOBJECT_DESC;
 
 protected:
