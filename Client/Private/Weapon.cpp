@@ -238,9 +238,9 @@ void CWeapon::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CWeapon::Calc_Durability(_int iDelta)
 {
-	m_iDurability -= iDelta;
+	m_fDurability -= iDelta;
 
-	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_iDurability);
+	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
 }
 
 _bool CWeapon::Find_CollisonObj(CGameObject* pObj)

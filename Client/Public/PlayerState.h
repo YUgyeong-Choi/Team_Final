@@ -630,7 +630,7 @@ public:
         }
 
 
-        m_pOwner->Use_Item(true);
+        m_pOwner->Use_Item();
         
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -646,11 +646,13 @@ public:
             if (KEY_PRESSING(DIK_R))
             {
                 m_pOwner->m_pAnimator->SetBool("Grinding", true);
+                
             }
             else
             {
                 m_pOwner->m_pAnimator->SetBool("Grinding", false);
                 m_pOwner->m_bUseGrinder = false;
+                m_pOwner->m_pSelectItem->Activate(false);
             }
             LockOnMovement4Way();
         }
@@ -670,7 +672,7 @@ public:
     virtual void Exit() override
     {
        
-        m_pOwner->Use_Item(false);
+       
 
         m_pOwner->m_pAnimator->SetBool("Grinding", false);
         m_pOwner->m_bUseLamp = false;

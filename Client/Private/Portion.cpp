@@ -60,18 +60,7 @@ HRESULT CPortion::Render()
 	return S_OK;
 }
 
-void CPortion::Activate(_bool isActive)
-{
-	
-	m_isActive = isActive;
 
-	if (false == m_isActive)
-	{
-		if (m_fElapsedTime > 0.5f)
-			Use();
-
-	}
-}
 
 void CPortion::Use()
 {

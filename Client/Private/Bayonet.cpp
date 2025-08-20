@@ -52,15 +52,32 @@ HRESULT CBayonet::Initialize(void* pArg)
 	m_eSkillDesc[1].iCountCombo = 0;
 	m_eSkillDesc[1].isCombo = false;
 
-	m_iDurability = m_iMaxDurability;
+	//m_iDurability = m_iMaxDurability;
 
-	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_iDurability);
-	m_pGameInstance->Notify(L"Weapon_Status", L"MaxDurablity", &m_iDurability);
+	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
+	m_pGameInstance->Notify(L"Weapon_Status", L"MaxDurablity", &m_fMaxDurability);
 
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
+
+	m_pGameInstance->Register_PullCallback(L"Weapon_Status", [this](const _wstring& eventName, void* data) {
+
+		if (L"AddDurablity" == eventName)
+		{
+			m_fDurability += *static_cast<_float*>(data);
+
+			if (m_fDurability >= m_fMaxDurability)
+			{
+				m_fDurability = m_fMaxDurability;
+				// 빛나는 효과 잠깐 추가...
+			}
+				
+			m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
+		}
+
+		});
 
 
 	m_iHandleIndex = m_pModelCom->Find_BoneIndex("BN_Handle");

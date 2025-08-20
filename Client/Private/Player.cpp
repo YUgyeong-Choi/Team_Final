@@ -1507,12 +1507,12 @@ void CPlayer::Callback_DownBelt()
 	m_pGameInstance->Notify(TEXT("Slot_Belts"), _wstring(L"ChangeDownBelt"), m_pBelt_Down);
 }
 
-void CPlayer::Use_Item(_bool isActive)
+void CPlayer::Use_Item()
 {
 	if (nullptr == m_pSelectItem)
 		return;
 
-	m_pSelectItem->Activate(isActive);
+	m_pSelectItem->Use();
 }
 
 void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)

@@ -52,7 +52,7 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 	 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
-	m_iDurability = m_iMaxDurability;
+	m_fDurability = m_fMaxDurability;
 
 	m_bIsActive = true;
 

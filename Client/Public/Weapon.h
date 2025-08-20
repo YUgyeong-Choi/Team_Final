@@ -131,8 +131,8 @@ protected:		//		스킬용 변수?
 	// 0번은 날 스킬, 1번은 자루 스킬
 	SKILL_DESC			m_eSkillDesc[2];
 	// 내구도
-	_int				m_iDurability = {};
-	_int				m_iMaxDurability = {100};
+	_float				m_fDurability = {};
+	_float				m_fMaxDurability = {100.f};
 
 protected:
 	_int				m_iHandleIndex = {};

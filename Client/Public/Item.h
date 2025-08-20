@@ -30,7 +30,7 @@ public:
 
 	// 사용 효과 상속받아서 구현하기
 	// 애니메이션 시작할 때 true, 끝날때 false
-	virtual void Activate(_bool isActive) = 0;
+	virtual void Activate(_bool isActive) { m_isActive = isActive; }
 	virtual void Use() = 0;
 
 	virtual ITEM_DESC Get_ItemDesc() { return ITEM_DESC(); };

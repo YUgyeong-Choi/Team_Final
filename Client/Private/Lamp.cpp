@@ -132,20 +132,6 @@ HRESULT CLamp::Render()
 	return S_OK;
 }
 
-void CLamp::Activate(_bool isActive)
-{
-
-	m_isActive = isActive;
-
-
-	if (false == m_isActive && m_fElapsedTime > 0.5f)
-	{
-
-		Use();
-	}
-		
-	
-}
 
 void CLamp::Use()
 {
