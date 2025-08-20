@@ -897,6 +897,7 @@ void CPlayer::Register_Events()
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetbIsActive(true);
+				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),m_pWeapon);
 			}
 		});
 	m_pAnimator->RegisterEventListener("PutWeapon", [this]()
@@ -904,6 +905,7 @@ void CPlayer::Register_Events()
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetbIsActive(false);
+				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),nullptr);
 			}
 		});
 	m_pAnimator->RegisterEventListener("OnGrinderEffect", [this]()
