@@ -145,7 +145,7 @@ private: /* [ 락온 함수 ] */
 private: /* [ 슬룻 함수 ] */
 	void Callback_UpBelt();
 	void Callback_DownBelt();
-	void Use_Item();
+	void Use_Item(_bool isActive);
 
 	void PriorityUpdate_Slot(_float fTimeDelta);
 	void Update_Slot(_float fTimeDelta);

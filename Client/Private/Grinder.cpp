@@ -39,6 +39,22 @@ void CGrinder::Priority_Update(_float fTimeDelta)
 
 void CGrinder::Update(_float fTimeDelta)
 {
+    if (m_isActive)
+    {
+        m_fElapsedTime += fTimeDelta;
+        // 무기 내구도 증가 
+
+
+        // 시간 측정해서 일정 시간 이상이면 내구도 차는 속도를 늘린다
+        if (m_fElapsedTime > 1.f)
+        {
+
+        }
+    }
+    else
+    {
+        m_fElapsedTime = 0;
+    }
 }
 
 void CGrinder::Late_Update(_float fTimeDelta)
@@ -50,9 +66,11 @@ HRESULT CGrinder::Render()
     return S_OK;
 }
 
-void CGrinder::Activate()
+void CGrinder::Activate(_bool isActive)
 {
     // 무기 게이지 연동? 하면 될듯
+
+    m_isActive = isActive;
 }
 
 ITEM_DESC CGrinder::Get_ItemDesc()

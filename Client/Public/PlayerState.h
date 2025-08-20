@@ -629,6 +629,8 @@ public:
             m_pOwner->m_bUsePulse = true;
         }
 
+
+        m_pOwner->Use_Item(true);
         
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -668,7 +670,7 @@ public:
     virtual void Exit() override
     {
        
-        m_pOwner->Use_Item();
+        m_pOwner->Use_Item(false);
 
         m_pOwner->m_pAnimator->SetBool("Grinding", false);
         m_pOwner->m_bUseLamp = false;

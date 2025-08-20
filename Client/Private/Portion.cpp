@@ -54,10 +54,21 @@ HRESULT CPortion::Render()
 	return S_OK;
 }
 
-void CPortion::Activate()
+void CPortion::Activate(_bool isActive)
 {
-	if(m_iUseCount > 0)
+	if (m_iUseCount <= 0)
+		return;
+
+	
+
+
+	if (false == isActive)
+	{
+
 		--m_iUseCount;
+		Heal();
+	}
+
 }
 
 ITEM_DESC CPortion::Get_ItemDesc()
@@ -91,6 +102,13 @@ ITEM_DESC CPortion::Get_ItemDesc()
 HRESULT CPortion::Ready_Components()
 {
 	return S_OK;
+}
+
+void CPortion::Heal()
+{
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"AddHp"), &m_fRatio);
+
+
 }
 
 

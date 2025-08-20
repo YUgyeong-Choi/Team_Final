@@ -28,7 +28,7 @@ public:
 	virtual HRESULT Render();
 
 	void Add_Item(CItem* pItem, _int iIndex);
-	void Use_SelectItem();
+	void Use_SelectItem(_bool isActive);
 	void DeselectItem();
 	void Change_Next_Item();
 

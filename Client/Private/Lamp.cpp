@@ -127,9 +127,12 @@ HRESULT CLamp::Render()
 	return S_OK;
 }
 
-void CLamp::Activate()
+void CLamp::Activate(_bool isActive)
 {
 	
+	if (true == isActive)
+		return;
+
 	m_isLight = !m_isLight;
 
 	if (m_isLight)
@@ -142,9 +145,6 @@ void CLamp::Activate()
 		
 		m_pLight->Get_LightDesc()->bIsUse = false;
 	}
-
-
-    // Lamp에 있는 light도 껏다 켯다 하도록 로직 추가
 
 }
 

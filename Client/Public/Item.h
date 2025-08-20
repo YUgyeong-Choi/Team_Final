@@ -29,7 +29,8 @@ public:
 	virtual HRESULT Render();
 
 	// 사용 효과 상속받아서 구현하기
-	virtual void Activate() = 0;
+	// 애니메이션 시작할 때 true, 끝날때 false
+	virtual void Activate(_bool isActive) = 0;
 
 	virtual ITEM_DESC Get_ItemDesc() { return ITEM_DESC(); };
 
@@ -38,7 +39,7 @@ protected:
 	// 그냥 enum해서 하는게 좋을수도?
 
 	_wstring m_strProtoTag = {};
-
+	// UI 표시 용도
 	// 쓸때만 할거는 껏다 켯다
 	// 항상 보이는거는 항상 true로? (램프 같은거)
 	_bool    m_isRender = {	false };
@@ -48,6 +49,8 @@ protected:
 	_bool    m_isConsumable = { false };
 
 	_int     m_iUseCount = { 0 };
+
+	_bool    m_isActive = {};
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

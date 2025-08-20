@@ -48,7 +48,7 @@ public:
 	virtual HRESULT Render();
 
 	// 사용 효과 상속받아서 구현하기
-	virtual void Activate();
+	virtual void Activate(_bool isActive);
 
 	virtual ITEM_DESC Get_ItemDesc() override;
 

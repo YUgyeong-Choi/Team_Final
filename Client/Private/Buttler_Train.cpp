@@ -105,12 +105,8 @@ HRESULT CButtler_Train::Render()
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	
-
-	// 이걸르 무기에 옮겨야됨
 	// 무기가 상태마다 한번씩 데미지 주고
 	// 이제 초기화하면 다시 데미지 줄 수 있게
-	// 수정 해야됨
-	// 플레이어 상태 좀 잡히면 다시 
 	ReceiveDamage(pOther, eColliderType);
 
 }
