@@ -186,8 +186,8 @@ HRESULT CBayonet::Ready_Actor()
 
 HRESULT CBayonet::Ready_Effect()
 {
-	_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade");
-	_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
+	_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
+	_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_End");
 
 	CSwordTrailEffect::DESC desc = {};
 	desc.pInnerSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
