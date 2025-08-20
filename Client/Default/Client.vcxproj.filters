@@ -238,9 +238,6 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler">
       <UniqueIdentifier>{6e387c41-6325-48c1-bb47-6fc072b83ccc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07.Effect\EffectContainer\Trail\Ri">
-      <UniqueIdentifier>{04d321e1-21ea-4da5-a8ed-f09e79edc950}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Police">
       <UniqueIdentifier>{f7b1672f-ca66-4fb8-b159-34e1261f8845}</UniqueIdentifier>
     </Filter>

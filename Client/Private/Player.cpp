@@ -178,12 +178,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
-		Set_GrinderEffect_Active(true);
+		static _bool testbool = false;
+		testbool = !testbool;
+		Set_GrinderEffect_Active(testbool);
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		Set_GrinderEffect_Active(false);
-
 		//m_pAnimator->SetBool("FocusOn", true);
 		m_pAnimator->SetTrigger("Hited");
 	}
@@ -1561,7 +1561,7 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 
 			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TestGrinder_VStretch_wls_P2"), &desc));
+			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TestGrinder_VStretch_P2S1"), &desc));
 
 			if (m_pGrinderEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
