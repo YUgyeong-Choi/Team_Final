@@ -80,7 +80,7 @@ public: /* [ 활성화 , 비활성화 ] */
 
 	void Clear_CollisionObj() { m_CollisonObjects.clear(); }
 
-	void Calc_Durability(_int iDelta);
+	void Calc_Durability(_float fDelta);
 
 	_bool Find_CollisonObj(CGameObject* pObj);
 	void Add_CollisonObj(CGameObject* pObj);
@@ -131,8 +131,8 @@ protected:		//		스킬용 변수?
 	// 0번은 날 스킬, 1번은 자루 스킬
 	SKILL_DESC			m_eSkillDesc[2];
 	// 내구도
-	_int				m_iDurability = {};
-	_int				m_iMaxDurability = {100};
+	_float				m_fDurability = {};
+	_float				m_fMaxDurability = {100.f};
 
 protected:
 	_int				m_iHandleIndex = {};

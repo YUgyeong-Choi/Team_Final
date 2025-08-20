@@ -43,6 +43,12 @@ void CPortion::Priority_Update(_float fTimeDelta)
 
 void CPortion::Update(_float fTimeDelta)
 {
+	if(m_isActive)
+		m_fElapsedTime += fTimeDelta;
+	else
+		m_fElapsedTime = 0.f;
+
+	
 }
 
 void CPortion::Late_Update(_float fTimeDelta)
@@ -54,10 +60,16 @@ HRESULT CPortion::Render()
 	return S_OK;
 }
 
-void CPortion::Activate()
+
+
+void CPortion::Use()
 {
-	if(m_iUseCount > 0)
-		--m_iUseCount;
+
+	if (m_iUseCount <= 0)
+		return;
+
+	--m_iUseCount;
+	Heal();
 }
 
 ITEM_DESC CPortion::Get_ItemDesc()
@@ -91,6 +103,13 @@ ITEM_DESC CPortion::Get_ItemDesc()
 HRESULT CPortion::Ready_Components()
 {
 	return S_OK;
+}
+
+void CPortion::Heal()
+{
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"AddHp"), &m_fRatio);
+
+
 }
 
 

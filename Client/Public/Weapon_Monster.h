@@ -42,6 +42,8 @@ public:
 
 	void	Collider_Off();
 
+	virtual void SetisAttack(_bool isAttack);
+
 
 protected: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components();

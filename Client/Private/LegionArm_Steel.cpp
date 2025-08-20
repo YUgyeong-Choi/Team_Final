@@ -60,7 +60,7 @@ HRESULT CLegionArm_Steel::Render()
 
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
+	if (m_pGameInstance->Get_RenderCollider() && m_pActorCom->Get_ReadyForDebugDraw()) {
 		m_pGameInstance->Add_DebugComponent(m_pActorCom);
 	}
 #endif
@@ -111,7 +111,7 @@ HRESULT CLegionArm_Steel::Ready_Actor()
 	PxVec3 halfExtents = PxVec3(0.3f, 0.3f, 0.3f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	m_pActorCom->Set_ShapeFlag(true, false, true);
+	m_pActorCom->Set_ShapeFlag(false, false, false);
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON;

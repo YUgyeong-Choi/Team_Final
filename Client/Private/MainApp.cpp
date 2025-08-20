@@ -67,6 +67,9 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Static()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Sound()))
+		return E_FAIL;
+
     return S_OK;
 }
 
@@ -261,10 +264,6 @@ HRESULT CMainApp::Ready_Static()
 		CCamera_CutScene::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
-	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
-	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
-
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_DefaultARM"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ARM_Default.png")))))
 		return E_FAIL;
@@ -272,6 +271,21 @@ HRESULT CMainApp::Ready_Static()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Emissive.dds")))))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Sound()
+{
+	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
+	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
+	m_pGameInstance->LoadSound("../Bin/Resources/Sound/SoundSpace/", false, true);
+	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
+
+	/* [ 동영상용 사운드 ] */
+	ADD_SOUND_EX(Intro, "../Bin/Resources/Sound/Video/Intro/", false, false, false);
+
+	/* [ 컷씬 문용 사운드 ] */
+	ADD_SOUND_EX(CutSceneDoor, "../Bin/Resources/Sound/CutScene/Door/", false, false, false);
 	return S_OK;
 }
 

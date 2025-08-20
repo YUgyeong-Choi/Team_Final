@@ -36,6 +36,8 @@ public:
 	void 	Update_Collider();
 	CPhysXDynamicActor* Get_PhysXActor() { return m_pPhysXActorCom; }
 
+	virtual void SetisAttack(_bool isAttack);
+
 	
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();

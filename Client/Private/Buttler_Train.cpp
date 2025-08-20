@@ -105,12 +105,8 @@ HRESULT CButtler_Train::Render()
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	
-
-	// 이걸르 무기에 옮겨야됨
 	// 무기가 상태마다 한번씩 데미지 주고
 	// 이제 초기화하면 다시 데미지 줄 수 있게
-	// 수정 해야됨
-	// 플레이어 상태 좀 잡히면 다시 
 	ReceiveDamage(pOther, eColliderType);
 
 }
@@ -230,8 +226,6 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 	{
 		auto pWeapon = static_cast<CWeapon*>(pOther);
 
-		if (false == pWeapon->GetisAttack())
-			return;
 
 		if (pWeapon->Find_CollisonObj(this))
 		{
@@ -239,7 +233,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		}
 
 		pWeapon->Add_CollisonObj(this);
-		pWeapon->Calc_Durability(3);
+		pWeapon->Calc_Durability(3.f);
 
 		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
 
@@ -332,13 +326,13 @@ void CButtler_Train::Register_Events()
 	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
 
 		m_pWeapon->SetisAttack(true);
-
+		m_pWeapon->Clear_CollisionObj();
 		});
 
 	m_pAnimator->RegisterEventListener("AttackOff", [this]() {
 
 		m_pWeapon->SetisAttack(false);
-
+		m_pWeapon->Clear_CollisionObj();
 		});
 
 }

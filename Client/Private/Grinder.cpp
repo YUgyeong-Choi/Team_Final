@@ -39,6 +39,29 @@ void CGrinder::Priority_Update(_float fTimeDelta)
 
 void CGrinder::Update(_float fTimeDelta)
 {
+
+
+    if (m_isActive)
+    {
+        m_fElapsedTime += fTimeDelta;
+        // 무기 내구도 증가 
+        _float fTemp = 0.25f;
+
+        // 시간 측정해서 일정 시간 이상이면 내구도 차는 속도를 늘린다
+        if (m_fElapsedTime > 1.f)
+        {
+            fTemp = 0.5f;
+            m_pGameInstance->Notify(L"Weapon_Status", L"AddDurablity", &fTemp);
+        }
+        else
+        {
+            m_pGameInstance->Notify(L"Weapon_Status", L"AddDurablity", &fTemp);
+        }
+    }
+    else
+    {
+        m_fElapsedTime = 0;
+    }
 }
 
 void CGrinder::Late_Update(_float fTimeDelta)
@@ -50,9 +73,16 @@ HRESULT CGrinder::Render()
     return S_OK;
 }
 
-void CGrinder::Activate()
+void CGrinder::Activate(_bool isActive)
 {
     // 무기 게이지 연동? 하면 될듯
+
+    m_isActive = isActive;
+}
+
+void CGrinder::Use()
+{
+    Activate(!m_isActive);
 }
 
 ITEM_DESC CGrinder::Get_ItemDesc()

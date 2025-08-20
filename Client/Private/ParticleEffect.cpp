@@ -31,6 +31,7 @@ HRESULT CParticleEffect::Initialize(void* pArg)
 		return E_FAIL;
 
 
+	m_eEffectType = EFF_PARTICLE;
 
 	return S_OK;
 }
@@ -43,6 +44,21 @@ void CParticleEffect::Priority_Update(_float fTimeDelta)
 void CParticleEffect::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+
+	if (m_pSocketMatrix != nullptr)
+	{
+		m_pVIBufferCom->Set_Center((_float3)(m_CombinedWorldMatrix.m[3]));
+		XMMATRIX socketWorld = XMLoadFloat4x4(m_pSocketMatrix);
+		XMVECTOR rotQuat = XMQuaternionRotationMatrix(socketWorld);
+		_float4 vRot = {};
+		XMStoreFloat4(&vRot, rotQuat);
+		m_pVIBufferCom->Set_SocketRotation(vRot);
+	}
+	else
+	{
+		m_pVIBufferCom->Set_Center((_float3)(m_pTransformCom->Get_State(STATE::POSITION).m128_f32));
+	}
+
 	m_pVIBufferCom->Update(fTimeDelta);
 	return; 
 }
@@ -229,7 +245,7 @@ json CParticleEffect::Serialize()
 	j["MaxLifeTime"] = m_fMaxLifeTime;
 	j["PType"] = m_ePType;
 	j["Loop"] = m_isLoop;
-	j["Local"] = m_bLocal;
+	j["Local"] = 1;
 	
 
 	return j;

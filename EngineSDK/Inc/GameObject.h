@@ -46,6 +46,11 @@ public:
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
+
+public:
+	_bool Get_IsLOD() const { return m_bIsLOD; }
+	void Set_IsLOD(_bool bIsLOD) { m_bIsLOD = bIsLOD; }
+
 public:
 	virtual void Set_bDead() { m_bDead = true; }
 	virtual _bool Get_bDead();
@@ -74,6 +79,7 @@ protected:
 	class CPhysXStaticActor*					m_pPhysXActorCom = { nullptr };
 
 	_bool m_bDead = {};
+	_bool m_bIsLOD = {};
 	_uint m_iLevelID = {}; // 이 객체가 현재 어느 레벨에 생성되었는지에 대한 변수
 	_float	m_fViewZ = {};
 	_bool m_bCloned = {};

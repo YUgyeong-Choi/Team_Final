@@ -52,15 +52,33 @@ HRESULT CBayonet::Initialize(void* pArg)
 	m_eSkillDesc[1].iCountCombo = 0;
 	m_eSkillDesc[1].isCombo = false;
 
-	m_iDurability = m_iMaxDurability;
+	//m_iDurability = m_iMaxDurability;
 
-	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_iDurability);
-	m_pGameInstance->Notify(L"Weapon_Status", L"MaxDurablity", &m_iDurability);
+
 
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
+
+	m_pGameInstance->Register_PullCallback(L"Weapon_Status", [this](const _wstring& eventName, void* data) {
+
+		if (L"AddDurablity" == eventName)
+		{
+			m_fDurability += *static_cast<_float*>(data);
+
+			if (m_fDurability >= m_fMaxDurability)
+			{
+				m_fDurability = m_fMaxDurability;
+				// 빛나는 효과 잠깐 추가...
+			}
+				
+		}
+
+		});
+
+	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
+	m_pGameInstance->Notify(L"Weapon_Status", L"MaxDurablity", &m_fMaxDurability);
 
 
 	m_iHandleIndex = m_pModelCom->Find_BoneIndex("BN_Handle");
@@ -95,7 +113,7 @@ HRESULT CBayonet::Render()
 	__super::Render();
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
+	if (m_pGameInstance->Get_RenderCollider() && m_pPhysXActorCom->Get_ReadyForDebugDraw()) {
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif
@@ -140,6 +158,18 @@ void CBayonet::Update_Collider()
 
 }
 
+void CBayonet::SetisAttack(_bool isAttack)
+{
+	if (isAttack)
+	{
+		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+	}
+	else
+	{
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+	}
+}
+
 
 
 HRESULT CBayonet::Ready_Components()
@@ -173,7 +203,7 @@ HRESULT CBayonet::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON; 
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | FILTER_MONSTERWEAPON; // 일단 보류
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY; // 일단 보류
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
@@ -181,13 +211,14 @@ HRESULT CBayonet::Ready_Actor()
 	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
+	
 	return S_OK;
 }
 
 HRESULT CBayonet::Ready_Effect()
 {
-	_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade");
-	_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
+	_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
+	_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_End");
 
 	CSwordTrailEffect::DESC desc = {};
 	desc.pInnerSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));

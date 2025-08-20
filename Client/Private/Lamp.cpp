@@ -71,6 +71,11 @@ void CLamp::Priority_Update(_float fTimeDelta)
 void CLamp::Update(_float fTimeDelta)
 {
     // 
+	if (m_isActive)
+		m_fElapsedTime += fTimeDelta;
+	else
+		m_fElapsedTime = 0.f;
+
 }
 
 void CLamp::Late_Update(_float fTimeDelta)
@@ -127,25 +132,21 @@ HRESULT CLamp::Render()
 	return S_OK;
 }
 
-void CLamp::Activate()
+
+void CLamp::Use()
 {
-	
 	m_isLight = !m_isLight;
 
 	if (m_isLight)
 	{
-		
+
 		m_pLight->Get_LightDesc()->bIsUse = true;
 	}
 	else
 	{
-		
+
 		m_pLight->Get_LightDesc()->bIsUse = false;
 	}
-
-
-    // Lamp에 있는 light도 껏다 켯다 하도록 로직 추가
-
 }
 
 ITEM_DESC CLamp::Get_ItemDesc()

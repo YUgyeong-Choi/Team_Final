@@ -160,6 +160,7 @@
     <ClInclude Include="..\public\AStar_Manager.h" />
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
+    <ClInclude Include="..\public\BossUnit.h" />
     <ClInclude Include="..\public\Buttler_Train.h" />
     <ClInclude Include="..\Public\CameraSequence.h" />
     <ClInclude Include="..\public\Camera_CutScene.h" />
@@ -198,6 +199,9 @@
     <ClInclude Include="..\public\LegionArm_Base.h" />
     <ClInclude Include="..\public\LegionArm_Steel.h" />
     <ClInclude Include="..\Public\Projectile.h" />
+    <ClInclude Include="..\Public\TriggerBox.h" />
+    <ClInclude Include="..\Public\TriggerMesh.h" />
+    <ClInclude Include="..\Public\TriggerNoMesh.h" />
     <ClInclude Include="..\public\UI_Component.h" />
     <ClInclude Include="..\public\UI_Component_Text.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
@@ -322,6 +326,7 @@
     <ClCompile Include="..\private\AStar_Manager.cpp" />
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
+    <ClCompile Include="..\private\BossUnit.cpp" />
     <ClCompile Include="..\private\Buttler_Train.cpp" />
     <ClCompile Include="..\Private\CameraSequence.cpp" />
     <ClCompile Include="..\private\Camera_CutScene.cpp" />
@@ -405,6 +410,9 @@
     <ClCompile Include="..\private\Stamina_Bar.cpp" />
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
+    <ClCompile Include="..\Private\TriggerBox.cpp" />
+    <ClCompile Include="..\Private\TriggerMesh.cpp" />
+    <ClCompile Include="..\Private\TriggerNoMesh.cpp" />
     <ClCompile Include="..\private\Static_Decal.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\private\TestAnimObject.cpp" />

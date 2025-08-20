@@ -1,7 +1,7 @@
 #include "Effect_Shader_Defines.hlsli"
 
-vector  g_vCamPosition;
-bool    g_bLocal;
+vector g_vCamPosition;
+bool g_bLocal;
 
 
 struct ParticleParam
@@ -11,35 +11,37 @@ struct ParticleParam
     float4 Look;
     float4 Translation;
 
+    float3 vInitOffset;
+    float _pad0;
+    
     float4 Direction; // normalized dir (w=unused)
-    float4 VelocityDir; // ½ÇÁ¦ ÀÌµ¿ÇÑ ¹æÇâ º¤ÅÍ, w = length
+    float4 VelocityDir; // ì‹¤ì œ ì´ë™í•œ ë°©í–¥ ë²¡í„°, w = length
 
     float2 LifeTime; // x=max, y=acc
     float Speed;
     float RotationSpeed; // degrees/sec
 
     float OrbitSpeed; // degrees/sec
-    float fAccel; // °¡¼Óµµ (+¸é °¡¼Ó, -¸é °¨¼Ó)
-    float fMaxSpeed; // ÃÖ´ë ¼Óµµ (¿É¼Ç)
-    float fMinSpeed; // ÃÖ¼Ò ¼Óµµ (¿É¼Ç, °¨¼Ó ½Ã ¸ØÃã ¹æÁö)
+    float fAccel; // ê°€ì†ë„ (+ë©´ ê°€ì†, -ë©´ ê°ì†)
+    float fMaxSpeed; // ìµœëŒ€ ì†ë„ (ì˜µì…˜)
+    float fMinSpeed; // ìµœì†Œ ì†ë„ (ì˜µì…˜, ê°ì† ì‹œ ë©ˆì¶¤ ë°©ì§€)
 };
 
 StructuredBuffer<ParticleParam> Particle_SRV : register(t0);
 
-
 struct VS_OUT
 {
-    /* SV_ : ShaderValue¾àÀÚ */
-    /* ³»°¡ ÇØ¾ßÇÒ ¿¬»êÀº ´Ù ÇßÀ¸´Ï ÀÌÁ¦ ´Ï(ÀåÄ¡)°¡ ¾Ë¾Æ¼­ Ãß°¡ÀûÀÎ ¿¬»êÀ» ÇØ¶ó. */     
+    /* SV_ : ShaderValueì•½ì */
+    /* ë‚´ê°€ í•´ì•¼í•  ì—°ì‚°ì€ ë‹¤ í–ˆìœ¼ë‹ˆ ì´ì œ ë‹ˆ(ì¥ì¹˜)ê°€ ì•Œì•„ì„œ ì¶”ê°€ì ì¸ ì—°ì‚°ì„ í•´ë¼. */     
     float4 vPosition : POSITION;
     float2 vPSize : PSIZE;
     float2 vLifeTime : TEXCOORD0;
     float fSpeed : TEXCOORD1;
-    float3 vDir : TEXCOORD2;
+    float4 vDir : TEXCOORD2;
 };
 
 VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
-{   
+{
     VS_OUT Out;
     
     matrix matWV, matWVP;
@@ -53,26 +55,26 @@ VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
         particle.Translation
     );
     
-    // ÀÌºÎºĞ¿¡¼­ transform °öÇÏ´Â°Å·Î ·ÎÄÃ¿ùµåºĞ±â.......
-    // ·ÎÄÃ¾µ·Á¸é °öÇÏ°í, °¢ÀÚ ¿ùµå»óÅÂ °¡Áö·Á¸é Ã³À½ºÎÅÍ ¿ùµå »óÅÂÀÇ ÁÂÇ¥ µç Ã¤·Î ÀÌºÎºĞ½ºÅµ
+    // ì´ë¶€ë¶„ì—ì„œ transform ê³±í•˜ëŠ”ê±°ë¡œ ë¡œì»¬ì›”ë“œë¶„ê¸°.......
+    // ë¡œì»¬ì“¸ë ¤ë©´ ê³±í•˜ê³ , ê°ì ì›”ë“œìƒíƒœ ê°€ì§€ë ¤ë©´ ì²˜ìŒë¶€í„° ì›”ë“œ ìƒíƒœì˜ ì¢Œí‘œ ë“  ì±„ë¡œ ì´ë¶€ë¶„ìŠ¤í‚µ
     vector vPosition = mul(vector(0.f, 0.f, 0.f, 1.f), TransformMatrix);
     
-    if (g_bLocal == 0)
-        Out.vPosition = mul(vPosition, g_WorldMatrix);
-    else
+    //if (g_bLocal == 0)
+    //    Out.vPosition = mul(vPosition, g_WorldMatrix);
+    //else
         Out.vPosition = vPosition;
     
     Out.vPSize = float2(length(particle.Right.xyz), length(particle.Up.xyz));
 
     Out.vLifeTime = particle.LifeTime;
     Out.fSpeed = particle.Speed;
-    Out.vDir = normalize(particle.VelocityDir.xyz);
+    Out.vDir = float4(normalize(particle.VelocityDir.xyz), particle.VelocityDir.w);
     
     return Out;
 }
 
 
-/* ±×¸®´Â ÇüÅÂ¿¡ µû¶ó¼­ È£ÃâµÈ´Ù. */ 
+/* ê·¸ë¦¬ëŠ” í˜•íƒœì— ë”°ë¼ì„œ í˜¸ì¶œëœë‹¤. */ 
 
 struct GS_IN
 {
@@ -82,7 +84,7 @@ struct GS_IN
     
     float2 vLifeTime : TEXCOORD0;
     float fSpeed : TEXCOORD1;
-    float3 vDir : TEXCOORD2;
+    float4 vDir : TEXCOORD2;
 };
 
 struct GS_OUT
@@ -104,11 +106,11 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
     
-    Out[0].vPosition = mul(float4(In[0].vPosition.xyz + vRight + vUp, 1.f), matVP);    
+    Out[0].vPosition = mul(float4(In[0].vPosition.xyz + vRight + vUp, 1.f), matVP);
     Out[0].vTexcoord = float2(0.f, 0.f);
     Out[0].vLifeTime = In[0].vLifeTime;
     Out[0].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
-    
+        
     Out[1].vPosition = mul(float4(In[0].vPosition.xyz - vRight + vUp, 1.f), matVP);
     Out[1].vTexcoord = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
@@ -140,59 +142,189 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
     GS_OUT Out[4];
-    // === Ä«¸Ş¶ó ¡æ ÆÄÆ¼Å¬ º¤ÅÍ ===
+    // === ì¹´ë©”ë¼ â†’ íŒŒí‹°í´ ë²¡í„° ===
     float3 vLook = normalize(g_vCamPosition.xyz - In[0].vPosition.xyz);
 
-    // === Ä«¸Ş¶ó ºôº¸µå ±âÁØ º¤ÅÍ ===
+    // === ì¹´ë©”ë¼ ë¹Œë³´ë“œ ê¸°ì¤€ ë²¡í„° ===
     float3 vRight = normalize(cross(float3(0, 1, 0), vLook));
     float3 vUp = normalize(cross(vLook, vRight));
 
-    // === ±âº» »çÀÌÁî ¹İ¿µ ===
+    // === ê¸°ë³¸ ì‚¬ì´ì¦ˆ ë°˜ì˜ ===
     vRight *= In[0].vPSize.x * 0.5f;
     vUp *= In[0].vPSize.y * 0.5f;
 
-    // === ¼Óµµ ¹æÇâ Stretch (±æÀÌ¸¸ ´Ã¸²) ===
+    // === ì†ë„ ë°©í–¥ Stretch (ê¸¸ì´ë§Œ ëŠ˜ë¦¼) ===
     float3 vDir = normalize(In[0].vDir);
-    float stretchFactor = 0.015f * In[0].fSpeed; // Æ©´×°ª
+    float stretchFactor = 0.015f * In[0].fSpeed; // íŠœë‹ê°’
     float3 vStretch = vDir * stretchFactor;
 
-    // ÃÖÁ¾ Up¿¡ ´õÇØÁÜ (YÃà Up + ¼Óµµ ²¿¸®)
+    // ìµœì¢… Upì— ë”í•´ì¤Œ (Yì¶• Up + ì†ë„ ê¼¬ë¦¬)
     float3 upStretch = vUp + vStretch;
 
-    // === VP º¯È¯ ===
+    // === VP ë³€í™˜ ===
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
-    
+  
     Out[0].vPosition = mul(float4(In[0].vPosition.xyz + vRight + upStretch, 1.f), matVP);
     Out[0].vTexcoord = float2(0.f, 0.f);
     Out[0].vLifeTime = In[0].vLifeTime;
     Out[0].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
-    
+  
     Out[1].vPosition = mul(float4(In[0].vPosition.xyz - vRight + upStretch, 1.f), matVP);
     Out[1].vTexcoord = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
     Out[1].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
-    
+  
     Out[2].vPosition = mul(float4(In[0].vPosition.xyz - vRight - upStretch, 1.f), matVP);
     Out[2].vTexcoord = float2(1.f, 1.f);
     Out[2].vLifeTime = In[0].vLifeTime;
     Out[2].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
-    
+  
     Out[3].vPosition = mul(float4(In[0].vPosition.xyz + vRight - upStretch, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
     Out[3].vLifeTime = In[0].vLifeTime;
     Out[3].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
-    
+  
     Triangles.Append(Out[0]);
     Triangles.Append(Out[1]);
     Triangles.Append(Out[2]);
     Triangles.RestartStrip();
-    
+  
     Triangles.Append(Out[0]);
     Triangles.Append(Out[2]);
     Triangles.Append(Out[3]);
     Triangles.RestartStrip();
 }
 
+
+
+//[maxvertexcount(6)]
+//void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Tri)
+//{
+//    GS_OUT Out[4];
+
+//    float3 camToP = g_vCamPosition.xyz - In[0].vPosition.xyz;
+//    float3 viewDir = normalize(camToP);
+
+//    // ì¹´ë©”ë¼ ë¹Œë³´ë“œ ê¸°ë³¸ ì¶•
+//    float3 right = normalize(cross(float3(0, 1, 0), viewDir));
+//    float3 up = normalize(cross(viewDir, right));
+
+//    right *= In[0].vPSize.x * 0.5f;
+//    up *= In[0].vPSize.y * 0.5f;
+
+//    float3 v = In[0].vDir.xyz;
+//    float vLen = max(In[0].vDir.w, 1e-6);
+//    v /= vLen;
+//    v = normalize(v - viewDir * dot(v, viewDir));
+
+//    float StretchScale = 1.f;
+//    float3 vStretch = v * (StretchScale * In[0].vDir.w);
+    
+//    float speed = In[0].vDir.w;
+//    if (speed < 1e-3f)
+//    {
+//    // ê·¸ëƒ¥ ë¹Œë³´ë“œì²˜ëŸ¼ Upë§Œ ì”€
+//        vStretch = 0;
+//    }
+//    else
+//    {
+//        float3 v = normalize(In[0].vDir.xyz);
+//        float stretchFactor = 0.02f * speed; // íŠœë‹ê°’
+//        vStretch = v * stretchFactor;
+//    }
+//    float3 upStretch = up + vStretch;
+
+//    matrix VP = mul(g_ViewMatrix, g_ProjMatrix);
+
+//    Out[0].vPosition = mul(float4(In[0].vPosition.xyz + right + upStretch, 1), VP);
+//    Out[0].vTexcoord = float2(0, 0);
+//    Out[0].vLifeTime = In[0].vLifeTime;
+//    Out[0].vProjPos = float4(length(camToP), 0, 0, 0);
+
+//    Out[1].vPosition = mul(float4(In[0].vPosition.xyz - right + upStretch, 1), VP);
+//    Out[1].vTexcoord = float2(1, 0);
+//    Out[1].vLifeTime = In[0].vLifeTime;
+//    Out[1].vProjPos = Out[0].vProjPos;
+
+//    Out[2].vPosition = mul(float4(In[0].vPosition.xyz - right - upStretch, 1), VP);
+//    Out[2].vTexcoord = float2(1, 1);
+//    Out[2].vLifeTime = In[0].vLifeTime;
+//    Out[2].vProjPos = Out[0].vProjPos;
+
+//    Out[3].vPosition = mul(float4(In[0].vPosition.xyz + right - upStretch, 1), VP);
+//    Out[3].vTexcoord = float2(0, 1);
+//    Out[3].vLifeTime = In[0].vLifeTime;
+//    Out[3].vProjPos = Out[0].vProjPos;
+
+//    Tri.Append(Out[0]);
+//    Tri.Append(Out[1]);
+//    Tri.Append(Out[2]);
+//    Tri.RestartStrip();
+//    Tri.Append(Out[0]);
+//    Tri.Append(Out[2]);
+//    Tri.Append(Out[3]);
+//    Tri.RestartStrip();
+//}
+
+//[maxvertexcount(6)]
+//void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Tri)
+//{
+//    GS_OUT Out[4];
+
+//    float3 pos = In[0].vPosition.xyz;
+//    float3 camToP = normalize(g_vCamPosition.xyz - pos);
+
+//    // === 1. ì†ë„ ë°©í–¥ ===
+//    float3 vDir = normalize(In[0].vDir.xyz);
+//    float speed = In[0].vDir.w;
+
+//    // === 2. Quad ê°€ë¡œì¶•: ì†ë„ì™€ ì¹´ë©”ë¼ë²¡í„°ì˜ ì™¸ì ì„ ì´ìš©í•´ ì§êµ ë²¡í„° ìƒì„± ===
+//    float3 right = normalize(cross(vDir, camToP));
+//    // í˜¹ì‹œ ì†ë„ì™€ ì¹´ë©”ë¼ê°€ í‰í–‰í•˜ë©´ right=0 ë˜ë‹ˆ, ë°©ì–´ì½”ë“œ í•„ìš”í•  ìˆ˜ë„ ìˆìŒ
+//    if (all(abs(right) < 1e-6))
+//        right = float3(1, 0, 0);
+
+//    // === 3. í¬ê¸° ì ìš© ===
+//    float stretchLen = 0.1f * speed; // íŠœë‹ê°’: ì†ë„ê°€ í´ìˆ˜ë¡ ë” ê¸¸ê²Œ
+//    float3 vStretch = vDir * stretchLen;
+
+//    right *= In[0].vPSize.x * 0.5f; // ê°€ë¡œí­ (íŒŒí‹°í´ í¬ê¸° ê¸°ë°˜)
+
+//    // === 4. Quad ê¼­ì§“ì  ê³„ì‚° ===
+//    float3 p0 = pos - right; // ì‹œì‘-ì™¼ìª½
+//    float3 p1 = pos + right; // ì‹œì‘-ì˜¤ë¥¸ìª½
+//    float3 p2 = pos + vStretch + right; // ë-ì˜¤ë¥¸ìª½
+//    float3 p3 = pos + vStretch - right; // ë-ì™¼ìª½
+
+//    matrix VP = mul(g_ViewMatrix, g_ProjMatrix);
+
+//    // === 5. ì¶œë ¥ ===
+//    Out[0].vPosition = mul(float4(p0, 1), VP);
+//    Out[0].vTexcoord = float2(0, 1);
+//    Out[1].vPosition = mul(float4(p1, 1), VP);
+//    Out[1].vTexcoord = float2(1, 1);
+//    Out[2].vPosition = mul(float4(p2, 1), VP);
+//    Out[2].vTexcoord = float2(1, 0);
+//    Out[3].vPosition = mul(float4(p3, 1), VP);
+//    Out[3].vTexcoord = float2(0, 0);
+
+//    [unroll]
+//    for (int i = 0; i < 4; ++i)
+//    {
+//        Out[i].vLifeTime = In[0].vLifeTime;
+//        Out[i].vProjPos = float4(length(camToP), 0, 0, 0);
+//    }
+
+//    // ë‘ ì‚¼ê°í˜• ìŠ¤íŠ¸ë¦½ ì¶œë ¥
+//    Tri.Append(Out[0]);
+//    Tri.Append(Out[1]);
+//    Tri.Append(Out[2]);
+//    Tri.RestartStrip();
+//    Tri.Append(Out[0]);
+//    Tri.Append(Out[2]);
+//    Tri.Append(Out[3]);
+//    Tri.RestartStrip();
+//}
 
 
 struct PS_IN
@@ -211,14 +343,14 @@ struct PS_OUT
 
 PS_OUT PS_MAIN(PS_IN In)
 {
-    PS_OUT Out;    
+    PS_OUT Out;
     
     Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     
-    if(Out.vColor.a < 0.003f)
+    if (Out.vColor.a < 0.003f)
         discard;
     
-    // ÀÌºÎºĞµµ º¯¼ö·Î ¹ŞÀ» ¼ö ÀÖÀ¸¸é??
+    // ì´ë¶€ë¶„ë„ ë³€ìˆ˜ë¡œ ë°›ì„ ìˆ˜ ìˆìœ¼ë©´??
     Out.vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
     
 
@@ -266,7 +398,7 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     if (mask < 0.003f)
-       discard;
+        discard;
     float4 vPreColor;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
     
@@ -278,20 +410,20 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     vColor.a = vPreColor.a * mask;
     //vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
     float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x); // 0 ~ 1
-    float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 ÀÌÈÄºÎÅÍ ¼­¼­È÷ 1.0À¸·Î
-    fade = 1.0 - fade; // ³²Àº »ı¸í¿¡ ºñ·ÊÇØ °¨¼Ò
+    float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 ì´í›„ë¶€í„° ì„œì„œíˆ 1.0ìœ¼ë¡œ
+    fade = 1.0 - fade; // ë‚¨ì€ ìƒëª…ì— ë¹„ë¡€í•´ ê°ì†Œ
     vColor.a *= fade;
     
     
     ////float fDepth = In.vProjPos.z / In.vProjPos.w;
     //float fDepth = In.vPosition.z;
     //
-    //// 1 - ±íÀÌ = ¸Ö ¼ö·Ï ¿¬ÇÏ°Ô
+    //// 1 - ê¹Šì´ = ë©€ ìˆ˜ë¡ ì—°í•˜ê²Œ
     //float fWeight = pow(saturate(1 - fDepth), 0.5f);
     ////float fWeight = 1.f;
     //float3 vPremulRGB = vColor.rgb * vColor.a;
     //
-    //// rgb¿¡ Premul * weight, a¿¡ a * weight
+    //// rgbì— Premul * weight, aì— a * weight
     //Out.vAccumulation = float4(vPremulRGB * fWeight, vColor.a * fWeight);
     //
     //Out.fRevealage = vColor.a;
@@ -332,7 +464,7 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
-        PixelShader = compile ps_5_0 PS_MAIN();      
+        PixelShader = compile ps_5_0 PS_MAIN();
     }
     pass MaskOnly //1
     {

@@ -77,12 +77,13 @@ HRESULT CStaticMesh_Instance::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		m_fEmissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
+			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 		{
-			/* [ 렌더링을 생략해야할 때 ] */
-			if (m_mapVisibleLight.find(m_iLightShape) != m_mapVisibleLight.end())
-				continue;
+			return E_FAIL;
 		}
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
@@ -101,29 +102,7 @@ HRESULT CStaticMesh_Instance::Render()
 			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
 				return E_FAIL;
 
-
-
-			/* [ 이미시브 1차 필터 ] */
-
-			/*if (m_iLightShape == 9 || m_iLightShape == 6)
-				SetEmissive();*/
 		}
-
-		///* [ 이미시브 2차 필터 ] */
-
-		if (m_iLightShape == 1 && i == 1)
-			SetEmissive();
-		else if (m_iLightShape == 2 && i == 1)
-			SetEmissive();
-		else if (m_iLightShape == 8 && i == 1)
-			SetEmissive();
-		else
-		{
-			m_fEmissive = 0.f;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
-				return E_FAIL;
-		}
-		
 
 		m_pShaderCom->Begin(0);
 

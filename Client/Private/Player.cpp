@@ -27,6 +27,8 @@
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
 
+#include "DoorMesh.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -34,6 +36,7 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CPlayer::CPlayer(const CPlayer& Prototype)
 	: CUnit(Prototype)
 {
+	m_eUnitType = EUnitType::PLAYER;
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -140,8 +143,8 @@ void CPlayer::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 	// 컷씬일 때 못 움직이도록
-	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-		return; 
+	//if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+	//	return; 
 	
 	/* [ 입력 ] */
 	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만
@@ -178,14 +181,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
-		Set_GrinderEffect_Active(true);
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		Set_GrinderEffect_Active(false);
-
-		//m_pAnimator->SetBool("FocusOn", true);
+		m_pAnimator->SetInt("HitDir", 3);
 		m_pAnimator->SetTrigger("Hited");
+
 	}
 
 
@@ -198,8 +199,8 @@ HRESULT CPlayer::Render()
 	__super::Render();
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
-		m_pGameInstance->Add_DebugComponent(m_pControllerCom);
+	if (m_pGameInstance->Get_RenderCollider() && m_pPhysXActorCom->Get_ReadyForDebugDraw()) {
+		//m_pGameInstance->Add_DebugComponent(m_pControllerCom);
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif
@@ -210,6 +211,42 @@ HRESULT CPlayer::Render()
 CAnimController* CPlayer::GetCurrentAnimContrller()
 {
 	return m_pAnimator->Get_CurrentAnimController();
+}
+
+inline _vector ProjectToXZ(_vector vPos)
+{
+	return XMVectorSet(XMVectorGetX(vPos), 0.f, XMVectorGetZ(vPos), 0.f);
+}
+CPlayer::EHitDir CPlayer::ComputeHitDir()
+{
+	_vector vPlayerRight = XMVector3Normalize(m_pTransformCom->Get_State(STATE::RIGHT));
+	_vector vPlayerLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
+
+	_vector vIncoming = XMVectorNegate(XMVector3Normalize(ProjectToXZ(m_vHitNormal)));
+	_vector vLookFlat = XMVector3Normalize(ProjectToXZ(vPlayerLook));
+	_vector vRightFlat = XMVector3Normalize(ProjectToXZ(vPlayerRight));
+
+	const _float fDotFront = XMVectorGetX(XMVector3Dot(vIncoming, vLookFlat));
+	const _float fDotRight = XMVectorGetX(XMVector3Dot(vIncoming, vRightFlat));
+
+	const _float fAngle = atan2f(fDotRight, fDotFront);
+	const _float fSector = XM_PI / 4.f;
+	_int iSectorIndex = static_cast<_int>(floorf((fAngle + fSector * 0.5f) / fSector)) & 7;
+
+	switch (iSectorIndex)
+	{
+	case 0:  return EHitDir::F;
+	case 1:  return EHitDir::FR;
+	case 2:  return EHitDir::R;
+	case 3:  return EHitDir::BR;
+	case 4:  return EHitDir::B;
+	case 5:  return EHitDir::BL;
+	case 6:  return EHitDir::L;
+	case 7:  return EHitDir::FL;
+
+
+	default: return EHitDir::F;
+	}
 }
 
 void CPlayer::SitAnimationMove(_float fTimeDelta)
@@ -276,6 +313,12 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 		return;
 
 	EPlayerState eNextState = EvaluateTransitions();
+
+	if (m_bIsHit)
+	{
+		eNextState = EPlayerState::HITED;
+		m_bIsHit = false;
+	}
 
 	if (eNextState != m_eCurrentState && m_pCurrentState->CanExit())
 	{
@@ -866,6 +909,7 @@ void CPlayer::Register_Events()
 				m_pWeapon->Set_WeaponTrail_Active(true);
 			}
 		});
+
 	m_pAnimator->RegisterEventListener("OffSwordTrail", [this]()
 		{
 			if (m_pWeapon)
@@ -873,8 +917,6 @@ void CPlayer::Register_Events()
 				m_pWeapon->Set_WeaponTrail_Active(false);
 			}
 		});
-
-
 
 	m_pAnimator->RegisterEventListener("OnWeaponCollider", [this]()
 		{
@@ -884,11 +926,21 @@ void CPlayer::Register_Events()
 				m_pWeapon->Clear_CollisionObj();
 			}
 		});
+
+	m_pAnimator->RegisterEventListener("OffWeaponCollider", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetisAttack(false);
+			}
+		});
+
 	m_pAnimator->RegisterEventListener("EquipWeapon", [this]()
 		{
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetbIsActive(true);
+				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),m_pWeapon);
 			}
 		});
 	m_pAnimator->RegisterEventListener("PutWeapon", [this]()
@@ -896,7 +948,16 @@ void CPlayer::Register_Events()
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetbIsActive(false);
+				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),nullptr);
 			}
+		});
+	m_pAnimator->RegisterEventListener("OnGrinderEffect", [this]()
+		{
+			Set_GrinderEffect_Active(true);
+		});
+	m_pAnimator->RegisterEventListener("OffGrinderEffect", [this]()
+		{
+			Set_GrinderEffect_Active(false);
 		});
 }
 
@@ -986,43 +1047,66 @@ void CPlayer::Update_Collider_Actor()
 void CPlayer::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	/* [ 들어온 데미지 계산 ] */
-	_float fDamage = 0.f;
-
-	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
-	if (!pUnit)
-	{
-		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
-		if (!pWeapon)
-		{
-			return;
-		}
-		else
-		{
-			fDamage = pWeapon->Get_CurrentDamage();
-		}
-	}
-	else
-	{
-		fDamage = pUnit->Get_CurrentDamage();
-	}
-
-	/* [ Hp 감소 ] */
-	m_fHP -= fDamage;
-	
-	if (m_fHP <= 0.f)
-		m_fHP = 0.f;
-
-	Callback_HP();
+	//_float fDamage = 0.f;
+	//
+	//CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
+	//if (!pUnit)
+	//{
+	//	CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
+	//	if (!pWeapon)
+	//	{
+	//		return;
+	//	}
+	//	else
+	//	{
+	//		fDamage = pWeapon->Get_CurrentDamage();
+	//	}
+	//}
+	//else
+	//{
+	//	fDamage = pUnit->Get_CurrentDamage();
+	//}
+	//
+	///* [ Hp 감소 ] */
+	//m_fHP -= fDamage;
+	//
+	//if (m_fHP <= 0.f)
+	//	m_fHP = 0.f;
+	//
+	//Callback_HP();
 }
 
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	/* [ 플레이어 피격 ] */
-	if (bIsInvincible)
+	if (m_bIsInvincible)
 		return;
+	
 
-	bIsHit = true;
-	ReceiveDamage(pOther, eColliderType);
+	/* [ 무엇을 해야하는가? ] */
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	{
+		//0. 필요한 정보를 수집한다.
+		m_vHitPos = HitPos;
+		m_vHitNormal = HitNormal;
+
+		//1. 애니메이션 상태를 히트로 바꾼다.
+
+		//가드 중에 피격시 스위치를 켠다.
+		if (m_bIsGuarding)
+		{
+			m_bGardHit = true;
+			return;
+		}
+
+		//가드 중이 아니라면 피격당한다.
+		m_bIsHit = true;
+
+		//2. 플레이어의 HP를 감소시킨다.
+		ReceiveDamage(pOther, eColliderType);
+	}
+	
+
 
 	//printf("HitPos: %f, %f, %f\n", XMVectorGetX(HitPos), XMVectorGetY(HitPos), XMVectorGetZ(HitPos));
 	//printf("HitNormal: %f, %f, %f\n", XMVectorGetX(HitNormal), XMVectorGetY(HitNormal), XMVectorGetZ(HitNormal));
@@ -1072,6 +1156,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKCHARGE)] = new CPlayer_ArmCharge(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMFAIL)] = new CPlayer_ArmFail(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::MAINSKILL)] = new CPlayer_MainSkill(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::HITED)] = new CPlayer_Hited(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }
@@ -1103,6 +1188,11 @@ HRESULT CPlayer::Ready_Weapon()
 		return E_FAIL;
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
+
+	if (m_pWeapon == nullptr)
+		return E_FAIL;
+
+	m_pWeapon->SetisAttack(false);
 
 	return S_OK;
 }
@@ -1168,6 +1258,26 @@ HRESULT CPlayer::Ready_UIParameters()
 
 	Callback_DownBelt();
 	Callback_UpBelt();
+
+	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), [this](_wstring eventName, void* data) {
+
+		if (eventName == L"AddHp")
+		{
+			_float* fRatio = static_cast<_float*>(data);
+
+			m_fHP = m_fHP + m_fMaxHP * (*fRatio);
+
+			if (m_fHP > m_fMaxHP)
+				m_fHP = m_fMaxHP;
+
+			Callback_HP();
+		}
+			
+		
+		});
+
+	//m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHP);
+
 
 	return S_OK;
 }
@@ -1275,7 +1385,7 @@ HRESULT CPlayer::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | FILTER_MONSTERWEAPON; 
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON; 
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
@@ -1390,6 +1500,11 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	if (m_bInteraction[0] && !m_bInteractionMove[0] && !m_bInteractionRotate[0])
 	{
 		m_fInteractionTime[0] += fTimeDelta;
+		if (m_fInteractionTime[0] >= 1.f && !m_bInteractSound[0])
+		{
+			m_bInteractSound[0] = true;
+			static_cast<CDoorMesh*>(m_pInterectionStuff)->Play_Sound();
+		}
 
 		//손 뼈의 컴바인드 행렬
 		const _float4x4* pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_L"));
@@ -1492,7 +1607,7 @@ void CPlayer::Use_Item()
 	if (nullptr == m_pSelectItem)
 		return;
 
-	m_pSelectItem->Activate();
+	m_pSelectItem->Use();
 }
 
 void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)
@@ -1551,14 +1666,9 @@ void CPlayer::LateUpdate_Slot(_float fTimeDelta)
 
 void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 {
-	if (m_pGrinderEffect)
+	if (true == bActive)
 	{
-		m_pGrinderEffect->Set_Loop(bActive);
-		m_pGrinderEffect = nullptr;
-	}
-	else
-	{
-		if (true == bActive)
+		if (!m_pGrinderEffect)
 		{
 			//"Bn_L_ForeTwist"
 			//"Bip001-L-Forearm"
@@ -1569,12 +1679,21 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 
 			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TestGrinder_VStretch_wls_P2"), &desc));
+			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TestGrinder_VStretch_P2S1"), &desc));
 
 			if (m_pGrinderEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 		}
 	}
+	else
+	{
+		if (m_pGrinderEffect)
+		{
+			m_pGrinderEffect->End_Effect();
+			m_pGrinderEffect = nullptr;
+		}
+	}
+
 }
 
 void CPlayer::Movement(_float fTimeDelta)

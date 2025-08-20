@@ -142,6 +142,8 @@ protected: // ....
 	_float4			    m_vLockonPos = {};
 	_int				m_iLockonBoneIndex = {};
 
+	EUnitType			m_eUnitType = EUnitType::NONE;
+
 public:
 	static CUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

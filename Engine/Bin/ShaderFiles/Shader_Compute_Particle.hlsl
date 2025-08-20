@@ -9,7 +9,10 @@ struct ParticleParam
     float4      Up;
     float4      Look;
     float4      Translation;
-
+    
+    float3      vInitOffset;
+    float       _pad0;
+    
     float4      Direction;  // normalized dir (w=unused)
     float4      VelocityDir; // 실제 이동한 방향 벡터, w = length
     
@@ -22,34 +25,6 @@ struct ParticleParam
     float       fMaxSpeed;  // 최대 속도 (옵션)
     float       fMinSpeed;  // 최소 속도 (옵션, 감속 시 멈춤 방지)
 };
-
-
-/* [ ParticleInitData ] */
-/* [ InstanceBuffer ] */
-//struct ParticleInst
-//{
-//    float4 Right;
-//    float4 Up;
-//    float4 Look;
-//    float4 Translation;
-//    float2 LifeTime; // x=max, y=acc
-//    float2 _pad;
-//};
-
-/* [ PARTICLEDESC ] */
-//struct ParticleParam
-//{
-//    float4 Direction; // normalized dir (w=unused)
-
-//    float Speed;
-//    float RotationSpeed; // degrees/sec
-//    float OrbitSpeed; // degrees/sec
-//    float fAccel; // 가속도 (+면 가속, -면 감속)
-
-//    float fMaxSpeed; // 최대 속도 (옵션)
-//    float fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
-//    float2 _pad;
-//};
 
 
 /* [ Constant Buffer ] */
@@ -80,6 +55,8 @@ cbuffer ParticleCB : register(b0)
 
     float3 RotationAxis;
     float _pad4;
+    
+	float4 vSocketRot;
 };
 
 // t는 SRV, u는 UAV, b는 Constant Buffer
@@ -97,6 +74,13 @@ float3 rotateAroundAxis(float3 v, float3 axis, float angleRad)
     return v * c + cross(axis, v) * s + axis * dot(axis, v) * (1.0f - c);
 }
 
+
+float3 RotateByQuat(float3 v, float4 q)
+{
+    // q * v * q^-1
+    float3 t = 2.0f * cross(q.xyz, v);
+    return v + q.w * t + cross(q.xyz, t);
+}
 
 
 [numthreads(128, 1, 1)]
@@ -260,14 +244,17 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         // 루프: 위치/라이프만 초기화(기하 기준은 유지하고 싶으면 아래처럼 Translation만 복원)
         if (IsLoop != 0 && pp.LifeTime.y >= pp.LifeTime.x)
         {
-            //pp = gInitInst[i];
             pp.LifeTime.y = 0.0f;
-            pos = gInitInst[i].Translation.xyz; // 위치만 리셋
-            pp.Speed = gInitInst[i].Speed;
-            // 필요 시 basis도 초기화 원하면 아래 주석 해제
-            // pp.Right = gInitInst[i].Right;
-            // pp.Up    = gInitInst[i].Up;
-            // pp.Look  = gInitInst[i].Look;
+            float3 offset0 = float3(pp.Right.w, pp.Up.w, pp.Look.w);
+            pos = Center + offset0; // << 변경점
+            pp.Speed = gInitInst[i].Speed; // 속도 초기화는 유지
+            
+            // === 뼈 회전 적용된 방향으로 다시 세팅 ===
+
+            float3 localDir = gInitInst[i].Direction.xyz;
+            float3 worldDir = RotateByQuat(localDir, vSocketRot);
+            pp.Direction.xyz = normalize(worldDir);
+
         }
 
         pp.Translation = float4(pos, 1.0f);

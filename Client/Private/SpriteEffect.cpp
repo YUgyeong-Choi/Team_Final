@@ -41,6 +41,7 @@ HRESULT CSpriteEffect::Initialize(void* pArg)
 	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_iTileCnt = m_iTileX * m_iTileY;
 
+	m_eEffectType = EFF_SPRITE;
 	return S_OK;
 }
 
@@ -57,6 +58,8 @@ void CSpriteEffect::Update(_float fTimeDelta)
 
 void CSpriteEffect::Late_Update(_float fTimeDelta)
 {
+	if (m_isActive == false)
+		return;
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
 }
@@ -76,6 +79,12 @@ HRESULT CSpriteEffect::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+_float CSpriteEffect::Ready_Death()
+{
+	m_isActive = false;
+	return 0.f;
 }
 
 HRESULT CSpriteEffect::Ready_Components()

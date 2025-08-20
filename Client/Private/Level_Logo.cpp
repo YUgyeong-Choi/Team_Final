@@ -27,7 +27,9 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Guide()))
 		return E_FAIL;
 
-
+	/* [ »ç¿îµå ] */
+	m_pBGM = m_pGameInstance->Get_Single_Sound("MU_MS_Title_Piano_03");
+	m_pBGM->Play();
 	return S_OK;
 }
 
@@ -195,6 +197,7 @@ HRESULT CLevel_Logo::Ready_Video()
 
 
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
+	eDesc.eType = CUI_Video::VIDEO_TYPE::LOGO;
 	eDesc.fOffset = 0.5f;
 	eDesc.fInterval = 0.05f;
 	eDesc.fSpeedPerSec = 1.f;
@@ -471,6 +474,12 @@ CLevel_Logo* CLevel_Logo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 void CLevel_Logo::Free()
 {
 	__super::Free();
+
+	if (m_pBGM)
+	{
+		m_pBGM->Stop();
+		Safe_Release(m_pBGM);
+	}
 
 	Safe_Release(m_pMainUI);
 
