@@ -141,7 +141,6 @@ protected:				/* [ 중력관련 변수 ] */
 protected: // .... 
 	_float4			    m_vLockonPos = {};
 	_int				m_iLockonBoneIndex = {};
-
 public:
 	static CUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

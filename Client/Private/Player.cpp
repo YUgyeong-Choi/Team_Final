@@ -198,8 +198,8 @@ HRESULT CPlayer::Render()
 	__super::Render();
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
-		m_pGameInstance->Add_DebugComponent(m_pControllerCom);
+	if (m_pGameInstance->Get_RenderCollider() && m_pPhysXActorCom->Get_ReadyForDebugDraw()) {
+		//m_pGameInstance->Add_DebugComponent(m_pControllerCom);
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif

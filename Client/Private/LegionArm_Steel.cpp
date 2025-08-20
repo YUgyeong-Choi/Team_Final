@@ -60,7 +60,7 @@ HRESULT CLegionArm_Steel::Render()
 
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
+	if (m_pGameInstance->Get_RenderCollider() && m_pActorCom->Get_ReadyForDebugDraw()) {
 		m_pGameInstance->Add_DebugComponent(m_pActorCom);
 	}
 #endif

@@ -115,7 +115,7 @@ HRESULT CPBRMesh::Render()
 	}
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
+	if (m_pGameInstance->Get_RenderMapCollider()) {
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif

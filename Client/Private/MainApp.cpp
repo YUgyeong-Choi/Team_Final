@@ -67,6 +67,9 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Static()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Sound()))
+		return E_FAIL;
+
     return S_OK;
 }
 
@@ -261,16 +264,21 @@ HRESULT CMainApp::Ready_Static()
 		CCamera_CutScene::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* [ 荤款靛 积己 ] (is3D / isLoop / isStreaming) */
-	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
-	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
-
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_DefaultARM"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/ARM_Default.png")))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Emissive"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Emissive.dds")))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Sound()
+{
+	/* [ 荤款靛 积己 ] (is3D / isLoop / isStreaming) */
+	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
+	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
 
 	return S_OK;
 }
