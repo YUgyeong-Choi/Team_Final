@@ -25,23 +25,23 @@ public:
 
 	struct InputContext {
 		/* [ W,A,S,D 입력 ] */
-		_bool bMove;
+		_bool bMove = false;
 
 		/* [ 마우스 입력 ] */
-		_bool bLeftMouseDown;
-		_bool bRightMouseDown;
-		_bool bRightMousePress;
-		_bool bRightMouseUp;
+		_bool bLeftMouseDown = false;
+		_bool bRightMouseDown = false;
+		_bool bRightMousePress = false;
+		_bool bRightMouseUp = false;
 
 		/* [ 특수키 입력 ] */
-		_bool bShift;
-		_bool bCtrl;
-		_bool bCtrlPress;
-		_bool bItem;
-		_bool bTap;
-		_bool bSkill;
-		_bool bSpaceUP;
-		_bool bSpaceDown;
+		_bool bShift = false;
+		_bool bCtrl = false;
+		_bool bCtrlPress = false;
+		_bool bItem = false;
+		_bool bTap = false;
+		_bool bSkill = false;
+		_bool bSpaceUP = false;
+		_bool bSpaceDown = false;
 
 	} m_Input;
 	

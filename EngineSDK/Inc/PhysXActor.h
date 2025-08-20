@@ -11,12 +11,22 @@ protected:
     virtual ~CPhysXActor() = default;
 public:
     virtual void Set_Transform(const PxTransform& pose) {};
-    void Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
-    void Set_ColliderType(COLLIDERTYPE eColliderType);
 
+    void Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
     CGameObject* Get_Owner() { return m_pOwner; }
+
+    void Set_ColliderType(COLLIDERTYPE eColliderType);
     COLLIDERTYPE Get_ColliderType() { return m_eColliderType; }
+
+
     virtual PxRigidActor* Get_Actor() = 0;
+    void Add_IngoreActors(PxActor* pActor) { m_ignoreActors.insert(pActor); }
+    unordered_set<PxActor*> Get_IngoreActors() { return m_ignoreActors; }
+
+    virtual void RemovePhysX() {};
+
+    virtual void Init_SimulationFilterData() {};
+	PxFilterData Get_FilterData() const { return m_filterData; }
 public:
     virtual void On_Enter(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});
     virtual void On_Stay(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});
@@ -24,11 +34,6 @@ public:
     virtual void On_TriggerEnter(CPhysXActor* pOther);
     virtual void On_TriggerExit(CPhysXActor* pOther);
     virtual HRESULT Render() = 0;
-
-    void Add_IngoreActors(PxActor* pActor) { m_ignoreActors.insert(pActor); }
-    unordered_set<PxActor*> Get_IngoreActors() { return m_ignoreActors; }
-
-    virtual void RemovePhysX() {};
 
 #ifdef _DEBUG
     // For Debug Render
@@ -52,6 +57,9 @@ protected:
 
     // 컨트롤러에서 무시할 자기 Actor 넣는 곳
     unordered_set<PxActor*> m_ignoreActors;
+
+    // 필터 설정
+    PxFilterData m_filterData{};
 #ifdef _DEBUG
     // For Debug Render
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };

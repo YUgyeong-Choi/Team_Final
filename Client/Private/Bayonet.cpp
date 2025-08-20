@@ -162,11 +162,11 @@ void CBayonet::SetisAttack(_bool isAttack)
 {
 	if (isAttack)
 	{
-		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 	}
 	else
 	{
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+		m_pPhysXActorCom->Init_SimulationFilterData();
 	}
 }
 
