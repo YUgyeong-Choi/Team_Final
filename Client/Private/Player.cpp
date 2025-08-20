@@ -900,6 +900,17 @@ void CPlayer::Register_Events()
 				m_pWeapon->Set_WeaponTrail_Active(false);
 			}
 		});
+
+
+
+	m_pAnimator->RegisterEventListener("OnWeaponCollider", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetisAttack(true);
+				m_pWeapon->Clear_CollisionObj();
+			}
+		});
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
