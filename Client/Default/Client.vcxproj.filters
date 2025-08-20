@@ -424,6 +424,9 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
       <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject">
+      <UniqueIdentifier>{57d38245-a484-4631-8cb6-8d575b2d031c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -889,11 +892,11 @@
     <ClInclude Include="..\Public\MonsterTool.h">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MonsterToolObject.h">
-      <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\LegionArm_Steel.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterToolObject.h">
+      <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1331,14 +1334,14 @@
     <ClCompile Include="..\private\LegionArm_Base.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MonsterToolObject.cpp">
-      <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MonsterTool.cpp">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LegionArm_Steel.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterToolObject.cpp">
+      <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

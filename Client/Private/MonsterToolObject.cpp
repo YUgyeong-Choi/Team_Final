@@ -54,6 +54,8 @@ HRESULT CMonsterToolObject::Initialize(void* pArg)
 	_vector vInitPos = XMVectorSetW(XMLoadFloat3(&pDesc->InitPos), 1.f);
 	m_pTransformCom->Set_State(STATE::POSITION, vInitPos);
 	m_pTransformCom->Scaling(pDesc->InitScale);
+
+	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 	
 	return S_OK;
 }
