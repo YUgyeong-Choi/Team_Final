@@ -71,6 +71,10 @@ void CLamp::Priority_Update(_float fTimeDelta)
 void CLamp::Update(_float fTimeDelta)
 {
     // 
+
+	if (m_isActive)
+		m_fElapsedTime += fTimeDelta;
+
 }
 
 void CLamp::Late_Update(_float fTimeDelta)
@@ -129,23 +133,33 @@ HRESULT CLamp::Render()
 
 void CLamp::Activate(_bool isActive)
 {
-	
-	if (true == isActive)
-		return;
 
+	m_isActive = isActive;
+
+
+	if (false == m_isActive && m_fElapsedTime > 0.5f)
+	{
+
+		Use();
+	}
+		
+	
+}
+
+void CLamp::Use()
+{
 	m_isLight = !m_isLight;
 
 	if (m_isLight)
 	{
-		
+
 		m_pLight->Get_LightDesc()->bIsUse = true;
 	}
 	else
 	{
-		
+
 		m_pLight->Get_LightDesc()->bIsUse = false;
 	}
-
 }
 
 ITEM_DESC CLamp::Get_ItemDesc()

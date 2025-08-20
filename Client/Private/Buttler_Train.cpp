@@ -328,13 +328,13 @@ void CButtler_Train::Register_Events()
 	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
 
 		m_pWeapon->SetisAttack(true);
-
+		m_pWeapon->Clear_CollisionObj();
 		});
 
 	m_pAnimator->RegisterEventListener("AttackOff", [this]() {
 
 		m_pWeapon->SetisAttack(false);
-
+		m_pWeapon->Clear_CollisionObj();
 		});
 
 }

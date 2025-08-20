@@ -156,8 +156,8 @@ HRESULT CUI_MonsterHP_Bar::Render()
     
     if (m_fDamage > 0.f)
     {
-        _float fDamage = floorf(m_fDamage);
-        _wstring strDamage = to_wstring(fDamage);
+        _int iDamage =  static_cast<_int>(floorf(m_fDamage));
+        _wstring strDamage = to_wstring(iDamage);
 
         m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.035f , m_fY - g_iWinSizeY * 0.02f }, {1.f,1.f,1.f,1.f},0.f,{0.f,0.f},0.7f,0.f);
     }

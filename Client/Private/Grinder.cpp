@@ -39,6 +39,7 @@ void CGrinder::Priority_Update(_float fTimeDelta)
 
 void CGrinder::Update(_float fTimeDelta)
 {
+
     if (m_isActive)
     {
         m_fElapsedTime += fTimeDelta;
@@ -68,9 +69,15 @@ HRESULT CGrinder::Render()
 
 void CGrinder::Activate(_bool isActive)
 {
-    // 무기 게이지 연동? 하면 될듯
+ 
 
     m_isActive = isActive;
+
+  
+}
+
+void CGrinder::Use()
+{
 }
 
 ITEM_DESC CGrinder::Get_ItemDesc()

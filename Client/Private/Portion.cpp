@@ -43,6 +43,9 @@ void CPortion::Priority_Update(_float fTimeDelta)
 
 void CPortion::Update(_float fTimeDelta)
 {
+	m_fElapsedTime += fTimeDelta;
+
+	
 }
 
 void CPortion::Late_Update(_float fTimeDelta)
@@ -56,19 +59,26 @@ HRESULT CPortion::Render()
 
 void CPortion::Activate(_bool isActive)
 {
+	
+	m_isActive = isActive;
+
+	if (false == m_isActive)
+	{
+		if (m_fElapsedTime > 0.5f)
+			Use();
+
+		m_fElapsedTime = 0.f;
+	}
+}
+
+void CPortion::Use()
+{
+
 	if (m_iUseCount <= 0)
 		return;
 
-	
-
-
-	if (false == isActive)
-	{
-
-		--m_iUseCount;
-		Heal();
-	}
-
+	--m_iUseCount;
+	Heal();
 }
 
 ITEM_DESC CPortion::Get_ItemDesc()

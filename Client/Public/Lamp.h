@@ -49,7 +49,7 @@ public:
 
 	// 사용 효과 상속받아서 구현하기
 	virtual void Activate(_bool isActive);
-
+	virtual void Use() override;
 	virtual ITEM_DESC Get_ItemDesc() override;
 
 	HRESULT Ready_Components();

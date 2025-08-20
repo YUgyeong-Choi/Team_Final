@@ -34,6 +34,7 @@ public:
 
 	// 사용 효과 상속받아서 구현하기
 	virtual void Activate(_bool isActive);
+	virtual void Use() override;
 
 	virtual ITEM_DESC Get_ItemDesc() override;
 
@@ -44,7 +45,6 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 private:
 	//
-	_float	m_fElapsedTime = {};
 
 public:
 	static CGrinder* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -31,6 +31,7 @@ public:
 	// 사용 효과 상속받아서 구현하기
 	// 애니메이션 시작할 때 true, 끝날때 false
 	virtual void Activate(_bool isActive) = 0;
+	virtual void Use() = 0;
 
 	virtual ITEM_DESC Get_ItemDesc() { return ITEM_DESC(); };
 
@@ -50,7 +51,9 @@ protected:
 
 	_int     m_iUseCount = { 0 };
 
+
 	_bool    m_isActive = {};
+	_float	m_fElapsedTime = {};
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
