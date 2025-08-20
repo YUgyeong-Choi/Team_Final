@@ -54,12 +54,12 @@ void CSwordTrailEffect::Update(_float fTimeDelta)
 {
 	Update_Keyframes();
 
-	if (m_pSocketMatrix != nullptr)
-	{
-		XMStoreFloat4x4(&m_CombinedWorldMatrix,
-			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
-		);
-	}
+	//if (m_pSocketMatrix != nullptr)
+	//{
+	//	XMStoreFloat4x4(&m_CombinedWorldMatrix,
+	//		XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
+	//	);
+	//}
 
 	if (m_bAnimation)
 		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
@@ -99,7 +99,7 @@ void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 
 HRESULT CSwordTrailEffect::Render()
 {
-	if (FAILED(Bind_ShaderResources()))
+	if (FAILED(Bind_ShaderResources()))	
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(m_iShaderPass)))

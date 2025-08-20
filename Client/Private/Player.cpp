@@ -24,6 +24,9 @@
 #include "LegionArm_Base.h"
 #include "LegionArm_Steel.h"
 
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -175,13 +178,14 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
+		Set_GrinderEffect_Active(true);
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		//m_fHP -= 10.f;
-		//Callback_HP();
+		Set_GrinderEffect_Active(false);
 
-		m_pAnimator->SetTrigger("Knockback");
+		//m_pAnimator->SetBool("FocusOn", true);
+		m_pAnimator->SetTrigger("Hited");
 	}
 
 
@@ -1230,6 +1234,24 @@ void CPlayer::LoadPlayerFromJson()
 	}
 }
 
+//HRESULT CPlayer::Ready_Effect()
+//{
+//	//"Bn_L_ForeTwist"
+//	//"Bip001-L-Forearm"
+//	_uint iBoneIdx = m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist");
+//
+//	CEffectContainer::DESC desc = {};
+//	desc.pSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iBoneIdx));
+//	desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+//	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+//	m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TestGrinder_VStretch_wls_P2"), &desc));
+//	
+//	if (m_pGrinderEffect == nullptr)
+//		MSG_BOX("이펙트 생성 실패함");
+//
+//	return S_OK;
+//}
+
 HRESULT CPlayer::Ready_Actor()
 {
 	// 3. Transform에서 S, R, T 분리
@@ -1522,6 +1544,34 @@ void CPlayer::LateUpdate_Slot(_float fTimeDelta)
 {
 	m_pBelt_Up->Late_Update(fTimeDelta);
 	m_pBelt_Down->Late_Update(fTimeDelta);
+}
+
+void CPlayer::Set_GrinderEffect_Active(_bool bActive)
+{
+	if (m_pGrinderEffect)
+	{
+		m_pGrinderEffect->Set_Loop(bActive);
+		m_pGrinderEffect = nullptr;
+	}
+	else
+	{
+		if (true == bActive)
+		{
+			//"Bn_L_ForeTwist"
+			//"Bip001-L-Forearm"
+			_uint iBoneIdx = m_pModelCom->Find_BoneIndex("BN_Weapon_R");
+
+			CEffectContainer::DESC desc = {};
+			desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_R"));
+
+			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
+
+			if (m_pGrinderEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+	}
 }
 
 void CPlayer::Movement(_float fTimeDelta)

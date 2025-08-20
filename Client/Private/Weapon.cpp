@@ -73,8 +73,6 @@ void CWeapon::Update(_float fTimeDelta)
 		m_pModelCom->Update_Bones();
 
 	// 상태에 따른 데미지 업데이트
-
-
 }
 
 void CWeapon::Late_Update(_float fTimeDelta)

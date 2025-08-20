@@ -120,7 +120,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_UIParameters();
 	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
-
+	//HRESULT Ready_Effect();
 
 private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
@@ -150,6 +150,9 @@ private: /* [ 슬룻 함수 ] */
 	void PriorityUpdate_Slot(_float fTimeDelta);
 	void Update_Slot(_float fTimeDelta);
 	void LateUpdate_Slot(_float fTimeDelta);
+
+private: /* [ 이펙트 관리 함수 ]*/
+	void Set_GrinderEffect_Active(_bool bActive);
 
 private: /* [ 상태패턴 ] */
 	void ReadyForState();
@@ -312,6 +315,8 @@ private: /* [ 벨트 슬롯 ] */
 	// 현재 사용중인 아이템
 	class CItem* m_pUseItem = { nullptr };
 
+private: /* [ 이펙트 ] */
+	class CEffectContainer* m_pGrinderEffect = { nullptr };
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

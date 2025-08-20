@@ -24,9 +24,6 @@ struct ParticleParam
 };
 
 
-
-
-
 /* [ ParticleInitData ] */
 /* [ InstanceBuffer ] */
 //struct ParticleInst
@@ -53,7 +50,6 @@ struct ParticleParam
 //    float fMinSpeed; // 弥家 加档 (可记, 皑加 矫 肛勉 规瘤)
 //    float2 _pad;
 //};
-
 
 
 /* [ Constant Buffer ] */

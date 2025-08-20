@@ -185,9 +185,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.fRevealage = vColor.a;
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
     
-    //float2 vInvertUV = float2(1.f - In.vTexcoord.x, In.vTexcoord.y);
-    float2 vInvertUV = float2(In.vTexcoord.x, In.vTexcoord.y);
-    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(vInvertUV, g_fTileSize, g_fTileOffset));
+    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     Out.vDistortion.a *= fade * fMask;
     return Out;
 }

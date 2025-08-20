@@ -61,7 +61,6 @@ void CEffectBase::Update(_float fTimeDelta)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	m_fLifeTime += fTimeDelta;
-
 		//if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
 	if (m_fCurrentTrackPosition > static_cast<_float>(m_iDuration))
 	{
@@ -75,9 +74,13 @@ void CEffectBase::Update(_float fTimeDelta)
 
 	if (m_pSocketMatrix != nullptr)
 	{
+		_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+
+		for (size_t i = 0; i < 3; i++)
+			SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
+
 		XMStoreFloat4x4(&m_CombinedWorldMatrix,
-			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
-		);
+			m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
 	}
 	if (m_bBillboard)
 		//m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
@@ -258,7 +261,7 @@ HRESULT CEffectBase::Change_Texture(_wstring strTextureName, TEXUSAGE eTex)
 
 	//Safe_Release(m_pTextureCom[eTex]);
 	_wstring strTextureTag = L"Prototype_Component_Texture_" + strTextureName;
-	if (FAILED(Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag.c_str(),
+	if (FAILED(Replace_Component(ENUM_CLASS(LEVEL::CY), strTextureTag,
 		Tag, reinterpret_cast<CComponent**>(&m_pTextureCom[eTex]))))
 		return E_FAIL;
 	m_TextureTag[eTex] = strTextureName;
