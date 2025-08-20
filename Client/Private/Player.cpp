@@ -1495,11 +1495,11 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 			_uint iBoneIdx = m_pModelCom->Find_BoneIndex("BN_Weapon_R");
 
 			CEffectContainer::DESC desc = {};
-			desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_R"));
+			desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
 
 			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
+			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TestGrinder_VStretch_wls_P2"), &desc));
 
 			if (m_pGrinderEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");

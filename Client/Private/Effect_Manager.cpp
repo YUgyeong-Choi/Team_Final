@@ -191,7 +191,7 @@ CGameObject* CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wst
     {
         CEffectContainer::DESC* pDesc = static_cast<CEffectContainer::DESC*>(pArg);
         ECDesc.pParentMatrix = pDesc->pParentMatrix;
-        ECDesc.pSocketMatrix = pDesc->pParentMatrix;
+        ECDesc.pSocketMatrix = pDesc->pSocketMatrix;
         ECDesc.PresetMatrix = pDesc->PresetMatrix;
     }
     ECDesc.j = iter->second;
