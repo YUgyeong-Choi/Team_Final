@@ -1,70 +1,18 @@
 [
     {
-        "ModelName": "SM_Street_BookStore_03",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Street_BookStore_03.bin"
+        "ModelName": "SM_BuildingA_Door_09",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_09.bin"
     },
     {
-        "ModelName": "SM_BuildingA_Store_03",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Store_03.bin"
+        "ModelName": "SM_Gate_Arch_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_Arch_01.bin"
     },
     {
-        "ModelName": "SM_Wall_WindowBottom01A",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_WindowBottom01A.bin"
+        "ModelName": "SM_Exhibition_RoofMolding_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_RoofMolding_01.bin"
     },
     {
-        "ModelName": "SM_BuildingA_Store_02",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Store_02.bin"
-    },
-    {
-        "ModelName": "SM_Gate_BurningGate_01",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_BurningGate_01.bin"
-    },
-    {
-        "ModelName": "SM_Gate_IronGate_02",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_IronGate_02.bin"
-    },
-    {
-        "ModelName": "SM_Gate_Gate_04",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_Gate_04.bin"
-    },
-    {
-        "ModelName": "SM_LightProp_SpotLight_01",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_SpotLight_01.bin"
-    },
-    {
-        "ModelName": "SM_LightProp_SpotLight_02",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_SpotLight_02.bin"
-    },
-    {
-        "ModelName": "SM_LightProp_FloorLight_01",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_FloorLight_01.bin"
-    },
-    {
-        "ModelName": "SM_LightProp_Lamp_02",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Lamp_02.bin"
-    },
-    {
-        "ModelName": "SM_LightProp_StreetLamp_07",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_07.bin"
-    },
-    {
-        "ModelName": "SM_LightProp_StreetLamp_08",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_08.bin"
-    },
-    {
-        "ModelName": "SM_Station_Light_02",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
-    },
-    {
-        "ModelName": "SM_Sign_Blueprint_02",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Blueprint_02.bin"
-    },
-    {
-        "ModelName": "SM_Sign_Blueprint_01",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Blueprint_01.bin"
-    },
-    {
-        "ModelName": "SM_Factory_Table_01",
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Table_01.bin"
+        "ModelName": "SM_Station_StairA_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_StairA_01.bin"
     }
 ]
