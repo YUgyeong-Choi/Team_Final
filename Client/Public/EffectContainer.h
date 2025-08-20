@@ -51,7 +51,7 @@ private:
 private:
 	_float				m_fFrame = { };
 	_bool				m_bReadyDeath = { false };
-	_float				m_fDeadInterval = { 5.f };
+	_float				m_fDeadInterval = { 0.f };
 	_float				m_fDeadTimeAcc = {};
 
 	const _float4x4*	m_pSocketMatrix = { nullptr };

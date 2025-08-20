@@ -35,6 +35,7 @@ HRESULT CMeshEffect::Initialize(void* pArg)
 	//	if (FAILED(Ready_Components()))
 	//		return E_FAIL;
 	//}
+	m_eEffectType = EFF_MESH;
 	return S_OK;
 }
 

@@ -1023,9 +1023,6 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 	bIsHit = true;
 	ReceiveDamage(pOther, eColliderType);
-
-	//printf("HitPos: %f, %f, %f\n", XMVectorGetX(HitPos), XMVectorGetY(HitPos), XMVectorGetZ(HitPos));
-	//printf("HitNormal: %f, %f, %f\n", XMVectorGetX(HitNormal), XMVectorGetY(HitNormal), XMVectorGetZ(HitNormal));
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -1551,14 +1548,9 @@ void CPlayer::LateUpdate_Slot(_float fTimeDelta)
 
 void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 {
-	if (m_pGrinderEffect)
+	if (true == bActive)
 	{
-		m_pGrinderEffect->Set_Loop(bActive);
-		m_pGrinderEffect = nullptr;
-	}
-	else
-	{
-		if (true == bActive)
+		if (!m_pGrinderEffect)
 		{
 			//"Bn_L_ForeTwist"
 			//"Bip001-L-Forearm"
@@ -1575,6 +1567,15 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 				MSG_BOX("이펙트 생성 실패함");
 		}
 	}
+	else
+	{
+		if (m_pGrinderEffect)
+		{
+			m_pGrinderEffect->End_Effect();
+			m_pGrinderEffect = nullptr;
+		}
+	}
+
 }
 
 void CPlayer::Movement(_float fTimeDelta)

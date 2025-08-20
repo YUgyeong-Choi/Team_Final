@@ -41,6 +41,7 @@ HRESULT CSpriteEffect::Initialize(void* pArg)
 	m_fTileSize.y = 1.0f / _float(m_iTileY);
 	m_iTileCnt = m_iTileX * m_iTileY;
 
+	m_eEffectType = EFF_SPRITE;
 	return S_OK;
 }
 

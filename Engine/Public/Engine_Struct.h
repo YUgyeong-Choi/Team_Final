@@ -494,7 +494,10 @@ namespace Engine
 		_float4		vUp;
 		_float4		vLook;
 		_float4		vTranslation; // WorldMatrix
-	
+
+		_float3		vInitOffset;
+		_float		_pad0;
+
 		_float4		vDirection = {};
 		_float4		vVelocityDir = {}; // xyz = 현재 이동방향, w=속도 크기 
 	
@@ -536,6 +539,8 @@ namespace Engine
 
 		_float3		vRotationAxis;   // normalized
 		_float		_pad4;
+
+		_float4		vSocketRot;
 	}PARTICLECBUFFER;
 
 } 

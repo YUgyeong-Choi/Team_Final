@@ -41,7 +41,8 @@ HRESULT CSwordTrailEffect::Initialize(void* pArg)
 		return E_FAIL;
 
 	// 부모 모델, 부모 모델의 뼈 소켓매트릭스
-		
+	m_eEffectType = EFF_TRAIL;
+
 	return S_OK;
 }
 
