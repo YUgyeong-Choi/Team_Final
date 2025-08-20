@@ -19486,7 +19486,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Light_02",
-            "NoInstancing": false,
+            "NoInstancing": true,
             "ObjectCount": 20,
             "Objects": [
                 {
