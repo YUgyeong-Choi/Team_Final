@@ -34,6 +34,7 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CPlayer::CPlayer(const CPlayer& Prototype)
 	: CUnit(Prototype)
 {
+	m_eUnitType = EUnitType::PLAYER;
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -178,14 +179,10 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
-		Set_GrinderEffect_Active(true);
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		Set_GrinderEffect_Active(false);
-
-		//m_pAnimator->SetBool("FocusOn", true);
-		m_pAnimator->SetTrigger("Hited");
+		m_pAnimator->SetTrigger("Dash");
 	}
 
 
@@ -1121,6 +1118,11 @@ HRESULT CPlayer::Ready_Weapon()
 		return E_FAIL;
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
+
+	if (m_pWeapon == nullptr)
+		return E_FAIL;
+
+	m_pWeapon->SetisAttack(false);
 
 	return S_OK;
 }

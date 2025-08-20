@@ -13,6 +13,7 @@ CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 CMonster_Base::CMonster_Base(const CMonster_Base& Prototype)
 	:CUnit{Prototype}
 {
+	m_eUnitType = EUnitType::NORMAL_MONSTER;
 }
 
 HRESULT CMonster_Base::Initialize_Prototype()

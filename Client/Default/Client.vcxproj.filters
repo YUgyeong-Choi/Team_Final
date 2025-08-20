@@ -406,30 +406,6 @@
     <Filter Include="02.GameObjects\99.UI\World\Fatal">
       <UniqueIdentifier>{f3d18659-20ad-4a08-8688-7e68b1eb696b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Unit\02. Monster\Police">
-      <UniqueIdentifier>{f7b1672f-ca66-4fb8-b159-34e1261f8845}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\02. Monster\Police\Elite">
-      <UniqueIdentifier>{82b1cf39-051c-489b-9344-d6882109340c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.ShaderFiles">
-      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.ShaderFiles\Effect">
-      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\12.Projectile">
-      <UniqueIdentifier>{5d4debaf-81fb-45f4-9dc8-a565ee4fb8a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\12.Projectile\Fuoco">
-      <UniqueIdentifier>{857ac3d0-7a88-456d-8659-01d2ab5485b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Text">
-      <UniqueIdentifier>{390fc19e-aa96-482f-a915-8e70584e6967}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Script">
-      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\World\Popup">
       <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
     </Filter>
@@ -447,9 +423,6 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
       <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject">
-      <UniqueIdentifier>{57d38245-a484-4631-8cb6-8d575b2d031c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -916,11 +889,14 @@
     <ClInclude Include="..\Public\MonsterTool.h">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterToolObject.h">
+      <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\LegionArm_Steel.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MonsterToolObject.h">
-      <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
+    <ClInclude Include="..\public\BossUnit.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1358,14 +1334,17 @@
     <ClCompile Include="..\private\LegionArm_Base.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MonsterToolObject.cpp">
+      <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MonsterTool.cpp">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LegionArm_Steel.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MonsterToolObject.cpp">
-      <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
+    <ClCompile Include="..\private\BossUnit.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
