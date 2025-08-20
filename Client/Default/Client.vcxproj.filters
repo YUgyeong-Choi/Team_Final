@@ -1072,9 +1072,6 @@
     <ClCompile Include="..\private\Static_UI.cpp">
       <Filter>02.GameObjects\99.UI\Static</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\StaticMesh.cpp">
-      <Filter>02.GameObjects\00.StaticMesh</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Dynamic_UI.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic</Filter>
     </ClCompile>
@@ -1366,6 +1363,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterToolObject.cpp">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticMesh.cpp">
+      <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

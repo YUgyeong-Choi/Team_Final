@@ -1,10 +1,10 @@
 [
     {
-        "Collision": true,
-        "ModelName": "SM_Cathedral_BrickWall_18",
+        "Collision": false,
+        "ModelName": "FloorA",
         "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_18.bin"
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorA.bin"
     },
     {
         "Collision": false,

@@ -53,6 +53,13 @@ namespace Client
 
 #pragma region YW
 	enum class COLLIDER_TYPE { NONE, CONVEX, TRIANGLE, END };
+	enum class LOD
+	{
+		LOD0 = 0,
+		LOD1,
+		LOD2,
+		END
+	};
 #pragma endregion
 
 #pragma region YG

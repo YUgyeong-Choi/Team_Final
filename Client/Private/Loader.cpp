@@ -1070,23 +1070,60 @@ HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 
 HRESULT CLoader::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
 {
-	//이미 프로토타입이존재하는 지확인
+	_matrix PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
 
-	if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) != nullptr /*&& bInstance == false*//*인스턴싱되는 녀석들은 무조건 다시만들어야해*//*버퍼를 추가하던가*/)
-	{
-		//MSG_BOX("이미 프로토타입이 존재함");
-		return S_OK;
-	}
+	// 파일 경로에서 디렉토리, 파일명, 확장자 분리
+	wstring wsBasePath = filesystem::path(pModelFilePath).parent_path();
+	wstring wsFilename = filesystem::path(pModelFilePath).stem();	// 확장자 뺀 파일명
+	wstring wsExtension = filesystem::path(pModelFilePath).extension();
 
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
+	// LOD0 모델 경로 생성
+	string strModelPathLod0 = (filesystem::path(wsBasePath) / filesystem::path(wsFilename + wsExtension)).string();
 
 	if (bInstance == false)
 	{
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
-			CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-			return E_FAIL;
+		// LOD1, LOD2 파일명 생성 (_Lod1, _Lod2 붙임)
+		wstring wsLod1Name = wsFilename + L"_Lod1" + wsExtension;
+		wstring wsLod2Name = wsFilename + L"_Lod2" + wsExtension;
+
+		// LOD1, LOD2 경로 생성
+		filesystem::path Lod1Path = filesystem::path(wsBasePath) / wsLod1Name;
+		filesystem::path Lod2Path = filesystem::path(wsBasePath) / wsLod2Name;
+		string strModelPathLod1 = Lod1Path.string();
+		string strModelPathLod2 = Lod2Path.string();
+
+		// LOD0 프로토타입 존재 여부 확인 후 없으면 로드
+		if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) == nullptr)
+		{
+			if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
+				CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod0.c_str(), PreTransformMatrix))))
+				return E_FAIL;
+		}
+
+		// LOD1 프로토타입 태그 생성 및 로드 (파일 존재하면)
+		wstring wsPrototypeTagLod1 = strPrototypeTag + L"_Lod1";
+		if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTagLod1) == nullptr)
+		{
+			if (filesystem::exists(strModelPathLod1))
+			{
+				if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, wsPrototypeTagLod1,
+					CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod1.c_str(), PreTransformMatrix))))
+					return S_OK; // 실패해도 무시
+			}
+		}
+
+		// LOD2 프로토타입 태그 생성 및 로드 (파일 존재하면)
+		wstring wsPrototypeTagLod2 = strPrototypeTag + L"_Lod2";
+		if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTagLod2) == nullptr)
+		{
+			if (filesystem::exists(strModelPathLod2))
+			{
+				if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, wsPrototypeTagLod2,
+					CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod2.c_str(), PreTransformMatrix))))
+					return S_OK; // 실패해도 무시
+			}
+		}
+
 	}
 	else
 	{
@@ -1352,7 +1389,7 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 		//LayerTag += StringToWString(ModelName);
 
 		StaticMeshDesc.iRender = 0;
-		StaticMeshDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
+		StaticMeshDesc.iLevelID = iLevelIndex;
 		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 		wstring wstrModelName = StringToWString(ModelName);
@@ -1396,7 +1433,7 @@ HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objec
 	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
 
 	StaticMeshInstanceDesc.iRender = 0;
-	StaticMeshInstanceDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
+	StaticMeshInstanceDesc.iLevelID = iLevelIndex;
 	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 	StaticMeshInstanceDesc.iLightShape = objects[0].value("LightShape", 0); //오브젝트중 하나 가져와서 라이트모양을 넣어주자.
