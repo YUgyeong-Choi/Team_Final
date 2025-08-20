@@ -22,12 +22,14 @@ HRESULT CButtler_Train::Initialize_Prototype()
 
 HRESULT CButtler_Train::Initialize(void* pArg)
 {
+	/* [ 데미지 설정 ] */
+	m_fDamage = 12.f;
+
 	if(FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
-
 
 	m_fDetectDist = 10.f;
 	m_fGroggyThreshold = 100;
@@ -41,7 +43,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
 	
-	return S_OK;
+	return S_OK; 
 }
 
 void CButtler_Train::Priority_Update(_float fTimeDelta)

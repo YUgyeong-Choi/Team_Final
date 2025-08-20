@@ -213,7 +213,7 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
+	pDesc.InitPos = _float3(-1.35f, 0.978f, 0.96f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");

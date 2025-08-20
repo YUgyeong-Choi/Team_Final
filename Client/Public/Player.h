@@ -90,6 +90,8 @@ private: /* [ 루트모션 활성화 ] */
 private: /* [ Actor 업데이트 ] */
 	void    Update_Collider_Actor();
 
+	virtual void ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -285,6 +287,7 @@ private: /* [ 현재 상태 ] */
 	_bool	bIsGuarding = { false };
 	_bool	bIsHit = { false };
 	_bool	bIsInvincible = { false };
+	_float	fIsInvincible = {};
 	_bool	m_bIsLockOn = { false };
 
 private: /* [ 현재 플레이어 레벨 ] */

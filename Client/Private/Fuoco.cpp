@@ -25,6 +25,8 @@ HRESULT CFuoco::Initialize_Prototype()
 
 HRESULT CFuoco::Initialize(void* pArg)
 {
+	/* [ 데미지 설정 ] */
+	m_fDamage = 15.f;
 
 	UNIT_DESC UnitDesc{};
 	UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;

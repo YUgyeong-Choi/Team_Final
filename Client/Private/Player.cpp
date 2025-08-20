@@ -305,6 +305,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
+		m_pTransformCom->SetbSpecialMoving();
 
 	}
 	
@@ -315,13 +316,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 	case eAnimCategory::NORMAL_ATTACKA:
 	{
-		// 이동초기화
-		if (!m_bMoveReset)
-		{
-			m_pTransformCom->SetbSpecialMoving();
-			m_bMoveReset = true;
-		}
-
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.2f;
 		_float  m_fDistance = 1.f;
@@ -352,13 +346,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::NORMAL_ATTACKB:
 	{
-		// 이동초기화
-		if (!m_bMoveReset)
-		{
-			m_pTransformCom->SetbSpecialMoving();
-			m_bMoveReset = true;
-		}
-
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.3f;
 		_float  m_fDistance = 1.f;
@@ -388,13 +375,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::STRONG_ATTACKA:
 	{
-		// 이동초기화
-		if (!m_bMoveReset)
-		{
-			m_pTransformCom->SetbSpecialMoving();
-			m_bMoveReset = true;
-		}
-
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.3f;
 		_float  m_fDistance = 1.f;
@@ -424,13 +404,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::STRONG_ATTACKB:
 	{
-		// 이동초기화
-		if (!m_bMoveReset)
-		{
-			m_pTransformCom->SetbSpecialMoving();
-			m_bMoveReset = true;
-		}
-
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.2f;
 		_float  m_fDistance = 1.f;
@@ -648,7 +621,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.5f;
-		_float  m_fDistance = 3.5f;
+		_float  m_fDistance = 2.5f;
 		
 		if (!m_bMove)
 		{
@@ -980,6 +953,38 @@ void CPlayer::Update_Collider_Actor()
 	// 무기 추가
 }
 
+void CPlayer::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	/* [ 들어온 데미지 계산 ] */
+	_float fDamage = 0.f;
+
+	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
+	if (!pUnit)
+	{
+		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
+		if (!pWeapon)
+		{
+			return;
+		}
+		else
+		{
+			fDamage = pWeapon->Get_CurrentDamage();
+		}
+	}
+	else
+	{
+		fDamage = pUnit->Get_CurrentDamage();
+	}
+
+	/* [ Hp 감소 ] */
+	m_fHP -= fDamage;
+	
+	if (m_fHP <= 0.f)
+		m_fHP = 0.f;
+
+	Callback_HP();
+}
+
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	/* [ 플레이어 피격 ] */
@@ -987,8 +992,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		return;
 
 	bIsHit = true;
-	m_fHP -= 10.f;
-	Callback_HP();
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)

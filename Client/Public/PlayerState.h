@@ -1129,20 +1129,17 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (0.8f < m_fStateTime)
-        {
-            if (MOUSE_DOWN(DIM::LBUTTON))
-                m_bAttackA = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
 
-            if (MOUSE_DOWN(DIM::RBUTTON))
-                m_bAttackB = true;
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
 
-            if (KEY_DOWN(DIK_LCONTROL))
-                m_bArmAttack = true;
+        if (KEY_DOWN(DIK_LCONTROL))
+            m_bArmAttack = true;
 
-            if (KEY_DOWN(DIK_F))
-                m_bSkill = true;
-        }
+        if (KEY_DOWN(DIK_F))
+            m_bSkill = true;
     }
 
     virtual void Exit() override
@@ -1241,22 +1238,14 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* 공격 애니메이션이 0.8 이상 진행되었을 때 */
-        if (0.8f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
-                if (KEY_DOWN(DIK_LCONTROL))
-					m_bArmAttack = true;
-                if (KEY_DOWN(DIK_F))
-                    m_bSkill = true;
-            }
-        }
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
+        if (KEY_DOWN(DIK_LCONTROL))
+			m_bArmAttack = true;
+        if (KEY_DOWN(DIK_F))
+            m_bSkill = true;
     }
 
     virtual void Exit() override
@@ -1357,22 +1346,14 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* 공격 애니메이션이 0.7 이상 진행되었을 때 */
-        if (0.7f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
-                if (KEY_DOWN(DIK_LCONTROL))
-                    m_bArmAttack = true;
-				if (KEY_DOWN(DIK_F))
-					m_bSkill = true;
-            }
-        }
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
+        if (KEY_DOWN(DIK_LCONTROL))
+            m_bArmAttack = true;
+		if (KEY_DOWN(DIK_F))
+			m_bSkill = true;
     }
 
     virtual void Exit() override
@@ -1475,22 +1456,14 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* 공격 애니메이션이 0.7 이상 진행되었을 때 */
-        if (0.7f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
-                if (KEY_DOWN(DIK_LCONTROL))
-                    m_bArmAttack = true;
-				if (KEY_DOWN(DIK_F))
-					m_bSkill = true;
-            }
-        }
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
+        if (KEY_DOWN(DIK_LCONTROL))
+            m_bArmAttack = true;
+		if (KEY_DOWN(DIK_F))
+			m_bSkill = true;
     }
 
     virtual void Exit() override
@@ -1980,17 +1953,14 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (0.5f < m_fStateTime)
-        {
-            if (MOUSE_DOWN(DIM::LBUTTON))
-                m_bAttackA = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
 
-            if (MOUSE_DOWN(DIM::RBUTTON))
-                m_bAttackB = true;
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
 
-            if (KEY_UP(DIK_LCONTROL))
-                m_bArmAttack = true;
-        }
+        if (KEY_UP(DIK_LCONTROL))
+            m_bArmAttack = true;
     }
 
     virtual void Exit() override
@@ -2085,18 +2055,11 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (0.5f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
 
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
-            }
-        }
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
     }
 
     virtual void Exit() override
@@ -2338,7 +2301,7 @@ public:
         m_fStateTime += fTimeDelta;
 
         //1. F를 다시 눌렀을 경우 최대 3콤보까지 진행이된다.
-        if (1.f < m_fStateTime && m_iSkillCount == 0 && IsManaEnough(100.f))
+        if (0.3f < m_fStateTime && m_iSkillCount == 0 && IsManaEnough(100.f))
         {
             if (KEY_DOWN(DIK_F))
             {
@@ -2353,7 +2316,7 @@ public:
             else if (MOUSE_DOWN(DIM::RBUTTON))
 				m_bAttackB = true;
         }
-        else if (2.5f < m_fStateTime && m_iSkillCount == 1 && IsManaEnough(100.f))
+        else if (1.f < m_fStateTime && m_iSkillCount == 1 && IsManaEnough(100.f))
         {
             if (KEY_DOWN(DIK_F))
             {
