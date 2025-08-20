@@ -63,6 +63,7 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
     else if(m_fRenderTime < 0.f)
     {
         m_fRenderTime = 0.f;
+        m_fDamage = 0.f;
     }
        
 }
@@ -103,8 +104,8 @@ void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
 
         _vector vScale = m_pTransformCom->Get_Scale();
 
-        _float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
-        _float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
+        m_fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
+        m_fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
 
 
         XMFLOAT4X4 world{};
@@ -112,13 +113,15 @@ void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
         world._22 = vScale.m128_f32[1] * g_iWinSizeY;
         world._33 = 1.f;
         world._44 = 1.f;
-        world._41 = fX - 0.5f * g_iWinSizeX;
-        world._42 = -fY + 0.5f * g_iWinSizeY;
+        world._41 = m_fX - 0.5f * g_iWinSizeX;
+        world._42 = -m_fY + 0.5f * g_iWinSizeY;
         world._43 = 0.f;
 
 
         //  가까운게 그려질 수 있도록
         m_fOffset = vDist * 0.001f;
+
+        
 
 
         XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(&world));
@@ -151,8 +154,15 @@ HRESULT CUI_MonsterHP_Bar::Render()
 
     // 직교 위치 구해서 받은 데미지 찍기
     
+    if (m_fDamage > 0.f)
+    {
+        int iDamage = floorf(m_fDamage);
+        _wstring strDamage = to_wstring(iDamage);
 
-
+        m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.035f , m_fY - g_iWinSizeY * 0.02f }, {1.f,1.f,1.f,1.f},0.f,{0.f,0.f},0.7f,0.f);
+    }
+        
+    
     return S_OK;
 }
 

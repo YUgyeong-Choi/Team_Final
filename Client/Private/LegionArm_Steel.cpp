@@ -28,6 +28,8 @@ HRESULT CLegionArm_Steel::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_szMeshID = L"LegionArm_Steel";
+	
+	m_isAttack = true;
 
 	return S_OK;
 }

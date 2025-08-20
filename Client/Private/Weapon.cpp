@@ -191,7 +191,7 @@ HRESULT CWeapon::Bind_Shader()
 HRESULT CWeapon::Ready_Components()
 {
 
-	if (m_szMeshID == L"")
+	if (m_szMeshID == nullptr)
 		return S_OK;
 
 	/* Com_Model */

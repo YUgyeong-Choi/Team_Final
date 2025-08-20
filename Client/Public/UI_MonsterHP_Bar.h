@@ -33,6 +33,8 @@ public:
 	void Set_RenderTime(_float fTime) { m_fRenderTime = fTime; }
 	void Set_MaxHp(_float iHp) { m_fMaxHP = iHp; }
 
+	void Add_Damage(_float fDamage) { m_fDamage += fDamage; }
+
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -57,7 +59,7 @@ private:
 	_float* m_pHP = { nullptr };
 	_bool* m_isGroggy = {nullptr};
 	_float  m_fMaxHP = {};
-	_int  m_iDamage = {};
+	_float  m_fDamage = {};
 
 	_float m_fRenderTime = { };
 

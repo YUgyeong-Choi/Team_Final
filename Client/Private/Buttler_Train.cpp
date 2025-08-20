@@ -241,6 +241,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
 
+		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() / 2.f);
+
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
 		if (nullptr != m_pHPBar)

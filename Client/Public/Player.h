@@ -134,7 +134,7 @@ private:
 	void ItemWeaponOFF(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
 
-	void Active_Weapon();
+	void Weapon_Collider_Active();
 	void Reset_Weapon();
 
 private: /* [ 락온 함수 ] */
@@ -272,9 +272,8 @@ private: /* [ 플레이어 변수 ] */
 	_float	m_fMaxErgo = { 100.f };
 	_float	m_fErgo = { 0.f };
 
-private: /* [ 무기 내구도 ] */
-	_float	m_fWeaponDurabilityMax = { 100.f };
-	_float	m_fWeaponDurability = { 100.f };
+private: /* [ 무기 내구도 ] - weapon 에 있음 */
+
 
 private: /* [ 리전 암 내구도 ] */
 	CLegionArm_Base* m_pLegionArm = { nullptr };
@@ -305,7 +304,10 @@ private: /* [ 벨트 슬롯 ] */
 	class CBelt* m_pBelt_Down = { nullptr };
 
 	_bool m_isSelectUpBelt = { true };
+	// 현재 빨간색으로 표시되고 있는 아이템
 	class CItem* m_pSelectItem = { nullptr };
+	// 현재 사용중인 아이템
+	class CItem* m_pUseItem = { nullptr };
 
 
 public:

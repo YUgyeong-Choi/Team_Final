@@ -98,6 +98,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Arm()))
 		return E_FAIL;
 
+
+	
+	m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
+	
+
 	return S_OK;
 }
 
@@ -1150,7 +1155,7 @@ HRESULT CPlayer::Ready_Arm()
 
 	m_pLegionArm = dynamic_cast<CLegionArm_Base*>(pGameObject);
 
-	if (m_pLegionArm->Get_Prototag().find(L"Steel") != _wstring::npos)
+	if (m_pLegionArm->Get_MeshName().find(L"Steel") != _wstring::npos)
 	{
 		m_pPhysXActorCom->Add_IngoreActors(dynamic_cast<CLegionArm_Steel*>(m_pLegionArm)->Get_Actor()->Get_Actor());
 		m_pControllerCom->Add_IngoreActors(dynamic_cast<CLegionArm_Steel*>(m_pLegionArm)->Get_Actor()->Get_Actor());
@@ -1374,7 +1379,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	}
 }
 
-void CPlayer::Active_Weapon()
+void CPlayer::Weapon_Collider_Active()
 {
 	if (nullptr == m_pWeapon)
 		return;
@@ -1476,22 +1481,7 @@ void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)
 		Callback_DownBelt();
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_R))
-	{
-		if (nullptr == m_pSelectItem)
-			return;
 
-		if (m_isSelectUpBelt)
-			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pSelectItem);
-		else
-			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pSelectItem);
-	}
-
-
-	if (m_pWeapon->GetbIsActive())
-		m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pWeapon);
-	if (!m_pWeapon->GetbIsActive())
-		m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
 
 	m_pBelt_Up->Priority_Update(fTimeDelta);
 	m_pBelt_Down->Priority_Update(fTimeDelta);
