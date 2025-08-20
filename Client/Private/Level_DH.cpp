@@ -277,7 +277,7 @@ HRESULT CLevel_DH::Load_StaticMesh(_uint iObjectCount, const json& objects, stri
 		LayerTag += StringToWString(ModelName);
 
 		StaticMeshDesc.iRender = 0;
-		StaticMeshDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
+		StaticMeshDesc.iLevelID = iLevelIndex;
 		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 		wstring wstrModelName = StringToWString(ModelName);
@@ -322,7 +322,7 @@ HRESULT CLevel_DH::Load_StaticMesh_Instance(_uint iObjectCount, const json& obje
 	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
 
 	StaticMeshInstanceDesc.iRender = 0;
-	StaticMeshInstanceDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
+	StaticMeshInstanceDesc.iLevelID = iLevelIndex;
 	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 	wstring wstrModelName = StringToWString(ModelName);

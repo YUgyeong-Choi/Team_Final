@@ -90,6 +90,7 @@ protected:
 	_uint				m_iRenderGroup = {};
 	_bool				m_isLoop = { false };
 	_float				m_fTimeAcc = {};
+	EFFECT_TYPE			m_eEffectType = { EFF_END };
 
 	// Colors
 	_float4				m_vColor = { 1.f, 1.f, 1.f, 1.f };
@@ -168,6 +169,8 @@ public:
 	HRESULT Ready_Textures_Prototype_Tool();
 
 	virtual HRESULT Ready_Effect_Deserialize(const json& j);
+
+	EFFECT_TYPE Get_EffectType() { return m_eEffectType; }
 
 public:
 	virtual CGameObject* Clone(void* pArg) PURE;

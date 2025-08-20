@@ -93,12 +93,29 @@ void CDoorMesh::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	m_bCanActive = false;
 }
 
+void CDoorMesh::Play_Sound()
+{
+	switch (m_eInteractType)
+	{
+	case Client::TUTORIALDOOR:
+		m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
+		break;
+	default:
+		break;
+	}
+}
+
 HRESULT CDoorMesh::Ready_Components(void* pArg)
 {
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
 		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysXTrigger"), reinterpret_cast<CComponent**>(&m_pPhysXTriggerCom))))
 		return E_FAIL;
+
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"),TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -166,4 +183,5 @@ void CDoorMesh::Free()
 	__super::Free();
 
 	Safe_Release(m_pPhysXTriggerCom);
+	Safe_Release(m_pSoundCom);
 }

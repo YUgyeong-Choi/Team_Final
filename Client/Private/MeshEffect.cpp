@@ -35,6 +35,7 @@ HRESULT CMeshEffect::Initialize(void* pArg)
 	//	if (FAILED(Ready_Components()))
 	//		return E_FAIL;
 	//}
+	m_eEffectType = EFF_MESH;
 	return S_OK;
 }
 
@@ -57,7 +58,8 @@ void CMeshEffect::Late_Update(_float fTimeDelta)
 	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
 
 	//m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
-
+	if (m_isActive == false)
+		return;
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
 
@@ -93,6 +95,12 @@ HRESULT CMeshEffect::Render()
 	}
 
 	return S_OK;
+}
+
+_float CMeshEffect::Ready_Death()
+{
+	m_isActive = false;
+	return 0.f;
 }
 
 HRESULT CMeshEffect::Ready_Components()

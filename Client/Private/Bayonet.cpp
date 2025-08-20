@@ -113,7 +113,7 @@ HRESULT CBayonet::Render()
 	__super::Render();
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
+	if (m_pGameInstance->Get_RenderCollider() && m_pPhysXActorCom->Get_ReadyForDebugDraw()) {
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif
@@ -211,13 +211,14 @@ HRESULT CBayonet::Ready_Actor()
 	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
+	
 	return S_OK;
 }
 
 HRESULT CBayonet::Ready_Effect()
 {
-	_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade");
-	_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
+	_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
+	_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_End");
 
 	CSwordTrailEffect::DESC desc = {};
 	desc.pInnerSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));

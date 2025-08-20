@@ -20,7 +20,6 @@ public:
 		const _tchar*	szMeshID;
 
 		LEVEL			m_eMeshLevelID;
-		_int			iRender = 0;
 
 		_tchar		szModelPrototypeTag[MAX_PATH] = { 0 };
 		_float4x4	WorldMatrix = _float4x4(
@@ -50,18 +49,13 @@ public:
 
 public:
 	LEVEL Get_LevelID() const { return m_eMeshLevelID; }
-	const _float3& Get_InitPos() const { return m_InitPos; }
 
 protected:
 	void Update_ColliderPos();
 
 protected: /* [ 초기화 변수 ] */
 	const _tchar*	m_szMeshID = { nullptr };
-	const _tchar*	m_szMeshFullID = { nullptr };
 	LEVEL			m_eMeshLevelID = { LEVEL::END };
-	LEVEL			m_eLevelLight = { LEVEL::END };
-	_float3			m_InitPos = {};
-	_int			m_iRender = {};
 	_bool			m_bDoOnce = {};
 protected:
 

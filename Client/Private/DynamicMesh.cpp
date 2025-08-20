@@ -28,8 +28,6 @@ HRESULT CDynamicMesh::Initialize(void* pArg)
 
 	m_szMeshID = StaicMeshDESC->szMeshID;
 
-	m_iRender = StaicMeshDESC->iRender;
-
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
 		return E_FAIL;
 
@@ -151,7 +149,6 @@ void CDynamicMesh::Update_ColliderPos()
 HRESULT CDynamicMesh::Ready_Components(void* pArg)
 {
 	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
-	m_szMeshFullID = StaicMeshDESC->szModelPrototypeTag;
 
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),

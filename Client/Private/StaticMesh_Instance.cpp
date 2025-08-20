@@ -28,8 +28,6 @@ HRESULT CStaticMesh_Instance::Initialize(void* pArg)
 
 	m_iNumInstance = InstanceDesc->iNumInstance;
 
-	m_eMeshLevelID = InstanceDesc->m_eMeshLevelID;
-
 	m_szMeshID = InstanceDesc->szMeshID;
 
 	m_iRender = InstanceDesc->iRender;
@@ -79,12 +77,13 @@ HRESULT CStaticMesh_Instance::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		m_fEmissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
+			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 		{
-			/* [ 렌더링을 생략해야할 때 ] */
-			if (m_mapVisibleLight.find(m_iLightShape) != m_mapVisibleLight.end())
-				continue;
+			return E_FAIL;
 		}
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
@@ -103,29 +102,7 @@ HRESULT CStaticMesh_Instance::Render()
 			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
 				return E_FAIL;
 
-
-
-			/* [ 이미시브 1차 필터 ] */
-
-			/*if (m_iLightShape == 9 || m_iLightShape == 6)
-				SetEmissive();*/
 		}
-
-		///* [ 이미시브 2차 필터 ] */
-
-		if (m_iLightShape == 1 && i == 1)
-			SetEmissive();
-		else if (m_iLightShape == 2 && i == 1)
-			SetEmissive();
-		else if (m_iLightShape == 8 && i == 1)
-			SetEmissive();
-		else
-		{
-			m_fEmissive = 0.f;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
-				return E_FAIL;
-		}
-		
 
 		m_pShaderCom->Begin(0);
 
@@ -171,9 +148,9 @@ HRESULT CStaticMesh_Instance::Ready_Components(void* pArg)
 	CMesh_Instance::MESHINSTANCE_DESC ComDesc = {};
 	ComDesc.iNumInstance = Desc->iNumInstance;
 	ComDesc.pInstanceMatrixs = Desc->pInstanceMatrixs;
-
+	
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), Desc->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
+	if (FAILED(__super::Add_Component(Desc->iLevelID, Desc->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom), &ComDesc)))
 		return E_FAIL;
 

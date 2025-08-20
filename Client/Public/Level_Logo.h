@@ -5,6 +5,7 @@
 
 NS_BEGIN(Engine)
 class CGameObject;
+class CSound_Core;
 NS_END
 
 NS_BEGIN(Client)
@@ -53,6 +54,8 @@ private:
 
 	// 이거는 나중에 빼기
 	class CUI_Guide* m_pGuide = { nullptr };
+private: /* [ 사운드 ] */
+	CSound_Core* m_pBGM = { nullptr };
 
 public:
 	static CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

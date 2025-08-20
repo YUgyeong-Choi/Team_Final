@@ -15,16 +15,6 @@ NS_BEGIN(Client)
 class CMapToolObject final : public CGameObject
 {
 	friend class CMapTool;
-	
-public:
-	enum class LOD
-	{
-		LOD0 = 0,
-		LOD1,
-		LOD2,
-		END
-	};
-
 public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{

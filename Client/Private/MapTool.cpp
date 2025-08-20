@@ -1528,6 +1528,12 @@ void CMapTool::SelectByClick()
 		m_pFocusObject = static_cast<CMapToolObject*>(Get_Focused_Object());
 		Safe_AddRef(m_pFocusObject);
 
+		if (m_pFocusObject == nullptr) //더미 메쉬 잘못 클릭했을 때 null나옴
+		{
+			m_iFocusIndex = -1;
+			return;
+		}
+
 		//다중선택 안함
 		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) == false)
 		{

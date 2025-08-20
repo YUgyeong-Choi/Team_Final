@@ -1,16 +1,79 @@
 [
     {
         "Collision": true,
-        "ModelName": "SM_Cathedral_BrickWall_18",
+        "ModelName": "SM_Exhibition_RoofMolding_01",
         "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_18.bin"
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_RoofMolding_01.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Gate_Arch_01",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_Arch_01.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Station_FStair_01",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FStair_01.bin"
     },
     {
         "Collision": false,
-        "ModelName": "SM_Interior_Table_10",
+        "ModelName": "SM_Station_MoldingA_02",
+        "NoInstancing": false,
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_MoldingA_02.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Station_StairA_01",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_StairA_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_StairAside_01",
+        "NoInstancing": false,
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_StairAside_01.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Station_Stair_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Stair_01.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Wall_MansionDoor02_A",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_MansionDoor02_A.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Wall_MansionDoor02_B",
         "NoInstancing": false,
         "ObjectCount": 4,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_10.bin"
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_MansionDoor02_B.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Wall_NobleStair02",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_NobleStair02.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "Tile_Marble_01",
+        "NoInstancing": false,
+        "ObjectCount": 16,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/Tile_Marble_01.bin"
     }
 ]

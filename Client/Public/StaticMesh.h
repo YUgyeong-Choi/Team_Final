@@ -19,8 +19,6 @@ public:
 	typedef struct tagStaticMeshDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		const _tchar*	szMeshID;
-
-		LEVEL			m_eMeshLevelID;
 		_int			iRender = 0;
 
 		_tchar		szModelPrototypeTag[MAX_PATH] = { 0 };
@@ -53,6 +51,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void LOD_Update();
+
 private:
 	HRESULT SetEmissive();
 
@@ -60,7 +61,6 @@ public:
 	HRESULT Add_Actor();
 
 public:
-	LEVEL Get_LevelID() const { return m_eMeshLevelID; }
 	const _float3& Get_InitPos() const { return m_InitPos; }
 
 private:
@@ -69,7 +69,6 @@ private:
 protected: /* [ 초기화 변수 ] */
 	const _tchar*	m_szMeshID = { nullptr };
 	const _tchar*	m_szMeshFullID = { nullptr };
-	LEVEL			m_eMeshLevelID = { LEVEL::END };
 	LEVEL			m_eLevelLight = { LEVEL::END };
 	_float3			m_InitPos = {};
 	_int			m_iRender = {};
@@ -89,10 +88,13 @@ protected:
 
 	unordered_set<_int> m_mapVisibleLight = { 1, 3, 4, 6 };
 
+private:
+	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태
+
 protected:
 
 	CShader*		m_pShaderCom = { nullptr };
-	CModel*			m_pModelCom = { nullptr };
+	CModel*			m_pModelCom[ENUM_CLASS(LOD::END)] = { nullptr };
 	CTexture*		m_pTextureCom = { nullptr };
 	CTexture*		m_pEmissiveCom = { nullptr };
 

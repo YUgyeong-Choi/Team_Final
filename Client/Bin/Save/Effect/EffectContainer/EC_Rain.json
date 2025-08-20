@@ -1,0 +1,138 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                10.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Duration": 455,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 455,
+            "FlipUV": false,
+            "Gravity": 100.0,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 97.77053833007813,
+            "LifeTime_Particle": [
+                1.0,
+                3.0
+            ],
+            "Local": 1,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Rain_Particle",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -90.0,
+                90.0
+            ],
+            "PType": 1,
+            "Pivot": [
+                -0.009999999776482582,
+                10.050000190734863,
+                0.019999999552965164
+            ],
+            "Range": [
+                100.0,
+                1.0,
+                100.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "Size": [
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "Speed": [
+                200.0,
+                200.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Crack_Mask_01_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 460
+}

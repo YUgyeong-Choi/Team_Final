@@ -29,6 +29,7 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual _float Ready_Death();
 
 protected:
 	CModel*			m_pModelCom = { nullptr };

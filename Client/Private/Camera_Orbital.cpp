@@ -343,7 +343,7 @@ void CCamera_Orbital::Update_LockOnCameraLook(_float fTimeDelta)
 	_float pitchOffset = XMConvertToRadians(10.f * t);
 
 	m_fPitch += pitchOffset;
-	m_fPitch = clamp(m_fPitch, XMConvertToRadians(-30.f), XMConvertToRadians(30.f));
+	m_fPitch = clamp(m_fPitch, XMConvertToRadians(-20.f), XMConvertToRadians(30.f));
 
 	Update_CameraPos(fTimeDelta);
 }

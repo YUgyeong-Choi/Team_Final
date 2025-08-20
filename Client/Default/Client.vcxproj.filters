@@ -238,9 +238,6 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler">
       <UniqueIdentifier>{6e387c41-6325-48c1-bb47-6fc072b83ccc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07.Effect\EffectContainer\Trail\Ri">
-      <UniqueIdentifier>{04d321e1-21ea-4da5-a8ed-f09e79edc950}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Police">
       <UniqueIdentifier>{f7b1672f-ca66-4fb8-b159-34e1261f8845}</UniqueIdentifier>
     </Filter>
@@ -406,6 +403,9 @@
     <Filter Include="02.GameObjects\99.UI\World\Fatal">
       <UniqueIdentifier>{f3d18659-20ad-4a08-8688-7e68b1eb696b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\World\Popup">
+      <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Base">
       <UniqueIdentifier>{77774670-8181-44d9-a3cd-ac18e732e9e8}</UniqueIdentifier>
     </Filter>
@@ -429,6 +429,9 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Popup">
       <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger">
+      <UniqueIdentifier>{53ddc91d-fc1d-47ec-8d5a-68f72fb6bc75}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -901,6 +904,18 @@
     <ClInclude Include="..\public\LegionArm_Steel.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BossUnit.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerNoMesh.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerMesh.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\UI_Manager.h">
       <Filter>02.GameObjects\99.UI\Manager</Filter>
     </ClInclude>
@@ -1053,9 +1068,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Static_UI.cpp">
       <Filter>02.GameObjects\99.UI\Static</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\StaticMesh.cpp">
-      <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Dynamic_UI.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic</Filter>
@@ -1348,6 +1360,21 @@
     </ClCompile>
     <ClCompile Include="..\private\LegionArm_Steel.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossUnit.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticMesh.cpp">
+      <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerNoMesh.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerMesh.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Manager.cpp">
       <Filter>02.GameObjects\99.UI\Manager</Filter>

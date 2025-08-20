@@ -408,7 +408,7 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 {
 	CStaticMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
-	Desc.m_eMeshLevelID = LEVEL::KRAT_HOTEL;
+	Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_HOTEL);
 
 	Desc.szMeshID = TEXT("SM_BuildingA_Lift_01");
 	lstrcpy(Desc.szName, TEXT("SM_BuildingA_Lift_01"));
@@ -420,7 +420,7 @@ HRESULT CLevel_KratHotel::Ready_Layer_StaticMesh(const _wstring strLayerTag)
 
 	CStaticMesh_Instance::STATICMESHINSTANCE_DESC InstanceDesc{};
 	InstanceDesc.iRender = 0;
-	InstanceDesc.m_eMeshLevelID = LEVEL::KRAT_HOTEL;
+	InstanceDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_HOTEL);
 
 	InstanceDesc.szMeshID = TEXT("SM_BuildingA_Lift_02");
 	lstrcpy(InstanceDesc.szName, TEXT("SM_BuildingA_Lift_02"));
