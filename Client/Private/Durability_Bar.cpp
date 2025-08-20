@@ -32,21 +32,28 @@ HRESULT CDurability_Bar::Initialize(void* pArg)
 
     }
 
-    m_pGameInstance->Register_PushCallback(TEXT("Weapon_Status"), [this](_wstring eventType, void* data) {
+    m_pGameInstance->Register_PushCallback(TEXT("Weapon_Status"), [this](const _wstring& eventType, void* data) {
         if (L"Durablity" == eventType)
         {
-            m_iDurablity = *static_cast<int*>(data);
+            m_fDurablity = *static_cast<_float*>(data);
 
 
         }
         else if (L"MaxDurablity" == eventType)
         {
-            m_iMaxDurablity = *static_cast<int*>(data);
+            m_fMaxDurablity = *static_cast<_float*>(data);
 
-            m_iDurablity = m_iMaxDurablity;
+            //m_iDurablity = m_iMaxDurablity;
+        }
+        else if (L"AddDurablity" == eventType)
+        {
+            m_fDurablity += *static_cast<_float*>(data);
+
+            if(m_fDurablity >= m_fMaxDurablity)
+                m_fDurablity = m_fMaxDurablity;
         }
 
-        m_fRatio = float(m_iDurablity) / m_iMaxDurablity;
+        m_fRatio = (m_fDurablity) / m_fMaxDurablity;
 
         });
 
@@ -104,6 +111,8 @@ HRESULT CDurability_Bar::Bind_ShaderResources()
 
     if (FAILED(m_pGradationCom->Bind_ShaderResource(m_pShaderCom, "g_GradationTexture", 0)))
         return E_FAIL;
+
+    m_fRatio = (m_fDurablity) / m_fMaxDurablity;
 
     if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fRatio, sizeof(_float))))
         return E_FAIL;

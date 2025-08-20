@@ -1259,6 +1259,26 @@ HRESULT CPlayer::Ready_UIParameters()
 	Callback_DownBelt();
 	Callback_UpBelt();
 
+	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), [this](_wstring eventName, void* data) {
+
+		if (eventName == L"AddHp")
+		{
+			_float* fRatio = static_cast<_float*>(data);
+
+			m_fHP = m_fHP + m_fMaxHP * (*fRatio);
+
+			if (m_fHP > m_fMaxHP)
+				m_fHP = m_fMaxHP;
+
+			Callback_HP();
+		}
+			
+		
+		});
+
+	//m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHP);
+
+
 	return S_OK;
 }
 
@@ -1587,7 +1607,7 @@ void CPlayer::Use_Item()
 	if (nullptr == m_pSelectItem)
 		return;
 
-	m_pSelectItem->Activate();
+	m_pSelectItem->Use();
 }
 
 void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)

@@ -111,7 +111,7 @@ HRESULT CLegionArm_Steel::Ready_Actor()
 	PxVec3 halfExtents = PxVec3(0.3f, 0.3f, 0.3f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	m_pActorCom->Set_ShapeFlag(true, false, true);
+	m_pActorCom->Set_ShapeFlag(false, false, false);
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON;

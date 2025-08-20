@@ -78,12 +78,12 @@ void CBelt::Add_Item(CItem* pItem, _int iIndex)
 	m_ViewItems.push_back(pItem);
 }
 
-void CBelt::Use_SelectItem()
+void CBelt::Use_SelectItem(_bool isActive)
 {
 	if (nullptr == m_pSelectItem)
 		return;
 
-	m_pSelectItem->Activate();
+	m_pSelectItem->Activate(isActive);
 
 }
 
