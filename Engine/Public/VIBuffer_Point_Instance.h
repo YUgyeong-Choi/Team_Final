@@ -56,6 +56,8 @@ public:
 	virtual void Spread(_float fTimeDelta, _bool bTool = false);
 
 	void Set_Loop(_bool isLoop) { m_tCBuffer.bIsLoop = isLoop; }
+	void Set_Center(const _float3& vCenter) { m_tCBuffer.vCenter = vCenter; }
+	void Set_SocketRotation(const _float4& vRot) { m_tCBuffer.vSocketRot = vRot; }
 
 
 private:	

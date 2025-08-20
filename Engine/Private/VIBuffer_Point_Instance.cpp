@@ -351,21 +351,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 
 #pragma region INSTANCEBUFFER
 	/* [ CS ] */
-	// 이거도 전부 컴퓨트셰이더cpp쪽으로 넘김
-	//m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
-	//m_VBInstanceDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	//m_VBInstanceDesc.Usage = D3D11_USAGE_DEFAULT;
-	//m_VBInstanceDesc.CPUAccessFlags = 0;
-	//m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
-	//m_VBInstanceDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	/**************************************************************************/
-	/* [ 기존 CPU 처리] */
-	//m_VBInstanceDesc.ByteWidth = m_iNumInstance * m_iVertexInstanceStride;
-	//m_VBInstanceDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	//m_VBInstanceDesc.Usage = D3D11_USAGE_DYNAMIC;
-	//m_VBInstanceDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//m_VBInstanceDesc.StructureByteStride = m_iVertexInstanceStride;
-	//m_VBInstanceDesc.MiscFlags = 0;
+	// 버퍼 생성용 정보들 전부 CS.cpp쪽으로 옮김
 
 	m_pParticleParamDesc = new PPDESC[m_iNumInstance];
 	ZeroMemory(m_pParticleParamDesc, sizeof(PPDESC) * m_iNumInstance);
@@ -389,6 +375,13 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 			m_pGameInstance->Compute_Random(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
 			m_pGameInstance->Compute_Random(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f),
 			1.f
+		);
+
+
+		m_pParticleParamDesc[i].vInitOffset = _float3(
+			m_pParticleParamDesc[i].vTranslation.x - pDesc->vCenter.x,
+			m_pParticleParamDesc[i].vTranslation.y - pDesc->vCenter.y,
+			m_pParticleParamDesc[i].vTranslation.z - pDesc->vCenter.z
 		);
 
 		m_pParticleParamDesc[i].vLifeTime = _float2(

@@ -1639,16 +1639,9 @@ void CPlayer::LateUpdate_Slot(_float fTimeDelta)
 
 void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 {
-	if (m_pGrinderEffect)
+	if (true == bActive)
 	{
-		if (bActive)
-			return;
-		m_pGrinderEffect->Set_Loop(bActive);
-		m_pGrinderEffect = nullptr;
-	}
-	else
-	{
-		if (true == bActive)
+		if (!m_pGrinderEffect)
 		{
 			//"Bn_L_ForeTwist"
 			//"Bip001-L-Forearm"
@@ -1659,12 +1652,21 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 
 			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TestGrinder_VStretch_wls_P2"), &desc));
+			m_pGrinderEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TestGrinder_VStretch_P2S1"), &desc));
 
 			if (m_pGrinderEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 		}
 	}
+	else
+	{
+		if (m_pGrinderEffect)
+		{
+			m_pGrinderEffect->End_Effect();
+			m_pGrinderEffect = nullptr;
+		}
+	}
+
 }
 
 void CPlayer::Movement(_float fTimeDelta)

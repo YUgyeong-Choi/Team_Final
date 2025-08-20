@@ -165,6 +165,8 @@ void CEffectContainer::End_Effect()
 	for (auto& pEffect : m_Effects)
 	{
 		_float fDeathTime = pEffect->Ready_Death();
+		//if (pEffect->Get_EffectType() == EFF_PARTICLE)
+		//	static_cast<CParticleEffect*>(pEffect)->Set_Loop(false);
 		if (m_fDeadInterval < fDeathTime)
 			m_fDeadInterval = fDeathTime;
 	}
