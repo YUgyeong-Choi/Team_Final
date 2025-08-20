@@ -54,7 +54,7 @@ void CGrinder::Update(_float fTimeDelta)
     }
     else
     {
-        m_fElapsedTime = 0;
+        m_fElapsedTime = 0.f;
     }
 }
 

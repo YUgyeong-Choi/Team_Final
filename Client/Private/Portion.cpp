@@ -43,7 +43,10 @@ void CPortion::Priority_Update(_float fTimeDelta)
 
 void CPortion::Update(_float fTimeDelta)
 {
-	m_fElapsedTime += fTimeDelta;
+	if(m_isActive)
+		m_fElapsedTime += fTimeDelta;
+	else
+		m_fElapsedTime = 0.f;
 
 	
 }
@@ -67,7 +70,6 @@ void CPortion::Activate(_bool isActive)
 		if (m_fElapsedTime > 0.5f)
 			Use();
 
-		m_fElapsedTime = 0.f;
 	}
 }
 

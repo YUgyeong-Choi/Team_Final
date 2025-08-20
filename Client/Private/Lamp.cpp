@@ -71,9 +71,10 @@ void CLamp::Priority_Update(_float fTimeDelta)
 void CLamp::Update(_float fTimeDelta)
 {
     // 
-
 	if (m_isActive)
 		m_fElapsedTime += fTimeDelta;
+	else
+		m_fElapsedTime = 0.f;
 
 }
 
