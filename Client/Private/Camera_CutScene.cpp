@@ -450,8 +450,6 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 				fPitch = LerpFloat(a.fPitch, b.fPitch, t);
 				fYaw = LerpFloat(a.fYaw, b.fYaw, t);
 				fDistance = LerpFloat(a.fDistance, b.fDistance, t);
-				fPitch = XMConvertToRadians(fPitch);
-				fYaw = XMConvertToRadians(fYaw);
 
 				_vector vtargetPos;
 				// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)

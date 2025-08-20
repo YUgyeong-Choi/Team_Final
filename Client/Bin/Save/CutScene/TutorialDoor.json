@@ -4,6 +4,802 @@
     "bEndBlend": false,
     "bStartBlend": false,
     "iEndFrame": 400,
+  "vecPosData": [
+    {
+      "interpPosition": 1,
+      "keyFrame": 40,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 42,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 44,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 46,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 48,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 50,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 52,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 54,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 56,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 58,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 60,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 62,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 64,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 66,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 68,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 70,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 72,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 74,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 76,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 78,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 80,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 82,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 84,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 86,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 88,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 90,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 92,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 94,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 96,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 98,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 100,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 102,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 104,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 106,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 108,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 110,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 112,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 114,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 116,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 118,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 120,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 122,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 124,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 126,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 128,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 130,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 132,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 134,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 136,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 138,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 140,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 142,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 144,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 146,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 148,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 150,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 152,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 154,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 156,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 158,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 160,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 162,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 164,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 166,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 168,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 170,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 172,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 174,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 176,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 178,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 180,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 182,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 184,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 186,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 188,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 1,
+      "keyFrame": 190,
+      "position": [
+        0.0,
+        -0.008,
+        0.0
+      ]
+    },
+    {
+      "interpPosition": 0,
+      "keyFrame": 192,
+      "position": [
+        0.0,
+        0.008,
+        0.0
+      ]
+    }
+  ],
+    "vecRotData": [
+        {
+            "interpRotation": 1,
+            "keyFrame": 225,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 230,
+            "rotation": [
+                -1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 235,
+            "rotation": [
+                1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 240,
+            "rotation": [
+                -1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 245,
+            "rotation": [
+                1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 250,
+            "rotation": [
+                -1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 255,
+            "rotation": [
+                1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 260,
+            "rotation": [
+                -1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 265,
+            "rotation": [
+                1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 270,
+            "rotation": [
+                -1.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 0,
+            "keyFrame": 275,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
     "vecTargetData": [
         {
             "distance": 3.0,

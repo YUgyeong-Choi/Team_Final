@@ -110,11 +110,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	//if (KEY_DOWN(DIK_J))
-	//	m_fTimeScale = 1.f;
-	//if (KEY_DOWN(DIK_K))
-	//	m_fTimeScale = 0.f;
-
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
@@ -1081,7 +1076,7 @@ HRESULT CPlayer::Ready_Weapon()
 	/* [ 무기 모델을 추가 ] */
 
 	CBayonet::BAYONET_DESC Desc{};
-	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.eMeshLevelID = static_cast<LEVEL>(m_pGameInstance->GetCurrentLevelIndex());
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };

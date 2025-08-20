@@ -335,7 +335,7 @@ HRESULT CYGTool::Render_CameraTool()
 
 	ImGui::SeparatorText("=====");
 
-	ImGui::Text("Current Frame: %d", m_iCurrentFrame);
+	ImGui::DragInt("Current Frame", &m_iCurrentFrame, 0, 1, m_iEndFrame);
 	if (m_iCurrentFrame < m_iEndFrame)
 	{
 		m_pSelectedKey = m_CameraSequence->GetKeyAtFrame(m_iCurrentFrame);
@@ -371,7 +371,7 @@ HRESULT CYGTool::Render_CameraTool()
 		{
 			// Offset Pos
 			XMFLOAT3 offSetPos = m_pSelectedKey->offSetPosition;
-			if (ImGui::DragFloat3("Offset Position", reinterpret_cast<float*>(&offSetPos), 0.1f))
+			if (ImGui::DragFloat3("Offset Position", reinterpret_cast<float*>(&offSetPos), 0.05f))
 				m_pSelectedKey->offSetPosition = offSetPos;
 
 			_int interpRot = static_cast<int>(m_pSelectedKey->interpOffSetPos);
@@ -724,7 +724,12 @@ HRESULT CYGTool::Render_CameraFrame()
 	ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiWindowFlags_HorizontalScrollbar);
 	_bool open = true;
 	ImGui::Begin("Camera Frame", &open, NULL);
-	ImGui::Text("CutScene Frames:");
+
+	if (auto* cut = CCamera_Manager::Get_Instance()->GetCutScene())
+	{
+		_int cur = cut->Get_CurrentFrame();       
+		ImGui::Text("CutScene Frame: %d", cur);
+	}
 
 	if (ImGui::CollapsingHeader("WorldPosRot Info"))
 	{
@@ -1034,6 +1039,13 @@ HRESULT CYGTool::Render_CameraFrame()
 		ImGui::SeparatorText("Edit Target Key Info");
 		ImGui::DragFloat("fPitch", &m_EditTargetKey.fPitch, 0.f, -89.0f, 89.0f);
 		ImGui::DragFloat("fYaw", &m_EditTargetKey.fYaw, 0.f, -180.0f, 180.0f);
+
+		if (ImGui::Button("Clone Pitch Yaw"))
+		{
+			m_EditTargetKey.fPitch = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch();
+			m_EditTargetKey.fYaw = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw();
+		}
+
 		ImGui::DragFloat("fDistance", &m_EditTargetKey.fDistance, 0.f, 1.0f, 179.0f);
 
 		const char* targetNames[] = { "None", "Layer_Player", "Layer_Boss1" };
@@ -1077,7 +1089,7 @@ HRESULT CYGTool::Render_CameraSequence()
 	SetNextWindowSize(ImVec2(1000, 400), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Camera Sequencer");
 
-	ImSequencer::Sequencer(
+ 	ImSequencer::Sequencer(
 		m_CameraSequence,
 		&m_iCurrentFrame,
 		&m_bExpanded,
