@@ -59,8 +59,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
-	m_pBGM->Set_Volume(0.f);
+	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
+	m_pBGM->Play();
 
 	return S_OK;
 }
@@ -94,7 +94,6 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 	if ((m_pStartVideo == nullptr || m_pStartVideo->Get_bDead()) && !m_bEndVideo)
 	{
 		m_pStartVideo = nullptr;
-		m_pBGM->Play();
 
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
@@ -578,6 +577,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 {
 	
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
+	eDesc.eType = CUI_Video::VIDEO_TYPE::INTRO;
 	eDesc.fOffset = 0.0f;
 	eDesc.fInterval = 0.016f;
 	eDesc.fSpeedPerSec = 1.f;

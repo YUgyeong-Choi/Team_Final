@@ -278,7 +278,11 @@ HRESULT CMainApp::Ready_Sound()
 {
 	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
+	m_pGameInstance->LoadSound("../Bin/Resources/Sound/SoundSpace/", false, true);
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Example/Player/", false, false, false);
+
+	/* [ 동영상용 사운드 ] */
+	ADD_SOUND_EX(Intro, "../Bin/Resources/Sound/Video/Intro/", false, false, false);
 
 	return S_OK;
 }

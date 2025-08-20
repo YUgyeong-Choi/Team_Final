@@ -20,6 +20,7 @@ HRESULT CUI_Video::Initialize(void* pArg)
 {
 	VIDEO_UI_DESC* pDesc = static_cast<VIDEO_UI_DESC*>(pArg);
 
+	m_eVideoType = pDesc->eType;
 	m_strVideoPath = pDesc->strVideoPath;
 	m_fPlaybackSpeed = pDesc->fSpeedPerSec;
 	m_fFrameInterval = pDesc->fInterval;
@@ -48,6 +49,8 @@ HRESULT CUI_Video::Initialize(void* pArg)
 
 	Safe_Delete_Array(pData);
 
+	if (SUCCEEDED(hr))
+		m_iDrawnFrameIndex = 0;
 	return S_OK;
 }
 
@@ -80,6 +83,7 @@ void CUI_Video::Update(_float fTimeDelta)
 			{
 				av_seek_frame(m_pFormatCtx, m_videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
 				avcodec_flush_buffers(m_pCodecCtx);
+				m_iDrawnFrameIndex = -1;
 				hr = ReadFrameToBuffer(&pData, &width, &height, &time);
 			}
 			else
@@ -99,6 +103,8 @@ void CUI_Video::Update(_float fTimeDelta)
 			if (SUCCEEDED(hr))
 			{
 				m_pVideoSRV = tempSRV;
+				++m_iDrawnFrameIndex;
+
 				Safe_Delete_Array(pData);
 			}
 
@@ -107,7 +113,8 @@ void CUI_Video::Update(_float fTimeDelta)
 		
 	}
 
-	
+	PlaySound();
+	printf("Video Frame Index: %d\n", m_iDrawnFrameIndex);
 }
 
 void CUI_Video::Late_Update(_float fTimeDelta)
@@ -336,6 +343,27 @@ void CUI_Video::Release_FFmpeg()
 	avformat_network_deinit();
 }
 
+void CUI_Video::PlaySound()
+{
+	switch (m_eVideoType)
+	{
+	case Client::CUI_Video::VIDEO_TYPE::INTRO:
+	{
+		if (m_iDrawnFrameIndex == 480)
+			m_pSoundCom->Play("VO_CIN_Scene_Ch01_Sophia_Opening_01");
+
+		if (m_iDrawnFrameIndex == 700)
+			m_pSoundCom->Play("SE_CIN_Intro");
+
+		if (m_iDrawnFrameIndex == 1130)
+			m_pSoundCom->Play("VO_CIN_Scene_Ch01_Sophia_Opening_02");
+		break;
+	}
+	default:
+		break;
+	}
+}
+
 HRESULT CUI_Video::Ready_Components()
 {
 
@@ -347,6 +375,22 @@ HRESULT CUI_Video::Ready_Components()
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
+
+	/* For.Com_Sound */
+	_wstring soundTag;
+	switch (m_eVideoType)
+	{
+	case Client::CUI_Video::VIDEO_TYPE::INTRO:
+		soundTag = TEXT("Prototype_Component_Sound_Intro");
+		if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), soundTag.c_str(),
+			TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+			return E_FAIL;
+		break;
+	default:
+		break;
+	}
+
+
 
 	return S_OK;
 }
@@ -389,6 +433,7 @@ void CUI_Video::Free()
 	
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTexture);
+	Safe_Release(m_pSoundCom);
 
 	Release_FFmpeg();
 	
