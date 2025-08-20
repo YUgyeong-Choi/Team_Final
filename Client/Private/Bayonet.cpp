@@ -54,8 +54,7 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	//m_iDurability = m_iMaxDurability;
 
-	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
-	m_pGameInstance->Notify(L"Weapon_Status", L"MaxDurablity", &m_fMaxDurability);
+
 
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
@@ -74,10 +73,12 @@ HRESULT CBayonet::Initialize(void* pArg)
 				// 빛나는 효과 잠깐 추가...
 			}
 				
-			m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
 		}
 
 		});
+
+	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
+	m_pGameInstance->Notify(L"Weapon_Status", L"MaxDurablity", &m_fMaxDurability);
 
 
 	m_iHandleIndex = m_pModelCom->Find_BoneIndex("BN_Handle");
@@ -157,6 +158,18 @@ void CBayonet::Update_Collider()
 
 }
 
+void CBayonet::SetisAttack(_bool isAttack)
+{
+	if (isAttack)
+	{
+		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+	}
+	else
+	{
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+	}
+}
+
 
 
 HRESULT CBayonet::Ready_Components()
@@ -190,7 +203,7 @@ HRESULT CBayonet::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON; 
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | FILTER_MONSTERWEAPON; // 일단 보류
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY; // 일단 보류
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);

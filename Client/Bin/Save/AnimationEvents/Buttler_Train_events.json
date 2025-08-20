@@ -18,11 +18,11 @@
                 },
                 {
                     "EventName": "AttackOn",
-                    "Time": 2.0
+                    "Time": 50.0
                 },
                 {
                     "EventName": "AttackOff",
-                    "Time": 3.0
+                    "Time": 120.0
                 }
             ],
             "IsLoop": false,
@@ -50,11 +50,11 @@
                 },
                 {
                     "EventName": "AttackOn",
-                    "Time": 1.0
+                    "Time": 50.0
                 },
                 {
                     "EventName": "AttackOff",
-                    "Time": 3.0
+                    "Time": 80.0
                 }
             ],
             "IsLoop": false,

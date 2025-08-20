@@ -80,7 +80,7 @@ public: /* [ 활성화 , 비활성화 ] */
 
 	void Clear_CollisionObj() { m_CollisonObjects.clear(); }
 
-	void Calc_Durability(_int iDelta);
+	void Calc_Durability(_float fDelta);
 
 	_bool Find_CollisonObj(CGameObject* pObj);
 	void Add_CollisonObj(CGameObject* pObj);

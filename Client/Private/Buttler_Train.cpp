@@ -226,8 +226,6 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 	{
 		auto pWeapon = static_cast<CWeapon*>(pOther);
 
-		if (false == pWeapon->GetisAttack())
-			return;
 
 		if (pWeapon->Find_CollisonObj(this))
 		{
@@ -235,7 +233,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		}
 
 		pWeapon->Add_CollisonObj(this);
-		pWeapon->Calc_Durability(3);
+		pWeapon->Calc_Durability(3.f);
 
 		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
 

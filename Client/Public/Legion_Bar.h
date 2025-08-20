@@ -43,8 +43,8 @@ private:
 	CTexture* m_pGradationCom = { nullptr };
 
 private:
-	_int m_iLegion = {};
-	_int m_iMaxLegion = {};
+	_float m_fLegion = {};
+	_float m_fMaxLegion = {};
 	_float m_fRatio = { 0.6f };
 
 public:

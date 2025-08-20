@@ -147,6 +147,18 @@ void CWeapon_Monster::Collider_Off()
 	m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 }
 
+void CWeapon_Monster::SetisAttack(_bool isAttack)
+{
+	if (isAttack)
+	{
+		m_pPhysXActorCom->Set_ShapeFlag(false, true, true);
+	}
+	else
+	{
+		Collider_Off();
+	}
+}
+
 HRESULT CWeapon_Monster::Ready_Components()
 {
 	/* [ 따로 추가할 컴포넌트가 있습니까? ] */
@@ -177,7 +189,7 @@ HRESULT CWeapon_Monster::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; 
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; 
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
@@ -190,7 +202,18 @@ HRESULT CWeapon_Monster::Ready_Actor()
 
 void CWeapon_Monster::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	
+	if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		//
+		static_cast<CUnit*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
+	}
+	else if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
+	{
+		//static_cast<CWeapon*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
+
+		// 상대 무기가 가드 상태면? 림라이트 이런거??
+
+	}
 }
 
 void CWeapon_Monster::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -207,9 +230,7 @@ void CWeapon_Monster::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CWeapon_Monster::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	if (!m_isAttack)
-		return;
-
+	
 
 	if (eColliderType == COLLIDERTYPE::PLAYER)
 	{
@@ -219,10 +240,12 @@ void CWeapon_Monster::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 	else if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
 	{
 		//static_cast<CWeapon*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
-		
+
 		// 상대 무기가 가드 상태면? 림라이트 이런거??
-		
+
 	}
+	
+
 
 }
 

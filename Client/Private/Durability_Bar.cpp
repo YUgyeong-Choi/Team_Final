@@ -112,6 +112,8 @@ HRESULT CDurability_Bar::Bind_ShaderResources()
     if (FAILED(m_pGradationCom->Bind_ShaderResource(m_pShaderCom, "g_GradationTexture", 0)))
         return E_FAIL;
 
+    m_fRatio = (m_fDurablity) / m_fMaxDurablity;
+
     if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fRatio, sizeof(_float))))
         return E_FAIL;
 
