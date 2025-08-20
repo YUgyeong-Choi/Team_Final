@@ -130,7 +130,7 @@ HRESULT CParticleEffect::Bind_ShaderResources()
 {
 	if (m_pSocketMatrix != nullptr)
 	{
-		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pSocketMatrix)))
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
 			return E_FAIL;
 	}
 	else

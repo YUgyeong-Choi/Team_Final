@@ -111,13 +111,6 @@ void CEffectContainer::Update(_float fTimeDelta)
 		matSocket = XMLoadFloat4x4(m_pSocketMatrix);
 		for (_uint i = 0; i < 3; i++)
 			matSocket.r[i] = XMVector3Normalize(matSocket.r[i]);
-		_vector trans, scale, rot;
-
-		XMMatrixDecompose(&scale, &rot, &trans, matSocket);
-
-		rot = XMQuaternionNormalize(rot);
-
-		matSocket = XMMatrixAffineTransformation(scale, XMVectorSet(0.f, 0.f, 0.f, 1.f), rot, trans);
 	}
 
 	if (m_pParentMatrix != nullptr)
