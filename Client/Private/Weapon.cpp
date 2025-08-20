@@ -65,9 +65,9 @@ void CWeapon::Update(_float fTimeDelta)
 	if (!m_bIsActive)
 		return;
 
-	/* [ 애니메이션 업데이트 ] */
-	if (m_pAnimator)
-		m_pAnimator->Update(fTimeDelta);
+	///* [ 애니메이션 업데이트 ] */
+	//if (m_pAnimator)
+	//	m_pAnimator->Update(fTimeDelta);
 	
 	if (m_pModelCom)
 		m_pModelCom->Update_Bones();

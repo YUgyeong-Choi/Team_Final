@@ -952,7 +952,7 @@ public:
             if (!m_bDoOnce)
             {
                 m_pOwner->m_bWeaponEquipped = true;
-                m_pOwner->m_pWeapon->SetbIsActive(true);
+              //  m_pOwner->m_pWeapon->SetbIsActive(true);
 				m_bDoOnce = true;
             }
         }
@@ -961,7 +961,7 @@ public:
             if (!m_bDoOnce)
             {
                 m_pOwner->m_bWeaponEquipped = false;
-                m_pOwner->m_pWeapon->SetbIsActive(false);
+               // m_pOwner->m_pWeapon->SetbIsActive(false);
                 m_bDoOnce = true;
             }
         }

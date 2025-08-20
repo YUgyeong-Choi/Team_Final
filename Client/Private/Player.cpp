@@ -896,6 +896,20 @@ void CPlayer::Register_Events()
 				m_pWeapon->Set_WeaponTrail_Active(false);
 			}
 		});
+	m_pAnimator->RegisterEventListener("EquipWeapon", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetbIsActive(true);
+			}
+		});
+	m_pAnimator->RegisterEventListener("PutWeapon", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetbIsActive(false);
+			}
+		});
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
