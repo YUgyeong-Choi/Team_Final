@@ -94,7 +94,7 @@ HRESULT CWeapon_Monster::Render()
 
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
+	if (m_pGameInstance->Get_RenderCollider() && m_pPhysXActorCom->Get_ReadyForDebugDraw()) {
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif

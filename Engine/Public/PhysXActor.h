@@ -35,7 +35,7 @@ public:
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
     void DebugRender(_fmatrix view, _cmatrix proj, PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds, _float offSet = 0.f);
     void DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox = false, PxVec3 hitPos = { 0.f, 0.f, 0.f });
-
+	_bool Get_ReadyForDebugDraw() const { return m_bReadyForDebugDraw; }
 protected:
     list<DEBUGRAY_DATA> m_RenderRay;
     _vector m_vRenderColor;
@@ -57,6 +57,7 @@ protected:
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
     BasicEffect* m_pEffect = { nullptr };
     ID3D11InputLayout* m_pInputLayout = { nullptr };
+	_bool m_bReadyForDebugDraw = { false };
 protected:
     HRESULT ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 protected:

@@ -658,7 +658,6 @@ HRESULT CLevel_YG::Ready_OctoTree()
 HRESULT CLevel_YG::Ready_Interact()
 {
 	CDoorMesh::DOORMESH_DESC Desc{};
-	Desc.iRender = 0;
 	Desc.m_eMeshLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));

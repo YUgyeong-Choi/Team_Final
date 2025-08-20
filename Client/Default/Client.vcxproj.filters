@@ -421,6 +421,12 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
       <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject">
+      <UniqueIdentifier>{57d38245-a484-4631-8cb6-8d575b2d031c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger">
+      <UniqueIdentifier>{53ddc91d-fc1d-47ec-8d5a-68f72fb6bc75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -895,6 +901,15 @@
     <ClInclude Include="..\public\BossUnit.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerBox.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerNoMesh.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerMesh.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1342,6 +1357,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\StaticMesh.cpp">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerBox.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerNoMesh.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerMesh.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

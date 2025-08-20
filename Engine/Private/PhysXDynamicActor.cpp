@@ -84,6 +84,7 @@ void CPhysXDynamicActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool 
 	m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation); // OnEnter, OnStay, OnExit 활성화
 	m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bTrigger); //OnTriger 활성화
 	m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bQuery); // Ray충돌 활성화 
+	m_bReadyForDebugDraw = bSimulation || bTrigger;
 }
 
 void CPhysXDynamicActor::Set_SimulationFilterData(PxFilterData _data)

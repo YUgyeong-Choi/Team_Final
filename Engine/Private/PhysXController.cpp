@@ -100,6 +100,7 @@ void CPhysXController::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQ
             pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation);
             pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bTrigger);
             pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bQuery);
+            m_bReadyForDebugDraw = bSimulation || bTrigger;
         }
     }
 }

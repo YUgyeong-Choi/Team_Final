@@ -59,8 +59,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("LiesOfP");
-	m_pBGM->Set_Volume(0.f);
+	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
+	m_pBGM->Play();
 
 	return S_OK;
 }
@@ -94,7 +94,6 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 	if ((m_pStartVideo == nullptr || m_pStartVideo->Get_bDead()) && !m_bEndVideo)
 	{
 		m_pStartVideo = nullptr;
-		m_pBGM->Play();
 
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
@@ -107,7 +106,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
 	if (nullptr != m_pStartVideo)
 		return;
-
 
 	if (KEY_DOWN(DIK_U))
 		m_pGameInstance->Set_GameTimeScale(1.f);
@@ -199,9 +197,9 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	if (FAILED(Ready_Monster()))
 		return E_FAIL;
 
-	//// 문 같이 상호작용 하는 것들
-	//if (FAILED(Ready_Interact()))
-	//	return E_FAIL;
+	// 문 같이 상호작용 하는 것들
+	if (FAILED(Ready_Interact()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -579,6 +577,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 {
 	
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
+	eDesc.eType = CUI_Video::VIDEO_TYPE::INTRO;
 	eDesc.fOffset = 0.0f;
 	eDesc.fInterval = 0.016f;
 	eDesc.fSpeedPerSec = 1.f;
@@ -713,7 +712,6 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 HRESULT CLevel_KratCentralStation::Ready_Interact()
 {
 	CDoorMesh::DOORMESH_DESC Desc{};
-	Desc.iRender = 0;
 	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
