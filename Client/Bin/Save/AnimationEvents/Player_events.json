@@ -626,6 +626,12 @@
         {
             "ClipName": "AS_Pino_T_EquipmentWeapon",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "EquipWeapon",
+                    "Time": 18.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -878,6 +884,12 @@
         {
             "ClipName": "AS_Pino_T_PutWeapon",
             "Duration": 84.0,
+            "Events": [
+                {
+                    "EventName": "PutWeapon",
+                    "Time": 36.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -1196,6 +1208,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_NA2",
             "Duration": 147.0,
+            "Events": [
+                {
+                    "EventName": "OnSwordTrail",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "OffSwordTrail",
+                    "Time": 71.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 80.0
@@ -1310,6 +1332,16 @@
         {
             "ClipName": "AS_Pino_T_CrystalSword_FCA",
             "Duration": 160.0,
+            "Events": [
+                {
+                    "EventName": "OnSwordTrail",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "OffSwordTrail",
+                    "Time": 46.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 80.0

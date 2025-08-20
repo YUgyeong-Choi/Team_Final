@@ -185,7 +185,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	{
 		//m_fHP -= 10.f;
 		//Callback_HP();
-		m_pAnimator->SetTrigger("Hited");
+
+		m_pAnimator->SetTrigger("Knockback");
 	}
 
 
@@ -882,6 +883,20 @@ void CPlayer::Register_Events()
 			{
 				m_pWeapon->SetisAttack(true);
 				m_pWeapon->Clear_CollisionObj();
+			}
+		});
+	m_pAnimator->RegisterEventListener("EquipWeapon", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetbIsActive(true);
+			}
+		});
+	m_pAnimator->RegisterEventListener("PutWeapon", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetbIsActive(false);
 			}
 		});
 }

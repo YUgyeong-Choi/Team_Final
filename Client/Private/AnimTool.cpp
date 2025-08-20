@@ -2813,7 +2813,7 @@ HRESULT CAnimTool::Register_Objects()
 	//pDesc.fSpeedPerSec = 1.f;
 	pPlayerDesc->fSpeedPerSec = 5.f;
 	pPlayerDesc->fRotationPerSec = XMConvertToRadians(600.0f);
-	pPlayerDesc->eMeshLevelID = LEVEL::STATIC;
+	pPlayerDesc->eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	pPlayerDesc->InitPos = _float3(0.f, 0.f, 0.f);
 	pPlayerDesc->InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pPlayerDesc->szName, TEXT("Player"));
