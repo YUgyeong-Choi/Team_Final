@@ -119,17 +119,17 @@ HRESULT CYGCapsule::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGCapsule::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGCapsule::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGCapsule 충돌 시작!\n");
 
 }
 
-void CYGCapsule::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGCapsule::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGCapsule::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGCapsule::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGCapsule 충돌 종료!\n");
 

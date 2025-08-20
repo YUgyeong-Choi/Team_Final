@@ -154,16 +154,16 @@ HRESULT CYGDynamicGib::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGDynamicGib::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGDynamicGib::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGDynamicGib 충돌 시작!\n");
 }
 
-void CYGDynamicGib::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGDynamicGib::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGDynamicGib::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGDynamicGib::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGDynamicGib 충돌 종료!\n");
 }

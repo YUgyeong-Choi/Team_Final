@@ -73,15 +73,15 @@ HRESULT CElite_Police::Render()
 	return S_OK;
 }
 
-void CElite_Police::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CElite_Police::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CElite_Police::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CElite_Police::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CElite_Police::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CElite_Police::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 

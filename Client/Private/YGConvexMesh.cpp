@@ -114,17 +114,17 @@ HRESULT CYGConvexMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGConvexMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGConvexMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGConvex 충돌 시작!\n");
 
 }
 
-void CYGConvexMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGConvexMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGConvexMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGConvexMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGConvex 충돌 종료!\n");
 

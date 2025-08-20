@@ -25,9 +25,9 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 
 	/* Ray로 인항 충돌(HitPos& HitNormal) */
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);

@@ -1015,7 +1015,7 @@ void CPlayer::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	Callback_HP();
 }
 
-void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	/* [ 플레이어 피격 ] */
 	if (bIsInvincible)
@@ -1023,13 +1023,16 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	bIsHit = true;
 	ReceiveDamage(pOther, eColliderType);
+
+	//printf("HitPos: %f, %f, %f\n", XMVectorGetX(HitPos), XMVectorGetY(HitPos), XMVectorGetZ(HitPos));
+	//printf("HitNormal: %f, %f, %f\n", XMVectorGetX(HitNormal), XMVectorGetY(HitNormal), XMVectorGetZ(HitNormal));
 }
 
-void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CPlayer::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CPlayer::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 

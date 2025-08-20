@@ -52,9 +52,9 @@ private:
 	void SetCascadeShadow();
 
 
-	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
-	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
-	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
 
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 public:

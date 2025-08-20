@@ -95,19 +95,19 @@ HRESULT CMonster_Test::Render()
     return S_OK;
 }
 
-void CMonster_Test::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CMonster_Test::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	m_pAnimator->SetBool("Detect", true);
 	printf("몬스터 충돌됨\n");
 }
 
 
-void CMonster_Test::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CMonster_Test::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	//printf("몬스터 충돌중\n");
 }
 
-void CMonster_Test::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CMonster_Test::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("몬스터 충돌 나감\n");
 }

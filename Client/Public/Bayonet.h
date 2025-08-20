@@ -43,9 +43,9 @@ protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Effect();
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
-	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 
 	/* Ray로 인항 충돌(HitPos& HitNormal) */
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);

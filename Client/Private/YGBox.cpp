@@ -106,17 +106,17 @@ HRESULT CYGBox::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGBox::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGBox::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGBox 충돌 시작!\n");
 
 }
 
-void CYGBox::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGBox::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGBox::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGBox::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGBox 충돌 종료!\n");
 

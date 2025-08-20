@@ -169,15 +169,15 @@ HRESULT CMonster_Base::Render()
 	return S_OK;
 }
 
-void CMonster_Base::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CMonster_Base::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CMonster_Base::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CMonster_Base::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CMonster_Base::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CMonster_Base::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 

@@ -140,17 +140,17 @@ HRESULT CYGController::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGController::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGController::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 
 	printf("CYGController 충돌 시작!\n");
 }
 
-void CYGController::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGController::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGController::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGController::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("CYGController 충돌 종료!\n");
 }

@@ -43,15 +43,15 @@ HRESULT CFireBall::Render()
     return __super::Render();
 }
 
-void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CFireBall::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CFireBall::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 

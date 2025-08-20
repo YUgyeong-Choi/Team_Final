@@ -29,30 +29,30 @@ void CPhysXActor::Set_ColliderType(COLLIDERTYPE eColliderType)
 
 }
 
-void CPhysXActor::On_Enter(CPhysXActor* pOther)
+void CPhysXActor::On_Enter(CPhysXActor* pOther, PxVec3 HitPos, PxVec3 HitNormal)
 {
     if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionEnter(m_pOwner, m_eColliderType);
+        pOther->Get_Owner()->On_CollisionEnter(m_pOwner, m_eColliderType, PxVec3ToVector(HitPos), PxVec3ToVector(HitNormal));
 #ifdef _DEBUG
         m_vRenderColor = Colors::Red;
 #endif
     }
 }
 
-void CPhysXActor::On_Stay(CPhysXActor* pOther)
+void CPhysXActor::On_Stay(CPhysXActor* pOther, PxVec3 HitPos, PxVec3 HitNormal)
 {
     if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionStay(m_pOwner, m_eColliderType);
+        pOther->Get_Owner()->On_CollisionStay(m_pOwner, m_eColliderType, PxVec3ToVector(HitPos), PxVec3ToVector(HitNormal));
     }
 }
 
-void CPhysXActor::On_Exit(CPhysXActor* pOther)
+void CPhysXActor::On_Exit(CPhysXActor* pOther, PxVec3 HitPos, PxVec3 HitNormal)
 {
     if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
-        pOther->Get_Owner()->On_CollisionExit(m_pOwner, m_eColliderType);
+        pOther->Get_Owner()->On_CollisionExit(m_pOwner, m_eColliderType, PxVec3ToVector(HitPos), PxVec3ToVector(HitNormal));
 #ifdef _DEBUG
         Set_RenderColor();
 #endif

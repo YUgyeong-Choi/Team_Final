@@ -112,17 +112,17 @@ HRESULT CYGFloor::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGFloor::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGFloor::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGFloor 충돌 시작!\n");
 
 }
 
-void CYGFloor::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGFloor::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGFloor::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGFloor::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGFloor 충돌 종료!\n");
 

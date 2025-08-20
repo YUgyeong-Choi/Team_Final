@@ -153,15 +153,15 @@ HRESULT CWego::Render()
 }
 
 
-void CWego::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CWego::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CWego::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CWego::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CWego::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CWego::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 

@@ -15,44 +15,70 @@ public:
     // 충돌이 발생할 때 자동 호출됨
     void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override
     {
-        if (g_bSceneChanging)
-            return;
+        if (g_bSceneChanging) return;
 
-        void* userDataA = pairHeader.actors[0]->userData;
-        void* userDataB = pairHeader.actors[1]->userData;
 
-        CPhysXActor* actorA = static_cast<CPhysXActor*>(userDataA);
-        CPhysXActor* actorB = static_cast<CPhysXActor*>(userDataB);
+        auto* actorA = static_cast<CPhysXActor*>(pairHeader.actors[0]->userData);
+        auto* actorB = static_cast<CPhysXActor*>(pairHeader.actors[1]->userData);
 
         for (PxU32 i = 0; i < nbPairs; ++i)
         {
             const PxContactPair& cp = pairs[i];
 
+            // 접촉점 추출
+            PxContactPairPoint pts[64];
+            PxU32 count = cp.extractContacts(pts, PX_ARRAY_SIZE(pts));
+
+            // 대표 접촉점 선택: separation이 가장 작은(=가장 깊이 파고든) 점
+            bool hasPoint = false;
+            PxContactPairPoint best{};
+            float bestSep = FLT_MAX; // (더 작은 값이 "더 깊이"여기선 음수가 작다)
+
+            for (PxU32 c = 0; c < count; ++c)
+            {
+                const auto& p = pts[c];
+                if (!hasPoint || p.separation < bestSep) {
+                    best = p;
+                    bestSep = p.separation;
+                    hasPoint = true;
+                }
+            }
+
+            // 이벤트별로 콜백 호출
             if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
             {
-                if (actorA)
-                    actorA->On_Enter(actorB);
-
-                if (actorB)
-                    actorB->On_Enter(actorA);
+                if (hasPoint) {
+                    if (actorA) actorA->On_Enter(actorB, best.position, best.normal /*, best.separation*/);
+                    if (actorB) actorB->On_Enter(actorA, best.position, -best.normal /* 반대쪽 노멀 */ /*, best.separation*/);
+                }
+                else {
+                    if (actorA) actorA->On_Enter(actorB);
+                    if (actorB) actorB->On_Enter(actorA);
+                }
             }
 
             if (cp.events & PxPairFlag::eNOTIFY_TOUCH_PERSISTS)
             {
-                if (actorA)
-                    actorA->On_Stay(actorB);
-
-                if (actorB)
-                    actorB->On_Stay(actorA);
+                if (hasPoint) {
+                    if (actorA) actorA->On_Stay(actorB, best.position, best.normal /*, best.separation*/);
+                    if (actorB) actorB->On_Stay(actorA, best.position, -best.normal /*, best.separation*/);
+                }
+                else {
+                    if (actorA) actorA->On_Stay(actorB);
+                    if (actorB) actorB->On_Stay(actorA);
+                }
             }
 
             if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST)
             {
-                if (actorA)
-                    actorA->On_Exit(actorB);
-
-                if (actorB)
-                    actorB->On_Exit(actorA);
+                if (hasPoint) {
+                    if (actorA) actorA->On_Exit(actorB, best.position, best.normal /*, best.separation*/);
+                    if (actorB) actorB->On_Exit(actorA, best.position, -best.normal /*, best.separation*/);
+                }
+                else {
+                    if (actorA) actorA->On_Exit(actorB);
+                    if (actorB) actorB->On_Exit(actorA);
+                }
             }
         }
     }

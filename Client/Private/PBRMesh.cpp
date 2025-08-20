@@ -163,16 +163,16 @@ void CPBRMesh::SetCascadeShadow()
 		m_eShadow = SHADOW::SHADOWC;
 }
 
-void CPBRMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CPBRMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("CPBRMesh 충돌 시작!\n");
 }
 
-void CPBRMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CPBRMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CPBRMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CPBRMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("CPBRMesh 충돌 종료!\n");
 }

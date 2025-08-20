@@ -1229,7 +1229,7 @@ _bool CFuoco::CheckConditionFlameField()
 }
 
 
-void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	if (pOther)
 	{
@@ -1249,11 +1249,11 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	}
 }
 
-void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	if (pOther)
 	{

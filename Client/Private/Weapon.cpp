@@ -210,15 +210,15 @@ HRESULT CWeapon::Ready_Components()
 	return S_OK;
 }
 
-void CWeapon::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CWeapon::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CWeapon::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CWeapon::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CWeapon::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CWeapon::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 

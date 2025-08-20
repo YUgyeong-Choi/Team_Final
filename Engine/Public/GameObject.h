@@ -37,9 +37,9 @@ public:
 	void Compute_ViewZ(_vector pCamPos, const _vector* pTargetPos);
 	AABBBOX GetWorldAABB() const;
 public:
-	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
-	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
-	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) {}
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) {}
+	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) {}
 
 	// Ray로 인항 충돌을 하면 On_Hit를 호출함 (HitPos & HitNormal을 가지고 올 수 있음)
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}

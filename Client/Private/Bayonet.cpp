@@ -203,7 +203,7 @@ HRESULT CBayonet::Ready_Effect()
 	return S_OK;	
 }
 
-void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	// 내구도나 이런거 하면 될듯?
 
@@ -214,12 +214,12 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 	
 }
 
-void CBayonet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CBayonet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	//m_isAttack =false;
 }
 
-void CBayonet::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CBayonet::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 

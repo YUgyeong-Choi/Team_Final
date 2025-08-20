@@ -102,7 +102,7 @@ HRESULT CButtler_Train::Render()
 	return S_OK;
 }
 
-void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	
 
@@ -115,12 +115,12 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 }
 
-void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	ReceiveDamage(pOther, eColliderType);
 }
 
-void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	ReceiveDamage(pOther, eColliderType);
 }

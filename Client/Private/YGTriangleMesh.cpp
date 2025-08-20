@@ -111,17 +111,17 @@ HRESULT CYGTriangleMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGTriangleMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGTriangleMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGTriangle 충돌 시작!\n");
 
 }
 
-void CYGTriangleMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGTriangleMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGTriangleMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGTriangleMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGTriangle 충돌 종료!\n");
 

@@ -18,9 +18,9 @@ public:
     COLLIDERTYPE Get_ColliderType() { return m_eColliderType; }
     virtual PxRigidActor* Get_Actor() = 0;
 public:
-    virtual void On_Enter(CPhysXActor* pOther);
-    virtual void On_Stay(CPhysXActor* pOther);
-    virtual void On_Exit(CPhysXActor* pOther);
+    virtual void On_Enter(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});
+    virtual void On_Stay(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});
+    virtual void On_Exit(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});
     virtual void On_TriggerEnter(CPhysXActor* pOther);
     virtual void On_TriggerExit(CPhysXActor* pOther);
     virtual HRESULT Render() = 0;

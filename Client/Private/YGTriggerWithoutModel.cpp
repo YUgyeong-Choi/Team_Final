@@ -70,16 +70,16 @@ HRESULT CYGTrrigerWithoutModel::Render()
 	return S_OK;
 }
 
-void CYGTrrigerWithoutModel::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGTrrigerWithoutModel::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGTrigger 충돌 시작!\n");
 }
 
-void CYGTrrigerWithoutModel::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGTrrigerWithoutModel::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGTrrigerWithoutModel::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGTrrigerWithoutModel::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGTrigger 충돌 종료!\n");
 }

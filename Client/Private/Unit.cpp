@@ -306,15 +306,15 @@ void CUnit::RayCast(CPhysXActor* actor)
 #endif
 }
 
-void CUnit::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CUnit::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CUnit::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CUnit::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 

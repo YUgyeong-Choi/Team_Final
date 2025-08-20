@@ -113,16 +113,16 @@ HRESULT CYGShpere::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CYGShpere::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGShpere::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGShpere 충돌 시작!\n");
 }
 
-void CYGShpere::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGShpere::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
 
-void CYGShpere::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CYGShpere::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	printf("YGShpere 충돌 종료!\n");
 }
