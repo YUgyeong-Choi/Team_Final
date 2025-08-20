@@ -24,6 +24,9 @@ HRESULT CBayonet::Initialize_Prototype()
 
 HRESULT CBayonet::Initialize(void* pArg)
 {
+	/* [ 데미지 설정 ] */
+	m_fDamage = 100.f;
+
 	BAYONET_DESC* pDesc = static_cast<BAYONET_DESC*>(pArg);
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -31,6 +34,7 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
+
 
 	/* [ 바이오닛 위치 셋팅 ] */
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
@@ -161,7 +165,7 @@ HRESULT CBayonet::Ready_Actor()
 
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
-
+	
 	PxVec3 halfExtents = PxVec3(0.2f, 1.f, 0.2f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));

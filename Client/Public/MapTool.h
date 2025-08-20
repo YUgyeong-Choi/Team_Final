@@ -84,6 +84,7 @@ private:
 	//컨백스 또는 트라이앵글 선택(기본 컨백스)
 	void Detail_Collider();
 	void Detail_LightShape();
+	void Detail_NoInstancing();
 
 private:
 	HRESULT Add_Favorite(const string& ModelName, _bool bSave);

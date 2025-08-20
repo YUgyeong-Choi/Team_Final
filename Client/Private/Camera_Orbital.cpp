@@ -49,25 +49,25 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	if (m_pGameInstance->Key_Down(DIK_T))
-	{
-		m_bActive = !m_bActive;
-		printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_T))
+	//{
+	//	m_bActive = !m_bActive;
+	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
+	//}
 
-	if (m_pGameInstance->Key_Down(DIK_X))
-	{
-		m_fMouseSensor -= 0.1f;
-		if (m_fMouseSensor <  0.f)
-			m_fMouseSensor = 0.1f;
-		printf("mouseSenor %f\n", m_fMouseSensor);
-	}
-		
-	if (m_pGameInstance->Key_Down(DIK_C))
-	{
-		m_fMouseSensor += 0.1f;
-		printf("mouseSenor %f\n", m_fMouseSensor);
-	}
+	//if (m_pGameInstance->Key_Down(DIK_X))
+	//{
+	//	m_fMouseSensor -= 0.1f;
+	//	if (m_fMouseSensor <  0.f)
+	//		m_fMouseSensor = 0.1f;
+	//	printf("mouseSenor %f\n", m_fMouseSensor);
+	//}
+	//	
+	//if (m_pGameInstance->Key_Down(DIK_C))
+	//{
+	//	m_fMouseSensor += 0.1f;
+	//	printf("mouseSenor %f\n", m_fMouseSensor);
+	//}
 
 	if (!m_pPlayer)
 		return;
@@ -123,12 +123,17 @@ HRESULT CCamera_Orbital::Render()
 	return S_OK;
 }
 
-void CCamera_Orbital::Set_InitCam()
+void CCamera_Orbital::Set_InitCam(_float fPitch, _float fYaw)
 {
 	if (m_pPlayer)
 	{
-		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(0.232652f, -1.561575f));
-		Set_PitchYaw(0.232652f, -1.561575f);
+		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(fPitch, fYaw));
+		Set_PitchYaw(fPitch, fYaw);
+
+		m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+		m_vPrevLookTarget = m_vPlayerPosition;
 	}
 }
 

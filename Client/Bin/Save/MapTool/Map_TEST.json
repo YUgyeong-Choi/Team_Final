@@ -4,6 +4,7 @@
         {
             "Collision": true,
             "ModelName": "FloorA",
+            "NoInstancing": false,
             "ObjectCount": 7,
             "Objects": [
                 {
@@ -225,6 +226,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_01_Female",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -262,6 +264,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_04_Female",
+            "NoInstancing": false,
             "ObjectCount": 9,
             "Objects": [
                 {
@@ -539,6 +542,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_TicketOffice_01",
+            "NoInstancing": true,
             "ObjectCount": 3,
             "Objects": [
                 {

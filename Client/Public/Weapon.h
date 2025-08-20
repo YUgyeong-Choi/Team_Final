@@ -64,7 +64,7 @@ public: /* [ 활성화 , 비활성화 ] */
 	_bool GetbIsActive() const { return m_bIsActive; }
 
 	// 레벨 업이나 강화 시 공격력을 바꾸도록
-	void SetBasicDamage(_float fDamage) { m_bDamage = fDamage; }
+	void SetBasicDamage(_float fDamage) { m_fDamage = fDamage; }
 
 	// 상태에 따라 공격 할 수 있는지 없는지
 	// 데미지 배율을 줘서 공격할 수 있도록
@@ -75,7 +75,7 @@ public: /* [ 활성화 , 비활성화 ] */
 	void SetDamageRatio(_float fRatio) { m_fDamageRatio = fRatio; }
 
 	// 기본 데미지에 배율을 곱해서 데미지를 줄 수 있게
-	_float Get_CurrentDamage() { return m_bDamage * m_fDamageRatio; }
+	_float Get_CurrentDamage() { return m_fDamage * m_fDamageRatio; }
 
 
 	void Clear_CollisionObj() { m_CollisonObjects.clear(); }
@@ -99,7 +99,7 @@ protected:
 	_float4x4			m_CombinedWorldMatrix = {};
 
 protected:				/* [ 기본 속성 ] */
-	_float				m_bDamage = { 100.f };
+	_float				m_fDamage = {};
 	_bool				m_bIsActive = {};
 	_bool				m_isAttack = {};
 	_float				m_fSpeedPerSec = 5.f;

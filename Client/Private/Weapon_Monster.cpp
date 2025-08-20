@@ -23,6 +23,9 @@ HRESULT CWeapon_Monster::Initialize_Prototype()
 
 HRESULT CWeapon_Monster::Initialize(void* pArg)
 {
+	/* [ 데미지 설정 ] */
+	m_fDamage = 12.f;
+
 	MONSTER_WEAPON_DESC* pDesc = static_cast<MONSTER_WEAPON_DESC*>(pArg);
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -137,6 +140,11 @@ void CWeapon_Monster::Update_Collider()
 	PxQuat physxRot(XMVectorGetX(finalRot), XMVectorGetY(finalRot), XMVectorGetZ(finalRot), XMVectorGetW(finalRot));
 
 	m_pPhysXActorCom->Set_Transform(PxTransform(physxPos, physxRot));
+}
+
+void CWeapon_Monster::Collider_Off()
+{
+	m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 }
 
 HRESULT CWeapon_Monster::Ready_Components()

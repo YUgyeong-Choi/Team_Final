@@ -65,9 +65,9 @@ void CWeapon::Update(_float fTimeDelta)
 	if (!m_bIsActive)
 		return;
 
-	/* [ 애니메이션 업데이트 ] */
-	if (m_pAnimator)
-		m_pAnimator->Update(fTimeDelta);
+	///* [ 애니메이션 업데이트 ] */
+	//if (m_pAnimator)
+	//	m_pAnimator->Update(fTimeDelta);
 	
 	if (m_pModelCom)
 		m_pModelCom->Update_Bones();
@@ -188,6 +188,10 @@ HRESULT CWeapon::Bind_Shader()
 }
 HRESULT CWeapon::Ready_Components()
 {
+
+	if (m_szMeshID == nullptr)
+		return S_OK;
+
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))

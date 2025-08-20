@@ -21,6 +21,9 @@
 #include "Item.h"
 #include "Lamp.h"
 
+#include "LegionArm_Base.h"
+#include "LegionArm_Steel.h"
+
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
 
@@ -95,6 +98,14 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_UIParameters()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Arm()))
+		return E_FAIL;
+
+
+	
+	m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
+	
+
 	return S_OK;
 }
 
@@ -102,11 +113,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	if (KEY_DOWN(DIK_J))
-		m_fTimeScale = 1.f;
-	if (KEY_DOWN(DIK_K))
-		m_fTimeScale = 0.f;
-
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
@@ -135,10 +141,12 @@ void CPlayer::Update(_float fTimeDelta)
 
 	// 컷씬일 때 못 움직이도록
 	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-		return;
-
+		return; 
+	
 	/* [ 입력 ] */
-	HandleInput();
+	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만
+		HandleInput();
+
 	SlidDoorMove(fTimeDelta);
 	UpdateCurrentState(fTimeDelta);
 	Movement(fTimeDelta);
@@ -302,6 +310,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
+		m_pTransformCom->SetbSpecialMoving();
 
 	}
 	
@@ -312,13 +321,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 	case eAnimCategory::NORMAL_ATTACKA:
 	{
-		// 이동초기화
-		if (!m_bMoveReset)
-		{
-			m_pTransformCom->SetbSpecialMoving();
-			m_bMoveReset = true;
-		}
-
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.2f;
 		_float  m_fDistance = 1.f;
@@ -349,13 +351,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::NORMAL_ATTACKB:
 	{
-		// 이동초기화
-		if (!m_bMoveReset)
-		{
-			m_pTransformCom->SetbSpecialMoving();
-			m_bMoveReset = true;
-		}
-
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.3f;
 		_float  m_fDistance = 1.f;
@@ -385,13 +380,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::STRONG_ATTACKA:
 	{
-		// 이동초기화
-		if (!m_bMoveReset)
-		{
-			m_pTransformCom->SetbSpecialMoving();
-			m_bMoveReset = true;
-		}
-
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.3f;
 		_float  m_fDistance = 1.f;
@@ -421,13 +409,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::STRONG_ATTACKB:
 	{
-		// 이동초기화
-		if (!m_bMoveReset)
-		{
-			m_pTransformCom->SetbSpecialMoving();
-			m_bMoveReset = true;
-		}
-
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.2f;
 		_float  m_fDistance = 1.f;
@@ -645,7 +626,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.5f;
-		_float  m_fDistance = 3.5f;
+		_float  m_fDistance = 2.5f;
 		
 		if (!m_bMove)
 		{
@@ -713,18 +694,36 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::ARM_ATTACKA:
 	{
+		if (!m_bSetOnce)
+		{
+			m_fLegionArmEnergy -= 20.f;
+			m_bSetOnce = true;
+		}
+
 		RootMotionActive(fTimeDelta);
 
 		break;
 	}
 	case eAnimCategory::ARM_ATTACKB:
 	{
+		if (!m_bSetOnce)
+		{
+			m_fLegionArmEnergy -= 20.f;
+			m_bSetOnce = true;
+		}
+
 		RootMotionActive(fTimeDelta);
 
 		break;
 	}
 	case eAnimCategory::ARM_ATTACKCHARGE:
 	{
+		if (!m_bSetOnce)
+		{
+			m_fLegionArmEnergy -= 20.f;
+			m_bSetOnce = true;
+		}
+
 		RootMotionActive(fTimeDelta);
 
 		break;
@@ -822,9 +821,9 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Arm_NormalAttack") == 0)
 		return eAnimCategory::ARM_ATTACKA;
 	if (stateName.find("Arm_NormalAttack2") == 0)
-		return eAnimCategory::ARM_ATTACKA;
+		return eAnimCategory::ARM_ATTACKB;
 	if (stateName.find("Arm_ChargeAttack") == 0)
-		return eAnimCategory::ARM_ATTACKA;
+		return eAnimCategory::ARM_ATTACKCHARGE;
 	if (stateName.find("Fail_Arm") == 0)
 		return eAnimCategory::ARM_FAIL;
 
@@ -860,18 +859,43 @@ _vector CPlayer::ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _b
 
 void CPlayer::Register_Events()
 {
-	m_pAnimator->RegisterEventListener("OnSwordTraill", [this](const string&)
+	m_pAnimator->RegisterEventListener("OnSwordTrail", [this]()
 		{
 			if (m_pWeapon)
 			{
 				m_pWeapon->Set_WeaponTrail_Active(true);
 			}
 		});
-	m_pAnimator->RegisterEventListener("OffSwordTraill", [this](const string&)
+	m_pAnimator->RegisterEventListener("OffSwordTrail", [this]()
 		{
 			if (m_pWeapon)
 			{
 				m_pWeapon->Set_WeaponTrail_Active(false);
+			}
+		});
+
+
+
+	m_pAnimator->RegisterEventListener("OnWeaponCollider", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetisAttack(true);
+				m_pWeapon->Clear_CollisionObj();
+			}
+		});
+	m_pAnimator->RegisterEventListener("EquipWeapon", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetbIsActive(true);
+			}
+		});
+	m_pAnimator->RegisterEventListener("PutWeapon", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetbIsActive(false);
 			}
 		});
 }
@@ -959,6 +983,38 @@ void CPlayer::Update_Collider_Actor()
 	// 무기 추가
 }
 
+void CPlayer::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	/* [ 들어온 데미지 계산 ] */
+	_float fDamage = 0.f;
+
+	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
+	if (!pUnit)
+	{
+		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
+		if (!pWeapon)
+		{
+			return;
+		}
+		else
+		{
+			fDamage = pWeapon->Get_CurrentDamage();
+		}
+	}
+	else
+	{
+		fDamage = pUnit->Get_CurrentDamage();
+	}
+
+	/* [ Hp 감소 ] */
+	m_fHP -= fDamage;
+	
+	if (m_fHP <= 0.f)
+		m_fHP = 0.f;
+
+	Callback_HP();
+}
+
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	/* [ 플레이어 피격 ] */
@@ -966,6 +1022,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		return;
 
 	bIsHit = true;
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -1010,6 +1067,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKA)] = new CPlayer_ArmAttackA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKB)] = new CPlayer_ArmAttackB(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKCHARGE)] = new CPlayer_ArmCharge(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::ARMFAIL)] = new CPlayer_ArmFail(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::MAINSKILL)] = new CPlayer_MainSkill(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
@@ -1022,7 +1080,7 @@ HRESULT CPlayer::Ready_Weapon()
 	/* [ 무기 모델을 추가 ] */
 
 	CBayonet::BAYONET_DESC Desc{};
-	Desc.eMeshLevelID = LEVEL::STATIC;
+	Desc.eMeshLevelID = static_cast<LEVEL>(m_pGameInstance->GetCurrentLevelIndex());
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };
@@ -1110,6 +1168,33 @@ HRESULT CPlayer::Ready_UIParameters()
 
 	return S_OK;
 }
+
+HRESULT CPlayer::Ready_Arm()
+{
+	CLegionArm_Base::ARM_DESC eDesc{};
+	
+	eDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	eDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
+	
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LegionArm_Steel"),
+		m_iLevelID, TEXT("Player_Weapon"), &pGameObject, &eDesc)))
+		return E_FAIL;
+
+	m_pLegionArm = dynamic_cast<CLegionArm_Base*>(pGameObject);
+
+	if (m_pLegionArm->Get_MeshName().find(L"Steel") != _wstring::npos)
+	{
+		m_pPhysXActorCom->Add_IngoreActors(dynamic_cast<CLegionArm_Steel*>(m_pLegionArm)->Get_Actor()->Get_Actor());
+		m_pControllerCom->Add_IngoreActors(dynamic_cast<CLegionArm_Steel*>(m_pLegionArm)->Get_Actor()->Get_Actor());
+	}
+
+
+	return S_OK;
+}
+
+
 void CPlayer::LoadPlayerFromJson()
 {
 	string path = "../Bin/Save/AnimationEvents/" + m_pModelCom->Get_ModelName() + "_events.json";
@@ -1249,7 +1334,6 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 
 void CPlayer::Play_CutScene_Door()
 {	
-	//m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::ONE);
 	m_bInteraction[0] = true;
 	m_bInteractionMove[0] = true;
 	m_bInteractionRotate[0] = true;
@@ -1296,6 +1380,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 		{
 			m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 			m_bInteractionRotate[0] = false; // 회전 완료
+			m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::TUTORIALDOOR);
 		}
 	}
 
@@ -1341,7 +1426,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	}
 }
 
-void CPlayer::Active_Weapon()
+void CPlayer::Weapon_Collider_Active()
 {
 	if (nullptr == m_pWeapon)
 		return;
@@ -1385,6 +1470,7 @@ void CPlayer::LockOnState()
 		m_pAnimator->SetBool("Front", false);
 		m_pAnimator->SetBool("Left", false);
 		m_pAnimator->SetBool("Right", false);
+		m_pAnimator->SetBool("Back", false);
 	}
 }
 
@@ -1442,26 +1528,7 @@ void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)
 		Callback_DownBelt();
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_R))
-	{
-		if (nullptr == m_pSelectItem)
-			return;
 
-		if (m_isSelectUpBelt)
-			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pSelectItem);
-		else
-			m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pSelectItem);
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_TAB))
-	{	
-		if(m_bSwitch)
-			m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pWeapon);
-		else
-			m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
-
-		m_bSwitch = !m_bSwitch;
-	}
 
 	m_pBelt_Up->Priority_Update(fTimeDelta);
 	m_pBelt_Down->Priority_Update(fTimeDelta);

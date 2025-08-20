@@ -27,7 +27,6 @@ private:
 	//툴 조작
 	void Control(_float fTimeDelta);
 private:
-	void Select_Decal();
 	void Focus();
 	void SnapTo();
 	void Duplicate();
@@ -35,12 +34,6 @@ private:
 private:
 	void Clear_All_Decal();
 	HRESULT Ready_Texture(const _char* Map);
-
-
-private:
-
-	//가장 가까운 데칼 오브젝트를 가져옴
-	class CDecalToolObject* Get_ClosestDecalObject(_fvector vPosition);
 
 private:
 	HRESULT Spawn_DecalObject();
@@ -54,8 +47,10 @@ private:
 	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };
 
 private:
-	class CDecalToolObject* m_pFocusObject = { nullptr };
+	class CMonsterToolObject* m_pFocusObject = { nullptr };
 
+private:
+	_int m_iID = { -1 }; //-1, -2 몬스터 아이디는 음수로하자
 
 public:
 	static CMonsterTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

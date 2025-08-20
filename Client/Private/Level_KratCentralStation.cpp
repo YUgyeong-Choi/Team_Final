@@ -90,6 +90,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 	}
+
 	if ((m_pStartVideo == nullptr || m_pStartVideo->Get_bDead()) && !m_bEndVideo)
 	{
 		m_pStartVideo = nullptr;
@@ -198,7 +199,7 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	if (FAILED(Ready_Monster()))
 		return E_FAIL;
 
-	// 문 같이 상호작용 하는 것들
+	//// 문 같이 상호작용 하는 것들
 	//if (FAILED(Ready_Interact()))
 	//	return E_FAIL;
 
@@ -211,8 +212,8 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc.eMeshLevelID = LEVEL::STATIC;
-	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
+	pDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	pDesc.InitPos = _float3(-1.35f, 0.978f, 0.96f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
 	pDesc.szMeshID = TEXT("Player");
@@ -593,6 +594,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video"), &eDesc)))
 		return E_FAIL;
 
+	Safe_AddRef(m_pStartVideo);
 
 	m_pStartVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video")));
 

@@ -93,7 +93,7 @@ void CCameraSequence::Delete_KeyFrame(_int type, _int keyFrame)
     case 1:
     {
         auto it = find(m_vecOffSetPosKeyFrames.begin(), m_vecOffSetPosKeyFrames.end(), keyFrame);
-        if (it != m_vecMatrixPosKeyFrames.end())
+        if (it != m_vecOffSetPosKeyFrames.end())
             m_vecOffSetPosKeyFrames.erase(it);
         break;
     }

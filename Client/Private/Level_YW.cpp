@@ -32,7 +32,7 @@ HRESULT CLevel_YW::Initialize()
 	Desc.eMeshLevelID = LEVEL::YW;
 	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
 	Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	lstrcpy(Desc.szName, TEXT("Buttler_Train"));
+	lstrcpy(Desc.szName, TEXT("MonsterToolObject"));
 	Desc.szMeshID = TEXT("Buttler_Train");
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
 		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))

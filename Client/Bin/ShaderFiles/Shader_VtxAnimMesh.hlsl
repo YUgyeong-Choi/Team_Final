@@ -288,6 +288,7 @@ PS_OUT_NONPICK PS_MAIN_NONPICK(PS_IN In)
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, 0.f);
+    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, g_fID);
     
     return Out;
 }
@@ -413,6 +414,17 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
         PixelShader = compile ps_5_0 PS_Cascade2(); // SV_TARGET2 Àü¿ë
+    }
+
+    pass ToolMesh //6
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN_NONPICK();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_NONPICK();
     }
    
    

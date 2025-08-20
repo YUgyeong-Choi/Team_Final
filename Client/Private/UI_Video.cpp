@@ -29,7 +29,7 @@ HRESULT CUI_Video::Initialize(void* pArg)
 	m_isLoop = pDesc->isLoop;
 	
 
-	if (FAILED(InitMediaFoundationAndCreateReader(m_strVideoPath.c_str(), m_pReader)))
+	if (FAILED(InitFFmpegAndOpenVideo(WStringToString(m_strVideoPath).c_str())))
 		return E_FAIL;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -38,22 +38,15 @@ HRESULT CUI_Video::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-
 	BYTE* pData = nullptr;
 	DWORD width = 0, height = 0;
 	LONGLONG time = 0;
 
-	if (SUCCEEDED(ReadFrameToBuffer(m_pReader, &pData, &width, &height, &time)))
-	{
-		Safe_Release(m_pVideoSRV);
-		ID3D11ShaderResourceView* tempSRV = {nullptr};
-		if (SUCCEEDED(UploadFrame(m_pDevice, m_pContext, pData, width, height, &tempSRV)))
-		{
-			m_pVideoSRV = tempSRV;
-		}
-		
-		delete[] pData;
-	}
+	HRESULT hr = ReadFrameToBuffer(&pData, &width, &height, &time);
+
+	hr = UploadFrame(m_pDevice, m_pContext, pData, width, height, &m_pVideoSRV);
+
+	Safe_Delete_Array(pData);
 
 	return S_OK;
 }
@@ -78,25 +71,21 @@ void CUI_Video::Update(_float fTimeDelta)
 		DWORD width = 0, height = 0;
 		LONGLONG time = 0;
 
-		HRESULT hr = ReadFrameToBuffer(m_pReader, &pData, &width, &height, &time);
+		HRESULT hr = ReadFrameToBuffer(&pData, &width, &height, &time);
+		
 
-		if (FAILED(hr) || hr == MF_E_END_OF_STREAM || hr == S_FALSE || pData == nullptr)
+		if (hr == MF_E_END_OF_STREAM || hr == AVERROR_EOF)
 		{
 			if (m_isLoop)
 			{
-				// 영상 루프 처리
-				m_pReader->Flush(MF_SOURCE_READER_FIRST_VIDEO_STREAM);
-
-				PROPVARIANT var;
-				PropVariantInit(&var);
-				var.vt = VT_I8;
-				var.hVal.QuadPart = 0; // 0부터 다시 시작
-				m_pReader->SetCurrentPosition(GUID_NULL, var);
-				PropVariantClear(&var);
+				av_seek_frame(m_pFormatCtx, m_videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
+				avcodec_flush_buffers(m_pCodecCtx);
+				hr = ReadFrameToBuffer(&pData, &width, &height, &time);
 			}
 			else
 			{
 				Safe_Release(m_pVideoSRV);
+				Safe_Delete_Array(pData);
 				Set_bDead();
 				return;
 			}
@@ -110,9 +99,10 @@ void CUI_Video::Update(_float fTimeDelta)
 			if (SUCCEEDED(hr))
 			{
 				m_pVideoSRV = tempSRV;
+				Safe_Delete_Array(pData);
 			}
 
-			delete[] pData;
+			Safe_Delete_Array(pData);
 		}
 		
 	}
@@ -160,148 +150,12 @@ HRESULT CUI_Video::Render()
 	return S_OK;
 }
 
-HRESULT CUI_Video::InitMediaFoundationAndCreateReader(const WCHAR* szFilePath, IMFSourceReader*& outReader)
-{
-	HRESULT hr = MFStartup(MF_VERSION);
-	if (FAILED(hr))
-		return hr;
-
-	IMFAttributes* pAttributes;
-	hr = MFCreateAttributes(&pAttributes, 1);
-	if (FAILED(hr))
-		return hr;
-
-	pAttributes->SetUINT32(MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING, TRUE);
-
-	hr = MFCreateSourceReaderFromURL(szFilePath, pAttributes, &outReader);
-	if (FAILED(hr))
-		return hr;
-
-	IMFMediaType* pTypeOut;
-	hr = MFCreateMediaType(&pTypeOut);
-	if (FAILED(hr))
-		return hr;
-
-	hr = pTypeOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
-	hr = pTypeOut->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB32);
-	if (FAILED(hr))
-		return hr;
-
-	hr = outReader->SetCurrentMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, pTypeOut);
-
-
-	if (nullptr != pAttributes) pAttributes->Release();
-	if (nullptr != pTypeOut) pTypeOut->Release();
-
-	return hr;
-}
-
-HRESULT CUI_Video::ReadFrameToBuffer(IMFSourceReader* pReader, BYTE** ppData, DWORD* pWidth, DWORD* pHeight, LONGLONG* pTimeStamp)
-{
-	if (!pReader || !ppData || !pWidth || !pHeight || !pTimeStamp)
-		return E_INVALIDARG;
-
-	*ppData = nullptr;
-	*pWidth = 0;
-	*pHeight = 0;
-	*pTimeStamp = 0;
-
-	IMFSample* pSample = nullptr;
-	IMFMediaBuffer* pBuffer = nullptr;
-	IMFMediaType* pMediaType = nullptr;
-
-	DWORD dwStreamFlags = 0;
-	LONGLONG llTimestamp = 0;
-
-	HRESULT hr = pReader->ReadSample(
-		MF_SOURCE_READER_FIRST_VIDEO_STREAM,
-		0,
-		nullptr,
-		&dwStreamFlags,
-		&llTimestamp,
-		&pSample);
-
-	if (FAILED(hr))
-		return hr;
-
-	// 스트림 끝
-	if (dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM)
-		return MF_E_END_OF_STREAM;
-
-	// 샘플이 없으면 처리하지 않음
-	if (!pSample)
-		return S_FALSE;
-
-	hr = pSample->ConvertToContiguousBuffer(&pBuffer);
-	if (FAILED(hr))
-	{
-		pSample->Release();
-		return hr;
-	}
-
-	BYTE* pSrc = nullptr;
-	DWORD maxLen = 0, curLen = 0;
-	hr = pBuffer->Lock(&pSrc, &maxLen, &curLen);
-	if (FAILED(hr))
-	{
-		pBuffer->Release();
-		pSample->Release();
-		return hr;
-	}
-
-	// 버퍼가 비었는지 확인
-	if (curLen == 0 || !pSrc)
-	{
-		pBuffer->Unlock();
-		pBuffer->Release();
-		pSample->Release();
-		return S_FALSE;
-	}
-
-	hr = pReader->GetCurrentMediaType(MF_SOURCE_READER_FIRST_VIDEO_STREAM, &pMediaType);
-	if (FAILED(hr))
-	{
-		pBuffer->Unlock();
-		pBuffer->Release();
-		pSample->Release();
-		return hr;
-	}
-
-	UINT32 width = 0, height = 0;
-	hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &width, &height);
-	if (FAILED(hr))
-	{
-		pMediaType->Release();
-		pBuffer->Unlock();
-		pBuffer->Release();
-		pSample->Release();
-		return hr;
-	}
-
-	// 데이터 복사
-	*ppData = new BYTE[curLen];
-	memcpy(*ppData, pSrc, curLen);
-	*pWidth = width;
-	*pHeight = height;
-	*pTimeStamp = llTimestamp;
-
-	// 해제
-	pMediaType->Release();
-	pBuffer->Unlock();
-	pBuffer->Release();
-	pSample->Release();
-
-	// 마지막 유효성 검사
-	if (*ppData == nullptr || *pWidth == 0 || *pHeight == 0)
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CUI_Video::UploadFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BYTE* pData, UINT32 width, UINT32 height, ID3D11ShaderResourceView** ppSRV)
 {
 	if (!pData || !pDevice || !ppSRV)
 		return E_INVALIDARG;
+
+	Safe_Release(m_pTexture);
 
 	D3D11_TEXTURE2D_DESC texDesc = {};
 	texDesc.Width = width;
@@ -314,16 +168,16 @@ HRESULT CUI_Video::UploadFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	ID3D11Texture2D* pTexture = nullptr;
-	HRESULT hr = pDevice->CreateTexture2D(&texDesc, nullptr, &pTexture);
+	
+	HRESULT hr = pDevice->CreateTexture2D(&texDesc, nullptr, &m_pTexture);
 	if (FAILED(hr))
 		return hr;
 
 	D3D11_MAPPED_SUBRESOURCE mapped = {};
-	hr = pContext->Map(pTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+	hr = pContext->Map(m_pTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
 	if (FAILED(hr))
 	{
-		pTexture->Release();
+		Safe_Release(m_pTexture);
 		return hr;
 	}
 
@@ -331,8 +185,6 @@ HRESULT CUI_Video::UploadFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	{
 		memcpy((BYTE*)mapped.pData + y * mapped.RowPitch, pData + y * width * 4, width * 4);
 	}
-	pContext->Unmap(pTexture, 0);
-
 	
 	// 초록 부분(쓰레기값)을 없애기 위해 가장 정상적인 데이터가 나오는 위치에 픽셀 값을 다 박는다
 	BYTE* pSourceLine = pData + (height - 9) * mapped.RowPitch;
@@ -344,15 +196,144 @@ HRESULT CUI_Video::UploadFrame(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		memcpy(pDst + i * mapped.RowPitch, pSourceLine, width * 4);
 	}
 
+	pContext->Unmap(m_pTexture, 0);
+
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = texDesc.Format;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	hr = pDevice->CreateShaderResourceView(pTexture, &srvDesc, ppSRV);
-	pTexture->Release();
+	hr = pDevice->CreateShaderResourceView(m_pTexture, &srvDesc, ppSRV);
+	Safe_Release(m_pTexture);
 	return hr;
+}
+
+HRESULT CUI_Video::InitFFmpegAndOpenVideo(const char* szFilePath)
+{
+	avformat_network_init();
+
+	if (avformat_open_input(&m_pFormatCtx, szFilePath, nullptr, nullptr) != 0)
+		return E_FAIL;
+
+	if (avformat_find_stream_info(m_pFormatCtx, nullptr) < 0)
+		return E_FAIL;
+
+	m_videoStreamIndex = -1;
+	for (unsigned int i = 0; i < m_pFormatCtx->nb_streams; i++) {
+		if (m_pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+			m_videoStreamIndex = i;
+			break;
+		}
+	}
+	if (m_videoStreamIndex == -1) return E_FAIL;
+
+	AVCodecParameters* pCodecParams = m_pFormatCtx->streams[m_videoStreamIndex]->codecpar;
+	const AVCodec* pCodec = avcodec_find_decoder(pCodecParams->codec_id);
+	if (!pCodec) return E_FAIL;
+
+	m_pCodecCtx = avcodec_alloc_context3(pCodec);
+	avcodec_parameters_to_context(m_pCodecCtx, pCodecParams);
+	if (avcodec_open2(m_pCodecCtx, pCodec, nullptr) < 0) return E_FAIL;
+
+	m_pFrame = av_frame_alloc();
+	m_pFrameRGB = av_frame_alloc();
+
+	int numBytes = av_image_get_buffer_size(AV_PIX_FMT_RGBA, m_pCodecCtx->width, m_pCodecCtx->height, 1);
+	m_rgbBuffer = (uint8_t*)av_malloc(numBytes * sizeof(uint8_t));
+	av_image_fill_arrays(m_pFrameRGB->data, m_pFrameRGB->linesize, m_rgbBuffer,
+		AV_PIX_FMT_RGBA, m_pCodecCtx->width, m_pCodecCtx->height, 1);
+
+	m_pSwsCtx = sws_getContext(
+		m_pCodecCtx->width, m_pCodecCtx->height, m_pCodecCtx->pix_fmt,
+		m_pCodecCtx->width, m_pCodecCtx->height, AV_PIX_FMT_BGRA,
+		SWS_BILINEAR, nullptr, nullptr, nullptr
+	);
+
+	return S_OK;
+}
+
+HRESULT CUI_Video::ReadFrameToBuffer(BYTE** ppData, DWORD* pWidth, DWORD* pHeight, LONGLONG* pTimeStamp)
+{
+	if (!ppData || !pWidth || !pHeight || !pTimeStamp) return E_INVALIDARG;
+
+	AVPacket packet;
+	while (av_read_frame(m_pFormatCtx, &packet) >= 0) {
+		if (packet.stream_index == m_videoStreamIndex) {
+			int ret = avcodec_send_packet(m_pCodecCtx, &packet);
+			if (ret < 0) {
+				av_packet_unref(&packet);
+				return E_FAIL;
+			}
+
+			ret = avcodec_receive_frame(m_pCodecCtx, m_pFrame);
+			if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+				av_packet_unref(&packet);
+				continue;
+			}
+			else if (ret < 0) {
+				av_packet_unref(&packet);
+				return E_FAIL;
+			}
+
+			sws_scale(m_pSwsCtx,
+				m_pFrame->data, m_pFrame->linesize,
+				0, m_pCodecCtx->height,
+				m_pFrameRGB->data, m_pFrameRGB->linesize);
+
+			*ppData = new BYTE[m_pCodecCtx->width * m_pCodecCtx->height * 4];
+			memcpy(*ppData, m_pFrameRGB->data[0], m_pCodecCtx->width * m_pCodecCtx->height * 4);
+			*pWidth = m_pCodecCtx->width;
+			*pHeight = m_pCodecCtx->height;
+			*pTimeStamp = m_pFrame->pts;
+
+			av_packet_unref(&packet);
+			return S_OK;
+		}
+		av_packet_unref(&packet);
+	}
+
+	return MF_E_END_OF_STREAM; // 끝 도달
+}
+
+void CUI_Video::Release_FFmpeg()
+{
+
+	// 프레임
+	if (m_pFrame) {
+		av_frame_free(&m_pFrame);
+		m_pFrame = nullptr;
+	}
+	if (m_pFrameRGB) {
+		av_frame_free(&m_pFrameRGB);
+		m_pFrameRGB = nullptr;
+	}
+
+	//context
+
+	if (m_pSwsCtx) {
+		sws_freeContext(m_pSwsCtx);
+		m_pSwsCtx = nullptr;
+	}
+
+	if (m_pCodecCtx) {
+		avcodec_free_context(&m_pCodecCtx);
+		m_pCodecCtx = nullptr;
+	}
+
+	if (m_pFormatCtx) {
+		avformat_close_input(&m_pFormatCtx);
+		m_pFormatCtx = nullptr;
+	}
+
+	// 버퍼
+
+	if (m_rgbBuffer) {
+		av_free(m_rgbBuffer);
+		m_rgbBuffer = nullptr;
+	}
+
+	avformat_network_deinit();
 }
 
 HRESULT CUI_Video::Ready_Components()
@@ -402,11 +383,13 @@ CGameObject* CUI_Video::Clone(void* pArg)
 void CUI_Video::Free()
 {
 	__super::Free();
-	Safe_Release(m_pTextureCom);
+	
 	Safe_Release(m_pVideoSRV);
 	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pReader);
+	
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pTexture);
 
-	MFShutdown();
+	Release_FFmpeg();
+	
 }

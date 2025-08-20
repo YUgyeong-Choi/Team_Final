@@ -386,8 +386,13 @@ HRESULT CMapTool::Save(const _char* Map)
 				ModelJson["Collision"] = true;
 				ReadyModelJson["Collision"] = true;
 			}
-
+			
+			//라이트 모양
 			ObjectJson["LightShape"] = pMapToolObject->m_iLightShape;
+
+			//인스턴싱 제외
+			ModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
+			ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 
 			ModelJson["Objects"].push_back(ObjectJson);
 		}
@@ -489,6 +494,9 @@ HRESULT CMapTool::Load(const _char* Map)
 			//라이트 모양
 			MapToolObjDesc.iLightShape = Objects[j].value("LightShape", 0);
 
+			//인스턴싱 제외 여부
+			if (Models[i].contains("NoInstancing"))
+				MapToolObjDesc.bNoInstancing = Models[i]["NoInstancing"].get<_bool>();
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 				ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
@@ -974,7 +982,9 @@ void CMapTool::Render_Detail()
 	
 	Detail_LightShape();
 
+	ImGui::Separator();
 
+	Detail_NoInstancing();
 
 	ImGui::End();
 #pragma endregion
@@ -1832,8 +1842,59 @@ void CMapTool::Detail_LightShape()
 	ImGui::Text("Light Shape");
 	if (m_pFocusObject)
 	{
-		ImGui::InputInt("Light Shape", &m_pFocusObject->m_iLightShape);
+		if (ImGui::InputInt("Light Shape", &m_pFocusObject->m_iLightShape))
+		{
+			//체크 박스를 눌렀을 때
+			//포커스된 오브젝트와 같은 모델들을 같은 속성 부여 시킨다.
+			auto iter = m_ModelGroups.find(m_pFocusObject->Get_ModelName());
+			if (iter != m_ModelGroups.end())
+			{
+				// it->second 가 해당 모델 이름의 리스트
+				list<CGameObject*>& ObjectList = iter->second;
+
+				for (auto* pObj : ObjectList)
+				{
+					static_cast<CMapToolObject*>(pObj)->m_iLightShape = m_pFocusObject->m_iLightShape;
+				}
+			}
+			else
+			{
+				//치명적 오류
+				MSG_BOX("Detail_No Instancing Error : 모델 그룹을 찾을 수 없음");
+			}
+		}
 	}
+}
+
+void CMapTool::Detail_NoInstancing()
+{
+	ImGui::Text("No Instancing");
+	if (m_pFocusObject)
+	{
+		if (ImGui::Checkbox("No Instancing", &m_pFocusObject->m_bNoInstancing))
+		{
+			//체크 박스를 눌렀을 때
+			//포커스된 오브젝트와 같은 모델들을 같은 속성 부여 시킨다.
+			auto iter = m_ModelGroups.find(m_pFocusObject->Get_ModelName());
+			if (iter != m_ModelGroups.end())
+			{
+				// it->second 가 해당 모델 이름의 리스트
+				list<CGameObject*>& ObjectList = iter->second;
+
+				for (auto* pObj : ObjectList)
+				{
+					static_cast<CMapToolObject*>(pObj)->m_bNoInstancing = m_pFocusObject->m_bNoInstancing;
+				}
+			}
+			else
+			{
+				//치명적 오류
+				MSG_BOX("Detail_No Instancing Error : 모델 그룹을 찾을 수 없음");
+			}
+			
+		}
+	}
+
 }
 
 HRESULT CMapTool::Add_Favorite(const string& ModelName, _bool bSave)

@@ -12,6 +12,7 @@ NS_END
 NS_BEGIN(Client)
 class CPlayerState;
 class CWeapon;
+class CLegionArm_Base;
 
 class CPlayer : public CUnit
 {
@@ -89,6 +90,8 @@ private: /* [ 루트모션 활성화 ] */
 private: /* [ Actor 업데이트 ] */
 	void    Update_Collider_Actor();
 
+	virtual void ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -115,6 +118,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
 	HRESULT Ready_UIParameters();
+	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
 	//HRESULT Ready_Effect();
 
@@ -132,7 +136,7 @@ private:
 	void ItemWeaponOFF(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
 
-	void Active_Weapon();
+	void Weapon_Collider_Active();
 	void Reset_Weapon();
 
 private: /* [ 락온 함수 ] */
@@ -174,6 +178,7 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_ArmAttackB;
 	friend class CPlayer_ArmCharge;
 	friend class CPlayer_MainSkill;
+	friend class CPlayer_ArmFail;
 
 
 private: /* [ 상태 변수 ] */
@@ -267,23 +272,24 @@ private: /* [ 플레이어 변수 ] */
 	_float	m_fStamina = { 100.f };
 	
 	_float	m_fMaxMana = { 300.f };
-	_float	m_fMana = { 150.f };
+	_float	m_fMana = { 300.f };
 	
 	_float	m_fMaxErgo = { 100.f };
 	_float	m_fErgo = { 0.f };
 
-private: /* [ 무기 내구도 ] */
-	_float	m_fWeaponDurabilityMax;
-	_float	m_fWeaponDurability;
+private: /* [ 무기 내구도 ] - weapon 에 있음 */
+
 
 private: /* [ 리전 암 내구도 ] */
-	_float  m_fLegionArmEnergy;
-	_float  m_fMaxLegionArmEnergy;
+	CLegionArm_Base* m_pLegionArm = { nullptr };
+	_float  m_fLegionArmEnergy = { 100.f };
+	_float  m_fMaxLegionArmEnergy = { 100.f };
 
 private: /* [ 현재 상태 ] */
 	_bool	bIsGuarding = { false };
 	_bool	bIsHit = { false };
 	_bool	bIsInvincible = { false };
+	_float	fIsInvincible = {};
 	_bool	m_bIsLockOn = { false };
 
 private: /* [ 현재 플레이어 레벨 ] */
@@ -304,7 +310,10 @@ private: /* [ 벨트 슬롯 ] */
 	class CBelt* m_pBelt_Down = { nullptr };
 
 	_bool m_isSelectUpBelt = { true };
+	// 현재 빨간색으로 표시되고 있는 아이템
 	class CItem* m_pSelectItem = { nullptr };
+	// 현재 사용중인 아이템
+	class CItem* m_pUseItem = { nullptr };
 
 private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };

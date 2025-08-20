@@ -41,6 +41,8 @@ public:
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
 		_int		iLightShape = { 0 }; //라이트 모양
+		_bool		bNoInstancing = { false }; //인스턴싱 제외 여부
+
 	}MAPTOOLOBJ_DESC;
 
 private:
@@ -96,6 +98,9 @@ private:
 
 private:
 	_int	m_iLightShape = { 0 }; // 라이트 모양
+
+private:
+	_bool	m_bNoInstancing = { false }; //인스턴싱을 못하게 한다.
 
 private:
 	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태

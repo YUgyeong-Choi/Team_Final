@@ -42,7 +42,7 @@ public:
     const _vector& GetCurCamLook() const { return m_vCurCamLook; }
 public:
     void SetPlayer(CGameObject* pPlayer);
-
+    void Set_Level(LEVEL eLevel) { m_eCurLevel = eLevel; }
 public:
     void	SetFreeCam() { m_pCurCamera = m_pCamera_Free; m_bMoveable = false; }
     void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital; m_bMoveable = true; }
@@ -68,7 +68,7 @@ private:
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };
-
+    LEVEL m_eCurLevel = LEVEL::END;
 private:
     CCamera* m_pCurCamera = { nullptr };
 private:

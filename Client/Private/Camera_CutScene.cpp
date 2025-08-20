@@ -134,7 +134,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				m_fElapsedTime = 0.f;
 				m_iCurrentFrame = -1;
 				m_initOrbitalMatrix = {};
-				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_InitCam();
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_InitCam(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 				CCamera_Manager::Get_Instance()->SetOrbitalCam();
 			}
 		}
@@ -170,8 +170,6 @@ void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
 	m_bReadyCutScene = false;
 
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
-	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalMatrix);
-	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 }
 
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
@@ -184,8 +182,6 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 	m_bReadyCutScene = false;
 
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
-	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_TransfomCom()->Set_WorldMatrix(m_initOrbitalMatrix);
-	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -441,7 +437,7 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 				switch (a.eTarget)
 				{
 				case TARGET_CAMERA::PLAYER:
-					pTargetObj = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YG), TEXT("Layer_Player"));
+					pTargetObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"));
 					break;
 				default:
 					break;
@@ -454,8 +450,6 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 				fPitch = LerpFloat(a.fPitch, b.fPitch, t);
 				fYaw = LerpFloat(a.fYaw, b.fYaw, t);
 				fDistance = LerpFloat(a.fDistance, b.fDistance, t);
-				fPitch = XMConvertToRadians(fPitch);
-				fYaw = XMConvertToRadians(fYaw);
 
 				_vector vtargetPos;
 				// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
@@ -509,15 +503,15 @@ HRESULT CCamera_CutScene::InitDatas()
 		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::WAKEUP, LoadCameraFrameData(j)));
 	}
 
-	//ifstream inFile2("../Bin/Save/CutScene/TutorialDoor.json");
-	//if (inFile2.is_open())
-	//{
-	//	json j;
-	//	inFile2 >> j;
-	//	inFile2.close();
+	ifstream inFile2("../Bin/Save/CutScene/TutorialDoor.json");
+	if (inFile2.is_open())
+	{
+		json j;
+		inFile2 >> j;
+		inFile2.close();
 
-	//	m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TUTORIALDOOR, LoadCameraFrameData(j)));
-	//}
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TUTORIALDOOR, LoadCameraFrameData(j)));
+	}
 	return S_OK;
 }
 

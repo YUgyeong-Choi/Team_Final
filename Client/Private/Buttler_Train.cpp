@@ -11,7 +11,7 @@ CButtler_Train::CButtler_Train(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 }
 
 CButtler_Train::CButtler_Train(const CButtler_Train& Prototype)
-	:CMonster_Base{Prototype}
+	:CMonster_Base (Prototype)
 {
 }
 
@@ -22,14 +22,17 @@ HRESULT CButtler_Train::Initialize_Prototype()
 
 HRESULT CButtler_Train::Initialize(void* pArg)
 {
+	/* [ 데미지 설정 ] */
+	m_fDamage = 12.f;
+
 	if(FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
 
-
 	m_fDetectDist = 10.f;
+	m_fGroggyThreshold = 100;
 	
 	m_fHp = 300;
 
@@ -39,12 +42,8 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	// 락온 용
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
-
-	//Register_Events();
-
 	
-	
-	return S_OK;
+	return S_OK; 
 }
 
 void CButtler_Train::Priority_Update(_float fTimeDelta)
@@ -54,6 +53,8 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
+		m_pWeapon->Collider_Off();
+		
 		if (m_pAnimator->IsFinished())
 		{
 			m_pWeapon->Set_bDead();
@@ -242,6 +243,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
 
+		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() / 2.f);
+
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
 		if (nullptr != m_pHPBar)
@@ -249,7 +252,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		if (m_fHp <= 0)
 		{
-
+			
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 			m_pAnimator->SetTrigger("Dead");
 			m_strStateName = "Dead";
@@ -302,37 +305,37 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 
 void CButtler_Train::Register_Events()
 {
-	m_pAnimator->RegisterEventListener("AddAttackCount", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
 
 		++m_iAttackCount;
 
 		});
 
-	m_pAnimator->RegisterEventListener("BackMoveEnd", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("BackMoveEnd", [this]() {
 
 		m_pAnimator->SetBool("IsBack", false);
 
 		});
 
-	m_pAnimator->RegisterEventListener("NotLookAt", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
 
 		m_isLookAt = false;
 
 		});
 
-	m_pAnimator->RegisterEventListener("LookAt", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("LookAt", [this]() {
 
 		m_isLookAt = true;
 
 		});
 
-	m_pAnimator->RegisterEventListener("AttackOn", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
 
 		m_pWeapon->SetisAttack(true);
 
 		});
 
-	m_pAnimator->RegisterEventListener("AttackOff", [this](const string callbackName) {
+	m_pAnimator->RegisterEventListener("AttackOff", [this]() {
 
 		m_pWeapon->SetisAttack(false);
 

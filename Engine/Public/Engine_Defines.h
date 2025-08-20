@@ -45,6 +45,15 @@ using namespace std::filesystem;
 #include <PxPhysicsAPI.h>
 using namespace physx;
 
+
+// ¿µ»ó ¿ë
+extern "C" {
+#include "FFmpeg/libavcodec/avcodec.h"
+#include "FFmpeg/libavformat/avformat.h"
+#include "FFmpeg/libavutil/imgutils.h"
+#include "FFmpeg/libswscale/swscale.h"
+}
+
 #include "Engine_Typedef.h"
 #include "Engine_Macro.h"
 #include "Engine_Enum.h"

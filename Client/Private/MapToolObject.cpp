@@ -43,6 +43,9 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	//자체 발광 여부
 	m_iLightShape = pDesc->iLightShape;
 
+	//인스턴싱 제외 여부
+	m_bNoInstancing = pDesc->bNoInstancing;
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 

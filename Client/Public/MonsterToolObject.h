@@ -15,7 +15,7 @@ class CMonsterToolObject : public CGameObject
 {
 	/* [ 모든 움직이는 객체의 부모클래스입니다. ] */
 	/*  ( 플레이어, 몬스터, 보스몬스터, NPC )  */
-
+	friend class CMonsterTool;
 
 public:
 	typedef struct tagMonsterToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
@@ -25,6 +25,12 @@ public:
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
+		_float4x4	WorldMatrix = _float4x4(
+			1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			0.f, 0.f, 0.f, 1.f
+		);
 	}MONSTERTOOLOBJECT_DESC;
 
 protected:
@@ -42,6 +48,10 @@ public:
 	virtual HRESULT Render_Shadow() override;
 
 	void SetCascadeShadow();
+
+private:
+	void LoadAnimDataFromJson();
+
 
 protected: /* [ Setup 함수 ] */
 	HRESULT Bind_Shader();

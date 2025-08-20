@@ -32,7 +32,7 @@ public:
 		);
 
 
-		_bool		bUseOctoTree = { true };
+		_bool		bUseOctoTree = { true }; // 병합 할때 true 필요, false
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
@@ -52,6 +52,9 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+private:
+	HRESULT SetEmissive();
 
 public:
 	HRESULT Add_Actor();
@@ -75,13 +78,16 @@ protected: /* [ 초기화 변수 ] */
 private:
 	_bool	m_bUseOctoTree = { true };
 	_bool	m_bUseTiling = { false };
+	_float  m_fEmissive = {};
 	_float2	m_vTileDensity = { 1.0f, 1.0f };
 
 private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
 
-private:
+protected:
 	_int m_iLightShape = { 0 };
+
+	unordered_set<_int> m_mapVisibleLight = { 1, 3, 4, 6 };
 
 protected:
 

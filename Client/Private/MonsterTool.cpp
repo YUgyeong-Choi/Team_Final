@@ -1,7 +1,7 @@
 #include "GameInstance.h"
 
 #include "MonsterTool.h"
-#include "DecalToolObject.h"
+#include "MonsterToolObject.h"
 
 #include "Camera_Manager.h"
 #include "ImGuiFileDialog.h"
@@ -55,7 +55,7 @@ HRESULT	CMonsterTool::Render_ImGui()
 
 	if (ImGui::Button("Spawn Monster"))
 	{
-		//Spawn_DecalObject();
+		Spawn_DecalObject();
 	}
 
 	ImGui::End();
@@ -103,7 +103,7 @@ void CMonsterTool::Control(_float fTimeDelta)
 	//클릭하면 가장 가까운 데칼을 포커스 한다.
 	if (m_pGameInstance->Mouse_Up(DIM::LBUTTON) && ImGuizmo::IsOver() == false)
 	{
-		Select_Decal();
+		//Select_Decal();
 	}
 
 	//F 키누르면 해당 오브젝트 위치로 이동
@@ -127,25 +127,6 @@ void CMonsterTool::Control(_float fTimeDelta)
 	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_D))
 	{
 		Duplicate();
-	}
-}
-
-void CMonsterTool::Select_Decal()
-{
-	//알트키 누르고 있으면 피킹하지 않음(오브젝트 붙이고나서 오브젝트 변경되는거 막기 위함임)
-	if (m_pGameInstance->Key_Pressing(DIK_LALT))
-		return;
-
-	// ImGui가 마우스 입력을 가져가면 피킹을 하지 않음
-	if (ImGui::GetIO().WantCaptureMouse)
-		return;
-
-	_float4 vWorldPos = {};
-	if (m_pGameInstance->Picking(&vWorldPos))
-	{
-		Safe_Release(m_pFocusObject);
-		m_pFocusObject = Get_ClosestDecalObject(XMLoadFloat4(&vWorldPos));
-		Safe_AddRef(m_pFocusObject);
 	}
 }
 
@@ -261,28 +242,6 @@ HRESULT CMonsterTool::Ready_Texture(const _char* Map)
 	return S_OK;
 }
 
-CDecalToolObject* CMonsterTool::Get_ClosestDecalObject(_fvector vPosition)
-{
-	list<CGameObject*> List = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"));
-
-	_float fMinDistance = FLT_MAX;
-	CGameObject* pClosestObject = nullptr;
-
-	for (CGameObject* pObj : List)
-	{
-		_float fDist = XMVectorGetX(XMVector3LengthSq(vPosition - pObj->Get_TransfomCom()->Get_State(STATE::POSITION)));
-
-		if (fDist < fMinDistance)
-		{
-			fMinDistance = fDist;
-			pClosestObject = pObj;
-		}
-
-	}
-
-	return  static_cast<CDecalToolObject*>(pClosestObject);
-}
-
 HRESULT CMonsterTool::Spawn_DecalObject()
 {
 #pragma region 카메라 앞에다가 소환
@@ -322,7 +281,7 @@ HRESULT CMonsterTool::Spawn_DecalObject()
 
 #pragma endregion
 
-	CDecalToolObject::DECALTOOLOBJECT_DESC DecalDesc = {};
+	CMonsterToolObject::MONSTERTOOLOBJECT_DESC DecalDesc = {};
 
 	// 오브젝트 월드 행렬에 적용
 	XMStoreFloat4x4(&DecalDesc.WorldMatrix, SpawnWorldMatrix);
@@ -332,8 +291,22 @@ HRESULT CMonsterTool::Spawn_DecalObject()
 		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"), &DecalDesc)))
 		return E_FAIL;
 
+
+	/*CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
+	Desc.fSpeedPerSec = 5.f;
+	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	Desc.eMeshLevelID = LEVEL::YW;
+	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
+	Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(Desc.szName, TEXT("MonsterToolObject"));
+	Desc.szMeshID = TEXT("Buttler_Train");
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
+		return E_FAIL;*/
+
+
 	Safe_Release(m_pFocusObject);
-	m_pFocusObject = static_cast<CDecalToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal")));
+	m_pFocusObject = static_cast<CMonsterToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Monster")));
 	Safe_AddRef(m_pFocusObject);
 
 	return S_OK;

@@ -63,10 +63,6 @@ private:
 	/* [ 카메라 Target 보간 ] */
 	void Interp_Target(_int curFrame);
 
-	/* [ 컷씬 데이터 로드 ] */
-	HRESULT InitDatas();
-	CAMERA_FRAMEDATA LoadCameraFrameData(const json& j);
-
 	/* [ 위치값만 추출하는 함수 - 보간할때 쓰기 좋아서 추가해둔 것 ] */
 	XMVECTOR XMMatrixDecompose_T(const _matrix& m);
 
@@ -76,6 +72,9 @@ private:
 	/* [ 오비탈 초기 위치 ->  컷씬 초기 위치] || [ 컷씬 끝 위치 ->  오비탈 초기 위치] */
 	_bool Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat);
 
+	/* [ 컷씬 데이터 로드 ] */
+	HRESULT InitDatas();
+	CAMERA_FRAMEDATA LoadCameraFrameData(const json& j);
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 

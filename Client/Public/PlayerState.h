@@ -49,7 +49,7 @@ protected:
 		m_pOwner->m_iCurrentCombo = Combo;
 	}
 
-protected:
+protected: /* [ 필요 자원 ] */
 	_bool   IsStaminaEnough(_float fStaminaCost)
 	{
 		if (m_pOwner->m_fStamina >= fStaminaCost)
@@ -57,6 +57,20 @@ protected:
 
 		return false;
 	}
+    _bool   IsManaEnough(_float fManaCost)
+    {
+        if (m_pOwner->m_fMana >= fManaCost)
+            return true;
+
+        return false;
+    }
+    _bool   IsLegionArmEnergyEnough(_float fLegionArmEnergy)
+    {
+        if (m_pOwner->m_fLegionArmEnergy >= fLegionArmEnergy)
+            return true;
+
+        return false;
+    }
 
 protected: /* [ 락온 관련 ] */
     void LockOnMovement()
@@ -248,10 +262,20 @@ public:
 			return EPlayerState::USEITEM;
 
         if (input.bCtrl) // 왼팔공격
-			return EPlayerState::ARMATTACKA;
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKA;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
         if (m_bChargeArm && m_pOwner->m_bWeaponEquipped) // 차징
-            return EPlayerState::ARMATTACKCHARGE;
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKCHARGE;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
 		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
 			return EPlayerState::STRONGATTACKA;
@@ -265,7 +289,7 @@ public:
         if (input.bTap) // 무기교체
             return EPlayerState::SWITCHWEAPON;
 
-        if (input.bSkill)
+        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
 		if (input.bSpaceDown && IsStaminaEnough(20.f)) // 빽스탭
@@ -371,11 +395,16 @@ public:
         if (input.bItem) // 아이템 사용
             return EPlayerState::USEITEM;
 
-        if (input.bSkill)
+        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
-        if (input.bCtrl) // 컨트롤 왼팔공격
-            return EPlayerState::ARMATTACKA;
+        if (input.bCtrl) // 왼팔공격
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKA;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
             return EPlayerState::STRONGATTACKA;
@@ -496,10 +525,15 @@ public:
         if (input.bItem) // 아이템 사용
             return EPlayerState::USEITEM;
 
-        if (input.bCtrl) // 컨트롤 왼팔공격
-            return EPlayerState::ARMATTACKA;
+        if (input.bCtrl) // 왼팔공격
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKA;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
-        if (input.bSkill)
+        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
@@ -589,11 +623,10 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
         {
-            m_pOwner->m_pWeapon->SetbIsActive(false);
+            m_pOwner->m_pAnimator->SetBool("HasLamp", false);
             m_pOwner->m_pAnimator->SetTrigger("Pulse");
             m_pOwner->m_pAnimator->SetTrigger("UseItem");
             m_pOwner->m_bUsePulse = true;
-            m_pOwner->m_bItemSwitch = true;
         }
 
         
@@ -634,9 +667,8 @@ public:
 
     virtual void Exit() override
     {
-        if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
-            m_pOwner->Use_Item();
-
+       
+        m_pOwner->Use_Item();
 
         m_pOwner->m_pAnimator->SetBool("Grinding", false);
         m_pOwner->m_bUseLamp = false;
@@ -646,6 +678,12 @@ public:
         m_fPulseTime = 0.f;
         m_fStateTime = 0.f;
         m_bDoOnce = false;
+
+        if (m_pOwner->m_isSelectUpBelt)
+            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pOwner-> m_pSelectItem);
+        else
+            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pOwner-> m_pSelectItem);
+        
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -896,6 +934,7 @@ public:
         {
             m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
             m_pOwner->m_pAnimator->ApplyOverrideAnimController("TwoHand");
+            m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pOwner->m_pWeapon);
         }
         else
         {
@@ -919,7 +958,7 @@ public:
             if (!m_bDoOnce)
             {
                 m_pOwner->m_bWeaponEquipped = true;
-                m_pOwner->m_pWeapon->SetbIsActive(true);
+              //  m_pOwner->m_pWeapon->SetbIsActive(true);
 				m_bDoOnce = true;
             }
         }
@@ -928,7 +967,7 @@ public:
             if (!m_bDoOnce)
             {
                 m_pOwner->m_bWeaponEquipped = false;
-                m_pOwner->m_pWeapon->SetbIsActive(false);
+               // m_pOwner->m_pWeapon->SetbIsActive(false);
                 m_bDoOnce = true;
             }
         }
@@ -1096,20 +1135,17 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (0.8f < m_fStateTime)
-        {
-            if (MOUSE_DOWN(DIM::LBUTTON))
-                m_bAttackA = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
 
-            if (MOUSE_DOWN(DIM::RBUTTON))
-                m_bAttackB = true;
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
 
-            if (KEY_DOWN(DIK_LCONTROL))
-                m_bArmAttack = true;
+        if (KEY_DOWN(DIK_LCONTROL))
+            m_bArmAttack = true;
 
-            if (KEY_DOWN(DIK_F))
-                m_bSkill = true;
-        }
+        if (KEY_DOWN(DIK_F))
+            m_bSkill = true;
     }
 
     virtual void Exit() override
@@ -1132,7 +1168,14 @@ public:
                 return EPlayerState::WEAKATTACKB;
             if (m_bAttackB && IsStaminaEnough(20.f))
                 return EPlayerState::STRONGATTACKB;
-            if (m_bSkill)
+            if (m_bArmAttack)
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKA;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
+            if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
         }
 
@@ -1201,22 +1244,14 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* 공격 애니메이션이 0.8 이상 진행되었을 때 */
-        if (0.8f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
-                if (KEY_DOWN(DIK_LCONTROL))
-					m_bArmAttack = true;
-                if (KEY_DOWN(DIK_F))
-                    m_bSkill = true;
-            }
-        }
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
+        if (KEY_DOWN(DIK_LCONTROL))
+			m_bArmAttack = true;
+        if (KEY_DOWN(DIK_F))
+            m_bSkill = true;
     }
 
     virtual void Exit() override
@@ -1240,8 +1275,13 @@ public:
             if (m_bAttackB && IsStaminaEnough(20.f))
                 return EPlayerState::STRONGATTACKA;
             if (m_bArmAttack)
-                return EPlayerState::ARMATTACKA;
-            if (m_bSkill)
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKA;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
+            if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
 
             if (input.bMove)
@@ -1312,22 +1352,14 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* 공격 애니메이션이 0.7 이상 진행되었을 때 */
-        if (0.7f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
-                if (KEY_DOWN(DIK_LCONTROL))
-                    m_bArmAttack = true;
-				if (KEY_DOWN(DIK_F))
-					m_bSkill = true;
-            }
-        }
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
+        if (KEY_DOWN(DIK_LCONTROL))
+            m_bArmAttack = true;
+		if (KEY_DOWN(DIK_F))
+			m_bSkill = true;
     }
 
     virtual void Exit() override
@@ -1353,8 +1385,13 @@ public:
             if (m_bAttackA && IsStaminaEnough(20.f))
                 return EPlayerState::WEAKATTACKB;
             if (m_bArmAttack)
-                return EPlayerState::ARMATTACKA;
-			if (m_bSkill)
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKA;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
+			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
         }
         if (1.5f < m_fStateTime)
@@ -1425,22 +1462,14 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        /* 공격 애니메이션이 0.7 이상 진행되었을 때 */
-        if (0.7f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
-                if (KEY_DOWN(DIK_LCONTROL))
-                    m_bArmAttack = true;
-				if (KEY_DOWN(DIK_F))
-					m_bSkill = true;
-            }
-        }
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
+        if (KEY_DOWN(DIK_LCONTROL))
+            m_bArmAttack = true;
+		if (KEY_DOWN(DIK_F))
+			m_bSkill = true;
     }
 
     virtual void Exit() override
@@ -1467,8 +1496,13 @@ public:
             if (m_bAttackA && IsStaminaEnough(20.f))
                 return EPlayerState::WEAKATTACKA;
             if (m_bArmAttack)
-                return EPlayerState::ARMATTACKA;
-			if (m_bSkill)
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKA;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
+			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
         }
 
@@ -1916,7 +1950,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetInt("ArmCombo", 0);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1926,21 +1959,14 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (0.5f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
 
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
 
-                if (KEY_UP(DIK_LCONTROL))
-                    m_bArmAttack = true;
-            }
-        }
+        if (KEY_UP(DIK_LCONTROL))
+            m_bArmAttack = true;
     }
 
     virtual void Exit() override
@@ -1979,7 +2005,12 @@ public:
             if (m_bAttackB)
                 return EPlayerState::STRONGATTACKB;
             if (m_bArmAttack)
-                return EPlayerState::ARMATTACKB;
+            {
+                if (IsLegionArmEnergyEnough(20.f))
+                    return EPlayerState::ARMATTACKB;
+                else
+                    return EPlayerState::ARMFAIL;
+            }
         }
 
         return EPlayerState::ARMATTACKA;
@@ -2021,7 +2052,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetInt("ArmCombo", 1);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2031,18 +2061,11 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (0.5f < m_fStateTime)
-        {
-            string strName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-            if (m_StateNames.find(strName) != m_StateNames.end())
-            {
-                if (MOUSE_DOWN(DIM::LBUTTON))
-                    m_bAttackA = true;
+        if (MOUSE_DOWN(DIM::LBUTTON))
+            m_bAttackA = true;
 
-                if (MOUSE_DOWN(DIM::RBUTTON))
-                    m_bAttackB = true;
-            }
-        }
+        if (MOUSE_DOWN(DIM::RBUTTON))
+            m_bAttackB = true;
     }
 
     virtual void Exit() override
@@ -2122,7 +2145,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetBool("Charge", true);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
-        m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2180,6 +2202,80 @@ private:
     };
 
 };
+class CPlayer_ArmFail final : public CPlayerState
+{
+public:
+    CPlayer_ArmFail(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_ArmFail() = default;
+
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 애니메이션 설정 ] */
+        m_pOwner->m_pAnimator->SetBool("Fail", true);
+        m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+    }
+
+    virtual void Exit() override
+    {
+        m_fStateTime = 0.f;
+
+        m_pOwner->m_pAnimator->SetBool("Fail", false);
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (2.f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+
+        return EPlayerState::ARMFAIL;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"ARMATTACKFAIL";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "Fail_Arm"
+    };
+
+};
 
 /* [ 이 클래스는 스킬 상태입니다. ] */
 class CPlayer_MainSkill final : public CPlayerState
@@ -2199,6 +2295,8 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("MainSkill");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
+        m_pOwner->m_fMana -= 100.f;
+        m_pOwner->Callback_Mana();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2209,11 +2307,13 @@ public:
         m_fStateTime += fTimeDelta;
 
         //1. F를 다시 눌렀을 경우 최대 3콤보까지 진행이된다.
-        if (0.5f < m_fStateTime && m_iSkillCount == 0)
+        if (0.3f < m_fStateTime && m_iSkillCount == 0 && IsManaEnough(100.f))
         {
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
+                m_pOwner->m_fMana -= 100.f;
+                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 
@@ -2222,24 +2322,13 @@ public:
             else if (MOUSE_DOWN(DIM::RBUTTON))
 				m_bAttackB = true;
         }
-        else if (1.5f < m_fStateTime && m_iSkillCount == 1)
+        else if (1.f < m_fStateTime && m_iSkillCount == 1 && IsManaEnough(100.f))
         {
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
-                m_iSkillCount++;
-            }
-
-            if (MOUSE_DOWN(DIM::LBUTTON))
-                m_bAttackA = true;
-            else if (MOUSE_DOWN(DIM::RBUTTON))
-                m_bAttackB = true;
-        }
-        else if (2.5f < m_fStateTime && m_iSkillCount == 2)
-        {
-            if (KEY_DOWN(DIK_F))
-            {
-                m_pOwner->m_pAnimator->SetTrigger("MainSkill");
+                m_pOwner->m_fMana -= 100.f;
+                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 

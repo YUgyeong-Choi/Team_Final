@@ -87,7 +87,7 @@
 #include "Buttler_Train.h"
 #include "UI_MonsterHP_Bar.h"
 #include "UI_LockOn_Icon.h"
-
+#include "LegionArm_Steel.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -358,6 +358,10 @@ HRESULT CLoader::Loading_For_Static()
 		CUI_LockOn_Icon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LegionArm_Steel"),
+		CLegionArm_Steel::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -381,11 +385,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Player"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Player"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlayerWeapon"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_PlayerWeapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
 		return E_FAIL;
 
@@ -461,10 +465,19 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	string Map = "STATION"; //STATION, TEST
+#pragma region 맵 로딩
 
 	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+	string Map = "STATION"; //STATION, TEST
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+	//	return E_FAIL;
+
+	//네비
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+		return E_FAIL;
+
+	//데칼
+	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
 		return E_FAIL;
 
 	m_pGameInstance->ClaerOctoTreeObjects();
@@ -483,75 +496,26 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
 		});
 
-	//auto futureTest = std::async(std::launch::async, [&] {
-	//	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
-	//		return E_FAIL;
-	//	return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST");
-	//	});
-
-	if (FAILED(futureStation.get())) return E_FAIL;
-	if (FAILED(futureHotel.get())) return E_FAIL;
-	//if (FAILED(futureTest.get())) return E_FAIL;
-
-
-
-	/*auto futureStation = std::async(std::launch::async, [&] {
-		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION");
-		});
-
-	auto futureHotel = std::async(std::launch::async, [&] {
-		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
-		});
-
-	auto futureTest = std::async(std::launch::async, [&] {
-		return Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST");
-		});
-
-	if (FAILED(futureStation.get()))
+	if (FAILED(futureStation.get())) 
 		return E_FAIL;
-	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	if (FAILED(futureHotel.get())) 
 		return E_FAIL;
-
-	if (FAILED(futureHotel.get()))
-		return E_FAIL;
-	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-
-	if (FAILED(futureTest.get()))
-		return E_FAIL;
-	if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
-		return E_FAIL;*/
-
-
-	////맵
-	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
-
-	////어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION"))) //TEST, STAION
-	//	return E_FAIL;
-
-	////맵
-	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
-
-	////어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL"))) //TEST, STAION, HOTEL
-	//	return E_FAIL;
-
-	////맵
-	//if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
-	//	return E_FAIL;
-
-	////어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST"))) //TEST, STAION
-	//	return E_FAIL;
 
 #pragma endregion
+	//네비 소환
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+		return E_FAIL;
+
+	//어떤 데칼을 소환 시킬 것인지?
+	if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str()))) //TEST, STATION
+		return E_FAIL;
+
 	//lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 	//제이슨으로 저장된 맵을 로드한다.
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
-		return E_FAIL;
+	/*if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+		return E_FAIL;*/
+#pragma endregion
+
 #pragma endregion
 
 
@@ -682,8 +646,6 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
-		return E_FAIL;
 
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
@@ -733,7 +695,31 @@ HRESULT CLoader::Loading_For_DH()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//스태틱 데칼	
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
+		CStatic_Decal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//네비게이션 컴포넌트 작동시켜주는 녀석
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Nav"),
+		CNav::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
+
+#pragma region 맵 로드
+	string Map = "STATION"; //STATION, TEST
+
+	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+	//제이슨으로 저장된 맵을 로드한다.
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+		return E_FAIL;
+#pragma endregion
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -761,11 +747,11 @@ HRESULT CLoader::Loading_For_JW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Train/Buttler_Train.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Player"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Player"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlayerWeapon"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_PlayerWeapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
 		return E_FAIL;
 
@@ -985,9 +971,43 @@ HRESULT CLoader::Loading_For_YW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Hotel.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+#pragma region  애님 모델
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Player"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_PlayerWeapon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Elite_Police"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Elite_Police/Elite_Police.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Elite_Police_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Club/Elite_Police_Weapon.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Wego"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Wego/Wego.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_FireEater"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FireEater/FireEater.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Buttler_Train"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Train/Buttler_Train.bin", PreTransformMatrix))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Buttler_Train_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon_Buttler/SK_WP_MOB_ButtlerTrain_01.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+#pragma endregion
 
 	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Buttler_Train_Weapon"),
 	//	CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon_Buttler/SK_WP_MOB_ButtlerTrain_01.bin", PreTransformMatrix))))
@@ -1034,8 +1054,8 @@ HRESULT CLoader::Loading_For_YW()
 HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 {
 	//맵
-	//if(FAILED(Loading_Meshs(iLevelIndex, Map)))
-	//	return E_FAIL;
+	if(FAILED(Loading_Meshs(iLevelIndex, Map)))
+		return E_FAIL;
 
 	//네비
 	if (FAILED(Loading_Navigation(iLevelIndex, Map)))
@@ -1117,9 +1137,11 @@ HRESULT CLoader::Loading_Meshs(_uint iLevelIndex, const _char* Map)
 
 		_bool bCollision = element["Collision"];
 
+		_bool bNoInstancing = element["NoInstancing"];
+
 		wstring PrototypeTag = {};
 		_bool bInstance = false;
-		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD)
+		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD && bNoInstancing == false)
 		{
 			//인스턴싱용 모델 프로토 타입 생성
 			PrototypeTag = L"Prototype_Component_Model_Instance_" + StringToWString(ModelName);
@@ -1219,11 +1241,11 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 }
 HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
-	//m_pGameInstance->ClaerOctoTreeObjects();
+	m_pGameInstance->ClaerOctoTreeObjects();
 
 	//어떤 맵을 소환 시킬 것인지?
-	//if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
-	//	return E_FAIL;
+	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
+		return E_FAIL;
 
 	//네비 소환
 	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex)))
@@ -1262,14 +1284,18 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 		const json& objects = Models[i]["Objects"];
 
 		_bool bCollision = Models[i]["Collision"];
+		_bool bNoInstancing = Models[i]["NoInstancing"];
+
 		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
-		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD)
+		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD && bNoInstancing == false)
 		{
-			Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex);
+			if (FAILED(Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex)))
+				return E_FAIL;
 		}
 		else
 		{
-			Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex);
+			if (FAILED(Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex)))
+				return E_FAIL;
 		}
 	}
 
@@ -1372,6 +1398,9 @@ HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objec
 	StaticMeshInstanceDesc.iRender = 0;
 	StaticMeshInstanceDesc.m_eMeshLevelID = static_cast<LEVEL>(iLevelIndex);
 	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
+
+	StaticMeshInstanceDesc.iLightShape = objects[0].value("LightShape", 0); //오브젝트중 하나 가져와서 라이트모양을 넣어주자.
+	//cout << StaticMeshInstanceDesc.iLightShape << endl;
 
 	wstring wstrModelName = StringToWString(ModelName);
 	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance_"); //인스턴스 용 모델을 준비해야겠는디?
@@ -1764,11 +1793,11 @@ HRESULT CLoader::Loading_For_YG()
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Player"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Player"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlayerWeapon"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_PlayerWeapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
 		return E_FAIL;
 

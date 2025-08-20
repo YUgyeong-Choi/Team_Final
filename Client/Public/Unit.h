@@ -42,7 +42,7 @@ public:
 	virtual HRESULT Render_Shadow() override;
 
 	void SetCascadeShadow();
-
+	
 
 
 protected: /* [ Setup 함수 ] */
@@ -90,6 +90,10 @@ public:
 
 	AABBBOX GetWorldAABB() const;
 
+public:
+	_float Get_CurrentDamage() { return m_fDamage; }
+	void Set_CurrentDamage(_float fDamage) { m_fDamage = fDamage; }
+
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };
 	_bool m_bIsPlayer = { false };
@@ -102,6 +106,7 @@ protected:				/* [ 기본 속성 ] */
 	_bool				m_isActive = { true };
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);
+	_float				m_fDamage = {};
 	_float3				m_InitPos = {};
 	_float3				m_InitScale = {};
 	_int				m_iRender = {};

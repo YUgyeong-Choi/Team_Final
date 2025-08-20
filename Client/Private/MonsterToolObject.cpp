@@ -47,13 +47,15 @@ HRESULT CMonsterToolObject::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	LoadAnimDataFromJson();
+
 	Register_Events();
 
 	_vector vInitPos = XMVectorSetW(XMLoadFloat3(&pDesc->InitPos), 1.f);
 	m_pTransformCom->Set_State(STATE::POSITION, vInitPos);
 	m_pTransformCom->Scaling(pDesc->InitScale);
 
-	//m_pAnimator->SetPlaying(true);
+	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 	
 	return S_OK;
 }
@@ -64,6 +66,9 @@ void CMonsterToolObject::Priority_Update(_float fTimeDelta)
 }
 void CMonsterToolObject::Update(_float fTimeDelta)
 {
+
+
+
 	/* [ 애니메이션 업데이트 ] */
 	if (m_pAnimator)
 		m_pAnimator->Update(fTimeDelta);
@@ -163,6 +168,45 @@ void CMonsterToolObject::SetCascadeShadow()
 	}
 }
 
+void CMonsterToolObject::LoadAnimDataFromJson()
+{
+	string path = "../Bin/Save/AnimationEvents/" + m_pModelCom->Get_ModelName() + "_events.json";
+	ifstream ifs(path);
+	if (ifs.is_open())
+	{
+		json root;
+		ifs >> root;
+		if (root.contains("animations"))
+		{
+			auto& animationsJson = root["animations"];
+			auto& clonedAnims = m_pModelCom->GetAnimations();
+
+			for (const auto& animData : animationsJson)
+			{
+				const string& clipName = animData["ClipName"];
+
+				for (auto& pAnim : clonedAnims)
+				{
+					if (pAnim->Get_Name() == clipName)
+					{
+						pAnim->Deserialize(animData);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	path = "../Bin/Save/AnimationStates/" + m_pModelCom->Get_ModelName() + "_States.json";
+	ifstream ifsStates(path);
+	if (ifsStates.is_open())
+	{
+		json rootStates;
+		ifsStates >> rootStates;
+		m_pAnimator->Deserialize(rootStates);
+	}
+}
+
 HRESULT CMonsterToolObject::Bind_Shader()
 {
 	/* [ 월드 스페이스 넘기기 ] */
@@ -188,7 +232,7 @@ HRESULT CMonsterToolObject::Bind_Shader()
 
 		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
-		if (FAILED(m_pShaderCom->Begin(0)))
+		if (FAILED(m_pShaderCom->Begin(1)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))

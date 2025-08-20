@@ -67,9 +67,6 @@
     <Filter Include="02.GameObjects\08.TestObject">
       <UniqueIdentifier>{fd6a2e2e-1acb-4059-8da8-96746c2038c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI">
-      <UniqueIdentifier>{abd57b5b-f0cf-4c34-8c0b-f0f78d57b774}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Camera\00.Camara_Free">
       <UniqueIdentifier>{3e4d9fb2-772a-4885-981e-42db3ac214d9}</UniqueIdentifier>
     </Filter>
@@ -82,14 +79,8 @@
     <Filter Include="01.Levels\LevelGL\UISequence">
       <UniqueIdentifier>{84d85fce-26e2-426d-b3c6-d47585fc318c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic">
-      <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\00.StaticMesh">
       <UniqueIdentifier>{ba614f03-cdd1-4f39-bea9-f61ffef52a92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Video">
-      <UniqueIdentifier>{23a91808-8324-4249-8518-c3ecc5b47f25}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\0_Level_KratCentralStation">
       <UniqueIdentifier>{a3f64273-696d-4106-b58f-efef5e5d53fe}</UniqueIdentifier>
@@ -121,18 +112,6 @@
     <Filter Include="02.GameObjects\07.Effect\Deprecated\Explosion">
       <UniqueIdentifier>{bc5eb1b7-60bc-4699-a4fe-4b7b555d9aad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Static">
-      <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
-      <UniqueIdentifier>{85e6703b-969f-44ff-8640-27151012a745}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Loading">
-      <UniqueIdentifier>{3a0ddaee-96b8-4ed3-8e84-eb55b5279ee8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\HP">
-      <UniqueIdentifier>{754f49d2-926e-4330-905d-0dc51623fb1b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelCY">
       <UniqueIdentifier>{fe0db61e-17b3-4a02-b250-2ba12840b64c}</UniqueIdentifier>
     </Filter>
@@ -148,20 +127,8 @@
     <Filter Include="02.GameObjects\00.StaticMesh\StaticMesh_Instance">
       <UniqueIdentifier>{3dc06d4f-f034-42de-b5d0-7cc25f51a15f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Button">
-      <UniqueIdentifier>{2b0fcbb9-ea95-4cc2-a9ea-66880efc5920}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelCY\Tool\ToolMeshEffect">
       <UniqueIdentifier>{c96d79a7-a63e-4a35-83f4-de237defe4ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Text">
-      <UniqueIdentifier>{b1e0564c-381f-4d59-a7ce-4e891ff924d9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container">
-      <UniqueIdentifier>{a57f9c53-0a50-4000-935c-7a8076f50e0e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Guide">
-      <UniqueIdentifier>{d4dbb103-38eb-42f4-bae6-7687d2708db9}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Unit">
       <UniqueIdentifier>{1262068e-f1b1-40a9-9e97-c548a3914883}</UniqueIdentifier>
@@ -175,23 +142,8 @@
     <Filter Include="02.GameObjects\01.Unit\00.Player\PlayerBehavior">
       <UniqueIdentifier>{c6317318-96b2-4c47-a258-b55edf9c9eb7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Panel">
-      <UniqueIdentifier>{cbc0df18-5fd5-4cd3-ae35-23bf397e69ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player">
-      <UniqueIdentifier>{21b0be92-1722-4dbf-9f8a-80c41ff5d6d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Mana">
-      <UniqueIdentifier>{367fcc09-a226-4aab-9b15-2cb35c437e7a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03.Weapon">
       <UniqueIdentifier>{87bd98b7-f2e3-4aba-bbd8-673c9acc6bd4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
-      <UniqueIdentifier>{de7768fa-8c6d-44b8-afd6-e7895c20ad10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\Weapon">
-      <UniqueIdentifier>{08aa5e06-5485-4229-9431-8542ea7c75c8}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\03. Item">
       <UniqueIdentifier>{19f9895f-95e4-4f19-8513-e9457ce85169}</UniqueIdentifier>
@@ -208,14 +160,8 @@
     <Filter Include="02.GameObjects\03. Item\Ramp">
       <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\Item">
-      <UniqueIdentifier>{c0df1a5c-fcd8-485b-a342-280c94755189}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Observer\Slot">
       <UniqueIdentifier>{e266084c-38d3-42df-9999-4c7cde30193f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\LD">
-      <UniqueIdentifier>{7ff4fea0-434f-4203-abc5-95abed9014ee}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\07.Effect\Manager">
       <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
@@ -249,30 +195,6 @@
     </Filter>
     <Filter Include="03. Observer\Weapon">
       <UniqueIdentifier>{1e5850b9-99a0-4042-a443-41b54a11553a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\RD">
-      <UniqueIdentifier>{15bb2e12-bf44-451a-962c-8efd8d082d9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Durability">
-      <UniqueIdentifier>{204442d3-c69d-4c7a-9141-09b4c54775d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Egro">
-      <UniqueIdentifier>{10f0a836-f83b-4549-b109-16566ca11c30}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\RU">
-      <UniqueIdentifier>{654c28ba-81f2-4605-92f6-c6577e62cc0b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\LegionArm">
-      <UniqueIdentifier>{5f05da4b-d7e7-4354-ad22-0daec0c9d1d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Legion">
-      <UniqueIdentifier>{8da4136f-ffbc-41ad-a920-f955759a05f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
-      <UniqueIdentifier>{58e701f2-137e-4b53-9f66-da65d354bf05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\Arm">
-      <UniqueIdentifier>{942c9929-9177-4a5e-88d8-4858d642d97d}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Unit\02. Monster">
       <UniqueIdentifier>{0008dbe7-bde6-49da-8a19-6f7823aff587}</UniqueIdentifier>
@@ -313,17 +235,89 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\Fuoco">
       <UniqueIdentifier>{d9857476-da8f-4f1b-bcaa-d6c49b41d4a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Element">
-      <UniqueIdentifier>{d72f2c3b-44c8-4ed6-9e56-a971259aa170}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler">
+      <UniqueIdentifier>{6e387c41-6325-48c1-bb47-6fc072b83ccc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Component">
-      <UniqueIdentifier>{264dbc4a-185d-49f3-a140-fa6917159057}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\07.Effect\EffectContainer\Trail\Ri">
+      <UniqueIdentifier>{04d321e1-21ea-4da5-a8ed-f09e79edc950}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Component\Text">
-      <UniqueIdentifier>{4af0f939-cc6e-4cff-bec3-32514c8447dc}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Police">
+      <UniqueIdentifier>{f7b1672f-ca66-4fb8-b159-34e1261f8845}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Component\Click">
-      <UniqueIdentifier>{2a29387b-5a45-44ae-85d7-c980f9c4b983}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Police\Elite">
+      <UniqueIdentifier>{82b1cf39-051c-489b-9344-d6882109340c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles">
+      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Effect">
+      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Projectile">
+      <UniqueIdentifier>{5d4debaf-81fb-45f4-9dc8-a565ee4fb8a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Projectile\Fuoco">
+      <UniqueIdentifier>{857ac3d0-7a88-456d-8659-01d2ab5485b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\13. DynamicMesh">
+      <UniqueIdentifier>{603fd7cb-9e42-4575-b9e8-b6874c9d9f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\14. AStar">
+      <UniqueIdentifier>{b465af8a-30b0-4d99-982d-fc5de51f5df9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script">
+      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\13. DynamicMesh\00.Door">
+      <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm">
+      <UniqueIdentifier>{de9c87a9-7366-4fba-8867-e942279ecb45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI">
+      <UniqueIdentifier>{abd57b5b-f0cf-4c34-8c0b-f0f78d57b774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic">
+      <UniqueIdentifier>{4e1dc362-0847-473b-b517-c3843dd22896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar">
+      <UniqueIdentifier>{85e6703b-969f-44ff-8640-27151012a745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Loading">
+      <UniqueIdentifier>{3a0ddaee-96b8-4ed3-8e84-eb55b5279ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\HP">
+      <UniqueIdentifier>{754f49d2-926e-4330-905d-0dc51623fb1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Mana">
+      <UniqueIdentifier>{367fcc09-a226-4aab-9b15-2cb35c437e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Durability">
+      <UniqueIdentifier>{204442d3-c69d-4c7a-9141-09b4c54775d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Egro">
+      <UniqueIdentifier>{10f0a836-f83b-4549-b109-16566ca11c30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Legion">
+      <UniqueIdentifier>{8da4136f-ffbc-41ad-a920-f955759a05f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\Stamina">
+      <UniqueIdentifier>{58e701f2-137e-4b53-9f66-da65d354bf05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Button">
+      <UniqueIdentifier>{2b0fcbb9-ea95-4cc2-a9ea-66880efc5920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon">
+      <UniqueIdentifier>{de7768fa-8c6d-44b8-afd6-e7895c20ad10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\Weapon">
+      <UniqueIdentifier>{08aa5e06-5485-4229-9431-8542ea7c75c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\Item">
+      <UniqueIdentifier>{c0df1a5c-fcd8-485b-a342-280c94755189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\LegionArm">
+      <UniqueIdentifier>{5f05da4b-d7e7-4354-ad22-0daec0c9d1d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature">
       <UniqueIdentifier>{352f8db1-0649-441d-9b02-807cefb57c48}</UniqueIdentifier>
@@ -346,14 +340,59 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Click">
       <UniqueIdentifier>{563b9a86-eb9e-4b76-b71f-0cbd6f539b67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler">
-      <UniqueIdentifier>{6e387c41-6325-48c1-bb47-6fc072b83ccc}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Text">
+      <UniqueIdentifier>{390fc19e-aa96-482f-a915-8e70584e6967}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
-      <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\99.UI\Video">
+      <UniqueIdentifier>{23a91808-8324-4249-8518-c3ecc5b47f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Static">
+      <UniqueIdentifier>{3c8f34e0-c54a-461d-a6bf-2ca8b382ad77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Text">
+      <UniqueIdentifier>{b1e0564c-381f-4d59-a7ce-4e891ff924d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container">
+      <UniqueIdentifier>{a57f9c53-0a50-4000-935c-7a8076f50e0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Guide">
+      <UniqueIdentifier>{d4dbb103-38eb-42f4-bae6-7687d2708db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel">
+      <UniqueIdentifier>{cbc0df18-5fd5-4cd3-ae35-23bf397e69ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player">
+      <UniqueIdentifier>{21b0be92-1722-4dbf-9f8a-80c41ff5d6d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\LD">
+      <UniqueIdentifier>{7ff4fea0-434f-4203-abc5-95abed9014ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\RD">
+      <UniqueIdentifier>{15bb2e12-bf44-451a-962c-8efd8d082d9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\RU">
+      <UniqueIdentifier>{654c28ba-81f2-4605-92f6-c6577e62cc0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\Arm">
+      <UniqueIdentifier>{942c9929-9177-4a5e-88d8-4858d642d97d}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Monster">
       <UniqueIdentifier>{3ee88807-5483-4c39-969c-48cf776b8700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script">
+      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Element">
+      <UniqueIdentifier>{d72f2c3b-44c8-4ed6-9e56-a971259aa170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Component">
+      <UniqueIdentifier>{264dbc4a-185d-49f3-a140-fa6917159057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Component\Text">
+      <UniqueIdentifier>{4af0f939-cc6e-4cff-bec3-32514c8447dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Component\Click">
+      <UniqueIdentifier>{2a29387b-5a45-44ae-85d7-c980f9c4b983}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\World">
       <UniqueIdentifier>{c622a759-7795-4101-a76e-892f83c691ef}</UniqueIdentifier>
@@ -394,23 +433,23 @@
     <Filter Include="02.GameObjects\99.UI\World\Popup">
       <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\13. DynamicMesh">
-      <UniqueIdentifier>{603fd7cb-9e42-4575-b9e8-b6874c9d9f10}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Base">
+      <UniqueIdentifier>{77774670-8181-44d9-a3cd-ac18e732e9e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\14. AStar">
-      <UniqueIdentifier>{b465af8a-30b0-4d99-982d-fc5de51f5df9}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Steel">
+      <UniqueIdentifier>{e8b16ba0-86c5-4932-821a-a1f8834a9fc5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Script">
-      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\13. DynamicMesh\00.Door">
-      <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Falcon">
+      <UniqueIdentifier>{9b969649-0e9b-4de5-99c4-383ddbfb7c57}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool">
-      <UniqueIdentifier>{88d6ea73-d443-4025-98e7-ede08337e842}</UniqueIdentifier>
+      <UniqueIdentifier>{d3b0d8fc-aabf-4ea6-955f-c42488f4c8b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
+      <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject">
-      <UniqueIdentifier>{80d23d27-478e-4893-829d-40d8938787e7}</UniqueIdentifier>
+      <UniqueIdentifier>{57d38245-a484-4631-8cb6-8d575b2d031c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -871,10 +910,16 @@
     <ClInclude Include="..\public\UI_Script.h">
       <Filter>02.GameObjects\99.UI\Container\Script</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MonsterTool.h">
+    <ClInclude Include="..\public\LegionArm_Base.h">
+      <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterTool.h">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MonsterToolObject.h">
+    <ClInclude Include="..\public\LegionArm_Steel.h">
+      <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterToolObject.h">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1310,10 +1355,16 @@
     <ClCompile Include="..\private\UI_Script.cpp">
       <Filter>02.GameObjects\99.UI\Container\Script</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MonsterTool.cpp">
+    <ClCompile Include="..\private\LegionArm_Base.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterTool.cpp">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MonsterToolObject.cpp">
+    <ClCompile Include="..\private\LegionArm_Steel.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterToolObject.cpp">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
     </ClCompile>
   </ItemGroup>

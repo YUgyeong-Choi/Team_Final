@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../public/;../../EngineSDK/Inc/;../../PhysXSDK/Include/;../default/imgui/;../default/imgui/backends/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/;../../EngineSDK/Inc/;../../PhysXSDK/Include/;../default/imgui/;../default/imgui/backends/;../../Engine/Public/FFmpeg/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -118,7 +118,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../EngineSDK/Lib/;../../PhysXSDK/Debug/LIB/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;DirectXTKd.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCooking_64.lib;PhysXVehicle2_static_64.lib;PhysXGpu_64.lib;assimp-vc143-mtd.lib;mfplat.lib;mf.lib;mfreadwrite.lib;mfuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;d3d11.lib;DirectXTKd.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCooking_64.lib;PhysXVehicle2_static_64.lib;PhysXGpu_64.lib;assimp-vc143-mtd.lib;mfplat.lib;mf.lib;mfreadwrite.lib;mfuuid.lib;swscale.lib;avutil.lib;avformat.lib;avcodec.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -135,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;USE_IMGUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../public/;../../EngineSDK/Inc/;../../PhysXSDK/Include/;../default/imgui/;../default/imgui/backends/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/;../../EngineSDK/Inc/;../../PhysXSDK/Include/;../default/imgui/;../default/imgui/backends/;../../Engine/Public/FFmpeg/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>MaxSpeed</Optimization>
@@ -193,8 +193,10 @@
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\public\Elite_Police.h" />
     <ClInclude Include="..\Public\FireBall.h" />
-    <ClInclude Include="..\public\MonsterTool.h" />
-    <ClInclude Include="..\public\MonsterToolObject.h" />
+    <ClInclude Include="..\Public\MonsterTool.h" />
+    <ClInclude Include="..\Public\MonsterToolObject.h" />
+    <ClInclude Include="..\public\LegionArm_Base.h" />
+    <ClInclude Include="..\public\LegionArm_Steel.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\public\UI_Component.h" />
     <ClInclude Include="..\public\UI_Component_Text.h" />
@@ -373,8 +375,8 @@
     <ClCompile Include="..\private\Mana_Bar.cpp" />
     <ClCompile Include="..\Private\MapTool.cpp" />
     <ClCompile Include="..\private\MeshEffect.cpp" />
-    <ClCompile Include="..\private\MonsterTool.cpp" />
-    <ClCompile Include="..\private\MonsterToolObject.cpp" />
+    <ClCompile Include="..\Private\MonsterTool.cpp" />
+    <ClCompile Include="..\Private\MonsterToolObject.cpp" />
     <ClCompile Include="..\private\Monster_Base.cpp" />
     <ClCompile Include="..\private\Monster_Test.cpp" />
     <ClCompile Include="..\Private\MySequence.cpp" />
@@ -391,6 +393,8 @@
     <ClCompile Include="..\private\PBRMesh.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Elite_Police.cpp" />
+    <ClCompile Include="..\private\LegionArm_Base.cpp" />
+    <ClCompile Include="..\private\LegionArm_Steel.cpp" />
     <ClCompile Include="..\private\Portion.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="..\private\Lamp.cpp" />

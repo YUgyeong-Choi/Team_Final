@@ -1,9 +1,10 @@
 {
-    "ModelCount": 164,
+    "ModelCount": 163,
     "Models": [
         {
             "Collision": true,
             "ModelName": "FloorB",
+            "NoInstancing": false,
             "ObjectCount": 12,
             "Objects": [
                 {
@@ -399,6 +400,7 @@
         {
             "Collision": false,
             "ModelName": "SM_BuildingA_Store_02",
+            "NoInstancing": false,
             "ObjectCount": 8,
             "Objects": [
                 {
@@ -646,6 +648,7 @@
         {
             "Collision": false,
             "ModelName": "SM_BuildingA_Store_03",
+            "NoInstancing": false,
             "ObjectCount": 6,
             "Objects": [
                 {
@@ -833,6 +836,7 @@
         {
             "Collision": false,
             "ModelName": "SM_BuildingA_Wall_058",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -870,6 +874,7 @@
         {
             "Collision": false,
             "ModelName": "SM_BuildingA_Wall_18",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -907,6 +912,7 @@
         {
             "Collision": false,
             "ModelName": "SM_BuildingA_Wall_23",
+            "NoInstancing": false,
             "ObjectCount": 11,
             "Objects": [
                 {
@@ -1244,6 +1250,7 @@
         {
             "Collision": false,
             "ModelName": "SM_BuildingA_Wall_28",
+            "NoInstancing": false,
             "ObjectCount": 10,
             "Objects": [
                 {
@@ -1551,6 +1558,7 @@
         {
             "Collision": true,
             "ModelName": "SM_BuildingA_Wall_44",
+            "NoInstancing": false,
             "ObjectCount": 13,
             "Objects": [
                 {
@@ -1948,6 +1956,7 @@
         {
             "Collision": true,
             "ModelName": "SM_BuildingA_Wall_YW",
+            "NoInstancing": false,
             "ObjectCount": 14,
             "Objects": [
                 {
@@ -2375,6 +2384,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_01_Male",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -2502,6 +2512,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_02_Male",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -2539,6 +2550,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_03_Female",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -2636,6 +2648,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_03_Male",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -2703,6 +2716,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_04_Female",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -2770,6 +2784,7 @@
         {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_05_Female",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -2807,6 +2822,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Cathedral_ArchWall_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -2844,6 +2860,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Cathedral_Arch_09",
+            "NoInstancing": false,
             "ObjectCount": 17,
             "Objects": [
                 {
@@ -3361,6 +3378,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Cathedral_Arch_12",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -3398,6 +3416,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Cathedral_BrickWall_01",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -3463,7 +3482,7 @@
                         [
                             108.86958312988281,
                             0.7799246311187744,
-                            -10.479959487915039,
+                            -10.413646697998047,
                             0.9999999403953552
                         ]
                     ]
@@ -3497,7 +3516,7 @@
                         [
                             108.86958312988281,
                             0.7799246311187744,
-                            -5.586540699005127,
+                            -5.763858318328857,
                             0.9999999403953552
                         ]
                     ]
@@ -3507,6 +3526,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Cathedral_BrickWall_18",
+            "NoInstancing": false,
             "ObjectCount": 9,
             "Objects": [
                 {
@@ -3524,9 +3544,9 @@
                             0.0
                         ],
                         [
-                            5.31201127464305e-14,
-                            0.4672490656375885,
-                            3.7170475573368444e-14,
+                            4.079509557312726e-14,
+                            0.3588367700576782,
+                            2.854610807716956e-14,
                             0.0
                         ],
                         [
@@ -3554,15 +3574,15 @@
                             0.0
                         ],
                         [
-                            0.3510003387928009,
-                            6.251954118852154e-07,
-                            1.1018482837243937e-07,
+                            0.30814239382743835,
+                            5.488578835866065e-07,
+                            9.673107825847183e-08,
                             0.0
                         ],
                         [
-                            3.2152402127394453e-06,
-                            -1.8051155805587769,
-                            -2.4769311832172937e-14,
+                            3.21523998536577e-06,
+                            -1.8051154613494873,
+                            -2.4769310138107042e-14,
                             0.0
                         ],
                         [
@@ -3666,10 +3686,14 @@
                 {
                     "ColliderType": 1,
                     "LightShape": 0,
+                    "TileDensity": [
+                        1.0,
+                        1.0
+                    ],
                     "WorldMatrix": [
                         [
-                            -0.2535518705844879,
-                            4.6144606358211604e-07,
+                            -0.5018728375434875,
+                            9.133734693023143e-07,
                             0.0,
                             0.0
                         ],
@@ -3686,8 +3710,8 @@
                             0.0
                         ],
                         [
-                            111.8941650390625,
-                            2.2321557998657227,
+                            112.25691986083984,
+                            1.250722050666809,
                             -12.158326148986816,
                             1.0
                         ]
@@ -3696,90 +3720,102 @@
                 {
                     "ColliderType": 0,
                     "LightShape": 0,
+                    "TileDensity": [
+                        1.0,
+                        1.0
+                    ],
                     "WorldMatrix": [
                         [
-                            -0.25355079770088196,
-                            4.6144410248416534e-07,
-                            -1.5005772856917546e-18,
+                            -0.5,
+                            9.099629210140847e-07,
+                            -2.9591292467724464e-18,
                             0.0
                         ],
                         [
-                            2.942466181821146e-08,
+                            2.9424683134493534e-08,
                             0.01616806723177433,
-                            -2.9424850112036438e-08,
+                            -2.9424683134493534e-08,
                             0.0
                         ],
                         [
-                            -5.232876978955581e-11,
-                            -2.8753709557349794e-05,
-                            -15.799394607543945,
+                            -5.232955388456695e-11,
+                            -2.8753724109265022e-05,
+                            -15.799393653869629,
                             0.0
                         ],
                         [
-                            111.89446258544922,
-                            11.961166381835938,
+                            111.75697326660156,
+                            9.759138107299805,
                             -12.158394813537598,
-                            0.9999982118606567
+                            1.0
                         ]
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 0,
+                    "TileDensity": [
+                        1.0,
+                        1.0
+                    ],
                     "WorldMatrix": [
                         [
-                            -0.25355076789855957,
-                            4.6144373300194275e-07,
-                            2.8456206033027065e-13,
+                            -0.4999999701976776,
+                            9.099628641706659e-07,
+                            5.611546925916866e-13,
                             0.0
                         ],
                         [
-                            -9.732011474906238e-14,
-                            7.066182083903527e-10,
+                            -1.6859386133796957e-14,
+                            7.067288421147566e-10,
                             -0.01616807095706463,
                             0.0
                         ],
                         [
-                            -4.165383870713413e-05,
+                            -4.1653831431176513e-05,
                             -22.887653350830078,
-                            -1.000501811176946e-06,
+                            -1.000451106847322e-06,
                             0.0
                         ],
                         [
-                            111.89446258544922,
-                            2.4593145847320557,
+                            111.78167724609375,
+                            1.3540196418762207,
                             -11.354613304138184,
-                            0.9999982118606567
+                            1.0
                         ]
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 0,
+                    "TileDensity": [
+                        1.0,
+                        1.0
+                    ],
                     "WorldMatrix": [
                         [
-                            -0.25355076789855957,
-                            4.6144373300194275e-07,
-                            2.8456206033027065e-13,
+                            -0.4999999701976776,
+                            9.099628641706659e-07,
+                            5.611541504906004e-13,
                             0.0
                         ],
                         [
-                            -9.732011474906238e-14,
-                            7.066182083903527e-10,
+                            -1.6859367499072117e-14,
+                            7.067288421147566e-10,
                             -0.01616807095706463,
                             0.0
                         ],
                         [
-                            -4.165383870713413e-05,
+                            -4.1653831431176513e-05,
                             -22.887653350830078,
-                            -1.000501811176946e-06,
+                            -1.000451106847322e-06,
                             0.0
                         ],
                         [
-                            111.89446258544922,
-                            2.4593145847320557,
+                            111.7636947631836,
+                            1.368564248085022,
                             -5.051215648651123,
-                            0.9999982118606567
+                            1.0
                         ]
                     ]
                 }
@@ -3788,6 +3824,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Debris_01A",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -3885,6 +3922,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Exterior_Barrel_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -3952,6 +3990,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_Clock_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -3989,6 +4028,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_Clock_02",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -4026,6 +4066,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_IronStairs_01",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -4153,6 +4194,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_ScaffoldingSet_02",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -4190,6 +4232,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_ScaffoldingSet_03",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -4227,6 +4270,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_ScaffoldingSet_09",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -4324,6 +4368,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_ScaffoldingSet_12",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -4361,6 +4406,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_ScaffoldingSet_13",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -4458,6 +4504,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Exterior_Suitcase_01",
+            "NoInstancing": false,
             "ObjectCount": 17,
             "Objects": [
                 {
@@ -4975,6 +5022,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_Suitcase_02",
+            "NoInstancing": false,
             "ObjectCount": 7,
             "Objects": [
                 {
@@ -5192,6 +5240,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Exterior_Suitcase_03",
+            "NoInstancing": false,
             "ObjectCount": 5,
             "Objects": [
                 {
@@ -5349,6 +5398,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Exterior_Suitcase_04",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -5446,6 +5496,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_TrashPaper_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -5483,6 +5534,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_TrashPaper_02",
+            "NoInstancing": false,
             "ObjectCount": 12,
             "Objects": [
                 {
@@ -5850,6 +5902,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_WoodenStool_03",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -5947,6 +6000,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Exterior_birdcage_01",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -6044,6 +6098,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Exterior_transportcart_01",
+            "NoInstancing": false,
             "ObjectCount": 8,
             "Objects": [
                 {
@@ -6291,6 +6346,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Factory_Box_01",
+            "NoInstancing": false,
             "ObjectCount": 9,
             "Objects": [
                 {
@@ -6568,6 +6624,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_Prop_01_DollArm_1",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -6605,6 +6662,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_Prop_01_DollArm_2",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -6642,6 +6700,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_Prop_01_DollBroken_2",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -6709,6 +6768,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_Prop_01_DollHead_1",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -6746,6 +6806,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_Prop_01_DollHead_2",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -6813,6 +6874,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_Prop_01_DollHead_3",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -6880,6 +6942,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_RoofFrame_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -6917,6 +6980,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Factory_Table_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -6984,6 +7048,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_Tarp_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -7021,6 +7086,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Fence_Barrier_01",
+            "NoInstancing": false,
             "ObjectCount": 76,
             "Objects": [
                 {
@@ -9308,6 +9374,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Fence_IronFence_02",
+            "NoInstancing": false,
             "ObjectCount": 5,
             "Objects": [
                 {
@@ -9465,6 +9532,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Gate_Arch_01",
+            "NoInstancing": false,
             "ObjectCount": 24,
             "Objects": [
                 {
@@ -10192,6 +10260,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Gate_Gate_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -10229,6 +10298,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Gate_Gate_02",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -10266,6 +10336,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Gate_IronGate_02",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -10333,6 +10404,7 @@
         {
             "Collision": false,
             "ModelName": "SM_InStructure_WallPart_01_FenceA",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -10400,6 +10472,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Bag_01",
+            "NoInstancing": false,
             "ObjectCount": 8,
             "Objects": [
                 {
@@ -10647,6 +10720,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Bag_02",
+            "NoInstancing": false,
             "ObjectCount": 15,
             "Objects": [
                 {
@@ -11104,6 +11178,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Bag_03",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -11231,6 +11306,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_BarCounter_04",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -11298,6 +11374,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Barrel_05",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -11335,6 +11412,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_BookShelf_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -11402,6 +11480,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_BookShelf_01_B",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -11439,6 +11518,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Book_02",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -11476,6 +11556,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Book_03",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -11513,6 +11594,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Book_04",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -11580,6 +11662,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Book_05",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -11707,6 +11790,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Book_06",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -11834,6 +11918,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Book_11",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -11871,6 +11956,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Book_12",
+            "NoInstancing": true,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -11938,6 +12024,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Book_13",
+            "NoInstancing": true,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -11975,6 +12062,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Book_18",
+            "NoInstancing": true,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -12042,6 +12130,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Bottle_01",
+            "NoInstancing": true,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -12139,6 +12228,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Bottle_01c",
+            "NoInstancing": true,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -12176,6 +12266,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Bottle_02",
+            "NoInstancing": true,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -12303,6 +12394,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Bottle_02c",
+            "NoInstancing": true,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -12340,6 +12432,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Bottles_04",
+            "NoInstancing": true,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -12377,6 +12470,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Box_01",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -12474,6 +12568,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Box_02",
+            "NoInstancing": false,
             "ObjectCount": 8,
             "Objects": [
                 {
@@ -12721,6 +12816,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Box_06",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -12818,6 +12914,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Box_08",
+            "NoInstancing": false,
             "ObjectCount": 12,
             "Objects": [
                 {
@@ -13185,6 +13282,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Candle_03",
+            "NoInstancing": true,
             "ObjectCount": 9,
             "Objects": [
                 {
@@ -13462,6 +13560,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_ChairSet_03",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -13499,6 +13598,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_ChairSet_04",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -13536,6 +13636,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_ChairSet_05",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -13573,6 +13674,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_ChairSet_07",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -13610,6 +13712,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Chair_08",
+            "NoInstancing": false,
             "ObjectCount": 18,
             "Objects": [
                 {
@@ -14157,6 +14260,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Chair_10",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -14224,6 +14328,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Clock_02",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -14261,6 +14366,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_GlassBottles_01",
+            "NoInstancing": true,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -14358,11 +14464,12 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Lamp_02",
+            "NoInstancing": true,
             "ObjectCount": 1,
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "LightShape": 2,
+                    "LightShape": 8,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -14395,6 +14502,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_OilLamp_02",
+            "NoInstancing": true,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -14462,6 +14570,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Table_02",
+            "NoInstancing": false,
             "ObjectCount": 5,
             "Objects": [
                 {
@@ -14619,6 +14728,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Interior_Table_10",
+            "NoInstancing": false,
             "ObjectCount": 5,
             "Objects": [
                 {
@@ -14742,7 +14852,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -14776,6 +14886,7 @@
         {
             "Collision": false,
             "ModelName": "SM_LightProp_FloorLight_02",
+            "NoInstancing": true,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -14843,6 +14954,7 @@
         {
             "Collision": false,
             "ModelName": "SM_LightProp_Light_02",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -14877,7 +14989,7 @@
                 },
                 {
                     "ColliderType": 0,
-                    "LightShape": 0,
+                    "LightShape": 6,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -14940,6 +15052,7 @@
         {
             "Collision": true,
             "ModelName": "SM_LightProp_SpotLight_01",
+            "NoInstancing": true,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -14977,11 +15090,12 @@
         {
             "Collision": true,
             "ModelName": "SM_LightProp_StreetLamp_02",
+            "NoInstancing": true,
             "ObjectCount": 5,
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "LightShape": 0,
+                    "LightShape": 3,
                     "WorldMatrix": [
                         [
                             -4.371138828673793e-08,
@@ -15041,7 +15155,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "LightShape": 0,
+                    "LightShape": 3,
                     "WorldMatrix": [
                         [
                             -4.371138828673793e-08,
@@ -15071,7 +15185,7 @@
                 },
                 {
                     "ColliderType": 0,
-                    "LightShape": 0,
+                    "LightShape": 3,
                     "WorldMatrix": [
                         [
                             -4.371138828673793e-08,
@@ -15134,11 +15248,12 @@
         {
             "Collision": true,
             "ModelName": "SM_LightProp_StreetLamp_04",
+            "NoInstancing": true,
             "ObjectCount": 2,
             "Objects": [
                 {
                     "ColliderType": 1,
-                    "LightShape": 0,
+                    "LightShape": 7,
                     "WorldMatrix": [
                         [
                             4.371138828673793e-08,
@@ -15168,7 +15283,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "LightShape": 0,
+                    "LightShape": 7,
                     "WorldMatrix": [
                         [
                             -4.371138828673793e-08,
@@ -15201,6 +15316,7 @@
         {
             "Collision": false,
             "ModelName": "SM_LightProp_StreetLight_02",
+            "NoInstancing": true,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -15238,6 +15354,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -15275,6 +15392,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_02",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -15312,6 +15430,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_03",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -15439,6 +15558,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_04",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -15506,6 +15626,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_05",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -15543,6 +15664,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_06",
+            "NoInstancing": false,
             "ObjectCount": 6,
             "Objects": [
                 {
@@ -15730,6 +15852,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_07",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -15797,6 +15920,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_09",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -15834,6 +15958,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_AD_11",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -15901,6 +16026,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_Blueprint_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -15938,6 +16064,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Sign_Blueprint_02",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -15975,6 +16102,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_1FRail_01",
+            "NoInstancing": false,
             "ObjectCount": 31,
             "Objects": [
                 {
@@ -16912,6 +17040,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_2FWallFillar_01",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -17039,6 +17168,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Bayonet",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -17076,6 +17206,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_Bench_01",
+            "NoInstancing": false,
             "ObjectCount": 9,
             "Objects": [
                 {
@@ -17353,6 +17484,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_BlueFairy_01",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -17480,6 +17612,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_BlueFairy_01a",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -17607,6 +17740,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_BlueFairy_02",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -17704,6 +17838,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_BlueFairy_02a",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -17801,6 +17936,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_BlueFairy_02b",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -17898,6 +18034,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_BlueFairy_03",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -17935,6 +18072,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_BlueFairy_03a",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -17972,6 +18110,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_BlueFairy_03b",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -18009,6 +18148,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_BlueFairy_04",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -18136,6 +18276,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_BlueFairy_04a",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -18263,6 +18404,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_BlueFairy_04b",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -18390,6 +18532,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Clock_02",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -18427,7 +18570,8 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_FStair_01",
-            "ObjectCount": 1,
+            "NoInstancing": false,
+            "ObjectCount": 2,
             "Objects": [
                 {
                     "ColliderType": 1,
@@ -18458,12 +18602,43 @@
                             1.0
                         ]
                     ]
+                },
+                {
+                    "ColliderType": 1,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            4.0869135631282916e-08,
+                            7.437879657882021e-14,
+                            0.9349768757820129,
+                            0.0
+                        ],
+                        [
+                            9.221612460186962e-14,
+                            0.8111414313316345,
+                            -6.452751879918242e-14,
+                            0.0
+                        ],
+                        [
+                            -0.6399999260902405,
+                            -7.275956773926742e-14,
+                            2.7975289640380652e-08,
+                            0.0
+                        ],
+                        [
+                            112.0465087890625,
+                            1.5562150478363037,
+                            -8.090107917785645,
+                            1.0
+                        ]
+                    ]
                 }
             ]
         },
         {
             "Collision": false,
             "ModelName": "SM_Station_FenceB_01",
+            "NoInstancing": false,
             "ObjectCount": 28,
             "Objects": [
                 {
@@ -19311,11 +19486,12 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Light_02",
-            "ObjectCount": 6,
+            "NoInstancing": false,
+            "ObjectCount": 20,
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "LightShape": 0,
+                    "LightShape": 1,
                     "WorldMatrix": [
                         [
                             -1.0000001192092896,
@@ -19336,10 +19512,10 @@
                             0.0
                         ],
                         [
-                            110.13363647460938,
-                            5.3324480056762695,
-                            -10.479961395263672,
-                            1.0
+                            110.10578918457031,
+                            5.360217571258545,
+                            -10.413098335266113,
+                            0.9999998807907104
                         ]
                     ]
                 },
@@ -19492,43 +19668,6 @@
                             1.0
                         ]
                     ]
-                }
-            ]
-        },
-        {
-            "Collision": false,
-            "ModelName": "SM_Station_Light_02_Lod2",
-            "ObjectCount": 9,
-            "Objects": [
-                {
-                    "ColliderType": 0,
-                    "LightShape": 1,
-                    "WorldMatrix": [
-                        [
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            1.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            0.0,
-                            1.0,
-                            0.0
-                        ],
-                        [
-                            -1.1976149082183838,
-                            2.4032020568847656,
-                            3.6878573894500732,
-                            0.9999999403953552
-                        ]
-                    ]
                 },
                 {
                     "ColliderType": 0,
@@ -19536,206 +19675,26 @@
                     "WorldMatrix": [
                         [
                             1.0,
-                            0.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            1.0,
+                            -3.265548912168015e-06,
                             0.0,
                             0.0
                         ],
                         [
-                            0.0,
-                            0.0,
-                            1.0,
+                            3.265532086516032e-06,
+                            0.9999948143959045,
+                            -2.324206434423104e-06,
                             0.0
                         ],
                         [
-                            1.939849615097046,
-                            2.4032020568847656,
-                            3.6878573894500732,
-                            0.9999999403953552
-                        ]
-                    ]
-                },
-                {
-                    "ColliderType": 0,
-                    "LightShape": 1,
-                    "WorldMatrix": [
-                        [
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            1.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            0.0,
+                            7.589848888267525e-12,
+                            2.3242184852279024e-06,
                             1.0,
                             0.0
                         ],
                         [
-                            6.255239009857178,
-                            2.4032020568847656,
-                            3.6878573894500732,
-                            0.9999999403953552
-                        ]
-                    ]
-                },
-                {
-                    "ColliderType": 0,
-                    "LightShape": 1,
-                    "WorldMatrix": [
-                        [
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            1.0,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            0.0,
-                            1.0,
-                            0.0
-                        ],
-                        [
-                            9.44367504119873,
-                            2.4032020568847656,
-                            3.6878573894500732,
-                            0.9999999403953552
-                        ]
-                    ]
-                },
-                {
-                    "ColliderType": 0,
-                    "LightShape": 1,
-                    "WorldMatrix": [
-                        [
-                            -1.0,
-                            1.8199258420281694e-06,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            1.819922772483551e-06,
-                            0.9999983310699463,
-                            -1.819922772483551e-06,
-                            0.0
-                        ],
-                        [
-                            -3.3121300840877055e-12,
-                            -1.8199258420281694e-06,
-                            -1.0,
-                            0.0
-                        ],
-                        [
-                            -1.2736692428588867,
-                            2.4828412532806396,
-                            -1.9352662563323975,
-                            1.0
-                        ]
-                    ]
-                },
-                {
-                    "ColliderType": 0,
-                    "LightShape": 1,
-                    "WorldMatrix": [
-                        [
-                            -1.0,
-                            1.8199258420281694e-06,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            1.819922772483551e-06,
-                            0.9999983310699463,
-                            -1.819922772483551e-06,
-                            0.0
-                        ],
-                        [
-                            -3.3121300840877055e-12,
-                            -1.8199258420281694e-06,
-                            -1.0,
-                            0.0
-                        ],
-                        [
-                            6.16995906829834,
-                            2.482830047607422,
-                            -1.9352662563323975,
-                            1.0
-                        ]
-                    ]
-                },
-                {
-                    "ColliderType": 0,
-                    "LightShape": 1,
-                    "WorldMatrix": [
-                        [
-                            -1.0,
-                            1.8199258420281694e-06,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            1.819922772483551e-06,
-                            0.9999983310699463,
-                            -1.819922772483551e-06,
-                            0.0
-                        ],
-                        [
-                            -3.3121300840877055e-12,
-                            -1.8199258420281694e-06,
-                            -1.0,
-                            0.0
-                        ],
-                        [
-                            1.8737521171569824,
-                            2.4828362464904785,
-                            -1.9352662563323975,
-                            1.0
-                        ]
-                    ]
-                },
-                {
-                    "ColliderType": 0,
-                    "LightShape": 1,
-                    "WorldMatrix": [
-                        [
-                            -1.0,
-                            1.8199258420281694e-06,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            1.819922772483551e-06,
-                            0.9999983310699463,
-                            -1.819922772483551e-06,
-                            0.0
-                        ],
-                        [
-                            -3.3121300840877055e-12,
-                            -1.8199258420281694e-06,
-                            -1.0,
-                            0.0
-                        ],
-                        [
-                            9.371068954467773,
-                            2.4828245639801025,
-                            -1.9352662563323975,
+                            -1.2343358993530273,
+                            2.2695744037628174,
+                            3.7045483589172363,
                             1.0
                         ]
                     ]
@@ -19746,26 +19705,386 @@
                     "WorldMatrix": [
                         [
                             1.0,
-                            0.0,
+                            -3.265548912168015e-06,
                             0.0,
                             0.0
                         ],
                         [
-                            0.0,
+                            3.265532086516032e-06,
+                            0.9999948143959045,
+                            -2.324206434423104e-06,
+                            0.0
+                        ],
+                        [
+                            7.589848888267525e-12,
+                            2.3242184852279024e-06,
                             1.0,
+                            0.0
+                        ],
+                        [
+                            1.9317231178283691,
+                            2.2695672512054443,
+                            3.7045483589172363,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            -3.265548912168015e-06,
                             0.0,
                             0.0
                         ],
                         [
-                            0.0,
-                            0.0,
+                            3.265532086516032e-06,
+                            0.9999948143959045,
+                            -2.324206434423104e-06,
+                            0.0
+                        ],
+                        [
+                            7.589848888267525e-12,
+                            2.3242184852279024e-06,
                             1.0,
                             0.0
                         ],
                         [
-                            20.546390533447266,
-                            2.4814367294311523,
-                            3.4627277851104736,
+                            6.253971576690674,
+                            2.2695538997650146,
+                            3.7045483589172363,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            -3.265548912168015e-06,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            3.265532086516032e-06,
+                            0.9999948143959045,
+                            -2.324206434423104e-06,
+                            0.0
+                        ],
+                        [
+                            7.589848888267525e-12,
+                            2.3242184852279024e-06,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            9.410276412963867,
+                            2.269545316696167,
+                            3.7045483589172363,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            -3.265548912168015e-06,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            3.2652126265020343e-06,
+                            0.9999948143959045,
+                            -2.323886974409106e-06,
+                            0.0
+                        ],
+                        [
+                            7.588630245025652e-12,
+                            2.3242184852279024e-06,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            20.52700424194336,
+                            2.2695038318634033,
+                            3.3705334663391113,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            -3.265548912168015e-06,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            3.2652126265020343e-06,
+                            0.9999948143959045,
+                            -2.323886974409106e-06,
+                            0.0
+                        ],
+                        [
+                            7.588630245025652e-12,
+                            2.3242184852279024e-06,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            23.693063735961914,
+                            2.2694966793060303,
+                            3.3705334663391113,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            -3.265548912168015e-06,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            3.2652126265020343e-06,
+                            0.9999948143959045,
+                            -2.323886974409106e-06,
+                            0.0
+                        ],
+                        [
+                            7.588630245025652e-12,
+                            2.3242184852279024e-06,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            31.1716251373291,
+                            2.269474744796753,
+                            3.3705334663391113,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            -3.265548912168015e-06,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            3.265532086516032e-06,
+                            0.9999948143959045,
+                            -2.324206434423104e-06,
+                            0.0
+                        ],
+                        [
+                            7.589848888267525e-12,
+                            2.3242184852279024e-06,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            28.017786026000977,
+                            2.269484281539917,
+                            3.370732545852661,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            -1.000003457069397,
+                            4.204126071272185e-06,
+                            6.019494696804257e-16,
+                            0.0
+                        ],
+                        [
+                            4.204078322800342e-06,
+                            0.9999921321868896,
+                            -4.204078322800342e-06,
+                            0.0
+                        ],
+                        [
+                            -1.7674013294555202e-11,
+                            -4.204126071272185e-06,
+                            -1.000003457069397,
+                            0.0
+                        ],
+                        [
+                            6.254302024841309,
+                            2.269530773162842,
+                            -2.040017604827881,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            -1.0,
+                            4.204111519356957e-06,
+                            6.019490461639521e-16,
+                            0.0
+                        ],
+                        [
+                            4.204089691484114e-06,
+                            0.9999948143959045,
+                            -4.204089691484114e-06,
+                            0.0
+                        ],
+                        [
+                            -1.7673952579233543e-11,
+                            -4.204111519356957e-06,
+                            -1.0,
+                            0.0
+                        ],
+                        [
+                            -1.2340103387832642,
+                            2.269561290740967,
+                            -2.0400099754333496,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            -1.000003457069397,
+                            4.204126071272185e-06,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            4.204078322800342e-06,
+                            0.9999921321868896,
+                            -4.204078322800342e-06,
+                            0.0
+                        ],
+                        [
+                            -1.7674615243601366e-11,
+                            -4.204126071272185e-06,
+                            -1.000003457069397,
+                            0.0
+                        ],
+                        [
+                            9.410276412963867,
+                            2.2695236206054688,
+                            -2.0400116443634033,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            -1.000003457069397,
+                            4.204126071272185e-06,
+                            6.019494696804257e-16,
+                            0.0
+                        ],
+                        [
+                            4.204078322800342e-06,
+                            0.9999921321868896,
+                            -4.204078322800342e-06,
+                            0.0
+                        ],
+                        [
+                            -1.7674013294555202e-11,
+                            -4.204126071272185e-06,
+                            -1.000003457069397,
+                            0.0
+                        ],
+                        [
+                            1.9320484399795532,
+                            2.269540786743164,
+                            -2.040013074874878,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            -1.000003457069397,
+                            4.204126071272185e-06,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            4.204078322800342e-06,
+                            0.9999921321868896,
+                            -4.204078322800342e-06,
+                            0.0
+                        ],
+                        [
+                            -1.7674615243601366e-11,
+                            -4.204126071272185e-06,
+                            -1.000003457069397,
+                            0.0
+                        ],
+                        [
+                            22.090600967407227,
+                            2.3736977577209473,
+                            -2.1943061351776123,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "LightShape": 1,
+                    "WorldMatrix": [
+                        [
+                            -1.000003457069397,
+                            4.204126071272185e-06,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            4.204078322800342e-06,
+                            0.9999921321868896,
+                            -4.204078322800342e-06,
+                            0.0
+                        ],
+                        [
+                            -1.7674615243601366e-11,
+                            -4.204126071272185e-06,
+                            -1.000003457069397,
+                            0.0
+                        ],
+                        [
+                            29.541547775268555,
+                            2.5133070945739746,
+                            -2.277918577194214,
                             1.0
                         ]
                     ]
@@ -19775,6 +20094,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Pillar_01",
+            "NoInstancing": false,
             "ObjectCount": 10,
             "Objects": [
                 {
@@ -20082,6 +20402,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Railing_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -20149,6 +20470,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Railway_01",
+            "NoInstancing": false,
             "ObjectCount": 17,
             "Objects": [
                 {
@@ -20666,6 +20988,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Rapier",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -20703,6 +21026,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Saber",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -20740,6 +21064,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Schedule_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -20807,6 +21132,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Sign_01B",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -20874,6 +21200,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Sign_01C",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -20941,6 +21268,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Sign_02A",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -21008,6 +21336,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Sign_02B",
+            "NoInstancing": false,
             "ObjectCount": 5,
             "Objects": [
                 {
@@ -21165,6 +21494,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Sign_02C",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -21262,6 +21592,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_StairA_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -21299,6 +21630,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_TopDeco_01",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -21426,6 +21758,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_TrainCarpet_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -21493,6 +21826,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_TrainCurtain_01",
+            "NoInstancing": false,
             "ObjectCount": 23,
             "Objects": [
                 {
@@ -22190,6 +22524,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_TrainCurtain_03",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -22227,6 +22562,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_TrainDoor_01",
+            "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
@@ -22324,6 +22660,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_TrainDoor_02",
+            "NoInstancing": false,
             "ObjectCount": 10,
             "Objects": [
                 {
@@ -22631,6 +22968,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Station_TrainDoor_03",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -22698,6 +23036,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_TrainStationRoof_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -22765,6 +23104,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_TrainWindow_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -22832,6 +23172,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Street_BookStore_03",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -22869,6 +23210,7 @@
         {
             "Collision": false,
             "ModelName": "SM_ToolsPack_01_A",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -22904,12 +23246,13 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Underdark_Lamp_01",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 2,
                     "WorldMatrix": [
                         [
@@ -22939,7 +23282,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 2,
                     "WorldMatrix": [
                         [
@@ -22973,6 +23316,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Vehicle_Wagon_01",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -23010,6 +23354,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Wall_ArchHalf01A",
+            "NoInstancing": false,
             "ObjectCount": 42,
             "Objects": [
                 {
@@ -24275,12 +24620,13 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Wall_Archway0aA",
-            "ObjectCount": 1,
+            "NoInstancing": false,
+            "ObjectCount": 2,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 2,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -24308,12 +24654,43 @@
                             1.0
                         ]
                     ]
+                },
+                {
+                    "ColliderType": 2,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            -3.145207827515151e-08,
+                            -5.724044692010863e-14,
+                            -0.7195364832878113,
+                            0.0
+                        ],
+                        [
+                            6.101446659110416e-14,
+                            0.5366889238357544,
+                            -4.2694495806577457e-14,
+                            0.0
+                        ],
+                        [
+                            0.8585911393165588,
+                            9.761051152469905e-14,
+                            -3.753024202524102e-08,
+                            0.0
+                        ],
+                        [
+                            107.71391296386719,
+                            0.5746829509735107,
+                            -8.401151657104492,
+                            1.0
+                        ]
+                    ]
                 }
             ]
         },
         {
             "Collision": false,
             "ModelName": "SM_Wall_MansionDoor02_A",
+            "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
@@ -24351,6 +24728,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Wall_MansionDoor02_B",
+            "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
@@ -24418,6 +24796,7 @@
         {
             "Collision": true,
             "ModelName": "SM_Wall_PillarFrame01A",
+            "NoInstancing": false,
             "ObjectCount": 143,
             "Objects": [
                 {
@@ -28715,6 +29094,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Wall_Uni_1FCol",
+            "NoInstancing": false,
             "ObjectCount": 10,
             "Objects": [
                 {
@@ -29022,6 +29402,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Wall_WindowBottom01A",
+            "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
@@ -29149,6 +29530,7 @@
         {
             "Collision": false,
             "ModelName": "Wall_Station_Flatform",
+            "NoInstancing": false,
             "ObjectCount": 18,
             "Objects": [
                 {
