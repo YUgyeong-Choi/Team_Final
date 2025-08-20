@@ -866,6 +866,7 @@ void CPlayer::Register_Events()
 				m_pWeapon->Set_WeaponTrail_Active(true);
 			}
 		});
+
 	m_pAnimator->RegisterEventListener("OffSwordTrail", [this]()
 		{
 			if (m_pWeapon)
@@ -873,8 +874,6 @@ void CPlayer::Register_Events()
 				m_pWeapon->Set_WeaponTrail_Active(false);
 			}
 		});
-
-
 
 	m_pAnimator->RegisterEventListener("OnWeaponCollider", [this]()
 		{
@@ -884,6 +883,15 @@ void CPlayer::Register_Events()
 				m_pWeapon->Clear_CollisionObj();
 			}
 		});
+
+	m_pAnimator->RegisterEventListener("OffWeaponCollider", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetisAttack(false);
+			}
+		});
+
 	m_pAnimator->RegisterEventListener("EquipWeapon", [this]()
 		{
 			if (m_pWeapon)
@@ -897,6 +905,14 @@ void CPlayer::Register_Events()
 			{
 				m_pWeapon->SetbIsActive(false);
 			}
+		});
+	m_pAnimator->RegisterEventListener("OnGrinderEffect", [this]()
+		{
+			Set_GrinderEffect_Active(true);
+		});
+	m_pAnimator->RegisterEventListener("OffGrinderEffect", [this]()
+		{
+			Set_GrinderEffect_Active(false);
 		});
 }
 
@@ -1553,6 +1569,8 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 {
 	if (m_pGrinderEffect)
 	{
+		if (bActive)
+			return;
 		m_pGrinderEffect->Set_Loop(bActive);
 		m_pGrinderEffect = nullptr;
 	}

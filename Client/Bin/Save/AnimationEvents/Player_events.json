@@ -24,6 +24,12 @@
         {
             "ClipName": "AS_Pino_Grinder_End",
             "Duration": 53.0,
+            "Events": [
+                {
+                    "EventName": "OffGrinderEffect",
+                    "Time": 38.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -38,6 +44,12 @@
         {
             "ClipName": "AS_Pino_Grinder_Loop",
             "Duration": 28.0,
+            "Events": [
+                {
+                    "EventName": "OnGrinderEffect",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -1150,6 +1162,22 @@
                 {
                     "EventName": "OffSwordTrail",
                     "Time": 173.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 103.0
+                },
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 67.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 75.0
+                },
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 97.0
                 }
             ],
             "IsLoop": false,
@@ -1159,6 +1187,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_CA4",
             "Duration": 244.0,
+            "Events": [
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 78.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 93.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 80.0
@@ -1180,6 +1218,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_DSA",
             "Duration": 103.0,
+            "Events": [
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 16.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 45.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -1216,6 +1264,14 @@
                 {
                     "EventName": "OffSwordTrail",
                     "Time": 71.0
+                },
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 37.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 43.0
                 }
             ],
             "IsLoop": false,
@@ -1225,6 +1281,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_NA3",
             "Duration": 153.0,
+            "Events": [
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 28.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 60.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -1240,6 +1306,14 @@
                 {
                     "EventName": "OffSwordTrail",
                     "Time": 44.0
+                },
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 39.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 54.0
                 }
             ],
             "IsLoop": false,
@@ -1285,6 +1359,14 @@
                 {
                     "EventName": "OffSwordTrail",
                     "Time": 53.0
+                },
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 14.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 41.0
                 }
             ],
             "IsLoop": false,
@@ -1301,6 +1383,16 @@
         {
             "ClipName": "AS_Pino_T_Bayonet_SA6",
             "Duration": 176.0,
+            "Events": [
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 22.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 50.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -1316,6 +1408,14 @@
                 {
                     "EventName": "OffSwordTrail",
                     "Time": 74.0
+                },
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 27.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 42.0
                 }
             ],
             "IsLoop": false,
@@ -1340,6 +1440,14 @@
                 {
                     "EventName": "OffSwordTrail",
                     "Time": 46.0
+                },
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 36.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 61.0
                 }
             ],
             "IsLoop": false,
