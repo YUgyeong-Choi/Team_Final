@@ -1,12 +1,12 @@
 #include "LegionArm_Base.h"
 
 CLegionArm_Base::CLegionArm_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CGameObject{pDevice, pContext}
+	:CWeapon{pDevice, pContext}
 {
 }
 
 CLegionArm_Base::CLegionArm_Base(const CLegionArm_Base& Prototype)
-	:CGameObject{Prototype}
+	:CWeapon{Prototype}
 {
 }
 
@@ -20,10 +20,10 @@ HRESULT CLegionArm_Base::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	ARM_DESC* eDesc = static_cast<ARM_DESC*>(pArg);
+	/*ARM_DESC* eDesc = static_cast<ARM_DESC*>(pArg);
 
 	m_pSocketMatrix = eDesc->pSocketMatrix;
-	m_pParentWorldMatrix = eDesc->pParentWorldMatrix;
+	m_pParentWorldMatrix = eDesc->pParentWorldMatrix;*/
 
 	return S_OK;
 }

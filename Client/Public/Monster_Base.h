@@ -90,6 +90,8 @@ protected:
 	
 	_float			m_fHp = {};
 	_float			m_fMaxHp = {};
+
+	_float			m_fDamage = {};
 	
 
 	// 특정 상태에만 계속 바라보게 해야?

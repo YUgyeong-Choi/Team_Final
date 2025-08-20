@@ -53,6 +53,8 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
+		m_pWeapon->Collider_Off();
+		
 		if (m_pAnimator->IsFinished())
 		{
 			m_pWeapon->Set_bDead();
@@ -241,6 +243,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
 
+		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() / 2.f);
+
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
 		if (nullptr != m_pHPBar)
@@ -248,7 +252,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		if (m_fHp <= 0)
 		{
-
+			
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 			m_pAnimator->SetTrigger("Dead");
 			m_strStateName = "Dead";

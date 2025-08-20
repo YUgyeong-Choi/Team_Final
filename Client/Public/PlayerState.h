@@ -667,9 +667,8 @@ public:
 
     virtual void Exit() override
     {
-        if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
-            m_pOwner->Use_Item();
-
+       
+        m_pOwner->Use_Item();
 
         m_pOwner->m_pAnimator->SetBool("Grinding", false);
         m_pOwner->m_bUseLamp = false;
@@ -679,6 +678,12 @@ public:
         m_fPulseTime = 0.f;
         m_fStateTime = 0.f;
         m_bDoOnce = false;
+
+        if (m_pOwner->m_isSelectUpBelt)
+            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pOwner-> m_pSelectItem);
+        else
+            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pOwner-> m_pSelectItem);
+        
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -929,6 +934,7 @@ public:
         {
             m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
             m_pOwner->m_pAnimator->ApplyOverrideAnimController("TwoHand");
+            m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pOwner->m_pWeapon);
         }
         else
         {

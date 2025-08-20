@@ -27,7 +27,9 @@ HRESULT CLegionArm_Steel::Initialize(void* pArg)
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 
-	m_strPrototag = L"LegionArm_Steel";
+	m_szMeshID = L"LegionArm_Steel";
+	
+	m_isAttack = true;
 
 	return S_OK;
 }
@@ -105,11 +107,11 @@ HRESULT CLegionArm_Steel::Ready_Actor()
 
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
-
-	PxVec3 halfExtents = PxVec3(0.2f, 0.2f, 0.2f);
+	
+	PxVec3 halfExtents = PxVec3(0.3f, 0.3f, 0.3f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	m_pActorCom->Set_ShapeFlag(false, false, true);
+	m_pActorCom->Set_ShapeFlag(true, false, true);
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON;

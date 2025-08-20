@@ -72,10 +72,9 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	}
 
 
-
-
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 		if (m_pAnimator->IsFinished())
 		{
 			m_bUseLockon = false;

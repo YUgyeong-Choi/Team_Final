@@ -52,7 +52,6 @@ private:
 private:
 	CPhysXDynamicActor* m_pActorCom = { nullptr };
 
-	_bool m_isAttack = { false };
 	
 
 public:

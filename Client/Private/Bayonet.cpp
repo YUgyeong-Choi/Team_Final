@@ -165,7 +165,7 @@ HRESULT CBayonet::Ready_Actor()
 
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
-
+	
 	PxVec3 halfExtents = PxVec3(0.2f, 1.f, 0.2f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
