@@ -1,40 +1,39 @@
-#include "DynamicMesh.h"
+#include "TriggerMesh.h"
 #include "GameInstance.h"
 
-CDynamicMesh::CDynamicMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+CTriggerMesh::CTriggerMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CTriggerBox{ pDevice, pContext }
 {
 
 }
 
-CDynamicMesh::CDynamicMesh(const CDynamicMesh& Prototype)
-	: CGameObject(Prototype)
+CTriggerMesh::CTriggerMesh(const CTriggerMesh& Prototype)
+	: CTriggerBox(Prototype)
 {
 
 }
 
-HRESULT CDynamicMesh::Initialize_Prototype()
+HRESULT CTriggerMesh::Initialize_Prototype()
 {
 	/* 외부 데이터베이스를 통해서 값을 채운다. */
 
 	return S_OK;
 }
 
-HRESULT CDynamicMesh::Initialize(void* pArg)
+HRESULT CTriggerMesh::Initialize(void* pArg)
 {
-	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
+	CTriggerMesh::TRIGGERMESH_DESC* TriggerMeshDESC = static_cast<TRIGGERMESH_DESC*>(pArg);
 
-	m_eMeshLevelID = StaicMeshDESC->m_eMeshLevelID;
+	m_eMeshLevelID = TriggerMeshDESC->m_eMeshLevelID;
 
-	m_szMeshID = StaicMeshDESC->szMeshID;
+	m_szMeshID = TriggerMeshDESC->szMeshID;
 
-	if (FAILED(__super::Initialize(StaicMeshDESC)))
+
+	if (FAILED(__super::Initialize(TriggerMeshDESC)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
-
-	m_pTransformCom->Set_WorldMatrix(StaicMeshDESC->WorldMatrix);
 
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
@@ -42,16 +41,15 @@ HRESULT CDynamicMesh::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CDynamicMesh::Priority_Update(_float fTimeDelta)
-{
-	Update_ColliderPos();
-}
-
-void CDynamicMesh::Update(_float fTimeDelta)
+void CTriggerMesh::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CDynamicMesh::Late_Update(_float fTimeDelta)
+void CTriggerMesh::Update(_float fTimeDelta)
+{
+}
+
+void CTriggerMesh::Late_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
@@ -59,7 +57,7 @@ void CDynamicMesh::Late_Update(_float fTimeDelta)
 	}
 }
 
-HRESULT CDynamicMesh::Render()
+HRESULT CTriggerMesh::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -108,6 +106,9 @@ HRESULT CDynamicMesh::Render()
 		{
 			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
 				return E_FAIL;
+
+			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXTriggerCom)))
+				return E_FAIL;
 		}
 	}
 
@@ -116,39 +117,12 @@ HRESULT CDynamicMesh::Render()
 	return S_OK;
 }
 
-AABBBOX CDynamicMesh::GetWorldAABB() const
+
+
+HRESULT CTriggerMesh::Ready_Components(void* pArg)
 {
-	PxBounds3 wb = m_pPhysXActorCom->Get_Actor()->getWorldBounds();
-	AABBBOX worldBox{ {wb.minimum.x, wb.minimum.y, wb.minimum.z},
-					  {wb.maximum.x, wb.maximum.y, wb.maximum.z} };
-
-	return worldBox;
-}
-
-void CDynamicMesh::Update_ColliderPos()
-{
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
-
-	// 행렬 → 스케일, 회전, 위치 분해
-	_vector vScale, vRotationQuat, vTranslation;
-	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
-
-	// 위치 추출
-	_float3 vPos;
-	XMStoreFloat3(&vPos, vTranslation);
-
-	// 회전 추출
-	_float4 vRot;
-	XMStoreFloat4(&vRot, vRotationQuat);
-
-	// PxTransform으로 생성
-	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
-	m_pPhysXActorCom->Set_Transform(physxTransform);
-}
-
-HRESULT CDynamicMesh::Ready_Components(void* pArg)
-{
-	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
+	CTriggerMesh::TRIGGERMESH_DESC* TriggerMeshDESC = static_cast<TRIGGERMESH_DESC*>(pArg);
+	m_szMeshFullID = TriggerMeshDESC->szModelPrototypeTag;
 
 	/* Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
@@ -156,19 +130,19 @@ HRESULT CDynamicMesh::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), StaicMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), TriggerMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
-		TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysXStatic"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CDynamicMesh::Bind_ShaderResources()
+HRESULT CTriggerMesh::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -181,7 +155,7 @@ HRESULT CDynamicMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CDynamicMesh::Ready_Collider()
+HRESULT CTriggerMesh::Ready_Collider()
 {
 	if (m_pModelCom)
 	{
@@ -216,7 +190,6 @@ HRESULT CDynamicMesh::Ready_Collider()
 
 		PxConvexMeshGeometry  ConvexGeom = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
 		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), ConvexGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorCom->Set_Kinematic(true);
 		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
@@ -234,13 +207,13 @@ HRESULT CDynamicMesh::Ready_Collider()
 	return S_OK;
 }
 
-CDynamicMesh* CDynamicMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CTriggerMesh* CTriggerMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CDynamicMesh* pGameInstance = new CDynamicMesh(pDevice, pContext);
+	CTriggerMesh* pGameInstance = new CTriggerMesh(pDevice, pContext);
 
 	if (FAILED(pGameInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Create : CDynamicMesh");
+		MSG_BOX("Failed to Create : CTriggerMesh");
 		Safe_Release(pGameInstance);
 	}
 
@@ -248,20 +221,20 @@ CDynamicMesh* CDynamicMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 }
 
 
-CGameObject* CDynamicMesh::Clone(void* pArg)
+CGameObject* CTriggerMesh::Clone(void* pArg)
 {
-	CDynamicMesh* pGameInstance = new CDynamicMesh(*this);
+	CTriggerMesh* pGameInstance = new CTriggerMesh(*this);
 
 	if (FAILED(pGameInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CDynamicMesh");
+		MSG_BOX("Failed to Clone : CTriggerMesh");
 		Safe_Release(pGameInstance);
 	}
 
 	return pGameInstance;
 }
 
-void CDynamicMesh::Free()
+void CTriggerMesh::Free()
 {
 	__super::Free();
 
