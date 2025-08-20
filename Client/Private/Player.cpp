@@ -1047,33 +1047,33 @@ void CPlayer::Update_Collider_Actor()
 void CPlayer::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	/* [ 들어온 데미지 계산 ] */
-	_float fDamage = 0.f;
-
-	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
-	if (!pUnit)
-	{
-		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
-		if (!pWeapon)
-		{
-			return;
-		}
-		else
-		{
-			fDamage = pWeapon->Get_CurrentDamage();
-		}
-	}
-	else
-	{
-		fDamage = pUnit->Get_CurrentDamage();
-	}
-
-	/* [ Hp 감소 ] */
-	m_fHP -= fDamage;
-	
-	if (m_fHP <= 0.f)
-		m_fHP = 0.f;
-
-	Callback_HP();
+	//_float fDamage = 0.f;
+	//
+	//CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
+	//if (!pUnit)
+	//{
+	//	CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
+	//	if (!pWeapon)
+	//	{
+	//		return;
+	//	}
+	//	else
+	//	{
+	//		fDamage = pWeapon->Get_CurrentDamage();
+	//	}
+	//}
+	//else
+	//{
+	//	fDamage = pUnit->Get_CurrentDamage();
+	//}
+	//
+	///* [ Hp 감소 ] */
+	//m_fHP -= fDamage;
+	//
+	//if (m_fHP <= 0.f)
+	//	m_fHP = 0.f;
+	//
+	//Callback_HP();
 }
 
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
