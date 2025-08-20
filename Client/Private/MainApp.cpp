@@ -284,6 +284,8 @@ HRESULT CMainApp::Ready_Sound()
 	/* [ 동영상용 사운드 ] */
 	ADD_SOUND_EX(Intro, "../Bin/Resources/Sound/Video/Intro/", false, false, false);
 
+	/* [ 컷씬 문용 사운드 ] */
+	ADD_SOUND_EX(CutSceneDoor, "../Bin/Resources/Sound/CutScene/Door/", false, false, false);
 	return S_OK;
 }
 

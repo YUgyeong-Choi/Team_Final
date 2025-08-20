@@ -27,6 +27,8 @@
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
 
+#include "DoorMesh.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -140,8 +142,8 @@ void CPlayer::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 	// 컷씬일 때 못 움직이도록
-	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-		return; 
+	//if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+	//	return; 
 	
 	/* [ 입력 ] */
 	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만
@@ -1390,6 +1392,11 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	if (m_bInteraction[0] && !m_bInteractionMove[0] && !m_bInteractionRotate[0])
 	{
 		m_fInteractionTime[0] += fTimeDelta;
+		if (m_fInteractionTime[0] >= 1.f && !m_bInteractSound[0])
+		{
+			m_bInteractSound[0] = true;
+			static_cast<CDoorMesh*>(m_pInterectionStuff)->Play_Sound();
+		}
 
 		//손 뼈의 컴바인드 행렬
 		const _float4x4* pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Weapon_L"));

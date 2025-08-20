@@ -64,7 +64,7 @@ void CSound_Core::Stop()
 {
     if (m_pChannel)
     {
-        m_pChannel->stop();
+		m_pChannel->stop();
         m_pChannel = nullptr;
     }
 }

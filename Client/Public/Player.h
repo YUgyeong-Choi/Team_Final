@@ -238,6 +238,7 @@ private: /* [ 인터렉션 관련변수 ] */
 	_bool  m_bInteractionProbMove[9] = { false };
 	_bool  m_bInteractionMove[9] = { false };
 	_bool  m_bInteractionRotate[9] = { false };
+	_bool  m_bInteractSound[9] = { false };
 	_float m_fInteractionTime[9] = { 0 };
 
 	unordered_set<string> m_MovableStates = {

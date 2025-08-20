@@ -9,6 +9,7 @@ class CTexture;
 class CModel;
 class CPhysXDynamicActor;
 class CPhysXStaticActor;
+class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -37,12 +38,14 @@ public:
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
+	void Play_Sound();
 protected:
 	HRESULT Ready_Components(void* pArg);
-	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Trigger(DOORMESH_DESC* pDesc);
 private:
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
+	CSoundController* m_pSoundCom = { nullptr };
 	INTERACT_TYPE m_eInteractType;
 
 	_bool m_bCanActive = false;

@@ -113,8 +113,8 @@ void CUI_Video::Update(_float fTimeDelta)
 		
 	}
 
-	PlaySound();
-	printf("Video Frame Index: %d\n", m_iDrawnFrameIndex);
+	Play_Sound();
+	//printf("Video Frame Index: %d\n", m_iDrawnFrameIndex);
 }
 
 void CUI_Video::Late_Update(_float fTimeDelta)
@@ -343,7 +343,8 @@ void CUI_Video::Release_FFmpeg()
 	avformat_network_deinit();
 }
 
-void CUI_Video::PlaySound()
+
+void CUI_Video::Play_Sound()
 {
 	switch (m_eVideoType)
 	{
@@ -433,6 +434,9 @@ void CUI_Video::Free()
 	
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTexture);
+
+	if (m_pSoundCom)
+		m_pSoundCom->StopAll();
 	Safe_Release(m_pSoundCom);
 
 	Release_FFmpeg();

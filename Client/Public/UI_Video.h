@@ -50,8 +50,9 @@ public:
 	HRESULT ReadFrameToBuffer(BYTE** ppData, DWORD* pWidth, DWORD* pHeight, LONGLONG* pTimeStamp);
 
 	void Release_FFmpeg();
+
 private:
-	void PlaySound();
+	void Play_Sound();
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
