@@ -1,18 +1,10 @@
 #pragma once
-#include "Unit.h"
+#include "BossUnit.h"
 #include "Client_Defines.h"
 #include "PhysX_ControllerReport.h"
 
-NS_BEGIN(Engine)
-class CBone;
-class CNavigation;
-class CPhysXController;
-class CPhysXDynamicActor;
-class CAnimController;
-NS_END
-
 NS_BEGIN(Client)
-class CFuoco : public CUnit
+class CFuoco final : public CBossUnit
 {
     // 주요 상태들의 NodeID
     enum class BossStateID : _uint
@@ -80,7 +72,7 @@ class CFuoco : public CUnit
 		FATAL_END = 100078
     };
 
-    enum EBossAttackPattern :_int
+    enum EBossAttackPattern : _int
     {
         BAP_NONE = 0,
         SlamCombo = 1,
@@ -97,12 +89,6 @@ class CFuoco : public CUnit
         P2_FireFlame = 12,
         P2_FireBall_B = 13,
     };
-
-	enum class EFuocoState{
-        IDLE,WALK,RUN,TURN,ATTACK,GROGGY,PARALYZATION,FATAL,DEAD,NONE};
-
-	enum class EMoveDirection	{
-        FRONT, RIGHT, BACK, LEFT};
 
     enum class ProjectileType {
         FireBall,
@@ -133,30 +119,14 @@ private:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 private:
-	HRESULT LoadFromJson();
-	HRESULT Ready_Components();
-	HRESULT Ready_Actor();
-	void Ready_BoneInformation();
+	virtual HRESULT Ready_Components() override;
+	virtual HRESULT Ready_Actor() override;
+	virtual void Ready_BoneInformation() override;
 
-	void Update_Collider();
-	void UpdateBossState(_float fTimeDelta);
-    void UpdateMovement(_float fDistance,_float fTimeDelta);
-    void UpdateAttackPattern(_float fDistance,_float fTimeDelta);
-    void UpdateStateByNodeID(_uint iNodeID);
-
-	_bool  IsTargetInFront(_float fDectedAngle = 60.f) const;
-	_bool UpdateTurnDuringAttack(_float fTimeDelta);
-	_float Get_DistanceToPlayer() const;
-	_vector GetTargetDirection() const;
-    _int GetYawSignFromDiretion() {
-        // 플레이어 방향 기준
-        _vector vDir = GetTargetDirection();
-        vDir = XMVectorSetY(vDir, 0.f);
-        _vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
-        _vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-        _vector vCross = XMVector3Cross(vLook, vDir);
-		return (XMVectorGetY(vCross) < 0.f) ? 1 : 0; 
-    }
+	virtual void Update_Collider() override;
+    virtual void UpdateAttackPattern(_float fDistance,_float fTimeDelta) override;
+    virtual void UpdateStateByNodeID(_uint iNodeID) override;
+    virtual void UpdateSpecificBehavior() override;
 
     // 공견 패턴
     void SetupAttackByType(EBossAttackPattern ePattern);
@@ -168,42 +138,15 @@ private:
 		m_fAddtiveRotSpeed = fAddtivRotSpeed;
     }
 
-    // 이동
-    void ApplyRootMotionDelta(_float fTimeDelta);
-    void UpdateNormalMove(_float fTimeDelta);
-
-
-	_bool IsValidAttackType(EBossAttackPattern ePattern) const
-	{
-		return ePattern == EBossAttackPattern::SwingAtk ||
-            ePattern == EBossAttackPattern::SwingAtkSeq||
-			ePattern == EBossAttackPattern::SlamFury ||
-			ePattern == EBossAttackPattern::SlamCombo ||
-			ePattern == EBossAttackPattern::FootAtk ||
-			ePattern == EBossAttackPattern::SlamAtk ||
-			ePattern == EBossAttackPattern::Uppercut ||
-			ePattern == EBossAttackPattern::StrikeFury ||
-            ePattern == EBossAttackPattern::P2_FlameField ||
-            ePattern == EBossAttackPattern::P2_FireFlame ||
-			ePattern == EBossAttackPattern::P2_FireOil ||
-			ePattern == EBossAttackPattern::P2_FireBall ||
-			ePattern == EBossAttackPattern::P2_FireBall_B;
-	}
-
     virtual void Register_Events() override;
 
-	void Ready_AttackPatternWeightForPhase1();
-	void Ready_AttackPatternWeightForPhase2();
+	virtual void Ready_AttackPatternWeightForPhase1() override;
+	virtual void Ready_AttackPatternWeightForPhase2() override;
 
 	EBossAttackPattern GetRandomAttackPattern(_float fDistance);
 	void UpdatePatternWeight(EBossAttackPattern ePattern);
 
     _bool CheckConditionFlameField();
- 
-	_float CalculateCurrentHpRatio() const
-	{
-		return m_fHP / m_fMaxHP;
-	}
 
 	void ChosePatternWeightByDistance(_float fDistance);
 	void FireProjectile(ProjectileType type, _float fSpeed = 10.f);
@@ -226,7 +169,6 @@ private:
 #endif
 private:
 	// 컴포넌트 관련
-	//CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForFoot = { nullptr };
     CNavigation* m_pNaviCom = { nullptr };
@@ -236,33 +178,7 @@ private:
 	CBone* m_pCannonBone{ nullptr };
 	
     // 상태 관련
-    EFuocoState m_eCurrentState = EFuocoState::NONE;
-    _bool m_bIsFirstAttack{ true }; // 컷씬하고 돌진 처리
-    _bool m_bIsPhase2{ false };
-    _bool m_bStartPhase2 = false;
     _bool m_bUsedFlameFiledOnLowHp = false;
-
-    // 체력
-	_float m_fHP = 100.f;
-	_float m_fMaxHP = 100.f;
-
-    // 이동 관련
-
-	_vector m_vRotationXDir = XMVectorZero(); // X축 회전 방향
-	_float m_fRotationTimeForX = 0.f; // X축 회전 시간
-
-    _vector  m_PrevWorldDelta = XMVectorZero();
-    _vector  m_PrevWorldRotation = XMVectorZero();
-    _float   m_fRotSmoothSpeed = 8.0f;
-    _float   m_fSmoothSpeed = 8.0f;
-    _float   m_fSmoothThreshold = 0.1f;
-    _float   m_fWalkSpeed = 3.f;
-	_float   m_fRunSpeed = 6.f;
-	_float   m_fRootMotionAddtiveScale = 1.35f; // 루트 모션 추가 배율
-
-	_float m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
-	_float m_fAddtiveRotSpeed = 1.f; // 회전 속h도 추가값
-    _float m_fTurnTimeDuringAttack = 0.f;
 
 
     // 공격 관련
@@ -273,8 +189,8 @@ private:
     _float m_fMaxWeight = 150.f;
     _float m_fWeightDecreaseRate = 0.15f;
 	_float m_fWeightIncreaseRate = 0.12f;
-    _float m_fAttackCooldown = 0.f; // 공격 쿨타임
-    _float m_fAttckDleay = 4.f;
+    //_float m_fAttackCooldown = 0.f; // 공격 쿨타임
+    //_float m_fAttckDleay = 4.f;
     _float m_fFireFlameDuration = 0.f;
 
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
@@ -307,11 +223,9 @@ private:
     };
 
     // 상수
-    const _float CHASING_DISTANCE = 1.5f;
 	const _float ATTACK_DISTANCE_CLOSE = 0.f;
     const _float ATTACK_DISTANCE_MIDDLE = 10.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
-    const _float MINIMUM_TURN_ANGLE = 35.f;
     const _int LIMIT_FIREBALL_COMBO_COUNT = 3;
 public:
 	static CFuoco* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

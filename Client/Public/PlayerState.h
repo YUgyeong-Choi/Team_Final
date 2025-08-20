@@ -934,7 +934,7 @@ public:
         {
             m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
             m_pOwner->m_pAnimator->ApplyOverrideAnimController("TwoHand");
-            m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pOwner->m_pWeapon);
+     /*       m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pOwner->m_pWeapon);*/
         }
         else
         {

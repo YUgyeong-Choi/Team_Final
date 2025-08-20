@@ -34,6 +34,7 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CPlayer::CPlayer(const CPlayer& Prototype)
 	: CUnit(Prototype)
 {
+	m_eUnitType = EUnitType::PLAYER;
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -178,7 +179,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
-		Set_GrinderEffect_Active(true);
 	}
 	if (KEY_DOWN(DIK_U))
 	{
@@ -907,6 +907,7 @@ void CPlayer::Register_Events()
 				m_pWeapon->Set_WeaponTrail_Active(true);
 			}
 		});
+
 	m_pAnimator->RegisterEventListener("OffSwordTrail", [this]()
 		{
 			if (m_pWeapon)
@@ -914,8 +915,6 @@ void CPlayer::Register_Events()
 				m_pWeapon->Set_WeaponTrail_Active(false);
 			}
 		});
-
-
 
 	m_pAnimator->RegisterEventListener("OnWeaponCollider", [this]()
 		{
@@ -925,11 +924,21 @@ void CPlayer::Register_Events()
 				m_pWeapon->Clear_CollisionObj();
 			}
 		});
+
+	m_pAnimator->RegisterEventListener("OffWeaponCollider", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->SetisAttack(false);
+			}
+		});
+
 	m_pAnimator->RegisterEventListener("EquipWeapon", [this]()
 		{
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetbIsActive(true);
+				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),m_pWeapon);
 			}
 		});
 	m_pAnimator->RegisterEventListener("PutWeapon", [this]()
@@ -937,7 +946,16 @@ void CPlayer::Register_Events()
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetbIsActive(false);
+				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),nullptr);
 			}
+		});
+	m_pAnimator->RegisterEventListener("OnGrinderEffect", [this]()
+		{
+			Set_GrinderEffect_Active(true);
+		});
+	m_pAnimator->RegisterEventListener("OffGrinderEffect", [this]()
+		{
+			Set_GrinderEffect_Active(false);
 		});
 }
 
@@ -1168,6 +1186,11 @@ HRESULT CPlayer::Ready_Weapon()
 		return E_FAIL;
 
 	m_pWeapon = dynamic_cast<CWeapon*>(pGameObject);
+
+	if (m_pWeapon == nullptr)
+		return E_FAIL;
+
+	m_pWeapon->SetisAttack(false);
 
 	return S_OK;
 }
@@ -1618,6 +1641,8 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 {
 	if (m_pGrinderEffect)
 	{
+		if (bActive)
+			return;
 		m_pGrinderEffect->Set_Loop(bActive);
 		m_pGrinderEffect = nullptr;
 	}

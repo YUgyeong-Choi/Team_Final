@@ -89,6 +89,17 @@ namespace Client
 		TUTORIALDOOR,
 	};
 #pragma endregion
+
+#pragma region JW
+	enum class EUnitType
+	{
+		NONE,
+		NORMAL_MONSTER,
+		BOSS,
+		PLAYER,
+		NPC
+	};
+#pragma endregion
 }
 
 
