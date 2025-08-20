@@ -111,6 +111,13 @@ void CEffectContainer::Update(_float fTimeDelta)
 		matSocket = XMLoadFloat4x4(m_pSocketMatrix);
 		for (_uint i = 0; i < 3; i++)
 			matSocket.r[i] = XMVector3Normalize(matSocket.r[i]);
+		_vector trans, scale, rot;
+
+		XMMatrixDecompose(&scale, &rot, &trans, matSocket);
+
+		rot = XMQuaternionNormalize(rot);
+
+		matSocket = XMMatrixAffineTransformation(scale, XMVectorSet(0.f, 0.f, 0.f, 1.f), rot, trans);
 	}
 
 	if (m_pParentMatrix != nullptr)
@@ -126,31 +133,6 @@ void CEffectContainer::Update(_float fTimeDelta)
 
 
 	XMStoreFloat4x4(&m_CombinedWorldMatrix, matWorld * matSocket * matParent);
-
-
-
-	//for (_uint i = 0; i < 3; i++)
-	//	matSocket.r[i] = XMVector3Normalize(matSocket.r[i]);
-
-
-	//// 1. 부모 행렬
-	//_matrix ParentWorld = XMLoadFloat4x4(m_pParentWorldMatrix);
-
-	//// 2. Socket 월드 행렬 
-	//_matrix SocketMat = XMLoadFloat4x4(m_pSocketMatrix);
-
-	//for (size_t i = 0; i < 3; i++)
-	//	SocketMat.r[i] = XMVector3Normalize(SocketMat.r[i]);
-
-	//// 3. Blade 본 월드 행렬
-	//_matrix HandleMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex));
-
-	//for (size_t i = 0; i < 3; i++)
-	//	HandleMat.r[i] = XMVector3Normalize(HandleMat.r[i]);
-
-	//_matrix WeaponWorld = HandleMat * SocketMat * ParentWorld;
-
-
 
 
 	// 가진 이펙트들을 업데이트
