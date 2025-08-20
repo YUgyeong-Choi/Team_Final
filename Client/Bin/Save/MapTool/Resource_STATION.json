@@ -905,7 +905,7 @@
     {
         "Collision": false,
         "ModelName": "SM_Station_Light_02",
-        "NoInstancing": false,
+        "NoInstancing": true,
         "ObjectCount": 20,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
     },
