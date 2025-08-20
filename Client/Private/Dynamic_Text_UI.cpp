@@ -145,6 +145,11 @@ void CDynamic_Text_UI::Update_UI_From_Tool(void* pArg)
 	m_eAlignType = TEXTALIGN(pDesc->iAlignType);
 }
 
+void CDynamic_Text_UI::Set_Caption(_wstring strCaption)
+{
+	m_strCaption = strCaption;
+}
+
 CDynamic_Text_UI* CDynamic_Text_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CDynamic_Text_UI* pInstance = new CDynamic_Text_UI(pDevice, pContext);

@@ -48,6 +48,8 @@ namespace Client
 	enum class TEXTALIGN{ LEFT, CENTER, RIGHT, END };
 	
 	enum class UI_TYPE {STATIC, DYNAMIC, TEXT , END};
+	
+	enum class UI_TRIGGER_TYPE {TUTORIAL, POPUP, SCRIPT, GUIDE, NARRATION, WEAPON_SELECT, END};
 
 #pragma endregion
 

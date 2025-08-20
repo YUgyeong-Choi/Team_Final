@@ -88,6 +88,7 @@
 #include "UI_MonsterHP_Bar.h"
 #include "UI_LockOn_Icon.h"
 #include "LegionArm_Steel.h"
+#include "UI_Popup.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -362,6 +363,9 @@ HRESULT CLoader::Loading_For_Static()
 		CLegionArm_Steel::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Popup"),
+		CUI_Popup::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -1551,6 +1555,11 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_F.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_E"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_E.dds")))))
+		return E_FAIL;
+
 
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
@@ -1586,6 +1595,11 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	/* For.Prototype_Component_Texture_Bar_Gradation*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Gradation_Right"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Gradation_Right.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Bar_Gradation*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Line_Center"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Line_Hor_Cen_Light.dds")))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Lamp"),

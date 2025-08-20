@@ -36,6 +36,8 @@ public:
 
 	virtual void Update_UI_From_Tool(void* pArg) override;
 
+	void Set_Caption(_wstring strCaption);
+
 
 private:
 	// 사용할 폰트
