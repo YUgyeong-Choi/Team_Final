@@ -21,6 +21,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FStair_01.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_Station_MoldingA_02",
+        "NoInstancing": false,
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_MoldingA_02.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Station_StairA_01",
         "NoInstancing": false,
@@ -45,14 +52,14 @@
         "Collision": true,
         "ModelName": "SM_Wall_MansionDoor02_A",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_MansionDoor02_A.bin"
     },
     {
         "Collision": true,
         "ModelName": "SM_Wall_MansionDoor02_B",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_MansionDoor02_B.bin"
     },
     {
