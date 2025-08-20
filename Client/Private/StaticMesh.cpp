@@ -63,17 +63,6 @@ void CStaticMesh::Priority_Update(_float fTimeDelta)
 
 void CStaticMesh::Update(_float fTimeDelta)
 {
-	//현재 카메라와의 거리를 계산해서 어떤 lod를 사용할지 결정한다.
-	const _float4* pCamPos = m_pGameInstance->Get_CamPosition();
-
-	_float fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(STATE::POSITION) - XMLoadFloat4(pCamPos)));
-
-	if (fDistance < 5.f)
-		m_eLOD = LOD::LOD0;
-	else if (fDistance < 10.f)
-		m_eLOD = LOD::LOD1;
-	else
-		m_eLOD = LOD::LOD2;
 }
 
 void CStaticMesh::Late_Update(_float fTimeDelta)
@@ -87,6 +76,12 @@ void CStaticMesh::Late_Update(_float fTimeDelta)
 		}
 	}
 
+	/* [ LOD 설정 ] */
+	if (m_bIsLOD)
+	{
+		LOD_Update();
+		m_bIsLOD = false;
+	}
 }
 
 HRESULT CStaticMesh::Render()
@@ -168,6 +163,21 @@ HRESULT CStaticMesh::Render()
 #endif
 
 	return S_OK;
+}
+
+void CStaticMesh::LOD_Update()
+{
+	//현재 카메라와의 거리를 계산해서 어떤 lod를 사용할지 결정한다.
+	const _float4* pCamPos = m_pGameInstance->Get_CamPosition();
+
+	_float fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(STATE::POSITION) - XMLoadFloat4(pCamPos)));
+
+	if (fDistance < 5.f)
+		m_eLOD = LOD::LOD0;
+	else if (fDistance < 10.f)
+		m_eLOD = LOD::LOD1;
+	else
+		m_eLOD = LOD::LOD2;
 }
 
 HRESULT CStaticMesh::SetEmissive()

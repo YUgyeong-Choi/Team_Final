@@ -182,10 +182,9 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		Set_GrinderEffect_Active(false);
-
-		//m_pAnimator->SetBool("FocusOn", true);
+		m_pAnimator->SetInt("HitDir", 3);
 		m_pAnimator->SetTrigger("Hited");
+
 	}
 
 
@@ -210,6 +209,42 @@ HRESULT CPlayer::Render()
 CAnimController* CPlayer::GetCurrentAnimContrller()
 {
 	return m_pAnimator->Get_CurrentAnimController();
+}
+
+inline _vector ProjectToXZ(_vector vPos)
+{
+	return XMVectorSet(XMVectorGetX(vPos), 0.f, XMVectorGetZ(vPos), 0.f);
+}
+CPlayer::EHitDir CPlayer::ComputeHitDir()
+{
+	_vector vPlayerRight = XMVector3Normalize(m_pTransformCom->Get_State(STATE::RIGHT));
+	_vector vPlayerLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
+
+	_vector vIncoming = XMVectorNegate(XMVector3Normalize(ProjectToXZ(m_vHitNormal)));
+	_vector vLookFlat = XMVector3Normalize(ProjectToXZ(vPlayerLook));
+	_vector vRightFlat = XMVector3Normalize(ProjectToXZ(vPlayerRight));
+
+	const _float fDotFront = XMVectorGetX(XMVector3Dot(vIncoming, vLookFlat));
+	const _float fDotRight = XMVectorGetX(XMVector3Dot(vIncoming, vRightFlat));
+
+	const _float fAngle = atan2f(fDotRight, fDotFront);
+	const _float fSector = XM_PI / 4.f;
+	_int iSectorIndex = static_cast<_int>(floorf((fAngle + fSector * 0.5f) / fSector)) & 7;
+
+	switch (iSectorIndex)
+	{
+	case 0:  return EHitDir::F;
+	case 1:  return EHitDir::FR;
+	case 2:  return EHitDir::R;
+	case 3:  return EHitDir::BR;
+	case 4:  return EHitDir::B;
+	case 5:  return EHitDir::BL;
+	case 6:  return EHitDir::L;
+	case 7:  return EHitDir::FL;
+
+
+	default: return EHitDir::F;
+	}
 }
 
 void CPlayer::SitAnimationMove(_float fTimeDelta)
@@ -276,6 +311,12 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 		return;
 
 	EPlayerState eNextState = EvaluateTransitions();
+
+	if (m_bIsHit)
+	{
+		eNextState = EPlayerState::HITED;
+		m_bIsHit = false;
+	}
 
 	if (eNextState != m_eCurrentState && m_pCurrentState->CanExit())
 	{
@@ -1018,11 +1059,34 @@ void CPlayer::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	/* [ 플레이어 피격 ] */
-	if (bIsInvincible)
+	if (m_bIsInvincible)
 		return;
+	
 
-	bIsHit = true;
-	ReceiveDamage(pOther, eColliderType);
+	/* [ 무엇을 해야하는가? ] */
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	{
+		//0. 필요한 정보를 수집한다.
+		m_vHitPos = HitPos;
+		m_vHitNormal = HitNormal;
+
+		//1. 애니메이션 상태를 히트로 바꾼다.
+
+		//가드 중에 피격시 스위치를 켠다.
+		if (m_bIsGuarding)
+		{
+			m_bGardHit = true;
+			return;
+		}
+
+		//가드 중이 아니라면 피격당한다.
+		m_bIsHit = true;
+
+		//2. 플레이어의 HP를 감소시킨다.
+		ReceiveDamage(pOther, eColliderType);
+	}
+	
+
 
 	//printf("HitPos: %f, %f, %f\n", XMVectorGetX(HitPos), XMVectorGetY(HitPos), XMVectorGetZ(HitPos));
 	//printf("HitNormal: %f, %f, %f\n", XMVectorGetX(HitNormal), XMVectorGetY(HitNormal), XMVectorGetZ(HitNormal));
@@ -1072,6 +1136,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKCHARGE)] = new CPlayer_ArmCharge(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMFAIL)] = new CPlayer_ArmFail(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::MAINSKILL)] = new CPlayer_MainSkill(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::HITED)] = new CPlayer_Hited(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }
@@ -1275,7 +1340,7 @@ HRESULT CPlayer::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | FILTER_MONSTERWEAPON; 
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON; 
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);

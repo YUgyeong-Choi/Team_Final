@@ -239,7 +239,8 @@ HRESULT CMonster_Base::Ready_Actor(void* pArg)
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON; // 일단 보류
+	//filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);

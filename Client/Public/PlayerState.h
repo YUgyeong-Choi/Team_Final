@@ -1737,6 +1737,7 @@ public:
 
         // 가드는 아이들 , 걷기 상태입니다.
         m_pOwner->m_pAnimator->SetBool("Guard", true);
+        m_pOwner->m_bIsGuarding = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1747,12 +1748,70 @@ public:
         m_fStateTime += fTimeDelta;
 
         LockOnMovement();
+
+
+        /* [ 가드중에 피격당했을 시 ] */
+        if (m_pOwner->m_bGardHit)
+        {
+			m_fGardTime += fTimeDelta;
+
+            m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
+            if (m_pOwner->m_eDir == CPlayer::EHitDir::F ||
+                m_pOwner->m_eDir == CPlayer::EHitDir::FL ||
+                m_pOwner->m_eDir == CPlayer::EHitDir::FR)
+            {
+                //정면 또는 측면을 맞으면 가드가 성공한다.
+                switch (m_pOwner->m_eDir)
+                {
+                case CPlayer::EHitDir::F:
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 0);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
+					break;
+                case CPlayer::EHitDir::FR:
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 1);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
+                    break;
+                case CPlayer::EHitDir::FL:
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 3);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
+                    break;
+
+                default:
+                    break;
+                }
+
+            }
+            else
+            {
+                //그 외의 방향을 맞으면 피격당한다. (백어택)
+                m_pOwner->m_bGardHit = false;
+                m_pOwner->m_pAnimator->SetBool("Guard", false);
+                switch (m_pOwner->m_eDir)
+                {
+                case CPlayer::EHitDir::L:
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 4);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
+                    break;
+                case CPlayer::EHitDir::R:
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 5);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
+                    break;
+
+                default:
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 2);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
+                    break;
+                }
+            }
+        }
     }
 
     virtual void Exit() override
     {
         m_pOwner->m_pAnimator->SetBool("Guard", false);
+        m_pOwner->m_bIsGuarding = false;
         m_fStateTime = 0.f;
+        m_fGardTime = 0.f;
 
     }
 
@@ -1761,8 +1820,22 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (!KEY_PRESSING(DIK_LSHIFT))
-            return EPlayerState::IDLE;
+
+        //만약 가드상태라면 0.3 초의 대기 상태 이후에 상태가 변경된다.
+        if (m_pOwner->m_bGardHit)
+        {
+            if (m_fGardTime > 0.3f)
+            {
+                m_pOwner->m_bGardHit = false;
+                if (!KEY_PRESSING(DIK_LSHIFT))
+                    return EPlayerState::IDLE;
+            }
+        }
+        else
+        {
+            if (!KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::IDLE;
+        }
 
         return EPlayerState::GARD;
     }
@@ -1788,6 +1861,8 @@ private:
 
     _float  m_fTime = 0.3f;
     _float  m_fDistance = 1.f;
+
+    _float  m_fGardTime = {};
 
 };
 
@@ -2437,5 +2512,86 @@ private:
 	_bool m_bAttackA = false;
 	_bool m_bAttackB = false;
 };
+
+/* [ 이 클래스는 피격 상태입니다. ] */
+class CPlayer_Hited final : public CPlayerState
+{
+
+public:
+    CPlayer_Hited(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_Hited() = default;
+
+    /* [ 가드가 아닌 정말 데미지를 입었을 때의 상태입니다. ] */
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 어느방향에서 맞는지 설정하기 ] */
+        m_pOwner->m_pAnimator->SetInt("HitDir", 1);
+        m_pOwner->m_pAnimator->SetTrigger("Hited");
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+    }
+
+    virtual void Exit() override
+    {
+        m_fStateTime = 0.f;
+    }
+
+    
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+
+        //1. 스킬의 진행도에 따라 탈출 조건이 달라진다.
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (0.4f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+
+        return EPlayerState::HITED;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"HITED";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "Hit_FtoB", "Hit_R", "Hit_B", "Hit_L", "Hit_RtoL", "Hit_LtoR"
+    };
+};
+
+
 
 NS_END

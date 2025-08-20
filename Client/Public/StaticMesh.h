@@ -51,6 +51,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void LOD_Update();
+
 private:
 	HRESULT SetEmissive();
 

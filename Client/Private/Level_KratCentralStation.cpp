@@ -394,6 +394,7 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 		if (vTypeTable[iIdx] == OCTOTREEOBJECTTYPE::MESH)
 		{
 			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, pObj);
+			pObj->Set_IsLOD(true);
 		}
 		else
 		{

@@ -21,6 +21,8 @@ public:
 	{
 	}PLAYER_DESC;
 
+	enum class EHitDir {F,FL,FR,L,R,BL,BR,B, END};
+
 	struct InputContext {
 		/* [ W,A,S,D 입력 ] */
 		_bool bMove;
@@ -68,6 +70,10 @@ public:
 	EPlayerState Get_PlayerState() { return m_eCurrentState; }
 
 	CAnimController* GetCurrentAnimContrller();
+
+private: /* [ 피격 헬퍼함수 ] */
+	EHitDir			ComputeHitDir();
+
 
 private:
 	void			SitAnimationMove(_float fTimeDelta);
@@ -179,6 +185,7 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_ArmCharge;
 	friend class CPlayer_MainSkill;
 	friend class CPlayer_ArmFail;
+	friend class CPlayer_Hited;
 
 
 private: /* [ 상태 변수 ] */
@@ -205,7 +212,7 @@ private: /* [ 소유할 수 있는 객체 ] */
 	CWeapon*		m_pWeapon = { nullptr };
 	CGameObject*	m_pInterectionStuff = { nullptr };
 
-private: /* [ 공격관련 변수 ] */
+private: /* [ 전투관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
 	_bool	m_bBackStepAttack = { false };
 	_bool 	m_bIsChange = { false };
@@ -213,6 +220,12 @@ private: /* [ 공격관련 변수 ] */
 	_float 	m_fChangeTime = {};
 	_float 	m_fChangeTimeElaped = {};
 	_int 	m_iCurrentCombo = { 0 };
+
+	_vector m_vHitPos = {};
+	_vector m_vHitNormal = {};
+
+	_bool   m_bGardHit = {};
+	EHitDir m_eDir = EHitDir::END;
 
 private: /* [ 이동관련 변수 ] */
 	_bool    m_bWalk = { true };
@@ -286,10 +299,10 @@ private: /* [ 리전 암 내구도 ] */
 	_float  m_fMaxLegionArmEnergy = { 100.f };
 
 private: /* [ 현재 상태 ] */
-	_bool	bIsGuarding = { false };
-	_bool	bIsHit = { false };
-	_bool	bIsInvincible = { false };
-	_float	fIsInvincible = {};
+	_bool	m_bIsGuarding = { false };
+	_bool	m_bIsHit = { false };
+	_bool	m_bIsInvincible = { false };
+	_float	m_fIsInvincible = {};
 	_bool	m_bIsLockOn = { false };
 
 private: /* [ 현재 플레이어 레벨 ] */
