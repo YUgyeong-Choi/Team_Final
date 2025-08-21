@@ -1004,11 +1004,29 @@ void CPlayer::Register_Events()
 			}
 		});
 
+	m_pAnimator->RegisterEventListener("OnArmCollider", [this]()
+		{
+			if (m_pLegionArm)
+			{
+				m_pLegionArm->SetisAttack(true);
+				m_pLegionArm->Clear_CollisionObj();
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("OffArmCollider", [this]()
+		{
+			if (m_pLegionArm)
+			{
+				m_pLegionArm->SetisAttack(false);
+			}
+		});
+
 	m_pAnimator->RegisterEventListener("EquipWeapon", [this]()
 		{
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetbIsActive(true);
+				m_pWeapon->SetisAttack(false);
 				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),m_pWeapon);
 			}
 		});
@@ -1017,6 +1035,7 @@ void CPlayer::Register_Events()
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetbIsActive(false);
+				m_pWeapon->SetisAttack(false);
 				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),nullptr);
 			}
 		});
@@ -1889,6 +1908,13 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	_float fDist = fSpeed * fTimeDelta;
 	vInputDir *= fDist;
 	XMStoreFloat3(&moveVec, vInputDir);
+
+#ifdef _DEBUG
+	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
+	if (iCurLevel == ENUM_CLASS(LEVEL::JW))
+		return;
+#endif // _DEBUG
+
 
 	// 중력 적용
 	constexpr _float fGravity = -9.81f;
