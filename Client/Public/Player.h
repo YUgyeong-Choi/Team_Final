@@ -216,6 +216,7 @@ private: /* [ 전투관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
 	_bool	m_bBackStepAttack = { false };
 	_bool 	m_bIsChange = { false };
+	_bool 	m_bLockOnSprint = { false };
 
 	_float 	m_fChangeTime = {};
 	_float 	m_fChangeTimeElaped = {};

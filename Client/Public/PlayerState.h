@@ -644,20 +644,22 @@ public:
         {
             if (KEY_PRESSING(DIK_R))
             {
+                if (!m_pOwner->m_pAnimator->CheckBool("Grinding"))
+                {
+                    m_pOwner->m_pAnimator->SetTrigger("Grinder");
+                }
+                m_fGrinderTime = 0.f;
                 m_pOwner->m_pAnimator->SetBool("Grinding", true);
-                
             }
-            else
+
+            if (KEY_UP(DIK_R))
             {
                 m_pOwner->m_pAnimator->SetBool("Grinding", false);
-                m_pOwner->m_bUseGrinder = false;
                 m_pOwner->m_pSelectItem->Activate(false);
+                m_fGrinderTime += fTimeDelta;
             }
+            
             LockOnMovement4Way();
-        }
-        else
-        {
-            m_fGrinderTime += fTimeDelta;
         }
 
         /* [ 펄스 : 이동가능 ] */
@@ -707,7 +709,7 @@ public:
             return EPlayerState::IDLE;
 		}
 
-        if (1.f < m_fGrinderTime && !m_pOwner->m_bUseGrinder)
+        if (1.f < m_fStateTime && m_pOwner->m_bUsePulse)
         {
             if (input.bMove)
             {
@@ -715,6 +717,23 @@ public:
                     return EPlayerState::WALK;
                 else
                     return EPlayerState::RUN;
+            }
+
+            return EPlayerState::IDLE;
+        }
+
+        if (1.f < m_fGrinderTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
             }
 
             return EPlayerState::IDLE;
@@ -2058,14 +2077,17 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (MOUSE_DOWN(DIM::LBUTTON))
-            m_bAttackA = true;
+        if (m_fStateTime > 0.3f)
+        {
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
 
-        if (MOUSE_DOWN(DIM::RBUTTON))
-            m_bAttackB = true;
+            if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
 
-        if (KEY_UP(DIK_LCONTROL))
-            m_bArmAttack = true;
+            if (KEY_UP(DIK_LCONTROL))
+                m_bArmAttack = true;
+        }
     }
 
     virtual void Exit() override

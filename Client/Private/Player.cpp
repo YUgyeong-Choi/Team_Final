@@ -153,8 +153,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
+
 	/* [ 캐스케이드 전용 업데이트 함수 ] */
 	UpdateShadowCamera();
+
 	/* [ 룩 벡터 레이케스트 ] */
 	RayCast(m_pControllerCom);
 
@@ -169,22 +171,23 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
 
-	// 컷씬일 때 못 움직이도록
-	//if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-	//	return; 
-	
 	/* [ 입력 ] */
 	if (CCamera_Manager::Get_Instance()->GetbMoveable()) // CameraOrbital일때만
 		HandleInput();
 
+	/* [ 락온 관련 ] */
+	LockOnState(fTimeDelta);
+
+	/* [ 문열기 관련 ] */
 	SlidDoorMove(fTimeDelta);
+
+	/* [ 상태 관련 ] */
 	UpdateCurrentState(fTimeDelta);
+
+	/* [ 이동 관련 ] */
 	Movement(fTimeDelta);
 
 	Update_Collider_Actor();
-
-	/* [ 락온 관련 ] */
-	LockOnState(fTimeDelta);
 
 	/* [ 아이템 ] */
 	Update_Slot(fTimeDelta);
@@ -1624,6 +1627,39 @@ void CPlayer::LockOnState(_float fTimeDelta)
 		m_pLockOn_Manager->Set_Active();
 
 	CUnit* pTarget = m_pLockOn_Manager->Get_Target();
+
+	/* [ 락온인데 스프린트 상태라면 ] */
+	if (pTarget && m_bWeaponEquipped && m_pAnimator->CheckBool("Sprint"))
+	{
+		/* [ 타겟이 있다면 ] */
+		m_bIsLockOn = true;
+		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
+
+		if (KEY_UP(DIK_SPACE))
+			m_bLockOnSprint = true;
+	}
+	/* [ 스페이스를 뗀 순간 회전 보간을 시작한다. ] */
+	if (m_bLockOnSprint)
+	{
+		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+		_vector vTargetDir = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vTargetPos, vPlayerPos)));
+		_bool bIsRotate = m_pTransformCom->RotateToDirectionSmoothly(vTargetDir, fTimeDelta);
+
+		if (!bIsRotate)
+		{
+			// 회전을 끝냈다면 스위치는 꺼진다.
+			m_bLockOnSprint = false;
+		}
+		else
+		{
+			//회전 중이라면 탈출해버린다.
+			return;
+		}
+	}
+
+	/* [ 락온인데 스프린트 상태가 아니라면 ] */
 	if (pTarget && m_bWeaponEquipped && !m_pAnimator->CheckBool("Sprint"))
 	{
 		if (m_bUseLamp)
@@ -1633,13 +1669,8 @@ void CPlayer::LockOnState(_float fTimeDelta)
 		m_bIsLockOn = true;
 		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		m_pTransformCom->LookAtWithOutY(vTargetPos);
-
-		//_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-		//_vector vTargetDir = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vTargetPos, vPlayerPos)));
-		//
-		///* 부드럽게 해당 방향으로 회전 (Y는 자동으로 무시된 평면방향) */
-		//m_pTransformCom->RotateToDirectionSmoothly(vTargetDir, fTimeDelta);
 	}
 	else
 	{
@@ -1883,14 +1914,17 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 			{
 				fClampedAngle = 0.f;
 			}
-			m_pTransformCom->TurnAngle(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
+
+			/* [ 락온보간중이 아닐 때만 ] */
+			if (!m_bLockOnSprint)
+				m_pTransformCom->TurnAngle(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
 		}
 	}
 
 	/* [ 이동을 한다. ] */
 	_float3 moveVec = {};
 	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
-	if (!m_bMovable)    fSpeed = 0.f;
+	if (!m_bMovable){fSpeed = 0.f;}
 	string strName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 	if (m_MovableStates.find(strName) == m_MovableStates.end())
 	{
@@ -1912,7 +1946,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	filters.mFilterCallback = &filter; // 필터 콜백 지정
 	PxControllerCollisionFlags collisionFlags =
 		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
-	
+	//printf(" 왜 안움직이지?? : %s \n", strName.c_str());
 
 	// 4. 지면에 닿았으면 중력 속도 초기화
 	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
