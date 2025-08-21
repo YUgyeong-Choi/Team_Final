@@ -8,6 +8,7 @@ IMPLEMENT_SINGLETON(CUI_Manager)
 CUI_Manager::CUI_Manager()
 	:m_pGameInstance{ CGameInstance::Get_Instance() }
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
 void CUI_Manager::Add_UI(CUIObject* pUI, _wstring strTag)
@@ -15,7 +16,7 @@ void CUI_Manager::Add_UI(CUIObject* pUI, _wstring strTag)
 	
 	m_UImap.insert({ strTag, pUI });
 
-	Safe_AddRef(pUI);
+	//Safe_AddRef(pUI);
 }
 
 void CUI_Manager::Remove_UI(_wstring strTag)
@@ -111,8 +112,6 @@ void CUI_Manager::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pGameInstance);
-
 	for (auto& pUI : m_UImap)
 	{
 		Safe_Release(pUI.second);
@@ -120,4 +119,6 @@ void CUI_Manager::Free()
 
 	m_UImap.clear();
 	m_pPanel.clear();
+
+	Safe_Release(m_pGameInstance);
 }
