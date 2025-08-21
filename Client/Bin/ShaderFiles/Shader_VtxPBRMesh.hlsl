@@ -105,7 +105,7 @@ struct PS_OUT
     vector vDiffuse     : SV_TARGET0;
     vector vNormal      : SV_TARGET1;
     vector vARM         : SV_TARGET2;
-    vector vDepth     : SV_TARGET3;
+    vector vDepth       : SV_TARGET3;
     vector vAO          : SV_TARGET4;
     vector vRoughness   : SV_TARGET5;
     vector vMetallic    : SV_TARGET6;

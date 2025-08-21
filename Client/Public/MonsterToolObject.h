@@ -20,7 +20,7 @@ class CMonsterToolObject : public CGameObject
 public:
 	typedef struct tagMonsterToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		const _tchar*	szMeshID;
+		_tchar			szMeshID[MAX_PATH];
 		LEVEL			eMeshLevelID;
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
@@ -31,6 +31,7 @@ public:
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
 		);
+		_int iID = { 0 };
 	}MONSTERTOOLOBJECT_DESC;
 
 protected:
@@ -45,9 +46,9 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual HRESULT Render_Shadow() override;
+	//virtual HRESULT Render_Shadow() override;
 
-	void SetCascadeShadow();
+	//void SetCascadeShadow();
 
 private:
 	void LoadAnimDataFromJson();
@@ -60,6 +61,9 @@ protected: /* [ Setup 함수 ] */
 
 	virtual void Register_Events() {}
 
+private:
+	_int m_iID = { 0 }; //몬스터 아이디는 음수 -1 부터 시작
+
 protected:				/* [ 기본 속성 ] */
 
 	_bool				m_isActive = { true };
@@ -71,7 +75,7 @@ protected:				/* [ 기본 속성 ] */
 	_bool				m_bUseLockon = {};
 
 protected: 				/* [ 기본 타입 ] */
-	const _tchar* m_szName = { nullptr };
+	//const _tchar* m_szName = { nullptr };
 	const _tchar* m_szMeshID = { nullptr };
 	LEVEL				m_eMeshLevelID = { LEVEL::END };
 

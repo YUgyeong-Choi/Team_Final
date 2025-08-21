@@ -26,17 +26,17 @@ CLevel_YW::CLevel_YW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_YW::Initialize()
 {
-	CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
-	Desc.fSpeedPerSec = 5.f;
-	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
-	Desc.eMeshLevelID = LEVEL::YW;
-	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
-	Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	lstrcpy(Desc.szName, TEXT("MonsterToolObject"));
-	Desc.szMeshID = TEXT("Buttler_Train");
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
-		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
-		return E_FAIL;
+	//CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
+	//Desc.fSpeedPerSec = 5.f;
+	//Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	//Desc.eMeshLevelID = LEVEL::YW;
+	//Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
+	//Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	//lstrcpy(Desc.szName, TEXT("MonsterToolObject"));
+	//Desc.szMeshID = TEXT("Buttler_Train");
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
+	//	ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;
@@ -181,14 +181,14 @@ void CLevel_YW::Render_File()
 	//저장할 때도 콤보박스에 선택된 파일에 저장하도록
 	ImGui::Text("Load Map");
 	_bool bRequestLoad = false;
-	if (ImGui::BeginCombo("##MapCombo", Maps[iMapIndex]))
+	if (ImGui::BeginCombo("##MapCombo", m_Maps[m_iMapIndex]))
 	{
-		for (_int i = 0; i < IM_ARRAYSIZE(Maps); i++)
+		for (_int i = 0; i < IM_ARRAYSIZE(m_Maps); i++)
 		{
-			_bool bSelected = (iMapIndex == i);
-			if (ImGui::Selectable(Maps[i], bSelected))
+			_bool bSelected = (m_iMapIndex == i);
+			if (ImGui::Selectable(m_Maps[i], bSelected))
 			{
-				iMapIndex = i;
+				m_iMapIndex = i;
 				bRequestLoad = true; // 로드 요청
 			}
 
@@ -204,7 +204,7 @@ void CLevel_YW::Render_File()
 		//모든 툴 로드
 		for (CYWTool* Tool : m_ImGuiTools)
 		{
-			Tool->Load(Maps[iMapIndex]);
+			Tool->Load(m_Maps[m_iMapIndex]);
 		}
 	}
 
@@ -213,7 +213,7 @@ void CLevel_YW::Render_File()
 	if (ImGui::Button("Save"))
 	{
 		//활성화 된 툴 저장
-		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(Maps[iMapIndex]);
+		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(m_Maps[m_iMapIndex]);
 	}
 
 	ImGui::End();
@@ -224,7 +224,7 @@ void CLevel_YW::Control()
 	//컨트롤 S 를 눌렀을 때 현재 활성화된 툴을 저장시킨다.
 	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
 	{
-		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(Maps[iMapIndex]);
+		m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Save(m_Maps[m_iMapIndex]);
 	}
 }
 
@@ -240,13 +240,13 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 		return E_FAIL;
 
 	//MapData를 따라 맵을 로드한다.
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Load(Maps[iMapIndex])))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Load(m_Maps[m_iMapIndex])))
 		return E_FAIL;
 #pragma endregion
 
 #pragma region 네비툴
 	CNavTool::NAVTOOL_DESC Desc{};
-	Desc.wsMapName = /*L"STATION";*/ StringToWString(Maps[iMapIndex]); //무조건 스테이션만 쓸 듯
+	Desc.wsMapName = /*L"STATION";*/ StringToWString(m_Maps[m_iMapIndex]); //무조건 스테이션만 쓸 듯
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext, &Desc));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)])
@@ -259,7 +259,7 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 		return E_FAIL;
 
 	//데칼 툴 로딩
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)]->Load(Maps[iMapIndex])))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DECAL)]->Load(m_Maps[m_iMapIndex])))
 		return E_FAIL;
 #pragma endregion
 
@@ -269,7 +269,7 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 		return E_FAIL;
 
 	//데칼 툴 로딩
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MONSTER)]->Load(Maps[iMapIndex])))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MONSTER)]->Load(m_Maps[m_iMapIndex])))
 		return E_FAIL;
 #pragma endregion
 

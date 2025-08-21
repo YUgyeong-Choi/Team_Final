@@ -84,7 +84,7 @@ void CUI_Video::Update(_float fTimeDelta)
 				av_seek_frame(m_pFormatCtx, m_videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
 				avcodec_flush_buffers(m_pCodecCtx);
 				m_iDrawnFrameIndex = -1;
-				hr = ReadFrameToBuffer(&pData, &width, &height, &time);
+				//hr = ReadFrameToBuffer(&pData, &width, &height, &time);
 			}
 			else
 			{
@@ -108,9 +108,10 @@ void CUI_Video::Update(_float fTimeDelta)
 				Safe_Delete_Array(pData);
 			}
 
-			Safe_Delete_Array(pData);
+			//Safe_Delete_Array(pData);
 		}
-		
+		Safe_Delete_Array(pData); //여기로 옮기면 누수 안나는가???(영웅) : 일단 아직 잘돌아가긴 함
+
 	}
 
 	Play_Sound();

@@ -27,6 +27,7 @@ private:
 	//툴 조작
 	void Control(_float fTimeDelta);
 private:
+	void Picking();
 	void Focus();
 	void SnapTo();
 	void Duplicate();
@@ -36,12 +37,34 @@ private:
 	HRESULT Ready_Texture(const _char* Map);
 
 private:
-	HRESULT Spawn_DecalObject();
+	//몬스터 소환
+	HRESULT Spawn_MonsterToolObject();
+
+	//삭제
 	void Delete_FocusObject();
 private:
 	void Render_Detail();
 	void Detail_Transform();
 	void Detail_Texture();
+
+private:
+#pragma region 몬스터 종류
+	enum class Monster {
+		Buttler_Train,
+		Elite_Police,
+		FireEater,
+		END
+	};
+
+	const string m_Monsters[static_cast<_int>(Monster::END)] = {
+	"Buttler_Train",
+	"Elite_Police",
+	"FireEater"
+	};
+
+#pragma endregion
+
+	_int m_iMonsterIndex = static_cast<_int>(Monster::Buttler_Train);
 
 private:
 	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };

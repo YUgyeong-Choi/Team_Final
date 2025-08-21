@@ -55,7 +55,24 @@ HRESULT	CMonsterTool::Render_ImGui()
 
 	if (ImGui::Button("Spawn Monster"))
 	{
-		Spawn_DecalObject();
+		Spawn_MonsterToolObject();
+	}
+
+	//몬스터 종류 나열 콤보 박스
+	if (ImGui::BeginCombo("##MonsterCombo", m_Monsters[m_iMonsterIndex].c_str()))
+	{
+		for (_int i = 0; i < IM_ARRAYSIZE(m_Monsters); i++)
+		{
+			_bool bSelected = (m_iMonsterIndex == i);
+			if (ImGui::Selectable(m_Monsters[i].c_str(), bSelected))
+			{
+				m_iMonsterIndex = i;
+			}
+
+			if (bSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
 	}
 
 	ImGui::End();
@@ -100,10 +117,10 @@ void CMonsterTool::Control(_float fTimeDelta)
 		}
 	}
 
-	//클릭하면 가장 가까운 데칼을 포커스 한다.
+	//클릭해서 선택
 	if (m_pGameInstance->Mouse_Up(DIM::LBUTTON) && ImGuizmo::IsOver() == false)
 	{
-		//Select_Decal();
+		Picking();
 	}
 
 	//F 키누르면 해당 오브젝트 위치로 이동
@@ -128,6 +145,32 @@ void CMonsterTool::Control(_float fTimeDelta)
 	{
 		Duplicate();
 	}
+}
+void CMonsterTool::Picking()
+{
+	_int iID = { 0 };
+	if (m_pGameInstance->PickByClick(&iID))
+	{
+		cout << "Monster ID(음수): " << iID << endl;
+	}
+
+	//MonsterToolObject 중에 같은 아이디를 찾아서 포커스한다.
+
+	list<CGameObject*>& ObjList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"));
+
+	for (CGameObject*pObj : ObjList)
+	{
+		CMonsterToolObject* pMonsterToolObj = static_cast<CMonsterToolObject*>(pObj);
+		if (pMonsterToolObj->m_iID == iID)
+		{
+			Safe_Release(m_pFocusObject);
+			m_pFocusObject = pMonsterToolObj;
+			Safe_AddRef(m_pFocusObject);
+
+			break;
+		}
+	}
+	
 }
 
 void CMonsterTool::Focus()
@@ -242,7 +285,7 @@ HRESULT CMonsterTool::Ready_Texture(const _char* Map)
 	return S_OK;
 }
 
-HRESULT CMonsterTool::Spawn_DecalObject()
+HRESULT CMonsterTool::Spawn_MonsterToolObject()
 {
 #pragma region 카메라 앞에다가 소환
 	//카메라 앞에다가 소환
@@ -281,32 +324,28 @@ HRESULT CMonsterTool::Spawn_DecalObject()
 
 #pragma endregion
 
-	CMonsterToolObject::MONSTERTOOLOBJECT_DESC DecalDesc = {};
-
+	CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
 	// 오브젝트 월드 행렬에 적용
-	XMStoreFloat4x4(&DecalDesc.WorldMatrix, SpawnWorldMatrix);
+	XMStoreFloat4x4(&Desc.WorldMatrix, SpawnWorldMatrix);
 
-	//소환하고 포커스 변경
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
-		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"), &DecalDesc)))
-		return E_FAIL;
-
-
-	/*CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
 	Desc.fSpeedPerSec = 5.f;
 	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
 	Desc.eMeshLevelID = LEVEL::YW;
 	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
 	Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	lstrcpy(Desc.szName, TEXT("MonsterToolObject"));
-	Desc.szMeshID = TEXT("Buttler_Train");
+	lstrcpy(Desc.szMeshID, StringToWString(m_Monsters[m_iMonsterIndex]).c_str());
+
+
+
+	Desc.iID = m_iID--;
+
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
 		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
-		return E_FAIL;*/
+		return E_FAIL;
 
 
 	Safe_Release(m_pFocusObject);
-	m_pFocusObject = static_cast<CMonsterToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Monster")));
+	m_pFocusObject = static_cast<CMonsterToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject")));
 	Safe_AddRef(m_pFocusObject);
 
 	return S_OK;

@@ -122,7 +122,7 @@ private:
 	class CMapToolObject* m_pFocusObject = { nullptr };
 
 private:
-	_uint m_iID = { 0 };
+	_uint m_iID = { 1 }; //1부터 시작
 
 private:
 	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };

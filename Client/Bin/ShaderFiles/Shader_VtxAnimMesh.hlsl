@@ -127,7 +127,7 @@ VS_OUT_PBR VS_MAIN(VS_IN In)
     return Out;
 }
 
-VS_OUT VS_MAIN_NONPICK(VS_IN In)
+VS_OUT VS_PICK(VS_IN In)
 {
     VS_OUT Out;
     
@@ -229,11 +229,12 @@ struct PS_OUT_PBR
 };
 
 
-struct PS_OUT_NONPICK
+struct PS_OUT_PICK
 {
     vector vDiffuse : SV_TARGET0;
     vector vNormal : SV_TARGET1;
-    vector vDepth : SV_TARGET2;
+    vector vARM : SV_TARGET2;
+    vector vDepth : SV_TARGET3;
     
 };
 
@@ -274,9 +275,9 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     return Out;
 }
 
-PS_OUT_NONPICK PS_MAIN_NONPICK(PS_IN In)
+PS_OUT_PICK PS_PICK(PS_IN In)
 {
-    PS_OUT_NONPICK Out;
+    PS_OUT_PICK Out;
     
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     if (vMtrlDiffuse.a < 0.3f)
@@ -286,9 +287,17 @@ PS_OUT_NONPICK PS_MAIN_NONPICK(PS_IN In)
     
     /* -1.f -> 0.f, 1.f -> 1.f */    
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+     
+    // ARM 텍스처
+    float3 vARM = g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
+    float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
+    float Roughness = vARM.g * g_fRoughnessIntensity;
+    float Metallic = vARM.b * g_fMetallicIntensity;
     
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, 0.f);
-    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, g_fID);
+    Out.vARM = float4(AO, Roughness, Metallic, 1.f);
+    
+    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, 0.f, g_fID);
     
     return Out;
 }
@@ -365,15 +374,15 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();      
     }
 
-    pass NonPick //1
+    pass MonsterToolObject //1 (피킹 해서 아이디 얻어올 수 있다.)
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
-        VertexShader = compile vs_5_0 VS_MAIN_NONPICK();
+        VertexShader = compile vs_5_0 VS_PICK();
         GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_NONPICK();
+        PixelShader = compile ps_5_0 PS_PICK();
     }
 
     pass Shadow // 2
@@ -415,19 +424,5 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
         PixelShader = compile ps_5_0 PS_Cascade2(); // SV_TARGET2 전용
     }
-
-    pass ToolMesh //6
-    {
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-        
-        VertexShader = compile vs_5_0 VS_MAIN_NONPICK();
-        GeometryShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_NONPICK();
-    }
-   
-   
-   
    
 }

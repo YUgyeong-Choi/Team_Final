@@ -39,7 +39,9 @@ HRESULT CMonsterToolObject::Initialize(void* pArg)
 	m_szMeshID = pDesc->szMeshID;
 	m_eMeshLevelID = pDesc->eMeshLevelID;
 	m_iRender = pDesc->iRender;
-	m_szName = pDesc->szName;
+	//m_szName = pDesc->szName;
+
+	m_iID = pDesc->iID;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -49,7 +51,7 @@ HRESULT CMonsterToolObject::Initialize(void* pArg)
 
 	LoadAnimDataFromJson();
 
-	Register_Events();
+	//Register_Events();
 
 	_vector vInitPos = XMVectorSetW(XMLoadFloat3(&pDesc->InitPos), 1.f);
 	m_pTransformCom->Set_State(STATE::POSITION, vInitPos);
@@ -80,7 +82,7 @@ void CMonsterToolObject::Update(_float fTimeDelta)
 
 void CMonsterToolObject::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -89,34 +91,18 @@ HRESULT CMonsterToolObject::Render()
 	if (FAILED(Bind_Shader()))
 		return E_FAIL;
 
-	return S_OK;
-}
-
-HRESULT CMonsterToolObject::Render_Shadow()
-{
-	/* [ 월드 스페이스 넘기기 ] */
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
-		return E_FAIL;
-
-	SetCascadeShadow();
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Light_ViewMatrix(m_eShadow))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Light_ProjMatrix(m_eShadow))))
-		return E_FAIL;
-
-	_int iCascadeCount = ENUM_CLASS(m_eShadow);
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0);
+
+
 		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
-		switch (iCascadeCount)
-		{
-		case 0: m_pShaderCom->Begin(3); break;
-		case 1: m_pShaderCom->Begin(4); break;
-		case 2: m_pShaderCom->Begin(5); break;
-		}
+		if (FAILED(m_pShaderCom->Begin(1)))
+			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))
 			return E_FAIL;
@@ -125,48 +111,81 @@ HRESULT CMonsterToolObject::Render_Shadow()
 	return S_OK;
 }
 
-void CMonsterToolObject::SetCascadeShadow()
-{
-	if (m_pPhysXActorCom)
-	{
-		// 월드 AABB 구하기
-		AABBBOX tWorldAABB = GetWorldAABB();
+//HRESULT CMonsterToolObject::Render_Shadow()
+//{
+//	/* [ 월드 스페이스 넘기기 ] */
+//	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
+//		return E_FAIL;
+//
+//	SetCascadeShadow();
+//	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Light_ViewMatrix(m_eShadow))))
+//		return E_FAIL;
+//	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Light_ProjMatrix(m_eShadow))))
+//		return E_FAIL;
+//
+//	_int iCascadeCount = ENUM_CLASS(m_eShadow);
+//	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+//
+//	for (_uint i = 0; i < iNumMesh; i++)
+//	{
+//		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
+//
+//		switch (iCascadeCount)
+//		{
+//		case 0: m_pShaderCom->Begin(3); break;
+//		case 1: m_pShaderCom->Begin(4); break;
+//		case 2: m_pShaderCom->Begin(5); break;
+//		}
+//
+//		if (FAILED(m_pModelCom->Render(i)))
+//			return E_FAIL;
+//	}
+//
+//	return S_OK;
+//}
 
-		// 뷰 행렬
-		_float4x4 tView = {};
-		XMStoreFloat4x4(&tView, XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW)));
-
-		// 8코너를 뷰공간으로 변환하여 Z범위 계산
-		_float fZMin = 1e9f, fZMax = -1e9f;
-		for (_uint i = 0; i < 8; ++i)
-		{
-			_float3 vCorner = ExtractAABBWorldCorner(tWorldAABB.vMin, tWorldAABB.vMax, i);
-			_vector vCornerVS = XMVector3TransformCoord(XMLoadFloat3(&vCorner), XMLoadFloat4x4(&tView));
-			_float  fZ = XMVectorGetZ(vCornerVS);
-			fZMin = min(fZMin, fZ);
-			fZMax = max(fZMax, fZ);
-		}
-
-		// 완전 포함 → 해당 캐스케이드
-		if (fZMax <= 5.f)        m_eShadow = SHADOW::SHADOWA;
-		else if (fZMin >= 5.f && fZMax <= 20.f) m_eShadow = SHADOW::SHADOWB;
-		else if (fZMin >= 20.f)  m_eShadow = SHADOW::SHADOWC;
-		else
-		{
-			// 걸침 → 최소 Z 기준으로만 분기
-			if (fZMin < 5.f)         m_eShadow = SHADOW::SHADOWA;
-			else if (fZMin < 20.f)   m_eShadow = SHADOW::SHADOWB;
-			else                     m_eShadow = SHADOW::SHADOWC;
-		}
-	}
-	else
-	{
-		// AABB 없으면 기존 방식
-		if (m_fViewZ < 5.f)         m_eShadow = SHADOW::SHADOWA;
-		else if (m_fViewZ < 20.f)   m_eShadow = SHADOW::SHADOWB;
-		else                        m_eShadow = SHADOW::SHADOWC;
-	}
-}
+//void CMonsterToolObject::SetCascadeShadow()
+//{
+//	if (m_pPhysXActorCom)
+//	{
+//		// 월드 AABB 구하기
+//		AABBBOX tWorldAABB = GetWorldAABB();
+//
+//		// 뷰 행렬
+//		_float4x4 tView = {};
+//		XMStoreFloat4x4(&tView, XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW)));
+//
+//		// 8코너를 뷰공간으로 변환하여 Z범위 계산
+//		_float fZMin = 1e9f, fZMax = -1e9f;
+//		for (_uint i = 0; i < 8; ++i)
+//		{
+//			_float3 vCorner = ExtractAABBWorldCorner(tWorldAABB.vMin, tWorldAABB.vMax, i);
+//			_vector vCornerVS = XMVector3TransformCoord(XMLoadFloat3(&vCorner), XMLoadFloat4x4(&tView));
+//			_float  fZ = XMVectorGetZ(vCornerVS);
+//			fZMin = min(fZMin, fZ);
+//			fZMax = max(fZMax, fZ);
+//		}
+//
+//		// 완전 포함 → 해당 캐스케이드
+//		if (fZMax <= 5.f)        m_eShadow = SHADOW::SHADOWA;
+//		else if (fZMin >= 5.f && fZMax <= 20.f) m_eShadow = SHADOW::SHADOWB;
+//		else if (fZMin >= 20.f)  m_eShadow = SHADOW::SHADOWC;
+//		else
+//		{
+//			// 걸침 → 최소 Z 기준으로만 분기
+//			if (fZMin < 5.f)         m_eShadow = SHADOW::SHADOWA;
+//			else if (fZMin < 20.f)   m_eShadow = SHADOW::SHADOWB;
+//			else                     m_eShadow = SHADOW::SHADOWC;
+//		}
+//	}
+//	else
+//	{
+//		// AABB 없으면 기존 방식
+//		if (m_fViewZ < 5.f)         m_eShadow = SHADOW::SHADOWA;
+//		else if (m_fViewZ < 20.f)   m_eShadow = SHADOW::SHADOWB;
+//		else                        m_eShadow = SHADOW::SHADOWC;
+//	}
+//}
 
 void CMonsterToolObject::LoadAnimDataFromJson()
 {
@@ -222,22 +241,10 @@ HRESULT CMonsterToolObject::Bind_Shader()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
 		return E_FAIL;
 
-	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
-	for (_uint i = 0; i < iNumMesh; i++)
-	{
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0);
-
-
-		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
-
-		if (FAILED(m_pShaderCom->Begin(1)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Render(i)))
-			return E_FAIL;
-	}
+	//아이디 출력
+	_float fID = static_cast<_float>(m_iID);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fID", &fID, sizeof(_float))))
+		return E_FAIL;
 
 	return S_OK;
 }
