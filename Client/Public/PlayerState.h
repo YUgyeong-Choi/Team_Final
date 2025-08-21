@@ -4,12 +4,14 @@
 #include "Camera_Manager.h"
 #include "LockOn_Manager.h"
 #include "DH_ToolMesh.h"
+#include "LegionArm_Base.h"
 
 #include "GameInstance.h"
 
 #include "Player.h"
 #include "Weapon.h"
 #include "Item.h"
+
 NS_BEGIN(Client)
 
 _float g_fWalkSpeed = 1.5f;
@@ -274,13 +276,13 @@ public:
                 return EPlayerState::ARMFAIL;
         }
 
-		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
+		if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 강공
 			return EPlayerState::STRONGATTACKA;
         
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(40.f)) // 차징
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
 			return EPlayerState::CHARGEA;
         
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 약공
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
 			return EPlayerState::WEAKATTACKA;
 
         if (input.bTap) // 무기교체
@@ -403,13 +405,13 @@ public:
                 return EPlayerState::ARMFAIL;
         }
 
-        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
+        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 강공
             return EPlayerState::STRONGATTACKA;
 
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(40.f)) // 차징
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 약공
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
             return EPlayerState::WEAKATTACKA;
 
         if (input.bSpaceUP && IsStaminaEnough(20.f)) // 구르기
@@ -533,13 +535,13 @@ public:
         if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
-        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 강공
+        if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 강공
             return EPlayerState::STRONGATTACKA;
 
-        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(40.f)) // 차징
+        if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f)) // 약공
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
             return EPlayerState::WEAKATTACKA;
 
         if (input.bSpaceUP && IsStaminaEnough(20.f)) // 구르기
@@ -1136,17 +1138,20 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (MOUSE_DOWN(DIM::LBUTTON))
-            m_bAttackA = true;
+        if (m_fStateTime > 0.2f)
+        {
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
 
-        if (MOUSE_DOWN(DIM::RBUTTON))
-            m_bAttackB = true;
+            if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
 
-        if (KEY_DOWN(DIK_LCONTROL))
-            m_bArmAttack = true;
+            if (KEY_DOWN(DIK_LCONTROL))
+                m_bArmAttack = true;
 
-        if (KEY_DOWN(DIK_F))
-            m_bSkill = true;
+            if (KEY_DOWN(DIK_F))
+                m_bSkill = true;
+        }
     }
 
     virtual void Exit() override
@@ -1165,9 +1170,9 @@ public:
 
         if (0.8f < m_fStateTime)
         {
-            if (m_bAttackA && IsStaminaEnough(20.f))
+            if (m_bAttackA && IsStaminaEnough(1.f))
                 return EPlayerState::WEAKATTACKB;
-            if (m_bAttackB && IsStaminaEnough(20.f))
+            if (m_bAttackB && IsStaminaEnough(1.f))
                 return EPlayerState::STRONGATTACKB;
             if (m_bArmAttack)
             {
@@ -1245,14 +1250,17 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (MOUSE_DOWN(DIM::LBUTTON))
-            m_bAttackA = true;
-        if (MOUSE_DOWN(DIM::RBUTTON))
-            m_bAttackB = true;
-        if (KEY_DOWN(DIK_LCONTROL))
-			m_bArmAttack = true;
-        if (KEY_DOWN(DIK_F))
-            m_bSkill = true;
+        if (m_fStateTime > 0.2f)
+        {
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
+            if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
+            if (KEY_DOWN(DIK_LCONTROL))
+                m_bArmAttack = true;
+            if (KEY_DOWN(DIK_F))
+                m_bSkill = true;
+        }
     }
 
     virtual void Exit() override
@@ -1271,9 +1279,9 @@ public:
 
         if (0.8f < m_fStateTime)
         {
-            if (m_bAttackA && IsStaminaEnough(20.f))
+            if (m_bAttackA && IsStaminaEnough(1.f))
                 return EPlayerState::WEAKATTACKA;
-            if (m_bAttackB && IsStaminaEnough(20.f))
+            if (m_bAttackB && IsStaminaEnough(1.f))
                 return EPlayerState::STRONGATTACKA;
             if (m_bArmAttack)
             {
@@ -1353,14 +1361,17 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (MOUSE_DOWN(DIM::RBUTTON))
-            m_bAttackB = true;
-        if (MOUSE_DOWN(DIM::LBUTTON))
-            m_bAttackA = true;
-        if (KEY_DOWN(DIK_LCONTROL))
-            m_bArmAttack = true;
-		if (KEY_DOWN(DIK_F))
-			m_bSkill = true;
+        if (m_fStateTime > 0.2f)
+        {
+            if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
+            if (KEY_DOWN(DIK_LCONTROL))
+                m_bArmAttack = true;
+            if (KEY_DOWN(DIK_F))
+                m_bSkill = true;
+        }
     }
 
     virtual void Exit() override
@@ -1381,9 +1392,9 @@ public:
 
         if (0.75f < m_fStateTime)
         {
-            if (m_bAttackB && IsStaminaEnough(20.f))
+            if (m_bAttackB && IsStaminaEnough(1.f))
                 return EPlayerState::STRONGATTACKB;
-            if (m_bAttackA && IsStaminaEnough(20.f))
+            if (m_bAttackA && IsStaminaEnough(1.f))
                 return EPlayerState::WEAKATTACKB;
             if (m_bArmAttack)
             {
@@ -1463,14 +1474,17 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (MOUSE_DOWN(DIM::RBUTTON))
-            m_bAttackB = true;
-        if (MOUSE_DOWN(DIM::LBUTTON))
-            m_bAttackA = true;
-        if (KEY_DOWN(DIK_LCONTROL))
-            m_bArmAttack = true;
-		if (KEY_DOWN(DIK_F))
-			m_bSkill = true;
+        if (m_fStateTime > 0.2f)
+        {
+            if (MOUSE_DOWN(DIM::RBUTTON))
+                m_bAttackB = true;
+            if (MOUSE_DOWN(DIM::LBUTTON))
+                m_bAttackA = true;
+            if (KEY_DOWN(DIK_LCONTROL))
+                m_bArmAttack = true;
+            if (KEY_DOWN(DIK_F))
+                m_bSkill = true;
+        }
     }
 
     virtual void Exit() override
@@ -1492,9 +1506,9 @@ public:
 
         if (1.f < m_fStateTime)
         {
-            if (m_bAttackB && IsStaminaEnough(20.f))
+            if (m_bAttackB && IsStaminaEnough(1.f))
                 return EPlayerState::STRONGATTACKA;
-            if (m_bAttackA && IsStaminaEnough(20.f))
+            if (m_bAttackA && IsStaminaEnough(1.f))
                 return EPlayerState::WEAKATTACKA;
             if (m_bArmAttack)
             {
@@ -2541,71 +2555,27 @@ public:
         m_fStateTime = 0.f;
 
         /* [ 어느방향에서 맞는지 설정하기 ] */
-        //m_pOwner->m_pAnimator->SetInt("HitDir", 1);
-        //m_pOwner->m_pAnimator->SetTrigger("Hited");
+        m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
+        if (m_pOwner->m_eDir == CPlayer::EHitDir::F){ m_pOwner->m_pAnimator->SetInt("HitDir", 0); }
+        else if (m_pOwner->m_eDir == CPlayer::EHitDir::FL){ m_pOwner->m_pAnimator->SetInt("HitDir", 3); }
+		else if (m_pOwner->m_eDir == CPlayer::EHitDir::FR) { m_pOwner->m_pAnimator->SetInt("HitDir", 1); }
+		else if (m_pOwner->m_eDir == CPlayer::EHitDir::L) { m_pOwner->m_pAnimator->SetInt("HitDir", 5); }
+		else if (m_pOwner->m_eDir == CPlayer::EHitDir::R) { m_pOwner->m_pAnimator->SetInt("HitDir", 4); }
+        else if (m_pOwner->m_eDir == CPlayer::EHitDir::BL) { m_pOwner->m_pAnimator->SetInt("HitDir", 2); }
+        else if (m_pOwner->m_eDir == CPlayer::EHitDir::BR) { m_pOwner->m_pAnimator->SetInt("HitDir", 2); }
+		else if (m_pOwner->m_eDir == CPlayer::EHitDir::B) { m_pOwner->m_pAnimator->SetInt("HitDir", 2); }
+        m_pOwner->m_pAnimator->SetTrigger("Hited");
+        m_pOwner->HPSubtract();
 
-         /* [ 가드중에 피격당했을 시 ] */
-        //if (m_pOwner->m_bGardHit)
-        //{
-        //    m_bIsHitAnimation = true;
-        //    m_pOwner->m_bGardHit = false;
+        printf(" 너 맞은방향 FtoB, R, B, L, RtoL, LtoR 중에 %d 방향이야. \n", static_cast<int>(m_pOwner->m_eDir));
 
-        //    m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
-        //    if (m_pOwner->m_eDir == CPlayer::EHitDir::F ||
-        //        m_pOwner->m_eDir == CPlayer::EHitDir::FL ||
-        //        m_pOwner->m_eDir == CPlayer::EHitDir::FR)
-        //    {
-        //        m_pOwner->m_pAnimator->SetInt("HitDir", 0);
-        //        m_pOwner->m_pAnimator->SetTrigger("Hited");
-
-        //        /* [ 퍼펙트 가드와 그냥 가드를 분기 ] */
-        //        if (m_fStateTime < 0.3f)
-        //        {
-        //            // 퍼펙트 가드입니다.
-        //            printf(" 너 퍼펙트 가드성공했어. \n");
-        //            m_pOwner->m_bPerfectGardDamege = true;
-        //            m_pOwner->HPSubtract();
-        //        }
-        //        else
-        //        {
-        //            // 일반 가드입니다.
-        //            printf(" 너 가드성공했어. \n");
-        //            m_pOwner->m_bGardDamege = true;
-        //            m_pOwner->HPSubtract();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        //그 외의 방향을 맞으면 피격당한다.
-        //        m_pOwner->HPSubtract();
-        //        switch (m_pOwner->m_eDir)
-        //        {
-        //        case CPlayer::EHitDir::L:
-        //        {
-        //            printf(" 너 왼쪽에서 맞았어. \n");
-        //            m_pOwner->m_pAnimator->SetInt("HitDir", 5);
-        //            m_pOwner->m_pAnimator->SetTrigger("Hited");
-        //            break;
-        //        }
-        //        case CPlayer::EHitDir::R:
-        //        {
-        //            printf(" 너 오른쪽에서 맞았어. \n");
-        //            m_pOwner->m_pAnimator->SetInt("HitDir", 4);
-        //            m_pOwner->m_pAnimator->SetTrigger("Hited");
-        //            break;
-        //        }
-
-        //        default:
-        //            printf(" 너 뒤쪽에서 맞았어. \n");
-        //            m_pOwner->m_pAnimator->SetInt("HitDir", 2);
-        //            m_pOwner->m_pAnimator->SetTrigger("Hited");
-        //            break;
-        //        }
-        //    }
-        //}
-
-        //if (m_bIsHitAnimation)
-        //    m_fGardTime += fTimeDelta;
+        if (m_pOwner->m_pWeapon)
+        {
+            m_pOwner->m_pWeapon->SetisAttack(false);
+            m_pOwner->m_pWeapon->Set_WeaponTrail_Active(false);
+        }
+        if (m_pOwner->m_pLegionArm)
+            m_pOwner->m_pLegionArm->SetisAttack(false);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2630,7 +2600,7 @@ public:
         //1. 스킬의 진행도에 따라 탈출 조건이 달라진다.
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (0.3f < m_fStateTime)
+        if (0.4f < m_fStateTime)
         {
             if (input.bMove)
             {

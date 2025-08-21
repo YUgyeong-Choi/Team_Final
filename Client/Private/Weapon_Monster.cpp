@@ -155,7 +155,7 @@ void CWeapon_Monster::SetisAttack(_bool isAttack)
 	}
 	else
 	{
-		Collider_Off();
+		m_pPhysXActorCom->Init_SimulationFilterData();
 	}
 }
 

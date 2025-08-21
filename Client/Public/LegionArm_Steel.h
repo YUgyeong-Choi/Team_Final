@@ -28,6 +28,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual void SetisAttack(_bool isAttack);
+
 	virtual void Activate();
 
 	void Update_Collider();
