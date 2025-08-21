@@ -174,18 +174,31 @@ _vector CNavigation::SetUp_Height(_fvector vWorldPos)
 
 HRESULT CNavigation::Select_Cell(_fvector vWorldPos)
 {
+	//x,z 평면상 내부에 있으면, 저장해뒀다가 가장 가까운 셀로 선택하게 한다.
+
+	_float fMinDist = {FLT_MAX};
+	_int	iIndex = { -1 };
+
 	//월드 포지션을 던지면 모든 셀을 안에 있는지 확인하고 그 셀의 인덱스를 던져주자
 	for (CCell* pCell : m_Cells)
 	{
-		if (pCell->isIn(XMVector3TransformCoord(vWorldPos, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix))), nullptr))
+		_float fDist = {};
+		if (pCell->isIn(XMVector3TransformCoord(vWorldPos, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix))), nullptr, &fDist))
 		{
-			m_iIndex = pCell->Get_Index();
-			return S_OK;
+			if (fDist < fMinDist)
+			{
+				fMinDist = fDist;
+				iIndex = pCell->Get_Index();
+			}
 		}
 	}
 
+	if(iIndex == -1)
+		return E_FAIL;
 
-	return E_FAIL;
+	m_iIndex = iIndex;
+
+	return S_OK;
 }
 
 HRESULT CNavigation::Snap(_float3* vWorldPos, _float fSnapThreshold)
