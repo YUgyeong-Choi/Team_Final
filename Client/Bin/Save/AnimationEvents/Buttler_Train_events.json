@@ -50,7 +50,7 @@
                 },
                 {
                     "EventName": "AttackOn",
-                    "Time": 50.0
+                    "Time": 30.0
                 },
                 {
                     "EventName": "AttackOff",

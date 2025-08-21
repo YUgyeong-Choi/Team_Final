@@ -420,8 +420,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bSetOnce = false;
 		m_bSetTwo = false;
 
-		//m_pWeapon->SetisAttack(false);
+		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
+		
 		m_pTransformCom->SetbSpecialMoving();
 
 	}
@@ -1001,6 +1002,7 @@ void CPlayer::Register_Events()
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetisAttack(false);
+				
 			}
 		});
 

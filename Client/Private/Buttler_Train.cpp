@@ -235,6 +235,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 
+		m_pWeapon->SetisAttack(false);
+
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
 
@@ -261,11 +263,12 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		if (!m_isCanGroggy)
 		{
-			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos || m_strStateName.find("Hit") != m_strStateName.npos)
+			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos )
 				return;
 
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 			m_pAnimator->SetTrigger("Hit");
+
 			
 			if(m_fGroggyThreshold <= 0)
 				m_isCanGroggy = true;
