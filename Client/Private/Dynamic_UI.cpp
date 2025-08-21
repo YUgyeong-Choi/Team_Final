@@ -145,9 +145,9 @@ HRESULT CDynamic_UI::Initialize(void* pArg)
 
 	auto& eFeatures = pDesc->FeatureDescs;
 
-	for (auto& pDesc : eFeatures)
+	for (auto& eDesc : eFeatures)
 	{
-		Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(pDesc->strProtoTag), pDesc);
+		Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(eDesc->strProtoTag), eDesc);
 	}
 
 	m_strProtoTag = TEXT("Prototype_GameObject_Dynamic_UI");

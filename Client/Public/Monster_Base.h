@@ -50,6 +50,8 @@ public:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
+	
+
 
 public: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components(void* pArg);

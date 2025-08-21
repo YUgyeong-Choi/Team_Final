@@ -90,6 +90,8 @@ public:
 
 	AABBBOX GetWorldAABB() const;
 
+	virtual void Guard_Reaction() {};
+
 public:
 	_float Get_CurrentDamage() { return m_fDamage; }
 	void Set_CurrentDamage(_float fDamage) { m_fDamage = fDamage; }

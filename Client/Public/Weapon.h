@@ -91,6 +91,7 @@ public: /* [ 활성화 , 비활성화 ] */
 
 public: /* [ 무기의 소유자 (Unit) 을 가져온다. ] */
 	class CUnit* Get_Owner() const { return m_pOwner; }
+	void Clear_Owner() { m_pOwner = nullptr; }
 
 public:
 	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }

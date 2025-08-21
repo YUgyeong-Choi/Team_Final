@@ -428,8 +428,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bSetOnce = false;
 		m_bSetTwo = false;
 
-		//m_pWeapon->SetisAttack(false);
+		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
+		
 		m_pTransformCom->SetbSpecialMoving();
 
 	}
@@ -1016,6 +1017,7 @@ void CPlayer::Register_Events()
 			if (m_pWeapon)
 			{
 				m_pWeapon->SetisAttack(false);
+				
 			}
 		});
 
@@ -1043,6 +1045,8 @@ void CPlayer::Register_Events()
 		{
 			Set_GrinderEffect_Active(false);
 		});
+
+
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
@@ -1130,6 +1134,49 @@ void CPlayer::Update_Collider_Actor()
 
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	/* [ 플레이어 피격 ] */
+	if (m_bIsInvincible)
+		return;
+
+
+	/* [ 무엇을 해야하는가? ] */
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	{
+		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
+		if (pWeapon == nullptr)
+			return;
+
+		if (pWeapon->Find_CollisonObj(this))
+			return;
+
+		pWeapon->Add_CollisonObj(this);
+
+		//0. 필요한 정보를 수집한다.
+		CalculateDamage(pOther, eColliderType);
+		CUnit* pUnit = pWeapon->Get_Owner();
+		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+		m_vHitNormal = vOtherPos - vPlayerPos;
+
+		//1. 애니메이션 상태를 히트로 바꾼다.
+
+		//가드 중에 피격시 스위치를 켠다.
+		if (m_bIsGuarding)
+		{
+			m_bGardHit = true;
+
+			//
+			pUnit->Guard_Reaction();
+
+			return;
+		}
+
+		//가드 중이 아니라면 피격상태로 넘긴다.
+		m_bIsHit = true;
+
+	}
+
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -1177,6 +1224,10 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		if (m_bIsGuarding)
 		{
 			m_bGardHit = true;
+
+			//
+			pUnit->Guard_Reaction();
+
 			return;
 		}
 

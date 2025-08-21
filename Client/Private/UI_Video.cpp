@@ -51,6 +51,8 @@ HRESULT CUI_Video::Initialize(void* pArg)
 
 	if (SUCCEEDED(hr))
 		m_iDrawnFrameIndex = 0;
+
+
 	return S_OK;
 }
 
@@ -84,12 +86,13 @@ void CUI_Video::Update(_float fTimeDelta)
 				av_seek_frame(m_pFormatCtx, m_videoStreamIndex, 0, AVSEEK_FLAG_BACKWARD);
 				avcodec_flush_buffers(m_pCodecCtx);
 				m_iDrawnFrameIndex = -1;
-				hr = ReadFrameToBuffer(&pData, &width, &height, &time);
+				//hr = ReadFrameToBuffer(&pData, &width, &height, &time);
+			
 			}
 			else
 			{
 				Safe_Release(m_pVideoSRV);
-				Safe_Delete_Array(pData);
+			
 				Set_bDead();
 				return;
 			}
@@ -105,13 +108,14 @@ void CUI_Video::Update(_float fTimeDelta)
 				m_pVideoSRV = tempSRV;
 				++m_iDrawnFrameIndex;
 
-				Safe_Delete_Array(pData);
+			
 			}
 
-			Safe_Delete_Array(pData);
+			
 		}
-		
+		Safe_Delete_Array(pData);
 	}
+	
 
 	Play_Sound();
 	//printf("Video Frame Index: %d\n", m_iDrawnFrameIndex);
