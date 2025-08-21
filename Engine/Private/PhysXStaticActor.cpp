@@ -66,12 +66,22 @@ void CPhysXStaticActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool b
     m_pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation); // OnEnter, OnStay, OnExit 활성화
     m_pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bTrigger); //OnTriger 활성화
     m_pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bQuery); // Ray충돌 활성화 
-    m_bReadyForDebugDraw = bSimulation || bTrigger;
 }
 
 void CPhysXStaticActor::Set_SimulationFilterData(PxFilterData _data)
 {
     m_pShape->setSimulationFilterData(_data);
+    m_filterData = _data;
+    m_bReadyForDebugDraw = true;
+}
+
+void CPhysXStaticActor::Init_SimulationFilterData()
+{
+    PxFilterData filterData{};
+    filterData.word0 = 0;
+    filterData.word1 = 0;
+    m_pShape->setSimulationFilterData(filterData);
+    m_bReadyForDebugDraw = false;
 }
 
 void CPhysXStaticActor::Set_QueryFilterData(PxFilterData _data)

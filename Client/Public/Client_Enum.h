@@ -88,6 +88,15 @@ namespace Client
 	{
 		TUTORIALDOOR,
 	};
+
+	enum TRIGGERBOX_TYPE
+	{
+		TUTORIAL_1,
+		MONADLIGHT,
+		TUTORIAL_2,
+		SELECTWEAPON
+	};
+
 #pragma endregion
 
 #pragma region JW

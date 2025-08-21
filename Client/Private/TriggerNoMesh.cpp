@@ -22,7 +22,7 @@ HRESULT CTriggerNoMesh::Initialize_Prototype()
 
 HRESULT CTriggerNoMesh::Initialize(void* pArg)
 {
-	CTriggerNoMesh::STATICTRIGGERNOMESH_DESC* TriggerNoMeshDESC = static_cast<STATICTRIGGERNOMESH_DESC*>(pArg);
+	CTriggerNoMesh::TRIGGERNOMESH_DESC* TriggerNoMeshDESC = static_cast<TRIGGERNOMESH_DESC*>(pArg);
 
 
 	if (FAILED(__super::Initialize(TriggerNoMeshDESC)))
@@ -34,7 +34,23 @@ HRESULT CTriggerNoMesh::Initialize(void* pArg)
 
 void CTriggerNoMesh::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDoOnce)
+	{
+		_bool bIsPlaying = false;
+		bIsPlaying = m_pSoundCom->IsPlaying(m_vecSoundData[m_iSoundIndex].strSoundTag);
 
+		if (!bIsPlaying)
+		{
+			m_iSoundIndex++;
+			if (m_iSoundIndex >= m_vecSoundData.size())
+			{
+				m_bDead = true; 
+				m_pPhysXTriggerCom->RemovePhysX();
+			}
+			else
+				m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+		}
+	}
 }
 
 void CTriggerNoMesh::Update(_float fTimeDelta)
@@ -50,6 +66,25 @@ HRESULT CTriggerNoMesh::Render()
 {
 	__super::Render();
 	return S_OK;
+}
+
+void CTriggerNoMesh::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (!m_bDoOnce)
+	{
+		m_bDoOnce = true;
+		m_iSoundIndex = 0;
+		m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+	}
+		
+}
+
+void CTriggerNoMesh::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CTriggerNoMesh::Play_Sound()
+{
 }
 
 

@@ -151,7 +151,7 @@ void CWeapon_Monster::SetisAttack(_bool isAttack)
 {
 	if (isAttack)
 	{
-		m_pPhysXActorCom->Set_ShapeFlag(false, true, true);
+		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 	}
 	else
 	{

@@ -90,6 +90,17 @@ void CPhysXDynamicActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool 
 void CPhysXDynamicActor::Set_SimulationFilterData(PxFilterData _data)
 {
 	m_pShape->setSimulationFilterData(_data);
+	m_filterData = _data;
+	m_bReadyForDebugDraw = true;
+}
+
+void CPhysXDynamicActor::Init_SimulationFilterData()
+{
+	PxFilterData filterData{};
+	filterData.word0 = 0;
+	filterData.word1 = 0; 
+	m_pShape->setSimulationFilterData(filterData);
+	m_bReadyForDebugDraw = false;
 }
 
 void CPhysXDynamicActor::Set_QueryFilterData(PxFilterData _data)

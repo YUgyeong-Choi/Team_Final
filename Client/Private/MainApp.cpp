@@ -286,6 +286,9 @@ HRESULT CMainApp::Ready_Sound()
 
 	/* [ 컷씬 문용 사운드 ] */
 	ADD_SOUND_EX(CutSceneDoor, "../Bin/Resources/Sound/CutScene/Door/", false, false, false);
+
+	/* [ 트리거용 사운드 ] */
+	ADD_SOUND_EX(Trigger, "../Bin/Resources/Sound/Trigger/", false, false, false);
 	return S_OK;
 }
 

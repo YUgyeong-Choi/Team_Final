@@ -13,6 +13,8 @@
 #pragma endregion
 
 #include "DoorMesh.h"
+#include "TriggerNoMesh.h"
+#include "TriggerMesh.h"
 
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
@@ -56,6 +58,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Level()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
 	/* [ 사운드 ] */
@@ -730,11 +735,72 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
 
-	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &pGameObject, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Trigger()
+{
+	ifstream inFile("../Bin/Save/Trigger/Trigger.json");
+	if (inFile.is_open())
+	{
+		json root;
+		inFile >> root;
+		inFile.close();
+
+		for (const auto& j : root["triggers"]) {
+			const _int type = j.value("UseMesh", 0);
+			// 공통 파싱
+			const auto vPosArr = j.value("vPos", vector<float>{});
+			const auto rotDegArr = j.value("rotationDeg", vector<float>{});
+			const auto offsetArr = j.value("triggerOffset", vector<float>{});
+			const auto sizeArr = j.value("triggerSize", vector<float>{});
+			const int  triggerType = j.value("TriggerType", 0); // 필요 시 enum으로 캐스팅
+
+			// SoundDatas 파싱
+			vector<CTriggerBox::SOUNDDATA> vecSoundData;
+			if (j.contains("SoundDatas") && j["SoundDatas"].is_array()) {
+				for (const auto& snd : j["SoundDatas"]) {
+					CTriggerBox::SOUNDDATA data{};
+
+					if (snd.contains("SoundName")) {
+						string soundTag = snd["SoundName"].get<string>();
+						data.strSoundTag = soundTag;
+					}
+					if (snd.contains("Text")) {
+						string text = snd["Text"].get<string>();
+						data.strSoundText = text;
+					}
+
+					vecSoundData.push_back(data);
+				}
+			}
+
+			if (type == 0) {
+				CTriggerNoMesh::TRIGGERNOMESH_DESC Desc{};
+				Desc.vPos = VecSetW(vPosArr, 1.f);
+				Desc.Rotation = VecToFloat3(rotDegArr);       // deg 보관
+				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
+				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
+				Desc.eTriggerBoxType = static_cast<TRIGGERBOX_TYPE>(triggerType);
+				Desc.m_vecSoundData = vecSoundData;
+				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerNoMesh"),
+					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerNoMesh"), &Desc)))
+					return E_FAIL;
+			}
+			else if (type == 1) {
+				CTriggerMesh::TRIGGERMESH_DESC Desc{};
+
+
+				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerMesh"),
+					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerMesh"), &Desc)))
+					return E_FAIL;
+			}
+		}
+	}
 	return S_OK;
 }
 

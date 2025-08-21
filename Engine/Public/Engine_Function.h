@@ -97,6 +97,22 @@ namespace Engine
 		return vec;
 	}
 
+	static _vector VecSetW(const vector<float>& v, float w = 0.f) {
+		return XMVectorSet(
+			v.size() > 0 ? v[0] : 0.f,
+			v.size() > 1 ? v[1] : 0.f,
+			v.size() > 2 ? v[2] : 0.f,
+			w
+		);
+	}
+	static _float3 VecToFloat3(const vector<float>& v) {
+		return _float3{
+			v.size() > 0 ? v[0] : 0.f,
+			v.size() > 1 ? v[1] : 0.f,
+			v.size() > 2 ? v[2] : 0.f
+		};
+	}
+
 #include <filesystem>
 #include <string>
 	namespace fs = std::filesystem;

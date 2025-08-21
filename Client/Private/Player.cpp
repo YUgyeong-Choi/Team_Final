@@ -123,6 +123,27 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
 	}
 
+	if (KEY_DOWN(DIK_F2))
+	{
+		PxVec3 pos = PxVec3(-0.227397f, 1.f, 1.014072f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	};
+
+	if (KEY_DOWN(DIK_F3))
+	{
+		PxVec3 pos = PxVec3(71.983032f, 1.f, -5.244843f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
+	if (KEY_DOWN(DIK_F4))
+	{
+		PxVec3 pos = PxVec3(127.851753f, 2.f, -7.543217f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
@@ -399,7 +420,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bSetOnce = false;
 		m_bSetTwo = false;
 
-		m_pWeapon->SetisAttack(false);
+		//m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
 		m_pTransformCom->SetbSpecialMoving();
 

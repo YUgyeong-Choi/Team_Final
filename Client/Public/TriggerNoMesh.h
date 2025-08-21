@@ -8,11 +8,11 @@ NS_BEGIN(Client)
 class CTriggerNoMesh : public CTriggerBox
 {
 public:
-	typedef struct tagStaticTriggerNoMeshDesc : public CTriggerBox::TRIGGERBOX_DESC
+	typedef struct tagTriggerNoMeshDesc : public CTriggerBox::TRIGGERBOX_DESC
 	{
 		
 
-	}STATICTRIGGERNOMESH_DESC;
+	}TRIGGERNOMESH_DESC;
 
 protected:
 	CTriggerNoMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -27,6 +27,10 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+private:
+	void Play_Sound();
 public:
 	static CTriggerNoMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
