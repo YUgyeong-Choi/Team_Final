@@ -105,7 +105,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 
+	if (m_pWeapon)
+		m_pWeapon->SetisAttack(false);
 	
+	if (m_pLegionArm)
+		m_pLegionArm->SetisAttack(false);
+
+
 	m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
 	
 
@@ -178,7 +184,7 @@ void CPlayer::Update(_float fTimeDelta)
 	Update_Collider_Actor();
 
 	/* [ 락온 관련 ] */
-	LockOnState();
+	LockOnState(fTimeDelta);
 
 	/* [ 아이템 ] */
 	Update_Slot(fTimeDelta);
@@ -202,13 +208,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
-		m_pAnimator->SetInt("HitDir", 3);
+		m_pAnimator->SetInt("HitDir", m_iTestInt);
 		m_pAnimator->SetTrigger("Hited");
+		m_iTestInt++;
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetInt("HitDir", 4);
-		m_pAnimator->SetTrigger("Hited");
 
 	}
 
@@ -861,6 +866,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
+	case eAnimCategory::HITED:
+	{
+		RootMotionActive(fTimeDelta);
+		break;
+	}
 	case eAnimCategory::GRINDER:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
@@ -927,6 +937,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 
 	if (stateName.find("Sit") == 0)
 		return eAnimCategory::SIT;
+	if (stateName.find("Hit") == 0)
+		return eAnimCategory::HITED;
 
 	if (stateName.find("SlidingDoor") == 0)
 		return eAnimCategory::FIRSTDOOR;
@@ -1606,7 +1618,7 @@ void CPlayer::Reset_Weapon()
 	m_pWeapon->Clear_CollisionObj();
 }
 
-void CPlayer::LockOnState()
+void CPlayer::LockOnState(_float fTimeDelta)
 {
 	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
 		m_pLockOn_Manager->Set_Active();
@@ -1622,6 +1634,12 @@ void CPlayer::LockOnState()
 		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
 		m_pTransformCom->LookAtWithOutY(vTargetPos);
+
+		//_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+		//_vector vTargetDir = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vTargetPos, vPlayerPos)));
+		//
+		///* 부드럽게 해당 방향으로 회전 (Y는 자동으로 무시된 평면방향) */
+		//m_pTransformCom->RotateToDirectionSmoothly(vTargetDir, fTimeDelta);
 	}
 	else
 	{

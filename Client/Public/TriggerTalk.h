@@ -5,19 +5,18 @@
 
 NS_BEGIN(Client)
 
-class CTriggerNoMesh : public CTriggerBox
+class CTriggerTalk : public CTriggerBox
 {
 public:
-	typedef struct tagTriggerNoMeshDesc : public CTriggerBox::TRIGGERBOX_DESC
+	typedef struct tagTriggerTalkDesc : public CTriggerBox::TRIGGERBOX_DESC
 	{
-		
-
-	}TRIGGERNOMESH_DESC;
+		string gameObjectTag;
+	}TRIGGERTALK_DESC;
 
 protected:
-	CTriggerNoMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CTriggerNoMesh(const CTriggerNoMesh& Prototype);
-	virtual ~CTriggerNoMesh() = default;
+	CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CTriggerTalk(const CTriggerTalk& Prototype);
+	virtual ~CTriggerTalk() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -31,8 +30,13 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 private:
 	void Play_Sound();
+	HRESULT Ready_TriggerObject(void* pArg);
+private:
+	CGameObject* m_pTriggerObject = { nullptr };
+	_bool m_bTalkActive = false;
+	_bool m_bAutoTalk = true;
 public:
-	static CTriggerNoMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CTriggerTalk* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

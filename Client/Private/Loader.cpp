@@ -50,8 +50,8 @@
 
 #include "Wego.h"
 #include "DoorMesh.h"
-#include "TriggerNoMesh.h"
-#include "TriggerMesh.h"
+#include "TriggerSound.h"
+#include "TriggerTalk.h"
 #include "DoorMesh.h"
 #pragma endregion
 
@@ -618,12 +618,12 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CUI_MonsterHP_Bar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerMesh"),
-		CTriggerMesh::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerTalk"),
+		CTriggerTalk::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerNoMesh"),
-		CTriggerNoMesh::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerSound"),
+		CTriggerSound::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	m_fRatio = 1.f;
@@ -1774,6 +1774,16 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Fatal"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Lockon/Fatal.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ActionType"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SelectActionType/Img_ActionType_%d.dds"),3))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Popup_Background"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BackGround/Popup_Bg_%d.dds"), 3))))
 		return E_FAIL;
 
 	return S_OK;
