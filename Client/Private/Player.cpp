@@ -184,7 +184,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetInt("HitDir", 3);
+	//	m_pAnimator->SetInt("HitDir", 3);
 		m_pAnimator->SetTrigger("Hited");
 
 	}
@@ -1192,7 +1192,7 @@ HRESULT CPlayer::Ready_Weapon()
 	if (m_pWeapon == nullptr)
 		return E_FAIL;
 
-	m_pWeapon->SetisAttack(false);
+	//m_pWeapon->SetisAttack(false);
 
 	return S_OK;
 }

@@ -132,29 +132,59 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 	_float prevPos = m_fCurrentTrackPosition;
 	m_fPrevTrackPosition = prevPos;
 
-	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+	if (m_bReverse)
+		m_fCurrentTrackPosition -= m_fTickPerSecond * fTimeDelta; // 역 재생
+	else
+		m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	_bool bIsReverse = (m_fPrevTrackPosition > m_fCurrentTrackPosition); // 이전이 더 크다면 지금 역 재생중
 
+	if (m_bReverse)
+	{
+		bIsReverse = true;
+		if (m_fCurrentTrackPosition <= 0.f)
+		{
+			m_fCurrentTrackPosition+= m_fDuration;
+			if (!isLoop)
+			{
+				m_fCurrentTrackPosition = 0.f;
+				return true; // 역 재생이 끝났음
+			}
+		}
+	}
+	else
+	{
 
 	if (m_fCurrentTrackPosition >= m_fDuration)
 	{
 		m_fCurrentTrackPosition = 0.f;
-		if (false == isLoop)
+		if (!isLoop)
 		{
 			m_fCurrentTrackPosition = m_fDuration;
 			return true;
 		}
 	}
 
+	}
 
 	// 이벤트 처리 (prevPos < ev.time <= currentPos)
 	if (outEvents)
 	{
 		for (auto& ev : m_events)
 		{
+			if (m_bReverse)
+			{
+				if (ev.fTime > m_fCurrentTrackPosition && ev.fTime <= prevPos)
+				{
+					outEvents->push_back(ev.name);
+				}
+			}
+			else
+			{
+
 			if (ev.fTime > prevPos && ev.fTime <= m_fCurrentTrackPosition)
 			{
 				outEvents->push_back(ev.name);
+			}
 			}
 		}
 	}
@@ -170,8 +200,19 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 	}
 
 	// 논루프 애니 종료 반환
+	if (m_bReverse)
+	{
+		if (!isLoop && m_fCurrentTrackPosition <= 0.f)
+		{
+			return true; // 역 재생이 끝났음
+		}
+	}
+	else
+	{
+
 	if (!isLoop && m_fCurrentTrackPosition >= m_fDuration)
 		return true;
+	}
 	return false;
 }
 
@@ -245,6 +286,8 @@ json CAnimation::Serialize()
 			});
 	}
 	j["RootMotion"] = m_bUseRootMotion;
+	if (m_bReverse)
+		j["Reverse"] = m_bReverse;
 	return j;
 }
 
@@ -283,6 +326,10 @@ void CAnimation::Deserialize(const json& j)
 	if (j.contains("RootMotion") && j["RootMotion"].is_boolean())
 	{
 		m_bUseRootMotion = j["RootMotion"].get<_bool>();
+	}
+	if (j.contains("Reverse") && j["Reverse"].is_boolean())
+	{
+		m_bReverse = j["Reverse"].get<_bool>();
 	}
 
 //	m_fTickPerSecond = max(m_fTickPerSecond, 55.f); // 최소값 설정
