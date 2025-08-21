@@ -8,6 +8,7 @@ IMPLEMENT_SINGLETON(CUI_Manager)
 CUI_Manager::CUI_Manager()
 	:m_pGameInstance{ CGameInstance::Get_Instance() }
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
 void CUI_Manager::Add_UI(CUIObject* pUI, _wstring strTag)

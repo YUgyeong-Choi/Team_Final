@@ -315,11 +315,10 @@ HRESULT CLevel_Logo::Ready_Menu()
 		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select"), &eSelectDesc)))
 		return E_FAIL;
 
-	Safe_Delete(uvDesc);
-
+	
 	m_pSelectUI = static_cast<CDynamic_UI*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select")));
 
-	
+ 	Safe_Delete(uvDesc);
 
 
 	return S_OK;
@@ -431,7 +430,8 @@ void CLevel_Logo::Check_Button()
 
 
 	m_pButtons[m_iButtonIndex]->Set_isMouseHover(true);
-	m_pSelectUI->Set_Position(g_iWinSizeX * 0.175f, g_iWinSizeY * (0.35f + 0.1f * m_iButtonIndex));
+	if(nullptr != m_pSelectUI)
+		m_pSelectUI->Set_Position(g_iWinSizeX * 0.175f, g_iWinSizeY * (0.35f + 0.1f * m_iButtonIndex));
 }
 
 void CLevel_Logo::Interation_Button(_int& iIndex)
