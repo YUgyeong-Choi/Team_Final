@@ -114,10 +114,32 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 	if(KEY_DOWN(DIK_H))
 		ToggleHoldMouse();
-	if(m_bHold)
-		HoldMouse();
+	if (m_bHold)
+	{
+		// 화면 중앙으로 마우스 위치 고정
+		RECT rcClient;
+		GetClientRect(g_hWnd, &rcClient);
+
+		POINT ptCenter;
+		ptCenter.x = (rcClient.right - rcClient.left) / 2;
+		ptCenter.y = (rcClient.bottom - rcClient.top) / 2;
+
+		// 클라이언트 좌표 -> 스크린 좌표로 변환
+		ClientToScreen(g_hWnd, &ptCenter);
+
+		// 마우스 커서 이동
+		SetCursorPos(ptCenter.x, ptCenter.y);
+
+		// 커서 강제로 숨기기
+		while (ShowCursor(FALSE) >= 0);
+		//HoldMouse();
+	}
 	else
-		ShowCursor(TRUE);
+	{
+		// 커서 강제로 보이기
+		while (ShowCursor(TRUE) < 0);
+	}
+
 
 	if (KEY_DOWN(DIK_F7))
 		m_pGameInstance->ToggleDebugOctoTree();
@@ -621,6 +643,11 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	Desc.szMeshID = TEXT("Buttler_Train");
 	Desc.fHeight = 1.f;
 	Desc.vExtent = {0.5f,1.f,0.5f};
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+		return E_FAIL;
+
+	Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
 		return E_FAIL;
