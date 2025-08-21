@@ -2039,6 +2039,7 @@ void CAnimTool::Setting_AnimationProperties()
 		bChanged |= ImGui::DragFloat("Tick Per Second", &fTickPerSecond, 0.1f, 0.1f, 100.f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
 		_bool bLoop = m_pCurAnimation->Get_isLoop();
 		_bool bRootMotion = m_pCurAnimation->IsRootMotionEnabled();
+		_bool bReverse = m_pCurAnimation->IsReverse();
 		if (ImGui::Checkbox("Loop", &bLoop))
 		{
 			m_pCurAnimation->SetLoop(bLoop);
@@ -2047,6 +2048,11 @@ void CAnimTool::Setting_AnimationProperties()
 		if (ImGui::Checkbox("Root Motion", &bRootMotion))
 		{
 			m_pCurAnimation->SetUseRootMotion(bRootMotion);
+			bChanged = true;
+		}
+		if (ImGui::Checkbox("Reverse", &bReverse))
+		{
+			m_pCurAnimation->SetReverse(bReverse);
 			bChanged = true;
 		}
 		if (bChanged)

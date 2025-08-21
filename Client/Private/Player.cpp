@@ -1237,7 +1237,7 @@ HRESULT CPlayer::Ready_Weapon()
 	if (m_pWeapon == nullptr)
 		return E_FAIL;
 
-	m_pWeapon->SetisAttack(false);
+	//m_pWeapon->SetisAttack(false);
 
 	return S_OK;
 }

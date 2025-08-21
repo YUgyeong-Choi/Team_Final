@@ -129,22 +129,6 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 	m_Blend.blendWeight = transitionResult.fBlendWeight; // 상하체 블렌드 가중치 
 
 
-
-	// 정규화 했다고 치고
-	transitionResult.fLowerStartTime;
-	transitionResult.fUpperStartTime;
-
-	//// 전체 기준으로 다시 곱해서 트랙 포지션 설정
-	// 이건 이전 애니메이션이랑 To가 다를 때
-
-	
-
-	// 기존에 무기 뽑기는 통짜
-	// 무기를 뽑으면서 걸으면 위에는 그대로 쓰고 하체만 달라지고
-	// 다시 돌아오면 상체는 같은데 하체가 달라짐
-	// 이전 상체랑 하체 중에 다음 상체랑 같은 게 없으면 처리
-
-
 	_bool bFromLowerAnimSame = (transitionResult.pFromLowerAnim == transitionResult.pToLowerAnim);
 	_bool bToUpperLowerSame = (transitionResult.pFromUpperAnim == transitionResult.pToUpperAnim);
 	_bool bFromAnimSameToUpper = (transitionResult.pFromLowerAnim == transitionResult.pToUpperAnim);
@@ -154,7 +138,7 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 		_float fLowerStartTime = transitionResult.fLowerStartTime * m_Blend.toLowerAnim->GetDuration();
 		m_Blend.toLowerAnim->SetCurrentTrackPosition(fLowerStartTime);
 	}
-	if (bToUpperLowerSame == false && bFromAnimSameToUpper == false)
+	if (bToUpperLowerSame == false && bFromAnimSameToUpper == false&& m_eCurrentTransitionType != ET::FullbodyToFullbody)
 	{
 		_float fUpperStartTime = transitionResult.fUpperStartTime * m_Blend.toUpperAnim->GetDuration();
 		m_Blend.toUpperAnim->SetCurrentTrackPosition(fUpperStartTime);
