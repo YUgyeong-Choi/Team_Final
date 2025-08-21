@@ -9,16 +9,26 @@ static PxFilterFlags CustomFilterShader(
 	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
 	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	
-	//printf("filerData0 world0: %d , filterData1 world1: %d\n", filterData0.word0, filterData1.word1);
-	//printf("filterData1 world0: %d ,filterData0 world1: %d\n", filterData1.word0, filterData0.word1);
-
 	if ((filterData0.word0 & filterData1.word1) == 0 &&
 		(filterData1.word0 & filterData0.word1) == 0)
 		return PxFilterFlag::eKILL; 
 
 	const _bool k0 = PxFilterObjectIsKinematic(attributes0);
 	const _bool k1 = PxFilterObjectIsKinematic(attributes1);
+
+	// 트리거 판정
+	const bool t0 = PxFilterObjectIsTrigger(attributes0);
+	const bool t1 = PxFilterObjectIsTrigger(attributes1);
+	const bool isTriggerPair = (t0 || t1);
+	if (isTriggerPair)
+	{
+		// 트리거는 persist 이벤트 지원 안 함 (PhysX 5.x)
+		pairFlags = PxPairFlag::eTRIGGER_DEFAULT
+			| PxPairFlag::eNOTIFY_TOUCH_FOUND
+			| PxPairFlag::eNOTIFY_TOUCH_LOST;
+		return PxFilterFlag::eDEFAULT;
+	}
+
 
 	if (k0 && k1) // 둘 다 Kinematic이면 충돌 없음
 	{

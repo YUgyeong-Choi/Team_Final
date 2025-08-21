@@ -924,6 +924,7 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 				Desc.eTriggerBoxType = static_cast<TRIGGERBOX_TYPE>(triggerType);
 				Desc.m_vecSoundData = vecSoundData;
 				Desc.gameObjectTag = objectTag;
+				Desc.bCanCancel = j.value("CanCancel", 0);
 				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerTalk"),
 					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerTalk"), &Desc)))
 					return E_FAIL;

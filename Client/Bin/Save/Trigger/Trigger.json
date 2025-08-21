@@ -18,6 +18,7 @@
       "UseMesh": 1,
       "TriggerType": 1,
       "ObjectTag": "",
+      "CanCancel": 0,
       "vPos": [ 31.398075, 0.2, 1.101484 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
@@ -56,6 +57,28 @@
         {
           "SoundName": "5_Dialog_Sophia_F00_S1_8_text_1",
           "Text": "그곳을 벗어나야 해요. 도움이 될 만한 걸 찾아요."
+        }
+      ]
+    },
+    {
+      "UseMesh": 1,
+      "TriggerType": 3,
+      "ObjectTag": "",
+      "CanCancel": 1,
+      "vPos": [ 54.663040, 0.2, 0.750669 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 0.6, 0.2, 0.4 ],
+      "SoundDatas": [
+        {
+          "SoundName": "6_Dialog_QST_initialize_stat_S1_text_1",
+          "Speaker": "소피아",
+          "Text": "밖은 위험해요. 당신 손에 익숙한 무기를 가져가요."
+        },
+        {
+          "SoundName": "7_Dialog_QST_initialize_stat_S1_2_text_1",
+          "Speaker": "소피아",
+          "Text": "호텔로 올 때 도움이 될 거예요."
         }
       ]
     }

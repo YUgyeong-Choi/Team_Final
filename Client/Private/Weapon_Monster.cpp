@@ -150,6 +150,15 @@ void CWeapon_Monster::Update_Collider()
 	m_pPhysXActorCom->Set_Transform(PxTransform(physxPos, physxRot));
 }
 
+void CWeapon_Monster::Collider_FilterOff()
+{
+	m_pPhysXActorCom->Init_SimulationFilterData();
+}
+
+void CWeapon_Monster::Collider_ShapeOff()
+{
+	m_pPhysXActorCom->Set_ShapeFlag(false, false, true);
+}
 
 void CWeapon_Monster::SetisAttack(_bool isAttack)
 {

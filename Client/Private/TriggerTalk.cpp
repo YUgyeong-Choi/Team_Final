@@ -23,7 +23,7 @@ HRESULT CTriggerTalk::Initialize_Prototype()
 HRESULT CTriggerTalk::Initialize(void* pArg)
 {
 	CTriggerTalk::TRIGGERTALK_DESC* TriggerTalkDESC = static_cast<TRIGGERTALK_DESC*>(pArg);
-
+	m_bCanCancel = TriggerTalkDESC->bCanCancel;
 
 	if (FAILED(__super::Initialize(TriggerTalkDESC)))
 		return E_FAIL;
@@ -37,6 +37,18 @@ HRESULT CTriggerTalk::Initialize(void* pArg)
 
 void CTriggerTalk::Priority_Update(_float fTimeDelta)
 {
+	if (!m_bActive)
+	{
+		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+		{
+			// 무기 선택 완료하면
+			// 이거 TriggerTalk 없애는 로직 추가하기
+		}
+	}
+
+	if (!m_bActive)
+		return;
+
 	if (m_bTalkActive && !m_bDoOnce)
 	{
 		// 조사함
@@ -53,11 +65,28 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-	/* 자동 OnOff */
 	if (m_bDoOnce)
 	{
+		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+		{
+			CTransform* pPlayerTransform = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"))->Get_TransfomCom();
+			pPlayerTransform->RotateToDirectionSmoothly(m_pTransformCom->Get_State(STATE::POSITION), 0.005f);
+		}
+
 		if (KEY_DOWN(DIK_F))
 			m_bAutoTalk = !m_bAutoTalk;
+
+		// 대화 중 끌 수 있다면
+		if (m_bCanCancel && KEY_DOWN(DIK_ESCAPE))
+		{
+			m_bDoOnce = false;
+			m_bTalkActive = false;
+			m_iSoundIndex = -1;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			m_pSoundCom->StopAll();
+			// UI 비활성화
+		}
 	}
 
 	if (m_bDoOnce)
@@ -73,10 +102,18 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 				m_iSoundIndex++;
 				if (m_iSoundIndex >= m_vecSoundData.size())
 				{
-					m_bDead = true;
-					m_pPhysXTriggerCom->RemovePhysX();
-					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-					CCamera_Manager::Get_Instance()->SetbMoveable(true);
+					if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+					{
+						// 무기 선택 UI 활성화
+						m_bActive = false;
+					}
+					else
+					{
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+						CCamera_Manager::Get_Instance()->SetbMoveable(true);
+						m_bDead = true;
+						m_pPhysXTriggerCom->RemovePhysX();
+					}
 				}
 				else
 				{
@@ -93,10 +130,18 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 				m_iSoundIndex++;
 				if (m_iSoundIndex >= m_vecSoundData.size())
 				{
-					m_bDead = true;
-					m_pPhysXTriggerCom->RemovePhysX();
-					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-					CCamera_Manager::Get_Instance()->SetbMoveable(true);
+					if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+					{
+						// 무기 선택 UI 활성화
+						m_bActive = false;
+					}
+					else
+					{
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+						CCamera_Manager::Get_Instance()->SetbMoveable(true);
+						m_bDead = true;
+						m_pPhysXTriggerCom->RemovePhysX();
+					}
 				}
 				else
 				{

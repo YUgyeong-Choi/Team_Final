@@ -40,6 +40,8 @@ public:
 	void 	Update_Collider();
 	CPhysXDynamicActor* Get_PhysXActor() { return m_pPhysXActorCom; }
 
+	void	Collider_FilterOff();
+	void	Collider_ShapeOff();
 
 
 	virtual void SetisAttack(_bool isAttack);
