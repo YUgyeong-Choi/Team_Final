@@ -43,7 +43,10 @@ void CTriggerNoMesh::Priority_Update(_float fTimeDelta)
 		{
 			m_iSoundIndex++;
 			if (m_iSoundIndex >= m_vecSoundData.size())
-				m_bDead = true;
+			{
+				m_bDead = true; 
+				m_pPhysXTriggerCom->RemovePhysX();
+			}
 			else
 				m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 		}
