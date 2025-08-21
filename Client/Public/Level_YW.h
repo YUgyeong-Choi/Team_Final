@@ -68,14 +68,14 @@ private:
 		END
 	};
 
-	const _char* Maps[static_cast<_int>(Map::END)] = {
+	const _char* m_Maps[static_cast<_int>(Map::END)] = {
 		"STATION",
 		"HOTEL",
 		"TEST"
 	};
 #pragma endregion
 	//가장 최근에 선택된 맵(초기값으로 두고 일단)으로 바꿔야지
-	_int iMapIndex = static_cast<_int>(Map::TEST);
+	_int m_iMapIndex = static_cast<_int>(Map::TEST);
 
 private:
 	class CYWTool* m_ImGuiTools[ENUM_CLASS(IMGUITOOL::END)] = {};

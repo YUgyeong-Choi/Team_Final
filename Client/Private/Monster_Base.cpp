@@ -34,12 +34,16 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	m_pAnimator->SetPlaying(true);
 
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&m_InitPos), 1.f));
 
-	_vector vDir = { 0.f,1.f,0.f,0.f };
+	//기존 코드 주석
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&m_InitPos), 1.f));
+	//_vector vDir = { 0.f,1.f,0.f,0.f };
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&m_InitPos), 1.f));
+	//m_pTransformCom->Scaling(pDesc->InitScale);
 
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&m_InitPos), 1.f));
-	m_pTransformCom->Scaling(pDesc->InitScale);
+
+	//월드행렬로 소환
+	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
 	LoadAnimDataFromJson();
 

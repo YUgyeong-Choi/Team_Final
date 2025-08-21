@@ -640,42 +640,114 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
-	CMonster_Base::MONSTER_BASE_DESC Desc{};
-	Desc.fSpeedPerSec = 5.f;
-	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
-	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-
-	//시작 위치에 네비게이션이 없으면 터진다 지금
-	Desc.wsNavName = TEXT("STATION");
-	Desc.InitPos = 
-	//_float3(148.f, 2.47f, -7.38f); //호텔위치
-	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
-
-	Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	lstrcpy(Desc.szName, TEXT("Buttler_Train"));
-	Desc.szMeshID = TEXT("Buttler_Train");
-	Desc.fHeight = 1.f;
-	Desc.vExtent = {0.5f,1.f,0.5f};
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+#pragma region 몬스터 JSON 파일 받아서 소환
+	if (FAILED(Ready_Monster("STATION")))
 		return E_FAIL;
-
-	Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+	if (FAILED(Ready_Monster("HOTEL")))
 		return E_FAIL;
+#pragma endregion
 
-	Desc.wsNavName = TEXT("HOTEL");
-	Desc.InitPos =
-		_float3(148.f, 2.47f, -7.38f); //호텔위치
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
-		return E_FAIL;
+
+#pragma region 전통적인 하드코드 방식으로 소환(지금 월드행렬로 몬스터 소환중이라 이걸로하면 항등행렬로 소환됨!!! 근데 항등행렬로 소환하니까 플레이어 충돌 문제 생김)
+
+	//CMonster_Base::MONSTER_BASE_DESC Desc{};
+	//Desc.fSpeedPerSec = 5.f;
+	//Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	//Desc.fHeight = 1.f;
+	//Desc.vExtent = { 0.5f,1.f,0.5f };
+	//Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+
+	////시작 위치에 네비게이션이 없으면 터진다 지금
+	//Desc.wsNavName = TEXT("STATION");
+	//Desc.InitPos =
+	//	//_float3(148.f, 2.47f, -7.38f); //호텔위치
+	//	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
+
+	//Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	//lstrcpy(Desc.szName, TEXT("Buttler_Train"));
+	//Desc.szMeshID = TEXT("Buttler_Train");
+
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+	//	return E_FAIL;
+
+	//Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+	//	return E_FAIL;
+
+	//Desc.wsNavName = TEXT("HOTEL");
+	//Desc.InitPos =
+	//	_float3(148.f, 2.47f, -7.38f); //호텔위치
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+	//	return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
 	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
 	//	return E_FAIL;
+#pragma endregion
 
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
+{
+	string MonsterFilePath = string("../Bin/Save/MonsterTool/Monster_") + Map + ".json";
+	ifstream inFile(MonsterFilePath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Monster_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json MonsterJson;
+	inFile >> MonsterJson;
+	inFile.close();
+
+	// 몬스터 종류별로 반복
+	for (auto& [MonsterName, MonsterArray] : MonsterJson.items())
+	{
+		wstring wstrMonsterName = StringToWString(MonsterName);
+
+		for (auto& MonsterData : MonsterArray)
+		{
+			// 월드 행렬 로드
+			const json& WorldMatrixJson = MonsterData["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			// 오브젝트 생성 Desc 채우기
+			CMonster_Base::MONSTER_BASE_DESC Desc{};
+
+			Desc.fSpeedPerSec = 5.f;
+			Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+			Desc.fHeight = 1.f;
+			Desc.vExtent = { 0.5f,1.f,0.5f };
+			Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+			Desc.WorldMatrix = WorldMatrix;
+			Desc.szMeshID = wstrMonsterName.c_str();
+			Desc.wsNavName = StringToWString(Map);
+
+			wstring wsPrototypeTag = TEXT("Prototype_GameObject_Monster_") + wstrMonsterName;
+
+
+			if (FAILED(m_pGameInstance->Add_GameObject(
+				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
+				wsPrototypeTag.c_str(),
+				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
+				TEXT("Layer_Monster_Normal"),
+				&Desc)))
+			{
+				return E_FAIL;
+			}
+		}
+	}
 
 	return S_OK;
 }

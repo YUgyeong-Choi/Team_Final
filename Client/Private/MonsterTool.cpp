@@ -55,7 +55,24 @@ HRESULT	CMonsterTool::Render_ImGui()
 
 	if (ImGui::Button("Spawn Monster"))
 	{
-		Spawn_DecalObject();
+		Spawn_MonsterToolObject();
+	}
+
+	//몬스터 종류 나열 콤보 박스
+	if (ImGui::BeginCombo("##MonsterCombo", m_Monsters[m_iMonsterIndex].c_str()))
+	{
+		for (_int i = 0; i < IM_ARRAYSIZE(m_Monsters); i++)
+		{
+			_bool bSelected = (m_iMonsterIndex == i);
+			if (ImGui::Selectable(m_Monsters[i].c_str(), bSelected))
+			{
+				m_iMonsterIndex = i;
+			}
+
+			if (bSelected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
 	}
 
 	ImGui::End();
@@ -67,15 +84,111 @@ HRESULT	CMonsterTool::Render_ImGui()
 
 HRESULT CMonsterTool::Save(const _char* Map)
 {
+	filesystem::create_directories("../Bin/Save/MonsterTool");
+	string MonsterFilePath = string("../Bin/Save/MonsterTool/Monster_") + Map + ".json";
+	ofstream MonsterDataFile(MonsterFilePath);
+
+	if (!MonsterDataFile.is_open())
+		return E_FAIL;
+
+	// 전체 몬스터 데이터를 담을 JSON 객체
+	json MonsterJson;
+
+	// 몬스터 레이어에서 오브젝트 가져오기
+	for (CGameObject* pObj : m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject")))
+	{
+		_matrix matWorld = pObj->Get_TransfomCom()->Get_WorldMatrix();
+		_float4x4 matWorldFloat4x4;
+		XMStoreFloat4x4(&matWorldFloat4x4, matWorld);
+
+		// 4x4 행렬 -> JSON 배열로 변환
+		json MatrixJson = json::array();
+		for (_int i = 0; i < 4; ++i)
+		{
+			json Row = json::array();
+			for (_int j = 0; j < 4; ++j)
+				Row.push_back(matWorldFloat4x4.m[i][j]);
+			MatrixJson.push_back(Row);
+		}
+
+		// 몬스터 툴 오브젝트로 캐스팅
+		CMonsterToolObject* pMonsterToolObj = static_cast<CMonsterToolObject*>(pObj);
+		string MonsterType = WStringToString(pMonsterToolObj->m_szMeshID);
+
+		// JSON에 추가 (몬스터 종류별 리스트에 행렬 푸시)
+		MonsterJson[MonsterType].push_back({
+			{"WorldMatrix", MatrixJson}
+			});
+	}
+
+	// JSON 저장
+	MonsterDataFile << MonsterJson.dump(4);
+	MonsterDataFile.close();
+
+	MSG_BOX("몬스터 저장 성공!");
 
 	return S_OK;
 }
+
 
 HRESULT CMonsterTool::Load(const _char* Map)
 {
+	// 현재 맵에 배치된 몬스터 모두 삭제
+	Clear();
+
+	string MonsterFilePath = string("../Bin/Save/MonsterTool/Monster_") + Map + ".json";
+	ifstream inFile(MonsterFilePath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Monster_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json MonsterJson;
+	inFile >> MonsterJson;
+	inFile.close();
+
+	// 몬스터 종류별로 반복
+	for (auto& [MonsterName, MonsterArray] : MonsterJson.items())
+	{
+		wstring wstrMonsterName = StringToWString(MonsterName);
+
+		for (auto& MonsterData : MonsterArray)
+		{
+			// 월드 행렬 로드
+			const json& WorldMatrixJson = MonsterData["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			// 오브젝트 생성 Desc 채우기
+			CMonsterToolObject::MONSTERTOOLOBJECT_DESC MonsterDesc = {};
+
+			MonsterDesc.eMeshLevelID = LEVEL::YW;
+			MonsterDesc.InitScale = _float3(1.f, 1.f, 1.f);
+
+			lstrcpy(MonsterDesc.szMeshID, wstrMonsterName.c_str());
+
+			MonsterDesc.WorldMatrix = WorldMatrix;
+			MonsterDesc.iID = m_iID--;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(
+				ENUM_CLASS(LEVEL::YW),
+				TEXT("Prototype_GameObject_MonsterToolObject"),
+				ENUM_CLASS(LEVEL::YW),
+				TEXT("Layer_MonsterToolObject"),
+				&MonsterDesc)))
+			{
+				return E_FAIL;
+			}
+		}
+	}
 
 	return S_OK;
 }
+
 
 void CMonsterTool::Control(_float fTimeDelta)
 {
@@ -100,10 +213,10 @@ void CMonsterTool::Control(_float fTimeDelta)
 		}
 	}
 
-	//클릭하면 가장 가까운 데칼을 포커스 한다.
+	//클릭해서 선택
 	if (m_pGameInstance->Mouse_Up(DIM::LBUTTON) && ImGuizmo::IsOver() == false)
 	{
-		//Select_Decal();
+		Picking();
 	}
 
 	//F 키누르면 해당 오브젝트 위치로 이동
@@ -128,6 +241,32 @@ void CMonsterTool::Control(_float fTimeDelta)
 	{
 		Duplicate();
 	}
+}
+void CMonsterTool::Picking()
+{
+	_int iID = { 0 };
+	if (m_pGameInstance->PickByClick(&iID))
+	{
+		cout << "Monster ID(음수): " << iID << endl;
+	}
+
+	//MonsterToolObject 중에 같은 아이디를 찾아서 포커스한다.
+
+	list<CGameObject*>& ObjList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"));
+
+	for (CGameObject*pObj : ObjList)
+	{
+		CMonsterToolObject* pMonsterToolObj = static_cast<CMonsterToolObject*>(pObj);
+		if (pMonsterToolObj->m_iID == iID)
+		{
+			Safe_Release(m_pFocusObject);
+			m_pFocusObject = pMonsterToolObj;
+			Safe_AddRef(m_pFocusObject);
+
+			break;
+		}
+	}
+	
 }
 
 void CMonsterTool::Focus()
@@ -187,12 +326,12 @@ void CMonsterTool::Duplicate()
 	//Safe_AddRef(m_pFocusObject);
 }
 
-void CMonsterTool::Clear_All_Decal()
+void CMonsterTool::Clear()
 {
 	Safe_Release(m_pFocusObject);
 	m_pFocusObject = nullptr;
 
-	list<CGameObject*> List = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"));
+	list<CGameObject*> List = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"));
 
 	for (CGameObject* pObj : List)
 	{
@@ -242,7 +381,7 @@ HRESULT CMonsterTool::Ready_Texture(const _char* Map)
 	return S_OK;
 }
 
-HRESULT CMonsterTool::Spawn_DecalObject()
+HRESULT CMonsterTool::Spawn_MonsterToolObject()
 {
 #pragma region 카메라 앞에다가 소환
 	//카메라 앞에다가 소환
@@ -281,32 +420,23 @@ HRESULT CMonsterTool::Spawn_DecalObject()
 
 #pragma endregion
 
-	CMonsterToolObject::MONSTERTOOLOBJECT_DESC DecalDesc = {};
-
+	CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
 	// 오브젝트 월드 행렬에 적용
-	XMStoreFloat4x4(&DecalDesc.WorldMatrix, SpawnWorldMatrix);
+	XMStoreFloat4x4(&Desc.WorldMatrix, SpawnWorldMatrix);
+	Desc.eMeshLevelID = LEVEL::YW;
+	lstrcpy(Desc.szMeshID, StringToWString(m_Monsters[m_iMonsterIndex]).c_str());
 
-	//소환하고 포커스 변경
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_DecalToolObject"),
-		ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"), &DecalDesc)))
+
+
+	Desc.iID = m_iID--;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
+		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
 		return E_FAIL;
 
 
-	/*CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
-	Desc.fSpeedPerSec = 5.f;
-	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
-	Desc.eMeshLevelID = LEVEL::YW;
-	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
-	Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	lstrcpy(Desc.szName, TEXT("MonsterToolObject"));
-	Desc.szMeshID = TEXT("Buttler_Train");
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
-		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))
-		return E_FAIL;*/
-
-
 	Safe_Release(m_pFocusObject);
-	m_pFocusObject = static_cast<CMonsterToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Monster")));
+	m_pFocusObject = static_cast<CMonsterToolObject*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject")));
 	Safe_AddRef(m_pFocusObject);
 
 	return S_OK;

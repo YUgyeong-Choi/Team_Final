@@ -72,10 +72,10 @@ void CPBRMesh::Update(_float fTimeDelta)
 
 void CPBRMesh::Late_Update(_float fTimeDelta)
 {
-	//if (m_bDummyShow)
-	//{
+	if (m_bDummyShow)
+	{
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-	//}
+	}
 }
 
 HRESULT CPBRMesh::Render()

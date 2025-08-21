@@ -43,7 +43,7 @@ private:
 	class CDecalToolObject* Get_ClosestDecalObject(_fvector vPosition);
 
 private:
-	HRESULT Spawn_DecalObject();
+	HRESULT Spawn_MonsterToolObject();
 	void Delete_FocusObject();
 private:
 	void Render_Detail();

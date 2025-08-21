@@ -433,6 +433,9 @@
     <Filter Include="02.GameObjects\15.StaticTrigger">
       <UniqueIdentifier>{53ddc91d-fc1d-47ec-8d5a-68f72fb6bc75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject">
+      <UniqueIdentifier>{da918027-254d-4345-aec4-3c323dbfff75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -898,9 +901,6 @@
     <ClInclude Include="..\Public\MonsterTool.h">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MonsterToolObject.h">
-      <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\LegionArm_Steel.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
     </ClInclude>
@@ -915,6 +915,9 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Manager.h">
       <Filter>02.GameObjects\99.UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterToolObject.h">
+      <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TriggerTalk.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
@@ -1352,9 +1355,6 @@
     <ClCompile Include="..\private\LegionArm_Base.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MonsterToolObject.cpp">
-      <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MonsterTool.cpp">
       <Filter>01.Levels\LevelYW\YWTool\MonsterTool</Filter>
     </ClCompile>
@@ -1375,6 +1375,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Manager.cpp">
       <Filter>02.GameObjects\99.UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterToolObject.cpp">
+      <Filter>01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TriggerTalk.cpp">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>

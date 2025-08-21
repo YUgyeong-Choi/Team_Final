@@ -157,7 +157,7 @@ _bool CPicking::PickByClick(_int* pOut)
 
 	*pOut = static_cast<_int>(m_pIDs[iIndex].w);
 
-	if (static_cast<_int>(m_pIDs[iIndex].w) < 0.f)
+	if (static_cast<_int>(m_pIDs[iIndex].w) == 0) //내가 왜 0보다 작으면 피킹 실패한걸로 했더라... 0이면 실패로하자, id의 초기값은 0인걸로
 		return false;
 
 	return true;

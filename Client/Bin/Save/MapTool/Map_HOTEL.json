@@ -1,6 +1,44 @@
 {
-    "ModelCount": 16,
+    "ModelCount": 17,
     "Models": [
+        {
+            "Collision": false,
+            "ModelName": "SM_CH_PROB_GoldStatue_01",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            0.14821623265743256,
+                            0.0,
+                            -0.9889549612998962,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.9889549612998962,
+                            0.0,
+                            0.14821623265743256,
+                            0.0
+                        ],
+                        [
+                            132.9672088623047,
+                            3.8023085594177246,
+                            -7.8697967529296875,
+                            1.0000001192092896
+                        ]
+                    ]
+                }
+            ]
+        },
         {
             "Collision": true,
             "ModelName": "SM_Exhibition_RoofMolding_01",

@@ -55,7 +55,7 @@ HRESULT	CDecalTool::Render_ImGui()
 
 	if(ImGui::Button("Spawn Decal"))
 	{
-		Spawn_DecalObject();
+		Spawn_MonsterToolObject();
 	}
 
 	ImGui::End();
@@ -434,7 +434,7 @@ CDecalToolObject* CDecalTool::Get_ClosestDecalObject(_fvector vPosition)
 	return  static_cast<CDecalToolObject*>(pClosestObject);
 }
 
-HRESULT CDecalTool::Spawn_DecalObject()
+HRESULT CDecalTool::Spawn_MonsterToolObject()
 {
 #pragma region 카메라 앞에다가 소환
 	//카메라 앞에다가 소환

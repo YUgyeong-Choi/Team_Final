@@ -36,10 +36,14 @@ private:
 	HRESULT Ready_UI();
 	HRESULT Ready_Video();
 	HRESULT Ready_Monster();
+	//특정 맵의 몬스터를 소환한다. 그 맵의 네비게이션을 장착시킨다.
+	HRESULT Ready_Monster(const _char* Map);
 	HRESULT Ready_Effect();
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();
 	HRESULT Ready_Trigger();
+
+
 
 private:
 	HRESULT Load_Shader();
