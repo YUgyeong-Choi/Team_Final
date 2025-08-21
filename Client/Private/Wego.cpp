@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Camera_Manager.h"
 #include "UIObject.h"
+#include "UI_Manager.h"
 CWego::CWego(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -60,10 +61,14 @@ void CWego::Priority_Update(_float fTimeDelta)
 				m_bTalkActive = false;
 				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr);
 				CCamera_Manager::Get_Instance()->SetbMoveable(true);
+
+
+				CUI_Manager::Get_Instance()->On_Panel();
 				return;
 			}
 
 			wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
+
 		}
 	}
 
@@ -78,12 +83,9 @@ void CWego::Priority_Update(_float fTimeDelta)
 
 			wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
 
-			auto& objList =m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"));
-
-			for (auto& obj : objList)
-			{
-				static_cast<CUIObject*>(obj)->Set_isReverse(true);
-			}
+			
+			CUI_Manager::Get_Instance()->Off_Panel();
+			CUI_Manager::Get_Instance()->Activate_Popup(false);
 		}
 	}
 
@@ -97,12 +99,9 @@ void CWego::Priority_Update(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr);
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
-			auto& objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"));
-
-			for (auto& obj : objList)
-			{
-				static_cast<CUIObject*>(obj)->Set_isReverse(false);
-			}
+			
+		
+			CUI_Manager::Get_Instance()->On_Panel();
 		}
 	}
 }
@@ -129,24 +128,6 @@ HRESULT CWego::Render()
 	}
 #endif
 	
-	if (m_bInTrigger)
-	{
-		// ui text를 파트로 가지게 해서 출력하게 해야겟다
-		_float4x4 viewMat, projMat;
-
-		XMStoreFloat4x4(&viewMat, XMMatrixIdentity());
-		XMStoreFloat4x4(&projMat, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.0f, 1.f));
-
-		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &viewMat)))
-			return E_FAIL;
-		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &projMat)))
-			return E_FAIL;
-		if (FAILED(m_pShaderCom->Begin(0)))
-			return E_FAIL;
-		wstring text = L"말을 건다";
-
-		m_pGameInstance->Draw_Font_Centered(TEXT("Font_Bold"), text.c_str(), _float2(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, { 0.f,0.f }, 5.f, 0.f);
-	}
 	
 
 	return S_OK;
@@ -172,11 +153,16 @@ void CWego::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CWego::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	m_bInTrigger = true;
+
+	CUI_Manager::Get_Instance()->Activate_Popup(true);
+	CUI_Manager::Get_Instance()->Set_Popup_Caption(1);
 }
 
 void CWego::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	m_bInTrigger = false;
+	CUI_Manager::Get_Instance()->Activate_Popup(false);
+
 }
 
 HRESULT CWego::Ready_Components()

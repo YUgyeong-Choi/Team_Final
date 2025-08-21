@@ -75,16 +75,12 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+		m_bUseLockon = false;
 		if (m_pAnimator->IsFinished())
 		{
-			m_bUseLockon = false;
 			m_pHPBar->Set_bDead();
 			Set_bDead();
-			if (nullptr != m_pPhysXActorCom)
-			{
-				m_pPhysXActorCom->RemovePhysX();
-			}
+			
 
 		}
 	}
@@ -460,7 +456,7 @@ CMonster_Base::MONSTER_DIR CMonster_Base::Calc_HitDir(_vector vOtherPos)
 	
 
 
-	return MONSTER_DIR::END;
+	return MONSTER_DIR::B;
 }
 
 _bool CMonster_Base::Check_Turn()

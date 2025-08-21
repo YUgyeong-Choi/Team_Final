@@ -4,6 +4,7 @@
 #include "Camera_Manager.h"
 #include "Effect_Manager.h"
 #include "LockOn_Manager.h"
+#include "UI_Manager.h"
 
 #include "Static_UI.h"
 #include "Dynamic_UI.h"
@@ -429,9 +430,11 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 
 	/* [ ½Ì±ÛÅæ »èÁ¦ ] */
+	CUI_Manager::Destroy_Instance();
 	CCamera_Manager::Destroy_Instance();
 	CEffect_Manager::Destroy_Instance();
 	CLockOn_Manager::Destroy_Instance();
+	
 
 	if (m_pGameInstance) {
 		m_pGameInstance->Release_Engine(); 

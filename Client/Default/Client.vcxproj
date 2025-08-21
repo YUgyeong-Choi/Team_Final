@@ -277,6 +277,7 @@
     <ClInclude Include="..\public\UI_Feature_UV.h" />
     <ClInclude Include="..\Public\UI_Guide.h" />
     <ClInclude Include="..\public\UI_LockOn_Icon.h" />
+    <ClInclude Include="..\public\UI_Manager.h" />
     <ClInclude Include="..\public\UI_MonsterHP_Bar.h" />
     <ClInclude Include="..\public\UI_Popup.h" />
     <ClInclude Include="..\public\UI_Script.h" />
@@ -435,6 +436,7 @@
     <ClCompile Include="..\private\UI_Feature_UV.cpp" />
     <ClCompile Include="..\Private\UI_Guide.cpp" />
     <ClCompile Include="..\private\UI_LockOn_Icon.cpp" />
+    <ClCompile Include="..\private\UI_Manager.cpp" />
     <ClCompile Include="..\private\UI_MonsterHP_Bar.cpp" />
     <ClCompile Include="..\private\UI_Popup.cpp" />
     <ClCompile Include="..\private\UI_Script.cpp" />

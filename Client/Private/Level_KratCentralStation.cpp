@@ -27,6 +27,7 @@
 #include "Wego.h"
 
 #include "LockOn_Manager.h"
+#include "UI_Manager.h"
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -574,6 +575,12 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
 		return E_FAIL;
 
+
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Popup.json");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Popup"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Popup"), &eDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

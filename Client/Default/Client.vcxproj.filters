@@ -421,8 +421,14 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
       <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject">
-      <UniqueIdentifier>{57d38245-a484-4631-8cb6-8d575b2d031c}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\99.UI\World\Tutorial">
+      <UniqueIdentifier>{7619dac2-9da0-4c4b-b7bb-52a6b1622caf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Manager">
+      <UniqueIdentifier>{5012f782-ee34-4b2a-b39c-29b78e33b2bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Popup">
+      <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\15.StaticTrigger">
       <UniqueIdentifier>{53ddc91d-fc1d-47ec-8d5a-68f72fb6bc75}</UniqueIdentifier>
@@ -872,7 +878,7 @@
       <Filter>02.GameObjects\99.UI\Dynamic\Text</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Popup.h">
-      <Filter>02.GameObjects\99.UI\World\Popup</Filter>
+      <Filter>02.GameObjects\99.UI\Container\Popup</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DynamicMesh.h">
       <Filter>02.GameObjects\13. DynamicMesh</Filter>
@@ -909,6 +915,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\TriggerMesh.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Manager.h">
+      <Filter>02.GameObjects\99.UI\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1326,7 +1335,7 @@
       <Filter>02.GameObjects\99.UI\Dynamic\Text</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Popup.cpp">
-      <Filter>02.GameObjects\99.UI\World\Popup</Filter>
+      <Filter>02.GameObjects\99.UI\Container\Popup</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DynamicMesh.cpp">
       <Filter>02.GameObjects\13. DynamicMesh</Filter>
@@ -1366,6 +1375,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerMesh.cpp">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Manager.cpp">
+      <Filter>02.GameObjects\99.UI\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
