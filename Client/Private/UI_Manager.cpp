@@ -28,7 +28,7 @@ void CUI_Manager::Remove_UI(_wstring strTag)
 
 	Safe_Release(pUI);
 
-	//m_UImap.erase(strTag);
+	m_UImap.erase(strTag);
 
 
 }
@@ -42,6 +42,7 @@ _bool CUI_Manager::Find_Panel()
 		return false;
 	}
 
+
 	for (auto& pObj : list)
 	{
 		
@@ -53,31 +54,29 @@ _bool CUI_Manager::Find_Panel()
 
 void CUI_Manager::On_Panel()
 {
-	_bool isEmpty = false;
+	
 	if (m_pPanel.empty())
-		isEmpty = Find_Panel();
+		 Find_Panel();
 
-	if (!isEmpty)
-		return;
+
 
 	for (auto& obj : m_pPanel)
 	{
-		(obj)->Set_isReverse(true);
+		(obj)->Set_isReverse(false);
 	}
 }
 
 void CUI_Manager::Off_Panel()
 {
-	_bool isEmpty = false;
+	
 	if (m_pPanel.empty())
-		isEmpty = Find_Panel();
+		Find_Panel();
 
-	if (!isEmpty)
-		return;
+
 
 	for (auto& obj : m_pPanel)
 	{
-		(obj)->Set_isReverse(false);
+		(obj)->Set_isReverse(true);
 	}
 }
 
@@ -112,10 +111,13 @@ void CUI_Manager::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pGameInstance);
+
 	for (auto& pUI : m_UImap)
 	{
 		Safe_Release(pUI.second);
 	}
 
 	m_UImap.clear();
+	m_pPanel.clear();
 }

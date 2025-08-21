@@ -35,6 +35,8 @@ HRESULT CUI_Popup::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_isActive = false;
+	
+	m_bCloned = true;
 
 	CUI_Manager::Get_Instance()->Add_UI(this, TEXT("Popup"));
 
@@ -73,6 +75,7 @@ void CUI_Popup::Set_String(_int iTriggerType)
 		break;
 	case 1:
 		strCaption = L"말을 건다.";
+		break;
 	default:
 		strCaption = L"????";
 		break;
@@ -109,9 +112,11 @@ CGameObject* CUI_Popup::Clone(void* pArg)
 
 void CUI_Popup::Free()
 {
-
-	CUI_Manager::Get_Instance()->Remove_UI(TEXT("Popup"));
 	__super::Free();
+
+	if(m_bCloned)
+		CUI_Manager::Get_Instance()->Remove_UI(TEXT("Popup"));
+	
 
 	
 }

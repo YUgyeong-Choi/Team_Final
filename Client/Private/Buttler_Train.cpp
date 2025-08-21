@@ -54,12 +54,15 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
 		m_pWeapon->Collider_Off();
-		
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+		m_pPhysXActorCom->RemovePhysX();
 		if (m_pAnimator->IsFinished())
 		{
 			m_pWeapon->Set_bDead();
 		}
 	}
+	
+	
 
 	
 }
@@ -113,12 +116,12 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	ReceiveDamage(pOther, eColliderType);
+
 }
 
 void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	ReceiveDamage(pOther, eColliderType);
+	
 }
 
 void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -261,8 +264,9 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos || m_strStateName.find("Hit") != m_strStateName.npos)
 				return;
 
-			m_pAnimator->SetTrigger("Hit");
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+			m_pAnimator->SetTrigger("Hit");
+			
 			if(m_fGroggyThreshold <= 0)
 				m_isCanGroggy = true;
 		}
