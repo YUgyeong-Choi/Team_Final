@@ -65,17 +65,6 @@ HRESULT CLegionArm_Steel::Render()
 	return S_OK;
 }
 
-void CLegionArm_Steel::SetisAttack(_bool isAttack)
-{
-	if (isAttack)
-	{
-		m_pActorCom->Set_SimulationFilterData(m_pActorCom->Get_FilterData());
-	}
-	else
-	{
-		m_pActorCom->Init_SimulationFilterData();
-	}
-}
 
 void CLegionArm_Steel::Activate()
 {
