@@ -23,7 +23,7 @@ HRESULT CTriggerTalk::Initialize_Prototype()
 HRESULT CTriggerTalk::Initialize(void* pArg)
 {
 	CTriggerTalk::TRIGGERTALK_DESC* TriggerTalkDESC = static_cast<TRIGGERTALK_DESC*>(pArg);
-
+	m_bCanCancel = TriggerTalkDESC->bCanCancel;
 
 	if (FAILED(__super::Initialize(TriggerTalkDESC)))
 		return E_FAIL;
@@ -53,11 +53,22 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-	/* 자동 OnOff */
 	if (m_bDoOnce)
 	{
 		if (KEY_DOWN(DIK_F))
 			m_bAutoTalk = !m_bAutoTalk;
+
+		// 대화 중 끌 수 있다면
+		if (m_bCanCancel && KEY_DOWN(DIK_ESCAPE))
+		{
+			m_bDoOnce = false;
+			m_bTalkActive = false;
+			m_iSoundIndex = -1;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			m_pSoundCom->StopAll();
+			// UI 비활성화
+		}
 	}
 
 	if (m_bDoOnce)

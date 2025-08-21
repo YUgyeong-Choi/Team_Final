@@ -18,6 +18,7 @@
       "UseMesh": 1,
       "TriggerType": 1,
       "ObjectTag": "",
+      "CanCancel": 0,
       "vPos": [ 31.398075, 0.2, 1.101484 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],

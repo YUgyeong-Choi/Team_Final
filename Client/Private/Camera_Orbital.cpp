@@ -243,8 +243,8 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 {
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 
-	_long MouseMoveX = 0.f;
-	_long MouseMoveY = 0.f; 
+	_long MouseMoveX = 0;
+	_long MouseMoveY = 0; 
 
 	if (m_bCanMoveTalk)
 	{
