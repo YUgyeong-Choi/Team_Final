@@ -125,7 +125,21 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_F2))
 	{
+		PxVec3 pos = PxVec3(-0.227397f, 1.f, 1.014072f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	};
+
+	if (KEY_DOWN(DIK_F3))
+	{
 		PxVec3 pos = PxVec3(71.983032f, 1.f, -5.244843f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
+	if (KEY_DOWN(DIK_F4))
+	{
+		PxVec3 pos = PxVec3(127.851753f, 2.f, -7.543217f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}

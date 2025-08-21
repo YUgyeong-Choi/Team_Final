@@ -1,4 +1,5 @@
 #pragma once
+/* [ 바닥에 있는 아이템들 같은 거 ] */
 
 #include "Client_Defines.h"
 #include "TriggerBox.h"
