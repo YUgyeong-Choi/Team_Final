@@ -351,13 +351,24 @@ void CUI_Video::Play_Sound()
 	case Client::CUI_Video::VIDEO_TYPE::INTRO:
 	{
 		if (m_iDrawnFrameIndex == 480)
+		{
+			m_pSoundCom->StopAll();
 			m_pSoundCom->Play("VO_CIN_Scene_Ch01_Sophia_Opening_01");
+		}
 
 		if (m_iDrawnFrameIndex == 700)
+		{
+			m_pSoundCom->StopAll();
 			m_pSoundCom->Play("SE_CIN_Intro");
+		}
+
 
 		if (m_iDrawnFrameIndex == 1130)
+		{
+			m_pSoundCom->StopAll();
 			m_pSoundCom->Play("VO_CIN_Scene_Ch01_Sophia_Opening_02");
+		}
+
 		break;
 	}
 	default:
