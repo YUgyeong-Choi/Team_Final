@@ -3,28 +3,27 @@
 vector g_vCamPosition;
 bool g_bLocal;
 
-
 struct ParticleParam
 {
-    float4 Right;
-    float4 Up;
-    float4 Look;
-    float4 Translation;
+    float4  Right;
+    float4  Up;
+    float4  Look;
+    float4  Translation;
 
-    float3 vInitOffset;
-    float  vIsFirst;
+    float3  vInitOffset;
+    uint    bFirstLoopDiscard;
     
-    float4 Direction; // normalized dir (w=unused)
-    float4 VelocityDir; // 실제 이동한 방향 벡터, w = length
+    float4  Direction; // normalized dir (w=unused)
+    float4  VelocityDir; // 실제 이동한 방향 벡터, w = length
 
-    float2 LifeTime; // x=max, y=acc
-    float  Speed;
-    float  RotationSpeed; // degrees/sec
+    float2  LifeTime; // x=max, y=acc
+    float   Speed;
+    float   RotationSpeed; // degrees/sec
 
-    float  OrbitSpeed; // degrees/sec
-    float  fAccel; // 가속도 (+면 가속, -면 감속)
-    float  fMaxSpeed; // 최대 속도 (옵션)
-    float  fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
+    float   OrbitSpeed; // degrees/sec
+    float   fAccel; // 가속도 (+면 가속, -면 감속)
+    float   fMaxSpeed; // 최대 속도 (옵션)
+    float   fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
 };
 
 StructuredBuffer<ParticleParam> Particle_SRV : register(t0);
@@ -42,12 +41,17 @@ struct VS_OUT
 
 VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
 {
-    VS_OUT Out;
+    VS_OUT Out = (VS_OUT)0;
     
     matrix matWV, matWVP;
     
     ParticleParam particle = Particle_SRV[instanceID];
     
+    if (particle.bFirstLoopDiscard)
+    {
+        Out.vLifeTime.y = -1.f;
+        return Out;
+    }
     row_major float4x4 TransformMatrix = float4x4(
         particle.Right,
         particle.Up,
@@ -99,6 +103,14 @@ struct GS_OUT
 void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
     GS_OUT Out[4];
+    if (In[0].vLifeTime.y < 0.f)
+    {
+        Out[0].vLifeTime = -1.f;
+        Out[1].vLifeTime = -1.f;
+        Out[2].vLifeTime = -1.f;
+        Out[3].vLifeTime = -1.f;
+        return;
+    }
     
     float3 vLook = g_vCamPosition.xyz - In[0].vPosition.xyz;
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook)) * In[0].vPSize.x * 0.5f;
@@ -154,7 +166,7 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     vUp *= In[0].vPSize.y * 0.5f;
 
     // === 속도 방향 Stretch (길이만 늘림) ===
-    float3 vDir = normalize(In[0].vDir);
+    float3 vDir = normalize(In[0].vDir.xyz);
     float stretchFactor = 0.015f * In[0].fSpeed; // 튜닝값
     float3 vStretch = vDir * stretchFactor;
 
@@ -263,6 +275,7 @@ struct PS_OUT_WB
 PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
 {
     PS_OUT_WB Out;
+        
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     if (mask < 0.003f)

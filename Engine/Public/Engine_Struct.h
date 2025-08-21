@@ -496,7 +496,7 @@ namespace Engine
 		_float4		vTranslation; // WorldMatrix
 
 		_float3		vInitOffset;
-		_float		_pad0;
+		_uint		bFirstLoopDiscard;
 
 		_float4		vDirection = {};
 		_float4		vVelocityDir = {}; // xyz = 현재 이동방향, w=속도 크기 

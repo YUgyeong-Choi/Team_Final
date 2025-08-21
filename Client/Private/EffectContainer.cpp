@@ -120,9 +120,6 @@ void CEffectContainer::Update(_float fTimeDelta)
 	}
 
 	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
-	for (_uint i = 0; i < 3; i++)
-		matWorld.r[i] = XMVector3Normalize(matWorld.r[i]);
-
 
 	XMStoreFloat4x4(&m_CombinedWorldMatrix, matWorld * matSocket * matParent);
 
@@ -242,7 +239,6 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			break;
 			case Client::EFF_TRAIL:
 			{
-
 				// 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
 				//CSwordTrailEffect::DESC desc = {};
 				//desc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -254,8 +250,6 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			}
 			break;
 			}
-
-
 			if (pInstance != nullptr)
 			{
 				if (FAILED(pInstance->Ready_Effect_Deserialize(jItem)))

@@ -285,8 +285,8 @@ private: /* [ 플레이어 변수 ] */
 	_float	m_fMaxHP = { 100.f };
 	_float	m_fHP = { 100.f };
 	
-	_float	m_fMaxStamina = { 100.f };
-	_float	m_fStamina = { 100.f };
+	_float	m_fMaxStamina = { 1000.f };
+	_float	m_fStamina = { 1000.f };
 	
 	_float	m_fMaxMana = { 300.f };
 	_float	m_fMana = { 300.f };
