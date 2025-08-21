@@ -53,12 +53,14 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
-		m_pWeapon->Collider_Off();
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+		m_pWeapon->Clear_Owner();
+		m_pWeapon->Gravity_On();
 		m_pPhysXActorCom->RemovePhysX();
+
 		if (m_pAnimator->IsFinished())
 		{
-			m_pWeapon->Set_bDead();
+			Safe_Release(m_pWeapon);
+
 		}
 	}
 	
@@ -116,12 +118,12 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	
+
 }
 
 void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -266,8 +268,19 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos)
 				return;
 
-			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-			m_pAnimator->SetTrigger("Hit");
+			if (m_strStateName.find("Hit") != m_strStateName.npos)
+			{
+				
+				m_pAnimator->Get_CurrentAnimController()->SetState(m_strStateName);
+
+			}
+			else
+			{
+				m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+				m_pAnimator->SetTrigger("Hit");
+			}
+
+			
 
 			
 			if(m_fGroggyThreshold <= 0)
@@ -344,6 +357,12 @@ void CButtler_Train::Register_Events()
 
 }
 
+void CButtler_Train::Guard_Reaction()
+{
+	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+	m_pAnimator->SetTrigger("Hit");
+}
+
 
 
 
@@ -362,8 +381,8 @@ HRESULT CButtler_Train::Ready_Weapon()
 	Desc.vAxis = { 0.f,1.f,0.f,0.f };
 	Desc.fRotationDegree = {90.f};
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 0.5f, 0.2f, 0.2f };
-
+	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
+	
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Desc.pOwner = this;
@@ -406,6 +425,6 @@ void CButtler_Train::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pWeapon);
+	//Safe_Release(m_pWeapon);
 
 }

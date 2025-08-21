@@ -40,9 +40,11 @@ public:
 	void 	Update_Collider();
 	CPhysXDynamicActor* Get_PhysXActor() { return m_pPhysXActorCom; }
 
-	void	Collider_Off();
+
 
 	virtual void SetisAttack(_bool isAttack);
+
+	void	Gravity_On();
 
 
 protected: /* [ Setup ÇÔ¼ö ] */
