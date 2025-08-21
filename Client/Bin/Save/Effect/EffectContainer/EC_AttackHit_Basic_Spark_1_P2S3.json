@@ -60,7 +60,7 @@
                     ]
                 }
             ],
-            "LifeTime": 528.7702026367188,
+            "LifeTime": 547.3253173828125,
             "LifeTime_Particle": [
                 0.009999999776482582,
                 0.10000000149011612
@@ -122,7 +122,7 @@
                 ""
             ],
             "TextureUsage": [
-                true,
+                false,
                 true,
                 false,
                 false
@@ -158,7 +158,7 @@
             ],
             "Duration": 61,
             "EffectType": 1,
-            "EmissiveIntensity": 0.800000011920929,
+            "EmissiveIntensity": 2.799999952316284,
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -192,7 +192,7 @@
                     ]
                 }
             ],
-            "LifeTime": 324.7401123046875,
+            "LifeTime": 343.2939147949219,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.5
@@ -238,8 +238,8 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.009999999776482582,
-                0.019999999552965164
+                0.019999999552965164,
+                0.029999999329447746
             ],
             "Speed": [
                 10.0,
@@ -265,34 +265,34 @@
             "TileY": 1
         },
         {
-            "Animation": true,
+            "Animation": false,
             "Billboard": true,
             "CenterColor": [
                 1.0,
-                1.0,
-                1.0,
+                0.7031605243682861,
+                0.5235601663589478,
                 1.0
             ],
             "Color": [
                 1.0,
-                0.6216386556625366,
-                0.32460731267929077,
+                0.4397905468940735,
+                0.0,
                 1.0
             ],
             "Duration": 61,
             "EffectType": 0,
-            "EmissiveIntensity": 0.0,
+            "EmissiveIntensity": 0.5,
             "EndTrack": 61,
             "FlipUV": false,
             "KeyFrames": [
                 {
                     "Color": [
                         1.0,
-                        0.6216386556625366,
-                        0.32460731267929077,
+                        0.4397905468940735,
+                        0.0,
                         1.0
                     ],
-                    "Intensity": 2.759999990463257,
+                    "Intensity": 4.0,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -315,8 +315,8 @@
                 {
                     "Color": [
                         1.0,
-                        0.6235294342041016,
-                        0.32549020648002625,
+                        0.5821259021759033,
+                        0.2513089179992676,
                         0.0
                     ],
                     "Intensity": 1.0,
@@ -340,7 +340,7 @@
                     ]
                 }
             ],
-            "LifeTime": 262.77337646484375,
+            "LifeTime": 281.3271789550781,
             "Loop": true,
             "Name": "Hit_BasicSprite1",
             "NumKeyFrames": 2,
@@ -363,8 +363,208 @@
             "TickPerSecond": 60.0,
             "TileX": 1,
             "TileY": 1
+        },
+        {
+            "Animation": false,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.16230368614196777,
+                0.16230368614196777,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.15706807374954224,
+                0.0,
+                1.0
+            ],
+            "Duration": 61,
+            "EffectType": 0,
+            "EmissiveIntensity": 6.050000190734863,
+            "EndTrack": 61,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.15706807374954224,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 5.909999847412109,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        6.0,
+                        0.30000001192092896,
+                        3.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        0.1568627506494522,
+                        0.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        6.0,
+                        0.0,
+                        0.0
+                    ],
+                    "TrackPosition": 5.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 18.52767562866211,
+            "Loop": true,
+            "Name": "Hit_BasicSlashSprite1",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_MeshTrail_01_C_GDH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.6172802448272705,
+                0.591623067855835,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.1568627506494522,
+                0.0,
+                1.0
+            ],
+            "Duration": 61,
+            "EffectType": 0,
+            "EmissiveIntensity": 2.0999999046325684,
+            "EndTrack": 61,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.1568627506494522,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 3.5899999141693115,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.0,
+                        1.5,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        0.1568627506494522,
+                        0.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.0,
+                        0.0,
+                        1.0
+                    ],
+                    "TrackPosition": 5.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 14.296831130981445,
+            "Loop": true,
+            "Name": "Hit_BasicLensFlareSprite1",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_LensFlare_03_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileX": 1,
+            "TileY": 1
         }
     ],
-    "Loop": true,
-    "MaxFrame": 64
+    "Loop": false,
+    "MaxFrame": 60
 }

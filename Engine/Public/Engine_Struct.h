@@ -529,7 +529,7 @@ namespace Engine
 		_float2		_pad0;
 
 		_float3		vPivot;          // vPivot
-		_float		_pad1;
+		_uint		isFirst;
 
 		_float3		vCenter;         // vCenter
 		_float		_pad2;
@@ -541,6 +541,9 @@ namespace Engine
 		_float		_pad4;
 
 		_float4		vSocketRot;
+
+		_float4x4	g_CombinedMatrix;
 	}PARTICLECBUFFER;
+	/* [ 이 구조체를 수정하면 CS hlsl 내부 구조체도 반드시 수정하시오 !! ] */
 
 } 
