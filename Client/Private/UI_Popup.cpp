@@ -114,9 +114,7 @@ void CUI_Popup::Free()
 {
 	__super::Free();
 
-	if(m_bCloned)
-		CUI_Manager::Get_Instance()->Remove_UI(TEXT("Popup"));
-	
-
+	/*if(m_bCloned)
+		CUI_Manager::Get_Instance()->Remove_UI(TEXT("Popup"));*/
 	
 }
