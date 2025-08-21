@@ -23,6 +23,7 @@ public:
 		
 		_float3 vExtent;
 		_float  fHeight;
+		wstring wsNavName = {}; //어떤 네비를 탈 것인가? //STATION, HOTEL...
 
 	}MONSTER_BASE_DESC;
 
@@ -51,7 +52,7 @@ public:
 
 
 public: /* [ Setup 함수 ] */
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Actor(void* pArg);
 	HRESULT Ready_PartObject();
 	//HRESULT Ready_Weapon(); 무기는 필요한 애들만 만들기

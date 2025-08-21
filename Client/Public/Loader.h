@@ -63,7 +63,7 @@ private:
 	HRESULT Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
 
 	//네비게이션을 로딩한다.
-	HRESULT Loading_Navigation(_uint iLevelIndex, const _char* Map, _bool bForTool = false);
+	HRESULT Loading_Navigation(_uint iLevelIndex, const _char* Map/*, _bool bForTool = false*/);
 
 	//필요한 데칼 텍스쳐를 로딩한다.
 	HRESULT Loading_Decal_Textures(_uint iLevelIndex, const _char* Map);
@@ -78,7 +78,7 @@ private:
 	HRESULT Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
 
 	//네비게이션 소환
-	HRESULT Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex);
+	HRESULT Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex, const _char* Map);
 
 	//스태틱 데칼을 소환한다. (true면 테스트 데칼 소환)
 	HRESULT Ready_Static_Decal(_uint iLevelIndex, const _char* Map);

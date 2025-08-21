@@ -609,12 +609,25 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	Desc.fSpeedPerSec = 5.f;
 	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
 	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
+
+	//시작 위치에 네비게이션이 없으면 터진다 지금
+	Desc.wsNavName = TEXT("STATION");
+	Desc.InitPos = 
+	//_float3(148.f, 2.47f, -7.38f); //호텔위치
+	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
+
 	Desc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(Desc.szName, TEXT("Buttler_Train"));
 	Desc.szMeshID = TEXT("Buttler_Train");
 	Desc.fHeight = 1.f;
 	Desc.vExtent = {0.5f,1.f,0.5f};
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+		return E_FAIL;
+
+	Desc.wsNavName = TEXT("HOTEL");
+	Desc.InitPos =
+		_float3(148.f, 2.47f, -7.38f); //호텔위치
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
 		return E_FAIL;

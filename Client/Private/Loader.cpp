@@ -467,53 +467,99 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #pragma region 맵 로딩
 
-	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
-	string Map = "STATION"; //STATION, TEST
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
-	//	return E_FAIL;
 
-	//네비
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
-		return E_FAIL;
-
-	//데칼
-	if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
-		return E_FAIL;
 
 	m_pGameInstance->ClaerOctoTreeObjects();
 
-#pragma region 이것을 멀티스레드로(일단 이렇게 놔둠 문제 생길 시 확인)
+#pragma region 일반 로딩 버전
 
-	auto futureStation = std::async(std::launch::async, [&] {
-		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-			return E_FAIL;
-		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION");
-		});
-
-	auto futureHotel = std::async(std::launch::async, [&] {
-		if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-			return E_FAIL;
-		return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
-		});
-
-	if (FAILED(futureStation.get())) 
-		return E_FAIL;
-	if (FAILED(futureHotel.get())) 
-		return E_FAIL;
-
-#pragma endregion
-	//네비 소환
-	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
-		return E_FAIL;
-
-	//어떤 데칼을 소환 시킬 것인지?
-	if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str()))) //TEST, STATION
-		return E_FAIL;
+	//lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
 
 	//lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-	//제이슨으로 저장된 맵을 로드한다.
-	/*if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
-		return E_FAIL;*/
+	////제이슨으로 저장된 맵을 로드한다.
+	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
+
+	auto futureStation = async(launch::async, [&] 
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
+	if (FAILED(futureStation.get()))
+		return E_FAIL;
+
+	auto futureHotel = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
+	if (FAILED(futureHotel.get()))
+		return E_FAIL;
+
+
+#pragma endregion
+
+
+
+#pragma region 이것을 멀티스레드로(일단 이렇게 놔둠 문제 생길 시 확인)
+
+	//lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
+
+	//string Map = "STATION"; //STATION, TEST
+
+	////네비
+	//if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+	//	return E_FAIL;
+
+	////데칼
+	//if (FAILED(Loading_Decal_Textures(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str())))
+	//	return E_FAIL;
+
+	//auto futureStation = std::async(std::launch::async, [&] {
+	//	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//		return E_FAIL;
+	//	return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION");
+	//	});
+
+	//auto futureHotel = std::async(std::launch::async, [&] {
+	//	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//		return E_FAIL;
+	//	return Ready_Meshs(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL");
+	//	});
+
+	//if (FAILED(futureStation.get())) 
+	//	return E_FAIL;
+	//if (FAILED(futureHotel.get())) 
+	//	return E_FAIL;
+
+
+	////네비 소환
+	//if (FAILED(Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+	//	return E_FAIL;
+
+	////어떤 데칼을 소환 시킬 것인지?
+	//if (FAILED(Ready_Static_Decal(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), Map.c_str()))) //TEST, STATION
+	//	return E_FAIL;
+
+#pragma endregion
+
+
 #pragma endregion
 
 #pragma endregion
@@ -1015,13 +1061,13 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION", true)))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION")))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL", true)))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST", true)))
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -1204,8 +1250,9 @@ HRESULT CLoader::Loading_Meshs(_uint iLevelIndex, const _char* Map)
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map, _bool bForTool)
+HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map/*, _bool bForTool*/)
 {
+	//bForTool = true;//bForTool 없어질 예정
 
 	wstring wsResourcePath = L"../Bin/Save/NavTool/Nav_" + StringToWString(Map) + L".json";
 
@@ -1220,10 +1267,10 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map, _bool b
 
 	wstring wsPrototypeTag = {};
 
-	if(bForTool)
-		wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);// 툴을 위한 로딩
-	else
-		wsPrototypeTag = L"Prototype_Component_Navigation";//실제 맵을 위한 로딩
+	//if(bForTool)
+		wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);
+	//else
+	//	wsPrototypeTag = L"Prototype_Component_Navigation";//실제 맵을 위한 로딩(툴과 똑같이 적용할 예정)
 
 	/* Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Prototype(
@@ -1278,14 +1325,12 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 }
 HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
-	m_pGameInstance->ClaerOctoTreeObjects();
-
 	//어떤 맵을 소환 시킬 것인지?
 	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
 		return E_FAIL;
 
 	//네비 소환
-	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex)))
+	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex, Map)))
 		return E_FAIL;
 
 	//어떤 데칼을 소환 시킬 것인지?
@@ -1452,10 +1497,11 @@ HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objec
 	return S_OK;
 }
 
-HRESULT CLoader::Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex)
+HRESULT CLoader::Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex, const _char* Map)
 {
 	CNav::NAV_DESC NavDesc = {};
 	NavDesc.iLevelIndex = iLevelIndex;
+	NavDesc.wsNavComName = StringToWString(Map);
 
 	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Nav"),
 		iLevelIndex, strLayerTag, &NavDesc)))

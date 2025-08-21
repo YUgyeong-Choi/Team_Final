@@ -292,6 +292,7 @@ HRESULT CLevel_YW::Ready_ImGui()
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+	io.IniFilename = "../Bin/Save/YW_ImGui.ini"; // ImGui 설정 파일 경로
 
 	return S_OK;
 }

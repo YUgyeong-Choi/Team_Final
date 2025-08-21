@@ -29,7 +29,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	m_pAnimator->SetPlaying(true);
@@ -194,7 +194,7 @@ void CMonster_Base::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderTy
 {
 }
 
-HRESULT CMonster_Base::Ready_Components()
+HRESULT CMonster_Base::Ready_Components(void* pArg)
 {
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), 
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
@@ -207,8 +207,10 @@ HRESULT CMonster_Base::Ready_Components()
 		return S_OK;
 	}
 
+	MONSTER_BASE_DESC* pDesc = static_cast<MONSTER_BASE_DESC*>(pArg);
+
 	//네비게이션 가져오기
-	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation");
+	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 탈 것인가 STAION, HOTEL...
 	if (FAILED(__super::Add_Component(iLevelIndex, wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
 		return E_FAIL;
