@@ -75,8 +75,7 @@ protected:				/* [ 기본 속성 ] */
 	_bool				m_bUseLockon = {};
 
 protected: 				/* [ 기본 타입 ] */
-	//const _tchar* m_szName = { nullptr };
-	const _tchar* m_szMeshID = { nullptr };
+	_tchar				m_szMeshID[MAX_PATH];
 	LEVEL				m_eMeshLevelID = { LEVEL::END };
 
 protected:				/* [ 그림자 관련 ] */

@@ -33,7 +33,7 @@ private:
 	void Duplicate();
 
 private:
-	void Clear_All_Decal();
+	void Clear();
 	HRESULT Ready_Texture(const _char* Map);
 
 private:

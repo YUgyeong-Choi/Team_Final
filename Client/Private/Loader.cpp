@@ -453,82 +453,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	m_fRatio = 0.7f;
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-#pragma region YW
-	//스태틱 데칼	
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-		CStatic_Decal::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	//네비게이션 컴포넌트 작동시켜주는 녀석
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Nav"),
-		CNav::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
-		CStaticMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma region 맵 로딩
-
-	m_pGameInstance->ClaerOctoTreeObjects();
-
-	//lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
-
-	//lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-	////제이슨으로 저장된 맵을 로드한다.
-	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
-	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
-
-	/*
-		이게 왜 문제가 안생김?????
-		두 스레드가 동시에 
-		프로토타입매니저나 오브젝트 매니저에
-		ADD 프로토타입, 오브젝트 하면 문제 생길 줄 알았음
-		STL 원소추가하는건 스레드 잘되어있나?
-	*/
-	auto futureStation = async(launch::async, [&] 
-		{
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	auto futureHotel = async(launch::async, [&]
-		{
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("스테이션 맵 생성 완료 기다리는 중..."));
-	if (FAILED(futureStation.get()))
-		return E_FAIL;
-
-	lstrcpy(m_szLoadingText, TEXT("호텔 맵 생성 완료 기다리는 중..."));
-	if (FAILED(futureHotel.get()))
-		return E_FAIL;
-
-#pragma endregion
-
-#pragma endregion
-
-
 	/* [ 메인 플레이어 로딩 ] */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
@@ -582,6 +506,82 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerNoMesh"),
 		CTriggerNoMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+#pragma region YW
+	//스태틱 데칼	
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		CStatic_Decal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//네비게이션 컴포넌트 작동시켜주는 녀석
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Nav"),
+		CNav::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma region 맵 로딩
+
+	m_pGameInstance->ClaerOctoTreeObjects();
+
+	//lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
+
+	//lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+	////제이슨으로 저장된 맵을 로드한다.
+	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
+
+	/*
+		이게 왜 문제가 안생김?????
+		두 스레드가 동시에
+		프로토타입매니저나 오브젝트 매니저에
+		ADD 프로토타입, 오브젝트 하면 문제 생길 줄 알았음
+		STL 원소추가하는건 스레드 잘되어있나?
+	*/
+	auto futureStation = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
+	auto futureHotel = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
+	lstrcpy(m_szLoadingText, TEXT("스테이션 맵 생성 완료 기다리는 중..."));
+	if (FAILED(futureStation.get()))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("호텔 맵 생성 완료 기다리는 중..."));
+	if (FAILED(futureHotel.get()))
+		return E_FAIL;
+
+#pragma endregion
+
+#pragma endregion
 
 	m_fRatio = 1.f;
 	Sleep(250); // 안해주면 동기화 안하고 끝나서 안차던데 좋은 방법 있으면 알려주셈

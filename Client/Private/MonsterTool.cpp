@@ -84,15 +84,111 @@ HRESULT	CMonsterTool::Render_ImGui()
 
 HRESULT CMonsterTool::Save(const _char* Map)
 {
+	filesystem::create_directories("../Bin/Save/MonsterTool");
+	string MonsterFilePath = string("../Bin/Save/MonsterTool/Monster_") + Map + ".json";
+	ofstream MonsterDataFile(MonsterFilePath);
+
+	if (!MonsterDataFile.is_open())
+		return E_FAIL;
+
+	// 전체 몬스터 데이터를 담을 JSON 객체
+	json MonsterJson;
+
+	// 몬스터 레이어에서 오브젝트 가져오기
+	for (CGameObject* pObj : m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject")))
+	{
+		_matrix matWorld = pObj->Get_TransfomCom()->Get_WorldMatrix();
+		_float4x4 matWorldFloat4x4;
+		XMStoreFloat4x4(&matWorldFloat4x4, matWorld);
+
+		// 4x4 행렬 -> JSON 배열로 변환
+		json MatrixJson = json::array();
+		for (_int i = 0; i < 4; ++i)
+		{
+			json Row = json::array();
+			for (_int j = 0; j < 4; ++j)
+				Row.push_back(matWorldFloat4x4.m[i][j]);
+			MatrixJson.push_back(Row);
+		}
+
+		// 몬스터 툴 오브젝트로 캐스팅
+		CMonsterToolObject* pMonsterToolObj = static_cast<CMonsterToolObject*>(pObj);
+		string MonsterType = WStringToString(pMonsterToolObj->m_szMeshID);
+
+		// JSON에 추가 (몬스터 종류별 리스트에 행렬 푸시)
+		MonsterJson[MonsterType].push_back({
+			{"WorldMatrix", MatrixJson}
+			});
+	}
+
+	// JSON 저장
+	MonsterDataFile << MonsterJson.dump(4);
+	MonsterDataFile.close();
+
+	MSG_BOX("몬스터 저장 성공!");
 
 	return S_OK;
 }
+
 
 HRESULT CMonsterTool::Load(const _char* Map)
 {
+	// 현재 맵에 배치된 몬스터 모두 삭제
+	Clear();
+
+	string MonsterFilePath = string("../Bin/Save/MonsterTool/Monster_") + Map + ".json";
+	ifstream inFile(MonsterFilePath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Monster_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json MonsterJson;
+	inFile >> MonsterJson;
+	inFile.close();
+
+	// 몬스터 종류별로 반복
+	for (auto& [MonsterName, MonsterArray] : MonsterJson.items())
+	{
+		wstring wstrMonsterName = StringToWString(MonsterName);
+
+		for (auto& MonsterData : MonsterArray)
+		{
+			// 월드 행렬 로드
+			const json& WorldMatrixJson = MonsterData["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			// 오브젝트 생성 Desc 채우기
+			CMonsterToolObject::MONSTERTOOLOBJECT_DESC MonsterDesc = {};
+
+			MonsterDesc.eMeshLevelID = LEVEL::YW;
+			MonsterDesc.InitScale = _float3(1.f, 1.f, 1.f);
+
+			lstrcpy(MonsterDesc.szMeshID, wstrMonsterName.c_str());
+
+			MonsterDesc.WorldMatrix = WorldMatrix;
+			MonsterDesc.iID = m_iID--;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(
+				ENUM_CLASS(LEVEL::YW),
+				TEXT("Prototype_GameObject_MonsterToolObject"),
+				ENUM_CLASS(LEVEL::YW),
+				TEXT("Layer_MonsterToolObject"),
+				&MonsterDesc)))
+			{
+				return E_FAIL;
+			}
+		}
+	}
 
 	return S_OK;
 }
+
 
 void CMonsterTool::Control(_float fTimeDelta)
 {
@@ -230,12 +326,12 @@ void CMonsterTool::Duplicate()
 	//Safe_AddRef(m_pFocusObject);
 }
 
-void CMonsterTool::Clear_All_Decal()
+void CMonsterTool::Clear()
 {
 	Safe_Release(m_pFocusObject);
 	m_pFocusObject = nullptr;
 
-	list<CGameObject*> List = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_Decal"));
+	list<CGameObject*> List = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"));
 
 	for (CGameObject* pObj : List)
 	{
@@ -327,12 +423,7 @@ HRESULT CMonsterTool::Spawn_MonsterToolObject()
 	CMonsterToolObject::MONSTERTOOLOBJECT_DESC Desc{};
 	// 오브젝트 월드 행렬에 적용
 	XMStoreFloat4x4(&Desc.WorldMatrix, SpawnWorldMatrix);
-
-	Desc.fSpeedPerSec = 5.f;
-	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
 	Desc.eMeshLevelID = LEVEL::YW;
-	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
-	Desc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(Desc.szMeshID, StringToWString(m_Monsters[m_iMonsterIndex]).c_str());
 
 

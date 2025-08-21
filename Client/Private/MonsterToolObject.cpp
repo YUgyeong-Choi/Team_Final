@@ -36,7 +36,7 @@ HRESULT CMonsterToolObject::Initialize(void* pArg)
 
 	m_InitPos = pDesc->InitPos;
 	m_InitScale = pDesc->InitScale;
-	m_szMeshID = pDesc->szMeshID;
+	lstrcpy(m_szMeshID, pDesc->szMeshID);
 	m_eMeshLevelID = pDesc->eMeshLevelID;
 	m_iRender = pDesc->iRender;
 	//m_szName = pDesc->szName;
