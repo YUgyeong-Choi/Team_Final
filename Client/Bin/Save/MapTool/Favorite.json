@@ -14,5 +14,9 @@
     {
         "ModelName": "SM_Station_StairA_01",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_StairA_01.bin"
+    },
+    {
+        "ModelName": "SM_Station_PillarC_03",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_PillarC_03.bin"
     }
 ]

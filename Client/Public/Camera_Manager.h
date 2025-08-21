@@ -49,6 +49,11 @@ public:
     void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene; m_bMoveable = false; }
     void	Shake_Camera(_float fIntensity = 1.f, _float fDuration = 1.f, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
 
+    //카메라 전환 막고 싶을 때 false 호출 //O,P로 카메라 전환하는거 막고싶어서 만듬(영웅)
+    void    Set_CameraSwitchEnabled(_bool bCameraSwitchEnabled) {
+        m_bCameraSwitchEnabled = bCameraSwitchEnabled;
+    }
+
 public:
 	void Set_StartGame(_bool bStart) { m_bStartGame = bStart; }
 	_bool Get_StartGame() const { return m_bStartGame; }
@@ -65,6 +70,9 @@ private:
 
 private:
     _bool m_bStartGame = {};
+
+private:
+    _bool m_bCameraSwitchEnabled = { true }; //O,P로 카메라 전환하는거 막고싶어서 만듬(영웅)
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };
