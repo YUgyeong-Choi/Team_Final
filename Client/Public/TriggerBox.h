@@ -16,6 +16,7 @@ public:
 	typedef struct tagSoundDatas
 	{
 		string strSoundTag;
+		string strSpeaker;
 		string strSoundText;
 	}SOUNDDATA;
 public:

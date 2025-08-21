@@ -910,14 +910,14 @@
     <ClInclude Include="..\Public\TriggerBox.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TriggerNoMesh.h">
-      <Filter>02.GameObjects\15.StaticTrigger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\TriggerMesh.h">
+    <ClInclude Include="..\Public\TriggerSound.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Manager.h">
       <Filter>02.GameObjects\99.UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerTalk.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1370,14 +1370,14 @@
     <ClCompile Include="..\Private\TriggerBox.cpp">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\TriggerNoMesh.cpp">
-      <Filter>02.GameObjects\15.StaticTrigger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\TriggerMesh.cpp">
+    <ClCompile Include="..\Private\TriggerSound.cpp">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Manager.cpp">
       <Filter>02.GameObjects\99.UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerTalk.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

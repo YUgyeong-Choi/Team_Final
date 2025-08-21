@@ -1,0 +1,187 @@
+#include "TriggerTalk.h"
+#include "GameInstance.h"
+#include "Camera_Manager.h"
+CTriggerTalk::CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CTriggerBox{ pDevice, pContext }
+{
+
+}
+
+CTriggerTalk::CTriggerTalk(const CTriggerTalk& Prototype)
+	: CTriggerBox(Prototype)
+{
+
+}
+
+HRESULT CTriggerTalk::Initialize_Prototype()
+{
+	/* 외부 데이터베이스를 통해서 값을 채운다. */
+
+	return S_OK;
+}
+
+HRESULT CTriggerTalk::Initialize(void* pArg)
+{
+	CTriggerTalk::TRIGGERTALK_DESC* TriggerTalkDESC = static_cast<TRIGGERTALK_DESC*>(pArg);
+
+
+	if (FAILED(__super::Initialize(TriggerTalkDESC)))
+		return E_FAIL;
+
+	if (TriggerTalkDESC->gameObjectTag != "")
+		if (FAILED(Ready_TriggerObject(TriggerTalkDESC)))
+			return E_FAIL;
+
+	return S_OK;
+}
+
+void CTriggerTalk::Priority_Update(_float fTimeDelta)
+{
+	if (m_bTalkActive && !m_bDoOnce)
+	{
+		// 조사함
+		if (KEY_DOWN(DIK_E))
+		{
+			m_bDoOnce = true;
+			m_bTalkActive = false;
+			m_iSoundIndex = 0;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, false);
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+			m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+			// 여기에 조사한다 UI 비활성화
+			// 말하는 UI활성화
+		}
+	}
+
+	/* 자동 OnOff */
+	if (m_bDoOnce)
+	{
+		if (KEY_DOWN(DIK_F))
+			m_bAutoTalk = !m_bAutoTalk;
+	}
+
+	if (m_bDoOnce)
+	{
+		// Auto Talk Active True
+		if (m_bAutoTalk)
+		{
+			_bool bIsPlaying = false;
+			bIsPlaying = m_pSoundCom->IsPlaying(m_vecSoundData[m_iSoundIndex].strSoundTag);
+
+			if (!bIsPlaying)
+			{
+				m_iSoundIndex++;
+				if (m_iSoundIndex >= m_vecSoundData.size())
+				{
+					m_bDead = true;
+					m_pPhysXTriggerCom->RemovePhysX();
+					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+					CCamera_Manager::Get_Instance()->SetbMoveable(true);
+				}
+				else
+				{
+					m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+					// 말하는 UI 대사 변경
+				}
+			}
+		}
+		else
+		{
+			if (KEY_DOWN(DIK_SPACE))
+			{
+				m_pSoundCom->StopAll();
+				m_iSoundIndex++;
+				if (m_iSoundIndex >= m_vecSoundData.size())
+				{
+					m_bDead = true;
+					m_pPhysXTriggerCom->RemovePhysX();
+					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+					CCamera_Manager::Get_Instance()->SetbMoveable(true);
+				}
+				else
+				{
+					m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+					// 말하는 UI 대사 변경
+				}
+			}
+		}
+	
+	}
+}
+
+void CTriggerTalk::Update(_float fTimeDelta)
+{
+}
+
+void CTriggerTalk::Late_Update(_float fTimeDelta)
+{
+	__super::Late_Update(fTimeDelta);
+}
+
+HRESULT CTriggerTalk::Render()
+{
+	__super::Render();
+	return S_OK;
+}
+
+void CTriggerTalk::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (!m_bDoOnce)
+	{
+		// 여기에 조사한다 UI 활성화 해두면 됨
+		m_bTalkActive = true;
+	}
+}
+
+void CTriggerTalk::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (!m_bDoOnce)
+	{
+		// 여기에 조사한다 UI 비활성화 해두면 됨
+		m_bTalkActive = false;
+	}
+
+}
+
+void CTriggerTalk::Play_Sound()
+{
+}
+
+HRESULT CTriggerTalk::Ready_TriggerObject(void* pArg)
+{
+	return S_OK;
+}
+
+
+
+CTriggerTalk* CTriggerTalk::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CTriggerTalk* pGameInstance = new CTriggerTalk(pDevice, pContext);
+
+	if (FAILED(pGameInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Create : CTriggerTalk");
+		Safe_Release(pGameInstance);
+	}
+
+	return pGameInstance;
+}
+
+
+CGameObject* CTriggerTalk::Clone(void* pArg)
+{
+	CTriggerTalk* pGameInstance = new CTriggerTalk(*this);
+
+	if (FAILED(pGameInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed to Clone : CTriggerTalk");
+		Safe_Release(pGameInstance);
+	}
+
+	return pGameInstance;
+}
+
+void CTriggerTalk::Free()
+{
+	__super::Free();
+}
