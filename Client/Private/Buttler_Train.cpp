@@ -359,6 +359,7 @@ HRESULT CButtler_Train::Ready_Weapon()
 
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Desc.pOwner = this;
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),

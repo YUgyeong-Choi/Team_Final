@@ -25,23 +25,23 @@ public:
 
 	struct InputContext {
 		/* [ W,A,S,D 입력 ] */
-		_bool bMove;
+		_bool bMove = false;
 
 		/* [ 마우스 입력 ] */
-		_bool bLeftMouseDown;
-		_bool bRightMouseDown;
-		_bool bRightMousePress;
-		_bool bRightMouseUp;
+		_bool bLeftMouseDown = false;
+		_bool bRightMouseDown = false;
+		_bool bRightMousePress = false;
+		_bool bRightMouseUp = false;
 
 		/* [ 특수키 입력 ] */
-		_bool bShift;
-		_bool bCtrl;
-		_bool bCtrlPress;
-		_bool bItem;
-		_bool bTap;
-		_bool bSkill;
-		_bool bSpaceUP;
-		_bool bSpaceDown;
+		_bool bShift = false;
+		_bool bCtrl = false;
+		_bool bCtrlPress = false;
+		_bool bItem = false;
+		_bool bTap = false;
+		_bool bSkill = false;
+		_bool bSpaceUP = false;
+		_bool bSpaceDown = false;
 
 	} m_Input;
 	
@@ -73,7 +73,8 @@ public:
 
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
-
+	void			CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
+	void			HPSubtract();
 
 private:
 	void			SitAnimationMove(_float fTimeDelta);
@@ -91,12 +92,11 @@ private: /* [ 애니메이션 관련 ] */
 	virtual void Register_Events() override;
 
 private: /* [ 루트모션 활성화 ] */
-	void			RootMotionActive(_float fTimeDelta);
+	void	RootMotionActive(_float fTimeDelta);
 
 private: /* [ Actor 업데이트 ] */
 	void    Update_Collider_Actor();
 
-	virtual void ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -221,11 +221,14 @@ private: /* [ 전투관련 변수 ] */
 	_float 	m_fChangeTimeElaped = {};
 	_int 	m_iCurrentCombo = { 0 };
 
+	_float  m_fReceiveDamage = {};
 	_vector m_vHitPos = {};
 	_vector m_vHitNormal = {};
+	EHitDir m_eDir = EHitDir::END;
 
 	_bool   m_bGardHit = {};
-	EHitDir m_eDir = EHitDir::END;
+	_bool   m_bGardDamege = {};
+	_bool   m_bPerfectGardDamege = {};
 
 private: /* [ 이동관련 변수 ] */
 	_bool    m_bWalk = { true };

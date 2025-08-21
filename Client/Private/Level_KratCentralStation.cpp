@@ -218,7 +218,7 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	pDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Player"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pGameObject, &pDesc)))
 		return E_FAIL;
 
@@ -238,7 +238,7 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 	pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pWegoDesc.szName, TEXT("Wego"));
 	pWegoDesc.szMeshID = TEXT("Wego");
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Wego"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Wego"), &pWegoDesc)))
 		return E_FAIL;
 

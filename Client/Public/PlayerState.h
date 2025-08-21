@@ -252,9 +252,6 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (input.bTap) // 실드
-            return EPlayerState::EQUIP;
-
         if (input.bShift && m_pOwner->m_bWeaponEquipped) // 가드
             return EPlayerState::GARD;
         
@@ -287,7 +284,7 @@ public:
 			return EPlayerState::WEAKATTACKA;
 
         if (input.bTap) // 무기교체
-            return EPlayerState::SWITCHWEAPON;
+            return EPlayerState::EQUIP;
 
         if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
@@ -1753,67 +1750,75 @@ public:
 
         LockOnMovement();
 
-
         /* [ 가드중에 피격당했을 시 ] */
         if (m_pOwner->m_bGardHit)
         {
-			m_fGardTime += fTimeDelta;
+            m_bIsHitAnimation = true;
+            m_pOwner->m_bGardHit = false;
 
             m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
             if (m_pOwner->m_eDir == CPlayer::EHitDir::F ||
                 m_pOwner->m_eDir == CPlayer::EHitDir::FL ||
                 m_pOwner->m_eDir == CPlayer::EHitDir::FR)
             {
-                //정면 또는 측면을 맞으면 가드가 성공한다.
-                switch (m_pOwner->m_eDir)
+                m_pOwner->m_pAnimator->SetInt("HitDir", 0);
+                m_pOwner->m_pAnimator->SetTrigger("Hited");
+
+                /* [ 퍼펙트 가드와 그냥 가드를 분기 ] */
+                if (m_fStateTime < 0.3f)
                 {
-                case CPlayer::EHitDir::F:
-                    m_pOwner->m_pAnimator->SetInt("HitDir", 0);
-                    m_pOwner->m_pAnimator->SetTrigger("Hited");
-					break;
-                case CPlayer::EHitDir::FR:
-                    m_pOwner->m_pAnimator->SetInt("HitDir", 1);
-                    m_pOwner->m_pAnimator->SetTrigger("Hited");
-                    break;
-                case CPlayer::EHitDir::FL:
-                    m_pOwner->m_pAnimator->SetInt("HitDir", 3);
-                    m_pOwner->m_pAnimator->SetTrigger("Hited");
-                    break;
-
-                default:
-                    break;
+					// 퍼펙트 가드입니다.
+                    printf(" 너 퍼펙트 가드성공했어. \n");
+                    m_pOwner->m_bPerfectGardDamege = true;
+                    m_pOwner->HPSubtract();
                 }
-
+                else
+                {
+                    // 일반 가드입니다.
+                    printf(" 너 가드성공했어. \n");
+                    m_pOwner->m_bGardDamege = true;
+                    m_pOwner->HPSubtract();
+                }
             }
             else
             {
-                //그 외의 방향을 맞으면 피격당한다. (백어택)
-                m_pOwner->m_bGardHit = false;
-                m_pOwner->m_pAnimator->SetBool("Guard", false);
+                //그 외의 방향을 맞으면 피격당한다.
+                m_pOwner->HPSubtract();
                 switch (m_pOwner->m_eDir)
                 {
                 case CPlayer::EHitDir::L:
-                    m_pOwner->m_pAnimator->SetInt("HitDir", 4);
-                    m_pOwner->m_pAnimator->SetTrigger("Hited");
-                    break;
-                case CPlayer::EHitDir::R:
+                {
+                    printf(" 너 왼쪽에서 맞았어. \n");
                     m_pOwner->m_pAnimator->SetInt("HitDir", 5);
                     m_pOwner->m_pAnimator->SetTrigger("Hited");
                     break;
+                }
+                case CPlayer::EHitDir::R:
+                {
+                    printf(" 너 오른쪽에서 맞았어. \n");
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 4);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
+                    break;
+                }
 
                 default:
+                    printf(" 너 뒤쪽에서 맞았어. \n");
                     m_pOwner->m_pAnimator->SetInt("HitDir", 2);
                     m_pOwner->m_pAnimator->SetTrigger("Hited");
                     break;
                 }
             }
         }
+
+        if (m_bIsHitAnimation)
+            m_fGardTime += fTimeDelta;
     }
 
     virtual void Exit() override
     {
         m_pOwner->m_pAnimator->SetBool("Guard", false);
         m_pOwner->m_bIsGuarding = false;
+        m_bIsHitAnimation = false;
         m_fStateTime = 0.f;
         m_fGardTime = 0.f;
 
@@ -1826,11 +1831,11 @@ public:
 
 
         //만약 가드상태라면 0.3 초의 대기 상태 이후에 상태가 변경된다.
-        if (m_pOwner->m_bGardHit)
+        if (m_bIsHitAnimation)
         {
             if (m_fGardTime > 0.3f)
             {
-                m_pOwner->m_bGardHit = false;
+                m_bIsHitAnimation = false;
                 if (!KEY_PRESSING(DIK_LSHIFT))
                     return EPlayerState::IDLE;
             }
@@ -1868,6 +1873,7 @@ private:
 
     _float  m_fGardTime = {};
 
+    _bool   m_bIsHitAnimation = {};
 };
 
 
@@ -2535,8 +2541,71 @@ public:
         m_fStateTime = 0.f;
 
         /* [ 어느방향에서 맞는지 설정하기 ] */
-        m_pOwner->m_pAnimator->SetInt("HitDir", 1);
-        m_pOwner->m_pAnimator->SetTrigger("Hited");
+        //m_pOwner->m_pAnimator->SetInt("HitDir", 1);
+        //m_pOwner->m_pAnimator->SetTrigger("Hited");
+
+         /* [ 가드중에 피격당했을 시 ] */
+        //if (m_pOwner->m_bGardHit)
+        //{
+        //    m_bIsHitAnimation = true;
+        //    m_pOwner->m_bGardHit = false;
+
+        //    m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
+        //    if (m_pOwner->m_eDir == CPlayer::EHitDir::F ||
+        //        m_pOwner->m_eDir == CPlayer::EHitDir::FL ||
+        //        m_pOwner->m_eDir == CPlayer::EHitDir::FR)
+        //    {
+        //        m_pOwner->m_pAnimator->SetInt("HitDir", 0);
+        //        m_pOwner->m_pAnimator->SetTrigger("Hited");
+
+        //        /* [ 퍼펙트 가드와 그냥 가드를 분기 ] */
+        //        if (m_fStateTime < 0.3f)
+        //        {
+        //            // 퍼펙트 가드입니다.
+        //            printf(" 너 퍼펙트 가드성공했어. \n");
+        //            m_pOwner->m_bPerfectGardDamege = true;
+        //            m_pOwner->HPSubtract();
+        //        }
+        //        else
+        //        {
+        //            // 일반 가드입니다.
+        //            printf(" 너 가드성공했어. \n");
+        //            m_pOwner->m_bGardDamege = true;
+        //            m_pOwner->HPSubtract();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        //그 외의 방향을 맞으면 피격당한다.
+        //        m_pOwner->HPSubtract();
+        //        switch (m_pOwner->m_eDir)
+        //        {
+        //        case CPlayer::EHitDir::L:
+        //        {
+        //            printf(" 너 왼쪽에서 맞았어. \n");
+        //            m_pOwner->m_pAnimator->SetInt("HitDir", 5);
+        //            m_pOwner->m_pAnimator->SetTrigger("Hited");
+        //            break;
+        //        }
+        //        case CPlayer::EHitDir::R:
+        //        {
+        //            printf(" 너 오른쪽에서 맞았어. \n");
+        //            m_pOwner->m_pAnimator->SetInt("HitDir", 4);
+        //            m_pOwner->m_pAnimator->SetTrigger("Hited");
+        //            break;
+        //        }
+
+        //        default:
+        //            printf(" 너 뒤쪽에서 맞았어. \n");
+        //            m_pOwner->m_pAnimator->SetInt("HitDir", 2);
+        //            m_pOwner->m_pAnimator->SetTrigger("Hited");
+        //            break;
+        //        }
+        //    }
+        //}
+
+        //if (m_bIsHitAnimation)
+        //    m_fGardTime += fTimeDelta;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2561,7 +2630,7 @@ public:
         //1. 스킬의 진행도에 따라 탈출 조건이 달라진다.
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (0.4f < m_fStateTime)
+        if (0.3f < m_fStateTime)
         {
             if (input.bMove)
             {

@@ -181,10 +181,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
+		m_pAnimator->SetInt("HitDir", 3);
+		m_pAnimator->SetTrigger("Hited");
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetInt("HitDir", 3);
+		m_pAnimator->SetInt("HitDir", 4);
 		m_pAnimator->SetTrigger("Hited");
 
 	}
@@ -222,7 +224,7 @@ CPlayer::EHitDir CPlayer::ComputeHitDir()
 	_vector vPlayerRight = XMVector3Normalize(m_pTransformCom->Get_State(STATE::RIGHT));
 	_vector vPlayerLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
 
-	_vector vIncoming = XMVectorNegate(XMVector3Normalize(ProjectToXZ(m_vHitNormal)));
+	_vector vIncoming = XMVector3Normalize(ProjectToXZ(m_vHitNormal));
 	_vector vLookFlat = XMVector3Normalize(ProjectToXZ(vPlayerLook));
 	_vector vRightFlat = XMVector3Normalize(ProjectToXZ(vPlayerRight));
 
@@ -248,6 +250,52 @@ CPlayer::EHitDir CPlayer::ComputeHitDir()
 	default: return EHitDir::F;
 	}
 }
+
+void CPlayer::CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	/* [ 들어온 데미지 계산 ] */
+	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
+	if (!pUnit)
+	{
+		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
+		if (!pWeapon)
+		{
+			return;
+		}
+		else
+		{
+			m_fReceiveDamage = pWeapon->Get_CurrentDamage();
+		}
+	}
+	else
+	{
+		m_fReceiveDamage = pUnit->Get_CurrentDamage();
+	}
+}
+
+void CPlayer::HPSubtract()
+{
+	/* [ Hp 감소 ] */
+	if (m_bPerfectGardDamege)
+	{
+		m_fReceiveDamage = 0.f;
+		m_bPerfectGardDamege = false;
+	}
+	else if (m_bGardDamege)
+	{
+		m_fReceiveDamage /= 4.f;
+		m_bGardDamege = false;
+	}
+
+
+	m_fHP -= m_fReceiveDamage;
+
+	if (m_fHP <= 0.f)
+		m_fHP = 0.f;
+
+	Callback_HP();
+}
+
 
 void CPlayer::SitAnimationMove(_float fTimeDelta)
 {
@@ -1044,72 +1092,8 @@ void CPlayer::Update_Collider_Actor()
 	// 무기 추가
 }
 
-void CPlayer::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-	/* [ 들어온 데미지 계산 ] */
-	//_float fDamage = 0.f;
-	//
-	//CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
-	//if (!pUnit)
-	//{
-	//	CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
-	//	if (!pWeapon)
-	//	{
-	//		return;
-	//	}
-	//	else
-	//	{
-	//		fDamage = pWeapon->Get_CurrentDamage();
-	//	}
-	//}
-	//else
-	//{
-	//	fDamage = pUnit->Get_CurrentDamage();
-	//}
-	//
-	///* [ Hp 감소 ] */
-	//m_fHP -= fDamage;
-	//
-	//if (m_fHP <= 0.f)
-	//	m_fHP = 0.f;
-	//
-	//Callback_HP();
-}
-
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	/* [ 플레이어 피격 ] */
-	if (m_bIsInvincible)
-		return;
-	
-
-	/* [ 무엇을 해야하는가? ] */
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
-	{
-		//0. 필요한 정보를 수집한다.
-		m_vHitPos = HitPos;
-		m_vHitNormal = HitNormal;
-
-		//1. 애니메이션 상태를 히트로 바꾼다.
-
-		//가드 중에 피격시 스위치를 켠다.
-		if (m_bIsGuarding)
-		{
-			m_bGardHit = true;
-			return;
-		}
-
-		//가드 중이 아니라면 피격당한다.
-		m_bIsHit = true;
-
-		//2. 플레이어의 HP를 감소시킨다.
-		ReceiveDamage(pOther, eColliderType);
-	}
-	
-
-
-	//printf("HitPos: %f, %f, %f\n", XMVectorGetX(HitPos), XMVectorGetY(HitPos), XMVectorGetZ(HitPos));
-	//printf("HitNormal: %f, %f, %f\n", XMVectorGetX(HitNormal), XMVectorGetY(HitNormal), XMVectorGetZ(HitNormal));
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -1126,6 +1110,45 @@ void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	/* [ 플레이어 피격 ] */
+	if (m_bIsInvincible)
+		return;
+
+
+	/* [ 무엇을 해야하는가? ] */
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	{
+		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
+		if (pWeapon == nullptr)
+			return;
+
+		if (pWeapon->Find_CollisonObj(this))
+			return;
+
+		pWeapon->Add_CollisonObj(this);
+
+		//0. 필요한 정보를 수집한다.
+		CalculateDamage(pOther, eColliderType);
+		CUnit* pUnit = pWeapon->Get_Owner();
+		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+		m_vHitNormal = vOtherPos - vPlayerPos;
+
+		//1. 애니메이션 상태를 히트로 바꾼다.
+
+		//가드 중에 피격시 스위치를 켠다.
+		if (m_bIsGuarding)
+		{
+			m_bGardHit = true;
+			return;
+		}
+
+		//가드 중이 아니라면 피격상태로 넘긴다.
+		m_bIsHit = true;
+
+	}
+
 }
 
 void CPlayer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -1140,7 +1163,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::USEITEM)] = new CPlayer_Item(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::BACKSTEP)] = new CPlayer_BackStep(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ROLLING)] = new CPlayer_Rolling(this);
-	m_pStateArray[ENUM_CLASS(EPlayerState::EQUIP)] = new CPlayer_Equip(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::EQUIP)] = new CPlayer_Equip(this); 
 	m_pStateArray[ENUM_CLASS(EPlayerState::SPRINT)] = new CPlayer_Sprint(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::WEAKATTACKA)] = new CPlayer_WeakAttackA(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::WEAKATTACKB)] = new CPlayer_WeakAttackB(this);
@@ -1175,6 +1198,7 @@ HRESULT CPlayer::Ready_Weapon()
 	Desc.InitScale = { 1.f, 1.f, 1.f };
 	Desc.iRender = 0;
 	Desc.iLevelID = m_iLevelID;
+	Desc.pOwner = this;
 	
 	Desc.szMeshID = TEXT("PlayerWeapon");
 	lstrcpy(Desc.szName, TEXT("PlayerWeapon"));
@@ -1183,7 +1207,7 @@ HRESULT CPlayer::Ready_Weapon()
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PlayerWeapon"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_PlayerWeapon"),
 		m_iLevelID, TEXT("Player_Weapon"), &pGameObject, &Desc)))
 		return E_FAIL;
 
