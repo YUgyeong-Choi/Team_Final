@@ -219,7 +219,7 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 	m_bSetPitchYaw = true;
 }
 
-void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget)
+void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool bCanMove)
 {
 	if (bActive)
 	{  
@@ -227,6 +227,7 @@ void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget)
 		m_bTalkEnd = false;
 		m_bTalkActive = true;
 		m_pNpcTalkTarget = pTarget;
+		m_bCanMoveTalk = bCanMove;
 	}
 	else
 	{
@@ -234,6 +235,7 @@ void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget)
 		m_bTalkEnd = true;
 		m_bTalkActive = false;
 		m_pNpcTalkTarget = pTarget;
+		m_bCanMoveTalk = true;
 	}
 }
 
@@ -241,8 +243,14 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 {
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 
-	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
-	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMM::Y);
+	_long MouseMoveX = 0;
+	_long MouseMoveY = 0; 
+
+	if (m_bCanMoveTalk)
+	{
+		MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
+		MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMM::Y);
+	}
 
 	//  Yaw Pitch ¼³Á¤
 	_float fAfterYaw = m_fYaw;

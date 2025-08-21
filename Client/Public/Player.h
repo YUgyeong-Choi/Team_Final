@@ -49,7 +49,7 @@ public:
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
 		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,
-		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, END
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, END
 	};
 
 protected:
@@ -146,7 +146,7 @@ private:
 	void Reset_Weapon();
 
 private: /* [ 락온 함수 ] */
-	void LockOnState();
+	void LockOnState(_float fTimeDelta);
 
 private: /* [ 슬룻 함수 ] */
 	void Callback_UpBelt();
@@ -268,6 +268,7 @@ private: /* [ 인터렉션 관련변수 ] */
 		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR"
 
 	};
+	_int m_iTestInt = { 0 };
 
 private: /* [ 루트모션 관련 변수 ] */
 	_vector  m_PrevWorldDelta = XMVectorZero();

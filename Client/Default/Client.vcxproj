@@ -200,8 +200,8 @@
     <ClInclude Include="..\public\LegionArm_Steel.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
-    <ClInclude Include="..\Public\TriggerMesh.h" />
-    <ClInclude Include="..\Public\TriggerNoMesh.h" />
+    <ClInclude Include="..\Public\TriggerSound.h" />
+    <ClInclude Include="..\Public\TriggerTalk.h" />
     <ClInclude Include="..\public\UI_Component.h" />
     <ClInclude Include="..\public\UI_Component_Text.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
@@ -412,8 +412,7 @@
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp" />
-    <ClCompile Include="..\Private\TriggerMesh.cpp" />
-    <ClCompile Include="..\Private\TriggerNoMesh.cpp" />
+    <ClCompile Include="..\Private\TriggerSound.cpp" />
     <ClCompile Include="..\private\Static_Decal.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\private\TestAnimObject.cpp" />
@@ -422,6 +421,7 @@
     <ClCompile Include="..\Private\ToolParticle.cpp" />
     <ClCompile Include="..\Private\ToolTrail.cpp" />
     <ClCompile Include="..\Private\SwordTrailEffect.cpp" />
+    <ClCompile Include="..\Private\TriggerTalk.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\private\UI_Component.cpp" />

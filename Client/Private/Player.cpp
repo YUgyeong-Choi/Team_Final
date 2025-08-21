@@ -178,7 +178,7 @@ void CPlayer::Update(_float fTimeDelta)
 	Update_Collider_Actor();
 
 	/* [ 락온 관련 ] */
-	LockOnState();
+	LockOnState(fTimeDelta);
 
 	/* [ 아이템 ] */
 	Update_Slot(fTimeDelta);
@@ -1030,6 +1030,8 @@ void CPlayer::Register_Events()
 		{
 			Set_GrinderEffect_Active(false);
 		});
+
+
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)

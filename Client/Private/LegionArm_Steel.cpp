@@ -21,9 +21,6 @@ HRESULT CLegionArm_Steel::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	//
-
-
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 
@@ -66,6 +63,18 @@ HRESULT CLegionArm_Steel::Render()
 #endif
 
 	return S_OK;
+}
+
+void CLegionArm_Steel::SetisAttack(_bool isAttack)
+{
+	if (isAttack)
+	{
+		m_pActorCom->Set_SimulationFilterData(m_pActorCom->Get_FilterData());
+	}
+	else
+	{
+		m_pActorCom->Init_SimulationFilterData();
+	}
 }
 
 void CLegionArm_Steel::Activate()
