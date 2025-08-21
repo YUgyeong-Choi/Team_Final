@@ -6,6 +6,7 @@ IMPLEMENT_SINGLETON(CCamera_Manager)
 CCamera_Manager::CCamera_Manager() :
     m_pGameInstance{ CGameInstance::Get_Instance() }
 {
+	Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CCamera_Manager::Initialize(LEVEL eLevel)
