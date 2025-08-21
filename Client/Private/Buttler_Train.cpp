@@ -130,6 +130,7 @@ void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CButtler_Train::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

@@ -157,6 +157,7 @@ void CWeapon_Monster::SetisAttack(_bool isAttack)
 	if (isAttack)
 	{
 		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+		m_pGameInstance->Get_Scene()->resetFiltering(*m_pPhysXActorCom->Get_Actor());
 	}
 	else
 	{
@@ -224,13 +225,6 @@ void CWeapon_Monster::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CWeapon_Monster::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	
-
-	if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-	}
-	else if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
-	{
-	}
 }
 
 void CWeapon_Monster::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
