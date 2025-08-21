@@ -84,10 +84,11 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 			return;
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_SPACE) && m_pStartVideo)
+	if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_bEndVideo)
 	{
-		m_pStartVideo->Set_bDead();
-		m_pStartVideo = nullptr;
+		if(m_pStartVideo)
+			m_pStartVideo->Set_bDead();
+	//	m_pStartVideo = nullptr;
 		m_bEndVideo = true;
 
 		m_pBGM->Play();
@@ -110,7 +111,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
-	if (nullptr != m_pStartVideo)
+	if (!m_bEndVideo)
 		return;
 
 	if (KEY_DOWN(DIK_U))
@@ -628,9 +629,9 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 		static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video"), &eDesc)))
 		return E_FAIL;
 
-	Safe_AddRef(m_pStartVideo);
 
 	m_pStartVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video")));
+	Safe_AddRef(m_pStartVideo);
 
 	
 

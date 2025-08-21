@@ -26,6 +26,8 @@ void CUI_Popup::Deserialize(const json& j)
 
 HRESULT CUI_Popup::Initialize_Prototype()
 {
+	m_bCloned = false;
+
 	return S_OK;
 }
 
@@ -114,7 +116,8 @@ void CUI_Popup::Free()
 {
 	__super::Free();
 
-	/*if(m_bCloned)
-		CUI_Manager::Get_Instance()->Remove_UI(TEXT("Popup"));*/
+	
+	
+
 	
 }
