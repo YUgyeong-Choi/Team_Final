@@ -364,6 +364,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
+		m_pParticleParamDesc[i].bFirstLoopDiscard = m_tCBuffer.bIsLoop ? 1 : 0;
 		m_pParticleParamDesc[i].fMaxSpeed = pDesc->fMaxSpeed;
 		m_pParticleParamDesc[i].fMinSpeed = pDesc->fMinSpeed;
 		m_pParticleParamDesc[i].fSpeed = m_pGameInstance->Compute_Random(pDesc->vSpeed.x, pDesc->vSpeed.y);
@@ -382,7 +383,6 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 			m_pGameInstance->Compute_Random(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f),
 			1.f
 		);
-
 
 		m_pParticleParamDesc[i].vInitOffset = _float3(
 			m_pParticleParamDesc[i].vTranslation.x - pDesc->vCenter.x,

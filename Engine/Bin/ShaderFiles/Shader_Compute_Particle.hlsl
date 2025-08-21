@@ -8,7 +8,7 @@ struct ParticleParam
     float4      Translation;
     
     float3      vInitOffset;
-    float       _pad0;
+    uint        bFirstLoopDiscard;
     
     float4      Direction;  // normalized dir (w=unused)
     float4      VelocityDir; // 실제 이동한 방향 벡터, w = length
@@ -200,6 +200,10 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         if (isFirst == 1)
         {
             pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
+
+            float3 localDir = gInitInst[i].Direction.xyz;
+            float3 worldDir = RotateByQuat(localDir, vSocketRot);
+            pp.Direction.xyz = normalize(worldDir);
         }
         
         float t = pp.LifeTime.y;
@@ -259,7 +263,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             float3 localDir = gInitInst[i].Direction.xyz;
             float3 worldDir = RotateByQuat(localDir, vSocketRot);
             pp.Direction.xyz = normalize(worldDir);
-
+            pp.bFirstLoopDiscard = false;
         }
 
         pp.Translation = float4(pos, 1.0f);

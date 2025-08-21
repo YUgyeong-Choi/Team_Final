@@ -1243,7 +1243,7 @@ HRESULT CPlayer::Ready_Weapon()
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_PlayerWeapon"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_PlayerWeapon"),
 		m_iLevelID, TEXT("Player_Weapon"), &pGameObject, &Desc)))
 		return E_FAIL;
 
