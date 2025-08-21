@@ -1,5 +1,12 @@
 [
     {
+        "Collision": false,
+        "ModelName": "SM_CH_PROB_GoldStatue_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_GoldStatue_01.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Exhibition_RoofMolding_01",
         "NoInstancing": false,
