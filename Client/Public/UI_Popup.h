@@ -39,12 +39,6 @@ public:
 	void Set_String(_int iTriggerType);
 	
 
-private:
-	
-
-
-
-
 public:
 	static CUI_Popup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
