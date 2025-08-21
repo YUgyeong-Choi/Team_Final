@@ -1,0 +1,18 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_Stargazer_broken_idle",
+            "Duration": 11.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Stargazer_restore",
+            "Duration": 220.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        }
+    ]
+}

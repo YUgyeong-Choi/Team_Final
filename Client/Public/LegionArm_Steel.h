@@ -33,7 +33,7 @@ public:
 	virtual void Activate();
 
 	void Update_Collider();
-
+	virtual void SetisAttack(_bool isAttack);
 	CPhysXDynamicActor* Get_Actor() { return m_pActorCom; }
 
 public:

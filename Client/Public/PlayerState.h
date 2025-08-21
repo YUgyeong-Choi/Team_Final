@@ -629,7 +629,7 @@ public:
         }
 
 
-        m_pOwner->Use_Item();
+     //   m_pOwner->Use_Item();
         
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());

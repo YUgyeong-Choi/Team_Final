@@ -23,6 +23,10 @@ public:
 	{
 		return m_LocalTransformationMatrix;
 	}
+	_uint GetNumKeyFrames() const
+	{
+		return m_iNumKeyFrames;
+	}
 private:
 	_bool IsRootBone(const CBone* pBone) const;
 private:

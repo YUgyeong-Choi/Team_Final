@@ -99,6 +99,18 @@ void CLegionArm_Steel::Update_Collider()
 	m_pActorCom->Set_Transform(PxTransform(physxPos, physxRot));
 }
 
+void CLegionArm_Steel::SetisAttack(_bool isAttack)
+{
+	if (isAttack)
+	{
+		m_pActorCom->Set_SimulationFilterData(m_pActorCom->Get_FilterData());
+	}
+	else
+	{
+		m_pActorCom->Init_SimulationFilterData();
+	}
+}
+
 HRESULT CLegionArm_Steel::Ready_Actor()
 {
 

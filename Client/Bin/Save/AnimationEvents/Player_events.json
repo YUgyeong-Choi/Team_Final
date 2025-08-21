@@ -253,6 +253,12 @@
         {
             "ClipName": "AS_Pino_Item_Lamp",
             "Duration": 160.0,
+            "Events": [
+                {
+                    "EventName": "UseItem",
+                    "Time": 46.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -260,6 +266,12 @@
         {
             "ClipName": "AS_Pino_Item_Pulse",
             "Duration": 90.0,
+            "Events": [
+                {
+                    "EventName": "UseItem",
+                    "Time": 36.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -526,6 +538,16 @@
         {
             "ClipName": "AS_Pino_Arm_Normal_BackHand",
             "Duration": 134.0,
+            "Events": [
+                {
+                    "EventName": "OnArmCollider",
+                    "Time": 22.0
+                },
+                {
+                    "EventName": "OffArmCollider",
+                    "Time": 27.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -533,6 +555,16 @@
         {
             "ClipName": "AS_Pino_Arm_Normal_ChargeAttack",
             "Duration": 175.0,
+            "Events": [
+                {
+                    "EventName": "OnArmCollider",
+                    "Time": 45.0
+                },
+                {
+                    "EventName": "OffArmCollider",
+                    "Time": 60.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -540,6 +572,16 @@
         {
             "ClipName": "AS_Pino_Arm_Normal_Hook",
             "Duration": 130.0,
+            "Events": [
+                {
+                    "EventName": "OnArmCollider",
+                    "Time": 21.0
+                },
+                {
+                    "EventName": "OffArmCollider",
+                    "Time": 38.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -1397,7 +1439,7 @@
                 },
                 {
                     "EventName": "OffWeaponCollider",
-                    "Time": 54.0
+                    "Time": 48.0
                 }
             ],
             "IsLoop": false,

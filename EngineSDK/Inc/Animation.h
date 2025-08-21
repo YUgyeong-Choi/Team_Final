@@ -83,15 +83,7 @@ public:
 	void SetReverse(_bool bReverse) { m_bReverse = bReverse; }
 
 public:
-	void ResetTrack()
-	{
-		if (m_bReverse)
-			m_fCurrentTrackPosition = m_fDuration; // 역 재생시 처음 위치는 Duration으로 설정
-		else
-			m_fCurrentTrackPosition = 0.f; // 정방향 재생시 처음 위치는 0
-		m_CurrentKeyFrameIndices.assign(m_iNumChannels, 0u);
-		//cout << "현재 리셋한 애니메이션 이름 " << m_AnimationName << endl;
-	}
+	void ResetTrack();
 private:
 	/* 전체 재생 거리. */
 	_float					m_fDuration = {};

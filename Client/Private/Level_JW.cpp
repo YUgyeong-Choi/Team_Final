@@ -3,6 +3,10 @@
 #include "AnimTool.h"
 #include "Camera_Manager.h"
 #include "Level_Loading.h"
+#include "PBRMesh.h"
+
+static CGameObject* pMap = { nullptr };
+
 CLevel_JW::CLevel_JW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -26,6 +30,10 @@ HRESULT CLevel_JW::Initialize()
 
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
+
+	if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
+		return E_FAIL;
+
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::JW));
 	return S_OK;
@@ -129,6 +137,27 @@ HRESULT CLevel_JW::Ready_ImGuiTools()
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CAnimTool::Create(m_pDevice, m_pContext);
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_JW::Ready_Layer_DummyMap(const _wstring strLayerTag)
+{
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eMeshLevelID = LEVEL::JW;
+	Desc.szMeshID = TEXT("Train");
+	lstrcpy(Desc.szName, TEXT("Train"));
+
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::JW), strLayerTag, &pMap, &Desc)))
+		return E_FAIL;
+
+	//Desc.szMeshID = TEXT("Station");
+	//lstrcpy(Desc.szName, TEXT("Station"));
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+	//	ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

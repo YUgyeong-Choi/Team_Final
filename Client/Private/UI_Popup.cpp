@@ -83,6 +83,8 @@ void CUI_Popup::Set_String(_int iTriggerType)
 		break;
 	}
 	
+	if (m_PartObjects.empty())
+		return;
 	static_cast<CDynamic_Text_UI*>(m_PartObjects.back())->Set_Caption(strCaption);
 }
 
