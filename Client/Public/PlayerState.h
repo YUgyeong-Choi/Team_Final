@@ -622,10 +622,21 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
         {
+            if (m_pOwner->m_pSelectItem->Get_UseCount() <= 0)
+            {
+				m_pOwner->m_pAnimator->SetBool("Fail", true);
+				m_pOwner->m_pAnimator->SetTrigger("UseItem");
+			}
+            else
+            {
+                m_pOwner->m_pAnimator->SetBool("Fail", false);
+                m_pOwner->m_pAnimator->SetTrigger("Pulse");
+                m_pOwner->m_pAnimator->SetTrigger("UseItem");
+            }
+    
             m_pOwner->m_pAnimator->SetBool("HasLamp", false);
-            m_pOwner->m_pAnimator->SetTrigger("Pulse");
-            m_pOwner->m_pAnimator->SetTrigger("UseItem");
-            m_pOwner->m_bUsePulse = true;
+
+           m_pOwner->m_bUsePulse = true;
         }
 
 
