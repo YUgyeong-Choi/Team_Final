@@ -855,6 +855,10 @@ void CMapTool::Render_Asset()
 						wstring PrototypeTag = L"Prototype_Component_Model_" + ModelPath.stem().wstring();
 						string strPrototypeTag = ModelPath.stem().string(); // 확장자 없이 파일 이름만
 
+						//Lod 제외
+						if (strPrototypeTag.find("Lod1") != string::npos || strPrototypeTag.find("Lod2") != string::npos)
+							continue;
+
 						string ModelFilePath = ModelPath.string();
 						const _char* pModelFilePath = ModelFilePath.c_str();
 

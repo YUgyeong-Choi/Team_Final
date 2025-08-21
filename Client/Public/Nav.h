@@ -15,6 +15,7 @@ public:
 	typedef struct tagNavDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_uint iLevelIndex = { ENUM_CLASS(LEVEL::END) };
+		wstring wsNavComName = {};
 	} NAV_DESC;
 
 private:
