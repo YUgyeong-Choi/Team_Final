@@ -249,7 +249,7 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(HitPos.m128_f32[0], HitPos.m128_f32[1], HitPos.m128_f32[2]));
 
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S1"), &desc))
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S3"), &desc))
 		MSG_BOX("이펙트 생성 실패함");
 
 	// 가드 때 충돌하고, 퍼펙트 가드가 아니면 감소하도록

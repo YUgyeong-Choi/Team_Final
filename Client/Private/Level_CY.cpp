@@ -20,6 +20,11 @@ CLevel_CY::CLevel_CY(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_CY::Initialize()
 {
+	/* [ 레벨 셋팅 ] */
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::CY));
+	m_pGameInstance->Set_IsChangeLevel(false);
+
+
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;
 
@@ -44,8 +49,6 @@ HRESULT CLevel_CY::Initialize()
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
 
-	m_pGameInstance->Set_IsChangeLevel(false);
-	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::CY));
 	return S_OK;
 }
 
@@ -253,7 +256,7 @@ HRESULT CLevel_CY::Ready_Player()
 	//pDesc.fSpeedPerSec = 1.f;
 	pDesc.fSpeedPerSec = 5.f;
 	pDesc.fRotationPerSec = XMConvertToRadians(600.0f);
-	pDesc.eMeshLevelID = LEVEL::STATIC;
+	pDesc.eMeshLevelID = LEVEL::CY;
 	pDesc.InitPos = _float3(-1.3f, 0.978f, 1.f);
 	pDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pDesc.szName, TEXT("Player"));
@@ -261,7 +264,7 @@ HRESULT CLevel_CY::Ready_Player()
 	pDesc.iLevelID = ENUM_CLASS(LEVEL::CY);
 
 	CGameObject* pGameObject = nullptr;
- 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+ 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_Player"),
 		ENUM_CLASS(LEVEL::CY), TEXT("Layer_Player"), &pGameObject, &pDesc)))
 		return E_FAIL;
 
@@ -283,7 +286,7 @@ HRESULT CLevel_CY::Ready_ImGui()
 
 	ImGui::StyleColorsDark();
 	io.Fonts->AddFontFromFileTTF("C://Windows//Fonts//gulim.ttc", 14.0f, nullptr, io.Fonts->GetGlyphRangesKorean());
-
+	io.IniFilename = "../Bin/Save/Effect/ImGui.ini"; // ImGui 설정 파일 경로
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
