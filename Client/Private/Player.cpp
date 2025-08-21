@@ -123,21 +123,21 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
 	}
 
-	if (KEY_DOWN(DIK_F2))
+	if (KEY_DOWN(DIK_1))
 	{
 		PxVec3 pos = PxVec3(-0.227397f, 1.f, 1.014072f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	};
 
-	if (KEY_DOWN(DIK_F3))
+	if (KEY_DOWN(DIK_2))
 	{
 		PxVec3 pos = PxVec3(71.983032f, 1.f, -5.244843f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
-	if (KEY_DOWN(DIK_F4))
+	if (KEY_DOWN(DIK_3))
 	{
 		PxVec3 pos = PxVec3(127.851753f, 2.f, -7.543217f);
 		PxTransform posTrans = PxTransform(pos);
