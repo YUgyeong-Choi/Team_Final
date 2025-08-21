@@ -1,0 +1,19 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_Broken_Idle",
+            "Duration": 60.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Restore",
+            "Duration": 180.0,
+            "IsLoop": false,
+            "Reverse": true,
+            "RootMotion": false,
+            "TickPerSecond": 30.0
+        }
+    ]
+}

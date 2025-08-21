@@ -1156,6 +1156,8 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	{
 		//ApplyHierarchicalLayout(pCtrl);
 		ApplyCategoryLayout(pCtrl);
+		ImNodes::ClearLinkSelection();
+		ImNodes::ClearNodeSelection();
 	//	ImNodes::EditorContextResetPanning(ImVec2(0.0f, 0.0f));
 	}
 

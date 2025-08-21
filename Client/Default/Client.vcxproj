@@ -116,7 +116,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../EngineSDK/Lib/;../../PhysXSDK/Debug/LIB/</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;d3d11.lib;DirectXTKd.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCooking_64.lib;PhysXVehicle2_static_64.lib;PhysXGpu_64.lib;assimp-vc143-mtd.lib;mfplat.lib;mf.lib;mfreadwrite.lib;mfuuid.lib;swscale.lib;avutil.lib;avformat.lib;avcodec.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>

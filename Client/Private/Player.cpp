@@ -1028,6 +1028,14 @@ void CPlayer::Register_Events()
 		{
 			Set_GrinderEffect_Active(false);
 		});
+
+	m_pAnimator->RegisterEventListener("UseItem", [this]()
+		{
+			if (m_pSelectItem)
+			{
+				m_pSelectItem->Use();
+			}
+		});
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)

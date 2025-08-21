@@ -54,8 +54,8 @@
             "Name": "Sprint",
             "NodeId": 9,
             "NodePos": [
-                3832.0,
-                129.0
+                3410.789794921875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Sprint_Stop",
             "NodeId": 23,
             "NodePos": [
-                3832.0,
-                299.0
+                -19.0,
+                449.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "EquipWeapon",
             "NodeId": 35,
             "NodePos": [
-                1672.0,
-                129.0
+                1250.789794921875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -279,8 +279,8 @@
             "Name": "Guard_Walk_R",
             "NodeId": 102,
             "NodePos": [
-                3240.0,
-                -425.0
+                530.7897338867188,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -294,8 +294,8 @@
             "Name": "Guard_Walk_F",
             "NodeId": 103,
             "NodePos": [
-                3240.0,
-                -255.0
+                530.7897338867188,
+                250.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -309,8 +309,8 @@
             "Name": "Guard_Walk_B",
             "NodeId": 104,
             "NodePos": [
-                3240.0,
-                -85.0
+                530.7897338867188,
+                420.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -324,8 +324,8 @@
             "Name": "Guard_Walk_L",
             "NodeId": 105,
             "NodePos": [
-                3240.0,
-                85.0
+                530.7897338867188,
+                590.4297485351563
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -354,8 +354,8 @@
             "Name": "Guard_Break",
             "NodeId": 107,
             "NodePos": [
-                2880.0,
-                -425.0
+                170.78973388671875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -369,8 +369,8 @@
             "Name": "Guard",
             "NodeId": 108,
             "NodePos": [
-                2880.0,
-                -255.0
+                170.78973388671875,
+                250.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -534,8 +534,8 @@
             "Name": "PutWeapon",
             "NodeId": 257,
             "NodePos": [
-                2752.0,
-                129.0
+                2330.789794921875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -729,8 +729,8 @@
             "Name": "SlidingDoor",
             "NodeId": 403,
             "NodePos": [
-                3472.0,
-                129.0
+                3050.789794921875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -744,8 +744,8 @@
             "Name": "DoubleDoor_Push_TrainStation",
             "NodeId": 404,
             "NodePos": [
-                1312.0,
-                129.0
+                890.7897338867188,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -759,8 +759,8 @@
             "Name": "Sit_Loop",
             "NodeId": 407,
             "NodePos": [
-                3112.0,
-                129.0
+                2690.789794921875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -774,8 +774,8 @@
             "Name": "Sit_End",
             "NodeId": 408,
             "NodePos": [
-                3112.0,
-                299.0
+                2690.789794921875,
+                250.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -789,8 +789,8 @@
             "Name": "OnLamp",
             "NodeId": 446,
             "NodePos": [
-                2392.0,
-                129.0
+                1970.789794921875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -894,8 +894,8 @@
             "Name": "Fail_Arm",
             "NodeId": 555,
             "NodePos": [
-                2032.0,
-                129.0
+                1610.789794921875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1254,8 +1254,8 @@
             "Name": "Death_F",
             "NodeId": 100216,
             "NodePos": [
-                592.0,
-                129.0
+                1440.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1269,8 +1269,8 @@
             "Name": "Death_B",
             "NodeId": 100217,
             "NodePos": [
-                592.0,
-                299.0
+                1440.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1359,8 +1359,8 @@
             "Name": "Teleport_Death_Start",
             "NodeId": 100236,
             "NodePos": [
-                952.0,
-                129.0
+                1800.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1374,8 +1374,8 @@
             "Name": "Teleport_Death_End",
             "NodeId": 100237,
             "NodePos": [
-                952.0,
-                299.0
+                1800.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1389,8 +1389,8 @@
             "Name": "Teleport_End",
             "NodeId": 100238,
             "NodePos": [
-                1705.96484375,
-                472.08349609375
+                3770.789794921875,
+                80.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1404,8 +1404,8 @@
             "Name": "Teleport_Start",
             "NodeId": 100242,
             "NodePos": [
-                809.96484375,
-                471.08349609375
+                3770.789794921875,
+                250.42974853515625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -25345,6 +25345,50 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 100238
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Guard",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.13699999451637268,
+            "FromNodeId": 5,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 52,
+                "LinkId": 100246,
+                "ToNodeId": 1081
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.15000000596046448,
+            "ToNodeId": 108
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Guard",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.11699999868869781,
+            "FromNodeId": 23,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 232,
+                "LinkId": 100247,
+                "ToNodeId": 1081
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.13500000536441803,
+            "ToNodeId": 108
         }
     ]
 }

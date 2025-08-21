@@ -45,9 +45,11 @@ HRESULT CAnimator::Initialize(void* pArg)
 		return E_FAIL;
 	// 디폴트 컨트롤러 생성해서 설정
 	m_pCurAnimController->SetAnimator(this);
-	m_pCurAnimController->Initialize_Prototype();
-	m_AnimControllers["Default"] = m_pCurAnimController;
+//	m_pCurAnimController->Initialize_Prototype();
 	m_pCurAnimController->SetName(m_pModel->Get_ModelName() + "_Default");
+	// 컨트롤러 이름
+
+	m_AnimControllers[m_pModel->Get_ModelName() + "_Default"] = m_pCurAnimController;
 	return S_OK;
 }
 
@@ -136,18 +138,27 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 	if (bFromLowerAnimSame == false && bFromAnimSameToLower == false) // 이전 하체랑도 다르고 이전 상체랑도 다른 하체라면
 	{
 		_float fLowerStartTime = transitionResult.fLowerStartTime * m_Blend.toLowerAnim->GetDuration();
+		if (m_Blend.toLowerAnim->IsReverse())
+		{
+			// 역재생인 경우
+			_float fDuration = m_Blend.toLowerAnim->GetDuration();
+			fLowerStartTime = fDuration - fLowerStartTime; // 역재생이므로 시작 시간을 Duration에서 빼줌
+			fLowerStartTime = max(0.f, fLowerStartTime); // 0보다 작으면 0으로 설정
+		}
 		m_Blend.toLowerAnim->SetCurrentTrackPosition(fLowerStartTime);
 	}
 	if (bToUpperLowerSame == false && bFromAnimSameToUpper == false&& m_eCurrentTransitionType != ET::FullbodyToFullbody)
 	{
 		_float fUpperStartTime = transitionResult.fUpperStartTime * m_Blend.toUpperAnim->GetDuration();
+		if (m_Blend.toUpperAnim->IsReverse())
+		{
+			// 역재생인 경우
+			_float fDuration = m_Blend.toUpperAnim->GetDuration();
+			fUpperStartTime = fDuration - fUpperStartTime; // 역재생이므로 시작 시간을 Duration에서 빼줌
+			fUpperStartTime = max(0.f, fUpperStartTime); // 0보다 작으면 0으로 설정
+		}
 		m_Blend.toUpperAnim->SetCurrentTrackPosition(fUpperStartTime);
 	}
-	if (m_eCurrentTransitionType != ET::FullbodyToFullbody)
-	{
-		
-	}
-	
 
 	m_bPlaying = true;
 	UpdateMaskState();

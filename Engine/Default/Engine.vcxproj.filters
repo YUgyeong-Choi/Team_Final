@@ -429,9 +429,6 @@
     <ClCompile Include="..\Private\Material.cpp">
       <Filter>01.Utility\04.Components\Model\Material</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Model.cpp">
-      <Filter>01.Utility\04.Components\Model</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Mesh.cpp">
       <Filter>01.Utility\04.Components\Model\Mesh</Filter>
     </ClCompile>
@@ -491,6 +488,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Area_Manager.cpp">
       <Filter>01.Utility\17.Area_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>01.Utility\04.Components\Model\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

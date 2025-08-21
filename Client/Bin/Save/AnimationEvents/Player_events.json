@@ -253,6 +253,12 @@
         {
             "ClipName": "AS_Pino_Item_Lamp",
             "Duration": 160.0,
+            "Events": [
+                {
+                    "EventName": "UseItem",
+                    "Time": 46.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -260,6 +266,12 @@
         {
             "ClipName": "AS_Pino_Item_Pulse",
             "Duration": 90.0,
+            "Events": [
+                {
+                    "EventName": "UseItem",
+                    "Time": 36.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

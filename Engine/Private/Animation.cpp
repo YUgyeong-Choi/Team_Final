@@ -149,6 +149,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 				m_fCurrentTrackPosition = 0.f;
 				return true; // 역 재생이 끝났음
 			}
+			ResetTrack();
 		}
 	}
 	else
@@ -227,6 +228,33 @@ _matrix CAnimation::GetBoneMatrix(_uint iIndex)
 	}
 	//채널이 없으면 해당 뼈의 로컬 바인드 포즈를 반환
 	return XMLoadFloat4x4(&m_Bones[iIndex]->Get_LocalBindPose());
+}
+
+void CAnimation::ResetTrack()
+{
+	if (m_bReverse)
+	{
+		m_fCurrentTrackPosition = m_fDuration; // 역 재생시 처음 위치는 Duration으로 설정
+		for (_uint i = 0; i < m_iNumChannels; ++i)
+		{
+			_uint keyFrameCount = m_Channels[i]->GetNumKeyFrames();
+			if (keyFrameCount > 1)
+			{
+				m_CurrentKeyFrameIndices[i] = keyFrameCount - 2; // 마지막에서 두 번째 키프레임
+			}
+			else
+			{
+				m_CurrentKeyFrameIndices[i] = 0;
+			}
+		}
+	}
+	else
+	{
+
+		m_CurrentKeyFrameIndices.assign(m_iNumChannels, 0u);
+		m_fCurrentTrackPosition = 0.f; // 정방향 재생시 처음 위치는 0
+	}
+
 }
 
 CAnimation* CAnimation::Create(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones)

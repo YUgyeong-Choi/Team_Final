@@ -1,0 +1,68 @@
+{
+    "Anim States": [
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Stargazer_restore",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Restore",
+            "NodeId": 1,
+            "NodePos": [
+                1297.0,
+                114.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Stargazer_broken_idle",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Idle",
+            "NodeId": 2,
+            "NodePos": [
+                577.0,
+                116.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        }
+    ],
+    "ControllerName": "Stargazer_Des_2_Default",
+    "Parameters": {
+        "Restore": {
+            "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        }
+    },
+    "Transitions": [
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "Restore",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 2,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 22,
+                "LinkId": 3,
+                "ToNodeId": 11
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 1
+        }
+    ]
+}
