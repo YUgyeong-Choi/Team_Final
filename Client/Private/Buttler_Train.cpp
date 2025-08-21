@@ -53,18 +53,18 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
-		m_pWeapon->Collider_Off();
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
-		m_pPhysXActorCom->RemovePhysX();
+		// 충돌만 False
+		m_pWeapon->Collider_ShapeOff();
+		m_pWeapon->Collider_FilterOff();
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, true);
+		m_pPhysXActorCom->Init_SimulationFilterData();
 		if (m_pAnimator->IsFinished())
 		{
+			// 씬에 지우는 건 딱 한번만
+			m_pPhysXActorCom->RemovePhysX();
 			m_pWeapon->Set_bDead();
 		}
 	}
-	
-	
-
-	
 }
 
 void CButtler_Train::Update(_float fTimeDelta)

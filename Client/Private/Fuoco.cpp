@@ -516,9 +516,9 @@ void CFuoco::Register_Events()
 		});
 
 	m_pAnimator->RegisterEventListener("CollidersOff", [this]() {
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
-		m_pPhysXActorComForArm->Set_ShapeFlag(false, false, false);
-		m_pPhysXActorComForFoot->Set_ShapeFlag(false, false, false);
+		m_pPhysXActorCom->Init_SimulationFilterData();
+		m_pPhysXActorComForArm->Init_SimulationFilterData();
+		m_pPhysXActorComForFoot->Init_SimulationFilterData();
 		});
 
 	m_pAnimator->RegisterEventListener("FireBall", [this]()
