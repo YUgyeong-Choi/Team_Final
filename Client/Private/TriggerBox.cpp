@@ -23,6 +23,8 @@ HRESULT CTriggerBox::Initialize_Prototype()
 HRESULT CTriggerBox::Initialize(void* pArg)
 {
 	CTriggerBox::TRIGGERBOX_DESC* TriggerBoxDESC = static_cast<TRIGGERBOX_DESC*>(pArg);
+	m_eTriggerBoxType = TriggerBoxDESC->eTriggerBoxType;
+	m_vecSoundData = TriggerBoxDESC->m_vecSoundData;
 
 	if (FAILED(__super::Initialize(TriggerBoxDESC)))
 		return E_FAIL;
@@ -33,7 +35,7 @@ HRESULT CTriggerBox::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::POSITION, TriggerBoxDESC->vPos);
 	m_pTransformCom->Rotation(XMConvertToRadians(TriggerBoxDESC->Rotation.x), XMConvertToRadians(TriggerBoxDESC->Rotation.y), XMConvertToRadians(TriggerBoxDESC->Rotation.z));
 
-	if (FAILED(Ready_Trigger()))
+	if (FAILED(Ready_Trigger(TriggerBoxDESC)))
 		return E_FAIL;
 
 	return S_OK;
@@ -73,7 +75,6 @@ HRESULT CTriggerBox::Render()
 	return S_OK;
 }
 
-
 HRESULT CTriggerBox::Ready_Components(void* pArg)
 {
 	/* For.Com_PhysX */
@@ -81,12 +82,41 @@ HRESULT CTriggerBox::Ready_Components(void* pArg)
 		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysXTrigger"), reinterpret_cast<CComponent**>(&m_pPhysXTriggerCom))))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Trigger"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT CTriggerBox::Ready_Trigger()
+HRESULT CTriggerBox::Ready_Trigger(TRIGGERBOX_DESC* pDesc)
 {
-	return E_NOTIMPL;
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+	positionVec += VectorToPxVec3(pDesc->vTriggerOffset);
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxVec3 halfExtents = VectorToPxVec3(pDesc->vTriggerSize);
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
+	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, false);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_INTERACT;
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; // 일단 보류
+	m_pPhysXTriggerCom->Set_SimulationFilterData(filterData);
+	m_pPhysXTriggerCom->Set_QueryFilterData(filterData);
+	m_pPhysXTriggerCom->Set_Owner(this);
+	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::TRIGGER);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
+
+	return S_OK;
 }
 
 CTriggerBox* CTriggerBox::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -121,4 +151,5 @@ void CTriggerBox::Free()
 	__super::Free();
 
 	Safe_Release(m_pPhysXTriggerCom);
+	Safe_Release(m_pSoundCom);
 }

@@ -1,0 +1,33 @@
+﻿{
+  "triggers": 
+  [
+    {
+      "UseMesh": 0,
+      "TriggerType": 0,
+      "vPos": [ 4.382186, 1.0, 0.864605 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 0.2, 0.2, 1.0 ],
+      "SoundDatas": [
+        {
+          "SoundName": "0_Dialog_Sophia_F00_S1_text_1",
+          "Text": "깨어났군요. 당신을 찾아 헤맸어요."
+        }
+      ]
+    },
+    {
+      "UseMesh": 0,
+      "TriggerType": 2,
+      "vPos": [ 35.138306, 1.0, 0.597706 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 0.2, 0.2, 1.0 ],
+      "SoundDatas": [
+        {
+          "SoundName": "5_Dialog_Sophia_F00_S1_8_text_1",
+          "Text": "그곳을 벗어나야 해요. 도움이 될 만한 걸 찾아요."
+        }
+      ]
+    }
+  ]
+}

@@ -50,6 +50,9 @@
 
 #include "Wego.h"
 #include "DoorMesh.h"
+#include "TriggerNoMesh.h"
+#include "TriggerMesh.h"
+#include "DoorMesh.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -565,7 +568,13 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CUI_MonsterHP_Bar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerMesh"),
+		CTriggerMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerNoMesh"),
+		CTriggerNoMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	m_fRatio = 1.f;
 	Sleep(250); // 안해주면 동기화 안하고 끝나서 안차던데 좋은 방법 있으면 알려주셈
