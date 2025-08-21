@@ -24,8 +24,8 @@ void CLevel::Priority_Update(_float fTimeDelta)
 void CLevel::Update(_float fTimeDelta)
 {
     // 마우스를 화면 중앙으로 이동
-    if (MOUSE_PRESSING(DIM::RBUTTON))
-        HoldMouse();
+    /*if (MOUSE_PRESSING(DIM::RBUTTON))
+        HoldMouse();*/
 }
 
 void CLevel::Late_Update(_float fTimeDelta)

@@ -22,7 +22,8 @@ public:
     }
 
     void Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery);
-    void Set_SimulationFilterData(PxFilterData filter);
+    void Set_SimulationFilterData(PxFilterData _data);
+    virtual void Init_SimulationFilterData() override;
     void Set_QueryFilterData(PxFilterData filter);
     void Move(_float fDeltaTime, const PxVec3& vDirection, _float fSpeed);
 

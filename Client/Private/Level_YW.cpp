@@ -246,7 +246,7 @@ HRESULT CLevel_YW::Ready_ImGuiTools()
 
 #pragma region 네비툴
 	CNavTool::NAVTOOL_DESC Desc{};
-	Desc.wsMapName = L"STATION"; //StringToWString(Maps[iMapIndex]); //무조건 스테이션만 쓸 듯
+	Desc.wsMapName = /*L"STATION";*/ StringToWString(Maps[iMapIndex]); //무조건 스테이션만 쓸 듯
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)] = reinterpret_cast<CYWTool*>(CNavTool::Create(m_pDevice, m_pContext, &Desc));
 	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)])
@@ -292,6 +292,7 @@ HRESULT CLevel_YW::Ready_ImGui()
 	// Setup Platform/Renderer backends
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+	io.IniFilename = "../Bin/Save/YW_ImGui.ini"; // ImGui 설정 파일 경로
 
 	return S_OK;
 }

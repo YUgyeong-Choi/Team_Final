@@ -22,6 +22,7 @@ public:
 		_int			iRender = 0;
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
+		CGameObject*	pOwner = { nullptr };
 
 		const _float4x4* pSocketMatrix = { nullptr };
 		const _float4x4* pParentWorldMatrix = { nullptr };
@@ -88,6 +89,9 @@ public: /* [ 활성화 , 비활성화 ] */
 	// 트레일 이펙트 온 오프
 	void Set_WeaponTrail_Active(_bool bActive);
 
+public: /* [ 무기의 소유자 (Unit) 을 가져온다. ] */
+	class CUnit* Get_Owner() const { return m_pOwner; }
+
 public:
 	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }
 	SKILL_DESC& Get_SkillDesc(_int iIndex) { return m_eSkillDesc[iIndex]; }
@@ -122,6 +126,8 @@ protected:              /* [ 컴포넌트 ] */
 	CModel*				m_pModelCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
 	CAnimator*			m_pAnimator = { nullptr };
+
+	class CUnit*		m_pOwner = { nullptr };
 
 protected:				/* [ 레이캐스트 변수 ] */
 	PxVec3				m_vRayHitPos = {};

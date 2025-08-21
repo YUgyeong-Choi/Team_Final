@@ -27,7 +27,7 @@
             "Events": [
                 {
                     "EventName": "OffGrinderEffect",
-                    "Time": 38.0
+                    "Time": 18.0
                 }
             ],
             "IsLoop": false,
@@ -316,6 +316,90 @@
         {
             "ClipName": "AS_Pino_Teleport_Start",
             "Duration": 180.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Getup_B",
+            "Duration": 110.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Getup_F",
+            "Duration": 110.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Lying_B",
+            "Duration": 115.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Lying_F",
+            "Duration": 168.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Stamp_Intro_B",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Stamp_Intro_F",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Up_Fall_B",
+            "Duration": 96.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Up_Fall_F",
+            "Duration": 145.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Up_Intro_B",
+            "Duration": 29.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Up_Intro_F",
+            "Duration": 29.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Up_Land_B",
+            "Duration": 59.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Down_Up_Land_F",
+            "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

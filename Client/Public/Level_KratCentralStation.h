@@ -39,6 +39,7 @@ private:
 	HRESULT Ready_Effect();
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();
+	HRESULT Ready_Trigger();
 
 private:
 	HRESULT Load_Shader();

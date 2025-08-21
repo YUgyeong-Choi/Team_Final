@@ -57,10 +57,10 @@ HRESULT CNav::Render()
 
 HRESULT CNav::Ready_Components(void* pArg)
 {
-	NAV_DESC* Desc = static_cast<NAV_DESC*>(pArg);
-	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation");
+	NAV_DESC* pDesc = static_cast<NAV_DESC*>(pArg);
+	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavComName;
 
-	if (FAILED(__super::Add_Component(Desc->iLevelIndex, wsPrototypeTag.c_str(),
+	if (FAILED(__super::Add_Component(pDesc->iLevelIndex, wsPrototypeTag.c_str(),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 

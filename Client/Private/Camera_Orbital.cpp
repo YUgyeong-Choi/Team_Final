@@ -49,6 +49,20 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
+	//// 화면 중앙으로 마우스 위치 고정
+	//RECT rcClient;
+	//GetClientRect(g_hWnd, &rcClient);
+
+	//POINT ptCenter;
+	//ptCenter.x = (rcClient.right - rcClient.left) / 2;
+	//ptCenter.y = (rcClient.bottom - rcClient.top) / 2;
+
+	//// 클라이언트 좌표 -> 스크린 좌표로 변환
+	//ClientToScreen(g_hWnd, &ptCenter);
+
+	//// 마우스 커서 이동
+	//SetCursorPos(ptCenter.x, ptCenter.y);
+
 	//if (m_pGameInstance->Key_Down(DIK_T))
 	//{
 	//	m_bActive = !m_bActive;

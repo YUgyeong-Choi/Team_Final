@@ -151,7 +151,7 @@ void CWeapon_Monster::SetisAttack(_bool isAttack)
 {
 	if (isAttack)
 	{
-		m_pPhysXActorCom->Set_ShapeFlag(false, true, true);
+		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 	}
 	else
 	{
@@ -202,18 +202,6 @@ HRESULT CWeapon_Monster::Ready_Actor()
 
 void CWeapon_Monster::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		//
-		static_cast<CUnit*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
-	}
-	else if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
-	{
-		//static_cast<CWeapon*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
-
-		// 상대 무기가 가드 상태면? 림라이트 이런거??
-
-	}
 }
 
 void CWeapon_Monster::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -234,19 +222,10 @@ void CWeapon_Monster::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 
 	if (eColliderType == COLLIDERTYPE::PLAYER)
 	{
-		//
-		static_cast<CUnit*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
 	{
-		//static_cast<CWeapon*>(pOther)->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
-
-		// 상대 무기가 가드 상태면? 림라이트 이런거??
-
 	}
-	
-
-
 }
 
 void CWeapon_Monster::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

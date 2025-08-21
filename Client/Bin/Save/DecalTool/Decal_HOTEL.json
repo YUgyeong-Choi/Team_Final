@@ -1,1 +1,33 @@
-[]
+[
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_Blood_01_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_BloodSpot_2_B_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_Blood_01_N.dds",
+        "WorldMatrix": [
+            [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+            ],
+            [
+                126.15840148925781,
+                1.6167142391204834,
+                -6.456386566162109,
+                1.0
+            ]
+        ]
+    }
+]

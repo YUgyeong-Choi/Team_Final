@@ -105,7 +105,7 @@ void CPhysXController::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQ
     }
 }
 
-void CPhysXController::Set_SimulationFilterData(PxFilterData filter)
+void CPhysXController::Set_SimulationFilterData(PxFilterData _data)
 {
     if (!m_pController)
         return;
@@ -119,7 +119,34 @@ void CPhysXController::Set_SimulationFilterData(PxFilterData filter)
     {
         pActor->getShapes(&pShape, 1);
         if (pShape)
-            pShape->setSimulationFilterData(filter);
+        {
+            pShape->setSimulationFilterData(_data);
+            m_filterData = _data;
+        }
+    }
+}
+
+void CPhysXController::Init_SimulationFilterData()
+{
+    if (!m_pController)
+        return;
+
+    PxRigidActor* pActor = m_pController->getActor();
+    if (!pActor)
+        return;
+
+    PxShape* pShape = nullptr;
+    if (pActor->getNbShapes() > 0)
+    {
+        pActor->getShapes(&pShape, 1);
+        if (pShape)
+        {
+            PxFilterData filterData{};
+            filterData.word0 = 0;
+            filterData.word1 = 0;
+            pShape->setSimulationFilterData(filterData);
+            m_bReadyForDebugDraw = true;
+        }
     }
 }
 
@@ -137,7 +164,10 @@ void CPhysXController::Set_QueryFilterData(PxFilterData filter)
     {
         pActor->getShapes(&pShape, 1);
         if (pShape)
+        {
             pShape->setQueryFilterData(filter);
+            m_bReadyForDebugDraw = false;
+        }
     }
 }
 

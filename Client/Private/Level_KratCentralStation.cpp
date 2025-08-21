@@ -13,6 +13,8 @@
 #pragma endregion
 
 #include "DoorMesh.h"
+#include "TriggerNoMesh.h"
+#include "TriggerMesh.h"
 
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"
@@ -57,6 +59,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Level()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
 	/* [ 사운드 ] */
@@ -115,10 +120,32 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 	if(KEY_DOWN(DIK_H))
 		ToggleHoldMouse();
-	if(m_bHold)
-		HoldMouse();
+	if (m_bHold)
+	{
+		// 화면 중앙으로 마우스 위치 고정
+		RECT rcClient;
+		GetClientRect(g_hWnd, &rcClient);
+
+		POINT ptCenter;
+		ptCenter.x = (rcClient.right - rcClient.left) / 2;
+		ptCenter.y = (rcClient.bottom - rcClient.top) / 2;
+
+		// 클라이언트 좌표 -> 스크린 좌표로 변환
+		ClientToScreen(g_hWnd, &ptCenter);
+
+		// 마우스 커서 이동
+		SetCursorPos(ptCenter.x, ptCenter.y);
+
+		// 커서 강제로 숨기기
+		while (ShowCursor(FALSE) >= 0);
+		//HoldMouse();
+	}
 	else
-		ShowCursor(TRUE);
+	{
+		// 커서 강제로 보이기
+		while (ShowCursor(TRUE) < 0);
+	}
+
 
 	if (KEY_DOWN(DIK_F7))
 		m_pGameInstance->ToggleDebugOctoTree();
@@ -219,7 +246,7 @@ HRESULT CLevel_KratCentralStation::Ready_Player()
 	pDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
 	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Player"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), &pGameObject, &pDesc)))
 		return E_FAIL;
 
@@ -239,7 +266,7 @@ HRESULT CLevel_KratCentralStation::Ready_Npc()
 	pWegoDesc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(pWegoDesc.szName, TEXT("Wego"));
 	pWegoDesc.szMeshID = TEXT("Wego");
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Wego"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Wego"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Wego"), &pWegoDesc)))
 		return E_FAIL;
 
@@ -616,12 +643,30 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	Desc.fSpeedPerSec = 5.f;
 	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
 	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.InitPos = _float3(85.5f, 0.f, -7.5f);
+
+	//시작 위치에 네비게이션이 없으면 터진다 지금
+	Desc.wsNavName = TEXT("STATION");
+	Desc.InitPos = 
+	//_float3(148.f, 2.47f, -7.38f); //호텔위치
+	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
+
 	Desc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(Desc.szName, TEXT("Buttler_Train"));
 	Desc.szMeshID = TEXT("Buttler_Train");
 	Desc.fHeight = 1.f;
 	Desc.vExtent = {0.5f,1.f,0.5f};
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+		return E_FAIL;
+
+	Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+		return E_FAIL;
+
+	Desc.wsNavName = TEXT("HOTEL");
+	Desc.InitPos =
+		_float3(148.f, 2.47f, -7.38f); //호텔위치
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
 		return E_FAIL;
@@ -737,11 +782,72 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
 
-	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &pGameObject, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Trigger()
+{
+	ifstream inFile("../Bin/Save/Trigger/Trigger.json");
+	if (inFile.is_open())
+	{
+		json root;
+		inFile >> root;
+		inFile.close();
+
+		for (const auto& j : root["triggers"]) {
+			const _int type = j.value("UseMesh", 0);
+			// 공통 파싱
+			const auto vPosArr = j.value("vPos", vector<float>{});
+			const auto rotDegArr = j.value("rotationDeg", vector<float>{});
+			const auto offsetArr = j.value("triggerOffset", vector<float>{});
+			const auto sizeArr = j.value("triggerSize", vector<float>{});
+			const int  triggerType = j.value("TriggerType", 0); // 필요 시 enum으로 캐스팅
+
+			// SoundDatas 파싱
+			vector<CTriggerBox::SOUNDDATA> vecSoundData;
+			if (j.contains("SoundDatas") && j["SoundDatas"].is_array()) {
+				for (const auto& snd : j["SoundDatas"]) {
+					CTriggerBox::SOUNDDATA data{};
+
+					if (snd.contains("SoundName")) {
+						string soundTag = snd["SoundName"].get<string>();
+						data.strSoundTag = soundTag;
+					}
+					if (snd.contains("Text")) {
+						string text = snd["Text"].get<string>();
+						data.strSoundText = text;
+					}
+
+					vecSoundData.push_back(data);
+				}
+			}
+
+			if (type == 0) {
+				CTriggerNoMesh::TRIGGERNOMESH_DESC Desc{};
+				Desc.vPos = VecSetW(vPosArr, 1.f);
+				Desc.Rotation = VecToFloat3(rotDegArr);       // deg 보관
+				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
+				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
+				Desc.eTriggerBoxType = static_cast<TRIGGERBOX_TYPE>(triggerType);
+				Desc.m_vecSoundData = vecSoundData;
+				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerNoMesh"),
+					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerNoMesh"), &Desc)))
+					return E_FAIL;
+			}
+			else if (type == 1) {
+				CTriggerMesh::TRIGGERMESH_DESC Desc{};
+
+
+				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerMesh"),
+					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerMesh"), &Desc)))
+					return E_FAIL;
+			}
+		}
+	}
 	return S_OK;
 }
 

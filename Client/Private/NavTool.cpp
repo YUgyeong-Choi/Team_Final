@@ -72,7 +72,7 @@ HRESULT CNavTool::Load(const _char* Map)
 	Remove_Component(TEXT("Com_Navigation"));
 	Safe_Release(m_pNavigationCom);
 
-	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + wsMap;//StringToWString(Map);
+	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + /*wsMap;*/StringToWString(Map);
 
 	/* For.Com_Navigation */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), wsPrototypeTag.c_str(),
@@ -89,7 +89,7 @@ HRESULT CNavTool::Save(const _char* Map)
 
 	string sMap = "STATION";
 
-	if (FAILED(m_pNavigationCom->Save(sMap.c_str()/*Map*/)))
+	if (FAILED(m_pNavigationCom->Save(/*sMap.c_str()*/Map)))
 	{
 		MSG_BOX("네비게이션 저장 실패");
 	}

@@ -34,7 +34,8 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 	m_pTransformCom->Set_WorldMatrix(pDesc->PresetMatrix);
 	m_pSocketMatrix = pDesc->pSocketMatrix;
 	m_pParentMatrix = pDesc->pParentMatrix;
-	Load_JsonFiles(pDesc->j);
+	if (FAILED(Load_JsonFiles(pDesc->j)))
+		return E_FAIL;
     return S_OK;
 }
 
@@ -72,8 +73,6 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 		}
 		else
 		{
-			m_fCurFrame = 0.f;
-			m_iCurFrame = 0;
  			if (m_bReadyDeath == false)
 			{
 				End_Effect();
@@ -172,6 +171,8 @@ void CEffectContainer::End_Effect()
 	}
 	m_bLoop = false;
 	m_bReadyDeath = true;
+	m_fCurFrame = 0.f;
+	m_iCurFrame = 0;
 }
 
 HRESULT CEffectContainer::Load_JsonFiles(const json& j)

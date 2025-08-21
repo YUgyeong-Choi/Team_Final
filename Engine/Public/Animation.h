@@ -79,10 +79,16 @@ public:
 		m_events.push_back(vEvent); }
 	vector<AnimationEvent>& GetEvents() { return m_events; }
 
+	const _bool IsReverse() const { return m_bReverse; }
+	void SetReverse(_bool bReverse) { m_bReverse = bReverse; }
+
 public:
 	void ResetTrack()
 	{
-		m_fCurrentTrackPosition = 0.f;
+		if (m_bReverse)
+			m_fCurrentTrackPosition = m_fDuration; // 역 재생시 처음 위치는 Duration으로 설정
+		else
+			m_fCurrentTrackPosition = 0.f; // 정방향 재생시 처음 위치는 0
 		m_CurrentKeyFrameIndices.assign(m_iNumChannels, 0u);
 		//cout << "현재 리셋한 애니메이션 이름 " << m_AnimationName << endl;
 	}
@@ -96,9 +102,10 @@ private:
 	// 애니메이션 뼈의 개수
 	_uint					m_iNumChannels;
 	vector<class CChannel*>	m_Channels;
-	char m_Name[MAX_PATH] = {};
-	_bool m_isLoop = false;
+	_char m_Name[MAX_PATH] = {};
+	_bool		m_isLoop = false;
 	_bool    m_bUseRootMotion = false;
+	_bool    m_bReverse = false;
 	vector<class CBone*> m_Bones;
 	vector<AnimationEvent> m_events;
 	vector<_matrix>			m_TransformMatrices;

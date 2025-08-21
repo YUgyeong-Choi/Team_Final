@@ -8,6 +8,7 @@
 #include "SwordTrailEffect.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
+#include "Unit.h"
 
 CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -43,6 +44,7 @@ HRESULT CWeapon::Initialize(void* pArg)
 	m_eMeshLevelID = pDesc->eMeshLevelID;
 	m_iRender = pDesc->iRender;
 	m_szName = pDesc->szName;
+	m_pOwner = dynamic_cast<CUnit*>(pDesc->pOwner);
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
