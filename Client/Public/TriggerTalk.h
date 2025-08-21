@@ -41,6 +41,9 @@ private:
 
 	/* [ 대화 중간에 종료 가능한가 ] */
 	_bool m_bCanCancel = false;
+
+	// 무기 선택 중 일때 사운드 update 안함
+	_bool m_bActive = true;
 public:
 	static CTriggerTalk* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -37,6 +37,18 @@ HRESULT CTriggerTalk::Initialize(void* pArg)
 
 void CTriggerTalk::Priority_Update(_float fTimeDelta)
 {
+	if (!m_bActive)
+	{
+		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+		{
+			// 무기 선택 완료하면
+			// 이거 TriggerTalk 없애는 로직 추가하기
+		}
+	}
+
+	if (!m_bActive)
+		return;
+
 	if (m_bTalkActive && !m_bDoOnce)
 	{
 		// 조사함
@@ -55,6 +67,12 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 
 	if (m_bDoOnce)
 	{
+		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+		{
+			CTransform* pPlayerTransform = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"))->Get_TransfomCom();
+			pPlayerTransform->RotateToDirectionSmoothly(m_pTransformCom->Get_State(STATE::POSITION), 0.005f);
+		}
+
 		if (KEY_DOWN(DIK_F))
 			m_bAutoTalk = !m_bAutoTalk;
 
@@ -84,10 +102,18 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 				m_iSoundIndex++;
 				if (m_iSoundIndex >= m_vecSoundData.size())
 				{
-					m_bDead = true;
-					m_pPhysXTriggerCom->RemovePhysX();
-					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-					CCamera_Manager::Get_Instance()->SetbMoveable(true);
+					if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+					{
+						// 무기 선택 UI 활성화
+						m_bActive = false;
+					}
+					else
+					{
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+						CCamera_Manager::Get_Instance()->SetbMoveable(true);
+						m_bDead = true;
+						m_pPhysXTriggerCom->RemovePhysX();
+					}
 				}
 				else
 				{
@@ -104,10 +130,18 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 				m_iSoundIndex++;
 				if (m_iSoundIndex >= m_vecSoundData.size())
 				{
-					m_bDead = true;
-					m_pPhysXTriggerCom->RemovePhysX();
-					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-					CCamera_Manager::Get_Instance()->SetbMoveable(true);
+					if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+					{
+						// 무기 선택 UI 활성화
+						m_bActive = false;
+					}
+					else
+					{
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+						CCamera_Manager::Get_Instance()->SetbMoveable(true);
+						m_bDead = true;
+						m_pPhysXTriggerCom->RemovePhysX();
+					}
 				}
 				else
 				{
