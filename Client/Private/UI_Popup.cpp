@@ -40,7 +40,7 @@ HRESULT CUI_Popup::Initialize(void* pArg)
 	
 	m_bCloned = true;
 
-	CUI_Manager::Get_Instance()->Add_UI(this, TEXT("Popup"));
+	CUI_Manager::Get_Instance()->Emplace_UI(this, TEXT("Popup"));
 
 	return S_OK;
 }
@@ -117,9 +117,6 @@ CGameObject* CUI_Popup::Clone(void* pArg)
 void CUI_Popup::Free()
 {
 	__super::Free();
-
-	
-	
 
 	
 }

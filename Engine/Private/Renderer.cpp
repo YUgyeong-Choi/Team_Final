@@ -672,10 +672,10 @@ HRESULT CRenderer::Render_PBRMesh()
 
 HRESULT CRenderer::Render_Blend()
 {
-	/*m_RenderObjects[RG_BLEND].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_BLEND)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
 	{
 		return dynamic_cast<CBlendObject*>(pSour)->Get_Depth() > dynamic_cast<CBlendObject*>(pDest)->Get_Depth();
-	});*/
+	});
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, false);
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_BLEND)])

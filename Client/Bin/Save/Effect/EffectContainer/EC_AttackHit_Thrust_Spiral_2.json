@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -60.0,
-                -40.0
+                -34.59000015258789,
+                -20.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -29,7 +29,7 @@
             "EmissiveIntensity": 0.44999998807907104,
             "EndTrack": 102,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
+            "Gravity": 2.5,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -60,10 +60,10 @@
                     ]
                 }
             ],
-            "LifeTime": 1348.233154296875,
+            "LifeTime": 1483.9520263671875,
             "LifeTime_Particle": [
-                0.009999999776482582,
-                0.15000000596046448
+                0.019999999552965164,
+                0.30000001192092896
             ],
             "Local": true,
             "Loop": false,
@@ -71,7 +71,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Hit_Spiral",
-            "NumInstance": 79,
+            "NumInstance": 27,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -106,8 +106,8 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.009999999776482582,
-                0.019999999552965164
+                0.019999999552965164,
+                0.029999999329447746
             ],
             "Speed": [
                 5.0,
@@ -192,7 +192,7 @@
                     ]
                 }
             ],
-            "LifeTime": 881.9030151367188,
+            "LifeTime": 1017.6289672851563,
             "LifeTime_Particle": [
                 0.5,
                 1.0

@@ -32,8 +32,30 @@
         {
             "ClipName": "AS_ATSA0_Skill_01_End_Before",
             "Duration": 243.0,
+            "Events": [
+                {
+                    "EventName": "AddAttackCount",
+                    "Time": 30.0
+                },
+                {
+                    "EventName": "LookAt",
+                    "Time": 0.0
+                },
+                {
+                    "EventName": "AttackOn",
+                    "Time": 75.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 120.0
+                },
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 40.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -42,11 +64,11 @@
             "Events": [
                 {
                     "EventName": "AddAttackCount",
-                    "Time": 6.0
+                    "Time": 45.0
                 },
                 {
                     "EventName": "LookAt",
-                    "Time": 0.10000000149011612
+                    "Time": 5.0
                 },
                 {
                     "EventName": "AttackOn",
@@ -633,7 +655,7 @@
             "ClipName": "AS_Idle_C",
             "Duration": 448.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -765,7 +787,7 @@
                 }
             ],
             "IsLoop": true,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -823,7 +845,7 @@
                 }
             ],
             "IsLoop": true,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {

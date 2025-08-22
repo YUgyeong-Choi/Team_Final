@@ -68,6 +68,7 @@ protected:
 	_float Interpolate_Ratio(_float fRatio);
 
 	virtual HRESULT Ready_Components() PURE;
+	HRESULT Bind_ShaderResources();
 
 protected:
 	CShader*			m_pShaderCom = { nullptr };

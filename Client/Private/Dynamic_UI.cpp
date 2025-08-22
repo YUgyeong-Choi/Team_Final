@@ -290,7 +290,7 @@ HRESULT CDynamic_UI::Ready_Components(const wstring& strTextureTag)
 		/* For.Com_Texture */
 		if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-			return E_FAIL;
+   			return E_FAIL;
 	}
 	
 

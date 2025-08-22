@@ -408,6 +408,8 @@ void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link
 	tr.iToNodeId = toNode;
 	tr.link = link;
 	tr.hasExitTime = bHasExitTime;
+
+//	SortTransitionByConditionsCount();
 }
 
 void CAnimController::AddTransition(_int fromNode, _int toNode, const Link& link, _float duration, _bool bHasExitTime, _bool bBlendFullBody)
@@ -431,6 +433,7 @@ void CAnimController::AddTransitionMultiCondition(_int fromNode, _int toNode, co
 	tr.iToNodeId = toNode;
 	tr.link = link;
 	tr.hasExitTime = bHasExitTime;
+	//SortTransitionByConditionsCount();
 }
 
 const CAnimController::TransitionResult & CAnimController::CheckTransition() const
@@ -576,6 +579,22 @@ void CAnimController::ChangeStatesForDefault()
 		return; // 원본 애니메이션 상태가 없으면 아무것도 하지 않음
 	m_States = m_OriginalAnimStates["Default"]; // 원래 상태로 되돌리기
 	m_bOverrideAnimController = false; // 오버라이드 애니메이션 컨트롤러 사용 중이 아님
+}
+
+void CAnimController::SortTransitionByConditionsCount()
+{
+	sort(m_Transitions.begin(), m_Transitions.end(),
+		[this](const Transition& a, const Transition& b) {
+		//	return a.conditions.size() > b.conditions.size();
+
+			if (a.iFromNodeId == ANYSTATE_NODE_ID && b.iFromNodeId != ANYSTATE_NODE_ID)
+				return true;
+			if (b.iFromNodeId == ANYSTATE_NODE_ID && a.iFromNodeId != ANYSTATE_NODE_ID)
+				return false;
+
+			// 같은 타입(둘 다 AnyState이거나 둘 다 일반) 내에서 조건 개수로 정렬
+			return a.conditions.size() > b.conditions.size();
+		});
 }
 
 CAnimController* CAnimController::Create()
@@ -905,7 +924,7 @@ void CAnimController::Deserialize(const json& j)
 			}
 		}
 	}
-
+	SortTransitionByConditionsCount();
 	if (j.contains("Parameters"))
 	{
 		for (const auto& [name, param] : j["Parameters"].items())

@@ -54,7 +54,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
 		m_pWeapon->Clear_Owner();
-		m_pWeapon->Gravity_On();
+		//m_pWeapon->Gravity_On();
 
 		// 충돌만 False
 		m_pWeapon->Collider_ShapeOff();
@@ -65,7 +65,9 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 		{
 			// 씬에 지우는 건 딱 한번만
 			m_pPhysXActorCom->RemovePhysX();
-			m_pWeapon->Set_bDead();
+
+			(m_pWeapon)->Set_bDead();
+			
 		}
 	}
 }
@@ -110,7 +112,11 @@ HRESULT CButtler_Train::Render()
 
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	
+	if (eColliderType == COLLIDERTYPE::MONSTER)
+	{
+		++m_iCollisionCount;
+		m_vPushDir -= HitNormal;
+	}
 	// 무기가 상태마다 한번씩 데미지 주고
 	// 이제 초기화하면 다시 데미지 줄 수 있게
 	ReceiveDamage(pOther, eColliderType);
@@ -119,12 +125,26 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if (eColliderType == COLLIDERTYPE::MONSTER)
+	{
+		// 계속 충돌중이면 빠져나갈 수 있게 좀 보정을
+		_vector vCorrection = HitNormal * 0.01f; 
+		m_vPushDir -= vCorrection;
+	}
+
 	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	--m_iCollisionCount;
 
+	if (m_iCollisionCount <= 0)
+	{
+		m_iCollisionCount = 0;
+		m_vPushDir = { 0.f, 0.f, 0.f, 0.f };
+	}
+		
 }
 
 void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -306,15 +326,17 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
-	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
-	{
-		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-		m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
-	}
-	else 
-	{
-		RootMotionActive(fTimeDelta);
-	}
+	//if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
+	//{
+	//	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+	//	m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
+	//}
+	//else 
+	//{
+	//	RootMotionActive(fTimeDelta);
+	//}
+
+	RootMotionActive(fTimeDelta);
 
 }
 
@@ -426,6 +448,6 @@ void CButtler_Train::Free()
 {
 	__super::Free();
 
-	//Safe_Release(m_pWeapon);
+	Safe_Release(m_pWeapon);
 
 }

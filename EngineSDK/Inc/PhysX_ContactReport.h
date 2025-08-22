@@ -110,7 +110,7 @@ public:
                 if (actorA) actorA->On_TriggerEnter(actorB);
                 if (actorB) actorB->On_TriggerEnter(actorA);
             }
-
+    
             if (pair.status & PxPairFlag::eNOTIFY_TOUCH_LOST)
             {
                 if (actorA) actorA->On_TriggerExit(actorB);

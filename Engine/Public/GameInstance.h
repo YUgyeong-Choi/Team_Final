@@ -196,6 +196,8 @@ public:
 	HRESULT LoadSound(const string& Path, _bool is3D = FALSE, _bool loop = FALSE, _bool stream = FALSE, unordered_map<string, class CSound_Core*>* _Out_ pOut = nullptr);
 	// 난 에드래퍼 올릴거다 분명히 말했다 래퍼 올린다 릴리즈 시키시오
 	class CSound_Core* Get_Single_Sound(const string& strKey);
+	// 릴리즈 시킬게
+	void Release_Single_Sound(const string& strKey);
 	// 리스너 포지션 제어(업룩포 요구해서 트랜스폼 받았음)
 	void Set_Listener_Position(class CTransform* pTransform, const _float3& vel);
 	// 전체 볼륨 제어

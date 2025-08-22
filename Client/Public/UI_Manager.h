@@ -22,8 +22,8 @@ private:
 
 public:
 
-    void Add_UI(CUIObject* pUI, _wstring strTag);
-    void Remove_UI(_wstring strTag);
+    void Emplace_UI(CUIObject* pUI, _wstring strTag);
+
 
     // 특정 상황에 패널을 껏다 킨다
     _bool Find_Panel();
