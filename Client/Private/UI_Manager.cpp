@@ -11,31 +11,32 @@ CUI_Manager::CUI_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
-void CUI_Manager::Add_UI(CUIObject* pUI, _wstring strTag)
+void CUI_Manager::Emplace_UI(CUIObject* pUI, _wstring strTag)
 {
-	
-	m_UImap.insert({ strTag, pUI });
 
-	//Safe_AddRef(pUI);
-}
-
-void CUI_Manager::Remove_UI(_wstring strTag)
-{
 	if (m_UImap.find(strTag) == m_UImap.end())
-		return;
+	{
+		m_UImap.insert({ strTag, pUI });
+
+		Safe_AddRef(pUI);
+	}
+	else 
+	{
+		Safe_Release(m_UImap[strTag]);
+		m_UImap.erase(strTag);
 
 
-	CUIObject* pUI = m_UImap.find(strTag)->second;
+		m_UImap.insert({ strTag, pUI });
 
-	Safe_Release(pUI);
-
-	m_UImap.erase(strTag);
-
-
+		Safe_AddRef(pUI);
+	}
+	
 }
 
 _bool CUI_Manager::Find_Panel()
 {
+	
+
 	auto& list = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Panel"));
 
 	if (list.empty())
@@ -43,12 +44,16 @@ _bool CUI_Manager::Find_Panel()
 		return false;
 	}
 
-
+	m_pPanel.clear();
+	
 	for (auto& pObj : list)
 	{
-		
+
 		m_pPanel.push_back(static_cast<CUIObject*>(pObj));
+
 	}
+	
+	
 
 	return true;
 }
@@ -56,10 +61,8 @@ _bool CUI_Manager::Find_Panel()
 void CUI_Manager::On_Panel()
 {
 	
-	if (m_pPanel.empty())
-		 Find_Panel();
-
-
+	if (!Find_Panel())
+		return;
 
 	for (auto& obj : m_pPanel)
 	{
@@ -70,9 +73,8 @@ void CUI_Manager::On_Panel()
 void CUI_Manager::Off_Panel()
 {
 	
-	if (m_pPanel.empty())
-		Find_Panel();
-
+	if (!Find_Panel())
+		return;
 
 
 	for (auto& obj : m_pPanel)
@@ -113,11 +115,14 @@ void CUI_Manager::Free()
 	__super::Free();
 
 	for (auto& pUI : m_UImap)
-	{
 		Safe_Release(pUI.second);
-	}
+	
 
 	m_UImap.clear();
+
+	for (auto& pPanel : m_pPanel)
+		Safe_Release(pPanel);
+
 	m_pPanel.clear();
 
 	Safe_Release(m_pGameInstance);

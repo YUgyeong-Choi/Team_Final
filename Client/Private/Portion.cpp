@@ -71,7 +71,7 @@ void CPortion::Use()
 		return;
 	}
 		
-
+	m_isUsable = true;
 
 	--m_iUseCount;
 	Heal();

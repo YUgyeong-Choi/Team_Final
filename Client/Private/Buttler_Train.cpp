@@ -42,9 +42,6 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	// 락온 용
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
-
-	if (m_pWeapon)
-		m_pWeapon->SetisAttack(false);
 	
 	return S_OK; 
 }
@@ -56,6 +53,9 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
+		m_pWeapon->Clear_Owner();
+		//m_pWeapon->Gravity_On();
+
 		// 충돌만 False
 		m_pWeapon->Collider_ShapeOff();
 		m_pWeapon->Collider_FilterOff();
@@ -65,7 +65,9 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 		{
 			// 씬에 지우는 건 딱 한번만
 			m_pPhysXActorCom->RemovePhysX();
-			m_pWeapon->Set_bDead();
+
+			(m_pWeapon)->Set_bDead();
+			
 		}
 	}
 }
@@ -74,6 +76,9 @@ void CButtler_Train::Update(_float fTimeDelta)
 {
 
 	Calc_Pos(fTimeDelta);
+
+
+
 
 	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
 	{
@@ -107,7 +112,11 @@ HRESULT CButtler_Train::Render()
 
 void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	
+	if (eColliderType == COLLIDERTYPE::MONSTER)
+	{
+		++m_iCollisionCount;
+		m_vPushDir -= HitNormal;
+	}
 	// 무기가 상태마다 한번씩 데미지 주고
 	// 이제 초기화하면 다시 데미지 줄 수 있게
 	ReceiveDamage(pOther, eColliderType);
@@ -116,12 +125,26 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if (eColliderType == COLLIDERTYPE::MONSTER)
+	{
+		// 계속 충돌중이면 빠져나갈 수 있게 좀 보정을
+		_vector vCorrection = HitNormal * 0.01f; 
+		m_vPushDir -= vCorrection;
+	}
 
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	
+	--m_iCollisionCount;
+
+	if (m_iCollisionCount <= 0)
+	{
+		m_iCollisionCount = 0;
+		m_vPushDir = { 0.f, 0.f, 0.f, 0.f };
+	}
+		
 }
 
 void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -130,7 +153,6 @@ void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CButtler_Train::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -236,6 +258,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 
+		m_pWeapon->SetisAttack(false);
+
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
 
@@ -265,8 +289,20 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos)
 				return;
 
-			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-			m_pAnimator->SetTrigger("Hit");
+			if (m_strStateName.find("Hit") != m_strStateName.npos)
+			{
+				
+				m_pAnimator->Get_CurrentAnimController()->SetState(m_strStateName);
+
+			}
+			else
+			{
+				m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+				m_pAnimator->SetTrigger("Hit");
+			}
+
+			
+
 			
 			if(m_fGroggyThreshold <= 0)
 				m_isCanGroggy = true;
@@ -290,15 +326,17 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
-	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
-	{
-		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-		m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
-	}
-	else 
-	{
-		RootMotionActive(fTimeDelta);
-	}
+	//if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
+	//{
+	//	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+	//	m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
+	//}
+	//else 
+	//{
+	//	RootMotionActive(fTimeDelta);
+	//}
+
+	RootMotionActive(fTimeDelta);
 
 }
 
@@ -342,6 +380,12 @@ void CButtler_Train::Register_Events()
 
 }
 
+void CButtler_Train::Guard_Reaction()
+{
+	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+	m_pAnimator->SetTrigger("Hit");
+}
+
 
 
 
@@ -360,8 +404,8 @@ HRESULT CButtler_Train::Ready_Weapon()
 	Desc.vAxis = { 0.f,1.f,0.f,0.f };
 	Desc.fRotationDegree = {90.f};
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 0.5f, 0.2f, 0.2f };
-
+	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
+	
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Desc.pOwner = this;

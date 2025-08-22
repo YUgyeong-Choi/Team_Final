@@ -79,6 +79,8 @@ public: /* [ Setup 함수 ] */
 
 	MONSTER_DIR Calc_TurnDir(_vector vOtherPos);
 
+	void Push_Other(_vector vHitPos, _vector vNormal);
+
 protected:
 
 
@@ -108,6 +110,9 @@ protected:
 
 	//
 	_float			m_fHeight = {};
+
+	_vector			m_vPushDir = {};
+	_int			m_iCollisionCount = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */

@@ -316,11 +316,12 @@ HRESULT CLevel_Logo::Ready_Menu()
 		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select"), &eSelectDesc)))
 		return E_FAIL;
 
-
+	
 	m_pSelectUI = dynamic_cast<CDynamic_UI*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select")));
 
 	if (!m_pSelectUI)
 		return E_FAIL;
+ 	
 
 
 	return S_OK;
