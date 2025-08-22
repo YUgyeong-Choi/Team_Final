@@ -256,7 +256,7 @@ HRESULT CLoader::Loading_For_Static()
 	lstrcpy(m_szLoadingText, TEXT("이펙트을(를) 로딩중입니다."));
 	if (FAILED(CEffect_Manager::Get_Instance()->Initialize(m_pDevice, m_pContext, TEXT("../Bin/Save/Effect/EffectContainer"))))
 		return E_FAIL;
-	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_Test.json"))))
+	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_Test_20_30_3.json"))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));

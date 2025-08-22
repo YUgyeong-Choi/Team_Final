@@ -1,0 +1,76 @@
+{
+    "Animation": false,
+    "Billboard": false,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+    ],
+    "Duration": 20,
+    "EffectType": 3,
+    "EmissiveIntensity": 0.0,
+    "EndTrack": 20,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeDuration": 0.5,
+    "LifeTime": 0.0,
+    "Loop": true,
+    "Name": "Player_BloodTrail",
+    "NodeInterval": 0.016599999740719795,
+    "NumKeyFrames": 1,
+    "RenderGroup": 8,
+    "ShaderPass": 1,
+    "StartTrack": 0,
+    "Subdivisions": 4,
+    "TextureTags": [
+        "T_Bullet_01_C_KMH",
+        "T_BloodSlash_01_C_KMH",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        true,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileX": 2,
+    "TileY": 1
+}

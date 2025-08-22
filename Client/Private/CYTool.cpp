@@ -388,8 +388,9 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::DragFloat("Glow Intensity", pEffect->Get_EmissiveIntensity_Ptr(), 0.05f, 0.0f, 10.f, "%.2f");
 	ImGui::PopItemWidth();
 	string strRGName;
-	for (_uint i = ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW); i < ENUM_CLASS(RENDERGROUP::RG_EFFECT_END); i++)
+	for (_uint i = ENUM_CLASS(RENDERGROUP::RG_BLEND); i < ENUM_CLASS(RENDERGROUP::RG_EFFECT_END); i++)
 	{
+		if (i == ENUM_CLASS(RENDERGROUP::RG_BLEND))strRGName = "RG_BLEND";
 		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_GLOW))strRGName = "RG_EFFECT_GLOW";
 		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB))strRGName = "RG_EFFECT_WB";
 		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL))strRGName = "RG_EFFECT_NL";
@@ -1140,10 +1141,10 @@ HRESULT CCYTool::Load_Effect()
 			break;
 			case Client::EFF_TRAIL:
 			{
-				CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player_Weapon"), 0);
+				CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::CY), TEXT("Player_Weapon"), 0);
 				CModel* pWeaponModelCom = static_cast<CModel*>(TestWeapon->Get_Component(TEXT("Com_Model")));
-				_uint iInnerBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade");
-				_uint iOuterBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_B");
+				_uint iInnerBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_B");
+				_uint iOuterBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_End");
 
 				CToolTrail::DESC desc = {};
 				desc.bAnimation = true;

@@ -96,6 +96,9 @@ public:
 	_float Get_CurrentDamage() { return m_fDamage; }
 	void Set_CurrentDamage(_float fDamage) { m_fDamage = fDamage; }
 
+protected:
+	void Spawn_MonsterHit_Effect(const _float3& vPos);
+
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };
 	_bool m_bIsPlayer = { false };

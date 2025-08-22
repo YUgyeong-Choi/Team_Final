@@ -22,7 +22,6 @@ VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out;
     
-    // 지금 월드 상태 가정하고 적음 아니 근데 아 로컬주고 여기서 곱하면 플레이어 무조건 따라다니잖아 진짜 고민한보람없네
     Out.vOuterPos = In.vOuterPos;
     Out.vInnerPos = In.vInnerPos;
     Out.vLifeTime = In.vLifeTime;   
@@ -34,7 +33,6 @@ VS_OUT VS_MAIN_DROP(VS_IN In)
 {
     VS_OUT Out;
     
-    // 지금 월드 상태 가정하고 적음 아니 근데 아 로컬주고 여기서 곱하면 플레이어 무조건 따라다니잖아 진짜 고민한보람없네
     Out.vOuterPos = In.vOuterPos;
     Out.vInnerPos = In.vInnerPos;
     Out.vLifeTime = In.vLifeTime;
@@ -97,8 +95,8 @@ void GS_MAIN(line VS_OUT input[2], inout TriangleStream<GS_OUT> Triangles)
     float2 uv[4] =
     {
         float2(0, v0), // Outer0
-        float2(1, v0), // Inner0
-        float2(1, v1), // Inner1
+        float2(2, v0), // Inner0
+        float2(2, v1), // Inner1
         float2(0, v1) // Outer1
     };
 
@@ -172,9 +170,9 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;
-    vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    vector vColor = g_DiffuseTexture.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     vColor = ColorAdjustment_Multiply(vColor, g_vColor);
-    float fMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    float fMask = g_MaskTexture1.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x);
     float fade = 1.0 - smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
     vColor.a *= fade * fMask;
@@ -185,8 +183,30 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.fRevealage = vColor.a;
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
     
-    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vDistortion = g_MaskTexture2.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     Out.vDistortion.a *= fade * fMask;
+    return Out;
+}
+
+
+struct PS_Blood_Blend
+{
+    vector vColor : SV_TARGET0;
+};
+
+PS_Blood_Blend PS_MAIN_Blood(PS_IN In)
+{
+    PS_Blood_Blend Out;
+    vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    vColor = ColorAdjustment_Multiply(vColor, g_vColor);
+    float fMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x);
+    float fade = 1.0 - smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
+    vColor.a *= fade * fMask;
+
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vColor = float4(vPremulRGB, vColor.a);
+    
     return Out;
 }
 
@@ -212,6 +232,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_DROP();
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN();
+    }
+    pass Blood_Drop // 2
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_DROP();
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_Blood();
     }
 
 }

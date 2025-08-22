@@ -7,6 +7,8 @@
 #include "PhysX_IgnoreSelfCallback.h"
 #include "PhysXController.h"
 #include "Camera_Manager.h"
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
 
 
 CUnit::CUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -338,6 +340,21 @@ AABBBOX CUnit::GetWorldAABB() const
 					  {wb.maximum.x, wb.maximum.y, wb.maximum.z} };
 
 	return worldBox;
+}
+
+void CUnit::Spawn_MonsterHit_Effect(const _float3& vPos)
+{
+	CEffectContainer::DESC desc = {};
+
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vPos.x, vPos.y, vPos.z));
+
+	CGameObject* pEffect = { nullptr };
+	/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc)
+		: rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
+		:*/ pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S3"), &desc);
+
+		if (pEffect == nullptr)
+			MSG_BOX("이펙트 생성 실패함");
 }
 
 CUnit* CUnit::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

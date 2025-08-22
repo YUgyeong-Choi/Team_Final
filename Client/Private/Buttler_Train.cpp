@@ -53,8 +53,8 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
-		m_pWeapon->Clear_Owner();
-		m_pWeapon->Gravity_On();
+		//m_pWeapon->Clear_Owner();
+		//m_pWeapon->Gravity_On();
 
 		// 충돌만 False
 		m_pWeapon->Collider_ShapeOff();
@@ -426,6 +426,6 @@ void CButtler_Train::Free()
 {
 	__super::Free();
 
-	//Safe_Release(m_pWeapon);
+	Safe_Release(m_pWeapon);
 
 }
