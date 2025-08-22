@@ -58,6 +58,9 @@ HRESULT CLevel_YW::Initialize()
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
 
+	//카메라 전환 비활성화
+	m_pCamera_Manager->Set_CameraSwitchEnabled(false);
+
 	// 무조건 커서를 보이게 만들기
 	while (ShowCursor(TRUE) < 0);
 

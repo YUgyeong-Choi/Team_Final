@@ -53,7 +53,7 @@ public:
 
 public:
 	HRESULT Initialize(const _float3* pPoints, _int iIndex);
-	_bool isIn(_fvector vLocalPos, _int* pNeighborIndex);
+	_bool isIn(_fvector vLocalPos, _int* pNeighborIndex, _float* pDist = nullptr);
 	_bool Compare(_fvector vSour, _fvector vDest);
 	_float Compute_Height(_fvector vLocalPos);
 

@@ -66,7 +66,12 @@ void CPortion::Use()
 {
 
 	if (m_iUseCount <= 0)
+	{
+		m_isUsable = false;
 		return;
+	}
+		
+	m_isUsable = true;
 
 	--m_iUseCount;
 	Heal();

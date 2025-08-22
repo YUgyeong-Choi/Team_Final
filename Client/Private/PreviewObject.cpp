@@ -44,7 +44,7 @@ HRESULT CPreviewObject::Initialize(void* pArg)
 	m_pCameraTransformCom->Set_RotationPreSec(1.f);
 	m_pCameraTransformCom->Set_SpeedPreSec(1.f);
 
-	m_pTransformCom->Set_RotationPreSec(1.f);
+	m_pTransformCom->Set_RotationPreSec(3.f);
 
 	Reset_CameraWorldMatrix();
 

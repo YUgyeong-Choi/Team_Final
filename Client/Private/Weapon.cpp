@@ -85,14 +85,13 @@ void CWeapon::Late_Update(_float fTimeDelta)
 		SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
 
 
-	if (m_pOwner != nullptr && ! m_pOwner->Get_bDead())
-	{
-		/*무기 월드 1.f, 소켓 월드, 부모 월드 0.02f */
-			XMStoreFloat4x4(&m_CombinedWorldMatrix,
-				XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *
-				SocketMatrix *
-				XMLoadFloat4x4(m_pParentWorldMatrix));
-	}
+	
+	/*무기 월드 1.f, 소켓 월드, 부모 월드 0.02f */
+		XMStoreFloat4x4(&m_CombinedWorldMatrix,
+			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) *
+			SocketMatrix *
+			XMLoadFloat4x4(m_pParentWorldMatrix));
+	
 	
 	
 

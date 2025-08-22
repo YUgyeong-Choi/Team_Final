@@ -171,6 +171,7 @@ void CBayonet::SetisAttack(_bool isAttack)
 	if (isAttack)
 	{
 		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+		m_pGameInstance->Get_Scene()->resetFiltering(*m_pPhysXActorCom->Get_Actor());
 	}
 	else
 	{
@@ -204,14 +205,14 @@ HRESULT CBayonet::Ready_Actor()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 	
-	PxVec3 halfExtents = PxVec3(0.4f, 1.5f, 0.4f);
+	PxVec3 halfExtents = PxVec3(0.2f, 1.f, 0.2f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+	m_pPhysXActorCom->Set_ShapeFlag(false, true, true);
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON; 
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY; // 일단 보류
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY; 
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);

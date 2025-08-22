@@ -19,7 +19,7 @@ CUnit::CUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 CUnit::CUnit(const CUnit& Prototype)
 	: CGameObject(Prototype)
-	, m_pAnimator(Prototype.m_pAnimator)
+	, m_pAnimator(nullptr)
 	, m_pShaderCom(Prototype.m_pShaderCom)
 {
 	Safe_AddRef(m_pAnimator);
@@ -90,6 +90,7 @@ void CUnit::Late_Update(_float fTimeDelta)
 		CGameObject::Compute_ViewZ(vCam, &vTemp);
 	}
 
+	/* [ 공간분할 ] */
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }

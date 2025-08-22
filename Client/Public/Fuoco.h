@@ -119,7 +119,7 @@ private:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 private:
-	virtual HRESULT Ready_Components() override;
+	virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT Ready_Actor() override;
 	virtual void Ready_BoneInformation() override;
 

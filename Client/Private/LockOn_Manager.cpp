@@ -344,8 +344,8 @@ CUnit* CLockOn_Manager::Change_ToLookTarget()
     const _long mouseX = m_pGameInstance->Get_DIMouseMove(DIMM::X);
     const _float  kDeadZone = 50.f;
     int sidePref = 0;
-    if (mouseX <= -kDeadZone) sidePref = +1;    // 왼쪽
-    else if (mouseX >= kDeadZone) sidePref = -1; // 오른쪽
+    if (mouseX <= -kDeadZone) sidePref = -1;    // 왼쪽
+    else if (mouseX >= kDeadZone) sidePref = +1; // 오른쪽
     else
         return nullptr; // 미세 이동이면 현재 대상 유지
 

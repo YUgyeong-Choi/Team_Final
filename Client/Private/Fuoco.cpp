@@ -28,18 +28,37 @@ HRESULT CFuoco::Initialize(void* pArg)
 	/* [ 데미지 설정 ] */
 	m_fDamage = 15.f;
 
-	UNIT_DESC UnitDesc{};
-	UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	UnitDesc.fRotationPerSec = XMConvertToRadians(140.f);
-	UnitDesc.fSpeedPerSec = m_fWalkSpeed;
-	lstrcpy(UnitDesc.szName, TEXT("FireEater"));
-	UnitDesc.szMeshID = TEXT("FireEater");
-	UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
-	//UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
-	UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
+	if (pArg == nullptr)
+	{
+		UNIT_DESC UnitDesc{};
+		UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+		UnitDesc.fRotationPerSec = XMConvertToRadians(140.f);
+		UnitDesc.fSpeedPerSec = m_fWalkSpeed;
+		lstrcpy(UnitDesc.szName, TEXT("FireEater"));
+		UnitDesc.szMeshID = TEXT("FireEater");
+		UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
+		//UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
+		UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
 
-	if (FAILED(__super::Initialize(&UnitDesc)))
-		return E_FAIL;
+		if (FAILED(__super::Initialize(&UnitDesc)))
+			return E_FAIL;
+	}
+	else
+	{
+		UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
+
+		lstrcpy(pDesc->szName, TEXT("FireEater"));
+		pDesc->szMeshID = TEXT("FireEater");
+		pDesc->fRotationPerSec = XMConvertToRadians(140.f);
+		pDesc->fSpeedPerSec = m_fWalkSpeed;
+
+		//UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
+		//UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
+		//UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
+
+		if (FAILED(__super::Initialize(pArg)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -100,9 +119,9 @@ void CFuoco::Late_Update(_float fTimeDelta)
 }
 
 
-HRESULT CFuoco::Ready_Components()
+HRESULT CFuoco::Ready_Components(void* pArg)
 {
-	if (FAILED(__super::Ready_Components()))
+	if (FAILED(__super::Ready_Components(pArg)))
 		return E_FAIL;	
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXActorComForArm))))

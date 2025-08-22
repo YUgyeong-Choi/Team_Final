@@ -200,7 +200,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	/* [ 특수행동 ] */
 	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
-
+	static _int i = 0;
 	/* [ 이곳은 애니메이션 실험실입니다. ] */
 	if(KEY_DOWN(DIK_Y))
 	{
@@ -211,15 +211,21 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
-		m_pAnimator->SetInt("HitDir", m_iTestInt);
-		m_pAnimator->SetTrigger("Hited");
+		//m_pAnimator->SetInt("HitDir", m_iTestInt);
+		//m_pAnimator->SetTrigger("Hited");
+		m_pAnimator->SetTrigger("NormalAttack");
+
 		m_iTestInt++;
 	}
+
 	if (KEY_DOWN(DIK_U))
 	{
 
-	}
+		m_pAnimator->SetTrigger("Dash");
 
+		cout << "왼쪽 : " << m_pAnimator->CheckBool("Left") << endl;
+		cout << "오른쪽 : " << m_pAnimator->CheckBool("Right") << endl;
+	}
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -349,6 +355,7 @@ void CPlayer::SitAnimationMove(_float fTimeDelta)
 void CPlayer::HandleInput()
 {
 	/* [ 키 입력을 업데이트합니다. ] */
+	m_bWalk ? m_pAnimator->SetBool("Run", false) : m_pAnimator->SetBool("Run", true);
 	if(KEY_PRESSING(DIK_W) || KEY_PRESSING(DIK_S) || KEY_PRESSING(DIK_A) || KEY_PRESSING(DIK_D))
 		m_Input.bMove = true;
 	else
@@ -433,6 +440,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		
 		m_pTransformCom->SetbSpecialMoving();
 
+		if (m_pWeapon)
+		{
+			m_pWeapon->SetisAttack(false);
+			m_pWeapon->Set_WeaponTrail_Active(false);
+		}
+		if (m_pLegionArm)
+			m_pLegionArm->SetisAttack(false);
 	}
 	
 	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
@@ -464,7 +478,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 
@@ -494,7 +507,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -523,7 +535,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -552,7 +563,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -590,7 +600,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 				m_pWeapon->Clear_CollisionObj();
 			}
 		}
@@ -601,7 +610,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetTwo = true;
-				m_pWeapon->SetisAttack(true);
 				m_pWeapon->Clear_CollisionObj();
 			}
 		}
@@ -621,7 +629,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -779,7 +786,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 20.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
-			m_pWeapon->SetisAttack(true);
 		}
 
 		break;
@@ -802,7 +808,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 20.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
-			m_pWeapon->SetisAttack(true);
 		}
 
 		break;
@@ -852,22 +857,16 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::MAINSKILLA:
 	{
 		RootMotionActive(fTimeDelta);
-		m_pWeapon->SetisAttack(true);
-
 		break;
 	}
 	case eAnimCategory::MAINSKILLB:
 	{
 		RootMotionActive(fTimeDelta);
-		m_pWeapon->SetisAttack(true);
-
 		break;
 	}
 	case eAnimCategory::MAINSKILLC:
 	{
 		RootMotionActive(fTimeDelta);
-		m_pWeapon->SetisAttack(true);
-
 		break;
 	}
 	case eAnimCategory::HITED:
@@ -876,6 +875,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		break;
 	}
 	case eAnimCategory::GRINDER:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	}
+	case eAnimCategory::PULSE:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 	}
@@ -954,7 +957,9 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::ARM_ATTACKCHARGE;
 	if (stateName.find("Fail_Arm") == 0)
 		return eAnimCategory::ARM_FAIL;
-
+	if (stateName.find("Heal") == 0)
+		return eAnimCategory::PULSE;
+	
 	return eAnimCategory::NONE;
 }
 
@@ -1182,7 +1187,10 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
+
+
 		m_vHitNormal = vOtherPos - vPlayerPos;
+		
 
 		//1. 애니메이션 상태를 히트로 바꾼다.
 
@@ -1191,8 +1199,13 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		{
 			m_bGardHit = true;
 
+
+			
 			//
-			pUnit->Guard_Reaction();
+			EHitDir eDir = ComputeHitDir();
+
+			if(eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
+				pUnit->Guard_Reaction();
 
 			return;
 		}
@@ -1250,8 +1263,12 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		{
 			m_bGardHit = true;
 
+
 			//
-			pUnit->Guard_Reaction();
+			EHitDir eDir = ComputeHitDir();
+
+			if (eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
+				pUnit->Guard_Reaction();
 
 			return;
 		}
@@ -1387,7 +1404,7 @@ HRESULT CPlayer::Ready_UIParameters()
 	auto pPortion = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"), nullptr);
 
 	m_pBelt_Up->Add_Item(static_cast<CItem*>(pPortion), 0);
-
+	
 
 	m_pSelectItem = m_pBelt_Up->Get_Items()[0];
 
@@ -1713,9 +1730,10 @@ void CPlayer::LockOnState(_float fTimeDelta)
 
 		if (KEY_UP(DIK_SPACE))
 			m_bLockOnSprint = true;
+
 	}
 	/* [ 스페이스를 뗀 순간 회전 보간을 시작한다. ] */
-	if (m_bLockOnSprint)
+	if (pTarget && m_bLockOnSprint)
 	{
 		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -1754,7 +1772,6 @@ void CPlayer::LockOnState(_float fTimeDelta)
 		m_bIsLockOn = false;
 		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 
-		m_pAnimator->SetBool("Front", false);
 		m_pAnimator->SetBool("Front", false);
 		m_pAnimator->SetBool("Left", false);
 		m_pAnimator->SetBool("Right", false);
@@ -1992,7 +2009,8 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 			}
 
 			/* [ 락온보간중이 아닐 때만 ] */
-			if (!m_bLockOnSprint)
+			CUnit* pTarget = m_pLockOn_Manager->Get_Target();
+			if (!m_bIsLockOn)
 				m_pTransformCom->TurnAngle(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
 		}
 	}
@@ -2023,7 +2041,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
 
 	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
-
+	
 	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 	PxControllerFilters filters;
 	filters.mFilterCallback = &filter; // 필터 콜백 지정

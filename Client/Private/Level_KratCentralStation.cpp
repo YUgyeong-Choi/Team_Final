@@ -42,6 +42,11 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 	m_pGameInstance->Set_IsChangeLevel(false);
 
+	/* [ 사운드 ] */
+	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
+	m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
+	m_pBGM->Play();
+
 	if(FAILED(Ready_Video()))
 		return E_FAIL;
 
@@ -64,10 +69,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
-	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
-	m_pBGM->Play();
-
 	return S_OK;
 }
 
@@ -80,6 +81,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		m_pGameInstance->ClearRenderObjects();
 		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 		m_pGameInstance->Reset_All();
+		CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
@@ -91,18 +93,16 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 	//	m_pStartVideo = nullptr;
 		m_bEndVideo = true;
 
-		m_pBGM->Play();
-
 		/* [ 플레이어 제어 ] */
-		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
+		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_End");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 	}
 
-	if ((m_pStartVideo == nullptr || m_pStartVideo->Get_bDead()) && !m_bEndVideo)
+	if (m_pStartVideo->Get_bDead() && !m_bEndVideo)
 	{
-		m_pStartVideo = nullptr;
+	//	m_pStartVideo = nullptr;
 
-		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
+		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_End");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 
 		m_bEndVideo = true;
@@ -201,8 +201,8 @@ HRESULT CLevel_KratCentralStation::Render()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
-	/*if (FAILED(Ready_Dummy()))
-		return E_FAIL;*/
+	if (FAILED(Ready_Dummy()))
+		return E_FAIL;
 	if (FAILED(Add_MapActor()))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Ready_Lights()))
@@ -227,8 +227,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	// 문 같이 상호작용 하는 것들
-	//if (FAILED(Ready_Interact()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Interact()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -688,8 +688,6 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	//	return E_FAIL;
 #pragma endregion
 
-
-
 	return S_OK;
 }
 
@@ -722,6 +720,22 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				for (_int col = 0; col < 4; ++col)
 					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
+			//만약 보스몹(푸오코라면 다른 방식으로 소환
+			if (wstrMonsterName == TEXT("FireEater"))
+			{
+				CUnit::UNIT_DESC UnitDesc{};
+				UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+				UnitDesc.wsNavName = StringToWString(Map);
+				UnitDesc.WorldMatrix = WorldMatrix;
+
+				//푸오쿠는 따로 생성
+				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &UnitDesc)))
+					return E_FAIL;
+
+				continue;
+			}
+
 			// 오브젝트 생성 Desc 채우기
 			CMonster_Base::MONSTER_BASE_DESC Desc{};
 
@@ -730,12 +744,11 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 			Desc.fHeight = 1.f;
 			Desc.vExtent = { 0.5f,1.f,0.5f };
 			Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-			Desc.WorldMatrix = WorldMatrix;
 			Desc.szMeshID = wstrMonsterName.c_str();
 			Desc.wsNavName = StringToWString(Map);
+			Desc.WorldMatrix = WorldMatrix;
 
 			wstring wsPrototypeTag = TEXT("Prototype_GameObject_Monster_") + wstrMonsterName;
-
 
 			if (FAILED(m_pGameInstance->Add_GameObject(
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
@@ -854,7 +867,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
-
+	Desc.pBGM = m_pBGM;
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
