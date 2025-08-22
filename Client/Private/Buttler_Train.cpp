@@ -380,13 +380,13 @@ void CButtler_Train::Register_Events()
 
 }
 
-void CButtler_Train::Guard_Reaction()
-{
-	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-	m_pAnimator->SetTrigger("Hit");
-}
-
-
+//void CButtler_Train::Guard_Reaction()
+//{
+//	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+//	m_pAnimator->SetTrigger("Hit");
+//}
+//
+//
 
 
 HRESULT CButtler_Train::Ready_Weapon()
