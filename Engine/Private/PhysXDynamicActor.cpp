@@ -167,6 +167,7 @@ void CPhysXDynamicActor::Free()
 {
 	if (m_pActor)
 	{
+		m_pGameInstance->Get_Scene()->removeActor(*m_pActor);
 		m_pActor->release();
 		m_pActor = nullptr;
 	}
