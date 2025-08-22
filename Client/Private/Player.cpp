@@ -1834,6 +1834,11 @@ void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)
 		Callback_DownBelt();
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_U))
+	{
+		Find_Slot(L"Prototype_GameObject_Portion");
+	}
+
 
 
 	m_pBelt_Up->Priority_Update(fTimeDelta);
@@ -1850,6 +1855,35 @@ void CPlayer::LateUpdate_Slot(_float fTimeDelta)
 {
 	m_pBelt_Up->Late_Update(fTimeDelta);
 	m_pBelt_Down->Late_Update(fTimeDelta);
+}
+
+_bool CPlayer::Find_Slot(const _wstring& strItemTag)
+{
+	if(m_pBelt_Up->Find_Item(strItemTag))
+	{
+		m_pSelectItem = m_pBelt_Up->Get_Current_Item();
+
+		m_isSelectUpBelt = true;
+
+		Callback_UpBelt();
+
+		return true;
+	}
+
+	if (m_pBelt_Down->Find_Item(strItemTag))
+	{
+		m_pSelectItem = m_pBelt_Down->Get_Current_Item();
+
+		m_isSelectUpBelt = false;
+
+		Callback_DownBelt();
+
+		return true;
+	}
+
+
+
+	return false;
 }
 
 void CPlayer::Set_GrinderEffect_Active(_bool bActive)

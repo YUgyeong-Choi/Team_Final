@@ -104,8 +104,8 @@ void CBelt::Change_Next_Item()
 
 	}
 
-	// 하나만 있거나 없어서 index 처리할 필요가 없음
-	if (1 >= iCount)
+	// 아무것도 없으면 하지 마.
+	if (0 >= iCount)
 	{
 
 		return;
@@ -145,13 +145,16 @@ _bool CBelt::Find_Item(const _wstring& strProtoTag)
 
 	for (int i =0; i< m_Items.size(); ++i)
 	{
-
-		if (m_Items[i]->Get_ProtoTag() == strProtoTag)
+		if (nullptr != m_Items[i])
 		{
-			m_iSelectIndex = i - 1;
-			Change_Next_Item();
-			return true;
+			if (m_Items[i]->Get_ProtoTag() == strProtoTag)
+			{
+				m_iSelectIndex = i - 1;
+				Change_Next_Item();
+				return true;
+			}
 		}
+		
 	}
 
 	return false;
