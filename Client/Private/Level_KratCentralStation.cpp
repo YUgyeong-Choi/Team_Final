@@ -42,6 +42,11 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 	m_pGameInstance->Set_IsChangeLevel(false);
 
+	/* [ 사운드 ] */
+	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
+	m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
+	m_pBGM->Play();
+
 	if(FAILED(Ready_Video()))
 		return E_FAIL;
 
@@ -64,10 +69,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
-	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
-	m_pBGM->Play();
-
 	return S_OK;
 }
 
@@ -80,6 +81,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		m_pGameInstance->ClearRenderObjects();
 		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 		m_pGameInstance->Reset_All();
+		CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
@@ -90,8 +92,6 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 			m_pStartVideo->Set_bDead();
 	//	m_pStartVideo = nullptr;
 		m_bEndVideo = true;
-
-		m_pBGM->Play();
 
 		/* [ 플레이어 제어 ] */
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
@@ -227,8 +227,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	// 문 같이 상호작용 하는 것들
-	//if (FAILED(Ready_Interact()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Interact()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -854,7 +854,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
-
+	Desc.pBGM = m_pBGM;
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;

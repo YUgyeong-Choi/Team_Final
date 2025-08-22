@@ -22,6 +22,7 @@ public:
     HRESULT LoadSound(const string& Path, _bool is3D, _bool loop, _bool stream, unordered_map<string, class CSound_Core*>* _Out_ pOut = nullptr);
     void Set_Listener_Position(class CTransform* pTransform, const _float3& vel);
     class CSound_Core* Get_Single_Sound(const string& strKey);
+    void Release_Single_Sound(const string& strKey);
     void Set_Master_Volume(_float volume);
 private:
     FMOD::DSP* m_pMasterLimiter = nullptr;
