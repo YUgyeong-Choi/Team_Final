@@ -13,6 +13,9 @@
 #include "Item.h"
 #include "Belt.h"
 
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
+
 NS_BEGIN(Client)
 
 _float g_fWalkSpeed = 1.5f;
@@ -1941,6 +1944,25 @@ public:
                     printf(" 너 퍼펙트 가드성공했어. \n");
                     m_pOwner->m_bPerfectGardDamege = true;
                     m_pOwner->HPSubtract();
+
+                    /*********************************************************/
+                    _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
+                    _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
+
+                    vPos += vDir * 1.5f;
+                    _float3 vEffPos = {};
+                    XMStoreFloat3(&vEffPos, vPos);
+                    vEffPos.y += 0.5f;
+                    
+                    CEffectContainer::DESC desc = {};
+
+                    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+
+                    CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardPerfect_P3S6"), &desc);
+
+                    if (pEffect == nullptr)
+                        MSG_BOX("이펙트 생성 실패함");
+                    /*********************************************************/
                 }
                 else
                 {
@@ -1948,6 +1970,26 @@ public:
                     printf(" 너 가드성공했어. \n");
                     m_pOwner->m_bGardDamege = true;
                     m_pOwner->HPSubtract();
+
+                    /*********************************************************/
+                    _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
+                    _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
+
+                    vPos += vDir * 1.5f;
+                    _float3 vEffPos = {};
+                    XMStoreFloat3(&vEffPos, vPos);
+                    vEffPos.y += 0.5f;
+
+                    CEffectContainer::DESC desc = {};
+
+                    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+
+                    CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardNormal_P2"), &desc);
+
+                    if (pEffect == nullptr)
+                        MSG_BOX("이펙트 생성 실패함");
+                    /*********************************************************/
+
                 }
             }
             else
