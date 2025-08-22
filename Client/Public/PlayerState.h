@@ -2831,12 +2831,11 @@ public:
         /*********************************************************/
 
         _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
-        _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
 
-        vPos += vDir * 1.5f;
+        vPos += m_pOwner->m_vHitNormal * 0.5f;
         _float3 vEffPos = {};
         XMStoreFloat3(&vEffPos, vPos);
-        vEffPos.y += 0.5f;
+        vEffPos.y += 1.7f;
 
         CEffectContainer::DESC desc = {};
 
