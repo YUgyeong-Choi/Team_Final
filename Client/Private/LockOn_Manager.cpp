@@ -11,6 +11,7 @@ IMPLEMENT_SINGLETON(CLockOn_Manager)
 CLockOn_Manager::CLockOn_Manager() 
     :m_pGameInstance{ CGameInstance::Get_Instance() }
 {
+    Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CLockOn_Manager::Initialize(LEVEL eLevel)
