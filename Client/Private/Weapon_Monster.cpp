@@ -168,10 +168,10 @@ void CWeapon_Monster::SetisAttack(_bool isAttack)
 	}
 }
 
-void CWeapon_Monster::Gravity_On()
-{
-	m_pPhysXActorCom->Set_Kinematic(false);
-}
+//void CWeapon_Monster::Gravity_On()
+//{
+//	m_pPhysXActorCom->Set_Kinematic(false);
+//}
 
 HRESULT CWeapon_Monster::Ready_Components()
 {

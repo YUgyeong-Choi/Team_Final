@@ -161,11 +161,10 @@ HRESULT CMonster_Base::Render()
 	__super::Render();
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()) {
+	if (m_pPhysXActorCom && m_pGameInstance->Get_RenderCollider() && m_pPhysXActorCom->Get_ReadyForDebugDraw()) {
 		m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 	}
 #endif
-
 
 	return S_OK;
 }
@@ -243,7 +242,7 @@ HRESULT CMonster_Base::Ready_Actor(void* pArg)
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON | FILTER_MONSTERBODY; // 일단 보류
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON | FILTER_MONSTERBODY | FILTER_PLAYERBODY; // 일단 보류
 	//filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
@@ -387,6 +386,9 @@ void CMonster_Base::LoadAnimDataFromJson()
 
 void CMonster_Base::Update_Collider()
 {
+	if (!m_pPhysXActorCom)
+		return;
+
 	// 1. 월드 행렬 가져오기
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
 

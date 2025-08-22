@@ -53,22 +53,19 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
-		m_pWeapon->Clear_Owner();
-		//m_pWeapon->Gravity_On();
-
-		// 충돌만 False
-		m_pWeapon->Collider_ShapeOff();
-		m_pWeapon->Collider_FilterOff();
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, true);
-		m_pPhysXActorCom->Init_SimulationFilterData();
 		if (m_pAnimator->IsFinished())
 		{
-			// 씬에 지우는 건 딱 한번만
-			m_pPhysXActorCom->RemovePhysX();
-
 			(m_pWeapon)->Set_bDead();
-			
 		}
+	}
+
+	if (m_fHp <= 0 && !m_bOffCollider)
+	{
+		m_pWeapon->Collider_FilterOff();
+		m_bOffCollider = true;
+		m_pPhysXActorCom->RemovePhysX();
+		Safe_Release(m_pPhysXActorCom);
+		m_pPhysXActorCom = nullptr;
 	}
 }
 
@@ -85,6 +82,12 @@ void CButtler_Train::Update(_float fTimeDelta)
 		m_fDuration += fTimeDelta;
 
 		m_pAnimator->SetFloat("GroggyTime", m_fDuration);
+	}
+
+
+	if (m_strStateName.find("Hit") != m_strStateName.npos)
+	{
+		m_pWeapon->SetisAttack(false);
 	}
 
 	__super::Update(fTimeDelta);
@@ -117,9 +120,13 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 		++m_iCollisionCount;
 		m_vPushDir -= HitNormal;
 	}
+	//else if (eColliderType == COLLIDERTYPE::PLAYER)
+		//m_isCollisionPlayer = true;
+
+
 	// 무기가 상태마다 한번씩 데미지 주고
 	// 이제 초기화하면 다시 데미지 줄 수 있게
-	ReceiveDamage(pOther, eColliderType);
+	//ReceiveDamage(pOther, eColliderType);
 
 }
 
@@ -131,19 +138,25 @@ void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollide
 		_vector vCorrection = HitNormal * 0.01f; 
 		m_vPushDir -= vCorrection;
 	}
+	//else if (eColliderType == COLLIDERTYPE::PLAYER)
+		//m_isCollisionPlayer = false;
 
-	ReceiveDamage(pOther, eColliderType);
+	//ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	--m_iCollisionCount;
-
-	if (m_iCollisionCount <= 0)
+	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
-		m_iCollisionCount = 0;
-		m_vPushDir = { 0.f, 0.f, 0.f, 0.f };
+		--m_iCollisionCount;
+
+		if (m_iCollisionCount <= 0)
+		{
+			m_iCollisionCount = 0;
+			m_vPushDir = { 0.f, 0.f, 0.f, 0.f };
+		}
 	}
+	
 		
 }
 
@@ -153,6 +166,7 @@ void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CButtler_Train::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -258,7 +272,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 
-		m_pWeapon->SetisAttack(false);
+		//m_pWeapon->SetisAttack(false);
 
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
@@ -380,7 +394,7 @@ void CButtler_Train::Register_Events()
 
 }
 
-void CButtler_Train::Guard_Reaction()
+void CButtler_Train::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 	m_pAnimator->SetTrigger("Hit");

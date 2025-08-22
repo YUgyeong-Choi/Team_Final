@@ -48,6 +48,8 @@ public:
 	virtual void Register_Events();
 	void Guard_Reaction();
 
+	virtual void Block_Reaction();
+
 
 private:
 	HRESULT Ready_Weapon(); 

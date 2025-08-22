@@ -49,7 +49,7 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	
-
+	virtual void Block_Reaction() {};
 
 public: /* [ Setup 함수 ] */
 	HRESULT Ready_Components(void* pArg);
@@ -113,6 +113,8 @@ protected:
 
 	_vector			m_vPushDir = {};
 	_int			m_iCollisionCount = {};
+
+	_bool			m_bOffCollider = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */
