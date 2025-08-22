@@ -19,7 +19,10 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	
+	// 레벨 설정
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::LOGO));
+	//m_pGameInstance->Set_IsChangeLevel(false);
+
 
 	if (FAILED(Ready_Video()))
 		return E_FAIL;
@@ -189,7 +192,7 @@ HRESULT CLevel_Logo::Ready_Video()
 	eBackDesc.fSizeY = g_iWinSizeY;
 	eBackDesc.iPassIndex = 0;
 	eBackDesc.iTextureIndex = 0;
-	eBackDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+	eBackDesc.strTextureTag = TEXT("Prototype_Component_Texture_Button_Select");
 	eBackDesc.vColor = { 0.f,0.f,0.f,1.f };
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),

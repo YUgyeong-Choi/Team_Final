@@ -40,7 +40,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 {
 	/* [ 레벨 셋팅 ] */
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-	m_pGameInstance->Set_IsChangeLevel(false);
+	//m_pGameInstance->Set_IsChangeLevel(false);
 
 	/* [ 사운드 ] */
 	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
@@ -84,6 +84,8 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
+
+		
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_bEndVideo)

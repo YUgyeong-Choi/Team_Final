@@ -78,7 +78,6 @@ void CUI_Video::Update(_float fTimeDelta)
 
 		HRESULT hr = ReadFrameToBuffer(&pData, &width, &height, &time);
 		
-
 		if (hr == MF_E_END_OF_STREAM || hr == AVERROR_EOF)
 		{
 			if (m_isLoop)
@@ -91,7 +90,7 @@ void CUI_Video::Update(_float fTimeDelta)
 			}
 			else
 			{
-				Safe_Release(m_pVideoSRV);
+				//Safe_Release(m_pVideoSRV); 
 			
 				Set_bDead();
 				return;
@@ -384,11 +383,11 @@ HRESULT CUI_Video::Ready_Components()
 {
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
+	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_UI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Replace_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
