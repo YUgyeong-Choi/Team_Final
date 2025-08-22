@@ -100,7 +100,9 @@ void CPhysXController::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQ
             pShape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, bSimulation);
             pShape->setFlag(PxShapeFlag::eTRIGGER_SHAPE, bTrigger);
             pShape->setFlag(PxShapeFlag::eSCENE_QUERY_SHAPE, bQuery);
+#ifdef _DEBUG
             m_bReadyForDebugDraw = bSimulation || bTrigger;
+#endif
         }
     }
 }
@@ -145,7 +147,9 @@ void CPhysXController::Init_SimulationFilterData()
             filterData.word0 = 0;
             filterData.word1 = 0;
             pShape->setSimulationFilterData(filterData);
+#ifdef _DEBUG
             m_bReadyForDebugDraw = true;
+#endif
         }
     }
 }
@@ -166,7 +170,9 @@ void CPhysXController::Set_QueryFilterData(PxFilterData filter)
         if (pShape)
         {
             pShape->setQueryFilterData(filter);
+#ifdef _DEBUG
             m_bReadyForDebugDraw = false;
+#endif
         }
     }
 }

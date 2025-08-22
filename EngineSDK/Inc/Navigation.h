@@ -35,7 +35,9 @@ public:
 
 public:
 	void Set_ShaderPass(ShaderPass eShaderPass) {
+#ifdef _DEBUG
 		m_iShaderPass = ENUM_CLASS(eShaderPass);
+#endif
 	}
 
 public:
