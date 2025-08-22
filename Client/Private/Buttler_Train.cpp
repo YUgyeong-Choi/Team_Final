@@ -71,10 +71,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 void CButtler_Train::Update(_float fTimeDelta)
 {
-
 	Calc_Pos(fTimeDelta);
-
-
 
 
 	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
@@ -178,7 +175,7 @@ void CButtler_Train::Update_State()
 	 Check_Detect();
 
 	 m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-
+	 
 	 if (!m_isDetect || m_fHp <= 0)
 	 {
 		 m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;

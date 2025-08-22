@@ -1275,6 +1275,9 @@ public:
             }
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
+
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
         }
 
         
@@ -1391,6 +1394,9 @@ public:
             }
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
+
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
         }
 
         if (1.4f < m_fStateTime)
@@ -1513,6 +1519,9 @@ public:
             }
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
+
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
         }
         if (1.5f < m_fStateTime)
         {
@@ -1633,6 +1642,9 @@ public:
             }
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
+
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
         }
 
         if (2.5f < m_fStateTime)
@@ -1731,6 +1743,9 @@ public:
 
         if (2.5f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             if (m_pOwner->m_bIsChange && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
             {
                 m_pOwner->m_bIsChange = false;
@@ -1833,6 +1848,9 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             /* [ 펄스 예약제 ] */
             if (m_pOwner->m_bPulseReservation)
                 return EPlayerState::USEITEM;
@@ -2227,6 +2245,9 @@ public:
 
         if (1.f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             /* [ 펄스 예약제 ] */
             if (m_pOwner->m_bPulseReservation)
                 return EPlayerState::USEITEM;
@@ -2334,6 +2355,9 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             /* [ 펄스 예약제 ] */
             if (m_pOwner->m_bPulseReservation)
                 return EPlayerState::USEITEM;
@@ -2429,6 +2453,9 @@ public:
 
         if (1.5f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             /* [ 펄스 예약제 ] */
             if (m_pOwner->m_bPulseReservation)
                 return EPlayerState::USEITEM;
@@ -2620,6 +2647,9 @@ public:
 
         if (1.f < m_fStateTime && m_iSkillCount == 0)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             if(m_bAttackA)
 				return EPlayerState::WEAKATTACKA;
 			if (m_bAttackB)
@@ -2640,6 +2670,9 @@ public:
         }
         if (2.f < m_fStateTime && m_iSkillCount == 1)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             if (m_bAttackA)
                 return EPlayerState::WEAKATTACKA;
             if (m_bAttackB)
@@ -2660,6 +2693,9 @@ public:
         }
         if (3.5f < m_fStateTime && m_iSkillCount >= 2)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             if (m_bAttackA)
                 return EPlayerState::WEAKATTACKA;
             if (m_bAttackB)

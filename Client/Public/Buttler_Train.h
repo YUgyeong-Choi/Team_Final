@@ -46,11 +46,8 @@ public:
 
 	
 	virtual void Register_Events();
-	void Guard_Reaction();
 
 	virtual void Block_Reaction();
-
-	void Guard_Reaction();
 
 
 private:

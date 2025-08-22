@@ -87,8 +87,8 @@ void CLayer::Late_Update(_float fTimeDelta)
 	{
 		if (nullptr != pGameObject)
 		{
-			if (!pGameObject->Get_isActive())
-				continue;
+			//if (!pGameObject->Get_isActive())
+			//	continue;
 
 			_float fScaledDelta = pGameObject->Get_TimeScale() * fTimeDelta;
 			pGameObject->Late_Update(fScaledDelta);

@@ -140,7 +140,7 @@ void CMonster_Base::Update(_float fTimeDelta)
 void CMonster_Base::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-
+	
 	if (nullptr != m_pHPBar)
 	{
 		// 더 좋은 방법 있으면 바꾸기

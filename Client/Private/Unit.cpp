@@ -90,24 +90,36 @@ void CUnit::Late_Update(_float fTimeDelta)
 		CGameObject::Compute_ViewZ(vCam, &vTemp);
 	}
 
-	/* [ 공간분할 ] */
-	vector<AABBBOX> CurrentBounds;
-	m_pGameInstance->GetActiveAreaBounds(CurrentBounds);
-	if (CurrentBounds.empty())
-		return;
-
-	AABBBOX tAreaUnion = CurrentBounds[0];
-	for (_uint iArea = 1; iArea < static_cast<_uint>(CurrentBounds.size()); ++iArea)
+	if (m_pPhysXActorCom)
 	{
-		// 현재 영역들의 AABB를 합친다 (1차 핉터)
-		AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
-	}
-	AABB_Inflate(tAreaUnion, 10.f);
+		/* [ 공간분할 ] */
+		vector<AABBBOX> CurrentBounds;
+		m_pGameInstance->GetActiveAreaBounds(CurrentBounds);
+		if (CurrentBounds.empty())
+			return;
 
-	if (AABB_IntersectsAABB(GetWorldAABB(), tAreaUnion))
-	{
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		AABBBOX tAreaUnion = CurrentBounds[0];
+		for (_uint iArea = 1; iArea < static_cast<_uint>(CurrentBounds.size()); ++iArea)
+		{
+			// 현재 영역들의 AABB를 합친다 (1차 핉터)
+			AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
+		}
+		AABB_Inflate(tAreaUnion, 10.f);
+
+		/*_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+		_float3 vPos3 = {};
+		XMStoreFloat3(&vPos3, vPos);*/
+
+		if (AABB_ContainsAABB(tAreaUnion, GetWorldAABB()))
+		{
+			m_isActive = true;
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		}
+		else
+		{
+			m_isActive = false;
+		}
 	}
 }
 
