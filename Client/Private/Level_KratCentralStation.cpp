@@ -94,15 +94,15 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		m_pBGM->Play();
 
 		/* [ 플레이어 제어 ] */
-		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
+		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_End");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 	}
 
-	if ((m_pStartVideo == nullptr || m_pStartVideo->Get_bDead()) && !m_bEndVideo)
+	if (m_pStartVideo->Get_bDead() && !m_bEndVideo)
 	{
-		m_pStartVideo = nullptr;
+	//	m_pStartVideo = nullptr;
 
-		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_Loop");
+		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_End");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 
 		m_bEndVideo = true;
@@ -223,8 +223,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
-	//if (FAILED(Ready_Monster()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Monster()))
+		return E_FAIL;
 
 	// 문 같이 상호작용 하는 것들
 	//if (FAILED(Ready_Interact()))

@@ -200,7 +200,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	/* [ 특수행동 ] */
 	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
-
+	static _int i = 0;
 	/* [ 이곳은 애니메이션 실험실입니다. ] */
 	if(KEY_DOWN(DIK_Y))
 	{
@@ -211,13 +211,20 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
-		m_pAnimator->SetInt("HitDir", m_iTestInt);
-		m_pAnimator->SetTrigger("Hited");
+		//m_pAnimator->SetInt("HitDir", m_iTestInt);
+		//m_pAnimator->SetTrigger("Hited");
+		m_pAnimator->SetTrigger("NormalAttack");
+
 		m_iTestInt++;
 	}
+
 	if (KEY_DOWN(DIK_U))
 	{
 
+		m_pAnimator->SetTrigger("Dash");
+
+		cout << "왼쪽 : " << m_pAnimator->CheckBool("Left") << endl;
+		cout << "오른쪽 : " << m_pAnimator->CheckBool("Right") << endl;
 	}
 
 
@@ -464,7 +471,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 
@@ -494,7 +500,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -523,7 +528,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -552,7 +556,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -590,7 +593,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 				m_pWeapon->Clear_CollisionObj();
 			}
 		}
@@ -601,7 +603,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetTwo = true;
-				m_pWeapon->SetisAttack(true);
 				m_pWeapon->Clear_CollisionObj();
 			}
 		}
@@ -621,7 +622,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
-				m_pWeapon->SetisAttack(true);
 			}
 		}
 		break;
@@ -779,7 +779,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 20.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
-			m_pWeapon->SetisAttack(true);
 		}
 
 		break;
@@ -802,7 +801,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 20.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
-			m_pWeapon->SetisAttack(true);
 		}
 
 		break;
@@ -852,22 +850,16 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::MAINSKILLA:
 	{
 		RootMotionActive(fTimeDelta);
-		m_pWeapon->SetisAttack(true);
-
 		break;
 	}
 	case eAnimCategory::MAINSKILLB:
 	{
 		RootMotionActive(fTimeDelta);
-		m_pWeapon->SetisAttack(true);
-
 		break;
 	}
 	case eAnimCategory::MAINSKILLC:
 	{
 		RootMotionActive(fTimeDelta);
-		m_pWeapon->SetisAttack(true);
-
 		break;
 	}
 	case eAnimCategory::HITED:
@@ -2023,7 +2015,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
 
 	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
-
+	
 	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 	PxControllerFilters filters;
 	filters.mFilterCallback = &filter; // 필터 콜백 지정

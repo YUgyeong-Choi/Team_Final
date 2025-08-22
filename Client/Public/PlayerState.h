@@ -504,7 +504,7 @@ public:
 
     virtual void Exit() override
     {
-        m_pOwner->m_pAnimator->SetBool("Run", false);
+    //    m_pOwner->m_pAnimator->SetBool("Run", false);
         m_bChargeStarted = false;
         m_fChargeElapsed = 0.f;
         m_fStateTime = 0.f;

@@ -422,6 +422,7 @@ private:
 			}
 		}
 	}
+	void SortTransitionByConditionsCount();
 
 private:
 	
