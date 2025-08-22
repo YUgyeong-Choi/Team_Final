@@ -201,8 +201,8 @@ HRESULT CLevel_KratCentralStation::Render()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
-	/*if (FAILED(Ready_Dummy()))
-		return E_FAIL;*/
+	if (FAILED(Ready_Dummy()))
+		return E_FAIL;
 	if (FAILED(Add_MapActor()))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Ready_Lights()))
@@ -722,6 +722,22 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				for (_int col = 0; col < 4; ++col)
 					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
+			//만약 보스몹(푸오코라면 다른 방식으로 소환
+			if (wstrMonsterName == TEXT("FireEater"))
+			{
+				CUnit::UNIT_DESC UnitDesc{};
+				UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+				UnitDesc.wsNavName = StringToWString(Map);
+				UnitDesc.WorldMatrix = WorldMatrix;
+
+				//푸오쿠는 따로 생성
+				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &UnitDesc)))
+					return E_FAIL;
+
+				continue;
+			}
+
 			// 오브젝트 생성 Desc 채우기
 			CMonster_Base::MONSTER_BASE_DESC Desc{};
 
@@ -730,12 +746,11 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 			Desc.fHeight = 1.f;
 			Desc.vExtent = { 0.5f,1.f,0.5f };
 			Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-			Desc.WorldMatrix = WorldMatrix;
 			Desc.szMeshID = wstrMonsterName.c_str();
 			Desc.wsNavName = StringToWString(Map);
+			Desc.WorldMatrix = WorldMatrix;
 
 			wstring wsPrototypeTag = TEXT("Prototype_GameObject_Monster_") + wstrMonsterName;
-
 
 			if (FAILED(m_pGameInstance->Add_GameObject(
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),

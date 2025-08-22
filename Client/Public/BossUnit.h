@@ -59,7 +59,7 @@ protected:
 	HRESULT LoadAnimationEventsFromJson(const string& modelName);
 	HRESULT LoadAnimationStatesFromJson(const string& modelName);
 	HRESULT LoadFromJson();
-	virtual HRESULT Ready_Components();
+	virtual HRESULT Ready_Components(void* pArg);
 	virtual HRESULT Ready_Actor();
 	virtual void Ready_BoneInformation() {};
 

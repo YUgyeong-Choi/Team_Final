@@ -23,13 +23,6 @@ public:
 		
 		_float3 vExtent;
 		_float  fHeight;
-		wstring wsNavName = {}; //어떤 네비를 탈 것인가? //STATION, HOTEL...
-		_float4x4	WorldMatrix = _float4x4(
-			1.f, 0.f, 0.f, 0.f,
-			0.f, 1.f, 0.f, 0.f,
-			0.f, 0.f, 1.f, 0.f,
-			0.f, 0.f, 0.f, 1.f
-		);
 	}MONSTER_BASE_DESC;
 
 protected:
