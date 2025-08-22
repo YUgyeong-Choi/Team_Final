@@ -60,7 +60,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, false);
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 
-			m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.3f * g_fInteractSoundVolume);
+			m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 			m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 			// 여기에 조사한다 UI 비활성화
 			// 말하는 UI활성화
@@ -119,7 +119,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 				}
 				else
 				{
-					m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.3f * g_fInteractSoundVolume);
+					m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 					m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 					// 말하는 UI 대사 변경
 				}
@@ -148,7 +148,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 				}
 				else
 				{
-					m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.3f * g_fInteractSoundVolume);
+					m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 					m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 					// 말하는 UI 대사 변경
 				}

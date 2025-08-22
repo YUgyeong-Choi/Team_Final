@@ -539,7 +539,7 @@
                 1.0,
                 1.0,
                 1.0,
-                0.0
+                1.0
             ],
             "Color": [
                 1.0,
@@ -561,7 +561,7 @@
                         1.0
                     ],
                     "Intensity": 1.0,
-                    "Interpolation": 4,
+                    "Interpolation": 1,
                     "Rotation": [
                         0.0,
                         0.0,
@@ -582,12 +582,12 @@
                 },
                 {
                     "Color": [
-                        1.0,
-                        1.0,
-                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
                         0.0
                     ],
-                    "Intensity": 1.0,
+                    "Intensity": 0.0,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -600,7 +600,7 @@
                         5.0,
                         5.0
                     ],
-                    "TrackPosition": 10.0,
+                    "TrackPosition": 30.0,
                     "Translation": [
                         0.0,
                         0.0,
@@ -618,7 +618,7 @@
             "TextureTags": [
                 "",
                 "T_Acid_Decal_N_KMH",
-                "T_Acid_Decal_C_KJS",
+                "T_Decal_01_C_LKM",
                 ""
             ],
             "TextureUsage": [
