@@ -32,7 +32,9 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 {
 	m_eNextLevelID = eNextLevelID;
 
-
+	/* [ 레벨 셋팅 ] */
+	//m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::LOADING));
+	//m_pGameInstance->Set_IsChangeLevel(false);
 	/* 로딩레벨 자체에 필요한 객체를 생성한다. */
 	/* 배경, 로딩바, 버튼, font */
 
