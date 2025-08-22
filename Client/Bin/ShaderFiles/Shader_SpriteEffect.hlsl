@@ -274,13 +274,29 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
     float2 dir = vMask.rg * 2.0 - 1.0; // [-1,1]
     float mag = lerp(1.0, vMask.b, 0.5); // B를 세기로 활용(옵션)
     
-    float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * frac(g_fTime * 0.1f) * mag);
+    float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * g_fTime * 0.4f * mag);
+
+    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
+    Out.vDistortion *= g_vColor;
+    
+    return Out;
+}
+
+//deprecated
+PS_OUT_EFFECT_WB PS_MAIN_DISTORTION(PS_IN_BLEND In)
+{
+    PS_OUT_EFFECT_WB Out;
+    vector vMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+
+    float2 dir = vMask.rg * 2.0 - 1.0; // [-1,1]
+    float mag = lerp(1.0, vMask.b, 0.5); // B를 세기로 활용(옵션)
+    
+    float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * frac(g_fTime * 0.2f) * mag);
 
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
     
     return Out;
 }
-
 
 technique11 DefaultTechnique
 {

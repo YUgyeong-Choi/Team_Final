@@ -1,5 +1,6 @@
 ﻿#include "Bayonet.h"
 
+#include "Unit.h"
 #include "Animator.h"
 #include "Animation.h"
 #include "GameInstance.h"
@@ -98,7 +99,7 @@ void CBayonet::Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_8))
 	{
-		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<unsigned int>(m_iLevelID), L"EC_AttackHit_Basic_Spark_1_P2S1"))
+		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<unsigned int>(m_iLevelID), L"EC_AttackHit_Basic_Spark_1_P2S4"))
 			MSG_BOX("이펙트 생성 실패함");
 	}
 
@@ -233,7 +234,7 @@ HRESULT CBayonet::Ready_Effect()
 	desc.pOuterSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
 	desc.pParentCombinedMatrix = &m_CombinedWorldMatrix;
 	desc.iLevelID = m_iLevelID;
-	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	m_pWeaponTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (m_pWeaponTrailEffect)
 		m_pWeaponTrailEffect->Set_TrailActive(false);
 	else
@@ -245,19 +246,26 @@ HRESULT CBayonet::Ready_Effect()
 void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	// 내구도나 이런거 하면 될듯?
+	_vector vDir = XMVector3Normalize(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION) - pOther->Get_TransfomCom()->Get_State(STATE::POSITION));
 
-	CEffectContainer::DESC desc = {};
+	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
+	if (pUnit)
+	{
+		auto& vLockonPos = pUnit->Get_LockonPos();
+		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
 
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(HitPos.m128_f32[0], HitPos.m128_f32[1], HitPos.m128_f32[2]));
+		CEffectContainer::DESC desc = {};
 
-	CGameObject* pEffect = { nullptr };
-	/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc)
-		: rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
-		:*/ pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S3"), &desc);
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
 
-	if (pEffect == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+		CGameObject* pEffect = { nullptr };
+		/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc)
+			:*/ rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
+			: pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc);
 
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+	}
 	// 가드 때 충돌하고, 퍼펙트 가드가 아니면 감소하도록
 	
 }
@@ -277,6 +285,26 @@ void CBayonet::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	_vector vDir = XMVector3Normalize(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION) - pOther->Get_TransfomCom()->Get_State(STATE::POSITION));
+
+	if (eColliderType == COLLIDERTYPE::MONSTER)
+	{
+		CUnit* pUnit = static_cast<CUnit*>(pOther);
+		auto& vLockonPos = pUnit->Get_LockonPos();
+		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
+
+		CEffectContainer::DESC desc = {};
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
+
+		CGameObject* pEffect = { nullptr };
+		/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc)
+			:*/ rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
+			: pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc);
+
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+	}
 }
 
 void CBayonet::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
