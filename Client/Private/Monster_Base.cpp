@@ -77,7 +77,7 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	}
 
 
-	if (m_strStateName.find("Dead") != m_strStateName.npos)
+	/*if (m_strStateName.find("Dead") != m_strStateName.npos)
 	{
 		m_bUseLockon = false;
 		if (m_pAnimator->IsFinished())
@@ -87,7 +87,7 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 			
 
 		}
-	}
+	}*/
 }
 
 void CMonster_Base::Update(_float fTimeDelta)
@@ -543,7 +543,7 @@ void CMonster_Base::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pPhysXActorCom);
+
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pHPBar);

@@ -2087,7 +2087,7 @@ void CPlayer::Free()
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pControllerCom);
-	Safe_Release(m_pPhysXActorCom);
+//	Safe_Release(m_pPhysXActorCom);
 
 	for (size_t i = 0; i < ENUM_CLASS(EPlayerState::END); ++i)
 		Safe_Delete(m_pStateArray[i]);

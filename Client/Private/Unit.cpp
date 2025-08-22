@@ -411,6 +411,7 @@ CGameObject* CUnit::Clone(void* pArg)
 void CUnit::Free()
 {
 	__super::Free();
+	Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);

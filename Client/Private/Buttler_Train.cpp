@@ -4,6 +4,7 @@
 #include "LockOn_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Client_Calculation.h"
+#include <Player.h>
 
 CButtler_Train::CButtler_Train(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CMonster_Base{pDevice, pContext}
@@ -51,21 +52,26 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_strStateName.find("Dead") != m_strStateName.npos)
+	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
+	if (pCurState&& pCurState->stateName.find("Dead") != pCurState->stateName.npos)
 	{
-		if (m_pAnimator->IsFinished())
-		{
-			(m_pWeapon)->Set_bDead();
-		}
+			if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
+			{
+				(m_pWeapon)->Set_bDead();
+				Set_bDead();
+			}
 	}
 
 	if (m_fHp <= 0 && !m_bOffCollider)
 	{
 		m_pWeapon->Collider_FilterOff();
 		m_bOffCollider = true;
-		m_pPhysXActorCom->RemovePhysX();
-		Safe_Release(m_pPhysXActorCom);
-		m_pPhysXActorCom = nullptr;
+
+			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+			{
+				pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+			}
+		m_pPhysXActorCom->Init_SimulationFilterData();
 	}
 }
 
