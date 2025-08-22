@@ -106,6 +106,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Station_InCeiling_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InCeiling_01.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Station_InWallSub_04",
         "NoInstancing": false,
         "ObjectCount": 30,

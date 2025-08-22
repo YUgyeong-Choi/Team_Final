@@ -24,6 +24,9 @@ HRESULT CPrototype_Manager::Add_Prototype(_uint iPrototypeLevelIndex, const _wst
 	if (nullptr == m_pPrototypes || iPrototypeLevelIndex >= m_iNumLevels)
 		return E_FAIL;
 	
+	// 락 걸기
+	lock_guard<mutex> lock(m_mtx);
+
 	if (nullptr != Find_Prototype(iPrototypeLevelIndex, strPrototypeTag)) {
 		Safe_Release(pPrototype);
 		return S_OK;
@@ -95,6 +98,9 @@ HRESULT CPrototype_Manager::Replace_Prototype(_uint iPrototypeLevelIndex, const 
 
 CBase* CPrototype_Manager::Find_Prototype(_uint iLevelIndex, const _wstring& strPrototypeTag)
 {
+	//락 걸기
+	//lock_guard<mutex> lock(m_mtx);
+
 	auto	iter = m_pPrototypes[iLevelIndex].find(strPrototypeTag);
 	if (iter == m_pPrototypes[iLevelIndex].end())
 		return nullptr;

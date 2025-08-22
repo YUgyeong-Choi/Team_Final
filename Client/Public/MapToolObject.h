@@ -8,6 +8,7 @@ class CShader;
 class CModel;
 class CPhysXDynamicActor;
 class CPhysXStaticActor;
+class CTexture;
 NS_END
 
 NS_BEGIN(Client)
@@ -96,10 +97,14 @@ private:
 	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태
 
 private:
+	_bool			m_bDoOnce = {};
+
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom[ENUM_CLASS(LOD::END)] = {nullptr};
 	CPhysXDynamicActor* m_pPhysXActorConvexCom = { nullptr };
 	CPhysXStaticActor*	m_pPhysXActorTriangleCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 
 private:
 	HRESULT Ready_Components(void* pArg);

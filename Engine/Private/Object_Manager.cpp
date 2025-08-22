@@ -47,6 +47,9 @@ HRESULT CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const _wstri
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
+	// 락 걸기
+	lock_guard<mutex> lock(m_mtx);
+
 	CLayer*		pLayer = Find_Layer(iLevelIndex, strLayerTag);
 
 	if (nullptr == pLayer)
@@ -71,6 +74,9 @@ HRESULT CObject_Manager::Add_GameObjectReturn
 		return E_FAIL;
 
 	*ppOut = pGameObject;
+
+	// 락 걸기
+	lock_guard<mutex> lock(m_mtx);
 
 	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
 
@@ -189,6 +195,9 @@ vector<wstring> CObject_Manager::Find_LayerNamesContaining(_uint iLevelIndex, co
 
 CLayer* CObject_Manager::Find_Layer(_uint iLevelIndex, const _wstring& strLayerTag)
 {
+	// 락 걸기
+	//lock_guard<mutex> lock(m_mtx);
+
 	auto	iter = m_pLayers[iLevelIndex].find(strLayerTag);
 	if (iter == m_pLayers[iLevelIndex].end())
 		return nullptr;
