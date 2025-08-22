@@ -1205,7 +1205,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 			EHitDir eDir = ComputeHitDir();
 
 			if(eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
-				pUnit->Guard_Reaction();
+				pUnit->Block_Reaction();
 
 			return;
 		}
@@ -1268,7 +1268,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			EHitDir eDir = ComputeHitDir();
 
 			if (eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
-				pUnit->Guard_Reaction();
+				pUnit->Block_Reaction();
 
 			return;
 		}

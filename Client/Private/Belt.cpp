@@ -140,6 +140,23 @@ void CBelt::Change_Next_Item()
 	}
 }
 
+_bool CBelt::Find_Item(const _wstring& strProtoTag)
+{
+
+	for (int i =0; i< m_Items.size(); ++i)
+	{
+
+		if (m_Items[i]->Get_ProtoTag() == strProtoTag)
+		{
+			m_iSelectIndex = i - 1;
+			Change_Next_Item();
+			return true;
+		}
+	}
+
+	return false;
+}
+
 CBelt* CBelt::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CBelt* pInstance = new CBelt(pDevice, pContext);

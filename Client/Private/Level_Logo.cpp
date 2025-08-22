@@ -298,7 +298,7 @@ HRESULT CLevel_Logo::Ready_Menu()
 	eSelectDesc.iPassIndex = D_UI_SPRITE;
 	eSelectDesc.iTextureIndex = 0;
 	eSelectDesc.vColor = { 1.f,1.f,1.f,1.f };
-	eSelectDesc.strTextureTag = TEXT("Prototype_Component_Texture_Sealingwax");
+	eSelectDesc.strTextureTag = TEXT("Prototype_Component_Texture_Button_Select");
 	eSelectDesc.fAlpha = 0.5f;
 
 

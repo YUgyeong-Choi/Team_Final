@@ -97,7 +97,7 @@ public:
 
 	AABBBOX GetWorldAABB() const;
 
-	virtual void Guard_Reaction() {};
+	virtual void Block_Reaction() {};
 
 public:
 	_float Get_CurrentDamage() { return m_fDamage; }

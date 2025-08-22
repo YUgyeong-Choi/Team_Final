@@ -32,6 +32,8 @@ public:
 	void DeselectItem();
 	void Change_Next_Item();
 
+	_bool Find_Item(const _wstring& strProtoTag);
+
 private:
 	vector<CItem*> m_Items;
 	vector<CItem*> m_ViewItems;

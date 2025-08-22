@@ -121,7 +121,8 @@ void CIcon_Item::Update_ICon(ITEM_DESC* pDesc)
 	
 	if (pDesc->isConsumable)
 	{
-		m_strCaption = to_wstring(pDesc->iUseCount);
+		if(pDesc->isUsable >= 0)
+			m_strCaption = to_wstring(pDesc->iUseCount);
 	}
 
 	
