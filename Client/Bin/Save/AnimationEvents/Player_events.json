@@ -675,14 +675,14 @@
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_F",
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 65.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_Heavy_B",
@@ -717,14 +717,14 @@
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 65.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Focus_R",
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 65.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Heavy_B",
@@ -745,14 +745,14 @@
             "Duration": 45.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_Pino_T_Dash_Normal_F",
             "Duration": 80.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_Pino_T_DrawWeapon",
@@ -1397,7 +1397,7 @@
                 },
                 {
                     "EventName": "OffWeaponCollider",
-                    "Time": 43.0
+                    "Time": 41.540000915527344
                 }
             ],
             "IsLoop": false,
@@ -1573,7 +1573,7 @@
                 },
                 {
                     "EventName": "OffWeaponCollider",
-                    "Time": 61.0
+                    "Time": 49.0
                 }
             ],
             "IsLoop": false,
