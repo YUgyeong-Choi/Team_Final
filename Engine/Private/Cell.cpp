@@ -37,7 +37,8 @@ HRESULT CCell::Initialize(const _float3* pPoints, _int iIndex)
 	return S_OK;
 }
 
-_bool CCell::isIn(_fvector vLocalPos, _int* pNeighborIndex)
+//현재 이것은 높이를 고려하지 않음
+_bool CCell::isIn(_fvector vLocalPos, _int* pNeighborIndex, _float* pDist)
 {
 	for (size_t i = 0; i < LINE_END; i++)
 	{
@@ -51,6 +52,18 @@ _bool CCell::isIn(_fvector vLocalPos, _int* pNeighborIndex)
 			return false;
 		}
 			
+	}
+	//거리를 반환 받을 변수가 전달 되었다면
+	//pOut으로 삼각형 중점의 거리와, 던진 로컬포즈의 거리를 구해서 던져주자
+	if (pDist)
+	{
+		_float3 vCentroid;//삼각형의 중점
+
+		vCentroid.x = (m_vPoints[0].x + m_vPoints[1].x + m_vPoints[2].x) / 3.f;
+		vCentroid.y = (m_vPoints[0].y + m_vPoints[1].y + m_vPoints[2].y) / 3.f;
+		vCentroid.z = (m_vPoints[0].z + m_vPoints[1].z + m_vPoints[2].z) / 3.f;
+
+		*pDist = XMVectorGetX(XMVector3Length(XMLoadFloat3(&vCentroid) - vLocalPos));
 	}
 
 	return true;

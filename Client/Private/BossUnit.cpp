@@ -28,11 +28,18 @@ HRESULT CBossUnit::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
+    if (pArg != nullptr)
+    {
+        UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
+        //월드행렬로 소환
+        m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+    }
+
 	if (FAILED(LoadFromJson()))
 		return E_FAIL;
 
     // 여기서는 네비와 기본 바디 콜라이더 클론
-    if (FAILED(Ready_Components()))
+    if (FAILED(Ready_Components(pArg)))
         return E_FAIL;
 
     Ready_BoneInformation();
@@ -179,7 +186,7 @@ HRESULT CBossUnit::LoadFromJson()
     return S_OK;
 }
 
-HRESULT CBossUnit::Ready_Components()
+HRESULT CBossUnit::Ready_Components(void* pArg)
 {
     /* For.Com_PhysX */
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
@@ -191,10 +198,16 @@ HRESULT CBossUnit::Ready_Components()
         return S_OK;
     }
 
-    _wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation");
-    if (FAILED(__super::Add_Component(iLevelIndex, wsPrototypeTag.c_str(),
-        TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
-        return E_FAIL;
+    if (pArg != nullptr)
+    {
+        UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
+
+        //네비게이션 가져오기
+        wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 탈 것인가 STAION, HOTEL...
+        if (FAILED(__super::Add_Component(iLevelIndex, wsPrototypeTag.c_str(),
+            TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
+            return E_FAIL;
+    }
 
     return S_OK;
 }
