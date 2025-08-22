@@ -49,7 +49,7 @@ void CTriggerSound::Priority_Update(_float fTimeDelta)
 			}
 			else
 			{
-				m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.3f * g_fInteractSoundVolume);
+				m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 				m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 			}
 		}
@@ -77,7 +77,7 @@ void CTriggerSound::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderT
 	{
 		m_bDoOnce = true;
 		m_iSoundIndex = 0;
-		m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.3f * g_fInteractSoundVolume);
+		m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 		m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 	}
 		
