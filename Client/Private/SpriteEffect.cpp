@@ -47,7 +47,7 @@ HRESULT CSpriteEffect::Initialize(void* pArg)
 
 void CSpriteEffect::Priority_Update(_float fTimeDelta)
 {
-
+	m_fTimeAcc += fTimeDelta;
 }
 
 void CSpriteEffect::Update(_float fTimeDelta)

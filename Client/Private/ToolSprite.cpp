@@ -96,8 +96,6 @@ HRESULT CToolSprite::Bind_ShaderResources()
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 
-	/* dx9 : 장치에 뷰, 투영행렬을 저장해두면 렌더링시 알아서 정점에 Transform해주었다. */
-	/* dx11 : 셰이더에 뷰, 투영행렬을 저장해두고 우리가 직접 변환해주어야한다. */
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bFlipUV", &m_bFlipUV, sizeof(_bool))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileSize", &m_fTileSize, sizeof(_float2))))
@@ -122,25 +120,25 @@ HRESULT CToolSprite::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (m_bTextureUsage[TU_DIFFUSE] == true){
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
+		return E_FAIL;
+
+	if (m_bTextureUsage[TU_DIFFUSE] == true) {
 		if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 			return E_FAIL;
 	}
-	if (m_bTextureUsage[TU_MASK1] == true){
+	if (m_bTextureUsage[TU_MASK1] == true) {
 		if (FAILED(m_pTextureCom[TU_MASK1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
 			return E_FAIL;
 	}
-	if (m_bTextureUsage[TU_MASK2] == true){
+	if (m_bTextureUsage[TU_MASK2] == true) {
 		if (FAILED(m_pTextureCom[TU_MASK2]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
 			return E_FAIL;
 	}
-	if (m_bTextureUsage[TU_MASK3] == true){
+	if (m_bTextureUsage[TU_MASK3] == true) {
 		if (FAILED(m_pTextureCom[TU_MASK3]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture3", 0)))
 			return E_FAIL;
 	}
-
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
-		return E_FAIL;
 
 	return S_OK;
 }

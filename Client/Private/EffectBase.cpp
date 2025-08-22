@@ -76,8 +76,8 @@ void CEffectBase::Update(_float fTimeDelta)
 	{
 		_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
-		for (size_t i = 0; i < 3; i++)
-			SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
+		//for (size_t i = 0; i < 3; i++)
+		//	SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
 
 		XMStoreFloat4x4(&m_CombinedWorldMatrix,
 			m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
