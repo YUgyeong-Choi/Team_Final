@@ -10,7 +10,7 @@
         "Collision": false,
         "ModelName": "SM_Exhibition_Pillar_01",
         "NoInstancing": false,
-        "ObjectCount": 23,
+        "ObjectCount": 25,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Pillar_01.bin"
     },
     {
@@ -73,7 +73,7 @@
         "Collision": false,
         "ModelName": "SM_Station_InWallSub_04",
         "NoInstancing": false,
-        "ObjectCount": 33,
+        "ObjectCount": 30,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWallSub_04.bin"
     },
     {
@@ -94,21 +94,21 @@
         "Collision": false,
         "ModelName": "SM_Station_InWall_04",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWall_04.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Station_InWall_04A",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 9,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWall_04A.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Station_InWall_04C",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 14,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWall_04C.bin"
     },
     {
@@ -171,7 +171,7 @@
         "Collision": false,
         "ModelName": "SM_Station_PillarC_02",
         "NoInstancing": false,
-        "ObjectCount": 6,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_PillarC_02.bin"
     },
     {
@@ -234,7 +234,7 @@
         "Collision": false,
         "ModelName": "SM_Station_Windows_03",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Windows_03.bin"
     },
     {
@@ -262,7 +262,7 @@
         "Collision": false,
         "ModelName": "SM_Wall_WindowLarge01ADoor",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_WindowLarge01ADoor.bin"
     },
     {
