@@ -426,6 +426,6 @@ void CButtler_Train::Free()
 {
 	__super::Free();
 
-	//Safe_Release(m_pWeapon);
+	Safe_Release(m_pWeapon);
 
 }

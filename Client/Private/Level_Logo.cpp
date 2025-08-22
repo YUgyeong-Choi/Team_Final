@@ -295,30 +295,31 @@ HRESULT CLevel_Logo::Ready_Menu()
 	eSelectDesc.fX = g_iWinSizeX * 0.175f;
 	eSelectDesc.fY = g_iWinSizeY * 0.25f;
 	eSelectDesc.iPassIndex = D_UI_SPRITE;
-	eSelectDesc.iTextureIndex = 2;
+	eSelectDesc.iTextureIndex = 0;
 	eSelectDesc.vColor = { 1.f,1.f,1.f,1.f };
-	eSelectDesc.strTextureTag = TEXT("Prototype_Component_Texture_Button_Select");
+	eSelectDesc.strTextureTag = TEXT("Prototype_Component_Texture_Sealingwax");
 	eSelectDesc.fAlpha = 0.5f;
-	
 
-	UI_FEATURE_UV_DESC *uvDesc = new UI_FEATURE_UV_DESC;
-	uvDesc->iStartFrame = 0;
-	uvDesc->iEndFrame = 16;
-	uvDesc->fStartUV = { 0.f,0.f };
-	uvDesc->fOffsetUV = { 0.25f,0.25f };
-	uvDesc->isLoop = true;
-	uvDesc->strProtoTag = ("Prototype_Component_UI_Feature_UV");
 
-	eSelectDesc.FeatureDescs.push_back(uvDesc);
+	UI_FEATURE_UV_DESC uvDesc = {};
+	uvDesc.iStartFrame = 0;
+	uvDesc.iEndFrame = 16;
+	uvDesc.fStartUV = { 0.f,0.f };
+	uvDesc.fOffsetUV = { 0.25f,0.25f };
+	uvDesc.isLoop = true;
+	uvDesc.strProtoTag = ("Prototype_Component_UI_Feature_UV");
+
+	eSelectDesc.FeatureDescs.push_back(&uvDesc);
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
 		static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select"), &eSelectDesc)))
 		return E_FAIL;
 
-	
-	m_pSelectUI = static_cast<CDynamic_UI*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select")));
 
- 	Safe_Delete(uvDesc);
+	m_pSelectUI = dynamic_cast<CDynamic_UI*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::LOGO), TEXT("Layer_Background_Button_Select")));
+
+	if (!m_pSelectUI)
+		return E_FAIL;
 
 
 	return S_OK;

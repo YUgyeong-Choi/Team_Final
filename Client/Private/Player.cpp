@@ -211,15 +211,15 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("Combo", 1);
 		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		//m_pAnimator->CancelOverrideAnimController();
-		m_pAnimator->SetInt("HitDir", m_iTestInt);
-		m_pAnimator->SetTrigger("Hited");
-		m_iTestInt++;
+		m_pAnimator->SetBool("Fail", false);
 	}
 	if (KEY_DOWN(DIK_U))
 	{
-
+		m_pAnimator->SetBool("Fail", true);
+		m_pAnimator->SetBool("HasLamp", false);
+		//m_pAnimator->SetTrigger("Pulse");
+		m_pAnimator->SetTrigger("UseItem");
 	}
-
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -349,6 +349,7 @@ void CPlayer::SitAnimationMove(_float fTimeDelta)
 void CPlayer::HandleInput()
 {
 	/* [ 키 입력을 업데이트합니다. ] */
+	m_bWalk ? m_pAnimator->SetBool("Run", false) : m_pAnimator->SetBool("Run", true);
 	if(KEY_PRESSING(DIK_W) || KEY_PRESSING(DIK_S) || KEY_PRESSING(DIK_A) || KEY_PRESSING(DIK_D))
 		m_Input.bMove = true;
 	else
@@ -433,6 +434,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		
 		m_pTransformCom->SetbSpecialMoving();
 
+		if (m_pWeapon)
+		{
+			m_pWeapon->SetisAttack(false);
+			m_pWeapon->Set_WeaponTrail_Active(false);
+		}
+		if (m_pLegionArm)
+			m_pLegionArm->SetisAttack(false);
 	}
 	
 	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
@@ -879,6 +887,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 	}
+	case eAnimCategory::PULSE:
+	{
+		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	}
 
 	default:
 		break;
@@ -954,7 +966,9 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::ARM_ATTACKCHARGE;
 	if (stateName.find("Fail_Arm") == 0)
 		return eAnimCategory::ARM_FAIL;
-
+	if (stateName.find("Heal") == 0)
+		return eAnimCategory::PULSE;
+	
 	return eAnimCategory::NONE;
 }
 
@@ -1387,7 +1401,7 @@ HRESULT CPlayer::Ready_UIParameters()
 	auto pPortion = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"), nullptr);
 
 	m_pBelt_Up->Add_Item(static_cast<CItem*>(pPortion), 0);
-
+	
 
 	m_pSelectItem = m_pBelt_Up->Get_Items()[0];
 
@@ -1713,9 +1727,10 @@ void CPlayer::LockOnState(_float fTimeDelta)
 
 		if (KEY_UP(DIK_SPACE))
 			m_bLockOnSprint = true;
+
 	}
 	/* [ 스페이스를 뗀 순간 회전 보간을 시작한다. ] */
-	if (m_bLockOnSprint)
+	if (pTarget && m_bLockOnSprint)
 	{
 		_vector vTargetPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -1754,7 +1769,6 @@ void CPlayer::LockOnState(_float fTimeDelta)
 		m_bIsLockOn = false;
 		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 
-		m_pAnimator->SetBool("Front", false);
 		m_pAnimator->SetBool("Front", false);
 		m_pAnimator->SetBool("Left", false);
 		m_pAnimator->SetBool("Right", false);
@@ -1992,7 +2006,8 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 			}
 
 			/* [ 락온보간중이 아닐 때만 ] */
-			if (!m_bLockOnSprint)
+			CUnit* pTarget = m_pLockOn_Manager->Get_Target();
+			if (!m_bIsLockOn)
 				m_pTransformCom->TurnAngle(XMVectorSet(0.f, 1.f, 0.f, 0.f), fClampedAngle);
 		}
 	}

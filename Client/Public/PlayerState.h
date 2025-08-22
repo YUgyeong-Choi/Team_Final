@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "Weapon.h"
 #include "Item.h"
+#include "Belt.h"
 
 NS_BEGIN(Client)
 
@@ -471,7 +472,6 @@ public:
 
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetBool("Move", true);
-        m_pOwner->m_pAnimator->SetBool("Run", true);
         m_pOwner->m_bWalk = false; 
 
         /* [ 디버깅 ] */
@@ -504,7 +504,6 @@ public:
 
     virtual void Exit() override
     {
-        m_pOwner->m_pAnimator->SetBool("Run", false);
         m_bChargeStarted = false;
         m_fChargeElapsed = 0.f;
         m_fStateTime = 0.f;
@@ -603,7 +602,28 @@ public:
 		m_pOwner->m_bWalk = true;
 
         /* [ 램프전용 스위치들 ] */
-        if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+        if (m_pOwner->m_bPulseReservation)
+        {
+            m_pOwner->m_bPulseReservation = false;
+
+            /* [ 순회하면서 아이템 찾기 ] */
+            _bool PulseUse = FindPulseObject();
+            
+            if (!PulseUse)
+            {
+                m_pOwner->m_pAnimator->SetBool("Fail", true);
+                m_pOwner->m_pAnimator->SetBool("HasLamp", false);
+                m_pOwner->m_pAnimator->SetTrigger("UseItem");
+            }
+            else
+            {
+                m_pOwner->m_pAnimator->SetBool("HasLamp", false);
+                m_pOwner->m_pAnimator->SetTrigger("Pulse");
+                m_pOwner->m_pAnimator->SetTrigger("UseItem");
+                m_pOwner->m_bUsePulse = true;
+            }
+        }
+        else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
         {
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_pAnimator->SetBool("HasLamp", true);
@@ -622,15 +642,27 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
         {
-            m_pOwner->m_pAnimator->SetBool("HasLamp", false);
-            m_pOwner->m_pAnimator->SetTrigger("Pulse");
-            m_pOwner->m_pAnimator->SetTrigger("UseItem");
-            m_pOwner->m_bUsePulse = true;
+            /* [ 순회하면서 아이템 찾기 ] */
+            _bool PulseUse = FindPulseObject();
+            
+            if (!PulseUse)
+                m_pOwner->m_pAnimator->SetBool("Fail", true);
+
+            if (!PulseUse)
+            {
+                m_pOwner->m_pAnimator->SetBool("Fail", true);
+                m_pOwner->m_pAnimator->SetBool("HasLamp", false);
+                m_pOwner->m_pAnimator->SetTrigger("UseItem");
+            }
+            else
+            {
+                m_pOwner->m_pAnimator->SetBool("HasLamp", false);
+                m_pOwner->m_pAnimator->SetTrigger("Pulse");
+                m_pOwner->m_pAnimator->SetTrigger("UseItem");
+                m_pOwner->m_bUsePulse = true;
+            }
         }
 
-
-     //   m_pOwner->Use_Item();
-        
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -648,17 +680,21 @@ public:
                 {
                     m_pOwner->m_pAnimator->SetTrigger("Grinder");
                 }
+				m_bGrinderEnd = false;
                 m_fGrinderTime = 0.f;
                 m_pOwner->m_pAnimator->SetBool("Grinding", true);
             }
 
             if (KEY_UP(DIK_R))
             {
+                m_bGrinderEnd = true;
                 m_pOwner->m_pAnimator->SetBool("Grinding", false);
                 m_pOwner->m_pSelectItem->Activate(false);
-                m_fGrinderTime += fTimeDelta;
             }
-            
+
+            if (m_bGrinderEnd)
+				m_fGrinderTime += fTimeDelta;
+
             LockOnMovement4Way();
         }
 
@@ -672,9 +708,7 @@ public:
 
     virtual void Exit() override
     {
-       
-       
-
+        m_pOwner->m_pAnimator->SetBool("Fail", false);
         m_pOwner->m_pAnimator->SetBool("Grinding", false);
         m_pOwner->m_bUseLamp = false;
         m_pOwner->m_bUseGrinder = false;
@@ -682,6 +716,7 @@ public:
         m_fGrinderTime = 0.f;
         m_fPulseTime = 0.f;
         m_fStateTime = 0.f;
+        m_bGrinderEnd = false;
         m_bDoOnce = false;
 
         if (m_pOwner->m_isSelectUpBelt)
@@ -722,7 +757,7 @@ public:
             return EPlayerState::IDLE;
         }
 
-        if (1.f < m_fGrinderTime)
+        if (m_bGrinderEnd && m_fGrinderTime > 0.3f)
         {
             if (input.bMove)
             {
@@ -747,6 +782,36 @@ public:
         return true;
     }
 
+    _bool FindPulseObject()
+    {
+        _bool bUse = false;
+        // 위의 벨트를 먼저 순회한다.
+        for (auto Item : m_pOwner->m_pBelt_Up->Get_Items())
+        {
+            if (Item)
+            {
+                if (TEXT("Prototype_GameObject_Portion") == Item->Get_ProtoTag())
+                {
+                    bUse = Item->Get_isUsable();
+                }
+            }
+        }
+        //m_pOwner->Callback_UpBelt();
+
+        // 아래의 벨트를 다음으로 순회한다.
+        for (auto Items : m_pOwner->m_pBelt_Down->Get_Items())
+        {
+            if (Items)
+            {
+                if (TEXT("Prototype_GameObject_Portion") == Items->Get_ProtoTag())
+                    bUse = Items->Get_isUsable();
+            }
+        }
+        //m_pOwner->Callback_DownBelt();
+
+        return bUse;
+    }
+
     virtual const _tchar* GetStateName() const override
     {
         return L"ITEM";
@@ -759,8 +824,9 @@ private:
 
 private:
 	_bool m_bPreWalk = { false };
-    _float m_fGrinderTime = {};
+    _bool m_bGrinderEnd = {};
     _float m_fPulseTime = {};
+    _float m_fGrinderTime = {};
 };
 
 /* [ 이 클래스는 백스탭 상태입니다. ] */
@@ -1146,7 +1212,7 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 약공은 무기 장착상태여야합니다.        
-        m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
+        m_pOwner->m_pAnimator->SetInt("Combo", 0);
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
 
         /* [ 디버깅 ] */
@@ -1170,6 +1236,9 @@ public:
 
             if (KEY_DOWN(DIK_F))
                 m_bSkill = true;
+
+            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+                m_pOwner->m_bPulseReservation = true;
         }
     }
 
@@ -1207,6 +1276,10 @@ public:
         
         if (1.5f < m_fStateTime)
         {
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
+
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -1214,6 +1287,7 @@ public:
                 else
                     return EPlayerState::RUN;
             }
+
             return EPlayerState::IDLE;
         }
 
@@ -1258,7 +1332,7 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 약공은 무기 장착상태여야합니다.
-        m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
+        m_pOwner->m_pAnimator->SetInt("Combo", 1);
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
 
         /* [ 디버깅 ] */
@@ -1279,6 +1353,8 @@ public:
                 m_bArmAttack = true;
             if (KEY_DOWN(DIK_F))
                 m_bSkill = true;
+            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+                m_pOwner->m_bPulseReservation = true;
         }
     }
 
@@ -1311,6 +1387,13 @@ public:
             }
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
+        }
+
+        if (1.4f < m_fStateTime)
+        {
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
 
             if (input.bMove)
             {
@@ -1366,7 +1449,7 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 강공은 무기 장착상태여야합니다.
-        m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
+        m_pOwner->m_pAnimator->SetInt("Combo", 0);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         
         /* [ 디버깅 ] */
@@ -1390,6 +1473,8 @@ public:
                 m_bArmAttack = true;
             if (KEY_DOWN(DIK_F))
                 m_bSkill = true;
+            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+                m_pOwner->m_bPulseReservation = true;
         }
     }
 
@@ -1427,6 +1512,10 @@ public:
         }
         if (1.5f < m_fStateTime)
         {
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
+
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -1479,7 +1568,7 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 강공은 무기 장착상태여야합니다.
-        m_pOwner->m_pAnimator->SetInt("Combo", GetCurrentCombo());
+        m_pOwner->m_pAnimator->SetInt("Combo", 1);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
 
         /* [ 디버깅 ] */
@@ -1503,6 +1592,8 @@ public:
                 m_bArmAttack = true;
             if (KEY_DOWN(DIK_F))
                 m_bSkill = true;
+            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+                m_pOwner->m_bPulseReservation = true;
         }
     }
 
@@ -1542,6 +1633,10 @@ public:
 
         if (2.5f < m_fStateTime)
         {
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
+
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -1610,6 +1705,12 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        if (m_fStateTime > 1.f)
+        {
+            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+                m_pOwner->m_bPulseReservation = true;
+        }
     }
 
     virtual void Exit() override
@@ -1631,6 +1732,10 @@ public:
                 m_pOwner->m_bIsChange = false;
                 return EPlayerState::CHARGEB;
             }
+
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
 
             if (input.bMove)
             {
@@ -1701,6 +1806,12 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        if (m_fStateTime)
+        {
+            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+                m_pOwner->m_bPulseReservation = true;
+        }
     }
 
     virtual void Exit() override
@@ -1718,6 +1829,10 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
+
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -2087,6 +2202,9 @@ public:
 
             if (KEY_UP(DIK_LCONTROL))
                 m_bArmAttack = true;
+
+            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+                m_pOwner->m_bPulseReservation = true;
         }
     }
 
@@ -2105,6 +2223,10 @@ public:
 
         if (1.f < m_fStateTime)
         {
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
+
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -2187,6 +2309,9 @@ public:
 
         if (MOUSE_DOWN(DIM::RBUTTON))
             m_bAttackB = true;
+
+        if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+            m_pOwner->m_bPulseReservation = true;
     }
 
     virtual void Exit() override
@@ -2203,8 +2328,12 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (1.f < m_fStateTime)
+        if (2.f < m_fStateTime)
         {
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
+
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -2274,6 +2403,12 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        if (m_fStateTime > 1.f)
+        {
+            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+                m_pOwner->m_bPulseReservation = true;
+        }
     }
 
     virtual void Exit() override
@@ -2288,8 +2423,12 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (2.f < m_fStateTime)
+        if (1.5f < m_fStateTime)
         {
+            /* [ 펄스 예약제 ] */
+            if (m_pOwner->m_bPulseReservation)
+                return EPlayerState::USEITEM;
+
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -2599,6 +2738,11 @@ public:
         if (m_pOwner->m_pLegionArm)
             m_pOwner->m_pLegionArm->SetisAttack(false);
 
+        m_pOwner->m_pAnimator->SetBool("Front", false);
+        m_pOwner->m_pAnimator->SetBool("Left", false);
+        m_pOwner->m_pAnimator->SetBool("Right", false);
+        m_pOwner->m_pAnimator->SetBool("Back", false);
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -2606,14 +2750,13 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
     }
 
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
     }
-
-    
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
@@ -2655,6 +2798,7 @@ private:
     unordered_set<string> m_StateNames = {
        "Hit_FtoB", "Hit_R", "Hit_B", "Hit_L", "Hit_RtoL", "Hit_LtoR"
     };
+
 };
 
 

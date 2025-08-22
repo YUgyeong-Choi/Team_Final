@@ -88,6 +88,7 @@ void CUnit::Late_Update(_float fTimeDelta)
 		CGameObject::Compute_ViewZ(vCam, &vTemp);
 	}
 
+	/* [ 공간분할 ] */
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }

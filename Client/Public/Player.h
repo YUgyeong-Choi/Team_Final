@@ -49,7 +49,7 @@ public:
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
 		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,
-		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, END
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, PULSE, END
 	};
 
 protected:
@@ -264,10 +264,9 @@ private: /* [ 인터렉션 관련변수 ] */
 		"Sprint", "Sprint_Stop",
 		"Guard_Walk_B", "Guard_Walk_F", "Guard_Walk_L", "Guard_Walk_R",
 		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
-		"OnLamp_Walk", "FailItem_Walk",
+		"OnLamp_Walk", "FailItem_Walk", "Fail_Walk",
 		"Grinder_Start", "Grinder_Loop", "Grinder_Loop_Walk_F", "Grinder_Loop_Walk_R", "Grinder_Loop_Walk_L" , "Grinder_Loop_Walk_B",//"Grinder_End"
 		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR"
-
 	};
 	_int m_iTestInt = { 0 };
 
@@ -296,8 +295,8 @@ private: /* [ 플레이어 변수 ] */
 	_float	m_fMaxErgo = { 100.f };
 	_float	m_fErgo = { 0.f };
 
-private: /* [ 무기 내구도 ] - weapon 에 있음 */
-
+private: /* [ 특수키 ] */
+	_bool   m_bPulseReservation = {};
 
 private: /* [ 리전 암 내구도 ] */
 	CLegionArm_Base* m_pLegionArm = { nullptr };
