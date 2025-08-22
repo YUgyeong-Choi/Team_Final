@@ -178,16 +178,8 @@ CSound_Core* CSound_Device::Get_Single_Sound(const string& strKey)
         return nullptr;
 
     Safe_AddRef(Iter->second);
+
     return Iter->second;
-}
-
-void CSound_Device::Release_Single_Sound(const string& strKey)
-{
-    auto Iter = m_SingleSounds.find(strKey);
-    if (Iter == m_SingleSounds.end())
-        return;
-
-    Safe_Release (Iter->second);
 }
 
 void CSound_Device::Set_Master_Volume(_float volume)
