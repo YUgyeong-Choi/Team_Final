@@ -77,7 +77,7 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	}
 
 
-	if (m_strStateName.find("Dead") != m_strStateName.npos)
+	if (m_pAnimator->GetCurrentAnimName().find("Dead") != string::npos)
 	{
 		m_bUseLockon = false;
 		if (m_pAnimator->IsFinished())
@@ -262,7 +262,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
-	eDesc.fHeight = 2.25f;
+	eDesc.fHeight = 2.5f;
 	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_isCanGroggy;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();

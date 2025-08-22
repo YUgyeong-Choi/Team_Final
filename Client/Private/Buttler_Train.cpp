@@ -42,6 +42,8 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	// 락온 용
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
+
+	m_pWeapon->Collider_FilterOff();
 	
 	return S_OK; 
 }
@@ -51,7 +53,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_strStateName.find("Dead") != m_strStateName.npos)
+	if (m_pAnimator->GetCurrentAnimName().find("Dead") != string::npos)
 	{
 		if (m_pAnimator->IsFinished())
 		{
