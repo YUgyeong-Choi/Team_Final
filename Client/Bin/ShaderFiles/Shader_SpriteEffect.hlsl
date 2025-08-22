@@ -274,7 +274,7 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
     float2 dir = vMask.rg * 2.0 - 1.0; // [-1,1]
     //float mag = lerp(1.0, vMask.b, 0.5); // B를 세기로 활용(옵션)
     
-    float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * g_fTime * 0.4f);
+    float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * g_fTime * 01.f);
 
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
     Out.vDistortion *= g_vColor;
