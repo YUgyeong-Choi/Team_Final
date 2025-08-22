@@ -50,6 +50,8 @@ public:
 
 	virtual void Block_Reaction();
 
+	void Guard_Reaction();
+
 
 private:
 	HRESULT Ready_Weapon(); 
