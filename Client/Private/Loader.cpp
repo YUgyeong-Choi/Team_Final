@@ -552,7 +552,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		프로토타입매니저나 오브젝트 매니저에
 		ADD 프로토타입, 오브젝트 하면 문제 생길 줄 알았음
 		STL 원소추가하는건 스레드 잘되어있나?
+
+		<오류 나가지고 뮤텍스로 락 걸었음>
 	*/
+
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
 	auto futureStation = async(launch::async, [&]
 		{
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
@@ -563,6 +567,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 			return S_OK;
 		});
 
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
 	auto futureHotel = async(launch::async, [&]
 		{
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
@@ -573,11 +578,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 			return S_OK;
 		});
 
-	lstrcpy(m_szLoadingText, TEXT("스테이션 맵 생성 완료 기다리는 중..."));
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료 기다리는 중..."));
 	if (FAILED(futureStation.get()))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("호텔 맵 생성 완료 기다리는 중..."));
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료 기다리는 중..."));
 	if (FAILED(futureHotel.get()))
 		return E_FAIL;
 

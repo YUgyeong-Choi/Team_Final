@@ -2,7 +2,7 @@
 
 #include "Base.h"
 
-
+#include <mutex>
 
 NS_BEGIN(Engine)
 
@@ -88,9 +88,17 @@ public:
 	const vector<OCTOTREEOBJECTTYPE>& GetObjectType() const { return m_ObjectType; }
 
 public:
-	void PushOctoTreeObjects(class CGameObject* pObject){m_vecOctoTreeObjects.push_back(pObject);}
+	void PushOctoTreeObjects(class CGameObject* pObject){
+		// 락 걸기
+		lock_guard<mutex> lock(m_mtx);
+
+		m_vecOctoTreeObjects.push_back(pObject);
+	}
 	vector<class CGameObject*> GetOctoTreeObjects() const { return m_vecOctoTreeObjects; }
 	void ClaerOctoTreeObjects() { m_vecOctoTreeObjects.clear(); }
+
+private:
+	mutex m_mtx = {};
 
 private: /* [ 절두체 변수들 ] */
 	XMFLOAT4 planes[6];
