@@ -43,10 +43,7 @@ public:
 	void	Collider_FilterOff();
 	void	Collider_ShapeOff();
 
-
 	virtual void SetisAttack(_bool isAttack);
-
-	void	Gravity_On();
 
 
 protected: /* [ Setup ÇÔ¼ö ] */

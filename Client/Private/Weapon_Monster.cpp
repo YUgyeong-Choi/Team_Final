@@ -64,7 +64,8 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 
 void CWeapon_Monster::Priority_Update(_float fTimeDelta)
 {
-	
+	if (m_bDead)
+		return;
 
 	__super::Priority_Update(fTimeDelta);
 
@@ -109,16 +110,7 @@ void CWeapon_Monster::Update_Collider()
 		return;
 
 	// 1. 부모 행렬
-	_matrix ParentWorld = {};  
-
-	if (m_pOwner == nullptr || m_pOwner->Get_bDead())
-	{
-		ParentWorld = XMMatrixIdentity();
-	}
-	else
-	{
-		ParentWorld = XMLoadFloat4x4(m_pParentWorldMatrix);;
-	}
+	_matrix ParentWorld = XMLoadFloat4x4(m_pParentWorldMatrix);
 
 	// 2. Socket 월드 행렬 
 	_matrix SocketMat = XMLoadFloat4x4(m_pSocketMatrix);
@@ -165,16 +157,12 @@ void CWeapon_Monster::SetisAttack(_bool isAttack)
 	if (isAttack)
 	{
 		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+		m_pGameInstance->Get_Scene()->resetFiltering(*m_pPhysXActorCom->Get_Actor());
 	}
 	else
 	{
 		m_pPhysXActorCom->Init_SimulationFilterData();
 	}
-}
-
-void CWeapon_Monster::Gravity_On()
-{
-	m_pPhysXActorCom->Set_Kinematic(false);
 }
 
 HRESULT CWeapon_Monster::Ready_Components()
@@ -237,13 +225,6 @@ void CWeapon_Monster::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CWeapon_Monster::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	
-
-	if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-	}
-	else if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
-	{
-	}
 }
 
 void CWeapon_Monster::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
