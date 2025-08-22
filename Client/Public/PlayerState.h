@@ -634,6 +634,8 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
         {
+            m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+
             if (m_pOwner->m_bWeaponEquipped)
             {
                 m_pOwner->m_pAnimator->SetTrigger("Grinder");
@@ -676,6 +678,7 @@ public:
         {
             if (KEY_PRESSING(DIK_R))
             {
+                m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
                 if (!m_pOwner->m_pAnimator->CheckBool("Grinding"))
                 {
                     m_pOwner->m_pAnimator->SetTrigger("Grinder");
@@ -713,6 +716,7 @@ public:
         m_pOwner->m_bUseLamp = false;
         m_pOwner->m_bUseGrinder = false;
 		m_pOwner->m_bWalk = m_bPreWalk;
+        m_pOwner->m_bUsePulse = false;
         m_fGrinderTime = 0.f;
         m_fPulseTime = 0.f;
         m_fStateTime = 0.f;

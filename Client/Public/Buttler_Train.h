@@ -46,6 +46,7 @@ public:
 
 	
 	virtual void Register_Events();
+	void Guard_Reaction();
 
 
 private:
