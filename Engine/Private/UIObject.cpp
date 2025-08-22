@@ -44,6 +44,7 @@ CUIObject::CUIObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CUIObject::CUIObject(const CUIObject& Prototype)
 	: CGameObject{ Prototype }
+
 {
 }
 

@@ -77,8 +77,7 @@ void CUI_Video::Update(_float fTimeDelta)
 		LONGLONG time = 0;
 
 		HRESULT hr = ReadFrameToBuffer(&pData, &width, &height, &time);
-		
-
+	//	hr = MF_E_END_OF_STREAM;
 		if (hr == MF_E_END_OF_STREAM || hr == AVERROR_EOF)
 		{
 			if (m_isLoop)
@@ -107,11 +106,7 @@ void CUI_Video::Update(_float fTimeDelta)
 			{
 				m_pVideoSRV = tempSRV;
 				++m_iDrawnFrameIndex;
-
-			
 			}
-
-			
 		}
 		Safe_Delete_Array(pData);
 	}
@@ -126,7 +121,7 @@ void CUI_Video::Late_Update(_float fTimeDelta)
 	if (m_bDead)
 		return;
 
-	
+
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 	
 }
@@ -445,6 +440,7 @@ void CUI_Video::Free()
 	__super::Free();
 	
 	Safe_Release(m_pVideoSRV);
+	m_pVideoSRV = nullptr;
 	Safe_Release(m_pVIBufferCom);
 	
 	Safe_Release(m_pShaderCom);

@@ -62,6 +62,8 @@ HRESULT CTexture::Bind_ShaderResource(CShader* pShader, const _char* pConstantNa
 {
  	if (iTextureIndex >= m_iNumTextures)
 		return E_FAIL;
+	if (m_SRVs.empty() || m_SRVs[iTextureIndex] == nullptr)
+		return E_FAIL;
 
 	return pShader->Bind_SRV(pConstantName, m_SRVs[iTextureIndex]);	
 }

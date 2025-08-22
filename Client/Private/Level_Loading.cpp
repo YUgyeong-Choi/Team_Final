@@ -177,7 +177,6 @@ HRESULT CLevel_Loading::Ready_Loading()
 	auto& Parts = static_cast<CUI_Container*>(pObj)->Get_PartUI();
 
 
-
 	for (_int i = 0; i < Parts.size() - 3; ++i)
 	{
 		Parts[i]->Set_isVignetting(true);
