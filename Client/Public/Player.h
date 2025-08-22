@@ -157,6 +157,8 @@ private: /* [ 슬룻 함수 ] */
 	void Update_Slot(_float fTimeDelta);
 	void LateUpdate_Slot(_float fTimeDelta);
 
+	_bool Find_Slot(const _wstring& strItemTag);
+
 private: /* [ 이펙트 관리 함수 ]*/
 	void Set_GrinderEffect_Active(_bool bActive);
 

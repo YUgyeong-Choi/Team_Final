@@ -53,9 +53,10 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_pAnimator->GetCurrentAnimName().find("Dead") != string::npos)
+	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
+	if (pCurState->stateName.find("Dead") != string::npos)
 	{
-		if (m_pAnimator->IsFinished())
+		if(pCurState->clip->GetClipLength()>=1.f)
 		{
 			(m_pWeapon)->Set_bDead();
 		}

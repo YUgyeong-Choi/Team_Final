@@ -77,10 +77,11 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 	}
 
 
-	if (m_pAnimator->GetCurrentAnimName().find("Dead") != string::npos)
+	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
+	if (pCurState->stateName.find("Dead") != string::npos)
 	{
 		m_bUseLockon = false;
-		if (m_pAnimator->IsFinished())
+		if (pCurState->clip->GetClipLength() >= 1.f)
 		{
 			m_pHPBar->Set_bDead();
 			Set_bDead();
