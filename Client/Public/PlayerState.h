@@ -761,6 +761,7 @@ private:
 	_bool m_bPreWalk = { false };
     _float m_fGrinderTime = {};
     _float m_fPulseTime = {};
+  
 };
 
 /* [ 이 클래스는 백스탭 상태입니다. ] */

@@ -1182,7 +1182,10 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
+
+
 		m_vHitNormal = vOtherPos - vPlayerPos;
+		
 
 		//1. 애니메이션 상태를 히트로 바꾼다.
 
@@ -1191,8 +1194,13 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		{
 			m_bGardHit = true;
 
+
+			
 			//
-			pUnit->Guard_Reaction();
+			EHitDir eDir = ComputeHitDir();
+
+			if(eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
+				pUnit->Guard_Reaction();
 
 			return;
 		}
@@ -1250,8 +1258,12 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		{
 			m_bGardHit = true;
 
+
 			//
-			pUnit->Guard_Reaction();
+			EHitDir eDir = ComputeHitDir();
+
+			if (eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
+				pUnit->Guard_Reaction();
 
 			return;
 		}

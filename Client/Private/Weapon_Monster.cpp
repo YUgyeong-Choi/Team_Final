@@ -111,14 +111,9 @@ void CWeapon_Monster::Update_Collider()
 	// 1. 부모 행렬
 	_matrix ParentWorld = {};  
 
-	if (m_pOwner == nullptr || m_pOwner->Get_bDead())
-	{
-		ParentWorld = XMMatrixIdentity();
-	}
-	else
-	{
-		ParentWorld = XMLoadFloat4x4(m_pParentWorldMatrix);;
-	}
+
+	ParentWorld = XMLoadFloat4x4(m_pParentWorldMatrix);;
+	
 
 	// 2. Socket 월드 행렬 
 	_matrix SocketMat = XMLoadFloat4x4(m_pSocketMatrix);

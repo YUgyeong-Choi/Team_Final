@@ -121,7 +121,7 @@ void CMonster_Base::Update(_float fTimeDelta)
 		_vector vLook = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 		vLook.m128_f32[1] = 0.f;
 		vLook = XMVector3Normalize(vLook);
-		m_pTransformCom->RotateToDirectionSmoothly(vLook, fTimeDelta);
+		m_pTransformCom->RotateToDirectionSmoothly(vLook, fTimeDelta * 0.8f);
 		
 	}
 
@@ -172,6 +172,7 @@ HRESULT CMonster_Base::Render()
 
 void CMonster_Base::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	
 }
 
 void CMonster_Base::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -242,7 +243,7 @@ HRESULT CMonster_Base::Ready_Actor(void* pArg)
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON; // 일단 보류
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON | FILTER_MONSTERBODY; // 일단 보류
 	//filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | FILTER_PLAYERWEAPON; // 일단 보류
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
@@ -312,10 +313,15 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 
 		vTrans += m_PrevWorldDelta;
 
+		XMVector3Normalize(m_vPushDir);
+		
+		vTrans += m_vPushDir * 0.01f;
+			
+
 		// 네비 이동 가능 여부 체크 후 위치 재설정
 		if (nullptr != m_pNaviCom && !m_pNaviCom->isMove(vTrans))
 		{
-			vTrans -= m_PrevWorldDelta;
+			vTrans -= (m_PrevWorldDelta + m_vPushDir * 0.01f);
 			m_pTransformCom->Set_State(STATE::POSITION, vTrans);
 		}
 
@@ -500,6 +506,14 @@ CMonster_Base::MONSTER_DIR CMonster_Base::Calc_TurnDir(_vector vOtherPos)
 		return MONSTER_DIR::L;
 	else
 		return MONSTER_DIR::R;
+}
+
+void CMonster_Base::Push_Other(_vector vHitPos, _vector vNormal)
+{
+	
+	m_vPushDir -= vNormal;
+
+	
 }
 
 CMonster_Base* CMonster_Base::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
