@@ -118,7 +118,9 @@ void CDoorMesh::Play_Sound()
 }
 
 void CDoorMesh::Play_BGM(_float fTimeDelta)
-{	// BGM
+{	
+	/*
+	// BGM
 	if (m_bBGMToZero)
 	{
 		if (m_bInSound)
@@ -150,19 +152,19 @@ void CDoorMesh::Play_BGM(_float fTimeDelta)
 		}
 		else
 		{
-			//밖에서 안으로
-			m_pBGM->Stop();
-			switch (m_eInteractType)
-			{
-			case Client::TUTORIALDOOR:
-				m_pGameInstance->Release_Single_Sound("AMB_SS_Train_Out_Rain");
-				m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
-				m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-				break;
-			default:
-				break;
-			}
-			m_pBGM->Play();
+			////밖에서 안으로
+			//m_pBGM->Stop();
+			//switch (m_eInteractType)
+			//{
+			//case Client::TUTORIALDOOR:
+			//	m_pGameInstance->Release_Single_Sound("AMB_SS_Train_Out_Rain");
+			//	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
+			//	m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+			//	break;
+			//default:
+			//	break;
+			//}
+			//m_pBGM->Play();
 		}
 	}
 
@@ -182,20 +184,22 @@ void CDoorMesh::Play_BGM(_float fTimeDelta)
 		}
 		else
 		{
-			//밖에서 안으로
-			m_pBGM->Stop();
-			switch (m_eInteractType)
-			{
-			case Client::TUTORIALDOOR:
-				m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
-				m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-				break;
-			default:
-				break;
-			}
-			m_pBGM->Play();
+			////밖에서 안으로
+			//m_pBGM->Stop();
+			//switch (m_eInteractType)
+			//{
+			//case Client::TUTORIALDOOR:
+			//	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
+			//	m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+			//	break;
+			//default:
+			//	break;
+			//}
+			//m_pBGM->Play();
 		}
 	}
+
+	*/
 }
 
 HRESULT CDoorMesh::Ready_Components(void* pArg)

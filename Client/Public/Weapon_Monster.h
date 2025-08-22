@@ -45,6 +45,8 @@ public:
 
 	virtual void SetisAttack(_bool isAttack);
 
+	void Gravity_On();
+
 
 protected: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components();
