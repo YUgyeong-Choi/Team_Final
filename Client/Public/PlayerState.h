@@ -1958,7 +1958,7 @@ public:
 
                     XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
 
-                    CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardPerfect_P3S6"), &desc);
+                    CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardPerfect_P3S6pls"), &desc);
 
                     if (pEffect == nullptr)
                         MSG_BOX("이펙트 생성 실패함");
@@ -2827,6 +2827,33 @@ public:
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
+
+        /*********************************************************/
+
+        _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
+        _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
+
+        vPos += vDir * 1.5f;
+        _float3 vEffPos = {};
+        XMStoreFloat3(&vEffPos, vPos);
+        vEffPos.y += 0.5f;
+
+        CEffectContainer::DESC desc = {};
+
+        XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+        CGameObject* pEffect = { nullptr };
+        pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
+
+        if (pEffect == nullptr)
+            MSG_BOX("이펙트 생성 실패함");
+
+        /*********************************************************/
+
+
+
+
+
+
     }
 
     virtual void Execute(_float fTimeDelta) override
