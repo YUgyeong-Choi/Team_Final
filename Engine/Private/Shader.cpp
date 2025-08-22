@@ -121,7 +121,6 @@ HRESULT CShader::Bind_SRV(const _char* pConstantName, ID3D11ShaderResourceView* 
 	if (nullptr == pVariable)
 		return E_FAIL;
 
-	
 	ID3DX11EffectShaderResourceVariable* pShaderResourceVariable = pVariable->AsShaderResource();
 	if (nullptr == pShaderResourceVariable)
 		return E_FAIL;

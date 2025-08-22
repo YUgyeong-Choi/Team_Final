@@ -19,10 +19,6 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	// 레벨 설정
-	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::LOGO));
-	//m_pGameInstance->Set_IsChangeLevel(false);
-
 
 	if (FAILED(Ready_Video()))
 		return E_FAIL;

@@ -2,8 +2,8 @@
 
 /* 상수테이블 ConstantTable */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D g_Texture;
-texture2D g_DepthTexture;
+Texture2D g_Texture;
+Texture2D g_DepthTexture;
 
 float g_Alpha;
 

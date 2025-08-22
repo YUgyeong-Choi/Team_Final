@@ -195,7 +195,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 void CPlayer::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	
 	/* [ 특수행동 ] */
 	ItemWeaponOFF(fTimeDelta);

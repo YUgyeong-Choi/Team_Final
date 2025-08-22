@@ -260,8 +260,8 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 		CGameObject* pEffect = { nullptr };
 		/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc)
-			:*/ rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
-			: pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc);
+			:rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
+			:*/  pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc);
 
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
@@ -299,8 +299,8 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 		CGameObject* pEffect = { nullptr };
 		/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc)
-			:*/ rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
-			: pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc);
+			: rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
+			:*/ pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc);
 
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");

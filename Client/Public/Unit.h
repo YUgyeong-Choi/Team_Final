@@ -114,8 +114,6 @@ protected: /* [ 기본 충돌체 ] */
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
 protected:				/* [ 기본 속성 ] */
-
-	_bool				m_isActive = { true };
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);
 	_float				m_fDamage = {};

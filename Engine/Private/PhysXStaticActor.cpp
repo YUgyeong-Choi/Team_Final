@@ -72,7 +72,9 @@ void CPhysXStaticActor::Set_SimulationFilterData(PxFilterData _data)
 {
     m_pShape->setSimulationFilterData(_data);
     m_filterData = _data;
+#ifdef _DEBUG
     m_bReadyForDebugDraw = true;
+#endif
 }
 
 void CPhysXStaticActor::Init_SimulationFilterData()
@@ -81,7 +83,9 @@ void CPhysXStaticActor::Init_SimulationFilterData()
     filterData.word0 = 0;
     filterData.word1 = 0;
     m_pShape->setSimulationFilterData(filterData);
+#ifdef _DEBUG
     m_bReadyForDebugDraw = false;
+#endif
 }
 
 void CPhysXStaticActor::Set_QueryFilterData(PxFilterData _data)

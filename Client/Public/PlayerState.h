@@ -13,6 +13,9 @@
 #include "Item.h"
 #include "Belt.h"
 
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
+
 NS_BEGIN(Client)
 
 _float g_fWalkSpeed = 1.5f;
@@ -634,6 +637,8 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
         {
+            m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+
             if (m_pOwner->m_bWeaponEquipped)
             {
                 m_pOwner->m_pAnimator->SetTrigger("Grinder");
@@ -676,6 +681,7 @@ public:
         {
             if (KEY_PRESSING(DIK_R))
             {
+                m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
                 if (!m_pOwner->m_pAnimator->CheckBool("Grinding"))
                 {
                     m_pOwner->m_pAnimator->SetTrigger("Grinder");
@@ -713,6 +719,7 @@ public:
         m_pOwner->m_bUseLamp = false;
         m_pOwner->m_bUseGrinder = false;
 		m_pOwner->m_bWalk = m_bPreWalk;
+        m_pOwner->m_bUsePulse = false;
         m_fGrinderTime = 0.f;
         m_fPulseTime = 0.f;
         m_fStateTime = 0.f;
@@ -1271,6 +1278,9 @@ public:
             }
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
+
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
         }
 
         
@@ -1387,6 +1397,9 @@ public:
             }
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
+
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
         }
 
         if (1.4f < m_fStateTime)
@@ -1509,6 +1522,9 @@ public:
             }
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
+
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
         }
         if (1.5f < m_fStateTime)
         {
@@ -1629,6 +1645,9 @@ public:
             }
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
+
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
         }
 
         if (2.5f < m_fStateTime)
@@ -1727,6 +1746,9 @@ public:
 
         if (2.5f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             if (m_pOwner->m_bIsChange && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
             {
                 m_pOwner->m_bIsChange = false;
@@ -1829,6 +1851,9 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             /* [ 펄스 예약제 ] */
             if (m_pOwner->m_bPulseReservation)
                 return EPlayerState::USEITEM;
@@ -1919,6 +1944,25 @@ public:
                     printf(" 너 퍼펙트 가드성공했어. \n");
                     m_pOwner->m_bPerfectGardDamege = true;
                     m_pOwner->HPSubtract();
+
+                    /*********************************************************/
+                    _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
+                    _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
+
+                    vPos += vDir * 1.5f;
+                    _float3 vEffPos = {};
+                    XMStoreFloat3(&vEffPos, vPos);
+                    vEffPos.y += 0.5f;
+                    
+                    CEffectContainer::DESC desc = {};
+
+                    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+
+                    CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardPerfect_P3S6"), &desc);
+
+                    if (pEffect == nullptr)
+                        MSG_BOX("이펙트 생성 실패함");
+                    /*********************************************************/
                 }
                 else
                 {
@@ -1926,6 +1970,26 @@ public:
                     printf(" 너 가드성공했어. \n");
                     m_pOwner->m_bGardDamege = true;
                     m_pOwner->HPSubtract();
+
+                    /*********************************************************/
+                    _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
+                    _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
+
+                    vPos += vDir * 1.5f;
+                    _float3 vEffPos = {};
+                    XMStoreFloat3(&vEffPos, vPos);
+                    vEffPos.y += 0.5f;
+
+                    CEffectContainer::DESC desc = {};
+
+                    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+
+                    CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardNormal_P2"), &desc);
+
+                    if (pEffect == nullptr)
+                        MSG_BOX("이펙트 생성 실패함");
+                    /*********************************************************/
+
                 }
             }
             else
@@ -2223,6 +2287,9 @@ public:
 
         if (1.f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             /* [ 펄스 예약제 ] */
             if (m_pOwner->m_bPulseReservation)
                 return EPlayerState::USEITEM;
@@ -2330,6 +2397,9 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             /* [ 펄스 예약제 ] */
             if (m_pOwner->m_bPulseReservation)
                 return EPlayerState::USEITEM;
@@ -2425,6 +2495,9 @@ public:
 
         if (1.5f < m_fStateTime)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             /* [ 펄스 예약제 ] */
             if (m_pOwner->m_bPulseReservation)
                 return EPlayerState::USEITEM;
@@ -2616,6 +2689,9 @@ public:
 
         if (1.f < m_fStateTime && m_iSkillCount == 0)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             if(m_bAttackA)
 				return EPlayerState::WEAKATTACKA;
 			if (m_bAttackB)
@@ -2636,6 +2712,9 @@ public:
         }
         if (2.f < m_fStateTime && m_iSkillCount == 1)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             if (m_bAttackA)
                 return EPlayerState::WEAKATTACKA;
             if (m_bAttackB)
@@ -2656,6 +2735,9 @@ public:
         }
         if (3.5f < m_fStateTime && m_iSkillCount >= 2)
         {
+            if (KEY_DOWN(DIK_SPACE))
+                return EPlayerState::BACKSTEP;
+
             if (m_bAttackA)
                 return EPlayerState::WEAKATTACKA;
             if (m_bAttackB)

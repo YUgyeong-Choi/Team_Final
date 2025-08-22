@@ -633,7 +633,7 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 
 	m_pStartVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video")));
-	Safe_AddRef(m_pStartVideo);
+//	Safe_AddRef(m_pStartVideo);
 
 	
 
@@ -1133,5 +1133,5 @@ void CLevel_KratCentralStation::Free()
 	Safe_Release(m_pShaderComPBR);
 	Safe_Release(m_pShaderComANIM);
 	Safe_Release(m_pShaderComInstance);
-	Safe_Release(m_pStartVideo);
+//	Safe_Release(m_pStartVideo);
 }
