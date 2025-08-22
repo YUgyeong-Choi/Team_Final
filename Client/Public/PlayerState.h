@@ -174,6 +174,15 @@ protected: /* [ 락온 관련 ] */
             m_pOwner->m_pAnimator->SetBool("Back", false);
         }
     }
+    void PrintfMoveSwitch()
+    {
+        printf("Left : %d | Right : %d | Front : %d | Back : %d\n",
+            static_cast<_int>(m_pOwner->m_pAnimator->CheckBool("Left")),
+            static_cast<_int>(m_pOwner->m_pAnimator->CheckBool("Right")),
+            static_cast<_int>(m_pOwner->m_pAnimator->CheckBool("Front")),
+            static_cast<_int>(m_pOwner->m_pAnimator->CheckBool("Back")));
+
+    }
 
 protected:
 	CPlayer* m_pOwner;
@@ -852,6 +861,7 @@ public:
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
+        LockOnMovement();
 
         // 백스탭은 무브 OFF 입니다.
         m_pOwner->m_pAnimator->SetBool("Move", false);
@@ -1279,7 +1289,7 @@ public:
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
 
-            if (KEY_DOWN(DIK_SPACE))
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
         }
 
@@ -1398,7 +1408,8 @@ public:
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
 
-            if (KEY_DOWN(DIK_SPACE))
+
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
         }
 
@@ -1523,7 +1534,8 @@ public:
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
 
-            if (KEY_DOWN(DIK_SPACE))
+
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
         }
         if (1.5f < m_fStateTime)
@@ -1646,7 +1658,8 @@ public:
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
 
-            if (KEY_DOWN(DIK_SPACE))
+
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
         }
 
@@ -1746,8 +1759,11 @@ public:
 
         if (2.5f < m_fStateTime)
         {
-            if (KEY_DOWN(DIK_SPACE))
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
+
+            if (m_pOwner->m_bUseLockon && KEY_UP(DIK_SPACE))
+                return EPlayerState::ROLLING;
 
             if (m_pOwner->m_bIsChange && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
             {
@@ -1851,7 +1867,7 @@ public:
 
         if (2.f < m_fStateTime)
         {
-            if (KEY_DOWN(DIK_SPACE))
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
             /* [ 펄스 예약제 ] */
