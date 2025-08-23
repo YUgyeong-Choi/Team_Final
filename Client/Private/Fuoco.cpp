@@ -194,7 +194,7 @@ HRESULT CFuoco::Ready_Actor()
 
 void CFuoco::Ready_BoneInformation()
 {
-	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine1");
+	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine");
 
 	auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-L-Hand"); });
