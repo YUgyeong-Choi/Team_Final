@@ -71,6 +71,7 @@ public:
 
 	CAnimController* GetCurrentAnimContrller();
 
+
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
 	void			CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);

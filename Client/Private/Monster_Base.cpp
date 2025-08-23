@@ -88,7 +88,7 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 			
 
 		}
-	}
+	}*/
 }
 
 void CMonster_Base::Update(_float fTimeDelta)
@@ -544,7 +544,7 @@ void CMonster_Base::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pPhysXActorCom);
+
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pHPBar);

@@ -4,14 +4,15 @@
 #include "LockOn_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Client_Calculation.h"
+#include <Player.h>
 
 CButtler_Train::CButtler_Train(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CMonster_Base{pDevice, pContext}
+	:CMonster_Base{ pDevice, pContext }
 {
 }
 
 CButtler_Train::CButtler_Train(const CButtler_Train& Prototype)
-	:CMonster_Base (Prototype)
+	:CMonster_Base(Prototype)
 {
 }
 
@@ -25,7 +26,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	/* [ 데미지 설정 ] */
 	m_fDamage = 18.f;
 
-	if(FAILED(__super::Initialize(pArg)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Weapon()))
@@ -33,10 +34,10 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_fDetectDist = 10.f;
 	m_fGroggyThreshold = 100;
-	
+
 	m_fHp = 300;
 
-	if(nullptr != m_pHPBar)
+	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
 
 	// 락온 용
@@ -54,11 +55,13 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 	__super::Priority_Update(fTimeDelta);
 
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
-	if (pCurState->stateName.find("Dead") != string::npos)
+	if (pCurState && pCurState->stateName.find("Dead") != pCurState->stateName.npos)
 	{
-		if(pCurState->clip->GetClipLength()>=1.f)
+		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
+			cout << pCurState->stateName << endl;
 			(m_pWeapon)->Set_bDead();
+			Set_bDead();
 		}
 	}
 
@@ -66,9 +69,12 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 	{
 		m_pWeapon->Collider_FilterOff();
 		m_bOffCollider = true;
-		m_pPhysXActorCom->RemovePhysX();
-		Safe_Release(m_pPhysXActorCom);
-		m_pPhysXActorCom = nullptr;
+
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+		}
+		m_pPhysXActorCom->Init_SimulationFilterData();
 	}
 }
 
@@ -101,14 +107,14 @@ void CButtler_Train::Late_Update(_float fTimeDelta)
 	Update_State();
 
 
-	
+
 }
 
 HRESULT CButtler_Train::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-	
+
 
 	return S_OK;
 }
@@ -135,7 +141,7 @@ void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollide
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
 		// 계속 충돌중이면 빠져나갈 수 있게 좀 보정을
-		_vector vCorrection = HitNormal * 0.01f; 
+		_vector vCorrection = HitNormal * 0.01f;
 		m_vPushDir -= vCorrection;
 	}
 	//else if (eColliderType == COLLIDERTYPE::PLAYER)
@@ -156,8 +162,8 @@ void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eCollide
 			m_vPushDir = { 0.f, 0.f, 0.f, 0.f };
 		}
 	}
-	
-		
+
+
 }
 
 void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -175,28 +181,28 @@ void CButtler_Train::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderT
 
 void CButtler_Train::Update_State()
 {
-	 Check_Detect();
+	Check_Detect();
 
-	 m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-	 
-	 if (!m_isDetect || m_fHp <= 0)
-	 {
-		 m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-		 return;
-	 }
-		
+	m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+
+	if (!m_isDetect || m_fHp <= 0)
+	{
+		m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+		return;
+	}
+
 
 
 
 	_vector vDist = {};
 	vDist = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 
-	
+
 	m_pAnimator->SetFloat("Distance", XMVectorGetX(XMVector3Length(vDist)));
 
-    m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+	m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
-	
+
 
 
 	if (m_strStateName.find("Idle") != m_strStateName.npos)
@@ -217,7 +223,7 @@ void CButtler_Train::Update_State()
 			m_pAnimator->SetBool("UseLightAttack", true);
 		}
 
-		
+
 	}
 
 	if (m_iAttackCount == 3)
@@ -229,10 +235,10 @@ void CButtler_Train::Update_State()
 		else
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(MONSTER_DIR::B));
 		m_pAnimator->SetBool("IsBack", true);
-		
+
 		m_iAttackCount = 0;
 
-		
+
 	}
 
 
@@ -241,9 +247,9 @@ void CButtler_Train::Update_State()
 		m_fDuration = 0.f;
 		m_fGroggyThreshold = 100;
 	}
-	
 
-	
+
+
 
 
 
@@ -254,7 +260,7 @@ void CButtler_Train::Attack(CGameObject* pOther, COLLIDERTYPE eColliderType)
 }
 
 void CButtler_Train::AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{ 
+{
 }
 
 void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -288,7 +294,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		if (m_fHp <= 0)
 		{
-			
+
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 			m_pAnimator->SetTrigger("Dead");
 			m_strStateName = "Dead";
@@ -305,7 +311,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 			if (m_strStateName.find("Hit") != m_strStateName.npos)
 			{
-				
+
 				m_pAnimator->Get_CurrentAnimController()->SetState(m_strStateName);
 
 			}
@@ -315,10 +321,10 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 				m_pAnimator->SetTrigger("Hit");
 			}
 
-			
 
-			
-			if(m_fGroggyThreshold <= 0)
+
+
+			if (m_fGroggyThreshold <= 0)
 				m_isCanGroggy = true;
 		}
 		else
@@ -329,13 +335,13 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 				m_pAnimator->SetTrigger("Groggy");
 				m_isCanGroggy = false;
 			}
-	
+
 		}
-		
+
 	}
 
 
-	
+
 }
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
@@ -416,10 +422,10 @@ HRESULT CButtler_Train::Ready_Weapon()
 	Desc.szMeshID = TEXT("Buttler_Train_Weapon");
 	lstrcpy(Desc.szName, TEXT("Buttler_Train_Weapon"));
 	Desc.vAxis = { 0.f,1.f,0.f,0.f };
-	Desc.fRotationDegree = {90.f};
+	Desc.fRotationDegree = { 90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
 	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
-	
+
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Desc.pOwner = this;
