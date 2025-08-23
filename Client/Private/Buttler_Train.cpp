@@ -23,7 +23,7 @@ HRESULT CButtler_Train::Initialize_Prototype()
 HRESULT CButtler_Train::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
-	m_fDamage = 12.f;
+	m_fDamage = 18.f;
 
 	if(FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

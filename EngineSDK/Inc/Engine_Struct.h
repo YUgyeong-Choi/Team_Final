@@ -290,7 +290,7 @@ namespace Engine
 	inline _bool AABB_ContainsAABB(const AABBBOX& a, const AABBBOX& b, float eps = 0.0f)
 	{
 		return (b.vMin.x >= a.vMin.x - eps) && (b.vMax.x <= a.vMax.x + eps) &&
-			//(b.vMin.y >= a.vMin.y - eps) && (b.vMax.y <= a.vMax.y + eps) &&
+			(b.vMin.y >= a.vMin.y - eps) && (b.vMax.y <= a.vMax.y + eps) &&
 			(b.vMin.z >= a.vMin.z - eps) && (b.vMax.z <= a.vMax.z + eps);
 	}
 

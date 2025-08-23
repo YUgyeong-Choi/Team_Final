@@ -187,6 +187,7 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 이동 관련 ] */
 	Movement(fTimeDelta);
 
+	/* [ 콜라이더 업데이트 ] */
 	Update_Collider_Actor();
 
 	/* [ 아이템 ] */
@@ -214,18 +215,14 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->CancelOverrideAnimController();
 		//m_pAnimator->SetInt("HitDir", m_iTestInt);
 		//m_pAnimator->SetTrigger("Hited");
-		m_pAnimator->SetTrigger("NormalAttack");
-
-		m_iTestInt++;
+		m_pAnimator->SetBool("WasDead", false);
+		m_pAnimator->SetTrigger("Teleport");
 	}
 
 	if (KEY_DOWN(DIK_U))
 	{
-
-		m_pAnimator->SetTrigger("Dash");
-
-		cout << "왼쪽 : " << m_pAnimator->CheckBool("Left") << endl;
-		cout << "오른쪽 : " << m_pAnimator->CheckBool("Right") << endl;
+		m_pAnimator->SetBool("WasDead", true);
+		m_pAnimator->SetTrigger("Death");
 	}
 
 	/* [ 아이템 ] */
@@ -324,7 +321,8 @@ void CPlayer::HPSubtract()
 	}
 
 
-	m_fHP -= m_fReceiveDamage;
+	//m_fHP -= m_fReceiveDamage;
+	m_fHP -= 40.f;
 
 	if (m_fHP <= 0.f)
 		m_fHP = 0.f;
@@ -1264,8 +1262,6 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		{
 			m_bGardHit = true;
 
-
-			//
 			EHitDir eDir = ComputeHitDir();
 
 			if (eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
@@ -1310,6 +1306,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMFAIL)] = new CPlayer_ArmFail(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::MAINSKILL)] = new CPlayer_MainSkill(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::HITED)] = new CPlayer_Hited(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::DEAD)] = new CPlayer_Dead(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
 }

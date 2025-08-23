@@ -188,6 +188,7 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_MainSkill;
 	friend class CPlayer_ArmFail;
 	friend class CPlayer_Hited;
+	friend class CPlayer_Dead;
 
 
 private: /* [ 상태 변수 ] */
@@ -309,8 +310,9 @@ private: /* [ 현재 상태 ] */
 	_bool	m_bIsGuarding = { false };
 	_bool	m_bIsHit = { false };
 	_bool	m_bIsInvincible = { false };
-	_float	m_fIsInvincible = {};
+	_float	m_fIsInvincible = { false };
 	_bool	m_bIsLockOn = { false };
+	_bool	m_bIsRrevival = { false };
 
 private: /* [ 현재 플레이어 레벨 ] */
 	_int	m_iLevel = { 0 };
