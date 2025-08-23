@@ -1213,6 +1213,9 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 	}
 
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
+		m_bContact = true;
+
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -1221,6 +1224,8 @@ void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 
 void CPlayer::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
+		m_bContact = false;
 }
 
 void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -1274,10 +1279,14 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	}
 
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
+		m_bContact = true;
 }
 
 void CPlayer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
+		m_bContact = true;
 }
 
 void CPlayer::ReadyForState()
@@ -2055,9 +2064,6 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	{
 		fSpeed = 0.f;
 	}
-	_float fDist = fSpeed * fTimeDelta;
-	vInputDir *= fDist;
-	XMStoreFloat3(&moveVec, vInputDir);
 
 #ifdef _DEBUG
 	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
@@ -2065,6 +2071,10 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 		return;
 #endif // _DEBUG
 
+	_float fDist = fSpeed * fTimeDelta;
+	PxVec3 vSaveInputDir = VectorToPxVec3(vInputDir);
+	vInputDir *= fDist;
+	XMStoreFloat3(&moveVec, vInputDir);
 
 	// 중력 적용
 	constexpr _float fGravity = -9.81f;
@@ -2076,8 +2086,15 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 	PxControllerFilters filters;
 	filters.mFilterCallback = &filter; // 필터 콜백 지정
-	PxControllerCollisionFlags collisionFlags =
-		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+	PxControllerCollisionFlags collisionFlags;
+	if (m_bContact && XMVector3Equal(vInputDir, XMVectorZero())) {
+		collisionFlags = m_pControllerCom->Move(fTimeDelta, vSaveInputDir, fSpeed, m_fContactIntensity);
+	}
+	else
+	{
+		collisionFlags = m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+	}
+
 	//printf(" 왜 안움직이지?? : %s \n", strName.c_str());
 
 	// 4. 지면에 닿았으면 중력 속도 초기화
