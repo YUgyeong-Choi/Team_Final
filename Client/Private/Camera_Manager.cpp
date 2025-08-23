@@ -136,6 +136,12 @@ void CCamera_Manager::Shake_Camera(_float fIntensity, _float fDuration, _float f
         m_pCurCamera->StartShake(fIntensity, fDuration, fShakeFreqPos, fShakeFreqRot);
 }
 
+void CCamera_Manager::Rot_Camera(_vector vRot, _float fDuration)
+{
+    if (m_pCurCamera)
+		m_pCurCamera->StartRot(vRot, fDuration);
+}
+
 
 void CCamera_Manager::Free()
 {
