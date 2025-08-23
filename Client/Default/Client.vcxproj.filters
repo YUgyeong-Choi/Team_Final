@@ -910,6 +910,9 @@
     <ClInclude Include="..\public\UI_Script_Talk.h">
       <Filter>02.GameObjects\99.UI\Container\Script\Talk</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Oil.h">
+      <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1363,6 +1366,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Script_Talk.cpp">
       <Filter>02.GameObjects\99.UI\Container\Script\Talk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Oil.cpp">
+      <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

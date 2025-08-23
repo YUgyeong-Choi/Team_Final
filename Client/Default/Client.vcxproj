@@ -198,6 +198,7 @@
     <ClInclude Include="..\Public\MonsterToolObject.h" />
     <ClInclude Include="..\public\LegionArm_Base.h" />
     <ClInclude Include="..\public\LegionArm_Steel.h" />
+    <ClInclude Include="..\Public\Oil.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
     <ClInclude Include="..\Public\TriggerSound.h" />
@@ -389,6 +390,7 @@
     <ClCompile Include="..\Private\Observer_Player_Status.cpp" />
     <ClCompile Include="..\private\Observer_Slot.cpp" />
     <ClCompile Include="..\private\Observer_Weapon.cpp" />
+    <ClCompile Include="..\Private\Oil.cpp" />
     <ClCompile Include="..\private\Panel_Player_Arm.cpp" />
     <ClCompile Include="..\private\Panel_Player_LD.cpp" />
     <ClCompile Include="..\private\Panel_Player_RD.cpp" />

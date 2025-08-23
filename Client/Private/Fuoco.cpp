@@ -69,10 +69,10 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_TAB))
 	{
-		//m_pAnimator->SetTrigger("Attack");
-		//m_pAnimator->SetInt("SkillType", P2_FireFlame);
+		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetInt("SkillType", P2_FireOil);
 		//m_pAnimator->SetTrigger("Paralyzation");
-		m_pAnimator->SetTrigger("Fatal");
+	//	m_pAnimator->SetTrigger("Fatal");
 		//m_pAnimator->SetTrigger("Groggy");
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
@@ -153,7 +153,7 @@ HRESULT CFuoco::Ready_Actor()
 		PxQuat armRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 armPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 		PxTransform armPose(armPositionVec, armRotationQuat);
-		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(1.3f);
+		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(1.45f);
 		m_pPhysXActorComForArm->Create_Collision(m_pGameInstance->GetPhysics(), armGeom, armPose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorComForArm->Set_ShapeFlag(false, true, true);
 		PxFilterData armFilterData{};
@@ -752,7 +752,7 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		XMStoreFloat3(&desc.vDir, GetTargetDirection());
 
 		desc.fLifeTime = 3.f;
-		desc.fGravityOnDist = Get_DistanceToPlayer() * 0.2f;
+		desc.fGravityOnDist = Get_DistanceToPlayer() * 0.15f;
 		desc.fStartTime = 1.f;
 		desc.bUseTimeTrigger = false;
 		desc.bUseDistTrigger = true;
@@ -787,7 +787,7 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		desc.bUseDistTrigger = false;
 		desc.fRadius = 0.2f;
 		desc.fLifeTime = 3.f;
-		lstrcpy(desc.szName, TEXT("FireBall"));
+		lstrcpy(desc.szName, TEXT("Oil"));
 		_vector vBaseDir = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
 		// base에서 30도씩 회전 시키기
 		_vector vLeftDirOfBase = XMVector3Rotate(vBaseDir, XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-5.f)));
@@ -801,7 +801,7 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		{
 			desc.vDir = vDirArray[i];
 			// 나중에 Oil로 바꾸기
-			if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_FireBall"), iLevelIndex, TEXT("Layer_Projectile"), &desc)))
+			if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Oil"), iLevelIndex, TEXT("Layer_Projectile"), &desc)))
 			{
 				return;
 			}
@@ -957,6 +957,12 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 			{
 				m_pAnimator->SetBool("IsHit", true);
 				SetTurnTimeDuringAttack(2.f, 1.2f); // 퓨리 어택 
+				if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
+				{
+					auto pAnimator = pPlayer->Get_Animator();
+					pAnimator->SetBool("IsUp", true);
+					pAnimator->SetTrigger("Hited");
+				}
 			}
 		}
 
@@ -989,46 +995,49 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 	{
-		EBossAttackPattern eSkillType = static_cast<EBossAttackPattern>(m_pAnimator->GetInt("SkillType"));
 		auto pAnimator = pPlayer->Get_Animator();
-		pAnimator->SetInt("HitDir", 0);
-		switch (eSkillType)
+		_vector vDir = GetTargetDirection();
+		_float fDot = XMVectorGetX(XMVector3Dot(vDir, pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
+		if (fDot > 0.f)
 		{
-		case Client::CFuoco::SlamCombo:
-			pAnimator->SetInt("HitDir", 0);
+			pAnimator->SetInt("HitDir", 2); // 뒤에서 맞음
+		}
+		else if (fDot < 0.f)
+		{
+			pAnimator->SetInt("HitDir",0); // 앞에서 맞음
+		}
+		else
+		{
+			pAnimator->SetInt("HitDir", 1); // 옆에서 맞음
+		}
+		_uint curNodeID = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->iNodeId;
+		switch (curNodeID)
+		{
+		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_START):
+		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_LOOP):
+		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_END):
+		case ENUM_CLASS(BossStateID::ATK_SLAM):
+		case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
+		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_FRONT):
 			pAnimator->SetTrigger("Stamp");
 			break;
-		case Client::CFuoco::Uppercut:
-			break;
-		case Client::CFuoco::SwingAtkSeq:
+		case ENUM_CLASS(BossStateID::ATK_SWING_R):
+		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
+		case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
+		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM2):
+		case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
+		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_LEFT_END):
+		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_RIGHT_END):
 			pAnimator->SetTrigger("Knockback");
 			break;
-		case Client::CFuoco::SwingAtk:
-			pAnimator->SetTrigger("Knockback");
-			break;
-		case Client::CFuoco::SlamFury:
-			pAnimator->SetInt("HitDir", 0);
-			pAnimator->SetTrigger("Stamp");
-			break;
-		case Client::CFuoco::FootAtk:
-			break;
-		case Client::CFuoco::P2_FlameField:
-			break;
-		case Client::CFuoco::SlamAtk:
-			pAnimator->SetInt("HitDir", 0);
-			pAnimator->SetTrigger("Stamp");
-			break;
-		case Client::CFuoco::StrikeFury:
-			break;
-		case Client::CFuoco::P2_FireOil:
-			break;
-		case Client::CFuoco::P2_FireBall:
-			break;
-		case Client::CFuoco::P2_FireFlame:
-			break;
-		case Client::CFuoco::P2_FireBall_B:
+		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_START):
+			pAnimator->SetTrigger("Hited");
 			break;
 		default:
+			pAnimator->SetBool("IsUp", false);
 			break;
 		}
 

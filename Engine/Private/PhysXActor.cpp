@@ -577,9 +577,11 @@ void CPhysXActor::Set_RenderColor()
         m_vRenderColor = Colors::BlueViolet;
         break;
     case COLLIDERTYPE::A:
+    case COLLIDERTYPE::ENVIRONMENT_CONVEX:
         m_vRenderColor = Colors::Orange;
         break;
     case COLLIDERTYPE::B:
+    case COLLIDERTYPE::ENVIRONMENT_TRI:
         m_vRenderColor = Colors::Blue;
         break;
     case COLLIDERTYPE::C:
