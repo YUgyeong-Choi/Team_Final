@@ -38,17 +38,35 @@ HRESULT CTriggerTalk::Initialize(void* pArg)
 
 void CTriggerTalk::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
+
 	if (!m_bActive)
 	{
 		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
 		{
-			// 무기 선택 완료하면
-			// 이거 TriggerTalk 없애는 로직 추가하기
+			// 여기서 하지 말고
+			// 무기 선택 ui 가서 이제 무기 선택 완료하면
+			// 이 트리거 주소를 가지고 거기서 setbdead로 지우자
 		}
 	}
 
 	if (!m_bActive)
 		return;
+
+	// 대화 중 끌 수 있다면
+	if (KEY_DOWN(DIK_ESCAPE) || BUTTON_FINISH == CUI_Manager::Get_Instance()->Check_Script_Click_Button())
+	{
+		m_bDoOnce = false;
+		m_bTalkActive = false;
+		m_iSoundIndex = -1;
+		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);
+		m_pSoundCom->StopAll();
+		// UI 비활성화
+		CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+		CUI_Manager::Get_Instance()->On_Panel();
+	}
 
 	if (m_bTalkActive && !m_bDoOnce)
 	{
@@ -68,7 +86,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 			// 말하는 UI활성화
 			CUI_Manager::Get_Instance()->Activate_TalkScript(true);
-			CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText);
+			CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText, m_bAutoTalk);
 		}
 	}
 
@@ -80,27 +98,8 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			pPlayerTransform->RotateToDirectionSmoothly(m_pTransformCom->Get_State(STATE::POSITION), 0.005f);
 		}
 
-		if (KEY_DOWN(DIK_F))
-			m_bAutoTalk = !m_bAutoTalk;
+		
 
-		// 대화 중 끌 수 있다면
-		if (KEY_DOWN(DIK_ESCAPE))
-		{
-			m_bDoOnce = false;
-			m_bTalkActive = false;
-			m_iSoundIndex = -1;
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-			CCamera_Manager::Get_Instance()->SetbMoveable(true);
-			m_pSoundCom->StopAll();
-			// UI 비활성화
-			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-			CUI_Manager::Get_Instance()->On_Panel();
-		}
-	}
-
-	if (m_bDoOnce)
-	{
-		// Auto Talk Active True
 		if (m_bAutoTalk)
 		{
 			_bool bIsPlaying = false;
@@ -108,69 +107,33 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 
 			if (!bIsPlaying)
 			{
-				m_iSoundIndex++;
-				if (m_iSoundIndex >= m_vecSoundData.size())
-				{
-					if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
-					{
-						// 무기 선택 UI 활성화
-						m_bActive = false;
-					}
-					else
-					{
-						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-						CCamera_Manager::Get_Instance()->SetbMoveable(true);
-						m_bDead = true;
-						m_pPhysXTriggerCom->RemovePhysX();
-					}
-				}
-				else
-				{
-					m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
-					m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
-					// 말하는 UI 대사 변경
-					CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText);
-				}
+				Next_Talk();
 			}
+
 		}
-		else
+
+		if (KEY_DOWN(DIK_SPACE) || BUTTON_NEXT == CUI_Manager::Get_Instance()->Check_Script_Click_Button())
 		{
-			if (KEY_DOWN(DIK_SPACE))
-			{
-				m_pSoundCom->StopAll();
-				m_iSoundIndex++;
-				if (m_iSoundIndex >= m_vecSoundData.size())
-				{
-					if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
-					{
-						// 무기 선택 UI 활성화
-						m_bActive = false;
-					}
-					else
-					{
-						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-						CCamera_Manager::Get_Instance()->SetbMoveable(true);
-						m_bDead = true;
-						m_pPhysXTriggerCom->RemovePhysX();
-						CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-						CUI_Manager::Get_Instance()->On_Panel();
-					}
-				}
-				else
-				{
-					m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
-					m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
-					// 말하는 UI 대사 변경
-					CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText);
-				}
-			}
+			m_pSoundCom->StopAll();
+			Next_Talk();
 		}
-	
+
+
+		if (KEY_DOWN(DIK_F) || BUTTON_AUTO == CUI_Manager::Get_Instance()->Check_Script_Click_Button())
+		{
+			m_bAutoTalk = !m_bAutoTalk;
+			CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText, m_bAutoTalk);
+		}
+			
+
 	}
+
+	
 }
 
 void CTriggerTalk::Update(_float fTimeDelta)
 {
+	
 }
 
 void CTriggerTalk::Late_Update(_float fTimeDelta)
@@ -191,6 +154,8 @@ void CTriggerTalk::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		// 여기에 조사한다 UI 활성화 해두면 됨
 		CUI_Manager::Get_Instance()->Activate_Popup(true);
 		CUI_Manager::Get_Instance()->Set_Popup_Caption(0);
+
+		CUI_Manager::Get_Instance()->Activate_TextScript(false);
 		m_bTalkActive = true;
 	}
 }
@@ -208,11 +173,48 @@ void CTriggerTalk::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 
 void CTriggerTalk::Play_Sound()
 {
+
 }
 
 HRESULT CTriggerTalk::Ready_TriggerObject(void* pArg)
 {
 	return S_OK;
+}
+
+void CTriggerTalk::Next_Talk()
+{
+	m_iSoundIndex++;
+	if (m_iSoundIndex >= m_vecSoundData.size())
+	{
+		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+		{
+			// 무기 선택 UI 활성화
+			m_bActive = false;
+			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+			//m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_SelectWeapon"), 
+							 //m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_SelectWeapon"), nullptr);
+
+			
+			
+		}
+		else
+		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			m_bDead = true;
+			m_pPhysXTriggerCom->RemovePhysX();
+			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+			CUI_Manager::Get_Instance()->On_Panel();
+		}
+	}
+	else
+	{
+		m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
+		m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+		// 말하는 UI 대사 변경
+		CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText, m_bAutoTalk);
+	}
 }
 
 

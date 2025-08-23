@@ -30,10 +30,11 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void Update_Script(const string strName, const string strText);
+	void Update_Script(const string strName, const string strText, _bool isAuto);
 
 	virtual void Active_Update(_bool isActive);
 
+	_int Check_Click_Button();
 
 private:
 	CUI_Container* m_pButtons = { nullptr };

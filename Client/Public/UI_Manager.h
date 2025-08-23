@@ -47,7 +47,9 @@ public:
     void Update_TextScript(string& strText);
 
     // 대화 내용 업데이트 하고, 뒷 배경 크기를 조절해준다
-    void Update_TalkScript(string& strName, string& strText);
+    void Update_TalkScript(string& strName, string& strText, _bool isAuto);
+
+    _int Check_Script_Click_Button();
   
 
 public:

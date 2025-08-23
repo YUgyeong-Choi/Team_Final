@@ -146,7 +146,7 @@ void CUI_Manager::Update_TextScript(string& strText)
 	static_cast<CUI_Script_Text*>(m_UImap.find(L"TextScript")->second)->Update_Script(strText);
 }
 
-void CUI_Manager::Update_TalkScript(string& strName, string& strText)
+void CUI_Manager::Update_TalkScript(string& strName, string& strText, _bool isAuto)
 {
 	if (m_UImap.find(L"TalkScript") == m_UImap.end())
 		return;
@@ -154,7 +154,19 @@ void CUI_Manager::Update_TalkScript(string& strName, string& strText)
 	if (nullptr == m_UImap.find(L"TalkScript")->second)
 		return;
 
-	static_cast<CUI_Script_Talk*>(m_UImap.find(L"TalkScript")->second)->Update_Script(strName, strText);
+	static_cast<CUI_Script_Talk*>(m_UImap.find(L"TalkScript")->second)->Update_Script(strName, strText, isAuto);
+}
+
+_int CUI_Manager::Check_Script_Click_Button()
+{
+	if (m_UImap.find(L"TalkScript") == m_UImap.end())
+		return -1;
+
+	if (nullptr == m_UImap.find(L"TalkScript")->second)
+		return -1;
+
+
+	return static_cast<CUI_Script_Talk*>(m_UImap.find(L"TalkScript")->second)->Check_Click_Button();
 }
 
 void CUI_Manager::Free()

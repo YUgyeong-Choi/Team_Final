@@ -9,82 +9,64 @@
         "FilePath": "",
         "Parts": [
             {
-                "Caption": "다음",
                 "Color": {
-                    "A": 0.800000011920929,
-                    "B": 0.800000011920929,
-                    "G": 0.800000011920929,
-                    "R": 0.800000011920929
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
                 },
-                "FontSize": 0.6499999761581421,
-                "Padding": {
-                    "X": 0.0,
-                    "Y": 10.0
-                },
-                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "ProtoTag": "Prototype_GameObject_UI_Icon_Item",
                 "RotationZ": 0.0,
-                "SizeX": 120.00000762939453,
-                "SizeY": 36.0,
-                "Texturetag": "",
+                "SizeX": 515.2000122070313,
+                "SizeY": 499.5,
+                "Texturetag": "Prototype_Component_Texture_ActionType",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
-                "fX": 1284.7999267578125,
-                "fY": 832.5,
+                "fX": 420.8000183105469,
+                "fY": 413.1000061035156,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
             },
             {
-                "Caption": "자동 재생",
                 "Color": {
-                    "A": 0.800000011920929,
-                    "B": 0.800000011920929,
-                    "G": 0.800000011920929,
-                    "R": 0.800000011920929
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
                 },
-                "FontSize": 0.6499999761581421,
-                "Padding": {
-                    "X": 0.0,
-                    "Y": 10.0
-                },
-                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "ProtoTag": "Prototype_GameObject_UI_Icon_Item",
                 "RotationZ": 0.0,
-                "SizeX": 187.1999969482422,
-                "SizeY": 36.0,
-                "Texturetag": "",
+                "SizeX": 515.2000122070313,
+                "SizeY": 499.5,
+                "Texturetag": "Prototype_Component_Texture_ActionType",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
-                "fX": 1416.0,
-                "fY": 832.5,
+                "fX": 800.0,
+                "fY": 413.1000061035156,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
             },
             {
-                "Caption": "닫기",
                 "Color": {
-                    "A": 0.800000011920929,
-                    "B": 0.800000011920929,
-                    "G": 0.800000011920929,
-                    "R": 0.800000011920929
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
                 },
-                "FontSize": 0.6499999761581421,
-                "Padding": {
-                    "X": 0.0,
-                    "Y": 10.0
-                },
-                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "ProtoTag": "Prototype_GameObject_UI_Icon_Item",
                 "RotationZ": 0.0,
-                "SizeX": 99.19999694824219,
-                "SizeY": 36.0,
-                "Texturetag": "",
+                "SizeX": 515.2000122070313,
+                "SizeY": 499.5,
+                "Texturetag": "Prototype_Component_Texture_ActionType",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
-                "fX": 1512.0,
-                "fY": 832.5,
+                "fX": 1148.800048828125,
+                "fY": 413.1000061035156,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0

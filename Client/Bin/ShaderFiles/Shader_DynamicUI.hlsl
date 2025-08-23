@@ -25,6 +25,7 @@ texture2D g_InputTexture;
 float4 g_ItemDesc;
 
 float g_Groggy;
+float g_UVTime;
 
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
@@ -126,6 +127,8 @@ struct PS_IN_BLEND
 PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
 {
     PS_OUT Out;
+    
+    In.vTexcoord.x += g_UVTime;
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
@@ -552,13 +555,24 @@ PS_OUT PS_MAIN_DISCARD_ALPAH_REVERSE(PS_IN In)
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    if (Out.vColor.a > 0.3f)
+    
+    if (length(Out.vColor.rgb) > 0.6f)
         discard;
     
-    
-    Out.vColor.a = 1.f - Out.vColor.a;
+  
+    Out.vColor.a = 1 - length(Out.vColor.rgb);
     
     Out.vColor *= g_Color;
+    
+    return Out;
+}
+
+
+PS_OUT PS_MAIN_ACTION_ICON(PS_IN In)
+{
+    PS_OUT Out;
+    
+  
     
     return Out;
 }
@@ -707,6 +721,17 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DISCARD_ALPAH_REVERSE();
     }
 
+    pass Action_Icon
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ACTION_ICON();
+    }
     
 
  }
