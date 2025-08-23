@@ -16,7 +16,6 @@ unsigned int CBase::Release()
 		Free();
 
 		delete this;
-
 		return 0;
 	}
 	else

@@ -1932,6 +1932,11 @@ public:
 
                     if (pEffect == nullptr)
                         MSG_BOX("이펙트 생성 실패함");
+                    /*********************************************************/
+
+					_vector vRot = { -2.f, 0.f, 0.f, 0.f };
+                    m_pCamera_Manager->GetCurCam()->StartRot(vRot, 0.4f);
+                    m_pCamera_Manager->GetCurCam()->StartShake(0.15f, 0.35f);
                 }
                 else
                 {
