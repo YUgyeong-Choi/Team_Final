@@ -92,6 +92,9 @@ HRESULT CBayonet::Initialize(void* pArg)
 void CBayonet::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bHitRegActive)
+		Update_HitReg(fTimeDelta);
 }
 void CBayonet::Update(_float fTimeDelta)
 {
@@ -304,6 +307,8 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+		
+		StartHitReg(0.1f, 0.015f, 0.025f);
 	}
 }
 
