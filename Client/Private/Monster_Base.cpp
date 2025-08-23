@@ -75,20 +75,6 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 			m_pPlayer = Find_Player(m_pGameInstance->GetCurrentLevelIndex());
 		return;
 	}
-
-
-	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
-	if (pCurState->stateName.find("Dead") != string::npos)
-	{
-		m_bUseLockon = false;
-		if (pCurState->clip->GetClipLength() >= 1.f)
-		{
-			m_pHPBar->Set_bDead();
-			Set_bDead();
-			
-
-		}
-	}
 }
 
 void CMonster_Base::Update(_float fTimeDelta)

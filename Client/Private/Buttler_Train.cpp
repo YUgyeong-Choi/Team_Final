@@ -75,6 +75,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 		}
 		m_pPhysXActorCom->Init_SimulationFilterData();
+
 	}
 }
 
