@@ -321,7 +321,7 @@ void CPlayer::HPSubtract()
 
 
 	//m_fHP -= m_fReceiveDamage;
-	m_fHP -= 40.f;
+	m_fHP -= 1.f;
 
 	if (m_fHP <= 0.f)
 		m_fHP = 0.f;
