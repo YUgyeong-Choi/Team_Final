@@ -79,6 +79,8 @@ void CMapToolObject::Update(_float fTimeDelta)
 		m_eLOD = LOD::LOD1;
 	else
 		m_eLOD = LOD::LOD2;
+
+	//Update_ColliderPos();
 }
 
 void CMapToolObject::Late_Update(_float fTimeDelta)
@@ -166,6 +168,7 @@ void CMapToolObject::Update_ColliderPos()
 	// PxTransform으로 생성
 	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
 	m_pPhysXActorConvexCom->Set_Transform(physxTransform);
+
 }
 
 void CMapToolObject::Set_Collider(COLLIDER_TYPE eColliderType)
