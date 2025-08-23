@@ -1,6 +1,7 @@
 #include "TriggerTalk.h"
 #include "GameInstance.h"
 #include "Camera_Manager.h"
+#include "UI_Manager.h"
 CTriggerTalk::CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
 {
@@ -63,7 +64,11 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 			m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 			// 여기에 조사한다 UI 비활성화
+			CUI_Manager::Get_Instance()->Off_Panel();
+			CUI_Manager::Get_Instance()->Activate_Popup(false);
 			// 말하는 UI활성화
+			CUI_Manager::Get_Instance()->Activate_TalkScript(true);
+			CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText);
 		}
 	}
 
@@ -79,7 +84,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			m_bAutoTalk = !m_bAutoTalk;
 
 		// 대화 중 끌 수 있다면
-		if (m_bCanCancel && KEY_DOWN(DIK_ESCAPE))
+		if (KEY_DOWN(DIK_ESCAPE))
 		{
 			m_bDoOnce = false;
 			m_bTalkActive = false;
@@ -88,6 +93,8 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 			m_pSoundCom->StopAll();
 			// UI 비활성화
+			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+			CUI_Manager::Get_Instance()->On_Panel();
 		}
 	}
 
@@ -122,6 +129,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 					m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 					m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 					// 말하는 UI 대사 변경
+					CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText);
 				}
 			}
 		}
@@ -144,6 +152,8 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 						CCamera_Manager::Get_Instance()->SetbMoveable(true);
 						m_bDead = true;
 						m_pPhysXTriggerCom->RemovePhysX();
+						CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+						CUI_Manager::Get_Instance()->On_Panel();
 					}
 				}
 				else
@@ -151,6 +161,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 					m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 					m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 					// 말하는 UI 대사 변경
+					CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText);
 				}
 			}
 		}
@@ -178,6 +189,8 @@ void CTriggerTalk::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderTy
 	if (!m_bDoOnce)
 	{
 		// 여기에 조사한다 UI 활성화 해두면 됨
+		CUI_Manager::Get_Instance()->Activate_Popup(true);
+		CUI_Manager::Get_Instance()->Set_Popup_Caption(0);
 		m_bTalkActive = true;
 	}
 }
@@ -187,6 +200,7 @@ void CTriggerTalk::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 	if (!m_bDoOnce)
 	{
 		// 여기에 조사한다 UI 비활성화 해두면 됨
+		CUI_Manager::Get_Instance()->Activate_Popup(false);
 		m_bTalkActive = false;
 	}
 

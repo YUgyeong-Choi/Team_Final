@@ -1,0 +1,69 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Caption": "speaker 이름 ",
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "FontTag": "Font_Medium",
+                "IsCenter": 1,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 720.0,
+                "SizeY": 405.0,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 800.0,
+                "fY": 627.300048828125,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "대화 내용",
+                "Color": {
+                    "A": 0.699999988079071,
+                    "B": 0.699999988079071,
+                    "G": 0.699999988079071,
+                    "R": 0.699999988079071
+                },
+                "FontTag": "Font_Medium",
+                "IsCenter": 1,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 640.0,
+                "SizeY": 360.0,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 800.0,
+                "fY": 737.0999755859375,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

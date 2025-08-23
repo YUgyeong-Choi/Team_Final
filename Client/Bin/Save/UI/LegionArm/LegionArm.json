@@ -45,43 +45,43 @@
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
             },
-            {
-                "Color": {
-                    "A": 1.0,
-                    "B": 0.10000000149011612,
-                    "G": 0.5,
-                    "R": 0.699999988079071
-                },
-                "Features": [
-                    {
-                        "EndPos": {
-                            "X": 0.16899999976158142,
-                            "Y": 0.9620000123977661
-                        },
-                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
-                        "StartPos": {
-                            "X": -0.10000000149011612,
-                            "Y": 1.149999976158142
-                        },
-                        "iEndFrame": 30,
-                        "iStartFrame": 0,
-                        "isLoop": false
-                    }
-                ],
-                "ProtoTag": "Prototype_GameObject_UI_Durability_Bar",
-                "RotationZ": 0.0,
-                "SizeX": 224.0,
-                "SizeY": 27.0,
-                "Texturetag": "Prototype_Component_Texture_Bar_Border",
-                "fAlpha": 1.0,
-                "fDuration": 0.01600000075995922,
-                "fOffset": 0.009999999776482582,
-                "fX": -160.0,
-                "fY": 1035.0,
-                "iPassIndex": 0,
-                "iTextureIndex": 0,
-                "iTextureLevel": 0
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 0.10000000149011612,
+              "G": 0.5,
+              "R": 0.699999988079071
             },
+            "Features": [
+              {
+                "EndPos": {
+                  "X": 0.16899999976158142,
+                  "Y": 0.9620000123977661
+                },
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                "StartPos": {
+                  "X": -0.10000000149011612,
+                  "Y": 1.149999976158142
+                },
+                "iEndFrame": 30,
+                "iStartFrame": 0,
+                "isLoop": false
+              }
+            ],
+            "ProtoTag": "Prototype_GameObject_UI_Legion_Bar",
+            "RotationZ": 0.0,
+            "SizeX": 224.0,
+            "SizeY": 27.0,
+            "Texturetag": "Prototype_Component_Texture_Bar_Border",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.009999999776482582,
+            "fX": -160.0,
+            "fY": 1035.0,
+            "iPassIndex": 0,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          },
             {
                 "Color": {
                     "A": 0.5,

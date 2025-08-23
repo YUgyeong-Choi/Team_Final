@@ -2,6 +2,9 @@
 #include "GameInstance.h"
 #include "UI_Feature.h"
 
+#include <sstream>
+
+
 CDynamic_Text_UI::CDynamic_Text_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CDynamic_UI{pDevice, pContext}
 {
@@ -50,6 +53,10 @@ HRESULT CDynamic_Text_UI::Initialize(void* pArg)
 
 	m_strFontTag = L"Font_Medium";
 
+	_float2 fSize = m_pGameInstance->Calc_Draw_Range(L"Font_Medium", L"aaaa");
+
+	m_fPaddingY = fSize.y;
+
 	if (nullptr == pArg)
 		return S_OK;
 
@@ -84,6 +91,7 @@ HRESULT CDynamic_Text_UI::Initialize(void* pArg)
 
 	m_strProtoTag = TEXT("Prototype_GameObject_Dynamic_UI");
 
+	
 
 	return S_OK;
 }
@@ -114,22 +122,29 @@ HRESULT CDynamic_Text_UI::Render()
 	if (m_isFade)
 		m_vColor = { m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha };
 
-	switch (m_eAlignType)
+	if(m_strCaption.find(L"\n") != _wstring::npos)
+		SplitLinedraw();
+	else
 	{
-	case Client::TEXTALIGN::LEFT:
-		m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, {0.f,0.f}, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY) , m_fOffset);
-		break;
-	case Client::TEXTALIGN::CENTER:
-		m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY) , m_fOffset);
-		break;
-	case Client::TEXTALIGN::RIGHT:
-		m_pGameInstance->Draw_Font_Righted(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY) , m_fOffset);
-		break;
-	case Client::TEXTALIGN::END:
-		break;
-	default:
-		break;
+		switch (m_eAlignType)
+		{
+		case Client::TEXTALIGN::LEFT:
+			m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			break;
+		case Client::TEXTALIGN::CENTER:
+			m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			break;
+		case Client::TEXTALIGN::RIGHT:
+			m_pGameInstance->Draw_Font_Righted(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			break;
+		case Client::TEXTALIGN::END:
+			break;
+		default:
+			break;
+		}
 	}
+
+	
 
 	return S_OK;
 }
@@ -148,6 +163,39 @@ void CDynamic_Text_UI::Update_UI_From_Tool(void* pArg)
 void CDynamic_Text_UI::Set_Caption(_wstring strCaption)
 {
 	m_strCaption = strCaption;
+}
+
+void CDynamic_Text_UI::SplitLinedraw()
+{
+	wstringstream wss(m_strCaption);
+	wstring line;
+	vector<std::wstring> lines;
+
+	_float fY = m_fY - m_fPaddingY * 0.5f;
+
+	while (std::getline(wss, line, L'\n')) {
+		
+
+		switch (m_eAlignType)
+		{
+		case Client::TEXTALIGN::LEFT:
+			m_pGameInstance->Draw_Font(m_strFontTag, line.c_str(), {m_fX, fY }, XMLoadFloat4(&m_vColor), m_fRotation, {0.f,0.f}, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			break;
+		case Client::TEXTALIGN::CENTER:
+			m_pGameInstance->Draw_Font_Centered(m_strFontTag, line.c_str(), { m_fX, fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			break;
+		case Client::TEXTALIGN::RIGHT:
+			m_pGameInstance->Draw_Font_Righted(m_strFontTag, line.c_str(), { m_fX, fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			break;
+		case Client::TEXTALIGN::END:
+			break;
+		default:
+			break;
+		}
+
+		fY += m_fPaddingY * 0.7f;
+	}
+
 }
 
 CDynamic_Text_UI* CDynamic_Text_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
