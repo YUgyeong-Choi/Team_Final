@@ -38,6 +38,7 @@ public:
 
 	void Set_Caption(_wstring strCaption);
 
+	void SplitLinedraw();
 
 private:
 	// 사용할 폰트
@@ -46,6 +47,9 @@ private:
 	_wstring m_strCaption = {};
 
 	TEXTALIGN m_eAlignType = { TEXTALIGN::LEFT };
+
+	_float	  m_fPaddingY = {};
+
 
 public:
 	static CDynamic_Text_UI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -871,7 +871,7 @@
     <ClInclude Include="..\Public\DoorMesh.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\UI_Script.h">
+    <ClInclude Include="..\public\UI_Script_Text.h">
       <Filter>02.GameObjects\99.UI\Container\Script</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LegionArm_Base.h">
@@ -1319,7 +1319,7 @@
     <ClCompile Include="..\Private\DoorMesh.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\UI_Script.cpp">
+    <ClCompile Include="..\private\UI_Script_Text.cpp">
       <Filter>02.GameObjects\99.UI\Container\Script</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LegionArm_Base.cpp">

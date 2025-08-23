@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "UIObject.h"
 #include "UI_Popup.h"
+#include "UI_Script_Text.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -108,6 +109,37 @@ void CUI_Manager::Set_Popup_Caption(_int iTriggerType)
 		return;
 
 	static_cast<CUI_Popup*>(pUI)->Set_String(iTriggerType);
+}
+
+void CUI_Manager::Activate_TextScript(_bool isActive)
+{
+	if (m_UImap.find(L"TextScript") == m_UImap.end())
+		return;
+
+	if (nullptr == m_UImap.find(L"TextScript")->second)
+		return;
+
+	static_cast<CUI_Script_Text*>(m_UImap.find(L"TextScript")->second)->Active_Update(isActive);
+
+}
+
+void CUI_Manager::Activate_TalkScript(_bool isActive)
+{
+}
+
+void CUI_Manager::Update_TextScript(string& strText)
+{
+	if (m_UImap.find(L"TextScript") == m_UImap.end())
+		return;
+
+	if (nullptr == m_UImap.find(L"TextScript")->second)
+		return;
+
+	static_cast<CUI_Script_Text*>(m_UImap.find(L"TextScript")->second)->Update_Script(strText);
+}
+
+void CUI_Manager::Update_TalkScript(string& strName, string& strText)
+{
 }
 
 void CUI_Manager::Free()

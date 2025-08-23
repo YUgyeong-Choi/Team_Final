@@ -601,11 +601,17 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 		return E_FAIL;
 
 
-	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Popup.json");
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Script/Script_Text.json");
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Popup"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_Popup"), &eDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Text"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Script_Text"), &eDesc)))
 		return E_FAIL;
+
+	CGameObject* pTextScript = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Script_Text"));
+
+	CUI_Manager::Get_Instance()->Emplace_UI(dynamic_cast<CUIObject*>(pTextScript), L"TextScript");
+
+	CUI_Manager::Get_Instance()->Activate_TextScript(false);
 
 	return S_OK;
 }

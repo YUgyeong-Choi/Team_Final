@@ -178,6 +178,7 @@ void CTriggerTalk::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderTy
 	if (!m_bDoOnce)
 	{
 		// 여기에 조사한다 UI 활성화 해두면 됨
+
 		m_bTalkActive = true;
 	}
 }
