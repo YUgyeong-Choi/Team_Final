@@ -268,7 +268,7 @@ CUnit* CLockOn_Manager::Find_ClosestToLookTarget()
     // ===== 설정 =====
     const _float wAngle = 0.35f;                     // 각도 가중치(정면 우선)
     const _float wDist = 0.65f;                     // 거리 가중치(가까운 대상 우선)
-    const _float cosHalfFov = cosf(XMConvertToRadians(80.f)); // -70 ~ 70 시야각에 있는 것만
+    const _float cosHalfFov = cosf(XMConvertToRadians(90.f)); // 시야각에 있는 것만
 
     // ===== 1) FOV 안의 타깃만 대상으로 최대 거리 계산 =====
     _float maxDist2 = 0.f;
@@ -451,6 +451,9 @@ void CLockOn_Manager::Set_Off(CUnit* pObj)
     _float fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
 
     CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
+
+    if (pObj != nullptr)
+        CLockOn_Manager::Get_Instance()->Set_Active();
 }
 
 
