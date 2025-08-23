@@ -112,8 +112,10 @@ void CFuoco::Late_Update(_float fTimeDelta)
 	if (m_pGameInstance->Get_RenderCollider())
 	{
 		//m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
-		m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForArm);
-		m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForFoot);
+		if(m_pPhysXActorComForArm->Get_ReadyForDebugDraw())
+			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForArm);
+		if (m_pPhysXActorComForFoot->Get_ReadyForDebugDraw())
+			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForFoot);
 	}
 #endif
 }
@@ -153,14 +155,14 @@ HRESULT CFuoco::Ready_Actor()
 		PxTransform armPose(armPositionVec, armRotationQuat);
 		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(1.3f);
 		m_pPhysXActorComForArm->Create_Collision(m_pGameInstance->GetPhysics(), armGeom, armPose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorComForArm->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorComForArm->Set_ShapeFlag(false, true, true);
 		PxFilterData armFilterData{};
 		armFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; // 일단 보류
+		armFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; 
 		m_pPhysXActorComForArm->Set_SimulationFilterData(armFilterData);
 		m_pPhysXActorComForArm->Set_QueryFilterData(armFilterData);
 		m_pPhysXActorComForArm->Set_Owner(this);
-		m_pPhysXActorComForArm->Set_ColliderType(COLLIDERTYPE::MONSTER);
+		m_pPhysXActorComForArm->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
 		m_pPhysXActorComForArm->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForArm->Get_Actor());
 	}
@@ -179,11 +181,11 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForFoot->Set_ShapeFlag(true, false, true);
 		PxFilterData footFilterData{};
 		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; // 일단 보류
+		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorComForFoot->Set_SimulationFilterData(footFilterData);
 		m_pPhysXActorComForFoot->Set_QueryFilterData(footFilterData);
 		m_pPhysXActorComForFoot->Set_Owner(this);
-		m_pPhysXActorComForFoot->Set_ColliderType(COLLIDERTYPE::MONSTER);
+		m_pPhysXActorComForFoot->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
 		m_pPhysXActorComForFoot->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForFoot->Get_Actor());
 	}
@@ -538,6 +540,28 @@ void CFuoco::Register_Events()
 		m_pPhysXActorCom->Init_SimulationFilterData();
 		m_pPhysXActorComForArm->Init_SimulationFilterData();
 		m_pPhysXActorComForFoot->Init_SimulationFilterData();
+		});
+	m_pAnimator->RegisterEventListener("CollidersOn", [this]() {
+		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+		m_pPhysXActorComForArm->Set_SimulationFilterData(m_pPhysXActorComForArm->Get_FilterData());
+		m_pPhysXActorComForFoot->Set_SimulationFilterData(m_pPhysXActorComForFoot->Get_FilterData());
+		});
+
+	m_pAnimator->RegisterEventListener("ColliderArmOn", [this]()
+		{
+			m_pPhysXActorComForArm->Set_SimulationFilterData(m_pPhysXActorComForArm->Get_FilterData());
+		});
+	m_pAnimator->RegisterEventListener("ColliderArmOff", [this]()
+		{
+			m_pPhysXActorComForArm->Init_SimulationFilterData();
+		});
+	m_pAnimator->RegisterEventListener("ColliderFootOn", [this]()
+		{
+			m_pPhysXActorComForFoot->Set_SimulationFilterData(m_pPhysXActorComForFoot->Get_FilterData());
+		});
+	m_pAnimator->RegisterEventListener("ColliderFootOff", [this]()
+		{
+			m_pPhysXActorComForFoot->Init_SimulationFilterData();
 		});
 
 	m_pAnimator->RegisterEventListener("FireBall", [this]()
@@ -962,6 +986,53 @@ void CFuoco::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	ReceiveDamage(pOther, eColliderType);
+
+	if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
+	{
+		EBossAttackPattern eSkillType = static_cast<EBossAttackPattern>(m_pAnimator->GetInt("SkillType"));
+		auto pAnimator = pPlayer->Get_Animator();
+		pAnimator->SetInt("HitDir", 0);
+		switch (eSkillType)
+		{
+		case Client::CFuoco::SlamCombo:
+			pAnimator->SetInt("HitDir", 0);
+			pAnimator->SetTrigger("Stamp");
+			break;
+		case Client::CFuoco::Uppercut:
+			break;
+		case Client::CFuoco::SwingAtkSeq:
+			pAnimator->SetTrigger("Knockback");
+			break;
+		case Client::CFuoco::SwingAtk:
+			pAnimator->SetTrigger("Knockback");
+			break;
+		case Client::CFuoco::SlamFury:
+			pAnimator->SetInt("HitDir", 0);
+			pAnimator->SetTrigger("Stamp");
+			break;
+		case Client::CFuoco::FootAtk:
+			break;
+		case Client::CFuoco::P2_FlameField:
+			break;
+		case Client::CFuoco::SlamAtk:
+			pAnimator->SetInt("HitDir", 0);
+			pAnimator->SetTrigger("Stamp");
+			break;
+		case Client::CFuoco::StrikeFury:
+			break;
+		case Client::CFuoco::P2_FireOil:
+			break;
+		case Client::CFuoco::P2_FireBall:
+			break;
+		case Client::CFuoco::P2_FireFlame:
+			break;
+		case Client::CFuoco::P2_FireBall_B:
+			break;
+		default:
+			break;
+		}
+
+	}
 }
 
 void CFuoco::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

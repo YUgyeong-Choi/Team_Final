@@ -62,6 +62,11 @@ private:
 	_float m_fDuration = {};
 	
 
+	//int m_iShapeTestState = 0; // 0: Box, 1: Sphere, 2: Capsule
+	//PxBoxGeometry m_DebugBox = PxBoxGeometry(1.0f, 2.0f, 1.0f);
+	//PxSphereGeometry m_DebugSphere = PxSphereGeometry(1.5f);
+	//PxCapsuleGeometry m_DebugCapsule = PxCapsuleGeometry(0.8f, 2.0f);
+
 public:
 	static CButtler_Train* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

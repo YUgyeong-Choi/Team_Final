@@ -661,6 +661,10 @@ json CAnimController::Serialize()
 			{"LowerStartTime", state.fLowerStartTime},
 			{"UpperStartTime", state.fUpperStartTime}
 			});
+		if (state.bCanSameAnimReset)
+		{
+			j["Anim States"].back()["CanSameAnimReset"] = state.bCanSameAnimReset;
+		}
 	}
 
 	// 트랜지션 직렬화
@@ -841,7 +845,14 @@ void CAnimController::Deserialize(const json& j)
 				newState.fLowerStartTime = fLowerStartTime; // 노드 위치 설정
 				newState.fUpperStartTime = fUpperStartTime; // 마스크 본 이름 설정
 				newState.fNodePos = pos; // 노드 위치 설정
-
+				if (state.contains("CanSameAnimReset") && state["CanSameAnimReset"].is_boolean())
+				{
+					newState.bCanSameAnimReset = state["CanSameAnimReset"];
+				}
+				else
+				{
+					newState.bCanSameAnimReset = false; // 기본값은 false
+				}
 
 				//m_States.push_back({ name, clip, nodeId, pos ,lowerClipName, upperClipName,maskBoneName,fBlendWeight });
 			}

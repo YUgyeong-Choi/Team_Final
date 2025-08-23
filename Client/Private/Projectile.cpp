@@ -52,6 +52,7 @@ HRESULT CProjectile::Initialize(void* pArg)
 
 void CProjectile::Priority_Update(_float fTimeDelta)
 {
+	
 }
 
 void CProjectile::Update(_float fTimeDelta)
@@ -61,6 +62,10 @@ void CProjectile::Update(_float fTimeDelta)
 	{
 		m_fElapsedTime = 0.f;
 		Set_bDead();
+		if (m_bDead)
+		{
+			m_pPhysXActorCom->RemovePhysX();
+		}
 		return;
 	}
 
@@ -146,12 +151,12 @@ HRESULT CProjectile::Ready_Actor()
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 	PxFilterData FilterData{};
 	FilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-	FilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+	FilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_EFFECTGIB;
 	
 	m_pPhysXActorCom->Set_SimulationFilterData(FilterData);
 	m_pPhysXActorCom->Set_QueryFilterData(FilterData);
 	m_pPhysXActorCom->Set_Owner(this);
-	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
 	m_pPhysXActorCom->Set_Kinematic(false);
 
 	if (auto pActor = m_pPhysXActorCom->Get_Actor())
