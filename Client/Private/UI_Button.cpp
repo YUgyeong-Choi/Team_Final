@@ -83,14 +83,21 @@ HRESULT CUI_Button::Initialize(void* pArg)
 
 	m_strProtoTag = L"Prototype_GameObject_UI_Button";
 
+
+
 	if (nullptr == pArg)
+	{
+		__super::Ready_Components(L"");
 		return S_OK;
+	}
+		
+	
 
 	BUTTON_UI_DESC* pDesc = static_cast<BUTTON_UI_DESC*>(pArg);
 
+	
 	if (FAILED(Ready_Components(m_strTextureTag)))
 		return E_FAIL;
-
 
 
 	m_strCaption = pDesc->strCaption;

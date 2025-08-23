@@ -546,6 +546,23 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_DISCARD_ALPAH_REVERSE(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    if (Out.vColor.a > 0.3f)
+        discard;
+    
+    
+    Out.vColor.a = 1.f - Out.vColor.a;
+    
+    Out.vColor *= g_Color;
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     /* 패스를 생성하는 기준을 뭘로? */ 
@@ -666,7 +683,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_HPBAR_MONSTER();
     }
 
-    pass Dark
+    pass Back
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -677,5 +694,19 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();
     }
+
+    pass BackGround_Reverse
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_DISCARD_ALPAH_REVERSE();
+    }
+
+    
 
  }

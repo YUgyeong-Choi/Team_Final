@@ -3,6 +3,7 @@
 #include "UIObject.h"
 #include "UI_Popup.h"
 #include "UI_Script_Text.h"
+#include "UI_Script_Talk.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -125,6 +126,13 @@ void CUI_Manager::Activate_TextScript(_bool isActive)
 
 void CUI_Manager::Activate_TalkScript(_bool isActive)
 {
+	if (m_UImap.find(L"TalkScript") == m_UImap.end())
+		return;
+
+	if (nullptr == m_UImap.find(L"TalkScript")->second)
+		return;
+
+	static_cast<CUI_Script_Talk*>(m_UImap.find(L"TalkScript")->second)->Active_Update(isActive);
 }
 
 void CUI_Manager::Update_TextScript(string& strText)
@@ -140,6 +148,13 @@ void CUI_Manager::Update_TextScript(string& strText)
 
 void CUI_Manager::Update_TalkScript(string& strName, string& strText)
 {
+	if (m_UImap.find(L"TalkScript") == m_UImap.end())
+		return;
+
+	if (nullptr == m_UImap.find(L"TalkScript")->second)
+		return;
+
+	static_cast<CUI_Script_Talk*>(m_UImap.find(L"TalkScript")->second)->Update_Script(strName, strText);
 }
 
 void CUI_Manager::Free()
