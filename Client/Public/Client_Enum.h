@@ -97,7 +97,8 @@ namespace Client
 		TUTORIAL_1,
 		MONADLIGHT,
 		TUTORIAL_2,
-		SELECTWEAPON
+		SELECTWEAPON,
+		STATIONINFO
 	};
 
 #pragma endregion

@@ -54,6 +54,7 @@ void CTriggerSound::Priority_Update(_float fTimeDelta)
 			{
 				m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 				m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+				CUI_Manager::Get_Instance()->Update_TextScript(m_vecSoundData[m_iSoundIndex].strSoundText);
 			}
 		}
 	}
