@@ -79,6 +79,8 @@ void CMapToolObject::Update(_float fTimeDelta)
 		m_eLOD = LOD::LOD1;
 	else
 		m_eLOD = LOD::LOD2;
+
+	//Update_ColliderPos();
 }
 
 void CMapToolObject::Late_Update(_float fTimeDelta)
@@ -114,6 +116,17 @@ HRESULT CMapToolObject::Render()
 
 		if (FAILED(m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
+			if (!m_bDoOnce)
+			{
+				/* Com_Texture */
+				if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_DefaultARM")),
+					TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+					return E_FAIL;
+				m_bDoOnce = true;
+			}
+
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+				return E_FAIL;
 
 		}
 
@@ -155,6 +168,7 @@ void CMapToolObject::Update_ColliderPos()
 	// PxTransform으로 생성
 	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
 	m_pPhysXActorConvexCom->Set_Transform(physxTransform);
+
 }
 
 void CMapToolObject::Set_Collider(COLLIDER_TYPE eColliderType)
@@ -413,4 +427,5 @@ void CMapToolObject::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pPhysXActorConvexCom);
 	Safe_Release(m_pPhysXActorTriangleCom);
+	Safe_Release(m_pTextureCom);
 }

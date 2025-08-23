@@ -1778,6 +1778,7 @@ void CMapTool::Detail_Transform()
 				_matrix matNew = matOffset * matOld;
 
 				pObj->Get_TransfomCom()->Set_WorldMatrix(matNew);
+				static_cast<CMapToolObject*>(pObj)->Update_ColliderPos();
 			}
 
 		}
@@ -1789,6 +1790,7 @@ void CMapTool::Detail_Transform()
 			ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, matrix);
 			memcpy(&worldMat, matrix, sizeof(_float) * 16);
 			pTransform->Set_WorldMatrix(worldMat);
+			m_pFocusObject->Update_ColliderPos();
 		}
 
 #pragma endregion

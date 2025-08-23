@@ -18,5 +18,9 @@
     {
         "ModelName": "SM_Station_PillarC_03",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_PillarC_03.bin"
+    },
+    {
+        "ModelName": "SM_Wall_Archway0aA",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Archway0aA.bin"
     }
 ]
