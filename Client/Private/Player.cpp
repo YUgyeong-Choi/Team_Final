@@ -214,18 +214,14 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->CancelOverrideAnimController();
 		//m_pAnimator->SetInt("HitDir", m_iTestInt);
 		//m_pAnimator->SetTrigger("Hited");
-		m_pAnimator->SetTrigger("NormalAttack");
+		m_pAnimator->SetTrigger("InactiveStargazer");
 
 		m_iTestInt++;
 	}
 
 	if (KEY_DOWN(DIK_U))
 	{
-
-		m_pAnimator->SetTrigger("Dash");
-
-		cout << "왼쪽 : " << m_pAnimator->CheckBool("Left") << endl;
-		cout << "오른쪽 : " << m_pAnimator->CheckBool("Right") << endl;
+		m_pAnimator->SetTrigger("EndInteraction");
 	}
 
 	/* [ 아이템 ] */

@@ -9,8 +9,8 @@
             "Name": "Run_F",
             "NodeId": 2,
             "NodePos": [
-                534.0,
-                107.0
+                6480.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -39,8 +39,8 @@
             "Name": "Run_F_Stop",
             "NodeId": 5,
             "NodePos": [
-                1566.0,
-                166.0
+                7160.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Sprint",
             "NodeId": 9,
             "NodePos": [
-                8280.0,
-                -425.0
+                702.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -69,8 +69,8 @@
             "Name": "Idle",
             "NodeId": 17,
             "NodePos": [
-                387.0,
-                268.0
+                4320.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Sprint_Stop",
             "NodeId": 23,
             "NodePos": [
-                8280.0,
-                -255.0
+                702.0,
+                303.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "EquipWeapon",
             "NodeId": 35,
             "NodePos": [
-                6120.0,
-                -425.0
+                -1458.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -384,8 +384,8 @@
             "Name": "Run_B",
             "NodeId": 109,
             "NodePos": [
-                886.0,
-                336.0
+                6480.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -399,8 +399,8 @@
             "Name": "Run_BL",
             "NodeId": 110,
             "NodePos": [
-                886.0,
-                506.0
+                6480.0,
+                -85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -414,8 +414,8 @@
             "Name": "Run_BR",
             "NodeId": 112,
             "NodePos": [
-                886.0,
-                676.0
+                6480.0,
+                85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -429,8 +429,8 @@
             "Name": "Run_FL",
             "NodeId": 114,
             "NodePos": [
-                886.0,
-                846.0
+                6480.0,
+                255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -444,8 +444,8 @@
             "Name": "Run_FR",
             "NodeId": 116,
             "NodePos": [
-                886.0,
-                1016.0
+                6480.0,
+                425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -459,8 +459,8 @@
             "Name": "Run_R",
             "NodeId": 118,
             "NodePos": [
-                1206.0,
-                166.0
+                6800.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -474,8 +474,8 @@
             "Name": "Run_L",
             "NodeId": 119,
             "NodePos": [
-                1206.0,
-                336.0
+                6800.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -534,8 +534,8 @@
             "Name": "PutWeapon",
             "NodeId": 257,
             "NodePos": [
-                7200.0,
-                -425.0
+                -378.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -729,8 +729,8 @@
             "Name": "SlidingDoor",
             "NodeId": 403,
             "NodePos": [
-                7920.0,
-                -425.0
+                342.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -744,8 +744,8 @@
             "Name": "DoubleDoor_Push_TrainStation",
             "NodeId": 404,
             "NodePos": [
-                5760.0,
-                -425.0
+                -1818.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -759,8 +759,8 @@
             "Name": "Sit_Loop",
             "NodeId": 407,
             "NodePos": [
-                7560.0,
-                -425.0
+                -18.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -774,8 +774,8 @@
             "Name": "Sit_End",
             "NodeId": 408,
             "NodePos": [
-                7560.0,
-                -255.0
+                -18.0,
+                303.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -789,8 +789,8 @@
             "Name": "OnLamp",
             "NodeId": 446,
             "NodePos": [
-                6840.0,
-                -425.0
+                -738.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -894,8 +894,8 @@
             "Name": "Fail_Arm",
             "NodeId": 555,
             "NodePos": [
-                6480.0,
-                -425.0
+                -1098.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1254,8 +1254,8 @@
             "Name": "Death_F",
             "NodeId": 100216,
             "NodePos": [
-                1440.0,
-                -425.0
+                492.0,
+                170.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1269,8 +1269,8 @@
             "Name": "Death_B",
             "NodeId": 100217,
             "NodePos": [
-                1440.0,
-                -255.0
+                492.0,
+                340.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1359,8 +1359,8 @@
             "Name": "Teleport_Death_Start",
             "NodeId": 100236,
             "NodePos": [
-                1800.0,
-                -425.0
+                852.0,
+                170.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1374,8 +1374,8 @@
             "Name": "Teleport_Death_End",
             "NodeId": 100237,
             "NodePos": [
-                1800.0,
-                -255.0
+                852.0,
+                340.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1389,8 +1389,8 @@
             "Name": "Teleport_End",
             "NodeId": 100238,
             "NodePos": [
-                8640.0,
-                -425.0
+                1782.0,
+                133.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1404,8 +1404,8 @@
             "Name": "Teleport_Start",
             "NodeId": 100242,
             "NodePos": [
-                8640.0,
-                -255.0
+                1782.0,
+                303.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1559,11 +1559,108 @@
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Stargazer_Inactive_Start",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Stargazer_Inactive_Start",
+            "NodeId": 100309,
+            "NodePos": [
+                1422.0,
+                133.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Stargazer_Inactive_Loop",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Stargazer_Inactive_Loop",
+            "NodeId": 100310,
+            "NodePos": [
+                1422.0,
+                303.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Stargazer_Inactive_End",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Stargazer_Inactive_End",
+            "NodeId": 100311,
+            "NodePos": [
+                1422.0,
+                473.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Stargazer_Active_Start",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Stargazer_Active_Start",
+            "NodeId": 100312,
+            "NodePos": [
+                1062.0,
+                133.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Stargazer_Active_Loop",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Stargazer_Active_Loop",
+            "NodeId": 100313,
+            "NodePos": [
+                1062.0,
+                303.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Stargazer_Active_End",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Stargazer_Active_End",
+            "NodeId": 100314,
+            "NodePos": [
+                1062.0,
+                473.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
         }
     ],
     "ControllerName": "Player_Default",
     "EntryState": "Idle",
     "Parameters": {
+        "ActiveStargazer": {
+            "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
         "ArmAttack": {
             "Type": 1,
             "bTriggered": false,
@@ -1607,6 +1704,13 @@
             "iValue": 0
         },
         "Death": {
+            "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "EndInteraction": {
             "Type": 1,
             "bTriggered": false,
             "bValue": false,
@@ -1684,6 +1788,13 @@
             "iValue": 0
         },
         "Hited": {
+            "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        },
+        "InactiveStargazer": {
             "Type": 1,
             "bTriggered": false,
             "bValue": false,
@@ -1818,6 +1929,56 @@
         }
     },
     "Transitions": [
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Guard",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Trigger",
+                    "ParamName": "Hited",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "NotEqual",
+                    "ParamName": "HitDir",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 2
+                },
+                {
+                    "Op": "NotEqual",
+                    "ParamName": "HitDir",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 4
+                },
+                {
+                    "Op": "NotEqual",
+                    "ParamName": "HitDir",
+                    "Type": "Int",
+                    "fThreshold": 0.0,
+                    "iThreshold": 5
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100001,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1000012,
+                "LinkId": 100214,
+                "ToNodeId": 1061
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 106
+        },
         {
             "Conditions": [
                 {
@@ -2423,35 +2584,6 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 100216
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Guard",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Trigger",
-                    "ParamName": "Hited",
-                    "Type": "Trigger",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 100001,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1000012,
-                "LinkId": 100214,
-                "ToNodeId": 1061
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 106
         },
         {
             "Conditions": [
@@ -13191,7 +13323,7 @@
                 "ToNodeId": 4981
             },
             "MaxTime": 1.0,
-            "MinTime": 0.453000009059906,
+            "MinTime": 0.27399998903274536,
             "ToNodeId": 498
         },
         {
@@ -13227,7 +13359,7 @@
                 "ToNodeId": 4971
             },
             "MaxTime": 1.0,
-            "MinTime": 0.45100000500679016,
+            "MinTime": 0.3059999942779541,
             "ToNodeId": 497
         },
         {
@@ -26987,6 +27119,182 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 267
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100312,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1003122,
+                "LinkId": 100315,
+                "ToNodeId": 1003131
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100313
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "EndInteraction",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100313,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1003132,
+                "LinkId": 100316,
+                "ToNodeId": 1003141
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100314
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100309,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1003092,
+                "LinkId": 100317,
+                "ToNodeId": 1003101
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100310
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "EndInteraction",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100310,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1003102,
+                "LinkId": 100318,
+                "ToNodeId": 1003111
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100311
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100314,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1003142,
+                "LinkId": 100319,
+                "ToNodeId": 1000001
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100000
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100311,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1003112,
+                "LinkId": 100320,
+                "ToNodeId": 1000001
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100000
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "InactiveStargazer",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100001,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1000012,
+                "LinkId": 100321,
+                "ToNodeId": 1003091
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100309
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "ActiveStargazer",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100001,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1000012,
+                "LinkId": 100322,
+                "ToNodeId": 1003121
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100312
         }
     ]
 }

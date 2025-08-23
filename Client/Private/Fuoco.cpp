@@ -151,7 +151,7 @@ HRESULT CFuoco::Ready_Actor()
 		PxQuat armRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 armPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 		PxTransform armPose(armPositionVec, armRotationQuat);
-		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(1.f);
+		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(1.3f);
 		m_pPhysXActorComForArm->Create_Collision(m_pGameInstance->GetPhysics(), armGeom, armPose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorComForArm->Set_ShapeFlag(true, false, true);
 		PxFilterData armFilterData{};
@@ -288,7 +288,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 	if (CheckConditionFlameField())
 	{
-		m_fAttackCooldown = m_fAttckDleay;
+		m_fAttackCooldown = 10.f;
 		return;
 	}
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
@@ -924,7 +924,7 @@ _bool CFuoco::CheckConditionFlameField()
 
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	ReceiveDamage(pOther, eColliderType);
+
 	if (pOther)
 	{
 		if (eColliderType == COLLIDERTYPE::PLAYER)
@@ -961,6 +961,7 @@ void CFuoco::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CFuoco::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
