@@ -572,7 +572,41 @@ PS_OUT PS_MAIN_ACTION_ICON(PS_IN In)
 {
     PS_OUT Out;
     
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    if (Out.vColor.a < 0.001f)
+        discard;
+    
+    vector vHighlight = g_HighlightTexture.Sample(DefaultSampler, In.vTexcoord);
+
+    
+
   
+
+    if (g_ItemDesc.x == 1.f)
+    {
+     
+       
+
+        Out.vColor.rgb *= vHighlight.a;
+
+    // y 좌표 기반 그라데이션 (0~1)
+        float redFactor = saturate((In.vTexcoord.y - 0.4f) * 2.0f);
+    
+        redFactor *= 0.2f;
+
+    // 원래 색과 빨강을 섞어주기
+        float3 red = float3(0.2f, 0.f, 0.f);
+        Out.vColor.rgb = lerp(Out.vColor.rgb , red, redFactor);
+   
+    }
+    else
+    {
+        // 원래 방식
+        Out.vColor.rgb *= vHighlight.a;
+    }
+
+    Out.vColor *= g_Color;
     
     return Out;
 }

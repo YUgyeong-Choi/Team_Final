@@ -29,12 +29,14 @@ public:
 
 	HRESULT Bind_ShaderResources();
 	
+	_bool Check_Hover();
+
 private:
 	_bool     m_isSelect = { false };
 	_bool	  m_isHover = {};
 	_wstring  m_strCaption = {};
 	CTexture* m_pEffectTextureCom = { nullptr };
-
+	
 
 public:
 	static CActionType_Icon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

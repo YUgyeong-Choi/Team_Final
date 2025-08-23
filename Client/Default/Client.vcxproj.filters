@@ -919,6 +919,9 @@
     <ClInclude Include="..\public\ActionType_Icon.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\ActionType</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_SelectWeapon.h">
+      <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1375,6 +1378,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ActionType_Icon.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\ActionType</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_SelectWeapon.cpp">
+      <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

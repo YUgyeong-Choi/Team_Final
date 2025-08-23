@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Camera_Manager.h"
 #include "UI_Manager.h"
+#include "UI_SelectWeapon.h"
 CTriggerTalk::CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
 {
@@ -39,7 +40,12 @@ HRESULT CTriggerTalk::Initialize(void* pArg)
 void CTriggerTalk::Priority_Update(_float fTimeDelta)
 {
 	if (m_bDead)
+	{
+		m_pPhysXTriggerCom->RemovePhysX();
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 		return;
+	}
+	
 
 	if (!m_bActive)
 	{
@@ -48,6 +54,9 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			// 여기서 하지 말고
 			// 무기 선택 ui 가서 이제 무기 선택 완료하면
 			// 이 트리거 주소를 가지고 거기서 setbdead로 지우자
+			
+			
+
 		}
 	}
 
@@ -192,9 +201,19 @@ void CTriggerTalk::Next_Talk()
 			m_bActive = false;
 			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
 
-			//m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_SelectWeapon"), 
-							 //m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_SelectWeapon"), nullptr);
+			CGameObject* pObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_SelectWeapon"));
 
+			if (nullptr == pObj)
+			{
+				CUI_SelectWeapon::SELECT_WEAPON_UI_DESC eDesc{};
+
+				eDesc.pTarget = this;
+				eDesc.strFilePath = TEXT("../Bin/Save/UI/SelectWeapon/SelectWeapon_Background.json");
+
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_SelectWeapon"),
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_SelectWeapon"), &eDesc);
+				return;
+			}
 			
 			
 		}
@@ -205,7 +224,7 @@ void CTriggerTalk::Next_Talk()
 			m_bDead = true;
 			m_pPhysXTriggerCom->RemovePhysX();
 			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-			CUI_Manager::Get_Instance()->On_Panel();
+			
 		}
 	}
 	else

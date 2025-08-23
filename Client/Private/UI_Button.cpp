@@ -106,6 +106,8 @@ HRESULT CUI_Button::Initialize(void* pArg)
 
 	m_fFontSize = pDesc->fFontSize;
 
+	
+
 	return S_OK;
 }
 

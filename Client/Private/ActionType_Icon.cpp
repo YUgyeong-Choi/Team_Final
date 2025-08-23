@@ -22,17 +22,18 @@ HRESULT CActionType_Icon::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_strProtoTag = TEXT("Prototype_GameObject_UI_Icon_Item");
 
-	m_strTextureTag = TEXT("Prototype_Component_Texture_Slot_Background");
+	// 기본 적인 텍스처 이미지 저장해놓기
 
-	// 주소 바꾸기
+	m_strProtoTag = TEXT("Prototype_GameObject_UI_Icon_ActionType");
 
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Slot_Select"),
+
+	//Prototype_Component_Texture_ActionType_Effect
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ActionType_Effect"),
 		TEXT("Com_Texture_Select"), reinterpret_cast<CComponent**>(&m_pEffectTextureCom))))
 		return E_FAIL;
-
-
+	
 	if (nullptr == pArg)
 		return S_OK;
 
@@ -49,6 +50,9 @@ void CActionType_Icon::Priority_Update(_float fTimeDelta)
 void CActionType_Icon::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+
+	
+
 }
 
 void CActionType_Icon::Late_Update(_float fTimeDelta)
@@ -70,14 +74,42 @@ HRESULT CActionType_Icon::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
+	switch (m_iTextureIndex)
+	{
+	case 0:
+		m_strCaption = TEXT("귀뚜라미의 길 : 균형");
+		break;
+	case 1:
+		m_strCaption = TEXT("서자들의 길 : 민첩");
+		break;
+	case 2:
+		m_strCaption = TEXT("청소부들의 길 : 강인");
+		break;
+
+
+	default:
+		break;
+	}
+
+
 	if (!m_strCaption.empty())
 	{
 		_vector vColor = { 1.f, 1.f, 1.f, 1.f };
 
-		if (m_isSelect)
-			vColor = { 0.7f,0.7,0.7f,0.7f };
+		if (!m_isSelect)
+		{
+			vColor = { 0.7f,0.7f,0.7f,0.7f };
+			m_pGameInstance->Draw_Font_Centered(TEXT("Font_Medium"), m_strCaption.c_str(), { m_fX ,m_fY + m_fSizeY * 0.4f }, vColor, 0.f, { 0.f,0.f }, 0.8f);
+		}
+		else
+		{
+			m_pGameInstance->Draw_Font_Centered(TEXT("Font_Bold"), m_strCaption.c_str(), { m_fX ,m_fY + m_fSizeY * 0.4f }, vColor, 0.f, { 0.f,0.f }, 0.8f);
+		}
+			
 
-		m_pGameInstance->Draw_Font_Centered(TEXT("Font_Medium"), m_strCaption.c_str(), { m_fX ,m_fY + m_fSizeY * 0.4f }, vColor, 0.f, { 0.f,0.f }, 0.8f);
+		
+
+		
 	}
 		
 
@@ -132,6 +164,11 @@ HRESULT CActionType_Icon::Bind_ShaderResources()
 	
 
 	return S_OK;
+}
+
+_bool CActionType_Icon::Check_Hover()
+{
+	return _bool();
 }
 
 
