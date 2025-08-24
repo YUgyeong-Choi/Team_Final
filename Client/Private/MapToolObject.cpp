@@ -142,33 +142,65 @@ HRESULT CMapToolObject::Render()
 	return S_OK;
 }
 
+// 콜라이더 위치/회전/스케일을 월드 트랜스폼에 맞게 갱신
 void CMapToolObject::Update_ColliderPos()
 {
-	/*
-		스케일을 바꾸려면 m_pPhysXActorConvexCom 컴포넌트를 새로 만들어야 한다.
-		그렇다고 한다. 새로 만들어주는거로 해보자
-	*/
+	// TRIANGLE 타입은 스케일 적용 대상이 아님 → 바로 리턴
 	if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
 		return;
 
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
+	// ----------------------------------------------------
+	// 1. 월드 행렬에서 스케일, 회전, 위치 분해
+	// ----------------------------------------------------
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	// 행렬 → 스케일, 회전, 위치 분해
 	_vector vScale, vRotationQuat, vTranslation;
 	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
 
-	// 위치 추출
+	// 위치
 	_float3 vPos;
 	XMStoreFloat3(&vPos, vTranslation);
 
-	// 회전 추출
+	// 회전 (Quaternion)
 	_float4 vRot;
 	XMStoreFloat4(&vRot, vRotationQuat);
 
-	// PxTransform으로 생성
-	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
+	// ----------------------------------------------------
+	// 2. PxTransform(위치 + 회전) 적용
+	//    (PhysX Transform에는 스케일이 들어가지 않음)
+	// ----------------------------------------------------
+	PxTransform physxTransform(
+		PxVec3(vPos.x, vPos.y, vPos.z),
+		PxQuat(vRot.x, vRot.y, vRot.z, vRot.w)
+	);
 	m_pPhysXActorConvexCom->Set_Transform(physxTransform);
 
+	// ----------------------------------------------------
+	// 3. MeshScale 생성 (스케일 벡터 적용)
+	// ----------------------------------------------------
+	PxVec3 scaleVec(
+		XMVectorGetX(vScale),
+		XMVectorGetY(vScale),
+		XMVectorGetZ(vScale)
+	);
+	PxMeshScale meshScale(scaleVec);
+
+	// ----------------------------------------------------
+	// 4. 기존 Shape의 ConvexMeshGeometry 가져오기
+	//    (getGeometry → PxGeometryHolder → ConvexMesh 꺼내기)
+	// ----------------------------------------------------
+	PxGeometryHolder holder = m_pPhysXActorConvexCom->Get_Shape()->getGeometry();
+	PxConvexMeshGeometry oldConvex = holder.convexMesh();
+
+	// ----------------------------------------------------
+	// 5. ConvexMeshGeometry 새로 생성 (스케일 적용)
+	// ----------------------------------------------------
+	PxConvexMeshGeometry convexGeom(oldConvex.convexMesh, meshScale);
+
+	// ----------------------------------------------------
+	// 6. Shape 교체 (스케일 반영된 Geometry로 갱신)
+	// ----------------------------------------------------
+	m_pPhysXActorConvexCom->Modify_Shape(convexGeom);
 }
 
 void CMapToolObject::Set_Collider(COLLIDER_TYPE eColliderType)
