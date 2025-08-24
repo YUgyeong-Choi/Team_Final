@@ -67,7 +67,7 @@ void CFlameField::Update(_float fTimeDelta)
 		_float fExpandRatio = m_fExpandElapsedTime / m_fExpandTime;
 		fExpandRatio = clamp(fExpandRatio, 0.f, 1.f);
 		_float fCurrentRadius = LerpFloat(m_fInitialRadius, m_fExpandRadius, fExpandRatio);
-		m_ModifyFlame.halfExtents = PxVec3(fCurrentRadius, 0.05f, fCurrentRadius);
+		m_ModifyFlame.halfExtents = PxVec3(fCurrentRadius, 0.5f, fCurrentRadius);
 		m_ModifyFlame = m_pGameInstance->CookBoxGeometry(m_ModifyFlame.halfExtents);
 		m_pPhysXActorCom->Modify_Shape(m_ModifyFlame);
 	}
@@ -145,7 +145,7 @@ HRESULT CFlameField::Ready_Actor()
 
 	PxTransform pose(positionVec, rotationQuat);
 
-	PxVec3 halfExtents = PxVec3(0.5f, 0.05f, 0.5f);
+	PxVec3 halfExtents = PxVec3(0.5f, 0.5f, 0.5f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(false, true, false);

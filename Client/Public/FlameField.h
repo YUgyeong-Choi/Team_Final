@@ -45,7 +45,7 @@ private:
 
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
-	PxBoxGeometry m_ModifyFlame = PxBoxGeometry(0.5f, 0.05f, 0.5f);
+	PxBoxGeometry m_ModifyFlame = PxBoxGeometry(0.5f, 0.5f, 0.5f);
 	_bool  m_bIsExpanded = false; // 불꽃이 확장되었는지 여부
 	_float m_fExpandRadius = 3.f; // 불꽃이 확장되는 반지름
 	_float m_fInitialRadius = 0.5f; // 불꽃의 초기 반지름

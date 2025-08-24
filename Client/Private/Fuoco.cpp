@@ -72,7 +72,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	{
 		m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType", P2_FireBall);
-		m_pAnimator->SetInt("SkillType", SwingAtk);
+//		m_pAnimator->SetInt("SkillType", SwingAtk);
 		//m_pAnimator->SetTrigger("Paralyzation");
 	//	m_pAnimator->SetTrigger("Fatal");
 		//m_pAnimator->SetTrigger("Groggy");
@@ -80,6 +80,12 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//	m_bStartPhase2 = true;
 	//	m_fHP -= 10.f;
 		//FireProjectile(ProjectileType::Oil);
+	}
+
+	if (KEY_DOWN(DIK_T))
+	{
+		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetInt("SkillType", P2_FireOil);
 	}
 	if (KEY_PRESSING(DIK_B))
 	{
@@ -575,8 +581,7 @@ void CFuoco::Register_Events()
 			{
 				if (auto pController = pPlayer->Get_Controller())
 				{
-					// 다시 넣는 로직 추가
-				//	pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+				  pController->Remove_IgnoreActors(m_pPhysXActorComForFoot->Get_Actor());
 				}
 			}
 		});
@@ -587,7 +592,7 @@ void CFuoco::Register_Events()
 			{
 				if (auto pController = pPlayer->Get_Controller())
 				{
-					pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+					pController->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
 				}
 			}
 		});
@@ -664,7 +669,7 @@ void CFuoco::Register_Events()
 			{
 				if (auto pController = pPlayer->Get_Controller())
 				{
-				 // 액터 추가 로직
+					pController->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
 				}
 			}
 		});
@@ -1080,8 +1085,9 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 				if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 				{
 					auto pAnimator = pPlayer->Get_Animator();
-					pAnimator->SetBool("IsUp", true);
-					pAnimator->SetTrigger("Hited");
+					pPlayer->SetHitMotion(HITMOTION::UP);
+					//pAnimator->SetBool("IsUp", true);
+					//pAnimator->SetTrigger("Hited");
 				}
 			}
 		}
@@ -1143,7 +1149,8 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		case ENUM_CLASS(BossStateID::ATK_SLAM):
 		case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
 		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_FRONT):
-			pAnimator->SetTrigger("Stamp");
+			pPlayer->SetHitMotion(HITMOTION::STAMP);
+			//pAnimator->SetTrigger("Stamp");
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SWING_R):
 		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
@@ -1155,10 +1162,12 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_LEFT_END):
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_RIGHT_END):
-			pAnimator->SetTrigger("Knockback");
+			pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
+	//		pAnimator->SetTrigger("Knockback");
 			break;
 		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_START):
-			pAnimator->SetTrigger("Hited");
+			pPlayer->SetHitMotion(HITMOTION::NORMAL);
+		//	pAnimator->SetTrigger("Hited");
 			break;
 		default:
 			pAnimator->SetBool("IsUp", false);
