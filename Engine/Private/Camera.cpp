@@ -42,22 +42,36 @@ HRESULT CCamera::Initialize(void* pArg)
 
 void CCamera::Priority_Update(_float fTimeDelta)
 {
-	if (m_bShake)
-		Update_Camera_Shake(fTimeDelta);
+	if (m_bShake)    Update_Camera_Shake(fTimeDelta);
+	if (m_bMoreRot)  Update_Camera_MoreRot(fTimeDelta);
 
-	if (m_bMoreRot)
-		Update_Camera_MoreRot(fTimeDelta);
-
-	// Transform 컴포넌트에서 위치와 방향 정보 가져옴
 	_vector vEye = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-	_vector vAt = vEye + vLook;
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);   
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);        
 
-	// 뷰 행렬 갱신
+	// 1) look이 0이면 폴백: 이전 프레임 look 또는 기본 전방 (0,0,1)
+	const _vector kEps = XMVectorReplicate(1e-8f);
+	if (XMVector3LessOrEqual(XMVector3LengthSq(vLook), kEps)) {
+		_vector vFallbackLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		vLook = vFallbackLook;
+	}
+
+	// 2) look 정규화
+	_vector vDir = XMVector3Normalize(vLook);
+
+	// 3) up이 vDir과 거의 평행이면 대체 up 선택
+	float dotLU = XMVectorGetX(XMVector3Dot(vDir, vUp));
+	if (fabsf(dotLU) > 0.9990f) {
+		_vector vAltUp = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		if (fabsf(XMVectorGetX(XMVector3Dot(vDir, vAltUp))) > 0.9990f)
+			vAltUp = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+		vUp = vAltUp;
+	}
+
+	_vector vAt = vEye + vDir;
+
+	// 4) 최종 뷰/프로젝션
 	m_ViewMatrix = XMMatrixLookAtLH(vEye, vAt, vUp);
-
-	// 투영 행렬 갱신
 	m_ProjMatrix = XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar);
 }
 
