@@ -54,6 +54,7 @@ public:
 public:
 	HRESULT Initialize(const _float3* pPoints, _int iIndex);
 	_bool isIn(_fvector vLocalPos, _int* pNeighborIndex, _float* pDist = nullptr);
+	NavigationEdge* FindEdge(_fvector vPosition);
 	_bool Compare(_fvector vSour, _fvector vDest);
 	_float Compute_Height(_fvector vLocalPos);
 
@@ -73,9 +74,10 @@ private:
 	//CCell*			m_pNeighbors[LINE_END] = { nullptr, nullptr, nullptr };
 	_int			m_iIndex = {};
 
+	NavigationEdge m_LastEdge;
+
 #ifdef _DEBUG
 	class CVIBuffer_Cell* m_pVIBuffer = { nullptr };
-
 #endif
 
 public:

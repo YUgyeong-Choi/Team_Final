@@ -58,8 +58,6 @@ public:
 	void PushNodeObjects_NoFrustum(const Node& node);
 	void PushNodeObjects_WithFrustum(const Node& node);
 
-	// ÈÄÃ³¸®
-	void FinalCullAndLOD();
 
 	void PushIfNotSeenThisFrame(_uint objIdx, vector<_uint>& out);
 

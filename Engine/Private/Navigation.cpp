@@ -172,6 +172,24 @@ _vector CNavigation::SetUp_Height(_fvector vWorldPos)
 	return XMVector3TransformCoord(vLocalPos, XMLoadFloat4x4(&m_WorldMatrix));
 }
 
+_vector CNavigation::GetSlideDirection(_fvector vPosition, _fvector vDir)
+{
+	/* 현재 셀의 3개의 선분과 나가려고하는 위치를 전부 내적해본다. */
+	NavigationEdge* NaviEdge = m_Cells[m_iIndex]->FindEdge(vPosition);
+
+	if (NaviEdge == nullptr)
+		return vDir;
+
+	/* 나간 경계 선분의 법선 벡터와 내 이동 방향을 내적한다 */
+	_vector vLineNormal = XMVector3Normalize(NaviEdge->vNormal);
+	_vector vMyDirection = vDir;
+
+	_float fDot = XMVectorGetX(XMVector3Dot(vLineNormal, vMyDirection));
+
+	/* 내 이동 벡터 - 법선벡터 * 스칼라 값 */
+	return vMyDirection - vLineNormal * fDot;
+}
+
 HRESULT CNavigation::Select_Cell(_fvector vWorldPos)
 {
 	//x,z 평면상 내부에 있으면, 저장해뒀다가 가장 가까운 셀로 선택하게 한다.

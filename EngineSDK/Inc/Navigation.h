@@ -32,6 +32,7 @@ public:
 	void Update(_fmatrix WorldMatrix);
 	_bool isMove(_fvector vWorldPos);
 	_vector SetUp_Height(_fvector vWorldPos);
+	_vector GetSlideDirection(_fvector vPosition, _fvector vDir);
 
 public:
 	void Set_ShaderPass(ShaderPass eShaderPass) {

@@ -209,6 +209,12 @@ namespace Engine
 		_float3 vMax;
 	};
 
+	struct ENGINE_DLL NavigationEdge
+	{
+		_vector		vDir;
+		_vector		vNormal;
+	};
+
 	inline XMFLOAT3 AABB_Center(const AABBBOX& b)
 	{
 		return XMFLOAT3(
@@ -368,6 +374,10 @@ namespace Engine
 		vCorner.z = (iIndex & 4) ? vMax.z : vMin.z;
 
 		return vCorner;
+	}
+	inline _vector ProjectToXZ(_fvector vIn)
+	{
+		return XMVectorSet(XMVectorGetX(vIn), 0.f, XMVectorGetZ(vIn), XMVectorGetW(vIn));
 	}
 
 	typedef struct ENGINE_DLL Area

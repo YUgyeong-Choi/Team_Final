@@ -69,6 +69,35 @@ _bool CCell::isIn(_fvector vLocalPos, _int* pNeighborIndex, _float* pDist)
 	return true;
 }
 
+NavigationEdge* CCell::FindEdge(_fvector vPosition)
+{
+	_float fMaxDot = -FLT_MAX;
+	_int iBestIndex = -1;
+
+	for (size_t i = 0; i < LINE_END; i++)
+	{
+		_vector vDir = vPosition - XMLoadFloat3(&m_vPoints[i]);
+		_float fDot = XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDir), XMLoadFloat3(&m_vNormals[i])));
+
+		if (fDot > 0.f && fDot > fMaxDot)
+		{
+			fMaxDot = fDot;
+			iBestIndex = (_int)i;
+		}
+	}
+
+	if (iBestIndex != -1)
+	{
+		// 침범한 Edge 중 가장 깊은 것 하나만 기준으로 반환
+		m_LastEdge.vDir = _vector{ -m_vNormals[iBestIndex].z, 0.f, m_vNormals[iBestIndex].x, 0.f };
+		m_LastEdge.vNormal = XMLoadFloat3(&m_vNormals[iBestIndex]);
+
+		return &m_LastEdge;
+	}
+
+	return nullptr;
+}
+
 _bool CCell::Compare(_fvector vSour, _fvector vDest)
 {
 	/*XMVectorEqual(vSour, vDest);*/

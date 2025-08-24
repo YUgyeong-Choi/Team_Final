@@ -21,6 +21,7 @@
 #include "Item.h"
 #include "Lamp.h"
 #include "PlayerLamp.h"
+#include "PlayerFrontCollider.h"
 
 #include "LegionArm_Base.h"
 #include "LegionArm_Steel.h"
@@ -60,6 +61,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_Lamp()))
+		return E_FAIL;
+	
+	if (FAILED(Ready_FrontCollider()))
 		return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
@@ -249,10 +253,6 @@ CAnimController* CPlayer::GetCurrentAnimContrller()
 	return m_pAnimator->Get_CurrentAnimController();
 }
 
-inline _vector ProjectToXZ(_vector vPos)
-{
-	return XMVectorSet(XMVectorGetX(vPos), 0.f, XMVectorGetZ(vPos), 0.f);
-}
 CPlayer::EHitDir CPlayer::ComputeHitDir()
 {
 	_vector vPlayerRight = XMVector3Normalize(m_pTransformCom->Get_State(STATE::RIGHT));
@@ -433,6 +433,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bMoveReset = false;
 		m_bSetOnce = false;
 		m_bSetTwo = false;
+		m_bIsInvincible = false;
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
@@ -716,10 +717,14 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			m_bIsInvincible = true;
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
 		}
+
+		if (m_fMoveTime > 0.2f)
+			m_bIsInvincible = true;
 
 		break;
 	}
@@ -743,7 +748,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
+			m_bIsInvincible = true;
 		}
+
+		if (m_fMoveTime > 0.2f)
+			m_bIsInvincible = false;
 
 		break;
 	}
@@ -772,7 +781,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
+			m_bIsInvincible = true;
 		}
+
+		if (m_fMoveTime > 0.2f)
+			m_bIsInvincible = false;
 
 		break;
 	}
@@ -868,6 +881,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		RootMotionActive(fTimeDelta);
 		break;
 	}
+	case eAnimCategory::FATAL:
+	{
+		RootMotionActive(fTimeDelta);
+		m_bIsInvincible = true;
+		break;
+	}
 	case eAnimCategory::HITED:
 	{
 		RootMotionActive(fTimeDelta);
@@ -958,6 +977,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::ARM_FAIL;
 	if (stateName.find("Heal") == 0)
 		return eAnimCategory::PULSE;
+	if (stateName.find("FatalAttack") == 0)
+		return eAnimCategory::FATAL;
 	
 	return eAnimCategory::NONE;
 }
@@ -1175,7 +1196,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		if (pWeapon == nullptr)
 			return;
 
-		if (pWeapon->Find_CollisonObj(this))
+		if (pWeapon->Find_CollisonObj(this, eColliderType))
 			return;
 
 		pWeapon->Add_CollisonObj(this);
@@ -1244,7 +1265,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		if (pWeapon == nullptr)
 			return;
 
-		if (pWeapon->Find_CollisonObj(this))
+		if (pWeapon->Find_CollisonObj(this, eColliderType))
 			return;
 
 		pWeapon->Add_CollisonObj(this);
@@ -1311,6 +1332,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKCHARGE)] = new CPlayer_ArmCharge(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMFAIL)] = new CPlayer_ArmFail(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::MAINSKILL)] = new CPlayer_MainSkill(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::FATAL)] = new CPlayer_Fatal(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::HITED)] = new CPlayer_Hited(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::DEAD)] = new CPlayer_Dead(this);
 
@@ -1384,6 +1406,31 @@ HRESULT CPlayer::Ready_Lamp()
 
 	if (m_pPlayerLamp == nullptr)
 		return E_FAIL; 
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Ready_FrontCollider()
+{
+	/* [ 램프 모델을 추가 ] */
+
+	CPlayerFrontCollider::FRONTCOLLIDER_DESC Desc{};
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.InitPos = { 0.f, 0.f, 0.f };
+	Desc.InitScale = { 1.f, 1.f, 1.f };
+	Desc.iLevelID = m_iLevelID;
+	Desc.pOwner = this;
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_PlayerFrontCollider"),
+		m_iLevelID, TEXT("Player_FrontCollider"), &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pFrontCollider = dynamic_cast<CPlayerFrontCollider*>(pGameObject);
+
+	if (m_pFrontCollider == nullptr)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -2175,4 +2222,5 @@ void CPlayer::Free()
 	Safe_Release(m_pBelt_Up);
 
 	Safe_Delete(m_pHitReport);
+
 }

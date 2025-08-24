@@ -247,6 +247,7 @@ public:
 #pragma region AREA_MANAGER
 	_bool AddArea_AABB(_int iAreaId, const _float3& vMin, const _float3& vMax, const vector<_uint>& vecAdjacentIds, AREA::EAreaType eType, _int iPriority);
 	void GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad = 0.f) const;
+	void GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const;
 	HRESULT FinalizePartition();
 	_int FindAreaContainingPoint();
 	HRESULT Reset_Parm();

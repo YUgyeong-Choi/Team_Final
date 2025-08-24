@@ -896,6 +896,10 @@ void CGameInstance::GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fP
 {
 	m_pArea_Manager->GetActiveAreaBounds(vecOutBounds, fPad);
 }
+void CGameInstance::GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const
+{
+	m_pArea_Manager->GetActiveAreaIds(vecOutAreaIds);
+}
 HRESULT CGameInstance::FinalizePartition()
 {
 	return m_pArea_Manager->FinalizePartition();

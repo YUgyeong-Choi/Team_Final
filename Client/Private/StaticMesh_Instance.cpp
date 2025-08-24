@@ -35,6 +35,7 @@ HRESULT CStaticMesh_Instance::Initialize(void* pArg)
 	m_iLightShape = InstanceDesc->iLightShape;
 
 	m_wsMap = InstanceDesc->wsMap;
+	
 
 	InstanceDesc->fSpeedPerSec = 0.f;
 	InstanceDesc->fRotationPerSec = 0.f;
@@ -65,15 +66,30 @@ void CStaticMesh_Instance::Update(_float fTimeDelta)
 
 void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 {
-	if (m_wsMap == TEXT("HOTEL")) //자신이 HOTEL맵에 속해있다면
+	/* [ 공간분할 ] */
+	vector<_uint> CurrentArea;
+	m_pGameInstance->GetActiveAreaIds(CurrentArea);
+	if (CurrentArea.empty())
+		return;
+
+	//여기 공간 중 한곳에 있을 경우
+	vector<_uint> vecHotelIds = { 4, 6, 7, 8, 9, 10, 11 };
+	if (IsInAnyArea(CurrentArea, vecHotelIds))
 	{
+		if (m_wsMap == TEXT("HOTEL"))
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		}
 	}
 
-	if (m_wsMap == TEXT("STATION"))//자신이 STATION맵에 속해있다면
+	vector<_uint> vecStationIds = { 1, 2, 3, 4, 5, 6 };
+	if (IsInAnyArea(CurrentArea, vecStationIds))
 	{
+		if (m_wsMap == TEXT("STATION"))
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		}
 	}
-
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 
 }
 
@@ -122,6 +138,20 @@ HRESULT CStaticMesh_Instance::Render()
 	}
 
 	return S_OK;
+}
+
+_bool CStaticMesh_Instance::IsInAnyArea(const vector<_uint>& vecActiveAreaIds,
+	const vector<_uint>& vecCheckAreaIds)
+{
+	if (vecActiveAreaIds.empty() || vecCheckAreaIds.empty())
+		return false;
+
+	for (const _uint iCheckId : vecCheckAreaIds)
+	{
+		if (std::find(vecActiveAreaIds.begin(), vecActiveAreaIds.end(), iCheckId) != vecActiveAreaIds.end())
+			return true;
+	}
+	return false;
 }
 
 HRESULT CStaticMesh_Instance::SetEmissive()

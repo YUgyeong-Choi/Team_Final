@@ -516,7 +516,7 @@ void CBossUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
     {
         auto pWeapon = static_cast<CWeapon*>(pOther);
 
-        if (pWeapon->Find_CollisonObj(this))
+        if (pWeapon->Find_CollisonObj(this, eColliderType))
             return;
 
         pWeapon->Add_CollisonObj(this);
