@@ -35,6 +35,8 @@ HRESULT CUI_Script_Talk::Initialize(void* pArg)
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Script/Script_Talk_Text.json");
 	m_pText = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc));
 
+	static_cast<CDynamic_UI*>(m_PartObjects.back())->Set_isUVmove(true);
+
 	return S_OK;
 }
 
@@ -58,6 +60,9 @@ void CUI_Script_Talk::Update(_float fTimeDelta)
 		if(pButton->Get_isActive())
 		static_cast<CUI_Button*>(pButton)->Check_MouseHover();
 	}
+
+	
+
 }
 
 void CUI_Script_Talk::Late_Update(_float fTimeDelta)
@@ -73,20 +78,40 @@ HRESULT CUI_Script_Talk::Render()
 	return S_OK;
 }
 
-void CUI_Script_Talk::Update_Script(const string strName, const string strText)
+void CUI_Script_Talk::Update_Script(const string strName, const string strText, _bool isAuto)
 {
 	static_cast<CDynamic_Text_UI*>(m_pText->Get_PartUI()[0])->Set_Caption(StringToWStringU8(strName));
 	static_cast<CDynamic_Text_UI*>(m_pText->Get_PartUI()[1])->Set_Caption(StringToWStringU8(strText));
+
+	static_cast<CDynamic_UI*>(m_PartObjects.back())->Set_isActive(isAuto);
 }
 
 void CUI_Script_Talk::Active_Update(_bool isActive)
 {
+	
 	__super::Active_Update(isActive);
+
 
 	m_pButtons->Active_Update(isActive);
 	m_pText->Active_Update(isActive);
 
 
+}
+
+_int CUI_Script_Talk::Check_Click_Button()
+{
+	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+	{
+		for (int i = 0; i < m_pButtons->Get_PartUI().size(); ++i)
+		{
+			if (static_cast<CUI_Button*>(m_pButtons->Get_PartUI()[i])->Check_MousePos())
+			{
+				return i;
+			}
+		}
+	}
+
+	return -1;
 }
 
 CUI_Script_Talk* CUI_Script_Talk::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

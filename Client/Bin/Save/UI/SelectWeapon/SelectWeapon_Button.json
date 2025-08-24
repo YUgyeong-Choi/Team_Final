@@ -9,82 +9,55 @@
         "FilePath": "",
         "Parts": [
             {
-                "Caption": "다음",
+                "Caption": "표시 전환",
                 "Color": {
                     "A": 0.800000011920929,
                     "B": 0.800000011920929,
                     "G": 0.800000011920929,
                     "R": 0.800000011920929
                 },
-                "FontSize": 0.6499999761581421,
+                "FontSize": 0.6000000238418579,
                 "Padding": {
                     "X": 0.0,
-                    "Y": 10.0
+                    "Y": 5.0
                 },
                 "ProtoTag": "Prototype_GameObject_UI_Button",
                 "RotationZ": 0.0,
-                "SizeX": 120.00000762939453,
-                "SizeY": 36.0,
+                "SizeX": 91.19999694824219,
+                "SizeY": 31.5,
                 "Texturetag": "",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
-                "fX": 1304.7999267578125,
-                "fY": 832.5,
+                "fX": 812.800048828125,
+                "fY": 697.5,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
             },
             {
-                "Caption": "자동 재생",
+                "Caption": "선택",
                 "Color": {
                     "A": 0.800000011920929,
                     "B": 0.800000011920929,
                     "G": 0.800000011920929,
                     "R": 0.800000011920929
                 },
-                "FontSize": 0.6499999761581421,
+                "FontSize": 0.6000000238418579,
                 "Padding": {
                     "X": 0.0,
-                    "Y": 10.0
+                    "Y": 5.0
                 },
                 "ProtoTag": "Prototype_GameObject_UI_Button",
                 "RotationZ": 0.0,
-                "SizeX": 140.1999969482422,
-                "SizeY": 36.0,
+                "SizeX": 91.19999694824219,
+                "SizeY": 31.5,
                 "Texturetag": "",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
-                "fX": 1416.0,
-                "fY": 832.5,
-                "iPassIndex": 0,
-                "iTextureIndex": 0,
-                "iTextureLevel": 0
-            },
-            {
-                "Caption": "닫기",
-                "Color": {
-                    "A": 0.800000011920929,
-                    "B": 0.800000011920929,
-                    "G": 0.800000011920929,
-                    "R": 0.800000011920929
-                },
-                "FontSize": 0.6499999761581421,
-                "Padding": {
-                    "X": 0.0,
-                    "Y": 10.0
-                },
-                "ProtoTag": "Prototype_GameObject_UI_Button",
-                "RotationZ": 0.0,
-                "SizeX": 99.19999694824219,
-                "SizeY": 36.0,
-                "Texturetag": "",
-                "fAlpha": 1.0,
-                "fDuration": 0.01600000075995922,
-                "fOffset": 0.0,
-                "fX": 1532.0,
-                "fY": 832.5,
+                "fX": 979.199951171875,
+                "fY": 697.5,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0

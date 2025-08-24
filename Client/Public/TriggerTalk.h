@@ -14,6 +14,8 @@ public:
 		_bool bCanCancel;
 	}TRIGGERTALK_DESC;
 
+	enum BUTTON {BUTTON_NEXT, BUTTON_AUTO, BUTTON_FINISH, BUTTON_END};
+
 protected:
 	CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTriggerTalk(const CTriggerTalk& Prototype);
@@ -32,6 +34,9 @@ public:
 private:
 	void Play_Sound();
 	HRESULT Ready_TriggerObject(void* pArg);
+
+	void Next_Talk();
+
 private:
 	CGameObject* m_pTriggerObject = { nullptr };
 	_bool m_bTalkActive = false;

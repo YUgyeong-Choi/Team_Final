@@ -150,7 +150,7 @@ HRESULT CIcon_Item::Bind_ShaderResources()
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTextureIndex)))
 		return E_FAIL;
-
+	
 	if (FAILED(m_pEffectTextureCom->Bind_ShaderResource(m_pShaderCom, "g_HighlightTexture", 0)))
 		return E_FAIL;
 
