@@ -35,6 +35,13 @@ HRESULT CLevel_DH::Initialize()
 
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
+	
+	if (FAILED(Ready_OctoTree()))
+		return E_FAIL;
+	
+	if (FAILED(Separate_Area()))
+		return E_FAIL;
+	m_pGameInstance->SetPlayerPosition(_fvector{ 51.3f, 1.f, -5.1f, 1.f });
 
 	//if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 	//	return E_FAIL;
@@ -54,6 +61,7 @@ void CLevel_DH::Priority_Update(_float fTimeDelta)
 
 void CLevel_DH::Update(_float fTimeDelta)
 {
+	m_pGameInstance->FindAreaContainingPoint();
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
@@ -64,7 +72,8 @@ void CLevel_DH::Update(_float fTimeDelta)
 void CLevel_DH::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-
+	
+	Add_RenderGroup_OctoTree();
 }
 
 HRESULT CLevel_DH::Render()
@@ -127,6 +136,68 @@ HRESULT CLevel_DH::Ready_OctoTree()
 		return E_FAIL;
 
 	m_pGameInstance->SetObjectType(vObjectType);
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Add_RenderGroup_OctoTree()
+{
+	_matrix matView = XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW));
+	_matrix matProj = XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ));
+
+	m_pGameInstance->BeginQueryFrame(matView, matProj);
+	m_pGameInstance->QueryVisible();
+
+	vector<class CGameObject*> AllStaticMesh = m_pGameInstance->GetIndexToObj();
+	vector<_uint> VisitCell = m_pGameInstance->GetCulledStaticObjects();
+	vector<OCTOTREEOBJECTTYPE> vTypeTable = m_pGameInstance->GetObjectType();
+
+
+	for (_uint iIdx : VisitCell)
+	{
+		CGameObject* pObj = AllStaticMesh[iIdx];
+
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, pObj);
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Separate_Area()
+{
+	m_pGameInstance->Reset_Parm();
+
+	/* [ 레벨의 구역을 나눠준다. ] */
+	auto FnToAABB = [](_float3 a, _float3 b, _float3& outMin, _float3& outMax)
+		{
+			outMin = _float3{
+				static_cast<_float>(min(a.x, b.x)),
+				static_cast<_float>(min(a.y, b.y)),
+				static_cast<_float>(min(a.z, b.z))
+			};
+			outMax = _float3{
+				static_cast<_float>(max(a.x, b.x)),
+				static_cast<_float>(max(a.y, b.y)),
+				static_cast<_float>(max(a.z, b.z))
+			};
+		};
+
+	_float3 a1p0 = _float3{ -10000.f, -10000.f,  -10000.f };
+	_float3 a1p1 = _float3{ 10000.f,  10000.f, 10000.f };
+	_float3 a1Min, a1Max;
+	FnToAABB(a1p0, a1p1, a1Min, a1Max);
+
+	{
+		/* [ 1번 구역 ] */
+		const vector<_uint> vecAdj1 = { 2 };
+		if (!m_pGameInstance->AddArea_AABB(
+			1, a1Min, a1Max, vecAdj1, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+
+	if (FAILED(m_pGameInstance->FinalizePartition()))
+		return E_FAIL;
+
 
 	return S_OK;
 }

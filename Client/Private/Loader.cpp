@@ -770,16 +770,42 @@ HRESULT CLoader::Loading_For_DH()
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-#pragma region 맵 오브젝트
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
-		CStaticMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+//#pragma region 맵 오브젝트
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
+//		CStaticMesh::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+//		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//
+//	//스태틱 데칼	
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
+//		CStatic_Decal::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//
+//	//네비게이션 컴포넌트 작동시켜주는 녀석
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Nav"),
+//		CNav::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//
+//#pragma endregion
+//
+//#pragma region 맵 로드
+//	string Map = "STATION"; //STATION, TEST
+//
+//	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
+//	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+//		return E_FAIL;
+//
+//	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+//	//제이슨으로 저장된 맵을 로드한다.
+//	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+//		return E_FAIL;
+//#pragma endregion
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	//스태틱 데칼	
+#pragma region YW
+//스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -789,19 +815,50 @@ HRESULT CLoader::Loading_For_DH()
 		CNav::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-#pragma endregion
-
-#pragma region 맵 로드
-	string Map = "STATION"; //STATION, TEST
-
-	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma region 맵 로딩
+
+	m_pGameInstance->ClaerOctoTreeObjects();
+
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
+	auto futureStation = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "STATION")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "STATION")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
+	auto futureHotel = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "HOTEL")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "HOTEL")))
+				return E_FAIL;
+
+			return S_OK;
+		});
 
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-	//제이슨으로 저장된 맵을 로드한다.
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+
+	if (FAILED(futureStation.get()))
 		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료..."));
+
+	if (FAILED(futureHotel.get()))
+		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
+
 #pragma endregion
 
 
