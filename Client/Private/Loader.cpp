@@ -103,6 +103,7 @@
 #include "Oil.h"
 #include "Fuoco.h"
 #include "FireBall.h"
+#include "FlameField.h"
 #include "TestAnimObject.h"
 #pragma endregion
 
@@ -510,6 +511,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		COil::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FlameField"),
+		CFlameField::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
 		CDoorMesh::Create(m_pDevice, m_pContext))))
@@ -848,6 +853,7 @@ HRESULT CLoader::Loading_For_JW()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireBall"),
 		CFireBall::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JW), TEXT("Prototype_Component_Model_Train"),

@@ -47,8 +47,6 @@ const _char* CMySequence::GetItemLabel(_int index) const
 
 void CMySequence::SetAnimator(CAnimator* pAnimator)
 {
-    Safe_Release(m_pAnimator);
     m_pAnimator = pAnimator;
-    Safe_AddRef(m_pAnimator);
 }
 

@@ -151,6 +151,7 @@ private:
 	void ChosePatternWeightByDistance(_float fDistance);
 	void FireProjectile(ProjectileType type, _float fSpeed = 10.f);
 	void FlamethrowerAttack(_float fConeAngle = 10.f, _int iRayCount = 7, _float fDistance = 15.f);
+	void SpawnFlameField();
 
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {    cout << "=== Attack Pattern Weights ===" << endl;

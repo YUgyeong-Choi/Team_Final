@@ -1,12 +1,13 @@
 ﻿#include "Fuoco.h"
 #include "Bone.h"
+#include <Player.h>
 #include "Projectile.h"
+#include "FlameField.h"
 #include "GameInstance.h"
 #include "Effect_Manager.h"
 #include "LockOn_Manager.h"
 #include "Camera_Manager.h"
 #include "Client_Calculation.h"
-#include <Player.h>
 #include <PhysX_IgnoreSelfCallback.h>
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -82,8 +83,8 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_T))
 	{
+		m_pAnimator->SetInt("SkillType", P2_FlameField);
 		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", P2_FireOil);
 	}
 #endif
 }
@@ -562,10 +563,25 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("ColliderFootOn", [this]()
 		{
 			m_pPhysXActorComForFoot->Set_SimulationFilterData(m_pPhysXActorComForFoot->Get_FilterData());
+			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+			{
+				if (auto pController = pPlayer->Get_Controller())
+				{
+					// 다시 넣는 로직 추가
+				//	pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+				}
+			}
 		});
 	m_pAnimator->RegisterEventListener("ColliderFootOff", [this]()
 		{
 			m_pPhysXActorComForFoot->Init_SimulationFilterData();
+			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+			{
+				if (auto pController = pPlayer->Get_Controller())
+				{
+					pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+				}
+			}
 		});
 
 	m_pAnimator->RegisterEventListener("FireBall", [this]()
@@ -621,6 +637,33 @@ void CFuoco::Register_Events()
 		{
 			m_fFireFlameDuration = 1.5f;
 			FlamethrowerAttack();
+		});
+
+	m_pAnimator->RegisterEventListener("IgnorePlayerCollision", [this]()
+		{
+			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+			{
+				if (auto pController = pPlayer->Get_Controller())
+				{
+					pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+				}
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("ResetIgnorePlayerCollision", [this]()
+		{
+			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+			{
+				if (auto pController = pPlayer->Get_Controller())
+				{
+				 // 액터 추가 로직
+				}
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("SpawnFlameField", [this]()
+		{
+			SpawnFlameField();
 		});
 }
 
@@ -737,6 +780,8 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 	{
 	case Client::CFuoco::ProjectileType::FireBall:
 	{
+		if (m_pPlayer == nullptr)
+			return;
 		if (m_pLeftBone)
 		{
 			auto handLocalMatrix = m_pLeftBone->Get_CombinedTransformationMatrix();
@@ -939,6 +984,19 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 
 	}
 
+}
+
+void CFuoco::SpawnFlameField()
+{
+	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+	CFlameField::FLAMEFIELD_DESC Desc{};
+	XMStoreFloat3(&Desc.vPos, m_pTransformCom->Get_State(STATE::POSITION));
+	Desc.fExpandRadius = 17.f; // 확장 반경
+	Desc.fExpandTime = 1.5f; // 확장까지 끝나야 하는 시간
+	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_FlameField"), iLevelIndex, TEXT("Layer_FlameField"),&Desc)))
+	{
+		return;
+	}
 }
 
 void CFuoco::UpdatePatternWeight(EBossAttackPattern ePattern)
