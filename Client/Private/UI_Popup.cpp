@@ -78,6 +78,9 @@ void CUI_Popup::Set_String(_int iTriggerType)
 	case 1:
 		strCaption = L"말을 건다.";
 		break;
+	case 2:
+		strCaption = L"문을 연다.";
+		break;
 	default:
 		strCaption = L"????";
 		break;
