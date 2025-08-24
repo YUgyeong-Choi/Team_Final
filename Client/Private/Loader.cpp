@@ -612,6 +612,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 			return S_OK;
 		});
 
+
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 
 

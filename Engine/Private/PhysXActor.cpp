@@ -33,7 +33,13 @@ void CPhysXActor::Modify_Shape(const PxGeometry& geom, PxMaterial* material)
 {
     if (m_pShape)
     {
+		if (m_pShape->getGeometry().getType()!= geom.getType())
+		{
+			cout << "Error: Geometry type mismatch. Cannot modify shape." << endl;
+			return;
+		}
         m_pShape->setGeometry(geom);
+
     }
 	if (material)
 	{

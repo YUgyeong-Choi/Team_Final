@@ -192,7 +192,13 @@ private:
     //_float m_fAttackCooldown = 0.f; // °ø°Ý ÄðÅ¸ÀÓ
     //_float m_fAttckDleay = 4.f;
     _float m_fFireFlameDuration = 0.f;
-
+    array<_float3, 4> m_vOilSpawnPos =
+    {
+        _float3{ 0.f, 0.f, 0.f }, // Áß¾Ó
+        _float3{ -2.f, 0.f, -2.f }, // ÁÂÇÏ
+        _float3{ 2.f, 0.f, -2.f }, // ¿ìÇÏ
+        _float3{ 0.f, 0.f, -4.f } // ¾Õ
+    };
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
     EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
     unordered_map<EBossAttackPattern, _float> m_PatternWeightMap;

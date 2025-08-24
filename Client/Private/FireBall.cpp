@@ -1,4 +1,7 @@
+#include "Oil.h"
 #include "FireBall.h"
+#include "Player.h"
+#include "PhysXDynamicActor.h"
 
 CFireBall::CFireBall(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CProjectile(pDevice, pContext)
@@ -20,6 +23,13 @@ HRESULT CFireBall::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	PxFilterData FilterData{};
+	FilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+	FilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_MONSTERWEAPON;
+
+	m_pPhysXActorCom->Set_SimulationFilterData(FilterData);
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 	return S_OK;
 }
 
@@ -45,6 +55,30 @@ HRESULT CFireBall::Render()
 
 void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	{
+		if (auto pOill = dynamic_cast<COil*>(pOther))
+		{
+			if (pOill)
+			{
+				Set_bDead();
+				return;
+			}
+		}
+	}
+	else if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
+		{
+			pPlayer->ReceiveDamage(this, eColliderType);
+			//pPlayer->Get_Animator()->SetTrigger("Hited");
+			Set_bDead();
+		}
+	}
+	else if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
+	{
+		Set_bDead();
+	}
 }
 
 void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -61,6 +95,7 @@ void CFireBall::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CFireBall::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+
 }
 
 void CFireBall::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

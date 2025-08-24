@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Client_Defines.h"
 NS_BEGIN(Engine)
-class CPhysXDynamicAtctor;
+class CPhysXDynamicActor;
 NS_END
 
 NS_BEGIN(Client)
@@ -36,7 +36,7 @@ private:
 	HRESULT Ready_Actor();
 
 private:
-	CPhysXDynamicAtctor* m_pPhysXActorCom = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
 public:
 	static CFlameField* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

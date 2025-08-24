@@ -70,7 +70,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_TAB))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", P2_FireOil);
+		m_pAnimator->SetInt("SkillType", P2_FireBall);
 		//m_pAnimator->SetTrigger("Paralyzation");
 	//	m_pAnimator->SetTrigger("Fatal");
 		//m_pAnimator->SetTrigger("Groggy");
@@ -78,6 +78,12 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//	m_bStartPhase2 = true;
 	//	m_fHP -= 10.f;
 		//FireProjectile(ProjectileType::Oil);
+	}
+
+	if (KEY_DOWN(DIK_T))
+	{
+		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetInt("SkillType", P2_FireOil);
 	}
 #endif
 }
@@ -726,7 +732,6 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 {
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	CProjectile::PROJECTILE_DESC desc{};
-	desc.fSpeed = fSpeed;
 	_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 	switch (type)
 	{
@@ -736,7 +741,7 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		{
 			auto handLocalMatrix = m_pLeftBone->Get_CombinedTransformationMatrix();
 			auto handWorldMatrix = XMLoadFloat4x4(handLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-			_float3 localOffset = { 0.0f, 0.0f, 100.f };
+			_float3 localOffset = { 0.0f, -2.f, 100.f };
 			_vector spawnPos = XMVector3TransformCoord(XMLoadFloat3(&localOffset), handWorldMatrix);
 			vPos = XMVectorSetW(spawnPos, 1.f);
 		}
@@ -746,14 +751,47 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 			vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		}
 
-		XMStoreFloat3(&desc.vPos, vPos);
-		XMStoreFloat3(&desc.vDir, GetTargetDirection());
 
-		desc.fLifeTime = 3.f;
-		desc.fGravityOnDist = Get_DistanceToPlayer() * 0.15f;
-		desc.fStartTime = 1.f;
-		desc.bUseTimeTrigger = false;
-		desc.bUseDistTrigger = true;
+		// 발사 각도 구하기 (속도, 위치, 중력 가속도를 알고 있을 때 각도를 구하는 공식)
+		const _float G = 9.81f; // 중력 가속도
+		_vector vTargetPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vHorizontalStartPos = XMVectorSetY(vPos, 0.0f);
+		_vector vHorizontalTargetPos = XMVectorSetY(vTargetPos, 0.0f);
+
+		// 수평 거리 계산
+		_float fHorizontalDist = XMVectorGetX(XMVector3Length(vHorizontalTargetPos - vHorizontalStartPos));
+		// 높이 차이
+		_float fYDiff = XMVectorGetY(vTargetPos) - XMVectorGetY(vPos);
+
+		_float fLaunchAngle = 0.0f;
+
+		_float fVelocitySquared = fSpeed * fSpeed; // v^2
+		// 스피드가 항상 양수라서 도달 안하는 경우는 없을듯 (혹시나 나중에 넘지 못하는 각도라면 음수 체크 해야할듯)
+		// 델타 = v^4 - g*(g*x^2 + 2y*v^2) x는 dist 
+		_float fDeltaValue = (fVelocitySquared * fVelocitySquared) - G * ((G * fHorizontalDist * fHorizontalDist) + (2 * fYDiff * fVelocitySquared));
+		
+		_float fTanThetaLow = (fVelocitySquared - sqrtf(fDeltaValue)) / (G * fHorizontalDist); // 낮은 발사각의 해로 처리 
+		fLaunchAngle = atanf(fTanThetaLow); // 라디안 각도 계산
+
+	
+		_float fCostheta = cosf(fLaunchAngle);
+		_float fSintheta = sinf(fLaunchAngle);
+
+		_vector vHorizontalDir = XMVector3Normalize(vHorizontalTargetPos - vHorizontalStartPos);
+		_vector vInitialVelocity = vHorizontalDir * (fSpeed * fCostheta) + XMVectorSet(0.0f, fSpeed * fSintheta, 0.0f, 0.0f);
+		_float fTotalTime = fHorizontalDist / (fSpeed * fCostheta) + 7.f; // 0.5초 추가 라이프 타임
+
+
+		XMStoreFloat3(&desc.vPos, vPos);
+		XMStoreFloat3(&desc.vDir, XMVector3Normalize(vInitialVelocity));
+
+		desc.fLifeTime = fTotalTime;
+		desc.fGravityOnDist = 0.f;
+		desc.fSpeed = fSpeed;
+		desc.fGravityOnDist = 0.f;
+		desc.fStartTime = 0.f;
+		desc.bUseTimeTrigger = true;
+		desc.bUseDistTrigger = false;
 		desc.fRadius = 0.35f;
 		lstrcpy(desc.szName, TEXT("FireBall"));
 
@@ -780,24 +818,30 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 			vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		}
 		XMStoreFloat3(&desc.vPos, vPos);
-		desc.fStartTime = 0.5f;
+		desc.fStartTime = 0.6f;
 		desc.bUseTimeTrigger = true;
 		desc.bUseDistTrigger = false;
 		desc.fRadius = 0.2f;
 		desc.fLifeTime = 3.f;
 		lstrcpy(desc.szName, TEXT("Oil"));
-		_vector vBaseDir = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
-		// base에서 30도씩 회전 시키기
-		_vector vLeftDirOfBase = XMVector3Rotate(vBaseDir, XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-5.f)));
-		_vector vRightDirOfBase = XMVector3Rotate(vBaseDir, XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(5.f)));
-		array<_float3, 3> vDirArray;
-		XMStoreFloat3(&vDirArray[0], vBaseDir);
+		_vector vBaseDir = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
+		const _float fAngle = 7.f;
+		_vector vLeftDirOfBase = XMVector3Rotate(vBaseDir, XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-fAngle)));
+		_vector vRightDirOfBase = XMVector3Rotate(vBaseDir, XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fAngle)));
+		_vector vUpDirOfBase = XMVector3Rotate(vBaseDir, XMQuaternionRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(-fAngle)));
+		_vector vDownDirOfBase = XMVector3Rotate(vBaseDir, XMQuaternionRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(fAngle)));
+		array<_float3, 4> vDirArray;
+		XMStoreFloat3(&vDirArray[0], vDownDirOfBase);
 		XMStoreFloat3(&vDirArray[1], vLeftDirOfBase);
 		XMStoreFloat3(&vDirArray[2], vRightDirOfBase);
+		XMStoreFloat3(&vDirArray[3], vUpDirOfBase);
 
-		for (_int i = 0; i < 3; i++)
+		for (_int i = 0; i < 4; i++)
 		{
 			desc.vDir = vDirArray[i];
+			// 스피드 랜덤 패턴
+			_float fRandomSpeed =fSpeed * GetRandomFloat(0.9f, 1.5f);
+			desc.fSpeed = fRandomSpeed;
 			// 나중에 Oil로 바꾸기
 			if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Oil"), iLevelIndex, TEXT("Layer_Projectile"), &desc)))
 			{
@@ -954,7 +998,7 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 			if (m_pAnimator->GetInt("SkillType") == FootAtk)
 			{
 				m_pAnimator->SetBool("IsHit", true);
-				SetTurnTimeDuringAttack(2.f, 1.2f); // 퓨리 어택 
+				SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
 				if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 				{
 					auto pAnimator = pPlayer->Get_Animator();
@@ -985,6 +1029,10 @@ void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _
 
 void CFuoco::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		cout << "플레이어 충돌" << endl;
+	}
 }
 
 void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)

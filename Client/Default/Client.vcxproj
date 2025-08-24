@@ -195,6 +195,7 @@
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\public\Elite_Police.h" />
     <ClInclude Include="..\Public\FireBall.h" />
+    <ClInclude Include="..\Public\FlameField.h" />
     <ClInclude Include="..\Public\MonsterTool.h" />
     <ClInclude Include="..\Public\MonsterToolObject.h" />
     <ClInclude Include="..\public\LegionArm_Base.h" />
@@ -359,6 +360,7 @@
     <ClCompile Include="..\private\EventMag.cpp" />
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\FireBall.cpp" />
+    <ClCompile Include="..\Private\FlameField.cpp" />
     <ClCompile Include="..\private\Fuoco.cpp" />
     <ClCompile Include="..\Private\GLTool.cpp" />
     <ClCompile Include="..\Private\AnimTool.cpp" />

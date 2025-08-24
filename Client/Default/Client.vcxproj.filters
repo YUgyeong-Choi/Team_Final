@@ -442,6 +442,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\ActionType">
       <UniqueIdentifier>{2b13074a-d794-4165-bf06-72b9eabcfbb1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\Fuoco\Skill">
+      <UniqueIdentifier>{fe63929d-0b86-4319-b35f-e6b8d18eae81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -937,6 +940,9 @@
     <ClInclude Include="..\public\UI_SelectWeapon.h">
       <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FlameField.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco\Skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1405,6 +1411,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_SelectWeapon.cpp">
       <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FlameField.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
