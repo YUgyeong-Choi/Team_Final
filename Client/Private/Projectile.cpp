@@ -71,6 +71,9 @@ void CProjectile::Update(_float fTimeDelta)
 	if (!m_bUseDistTrigger && !m_bUseTimeTrigger) // 거리도 시간도 안쓰면 그냥 중력 없이
 		return;
 
+	if (m_pPhysXActorCom == nullptr)
+		return;
+
 	if (m_bGravity == false)
 	{
 		if (m_bUseTimeTrigger)
