@@ -28,6 +28,11 @@ HRESULT CLegionArm_Steel::Initialize(void* pArg)
 	
 	m_isAttack = true;
 
+	m_fDamage = 100.f;
+
+	//
+
+
 	return S_OK;
 }
 
@@ -93,6 +98,7 @@ void CLegionArm_Steel::SetisAttack(_bool isAttack)
 	if (isAttack)
 	{
 		m_pActorCom->Set_SimulationFilterData(m_pActorCom->Get_FilterData());
+
 	}
 	else
 	{
@@ -121,7 +127,7 @@ HRESULT CLegionArm_Steel::Ready_Actor()
 	PxVec3 halfExtents = PxVec3(0.3f, 0.3f, 0.3f);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	m_pActorCom->Set_ShapeFlag(false, true, false);
+	m_pActorCom->Set_ShapeFlag(false, true, true);
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON;

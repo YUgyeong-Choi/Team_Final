@@ -38,6 +38,12 @@ public:
 	// 팔 사용 효과 만들기
 	virtual void Activate() {}
 
+	_float& Get_fLegionEnergy() { return m_fLegionArmEnergy; }
+	void Use_LegionEnergy(_float energy);
+
+	
+
+
 protected:              /* [ 컴포넌트 ], 나중에 필요할거 같아서 일단 넣어만 둠 */
 	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };

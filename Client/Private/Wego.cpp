@@ -39,6 +39,8 @@ HRESULT CWego::Initialize(void* pArg)
 	// NPC 대화 데이터 
 	LoadNpcTalkData("../Bin/Save/Npc/Wego.json");
 
+	m_strNpcName = u8"초보 탐험가 휴고";
+
 	return S_OK;
 }
 
@@ -49,7 +51,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 	// Talk 진행
 	if (m_bTalkActive)
 	{
-		if (m_pGameInstance->Key_Down(DIK_E))
+		if (m_pGameInstance->Key_Down(DIK_F))
 		{
 			++m_curTalkIndex;
 			if (m_curTalkIndex >= m_NpcTalkData[m_curTalkType].size())
@@ -67,8 +69,8 @@ void CWego::Priority_Update(_float fTimeDelta)
 				return;
 			}
 
-			wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
-
+			//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
+			CUI_Manager::Get_Instance()->Update_TalkScript(m_strNpcName, (m_NpcTalkData[m_curTalkType][m_curTalkIndex]), m_bAutoTalk);
 		}
 	}
 
@@ -81,18 +83,20 @@ void CWego::Priority_Update(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 
-			wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
+			//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
 
 			
 			CUI_Manager::Get_Instance()->Off_Panel();
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
+			CUI_Manager::Get_Instance()->Activate_TalkScript(true);
+			CUI_Manager::Get_Instance()->Update_TalkScript(m_strNpcName, (m_NpcTalkData[m_curTalkType][m_curTalkIndex]), m_bAutoTalk);
 		}
 	}
 
 	// Talk 비활성화
 	if (m_bTalkActive)
 	{
-		if (m_pGameInstance->Key_Down(DIK_Q))
+		if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 		{
 			m_curTalkIndex = 0;
 			m_bTalkActive = false;
@@ -102,6 +106,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 			
 		
 			CUI_Manager::Get_Instance()->On_Panel();
+			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
 		}
 	}
 }
@@ -255,13 +260,13 @@ void CWego::LoadNpcTalkData(string filePath)
 			WEGOTALKTYPE talkType = (type == 0) ? WEGOTALKTYPE::ONE : WEGOTALKTYPE::TWO;
 
 			// Words 배열 읽기
-			vector<wstring> words;
+			vector<string> words;
 			for (const auto& word : item["Words"])
 			{
 				// string -> wstring 변환
 				string s = word.get<std::string>();
-				wstring ws(s.begin(), s.end());
-				words.push_back(ws);
+			
+				words.push_back(s);
 			}
 
 			// 맵에 저장

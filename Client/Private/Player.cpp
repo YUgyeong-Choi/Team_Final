@@ -847,7 +847,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -859,7 +861,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -871,7 +874,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -1105,10 +1109,7 @@ void CPlayer::Register_Events()
 
 	m_pAnimator->RegisterEventListener("UseItem", [this]()
 		{
-			if (m_pSelectItem)
-			{
-				m_pSelectItem->Use();
-			}
+			Use_Item();
 		});
 }
 
@@ -1636,8 +1637,8 @@ HRESULT CPlayer::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON; 
-	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON | FILTER_MONSTERBODY; 
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData); 
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PLAYER);
@@ -1893,6 +1894,11 @@ void CPlayer::Use_Item()
 		return;
 
 	m_pSelectItem->Use();
+
+	if(m_isSelectUpBelt)
+		Callback_UpBelt();
+	else
+		Callback_DownBelt();
 }
 
 void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)

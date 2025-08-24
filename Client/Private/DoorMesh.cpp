@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Client_Calculation.h"
+#include "UI_Manager.h"
 CDoorMesh::CDoorMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDynamicMesh{ pDevice, pContext }
 {
@@ -51,6 +52,8 @@ void CDoorMesh::Priority_Update(_float fTimeDelta)
 			CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_Player")));
 			pPlayer->Interaction_Door(m_eInteractType, this);
 			m_bFinish = true;
+
+			CUI_Manager::Get_Instance()->Activate_Popup(false);
 		}
 	}
 
@@ -89,8 +92,15 @@ HRESULT CDoorMesh::Render()
 
 void CDoorMesh::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	if(!m_bFinish)
+	if (!m_bFinish)
+	{
 		m_bCanActive = true;
+		CUI_Manager::Get_Instance()->Activate_Popup(true);
+  		CUI_Manager::Get_Instance()->Set_Popup_Caption(2);
+	}
+		
+
+	
 }
 
 void CDoorMesh::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -102,6 +112,7 @@ void CDoorMesh::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	m_bInSound = !m_bInSound;
 	m_bBGMToZero = true;
 
+	CUI_Manager::Get_Instance()->Activate_Popup(false);
 }
 
 void CDoorMesh::Play_Sound()

@@ -240,13 +240,6 @@ void CWeapon::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 
-void CWeapon::Calc_Durability(_float fDelta)
-{
-	
-	_float fTemp = -1.f * fDelta;
-
-	m_pGameInstance->Notify(L"Weapon_Status", L"AddDurablity", &fDelta);
-}
 
 _bool CWeapon::Find_CollisonObj(CGameObject* pObj, COLLIDERTYPE eColliderType)
 {

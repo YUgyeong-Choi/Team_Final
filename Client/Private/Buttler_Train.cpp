@@ -97,6 +97,8 @@ void CButtler_Train::Update(_float fTimeDelta)
 		m_pWeapon->SetisAttack(false);
 	}
 
+	
+
 	__super::Update(fTimeDelta);
 
 
@@ -191,8 +193,8 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 		++m_iCollisionCount;
 		m_vPushDir -= HitNormal;
 	}
-	//else if (eColliderType == COLLIDERTYPE::PLAYER)
-		//m_isCollisionPlayer = true;
+	else if (eColliderType == COLLIDERTYPE::PLAYER)
+		m_isCollisionPlayer = true;
 
 
 	// 무기가 상태마다 한번씩 데미지 주고
@@ -209,8 +211,7 @@ void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollide
 		_vector vCorrection = HitNormal * 0.01f;
 		m_vPushDir -= vCorrection;
 	}
-	//else if (eColliderType == COLLIDERTYPE::PLAYER)
-		//m_isCollisionPlayer = false;
+	
 
 	//ReceiveDamage(pOther, eColliderType);
 }
@@ -227,6 +228,8 @@ void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eCollide
 			m_vPushDir = { 0.f, 0.f, 0.f, 0.f };
 		}
 	}
+	else if (eColliderType == COLLIDERTYPE::PLAYER)
+		m_isCollisionPlayer = false;
 
 
 }
@@ -250,13 +253,18 @@ void CButtler_Train::Update_State()
 
 	m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
+	if (m_isFatal)
+	{
+		m_pAnimator->SetFloat("Hp", m_fHp);
+	}
+
 	if (!m_isDetect || m_fHp <= 0)
 	{
 		m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 		return;
 	}
 
-
+	
 
 
 	_vector vDist = {};
@@ -313,7 +321,10 @@ void CButtler_Train::Update_State()
 		m_fGroggyThreshold = 100;
 	}
 
-
+	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
+	{
+		m_isGroogyLoop = true;
+	}
 
 
 
@@ -357,9 +368,9 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
 
-		if (m_fHp <= 0)
+		if (m_fHp <= 0 && !m_isFatal)
 		{
-
+			
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 			m_pAnimator->SetTrigger("Dead");
 			m_strStateName = "Dead";
@@ -421,6 +432,17 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	//	RootMotionActive(fTimeDelta);
 	//}
 
+	if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
+	{
+		m_isLookAt = false;
+		m_isCollisionPlayer = false;
+	}
+		
+
+
+	if (m_strStateName.find("Walk") != m_strStateName.npos || m_strStateName.find("Run") != m_strStateName.npos )
+		m_isCollisionPlayer = false;
+
 	RootMotionActive(fTimeDelta);
 
 }
@@ -469,6 +491,14 @@ void CButtler_Train::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 	m_pAnimator->SetTrigger("Hit");
+}
+
+void CButtler_Train::Start_Fatal_Reaction()
+{
+	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+	m_pAnimator->SetTrigger("Fatal");
+
+	m_isFatal = true;
 }
 
 
