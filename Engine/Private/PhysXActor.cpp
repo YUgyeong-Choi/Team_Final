@@ -29,6 +29,16 @@ void CPhysXActor::Set_ColliderType(COLLIDERTYPE eColliderType)
 
 }
 
+void CPhysXActor::Remove_IgnoreActors(PxActor* pActor)
+{
+    if (!pActor)
+        return;
+
+    auto it = m_ignoreActors.find(pActor);
+    if (it != m_ignoreActors.end())
+        m_ignoreActors.erase(it);
+}
+
 void CPhysXActor::Modify_Shape(const PxGeometry& geom, PxMaterial* material)
 {
     if (m_pShape)

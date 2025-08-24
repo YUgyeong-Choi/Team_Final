@@ -22,6 +22,7 @@ public:
     virtual PxRigidActor* Get_Actor() = 0;
     PxShape* Get_Shape() { return m_pShape; }
     void Add_IngoreActors(PxActor* pActor) { m_ignoreActors.insert(pActor); }
+    void Remove_IgnoreActors(PxActor* pActor);
     unordered_set<PxActor*> Get_IngoreActors() { return m_ignoreActors; }
 
     void Modify_Shape(const PxGeometry& geom, PxMaterial* material = nullptr);

@@ -4,7 +4,7 @@
 #include "UI_Manager.h"
 #include "UI_SelectWeapon.h"
 #include "PlayerLamp.h"
-
+#include "TriggerItem.h"
 #include "Player.h"
 CTriggerTalk::CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
@@ -34,8 +34,11 @@ HRESULT CTriggerTalk::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (TriggerTalkDESC->gameObjectTag != "")
+	{
 		if (FAILED(Ready_TriggerObject(TriggerTalkDESC)))
 			return E_FAIL;
+	}
+
 
 	return S_OK;
 }
@@ -46,6 +49,12 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 	{
 		m_pPhysXTriggerCom->RemovePhysX();
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
+
+		if(m_eTriggerBoxType == TRIGGERBOX_TYPE::MONADLIGHT)
+			m_pPlayer->Get_PlayerLamp()->SetbLampVisible(true);
+
+		if (m_pTriggerObject)
+			m_pTriggerObject->Set_bDead();
 		return;
 	}
 
@@ -107,8 +116,6 @@ void CTriggerTalk::Update(_float fTimeDelta)
 
 			if (m_eTriggerBoxType == TRIGGERBOX_TYPE::MONADLIGHT)
 				m_pPlayer->Get_Animator()->SetTrigger("InactiveStargazer");
-
-			m_pPlayer->Get_PlayerLamp()->SetbLampVisible(true);
 
 			// 여기에 조사한다 UI 비활성화
 			CUI_Manager::Get_Instance()->Off_Panel();
@@ -198,8 +205,21 @@ void CTriggerTalk::Play_Sound()
 
 }
 
-HRESULT CTriggerTalk::Ready_TriggerObject(void* pArg)
+HRESULT CTriggerTalk::Ready_TriggerObject(TRIGGERTALK_DESC* TriggerTalkDESC)
 {
+	m_iLevelID = m_pGameInstance->GetCurrentLevelIndex();
+	wstring strTriggerObjectTag = L"Prototype_GameObject_";
+	strTriggerObjectTag += wstring(TriggerTalkDESC->gameObjectTag.begin(), TriggerTalkDESC->gameObjectTag.end());
+
+	CTriggerItem::TRIGGERITEM_DESC Desc{};
+	Desc.triggerWorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	Desc.vOffSetObj = TriggerTalkDESC->vOffSetObj;
+	Desc.vScaleObj = TriggerTalkDESC->vScaleObj;
+
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, strTriggerObjectTag.c_str(),
+		m_iLevelID, TEXT("Layer_TriggerItem"), &m_pTriggerObject, &Desc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
