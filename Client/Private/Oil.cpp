@@ -27,7 +27,7 @@ HRESULT COil::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_fLifeTime = FLT_MAX; // 오일은 계속 남아있어야 하니까
+	m_fLifeTime = 20.f; // 오일 시간 
 	if (m_pPhysXActorCom)
 	{
 		PxFilterData filterData{};
