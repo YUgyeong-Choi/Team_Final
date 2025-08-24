@@ -24,6 +24,7 @@ public:
 		_float3			vRotationAxis = {};       // 자전용, xyz 축 w 속도
 		_bool			isTileLoop = { false };
 		_float2			vTileCnt = { 1.f,1.f };
+		_float			fTileTickPerSec = { 60.f };
 
 		/* --- Particle Parameters --- */
 		_float2			vLifeTime;

@@ -37,6 +37,7 @@ HRESULT CPlayerLamp::Initialize(void* pArg)
 	m_iRender = pDesc->iRender;
 	m_szName = pDesc->szName;
 	m_pOwner = dynamic_cast<CUnit*>(pDesc->pOwner);
+	m_eMeshLevelID = pDesc->eMeshLevelID;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -125,7 +126,7 @@ HRESULT CPlayerLamp::Ready_Components()
 		return S_OK;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
+	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), _wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

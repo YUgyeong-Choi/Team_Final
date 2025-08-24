@@ -362,6 +362,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_tCBuffer.vRotationAxis = pDesc->vRotationAxis;
 	m_tCBuffer.isTileLoop = pDesc->isTileLoop ? 1 : 0;
 	m_tCBuffer.vTileCnt = pDesc->vTileCnt; // m_iTileX, YÀÎµ¥..
+	m_tCBuffer.fTileTickPerSec = pDesc->fTileTickPerSec;
 
 #pragma region INSTANCEBUFFER
 	/* [ CS ] */

@@ -516,6 +516,9 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
     else
         VIBufferDesc.vTileCnt.y = 1.f;
 
+    if (j.contains("TileTickPerSec"))
+        VIBufferDesc.fTileTickPerSec = j["TileTickPerSec"].get<_float>();
+
     VIBufferDesc.isTool = false;
 
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,

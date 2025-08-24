@@ -29,6 +29,8 @@ private:
 	HRESULT SequenceWindow();
 	HRESULT Edit_Preferences();
 
+	void Change_SelectedItem(class CEffectBase* pEffect);
+
 	HRESULT Window_Sprite();
 	HRESULT Window_Particle();
 	HRESULT Window_Mesh();
@@ -85,16 +87,16 @@ private:
 
 	_bool						m_bUpdateRuntimeMode = { false };
 
-	_uint						m_iRenderGroup = ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB);
+	//_uint						m_iRenderGroup = ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB);
 
 #pragma endregion
 
 
 #pragma region BaseEffect
 	// 공통 이펙트 용 변수들
-	_int						m_iSelectedInterpolationType = { 0 };
+	//_int						m_iSelectedInterpolationType = { 0 };
 	const _char*				m_InterpolationTypes[5] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
-	_bool						m_bAnimateSprite = { false };
+	//_bool						m_bAnimateSprite = { false };
 
 #pragma endregion
 
