@@ -60,6 +60,7 @@ void CEffectBase::Priority_Update(_float fTimeDelta)
 void CEffectBase::Update(_float fTimeDelta)
 {
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+	m_fTileIdx += m_fTileTickPerSec * fTimeDelta;
 	m_fLifeTime += fTimeDelta;
 		//if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
 	if (m_fCurrentTrackPosition > static_cast<_float>(m_iDuration))
@@ -87,7 +88,7 @@ void CEffectBase::Update(_float fTimeDelta)
 		XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
 
 	if (m_bAnimation)
-		m_iTileIdx = static_cast<_int>(m_fCurrentTrackPosition);
+		m_iTileIdx = static_cast<_int>(m_fTileIdx);
 	else
 		m_iTileIdx = 0;
 
@@ -190,6 +191,7 @@ HRESULT CEffectBase::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissiveIntensity, sizeof(_float))))
 		return E_FAIL;
+
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
@@ -487,6 +489,7 @@ json CEffectBase::Serialize()
 	j["TileX"] = m_iTileX;
 	j["TileY"] = m_iTileY;
 	j["FlipUV"] = m_bFlipUV;
+	j["TileTickPerSec"] = m_fTileTickPerSec;
 
 	return j;
 }
@@ -576,6 +579,9 @@ void CEffectBase::Deserialize(const json& j)
 
 	if (j.contains("FlipUV"))
 		m_bFlipUV = j["FlipUV"].get<_bool>();
+
+	if (j.contains("TileTickPerSec"))
+		m_fTileTickPerSec = j["TileTickPerSec"].get<_float>();
 }
 
 json CEffectBase::tagEffectKeyFrame::Serialize()

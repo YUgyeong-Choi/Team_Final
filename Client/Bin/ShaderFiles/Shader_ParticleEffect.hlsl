@@ -2,6 +2,7 @@
 
 vector g_vCamPosition;
 bool g_bLocal;
+float g_fStretchFactor = 0.0015f;
 
 struct ParticleParam
 {
@@ -24,6 +25,10 @@ struct ParticleParam
     float   fAccel; // 가속도 (+면 가속, -면 감속)
     float   fMaxSpeed; // 최대 속도 (옵션)
     float   fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
+    
+    float   fTileIdx;
+    float2  vTileOffset;
+    float   _pad0;
 };
 
 StructuredBuffer<ParticleParam> Particle_SRV : register(t0);
@@ -37,6 +42,7 @@ struct VS_OUT
     float2 vLifeTime : TEXCOORD0;
     float fSpeed : TEXCOORD1;
     float4 vDir : TEXCOORD2;
+    float2 vTileOffset : TEXCOORD3;
 };
 
 VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
@@ -47,7 +53,7 @@ VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
     
     ParticleParam particle = Particle_SRV[instanceID];
     
-    if (particle.bFirstLoopDiscard)
+    if (particle.bFirstLoopDiscard == 1)
     {
         Out.vLifeTime.y = -1.f;
         return Out;
@@ -73,7 +79,8 @@ VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
     Out.vLifeTime = particle.LifeTime;
     Out.fSpeed = particle.Speed;
     Out.vDir = float4(normalize(particle.VelocityDir.xyz), particle.VelocityDir.w);
-    
+    Out.vTileOffset = particle.vTileOffset;
+
     return Out;
 }
 
@@ -89,6 +96,7 @@ struct GS_IN
     float2 vLifeTime : TEXCOORD0;
     float fSpeed : TEXCOORD1;
     float4 vDir : TEXCOORD2;
+    float2 vTileOffset : TEXCOORD3;
 };
 
 struct GS_OUT
@@ -97,6 +105,7 @@ struct GS_OUT
     float2 vTexcoord : TEXCOORD0;
     float2 vLifeTime : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+    float2 vTileOffset : TEXCOORD3;
 };
 
 [maxvertexcount(6)]
@@ -122,21 +131,25 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Out[0].vTexcoord = float2(0.f, 0.f);
     Out[0].vLifeTime = In[0].vLifeTime;
     Out[0].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    Out[0].vTileOffset = In[0].vTileOffset;
         
     Out[1].vPosition = mul(float4(In[0].vPosition.xyz - vRight + vUp, 1.f), matVP);
     Out[1].vTexcoord = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
     Out[1].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    Out[1].vTileOffset = In[0].vTileOffset;
     
     Out[2].vPosition = mul(float4(In[0].vPosition.xyz - vRight - vUp, 1.f), matVP);
     Out[2].vTexcoord = float2(1.f, 1.f);
     Out[2].vLifeTime = In[0].vLifeTime;
     Out[2].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    Out[2].vTileOffset = In[0].vTileOffset;
     
     Out[3].vPosition = mul(float4(In[0].vPosition.xyz + vRight - vUp, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
     Out[3].vLifeTime = In[0].vLifeTime;
     Out[3].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    Out[3].vTileOffset = In[0].vTileOffset;
     
     Triangles.Append(Out[0]);
     Triangles.Append(Out[1]);
@@ -180,21 +193,25 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Out[0].vTexcoord = float2(0.f, 0.f);
     Out[0].vLifeTime = In[0].vLifeTime;
     Out[0].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    Out[0].vTileOffset = In[0].vTileOffset;
   
     Out[1].vPosition = mul(float4(In[0].vPosition.xyz - vRight + upStretch, 1.f), matVP);
     Out[1].vTexcoord = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
     Out[1].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    Out[1].vTileOffset = In[0].vTileOffset;
   
     Out[2].vPosition = mul(float4(In[0].vPosition.xyz - vRight - upStretch, 1.f), matVP);
     Out[2].vTexcoord = float2(1.f, 1.f);
     Out[2].vLifeTime = In[0].vLifeTime;
     Out[2].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    Out[2].vTileOffset = In[0].vTileOffset;
   
     Out[3].vPosition = mul(float4(In[0].vPosition.xyz + vRight - upStretch, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
     Out[3].vLifeTime = In[0].vLifeTime;
     Out[3].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
+    Out[3].vTileOffset = In[0].vTileOffset;
   
     Triangles.Append(Out[0]);
     Triangles.Append(Out[1]);
@@ -213,6 +230,7 @@ struct PS_IN
     float2 vTexcoord : TEXCOORD0;
     float2 vLifeTime : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
+    float2 vTileOffset : TEXCOORD3;
 };
 
 struct PS_OUT
@@ -225,7 +243,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize,In.vTileOffset));
     
     if (Out.vColor.a < 0.003f)
         discard;
@@ -244,7 +262,7 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
 {
     PS_OUT Out;
     
-    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset)).r;
     if (mask < 0.003f)
         discard;
     float4 color;
@@ -277,7 +295,7 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     PS_OUT_WB Out;
         
     
-    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset)).r;
     if (mask < 0.003f)
         discard;
     float4 vPreColor;
@@ -379,6 +397,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN_VSTRETCH();
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WBGLOW();
+    }
+    pass Diffuse_ // 4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN_CS();
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN();
     }
  
 }

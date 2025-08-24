@@ -22,6 +22,9 @@ public:
 		_float3			vCenter;
 		_float3			vOrbitAxis = {};			// 공전용, xyz 축 w 속도
 		_float3			vRotationAxis = {};       // 자전용, xyz 축 w 속도
+		_bool			isTileLoop = { false };
+		_float2			vTileCnt = { 1.f,1.f };
+		_float			fTileTickPerSec = { 60.f };
 
 		/* --- Particle Parameters --- */
 		_float2			vLifeTime;
@@ -57,9 +60,18 @@ public:
 
 	void Set_Loop(_bool isLoop) { m_tCBuffer.bIsLoop = isLoop; }
 	void Set_Center(const _float3& vCenter) { m_tCBuffer.vCenter = vCenter; }
+	void Set_Center(const _float4x4& matWorld) { XMStoreFloat3(&m_tCBuffer.vCenter, XMVector3TransformCoord(XMLoadFloat3(&m_tCBuffer.vCenter), XMLoadFloat4x4(&matWorld))); }
 	void Set_SocketRotation(const _float4& vRot) { m_tCBuffer.vSocketRot = vRot; }
 	void Set_CombinedMatrix(const _float4x4& matCombined) { m_bFirst = true; m_tCBuffer.g_CombinedMatrix = matCombined; }
 	void Set_First(_bool bFirst) { m_bFirst = bFirst; }
+
+#ifdef USE_IMGUI
+	void Set_CBuffer(const PARTICLECBUFFER& tCBuffer) { m_tCBuffer = tCBuffer; }
+	const PARTICLECBUFFER& Get_CBuffer() { return m_tCBuffer; }
+#endif
+
+private:
+	HRESULT Make_InstanceBuffer(const DESC* pDesc);
 
 private:	
 	/* PARTICLECBUFFER 구조체로 통합됨 !! */
@@ -88,10 +100,6 @@ private:
 		PFADE_OUT = 1 << 1,
 		PFADE_DEFAULT = 1 << 2
 	};
-
-protected:
-	HRESULT Make_InstanceBuffer(const DESC* pDesc);
-
 
 public:
 	static CVIBuffer_Point_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const DESC* pDesc);

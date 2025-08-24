@@ -72,7 +72,7 @@ protected: /* [ 필요 자원 ] */
     }
     _bool   IsLegionArmEnergyEnough(_float fLegionArmEnergy)
     {
-        if (m_pOwner->m_fLegionArmEnergy >= fLegionArmEnergy)
+        if (m_pOwner->m_pLegionArm->Get_fLegionEnergy() >= fLegionArmEnergy)
             return true;
 
         return false;
@@ -296,6 +296,9 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
 			return EPlayerState::CHARGEA;
         
+        //if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        //    return EPlayerState::FATAL;
+
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
 			return EPlayerState::WEAKATTACKA;
 
@@ -426,6 +429,9 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
             return EPlayerState::CHARGEA;
 
+        //if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        //    return EPlayerState::FATAL;
+
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
             return EPlayerState::WEAKATTACKA;
 
@@ -555,6 +561,9 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
             return EPlayerState::CHARGEA;
 
+        //if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        //    return EPlayerState::FATAL;
+
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
             return EPlayerState::WEAKATTACKA;
 
@@ -680,6 +689,7 @@ public:
 				m_bGrinderEnd = false;
                 m_fGrinderTime = 0.f;
                 m_pOwner->m_pAnimator->SetBool("Grinding", true);
+                m_pOwner->m_pSelectItem->Activate(true);
             }
 
             if (KEY_UP(DIK_R))
@@ -830,7 +840,6 @@ public:
         m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetTrigger("Dash");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
-        m_pOwner->m_bIsInvincible = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -854,9 +863,6 @@ public:
                 m_pOwner->m_pAnimator->SetTrigger("Dash");
             }
         }
-
-        if (0.2f < m_fStateTime)
-            m_pOwner->m_bIsInvincible = false;
     }
 
     virtual void Exit() override
@@ -920,7 +926,6 @@ public:
 
         // 구르기는 무브 ON 입니다.
         m_pOwner->m_pAnimator->SetTrigger("Dash");
-        m_pOwner->m_bIsInvincible = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -935,9 +940,6 @@ public:
             m_fStateTime = 0.f;
             m_pOwner->m_pAnimator->SetTrigger("Dash");
         }
-
-        if (0.2f < m_fStateTime)
-            m_pOwner->m_bIsInvincible = false;
 
         LockOnMovement();
     }
@@ -1950,6 +1952,8 @@ public:
                 {
                     printf(" 너 가드성공했어. \n");
                     m_pOwner->m_bGardDamege = true;
+                    
+                    m_pOwner->m_pWeapon->Calc_Durability(3);
 
                     /* [ 이펙트를 생성한다. ] */
                     _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
@@ -2802,6 +2806,80 @@ private:
 	_bool m_bAttackA = false;
 	_bool m_bAttackB = false;
 };
+/* [ 이 클래스는 페이탈 상태입니다. ] */
+class CPlayer_Fatal final : public CPlayerState
+{
+public:
+    CPlayer_Fatal(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_Fatal() = default;
+
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 애니메이션 설정 ] */
+        m_pOwner->m_pAnimator->SetTrigger("Fatal");
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+
+    }
+
+    virtual void Exit() override
+    {
+        m_fStateTime = 0.f;
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+
+        //1. 스킬의 진행도에 따라 탈출 조건이 달라진다.
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (4.f < m_fStateTime)
+        {
+            if (input.bMove)
+            {
+                if (m_pOwner->m_bWalk)
+                {
+                    return EPlayerState::WALK;
+                }
+                else
+                {
+                    return EPlayerState::RUN;
+                }
+            }
+            return EPlayerState::IDLE;
+        }
+        return EPlayerState::FATAL;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"FATAL";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "FatalAttack"
+    };
+
+};
 
 /* [ 이 클래스는 피격 상태입니다. ] */
 class CPlayer_Hited final : public CPlayerState
@@ -3069,7 +3147,6 @@ private:
 private:
     _float m_fRrevivalTime = {};
 };
-
 
 
 NS_END

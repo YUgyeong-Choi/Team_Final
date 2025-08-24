@@ -45,10 +45,12 @@ private:
 	CUI_Container* m_pBackgrounds = { nullptr };
 	CUI_Container* m_pButton_Select = { nullptr };
 	CUI_Container* m_pText = { nullptr };
+	CUI_Container* m_pSelectEffect = { nullptr };
 
 	CGameObject* m_pTarget = { nullptr };
 
 	_bool		m_isSelectWeapon = { false };
+	_int		m_iSelectIndex = {};
 	
 
 

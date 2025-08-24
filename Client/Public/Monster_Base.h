@@ -56,7 +56,9 @@ public: /* [ Setup 함수 ] */
 	HRESULT Ready_Actor(void* pArg);
 	HRESULT Ready_PartObject();
 	//HRESULT Ready_Weapon(); 무기는 필요한 애들만 만들기
-	
+
+
+	_bool Get_IsGroggyLoop() { return m_isGroogyLoop; }
 	
 	void	RootMotionActive(_float fTimeDelta);
 
@@ -81,6 +83,10 @@ public: /* [ Setup 함수 ] */
 
 	void Push_Other(_vector vHitPos, _vector vNormal);
 
+	virtual void Start_Fatal_Reaction() {};
+
+
+	
 protected:
 
 
@@ -115,6 +121,11 @@ protected:
 	_int			m_iCollisionCount = {};
 
 	_bool			m_bOffCollider = {};
+	_bool			m_isCollisionPlayer = {};
+
+	_bool			m_isFatal = {};
+
+	_bool			m_isGroogyLoop = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */

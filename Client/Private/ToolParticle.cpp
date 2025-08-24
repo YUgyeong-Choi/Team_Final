@@ -42,7 +42,9 @@ HRESULT CToolParticle::Initialize(void* pArg)
 		m_tDesc.vRange = pDesc->vRange;
 		m_tDesc.vSize = pDesc->vSize;
 		m_tDesc.vSpeed = pDesc->vSpeed;
-
+		m_tDesc.isTileLoop = false;
+		m_tDesc.vTileCnt = _float2(static_cast<_float>(pDesc->iTileX), static_cast<_float>(pDesc->iTileY));
+		m_tDesc.fTileTickPerSec = m_fTileTickPerSec;
 		m_iShaderPass = pDesc->iShaderPass;
 		m_fMaxLifeTime = pDesc->vLifeTime.y;
 		m_bTool = pDesc->bTool;
@@ -76,7 +78,11 @@ void CToolParticle::Priority_Update(_float fTimeDelta)
 void CToolParticle::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-	return ;
+
+
+
+	//m_pVIBufferCom->Update(fTimeDelta);
+	return;
 }
 
 void CToolParticle::Late_Update(_float fTimeDelta)
@@ -99,7 +105,7 @@ HRESULT CToolParticle::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-	//m_iShaderPass = 2.f;
+
  	if (FAILED(m_pShaderCom->Begin(m_iShaderPass)))
 		return E_FAIL;
 
@@ -139,6 +145,23 @@ void CToolParticle::Update_Tool(_float fTimeDelta, _float fCurFrame)
 	m_fOffset.x = (m_iTileIdx % m_iTileX) * m_fTileSize.x;
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
 
+	if (m_pSocketMatrix != nullptr)
+	{
+		if (m_bFirst)
+		{
+			m_pVIBufferCom->Set_CombinedMatrix(m_pTransformCom->Get_World4x4());
+			m_bFirst = false;
+		}
+		m_pVIBufferCom->Set_Center(_float3(m_pTransformCom->Get_State(STATE::POSITION).m128_f32[0], m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1], m_pTransformCom->Get_State(STATE::POSITION).m128_f32[2]));
+		_vector rotQuat = XMQuaternionRotationMatrix(m_pTransformCom->Get_WorldMatrix());
+		_float4 vRot = {};
+		XMStoreFloat4(&vRot, rotQuat);
+		m_pVIBufferCom->Set_SocketRotation(vRot);
+	}
+	//else
+	//{
+	//	m_pVIBufferCom->Set_Center((_float3)(m_pTransformCom->Get_State(STATE::POSITION).m128_f32));
+	//}
 	//m_pVIBufferCom->Update(fTimeDelta);
 	m_pVIBufferCom->Update_Tool(m_fCurrentTrackPosition);
 }
@@ -148,28 +171,6 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 	CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
 	if (pArg == nullptr) // 툴 내에서 파싱 받아왔을 경우
 	{
-		//VIBufferDesc.ePType = m_ePType;
-		//VIBufferDesc.iNumInstance = m_iNumInstance;
-		//VIBufferDesc.isLoop = m_isLoop;
-		//VIBufferDesc.vCenter = m_tDesc.vCenter;
-		//VIBufferDesc.vLifeTime = m_tDesc.vLifeTime;
-		//VIBufferDesc.vPivot = m_tDesc.vPivot;
-		//VIBufferDesc.vRange = m_tDesc.vRange;
-		//VIBufferDesc.vSize = m_tDesc.vSize;
-		//VIBufferDesc.vSpeed = m_tDesc.vSpeed;
-		//VIBufferDesc.isTool = true;
-
-		//VIBufferDesc.bSpin = m_tDesc.bSpin;
-		//VIBufferDesc.bOrbit = m_tDesc.bOrbit;
-		//VIBufferDesc.vRotationAxis = m_tDesc.vRotationAxis;
-		//VIBufferDesc.vOrbitAxis = m_tDesc.vOrbitAxis;
-		//VIBufferDesc.vRotationSpeed = m_tDesc.vRotationSpeed;
-		//VIBufferDesc.vOrbitSpeed = m_tDesc.vOrbitSpeed;
-		//VIBufferDesc.vAccel = m_tDesc.vAccel;
-		//VIBufferDesc.fMaxSpeed = m_tDesc.fMaxSpeed;
-		//VIBufferDesc.fMinSpeed = m_tDesc.fMinSpeed;
-
-		//pArg = &VIBufferDesc;
 		m_tDesc.ePType = m_ePType;
 		m_tDesc.iNumInstance = m_iNumInstance;
 		m_tDesc.isLoop = m_isLoop;
@@ -182,29 +183,8 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 		m_ePType		= pDesc->ePType;
 		m_iNumInstance	= pDesc->iNumInstance;
 		m_isLoop		= pDesc->isLoop;
-		//m_tDesc.vCenter		= pDesc->vCenter;
-		//m_tDesc.vLifeTime		= pDesc->vLifeTime;
-		//m_tDesc.vPivot		= pDesc->vPivot;
-		//m_tDesc.vRange		= pDesc->vRange;
-		//m_tDesc.vSize			= pDesc->vSize;
-		//m_tDesc.vSpeed		= pDesc->vSpeed;
-		//m_tDesc.bGravity		= pDesc->bGravity;
-		//m_tDesc.fGravity		= pDesc->fGravity;
-		//
-		//m_tDesc.bSpin			= pDesc->bSpin;
-		//m_tDesc.bOrbit		= pDesc->bOrbit;
-		//m_tDesc.vRotationAxis = pDesc->vRotationAxis;
-		//m_tDesc.vOrbitAxis	= pDesc->vOrbitAxis;
-		//m_tDesc.vRotationSpeed= pDesc->vRotationSpeed;
-		//m_tDesc.vOrbitSpeed	= pDesc->vOrbitSpeed;
-		//m_tDesc.vAccel		= pDesc->vAccel;
-		//m_tDesc.fMaxSpeed		= pDesc->fMaxSpeed;
-		//m_tDesc.fMinSpeed		= pDesc->fMinSpeed;
-
 		m_tDesc = *pDesc;
 	}
-
-
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Replace_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_PointInstance"),
@@ -216,21 +196,6 @@ HRESULT CToolParticle::Change_InstanceBuffer(void* pArg)
 
 const CVIBuffer_Point_Instance::DESC CToolParticle::Get_InstanceBufferDesc()
 {
-	//CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-	//VIBufferDesc.ePType = m_ePType;
-	//VIBufferDesc.iNumInstance = m_iNumInstance;
-	//VIBufferDesc.isLoop = m_isLoop;
-	//VIBufferDesc.vCenter = m_vCenter;
-	//VIBufferDesc.vLifeTime = m_vLifeTime;
-	//VIBufferDesc.vPivot = m_vPivot;
-	//VIBufferDesc.vRange = m_vRange;
-	//VIBufferDesc.vSize = m_vSize;
-	//VIBufferDesc.vSpeed = m_vSpeed;
-
-	//VIBufferDesc.isTool = true;
-
-	//return VIBufferDesc;
-
 	return m_tDesc;
 }
 
@@ -260,7 +225,7 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 		VIBufferDesc.vRange = pDesc->vRange;
 		VIBufferDesc.vSize = pDesc->vSize;
 		VIBufferDesc.vCenter = pDesc->vCenter;
-
+		VIBufferDesc.fTileTickPerSec = m_fTileTickPerSec;
 
 		VIBufferDesc.isTool = true;
 		/* For.Com_VIBuffer */
@@ -301,6 +266,8 @@ HRESULT CToolParticle::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTime", &m_fTimeAcc, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissiveIntensity, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fStretchFactor", &m_fStretchFactor, sizeof(_float))))
 		return E_FAIL;
 
 	if (m_bTextureUsage[TU_DIFFUSE] == true) {
@@ -443,4 +410,12 @@ void CToolParticle::Deserialize(const json& j)
 		m_tDesc.bGravity = j["IsGravity"].get<_bool>();
 	if (j.contains("Gravity"))
 		m_tDesc.fGravity = j["Gravity"].get<_float>();
+	
+	// UV Grid
+	if (j.contains("isTileLoop"))
+		m_tDesc.isTileLoop = j["isTileLoop"].get<_bool>();
+	if (j.contains("TileX"))
+		m_tDesc.vTileCnt.x = (_float)(j["TileX"].get<_int>());
+	if (j.contains("TileY"))
+		m_tDesc.vTileCnt.y = (_float)(j["TileY"].get<_int>());
 }

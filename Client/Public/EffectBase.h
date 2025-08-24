@@ -68,7 +68,7 @@ protected:
 	_float Interpolate_Ratio(_float fRatio);
 
 	virtual HRESULT Ready_Components() PURE;
-	HRESULT Bind_ShaderResources();
+	virtual HRESULT Bind_ShaderResources();
 
 protected:
 	CShader*			m_pShaderCom = { nullptr };
@@ -80,7 +80,6 @@ protected:
 protected:
 	const _float4x4*	m_pSocketMatrix = { nullptr };
 	_float4x4			m_CombinedWorldMatrix{};
-
 
 protected:
 	// Basic Effect Preferences
@@ -114,12 +113,14 @@ protected:
 	vector<EFFKEYFRAME>	m_KeyFrames;
 
 	// UV Grid variables
-	_int				m_iTileX{1}, m_iTileY{1};
-	_int				m_iTileCnt{1};
-	_int				m_iTileIdx{0};
-	_float2				m_fTileSize{};
-	_float2				m_fOffset{};
+	_int				m_iTileX = {1}, m_iTileY = {1};
+	_int				m_iTileCnt = { 1 };
+	_int				m_iTileIdx = { 0 };
+	_float				m_fTileIdx = {};
+	_float2				m_fTileSize = {};
+	_float2				m_fOffset = {};
 	_bool				m_bFlipUV = { false };
+	_float				m_fTileTickPerSec = { 60.f };
 	
 	// Tool
 	_bool				m_bTool = { false };
@@ -133,16 +134,19 @@ public:
 	_int* Get_StartTrackPosition_Ptr() { return &m_iStartTrackPosition; }
 	_int* Get_TileX() { return &m_iTileX; }
 	_int* Get_TileY() { return &m_iTileY; }
+	_float* Get_TileTickPerSec() { return &m_fTileTickPerSec; }
 	_bool* Get_Billboard_Ptr() { return &m_bBillboard; }
 	_bool* Get_Animation_Ptr() { return &m_bAnimation; }
 	_bool* Get_FlipUV_Ptr() { return &m_bFlipUV; }
 	_float* Get_EmissiveIntensity_Ptr() { return &m_fEmissiveIntensity; }
+	_uint* Get_RenderGroup_Ptr() { return &m_iRenderGroup; }
+	_uint* Get_ShaderPass_Ptr() { return &m_iShaderPass; }
 	void Set_TileXY(_int iX, _int iY) { m_iTileX = iX; m_iTileY = iY; }
-	void Set_Billboard(_bool bBillboard) { m_bBillboard = bBillboard; }
+	//void Set_Billboard(_bool bBillboard) { m_bBillboard = bBillboard; }
 	HRESULT Change_Texture(_wstring strTextureName, TEXUSAGE eTex = TU_DIFFUSE);
 	HRESULT Delete_Texture(TEXUSAGE eTex);
-	void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
-	void Set_RenderGroup(_uint iRG) { m_iRenderGroup = iRG; }
+	//void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
+	//void Set_RenderGroup(_uint iRG) { m_iRenderGroup = iRG; }
 
 	_float* Get_Threshold() { return &m_fThreshold; }
 	_float4* Get_CenterColor() { return &m_vCenterColor; }

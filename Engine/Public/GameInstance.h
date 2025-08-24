@@ -51,7 +51,7 @@ public:
 
 #pragma region OBJECT_MANAGER
 	HRESULT Add_GameObject(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
-	HRESULT Add_GameObjectReturn(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, CGameObject** ppOut, void* pArg);
+	HRESULT Add_GameObjectReturn(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, CGameObject** ppOut, void* pArg = nullptr);
 	CComponent* Get_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentTag, _uint iIndex = 0);
 	CComponent* Get_Component(_uint iLevelIndex, const _wstring& strLayerTag, _uint iPartID, const _wstring& strComponentTag, _uint iIndex = 0);
 
@@ -189,6 +189,10 @@ public:
 	PxControllerManager* Get_ControllerManager();
 	PxPhysics* GetPhysics();
 	PxMaterial* GetMaterial(const wstring& name);
+
+	void Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther);
 #pragma endregion
 
 #pragma region SOUND_DEVICE
@@ -247,6 +251,7 @@ public:
 #pragma region AREA_MANAGER
 	_bool AddArea_AABB(_int iAreaId, const _float3& vMin, const _float3& vMax, const vector<_uint>& vecAdjacentIds, AREA::EAreaType eType, _int iPriority);
 	void GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad = 0.f) const;
+	void GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const;
 	HRESULT FinalizePartition();
 	_int FindAreaContainingPoint();
 	HRESULT Reset_Parm();

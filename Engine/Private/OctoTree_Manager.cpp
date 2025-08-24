@@ -331,7 +331,7 @@ void COctoTree_Manager::QueryVisible()
 		// 현재 영역들의 AABB를 합친다 (1차 핉터)
         AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
     }
-    AABB_Inflate(tAreaUnion, 10.f);
+    AABB_Inflate(tAreaUnion, 1.f);
 
     // 트리 탐색 시작
     m_TempNodeStack.clear();
@@ -356,7 +356,7 @@ void COctoTree_Manager::QueryVisible()
         _bool bOverlapAnyArea = false;
         for (const AABBBOX& tAreaBox : CurrentBounds)
         {
-            if (AABB_IntersectsAABB_Eps(node.AABBBounds, tAreaBox, 10.f))
+            if (AABB_IntersectsAABB_Eps(node.AABBBounds, tAreaBox, 1.f))
             {
                 bOverlapAnyArea = true;
                 break;
@@ -459,10 +459,6 @@ void COctoTree_Manager::PushNodeObjects_WithFrustum(const Node& node)
 }
 
 
-
-void COctoTree_Manager::FinalCullAndLOD()
-{
-}
 
 
 

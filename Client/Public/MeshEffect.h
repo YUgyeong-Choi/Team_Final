@@ -37,7 +37,7 @@ protected:
 
 protected:
 	virtual HRESULT Ready_Components() override;
-	HRESULT Bind_ShaderResources();
+	virtual HRESULT Bind_ShaderResources() override;
 
 public:
 	static CMeshEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

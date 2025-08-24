@@ -45,6 +45,7 @@ public:
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
+	virtual void On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 
 public:

@@ -49,6 +49,7 @@ public:
 
 	virtual void Block_Reaction();
 
+	virtual void Start_Fatal_Reaction();
 
 private:
 	HRESULT Ready_Weapon(); 
@@ -60,6 +61,7 @@ private:
 
 	
 	_float m_fDuration = {};
+	
 	
 
 	//int m_iShapeTestState = 0; // 0: Box, 1: Sphere, 2: Capsule

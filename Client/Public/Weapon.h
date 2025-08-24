@@ -81,9 +81,9 @@ public: /* [ 활성화 , 비활성화 ] */
 
 	void Clear_CollisionObj() { m_CollisonObjects.clear(); }
 
-	void Calc_Durability(_float fDelta);
+	virtual void Calc_Durability(_float fDelta) {};
 
-	_bool Find_CollisonObj(CGameObject* pObj);
+	_bool Find_CollisonObj(CGameObject* pObj, COLLIDERTYPE eColliderType);
 	void Add_CollisonObj(CGameObject* pObj);
 
 	// 트레일 이펙트 온 오프

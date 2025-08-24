@@ -43,7 +43,7 @@ private:
 private:
 	_float m_fDurablity = {};
 	_float m_fMaxDurablity = {};
-	_float m_fRatio = { 1.f };
+	_float m_fRatio = {};
 
 public:
 	static CDurability_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

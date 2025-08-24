@@ -26,6 +26,7 @@ private:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 
 	virtual HRESULT Ready_Components() override;
+	virtual HRESULT Ready_Effect() override;
 private:
 	_float m_fDamge = 10.f;
 public:

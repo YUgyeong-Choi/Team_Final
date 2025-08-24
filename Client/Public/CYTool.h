@@ -29,6 +29,8 @@ private:
 	HRESULT SequenceWindow();
 	HRESULT Edit_Preferences();
 
+	void Change_SelectedItem(class CEffectBase* pEffect);
+
 	HRESULT Window_Sprite();
 	HRESULT Window_Particle();
 	HRESULT Window_Mesh();
@@ -85,16 +87,16 @@ private:
 
 	_bool						m_bUpdateRuntimeMode = { false };
 
-	_uint						m_iRenderGroup = ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB);
+	//_uint						m_iRenderGroup = ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB);
 
 #pragma endregion
 
 
 #pragma region BaseEffect
 	// 공통 이펙트 용 변수들
-	_int						m_iSelectedInterpolationType = { 0 };
+	//_int						m_iSelectedInterpolationType = { 0 };
 	const _char*				m_InterpolationTypes[5] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
-	_bool						m_bAnimateSprite = { false };
+	//_bool						m_bAnimateSprite = { false };
 
 #pragma endregion
 
@@ -117,25 +119,28 @@ private:
 	_bool					m_isParticlePreview = { false };
 	PARTICLETYPE			m_eParticleType = PTYPE_SPREAD;
 
-	_float3					m_vPivot = { 0.f, 0.f, 0.f };
 	_float2					m_vLifeTime = { 2.f, 4.f };
 	_float2					m_vSpeed = { 5.f, 10.f };
-	_bool					m_isLoop = { true };
 	_int					m_iNumInstance = { 100 };
 	_float3					m_vRange = { 5.f, 1.f, 5.f };
 	_float2					m_vSize = { 1.f, 2.f };
-	_float3					m_vCenter = { 0.f, 0.f, 0.f };
-	_bool					m_bGravity = { false };
-	_float					m_fGravity = { 9.8f };
-	_bool					m_bOrbit = { false };
-	_bool					m_bSpin = { false };
-	_float3					m_vRotationAxis = {}; // 자전용, xyz 축 w 속도
-	_float3					m_vOrbitAxis = {};	// 공전용, xyz 축 w 속도
 	_float2					m_vRotationSpeed = {}; // 자전 속도
 	_float2					m_vOrbitSpeed = {}; // 공전 속도
 
 	_float2					m_vAccel = {};        // 가속도 (+면 가속, -면 감속)
 	_float2					m_vMin_MaxSpeed = { 0.f, 1000.f };	
+
+	_bool					m_bIsTool;
+	_bool					m_bIsLoop;
+	_bool					m_bUseGravity;
+	_bool					m_bUseSpin;
+	_bool					m_bUseOrbit;
+	_bool					m_bIsTileLoop = { false };
+
+	PARTICLECBUFFER			m_tPCB = {};
+
+
+	_float					m_fStretchFactor = { 0.015f };
 
 	class CToolParticle*	m_pToolParticle = { nullptr };
 

@@ -99,11 +99,11 @@ HRESULT CActionType_Icon::Render()
 		if (!m_isSelect)
 		{
 			vColor = { 0.7f,0.7f,0.7f,0.7f };
-			m_pGameInstance->Draw_Font_Centered(TEXT("Font_Medium"), m_strCaption.c_str(), { m_fX ,m_fY + m_fSizeY * 0.4f }, vColor, 0.f, { 0.f,0.f }, 0.8f);
+			m_pGameInstance->Draw_Font_Centered(TEXT("Font_Medium"), m_strCaption.c_str(), { m_fX ,m_fY + m_fSizeY * 0.4f }, vColor, 0.f, { 0.f,0.f }, 0.65f);
 		}
 		else
 		{
-			m_pGameInstance->Draw_Font_Centered(TEXT("Font_Bold"), m_strCaption.c_str(), { m_fX ,m_fY + m_fSizeY * 0.4f }, vColor, 0.f, { 0.f,0.f }, 0.8f);
+			m_pGameInstance->Draw_Font_Centered(TEXT("Font_Bold"), m_strCaption.c_str(), { m_fX ,m_fY + m_fSizeY * 0.4f }, vColor, 0.f, { 0.f,0.f }, 0.65f);
 		}
 			
 

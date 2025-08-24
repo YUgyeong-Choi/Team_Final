@@ -51,6 +51,9 @@ HRESULT CDurability_Bar::Initialize(void* pArg)
 
             if(m_fDurablity >= m_fMaxDurablity)
                 m_fDurablity = m_fMaxDurablity;
+
+            if (m_fDurablity <= 0.f)
+                m_fDurablity = 0.f;
         }
 
         m_fRatio = (m_fDurablity) / m_fMaxDurablity;

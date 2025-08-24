@@ -209,6 +209,12 @@ namespace Engine
 		_float3 vMax;
 	};
 
+	struct ENGINE_DLL NavigationEdge
+	{
+		_vector		vDir;
+		_vector		vNormal;
+	};
+
 	inline XMFLOAT3 AABB_Center(const AABBBOX& b)
 	{
 		return XMFLOAT3(
@@ -369,6 +375,10 @@ namespace Engine
 
 		return vCorner;
 	}
+	inline _vector ProjectToXZ(_fvector vIn)
+	{
+		return XMVectorSet(XMVectorGetX(vIn), 0.f, XMVectorGetZ(vIn), XMVectorGetW(vIn));
+	}
 
 	typedef struct ENGINE_DLL Area
 	{
@@ -474,20 +484,6 @@ namespace Engine
 		PxVec3 vHitPos = {};
 	}DEBUGRAY_DATA;
 
-
-	//typedef struct tagParticleDesc {
-	//	_float4		vDirection = {};
-
-	//	_float		fSpeed = {};
-	//	_float		fRotationSpeed = {}; // 자전 속도
-	//	_float		fOrbitSpeed = {}; // 공전 속도
-	//	_float		fAccel;        // 가속도 (+면 가속, -면 감속)
-
-	//	_float		fMaxSpeed;     // 최대 속도 (옵션)
-	//	_float		fMinSpeed;     // 최소 속도 (옵션, 감속 시 멈춤 방지)
-	//	_float2		_pad0;
-	//}PARTICLEDESC;
-
 	/* PARTICLEDESC + VTXPOSINSTANCE */
 	typedef struct tagParticleParamDesc{
 		_float4		vRight;
@@ -510,6 +506,9 @@ namespace Engine
 		_float		fMaxSpeed;     // 최대 속도 (옵션)
 		_float		fMinSpeed;     // 최소 속도 (옵션, 감속 시 멈춤 방지)
 
+		_float		fTileIdx = {};
+		_float2		vTileOffset = {};
+		_float		_pad0;
 	}PPDESC;
 	/* [ 이 구조체를 수정하면 ParticleVS와 CS hlsl 내부 구조체도 반드시 수정하시오 !! ] */
 
@@ -525,20 +524,25 @@ namespace Engine
 		_uint		bUseSpin;
 
 		_uint		bUseOrbit;
-		_float		fGravity;        // e.g. 9.8
-		_float2		_pad0;
-
-		_float3		vPivot;          // vPivot
 		_uint		isFirst;
+		_uint		isTileLoop = { 0 };
+		_float		fGravity;        // e.g. 9.8
 
-		_float3		vCenter;         // vCenter
+		_float2		vTileCnt = { 1.f,1.f };
+		_float		fTileTickPerSec = { 30.f };
 		_float		_pad2;
 
-		_float3		vOrbitAxis;      // normalized
+		_float3		vPivot;          // vPivot
 		_float		_pad3;
 
-		_float3		vRotationAxis;   // normalized
+		_float3		vCenter;         // vCenter
 		_float		_pad4;
+
+		_float3		vOrbitAxis;      // normalized
+		_float		_pad5;
+
+		_float3		vRotationAxis;   // normalized
+		_float		_pad6;
 
 		_float4		vSocketRot;
 

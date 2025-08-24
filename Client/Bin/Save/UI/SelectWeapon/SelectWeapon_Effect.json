@@ -1,0 +1,79 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 365.0,
+                "SizeY": 585.0,
+                "Texturetag": "Prototype_Component_Texture_Menu_Select",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.019999999552965164,
+                "fX": 800.0,
+                "fY": 405.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_UV",
+                        "OffsetUV": {
+                            "U": 0.25,
+                            "V": 0.25
+                        },
+                        "StartUV": {
+                            "U": 0.0,
+                            "V": 0.0
+                        },
+                        "iEndFrame": 16,
+                        "iStartFrame": 0,
+                        "isLoop": true
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 40.0,
+                "SizeY": 45.0,
+                "Texturetag": "Prototype_Component_Texture_Button_Select",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.004999999888241291,
+                "fX": 681.5999755859375,
+                "fY": 612.0,
+                "iPassIndex": 2,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

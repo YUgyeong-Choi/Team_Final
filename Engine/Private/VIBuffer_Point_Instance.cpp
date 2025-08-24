@@ -149,9 +149,8 @@ void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 	//default:
 	//	break;
 	//}
-	m_tCBuffer.fTrackTime = fCurTrackPos / 60.f;
+	m_tCBuffer.fTrackTime = fCurTrackPos;
 	m_tCBuffer.bIsTool = true;
-
 	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
 
 }
@@ -354,6 +353,9 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_tCBuffer.vCenter = pDesc->vCenter;
 	m_tCBuffer.vOrbitAxis = pDesc->vOrbitAxis;
 	m_tCBuffer.vRotationAxis = pDesc->vRotationAxis;
+	m_tCBuffer.isTileLoop = pDesc->isTileLoop ? 1 : 0;
+	m_tCBuffer.vTileCnt = pDesc->vTileCnt; // m_iTileX, YÀÎµ¥..
+	m_tCBuffer.fTileTickPerSec = pDesc->fTileTickPerSec;
 
 #pragma region INSTANCEBUFFER
 	/* [ CS ] */
@@ -364,7 +366,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
-		m_pParticleParamDesc[i].bFirstLoopDiscard = m_tCBuffer.bIsLoop ? 1 : 0;
+		m_pParticleParamDesc[i].bFirstLoopDiscard = m_tCBuffer.bIsLoop;
 		m_pParticleParamDesc[i].fMaxSpeed = pDesc->fMaxSpeed;
 		m_pParticleParamDesc[i].fMinSpeed = pDesc->fMinSpeed;
 		m_pParticleParamDesc[i].fSpeed = m_pGameInstance->Compute_Random(pDesc->vSpeed.x, pDesc->vSpeed.y);
@@ -416,13 +418,12 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 			break;
 		case Engine::PTYPE_ALLRANDOM:
 		{
-			vDir = XMVector3Normalize(
+			vDir = XMVectorSetW(XMVector3Normalize(
 				XMVectorSet(
 					m_pGameInstance->Compute_Random(-1.f, 1.f),
 					m_pGameInstance->Compute_Random(-1.f, 1.f),
 					m_pGameInstance->Compute_Random(-1.f, 1.f),
-					0.f)
-			);
+					0.f)), 0.f);
 		}
 			break;
 		default:

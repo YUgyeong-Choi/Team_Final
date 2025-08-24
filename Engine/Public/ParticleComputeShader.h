@@ -7,9 +7,6 @@ class CParticleComputeShader : public CComputeShader
 public:
 	typedef struct tagParticleCSDesc {
 		_uint						iNumInstance = {};
-		//PARTICLEDESC*				pParticleDesc = { nullptr };
-		//D3D11_BUFFER_DESC*			pParticleBufferDesc;
-		//VTXPOS_PARTICLE_INSTANCE*	pVertexInstances = { nullptr };
 		PPDESC* pParticleParamDesc = { nullptr };
 	}DESC;
 
@@ -42,6 +39,10 @@ private:
 	ID3D11Buffer*				m_pCBuffer = { nullptr };
 	PARTICLECBUFFER				m_tParticleCBuffer = {};
 
+#pragma region StagingBuffer DEBUG
+	// 디버그 용 스테이징 버퍼
+	ID3D11Buffer*				m_pStaging = { nullptr };
+#pragma endregion
 private:
 	_uint						m_iNumInstance = {};
 

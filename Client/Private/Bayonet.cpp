@@ -54,7 +54,7 @@ HRESULT CBayonet::Initialize(void* pArg)
 	m_eSkillDesc[1].iCountCombo = 0;
 	m_eSkillDesc[1].isCombo = false;
 
-	//m_iDurability = m_iMaxDurability;
+	m_fDurability = m_fMaxDurability;
 
 
 
@@ -74,7 +74,9 @@ HRESULT CBayonet::Initialize(void* pArg)
 				m_fDurability = m_fMaxDurability;
 				// 빛나는 효과 잠깐 추가...
 			}
-				
+			
+			if (m_fDurability <= 0)
+				m_fDurability = 0;
 		}
 
 		});
@@ -180,6 +182,13 @@ void CBayonet::SetisAttack(_bool isAttack)
 	{
 		m_pPhysXActorCom->Init_SimulationFilterData();
 	}
+}
+
+void CBayonet::Calc_Durability(_float fDelta)
+{
+	_float fTemp = -1.f * fDelta;
+
+	m_pGameInstance->Notify(L"Weapon_Status", L"AddDurablity", &fTemp);
 }
 
 

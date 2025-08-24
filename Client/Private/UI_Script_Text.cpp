@@ -55,8 +55,8 @@ void CUI_Script_Text::Update_Script(const string strText)
 
 	_float2 vSize = m_pGameInstance->Calc_Draw_Range(L"Font_Medium", StringToWStringU8(strText).c_str());
 
-	vSize.x -= 30.f;
-	vSize.y -= 15.f;
+	vSize.x *= 0.75f;
+	vSize.y *= 0.7f;
 
 	m_PartObjects[1]->Get_TransfomCom()->Scaling(vSize.x, vSize.y);
 

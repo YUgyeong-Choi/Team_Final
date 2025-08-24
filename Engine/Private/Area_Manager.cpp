@@ -237,6 +237,29 @@ void CArea_Manager::GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fP
     }
 }
 
+void CArea_Manager::GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const
+{
+    vecOutAreaIds.clear();
+
+    // 현재 Area가 유효하지 않으면 종료
+    if (m_iCurrentAreaId < 0)
+        return;
+
+    // 현재 Area ID 추가
+    const _uint iCurrentAreaId = static_cast<_uint>(m_iCurrentAreaId);
+    vecOutAreaIds.push_back(iCurrentAreaId);
+
+    // 인접 Area ID 추가
+    auto it = m_mapAreaIdToIndex.find(m_iCurrentAreaId);
+    if (it != m_mapAreaIdToIndex.end())
+    {
+        const AREA& tCurrentArea = m_vecAreas[it->second];
+        for (const _uint iAdjacentId : tCurrentArea.vecAdjacent)
+        {
+            vecOutAreaIds.push_back(iAdjacentId);
+        }
+    }
+}
 
 
 void CArea_Manager::DebugDrawCells()

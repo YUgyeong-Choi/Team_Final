@@ -14,6 +14,7 @@ class CPlayerState;
 class CWeapon;
 class CLegionArm_Base;
 class CPlayerLamp;
+class CPlayerFrontCollider;
 
 class CPlayer : public CUnit
 {
@@ -50,7 +51,7 @@ public:
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
 		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,
-		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, PULSE, END
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, PULSE, FATAL, END
 	};
 
 protected:
@@ -67,8 +68,8 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	CPhysXController* Get_Controller() { return m_pControllerCom; }
-	EPlayerState Get_PlayerState() { return m_eCurrentState; }
+	CPhysXController*	Get_Controller() { return m_pControllerCom; }
+	EPlayerState		Get_PlayerState() { return m_eCurrentState; }
 
 	CAnimController* GetCurrentAnimContrller();
 
@@ -123,6 +124,7 @@ private: /* [ 이동로직 ] */
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Weapon();
 	HRESULT Ready_Lamp();
+	HRESULT Ready_FrontCollider();
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
@@ -148,6 +150,9 @@ private:
 	void Weapon_Collider_Active();
 	void Reset_Weapon();
 
+public:
+	CPlayerLamp* Get_PlayerLamp() { return m_pPlayerLamp; }
+
 private: /* [ 락온 함수 ] */
 	void LockOnState(_float fTimeDelta);
 
@@ -164,6 +169,10 @@ private: /* [ 슬룻 함수 ] */
 
 private: /* [ 이펙트 관리 함수 ]*/
 	void Set_GrinderEffect_Active(_bool bActive);
+
+public:
+	void SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
+	_bool GetbIsBackAttack() const { return m_bIsBackAttack; }
 
 private: /* [ 상태패턴 ] */
 	void ReadyForState();
@@ -189,10 +198,17 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_ArmAttackB;
 	friend class CPlayer_ArmCharge;
 	friend class CPlayer_MainSkill;
+	friend class CPlayer_Fatal;
 	friend class CPlayer_ArmFail;
 	friend class CPlayer_Hited;
 	friend class CPlayer_Dead;
 
+public:
+	void SetHitMotion(HITMOTION eHitMotion) { m_eHitMotion = eHitMotion; }
+	HITMOTION GetHitMotion() const { return m_eHitMotion; }
+
+private: /* [ 특수 모션 ] */
+	HITMOTION m_eHitMotion = { HITMOTION::END };
 
 private: /* [ 상태 변수 ] */
 	EPlayerState  m_pPreviousState = { EPlayerState::END };
@@ -214,16 +230,18 @@ private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_At = {};
 
 private: /* [ 소유할 수 있는 객체 ] */
-	CGameObject*	m_pTarget = { nullptr };
-	CWeapon*		m_pWeapon = { nullptr };
-	CGameObject*	m_pInterectionStuff = { nullptr };
-	CPlayerLamp*	m_pPlayerLamp = { nullptr };
+	CGameObject*			m_pTarget = { nullptr };
+	CWeapon*				m_pWeapon = { nullptr };
+	CGameObject*			m_pInterectionStuff = { nullptr };
+	CPlayerLamp*			m_pPlayerLamp = { nullptr };
+	CPlayerFrontCollider*	m_pFrontCollider = { nullptr };
 
 private: /* [ 전투관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
 	_bool	m_bBackStepAttack = { false };
 	_bool 	m_bIsChange = { false };
 	_bool 	m_bLockOnSprint = { false };
+	_bool   m_bIsBackAttack = { false };
 
 	_float 	m_fChangeTime = {};
 	_float 	m_fChangeTimeElaped = {};
@@ -307,8 +325,8 @@ private: /* [ 특수키 ] */
 
 private: /* [ 리전 암 내구도 ] */
 	CLegionArm_Base* m_pLegionArm = { nullptr };
-	_float  m_fLegionArmEnergy = { 100.f };
-	_float  m_fMaxLegionArmEnergy = { 100.f };
+	//_float  m_fLegionArmEnergy = { 100.f };
+	//_float  m_fMaxLegionArmEnergy = { 100.f };
 
 private: /* [ 현재 상태 ] */
 	_bool	m_bIsGuarding = { false };

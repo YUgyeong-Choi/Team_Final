@@ -1,5 +1,6 @@
 #include "Legion_Bar.h"
 #include "GameInstance.h"
+#include "Observer_Weapon.h"
 
 CLegion_Bar::CLegion_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CDynamic_UI{pDevice, pContext}
@@ -24,6 +25,41 @@ HRESULT CLegion_Bar::Initialize(void* pArg)
     m_strProtoTag = TEXT("Prototype_GameObject_UI_Durability_Bar");
 
     // 콜백을 등록
+
+    if (nullptr == m_pGameInstance->Find_Observer(TEXT("Weapon_Status")))
+    {
+
+        m_pGameInstance->Add_Observer(TEXT("Weapon_Status"), new CObserver_Weapon);
+
+    }
+
+    m_pGameInstance->Register_PushCallback(TEXT("Weapon_Status"), [this](const _wstring& eventType, void* data) {
+        if (L"Legion" == eventType)
+        {
+            m_fLegion = *static_cast<_float*>(data);
+
+
+        }
+        else if (L"MaxLegion" == eventType)
+        {
+            m_fMaxLegion = *static_cast<_float*>(data);
+
+            //m_iDurablity = m_iMaxDurablity;
+        }
+        else if (L"AddLegion" == eventType)
+        {
+            m_fLegion += *static_cast<_float*>(data);
+
+            if (m_fLegion >= m_fMaxLegion)
+                m_fLegion = m_fMaxLegion;
+
+            if (m_fLegion <= 0.f)
+                m_fLegion = 0.f;
+        }
+
+        m_fRatio = (m_fLegion) / m_fMaxLegion;
+
+        });
 
     Ready_Component(m_strTextureTag);
 

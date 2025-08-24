@@ -53,6 +53,7 @@
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "DoorMesh.h"
+#include "TriggerItemLamp.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -61,6 +62,7 @@
 #include "Player.h"
 #include "Bayonet.h"
 #include "PlayerLamp.h"
+#include "PlayerFrontCollider.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -103,6 +105,7 @@
 #include "Oil.h"
 #include "Fuoco.h"
 #include "FireBall.h"
+#include "FlameField.h"
 #include "TestAnimObject.h"
 #pragma endregion
 
@@ -492,6 +495,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_PlayerLamp"),
 		CPlayerLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_PlayerFrontCollider"),
+		CPlayerFrontCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Wego"),
 		CWego::Create(m_pDevice, m_pContext))))
@@ -508,6 +514,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Oil"),
 		COil::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FlameField"),
+		CFlameField::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -535,6 +545,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CUI_MonsterHP_Bar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+#pragma region 트리거용
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerTalk"),
 		CTriggerTalk::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -543,6 +555,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTriggerSound::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerItemLamp"),
+		CTriggerItemLamp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 
 #pragma region YW
 	//스태틱 데칼	
@@ -612,6 +628,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 			return S_OK;
 		});
+
 
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 
@@ -744,16 +761,42 @@ HRESULT CLoader::Loading_For_DH()
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-#pragma region 맵 오브젝트
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
-		CStaticMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+//#pragma region 맵 오브젝트
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
+//		CStaticMesh::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+//		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//
+//	//스태틱 데칼	
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
+//		CStatic_Decal::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//
+//	//네비게이션 컴포넌트 작동시켜주는 녀석
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Nav"),
+//		CNav::Create(m_pDevice, m_pContext))))
+//		return E_FAIL;
+//
+//#pragma endregion
+//
+//#pragma region 맵 로드
+//	string Map = "STATION"; //STATION, TEST
+//
+//	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
+//	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+//		return E_FAIL;
+//
+//	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+//	//제이슨으로 저장된 맵을 로드한다.
+//	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+//		return E_FAIL;
+//#pragma endregion
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	//스태틱 데칼	
+#pragma region YW
+//스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -763,19 +806,50 @@ HRESULT CLoader::Loading_For_DH()
 		CNav::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-#pragma endregion
-
-#pragma region 맵 로드
-	string Map = "STATION"; //STATION, TEST
-
-	lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
+		CStaticMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh_Instance"),
+		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma region 맵 로딩
+
+	m_pGameInstance->ClaerOctoTreeObjects();
+
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
+	auto futureStation = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "STATION")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "STATION")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
+	auto futureHotel = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "HOTEL")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "HOTEL")))
+				return E_FAIL;
+
+			return S_OK;
+		});
 
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-	//제이슨으로 저장된 맵을 로드한다.
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), Map.c_str())))
+
+	if (FAILED(futureStation.get()))
 		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료..."));
+
+	if (FAILED(futureHotel.get()))
+		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
+
 #pragma endregion
 
 
@@ -821,6 +895,7 @@ HRESULT CLoader::Loading_For_JW()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireBall"),
 		CFireBall::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JW), TEXT("Prototype_Component_Model_Train"),
@@ -1799,6 +1874,11 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Flow.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Menu_Select"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/PlayerMenu/MenuIcon_Selected.dds")))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -1856,6 +1936,10 @@ HRESULT CLoader::Loading_For_CY()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Model_PlayerLamp"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Lamp.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_VIBuffer_ToolTrail */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_ToolTrail"),
 		CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext))))
@@ -1899,6 +1983,9 @@ HRESULT CLoader::Loading_For_CY()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_PlayerWeapon"),
 		CBayonet::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_PlayerLamp"),
+		CPlayerLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

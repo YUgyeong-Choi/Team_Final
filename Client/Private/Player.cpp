@@ -21,6 +21,7 @@
 #include "Item.h"
 #include "Lamp.h"
 #include "PlayerLamp.h"
+#include "PlayerFrontCollider.h"
 
 #include "LegionArm_Base.h"
 #include "LegionArm_Steel.h"
@@ -61,6 +62,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	if (FAILED(Ready_Lamp()))
 		return E_FAIL;
+	
+	if (FAILED(Ready_FrontCollider()))
+		return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
@@ -99,6 +103,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* [ 락온 세팅 ] */
 	m_pLockOn_Manager = CLockOn_Manager::Get_Instance();
 	m_pLockOn_Manager->SetPlayer(this);
+	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.7f, 0.f, 0.f };
 
 	if (FAILED(Ready_UIParameters()))
@@ -153,6 +158,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_DOWN(DIK_4))
+	{
+		PxVec3 pos = PxVec3(119.659203f, 3.f, -28.681953f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
@@ -195,6 +207,11 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 아이템 ] */
 	Update_Slot(fTimeDelta);
+
+	/* [ 플레이어 락온 위치  ] */
+	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
+	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
+	XMStoreFloat4(&m_vLockonPos, vLockonPos);
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -228,6 +245,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
+
 }
 
 HRESULT CPlayer::Render()
@@ -249,10 +267,6 @@ CAnimController* CPlayer::GetCurrentAnimContrller()
 	return m_pAnimator->Get_CurrentAnimController();
 }
 
-inline _vector ProjectToXZ(_vector vPos)
-{
-	return XMVectorSet(XMVectorGetX(vPos), 0.f, XMVectorGetZ(vPos), 0.f);
-}
 CPlayer::EHitDir CPlayer::ComputeHitDir()
 {
 	_vector vPlayerRight = XMVector3Normalize(m_pTransformCom->Get_State(STATE::RIGHT));
@@ -433,6 +447,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bMoveReset = false;
 		m_bSetOnce = false;
 		m_bSetTwo = false;
+		m_bIsInvincible = false;
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
@@ -716,10 +731,14 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			m_bIsInvincible = true;
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
 		}
+
+		if (m_fMoveTime > 0.2f)
+			m_bIsInvincible = true;
 
 		break;
 	}
@@ -743,7 +762,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
+			m_bIsInvincible = true;
 		}
+
+		if (m_fMoveTime > 0.2f)
+			m_bIsInvincible = false;
 
 		break;
 	}
@@ -772,7 +795,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
+			m_bIsInvincible = true;
 		}
+
+		if (m_fMoveTime > 0.2f)
+			m_bIsInvincible = false;
 
 		break;
 	}
@@ -821,7 +848,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -833,7 +862,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -845,7 +875,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -866,6 +897,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::MAINSKILLC:
 	{
 		RootMotionActive(fTimeDelta);
+		break;
+	}
+	case eAnimCategory::FATAL:
+	{
+		RootMotionActive(fTimeDelta);
+		m_bIsInvincible = true;
 		break;
 	}
 	case eAnimCategory::HITED:
@@ -958,6 +995,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::ARM_FAIL;
 	if (stateName.find("Heal") == 0)
 		return eAnimCategory::PULSE;
+	if (stateName.find("FatalAttack") == 0)
+		return eAnimCategory::FATAL;
 	
 	return eAnimCategory::NONE;
 }
@@ -1071,10 +1110,7 @@ void CPlayer::Register_Events()
 
 	m_pAnimator->RegisterEventListener("UseItem", [this]()
 		{
-			if (m_pSelectItem)
-			{
-				m_pSelectItem->Use();
-			}
+			Use_Item();
 		});
 }
 
@@ -1175,7 +1211,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		if (pWeapon == nullptr)
 			return;
 
-		if (pWeapon->Find_CollisonObj(this))
+		if (pWeapon->Find_CollisonObj(this, eColliderType))
 			return;
 
 		pWeapon->Add_CollisonObj(this);
@@ -1244,7 +1280,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		if (pWeapon == nullptr)
 			return;
 
-		if (pWeapon->Find_CollisonObj(this))
+		if (pWeapon->Find_CollisonObj(this, eColliderType))
 			return;
 
 		pWeapon->Add_CollisonObj(this);
@@ -1311,6 +1347,7 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMATTACKCHARGE)] = new CPlayer_ArmCharge(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::ARMFAIL)] = new CPlayer_ArmFail(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::MAINSKILL)] = new CPlayer_MainSkill(this);
+	m_pStateArray[ENUM_CLASS(EPlayerState::FATAL)] = new CPlayer_Fatal(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::HITED)] = new CPlayer_Hited(this);
 	m_pStateArray[ENUM_CLASS(EPlayerState::DEAD)] = new CPlayer_Dead(this);
 
@@ -1360,7 +1397,7 @@ HRESULT CPlayer::Ready_Lamp()
 	/* [ 램프 모델을 추가 ] */
 
 	CPlayerLamp::PLAYERLAMP_DESC Desc{};
-	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.eMeshLevelID = static_cast<LEVEL>(m_pGameInstance->GetCurrentLevelIndex());
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };
@@ -1384,6 +1421,31 @@ HRESULT CPlayer::Ready_Lamp()
 
 	if (m_pPlayerLamp == nullptr)
 		return E_FAIL; 
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Ready_FrontCollider()
+{
+	/* [ 램프 모델을 추가 ] */
+
+	CPlayerFrontCollider::FRONTCOLLIDER_DESC Desc{};
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.InitPos = { 0.f, 0.f, 0.f };
+	Desc.InitScale = { 1.f, 1.f, 1.f };
+	Desc.iLevelID = m_iLevelID;
+	Desc.pOwner = this;
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_PlayerFrontCollider"),
+		m_iLevelID, TEXT("Player_FrontCollider"), &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pFrontCollider = dynamic_cast<CPlayerFrontCollider*>(pGameObject);
+
+	if (m_pFrontCollider == nullptr)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -1576,8 +1638,8 @@ HRESULT CPlayer::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON; 
-	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON | FILTER_MONSTERBODY; 
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData); 
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PLAYER);
@@ -1833,6 +1895,11 @@ void CPlayer::Use_Item()
 		return;
 
 	m_pSelectItem->Use();
+
+	if(m_isSelectUpBelt)
+		Callback_UpBelt();
+	else
+		Callback_DownBelt();
 }
 
 void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)
@@ -2175,4 +2242,5 @@ void CPlayer::Free()
 	Safe_Release(m_pBelt_Up);
 
 	Safe_Delete(m_pHitReport);
+
 }

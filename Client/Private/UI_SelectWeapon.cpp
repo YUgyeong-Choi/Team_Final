@@ -3,6 +3,7 @@
 #include "UI_Button.h"
 #include "Camera_Manager.h"
 #include "UI_Manager.h"
+#include "ActionType_Icon.h"
 
 CUI_SelectWeapon::CUI_SelectWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUI_Container{pDevice, pContext}
@@ -50,11 +51,25 @@ HRESULT CUI_SelectWeapon::Initialize(void* pArg)
     eDesc.strFilePath = TEXT("../Bin/Save/UI/SelectWeapon/SelectWeapon_Text.json");
     m_pText = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc));
     
+   
 
-    // Text
+
+    // 선택된 이미지 강조하기 위한 ui 이미지 추가
+    eDesc.strFilePath = TEXT("../Bin/Save/UI/SelectWeapon/SelectWeapon_Effect.json");
+    m_pSelectEffect = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc));
 
 
-    
+    static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[0])->Set_isSelect(true);
+
+    _vector vPos = m_pIcons->Get_PartUI()[0]->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+    m_pSelectEffect->Get_PartUI()[0]->Get_TransfomCom()->Set_State(STATE::POSITION, vPos);
+
+    _float3 vScale = m_pIcons->Get_PartUI()[0]->Get_TransfomCom()->Compute_Scaled();
+
+    vPos -= {vScale.x * 0.25f, vScale.y * 0.45f, 0.f, 0.f};
+
+    m_pSelectEffect->Get_PartUI()[1]->Get_TransfomCom()->Set_State(STATE::POSITION, vPos);
 
     return S_OK;
 }
@@ -68,28 +83,7 @@ void CUI_SelectWeapon::Priority_Update(_float fTimeDelta)
     m_pBackgrounds->Priority_Update(fTimeDelta);
     m_pButton_Select->Priority_Update(fTimeDelta);
     m_pText->Priority_Update(fTimeDelta);
-
-    if (m_pGameInstance->Key_Down(DIK_SPACE) && m_isSelectWeapon)
-    {
-        CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-        CCamera_Manager::Get_Instance()->SetbMoveable(true);
-        CUI_Manager::Get_Instance()->On_Panel();
-
-        m_pTarget->Set_bDead();
-        
-        Set_bDead();
-
-    }
-
-
-    // 첫 화면에서 두번째 화면
-    if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_isSelectWeapon)
-    {
-        m_isSelectWeapon = true;
-
-    }
-
-    
+    m_pSelectEffect->Priority_Update(fTimeDelta);
 
 }
 
@@ -99,6 +93,7 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
 
     m_pButtons->Update(fTimeDelta);
     m_pIcons->Update(fTimeDelta);
+    m_pSelectEffect->Update(fTimeDelta);
     
     if (m_isSelectWeapon)
     {
@@ -107,10 +102,31 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
         m_pText->Update(fTimeDelta);
     }
 
+    if (m_pGameInstance->Key_Down(DIK_ESCAPE) && m_isSelectWeapon)
+    {
+        m_isSelectWeapon = false;
+    }
 
-  
+
+    if (m_pGameInstance->Key_Down(DIK_SPACE) && m_isSelectWeapon)
+    {
+        CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+        CUI_Manager::Get_Instance()->On_Panel();
+
+        m_pTarget->Set_bDead();
+
+        Set_bDead();
+
+    }
    
+    // 첫 화면에서 두번째 화면
+    if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_isSelectWeapon)
+    {
+        m_isSelectWeapon = true;
 
+    }
+
+   
 
 
     if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
@@ -118,7 +134,39 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
 
     }
 
+    if (m_pGameInstance->Key_Down(DIK_A))
+    {
 
+        if (m_iSelectIndex <= 0)
+        {
+            return;
+        }
+        
+        static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[m_iSelectIndex])->Set_isSelect(false);
+        --m_iSelectIndex;
+        static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[m_iSelectIndex])->Set_isSelect(true);
+    }
+    else if (m_pGameInstance->Key_Down(DIK_D))
+    {
+        if (m_iSelectIndex >= m_pIcons->Get_PartUI().size() - 1)
+        {
+            return;
+        }
+
+        static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[m_iSelectIndex])->Set_isSelect(false);
+        ++m_iSelectIndex;
+        static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[m_iSelectIndex])->Set_isSelect(true);
+    }
+
+    _vector vPos = m_pIcons->Get_PartUI()[m_iSelectIndex]->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+    m_pSelectEffect->Get_PartUI()[0]->Get_TransfomCom()->Set_State(STATE::POSITION, vPos);
+
+    _float3 vScale = m_pIcons->Get_PartUI()[m_iSelectIndex]->Get_TransfomCom()->Compute_Scaled();
+
+    vPos -= {vScale.x * 0.25f, vScale.y * 0.45f, 0.f, 0.f};
+
+    m_pSelectEffect->Get_PartUI()[1]->Get_TransfomCom()->Set_State(STATE::POSITION, vPos);
    
 }
 
@@ -128,6 +176,7 @@ void CUI_SelectWeapon::Late_Update(_float fTimeDelta)
 
     m_pButtons->Late_Update(fTimeDelta);
     m_pIcons->Late_Update(fTimeDelta);
+    m_pSelectEffect->Late_Update(fTimeDelta);
 
     if (m_isSelectWeapon)
     {
@@ -151,6 +200,7 @@ void CUI_SelectWeapon::Active_Update(_bool isActive)
     __super::Active_Update(isActive);
     m_pButtons->Active_Update(isActive);
     m_pIcons->Active_Update(isActive);
+    m_pSelectEffect->Active_Update(isActive);
 
 }
 
@@ -190,6 +240,7 @@ void CUI_SelectWeapon::Free()
     Safe_Release(m_pBackgrounds);
     Safe_Release(m_pButton_Select);
     Safe_Release(m_pText);
+    Safe_Release(m_pSelectEffect);
 
     
 }
