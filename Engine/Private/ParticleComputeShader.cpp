@@ -84,6 +84,7 @@
 		if (FAILED(hr))
 			return hr;
 
+#pragma region StagingBuffer DEBUG
 		/****** [ 디버그 용 staging buffer 입니다 ] ******/
 		//D3D11_BUFFER_DESC desc = {};
 		//desc.Usage = D3D11_USAGE_STAGING;
@@ -94,6 +95,7 @@
 		//desc.StructureByteStride = sizeof(PPDESC);
 
 		//m_pDevice->CreateBuffer(&desc, nullptr, &m_pStaging);
+#pragma endregion 
 
 
 
@@ -164,7 +166,7 @@
 
 	void CParticleComputeShader::Bind_InstanceSRV()
 	{
-		//DEBUG
+#pragma region StagingBuffer DEBUG
 		//m_pContext->CopyResource(m_pStaging, m_pPPBuffer);
 
 		//D3D11_MAPPED_SUBRESOURCE mapped{};
@@ -174,8 +176,9 @@
 
 
 		//m_pContext->Unmap(m_pStaging, 0);
+#pragma endregion
 
-		//ENDDEBUG
+
 
 
 

@@ -73,6 +73,7 @@ protected:				/* [ 기본 속성 ] */
 protected: 				/* [ 기본 타입 ] */
 	const _tchar*		m_szName = { nullptr };
 	const _tchar*		m_szMeshID = { nullptr };
+	LEVEL				m_eMeshLevelID = { LEVEL::END };
 
 protected:              /* [ 컴포넌트 ] */
 	CModel*				m_pModelCom = { nullptr };

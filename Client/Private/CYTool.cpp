@@ -371,13 +371,11 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Checkbox("Flip UV", pEffect->Get_FlipUV_Ptr());
 
 	ImGui::PushItemWidth(100);
-	ImGui::Text("Tile X");
-	ImGui::SameLine();
-	ImGui::InputInt("##Tile X", pEffect->Get_TileX());
-	ImGui::SameLine();
-	ImGui::Text("Tile Y");
-	ImGui::SameLine();
+	ImGui::Text("Tile X"); ImGui::SameLine();
+	ImGui::InputInt("##Tile X", pEffect->Get_TileX()); ImGui::SameLine();
+	ImGui::Text("Tile Y"); ImGui::SameLine();
 	ImGui::InputInt("##Tile Y", pEffect->Get_TileY());
+	ImGui::DragFloat("Tile Animation Speed", pEffect->Get_TileTickPerSec(), 1.f, 0.f, 240.f, "%.0f");
 	ImGui::Separator();
 	ImGui::Dummy(ImVec2(0.0f, 5.0f));
 	ImGui::ColorEdit4("Center Color##picker", reinterpret_cast<_float*>(pEffect->Get_CenterColor()), ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
@@ -394,9 +392,8 @@ HRESULT CCYTool::Edit_Preferences()
 		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB))strRGName = "RG_EFFECT_WB";
 		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL))strRGName = "RG_EFFECT_NL";
 		if (i == ENUM_CLASS(RENDERGROUP::RG_EFFECT_LIGHT))strRGName = "RG_EFFECT_LIGHT";
-		if (ImGui::RadioButton(strRGName.c_str(), m_iRenderGroup == i)) {
-			m_iRenderGroup = i;
-			pEffect->Set_RenderGroup(i);
+		if (ImGui::RadioButton(strRGName.c_str(), *pEffect->Get_RenderGroup_Ptr() == i)) {
+			*pEffect->Get_RenderGroup_Ptr() = i;
 		}
 		if (i!= ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL))
 			ImGui::SameLine();
@@ -476,6 +473,16 @@ HRESULT CCYTool::Edit_Preferences()
 	return S_OK;
 }
 
+void CCYTool::Change_SelectedItem(class CEffectBase* pEffect)
+{
+	if (m_iSelected >= m_pSequence->m_Items.size())
+	{
+		m_iLastSelected = m_iSelected = -1;
+		return;
+	}
+
+}
+
 HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
@@ -484,9 +491,8 @@ HRESULT CCYTool::Window_Sprite()
 
 	for (_uint i = SE_UVSPRITE_COLOR_WB; i < SE_END; i++)
 	{
-		if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), m_eSelectedPass_SE == i)) {
-			m_eSelectedPass_SE = (SPRITEEFFECT_PASS_INDEX)i;
-			pSE->Set_ShaderPass(i);
+		if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), *pSE->Get_ShaderPass_Ptr() == i)) {
+			*pSE->Get_ShaderPass_Ptr() = (SPRITEEFFECT_PASS_INDEX)i;
 		}
 		if (i % 6 != 0 || i == 0)
 			ImGui::SameLine();
@@ -530,9 +536,8 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t 3. vstretch");
 	for (_uint i = 0; i < PE_END; i++)
 	{
-		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), m_eSelectedPass_PE == i)) {
-			m_eSelectedPass_PE = (PARTICLEEFFECT_PASS_INDEX)i;
-			pPE->Set_ShaderPass(i);
+		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), *pPE->Get_ShaderPass_Ptr() == i)) {
+			*pPE->Get_ShaderPass_Ptr() = (PARTICLEEFFECT_PASS_INDEX)i;
 		}
 		if (i % 6 != 0 || i == 0)
 			ImGui::SameLine();
@@ -663,9 +668,8 @@ HRESULT CCYTool::Window_Mesh()
 	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\t4. Mask Only WB");
 	for (_uint i = 0; i < ME_END; i++)
 	{
-		if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), m_eSelectedPass_ME == i)) {
-			m_eSelectedPass_ME = (MESHEFFECT_PASS_INDEX)i;
-			pME->Set_ShaderPass(i);
+		if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), *pME->Get_ShaderPass_Ptr() == i)) {
+			*pME->Get_ShaderPass_Ptr() = (MESHEFFECT_PASS_INDEX)i;
 		}
 		if (i % 6 != 0 || i == 0)
 			ImGui::SameLine();
@@ -719,9 +723,8 @@ HRESULT CCYTool::Window_Trail()
 
 	for (_uint i = 0; i < TE_END; i++)
 	{
-		if (ImGui::RadioButton((to_string(i) + "##TE").c_str(), m_eSelectedPass_TE == i)) {
-			m_eSelectedPass_TE = (TRAILEFFECT_PASS_INDEX)i;
-			pTE->Set_ShaderPass(i);
+		if (ImGui::RadioButton((to_string(i) + "##TE").c_str(), *pTE->Get_ShaderPass_Ptr() == i)) {
+			*pTE->Get_ShaderPass_Ptr() = (TRAILEFFECT_PASS_INDEX)i;
 		}
 		if (i % 6 != 0 || i == 0)
 			ImGui::SameLine();

@@ -39,9 +39,10 @@ private:
 	ID3D11Buffer*				m_pCBuffer = { nullptr };
 	PARTICLECBUFFER				m_tParticleCBuffer = {};
 
+#pragma region StagingBuffer DEBUG
 	// 디버그 용 스테이징 버퍼
 	ID3D11Buffer*				m_pStaging = { nullptr };
-
+#pragma endregion
 private:
 	_uint						m_iNumInstance = {};
 

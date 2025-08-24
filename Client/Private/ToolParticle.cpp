@@ -104,7 +104,7 @@ HRESULT CToolParticle::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-	//m_iShaderPass = 2.f;
+
  	if (FAILED(m_pShaderCom->Begin(m_iShaderPass)))
 		return E_FAIL;
 
@@ -265,6 +265,8 @@ HRESULT CToolParticle::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTime", &m_fTimeAcc, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissiveIntensity, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fStretchFactor", &m_fStretchFactor, sizeof(_float))))
 		return E_FAIL;
 
 	if (m_bTextureUsage[TU_DIFFUSE] == true) {
