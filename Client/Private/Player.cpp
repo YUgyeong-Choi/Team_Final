@@ -1577,8 +1577,8 @@ HRESULT CPlayer::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON; 
-	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON | FILTER_MONSTERBODY; 
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData); 
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::PLAYER);

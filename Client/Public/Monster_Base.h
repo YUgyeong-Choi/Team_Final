@@ -115,6 +115,7 @@ protected:
 	_int			m_iCollisionCount = {};
 
 	_bool			m_bOffCollider = {};
+	_bool			m_isCollisionPlayer = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */

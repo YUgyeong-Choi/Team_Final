@@ -97,6 +97,8 @@ void CButtler_Train::Update(_float fTimeDelta)
 		m_pWeapon->SetisAttack(false);
 	}
 
+	
+
 	__super::Update(fTimeDelta);
 
 
@@ -191,8 +193,8 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 		++m_iCollisionCount;
 		m_vPushDir -= HitNormal;
 	}
-	//else if (eColliderType == COLLIDERTYPE::PLAYER)
-		//m_isCollisionPlayer = true;
+	else if (eColliderType == COLLIDERTYPE::PLAYER)
+		m_isCollisionPlayer = true;
 
 
 	// 무기가 상태마다 한번씩 데미지 주고
@@ -209,8 +211,7 @@ void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollide
 		_vector vCorrection = HitNormal * 0.01f;
 		m_vPushDir -= vCorrection;
 	}
-	//else if (eColliderType == COLLIDERTYPE::PLAYER)
-		//m_isCollisionPlayer = false;
+	
 
 	//ReceiveDamage(pOther, eColliderType);
 }
@@ -227,6 +228,8 @@ void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eCollide
 			m_vPushDir = { 0.f, 0.f, 0.f, 0.f };
 		}
 	}
+	else if (eColliderType == COLLIDERTYPE::PLAYER)
+		m_isCollisionPlayer = false;
 
 
 }
@@ -420,6 +423,9 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	//{
 	//	RootMotionActive(fTimeDelta);
 	//}
+
+	if (m_strStateName.find("Walk") != m_strStateName.npos || m_strStateName.find("Run") != m_strStateName.npos)
+		m_isCollisionPlayer = false;
 
 	RootMotionActive(fTimeDelta);
 

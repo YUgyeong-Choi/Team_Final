@@ -296,38 +296,38 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
 
 
-
-		_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
-		_vector finalDelta;
-		if (fDeltaMag > m_fSmoothThreshold)
+		if (!m_isCollisionPlayer)
 		{
-			_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-			finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+			_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
+			_vector finalDelta;
+			if (fDeltaMag > m_fSmoothThreshold)
+			{
+				_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
+				finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+			}
+			else
+			{
+				finalDelta = vWorldDelta;
+			}
+			m_PrevWorldDelta = finalDelta;
+
+			m_PrevWorldDelta.m128_f32[3] = 0;
+
+			vTrans += m_PrevWorldDelta;
+
+			XMVector3Normalize(m_vPushDir);
+
+			vTrans += m_vPushDir * 0.01f;
+
+
+			// 네비 이동 가능 여부 체크 후 위치 재설정
+
+			if (nullptr != m_pNaviCom && !m_pNaviCom->isMove(vTrans))
+			{
+				vTrans -= (m_PrevWorldDelta + m_vPushDir * 0.01f);
+				m_pTransformCom->Set_State(STATE::POSITION, vTrans);
+			}
 		}
-		else
-		{
-			finalDelta = vWorldDelta;
-		}
-		m_PrevWorldDelta = finalDelta;
-
-		m_PrevWorldDelta.m128_f32[3] = 0;
-
-		vTrans += m_PrevWorldDelta;
-
-		XMVector3Normalize(m_vPushDir);
-		
-		vTrans += m_vPushDir * 0.01f;
-			
-
-		// 네비 이동 가능 여부 체크 후 위치 재설정
-		if (nullptr != m_pNaviCom && !m_pNaviCom->isMove(vTrans))
-		{
-			vTrans -= (m_PrevWorldDelta + m_vPushDir * 0.01f);
-			m_pTransformCom->Set_State(STATE::POSITION, vTrans);
-		}
-
-		// 이제 충돌 테스트 해서 충돌하면 돌아가게
-
 
 
 		// 회전 보정
