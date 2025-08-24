@@ -189,6 +189,10 @@ public:
 	PxControllerManager* Get_ControllerManager();
 	PxPhysics* GetPhysics();
 	PxMaterial* GetMaterial(const wstring& name);
+
+	void Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther);
 #pragma endregion
 
 #pragma region SOUND_DEVICE

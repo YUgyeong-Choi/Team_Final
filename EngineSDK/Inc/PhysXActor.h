@@ -28,12 +28,12 @@ public:
     void Modify_Shape(const PxGeometry& geom, PxMaterial* material = nullptr);
     void ReCreate_Shape(class PxRigidActor* pRigidActor, const PxGeometry& geom, PxMaterial* material = nullptr);
 
-
-
     virtual void RemovePhysX() {};
 
     virtual void Init_SimulationFilterData() {};
 	PxFilterData Get_FilterData() const { return m_filterData; }
+
+    CPhysXActor* Get_TriggerOther() { return m_pTriggerEnterOther; }
 public:
     virtual void On_Enter(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});
     virtual void On_Stay(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});
@@ -69,6 +69,10 @@ protected:
     PxFilterData m_filterData{};
 
     PxShape* m_pShape = { nullptr };
+
+    // TriggerRemove용 사용 할 거
+    CPhysXActor* m_pTriggerEnterOther = { nullptr };
+
 #ifdef _DEBUG
     // For Debug Render
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
