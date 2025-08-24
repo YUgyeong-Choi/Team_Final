@@ -173,6 +173,7 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 }
 void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	m_pOwner->SetbIsBackAttack(false);
 }
 
 void CPlayerFrontCollider::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
