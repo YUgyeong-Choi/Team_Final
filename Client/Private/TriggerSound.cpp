@@ -1,5 +1,6 @@
 #include "TriggerSound.h"
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 CTriggerSound::CTriggerSound(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
@@ -46,11 +47,14 @@ void CTriggerSound::Priority_Update(_float fTimeDelta)
 			{
 				m_bDead = true; 
 				m_pPhysXTriggerCom->RemovePhysX();
+				// 소리가 끝나면 스크립트도 끈다.
+				CUI_Manager::Get_Instance()->Activate_TextScript(false);
 			}
 			else
 			{
 				m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 				m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+				CUI_Manager::Get_Instance()->Update_TextScript(m_vecSoundData[m_iSoundIndex].strSoundText);
 			}
 		}
 	}
@@ -79,6 +83,10 @@ void CTriggerSound::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderT
 		m_iSoundIndex = 0;
 		m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 		m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+
+		// 스크립트를 킨다.
+		CUI_Manager::Get_Instance()->Activate_TextScript(true);
+		CUI_Manager::Get_Instance()->Update_TextScript(m_vecSoundData[m_iSoundIndex].strSoundText);
 	}
 		
 }

@@ -443,6 +443,8 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 					break;
 				}
 
+				if (pTargetObj == nullptr)
+					return;
 				float t = float(curFrame - a.iKeyFrame) / float(max(1, b.iKeyFrame - a.iKeyFrame));
 				_float fPitch;
 				_float fYaw;

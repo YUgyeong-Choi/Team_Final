@@ -53,6 +53,8 @@ public:
 
 	virtual void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; m_iCurrentFrame = 0; Reset(); }
 
+	void Set_isUVmove(_bool isMove) { m_isUVMove = isMove; }
+
 protected:
 	CDynamic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDynamic_UI(const CDynamic_UI& Prototype);
@@ -102,6 +104,9 @@ protected:
 	_int			m_iPassIndex = {};
 	_int			m_iTextureIndex = {};
 	_int			m_iTextureLevel = { ENUM_CLASS(LEVEL::STATIC) };
+
+	_bool			m_isUVMove = {};
+	_float			m_fUVTime = {};
 	
 
 private:

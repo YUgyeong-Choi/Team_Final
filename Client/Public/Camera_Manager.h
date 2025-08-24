@@ -48,6 +48,7 @@ public:
     void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital; m_bMoveable = true; }
     void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene; m_bMoveable = false; }
     void	Shake_Camera(_float fIntensity = 1.f, _float fDuration = 1.f, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
+    void	Rot_Camera(_vector vRot, _float fDuration = 1.f);
 
     //카메라 전환 막고 싶을 때 false 호출 //O,P로 카메라 전환하는거 막고싶어서 만듬(영웅)
     void    Set_CameraSwitchEnabled(_bool bCameraSwitchEnabled) {

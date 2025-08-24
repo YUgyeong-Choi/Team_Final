@@ -31,11 +31,10 @@ public:
     void Shape_Detach();
 public:
     PxRigidActor* Get_Actor() override { return m_pActor; }
-    PxShape* Get_Shape() { return m_pShape; }
+
 private:
     _bool m_bKinematic = false;
     PxRigidActor* m_pActor = { nullptr };
-    PxShape* m_pShape = { nullptr };
 public:
     static CPhysXDynamicActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg) override;

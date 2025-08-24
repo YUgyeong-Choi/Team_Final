@@ -346,8 +346,8 @@ HRESULT CStaticMesh::Ready_Collider()
 		PxMeshScale meshScale(scaleVec);
 
 		PxFilterData filterData{};
-		filterData.word0 = WORLDFILTER::FILTER_EFFECTGIB;
-		filterData.word1 = WORLDFILTER::FILTER_EFFECTGIB;
+		filterData.word0 = WORLDFILTER::FILTER_MAP;
+		filterData.word1 = 0;
 
 		if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)
 		{
@@ -360,7 +360,7 @@ HRESULT CStaticMesh::Ready_Collider()
 			m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 			m_pPhysXActorCom->Set_QueryFilterData(filterData);
 			m_pPhysXActorCom->Set_Owner(this);
-			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::B); // 이걸로 색깔을 바꿀 수 있다.
+			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX); // 이걸로 색깔을 바꿀 수 있다.
 
 			//충돌체가 있는 것만
 			/*if (m_eColliderType == COLLIDER_TYPE::CONVEX)
@@ -390,7 +390,7 @@ HRESULT CStaticMesh::Ready_Collider()
 			m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 			m_pPhysXActorCom->Set_QueryFilterData(filterData);
 			m_pPhysXActorCom->Set_Owner(this);
-			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::A);
+			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_TRI);
 
 			/*m_pGameInstance->Get_Scene()->lockWrite();
 			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());

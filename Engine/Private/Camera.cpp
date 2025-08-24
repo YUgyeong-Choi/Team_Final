@@ -45,6 +45,9 @@ void CCamera::Priority_Update(_float fTimeDelta)
 	if (m_bShake)
 		Update_Camera_Shake(fTimeDelta);
 
+	if (m_bMoreRot)
+		Update_Camera_MoreRot(fTimeDelta);
+
 	// Transform 컴포넌트에서 위치와 방향 정보 가져옴
 	_vector vEye = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -78,7 +81,7 @@ HRESULT CCamera::Update_Camera()
 
 	m_pTransformCom->Move(m_vCurrentShakePos);
 	m_pTransformCom->Quaternion_Turn(m_vCurrentShakeRot);
-	
+
 	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
 	m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
 
@@ -119,6 +122,15 @@ void CCamera::StartShake(_float fIntensity, _float fDuration, _float fShakeFreqP
 	m_bShake = TRUE;
 }
 
+void CCamera::StartRot(_vector vRot, _float fDuration)
+{
+	m_fMoreRotDuration = fDuration;
+	m_vMoreRotFreq = vRot;
+
+	m_fMoreRotTime = 0.f;
+	m_bMoreRot = TRUE;
+}
+
 // 쉐이크 갱신 함수
 void CCamera::Update_Camera_Shake(_float fTimedelta)
 {
@@ -155,6 +167,33 @@ void CCamera::Update_Camera_Shake(_float fTimedelta)
 	// 5. 적용
 	m_vCurrentShakePos = offsetPos;
 	m_vCurrentShakeRot = offsetRot;
+}
+
+void CCamera::Update_Camera_MoreRot(_float fTimedelta)
+{
+	m_fMoreRotTime += fTimedelta;
+
+	if (m_fMoreRotTime >= m_fMoreRotDuration)
+	{
+		m_bMoreRot = FALSE;
+		m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
+		return;
+	}
+
+	float t = m_fMoreRotTime / m_fMoreRotDuration;
+	float lerpFactor;
+	if (t < 0.5f)
+		lerpFactor = t / 0.5f;               // 0 → 1
+	else
+		lerpFactor = 1.f - (t - 0.5f) / 0.5f; // 1 → 0
+
+	// 최종 회전 오프셋
+	_vector moreRot = m_vMoreRotFreq * lerpFactor;
+
+	if(m_bShake)
+		m_vCurrentShakeRot += moreRot;
+	else
+		m_vCurrentShakeRot = moreRot;
 }
 
 void CCamera::Bind_Matrices()

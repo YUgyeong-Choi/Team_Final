@@ -45,6 +45,7 @@ public:
 		_float fBlendWeight = 1.f; // 블렌드 가중치 (0~1 사이)
 		_float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
 		_float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
+		_bool  bCanSameAnimReset = false; // 같은 애니메이션으로 전환 시에 리셋할지 여부
 	};
 
 
@@ -76,6 +77,7 @@ public:
 		_float fBlendWeight = 1.f; // 마스크에 사용함
 		_float fLowerStartTime = 0.f; // 하체 애니메이션 시작 시간
 		_float fUpperStartTime = 0.f; // 상체 애니메이션 시작 시간
+		_bool bCanSameAnimReset = false; // 같은 애니메이션으로 전환 시에 리셋할지 여부
 	};
 
 

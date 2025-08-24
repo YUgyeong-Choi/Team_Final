@@ -25,6 +25,7 @@ texture2D g_InputTexture;
 float4 g_ItemDesc;
 
 float g_Groggy;
+float g_UVTime;
 
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
@@ -126,6 +127,8 @@ struct PS_IN_BLEND
 PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
 {
     PS_OUT Out;
+    
+    In.vTexcoord.x += g_UVTime;
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
@@ -546,6 +549,68 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_DISCARD_ALPAH_REVERSE(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    
+    if (length(Out.vColor.rgb) > 0.6f)
+        discard;
+    
+  
+    Out.vColor.a = 1 - length(Out.vColor.rgb);
+    
+    Out.vColor *= g_Color;
+    
+    return Out;
+}
+
+
+PS_OUT PS_MAIN_ACTION_ICON(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    if (Out.vColor.a < 0.001f)
+        discard;
+    
+    vector vHighlight = g_HighlightTexture.Sample(DefaultSampler, In.vTexcoord);
+
+    
+
+  
+
+    if (g_ItemDesc.x == 1.f)
+    {
+     
+       
+
+        Out.vColor.rgb *= vHighlight.a;
+
+    // y 좌표 기반 그라데이션 (0~1)
+        float redFactor = saturate((In.vTexcoord.y - 0.4f) * 2.0f);
+    
+        redFactor *= 0.2f;
+
+    // 원래 색과 빨강을 섞어주기
+        float3 red = float3(0.2f, 0.f, 0.f);
+        Out.vColor.rgb = lerp(Out.vColor.rgb , red, redFactor);
+   
+    }
+    else
+    {
+        // 원래 방식
+        Out.vColor.rgb *= vHighlight.a;
+    }
+
+    Out.vColor *= g_Color;
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     /* 패스를 생성하는 기준을 뭘로? */ 
@@ -665,4 +730,42 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_HPBAR_MONSTER();
     }
-}
+
+    pass Back
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass BackGround_Reverse
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_DISCARD_ALPAH_REVERSE();
+    }
+
+    pass Action_Icon
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ACTION_ICON();
+    }
+    
+
+ }

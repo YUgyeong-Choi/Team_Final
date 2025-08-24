@@ -10,7 +10,7 @@
       "SoundDatas": [
         {
           "SoundName": "0_Dialog_Sophia_F00_S1_text_1",
-          "Text": "깨어났군요. 당신을 찾아 헤맸어요."
+          "Text": "깨어났군요.\n당신을 찾아 헤맸어요."
         }
       ]
     },
@@ -32,12 +32,12 @@
         {
           "SoundName": "2_Dialog_Sophia_F00_S2_1_text_1",
           "Speaker": "소피아",
-          "Text": "제미니...도 당했군요. 하지만 지금은 시간이 없어."
+          "Text": "제미니...도 당했군요.\n하지만 지금은 시간이 없어."
         },
         {
           "SoundName": "3_Dialog_Sophia_F00_S2_2_text_1",
           "Speaker": "소피아",
-          "Text": "난 소피아에요,크라크 호텔로 와줘요. 자세한 이야기는 그때 해요."
+          "Text": "난 소피아에요,크라크 호텔로 와줘요.\n자세한 이야기는 그때 해요."
         },
         {
           "SoundName": "4_Dialog_Sophia_F00_S2_3_text_1",
@@ -56,7 +56,7 @@
       "SoundDatas": [
         {
           "SoundName": "5_Dialog_Sophia_F00_S1_8_text_1",
-          "Text": "그곳을 벗어나야 해요. 도움이 될 만한 걸 찾아요."
+          "Text": "그곳을 벗어나야 해요.\n도움이 될 만한 걸 찾아요."
         }
       ]
     },
@@ -73,12 +73,30 @@
         {
           "SoundName": "6_Dialog_QST_initialize_stat_S1_text_1",
           "Speaker": "소피아",
-          "Text": "밖은 위험해요. 당신 손에 익숙한 무기를 가져가요."
+          "Text": "밖은 위험해요.\n당신 손에 익숙한 무기를 가져가요."
         },
         {
           "SoundName": "7_Dialog_QST_initialize_stat_S1_2_text_1",
           "Speaker": "소피아",
           "Text": "호텔로 올 때 도움이 될 거예요."
+        }
+      ]
+    },
+    {
+      "UseMesh": 0,
+      "TriggerType": 4,
+      "vPos": [ 95.973389, 1.0, -7.540224 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 0.2, 0.2, 1.8 ],
+      "SoundDatas": [
+        {
+          "SoundName": "0_Dialog_Radio_E00_S1_text_1_ALT_01",
+          "Text": "크라트 역에 오신 여러분을 환영합니다."
+        },
+        {
+          "SoundName": "1_Dialog_Radio_E00_S1_1_text_1_ALT_01",
+          "Text": "여러분은 크라트 시에서 인류가 빛어낸 지상 최고의 장엄한 절경을 목격하실 수 있습니다.\n이곳이 마지막 종착역이시라면,찬란한 내일의 도시를 즐기시길 바랍니다."
         }
       ]
     }

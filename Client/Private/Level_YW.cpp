@@ -224,6 +224,9 @@ void CLevel_YW::Render_File()
 
 void CLevel_YW::Control()
 {
+	if (GetForegroundWindow() != g_hWnd)
+		return;
+
 	//컨트롤 S 를 눌렀을 때 현재 활성화된 툴을 저장시킨다.
 	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_S))
 	{

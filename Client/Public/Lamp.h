@@ -68,7 +68,7 @@ private:
 
 private:
 	_bool m_bDebug = { true };
-
+	
 	_uint m_iID = { 0 };
 	LEVEL m_eTargetLevel = { LEVEL::END };
 

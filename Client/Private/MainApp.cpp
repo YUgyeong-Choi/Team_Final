@@ -438,10 +438,7 @@ void CMainApp::Free()
 	CLockOn_Manager::Destroy_Instance();
 	
 
-	if (m_pGameInstance) {
-		m_pGameInstance->Release_Engine(); 
-		m_pGameInstance = nullptr;       
-	}
-	
-	// Safe_Release(m_pGameInstance); 이거하니까 오류남 DestoryInstance뒤에 해줘서
+	m_pGameInstance->Release_Engine();
+
+	Safe_Release(m_pGameInstance);
 }

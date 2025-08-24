@@ -174,6 +174,15 @@ protected: /* [ 락온 관련 ] */
             m_pOwner->m_pAnimator->SetBool("Back", false);
         }
     }
+    void PrintfMoveSwitch()
+    {
+        printf("Left : %d | Right : %d | Front : %d | Back : %d\n",
+            static_cast<_int>(m_pOwner->m_pAnimator->CheckBool("Left")),
+            static_cast<_int>(m_pOwner->m_pAnimator->CheckBool("Right")),
+            static_cast<_int>(m_pOwner->m_pAnimator->CheckBool("Front")),
+            static_cast<_int>(m_pOwner->m_pAnimator->CheckBool("Back")));
+
+    }
 
 protected:
 	CPlayer* m_pOwner;
@@ -211,7 +220,7 @@ public:
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
-        // 아이들 상태는 아무것도 안받음
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -220,6 +229,7 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
 
         if (MOUSE_PRESSING(DIM::RBUTTON))
         {
@@ -345,6 +355,7 @@ public:
     virtual void Enter() override
     {
         m_pOwner->m_pAnimator->SetBool("Sprint", false);
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
         SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
@@ -470,6 +481,7 @@ public:
     virtual void Enter() override
     {
         m_pOwner->m_pAnimator->SetBool("Sprint", false);
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
         SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
@@ -604,29 +616,8 @@ public:
 		m_bPreWalk = m_pOwner->m_bWalk;
 		m_pOwner->m_bWalk = true;
 
-        /* [ 램프전용 스위치들 ] */
-        if (m_pOwner->m_bPulseReservation)
-        {
-            m_pOwner->m_bPulseReservation = false;
-
-            /* [ 순회하면서 아이템 찾기 ] */
-            _bool PulseUse = FindPulseObject();
-            
-            if (!PulseUse)
-            {
-                m_pOwner->m_pAnimator->SetBool("Fail", true);
-                m_pOwner->m_pAnimator->SetBool("HasLamp", false);
-                m_pOwner->m_pAnimator->SetTrigger("UseItem");
-            }
-            else
-            {
-                m_pOwner->m_pAnimator->SetBool("HasLamp", false);
-                m_pOwner->m_pAnimator->SetTrigger("Pulse");
-                m_pOwner->m_pAnimator->SetTrigger("UseItem");
-                m_pOwner->m_bUsePulse = true;
-            }
-        }
-        else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+        /* [ 아이템 스위치들 ] */
+        if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
         {
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_pAnimator->SetBool("HasLamp", true);
@@ -645,19 +636,19 @@ public:
                 m_pOwner->m_bUseGrinder = true;
             }
         }
-        else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
+        else if (m_pOwner->m_bPulseReservation || m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
         {
+            m_pOwner->m_bPulseReservation = false;
+
             /* [ 순회하면서 아이템 찾기 ] */
             _bool PulseUse = FindPulseObject();
-            
-            if (!PulseUse)
-                m_pOwner->m_pAnimator->SetBool("Fail", true);
 
             if (!PulseUse)
             {
                 m_pOwner->m_pAnimator->SetBool("Fail", true);
                 m_pOwner->m_pAnimator->SetBool("HasLamp", false);
                 m_pOwner->m_pAnimator->SetTrigger("UseItem");
+                m_pOwner->m_bUsePulse = true;
             }
             else
             {
@@ -792,29 +783,10 @@ public:
     _bool FindPulseObject()
     {
         _bool bUse = false;
-        // 위의 벨트를 먼저 순회한다.
-        for (auto Item : m_pOwner->m_pBelt_Up->Get_Items())
-        {
-            if (Item)
-            {
-                if (TEXT("Prototype_GameObject_Portion") == Item->Get_ProtoTag())
-                {
-                    bUse = Item->Get_isUsable();
-                }
-            }
-        }
-        //m_pOwner->Callback_UpBelt();
-
-        // 아래의 벨트를 다음으로 순회한다.
-        for (auto Items : m_pOwner->m_pBelt_Down->Get_Items())
-        {
-            if (Items)
-            {
-                if (TEXT("Prototype_GameObject_Portion") == Items->Get_ProtoTag())
-                    bUse = Items->Get_isUsable();
-            }
-        }
-        //m_pOwner->Callback_DownBelt();
+        m_pOwner->Find_Slot(L"Prototype_GameObject_Portion");
+        _int iCount = m_pOwner->m_pSelectItem->Get_UseCount();
+        if (iCount > 0)
+            bUse = true;
 
         return bUse;
     }
@@ -852,11 +824,13 @@ public:
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
+        LockOnMovement();
 
         // 백스탭은 무브 OFF 입니다.
         m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetTrigger("Dash");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
+        m_pOwner->m_bIsInvincible = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -880,6 +854,9 @@ public:
                 m_pOwner->m_pAnimator->SetTrigger("Dash");
             }
         }
+
+        if (0.2f < m_fStateTime)
+            m_pOwner->m_bIsInvincible = false;
     }
 
     virtual void Exit() override
@@ -943,6 +920,7 @@ public:
 
         // 구르기는 무브 ON 입니다.
         m_pOwner->m_pAnimator->SetTrigger("Dash");
+        m_pOwner->m_bIsInvincible = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -957,6 +935,9 @@ public:
             m_fStateTime = 0.f;
             m_pOwner->m_pAnimator->SetTrigger("Dash");
         }
+
+        if (0.2f < m_fStateTime)
+            m_pOwner->m_bIsInvincible = false;
 
         LockOnMovement();
     }
@@ -1053,7 +1034,7 @@ public:
             if (!m_bDoOnce)
             {
                 m_pOwner->m_bWeaponEquipped = true;
-              //  m_pOwner->m_pWeapon->SetbIsActive(true);
+                //m_pOwner->m_pWeapon->SetbIsActive(true);
 				m_bDoOnce = true;
             }
         }
@@ -1279,7 +1260,7 @@ public:
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
 
-            if (KEY_DOWN(DIK_SPACE))
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
         }
 
@@ -1398,7 +1379,8 @@ public:
             if (m_bSkill && IsManaEnough(100.f))
                 return EPlayerState::MAINSKILL;
 
-            if (KEY_DOWN(DIK_SPACE))
+
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
         }
 
@@ -1523,7 +1505,8 @@ public:
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
 
-            if (KEY_DOWN(DIK_SPACE))
+
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
         }
         if (1.5f < m_fStateTime)
@@ -1646,7 +1629,8 @@ public:
 			if (m_bSkill && IsManaEnough(100.f))
 				return EPlayerState::MAINSKILL;
 
-            if (KEY_DOWN(DIK_SPACE))
+
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
         }
 
@@ -1736,6 +1720,7 @@ public:
     {
         m_fStateTime = 0.f;
 
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
         m_pOwner->m_bMovable = true;
     }
 
@@ -1746,18 +1731,17 @@ public:
 
         if (2.5f < m_fStateTime)
         {
-            if (KEY_DOWN(DIK_SPACE))
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
+
+            if (m_pOwner->m_bUseLockon && KEY_UP(DIK_SPACE))
+                return EPlayerState::ROLLING;
 
             if (m_pOwner->m_bIsChange && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
             {
                 m_pOwner->m_bIsChange = false;
                 return EPlayerState::CHARGEB;
             }
-
-            /* [ 펄스 예약제 ] */
-            if (m_pOwner->m_bPulseReservation)
-                return EPlayerState::USEITEM;
 
             if (input.bMove)
             {
@@ -1851,12 +1835,8 @@ public:
 
         if (2.f < m_fStateTime)
         {
-            if (KEY_DOWN(DIK_SPACE))
+            if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
-
-            /* [ 펄스 예약제 ] */
-            if (m_pOwner->m_bPulseReservation)
-                return EPlayerState::USEITEM;
 
             if (input.bMove)
             {
@@ -1934,18 +1914,16 @@ public:
                 m_pOwner->m_eDir == CPlayer::EHitDir::FL ||
                 m_pOwner->m_eDir == CPlayer::EHitDir::FR)
             {
-                m_pOwner->m_pAnimator->SetInt("HitDir", 0);
-                m_pOwner->m_pAnimator->SetTrigger("Hited");
-
                 /* [ 퍼펙트 가드와 그냥 가드를 분기 ] */
-                if (m_fStateTime < 0.3f)
+                if (m_fStateTime < 0.2f)
                 {
-					// 퍼펙트 가드입니다.
                     printf(" 너 퍼펙트 가드성공했어. \n");
                     m_pOwner->m_bPerfectGardDamege = true;
                     m_pOwner->HPSubtract();
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 0);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
 
-                    /*********************************************************/
+                    /* [ 이펙트를 생성한다. ] */
                     _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
                     _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
 
@@ -1963,15 +1941,17 @@ public:
                     if (pEffect == nullptr)
                         MSG_BOX("이펙트 생성 실패함");
                     /*********************************************************/
+
+					_vector vRot = { -2.f, 0.f, 0.f, 0.f };
+                    m_pCamera_Manager->GetCurCam()->StartRot(vRot, 0.4f);
+                    m_pCamera_Manager->GetCurCam()->StartShake(0.15f, 0.35f);
                 }
                 else
                 {
-                    // 일반 가드입니다.
                     printf(" 너 가드성공했어. \n");
                     m_pOwner->m_bGardDamege = true;
-                    m_pOwner->HPSubtract();
 
-                    /*********************************************************/
+                    /* [ 이펙트를 생성한다. ] */
                     _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
                     _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
 
@@ -1988,14 +1968,49 @@ public:
 
                     if (pEffect == nullptr)
                         MSG_BOX("이펙트 생성 실패함");
-                    /*********************************************************/
+
+                    /* [ HP 를 감소시키고 사망을 확인한다. ] */
+                    m_pOwner->HPSubtract();
+                    if (m_pOwner->m_fHP <= 0.f)
+                    {
+                        m_bDead = true;
+                        return;
+                    }
+
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 0);
+                    m_pOwner->m_pAnimator->SetTrigger("Hited");
 
                 }
             }
             else
             {
                 //그 외의 방향을 맞으면 피격당한다.
+
+               /* [ 이펙트를 생성한다. ] */
+                _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
+
+                vPos += m_pOwner->m_vHitNormal * 0.5f;
+                _float3 vEffPos = {};
+                XMStoreFloat3(&vEffPos, vPos);
+                vEffPos.y += 1.7f;
+
+                CEffectContainer::DESC desc = {};
+
+                XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+                CGameObject* pEffect = { nullptr };
+                pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
+
+                if (pEffect == nullptr)
+                    MSG_BOX("이펙트 생성 실패함");
+
+                /* [ HP 를 감소시키고 사망을 확인한다. ] */
                 m_pOwner->HPSubtract();
+                if (m_pOwner->m_fHP <= 0.f)
+                {
+                    m_bDead = true;
+                    return;
+                }
+
                 switch (m_pOwner->m_eDir)
                 {
                 case CPlayer::EHitDir::L:
@@ -2033,16 +2048,18 @@ public:
         m_bIsHitAnimation = false;
         m_fStateTime = 0.f;
         m_fGardTime = 0.f;
+		m_bDead = false;
 
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        if (m_bDead)
+            return EPlayerState::DEAD;
+
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-
-        //만약 가드상태라면 0.3 초의 대기 상태 이후에 상태가 변경된다.
         if (m_bIsHitAnimation)
         {
             if (m_fGardTime > 0.3f)
@@ -2086,6 +2103,7 @@ private:
     _float  m_fGardTime = {};
 
     _bool   m_bIsHitAnimation = {};
+	_bool   m_bDead = {};
 };
 
 
@@ -2377,6 +2395,9 @@ public:
         if (MOUSE_DOWN(DIM::RBUTTON))
             m_bAttackB = true;
 
+        if (KEY_UP(DIK_LCONTROL))
+            m_bArmAttack = true;
+
         if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
             m_pOwner->m_bPulseReservation = true;
     }
@@ -2424,6 +2445,8 @@ public:
                 return EPlayerState::WEAKATTACKA;
             if (m_bAttackB)
                 return EPlayerState::STRONGATTACKA;
+            if (m_bArmAttack)
+                return EPlayerState::ARMATTACKA;
         }
 
         return EPlayerState::ARMATTACKB;
@@ -2795,6 +2818,31 @@ public:
 public:
     virtual void Enter() override
     {
+        /* [ 이펙트를 생성한다. ] */
+        _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
+
+        vPos += m_pOwner->m_vHitNormal * 0.5f;
+        _float3 vEffPos = {};
+        XMStoreFloat3(&vEffPos, vPos);
+        vEffPos.y += 1.7f;
+
+        CEffectContainer::DESC desc = {};
+
+        XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+        CGameObject* pEffect = { nullptr };
+        pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
+
+        if (pEffect == nullptr)
+            MSG_BOX("이펙트 생성 실패함");
+
+        /* [ HP 를 우선으로 감소시키고 사망을 확인한다. ] */
+        m_pOwner->HPSubtract();
+        if (m_pOwner->m_fHP <= 0.f)
+        {
+            m_bDead = true;
+            return;
+        }
+
         m_fStateTime = 0.f;
 
         /* [ 어느방향에서 맞는지 설정하기 ] */
@@ -2808,7 +2856,7 @@ public:
         else if (m_pOwner->m_eDir == CPlayer::EHitDir::BR) { m_pOwner->m_pAnimator->SetInt("HitDir", 2); }
 		else if (m_pOwner->m_eDir == CPlayer::EHitDir::B) { m_pOwner->m_pAnimator->SetInt("HitDir", 2); }
         m_pOwner->m_pAnimator->SetTrigger("Hited");
-        m_pOwner->HPSubtract();
+        
 
         printf(" 너 맞은방향 FtoB, R, B, L, RtoL, LtoR 중에 %d 방향이야. \n", static_cast<int>(m_pOwner->m_eDir));
 
@@ -2825,35 +2873,10 @@ public:
         m_pOwner->m_pAnimator->SetBool("Right", false);
         m_pOwner->m_pAnimator->SetBool("Back", false);
 
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
-
-        /*********************************************************/
-
-        _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
-        _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
-
-        vPos += vDir * 1.5f;
-        _float3 vEffPos = {};
-        XMStoreFloat3(&vEffPos, vPos);
-        vEffPos.y += 0.5f;
-
-        CEffectContainer::DESC desc = {};
-
-        XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
-        CGameObject* pEffect = { nullptr };
-        pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
-
-        if (pEffect == nullptr)
-            MSG_BOX("이펙트 생성 실패함");
-
-        /*********************************************************/
-
-
-
-
-
-
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -2865,11 +2888,14 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
+        m_bDead = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
     {
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+		if (m_bDead)
+			return EPlayerState::DEAD;
 
         //1. 스킬의 진행도에 따라 탈출 조건이 달라진다.
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
@@ -2908,6 +2934,140 @@ private:
        "Hit_FtoB", "Hit_R", "Hit_B", "Hit_L", "Hit_RtoL", "Hit_LtoR"
     };
 
+private:
+    _bool m_bDead = {};
+
+};
+
+/* [ 이 클래스는 피격 상태입니다. ] */
+class CPlayer_Dead final : public CPlayerState
+{
+
+public:
+    CPlayer_Dead(CPlayer* pOwner)
+        : CPlayerState(pOwner) {
+    }
+
+    virtual ~CPlayer_Dead() = default;
+
+    /* [ 플레이어가 사망했을 때의 상태입니다. ] */
+public:
+    virtual void Enter() override
+    {
+        m_fStateTime = 0.f;
+
+        /* [ 콜라이더 및 방향 스위치 초기화 ] */
+        m_pOwner->m_bIsInvincible = true;
+        if (m_pOwner->m_pWeapon)
+        {
+            m_pOwner->m_pWeapon->SetisAttack(false);
+            m_pOwner->m_pWeapon->Set_WeaponTrail_Active(false);
+        }
+        if (m_pOwner->m_pLegionArm)
+            m_pOwner->m_pLegionArm->SetisAttack(false);
+
+        m_pOwner->m_pAnimator->SetBool("Front", false);
+        m_pOwner->m_pAnimator->SetBool("Left", false);
+        m_pOwner->m_pAnimator->SetBool("Right", false);
+        m_pOwner->m_pAnimator->SetBool("Back", false);
+
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
+        m_pOwner->m_pAnimator->SetBool("Move", false);
+        m_pOwner->m_pAnimator->SetBool("Run", false);
+
+        /* [ 애니메이션 설정 ] */
+        /* [ 어느방향에서 맞는지 설정하기 ] */
+        m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
+        if (m_pOwner->m_eDir == CPlayer::EHitDir::F ||
+            m_pOwner->m_eDir == CPlayer::EHitDir::FL ||
+            m_pOwner->m_eDir == CPlayer::EHitDir::FR ||
+            m_pOwner->m_eDir == CPlayer::EHitDir::L)
+        {
+            m_pOwner->m_pAnimator->SetInt("HitDir", 0); 
+        }
+        else if(m_pOwner->m_eDir == CPlayer::EHitDir::B ||
+            m_pOwner->m_eDir == CPlayer::EHitDir::BL ||
+            m_pOwner->m_eDir == CPlayer::EHitDir::BR ||
+            m_pOwner->m_eDir == CPlayer::EHitDir::R)
+        {
+            m_pOwner->m_pAnimator->SetInt("HitDir", 2);
+        }
+
+        /* [ 죽는 애니메이션 ] */
+        m_pOwner->m_pAnimator->SetTrigger("Death");
+        m_pOwner->m_pAnimator->SetBool("WasDead", true);
+
+        /* [ 디버깅 ] */
+        printf("Player_State : %ls \n", GetStateName());
+    }
+
+    virtual void Execute(_float fTimeDelta) override
+    {
+        m_fStateTime += fTimeDelta;
+
+        if (m_fStateTime > 3.f && !m_pOwner->m_bIsRrevival)
+        {
+			/* [ 사망 후 특정 위치에서 다시 살아난다. ] */
+            m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{1.f,0.f,0.f,0.f});
+            PxVec3 pos = PxVec3(51.3f, 1.f, -5.1f);
+            PxTransform posTrans = PxTransform(pos);
+            m_pOwner->m_pControllerCom->Set_Transform(posTrans);
+            
+            m_pOwner->m_pAnimator->SetTrigger("Teleport");
+
+            /* [ 무기 장착 해제 ] */
+            m_pOwner->m_pWeapon->SetbIsActive(false);
+            m_pOwner->m_bWeaponEquipped = false;
+
+            m_pOwner->m_fHP = 100.f;
+            m_pOwner->Callback_HP();
+            m_pOwner->m_bIsRrevival = true;
+        }
+
+        if (m_pOwner->m_bIsRrevival)
+			m_fRrevivalTime += fTimeDelta;
+    }
+
+    virtual void Exit() override
+    {
+        m_pOwner->m_pAnimator->CancelOverrideAnimController();
+        m_pOwner->m_pAnimator->SetBool("WasDead", false);
+        m_fStateTime = 0.f;
+        m_fRrevivalTime = 0.f;
+        m_pOwner->m_bIsRrevival = false;
+        m_pOwner->m_bIsInvincible = false;
+    }
+
+    virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
+    {
+        /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
+        m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
+
+        if (2.f < m_fRrevivalTime)
+        {
+            return EPlayerState::IDLE;
+        }
+
+        return EPlayerState::DEAD;
+    }
+
+    virtual bool CanExit() const override
+    {
+        return true;
+    }
+
+    virtual const _tchar* GetStateName() const override
+    {
+        return L"DEAD";
+    }
+
+private:
+    unordered_set<string> m_StateNames = {
+       "Death_F", "Death_B" , "Teleport_Death_Start", "Teleport_Death_End"
+    };
+
+private:
+    _float m_fRrevivalTime = {};
 };
 
 

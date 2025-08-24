@@ -3,7 +3,7 @@
 #include "LockOn_Manager.h"
 #include "PhysX_ControllerReport.h"
 #include "PhysX_IgnoreSelfCallback.h"
-
+#include "Camera_Orbital.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUnit{pDevice, pContext}
@@ -75,19 +75,6 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 			m_pPlayer = Find_Player(m_pGameInstance->GetCurrentLevelIndex());
 		return;
 	}
-
-
-	if (m_strStateName.find("Dead") != m_strStateName.npos)
-	{
-		m_bUseLockon = false;
-		if (m_pAnimator->IsFinished())
-		{
-			m_pHPBar->Set_bDead();
-			Set_bDead();
-			
-
-		}
-	}
 }
 
 void CMonster_Base::Update(_float fTimeDelta)
@@ -140,6 +127,19 @@ void CMonster_Base::Update(_float fTimeDelta)
 void CMonster_Base::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
+
+	if (m_pPlayer)
+	{
+		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		CGameObject::Compute_ViewZ(vPlayerPos, &vTemp);
+	}
+	else
+	{
+		_vector vCam = m_pCamera_Orbital->GetPosition();
+		CGameObject::Compute_ViewZ(vCam, &vTemp);
+	}
 	
 	if (nullptr != m_pHPBar)
 	{
@@ -193,6 +193,8 @@ void CMonster_Base::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderT
 void CMonster_Base::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
+
+
 
 HRESULT CMonster_Base::Ready_Components(void* pArg)
 {
@@ -262,7 +264,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
-	eDesc.fHeight = 2.25f;
+	eDesc.fHeight = 2.5f;
 	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_isCanGroggy;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -543,7 +545,7 @@ void CMonster_Base::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pPhysXActorCom);
+
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pNaviCom);
 	Safe_Release(m_pHPBar);

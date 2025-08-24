@@ -26,6 +26,8 @@ HRESULT CTriggerBox::Initialize(void* pArg)
 	m_eTriggerBoxType = TriggerBoxDESC->eTriggerBoxType;
 	m_vecSoundData = TriggerBoxDESC->m_vecSoundData;
 
+	
+	
 	if (FAILED(__super::Initialize(TriggerBoxDESC)))
 		return E_FAIL;
 

@@ -60,6 +60,7 @@
 #include "DH_ToolMesh.h"
 #include "Player.h"
 #include "Bayonet.h"
+#include "PlayerLamp.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -92,9 +93,14 @@
 #include "UI_LockOn_Icon.h"
 #include "LegionArm_Steel.h"
 #include "UI_Popup.h"
+#include "UI_Script_Text.h"
+#include "UI_Script_Talk.h"
+#include "ActionType_Icon.h"
+#include "UI_SelectWeapon.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
+#include "Oil.h"
 #include "Fuoco.h"
 #include "FireBall.h"
 #include "TestAnimObject.h"
@@ -338,6 +344,11 @@ HRESULT CLoader::Loading_For_Static()
 		CIcon_Weapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Icon_ActionType"),
+		CActionType_Icon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Icon_LegionArm"),
 		CIcon_LegionArm::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -370,6 +381,18 @@ HRESULT CLoader::Loading_For_Static()
 		CUI_Popup::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Text"),
+		CUI_Script_Text::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Talk"),
+		CUI_Script_Talk::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_SelectWeapon"),
+		CUI_SelectWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	return S_OK;
@@ -398,6 +421,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_PlayerWeapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_PlayerLamp"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Lamp.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Elite_Police"),
@@ -462,6 +489,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_PlayerWeapon"),
 		CBayonet::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_PlayerLamp"),
+		CPlayerLamp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Wego"),
 		CWego::Create(m_pDevice, m_pContext))))
@@ -474,6 +504,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireBall"),
 		CFireBall::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Oil"),
+		COil::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -552,7 +586,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		프로토타입매니저나 오브젝트 매니저에
 		ADD 프로토타입, 오브젝트 하면 문제 생길 줄 알았음
 		STL 원소추가하는건 스레드 잘되어있나?
+
+		<오류 나가지고 뮤텍스로 락 걸었음>
 	*/
+
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
 	auto futureStation = async(launch::async, [&]
 		{
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
@@ -563,6 +601,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 			return S_OK;
 		});
 
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
 	auto futureHotel = async(launch::async, [&]
 		{
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
@@ -573,13 +612,40 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 			return S_OK;
 		});
 
-	lstrcpy(m_szLoadingText, TEXT("스테이션 맵 생성 완료 기다리는 중..."));
+	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+
+
+	//while (true)
+	//{
+	//	if (futureStation.valid() &&
+	//		futureStation.wait_for(chrono::seconds(0)) == future_status::ready)
+	//	{
+	//		if (FAILED(futureStation.get()))
+	//			return E_FAIL;
+	//		lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료..."));
+	//		break; // station은 끝났음
+	//	}
+
+	//	if (futureHotel.valid() &&
+	//		futureHotel.wait_for(chrono::seconds(0)) == future_status::ready)
+	//	{
+	//		if (FAILED(futureHotel.get()))
+	//			return E_FAIL;
+	//		lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
+	//		break; // hotel은 끝났음
+	//	}
+
+	//	// 너무 빡세게 돌지 않도록 잠깐 sleep
+	//	this_thread::sleep_for(std::chrono::milliseconds(10));
+	//}
+
 	if (FAILED(futureStation.get()))
 		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료..."));
 
-	lstrcpy(m_szLoadingText, TEXT("호텔 맵 생성 완료 기다리는 중..."));
 	if (FAILED(futureHotel.get()))
 		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
 
 #pragma endregion
 
@@ -835,10 +901,6 @@ HRESULT CLoader::Loading_For_GL()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Line_Highlight.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Button_Select*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Select"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Button/Button_Select_%d.dds"), 3))))
-		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Guide_Background*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Guide_Background"),
@@ -1603,7 +1665,10 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_E.dds")))))
 		return E_FAIL;
 
-
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_ESC"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_ESC.dds")))))
+		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Button_Arrow"),
@@ -1688,6 +1753,16 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Weapon_Saber"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Saber_%d.dds"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Weapon_Rapier"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Rapier_%d.dds"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Skill_Type"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkillType/FableType_%d.dds"), 3))))
 		return E_FAIL;
@@ -1729,13 +1804,29 @@ HRESULT CLoader::Loading_For_UI_Texture()
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ActionType"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SelectActionType/Img_ActionType_%d.dds"),3))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SelectActionType/Img_ActionType_%d.dds"),6))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ActionType_Effect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SelectActionType/Img_ActionType_Mask.dds")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Popup_Background"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BackGround/Popup_Bg_%d.dds"), 3))))
+		return E_FAIL;	
+	
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Script_Background"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BackGround/Script_BG.dds")))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Script_AutoEffect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Flow.dds")))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

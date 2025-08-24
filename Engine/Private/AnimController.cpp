@@ -169,8 +169,16 @@ void CAnimController::Update(_float fTimeDelta)
 			if (tr.iFromNodeId == ANYSTATE_NODE_ID)
 			{
 				// AnyState에서 현재 상태로의 전환은 무시 (무한루프 방지)
+				//if (tr.iToNodeId == m_CurrentStateNodeId)
+				//	continue;
+
 				if (tr.iToNodeId == m_CurrentStateNodeId)
-					continue;
+				{
+					auto toState = FindStateByNodeId(tr.iToNodeId);
+					if (!toState || !toState->bCanSameAnimReset)
+						continue; // 원래대로 무시
+					// bCanSameAnimReset == true면 같은 상태로 다시 들어가도록 허용
+				}
 
 				if (!tr.Evaluates(this, m_pAnimator))
 					continue;
@@ -246,6 +254,7 @@ void CAnimController::Update(_float fTimeDelta)
 				m_TransitionResult.bTransition = true;
 				m_TransitionResult.fDuration = tr.duration;
 				m_CurrentStateNodeId = ConvertExitNodeToExitStateNodeId(tr.iToNodeId);
+				m_TransitionResult.bCanSameAnimReset = toState->bCanSameAnimReset;
 				ConsumeTrigger(tr);
 				return; // AnyState 전환이 실행되면 즉시 종료
 			}
@@ -354,6 +363,7 @@ void CAnimController::Update(_float fTimeDelta)
 			m_TransitionResult.fDuration = tr.duration;
 			m_CurrentStateNodeId = ConvertExitNodeToExitStateNodeId(tr.iToNodeId); // 다음 프레임부터 이 상태로 간주
 			ConsumeTrigger(tr);
+			m_TransitionResult.bCanSameAnimReset = toState->bCanSameAnimReset;
 			break;
 		}
 	}
@@ -661,6 +671,10 @@ json CAnimController::Serialize()
 			{"LowerStartTime", state.fLowerStartTime},
 			{"UpperStartTime", state.fUpperStartTime}
 			});
+		if (state.bCanSameAnimReset)
+		{
+			j["Anim States"].back()["CanSameAnimReset"] = state.bCanSameAnimReset;
+		}
 	}
 
 	// 트랜지션 직렬화
@@ -841,7 +855,14 @@ void CAnimController::Deserialize(const json& j)
 				newState.fLowerStartTime = fLowerStartTime; // 노드 위치 설정
 				newState.fUpperStartTime = fUpperStartTime; // 마스크 본 이름 설정
 				newState.fNodePos = pos; // 노드 위치 설정
-
+				if (state.contains("CanSameAnimReset") && state["CanSameAnimReset"].is_boolean())
+				{
+					newState.bCanSameAnimReset = state["CanSameAnimReset"];
+				}
+				else
+				{
+					newState.bCanSameAnimReset = false; // 기본값은 false
+				}
 
 				//m_States.push_back({ name, clip, nodeId, pos ,lowerClipName, upperClipName,maskBoneName,fBlendWeight });
 			}

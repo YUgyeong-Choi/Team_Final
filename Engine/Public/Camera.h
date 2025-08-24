@@ -45,7 +45,9 @@ protected:
 
 public:
 	void StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
+	void StartRot(_vector vRot, _float fDuration);
 	void Update_Camera_Shake(_float fTimedelta);
+	void Update_Camera_MoreRot(_float fTimedelta);
 
 public:
 	_vector GetPureCamPos() const { return m_vPureCamPos; }
@@ -66,6 +68,12 @@ protected:
 	_float				m_fShakeFreqPos = {};
 	_float				m_fShakeFreqRot = {};
 	_float				m_fShakeIntensity = {};
+
+	_bool				m_bMoreRot = {};
+	_float				m_fMoreRotTime = {};
+	_float				m_fMoreRotDuration = {};
+	_vector				m_vMoreRotFreq = {};
+
 	_vector				m_vCurrentShakePos = {};
 	_vector				m_vCurrentShakeRot = {};
 	_vector				m_vPureCamPos = {};

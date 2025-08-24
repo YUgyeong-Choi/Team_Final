@@ -536,6 +536,62 @@
             "TickPerSecond": 55.0
         },
         {
+            "ClipName": "AS_Pino_Prop_Fog",
+            "Duration": 370.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Stargazer_Active_End",
+            "Duration": 55.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Stargazer_Active_Loop",
+            "Duration": 90.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Stargazer_Active_Start",
+            "Duration": 50.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Stargazer_Inactive",
+            "Duration": 200.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Stargazer_Inactive_End",
+            "Duration": 80.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Stargazer_Inactive_Loop",
+            "Duration": 60.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Pino_Stargazer_Inactive_Start",
+            "Duration": 60.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
             "ClipName": "AS_Pino_Arm_Normal_BackHand",
             "Duration": 134.0,
             "Events": [

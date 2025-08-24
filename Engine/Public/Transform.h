@@ -102,7 +102,7 @@ public:
 	bool Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetScale);
 	/* [ 몇초동안 어느방향으로 어느축을 기준으로 몇만큼 회전할거니? ] */
 	bool Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, _float fAngleDegree);
-	/* [ 목표지점까지 얼마만큼 높이로 점프한다 ] */
+	/* [ 목표지점까지 얼마만큼 높이로 점프해서 도착한다. ] */
 	bool JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime, class CPhysXController* pController = nullptr);
 
 public:
