@@ -20,8 +20,14 @@ public:
 
 
     virtual PxRigidActor* Get_Actor() = 0;
+    PxShape* Get_Shape() { return m_pShape; }
     void Add_IngoreActors(PxActor* pActor) { m_ignoreActors.insert(pActor); }
     unordered_set<PxActor*> Get_IngoreActors() { return m_ignoreActors; }
+
+    void Modify_Shape(const PxGeometry& geom, PxMaterial* material = nullptr);
+    void ReCreate_Shape(class PxRigidActor* pRigidActor, const PxGeometry& geom, PxMaterial* material = nullptr);
+
+
 
     virtual void RemovePhysX() {};
 
@@ -60,6 +66,8 @@ protected:
 
     // 필터 설정
     PxFilterData m_filterData{};
+
+    PxShape* m_pShape = { nullptr };
 #ifdef _DEBUG
     // For Debug Render
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };

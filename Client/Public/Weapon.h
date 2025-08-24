@@ -98,6 +98,11 @@ public:
 	SKILL_DESC& Get_SkillDesc(_int iIndex) { return m_eSkillDesc[iIndex]; }
 	const _float4x4* Get_CombinedWorldMatrix() const { return &m_CombinedWorldMatrix; }
 
+protected:  /* [ 히트랙 ] */
+	// TimeScale 몇까지 내릴지, 내려가는 시간, 올라가는 시간
+	// 0.1f, 0.3f, 0.5f 면 1.0~0.1까지 타임스탬프가 0.3초 동안 내려가고, 0.1~1.0 까지 0.5초 동안 다시 올라간다.
+	void StartHitReg(_float fHitRegTarget, _float fHitRegStartSpeed, _float fHitRegEndSpeed);
+	void Update_HitReg(_float fTimeDelta);
 protected:
 	const _float4x4*	m_pParentWorldMatrix = { nullptr };
 	const _float4x4*	m_pSocketMatrix = { nullptr };
@@ -146,9 +151,15 @@ protected:
 
 protected:				/* [ 무기들이 보통 공통적으로 트레일 이펙트를 갖고 있기 때문에 추가합니다. ] */
 	class CSwordTrailEffect* m_pWeaponTrailEffect = { nullptr };	// 각자 이펙트가 있을 경우에 Ready_Effect든 뭐든 해서 만들어 사용.
-
-	
 	vector<CGameObject*> m_CollisonObjects;
+
+protected: /* [ 히트랙 ] */
+	_bool m_bHitRegActive = { false };
+	_float m_fHitRegTime = {};  // 전체 지속시간 (초)
+	_float m_fHitRegTarget = 0.6f;   // 내려갈 목표 타임스케일 (슬로우)
+	_float m_fHitRegStartSpeed = 1.0f;   // 내려가는 속도 가중치
+	_float m_fHitRegEndSpeed = 1.5f;   // 올라오는 속도 가중치
+	_float m_fHitRegElapsed;
 
 public:
 	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

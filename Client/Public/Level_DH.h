@@ -31,6 +31,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	HRESULT Ready_OctoTree();
+
 
 private:
 	//맵 로드하는 부분

@@ -262,13 +262,13 @@ CUnit* CLockOn_Manager::Find_ClosestToLookTarget()
         return nullptr;
 
     const _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-    _vector       vPlayerLook = CCamera_Manager::Get_Instance()->GetCurCam()->Get_TransfomCom()->Get_State(STATE::LOOK);
-    vPlayerLook = XMVector3Normalize(vPlayerLook);
+    _vector       vCamLook = CCamera_Manager::Get_Instance()->GetCurCam()->Get_TransfomCom()->Get_State(STATE::LOOK);
+    vCamLook = XMVector3Normalize(vCamLook);
 
     // ===== 설정 =====
     const _float wAngle = 0.35f;                     // 각도 가중치(정면 우선)
     const _float wDist = 0.65f;                     // 거리 가중치(가까운 대상 우선)
-    const _float cosHalfFov = cosf(XMConvertToRadians(80.f)); // -70 ~ 70 시야각에 있는 것만
+    const _float cosHalfFov = cosf(XMConvertToRadians(90.f)); // 시야각에 있는 것만
 
     // ===== 1) FOV 안의 타깃만 대상으로 최대 거리 계산 =====
     _float maxDist2 = 0.f;
@@ -281,7 +281,7 @@ CUnit* CLockOn_Manager::Find_ClosestToLookTarget()
         const _vector vDelta = vTargetPos - vPlayerPos;
         const _vector vToTarget = XMVector3Normalize(vDelta);
 
-        const _float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget)); // [-1,1]
+        const _float fDot = XMVectorGetX(XMVector3Dot(vCamLook, vToTarget)); // [-1,1]
         if (fDot < cosHalfFov)          // FOV 밖 → 스킵
             continue;
 
@@ -308,7 +308,7 @@ CUnit* CLockOn_Manager::Find_ClosestToLookTarget()
         const _vector vDelta = vTargetPos - vPlayerPos;
         const _vector vToTarget = XMVector3Normalize(vDelta);
 
-        _float fDot = XMVectorGetX(XMVector3Dot(vPlayerLook, vToTarget));
+        _float fDot = XMVectorGetX(XMVector3Dot(vCamLook, vToTarget));
         if (fDot < cosHalfFov)          // FOV 밖 → 스킵
             continue;
 
@@ -353,10 +353,10 @@ CUnit* CLockOn_Manager::Change_ToLookTarget()
     RemoveSomeTargets();
 
     // 플레이어 기준 벡터
-    const _vector P = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-    const _vector F = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK));
+    const _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+    const _vector vCamLook = XMVector3Normalize(CCamera_Manager::Get_Instance()->GetCurCam()->Get_TransfomCom()->Get_State(STATE::LOOK));
     const _vector Up = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-    const _vector R = XMVector3Normalize(XMVector3Cross(Up, F));
+    const _vector R = XMVector3Normalize(XMVector3Cross(Up, vCamLook));
 
     // 현재 락온 대상 제외
     CGameObject* pCurrent = m_pBestTarget;
@@ -364,20 +364,26 @@ CUnit* CLockOn_Manager::Change_ToLookTarget()
     CUnit* best = nullptr;
     _float bestAngle = XM_PI;
 
+    const _float cosHalfFov = cosf(XMConvertToRadians(90.f)); // 시야각에 있는 것만
+
     for (auto* target : m_vecTarget)
     {
         if (target == pCurrent) continue;
 
-        const _vector T = target->Get_TransfomCom()->Get_State(STATE::POSITION);
-        const _vector V = XMVector3Normalize(T - P);
+        const _vector vTargetPos = target->Get_TransfomCom()->Get_State(STATE::POSITION);
+        const _vector vDelta = XMVector3Normalize(vTargetPos - vPlayerPos);
 
         // 좌/우 판정
-        const _float side = XMVectorGetX(XMVector3Dot(V, R));
+        const _float side = XMVectorGetX(XMVector3Dot(vDelta, R));
         if ((sidePref > 0 && side <= 0.f) || (sidePref < 0 && side >= 0.f))
             continue;
 
         // 각도 계산
-        _float fDot = XMVectorGetX(XMVector3Dot(F, V));
+        _float fDot = XMVectorGetX(XMVector3Dot(vCamLook, vDelta));
+
+        if (fDot < cosHalfFov)          // FOV 밖 → 스킵
+            continue;
+
         fDot = clamp(fDot, -1.f, 1.f);
         _float fAngle = acosf(fDot);
 
@@ -451,6 +457,9 @@ void CLockOn_Manager::Set_Off(CUnit* pObj)
     _float fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
 
     CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_PitchYaw(fPitch, fYaw);
+
+    if (pObj != nullptr)
+        CLockOn_Manager::Get_Instance()->Set_Active();
 }
 
 

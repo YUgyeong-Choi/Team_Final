@@ -10,6 +10,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Left_End",
             "Duration": 142.0,
+            "Events": [
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 36.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 59.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -21,6 +31,14 @@
                 {
                     "EventName": "Turnning",
                     "Time": 10.0
+                },
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 55.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 61.0
                 }
             ],
             "IsLoop": false,
@@ -30,6 +48,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Right_End",
             "Duration": 125.0,
+            "Events": [
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 45.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 55.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -61,6 +89,14 @@
                 {
                     "EventName": "IsFront",
                     "Time": 90.0
+                },
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 54.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 79.0
                 }
             ],
             "IsLoop": false,
@@ -84,6 +120,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_04_Left",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 48.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -115,6 +161,14 @@
                 {
                     "EventName": "Turnning",
                     "Time": 2.0
+                },
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 55.0
                 }
             ],
             "IsLoop": false,
@@ -149,6 +203,10 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 106.0
+                },
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 98.0
                 }
             ],
             "IsLoop": false,
@@ -190,6 +248,14 @@
                 {
                     "EventName": "Turnning",
                     "Time": 6.0
+                },
+                {
+                    "EventName": "ColliderFootOn",
+                    "Time": 37.0
+                },
+                {
+                    "EventName": "ColliderFootOff",
+                    "Time": 55.0
                 }
             ],
             "IsLoop": false,
@@ -221,6 +287,14 @@
                 {
                     "EventName": "Turnning",
                     "Time": 13.0
+                },
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 42.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 47.0
                 }
             ],
             "IsLoop": false,
@@ -345,7 +419,7 @@
             "Events": [
                 {
                     "EventName": "Flamethrower",
-                    "Time": 2.0
+                    "Time": 17.0
                 }
             ],
             "IsLoop": false,
@@ -358,7 +432,7 @@
             "Events": [
                 {
                     "EventName": "Flamethrower",
-                    "Time": 2.0
+                    "Time": 17.0
                 }
             ],
             "IsLoop": false,
@@ -490,6 +564,16 @@
         {
             "ClipName": "AS_Idle_C",
             "Duration": 480.0,
+            "Events": [
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ColliderFootOff",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0

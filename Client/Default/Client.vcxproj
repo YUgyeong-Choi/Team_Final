@@ -157,6 +157,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\ActionType_Icon.h" />
     <ClInclude Include="..\public\AStar_Manager.h" />
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
@@ -198,6 +199,9 @@
     <ClInclude Include="..\Public\MonsterToolObject.h" />
     <ClInclude Include="..\public\LegionArm_Base.h" />
     <ClInclude Include="..\public\LegionArm_Steel.h" />
+    <ClInclude Include="..\public\PlayerFrontCollider.h" />
+    <ClInclude Include="..\Public\PlayerLamp.h" />
+    <ClInclude Include="..\Public\Oil.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
     <ClInclude Include="..\Public\TriggerSound.h" />
@@ -279,6 +283,7 @@
     <ClInclude Include="..\public\UI_Popup.h" />
     <ClInclude Include="..\public\UI_Script_Talk.h" />
     <ClInclude Include="..\public\UI_Script_Text.h" />
+    <ClInclude Include="..\public\UI_SelectWeapon.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
     <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
@@ -322,6 +327,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\ActionType_Icon.cpp" />
     <ClCompile Include="..\private\AStar_Manager.cpp" />
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
@@ -389,6 +395,7 @@
     <ClCompile Include="..\Private\Observer_Player_Status.cpp" />
     <ClCompile Include="..\private\Observer_Slot.cpp" />
     <ClCompile Include="..\private\Observer_Weapon.cpp" />
+    <ClCompile Include="..\Private\Oil.cpp" />
     <ClCompile Include="..\private\Panel_Player_Arm.cpp" />
     <ClCompile Include="..\private\Panel_Player_LD.cpp" />
     <ClCompile Include="..\private\Panel_Player_RD.cpp" />
@@ -399,6 +406,8 @@
     <ClCompile Include="..\private\Elite_Police.cpp" />
     <ClCompile Include="..\private\LegionArm_Base.cpp" />
     <ClCompile Include="..\private\LegionArm_Steel.cpp" />
+    <ClCompile Include="..\private\PlayerFrontCollider.cpp" />
+    <ClCompile Include="..\private\PlayerLamp.cpp" />
     <ClCompile Include="..\private\Portion.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="..\private\Lamp.cpp" />
@@ -436,6 +445,7 @@
     <ClCompile Include="..\private\UI_Popup.cpp" />
     <ClCompile Include="..\private\UI_Script_Talk.cpp" />
     <ClCompile Include="..\private\UI_Script_Text.cpp" />
+    <ClCompile Include="..\private\UI_SelectWeapon.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
     <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />

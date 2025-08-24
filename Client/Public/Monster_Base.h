@@ -124,8 +124,6 @@ private: /* [ 루트모션 관련 변수 ] */
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
 	_float   m_fSmoothThreshold = 0.1f;
-
-
 public:
 	static CMonster_Base* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

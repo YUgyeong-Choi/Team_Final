@@ -129,6 +129,7 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 	m_Blend.toUpperAnim = transitionResult.pToUpperAnim;
 	m_eCurrentTransitionType = transitionResult.eType; // 현재 전환 타입 저장
 	m_Blend.blendWeight = transitionResult.fBlendWeight; // 상하체 블렌드 가중치 
+	m_Blend.canSameAnimReset = transitionResult.bCanSameAnimReset; // 같은 애니메이션일 때 초기화 가능한지 여부
 
 
 	_bool bFromLowerAnimSame = (transitionResult.pFromLowerAnim == transitionResult.pToLowerAnim);
@@ -269,13 +270,6 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 	CollectBoneMatrices(m_Blend.toLowerAnim, toL, iBoneCount);
 	CollectBoneMatrices(m_Blend.fromUpperAnim, fromU, iBoneCount);
 	CollectBoneMatrices(m_Blend.toUpperAnim, toU, iBoneCount);
-	//for (size_t i = 0; i < iBoneCount; ++i)
-	//{
-	//	fromU[i] = m_Blend.fromUpperAnim ? m_Blend.fromUpperAnim->GetBoneMatrix(static_cast<_uint>(i)) : XMMatrixIdentity();
-	//	fromL[i] = m_Blend.fromLowerAnim ? m_Blend.fromLowerAnim->GetBoneMatrix(static_cast<_uint>(i)) : XMMatrixIdentity();
-	//	toU[i] = m_Blend.toUpperAnim ? m_Blend.toUpperAnim->GetBoneMatrix(static_cast<_uint>(i)) : XMMatrixIdentity();
-	//	toL[i] = m_Blend.toLowerAnim ? m_Blend.toLowerAnim->GetBoneMatrix(static_cast<_uint>(i)) : XMMatrixIdentity();
-	//}
 
 	//블렌드
 	m_Blend.elapsed += fDeltaTime;
@@ -373,14 +367,21 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 	//  블렌드 끝났으면 정리
 	if (fBlendFactor >= 1.f)
 	{
-		m_Blend.elapsed = 0.f;
-		m_Blend.active = false;
-
 		_bool lowerChanged = (m_Blend.fromLowerAnim != m_Blend.toLowerAnim);
 		_bool upperChanged = (m_Blend.fromUpperAnim != m_Blend.toUpperAnim);
 		_bool lowerUpperSame = (m_Blend.fromLowerAnim != m_Blend.toUpperAnim);
 		_bool upperLowerSame = (m_Blend.fromUpperAnim != m_Blend.toLowerAnim);
 		unordered_set<CAnimation*> toReset;
+
+		if (m_Blend.canSameAnimReset)
+		{
+			if (m_Blend.fromLowerAnim == m_Blend.toLowerAnim)
+				toReset.insert(m_Blend.fromLowerAnim);
+
+			if (m_Blend.fromUpperAnim == m_Blend.toUpperAnim)
+				toReset.insert(m_Blend.fromUpperAnim);
+		}
+
 		if (lowerChanged)
 		{
 			if (lowerUpperSame)
@@ -411,6 +412,9 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 			m_pUpperClip = nullptr;
 			m_UpperMaskSet.clear();
 		}
+		m_bIsFinished = false;
+		m_Blend.elapsed = 0.f;
+		m_Blend.active = false;
 		return;
 	}
 }

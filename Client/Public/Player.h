@@ -13,6 +13,7 @@ NS_BEGIN(Client)
 class CPlayerState;
 class CWeapon;
 class CLegionArm_Base;
+class CPlayerLamp;
 
 class CPlayer : public CUnit
 {
@@ -121,6 +122,7 @@ private: /* [ 이동로직 ] */
 
 private: /* [ Setup 함수 ] */
 	HRESULT Ready_Weapon();
+	HRESULT Ready_Lamp();
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
 	HRESULT Ready_Controller();
@@ -215,6 +217,7 @@ private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*	m_pTarget = { nullptr };
 	CWeapon*		m_pWeapon = { nullptr };
 	CGameObject*	m_pInterectionStuff = { nullptr };
+	CPlayerLamp*	m_pPlayerLamp = { nullptr };
 
 private: /* [ 전투관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
@@ -265,7 +268,7 @@ private: /* [ 인터렉션 관련변수 ] */
 	unordered_set<string> m_MovableStates = {
 		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",
 		"Run_F", "Run_F_Stop", "Run_FR", "Run_FL", "Run_BR", "Run_BL", "Run_B", "Run_L", "Run_R",
-		"Sprint", "Sprint_Stop",
+		"Sprint", //"Sprint_Stop",
 		"Guard_Walk_B", "Guard_Walk_F", "Guard_Walk_L", "Guard_Walk_R",
 		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
 		"OnLamp_Walk", "FailItem_Walk", "Fail_Walk",
@@ -341,6 +344,9 @@ private: /* [ 벨트 슬롯 ] */
 private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
 
+
+	_bool m_bContact = false;
+	_float m_fContactIntensity = 0.2f;
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

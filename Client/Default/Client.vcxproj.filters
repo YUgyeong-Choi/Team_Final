@@ -430,6 +430,18 @@
     <Filter Include="97.ShaderFiles\Effect">
       <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\FrontCollider">
+      <UniqueIdentifier>{d4c63305-0980-4007-be91-0d252ad9cc49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Lamp">
+      <UniqueIdentifier>{f271a8c5-3b22-4233-b044-b30176865f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\SelectWeapon">
+      <UniqueIdentifier>{6b28a854-4528-4ec6-b1e9-6ad4d197763f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\ActionType">
+      <UniqueIdentifier>{2b13074a-d794-4165-bf06-72b9eabcfbb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -910,6 +922,21 @@
     <ClInclude Include="..\public\UI_Script_Talk.h">
       <Filter>02.GameObjects\99.UI\Container\Script\Talk</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerFrontCollider.h">
+      <Filter>02.GameObjects\01.Unit\00.Player\FrontCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerLamp.h">
+      <Filter>02.GameObjects\01.Unit\00.Player\Lamp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Oil.h">
+      <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ActionType_Icon.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon\ActionType</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_SelectWeapon.h">
+      <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1363,6 +1390,21 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Script_Talk.cpp">
       <Filter>02.GameObjects\99.UI\Container\Script\Talk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerFrontCollider.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player\FrontCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerLamp.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player\Lamp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Oil.cpp">
+      <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ActionType_Icon.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Icon\ActionType</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_SelectWeapon.cpp">
+      <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

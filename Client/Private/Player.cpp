@@ -20,6 +20,7 @@
 #include "Belt.h"
 #include "Item.h"
 #include "Lamp.h"
+#include "PlayerLamp.h"
 
 #include "LegionArm_Base.h"
 #include "LegionArm_Steel.h"
@@ -56,8 +57,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Ready_Weapon()))
-		return E_FAIL; 
+		return E_FAIL;
 
+	if (FAILED(Ready_Lamp()))
+		return E_FAIL;
 
 	/* [ 플레이어 제이슨 로딩 ] */
 	LoadPlayerFromJson();
@@ -215,8 +218,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->CancelOverrideAnimController();
 		//m_pAnimator->SetInt("HitDir", m_iTestInt);
 		//m_pAnimator->SetTrigger("Hited");
-		m_pAnimator->SetBool("WasDead", false);
-		m_pAnimator->SetTrigger("Teleport");
+		m_pAnimator->SetTrigger("Death");
 	}
 
 	if (KEY_DOWN(DIK_U))
@@ -320,8 +322,7 @@ void CPlayer::HPSubtract()
 	}
 
 
-	//m_fHP -= m_fReceiveDamage;
-	m_fHP -= 1.f;
+	m_fHP -= m_fReceiveDamage;
 
 	if (m_fHP <= 0.f)
 		m_fHP = 0.f;
@@ -1197,9 +1198,6 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		{
 			m_bGardHit = true;
 
-
-			
-			//
 			EHitDir eDir = ComputeHitDir();
 
 			if(eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
@@ -1213,6 +1211,9 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 	}
 
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
+		m_bContact = true;
+
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -1221,6 +1222,8 @@ void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 
 void CPlayer::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
+		m_bContact = false;
 }
 
 void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -1274,10 +1277,14 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	}
 
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
+		m_bContact = true;
 }
 
 void CPlayer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
+		m_bContact = true;
 }
 
 void CPlayer::ReadyForState()
@@ -1343,6 +1350,40 @@ HRESULT CPlayer::Ready_Weapon()
 		return E_FAIL;
 
 	//m_pWeapon->SetisAttack(false);
+
+	return S_OK;
+}
+
+
+HRESULT CPlayer::Ready_Lamp()
+{
+	/* [ 램프 모델을 추가 ] */
+
+	CPlayerLamp::PLAYERLAMP_DESC Desc{};
+	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.InitPos = { 0.f, 0.f, 0.f };
+	Desc.InitScale = { 0.4f, 0.4f, 0.4f };
+	Desc.iRender = 0;
+	Desc.iLevelID = m_iLevelID;
+	Desc.pOwner = this;
+
+	Desc.szMeshID = TEXT("PlayerLamp");
+	lstrcpy(Desc.szName, TEXT("PlayerLamp"));
+
+	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Lamp_02"));
+	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_PlayerLamp"),
+		m_iLevelID, TEXT("Player_Lamp"), &pGameObject, &Desc)))
+		return E_FAIL;
+	
+	m_pPlayerLamp = dynamic_cast<CPlayerLamp*>(pGameObject);
+
+	if (m_pPlayerLamp == nullptr)
+		return E_FAIL; 
 
 	return S_OK;
 }
@@ -2055,9 +2096,6 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	{
 		fSpeed = 0.f;
 	}
-	_float fDist = fSpeed * fTimeDelta;
-	vInputDir *= fDist;
-	XMStoreFloat3(&moveVec, vInputDir);
 
 #ifdef _DEBUG
 	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
@@ -2065,6 +2103,10 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 		return;
 #endif // _DEBUG
 
+	_float fDist = fSpeed * fTimeDelta;
+	PxVec3 vSaveInputDir = VectorToPxVec3(vInputDir);
+	vInputDir *= fDist;
+	XMStoreFloat3(&moveVec, vInputDir);
 
 	// 중력 적용
 	constexpr _float fGravity = -9.81f;
@@ -2076,8 +2118,15 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 	PxControllerFilters filters;
 	filters.mFilterCallback = &filter; // 필터 콜백 지정
-	PxControllerCollisionFlags collisionFlags =
-		m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+	PxControllerCollisionFlags collisionFlags;
+	if (m_bContact && XMVector3Equal(vInputDir, XMVectorZero())) {
+		collisionFlags = m_pControllerCom->Move(fTimeDelta, vSaveInputDir, fSpeed, m_fContactIntensity);
+	}
+	else
+	{
+		collisionFlags = m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+	}
+
 	//printf(" 왜 안움직이지?? : %s \n", strName.c_str());
 
 	// 4. 지면에 닿았으면 중력 속도 초기화

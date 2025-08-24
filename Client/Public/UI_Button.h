@@ -72,7 +72,7 @@ private:
 	_bool   m_isHasTexture = {false};
 
 	// 마우스가 위에 있는지, 클릭이 됬는지
-	_bool   m_isMouseHover = {false};
+	_bool   m_isMouseHover = { false };
 	_bool   m_isHighlight = {false};
 
 	// ui에 필요한 글자 만들고, 버튼 중앙에 띄운다.

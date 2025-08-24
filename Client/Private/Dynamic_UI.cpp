@@ -167,6 +167,9 @@ void CDynamic_UI::Update(_float fTimeDelta)
 	{
 		m_fElapsedTime += fTimeDelta;
 
+		if (m_isUVMove)
+			m_fUVTime += fTimeDelta;
+
 
 		if (m_fElapsedTime > m_fDuration)
 		{
@@ -347,6 +350,10 @@ HRESULT CDynamic_UI::Bind_ShaderResources()
 	// 기본값을 던지고, 추가로 덮어쓰자
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &m_fCurrentAlpha, sizeof(_float))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_UVTime", &m_fUVTime, sizeof(_float))))
 		return E_FAIL;
 
 	

@@ -93,6 +93,10 @@ HRESULT CPBRMesh::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		_float fEmissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+			return E_FAIL;
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 			return E_FAIL;
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))

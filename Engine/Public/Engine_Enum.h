@@ -47,6 +47,8 @@ namespace Engine
 		PLAYER_WEAPON,
 		MONSTER_WEAPON,
 		NPC,
+		ENVIRONMENT_CONVEX,
+		ENVIRONMENT_TRI,
 		A,
 		B,
 		C,

@@ -4,6 +4,7 @@
 #include "Camera_Manager.h"
 #include "Level_Loading.h"
 #include "PBRMesh.h"
+#include "DH_ToolMesh.h"
 
 #include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
@@ -56,6 +57,7 @@ void CLevel_DH::Update(_float fTimeDelta)
 
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
+	ShowCursor(true);
 	//__super::Update(fTimeDelta);
 }
 
@@ -93,6 +95,41 @@ HRESULT CLevel_DH::Render()
 	return S_OK;
 }
 
+HRESULT CLevel_DH::Ready_OctoTree()
+{
+	m_pGameInstance->ClearIndexToObj();
+
+	vector<AABBBOX> staticBounds;
+	vector<OCTOTREEOBJECTTYPE>  vObjectType;
+	map<Handle, _uint> handleToIndex;
+
+	//용량 확보: 메쉬 + 라이트
+	vector<class CGameObject*> OctoObject = m_pGameInstance->GetOctoTreeObjects();
+	const _uint iReserve = static_cast<_uint>(OctoObject.size());
+	staticBounds.reserve(iReserve);
+	vObjectType.reserve(iReserve);
+
+	_uint nextHandleId = 1000; // 핸들 ID 인데 1000부터 시작임
+
+	for (auto* OctoTreeObjects : OctoObject)
+	{
+		AABBBOX worldBox = OctoTreeObjects->GetWorldAABB();
+		_uint idx = static_cast<_uint>(staticBounds.size());
+		staticBounds.push_back(worldBox);
+		vObjectType.push_back(OCTOTREEOBJECTTYPE::MESH);
+
+		Handle h{ nextHandleId++ };
+		handleToIndex[h] = idx;
+		m_pGameInstance->PushBackIndexToObj(OctoTreeObjects);
+	}
+
+	if (FAILED(m_pGameInstance->Ready_OctoTree(staticBounds, handleToIndex)))
+		return E_FAIL;
+
+	m_pGameInstance->SetObjectType(vObjectType);
+
+	return S_OK;
+}
 
 
 #pragma region 맵 로드

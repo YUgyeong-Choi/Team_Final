@@ -1760,6 +1760,12 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 						state.fLowerStartTime = fLowerStartTime;
 					}
 				}
+				_bool bCanSameAnimReset = state.bCanSameAnimReset;
+
+				if (ImGui::Checkbox("Can Same Anim Reset", &bCanSameAnimReset))
+				{
+					state.bCanSameAnimReset = bCanSameAnimReset;
+				}
 
 				ImGui::End();
 			break;

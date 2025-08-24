@@ -72,16 +72,6 @@ void CBossUnit::Priority_Update(_float fTimeDelta)
         cout << "현재 플레이어와의 거리 : " << Get_DistanceToPlayer() << endl;
         cout << "현재 애니메이션 상태 : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
         cout << "현재 이동 방향 " << m_pAnimator->GetInt("MoveDir") << endl;
-
-        //m_pAnimator->SetTrigger("Attack");
-        //m_pAnimator->SetInt("SkillType", P2_FireFlame);
-        //m_pAnimator->SetTrigger("Paralyzation");
-        m_pAnimator->SetTrigger("Fatal");
-        //m_pAnimator->SetTrigger("Groggy");
-        //if (m_bStartPhase2 == false)
-        //	m_bStartPhase2 = true;
-    //	m_fHP -= 10.f;
-        //FireProjectile(ProjectileType::Oil);
     }
 #endif
 
@@ -110,8 +100,8 @@ void CBossUnit::Update(_float fTimeDelta)
 
 void CBossUnit::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
-    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	__super::Late_Update(fTimeDelta);
+
 #ifdef _DEBUG
     if (m_pGameInstance->Get_RenderCollider())
     {
@@ -223,7 +213,7 @@ HRESULT CBossUnit::Ready_Actor()
 
     PxTransform pose(positionVec, rotationQuat);
 
-    PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y * 1.7f, scaleVec.z * 0.8f);
+    PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y * 1.7f, scaleVec.z * 1.3f);
     PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
     m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
     m_pPhysXActorCom->Set_ShapeFlag(true, false, true);

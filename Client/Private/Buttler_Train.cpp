@@ -75,6 +75,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 		}
 		m_pPhysXActorCom->Init_SimulationFilterData();
+
 	}
 }
 
@@ -97,6 +98,70 @@ void CButtler_Train::Update(_float fTimeDelta)
 	}
 
 	__super::Update(fTimeDelta);
+
+
+//#ifdef _DEBUG
+//	// ===== Shape 교체 (F5) =====
+//	if (KEY_DOWN(DIK_F5))
+//	{
+//		if (m_pPhysXActorCom && m_pPhysXActorCom->Get_Actor())
+//		{
+//			switch (m_iShapeTestState)
+//			{
+//			case 0: // Box
+//				m_pPhysXActorCom->ReCreate_Shape(m_pPhysXActorCom->Get_Actor(), m_DebugBox, m_pGameInstance->GetMaterial(L"Default"));
+//				cout << "Shape Test: Box ("
+//					<< m_DebugBox.halfExtents.x << ","
+//					<< m_DebugBox.halfExtents.y << ","
+//					<< m_DebugBox.halfExtents.z << ")" << endl;
+//				break;
+//
+//			case 1: // Sphere
+//				m_pPhysXActorCom->ReCreate_Shape(m_pPhysXActorCom->Get_Actor(), m_DebugSphere, m_pGameInstance->GetMaterial(L"Default"));
+//				cout << "Shape Test: Sphere (r=" << m_DebugSphere.radius << ")" << endl;
+//				break;
+//
+//			case 2: // Capsule
+//				m_pPhysXActorCom->ReCreate_Shape(m_pPhysXActorCom->Get_Actor(), m_DebugCapsule, m_pGameInstance->GetMaterial(L"Default"));
+//				cout << "Shape Test: Capsule (r=" << m_DebugCapsule.radius
+//					<< ", h=" << m_DebugCapsule.halfHeight * 2 << ")" << endl;
+//				break;
+//			}
+//
+//			m_iShapeTestState = (m_iShapeTestState + 1) % 3;
+//		}
+//	}
+//
+//	//// ===== 크기 조정 =====
+//	//if (m_pPhysXActorCom && m_pPhysXActorCom->Get_Actor())
+//	//{
+//	//	switch (m_iShapeTestState)
+//	//	{
+//	//	case 0: // Box
+//	//		if (KEY_DOWN(DIK_F6)) { m_DebugBox.halfExtents.x += 0.1f; }
+//	//		if (KEY_DOWN(DIK_F7)) { m_DebugBox.halfExtents.y += 0.1f; }
+//	//		if (KEY_DOWN(DIK_F8)) { m_DebugBox.halfExtents.z += 0.1f; }
+//	//		if (KEY_DOWN(DIK_F9)) { m_DebugBox.halfExtents = PxVec3(1.f, 2.f, 1.f); } // reset
+//	//		m_pPhysXActorCom->Modify_Shape(m_DebugBox, m_pGameInstance->GetMaterial(L"Default"));
+//	//		break;
+//
+//	//	case 1: // Sphere
+//	//		if (KEY_DOWN(DIK_F6)) { m_DebugSphere.radius += 0.1f; }
+//	//		if (KEY_DOWN(DIK_F7)) { m_DebugSphere.radius = max(0.1f, m_DebugSphere.radius - 0.1f); }
+//	//		if (KEY_DOWN(DIK_F9)) { m_DebugSphere.radius = 1.5f; } // reset
+//	//		m_pPhysXActorCom->Modify_Shape(m_DebugSphere, m_pGameInstance->GetMaterial(L"Default"));
+//	//		break;
+//
+//	//	case 2: // Capsule
+//	//		if (KEY_DOWN(DIK_F6)) { m_DebugCapsule.radius += 0.1f; }
+//	//		if (KEY_DOWN(DIK_F7)) { m_DebugCapsule.halfHeight += 0.1f; }
+//	//		if (KEY_DOWN(DIK_F8)) { m_DebugCapsule.halfHeight = max(0.1f, m_DebugCapsule.halfHeight - 0.1f); }
+//	//		if (KEY_DOWN(DIK_F9)) { m_DebugCapsule = PxCapsuleGeometry(0.8f, 2.0f); } // reset
+//	//		m_pPhysXActorCom->Modify_Shape(m_DebugCapsule, m_pGameInstance->GetMaterial(L"Default"));
+//	//		break;
+//	//	}
+//	//}
+//#endif
 
 }
 

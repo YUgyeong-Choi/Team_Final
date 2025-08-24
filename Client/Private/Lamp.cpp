@@ -63,7 +63,9 @@ void CLamp::Priority_Update(_float fTimeDelta)
 	{
 		auto pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
 		if (pPlayer)
+		{
 			m_pParentWorldMatrix = pPlayer->Get_TransfomCom()->Get_WorldMatrix_Ptr();
+		}
 	}
 	
 }
@@ -88,15 +90,15 @@ void CLamp::Late_Update(_float fTimeDelta)
 
 		_matrix PlayerMat = XMLoadFloat4x4(m_pParentWorldMatrix);
 		_vector vPosition = PlayerMat.r[3];
-		vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
+		_vector vPlayerLook = PlayerMat.r[2];
+		vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.5f);
+		vPosition += -vPlayerLook * 2.f;
 		PlayerMat.r[3] = vPosition;
 		m_pTransformCom->Set_WorldMatrix(PlayerMat);
 	
 		_vector vLightPos = m_pTransformCom->Get_State(STATE::POSITION);
 		XMStoreFloat4(&m_pLight->Get_LightDesc()->vPosition, vLightPos);
 
-		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-		XMStoreFloat4(&m_pLight->Get_LightDesc()->vDirection, vLook);
 	}
 	
 
