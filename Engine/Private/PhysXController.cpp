@@ -177,20 +177,25 @@ void CPhysXController::Set_QueryFilterData(PxFilterData filter)
     }
 }
 
-void CPhysXController::Move(_float fDeltaTime, const PxVec3& vDirection, _float fSpeed)
+PxControllerCollisionFlags CPhysXController::Move(_float fDeltaTime, const PxVec3& vDirection, _float fSpeed, _float intensity)
 {
-    PxVec3 displacement = vDirection * fSpeed * fDeltaTime;
+    PxExtendedVec3 exPos = m_pController->getPosition();
 
+    PxVec3 displacement = vDirection * fSpeed * fDeltaTime;
     CIgnoreSelfCallback filter(m_ignoreActors);
     PxControllerFilters filters;
     filters.mFilterCallback = &filter; 
     PxControllerCollisionFlags result = m_pController->move(displacement, 0.001f, fDeltaTime, filters);
 
-    // 예시: 땅에 닿았는지 확인
-    if (result & PxControllerCollisionFlag::eCOLLISION_DOWN)
+    PxExtendedVec3 nowPos = m_pController->getPosition();
+
+    if (intensity != 1.0f)
     {
-        // 점프 가능 상태 등
+        PxExtendedVec3 vPos = (nowPos - exPos)* intensity + exPos;
+		m_pController->setPosition(PxExtendedVec3(vPos.x, exPos.y, vPos.z));
     }
+
+    return result;
 }
 
 CPhysXController* CPhysXController::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

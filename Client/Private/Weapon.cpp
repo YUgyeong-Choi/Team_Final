@@ -7,7 +7,7 @@
 #include "Effect_Manager.h"
 #include "SwordTrailEffect.h"
 #include "PhysX_IgnoreSelfCallback.h"
-
+#include "Client_Calculation.h"
 #include "Unit.h"
 
 CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -57,6 +57,8 @@ HRESULT CWeapon::Initialize(void* pArg)
 
 void CWeapon::Priority_Update(_float fTimeDelta)
 {
+	if (KEY_DOWN(DIK_CAPSLOCK))
+		PrintMatrix("World", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 }
 
 void CWeapon::Update(_float fTimeDelta)
@@ -90,8 +92,6 @@ void CWeapon::Late_Update(_float fTimeDelta)
 			XMLoadFloat4x4(m_pParentWorldMatrix));
 	
 	
-	
-
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -267,6 +267,44 @@ void CWeapon::Set_WeaponTrail_Active(_bool bActive)
 {
 	if (m_pWeaponTrailEffect)
 		m_pWeaponTrailEffect->Set_TrailActive(bActive);
+}
+
+void CWeapon::StartHitReg(_float fHitRegTarget, _float fHitRegStartSpeed, _float fHitRegEndSpeed)
+{
+	m_fHitRegTime = fHitRegStartSpeed + fHitRegEndSpeed;
+	m_fHitRegTarget = fHitRegTarget;
+	m_fHitRegStartSpeed = fHitRegStartSpeed;
+	m_fHitRegEndSpeed = fHitRegEndSpeed;
+	m_fHitRegElapsed = {};
+	m_bHitRegActive = (m_fHitRegTime > 0.f);
+}
+
+void CWeapon::Update_HitReg(_float fTimeDelta)
+{
+	m_fHitRegElapsed += fTimeDelta;
+
+	_float timeScale = 1.0f;
+
+	// 페이즈 1: 1.0 → fHitRegStart
+	if (m_fHitRegElapsed <= m_fHitRegStartSpeed)
+	{
+		_float t = m_fHitRegStartSpeed <= 0.f ? 1.f : (m_fHitRegElapsed / m_fHitRegStartSpeed);
+		timeScale = LerpFloat(1.0f, m_fHitRegTarget, t);
+	}
+	// 페이즈 2: fHitRegStart → 1.0
+	else if (m_fHitRegElapsed <= (m_fHitRegStartSpeed + m_fHitRegEndSpeed))
+	{
+		_float t = m_fHitRegEndSpeed <= 0.f ? 1.f : ((m_fHitRegElapsed - m_fHitRegStartSpeed) / m_fHitRegEndSpeed);
+		timeScale = LerpFloat(m_fHitRegTarget, 1.0f, t);
+	}
+	else
+	{
+		// 끝
+		timeScale = 1.0f;
+		m_bHitRegActive = false;
+	}
+
+	m_pGameInstance->Set_GameTimeScale(timeScale);
 }
 
 CWeapon* CWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

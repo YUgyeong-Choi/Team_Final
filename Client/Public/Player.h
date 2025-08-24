@@ -344,6 +344,9 @@ private: /* [ ∫ß∆Æ ΩΩ∑‘ ] */
 private: /* [ ¿Ã∆Â∆Æ ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
 
+
+	_bool m_bContact = false;
+	_float m_fContactIntensity = 0.2f;
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
