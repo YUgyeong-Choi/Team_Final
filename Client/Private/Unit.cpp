@@ -77,19 +77,6 @@ void CUnit::Update(_float fTimeDelta)
 
 void CUnit::Late_Update(_float fTimeDelta)
 {
-	_vector	vTemp = m_pTransformCom->Get_State(STATE::POSITION);
-
-	if (m_pPlayer)
-	{
-		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-		CGameObject::Compute_ViewZ(vPlayerPos, &vTemp);
-	}
-	else
-	{
-		_vector vCam = m_pCamera_Orbital->GetPosition();
-		CGameObject::Compute_ViewZ(vCam, &vTemp);
-	}
-
 	if (m_pPhysXActorCom)
 	{
 		/* [ 공간분할 ] */
@@ -105,10 +92,6 @@ void CUnit::Late_Update(_float fTimeDelta)
 			AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
 		}
 		AABB_Inflate(tAreaUnion, 10.f);
-
-		/*_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_float3 vPos3 = {};
-		XMStoreFloat3(&vPos3, vPos);*/
 
 		if (AABB_ContainsAABB(tAreaUnion, GetWorldAABB()))
 		{

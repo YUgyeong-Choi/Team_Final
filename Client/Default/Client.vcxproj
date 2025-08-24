@@ -198,6 +198,8 @@
     <ClInclude Include="..\Public\MonsterToolObject.h" />
     <ClInclude Include="..\public\LegionArm_Base.h" />
     <ClInclude Include="..\public\LegionArm_Steel.h" />
+    <ClInclude Include="..\public\PlayerFrontCollider.h" />
+    <ClInclude Include="..\Public\PlayerLamp.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
     <ClInclude Include="..\Public\TriggerSound.h" />
@@ -399,6 +401,8 @@
     <ClCompile Include="..\private\Elite_Police.cpp" />
     <ClCompile Include="..\private\LegionArm_Base.cpp" />
     <ClCompile Include="..\private\LegionArm_Steel.cpp" />
+    <ClCompile Include="..\private\PlayerFrontCollider.cpp" />
+    <ClCompile Include="..\private\PlayerLamp.cpp" />
     <ClCompile Include="..\private\Portion.cpp" />
     <ClCompile Include="..\private\PreviewObject.cpp" />
     <ClCompile Include="..\private\Lamp.cpp" />

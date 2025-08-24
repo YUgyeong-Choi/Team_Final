@@ -830,6 +830,7 @@ public:
         m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetTrigger("Dash");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
+        m_pOwner->m_bIsInvincible = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -853,6 +854,9 @@ public:
                 m_pOwner->m_pAnimator->SetTrigger("Dash");
             }
         }
+
+        if (0.2f < m_fStateTime)
+            m_pOwner->m_bIsInvincible = false;
     }
 
     virtual void Exit() override
@@ -916,6 +920,7 @@ public:
 
         // 구르기는 무브 ON 입니다.
         m_pOwner->m_pAnimator->SetTrigger("Dash");
+        m_pOwner->m_bIsInvincible = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -930,6 +935,9 @@ public:
             m_fStateTime = 0.f;
             m_pOwner->m_pAnimator->SetTrigger("Dash");
         }
+
+        if (0.2f < m_fStateTime)
+            m_pOwner->m_bIsInvincible = false;
 
         LockOnMovement();
     }
@@ -1978,32 +1986,25 @@ public:
             {
                 //그 외의 방향을 맞으면 피격당한다.
 
-                /* [ 이펙트를 생성한다. ] */
+               /* [ 이펙트를 생성한다. ] */
                 _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
-                _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
 
-                vPos += vDir * 1.5f;
+                vPos += m_pOwner->m_vHitNormal * 0.5f;
                 _float3 vEffPos = {};
                 XMStoreFloat3(&vEffPos, vPos);
-                vEffPos.y += 0.5f;
+                vEffPos.y += 1.7f;
 
                 CEffectContainer::DESC desc = {};
 
                 XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
-
-                CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardNormal_P2"), &desc);
+                CGameObject* pEffect = { nullptr };
+                pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
 
                 if (pEffect == nullptr)
                     MSG_BOX("이펙트 생성 실패함");
 
                 /* [ HP 를 감소시키고 사망을 확인한다. ] */
                 m_pOwner->HPSubtract();
-                if (m_pOwner->m_fHP <= 0.f)
-                {
-                    m_bDead = true;
-                    return;
-                }
-
                 if (m_pOwner->m_fHP <= 0.f)
                 {
                     m_bDead = true;
@@ -2974,11 +2975,6 @@ public:
         m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetBool("Run", false);
 
-		/* [ 무기 장착 해제 ] */
-        m_pOwner->m_pWeapon->SetbIsActive(false);
-        m_pOwner->m_bWeaponEquipped = false;
-        m_pOwner->m_pAnimator->CancelOverrideAnimController();
-
         /* [ 애니메이션 설정 ] */
         /* [ 어느방향에서 맞는지 설정하기 ] */
         m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
@@ -2997,8 +2993,9 @@ public:
             m_pOwner->m_pAnimator->SetInt("HitDir", 2);
         }
 
-        m_pOwner->m_pAnimator->SetBool("WasDead", true);
+        /* [ 죽는 애니메이션 ] */
         m_pOwner->m_pAnimator->SetTrigger("Death");
+        m_pOwner->m_pAnimator->SetBool("WasDead", true);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -3018,6 +3015,10 @@ public:
             
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
 
+            /* [ 무기 장착 해제 ] */
+            m_pOwner->m_pWeapon->SetbIsActive(false);
+            m_pOwner->m_bWeaponEquipped = false;
+
             m_pOwner->m_fHP = 100.f;
             m_pOwner->Callback_HP();
             m_pOwner->m_bIsRrevival = true;
@@ -3029,6 +3030,7 @@ public:
 
     virtual void Exit() override
     {
+        m_pOwner->m_pAnimator->CancelOverrideAnimController();
         m_pOwner->m_pAnimator->SetBool("WasDead", false);
         m_fStateTime = 0.f;
         m_fRrevivalTime = 0.f;
