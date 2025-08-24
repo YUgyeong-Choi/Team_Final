@@ -74,8 +74,8 @@ private:
 
 	//메쉬 소환
 	HRESULT Ready_Meshs(_uint iLevelIndex, const _char* Map);
-	HRESULT Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
-	HRESULT Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex);
+	HRESULT Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map);
+	HRESULT Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map);
 
 	//네비게이션 소환
 	HRESULT Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex, const _char* Map);

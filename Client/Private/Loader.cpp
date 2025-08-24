@@ -591,6 +591,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	*/
 
 	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
+
 	auto futureStation = async(launch::async, [&]
 		{
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
@@ -614,38 +615,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 
-
-	//while (true)
-	//{
-	//	if (futureStation.valid() &&
-	//		futureStation.wait_for(chrono::seconds(0)) == future_status::ready)
-	//	{
-	//		if (FAILED(futureStation.get()))
-	//			return E_FAIL;
-	//		lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료..."));
-	//		break; // station은 끝났음
-	//	}
-
-	//	if (futureHotel.valid() &&
-	//		futureHotel.wait_for(chrono::seconds(0)) == future_status::ready)
-	//	{
-	//		if (FAILED(futureHotel.get()))
-	//			return E_FAIL;
-	//		lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
-	//		break; // hotel은 끝났음
-	//	}
-
-	//	// 너무 빡세게 돌지 않도록 잠깐 sleep
-	//	this_thread::sleep_for(std::chrono::milliseconds(10));
-	//}
-
 	if (FAILED(futureStation.get()))
 		return E_FAIL;
-	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료..."));
 
 	if (FAILED(futureHotel.get()))
 		return E_FAIL;
-	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
 
 #pragma endregion
 
@@ -1397,12 +1371,12 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
 		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD && bNoInstancing == false)
 		{
-			if (FAILED(Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex)))
+			if (FAILED(Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex, Map)))
 				return E_FAIL;
 		}
 		else
 		{
-			if (FAILED(Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex)))
+			if (FAILED(Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex, Map)))
 				return E_FAIL;
 		}
 	}
@@ -1410,7 +1384,7 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 	return S_OK;
 }
 
-HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
+HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map)
 {
 	for (_uint j = 0; j < iObjectCount; ++j)
 	{
@@ -1455,13 +1429,8 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 		StaticMeshDesc.iLightShape = objects[j].value("LightShape", 0);
 #pragma endregion
 
-
-		wstring LayerTag = TEXT("Layer_StaticMesh");
-		//LayerTag += StringToWString(ModelName);
-
 		StaticMeshDesc.iRender = 0;
 		StaticMeshDesc.iLevelID = iLevelIndex;
-		//lstrcpy(StaticMeshDesc.szName, TEXT("SM_TEST_FLOOR"));
 
 		wstring wstrModelName = StringToWString(ModelName);
 		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
@@ -1469,9 +1438,11 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 
 		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
+		wstring wsLayerTag = TEXT("Layer_StaticMesh_") + StringToWString(Map); //Layer_StaticMesh_STATION, Layer_StaticMesh_HOTEL
+
 		CGameObject* pGameObject = nullptr;
 		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
-			iLevelIndex, LayerTag, &pGameObject, &StaticMeshDesc)))
+			iLevelIndex, wsLayerTag, &pGameObject, &StaticMeshDesc)))
 			return E_FAIL;
 
 		m_pGameInstance->PushOctoTreeObjects(pGameObject);
@@ -1480,7 +1451,7 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 	return S_OK;
 }
 
-HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex)
+HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map)
 {
 	vector<_float4x4> InstanceMatixs(iObjectCount);
 
@@ -1495,8 +1466,6 @@ HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objec
 
 
 	//오브젝트 생성, 배치
-
-	wstring LayerTag = TEXT("Layer_StaticMesh_Instance");
 	//LayerTag += StringToWString(ModelName);
 
 	CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
@@ -1516,8 +1485,11 @@ HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objec
 
 	lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
+	wstring wsLayerTag = TEXT("Layer_StaticMesh_Instance_") + StringToWString(Map); //Layer_StaticMesh_Instance_STATION, Layer_StaticMesh_Instance_HOTEL
+	StaticMeshInstanceDesc.wsMap = StringToWString(Map);
+
 	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		iLevelIndex, LayerTag, &StaticMeshInstanceDesc)))
+		iLevelIndex, wsLayerTag, &StaticMeshInstanceDesc)))
 		return E_FAIL;
 
 	return S_OK;

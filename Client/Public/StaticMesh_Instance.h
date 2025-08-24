@@ -24,6 +24,9 @@ public:
 
 		//라이트 모양
 		_int iLightShape = { 0 };
+
+		//어디에 속했는가(STATION? HOTEL?...)
+		wstring wsMap = {};
 	}STATICMESHINSTANCE_DESC;
 
 private:
@@ -42,6 +45,8 @@ public:
 private:
 	HRESULT SetEmissive();
 
+private:
+	wstring m_wsMap = {}; //어디에 속했는가(STATION? HOTEL?...)
 
 private:
 	CModel_Instance* m_pModelCom = { nullptr };

@@ -205,7 +205,9 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	/* [ 해야할 준비들 ] */
 	if (FAILED(Ready_Dummy()))
 		return E_FAIL;
-	if (FAILED(Add_MapActor()))//맵 액터(콜라이더) 추가
+	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
@@ -971,11 +973,13 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Add_MapActor()
+HRESULT CLevel_KratCentralStation::Add_MapActor(const _char* Map)
 {
 	//여기서 액터를 추가해준다. 메인스레드에서 액터를 추가하는 것이 안전하다고 한다.
 
-	list<CGameObject*> ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_StaticMesh"));
+	wstring wsLayerTag = TEXT("Layer_StaticMesh_") + StringToWString(Map);
+
+	list<CGameObject*> ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), wsLayerTag);
 
 	for (CGameObject* pObj : ObjList)
 	{

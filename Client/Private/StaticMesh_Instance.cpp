@@ -34,6 +34,8 @@ HRESULT CStaticMesh_Instance::Initialize(void* pArg)
 
 	m_iLightShape = InstanceDesc->iLightShape;
 
+	m_wsMap = InstanceDesc->wsMap;
+
 	InstanceDesc->fSpeedPerSec = 0.f;
 	InstanceDesc->fRotationPerSec = 0.f;
 
@@ -63,7 +65,16 @@ void CStaticMesh_Instance::Update(_float fTimeDelta)
 
 void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 {
+	if (m_wsMap == TEXT("HOTEL")) //자신이 HOTEL맵에 속해있다면
+	{
+	}
+
+	if (m_wsMap == TEXT("STATION"))//자신이 STATION맵에 속해있다면
+	{
+	}
+
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+
 }
 
 HRESULT CStaticMesh_Instance::Render()
