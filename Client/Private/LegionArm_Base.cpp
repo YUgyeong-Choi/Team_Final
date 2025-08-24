@@ -1,4 +1,6 @@
 #include "LegionArm_Base.h"
+#include "GameInstance.h"
+#include "Observer_Weapon.h"
 
 CLegionArm_Base::CLegionArm_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CWeapon{pDevice, pContext}
@@ -24,6 +26,31 @@ HRESULT CLegionArm_Base::Initialize(void* pArg)
 
 	m_pSocketMatrix = eDesc->pSocketMatrix;
 	m_pParentWorldMatrix = eDesc->pParentWorldMatrix;*/
+
+	m_fMaxLegionArmEnergy = 100.f;
+
+	m_fLegionArmEnergy = m_fMaxLegionArmEnergy;
+
+	m_pGameInstance->Register_PullCallback(L"Weapon_Status", [this](const _wstring& eventName, void* data) {
+
+		if (L"AddLegion" == eventName)
+		{
+			m_fLegionArmEnergy += *static_cast<_float*>(data);
+
+			if (m_fLegionArmEnergy >= m_fMaxDurability)
+			{
+				m_fLegionArmEnergy = m_fMaxDurability;
+				// ºû³ª´Â È¿°ú Àá±ñ Ãß°¡...
+			}
+
+			if (m_fLegionArmEnergy <= 0)
+				m_fLegionArmEnergy = 0;
+		}
+
+		});
+
+	m_pGameInstance->Notify(L"Weapon_Status", L"Legion", &m_fLegionArmEnergy);
+	m_pGameInstance->Notify(L"Weapon_Status", L"MaxLegion", &m_fMaxLegionArmEnergy);
 
 	return S_OK;
 }
@@ -53,6 +80,16 @@ void CLegionArm_Base::Late_Update(_float fTimeDelta)
 HRESULT CLegionArm_Base::Render()
 {
 	return S_OK;
+}
+
+void CLegionArm_Base::Use_LegionEnergy(_float energy)
+{
+	m_fLegionArmEnergy -= energy;
+
+	if (m_fLegionArmEnergy <= 0)
+		m_fLegionArmEnergy = 0;
+
+	m_pGameInstance->Notify(L"Weapon_Status", L"Legion", &m_fLegionArmEnergy);
 }
 
 void CLegionArm_Base::Free()

@@ -72,7 +72,7 @@ protected: /* [ 필요 자원 ] */
     }
     _bool   IsLegionArmEnergyEnough(_float fLegionArmEnergy)
     {
-        if (m_pOwner->m_fLegionArmEnergy >= fLegionArmEnergy)
+        if (m_pOwner->m_pLegionArm->Get_fLegionEnergy() >= fLegionArmEnergy)
             return true;
 
         return false;
@@ -680,6 +680,7 @@ public:
 				m_bGrinderEnd = false;
                 m_fGrinderTime = 0.f;
                 m_pOwner->m_pAnimator->SetBool("Grinding", true);
+                m_pOwner->m_pSelectItem->Activate(true);
             }
 
             if (KEY_UP(DIK_R))
@@ -1950,6 +1951,8 @@ public:
                 {
                     printf(" 너 가드성공했어. \n");
                     m_pOwner->m_bGardDamege = true;
+                    
+                    m_pOwner->m_pWeapon->Calc_Durability(3);
 
                     /* [ 이펙트를 생성한다. ] */
                     _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);

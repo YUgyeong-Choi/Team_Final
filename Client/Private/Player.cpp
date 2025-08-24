@@ -821,7 +821,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -833,7 +835,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -845,7 +848,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
-			m_fLegionArmEnergy -= 20.f;
+			m_pLegionArm->Use_LegionEnergy(20.f);
+			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 		}
 
@@ -1071,10 +1075,7 @@ void CPlayer::Register_Events()
 
 	m_pAnimator->RegisterEventListener("UseItem", [this]()
 		{
-			if (m_pSelectItem)
-			{
-				m_pSelectItem->Use();
-			}
+			Use_Item();
 		});
 }
 
@@ -1833,6 +1834,11 @@ void CPlayer::Use_Item()
 		return;
 
 	m_pSelectItem->Use();
+
+	if(m_isSelectUpBelt)
+		Callback_UpBelt();
+	else
+		Callback_DownBelt();
 }
 
 void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)

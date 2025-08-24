@@ -310,8 +310,8 @@ private: /* [ 특수키 ] */
 
 private: /* [ 리전 암 내구도 ] */
 	CLegionArm_Base* m_pLegionArm = { nullptr };
-	_float  m_fLegionArmEnergy = { 100.f };
-	_float  m_fMaxLegionArmEnergy = { 100.f };
+	//_float  m_fLegionArmEnergy = { 100.f };
+	//_float  m_fMaxLegionArmEnergy = { 100.f };
 
 private: /* [ 현재 상태 ] */
 	_bool	m_bIsGuarding = { false };

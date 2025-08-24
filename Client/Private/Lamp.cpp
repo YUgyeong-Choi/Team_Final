@@ -149,6 +149,8 @@ void CLamp::Use()
 
 		m_pLight->Get_LightDesc()->bIsUse = false;
 	}
+
+	
 }
 
 ITEM_DESC CLamp::Get_ItemDesc()

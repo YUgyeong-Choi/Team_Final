@@ -157,9 +157,6 @@
     <Filter Include="02.GameObjects\03. Item\Belt">
       <UniqueIdentifier>{af3572e6-708d-4733-8058-128ddec890f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03. Item\Ramp">
-      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Observer\Slot">
       <UniqueIdentifier>{e266084c-38d3-42df-9999-4c7cde30193f}</UniqueIdentifier>
     </Filter>
@@ -441,6 +438,9 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\ActionType">
       <UniqueIdentifier>{2b13074a-d794-4165-bf06-72b9eabcfbb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Item\Lamp">
+      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -751,7 +751,7 @@
       <Filter>02.GameObjects\03. Item</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Lamp.h">
-      <Filter>02.GameObjects\03. Item\Ramp</Filter>
+      <Filter>02.GameObjects\03. Item\Lamp</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Belt.h">
       <Filter>02.GameObjects\03. Item\Belt</Filter>
@@ -1214,7 +1214,7 @@
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Lamp.cpp">
-      <Filter>02.GameObjects\03. Item\Ramp</Filter>
+      <Filter>02.GameObjects\03. Item\Lamp</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Belt.cpp">
       <Filter>02.GameObjects\03. Item\Belt</Filter>
