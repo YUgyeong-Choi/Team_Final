@@ -33,6 +33,9 @@ public:
 public:
 	HRESULT Change_InstanceBuffer(void* pArg);
 	const CVIBuffer_Point_Instance::DESC Get_InstanceBufferDesc();
+	void Set_CBuffer(const PARTICLECBUFFER& tCBuffer) { m_pVIBufferCom->Set_CBuffer(tCBuffer); }
+	const PARTICLECBUFFER& Get_CBuffer() { return m_pVIBufferCom->Get_CBuffer(); }
+	_float* Get_StretchFactor_Ptr() { return &m_fStretchFactor; }
 
 private:
 	_bool m_bLoadingInTool = { false };

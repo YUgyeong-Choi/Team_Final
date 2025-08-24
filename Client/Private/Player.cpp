@@ -1360,7 +1360,7 @@ HRESULT CPlayer::Ready_Lamp()
 	/* [ 램프 모델을 추가 ] */
 
 	CPlayerLamp::PLAYERLAMP_DESC Desc{};
-	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.eMeshLevelID = static_cast<LEVEL>(m_pGameInstance->GetCurrentLevelIndex());
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.f, 0.f, 0.f };

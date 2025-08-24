@@ -7,9 +7,6 @@ class CParticleComputeShader : public CComputeShader
 public:
 	typedef struct tagParticleCSDesc {
 		_uint						iNumInstance = {};
-		//PARTICLEDESC*				pParticleDesc = { nullptr };
-		//D3D11_BUFFER_DESC*			pParticleBufferDesc;
-		//VTXPOS_PARTICLE_INSTANCE*	pVertexInstances = { nullptr };
 		PPDESC* pParticleParamDesc = { nullptr };
 	}DESC;
 
@@ -41,6 +38,9 @@ private:
 	// 파티클 전체의 속성 모음. (시간, 중력, 공전 축 등) / CPU쓰기, GPU읽기전용
 	ID3D11Buffer*				m_pCBuffer = { nullptr };
 	PARTICLECBUFFER				m_tParticleCBuffer = {};
+
+	// 디버그 용 스테이징 버퍼
+	ID3D11Buffer*				m_pStaging = { nullptr };
 
 private:
 	_uint						m_iNumInstance = {};

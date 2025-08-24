@@ -220,23 +220,22 @@ HRESULT CCYTool::SequenceWindow()
 		case Client::EFF_PARTICLE:
 		{
 			CToolParticle::DESC desc = {};
-			desc.iShaderPass = ENUM_CLASS(SE_UVSPRITE_COLOR);
 			desc.fRotationPerSec = XMConvertToRadians(90.f);
 			desc.fSpeedPerSec = 5.f;
-			desc.iTileX = 8;
-			desc.iTileY = 8;
+			desc.iTileX = 1;
+			desc.iTileY = 1;
 			desc.ePType = m_eParticleType;
 			desc.iNumInstance = m_iNumInstance;
-			desc.isLoop = m_isLoop;
-			desc.vCenter = m_vCenter;
+			desc.isLoop = true;
+			desc.vCenter = _float3(0.f,0.f,0.f);
 			desc.vLifeTime = m_vLifeTime;
-			desc.vPivot = m_vPivot;
+			desc.vPivot = _float3(0.f, 0.f, 0.f);
 			desc.vRange = m_vRange;
 			desc.vSize = m_vSize;
 			desc.vSpeed = m_vSpeed;
 			desc.bBillboard = false;
 			desc.bTool = true;
-			desc.iShaderPass = ENUM_CLASS(PE_DEFAULT);
+			desc.iShaderPass = ENUM_CLASS(PE_WB);
 			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
 				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_ToolParticle"), &desc));
 		}
@@ -507,25 +506,25 @@ HRESULT CCYTool::Window_Particle()
 
 		m_eParticleType = desc.ePType;
 		m_iNumInstance = desc.iNumInstance;
-		m_isLoop = desc.isLoop;
-		m_vCenter = desc.vCenter;
 		m_vLifeTime = desc.vLifeTime;
-		m_vPivot = desc.vPivot;
 		m_vRange = desc.vRange;
 		m_vSize = desc.vSize;
 		m_vSpeed = desc.vSpeed;
-		m_bGravity = desc.bGravity;
-		m_fGravity = desc.fGravity;
-		m_vRotationAxis = desc.vRotationAxis;
 		m_vRotationSpeed = desc.vRotationSpeed;
-		m_vOrbitAxis = desc.vOrbitAxis;
 		m_vOrbitSpeed = desc.vOrbitSpeed;
-		m_bOrbit = desc.bOrbit;
-		m_bSpin = desc.bSpin;
 		m_vAccel = desc.vAccel;
 		m_vMin_MaxSpeed.x = desc.fMinSpeed;
 		m_vMin_MaxSpeed.y = desc.fMaxSpeed;
 		m_iLastSelected = m_iSelected;
+		m_tPCB.bUseGravity = desc.bGravity;
+		m_tPCB.fGravity = desc.fGravity;
+		m_tPCB.vRotationAxis = desc.vRotationAxis;
+		m_tPCB.vOrbitAxis = desc.vOrbitAxis;
+		m_tPCB.bUseOrbit = desc.bOrbit;
+		m_tPCB.bUseSpin = desc.bSpin;
+		m_tPCB.vPivot = desc.vPivot;
+		m_tPCB.bIsLoop = desc.isLoop;
+		m_tPCB.vCenter = desc.vCenter;
 	}
 
 	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t 3. vstretch");
@@ -538,46 +537,70 @@ HRESULT CCYTool::Window_Particle()
 		if (i % 6 != 0 || i == 0)
 			ImGui::SameLine();
 	}
+	m_tPCB = pPE->Get_CBuffer();
+
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 10000, "%d");
-	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_vPivot), 0.01f, -1000.f, 1000.f, "%.2f");
-	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_vCenter), 0.01f, -1000.f, 1000.f, "%.2f");
+	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_tPCB.vPivot), 0.01f, -1000.f, 1000.f, "%.2f");
+	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_tPCB.vCenter), 0.01f, -1000.f, 1000.f, "%.2f");
 	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");	
-	ImGui::DragFloat("##Gravity Power", reinterpret_cast<_float*>(&m_fGravity), 0.1f, 0.f, 200.f, "%.1f"); ImGui::SameLine();
-	ImGui::Checkbox("Gravity", &m_bGravity); 
+	ImGui::DragFloat("##Gravity Power", reinterpret_cast<_float*>(&m_tPCB.fGravity), 0.1f, 0.f, 200.f, "%.1f"); ImGui::SameLine();
+
+	m_bUseGravity = m_tPCB.bUseGravity == 0 ? false : true;
+	ImGui::Checkbox("Gravity", &m_bUseGravity);
+	m_tPCB.bUseGravity = m_bUseGravity == true ? 1 : 0;
 
 	// --- 자전(Spin) ---
-	ImGui::InputFloat3("Spin Axis", &m_vRotationAxis.x);
+	ImGui::InputFloat3("Spin Axis", &m_tPCB.vRotationAxis.x);
 	ImGui::SameLine();
 	if (ImGui::Button("Normalize##spin")) {
-		_vector a = XMVector3Normalize(XMLoadFloat3(&m_vRotationAxis));
-		XMStoreFloat3(&m_vRotationAxis, a);
+		_vector a = XMVector3Normalize(XMLoadFloat3(&m_tPCB.vRotationAxis));
+		XMStoreFloat3(&m_tPCB.vRotationAxis, a);
 	}
 	ImGui::DragFloat2("Spin Speed (deg/s)", reinterpret_cast<_float*>(&m_vRotationSpeed), 0.1f, -2000.f, 2000.f);
 
 	// --- 공전(Orbit) ---
-	ImGui::InputFloat3("Orbit Axis", &m_vOrbitAxis.x);
+	ImGui::InputFloat3("Orbit Axis", &m_tPCB.vOrbitAxis.x);
 	ImGui::SameLine();
 	if (ImGui::Button("Normalize##orbit")) {
-		_vector a = XMVector3Normalize(XMLoadFloat3(&m_vOrbitAxis));
-		XMStoreFloat3(&m_vOrbitAxis, a);
+		_vector a = XMVector3Normalize(XMLoadFloat3(&m_tPCB.vOrbitAxis));
+		XMStoreFloat3(&m_tPCB.vOrbitAxis, a);
 	}
 	ImGui::DragFloat2("Orbit Speed (deg/s)", reinterpret_cast<_float*>(&m_vOrbitSpeed), 0.1f, -2000.f, 2000.f);
 
 	// 가감속
 	ImGui::DragFloat2("Accel", reinterpret_cast<_float*>(&m_vAccel), 0.01f, -1000.f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Min/Max Speed", reinterpret_cast<_float*>(&m_vMin_MaxSpeed), 0.01f, -1000.f, 1000.f, "%.2f");
+	
+	// 타일 루프 설정
+	m_bIsTileLoop = m_tPCB.isTileLoop == 0 ? false : true;
+	ImGui::Checkbox("TileLoop", &m_bIsTileLoop);
+	m_tPCB.isTileLoop = m_bIsTileLoop == true ? 1 : 0;
 
+	// stretch 시에 늘어나는 정도
+	if (m_eSelectedPass_PE == PE_WB_VSTRETCH)
+	{
+		ImGui::DragFloat("StretchFactor", pPE->Get_StretchFactor_Ptr(), 0.001f, 0.001f, 10.f, "%.3f");
+	}
 	/**************************************************/
 	
-	ImGui::Checkbox("Loop", &m_isLoop); ImGui::SameLine();
-	ImGui::Checkbox("Spin", &m_bSpin); ImGui::SameLine();
-	ImGui::Checkbox("Orbit", &m_bOrbit);/* ImGui::SameLine();*/
-	//ImGui::Checkbox("Prewarm", &m_bOrbit); 
+	m_bIsLoop = m_tPCB.bIsLoop == 0 ? false : true;
+	ImGui::Checkbox("Loop", &m_bIsLoop); ImGui::SameLine();
+	m_tPCB.bIsLoop = m_bIsLoop == true ? 1 : 0;
+
+	m_bUseSpin = m_tPCB.bUseSpin == 0 ? false : true;
+	ImGui::Checkbox("Spin", &m_bUseSpin); ImGui::SameLine();
+	m_tPCB.bUseSpin = m_bUseSpin == true ? 1 : 0;
+
+	m_bUseOrbit = m_tPCB.bUseOrbit == 0 ? false : true;
+	ImGui::Checkbox("Orbit", &m_bUseOrbit);
+	m_tPCB.bUseOrbit = m_bUseOrbit == true ? 1 : 0;
+
+
 
 	//ImGui::DragFloat("Rotation Speed", &m_fRotationSpeed, 1.f, -360.f, 360.f, "%.1f");
 	ImGui::SeparatorText("Particle Type");
@@ -592,31 +615,35 @@ HRESULT CCYTool::Window_Particle()
 	if (ImGui::RadioButton("Random", m_eParticleType == PTYPE_ALLRANDOM)) {
 		m_eParticleType = PTYPE_ALLRANDOM;
 	}
+	m_tPCB.vTileCnt = _float2(_float(*pPE->Get_TileX()), _float(*pPE->Get_TileX()));
+	pPE->Set_CBuffer(m_tPCB);
 
 	if(ImGui::Button("Update Particle"))
 	{
 		CVIBuffer_Point_Instance::DESC desc = {};
 		desc.ePType = m_eParticleType;
 		desc.iNumInstance = m_iNumInstance;
-		desc.isLoop = m_isLoop;
-		desc.vCenter = m_vCenter;
+		desc.isLoop = m_bIsLoop;
+		desc.vCenter = m_tPCB.vCenter;
 		desc.vLifeTime = m_vLifeTime;
-		desc.vPivot = m_vPivot;
+		desc.vPivot = m_tPCB.vPivot;
 		desc.vRange = m_vRange;
 		desc.vSize = m_vSize;
 		desc.vSpeed = m_vSpeed;
-		desc.bGravity = m_bGravity;
-		desc.fGravity = m_fGravity;
-		desc.vRotationAxis = m_vRotationAxis;
-		desc.vOrbitAxis = m_vOrbitAxis;
+		desc.bGravity = m_tPCB.bUseGravity;
+		desc.fGravity = m_tPCB.fGravity;
+		desc.vRotationAxis = m_tPCB.vRotationAxis;
+		desc.vOrbitAxis = m_tPCB.vOrbitAxis;
 		desc.vRotationSpeed = m_vRotationSpeed;
 		desc.vOrbitSpeed = m_vOrbitSpeed;
-		desc.bOrbit = m_bOrbit;
-		desc.bSpin = m_bSpin;
+		desc.bOrbit = m_tPCB.bUseOrbit;
+		desc.bSpin = m_tPCB.bUseSpin;
 		desc.vAccel = m_vAccel;
 		desc.fMinSpeed = m_vMin_MaxSpeed.x;
 		desc.fMaxSpeed = m_vMin_MaxSpeed.y;
 		desc.isTool = true;
+		desc.vTileCnt = m_tPCB.vTileCnt;
+		desc.isTileLoop = m_tPCB.isTileLoop;
 		pPE->Change_InstanceBuffer(&desc);
 	}
 
@@ -995,11 +1022,13 @@ HRESULT CCYTool::Load_EffectSet()
 					{
 						MSG_BOX("Failed to make Effect");
 						m_bOpenLoadEffectContainer = false;
+						m_iSelected = -1;
 						IFILEDIALOG->Close();
 						return E_FAIL;
 					}
 				}
 				m_bOpenLoadEffectContainer = false;
+				m_iSelected = -1;
 				IFILEDIALOG->Close();
 			}
 		}

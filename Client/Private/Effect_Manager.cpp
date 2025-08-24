@@ -502,6 +502,20 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
     //if (j.contains("Local"))
     //    VIBufferDesc.bLocal = j["Local"].get<_bool>();
 
+    // UV Grid
+    if (j.contains("isTileLoop"))
+        VIBufferDesc.isTileLoop = j["isTileLoop"].get<_bool>();
+    else
+        VIBufferDesc.isTileLoop = false;
+    if (j.contains("TileX"))
+        VIBufferDesc.vTileCnt.x = (_float)(j["TileX"].get<_int>());
+    else
+        VIBufferDesc.vTileCnt.x = 1.f;
+    if (j.contains("TileY"))
+        VIBufferDesc.vTileCnt.y = (_float)(j["TileY"].get<_int>());
+    else
+        VIBufferDesc.vTileCnt.y = 1.f;
+
     VIBufferDesc.isTool = false;
 
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,

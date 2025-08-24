@@ -9,7 +9,7 @@
             "Billboard": false,
             "Center": [
                 0.0,
-                10.0,
+                20.0,
                 0.0
             ],
             "CenterColor": [
@@ -24,12 +24,12 @@
                 1.0,
                 1.0
             ],
-            "Duration": 455,
+            "Duration": 1017,
             "EffectType": 1,
             "EmissiveIntensity": 0.0,
-            "EndTrack": 455,
+            "EndTrack": 1017,
             "FlipUV": false,
-            "Gravity": 100.0,
+            "Gravity": 50.0,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -60,18 +60,18 @@
                     ]
                 }
             ],
-            "LifeTime": 97.77053833007813,
+            "LifeTime": 112.80979919433594,
             "LifeTime_Particle": [
-                1.0,
+                0.5,
                 3.0
             ],
-            "Local": 1,
+            "Local": true,
             "Loop": true,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Rain_Particle",
-            "NumInstance": 100,
+            "NumInstance": 1000,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -80,14 +80,14 @@
                 0.0
             ],
             "OrbitSpeed": [
-                -90.0,
-                90.0
+                -20.0,
+                20.0
             ],
             "PType": 1,
             "Pivot": [
                 -0.009999999776482582,
-                10.050000190734863,
-                0.019999999552965164
+                20.049999237060547,
+                0.009999999776482582
             ],
             "Range": [
                 100.0,
@@ -106,12 +106,12 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.10000000149011612,
+                0.029999999329447746,
                 0.10000000149011612
             ],
             "Speed": [
-                200.0,
-                200.0
+                20.0,
+                60.0
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -134,5 +134,5 @@
         }
     ],
     "Loop": true,
-    "MaxFrame": 460
+    "MaxFrame": 979
 }

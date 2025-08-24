@@ -53,24 +53,21 @@ public:
 #endif
 
 protected:
-	CVIBuffer_Point_Instance*		m_pVIBufferCom = { nullptr };
-	_wstring						m_strBufferTag;
+	CVIBuffer_Point_Instance*	m_pVIBufferCom = { nullptr };
+	_wstring					m_strBufferTag;
 
-	PARTICLETYPE					m_ePType = {}; // Particle Type
-	_bool							m_bFirst = { true };
-	// 로컬/월드 분리할건지
-	// 변수로 처리할건지
-	// 일단 변수로
+	PARTICLETYPE				m_ePType = {}; // Particle Type
+	_bool						m_bFirst = { true };
 
 protected:
-	_uint				m_iNumInstance;
-	_float				m_fMaxLifeTime = {};
-	_bool				m_bLocal = { true };
-
+	_uint						m_iNumInstance;
+	_float						m_fMaxLifeTime = {};
+	_bool						m_bLocal = { true };
+	_float						m_fStretchFactor = { 0.015f };
 
 protected:
 	virtual HRESULT Ready_Components() override;
-	HRESULT Bind_ShaderResources();
+	virtual HRESULT Bind_ShaderResources() override;
 
 public:
 	static CParticleEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
