@@ -27,6 +27,7 @@ public:
 
 	_bool  Get_isFade() { return m_isFade; }
 	_float Get_Alpha() { return m_fCurrentAlpha; }
+	void  Set_Alpha(_float fAlpha) { m_fCurrentAlpha = fAlpha; }
 
 	void  Set_isVignetting(_bool isVignetting) { m_isDeferred = isVignetting; }
 

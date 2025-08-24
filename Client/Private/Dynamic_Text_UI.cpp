@@ -118,6 +118,12 @@ HRESULT CDynamic_Text_UI::Render()
 			return E_FAIL;
 	}
 
+	for (auto& pFeature : m_pUIFeatures)
+	{
+		if (nullptr != pFeature)
+			pFeature->Bind_ShaderResources(m_pShaderCom);
+	}
+
 
 	if (m_isFade)
 		m_vColor = { m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha };
@@ -129,13 +135,13 @@ HRESULT CDynamic_Text_UI::Render()
 		switch (m_eAlignType)
 		{
 		case Client::TEXTALIGN::LEFT:
-			m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			m_pGameInstance->Draw_Font(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor) * m_fCurrentAlpha, m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
 			break;
 		case Client::TEXTALIGN::CENTER:
-			m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			m_pGameInstance->Draw_Font_Centered(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor) * m_fCurrentAlpha, m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
 			break;
 		case Client::TEXTALIGN::RIGHT:
-			m_pGameInstance->Draw_Font_Righted(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			m_pGameInstance->Draw_Font_Righted(m_strFontTag, m_strCaption.c_str(), { m_fX, m_fY }, XMLoadFloat4(&m_vColor) * m_fCurrentAlpha, m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
 			break;
 		case Client::TEXTALIGN::END:
 			break;

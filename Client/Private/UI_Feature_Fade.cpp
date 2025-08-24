@@ -1,5 +1,6 @@
 #include "UI_Feature_Fade.h"
 #include "Shader.h"
+#include "Dynamic_UI.h"
 
 CUI_Feature_Fade::CUI_Feature_Fade(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUI_Feature{pDevice, pContext}
@@ -46,7 +47,13 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
         return;
 
     if (iCurrentFrame < m_iStartFrame)
+    {
+        pUI->Set_Alpha(m_fCurrentAlpha);
         return;
+    }
+        
+    
+        
 
     if (m_isLoop)
     {
@@ -66,7 +73,7 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
 
     if (!isReverse)
     {
-        // 정방향
+        // 정방향0
         m_fCurrentAlpha = LERP(m_fStartAlpha, m_fEndAlpha, t);
     }
     else
@@ -77,7 +84,7 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
   
 
  
-
+    pUI->Set_Alpha(m_fCurrentAlpha);
 }
 
 HRESULT CUI_Feature_Fade::Bind_ShaderResources(CShader* pShader)
