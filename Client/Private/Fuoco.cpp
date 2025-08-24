@@ -70,7 +70,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_TAB))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", P2_FireOil);
+		m_pAnimator->SetInt("SkillType", SwingAtk);
 		//m_pAnimator->SetTrigger("Paralyzation");
 	//	m_pAnimator->SetTrigger("Fatal");
 		//m_pAnimator->SetTrigger("Groggy");
@@ -78,6 +78,19 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//	m_bStartPhase2 = true;
 	//	m_fHP -= 10.f;
 		//FireProjectile(ProjectileType::Oil);
+	}
+	if (KEY_PRESSING(DIK_B))
+	{
+		CEffectContainer::DESC desc = {};
+		auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+
+		XMStoreFloat4x4(&desc.PresetMatrix,
+			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
+				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
+				worldmat.r[3].m128_f32[2]));
+
+		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_FloorFountain_P2"), &desc) == nullptr)
+			MSG_BOX("이펙트 생성 실패함");
 	}
 #endif
 }
@@ -895,6 +908,16 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 
 	}
 
+}
+
+HRESULT CFuoco::EffectSpawn_Active(_int iPattern, _bool bActive)
+{
+	EBossAttackPattern ePattern = static_cast<EBossAttackPattern>(iPattern);
+
+	// 못만들었어
+	// 만들어줘 
+
+	return S_OK;
 }
 
 void CFuoco::UpdatePatternWeight(EBossAttackPattern ePattern)

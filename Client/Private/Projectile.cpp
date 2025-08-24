@@ -47,6 +47,9 @@ HRESULT CProjectile::Initialize(void* pArg)
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
+
     return S_OK;
 }
 

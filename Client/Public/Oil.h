@@ -26,6 +26,8 @@ private:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 
 	virtual HRESULT Ready_Components() override;
+	virtual HRESULT Ready_Effect() override;
+
 private:
 	_float m_fDamge = 10.f;
 	_bool m_bCanSpread = false; // 기름이 퍼질 수 있는지 여부
