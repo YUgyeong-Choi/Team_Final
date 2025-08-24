@@ -45,8 +45,13 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 		return;
 	}
-	
 
+
+	
+}
+
+void CTriggerTalk::Update(_float fTimeDelta)
+{
 	if (!m_bActive)
 	{
 		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
@@ -54,8 +59,8 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			// 여기서 하지 말고
 			// 무기 선택 ui 가서 이제 무기 선택 완료하면
 			// 이 트리거 주소를 가지고 거기서 setbdead로 지우자
-			
-			
+
+
 
 		}
 	}
@@ -107,7 +112,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			pPlayerTransform->RotateToDirectionSmoothly(m_pTransformCom->Get_State(STATE::POSITION), 0.005f);
 		}
 
-		
+
 
 		if (m_bAutoTalk)
 		{
@@ -133,16 +138,9 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			m_bAutoTalk = !m_bAutoTalk;
 			CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText, m_bAutoTalk);
 		}
-			
+
 
 	}
-
-	
-}
-
-void CTriggerTalk::Update(_float fTimeDelta)
-{
-	
 }
 
 void CTriggerTalk::Late_Update(_float fTimeDelta)
