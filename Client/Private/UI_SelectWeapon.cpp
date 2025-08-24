@@ -68,27 +68,6 @@ void CUI_SelectWeapon::Priority_Update(_float fTimeDelta)
     m_pBackgrounds->Priority_Update(fTimeDelta);
     m_pButton_Select->Priority_Update(fTimeDelta);
     m_pText->Priority_Update(fTimeDelta);
-
-    if (m_pGameInstance->Key_Down(DIK_SPACE) && m_isSelectWeapon)
-    {
-        CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
-        CCamera_Manager::Get_Instance()->SetbMoveable(true);
-        CUI_Manager::Get_Instance()->On_Panel();
-
-        m_pTarget->Set_bDead();
-        
-        Set_bDead();
-
-    }
-
-
-    // 첫 화면에서 두번째 화면
-    if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_isSelectWeapon)
-    {
-        m_isSelectWeapon = true;
-
-    }
-
     
 
 }
@@ -108,9 +87,23 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
     }
 
 
-  
-   
+    if (m_pGameInstance->Key_Down(DIK_SPACE) && m_isSelectWeapon)
+    {
+        CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+        CUI_Manager::Get_Instance()->On_Panel();
 
+        m_pTarget->Set_bDead();
+
+        Set_bDead();
+
+    }
+   
+    // 첫 화면에서 두번째 화면
+    if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_isSelectWeapon)
+    {
+        m_isSelectWeapon = true;
+
+    }
 
 
     if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
