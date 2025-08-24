@@ -73,10 +73,10 @@ void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 			SetIsPlayerFar(false);
 	}
 
-	//if (m_bLightOnOff)
-	//	m_pLight->Get_LightDesc()->bIsUse = true;
-	//else
-	//	m_pLight->Get_LightDesc()->bIsUse = false;
+	if (m_bLightOnOff)
+		m_pLight->Get_LightDesc()->bIsUse = true;
+	else
+		m_pLight->Get_LightDesc()->bIsUse = false;
 }
 
 void CDH_ToolMesh::Update(_float fTimeDelta)
@@ -210,7 +210,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.bIsUse = true;
 	}
 
-	m_eTargetLevel = LEVEL::DH;
+	//m_eTargetLevel = LEVEL::DH;
 	if (FAILED(m_pGameInstance->Add_LevelLightDataReturn(ENUM_CLASS(m_eTargetLevel), LightDesc, &m_pLight)))
 		return E_FAIL;
 

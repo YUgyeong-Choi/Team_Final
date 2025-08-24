@@ -84,7 +84,7 @@ void CTriggerTalk::Update(_float fTimeDelta)
 
 	if (m_bTalkActive && !m_bDoOnce)
 	{
-		// 조사함
+		/* [ 모나미 등불 대화 ] */
 		if (KEY_DOWN(DIK_E))
 		{
 			m_bDoOnce = true;
