@@ -32,6 +32,8 @@ public:
 	virtual HRESULT Render() override;
 
 	HRESULT Ready_OctoTree();
+	HRESULT Add_RenderGroup_OctoTree();
+	HRESULT Separate_Area();
 
 
 private:
