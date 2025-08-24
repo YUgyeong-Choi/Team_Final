@@ -43,7 +43,7 @@ HRESULT CToolParticle::Initialize(void* pArg)
 		m_tDesc.vSize = pDesc->vSize;
 		m_tDesc.vSpeed = pDesc->vSpeed;
 		m_tDesc.isTileLoop = false;
-		m_tDesc.vTileCnt = _float2(pDesc->iTileX, pDesc->iTileY);
+		m_tDesc.vTileCnt = _float2(static_cast<_float>(pDesc->iTileX), static_cast<_float>(pDesc->iTileY));
 		m_iShaderPass = pDesc->iShaderPass;
 		m_fMaxLifeTime = pDesc->vLifeTime.y;
 		m_bTool = pDesc->bTool;
