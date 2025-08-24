@@ -32,8 +32,6 @@ public:
 
     virtual void Init_SimulationFilterData() {};
 	PxFilterData Get_FilterData() const { return m_filterData; }
-
-    CPhysXActor* Get_TriggerOther() { return m_pTriggerEnterOther; }
 public:
     virtual void On_Enter(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});
     virtual void On_Stay(CPhysXActor* pOther, PxVec3 HitPos = {}, PxVec3 HitNormal = {});

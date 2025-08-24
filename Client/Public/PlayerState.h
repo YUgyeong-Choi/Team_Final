@@ -296,8 +296,8 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
 			return EPlayerState::CHARGEA;
         
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
-            return EPlayerState::FATAL;
+        //if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        //    return EPlayerState::FATAL;
 
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
 			return EPlayerState::WEAKATTACKA;
@@ -429,8 +429,8 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
-            return EPlayerState::FATAL;
+        //if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        //    return EPlayerState::FATAL;
 
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
             return EPlayerState::WEAKATTACKA;
@@ -561,8 +561,8 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
-            return EPlayerState::FATAL;
+        //if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        //    return EPlayerState::FATAL;
 
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
             return EPlayerState::WEAKATTACKA;

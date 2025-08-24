@@ -994,8 +994,6 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 
 }
 
-}
-
 void CFuoco::SpawnFlameField()
 {
 	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
@@ -1003,10 +1001,14 @@ void CFuoco::SpawnFlameField()
 	XMStoreFloat3(&Desc.vPos, m_pTransformCom->Get_State(STATE::POSITION));
 	Desc.fExpandRadius = 17.f; // 확장 반경
 	Desc.fExpandTime = 1.5f; // 확장까지 끝나야 하는 시간
-	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_FlameField"), iLevelIndex, TEXT("Layer_FlameField"),&Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_FlameField"), iLevelIndex, TEXT("Layer_FlameField"), &Desc)))
 	{
 		return;
 	}
+
+}
+
+
 HRESULT CFuoco::EffectSpawn_Active(_int iPattern, _bool bActive)
 {
 	EBossAttackPattern ePattern = static_cast<EBossAttackPattern>(iPattern);
