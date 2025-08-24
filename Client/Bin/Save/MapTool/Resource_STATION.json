@@ -889,34 +889,6 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Clock_02.bin"
     },
     {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_05",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_05.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_05A",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_05A.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_06",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_06.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_06A",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_06A.bin"
-    },
-    {
         "Collision": true,
         "ModelName": "SM_Station_FStair_01",
         "NoInstancing": false,
@@ -936,6 +908,13 @@
         "NoInstancing": true,
         "ObjectCount": 20,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_MoldingB_02",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_MoldingB_02.bin"
     },
     {
         "Collision": false,
