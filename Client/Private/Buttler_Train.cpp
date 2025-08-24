@@ -321,7 +321,10 @@ void CButtler_Train::Update_State()
 		m_fGroggyThreshold = 100;
 	}
 
-
+	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
+	{
+		m_isGroogyLoop = true;
+	}
 
 
 
