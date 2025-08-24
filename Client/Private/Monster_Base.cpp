@@ -150,10 +150,6 @@ void CMonster_Base::Late_Update(_float fTimeDelta)
 
 		m_pHPBar->Late_Update(fTimeDelta);
 	}
-
-
-
-
 }
 
 HRESULT CMonster_Base::Render()

@@ -439,6 +439,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\ActionType">
       <UniqueIdentifier>{2b13074a-d794-4165-bf06-72b9eabcfbb1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\Fuoco\Skill">
+      <UniqueIdentifier>{fe63929d-0b86-4319-b35f-e6b8d18eae81}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\15.StaticTrigger\TriggerItem">
       <UniqueIdentifier>{8ce35ac3-2f6d-4bd2-8c70-afdd5167bcd9}</UniqueIdentifier>
     </Filter>
@@ -940,6 +943,9 @@
     <ClInclude Include="..\public\UI_SelectWeapon.h">
       <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FlameField.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco\Skill</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\TriggerItem.h">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
     </ClInclude>
@@ -1414,6 +1420,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_SelectWeapon.cpp">
       <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FlameField.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\Fuoco\Skill</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TriggerItem.cpp">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>

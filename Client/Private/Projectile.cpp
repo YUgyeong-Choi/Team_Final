@@ -46,7 +46,6 @@ HRESULT CProjectile::Initialize(void* pArg)
 	m_bUseTimeTrigger = pDesc->bUseTimeTrigger; // 중력 시작 거리로 판단해서 사용
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
-
     return S_OK;
 }
 
@@ -177,10 +176,6 @@ HRESULT CProjectile::Ready_Actor()
 	{
 		pRigid->setLinearVelocity(velocity);
 		//pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true); // 연속 충돌 감지 활성화 (빠른 거면)
-	}
-	else
-	{
-		int a = 0;
 	}
 	// 씬에 액터 추가
 

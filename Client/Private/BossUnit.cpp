@@ -213,7 +213,7 @@ HRESULT CBossUnit::Ready_Actor()
 
     PxTransform pose(positionVec, rotationQuat);
 
-    PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y * 1.7f, scaleVec.z * 1.3f);
+    PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y * 1.7f, scaleVec.z * 1.5f);
     PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
     m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
     m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
@@ -224,7 +224,7 @@ HRESULT CBossUnit::Ready_Actor()
     m_pPhysXActorCom->Set_SimulationFilterData(filterData);
     m_pPhysXActorCom->Set_QueryFilterData(filterData);
     m_pPhysXActorCom->Set_Owner(this);
-    m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER);
+    m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
     m_pPhysXActorCom->Set_Kinematic(true);
     m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
@@ -554,5 +554,4 @@ void CBossUnit::Free()
 {
     __super::Free();
     Safe_Release(m_pNaviCom);
-    Safe_Release(m_pPhysXActorCom);
 }

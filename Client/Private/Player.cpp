@@ -245,6 +245,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
+
 }
 
 HRESULT CPlayer::Render()

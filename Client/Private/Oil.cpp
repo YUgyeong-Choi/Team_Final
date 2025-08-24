@@ -1,5 +1,6 @@
 #include "Oil.h"
 #include "Player.h"
+#include "FireBall.h"
 #include "PhysXDynamicActor.h"
 #include "Client_Calculation.h"
 COil::COil(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -26,7 +27,7 @@ HRESULT COil::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_fLifeTime = FLT_MAX; // 오일은 계속 남아있어야 하니까
+	m_fLifeTime = 20.f; // 오일 시간 
 	if (m_pPhysXActorCom)
 	{
 		PxFilterData filterData{};
@@ -69,6 +70,10 @@ void COil::Priority_Update(_float fTimeDelta)
 			XMVectorGetY(vPos),  
 			XMVectorGetZ(vSpreadPos));
 		m_pPhysXActorCom->Get_Actor()->setGlobalPose(pose);
+		PxFilterData filterData{};
+		filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+		filterData.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_MONSTERWEAPON;
+		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	
 	}
 }
@@ -113,7 +118,7 @@ void COil::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	if (m_bIsSpreaded)
 	{
 		// 나중에 터질 때 처리(플레이어로 테스트 처리, 나중에 화염 발사랑 만나면)
-		if (m_pPlayer && eColliderType == COLLIDERTYPE::PLAYER)
+		if (m_pPlayer && eColliderType == COLLIDERTYPE::MONSTER_WEAPON && dynamic_cast<CFireBall*>(pOther))
 		{
 			// 화염 처리만 히트 주고
 			// 사각형 충돌 계산
