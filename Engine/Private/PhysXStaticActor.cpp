@@ -95,7 +95,6 @@ void CPhysXStaticActor::Set_QueryFilterData(PxFilterData _data)
 
 void CPhysXStaticActor::RemovePhysX()
 {
-    Set_ShapeFlag(false, false, false);
     Get_Actor()->userData = nullptr;
     m_pGameInstance->Get_Scene()->removeActor(*Get_Actor());
 }

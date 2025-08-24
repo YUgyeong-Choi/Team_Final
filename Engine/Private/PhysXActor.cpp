@@ -174,10 +174,11 @@ void CPhysXActor::On_TriggerExit(CPhysXActor* pOther)
     if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_TriggerExit(m_pOwner, m_eColliderType);
-#ifdef _DEBUG
-        Set_RenderColor();
-#endif
     }
+
+#ifdef _DEBUG
+    Set_RenderColor();
+#endif
 }
 
 #ifdef _DEBUG

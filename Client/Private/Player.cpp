@@ -154,6 +154,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_DOWN(DIK_4))
+	{
+		PxVec3 pos = PxVec3(119.659203f, 3.f, -28.681953f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
