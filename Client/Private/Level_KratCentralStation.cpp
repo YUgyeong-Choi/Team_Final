@@ -213,8 +213,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Separate_Area()))
 		return E_FAIL;
-	if (FAILED(Ready_Effect()))
-		return E_FAIL;
+	//if (FAILED(Ready_Effect()))
+	//	return E_FAIL;
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
@@ -769,28 +769,28 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
-	//_matrix presetmat = XMMatrixIdentity();
-	//CEffectContainer::DESC ECDesc = {};
+	_matrix presetmat = XMMatrixIdentity();
+	CEffectContainer::DESC ECDesc = {};
 
-	//presetmat = XMMatrixTranslation(52.83f, 0.09f, 1.57f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
+	presetmat = XMMatrixTranslation(52.83f, 0.09f, 1.57f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
+		MSG_BOX("이펙트 생성 실패");
 
-	//presetmat = XMMatrixTranslation(69.25f, -0.22f, -8.17f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
+	presetmat = XMMatrixTranslation(69.25f, -0.22f, -8.17f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
+		MSG_BOX("이펙트 생성 실패");
 
-	//presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
+	presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
+		MSG_BOX("이펙트 생성 실패");
 
-	//presetmat = XMMatrixTranslation(0.f, 0.f, 0.f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
+	presetmat = XMMatrixTranslation(0.f, 0.f, 0.f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
+		MSG_BOX("이펙트 생성 실패");
 
 	return S_OK;
 }

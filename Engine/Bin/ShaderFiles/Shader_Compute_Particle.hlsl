@@ -21,39 +21,48 @@ struct ParticleParam
     float       fAccel;     // 가속도 (+면 가속, -면 감속)
     float       fMaxSpeed;  // 최대 속도 (옵션)
     float       fMinSpeed;  // 최소 속도 (옵션, 감속 시 멈춤 방지)
+    
+    float       fTileIdx;
+    float2      vTileOffset;
+    float       _pad0;
 };
 
 
 /* [ Constant Buffer ] */
 cbuffer ParticleCB : register(b0)
 {
-    float   DeltaTime;
-    float   TrackTime;
-    uint    ParticleType;
-    uint    NumInstances;
+    float DeltaTime; // dt (tool이면 무시)
+    float TrackTime; // tool 절대시간(초) = curTrackPos/60.f
+    uint ParticleType; // 0:SPREAD, 1:DIRECTIONAL
+    uint NumInstances;
 
-    uint    IsTool;
-    uint    IsLoop;
-    uint    UseGravity;
-    uint    UseSpin;
+    uint isTool; // uint == bool
+    uint isLoop;
+    uint UseGravity;
+    uint UseSpin;
 
-    uint    UseOrbit;
-    float   Gravity;
-    float2  _pad0;
+    uint UseOrbit;
+    uint isFirst;
+    uint isTileLoop;
+    float fGravity; // e.g. 9.8
 
-    float3  Pivot;
-    uint    isFirst;
+    float2 vTileCnt;
+    float fTileTickPerSec;
+    float _pad2;
 
-    float3  Center;
-    float   _pad2;
-
-    float3  OrbitAxis;
-    float   _pad3;
-
-    float3  RotationAxis;
-    float   _pad4;
+    float3  Pivot; // vPivot
+    float _pad3;
     
-	float4  vSocketRot;
+    float3 Center; // vCenter
+    float _pad4;
+    
+    float3 OrbitAxis; // normalized
+    float _pad5;
+    
+    float3 RotationAxis; // normalized
+    float _pad6;
+
+    float4 vSocketRot;
 
     row_major float4x4 g_CombinedMatrix;
 };
@@ -91,32 +100,19 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
 
     ParticleParam pp = gInst[i];
     float3 prevPos = pp.Translation.xyz;
-    const bool TOOL = (IsTool != 0);
+    const bool TOOL = (isTool != 0);
 
     if (TOOL)
     {
         // --- 툴 모드: 절대시간으로 "초기값 기준" 재구성 ---
+        pp.bFirstLoopDiscard = 0;
         float t = TrackTime;
-        if (IsLoop != 0)
+        if (isLoop != 0)
             t = fmod(t, pp.LifeTime.x);
 
         const ParticleParam init = gInitInst[i]; // 항상 초기값 기준
         float3 pos = init.Translation.xyz;
-
-        // 이동: 초기위치 + (방향 * 속도 * t)
-        //float3 dir = normalize(pp.Direction.xyz);
-        //pos += dir * pp.Speed * t;
         
-        /*****/
-        //// 이동: 초기위치 + v0*t + 0.5*a*t^2 (가속 추가 버전)
-        //float3 dir = normalize(pp.Direction.xyz);
-        //float v0 = init.Speed;
-        //float accel = pp.fAccel;
-        
-        //// 현재 속도 (clamp 반영)
-        //float curSpeed = clamp(v0 + accel * t, pp.fMinSpeed, pp.fMaxSpeed);
-        //pos += dir * (curSpeed * t);
-        /*****/
         float3 dir = normalize(pp.Direction.xyz);
         float v0 = init.Speed;
         float accel = pp.fAccel;
@@ -156,7 +152,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
 
         // 중력: 절대시간 적용 (s = 1/2 g t^2)
         if (UseGravity != 0)
-            pos.y -= 0.5f * Gravity * t * t;
+            pos.y -= 0.5f * fGravity * t * t;
 
         // 자전: 초기 basis에 "절대 각도" 적용
         if (UseSpin != 0)
@@ -225,8 +221,8 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         // 중력: Δs = 1/2 g (t^2 - (t-Δt)^2)  = g*(t-Δt/2)*Δt
         if (UseGravity != 0)
         {
-            float gravNow = 0.5f * Gravity * t * t;
-            float gravPrev = 0.5f * Gravity * tPrev * tPrev;
+            float gravNow = 0.5f * fGravity * t * t;
+            float gravPrev = 0.5f * fGravity * tPrev * tPrev;
             pos.y -= (gravNow - gravPrev);
         }
 
@@ -249,23 +245,33 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             offset = rotateAroundAxis(offset, axis, angle);
             pos = Center + offset;
         }
-
+        
+        // tile uv settings
+        
+        pp.fTileIdx += DeltaTime * fTileTickPerSec;
         // 루프: 위치/라이프만 초기화(기하 기준은 유지하고 싶으면 아래처럼 Translation만 복원)
-        if (IsLoop != 0 && pp.LifeTime.y >= pp.LifeTime.x)
+        if ((isLoop != 0 && pp.LifeTime.y >= pp.LifeTime.x)
+            /*|| (isTileLoop != 0 && pp.fTileIdx >= vTileCnt.x * vTileCnt.y)*/) // tileloop의 조건 or lifetimeloop의 조건 둘 중 하나만 걸려도 초기화 되도록 함
         {
             pp.LifeTime.y = 0.0f;
-            float3 offset0 = float3(pp.Right.w, pp.Up.w, pp.Look.w);
+            //float3 offset0 = float3(pp.Right.w, pp.Up.w, pp.Look.w);
+            float3 offset0 = gInitInst[i].vInitOffset;
             pos = Center + offset0; // << 변경점
             pp.Speed = gInitInst[i].Speed; // 속도 초기화는 유지
             
             // === 뼈 회전 적용된 방향으로 다시 세팅 ===
-
             float3 localDir = gInitInst[i].Direction.xyz;
             float3 worldDir = RotateByQuat(localDir, vSocketRot);
             pp.Direction.xyz = normalize(worldDir);
             pp.bFirstLoopDiscard = false;
+            pp.fTileIdx = 0.f;
         }
-
+        
+        uint iTileIdx = (uint) pp.fTileIdx;
+        float fTileSizeX = 1.0f / float(vTileCnt.x);
+        float fTileSizeY = 1.0f / float(vTileCnt.y);
+        pp.vTileOffset = float2((iTileIdx % uint(vTileCnt.x)) * fTileSizeX, (iTileIdx / uint(vTileCnt.x)) * fTileSizeY);
+        //pp.vTileOffset = float2(0.f, 0.f);
         pp.Translation = float4(pos, 1.0f);
         float3 velocity = pos - prevPos;
         pp.VelocityDir = float4(normalize(velocity), length(velocity));

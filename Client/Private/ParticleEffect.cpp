@@ -43,25 +43,47 @@ void CParticleEffect::Priority_Update(_float fTimeDelta)
 
 void CParticleEffect::Update(_float fTimeDelta)
 {
-	__super::Update(fTimeDelta);
-
+	//// 키프레임 보간 때문에 이거 있어야함 ,,
+	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+	m_fLifeTime += fTimeDelta;
+	//if (m_fCurrentTrackPosition >= static_cast<_float>(m_iTileCnt))
+	if (m_fCurrentTrackPosition > static_cast<_float>(m_iDuration))
+	{
+		if (m_isLoop)
+			m_fCurrentTrackPosition = 0.f;
+		else
+			m_bDead = true;
+	}
+	
+	Update_Keyframes();
+	
 	if (m_pSocketMatrix != nullptr)
 	{
-		if (m_bFirst)
+		_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+	
+		XMStoreFloat4x4(&m_CombinedWorldMatrix,
+			m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
+	}
+	//__super::Update(fTimeDelta);
+	m_fTileSize.x = 1.0f / _float(m_iTileX);
+	m_fTileSize.y = 1.0f / _float(m_iTileY);
+	if (m_pSocketMatrix != nullptr)
+	{
+		if (m_bFirst) 
 		{
 			m_pVIBufferCom->Set_CombinedMatrix(m_CombinedWorldMatrix);
 			m_bFirst = false;
 		}
 		m_pVIBufferCom->Set_Center((_float3)(m_CombinedWorldMatrix.m[3]));
-		XMMATRIX socketWorld = XMLoadFloat4x4(m_pSocketMatrix);
-		XMVECTOR rotQuat = XMQuaternionRotationMatrix(socketWorld);
+		_matrix socketWorld = XMLoadFloat4x4(m_pSocketMatrix);
+		_vector rotQuat = XMQuaternionRotationMatrix(socketWorld);
 		_float4 vRot = {};
 		XMStoreFloat4(&vRot, rotQuat);
 		m_pVIBufferCom->Set_SocketRotation(vRot);
 	}
 	else
 	{
-		m_pVIBufferCom->Set_Center((_float3)(m_pTransformCom->Get_State(STATE::POSITION).m128_f32));
+		m_pVIBufferCom->Set_Center(m_pTransformCom->Get_World4x4());
 	}
 
 	m_pVIBufferCom->Update(fTimeDelta);
@@ -162,11 +184,65 @@ HRESULT CParticleEffect::Bind_ShaderResources()
 	}
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fStretchFactor", &m_fStretchFactor, sizeof(_float))))
+		return E_FAIL;
 
 	if (FAILED(__super::Bind_ShaderResources()))
 		return E_FAIL;
 
 	return S_OK;
+
+	//if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+	//	return E_FAIL;
+	//
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_bFlipUV", &m_bFlipUV, sizeof(_bool))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileSize", &m_fTileSize, sizeof(_float2))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fTileOffset", &m_fOffset, sizeof(_float2))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCenterColor", &m_vCenterColor, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fIntensity", &m_fIntensity, sizeof(_float))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fThreshold", &m_fThreshold, sizeof(_float))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fTime", &m_fTimeAcc, sizeof(_float))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissiveIntensity, sizeof(_float))))
+	//	return E_FAIL;
+	//
+	//if (m_bTextureUsage[TU_DIFFUSE] == true) {
+	//	if (FAILED(m_pTextureCom[TU_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+	//		return E_FAIL;
+	//}
+	//if (m_bTextureUsage[TU_MASK1] == true) {
+	//	if (FAILED(m_pTextureCom[TU_MASK1]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture1", 0)))
+	//		return E_FAIL;
+	//}
+	//if (m_bTextureUsage[TU_MASK2] == true) {
+	//	if (FAILED(m_pTextureCom[TU_MASK2]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture2", 0)))
+	//		return E_FAIL;
+	//}
+	//if (m_bTextureUsage[TU_MASK3] == true) {
+	//	if (FAILED(m_pTextureCom[TU_MASK3]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture3", 0)))
+	//		return E_FAIL;
+	//}
+	//
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
+	//	return E_FAIL;
+
+	return S_OK;
+
 }
 
 CParticleEffect* CParticleEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

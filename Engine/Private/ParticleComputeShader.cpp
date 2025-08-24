@@ -84,6 +84,19 @@
 		if (FAILED(hr))
 			return hr;
 
+		/****** [ 디버그 용 staging buffer 입니다 ] ******/
+		D3D11_BUFFER_DESC desc = {};
+		desc.Usage = D3D11_USAGE_STAGING;
+		desc.ByteWidth = m_iNumInstance * sizeof(PPDESC);
+		desc.BindFlags = 0; // 반드시 0
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		desc.StructureByteStride = sizeof(PPDESC);
+
+		m_pDevice->CreateBuffer(&desc, nullptr, &m_pStaging);
+
+
+
 		return S_OK;
 	}
 
@@ -151,6 +164,21 @@
 
 	void CParticleComputeShader::Bind_InstanceSRV()
 	{
+		//DEBUG
+		m_pContext->CopyResource(m_pStaging, m_pPPBuffer);
+
+		D3D11_MAPPED_SUBRESOURCE mapped{};
+		m_pContext->Map(m_pStaging, 0, D3D11_MAP_READ, 0, &mapped);
+
+		PPDESC* pData = reinterpret_cast<PPDESC*>(mapped.pData);
+
+
+		m_pContext->Unmap(m_pStaging, 0);
+
+		//ENDDEBUG
+
+
+
 		ID3D11ShaderResourceView* srvs[] = { m_pPPSRV };
 		m_pContext->VSSetShaderResources(0, 1, srvs);
 	}
