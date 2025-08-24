@@ -49,6 +49,7 @@ public:
 
 	virtual void Block_Reaction();
 
+	virtual void Start_Fatal_Reaction();
 
 private:
 	HRESULT Ready_Weapon(); 

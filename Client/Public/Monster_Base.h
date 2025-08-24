@@ -81,6 +81,8 @@ public: /* [ Setup 함수 ] */
 
 	void Push_Other(_vector vHitPos, _vector vNormal);
 
+	virtual void Start_Fatal_Reaction() {};
+
 protected:
 
 
@@ -116,6 +118,8 @@ protected:
 
 	_bool			m_bOffCollider = {};
 	_bool			m_isCollisionPlayer = {};
+
+	_bool			m_isFatal = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */
