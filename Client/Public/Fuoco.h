@@ -153,6 +153,8 @@ private:
 	void FlamethrowerAttack(_float fConeAngle = 10.f, _int iRayCount = 7, _float fDistance = 15.f);
 	void SpawnFlameField();
 
+    virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive);
+
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {    cout << "=== Attack Pattern Weights ===" << endl;
     for (const auto& [pattern, weight] : m_PatternWeightMap)

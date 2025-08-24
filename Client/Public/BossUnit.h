@@ -108,6 +108,10 @@ protected:
 		return m_fHP / m_fMaxHP;
 	}
 
+	// 이펙트 출력 관련
+	virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive) { return S_OK; }
+	virtual HRESULT Spawn_Effect() { return S_OK; }
+
 protected:
 	CNavigation* m_pNaviCom = { nullptr };
 

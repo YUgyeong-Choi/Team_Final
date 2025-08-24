@@ -110,6 +110,18 @@ HRESULT CFireBall::Ready_Components()
     return S_OK;
 }
 
+HRESULT CFireBall::Ready_Effect()
+{
+	CEffectContainer::DESC desc = {};
+	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+	if (nullptr == dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_FireballProjectile_test_M1P1"), &desc)))
+		MSG_BOX("이펙트 생성 실패함");
+
+	return S_OK;
+}
+
 CFireBall* CFireBall::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CFireBall* pInstance = new CFireBall(pDevice, pContext);

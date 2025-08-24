@@ -531,6 +531,8 @@ HRESULT CCYTool::Window_Particle()
 		m_tPCB.vPivot = desc.vPivot;
 		m_tPCB.bIsLoop = desc.isLoop;
 		m_tPCB.vCenter = desc.vCenter;
+		m_tPCB.vTileCnt = desc.vTileCnt;
+		m_tPCB.isTileLoop = desc.isTileLoop;
 	}
 
 	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t 3. vstretch");
@@ -587,7 +589,7 @@ HRESULT CCYTool::Window_Particle()
 	m_tPCB.isTileLoop = m_bIsTileLoop == true ? 1 : 0;
 
 	// stretch 시에 늘어나는 정도
-	if (m_eSelectedPass_PE == PE_WB_VSTRETCH)
+	if (*pPE->Get_ShaderPass_Ptr() == PE_WB_VSTRETCH)
 	{
 		ImGui::DragFloat("StretchFactor", pPE->Get_StretchFactor_Ptr(), 0.001f, 0.001f, 10.f, "%.3f");
 	}
@@ -621,6 +623,7 @@ HRESULT CCYTool::Window_Particle()
 		m_eParticleType = PTYPE_ALLRANDOM;
 	}
 	m_tPCB.vTileCnt = _float2(_float(*pPE->Get_TileX()), _float(*pPE->Get_TileX()));
+	m_tPCB.fTileTickPerSec = *pPE->Get_TileTickPerSec();
 	pPE->Set_CBuffer(m_tPCB);
 
 	if(ImGui::Button("Update Particle"))
@@ -649,6 +652,7 @@ HRESULT CCYTool::Window_Particle()
 		desc.isTool = true;
 		desc.vTileCnt = m_tPCB.vTileCnt;
 		desc.isTileLoop = m_tPCB.isTileLoop;
+		desc.fTileTickPerSec = m_tPCB.fTileTickPerSec;
 		pPE->Change_InstanceBuffer(&desc);
 	}
 

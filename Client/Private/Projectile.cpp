@@ -46,6 +46,10 @@ HRESULT CProjectile::Initialize(void* pArg)
 	m_bUseTimeTrigger = pDesc->bUseTimeTrigger; // 중력 시작 거리로 판단해서 사용
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
+
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
+
     return S_OK;
 }
 
