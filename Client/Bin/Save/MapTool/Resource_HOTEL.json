@@ -1,5 +1,12 @@
 [
     {
+        "Collision": false,
+        "ModelName": "Ceiling",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/Ceiling.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "FloorA",
         "NoInstancing": false,
@@ -52,7 +59,7 @@
         "Collision": false,
         "ModelName": "SM_Cathedral_Floor_04",
         "NoInstancing": false,
-        "ObjectCount": 19,
+        "ObjectCount": 10,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_Floor_04.bin"
     },
     {
