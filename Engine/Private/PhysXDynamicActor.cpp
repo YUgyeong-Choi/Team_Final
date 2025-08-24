@@ -116,7 +116,9 @@ void CPhysXDynamicActor::Set_QueryFilterData(PxFilterData _data)
 
 void CPhysXDynamicActor::RemovePhysX()
 {
-	//Set_ShapeFlag(false, false, false);
+	if (m_pTriggerEnterOther)
+		m_pGameInstance->Remove_TriggerRemoveActor(this, m_pTriggerEnterOther);
+
 	Get_Actor()->userData = nullptr;
 	m_pGameInstance->Get_Scene()->removeActor(*Get_Actor());
 }

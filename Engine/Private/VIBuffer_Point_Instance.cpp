@@ -129,9 +129,6 @@ void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 
 	m_tCBuffer.fDeltaTime = fTimeDelta;
 	m_tCBuffer.bIsTool = false;
-	m_tCBuffer.vTileCnt = _float2(1.f, 1.f);
-	m_tCBuffer.fTileTickPerSec = 45.f;
-	m_tCBuffer.isTileLoop = 0;
 	/* [ CS ] */
 	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
 
@@ -152,12 +149,8 @@ void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 	//default:
 	//	break;
 	//}
-	m_tCBuffer.fTrackTime = fCurTrackPos / 60.f;
+	m_tCBuffer.fTrackTime = fCurTrackPos;
 	m_tCBuffer.bIsTool = true;
-
-	m_tCBuffer.vTileCnt = _float2(1.f, 1.f);
-	m_tCBuffer.fTileTickPerSec = 45.f;
-	m_tCBuffer.isTileLoop = 0;
 	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
 
 }

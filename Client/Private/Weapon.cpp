@@ -241,12 +241,13 @@ void CWeapon::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 
-_bool CWeapon::Find_CollisonObj(CGameObject* pObj)
+_bool CWeapon::Find_CollisonObj(CGameObject* pObj, COLLIDERTYPE eColliderType)
 {
 	if (m_CollisonObjects.empty())
 		return false;
 
-	
+	if (eColliderType == COLLIDERTYPE::TRIGGER)
+		return false;
 
 	return find(m_CollisonObjects.begin(), m_CollisonObjects.end(), pObj) != m_CollisonObjects.end();
 }

@@ -44,6 +44,7 @@ HRESULT CToolParticle::Initialize(void* pArg)
 		m_tDesc.vSpeed = pDesc->vSpeed;
 		m_tDesc.isTileLoop = false;
 		m_tDesc.vTileCnt = _float2(static_cast<_float>(pDesc->iTileX), static_cast<_float>(pDesc->iTileY));
+		m_tDesc.fTileTickPerSec = m_fTileTickPerSec;
 		m_iShaderPass = pDesc->iShaderPass;
 		m_fMaxLifeTime = pDesc->vLifeTime.y;
 		m_bTool = pDesc->bTool;
@@ -224,7 +225,7 @@ HRESULT CToolParticle::Ready_Components(void* pArg)
 		VIBufferDesc.vRange = pDesc->vRange;
 		VIBufferDesc.vSize = pDesc->vSize;
 		VIBufferDesc.vCenter = pDesc->vCenter;
-
+		VIBufferDesc.fTileTickPerSec = m_fTileTickPerSec;
 
 		VIBufferDesc.isTool = true;
 		/* For.Com_VIBuffer */

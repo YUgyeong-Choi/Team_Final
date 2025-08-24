@@ -1,0 +1,139 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -130.0,
+                -85.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.44795918464660645,
+                0.23036646842956543,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0628272294998169,
+                0.0,
+                1.0
+            ],
+            "Duration": 64,
+            "EffectType": 1,
+            "EmissiveIntensity": 1.75,
+            "EndTrack": 64,
+            "FlipUV": false,
+            "Gravity": -1.0,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0628272294998169,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.430000066757202,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.800000011920929,
+                        0.800000011920929,
+                        0.800000011920929
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 3012.8291015625,
+            "LifeTime_Particle": [
+                0.05000000074505806,
+                0.20000000298023224
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 500.0,
+            "MinSpeed": 2.0,
+            "Name": "Fuoco_Spin3_HandParticle1",
+            "NumInstance": 30,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.40824827551841736,
+                0.8164965510368347,
+                0.40824827551841736
+            ],
+            "OrbitSpeed": [
+                -45.0,
+                45.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "Size": [
+                0.009999999776482582,
+                0.02800000086426735
+            ],
+            "Speed": [
+                10.0,
+                14.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Shere_07_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 60
+}

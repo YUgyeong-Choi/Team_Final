@@ -53,6 +53,7 @@
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "DoorMesh.h"
+#include "TriggerItemLamp.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -61,6 +62,7 @@
 #include "Player.h"
 #include "Bayonet.h"
 #include "PlayerLamp.h"
+#include "PlayerFrontCollider.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -103,6 +105,7 @@
 #include "Oil.h"
 #include "Fuoco.h"
 #include "FireBall.h"
+#include "FlameField.h"
 #include "TestAnimObject.h"
 #pragma endregion
 
@@ -492,6 +495,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_PlayerLamp"),
 		CPlayerLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_PlayerFrontCollider"),
+		CPlayerFrontCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Wego"),
 		CWego::Create(m_pDevice, m_pContext))))
@@ -508,6 +514,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Oil"),
 		COil::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FlameField"),
+		CFlameField::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -535,6 +545,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CUI_MonsterHP_Bar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+#pragma region 트리거용
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerTalk"),
 		CTriggerTalk::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -543,6 +555,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTriggerSound::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerItemLamp"),
+		CTriggerItemLamp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 
 #pragma region YW
 	//스태틱 데칼	
@@ -612,6 +628,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 			return S_OK;
 		});
+
 
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 
@@ -878,6 +895,7 @@ HRESULT CLoader::Loading_For_JW()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireBall"),
 		CFireBall::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JW), TEXT("Prototype_Component_Model_Train"),

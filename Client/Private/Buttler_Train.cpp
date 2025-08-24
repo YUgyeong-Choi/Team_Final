@@ -349,7 +349,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		auto pWeapon = static_cast<CWeapon*>(pOther);
 
 
-		if (pWeapon->Find_CollisonObj(this))
+		if (pWeapon->Find_CollisonObj(this, eColliderType))
 		{
 			return;
 		}

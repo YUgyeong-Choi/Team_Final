@@ -123,7 +123,6 @@ void CEffectContainer::Update(_float fTimeDelta)
 
 	XMStoreFloat4x4(&m_CombinedWorldMatrix, matWorld * matSocket * matParent);
 
-
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{

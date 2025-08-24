@@ -219,7 +219,7 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 	m_bSetPitchYaw = true;
 }
 
-void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool bCanMove)
+void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool bCanMove, _float fTalkOffSet)
 {
 	if (bActive)
 	{  
@@ -228,6 +228,7 @@ void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool 
 		m_bTalkActive = true;
 		m_pNpcTalkTarget = pTarget;
 		m_bCanMoveTalk = bCanMove;
+		m_fTalkOffSet = fTalkOffSet;
 	}
 	else
 	{
@@ -274,8 +275,8 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 	_vector vTargetLookPos;
 	if (m_bTalkActive)
 	{
-		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-		vTargetLookPos = (targetPos + m_vPlayerPosition) * 0.5f;
+		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION)+ XMVectorSet(0.f, m_fTalkOffSet, 0.f, 0.f);
+		vTargetLookPos = targetPos;
 	}
 	else
 	{
@@ -307,8 +308,8 @@ void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
 	_vector vTargetLookPos;
 	if (m_bTalkActive)
 	{
-		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-		vTargetLookPos = (targetPos + m_vPlayerPosition) * 0.5f;
+		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, m_fTalkOffSet, 0.f, 0.f);
+		vTargetLookPos = targetPos;
 	}
 	else
 	{
@@ -325,7 +326,7 @@ void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
 	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
 
-	m_pTransformCom->LookAt(m_vPrevLookTarget);
+	m_pTransformCom->LookAt(vTargetLookPos);
 
 	if (fabs(m_fYaw - m_fTargetYaw) < 0.001f && fabs(m_fPitch - m_fTargetPitch) < 0.001f)
 	{
@@ -375,9 +376,17 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 
 	// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
-	m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-	m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+	if (m_bTalkActive)
+	{
+		m_vPlayerPosition = XMLoadFloat4(&static_cast<CUnit*>(m_pPlayer)->Get_LockonPos());
+	}
+	else
+	{
+		m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+	}
+
 
 	// 방향 계산
 	_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);

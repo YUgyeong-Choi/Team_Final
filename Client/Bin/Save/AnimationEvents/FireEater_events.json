@@ -206,7 +206,11 @@
                 },
                 {
                     "EventName": "ColliderArmOn",
-                    "Time": 98.0
+                    "Time": 99.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 104.0
                 }
             ],
             "IsLoop": false,
@@ -304,6 +308,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_09",
             "Duration": 210.0,
+            "Events": [
+                {
+                    "EventName": "IgnorePlayerCollision",
+                    "Time": 85.0
+                },
+                {
+                    "EventName": "ResetIgnorePlayerCollision",
+                    "Time": 163.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -476,6 +490,12 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_14",
             "Duration": 400.0,
+            "Events": [
+                {
+                    "EventName": "SpawnFlameField",
+                    "Time": 208.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

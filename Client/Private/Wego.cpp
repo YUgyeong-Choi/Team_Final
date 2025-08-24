@@ -61,7 +61,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 
 				m_curTalkIndex = 0;
 				m_bTalkActive = false;
-				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
 				CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
 
@@ -80,7 +80,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 		if (m_pGameInstance->Key_Down(DIK_E) && !m_bTalkActive)
 		{
 			m_bTalkActive = true;
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 
 			//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
@@ -100,7 +100,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 		{
 			m_curTalkIndex = 0;
 			m_bTalkActive = false;
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr,true);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr,true, 0.f);
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
 			

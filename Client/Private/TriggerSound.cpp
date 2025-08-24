@@ -47,7 +47,6 @@ void CTriggerSound::Priority_Update(_float fTimeDelta)
 			{
 				m_bDead = true; 
 				m_pPhysXTriggerCom->RemovePhysX();
-				// 소리가 끝나면 스크립트도 끈다.
 				CUI_Manager::Get_Instance()->Activate_TextScript(false);
 			}
 			else
@@ -89,6 +88,11 @@ void CTriggerSound::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderT
 		CUI_Manager::Get_Instance()->Update_TextScript(m_vecSoundData[m_iSoundIndex].strSoundText);
 	}
 		
+}
+
+void CTriggerSound::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+ 	_int a = 10;
 }
 
 void CTriggerSound::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

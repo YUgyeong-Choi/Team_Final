@@ -42,6 +42,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	_bool IsInAnyArea(const vector<_uint>& vecActiveAreaIds, const vector<_uint>& vecCheckAreaIds);
+
 private:
 	HRESULT SetEmissive();
 

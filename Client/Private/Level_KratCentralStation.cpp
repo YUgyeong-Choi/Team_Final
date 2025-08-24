@@ -425,7 +425,7 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 		if (vTypeTable[iIdx] == OCTOTREEOBJECTTYPE::MESH)
 		{
 			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, pObj);
-			pObj->Set_IsLOD(true);
+			//pObj->Set_IsLOD(true);
 		}
 		else
 		{
@@ -487,10 +487,28 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a5p0, a5p1, a5Min, a5Max);
 
 	// Area 6
-	_float3 a6p0 = _float3{ 186.83f, -0.18f, 24.92f };
-	_float3 a6p1 = _float3{ 113.46f, 48.18f, -75.18f };
+	_float3 a6p0 = _float3{ 135.35f, 1.29f, 3.18f };
+	_float3 a6p1 = _float3{ 117.31f, 19.65f, -17.30f };
 	_float3 a6Min, a6Max;
 	FnToAABB(a6p0, a6p1, a6Min, a6Max);
+
+	// Area 7
+	_float3 a7p0 = _float3{ 186.83f, -0.18f, 24.92f };
+	_float3 a7p1 = _float3{ 113.46f, 48.18f, -75.18f };
+	_float3 a7Min, a7Max;
+	FnToAABB(a7p0, a7p1, a7Min, a7Max);
+
+	// Area 8
+	_float3 a8p0 = _float3{ 178.65f, 1.57f, - 16.40f };
+	_float3 a8p1 = _float3{ 163.46f, 21.62f, - 28.31f };
+	_float3 a8Min, a8Max;
+	FnToAABB(a8p0, a8p1, a8Min, a8Max);
+
+	// Area 9
+	_float3 a9p0 = _float3{ 180.31f, -0.99f, -24.41f };
+	_float3 a9p1 = _float3{ 164.76f, 28.10f, -58.69f };
+	_float3 a9Min, a9Max;
+	FnToAABB(a9p0, a9p1, a9Min, a9Max);
 
 	{
 		/* [ 1번 구역 ] */
@@ -529,14 +547,34 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 6번 구역 ] */
-		const vector<_uint> vecAdj6 = { 4 };
+		const vector<_uint> vecAdj6 = { 4 , 7 };
 		if (!m_pGameInstance->AddArea_AABB(
 			6, a6Min, a6Max, vecAdj6, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
+	{
+		/* [ 7번 구역 ] */
+		const vector<_uint> vecAdj7 = { 8 };
+		if (!m_pGameInstance->AddArea_AABB(
+			7, a7Min, a7Max, vecAdj7, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 8번 구역 ] */
+		const vector<_uint> vecAdj8 = { 7, 9 };
+		if (!m_pGameInstance->AddArea_AABB(
+			8, a8Min, a8Max, vecAdj8, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 9번 구역 ] */
+		const vector<_uint> vecAdj9 = { 8, 10, 11 };
+		if (!m_pGameInstance->AddArea_AABB(
+			9, a9Min, a9Max, vecAdj9, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
 
 
-	// 3) 파티션 확정 (ID→Index 매핑/검증)
 	if (FAILED(m_pGameInstance->FinalizePartition()))
 		return E_FAIL;
 
@@ -962,6 +1000,14 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 				Desc.eTriggerBoxType = static_cast<TRIGGERBOX_TYPE>(triggerType);
 				Desc.m_vecSoundData = vecSoundData;
 				Desc.gameObjectTag = objectTag;
+				if (objectTag != "")
+				{
+					const auto offSetObj = j.value("offSetObj", vector<float>{});
+					Desc.vOffSetObj = VecSetW(offSetObj, 0.f);
+
+					const auto scaleObj = j.value("scaleObj", vector<float>{});
+					Desc.vScaleObj = VecSetW(scaleObj, 0.f);
+				}
 				Desc.bCanCancel = j.value("CanCancel", 0);
 				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerTalk"),
 					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerTalk"), &Desc)))

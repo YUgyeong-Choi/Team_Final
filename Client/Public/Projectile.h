@@ -1,6 +1,9 @@
 #pragma once
 #include "GameObject.h"
 #include "Client_Defines.h"
+
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
 NS_BEGIN(Engine)
 class CModel;
 class CShader;
@@ -43,7 +46,7 @@ protected:
 	virtual HRESULT Ready_Components();
 	HRESULT Ready_Actor();
 	HRESULT Bind_Shader();
-
+	virtual HRESULT Ready_Effect() { return S_OK; };
 
 protected:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;

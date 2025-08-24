@@ -106,9 +106,18 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
     {
         // --- 툴 모드: 절대시간으로 "초기값 기준" 재구성 ---
         pp.bFirstLoopDiscard = 0;
-        float t = TrackTime;
+        float t = TrackTime / 60.f;
         if (isLoop != 0)
             t = fmod(t, pp.LifeTime.x);
+        pp.fTileIdx = TrackTime / fTileTickPerSec;
+        if (isTileLoop != 0)
+            pp.fTileIdx = fmod(pp.fTileIdx, vTileCnt.x * vTileCnt.y);
+        uint iTileIdx = (uint) pp.fTileIdx;
+        float fTileSizeX = 1.0f / float(vTileCnt.x);
+        float fTileSizeY = 1.0f / float(vTileCnt.y);
+        pp.vTileOffset = float2((iTileIdx % uint(vTileCnt.x)) * fTileSizeX, (iTileIdx / uint(vTileCnt.x)) * fTileSizeY);
+
+        
 
         const ParticleParam init = gInitInst[i]; // 항상 초기값 기준
         float3 pos = init.Translation.xyz;
@@ -246,20 +255,27 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             pos = Center + offset;
         }
         
-        // tile uv settings
-        
         pp.fTileIdx += DeltaTime * fTileTickPerSec;
-        // 루프: 위치/라이프만 초기화(기하 기준은 유지하고 싶으면 아래처럼 Translation만 복원)
-        if ((isLoop != 0 && pp.LifeTime.y >= pp.LifeTime.x)
-            /*|| (isTileLoop != 0 && pp.fTileIdx >= vTileCnt.x * vTileCnt.y)*/) // tileloop의 조건 or lifetimeloop의 조건 둘 중 하나만 걸려도 초기화 되도록 함
+        
+        const bool firstLoop = (pp.bFirstLoopDiscard != 0);
+        const bool lifeEnded = pp.LifeTime.y >= pp.LifeTime.x;
+        const bool tileEnded = isTileLoop != 0 && (pp.fTileIdx >= vTileCnt.x * vTileCnt.y);
+        
+        //bool needReset = (pp.bFirstLoopDiscard != 0 && (lifeEnded != 0.0f)) ||
+        //             (pp.bFirstLoopDiscard == 0 && (tileEnded || (isLoop != 0 && lifeEnded)));
+        
+        bool needReset = firstLoop ? lifeEnded
+                           : ((isTileLoop != 0) ? tileEnded
+                                                : ((isLoop != 0) && lifeEnded));
+
+        if (needReset)
         {
             pp.LifeTime.y = 0.0f;
-            //float3 offset0 = float3(pp.Right.w, pp.Up.w, pp.Look.w);
             float3 offset0 = gInitInst[i].vInitOffset;
             pos = Center + offset0; // << 변경점
             pp.Speed = gInitInst[i].Speed; // 속도 초기화는 유지
             
-            // === 뼈 회전 적용된 방향으로 다시 세팅 ===
+                    // === 뼈 회전 적용된 방향으로 다시 세팅 ===
             float3 localDir = gInitInst[i].Direction.xyz;
             float3 worldDir = RotateByQuat(localDir, vSocketRot);
             pp.Direction.xyz = normalize(worldDir);
@@ -267,11 +283,32 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             pp.fTileIdx = 0.f;
         }
         
+        
+        
+        
+        //// 루프: 위치/라이프만 초기화(기하 기준은 유지하고 싶으면 아래처럼 Translation만 복원)
+        //if ((isLoop != 0 && pp.LifeTime.y >= pp.LifeTime.x)
+        //    || (isTileLoop != 0 && pp.fTileIdx >= vTileCnt.x * vTileCnt.y)) // tileloop의 조건 or lifetimeloop의 조건 둘 중 하나만 걸려도 초기화 되도록 함
+        //{
+        //    pp.LifeTime.y = 0.0f;
+        //    //float3 offset0 = float3(pp.Right.w, pp.Up.w, pp.Look.w);
+        //    float3 offset0 = gInitInst[i].vInitOffset;
+        //    pos = Center + offset0; // << 변경점
+        //    pp.Speed = gInitInst[i].Speed; // 속도 초기화는 유지
+        //    
+        //    // === 뼈 회전 적용된 방향으로 다시 세팅 ===
+        //    float3 localDir = gInitInst[i].Direction.xyz;
+        //    float3 worldDir = RotateByQuat(localDir, vSocketRot);
+        //    pp.Direction.xyz = normalize(worldDir);
+        //    pp.bFirstLoopDiscard = false;
+        //    pp.fTileIdx = 0.f;
+        //}
+        
         uint iTileIdx = (uint) pp.fTileIdx;
         float fTileSizeX = 1.0f / float(vTileCnt.x);
         float fTileSizeY = 1.0f / float(vTileCnt.y);
         pp.vTileOffset = float2((iTileIdx % uint(vTileCnt.x)) * fTileSizeX, (iTileIdx / uint(vTileCnt.x)) * fTileSizeY);
-        //pp.vTileOffset = float2(0.f, 0.f);
+
         pp.Translation = float4(pos, 1.0f);
         float3 velocity = pos - prevPos;
         pp.VelocityDir = float4(normalize(velocity), length(velocity));

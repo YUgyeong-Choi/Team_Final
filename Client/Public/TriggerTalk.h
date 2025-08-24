@@ -11,6 +11,8 @@ public:
 	typedef struct tagTriggerTalkDesc : public CTriggerBox::TRIGGERBOX_DESC
 	{
 		string gameObjectTag;
+		_vector vOffSetObj;
+		_vector vScaleObj;
 		_bool bCanCancel;
 	}TRIGGERTALK_DESC;
 
@@ -33,13 +35,16 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 private:
 	void Play_Sound();
-	HRESULT Ready_TriggerObject(void* pArg);
+	HRESULT Ready_TriggerObject(TRIGGERTALK_DESC* TriggerTalkDESC);
 
 	void Next_Talk();
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
+
 	CGameObject* m_pTriggerObject = { nullptr };
+	_vector m_vObjOffSet = {};
+
 	_bool m_bTalkActive = false;
 
 	/* [ 대화 자동으로 넘어가기 ] */
@@ -50,6 +55,7 @@ private:
 
 	// 무기 선택 중 일때 사운드 update 안함
 	_bool m_bActive = true;
+
 public:
 	static CTriggerTalk* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

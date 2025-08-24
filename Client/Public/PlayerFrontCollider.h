@@ -2,6 +2,9 @@
 #include "GameObject.h"
 #include "Client_Defines.h"
 
+NS_BEGIN(Engine)
+class CPhysXDynamicActor;
+NS_END
 
 NS_BEGIN(Client)
 class CPlayerFrontCollider : public CGameObject
@@ -10,12 +13,12 @@ class CPlayerFrontCollider : public CGameObject
 
 
 public:
-	typedef struct tagWeaponDesc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct tagFrontColliderDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_float3 		InitPos = { 0.f, 0.f, 0.f };
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
 		CGameObject*	pOwner = { nullptr };
-	}WEAPON_DESC;
+	}FRONTCOLLIDER_DESC;
 
 protected:
 	CPlayerFrontCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -33,6 +36,8 @@ public:
 
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
+	HRESULT Ready_Actor();
+	void Update_Collider_Actor();
 
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
@@ -44,16 +49,19 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 public: /* [ 소유자 (Unit) 를 가져온다. ] */
-	class CUnit* Get_Owner() const { return m_pOwner; }
+	class CPlayer* Get_Owner() const { return m_pOwner; }
 	void Clear_Owner() { m_pOwner = nullptr; }
 
 protected:				/* [ 기본 속성 ] */
 	_float3				m_InitPos = {};
 	_float3				m_InitScale = {};
 
+private:
+	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
+
 protected:
-	const _tchar* m_szName = { nullptr };
-	class CUnit* m_pOwner = { nullptr };
+	const _tchar*		m_szName = { nullptr };
+	class CPlayer*		m_pOwner = { nullptr };
 
 public:
 	static CPlayerFrontCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

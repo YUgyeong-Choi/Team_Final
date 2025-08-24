@@ -2972,20 +2972,27 @@ void CAnimTool::Free()
 	{
 		Safe_Release(pair.second);
 	}
+	m_LoadedModels.clear();
 
 	for (auto& pair : m_LoadedAnimators)
 	{
 		Safe_Release(pair.second);
 	}
+	m_LoadedAnimators.clear();
+
 
 	for (auto& obj : m_vecObjects)
 	{
 		Safe_Release(obj);
 	}
+	m_vecObjects.clear();
 	for (auto& Pair : m_SpawnObjectDesc)
 	{
 		Safe_Delete(Pair.second);
 	}
+	m_SpawnObjectDesc.clear();
+
+	Safe_Release(m_pTransformCom);
 
 	ImNodes::DestroyContext();
 	Safe_Release(m_pEventMag);

@@ -160,6 +160,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pLevel_Manager->Late_Update(fTimeDelta);
 
 	m_pObject_Manager->Last_Update(fTimeDelta);
+	m_pPhysX_Manager->Update_OnTriggerStay();
 
  	m_pPhysX_Manager->Simulate(fTimeDelta);
 
@@ -744,6 +745,18 @@ PxMaterial* CGameInstance::GetMaterial(const wstring& name)
 {
 	return m_pPhysX_Manager->GetMaterial(name);
 }
+void CGameInstance::Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOther)
+{
+	m_pPhysX_Manager->Insert_TriggerEnterActor(pMe, pOther);
+}
+void CGameInstance::Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther)
+{
+	m_pPhysX_Manager->Remove_TriggerExitActor(pMe, pOther);
+}
+void CGameInstance::Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther)
+{
+	m_pPhysX_Manager->Remove_TriggerRemoveActor(pMe, pOther);
+}
 #pragma endregion
 
 #pragma region SOUND_DEVICE
@@ -895,6 +908,10 @@ _bool CGameInstance::AddArea_AABB(_int iAreaId, const _float3& vMin, const _floa
 void CGameInstance::GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad) const
 {
 	m_pArea_Manager->GetActiveAreaBounds(vecOutBounds, fPad);
+}
+void CGameInstance::GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const
+{
+	m_pArea_Manager->GetActiveAreaIds(vecOutAreaIds);
 }
 HRESULT CGameInstance::FinalizePartition()
 {
