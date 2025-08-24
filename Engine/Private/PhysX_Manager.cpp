@@ -399,6 +399,52 @@ PxSphereGeometry CPhysX_Manager::CookSphereGeometry(_float fRadius)
 //	}
 //}
 
+void CPhysX_Manager::Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOther)
+{
+	TIGGERSTAY_DESC desc;
+	desc.pMe = pMe;
+	desc.pOther = pOther;
+	m_ActorsForTriggerStay.push_back(desc);
+}
+
+void CPhysX_Manager::Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther)
+{
+	for (auto it = m_ActorsForTriggerStay.begin(); it != m_ActorsForTriggerStay.end(); )
+	{
+		if (it->pMe == pMe && it->pOther == pOther)
+			it = m_ActorsForTriggerStay.erase(it); 
+		else
+			++it;
+	}
+}
+
+void CPhysX_Manager::Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther)
+{
+	for (auto it = m_ActorsForTriggerStay.begin(); it != m_ActorsForTriggerStay.end(); )
+	{
+		if (it->pMe == pMe && it->pOther == pOther)
+			it = m_ActorsForTriggerStay.erase(it);
+		else if (it->pMe == pOther && it->pOther == pMe)
+			it = m_ActorsForTriggerStay.erase(it);
+		else
+			++it;
+	}
+}
+
+void CPhysX_Manager::Update_OnTriggerStay()
+{
+	for (auto& pair : m_ActorsForTriggerStay)
+	{
+		CPhysXActor* pMe = pair.pMe;
+		CPhysXActor* pOther = pair.pOther;
+
+		if (pMe && pOther && pOther->Get_Owner())
+		{
+			pOther->Get_Owner()->On_TriggerStay(pMe->Get_Owner(), pMe->Get_ColliderType());
+		}
+	}
+}
+
 CPhysX_Manager* CPhysX_Manager::Create()
 {
 	CPhysX_Manager* pInstance = new CPhysX_Manager();

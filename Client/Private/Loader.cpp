@@ -53,6 +53,7 @@
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "DoorMesh.h"
+#include "TriggerItemLamp.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -539,6 +540,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CUI_MonsterHP_Bar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+#pragma region 트리거용
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerTalk"),
 		CTriggerTalk::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -547,6 +550,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTriggerSound::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerItemLamp"),
+		CTriggerItemLamp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 
 #pragma region YW
 	//스태틱 데칼	

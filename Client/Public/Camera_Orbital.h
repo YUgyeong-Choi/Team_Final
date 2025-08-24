@@ -47,7 +47,7 @@ public:
 	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed);
 	
 	void Set_LockOn(CGameObject* pTarget, _bool bActive);
-	void Set_ActiveTalk(_bool bActive, CGameObject*  pTarget, _bool bCanMove);
+	void Set_ActiveTalk(_bool bActive, CGameObject*  pTarget, _bool bCanMove, _float fTalkOffSet);
 private:
 	// 카메라 Look 관련
 	/* [ 평소에 실행 ] */
@@ -81,6 +81,7 @@ private:
 	_bool			m_bTalkEnd = false;
 	_bool			m_bTalkActive = false;
 	_bool			m_bCanMoveTalk = true;
+	_float			m_fTalkOffSet = 0.f;
 
 	_bool m_bActive = false;
 private:

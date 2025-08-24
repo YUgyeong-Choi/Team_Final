@@ -103,6 +103,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* [ 락온 세팅 ] */
 	m_pLockOn_Manager = CLockOn_Manager::Get_Instance();
 	m_pLockOn_Manager->SetPlayer(this);
+	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.7f, 0.f, 0.f };
 
 	if (FAILED(Ready_UIParameters()))
@@ -157,6 +158,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_DOWN(DIK_4))
+	{
+		PxVec3 pos = PxVec3(119.659203f, 3.f, -28.681953f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
@@ -199,6 +207,11 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 아이템 ] */
 	Update_Slot(fTimeDelta);
+
+	/* [ 플레이어 락온 위치  ] */
+	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
+	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
+	XMStoreFloat4(&m_vLockonPos, vLockonPos);
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)

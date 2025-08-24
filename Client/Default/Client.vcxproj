@@ -204,6 +204,8 @@
     <ClInclude Include="..\Public\Oil.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
+    <ClInclude Include="..\Public\TriggerItem.h" />
+    <ClInclude Include="..\Public\TriggerItemLamp.h" />
     <ClInclude Include="..\Public\TriggerSound.h" />
     <ClInclude Include="..\Public\TriggerTalk.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
@@ -419,6 +421,8 @@
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp" />
+    <ClCompile Include="..\Private\TriggerItem.cpp" />
+    <ClCompile Include="..\Private\TriggerItemLamp.cpp" />
     <ClCompile Include="..\Private\TriggerSound.cpp" />
     <ClCompile Include="..\private\Static_Decal.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />

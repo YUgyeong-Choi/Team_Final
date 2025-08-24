@@ -442,6 +442,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\ActionType">
       <UniqueIdentifier>{2b13074a-d794-4165-bf06-72b9eabcfbb1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerItem">
+      <UniqueIdentifier>{8ce35ac3-2f6d-4bd2-8c70-afdd5167bcd9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -937,6 +940,12 @@
     <ClInclude Include="..\public\UI_SelectWeapon.h">
       <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerItem.h">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerItemLamp.h">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1405,6 +1414,12 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_SelectWeapon.cpp">
       <Filter>02.GameObjects\99.UI\Container\SelectWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerItem.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerItemLamp.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

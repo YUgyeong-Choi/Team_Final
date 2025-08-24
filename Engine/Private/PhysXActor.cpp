@@ -29,6 +29,16 @@ void CPhysXActor::Set_ColliderType(COLLIDERTYPE eColliderType)
 
 }
 
+void CPhysXActor::Remove_IgnoreActors(PxActor* pActor)
+{
+    if (!pActor)
+        return;
+
+    auto it = m_ignoreActors.find(pActor);
+    if (it != m_ignoreActors.end())
+        m_ignoreActors.erase(it);
+}
+
 void CPhysXActor::Modify_Shape(const PxGeometry& geom, PxMaterial* material)
 {
     if (m_pShape)
@@ -153,6 +163,9 @@ void CPhysXActor::On_TriggerEnter(CPhysXActor* pOther)
     if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_TriggerEnter(m_pOwner, m_eColliderType);
+        m_pGameInstance->Insert_TriggerEnterActor(this, pOther);
+        m_pTriggerEnterOther = pOther;
+
 #ifdef _DEBUG
         m_vRenderColor = Colors::Red;
 #endif
@@ -164,10 +177,13 @@ void CPhysXActor::On_TriggerExit(CPhysXActor* pOther)
     if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
     {
         pOther->Get_Owner()->On_TriggerExit(m_pOwner, m_eColliderType);
-#ifdef _DEBUG
-        Set_RenderColor();
-#endif
+        m_pGameInstance->Remove_TriggerExitActor(this, pOther);
+        m_pTriggerEnterOther = nullptr;
     }
+
+#ifdef _DEBUG
+    Set_RenderColor();
+#endif
 }
 
 #ifdef _DEBUG

@@ -8,6 +8,12 @@ NS_BEGIN(Engine)
 class CPhysX_Manager final : public CBase
 {
 private:
+	typedef struct TriggerStay
+	{
+		CPhysXActor* pMe;
+		CPhysXActor* pOther;
+	}TIGGERSTAY_DESC;
+private:
 	CPhysX_Manager();
 	virtual ~CPhysX_Manager() = default;
 
@@ -54,6 +60,10 @@ public:
 	// 지형 매쉬 생성
 	//CPhysXStaticActor* Create_Terrain(const PxVec3* pVertices, PxU32 vertexCount, const PxU32* pIndices, PxU32 triangleCount);
 
+	void Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Update_OnTriggerStay();
 public:
 	static CPhysX_Manager* Create();
 	virtual void Free() override;
@@ -76,6 +86,8 @@ private:
 	PxDefaultErrorCallback m_ErrorCallback;
 
 	CPhysX_ContactReport* m_pContactCallback = { nullptr };
+private:
+	vector<TIGGERSTAY_DESC> m_ActorsForTriggerStay;
 };
 
 NS_END
