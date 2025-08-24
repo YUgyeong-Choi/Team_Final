@@ -50,8 +50,8 @@ public: /* [ 소유자 (Unit) 을 가져온다. ] */
 	void Clear_Owner() { m_pOwner = nullptr; }
 
 public: /* [ 램프의 소유여부 ] */
-	void SetbVisible(_bool bIsVisible) { m_bIsVisible = bIsVisible; }
-	_bool GetbVisible() const { return m_bIsVisible; }
+	void SetbLampVisible(_bool bIsVisible) { m_bIsVisible = bIsVisible; }
+	_bool GetbLampVisible() const { return m_bIsVisible; }
 
 public:
 	_wstring Get_MeshName() { return (m_szMeshID != nullptr) ? wstring(m_szMeshID) : wstring(); }
@@ -63,7 +63,7 @@ protected:
 	_float4x4			m_CombinedWorldMatrix = {};
 
 protected:				/* [ 기본 속성 ] */
-	_bool				m_bIsVisible = { true };
+	_bool				m_bIsVisible = {};
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);
 	_float3				m_InitPos = {};

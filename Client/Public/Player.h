@@ -148,6 +148,9 @@ private:
 	void Weapon_Collider_Active();
 	void Reset_Weapon();
 
+public:
+	CPlayerLamp* Get_PlayerLamp() { return m_pPlayerLamp; }
+
 private: /* [ 락온 함수 ] */
 	void LockOnState(_float fTimeDelta);
 

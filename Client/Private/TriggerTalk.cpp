@@ -3,6 +3,9 @@
 #include "Camera_Manager.h"
 #include "UI_Manager.h"
 #include "UI_SelectWeapon.h"
+#include "PlayerLamp.h"
+
+#include "Player.h"
 CTriggerTalk::CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
 {
@@ -46,8 +49,8 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 		return;
 	}
 
-
-	
+	if (!m_pPlayer)
+		m_pPlayer = GET_PLAYER(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 }
 
 void CTriggerTalk::Update(_float fTimeDelta)
@@ -95,6 +98,11 @@ void CTriggerTalk::Update(_float fTimeDelta)
 
 			m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 			m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
+			m_pPlayer->Get_TransfomCom()->RotateToDirectionImmediately(_fvector{ 0.f,0.f,1.f,0.f });
+			if (m_eTriggerBoxType == TRIGGERBOX_TYPE::MONADLIGHT)
+				m_pPlayer->Get_Animator()->SetTrigger("InactiveStargazer");
+			m_pPlayer->Get_PlayerLamp()->SetbLampVisible(true);
+
 			// 여기에 조사한다 UI 비활성화
 			CUI_Manager::Get_Instance()->Off_Panel();
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
@@ -219,6 +227,8 @@ void CTriggerTalk::Next_Talk()
 		{
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true);
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			if (m_eTriggerBoxType == TRIGGERBOX_TYPE::MONADLIGHT)
+				m_pPlayer->Get_Animator()->SetTrigger("EndInteraction");
 			m_bDead = true;
 			m_pPhysXTriggerCom->RemovePhysX();
 			CUI_Manager::Get_Instance()->Activate_TalkScript(false);

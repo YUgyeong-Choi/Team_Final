@@ -38,6 +38,7 @@ private:
 	void Next_Talk();
 
 private:
+	class CPlayer* m_pPlayer = { nullptr };
 	CGameObject* m_pTriggerObject = { nullptr };
 	_bool m_bTalkActive = false;
 
