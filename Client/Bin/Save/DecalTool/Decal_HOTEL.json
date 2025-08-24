@@ -1,13 +1,13 @@
 [
     {
-        "ARMT": "Prototype_Component_Texture_T_Decal_Blood_01_ARMT.dds",
-        "BC": "Prototype_Component_Texture_T_Decal_BloodSpot_2_B_BC.dds",
-        "N": "Prototype_Component_Texture_T_Decal_Blood_01_N.dds",
+        "ARMT": "Prototype_Component_Texture_T_Decal_BloodTrail_58_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_BloodTrail_58_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_BloodTrail_58_N.dds",
         "WorldMatrix": [
             [
-                1.0,
+                4.05281400680542,
                 0.0,
-                0.0,
+                2.92825984954834,
                 0.0
             ],
             [
@@ -17,15 +17,15 @@
                 0.0
             ],
             [
+                -1.1713042259216309,
                 0.0,
-                0.0,
-                1.0,
+                1.6211252212524414,
                 0.0
             ],
             [
-                126.15840148925781,
-                1.6167142391204834,
-                -6.456386566162109,
+                152.94924926757813,
+                3.1195926666259766,
+                -5.87396240234375,
                 1.0
             ]
         ]

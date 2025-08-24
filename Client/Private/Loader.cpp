@@ -596,13 +596,40 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 			return S_OK;
 		});
 
-	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료 기다리는 중..."));
+	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+
+
+	//while (true)
+	//{
+	//	if (futureStation.valid() &&
+	//		futureStation.wait_for(chrono::seconds(0)) == future_status::ready)
+	//	{
+	//		if (FAILED(futureStation.get()))
+	//			return E_FAIL;
+	//		lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료..."));
+	//		break; // station은 끝났음
+	//	}
+
+	//	if (futureHotel.valid() &&
+	//		futureHotel.wait_for(chrono::seconds(0)) == future_status::ready)
+	//	{
+	//		if (FAILED(futureHotel.get()))
+	//			return E_FAIL;
+	//		lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
+	//		break; // hotel은 끝났음
+	//	}
+
+	//	// 너무 빡세게 돌지 않도록 잠깐 sleep
+	//	this_thread::sleep_for(std::chrono::milliseconds(10));
+	//}
+
 	if (FAILED(futureStation.get()))
 		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 완료..."));
 
-	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료 기다리는 중..."));
 	if (FAILED(futureHotel.get()))
 		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
 
 #pragma endregion
 

@@ -1,5 +1,5 @@
 {
-    "ModelCount": 163,
+    "ModelCount": 167,
     "Models": [
         {
             "Collision": true,
@@ -18562,6 +18562,158 @@
                             12.159200668334961,
                             -7.714112281799316,
                             1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Station_ClownPanel_05",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            0.883985161781311,
+                            0.0,
+                            -0.46751517057418823,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.46751517057418823,
+                            0.0,
+                            0.883985161781311,
+                            0.0
+                        ],
+                        [
+                            120.32881164550781,
+                            1.5842700004577637,
+                            -6.367199420928955,
+                            1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Station_ClownPanel_05A",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            0.934398353099823,
+                            0.0,
+                            -0.35623013973236084,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.35623013973236084,
+                            0.0,
+                            0.934398353099823,
+                            0.0
+                        ],
+                        [
+                            116.9141845703125,
+                            1.5825529098510742,
+                            -6.156059265136719,
+                            1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Station_ClownPanel_06",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            115.82349395751953,
+                            1.583177089691162,
+                            -10.709102630615234,
+                            1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Station_ClownPanel_06A",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            -0.7213141918182373,
+                            0.0,
+                            -0.6926079988479614,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.6926079988479614,
+                            0.0,
+                            -0.7213141918182373,
+                            0.0
+                        ],
+                        [
+                            120.37310791015625,
+                            1.582438349723816,
+                            -10.015010833740234,
+                            1.0000001192092896
                         ]
                     ]
                 }
