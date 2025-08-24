@@ -98,6 +98,7 @@
 #pragma endregion
 
 #pragma region LEVEL_JW
+#include "Oil.h"
 #include "Fuoco.h"
 #include "FireBall.h"
 #include "TestAnimObject.h"
@@ -492,6 +493,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireBall"),
 		CFireBall::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Oil"),
+		COil::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

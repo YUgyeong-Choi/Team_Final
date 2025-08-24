@@ -29,6 +29,94 @@ void CPhysXActor::Set_ColliderType(COLLIDERTYPE eColliderType)
 
 }
 
+void CPhysXActor::Modify_Shape(const PxGeometry& geom, PxMaterial* material)
+{
+    if (m_pShape)
+    {
+        m_pShape->setGeometry(geom);
+    }
+	if (material)
+	{
+		m_pShape->setMaterials(&material, 1);
+	}
+	else if (m_pMaterial)
+	{
+		m_pShape->setMaterials(&m_pMaterial, 1);
+	}
+}
+
+void CPhysXActor::ReCreate_Shape(PxRigidActor* pRigidActor,const PxGeometry& geom, PxMaterial* material)
+{
+    if (!pRigidActor) 
+    {
+        cout << "Error: pRigidActor is null" << endl;
+        return;
+    }
+
+    PxScene* scene = pRigidActor->getScene();
+    if (scene) 
+    {
+        // 시뮬레이션 중일 경우 쓰기 잠금
+        scene->lockWrite();
+    }
+    PxShapeFlags oldFlags;
+    PxFilterData simFilterData, qryFilterData;
+    PxTransform localPose;
+    _float fContactOffset = 0.f, fRestOffset = 0.f;
+    _bool bHasOldShape = false;
+
+    // 기존 셰이프가 존재하면 해제
+    if (m_pShape)
+    {
+        oldFlags = m_pShape->getFlags(); // 기존 shape 플래그 백업
+        simFilterData = m_pShape->getSimulationFilterData();
+        qryFilterData = m_pShape->getQueryFilterData();
+        localPose = m_pShape->getLocalPose();
+        fContactOffset = m_pShape->getContactOffset();
+        fRestOffset = m_pShape->getRestOffset();
+        bHasOldShape = true;
+		PxShape* shapes[8]{ nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+        _uint count = pRigidActor->getNbShapes();
+        pRigidActor->getShapes(shapes, count);
+
+        for (_uint i = 0; i < count; ++i)
+        {
+            pRigidActor->detachShape(*shapes[i]);
+        }
+		m_pShape = nullptr; // 기존 셰이프 포인터 초기화
+    }
+
+    // 사용할 재질 선택
+    PxMaterial* useMaterial = material ? material : m_pMaterial;
+    if (!useMaterial) 
+    {
+        if (scene)
+        {
+            scene->unlockWrite();
+        }
+        cout << "Error: No material available." << endl;
+        return;
+    }
+
+    // 새로운 셰이프 생성
+    m_pShape = PxRigidActorExt::createExclusiveShape(*pRigidActor, geom, *useMaterial);
+    if (bHasOldShape && m_pShape)
+    {
+        // 기존 설정 복원
+        m_pShape->setFlags(oldFlags);
+        m_pShape->setSimulationFilterData(simFilterData);
+        m_pShape->setQueryFilterData(qryFilterData);
+        m_pShape->setLocalPose(localPose);
+        m_pShape->setContactOffset(fContactOffset);
+        m_pShape->setRestOffset(fRestOffset);
+    }
+    // 쓰기 잠금 해제
+    if (scene) 
+    {
+        scene->unlockWrite();
+    }
+}
+
 void CPhysXActor::On_Enter(CPhysXActor* pOther, PxVec3 HitPos, PxVec3 HitNormal)
 {
     if (m_pOwner && nullptr != pOther && pOther->Get_Owner())
@@ -489,9 +577,11 @@ void CPhysXActor::Set_RenderColor()
         m_vRenderColor = Colors::BlueViolet;
         break;
     case COLLIDERTYPE::A:
+    case COLLIDERTYPE::ENVIRONMENT_CONVEX:
         m_vRenderColor = Colors::Orange;
         break;
     case COLLIDERTYPE::B:
+    case COLLIDERTYPE::ENVIRONMENT_TRI:
         m_vRenderColor = Colors::Blue;
         break;
     case COLLIDERTYPE::C:

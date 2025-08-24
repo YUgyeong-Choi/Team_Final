@@ -35,10 +35,9 @@ public:
     void Shape_Detach();
 public:
     PxRigidActor* Get_Actor() override { return m_pActor; }
-    PxShape* Get_Shape() { return m_pShape; }
+
 private:
     PxRigidActor* m_pActor = { nullptr };
-    PxShape* m_pShape = { nullptr };
 public:
     static CPhysXStaticActor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg) override;

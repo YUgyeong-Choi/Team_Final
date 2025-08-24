@@ -922,6 +922,9 @@
     <ClInclude Include="..\Public\PlayerLamp.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Lamp</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Oil.h">
+      <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1381,6 +1384,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerLamp.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Lamp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Oil.cpp">
+      <Filter>02.GameObjects\12.Projectile\Fuoco</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
