@@ -350,7 +350,7 @@ json CToolParticle::Serialize()
 
 	j["IsGravity"] = m_tDesc.bGravity;
 	j["Gravity"] = m_tDesc.fGravity;
-
+	j["isTileLoop"] = m_tDesc.isTileLoop;
 
 	return j;
 }

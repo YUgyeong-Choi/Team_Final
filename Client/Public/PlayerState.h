@@ -2838,7 +2838,8 @@ public:
         if (m_pOwner->m_pFatalTarget && !m_pOwner->m_bIsFatalBoss)
         {
 			CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(m_pOwner->m_pFatalTarget);
-            pMonster->Start_Fatal_Reaction();
+            if (pMonster)
+                pMonster->Start_Fatal_Reaction();
         }
 
         /* [ 디버깅 ] */

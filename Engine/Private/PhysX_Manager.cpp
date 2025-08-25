@@ -409,6 +409,12 @@ void CPhysX_Manager::Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOt
 
 void CPhysX_Manager::Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther)
 {
+	if (pMe->Get_Owner()->Get_bDead())
+		return;
+
+	if (pOther->Get_Owner()->Get_bDead())
+		return;
+
 	for (auto it = m_ActorsForTriggerStay.begin(); it != m_ActorsForTriggerStay.end(); )
 	{
 		if (it->pMe == pMe && it->pOther == pOther)
@@ -418,13 +424,17 @@ void CPhysX_Manager::Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOth
 	}
 }
 
-void CPhysX_Manager::Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther)
+void CPhysX_Manager::Remove_TriggerRemoveActor(CPhysXActor* pMe, unordered_set<CPhysXActor*> pTriggerEnterOthers)
 {
 	for (auto it = m_ActorsForTriggerStay.begin(); it != m_ActorsForTriggerStay.end(); )
 	{
-		if (it->pMe == pMe && it->pOther == pOther)
-			it = m_ActorsForTriggerStay.erase(it);
-		else if (it->pMe == pOther && it->pOther == pMe)
+		bool eraseMe = false;
+		if (it->pMe == pMe)
+			eraseMe = (pTriggerEnterOthers.find(it->pOther) != pTriggerEnterOthers.end());
+		else if (it->pOther == pMe)
+			eraseMe = (pTriggerEnterOthers.find(it->pMe) != pTriggerEnterOthers.end());
+
+		if (eraseMe)
 			it = m_ActorsForTriggerStay.erase(it);
 		else
 			++it;

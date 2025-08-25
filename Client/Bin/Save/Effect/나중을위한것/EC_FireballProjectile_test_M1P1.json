@@ -62,7 +62,7 @@
             ],
             "LifeTime": 1055.259765625,
             "LifeTime_Particle": [
-                0.2800000011920929,
+                0.1100000011920929,
                 0.9100000381469727
             ],
             "Local": true,
@@ -71,7 +71,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fireball_FireParticle1",
-            "NumInstance": 25,
+            "NumInstance": 50,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [

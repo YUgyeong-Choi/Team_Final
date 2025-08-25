@@ -170,7 +170,7 @@ void CPhysXActor::On_TriggerEnter(CPhysXActor* pOther)
     {
         pOther->Get_Owner()->On_TriggerEnter(m_pOwner, m_eColliderType);
         m_pGameInstance->Insert_TriggerEnterActor(this, pOther);
-        m_pTriggerEnterOther = pOther;
+        m_pTriggerEnterOthers.insert(pOther);
 
 #ifdef _DEBUG
         m_vRenderColor = Colors::Red;
@@ -184,7 +184,7 @@ void CPhysXActor::On_TriggerExit(CPhysXActor* pOther)
     {
         pOther->Get_Owner()->On_TriggerExit(m_pOwner, m_eColliderType);
         m_pGameInstance->Remove_TriggerExitActor(this, pOther);
-        m_pTriggerEnterOther = nullptr;
+        m_pTriggerEnterOthers.erase(pOther);
     }
 
 #ifdef _DEBUG

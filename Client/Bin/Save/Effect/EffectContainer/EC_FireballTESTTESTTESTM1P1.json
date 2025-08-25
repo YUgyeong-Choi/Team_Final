@@ -13,15 +13,15 @@
                 0.0
             ],
             "CenterColor": [
-                0.1068063020706177,
+                0.7068063020706177,
                 0.4191510081291199,
-                0.86282446682453156,
+                0.16282446682453156,
                 1.0
             ],
             "Color": [
-                0.0,
-                0.09424084424972534,
                 1.0,
+                0.09424084424972534,
+                0.0,
                 0.0
             ],
             "Duration": 204,
@@ -34,9 +34,9 @@
             "KeyFrames": [
                 {
                     "Color": [
-                        0.0,
-                        0.09424084424972534,
                         1.0,
+                        0.09424084424972534,
+                        0.0,
                         0.0
                     ],
                     "Intensity": 1.3600000143051147,
@@ -60,18 +60,18 @@
                     ]
                 }
             ],
-            "LifeTime": 1055.259765625,
+            "LifeTime": 1815.7669677734375,
             "LifeTime_Particle": [
-                0.2800000011920929,
-                0.9100000381469727
+                0.009999999776482582,
+                2.0
             ],
             "Local": true,
             "Loop": true,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "Oilball_FireParticle1",
-            "NumInstance": 25,
+            "Name": "FIREBALLPARTICLE",
+            "NumInstance": 45,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -131,84 +131,85 @@
             "TickPerSecond": 60.0,
             "TileTickPerSec": 80.0,
             "TileX": 9,
-            "TileY": 9
+            "TileY": 9,
+            "isTileLoop": true
         },
-      {
-        "Animation": true,
-        "Billboard": false,
-        "CenterColor": [
-          0.0,
-          0.15706807374954224,
-          1.0,
-          1.0
-        ],
-        "Color": [
-          0.0,
-          0.5571119785308838,
-          0.90942407846450806,
-          1.0
-        ],
-        "Duration": 201,
-        "EffectType": 2,
-        "EmissiveIntensity": 0.949999988079071,
-        "EndTrack": 201,
-        "FlipUV": false,
-        "KeyFrames": [
-          {
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                0.15706807374954224,
+                0.0,
+                1.0
+            ],
             "Color": [
-              0.0,
-              0.5571119785308838,
-              0.90942407846450806,
-              1.0
+                1.0,
+                0.5571119785308838,
+                0.20942407846450806,
+                1.0
             ],
-            "Intensity": 1.0,
-            "Interpolation": 0,
-            "Rotation": [
-              0.0,
-              0.0,
-              0.0,
-              0.0
+            "Duration": 201,
+            "EffectType": 2,
+            "EmissiveIntensity": 0.949999988079071,
+            "EndTrack": 201,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.5571119785308838,
+                        0.20942407846450806,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
             ],
-            "Scale": [
-              1.0,
-              1.0,
-              1.0
+            "LifeTime": 1124.5640869140625,
+            "Loop": true,
+            "ModelTag": "SM_Sphere_01_KMH",
+            "Name": "FIREBALLMESH",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Tile_Noise_01_C_LGS",
+                "",
+                ""
             ],
-            "TrackPosition": 0.0,
-            "Translation": [
-              0.0,
-              0.0,
-              0.0
-            ]
-          }
-        ],
-        "LifeTime": 364.0332336425781,
-        "Loop": true,
-        "ModelTag": "SM_Sphere_01_KMH",
-        "Name": "Fireball_FireMesh1",
-        "NumKeyFrames": 1,
-        "RenderGroup": 8,
-        "ShaderPass": 4,
-        "StartTrack": 0,
-        "TextureTags": [
-          "",
-          "T_Tile_Noise_01_C_LGS",
-          "",
-          ""
-        ],
-        "TextureUsage": [
-          false,
-          true,
-          false,
-          false
-        ],
-        "Threshold": 0.8999999761581421,
-        "TickPerSecond": 60.0,
-        "TileTickPerSec": 60.0,
-        "TileX": 1,
-        "TileY": 1
-      }
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        }
     ],
-    "Loop": true,
+    "Loop": false,
     "MaxFrame": 200
 }
