@@ -83,7 +83,7 @@ protected: /* [ 초기화 변수 ] */
 protected:
 	_bool			m_bDead = {};
 	_bool			m_bDoOnce = {};
-	_bool			m_bDummyShow = { true };
+	_bool			m_bDummyShow = {};
 
 protected:
 	SHADOW			m_eShadow = SHADOW::SHADOW_END;

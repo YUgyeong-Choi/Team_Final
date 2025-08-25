@@ -325,13 +325,16 @@ void COctoTree_Manager::QueryVisible()
     if (CurrentBounds.empty())
         return;
 
+    /* [ 라이트 매쉬 때문에 개별 조정 ] */
+    m_LastQueriedAreas = CurrentBounds;
+
     AABBBOX tAreaUnion = CurrentBounds[0];
     for (_uint iArea = 1; iArea < static_cast<_uint>(CurrentBounds.size()); ++iArea)
     {
 		// 현재 영역들의 AABB를 합친다 (1차 핉터)
         AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
     }
-    AABB_Inflate(tAreaUnion, 1.f);
+    AABB_Inflate(tAreaUnion, 0.1f);
 
     // 트리 탐색 시작
     m_TempNodeStack.clear();
@@ -356,7 +359,7 @@ void COctoTree_Manager::QueryVisible()
         _bool bOverlapAnyArea = false;
         for (const AABBBOX& tAreaBox : CurrentBounds)
         {
-            if (AABB_IntersectsAABB_Eps(node.AABBBounds, tAreaBox, 1.f))
+            if (AABB_IntersectsAABB_Eps(node.AABBBounds, tAreaBox, 0.1f))
             {
                 bOverlapAnyArea = true;
                 break;
@@ -425,6 +428,10 @@ void COctoTree_Manager::PushNodeObjects_NoFrustum(const Node& node)
         {
             // 해당 노드의 오브젝트 인덱스를 추출 후 중복방지 객체 추가
             const _uint objIdx = m_ObjectIndices[n.iFirstObj + i];
+            const AABBBOX& tObjectBox = m_StaticObjectBounds[objIdx];
+            if (!IntersectsAnyArea_Object(tObjectBox))
+                continue;
+
             PushIfNotSeenThisFrame(objIdx, m_CulledStaticObjects);
         }
 
@@ -445,6 +452,9 @@ void COctoTree_Manager::PushNodeObjects_WithFrustum(const Node& node)
         const _uint objIdx = m_ObjectIndices[node.iFirstObj + i];
         const AABBBOX& a = m_StaticObjectBounds[objIdx];
 
+        if (!IntersectsAnyArea_Object(a))
+            continue;
+
         const FrustumHit oh = m_Frustum.OctoIsInAABB(a.vMin, a.vMax);
         if (oh != FrustumHit::Outside)
         {
@@ -461,6 +471,16 @@ void COctoTree_Manager::PushNodeObjects_WithFrustum(const Node& node)
 
 
 
+_bool COctoTree_Manager::IntersectsAnyArea_Object(const AABBBOX& tObjBox, _float fEps) const
+{
+    for (const AABBBOX& tAreaBox : m_LastQueriedAreas)
+    {
+        if (AABB_IntersectsAABB_Eps(tObjBox, tAreaBox, fEps))
+            return true;
+    }
+
+    return false;
+}
 
 void COctoTree_Manager::PushIfNotSeenThisFrame(_uint objIdx, vector<_uint>& out)
 {

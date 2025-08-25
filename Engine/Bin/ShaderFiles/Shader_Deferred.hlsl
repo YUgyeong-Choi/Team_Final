@@ -131,7 +131,7 @@ float SampleFogDensity(float3 worldPos, float time)
 
     float noise = ValueNoise3D(uvw);
     //float density = saturate(noise * 1.5f);
-    float density = saturate(pow(noise, 1.2f) * 1.2f);
+    float density = saturate(pow(abs(noise), 1.2f) * 1.2f);
 
     return density;
 }

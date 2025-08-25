@@ -59,6 +59,7 @@ public:
 	void PushNodeObjects_WithFrustum(const Node& node);
 
 
+	_bool IntersectsAnyArea_Object(const AABBBOX& tObjBox, _float fEps = 0.1f) const;
 	void PushIfNotSeenThisFrame(_uint objIdx, vector<_uint>& out);
 
 	// 디버그
@@ -124,6 +125,7 @@ private: /* [ 쿼드트리 노드들 ] */
 	vector<Node>					m_Nodes;
 	vector<_uint>					m_ObjectIndices;
 	vector<AABBBOX>					m_StaticObjectBounds;
+	vector<AABBBOX>					m_LastQueriedAreas;
 	vector<Handle>					m_StaticIndexToHandle;
 	vector<class CGameObject*>		m_vecIndexToObj;
 

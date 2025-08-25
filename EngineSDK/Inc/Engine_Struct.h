@@ -384,13 +384,13 @@ namespace Engine
 	{
 		enum class EAreaType : _int { ROOM, LOBBY, INDOOR, OUTDOOR, END};
 
-		_int iAreaState;
-		_int iAreaId;
-		AABBBOX vBounds;
-		vector<_uint> vecAdjacent;
+		_int iAreaState = {};
+		_int iAreaId = {};
+		AABBBOX vBounds = {};
+		vector<_uint> vecAdjacent = {};
 
-		EAreaType eType;
-		_int iPriority;
+		EAreaType eType = {};
+		_int iPriority = {};
 
 		bool ContainsPoint(const _float3& point) const
 		{
