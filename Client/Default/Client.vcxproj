@@ -509,7 +509,16 @@
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\ImGuiFileDialog.cpp" />
-    <ClCompile Include="imgui\ImGuizmo.cpp" />
+    <ClCompile Include="imgui\ImGuizmo.cpp">
+      <AddCodeBeforeSourceInclude Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">#undef x
+#undef y
+#undef max
+#undef min</AddCodeBeforeSourceInclude>
+      <AddCodeBeforeSourceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">#undef x
+#undef y
+#undef max
+#undef min</AddCodeBeforeSourceInclude>
+    </ClCompile>
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
