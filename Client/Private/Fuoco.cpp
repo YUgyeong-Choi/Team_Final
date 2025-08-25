@@ -61,6 +61,17 @@ HRESULT CFuoco::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
+	CEffectContainer::DESC desc = {};
+	desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Ball01"));
+
+	desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_BellyFire_P2"), &desc) == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
+
+	
+
 	return S_OK;
 }
 

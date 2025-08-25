@@ -236,7 +236,15 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetInt("HitDir", m_iTestInt);
 		//m_pAnimator->SetTrigger("Hited");
 		//m_pAnimator->SetTrigger("Death");
+		CEffectContainer::DESC desc = {};
+		auto worldmat =  m_pTransformCom->Get_WorldMatrix();
 
+		// 위치 프리셋만
+		XMStoreFloat4x4(&desc.PresetMatrix,
+			XMMatrixTranslation(worldmat.r[3].m128_f32[0], worldmat.r[3].m128_f32[1], worldmat.r[3].m128_f32[2]));
+
+		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_Imsi_P2"), &desc))
+			MSG_BOX("이펙트 생성 실패함");
 	}
 
 	if (KEY_DOWN(DIK_U))
