@@ -381,8 +381,6 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float Unit = vARMDesc.a;
     float3 Ambient = Albedo * 0.1f * AO;
     
-
-
     /* ARM 블렌딩 */
     AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a);
     Roughness = lerp(Roughness, vDecalAMRTDesc.g, vDecalAMRTDesc.a);
@@ -506,8 +504,8 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     float4 worldPos = mul(viewPos, g_ViewMatrixInv);
 
     // [ 라이트 방향 및 감쇠 ]
-    float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
-    //float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
+    //float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
+    float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
     
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
@@ -610,8 +608,8 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     float4 worldPos = mul(viewPos, g_ViewMatrixInv);
 
     // [ 라이트 방향 및 감쇠 ]
-    //float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
-    float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
+    float3 L_unormalized = g_vLightPos.xyz - worldPos.xyz;
+    //float3 L_unormalized = worldPos.xyz - g_vLightPos.xyz;
     float distance = length(L_unormalized);
     float3 L = normalize(L_unormalized);
     

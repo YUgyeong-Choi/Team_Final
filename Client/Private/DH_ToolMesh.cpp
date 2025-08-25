@@ -73,10 +73,10 @@ void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 			SetIsPlayerFar(false);
 	}
 
-	if (m_bLightOnOff)
-		m_pLight->Get_LightDesc()->bIsUse = true;
-	else
-		m_pLight->Get_LightDesc()->bIsUse = false;
+	//if (m_bLightOnOff)
+	//	m_pLight->Get_LightDesc()->bIsUse = true;
+	//else
+	//	m_pLight->Get_LightDesc()->bIsUse = false;
 }
 
 void CDH_ToolMesh::Update(_float fTimeDelta)

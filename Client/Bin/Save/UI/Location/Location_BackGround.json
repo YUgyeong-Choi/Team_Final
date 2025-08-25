@@ -15,16 +15,26 @@
                     "G": 1.0,
                     "R": 1.0
                 },
-                "Features": [
-                    {
-                        "EndAlpha": 0.5,
-                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
-                        "StartAlpha": 0.0,
-                        "iEndFrame": 60,
-                        "iStartFrame": 0,
-                        "isLoop": false
-                    }
-                ],
+              "Features": [
+
+
+                {
+                  "EndAlpha": 0.0,
+                  "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                  "StartAlpha": 0.5,
+                  "iEndFrame": 300,
+                  "iStartFrame": 240,
+                  "isLoop": false
+                },
+                {
+                  "EndAlpha": 0.5,
+                  "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                  "StartAlpha": 0.0,
+                  "iEndFrame": 60,
+                  "iStartFrame": 0,
+                  "isLoop": false
+                }
+              ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 320.0,
@@ -46,16 +56,25 @@
                     "G": 1.0,
                     "R": 1.0
                 },
-                "Features": [
-                    {
-                        "EndAlpha": 1.0,
-                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
-                        "StartAlpha": 0.0,
-                        "iEndFrame": 60,
-                        "iStartFrame": 0,
-                        "isLoop": false
-                    }
-                ],
+              "Features": [
+
+                {
+                  "EndAlpha": 0.0,
+                  "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                  "StartAlpha": 1.0,
+                  "iEndFrame": 300,
+                  "iStartFrame": 240,
+                  "isLoop": false
+                },
+                {
+                  "EndAlpha": 1.0,
+                  "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                  "StartAlpha": 0.0,
+                  "iEndFrame": 60,
+                  "iStartFrame": 0,
+                  "isLoop": false
+                }
+              ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 640.0,

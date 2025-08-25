@@ -1840,6 +1840,11 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Background_Location"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Background/BG_Location.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_LockOn"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Lockon/Lockon.dds")))))
 		return E_FAIL;
@@ -1986,6 +1991,9 @@ HRESULT CLoader::Loading_For_CY()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_PlayerLamp"),
 		CPlayerLamp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_GameObject_PlayerFrontCollider"),
+		CPlayerFrontCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

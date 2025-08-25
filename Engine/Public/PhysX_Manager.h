@@ -62,7 +62,7 @@ public:
 
 	void Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOther);
 	void Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther);
-	void Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Remove_TriggerRemoveActor(CPhysXActor* pMe, unordered_set<CPhysXActor*> pTriggerEnterOthers);
 	void Update_OnTriggerStay();
 public:
 	static CPhysX_Manager* Create();

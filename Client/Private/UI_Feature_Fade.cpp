@@ -1,5 +1,6 @@
 #include "UI_Feature_Fade.h"
 #include "Shader.h"
+#include "Dynamic_UI.h"
 
 CUI_Feature_Fade::CUI_Feature_Fade(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUI_Feature{pDevice, pContext}
@@ -46,7 +47,13 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
         return;
 
     if (iCurrentFrame < m_iStartFrame)
+    {
+        pUI->Set_Alpha(m_fStartAlpha);
         return;
+    }
+        
+    
+        
 
     if (m_isLoop)
     {
@@ -59,10 +66,11 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
 
     if (m_iCurrentFrame > m_iEndFrame)
     {
+      
         return;
     }
 
-    _float t = std::clamp(float(m_iCurrentFrame) / m_iRange, 0.f, 1.f);
+    _float t = std::clamp(float(m_iCurrentFrame - m_iStartFrame) / m_iRange, 0.f, 1.f);
 
     if (!isReverse)
     {
@@ -77,11 +85,14 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
   
 
  
-
+    pUI->Set_Alpha(m_fCurrentAlpha);
 }
 
 HRESULT CUI_Feature_Fade::Bind_ShaderResources(CShader* pShader)
 {
+    if (m_iCurrentFrame > m_iEndFrame || m_iCurrentFrame < m_iStartFrame)
+        return S_OK;
+
     if (FAILED(pShader->Bind_RawValue("g_Alpha", &m_fCurrentAlpha, sizeof(_float))))
         return E_FAIL;
 
