@@ -447,7 +447,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bMoveReset = false;
 		m_bSetOnce = false;
 		m_bSetTwo = false;
-		m_bIsInvincible = false;
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
@@ -731,14 +730,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
-			m_bIsInvincible = true;
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
 		}
-
-		if (m_fMoveTime > 0.2f)
-			m_bIsInvincible = true;
 
 		break;
 	}
@@ -762,11 +757,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
-			m_bIsInvincible = true;
 		}
 
-		if (m_fMoveTime > 0.2f)
-			m_bIsInvincible = false;
 
 		break;
 	}
@@ -795,11 +787,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
-			m_bIsInvincible = true;
 		}
-
-		if (m_fMoveTime > 0.2f)
-			m_bIsInvincible = false;
 
 		break;
 	}
@@ -902,7 +890,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::FATAL:
 	{
 		RootMotionActive(fTimeDelta);
-		m_bIsInvincible = true;
 		break;
 	}
 	case eAnimCategory::HITED:
