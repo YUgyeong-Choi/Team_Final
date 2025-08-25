@@ -5,7 +5,6 @@
 
 NS_BEGIN(Engine)
 class CPhysXStaticActor;
-class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -26,7 +25,6 @@ public:
 		_float3 Rotation;
 		_vector vTriggerOffset;
 		_vector vTriggerSize;
-		TRIGGERBOX_TYPE eTriggerBoxType;
 		vector<SOUNDDATA> m_vecSoundData;
 	}TRIGGERBOX_DESC;
 
@@ -48,8 +46,6 @@ protected: /* [ 초기화 변수 ] */
 	_bool			m_bDoOnce = {};
 protected:
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
-	CSoundController* m_pSoundCom = { nullptr };
-	TRIGGERBOX_TYPE m_eTriggerBoxType;
 
 	vector<SOUNDDATA> m_vecSoundData;
 	_int m_iSoundIndex = -1;

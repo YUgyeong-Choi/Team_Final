@@ -952,6 +952,9 @@
     <ClInclude Include="..\Public\TriggerItemLamp.h">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerUI.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1429,6 +1432,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerItemLamp.cpp">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerUI.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

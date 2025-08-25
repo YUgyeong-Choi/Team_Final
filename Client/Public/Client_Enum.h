@@ -93,13 +93,19 @@ namespace Client
 		TUTORIALDOOR,
 	};
 
-	enum TRIGGERBOX_TYPE
+	enum class TRIGGERSOUND_TYPE
 	{
 		TUTORIAL_1,
 		MONADLIGHT,
 		TUTORIAL_2,
 		SELECTWEAPON,
 		STATIONINFO
+	};
+
+	enum class TRIGGERUI_TYPE
+	{
+		STATIONTITLE,
+		GUARD
 	};
 
 #pragma endregion

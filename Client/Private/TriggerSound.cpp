@@ -24,11 +24,13 @@ HRESULT CTriggerSound::Initialize_Prototype()
 HRESULT CTriggerSound::Initialize(void* pArg)
 {
 	CTriggerSound::TRIGGERNOMESH_DESC* TriggerNoMeshDESC = static_cast<TRIGGERNOMESH_DESC*>(pArg);
-
+	m_eTriggerSoundType = TriggerNoMeshDESC->eTriggerBoxType;
 
 	if (FAILED(__super::Initialize(TriggerNoMeshDESC)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Components()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -99,10 +101,14 @@ void CTriggerSound::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderTy
 {
 }
 
-void CTriggerSound::Play_Sound()
-{
-}
+HRESULT CTriggerSound::Ready_Components()
+{	
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Trigger"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
 
+	return S_OK;
+}
 
 
 CTriggerSound* CTriggerSound::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -135,4 +141,5 @@ CGameObject* CTriggerSound::Clone(void* pArg)
 void CTriggerSound::Free()
 {
 	__super::Free();
+	Safe_Release(m_pSoundCom);
 }

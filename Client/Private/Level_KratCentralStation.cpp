@@ -15,6 +15,7 @@
 #include "DoorMesh.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
+#include "TriggerUI.h"
 
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"     
@@ -962,13 +963,12 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 		inFile.close();
 
 		for (const auto& j : root["triggers"]) {
-			const _int type = j.value("UseMesh", 0);
+			const _int type = j.value("ClassType", 0);
 			// 공통 파싱
 			const auto vPosArr = j.value("vPos", vector<float>{});
 			const auto rotDegArr = j.value("rotationDeg", vector<float>{});
 			const auto offsetArr = j.value("triggerOffset", vector<float>{});
 			const auto sizeArr = j.value("triggerSize", vector<float>{});
-			const int  triggerType = j.value("TriggerType", 0); // 필요 시 enum으로 캐스팅
 
 			// SoundDatas 파싱
 			vector<CTriggerBox::SOUNDDATA> vecSoundData;
@@ -993,25 +993,29 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 			}
 
 			if (type == 0) {
+				const int  triggerType = j.value("TriggerType", 0);
+
 				CTriggerSound::TRIGGERNOMESH_DESC Desc{};
 				Desc.vPos = VecSetW(vPosArr, 1.f);
 				Desc.Rotation = VecToFloat3(rotDegArr);       
 				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
-				Desc.eTriggerBoxType = static_cast<TRIGGERBOX_TYPE>(triggerType);
+				Desc.eTriggerBoxType = static_cast<TRIGGERSOUND_TYPE>(triggerType);
 				Desc.m_vecSoundData = vecSoundData;
 				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerSound"),
 					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerSound"), &Desc)))
 					return E_FAIL;
 			}
 			else if (type == 1) {
+				const int  triggerType = j.value("TriggerType", 0);
+
 				CTriggerTalk::TRIGGERTALK_DESC Desc{};
 				string objectTag = j["ObjectTag"].get<string>();
 				Desc.vPos = VecSetW(vPosArr, 1.f);
 				Desc.Rotation = VecToFloat3(rotDegArr);      
 				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
-				Desc.eTriggerBoxType = static_cast<TRIGGERBOX_TYPE>(triggerType);
+				Desc.eTriggerBoxType = static_cast<TRIGGERSOUND_TYPE>(triggerType);
 				Desc.m_vecSoundData = vecSoundData;
 				Desc.gameObjectTag = objectTag;
 				if (objectTag != "")
@@ -1025,6 +1029,18 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 				Desc.bCanCancel = j.value("CanCancel", 0);
 				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerTalk"),
 					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerTalk"), &Desc)))
+					return E_FAIL;
+			}else if (type == 2) {
+				const int  triggerType = j.value("TriggerType", 0);
+
+				CTriggerUI::TRIGGERUI_DESC Desc{};
+				Desc.vPos = VecSetW(vPosArr, 1.f);
+				Desc.Rotation = VecToFloat3(rotDegArr);
+				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
+				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
+				Desc.eTriggerUIType = static_cast<TRIGGERUI_TYPE>(triggerType);
+				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerUI"),
+					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerUI"), &Desc)))
 					return E_FAIL;
 			}
 		}
