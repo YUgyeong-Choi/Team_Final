@@ -319,7 +319,7 @@ void CTransform::Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CPhysXContro
 	}
 	else
 	{
-		if (!pNavigation)
+		if (pNavigation)
 		{
 			if(pNavigation->isMove(vNewPos))
 			{
