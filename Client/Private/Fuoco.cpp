@@ -85,7 +85,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_T))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", P2_FireOil);
+		m_pAnimator->SetInt("SkillType", P2_FlameField);
 	}
 	if (KEY_PRESSING(DIK_B))
 	{
@@ -316,6 +316,13 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	{
 		return;
 	}
+
+
+	if (m_eCurrentState == EBossState::ATTACK)
+	{
+		return;
+	}
+
 	if (m_fAttackCooldown > 0.f)
 	{
 		m_fAttackCooldown -= fTimeDelta;
@@ -328,11 +335,6 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	if (fDistance >= 25.f)
 		return;
 
-
-	if (m_eCurrentState == EBossState::ATTACK)
-	{
-		return;
-	}
 
 
 	EBossAttackPattern eSkillType = GetRandomAttackPattern(fDistance);
@@ -932,7 +934,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;
-	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC| PxQueryFlag::ePREFILTER; // 
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC| PxQueryFlag::ePREFILTER;
 	unordered_set<PxActor*> ignoreActors;
 	ignoreActors.insert(m_pPhysXActorCom->Get_Actor());
 	ignoreActors.insert(m_pPhysXActorComForArm->Get_Actor());
@@ -976,8 +978,8 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 				XMFLOAT3 fLook;
 				XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
 				_data.vDirection = vRayDir;
-				_data.fRayLength = 10.f;
-				_data.bIsHit = fDistance;
+				_data.fRayLength = fDistance;
+				_data.bIsHit = hit.hasBlock;
 				_data.vHitPos = m_vRayHitPos;
 				m_pPhysXActorCom->Add_RenderRay(_data);
 			}
@@ -989,7 +991,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 			_data.vStartPos = origin;
 			_data.vDirection = vRayDir; // 회전된 방향 사용
 			_data.fRayLength = fDistance;
-			_data.bIsHit = false;
+			_data.bIsHit = hit.hasBlock;
 			_data.vHitPos = PxVec3(0, 0, 0);
 			m_pPhysXActorCom->Add_RenderRay(_data);
 		}

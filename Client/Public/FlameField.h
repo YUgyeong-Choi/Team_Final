@@ -43,6 +43,8 @@ private:
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
 
+	// 12방향정도 레이쏴서 생성 시킬 범위 확정
+	void Check_SpawnEffectDistance();
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	PxBoxGeometry m_ModifyFlame = PxBoxGeometry(0.5f, 0.5f, 0.5f);
@@ -52,7 +54,7 @@ private:
 	_float m_fExpandTime = 0.f; // 불꽃이 확장까지 걸리는 시간
 	_float m_fExpandElapsedTime = 0.f; // 불꽃이 확장된 시간
 	_float m_fRemainTime = 2.f;
-
+	list<_float> m_SpawnEffectDistanceList; // 이펙트를 생성할 거리 리스트
 public:
 	static CFlameField* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
