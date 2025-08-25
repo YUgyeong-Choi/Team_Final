@@ -143,7 +143,7 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 	// 들어온 몬스터의 상태를 가져온다.
 	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
 
-	const _float fBackDotThreshold = -0.8f;
+	const _float fBackDotThreshold = -0.9f;
 
 	// 위치/룩 수집
 	_vector vMonsterPos = pOther->Get_TransfomCom()->Get_State(STATE::POSITION);
