@@ -22,5 +22,9 @@
     {
         "ModelName": "SM_Wall_Archway0aA",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Archway0aA.bin"
+    },
+    {
+        "ModelName": "SM_Cathedral_DoorArch_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_DoorArch_01.bin"
     }
 ]
