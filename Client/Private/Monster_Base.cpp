@@ -208,7 +208,6 @@ void CMonster_Base::Reset()
 	m_fGroggyThreshold = {};
 	m_isCanGroggy = {};
 	m_isDetect = { false };
-	m_fDetectDist = {};
 	m_strStateName = {};
 	m_vPushDir = {};
 	m_iCollisionCount = {};
