@@ -231,7 +231,7 @@ void CLockOn_Manager::RemoveSomeTargets()
                     PxRigidActor* hitActor = hit.block.actor;
                     CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-                    if (pHitActor && pHitActor->Get_ColliderType() != COLLIDERTYPE::MONSTER)
+                    if (pHitActor && !(pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON))
                     {
                         // 벽 등 다른 오브젝트가 먼저 막음 → 제거
                         bRemove = true;
