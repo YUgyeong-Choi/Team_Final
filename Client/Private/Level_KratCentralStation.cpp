@@ -117,9 +117,8 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		return;
 
 	if (KEY_DOWN(DIK_U))
-		m_pGameInstance->Set_GameTimeScale(1.f);
-	if (KEY_DOWN(DIK_I))
-		m_pGameInstance->Set_GameTimeScale(0.5f);
+		Reset();
+
 
 	if(KEY_DOWN(DIK_H))
 		ToggleHoldMouse();
@@ -196,6 +195,17 @@ void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 HRESULT CLevel_KratCentralStation::Render()
 {
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Reset()
+{
+	for (auto& pMonster : m_vecMonster)
+	{
+		if(pMonster->Get_bPlayOnce() || !pMonster->Get_bActive())
+			pMonster->Reset();
+	}
 
 	return S_OK;
 }
@@ -813,15 +823,19 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 
 			wstring wsPrototypeTag = TEXT("Prototype_GameObject_Monster_") + wstrMonsterName;
 
-			if (FAILED(m_pGameInstance->Add_GameObject(
+			CGameObject* pObj;
+			if (FAILED(m_pGameInstance->Add_GameObjectReturn(
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
 				wsPrototypeTag.c_str(),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
 				TEXT("Layer_Monster_Normal"),
-				&Desc)))
+				&pObj, &Desc)))
 			{
 				return E_FAIL;
 			}
+
+			if (CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pObj))
+				m_vecMonster.push_back(pMonster);
 		}
 	}
 

@@ -44,13 +44,13 @@ public:
 
 	void Calc_Pos(_float fTimeDelta);
 
-	
 	virtual void Register_Events();
 
 	virtual void Block_Reaction();
 
 	virtual void Start_Fatal_Reaction();
 
+	virtual void Reset() override;
 private:
 	HRESULT Ready_Weapon(); 
 
