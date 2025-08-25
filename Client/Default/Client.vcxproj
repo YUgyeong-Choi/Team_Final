@@ -44,7 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>false</EnableUnitySupport>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -52,6 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -114,6 +115,7 @@
       <AdditionalIncludeDirectories>../public/;../../EngineSDK/Inc/;../../PhysXSDK/Include/;../default/imgui/;../default/imgui/backends/;../../Engine/Public/FFmpeg/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MaxFilesInUnityFile>5</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,6 +143,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <Optimization>MaxSpeed</Optimization>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <MaxFilesInUnityFile>5</MaxFilesInUnityFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -486,7 +489,16 @@
     <ClCompile Include="imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\ImGuiFileDialog.cpp" />
-    <ClCompile Include="imgui\ImGuizmo.cpp" />
+    <ClCompile Include="imgui\ImGuizmo.cpp">
+      <AddCodeBeforeSourceInclude Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">#undef x
+#undef y
+#undef max
+#undef min</AddCodeBeforeSourceInclude>
+      <AddCodeBeforeSourceInclude Condition="'$(Configuration)|$(Platform)'=='Release|x64'">#undef x
+#undef y
+#undef max
+#undef min</AddCodeBeforeSourceInclude>
+    </ClCompile>
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
