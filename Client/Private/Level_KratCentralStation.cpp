@@ -203,8 +203,8 @@ HRESULT CLevel_KratCentralStation::Render()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
-	if (FAILED(Ready_Dummy()))
-		return E_FAIL;
+	//if (FAILED(Ready_Dummy()))
+	//	return E_FAIL;
 	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가

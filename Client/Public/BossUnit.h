@@ -44,6 +44,7 @@ public:
 
 public:
 	const EBossAttackType& Get_BossAttackType() const { m_eBossAttackType; }
+
 protected:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -53,6 +54,7 @@ protected:
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 
@@ -61,6 +63,7 @@ protected:
 	HRESULT LoadFromJson();
 	virtual HRESULT Ready_Components(void* pArg);
 	virtual HRESULT Ready_Actor();
+	virtual void Ready_EffectNames() {};
 	virtual void Ready_BoneInformation() {};
 
 	virtual void Update_Collider();
@@ -68,6 +71,7 @@ protected:
 	virtual void UpdateMovement(_float fDistance, _float fTimeDelta);
 	virtual void UpdateAttackPattern(_float fDistance, _float fTimeDelta) ;
 	virtual void UpdateStateByNodeID(_uint iNodeID);
+	virtual void ProcessingEffects(const _wstring& stEffectTag) {}; // 이펙트 처리
 
 	_bool CanMove() const;
 
@@ -109,7 +113,7 @@ protected:
 	}
 
 	// 이펙트 출력 관련
-	virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive) { return S_OK; }
+	virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce = true) { return S_OK; }
 	virtual HRESULT Spawn_Effect() { return S_OK; }
 
 protected:
@@ -130,9 +134,10 @@ protected:
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
 	_float   m_fSmoothThreshold = 0.1f;
+	_float   m_fSlideClamp = 0.2f;
 	_float   m_fWalkSpeed = 3.f;
 	_float   m_fRunSpeed = 6.f;
-	_float   m_fRootMotionAddtiveScale = 1.35f; // 루트 모션 추가 배율
+	_float   m_fRootMotionAddtiveScale =1.f; // 루트 모션 추가 배율
 	_float   m_fChasingDistance = 1.5f; // 플레이어 추적 거리
 
 	_float m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
@@ -151,6 +156,9 @@ protected:
 	_float m_fAttckDleay = 4.f;
 
 	EBossAttackType m_eBossAttackType = EBossAttackType::NONE;
+
+	unordered_map<_int, _wstring> m_EffectMap; // 이펙트 이름 맵 (패턴, 이름)
+	list<pair<_wstring, _bool>> m_ActiveEffect; // 활성화된 이펙트 (이름, 한번만 실행할지)
 
 	static constexpr _float MINIMUM_TURN_ANGLE = 35.f;
 public:
