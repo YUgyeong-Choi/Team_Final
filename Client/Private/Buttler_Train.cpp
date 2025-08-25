@@ -81,7 +81,10 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 void CButtler_Train::Update(_float fTimeDelta)
 {
-	Calc_Pos(fTimeDelta);
+	
+ 	Calc_Pos(fTimeDelta);
+
+	__super::Update(fTimeDelta);
 
 
 	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
@@ -102,10 +105,6 @@ void CButtler_Train::Update(_float fTimeDelta)
 		m_isFatal = false;
 	}
 	
-
-	__super::Update(fTimeDelta);
-
-
 //#ifdef _DEBUG
 //	// ===== Shape 교체 (F5) =====
 //	if (KEY_DOWN(DIK_F5))
@@ -426,51 +425,69 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
-	//if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
-	//{
-	//	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-	//	m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
-	//}
-	//else 
-	//{
-	//	RootMotionActive(fTimeDelta);
-	//}
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-	if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
+	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
 	{
-		m_isLookAt = false;
-		m_isCollisionPlayer = false;
-	}
+		_float fSpeed = { 1.f };
+		if (m_strStateName.find("Walk_F") != m_strStateName.npos)
+		{
+			fSpeed = 0.5f;
+		}
+
+		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+		
+		m_vPushDir  = XMVector3Normalize(m_vPushDir);
+
+		m_vPushDir.m128_f32[3] = 0.f;
+		
+		_vector vDir = XMVector3Normalize(vLook)  +m_vPushDir ;
+
+
+		m_pTransformCom->Go_Dir(vDir, fTimeDelta * fSpeed, nullptr, m_pNaviCom);
 		
 
-
-	if (m_strStateName.find("Walk") != m_strStateName.npos || m_strStateName.find("Run") != m_strStateName.npos )
-		m_isCollisionPlayer = false;
-
-	if (m_strStateName.find("Away") == m_strStateName.npos)
-	{
-		m_fAwaySpeed = 1.f;
-		RootMotionActive(fTimeDelta);
 	}
 	else
 	{
-		m_fAwaySpeed -= fTimeDelta * 0.5f;
-
-		if (m_fAwaySpeed <= 0.f)
-			m_fAwaySpeed = 0.f;
-
-		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-		if (m_strStateName.find("B") == m_strStateName.npos)
+		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
 		{
-			vLook *= -1.f;
-			
+			m_isLookAt = false;
+			m_isCollisionPlayer = false;
 		}
 
 
-		
 
-		m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
-	}    
+
+
+		if (m_strStateName.find("Away") == m_strStateName.npos)
+		{
+			m_fAwaySpeed = 1.f;
+			RootMotionActive(fTimeDelta);
+		}
+		else
+		{
+			m_fAwaySpeed -= fTimeDelta * 0.5f;
+
+			if (m_fAwaySpeed <= 0.f)
+				m_fAwaySpeed = 0.f;
+
+		
+			if (m_strStateName.find("B") == m_strStateName.npos)
+			{
+				vLook *= -1.f;
+
+			}
+
+
+
+
+			m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
+		}
+	}
+
+
+
 	
 
 }
