@@ -69,6 +69,7 @@ void CUI_Manager::On_Panel()
 	for (auto& obj : m_pPanel)
 	{
 		(obj)->Set_isReverse(false);
+		
 	}
 }
 

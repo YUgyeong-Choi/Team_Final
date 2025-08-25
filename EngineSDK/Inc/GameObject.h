@@ -64,6 +64,7 @@ public:
 
 	virtual _float Get_TimeScale() { return m_fTimeScale; }
 
+
 	void PrintMatrix(const char* szName, const _matrix& mat);
 
 	wstring Get_Name() { return wstring(m_szName); }
