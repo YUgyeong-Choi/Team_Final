@@ -121,7 +121,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
         CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
-        unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
+        unordered_set<PxActor*> ignoreActors = pPlayer->Get_BodyActor()->Get_IngoreActors();
         CIgnoreSelfCallback callback(ignoreActors);
 
         _bool bRemove = false;
@@ -221,7 +221,7 @@ void CLockOn_Manager::RemoveSomeTargets()
             filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
             CPlayer* pPlayer = static_cast<CPlayer*>(m_pPlayer);
-            unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
+            unordered_set<PxActor*> ignoreActors = pPlayer->Get_BodyActor()->Get_IngoreActors();
             CIgnoreSelfCallback callback(ignoreActors);
 
             if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))

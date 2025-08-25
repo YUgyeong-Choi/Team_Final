@@ -95,8 +95,7 @@ void CPhysXStaticActor::Set_QueryFilterData(PxFilterData _data)
 
 void CPhysXStaticActor::RemovePhysX()
 {
-    if (m_pTriggerEnterOther)
-        m_pGameInstance->Remove_TriggerRemoveActor(this, m_pTriggerEnterOther);
+    m_pGameInstance->Remove_TriggerRemoveActor(this, m_pTriggerEnterOthers);
 
     Get_Actor()->userData = nullptr;
     m_pGameInstance->Get_Scene()->removeActor(*Get_Actor());

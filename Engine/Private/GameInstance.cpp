@@ -753,9 +753,9 @@ void CGameInstance::Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOthe
 {
 	m_pPhysX_Manager->Remove_TriggerExitActor(pMe, pOther);
 }
-void CGameInstance::Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther)
+void CGameInstance::Remove_TriggerRemoveActor(CPhysXActor* pMe, unordered_set<CPhysXActor*> pOthers)
 {
-	m_pPhysX_Manager->Remove_TriggerRemoveActor(pMe, pOther);
+	m_pPhysX_Manager->Remove_TriggerRemoveActor(pMe, pOthers);
 }
 #pragma endregion
 
