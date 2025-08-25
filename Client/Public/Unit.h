@@ -52,6 +52,8 @@ public:
 
 	void SetCascadeShadow();
 	
+
+
 protected: /* [ Setup 함수 ] */
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();

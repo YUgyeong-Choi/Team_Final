@@ -1,6 +1,8 @@
 #include "TriggerUI.h"
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "UI_Container.h"
+#include "UI_Guide.h"
 
 CTriggerUI::CTriggerUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
@@ -61,12 +63,31 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 	if (!m_bDoOnce)
 	{
 		m_bDoOnce = true;
+		CUI_Container::UI_CONTAINER_DESC eDesc{};
+		CUI_Guide::UI_GUIDE_DESC eGuideDesc = {};
 
 		switch (m_eTriggerUIType)
 		{
 		case Client::TRIGGERUI_TYPE::STATIONTITLE:
+			
+			//eDesc.useLifeTime = true;
+			//eDesc.fLifeTime = 8.f;
+			//eDesc.strFilePath = TEXT("../Bin/Save/UI/Location/Location_BackGround.json");
+			//m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Location_UI"), &eDesc);
+			//eDesc.strFilePath = TEXT("../Bin/Save/UI/Location/Location_Text.json");
+			//m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Location_UI"), &eDesc);
+
+			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Guard.json"),TEXT("../Bin/Save/UI/Guide/Guide_PerfectGuard.json") };
+
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
+
 			break;
 		case Client::TRIGGERUI_TYPE::GUARD:
+			
+
+			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Guard.json"),TEXT("../Bin/Save/UI/Guide/Guide_PerfectGuard.json") };
+
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
 			break;
 		default:
 			break;

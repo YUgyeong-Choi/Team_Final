@@ -31,6 +31,8 @@ public:
     void On_Panel();
     void Off_Panel();
 
+    void Activate_UI(_wstring strTag, _bool isActive);
+
     // ÆË¾÷
     void Activate_Popup(_bool isActive);
     void Set_Popup_Caption(_int iTriggerType);

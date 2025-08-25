@@ -267,6 +267,8 @@ void CDynamic_UI::Update_UI_From_Tool(void* pArg)
 
 void CDynamic_UI::Reset()
 {
+	m_iCurrentFrame = 0;
+
 	for (auto& pFeature : m_pUIFeatures)
 	{
 		if (nullptr == pFeature || Get_bDead())

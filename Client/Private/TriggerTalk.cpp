@@ -6,6 +6,8 @@
 #include "PlayerLamp.h"
 #include "TriggerItem.h"
 #include "Player.h"
+#include "UI_Container.h"
+
 CTriggerTalk::CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
 {
@@ -53,8 +55,22 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 		m_pPhysXTriggerCom->RemovePhysX();
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
-		if(m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
+		if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
+		{
+			//add_item..
+			CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
+
+			CUI_Container::UI_CONTAINER_DESC eDesc{};
+			eDesc.useLifeTime = true;
+			eDesc.fLifeTime = 8.f;
+			eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Lamp_Description.json");
+
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lamp_Desc"), &eDesc);
+
 			m_pPlayer->Get_PlayerLamp()->SetbLampVisible(true);
+			CUI_Manager::Get_Instance()->On_Panel();
+		}
+			
 
 		if (m_pTriggerObject)
 			m_pTriggerObject->Set_bDead();

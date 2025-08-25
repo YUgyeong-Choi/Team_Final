@@ -316,7 +316,7 @@
             "ClipName": "AS_Down_GetUp_B",
             "Duration": 194.0,
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 70.0
         },
         {
@@ -330,7 +330,7 @@
             "ClipName": "AS_Down_GetUp_F",
             "Duration": 194.0,
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 70.0
         },
         {

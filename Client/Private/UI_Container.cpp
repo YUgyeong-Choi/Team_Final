@@ -98,6 +98,9 @@ HRESULT CUI_Container::Initialize(void* pArg)
 
 	m_strFilePath = pDesc->strFilePath;
 
+	m_fLifeTime = pDesc->fLifeTime;
+	m_useLifeTime = pDesc->useLifeTime;
+
 	if (m_strFilePath.empty())
 		return S_OK;
 
@@ -151,6 +154,18 @@ HRESULT CUI_Container::Initialize(void* pArg)
 
 void CUI_Container::Priority_Update(_float fTimeDelta)
 {
+	if (m_useLifeTime)
+	{
+		m_fLifeTime -= fTimeDelta;
+
+		if (m_fLifeTime < 0.f)
+		{
+			Set_bDead();
+			return;
+		}
+	}
+
+
 	for (auto& pObj : m_PartObjects)
 	{
 		if(nullptr != pObj)

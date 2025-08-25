@@ -19,6 +19,10 @@ public:
 		_vector vOffSetObj;
 		_vector vScaleObj;
 		_bool bCanCancel;
+		
+		// 끝날때 아이템을 생성하는 대화면 여기에 생성할 아이템 이름을 넣어주기
+		_int  iMakeObjectType = {};
+		string strMakeObjectName = {};
 	}TRIGGERTALK_DESC;
 
 	enum BUTTON {BUTTON_NEXT, BUTTON_AUTO, BUTTON_FINISH, BUTTON_END};
