@@ -451,6 +451,15 @@
     <Filter Include="02.GameObjects\15.StaticTrigger\DropItem">
       <UniqueIdentifier>{2c3d912b-b147-46ab-9d4a-e9049f9614e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup">
+      <UniqueIdentifier>{a19245ee-eea7-44cd-a095-a156e2c472c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup\Item">
+      <UniqueIdentifier>{ed75b6f6-c903-4fbc-9123-3696358a1edc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup\Weapon">
+      <UniqueIdentifier>{b0dce10e-e343-4df9-98d8-bb1e854e9b1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -958,6 +967,9 @@
     <ClInclude Include="..\public\TriggerDropItem.h">
       <Filter>02.GameObjects\15.StaticTrigger\DropItem</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Pickup_Item.h">
+      <Filter>02.GameObjects\99.UI\Container\Pickup\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1438,6 +1450,9 @@
     </ClCompile>
     <ClCompile Include="..\private\TriggerDropItem.cpp">
       <Filter>02.GameObjects\15.StaticTrigger\DropItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Pickup_Item.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Pickup\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

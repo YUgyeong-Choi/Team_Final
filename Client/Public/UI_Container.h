@@ -13,7 +13,8 @@ class CUI_Container  : public CUIObject
 public:
 	typedef struct tagUIContainerDesc : public CUIObject::UIOBJECT_DESC
 	{
-
+		_bool	 useLifeTime = {};
+		_float   fLifeTime = {};
 		_wstring strFilePath;
 	}UI_CONTAINER_DESC;
 protected:
@@ -50,6 +51,9 @@ protected:
 	vector<class CUIObject*>			m_PartObjects;
 
 	_bool								m_isReverse = {false};
+
+	_bool								m_useLifeTime = { false };
+	_float								m_fLifeTime = {};
 
 protected:
 

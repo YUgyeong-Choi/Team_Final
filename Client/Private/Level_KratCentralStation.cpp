@@ -668,6 +668,11 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 	CUI_Manager::Get_Instance()->Emplace_UI(dynamic_cast<CUIObject*>(pTextScript), L"TalkScript");
 	CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Pickup_Item"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Pickup_Item"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

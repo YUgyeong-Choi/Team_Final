@@ -15,6 +15,11 @@ public:
 		_matrix triggerWorldMatrix;
 		_vector vOffSetObj;
 		_vector vScaleObj;
+
+		// 생성할 아이템 타입
+		// 이름
+		
+
 	}TRIGGERITEM_DESC;
 protected:
 	CTriggerItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
