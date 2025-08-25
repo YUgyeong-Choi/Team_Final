@@ -65,7 +65,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 void CFuoco::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);	
+	__super::Priority_Update(fTimeDelta);
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_V))
 	{
@@ -99,8 +99,8 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		XMMatrixDecompose(&scale, &rot, &trans, worldmat);
 
 		_vector finalRot = XMQuaternionMultiply(XMQuaternionInverse(rot), XMQuaternionRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f)));
-		
-		XMStoreFloat4x4(&desc.PresetMatrix,XMMatrixRotationQuaternion(finalRot) *
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(finalRot) *
 			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
 				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
 				worldmat.r[3].m128_f32[2]));
@@ -116,6 +116,16 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 			MSG_BOX("이펙트 생성 실패함");
 
 		//FireProjectile(ProjectileType::FireBall, 25.f);
+	}
+	if (KEY_PRESSING(DIK_V))
+	{
+		CEffectContainer::DESC desc = {};
+		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1"), &desc) == nullptr)
+			MSG_BOX("이펙트 생성 실패함");
 	}
 	if (KEY_DOWN(DIK_V))
 	{
