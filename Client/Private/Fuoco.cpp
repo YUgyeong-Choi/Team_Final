@@ -72,7 +72,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	{
 		m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType", P2_FireBall);
-		m_pAnimator->SetInt("SkillType", SwingAtk);
+		//m_pAnimator->SetInt("SkillType", SwingAtk);
 		//m_pAnimator->SetTrigger("Paralyzation");
 	//	m_pAnimator->SetTrigger("Fatal");
 		//m_pAnimator->SetTrigger("Groggy");
@@ -83,16 +83,18 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	}
 	if (KEY_PRESSING(DIK_B))
 	{
-		CEffectContainer::DESC desc = {};
-		auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+		//CEffectContainer::DESC desc = {};
+		//auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
-				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
-				worldmat.r[3].m128_f32[2]));
+		//XMStoreFloat4x4(&desc.PresetMatrix,
+		//	XMMatrixTranslation(worldmat.r[3].m128_f32[0],
+		//		m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
+		//		worldmat.r[3].m128_f32[2]));
 
-		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_FloorFountain_P2"), &desc) == nullptr)
-			MSG_BOX("이펙트 생성 실패함");
+		//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_FloorFountain_P2"), &desc) == nullptr)
+		//	MSG_BOX("이펙트 생성 실패함");
+		//FireProjectile(ProjectileType::FireBall, 25.f);
+
 	}
 #endif
 }
@@ -1016,6 +1018,21 @@ HRESULT CFuoco::EffectSpawn_Active(_int iPattern, _bool bActive)
 	// 못만들었어
 	// 만들어줘 
 
+	return S_OK;
+}
+
+HRESULT CFuoco::Effect_FlameField()
+{
+	// 임시로 만들어둘 곳이 없어서 함수만 대충 넣어놨습니다
+	CEffectContainer::DESC desc = {};
+	auto worldmat = m_pTransformCom->Get_WorldMatrix();
+
+	// 월드 위치만 넣어주면 되는데 위치를 모르겠어서 푸오코 위치 넣음
+	XMStoreFloat4x4(&desc.PresetMatrix,
+		XMMatrixTranslation(worldmat.r[3].m128_f32[0], worldmat.r[3].m128_f32[1], worldmat.r[3].m128_f32[2]));
+
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_Imsi_P2"), &desc))
+		MSG_BOX("이펙트 생성 실패함");
 	return S_OK;
 }
 

@@ -1,0 +1,274 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                -0.009999999776482582,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.6151695251464844,
+                0.27225130796432495,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.1256544589996338,
+                0.0,
+                1.0
+            ],
+            "Duration": 213,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.3499999940395355,
+            "EndTrack": 213,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.1256544589996338,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.380000114440918,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1006.201904296875,
+            "LifeTime_Particle": [
+                0.4099999964237213,
+                3.0
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Fuoco_Flamefield_imsiParticle1",
+            "NumInstance": 20,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                5.0,
+                0.009999999776482582,
+                5.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 2,
+            "Size": [
+                1.0,
+                2.0
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_25_ECD_8x8_SC_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 8,
+            "TileY": 8,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                -0.009999999776482582,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.5628957152366638,
+                0.29842931032180786,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.03141361474990845,
+                0.0,
+                1.0
+            ],
+            "Duration": 212,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 212,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.03141361474990845,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.7699999809265137,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 14.093949317932129,
+            "LifeTime_Particle": [
+                0.4099999964237213,
+                3.0
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 3.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Fuoco_Flamefield_imsiParticle2",
+            "NumInstance": 10,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                5.0,
+                0.009999999776482582,
+                5.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 2,
+            "Size": [
+                0.5,
+                0.699999988079071
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_17_FC_8x8_SC_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 8,
+            "TileY": 8,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 200
+}

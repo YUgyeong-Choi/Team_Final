@@ -235,7 +235,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->CancelOverrideAnimController();
 		//m_pAnimator->SetInt("HitDir", m_iTestInt);
 		//m_pAnimator->SetTrigger("Hited");
-		m_pAnimator->SetTrigger("Death");
+		//m_pAnimator->SetTrigger("Death");
+
 	}
 
 	if (KEY_DOWN(DIK_U))
