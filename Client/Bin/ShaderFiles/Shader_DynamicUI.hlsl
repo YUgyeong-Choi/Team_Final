@@ -137,6 +137,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
     
     Out.vColor *= g_Color;
    
+    Out.vColor.a *= g_Alpha;
     
     return Out;
 }
@@ -151,6 +152,8 @@ PS_OUT PS_MAIN_DISCARD_DARK(PS_IN In)
         discard;
     
     Out.vColor *= g_Color;
+    
+    Out.vColor.a *= g_Alpha;
     
     return Out;
 }
