@@ -546,7 +546,7 @@
             "ObjectCount": 3,
             "Objects": [
                 {
-                    "ColliderType": 1,
+                    "ColliderType": 0,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [

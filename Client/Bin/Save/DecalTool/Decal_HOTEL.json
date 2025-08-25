@@ -29,5 +29,98 @@
                 1.0
             ]
         ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_BloodTrail_58_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_BloodTrail_58_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_BloodTrail_58_N.dds",
+        "WorldMatrix": [
+            [
+                -0.5796385407447815,
+                0.0,
+                4.790088176727295,
+                0.0
+            ],
+            [
+                0.0,
+                0.06267506629228592,
+                0.0,
+                0.0
+            ],
+            [
+                -3.1371147632598877,
+                0.0,
+                -0.37961578369140625,
+                0.0
+            ],
+            [
+                131.08294677734375,
+                2.6685235500335693,
+                -34.97414016723633,
+                0.9999998807907104
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_BloodSpot_2_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_BloodTrail_58_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_BloodTrail_58_N.dds",
+        "WorldMatrix": [
+            [
+                4.954139709472656,
+                0.0,
+                0.6756467223167419,
+                0.0
+            ],
+            [
+                0.0,
+                0.06267506629228592,
+                0.0,
+                0.0
+            ],
+            [
+                -0.6756467223167419,
+                0.0,
+                4.954139709472656,
+                0.0
+            ],
+            [
+                132.74342346191406,
+                2.6685235500335693,
+                -40.30115509033203,
+                1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_BloodSpot_2_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_BloodTrail_58_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_BloodTrail_58_N.dds",
+        "WorldMatrix": [
+            [
+                3.8972957134246826,
+                0.0,
+                3.132263660430908,
+                0.0
+            ],
+            [
+                0.0,
+                0.06267506629228592,
+                0.0,
+                0.0
+            ],
+            [
+                -3.132263660430908,
+                0.0,
+                3.8972957134246826,
+                0.0
+            ],
+            [
+                138.06436157226563,
+                2.6685235500335693,
+                -42.04313659667969,
+                1.0
+            ]
+        ]
     }
 ]

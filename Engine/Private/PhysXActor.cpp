@@ -464,21 +464,22 @@ void CPhysXActor::DrawTriangleMesh(PxTransform pose, PxGeometryHolder geom, PxBo
         m_pBatch->DrawLine(VertexPositionColor(v2, m_vRenderColor), VertexPositionColor(v0, m_vRenderColor));
     }
 
-
-    // === AABB 시각화 추가 ===
-   BoundingBox aabb;
-   aabb.Center = XMFLOAT3(
-       (bounds.minimum.x + bounds.maximum.x) * 0.5f,
-       (bounds.minimum.y + bounds.maximum.y) * 0.5f,
-       (bounds.minimum.z + bounds.maximum.z) * 0.5f
-   );
-   aabb.Extents = XMFLOAT3(
-       (bounds.maximum.x - bounds.minimum.x) * 0.5f,
-       (bounds.maximum.y - bounds.minimum.y) * 0.5f,
-       (bounds.maximum.z - bounds.minimum.z) * 0.5f
-   );
-   DX::Draw(m_pBatch, aabb, Colors::Yellow);
-
+    if (m_bDrawAABB)
+    {
+        // === AABB 시각화 추가 ===
+        BoundingBox aabb;
+        aabb.Center = XMFLOAT3(
+            (bounds.minimum.x + bounds.maximum.x) * 0.5f,
+            (bounds.minimum.y + bounds.maximum.y) * 0.5f,
+            (bounds.minimum.z + bounds.maximum.z) * 0.5f
+        );
+        aabb.Extents = XMFLOAT3(
+            (bounds.maximum.x - bounds.minimum.x) * 0.5f,
+            (bounds.maximum.y - bounds.minimum.y) * 0.5f,
+            (bounds.maximum.z - bounds.minimum.z) * 0.5f
+        );
+        DX::Draw(m_pBatch, aabb, Colors::Yellow);
+    }
 }
 
 void CPhysXActor::DrawConvexMesh(PxTransform pose, PxGeometryHolder geom, PxBounds3 bounds)
@@ -530,19 +531,23 @@ void CPhysXActor::DrawConvexMesh(PxTransform pose, PxGeometryHolder geom, PxBoun
         }
     }
 
-    // === AABB 시각화 추가 ===
-    BoundingBox aabb;
-    aabb.Center = XMFLOAT3(
-        (bounds.minimum.x + bounds.maximum.x) * 0.5f,
-        (bounds.minimum.y + bounds.maximum.y) * 0.5f,
-        (bounds.minimum.z + bounds.maximum.z) * 0.5f
-    );
-    aabb.Extents = XMFLOAT3(
-        (bounds.maximum.x - bounds.minimum.x) * 0.5f,
-        (bounds.maximum.y - bounds.minimum.y) * 0.5f,
-        (bounds.maximum.z - bounds.minimum.z) * 0.5f
-    );
-    DX::Draw(m_pBatch, aabb, Colors::Yellow);
+    if (m_bDrawAABB)
+    {
+        // === AABB 시각화 추가 ===
+        BoundingBox aabb;
+        aabb.Center = XMFLOAT3(
+            (bounds.minimum.x + bounds.maximum.x) * 0.5f,
+            (bounds.minimum.y + bounds.maximum.y) * 0.5f,
+            (bounds.minimum.z + bounds.maximum.z) * 0.5f
+        );
+        aabb.Extents = XMFLOAT3(
+            (bounds.maximum.x - bounds.minimum.x) * 0.5f,
+            (bounds.maximum.y - bounds.minimum.y) * 0.5f,
+            (bounds.maximum.z - bounds.minimum.z) * 0.5f
+        );
+        DX::Draw(m_pBatch, aabb, Colors::Yellow);
+    }
+
 }
 
 void CPhysXActor::DrawRay(_fmatrix view, _cmatrix proj, const PxVec3& origin, const PxVec3& dir, float length, _bool drawHitBox, PxVec3 hitPos)
