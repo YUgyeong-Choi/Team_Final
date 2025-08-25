@@ -124,51 +124,13 @@ void CMapTool::Control(_float fTimeDelta)
 	if (GetForegroundWindow() != g_hWnd)
 		return;
 
-	if (ImGuizmo::IsUsing() == false)
-	{
-		//E 회전, R 크기, T는 위치
-		if (m_pGameInstance->Key_Down(DIK_E))
-			m_currentOperation = ImGuizmo::ROTATE;
-		else if (m_pGameInstance->Key_Down(DIK_R))
-			m_currentOperation = ImGuizmo::SCALE;
-		else if (m_pGameInstance->Key_Down(DIK_T))
-			m_currentOperation = ImGuizmo::TRANSLATE;
+	Change_Operation();
 
-		if (m_pGameInstance->Mouse_Up(DIM::WHEELBUTTON))
-		{
-			//모든 오브젝트 선택 제거
-
-			m_SelectedIndexies.clear();
-
-			for (CMapToolObject* pObj : m_SelectedObjects)
-				Safe_Release(pObj);
-			m_SelectedObjects.clear();
-
-			m_iFocusIndex = -1;
-			Safe_Release(m_pFocusObject);
-			m_pFocusObject = nullptr;
-
-		}
-	}
+	DeselectObject();
 	
+	Change_ColliderType();
 
-	//알트 클릭 하면 피킹된 위치로 이동
-	if (m_pGameInstance->Key_Pressing(DIK_LALT) && m_pGameInstance->Mouse_Up(DIM::LBUTTON))
-	{
-		if (m_pFocusObject)
-		{
-			CTransform* pTransform = m_pFocusObject->Get_TransfomCom();
-	
-			_float4 vPickedPos = {};
-			if (m_pGameInstance->Picking(&vPickedPos))
-			{
-				//이전 월드 행렬 저장
-				m_pFocusObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
-				pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
-
-			}
-		}
-	}
+	SnapTo();
 
 	//Ctrl + D 선택된 오브젝트 복제
 	if (m_pGameInstance->Key_Pressing(DIK_LCONTROL) && m_pGameInstance->Key_Down(DIK_D))
@@ -247,6 +209,89 @@ void CMapTool::Control(_float fTimeDelta)
 
 	Control_PreviewObject(fTimeDelta);
 
+}
+
+void CMapTool::Change_Operation()
+{
+	if (ImGuizmo::IsUsing() == false)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_LALT))
+			return;
+
+		if (m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+			return;
+
+		//E 회전, R 크기, T는 위치
+		if (m_pGameInstance->Key_Down(DIK_E))
+			m_currentOperation = ImGuizmo::ROTATE;
+		else if (m_pGameInstance->Key_Down(DIK_R))
+			m_currentOperation = ImGuizmo::SCALE;
+		else if (m_pGameInstance->Key_Down(DIK_T))
+			m_currentOperation = ImGuizmo::TRANSLATE;
+	}
+}
+
+void CMapTool::DeselectObject()
+{
+	if (m_pGameInstance->Mouse_Up(DIM::WHEELBUTTON))
+	{
+		//모든 오브젝트 선택 제거
+
+		m_SelectedIndexies.clear();
+
+		for (CMapToolObject* pObj : m_SelectedObjects)
+			Safe_Release(pObj);
+		m_SelectedObjects.clear();
+
+		m_iFocusIndex = -1;
+		Safe_Release(m_pFocusObject);
+		m_pFocusObject = nullptr;
+
+	}
+}
+
+void CMapTool::Change_ColliderType()
+{
+	if (m_pFocusObject)
+	{
+		//C를 누르고 1(NONE), 2(CONVEX), 3(TRIANGLE) 을하면 콜라이더 변경
+		if (m_pGameInstance->Key_Pressing(DIK_C))
+		{
+			if (m_pGameInstance->Key_Up(DIK_1))
+			{
+				m_pFocusObject->Set_Collider(COLLIDER_TYPE::NONE);
+			}
+			if (m_pGameInstance->Key_Up(DIK_2))
+			{
+				m_pFocusObject->Set_Collider(COLLIDER_TYPE::CONVEX);
+			}
+			if (m_pGameInstance->Key_Up(DIK_3))
+			{
+				m_pFocusObject->Set_Collider(COLLIDER_TYPE::TRIANGLE);
+			}
+		}
+	}
+}
+
+void CMapTool::SnapTo()
+{
+	//알트 클릭 하면 피킹된 위치로 이동
+	if (m_pGameInstance->Key_Pressing(DIK_LALT) && m_pGameInstance->Mouse_Up(DIM::LBUTTON))
+	{
+		if (m_pFocusObject)
+		{
+			CTransform* pTransform = m_pFocusObject->Get_TransfomCom();
+
+			_float4 vPickedPos = {};
+			if (m_pGameInstance->Picking(&vPickedPos))
+			{
+				//이전 월드 행렬 저장
+				m_pFocusObject->Set_UndoWorldMatrix(pTransform->Get_WorldMatrix());
+				pTransform->Set_State(STATE::POSITION, XMLoadFloat4(&vPickedPos));
+
+			}
+		}
+	}
 }
 
 HRESULT CMapTool::Ready_Model(const _char* Map)

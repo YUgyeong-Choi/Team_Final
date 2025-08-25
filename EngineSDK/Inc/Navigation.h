@@ -50,7 +50,7 @@ public:
 	//선택된 셀을 삭제한다.
 	HRESULT Delete_Cell();
 
-	//월드포지션으로 셀을 선택한다.(높이 고려 안함)
+	//월드포지션으로 셀을 선택한다.(이거 업데이트 하지마시오 전체 셀 순회함)
 	HRESULT Select_Cell(_fvector vWorldPos);
 
 	//가장 가까운 점으로 스냅해준다.(fDist보다 가까울 경우만)

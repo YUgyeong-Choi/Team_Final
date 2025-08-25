@@ -26,6 +26,15 @@ public:
 private:
 	//맵툴 조작
 	void Control(_float fTimeDelta);
+private:
+	//ERT로 조작 변경
+	void Change_Operation();
+	//선택 해제
+	void DeselectObject();
+	//콜라이더 변경
+	void Change_ColliderType();
+	//스냅 이동
+	void SnapTo();
 
 private:
 	HRESULT Ready_Model(const _char* Map);

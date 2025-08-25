@@ -416,6 +416,9 @@ HRESULT CMapToolObject::Ready_Collider()
 		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
 	}
 
+	//AABB박스 출력하지마
+	m_pPhysXActorConvexCom->Set_DrawAABB(false);
+	m_pPhysXActorTriangleCom->Set_DrawAABB(false);
 
 	return S_OK;
 }
