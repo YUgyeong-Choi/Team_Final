@@ -448,6 +448,9 @@
     <Filter Include="02.GameObjects\03. Item\Lamp">
       <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\DropItem">
+      <UniqueIdentifier>{2c3d912b-b147-46ab-9d4a-e9049f9614e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -952,6 +955,9 @@
     <ClInclude Include="..\Public\TriggerItemLamp.h">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TriggerDropItem.h">
+      <Filter>02.GameObjects\15.StaticTrigger\DropItem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1429,6 +1435,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerItemLamp.cpp">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TriggerDropItem.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger\DropItem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

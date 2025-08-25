@@ -49,7 +49,6 @@ public:
 	virtual HRESULT Render_Shadow() override;
 
 	void SetCascadeShadow();
-	
 
 
 protected: /* [ Setup 함수 ] */
