@@ -18,6 +18,14 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 59.0
+                },
+                {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 41.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 43.0
                 }
             ],
             "IsLoop": false,
@@ -128,6 +136,14 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 48.0
+                },
+                {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 31.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 43.0
                 }
             ],
             "IsLoop": false,
@@ -169,6 +185,14 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 55.0
+                },
+                {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 39.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 50.0
                 }
             ],
             "IsLoop": false,

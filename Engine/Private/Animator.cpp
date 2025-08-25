@@ -403,7 +403,7 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 				anim->ResetTrack();
 
 		}
-		m_pCurrentAnim = m_Blend.toLowerAnim;
+
 
 		if (m_eCurrentTransitionType == ET::MaskedToFullbody)
 		{
@@ -415,6 +415,7 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 		m_bIsFinished = false;
 		m_Blend.elapsed = 0.f;
 		m_Blend.active = false;
+		m_pCurrentAnim = m_Blend.toLowerAnim;
 		return;
 	}
 }
@@ -1057,6 +1058,18 @@ void CAnimator::AddParameter(const string& name, Parameter& parm)
 	if (m_pCurAnimController)
 	{
 		m_pCurAnimController->AddParameter(name, parm);
+	}
+	else
+	{
+		MSG_BOX("No current animation controller set.");
+	}
+}
+
+void CAnimator::ResetParameters()
+{
+	if (m_pCurAnimController)
+	{
+		m_pCurAnimController->ResetParameters();
 	}
 	else
 	{

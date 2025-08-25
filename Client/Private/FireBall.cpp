@@ -30,6 +30,7 @@ HRESULT CFireBall::Initialize(void* pArg)
 
 	m_pPhysXActorCom->Set_SimulationFilterData(FilterData);
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
 	return S_OK;
 }
 
@@ -55,12 +56,13 @@ HRESULT CFireBall::Render()
 
 void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
-		if (auto pOill = dynamic_cast<COil*>(pOther))
+		if (auto pOil = dynamic_cast<COil*>(pOther))
 		{
-			if (pOill)
+			if (pOil)
 			{
+				pOil->Explode_Oil();
 				Set_bDead();
 				return;
 			}

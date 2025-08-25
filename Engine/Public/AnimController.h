@@ -122,6 +122,7 @@ public:
 	const TransitionResult& CheckTransition() const;
 	void ResetTransitionResult() { m_TransitionResult = TransitionResult{}; }
 
+
 	void SetState(const string& name);
 	void SetState(_int iNodeId);
 	const vector<AnimState>& GetStates() const { return m_States; }
@@ -272,6 +273,8 @@ public:
 		m_Params.erase(name);
 	}
 
+	void ResetParameters(); // 모든 파라미터를 초기 상태로 리셋
+
 	// 조건 검사용
 	_bool CheckBool(const string& name) const {
 		if (m_Params.find(name) == m_Params.end()) {
@@ -317,6 +320,11 @@ public:
 		return m_Params;
 	}
 #endif
+
+	void SetStateToEntry() {
+		if (m_EntryState)
+			SetState(m_EntryState->iNodeId);
+	}
 
 	void SetEntry(const string& entryStateName)
 	{
