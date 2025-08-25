@@ -48,7 +48,7 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
 
     if (iCurrentFrame < m_iStartFrame)
     {
-        pUI->Set_Alpha(m_fCurrentAlpha);
+        pUI->Set_Alpha(m_fStartAlpha);
         return;
     }
         
@@ -66,14 +66,15 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
 
     if (m_iCurrentFrame > m_iEndFrame)
     {
+      
         return;
     }
 
-    _float t = std::clamp(float(m_iCurrentFrame) / m_iRange, 0.f, 1.f);
+    _float t = std::clamp(float(m_iCurrentFrame - m_iStartFrame) / m_iRange, 0.f, 1.f);
 
     if (!isReverse)
     {
-        // 정방향0
+        // 정방향
         m_fCurrentAlpha = LERP(m_fStartAlpha, m_fEndAlpha, t);
     }
     else
@@ -89,6 +90,9 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
 
 HRESULT CUI_Feature_Fade::Bind_ShaderResources(CShader* pShader)
 {
+    if (m_iCurrentFrame > m_iEndFrame || m_iCurrentFrame < m_iStartFrame)
+        return S_OK;
+
     if (FAILED(pShader->Bind_RawValue("g_Alpha", &m_fCurrentAlpha, sizeof(_float))))
         return E_FAIL;
 

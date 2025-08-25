@@ -185,13 +185,13 @@ void CDynamic_Text_UI::SplitLinedraw()
 		switch (m_eAlignType)
 		{
 		case Client::TEXTALIGN::LEFT:
-			m_pGameInstance->Draw_Font(m_strFontTag, line.c_str(), {m_fX, fY }, XMLoadFloat4(&m_vColor), m_fRotation, {0.f,0.f}, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			m_pGameInstance->Draw_Font(m_strFontTag, line.c_str(), {m_fX, fY }, XMLoadFloat4(&m_vColor) * m_fCurrentAlpha, m_fRotation, {0.f,0.f}, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
 			break;
 		case Client::TEXTALIGN::CENTER:
-			m_pGameInstance->Draw_Font_Centered(m_strFontTag, line.c_str(), { m_fX, fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			m_pGameInstance->Draw_Font_Centered(m_strFontTag, line.c_str(), { m_fX, fY }, XMLoadFloat4(&m_vColor) * m_fCurrentAlpha, m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
 			break;
 		case Client::TEXTALIGN::RIGHT:
-			m_pGameInstance->Draw_Font_Righted(m_strFontTag, line.c_str(), { m_fX, fY }, XMLoadFloat4(&m_vColor), m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
+			m_pGameInstance->Draw_Font_Righted(m_strFontTag, line.c_str(), { m_fX, fY }, XMLoadFloat4(&m_vColor) * m_fCurrentAlpha, m_fRotation, { 0.f,0.f }, (m_fSizeX / g_iWinSizeX + m_fSizeY / g_iWinSizeY), m_fOffset);
 			break;
 		case Client::TEXTALIGN::END:
 			break;
