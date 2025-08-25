@@ -170,9 +170,13 @@ private: /* [ 슬룻 함수 ] */
 private: /* [ 이펙트 관리 함수 ]*/
 	void Set_GrinderEffect_Active(_bool bActive);
 
-public:
+public: /* [ 페이탈 함수 ] */
 	void SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
 	_bool GetbIsBackAttack() const { return m_bIsBackAttack; }
+	void SetFatalTarget(CUnit* pTarget) { m_pFatalTarget = pTarget; }
+	void SetFatalTargetNull() { m_pFatalTarget = nullptr; }
+	void SetIsFatalBoss(_bool bIsFatalBoss) { m_bIsFatalBoss = bIsFatalBoss; }
+	_bool GetIsFatalBoss() const { return m_bIsFatalBoss; }
 
 private: /* [ 상태패턴 ] */
 	void ReadyForState();
@@ -231,6 +235,7 @@ private: /* [ 그림자 변수 ] */
 
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*			m_pTarget = { nullptr };
+	CUnit*					m_pFatalTarget = { nullptr };
 	CWeapon*				m_pWeapon = { nullptr };
 	CGameObject*			m_pInterectionStuff = { nullptr };
 	CPlayerLamp*			m_pPlayerLamp = { nullptr };
@@ -242,6 +247,7 @@ private: /* [ 전투관련 변수 ] */
 	_bool 	m_bIsChange = { false };
 	_bool 	m_bLockOnSprint = { false };
 	_bool   m_bIsBackAttack = { false };
+	_bool   m_bIsFatalBoss = { false };
 
 	_float 	m_fChangeTime = {};
 	_float 	m_fChangeTimeElaped = {};

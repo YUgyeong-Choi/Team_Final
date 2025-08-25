@@ -99,6 +99,7 @@ public:
 
 	virtual void Block_Reaction() {};
 
+	CPhysXDynamicActor* Get_BodyActor() { return m_pPhysXActorCom; }
 public:
 	_float Get_CurrentDamage() { return m_fDamage; }
 	void Set_CurrentDamage(_float fDamage) { m_fDamage = fDamage; }

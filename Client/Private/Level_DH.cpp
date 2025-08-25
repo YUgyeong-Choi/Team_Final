@@ -41,7 +41,7 @@ HRESULT CLevel_DH::Initialize()
 	
 	if (FAILED(Separate_Area()))
 		return E_FAIL;
-	m_pGameInstance->SetPlayerPosition(_fvector{ 51.3f, 1.f, -5.1f, 1.f });
+	m_pGameInstance->SetPlayerPosition(_fvector{ 138.3f, 1.f, -3.1f, 1.f });
 
 	//if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 	//	return E_FAIL;
@@ -189,9 +189,22 @@ HRESULT CLevel_DH::Separate_Area()
 
 	{
 		/* [ 1锅 备开 ] */
-		const vector<_uint> vecAdj1 = { 2 };
+		const vector<_uint> vecAdj1 = { 6 };
 		if (!m_pGameInstance->AddArea_AABB(
 			1, a1Min, a1Max, vecAdj1, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+
+	_float3 a6p0 = _float3{ -10000.f, -10000.f,  -10000.f };
+	_float3 a6p1 = _float3{ 10000.f,  10000.f, 10000.f };
+	_float3 a6Min, a6Max;
+	FnToAABB(a6p0, a6p1, a6Min, a6Max);
+
+	{
+		/* [ 1锅 备开 ] */
+		const vector<_uint> vecAdj6 = { 1 };
+		if (!m_pGameInstance->AddArea_AABB(
+			6, a6Min, a6Max, vecAdj6, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
 	}
 

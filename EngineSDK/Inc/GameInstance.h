@@ -192,7 +192,7 @@ public:
 
 	void Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOther);
 	void Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther);
-	void Remove_TriggerRemoveActor(CPhysXActor* pMe, CPhysXActor* pOther);
+	void Remove_TriggerRemoveActor(CPhysXActor* pMe, unordered_set<CPhysXActor*> pOthers);
 #pragma endregion
 
 #pragma region SOUND_DEVICE

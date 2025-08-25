@@ -97,6 +97,10 @@ void CButtler_Train::Update(_float fTimeDelta)
 		m_pWeapon->SetisAttack(false);
 	}
 
+	if (m_strStateName.find("Down") != m_strStateName.npos)
+	{
+		m_isFatal = false;
+	}
 	
 
 	__super::Update(fTimeDelta);
@@ -443,7 +447,31 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	if (m_strStateName.find("Walk") != m_strStateName.npos || m_strStateName.find("Run") != m_strStateName.npos )
 		m_isCollisionPlayer = false;
 
-	RootMotionActive(fTimeDelta);
+	if (m_strStateName.find("Away") == m_strStateName.npos)
+	{
+		m_fAwaySpeed = 1.f;
+		RootMotionActive(fTimeDelta);
+	}
+	else
+	{
+		m_fAwaySpeed -= fTimeDelta * 0.5f;
+
+		if (m_fAwaySpeed <= 0.f)
+			m_fAwaySpeed = 0.f;
+
+		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+		if (m_strStateName.find("B") == m_strStateName.npos)
+		{
+			vLook *= -1.f;
+			
+		}
+
+
+		
+
+		m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
+	}    
+	
 
 }
 
