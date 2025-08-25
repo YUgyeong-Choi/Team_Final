@@ -1,7 +1,7 @@
 ﻿{
   "triggers": [
     {
-      "UseMesh": 0,
+      "ClassType": 0,
       "TriggerType": 0,
       "vPos": [ 4.382186, 1.0, 0.864605 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
@@ -15,7 +15,7 @@
       ]
     },
     {
-      "UseMesh": 1,
+      "ClassType": 1,
       "TriggerType": 1,
       "ObjectTag": "TriggerItemLamp",
       "offSetObj": [ 0.0, 0.2, 0.0 ],
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "UseMesh": 0,
+      "ClassType": 0,
       "TriggerType": 2,
       "vPos": [ 35.138306, 1.0, 0.597706 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
@@ -63,7 +63,7 @@
       ]
     },
     {
-      "UseMesh": 1,
+      "ClassType": 1,
       "TriggerType": 3,
       "ObjectTag": "",
       "CanCancel": 1,
@@ -85,7 +85,7 @@
       ]
     },
     {
-      "UseMesh": 0,
+      "ClassType": 0,
       "TriggerType": 4,
       "vPos": [ 95.973389, 1.0, -7.540224 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
@@ -101,6 +101,22 @@
           "Text": "여러분은 크라트 시에서 인류가 빛어낸 지상 최고의 장엄한 절경을 목격하실 수 있습니다.\n이곳이 마지막 종착역이시라면,찬란한 내일의 도시를 즐기시길 바랍니다."
         }
       ]
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 0,
+      "vPos": [ 57.975121, 0.5, -7.373825 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 0.2, 0.2, 3.5 ]
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 1,
+      "vPos": [ 172.032059, 5.006557, -20.399889 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 5.0, 0.2, 0.2 ]
     }
   ]
 }

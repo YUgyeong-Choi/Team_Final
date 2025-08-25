@@ -43,6 +43,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 
 	//월드행렬로 소환
+	m_InitWorldMatrix = pDesc->WorldMatrix;
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
 	LoadAnimDataFromJson();
@@ -190,7 +191,35 @@ void CMonster_Base::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderTy
 {
 }
 
+void CMonster_Base::Reset()
+{
+	m_pTransformCom->Set_WorldMatrix(m_InitWorldMatrix);
 
+	if (m_pNaviCom)
+		m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
+
+	m_pAnimator->SetBool("Detect", false);
+
+	m_bUseLockon = true;
+
+
+	m_isLookAt = {};
+	m_eDir = { MONSTER_DIR::END };
+	m_fGroggyThreshold = {};
+	m_isCanGroggy = {};
+	m_isDetect = { false };
+	m_fDetectDist = {};
+	m_strStateName = {};
+	m_vPushDir = {};
+	m_iCollisionCount = {};
+	m_bOffCollider = {};
+	m_isCollisionPlayer = {};
+	m_isFatal = {};
+	m_isGroogyLoop = {};
+
+	m_bActive = true;
+	m_bPlayOnce = false;
+}
 
 HRESULT CMonster_Base::Ready_Components(void* pArg)
 {
@@ -435,11 +464,11 @@ _bool CMonster_Base::Check_Detect()
 	{
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
+		m_bPlayOnce = true;
 		
 		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		return true;
 	}
-	
 
 	return false;
 }

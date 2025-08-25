@@ -51,7 +51,7 @@ public:
 
 	void Set_Pos(_float fX, _float fY) { m_fX = fX; m_fY = fY; }
 
-	virtual void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; m_iCurrentFrame = 0; Reset(); }
+	virtual void Set_isReverse(_bool isReverse) { m_isReverse = isReverse;  Reset(); }
 
 	void Set_isUVmove(_bool isMove) { m_isUVMove = isMove; }
 

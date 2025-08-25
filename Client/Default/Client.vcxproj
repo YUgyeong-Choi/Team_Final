@@ -206,10 +206,12 @@
     <ClInclude Include="..\Public\Oil.h" />
     <ClInclude Include="..\Public\Projectile.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
+    <ClInclude Include="..\public\TriggerDropItem.h" />
     <ClInclude Include="..\Public\TriggerItem.h" />
     <ClInclude Include="..\Public\TriggerItemLamp.h" />
     <ClInclude Include="..\Public\TriggerSound.h" />
     <ClInclude Include="..\Public\TriggerTalk.h" />
+    <ClInclude Include="..\Public\TriggerUI.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
     <ClInclude Include="..\public\Fuoco.h" />
     <ClInclude Include="..\Public\GLTool.h" />
@@ -284,6 +286,7 @@
     <ClInclude Include="..\public\UI_LockOn_Icon.h" />
     <ClInclude Include="..\public\UI_Manager.h" />
     <ClInclude Include="..\public\UI_MonsterHP_Bar.h" />
+    <ClInclude Include="..\public\UI_Pickup_Item.h" />
     <ClInclude Include="..\public\UI_Popup.h" />
     <ClInclude Include="..\public\UI_Script_Talk.h" />
     <ClInclude Include="..\public\UI_Script_Text.h" />
@@ -424,6 +427,7 @@
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp" />
+    <ClCompile Include="..\private\TriggerDropItem.cpp" />
     <ClCompile Include="..\Private\TriggerItem.cpp" />
     <ClCompile Include="..\Private\TriggerItemLamp.cpp" />
     <ClCompile Include="..\Private\TriggerSound.cpp" />
@@ -436,6 +440,7 @@
     <ClCompile Include="..\Private\ToolTrail.cpp" />
     <ClCompile Include="..\Private\SwordTrailEffect.cpp" />
     <ClCompile Include="..\Private\TriggerTalk.cpp" />
+    <ClCompile Include="..\Private\TriggerUI.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\Private\UI_Container.cpp" />
@@ -449,6 +454,7 @@
     <ClCompile Include="..\private\UI_LockOn_Icon.cpp" />
     <ClCompile Include="..\private\UI_Manager.cpp" />
     <ClCompile Include="..\private\UI_MonsterHP_Bar.cpp" />
+    <ClCompile Include="..\private\UI_Pickup_Item.cpp" />
     <ClCompile Include="..\private\UI_Popup.cpp" />
     <ClCompile Include="..\private\UI_Script_Talk.cpp" />
     <ClCompile Include="..\private\UI_Script_Text.cpp" />

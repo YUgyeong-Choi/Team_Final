@@ -85,6 +85,20 @@ void CUI_Manager::Off_Panel()
 	}
 }
 
+void CUI_Manager::Activate_UI(_wstring strTag, _bool isActive)
+{
+	if (m_UImap.find(strTag) == m_UImap.end())
+		return;
+
+	CUI_Container* pUI = dynamic_cast<CUI_Container*>(m_UImap.find(strTag)->second);
+
+	if (nullptr == pUI)
+		return;
+
+	pUI->Active_Update(isActive);
+
+}
+
 void CUI_Manager::Activate_Popup(_bool isActive)
 {
 	if (m_UImap.find(L"Popup") == m_UImap.end())

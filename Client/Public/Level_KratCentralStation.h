@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "Level.h"
 #include "DHTool.h"
+#include "Monster_Base.h"
 
 NS_BEGIN(Engine)
 class CSound_Core;
@@ -22,6 +23,8 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Reset() override;
+
 
 	HRESULT Ready_Level();
 
@@ -77,7 +80,7 @@ private:
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
-
+	vector<CMonster_Base*> m_vecMonster;
 public:
 	static CLevel_KratCentralStation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

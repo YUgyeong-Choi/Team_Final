@@ -23,11 +23,8 @@ HRESULT CTriggerBox::Initialize_Prototype()
 HRESULT CTriggerBox::Initialize(void* pArg)
 {
 	CTriggerBox::TRIGGERBOX_DESC* TriggerBoxDESC = static_cast<TRIGGERBOX_DESC*>(pArg);
-	m_eTriggerBoxType = TriggerBoxDESC->eTriggerBoxType;
 	m_vecSoundData = TriggerBoxDESC->m_vecSoundData;
 
-	
-	
 	if (FAILED(__super::Initialize(TriggerBoxDESC)))
 		return E_FAIL;
 
@@ -82,10 +79,6 @@ HRESULT CTriggerBox::Ready_Components(void* pArg)
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
 		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysXTrigger"), reinterpret_cast<CComponent**>(&m_pPhysXTriggerCom))))
-		return E_FAIL;
-
-	/* For.Com_Sound */
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Trigger"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -153,5 +146,4 @@ void CTriggerBox::Free()
 	__super::Free();
 
 	Safe_Release(m_pPhysXTriggerCom);
-	Safe_Release(m_pSoundCom);
 }

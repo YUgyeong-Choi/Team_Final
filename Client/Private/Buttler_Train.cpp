@@ -51,6 +51,8 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 void CButtler_Train::Priority_Update(_float fTimeDelta)
 {
+	if (!m_bActive)
+		return;
 
 	__super::Priority_Update(fTimeDelta);
 
@@ -60,8 +62,9 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
 			cout << pCurState->stateName << endl;
-			(m_pWeapon)->Set_bDead();
-			Set_bDead();
+			//(m_pWeapon)->Set_bDead();
+			//Set_bDead();
+			m_bActive = false;
 		}
 	}
 
@@ -81,7 +84,12 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 void CButtler_Train::Update(_float fTimeDelta)
 {
+	if (!m_bActive)
+		return;
+
 	Calc_Pos(fTimeDelta);
+
+	__super::Update(fTimeDelta);
 
 
 	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
@@ -102,10 +110,6 @@ void CButtler_Train::Update(_float fTimeDelta)
 		m_isFatal = false;
 	}
 	
-
-	__super::Update(fTimeDelta);
-
-
 //#ifdef _DEBUG
 //	// ===== Shape 교체 (F5) =====
 //	if (KEY_DOWN(DIK_F5))
@@ -173,12 +177,12 @@ void CButtler_Train::Update(_float fTimeDelta)
 
 void CButtler_Train::Late_Update(_float fTimeDelta)
 {
+	if (!m_bActive)
+		return;
+
 	__super::Late_Update(fTimeDelta);
 
 	Update_State();
-
-
-
 }
 
 HRESULT CButtler_Train::Render()
@@ -418,6 +422,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		}
 
+		m_bPlayOnce = true;
 	}
 
 
@@ -426,51 +431,69 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
 {
-	//if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
-	//{
-	//	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-	//	m_pTransformCom->Go_Dir(vLook, fTimeDelta * 0.5f, nullptr, m_pNaviCom);
-	//}
-	//else 
-	//{
-	//	RootMotionActive(fTimeDelta);
-	//}
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-	if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
+	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
 	{
-		m_isLookAt = false;
-		m_isCollisionPlayer = false;
-	}
+		_float fSpeed = { 1.f };
+		if (m_strStateName.find("Walk_F") != m_strStateName.npos)
+		{
+			fSpeed = 0.5f;
+		}
+
+		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+		
+		m_vPushDir  = XMVector3Normalize(m_vPushDir);
+
+		m_vPushDir.m128_f32[3] = 0.f;
+		
+		_vector vDir = XMVector3Normalize(vLook)  +m_vPushDir ;
+
+
+		m_pTransformCom->Go_Dir(vDir, fTimeDelta * fSpeed, nullptr, m_pNaviCom);
 		
 
-
-	if (m_strStateName.find("Walk") != m_strStateName.npos || m_strStateName.find("Run") != m_strStateName.npos )
-		m_isCollisionPlayer = false;
-
-	if (m_strStateName.find("Away") == m_strStateName.npos)
-	{
-		m_fAwaySpeed = 1.f;
-		RootMotionActive(fTimeDelta);
 	}
 	else
 	{
-		m_fAwaySpeed -= fTimeDelta * 0.5f;
-
-		if (m_fAwaySpeed <= 0.f)
-			m_fAwaySpeed = 0.f;
-
-		_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-		if (m_strStateName.find("B") == m_strStateName.npos)
+		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
 		{
-			vLook *= -1.f;
-			
+			m_isLookAt = false;
+			m_isCollisionPlayer = false;
 		}
 
 
-		
 
-		m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
-	}    
+
+
+		if (m_strStateName.find("Away") == m_strStateName.npos)
+		{
+			m_fAwaySpeed = 1.f;
+			RootMotionActive(fTimeDelta);
+		}
+		else
+		{
+			m_fAwaySpeed -= fTimeDelta * 0.5f;
+
+			if (m_fAwaySpeed <= 0.f)
+				m_fAwaySpeed = 0.f;
+
+		
+			if (m_strStateName.find("B") == m_strStateName.npos)
+			{
+				vLook *= -1.f;
+
+			}
+
+
+
+
+			m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
+		}
+	}
+
+
+
 	
 
 }
@@ -529,8 +552,28 @@ void CButtler_Train::Start_Fatal_Reaction()
 	m_isFatal = true;
 }
 
+void CButtler_Train::Reset()
+{
+	m_fHp = 300;
 
+	if (nullptr != m_pHPBar)
+		m_pHPBar->Set_MaxHp(m_fHp);
 
+	m_iAttackCount = {};
+	m_fDuration = 0.f;
+	m_fAwaySpeed = 1.f;
+
+	auto stEntry = m_pAnimator->Get_CurrentAnimController()->GetEntryState();
+	m_pAnimator->Get_CurrentAnimController()->SetState(stEntry->stateName);
+
+	__super::Reset();
+
+	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+	{
+		pPlayer->Get_Controller()->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
+	}
+	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+}
 
 HRESULT CButtler_Train::Ready_Weapon()
 {
