@@ -58,7 +58,7 @@ protected:
 
 	PARTICLETYPE				m_ePType = {}; // Particle Type
 	_bool						m_bFirst = { true };
-
+	_bool						m_bReadyDeath = { false };
 protected:
 	_uint						m_iNumInstance;
 	_float						m_fMaxLifeTime = {};

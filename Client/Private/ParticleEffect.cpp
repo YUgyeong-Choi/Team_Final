@@ -56,34 +56,36 @@ void CParticleEffect::Update(_float fTimeDelta)
 	}
 	
 	Update_Keyframes();
-	
-	if (m_pSocketMatrix != nullptr)
+	if (!m_bReadyDeath)
 	{
-		_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
-	
-		XMStoreFloat4x4(&m_CombinedWorldMatrix,
-			m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
-	}
-	//__super::Update(fTimeDelta);
-	m_fTileSize.x = 1.0f / _float(m_iTileX);
-	m_fTileSize.y = 1.0f / _float(m_iTileY);
-	if (m_pSocketMatrix != nullptr)
-	{
-		if (m_bFirst) 
+		if (m_pSocketMatrix != nullptr)
 		{
-			m_pVIBufferCom->Set_CombinedMatrix(m_CombinedWorldMatrix);
-			m_bFirst = false;
+			_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+
+			XMStoreFloat4x4(&m_CombinedWorldMatrix,
+				m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
 		}
-		m_pVIBufferCom->Set_Center((_float3)(m_CombinedWorldMatrix.m[3]));
-		_matrix socketWorld = XMLoadFloat4x4(m_pSocketMatrix);
-		_vector rotQuat = XMQuaternionRotationMatrix(socketWorld);
-		_float4 vRot = {};
-		XMStoreFloat4(&vRot, rotQuat);
-		m_pVIBufferCom->Set_SocketRotation(vRot);
-	}
-	else
-	{
-		m_pVIBufferCom->Set_Center(m_pTransformCom->Get_World4x4());
+		//__super::Update(fTimeDelta);
+		m_fTileSize.x = 1.0f / _float(m_iTileX);
+		m_fTileSize.y = 1.0f / _float(m_iTileY);
+		if (m_pSocketMatrix != nullptr)
+		{
+			if (m_bFirst)
+			{
+				m_pVIBufferCom->Set_CombinedMatrix(m_CombinedWorldMatrix);
+				m_bFirst = false;
+			}
+			m_pVIBufferCom->Set_Center((_float3)(m_CombinedWorldMatrix.m[3]));
+			_matrix socketWorld = XMLoadFloat4x4(m_pSocketMatrix);
+			_vector rotQuat = XMQuaternionRotationMatrix(socketWorld);
+			_float4 vRot = {};
+			XMStoreFloat4(&vRot, rotQuat);
+			m_pVIBufferCom->Set_SocketRotation(vRot);
+		}
+		else
+		{
+			m_pVIBufferCom->Set_Center(m_pTransformCom->Get_World4x4());
+		}
 	}
 
 	m_pVIBufferCom->Update(fTimeDelta);
@@ -118,6 +120,7 @@ HRESULT CParticleEffect::Render()
 _float CParticleEffect::Ready_Death()
 {
 	m_pVIBufferCom->Set_Loop(false);
+	m_bReadyDeath = true;
 	return m_fMaxLifeTime;
 }
 

@@ -244,4 +244,6 @@ void CProjectile::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pPhysXActorCom);
+	if (m_pEffect)
+		m_pEffect->End_Effect();
 }

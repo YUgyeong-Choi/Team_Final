@@ -73,6 +73,8 @@ protected:
 	_float m_fRadius = 0.5f; // 충돌 반경
 	_vector m_vDirection = XMVectorZero();
 	_vector m_vStartPos = XMVectorZero(); // 시작 위치
+
+	class CEffectContainer* m_pEffect = { nullptr }; // 최소 하나의 이펙트,
 public:
 	static CProjectile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

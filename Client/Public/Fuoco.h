@@ -155,6 +155,7 @@ private:
 
     virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive);
     HRESULT Effect_FlameField();
+    virtual HRESULT Ready_Effect();
 
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {    cout << "=== Attack Pattern Weights ===" << endl;

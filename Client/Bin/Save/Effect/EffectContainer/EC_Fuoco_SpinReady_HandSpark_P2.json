@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -20.0,
-                -10.0
+                -39.630001068115234,
+                -14.829999923706055
             ],
             "Animation": true,
             "Billboard": false,
@@ -24,12 +24,12 @@
                 0.0,
                 1.0
             ],
-            "Duration": 112,
+            "Duration": 54,
             "EffectType": 1,
             "EmissiveIntensity": 1.75,
-            "EndTrack": 112,
+            "EndTrack": 54,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
+            "Gravity": -1.0,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -48,9 +48,9 @@
                         0.0
                     ],
                     "Scale": [
-                        0.800000011920929,
-                        0.800000011920929,
-                        0.800000011920929
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -60,39 +60,39 @@
                     ]
                 }
             ],
-            "LifeTime": 6191.08056640625,
+            "LifeTime": 7667.36181640625,
             "LifeTime_Particle": [
-                0.5,
-                0.800000011920929
+                0.2199999988079071,
+                0.6100000143051147
             ],
             "Local": true,
-            "Loop": false,
+            "Loop": true,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
-            "Name": "Fuoco_Slam_SparkParticle1",
-            "NumInstance": 150,
+            "MinSpeed": 3.0,
+            "Name": "Fuoco_SpinReady_SparkSpinParticle1",
+            "NumInstance": 100,
             "NumKeyFrames": 1,
-            "Orbit": false,
+            "Orbit": true,
             "OrbitAxis": [
                 0.0,
-                0.0,
-                1.0
+                1.0,
+                0.0
             ],
             "OrbitSpeed": [
                 0.0,
-                0.0
+                90.0
             ],
             "PType": 0,
             "Pivot": [
                 0.0,
-                -0.1899999976158142,
+                0.0,
                 0.0
             ],
             "Range": [
-                0.30000001192092896,
-                0.30000001192092896,
-                0.30000001192092896
+                0.20000000298023224,
+                0.029999999329447746,
+                0.20000000298023224
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -106,12 +106,12 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.019999999552965164,
-                0.03999999910593033
+                0.03999999910593033,
+                0.05999999865889549
             ],
             "Speed": [
-                12.9399995803833,
-                17.15999984741211
+                10.0,
+                14.0
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -136,44 +136,44 @@
         },
         {
             "Accel": [
-                -2.0,
+                0.0,
                 0.0
             ],
             "Animation": true,
             "Billboard": false,
             "Center": [
                 0.0,
-                0.0,
+                1.0,
                 0.0
             ],
             "CenterColor": [
-                0.0,
-                0.0,
-                0.0,
+                1.0,
+                0.44795918464660645,
+                0.23036646842956543,
                 1.0
             ],
             "Color": [
-                0.27225130796432495,
-                0.24999715387821198,
-                0.21238452196121216,
-                0.4921466112136841
+                1.0,
+                0.0628272294998169,
+                0.0,
+                1.0
             ],
-            "Duration": 114,
+            "Duration": 54,
             "EffectType": 1,
-            "EmissiveIntensity": 0.0,
-            "EndTrack": 114,
+            "EmissiveIntensity": 1.75,
+            "EndTrack": 54,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
-            "IsGravity": false,
+            "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [
-                        0.27225130796432495,
-                        0.24999715387821198,
-                        0.21238452196121216,
-                        0.4921466112136841
+                        1.0,
+                        0.0628272294998169,
+                        0.0,
+                        1.0
                     ],
-                    "Intensity": 1.0,
+                    "Intensity": 2.430000066757202,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -194,39 +194,39 @@
                     ]
                 }
             ],
-            "LifeTime": 536.454345703125,
+            "LifeTime": 2928.97607421875,
             "LifeTime_Particle": [
-                1.5,
-                1.7999999523162842
+                0.2199999988079071,
+                0.6100000143051147
             ],
             "Local": true,
-            "Loop": false,
-            "MaxLifeTime": 0.800000011920929,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "Fuoco_Slam_DustParticle1",
-            "NumInstance": 16,
+            "Name": "Fuoco_SpinReady_SparkUpperParticle1",
+            "NumInstance": 63,
             "NumKeyFrames": 1,
-            "Orbit": false,
+            "Orbit": true,
             "OrbitAxis": [
                 0.0,
-                1.0,
-                0.0
+                0.0,
+                1.0
             ],
             "OrbitSpeed": [
-                -30.0,
-                30.0
+                0.0,
+                0.0
             ],
             "PType": 0,
             "Pivot": [
-                0.0,
-                -1.0,
+                0.41999998688697815,
+                1.0,
                 0.0
             ],
             "Range": [
-                4.0,
-                3.0,
-                4.0
+                0.5,
+                0.10000000149011612,
+                0.10000000149011612
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -238,20 +238,20 @@
                 0.0,
                 0.0
             ],
-            "ShaderPass": 2,
+            "ShaderPass": 3,
             "Size": [
-                3.0,
-                4.0
+                0.029999999329447746,
+                0.03999999910593033
             ],
             "Speed": [
-                1.5399999618530273,
-                2.0
+                15.0,
+                20.0
             ],
             "Spin": false,
             "StartTrack": 0,
             "TextureTags": [
                 "",
-                "T_Smoke_04_C_LGS",
+                "T_Shere_07_C_LGS",
                 "",
                 ""
             ],
@@ -270,5 +270,5 @@
         }
     ],
     "Loop": false,
-    "MaxFrame": 110
+    "MaxFrame": 52
 }

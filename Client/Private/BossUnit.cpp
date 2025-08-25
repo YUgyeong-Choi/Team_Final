@@ -61,6 +61,10 @@ HRESULT CBossUnit::Initialize(void* pArg)
     // 래이캐스트 머리쪽에 할려고 둔 offset !!!!
     m_vRayOffset = { 0.f, 3.3f, 0.f, 0.f };
     m_bUseLockon = true;
+
+    if (FAILED(Ready_Effect()))
+        return E_FAIL;
+
     return S_OK;
 }
 

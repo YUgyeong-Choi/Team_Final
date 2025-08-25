@@ -112,6 +112,8 @@ protected:
 	virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive) { return S_OK; }
 	virtual HRESULT Spawn_Effect() { return S_OK; }
 
+	virtual HRESULT Ready_Effect() { return S_OK; } // Initialize에서 Loop로 평생 돌릴 이펙트 ready
+
 protected:
 	CNavigation* m_pNaviCom = { nullptr };
 
