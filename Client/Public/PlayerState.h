@@ -5,6 +5,7 @@
 #include "LockOn_Manager.h"
 #include "DH_ToolMesh.h"
 #include "LegionArm_Base.h"
+#include "Monster_Base.h"
 
 #include "GameInstance.h"
 
@@ -840,6 +841,7 @@ public:
         m_pOwner->m_pAnimator->SetBool("Move", false);
         m_pOwner->m_pAnimator->SetTrigger("Dash");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
+        m_pOwner->m_bIsInvincible = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -863,6 +865,9 @@ public:
                 m_pOwner->m_pAnimator->SetTrigger("Dash");
             }
         }
+
+        if (0.2f < m_fStateTime)
+            m_pOwner->m_bIsInvincible = false;
     }
 
     virtual void Exit() override
@@ -926,6 +931,7 @@ public:
 
         // 구르기는 무브 ON 입니다.
         m_pOwner->m_pAnimator->SetTrigger("Dash");
+        m_pOwner->m_bIsInvincible = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -940,6 +946,9 @@ public:
             m_fStateTime = 0.f;
             m_pOwner->m_pAnimator->SetTrigger("Dash");
         }
+
+        if (0.2f < m_fStateTime)
+            m_pOwner->m_bIsInvincible = false;
 
         LockOnMovement();
     }
@@ -2806,6 +2815,7 @@ private:
 	_bool m_bAttackA = false;
 	_bool m_bAttackB = false;
 };
+
 /* [ 이 클래스는 페이탈 상태입니다. ] */
 class CPlayer_Fatal final : public CPlayerState
 {
@@ -2823,6 +2833,13 @@ public:
 
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("Fatal");
+        m_pOwner->m_bIsInvincible = true;
+        
+        if (m_pOwner->m_pFatalTarget && !m_pOwner->m_bIsFatalBoss)
+        {
+			CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(m_pOwner->m_pFatalTarget);
+            pMonster->Start_Fatal_Reaction();
+        }
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2831,12 +2848,12 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
-
     }
 
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
+        m_pOwner->m_bIsInvincible = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
