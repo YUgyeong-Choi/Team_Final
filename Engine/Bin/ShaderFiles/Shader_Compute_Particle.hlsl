@@ -109,7 +109,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         float t = TrackTime / 60.f;
         if (isLoop != 0)
             t = fmod(t, pp.LifeTime.x);
-        pp.fTileIdx = TrackTime / fTileTickPerSec;
+        pp.fTileIdx = TrackTime / 60.f / fTileTickPerSec;
         if (isTileLoop != 0)
             pp.fTileIdx = fmod(pp.fTileIdx, vTileCnt.x * vTileCnt.y);
         uint iTileIdx = (uint) pp.fTileIdx;
@@ -259,15 +259,41 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         
         const bool firstLoop = (pp.bFirstLoopDiscard != 0);
         const bool lifeEnded = pp.LifeTime.y >= pp.LifeTime.x;
-        const bool tileEnded = isTileLoop != 0 && (pp.fTileIdx >= vTileCnt.x * vTileCnt.y);
+        const bool tileEnded = pp.fTileIdx >= vTileCnt.x * vTileCnt.y;
         
-        //bool needReset = (pp.bFirstLoopDiscard != 0 && (lifeEnded != 0.0f)) ||
-        //             (pp.bFirstLoopDiscard == 0 && (tileEnded || (isLoop != 0 && lifeEnded)));
         
-        bool needReset = firstLoop ? lifeEnded
-                           : ((isTileLoop != 0) ? tileEnded
-                                                : ((isLoop != 0) && lifeEnded));
+        //bool needReset = firstLoop ? lifeEnded 
+        //                : ((isTileLoop != 0) ? tileEnded
+        //                                        : ((isLoop != 0) && lifeEnded));
+        //// 위의 삼항삼항연산자와 동일함
+        //bool needReset = false;
+        //if (firstLoop)
+        //    needReset = lifeEnded;
+        //else if (isTileLoop != 0)
+        //    needReset = tileEnded; // TileLoop 우선
+        //else if (isLoop != 0)
+        //    needReset = lifeEnded;
+        
+        bool needReset = false;
 
+        if (isTileLoop != 0)
+        {
+            if (firstLoop)
+                needReset = lifeEnded; // 첫 루프는 lifeTime으로만 끊어줌
+            else
+                needReset = tileEnded; // 이후부터는 tileLoop만 체크
+        }
+        else
+        {
+            if (firstLoop)
+                needReset = lifeEnded; // 원래 로직 그대로
+            else if (isLoop != 0)
+                needReset = lifeEnded;
+        }
+        
+        
+
+        
         if (needReset)
         {
             pp.LifeTime.y = 0.0f;
@@ -275,16 +301,14 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             pos = Center + offset0; // << 변경점
             pp.Speed = gInitInst[i].Speed; // 속도 초기화는 유지
             
-                    // === 뼈 회전 적용된 방향으로 다시 세팅 ===
+            // === 뼈 회전 적용된 방향으로 다시 세팅 ===
             float3 localDir = gInitInst[i].Direction.xyz;
             float3 worldDir = RotateByQuat(localDir, vSocketRot);
             pp.Direction.xyz = normalize(worldDir);
-            pp.bFirstLoopDiscard = false;
+            pp.bFirstLoopDiscard = 0;
             pp.fTileIdx = 0.f;
         }
-        
-        
-        
+
         
         //// 루프: 위치/라이프만 초기화(기하 기준은 유지하고 싶으면 아래처럼 Translation만 복원)
         //if ((isLoop != 0 && pp.LifeTime.y >= pp.LifeTime.x)
