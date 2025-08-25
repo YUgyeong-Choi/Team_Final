@@ -460,6 +460,9 @@
     <Filter Include="02.GameObjects\99.UI\Container\Pickup\Weapon">
       <UniqueIdentifier>{b0dce10e-e343-4df9-98d8-bb1e854e9b1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\UI">
+      <UniqueIdentifier>{e05af1b0-7999-451e-b1a1-d4596ece04d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -971,7 +974,7 @@
       <Filter>02.GameObjects\99.UI\Container\Pickup\Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TriggerUI.h">
-      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+      <Filter>02.GameObjects\15.StaticTrigger\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1458,7 +1461,7 @@
       <Filter>02.GameObjects\99.UI\Container\Pickup\Item</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TriggerUI.cpp">
-      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+      <Filter>02.GameObjects\15.StaticTrigger\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

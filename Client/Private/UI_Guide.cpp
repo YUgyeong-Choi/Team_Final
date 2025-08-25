@@ -1,6 +1,8 @@
 #include "UI_Guide.h"
 #include "Static_UI.h"
 #include "GameInstance.h"
+#include "UI_Manager.h"
+#include "Camera_Manager.h"
 
 CUI_Guide::CUI_Guide(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUI_Container{pDevice, pContext}
@@ -84,24 +86,33 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     for (auto& pExplain : m_Explainations)
         pExplain->Active_Update(false);
 
+
+    if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
+    {
+        CUI_Manager::Get_Instance()->Off_Panel();
+        m_pGameInstance->Set_GameTimeScale(0.01f);
+    }
+
+
     return S_OK;
 }
 
 void CUI_Guide::Priority_Update(_float fTimeDelta)
 {
     
-     
+   
 
-        
+    // 키 입력
+    Check_Button();
     
 }
 
 
 void CUI_Guide::Update(_float fTimeDelta)
 {
-    // 키 입력
+    
 
-    Check_Button();
+  
 }
 
 void CUI_Guide::Late_Update(_float fTimeDelta)
@@ -133,11 +144,18 @@ void CUI_Guide::Check_Button()
 {
     if (m_pGameInstance->Key_Down(DIK_SPACE))
     {
+       
         Active_Update(false);
 
         m_iIndex = 0;
 
-       
+        if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
+        {
+            Set_bDead();
+            CUI_Manager::Get_Instance()->On_Panel();
+            m_pGameInstance->Set_GameTimeScale(1.f);
+            return;
+        }
             
     }
 
@@ -201,6 +219,15 @@ void CUI_Guide::Click_Interaction()
             Active_Update(false);
 
             m_iIndex = 0;
+
+            if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
+            {
+                Set_bDead();
+                CUI_Manager::Get_Instance()->On_Panel();
+                m_pGameInstance->Set_GameTimeScale(1.f);
+                return;
+            }
+
 
         }
 

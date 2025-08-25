@@ -55,7 +55,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 		m_pPhysXTriggerCom->RemovePhysX();
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
-		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::MONADLIGHT)
+		if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
 		{
 			//add_item..
 			CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
