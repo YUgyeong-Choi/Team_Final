@@ -204,12 +204,32 @@ CGameObject* CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wst
         iLevelIndex, TEXT("Layer_Effect"), &pInstance , &ECDesc)))
         return nullptr;
 
+
+
     return pInstance;
 }
 
 CEffectContainer* CEffect_Manager::Find_EffectContainer(const _wstring& strECTag)
 {
-    return nullptr;
+    auto	iter = m_ECs.find(strECTag);
+    if (iter == m_ECs.end())
+        return nullptr;
+
+    return iter->second;
+}
+
+void CEffect_Manager::Release_EffectContainer(const _wstring& strECTag)
+{
+    m_ECs.erase(strECTag);
+}
+
+void CEffect_Manager::Set_Dead_EffectContainer(const _wstring& strECTag)
+{
+    auto pEC = Find_EffectContainer(strECTag);
+    if (pEC == nullptr)
+        return;
+    pEC->End_Effect();
+    Release_EffectContainer(strECTag);
 }
 
 HRESULT CEffect_Manager::Ready_Prototypes()
@@ -343,6 +363,14 @@ HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
     m_ECJsonDescs.emplace(make_pair(path(strECPath).stem(), j));
 
     return S_OK;
+}
+
+// 이펙트매니저가 이펙트 전체 관리하게 변경 전에 땜빵처리입니다..
+void CEffect_Manager::Store_EffectContainer(const _wstring& strECTag, class CEffectContainer* pEC)
+{
+    if (nullptr != Find_EffectContainer(strECTag))
+        return;
+    m_ECs.emplace(make_pair(strECTag, pEC));
 }
 
 HRESULT CEffect_Manager::Ready_Prototype_Components(const json& j, EFFECT_TYPE eEffType)

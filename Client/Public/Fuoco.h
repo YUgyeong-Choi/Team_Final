@@ -128,6 +128,7 @@ private:
     virtual void UpdateStateByNodeID(_uint iNodeID) override;
     virtual void UpdateSpecificBehavior() override;
 
+
     // 공견 패턴
     void SetupAttackByType(EBossAttackPattern ePattern);
     void SetTurnTimeDuringAttack(_float fTime,_float fAddtivRotSpeed = 1.f)
@@ -152,23 +153,27 @@ private:
 	void FireProjectile(ProjectileType type, _float fSpeed = 10.f);
 	void FlamethrowerAttack(_float fConeAngle = 10.f, _int iRayCount = 7, _float fDistance = 15.f);
 	void SpawnFlameField();
-
-    virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive);
-    HRESULT Effect_FlameField();
+    virtual void Ready_EffectNames() override;
+    virtual void ProcessingEffects(const _wstring& stEffectTag) override;
+    virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive,_bool bIsOnce = true) override;
+    virtual HRESULT Spawn_Effect();
+    
+    virtual HRESULT Ready_Effect();
 
 #ifdef _DEBUG
-    function<void()> PatterDebugFunc = [this]() {    cout << "=== Attack Pattern Weights ===" << endl;
-    for (const auto& [pattern, weight] : m_PatternWeightMap)
-    {
-       /* cout << "Pattern " << static_cast<_int>(pattern)
-            << ": Weight=" << weight
-            << ", Consecutive=" << m_PatternCountMap[pattern]
-            <<"\n"
-            << ", Previous=" << static_cast<_int>(m_ePrevAttackPattern) <<"\n"<<
-                ", Current=" << static_cast<_int>(m_eCurAttackPattern)
-                << endl;*/
-    }
-    cout << "===============================" << endl;
+    function<void()> PatterDebugFunc = [this]() {   
+    //    cout << "=== Attack Pattern Weights ===" << endl;
+    //for (const auto& [pattern, weight] : m_PatternWeightMap)
+    //{
+    //    cout << "Pattern " << static_cast<_int>(pattern)
+    //        << ": Weight=" << weight
+    //        << ", Consecutive=" << m_PatternCountMap[pattern]
+    //        <<"\n"
+    //        << ", Previous=" << static_cast<_int>(m_ePrevAttackPattern) <<"\n"<<
+    //            ", Current=" << static_cast<_int>(m_eCurAttackPattern)
+    //            << endl;
+    //}
+    //cout << "===============================" << endl;
         };
 #endif
 private:
@@ -186,13 +191,13 @@ private:
 
 
     // 공격 관련
-    _int   m_iPatternLimit = 3;
+    _int   m_iPatternLimit = 2;
     _int   m_iFireBallComboCount = 0;
     _float m_fBasePatternWeight = 100.f;
-    _float m_fMinWeight = 50.f;
-    _float m_fMaxWeight = 150.f;
-    _float m_fWeightDecreaseRate = 0.15f;
-	_float m_fWeightIncreaseRate = 0.12f;
+    _float m_fMinWeight = 30.f;
+    _float m_fMaxWeight = 250.f;
+    _float m_fWeightDecreaseRate = 0.45f;
+	_float m_fWeightIncreaseRate = 0.35f;
     //_float m_fAttackCooldown = 0.f; // 공격 쿨타임
     //_float m_fAttckDleay = 4.f;
     _float m_fFireFlameDuration = 0.f;

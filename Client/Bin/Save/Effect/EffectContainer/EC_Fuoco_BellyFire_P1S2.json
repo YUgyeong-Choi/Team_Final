@@ -2,10 +2,10 @@
     "EffectObject": [
         {
             "Accel": [
-                -20.0,
-                -10.0
+                -3.0,
+                -1.0
             ],
-            "Animation": true,
+            "Animation": false,
             "Billboard": false,
             "Center": [
                 0.0,
@@ -14,32 +14,32 @@
             ],
             "CenterColor": [
                 1.0,
-                0.44795918464660645,
-                0.23036646842956543,
+                0.3769633173942566,
+                0.0,
                 1.0
             ],
             "Color": [
                 1.0,
-                0.0628272294998169,
+                0.0,
                 0.0,
                 1.0
             ],
-            "Duration": 112,
+            "Duration": 91,
             "EffectType": 1,
-            "EmissiveIntensity": 1.75,
-            "EndTrack": 112,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 91,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
+            "Gravity": -0.30000001192092896,
             "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [
                         1.0,
-                        0.0628272294998169,
+                        0.0,
                         0.0,
                         1.0
                     ],
-                    "Intensity": 2.430000066757202,
+                    "Intensity": 1.1200000047683716,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -48,9 +48,9 @@
                         0.0
                     ],
                     "Scale": [
-                        0.800000011920929,
-                        0.800000011920929,
-                        0.800000011920929
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -60,33 +60,33 @@
                     ]
                 }
             ],
-            "LifeTime": 6191.08056640625,
+            "LifeTime": 2201.966796875,
             "LifeTime_Particle": [
-                0.5,
-                0.800000011920929
+                0.38999998569488525,
+                1.2000000476837158
             ],
             "Local": true,
-            "Loop": false,
-            "MaxLifeTime": 4.0,
+            "Loop": true,
+            "MaxLifeTime": 1.2000000476837158,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
-            "Name": "Fuoco_Slam_SparkParticle1",
-            "NumInstance": 150,
+            "MinSpeed": 0.30000001192092896,
+            "Name": "Fuoco_BellyFire_tickParticle1",
+            "NumInstance": 50,
             "NumKeyFrames": 1,
-            "Orbit": false,
+            "Orbit": true,
             "OrbitAxis": [
-                0.0,
-                0.0,
-                1.0
+                0.40824827551841736,
+                0.8164965510368347,
+                0.40824827551841736
             ],
             "OrbitSpeed": [
-                0.0,
-                0.0
+                -45.0,
+                45.0
             ],
             "PType": 0,
             "Pivot": [
                 0.0,
-                -0.1899999976158142,
+                -0.029999999329447746,
                 0.0
             ],
             "Range": [
@@ -107,11 +107,11 @@
             "ShaderPass": 3,
             "Size": [
                 0.019999999552965164,
-                0.03999999910593033
+                0.05000000074505806
             ],
             "Speed": [
-                12.9399995803833,
-                17.15999984741211
+                1.0,
+                1.399999976158142
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -135,45 +135,34 @@
             "isTileLoop": false
         },
         {
-            "Accel": [
-                -2.0,
-                0.0
-            ],
             "Animation": true,
-            "Billboard": false,
-            "Center": [
-                0.0,
-                0.0,
-                0.0
-            ],
+            "Billboard": true,
             "CenterColor": [
-                0.0,
-                0.0,
+                1.0,
+                0.18848168849945068,
                 0.0,
                 1.0
             ],
             "Color": [
-                0.27225130796432495,
-                0.24999715387821198,
-                0.21238452196121216,
-                0.4921466112136841
+                1.0,
+                0.0,
+                0.0,
+                1.0
             ],
-            "Duration": 114,
-            "EffectType": 1,
-            "EmissiveIntensity": 0.0,
-            "EndTrack": 114,
+            "Duration": 81,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.699999988079071,
+            "EndTrack": 81,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
-            "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
-                        0.27225130796432495,
-                        0.24999715387821198,
-                        0.21238452196121216,
-                        0.4921466112136841
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
                     ],
-                    "Intensity": 1.0,
+                    "Intensity": 2.740000009536743,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -194,64 +183,16 @@
                     ]
                 }
             ],
-            "LifeTime": 536.454345703125,
-            "LifeTime_Particle": [
-                1.5,
-                1.7999999523162842
-            ],
-            "Local": true,
-            "Loop": false,
-            "MaxLifeTime": 0.800000011920929,
-            "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
-            "Name": "Fuoco_Slam_DustParticle1",
-            "NumInstance": 16,
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
             "NumKeyFrames": 1,
-            "Orbit": false,
-            "OrbitAxis": [
-                0.0,
-                1.0,
-                0.0
-            ],
-            "OrbitSpeed": [
-                -30.0,
-                30.0
-            ],
-            "PType": 0,
-            "Pivot": [
-                0.0,
-                -1.0,
-                0.0
-            ],
-            "Range": [
-                4.0,
-                3.0,
-                4.0
-            ],
             "RenderGroup": 8,
-            "RotationAxis": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "RotationSpeed": [
-                0.0,
-                0.0
-            ],
-            "ShaderPass": 2,
-            "Size": [
-                3.0,
-                4.0
-            ],
-            "Speed": [
-                1.5399999618530273,
-                2.0
-            ],
-            "Spin": false,
+            "ShaderPass": 5,
             "StartTrack": 0,
             "TextureTags": [
                 "",
-                "T_Smoke_04_C_LGS",
+                "T_SubUV_Fire_07_9x9_SC_KMH",
                 "",
                 ""
             ],
@@ -264,11 +205,84 @@
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
             "TileTickPerSec": 60.0,
-            "TileX": 1,
-            "TileY": 1,
-            "isTileLoop": false
+            "TileX": 9,
+            "TileY": 9
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.1256544589996338,
+                0.0,
+                1.0
+            ],
+            "Color": [
+                0.6963350772857666,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 81,
+            "EffectType": 0,
+            "EmissiveIntensity": 1.25,
+            "EndTrack": 81,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.6963350772857666,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 4.489999771118164,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.800000011920929,
+                        0.800000011920929,
+                        0.800000011920929
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_10_9x9_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 9,
+            "TileY": 9
         }
     ],
-    "Loop": false,
-    "MaxFrame": 110
+    "Loop": true,
+    "MaxFrame": 81
 }

@@ -88,6 +88,7 @@ public:
    const  unordered_map<string, Parameter>& GetParameters() const;
 
     void AddParameter(const string& name, Parameter& parm);
+    void ResetParameters();
 
     void RegisterEventListener(const string& eventName, AnimEventCallback&& cb);
     void RegisterAnimController(const string& name, class CAnimController* pController);

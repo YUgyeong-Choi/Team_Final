@@ -69,20 +69,15 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 		switch (m_eTriggerUIType)
 		{
 		case Client::TRIGGERUI_TYPE::STATIONTITLE:
-			
 			eDesc.useLifeTime = true;
 			eDesc.fLifeTime = 8.f;
 			eDesc.strFilePath = TEXT("../Bin/Save/UI/Location/Location_BackGround.json");
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Location_UI"), &eDesc);
 			eDesc.strFilePath = TEXT("../Bin/Save/UI/Location/Location_Text.json");
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Location_UI"), &eDesc);
-
 			break;
 		case Client::TRIGGERUI_TYPE::GUARD:
-			
-
 			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Guard.json"),TEXT("../Bin/Save/UI/Guide/Guide_PerfectGuard.json") };
-
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
 			break;
 		default:

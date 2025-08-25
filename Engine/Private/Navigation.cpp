@@ -190,6 +190,7 @@ _vector CNavigation::GetSlideDirection(_fvector vPosition, _fvector vDir)
 	return vMyDirection - vLineNormal * fDot;
 }
 
+//이거 업데이트 하지마시오 전체 셀 순회함
 HRESULT CNavigation::Select_Cell(_fvector vWorldPos)
 {
 	//x,z 평면상 내부에 있으면, 저장해뒀다가 가장 가까운 셀로 선택하게 한다.

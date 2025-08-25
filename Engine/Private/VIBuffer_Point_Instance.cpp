@@ -131,9 +131,8 @@ void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 	m_tCBuffer.bIsTool = false;
 	/* [ CS ] */
 	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
-
-
 }
+
 void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 {
 	//switch (m_ePType)

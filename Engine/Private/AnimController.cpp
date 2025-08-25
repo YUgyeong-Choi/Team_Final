@@ -451,6 +451,28 @@ const CAnimController::TransitionResult & CAnimController::CheckTransition() con
 	return m_TransitionResult;
 }
 
+void CAnimController::ResetParameters()
+{
+	for (auto& [key, value] : m_Params)
+	{
+		switch (value.type)
+		{
+		case ParamType::Bool:
+			value.bValue = false;
+			break;
+		case ParamType::Int:
+			value.iValue = 0;
+			break;
+		case ParamType::Float:
+			value.fValue = 0.f;
+			break;
+		case ParamType::Trigger:
+			value.bValue = false;
+			break;
+		}
+	}
+}
+
 
 void CAnimController::SetState(const string& name)
 {

@@ -35,7 +35,7 @@ CComponent* CGameObject::Get_Component(const _wstring& strComponentTag)
 
 HRESULT CGameObject::Initialize_Prototype()
 {	
-
+	
 	return S_OK;
 }
 

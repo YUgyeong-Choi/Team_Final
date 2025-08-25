@@ -40,6 +40,12 @@ public:
     virtual void On_TriggerExit(CPhysXActor* pOther);
     virtual HRESULT Render() = 0;
 
+public:
+    //AABB박스 출력할지말지 설정(영웅)
+    void Set_DrawAABB(_bool bDraw) {
+        m_bDrawAABB = bDraw;
+    }
+
 #ifdef _DEBUG
     // For Debug Render
     virtual void Add_RenderRay(DEBUGRAY_DATA _data);
@@ -71,12 +77,16 @@ protected:
     // TriggerRemove용 사용 할 거
     unordered_set<CPhysXActor*> m_pTriggerEnterOthers;
 
+    //AABB박스 출력할지말지(영웅)
+    _bool   m_bDrawAABB = { true };
+
 #ifdef _DEBUG
     // For Debug Render
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
     BasicEffect* m_pEffect = { nullptr };
     ID3D11InputLayout* m_pInputLayout = { nullptr };
 	_bool m_bReadyForDebugDraw = { false };
+
 protected:
     HRESULT ReadyForDebugDraw(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 protected:

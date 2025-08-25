@@ -26,9 +26,17 @@ public:
 public:
     class CGameObject* Make_Effect(_uint iLevelIndex, const _wstring& strEffectTag, const _wstring& strLayerTag, const _float3& vPresetPos = { 0.f, 0.f, 0.f }, void* pArg = nullptr);
     class CGameObject* Make_EffectContainer(_uint iLevelIndex, const _wstring& strECTag, void* pArg = nullptr);
-    class CEffectContainer* Find_EffectContainer(const _wstring& strECTag);
     HRESULT Ready_Effect(const _wstring strEffectPath);
     HRESULT Ready_EffectContainer(const _wstring strECPath);
+
+
+// 이펙트 매니저가 이펙트 수명관리를 하지 않기 때문에 임시로 영구Loop이펙트들만 매니저에 등록 후 관리할 수 있도록 처리함
+// 나중에 이펙트 매니저쪽으로 Update가 전부 넘어가면 변경 예정 (지금은 ObjectManager가 처리함)
+public: 
+    void Store_EffectContainer(const _wstring& strECTag, class CEffectContainer* pEC);
+    class CEffectContainer* Find_EffectContainer(const _wstring& strECTag);
+    void Release_EffectContainer(const _wstring& strECTag);
+    void Set_Dead_EffectContainer(const _wstring& strECTag);
 
 private:
     HRESULT Ready_Prototypes();
@@ -52,9 +60,12 @@ public:
     }EFFECT_DESC;
 
 private:
+    typedef map<const _wstring, class CEffectContainer*> CONTAINERS;
     //map<const _wstring, CEffectContainer*>  m_ECPrototypes;
-    map<const _wstring, EFFECT_DESC>        m_EffectCloneDescs;
-    map<const _wstring, const json>         m_ECJsonDescs;
+    map<const _wstring, EFFECT_DESC>    m_EffectCloneDescs;
+    map<const _wstring, const json>     m_ECJsonDescs;
+
+    CONTAINERS                          m_ECs;
 
 public:
     virtual void Free() override;

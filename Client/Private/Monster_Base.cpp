@@ -205,10 +205,9 @@ void CMonster_Base::Reset()
 
 	m_isLookAt = {};
 	m_eDir = { MONSTER_DIR::END };
-	m_fGroggyThreshold = {100};
+	m_fGroggyThreshold = {};
 	m_isCanGroggy = {};
 	m_isDetect = { false };
-	m_fDetectDist = {10.f};
 	m_strStateName = {};
 	m_vPushDir = {};
 	m_iCollisionCount = {};

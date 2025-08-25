@@ -61,6 +61,12 @@ HRESULT CBossUnit::Initialize(void* pArg)
     // 래이캐스트 머리쪽에 할려고 둔 offset !!!!
     m_vRayOffset = { 0.f, 3.3f, 0.f, 0.f };
     m_bUseLockon = true;
+    Ready_EffectNames();
+
+
+    if (FAILED(Ready_Effect()))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -96,6 +102,8 @@ void CBossUnit::Update(_float fTimeDelta)
 
         XMStoreFloat4(&m_vLockonPos, vLockonPos);
     }
+
+    Spawn_Effect();
 }
 
 void CBossUnit::Late_Update(_float fTimeDelta)
@@ -308,7 +316,18 @@ void CBossUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
     }
     else
     {
+        if (XMVectorGetX(XMVector3LengthSq(m_PrevWorldDelta)) > 1e-6f)
+        {
+            // 루트모션 마지막 위치로 보정
+            _vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+            _float fY = m_pNaviCom->Compute_NavigationY(vPos);
+            m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(vPos, fY));
+
+            m_PrevWorldDelta = XMVectorZero(); // 잔여치 제거
+        }
+
         UpdateNormalMove(fTimeDelta);
+        m_PrevWorldDelta = XMVectorZero();
     }
 
     _vector vDir = GetTargetDirection();
@@ -435,25 +454,81 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
     _vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vNewRotQut));
     vWorldDelta = XMVectorSetY(vWorldDelta, 0.f);
     _float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
+
     _vector finalDelta = vWorldDelta;
     if (fDeltaMag > m_fSmoothThreshold)
     {
         _float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
         finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
     }
-
+    _float fMaxStep = 0.35f; // 프레임당 최대 이동 허용
+    if (XMVectorGetX(XMVector3Length(finalDelta)) > fMaxStep)
+    {
+        finalDelta = XMVector3Normalize(finalDelta) * fMaxStep;
+    }
     m_PrevWorldDelta = finalDelta;
     _vector vNext = XMVectorAdd(vTrans, finalDelta);
+
     if (m_pNaviCom)
     {
         if (m_pNaviCom->isMove(vNext))
         {
+            // 갈 수 있으면 Y만 네비로 보정
             _float fY = m_pNaviCom->Compute_NavigationY(vNext);
             vTrans = XMVectorSetY(vNext, fY);
+			cout << "일반 이동" << endl;
+        }
+        else
+        {
+            _vector vSlideDir = m_pNaviCom->GetSlideDirection(vNext, XMVector3Normalize(finalDelta));
+            _vector vSlidePos = vTrans + vSlideDir * min(fDeltaMag, m_fSlideClamp);
+
+            if (m_pNaviCom->isMove(vSlidePos))
+            {
+				cout << "슬라이드 이동" << endl;
+                _float fY = m_pNaviCom->Compute_NavigationY(vSlidePos);
+                vTrans = XMVectorSetY(vSlidePos, fY);
+            }
+            else
+            {
+				cout << "이동 불가" << endl;
+                vTrans = XMVectorSetY(vTrans, m_pNaviCom->Compute_NavigationY(vTrans));
+            }
         }
     }
-    _matrix newWorld = XMMatrixScalingFromVector(vScale) * XMMatrixRotationQuaternion(vNewRotQut) * XMMatrixTranslationFromVector(vTrans);
+
+    // 최종 매트릭스 갱신
+    _matrix newWorld =
+        XMMatrixScalingFromVector(vScale) *
+        XMMatrixRotationQuaternion(vNewRotQut) *
+        XMMatrixTranslationFromVector(vTrans);
+
     m_pTransformCom->Set_WorldMatrix(newWorld);
+
+    //if (fDeltaMag < 0.001f) // 사실상 루트모션 종료
+    //{
+    //    _float fY = m_pNaviCom->Compute_NavigationY(vTrans);
+    //    vTrans = XMVectorSetY(vTrans, fY);
+
+    //    newWorld =
+    //        XMMatrixScalingFromVector(vScale) *
+    //        XMMatrixRotationQuaternion(vNewRotQut) *
+    //        XMMatrixTranslationFromVector(vTrans);
+
+    //    m_pTransformCom->Set_WorldMatrix(newWorld);
+
+    //    m_PrevWorldDelta = XMVectorZero();
+    //}
+    //if (m_pNaviCom)
+    //{
+    //    if (m_pNaviCom->isMove(vNext))
+    //    {
+    //        _float fY = m_pNaviCom->Compute_NavigationY(vNext);
+    //        vTrans = XMVectorSetY(vNext, fY);
+    //    }
+    //}
+    //_matrix newWorld = XMMatrixScalingFromVector(vScale) * XMMatrixRotationQuaternion(vNewRotQut) * XMMatrixTranslationFromVector(vTrans);
+    //m_pTransformCom->Set_WorldMatrix(newWorld);
 }
 
 void CBossUnit::UpdateNormalMove(_float fTimeDelta)
@@ -495,7 +570,6 @@ void CBossUnit::Ready_AttackPatternWeightForPhase2()
 
 void CBossUnit::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-
 }
 
 void CBossUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -522,7 +596,7 @@ void CBossUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3);
 
-        m_fHP -= pWeapon->Get_CurrentDamage() * 0.05f;
+        m_fHP -= pWeapon->Get_CurrentDamage() * 0.03f;
 		m_fHP = max(m_fHP, 0.f);
         cout << "보스 현재 체력 : " << m_fHP << endl;
     }

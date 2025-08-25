@@ -30,6 +30,7 @@ HRESULT CFireBall::Initialize(void* pArg)
 
 	m_pPhysXActorCom->Set_SimulationFilterData(FilterData);
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
 	return S_OK;
 }
 
@@ -55,12 +56,13 @@ HRESULT CFireBall::Render()
 
 void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
-		if (auto pOill = dynamic_cast<COil*>(pOther))
+		if (auto pOil = dynamic_cast<COil*>(pOther))
 		{
-			if (pOill)
+			if (pOil)
 			{
+				pOil->Explode_Oil();
 				Set_bDead();
 				return;
 			}
@@ -115,8 +117,8 @@ HRESULT CFireBall::Ready_Effect()
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-
-	if (nullptr == dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_FireballTESTTESTTESTM1P1"), &desc)))
+	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_FireballTESTTESTTESTM1P1"), &desc));
+	if (nullptr == m_pEffect)
 		MSG_BOX("이펙트 생성 실패함");
 
 	return S_OK;

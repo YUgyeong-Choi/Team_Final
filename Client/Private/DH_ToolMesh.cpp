@@ -73,10 +73,10 @@ void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 			SetIsPlayerFar(false);
 	}
 
-	//if (m_bLightOnOff)
-	//	m_pLight->Get_LightDesc()->bIsUse = true;
-	//else
-	//	m_pLight->Get_LightDesc()->bIsUse = false;
+	if (m_bLightOnOff)
+		m_pLight->Get_LightDesc()->bIsUse = true;
+	else
+		m_pLight->Get_LightDesc()->bIsUse = false;
 }
 
 void CDH_ToolMesh::Update(_float fTimeDelta)
@@ -96,7 +96,7 @@ void CDH_ToolMesh::Late_Update(_float fTimeDelta)
 
 HRESULT CDH_ToolMesh::Render()
 {
-	if (!m_bDebug)
+	if (m_bLightDebug == false)
 		return S_OK;
 
 	if (FAILED(Bind_ShaderResources()))

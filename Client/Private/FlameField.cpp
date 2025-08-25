@@ -1,10 +1,13 @@
 #include "Player.h"
 #include "FlameField.h"
 #include "GameInstance.h"
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
 #include "PhysXDynamicActor.h"
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
 #include <Fuoco.h>
+#include <Oil.h>
 
 CFlameField::CFlameField(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -42,7 +45,8 @@ HRESULT CFlameField::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_fExpandElapsedTime = 0.f;
-
+	m_LastSpawnDist.resize(16, 0.f);
+	m_SpawnEffectDistanceList.reserve(16);
 	Check_SpawnEffectDistance();
     return S_OK;
 }
@@ -69,6 +73,27 @@ void CFlameField::Update(_float fTimeDelta)
 		_float fExpandRatio = m_fExpandElapsedTime / m_fExpandTime;
 		fExpandRatio = clamp(fExpandRatio, 0.f, 1.f);
 		_float fCurrentRadius = LerpFloat(m_fInitialRadius, m_fExpandRadius, fExpandRatio);
+
+
+		_float step = 2.5f; // 이펙트 크기에 맞춰 조정
+
+		// 16방향으로 퍼짐
+		for (_int i = 0; i <12; i++)
+		{
+			_float maxDist = m_MergeDist[i];
+
+			while (m_LastSpawnDist[i] + step <= fCurrentRadius && m_LastSpawnDist[i] + step <= maxDist)
+			{
+				m_LastSpawnDist[i] += step;
+
+				_float angle = XMConvertToRadians(30.f * i);
+				_vector vDir = XMVector3Normalize(XMVectorSet(cosf(angle), 0.f, sinf(angle), 0.f));
+				_vector vSpawnPos = m_pTransformCom->Get_State(STATE::POSITION) + vDir * m_LastSpawnDist[i];
+
+				Effect_FlameField(vSpawnPos);
+			}
+		}
+
 		m_ModifyFlame.halfExtents = PxVec3(fCurrentRadius, 0.5f, fCurrentRadius);
 		m_ModifyFlame = m_pGameInstance->CookBoxGeometry(m_ModifyFlame.halfExtents);
 		m_pPhysXActorCom->Modify_Shape(m_ModifyFlame);
@@ -104,7 +129,6 @@ HRESULT CFlameField::Render()
 
 void CFlameField::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	int i = 0;
 }
 
 void CFlameField::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -117,15 +141,40 @@ void CFlameField::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CFlameField::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+
 }
 
 void CFlameField::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	int i = 0;
+	if (auto pOil = dynamic_cast<COil*>(pOther))
+	{
+		pOil->Explode_Oil();
+	}
+}
+
+void CFlameField::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
 }
 
 void CFlameField::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+}
+
+HRESULT CFlameField::Effect_FlameField(const _fvector& vSpawnPos)
+{
+	CEffectContainer::DESC desc = {};
+	auto worldmat = m_pTransformCom->Get_WorldMatrix();
+
+	_float3 pos;
+	XMStoreFloat3(&pos, vSpawnPos);
+
+	// 위치만 반영된 월드 매트릭스 생성
+	_matrix matWorld = XMMatrixTranslation(pos.x, pos.y, pos.z);
+	_int iLevelID = m_pGameInstance->GetCurrentLevelIndex();
+	XMStoreFloat4x4(&desc.PresetMatrix, matWorld);
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(iLevelID), TEXT("EC_Fuoco_FlameField_Imsi_P2"), &desc))
+		MSG_BOX("이펙트 생성 실패함");
+	return S_OK;
 }
 
 HRESULT CFlameField::Ready_Components()
@@ -154,11 +203,11 @@ HRESULT CFlameField::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_MONSTERWEAPON;
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
-	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
 	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
@@ -195,59 +244,72 @@ void CFlameField::Check_SpawnEffectDistance()
 	CIgnoreSelfCallback callback(ignoreActors);
 
 
+	m_SpawnEffectDistanceList.clear();
+	m_SpawnEffectDistanceList.reserve(72);
 
-	for (_int i = 0; i < 12; i++)
+	for (_int i = 0; i < 72; i++)
 	{
-		_float fAngle = XMConvertToRadians(30.f * i); // 12방향으로 나누기
+		_float fAngle = XMConvertToRadians(5.f * i);
 		_vector vDir = XMVector3Normalize(XMVectorSet(cosf(fAngle), 0.f, sinf(fAngle), 0.f));
 		_vector vSpawnPos = vOffsetPos + vDir * m_fExpandRadius;
 
-
-		_vector vRay = vSpawnPos - vOffsetPos;                  // 방향+거리
-		_float fDistance = XMVectorGetX(XMVector3Length(vRay)); // 길이
-		_vector vRayDirNorm = XMVector3Normalize(vRay);         // 방향만 정규화
+		_vector vRay = vSpawnPos - vOffsetPos;
+		_float fDistance = XMVectorGetX(XMVector3Length(vRay));
+		_vector vRayDirNorm = XMVector3Normalize(vRay);
 		PxVec3 vRayDir(XMVectorGetX(vRayDirNorm), XMVectorGetY(vRayDirNorm), XMVectorGetZ(vRayDirNorm));
 
 		PxRaycastBuffer hit;
+		_float finalDist = fDistance;
+
 		if (m_pGameInstance->Get_Scene()->raycast(origin, vRayDir, fDistance, hit, hitFlags, filterData, &callback))
 		{
-			PxRigidActor* hitActor = hit.block.actor;
-			PxVec3 hitPos = hit.block.position;
-			PxVec3 hitNormal = hit.block.normal;
-			if (hit.hasBlock)
+			if (hit.hasBlock && hit.block.actor)
 			{
-
-				CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
-
-				if (pHitActor && pHitActor->Get_Owner())
+				if (auto pHitActor = static_cast<CPhysXActor*>(hit.block.actor->userData))
 				{
-					if (nullptr == pHitActor->Get_Owner())
-						return;
-					// 데미지 계산 나중에 생각해보기
-					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::MONSTER_WEAPON);
+					if (pHitActor->Get_Owner() && pHitActor->Get_ColliderType() != COLLIDERTYPE::PLAYER)
+						finalDist = hit.block.distance;
+					else
+						finalDist = fDistance;
 				}
-				wcout << L"Hit: " << hit.block.actor << endl;
-				for (auto* p : ignoreActors) {
-					wcout << L"Ignore: " << p << endl;
-				}
-				wcout << pHitActor->Get_Owner()->Get_Name() << L" Hit by FlameField" << endl;
-#ifdef _DEBUG
-				if (m_pGameInstance->Get_RenderCollider()) {
-					DEBUGRAY_DATA _data{};
-					_data.vStartPos = origin;
-					_data.vDirection = vRayDir;
-					_data.fRayLength = fDistance;
-					_data.bIsHit = hit.hasBlock;
-					_data.vHitPos = hitPos;
-					m_pPhysXActorCom->Add_RenderRay(_data);
-				}
-#endif
 			}
-
-
 		}
 
-		m_SpawnEffectDistanceList.push_back(fDistance);
+		m_SpawnEffectDistanceList.push_back(finalDist);
+
+#ifdef _DEBUG
+		if (m_pGameInstance->Get_RenderCollider())
+		{
+			DEBUGRAY_DATA _data{};
+			_data.vStartPos = origin;
+			_data.vDirection = vRayDir;
+			_data.fRayLength = finalDist;
+			_data.bIsHit = hit.hasBlock;
+			_data.vHitPos = hit.hasBlock ? hit.block.position : origin + vRayDir * finalDist;
+			m_pPhysXActorCom->Add_RenderRay(_data);
+		}
+#endif
+	}
+
+	m_MergeDist.clear();
+	m_MergeDist.resize(12, 0.f);
+
+	for (_int i = 0; i < 12; i++)
+	{
+		_float fMinDist = FLT_MAX;
+
+
+		for (_int j = -2; j <= 2; j++)
+		{
+			_int iIdx = (i * 6 + j + 72) % 72; // 72로 나누어 음수 인덱스 방지
+			// 이전의 합친 그룹이랑도 같이 비교
+			fMinDist = min(fMinDist, m_SpawnEffectDistanceList[iIdx]);
+		}
+
+		if (fMinDist == FLT_MAX)
+			fMinDist = m_fExpandRadius;
+
+		m_MergeDist[i] = fMinDist;
 	}
 }
 

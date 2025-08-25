@@ -73,7 +73,7 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 		return;
 
 	//여기 공간 중 한곳에 있을 경우
-	vector<_uint> vecHotelIds = { 4, 6, 7, 8, 9, 10, 11 };
+	vector<_uint> vecHotelIds = { 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
 	if (IsInAnyArea(CurrentArea, vecHotelIds))
 	{
 		if (m_wsMap == TEXT("HOTEL"))

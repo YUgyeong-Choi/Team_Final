@@ -3,6 +3,7 @@
 #include "FireBall.h"
 #include "PhysXDynamicActor.h"
 #include "Client_Calculation.h"
+#include <FlameField.h>
 COil::COil(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CProjectile(pDevice, pContext)
 {
@@ -34,11 +35,8 @@ HRESULT COil::Initialize(void* pArg)
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
 		filterData.word1 = WORLDFILTER::FILTER_MAP;
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
-		m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"), 0));
-		if (m_pPlayer)
-		{
-			m_pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
-		}
+
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
 	}
 
 	return S_OK;
@@ -52,7 +50,7 @@ void COil::Priority_Update(_float fTimeDelta)
 	{
 		m_pPhysXActorCom->ReCreate_Shape(m_pPhysXActorCom->Get_Actor(), m_SpreadOilShape);
 		m_pPhysXActorCom->Set_Kinematic(true);
-		m_pPhysXActorCom->Set_ShapeFlag(false, true, false);
+		m_pPhysXActorCom->Set_ShapeFlag(true, false, false);
 		m_bIsSpreaded = true;
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		// 오일이 퍼지면 위치를 바꿔야함
@@ -67,13 +65,20 @@ void COil::Priority_Update(_float fTimeDelta)
 
 		PxTransform pose = m_pPhysXActorCom->Get_Actor()->getGlobalPose();
 		pose.p = PxVec3(XMVectorGetX(vSpreadPos),
-			XMVectorGetY(vPos),  
+			XMVectorGetY(vSpreadPos),
 			XMVectorGetZ(vSpreadPos));
 		m_pPhysXActorCom->Get_Actor()->setGlobalPose(pose);
 		PxFilterData filterData{};
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-		filterData.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_MONSTERWEAPON;
+		filterData.word1 = WORLDFILTER::FILTER_MONSTERWEAPON;
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+		_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+		auto pPlayer = GET_PLAYER(iLevelIndex);
+		if (pPlayer)
+		{
+			pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());	
+			m_pPlayer = pPlayer;
+		}
 	
 	}
 }
@@ -93,11 +98,39 @@ HRESULT COil::Render()
     return __super::Render();
 }
 
+void COil::Explode_Oil()
+{
+	if (m_bIsSpreaded)
+	{
+		if (m_pPlayer)
+		{
+			// 화염 처리만 히트 주고
+			// 사각형 충돌 계산
+			_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+			_vector vOilPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_float fDist = XMVectorGetX(XMVector3Length(XMVectorSubtract(vPlayerPos, vOilPos)));
+			// 내 콜라이더의 너비
+			_float fColliderWidth = 2.f;
+			if (fDist <= fColliderWidth)
+			{
+				_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+				auto pPlayer = GET_PLAYER(iLevelIndex);
+				if (pPlayer)
+				{
+					pPlayer->SetHitMotion(HITMOTION::NORMAL);
+				}
+			}
+			Set_bDead();
+		}
+	}
+}
+
 void COil::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
 	{
-		m_bCanSpread = true;
+		if (m_bIsSpreaded== false)
+			m_bCanSpread = true;
 	}
 }
 
@@ -115,26 +148,28 @@ void COil::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void COil::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	if (m_bIsSpreaded)
-	{
-		// 나중에 터질 때 처리(플레이어로 테스트 처리, 나중에 화염 발사랑 만나면)
-		if (m_pPlayer && eColliderType == COLLIDERTYPE::MONSTER_WEAPON && dynamic_cast<CFireBall*>(pOther))
-		{
-			// 화염 처리만 히트 주고
-			// 사각형 충돌 계산
-			_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-			_vector vOilPos = m_pTransformCom->Get_State(STATE::POSITION);
-			_float fDist = XMVectorGetX(XMVector3Length(XMVectorSubtract(vPlayerPos, vOilPos)));
-			// 내 콜라이더의 너비
-			_float fColliderWidth =2.f;
-			if (fDist <= fColliderWidth)
-			{
-				m_pPlayer->ReceiveDamage(this, COLLIDERTYPE::MONSTER_WEAPON);
-				m_pPlayer->Get_Animator()->SetTrigger("Hited");
-				Set_bDead();
-			}
-		}
-	}
+	//if (m_bIsSpreaded)
+	//{
+	//	if (m_pPlayer && eColliderType == COLLIDERTYPE::BOSS_WEAPON && dynamic_cast<CFlameField*>(pOther))
+	//	{
+	//		// 화염 처리만 히트 주고
+	//		// 사각형 충돌 계산
+	//		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+	//		_vector vOilPos = m_pTransformCom->Get_State(STATE::POSITION);
+	//		_float fDist = XMVectorGetX(XMVector3Length(XMVectorSubtract(vPlayerPos, vOilPos)));
+	//		_float fColliderWidth = 2.f;
+	//		if (fDist <= fColliderWidth)
+	//		{
+	//			_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+	//			auto pPlayer = GET_PLAYER(iLevelIndex);
+	//			if (pPlayer)
+	//			{
+	//				pPlayer->SetHitMotion(HITMOTION::NORMAL);
+	//			}
+	//			Set_bDead();
+	//		}
+	//	}
+	//}
 }
 
 void COil::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -155,8 +190,8 @@ HRESULT COil::Ready_Effect()
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-
-	if (nullptr == dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &desc)))
+	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &desc));
+	if (nullptr == m_pEffect)
 		MSG_BOX("이펙트 생성 실패함");
 
 	return S_OK;

@@ -49,6 +49,10 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 
 public:
+	void SetLightDebug(_bool bDebug) { m_bLightDebug = bDebug; }
+	_bool GetLightDebug() const { return m_bLightDebug; }
+
+public:
 	_bool Get_IsLOD() const { return m_bIsLOD; }
 	void Set_IsLOD(_bool bIsLOD) { m_bIsLOD = bIsLOD; }
 
@@ -86,7 +90,10 @@ protected:
 	_float	m_fViewZ = {};
 	_bool m_bCloned = {};
 	_bool m_bEmissive = {};
+
+	/* [ 라이트관련 디버그 ] */
 	_bool m_bLightOnOff = {};
+	_bool m_bLightDebug = { true };
 
 	_bool m_isActive = { true };
 
