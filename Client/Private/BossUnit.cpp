@@ -63,6 +63,10 @@ HRESULT CBossUnit::Initialize(void* pArg)
     m_bUseLockon = true;
     Ready_EffectNames();
 
+
+    if (FAILED(Ready_Effect()))
+        return E_FAIL;
+
     return S_OK;
 }
 

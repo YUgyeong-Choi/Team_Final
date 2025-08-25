@@ -63,11 +63,11 @@
             "LifeTime": 1815.7669677734375,
             "LifeTime_Particle": [
                 0.009999999776482582,
-                2.0
+                1.0
             ],
             "Local": true,
             "Loop": true,
-            "MaxLifeTime": 4.0,
+            "MaxLifeTime": 1.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "FIREBALLPARTICLE",
@@ -210,6 +210,6 @@
             "TileY": 1
         }
     ],
-    "Loop": false,
+    "Loop": true,
     "MaxFrame": 200
 }

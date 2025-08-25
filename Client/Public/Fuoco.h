@@ -157,7 +157,8 @@ private:
     virtual void ProcessingEffects(const _wstring& stEffectTag) override;
     virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive,_bool bIsOnce = true) override;
     virtual HRESULT Spawn_Effect();
-
+    
+    virtual HRESULT Ready_Effect();
 
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {   
