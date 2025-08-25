@@ -109,6 +109,14 @@
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
       "triggerSize": [ 0.2, 0.2, 3.5 ]
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 1,
+      "vPos": [ 172.032059, 5.006557, -20.399889 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 5.0, 0.2, 0.2 ]
     }
   ]
 }
