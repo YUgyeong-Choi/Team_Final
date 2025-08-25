@@ -48,7 +48,10 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
 
+	virtual void Reset() {};
+
 	void SetCascadeShadow();
+	
 
 
 protected: /* [ Setup 함수 ] */
@@ -62,7 +65,6 @@ public: /* [ 피직스 관련 ] */
 	PxRigidActor* Get_Actor(CPhysXActor* actor);
 	_vector Get_RayOffset() { return m_vRayOffset; }
 	void RayCast(CPhysXActor* actor);
-
 #ifdef USE_IMGUI
 	class CAnimator* Get_Animator() const { return m_pAnimator; }
 #endif
@@ -153,7 +155,6 @@ protected: // ....
 	_int				m_iLockonBoneIndex = {};
 
 	EUnitType			m_eUnitType = EUnitType::NONE;
-
 public:
 	static CUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

@@ -51,6 +51,8 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 void CButtler_Train::Priority_Update(_float fTimeDelta)
 {
+	if (!m_bActive)
+		return;
 
 	__super::Priority_Update(fTimeDelta);
 
@@ -60,8 +62,9 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
 			cout << pCurState->stateName << endl;
-			(m_pWeapon)->Set_bDead();
-			Set_bDead();
+			//(m_pWeapon)->Set_bDead();
+			//Set_bDead();
+			m_bActive = false;
 		}
 	}
 
@@ -81,8 +84,10 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 void CButtler_Train::Update(_float fTimeDelta)
 {
-	
- 	Calc_Pos(fTimeDelta);
+	if (!m_bActive)
+		return;
+
+	Calc_Pos(fTimeDelta);
 
 	__super::Update(fTimeDelta);
 
@@ -172,12 +177,12 @@ void CButtler_Train::Update(_float fTimeDelta)
 
 void CButtler_Train::Late_Update(_float fTimeDelta)
 {
+	if (!m_bActive)
+		return;
+
 	__super::Late_Update(fTimeDelta);
 
 	Update_State();
-
-
-
 }
 
 HRESULT CButtler_Train::Render()
@@ -417,6 +422,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		}
 
+		m_bPlayOnce = true;
 	}
 
 
@@ -546,8 +552,28 @@ void CButtler_Train::Start_Fatal_Reaction()
 	m_isFatal = true;
 }
 
+void CButtler_Train::Reset()
+{
+	m_fHp = 300;
 
+	if (nullptr != m_pHPBar)
+		m_pHPBar->Set_MaxHp(m_fHp);
 
+	m_iAttackCount = {};
+	m_fDuration = 0.f;
+	m_fAwaySpeed = 1.f;
+
+	auto stEntry = m_pAnimator->Get_CurrentAnimController()->GetEntryState();
+	m_pAnimator->Get_CurrentAnimController()->SetState(stEntry->stateName);
+
+	__super::Reset();
+
+	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+	{
+		pPlayer->Get_Controller()->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
+	}
+	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+}
 
 HRESULT CButtler_Train::Ready_Weapon()
 {

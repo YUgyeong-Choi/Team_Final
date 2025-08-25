@@ -970,6 +970,9 @@
     <ClInclude Include="..\public\UI_Pickup_Item.h">
       <Filter>02.GameObjects\99.UI\Container\Pickup\Item</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerUI.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1453,6 +1456,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Pickup_Item.cpp">
       <Filter>02.GameObjects\99.UI\Container\Pickup\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerUI.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

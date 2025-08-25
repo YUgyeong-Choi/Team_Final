@@ -30,9 +30,13 @@ HRESULT CTriggerTalk::Initialize_Prototype()
 HRESULT CTriggerTalk::Initialize(void* pArg)
 {
 	CTriggerTalk::TRIGGERTALK_DESC* TriggerTalkDESC = static_cast<TRIGGERTALK_DESC*>(pArg);
+	m_eTriggerSoundType = TriggerTalkDESC->eTriggerBoxType;
 	m_bCanCancel = TriggerTalkDESC->bCanCancel;
 
 	if (FAILED(__super::Initialize(TriggerTalkDESC)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
 	if (TriggerTalkDESC->gameObjectTag != "")
@@ -40,7 +44,6 @@ HRESULT CTriggerTalk::Initialize(void* pArg)
 		if (FAILED(Ready_TriggerObject(TriggerTalkDESC)))
 			return E_FAIL;
 	}
-
 
 	return S_OK;
 }
@@ -81,19 +84,6 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 void CTriggerTalk::Update(_float fTimeDelta)
 {
 	if (!m_bActive)
-	{
-		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
-		{
-			// 여기서 하지 말고
-			// 무기 선택 ui 가서 이제 무기 선택 완료하면
-			// 이 트리거 주소를 가지고 거기서 setbdead로 지우자
-
-
-
-		}
-	}
-
-	if (!m_bActive)
 		return;
 
 	// 대화 중 끌 수 있다면
@@ -120,7 +110,7 @@ void CTriggerTalk::Update(_float fTimeDelta)
 			m_iSoundIndex = 0;
 
 			_float offSet = 1.7f;
-			if (m_eTriggerBoxType == TRIGGERBOX_TYPE::MONADLIGHT)
+			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
 				offSet = 0.f;
 
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, false, offSet);
@@ -130,7 +120,7 @@ void CTriggerTalk::Update(_float fTimeDelta)
 			m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
 			m_pPlayer->Get_TransfomCom()->RotateToDirectionImmediately(_fvector{ 0.f,0.f,1.f,0.f });
 
-			if (m_eTriggerBoxType == TRIGGERBOX_TYPE::MONADLIGHT)
+			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
 				m_pPlayer->Get_Animator()->SetTrigger("InactiveStargazer");
 
 			// 여기에 조사한다 UI 비활성화
@@ -144,7 +134,7 @@ void CTriggerTalk::Update(_float fTimeDelta)
 
 	if (m_bDoOnce)
 	{
-		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+		if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::SELECTWEAPON)
 		{
 			CTransform* pPlayerTransform = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"))->Get_TransfomCom();
 			pPlayerTransform->RotateToDirectionSmoothly(m_pTransformCom->Get_State(STATE::POSITION), 0.005f);
@@ -216,10 +206,15 @@ void CTriggerTalk::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 
 }
 
-void CTriggerTalk::Play_Sound()
+HRESULT CTriggerTalk::Ready_Components()
 {
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Trigger"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
 
+	return S_OK;
 }
+
 
 HRESULT CTriggerTalk::Ready_TriggerObject(TRIGGERTALK_DESC* TriggerTalkDESC)
 {
@@ -244,7 +239,7 @@ void CTriggerTalk::Next_Talk()
 	m_iSoundIndex++;
 	if (m_iSoundIndex >= m_vecSoundData.size())
 	{
-		if (m_eTriggerBoxType == TRIGGERBOX_TYPE::SELECTWEAPON)
+		if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::SELECTWEAPON)
 		{
 			// 무기 선택 UI 활성화
 			m_bActive = false;
@@ -270,7 +265,7 @@ void CTriggerTalk::Next_Talk()
 		{
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
-			if (m_eTriggerBoxType == TRIGGERBOX_TYPE::MONADLIGHT)
+			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
 				m_pPlayer->Get_Animator()->SetTrigger("EndInteraction");
 			m_bDead = true;
 			m_pPhysXTriggerCom->RemovePhysX();
@@ -319,4 +314,5 @@ CGameObject* CTriggerTalk::Clone(void* pArg)
 void CTriggerTalk::Free()
 {
 	__super::Free();
+	Safe_Release(m_pSoundCom);
 }

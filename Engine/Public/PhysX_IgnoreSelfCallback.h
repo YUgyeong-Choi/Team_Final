@@ -1,3 +1,5 @@
+#pragma once
+
 #include "PxPhysicsAPI.h"
 #include "PhysXActor.h"
 
