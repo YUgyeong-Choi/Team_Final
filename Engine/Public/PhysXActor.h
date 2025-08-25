@@ -69,7 +69,7 @@ protected:
     PxShape* m_pShape = { nullptr };
 
     // TriggerRemove용 사용 할 거
-    CPhysXActor* m_pTriggerEnterOther = { nullptr };
+    unordered_set<CPhysXActor*> m_pTriggerEnterOthers;
 
 #ifdef _DEBUG
     // For Debug Render
