@@ -166,6 +166,7 @@
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\public\BossUnit.h" />
+    <ClInclude Include="..\public\Buttler_Basic.h" />
     <ClInclude Include="..\public\Buttler_Train.h" />
     <ClInclude Include="..\Public\CameraSequence.h" />
     <ClInclude Include="..\public\Camera_CutScene.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="..\Public\TriggerSound.h" />
     <ClInclude Include="..\Public\TriggerTalk.h" />
     <ClInclude Include="..\Public\TriggerUI.h" />
+    <ClInclude Include="..\public\UI_Fatal_Icon.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
     <ClInclude Include="..\public\Fuoco.h" />
     <ClInclude Include="..\Public\GLTool.h" />
@@ -342,6 +344,7 @@
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
+    <ClCompile Include="..\private\Buttler_Basic.cpp" />
     <ClCompile Include="..\private\Buttler_Train.cpp" />
     <ClCompile Include="..\Private\CameraSequence.cpp" />
     <ClCompile Include="..\private\Camera_CutScene.cpp" />
@@ -447,6 +450,7 @@
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\Private\UI_Container.cpp" />
+    <ClCompile Include="..\private\UI_Fatal_Icon.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
     <ClCompile Include="..\private\UI_Feature_Click.cpp" />
