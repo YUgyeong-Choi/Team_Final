@@ -104,6 +104,11 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	//	MSG_BOX("이펙트 생성 실패함");
 	}
 
+	if (KEY_DOWN(DIK_B))
+	{
+		m_bDebugMode = !m_bDebugMode;
+	}
+
 	if (KEY_PRESSING(DIK_LCONTROL))
 	{
 		if (KEY_DOWN(DIK_X))
