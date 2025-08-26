@@ -1235,6 +1235,7 @@ public:
 
             if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
                 m_pOwner->m_bPulseReservation = true;
+
         }
     }
 
@@ -1479,6 +1480,7 @@ public:
             if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
                 m_pOwner->m_bPulseReservation = true;
         }
+
     }
 
     virtual void Exit() override
@@ -1952,6 +1954,9 @@ public:
 					_vector vRot = { -2.f, 0.f, 0.f, 0.f };
                     m_pCamera_Manager->GetCurCam()->StartRot(vRot, 0.4f);
                     m_pCamera_Manager->GetCurCam()->StartShake(0.15f, 0.35f);
+
+                    m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_PerfectGuard_", 3);
+
                 }
                 else
                 {
@@ -1989,6 +1994,8 @@ public:
                     m_pOwner->m_pAnimator->SetInt("HitDir", 0);
                     m_pOwner->m_pAnimator->SetTrigger("Hited");
 
+                    m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_Guard_", 3);
+
                 }
             }
             else
@@ -2019,6 +2026,7 @@ public:
                     m_bDead = true;
                     return;
                 }
+
 
                 switch (m_pOwner->m_eDir)
                 {

@@ -2,6 +2,8 @@
 
 namespace Engine
 {
+	enum class AREAMMGR { STATION, HOTEL, END };
+
 	enum class COLLIDER { AABB, OBB, SPHERE, END };
 	enum class MODEL { NONANIM, ANIM };
 	enum class DIM { LBUTTON, RBUTTON, WHEELBUTTON };

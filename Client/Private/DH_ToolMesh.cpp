@@ -32,7 +32,7 @@ HRESULT CDH_ToolMesh::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(PBRMeshDESC)))
 		return E_FAIL;
-
+	
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
@@ -64,7 +64,7 @@ void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 		vDiff = XMVectorSetY(vDiff, 0.f);
 
 		_float fDistSq = XMVectorGetX(XMVector3LengthSq(vDiff));
-		const _float fTh = 25.f;
+		const _float fTh = 40.f;
 		const _float fThSq = fTh * fTh;
 
 		if (fDistSq > fThSq)

@@ -179,7 +179,7 @@ HRESULT CProjectile::Ready_Actor()
 	if (auto pRigid =m_pPhysXActorCom->Get_Actor()->is<PxRigidDynamic>())
 	{
 		pRigid->setLinearVelocity(velocity);
-		//pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true); // 연속 충돌 감지 활성화 (빠른 거면)
+//		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true); // 연속 충돌 감지 활성화 (빠른 거면)
 	}
 	// 씬에 액터 추가
 

@@ -37,6 +37,7 @@ private:
 	_bool m_bIsSpreaded = false; // 기름이 퍼졌는지 여부
 	PxBoxGeometry m_SpreadOilShape = PxBoxGeometry(1.0f, 0.05f, 1.0f);
 	class CPlayer* m_pPlayer{ nullptr };
+	class CGameObject* m_pFuoco{ nullptr };
 public:
 	static COil* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

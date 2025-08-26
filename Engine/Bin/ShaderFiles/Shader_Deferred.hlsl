@@ -685,6 +685,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
     float viewZ = vDepthDesc.y * 1000.0f;
+    //float viewZ = -vDepthDesc.z;
     
     bool bNoMeshBehind = (z_ndc >= 0.999f || viewZ <= 0.001f);
     
@@ -758,11 +759,12 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_POINT(PS_IN In)
         float softFalloff = saturate(1.0f - (distanceToLight / g_fFogCutoff));
         if (distanceToLight > g_fFogCutoff) { continue; }
         if (distanceToLight <= 1e-3f) { continue; }
-        float shadow = SampleShadowMap(worldPos);
+        //float shadow = SampleShadowMap(worldPos);
         
-        float transmittance = 1.0f - shadow;
+        //float transmittance = 1.0f - shadow;
         int NumLights = max(g_iPointNum, 1);
-        LightFog += density * transmittance * softFalloff * StepSize * 0.05f;
+        //LightFog += density * transmittance * softFalloff * StepSize * 0.05f;
+        LightFog += density * softFalloff * StepSize * 0.05f;
     }
     
     // -----------------------------------------
@@ -787,6 +789,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
     float viewZ = vDepthDesc.y * 1000.0f;
+    //float viewZ = -vDepthDesc.z;
     
     float4 ndcPos;
     ndcPos.x = vUV.x * 2.0f - 1.0f;
@@ -825,16 +828,17 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_DIRECTIONAL(PS_IN In)
         // 메쉬 차폐
         if (!bBlocked && sampleViewPos.z > viewZ + 0.01f)
             bBlocked = true;
-
+        
         if (bBlocked)
             continue;
 
         float density = SampleFogDensity(RayPosWorld, g_fTime);
-        float shadow = SampleShadowMap(RayPosWorld);
+        //float shadow = SampleShadowMap(RayPosWorld);
         
-        float transmittance = 1.0f - shadow;
+        //float transmittance = 1.0f - shadow;
         int NumLights = max(g_iPointNum, 1);
-        LightFog += density * transmittance * StepSize * 0.1f;
+        //LightFog += density * transmittance * StepSize * 0.1f;
+        LightFog += density * StepSize * 0.1f;
     }
     
     float3 fogColor = g_vLightDiffuse.rgb;
@@ -937,11 +941,12 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
         float softFalloff = saturate(1.0f - (distanceToLight / g_fFogCutoff));
 
         // [ 밀도 + 그림자 ]
-        float shadow = SampleShadowMap(worldPos);
-        float transmittance = 1.0f - shadow;
+        //float shadow = SampleShadowMap(worldPos);
+        //float transmittance = 1.0f - shadow;
 
         // [ 누적 ]
-        LightFog += density * transmittance * softFalloff * spotFalloff * StepSize * 0.05f;
+        //LightFog += density * transmittance * softFalloff * spotFalloff * StepSize * 0.05f;
+        LightFog += density * softFalloff * spotFalloff * StepSize * 0.05f;
         
     }
     

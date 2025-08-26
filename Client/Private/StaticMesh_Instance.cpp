@@ -67,16 +67,11 @@ void CStaticMesh_Instance::Update(_float fTimeDelta)
 void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 {
 	/* [ 공간분할 ] */
-	vector<_uint> CurrentArea;
-	m_pGameInstance->GetActiveAreaIds(CurrentArea);
-	if (CurrentArea.empty())
-		return;
 
-	_int iCurrentAreaId = CurrentArea.front();
+	AREAMMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
 
 	//현재 활성화된 지역이 호텔입니다.
-	vector<_uint> vecHotelIds = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
-	if (find(vecHotelIds.begin(), vecHotelIds.end(), iCurrentAreaId) != vecHotelIds.end())
+	if (eAreaMgr == AREAMMGR::HOTEL)
 	{
 		if (m_wsMap == TEXT("HOTEL"))
 		{
@@ -85,8 +80,7 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 	}
 
 	//현재 활성화된 지역이 스테이션입니다.
-	vector<_uint> vecStationIds = { 1, 2, 3, 4, 5 };
-	if (find(vecStationIds.begin(), vecStationIds.end(), iCurrentAreaId) != vecStationIds.end())
+	if (eAreaMgr == AREAMMGR::STATION)
 	{
 		if (m_wsMap == TEXT("STATION"))
 		{

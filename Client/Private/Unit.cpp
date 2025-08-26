@@ -409,4 +409,5 @@ void CUnit::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pSoundCom);
 }
