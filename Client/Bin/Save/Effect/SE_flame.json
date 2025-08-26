@@ -1,0 +1,74 @@
+{
+    "Animation": true,
+    "Billboard": true,
+    "CenterColor": [
+        1.0,
+        0.5629780292510986,
+        0.21989530324935913,
+        1.0
+    ],
+    "Color": [
+        1.0,
+        0.09424084424972534,
+        0.0,
+        1.0
+    ],
+    "Duration": 60,
+    "EffectType": 0,
+    "EmissiveIntensity": 0.44999998807907104,
+    "EndTrack": 60,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                0.09424084424972534,
+                0.0,
+                1.0
+            ],
+            "Intensity": 3.5,
+            "Interpolation": 0,
+            "Rotation": [
+                -0.0,
+                0.0,
+                0.00047165979049168527,
+                0.9999998807907104
+            ],
+            "Scale": [
+                0.9999984502792358,
+                0.9999984502792358,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 2663.34765625,
+    "Loop": true,
+    "Name": "Fuoco_Spin3_LastFlame_Sprite1",
+    "NumKeyFrames": 1,
+    "RenderGroup": 8,
+    "ShaderPass": 5,
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "T_SubUV_Fire_07_9x9_SC_KMH",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        false,
+        true,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 60.0,
+    "TileX": 9,
+    "TileY": 9
+}
