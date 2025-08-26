@@ -253,6 +253,9 @@ public:
 		return matrices;
 	}
 #endif
+
+
+    void SetPlayRate(_float fSpeed) { m_fPlaybackSpeed = fSpeed; }
 private:
     // 애니메이션 재생관련
     void RefreshAndProcessTransition(_float fDeltaTime);
@@ -287,6 +290,7 @@ private:
 	_bool                       m_bIsFinished = false; // 애니메이션 재생 완료 여부
     _uint						m_iCurrentAnimIndex = { };
     _uint						m_iPrevAnimIndex = { };
+	_float                      m_fPlaybackSpeed = 1.f; // 재생 속도 배율
 	class CAnimController*      m_pCurAnimController = nullptr; // 현재 애니메이션 컨트롤러
     class CModel*               m_pModel{ nullptr };          // 본과 메시 데이터 참조
 	CAnimation*                 m_pCurrentAnim = nullptr; // 현재 애니메이션

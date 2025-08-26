@@ -26,6 +26,14 @@
                 {
                     "EventName": "OffGroundScratchEffect",
                     "Time": 43.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 26.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 31.0
                 }
             ],
             "IsLoop": false,
@@ -47,6 +55,18 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 61.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 38.0
+                },
+                {
+                    "EventName": "OnSlamEffect",
+                    "Time": 56.0
                 }
             ],
             "IsLoop": false,
@@ -64,6 +84,22 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 55.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 26.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 34.0
+                },
+                {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 48.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 51.0
                 }
             ],
             "IsLoop": false,
@@ -105,6 +141,14 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 79.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 69.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 76.0
                 }
             ],
             "IsLoop": false,
@@ -164,6 +208,14 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 46.0
+                },
+                {
+                    "EventName": "OnRollingSparkEffect",
+                    "Time": 47.0
+                },
+                {
+                    "EventName": "OnSlamEffect",
+                    "Time": 46.0
                 }
             ],
             "IsLoop": false,
@@ -206,6 +258,10 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 28.0
+                },
+                {
+                    "EventName": "OnSlamEffect",
+                    "Time": 28.0
                 }
             ],
             "IsLoop": false,
@@ -235,6 +291,18 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 104.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 88.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "OnSlamEffect",
+                    "Time": 99.0
                 }
             ],
             "IsLoop": false,
@@ -259,6 +327,10 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 35.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -323,6 +395,18 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 47.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 32.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 22.6299991607666
+                },
+                {
+                    "EventName": "OnSlamEffect",
+                    "Time": 42.0
                 }
             ],
             "IsLoop": false,
@@ -458,11 +542,19 @@
                 {
                     "EventName": "Flamethrower",
                     "Time": 17.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 17.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 58.0
                 }
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Right",
@@ -471,11 +563,19 @@
                 {
                     "EventName": "Flamethrower",
                     "Time": 17.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 17.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 58.0
                 }
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_Start",
@@ -615,6 +715,10 @@
                 },
                 {
                     "EventName": "ColliderFootOff",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
                     "Time": 1.0
                 }
             ],
