@@ -2,7 +2,7 @@
 
 #include "Base.h"
 
-#include <mutex>
+//#include <mutex>
 
 NS_BEGIN(Engine)
 
@@ -89,7 +89,7 @@ public:
 public:
 	void PushOctoTreeObjects(class CGameObject* pObject){
 		// 락 걸기
-		lock_guard<mutex> lock(m_mtx);
+		//lock_guard<mutex> lock(m_mtx);
 
 		m_vecOctoTreeObjects.push_back(pObject);
 	}
@@ -97,7 +97,7 @@ public:
 	void ClaerOctoTreeObjects() { m_vecOctoTreeObjects.clear(); }
 
 private:
-	mutex m_mtx = {};
+	//mutex m_mtx = {};
 
 private: /* [ 절두체 변수들 ] */
 	XMFLOAT4 planes[6];

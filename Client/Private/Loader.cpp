@@ -1546,6 +1546,9 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 
 		wstring wsLayerTag = TEXT("Layer_StaticMesh_") + StringToWString(Map); //Layer_StaticMesh_STATION, Layer_StaticMesh_HOTEL
 
+		// 락 걸기
+		lock_guard<mutex> lock(m_mtx);
+
 		CGameObject* pGameObject = nullptr;
 		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
 			iLevelIndex, wsLayerTag, &pGameObject, &StaticMeshDesc)))

@@ -927,6 +927,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 				UnitDesc.wsNavName = StringToWString(Map);
 				UnitDesc.WorldMatrix = WorldMatrix;
+				UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
 				//푸오쿠는 따로 생성
 				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),

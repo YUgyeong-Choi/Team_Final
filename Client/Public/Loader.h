@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Base.h"
+#include <mutex>
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -82,6 +83,9 @@ private:
 
 	//스태틱 데칼을 소환한다. (true면 테스트 데칼 소환)
 	HRESULT Ready_Static_Decal(_uint iLevelIndex, const _char* Map);
+
+private:
+	mutex m_mtx = {};
 
 public:
 #pragma endregion
