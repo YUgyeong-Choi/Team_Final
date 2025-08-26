@@ -1733,6 +1733,14 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 	}
 }
 
+void CPlayer::GetWeapon()
+{
+	m_pAnimator->SetTrigger("EquipWeapon");
+	m_pAnimator->ApplyOverrideAnimController("TwoHand");
+	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	m_bWalk = true;
+}
+
 void CPlayer::Play_CutScene_Door()
 {	
 	m_bInteraction[0] = true;

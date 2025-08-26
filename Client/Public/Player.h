@@ -140,6 +140,7 @@ private: /* [ 옵저버 관련 ] */
 
 public: /* [ 상호작용 관련 ] */
 	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj);
+	void GetWeapon();
 private:
 	void Play_CutScene_Door();
 

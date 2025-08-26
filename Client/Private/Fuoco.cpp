@@ -744,6 +744,11 @@ void CFuoco::Register_Events()
 		{
 			EffectSpawn_Active(SlamAtk, true);
 		});
+
+	m_pAnimator->RegisterEventListener("OnFlamethrowerEffect", [this]()
+		{
+			EffectSpawn_Active(P2_FireFlame, true);
+		});
 }
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
@@ -1094,6 +1099,7 @@ void CFuoco::Ready_EffectNames()
 	//m_EffectMap[SlamAtk] = TEXT("EC_Fuoco_SlamAtk_01");
 	//m_EffectMap[StrikeFury] = TEXT("EC_Fuoco_StrikeFury_01");
 	// Phase 2
+	m_EffectMap[P2_FireFlame].emplace_back(TEXT("EC_Fuoco_FlameThrow_P1"));
 	//m_EffectMap[P2_FireOil] = TEXT("EC_Fuoco_P2_FireOil_01");
 	//m_EffectMap[P2_FireBall] = TEXT("EC_Fuoco_P2_FireBall_01");
 	//m_EffectMap[P2_FireBall_B] = TEXT("EC_Fuoco_P2_FireBall_B_01");
@@ -1157,6 +1163,17 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(_vector{ 1.f, 0.f, 0.f, 0.f }, XMConvertToRadians(90.f)) *
 			XMMatrixTranslation(0.f, 0.f, 1.5f));
+	}
+	else if (stEffectTag == TEXT("EC_Fuoco_FlameThrow_P1"))
+	{
+		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Finger0"));
+		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(_vector{ 1.f, 0.f, 0.f, 0.f }, XMConvertToRadians(90.f)) *
+			XMMatrixTranslation(0.f, 0.f, 0.f));
+	}
+	else
+	{
+		return;
 	}
 
 	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
