@@ -48,7 +48,7 @@ private:
 	class CGameInstance*				m_pGameInstance = { nullptr };
 
 private:
-	mutex m_mtx = {};
+	//mutex m_mtx = {};
 
 private:
 	class CLayer* Find_Layer(_uint iLevelIndex, const _wstring& strLayerTag);

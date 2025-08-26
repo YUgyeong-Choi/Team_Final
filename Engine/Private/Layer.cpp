@@ -28,6 +28,9 @@ CComponent* CLayer::Get_Component(_uint iPartID, const _wstring& strComponentTag
 
 HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 {
+	// ¶ô °É±â
+	lock_guard<mutex> lock(m_mtx);
+
 	if (nullptr == pGameObject)
 		return E_FAIL;
 

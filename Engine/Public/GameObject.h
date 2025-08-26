@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Transform.h"
+#include <mutex>
 
 NS_BEGIN(Engine)
 
@@ -97,6 +98,9 @@ protected:
 	_bool m_isActive = { true };
 
 	float m_fTimeScale = 1.f; // 오브젝트 별 업데이트 속도
+private:
+	mutex m_mtx = {};
+
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
 
