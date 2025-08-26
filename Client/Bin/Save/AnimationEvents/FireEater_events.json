@@ -109,12 +109,6 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Start",
             "Duration": 30.0,
-            "Events": [
-                {
-                    "EventName": "Turnning",
-                    "Time": 0.0
-                }
-            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0

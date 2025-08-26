@@ -28,7 +28,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
 	m_fDamage = 15.f;
-	m_fAttckDleay = 2.5f;
+	m_fAttckDleay = 1.5f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -1006,6 +1006,10 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 	vDir.normalize();
 	vRight.normalize();
 
+	//_float fPitchAngle = XMConvertToRadians(15.f);
+	//PxQuat pitchRot(fPitchAngle, PxVec3(1, 0, 0));
+	//vDir = pitchRot.rotate(vDir);
+
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC| PxQueryFlag::ePREFILTER;
@@ -1036,8 +1040,14 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 				{
 					if (nullptr == pHitActor->Get_Owner())
 						return;
+
+					if (pHitActor->Get_Owner()->Get_Name() == TEXT("Player"))
+					{
+						cout << "플레이어 화염방사 맞음" << endl;
+					}
+	
 					// 데미지 계산 나중에 생각해보기
-					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::MONSTER_WEAPON);
+					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::BOSS_WEAPON);
 				}
 
 				//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
@@ -1045,32 +1055,21 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 				m_bRayHit = true;
 				m_vRayHitPos = hitPos;
 			}
+
 #ifdef _DEBUG
-			if (m_pGameInstance->Get_RenderCollider()) {
+			if (m_pGameInstance->Get_RenderCollider())
+			{
 				DEBUGRAY_DATA _data{};
 				_data.vStartPos = origin;
-				XMFLOAT3 fLook;
-				XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
 				_data.vDirection = vRayDir;
-				_data.fRayLength = fDistance;
+				_data.fRayLength = (hit.hasBlock ? hit.block.distance : fDistance); // 맞으면 hit 거리, 아니면 지정 거리
 				_data.bIsHit = hit.hasBlock;
-				_data.vHitPos = m_vRayHitPos;
+				_data.vHitPos = hit.hasBlock ? hit.block.position : (origin + vRayDir * fDistance);
 				m_pPhysXActorCom->Add_RenderRay(_data);
 			}
 #endif
-		}
-#ifdef _DEBUG
-		else if(m_pGameInstance->Get_RenderCollider()) {
-			DEBUGRAY_DATA _data{};
-			_data.vStartPos = origin;
-			_data.vDirection = vRayDir; // 회전된 방향 사용
-			_data.fRayLength = fDistance;
-			_data.bIsHit = hit.hasBlock;
-			_data.vHitPos = PxVec3(0, 0, 0);
-			m_pPhysXActorCom->Add_RenderRay(_data);
-		}
-#endif // _DEBUG
 
+		}
 	}
 
 }
@@ -1287,7 +1286,7 @@ _bool CFuoco::CheckConditionFlameField()
 	if (m_bStartPhase2 || (!m_bUsedFlameFiledOnLowHp && CalculateCurrentHpRatio() <= 0.3f))
 	{
 		m_pAnimator->ResetTrigger("Attack");
-		if (CalculateCurrentHpRatio() <= 0.2f && !m_bUsedFlameFiledOnLowHp)
+		if (CalculateCurrentHpRatio() <= 0.3f && !m_bUsedFlameFiledOnLowHp)
 		{
 			m_pAnimator->SetInt("SkillType", P2_FlameField);
 			m_bUsedFlameFiledOnLowHp = true;
