@@ -527,7 +527,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 
 	// Area 10
 	_float3 a10p0 = _float3{ 165.54f, -0.73f, -35.35f };
-	_float3 a10p1 = _float3{ 153.13f, 15.00f, -56.29f };
+	_float3 a10p1 = _float3{ 153.13f, 15.00f, -86.29f };
 	_float3 a10Min, a10Max;
 	FnToAABB(a10p0, a10p1, a10Min, a10Max);
 
@@ -693,7 +693,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 17번 구역 ] */
-		const vector<_uint> vecAdj17 = { 7, 14, 16, 18 };
+		const vector<_uint> vecAdj17 = { 7, 12, 14, 16, 18 };
 		if (!m_pGameInstance->AddArea_AABB(
 			17, a17Min, a17Max, vecAdj17, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;

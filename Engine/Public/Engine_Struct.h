@@ -251,6 +251,49 @@ namespace Engine
 		b.vMin.x -= eps; b.vMin.y -= eps; b.vMin.z -= eps;
 		b.vMax.x += eps; b.vMax.y += eps; b.vMax.z += eps;
 	}
+	inline _bool AABB_Deflate(AABBBOX& tBox, const _float fEps, const _float fMinThickness = static_cast<_float>(1e-6f))
+	{
+		if (fEps <= static_cast<_float>(0))
+		{
+			AABB_Inflate(tBox, -fEps);  // 음수면 반대로 확대
+			return true;
+		}
+
+		_bool bClamped = false;
+
+		const auto ShrinkAxis = [&](_float& fMin, _float& fMax)
+			{
+				const _float fExtent = fMax - fMin;
+				const _float fHalf = fExtent * static_cast<_float>(0.5f);
+
+				// 이미 너무 얇으면 더 줄이지 않음
+				if (fHalf <= fMinThickness * static_cast<_float>(0.5f))
+					return;
+
+				if (fEps < fHalf)
+				{
+					// 정상 축소: 양쪽에서 fEps 씩 안으로
+					fMin += fEps;
+					fMax -= fEps;
+				}
+				else
+				{
+					// 과도 축소 방지: 중심을 유지한 채 최소 두께만 남겨 둠
+					const _float fCenter = (fMax + fMin) * static_cast<_float>(0.5f);
+					const _float fTiny = fMinThickness * static_cast<_float>(0.5f);
+					fMin = fCenter - fTiny;
+					fMax = fCenter + fTiny;
+					bClamped = true;
+				}
+			};
+
+		ShrinkAxis(tBox.vMin.x, tBox.vMax.x);
+		ShrinkAxis(tBox.vMin.y, tBox.vMax.y);
+		ShrinkAxis(tBox.vMin.z, tBox.vMax.z);
+
+		// 반환: true면 정상 축소, false면 경계 클램프로 최소 두께만 남김
+		return !bClamped;
+	}
 
 	inline void AABB_ExpandByPoint(AABBBOX& b, const XMFLOAT3& p)
 	{

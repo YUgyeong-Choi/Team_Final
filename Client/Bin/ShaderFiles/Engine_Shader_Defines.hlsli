@@ -20,6 +20,15 @@ sampler LinearClampSampler = sampler_state
     AddressU = clamp;
     AddressV = clamp;
 };
+
+sampler ShadowBorderSampler = sampler_state
+{
+    Filter = min_mag_mip_linear;
+    AddressU = BORDER;
+    AddressV = BORDER;
+    BorderColor = float4(1, 1, 1, 1);
+};
+
 sampler LinearWrapSampler = sampler_state
 {
     Filter = min_mag_mip_linear;

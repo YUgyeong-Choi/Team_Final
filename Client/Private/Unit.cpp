@@ -164,6 +164,7 @@ void CUnit::SetCascadeShadow()
 	{
 		// 월드 AABB 구하기
 		AABBBOX tWorldAABB = GetWorldAABB();
+		AABB_Deflate(tWorldAABB, 5.f);
 
 		// 뷰 행렬
 		_float4x4 tView = {};
@@ -181,9 +182,12 @@ void CUnit::SetCascadeShadow()
 		}
 
 		// 완전 포함 → 해당 캐스케이드
-		if (fZMax <= 5.f)        m_eShadow = SHADOW::SHADOWA;
-		else if (fZMin >= 5.f && fZMax <= 20.f) m_eShadow = SHADOW::SHADOWB;
-		else if (fZMin >= 20.f)  m_eShadow = SHADOW::SHADOWC;
+		if (fZMax <= 5.f)
+			m_eShadow = SHADOW::SHADOWA;
+		else if (fZMin >= 5.f && fZMax <= 20.f)
+			m_eShadow = SHADOW::SHADOWB;
+		else if (fZMin >= 20.f)
+			m_eShadow = SHADOW::SHADOWC;
 		else
 		{
 			// 걸침 → 최소 Z 기준으로만 분기
