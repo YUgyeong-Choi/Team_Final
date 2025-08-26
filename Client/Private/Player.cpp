@@ -456,6 +456,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bMoveReset = false;
 		m_bSetOnce = false;
 		m_bSetTwo = false;
+		m_bSetSound = false;
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
@@ -503,6 +504,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_1st");
+				m_bSetSound = true;
+			}
+		}
+
 		break;
 	}
 	case eAnimCategory::NORMAL_ATTACKB:
@@ -529,6 +539,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+			}
+		}
+
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
+				m_bSetSound = true;
 			}
 		}
 		break;
@@ -559,6 +578,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_bSetOnce = true;
 			}
 		}
+
+		if (m_fSetTime > 0.4f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_1st");
+				m_bSetSound = true;
+			}
+		}
 		break;
 	}
 	case eAnimCategory::STRONG_ATTACKB:
@@ -585,6 +613,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+			}
+		}
+
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
+				m_bSetSound = true;
 			}
 		}
 		break;
@@ -904,6 +941,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::HITED:
 	{
 		RootMotionActive(fTimeDelta);
+
+		if (!m_bSetSound)
+		{
+			m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+			m_bSetSound = true;
+		}
+
 		break;
 	}
 	case eAnimCategory::GRINDER:
@@ -1243,9 +1287,6 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 	}
 
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
-		m_bContact = true;
-
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -1254,8 +1295,7 @@ void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 
 void CPlayer::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
-		m_bContact = false;
+
 }
 
 void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -1309,14 +1349,10 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	}
 
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
-		m_bContact = true;
 }
 
 void CPlayer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
-		m_bContact = true;
 }
 
 void CPlayer::ReadyForState()
@@ -1460,6 +1496,9 @@ HRESULT CPlayer::Ready_Components()
 		TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Player"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -2167,7 +2206,6 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 #endif // _DEBUG
 
 	_float fDist = fSpeed * fTimeDelta;
-	PxVec3 vSaveInputDir = VectorToPxVec3(vInputDir);
 	vInputDir *= fDist;
 	XMStoreFloat3(&moveVec, vInputDir);
 
@@ -2182,13 +2220,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	PxControllerFilters filters;
 	filters.mFilterCallback = &filter; // 필터 콜백 지정
 	PxControllerCollisionFlags collisionFlags;
-	if (m_bContact && XMVector3Equal(vInputDir, XMVectorZero())) {
-		collisionFlags = m_pControllerCom->Move(fTimeDelta, vSaveInputDir, fSpeed, m_fContactIntensity);
-	}
-	else
-	{
-		collisionFlags = m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
-	}
+	collisionFlags = m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 
 	//printf(" 왜 안움직이지?? : %s \n", strName.c_str());
 
