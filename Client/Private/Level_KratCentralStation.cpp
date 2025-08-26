@@ -334,7 +334,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 		_float fFalloff = jLight["Falloff"];
 		_float fFogDensity = jLight["FogDensity"];
 		_float fFogCutOff = jLight["FogCutOff"];
-		_int m_iVolumetricMode = jLight["Volumetric"].get<int>();
+		_bool  bVolumetricMode = jLight["Volumetric"];
 
 		CDHTool::LIGHT_TYPE eLightType = static_cast<CDHTool::LIGHT_TYPE>(jLight["LightType"].get<int>());
 		CDHTool::LEVEL_TYPE eLevelType = static_cast<CDHTool::LEVEL_TYPE>(jLight["LevelType"].get<int>());
@@ -365,7 +365,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 		pNewLight->SetfFalloff(fFalloff);
 		pNewLight->SetfFogDensity(fFogDensity);
 		pNewLight->SetfFogCutOff(fFogCutOff);
-		pNewLight->SetbVolumetric(m_iVolumetricMode);
+		pNewLight->SetbVolumetric(bVolumetricMode);
 
 		//pNewLight->SetDebug(false);
 	}

@@ -32,7 +32,7 @@ HRESULT CDH_ToolMesh::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(PBRMeshDESC)))
 		return E_FAIL;
-
+	
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
@@ -64,7 +64,7 @@ void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 		vDiff = XMVectorSetY(vDiff, 0.f);
 
 		_float fDistSq = XMVectorGetX(XMVector3LengthSq(vDiff));
-		const _float fTh = 25.f;
+		const _float fTh = 40.f;
 		const _float fThSq = fTh * fTh;
 
 		if (fDistSq > fThSq)
@@ -73,10 +73,10 @@ void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 			SetIsPlayerFar(false);
 	}
 
-	if (m_bLightOnOff)
-		m_pLight->Get_LightDesc()->bIsUse = true;
-	else
-		m_pLight->Get_LightDesc()->bIsUse = false;
+	//if (m_bLightOnOff)
+	//	m_pLight->Get_LightDesc()->bIsUse = true;
+	//else
+	//	m_pLight->Get_LightDesc()->bIsUse = false;
 }
 
 void CDH_ToolMesh::Update(_float fTimeDelta)
@@ -210,7 +210,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.bIsUse = true;
 	}
 
-	//m_eTargetLevel = LEVEL::DH;
+	m_eTargetLevel = LEVEL::DH;
 	if (FAILED(m_pGameInstance->Add_LevelLightDataReturn(ENUM_CLASS(m_eTargetLevel), LightDesc, &m_pLight)))
 		return E_FAIL;
 

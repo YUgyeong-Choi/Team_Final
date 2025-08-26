@@ -72,7 +72,7 @@ public: /* [ 플레이어와의 거리 측정 ] */
 	void SetIsPlayerFar(_bool bPlayerFar) { m_pLight->Get_LightDesc()->bIsPlayerFar = bPlayerFar; }
 	_bool GetIsPlayerFar() { return m_pLight->Get_LightDesc()->bIsPlayerFar; }
 
-
+	
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };
 

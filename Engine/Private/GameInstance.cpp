@@ -913,9 +913,9 @@ void CGameInstance::GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const
 {
 	m_pArea_Manager->GetActiveAreaIds(vecOutAreaIds);
 }
-_int CGameInstance::GetCurrentAreaIds()
+AREAMMGR CGameInstance::GetCurrentAreaMgr()
 {
-	return m_pArea_Manager->GetCurrentAreaIds();
+	return m_pArea_Manager->GetCurrentAreaMgr();
 }
 HRESULT CGameInstance::FinalizePartition()
 {

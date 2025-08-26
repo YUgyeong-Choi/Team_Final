@@ -281,6 +281,30 @@ void CArea_Manager::GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const
     }
 }
 
+AREAMMGR CArea_Manager::GetCurrentAreaMgr()
+{
+    // 현재 활성화된 지역이 호텔입니다.
+    vector<_uint> vecHotelIds = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+
+    // 현재 활성화된 지역이 스테이션입니다.
+    vector<_uint> vecStationIds = { 1, 2, 3, 4, 5 };
+
+    m_eAreaMgr = AREAMMGR::END; // 기본값 초기화
+
+    // Hotel 구역 체크
+    if (find(vecHotelIds.begin(), vecHotelIds.end(), m_iCurrentAreaId) != vecHotelIds.end())
+    {
+        m_eAreaMgr = AREAMMGR::HOTEL;
+    }
+    // Station 구역 체크
+    else if (find(vecStationIds.begin(), vecStationIds.end(), m_iCurrentAreaId) != vecStationIds.end())
+    {
+        m_eAreaMgr = AREAMMGR::STATION;
+    }
+
+    return m_eAreaMgr;
+}
+
 
 void CArea_Manager::DebugDrawCells()
 {

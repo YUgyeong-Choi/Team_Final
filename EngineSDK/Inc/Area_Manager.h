@@ -28,7 +28,7 @@ public:
 	const AABBBOX* GetAreaBounds(_int iAreaId) const;
 	void           GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad = 0.f) const;
 	void		   GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const;
-	_int		   GetCurrentAreaIds() { return m_iCurrentAreaId; }
+	AREAMMGR	   GetCurrentAreaMgr();
 
 
 public: /* [ µð¹ö±ë ÇÔ¼ö ]*/
@@ -43,6 +43,8 @@ public:
 	void SetPlayerPosition(const _vector& vPos) { m_vPlayerPos = vPos; }
 	_vector GetPlayerPosition() const { return m_vPlayerPos; }
 
+private:
+	AREAMMGR m_eAreaMgr = { AREAMMGR::END };
 
 private:
 	_vector m_vPlayerPos = {};

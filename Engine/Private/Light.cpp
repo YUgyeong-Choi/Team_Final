@@ -126,6 +126,21 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
 	{
+		AREAMMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
+		if (eAreaMgr == AREAMMGR::HOTEL)
+		{
+			_float fFogDensity = 0.2f;
+			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))
+				return E_FAIL;
+		}
+		else if (eAreaMgr == AREAMMGR::STATION)
+		{
+			_float fFogDensity = 0.4f;
+			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))
+				return E_FAIL;
+		}
+			
+
 		/* 빛정보를 쉐이더에 던진다. */
 		if (FAILED(pShader->Bind_RawValue("g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4))))
 			return E_FAIL;
@@ -136,7 +151,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	{
 		if (!m_LightDesc.bIsUse)
 			return S_OK;
-
+		
 		if (m_LightDesc.bIsPlayerFar)
 			return S_OK;
 
@@ -155,6 +170,8 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 			return E_FAIL;
 		if (FAILED(pShader->Bind_RawValue("g_fFogCutoff", &m_LightDesc.fFogCutoff, sizeof(_float))))
 			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fFogPower", &m_LightDesc.fFogDensity, sizeof(_float))))
+			return E_FAIL;
 
 		iPassIndex = 12;
 	}
@@ -162,7 +179,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	{
 		if (!m_LightDesc.bIsUse)
 			return S_OK;
-
+		
 		if (m_LightDesc.bIsPlayerFar)
 			return S_OK;
 
@@ -171,6 +188,8 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		if (FAILED(pShader->Bind_RawValue("g_fLightRange", &m_LightDesc.fRange, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(pShader->Bind_RawValue("g_fFogCutoff", &m_LightDesc.fFogCutoff, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(pShader->Bind_RawValue("g_fFogPower", &m_LightDesc.fFogDensity, sizeof(_float))))
 			return E_FAIL;
 
 		iPassIndex = 9;
@@ -184,9 +203,6 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	if (FAILED(pShader->Bind_RawValue("g_fLightIntencity", &m_LightDesc.fIntensity, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(pShader->Bind_RawValue("g_vLightSpecular", &m_LightDesc.vSpecular, sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(pShader->Bind_RawValue("g_fFogPower", &m_LightDesc.fFogDensity, sizeof(_float))))
 		return E_FAIL;
 
 	pShader->Begin(iPassIndex);
