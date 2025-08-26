@@ -24,7 +24,7 @@
         "Collision": true,
         "ModelName": "SM_Station_TicketOffice_01",
         "NoInstancing": false,
-        "ObjectCount": 13,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TicketOffice_01.bin"
     }
 ]

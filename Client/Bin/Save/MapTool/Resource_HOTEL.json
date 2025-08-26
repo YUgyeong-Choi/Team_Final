@@ -52,7 +52,7 @@
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_02_Male",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_02_Male.bin"
     },
     {
@@ -175,7 +175,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Cathedral_BridgeProp_08",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -241,14 +241,14 @@
         "Collision": true,
         "ModelName": "SM_Exhibition_Pillar_01",
         "NoInstancing": false,
-        "ObjectCount": 165,
+        "ObjectCount": 163,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Pillar_01.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Exhibition_Pillar_06",
         "NoInstancing": false,
-        "ObjectCount": 5,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Pillar_06.bin"
     },
     {
@@ -266,6 +266,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Bench_03.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_Exterior_Clock_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Clock_01.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Exterior_DecoBoxes_01",
         "NoInstancing": false,
@@ -276,14 +283,14 @@
         "Collision": false,
         "ModelName": "SM_Exterior_Suitcase_01",
         "NoInstancing": false,
-        "ObjectCount": 6,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_01.bin"
     },
     {
         "Collision": true,
         "ModelName": "SM_Exterior_Suitcase_02",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 9,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Suitcase_02.bin"
     },
     {
@@ -325,7 +332,7 @@
         "Collision": true,
         "ModelName": "SM_Exterior_transportcart_01",
         "NoInstancing": false,
-        "ObjectCount": 14,
+        "ObjectCount": 15,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_transportcart_01.bin"
     },
     {
@@ -371,7 +378,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_WallArch_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_InStructure_WallPillar_01_DecoPillarA",
         "NoInstancing": false,
         "ObjectCount": 2,
@@ -395,7 +402,7 @@
         "Collision": true,
         "ModelName": "SM_Interior_Bag_02",
         "NoInstancing": false,
-        "ObjectCount": 19,
+        "ObjectCount": 21,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Bag_02.bin"
     },
     {
@@ -570,8 +577,15 @@
         "Collision": false,
         "ModelName": "SM_Interior_Door_06",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Door_06.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Interior_Flower_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Flower_02.bin"
     },
     {
         "Collision": true,
@@ -595,11 +609,46 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Lamp_02.bin"
     },
     {
+        "Collision": true,
+        "ModelName": "SM_Interior_Library_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Library_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_PhotoFrame_12",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_PhotoFrame_12.bin"
+    },
+    {
         "Collision": false,
         "ModelName": "SM_Interior_PictureFrame_05",
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_PictureFrame_05.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Pipe_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Pipe_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Pipe_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Pipe_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Pipe_06",
+        "NoInstancing": false,
+        "ObjectCount": 5,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Pipe_06.bin"
     },
     {
         "Collision": true,
@@ -610,9 +659,16 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Interior_TrashCan_01",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_TrashCan_01.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Interior_TrashCan_02",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_TrashCan_02.bin"
     },
     {
@@ -621,6 +677,13 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Urinal_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Wall_10",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Wall_10.bin"
     },
     {
         "Collision": false,
@@ -642,6 +705,13 @@
         "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Chandelier_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_LightProp_Chandelier_05",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Chandelier_05.bin"
     },
     {
         "Collision": false,
@@ -717,21 +787,28 @@
         "Collision": true,
         "ModelName": "SM_Sign_LargePoster_02",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_LargePoster_02.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Sign_Poster_01",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Poster_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Sign_Poster_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Poster_02.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Sign_Poster_03",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Poster_03.bin"
     },
     {
@@ -780,7 +857,7 @@
         "Collision": false,
         "ModelName": "SM_Sign_Poster_11",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Poster_11.bin"
     },
     {
@@ -868,7 +945,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FenceB_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_FenceB_03",
         "NoInstancing": false,
         "ObjectCount": 11,
@@ -920,7 +997,7 @@
         "Collision": true,
         "ModelName": "SM_Station_InWallSub_04",
         "NoInstancing": false,
-        "ObjectCount": 90,
+        "ObjectCount": 98,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWallSub_04.bin"
     },
     {
@@ -934,7 +1011,7 @@
         "Collision": true,
         "ModelName": "SM_Station_InWall_02",
         "NoInstancing": false,
-        "ObjectCount": 15,
+        "ObjectCount": 16,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWall_02.bin"
     },
     {
@@ -987,7 +1064,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWall_06.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_Light_01",
         "NoInstancing": false,
         "ObjectCount": 18,
@@ -1099,10 +1176,10 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Radiator_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_Radiator_02",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Radiator_02.bin"
     },
     {
@@ -1176,6 +1253,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Windows_03.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_Station_mirror",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_mirror.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Station_sink",
         "NoInstancing": false,
@@ -1188,6 +1272,20 @@
         "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_toilet_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_towel_rack_small_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_towel_rack_small_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_towel_rack_small_02_towel",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_towel_rack_small_02_towel.bin"
     },
     {
         "Collision": false,
