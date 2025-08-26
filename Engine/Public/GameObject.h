@@ -68,6 +68,7 @@ public:
 	_bool Get_bLightOnOff() { return m_bLightOnOff; }
 
 	virtual _float Get_TimeScale() { return m_fTimeScale; }
+	virtual void Set_TimeScale(_float timeScale) { m_fTimeScale = timeScale; }
 
 	void PrintMatrix(const char* szName, const _matrix& mat);
 

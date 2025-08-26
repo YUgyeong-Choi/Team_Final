@@ -90,7 +90,14 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
     {
         CUI_Manager::Get_Instance()->Off_Panel();
-        m_pGameInstance->Set_GameTimeScale(0.01f);
+
+        list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
+        for (auto& obj : objList)
+            obj->Set_TimeScale(0.f);
+
+        CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+        pPlayer->Set_TimeScale(0.f);
+
     }
 
 
@@ -151,6 +158,13 @@ void CUI_Guide::Check_Button()
 
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
         {
+            list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
+            for (auto& obj : objList)
+                obj->Set_TimeScale(1.f);
+
+            CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+            pPlayer->Set_TimeScale(1.f);
+
             Set_bDead();
             m_pTrigger->Set_bDead();
             CUI_Manager::Get_Instance()->On_Panel();
@@ -223,9 +237,16 @@ void CUI_Guide::Click_Interaction()
 
             if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
             {
+                list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
+                for (auto& obj : objList)
+                    obj->Set_TimeScale(1.f);
+
+                CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+                pPlayer->Set_TimeScale(1.f);
+
                 Set_bDead();
+                m_pTrigger->Set_bDead();
                 CUI_Manager::Get_Instance()->On_Panel();
-                m_pGameInstance->Set_GameTimeScale(1.f);
                 return;
             }
 
