@@ -55,6 +55,7 @@ private:
 	unordered_map<WEGOTALKTYPE, vector<string>> m_NpcTalkData;
 	_bool m_bAutoTalk = {};
 	
+	_bool m_bFinish = false;
 public:
 	static CWego* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

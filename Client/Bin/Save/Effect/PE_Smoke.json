@@ -1,0 +1,134 @@
+{
+    "Accel": [
+        0.0,
+        0.0
+    ],
+    "Animation": true,
+    "Billboard": false,
+    "Center": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "CenterColor": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+    ],
+    "Color": [
+        1.0,
+        1.0,
+        1.0,
+        0.4921466112136841
+    ],
+    "Duration": 114,
+    "EffectType": 1,
+    "EmissiveIntensity": 0.0,
+    "EndTrack": 114,
+    "FlipUV": false,
+    "Gravity": -2.0,
+    "IsGravity": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                0.4921466112136841
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 705.0667114257813,
+    "LifeTime_Particle": [
+        0.6000000238418579,
+        1.7200000286102295
+    ],
+    "Local": true,
+    "Loop": true,
+    "MaxLifeTime": 0.800000011920929,
+    "MaxSpeed": 1000.0,
+    "MinSpeed": 0.0,
+    "Name": "Particle_Smoke",
+    "NumInstance": 15,
+    "NumKeyFrames": 1,
+    "Orbit": true,
+    "OrbitAxis": [
+        0.0,
+        1.0,
+        0.0
+    ],
+    "OrbitSpeed": [
+        -30.0,
+        30.0
+    ],
+    "PType": 0,
+    "Pivot": [
+        0.0,
+        -0.38999998569488525,
+        0.0
+    ],
+    "Range": [
+        0.10000000149011612,
+        0.10000000149011612,
+        0.10000000149011612
+    ],
+    "RenderGroup": 8,
+    "RotationAxis": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "RotationSpeed": [
+        0.0,
+        0.0
+    ],
+    "ShaderPass": 2,
+    "Size": [
+        0.30000001192092896,
+        1.2999999523162842
+    ],
+    "Speed": [
+        1.5399999618530273,
+        2.0
+    ],
+    "Spin": false,
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "T_Smoke_04_C_LGS",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        false,
+        true,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 60.0,
+    "TileX": 1,
+    "TileY": 1,
+    "isTileLoop": false
+}

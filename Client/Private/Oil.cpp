@@ -1,6 +1,7 @@
 #include "Oil.h"
 #include "Player.h"
 #include "FireBall.h"
+#include "GameInstance.h"
 #include "PhysXDynamicActor.h"
 #include "Client_Calculation.h"
 #include <FlameField.h>
@@ -39,6 +40,9 @@ HRESULT COil::Initialize(void* pArg)
 		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
 	}
 
+	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+	m_pFuoco = m_pGameInstance->Get_LastObject(iLevelIndex, TEXT("Layer_Monster"));
+
 	return S_OK;
 }
 
@@ -52,6 +56,8 @@ void COil::Priority_Update(_float fTimeDelta)
 		m_pPhysXActorCom->Set_Kinematic(true);
 		m_pPhysXActorCom->Set_ShapeFlag(true, false, false);
 		m_bIsSpreaded = true;
+
+
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		// 오일이 퍼지면 위치를 바꿔야함
 		_float fRadius = GetRandomFloat(0.5f, 4.0f); // 반경
@@ -59,7 +65,14 @@ void COil::Priority_Update(_float fTimeDelta)
 		_float fX = cosf(fAngle) * fRadius;
 		_float fZ = sinf(fAngle) * fRadius;
 
-		_vector vSpreadPos = vPos + XMVectorSet(fX, 0.f, fZ, 0.f);
+		const _float fGroundY = m_pFuoco ? XMVectorGetY(m_pFuoco->Get_TransfomCom()->Get_State(STATE::POSITION)) : XMVectorGetY(vPos);
+		_vector vSpreadPos = XMVectorSet(
+			XMVectorGetX(vPos) + fX,
+			fGroundY,
+			XMVectorGetZ(vPos) + fZ,
+			1.f
+		);
+
 
 		m_pTransformCom->Set_State(STATE::POSITION, vSpreadPos);
 
@@ -67,6 +80,7 @@ void COil::Priority_Update(_float fTimeDelta)
 		pose.p = PxVec3(XMVectorGetX(vSpreadPos),
 			XMVectorGetY(vSpreadPos),
 			XMVectorGetZ(vSpreadPos));
+		pose.q = PxQuat(PxIdentity);
 		m_pPhysXActorCom->Get_Actor()->setGlobalPose(pose);
 		PxFilterData filterData{};
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
@@ -129,8 +143,10 @@ void COil::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _v
 {
 	if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
 	{
-		if (m_bIsSpreaded== false)
+		if (m_bIsSpreaded == false)
+		{
 			m_bCanSpread = true;
+		}
 	}
 }
 
@@ -190,7 +206,7 @@ HRESULT COil::Ready_Effect()
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &desc));
+	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Imsioil_M1"), &desc));
 	if (nullptr == m_pEffect)
 		MSG_BOX("이펙트 생성 실패함");
 

@@ -4,6 +4,7 @@
 #include "Camera_Manager.h"
 #include "UI_Manager.h"
 #include "ActionType_Icon.h"
+#include "Player.h"
 
 CUI_SelectWeapon::CUI_SelectWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUI_Container{pDevice, pContext}
@@ -117,6 +118,8 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
 
         Set_bDead();
 
+        CPlayer* pPlayer = GET_PLAYER(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+        pPlayer->GetWeapon();
     }
    
     // 첫 화면에서 두번째 화면

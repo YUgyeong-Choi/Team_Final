@@ -44,7 +44,9 @@ public:
 
 public:
 	const EBossAttackType& Get_BossAttackType() const { m_eBossAttackType; }
-
+	void EnterCutScene() { 
+		m_pAnimator->SetPlaying(true);
+		m_bCutSceneOn = true; }
 protected:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -146,6 +148,10 @@ protected:
 	_float m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
 	_float m_fTurnTimeDuringAttack = 0.f;
 
+#ifdef _DEBUG
+	_bool m_bDebugMode = false;
+#endif // _DEBUG
+
 
 	// 공격 관련
 	//_int   m_iPatternLimit = 3;
@@ -156,10 +162,11 @@ protected:
 	//_float m_fWeightIncreaseRate = 0.12f;
 	_float m_fAttackCooldown = 0.f; // 공격 쿨타임
 	_float m_fAttckDleay = 4.f;
+	_bool m_bCutSceneOn = false;
 
 	EBossAttackType m_eBossAttackType = EBossAttackType::NONE;
 
-	unordered_map<_int, _wstring> m_EffectMap; // 이펙트 이름 맵 (패턴, 이름)
+	unordered_map<_int, vector<_wstring>> m_EffectMap; // 이펙트 이름 맵 (패턴, 이름)
 	list<pair<_wstring, _bool>> m_ActiveEffect; // 활성화된 이펙트 (이름, 한번만 실행할지)
 
 	static constexpr _float MINIMUM_TURN_ANGLE = 35.f;

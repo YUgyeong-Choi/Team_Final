@@ -119,6 +119,9 @@ void CGameObject::PrintMatrix(const char* szName, const _matrix& mat)
 
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
 {
+	// ¶ô °É±â
+	lock_guard<mutex> lock(m_mtx);
+
 	CComponent*	pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));
 	if (nullptr == pComponent)
 		return E_FAIL;

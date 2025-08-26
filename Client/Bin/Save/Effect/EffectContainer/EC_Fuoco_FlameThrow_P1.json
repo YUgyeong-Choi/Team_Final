@@ -1,0 +1,140 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -8.869999885559082,
+                -6.590000152587891
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.3390531539916992,
+                0.07853400707244873,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 60,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.3499999940395355,
+            "EndTrack": 60,
+            "FlipUV": false,
+            "Gravity": 1.0,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.2699999809265137,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime":  1.7200000286102295,
+            "LifeTime_Particle": [
+                0.1300000101327896,
+                1.7200000286102295
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Fuoco_FlameThrow_Particle1",
+            "NumInstance": 50,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -10.0,
+                10.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -1.0,
+                0.0
+            ],
+            "Range": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "Size": [
+                2.0,
+                3.0
+            ],
+            "Speed": [
+                15.0,
+                20.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_06_8x8_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 100.0,
+            "TileX": 8,
+            "TileY": 8,
+            "isTileLoop": true
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 59
+}

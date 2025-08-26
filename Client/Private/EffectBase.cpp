@@ -84,8 +84,8 @@ void CEffectBase::Update(_float fTimeDelta)
 			m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
 	}
 	if (m_bBillboard)
-		//m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
-		XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+		//XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+		XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard_WithOffset(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
 
 	if (m_bAnimation)
 		m_iTileIdx = static_cast<_int>(m_fTileIdx);

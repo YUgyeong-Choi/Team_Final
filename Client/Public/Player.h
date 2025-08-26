@@ -140,6 +140,7 @@ private: /* [ 옵저버 관련 ] */
 
 public: /* [ 상호작용 관련 ] */
 	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj);
+	void GetWeapon();
 private:
 	void Play_CutScene_Door();
 
@@ -228,7 +229,6 @@ protected:
 	/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
-
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
@@ -313,6 +313,7 @@ private: /* [ 플레이어 변수 ] */
 	_float  m_fSetTime = {};
 	_bool   m_bSetOnce = {};
 	_bool   m_bSetTwo = {};
+	_bool   m_bSetSound = {};
 
 	_float	m_fMaxHP = { 100.f };
 	_float	m_fHP = { 100.f };
@@ -367,10 +368,6 @@ private: /* [ 벨트 슬롯 ] */
 
 private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
-
-
-	_bool m_bContact = false;
-	_float m_fContactIntensity = 0.2f;
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

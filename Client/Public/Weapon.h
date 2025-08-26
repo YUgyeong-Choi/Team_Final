@@ -6,6 +6,7 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CAnimator;
+class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -134,7 +135,8 @@ protected:              /* [ 컴포넌트 ] */
 	CAnimator*			m_pAnimator = { nullptr };
 
 	class CUnit*		m_pOwner = { nullptr };
-
+	/* [ 사운드 관련 ] */
+	CSoundController* m_pSoundCom = { nullptr };
 protected:				/* [ 레이캐스트 변수 ] */
 	PxVec3				m_vRayHitPos = {};
 	_bool				m_bRayHit = {};

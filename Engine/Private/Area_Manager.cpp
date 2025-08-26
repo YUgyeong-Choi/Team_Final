@@ -113,19 +113,39 @@ _int CArea_Manager::FindAreaContainingPoint()
         const _double dz = static_cast<_double>(a.vBounds.vMax.z - a.vBounds.vMin.z);
         return dx * dy * dz;
         };
-    auto FnIsBetter = [&](const AREA& cand, const AREA* pBest) -> _bool 
+    auto FnIsBetter = [&](const AREA& tCand, const AREA* pBest) -> _bool
         {
-        if (pBest == nullptr) 
-            return true;
+            if (pBest == nullptr)
+                return true;
 
-        if (cand.iPriority != pBest->iPriority) 
-            return (cand.iPriority < pBest->iPriority);
+            // [추가] 에어리어 타입 우선 비교 (원하는 우선순위: ROOM < INDOOR < LOBBY < OUTDOOR)
+            auto GetTypeRank = [](_int iTypeVal) -> _int
+                {
+                    switch (static_cast<AREA::EAreaType>(iTypeVal))
+                    {
+                    case AREA::EAreaType::ROOM:    return static_cast<_int>(0);
+                    case AREA::EAreaType::LOBBY:   return static_cast<_int>(1);
+                    case AREA::EAreaType::INDOOR:  return static_cast<_int>(2);
+                    case AREA::EAreaType::OUTDOOR: return static_cast<_int>(3);
+                    default:                 return static_cast<_int>(9999);
+                    }
+                };
 
-        const _double vC = FnVolume(cand), vB = FnVolume(*pBest);
-        if (vC != vB) 
-            return (vC < vB); 
+            const _int iCandTypeRank = GetTypeRank(static_cast<_int>(tCand.eType));
+            const _int iBestTypeRank = GetTypeRank(static_cast<_int>(pBest->eType));
+            if (iCandTypeRank != iBestTypeRank)
+                return (iCandTypeRank < iBestTypeRank);
 
-        return (cand.iAreaId < pBest->iAreaId);
+            // [기존] iPriority → 부피 → ID
+            if (tCand.iPriority != pBest->iPriority)
+                return (tCand.iPriority < pBest->iPriority);
+
+            const _double dVolCand = FnVolume(tCand);
+            const _double dVolBest = FnVolume(*pBest);
+            if (dVolCand != dVolBest)
+                return (dVolCand < dVolBest);
+
+            return (tCand.iAreaId < pBest->iAreaId);
         };
 
     /* [ 해당 위치가 어디 구역에 위치하는지 탐색 ] */
@@ -259,6 +279,30 @@ void CArea_Manager::GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const
             vecOutAreaIds.push_back(iAdjacentId);
         }
     }
+}
+
+AREAMMGR CArea_Manager::GetCurrentAreaMgr()
+{
+    // 현재 활성화된 지역이 호텔입니다.
+    vector<_uint> vecHotelIds = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+
+    // 현재 활성화된 지역이 스테이션입니다.
+    vector<_uint> vecStationIds = { 1, 2, 3, 4, 5 };
+
+    m_eAreaMgr = AREAMMGR::END; // 기본값 초기화
+
+    // Hotel 구역 체크
+    if (find(vecHotelIds.begin(), vecHotelIds.end(), m_iCurrentAreaId) != vecHotelIds.end())
+    {
+        m_eAreaMgr = AREAMMGR::HOTEL;
+    }
+    // Station 구역 체크
+    else if (find(vecStationIds.begin(), vecStationIds.end(), m_iCurrentAreaId) != vecStationIds.end())
+    {
+        m_eAreaMgr = AREAMMGR::STATION;
+    }
+
+    return m_eAreaMgr;
 }
 
 

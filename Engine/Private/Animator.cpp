@@ -86,6 +86,7 @@ void CAnimator::Update(_float fDeltaTime)
 {
 	if (m_bPlaying == false)
 		return;
+	_float fTimeScale = fDeltaTime * m_fPlaybackSpeed;
 	RefreshAndProcessTransition(fDeltaTime);
 
 	vector<string> triggeredEvents; // 이벤트를 한 번에 수집
@@ -93,11 +94,11 @@ void CAnimator::Update(_float fDeltaTime)
 
 	if (m_Blend.active) //  블렌딩 중
 	{
-		UpdateBlend(fDeltaTime, iBoneCount, triggeredEvents);
+		UpdateBlend(fTimeScale, iBoneCount, triggeredEvents);
 	}
 	else // 블렌드가 아닐 때
 	{
-		UpdateAnimation(fDeltaTime, iBoneCount, triggeredEvents);
+		UpdateAnimation(fTimeScale, iBoneCount, triggeredEvents);
 	}
 
 	DispatchAnimEvents(triggeredEvents);
@@ -116,7 +117,7 @@ void CAnimator::PlayClip(CAnimation* pAnim, _bool isLoop)
 
 void CAnimator::StartTransition(const CAnimController::TransitionResult& transitionResult)
 {
-	ResetRootMotion();
+//	ResetRootMotion();
 
 	m_Blend.active = true;
 	m_Blend.elapsed = 0.f;
@@ -136,7 +137,8 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 	_bool bToUpperLowerSame = (transitionResult.pFromUpperAnim == transitionResult.pToUpperAnim);
 	_bool bFromAnimSameToUpper = (transitionResult.pFromLowerAnim == transitionResult.pToUpperAnim);
 	_bool bFromAnimSameToLower = (transitionResult.pFromUpperAnim == transitionResult.pToLowerAnim);
-	if (bFromLowerAnimSame == false && bFromAnimSameToLower == false) // 이전 하체랑도 다르고 이전 상체랑도 다른 하체라면
+	
+	if (bFromLowerAnimSame == false && bFromAnimSameToLower == false ) // 이전 하체랑도 다르고 이전 상체랑도 다른 하체라면
 	{
 		_float fLowerStartTime = transitionResult.fLowerStartTime * m_Blend.toLowerAnim->GetDuration();
 		if (m_Blend.toLowerAnim->IsReverse())
@@ -163,7 +165,6 @@ void CAnimator::StartTransition(const CAnimController::TransitionResult& transit
 
 	m_bPlaying = true;
 	UpdateMaskState();
-
 }
 
 void CAnimator::SetCurrentRootRotation(const _float4& rot)
@@ -415,7 +416,9 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 		m_bIsFinished = false;
 		m_Blend.elapsed = 0.f;
 		m_Blend.active = false;
+		ResetRootMotion();
 		m_pCurrentAnim = m_Blend.toLowerAnim;
+
 		return;
 	}
 }

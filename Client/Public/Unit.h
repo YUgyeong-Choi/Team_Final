@@ -8,6 +8,7 @@ class CShader;
 class CAnimator;
 class CPhysXActor;
 class CPhysXDynamicActor;
+class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -114,7 +115,8 @@ protected: /* [ 플레이어 ] */
 
 protected: /* [ 기본 충돌체 ] */
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
-
+	/* [ 사운드 관련 ] */
+	CSoundController* m_pSoundCom = { nullptr };
 protected:				/* [ 기본 속성 ] */
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);

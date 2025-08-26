@@ -67,6 +67,10 @@ HRESULT CBossUnit::Initialize(void* pArg)
     if (FAILED(Ready_Effect()))
         return E_FAIL;
 
+    // 컷씬 시작 전 대기
+    m_pAnimator->Update(0.f);
+    m_pAnimator->SetPlaying(false);
+    m_pModelCom->Update_Bones();
     return S_OK;
 }
 
@@ -102,7 +106,6 @@ void CBossUnit::Update(_float fTimeDelta)
 
         XMStoreFloat4(&m_vLockonPos, vLockonPos);
     }
-
     Spawn_Effect();
 }
 
@@ -316,15 +319,15 @@ void CBossUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
     }
     else
     {
-        if (XMVectorGetX(XMVector3LengthSq(m_PrevWorldDelta)) > 1e-6f)
-        {
-            // 루트모션 마지막 위치로 보정
-            _vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-            _float fY = m_pNaviCom->Compute_NavigationY(vPos);
-            m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(vPos, fY));
+        //if (XMVectorGetX(XMVector3LengthSq(m_PrevWorldDelta)) > 1e-6f)
+        //{
+        //    // 루트모션 마지막 위치로 보정
+        //    _vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+        //    _float fY = m_pNaviCom->Compute_NavigationY(vPos);
+        //    m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(vPos, fY));
 
-            m_PrevWorldDelta = XMVectorZero(); // 잔여치 제거
-        }
+        //    m_PrevWorldDelta = XMVectorZero(); // 잔여치 제거
+        //}
 
         UpdateNormalMove(fTimeDelta);
         m_PrevWorldDelta = XMVectorZero();
@@ -394,7 +397,7 @@ _bool CBossUnit::IsTargetInFront(_float fDectedAngle) const
     _vector vToPlayerXZ = XMVectorSetY(vPlayerPos - vThisPos, 0.f);
     _float fDot = XMVectorGetX(XMVector3Dot(vForward, vToPlayerXZ));
     fDot = clamp(fDot, -1.f, 1.f); // -1 ~ 1 사이로 제한
-    _float fAngle = cosf(XMConvertToRadians(30.f)); // 시야각 60도 기준
+    _float fAngle = cosf(XMConvertToRadians(fDectedAngle)); // 시야각 60도 기준
 
     return fDot > fAngle; // 앞쪽에 있으면 true
 }
@@ -443,6 +446,7 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
 {
     _float3	 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
     _float4  rootMotionQuat = m_pAnimator->GetRootRotationDelta();
+
     _vector vLocal = XMLoadFloat3(&rootMotionDelta);
     vLocal = XMVectorScale(vLocal, m_fRootMotionAddtiveScale);
     _vector vRotQuat = XMQuaternionNormalize(XMLoadFloat4(&rootMotionQuat));
@@ -456,12 +460,12 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
     _float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
 
     _vector finalDelta = vWorldDelta;
-    if (fDeltaMag > m_fSmoothThreshold)
+ /*   if (fDeltaMag > m_fSmoothThreshold)
     {
         _float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
         finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
-    }
-    _float fMaxStep = 0.35f; // 프레임당 최대 이동 허용
+    }*/
+    _float fMaxStep = 0.45f; // 프레임당 최대 이동 허용
     if (XMVectorGetX(XMVector3Length(finalDelta)) > fMaxStep)
     {
         finalDelta = XMVector3Normalize(finalDelta) * fMaxStep;
@@ -476,7 +480,7 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
             // 갈 수 있으면 Y만 네비로 보정
             _float fY = m_pNaviCom->Compute_NavigationY(vNext);
             vTrans = XMVectorSetY(vNext, fY);
-			cout << "일반 이동" << endl;
+			//cout << "일반 이동" << endl;
         }
         else
         {
@@ -485,13 +489,13 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
 
             if (m_pNaviCom->isMove(vSlidePos))
             {
-				cout << "슬라이드 이동" << endl;
+				//cout << "슬라이드 이동" << endl;
                 _float fY = m_pNaviCom->Compute_NavigationY(vSlidePos);
                 vTrans = XMVectorSetY(vSlidePos, fY);
             }
             else
             {
-				cout << "이동 불가" << endl;
+				//cout << "이동 불가" << endl;
                 vTrans = XMVectorSetY(vTrans, m_pNaviCom->Compute_NavigationY(vTrans));
             }
         }

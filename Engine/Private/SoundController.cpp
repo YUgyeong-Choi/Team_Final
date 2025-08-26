@@ -37,6 +37,14 @@ void CSoundController::Play(const string& strTag)
 		pSoundCore->Play();
 }
 
+void CSoundController::Play_Random(const string& strTag, _int randCount)
+{
+	string strSoundTag = strTag + to_string(rand() % randCount);
+	auto pSoundCore = Find_Sound(strSoundTag);
+	if (pSoundCore)
+		pSoundCore->Play();
+}
+
 void CSoundController::Stop(const string& strTag)
 {
 	auto pSoundCore = Find_Sound(strTag);

@@ -277,6 +277,8 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+
+			m_pSoundCom->Play_Random("SE_PC_SK_Hit_Skin_Slice_S_", 3);
 	}
 	// 가드 때 충돌하고, 퍼펙트 가드가 아니면 감소하도록
 	
@@ -318,6 +320,8 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 				MSG_BOX("이펙트 생성 실패함");
 		
 		StartHitReg(0.1f, 0.015f, 0.025f);
+
+		m_pSoundCom->Play_Random("SE_PC_SK_Hit_Skin_Slice_S_", 3);
 	}
 }
 
