@@ -159,7 +159,7 @@ protected:
 
 	EBossAttackType m_eBossAttackType = EBossAttackType::NONE;
 
-	unordered_map<_int, _wstring> m_EffectMap; // 이펙트 이름 맵 (패턴, 이름)
+	unordered_map<_int, vector<_wstring>> m_EffectMap; // 이펙트 이름 맵 (패턴, 이름)
 	list<pair<_wstring, _bool>> m_ActiveEffect; // 활성화된 이펙트 (이름, 한번만 실행할지)
 
 	static constexpr _float MINIMUM_TURN_ANGLE = 35.f;
