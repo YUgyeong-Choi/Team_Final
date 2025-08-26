@@ -65,6 +65,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
 			m_bActive = false;
+			m_pWeapon->SetbIsActive(false);
 		}
 	}
 
@@ -565,6 +566,8 @@ void CButtler_Train::Reset()
 
 	auto stEntry = m_pAnimator->Get_CurrentAnimController()->GetEntryState();
 	m_pAnimator->Get_CurrentAnimController()->SetState(stEntry->stateName);
+
+	m_pWeapon->SetbIsActive(true);
 
 	__super::Reset();
 
