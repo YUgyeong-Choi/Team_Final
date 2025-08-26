@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include <mutex>
 
 /* 객체들을 모아놓는다. */
 
@@ -31,6 +32,8 @@ public:
 	list<class CGameObject*>& Get_ObjectList();
 private:
 	list<class CGameObject*>			m_GameObjects;
+
+	mutex m_mtx = {};
 
 public:
 	static CLayer* Create();

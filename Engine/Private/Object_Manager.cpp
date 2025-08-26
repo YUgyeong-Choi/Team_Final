@@ -48,7 +48,7 @@ HRESULT CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const _wstri
 		return E_FAIL;
 
 	// 락 걸기
-	lock_guard<mutex> lock(m_mtx);
+	//lock_guard<mutex> lock(m_mtx);
 
 	CLayer*		pLayer = Find_Layer(iLevelIndex, strLayerTag);
 
@@ -69,14 +69,14 @@ HRESULT CObject_Manager::Add_GameObject(_uint iPrototypeLevelIndex, const _wstri
 HRESULT CObject_Manager::Add_GameObjectReturn
 (_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, CGameObject** ppOut, void* pArg)
 {
+	// 락 걸기
+	//lock_guard<mutex> lock(m_mtx);
+
 	CGameObject* pGameObject = dynamic_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, iPrototypeLevelIndex, strPrototypeTag, pArg));
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
 	*ppOut = pGameObject;
-
-	// 락 걸기
-	lock_guard<mutex> lock(m_mtx);
 
 	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
 

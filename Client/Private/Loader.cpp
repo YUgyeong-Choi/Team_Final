@@ -622,17 +622,17 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		<오류 나가지고 뮤텍스로 락 걸었음>
 	*/
 
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
 
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
 
-	/*lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
+	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
 
 	auto futureStation = async(launch::async, [&]
 		{
@@ -662,7 +662,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;
 
 	if (FAILED(futureHotel.get()))
-		return E_FAIL;*/
+		return E_FAIL;
 
 #pragma endregion
 
@@ -1545,6 +1545,9 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
 		wstring wsLayerTag = TEXT("Layer_StaticMesh_") + StringToWString(Map); //Layer_StaticMesh_STATION, Layer_StaticMesh_HOTEL
+
+		// 락 걸기
+		lock_guard<mutex> lock(m_mtx);
 
 		CGameObject* pGameObject = nullptr;
 		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
