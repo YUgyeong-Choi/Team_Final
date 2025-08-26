@@ -53,6 +53,10 @@ HRESULT CTriggerItemLamp::Render()
 
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 
+	_float fEmissive = 0.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+		return E_FAIL;
+
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))

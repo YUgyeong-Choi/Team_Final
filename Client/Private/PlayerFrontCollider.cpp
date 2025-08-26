@@ -149,7 +149,7 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 
 	// À§Ä¡/·è ¼öÁý
 	_vector vMonsterPos = pOther->Get_TransfomCom()->Get_State(STATE::POSITION);
-	_vector vMonsterLook = m_pOwner->Get_TransfomCom()->Get_State(STATE::LOOK);
+	_vector vMonsterLook = pOther->Get_TransfomCom()->Get_State(STATE::LOOK);
 
 	_vector vPlayerPos = m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION);
 	_vector vPlayerLook = m_pOwner->Get_TransfomCom()->Get_State(STATE::LOOK);
