@@ -90,6 +90,8 @@ HRESULT CDecalToolObject::Render()
 
 HRESULT CDecalToolObject::Set_Texture(TEXTURE_TYPE eType, string TexturePath, string FileName)
 {
+	m_FileName[ENUM_CLASS(eType)] = FileName;
+
 	//프로토타입을 만들고
 	wstring wstrPrototypeTag = TEXT("Prototype_Component_Texture_") + StringToWString(FileName);
 	if (m_pGameInstance->Find_Prototype(ENUM_CLASS(LEVEL::YW), wstrPrototypeTag) == nullptr)
