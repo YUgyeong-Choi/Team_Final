@@ -228,7 +228,6 @@ protected:
 	/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
-
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
