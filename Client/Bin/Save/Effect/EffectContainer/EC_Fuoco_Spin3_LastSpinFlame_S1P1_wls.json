@@ -136,8 +136,8 @@
             ],
             "LifeTime": 1853.98876953125,
             "LifeTime_Particle": [
-                0.23000000417232513,
-                1.100000023841858
+                0.13000000417232513,
+                0.9
             ],
             "Local": true,
             "Loop": true,
@@ -145,7 +145,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_Spin3_LastFlame_Particle1",
-            "NumInstance": 20,
+            "NumInstance": 40,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [

@@ -44,7 +44,9 @@ public:
 
 public:
 	const EBossAttackType& Get_BossAttackType() const { m_eBossAttackType; }
-
+	void EnterCutScene() { 
+		m_pAnimator->SetPlaying(true);
+		m_bCutSceneOn = true; }
 protected:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -160,6 +162,7 @@ protected:
 	//_float m_fWeightIncreaseRate = 0.12f;
 	_float m_fAttackCooldown = 0.f; // °ø°Ý ÄðÅ¸ÀÓ
 	_float m_fAttckDleay = 4.f;
+	_bool m_bCutSceneOn = false;
 
 	EBossAttackType m_eBossAttackType = EBossAttackType::NONE;
 
