@@ -37,7 +37,7 @@ HRESULT CUI_Guide::Initialize(void* pArg)
         return E_FAIL;
 
     UI_GUIDE_DESC* pDesc = static_cast<UI_GUIDE_DESC*>(pArg);
-
+    m_pTrigger = pDesc->pTrigger;
     
 
     for (auto& partPath : pDesc->partPaths)
@@ -152,6 +152,7 @@ void CUI_Guide::Check_Button()
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
         {
             Set_bDead();
+            m_pTrigger->Set_bDead();
             CUI_Manager::Get_Instance()->On_Panel();
             m_pGameInstance->Set_GameTimeScale(1.f);
             return;
