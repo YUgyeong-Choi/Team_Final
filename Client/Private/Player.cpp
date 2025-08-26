@@ -451,6 +451,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_strPrevStateName = stateName;
 		m_fMoveTime = 0.f;
 		m_fSetTime = 0.f;
+		if(m_bResetSoundTime)
+			m_fSetSoundTime = 0.f;
 		m_iMoveStep = 0;
 		m_bMove = false;
 		m_bMoveReset = false;
@@ -504,7 +506,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 0.6f)
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.6f)
 		{
 			if (!m_bSetSound)
 			{
@@ -542,7 +545,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 0.6f)
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.6f)
 		{
 			if (!m_bSetSound)
 			{
@@ -579,7 +583,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 0.4f)
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.4f)
 		{
 			if (!m_bSetSound)
 			{
@@ -616,7 +621,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 0.6f)
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.6f)
 		{
 			if (!m_bSetSound)
 			{
@@ -713,6 +719,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			Callback_Stamina();
 		}
 
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.7f)
+		{
+			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Walk_", 9);
+			m_fSetSoundTime = 0.f;
+		}
+
 		break;
 	}
 	case eAnimCategory::RUN:
@@ -731,6 +744,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			Callback_Stamina();
 		}
 
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.45f)
+		{
+			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+			m_fSetSoundTime = 0.f;
+		}
+
 		break;
 	}
 	case eAnimCategory::SPRINT:
@@ -742,6 +762,14 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= fTimeDelta * 15.f;
 			Callback_Stamina();
 		}
+
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.35f)
+		{
+			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+			m_fSetSoundTime = 0.f;
+		}
+
 		break;
 	}
 	case eAnimCategory::EQUIP:
@@ -754,8 +782,41 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
 	}
+	case eAnimCategory::ITEM:
+	{
+		if (m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+		{
+			m_fSetSoundTime += fTimeDelta;
+			if (m_fSetSoundTime >= 0.7f && !m_bSetSound)
+			{
+				if (!m_bCheckSound)
+				{
+					m_pSoundCom->Play_Random("SE_PC_MT_Item_Monard_Lamp_", 3);
+					m_bSetSound = true;
+					m_bCheckSound = true;
+				}
+
+			}
+		}
+
+		break;
+	}
 	case eAnimCategory::ITEM_WALK:
 	{
+		if (m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+		{
+			m_fSetSoundTime += fTimeDelta;
+			if (m_fSetSoundTime >= 0.7f && !m_bSetSound)
+			{
+				if (!m_bCheckSound)
+				{
+					m_pSoundCom->Play_Random("SE_PC_MT_Item_Monard_Lamp_", 3);
+					m_bSetSound = true;
+					m_bCheckSound = true;
+				}
+			}
+		}
+
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
 	}

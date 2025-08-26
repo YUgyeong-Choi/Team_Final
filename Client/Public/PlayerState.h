@@ -632,6 +632,7 @@ public:
 
             m_pOwner->m_bUseLamp = true;
             m_pOwner->m_bItemSwitch = true;
+            m_pOwner->m_bResetSoundTime = false;
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
         {
@@ -719,6 +720,8 @@ public:
         m_pOwner->m_bUseGrinder = false;
 		m_pOwner->m_bWalk = m_bPreWalk;
         m_pOwner->m_bUsePulse = false;
+        m_pOwner->m_bCheckSound = false;
+        m_pOwner->m_bResetSoundTime = true;
         m_fGrinderTime = 0.f;
         m_fPulseTime = 0.f;
         m_fStateTime = 0.f;
