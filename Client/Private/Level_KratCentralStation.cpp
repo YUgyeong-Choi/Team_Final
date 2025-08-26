@@ -526,7 +526,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a9p0, a9p1, a9Min, a9Max);
 
 	// Area 10
-	_float3 a10p0 = _float3{ 165.54f, -0.73f, -45.35f };
+	_float3 a10p0 = _float3{ 165.54f, -0.73f, -35.35f };
 	_float3 a10p1 = _float3{ 153.13f, 15.00f, -56.29f };
 	_float3 a10Min, a10Max;
 	FnToAABB(a10p0, a10p1, a10Min, a10Max);
