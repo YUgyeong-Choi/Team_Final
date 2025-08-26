@@ -411,7 +411,8 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::SPECIAL_DIE):
 		m_eCurrentState = EBossState::DEAD;
 		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_BellyFire"));
-		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke"));
+		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke1"));
+		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2"));
 		break;
 	case ENUM_CLASS(BossStateID::TURN_L):
 	case ENUM_CLASS(BossStateID::TURN_R):
@@ -1250,12 +1251,21 @@ HRESULT CFuoco::Ready_Effect()
 	CEffectContainer::DESC HeadSmokeDesc = {};
 	HeadSmokeDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Head01"));
 	HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(_vector{0.f, 0.f, 1.f, 0.f}, XMConvertToRadians(-90.f)) * XMMatrixTranslation(1.f, 0.f, -1.f));
+	XMStoreFloat4x4(&HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(_vector{ 0.f, 0.f, 1.f, 0.f }, XMConvertToRadians(-90.f)) * XMMatrixTranslation(1.5f, -0.45f, -0.4f));
 	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_HeadSmoke_P2"), &HeadSmokeDesc);
 	if (pEC == nullptr)
 		MSG_BOX("이펙트 생성 실패함");
 
-	CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_HeadSmoke"), static_cast<CEffectContainer*>(pEC));
+	CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_HeadSmoke1"), static_cast<CEffectContainer*>(pEC));
+
+	pEC = nullptr;
+	XMStoreFloat4x4(&HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(_vector{ 0.f, 0.f, 1.f, 0.f }, XMConvertToRadians(-90.f)) * XMMatrixTranslation(1.5f, -0.45f, 0.45f));
+	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_HeadSmoke_Small_P1"), &HeadSmokeDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
+
+	CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_HeadSmoke2"), static_cast<CEffectContainer*>(pEC));
+
 
 
 
