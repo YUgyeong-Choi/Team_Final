@@ -113,15 +113,12 @@ void CTriggerTalk::Update(_float fTimeDelta)
 			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
 				offSet = 0.f;
 
+
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, false, offSet);
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 
 			m_pSoundCom->SetVolume(m_vecSoundData[m_iSoundIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
 			m_pSoundCom->Play(m_vecSoundData[m_iSoundIndex].strSoundTag);
-			m_pPlayer->Get_TransfomCom()->RotateToDirectionImmediately(_fvector{ 0.f,0.f,1.f,0.f });
-
-			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
-				m_pPlayer->Get_Animator()->SetTrigger("InactiveStargazer");
 
 			// 여기에 조사한다 UI 비활성화
 			CUI_Manager::Get_Instance()->Off_Panel();
@@ -129,18 +126,25 @@ void CTriggerTalk::Update(_float fTimeDelta)
 			// 말하는 UI활성화
 			CUI_Manager::Get_Instance()->Activate_TalkScript(true);
 			CUI_Manager::Get_Instance()->Update_TalkScript(m_vecSoundData[m_iSoundIndex].strSpeaker, m_vecSoundData[m_iSoundIndex].strSoundText, m_bAutoTalk);
+
+			// 모나드 관련 
+			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
+				m_pPlayer->Get_Animator()->SetTrigger("InactiveStargazer");
 		}
 	}
 
 	if (m_bDoOnce)
 	{
-		if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::SELECTWEAPON)
+		_vector vDir = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		vDir = XMVector3Normalize(XMVectorSet(XMVectorGetX(vDir), 0, XMVectorGetZ(vDir), 0)); // Y 제거
+		_bool bFinish = m_pPlayer->Get_TransfomCom()->RotateToDirectionSmoothly(vDir, 0.005f);
+
+		// 무기 선택 관련
+		if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::SELECTWEAPON && bFinish)
 		{
-			CTransform* pPlayerTransform = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"))->Get_TransfomCom();
-			pPlayerTransform->RotateToDirectionSmoothly(m_pTransformCom->Get_State(STATE::POSITION), 0.005f);
+			XMVECTOR backDir = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -1;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir, 15.f);
 		}
-
-
 
 		if (m_bAutoTalk)
 		{
