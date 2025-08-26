@@ -550,6 +550,10 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 58.0
+                },
+                {
+                    "EventName": "OnFlamethrowerEffect",
+                    "Time": 27.0
                 }
             ],
             "IsLoop": false,
@@ -571,6 +575,10 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 58.0
+                },
+                {
+                    "EventName": "OnFlamethrowerEffect",
+                    "Time": 27.0
                 }
             ],
             "IsLoop": false,
