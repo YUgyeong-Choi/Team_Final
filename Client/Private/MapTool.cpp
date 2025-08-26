@@ -239,12 +239,12 @@ void CMapTool::DeselectObject()
 
 		m_SelectedIndexies.clear();
 
-		for (CMapToolObject* pObj : m_SelectedObjects)
-			Safe_Release(pObj);
+		/*for (CMapToolObject* pObj : m_SelectedObjects)
+			Safe_Release(pObj);*/
 		m_SelectedObjects.clear();
 
 		m_iFocusIndex = -1;
-		Safe_Release(m_pFocusObject);
+		//Safe_Release(m_pFocusObject);
 		m_pFocusObject = nullptr;
 
 	}
@@ -710,14 +710,14 @@ void CMapTool::Render_Hierarchy()
 								if (isSelected)
 								{
 									m_SelectedObjects.erase(static_cast<CMapToolObject*>(pGameObject));
-									Safe_Release(pGameObject);
+									//Safe_Release(pGameObject);
 
 									m_SelectedIndexies.erase(i);
 								}
 								else
 								{
 									m_SelectedObjects.insert(static_cast<CMapToolObject*>(pGameObject));
-									Safe_AddRef(pGameObject);
+									//Safe_AddRef(pGameObject);
 
 									m_SelectedIndexies.insert(i);
 								}
@@ -725,11 +725,11 @@ void CMapTool::Render_Hierarchy()
 							else
 							{
 								for (CMapToolObject* pObj : m_SelectedObjects)
-									Safe_Release(pObj);
+									//Safe_Release(pObj);
 								m_SelectedObjects.clear();
 
 								m_SelectedObjects.insert(static_cast<CMapToolObject*>(pGameObject));
-								Safe_AddRef(pGameObject);
+								//Safe_AddRef(pGameObject);
 
 								// Ctrl 안 눌렀으면 단일 선택
 								m_SelectedIndexies.clear();
@@ -739,9 +739,9 @@ void CMapTool::Render_Hierarchy()
 							//마지막 클릭한 항목
 							m_iFocusIndex = i;
 
-							Safe_Release(m_pFocusObject);
+							//Safe_Release(m_pFocusObject);
 							m_pFocusObject = static_cast<CMapToolObject*>(Get_Focused_Object());
-							Safe_AddRef(m_pFocusObject);
+							//Safe_AddRef(m_pFocusObject);
 						}
 					}
 
@@ -1168,20 +1168,20 @@ HRESULT CMapTool::Spawn_MapToolObject()
 	//포커스 변경
 	m_iFocusIndex = Find_HierarchyIndex_By_ID(MapToolObjDesc.iID);
 
-	Safe_Release(m_pFocusObject);
+	//Safe_Release(m_pFocusObject);
 	m_pFocusObject = Find_Object_By_Index(m_iFocusIndex);
-	Safe_AddRef(m_pFocusObject);
+	//Safe_AddRef(m_pFocusObject);
 
 	//선택된것들 모두 초기화 후 새로 추가한것 넣기
 	m_SelectedIndexies.clear();
 
-	for (CMapToolObject* pObj : m_SelectedObjects)
-		Safe_Release(pObj);
+	/*for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);*/
 	m_SelectedObjects.clear();
 
 	m_SelectedIndexies.insert(m_iFocusIndex);
 	m_SelectedObjects.insert(m_pFocusObject);
-	Safe_AddRef(m_pFocusObject);
+	//Safe_AddRef(m_pFocusObject);
 
 	return S_OK;
 }
@@ -1257,20 +1257,20 @@ HRESULT CMapTool::Spawn_MapToolObject(string ModelName)
 	//포커스 변경
 	m_iFocusIndex = Find_HierarchyIndex_By_ID(MapToolObjDesc.iID);
 
-	Safe_Release(m_pFocusObject);
+	//Safe_Release(m_pFocusObject);
 	m_pFocusObject = Find_Object_By_Index(m_iFocusIndex);
-	Safe_AddRef(m_pFocusObject);
+	//Safe_AddRef(m_pFocusObject);
 
 	//선택된것들 모두 초기화 후 새로 추가한것 넣기
 	m_SelectedIndexies.clear();
 
 	for (CMapToolObject* pObj : m_SelectedObjects)
-		Safe_Release(pObj);
+		//Safe_Release(pObj);
 	m_SelectedObjects.clear();
 
 	m_SelectedIndexies.insert(m_iFocusIndex);
 	m_SelectedObjects.insert(m_pFocusObject);
-	Safe_AddRef(m_pFocusObject);
+	//Safe_AddRef(m_pFocusObject);
 
 	return S_OK;
 }
@@ -1291,8 +1291,8 @@ HRESULT CMapTool::Duplicate_Selected_Object()
 	//선택된것들 모두 초기화 후 복제한것만 넣기
 	m_SelectedIndexies.clear();
 
-	for (CMapToolObject* pObj : m_SelectedObjects)
-		Safe_Release(pObj);
+	/*for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);*/
 	m_SelectedObjects.clear();
 
 	for (CMapToolObject* pObj : pTempSelectObjects)
@@ -1338,14 +1338,14 @@ HRESULT CMapTool::Duplicate_Selected_Object()
 		m_iFocusIndex = Find_HierarchyIndex_By_ID(m_iID);
 
 		//포커스 되는 오브젝트 변경
-		Safe_Release(m_pFocusObject);
+		//Safe_Release(m_pFocusObject);
 		m_pFocusObject = static_cast<CMapToolObject*>(pLastObject);
-		Safe_AddRef(m_pFocusObject);
+		//Safe_AddRef(m_pFocusObject);
 
 		//복제된 것 넣기
 		m_SelectedIndexies.insert(m_iFocusIndex);
 		m_SelectedObjects.insert(m_pFocusObject);
-		Safe_AddRef(m_pFocusObject);
+		//Safe_AddRef(m_pFocusObject);
 	}
 
 	return S_OK;
@@ -1366,7 +1366,7 @@ void CMapTool::DeleteMapToolObject()
 	for (CGameObject* pObj : m_SelectedObjects)
 	{
 		//m_SelectedObjects 릴리즈
-		Safe_Release(pObj);
+		//Safe_Release(pObj);
 		//그룹에서 삭제
 		Delete_ModelGroup(pObj);
 		//실제로 삭제
@@ -1379,7 +1379,7 @@ void CMapTool::DeleteMapToolObject()
 	m_iFocusIndex = -1;
 
 	//포커스 릴리즈
-	Safe_Release(m_pFocusObject);
+	//Safe_Release(m_pFocusObject);
 	m_pFocusObject = nullptr;
 }
 
@@ -1390,18 +1390,18 @@ void CMapTool::Clear_Map()
 		for (auto pObj : Group.second)
 		{
 			pObj->Set_bDead();
-			Safe_Release(pObj);
+			//Safe_Release(pObj);
 		}
 			
 		Group.second.clear();
 	}
 	m_ModelGroups.clear();
 
-	Safe_Release(m_pFocusObject);
+	//Safe_Release(m_pFocusObject);
 	m_pFocusObject = nullptr;
 
-	for (CMapToolObject* pObj : m_SelectedObjects)
-		Safe_Release(pObj);
+	/*for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);*/
 	m_SelectedObjects.clear();
 
 
@@ -1467,7 +1467,7 @@ HRESULT CMapTool::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelF
 
 void CMapTool::Add_ModelGroup(string ModelName, CGameObject* pMapToolObject)
 {
-	Safe_AddRef(pMapToolObject);
+	//Safe_AddRef(pMapToolObject);
 	// 모델 이름을 키로 하여 그룹에 GameObject를 추가
 	m_ModelGroups[ModelName].push_back(pMapToolObject);
 }
@@ -1490,7 +1490,7 @@ void CMapTool::Delete_ModelGroup(CGameObject* pMapToolObject)
 
 	std::list<CGameObject*>& objList = iterGroup->second;
 
-	Safe_Release(pMapToolObject);
+	//Safe_Release(pMapToolObject);
 	// 리스트에서 해당 오브젝트 제거
 	objList.remove(pMapToolObject);
 
@@ -1573,9 +1573,9 @@ void CMapTool::SelectByClick()
 		printf("ID: %d\n", iID);
 		m_iFocusIndex = Find_HierarchyIndex_By_ID(iID);
 
-		Safe_Release(m_pFocusObject);
+		//Safe_Release(m_pFocusObject);
 		m_pFocusObject = static_cast<CMapToolObject*>(Get_Focused_Object());
-		Safe_AddRef(m_pFocusObject);
+		//Safe_AddRef(m_pFocusObject);
 
 		if (m_pFocusObject == nullptr) //더미 메쉬 잘못 클릭했을 때 null나옴
 		{
@@ -1588,15 +1588,15 @@ void CMapTool::SelectByClick()
 		{
 			//기존 선택된 것들 클리어
 			m_SelectedIndexies.clear();
-			for (CMapToolObject* pObj : m_SelectedObjects)
-				Safe_Release(pObj);
+			/*for (CMapToolObject* pObj : m_SelectedObjects)
+				Safe_Release(pObj);*/
 			m_SelectedObjects.clear();
 		}
 
 		//새로 추가
 		m_SelectedIndexies.insert(Find_HierarchyIndex_By_ID(m_pFocusObject->Get_ID()));
 		m_SelectedObjects.insert(m_pFocusObject);
-		Safe_AddRef(m_pFocusObject);
+		//Safe_AddRef(m_pFocusObject);
 	}
 }
 
@@ -1608,8 +1608,8 @@ void CMapTool::SelectByDrag(const _float2& vMouseDragEnd)
 	{
 		//기존 선택된 것들 클리어
 		m_SelectedIndexies.clear();
-		for (CMapToolObject* pObj : m_SelectedObjects)
-			Safe_Release(pObj);
+		/*for (CMapToolObject* pObj : m_SelectedObjects)
+			Safe_Release(pObj);*/
 		m_SelectedObjects.clear();
 
 		_bool bSetFocusObject = { false };
@@ -1624,16 +1624,16 @@ void CMapTool::SelectByDrag(const _float2& vMouseDragEnd)
 
 			CMapToolObject* pObj = Find_Object_By_Index(iIndex);
 			m_SelectedObjects.insert(pObj);
-			Safe_AddRef(pObj);
+			//Safe_AddRef(pObj);
 
 			if (bSetFocusObject == false)
 			{
 				bSetFocusObject = true;
 				m_iFocusIndex = iIndex;
 
-				Safe_Release(m_pFocusObject);
+				//Safe_Release(m_pFocusObject);
 				m_pFocusObject = pObj;
-				Safe_AddRef(m_pFocusObject);
+				//Safe_AddRef(m_pFocusObject);
 			}
 		}
 
@@ -2012,15 +2012,16 @@ void CMapTool::Free()
 
 	for (auto Group : m_ModelGroups)
 	{
-		for (auto pObj : Group.second )
-			Safe_Release(pObj);
+		/*for (auto pObj : Group.second )
+			Safe_Release(pObj);*/
 		Group.second.clear();
 	}
 	m_ModelGroups.clear();
 
-	Safe_Release(m_pFocusObject);
+	//Safe_Release(m_pFocusObject);
 
-	for (CMapToolObject* pObj : m_SelectedObjects)
-		Safe_Release(pObj);
+	/*for (CMapToolObject* pObj : m_SelectedObjects)
+		Safe_Release(pObj);*/
+
 	m_SelectedObjects.clear();
 }
