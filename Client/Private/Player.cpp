@@ -1243,9 +1243,6 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 	}
 
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
-		m_bContact = true;
-
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -1254,8 +1251,7 @@ void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 
 void CPlayer::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
-		m_bContact = false;
+
 }
 
 void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -1309,14 +1305,10 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	}
 
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
-		m_bContact = true;
 }
 
 void CPlayer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER)
-		m_bContact = true;
 }
 
 void CPlayer::ReadyForState()
@@ -2167,7 +2159,6 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 #endif // _DEBUG
 
 	_float fDist = fSpeed * fTimeDelta;
-	PxVec3 vSaveInputDir = VectorToPxVec3(vInputDir);
 	vInputDir *= fDist;
 	XMStoreFloat3(&moveVec, vInputDir);
 
@@ -2182,13 +2173,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	PxControllerFilters filters;
 	filters.mFilterCallback = &filter; // 필터 콜백 지정
 	PxControllerCollisionFlags collisionFlags;
-	if (m_bContact && XMVector3Equal(vInputDir, XMVectorZero())) {
-		collisionFlags = m_pControllerCom->Move(fTimeDelta, vSaveInputDir, fSpeed, m_fContactIntensity);
-	}
-	else
-	{
-		collisionFlags = m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
-	}
+	collisionFlags = m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 
 	//printf(" 왜 안움직이지?? : %s \n", strName.c_str());
 
