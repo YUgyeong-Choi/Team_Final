@@ -29,6 +29,7 @@ private:
 	virtual HRESULT Ready_Effect() override;
 private:
 	_float m_fDamge = 10.f;
+	vector<CGameObject*> m_CollisionObjects; // 데미지를 입은 오브젝트 리스트
 public:
 	static CFireBall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

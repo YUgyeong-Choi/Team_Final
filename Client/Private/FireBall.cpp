@@ -26,7 +26,7 @@ HRESULT CFireBall::Initialize(void* pArg)
 
 	PxFilterData FilterData{};
 	FilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-	FilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_MONSTERWEAPON;
+	FilterData.word1 =  WORLDFILTER::FILTER_MONSTERWEAPON | WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_MAP;
 
 	m_pPhysXActorCom->Set_SimulationFilterData(FilterData);
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
@@ -64,6 +64,41 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 			{
 				pOil->Explode_Oil();
 				Set_bDead();
+				cout << "FireBall On_CollisionEnter COil" << endl;
+				return;
+			}
+		}
+	}
+	if (Get_bDead())
+		return;
+
+	if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
+		{
+			pPlayer->ReceiveDamage(this, eColliderType);
+			//pPlayer->Get_Animator()->SetTrigger("Hited");
+			cout << "FireBall On_CollisionEnter Player" << endl;
+			Set_bDead();
+		}
+	}
+	else if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
+	{
+		cout << "FireBall On_CollisionEnter ENVIRONMENT" << endl;
+		Set_bDead();
+	}
+}
+
+void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
+	{
+		if (auto pOil = dynamic_cast<COil*>(pOther))
+		{
+			if (pOil)
+			{
+				pOil->Explode_Oil();
+				Set_bDead();
 				return;
 			}
 		}
@@ -77,14 +112,6 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 			Set_bDead();
 		}
 	}
-	else if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
-	{
-		Set_bDead();
-	}
-}
-
-void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
 }
 
 void CFireBall::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)

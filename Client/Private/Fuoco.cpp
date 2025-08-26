@@ -84,12 +84,15 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
 	//	m_fHP -= 10.f;
-		FireProjectile(ProjectileType::Oil);
 	}
 
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
+
+		m_pAnimator->SetBool("IsCombo", true);
+		_int iDir = GetYawSignFromDiretion();
+		m_pAnimator->SetInt("Direction", iDir);
 		//m_fHP -= 10.f;
 		/*m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType",Uppercut);*/
@@ -106,6 +109,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_B))
 	{
+		EnterCutScene();
 		m_bDebugMode = !m_bDebugMode;
 	}
 
@@ -431,6 +435,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 {
+	static _int iLastNodeID = -1;
 	switch (iNodeID)
 	{
 	case ENUM_CLASS(BossStateID::IDLE):
@@ -481,7 +486,11 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
+	{
+			if(iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
+				EffectSpawn_Active(15, true);
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
+	}
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET):
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET2):
@@ -502,6 +511,7 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_eCurrentState = EBossState::ATTACK;
 		break;
 	}
+	iLastNodeID = iNodeID;
 }
 
 void CFuoco::UpdateSpecificBehavior()
@@ -686,7 +696,7 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("FireBall", [this]()
 		{
-			FireProjectile(ProjectileType::FireBall, 25.f);
+			FireProjectile(ProjectileType::FireBall, 24.5f);
 		});
 
 	m_pAnimator->RegisterEventListener("FireOilFirst", [this]()
@@ -906,7 +916,7 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		{
 			auto handLocalMatrix = m_pLeftBone->Get_CombinedTransformationMatrix();
 			auto handWorldMatrix = XMLoadFloat4x4(handLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-			_float3 localOffset = { 0.0f, -2.f, 100.f };
+			_float3 localOffset = { 0.0f, 0.f, 100.f };
 			_vector spawnPos = XMVector3TransformCoord(XMLoadFloat3(&localOffset), handWorldMatrix);
 			vPos = XMVectorSetW(spawnPos, 1.f);
 		}
@@ -957,7 +967,7 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		desc.fStartTime = 0.f;
 		desc.bUseTimeTrigger = true;
 		desc.bUseDistTrigger = false;
-		desc.fRadius = 0.35f;
+		desc.fRadius = 0.33f;
 		lstrcpy(desc.szName, TEXT("FireBall"));
 
 
@@ -1129,6 +1139,7 @@ void CFuoco::Ready_EffectNames()
 	m_EffectMap[SwingAtk].emplace_back(TEXT("EC_Fuoco_Spin3_HandSpark_P1"));
 	m_EffectMap[SlamAtk].emplace_back(TEXT("EC_Fuoco_Slam_Imsi_P2"));
 	m_EffectMap[SwingAtkSeq].emplace_back(TEXT("EC_Fuoco_SpinReady_HandSpark_P2"));
+	m_EffectMap[15].emplace_back(TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"));
 	//m_EffectMap[SlamFury] = TEXT("EC_Fuoco_SlamFury_01");
 	//m_EffectMap[FootAtk] = TEXT("EC_Fuoco_FootAtk_01");
 	//m_EffectMap[SlamAtk] = TEXT("EC_Fuoco_SlamAtk_01");
@@ -1145,23 +1156,20 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 {
 	if (m_pFistBone == nullptr)
 		return;
+
+	CEffectContainer::DESC desc = {};
 	if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P2"))
 	{
 
-		CEffectContainer::DESC desc = {};
 		auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 
 		XMStoreFloat4x4(&desc.PresetMatrix,
 			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
 				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
 				worldmat.r[3].m128_f32[2]));
-
-		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-			MSG_BOX("이펙트 생성 실패함");
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_HandSpark_P1"))
 	{
-		CEffectContainer::DESC desc = {};
 		auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 
 		_vector rot, trans, scale;
@@ -1178,34 +1186,32 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
-		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-			MSG_BOX("이펙트 생성 실패함");
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
 	{
-		CEffectContainer::DESC desc = {};
 		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
 
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-
-		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-			MSG_BOX("이펙트 생성 실패함");
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2"))
 	{
-		CEffectContainer::DESC desc = {};
+	
 		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
 
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-
-		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-			MSG_BOX("이펙트 생성 실패함");
+	}
+	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"))
+	{
+		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Finger0"));
+		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(_vector{ 1.f, 0.f, 0.f, 0.f }, XMConvertToRadians(90.f)) *
+			XMMatrixTranslation(0.f, 0.f, 1.5f));
 	}
 
-
-
+	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 HRESULT CFuoco::EffectSpawn_Active(_int iPattern, _bool bActive,_bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
