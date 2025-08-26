@@ -86,6 +86,7 @@ void CAnimator::Update(_float fDeltaTime)
 {
 	if (m_bPlaying == false)
 		return;
+	_float fTimeScale = fDeltaTime * m_fPlaybackSpeed;
 	RefreshAndProcessTransition(fDeltaTime);
 
 	vector<string> triggeredEvents; // 이벤트를 한 번에 수집
@@ -93,11 +94,11 @@ void CAnimator::Update(_float fDeltaTime)
 
 	if (m_Blend.active) //  블렌딩 중
 	{
-		UpdateBlend(fDeltaTime, iBoneCount, triggeredEvents);
+		UpdateBlend(fTimeScale, iBoneCount, triggeredEvents);
 	}
 	else // 블렌드가 아닐 때
 	{
-		UpdateAnimation(fDeltaTime, iBoneCount, triggeredEvents);
+		UpdateAnimation(fTimeScale, iBoneCount, triggeredEvents);
 	}
 
 	DispatchAnimEvents(triggeredEvents);

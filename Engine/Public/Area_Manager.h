@@ -28,6 +28,7 @@ public:
 	const AABBBOX* GetAreaBounds(_int iAreaId) const;
 	void           GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad = 0.f) const;
 	void		   GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const;
+	_int		   GetCurrentAreaIds() { return m_iCurrentAreaId; }
 
 
 public: /* [ µð¹ö±ë ÇÔ¼ö ]*/

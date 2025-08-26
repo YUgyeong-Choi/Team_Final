@@ -113,19 +113,39 @@ _int CArea_Manager::FindAreaContainingPoint()
         const _double dz = static_cast<_double>(a.vBounds.vMax.z - a.vBounds.vMin.z);
         return dx * dy * dz;
         };
-    auto FnIsBetter = [&](const AREA& cand, const AREA* pBest) -> _bool 
+    auto FnIsBetter = [&](const AREA& tCand, const AREA* pBest) -> _bool
         {
-        if (pBest == nullptr) 
-            return true;
+            if (pBest == nullptr)
+                return true;
 
-        if (cand.iPriority != pBest->iPriority) 
-            return (cand.iPriority < pBest->iPriority);
+            // [추가] 에어리어 타입 우선 비교 (원하는 우선순위: ROOM < INDOOR < LOBBY < OUTDOOR)
+            auto GetTypeRank = [](_int iTypeVal) -> _int
+                {
+                    switch (static_cast<AREA::EAreaType>(iTypeVal))
+                    {
+                    case AREA::EAreaType::ROOM:    return static_cast<_int>(0);
+                    case AREA::EAreaType::LOBBY:   return static_cast<_int>(1);
+                    case AREA::EAreaType::INDOOR:  return static_cast<_int>(2);
+                    case AREA::EAreaType::OUTDOOR: return static_cast<_int>(3);
+                    default:                 return static_cast<_int>(9999);
+                    }
+                };
 
-        const _double vC = FnVolume(cand), vB = FnVolume(*pBest);
-        if (vC != vB) 
-            return (vC < vB); 
+            const _int iCandTypeRank = GetTypeRank(static_cast<_int>(tCand.eType));
+            const _int iBestTypeRank = GetTypeRank(static_cast<_int>(pBest->eType));
+            if (iCandTypeRank != iBestTypeRank)
+                return (iCandTypeRank < iBestTypeRank);
 
-        return (cand.iAreaId < pBest->iAreaId);
+            // [기존] iPriority → 부피 → ID
+            if (tCand.iPriority != pBest->iPriority)
+                return (tCand.iPriority < pBest->iPriority);
+
+            const _double dVolCand = FnVolume(tCand);
+            const _double dVolBest = FnVolume(*pBest);
+            if (dVolCand != dVolBest)
+                return (dVolCand < dVolBest);
+
+            return (tCand.iAreaId < pBest->iAreaId);
         };
 
     /* [ 해당 위치가 어디 구역에 위치하는지 탐색 ] */

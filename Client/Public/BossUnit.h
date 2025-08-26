@@ -146,6 +146,10 @@ protected:
 	_float m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
 	_float m_fTurnTimeDuringAttack = 0.f;
 
+#ifdef _DEBUG
+	_bool m_bDebugMode = false;
+#endif // _DEBUG
+
 
 	// 공격 관련
 	//_int   m_iPatternLimit = 3;
@@ -159,7 +163,7 @@ protected:
 
 	EBossAttackType m_eBossAttackType = EBossAttackType::NONE;
 
-	unordered_map<_int, _wstring> m_EffectMap; // 이펙트 이름 맵 (패턴, 이름)
+	unordered_map<_int, vector<_wstring>> m_EffectMap; // 이펙트 이름 맵 (패턴, 이름)
 	list<pair<_wstring, _bool>> m_ActiveEffect; // 활성화된 이펙트 (이름, 한번만 실행할지)
 
 	static constexpr _float MINIMUM_TURN_ANGLE = 35.f;

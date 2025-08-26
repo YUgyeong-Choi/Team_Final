@@ -1,0 +1,81 @@
+{
+    "EffectObject": [
+      {
+        "Animation": true,
+        "Billboard": false,
+        "CenterColor": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "Color": [
+          0.2146596908569336,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Duration": 20,
+        "EffectType": 2,
+        "EmissiveIntensity": 0.0,
+        "EndTrack": 20,
+        "FlipUV": false,
+        "KeyFrames": [
+          {
+            "Color": [
+              0.2146596908569336,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Scale": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+              0.0,
+              0.4000000059604645,
+              0.0
+            ]
+          }
+        ],
+        "LifeTime": 0.0,
+        "Loop": true,
+        "ModelTag": "SM_Sphere_01_KMH",
+        "Name": "Mesh_ImsiOil",
+        "NumKeyFrames": 1,
+        "RenderGroup": 6,
+        "ShaderPass": 0,
+        "StartTrack": 0,
+        "TextureTags": [
+          "T_Tile_Noise_65_C_RSW",
+          "",
+          "",
+          ""
+        ],
+        "TextureUsage": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "Threshold": 0.8999999761581421,
+        "TickPerSecond": 60.0,
+        "TileTickPerSec": 60.0,
+        "TileX": 1,
+        "TileY": 1
+      }
+    ],
+    "Loop": true,
+    "MaxFrame": 20
+}

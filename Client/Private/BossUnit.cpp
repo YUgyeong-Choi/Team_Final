@@ -394,7 +394,7 @@ _bool CBossUnit::IsTargetInFront(_float fDectedAngle) const
     _vector vToPlayerXZ = XMVectorSetY(vPlayerPos - vThisPos, 0.f);
     _float fDot = XMVectorGetX(XMVector3Dot(vForward, vToPlayerXZ));
     fDot = clamp(fDot, -1.f, 1.f); // -1 ~ 1 사이로 제한
-    _float fAngle = cosf(XMConvertToRadians(30.f)); // 시야각 60도 기준
+    _float fAngle = cosf(XMConvertToRadians(fDectedAngle)); // 시야각 60도 기준
 
     return fDot > fAngle; // 앞쪽에 있으면 true
 }
@@ -461,7 +461,7 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
         _float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
         finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
     }
-    _float fMaxStep = 0.35f; // 프레임당 최대 이동 허용
+    _float fMaxStep = 0.45f; // 프레임당 최대 이동 허용
     if (XMVectorGetX(XMVector3Length(finalDelta)) > fMaxStep)
     {
         finalDelta = XMVector3Normalize(finalDelta) * fMaxStep;
@@ -476,7 +476,7 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
             // 갈 수 있으면 Y만 네비로 보정
             _float fY = m_pNaviCom->Compute_NavigationY(vNext);
             vTrans = XMVectorSetY(vNext, fY);
-			cout << "일반 이동" << endl;
+			//cout << "일반 이동" << endl;
         }
         else
         {
@@ -485,13 +485,13 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
 
             if (m_pNaviCom->isMove(vSlidePos))
             {
-				cout << "슬라이드 이동" << endl;
+				//cout << "슬라이드 이동" << endl;
                 _float fY = m_pNaviCom->Compute_NavigationY(vSlidePos);
                 vTrans = XMVectorSetY(vSlidePos, fY);
             }
             else
             {
-				cout << "이동 불가" << endl;
+				//cout << "이동 불가" << endl;
                 vTrans = XMVectorSetY(vTrans, m_pNaviCom->Compute_NavigationY(vTrans));
             }
         }

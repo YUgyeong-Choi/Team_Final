@@ -221,7 +221,6 @@ public:
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -359,7 +358,6 @@ public:
     virtual void Enter() override
     {
         m_pOwner->m_pAnimator->SetBool("Sprint", false);
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
         SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
@@ -488,7 +486,6 @@ public:
     virtual void Enter() override
     {
         m_pOwner->m_pAnimator->SetBool("Sprint", false);
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
         SetCurrentCombo(0);
         m_fStateTime = 0.f;
 
@@ -1731,7 +1728,6 @@ public:
     {
         m_fStateTime = 0.f;
 
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
         m_pOwner->m_bMovable = true;
     }
 

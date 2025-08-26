@@ -1,0 +1,288 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.5629780292510986,
+                0.21989530324935913,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.09424084424972534,
+                0.0,
+                1.0
+            ],
+            "Duration": 60,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.44999998807907104,
+            "EndTrack": 60,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.09424084424972534,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 3.5,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.00037702961708419025,
+                        0.7072306871414185,
+                        0.00037365261232480407,
+                        0.7069826722145081
+                    ],
+                    "Scale": [
+                        0.9998419284820557,
+                        0.9998526573181152,
+                        0.9999784827232361
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2866.0595703125,
+            "Loop": true,
+            "Name": "Fuoco_Spin3_LastFlame_Sprite1",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_07_9x9_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 9,
+            "TileY": 9
+        },
+        {
+            "Accel": [
+                -8.869999885559082,
+                -6.590000152587891
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.3390531539916992,
+                0.07853400707244873,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Duration": 60,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.3499999940395355,
+            "EndTrack": 60,
+            "FlipUV": false,
+            "Gravity": 1.0,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.2699999809265137,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        0.00017245895287487656,
+                        1.0
+                    ],
+                    "Scale": [
+                        0.9999978542327881,
+                        0.9999978542327881,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1853.98876953125,
+            "LifeTime_Particle": [
+                0.23000000417232513,
+                1.100000023841858
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Fuoco_Spin3_LastFlame_Particle1",
+            "NumInstance": 20,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -10.0,
+                10.0
+            ],
+            "PType": 1,
+            "Pivot": [
+                0.0,
+                -1.0,
+                0.0
+            ],
+            "Range": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 2,
+            "Size": [
+                2.0,
+                3.0
+            ],
+            "Speed": [
+                7.0,
+                8.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_06_8x8_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 8,
+            "TileY": 8,
+            "isTileLoop": true
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.5629780292510986,
+                0.21989530324935913,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.09424084424972534,
+                0.0,
+                1.0
+            ],
+            "Duration": 60,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.44999998807907104,
+            "EndTrack": 60,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.09424084424972534,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 3.5,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -6.79361955580049e-10,
+                        -1.3411039390121005e-07,
+                        0.00022741316934116185,
+                        1.0
+                    ],
+                    "Scale": [
+                        0.9999130964279175,
+                        0.9998274445533752,
+                        1.0000011920928955
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2864.859375,
+            "Loop": true,
+            "Name": "Fuoco_Spin3_LastFlame_Sprite2",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_07_9x9_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 9,
+            "TileY": 9
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 59
+}
