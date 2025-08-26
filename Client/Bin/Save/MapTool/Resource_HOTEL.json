@@ -245,6 +245,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Pillar_01.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_Exhibition_Pillar_06",
+        "NoInstancing": false,
+        "ObjectCount": 5,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Pillar_06.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Exhibition_RoofMolding_01",
         "NoInstancing": false,
@@ -659,6 +666,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_LightProp_Lamp_03",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Lamp_03.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_LightProp_Lantern_01",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -675,7 +689,7 @@
         "Collision": false,
         "ModelName": "SM_LightProp_StreetLamp_09",
         "NoInstancing": false,
-        "ObjectCount": 24,
+        "ObjectCount": 25,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_09.bin"
     },
     {
