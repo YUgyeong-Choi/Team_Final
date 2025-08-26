@@ -203,7 +203,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_Floor_04.bin"
     },
     {
-        "Collision": true,
+        "Collision": false,
         "ModelName": "SM_Cathedral_MetalDoor_02",
         "NoInstancing": false,
         "ObjectCount": 4,
@@ -224,7 +224,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Debris_06B.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Exhibition_OutWall_01",
         "NoInstancing": false,
         "ObjectCount": 5,
@@ -474,6 +474,13 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Lamp_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_LightProp_Lantern_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Lantern_01.bin"
     },
     {
         "Collision": false,

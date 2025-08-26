@@ -595,6 +595,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #pragma region 맵 로딩
 
+	lstrcpy(m_szLoadingText, TEXT("맵 생성 시작!!..."));
+
 	m_pGameInstance->ClaerOctoTreeObjects();
 
 	//lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
