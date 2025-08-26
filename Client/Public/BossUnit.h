@@ -146,6 +146,10 @@ protected:
 	_float m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
 	_float m_fTurnTimeDuringAttack = 0.f;
 
+#ifdef _DEBUG
+	_bool m_bDebugMode = false;
+#endif // _DEBUG
+
 
 	// 공격 관련
 	//_int   m_iPatternLimit = 3;

@@ -476,7 +476,7 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
             // 갈 수 있으면 Y만 네비로 보정
             _float fY = m_pNaviCom->Compute_NavigationY(vNext);
             vTrans = XMVectorSetY(vNext, fY);
-			cout << "일반 이동" << endl;
+			//cout << "일반 이동" << endl;
         }
         else
         {
@@ -485,13 +485,13 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
 
             if (m_pNaviCom->isMove(vSlidePos))
             {
-				cout << "슬라이드 이동" << endl;
+			//	cout << "슬라이드 이동" << endl;
                 _float fY = m_pNaviCom->Compute_NavigationY(vSlidePos);
                 vTrans = XMVectorSetY(vSlidePos, fY);
             }
             else
             {
-				cout << "이동 불가" << endl;
+			//	cout << "이동 불가" << endl;
                 vTrans = XMVectorSetY(vTrans, m_pNaviCom->Compute_NavigationY(vTrans));
             }
         }
