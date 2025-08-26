@@ -312,6 +312,7 @@ private: /* [ 플레이어 변수 ] */
 	_float  m_fSetTime = {};
 	_bool   m_bSetOnce = {};
 	_bool   m_bSetTwo = {};
+	_bool   m_bSetSound = {};
 
 	_float	m_fMaxHP = { 100.f };
 	_float	m_fHP = { 100.f };

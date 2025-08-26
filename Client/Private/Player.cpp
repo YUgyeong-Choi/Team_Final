@@ -456,6 +456,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bMoveReset = false;
 		m_bSetOnce = false;
 		m_bSetTwo = false;
+		m_bSetSound = false;
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
@@ -503,6 +504,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_1st");
+				m_bSetSound = true;
+			}
+		}
+
 		break;
 	}
 	case eAnimCategory::NORMAL_ATTACKB:
@@ -529,6 +539,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+			}
+		}
+
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
+				m_bSetSound = true;
 			}
 		}
 		break;
@@ -559,6 +578,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_bSetOnce = true;
 			}
 		}
+
+		if (m_fSetTime > 0.4f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_1st");
+				m_bSetSound = true;
+			}
+		}
 		break;
 	}
 	case eAnimCategory::STRONG_ATTACKB:
@@ -585,6 +613,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+			}
+		}
+
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
+				m_bSetSound = true;
 			}
 		}
 		break;
@@ -904,6 +941,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::HITED:
 	{
 		RootMotionActive(fTimeDelta);
+
+		if (!m_bSetSound)
+		{
+			m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+			m_bSetSound = true;
+		}
+
 		break;
 	}
 	case eAnimCategory::GRINDER:

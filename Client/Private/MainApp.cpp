@@ -281,7 +281,9 @@ HRESULT CMainApp::Ready_Sound()
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/SoundSpace/", false, true);
 
+	/* [ 플레이어 사운드 ] */
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Unit/Player/", false, false, false);
+	ADD_SOUND_EX(Weapon, "../Bin/Resources/Sound/Unit/Weapon/", false, false, false);
 
 	/* [ 동영상용 사운드 ] */
 	ADD_SOUND_EX(Intro, "../Bin/Resources/Sound/Video/Intro/", false, false, false);

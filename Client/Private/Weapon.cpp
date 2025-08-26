@@ -211,6 +211,10 @@ HRESULT CWeapon::Ready_Components()
 	if (FAILED(m_pAnimator->Initialize(m_pModelCom)))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Weapon"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -329,4 +333,5 @@ void CWeapon::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pSoundCom);
 }

@@ -2027,7 +2027,6 @@ public:
                     return;
                 }
 
-                m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_L_", 3);
 
                 switch (m_pOwner->m_eDir)
                 {
@@ -2943,8 +2942,6 @@ public:
             m_bDead = true;
             return;
         }
-
-        m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_L_", 3);
 
         m_fStateTime = 0.f;
 
