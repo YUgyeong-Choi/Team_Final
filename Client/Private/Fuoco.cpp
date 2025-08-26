@@ -67,7 +67,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);	
 #ifdef _DEBUG
-	if (KEY_DOWN(DIK_V))
+	if (KEY_DOWN(DIK_X))
 	{
 		m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType", SwingAtkSeq);
