@@ -69,8 +69,15 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))
 	{
-		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", SwingAtkSeq);
+
+		static _int i = 0;
+		static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+	
+		cout << "현재 공격 인덱스 " << i << endl;
+		m_pAnimator->SetInt("SkillType", testArray[i++]);
+		if (i >= 13)
+			i = 0;
 		//m_pAnimator->SetTrigger("Paralyzation");
 	//	m_pAnimator->SetTrigger("Fatal");
 		//m_pAnimator->SetTrigger("Groggy");
@@ -82,9 +89,10 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_C))
 	{
-		//m_fHP -= 10.f;
 		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType",Uppercut);
+		//m_fHP -= 10.f;
+		/*m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetInt("SkillType",Uppercut);*/
 
 		//CEffectContainer::DESC desc = {};
 	//desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
@@ -395,6 +403,12 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 	if (fDistance >= 25.f)
 		return;
+
+
+#ifdef _DEBUG
+	if (m_bDebugMode)
+		return;
+#endif // _DEBUG
 
 
 
