@@ -71,7 +71,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	{
 
 		static _int i = 0;
-		static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+		static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13 };
 
 	
 		cout << "현재 공격 인덱스 " << i << endl;
