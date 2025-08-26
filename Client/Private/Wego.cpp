@@ -47,11 +47,21 @@ HRESULT CWego::Initialize(void* pArg)
 void CWego::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+	if (m_bFinish)
+	{
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);
+		m_bFinish = false;
+	}
+}
+
+void CWego::Update(_float fTimeDelta)
+{
+	__super::Update(fTimeDelta);
 
 	// Talk ม๘วเ
 	if (m_bTalkActive)
 	{
-		if (m_pGameInstance->Key_Down(DIK_F))
+		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
 			++m_curTalkIndex;
 			if (m_curTalkIndex >= m_NpcTalkData[m_curTalkType].size())
@@ -61,10 +71,10 @@ void CWego::Priority_Update(_float fTimeDelta)
 
 				m_curTalkIndex = 0;
 				m_bTalkActive = false;
+				m_bFinish = true;
 				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-				CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
-
+				CUI_Manager::Get_Instance()->Activate_TalkScript(false);
 				CUI_Manager::Get_Instance()->On_Panel();
 				return;
 			}
@@ -85,7 +95,7 @@ void CWego::Priority_Update(_float fTimeDelta)
 
 			//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
 
-			
+
 			CUI_Manager::Get_Instance()->Off_Panel();
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 			CUI_Manager::Get_Instance()->Activate_TalkScript(true);
@@ -100,20 +110,15 @@ void CWego::Priority_Update(_float fTimeDelta)
 		{
 			m_curTalkIndex = 0;
 			m_bTalkActive = false;
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr,true, 0.f);
-			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+			m_bFinish = true;
 
-			
-		
+
+
 			CUI_Manager::Get_Instance()->On_Panel();
 			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
 		}
 	}
-}
-
-void CWego::Update(_float fTimeDelta)
-{
-	__super::Update(fTimeDelta);
 }
 
 void CWego::Late_Update(_float fTimeDelta)

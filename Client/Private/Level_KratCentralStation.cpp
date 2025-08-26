@@ -494,9 +494,9 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a4p1 = _float3{ 95.67f, 15.49f, -21.39f };
 	_float3 a4Min, a4Max;
 	FnToAABB(a4p0, a4p1, a4Min, a4Max);
-
+	
 	// Area 5
-	_float3 a5p0 = _float3{ 135.35f, -5.63f,  32.20f };
+	_float3 a5p0 = _float3{ 110.35f, -5.63f,  32.20f };
 	_float3 a5p1 = _float3{ 26.53f,  49.64f, -52.41f };
 	_float3 a5Min, a5Max;
 	FnToAABB(a5p0, a5p1, a5Min, a5Max);
@@ -538,8 +538,8 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a11p0, a11p1, a11Min, a11Max);
 
 	// Area 12
-	_float3 a12p0 = _float3{ 141.09f, 0.33f, -71.50f };
-	_float3 a12p1 = _float3{ 114.46f, 36.75f, -26.58f };
+	_float3 a12p0 = _float3{ 150.09f, 0.33f, -71.50f };
+	_float3 a12p1 = _float3{ 110.35f, 36.75f, -26.58f };
 	_float3 a12Min, a12Max;
 	FnToAABB(a12p0, a12p1, a12Min, a12Max);
 
@@ -550,7 +550,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a13p0, a13p1, a13Min, a13Max);
 
 	// Area 14
-	_float3 a14p0 = _float3{ 139.64f, -3.73f, -32.23f };
+	_float3 a14p0 = _float3{ 139.64f, -3.73f, -34.23f };
 	_float3 a14p1 = _float3{ 164.14f, 27.16f, -15.25f };
 	_float3 a14Min, a14Max;
 	FnToAABB(a14p0, a14p1, a14Min, a14Max);
@@ -602,30 +602,30 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 4번 구역 ] */
-		const vector<_uint> vecAdj4 = { 5, 3, 6 };
+		const vector<_uint> vecAdj4 = { 5, 6, 7 };
 		if (!m_pGameInstance->AddArea_AABB(
-			4, a4Min, a4Max, vecAdj4, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			4, a4Min, a4Max, vecAdj4, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	} 
 	{
 		/* [ 5번 구역 ] */
-		const vector<_uint> vecAdj5 = { 3, 6 };
+		const vector<_uint> vecAdj5 = { 4, 6 };
 		if (!m_pGameInstance->AddArea_AABB(
 			5, a5Min, a5Max, vecAdj5, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;
 	}
 	{
 		/* [ 6번 구역 ] */
-		const vector<_uint> vecAdj6 = { 4 , 7 };
+		const vector<_uint> vecAdj6 = { 4, 7, 12 };
 		if (!m_pGameInstance->AddArea_AABB(
 			6, a6Min, a6Max, vecAdj6, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 	{
 		/* [ 7번 구역 ] */
-		const vector<_uint> vecAdj7 = { 4, 8, 9 };
+		const vector<_uint> vecAdj7 = { 8, 9, 14, 18, 12 };
 		if (!m_pGameInstance->AddArea_AABB(
-			7, a7Min, a7Max, vecAdj7, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			7, a7Min, a7Max, vecAdj7, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;
 	}
 	{
@@ -695,14 +695,14 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 		/* [ 17번 구역 ] */
 		const vector<_uint> vecAdj17 = { 7, 14, 16, 18 };
 		if (!m_pGameInstance->AddArea_AABB(
-			17, a17Min, a17Max, vecAdj17, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			17, a17Min, a17Max, vecAdj17, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 	{
 		/* [ 18번 구역 ] */
 		const vector<_uint> vecAdj18 = { 7, 12, 14, 16, 17 };
 		if (!m_pGameInstance->AddArea_AABB(
-			18, a18Min, a18Max, vecAdj18, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			18, a18Min, a18Max, vecAdj18, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
 	}
 

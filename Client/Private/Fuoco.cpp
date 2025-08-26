@@ -65,7 +65,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 void CFuoco::Priority_Update(_float fTimeDelta)
 {
-	__super::Priority_Update(fTimeDelta);	
+	__super::Priority_Update(fTimeDelta);
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))
 	{
@@ -84,7 +84,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
 	//	m_fHP -= 10.f;
-		//FireProjectile(ProjectileType::Oil);
+		FireProjectile(ProjectileType::Oil);
 	}
 
 	if (KEY_DOWN(DIK_C))
@@ -103,49 +103,79 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_SpinReady_HandSpark_P2"), &desc) == nullptr)
 	//	MSG_BOX("이펙트 생성 실패함");
 	}
+
 	if (KEY_DOWN(DIK_B))
 	{
-			m_bDebugMode = !m_bDebugMode;
-			cout << "디버그 모드 " << m_bDebugMode << endl;
-		////CEffectContainer::DESC desc = {};
-		////auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
-		//CEffectContainer::DESC desc = {};
-		//auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
-
-		//_vector rot, trans, scale;
-		//XMMatrixDecompose(&scale, &rot, &trans, worldmat);
-
-		//_vector finalRot = XMQuaternionMultiply(XMQuaternionInverse(rot), XMQuaternionRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f)));
-		//
-		//XMStoreFloat4x4(&desc.PresetMatrix,XMMatrixRotationQuaternion(finalRot) *
-		//	XMMatrixTranslation(worldmat.r[3].m128_f32[0],
-		//		m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
-		//		worldmat.r[3].m128_f32[2]));
-
-		//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_FloorFountain_P2"), &desc) == nullptr)
-		//	MSG_BOX("이펙트 생성 실패함");
-
-		//desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-		//desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-		//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-
-		//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_HandSpark_P1"), &desc) == nullptr)
-		//	MSG_BOX("이펙트 생성 실패함");
-
-		////FireProjectile(ProjectileType::FireBall, 25.f);
+		m_bDebugMode = !m_bDebugMode;
 	}
-	if (KEY_DOWN(DIK_V))
+
+	if (KEY_PRESSING(DIK_LCONTROL))
 	{
-		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", SlamAtk);
-	/*	CEffectContainer::DESC desc = {};
-		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+		if (KEY_DOWN(DIK_X))
+		{
+			// 마지막 돌 때 한번만 실행되면 됨
+			CEffectContainer::DESC desc = {};
+			desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Finger0"));
+			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(_vector{ 1.f, 0.f, 0.f, 0.f}, XMConvertToRadians(90.f)) * 
+			XMMatrixTranslation(0.f, 0.f, 1.5f));
 
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"), &desc) == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+		if (KEY_DOWN(DIK_C))
+		{
+			CEffectContainer::DESC desc = {};
+			desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
 
-		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Slam_Imsi_P2"), &desc) == nullptr)
-			MSG_BOX("이펙트 생성 실패함");*/
+			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_SpinReady_HandSpark_P2"), &desc) == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+		if (KEY_DOWN(DIK_V))
+		{
+			CEffectContainer::DESC desc = {};
+			desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+
+			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Slam_Imsi_P2"), &desc) == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+		if (KEY_PRESSING(DIK_B))
+		{
+			m_pAnimator->SetTrigger("Attack");
+			m_pAnimator->SetInt("SkillType", P2_FireOil);
+			//CEffectContainer::DESC desc = {};
+			//auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+			CEffectContainer::DESC desc = {};
+			auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+
+			_vector rot, trans, scale;
+			XMMatrixDecompose(&scale, &rot, &trans, worldmat);
+
+			_vector finalRot = XMQuaternionMultiply(XMQuaternionInverse(rot), XMQuaternionRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f)));
+
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(finalRot) *
+				XMMatrixTranslation(worldmat.r[3].m128_f32[0],
+					m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
+					worldmat.r[3].m128_f32[2]));
+
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_FloorFountain_P2"), &desc) == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+
+			desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spin3_HandSpark_P1"), &desc) == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+
+			//FireProjectile(ProjectileType::FireBall, 25.f);
+		}
 	}
 #endif
 }
@@ -253,7 +283,6 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForFoot->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForFoot->Get_Actor());
 	}
-
 
 	return S_OK;
 }

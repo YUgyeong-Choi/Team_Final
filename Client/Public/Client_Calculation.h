@@ -162,6 +162,60 @@ static _matrix Turn_Billboard(_fmatrix SrcMatrix, _float fRotationPerSec, _float
     return m_Return;
 }
 
+static _matrix Compute_Billboard_WithOffset(_fmatrix SrcMatrix)
+{
+    _float4x4 m_Return = {};
+    XMStoreFloat4x4(&m_Return, XMMatrixIdentity());
+
+    // 1. 원본 행렬에서 스케일/위치 추출
+    _float3 vScaled = _float3(
+        XMVectorGetX(XMVector3Length(SrcMatrix.r[0])),
+        XMVectorGetX(XMVector3Length(SrcMatrix.r[1])),
+        XMVectorGetX(XMVector3Length(SrcMatrix.r[2]))
+    );
+    _vector vPosition = SrcMatrix.r[3];
+
+    // 2. 카메라 축 기준 빌보드
+    _matrix matCamWorld = CGameInstance::Get_Instance()->Get_Transform_Matrix_Inv(D3DTS::VIEW);
+    _vector vRight = XMVector3Normalize(matCamWorld.r[0]) * vScaled.x;
+    _vector vUp = XMVector3Normalize(matCamWorld.r[1]) * vScaled.y;
+    _vector vLook = XMVector3Normalize(matCamWorld.r[2]) * vScaled.z;
+
+    // 3. 내가 원래 월드 행렬에서 줬던 회전을 적용 (Offset Rotation)
+    //    예: SrcMatrix의 회전 부분만 뽑아내서 곱하기
+    _matrix matOffset;
+    {
+        _float4x4 rotOnly;
+        rotOnly._11 = XMVectorGetX(XMVector3Normalize(SrcMatrix.r[0]));
+        rotOnly._12 = XMVectorGetY(XMVector3Normalize(SrcMatrix.r[0]));
+        rotOnly._13 = XMVectorGetZ(XMVector3Normalize(SrcMatrix.r[0]));
+        rotOnly._21 = XMVectorGetX(XMVector3Normalize(SrcMatrix.r[1]));
+        rotOnly._22 = XMVectorGetY(XMVector3Normalize(SrcMatrix.r[1]));
+        rotOnly._23 = XMVectorGetZ(XMVector3Normalize(SrcMatrix.r[1]));
+        rotOnly._31 = XMVectorGetX(XMVector3Normalize(SrcMatrix.r[2]));
+        rotOnly._32 = XMVectorGetY(XMVector3Normalize(SrcMatrix.r[2]));
+        rotOnly._33 = XMVectorGetZ(XMVector3Normalize(SrcMatrix.r[2]));
+        rotOnly._41 = 0.f;
+        rotOnly._42 = 0.f;
+        rotOnly._43 = 0.f;
+        rotOnly._44 = 1.f;
+        matOffset = XMLoadFloat4x4(&rotOnly);
+    }
+
+    vRight = XMVector3TransformNormal(vRight, matOffset);
+    vUp = XMVector3TransformNormal(vUp, matOffset);
+    vLook = XMVector3TransformNormal(vLook, matOffset);
+
+    // 4. 최종 행렬 구성
+    XMStoreFloat3((_float3*)&m_Return.m[0][0], vRight);
+    XMStoreFloat3((_float3*)&m_Return.m[1][0], vUp);
+    XMStoreFloat3((_float3*)&m_Return.m[2][0], vLook);
+    XMStoreFloat3((_float3*)&m_Return.m[3][0], vPosition);
+    m_Return._44 = 1.f;
+
+    return XMLoadFloat4x4(&m_Return);
+}
+
 static _float LerpFloat(_float a, _float b, _float t)
 {
     return a + (b - a) * t;

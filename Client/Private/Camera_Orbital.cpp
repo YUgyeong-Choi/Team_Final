@@ -376,17 +376,12 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 
 	// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
-	if (m_bTalkActive)
-	{
-		m_vPlayerPosition = XMLoadFloat4(&static_cast<CUnit*>(m_pPlayer)->Get_LockonPos());
-	}
-	else
+	if (!m_bTalkActive)
 	{
 		m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
 		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 	}
-
 
 	// 방향 계산
 	_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);

@@ -72,9 +72,11 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 	if (CurrentArea.empty())
 		return;
 
-	//여기 공간 중 한곳에 있을 경우
-	vector<_uint> vecHotelIds = { 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
-	if (IsInAnyArea(CurrentArea, vecHotelIds))
+	_int iCurrentAreaId = CurrentArea.front();
+
+	//현재 활성화된 지역이 호텔입니다.
+	vector<_uint> vecHotelIds = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+	if (find(vecHotelIds.begin(), vecHotelIds.end(), iCurrentAreaId) != vecHotelIds.end())
 	{
 		if (m_wsMap == TEXT("HOTEL"))
 		{
@@ -82,8 +84,9 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 		}
 	}
 
-	vector<_uint> vecStationIds = { 1, 2, 3, 4, 5, 6 };
-	if (IsInAnyArea(CurrentArea, vecStationIds))
+	//현재 활성화된 지역이 스테이션입니다.
+	vector<_uint> vecStationIds = { 1, 2, 3, 4, 5 };
+	if (find(vecStationIds.begin(), vecStationIds.end(), iCurrentAreaId) != vecStationIds.end())
 	{
 		if (m_wsMap == TEXT("STATION"))
 		{

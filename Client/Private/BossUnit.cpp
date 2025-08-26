@@ -485,13 +485,13 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
 
             if (m_pNaviCom->isMove(vSlidePos))
             {
-			//	cout << "슬라이드 이동" << endl;
+				//cout << "슬라이드 이동" << endl;
                 _float fY = m_pNaviCom->Compute_NavigationY(vSlidePos);
                 vTrans = XMVectorSetY(vSlidePos, fY);
             }
             else
             {
-			//	cout << "이동 불가" << endl;
+				//cout << "이동 불가" << endl;
                 vTrans = XMVectorSetY(vTrans, m_pNaviCom->Compute_NavigationY(vTrans));
             }
         }
