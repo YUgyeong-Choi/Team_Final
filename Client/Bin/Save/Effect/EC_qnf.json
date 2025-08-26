@@ -11,7 +11,7 @@
             ],
             "Color": [
                 1.0,
-                0.0941176488995552,
+                0.09424084424972534,
                 0.0,
                 1.0
             ],
@@ -31,15 +31,15 @@
                     "Intensity": 3.5,
                     "Interpolation": 0,
                     "Rotation": [
+                        0.00017228729848284274,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         1.0,
-                        1.0,
-                        1.0
+                        0.9999995827674866,
+                        0.9999995827674866
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -47,120 +47,12 @@
                         0.0,
                         0.0
                     ]
-                },
-                {
-                    "Color": [
-                        1.0,
-                        0.0941176488995552,
-                        0.0,
-                        1.0
-                    ],
-                    "Intensity": 0.0,
-                    "Interpolation": 2,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "TrackPosition": 6.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "Color": [
-                        1.0,
-                        0.0941176488995552,
-                        0.0,
-                        1.0
-                    ],
-                    "Intensity": 3.5,
-                    "Interpolation": 3,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "TrackPosition": 11.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "Color": [
-                        1.0,
-                        0.0941176488995552,
-                        0.0,
-                        1.0
-                    ],
-                    "Intensity": 0.0,
-                    "Interpolation": 0,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "TrackPosition": 32.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "Color": [
-                        1.0,
-                        0.0941176488995552,
-                        0.0,
-                        1.0
-                    ],
-                    "Intensity": 3.5,
-                    "Interpolation": 0,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "TrackPosition": 40.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
                 }
             ],
-            "LifeTime": 2387.123046875,
+            "LifeTime": 2635.804931640625,
             "Loop": true,
             "Name": "Fuoco_Spin3_LastFlame_Sprite1",
-            "NumKeyFrames": 5,
+            "NumKeyFrames": 1,
             "RenderGroup": 8,
             "ShaderPass": 5,
             "StartTrack": 0,
@@ -184,8 +76,8 @@
         },
         {
             "Accel": [
-                0.0,
-                0.0
+                -5.0,
+                -5.0
             ],
             "Animation": false,
             "Billboard": false,
@@ -224,10 +116,10 @@
                     "Intensity": 1.2699999809265137,
                     "Interpolation": 0,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         1.0,
@@ -242,9 +134,9 @@
                     ]
                 }
             ],
-            "LifeTime": 1371.16455078125,
+            "LifeTime": 1623.552734375,
             "LifeTime_Particle": [
-                0.23000000417232513,
+                0.30000001192092896,
                 1.100000023841858
             ],
             "Local": true,
@@ -253,7 +145,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_Spin3_LastFlame_Particle1",
-            "NumInstance": 8,
+            "NumInstance": 5,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -292,8 +184,8 @@
                 3.0
             ],
             "Speed": [
-                2.0,
-                2.0
+                5.0,
+                6.0
             ],
             "Spin": false,
             "StartTrack": 0,
