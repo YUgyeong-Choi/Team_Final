@@ -117,7 +117,7 @@ void CAnimator::PlayClip(CAnimation* pAnim, _bool isLoop)
 
 void CAnimator::StartTransition(const CAnimController::TransitionResult& transitionResult)
 {
-//	ResetRootMotion();
+	ResetRootMotion();
 
 	m_Blend.active = true;
 	m_Blend.elapsed = 0.f;
@@ -249,7 +249,6 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 	AddUniqueClip(m_Blend.toLowerAnim, m_pBlendAnimArray, m_iBlendAnimCount);
 	AddUniqueClip(m_Blend.fromUpperAnim, m_pBlendAnimArray, m_iBlendAnimCount);
 	AddUniqueClip(m_Blend.toUpperAnim, m_pBlendAnimArray, m_iBlendAnimCount);
-
 
 	for (_int i = 0; i < m_iBlendAnimCount; ++i)
 	{
@@ -416,7 +415,6 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 		m_bIsFinished = false;
 		m_Blend.elapsed = 0.f;
 		m_Blend.active = false;
-		ResetRootMotion();
 		m_pCurrentAnim = m_Blend.toLowerAnim;
 
 		return;
@@ -455,6 +453,11 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 					m_Bones[i]->Set_TransformationMatrix(lowerM[i]);
 			}
 		}
+
+		//if (m_pLowerClip->IsRootMotionEnabled() || m_pUpperClip->IsRootMotionEnabled())
+		//{
+		//	RootMotionDecomposition();
+		//}
 	}
 	else if (m_pCurrentAnim)
 	{
@@ -655,19 +658,37 @@ void CAnimator::RootMotionDecomposition()
 	_float3 rootPos;      XMStoreFloat3(&rootPos, rootTrans);
 	_float4 pelvisRot;    XMStoreFloat4(&pelvisRot, pelvisRotQuat);
 
-	this->SetCurrentRootPosition(rootPos);
 	this->SetCurrentRootRotation(pelvisRot);
+	this->SetCurrentRootPosition(rootPos);
 }
 
 void CAnimator::ResetRootMotion()
 {
 	m_bFirstFrameAfterReset = true;
 	m_RootMotionDelta = { 0.f, 0.f, 0.f };
-	m_PrevRootPosition = { 0.f, 0.f, 0.f };
-	m_CurrentRootPosition = { 0.f, 0.f, 0.f };
-	m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
-	m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
-	m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
+
+	if (!m_Bones.empty())
+	{
+		_matrix rootMat = XMLoadFloat4x4(m_Bones[1]->Get_CombinedTransformationMatrix());
+		_vector s, r, t;
+		XMMatrixDecompose(&s, &r, &t, rootMat);
+		XMStoreFloat3(&m_PrevRootPosition, t);
+		XMStoreFloat3(&m_CurrentRootPosition, t);
+		XMStoreFloat4(&m_PrevRootRotation, r);
+		XMStoreFloat4(&m_CurrentRootRotation, r);
+	}
+	else
+	{
+		m_PrevRootPosition = { 0.f, 0.f, 0.f };
+		m_CurrentRootPosition = { 0.f, 0.f, 0.f };
+		m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
+		m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
+	}
+	//m_PrevRootPosition = { 0.f, 0.f, 0.f };
+	//m_CurrentRootPosition = { 0.f, 0.f, 0.f };
+	//m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+	//m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
+	//m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
 }
 
 void CAnimator::DispatchAnimEvents(const vector<string>& triggeredEvents)

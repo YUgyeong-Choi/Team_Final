@@ -89,7 +89,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
-
+		m_eCurrentState = EBossState::ATTACK;
 		m_pAnimator->SetBool("IsCombo", true);
 		_int iDir = GetYawSignFromDiretion();
 		m_pAnimator->SetInt("Direction", iDir);
@@ -428,13 +428,16 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_eCurrentState = EBossState::FATAL;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
+		m_eCurrentState = EBossState::ATTACK;
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
+		m_eCurrentState = EBossState::ATTACK;
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 	{
+		m_eCurrentState = EBossState::ATTACK;
 			if(iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
 				EffectSpawn_Active(15, true);
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
@@ -443,14 +446,17 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET):
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET2):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(100.f);
+		m_eCurrentState = EBossState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_END):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
+		m_eCurrentState = EBossState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
+		m_eCurrentState = EBossState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::CUTSCENE):
 		m_eCurrentState = EBossState::CUTSCENE;
@@ -1141,14 +1147,7 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
 	}
-	else if (stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
-	{
-		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	}
-	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2"))
+	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2") || stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
 	{
 	
 		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();

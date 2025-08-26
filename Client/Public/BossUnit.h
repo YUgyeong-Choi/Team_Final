@@ -137,11 +137,11 @@ protected:
 	_vector  m_PrevWorldRotation = XMVectorZero();
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
-	_float   m_fSmoothThreshold = 0.1f;
+	_float   m_fSmoothThreshold = 0.05f;
 	_float   m_fSlideClamp = 0.2f;
 	_float   m_fWalkSpeed = 3.f;
 	_float   m_fRunSpeed = 6.f;
-	_float   m_fRootMotionAddtiveScale =1.f; // 루트 모션 추가 배율
+	_float   m_fRootMotionAddtiveScale =1.2f; // 루트 모션 추가 배율
 	_float   m_fChasingDistance = 1.5f; // 플레이어 추적 거리
 
 	_float m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임

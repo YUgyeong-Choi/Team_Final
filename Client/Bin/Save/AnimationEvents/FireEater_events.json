@@ -37,7 +37,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -70,7 +70,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -103,7 +103,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -410,7 +410,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
