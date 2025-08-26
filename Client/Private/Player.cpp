@@ -795,7 +795,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 					m_bSetSound = true;
 					m_bCheckSound = true;
 				}
-
 			}
 		}
 
@@ -909,6 +908,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bSetOnce = true;
 		}
 
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.4f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_1st");
+				m_bSetSound = true;
+			}
+		}
 		break;
 	}
 	case eAnimCategory::SPRINT_ATTACKB:
@@ -929,6 +937,16 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 20.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
+		}
+
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.4f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_3rd");
+				m_bSetSound = true;
+			}
 		}
 
 		break;
