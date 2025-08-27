@@ -1111,7 +1111,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::GUARD_HIT;
 	if (stateName.find("Guard_Break") == 0)
 		return eAnimCategory::GUARD_BREAK;
-	if (stateName.find("Guard") == 0) return eAnimCategory::GUARD;
+	if (stateName.find("Guard") == 0) 
+		return eAnimCategory::GUARD;
 
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
