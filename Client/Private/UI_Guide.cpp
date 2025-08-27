@@ -44,7 +44,7 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     {
         CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
-        eDesc.strFilePath = partPath;
+        eDesc.strFilePath = partPath; 
 
         m_Explainations.push_back(static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc)));
 
@@ -90,18 +90,34 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
     {
         CUI_Manager::Get_Instance()->Off_Panel();
-        m_pGameInstance->Set_GameTimeScale(0.01f);
+
+      
     }
 
+
+    m_fCurrentAlpha = 1.f;
+   
 
     return S_OK;
 }
 
 void CUI_Guide::Priority_Update(_float fTimeDelta)
 {
+    if (m_isFade == false && m_fCurrentAlpha <= 0.f)
+    {
+        Set_bDead();
+        return;
+    }
+
+  
+
+    
+
+
+
+    
     
    
-
     // Å° ÀÔ·Â
     Check_Button();
     
@@ -110,7 +126,24 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
 
 void CUI_Guide::Update(_float fTimeDelta)
 {
-    
+
+    Fade(fTimeDelta);
+
+    for (auto& pObj : m_pBackGround->Get_PartUI())
+    {
+        pObj->Update(fTimeDelta);
+    }
+
+    for (auto& pParts : m_Explainations)
+    {
+        for (auto& pObj : pParts->Get_PartUI())
+            pObj->Update(fTimeDelta);
+    }
+
+    for (auto& pObj : m_Buttons)
+    {
+        pObj->Update(fTimeDelta);
+    }
 
   
 }
@@ -142,20 +175,50 @@ HRESULT CUI_Guide::Render()
 
 void CUI_Guide::Check_Button()
 {
+
     if (m_pGameInstance->Key_Down(DIK_SPACE))
     {
        
-        Active_Update(false);
-
-        m_iIndex = 0;
+       
+       
 
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
         {
-            Set_bDead();
+          
             CUI_Manager::Get_Instance()->On_Panel();
-            m_pGameInstance->Set_GameTimeScale(1.f);
+
+           
+
+           
+            FadeStart(1.f, 0.f, 0.25f);
+
+            for (auto& pObj : m_pBackGround->Get_PartUI())
+            {
+                pObj->Set_isReverse(true);
+            }
+
+            for (auto& pParts : m_Explainations)
+            {
+                for (auto& pObj : pParts->Get_PartUI())
+                    pObj->Set_isReverse(true);
+            }
+
+            for (auto& pObj : m_Buttons)
+            {
+                pObj->Set_isReverse(true);
+            }
+
+        
+
             return;
         }
+        else
+        {
+            Active_Update(false);
+
+        }
+
+        m_iIndex = 0;
             
     }
 
@@ -216,19 +279,43 @@ void CUI_Guide::Click_Interaction()
     {
         if (m_Buttons[0]->Get_isActive() && m_Buttons[0]->Check_Click())
         {
-            Active_Update(false);
-
-            m_iIndex = 0;
+          
 
             if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
             {
-                Set_bDead();
+               
+
                 CUI_Manager::Get_Instance()->On_Panel();
-                m_pGameInstance->Set_GameTimeScale(1.f);
+
+
+
+
+                FadeStart(1.f, 0.f, 0.5f);
+
+                for (auto& pObj : m_pBackGround->Get_PartUI())
+                {
+                    pObj->Set_isReverse(true);
+                }
+
+                for (auto& pParts : m_Explainations)
+                {
+                    for (auto& pObj : pParts->Get_PartUI())
+                        pObj->Set_isReverse(true);
+                }
+
+                for (auto& pObj : m_Buttons)
+                {
+                    pObj->Set_isReverse(true);
+                }
+               
                 return;
             }
+            else
+            {
+                Active_Update(false);
+            }
 
-
+            m_iIndex = 0;
         }
 
 
@@ -306,6 +393,4 @@ void CUI_Guide::Free()
 
     Safe_Release(m_pButtonContainer);
 
-    for (auto& pPart : m_Explainations)
-        Safe_Release(pPart);
 }

@@ -104,8 +104,14 @@ void CUI_Text::Late_Update(_float fTimeDelta)
 
 HRESULT CUI_Text::Render()
 {
-	if(m_isFade)
-		m_vColor = { m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha, m_fCurrentAlpha };
+	if (m_isFade)
+	{
+		m_vColor.x *= m_fCurrentAlpha;
+		m_vColor.y *= m_fCurrentAlpha;
+		m_vColor.z *= m_fCurrentAlpha;
+		m_vColor.w *= m_fCurrentAlpha;
+	}
+		
 
 	switch (m_eAlignType)
 	{

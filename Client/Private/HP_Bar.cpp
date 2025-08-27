@@ -48,6 +48,11 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 		}
 			
 		m_fRatio = (m_fCurrentHP) / m_fMaxHP;
+
+		if (m_fRatio > m_fCurrentRatio)
+			m_isPlus = true;
+		else
+			m_isPlus = false;
 		
 		});
 
@@ -71,6 +76,35 @@ void CHP_Bar::Update(_float fTimeDelta)
 {
 	// 일단 하고 나중에 고쳐
 	__super::Update(fTimeDelta);
+
+	if (m_isPlus)
+	{
+		if (m_fCurrentRatio < m_fRatio)
+		{
+			m_fCurrentRatio += fTimeDelta * 2.f;
+		}
+		else
+		{
+			m_fCurrentRatio = m_fRatio;
+		}
+	}
+	else
+	{
+		if (m_fCurrentRatio > m_fRatio)
+		{
+			m_fCurrentRatio -= fTimeDelta * 2.f;
+		}
+		else
+		{
+			m_fCurrentRatio = m_fRatio;
+		}
+	}
+
+	
+	
+	
+
+
 }
 
 void CHP_Bar::Late_Update(_float fTimeDelta)
@@ -110,7 +144,7 @@ HRESULT CHP_Bar::Bind_ShaderResources()
 	if (FAILED(m_pGradationCom->Bind_ShaderResource(m_pShaderCom, "g_GradationTexture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fRatio, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fCurrentRatio, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

@@ -2,6 +2,7 @@
 #include "BossUnit.h"
 #include "Client_Defines.h"
 #include "PhysX_ControllerReport.h"
+#include "UI_MonsterHP_Bar.h"
 
 NS_BEGIN(Client)
 class CFuoco final : public CBossUnit
@@ -242,6 +243,8 @@ private:
     const _float ATTACK_DISTANCE_MIDDLE = 10.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
     const _int LIMIT_FIREBALL_COMBO_COUNT = 3;
+
+   
 public:
 	static CFuoco* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

@@ -163,6 +163,8 @@ void CDynamic_UI::Priority_Update(_float fTimeDelta)
 
 void CDynamic_UI::Update(_float fTimeDelta)
 {
+	Fade(fTimeDelta);
+
 	if (!m_isFromTool)
 	{
 		m_fElapsedTime += fTimeDelta;
