@@ -1007,7 +1007,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vEmissive = g_PBR_Emissive.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
-        Out.vBackBuffer = vPBRFinal + vEmissive;
+        Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb, vPBRFinal.a);
     finalColor = Out.vBackBuffer;
     
     
