@@ -1,6 +1,7 @@
 #include "BossUnit.h"
 #include <Player.h>
 #include "Weapon.h"
+#include "GameInstance.h"
 #include "LockOn_Manager.h"
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
@@ -231,7 +232,7 @@ HRESULT CBossUnit::Ready_Actor()
 
     PxFilterData filterData{};
     filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-    filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON; // 일단 보류
+    filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON | FILTER_PLAYERBODY; // 일단 보류
     m_pPhysXActorCom->Set_SimulationFilterData(filterData);
     m_pPhysXActorCom->Set_QueryFilterData(filterData);
     m_pPhysXActorCom->Set_Owner(this);
@@ -276,7 +277,22 @@ void CBossUnit::UpdateBossState(_float fTimeDelta)
         return;
     UpdateSpecificBehavior();
     _float fDistance = Get_DistanceToPlayer();
+    if (m_bGroggyActive)
+    {
+        m_fGroggyEndTimer -= fTimeDelta;
+        if (m_fGroggyEndTimer <= 0.f)
+        {
+            m_bGroggyActive = false; 
+            m_fGroggyGauge = 0.f;
+			cout << "그로기 가능 시간 종료" << endl;
+        }
 
+    }
+    else
+    {
+        // 게이지는 조금씩 감소시키기(일단 주석)
+   //     m_fGroggyGauge = max(0.f, m_fGroggyGauge - fTimeDelta * 0.05f);
+    }
     UpdateAttackPattern(fDistance, fTimeDelta);// 공격 패턴 업데이트
     UpdateMovement(fDistance, fTimeDelta);
 }
@@ -361,6 +377,7 @@ void CBossUnit::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 void CBossUnit::UpdateStateByNodeID(_uint iNodeID)
 {
 }
+
 
 _bool CBossUnit::CanMove() const
 {
@@ -639,6 +656,57 @@ void CBossUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         m_fHP -= pWeapon->Get_CurrentDamage() * 0.03f;
 		m_fHP = max(m_fHP, 0.f);
         cout << "보스 현재 체력 : " << m_fHP << endl;
+
+		_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+        auto pPlayer = GET_PLAYER(iLevelIndex);
+
+        if (pPlayer == nullptr)
+            return;
+        // cout << "플레이어 충돌" << endl;
+        auto playerState = pPlayer->Get_PlayerState();
+
+        switch (playerState)
+        {
+        case Client::EPlayerState::CHARGEA:
+        case Client::EPlayerState::CHARGEB:
+            m_fGroggyGauge += 0.1f;
+            if (m_fGroggyGauge >= m_fGroggyThreshold && !m_bGroggyActive)
+            {
+                m_bGroggyActive = true;                  // 화이트 게이지 시작
+                m_fGroggyEndTimer = m_fGroggyTimer;      // 3초 유지
+                m_fGroggyGauge = m_fGroggyThreshold;
+                break;
+            }
+            if (m_bGroggyActive)
+            {
+                m_pAnimator->SetTrigger("Groggy");
+                m_bGroggyActive = false;
+                m_fGroggyGauge = 0.f;
+            }
+            cout << "그로기 게이지 : " << m_fGroggyGauge << endl;
+            cout << "그로기 상태 : " << m_bGroggyActive << endl;
+            break;
+        case Client::EPlayerState::GARD:
+            break;
+        case Client::EPlayerState::USEITEM:
+            break;
+        case Client::EPlayerState::SHILD:
+            break;
+        case Client::EPlayerState::MAINSKILL:
+            break;
+        case Client::EPlayerState::ARMATTACKCHARGE:
+            break;
+        case Client::EPlayerState::ARMFAIL:
+            break;
+        case Client::EPlayerState::HITED:
+            break;
+        case Client::EPlayerState::FATAL:
+            break;
+        case Client::EPlayerState::END:
+            break;
+        default:
+            break;
+        }
     }
 }
 

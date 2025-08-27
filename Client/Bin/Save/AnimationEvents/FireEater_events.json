@@ -412,11 +412,7 @@
             "Duration": 210.0,
             "Events": [
                 {
-                    "EventName": "IgnorePlayerCollision",
-                    "Time": 85.0
-                },
-                {
-                    "EventName": "ResetIgnorePlayerCollision",
+                    "EventName": "CollidersOn",
                     "Time": 163.0
                 }
             ],

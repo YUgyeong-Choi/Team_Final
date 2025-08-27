@@ -127,6 +127,7 @@ private:
     virtual void UpdateAttackPattern(_float fDistance,_float fTimeDelta) override;
     virtual void UpdateStateByNodeID(_uint iNodeID) override;
     virtual void UpdateSpecificBehavior() override;
+    virtual void EnableColliders(_bool bEnable) override;
 
 
     // 공견 패턴
@@ -188,6 +189,7 @@ private:
 	
     // 상태 관련
     _bool m_bUsedFlameFiledOnLowHp = false;
+	_bool m_bPlayerCollided = false;
 
 
     // 공격 관련
