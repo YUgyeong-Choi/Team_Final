@@ -266,10 +266,6 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     
-    //유닛마스크로 데칼 마스킹 하자
-    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
-    //vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
-    
     //데칼
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
@@ -315,11 +311,6 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
 
-    
-    //유닛마스크로 데칼 마스킹 하자
-    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
-    //vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
-    
     //데칼
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
@@ -378,11 +369,6 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     vector vDecalNDesc = g_DecalN.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
-    
-    //유닛마스크로 데칼 마스킹 하자
-    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
-    //vector vUnitMask = g_PBR_UnitMask.Sample(PointSampler, In.vTexcoord);
-    //float fMask = step(0.5f, vUnitMask.r);
     
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
@@ -489,11 +475,6 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     
-    //유닛마스크로 데칼 마스킹 하자
-    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
-    //vector vUnitMask = g_PBR_UnitMask.Sample(PointSampler, In.vTexcoord);
-    //float fMask = step(0.5f, vUnitMask.r);
-    
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
     Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
@@ -597,11 +578,6 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     vector vDecalNDesc = g_DecalN.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
-    
-    //유닛마스크로 데칼 마스킹 하자
-    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
-    //vector vUnitMask = g_PBR_UnitMask.Sample(PointSampler, In.vTexcoord);
-    //float fMask = step(0.5f, vUnitMask.r);
     
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
