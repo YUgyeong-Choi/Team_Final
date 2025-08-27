@@ -423,9 +423,12 @@ HRESULT CEffectBase::Ready_Textures_Prototype_Tool()
 
 HRESULT CEffectBase::Ready_Effect_Deserialize(const json& j)
 {
-	Deserialize(j); // 자식으로 오버라이드되어서 실행되는지 꼭 확인
-	if (FAILED(Ready_Components())) // 얘가문제였네
+	Deserialize(j);
+	if (FAILED(Ready_Components()))
+	{
+		MSG_BOX("Ready_Effect_Deserialize Failed(Ready_Components)");
 		return E_FAIL;
+	}
 	return S_OK;
 }
 

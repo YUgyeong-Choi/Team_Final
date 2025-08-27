@@ -1038,23 +1038,43 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::GRINDER:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
 	}
 	case eAnimCategory::PULSE:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
 	}
 	case eAnimCategory::GUARD_HIT:
 	{
-		//가드 밀림 여부
-		_float  m_fTime = 0.1f;
-		_float  m_fDistance = 3.f;
-
-		if (!m_bMove)
+		if (m_eHitedTarget == eHitedTarget::MONSTER)
 		{
-			_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
-			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
-			SyncTransformWithController();
+			//가드 밀림 여부
+			_float  m_fTime = 0.1f;
+			_float  m_fDistance = 0.3f;
+
+			if (!m_bMove)
+			{
+				_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
 		}
+		else if (m_eHitedTarget == eHitedTarget::BOSS)
+		{
+			//가드 밀림 여부
+			_float  m_fTime = 0.1f;
+			_float  m_fDistance = 3.f;
+
+			if (!m_bMove)
+			{
+				_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+
+		break;
 	}
 	case eAnimCategory::HITEDUP:
 	{
@@ -1067,6 +1087,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
+		break;
 	}
 	case eAnimCategory::HITEDSTAMP:
 	{
@@ -1079,6 +1100,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
+		break;
 	}
 
 	default:
@@ -1111,7 +1133,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::GUARD_HIT;
 	if (stateName.find("Guard_Break") == 0)
 		return eAnimCategory::GUARD_BREAK;
-	if (stateName.find("Guard") == 0) return eAnimCategory::GUARD;
+	if (stateName.find("Guard") == 0) 
+		return eAnimCategory::GUARD;
 
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
@@ -1375,6 +1398,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 	/* [ 무엇을 해야하는가? ] */
 	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
 	{
+		m_eHitedTarget = eHitedTarget::MONSTER;
 		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
 		if (pWeapon == nullptr)
 			return;
@@ -1415,6 +1439,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 	}
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
+		m_eHitedTarget = eHitedTarget::BOSS;
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
 		if (pBoss == nullptr)
 			return;
@@ -1464,6 +1489,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	/* [ 무엇을 해야하는가? ] */
 	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
 	{
+		m_eHitedTarget = eHitedTarget::MONSTER;
 		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
 		if (pWeapon == nullptr)
 			return;
@@ -1503,6 +1529,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
+		m_eHitedTarget = eHitedTarget::BOSS;
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
 		if (pBoss == nullptr)
 			return;

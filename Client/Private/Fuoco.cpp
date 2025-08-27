@@ -624,7 +624,7 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 	break;
 	case Client::CFuoco::SlamFury:
 		SetTurnTimeDuringAttack(1.5f, 1.3f);
-		m_eBossAttackType = EBossAttackType::FURY_STAMP;
+		m_eBossAttackType = EBossAttackType::STAMP;
 	case Client::CFuoco::FootAtk:
 		SetTurnTimeDuringAttack(1.f);
 		break;
@@ -757,6 +757,19 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("FireBall", [this]()
 		{
+			CEffectContainer::DESC desc = {};
+
+			auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Finger0")))
+				* m_pTransformCom->Get_WorldMatrix();
+			_vector vHandPos = worldmat.r[3];
+			_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+			_vector vDir = XMVector3Normalize(vPlayerPos - vHandPos);
+			_vector vOffsetPos = vHandPos + vDir * 1.f;
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(1.5f, 1.5f, 1.5f) * 
+				XMMatrixTranslation(vOffsetPos.m128_f32[0], vOffsetPos.m128_f32[1], vOffsetPos.m128_f32[2]));
+
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Spawn_Fireball"), &desc) == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
 			FireProjectile(ProjectileType::FireBall, 24.5f);
 		});
 
@@ -1042,6 +1055,8 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		{
 			return;
 		}
+
+
 	}
 	break;
 	case Client::CFuoco::ProjectileType::Oil:
@@ -1227,10 +1242,13 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 	CEffectContainer::DESC desc = {};
 	if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P2"))
 	{
-
 		auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+		_vector rot, trans, scale;
+		XMMatrixDecompose(&scale, &rot, &trans, worldmat);
 
-		XMStoreFloat4x4(&desc.PresetMatrix,
+		_vector finalRot = XMQuaternionMultiply(XMQuaternionInverse(rot), XMQuaternionRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-60.f)));
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(finalRot) *
 			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
 				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
 				worldmat.r[3].m128_f32[2]));
@@ -1238,16 +1256,6 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_HandSpark_P1"))
 	{
 		auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
-
-		_vector rot, trans, scale;
-		XMMatrixDecompose(&scale, &rot, &trans, worldmat);
-
-		_vector finalRot = XMQuaternionMultiply(XMQuaternionInverse(rot), XMQuaternionRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f)));
-
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(finalRot) *
-			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
-				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
-				worldmat.r[3].m128_f32[2]));
 
 		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -1273,8 +1281,8 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 	{
 		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Finger0"));
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(_vector{ 1.f, 0.f, 0.f, 0.f }, XMConvertToRadians(90.f)) *
-			XMMatrixTranslation(0.f, 0.f, 0.f));
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(XMVector3Normalize(_vector{ 1.f, -0.3f, 0.f, 0.f }), XMConvertToRadians(90.f)) *
+			XMMatrixTranslation(0.f, 0.f, 1.5f));
 	}
 	else
 	{
@@ -1514,7 +1522,7 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			//pAnimator->SetTrigger("Stamp");
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
-			pPlayer->SetHitMotion(HITMOTION::FURY_STAMP);
+			pPlayer->SetHitMotion(HITMOTION::STAMP);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SWING_R):
 		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):

@@ -1,0 +1,544 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -70.0,
+                -50.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.45464766025543213,
+                0.39790576696395874,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.15706807374954224,
+                0.0,
+                1.0
+            ],
+            "Duration": 61,
+            "EffectType": 1,
+            "EmissiveIntensity": 1.2999999523162842,
+            "EndTrack": 61,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.15706807374954224,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.450000047683716,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1741.4239501953125,
+            "LifeTime_Particle": [
+                0.05000000074505806,
+                0.47999998927116394
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 0.10000000149011612,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.30000001192092896,
+            "Name": "Hit_BasicSpark2",
+            "NumInstance": 10,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.7071067690849304,
+                0.0,
+                0.7071067690849304
+            ],
+            "OrbitSpeed": [
+                -90.0,
+                90.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.029999999329447746,
+                0.029999999329447746,
+                0.029999999329447746
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "Size": [
+                0.029999999329447746,
+                0.03999999910593033
+            ],
+            "Speed": [
+                15.0,
+                17.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Animation": false,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.7031605243682861,
+                0.5235601663589478,
+                0.6544502973556519
+            ],
+            "Color": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Duration": 61,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.15000000596046448,
+            "EndTrack": 61,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.3141361474990845,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 3.0,
+                    "Interpolation": 4,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Intensity": 0.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        5.0,
+                        5.0,
+                        5.0
+                    ],
+                    "TrackPosition": 30.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1679.452392578125,
+            "Loop": true,
+            "Name": "Fuoco_Spawn_Fireball_FlareSprite1",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Crack_Mask_01_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Duration": 61,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 61,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 1,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        8.0,
+                        8.0,
+                        8.0
+                    ],
+                    "TrackPosition": 45.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 825.6558837890625,
+            "Loop": true,
+            "Name": "Fuoco_Spawn_Fireball_DistortionSprite1",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 8,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "",
+                "T_RippleNormal_01_N_RSW",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                false,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.7019608020782471,
+                0.5254902243614197,
+                0.6549019813537598
+            ],
+            "Color": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Duration": 61,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.44999998807907104,
+            "EndTrack": 61,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.3137255012989044,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 7.210000038146973,
+                    "Interpolation": 4,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Intensity": 0.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        5.0,
+                        5.0,
+                        5.0
+                    ],
+                    "TrackPosition": 30.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 550.2097778320313,
+            "Loop": true,
+            "Name": "Fuoco_Spawn_Fireball_RingSprite2",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Ring_05_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                0.7382198572158813,
+                0.2560427784919739,
+                0.16619610786437988,
+                1.0
+            ],
+            "Color": [
+                0.41590315103530884,
+                0.05550835281610489,
+                0.05550835281610489,
+                1.0
+            ],
+            "Duration": 15,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.800000011920929,
+            "EndTrack": 15,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.549999952316284,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.37696337699890137,
+                        0.059208910912275314,
+                        0.059208910912275314,
+                        1.0
+                    ],
+                    "Intensity": 0.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "TrackPosition": 16.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 276.2275390625,
+            "Loop": true,
+            "Name": "Fuoco_Spawn_Fireball_FlameSprite1",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_14_8x4_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 120.0,
+            "TileX": 8,
+            "TileY": 4
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 60
+}
