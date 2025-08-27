@@ -91,7 +91,12 @@ PS_OUT PS_DECAL(PS_IN In)
     // 텍스처 좌표 계산 (0 ~ 1)
     float2 vTexcoord = vLocalPos.xz + 0.5f;
     
-    Out.vARMT = g_ARMT.Sample(DefaultSampler, vTexcoord);
+    vector vARMT = g_ARMT.Sample(DefaultSampler, vTexcoord);
+    
+    if (vARMT.a < 0.3f)
+        discard;
+    
+    Out.vARMT = vARMT;//g_ARMT.Sample(DefaultSampler, vTexcoord);
     Out.vN = g_N.Sample(DefaultSampler, vTexcoord);
     Out.vBC = g_BC.Sample(DefaultSampler, vTexcoord);
     
