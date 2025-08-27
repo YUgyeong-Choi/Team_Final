@@ -372,11 +372,11 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalBCDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
@@ -477,11 +477,11 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalBCDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
@@ -581,11 +581,11 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalBCDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;

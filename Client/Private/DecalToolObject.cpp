@@ -53,19 +53,8 @@ void CDecalToolObject::Late_Update(_float fTimeDelta)
 
 HRESULT CDecalToolObject::Render()
 {
-	if (FAILED(Bind_ShaderResources()))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Begin(0)))
-		return E_FAIL;
-
-	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
-		return E_FAIL;
-
-	if (FAILED(m_pVIBufferCom->Render()))
-		return E_FAIL;
-
-
 	
 //#ifdef _DEBUG
 
@@ -153,6 +142,7 @@ HRESULT CDecalToolObject::Ready_Components(void* Arg)
 		m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::ARMT)] = TEXT("Prototype_Component_Texture_DefaultDecal");
 		m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_DefaultDecal");
 		m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::BC)] = TEXT("Prototype_Component_Texture_DefaultDecal");
+		m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_DefaultMaskTexture");
 	}
 	else
 	{
@@ -160,6 +150,7 @@ HRESULT CDecalToolObject::Ready_Components(void* Arg)
 		m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::ARMT)] = pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::ARMT)];
 		m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::N)] = pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::N)];
 		m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::BC)] = pDesc->PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::BC)];
+		m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_DefaultMaskTexture");
 
 		////파일 패스도 저장해주자
 		//json ResourceJson;
@@ -192,6 +183,11 @@ HRESULT CDecalToolObject::Ready_Components(void* Arg)
 	/* For.Com_Texture_BC */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::BC)],
 		TEXT("Com_Texture_BC"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::BC)]))))
+		return E_FAIL;
+
+	/* For.Com_Texture_BC */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::YW), m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::MASK)],
+		TEXT("Com_Texture_MASK"), reinterpret_cast<CComponent**>(&m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::MASK)]))))
 		return E_FAIL;
 
 	return S_OK;

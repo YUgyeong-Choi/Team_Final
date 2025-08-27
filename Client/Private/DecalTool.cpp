@@ -509,6 +509,10 @@ void CDecalTool::Render_Detail()
 
 	Detail_Texture();
 
+	ImGui::Separator();
+
+	Detail_RenderMode();
+
 
 	ImGui::End();
 #pragma endregion
@@ -711,6 +715,15 @@ void CDecalTool::Detail_Texture()
 
 
 	
+}
+
+void CDecalTool::Detail_RenderMode()
+{
+	if (m_pFocusObject)
+	{
+		// ImGui 체크박스로 토글
+		ImGui::Checkbox("Normal Only", &m_pFocusObject->m_bNormalOnly);
+	}
 }
 
 

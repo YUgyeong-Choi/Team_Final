@@ -1136,6 +1136,11 @@ HRESULT CLoader::Loading_For_YW()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_N.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_DefaultMaskTexture*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_DefaultMaskTexture"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_C_KMH.dds")))))
+		return E_FAIL;
+
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));

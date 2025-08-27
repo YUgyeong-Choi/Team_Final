@@ -51,25 +51,24 @@ HRESULT CDecal::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(0)))
-		return E_FAIL;
+	if (m_bNormalOnly)
+	{
+		//노말만 사용하는 데칼
+		if (FAILED(m_pShaderCom->Begin(2)))
+			return E_FAIL;
+	}
+	else
+	{
+		//기본 ARMT, N, BC 사용하는 데칼
+		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
-
-#ifdef _DEBUG
-	if (FAILED(m_pShaderCom->Begin(1)))
-		return E_FAIL;
-
-	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
-		return E_FAIL;
-
-	if (FAILED(m_pVIBufferCom->Render()))
-		return E_FAIL;
-#endif // _DEBUG
 
 	return S_OK;
 }
@@ -115,27 +114,29 @@ HRESULT CDecal::Bind_ShaderResources()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_WorldPos"), m_pShaderCom, "g_WorldPosTexture")))
-	//	return E_FAIL;
+	/* 
+	노말만 적용하려면...AMRT의 알파를 0으로하고
+	노말은 마스킹으로 처리해야하는데...
+	*/
 
-	if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]->Bind_ShaderResource(m_pShaderCom, "g_ARMT", 0)))
-		return E_FAIL;
-
+	//노말 바인드
 	if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::N)]->Bind_ShaderResource(m_pShaderCom, "g_N", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::BC)]->Bind_ShaderResource(m_pShaderCom, "g_BC", 0)))
-		return E_FAIL;
+	if (m_bNormalOnly)
+	{
+		//마스킹 텍스쳐 바인드
+		if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::MASK)]->Bind_ShaderResource(m_pShaderCom, "g_MASK", 0)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::ARMT)]->Bind_ShaderResource(m_pShaderCom, "g_ARMT", 0)))
+			return E_FAIL;
 
-	//_float4x4 WorldMatrixInv = {};
-	//XMStoreFloat4x4(&WorldMatrixInv, m_pTransformCom->Get_WorldMatrix_Inverse());
-	//if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrixInv", &WorldMatrixInv)))
-	//	return E_FAIL;
-
-	//_float4x4 ViewMatrixInv = {};
-	//XMStoreFloat4x4(&ViewMatrixInv, m_pGameInstance->Get_Transform_Matrix_Inv(D3DTS::VIEW));
-	//if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrixInv", &ViewMatrixInv)))
-	//	return E_FAIL;
+		if (FAILED(m_pTextureCom[ENUM_CLASS(TEXTURE_TYPE::BC)]->Bind_ShaderResource(m_pShaderCom, "g_BC", 0)))
+			return E_FAIL;
+	}
 
 	_float4x4 ProjMatrixInv = {};
 	XMStoreFloat4x4(&ProjMatrixInv, m_pGameInstance->Get_Transform_Matrix_Inv(D3DTS::PROJ));
