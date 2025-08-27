@@ -30,6 +30,7 @@ public:
     _bool Find_Panel();
     void On_Panel();
     void Off_Panel();
+    
 
     void Activate_UI(_wstring strTag, _bool isActive);
 

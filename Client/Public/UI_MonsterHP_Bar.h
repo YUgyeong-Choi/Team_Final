@@ -18,6 +18,8 @@ class CUI_MonsterHP_Bar final : public CUIObject
 public:
 	typedef struct tagHpDesc : public  CUIObject::UIOBJECT_DESC
 	{
+		_bool    isBoss;
+		_wstring strName;
 		_float fHeight;
 		_float* pHP;
 		_bool* pIsGroggy;
@@ -62,6 +64,9 @@ private:
 	_float  m_fDamage = {};
 
 	_float m_fRenderTime = { };
+
+	_wstring m_strName = {};
+	_bool	 m_isBoss = {};
 
 	const _float4x4* m_pParentMatrix = { nullptr };
 	_float4x4				m_CombinedWorldMatrix{};

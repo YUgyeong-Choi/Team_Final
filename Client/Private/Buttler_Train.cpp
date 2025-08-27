@@ -578,6 +578,8 @@ void CButtler_Train::Reset()
 		pPlayer->Get_Controller()->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
 	}
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+
+
 }
 
 HRESULT CButtler_Train::Ready_Weapon()

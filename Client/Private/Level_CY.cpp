@@ -145,7 +145,7 @@ HRESULT CLevel_CY::Ready_Lights()
 	LightDesc.fAmbient = 0.6f;
 	LightDesc.fIntensity = 0.8f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -0.5f, 1.f, 0.f);
+	LightDesc.vDirection = _float4(0.f, 1.f, 0.f, 0.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.fFogDensity = 0.f;
 		

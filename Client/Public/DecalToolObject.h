@@ -38,6 +38,7 @@ public:
 	HRESULT Set_Texture(TEXTURE_TYPE eType, string TexturePath, string FileName);
 
 private:
+	string m_FileName[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
 	wstring m_PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
 	wstring m_FilePath[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
 

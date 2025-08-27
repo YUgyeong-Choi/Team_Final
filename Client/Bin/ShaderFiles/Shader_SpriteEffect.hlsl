@@ -274,14 +274,11 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
     float2 dir = vMask.rg * 2.0 - 1.0; // [-1,1]
     //float mag = lerp(1.0, vMask.b, 0.5); // B를 세기로 활용(옵션)
     
-    float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * g_fTime * 01.f);
+    float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * g_fTime * 1.f);
 
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
     Out.vDistortion *= g_vColor;
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
+
     return Out;
 }
 
@@ -289,14 +286,10 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
 PS_OUT_EFFECT_WB PS_MAIN_DISTORTION(PS_IN_BLEND In)
 {
     PS_OUT_EFFECT_WB Out;
-    vector vMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
 
-    float2 dir = vMask.rg * 2.0 - 1.0; // [-1,1]
-    float mag = lerp(1.0, vMask.b, 0.5); // B를 세기로 활용(옵션)
-    
-    float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * frac(g_fTime * 0.2f) * mag);
-
-    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
+    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0);
+    Out.vDistortion *= g_vColor;
     
     return Out;
 }
@@ -383,5 +376,15 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_BLEND();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_DISTORTIONONLY();
+    }
+    pass DistortionNoMask // 8
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_BLEND();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_DISTORTION();
     }
 }

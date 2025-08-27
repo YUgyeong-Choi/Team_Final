@@ -2,6 +2,7 @@
 #include "Unit.h"
 #include "Client_Defines.h"
 #include "PhysX_ControllerReport.h"
+#include "UI_MonsterHP_Bar.h"
 
 NS_BEGIN(Engine)
 class CBone;
@@ -45,8 +46,6 @@ public:
 public:
 	const EBossAttackType& Get_BossAttackType() const { m_eBossAttackType; }
 	void EnterCutScene() { 
-<<<<<<< Updated upstream
-=======
 
 		if (!m_pHPBar)
 		{
@@ -58,8 +57,6 @@ public:
 			m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
 				ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 		}
-
->>>>>>> Stashed changes
 		m_pAnimator->SetPlaying(true);
 		m_bCutSceneOn = true; }
 protected:
@@ -190,6 +187,11 @@ protected:
 	list<pair<_wstring, _bool>> m_ActiveEffect; // 활성화된 이펙트 (이름, 한번만 실행할지)
 
 	static constexpr _float MINIMUM_TURN_ANGLE = 35.f;
+
+	_bool m_isGroggy = {};
+
+	CUI_MonsterHP_Bar* m_pHPBar = { nullptr };
+
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;

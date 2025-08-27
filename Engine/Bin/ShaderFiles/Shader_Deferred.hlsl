@@ -31,6 +31,9 @@ Texture2D g_ShadowTextureA;
 Texture2D g_ShadowTextureB;
 Texture2D g_ShadowTextureC;
 
+float  g_fCascadeRefHeight;
+float3 g_fHeightBand;
+
 /* [ 볼륨메트리 포그 ] */
 float g_fFogSpeed = 0.1f;
 float g_fFogPower = 1.5f;
@@ -263,6 +266,10 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
     
+    //유닛마스크로 데칼 마스킹 하자
+    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
+    //vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
+    
     //데칼
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
@@ -271,7 +278,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     //DES
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
     //ARMT로 알파값 보간
-    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a /** vUnitMask.r*/), 0.f));
     
     float fShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_fLightAmbient * g_fMtrlAmbient);
     
@@ -308,6 +315,11 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
 
+    
+    //유닛마스크로 데칼 마스킹 하자
+    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
+    //vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
+    
     //데칼
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
@@ -316,7 +328,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     //DES
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
     //ARMT로 알파값 보간
-    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a), 0.f));
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a /** vUnitMask.r*/), 0.f));
     
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
@@ -367,24 +379,29 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     
+    //유닛마스크로 데칼 마스킹 하자
+    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
+    //vector vUnitMask = g_PBR_UnitMask.Sample(PointSampler, In.vTexcoord);
+    //float fMask = step(0.5f, vUnitMask.r);
+    
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a); //데칼 디퓨즈 추가
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a)); //데칼 노말 추가
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
-    float Unit = vARMDesc.a;
+    float Unit = vARMDesc.a; //유닛 여부(유닛 = 0)
     float3 Ambient = Albedo * 0.1f * AO;
     
     /* ARM 블렌딩 */
-    AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a);
-    Roughness = lerp(Roughness, vDecalAMRTDesc.g, vDecalAMRTDesc.a);
-    Metallic = lerp(Metallic, vDecalAMRTDesc.b, vDecalAMRTDesc.a);
+    AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/);
+    Metallic = lerp(Metallic, vDecalAMRTDesc.b, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/);
 
     
     // [ ViewPos 복원 ]
@@ -472,13 +489,18 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     
+    //유닛마스크로 데칼 마스킹 하자
+    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
+    //vector vUnitMask = g_PBR_UnitMask.Sample(PointSampler, In.vTexcoord);
+    //float fMask = step(0.5f, vUnitMask.r);
+    
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a); //데칼 디퓨즈 추가
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a)); //데칼 노말 추가
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
@@ -576,13 +598,18 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     
+    //유닛마스크로 데칼 마스킹 하자
+    //vector vUnitMask = float4(1.f, 0.f, 0.f, 0.f);
+    //vector vUnitMask = g_PBR_UnitMask.Sample(PointSampler, In.vTexcoord);
+    //float fMask = step(0.5f, vUnitMask.r);
+    
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a); //데칼 디퓨즈 추가
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a)); //데칼 노말 추가
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
@@ -980,7 +1007,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vEmissive = g_PBR_Emissive.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
-        Out.vBackBuffer = vPBRFinal + vEmissive;
+        Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb, vPBRFinal.a);
     finalColor = Out.vBackBuffer;
     
     
@@ -1018,7 +1045,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
     Out.vBackBuffer.rgb += fogColor;
 
-    if (vUnitMask.r > 0.f)
+    if (vUnitMask.r > 0.f) //배경이라면
     {
         /* [ 뷰포트상의 깊이값 복원 ] */
         vector vPosition;
@@ -1032,50 +1059,79 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
         vPosition = mul(vPosition, g_ProjMatrixInv);
         vPosition = mul(vPosition, g_ViewMatrixInv);
-    
-        // 1. Cascade A
-        vector vLightPosA;
-        vLightPosA = mul(vPosition, g_LightViewMatrixA);
-        vLightPosA = mul(vLightPosA, g_LightProjMatrixA);
-    
+        
+        float fPixelWorldY = vPosition.y;
+        
+        bool bHeightOK_A = abs(fPixelWorldY - g_fCascadeRefHeight) <= g_fHeightBand.x;
+        bool bHeightOK_B = abs(fPixelWorldY - g_fCascadeRefHeight) <= g_fHeightBand.y;
+        bool bHeightOK_C = abs(fPixelWorldY - g_fCascadeRefHeight) <= g_fHeightBand.z;
+        
+        // 1. Cascade A  ← 여기를 통째로 교체
+        vector vLightViewA = mul(vPosition, g_LightViewMatrixA);
+        float fCurrViewZA = vLightViewA.z;
+        vector vLightPosA = mul(vLightViewA, g_LightProjMatrixA);
+
         float2 uvA;
         uvA.x = vLightPosA.x / vLightPosA.w * 0.5f + 0.5f;
         uvA.y = vLightPosA.y / vLightPosA.w * -0.5f + 0.5f;
     
-        float4 vDepthA = g_ShadowTextureA.Sample(LinearClampSampler, uvA);
-        float fShadowViewZA = vDepthA.y * 1000.f;
-    
         // 2. Cascade B
-        vector vLightPosB;
-        vLightPosB = mul(vPosition, g_LightViewMatrixB);
-        vLightPosB = mul(vLightPosB, g_LightProjMatrixB);
+        vector vLightViewB = mul(vPosition, g_LightViewMatrixB);
+        float fCurrViewZB = vLightViewB.z;
+        vector vLightPosB = mul(vLightViewB, g_LightProjMatrixB);
     
         float2 uvB;
         uvB.x = vLightPosB.x / vLightPosB.w * 0.5f + 0.5f;
         uvB.y = vLightPosB.y / vLightPosB.w * -0.5f + 0.5f;
-    
-        float4 vDepthB = g_ShadowTextureB.Sample(LinearClampSampler, uvB);
-        float fShadowViewZB = vDepthB.y * 1000.f;
 
         // 3. Cascade C
-        vector vLightPosC;
-        vLightPosC = mul(vPosition, g_LightViewMatrixC);
-        vLightPosC = mul(vLightPosC, g_LightProjMatrixC);
+        vector vLightViewC = mul(vPosition, g_LightViewMatrixC);
+        float fCurrViewZC = vLightViewC.z;
+        vector vLightPosC = mul(vLightViewC, g_LightProjMatrixC);
     
         float2 uvC;
         uvC.x = vLightPosC.x / vLightPosC.w * 0.5f + 0.5f;
         uvC.y = vLightPosC.y / vLightPosC.w * -0.5f + 0.5f;
-    
-        float4 vDepthC = g_ShadowTextureC.Sample(LinearClampSampler, uvC);
-        float fShadowViewZC = vDepthC.y * 1000.f;
+        
+        bool bInsideA = (vLightPosA.w > 0) &&
+                (uvA.x >= 0 && uvA.x <= 1 && uvA.y >= 0 && uvA.y <= 1) &&
+                (vLightPosA.z >= 0 && vLightPosA.z <= vLightPosA.w);
+        bool bInsideB = (vLightPosB.w > 0) &&
+                (uvB.x >= 0 && uvB.x <= 1 && uvB.y >= 0 && uvB.y <= 1) &&
+                (vLightPosB.z >= 0 && vLightPosB.z <= vLightPosB.w);
+        bool bInsideC = (vLightPosC.w > 0) &&
+                (uvC.x >= 0 && uvC.x <= 1 && uvC.y >= 0 && uvC.y <= 1) &&
+                (vLightPosC.z >= 0 && vLightPosC.z <= vLightPosC.w);
+        
+        float fShadowViewZA = 0.0f;
+        if (bInsideA)
+        {
+            float4 vDepthA = g_ShadowTextureA.Sample(LinearClampSampler, uvA);
+            fShadowViewZA = vDepthA.y * 1000.f;
+        }
+
+        float fShadowViewZB = 0.0f;
+        if (bInsideB)
+        {
+            float4 vDepthB = g_ShadowTextureB.Sample(LinearClampSampler, uvB);
+            fShadowViewZB = vDepthB.y * 1000.f;
+        }
+
+        float fShadowViewZC = 0.0f;
+        if (bInsideC)
+        {
+            float4 vDepthC = g_ShadowTextureC.Sample(LinearClampSampler, uvC);
+            fShadowViewZC = vDepthC.y * 1000.f;
+        }
 
         // --- 깊이 비교 ---
-        float fBias = 0.1f;
-        if (fShadowViewZA + fBias < vLightPosA.w)
+        
+        float fBiasViewZ = 0.5f;
+        if (bHeightOK_A && bInsideA && (fCurrViewZA - fBiasViewZ > fShadowViewZA))
             Out.vBackBuffer *= 0.5f;
-        else if (fShadowViewZB + fBias < vLightPosB.w)
+        else if (bHeightOK_B && bInsideB && (fCurrViewZB - fBiasViewZ > fShadowViewZB))
             Out.vBackBuffer *= 0.5f;
-        else if (fShadowViewZC + fBias < vLightPosC.w)
+        else if (bHeightOK_C && bInsideC && (fCurrViewZC - fBiasViewZ > fShadowViewZC))
             Out.vBackBuffer *= 0.5f;
     }
     

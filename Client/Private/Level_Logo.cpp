@@ -76,14 +76,7 @@ void CLevel_Logo::Update(_float fTimeDelta)
 					return;
 				}
 			}
-			else if (1 == m_iButtonIndex)
-			{
-				if (!m_pGuide->Get_isActive())
-				{
-					m_isOpen = false;
 		
-				}
-			}
 
 			
 
@@ -365,20 +358,6 @@ HRESULT CLevel_Logo::Ready_Guide()
 	m_pTeammate->Active_Update(false);
 	m_pGuideBack->Set_isActive(false);
 
-	// »©±â
-
-	CUI_Guide::UI_GUIDE_DESC eGuideDesc = {};
-
-	eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Guard.json"),TEXT("../Bin/Save/UI/Guide/Guide_PerfectGuard.json") };
-
-	m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), ENUM_CLASS(LEVEL::LOGO), TEXT("Layer_temp"), &eGuideDesc);
-
-	m_pGuide = static_cast<CUI_Guide*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::LOGO), TEXT("Layer_temp")));
-
-	Safe_AddRef(m_pGuide);
-
-	m_pGuide->Active_Update(false);
-
 	return S_OK;
 }
 
@@ -446,8 +425,8 @@ void CLevel_Logo::Interation_Button(_int& iIndex)
 		m_eNextLevel = LEVEL::KRAT_CENTERAL_STATION;
 		break;
 	case 1:
-		m_pGuide->Active_Update(true);
-		m_isOpen = true;
+		//m_pGuide->Active_Update(true);
+		//m_isOpen = true;
 		break;
 	case 2:
 		m_isOpen = true;
@@ -491,5 +470,5 @@ void CLevel_Logo::Free()
 		Safe_Release(pButton);
 	m_pButtons.clear();
 
-	Safe_Release(m_pGuide);
+	
 }
