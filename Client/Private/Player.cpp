@@ -1051,7 +1051,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		{
 			//가드 밀림 여부
 			_float  m_fTime = 0.1f;
-			_float  m_fDistance = 0.3f;
+			_float  m_fDistance = 0.15f;
 
 			if (!m_bMove)
 			{
