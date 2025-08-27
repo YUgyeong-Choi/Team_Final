@@ -222,20 +222,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	/* [ 특수행동 ] */
 	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
-	static _int i = 0;
-	/* [ 이곳은 애니메이션 실험실입니다. ] */
+
+	static _int i = 0; // <- 이거 머임?
+
+	/* [ 이곳은 실험실입니다. ] */
 	if(KEY_DOWN(DIK_Y))
 	{
-		//m_pAnimator->ApplyOverrideAnimController("TwoHand");
-		//string strName = m_pAnimator->GetCurrentAnimName();
-		//m_pAnimator->SetTrigger("StrongAttack");
-		//m_pAnimator->SetBool("Charge", true);
-		//m_pAnimator->SetInt("Combo", 1);
-		//m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
-		//m_pAnimator->CancelOverrideAnimController();
-		//m_pAnimator->SetInt("HitDir", m_iTestInt);
-		//m_pAnimator->SetTrigger("Hited");
-		//m_pAnimator->SetTrigger("Death");
 		CEffectContainer::DESC desc = {};
 		auto worldmat =  m_pTransformCom->Get_WorldMatrix();
 
@@ -249,7 +241,9 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetTrigger("EndInteraction");
+		m_pAnimator->SetInt("HitDir", 2);
+		m_pAnimator->SetBool("IsUp", true);
+		m_pAnimator->SetTrigger("Hited");
 	}
 
 	/* [ 아이템 ] */
@@ -958,6 +952,43 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 	}
+	case eAnimCategory::GUARD_HIT:
+	{
+		//가드 밀림 여부
+		_float  m_fTime = 0.1f;
+		_float  m_fDistance = 3.f;
+
+		if (!m_bMove)
+		{
+			_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+			SyncTransformWithController();
+		}
+	}
+	case eAnimCategory::HITEDUP:
+	{
+		_float  m_fTime = 0.4f;
+		_float  m_fDistance = 2.f;
+
+		if (!m_bMove)
+		{
+			_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+			SyncTransformWithController();
+		}
+	}
+	case eAnimCategory::HITEDSTAMP:
+	{
+		_float  m_fTime = 0.1f;
+		_float  m_fDistance = 2.f;
+
+		if (!m_bMove)
+		{
+			_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+			SyncTransformWithController();
+		}
+	}
 
 	default:
 		break;
@@ -985,8 +1016,10 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Sprint") == 0)
 		return eAnimCategory::SPRINT;
 
-	if (stateName.find("Guard_Hit") == 0 || stateName.find("Guard_Break") == 0)
+	if (stateName.find("Guard_Hit") == 0)
 		return eAnimCategory::GUARD_HIT;
+	if (stateName.find("Guard_Break") == 0)
+		return eAnimCategory::GUARD_BREAK;
 	if (stateName.find("Guard") == 0) return eAnimCategory::GUARD;
 
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
@@ -1020,6 +1053,10 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 
 	if (stateName.find("Sit") == 0)
 		return eAnimCategory::SIT;
+	if (stateName.find("Hit_Up") == 0)
+		return eAnimCategory::HITEDUP;
+	if (stateName.find("Hit_Stamp") == 0)
+		return eAnimCategory::HITEDSTAMP;
 	if (stateName.find("Hit") == 0)
 		return eAnimCategory::HITED;
 
@@ -1286,7 +1323,32 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		m_bIsHit = true;
 
 	}
+	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
+	{
+		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
+		if (pBoss == nullptr)
+			return;
 
+		//0. 필요한 정보를 수집한다.
+		CalculateDamage(pOther, eColliderType);
+		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+		_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+		m_vHitNormal = vOtherPos - vPlayerPos;
+
+		//1. 애니메이션 상태를 히트로 바꾼다.
+
+		//가드 중에 피격시 스위치를 켠다.
+		if (m_bIsGuarding)
+		{
+			m_bGardHit = true;
+			return;
+		}
+
+		//가드 중이 아니라면 피격상태로 넘긴다.
+		m_bIsHit = true;
+
+	}
 }
 
 void CPlayer::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -1341,6 +1403,33 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			if (eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
 				pUnit->Block_Reaction();
 
+			return;
+		}
+
+		//가드 중이 아니라면 피격상태로 넘긴다.
+		m_bIsHit = true;
+
+	}
+
+	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
+	{
+		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
+		if (pBoss == nullptr)
+			return;
+
+		//0. 필요한 정보를 수집한다.
+		CalculateDamage(pOther, eColliderType);
+		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+		_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+		m_vHitNormal = vOtherPos - vPlayerPos;
+
+		//1. 애니메이션 상태를 히트로 바꾼다.
+
+		//가드 중에 피격시 스위치를 켠다.
+		if (m_bIsGuarding)
+		{
+			m_bGardHit = true;
 			return;
 		}
 

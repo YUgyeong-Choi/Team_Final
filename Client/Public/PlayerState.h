@@ -2955,10 +2955,51 @@ public:
         else if (m_pOwner->m_eDir == CPlayer::EHitDir::BL) { m_pOwner->m_pAnimator->SetInt("HitDir", 2); }
         else if (m_pOwner->m_eDir == CPlayer::EHitDir::BR) { m_pOwner->m_pAnimator->SetInt("HitDir", 2); }
 		else if (m_pOwner->m_eDir == CPlayer::EHitDir::B) { m_pOwner->m_pAnimator->SetInt("HitDir", 2); }
-        m_pOwner->m_pAnimator->SetTrigger("Hited");
         
+        /* [ 특수한 힛모션이 있는경우 ] */
+        if (m_pOwner->m_eHitMotion != HITMOTION::END)
+        {
+            switch (m_pOwner->m_eHitMotion)
+            {
+            case HITMOTION::KNOCKBACK:
+				m_pOwner->m_pAnimator->SetTrigger("Knockback");
+                m_pOwner->m_eHitMotion = HITMOTION::END;
+				break;
 
-        printf(" 너 맞은방향 FtoB, R, B, L, RtoL, LtoR 중에 %d 방향이야. \n", static_cast<int>(m_pOwner->m_eDir));
+            case HITMOTION::STAMP:
+                if (m_pOwner->m_eDir == CPlayer::EHitDir::F ||
+                    m_pOwner->m_eDir == CPlayer::EHitDir::FL ||
+                    m_pOwner->m_eDir == CPlayer::EHitDir::FR ||
+                    m_pOwner->m_eDir == CPlayer::EHitDir::L)
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 0);
+                else
+                    m_pOwner->m_pAnimator->SetInt("HitDir", 2);
+
+
+                m_pOwner->m_pAnimator->SetTrigger("Stamp");
+                m_pOwner->m_eHitMotion = HITMOTION::END;
+                break;
+
+            case HITMOTION::UP:
+				if (m_pOwner->m_eDir == CPlayer::EHitDir::F ||
+					m_pOwner->m_eDir == CPlayer::EHitDir::FL ||
+					m_pOwner->m_eDir == CPlayer::EHitDir::FR ||
+					m_pOwner->m_eDir == CPlayer::EHitDir::L)
+					m_pOwner->m_pAnimator->SetInt("HitDir", 0);
+				else
+					m_pOwner->m_pAnimator->SetInt("HitDir", 2);
+
+                m_pOwner->m_pAnimator->SetBool("IsUp", true);
+                m_pOwner->m_pAnimator->SetTrigger("Hited");
+            default:
+                m_pOwner->m_pAnimator->SetTrigger("Hited");
+                break;
+            }
+        }
+        else
+        {
+            m_pOwner->m_pAnimator->SetTrigger("Hited");
+        }
 
         if (m_pOwner->m_pWeapon)
         {
@@ -2987,6 +3028,7 @@ public:
 
     virtual void Exit() override
     {
+        m_pOwner->m_pAnimator->SetBool("IsUp", false);
         m_fStateTime = 0.f;
         m_bDead = false;
     }
@@ -3039,7 +3081,7 @@ private:
 
 };
 
-/* [ 이 클래스는 피격 상태입니다. ] */
+/* [ 이 클래스는 죽는 상태입니다. ] */
 class CPlayer_Dead final : public CPlayerState
 {
 

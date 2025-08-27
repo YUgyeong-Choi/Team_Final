@@ -339,8 +339,8 @@
             "Name": "Guard_Hit",
             "NodeId": 106,
             "NodePos": [
-                -455.0,
-                202.0
+                -985.0,
+                131.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1164,8 +1164,8 @@
             "Name": "Hit_R",
             "NodeId": 100195,
             "NodePos": [
-                -95.0,
-                202.0
+                -625.0,
+                131.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1179,8 +1179,8 @@
             "Name": "Hit_B",
             "NodeId": 100196,
             "NodePos": [
-                -95.0,
-                372.0
+                -625.0,
+                301.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1194,8 +1194,8 @@
             "Name": "Hit_L",
             "NodeId": 100197,
             "NodePos": [
-                -95.0,
-                542.0
+                -625.0,
+                471.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1209,8 +1209,8 @@
             "Name": "Hit_LtoR",
             "NodeId": 100198,
             "NodePos": [
-                -95.0,
-                712.0
+                -625.0,
+                641.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1224,8 +1224,8 @@
             "Name": "Hit_RtoL",
             "NodeId": 100199,
             "NodePos": [
-                -95.0,
-                882.0
+                -625.0,
+                811.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1239,8 +1239,8 @@
             "Name": "Hit_FtoB",
             "NodeId": 100200,
             "NodePos": [
-                -95.0,
-                1052.0
+                -625.0,
+                981.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1285,8 +1285,8 @@
             "Name": "Hit_Knockback_Strong_F",
             "NodeId": 100221,
             "NodePos": [
-                625.0,
-                202.0
+                95.0,
+                131.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1301,8 +1301,8 @@
             "Name": "Hit_Knockback_Weak_F",
             "NodeId": 100224,
             "NodePos": [
-                624.0,
-                372.0
+                95.0,
+                301.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1316,8 +1316,8 @@
             "Name": "Hit_Knockback_Weak_L",
             "NodeId": 100227,
             "NodePos": [
-                625.0,
-                542.0
+                95.0,
+                471.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1331,8 +1331,8 @@
             "Name": "Hit_Knockback_Weak_R",
             "NodeId": 100228,
             "NodePos": [
-                625.0,
-                712.0
+                95.0,
+                641.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1346,8 +1346,8 @@
             "Name": "Hit_Knockback_Weak_B",
             "NodeId": 100229,
             "NodePos": [
-                625.0,
-                882.0
+                95.0,
+                811.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1421,8 +1421,8 @@
             "Name": "Hit_Stamp_F",
             "NodeId": 100248,
             "NodePos": [
-                985.0,
-                202.0
+                455.0,
+                131.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1436,8 +1436,8 @@
             "Name": "Hit_Stamp_B",
             "NodeId": 100249,
             "NodePos": [
-                985.0,
-                372.0
+                455.0,
+                301.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1451,8 +1451,8 @@
             "Name": "Hit_Getup_F",
             "NodeId": 100250,
             "NodePos": [
-                265.0,
-                202.0
+                -265.0,
+                131.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1466,8 +1466,8 @@
             "Name": "Hit_Getup_B",
             "NodeId": 100251,
             "NodePos": [
-                265.0,
-                372.0
+                -265.0,
+                301.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1481,8 +1481,8 @@
             "Name": "Hit_Up_F",
             "NodeId": 100256,
             "NodePos": [
-                1345.0,
-                202.0
+                814.716064453125,
+                114.08306884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1496,8 +1496,8 @@
             "Name": "Hit_Up_B",
             "NodeId": 100257,
             "NodePos": [
-                1345.0,
-                372.0
+                676.0,
+                246.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1511,8 +1511,8 @@
             "Name": "Hit_Up_Fall_F",
             "NodeId": 100258,
             "NodePos": [
-                1345.0,
-                542.0
+                821.0,
+                473.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1526,8 +1526,8 @@
             "Name": "Hit_Up_Land_F",
             "NodeId": 100260,
             "NodePos": [
-                1345.0,
-                712.0
+                815.0,
+                641.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1541,8 +1541,8 @@
             "Name": "Hit_Up_Fall_B",
             "NodeId": 100263,
             "NodePos": [
-                1345.0,
-                882.0
+                694.0,
+                782.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1556,8 +1556,8 @@
             "Name": "Hit_Up_Land_B",
             "NodeId": 100264,
             "NodePos": [
-                1345.0,
-                1052.0
+                815.0,
+                981.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -26113,7 +26113,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -26122,20 +26122,20 @@
             ],
             "Duration": 0.20000000298023224,
             "FromNodeId": 100256,
-            "HasExitTime": true,
+            "HasExitTime": false,
             "Link": {
                 "FromNodeId": 1002562,
                 "LinkId": 100259,
                 "ToNodeId": 1002581
             },
             "MaxTime": 1.0,
-            "MinTime": 0.0,
+            "MinTime": 0.38499999046325684,
             "ToNodeId": 100258
         },
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -26144,14 +26144,14 @@
             ],
             "Duration": 0.20000000298023224,
             "FromNodeId": 100258,
-            "HasExitTime": true,
+            "HasExitTime": false,
             "Link": {
                 "FromNodeId": 1002582,
                 "LinkId": 100261,
                 "ToNodeId": 1002601
             },
             "MaxTime": 1.0,
-            "MinTime": 0.0,
+            "MinTime": 0.05000000074505806,
             "ToNodeId": 100260
         },
         {
@@ -26179,7 +26179,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -26188,14 +26188,14 @@
             ],
             "Duration": 0.20000000298023224,
             "FromNodeId": 100263,
-            "HasExitTime": true,
+            "HasExitTime": false,
             "Link": {
                 "FromNodeId": 1002632,
                 "LinkId": 100265,
                 "ToNodeId": 1002641
             },
             "MaxTime": 1.0,
-            "MinTime": 0.0,
+            "MinTime": 0.05000000074505806,
             "ToNodeId": 100264
         },
         {
@@ -26223,7 +26223,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -26232,14 +26232,14 @@
             ],
             "Duration": 0.20000000298023224,
             "FromNodeId": 100257,
-            "HasExitTime": true,
+            "HasExitTime": false,
             "Link": {
                 "FromNodeId": 1002572,
                 "LinkId": 100267,
                 "ToNodeId": 1002631
             },
             "MaxTime": 1.0,
-            "MinTime": 0.0,
+            "MinTime": 0.38499999046325684,
             "ToNodeId": 100263
         },
         {
