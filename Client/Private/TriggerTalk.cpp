@@ -103,7 +103,7 @@ void CTriggerTalk::Update(_float fTimeDelta)
 	if (m_bTalkActive && !m_bDoOnce)
 	{
 		/* [ 대화 시작 ] */
-		if (KEY_DOWN(DIK_E))
+   		if (KEY_DOWN(DIK_E))
 		{
 			m_bDoOnce = true;
 			m_bTalkActive = false;
@@ -195,6 +195,7 @@ void CTriggerTalk::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		CUI_Manager::Get_Instance()->Set_Popup_Caption(0);
 
 		CUI_Manager::Get_Instance()->Activate_TextScript(false);
+		
 		m_bTalkActive = true;
 	}
 }

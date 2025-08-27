@@ -1480,9 +1480,19 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 		pWeapon->Add_CollisonObj(this);
 
+		CUnit* pUnit = pWeapon->Get_Owner();
+
+		CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pUnit);
+
+		if (nullptr == pMonster)
+			return;
+
+		if (pMonster->Get_CurrentHp() <= 0)
+			return;
+
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
-		CUnit* pUnit = pWeapon->Get_Owner();
+		
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 

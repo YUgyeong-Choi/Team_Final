@@ -42,6 +42,9 @@ public:
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
+
+	virtual void Reset_DoOnce() { m_bDoOnce = false; }
+
 protected: /* [ 초기화 변수 ] */
 	_bool			m_bDoOnce = {};
 protected:
