@@ -8,48 +8,48 @@
         },
         "FilePath": "",
         "Parts": [
-            {
-                "Caption": "크라트 기차역",
-                "Color": {
-                    "A": 1.0,
-                    "B": 1.0,
-                    "G": 1.0,
-                    "R": 1.0
-                },
-              "Features": [
-                {
-                  "EndAlpha": 0.0,
-                  "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
-                  "StartAlpha": 1.0,
-                  "iEndFrame": 300,
-                  "iStartFrame": 240,
-                  "isLoop": false
-                },
-                {
-                  "EndAlpha": 1.0,
-                  "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
-                  "StartAlpha": 0.0,
-                  "iEndFrame": 120,
-                  "iStartFrame": 60,
-                  "isLoop": false
-                }
-              ],
-                "FontTag": "Font_Bold",
-                "IsCenter": 1,
-                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
-                "RotationZ": 0.0,
-                "SizeX": 1200.0,
-                "SizeY": 675.0,
-                "Texturetag": "",
-                "fAlpha": 1.0,
-                "fDuration": 0.01600000075995922,
-                "fOffset": 0.0,
-                "fX": 800.0,
-                "fY": 221.40000915527344,
-                "iPassIndex": 0,
-                "iTextureIndex": 0,
-                "iTextureLevel": 0
+          {
+            "Caption": "크라트 기차역",
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
             },
+            "Features": [
+              {
+                "EndAlpha": 0.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 1.0,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
+                "isLoop": false
+              },
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 120,
+                "iStartFrame": 60,
+                "isLoop": false
+              }
+            ],
+            "FontTag": "Font_Medium",
+            "IsCenter": 1,
+            "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+            "RotationZ": 0.0,
+            "SizeX": 1200.0,
+            "SizeY": 675.0,
+            "Texturetag": "",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 800.0,
+            "fY": 221.40000915527344,
+            "iPassIndex": 0,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          },
             {
                 "Caption": "비 오는 밤",
                 "Color": {
