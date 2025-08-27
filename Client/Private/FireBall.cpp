@@ -107,7 +107,8 @@ void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType
 	{
 		if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 		{
-			pPlayer->ReceiveDamage(this, eColliderType);
+		/*	pPlayer->ReceiveDamage(this, eColliderType);*/
+			pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
 			//pPlayer->Get_Animator()->SetTrigger("Hited");
 			Set_bDead();
 		}
