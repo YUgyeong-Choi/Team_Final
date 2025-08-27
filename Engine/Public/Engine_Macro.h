@@ -85,7 +85,3 @@ if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), _wstring(TE
 CSoundController::Create(Path, __VA_ARGS__))))																		\
 return E_FAIL
 
-#define TOSTR(x) #x
-#define STR(x) TOSTR(x)
-#define MSG(desc) message(__FILE__"("STR(__LINE__)"):"#desc)
-#define FixLater(desc) __pragma(MSG(desc))

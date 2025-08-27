@@ -463,6 +463,9 @@
     <Filter Include="02.GameObjects\15.StaticTrigger\UI">
       <UniqueIdentifier>{e05af1b0-7999-451e-b1a1-d4596ece04d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Basic">
+      <UniqueIdentifier>{c36f0b3c-c3fe-4ba7-a261-cb942f41f202}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -976,6 +979,12 @@
     <ClInclude Include="..\Public\TriggerUI.h">
       <Filter>02.GameObjects\15.StaticTrigger\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Buttler_Basic.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Fatal_Icon.h">
+      <Filter>02.GameObjects\99.UI\World\Fatal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1462,6 +1471,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerUI.cpp">
       <Filter>02.GameObjects\15.StaticTrigger\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Buttler_Basic.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Fatal_Icon.cpp">
+      <Filter>02.GameObjects\99.UI\World\Fatal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

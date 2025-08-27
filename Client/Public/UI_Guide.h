@@ -13,7 +13,7 @@ public:
 	{
 	
 		vector<_wstring> partPaths;
-
+		CGameObject* pTrigger;
 	}UI_GUIDE_DESC;
 	
 protected:
@@ -54,8 +54,7 @@ private:
 	_int	m_iIndex = {};
 	
 
-
-
+	CGameObject* m_pTrigger = { nullptr }; // 트리거 박스 
 public:
 	static CUI_Guide* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

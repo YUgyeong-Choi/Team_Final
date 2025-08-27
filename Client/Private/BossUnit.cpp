@@ -1,6 +1,7 @@
 #include "BossUnit.h"
 #include <Player.h>
 #include "Weapon.h"
+#include "GameInstance.h"
 #include "LockOn_Manager.h"
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
@@ -71,6 +72,9 @@ HRESULT CBossUnit::Initialize(void* pArg)
     m_pAnimator->Update(0.f);
     m_pAnimator->SetPlaying(false);
     m_pModelCom->Update_Bones();
+
+    
+
     return S_OK;
 }
 
@@ -231,7 +235,7 @@ HRESULT CBossUnit::Ready_Actor()
 
     PxFilterData filterData{};
     filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-    filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON; // 일단 보류
+    filterData.word1 = WORLDFILTER::FILTER_PLAYERWEAPON | FILTER_PLAYERBODY; // 일단 보류
     m_pPhysXActorCom->Set_SimulationFilterData(filterData);
     m_pPhysXActorCom->Set_QueryFilterData(filterData);
     m_pPhysXActorCom->Set_Owner(this);
@@ -276,7 +280,22 @@ void CBossUnit::UpdateBossState(_float fTimeDelta)
         return;
     UpdateSpecificBehavior();
     _float fDistance = Get_DistanceToPlayer();
+    if (m_bGroggyActive)
+    {
+        m_fGroggyEndTimer -= fTimeDelta;
+        if (m_fGroggyEndTimer <= 0.f)
+        {
+            m_bGroggyActive = false; 
+            m_fGroggyGauge = 0.f;
+			cout << "그로기 가능 시간 종료" << endl;
+        }
 
+    }
+    else
+    {
+        // 게이지는 조금씩 감소시키기(일단 주석)
+   //     m_fGroggyGauge = max(0.f, m_fGroggyGauge - fTimeDelta * 0.05f);
+    }
     UpdateAttackPattern(fDistance, fTimeDelta);// 공격 패턴 업데이트
     UpdateMovement(fDistance, fTimeDelta);
 }
@@ -319,18 +338,7 @@ void CBossUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
     }
     else
     {
-        //if (XMVectorGetX(XMVector3LengthSq(m_PrevWorldDelta)) > 1e-6f)
-        //{
-        //    // 루트모션 마지막 위치로 보정
-        //    _vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-        //    _float fY = m_pNaviCom->Compute_NavigationY(vPos);
-        //    m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(vPos, fY));
-
-        //    m_PrevWorldDelta = XMVectorZero(); // 잔여치 제거
-        //}
-
         UpdateNormalMove(fTimeDelta);
-        m_PrevWorldDelta = XMVectorZero();
     }
 
     _vector vDir = GetTargetDirection();
@@ -340,7 +348,7 @@ void CBossUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
     vDir = XMVector3Normalize(vDir);
 
 
-    // 현재 상태에서 많이 회전했으면 애니메이터 Turn true
+  //   현재 상태에서 많이 회전했으면 애니메이터 Turn true
     _vector vCurrentLook = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
     _float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, vDir));
     fDot = clamp(fDot, -1.f, 1.f);
@@ -372,6 +380,7 @@ void CBossUnit::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 void CBossUnit::UpdateStateByNodeID(_uint iNodeID)
 {
 }
+
 
 _bool CBossUnit::CanMove() const
 {
@@ -444,95 +453,142 @@ _vector CBossUnit::GetTargetDirection() const
 
 void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
 {
-    _float3	 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
-    _float4  rootMotionQuat = m_pAnimator->GetRootRotationDelta();
+  //  _float3	 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+  //  _float4  rootMotionQuat = m_pAnimator->GetRootRotationDelta();
+
+  //  _vector vLocal = XMLoadFloat3(&rootMotionDelta);
+  //  vLocal = XMVectorScale(vLocal, m_fRootMotionAddtiveScale);
+  //  _vector vRotQuat = XMQuaternionNormalize(XMLoadFloat4(&rootMotionQuat));
+
+  //  _vector vScale, vCurRotQuat, vTrans;
+  //  XMMatrixDecompose(&vScale, &vCurRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
+  //  _vector vNewRotQut = XMQuaternionNormalize(XMQuaternionMultiply(vRotQuat, vCurRotQuat));
+
+  //  _vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vNewRotQut));
+  //  vWorldDelta = XMVectorSetY(vWorldDelta, 0.f);
+  //  _float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
+
+  //  _vector finalDelta = vWorldDelta;
+  //  float fLenSq = XMVectorGetX(XMVector3LengthSq(finalDelta));
+  //  if (fLenSq < 1e-6f) {
+  //      m_PrevWorldDelta = XMVectorZero();
+  //      return; // 루트모션 적용하지 않고 그대로 둠
+  //  }
+  //  //if (XMVectorGetX(XMVector3Length(m_PrevWorldDelta)) > m_fSmoothThreshold)
+  //  //{
+  //  //    //// 이전 프레임 이동이 있으면 현재 이동과 보간
+  //  //    //_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
+  //  //    //finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+  //  //    return;
+  //  //    m_PrevWorldDelta = finalDelta;
+  //  //}
+
+  //  _float fAnimSafeStep = 12.f * fTimeDelta; //
+  //  if (XMVectorGetX(XMVector3Length(finalDelta)) > fAnimSafeStep)
+  //      finalDelta = XMVector3Normalize(finalDelta) * fAnimSafeStep;
+  //  m_PrevWorldDelta = finalDelta;
+  //  _float fLen = XMVectorGetX(XMVector3Length(finalDelta));
+  //  if (fLen < 1e-6f)
+  //      cout << "PrevWorldDelta = ZERO" << endl;
+  //  else
+  //      cout << "PrevWorldDelta = " << fLen << endl;
+  //  _vector vNext = XMVectorAdd(vTrans, finalDelta);
+
+  //  if (m_pNaviCom)
+  //  {
+  //      if (m_pNaviCom->isMove(vNext))
+  //      {
+  //          // 갈 수 있으면 Y만 네비로 보정
+  //          _float fY = m_pNaviCom->Compute_NavigationY(vNext);
+  //          vTrans = XMVectorSetY(vNext, fY);
+		////	cout << "일반 이동" << endl;
+  //      }
+  //      else
+  //      {
+  //          _vector vSlideDir = m_pNaviCom->GetSlideDirection(vNext, XMVector3Normalize(finalDelta));
+  //          _vector vSlidePos = vTrans + vSlideDir * min(fDeltaMag, m_fSlideClamp);
+
+  //          if (m_pNaviCom->isMove(vSlidePos))
+  //          {
+		//		//cout << "슬라이드 이동" << endl;
+  //              _float fY = m_pNaviCom->Compute_NavigationY(vSlidePos);
+  //              vTrans = XMVectorSetY(vSlidePos, fY);
+  //          }
+  //          else
+  //          {
+		//		//cout << "이동 불가" << endl;
+  //              vTrans = XMVectorSetY(vTrans, m_pNaviCom->Compute_NavigationY(vTrans));
+  //          }
+  //      }
+  //  }
+
+  //  // 최종 매트릭스 갱신
+  //  _matrix newWorld =
+  //      XMMatrixScalingFromVector(vScale) *
+  //      XMMatrixRotationQuaternion(vNewRotQut) *
+  //      XMMatrixTranslationFromVector(vTrans);
+
+  //  m_pTransformCom->Set_WorldMatrix(newWorld);
+
+    _float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 
     _vector vLocal = XMLoadFloat3(&rootMotionDelta);
     vLocal = XMVectorScale(vLocal, m_fRootMotionAddtiveScale);
-    _vector vRotQuat = XMQuaternionNormalize(XMLoadFloat4(&rootMotionQuat));
 
+    // 현재 트랜스폼 분해 (스케일, 회전, 위치)
     _vector vScale, vCurRotQuat, vTrans;
     XMMatrixDecompose(&vScale, &vCurRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
-    _vector vNewRotQut = XMQuaternionNormalize(XMQuaternionMultiply(vRotQuat, vCurRotQuat));
 
-    _vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vNewRotQut));
+
+    _vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vCurRotQuat));
     vWorldDelta = XMVectorSetY(vWorldDelta, 0.f);
+
     _float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
 
-    _vector finalDelta = vWorldDelta;
- /*   if (fDeltaMag > m_fSmoothThreshold)
+    if (fDeltaMag < 1e-6f)
     {
-        _float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-        finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
-    }*/
-    _float fMaxStep = 0.45f; // 프레임당 최대 이동 허용
-    if (XMVectorGetX(XMVector3Length(finalDelta)) > fMaxStep)
-    {
-        finalDelta = XMVector3Normalize(finalDelta) * fMaxStep;
+        m_PrevWorldDelta = XMVectorZero();
+        return;
     }
-    m_PrevWorldDelta = finalDelta;
-    _vector vNext = XMVectorAdd(vTrans, finalDelta);
 
+    _float fAnimSafeStep = 13.f * fTimeDelta; 
+    if (fDeltaMag > fAnimSafeStep)
+        vWorldDelta = XMVector3Normalize(vWorldDelta) * fAnimSafeStep;
+
+    m_PrevWorldDelta = vWorldDelta;
+    _vector vNext = XMVectorAdd(vTrans, vWorldDelta);
+
+    // 네비 보정
     if (m_pNaviCom)
     {
         if (m_pNaviCom->isMove(vNext))
         {
-            // 갈 수 있으면 Y만 네비로 보정
             _float fY = m_pNaviCom->Compute_NavigationY(vNext);
             vTrans = XMVectorSetY(vNext, fY);
-			//cout << "일반 이동" << endl;
         }
         else
         {
-            _vector vSlideDir = m_pNaviCom->GetSlideDirection(vNext, XMVector3Normalize(finalDelta));
+            _vector vSlideDir = m_pNaviCom->GetSlideDirection(vNext, XMVector3Normalize(vWorldDelta));
             _vector vSlidePos = vTrans + vSlideDir * min(fDeltaMag, m_fSlideClamp);
 
             if (m_pNaviCom->isMove(vSlidePos))
             {
-				//cout << "슬라이드 이동" << endl;
                 _float fY = m_pNaviCom->Compute_NavigationY(vSlidePos);
                 vTrans = XMVectorSetY(vSlidePos, fY);
             }
             else
             {
-				//cout << "이동 불가" << endl;
                 vTrans = XMVectorSetY(vTrans, m_pNaviCom->Compute_NavigationY(vTrans));
             }
         }
     }
 
-    // 최종 매트릭스 갱신
     _matrix newWorld =
         XMMatrixScalingFromVector(vScale) *
-        XMMatrixRotationQuaternion(vNewRotQut) *
-        XMMatrixTranslationFromVector(vTrans);
+        XMMatrixRotationQuaternion(vCurRotQuat) *   // 회전은 그대로
+        XMMatrixTranslationFromVector(vTrans);      // 위치만 적용
 
     m_pTransformCom->Set_WorldMatrix(newWorld);
-
-    //if (fDeltaMag < 0.001f) // 사실상 루트모션 종료
-    //{
-    //    _float fY = m_pNaviCom->Compute_NavigationY(vTrans);
-    //    vTrans = XMVectorSetY(vTrans, fY);
-
-    //    newWorld =
-    //        XMMatrixScalingFromVector(vScale) *
-    //        XMMatrixRotationQuaternion(vNewRotQut) *
-    //        XMMatrixTranslationFromVector(vTrans);
-
-    //    m_pTransformCom->Set_WorldMatrix(newWorld);
-
-    //    m_PrevWorldDelta = XMVectorZero();
-    //}
-    //if (m_pNaviCom)
-    //{
-    //    if (m_pNaviCom->isMove(vNext))
-    //    {
-    //        _float fY = m_pNaviCom->Compute_NavigationY(vNext);
-    //        vTrans = XMVectorSetY(vNext, fY);
-    //    }
-    //}
-    //_matrix newWorld = XMMatrixScalingFromVector(vScale) * XMMatrixRotationQuaternion(vNewRotQut) * XMMatrixTranslationFromVector(vTrans);
-    //m_pTransformCom->Set_WorldMatrix(newWorld);
 }
 
 void CBossUnit::UpdateNormalMove(_float fTimeDelta)
@@ -601,8 +657,67 @@ void CBossUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		pWeapon->Calc_Durability(3);
 
         m_fHP -= pWeapon->Get_CurrentDamage() * 0.03f;
+
+        if (nullptr != m_pHPBar)
+        {
+            m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() * 0.03f);
+            m_pHPBar->Set_RenderTime(3.f);
+        }
+         
+
 		m_fHP = max(m_fHP, 0.f);
         cout << "보스 현재 체력 : " << m_fHP << endl;
+
+		_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+        auto pPlayer = GET_PLAYER(iLevelIndex);
+
+        if (pPlayer == nullptr)
+            return;
+        // cout << "플레이어 충돌" << endl;
+        auto playerState = pPlayer->Get_PlayerState();
+
+        switch (playerState)
+        {
+        case Client::EPlayerState::CHARGEA:
+        case Client::EPlayerState::CHARGEB:
+            m_fGroggyGauge += 0.1f;
+            if (m_fGroggyGauge >= m_fGroggyThreshold && !m_bGroggyActive)
+            {
+                m_bGroggyActive = true;                  // 화이트 게이지 시작
+                m_fGroggyEndTimer = m_fGroggyTimer;      // 3초 유지
+                m_fGroggyGauge = m_fGroggyThreshold;
+                break;
+            }
+            if (m_bGroggyActive)
+            {
+                m_pAnimator->SetTrigger("Groggy");
+                m_bGroggyActive = false;
+                m_fGroggyGauge = 0.f;
+            }
+            cout << "그로기 게이지 : " << m_fGroggyGauge << endl;
+            cout << "그로기 상태 : " << m_bGroggyActive << endl;
+            break;
+        case Client::EPlayerState::GARD:
+            break;
+        case Client::EPlayerState::USEITEM:
+            break;
+        case Client::EPlayerState::SHILD:
+            break;
+        case Client::EPlayerState::MAINSKILL:
+            break;
+        case Client::EPlayerState::ARMATTACKCHARGE:
+            break;
+        case Client::EPlayerState::ARMFAIL:
+            break;
+        case Client::EPlayerState::HITED:
+            break;
+        case Client::EPlayerState::FATAL:
+            break;
+        case Client::EPlayerState::END:
+            break;
+        default:
+            break;
+        }
     }
 }
 

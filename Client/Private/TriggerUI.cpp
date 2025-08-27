@@ -3,6 +3,7 @@
 #include "UI_Manager.h"
 #include "UI_Container.h"
 #include "UI_Guide.h"
+#include "Camera_Manager.h"
 
 CTriggerUI::CTriggerUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
@@ -39,7 +40,11 @@ HRESULT CTriggerUI::Initialize(void* pArg)
 void CTriggerUI::Priority_Update(_float fTimeDelta)
 {
 	if (m_bDead)
+	{
 		m_pPhysXTriggerCom->RemovePhysX();
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);
+	}
+
 }
 
 void CTriggerUI::Update(_float fTimeDelta)
@@ -78,13 +83,14 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 			break;
 		case Client::TRIGGERUI_TYPE::GUARD:
 			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Guard.json"),TEXT("../Bin/Save/UI/Guide/Guide_PerfectGuard.json") };
+			eGuideDesc.pTrigger = this;
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
 			break;
 		default:
 			break;
 		}
 
-		Set_bDead();
 	}
 		
 }

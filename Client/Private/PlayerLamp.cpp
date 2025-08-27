@@ -86,6 +86,10 @@ HRESULT CPlayerLamp::Render()
 	if (FAILED(Bind_Shader()))
 		return E_FAIL;
 
+	_float fEmissive = 0.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+		return E_FAIL;
+
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMesh; i++)

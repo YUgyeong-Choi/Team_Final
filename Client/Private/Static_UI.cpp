@@ -80,6 +80,7 @@ void CStatic_UI::Priority_Update(_float fTimeDelta)
 
 void CStatic_UI::Update(_float fTimeDelta)
 {
+	Fade(fTimeDelta);
 }
 
 void CStatic_UI::Late_Update(_float fTimeDelta)
@@ -108,6 +109,9 @@ HRESULT CStatic_UI::Render()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &m_vColor, sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &m_fCurrentAlpha, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(m_iPassIndex)))

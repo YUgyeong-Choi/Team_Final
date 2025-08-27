@@ -29,7 +29,7 @@
             "EmissiveIntensity": 0.3499999940395355,
             "EndTrack": 60,
             "FlipUV": false,
-            "Gravity": 1.0,
+            "Gravity": -1.5,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -60,7 +60,7 @@
                     ]
                 }
             ],
-            "LifeTime":  1.7200000286102295,
+            "LifeTime": 197.55908203125,
             "LifeTime_Particle": [
                 0.1300000101327896,
                 1.7200000286102295
@@ -71,7 +71,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_FlameThrow_Particle1",
-            "NumInstance": 50,
+            "NumInstance": 40,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -106,8 +106,8 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                2.0,
-                3.0
+                1.0,
+                2.0
             ],
             "Speed": [
                 15.0,

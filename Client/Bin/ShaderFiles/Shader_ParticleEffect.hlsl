@@ -84,7 +84,6 @@ VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
     return Out;
 }
 
-
 /* 그리는 형태에 따라서 호출된다. */ 
 
 struct GS_IN
@@ -238,19 +237,20 @@ struct PS_OUT
     vector vColor : SV_TARGET0;
 };
 
-
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;
     
-    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize,In.vTileOffset));
+    Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset));
     
     if (Out.vColor.a < 0.003f)
         discard;
     
     // 이부분도 변수로 받을 수 있으면??
-    Out.vColor.a = saturate(In.vLifeTime.x - In.vLifeTime.y);
-    
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x); // 0 ~ 1
+    float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
+    fade = 1.0 - fade; // 남은 생명에 비례해 감소
+    Out.vColor.a *= fade;  
 
     if (In.vLifeTime.y >= In.vLifeTime.x)
         discard;
@@ -281,7 +281,6 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
     
     return Out;
 }
-
 
 struct PS_OUT_WB
 {
@@ -352,13 +351,41 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     return Out;
 }
 
+
+PS_OUT_WB PS_MAIN_DIFFUSE_WB(PS_IN In)
+{
+    PS_OUT_WB Out;
+        
+    vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset));
+    
+    if (In.vLifeTime.y >= In.vLifeTime.x)
+        discard;
+
+    if (vColor.a < 0.003f)
+        discard;
+    
+    vColor *= g_vColor;
+    
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x); // 0 ~ 1
+    float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
+    fade = 1.0 - fade; // 남은 생명에 비례해 감소
+    vColor.a *= fade;
+
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Default // 0
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
-        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
         VertexShader = compile vs_5_0 VS_MAIN_CS();
@@ -398,7 +425,7 @@ technique11 DefaultTechnique
         GeometryShader = compile gs_5_0 GS_MAIN_VSTRETCH();
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WBGLOW();
     }
-    pass Diffuse_ // 4
+    pass Diffuse_WB // 4
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_ReadOnlyDepth, 0);
@@ -407,7 +434,7 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
-        PixelShader = compile ps_5_0 PS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_DIFFUSE_WB();
     }
  
 }

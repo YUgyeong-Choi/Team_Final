@@ -31,6 +31,9 @@ Texture2D g_ShadowTextureA;
 Texture2D g_ShadowTextureB;
 Texture2D g_ShadowTextureC;
 
+float  g_fCascadeRefHeight;
+float3 g_fHeightBand;
+
 /* [ 볼륨메트리 포그 ] */
 float g_fFogSpeed = 0.1f;
 float g_fFogPower = 1.5f;
@@ -1004,7 +1007,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vEmissive = g_PBR_Emissive.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
-        Out.vBackBuffer = vPBRFinal + vEmissive;
+        Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb, vPBRFinal.a);
     finalColor = Out.vBackBuffer;
     
     
@@ -1056,50 +1059,79 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
         vPosition = mul(vPosition, g_ProjMatrixInv);
         vPosition = mul(vPosition, g_ViewMatrixInv);
-    
-        // 1. Cascade A
-        vector vLightPosA;
-        vLightPosA = mul(vPosition, g_LightViewMatrixA);
-        vLightPosA = mul(vLightPosA, g_LightProjMatrixA);
-    
+        
+        float fPixelWorldY = vPosition.y;
+        
+        bool bHeightOK_A = abs(fPixelWorldY - g_fCascadeRefHeight) <= g_fHeightBand.x;
+        bool bHeightOK_B = abs(fPixelWorldY - g_fCascadeRefHeight) <= g_fHeightBand.y;
+        bool bHeightOK_C = abs(fPixelWorldY - g_fCascadeRefHeight) <= g_fHeightBand.z;
+        
+        // 1. Cascade A  ← 여기를 통째로 교체
+        vector vLightViewA = mul(vPosition, g_LightViewMatrixA);
+        float fCurrViewZA = vLightViewA.z;
+        vector vLightPosA = mul(vLightViewA, g_LightProjMatrixA);
+
         float2 uvA;
         uvA.x = vLightPosA.x / vLightPosA.w * 0.5f + 0.5f;
         uvA.y = vLightPosA.y / vLightPosA.w * -0.5f + 0.5f;
     
-        float4 vDepthA = g_ShadowTextureA.Sample(LinearClampSampler, uvA);
-        float fShadowViewZA = vDepthA.y * 1000.f;
-    
         // 2. Cascade B
-        vector vLightPosB;
-        vLightPosB = mul(vPosition, g_LightViewMatrixB);
-        vLightPosB = mul(vLightPosB, g_LightProjMatrixB);
+        vector vLightViewB = mul(vPosition, g_LightViewMatrixB);
+        float fCurrViewZB = vLightViewB.z;
+        vector vLightPosB = mul(vLightViewB, g_LightProjMatrixB);
     
         float2 uvB;
         uvB.x = vLightPosB.x / vLightPosB.w * 0.5f + 0.5f;
         uvB.y = vLightPosB.y / vLightPosB.w * -0.5f + 0.5f;
-    
-        float4 vDepthB = g_ShadowTextureB.Sample(LinearClampSampler, uvB);
-        float fShadowViewZB = vDepthB.y * 1000.f;
 
         // 3. Cascade C
-        vector vLightPosC;
-        vLightPosC = mul(vPosition, g_LightViewMatrixC);
-        vLightPosC = mul(vLightPosC, g_LightProjMatrixC);
+        vector vLightViewC = mul(vPosition, g_LightViewMatrixC);
+        float fCurrViewZC = vLightViewC.z;
+        vector vLightPosC = mul(vLightViewC, g_LightProjMatrixC);
     
         float2 uvC;
         uvC.x = vLightPosC.x / vLightPosC.w * 0.5f + 0.5f;
         uvC.y = vLightPosC.y / vLightPosC.w * -0.5f + 0.5f;
-    
-        float4 vDepthC = g_ShadowTextureC.Sample(LinearClampSampler, uvC);
-        float fShadowViewZC = vDepthC.y * 1000.f;
+        
+        bool bInsideA = (vLightPosA.w > 0) &&
+                (uvA.x >= 0 && uvA.x <= 1 && uvA.y >= 0 && uvA.y <= 1) &&
+                (vLightPosA.z >= 0 && vLightPosA.z <= vLightPosA.w);
+        bool bInsideB = (vLightPosB.w > 0) &&
+                (uvB.x >= 0 && uvB.x <= 1 && uvB.y >= 0 && uvB.y <= 1) &&
+                (vLightPosB.z >= 0 && vLightPosB.z <= vLightPosB.w);
+        bool bInsideC = (vLightPosC.w > 0) &&
+                (uvC.x >= 0 && uvC.x <= 1 && uvC.y >= 0 && uvC.y <= 1) &&
+                (vLightPosC.z >= 0 && vLightPosC.z <= vLightPosC.w);
+        
+        float fShadowViewZA = 0.0f;
+        if (bInsideA)
+        {
+            float4 vDepthA = g_ShadowTextureA.Sample(LinearClampSampler, uvA);
+            fShadowViewZA = vDepthA.y * 1000.f;
+        }
+
+        float fShadowViewZB = 0.0f;
+        if (bInsideB)
+        {
+            float4 vDepthB = g_ShadowTextureB.Sample(LinearClampSampler, uvB);
+            fShadowViewZB = vDepthB.y * 1000.f;
+        }
+
+        float fShadowViewZC = 0.0f;
+        if (bInsideC)
+        {
+            float4 vDepthC = g_ShadowTextureC.Sample(LinearClampSampler, uvC);
+            fShadowViewZC = vDepthC.y * 1000.f;
+        }
 
         // --- 깊이 비교 ---
-        float fBias = 0.1f;
-        if (fShadowViewZA + fBias < vLightPosA.w)
+        
+        float fBiasViewZ = 0.5f;
+        if (bHeightOK_A && bInsideA && (fCurrViewZA - fBiasViewZ > fShadowViewZA))
             Out.vBackBuffer *= 0.5f;
-        else if (fShadowViewZB + fBias < vLightPosB.w)
+        else if (bHeightOK_B && bInsideB && (fCurrViewZB - fBiasViewZ > fShadowViewZB))
             Out.vBackBuffer *= 0.5f;
-        else if (fShadowViewZC + fBias < vLightPosC.w)
+        else if (bHeightOK_C && bInsideC && (fCurrViewZC - fBiasViewZ > fShadowViewZC))
             Out.vBackBuffer *= 0.5f;
     }
     

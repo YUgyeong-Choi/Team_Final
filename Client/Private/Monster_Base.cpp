@@ -4,6 +4,7 @@
 #include "PhysX_ControllerReport.h"
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Camera_Orbital.h"
+#include "Player.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUnit{pDevice, pContext}
@@ -185,6 +186,7 @@ void CMonster_Base::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CMonster_Base::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+
 }
 
 void CMonster_Base::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -205,7 +207,6 @@ void CMonster_Base::Reset()
 
 	m_isLookAt = {};
 	m_eDir = { MONSTER_DIR::END };
-	m_fGroggyThreshold = {};
 	m_isCanGroggy = {};
 	m_isDetect = { false };
 	m_strStateName = {};
@@ -354,9 +355,10 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 		}
 
 
-		// 회전 보정
+		// 회전 보정 (루트모션 수정으로 회전을 빼버림)
 		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
-		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
+	//	_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
+		_vector vNewRot = vRotQuat;
 	
 
 		// 월드 행렬 재생성 및 세팅

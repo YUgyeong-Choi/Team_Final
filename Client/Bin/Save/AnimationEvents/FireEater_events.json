@@ -37,7 +37,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -70,7 +70,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -103,18 +103,12 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Start",
             "Duration": 30.0,
-            "Events": [
-                {
-                    "EventName": "Turnning",
-                    "Time": 0.0
-                }
-            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -410,7 +404,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -418,11 +412,7 @@
             "Duration": 210.0,
             "Events": [
                 {
-                    "EventName": "IgnorePlayerCollision",
-                    "Time": 85.0
-                },
-                {
-                    "EventName": "ResetIgnorePlayerCollision",
+                    "EventName": "CollidersOn",
                     "Time": 163.0
                 }
             ],
@@ -550,6 +540,10 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 58.0
+                },
+                {
+                    "EventName": "OnFlamethrowerEffect",
+                    "Time": 27.0
                 }
             ],
             "IsLoop": false,
@@ -571,6 +565,10 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 58.0
+                },
+                {
+                    "EventName": "OnFlamethrowerEffect",
+                    "Time": 27.0
                 }
             ],
             "IsLoop": false,

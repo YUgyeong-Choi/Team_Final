@@ -23,6 +23,7 @@
 #include "Observer_Manager.h"
 
 #include "ComputeShader.h"
+#include "Level.h"
 
 
 IMPLEMENT_SINGLETON(CGameInstance);
@@ -247,6 +248,10 @@ HRESULT CGameInstance::Change_Level(_uint iLevelIndex, CLevel* pNewLevel)
 CLevel* CGameInstance::Get_CurrentLevel() const
 {
 	return m_pLevel_Manager->Get_CurrentLevel();
+}
+void CGameInstance::Reset_LevelUnits()
+{
+	m_pLevel_Manager->Get_CurrentLevel()->Reset();
 }
 #pragma endregion
 

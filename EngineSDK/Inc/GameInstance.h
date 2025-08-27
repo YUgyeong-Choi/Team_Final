@@ -36,6 +36,7 @@ public:
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	class CLevel* Get_CurrentLevel() const;
+	void Reset_LevelUnits();
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -73,6 +74,9 @@ public:
 	_bool Get_RenderCollider();
 	_bool Get_RenderMapCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
+
+	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
+	_vector GetPlayerPos() { return m_vPlayerPosition; }	
 #endif
 #pragma endregion
 
@@ -284,6 +288,10 @@ private:
 private:
 	_uint					m_iCurrentLevelIndex = 0;
 	float m_fTimeScale = 1.f; // 업데이트 속도
+
+private: /* [ 플레이어 포지션 ] */
+	_vector m_vPlayerPosition = {};
+
 public:
 	void Release_Engine();
 	virtual void Free() override;

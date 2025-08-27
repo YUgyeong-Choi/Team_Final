@@ -6,11 +6,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.10000000149011612,
             "MaskBone": "",
-            "Name": "Combo_Start",
+            "Name": "Attack_Combo_Start",
             "NodeId": 1,
             "NodePos": [
-                -65.0,
-                175.0
+                -2760.0,
+                89.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -21,11 +21,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "Combo_Loop",
+            "Name": "Attack_Combo_Loop",
             "NodeId": 2,
             "NodePos": [
-                -65.0,
-                345.0
+                -2760.0,
+                259.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -36,11 +36,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.10000000149011612,
             "MaskBone": "",
-            "Name": "Combo_End",
+            "Name": "Attack_Combo_End",
             "NodeId": 3,
             "NodePos": [
-                -65.0,
-                515.0
+                -2760.0,
+                429.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Spawn_Loop",
             "NodeId": 100002,
             "NodePos": [
-                655.0,
-                175.0
+                480.0,
+                89.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -69,8 +69,308 @@
             "Name": "Spawn_End",
             "NodeId": 100003,
             "NodePos": [
-                656.0,
-                345.0
+                480.0,
+                259.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Walk_F",
+            "NodeId": 100005,
+            "NodePos": [
+                1200.0,
+                89.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Walk_B",
+            "NodeId": 100006,
+            "NodePos": [
+                1200.0,
+                259.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Walk_L",
+            "NodeId": 100007,
+            "NodePos": [
+                1200.0,
+                429.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Walk_R",
+            "NodeId": 100008,
+            "NodePos": [
+                1200.0,
+                599.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Idle",
+            "NodeId": 100009,
+            "NodePos": [
+                -960.0,
+                89.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Attack_Light",
+            "NodeId": 100010,
+            "NodePos": [
+                -3120.0,
+                89.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Dead_F",
+            "NodeId": 100011,
+            "NodePos": [
+                -240.0,
+                89.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Dead_B",
+            "NodeId": 100012,
+            "NodePos": [
+                -240.0,
+                259.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Hit_B",
+            "NodeId": 100013,
+            "NodePos": [
+                -1680.0,
+                89.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Hit_R",
+            "NodeId": 100014,
+            "NodePos": [
+                -1680.0,
+                259.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Hit_L",
+            "NodeId": 100015,
+            "NodePos": [
+                -1680.0,
+                429.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Groggy_In",
+            "NodeId": 100016,
+            "NodePos": [
+                1200.0,
+                89.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Groggy_Out",
+            "NodeId": 100017,
+            "NodePos": [
+                1200.0,
+                259.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Groggy_Loop",
+            "NodeId": 100018,
+            "NodePos": [
+                1200.0,
+                429.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Fatal_In",
+            "NodeId": 100019,
+            "NodePos": [
+                480.0,
+                89.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Fatal_Ioop",
+            "NodeId": 100020,
+            "NodePos": [
+                480.0,
+                259.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Down_Away",
+            "NodeId": 100021,
+            "NodePos": [
+                120.0,
+                89.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Down_Fall",
+            "NodeId": 100022,
+            "NodePos": [
+                120.0,
+                259.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Down_Land",
+            "NodeId": 100023,
+            "NodePos": [
+                120.0,
+                429.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_ATSA0_Skill_01_End_Before",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Getup",
+            "NodeId": 100024,
+            "NodePos": [
+                840.0,
+                89.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
