@@ -1295,7 +1295,7 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
 		_matrix newWorld =
 			XMMatrixScalingFromVector(vScale) *
-			XMMatrixRotationQuaternion(vNewRot) *
+			XMMatrixRotationQuaternion(vRotQuat) *
 			XMMatrixTranslationFromVector(vTrans);
 		m_pTransformCom->Set_WorldMatrix(newWorld);
 

@@ -127,6 +127,7 @@ private:
     virtual void UpdateAttackPattern(_float fDistance,_float fTimeDelta) override;
     virtual void UpdateStateByNodeID(_uint iNodeID) override;
     virtual void UpdateSpecificBehavior() override;
+    virtual void EnableColliders(_bool bEnable) override;
 
 
     // 공견 패턴
@@ -188,16 +189,17 @@ private:
 	
     // 상태 관련
     _bool m_bUsedFlameFiledOnLowHp = false;
+	_bool m_bPlayerCollided = false;
 
 
     // 공격 관련
-    _int   m_iPatternLimit = 2;
+    _int   m_iPatternLimit = 1;
     _int   m_iFireBallComboCount = 0;
     _float m_fBasePatternWeight = 100.f;
     _float m_fMinWeight = 30.f;
     _float m_fMaxWeight = 250.f;
-    _float m_fWeightDecreaseRate = 0.45f;
-	_float m_fWeightIncreaseRate = 0.35f;
+    _float m_fWeightDecreaseRate = 0.6f;
+	_float m_fWeightIncreaseRate = 0.4f;
     //_float m_fAttackCooldown = 0.f; // 공격 쿨타임
     //_float m_fAttckDleay = 4.f;
     _float m_fFireFlameDuration = 0.f;
@@ -239,7 +241,7 @@ private:
 
     // 상수
 	const _float ATTACK_DISTANCE_CLOSE = 0.f;
-    const _float ATTACK_DISTANCE_MIDDLE = 10.f;
+    const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
     const _int LIMIT_FIREBALL_COMBO_COUNT = 3;
 public:

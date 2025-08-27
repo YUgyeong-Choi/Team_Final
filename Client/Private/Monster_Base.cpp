@@ -355,9 +355,10 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 		}
 
 
-		// 회전 보정
+		// 회전 보정 (루트모션 수정으로 회전을 빼버림)
 		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
-		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
+	//	_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
+		_vector vNewRot = vRotQuat;
 	
 
 		// 월드 행렬 재생성 및 세팅

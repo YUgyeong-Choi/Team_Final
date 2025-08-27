@@ -9,14 +9,6 @@
             "States": [
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Guard_Idle",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Guard",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_Fail_Item",
                     "LowerClipName": "",
                     "MaskBoneName": "",
@@ -25,10 +17,10 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_Hit_LtoR",
+                    "ClipName": "AS_Pino_T_Guard_Idle",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Hit_LtoR",
+                    "Name": "Guard",
                     "UpperClipName": ""
                 },
                 {
@@ -41,11 +33,11 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "",
-                    "LowerClipName": "AS_Pino_T_Walk_B",
-                    "MaskBoneName": "Bip001-Spine2",
-                    "Name": "Grinder_Loop_Walk_B",
-                    "UpperClipName": "AS_Pino_Grinder_Loop"
+                    "ClipName": "AS_Pino_Hit_LtoR",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Hit_LtoR",
+                    "UpperClipName": ""
                 },
                 {
                     "BlendWeight": 1.0,
@@ -53,6 +45,14 @@
                     "LowerClipName": "AS_Pino_T_Walk_R",
                     "MaskBoneName": "Bip001-Spine2",
                     "Name": "Grinder_Loop_Walk_R",
+                    "UpperClipName": "AS_Pino_Grinder_Loop"
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_B",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "Grinder_Loop_Walk_B",
                     "UpperClipName": "AS_Pino_Grinder_Loop"
                 },
                 {
@@ -73,6 +73,14 @@
                 },
                 {
                     "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Walk_BL",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Walk_BL",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Idle",
                     "LowerClipName": "",
                     "MaskBoneName": "",
@@ -85,14 +93,6 @@
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Guard_Walk_B",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Walk_BL",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Walk_BL",
                     "UpperClipName": ""
                 },
                 {
@@ -129,18 +129,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_Arm_Normal_Hook",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Arm_NormalAttack",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Sprint",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Sprint",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Arm_Normal_Hook",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Arm_NormalAttack",
                     "UpperClipName": ""
                 },
                 {
@@ -201,19 +201,19 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "",
-                    "LowerClipName": "AS_Pino_T_Walk_F",
-                    "MaskBoneName": "Bip001-Spine2",
-                    "Name": "OnLamp_Walk",
-                    "UpperClipName": "AS_Pino_Item_Lamp"
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Bayonet_CA3",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "ChargeStrongAttack",
                     "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_F",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "OnLamp_Walk",
+                    "UpperClipName": "AS_Pino_Item_Lamp"
                 },
                 {
                     "BlendWeight": 1.0,
@@ -241,14 +241,6 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "AnyState",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Bayonet_DSA",
                     "LowerClipName": "",
                     "MaskBoneName": "",
@@ -265,11 +257,35 @@
                 },
                 {
                     "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "AnyState",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Bayonet_SNA",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "SprintStrongAttack",
                     "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Bayonet_NA3",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "NormalAttack",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_L",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "Heal_Walk_L",
+                    "UpperClipName": "AS_Pino_Item_Pulse"
                 },
                 {
                     "BlendWeight": 1.0,
@@ -290,22 +306,6 @@
                 {
                     "BlendWeight": 1.0,
                     "ClipName": "",
-                    "LowerClipName": "AS_Pino_T_Walk_L",
-                    "MaskBoneName": "Bip001-Spine2",
-                    "Name": "Heal_Walk_L",
-                    "UpperClipName": "AS_Pino_Item_Pulse"
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Bayonet_NA3",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "NormalAttack",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "",
                     "LowerClipName": "AS_Pino_T_Walk_FL",
                     "MaskBoneName": "Bip001-Spine2",
                     "Name": "Heal_Walk_FL",
@@ -321,18 +321,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Run_BR",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Run_BR",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Guard_Walk_F",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Guard_Walk_F",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Run_BR",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_BR",
                     "UpperClipName": ""
                 },
                 {
@@ -361,14 +361,6 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Walk_FL",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Walk_FL",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Run_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",
@@ -377,10 +369,26 @@
                 },
                 {
                     "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_T_Walk_FL",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Walk_FL",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Run_BL",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Run_BL",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Sit_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Sit_End",
                     "UpperClipName": ""
                 },
                 {
@@ -397,14 +405,6 @@
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Arm_NormalAttack2",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_Sit_End",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Sit_End",
                     "UpperClipName": ""
                 },
                 {
@@ -481,19 +481,19 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "",
-                    "LowerClipName": "AS_Pino_T_Walk_F",
-                    "MaskBoneName": "Bip001-Spine2",
-                    "Name": "Fail_Walk",
-                    "UpperClipName": "AS_Pino_Fail_Item"
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Dash_Focus_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Dash_Focus_B",
                     "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_F",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "Fail_Walk",
+                    "UpperClipName": "AS_Pino_Fail_Item"
                 },
                 {
                     "BlendWeight": 1.0,
@@ -585,19 +585,19 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_Arm_Normal_ChargeAttack",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Arm_ChargeAttack",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "",
                     "LowerClipName": "AS_Pino_T_Walk_BR",
                     "MaskBoneName": "Bip001-Spine2",
                     "Name": "Heal_Walk_BR",
                     "UpperClipName": "AS_Pino_Item_Pulse"
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Pino_Arm_Normal_ChargeAttack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Arm_ChargeAttack",
+                    "UpperClipName": ""
                 },
                 {
                     "BlendWeight": 1.0,
@@ -642,6 +642,14 @@
                 {
                     "BlendWeight": 1.0,
                     "ClipName": "",
+                    "LowerClipName": "AS_Pino_T_Walk_BL",
+                    "MaskBoneName": "Bip001-Spine2",
+                    "Name": "Heal_Walk_BL",
+                    "UpperClipName": "AS_Pino_Item_Pulse"
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "",
                     "LowerClipName": "AS_Pino_H_Walk_F",
                     "MaskBoneName": "Bip001-Spine2",
                     "Name": "Heal_Walk_F",
@@ -650,9 +658,9 @@
                 {
                     "BlendWeight": 1.0,
                     "ClipName": "",
-                    "LowerClipName": "AS_Pino_T_Walk_BL",
+                    "LowerClipName": "AS_Pino_T_Walk_R",
                     "MaskBoneName": "Bip001-Spine2",
-                    "Name": "Heal_Walk_BL",
+                    "Name": "Heal_Walk_R",
                     "UpperClipName": "AS_Pino_Item_Pulse"
                 },
                 {
@@ -662,14 +670,6 @@
                     "MaskBoneName": "",
                     "Name": "Death_B",
                     "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "",
-                    "LowerClipName": "AS_Pino_T_Walk_R",
-                    "MaskBoneName": "Bip001-Spine2",
-                    "Name": "Heal_Walk_R",
-                    "UpperClipName": "AS_Pino_Item_Pulse"
                 },
                 {
                     "BlendWeight": 1.0,

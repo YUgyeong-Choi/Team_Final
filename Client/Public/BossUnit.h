@@ -75,8 +75,8 @@ protected:
 	virtual void UpdateStateByNodeID(_uint iNodeID);
 	virtual void ProcessingEffects(const _wstring& stEffectTag) {}; // 이펙트 처리
 
+	virtual void EnableColliders(_bool bEnable) {};
 	_bool CanMove() const;
-
 	_bool  IsTargetInFront(_float fDectedAngle = 60.f) const;
 
 	_bool UpdateTurnDuringAttack(_float fTimeDelta);
@@ -119,34 +119,39 @@ protected:
 	virtual HRESULT Spawn_Effect() { return S_OK; }
 
 	virtual HRESULT Ready_Effect() { return S_OK; } // Initialize에서 Loop로 평생 돌릴 이펙트 ready
-
+	_bool CanGroggyActive() const { return m_bGroggyActive; } // 그로기를 만들 수 있는 상태인지
 protected:
 	CNavigation* m_pNaviCom = { nullptr };
 
 	EBossState m_eCurrentState = EBossState::NONE;
-	_bool m_bIsFirstAttack{ true }; // 컷씬하고 돌진 처리
-	_bool m_bIsPhase2{ false };
-	_bool m_bStartPhase2 = false;
+	_bool    m_bIsFirstAttack{ true }; // 컷씬하고 돌진 처리
+	_bool    m_bIsPhase2{ false };
+	_bool    m_bStartPhase2 = false;
 
 	// 체력
-	_float m_fHP = 100.f;
-	_float m_fMaxHP = 100.f;
-	_float m_fPhase2HPThreshold = 0.5f; // 50% 이하로 떨어지면 페이즈2 시작
+	_float   m_fHP = 100.f;
+	_float   m_fMaxHP = 100.f;
+	_float   m_fPhase2HPThreshold = 0.5f; // 50% 이하로 떨어지면 페이즈2 시작
 
+	 _bool   m_bGroggyActive = false;
+	_float   m_fGroggyGauge  = 0.f;       // 누적 값
+	_float   m_fGroggyThreshold = 1.f;   // 발동 기준
+	_float   m_fGroggyTimer = 5.f;       // 화이트 게이지 유지 시간
+	_float	 m_fGroggyEndTimer = 0.f;   // 화이트 게이지 유지 시간 카운트
 	_vector  m_PrevWorldDelta = XMVectorZero();
 	_vector  m_PrevWorldRotation = XMVectorZero();
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
-	_float   m_fSmoothThreshold = 0.1f;
+	_float   m_fSmoothThreshold = 0.05f;
 	_float   m_fSlideClamp = 0.2f;
 	_float   m_fWalkSpeed = 3.f;
 	_float   m_fRunSpeed = 6.f;
-	_float   m_fRootMotionAddtiveScale =1.f; // 루트 모션 추가 배율
+	_float   m_fRootMotionAddtiveScale =1.2f; // 루트 모션 추가 배율
 	_float   m_fChasingDistance = 1.5f; // 플레이어 추적 거리
 
-	_float m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
-	_float m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
-	_float m_fTurnTimeDuringAttack = 0.f;
+	_float   m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
+	_float   m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
+	_float   m_fTurnTimeDuringAttack = 0.f;
 
 #ifdef _DEBUG
 	_bool m_bDebugMode = false;
@@ -160,9 +165,9 @@ protected:
 	//_float m_fMaxWeight = 150.f;
 	//_float m_fWeightDecreaseRate = 0.15f;
 	//_float m_fWeightIncreaseRate = 0.12f;
-	_float m_fAttackCooldown = 0.f; // 공격 쿨타임
-	_float m_fAttckDleay = 4.f;
-	_bool m_bCutSceneOn = false;
+	_float   m_fAttackCooldown = 0.f; // 공격 쿨타임
+	_float   m_fAttckDleay = 4.f;
+	_bool    m_bCutSceneOn = false;
 
 	EBossAttackType m_eBossAttackType = EBossAttackType::NONE;
 
