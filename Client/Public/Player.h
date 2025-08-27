@@ -54,6 +54,11 @@ public:
 		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, HITEDUP, HITEDSTAMP, PULSE, FATAL, END
 	};
 
+	enum class eHitedTarget
+	{
+		MONSTER, BOSS, ARROW, END
+	};
+
 protected:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& Prototype);
@@ -217,6 +222,7 @@ public:
 
 private: /* [ 특수 모션 ] */
 	HITMOTION m_eHitMotion = { HITMOTION::END };
+	eHitedTarget m_eHitedTarget = { eHitedTarget::END };
 
 private: /* [ 상태 변수 ] */
 	EPlayerState  m_pPreviousState = { EPlayerState::END };
