@@ -10,6 +10,7 @@
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
 #include "UI_MonsterHP_Bar.h"
+#include "Static_Decal.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -192,6 +193,47 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 void CFuoco::Update(_float fTimeDelta)
 {
+#pragma region 영웅 데칼 테스트 코드
+	if (m_pGameInstance->Key_Down(DIK_0)) 
+	{
+		//데칼 테스트(영웅)
+		CStatic_Decal::DECAL_DESC DecalDesc = {};
+		DecalDesc.bNormalOnly = true;
+		DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEaterNormal");
+		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEaterMask");
+		//DecalDesc.WorldMatrix = m_pTransformCom->Get_World4x4(); //크자이공부로 직접 넣어주면 ㅎㅎ
+
+		// 기존 월드행렬
+		_matrix World = XMLoadFloat4x4(&m_pTransformCom->Get_World4x4());
+
+		// 스케일, 회전, 위치 분해
+		_vector scale, rotQuat, trans;
+		XMMatrixDecompose(&scale, &rotQuat, &trans, World);
+
+		// 새 스케일 설정
+		scale = XMVectorSet(5.f, 1.f, 5.f, 0.f);
+
+		// 다시 합성
+		_matrix NewWorld = XMMatrixScalingFromVector(scale) *
+			XMMatrixRotationQuaternion(rotQuat) *
+			XMMatrixTranslationFromVector(trans);
+
+		// 적용
+		XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
+
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+		{
+			//return E_FAIL;
+		}
+			
+	}
+#pragma endregion
+
+
+
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
 		m_pAnimator->SetTrigger("SpecialDie");
