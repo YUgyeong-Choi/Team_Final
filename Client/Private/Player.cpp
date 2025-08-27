@@ -2102,7 +2102,6 @@ HRESULT CPlayer::UpdateShadowCamera()
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWA)))
 		return E_FAIL;
 
-	vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 	vTargetEye = vPlayerPos + XMVectorSet(-10.f, 40.f, 10.f, 0.f);
 	vTargetAt = vPlayerPos;
 
@@ -2117,7 +2116,6 @@ HRESULT CPlayer::UpdateShadowCamera()
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWB)))
 		return E_FAIL;
 
-	vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 	vTargetEye = vPlayerPos + XMVectorSet(-10.f, 60.f, 10.f, 0.f);
 	vTargetAt = vPlayerPos;
 
@@ -2132,7 +2130,7 @@ HRESULT CPlayer::UpdateShadowCamera()
 	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc, SHADOW::SHADOWC)))
 		return E_FAIL;
 
-
+	m_pGameInstance->SetPlayerPos(vPlayerPos);
 	return S_OK;
 }
 

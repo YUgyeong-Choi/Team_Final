@@ -915,10 +915,10 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrixC", m_pGameInstance->Get_Light_ProjMatrix(SHADOW::SHADOWC))))
 		return E_FAIL;
 
-	_float fSplitA = 5.f;
-	_float fSplitB = 20.f;
-	m_pShader->Bind_RawValue("g_fSplitA", &fSplitA, sizeof(_float));
-	m_pShader->Bind_RawValue("g_fSplitB", &fSplitB, sizeof(_float));
+	_float fCascadeRefHeight = XMVectorGetY(m_pGameInstance->GetPlayerPos());
+	_float3 fHeightBand = _float3(1.0f, 1.5f, 3.0f);
+	m_pShader->Bind_RawValue("g_fCascadeRefHeight", &fCascadeRefHeight, sizeof(_float));
+	m_pShader->Bind_RawValue("g_fHeightBand", &fHeightBand, sizeof(_float3));
 
 	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::DEFERRED));
 
