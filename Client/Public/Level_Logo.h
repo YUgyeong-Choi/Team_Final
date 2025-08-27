@@ -52,8 +52,7 @@ private:
 	class CGameObject* m_pGuideBack = { nullptr };
 
 
-	// 이거는 나중에 빼기
-	class CUI_Guide* m_pGuide = { nullptr };
+	
 private: /* [ 사운드 ] */
 	CSound_Core* m_pBGM = { nullptr };
 
