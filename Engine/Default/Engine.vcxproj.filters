@@ -259,6 +259,9 @@
     <ClInclude Include="..\Public\Area_Manager.h">
       <Filter>01.Utility\17.Area_Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Pulling_Manager.h">
+      <Filter>01.Utility\18.PullingManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -491,6 +494,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>01.Utility\04.Components\Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pulling_Manager.cpp">
+      <Filter>01.Utility\18.PullingManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -748,6 +754,9 @@
     </Filter>
     <Filter Include="01.Utility\17.Area_Manager">
       <UniqueIdentifier>{eff55819-2b7c-49ab-b0c0-da49622d9f88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\18.PullingManager">
+      <UniqueIdentifier>{1924153b-0cfc-4244-a93e-6801760e21a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

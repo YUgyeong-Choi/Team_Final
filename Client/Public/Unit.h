@@ -49,8 +49,6 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
 
-	virtual void Reset() {};
-
 	void SetCascadeShadow();
 	
 

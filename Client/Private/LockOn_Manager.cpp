@@ -113,7 +113,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         direction.normalize(); // 방향 벡터 정규화
         origin -= direction * 0.5f;
 
-        _float fRayLength = 10.f;
+        _float fRayLength = 15.f;
 
         PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
         PxRaycastBuffer hit;
@@ -134,7 +134,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
                 PxRigidActor* hitActor = hit.block.actor;
                 CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-                _bool isMonster = !(pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON);
+                _bool isMonster = !(pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON || pHitActor->Get_ColliderType() == COLLIDERTYPE::BOSS_WEAPON);
                 if (pHitActor && isMonster)
                 {
                     // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
@@ -172,7 +172,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
             _data.vStartPos = origin;
             _data.vDirection = direction;
-            _data.fRayLength = 10.f;
+            _data.fRayLength = 15.f;
             _data.bIsHit = bHit;
             _data.vHitPos = hitPos;
             pPlayer->Get_Controller()->Add_RenderRay(_data);
@@ -203,7 +203,7 @@ void CLockOn_Manager::RemoveSomeTargets()
         // 거리 기준 제거 (3D 거리)
         _vector delta = targetPos - playerPos;
         float distSq = XMVectorGetX(XMVector3Length(delta));
-        if (distSq > 10.f)
+        if (distSq > 1.5f)
             bRemove = true;
 
 
@@ -213,7 +213,7 @@ void CLockOn_Manager::RemoveSomeTargets()
             PxVec3 origin = VectorToPxVec3(playerPos);
             PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
             direction.normalize();
-            _float fRayLength = 10.f;
+            _float fRayLength = 1.5f;
 
             PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
             PxRaycastBuffer hit;

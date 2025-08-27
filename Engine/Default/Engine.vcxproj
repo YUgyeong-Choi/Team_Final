@@ -239,6 +239,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClInclude Include="..\public\Picking.h" />
     <ClInclude Include="..\public\PipeLine.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
+    <ClInclude Include="..\Public\Pulling_Manager.h" />
     <ClInclude Include="..\public\QuadTree.h" />
     <ClInclude Include="..\public\OctoTree_Manager.h" />
     <ClInclude Include="..\Public\Renderer.h" />
@@ -321,6 +322,7 @@ CALL $(SolutionDir)\UpdateLib.bat</Command>
     <ClCompile Include="..\private\Picking.cpp" />
     <ClCompile Include="..\private\PipeLine.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
+    <ClCompile Include="..\Private\Pulling_Manager.cpp" />
     <ClCompile Include="..\private\QuadTree.cpp" />
     <ClCompile Include="..\private\OctoTree_Manager.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
