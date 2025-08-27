@@ -2315,6 +2315,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 
 void CPlayer::SetMoveState(_float fTimeDelta)
 {
+#ifdef _DEBUG
+	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
+	if (iCurLevel == ENUM_CLASS(LEVEL::JW))
+		return;
+#endif // _DEBUG
 
 	_vector vCamLook = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::LOOK);
 	_vector vCamRight = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::RIGHT);
@@ -2384,11 +2389,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 		fSpeed = 0.f;
 	}
 
-#ifdef _DEBUG
-	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
-	if (iCurLevel == ENUM_CLASS(LEVEL::JW))
-		return;
-#endif // _DEBUG
+
 
 	_float fDist = fSpeed * fTimeDelta;
 	vInputDir *= fDist;
