@@ -1038,10 +1038,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::GRINDER:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
 	}
 	case eAnimCategory::PULSE:
 	{
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		break;
 	}
 	case eAnimCategory::GUARD_HIT:
 	{
@@ -1055,6 +1057,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
+
+		break;
 	}
 	case eAnimCategory::HITEDUP:
 	{
@@ -1067,6 +1071,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
+		break;
 	}
 	case eAnimCategory::HITEDSTAMP:
 	{
@@ -1079,6 +1084,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
+		break;
 	}
 
 	default:
