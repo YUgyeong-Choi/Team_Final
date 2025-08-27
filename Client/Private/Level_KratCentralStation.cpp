@@ -117,10 +117,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if (!m_bEndVideo)
 		return;
 
-	if (KEY_DOWN(DIK_U))
-		Reset();
-
-
 	if(KEY_DOWN(DIK_H))
 		ToggleHoldMouse();
 	if (m_bHold)
