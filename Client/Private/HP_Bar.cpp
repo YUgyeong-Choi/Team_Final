@@ -81,7 +81,7 @@ void CHP_Bar::Update(_float fTimeDelta)
 	{
 		if (m_fCurrentRatio < m_fRatio)
 		{
-			m_fCurrentRatio += fTimeDelta;
+			m_fCurrentRatio += fTimeDelta * 2.f;
 		}
 		else
 		{
@@ -92,7 +92,7 @@ void CHP_Bar::Update(_float fTimeDelta)
 	{
 		if (m_fCurrentRatio > m_fRatio)
 		{
-			m_fCurrentRatio -= fTimeDelta;
+			m_fCurrentRatio -= fTimeDelta * 2.f;
 		}
 		else
 		{

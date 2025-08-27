@@ -71,6 +71,9 @@ HRESULT CBossUnit::Initialize(void* pArg)
     m_pAnimator->Update(0.f);
     m_pAnimator->SetPlaying(false);
     m_pModelCom->Update_Bones();
+
+    
+
     return S_OK;
 }
 
@@ -601,6 +604,14 @@ void CBossUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		pWeapon->Calc_Durability(3);
 
         m_fHP -= pWeapon->Get_CurrentDamage() * 0.03f;
+
+        if (nullptr != m_pHPBar)
+        {
+            m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() * 0.03f);
+            m_pHPBar->Set_RenderTime(3.f);
+        }
+         
+
 		m_fHP = max(m_fHP, 0.f);
         cout << "보스 현재 체력 : " << m_fHP << endl;
     }

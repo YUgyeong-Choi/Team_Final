@@ -119,6 +119,7 @@ void CUI_Button::Update(_float fTimeDelta)
 {
 	// 업데이트 할꺼? 잇나
 
+	Fade(fTimeDelta);
 	
 }
 

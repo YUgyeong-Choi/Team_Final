@@ -9,6 +9,7 @@
 #include "Camera_Manager.h"
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
+#include "UI_MonsterHP_Bar.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -60,12 +61,28 @@ HRESULT CFuoco::Initialize(void* pArg)
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
 	}
+
+	// 체력 일단 각 객체에 
+
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	eDesc.strName = TEXT("왕의 불꽃 푸오코");
+	eDesc.isBoss = true;
+	eDesc.pHP = &m_fHP;
+	eDesc.pIsGroggy = &m_isGroggy;
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+
 	return S_OK;
 }
 
 void CFuoco::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDead)
+		m_pHPBar->Set_bDead();
+
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))
 	{
@@ -129,6 +146,12 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		}
 	}
 #endif
+
+	if (nullptr != m_pHPBar)
+		m_pHPBar->Priority_Update(fTimeDelta);
+
+
+
 }
 
 void CFuoco::Update(_float fTimeDelta)
@@ -137,6 +160,7 @@ void CFuoco::Update(_float fTimeDelta)
 	{
 		m_pAnimator->SetTrigger("SpecialDie");
 		m_bUseLockon = false;
+		Safe_Release(m_pHPBar);
 	}
 
 	if (m_fFireFlameDuration > 0.f)
@@ -150,6 +174,9 @@ void CFuoco::Update(_float fTimeDelta)
 	}
 
 	__super::Update(fTimeDelta); 
+
+	if (nullptr != m_pHPBar)
+		m_pHPBar->Update(fTimeDelta);
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)
@@ -165,6 +192,10 @@ void CFuoco::Late_Update(_float fTimeDelta)
 			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForFoot);
 	}
 #endif
+
+
+	if (nullptr != m_pHPBar)
+		m_pHPBar->Late_Update(fTimeDelta);
 }
 
 HRESULT CFuoco::Ready_Components(void* pArg)
@@ -1460,4 +1491,7 @@ void CFuoco::Free()
 	//Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pPhysXActorComForArm);
 	Safe_Release(m_pPhysXActorComForFoot);
+
+	Safe_Release(m_pHPBar);
+	
 }

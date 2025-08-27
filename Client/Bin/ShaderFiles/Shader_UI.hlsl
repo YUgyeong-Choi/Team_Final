@@ -95,6 +95,8 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
     Out.vColor *= g_Color;
+  
+    Out.vColor *= g_Alpha;
     
     return Out;    
 }
@@ -133,6 +135,8 @@ PS_OUT PS_MAIN_BLEND(PS_IN_BLEND In)
     
     Out.vColor *= g_Color;
     
+    Out.vColor *= g_Alpha;
+    
     return Out;
 }
 
@@ -147,6 +151,8 @@ PS_OUT PS_MAIN_DISCARD_DARK(PS_IN In)
     
     Out.vColor *= g_Color;
     
+    Out.vColor *= g_Alpha;
+    
     return Out;
 }
 
@@ -160,6 +166,8 @@ PS_OUT PS_MAIN_DISCARD_ALPHA(PS_IN In)
         discard;
     
     Out.vColor *= g_Color;
+    
+    Out.vColor *= g_Alpha;
     
     return Out;
 }
@@ -183,6 +191,8 @@ PS_OUT PS_MAIN_FONT(PS_IN In)
   
     
     Out.vColor = float4(0.f,0.f,0.f,0.f);
+    
+    Out.vColor *= g_Alpha;
     
     return Out;
 }

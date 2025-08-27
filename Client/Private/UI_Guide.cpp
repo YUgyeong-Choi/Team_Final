@@ -90,18 +90,34 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
     {
         CUI_Manager::Get_Instance()->Off_Panel();
+
       
     }
 
+
+    m_fCurrentAlpha = 1.f;
+   
 
     return S_OK;
 }
 
 void CUI_Guide::Priority_Update(_float fTimeDelta)
 {
+    if (m_isFade == false && m_fCurrentAlpha <= 0.f)
+    {
+        Set_bDead();
+        return;
+    }
+
+  
+
+    
+
+
+
+    
     
    
-
     // Å° ÀÔ·Â
     Check_Button();
     
@@ -110,7 +126,24 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
 
 void CUI_Guide::Update(_float fTimeDelta)
 {
-    
+
+    Fade(fTimeDelta);
+
+    for (auto& pObj : m_pBackGround->Get_PartUI())
+    {
+        pObj->Update(fTimeDelta);
+    }
+
+    for (auto& pParts : m_Explainations)
+    {
+        for (auto& pObj : pParts->Get_PartUI())
+            pObj->Update(fTimeDelta);
+    }
+
+    for (auto& pObj : m_Buttons)
+    {
+        pObj->Update(fTimeDelta);
+    }
 
   
 }
@@ -142,17 +175,41 @@ HRESULT CUI_Guide::Render()
 
 void CUI_Guide::Check_Button()
 {
+
     if (m_pGameInstance->Key_Down(DIK_SPACE))
     {
        
        
-        m_iIndex = 0;
+       
 
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
         {
           
             CUI_Manager::Get_Instance()->On_Panel();
-            Set_bDead();
+
+           
+
+           
+            FadeStart(1.f, 0.f, 0.25f);
+
+            for (auto& pObj : m_pBackGround->Get_PartUI())
+            {
+                pObj->Set_isReverse(true);
+            }
+
+            for (auto& pParts : m_Explainations)
+            {
+                for (auto& pObj : pParts->Get_PartUI())
+                    pObj->Set_isReverse(true);
+            }
+
+            for (auto& pObj : m_Buttons)
+            {
+                pObj->Set_isReverse(true);
+            }
+
+        
+
             return;
         }
         else
@@ -160,6 +217,8 @@ void CUI_Guide::Check_Button()
             Active_Update(false);
 
         }
+
+        m_iIndex = 0;
             
     }
 
@@ -222,12 +281,32 @@ void CUI_Guide::Click_Interaction()
         {
           
 
-            m_iIndex = 0;
-
             if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
             {
-                Set_bDead();
+               
+
                 CUI_Manager::Get_Instance()->On_Panel();
+
+
+
+
+                FadeStart(1.f, 0.f, 0.5f);
+
+                for (auto& pObj : m_pBackGround->Get_PartUI())
+                {
+                    pObj->Set_isReverse(true);
+                }
+
+                for (auto& pParts : m_Explainations)
+                {
+                    for (auto& pObj : pParts->Get_PartUI())
+                        pObj->Set_isReverse(true);
+                }
+
+                for (auto& pObj : m_Buttons)
+                {
+                    pObj->Set_isReverse(true);
+                }
                
                 return;
             }
@@ -236,7 +315,7 @@ void CUI_Guide::Click_Interaction()
                 Active_Update(false);
             }
 
-
+            m_iIndex = 0;
         }
 
 

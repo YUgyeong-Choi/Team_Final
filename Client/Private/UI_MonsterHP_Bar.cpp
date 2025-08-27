@@ -34,15 +34,46 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
     m_fMaxHP = *m_pHP;
 
-    m_pParentMatrix = pDesc->pParentMatrix;
-    
-    _vector vPos = { 0.f,pDesc->fHeight,0.f,1.f };
+    m_isBoss = pDesc->isBoss;
 
-    m_pTransformCom->Set_State(STATE::POSITION, vPos);
+    m_strName = pDesc->strName;
 
-    m_pTransformCom->Scaling(0.08f, 0.025f, 1.f);
+    if (!m_isBoss)
+    {
+        m_pParentMatrix = pDesc->pParentMatrix;
+
+        _vector vPos = { 0.f,pDesc->fHeight,0.f,1.f };
+
+        m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+        m_pTransformCom->Scaling(0.08f, 0.025f, 1.f);
+    }
+    else
+    {
+
+        D3D11_VIEWPORT			ViewportDesc{};
+        _uint					iNumViewports = { 1 };
+
+        m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+        m_fSizeX = g_iWinSizeX * 0.55f;
+        m_fSizeY = g_iWinSizeY * 0.05f;
+
+        m_fX = g_iWinSizeX * 0.5f;
+        m_fY = g_iWinSizeY * 0.85f;
+
+        m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+
+        m_pTransformCom->Rotation(0.f, 0.f, XMConvertToRadians(m_fRotation));
+
+        m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
+
+    }
 
    
+
+   
+
 
 
     return S_OK;
@@ -70,67 +101,76 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
 
 void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
 {
-    if (m_fRenderTime > 0.f)
+    if (!m_isBoss)
     {
-        XMFLOAT4X4 parentMatrix = *m_pParentMatrix;
+        if (m_fRenderTime > 0.f)
+        {
+            XMFLOAT4X4 parentMatrix = *m_pParentMatrix;
 
 
-        parentMatrix._11 = 1.0f; parentMatrix._12 = 0.0f; parentMatrix._13 = 0.0f;
-        parentMatrix._21 = 0.0f; parentMatrix._22 = 1.0f; parentMatrix._23 = 0.0f;
-        parentMatrix._31 = 0.0f; parentMatrix._32 = 0.0f; parentMatrix._33 = 1.0f;
-        // 위치는 유지
-        // parentMatrix._41, _42, _43 는 그대로 둠
+            parentMatrix._11 = 1.0f; parentMatrix._12 = 0.0f; parentMatrix._13 = 0.0f;
+            parentMatrix._21 = 0.0f; parentMatrix._22 = 1.0f; parentMatrix._23 = 0.0f;
+            parentMatrix._31 = 0.0f; parentMatrix._32 = 0.0f; parentMatrix._33 = 1.0f;
+            // 위치는 유지
+            // parentMatrix._41, _42, _43 는 그대로 둠
 
-        // 결합
-        XMStoreFloat4x4(
-            &m_CombinedWorldMatrix,
-            XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&parentMatrix)
-        );
+            // 결합
+            XMStoreFloat4x4(
+                &m_CombinedWorldMatrix,
+                XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(&parentMatrix)
+            );
 
-        // 
-        _vector camPos = XMLoadFloat4(m_pGameInstance->Get_CamPosition());
-        _vector vWorldPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
+            // 
+            _vector camPos = XMLoadFloat4(m_pGameInstance->Get_CamPosition());
+            _vector vWorldPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
 
-        _float vDist = XMVectorGetX(XMVector3Length(camPos - vWorldPos));
+            _float vDist = XMVectorGetX(XMVector3Length(camPos - vWorldPos));
 
-        _matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
-        _matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);
+            _matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
+            _matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);
 
-        _vector vClipPos = XMVector4Transform(vWorldPos, ViewMat * ProjMat);
+            _vector vClipPos = XMVector4Transform(vWorldPos, ViewMat * ProjMat);
 
-        vClipPos.m128_f32[0] /= vClipPos.m128_f32[3];
-        vClipPos.m128_f32[1] /= vClipPos.m128_f32[3];
-        vClipPos.m128_f32[2] /= vClipPos.m128_f32[3];
+            vClipPos.m128_f32[0] /= vClipPos.m128_f32[3];
+            vClipPos.m128_f32[1] /= vClipPos.m128_f32[3];
+            vClipPos.m128_f32[2] /= vClipPos.m128_f32[3];
 
-        _vector vScale = m_pTransformCom->Get_Scale();
+            _vector vScale = m_pTransformCom->Get_Scale();
 
-        m_fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
-        m_fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
-
-
-        XMFLOAT4X4 world{};
-        world._11 = vScale.m128_f32[0] * g_iWinSizeX;  // 픽셀 단위 스케일
-        world._22 = vScale.m128_f32[1] * g_iWinSizeY;
-        world._33 = 1.f;
-        world._44 = 1.f;
-        world._41 = m_fX - 0.5f * g_iWinSizeX;
-        world._42 = -m_fY + 0.5f * g_iWinSizeY;
-        world._43 = 0.f;
+            m_fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
+            m_fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
 
 
-        //  가까운게 그려질 수 있도록
-        m_fOffset = vDist * 0.001f;
+            XMFLOAT4X4 world{};
+            world._11 = vScale.m128_f32[0] * g_iWinSizeX;  // 픽셀 단위 스케일
+            world._22 = vScale.m128_f32[1] * g_iWinSizeY;
+            world._33 = 1.f;
+            world._44 = 1.f;
+            world._41 = m_fX - 0.5f * g_iWinSizeX;
+            world._42 = -m_fY + 0.5f * g_iWinSizeY;
+            world._43 = 0.f;
 
-        
 
-
-        XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(&world));
+            //  가까운게 그려질 수 있도록
+            m_fOffset = vDist * 0.001f;
 
 
 
-        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+
+            XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(&world));
+
+
+
+            m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+        }
+
     }
 
+    else
+    {
+        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+    }
+  
    
 }
 
@@ -159,7 +199,12 @@ HRESULT CUI_MonsterHP_Bar::Render()
         _int iDamage =  static_cast<_int>(floorf(m_fDamage));
         _wstring strDamage = to_wstring(iDamage);
 
-        m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.035f , m_fY - g_iWinSizeY * 0.02f }, {1.f,1.f,1.f,1.f},0.f,{0.f,0.f},0.7f,0.f);
+        m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.24f , m_fY - g_iWinSizeY * 0.03f }, {1.f,1.f,1.f,1.f},0.f,{0.f,0.f},0.7f,0.f);
+    }
+
+    if (!m_strName.empty())
+    {
+        m_pGameInstance->Draw_Font_Centered(L"Font_Medium", m_strName.c_str(), { m_fX , m_fY - g_iWinSizeY * 0.03f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.7f, 0.f);
     }
         
     
@@ -196,9 +241,17 @@ HRESULT CUI_MonsterHP_Bar::Ready_Components()
 
 HRESULT CUI_MonsterHP_Bar::Bind_ShaderResources()
 {
-
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
-        return E_FAIL;
+    if (!m_isBoss)
+    {
+        if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+            return E_FAIL;
+    }
+    else
+    {
+        if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+            return E_FAIL;
+    }
+  
 
     
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
