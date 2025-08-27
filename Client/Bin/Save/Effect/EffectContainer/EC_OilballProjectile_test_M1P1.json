@@ -1,0 +1,214 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                -0.10000000149011612,
+                0.0
+            ],
+            "CenterColor": [
+                0.1068063020706177,
+                0.4191510081291199,
+                0.86282446682453156,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.09424084424972534,
+                1.0,
+                0.0
+            ],
+            "Duration": 204,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.44999998807907104,
+            "EndTrack": 204,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.09424084424972534,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 1.3600000143051147,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1055.259765625,
+            "LifeTime_Particle": [
+                0.2800000011920929,
+                0.9100000381469727
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Oilball_FireParticle1",
+            "NumInstance": 25,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 1,
+            "Pivot": [
+                0.0,
+                -0.6200000047683716,
+                0.0
+            ],
+            "Range": [
+                0.30000001192092896,
+                0.30000001192092896,
+                0.30000001192092896
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                360.0
+            ],
+            "ShaderPass": 2,
+            "Size": [
+                0.9100000262260437,
+                1.340000033378601
+            ],
+            "Speed": [
+                0.8100000023841858,
+                0.9599999785423279
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_SubUV_Explosion_13_9x9_SC_KMH",
+                "T_SubUV_Explosion_13_9x9_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 80.0,
+            "TileX": 9,
+            "TileY": 9
+        },
+      {
+        "Animation": true,
+        "Billboard": false,
+        "CenterColor": [
+          0.0,
+          0.15706807374954224,
+          1.0,
+          1.0
+        ],
+        "Color": [
+          0.0,
+          0.5571119785308838,
+          0.90942407846450806,
+          1.0
+        ],
+        "Duration": 201,
+        "EffectType": 2,
+        "EmissiveIntensity": 0.949999988079071,
+        "EndTrack": 201,
+        "FlipUV": false,
+        "KeyFrames": [
+          {
+            "Color": [
+              0.0,
+              0.5571119785308838,
+              0.90942407846450806,
+              1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Scale": [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "LifeTime": 364.0332336425781,
+        "Loop": true,
+        "ModelTag": "SM_Sphere_01_KMH",
+        "Name": "Fireball_FireMesh1",
+        "NumKeyFrames": 1,
+        "RenderGroup": 8,
+        "ShaderPass": 4,
+        "StartTrack": 0,
+        "TextureTags": [
+          "",
+          "T_Tile_Noise_01_C_LGS",
+          "",
+          ""
+        ],
+        "TextureUsage": [
+          false,
+          true,
+          false,
+          false
+        ],
+        "Threshold": 0.8999999761581421,
+        "TickPerSecond": 60.0,
+        "TileTickPerSec": 60.0,
+        "TileX": 1,
+        "TileY": 1
+      }
+    ],
+    "Loop": true,
+    "MaxFrame": 200
+}

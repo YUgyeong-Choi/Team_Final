@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -130.0,
-                -85.0
+                -111.19999694824219,
+                -55.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -60,10 +60,10 @@
                     ]
                 }
             ],
-            "LifeTime": 3689.6376953125,
+            "LifeTime": 3875.90380859375,
             "LifeTime_Particle": [
                 0.10000000149011612,
-                0.4000000059604645
+                0.5
             ],
             "Local": true,
             "Loop": false,
@@ -71,7 +71,7 @@
             "MaxSpeed": 500.0,
             "MinSpeed": 2.0,
             "Name": "Fuoco_Spin3_FloorFountainParticle1",
-            "NumInstance": 35,
+            "NumInstance": 80,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -85,8 +85,8 @@
             ],
             "PType": 0,
             "Pivot": [
-                -0.05000000074505806,
-                -0.03999999910593033,
+                -0.009999999776482582,
+                -0.009999999776482582,
                 0.0
             ],
             "Range": [
@@ -110,8 +110,8 @@
                 0.02800000086426735
             ],
             "Speed": [
-                15.0,
-                25.0
+                18.0,
+                22.0
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -153,10 +153,10 @@
                 0.4293193817138672
             ],
             "Color": [
-                0.2652777433395386,
-                0.26655545830726624,
-                0.26691558957099915,
-                -0.014675945043563843
+                0.2670156955718994,
+                0.2670156955718994,
+                0.2670156955718994,
+                0.0
             ],
             "Duration": 110,
             "EffectType": 1,
@@ -221,7 +221,7 @@
                     ]
                 }
             ],
-            "LifeTime": 719.82373046875,
+            "LifeTime": 850.6694946289063,
             "LifeTime_Particle": [
                 0.800000011920929,
                 1.2000000476837158
@@ -232,7 +232,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_Spin3_FloorDustParticle1",
-            "NumInstance": 4,
+            "NumInstance": 6,
             "NumKeyFrames": 2,
             "Orbit": true,
             "OrbitAxis": [
@@ -251,9 +251,9 @@
                 0.0
             ],
             "Range": [
-                0.5,
-                0.5,
-                0.5
+                1.0,
+                1.0,
+                1.0
             ],
             "RenderGroup": 8,
             "RotationAxis": [

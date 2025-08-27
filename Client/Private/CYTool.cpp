@@ -487,7 +487,7 @@ HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-	ImGui::Text("Select Pass\n4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnly");
+	ImGui::Text("Select Pass\n4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnlyFlow\n8. Distortion NoMaskFlow");
 
 	for (_uint i = SE_UVSPRITE_COLOR_WB; i < SE_END; i++)
 	{
@@ -535,7 +535,7 @@ HRESULT CCYTool::Window_Particle()
 		m_tPCB.isTileLoop = desc.isTileLoop;
 	}
 
-	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t 3. vstretch");
+	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t 3. vstretch\n4. Diffuse_WB");
 	for (_uint i = 0; i < PE_END; i++)
 	{
 		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), *pPE->Get_ShaderPass_Ptr() == i)) {
