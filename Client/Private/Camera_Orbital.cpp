@@ -326,7 +326,7 @@ void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
 	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
 
-	m_pTransformCom->LookAt(vTargetLookPos);
+	m_pTransformCom->LookAt(m_vPrevLookTarget);
 
 	if (fabs(m_fYaw - m_fTargetYaw) < 0.001f && fabs(m_fPitch - m_fTargetPitch) < 0.001f)
 	{
