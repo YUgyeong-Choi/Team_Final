@@ -207,7 +207,6 @@ void CMonster_Base::Reset()
 
 	m_isLookAt = {};
 	m_eDir = { MONSTER_DIR::END };
-	m_fGroggyThreshold = {};
 	m_isCanGroggy = {};
 	m_isDetect = { false };
 	m_strStateName = {};

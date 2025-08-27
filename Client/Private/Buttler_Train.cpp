@@ -564,6 +564,7 @@ void CButtler_Train::Reset()
 	m_iAttackCount = {};
 	m_fDuration = 0.f;
 	m_fAwaySpeed = 1.f;
+	m_fGroggyThreshold = 100;
 
 	auto stEntry = m_pAnimator->Get_CurrentAnimController()->GetEntryState();
 	m_pAnimator->Get_CurrentAnimController()->SetState(stEntry->stateName);
