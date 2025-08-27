@@ -278,7 +278,10 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
 
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
     Out.vDistortion *= g_vColor;
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
     return Out;
 }
 

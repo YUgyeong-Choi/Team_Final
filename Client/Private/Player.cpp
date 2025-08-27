@@ -1828,6 +1828,7 @@ void CPlayer::GetWeapon()
 	m_pAnimator->SetTrigger("EquipWeapon");
 	m_pAnimator->ApplyOverrideAnimController("TwoHand");
 	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	m_bWeaponEquipped = true;
 	m_bWalk = true;
 }
 
