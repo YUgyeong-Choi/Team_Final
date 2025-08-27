@@ -650,7 +650,7 @@ void CDecalTool::Detail_Texture()
 			filePath = ToRelativePath(filePath);
 
 			string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-
+			
 			//파일 이름을 가져와서, 프로토타입을 만들고, 갈아껴주자
 			if (FAILED(m_pFocusObject->Set_Texture(CDecal::TEXTURE_TYPE::ARMT, filePath, fileName)))
 				MSG_BOX("ARMT 텍스쳐 갈아끼기 실패");

@@ -19,6 +19,15 @@
     "Prototype_Component_Texture_T_Decal_BloodTrail_58_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_BloodTrail_58_BC.dds",
     "Prototype_Component_Texture_T_Decal_BloodTrail_58_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_BloodTrail_58_N.dds",
     "Prototype_Component_Texture_T_Decal_Blood_02_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Blood_02_ARMT.dds",
+    "Prototype_Component_Texture_T_Decal_Dust_01_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Dust_01_BC.dds",
+    "Prototype_Component_Texture_T_Decal_Dust_01_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Dust_01_N.dds",
     "Prototype_Component_Texture_T_Decal_FlowDownBlood_02_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_FlowDownBlood_02_BC.dds",
-    "Prototype_Component_Texture_T_Decal_FlowDownBlood_02_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_FlowDownBlood_02_N.dds"
+    "Prototype_Component_Texture_T_Decal_FlowDownBlood_02_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_FlowDownBlood_02_N.dds",
+    "Prototype_Component_Texture_T_Decal_Rust_01_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Rust_01_BC.dds",
+    "Prototype_Component_Texture_T_Decal_Rust_01_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Rust_01_N.dds",
+    "Prototype_Component_Texture_T_Decal_Soil_02_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Soil_02_ARMT.dds",
+    "Prototype_Component_Texture_T_Decal_Soil_03_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Soil_03_ARMT.dds",
+    "Prototype_Component_Texture_T_Decal_Stain_01_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Stain_01_ARMT.dds",
+    "Prototype_Component_Texture_T_Decal_Stain_01_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Stain_01_BC.dds",
+    "Prototype_Component_Texture_T_Decal_Stain_01_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Stain_01_N.dds"
 }

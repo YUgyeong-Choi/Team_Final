@@ -67,7 +67,7 @@ HRESULT CDecalToolObject::Render()
 
 
 	
-#ifdef _DEBUG
+//#ifdef _DEBUG
 
 	if (CLevel_YW::IMGUITOOL::DECAL == static_cast<CLevel_YW*>(m_pGameInstance->Get_CurrentLevel())->Get_AciveTool())
 	{
@@ -81,7 +81,7 @@ HRESULT CDecalToolObject::Render()
 			return E_FAIL;
 	}
 
-#endif // _DEBUG
+//#endif // _DEBUG
 
 
 	return S_OK;
