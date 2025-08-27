@@ -1453,7 +1453,7 @@
                 },
                 {
                     "EventName": "OffWeaponCollider",
-                    "Time": 41.540000915527344
+                    "Time": 48.0
                 }
             ],
             "IsLoop": false,
@@ -1495,7 +1495,7 @@
                 },
                 {
                     "EventName": "OffWeaponCollider",
-                    "Time": 48.0
+                    "Time": 43.0
                 }
             ],
             "IsLoop": false,

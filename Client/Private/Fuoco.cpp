@@ -74,7 +74,50 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13 };
 
 	
-		cout << "현재 공격 인덱스 " << i << endl;
+		/*cout << "현재 공격 인덱스 " << i << endl;*/
+		m_eCurAttackPattern = static_cast<EBossAttackPattern>(i);
+		switch (m_eCurAttackPattern)
+		{
+		case CFuoco::SlamCombo:    
+			cout<<"SlamCombo";
+			break;
+		case CFuoco::Uppercut:     
+			cout<<"Uppercut";
+			break;
+		case CFuoco::SwingAtk:    
+			cout<<"SwingAtk";
+			break;
+		case CFuoco::SwingAtkSeq: 
+			cout<<"SwingAtkSeq";
+			break;
+		case CFuoco::SlamFury:     
+			cout<<"SlamFury";
+			break;
+		case CFuoco::FootAtk:     
+			cout<<"FootAtk";
+			break;
+		case CFuoco::SlamAtk:     
+			cout<<"SlamAtk";
+			break;
+		case CFuoco::StrikeFury:   
+			cout<<"StrikeFury";
+			break;
+		case CFuoco::P2_FireOil:   
+			cout<<"P2_FireOil";
+			break;
+		case CFuoco::P2_FireBall:  
+			cout<<"P2_FireBall";
+			break;
+		case CFuoco::P2_FireFlame: 
+			cout<<"P2_FireFlame";
+			break;
+		case CFuoco::P2_FireBall_B:
+			cout<<"P2_FireBall_B";
+			break;
+		default:                  
+			cout<<"Unknown";
+			break;
+		}
 		m_pAnimator->SetInt("SkillType", testArray[i++]);
 		if (i >= 13)
 			i = 0;
@@ -378,6 +421,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	m_pAnimator->SetTrigger("Attack");
 	m_eCurrentState = EBossState::ATTACK;
 	m_fAttackCooldown = m_fAttckDleay;
+
 }
 
 void CFuoco::UpdateStateByNodeID(_uint iNodeID)
@@ -429,21 +473,18 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
 		m_eCurrentState = EBossState::ATTACK;
-		m_pAnimator->SetPlayRate(0.7f);
-		//m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
 		m_eCurrentState = EBossState::ATTACK;
-		m_pAnimator->SetPlayRate(0.85f);
-	//	m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 	{
 		m_eCurrentState = EBossState::ATTACK;
 			if(iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
 				EffectSpawn_Active(15, true);
-			m_pAnimator->SetPlayRate(1.f);
-	//	m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
+			m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
 	}
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET):
@@ -475,7 +516,7 @@ void CFuoco::UpdateSpecificBehavior()
 {
 	if (m_eCurrentState == EBossState::DEAD)
 		return;
-	if (m_pAnimator->GetInt("SkillType") == StrikeFury && m_bPlayerCollided)
+	if (m_eCurAttackPattern == StrikeFury && m_bPlayerCollided)
 	{
 		EnableColliders(false);
 	}
@@ -487,6 +528,11 @@ void CFuoco::UpdateSpecificBehavior()
 	{
 		m_pAnimator->SetBool("Move", false);
 	}
+
+	//if (m_pAnimator->CheckTrigger("Attack") == false)
+	//{
+	//	m_pAnimator->SetInt("SkillType", -1);
+	//}
 }
 
 void CFuoco::EnableColliders(_bool bEnable)
