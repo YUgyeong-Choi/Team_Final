@@ -206,7 +206,7 @@ HRESULT COil::Ready_Effect()
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Imsioil_M1"), &desc));
+	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &desc));
 	if (nullptr == m_pEffect)
 		MSG_BOX("이펙트 생성 실패함");
 
