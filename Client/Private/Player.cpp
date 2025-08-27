@@ -130,6 +130,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
@@ -274,6 +275,17 @@ HRESULT CPlayer::Render()
 CAnimController* CPlayer::GetCurrentAnimContrller()
 {
 	return m_pAnimator->Get_CurrentAnimController();
+}
+
+void CPlayer::Set_HitTarger(CUnit* pTarget, _bool bDead)
+{
+	if (bDead && m_pHitTarget == pTarget)
+	{
+		m_pHitTarget = nullptr;
+		return;
+	}
+	
+	m_pHitTarget = pTarget; 
 }
 
 CPlayer::EHitDir CPlayer::ComputeHitDir()
@@ -1363,7 +1375,6 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 		//가드 중이 아니라면 피격상태로 넘긴다.
 		m_bIsHit = true;
-
 	}
 
 }

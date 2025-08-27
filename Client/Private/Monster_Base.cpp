@@ -4,6 +4,7 @@
 #include "PhysX_ControllerReport.h"
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Camera_Orbital.h"
+#include "Player.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUnit{pDevice, pContext}
@@ -185,6 +186,7 @@ void CMonster_Base::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CMonster_Base::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+
 }
 
 void CMonster_Base::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

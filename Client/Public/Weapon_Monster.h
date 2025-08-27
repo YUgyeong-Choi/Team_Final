@@ -19,7 +19,6 @@ public:
 		_float  fRotationDegree; // 라디안 변환 해주기
 		_float4 vLocalOffset; // 피직스 보정해 줄 오프셋
 		PxVec3 vPhsyxExtent;
-		
 	}MONSTER_WEAPON_DESC;
 
 
@@ -69,7 +68,6 @@ private:
 	_float4	m_vLocalOffset = {};
 
 	PxVec3 m_physxExtent = {};
-
 public:
 	static CWeapon_Monster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

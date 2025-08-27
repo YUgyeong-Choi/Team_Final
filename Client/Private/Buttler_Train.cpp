@@ -80,6 +80,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 		}
 		m_pPhysXActorCom->Init_SimulationFilterData();
 
+		static_cast<CPlayer*>(m_pPlayer)->Set_HitTarger(this, true);
 	}
 }
 
