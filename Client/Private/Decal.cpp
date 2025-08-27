@@ -25,7 +25,7 @@ HRESULT CDecal::Initialize(void* pArg)
 	DECAL_DESC* pDesc = static_cast<DECAL_DESC*>(pArg);
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
-
+	m_bNormalOnly = pDesc->bNormalOnly;
 	
 
 	return S_OK;

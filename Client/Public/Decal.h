@@ -36,6 +36,7 @@ public:
 		wstring PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
 
 		//노말만 적용하는 데칼인지 분기하려고함
+		_bool bNormalOnly = { false };
 
 	} DECAL_DESC;
 

@@ -268,13 +268,13 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     //데칼
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
-    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
+    //vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
     //SRC
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
     //DES
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
     //ARMT로 알파값 보간
-    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a /** vUnitMask.r*/), 0.f));
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalNDesc.a), 0.f));
     
     float fShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_fLightAmbient * g_fMtrlAmbient);
     
@@ -313,13 +313,13 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
 
     //데칼
     vector vDecalNDesc = g_DecalN.Sample(PointSampler, In.vTexcoord);
-    vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
+    //vector vDecalAMRTDesc = g_DecalAMRT.Sample(PointSampler, In.vTexcoord);
     //SRC
     float4 vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
     //DES
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
     //ARMT로 알파값 보간
-    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalAMRTDesc.a /** vUnitMask.r*/), 0.f));
+    vNormal = normalize(vector(lerp(vNormal.xyz, vDecalNormal, vDecalNDesc.a), 0.f));
     
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;

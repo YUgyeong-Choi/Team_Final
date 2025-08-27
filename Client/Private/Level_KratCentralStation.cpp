@@ -70,6 +70,24 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
+
+	//데칼 테스트(영웅)
+	CStatic_Decal::DECAL_DESC DecalDesc = {};
+	DecalDesc.bNormalOnly = true;
+	DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEaterNormal");
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEaterMask");
+	DecalDesc.WorldMatrix = _float4x4(
+		3.f, 0.f, 0.f, 0.f,
+		0.f, 3.f, 0.f, 0.f,
+		0.f, 0.f, 3.f, 0.f,
+		0.f, 0.f, 0.f, 1.f
+	);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Wego"), &DecalDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
