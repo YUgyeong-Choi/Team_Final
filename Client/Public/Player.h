@@ -73,7 +73,8 @@ public:
 
 	CAnimController* GetCurrentAnimContrller();
 
-
+	// 몬스터가 죽을 때 불러줌
+	void Set_HitTarger(CUnit* pTarget, _bool bDead);
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
 	void			CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -315,7 +316,10 @@ private: /* [ 플레이어 변수 ] */
 	_float  m_fSetTime = {};
 	_bool   m_bSetOnce = {};
 	_bool   m_bSetTwo = {};
+	_float  m_fSetSoundTime = {};
 	_bool   m_bSetSound = {};
+	_bool   m_bCheckSound = {};
+	_bool   m_bResetSoundTime = true;
 
 	_float	m_fMaxHP = { 100.f };
 	_float	m_fHP = { 100.f };
@@ -370,6 +374,8 @@ private: /* [ 벨트 슬롯 ] */
 
 private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
+private: /* [ 공격한 적 ] */
+	class CUnit* m_pHitTarget = { nullptr };
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

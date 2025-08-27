@@ -37,7 +37,7 @@ HRESULT CUI_Guide::Initialize(void* pArg)
         return E_FAIL;
 
     UI_GUIDE_DESC* pDesc = static_cast<UI_GUIDE_DESC*>(pArg);
-
+    m_pTrigger = pDesc->pTrigger;
     
 
     for (auto& partPath : pDesc->partPaths)
@@ -91,7 +91,13 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     {
         CUI_Manager::Get_Instance()->Off_Panel();
 
-      
+        list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
+        for (auto& obj : objList)
+            obj->Set_TimeScale(0.f);
+
+        CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+        pPlayer->Set_TimeScale(0.f);
+
     }
 
 
@@ -184,7 +190,15 @@ void CUI_Guide::Check_Button()
 
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
         {
-          
+            list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
+            for (auto& obj : objList)
+                obj->Set_TimeScale(1.f);
+
+            CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+            pPlayer->Set_TimeScale(1.f);
+
+            Set_bDead();
+            m_pTrigger->Set_bDead();
             CUI_Manager::Get_Instance()->On_Panel();
 
            
@@ -283,31 +297,16 @@ void CUI_Guide::Click_Interaction()
 
             if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
             {
-               
+                list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
+                for (auto& obj : objList)
+                    obj->Set_TimeScale(1.f);
 
+                CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+                pPlayer->Set_TimeScale(1.f);
+
+                Set_bDead();
+                m_pTrigger->Set_bDead();
                 CUI_Manager::Get_Instance()->On_Panel();
-
-
-
-
-                FadeStart(1.f, 0.f, 0.5f);
-
-                for (auto& pObj : m_pBackGround->Get_PartUI())
-                {
-                    pObj->Set_isReverse(true);
-                }
-
-                for (auto& pParts : m_Explainations)
-                {
-                    for (auto& pObj : pParts->Get_PartUI())
-                        pObj->Set_isReverse(true);
-                }
-
-                for (auto& pObj : m_Buttons)
-                {
-                    pObj->Set_isReverse(true);
-                }
-               
                 return;
             }
             else

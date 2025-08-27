@@ -65,6 +65,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
 			m_bActive = false;
+			m_pWeapon->SetbIsActive(false);
 		}
 	}
 
@@ -79,6 +80,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 		}
 		m_pPhysXActorCom->Init_SimulationFilterData();
 
+		static_cast<CPlayer*>(m_pPlayer)->Set_HitTarger(this, true);
 	}
 }
 
@@ -562,9 +564,12 @@ void CButtler_Train::Reset()
 	m_iAttackCount = {};
 	m_fDuration = 0.f;
 	m_fAwaySpeed = 1.f;
+	m_fGroggyThreshold = 100;
 
 	auto stEntry = m_pAnimator->Get_CurrentAnimController()->GetEntryState();
 	m_pAnimator->Get_CurrentAnimController()->SetState(stEntry->stateName);
+
+	m_pWeapon->SetbIsActive(true);
 
 	__super::Reset();
 

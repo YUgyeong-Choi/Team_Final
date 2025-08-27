@@ -9,6 +9,7 @@
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
+#include "Player.h"
 
 
 CBayonet::CBayonet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -322,6 +323,8 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		StartHitReg(0.1f, 0.015f, 0.025f);
 
 		m_pSoundCom->Play_Random("SE_PC_SK_Hit_Skin_Slice_S_", 3);
+
+		static_cast<CPlayer*>(m_pOwner)->Set_HitTarger(pUnit, false);
 	}
 }
 

@@ -29,7 +29,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
 	m_fDamage = 15.f;
-	m_fAttckDleay = 2.5f;
+	m_fAttckDleay = 1.5f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -106,7 +106,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
-
+		m_eCurrentState = EBossState::ATTACK;
 		m_pAnimator->SetBool("IsCombo", true);
 		_int iDir = GetYawSignFromDiretion();
 		m_pAnimator->SetInt("Direction", iDir);
@@ -460,29 +460,38 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_eCurrentState = EBossState::FATAL;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
-		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
+		m_eCurrentState = EBossState::ATTACK;
+		m_pAnimator->SetPlayRate(0.7f);
+		//m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
-		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
+		m_eCurrentState = EBossState::ATTACK;
+		m_pAnimator->SetPlayRate(0.85f);
+	//	m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 	{
+		m_eCurrentState = EBossState::ATTACK;
 			if(iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
 				EffectSpawn_Active(15, true);
-		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
+			m_pAnimator->SetPlayRate(1.f);
+	//	m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
 	}
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET):
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET2):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(100.f);
+		m_eCurrentState = EBossState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_END):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
+		m_eCurrentState = EBossState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
+		m_eCurrentState = EBossState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::CUTSCENE):
 		m_eCurrentState = EBossState::CUTSCENE;
@@ -498,7 +507,10 @@ void CFuoco::UpdateSpecificBehavior()
 {
 	if (m_eCurrentState == EBossState::DEAD)
 		return;
-
+	if (m_pAnimator->GetInt("SkillType") == StrikeFury && m_bPlayerCollided)
+	{
+		EnableColliders(false);
+	}
 	if (m_eCurrentState != EBossState::ATTACK)
 	{
 		m_pAnimator->SetBool("IsHit", false);
@@ -506,6 +518,40 @@ void CFuoco::UpdateSpecificBehavior()
 	else if (m_eCurrentState == EBossState::ATTACK)
 	{
 		m_pAnimator->SetBool("Move", false);
+	}
+}
+
+void CFuoco::EnableColliders(_bool bEnable)
+{
+	if (bEnable)
+	{
+		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+		m_pPhysXActorComForArm->Set_SimulationFilterData(m_pPhysXActorComForArm->Get_FilterData());
+		m_pPhysXActorComForFoot->Set_SimulationFilterData(m_pPhysXActorComForFoot->Get_FilterData());
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			if (auto pController = pPlayer->Get_Controller())
+			{
+				pController->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
+				pController->Remove_IgnoreActors(m_pPhysXActorComForArm->Get_Actor());
+				pController->Remove_IgnoreActors(m_pPhysXActorComForFoot->Get_Actor());
+			}
+		}
+	}
+	else
+	{
+		m_pPhysXActorCom->Init_SimulationFilterData();
+		m_pPhysXActorComForArm->Init_SimulationFilterData();
+		m_pPhysXActorComForFoot->Init_SimulationFilterData();
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			if (auto pController = pPlayer->Get_Controller())
+			{
+				pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+				pController->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
+				pController->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
+			}
+		}
 	}
 }
 
@@ -633,14 +679,10 @@ void CFuoco::Register_Events()
 
 
 	m_pAnimator->RegisterEventListener("CollidersOff", [this]() {
-		m_pPhysXActorCom->Init_SimulationFilterData();
-		m_pPhysXActorComForArm->Init_SimulationFilterData();
-		m_pPhysXActorComForFoot->Init_SimulationFilterData();
+		EnableColliders(false);
 		});
 	m_pAnimator->RegisterEventListener("CollidersOn", [this]() {
-		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
-		m_pPhysXActorComForArm->Set_SimulationFilterData(m_pPhysXActorComForArm->Get_FilterData());
-		m_pPhysXActorComForFoot->Set_SimulationFilterData(m_pPhysXActorComForFoot->Get_FilterData());
+		EnableColliders(true);
 		});
 
 	m_pAnimator->RegisterEventListener("ColliderArmOn", [this]()
@@ -741,14 +783,14 @@ void CFuoco::Register_Events()
 		});
 
 	m_pAnimator->RegisterEventListener("ResetIgnorePlayerCollision", [this]()
-		{
-			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{		EnableColliders(true);
+		/*	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 			{
 				if (auto pController = pPlayer->Get_Controller())
 				{
 					pController->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
 				}
-			}
+			}*/
 		});
 
 	m_pAnimator->RegisterEventListener("SpawnFlameField", [this]()
@@ -915,6 +957,7 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		// 발사 각도 구하기 (속도, 위치, 중력 가속도를 알고 있을 때 각도를 구하는 공식)
 		const _float G = 9.81f; // 중력 가속도
 		_vector vTargetPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) + 1.f);
 		_vector vHorizontalStartPos = XMVectorSetY(vPos, 0.0f);
 		_vector vHorizontalTargetPos = XMVectorSetY(vTargetPos, 0.0f);
 
@@ -1032,6 +1075,10 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 	vDir.normalize();
 	vRight.normalize();
 
+	//_float fPitchAngle = XMConvertToRadians(15.f);
+	//PxQuat pitchRot(fPitchAngle, PxVec3(1, 0, 0));
+	//vDir = pitchRot.rotate(vDir);
+
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC| PxQueryFlag::ePREFILTER;
@@ -1062,8 +1109,14 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 				{
 					if (nullptr == pHitActor->Get_Owner())
 						return;
+
+					if (pHitActor->Get_Owner()->Get_Name() == TEXT("Player"))
+					{
+						cout << "플레이어 화염방사 맞음" << endl;
+					}
+	
 					// 데미지 계산 나중에 생각해보기
-					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::MONSTER_WEAPON);
+					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::BOSS_WEAPON);
 				}
 
 				//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
@@ -1071,32 +1124,21 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 				m_bRayHit = true;
 				m_vRayHitPos = hitPos;
 			}
+
 #ifdef _DEBUG
-			if (m_pGameInstance->Get_RenderCollider()) {
+			if (m_pGameInstance->Get_RenderCollider())
+			{
 				DEBUGRAY_DATA _data{};
 				_data.vStartPos = origin;
-				XMFLOAT3 fLook;
-				XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
 				_data.vDirection = vRayDir;
-				_data.fRayLength = fDistance;
+				_data.fRayLength = (hit.hasBlock ? hit.block.distance : fDistance); // 맞으면 hit 거리, 아니면 지정 거리
 				_data.bIsHit = hit.hasBlock;
-				_data.vHitPos = m_vRayHitPos;
+				_data.vHitPos = hit.hasBlock ? hit.block.position : (origin + vRayDir * fDistance);
 				m_pPhysXActorCom->Add_RenderRay(_data);
 			}
 #endif
-		}
-#ifdef _DEBUG
-		else if(m_pGameInstance->Get_RenderCollider()) {
-			DEBUGRAY_DATA _data{};
-			_data.vStartPos = origin;
-			_data.vDirection = vRayDir; // 회전된 방향 사용
-			_data.fRayLength = fDistance;
-			_data.bIsHit = hit.hasBlock;
-			_data.vHitPos = PxVec3(0, 0, 0);
-			m_pPhysXActorCom->Add_RenderRay(_data);
-		}
-#endif // _DEBUG
 
+		}
 	}
 
 }
@@ -1173,14 +1215,7 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
 	}
-	else if (stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
-	{
-		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	}
-	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2"))
+	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2") || stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
 	{
 	
 		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
@@ -1329,7 +1364,7 @@ _bool CFuoco::CheckConditionFlameField()
 	if (m_bStartPhase2 || (!m_bUsedFlameFiledOnLowHp && CalculateCurrentHpRatio() <= 0.3f))
 	{
 		m_pAnimator->ResetTrigger("Attack");
-		if (CalculateCurrentHpRatio() <= 0.2f && !m_bUsedFlameFiledOnLowHp)
+		if (CalculateCurrentHpRatio() <= 0.3f && !m_bUsedFlameFiledOnLowHp)
 		{
 			m_pAnimator->SetInt("SkillType", P2_FlameField);
 			m_bUsedFlameFiledOnLowHp = true;
@@ -1358,13 +1393,15 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 	{
 		if (eColliderType == COLLIDERTYPE::PLAYER)
 		{
-			if (m_pAnimator->GetInt("SkillType") == FootAtk)
+				m_bPlayerCollided = true;
+			if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 			{
-				m_pAnimator->SetBool("IsHit", true);
-				SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
-				if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
+				if (m_pAnimator->GetInt("SkillType") == FootAtk)
 				{
-					auto pAnimator = pPlayer->Get_Animator();
+					m_pAnimator->SetBool("IsHit", true);
+					SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
+
+					//auto pAnimator = pPlayer->Get_Animator();
 					pPlayer->SetHitMotion(HITMOTION::UP);
 					//pAnimator->SetBool("IsUp", true);
 					//pAnimator->SetTrigger("Hited");
@@ -1377,17 +1414,23 @@ void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, 
 
 void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if (pOther)
+	{
+		if (eColliderType == COLLIDERTYPE::PLAYER)
+		{
+				m_bPlayerCollided = true;
+		}
+	}
 }
 
 void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	if (pOther)
 	{
-		//if (eColliderType == COLLIDERTYPE::PALYER)
-		//{
-		//	if (m_pAnimator->CheckBool("IsHit"))
-		//		m_pAnimator->SetBool("IsHit", false);
-		//}
+		if (eColliderType == COLLIDERTYPE::PLAYER)
+		{
+			m_bPlayerCollided = false;
+		}
 	}
 }
 
@@ -1427,10 +1470,12 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_LOOP):
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_END):
 		case ENUM_CLASS(BossStateID::ATK_SLAM):
-		case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
 		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_FRONT):
 			pPlayer->SetHitMotion(HITMOTION::STAMP);
 			//pAnimator->SetTrigger("Stamp");
+			break;
+		case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
+			pPlayer->SetHitMotion(HITMOTION::FURY_STAMP);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SWING_R):
 		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
@@ -1450,7 +1495,7 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		//	pAnimator->SetTrigger("Hited");
 			break;
 		default:
-			pAnimator->SetBool("IsUp", false);
+			//pAnimator->SetBool("IsUp", false);
 			break;
 		}
 

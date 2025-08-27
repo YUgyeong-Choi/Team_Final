@@ -130,6 +130,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
@@ -268,6 +269,17 @@ HRESULT CPlayer::Render()
 CAnimController* CPlayer::GetCurrentAnimContrller()
 {
 	return m_pAnimator->Get_CurrentAnimController();
+}
+
+void CPlayer::Set_HitTarger(CUnit* pTarget, _bool bDead)
+{
+	if (bDead && m_pHitTarget == pTarget)
+	{
+		m_pHitTarget = nullptr;
+		return;
+	}
+	
+	m_pHitTarget = pTarget; 
 }
 
 CPlayer::EHitDir CPlayer::ComputeHitDir()
@@ -445,6 +457,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_strPrevStateName = stateName;
 		m_fMoveTime = 0.f;
 		m_fSetTime = 0.f;
+		if(m_bResetSoundTime)
+			m_fSetSoundTime = 0.f;
 		m_iMoveStep = 0;
 		m_bMove = false;
 		m_bMoveReset = false;
@@ -498,7 +512,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 0.6f)
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.6f)
 		{
 			if (!m_bSetSound)
 			{
@@ -536,7 +551,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 0.6f)
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.6f)
 		{
 			if (!m_bSetSound)
 			{
@@ -573,7 +589,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 0.4f)
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.4f)
 		{
 			if (!m_bSetSound)
 			{
@@ -610,7 +627,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (m_fSetTime > 0.6f)
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.6f)
 		{
 			if (!m_bSetSound)
 			{
@@ -707,6 +725,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			Callback_Stamina();
 		}
 
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.7f)
+		{
+			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Walk_", 9);
+			m_fSetSoundTime = 0.f;
+		}
+
 		break;
 	}
 	case eAnimCategory::RUN:
@@ -725,6 +750,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			Callback_Stamina();
 		}
 
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.45f)
+		{
+			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+			m_fSetSoundTime = 0.f;
+		}
+
 		break;
 	}
 	case eAnimCategory::SPRINT:
@@ -736,6 +768,14 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= fTimeDelta * 15.f;
 			Callback_Stamina();
 		}
+
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.35f)
+		{
+			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+			m_fSetSoundTime = 0.f;
+		}
+
 		break;
 	}
 	case eAnimCategory::EQUIP:
@@ -748,8 +788,40 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
 	}
+	case eAnimCategory::ITEM:
+	{
+		if (m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+		{
+			m_fSetSoundTime += fTimeDelta;
+			if (m_fSetSoundTime >= 0.7f && !m_bSetSound)
+			{
+				if (!m_bCheckSound)
+				{
+					m_pSoundCom->Play_Random("SE_PC_MT_Item_Monard_Lamp_", 3);
+					m_bSetSound = true;
+					m_bCheckSound = true;
+				}
+			}
+		}
+
+		break;
+	}
 	case eAnimCategory::ITEM_WALK:
 	{
+		if (m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+		{
+			m_fSetSoundTime += fTimeDelta;
+			if (m_fSetSoundTime >= 0.7f && !m_bSetSound)
+			{
+				if (!m_bCheckSound)
+				{
+					m_pSoundCom->Play_Random("SE_PC_MT_Item_Monard_Lamp_", 3);
+					m_bSetSound = true;
+					m_bCheckSound = true;
+				}
+			}
+		}
+
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
 	}
@@ -842,6 +914,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bSetOnce = true;
 		}
 
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.4f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_1st");
+				m_bSetSound = true;
+			}
+		}
 		break;
 	}
 	case eAnimCategory::SPRINT_ATTACKB:
@@ -862,6 +943,16 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_fStamina -= 20.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
+		}
+
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.4f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_3rd");
+				m_bSetSound = true;
+			}
 		}
 
 		break;
@@ -1241,7 +1332,7 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
 		_matrix newWorld =
 			XMMatrixScalingFromVector(vScale) *
-			XMMatrixRotationQuaternion(vNewRot) *
+			XMMatrixRotationQuaternion(vRotQuat) *
 			XMMatrixTranslationFromVector(vTrans);
 		m_pTransformCom->Set_WorldMatrix(newWorld);
 
@@ -1321,7 +1412,6 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 		//가드 중이 아니라면 피격상태로 넘긴다.
 		m_bIsHit = true;
-
 	}
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
