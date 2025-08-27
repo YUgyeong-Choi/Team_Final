@@ -39,7 +39,7 @@
             "ClipName": "AS_ATSA0_Skill_02",
             "Duration": 160.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -234,7 +234,7 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_Ing_B",
             "Duration": 120.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 70.0
         },
@@ -277,14 +277,14 @@
             "ClipName": "AS_Groggy_Start",
             "Duration": 40.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
             "ClipName": "AS_Hit_B",
             "Duration": 83.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -305,14 +305,14 @@
             "ClipName": "AS_Hit_L",
             "Duration": 83.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
             "ClipName": "AS_Hit_R",
             "Duration": 83.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -515,7 +515,7 @@
             "ClipName": "AS_Walk_C_B_Root",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -543,7 +543,7 @@
             "ClipName": "AS_Walk_C_L_Root",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -557,7 +557,7 @@
             "ClipName": "AS_Walk_C_R_Root",
             "Duration": 120.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         }
     ]

@@ -40,11 +40,11 @@ HRESULT CLamp::Initialize(void* pArg)
 	m_bDebug = false;
 
 	SetbVolumetric(true);
-	SetRange(3.f);
+	SetRange(5.f);
 	SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
 
 	SetIsPlayerFar(true);
-	SetIntensity(1.5f);
+	SetIntensity(1.f);
 
 	m_isLight = false;
 

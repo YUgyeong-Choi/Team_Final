@@ -456,11 +456,18 @@ _bool CMonster_Base::Check_Detect()
 	if (nullptr == m_pPlayer)
 		return false;
 
- 	if (true == m_isDetect)
+	if (true == m_isDetect)
 		return true;
 
 	_vector vDir = {};
 	vDir = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+
+	// 보는 방향 벡터가 다른거부터 체크
+	if (XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK)),
+			XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)))) > 0)
+		return false;
+
 
 	if (XMVectorGetX(XMVector3Length(vDir)) < m_fDetectDist)
 	{

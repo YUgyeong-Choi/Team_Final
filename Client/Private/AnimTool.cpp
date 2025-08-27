@@ -2823,6 +2823,23 @@ HRESULT CAnimTool::Register_Objects()
 	m_vecObjectNames.push_back("Buttler_Train");
 	m_SpawnObjectDesc["Buttler_Train"] = pDesc;
 
+
+	//pDesc.fSpeedPerSec = 1.f;
+	pDesc->fSpeedPerSec = 5.f;
+	pDesc->fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc->eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	pDesc->InitPos = _float3(0.f, 0.f, 0.f);
+	pDesc->InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pDesc->szName, TEXT("Buttler_Basic"));
+	pDesc->szMeshID = TEXT("Buttler_Basic");
+	pDesc->fHeight = 1.f;
+	pDesc->vExtent = { 0.5f,1.f,0.5f };
+	if (FAILED(m_pEditorObjectFactory->RegisterObject<CButtler_Train>(TEXT("Buttler_Basic"), pDesc)))
+		return E_FAIL;
+	m_vecObjectNames.push_back("Buttler_Basic");
+	m_SpawnObjectDesc["Buttler_Basic"] = pDesc;
+
+
 	CPlayer::PLAYER_DESC* pPlayerDesc = new CPlayer::PLAYER_DESC();
 	//pDesc.fSpeedPerSec = 1.f;
 	pPlayerDesc->fSpeedPerSec = 5.f;
