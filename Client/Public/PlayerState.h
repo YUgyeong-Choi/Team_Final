@@ -3181,6 +3181,8 @@ public:
         m_fRrevivalTime = 0.f;
         m_pOwner->m_bIsRrevival = false;
         m_pOwner->m_bIsInvincible = false;
+
+        m_pGameInstance->Reset_LevelUnits();
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
