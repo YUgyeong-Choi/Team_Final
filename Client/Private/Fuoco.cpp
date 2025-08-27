@@ -624,7 +624,7 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 	break;
 	case Client::CFuoco::SlamFury:
 		SetTurnTimeDuringAttack(1.5f, 1.3f);
-		m_eBossAttackType = EBossAttackType::FURY_STAMP;
+		m_eBossAttackType = EBossAttackType::STAMP;
 	case Client::CFuoco::FootAtk:
 		SetTurnTimeDuringAttack(1.f);
 		break;
@@ -1522,7 +1522,7 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			//pAnimator->SetTrigger("Stamp");
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
-			pPlayer->SetHitMotion(HITMOTION::FURY_STAMP);
+			pPlayer->SetHitMotion(HITMOTION::STAMP);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SWING_R):
 		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
