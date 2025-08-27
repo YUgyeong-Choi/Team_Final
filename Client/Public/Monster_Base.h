@@ -56,6 +56,7 @@ public: /* [ Setup 함수 ] */
 	HRESULT Ready_PartObject();
 	//HRESULT Ready_Weapon(); 무기는 필요한 애들만 만들기
 
+	_float Get_CurrentHp() { return m_fHp;  }
 
 	_bool Get_IsGroggyLoop() { return m_isGroogyLoop; }
 	
