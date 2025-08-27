@@ -147,7 +147,8 @@ void CMonster_Base::Late_Update(_float fTimeDelta)
 	{
 		// 더 좋은 방법 있으면 바꾸기
 		if (this == CLockOn_Manager::Get_Instance()->Get_Target())
-			m_pHPBar->Set_RenderTime(2.f);
+			m_pHPBar->Set_RenderTime(0.5f);
+		
 
 
 		m_pHPBar->Late_Update(fTimeDelta);
