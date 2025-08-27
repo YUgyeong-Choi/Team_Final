@@ -57,7 +57,7 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
         m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
 
         m_fSizeX = g_iWinSizeX * 0.55f;
-        m_fSizeY = g_iWinSizeY * 0.05f;
+        m_fSizeY = g_iWinSizeY * 0.03f;
 
         m_fX = g_iWinSizeX * 0.5f;
         m_fY = g_iWinSizeY * 0.85f;
@@ -199,7 +199,10 @@ HRESULT CUI_MonsterHP_Bar::Render()
         _int iDamage =  static_cast<_int>(floorf(m_fDamage));
         _wstring strDamage = to_wstring(iDamage);
 
-        m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.24f , m_fY - g_iWinSizeY * 0.03f }, {1.f,1.f,1.f,1.f},0.f,{0.f,0.f},0.7f,0.f);
+        if (m_isBoss)
+            m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.24f , m_fY - g_iWinSizeY * 0.03f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.7f, 0.f);
+        else
+            m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.0325f , m_fY - g_iWinSizeY * 0.02f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.7f, 0.f);
     }
 
     if (!m_strName.empty())

@@ -392,4 +392,7 @@ void CUI_Guide::Free()
 
     Safe_Release(m_pButtonContainer);
 
+    for (auto& pContainer : m_Explainations)
+        Safe_Release(pContainer);
+
 }
