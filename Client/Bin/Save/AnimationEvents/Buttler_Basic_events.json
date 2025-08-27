@@ -234,7 +234,7 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_Ing_B",
             "Duration": 120.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 70.0
         },

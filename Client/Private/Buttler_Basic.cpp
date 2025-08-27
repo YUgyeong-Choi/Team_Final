@@ -288,6 +288,8 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
 
+		m_isDetect = true;
+
 		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
 
 		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() / 2.f);
@@ -397,11 +399,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 				m_fAwaySpeed = 0.f;
 
 
-			if (m_strStateName.find("B") == m_strStateName.npos)
-			{
-				vLook *= -1.f;
 
-			}
 
 
 
@@ -501,8 +499,8 @@ HRESULT CButtler_Basic::Ready_Weapon()
 	Desc.InitScale = { 1.f, 0.6f, 1.f };
 	Desc.iRender = 0;
 
-	Desc.szMeshID = TEXT("Buttler_Train_Weapon");
-	lstrcpy(Desc.szName, TEXT("Buttler_Train_Weapon"));
+	Desc.szMeshID = TEXT("Buttler_Basic_Weapon");
+	lstrcpy(Desc.szName, TEXT("Buttler_Basic_Weapon"));
 	Desc.vAxis = { 0.f,1.f,0.f,0.f };
 	Desc.fRotationDegree = { 90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
