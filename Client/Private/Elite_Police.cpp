@@ -12,6 +12,7 @@ CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 CElite_Police::CElite_Police(const CElite_Police& Prototype)
 	:CBossUnit(Prototype)
 {
+	m_pAnimator = nullptr;
 }
 
 HRESULT CElite_Police::Initialize_Prototype()
@@ -65,13 +66,21 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	//m_pHPBar->Set_MaxHp(m_fHP);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
-
+	EnterCutScene();
+//	m_pPhysXActorCom->Modify_Shape()
 	return S_OK;
 }
 
 void CElite_Police::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+#ifdef _DEBUG
+	if (KEY_DOWN(DIK_V))
+	{
+		m_pAnimator->SetTrigger("Detect");
+	}
+#endif // _DEBUG
+
 
 
 	if (m_bDead)
@@ -194,6 +203,7 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 
 void CElite_Police::UpdateSpecificBehavior()
 {
+	m_eCurrentState = EBossState::WALK;
 }
 
 void CElite_Police::EnableColliders(_bool bEnable)

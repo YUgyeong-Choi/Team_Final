@@ -1389,6 +1389,13 @@ void CPlayer::Register_Events()
 		{
 			Use_Item();
 		});
+	m_pAnimator->RegisterEventListener("ToggleLamp", [this]()
+		{
+			if(m_pPlayerLamp)
+				m_pPlayerLamp->ToggleLamp();
+		});
+	
+
 
 	m_pAnimator->RegisterEventListener("ReceiveDamageToFatalTarget", [this]()
 		{
@@ -2351,7 +2358,6 @@ void CPlayer::Use_Item()
 		return;
 
 	m_pSelectItem->Use();
-	m_pPlayerLamp->ToggleLamp();
 
 	if(m_isSelectUpBelt)
 		Callback_UpBelt();

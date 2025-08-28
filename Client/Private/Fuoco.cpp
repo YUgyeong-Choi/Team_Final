@@ -780,6 +780,22 @@ void CFuoco::Register_Events()
 
 		});
 
+	m_pAnimator->RegisterEventListener("ActiveHpBar", [this]()
+		{
+			if (m_pHPBar)
+				return;
+
+			CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+			eDesc.strName = TEXT("왕의 불꽃 푸오코");
+			eDesc.isBoss = true;
+			eDesc.pHP = &m_fHP;
+			eDesc.pIsGroggy = &m_isGroggy;
+
+			m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+				ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+
+		});
+
 	m_pAnimator->RegisterEventListener("ResetAnim", [this]()
 		{
 			m_pAnimator->GetCurrentAnim()->ResetTrack();
