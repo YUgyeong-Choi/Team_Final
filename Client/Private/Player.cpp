@@ -2316,7 +2316,7 @@ _bool CPlayer::Find_Slot(const _wstring& strItemTag)
 	return false;
 }
 
-void CPlayer::Add_Item(const _wstring& strItemTag)
+void CPlayer::Add_Icon(const _wstring& strItemTag)
 {
 	if (strItemTag == L"Prototype_GameObject_Lamp")
 	{

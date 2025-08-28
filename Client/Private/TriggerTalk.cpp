@@ -75,7 +75,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
 
-			m_pPlayer->Add_Item(TEXT("Prototype_GameObject_Lamp"));
+			m_pPlayer->Add_Icon(TEXT("Prototype_GameObject_Lamp"));
 			m_pPlayer->Get_PlayerLamp()->SetbLampVisible(true);
 			
 			//CUI_Manager::Get_Instance()->On_Panel();
