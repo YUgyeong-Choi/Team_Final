@@ -67,7 +67,7 @@
             "ClipName": "AS_ATSC0_Skill_05_New",
             "Duration": 162.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -116,7 +116,7 @@
             "ClipName": "AS_Fatal_NPC_Hit_End",
             "Duration": 265.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -130,14 +130,14 @@
             "ClipName": "AS_Fatal_NPC_Hit_Ing",
             "Duration": 119.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Fatal_NPC_Hit_Start",
             "Duration": 30.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -241,7 +241,7 @@
         {
             "ClipName": "AS_Run_C_F",
             "Duration": 60.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -276,7 +276,7 @@
         {
             "ClipName": "AS_Walk_C_B",
             "Duration": 88.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -284,13 +284,13 @@
             "ClipName": "AS_Walk_C_B_Root",
             "Duration": 88.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_F",
             "Duration": 88.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -304,7 +304,7 @@
         {
             "ClipName": "AS_Walk_C_L",
             "Duration": 88.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -312,13 +312,13 @@
             "ClipName": "AS_Walk_C_L_Root",
             "Duration": 88.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Walk_C_R",
             "Duration": 88.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
@@ -326,7 +326,7 @@
             "ClipName": "AS_Walk_C_R_Root",
             "Duration": 88.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         }
     ]

@@ -3025,8 +3025,11 @@ public:
         m_pOwner->m_pAnimator->ResetParameters();
         m_pOwner->Set_GrinderEffect_Active(false);
 
+
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
+
     }
 
     virtual void Execute(_float fTimeDelta) override

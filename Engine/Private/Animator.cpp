@@ -117,6 +117,14 @@ void CAnimator::PlayClip(CAnimation* pAnim, _bool isLoop)
 
 void CAnimator::StartTransition(const CAnimController::TransitionResult& transitionResult)
 {
+	//if (transitionResult.bCanSameAnimReset)
+	//{
+	//	m_RootMotionDelta = _float3(0.f, 0.f, 0.f);
+	//	m_RootRotationDelta = _float4(0.f, 0.f, 0.f, 1.f);
+	//}
+	//else
+	//{
+	//}
 	ResetRootMotion();
 
 	m_Blend.active = true;
@@ -672,10 +680,10 @@ void CAnimator::ResetRootMotion()
 		_matrix rootMat = XMLoadFloat4x4(m_Bones[1]->Get_CombinedTransformationMatrix());
 		_vector s, r, t;
 		XMMatrixDecompose(&s, &r, &t, rootMat);
-		XMStoreFloat3(&m_PrevRootPosition, t);
 		XMStoreFloat3(&m_CurrentRootPosition, t);
-		XMStoreFloat4(&m_PrevRootRotation, r);
 		XMStoreFloat4(&m_CurrentRootRotation, r);
+		XMStoreFloat3(&m_PrevRootPosition, t);
+		XMStoreFloat4(&m_PrevRootRotation, r);
 	}
 	else
 	{
@@ -684,6 +692,8 @@ void CAnimator::ResetRootMotion()
 		m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
 		m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
 	}
+	m_RootMotionDelta = { 0.f, 0.f, 0.f };
+	m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
 	//m_PrevRootPosition = { 0.f, 0.f, 0.f };
 	//m_CurrentRootPosition = { 0.f, 0.f, 0.f };
 	//m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
