@@ -45,24 +45,27 @@ public:
 
 public:
 	const EBossAttackType& Get_BossAttackType() const { m_eBossAttackType; }
-	void EnterCutScene() { 
-
+	void EnterCutScene()
+	{
 		if (m_pHPBar)
 			return;
+
 		CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 		eDesc.strName = TEXT("¿ÕÀÇ ºÒ²É Çª¿ÀÄÚ");
 		eDesc.isBoss = true;
 		eDesc.pHP = &m_fHP;
 		eDesc.pIsGroggy = &m_isGroggy;
 
-			m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
-				ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
-		}
+		m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+			ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 
-		
 
 		m_pAnimator->SetPlaying(true);
-		m_bCutSceneOn = true; }
+		m_bCutSceneOn = true;
+	}
+
+
+
 protected:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
