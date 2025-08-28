@@ -632,6 +632,7 @@ public:
 			
             m_pOwner->m_bUseLamp = true;
             m_pOwner->m_bItemSwitch = true;
+            m_pOwner->m_bLampSwitch = true;
             m_pOwner->m_bResetSoundTime = false;
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
@@ -652,7 +653,7 @@ public:
         {
             m_pOwner->m_bPulseReservation = false;
 
-            /* [ 순회하면서 아이템 찾기 ] */
+            /* [ 아이템 찾기 ] */
             _bool PulseUse = FindPulseObject();
 
             if (!PulseUse)

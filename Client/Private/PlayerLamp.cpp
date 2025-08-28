@@ -48,19 +48,15 @@ HRESULT CPlayerLamp::Initialize(void* pArg)
 	m_pTransformCom->Rotation(_fvector{0.f,0.f,1.f,0.f}, XMConvertToRadians(90.f));
 	m_pTransformCom->SetUp_Scale(pDesc->InitScale.x, pDesc->InitScale.y, pDesc->InitScale.z);
 
-	if (FAILED(Ready_Light()))
-		return E_FAIL;
-
-
 	m_eTargetLevel = LEVEL::KRAT_CENTERAL_STATION;
 	m_bDebug = false;
 
-	SetbVolumetric(true);
+	if (FAILED(Ready_Light()))
+		return E_FAIL;
+
 	SetRange(5.f);
 	SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
-
-	
-	SetIntensity(10.f);
+	SetIntensity(1.f);
 
 	return S_OK;
 }
@@ -94,22 +90,14 @@ void CPlayerLamp::Late_Update(_float fTimeDelta)
 		SocketMatrix *
 		XMLoadFloat4x4(m_pParentWorldMatrix));
 
-	if (m_isUse)
+	if (m_bIsUse)
 	{
-		if (nullptr == m_pParentWorldMatrix)
-			return;
+		_vector vPosition = m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vLook = m_pOwner->Get_TransfomCom()->Get_State(STATE::LOOK);
+		vPosition += vLook * 1.5f;
+		vPosition = XMVectorAdd(vPosition, XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
-		_matrix PlayerMat = XMLoadFloat4x4(&m_CombinedWorldMatrix);
-		_vector vPosition = PlayerMat.r[3];
-		_vector vPlayerLook = PlayerMat.r[2];
-		vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
-		vPosition += -XMVector3Normalize(vPlayerLook) * 0.5f;
-		PlayerMat.r[3] = vPosition;
-		//m_pTransformCom->Set_WorldMatrix(PlayerMat);
-
-		//_vector vLightPos = m_pTransformCom->Get_State(STATE::POSITION);
 		XMStoreFloat4(&m_pLight->Get_LightDesc()->vPosition, vPosition);
-
 	}
 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
@@ -159,10 +147,18 @@ HRESULT CPlayerLamp::Render()
 		/* [ 이미시브 맵이 있다면 사용하라 ] */
 		if (bIsEmissive)
 		{
-			//if (m_pOwner->getitem)
-			_float fEmissive = 1.f;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
-				return E_FAIL;
+			if (m_bIsUse)
+			{
+				_float fEmissive = 1.f;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+					return E_FAIL;
+			}
+			else if (!m_bIsUse)
+			{
+				_float fEmissive = 0.f;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+					return E_FAIL;
+			}
 		}
 
 
@@ -242,7 +238,7 @@ HRESULT CPlayerLamp::Ready_Light()
 	LightDesc.vPosition = _float4(10.f, 5.0f, 10.f, 1.f);
 
 	LightDesc.fAmbient = 0.2f;
-	LightDesc.fIntensity = 1.f;
+	LightDesc.fIntensity = 0.1f;
 	LightDesc.fRange = 10.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
@@ -250,7 +246,6 @@ HRESULT CPlayerLamp::Ready_Light()
 	LightDesc.fFogCutoff = 15.f;
 	LightDesc.bIsVolumetric = true;
 	LightDesc.bIsPlayerFar = true;
-
 
 	if (FAILED(m_pGameInstance->Add_LevelLightDataReturn(ENUM_CLASS(m_eTargetLevel), LightDesc, &m_pLight)))
 		return E_FAIL;

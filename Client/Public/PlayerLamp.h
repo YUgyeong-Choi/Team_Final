@@ -57,19 +57,13 @@ public:
 	const _float4x4* Get_CombinedWorldMatrix() const { return &m_CombinedWorldMatrix; }
 
 public:
-	_bool	Get_isUse() { return m_isUse; }
-	void    Set_isUse(_bool isUse) { m_isUse = isUse;  
-	
-		if (m_isUse)
-		{
-
+	void    ToggleLamp() 
+	{
+		m_bIsUse = !m_bIsUse;
+		if (m_bIsUse)
 			m_pLight->Get_LightDesc()->bIsUse = true;
-		}
 		else
-		{
-
 			m_pLight->Get_LightDesc()->bIsUse = false;
-		}
 	}
 
 	void SetIsPlayerFar(_bool bPlayerFar) { m_pLight->Get_LightDesc()->bIsPlayerFar = bPlayerFar; }
@@ -117,7 +111,7 @@ protected:              /* [ 컴포넌트 ] */
 private:
 	// 빛, 사용중인지 아닌지
 	CLight* m_pLight = { nullptr };
-	_bool   m_isUse = { false };
+	_bool   m_bIsUse = { false };
 
 	_bool m_bDebug = { false };
 

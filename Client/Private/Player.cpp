@@ -221,7 +221,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	
 	/* [ 특수행동 ] */
-	ItemWeaponOFF(fTimeDelta);
+	ItemWeapOnOff(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 
 	/* [ 이곳은 실험실입니다. ] */
@@ -2143,7 +2143,7 @@ void CPlayer::Play_CutScene_Door()
 	m_bInteractionRotate[0] = true;
 }
 
-void CPlayer::ItemWeaponOFF(_float fTimeDelta)
+void CPlayer::ItemWeapOnOff(_float fTimeDelta)
 {
 	if (m_bItemSwitch)
 	{
@@ -2333,14 +2333,12 @@ void CPlayer::Use_Item()
 		return;
 
 	m_pSelectItem->Use();
+	m_pPlayerLamp->ToggleLamp();
 
 	if(m_isSelectUpBelt)
 		Callback_UpBelt();
 	else
 		Callback_DownBelt();
-
-	if (m_pSelectItem->Get_ProtoTag().find(TEXT("Lamp")) != _wstring::npos)
-		m_pPlayerLamp->Set_isUse(m_pSelectItem->Get_isActive());
 }
 
 void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)

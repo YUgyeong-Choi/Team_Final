@@ -151,7 +151,7 @@ private:
 	void Play_CutScene_Door();
 
 private:
-	void ItemWeaponOFF(_float fTimeDelta);
+	void ItemWeapOnOff(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
 
 	void Weapon_Collider_Active();
@@ -366,6 +366,8 @@ private: /* [ 현재 플레이어 레벨 ] */
 private: /* [ 아이템 사용 관련 변수 ] */
 	_bool	 m_bItemSwitch = {};
 	_float	 m_fItemTime = {};
+	_bool	 m_bLampSwitch = {};
+	_float	 m_fLampTime = {};
 	
 private: /* [ 벨트 슬롯 ] */
 	_bool	 m_bUseLamp = {};
