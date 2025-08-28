@@ -2927,6 +2927,8 @@ public:
 public:
     virtual void Enter() override
     {
+
+        m_pOwner->m_fMaxRootMotionSpeed = 18.f;
         /* [ 이펙트를 생성한다. ] */
         _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
 

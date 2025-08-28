@@ -1608,6 +1608,10 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			m_pAnimator->SetBool("IsHit", true);
 			SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
 			pPlayer->SetHitMotion(HITMOTION::UP);
+			if (m_pAnimator->GetInt("SkillType") == FootAtk)
+			{
+				m_pAnimator->SetBool("IsHit", true);
+			}
 		case ENUM_CLASS(BossStateID::ATK_STRIKE_FURY):
 			pPlayer->SetfReceiveDamage(DAMAGE_FURY);
 			pPlayer->SetHitMotion(HITMOTION::UP);

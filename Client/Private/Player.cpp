@@ -1342,6 +1342,17 @@ void CPlayer::Register_Events()
 			if (m_iFatalAttackCount == 3)
 				m_iFatalAttackCount = 0;
 		});
+	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
+		{
+			m_fMaxRootMotionSpeed = 40.f;
+		});
+
+	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()
+		{
+			m_fMaxRootMotionSpeed = 18.f;
+		});
+
+
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
@@ -1418,7 +1429,7 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 
 		_float fDeltaMag = XMVectorGetX(XMVector3Length(finalDelta));
 
-		_float fMaxDeltaPerFrame =18.f * fTimeDelta;
+		_float fMaxDeltaPerFrame = m_fMaxRootMotionSpeed * fTimeDelta;
 		if (fDeltaMag > fMaxDeltaPerFrame)
 		{
 			finalDelta = XMVector3Normalize(finalDelta) * fMaxDeltaPerFrame;
