@@ -65,6 +65,10 @@ public:
 
 	//해당 레벨에 있는 레이어를 챙겨온다.
 	const map<const _wstring, class CLayer*>& Get_Layers(_uint iLevelIndex) const;
+
+	// For Pulling
+	HRESULT Push_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag);
+	CGameObject* Recycle_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -284,7 +288,7 @@ private:
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
 	class COctoTree_Manager*	m_pOctoTree_Manager = { nullptr };
 	class CArea_Manager*		m_pArea_Manager = { nullptr };
-
+	class CPulling_Manager*		m_pPulling_Manager = { nullptr };
 private:
 	_uint					m_iCurrentLevelIndex = 0;
 	float m_fTimeScale = 1.f; // 업데이트 속도

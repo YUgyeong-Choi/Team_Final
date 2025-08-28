@@ -277,7 +277,8 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
     float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * g_fTime * 1.f);
 
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
-    
+    Out.vDistortion *= g_vColor;
+
     return Out;
 }
 

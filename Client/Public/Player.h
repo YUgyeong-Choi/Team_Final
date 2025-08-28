@@ -328,6 +328,7 @@ private: /* [ 플레이어 변수 ] */
 	_bool   m_bSetSound = {};
 	_bool   m_bCheckSound = {};
 	_bool   m_bResetSoundTime = true;
+	_bool   m_bSetCamera[9] = {};
 
 	_float	m_fMaxHP = { 100.f };
 	_float	m_fHP = { 100.f };

@@ -86,27 +86,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (!m_pPlayer)
 		return;
 
-	if (m_bTalkStart)
-	{
-		m_fDistance = LerpFloat(m_fDistance, 1.7f, fTimeDelta * 2.f);
-
-		if (fabsf(m_fDistance - 1.7f) < 0.01f)
-		{
-			m_fDistance = 1.7f;
-			m_bTalkStart = false;
-		}
-	}
-
-	if (m_bTalkEnd)
-	{
-		m_fDistance = LerpFloat(m_fDistance, 3.f, fTimeDelta * 2.f); 
-
-		if (fabsf(m_fDistance - 3.f) < 0.01f)
-		{
-			m_fDistance = 3.f;
-			m_bTalkEnd = false;
-		}
-	}
+	Update_LerpDistacne(fTimeDelta);
 	
 	if (m_bActive)
 		return;
@@ -240,6 +220,14 @@ void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool 
 	}
 }
 
+void CCamera_Orbital::Start_DistanceLerp(_float fTargetLerpDistance, _float fDistanceLerpSpeed)
+{
+	m_bLerpDistanceStart = true;
+	m_fSaveDistance = m_fDistance;
+	m_fTargetLerpDistance = fTargetLerpDistance;
+	m_fDistanceLerpSpeed = fDistanceLerpSpeed;
+}
+
 void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 {
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
@@ -326,7 +314,7 @@ void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
 	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
 
-	m_pTransformCom->LookAt(vTargetLookPos);
+	m_pTransformCom->LookAt(m_vPrevLookTarget);
 
 	if (fabs(m_fYaw - m_fTargetYaw) < 0.001f && fabs(m_fPitch - m_fTargetPitch) < 0.001f)
 	{
@@ -432,6 +420,55 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 
 	// 카메라 설정
 	m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
+}
+
+void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
+{
+	if (m_bTalkStart)
+	{
+		m_fDistance = LerpFloat(m_fDistance, 1.7f, fTimeDelta * 2.f);
+
+		if (fabsf(m_fDistance - 1.7f) < 0.01f)
+		{
+			m_fDistance = 1.7f;
+			m_bTalkStart = false;
+		}
+	}
+
+	if (m_bTalkEnd)
+	{
+		m_fDistance = LerpFloat(m_fDistance, 3.f, fTimeDelta * 2.f);
+
+		if (fabsf(m_fDistance - 3.f) < 0.01f)
+		{
+			m_fDistance = 3.f;
+			m_bTalkEnd = false;
+		}
+	}
+
+
+	if (m_bLerpDistanceStart)
+	{
+		m_fDistance = LerpFloat(m_fDistance, m_fTargetLerpDistance, fTimeDelta * m_fDistanceLerpSpeed);
+
+		if (fabsf(m_fDistance - m_fTargetLerpDistance) < 0.01f)
+		{
+			m_fDistance = m_fTargetLerpDistance;
+			m_bLerpDistanceStart = false;
+			m_bLerpDistanceEnd = true;
+		}
+	}
+
+	if (m_bLerpDistanceEnd)
+	{
+		m_fDistance = LerpFloat(m_fDistance, m_fSaveDistance, fTimeDelta * m_fDistanceLerpSpeed);
+
+		if (fabsf(m_fDistance - m_fSaveDistance) < 0.01f)
+		{
+			m_fDistance = m_fSaveDistance;
+			m_bLerpDistanceEnd = false;
+		}
+	}
 }
 
 

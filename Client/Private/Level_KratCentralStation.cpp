@@ -636,7 +636,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 10번 구역 ] */
-		const vector<_uint> vecAdj10 = { 9  };
+		const vector<_uint> vecAdj10 = { 9, 12, 14, 16, 17, 18 };
 		if (!m_pGameInstance->AddArea_AABB(
 			10, a10Min, a10Max, vecAdj10, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;

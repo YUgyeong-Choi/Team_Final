@@ -94,6 +94,39 @@ HRESULT CObject_Manager::Add_GameObjectReturn
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Push_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag)
+{
+
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	if (nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+
+		pLayer->Add_GameObject(pObj);
+
+		m_pLayers[iLevelIndex].emplace(strLayerTag, pLayer);
+	}
+	else
+		pLayer->Add_GameObject(pObj);
+
+	return S_OK;
+}
+
+CGameObject* CObject_Manager::Recycle_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	if (nullptr == pLayer)
+	{
+		MSG_BOX("Recycle_GameObject : Cant find Layer");
+		return nullptr;
+	}
+	else
+		return pLayer->Remove_GameObject(pObj);
+
+}
+
 void CObject_Manager::Priority_Update(_float fTimeDelta)
 {
 	for (size_t i = 0; i < m_iNumLevels; i++)

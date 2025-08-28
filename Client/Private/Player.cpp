@@ -458,14 +458,16 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_strPrevStateName = stateName;
 		m_fMoveTime = 0.f;
 		m_fSetTime = 0.f;
-		if(m_bResetSoundTime)
-			m_fSetSoundTime = 0.f;
 		m_iMoveStep = 0;
 		m_bMove = false;
 		m_bMoveReset = false;
 		m_bSetOnce = false;
 		m_bSetTwo = false;
+
 		m_bSetSound = false;
+		if (m_bResetSoundTime)
+			m_fSetSoundTime = 0.f;
+		m_bSetCamera[9] = {};
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
@@ -1021,6 +1023,23 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::FATAL:
 	{
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.f && !m_bSetCamera[0])
+		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 10.f);
+			m_bSetCamera[0] = true;
+		}
+		if (m_fSetTime > 1.f && !m_bSetCamera[1])
+		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 10.f);
+			m_bSetCamera[1] = true;
+		}
+		if (m_fSetTime > 2.f && !m_bSetCamera[2])
+		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.f, 8.f);
+			m_bSetCamera[2] = true;
+		}
+
 		RootMotionActive(fTimeDelta);
 		break;
 	}
@@ -1981,6 +2000,7 @@ void CPlayer::GetWeapon()
 	m_pAnimator->SetTrigger("EquipWeapon");
 	m_pAnimator->ApplyOverrideAnimController("TwoHand");
 	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	m_bWeaponEquipped = true;
 	m_bWalk = true;
 }
 
