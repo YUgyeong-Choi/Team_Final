@@ -44,7 +44,9 @@ void CUI_Fatal_Icon::Update(_float fTimeDelta)
 	if (nullptr == m_pPlayer)
 		return;
 
-	if (nullptr == m_pPlayer->GetFatalTarget() || m_pPlayer->GetFatalTarget()->Get_bDead())
+	// 보스 페이탈 로직 보고 다시 바꾸기, 그로기면 이제 빨간색으로 띄운게 필요할듯?
+
+	if (nullptr == m_pPlayer->GetFatalTarget() || !m_pPlayer->GetbIsBackAttack() || !m_pPlayer->GetFatalTarget()->Get_isActive())
 	{
 		m_isRender = false;
 		return;
@@ -150,6 +152,8 @@ HRESULT CUI_Fatal_Icon::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+	
+	// 이제 페이탈이 가능하면 이 색깔로, 그로기면 빨간색으로? 
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &m_vColor, sizeof(_float4))))
 		return E_FAIL;
