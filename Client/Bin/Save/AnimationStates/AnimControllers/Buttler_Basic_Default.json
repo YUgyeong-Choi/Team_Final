@@ -9,8 +9,8 @@
             "Name": "Attack_Combo_Start",
             "NodeId": 1,
             "NodePos": [
-                978.0,
-                193.0
+                -2163.923583984375,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -24,8 +24,8 @@
             "Name": "Attack_Combo_Loop",
             "NodeId": 2,
             "NodePos": [
-                978.0,
-                363.0
+                -2163.923583984375,
+                261.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -39,8 +39,8 @@
             "Name": "Attack_Combo_End",
             "NodeId": 3,
             "NodePos": [
-                978.0,
-                533.0
+                -2163.923583984375,
+                431.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Spawn_Loop",
             "NodeId": 100002,
             "NodePos": [
-                4218.0,
-                193.0
+                1076.076416015625,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -69,8 +69,8 @@
             "Name": "Spawn_End",
             "NodeId": 100003,
             "NodePos": [
-                4218.0,
-                363.0
+                1076.076416015625,
+                261.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Walk_F",
             "NodeId": 100005,
             "NodePos": [
-                4938.0,
-                193.0
+                1796.076416015625,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -99,8 +99,8 @@
             "Name": "Walk_B",
             "NodeId": 100006,
             "NodePos": [
-                4938.0,
-                363.0
+                1796.076416015625,
+                261.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -114,8 +114,8 @@
             "Name": "Walk_L",
             "NodeId": 100007,
             "NodePos": [
-                4938.0,
-                533.0
+                1796.076416015625,
+                431.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "Walk_R",
             "NodeId": 100008,
             "NodePos": [
-                4938.0,
-                703.0
+                1796.076416015625,
+                601.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -144,8 +144,8 @@
             "Name": "Idle",
             "NodeId": 100009,
             "NodePos": [
-                2778.0,
-                193.0
+                -363.923583984375,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -159,8 +159,8 @@
             "Name": "Attack_Light",
             "NodeId": 100010,
             "NodePos": [
-                618.0,
-                193.0
+                -2523.923583984375,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -174,8 +174,8 @@
             "Name": "Dead_F",
             "NodeId": 100011,
             "NodePos": [
-                3498.0,
-                193.0
+                356.076416015625,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -189,8 +189,8 @@
             "Name": "Dead_B",
             "NodeId": 100012,
             "NodePos": [
-                3498.0,
-                363.0
+                356.076416015625,
+                261.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -204,8 +204,8 @@
             "Name": "Hit_B",
             "NodeId": 100013,
             "NodePos": [
-                2058.0,
-                193.0
+                -1083.923583984375,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -219,8 +219,8 @@
             "Name": "Hit_R",
             "NodeId": 100014,
             "NodePos": [
-                2058.0,
-                363.0
+                -1083.923583984375,
+                261.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -234,8 +234,8 @@
             "Name": "Hit_L",
             "NodeId": 100015,
             "NodePos": [
-                2058.0,
-                533.0
+                -1083.923583984375,
+                431.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -249,8 +249,8 @@
             "Name": "Groggy_In",
             "NodeId": 100016,
             "NodePos": [
-                4938.0,
-                193.0
+                1796.076416015625,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -264,8 +264,8 @@
             "Name": "Groggy_Out",
             "NodeId": 100017,
             "NodePos": [
-                4938.0,
-                363.0
+                1796.076416015625,
+                261.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -279,8 +279,8 @@
             "Name": "Groggy_Loop",
             "NodeId": 100018,
             "NodePos": [
-                4938.0,
-                533.0
+                1796.076416015625,
+                431.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -294,8 +294,8 @@
             "Name": "Fatal_In",
             "NodeId": 100019,
             "NodePos": [
-                4218.0,
-                193.0
+                1076.076416015625,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -309,8 +309,8 @@
             "Name": "Fatal_Loop",
             "NodeId": 100020,
             "NodePos": [
-                4218.0,
-                363.0
+                1076.076416015625,
+                261.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -324,8 +324,8 @@
             "Name": "Down_Away",
             "NodeId": 100021,
             "NodePos": [
-                3858.0,
-                193.0
+                722.0,
+                64.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -339,8 +339,8 @@
             "Name": "Down_Fall",
             "NodeId": 100022,
             "NodePos": [
-                3858.0,
-                363.0
+                716.076416015625,
+                261.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -354,8 +354,8 @@
             "Name": "Down_Land",
             "NodeId": 100023,
             "NodePos": [
-                3858.0,
-                533.0
+                716.076416015625,
+                431.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -369,8 +369,8 @@
             "Name": "Getup",
             "NodeId": 100024,
             "NodePos": [
-                4578.0,
-                193.0
+                1436.076416015625,
+                91.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -384,8 +384,8 @@
             "Name": "Dead_Getup",
             "NodeId": 100040,
             "NodePos": [
-                3498.0,
-                533.0
+                356.076416015625,
+                431.9757080078125
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1090,7 +1090,7 @@
                 "ToNodeId": 1000221
             },
             "MaxTime": 1.0,
-            "MinTime": 0.36399999260902405,
+            "MinTime": 0.4950000047683716,
             "ToNodeId": 100022
         },
         {
@@ -1103,7 +1103,7 @@
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.0860000029206276,
+            "Duration": 0.15600000321865082,
             "FromNodeId": 100022,
             "HasExitTime": false,
             "Link": {

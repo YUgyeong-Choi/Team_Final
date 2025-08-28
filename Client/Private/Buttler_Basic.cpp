@@ -288,8 +288,6 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
 
-		m_isDetect = true;
-
 		m_fHp -= pWeapon->Get_CurrentDamage();
 
 		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage());
@@ -298,6 +296,8 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
+
+		m_isDetect = true;
 
 		if (m_fHp <= 0 && !m_isFatal)
 		{
@@ -322,7 +322,6 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 				m_pHPBar->Set_RenderTime(0.f);
 			return;
 		}
-
 
 		if (!m_isCanGroggy)
 		{
