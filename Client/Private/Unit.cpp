@@ -9,6 +9,7 @@
 #include "Camera_Manager.h"
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
+#include "Player.h"
 
 
 CUnit::CUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -62,7 +63,7 @@ HRESULT CUnit::Initialize(void* pArg)
 void CUnit::Priority_Update(_float fTimeDelta)
 {
 	if (!m_pPlayer)
-		m_pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+		m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player")));
 }
 void CUnit::Update(_float fTimeDelta)
 {

@@ -37,6 +37,7 @@ public:
     class CEffectContainer* Find_EffectContainer(const _wstring& strECTag);
     void Release_EffectContainer(const _wstring& strECTag);
     void Set_Dead_EffectContainer(const _wstring& strECTag);
+    void Set_Active_Effect(const _wstring& strECTag, _bool bActive);
 
 private:
     HRESULT Ready_Prototypes();

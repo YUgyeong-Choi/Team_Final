@@ -96,6 +96,9 @@ HRESULT CPBRMesh::Render()
 		_float fEmissive = 0.f;
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
 			return E_FAIL;
+		_float fGlass = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlass", &fGlass, sizeof(_float))))
+			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 			return E_FAIL;

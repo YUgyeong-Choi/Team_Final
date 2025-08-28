@@ -5,12 +5,12 @@
 #include "Client_Calculation.h"
 
 CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CMonster_Base{pDevice, pContext}
+	:CBossUnit{pDevice, pContext}
 {
 }
 
 CElite_Police::CElite_Police(const CElite_Police& Prototype)
-	:CMonster_Base{Prototype}
+	:CBossUnit(Prototype)
 {
 }
 
@@ -27,11 +27,10 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
 
-	m_fDetectDist = 10.f;
 
-	m_fHp = 300;
+	m_fHP = 300;
 
-	m_pHPBar->Set_MaxHp(m_fHp);
+	m_pHPBar->Set_MaxHp(m_fHP);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 
@@ -42,13 +41,13 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_strStateName.find("Dead") != m_strStateName.npos)
-	{
-		if (m_pAnimator->IsFinished())
-		{
-			m_pWeapon->Set_bDead();
-		}
-	}
+	//if (m_strStateName.find("Dead") != m_strStateName.npos)
+	//{
+	//	if (m_pAnimator->IsFinished())
+	//	{
+	//		m_pWeapon->Set_bDead();
+	//	}
+	//}
 
 }
 
@@ -60,69 +59,22 @@ void CElite_Police::Update(_float fTimeDelta)
 void CElite_Police::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-
-	Update_State();
 }
 
-HRESULT CElite_Police::Render()
+HRESULT CElite_Police::Ready_Components(void* pArg)
 {
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-
-	return S_OK;
+	return E_NOTIMPL;
 }
 
-void CElite_Police::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+HRESULT CElite_Police::Ready_Actor()
 {
+	return E_NOTIMPL;
 }
 
-void CElite_Police::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+void CElite_Police::Ready_BoneInformation()
 {
 }
 
-void CElite_Police::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-}
-
-void CElite_Police::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
-void CElite_Police::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
-void CElite_Police::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
-void CElite_Police::Update_State()
-{
-	Check_Detect();
-
-	m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-
-	if (!m_isDetect || m_fHp <= 0)
-	{
-		m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-		return;
-	}
-}
-
-_int CElite_Police::Update_AttackType()
-{
-
-	// °Å¸®·Î?
-	_vector vDist = {};
-	vDist = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-
-	if (XMVectorGetX(vDist) > 8.f)
-		return ATTACK_END;
-
-	else
-		return GetRandomInt(ATTACK_A, ATTACK_D);
-}
 
 HRESULT CElite_Police::Ready_Weapon()
 {
@@ -154,6 +106,96 @@ HRESULT CElite_Police::Ready_Weapon()
 
 	return S_OK;
 }
+
+void CElite_Police::Update_Collider()
+{
+}
+
+void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
+{
+}
+
+void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
+{
+}
+
+void CElite_Police::UpdateSpecificBehavior()
+{
+}
+
+void CElite_Police::EnableColliders(_bool bEnable)
+{
+}
+
+void CElite_Police::Ready_EffectNames()
+{
+}
+
+void CElite_Police::ProcessingEffects(const _wstring& stEffectTag)
+{
+}
+
+HRESULT CElite_Police::EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce)
+{
+	return E_NOTIMPL;
+}
+
+HRESULT CElite_Police::Spawn_Effect()
+{
+	return E_NOTIMPL;
+}
+
+HRESULT CElite_Police::Ready_Effect()
+{
+	return E_NOTIMPL;
+}
+
+void CElite_Police::Register_Events()
+{
+}
+
+CElite_Police::EEliteAttackPattern CElite_Police::GetRandomAttackPattern(_float fDistance)
+{
+	return EEliteAttackPattern();
+}
+
+void CElite_Police::UpdatePatternWeight(EEliteAttackPattern ePattern)
+{
+}
+
+_bool CElite_Police::CheckConditionFlameField()
+{
+	return _bool();
+}
+
+void CElite_Police::ChosePatternWeightByDistance(_float fDistance)
+{
+}
+
+void CElite_Police::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+}
+
+void CElite_Police::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+}
+
+void CElite_Police::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+}
+
+void CElite_Police::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CElite_Police::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CElite_Police::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
 
 CElite_Police* CElite_Police::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

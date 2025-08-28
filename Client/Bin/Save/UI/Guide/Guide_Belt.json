@@ -1,0 +1,247 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 357.04901123046875,
+                "SizeX": 480.0000305175781,
+                "SizeY": 243.00001525878906,
+                "Texturetag": "Prototype_Component_Texture_Tutorial",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.009999999776482582,
+                "fX": 1062.39990234375,
+                "fY": 472.4999694824219,
+                "iPassIndex": 1,
+                "iTextureIndex": 3,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "벨트 사용",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.10000000149011612,
+                    "G": 0.10000000149011612,
+                    "R": 0.10000000149011612
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 1,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 720.0,
+                "SizeY": 405.0,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 800.0,
+                "fY": 231.3000030517578,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": ": 위 벨트 선택 / 길게 눌러 첫 번째 칸 선택\n: 아래 벨트 선택 / 길게 눌러 첫 번째 칸 선택\n: 선택한 벨트 아이템 사용",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.20000000298023224,
+                    "G": 0.20000000298023224,
+                    "R": 0.20000000298023224
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 0,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 560.0,
+                "SizeY": 315.0,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 425.6000061035156,
+                "fY": 383.3999938964844,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+          {
+            "Caption": "사용 아이템과 제스처를 벨트에 장착하여 사용할 수 \n있다.\n길게 누르면 벨트의 첫 번째 칸이 선택된다.",
+            "Color": {
+              "A": 1.0,
+              "B": 0.20000000298023224,
+              "G": 0.20000000298023224,
+              "R": 0.20000000298023224
+            },
+            "Features": [
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 15,
+                "iStartFrame": 0,
+                "isLoop": false
+              }
+            ],
+            "FontTag": "Font_Medium",
+            "IsCenter": 0,
+            "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+            "RotationZ": 0.0,
+            "SizeX": 560.0,
+            "SizeY": 315.0,
+            "Texturetag": "",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 392.0,
+            "fY": 494.10003662109375,
+            "iPassIndex": 0,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          },
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
+            },
+            "Features": [
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 15,
+                "iStartFrame": 0,
+                "isLoop": false
+              }
+            ],
+            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+            "RotationZ": 0.0,
+            "SizeX": 28.799999237060547,
+            "SizeY": 27.0,
+            "Texturetag": "Prototype_Component_Texture_Icon_Key_T",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 406.4000244140625,
+            "fY": 385.20001220703125,
+            "iPassIndex": 1,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          },
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
+            },
+            "Features": [
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 15,
+                "iStartFrame": 0,
+                "isLoop": false
+              }
+            ],
+            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+            "RotationZ": 0.0,
+            "SizeX": 28.799999237060547,
+            "SizeY": 27.0,
+            "Texturetag": "Prototype_Component_Texture_Icon_Key_G",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 406.4000244140625,
+            "fY": 413.1000061035156,
+            "iPassIndex": 1,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          },
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
+            },
+            "Features": [
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 15,
+                "iStartFrame": 0,
+                "isLoop": false
+              }
+            ],
+            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+            "RotationZ": 0.0,
+            "SizeX": 28.799999237060547,
+            "SizeY": 27.0,
+            "Texturetag": "Prototype_Component_Texture_Icon_Key_R",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 406.4000244140625,
+            "fY": 441.0,
+            "iPassIndex": 1,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

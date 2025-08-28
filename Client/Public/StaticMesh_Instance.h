@@ -44,8 +44,6 @@ public:
 
 	_bool IsInAnyArea(const vector<_uint>& vecActiveAreaIds, const vector<_uint>& vecCheckAreaIds);
 
-private:
-	HRESULT SetEmissive();
 
 private:
 	wstring m_wsMap = {}; //어디에 속했는가(STATION? HOTEL?...)

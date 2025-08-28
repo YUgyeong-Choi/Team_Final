@@ -11,9 +11,6 @@ NS_END
 NS_BEGIN(Client)
 class CPlayerLamp : public CGameObject
 {
-	/* [ 모든 무기객체의 부모클래스입니다. ] */
-
-
 public:
 	typedef struct tagPlayerLampDesc : public CGameObject::GAMEOBJECT_DESC
 	{
@@ -46,7 +43,7 @@ protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 
 public: /* [ 소유자 (Unit) 을 가져온다. ] */
-	class CUnit* Get_Owner() const { return m_pOwner; }
+	class CPlayer* Get_Owner() const { return m_pOwner; }
 	void Clear_Owner() { m_pOwner = nullptr; }
 
 public: /* [ 램프의 소유여부 ] */
@@ -79,7 +76,9 @@ protected:              /* [ 컴포넌트 ] */
 	CModel*				m_pModelCom = { nullptr };
 	CShader*			m_pShaderCom = { nullptr };
 
-	class CUnit*		m_pOwner = { nullptr };
+	class CPlayer*		m_pOwner = { nullptr };
+
+	_bool				m_bDoOnce = {};
 
 public:
 	static CPlayerLamp* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -281,16 +281,16 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
 
-		m_isDetect = true;
+		m_fHp -= pWeapon->Get_CurrentDamage();
 
-		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
-
-		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() / 2.f);
+		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage());
 
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
+
+		m_isDetect = true;
 
 		if (m_fHp <= 0 && !m_isFatal)
 		{
@@ -301,12 +301,25 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
 			m_bUseLockon = false;
+
+			if (nullptr != m_pHPBar)
+				m_pHPBar->Set_RenderTime(0.f);
+			return;
+		}
+		else if (m_fHp <= 0 && m_isFatal)
+		{
+			CLockOn_Manager::Get_Instance()->Set_Off(this);
+			m_bUseLockon = false;
+
+			if (nullptr != m_pHPBar)
+				m_pHPBar->Set_RenderTime(0.f);
 			return;
 		}
 
 		if (!m_isCanGroggy)
 		{
-			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos)
+			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos ||
+				m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
 				return;
 
 			if (m_strStateName.find("Hit") != m_strStateName.npos)
@@ -344,7 +357,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 {
 	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
+	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos )
 	{
 		m_isLookAt = true;
 
@@ -390,11 +403,6 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 			if (m_fAwaySpeed <= 0.f)
 				m_fAwaySpeed = 0.f;
-
-
-
-
-
 
 
 			m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
@@ -491,7 +499,7 @@ HRESULT CButtler_Basic::Ready_Weapon()
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.125f, 0.f, 0.f };
-	Desc.InitScale = { 1.f, 0.6f, 1.f };
+	Desc.InitScale = { 1.f, 0.8f, 1.f };
 	Desc.iRender = 0;
 
 	Desc.szMeshID = TEXT("Buttler_Basic_Weapon");
@@ -499,7 +507,7 @@ HRESULT CButtler_Basic::Ready_Weapon()
 	Desc.vAxis = { 0.f,1.f,0.f,0.f };
 	Desc.fRotationDegree = { 90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
+	Desc.vPhsyxExtent = { 0.8f, 0.2f, 0.2f };
 
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();

@@ -77,7 +77,7 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 	{
 		if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 		{
-			pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
+			pPlayer->SetHitMotion(HITMOTION::NORMAL);
 			pPlayer->SetfReceiveDamage(5.f);
 			Set_bDead();
 		}
