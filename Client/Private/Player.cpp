@@ -247,7 +247,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		//m_pAnimator->SetTrigger("Hited");
 		m_pAnimator->SetTrigger("Fatal");
 	}
-
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
 
@@ -1332,34 +1331,100 @@ void CPlayer::Register_Events()
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
 {
-	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
-	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
+	//CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
+	//_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 
+	//if (bUseRoot)
+	//{
+	//	_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+	//	XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
+
+	//	_vector vScale, vRotQuat, vTrans;
+	//	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
+
+	//	XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
+
+	//	_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
+	//	_vector  finalDelta = XMVectorSetY(vWorldDelta, dy);
+
+	//	_float fDeltaMag = XMVectorGetX(XMVector3Length(finalDelta));
+	//	//if (fDeltaMag > m_fSmoothThreshold)
+	//	//{
+	//	//	_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
+	//	//	finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+	//	//}
+	//	//else
+	//	//{
+	//	//	finalDelta = vWorldDelta;
+	//	//}
+
+	//	if (fDeltaMag < 1e-6f)
+	//	{
+	//		m_PrevWorldDelta = XMVectorZero();
+	//		return;
+	//	}
+	//	m_PrevWorldDelta = finalDelta;
+
+	//	PxVec3 pos{
+	//		XMVectorGetX(finalDelta),
+	//		XMVectorGetY(finalDelta),
+	//		XMVectorGetZ(finalDelta)
+	//	};
+
+	//	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
+	//	PxControllerFilters filters;
+	//	filters.mFilterCallback = &filter; 
+
+	//	m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
+	//	SyncTransformWithController();
+	//	_vector vTmp{};
+	//	XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
+	//	_matrix newWorld =
+	//		XMMatrixScalingFromVector(vScale) *
+	//		XMMatrixRotationQuaternion(vRotQuat) *
+	//		XMMatrixTranslationFromVector(vTrans);
+	//	m_pTransformCom->Set_WorldMatrix(newWorld);
+	//}
+
+	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
+	_bool bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 	if (bUseRoot)
 	{
-		_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
-		_float4 		rootMotionQuat = m_pAnimator->GetRootRotationDelta();
+		_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
 
 		_vector vScale, vRotQuat, vTrans;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
-
 		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
 
+		// Y값 처리
 		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
-		vWorldDelta = XMVectorSetY(vWorldDelta, dy);
+		_vector finalDelta = XMVectorSetY(vWorldDelta, dy);
 
-		_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
-		_vector finalDelta;
-		if (fDeltaMag > m_fSmoothThreshold)
+		_float fDeltaMag = XMVectorGetX(XMVector3Length(finalDelta));
+
+		_float fMaxDeltaPerFrame =18.f * fTimeDelta;
+		if (fDeltaMag > fMaxDeltaPerFrame)
 		{
-			_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-			finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+			finalDelta = XMVector3Normalize(finalDelta) * fMaxDeltaPerFrame;
+			fDeltaMag = fMaxDeltaPerFrame;
 		}
-		else
+
+		if (fDeltaMag < 1e-6f)
 		{
-			finalDelta = vWorldDelta;
+			m_PrevWorldDelta = XMVectorZero();
+			return;
 		}
+
+		_float fSmoothThreshold = 0.3f; 
+		_float fSmoothSpeed = 8.0f;  
+
+		if (fDeltaMag > fSmoothThreshold)
+		{
+			_float alpha = clamp(fTimeDelta * fSmoothSpeed, 0.f, 1.f);
+			finalDelta = XMVectorLerp(m_PrevWorldDelta, finalDelta, alpha);
+		}
+
 		m_PrevWorldDelta = finalDelta;
 
 		PxVec3 pos{
@@ -1370,22 +1435,18 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 
 		CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 		PxControllerFilters filters;
-		filters.mFilterCallback = &filter; 
+		filters.mFilterCallback = &filter;
 
 		m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
 		SyncTransformWithController();
+
 		_vector vTmp{};
 		XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
-		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
-		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
 		_matrix newWorld =
 			XMMatrixScalingFromVector(vScale) *
 			XMMatrixRotationQuaternion(vRotQuat) *
 			XMMatrixTranslationFromVector(vTrans);
 		m_pTransformCom->Set_WorldMatrix(newWorld);
-
-		_float4 rot;
-		XMStoreFloat4(&rot, vNewRot);
 	}
 }
 

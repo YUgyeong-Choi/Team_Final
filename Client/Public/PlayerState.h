@@ -3019,8 +3019,11 @@ public:
 
         m_pOwner->m_pAnimator->SetBool("Charge", false);
 
+
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
+
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -3111,14 +3114,16 @@ public:
         if (m_pOwner->m_pLegionArm)
             m_pOwner->m_pLegionArm->SetisAttack(false);
 
-        m_pOwner->m_pAnimator->SetBool("Front", false);
-        m_pOwner->m_pAnimator->SetBool("Left", false);
-        m_pOwner->m_pAnimator->SetBool("Right", false);
-        m_pOwner->m_pAnimator->SetBool("Back", false);
+        m_pOwner->m_pAnimator->ResetParameters();
 
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
-        m_pOwner->m_pAnimator->SetBool("Move", false);
-        m_pOwner->m_pAnimator->SetBool("Run", false);
+        //m_pOwner->m_pAnimator->SetBool("Front", false);
+        //m_pOwner->m_pAnimator->SetBool("Left", false);
+        //m_pOwner->m_pAnimator->SetBool("Right", false);
+        //m_pOwner->m_pAnimator->SetBool("Back", false);
+
+        //m_pOwner->m_pAnimator->SetBool("Charge", false);
+        //m_pOwner->m_pAnimator->SetBool("Move", false);
+        //m_pOwner->m_pAnimator->SetBool("Run", false);
 
         /* [ 애니메이션 설정 ] */
         /* [ 어느방향에서 맞는지 설정하기 ] */
