@@ -10,8 +10,8 @@
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
 #include "UI_MonsterHP_Bar.h"
-#include "Static_Decal.h"
 #include <Oil.h>
+#include "Static_Decal.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -66,7 +66,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 	// 체력 일단 각 객체에 
 
-	
+
 
 	return S_OK;
 }
@@ -108,51 +108,51 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		static _int i = 0;
 		static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13 };
 
-	
+
 		/*cout << "현재 공격 인덱스 " << i << endl;*/
 		m_eCurAttackPattern = static_cast<EBossAttackPattern>(i + 1);
-		switch (m_eCurAttackPattern )
+		switch (m_eCurAttackPattern)
 		{
-		case CFuoco::SlamCombo:    
-			cout<<"SlamCombo"<<endl;
+		case CFuoco::SlamCombo:
+			cout << "SlamCombo" << endl;
 			break;
-		case CFuoco::Uppercut:     
-			cout<<"Uppercut" << endl;
+		case CFuoco::Uppercut:
+			cout << "Uppercut" << endl;
 			break;
 		case CFuoco::SwingAtkSeq:
 			cout << "SwingAtkSeq" << endl;
 			break;
-		case CFuoco::SwingAtk:    
-			cout<<"SwingAtk"<<endl;
+		case CFuoco::SwingAtk:
+			cout << "SwingAtk" << endl;
 			break;
-		case CFuoco::SlamFury:     
-			cout<<"SlamFury" << endl;
+		case CFuoco::SlamFury:
+			cout << "SlamFury" << endl;
 			break;
-		case CFuoco::FootAtk:     
-			cout<<"FootAtk" << endl;
+		case CFuoco::FootAtk:
+			cout << "FootAtk" << endl;
 			break;
 		case CFuoco::P2_FlameField:
-			cout<<"P2_FlameField" << endl;
+			cout << "P2_FlameField" << endl;
 			break;
 		case CFuoco::SlamAtk:
-			cout<<"SlamAtk" << endl;
+			cout << "SlamAtk" << endl;
 			break;
 		case CFuoco::StrikeFury:
-			cout<<"StrikeFury" << endl;
+			cout << "StrikeFury" << endl;
 			break;
 		case CFuoco::P2_FireOil:
-			cout<<"P2_FireOil" << endl;
+			cout << "P2_FireOil" << endl;
 			break;
 		case CFuoco::P2_FireBall:
-			cout<<"P2_FireBall" << endl;
+			cout << "P2_FireBall" << endl;
 			break;
 		case CFuoco::P2_FireFlame:
-			cout<<"P2_FireFlame" << endl;
+			cout << "P2_FireFlame" << endl;
 			break;
 		case CFuoco::P2_FireBall_B:
 			cout << "P2_FireBall_B" << endl;
 			break;
-		default:                  
+		default:
 			cout << "Unknown" << endl;;
 			break;
 		}
@@ -202,8 +202,8 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 			CEffectContainer::DESC desc = {};
 			desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Finger0"));
 			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(_vector{1.f, 0.f, 0.f, 0.f}, XMConvertToRadians(90.f)) *
-			XMMatrixTranslation(0.f, 0.f, 1.f));
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(_vector{ 1.f, 0.f, 0.f, 0.f }, XMConvertToRadians(90.f)) *
+				XMMatrixTranslation(0.f, 0.f, 1.f));
 
 			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameThrow_P1"), &desc) == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
@@ -221,7 +221,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 void CFuoco::Update(_float fTimeDelta)
 {
 #pragma region 영웅 데칼 테스트 코드
-	if (m_pGameInstance->Key_Down(DIK_0)) 
+	if (m_pGameInstance->Key_Down(DIK_0))
 	{
 		//데칼 테스트(영웅)
 		CStatic_Decal::DECAL_DESC DecalDesc = {};
@@ -255,11 +255,9 @@ void CFuoco::Update(_float fTimeDelta)
 		{
 			//return E_FAIL;
 		}
-			
+
 	}
 #pragma endregion
-
-
 
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
@@ -278,7 +276,7 @@ void CFuoco::Update(_float fTimeDelta)
 		}
 	}
 
-	__super::Update(fTimeDelta); 
+	__super::Update(fTimeDelta);
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
@@ -291,7 +289,7 @@ void CFuoco::Late_Update(_float fTimeDelta)
 	if (m_pGameInstance->Get_RenderCollider())
 	{
 		//m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
-		if(m_pPhysXActorComForArm->Get_ReadyForDebugDraw())
+		if (m_pPhysXActorComForArm->Get_ReadyForDebugDraw())
 			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForArm);
 		if (m_pPhysXActorComForFoot->Get_ReadyForDebugDraw())
 			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForFoot);
@@ -306,7 +304,7 @@ void CFuoco::Late_Update(_float fTimeDelta)
 HRESULT CFuoco::Ready_Components(void* pArg)
 {
 	if (FAILED(__super::Ready_Components(pArg)))
-		return E_FAIL;	
+		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXActorComForArm))))
 		return E_FAIL;
@@ -319,7 +317,7 @@ HRESULT CFuoco::Ready_Components(void* pArg)
 
 HRESULT CFuoco::Ready_Actor()
 {
-	if(FAILED(__super::Ready_Actor()))
+	if (FAILED(__super::Ready_Actor()))
 		return E_FAIL;
 	_vector S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
@@ -392,7 +390,7 @@ void CFuoco::Ready_BoneInformation()
 	{
 		m_pCannonBone = *it;
 	}
-	
+
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bone001-Fist01"); });
@@ -577,11 +575,11 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 	{
 		m_eCurrentState = EBossState::ATTACK;
-			if(iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
-				EffectSpawn_Active(15, true);
-			m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
+		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
+			EffectSpawn_Active(15, true);
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
 	}
-		break;
+	break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET):
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET2):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(100.f);
@@ -618,7 +616,7 @@ void CFuoco::UpdateSpecificBehavior()
 		return;
 	if (m_eCurAttackPattern == StrikeFury && m_bPlayerCollided)
 	{
-	//	EnableColliders(false);
+		//	EnableColliders(false);
 	}
 	if (m_eCurrentState != EBossState::ATTACK)
 	{
@@ -706,7 +704,7 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 		SetTurnTimeDuringAttack(1.5f, 1.3f);
 		m_eBossAttackType = EBossAttackType::STAMP;
 	case Client::CFuoco::FootAtk:
-	//	SetTurnTimeDuringAttack(1.f,1.5f);
+		//	SetTurnTimeDuringAttack(1.f,1.5f);
 		break;
 	case Client::CFuoco::SlamAtk:
 		SetTurnTimeDuringAttack(1.f);
@@ -819,7 +817,7 @@ void CFuoco::Register_Events()
 			{
 				if (auto pController = pPlayer->Get_Controller())
 				{
-				  pController->Remove_IgnoreActors(m_pPhysXActorComForFoot->Get_Actor());
+					pController->Remove_IgnoreActors(m_pPhysXActorComForFoot->Get_Actor());
 				}
 			}
 		});
@@ -879,7 +877,7 @@ void CFuoco::Register_Events()
 					m_pAnimator->Get_CurrentAnimController()->SetState(ENUM_CLASS(BossStateID::P2_ATK_FIRE_BALL_F));
 				}
 				m_iFireBallComboCount++;
-			
+
 			}
 			else
 			{
@@ -905,7 +903,7 @@ void CFuoco::Register_Events()
 		});
 
 	m_pAnimator->RegisterEventListener("BeginStrikeFuryCollisionFlag", [this]()
-		{		
+		{
 			if (m_pPhysXActorCom)
 			{
 				m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
@@ -981,7 +979,7 @@ void CFuoco::Ready_AttackPatternWeightForPhase1()
 
 void CFuoco::Ready_AttackPatternWeightForPhase2()
 {
-//	m_pAnimator->SetTrigger("Paralyzation");
+	//	m_pAnimator->SetTrigger("Paralyzation");
 	m_pAnimator->SetTrigger("Groggy");
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
@@ -1113,11 +1111,11 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		// 스피드가 항상 양수라서 도달 안하는 경우는 없을듯 (혹시나 나중에 넘지 못하는 각도라면 음수 체크 해야할듯)
 		// 델타 = v^4 - g*(g*x^2 + 2y*v^2) x는 dist 
 		_float fDeltaValue = (fVelocitySquared * fVelocitySquared) - G * ((G * fHorizontalDist * fHorizontalDist) + (2 * fYDiff * fVelocitySquared));
-		
+
 		_float fTanThetaLow = (fVelocitySquared - sqrtf(fDeltaValue)) / (G * fHorizontalDist); // 낮은 발사각의 해로 처리 
 		fLaunchAngle = atanf(fTanThetaLow); // 라디안 각도 계산
 
-	
+
 		_float fCostheta = cosf(fLaunchAngle);
 		_float fSintheta = sinf(fLaunchAngle);
 
@@ -1186,7 +1184,7 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		{
 			desc.vDir = vDirArray[i];
 			// 스피드 랜덤 패턴
-			_float fRandomSpeed =fSpeed * GetRandomFloat(0.9f, 1.5f);
+			_float fRandomSpeed = fSpeed * GetRandomFloat(0.9f, 1.5f);
 			desc.fSpeed = fRandomSpeed;
 			// 나중에 Oil로 바꾸기
 			if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Oil"), iLevelIndex, TEXT("Layer_Projectile"), &desc)))
@@ -1224,12 +1222,12 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;
-	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC| PxQueryFlag::ePREFILTER;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 	unordered_set<PxActor*> ignoreActors;
 	ignoreActors.insert(m_pPhysXActorCom->Get_Actor());
 	ignoreActors.insert(m_pPhysXActorComForArm->Get_Actor());
 	ignoreActors.insert(m_pPhysXActorComForFoot->Get_Actor());
-	
+
 	CIgnoreSelfCallback callback(ignoreActors);
 
 	for (_int i = 0; i < iRayCount; i++)
@@ -1248,7 +1246,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 				PxVec3 hitNormal = hit.block.normal;
 				CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-				if (pHitActor&& pHitActor->Get_Owner())
+				if (pHitActor && pHitActor->Get_Owner())
 				{
 					if (nullptr == pHitActor->Get_Owner())
 						return;
@@ -1257,7 +1255,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 					{
 						cout << "플레이어 화염방사 맞음" << endl;
 					}
-	
+
 					// 데미지 계산 나중에 생각해보기
 					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::BOSS_WEAPON);
 				}
@@ -1353,7 +1351,7 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2") || stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
 	{
-	
+
 		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
 
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -1394,7 +1392,7 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		MSG_BOX("이펙트 생성 실패함");
 }
 
-HRESULT CFuoco::EffectSpawn_Active(_int iPattern, _bool bActive,_bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
+HRESULT CFuoco::EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
 {
 	auto it = m_EffectMap.find(iPattern);
 	if (it == m_EffectMap.end())
@@ -1460,7 +1458,7 @@ HRESULT CFuoco::Ready_Effect()
 
 	CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_BellyFire"), static_cast<CEffectContainer*>(pEC));
 
-/**************************************************/
+	/**************************************************/
 	pEC = nullptr;
 	CEffectContainer::DESC HeadSmokeDesc = {};
 	HeadSmokeDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Head01"));
@@ -1569,7 +1567,7 @@ void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _
 	{
 		if (eColliderType == COLLIDERTYPE::PLAYER)
 		{
-				m_bPlayerCollided = true;
+			m_bPlayerCollided = true;
 		}
 	}
 }
@@ -1608,7 +1606,7 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		}
 		else if (fDot < 0.f)
 		{
-			pAnimator->SetInt("HitDir",0); // 앞에서 맞음
+			pAnimator->SetInt("HitDir", 0); // 앞에서 맞음
 		}
 		else
 		{
@@ -1705,5 +1703,5 @@ void CFuoco::Free()
 	Safe_Release(m_pPhysXActorComForFoot);
 
 	Safe_Release(m_pHPBar);
-	
+
 }
