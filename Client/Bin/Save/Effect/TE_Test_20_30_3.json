@@ -56,7 +56,7 @@
     "RenderGroup": 8,
     "ShaderPass": 0,
     "StartTrack": 0,
-    "Subdivisions": 4,
+    "Subdivisions": 15,
     "TextureTags": [
         "T_Mask_05_C_LGS",
         "trail_tex",

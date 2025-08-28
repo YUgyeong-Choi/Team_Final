@@ -31,7 +31,8 @@ public:
 	virtual HRESULT Render();
 
 	void Set_Loop(_bool bLoop) { m_bLoop = bLoop; }
-	void End_Effect(); // 무한 루프로 생성된 이펙트는 죽일 때 반드시 이 함수를 호출하시오 셋데드이런거안됨
+	// 무한 루프로 생성된 이펙트는 죽일 때 반드시 이 함수를 호출하시오 셋데드이런거안됨
+	void End_Effect(); 
 
 private:
 	vector<class CEffectBase*>        m_Effects;
