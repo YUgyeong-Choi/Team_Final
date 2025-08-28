@@ -360,6 +360,22 @@ bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir
 	_float smoothT = (sinf(t * XM_PI - XM_PIDIV2) + 1.f) * 0.5f; // 이징 In-Out
 	_vector vNewPos = m_fSpecialMoveStartPos + m_vSpecialMoveOffset * smoothT;
 
+
+	// 중력 적용
+	constexpr _float fGravity = -9.81f;
+	m_vGravityVelocity.y += fGravity * fTimeDelta;
+
+	// 현재 위치
+	_vector vCurPos = Get_State(STATE::POSITION);
+
+	// 수평 델타
+	_vector vDeltaH = vNewPos - XMVectorSetY(vCurPos, XMVectorGetY(vNewPos));
+	_float dx = XMVectorGetX(vDeltaH);
+	_float dz = XMVectorGetZ(vDeltaH);
+
+	// 최종 이동 벡터 (m_vVelocity에 저장)
+	PxVec3 pxMove = PxVec3(dx, m_vGravityVelocity.y * fTimeDelta, dz);
+
 	if (pPhysXController)
 	{
 		CIgnoreSelfCallback filter(pPhysXController->Get_IngoreActors());
@@ -372,8 +388,16 @@ bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir
 		_float fY = XMVectorGetY(vDelta);
 		_float fZ = XMVectorGetZ(vDelta);
 
-		PxVec3 pxMove = { fX, fY, fZ };
-		pPhysXController->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+		PxControllerCollisionFlags flags = pPhysXController->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
+
+		// 지면 충돌 체크
+		m_bOnGround = (flags & PxControllerCollisionFlag::eCOLLISION_DOWN);
+		if (m_bOnGround)
+			m_vGravityVelocity.y = 0.f;
+
+		// 컨트롤러 → 트랜스폼 싱크
+		const PxExtendedVec3 ex = pPhysXController->Get_Controller()->getPosition();
+		Set_State(STATE::POSITION, XMVectorSet((float)ex.x, (float)ex.y, (float)ex.z, 1.f));
 	}
 	else if (pNavigation)
 	{
