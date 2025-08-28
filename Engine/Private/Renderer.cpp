@@ -927,6 +927,7 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrixC", m_pGameInstance->Get_Light_ProjMatrix(SHADOW::SHADOWC))))
 		return E_FAIL;
 
+
 	_float fCascadeRefHeight = XMVectorGetY(m_pGameInstance->GetPlayerPos());
 	_float3 fHeightBand = _float3(1.0f, 1.5f, 3.0f);
 	m_pShader->Bind_RawValue("g_fCascadeRefHeight", &fCascadeRefHeight, sizeof(_float));

@@ -194,9 +194,6 @@ void CUI_Manager::Free()
 
 	m_UImap.clear();
 
-	for (auto& pPanel : m_pPanel)
-		Safe_Release(pPanel);
-
 	m_pPanel.clear();
 
 	Safe_Release(m_pGameInstance);
