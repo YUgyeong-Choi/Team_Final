@@ -467,7 +467,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_bSetSound = false;
 		if (m_bResetSoundTime)
 			m_fSetSoundTime = 0.f;
-		m_bSetCamera[9] = {};
+		for (int i = 0; i < 9; ++i)
+			m_bSetCamera[i] = false;
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
@@ -1024,19 +1025,22 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::FATAL:
 	{
 		m_fSetTime += fTimeDelta;
-		if (m_fSetTime > 0.f && !m_bSetCamera[0])
+		if (m_fSetTime > 0.2f && !m_bSetCamera[0])
 		{
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 10.f);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 0.1f, 0.2f);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.4f, 0.3f,100.f, 40.f, 0.05f);
 			m_bSetCamera[0] = true;
 		}
 		if (m_fSetTime > 1.f && !m_bSetCamera[1])
 		{
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 10.f);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 0.1f, 0.2f); 
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.4f, 0.3f, 100.f, 40.f, 0.05f);
 			m_bSetCamera[1] = true;
 		}
 		if (m_fSetTime > 2.f && !m_bSetCamera[2])
 		{
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.f, 8.f);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.2f, 0.1f, 0.4f, 0.2f);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.8f, 0.3f, 100.f, 40.f, 0.05f);
 			m_bSetCamera[2] = true;
 		}
 
