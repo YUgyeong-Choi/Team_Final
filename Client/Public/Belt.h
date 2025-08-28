@@ -34,6 +34,8 @@ public:
 
 	_bool Find_Item(const _wstring& strProtoTag);
 
+	virtual void Reset();
+
 private:
 	vector<CItem*> m_Items;
 	vector<CItem*> m_ViewItems;

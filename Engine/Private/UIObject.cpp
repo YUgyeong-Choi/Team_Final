@@ -87,6 +87,8 @@ HRESULT CUIObject::Initialize(void* pArg)
 
 	m_fRotation = pDesc->fRotation;
 
+	m_fDelay = pDesc->fDelay;
+
 	
 
 	D3D11_VIEWPORT			ViewportDesc{};

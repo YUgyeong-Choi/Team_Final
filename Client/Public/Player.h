@@ -72,6 +72,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual void Reset() override;
+
 public:
 	CPhysXController*	Get_Controller() { return m_pControllerCom; }
 	EPlayerState		Get_PlayerState() { return m_eCurrentState; }

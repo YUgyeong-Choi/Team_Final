@@ -62,6 +62,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 
 			CUI_Container::UI_CONTAINER_DESC eDesc{};
+			eDesc.fDelay = 0.5f;
 			eDesc.useLifeTime = true;
 			eDesc.fLifeTime = 8.f;
 			eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Lamp_Description.json");
@@ -69,7 +70,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lamp_Desc"), &eDesc);
 
 			CUI_Guide::UI_GUIDE_DESC eGuideDesc{};
-
+			eGuideDesc.fDelay = 1.25f;
 			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Belt.json") };
 			eGuideDesc.pTrigger = nullptr;
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
