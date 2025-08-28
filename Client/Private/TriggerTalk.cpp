@@ -7,6 +7,7 @@
 #include "TriggerItem.h"
 #include "Player.h"
 #include "UI_Container.h"
+#include "UI_Guide.h"
 
 CTriggerTalk::CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
@@ -67,8 +68,17 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lamp_Desc"), &eDesc);
 
+			CUI_Guide::UI_GUIDE_DESC eGuideDesc{};
+
+			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Belt.json") };
+			eGuideDesc.pTrigger = nullptr;
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
+
+			m_pPlayer->Add_Item(TEXT("Prototype_GameObject_Lamp"));
 			m_pPlayer->Get_PlayerLamp()->SetbLampVisible(true);
-			CUI_Manager::Get_Instance()->On_Panel();
+			
+			//CUI_Manager::Get_Instance()->On_Panel();
 		}
 			
 

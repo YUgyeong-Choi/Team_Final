@@ -1810,13 +1810,10 @@ HRESULT CPlayer::Ready_UIParameters()
 	m_pBelt_Up = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
 	m_pBelt_Down = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
 
-	auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
-
-	m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 0);
 
 	auto pGrinder = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Grinder"), nullptr);
 
-	m_pBelt_Down->Add_Item(static_cast<CItem*>(pGrinder), 1);
+	m_pBelt_Down->Add_Item(static_cast<CItem*>(pGrinder), 0);
 
 	auto pPortion = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"), nullptr);
 
@@ -1828,6 +1825,9 @@ HRESULT CPlayer::Ready_UIParameters()
 
 	Callback_DownBelt();
 	Callback_UpBelt();
+
+	//auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
+	//m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 1);
 
 	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), [this](_wstring eventName, void* data) {
 
@@ -2314,6 +2314,19 @@ _bool CPlayer::Find_Slot(const _wstring& strItemTag)
 
 
 	return false;
+}
+
+void CPlayer::Add_Item(const _wstring& strItemTag)
+{
+	if (strItemTag == L"Prototype_GameObject_Lamp")
+	{
+		auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
+
+		m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 1);
+
+		Callback_DownBelt();
+		Callback_UpBelt();
+	}
 }
 
 void CPlayer::Set_GrinderEffect_Active(_bool bActive)

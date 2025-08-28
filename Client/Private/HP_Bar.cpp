@@ -85,12 +85,7 @@ void CHP_Bar::Update(_float fTimeDelta)
 	{
 		m_fCurrentRatio = clamp(m_fCurrentRatio - fTimeDelta * 1.5f, m_fRatio, 1.f);
 	}
-
 	
-	
-	
-
-
 }
 
 void CHP_Bar::Late_Update(_float fTimeDelta)
