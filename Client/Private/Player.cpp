@@ -242,9 +242,10 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetInt("HitDir", 2);
-		m_pAnimator->SetBool("IsUp", true);
-		m_pAnimator->SetTrigger("Hited");
+		//m_pAnimator->SetInt("HitDir", 2);
+		//m_pAnimator->SetBool("IsUp", true);
+		//m_pAnimator->SetTrigger("Hited");
+		m_pAnimator->SetTrigger("Fatal");
 	}
 
 	/* [ 아이템 ] */

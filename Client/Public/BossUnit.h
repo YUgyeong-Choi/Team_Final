@@ -47,13 +47,13 @@ public:
 	const EBossAttackType& Get_BossAttackType() const { m_eBossAttackType; }
 	void EnterCutScene() { 
 
-		if (nullptr == m_pHPBar)
-		{
-			CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
-			eDesc.strName = TEXT("왕의 불꽃 푸오코");
-			eDesc.isBoss = true;
-			eDesc.pHP = &m_fHP;
-			eDesc.pIsGroggy = &m_isGroggy;
+		if (m_pHPBar)
+			return;
+		CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+		eDesc.strName = TEXT("왕의 불꽃 푸오코");
+		eDesc.isBoss = true;
+		eDesc.pHP = &m_fHP;
+		eDesc.pIsGroggy = &m_isGroggy;
 
 			m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
 				ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
@@ -136,10 +136,12 @@ protected:
 
 	virtual HRESULT Ready_Effect() { return S_OK; } // Initialize에서 Loop로 평생 돌릴 이펙트 ready
 	_bool CanGroggyActive() const { return m_bGroggyActive; } // 그로기를 만들 수 있는 상태인지
+	virtual void Reset() override;
 protected:
 	CNavigation* m_pNaviCom = { nullptr };
 
 	EBossState m_eCurrentState = EBossState::NONE;
+	EBossState m_ePrevState = EBossState::NONE;
 	_bool    m_bIsFirstAttack{ true }; // 컷씬하고 돌진 처리
 	_bool    m_bIsPhase2{ false };
 	_bool    m_bStartPhase2 = false;
@@ -162,6 +164,7 @@ protected:
 	_float   m_fSlideClamp = 0.2f;
 	_float   m_fWalkSpeed = 3.f;
 	_float   m_fRunSpeed = 6.f;
+	_float   m_fMaxRootMotionSpeed = 13.f;
 	_float   m_fRootMotionAddtiveScale =1.2f; // 루트 모션 추가 배율
 	_float   m_fChasingDistance = 1.5f; // 플레이어 추적 거리
 

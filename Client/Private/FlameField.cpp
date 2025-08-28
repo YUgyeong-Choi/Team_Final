@@ -61,9 +61,26 @@ void CFlameField::Priority_Update(_float fTimeDelta)
 
 void CFlameField::Update(_float fTimeDelta)
 {
+	if (m_bEnterPlayer)
+	{
+		if (m_fDamgeElapsedTime >= m_fDamageInterval)
+		{
+			if (m_pPlayer)
+			{
+				m_pPlayer->SetfReceiveDamage(2.f);
+				m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
+			}
+			m_fDamgeElapsedTime = 0.f;
+		}
+		else
+		{
+			m_fDamgeElapsedTime += fTimeDelta;
+		}
+	}
 	m_fExpandElapsedTime += fTimeDelta;
 	if (m_fExpandElapsedTime > m_fExpandTime + m_fRemainTime&& !m_bIsExpanded)
 	{
+		m_bEnterPlayer = false;
 		m_bIsExpanded = true;
 		m_fExpandElapsedTime = m_fExpandTime + m_fRemainTime; // 확장 완료
 	}
@@ -150,14 +167,31 @@ void CFlameField::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 	{
 		pOil->Explode_Oil();
 	}
+
+	if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		if (!m_pPlayer)
+		{
+			m_pPlayer = dynamic_cast<CPlayer*>(pOther);
+		}
+		m_bEnterPlayer = true;
+	}
 }
 
 void CFlameField::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		m_bEnterPlayer = true;
+	}
 }
 
 void CFlameField::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		m_bEnterPlayer = false;
+	}
 }
 
 HRESULT CFlameField::Effect_FlameField(const _fvector& vSpawnPos)

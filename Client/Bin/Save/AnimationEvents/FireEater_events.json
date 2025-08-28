@@ -29,7 +29,7 @@
                 },
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 26.0
+                    "Time": 21.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
@@ -87,11 +87,11 @@
                 },
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 26.0
+                    "Time": 17.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
-                    "Time": 34.0
+                    "Time": 30.0
                 },
                 {
                     "EventName": "OnGroundScratchEffect",
@@ -138,7 +138,7 @@
                 },
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 69.0
+                    "Time": 63.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
@@ -349,12 +349,32 @@
                 },
                 {
                     "EventName": "ColliderFootOff",
-                    "Time": 55.0
+                    "Time": 51.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 17.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 30.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 48.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 61.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 64.0
                 }
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_06_New",
@@ -396,7 +416,7 @@
                 },
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 18.0
+                    "Time": 19.0
                 },
                 {
                     "EventName": "OnSlamEffect",
@@ -412,8 +432,36 @@
             "Duration": 210.0,
             "Events": [
                 {
-                    "EventName": "CollidersOn",
-                    "Time": 163.0
+                    "EventName": "ColliderArmOn",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "BeginStrikeFuryCollisionFlag",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 155.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 166.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 58.0
+                },
+                {
+                    "EventName": "EndStrikeFuryCollisionFlag",
+                    "Time": 145.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 145.0
                 }
             ],
             "IsLoop": false,
@@ -445,7 +493,7 @@
             "ClipName": "AS_ATLBoss0_Skill_11_End",
             "Duration": 70.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -516,7 +564,7 @@
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_12_End",
@@ -607,7 +655,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_ATLBoss0_Skill_14",
@@ -625,8 +673,18 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_End",
             "Duration": 248.0,
+            "Events": [
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 3.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -650,6 +708,14 @@
                 {
                     "EventName": "CameraShake",
                     "Time": 252.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 0.0
+                },
+                {
+                    "EventName": "ColliderFootOff",
+                    "Time": 0.0
                 }
             ],
             "IsLoop": false,

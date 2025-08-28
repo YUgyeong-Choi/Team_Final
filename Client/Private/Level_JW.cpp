@@ -34,6 +34,8 @@ HRESULT CLevel_JW::Initialize()
 	if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
 		return E_FAIL;
 
+	while (ShowCursor(TRUE) < 0);
+
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::JW));
 	return S_OK;
