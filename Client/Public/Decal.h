@@ -19,6 +19,7 @@ public:
 		ARMT,
 		N,
 		BC,
+		MASK,
 		END
 	};
 
@@ -33,6 +34,10 @@ public:
 		);
 
 		wstring PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
+
+		//노말만 적용하는 데칼인지 분기하려고함
+		_bool bNormalOnly = { false };
+
 	} DECAL_DESC;
 
 protected:
@@ -47,6 +52,10 @@ public:
 	virtual void Update(_float fTimeDelta)override;
 	virtual void Late_Update(_float fTimeDelta)override;
 	virtual HRESULT Render()override;
+
+protected:
+	//노말만 그리는 데칼인가?
+	_bool m_bNormalOnly = { false };
 
 protected:
 	CShader* m_pShaderCom = { nullptr };

@@ -49,6 +49,7 @@ private:
 	void Render_Detail();
 	void Detail_Transform();
 	void Detail_Texture();
+	void Detail_RenderMode();
 
 private:
 	ImGuizmo::OPERATION m_currentOperation = { ImGuizmo::TRANSLATE };
