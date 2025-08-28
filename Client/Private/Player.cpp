@@ -1441,7 +1441,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
 		m_eHitedTarget = eHitedTarget::BOSS;
-		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
+		CGameObject* pBoss = dynamic_cast<CGameObject*>(pOther);
 		if (pBoss == nullptr)
 			return;
 

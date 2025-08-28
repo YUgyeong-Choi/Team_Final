@@ -652,7 +652,7 @@ void CBossUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType
     {
         if (auto pFrontTrigger = dynamic_cast<CPlayerFrontCollider*>(pOther))
         {
-            if (m_eCurrentState == EBossState::GROGGY && m_pAnimator)
+            if (m_bStartPhase2 == false &&m_eCurrentState == EBossState::GROGGY && m_pAnimator)
             {
                 if (auto pPlayer = pFrontTrigger->Get_Owner())
                 {

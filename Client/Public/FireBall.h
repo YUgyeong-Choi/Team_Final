@@ -5,6 +5,11 @@ NS_BEGIN(Client)
 class CFireBall final :public CProjectile
 {
 private:
+	enum ECollisionPriority
+	{
+		Oil, Player, Environment, End
+	};
+private:
 	CFireBall(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CFireBall(const CFireBall& Prototype);
 	virtual ~CFireBall() = default;
@@ -27,9 +32,11 @@ private:
 
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_Effect() override;
+	_bool ProcessCollisionPriority();
 private:
 	_float m_fDamge = 10.f;
 	vector<CGameObject*> m_CollisionObjects; // 데미지를 입은 오브젝트 리스트
+	array<CGameObject*, ECollisionPriority::End> m_CollisionPriority = {};
 public:
 	static CFireBall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

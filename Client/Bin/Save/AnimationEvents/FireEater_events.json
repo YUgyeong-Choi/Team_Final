@@ -432,16 +432,12 @@
             "Duration": 210.0,
             "Events": [
                 {
-                    "EventName": "CollidersOn",
-                    "Time": 163.0
+                    "EventName": "ColliderArmOn",
+                    "Time": 82.0
                 },
                 {
                     "EventName": "BeginStrikeFuryCollisionFlag",
                     "Time": 82.0
-                },
-                {
-                    "EventName": "EndStrikeFuryCollisionFlag",
-                    "Time": 177.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -458,6 +454,14 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 58.0
+                },
+                {
+                    "EventName": "EndStrikeFuryCollisionFlag",
+                    "Time": 145.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 145.0
                 }
             ],
             "IsLoop": false,
@@ -489,7 +493,7 @@
             "ClipName": "AS_ATLBoss0_Skill_11_End",
             "Duration": 70.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -673,6 +677,10 @@
                 {
                     "EventName": "ResetRootStep",
                     "Time": 25.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 3.0
                 }
             ],
             "IsLoop": false,
