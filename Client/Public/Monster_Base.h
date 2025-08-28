@@ -87,6 +87,8 @@ public: /* [ Setup 함수 ] */
 	
 protected:
 
+	//(영웅)halfExtents 몬스터 베이스에다가 넣어둘게요
+	_float3 m_vHalfExtents = {};
 
 	STATE_MONSTER	m_eCurrentState = {};
 	//CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
