@@ -51,7 +51,7 @@ _bool CUI_Manager::Find_Panel()
 	for (auto& pObj : list)
 	{
 
-		m_pPanel.push_back(static_cast<CUIObject*>(pObj));
+		m_pPanel.push_back(static_cast<CUI_Container*>(pObj));
 
 	}
 	
@@ -193,9 +193,6 @@ void CUI_Manager::Free()
 	
 
 	m_UImap.clear();
-
-	for (auto& pPanel : m_pPanel)
-		Safe_Release(pPanel);
 
 	m_pPanel.clear();
 

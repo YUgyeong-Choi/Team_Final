@@ -37,6 +37,7 @@ using Microsoft::WRL::ComPtr;
 #include <unordered_map>
 #include <cmath>
 #include <chrono>
+#include <queue>
 using namespace std;
 
 #include <fstream>

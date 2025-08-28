@@ -34,6 +34,7 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT Render_Shadow() { return S_OK; }
 
+	virtual void Reset() {};
 public:
 	void Compute_ViewZ(_vector pCamPos, const _vector* pTargetPos);
 	AABBBOX GetWorldAABB() const;
@@ -95,7 +96,7 @@ protected:
 
 	/* [ 라이트관련 디버그 ] */
 	_bool m_bLightOnOff = {};
-	_bool m_bLightDebug = { true };
+	_bool m_bLightDebug = {};
 
 	_bool m_isActive = { true };
 

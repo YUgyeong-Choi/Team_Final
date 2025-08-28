@@ -86,27 +86,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (!m_pPlayer)
 		return;
 
-	if (m_bTalkStart)
-	{
-		m_fDistance = LerpFloat(m_fDistance, 1.7f, fTimeDelta * 2.f);
-
-		if (fabsf(m_fDistance - 1.7f) < 0.01f)
-		{
-			m_fDistance = 1.7f;
-			m_bTalkStart = false;
-		}
-	}
-
-	if (m_bTalkEnd)
-	{
-		m_fDistance = LerpFloat(m_fDistance, 3.f, fTimeDelta * 2.f); 
-
-		if (fabsf(m_fDistance - 3.f) < 0.01f)
-		{
-			m_fDistance = 3.f;
-			m_bTalkEnd = false;
-		}
-	}
+	Update_LerpDistacne(fTimeDelta);
 	
 	if (m_bActive)
 		return;
@@ -240,6 +220,17 @@ void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool 
 	}
 }
 
+void CCamera_Orbital::Start_DistanceLerp(_float fTargetLerpDistance, _float fDistanceStartTime, _float fDistanceEndTime, _float fDistanceDelayTime)
+{
+	m_bDistanceLerp = true;
+	m_fDistanceTime = fDistanceStartTime + fDistanceEndTime;
+	m_fDistanceTarget = fTargetLerpDistance;
+	m_fDistnaceStartSpeed = fDistanceStartTime;
+	m_fDistnaceEndSpeed = fDistanceEndTime;
+	m_fDistanceDelayTime = fDistanceDelayTime;
+	m_fDistanceLerpElapsed = {};
+}
+
 void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 {
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
@@ -326,7 +317,7 @@ void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
 	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
 
-	m_pTransformCom->LookAt(vTargetLookPos);
+	m_pTransformCom->LookAt(m_vPrevLookTarget);
 
 	if (fabs(m_fYaw - m_fTargetYaw) < 0.001f && fabs(m_fPitch - m_fTargetPitch) < 0.001f)
 	{
@@ -432,6 +423,66 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 
 	// 카메라 설정
 	m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
+}
+
+void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
+{
+	if (m_bTalkStart)
+	{
+		m_fDistance = LerpFloat(m_fDistance, 1.7f, fTimeDelta * 2.f);
+
+		if (fabsf(m_fDistance - 1.7f) < 0.01f)
+		{
+			m_fDistance = 1.7f;
+			m_bTalkStart = false;
+		}
+	}
+
+	if (m_bTalkEnd)
+	{
+		m_fDistance = LerpFloat(m_fDistance, 3.f, fTimeDelta * 2.f);
+
+		if (fabsf(m_fDistance - 3.f) < 0.01f)
+		{
+			m_fDistance = 3.f;
+			m_bTalkEnd = false;
+		}
+	}
+
+	if (m_bDistanceLerp)
+	{
+		m_fDistanceLerpElapsed += fTimeDelta;
+
+		// 페이즈 1: 1.0 → m_fDistanceTarget
+		if (m_fDistanceLerpElapsed <= m_fDistnaceStartSpeed)
+		{
+			_float t = m_fDistnaceStartSpeed <= 0.f ? 1.f : (m_fDistanceLerpElapsed / m_fDistnaceStartSpeed);
+			m_fDistance = LerpFloat(3.f, m_fDistanceTarget, t);
+		}
+		// 페이즈 1이 끝났고, 아직 딜레이 시간 진행 중
+		else if (m_fDistanceLerpElapsed <= (m_fDistnaceStartSpeed + m_fDistanceDelayTime))
+		{
+			m_fDistanceDelayElapsed += fTimeDelta;
+
+			// 딜레이 구간에서는 값 고정 (m_fDistanceTarget 유지)
+			m_fDistance = m_fDistanceTarget;
+		}
+		// 페이즈 2: m_fDistanceTarget → 3.0
+		else if (m_fDistanceLerpElapsed <= (m_fDistnaceStartSpeed + m_fDistanceDelayTime + m_fDistnaceEndSpeed))
+		{
+			_float t = m_fDistnaceEndSpeed <= 0.f
+				? 1.f
+				: ((m_fDistanceLerpElapsed - (m_fDistnaceStartSpeed + m_fDistanceDelayTime)) / m_fDistnaceEndSpeed);
+
+			m_fDistance = LerpFloat(m_fDistanceTarget, 3.f, t);
+		}
+		else
+		{
+			// 끝
+			m_bDistanceLerp = false;
+			m_fDistance = 3.f;
+		}
+	}
 }
 
 

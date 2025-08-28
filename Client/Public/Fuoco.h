@@ -133,13 +133,7 @@ private:
 
     // 공견 패턴
     void SetupAttackByType(EBossAttackPattern ePattern);
-    void SetTurnTimeDuringAttack(_float fTime,_float fAddtivRotSpeed = 1.f)
-    {
-        if (m_fTurnTimeDuringAttack != 0.f)
-            return;
-		m_fTurnTimeDuringAttack = fTime;
-		m_fAddtiveRotSpeed = fAddtivRotSpeed;
-    }
+
 
     virtual void Register_Events() override;
 
@@ -182,7 +176,6 @@ private:
 	// 컴포넌트 관련
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForFoot = { nullptr };
-    CNavigation* m_pNaviCom = { nullptr };
 	CBone* m_pFistBone{ nullptr };
 	CBone* m_pFootBone{ nullptr };
 	CBone* m_pLeftBone{ nullptr };
@@ -241,10 +234,14 @@ private:
     };
 
     // 상수
+    const _int   LIMIT_FIREBALL_COMBO_COUNT = 4;
 	const _float ATTACK_DISTANCE_CLOSE = 0.f;
     const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
-    const _int LIMIT_FIREBALL_COMBO_COUNT = 3;
+    const _float DAMAGE_LIGHT = 4.f;   
+    const _float DAMAGE_MEDIUM = 7.f;  
+    const _float DAMAGE_HEAVY = 10.f; 
+    const _float DAMAGE_FURY = 15.f; 
 
    
 public:

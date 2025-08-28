@@ -121,6 +121,53 @@ BlendState BS_SoftAdd
     BlendOp = Add;
 };
 
+BlendState BS_GBuffer_RT7_RGBonly
+{
+    AlphaToCoverageEnable = FALSE;
+
+    BlendEnable[0] = FALSE;
+    RenderTargetWriteMask[0] = 0xF;
+    BlendEnable[1] = FALSE;
+    RenderTargetWriteMask[1] = 0xF;
+    BlendEnable[2] = FALSE;
+    RenderTargetWriteMask[2] = 0xF;
+    BlendEnable[3] = FALSE;
+    RenderTargetWriteMask[3] = 0xF;
+    BlendEnable[4] = FALSE;
+    RenderTargetWriteMask[4] = 0xF;
+    BlendEnable[5] = FALSE;
+    RenderTargetWriteMask[5] = 0xF;
+    BlendEnable[6] = FALSE;
+    RenderTargetWriteMask[6] = 0xF;
+
+    BlendEnable[7] = FALSE;
+    RenderTargetWriteMask[7] = 0x7;
+};
+
+BlendState BS_WriteAlphaOnly_RT7
+{
+    AlphaToCoverageEnable = FALSE;
+
+    BlendEnable[0] = FALSE;
+    RenderTargetWriteMask[0] = 0x0;
+    BlendEnable[1] = FALSE;
+    RenderTargetWriteMask[1] = 0x0;
+    BlendEnable[2] = FALSE;
+    RenderTargetWriteMask[2] = 0x0;
+    BlendEnable[3] = FALSE;
+    RenderTargetWriteMask[3] = 0x0;
+    BlendEnable[4] = FALSE;
+    RenderTargetWriteMask[4] = 0x0;
+    BlendEnable[5] = FALSE;
+    RenderTargetWriteMask[5] = 0x0;
+    BlendEnable[6] = FALSE;
+    RenderTargetWriteMask[6] = 0x0;
+
+    // RT7: ¾ËÆÄ¸¸ overwrite (A=0x8)
+    BlendEnable[7] = FALSE;
+    RenderTargetWriteMask[7] = 0x8;
+};
+
 BlendState BS_WBOIT
 {
     // RTV0 : Accumulation (additive)

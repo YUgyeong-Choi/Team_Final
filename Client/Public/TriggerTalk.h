@@ -48,6 +48,8 @@ private:
 
 	void Next_Talk();
 
+	virtual void Reset_DoOnce() { m_bDoOnce = false; m_bActive = true; }
+
 private:
 	class CPlayer* m_pPlayer = { nullptr };
 

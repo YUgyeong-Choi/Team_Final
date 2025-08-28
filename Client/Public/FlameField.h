@@ -49,15 +49,19 @@ private:
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	PxBoxGeometry m_ModifyFlame = PxBoxGeometry(0.5f, 0.5f, 0.5f);
+	_bool  m_bEnterPlayer = false;
 	_bool  m_bIsExpanded = false; // 불꽃이 확장되었는지 여부
 	_float m_fExpandRadius = 3.f; // 불꽃이 확장되는 반지름
 	_float m_fInitialRadius = 0.5f; // 불꽃의 초기 반지름
 	_float m_fExpandTime = 0.f; // 불꽃이 확장까지 걸리는 시간
 	_float m_fExpandElapsedTime = 0.f; // 불꽃이 확장된 시간
 	_float m_fRemainTime = 2.f;
+	_float m_fDamageInterval = 0.3f; // 데미지 간격(전체 시간에서의 비율로)
+	_float m_fDamgeElapsedTime = 0.f; // 누적 데미지 시간
 	vector<_float> m_SpawnEffectDistanceList; // 이펙트를 생성할 거리 리스트
 	vector<_float> m_LastSpawnDist; // 이펙트를 생성할 거리 리스트
-	vector<_float> m_MergeDist; // 36방향에서 레이를 쏴서 얻은 거리의 평균
+	vector<_float> m_MergeDist; // 72방향에서 레이를 쏴서 얻은 거리의 평균
+	CPlayer* m_pPlayer = nullptr;
 public:
 	static CFlameField* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -65,6 +65,10 @@ public:
 
 	//해당 레벨에 있는 레이어를 챙겨온다.
 	const map<const _wstring, class CLayer*>& Get_Layers(_uint iLevelIndex) const;
+
+	// For Pulling
+	HRESULT Push_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag);
+	CGameObject* Recycle_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -73,11 +77,10 @@ public:
 #ifdef _DEBUG
 	_bool Get_RenderCollider();
 	_bool Get_RenderMapCollider();
-	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
-
-	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
-	_vector GetPlayerPos() { return m_vPlayerPosition; }	
+	HRESULT Add_DebugComponent(class CComponent* pDebugCom);	
 #endif
+	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
+	_vector GetPlayerPos() { return m_vPlayerPosition; }
 #pragma endregion
 
 #pragma region TIMER_MANAGER
@@ -264,6 +267,13 @@ public:
 	void ToggleDebugArea();
 #pragma endregion
 
+#pragma region PULLING_MANAGER
+	void Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
+	void Use_PoolObject(const _wstring& wsLayerName);
+	void UseAll_PoolObjects(const _wstring& wsLayerName);
+	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -284,7 +294,7 @@ private:
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
 	class COctoTree_Manager*	m_pOctoTree_Manager = { nullptr };
 	class CArea_Manager*		m_pArea_Manager = { nullptr };
-
+	class CPulling_Manager*		m_pPulling_Manager = { nullptr };
 private:
 	_uint					m_iCurrentLevelIndex = 0;
 	float m_fTimeScale = 1.f; // 업데이트 속도

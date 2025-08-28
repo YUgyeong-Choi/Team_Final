@@ -5,6 +5,7 @@
 #include "UI_Manager.h"
 #include "ActionType_Icon.h"
 #include "Player.h"
+#include "TriggerBox.h"
 
 CUI_SelectWeapon::CUI_SelectWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUI_Container{pDevice, pContext}
@@ -106,6 +107,16 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
     if (m_pGameInstance->Key_Down(DIK_ESCAPE) && m_isSelectWeapon)
     {
         m_isSelectWeapon = false;
+    }
+
+    if (m_pGameInstance->Key_Down(DIK_ESCAPE) && !m_isSelectWeapon)
+    {
+        CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+        CUI_Manager::Get_Instance()->On_Panel();
+
+        static_cast<CTriggerBox*>(m_pTarget)->Reset_DoOnce();
+
+        Set_bDead();
     }
 
 

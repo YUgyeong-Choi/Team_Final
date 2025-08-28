@@ -50,6 +50,7 @@ Texture2D g_PBR_Depth;
 Texture2D g_PBR_Final;
 Texture2D g_PBR_UnitMask;
 Texture2D g_PBR_Emissive;
+Texture2D g_PBR_Glow;
 
 Texture2D g_VolumetricTexture;
 
@@ -125,6 +126,22 @@ float ValueNoise3D(float3 p)
     float nxy1 = lerp(nx01, nx11, w.y);
 
     return lerp(nxy0, nxy1, w.z);
+}
+float Hash12(float2 p)
+{
+    float h = dot(p, float2(127.1, 311.7));
+    return frac(sin(h) * 43758.5453);
+}
+float Noise2D(float2 p)
+{
+    float2 i = floor(p), f = frac(p);
+    // bilerp of 4 hashed corners
+    float a = Hash12(i);
+    float b = Hash12(i + float2(1, 0));
+    float c = Hash12(i + float2(0, 1));
+    float d = Hash12(i + float2(1, 1));
+    float2 u = f * f * (3.0 - 2.0 * f);
+    return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);
 }
 
 float SampleFogDensity(float3 worldPos, float time)
@@ -992,44 +1009,51 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     vector finalColor = vector(0.f, 0.f, 0.f, 0.f);
     
-    /* [ 기존 VTXMesh ] */
-    //vector vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
-    //vector vShade = g_ShadeTexture.Sample(DefaultSampler, In.vTexcoord);
-    //vector vSpecular = g_SpecularTexture.Sample(DefaultSampler, In.vTexcoord);
-    //Out.vBackBuffer = vDiffuse * vShade + vSpecular;
-    //finalColor = Out.vBackBuffer;
-    
     /* [ PBR 매쉬 ] */
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vVolumetric = g_VolumetricTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
     vector vEmissive = g_PBR_Emissive.Sample(DefaultSampler, In.vTexcoord);
+    vector vGlow = g_PBR_Glow.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
-        Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb, vPBRFinal.a);
+        Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
     finalColor = Out.vBackBuffer;
     
+    /* [ 유리 재질 효과 ] */
+    float fGlass = saturate(vEmissive.a);
     
-    /* [ 이펙트 + 글로우 ] */
-    //float fGlowIntensity = 3.f;
+    //1. FilterA
+    float fGlassOpacity = 0.45;
+    float fTintStrength = 0.08;
+    float fEdgeGain = 2.5f;
+    float fEdgeBoost = 0.05f;
+    float3 vGlassTint = float3(0.97, 0.99, 1.00);
+    float3 vTinted = lerp(finalColor.rgb, vGlassTint, fTintStrength);
+    finalColor.rgb = lerp(finalColor.rgb, vTinted, fGlass * fGlassOpacity);
     
-    //vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
-    //vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
-    ////EffectBlendGlow.rgb *= fGlowIntensity;
-    //// EffectBlendGlow.a *= 1.5f;
-    //EffectBlendDiffuse += EffectBlendGlow;
-    //finalColor += EffectBlendDiffuse;
+    //2. FilterB
+    float2 vGrad = float2(ddx(fGlass), ddy(fGlass));
+    float fEdge = saturate(length(vGrad) * fEdgeGain);
+    finalColor.rgb += fEdge * fEdgeBoost;
     
-     //if (vDiffuse.a < 0.1f && vPBRFinal.a < 0.1f && EffectDiffuse.a < 0.1f)
-     //   discard;   
-    //if (finalColor.a < 0.003f)
-    //    discard;
+    //3. FilterC
+    float fRefractStrength = 0.5f;
+    float fRefractionScale = 0.01f;
+    float fNoiseScale = 120.0f;
 
-    //데칼 입히기
-    //vector vDecalARMT = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
-    //vector vDecalBC = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
-    //finalColor.rgb = finalColor.rgb * (1 - vDecalARMT.a) + vDecalBC.rgb * vDecalARMT.a;
+    float fN = Noise2D(In.vTexcoord * fNoiseScale);
+    float2 vNg = float2(ddx(fN), ddy(fN));
+    float2 vDir = normalize(vNg + 1e-6.xx);
+    float2 vOff = vDir * fRefractionScale;
+
+    float3 vBehind = g_PBR_Final.Sample(LinearClampSampler, In.vTexcoord + vOff).rgb;
+    finalColor.rgb = lerp(finalColor.rgb, vBehind, fGlass * fRefractStrength);
+    
+    Out.vBackBuffer = finalColor;
+    
+    
     
     //데칼 볼륨메쉬(디버그)
     vector vDecalVolumeMesh = g_DecalVolumeMesh.Sample(DefaultSampler, In.vTexcoord);
@@ -1045,7 +1069,9 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
     Out.vBackBuffer.rgb += fogColor;
 
-    if (vUnitMask.r > 0.f) //배경이라면
+    
+    /* [ 여긴 그림자 로직입니다. ] */ 
+    if (vUnitMask.r > 0.f)
     {
         /* [ 뷰포트상의 깊이값 복원 ] */
         vector vPosition;
@@ -1066,7 +1092,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
         bool bHeightOK_B = abs(fPixelWorldY - g_fCascadeRefHeight) <= g_fHeightBand.y;
         bool bHeightOK_C = abs(fPixelWorldY - g_fCascadeRefHeight) <= g_fHeightBand.z;
         
-        // 1. Cascade A  ← 여기를 통째로 교체
+        // 1. Cascade A
         vector vLightViewA = mul(vPosition, g_LightViewMatrixA);
         float fCurrViewZA = vLightViewA.z;
         vector vLightPosA = mul(vLightViewA, g_LightProjMatrixA);
@@ -1124,7 +1150,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
             fShadowViewZC = vDepthC.y * 1000.f;
         }
 
-        // --- 깊이 비교 ---
+        /* [ 실제 그림자 적용 로직 ] */
         
         float fBiasViewZ = 0.5f;
         if (bHeightOK_A && bInsideA && (fCurrViewZA - fBiasViewZ > fShadowViewZA))
@@ -1135,27 +1161,16 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
             Out.vBackBuffer *= 0.5f;
     }
     
+    /* [ 이펙트 디퍼드 합성 ] */
     vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
     vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
     EffectBlendDiffuse += EffectBlendGlow;
     Out.vBackBuffer += EffectBlendDiffuse;
-    //EffectBlendGlow.rgb *= fGlowIntensity;
-    // EffectBlendGlow.a *= 1.5f;
     
     vector EffectBlendWBComposite = g_EffectBlend_WBComposite.Sample(DefaultSampler, In.vTexcoord);
     vector EffectBlendWBGlow = g_EffectBlend_WBGlow.Sample(DefaultSampler, In.vTexcoord);
     EffectBlendWBComposite += EffectBlendWBGlow;
     Out.vBackBuffer += EffectBlendWBComposite;
-    
-    /*****************/
-    //vector vAccum = g_WB_Accumulation.Sample(DefaultSampler, In.vTexcoord);
-    //float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
-    //vector Final;
-    
-    //Final = vAccum.rgb + Out.vBackBuffer.rgb * fReveal;
-    //Final.a = 1 - fReveal;
-
-    //Out.vBackBuffer += Final;
        
     if (Out.vBackBuffer.a < 0.003f)
         discard;

@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "LockOn_Manager.h"
 #include "Client_Calculation.h"
+#include "PlayerFrontCollider.h"
 #include <PhysX_IgnoreSelfCallback.h>
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -551,7 +552,7 @@ void CBossUnit::ApplyRootMotionDelta(_float fTimeDelta)
         return;
     }
 
-    _float fAnimSafeStep = 13.f * fTimeDelta; 
+    _float fAnimSafeStep = m_fMaxRootMotionSpeed * fTimeDelta;
     if (fDeltaMag > fAnimSafeStep)
         vWorldDelta = XMVector3Normalize(vWorldDelta) * fAnimSafeStep;
 
@@ -628,12 +629,46 @@ void CBossUnit::Ready_AttackPatternWeightForPhase2()
 {
 }
 
+void CBossUnit::Reset()
+{
+	m_fHP = m_fMaxHP;
+    m_eCurrentState = EBossState::CUTSCENE;
+	m_bIsPhase2 = false;
+	m_bIsFirstAttack = true;
+	m_fGroggyGauge = 0.f;
+	m_bGroggyActive = false;
+	m_bCutSceneOn = false;
+	Safe_Release(m_pHPBar);
+}
+
 void CBossUnit::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+    
 }
 
 void CBossUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+    if (eColliderType == COLLIDERTYPE::TRIGGER) // 이게 아마 플레이어의 프론트 콜라이더
+    {
+        if (auto pFrontTrigger = dynamic_cast<CPlayerFrontCollider*>(pOther))
+        {
+            if (m_bStartPhase2 == false &&m_eCurrentState == EBossState::GROGGY && m_pAnimator)
+            {
+                if (auto pPlayer = pFrontTrigger->Get_Owner())
+                {
+                    if (pPlayer->Get_PlayerState() == EPlayerState::WEAKATTACKA ||
+                        pPlayer->Get_PlayerState() == EPlayerState::WEAKATTACKB)
+                    {
+                          m_pAnimator->SetTrigger("Fatal");
+						  m_fGroggyEndTimer = 0.f;
+						  m_bGroggyActive = false;
+						  m_fGroggyGauge = 0.f;
+						  cout << "Boss Fatal Attack" << endl;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void CBossUnit::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -680,11 +715,11 @@ void CBossUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         {
         case Client::EPlayerState::CHARGEA:
         case Client::EPlayerState::CHARGEB:
-            m_fGroggyGauge += 0.1f;
+            m_fGroggyGauge += 0.4f;
             if (m_fGroggyGauge >= m_fGroggyThreshold && !m_bGroggyActive)
             {
                 m_bGroggyActive = true;                  // 화이트 게이지 시작
-                m_fGroggyEndTimer = m_fGroggyTimer;      // 3초 유지
+                m_fGroggyEndTimer = m_fGroggyTimer;      
                 m_fGroggyGauge = m_fGroggyThreshold;
                 break;
             }

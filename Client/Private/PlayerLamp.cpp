@@ -4,7 +4,7 @@
 #include "Effect_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
-#include "Unit.h"
+#include "Player.h"
 
 CPlayerLamp::CPlayerLamp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -36,7 +36,7 @@ HRESULT CPlayerLamp::Initialize(void* pArg)
 	m_szMeshID = pDesc->szMeshID;
 	m_iRender = pDesc->iRender;
 	m_szName = pDesc->szName;
-	m_pOwner = dynamic_cast<CUnit*>(pDesc->pOwner);
+	m_pOwner = dynamic_cast<CPlayer*>(pDesc->pOwner);
 	m_eMeshLevelID = pDesc->eMeshLevelID;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -86,20 +86,48 @@ HRESULT CPlayerLamp::Render()
 	if (FAILED(Bind_Shader()))
 		return E_FAIL;
 
-	_float fEmissive = 0.f;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
-		return E_FAIL;
-
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		_bool bIsDiffuse = true;
+		_bool bIsNormal = true;
+		_bool bIsARM = true;
+		_bool bIsEmissive = true;
+
+		_float fEmissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+			return E_FAIL;
+		_float fGlass = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlass", &fGlass, sizeof(_float))))
+			return E_FAIL;
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
-			return E_FAIL;
+			bIsDiffuse = false;
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
-			return E_FAIL;
+			bIsNormal = false;
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
-			return E_FAIL;
+			bIsARM = false;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Emissive", i, aiTextureType_EMISSIVE, 0)))
+			bIsEmissive = false;
+
+		_bool bIsGlass = m_pModelCom->HasTexture(i, aiTextureType_AMBIENT);
+		
+		/* [ 디퓨즈 , 이미시브, 글래스 다 없으면 생략하라 ] */
+		if (!bIsDiffuse && !bIsEmissive && !bIsGlass)
+			continue;
+
+		/* [ 이미시브 맵이 있다면 사용하라 ] */
+		if (bIsEmissive)
+		{
+			//if (m_pOwner->getitem)
+			_float fEmissive = 1.f;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+				return E_FAIL;
+		}
+
 
 		m_pShaderCom->Begin(0);
 

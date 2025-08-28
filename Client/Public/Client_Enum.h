@@ -10,7 +10,7 @@ namespace Client
 		HITED, FATAL, END
 	};
 
-	enum class HITMOTION { KNOCKBACK, UP, FURY_STAMP, STAMP,NORMAL, END }; //필요한거 추가하시오
+	enum class HITMOTION { NONE_MOTION,STRONG_KNOCKBACK, KNOCKBACK, UP, FURY_STAMP, STAMP,NORMAL, END }; //필요한거 추가하시오
 
 	enum class LEVEL { STATIC, LOADING, LOGO, KRAT_CENTERAL_STATION, KRAT_HOTEL, YG, CY, GL, DH, YW, JW,END };
 
@@ -105,7 +105,8 @@ namespace Client
 	enum class TRIGGERUI_TYPE
 	{
 		STATIONTITLE,
-		GUARD
+		GUARD,
+		LOCK
 	};
 
 #pragma endregion

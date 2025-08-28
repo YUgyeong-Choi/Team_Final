@@ -1342,9 +1342,6 @@
     <ClCompile Include="..\private\Monster_Base.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Weapon_Monster.cpp">
-      <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\NavTool.cpp">
       <Filter>01.Levels\LevelYW\YWTool\NavTool</Filter>
     </ClCompile>
@@ -1477,6 +1474,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Fatal_Icon.cpp">
       <Filter>02.GameObjects\99.UI\World\Fatal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon_Monster.cpp">
+      <Filter>02.GameObjects\03.Weapon\00.Bayonet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

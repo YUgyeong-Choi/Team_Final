@@ -70,7 +70,7 @@
             ],
             "ProtoTag": "Prototype_GameObject_UI_Legion_Bar",
             "RotationZ": 0.0,
-            "SizeX": 224.0,
+            "SizeX": 250.0,
             "SizeY": 27.0,
             "Texturetag": "Prototype_Component_Texture_Bar_Border",
             "fAlpha": 1.0,

@@ -224,8 +224,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 
-	static _int i = 0; // <- 이거 머임?
-
 	/* [ 이곳은 실험실입니다. ] */
 	if(KEY_DOWN(DIK_Y))
 	{
@@ -242,11 +240,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetInt("HitDir", 2);
-		m_pAnimator->SetBool("IsUp", true);
-		m_pAnimator->SetTrigger("Hited");
+		
 	}
-
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
 
@@ -457,14 +452,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_strPrevStateName = stateName;
 		m_fMoveTime = 0.f;
 		m_fSetTime = 0.f;
-		if(m_bResetSoundTime)
-			m_fSetSoundTime = 0.f;
 		m_iMoveStep = 0;
 		m_bMove = false;
 		m_bMoveReset = false;
 		m_bSetOnce = false;
 		m_bSetTwo = false;
+
 		m_bSetSound = false;
+		if (m_bResetSoundTime)
+			m_fSetSoundTime = 0.f;
+		for (int i = 0; i < 9; ++i)
+			m_bSetCamera[i] = false;
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
@@ -1020,6 +1018,26 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::FATAL:
 	{
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.2f && !m_bSetCamera[0])
+		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 0.1f, 0.2f);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.4f, 0.3f,100.f, 40.f, 0.05f);
+			m_bSetCamera[0] = true;
+		}
+		if (m_fSetTime > 1.f && !m_bSetCamera[1])
+		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 0.1f, 0.2f); 
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.4f, 0.3f, 100.f, 40.f, 0.05f);
+			m_bSetCamera[1] = true;
+		}
+		if (m_fSetTime > 2.f && !m_bSetCamera[2])
+		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.2f, 0.1f, 0.4f, 0.2f);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.8f, 0.3f, 100.f, 40.f, 0.05f);
+			m_bSetCamera[2] = true;
+		}
+
 		RootMotionActive(fTimeDelta);
 		break;
 	}
@@ -1047,11 +1065,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::GUARD_HIT:
 	{
-		if (m_eHitedTarget == eHitedTarget::MONSTER)
+		if (m_eHitedTarget == eHitedTarget::MONSTER || m_eHitedTarget == eHitedTarget::ARROW)
 		{
 			//가드 밀림 여부
 			_float  m_fTime = 0.1f;
-			_float  m_fDistance = 0.3f;
+			_float  m_fDistance = 0.15f;
 
 			if (!m_bMove)
 			{
@@ -1083,9 +1101,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bMove)
 		{
-			_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
-			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
-			SyncTransformWithController();
+			if (m_pHitedTarget)
+			{
+				_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
+
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
 		}
 		break;
 	}
@@ -1094,9 +1116,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		_float  m_fTime = 0.1f;
 		_float  m_fDistance = 2.f;
 
-		if (!m_bMove)
+		if (m_pHitedTarget)
 		{
-			_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
+			_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
+
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
@@ -1303,38 +1326,120 @@ void CPlayer::Register_Events()
 		{
 			Use_Item();
 		});
+
+	m_pAnimator->RegisterEventListener("ReceiveDamageToFatalTarget", [this]()
+		{
+			if (m_pWeapon && m_pFatalTarget)
+			{
+				m_pWeapon->Clear_CollisionObj();
+				++m_iFatalAttackCount;
+				m_pWeapon->SetDamageRatio(0.5f + m_iFatalAttackCount);
+				m_pFatalTarget->ReceiveDamage(m_pWeapon, COLLIDERTYPE::PLAYER_WEAPON);
+				m_pWeapon->SetDamageRatio(1.f);
+
+			}
+
+			if (m_iFatalAttackCount == 3)
+				m_iFatalAttackCount = 0;
+		});
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
 {
-	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
-	_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
+	//CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
+	//_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 
+	//if (bUseRoot)
+	//{
+	//	_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
+	//	XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
+
+	//	_vector vScale, vRotQuat, vTrans;
+	//	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
+
+	//	XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
+
+	//	_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
+	//	_vector  finalDelta = XMVectorSetY(vWorldDelta, dy);
+
+	//	_float fDeltaMag = XMVectorGetX(XMVector3Length(finalDelta));
+	//	//if (fDeltaMag > m_fSmoothThreshold)
+	//	//{
+	//	//	_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
+	//	//	finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+	//	//}
+	//	//else
+	//	//{
+	//	//	finalDelta = vWorldDelta;
+	//	//}
+
+	//	if (fDeltaMag < 1e-6f)
+	//	{
+	//		m_PrevWorldDelta = XMVectorZero();
+	//		return;
+	//	}
+	//	m_PrevWorldDelta = finalDelta;
+
+	//	PxVec3 pos{
+	//		XMVectorGetX(finalDelta),
+	//		XMVectorGetY(finalDelta),
+	//		XMVectorGetZ(finalDelta)
+	//	};
+
+	//	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
+	//	PxControllerFilters filters;
+	//	filters.mFilterCallback = &filter; 
+
+	//	m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
+	//	SyncTransformWithController();
+	//	_vector vTmp{};
+	//	XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
+	//	_matrix newWorld =
+	//		XMMatrixScalingFromVector(vScale) *
+	//		XMMatrixRotationQuaternion(vRotQuat) *
+	//		XMMatrixTranslationFromVector(vTrans);
+	//	m_pTransformCom->Set_WorldMatrix(newWorld);
+	//}
+
+	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
+	_bool bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 	if (bUseRoot)
 	{
-		_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
-		_float4 		rootMotionQuat = m_pAnimator->GetRootRotationDelta();
+		_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
 
 		_vector vScale, vRotQuat, vTrans;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
-
 		XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
 
+		// Y값 처리
 		_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
-		vWorldDelta = XMVectorSetY(vWorldDelta, dy);
+		_vector finalDelta = XMVectorSetY(vWorldDelta, dy);
 
-		_float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
-		_vector finalDelta;
-		if (fDeltaMag > m_fSmoothThreshold)
+		_float fDeltaMag = XMVectorGetX(XMVector3Length(finalDelta));
+
+		_float fMaxDeltaPerFrame =18.f * fTimeDelta;
+		if (fDeltaMag > fMaxDeltaPerFrame)
 		{
-			_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-			finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+			finalDelta = XMVector3Normalize(finalDelta) * fMaxDeltaPerFrame;
+			fDeltaMag = fMaxDeltaPerFrame;
 		}
-		else
+
+		if (fDeltaMag < 1e-6f)
 		{
-			finalDelta = vWorldDelta;
+			m_PrevWorldDelta = XMVectorZero();
+			return;
 		}
+
+		_float fSmoothThreshold = 0.3f; 
+		_float fSmoothSpeed = 8.0f;  
+
+		if (fDeltaMag > fSmoothThreshold)
+		{
+			_float alpha = clamp(fTimeDelta * fSmoothSpeed, 0.f, 1.f);
+			finalDelta = XMVectorLerp(m_PrevWorldDelta, finalDelta, alpha);
+		}
+
 		m_PrevWorldDelta = finalDelta;
 
 		PxVec3 pos{
@@ -1345,22 +1450,18 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 
 		CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 		PxControllerFilters filters;
-		filters.mFilterCallback = &filter; 
+		filters.mFilterCallback = &filter;
 
 		m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
 		SyncTransformWithController();
+
 		_vector vTmp{};
 		XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
-		_vector vRotDelta = XMLoadFloat4(&rootMotionQuat);
-		_vector vNewRot = XMQuaternionMultiply(vRotDelta, vRotQuat);
 		_matrix newWorld =
 			XMMatrixScalingFromVector(vScale) *
 			XMMatrixRotationQuaternion(vRotQuat) *
 			XMMatrixTranslationFromVector(vTrans);
 		m_pTransformCom->Set_WorldMatrix(newWorld);
-
-		_float4 rot;
-		XMStoreFloat4(&rot, vNewRot);
 	}
 }
 
@@ -1403,6 +1504,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		if (pWeapon == nullptr)
 			return;
 
+
 		if (pWeapon->Find_CollisonObj(this, eColliderType))
 			return;
 
@@ -1411,6 +1513,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
 		CUnit* pUnit = pWeapon->Get_Owner();
+		m_pHitedTarget = pUnit;
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
@@ -1439,17 +1542,33 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 	}
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
-		m_eHitedTarget = eHitedTarget::BOSS;
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
-		if (pBoss == nullptr)
-			return;
+		if (pBoss)
+		{
+			m_eHitedTarget = eHitedTarget::BOSS;
+			m_pHitedTarget = pBoss;
 
-		//0. 필요한 정보를 수집한다.
-		CalculateDamage(pOther, eColliderType);
-		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
+			//0. 필요한 정보를 수집한다.
+			CalculateDamage(pOther, eColliderType);
+			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
 
-		m_vHitNormal = vOtherPos - vPlayerPos;
+			m_vHitNormal = vOtherPos - vPlayerPos;
+		}
+		else
+		{
+			m_eHitedTarget = eHitedTarget::ARROW;
+
+			CGameObject* pArrow = dynamic_cast<CGameObject*>(pOther);
+			m_pHitedTarget = pArrow;
+
+			//0. 필요한 정보를 수집한다.
+			CalculateDamage(pOther, eColliderType);
+			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vOtherPos = pArrow->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+			m_vHitNormal = vOtherPos - vPlayerPos;
+		}
 
 		//1. 애니메이션 상태를 히트로 바꾼다.
 
@@ -1499,9 +1618,20 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 		pWeapon->Add_CollisonObj(this);
 
+		CUnit* pUnit = pWeapon->Get_Owner();
+		m_pHitedTarget = pUnit;
+
+		CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pUnit);
+
+		if (nullptr == pMonster)
+			return;
+
+		if (pMonster->Get_CurrentHp() <= 0)
+			return;
+
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
-		CUnit* pUnit = pWeapon->Get_Owner();
+		
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
@@ -1533,6 +1663,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
 		if (pBoss == nullptr)
 			return;
+
+		m_pHitedTarget = pBoss;
 
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
@@ -1734,13 +1866,10 @@ HRESULT CPlayer::Ready_UIParameters()
 	m_pBelt_Up = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
 	m_pBelt_Down = static_cast<CBelt*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Belt"), nullptr));
 
-	auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
-
-	m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 0);
 
 	auto pGrinder = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Grinder"), nullptr);
 
-	m_pBelt_Down->Add_Item(static_cast<CItem*>(pGrinder), 1);
+	m_pBelt_Down->Add_Item(static_cast<CItem*>(pGrinder), 0);
 
 	auto pPortion = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Portion"), nullptr);
 
@@ -1752,6 +1881,9 @@ HRESULT CPlayer::Ready_UIParameters()
 
 	Callback_DownBelt();
 	Callback_UpBelt();
+
+	//auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
+	//m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 1);
 
 	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), [this](_wstring eventName, void* data) {
 
@@ -1944,6 +2076,7 @@ void CPlayer::GetWeapon()
 	m_pAnimator->SetTrigger("EquipWeapon");
 	m_pAnimator->ApplyOverrideAnimController("TwoHand");
 	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	m_bWeaponEquipped = true;
 	m_bWalk = true;
 }
 
@@ -2239,6 +2372,19 @@ _bool CPlayer::Find_Slot(const _wstring& strItemTag)
 	return false;
 }
 
+void CPlayer::Add_Icon(const _wstring& strItemTag)
+{
+	if (strItemTag == L"Prototype_GameObject_Lamp")
+	{
+		auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
+
+		m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 1);
+
+		Callback_DownBelt();
+		Callback_UpBelt();
+	}
+}
+
 void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 {
 	if (true == bActive)
@@ -2337,6 +2483,7 @@ HRESULT CPlayer::UpdateShadowCamera()
 		return E_FAIL;
 
 	m_pGameInstance->SetPlayerPos(vPlayerPos);
+
 	return S_OK;
 }
 

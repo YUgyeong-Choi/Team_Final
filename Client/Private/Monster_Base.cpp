@@ -147,7 +147,8 @@ void CMonster_Base::Late_Update(_float fTimeDelta)
 	{
 		// 더 좋은 방법 있으면 바꾸기
 		if (this == CLockOn_Manager::Get_Instance()->Get_Target())
-			m_pHPBar->Set_RenderTime(2.f);
+			m_pHPBar->Set_RenderTime(0.5f);
+		
 
 
 		m_pHPBar->Late_Update(fTimeDelta);
@@ -216,9 +217,6 @@ void CMonster_Base::Reset()
 	m_isCollisionPlayer = {};
 	m_isFatal = {};
 	m_isGroogyLoop = {};
-
-	m_bActive = true;
-	m_bPlayOnce = false;
 }
 
 HRESULT CMonster_Base::Ready_Components(void* pArg)
@@ -455,17 +453,26 @@ _bool CMonster_Base::Check_Detect()
 	if (nullptr == m_pPlayer)
 		return false;
 
- 	if (true == m_isDetect)
+	if (true == m_isDetect)
 		return true;
 
 	_vector vDir = {};
 	vDir = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 
+
+	// 보는 방향 벡터가 다른거부터 체크
+	if (!m_isDetect)
+	{
+		if (XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK)),
+			XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)))) > 0)
+			return false;
+	}
+
+
 	if (XMVectorGetX(XMVector3Length(vDir)) < m_fDetectDist)
 	{
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
-		m_bPlayOnce = true;
 		
 		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		return true;

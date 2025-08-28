@@ -258,39 +258,50 @@ PS_OUT PS_MAIN_BUTTON(PS_IN In)
 PS_OUT PS_MAIN_HPBAR(PS_IN In)
 {
     PS_OUT Out;
- 
-    Out.vColor = float4(0.f, 0.f, 0.f, 0.f);
-    
-    vector vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
-    
-    if (vBorder.a > 0.1f)
+    Out.vColor = float4(0, 0, 0, 0);
+
+    float4 vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    float2 highlightUV;
+// 축소하고 가운데 정렬
+    highlightUV.x = (In.vTexcoord.x - 0.5f) * 0.9f + 0.5f;
+    highlightUV.y = (In.vTexcoord.y - 0.5f) * 0.5f + 0.5f;
+
+    float4 vHighlight = (g_Groggy == 1.f) ? g_HighlightTexture.Sample(DefaultSampler, highlightUV) : float4(0, 0, 0, 0);
+
+    float fMarginX = 0.085f;
+    float fMarginY = 0.25f;
+
+// 채워질 수 있는 X 범위
+    float minX = fMarginX;
+    float maxX = 1 - 1.15f * fMarginX;
+
+// 비율에 따라 실제 채워지는 위치
+    float filledX = minX + (maxX - minX) * g_BarRatio;
+
+    bool isInsideX = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
+    bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY ;
+
+
+    if (vHighlight.a > 0.0001f)
     {
-        Out.vColor = vBorder;
+        Out.vColor += vHighlight * 2.f;
+    }
+
+    if (vBorder.a > 0.001f)
+    {
+        Out.vColor += vBorder * 0.8f;
         return Out;
     }
-    
-    float fMarginX = 0.06f;
-    float fMarginY = 0.3f;
-    bool isInsideX;
-    
-    if (g_BarRatio > 1 - 1.2 * fMarginX)
-        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= 1 - 1.2 * fMarginX;
-    else
-        isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio;
-    bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
-  
+
     if (isInsideX && isInsideY)
     {
         vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
-        
         Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
-
-        
-
     }
     else
     {
-        discard;
+        if (isInsideY)
+            Out.vColor += vHighlight * 2.f;
     }
 
     return Out;
@@ -301,7 +312,7 @@ PS_OUT PS_MAIN_MANABAR(PS_IN In)
     PS_OUT Out;
 
     float unitCount = g_ManaDesc.x; // 총 칸 수
-    float margin = g_ManaDesc.y; // 칸 사이 여백 (0~0.5)
+    float margin = g_ManaDesc.y * 1.2f; // 칸 사이 여백 (0~0.5)
     int fullUnits = (int) g_ManaDesc.z; // 꽉 찬 칸 개수
     float remainRatio = g_ManaDesc.w; // 마지막 칸의 비율 (0~1)
 
@@ -358,7 +369,7 @@ PS_OUT PS_MAIN_MANABAR(PS_IN In)
     }
     else if (unitIndex == fullUnits)
     {
-        fillAmount = fillStartX + remainRatio * (fillEndX - fillStartX);
+        fillAmount = fillStartX + remainRatio * (fillEndX - fillStartX) * 0.9f;
     }
     else
     {
@@ -456,8 +467,12 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
     vector vBack = g_BackgroundTexture.Sample(DefaultSampler, In.vTexcoord);
 
     
-    float fMarginX = 0.06f;
-    float fMarginY = 0.3f;
+    float fMarginX = 0.11f;
+    float fMarginY = 0.30f;
+
+// 채워질 수 있는 X 범위
+    float minX = fMarginX;
+    float maxX = 1 - 1.2f * fMarginX;
 
     // Y 범위 밖이면 버림
     if (In.vTexcoord.y < fMarginY || In.vTexcoord.y > 1.0f - fMarginY)
@@ -513,12 +528,12 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
 
     float4 vHighlight = (g_Groggy == 1.f) ? g_HighlightTexture.Sample(DefaultSampler, highlightUV) : float4(0, 0, 0, 0);
 
-    float fMarginX = 0.06f;
-    float fMarginY = 0.3f;
+    float fMarginX = 0.09f;
+    float fMarginY = 0.25f;
 
 // 채워질 수 있는 X 범위
     float minX = fMarginX;
-    float maxX = 1 - 1.2f * fMarginX;
+    float maxX = 1 - 1.05f * fMarginX;
 
 // 비율에 따라 실제 채워지는 위치
     float filledX = minX + (maxX - minX) * g_BarRatio;
@@ -529,12 +544,14 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
 
     if (vHighlight.a > 0.0001f)
     {
-        Out.vColor += vHighlight * 2.f;
+        Out.vColor += vHighlight * 2.f ;
     }
-
-    if (vBorder.a > 0.001f)
+    
+    if (vBorder.a > 0.1f)
     {
-        Out.vColor += vBorder;
+        if ((In.vTexcoord.x >= minX * 1.0375f) && (In.vTexcoord.x <= (maxX + 0.0015f )))
+            Out.vColor = float4(0.5f,0.5f,0.5f,0.3f);
+        
         return Out;
     }
 
@@ -546,7 +563,7 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     else
     {
         if (isInsideY)
-            Out.vColor += vHighlight * 2.f;
+            Out.vColor += vHighlight * 2.f ;
     }
 
     return Out;

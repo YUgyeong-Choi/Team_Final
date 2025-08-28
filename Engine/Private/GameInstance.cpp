@@ -17,6 +17,7 @@
 #include "Prototype_Manager.h"
 #include "OctoTree_Manager.h"
 #include "Area_Manager.h"
+#include "Pulling_Manager.h"
 
 #include "PhysX_Manager.h"
 #include "Sound_Device.h"
@@ -136,6 +137,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pArea_Manager)
 		return E_FAIL;
 
+	m_pPulling_Manager = CPulling_Manager::Create();
+	if (nullptr == m_pPulling_Manager)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -293,6 +297,16 @@ HRESULT CGameInstance::Add_GameObject(_uint iPrototypeLevelIndex, const _wstring
 HRESULT CGameInstance::Add_GameObjectReturn(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, CGameObject** ppOut, void* pArg)
 {
 	return m_pObject_Manager->Add_GameObjectReturn(iPrototypeLevelIndex, strPrototypeTag, iLevelIndex, strLayerTag, ppOut, pArg);
+}
+
+HRESULT CGameInstance::Push_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->Push_GameObject(pObj, iLevelIndex, strLayerTag);
+}
+
+CGameObject* CGameInstance::Recycle_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->Recycle_GameObject(pObj, iLevelIndex, strLayerTag);
 }
 
 CComponent* CGameInstance::Get_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentTag, _uint iIndex)
@@ -942,6 +956,22 @@ void CGameInstance::ToggleDebugArea()
 {
 	m_pArea_Manager->ToggleDebugCells();
 }
+void CGameInstance::Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
+{
+	m_pPulling_Manager->Add_PoolObject(wsLayerName, pObj);
+}
+void CGameInstance::Use_PoolObject(const _wstring& wsLayerName)
+{
+	m_pPulling_Manager->Use_PoolObject(wsLayerName);
+}
+void CGameInstance::UseAll_PoolObjects(const _wstring& wsLayerName)
+{
+	m_pPulling_Manager->UseAll_PoolObjects(wsLayerName);
+}
+void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
+{
+	m_pPulling_Manager->Return_PoolObject(wsLayerName, pObj);
+}
 #pragma endregion
 
 
@@ -986,6 +1016,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pOctoTree_Manager);
 
 	Safe_Release(m_pArea_Manager);
+
+	Safe_Release(m_pPulling_Manager);
 
 	CComputeShader::ReleaseCache(); // 캐싱해둔 컴퓨트 셰이더들 해제
 

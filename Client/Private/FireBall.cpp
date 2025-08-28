@@ -40,12 +40,15 @@ void CFireBall::Priority_Update(_float fTimeDelta)
 }
 
 void CFireBall::Update(_float fTimeDelta)
-{
+{/*
+	if (ProcessCollisionPriority())
+		return;*/
 	__super::Update(fTimeDelta);
 }
 
 void CFireBall::Late_Update(_float fTimeDelta)
 {
+
 	__super::Late_Update(fTimeDelta);
 }
 
@@ -60,58 +63,41 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 	{
 		if (auto pOil = dynamic_cast<COil*>(pOther))
 		{
-			if (pOil)
-			{
-				pOil->Explode_Oil();
-				Set_bDead();
+			pOil->Explode_Oil();
+			Set_bDead();
+		//	m_CollisionPriority[Oil] = pOther;
+#ifdef _DEBUG
 				cout << "FireBall On_CollisionEnter COil" << endl;
-				return;
-			}
+#endif
+
 		}
 	}
-	if (Get_bDead())
-		return;
 
 	if (eColliderType == COLLIDERTYPE::PLAYER)
 	{
 		if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 		{
-			pPlayer->ReceiveDamage(this, eColliderType);
-			//pPlayer->Get_Animator()->SetTrigger("Hited");
-			cout << "FireBall On_CollisionEnter Player" << endl;
+			pPlayer->SetHitMotion(HITMOTION::NORMAL);
+			pPlayer->SetfReceiveDamage(5.f);
 			Set_bDead();
 		}
+		m_CollisionPriority[Player] = pOther;
+#ifdef _DEBUG
+			cout << "FireBall On_CollisionEnter Player" << endl;
+#endif
 	}
 	else if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
 	{
-		cout << "FireBall On_CollisionEnter ENVIRONMENT" << endl;
+		m_CollisionPriority[Environment] = pOther;
 		Set_bDead();
+#ifdef _DEBUG
+		cout << "FireBall On_CollisionEnter ENVIRONMENT" << endl;
+#endif
 	}
 }
 
 void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
-	{
-		if (auto pOil = dynamic_cast<COil*>(pOther))
-		{
-			if (pOil)
-			{
-				pOil->Explode_Oil();
-				Set_bDead();
-				return;
-			}
-		}
-	}
-	else if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
-		{
-			pPlayer->ReceiveDamage(this, eColliderType);
-			//pPlayer->Get_Animator()->SetTrigger("Hited");
-			Set_bDead();
-		}
-	}
 }
 
 void CFireBall::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -149,6 +135,41 @@ HRESULT CFireBall::Ready_Effect()
 		MSG_BOX("이펙트 생성 실패함");
 
 	return S_OK;
+}
+
+_bool CFireBall::ProcessCollisionPriority()
+{
+	for (_int i = 0; i < ECollisionPriority::End; i++)
+	{
+		auto pObj = m_CollisionPriority[i];
+		if (pObj)
+		{
+			switch (i)
+			{
+			case ECollisionPriority::Oil:
+				if (auto pOil = dynamic_cast<COil*>(pObj))
+				{
+					pOil->Explode_Oil();
+					Set_bDead();
+				}
+				return true;;
+
+			case ECollisionPriority::Player:
+				if (auto pPlayer = dynamic_cast<CPlayer*>(pObj))
+				{
+					pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
+					pPlayer->SetfReceiveDamage(5.f);
+					Set_bDead();
+				}
+				return true;;
+			case ECollisionPriority::Environment:
+				Set_bDead();
+				return true;;
+			}
+		}
+	}
+
+	return false;
 }
 
 CFireBall* CFireBall::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

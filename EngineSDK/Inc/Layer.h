@@ -22,6 +22,8 @@ public:
 	}
 public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
+	CGameObject* Remove_GameObject(class CGameObject* pGameObject);
+
 	void Priority_Update(_float fTimeDelta);
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);

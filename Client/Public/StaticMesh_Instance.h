@@ -44,8 +44,6 @@ public:
 
 	_bool IsInAnyArea(const vector<_uint>& vecActiveAreaIds, const vector<_uint>& vecCheckAreaIds);
 
-private:
-	HRESULT SetEmissive();
 
 private:
 	wstring m_wsMap = {}; //어디에 속했는가(STATION? HOTEL?...)
@@ -55,7 +53,6 @@ private:
 	_uint	m_iNumInstance = { 0 };
 private:
 	_int m_iLightShape = { 0 };
-	_float  m_fEmissive = {};
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
