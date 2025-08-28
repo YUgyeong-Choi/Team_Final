@@ -203,7 +203,7 @@ void CLockOn_Manager::RemoveSomeTargets()
         // 거리 기준 제거 (3D 거리)
         _vector delta = targetPos - playerPos;
         float distSq = XMVectorGetX(XMVector3Length(delta));
-        if (distSq > 1.5f)
+        if (distSq > 15.f)
             bRemove = true;
 
 
@@ -213,7 +213,7 @@ void CLockOn_Manager::RemoveSomeTargets()
             PxVec3 origin = VectorToPxVec3(playerPos);
             PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
             direction.normalize();
-            _float fRayLength = 1.5f;
+            _float fRayLength = 15.f;
 
             PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
             PxRaycastBuffer hit;
