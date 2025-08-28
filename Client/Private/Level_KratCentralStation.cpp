@@ -763,6 +763,10 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Fatal_Icon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
+		return E_FAIL;
+
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Popup.json");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Popup"),
@@ -856,10 +860,10 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	//	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
 
 	//Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	//lstrcpy(Desc.szName, TEXT("Buttler_Train"));
-	//Desc.szMeshID = TEXT("Buttler_Train");
+	//lstrcpy(Desc.szName, TEXT("Buttler_Basic"));
+	//Desc.szMeshID = TEXT("Buttler_Basic");
 
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Basic"),
 	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
 	//	return E_FAIL;
 

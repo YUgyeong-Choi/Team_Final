@@ -378,6 +378,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
 
+		m_isDetect = true;
+
 		if (m_fHp <= 0 && !m_isFatal)
 		{
 			
@@ -552,6 +554,8 @@ void CButtler_Train::Start_Fatal_Reaction()
 	m_pAnimator->SetTrigger("Fatal");
 
 	m_isFatal = true;
+	m_pWeapon->SetisAttack(false);
+	m_pWeapon->Clear_CollisionObj();
 }
 
 void CButtler_Train::Reset()
