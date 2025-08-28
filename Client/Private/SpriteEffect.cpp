@@ -47,6 +47,9 @@ HRESULT CSpriteEffect::Initialize(void* pArg)
 
 void CSpriteEffect::Priority_Update(_float fTimeDelta)
 {
+	if (m_isActive == false || m_isEffectActive == false)
+		return;
+
 	m_fTimeAcc += fTimeDelta;
 }
 
@@ -58,7 +61,7 @@ void CSpriteEffect::Update(_float fTimeDelta)
 
 void CSpriteEffect::Late_Update(_float fTimeDelta)
 {
-	if (m_isActive == false)
+	if (m_isActive == false || m_isEffectActive == false)
 		return;
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);

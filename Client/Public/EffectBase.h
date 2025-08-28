@@ -61,6 +61,7 @@ public:
 	virtual void Update_Tool(_float fTimeDelta, _float fCurFrame);
 
 	virtual _float Ready_Death() { return 0; }
+	virtual void Pause() {}
 
 protected:
 	/* Keyframe Interpolation */
@@ -83,6 +84,7 @@ protected:
 
 protected:
 	// Basic Effect Preferences
+	_bool				m_isEffectActive = { true };
 	_float				m_fLifeTime = {};
 	_bool				m_bBillboard = { true };
 	_bool				m_bAnimation = { true };

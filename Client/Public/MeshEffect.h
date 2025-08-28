@@ -30,6 +30,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 	virtual _float Ready_Death();
+	virtual void Pause() { m_isActive = false; }
 
 protected:
 	CModel*			m_pModelCom = { nullptr };

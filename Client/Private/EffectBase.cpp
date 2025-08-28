@@ -59,6 +59,9 @@ void CEffectBase::Priority_Update(_float fTimeDelta)
 
 void CEffectBase::Update(_float fTimeDelta)
 {
+	if (m_isEffectActive == false)
+		return;
+
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	m_fTileIdx += m_fTileTickPerSec * fTimeDelta;
 	m_fLifeTime += fTimeDelta;
