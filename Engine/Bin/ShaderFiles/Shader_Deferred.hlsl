@@ -127,6 +127,22 @@ float ValueNoise3D(float3 p)
 
     return lerp(nxy0, nxy1, w.z);
 }
+float Hash12(float2 p)
+{
+    float h = dot(p, float2(127.1, 311.7));
+    return frac(sin(h) * 43758.5453);
+}
+float Noise2D(float2 p)
+{
+    float2 i = floor(p), f = frac(p);
+    // bilerp of 4 hashed corners
+    float a = Hash12(i);
+    float b = Hash12(i + float2(1, 0));
+    float c = Hash12(i + float2(0, 1));
+    float d = Hash12(i + float2(1, 1));
+    float2 u = f * f * (3.0 - 2.0 * f);
+    return lerp(lerp(a, b, u.x), lerp(c, d, u.x), u.y);
+}
 
 float SampleFogDensity(float3 worldPos, float time)
 {
@@ -1002,24 +1018,39 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vGlow = g_PBR_Glow.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
-        Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 3.f), vPBRFinal.a);
+        Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
     finalColor = Out.vBackBuffer;
     
+    /* [ 유리 재질 효과 ] */
     float fGlass = saturate(vEmissive.a);
     
-    float fGlassOpacity = 0.65;
-    float fTintStrength = 0.25;
+    //1. FilterA
+    float fGlassOpacity = 0.45;
+    float fTintStrength = 0.08;
     float fEdgeGain = 2.5f;
-    float fEdgeBoost = 0.1f;
-    float3 vGlassTint = float3(0.85, 0.95, 1.00);
-    
+    float fEdgeBoost = 0.05f;
+    float3 vGlassTint = float3(0.97, 0.99, 1.00);
     float3 vTinted = lerp(finalColor.rgb, vGlassTint, fTintStrength);
     finalColor.rgb = lerp(finalColor.rgb, vTinted, fGlass * fGlassOpacity);
     
+    //2. FilterB
     float2 vGrad = float2(ddx(fGlass), ddy(fGlass));
     float fEdge = saturate(length(vGrad) * fEdgeGain);
     finalColor.rgb += fEdge * fEdgeBoost;
+    
+    //3. FilterC
+    float fRefractStrength = 0.5f;
+    float fRefractionScale = 0.01f;
+    float fNoiseScale = 120.0f;
 
+    float fN = Noise2D(In.vTexcoord * fNoiseScale);
+    float2 vNg = float2(ddx(fN), ddy(fN));
+    float2 vDir = normalize(vNg + 1e-6.xx);
+    float2 vOff = vDir * fRefractionScale;
+
+    float3 vBehind = g_PBR_Final.Sample(LinearClampSampler, In.vTexcoord + vOff).rgb;
+    finalColor.rgb = lerp(finalColor.rgb, vBehind, fGlass * fRefractStrength);
+    
     Out.vBackBuffer = finalColor;
     
     

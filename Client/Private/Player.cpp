@@ -224,8 +224,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	ItemWeaponOFF(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 
-	static _int i = 0; // <- 이거 머임?
-
 	/* [ 이곳은 실험실입니다. ] */
 	if(KEY_DOWN(DIK_Y))
 	{
@@ -242,10 +240,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_U))
 	{
-		//m_pAnimator->SetInt("HitDir", 2);
-		//m_pAnimator->SetBool("IsUp", true);
-		//m_pAnimator->SetTrigger("Hited");
-		m_pAnimator->SetTrigger("Fatal");
+		
 	}
 
 	/* [ 아이템 ] */

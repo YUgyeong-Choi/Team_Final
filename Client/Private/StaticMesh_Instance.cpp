@@ -93,7 +93,6 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 HRESULT CStaticMesh_Instance::Render()
 {
 	//¿ŒΩ∫≈œΩÃ¿∏∑Œ ∑ª¥ı
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -149,28 +148,6 @@ _bool CStaticMesh_Instance::IsInAnyArea(const vector<_uint>& vecActiveAreaIds,
 			return true;
 	}
 	return false;
-}
-
-HRESULT CStaticMesh_Instance::SetEmissive()
-{
-	if (!m_bEmissive)
-	{
-		/* Com_Emissive */
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_Emissive")),
-			TEXT("Com_Emissive"), reinterpret_cast<CComponent**>(&m_pEmissiveCom))))
-			return E_FAIL;
-		m_bEmissive = true;
-	}
-
-	if (FAILED(m_pEmissiveCom->Bind_ShaderResource(m_pShaderCom, "g_Emissive", 0)))
-		return E_FAIL;
-
-	_float fEmissive = 1.f;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
-		return E_FAIL;
-
-
-	return S_OK;
 }
 
 HRESULT CStaticMesh_Instance::Ready_Components(void* pArg)

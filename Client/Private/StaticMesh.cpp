@@ -156,8 +156,8 @@ HRESULT CStaticMesh::Render()
 		/* [ 이미시브 맵이 있다면 사용하라 ] */
 		if (bIsEmissive)
 		{
-			_float fEmissive = 1.f;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+			SetEmissive(m_iLightShape);
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
 				return E_FAIL;
 		}
 
@@ -206,25 +206,61 @@ void CStaticMesh::LOD_Update()
 		m_eLOD = LOD::LOD2;
 }
 
-HRESULT CStaticMesh::SetEmissive()
+HRESULT CStaticMesh::SetEmissive(_int LightShape)
 {
-	if (!m_bEmissive)
+	switch (LightShape)
 	{
-		/* Com_Emissive */
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_Emissive")),
-			TEXT("Com_Emissive"), reinterpret_cast<CComponent**>(&m_pEmissiveCom))))
-			return E_FAIL;
-		m_bEmissive = true;
+	case 1: //Station_Light_02
+	{
+		m_fEmissive = 1.f;
+		break;
+	}
+	case 2: //Underdark_Lamp_01
+	{
+		m_fEmissive = 1.f;
+		break;
+	}
+	case 3: //StreetLamp_02
+	{
+		m_fEmissive = 0.3f;
+		break;
+	}
+	case 4: //SpotLight_01
+	{
+		m_fEmissive = 2.f;
+		break;
+	}
+	case 5: //FloorLight_02
+	{
+		m_fEmissive = 0.5f;
+		break;
+	}
+	case 6: //LightProp_Light_02
+	{
+		m_fEmissive = 1.f;
+		break;
+	}
+	case 7: //StreetLamp_04
+	{
+		m_fEmissive = 3.f;
+		break;
+	}
+	case 8: //Interior_Lamp_02
+	{
+		m_fEmissive = 1.f;
+		break;
+	}
+	case 9: //StreetLamp_02
+	{
+		m_fEmissive = 1.f;
+		break;
 	}
 
-	if (FAILED(m_pEmissiveCom->Bind_ShaderResource(m_pShaderCom, "g_Emissive", 0)))
-		return E_FAIL;
 
-	_float fEmissive = 1.f;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
-		return E_FAIL;
-
-
+	default:
+		m_fEmissive = 1.f;
+		break;
+	}
 	return S_OK;
 }
 

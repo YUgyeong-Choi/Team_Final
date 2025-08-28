@@ -55,7 +55,7 @@ public:
 	void LOD_Update();
 
 private:
-	HRESULT SetEmissive();
+	HRESULT SetEmissive(_int LightShape);
 
 public:
 	HRESULT Add_Actor();
@@ -79,6 +79,7 @@ private:
 	_bool	m_bUseOctoTree = { true };
 	_bool	m_bUseTiling = { false };
 	_float2	m_vTileDensity = { 1.0f, 1.0f };
+	_float  m_fEmissive = {};
 
 private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };
