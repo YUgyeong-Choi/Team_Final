@@ -321,6 +321,7 @@ private: /* [ 루트모션 관련 변수 ] */
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
 	_float   m_fSmoothThreshold = 0.1f;
+	_float   m_fMaxRootMotionSpeed = 18.f;
 
 private: /* [ 플레이어 변수 ] */
 	_float  m_fSetTime = {};
