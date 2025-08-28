@@ -155,6 +155,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 	m_pLevel_Manager->Priority_Update(fTimeDelta);
 
+	m_pPulling_Manager->RemoveObjMagr_PushPullingMgr();
+
 	m_pObject_Manager->Update(fTimeDelta);	
 	m_pLevel_Manager->Update(fTimeDelta);
 
@@ -971,6 +973,10 @@ void CGameInstance::UseAll_PoolObjects(const _wstring& wsLayerName)
 void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
 {
 	m_pPulling_Manager->Return_PoolObject(wsLayerName, pObj);
+}
+void CGameInstance::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj)
+{ 	
+	m_pPulling_Manager->Push_WillRemove(wsLayerName, pObj);
 }
 #pragma endregion
 

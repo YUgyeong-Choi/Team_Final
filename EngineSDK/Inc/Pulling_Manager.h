@@ -8,6 +8,11 @@ NS_BEGIN(Engine)
 class CPulling_Manager final : public CBase
 {
 private:
+	struct RemoveObject {
+		_wstring layerName;
+		CGameObject* pObj;
+	};
+private:
 	CPulling_Manager();
 	virtual ~CPulling_Manager() = default;
 
@@ -26,6 +31,9 @@ public:
 	/* [ 이때 오브젝트 매니저에서 삭제해준다 ] */
 	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
 	
+	// PriorityUpdate다음에 지워줄 애들
+	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
+	void RemoveObjMagr_PushPullingMgr();
 private:
 	void Clear_Pools();
 public:
@@ -36,7 +44,7 @@ private:
 	class CGameInstance* m_pGameInstance = { nullptr };
 	
 	unordered_map<wstring, queue<CGameObject*>> m_ObjectPools;
-	
+	list<RemoveObject> m_RemoveObjects;
 	//unordered_map<string, vector<CGameObject*>> m_ActiveObjects;
 };
 
