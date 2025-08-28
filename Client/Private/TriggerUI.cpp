@@ -87,6 +87,14 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
 			break;
+
+		case Client::TRIGGERUI_TYPE::LOCK:
+			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Lock.json") };
+			eGuideDesc.pTrigger = this;
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
+			break;
+
 		default:
 			break;
 		}
