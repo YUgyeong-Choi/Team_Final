@@ -203,7 +203,7 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 
 void CElite_Police::UpdateSpecificBehavior()
 {
-	m_eCurrentState = EBossState::WALK;
+//	m_eCurrentState = EBossState::WALK;
 }
 
 void CElite_Police::EnableColliders(_bool bEnable)
