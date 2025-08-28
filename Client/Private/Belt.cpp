@@ -160,6 +160,15 @@ _bool CBelt::Find_Item(const _wstring& strProtoTag)
 	return false;
 }
 
+void CBelt::Reset()
+{
+	for (auto& pItem : m_Items)
+	{
+		if (nullptr != pItem)
+			pItem->Reset();
+	}
+}
+
 CBelt* CBelt::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CBelt* pInstance = new CBelt(pDevice, pContext);

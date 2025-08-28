@@ -1476,7 +1476,7 @@
       <Filter>02.GameObjects\99.UI\World\Fatal</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Weapon_Monster.cpp">
-      <Filter>02.GameObjects\03.Weapon\00.Bayonet</Filter>
+      <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

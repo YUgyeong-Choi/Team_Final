@@ -44,6 +44,8 @@ public:
 
 	HRESULT Bind_ShaderResources();
 
+	virtual void Reset() { m_isActive = false; }
+
 private:
 	//
 

@@ -261,6 +261,13 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
+void CPlayer::Reset()
+{
+	m_pBelt_Down->Reset();
+	m_pBelt_Up->Reset();
+	m_pPlayerLamp->Reset();
+}
+
 CAnimController* CPlayer::GetCurrentAnimContrller()
 {
 	return m_pAnimator->Get_CurrentAnimController();
