@@ -217,9 +217,6 @@ void CMonster_Base::Reset()
 	m_isCollisionPlayer = {};
 	m_isFatal = {};
 	m_isGroogyLoop = {};
-
-	m_bActive = true;
-	m_bPlayOnce = false;
 }
 
 HRESULT CMonster_Base::Ready_Components(void* pArg)
@@ -476,7 +473,6 @@ _bool CMonster_Base::Check_Detect()
 	{
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
-		m_bPlayOnce = true;
 		
 		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		return true;

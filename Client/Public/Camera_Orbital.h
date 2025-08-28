@@ -48,7 +48,7 @@ public:
 	
 	void Set_LockOn(CGameObject* pTarget, _bool bActive);
 	void Set_ActiveTalk(_bool bActive, CGameObject*  pTarget, _bool bCanMove, _float fTalkOffSet);
-	void Start_DistanceLerp(_float fTargetLerpDistance, _float fDistanceLerpSpeed);
+	void Start_DistanceLerp(_float fTargetLerpDistance, _float fDistanceStartTime, _float fDistanceEndTime, _float fDistanceDelayTime = 0.f);
 private:
 	// 카메라 Look 관련
 	/* [ 평소에 실행 ] */
@@ -85,11 +85,14 @@ private:
 	_bool			m_bCanMoveTalk = true;
 	_float			m_fTalkOffSet = 0.f;
 private:
-	_bool m_bLerpDistanceStart = {};
-	_bool m_bLerpDistanceEnd = {};
-	_float m_fSaveDistance = {};
-	_float m_fTargetLerpDistance = {};
-	_float m_fDistanceLerpSpeed = {};
+	_bool m_bDistanceLerp = {};
+	_float m_fDistanceTime = {};
+	_float m_fDistanceTarget = {};
+	_float m_fDistnaceStartSpeed = {};
+	_float m_fDistnaceEndSpeed = {};
+	_float m_fDistanceLerpElapsed = {};
+	_float m_fDistanceDelayTime = 0.f;      
+	_float m_fDistanceDelayElapsed = 0.f;  
 
 	_bool m_bActive = false;
 private:

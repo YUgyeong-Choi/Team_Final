@@ -77,11 +77,10 @@ public:
 #ifdef _DEBUG
 	_bool Get_RenderCollider();
 	_bool Get_RenderMapCollider();
-	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
-
-	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
-	_vector GetPlayerPos() { return m_vPlayerPosition; }	
+	HRESULT Add_DebugComponent(class CComponent* pDebugCom);	
 #endif
+	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
+	_vector GetPlayerPos() { return m_vPlayerPosition; }
 #pragma endregion
 
 #pragma region TIMER_MANAGER
@@ -266,6 +265,13 @@ public:
 	HRESULT Reset_Parm();
 	void SetPlayerPosition(const _vector& vPos);
 	void ToggleDebugArea();
+#pragma endregion
+
+#pragma region PULLING_MANAGER
+	void Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
+	void Use_PoolObject(const _wstring& wsLayerName);
+	void UseAll_PoolObjects(const _wstring& wsLayerName);
+	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
 #pragma endregion
 
 private:

@@ -51,8 +51,6 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 void CButtler_Train::Priority_Update(_float fTimeDelta)
 {
-	if (!m_bActive)
-		return;
 
 	__super::Priority_Update(fTimeDelta);
 
@@ -64,7 +62,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_bActive = false;
+			m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", this);
 			m_pWeapon->SetbIsActive(false);
 		}
 	}
@@ -86,8 +84,6 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 void CButtler_Train::Update(_float fTimeDelta)
 {
-	if (!m_bActive)
-		return;
 
 	Calc_Pos(fTimeDelta);
 
@@ -179,8 +175,6 @@ void CButtler_Train::Update(_float fTimeDelta)
 
 void CButtler_Train::Late_Update(_float fTimeDelta)
 {
-	if (!m_bActive)
-		return;
 
 	__super::Late_Update(fTimeDelta);
 
@@ -426,11 +420,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		}
 
-		m_bPlayOnce = true;
 	}
-
-
-
 }
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)

@@ -12,14 +12,14 @@ HRESULT CPulling_Manager::Initialize()
 	return S_OK;
 }
 
-void CPulling_Manager::Add_PoolObject(string strLayerName, CGameObject* pObj)
+void CPulling_Manager::Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
 {
-	m_ObjectPools[strLayerName].push(pObj);
+	m_ObjectPools[wsLayerName].push(pObj);
 }
 
-void CPulling_Manager::Use_PoolObject(string strLayerName)
+void CPulling_Manager::Use_PoolObject(const _wstring& wsLayerName)
 {
-    auto it = m_ObjectPools.find(strLayerName);
+    auto it = m_ObjectPools.find(wsLayerName);
     if (it == m_ObjectPools.end() || it->second.empty())
         return; 
 
@@ -30,19 +30,17 @@ void CPulling_Manager::Use_PoolObject(string strLayerName)
     if (!pObj) return;
 
     const int levelIdx = m_pGameInstance->GetCurrentLevelIndex();
-    wstring layerName(strLayerName.begin(), strLayerName.end());
-    m_pGameInstance->Push_GameObject(pObj, levelIdx, layerName);
+    m_pGameInstance->Push_GameObject(pObj, levelIdx, wsLayerName);
 }
 
-void CPulling_Manager::UseAll_PoolObjects(string strLayerName)
+void CPulling_Manager::UseAll_PoolObjects(const _wstring& wsLayerName)
 {
-    auto it = m_ObjectPools.find(strLayerName);
+    auto it = m_ObjectPools.find(wsLayerName);
     if (it == m_ObjectPools.end() || it->second.empty())
         return; 
 
     auto& queueObjs = it->second;
     const _int levelIdx = m_pGameInstance->GetCurrentLevelIndex();
-    wstring layerName(strLayerName.begin(), strLayerName.end());
 
     // 큐가 빌 때까지 전부 사용
     while (!queueObjs.empty())
@@ -52,21 +50,20 @@ void CPulling_Manager::UseAll_PoolObjects(string strLayerName)
 
         if (!pObj) continue; 
 
-        m_pGameInstance->Push_GameObject(pObj, levelIdx, layerName);
+        m_pGameInstance->Push_GameObject(pObj, levelIdx, wsLayerName);
     }
 }
 
 
-void CPulling_Manager::Return_PoolObject(string strLayerName, CGameObject* pObj)
+void CPulling_Manager::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
 {
     const _int levelIdx = m_pGameInstance->GetCurrentLevelIndex();
-    wstring layerName(strLayerName.begin(), strLayerName.end());
-    CGameObject* pReturnObj = m_pGameInstance->Recycle_GameObject(pObj, levelIdx, layerName);
+    CGameObject* pReturnObj = m_pGameInstance->Recycle_GameObject(pObj, levelIdx, wsLayerName);
     if (!pObj)
         return;
 
     pReturnObj->Reset();
-    m_ObjectPools[strLayerName].push(pReturnObj);
+    m_ObjectPools[wsLayerName].push(pReturnObj);
 }
 
 void CPulling_Manager::Clear_Pools()

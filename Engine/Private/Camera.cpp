@@ -125,12 +125,15 @@ _vector CCamera::GetLookVector()
 	return m_pTransformCom->Get_State(STATE::LOOK);
 }
 
-void CCamera::StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot)
+void CCamera::StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos, _float fShakeFreqRot, _float fShakeUpdateInterval)
 {
 	m_fShakeIntensity = fIntensity;
 	m_fShakeDuration = fDuration;
 	m_fShakeFreqPos = fShakeFreqPos;
 	m_fShakeFreqRot = fShakeFreqRot;
+
+	m_fShakeUpdateInterval = fShakeUpdateInterval;
+	m_fShakeUpdateAccum = 0.f;
 
 	m_fShakeTime = 0.f;
 	m_bShake = TRUE;
@@ -155,34 +158,48 @@ void CCamera::Update_Camera_Shake(_float fTimedelta)
 		m_bShake = FALSE;
 		m_vCurrentShakePos = { 0.f, 0.f, 0.f, 0.f };
 		m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
+		m_fShakeUpdateAccum = 0.f;
 		return;
 	}
 
-	// 2. 감쇠 적용
+	// 감쇠 적용
 	_float decay = 1.f - (m_fShakeTime / m_fShakeDuration);
 	_float shakeStrength = m_fShakeIntensity * decay;
-
 	_float t = m_fShakeTime;
 
-	// 3. 부드러운 위치 흔들림 (sin/cos 기반)
-	_vector offsetPos = {
-		sin(t * m_fShakeFreqPos) * shakeStrength * 0.5f,
-		cos(t * m_fShakeFreqPos * 0.8f) * shakeStrength * 0.4f,
-		sin(t * m_fShakeFreqPos * 1.2f) * shakeStrength * 0.3f
-	};
+	// 누적 시간
+	m_fShakeUpdateAccum += fTimedelta;
 
-	// 4. 부드러운 회전 흔들림 (YawPitchRoll 순서 기준)
-	_vector offsetRot = {
-		cos(t * m_fShakeFreqRot * 1.5f) * shakeStrength * 1.5f, // Pitch (X)
-		sin(t * m_fShakeFreqRot) * shakeStrength * 2.0f, // Yaw   (Y)
-		cos(t * m_fShakeFreqRot * 0.7f) * shakeStrength * 0.8f  // Roll  (Z)
-	};
+	// --- 일정 간격마다만 새 값 계산 ---
+	if (m_fShakeUpdateAccum >= m_fShakeUpdateInterval)
+	{
+		// 3. 위치 흔들림
+		_vector offsetPos = {
+			sin(t * m_fShakeFreqPos) * shakeStrength * 0.5f,
+			cos(t * m_fShakeFreqPos * 0.8f) * shakeStrength * 0.4f,
+			sin(t * m_fShakeFreqPos * 1.2f) * shakeStrength * 0.3f
+		};
 
-	// 5. 적용
-	m_vCurrentShakePos = offsetPos;
-	m_vCurrentShakeRot = offsetRot;
+		// 4. 회전 흔들림
+		_vector offsetRot = {
+			cos(t * m_fShakeFreqRot * 1.5f) * shakeStrength * 1.5f, // Pitch
+			sin(t * m_fShakeFreqRot) * shakeStrength * 2.0f, // Yaw
+			cos(t * m_fShakeFreqRot * 0.7f) * shakeStrength * 0.8f  // Roll
+		};
+
+		// 적용
+		m_vCurrentShakePos = offsetPos;
+		m_vCurrentShakeRot = offsetRot;
+
+		// 누적 시간 초기화
+		m_fShakeUpdateAccum = 0.f;
+	}
+	else
+	{
+		// 간격 사이에는 새 계산 없이 기존 값 유지
+		// (감쇠에 의한 스케일만 보정하고 싶으면 여기서 scale 적용 가능)
+	}
 }
-
 void CCamera::Update_Camera_MoreRot(_float fTimedelta)
 {
 	m_fMoreRotTime += fTimedelta;

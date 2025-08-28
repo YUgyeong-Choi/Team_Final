@@ -220,12 +220,15 @@ void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool 
 	}
 }
 
-void CCamera_Orbital::Start_DistanceLerp(_float fTargetLerpDistance, _float fDistanceLerpSpeed)
+void CCamera_Orbital::Start_DistanceLerp(_float fTargetLerpDistance, _float fDistanceStartTime, _float fDistanceEndTime, _float fDistanceDelayTime)
 {
-	m_bLerpDistanceStart = true;
-	m_fSaveDistance = m_fDistance;
-	m_fTargetLerpDistance = fTargetLerpDistance;
-	m_fDistanceLerpSpeed = fDistanceLerpSpeed;
+	m_bDistanceLerp = true;
+	m_fDistanceTime = fDistanceStartTime + fDistanceEndTime;
+	m_fDistanceTarget = fTargetLerpDistance;
+	m_fDistnaceStartSpeed = fDistanceStartTime;
+	m_fDistnaceEndSpeed = fDistanceEndTime;
+	m_fDistanceDelayTime = fDistanceDelayTime;
+	m_fDistanceLerpElapsed = {};
 }
 
 void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
@@ -446,27 +449,38 @@ void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
 		}
 	}
 
-
-	if (m_bLerpDistanceStart)
+	if (m_bDistanceLerp)
 	{
-		m_fDistance = LerpFloat(m_fDistance, m_fTargetLerpDistance, fTimeDelta * m_fDistanceLerpSpeed);
+		m_fDistanceLerpElapsed += fTimeDelta;
 
-		if (fabsf(m_fDistance - m_fTargetLerpDistance) < 0.01f)
+		// 페이즈 1: 1.0 → m_fDistanceTarget
+		if (m_fDistanceLerpElapsed <= m_fDistnaceStartSpeed)
 		{
-			m_fDistance = m_fTargetLerpDistance;
-			m_bLerpDistanceStart = false;
-			m_bLerpDistanceEnd = true;
+			_float t = m_fDistnaceStartSpeed <= 0.f ? 1.f : (m_fDistanceLerpElapsed / m_fDistnaceStartSpeed);
+			m_fDistance = LerpFloat(3.f, m_fDistanceTarget, t);
 		}
-	}
-
-	if (m_bLerpDistanceEnd)
-	{
-		m_fDistance = LerpFloat(m_fDistance, m_fSaveDistance, fTimeDelta * m_fDistanceLerpSpeed);
-
-		if (fabsf(m_fDistance - m_fSaveDistance) < 0.01f)
+		// 페이즈 1이 끝났고, 아직 딜레이 시간 진행 중
+		else if (m_fDistanceLerpElapsed <= (m_fDistnaceStartSpeed + m_fDistanceDelayTime))
 		{
-			m_fDistance = m_fSaveDistance;
-			m_bLerpDistanceEnd = false;
+			m_fDistanceDelayElapsed += fTimeDelta;
+
+			// 딜레이 구간에서는 값 고정 (m_fDistanceTarget 유지)
+			m_fDistance = m_fDistanceTarget;
+		}
+		// 페이즈 2: m_fDistanceTarget → 3.0
+		else if (m_fDistanceLerpElapsed <= (m_fDistnaceStartSpeed + m_fDistanceDelayTime + m_fDistnaceEndSpeed))
+		{
+			_float t = m_fDistnaceEndSpeed <= 0.f
+				? 1.f
+				: ((m_fDistanceLerpElapsed - (m_fDistnaceStartSpeed + m_fDistanceDelayTime)) / m_fDistnaceEndSpeed);
+
+			m_fDistance = LerpFloat(m_fDistanceTarget, 3.f, t);
+		}
+		else
+		{
+			// 끝
+			m_bDistanceLerp = false;
+			m_fDistance = 3.f;
 		}
 	}
 }

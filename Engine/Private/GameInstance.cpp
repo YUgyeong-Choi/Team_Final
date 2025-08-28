@@ -956,6 +956,22 @@ void CGameInstance::ToggleDebugArea()
 {
 	m_pArea_Manager->ToggleDebugCells();
 }
+void CGameInstance::Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
+{
+	m_pPulling_Manager->Add_PoolObject(wsLayerName, pObj);
+}
+void CGameInstance::Use_PoolObject(const _wstring& wsLayerName)
+{
+	m_pPulling_Manager->Use_PoolObject(wsLayerName);
+}
+void CGameInstance::UseAll_PoolObjects(const _wstring& wsLayerName)
+{
+	m_pPulling_Manager->UseAll_PoolObjects(wsLayerName);
+}
+void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
+{
+	m_pPulling_Manager->Return_PoolObject(wsLayerName, pObj);
+}
 #pragma endregion
 
 
