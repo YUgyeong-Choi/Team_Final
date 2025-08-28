@@ -94,6 +94,7 @@
 #include "Buttler_Train.h"
 #include "UI_MonsterHP_Bar.h"
 #include "UI_LockOn_Icon.h"
+#include "UI_Fatal_Icon.h"
 #include "LegionArm_Steel.h"
 #include "UI_Popup.h"
 #include "UI_Script_Text.h"
@@ -378,6 +379,11 @@ HRESULT CLoader::Loading_For_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LockOn_Icon"),
 		CUI_LockOn_Icon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Fatal_Icon"),
+		CUI_Fatal_Icon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LegionArm_Steel"),
 		CLegionArm_Steel::Create(m_pDevice, m_pContext))))

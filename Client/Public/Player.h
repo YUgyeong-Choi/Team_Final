@@ -179,6 +179,7 @@ public: /* [ 페이탈 함수 ] */
 	void SetFatalTargetNull() { m_pFatalTarget = nullptr; }
 	void SetIsFatalBoss(_bool bIsFatalBoss) { m_bIsFatalBoss = bIsFatalBoss; }
 	_bool GetIsFatalBoss() const { return m_bIsFatalBoss; }
+	CUnit* GetFatalTarget() { return m_pFatalTarget; }
 
 private: /* [ 상태패턴 ] */
 	void ReadyForState();

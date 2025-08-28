@@ -46,7 +46,7 @@ private:
 private:
 	CPlayer* m_pPlayer = {nullptr};
 
-	CUnit*m_pTarget = { nullptr };
+	CUnit*	m_pTarget = { nullptr };
 
 	_bool	m_isRender = { false };
 
