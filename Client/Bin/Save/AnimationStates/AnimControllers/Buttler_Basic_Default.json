@@ -9,8 +9,8 @@
             "Name": "Attack_Combo_Start",
             "NodeId": 1,
             "NodePos": [
-                -2835.246826171875,
-                713.268310546875
+                978.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -24,8 +24,8 @@
             "Name": "Attack_Combo_Loop",
             "NodeId": 2,
             "NodePos": [
-                -2835.246826171875,
-                1087.268310546875
+                978.0,
+                363.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -39,8 +39,8 @@
             "Name": "Attack_Combo_End",
             "NodeId": 3,
             "NodePos": [
-                -2835.246826171875,
-                1257.268310546875
+                978.0,
+                533.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Spawn_Loop",
             "NodeId": 100002,
             "NodePos": [
-                404.753173828125,
-                917.268310546875
+                4218.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -69,8 +69,8 @@
             "Name": "Spawn_End",
             "NodeId": 100003,
             "NodePos": [
-                404.753173828125,
-                1087.268310546875
+                4218.0,
+                363.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Walk_F",
             "NodeId": 100005,
             "NodePos": [
-                730.200439453125,
-                163.121337890625
+                4938.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -99,8 +99,8 @@
             "Name": "Walk_B",
             "NodeId": 100006,
             "NodePos": [
-                1124.753173828125,
-                1087.268310546875
+                4938.0,
+                363.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -114,8 +114,8 @@
             "Name": "Walk_L",
             "NodeId": 100007,
             "NodePos": [
-                1124.753173828125,
-                1257.268310546875
+                4938.0,
+                533.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "Walk_R",
             "NodeId": 100008,
             "NodePos": [
-                1124.753173828125,
-                1427.268310546875
+                4938.0,
+                703.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -144,23 +144,23 @@
             "Name": "Idle",
             "NodeId": 100009,
             "NodePos": [
-                -1035.246826171875,
-                917.268310546875
+                2778.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATSA0_Skill_02",
+            "Clip": "AS_ATSA0_Skill_01_Start",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Attack_Light",
             "NodeId": 100010,
             "NodePos": [
-                -3165.447265625,
-                488.14697265625
+                618.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -174,8 +174,8 @@
             "Name": "Dead_F",
             "NodeId": 100011,
             "NodePos": [
-                -315.246826171875,
-                917.268310546875
+                3498.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -189,8 +189,8 @@
             "Name": "Dead_B",
             "NodeId": 100012,
             "NodePos": [
-                -315.246826171875,
-                1087.268310546875
+                3498.0,
+                363.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -204,8 +204,8 @@
             "Name": "Hit_B",
             "NodeId": 100013,
             "NodePos": [
-                -1755.246826171875,
-                917.268310546875
+                2058.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -219,8 +219,8 @@
             "Name": "Hit_R",
             "NodeId": 100014,
             "NodePos": [
-                -1755.246826171875,
-                1087.268310546875
+                2058.0,
+                363.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -234,8 +234,8 @@
             "Name": "Hit_L",
             "NodeId": 100015,
             "NodePos": [
-                -1755.246826171875,
-                1257.268310546875
+                2058.0,
+                533.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -249,8 +249,8 @@
             "Name": "Groggy_In",
             "NodeId": 100016,
             "NodePos": [
-                1124.753173828125,
-                917.268310546875
+                4938.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -264,8 +264,8 @@
             "Name": "Groggy_Out",
             "NodeId": 100017,
             "NodePos": [
-                1124.753173828125,
-                1087.268310546875
+                4938.0,
+                363.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -279,8 +279,8 @@
             "Name": "Groggy_Loop",
             "NodeId": 100018,
             "NodePos": [
-                1124.753173828125,
-                1257.268310546875
+                4938.0,
+                533.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -294,8 +294,8 @@
             "Name": "Fatal_In",
             "NodeId": 100019,
             "NodePos": [
-                404.753173828125,
-                917.268310546875
+                4218.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -309,8 +309,8 @@
             "Name": "Fatal_Loop",
             "NodeId": 100020,
             "NodePos": [
-                404.753173828125,
-                1087.268310546875
+                4218.0,
+                363.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -324,8 +324,8 @@
             "Name": "Down_Away",
             "NodeId": 100021,
             "NodePos": [
-                44.753173828125,
-                917.268310546875
+                3858.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -339,8 +339,8 @@
             "Name": "Down_Fall",
             "NodeId": 100022,
             "NodePos": [
-                44.753173828125,
-                1087.268310546875
+                3858.0,
+                363.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -354,8 +354,8 @@
             "Name": "Down_Land",
             "NodeId": 100023,
             "NodePos": [
-                44.753173828125,
-                1257.268310546875
+                3858.0,
+                533.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -369,8 +369,8 @@
             "Name": "Getup",
             "NodeId": 100024,
             "NodePos": [
-                764.753173828125,
-                917.268310546875
+                4578.0,
+                193.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -384,8 +384,8 @@
             "Name": "Dead_Getup",
             "NodeId": 100040,
             "NodePos": [
-                -315.246826171875,
-                1257.268310546875
+                3498.0,
+                533.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0

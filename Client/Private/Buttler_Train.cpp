@@ -389,6 +389,9 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
 			m_bUseLockon = false;
+
+			if (nullptr != m_pHPBar)
+				m_pHPBar->Set_RenderTime(0.f);
 			return;
 		}
 
