@@ -113,9 +113,6 @@ void CUnit::Late_Update(_float fTimeDelta)
 			m_isActive = false;
 		}
 	}
-
-
-
 }
 
 HRESULT CUnit::Render()

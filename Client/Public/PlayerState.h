@@ -2677,8 +2677,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("MainSkill");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
-        m_pOwner->m_fMana -= 100.f;
-        m_pOwner->Callback_Mana();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2694,8 +2692,6 @@ public:
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
-                m_pOwner->m_fMana -= 100.f;
-                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 
@@ -2709,8 +2705,6 @@ public:
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
-                m_pOwner->m_fMana -= 100.f;
-                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 

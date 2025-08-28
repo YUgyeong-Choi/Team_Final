@@ -240,7 +240,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_U))
 	{
-		
 	}
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -1004,16 +1003,73 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::MAINSKILLA:
 	{
 		RootMotionActive(fTimeDelta);
-		break;
+		if (!m_bSetTwo)
+		{
+			m_bIsInvincible = true;
+			m_bSetTwo = true;
+		}
+
+		
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetOnce && m_fMana >= 0.f)
+			{
+				m_bIsInvincible = false;
+				m_fMana -= 100.f;
+				Callback_Mana();
+				m_bSetOnce = true;
+			}
+		}
+
+		break; 
 	}
 	case eAnimCategory::MAINSKILLB:
 	{
 		RootMotionActive(fTimeDelta);
+
+		if (!m_bSetTwo)
+		{
+			m_bIsInvincible = true;
+			m_bSetTwo = true;
+		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetOnce && m_fMana >= 0.f)
+			{
+				m_bIsInvincible = false;
+				m_fMana -= 100.f;
+				Callback_Mana();
+				m_bSetOnce = true;
+			}
+		}
+
 		break;
 	}
 	case eAnimCategory::MAINSKILLC:
 	{
 		RootMotionActive(fTimeDelta);
+
+		if (!m_bSetTwo)
+		{
+			m_bIsInvincible = true;
+			m_bSetTwo = true;
+		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetOnce && m_fMana >= 0.f)
+			{
+				m_bIsInvincible = false;
+				m_fMana -= 100.f;
+				Callback_Mana();
+				m_bSetOnce = true;
+			}
+		}
+
 		break;
 	}
 	case eAnimCategory::FATAL:
