@@ -169,26 +169,33 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_F8))
 		m_pGameInstance->ToggleDebugArea();
 
-	//if (KEY_PRESSING(DIK_LCONTROL))
-	//{
-	//	if (KEY_DOWN(DIK_Z))
-	//	{
-	//		if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_TestGrinder_VStretch_wls_P2"),
-	//			m_pGameInstance->Compute_Random(-1.f, 1.f),
-	//			m_pGameInstance->Compute_Random(-1.f, 1.f),
-	//			m_pGameInstance->Compute_Random(-1.f, 1.f)))
-	//			MSG_BOX("조짐");
-	//	}
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (KEY_DOWN(DIK_Z))
+		{
+			static _bool bEfActv = { true };
+			bEfActv = !bEfActv;
+			
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("StationRain_1"), bEfActv);
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("StationRain_2"), bEfActv);
+		}
+	}
 	//	if (KEY_DOWN(DIK_X))
 	//	{
-	//		_float3 pos = {};
-	//		if (m_pPlayer)
-	//			XMStoreFloat3(&pos, m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
-	//		if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_AttackHit_Thrust_Spiral_2"),
-	//			pos.x,
-	//			pos.y + 1.f,
-	//			pos.z))
-	//			MSG_BOX("조짐");
+		//_float3 pos = {};
+		//if (m_pPlayer)
+		//	XMStoreFloat3(&pos, m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
+
+		//_matrix presetmat = XMMatrixIdentity();
+		//CEffectContainer::DESC ECDesc = {};
+		//presetmat = XMMatrixTranslation(pos.x + m_pGameInstance->Compute_Random(-1.f, 1.f),
+		//	pos.y + m_pGameInstance->Compute_Random(0.f, 3.f),
+		//	pos.z + m_pGameInstance->Compute_Random(-1.f, 1.f));
+		//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+		//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain"), &ECDesc))
+		//	MSG_BOX("이펙트 생성 실패");
+		////if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
+		////	MSG_BOX("이펙트 생성 실패");
 	//	}
 	//}
 
@@ -216,11 +223,16 @@ HRESULT CLevel_KratCentralStation::Render()
 
 HRESULT CLevel_KratCentralStation::Reset()
 {
-	for (auto& pMonster : m_vecMonster)
-	{
-		if(pMonster->Get_bPlayOnce() || !pMonster->Get_bActive())
-			pMonster->Reset();
-	}
+
+	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster");
+	for (auto& obj : objList)
+		m_pGameInstance->Return_PoolObject(L"Layer_Monster", obj);
+	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster_Normal");
+	for (auto& obj : objList)
+		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj);
+
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal");
 
 	return S_OK;
 }
@@ -240,8 +252,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Separate_Area()))
 		return E_FAIL;
-	//if (FAILED(Ready_Effect()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
 	if (FAILED(Ready_Camera()))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
@@ -440,10 +452,7 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 	vector<OCTOTREEOBJECTTYPE> vTypeTable = m_pGameInstance->GetObjectType();
 
 	for (_uint i = 0; i < static_cast<_uint>(AllStaticMesh.size()); ++i)
-	{
 		AllStaticMesh[i]->Set_bLightOnOff(false);
-		AllStaticMesh[i]->SetLightDebug(false);
-	}
 
 
 	for (_uint iIdx : VisitCell)
@@ -459,7 +468,6 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 		{
 			//만약 조명오브젝트라면? 
 			pObj->Set_bLightOnOff(true);
-			pObj->SetLightDebug(true);
 		}
 	}
 
@@ -658,7 +666,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 10번 구역 ] */
-		const vector<_uint> vecAdj10 = { 9 };
+		const vector<_uint> vecAdj10 = { 9, 12, 14, 16, 17, 18 };
 		if (!m_pGameInstance->AddArea_AABB(
 			10, a10Min, a10Max, vecAdj10, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
@@ -785,6 +793,10 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Fatal_Icon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
+		return E_FAIL;
+
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Popup.json");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Popup"),
@@ -878,10 +890,10 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	//	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
 
 	//Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	//lstrcpy(Desc.szName, TEXT("Buttler_Train"));
-	//Desc.szMeshID = TEXT("Buttler_Train");
+	//lstrcpy(Desc.szName, TEXT("Buttler_Basic"));
+	//Desc.szMeshID = TEXT("Buttler_Basic");
 
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Basic"),
 	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
 	//	return E_FAIL;
 
@@ -943,10 +955,8 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				UnitDesc.WorldMatrix = WorldMatrix;
 				UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
-				//푸오쿠는 따로 생성
-				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &UnitDesc)))
-					return E_FAIL;
+				CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"), &UnitDesc));
+				m_pGameInstance->Add_PoolObject(L"Layer_Monster", pObj);
 
 				continue;
 			}
@@ -965,19 +975,9 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 
 			wstring wsPrototypeTag = TEXT("Prototype_GameObject_Monster_") + wstrMonsterName;
 
-			CGameObject* pObj;
-			if (FAILED(m_pGameInstance->Add_GameObjectReturn(
-				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
-				wsPrototypeTag.c_str(),
-				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
-				TEXT("Layer_Monster_Normal"),
-				&pObj, &Desc)))
-			{
-				return E_FAIL;
-			}
 
-			if (CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pObj))
-				m_vecMonster.push_back(pMonster);
+			CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), wsPrototypeTag, &Desc));
+			m_pGameInstance->Add_PoolObject(L"Layer_Monster_Normal", pObj);
 		}
 	}
 
@@ -989,25 +989,45 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	_matrix presetmat = XMMatrixIdentity();
 	CEffectContainer::DESC ECDesc = {};
 
-	presetmat = XMMatrixTranslation(52.83f, 0.09f, 1.57f);
+	//presetmat = XMMatrixTranslation(52.83f, 0.09f, 1.57f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
+	//	MSG_BOX("이펙트 생성 실패");
+
+	//presetmat = XMMatrixTranslation(69.25f, -0.22f, -8.17f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
+	//	MSG_BOX("이펙트 생성 실패");
+
+	//presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
+	//	MSG_BOX("이펙트 생성 실패");
+
+	//presetmat = XMMatrixTranslation(0.f, 0.f, 0.f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
+	//	MSG_BOX("이펙트 생성 실패");
+
+	CGameObject* pEC = { nullptr };
+
+	presetmat = XMMatrixTranslation(60.f, 20.f, -7.1f);
 	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
+	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain"), &ECDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패");
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_1"), static_cast<CEffectContainer*>(pEC));
+
+	pEC = nullptr;
+	presetmat = XMMatrixTranslation(80.f, 20.f, -8.f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain"), &ECDesc);
+	if (pEC == nullptr)
 		MSG_BOX("이펙트 생성 실패");
 
-	presetmat = XMMatrixTranslation(69.25f, -0.22f, -8.17f);
-	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-		MSG_BOX("이펙트 생성 실패");
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_2"), static_cast<CEffectContainer*>(pEC));
 
-	presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
-	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-		MSG_BOX("이펙트 생성 실패");
 
-	presetmat = XMMatrixTranslation(0.f, 0.f, 0.f);
-	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
-		MSG_BOX("이펙트 생성 실패");
 
 	return S_OK;
 }

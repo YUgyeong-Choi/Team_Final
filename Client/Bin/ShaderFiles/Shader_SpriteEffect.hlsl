@@ -171,7 +171,7 @@ struct PS_OUT_EFFECT_WB
 
 PS_OUT_EFFECT_WB PS_MAIN_GRID_COLOR_WB(PS_IN_BLEND In)
 {
-    PS_OUT_EFFECT_WB Out;
+    PS_OUT_EFFECT_WB Out = (PS_OUT_EFFECT_WB)0;
     vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     if (vColor.a <= 0.003f)
         discard;
@@ -206,7 +206,8 @@ PS_OUT_EFFECT_WB PS_MAIN_GRID_COLOR_WB(PS_IN_BLEND In)
 
 PS_OUT_EFFECT_WB PS_MAIN_MASKONLY_CWB(PS_IN_BLEND In)
 {
-    PS_OUT_EFFECT_WB Out;
+    PS_OUT_EFFECT_WB Out = (PS_OUT_EFFECT_WB) 0;
+
 
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     if (mask < 0.003f)
@@ -219,6 +220,8 @@ PS_OUT_EFFECT_WB PS_MAIN_MASKONLY_CWB(PS_IN_BLEND In)
     
     vector vColor;
     
+    vColor = SoftEffect(vPreColor, In.vProjPos);
+
     vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
     vColor.a = vPreColor.a * mask;
     
@@ -233,7 +236,8 @@ PS_OUT_EFFECT_WB PS_MAIN_MASKONLY_CWB(PS_IN_BLEND In)
 
 PS_OUT_EFFECT_WB PS_MAIN_MASKDISSOLVE_CWB(PS_IN_BLEND In)
 {
-    PS_OUT_EFFECT_WB Out;
+    PS_OUT_EFFECT_WB Out = (PS_OUT_EFFECT_WB) 0;
+
 
     vector noise = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
 
@@ -268,7 +272,8 @@ PS_OUT_EFFECT_WB PS_MAIN_MASKDISSOLVE_CWB(PS_IN_BLEND In)
 
 PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
 {
-    PS_OUT_EFFECT_WB Out;
+    PS_OUT_EFFECT_WB Out = (PS_OUT_EFFECT_WB) 0;
+
     vector vMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
 
     float2 dir = vMask.rg * 2.0 - 1.0; // [-1,1]
@@ -277,14 +282,15 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
     float2 flowUV = saturate(UVTexcoord(In.vTexcoord) + dir * g_fTime * 1.f);
 
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
+    Out.vDistortion *= g_vColor;
     
     return Out;
 }
 
-//deprecated
 PS_OUT_EFFECT_WB PS_MAIN_DISTORTION(PS_IN_BLEND In)
 {
-    PS_OUT_EFFECT_WB Out;
+    PS_OUT_EFFECT_WB Out = (PS_OUT_EFFECT_WB) 0;
+
 
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0);

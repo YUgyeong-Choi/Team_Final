@@ -163,7 +163,7 @@ public:
 private: /* [ 락온 함수 ] */
 	void LockOnState(_float fTimeDelta);
 
-private: /* [ 슬룻 함수 ] */
+public: /* [ 슬룻 함수 ] */
 	void Callback_UpBelt();
 	void Callback_DownBelt();
 	void Use_Item();
@@ -173,6 +173,8 @@ private: /* [ 슬룻 함수 ] */
 	void LateUpdate_Slot(_float fTimeDelta);
 
 	_bool Find_Slot(const _wstring& strItemTag);
+
+	void Add_Icon(const _wstring& strItemTag);
 
 private: /* [ 이펙트 관리 함수 ]*/
 	void Set_GrinderEffect_Active(_bool bActive);
@@ -184,6 +186,7 @@ public: /* [ 페이탈 함수 ] */
 	void SetFatalTargetNull() { m_pFatalTarget = nullptr; }
 	void SetIsFatalBoss(_bool bIsFatalBoss) { m_bIsFatalBoss = bIsFatalBoss; }
 	_bool GetIsFatalBoss() const { return m_bIsFatalBoss; }
+	CUnit* GetFatalTarget() { return m_pFatalTarget; }
 
 private: /* [ 상태패턴 ] */
 	void ReadyForState();
@@ -245,6 +248,7 @@ private: /* [ 그림자 변수 ] */
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*			m_pTarget = { nullptr };
 	CUnit*					m_pFatalTarget = { nullptr };
+	CGameObject*			m_pHitedTarget = { nullptr };
 	CWeapon*				m_pWeapon = { nullptr };
 	CGameObject*			m_pInterectionStuff = { nullptr };
 	CPlayerLamp*			m_pPlayerLamp = { nullptr };
@@ -326,6 +330,7 @@ private: /* [ 플레이어 변수 ] */
 	_bool   m_bSetSound = {};
 	_bool   m_bCheckSound = {};
 	_bool   m_bResetSoundTime = true;
+	_bool   m_bSetCamera[9] = {};
 
 	_float	m_fMaxHP = { 100.f };
 	_float	m_fHP = { 100.f };
@@ -382,6 +387,9 @@ private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
 private: /* [ 공격한 적 ] */
 	class CUnit* m_pHitTarget = { nullptr };
+
+	_int m_iFatalAttackCount = {};
+
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

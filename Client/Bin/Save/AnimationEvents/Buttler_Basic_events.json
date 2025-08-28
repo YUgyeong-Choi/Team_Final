@@ -10,6 +10,20 @@
         {
             "ClipName": "AS_ATSA0_Skill_01_End_Before",
             "Duration": 243.0,
+            "Events": [
+                {
+                    "EventName": "AttackOn",
+                    "Time": 85.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 115.0
+                },
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 90.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 70.0
@@ -17,6 +31,16 @@
         {
             "ClipName": "AS_ATSA0_Skill_01_Loop",
             "Duration": 150.0,
+            "Events": [
+                {
+                    "EventName": "AttackOn",
+                    "Time": 20.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 40.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 70.0
@@ -24,6 +48,28 @@
         {
             "ClipName": "AS_ATSA0_Skill_01_Start",
             "Duration": 184.0,
+            "Events": [
+                {
+                    "EventName": "LookAt",
+                    "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "AttackOn",
+                    "Time": 30.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 60.0
+                },
+                {
+                    "EventName": "AddAttackCount",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 70.0
@@ -38,8 +84,34 @@
         {
             "ClipName": "AS_ATSA0_Skill_02",
             "Duration": 160.0,
+            "Events": [
+                {
+                    "EventName": "LookAt",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "AddAttackCount",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "AttackOn",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 52.0
+                },
+                {
+                    "EventName": "AttackOn",
+                    "Time": 62.0
+                },
+                {
+                    "EventName": "AttackOff",
+                    "Time": 100.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -248,6 +320,12 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_Start_B",
             "Duration": 30.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 70.0
@@ -277,19 +355,31 @@
             "ClipName": "AS_Groggy_Start",
             "Duration": 40.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
             "ClipName": "AS_Hit_B",
             "Duration": 83.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
             "ClipName": "AS_Hit_Dead_B",
             "Duration": 346.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 70.0
@@ -297,6 +387,12 @@
         {
             "ClipName": "AS_Hit_Dead_F",
             "Duration": 350.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 70.0
@@ -304,15 +400,27 @@
         {
             "ClipName": "AS_Hit_L",
             "Duration": 83.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
             "ClipName": "AS_Hit_R",
             "Duration": 83.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -514,8 +622,18 @@
         {
             "ClipName": "AS_Walk_C_B_Root",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "BackMoveEnd",
+                    "Time": 50.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -528,7 +646,13 @@
         {
             "ClipName": "AS_Walk_C_F_Root",
             "Duration": 120.0,
-            "IsLoop": false,
+            "Events": [
+                {
+                    "EventName": "LootAt",
+                    "Time": 1.0
+                }
+            ],
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 70.0
         },
@@ -542,8 +666,18 @@
         {
             "ClipName": "AS_Walk_C_L_Root",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "BackMoveEnd",
+                    "Time": 50.0
+                },
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         },
         {
@@ -556,8 +690,18 @@
         {
             "ClipName": "AS_Walk_C_R_Root",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "BackMoveEnd",
+                    "Time": 50.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 70.0
         }
     ]

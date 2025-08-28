@@ -98,6 +98,9 @@ HRESULT CUI_Guide::Initialize(void* pArg)
         CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
         pPlayer->Set_TimeScale(0.f);
 
+        if (m_Explainations.size() == 1)
+            m_Explainations[0]->Active_Update(true);
+
     }
 
 
@@ -111,7 +114,10 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
 {
     if (m_isFade == false && m_fCurrentAlpha <= 0.f)
     {
+        CCamera_Manager::Get_Instance()->SetbMoveable(true);
         Set_bDead();
+        if(nullptr != m_pTrigger)
+            m_pTrigger->Set_bDead();
         return;
     }
 
@@ -167,8 +173,17 @@ void CUI_Guide::Late_Update(_float fTimeDelta)
             pPart->Late_Update(fTimeDelta);
         }
 
-        for (auto& pButton : m_Buttons)
-            pButton->Late_Update(fTimeDelta);
+        if (m_Explainations.size() >= 2)
+        {
+            for (auto& pButton : m_Buttons)
+                pButton->Late_Update(fTimeDelta);
+        }
+        else
+        {
+            m_Buttons[0]->Late_Update(fTimeDelta);
+        }
+
+      
     }
 
    
@@ -197,8 +212,7 @@ void CUI_Guide::Check_Button()
             CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
             pPlayer->Set_TimeScale(1.f);
 
-            Set_bDead();
-            m_pTrigger->Set_bDead();
+          
             CUI_Manager::Get_Instance()->On_Panel();
 
            
@@ -238,45 +252,50 @@ void CUI_Guide::Check_Button()
 
     if (m_isActive)
     {
-        if (m_pGameInstance->Key_Down(DIK_A))
+        if (m_Explainations.size() >= 2)
         {
-            --m_iIndex;
+            if (m_pGameInstance->Key_Down(DIK_A))
+            {
+                --m_iIndex;
 
-            if (m_iIndex < 0)
-                m_iIndex = 0;
-        }
-        else if (m_pGameInstance->Key_Down(DIK_D))
-        {
-            ++m_iIndex;
+                if (m_iIndex < 0)
+                    m_iIndex = 0;
+            }
+            else if (m_pGameInstance->Key_Down(DIK_D))
+            {
+                ++m_iIndex;
 
-            if (m_iIndex >= m_iSize)
-                m_iIndex = m_iSize - 1;
-        }
+                if (m_iIndex >= m_iSize)
+                    m_iIndex = m_iSize - 1;
+            }
 
 
-        if (m_iIndex == 0)
-        {
-            m_Buttons[1]->Set_isActive(true);
-            m_Buttons[2]->Set_isActive(false);
-        }
-        else if (m_iIndex == m_iSize - 1)
-        {
-            m_Buttons[1]->Set_isActive(false);
-            m_Buttons[2]->Set_isActive(true);
-        }
-        else
-        {
-
-            m_Buttons[2]->Set_isActive(true);
-        }
-
-        for (_int i = 0; i < m_iSize; ++i)
-        {
-            if (i == m_iIndex)
-                m_Explainations[i]->Active_Update(true);
+            if (m_iIndex == 0)
+            {
+                m_Buttons[1]->Set_isActive(true);
+                m_Buttons[2]->Set_isActive(false);
+            }
+            else if (m_iIndex == m_iSize - 1)
+            {
+                m_Buttons[1]->Set_isActive(false);
+                m_Buttons[2]->Set_isActive(true);
+            }
             else
-                m_Explainations[i]->Active_Update(false);
+            {
+
+                m_Buttons[2]->Set_isActive(true);
+            }
+
+            for (_int i = 0; i < m_iSize; ++i)
+            {
+                if (i == m_iIndex)
+                    m_Explainations[i]->Active_Update(true);
+                else
+                    m_Explainations[i]->Active_Update(false);
+            }
         }
+
+        
     }
 
 
@@ -293,7 +312,7 @@ void CUI_Guide::Click_Interaction()
     {
         if (m_Buttons[0]->Get_isActive() && m_Buttons[0]->Check_Click())
         {
-          
+
 
             if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
             {
@@ -304,8 +323,7 @@ void CUI_Guide::Click_Interaction()
                 CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
                 pPlayer->Set_TimeScale(1.f);
 
-                Set_bDead();
-                m_pTrigger->Set_bDead();
+
                 CUI_Manager::Get_Instance()->On_Panel();
                 return;
             }
@@ -317,29 +335,30 @@ void CUI_Guide::Click_Interaction()
             m_iIndex = 0;
         }
 
-
-        if (m_Buttons[1]->Get_isActive()&& m_Buttons[1]->Check_Click())
+        if (m_Explainations.size() >= 2)
         {
-            ++m_iIndex;
+            if (m_Buttons[1]->Get_isActive() && m_Buttons[1]->Check_Click())
+            {
+                ++m_iIndex;
 
-            if (m_iIndex >= m_iSize)
-                m_iIndex = m_iSize - 1;
+                if (m_iIndex >= m_iSize)
+                    m_iIndex = m_iSize - 1;
 
-            m_Buttons[1]->Set_isHighlight(false);
+                m_Buttons[1]->Set_isHighlight(false);
+            }
+
+            if (m_Buttons[2]->Get_isActive() && m_Buttons[2]->Check_Click())
+            {
+                --m_iIndex;
+
+                if (m_iIndex < 0)
+                    m_iIndex = 0;
+
+                m_Buttons[2]->Set_isHighlight(false);
+            }
+
         }
 
-        if (m_Buttons[2]->Get_isActive() && m_Buttons[2]->Check_Click())
-        {
-            --m_iIndex;
-
-            if (m_iIndex < 0)
-                m_iIndex = 0;
-
-            m_Buttons[2]->Set_isHighlight(false);
-        }
-
-
-         
     }
 }
 

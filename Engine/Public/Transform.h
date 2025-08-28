@@ -191,6 +191,10 @@ private:
 	_vector m_vStartScale = {};
 	_vector m_vTargetScale = {};
 
+	// 중력 전용
+	_bool   m_bOnGround = {};
+	PxVec3  m_vVelocity = PxVec3{ 0.f, 0.f, 0.f };
+	_float3 m_vGravityVelocity = _float3{ 0.f, 0.f, 0.f };
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

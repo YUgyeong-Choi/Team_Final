@@ -83,7 +83,6 @@ HRESULT CEffect_Manager::Render()
     return S_OK;
 }
 
-
 CGameObject* CEffect_Manager::Make_Effect(_uint iLevelIndex, const _wstring& strEffectTag, const _wstring& strLayerTag, const _float3& vPresetPos, void* pArg)
 {
     auto	iter = m_ECJsonDescs.find(strEffectTag);
@@ -107,9 +106,6 @@ CGameObject* CEffect_Manager::Make_Effect(_uint iLevelIndex, const _wstring& str
         eEffectType = EFF_MESH;
     if (prefix == L"TE")
         eEffectType = EFF_TRAIL;
-
-
-
 
     // Effect 按眉 积己 棺 开流纺拳
     CGameObject* pInstance = { nullptr };
@@ -220,7 +216,11 @@ CEffectContainer* CEffect_Manager::Find_EffectContainer(const _wstring& strECTag
 
 void CEffect_Manager::Release_EffectContainer(const _wstring& strECTag)
 {
-    m_ECs.erase(strECTag);
+    auto	iter = m_ECs.find(strECTag);
+    if (iter == m_ECs.end())
+        return ;
+    Safe_Release(iter->second);
+    m_ECs.erase(iter);
 }
 
 void CEffect_Manager::Set_Dead_EffectContainer(const _wstring& strECTag)
@@ -230,6 +230,14 @@ void CEffect_Manager::Set_Dead_EffectContainer(const _wstring& strECTag)
         return;
     pEC->End_Effect();
     Release_EffectContainer(strECTag);
+}
+
+void CEffect_Manager::Set_Active_Effect(const _wstring& strECTag, _bool bActive)
+{
+    auto pEC = Find_EffectContainer(strECTag);
+    if (pEC == nullptr)
+        return;
+    pEC->Set_isActive(bActive);
 }
 
 HRESULT CEffect_Manager::Ready_Prototypes()
@@ -371,6 +379,7 @@ void CEffect_Manager::Store_EffectContainer(const _wstring& strECTag, class CEff
     if (nullptr != Find_EffectContainer(strECTag))
         return;
     m_ECs.emplace(make_pair(strECTag, pEC));
+    Safe_AddRef(pEC);
 }
 
 HRESULT CEffect_Manager::Ready_Prototype_Components(const json& j, EFFECT_TYPE eEffType)
@@ -589,4 +598,11 @@ void CEffect_Manager::Free()
     Safe_Release(m_pContext);
 
     Safe_Release(m_pGameInstance);
+
+    for (auto& pEC : m_ECs)
+    {
+        Safe_Release(pEC.second);
+    }
+    m_ECs.clear();
 }
+

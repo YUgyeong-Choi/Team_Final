@@ -174,8 +174,15 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     float3 vUp = normalize(cross(vLook, vRight));
 
     // === 기본 사이즈 반영 ===
-    vRight *= In[0].vPSize.x * 0.5f;
-    vUp *= In[0].vPSize.y * 0.5f;
+    float sizeX = In[0].vPSize.x * 0.5f;
+    float sizeY = In[0].vPSize.y * 0.5f;
+    
+    float lifeRatio = saturate(In[0].vLifeTime.y / In[0].vLifeTime.x); // 0 ~ 1
+    float sizeScale = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
+    sizeScale = 1.0 - sizeScale; // 남은 생명에 비례해 감소
+    
+    vRight *= sizeX * sizeScale;
+    vUp *= sizeY * sizeScale;
 
     // === 속도 방향 Stretch (길이만 늘림) ===
     float3 vDir = normalize(In[0].vDir.xyz);
@@ -239,7 +246,7 @@ struct PS_OUT
 
 PS_OUT PS_MAIN(PS_IN In)
 {
-    PS_OUT Out;
+    PS_OUT Out = (PS_OUT)0;
     
     Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset));
     
@@ -260,7 +267,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 PS_OUT PS_MAIN_MASKONLY(PS_IN In)
 {
-    PS_OUT Out;
+    PS_OUT Out = (PS_OUT)0;
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset)).r;
     if (mask < 0.003f)
@@ -287,12 +294,12 @@ struct PS_OUT_WB
     vector vAccumulation : SV_TARGET0;
     vector fRevealage : SV_TARGET1;
     vector vEmissive : SV_TARGET2;
+    vector vDistortion : SV_TARGET3;
 };
 
 PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
 {
-    PS_OUT_WB Out;
-        
+    PS_OUT_WB Out = (PS_OUT_WB) 0;
     
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset)).r;
     if (mask < 0.003f)
@@ -354,7 +361,7 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
 
 PS_OUT_WB PS_MAIN_DIFFUSE_WB(PS_IN In)
 {
-    PS_OUT_WB Out;
+    PS_OUT_WB Out = (PS_OUT_WB) 0;
         
     vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset));
     
@@ -375,6 +382,46 @@ PS_OUT_WB PS_MAIN_DIFFUSE_WB(PS_IN In)
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
     Out.fRevealage = vColor.a;
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+    
+    return Out;
+}
+
+PS_OUT_WB PS_MAIN_RAINONLY(PS_IN In)
+{
+    PS_OUT_WB Out = (PS_OUT_WB) 0;
+    
+     
+    float mask = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset)).r;
+    if (mask < 0.003f)
+        discard;
+    float4 vPreColor;
+    float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    
+    vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    vector vColor;
+    
+    vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
+    vColor.a = vPreColor.a * mask;
+    //vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x); // 0 ~ 1
+    float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
+    fade = 1.0 - fade; // 남은 생명에 비례해 감소
+    vColor.a *= fade;
+
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+    
+
+
+    float vMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0);
+    Out.vDistortion *= g_vColor;
+    Out.vDistortion.a *= 1.f - vMask;
+    
     
     return Out;
 }
@@ -435,6 +482,17 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN_DIFFUSE_WB();
+    }
+    pass Rain // 5
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN_CS();
+        GeometryShader = compile gs_5_0 GS_MAIN_VSTRETCH();
+        PixelShader = compile ps_5_0 PS_MAIN_RAINONLY();
     }
  
 }

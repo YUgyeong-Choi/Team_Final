@@ -51,8 +51,6 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 void CButtler_Train::Priority_Update(_float fTimeDelta)
 {
-	if (!m_bActive)
-		return;
 
 	__super::Priority_Update(fTimeDelta);
 
@@ -64,7 +62,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_bActive = false;
+			m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", this);
 			m_pWeapon->SetbIsActive(false);
 		}
 	}
@@ -86,8 +84,6 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 void CButtler_Train::Update(_float fTimeDelta)
 {
-	if (!m_bActive)
-		return;
 
 	Calc_Pos(fTimeDelta);
 
@@ -179,8 +175,6 @@ void CButtler_Train::Update(_float fTimeDelta)
 
 void CButtler_Train::Late_Update(_float fTimeDelta)
 {
-	if (!m_bActive)
-		return;
 
 	__super::Late_Update(fTimeDelta);
 
@@ -369,14 +363,16 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
 
-		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
+		m_fHp -= pWeapon->Get_CurrentDamage() ;
 
-		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() / 2.f);
+		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() );
 
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
+
+		m_isDetect = true;
 
 		if (m_fHp <= 0 && !m_isFatal)
 		{
@@ -387,12 +383,25 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
 			m_bUseLockon = false;
+
+			if (nullptr != m_pHPBar)
+				m_pHPBar->Set_RenderTime(0.f);
+			return;
+		}
+		else if (m_fHp <= 0 && m_isFatal)
+		{
+			CLockOn_Manager::Get_Instance()->Set_Off(this);
+			m_bUseLockon = false;
+
+			if (nullptr != m_pHPBar)
+				m_pHPBar->Set_RenderTime(0.f);
 			return;
 		}
 
 		if (!m_isCanGroggy)
 		{
-			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos)
+			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos || 
+				m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
 				return;
 
 			if (m_strStateName.find("Hit") != m_strStateName.npos)
@@ -424,11 +433,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		}
 
-		m_bPlayOnce = true;
 	}
-
-
-
 }
 
 void CButtler_Train::Calc_Pos(_float fTimeDelta)
@@ -552,6 +557,8 @@ void CButtler_Train::Start_Fatal_Reaction()
 	m_pAnimator->SetTrigger("Fatal");
 
 	m_isFatal = true;
+	m_pWeapon->SetisAttack(false);
+	m_pWeapon->Clear_CollisionObj();
 }
 
 void CButtler_Train::Reset()

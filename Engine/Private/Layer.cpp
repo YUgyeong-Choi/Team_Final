@@ -39,6 +39,22 @@ HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 	return S_OK;
 }
 
+CGameObject* CLayer::Remove_GameObject(CGameObject* pGameObject)
+{
+	for (auto it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
+	{
+		if (*it == pGameObject)
+		{
+			CGameObject* removedObj = *it;
+			m_GameObjects.erase(it);
+			return removedObj; // 제거한 객체 반환
+		}
+	}
+
+	return nullptr; // 못 찾으면 nullptr 반환
+}
+
+
 void CLayer::Priority_Update(_float fTimeDelta)
 {
 	for (auto iter = m_GameObjects.begin(); iter != m_GameObjects.end(); )

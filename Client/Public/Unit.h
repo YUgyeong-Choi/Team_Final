@@ -49,8 +49,6 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
 
-	virtual void Reset() {};
-
 	void SetCascadeShadow();
 	
 
@@ -85,6 +83,8 @@ public:
 	_float4& Get_LockonPos() { return m_vLockonPos; }
 	//락온에서 hp 0이하인거는 제외할라고(죽는모션할떄 락온되서)
 	_bool Get_UseLockon() { return m_bUseLockon; }
+
+
 public:
 	// 데미지를 준다
 	virtual void Attack(CGameObject* pOther, COLLIDERTYPE eColliderType) {};

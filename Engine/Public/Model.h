@@ -71,6 +71,7 @@ public:
 	}
 public:
 	virtual HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iMeshIndex, aiTextureType eType, _uint iTextureIndex = 0);
+	_bool HasTexture(_uint iMaterialIndex, aiTextureType eType) const;
 	HRESULT Bind_Bone_Matrices(class CShader* pShader, const _char* pConstantName, _uint iMeshIndex);
 	HRESULT Bind_SkinningSRVs(class CShader* pShader, _uint iMeshIndex)
 	{

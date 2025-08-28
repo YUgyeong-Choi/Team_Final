@@ -41,6 +41,9 @@ HRESULT CMeshEffect::Initialize(void* pArg)
 
 void CMeshEffect::Priority_Update(_float fTimeDelta)
 {
+	if (m_isActive == false || m_isEffectActive == false)
+		return;
+
 	m_fTimeAcc += fTimeDelta;
 
 }
@@ -58,8 +61,9 @@ void CMeshEffect::Late_Update(_float fTimeDelta)
 	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
 
 	//m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
-	if (m_isActive == false)
+	if (m_isActive == false || m_isEffectActive == false)
 		return;
+
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
 

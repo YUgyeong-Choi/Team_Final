@@ -43,6 +43,9 @@ void CParticleEffect::Priority_Update(_float fTimeDelta)
 
 void CParticleEffect::Update(_float fTimeDelta)
 {
+	if (m_isActive == false || m_isEffectActive == false)
+		return;
+
 	//// 키프레임 보간 때문에 이거 있어야함 ,,
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 	m_fLifeTime += fTimeDelta;
@@ -96,6 +99,8 @@ void CParticleEffect::Late_Update(_float fTimeDelta)
 {
 	/* WeightBlend */
 	//m_iRenderGroup = (_int)RENDERGROUP::RG_EFFECT_GLOW;
+	if (m_isActive == false || m_isEffectActive == false)
+		return;
 
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
@@ -123,6 +128,7 @@ _float CParticleEffect::Ready_Death()
 	m_bReadyDeath = true;
 	return m_fMaxLifeTime;
 }
+
 
 void CParticleEffect::Set_Loop(_bool isLoop)
 {

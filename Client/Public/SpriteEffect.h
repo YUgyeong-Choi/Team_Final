@@ -30,6 +30,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 	virtual _float Ready_Death();
+	virtual void Pause() { m_isEffectActive = false; }
+
 protected:
 	CVIBuffer_Rect*		m_pVIBufferCom = { nullptr };
 

@@ -44,7 +44,7 @@ protected:
 	void Bind_Matrices();
 
 public:
-	void StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
+	void StartShake(_float fIntensity, _float fDuration, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f, _float fShakeUpdateInterval = 0.016f);
 	void StartRot(_vector vRot, _float fDuration);
 	void Update_Camera_Shake(_float fTimedelta);
 	void Update_Camera_MoreRot(_float fTimedelta);
@@ -68,6 +68,13 @@ protected:
 	_float				m_fShakeFreqPos = {};
 	_float				m_fShakeFreqRot = {};
 	_float				m_fShakeIntensity = {};
+	_float m_fShakeUpdateInterval = 0.016f;
+	/*
+	0.016f → 60FPS 기준으로 매 프레임 갱신
+	0.033f → 60FPS 기준으로 2프레임마다 갱신
+	0.05f → 60FPS 기준으로 3프레임 정도마다 갱신
+	*/
+	_float m_fShakeUpdateAccum = 0.f;
 
 	_bool				m_bMoreRot = {};
 	_float				m_fMoreRotTime = {};

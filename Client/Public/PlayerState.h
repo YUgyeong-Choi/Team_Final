@@ -629,7 +629,7 @@ public:
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_pAnimator->SetBool("HasLamp", true);
             m_pOwner->m_pAnimator->SetTrigger("UseItem");
-
+			
             m_pOwner->m_bUseLamp = true;
             m_pOwner->m_bItemSwitch = true;
             m_pOwner->m_bResetSoundTime = false;
@@ -642,6 +642,10 @@ public:
             {
                 m_pOwner->m_pAnimator->SetTrigger("Grinder");
                 m_pOwner->m_bUseGrinder = true;
+            }
+            else
+            {
+                m_bGrinderFail = true;
             }
         }
         else if (m_pOwner->m_bPulseReservation || m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
@@ -726,6 +730,7 @@ public:
         m_fPulseTime = 0.f;
         m_fStateTime = 0.f;
         m_bGrinderEnd = false;
+        m_bGrinderFail = false;
         m_bDoOnce = false;
 
         if (m_pOwner->m_isSelectUpBelt)
@@ -766,7 +771,7 @@ public:
             return EPlayerState::IDLE;
         }
 
-        if (m_bGrinderEnd && m_fGrinderTime > 0.3f)
+        if ((m_bGrinderEnd && m_fGrinderTime > 0.3f) || m_bGrinderFail)
         {
             if (input.bMove)
             {
@@ -815,6 +820,7 @@ private:
 private:
 	_bool m_bPreWalk = { false };
     _bool m_bGrinderEnd = {};
+    _bool m_bGrinderFail = {};
     _float m_fPulseTime = {};
     _float m_fGrinderTime = {};
 };
@@ -2671,8 +2677,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("MainSkill");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
-        m_pOwner->m_fMana -= 100.f;
-        m_pOwner->Callback_Mana();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2688,8 +2692,6 @@ public:
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
-                m_pOwner->m_fMana -= 100.f;
-                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 
@@ -2703,8 +2705,6 @@ public:
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
-                m_pOwner->m_fMana -= 100.f;
-                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 
@@ -3004,6 +3004,10 @@ public:
             m_pOwner->m_pAnimator->SetTrigger("Hited");
         }
 
+
+
+
+        /* [ 모든 진행이 종료된다. ] */
         if (m_pOwner->m_pWeapon)
         {
             m_pOwner->m_pWeapon->SetisAttack(false);
@@ -3012,15 +3016,14 @@ public:
         if (m_pOwner->m_pLegionArm)
             m_pOwner->m_pLegionArm->SetisAttack(false);
 
-        m_pOwner->m_pAnimator->SetBool("Front", false);
-        m_pOwner->m_pAnimator->SetBool("Left", false);
-        m_pOwner->m_pAnimator->SetBool("Right", false);
-        m_pOwner->m_pAnimator->SetBool("Back", false);
+        m_pOwner->m_pAnimator->ResetParameters();
+        m_pOwner->Set_GrinderEffect_Active(false);
 
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
+
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
+
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -3100,9 +3103,10 @@ public:
     virtual void Enter() override
     {
         m_fStateTime = 0.f;
-
-        /* [ 콜라이더 및 방향 스위치 초기화 ] */
         m_pOwner->m_bIsInvincible = true;
+
+        
+        /* [ 모든 진행이 종료된다. ] */
         if (m_pOwner->m_pWeapon)
         {
             m_pOwner->m_pWeapon->SetisAttack(false);
@@ -3111,14 +3115,9 @@ public:
         if (m_pOwner->m_pLegionArm)
             m_pOwner->m_pLegionArm->SetisAttack(false);
 
-        m_pOwner->m_pAnimator->SetBool("Front", false);
-        m_pOwner->m_pAnimator->SetBool("Left", false);
-        m_pOwner->m_pAnimator->SetBool("Right", false);
-        m_pOwner->m_pAnimator->SetBool("Back", false);
+        m_pOwner->m_pAnimator->ResetParameters();
+        m_pOwner->Set_GrinderEffect_Active(false);
 
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
-        m_pOwner->m_pAnimator->SetBool("Move", false);
-        m_pOwner->m_pAnimator->SetBool("Run", false);
 
         /* [ 애니메이션 설정 ] */
         /* [ 어느방향에서 맞는지 설정하기 ] */
@@ -3144,6 +3143,7 @@ public:
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
+        CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -3167,6 +3167,8 @@ public:
             m_pOwner->m_fHP = 100.f;
             m_pOwner->Callback_HP();
             m_pOwner->m_bIsRrevival = true;
+
+            m_pGameInstance->Reset_LevelUnits();
         }
 
         if (m_pOwner->m_bIsRrevival)
@@ -3181,8 +3183,6 @@ public:
         m_fRrevivalTime = 0.f;
         m_pOwner->m_bIsRrevival = false;
         m_pOwner->m_bIsInvincible = false;
-
-        m_pGameInstance->Reset_LevelUnits();
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

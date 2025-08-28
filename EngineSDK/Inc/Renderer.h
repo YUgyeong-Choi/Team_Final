@@ -81,6 +81,7 @@ private:
 	HRESULT Render_Blur(const _wstring& strTargetTag);
 	HRESULT Render_Effect_Glow();
 	HRESULT Render_Effect_WBGlow();
+	HRESULT Render_PBR_Glow();
 	HRESULT Render_Effect_NonLight();
 	HRESULT Render_Effect_WB();
 	HRESULT Render_Effect_WB_Composite();
