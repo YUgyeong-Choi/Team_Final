@@ -2338,6 +2338,9 @@ void CPlayer::Use_Item()
 		Callback_UpBelt();
 	else
 		Callback_DownBelt();
+
+	if (m_pSelectItem->Get_ProtoTag().find(TEXT("Lamp")) != _wstring::npos)
+		m_pPlayerLamp->Set_isUse(m_pSelectItem->Get_isActive());
 }
 
 void CPlayer::PriorityUpdate_Slot(_float fTimeDelta)
