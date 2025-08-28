@@ -41,6 +41,8 @@ public:
 
 	HRESULT Ready_Components();
 
+	virtual void Reset() { m_iUseCount = m_iMaxCount; }
+
 	void Heal();
 
 private:
