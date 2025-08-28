@@ -63,6 +63,8 @@ private:
 	_float  m_fMaxHP = {};
 	_float  m_fDamage = {};
 
+	_float m_fCurrentRatio = { 1.f };
+
 	_float m_fRenderTime = { };
 
 	_wstring m_strName = {};

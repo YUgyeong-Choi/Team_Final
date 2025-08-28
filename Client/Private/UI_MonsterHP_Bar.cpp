@@ -96,6 +96,16 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
         m_fRenderTime = 0.f;
         m_fDamage = 0.f;
     }
+
+
+    _float fRatio = *m_pHP / (m_fMaxHP);
+    
+    if (m_fCurrentRatio > fRatio)
+    {
+        m_fCurrentRatio -= fTimeDelta * 2.f;
+    }
+    else
+        m_fCurrentRatio = fRatio;
        
 }
 
@@ -202,7 +212,7 @@ HRESULT CUI_MonsterHP_Bar::Render()
         if (m_isBoss)
             m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.24f , m_fY - g_iWinSizeY * 0.03f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.625f, 0.f);
         else
-            m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.0325f , m_fY - g_iWinSizeY * 0.02f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.7f, 0.f);
+            m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.035f , m_fY - g_iWinSizeY * 0.02f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.7f, 0.f);
     }
 
     if (!m_strName.empty())
@@ -279,9 +289,9 @@ HRESULT CUI_MonsterHP_Bar::Bind_ShaderResources()
     if (FAILED(m_pBlurTextureCom->Bind_ShaderResource(m_pShaderCom, "g_HighlightTexture", 0)))
         return E_FAIL;
 
-    _float fRatio = *m_pHP / (m_fMaxHP);
+ 
 
-    if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &(fRatio), sizeof(_float))))   
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &(m_fCurrentRatio), sizeof(_float))))   
         return E_FAIL;
 
     _float fGroogy = _float(*m_isGroggy);

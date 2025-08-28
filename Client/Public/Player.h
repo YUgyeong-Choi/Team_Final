@@ -163,7 +163,7 @@ public:
 private: /* [ 락온 함수 ] */
 	void LockOnState(_float fTimeDelta);
 
-private: /* [ 슬룻 함수 ] */
+public: /* [ 슬룻 함수 ] */
 	void Callback_UpBelt();
 	void Callback_DownBelt();
 	void Use_Item();
@@ -173,6 +173,8 @@ private: /* [ 슬룻 함수 ] */
 	void LateUpdate_Slot(_float fTimeDelta);
 
 	_bool Find_Slot(const _wstring& strItemTag);
+
+	void Add_Icon(const _wstring& strItemTag);
 
 private: /* [ 이펙트 관리 함수 ]*/
 	void Set_GrinderEffect_Active(_bool bActive);
@@ -385,6 +387,9 @@ private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
 private: /* [ 공격한 적 ] */
 	class CUnit* m_pHitTarget = { nullptr };
+
+	_int m_iFatalAttackCount = {};
+
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

@@ -17,6 +17,20 @@
         {
             "ClipName": "AS_Pino_Fatal_Middle_Swing",
             "Duration": 252.0,
+            "Events": [
+                {
+                    "EventName": "ReceiveDamageToFatalTarget",
+                    "Time": 31.0
+                },
+                {
+                    "EventName": "ReceiveDamageToFatalTarget",
+                    "Time": 68.0
+                },
+                {
+                    "EventName": "ReceiveDamageToFatalTarget",
+                    "Time": 127.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 60.0
