@@ -267,6 +267,13 @@ public:
 	void ToggleDebugArea();
 #pragma endregion
 
+#pragma region PULLING_MANAGER
+	void Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
+	void Use_PoolObject(const _wstring& wsLayerName);
+	void UseAll_PoolObjects(const _wstring& wsLayerName);
+	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };

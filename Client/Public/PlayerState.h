@@ -3144,6 +3144,7 @@ public:
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
+        CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -3167,6 +3168,8 @@ public:
             m_pOwner->m_fHP = 100.f;
             m_pOwner->Callback_HP();
             m_pOwner->m_bIsRrevival = true;
+
+            m_pGameInstance->Reset_LevelUnits();
         }
 
         if (m_pOwner->m_bIsRrevival)
@@ -3181,8 +3184,6 @@ public:
         m_fRrevivalTime = 0.f;
         m_pOwner->m_bIsRrevival = false;
         m_pOwner->m_bIsInvincible = false;
-
-        m_pGameInstance->Reset_LevelUnits();
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

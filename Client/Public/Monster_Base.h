@@ -84,10 +84,6 @@ public: /* [ Setup 함수 ] */
 	void Push_Other(_vector vHitPos, _vector vNormal);
 
 	virtual void Start_Fatal_Reaction() {};
-
-public: /* [ 리셋 하기 위한 ] */
-	_bool Get_bPlayOnce() { return m_bPlayOnce; }
-	_bool Get_bActive() { return m_bActive; }
 	
 protected:
 
@@ -139,8 +135,7 @@ private: /* [ 루트모션 관련 변수 ] */
 	_float   m_fSmoothThreshold = 0.1f;
 
 protected: /* [ 리셋 관련 ] */
-	_bool  m_bPlayOnce = false;
-	_bool  m_bActive = true; // 죽었는 지
+
 	_float4x4 m_InitWorldMatrix;
 public:
 	static CMonster_Base* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

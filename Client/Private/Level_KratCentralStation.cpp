@@ -70,6 +70,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
+	Reset();
+
 	return S_OK;
 }
 
@@ -198,11 +200,16 @@ HRESULT CLevel_KratCentralStation::Render()
 
 HRESULT CLevel_KratCentralStation::Reset()
 {
-	for (auto& pMonster : m_vecMonster)
-	{
-		if(pMonster->Get_bPlayOnce() || !pMonster->Get_bActive())
-			pMonster->Reset();
-	}
+
+	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster");
+	for (auto& obj : objList)
+		m_pGameInstance->Return_PoolObject(L"Layer_Monster", obj);
+	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster_Normal");
+	for (auto& obj : objList)
+		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj);
+
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal");
 
 	return S_OK;
 }
@@ -925,10 +932,8 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				UnitDesc.WorldMatrix = WorldMatrix;
 				UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
-				//푸오쿠는 따로 생성
-				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"), &UnitDesc)))
-					return E_FAIL;
+				CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"), &UnitDesc));
+				m_pGameInstance->Add_PoolObject(L"Layer_Monster", pObj);
 
 				continue;
 			}
@@ -947,19 +952,9 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 
 			wstring wsPrototypeTag = TEXT("Prototype_GameObject_Monster_") + wstrMonsterName;
 
-			CGameObject* pObj;
-			if (FAILED(m_pGameInstance->Add_GameObjectReturn(
-				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
-				wsPrototypeTag.c_str(),
-				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION),
-				TEXT("Layer_Monster_Normal"),
-				&pObj, &Desc)))
-			{
-				return E_FAIL;
-			}
 
-			if (CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pObj))
-				m_vecMonster.push_back(pMonster);
+			CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), wsPrototypeTag, &Desc));
+			m_pGameInstance->Add_PoolObject(L"Layer_Monster_Normal", pObj);
 		}
 	}
 
