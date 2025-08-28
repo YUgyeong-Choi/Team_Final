@@ -259,6 +259,8 @@ void CFuoco::Update(_float fTimeDelta)
 	}
 #pragma endregion
 
+
+
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
 		m_pAnimator->SetTrigger("SpecialDie");

@@ -31,7 +31,7 @@
 #include "UI_Manager.h"
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-		: CLevel { pDevice, pContext }
+	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
 {
 
@@ -48,7 +48,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
 	m_pBGM->Play();
 
-	if(FAILED(Ready_Video()))
+	if (FAILED(Ready_Video()))
 		return E_FAIL;
 
 	/* [ 셰이더 값 세팅 ] */
@@ -70,6 +70,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
+	Reset();
 
 	//데칼 테스트(영웅)
 	CStatic_Decal::DECAL_DESC DecalDesc = {};
@@ -104,14 +105,14 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 
-		
+
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_bEndVideo)
 	{
-		if(m_pStartVideo)
+		if (m_pStartVideo)
 			m_pStartVideo->Set_bDead();
-	//	m_pStartVideo = nullptr;
+		//	m_pStartVideo = nullptr;
 		m_bEndVideo = true;
 
 		/* [ 플레이어 제어 ] */
@@ -121,7 +122,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 	if (m_pStartVideo->Get_bDead() && !m_bEndVideo)
 	{
-	//	m_pStartVideo = nullptr;
+		//	m_pStartVideo = nullptr;
 
 		m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_End");
 		CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
@@ -135,7 +136,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if (!m_bEndVideo)
 		return;
 
-	if(KEY_DOWN(DIK_H))
+	if (KEY_DOWN(DIK_H))
 		ToggleHoldMouse();
 	if (m_bHold)
 	{
@@ -175,7 +176,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 		{
 			static _bool bEfActv = { true };
 			bEfActv = !bEfActv;
-			
+
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("StationRain_1"), bEfActv);
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("StationRain_2"), bEfActv);
 		}
@@ -496,27 +497,27 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	// Area 1 (우선순위 최상)
 	_float3 a1p0 = _float3{ 35.73f, -2.87f,  4.97f };
 	_float3 a1p1 = _float3{ -10.57f,  9.92f, -4.62f };
-	_float3 a1Min, a1Max; 
+	_float3 a1Min, a1Max;
 	FnToAABB(a1p0, a1p1, a1Min, a1Max);
 
 	// Area 2
 	_float3 a2p0 = _float3{ 61.82f, -5.39f,  8.25f };
 	_float3 a2p1 = _float3{ 32.16f,  8.91f, -4.62f };
-	_float3 a2Min, a2Max; 
+	_float3 a2Min, a2Max;
 	FnToAABB(a2p0, a2p1, a2Min, a2Max);
 
 	// Area 3
 	_float3 a3p0 = _float3{ 110.f, -5.63f,  32.20f };
 	_float3 a3p1 = _float3{ -40.69f, 52.55f, -61.73f };
-	_float3 a3Min, a3Max; 
+	_float3 a3Min, a3Max;
 	FnToAABB(a3p0, a3p1, a3Min, a3Max);
 
 	// Area 4
-	_float3 a4p0 = _float3{ 120.04f, - 5.32f, 4.66f };
+	_float3 a4p0 = _float3{ 120.04f, -5.32f, 4.66f };
 	_float3 a4p1 = _float3{ 95.67f, 15.49f, -21.39f };
 	_float3 a4Min, a4Max;
 	FnToAABB(a4p0, a4p1, a4Min, a4Max);
-	
+
 	// Area 5
 	_float3 a5p0 = _float3{ 110.35f, -5.63f,  32.20f };
 	_float3 a5p1 = _float3{ 26.53f,  49.64f, -52.41f };
@@ -536,8 +537,8 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a7p0, a7p1, a7Min, a7Max);
 
 	// Area 8
-	_float3 a8p0 = _float3{ 178.65f, 1.57f, - 16.40f };
-	_float3 a8p1 = _float3{ 163.46f, 21.62f, - 28.31f };
+	_float3 a8p0 = _float3{ 178.65f, 1.57f, -16.40f };
+	_float3 a8p1 = _float3{ 163.46f, 21.62f, -28.31f };
 	_float3 a8Min, a8Max;
 	FnToAABB(a8p0, a8p1, a8Min, a8Max);
 
@@ -628,7 +629,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 		if (!m_pGameInstance->AddArea_AABB(
 			4, a4Min, a4Max, vecAdj4, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
-	} 
+	}
 	{
 		/* [ 5번 구역 ] */
 		const vector<_uint> vecAdj5 = { 4, 6 };
@@ -757,7 +758,7 @@ HRESULT CLevel_KratCentralStation::Ready_Layer_Sky(const _wstring strLayerTag)
 
 HRESULT CLevel_KratCentralStation::Ready_UI()
 {
-	
+
 	CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Panel_Player_LU.json");
@@ -784,10 +785,10 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 
 	CUIObject::UIOBJECT_DESC eLockonDesc = {};
-	
+
 	eLockonDesc.fSizeX = 50.f;
 	eLockonDesc.fSizeY = 50.f;
-	
+
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LockOn_Icon"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
@@ -836,7 +837,7 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 HRESULT CLevel_KratCentralStation::Ready_Video()
 {
-	
+
 	CUI_Video::VIDEO_UI_DESC eDesc = {};
 	eDesc.eType = CUI_Video::VIDEO_TYPE::INTRO;
 	eDesc.fOffset = 0.0f;
@@ -857,9 +858,9 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 
 	m_pStartVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Background_Video")));
-//	Safe_AddRef(m_pStartVideo);
+	//	Safe_AddRef(m_pStartVideo);
 
-	
+
 
 	return S_OK;
 }
@@ -1144,7 +1145,7 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 						data.strSoundText = snd["Text"].get<string>();
 					}
 
-					if(type == 0)
+					if (type == 0)
 						data.strSpeaker = "";
 					else
 						data.strSpeaker = snd["Speaker"].get<string>();
@@ -1158,7 +1159,7 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 
 				CTriggerSound::TRIGGERNOMESH_DESC Desc{};
 				Desc.vPos = VecSetW(vPosArr, 1.f);
-				Desc.Rotation = VecToFloat3(rotDegArr);       
+				Desc.Rotation = VecToFloat3(rotDegArr);
 				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
 				Desc.eTriggerBoxType = static_cast<TRIGGERSOUND_TYPE>(triggerType);
@@ -1173,7 +1174,7 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 				CTriggerTalk::TRIGGERTALK_DESC Desc{};
 				string objectTag = j["ObjectTag"].get<string>();
 				Desc.vPos = VecSetW(vPosArr, 1.f);
-				Desc.Rotation = VecToFloat3(rotDegArr);      
+				Desc.Rotation = VecToFloat3(rotDegArr);
 				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
 				Desc.eTriggerBoxType = static_cast<TRIGGERSOUND_TYPE>(triggerType);
@@ -1191,7 +1192,8 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerTalk"),
 					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerTalk"), &Desc)))
 					return E_FAIL;
-			}else if (type == 2) {
+			}
+			else if (type == 2) {
 				const int  triggerType = j.value("TriggerType", 0);
 
 				CTriggerUI::TRIGGERUI_DESC Desc{};
@@ -1395,5 +1397,5 @@ void CLevel_KratCentralStation::Free()
 	Safe_Release(m_pShaderComPBR);
 	Safe_Release(m_pShaderComANIM);
 	Safe_Release(m_pShaderComInstance);
-//	Safe_Release(m_pStartVideo);
+	//	Safe_Release(m_pStartVideo);
 }
