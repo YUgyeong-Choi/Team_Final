@@ -119,6 +119,24 @@
       "triggerSize": [ 5.0, 0.2, 0.2 ]
     },
     {
+      "ClassType": 0,
+      "TriggerType": 5,
+      "vPos": [ 171.698608, 5.006557, -32.148464 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 5.0, 0.2, 0.2 ],
+      "SoundDatas": [
+        {
+          "SoundName": "0_Dialog_Gemini_S00_S6_text_1",
+          "Text": "어두운 곳은 시야 확보 필요."
+        },
+        {
+          "SoundName": "1_Dialog_Gemini_S00_S6_1_text_1",
+          "Text": "등불을 켜면 밝힐 수 있다."
+        }
+      ]
+    },
+    {
       "ClassType": 2,
       "TriggerType": 2,
       "vPos": [ 146.530441, 3.006557, -35.049854 ],
