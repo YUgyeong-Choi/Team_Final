@@ -944,7 +944,19 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 
 				continue;
 			}
+			else  if (wstrMonsterName == TEXT("Elite_Police"))
+			{
+				CUnit::UNIT_DESC UnitDesc{};
+				UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+				UnitDesc.wsNavName = StringToWString(Map);
+				UnitDesc.WorldMatrix = WorldMatrix;
+				UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
+				CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Elite_Police"), &UnitDesc));
+				m_pGameInstance->Add_PoolObject(L"Layer_Monster", pObj);
+
+				continue;
+			}
 			// 오브젝트 생성 Desc 채우기
 			CMonster_Base::MONSTER_BASE_DESC Desc{};
 

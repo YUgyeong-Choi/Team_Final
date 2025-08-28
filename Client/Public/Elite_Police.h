@@ -70,11 +70,9 @@ public:
 
 private:
     virtual HRESULT Ready_Components(void* pArg) override;
-    virtual HRESULT Ready_Actor() override;
     virtual void Ready_BoneInformation() override;
     HRESULT Ready_Weapon();
 
-    virtual void Update_Collider() override;
     virtual void UpdateAttackPattern(_float fDistance, _float fTimeDelta) override;
     virtual void UpdateStateByNodeID(_uint iNodeID) override;
     virtual void UpdateSpecificBehavior() override;
@@ -96,6 +94,8 @@ private:
     _bool CheckConditionFlameField();
 
     void ChosePatternWeightByDistance(_float fDistance);
+
+	void SetupAttackByType(EEliteAttackPattern ePattern);
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
 
