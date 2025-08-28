@@ -207,7 +207,6 @@ HRESULT CLevel_KratCentralStation::Render()
 
 HRESULT CLevel_KratCentralStation::Reset()
 {
-
 	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster");
 	for (auto& obj : objList)
 		m_pGameInstance->Return_PoolObject(L"Layer_Monster", obj);

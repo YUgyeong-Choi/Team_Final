@@ -983,6 +983,8 @@ void CGameInstance::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pO
 
 void CGameInstance::Release_Engine()
 {
+	Safe_Release(m_pPulling_Manager);
+
 	Safe_Release(m_pFrustum);
 
 	Safe_Release(m_pShadow);
@@ -1022,8 +1024,6 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pOctoTree_Manager);
 
 	Safe_Release(m_pArea_Manager);
-
-	Safe_Release(m_pPulling_Manager);
 
 	CComputeShader::ReleaseCache(); // Ä³½ÌÇØµÐ ÄÄÇ»Æ® ¼ÎÀÌ´õµé ÇØÁ¦
 
