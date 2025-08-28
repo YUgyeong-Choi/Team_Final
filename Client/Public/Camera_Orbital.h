@@ -48,6 +48,7 @@ public:
 	
 	void Set_LockOn(CGameObject* pTarget, _bool bActive);
 	void Set_ActiveTalk(_bool bActive, CGameObject*  pTarget, _bool bCanMove, _float fTalkOffSet);
+	void Start_DistanceLerp(_float fTargetLerpDistance, _float fDistanceLerpSpeed);
 private:
 	// 카메라 Look 관련
 	/* [ 평소에 실행 ] */
@@ -59,6 +60,8 @@ private:
 
 	// 카메라 Pos 관련
 	void Update_CameraPos(_float fTimeDelta);
+
+	void Update_LerpDistacne(_float fTimeDelta);
 private:
 	_bool			m_bSetPitchYaw = false;
 
@@ -69,7 +72,6 @@ private:
 	_float			m_fTargetLerpSpeed = 0.f;
 
 	_float			m_fDistance = 3.f;
-	_float			m_fZoomSpeed = 0.5f;
 	_float			m_fMouseSensor = { };
 
 	_vector			m_vTargetCamPos = {};
@@ -82,6 +84,12 @@ private:
 	_bool			m_bTalkActive = false;
 	_bool			m_bCanMoveTalk = true;
 	_float			m_fTalkOffSet = 0.f;
+private:
+	_bool m_bLerpDistanceStart = {};
+	_bool m_bLerpDistanceEnd = {};
+	_float m_fSaveDistance = {};
+	_float m_fTargetLerpDistance = {};
+	_float m_fDistanceLerpSpeed = {};
 
 	_bool m_bActive = false;
 private:
@@ -90,7 +98,6 @@ private:
 	const _float m_fDistanceMin = 3.0f;     //  플레이어 & 타겟이 너무 가까워 지는거 방지
 	const _float m_fDistanceMax = 6.0f;     // 플레이어 & 타겟이 멀어져서 지는거 방지
 	const _float fMinPlayerDepth = 1.2f;    // 플레이어 카메라간의 최소 거리
-	_float m_fCurDistance = 3.0f; //m_fDistanceMin 같도록
 private:
 	CGameObject*	m_pPlayer = { nullptr };
 	// 락온이 안될 때는 항상 nullptr
