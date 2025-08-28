@@ -1328,6 +1328,22 @@ void CPlayer::Register_Events()
 		{
 			Use_Item();
 		});
+
+	m_pAnimator->RegisterEventListener("ReceiveDamageToFatalTarget", [this]()
+		{
+			if (m_pWeapon && m_pFatalTarget)
+			{
+				m_pWeapon->Clear_CollisionObj();
+				++m_iFatalAttackCount;
+				m_pWeapon->SetDamageRatio(0.5f + m_iFatalAttackCount);
+				m_pFatalTarget->ReceiveDamage(m_pWeapon, COLLIDERTYPE::PLAYER_WEAPON);
+				m_pWeapon->SetDamageRatio(1.f);
+
+			}
+
+			if (m_iFatalAttackCount == 3)
+				m_iFatalAttackCount = 0;
+		});
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)

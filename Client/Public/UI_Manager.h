@@ -61,7 +61,7 @@ private:
     CGameInstance* m_pGameInstance = { nullptr };
 private:
     // 
-    list<CUIObject*> m_pPanel = {};
+    list<CUI_Container*> m_pPanel = {};
 
     map<_wstring, CUIObject*> m_UImap = {};
     

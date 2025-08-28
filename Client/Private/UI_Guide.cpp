@@ -112,6 +112,7 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
     if (m_isFade == false && m_fCurrentAlpha <= 0.f)
     {
         Set_bDead();
+        m_pTrigger->Set_bDead();
         return;
     }
 
@@ -197,8 +198,7 @@ void CUI_Guide::Check_Button()
             CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
             pPlayer->Set_TimeScale(1.f);
 
-            Set_bDead();
-            m_pTrigger->Set_bDead();
+          
             CUI_Manager::Get_Instance()->On_Panel();
 
            
@@ -304,8 +304,7 @@ void CUI_Guide::Click_Interaction()
                 CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
                 pPlayer->Set_TimeScale(1.f);
 
-                Set_bDead();
-                m_pTrigger->Set_bDead();
+              
                 CUI_Manager::Get_Instance()->On_Panel();
                 return;
             }

@@ -385,6 +385,9 @@ private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
 private: /* [ 공격한 적 ] */
 	class CUnit* m_pHitTarget = { nullptr };
+
+	_int m_iFatalAttackCount = {};
+
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

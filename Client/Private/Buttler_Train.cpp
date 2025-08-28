@@ -369,9 +369,9 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
 
-		m_fHp -= pWeapon->Get_CurrentDamage() / 2.f;
+		m_fHp -= pWeapon->Get_CurrentDamage() ;
 
-		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() / 2.f);
+		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() );
 
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
@@ -394,10 +394,20 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 				m_pHPBar->Set_RenderTime(0.f);
 			return;
 		}
+		else if (m_fHp <= 0 && m_isFatal)
+		{
+			CLockOn_Manager::Get_Instance()->Set_Off(this);
+			m_bUseLockon = false;
+
+			if (nullptr != m_pHPBar)
+				m_pHPBar->Set_RenderTime(0.f);
+			return;
+		}
 
 		if (!m_isCanGroggy)
 		{
-			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos)
+			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos || 
+				m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
 				return;
 
 			if (m_strStateName.find("Hit") != m_strStateName.npos)

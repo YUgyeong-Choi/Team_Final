@@ -51,7 +51,7 @@ _bool CUI_Manager::Find_Panel()
 	for (auto& pObj : list)
 	{
 
-		m_pPanel.push_back(static_cast<CUIObject*>(pObj));
+		m_pPanel.push_back(static_cast<CUI_Container*>(pObj));
 
 	}
 	
