@@ -2398,6 +2398,7 @@ HRESULT CPlayer::UpdateShadowCamera()
 		return E_FAIL;
 
 	m_pGameInstance->SetPlayerPos(vPlayerPos);
+
 	return S_OK;
 }
 

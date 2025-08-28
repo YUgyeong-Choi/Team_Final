@@ -77,11 +77,10 @@ public:
 #ifdef _DEBUG
 	_bool Get_RenderCollider();
 	_bool Get_RenderMapCollider();
-	HRESULT Add_DebugComponent(class CComponent* pDebugCom);
-
-	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
-	_vector GetPlayerPos() { return m_vPlayerPosition; }	
+	HRESULT Add_DebugComponent(class CComponent* pDebugCom);	
 #endif
+	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
+	_vector GetPlayerPos() { return m_vPlayerPosition; }
 #pragma endregion
 
 #pragma region TIMER_MANAGER
