@@ -554,6 +554,8 @@ void CButtler_Train::Start_Fatal_Reaction()
 	m_pAnimator->SetTrigger("Fatal");
 
 	m_isFatal = true;
+	m_pWeapon->SetisAttack(false);
+	m_pWeapon->Clear_CollisionObj();
 }
 
 void CButtler_Train::Reset()

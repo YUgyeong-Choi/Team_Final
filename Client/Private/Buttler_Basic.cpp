@@ -355,6 +355,8 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
 	{
+		m_isLookAt = true;
+
 		_float fSpeed = { 1.f };
 		if (m_strStateName.find("Walk_F") != m_strStateName.npos)
 		{
@@ -388,7 +390,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 		if (m_strStateName.find("Away") == m_strStateName.npos)
 		{
-			m_fAwaySpeed = 1.f;
+			m_fAwaySpeed = 1.5f;
 			RootMotionActive(fTimeDelta);
 		}
 		else
@@ -461,6 +463,8 @@ void CButtler_Basic::Start_Fatal_Reaction()
 	m_pAnimator->SetTrigger("Fatal");
 
 	m_isFatal = true;
+	m_pWeapon->SetisAttack(false);
+	m_pWeapon->Clear_CollisionObj();
 }
 
 void CButtler_Basic::Reset()
