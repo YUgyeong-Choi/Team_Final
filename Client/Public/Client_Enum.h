@@ -105,7 +105,8 @@ namespace Client
 	enum class TRIGGERUI_TYPE
 	{
 		STATIONTITLE,
-		GUARD
+		GUARD,
+		LOCK
 	};
 
 #pragma endregion
