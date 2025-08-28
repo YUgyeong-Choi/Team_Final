@@ -19,6 +19,7 @@ public:
 		_wstring strProtoTag = {};
 
 		_float fRotation = {};
+		_float fDelay = {};
 
 	}UIOBJECT_DESC;
 
@@ -94,6 +95,8 @@ protected:
 	_float			m_fRotation = {};
 
 	_bool			m_isReverse = { false };
+
+	_float			m_fDelay = {};
 	
 
 public:

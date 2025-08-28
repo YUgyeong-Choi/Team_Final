@@ -138,6 +138,12 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
 
 void CUI_Guide::Update(_float fTimeDelta)
 {
+    if (m_fDelay > 0)
+    {
+        m_fDelay -= fTimeDelta;
+        return;
+    }
+
 
     Fade(fTimeDelta);
 
@@ -162,6 +168,12 @@ void CUI_Guide::Update(_float fTimeDelta)
 
 void CUI_Guide::Late_Update(_float fTimeDelta)
 {
+
+    if (m_fDelay > 0)
+    {
+        
+        return;
+    }
 
     if (m_isActive)
     {
