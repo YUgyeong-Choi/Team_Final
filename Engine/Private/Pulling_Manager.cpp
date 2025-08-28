@@ -66,6 +66,22 @@ void CPulling_Manager::Return_PoolObject(const _wstring& wsLayerName, CGameObjec
     m_ObjectPools[wsLayerName].push(pReturnObj);
 }
 
+void CPulling_Manager::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj)
+{
+    RemoveObject desc{};
+    desc.layerName = wsLayerName;
+    desc.pObj = pObj;
+    m_RemoveObjects.push_back(desc);
+}
+
+void CPulling_Manager::RemoveObjMagr_PushPullingMgr()
+{
+    for (auto& obj : m_RemoveObjects)
+        Return_PoolObject(obj.layerName, obj.pObj);
+
+    m_RemoveObjects.clear();
+}
+
 void CPulling_Manager::Clear_Pools()
 {
     for (auto& pair : m_ObjectPools)

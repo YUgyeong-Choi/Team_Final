@@ -272,6 +272,7 @@ public:
 	void Use_PoolObject(const _wstring& wsLayerName);
 	void UseAll_PoolObjects(const _wstring& wsLayerName);
 	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
+	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
 #pragma endregion
 
 private:
