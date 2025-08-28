@@ -261,6 +261,8 @@ CUnit* CLockOn_Manager::Find_ClosestToLookTarget()
     if (!m_pPlayer || m_vecTarget.empty())
         return nullptr;
 
+    RemoveSomeTargets();
+
     const _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
     _vector       vCamLook = CCamera_Manager::Get_Instance()->GetCurCam()->Get_TransfomCom()->Get_State(STATE::LOOK);
     vCamLook = XMVector3Normalize(vCamLook);
