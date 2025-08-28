@@ -15,6 +15,8 @@ public:
 	HRESULT Initialize(const _char* pModelFilePath,  ifstream& ifs);
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName, aiTextureType eType, _uint iTextureIndex);
 
+	_bool HasTexture(aiTextureType eType) const;
+
 private:
 	ID3D11Device*								m_pDevice = { nullptr };
 	ID3D11DeviceContext*						m_pContext = { nullptr };

@@ -28,7 +28,7 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 
 	m_bUseOctoTree = StaicMeshDESC->bUseOctoTree;
 
-	m_szMeshID = StaicMeshDESC->szMeshID;
+	m_strMeshName = StaicMeshDESC->szModelPrototypeTag;
 
 	m_iRender = StaicMeshDESC->iRender;
 
@@ -90,28 +90,56 @@ HRESULT CStaticMesh::Render()
 		return E_FAIL;
 
 	if (m_pModelCom[ENUM_CLASS(m_eLOD)] == nullptr)
-	{
-		m_eLOD = LOD::LOD0; // 모델이 없으면 LOD0로 설정
-	}
+		m_eLOD = LOD::LOD0;
 
 	_uint		iNumMesh = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
-		m_fEmissive = 0.f;
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
+		_bool bIsDiffuse = true;
+		_bool bIsNormal = true;
+		_bool bIsARM = true;
+		_bool bIsEmissive = true;
+
+		_float fEmissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+			return E_FAIL;
+		_float fGlass = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlass", &fGlass, sizeof(_float))))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
-		{
-			/* [ 렌더링을 생략해야할 때 ] */
-			if (m_mapVisibleLight.find(m_iLightShape) != m_mapVisibleLight.end())
-				continue;
-		}
+			bIsDiffuse = false;
 
-		m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
+		if (FAILED(m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
+			bIsNormal = false;
 
 		if (FAILED(m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
+			bIsARM = false;
+
+		if (FAILED(m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_Emissive", i, aiTextureType_EMISSIVE, 0)))
+			bIsEmissive = false;
+
+		_bool bIsGlass = m_pModelCom[ENUM_CLASS(m_eLOD)]->HasTexture(i, aiTextureType_AMBIENT);
+
+		/* [ 디퓨즈 , 이미시브, 글래스 다 없으면 생략하라 ] */
+		if (!bIsDiffuse && !bIsEmissive && !bIsGlass)
+			continue;
+
+		/* [ 유리 매쉬라면 따로 렌더하라 ] */
+		if (bIsGlass)
+		{
+			_float fGlass = 1.f;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlass", &fGlass, sizeof(_float))))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(5);
+			m_pModelCom[ENUM_CLASS(m_eLOD)]->Render(i);
+
+			continue;
+		}
+
+		/* [ ARM 맵이 없다면 기본을 사용하라 ] */
+		if (!bIsARM)
 		{
 			if (!m_bDoOnce)
 			{
@@ -121,26 +149,24 @@ HRESULT CStaticMesh::Render()
 					return E_FAIL;
 				m_bDoOnce = true;
 			}
-
 			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
 				return E_FAIL;
-
-			/* [ 이미시브 1차 필터 ] */
-			if (m_iLightShape == 9 || m_iLightShape == 6)
-				SetEmissive();
 		}
 
-		/* [ 이미시브 2차 필터 ] */
-		if (m_iLightShape == 2 && i == 1)
-			SetEmissive();
-		if (m_iLightShape == 8 && i == 1)
-			SetEmissive();
-		
+		/* [ 이미시브 맵이 있다면 사용하라 ] */
+		if (bIsEmissive)
+		{
+			_float fEmissive = 1.f;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+				return E_FAIL;
+		}
+
 
 		m_pShaderCom->Begin(0);
 
 		m_pModelCom[ENUM_CLASS(m_eLOD)]->Render(i);
 	}
+
 
 #ifdef _DEBUG
 	//초기화가 이상함
@@ -194,8 +220,8 @@ HRESULT CStaticMesh::SetEmissive()
 	if (FAILED(m_pEmissiveCom->Bind_ShaderResource(m_pShaderCom, "g_Emissive", 0)))
 		return E_FAIL;
 
-	m_fEmissive = 1.f;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
+	_float fEmissive = 1.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
 		return E_FAIL;
 
 

@@ -18,6 +18,7 @@ float g_fMetallicIntensity = 1;
 float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
 float g_fEmissiveIntensity = 0;
+float g_fGlass = 0;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
 /* [ 피킹변수 ] */
@@ -110,7 +111,6 @@ struct PS_OUT
     vector vRoughness   : SV_TARGET5;
     vector vMetallic    : SV_TARGET6;
     vector vEmissive    : SV_TARGET7;
-    //vector vWorldPos : SV_TARGET7;
 };
 
 struct PS_SKY_OUT
@@ -175,7 +175,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     // 이미시브 텍스처
     vector vEmissive = g_Emissive.Sample(DefaultSampler, In.vTexcoord);
-   
+    
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
     Out.vARM = float4(AO, Roughness, Metallic, 1.f);
@@ -183,9 +183,21 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
-    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, vEmissive.a);
-    //Out.vWorldPos = In.vWorldPos; //테스트(영웅)
+    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, 1.f);
+    return Out;
+}
+
+
+struct PS_OUT_A7
+{
+    float4 vEmissive : SV_TARGET7;
+};
+
+PS_OUT_A7 PS_GLASS(PS_IN In)
+{
+    PS_OUT_A7 Out;
     
+    Out.vEmissive = float4(0, 0, 0, g_fGlass);
     return Out;
 }
 
@@ -275,7 +287,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Cull_None);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_GBuffer_RT7_RGBonly, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
         VertexShader = compile vs_5_0 VS_MAIN();      
         GeometryShader = NULL;
@@ -321,5 +333,14 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_SHADOW_MAIN();
         PixelShader = compile ps_5_0 PS_Cascade2(); // SV_TARGET2 전용
     }
-
+    pass Glass //5
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WriteAlphaOnly_RT7, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_GLASS();
+    }
 }

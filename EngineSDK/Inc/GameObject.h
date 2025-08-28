@@ -95,7 +95,7 @@ protected:
 
 	/* [ 라이트관련 디버그 ] */
 	_bool m_bLightOnOff = {};
-	_bool m_bLightDebug = { true };
+	_bool m_bLightDebug = {};
 
 	_bool m_isActive = { true };
 

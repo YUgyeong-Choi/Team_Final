@@ -115,6 +115,22 @@ HRESULT CMaterial::Bind_ShaderResource(CShader* pShader, const _char* pConstantN
     return pShader->Bind_SRV(pConstantName, m_SRVs[eType][iTextureIndex]);    
 }
 
+_bool CMaterial::HasTexture(aiTextureType eType) const
+{
+    const _int  iType = static_cast<_int>(eType);
+    const _uint iTypeU = static_cast<_uint>(eType);
+
+    if (iType < 0)
+        return false;
+
+    const _uint iSRVSlots = static_cast<_uint>(_countof(m_SRVs));
+    if (iTypeU >= iSRVSlots)
+        return false;
+
+    const auto& vecSRV = m_SRVs[iTypeU];
+    return !vecSRV.empty() && (vecSRV[0] != nullptr);
+}
+
 CMaterial* CMaterial::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _char* pModelFilePath, const aiMaterial* pAIMaterial)
 {
     CMaterial* pInstance = new CMaterial(pDevice, pContext);

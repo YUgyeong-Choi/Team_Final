@@ -73,11 +73,11 @@ protected: /* [ 초기화 변수 ] */
 	_float3			m_InitPos = {};
 	_int			m_iRender = {};
 	_bool			m_bDoOnce = {};
+	wstring			m_strMeshName = {};
 
 private:
 	_bool	m_bUseOctoTree = { true };
 	_bool	m_bUseTiling = { false };
-	_float  m_fEmissive = {};
 	_float2	m_vTileDensity = { 1.0f, 1.0f };
 
 private:

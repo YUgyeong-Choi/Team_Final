@@ -55,6 +55,18 @@ HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uin
 	return m_Materials[iMaterialIndex]->Bind_ShaderResource(pShader, pConstantName, eType, iTextureIndex);
 }
 
+_bool CModel::HasTexture(_uint iMeshIndex, aiTextureType eType) const
+{
+	if (iMeshIndex >= m_iNumMeshes)
+		return false;
+
+	_uint iMaterialIndex = m_Meshes[iMeshIndex]->Get_MaterialIndex();
+	if (iMaterialIndex >= m_iNumMaterials)
+		return false;
+
+	return m_Materials[iMaterialIndex]->HasTexture(eType);
+}
+
 HRESULT CModel::Bind_Bone_Matrices(CShader* pShader, const _char* pConstantName, _uint iMeshIndex)
 {
 	return m_Meshes[iMeshIndex]->Bind_Bone_Matrices(pShader, pConstantName, m_Bones);

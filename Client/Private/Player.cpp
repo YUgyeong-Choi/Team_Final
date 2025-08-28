@@ -1047,7 +1047,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::GUARD_HIT:
 	{
-		if (m_eHitedTarget == eHitedTarget::MONSTER)
+		if (m_eHitedTarget == eHitedTarget::MONSTER || m_eHitedTarget == eHitedTarget::ARROW)
 		{
 			//가드 밀림 여부
 			_float  m_fTime = 0.1f;
@@ -1083,9 +1083,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bMove)
 		{
-			_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
-			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
-			SyncTransformWithController();
+			if (m_pHitedTarget)
+			{
+				_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
+
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
 		}
 		break;
 	}
@@ -1094,9 +1098,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		_float  m_fTime = 0.1f;
 		_float  m_fDistance = 2.f;
 
-		if (!m_bMove)
+		if (m_pHitedTarget)
 		{
-			_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
+			_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
+
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
@@ -1403,6 +1408,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		if (pWeapon == nullptr)
 			return;
 
+
 		if (pWeapon->Find_CollisonObj(this, eColliderType))
 			return;
 
@@ -1411,6 +1417,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
 		CUnit* pUnit = pWeapon->Get_Owner();
+		m_pHitedTarget = pUnit;
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
@@ -1439,17 +1446,33 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 	}
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
-		m_eHitedTarget = eHitedTarget::BOSS;
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
-		if (pBoss == nullptr)
-			return;
+		if (pBoss)
+		{
+			m_eHitedTarget = eHitedTarget::BOSS;
+			m_pHitedTarget = pBoss;
 
-		//0. 필요한 정보를 수집한다.
-		CalculateDamage(pOther, eColliderType);
-		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
+			//0. 필요한 정보를 수집한다.
+			CalculateDamage(pOther, eColliderType);
+			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
 
-		m_vHitNormal = vOtherPos - vPlayerPos;
+			m_vHitNormal = vOtherPos - vPlayerPos;
+		}
+		else
+		{
+			m_eHitedTarget = eHitedTarget::ARROW;
+
+			CGameObject* pArrow = dynamic_cast<CGameObject*>(pOther);
+			m_pHitedTarget = pArrow;
+
+			//0. 필요한 정보를 수집한다.
+			CalculateDamage(pOther, eColliderType);
+			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vOtherPos = pArrow->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+			m_vHitNormal = vOtherPos - vPlayerPos;
+		}
 
 		//1. 애니메이션 상태를 히트로 바꾼다.
 
@@ -1500,6 +1523,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		pWeapon->Add_CollisonObj(this);
 
 		CUnit* pUnit = pWeapon->Get_Owner();
+		m_pHitedTarget = pUnit;
 
 		CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pUnit);
 
@@ -1543,6 +1567,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
 		if (pBoss == nullptr)
 			return;
+
+		m_pHitedTarget = pBoss;
 
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);

@@ -55,7 +55,6 @@ private:
 	_uint	m_iNumInstance = { 0 };
 private:
 	_int m_iLightShape = { 0 };
-	_float  m_fEmissive = {};
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

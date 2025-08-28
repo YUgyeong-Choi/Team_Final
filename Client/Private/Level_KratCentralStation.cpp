@@ -422,10 +422,7 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 	vector<OCTOTREEOBJECTTYPE> vTypeTable = m_pGameInstance->GetObjectType();
 
 	for (_uint i = 0; i < static_cast<_uint>(AllStaticMesh.size()); ++i)
-	{
 		AllStaticMesh[i]->Set_bLightOnOff(false);
-		AllStaticMesh[i]->SetLightDebug(false);
-	}
 
 
 	for (_uint iIdx : VisitCell)
@@ -441,7 +438,6 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 		{
 			//만약 조명오브젝트라면? 
 			pObj->Set_bLightOnOff(true);
-			pObj->SetLightDebug(true);
 		}
 	}
 

@@ -490,7 +490,7 @@
       <Filter>01.Utility\17.Area_Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
-      <Filter>01.Utility\04.Components\Model\Mesh</Filter>
+      <Filter>01.Utility\04.Components\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -759,13 +759,13 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
       <Filter>01.Utility\98.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
-      <Filter>01.Utility\98.ShaderFiles</Filter>
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimCS.hlsl">
       <Filter>01.Utility\98.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_Particle.hlsl">
+      <Filter>01.Utility\98.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
       <Filter>01.Utility\98.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

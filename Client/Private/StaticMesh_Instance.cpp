@@ -101,8 +101,8 @@ HRESULT CStaticMesh_Instance::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
-		m_fEmissive = 0.f;
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
+		_float fEmissive = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
@@ -165,8 +165,8 @@ HRESULT CStaticMesh_Instance::SetEmissive()
 	if (FAILED(m_pEmissiveCom->Bind_ShaderResource(m_pShaderCom, "g_Emissive", 0)))
 		return E_FAIL;
 
-	m_fEmissive = 1.f;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float))))
+	_float fEmissive = 1.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
 		return E_FAIL;
 
 

@@ -88,7 +88,6 @@ HRESULT CRenderer::Initialize()
 
 
 
-
 #pragma region RenderPBR
 	/* [ PBR 렌더타겟 ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
@@ -98,9 +97,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ARM"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.0f, 0.5f, 0.0f, 1.0f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Depth"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 1.f, 0.f, -1.f))))
-		return E_FAIL;	
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_WorldPos"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
-	//	return E_FAIL;// 테스트(영웅)
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_AO"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Roughness"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
@@ -112,6 +109,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Specular"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Emissive"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Glow"), g_iSmallWidth, g_iSmallHeight, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_GlowFinal"), g_iSmallWidth, g_iSmallHeight, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -145,8 +146,11 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_Emissive"))))
 		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_WorldPos"))))//테스트(영웅)
-	//	return E_FAIL;
+	
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGlow"), TEXT("Target_PBR_Glow"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGlowFinal"), TEXT("Target_PBR_GlowFinal"))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
 		return E_FAIL;
@@ -330,7 +334,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowB"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowC"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Emissive"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
@@ -419,6 +423,12 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_PBRMesh()))
 	{
 		MSG_BOX("Render_PBRMesh Failed");
+		return E_FAIL;
+	}
+	
+	if (FAILED(Render_PBR_Glow()))
+	{
+		MSG_BOX("Render_PBR_Glow Failed");
 		return E_FAIL;
 	}
 
@@ -874,6 +884,8 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PBR_Emissive")))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_GlowFinal"), m_pShader, "g_PBR_Glow")))
+		return E_FAIL;
 
 	/* [ Effect 렌더링용 ]*/
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
@@ -1107,6 +1119,61 @@ HRESULT CRenderer::Render_Effect_WBGlow()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_PBR_Glow()
+{
+	/* [ 가로로 늘린다. ] */
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGlow"));
+
+	if (FAILED(Change_ViewportDesc(g_iSmallWidth, g_iSmallHeight)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PreBlurTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(4);
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	if (FAILED(Change_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))
+		return E_FAIL;
+
+
+	/* [ 세로로 늘린다. ] */
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGlowFinal"));
+
+	if (FAILED(Change_ViewportDesc(g_iSmallWidth, g_iSmallHeight)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Glow"), m_pShader, "g_BlurXTexture")))
+		return E_FAIL;
+
+	m_pShader->Begin(5);
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	if (FAILED(Change_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_Effect_NonLight()
 {
 	// 당장 안 쓰고 상황 봐서 사용할 것
@@ -1305,6 +1372,7 @@ HRESULT CRenderer::Render_Debug()
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGlowFinal"), m_pShader, m_pVIBuffer);
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
 			/* 여기에 MRT 입력 */

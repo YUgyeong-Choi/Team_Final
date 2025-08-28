@@ -245,6 +245,7 @@ private: /* [ 그림자 변수 ] */
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*			m_pTarget = { nullptr };
 	CUnit*					m_pFatalTarget = { nullptr };
+	CGameObject*			m_pHitedTarget = { nullptr };
 	CWeapon*				m_pWeapon = { nullptr };
 	CGameObject*			m_pInterectionStuff = { nullptr };
 	CPlayerLamp*			m_pPlayerLamp = { nullptr };
