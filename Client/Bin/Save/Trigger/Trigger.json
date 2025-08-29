@@ -108,7 +108,10 @@
       "vPos": [ 57.975121, 0.5, -7.373825 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
-      "triggerSize": [ 0.2, 0.2, 3.5 ]
+      "triggerSize": [ 0.2, 0.2, 3.5 ],
+      "PrototypeName": "Prototype_GameObject_UI_Container",
+      "FilePaths": [ "../Bin/Save/UI/Location/Location_BackGround.json", "../Bin/Save/UI/Location/Location_Text.json" ]
+
     },
     {
       "ClassType": 2,
@@ -116,7 +119,9 @@
       "vPos": [ 172.032059, 5.006557, -20.399889 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
-      "triggerSize": [ 5.0, 0.2, 0.2 ]
+      "triggerSize": [ 5.0, 0.2, 0.2 ],
+      "PrototypeName": "Prototype_GameObject_UI_Guide",
+      "FilePaths": [ "../Bin/Save/UI/Guide/Guide_Guard.json", "../Bin/Save/UI/Guide/Guide_PerfectGuard.json" ]
     },
     {
       "ClassType": 0,
@@ -142,7 +147,29 @@
       "vPos": [ 146.530441, 3.006557, -35.049854 ],
       "rotationDeg": [ 0.0, -60.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
-      "triggerSize": [ 5.0, 0.2, 0.2 ]
+      "triggerSize": [ 5.0, 0.2, 0.2 ],
+      "PrototypeName": "Prototype_GameObject_UI_Guide",
+      "FilePaths": [ "../Bin/Save/UI/Guide/Guide_Lock.json" ]
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 3,
+      "vPos": [ 26.533379, 1.0, 0.690163 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 1.5, 0.2, 1.0 ],
+      "PrototypeName": "Prototype_GameObject_UI_Info",
+      "FilePaths": [ "../Bin/Save/UI/Info/Info_Interaction.json" ]
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 3,
+      "vPos": [ 3.382186, 1.0, 0.864605 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 3.5, 0.2, 1.0 ],
+      "PrototypeName": "Prototype_GameObject_UI_Info",
+      "FilePaths": [ "../Bin/Save/UI/Info/Info_Move.json" ]
     }
   ]
 }

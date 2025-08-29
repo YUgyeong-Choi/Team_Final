@@ -1212,7 +1212,16 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 				Desc.Rotation = VecToFloat3(rotDegArr);
 				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
-				Desc.eTriggerUIType = static_cast<TRIGGERUI_TYPE>(triggerType);
+
+				Desc.strProtoName = StringToWStringU8(j["PrototypeName"].get<string>());
+
+				for (auto& filePath : j["FilePaths"])
+				{
+					string path = filePath.get<string>();
+
+					Desc.strFilePaths.push_back(StringToWStringU8(path));
+				}
+				
 				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerUI"),
 					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerUI"), &Desc)))
 					return E_FAIL;
