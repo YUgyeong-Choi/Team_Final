@@ -50,6 +50,7 @@ private:
 private:
 #pragma region 몬스터 종류
 	enum class Monster {
+		Buttler_Basic,
 		Buttler_Train,
 		Elite_Police,
 		FireEater,
@@ -57,6 +58,7 @@ private:
 	};
 
 	const string m_Monsters[static_cast<_int>(Monster::END)] = {
+	"Buttler_Basic",
 	"Buttler_Train",
 	"Elite_Police",
 	"FireEater"

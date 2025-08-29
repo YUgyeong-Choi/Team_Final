@@ -15679,7 +15679,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "LightShape": 0,
+                    "LightShape": 1,
                     "WorldMatrix": [
                         [
                             1.0,

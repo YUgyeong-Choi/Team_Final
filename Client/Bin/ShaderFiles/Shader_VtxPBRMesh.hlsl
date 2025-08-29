@@ -239,7 +239,7 @@ PS_OUT PS_TOOL_MAIN(PS_IN In)
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
-    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, vEmissive.a);
+    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, 0.f);
     
     return Out;
 }

@@ -134,6 +134,9 @@ PS_OUT_NORMALONLY PS_DECAL_NORMALONLY(PS_IN In)
     vector vN = g_N.Sample(DefaultSampler, tagDecalSample.vTexcoord);
     vector vMask = g_MASK.Sample(DefaultSampler, tagDecalSample.vTexcoord);
 
+    if (vMask.r < 0.3f)
+        discard;
+    
     Out.vN = vN * vMask.r;
 
     return Out;
