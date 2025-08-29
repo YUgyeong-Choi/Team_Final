@@ -181,6 +181,17 @@
       "PrototypeName": "Prototype_GameObject_UI_Info",
       "FilePaths": [ "../Bin/Save/UI/Info/Info_Lockon.json" ]
 
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 4,
+      "vPos": [ 84, 0.5, -7.373825 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 14.0, 0.8, 5 ],
+      "PrototypeName": "Prototype_GameObject_UI_Info",
+      "FilePaths": [ "../Bin/Save/UI/Info/Info_Attack.json" ]
+
     }
   ]
 }
