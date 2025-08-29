@@ -33,6 +33,7 @@ public:
 	virtual void Last_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 	virtual HRESULT Render_Shadow() { return S_OK; }
+	virtual HRESULT Render_Fury() { return S_OK; }
 
 	virtual void Reset() {};
 public:

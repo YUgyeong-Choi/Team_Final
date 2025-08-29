@@ -9,6 +9,7 @@ class CAnimator;
 class CPhysXActor;
 class CPhysXDynamicActor;
 class CSoundController;
+class CTexture;
 NS_END
 
 NS_BEGIN(Client)
@@ -48,6 +49,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Shadow() override;
+	virtual HRESULT Render_Fury() override;
 
 	void SetCascadeShadow();
 	
@@ -119,10 +121,15 @@ protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };
 	_bool m_bIsPlayer = { false };
 
-protected: /* [ 기본 충돌체 ] */
+
+protected:              /* [ 컴포넌트 ] */
+	CModel*				m_pModelCom = { nullptr };
+	CShader*			m_pShaderCom = { nullptr };
+	CAnimator*			m_pAnimator = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
-	/* [ 사운드 관련 ] */
-	CSoundController* m_pSoundCom = { nullptr };
+	CSoundController*	m_pSoundCom = { nullptr };
+	CTexture*			m_pNoiseMap = { nullptr };
+
 protected:				/* [ 기본 속성 ] */
 	_float				m_fSpeedPerSec = 5.f;
 	_float				m_fRotationPerSec = XMConvertToRadians(90.f);
@@ -142,11 +149,6 @@ protected: 				/* [ 기본 타입 ] */
 
 protected:				/* [ 그림자 관련 ] */
 	SHADOW				m_eShadow = SHADOW::SHADOW_END;
-
-protected:              /* [ 컴포넌트 ] */
-	CModel*				m_pModelCom = { nullptr };
-	CShader*			m_pShaderCom = { nullptr };
-	CAnimator*			m_pAnimator = { nullptr };
 
 protected:				/* [ 레이캐스트 변수 ] */
 	PxVec3				m_vRayHitPos = {};

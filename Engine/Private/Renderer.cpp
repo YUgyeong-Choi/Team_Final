@@ -124,6 +124,10 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowC"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
 		return E_FAIL;
+	
+	/* [ 외곽선 이펙트 ] */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_OutLine"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
 
 	/* [ 볼륨메트릭 포그 ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Volumetric"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
@@ -150,6 +154,12 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGlow"), TEXT("Target_PBR_Glow"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGlowFinal"), TEXT("Target_PBR_GlowFinal"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_DepthStencilView_PBR_Blur(g_iSmallWidth, g_iSmallHeight)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBROutLine"), TEXT("Target_PBR_OutLine"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
@@ -332,9 +342,9 @@ HRESULT CRenderer::Initialize()
 
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowA"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_ShadowB"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Unit"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Emissive"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_OutLine"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
@@ -505,6 +515,12 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_BackBuffer()))
 	{
 		MSG_BOX("Render_BackBuffer Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Outline()))
+	{
+		MSG_BOX("Render_Outline Failed");
 		return E_FAIL;
 	}
 
@@ -718,13 +734,6 @@ HRESULT CRenderer::Render_UI()
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_UI)].clear();
 
-
-	//
-
-
-
-
-
 	return S_OK;
 }
 
@@ -800,6 +809,25 @@ HRESULT CRenderer::Render_PBRLights()
 	/* 장치에 백버퍼로 복구한다. */
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Outline()
+{
+	/* [ PBR 렌더링 ] */
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBROutLine"));
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_FURY)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_Fury();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_FURY)].clear();
+
+	m_pGameInstance->End_MRT();
 
 	return S_OK;
 }
@@ -881,6 +909,8 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowC"), m_pShader, "g_ShadowTextureC")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Unit"), m_pShader, "g_PBR_UnitMask")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_OutLine"), m_pShader, "g_PBR_OutLine")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PBR_Emissive")))
 		return E_FAIL;
@@ -1076,7 +1106,7 @@ HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag)
 
 HRESULT CRenderer::Render_Effect_Glow()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_EffectBlend_Glow"))))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_EffectBlend_Glow"), m_pPBRBlurDSV, true, true)))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1137,11 +1167,21 @@ HRESULT CRenderer::Render_PBR_Glow()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PreBlurTexture")))
 		return E_FAIL;
 
+	_bool bOutline = true;
+	if (FAILED(m_pShader->Bind_RawValue("g_bOutLine" , &bOutline, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_OutLine"), m_pShader, "g_PreBlurTexture2")))
+		return E_FAIL;
+
 	m_pShader->Begin(4);
 	m_pVIBuffer->Bind_Buffers();
 	m_pVIBuffer->Render();
 
 	m_pGameInstance->End_MRT();
+
+	bOutline = false;
+	if (FAILED(m_pShader->Bind_RawValue("g_bOutLine", &bOutline, sizeof(_bool))))
+		return E_FAIL;
 
 	if (FAILED(Change_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))
 		return E_FAIL;
@@ -1326,6 +1366,39 @@ HRESULT CRenderer::Ready_DepthStencilView_Blur(_uint iWidth, _uint iHeight)
 	return S_OK;
 }
 
+HRESULT CRenderer::Ready_DepthStencilView_PBR_Blur(_uint iWidth, _uint iHeight)
+{
+	ID3D11Texture2D* pDepthStencilTexture = nullptr;
+
+	D3D11_TEXTURE2D_DESC	TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = iWidth;
+	TextureDesc.Height = iHeight;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pPBRBlurDSV)))
+		return E_FAIL;
+
+	Safe_Release(pDepthStencilTexture);
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Change_ViewportDesc(_uint iWidth, _uint iHeight)
 {
 	D3D11_VIEWPORT			ViewportDesc{};
@@ -1374,6 +1447,7 @@ HRESULT CRenderer::Render_Debug()
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGlowFinal"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBROutLine"), m_pShader, m_pVIBuffer);
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
 			/* 여기에 MRT 입력 */
@@ -1423,6 +1497,7 @@ void CRenderer::Free()
 
 	Safe_Release(m_pShadowDSV);
 	Safe_Release(m_pBlurDSV);
+	Safe_Release(m_pPBRBlurDSV);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

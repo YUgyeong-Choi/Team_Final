@@ -220,6 +220,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
 	
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
@@ -1017,6 +1018,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		RootMotionActive(fTimeDelta);
 		if (!m_bSetTwo)
 		{
+			m_fMana -= 100.f;
 			m_bIsInvincible = true;
 			m_bSetTwo = true;
 		}
@@ -1028,7 +1030,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			if (!m_bSetOnce && m_fMana >= 0.f)
 			{
 				m_bIsInvincible = false;
-				m_fMana -= 100.f;
 				Callback_Mana();
 				m_bSetOnce = true;
 			}
@@ -1042,6 +1043,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetTwo)
 		{
+			m_fMana -= 100.f;
 			m_bIsInvincible = true;
 			m_bSetTwo = true;
 		}
@@ -1052,7 +1054,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			if (!m_bSetOnce && m_fMana >= 0.f)
 			{
 				m_bIsInvincible = false;
-				m_fMana -= 100.f;
 				Callback_Mana();
 				m_bSetOnce = true;
 			}
@@ -1066,6 +1067,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetTwo)
 		{
+			m_fMana -= 100.f;
 			m_bIsInvincible = true;
 			m_bSetTwo = true;
 		}
@@ -1076,7 +1078,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			if (!m_bSetOnce && m_fMana >= 0.f)
 			{
 				m_bIsInvincible = false;
-				m_fMana -= 100.f;
 				Callback_Mana();
 				m_bSetOnce = true;
 			}

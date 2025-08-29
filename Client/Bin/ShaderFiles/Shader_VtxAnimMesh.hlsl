@@ -19,6 +19,7 @@ Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 Texture2D g_ARMTexture;
 Texture2D g_Emissive;
+Texture2D g_NoiseMap;
 
 /* [ 조절용 파라미터 ] */
 float g_fDiffuseIntensity = 1;
@@ -128,6 +129,74 @@ VS_OUT_PBR VS_MAIN(VS_IN In)
     
     return Out;
 }
+
+
+VS_OUT VS_OUTLINE(VS_IN In)
+{
+    /* 기타 변환들을 수행한다.*/
+    VS_OUT Out = (VS_OUT) 0;
+    
+    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+
+    matrix BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+        g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+        g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+        g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+    vector vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
+    
+    vPosition += normalize(vNormal) * 0.01f;
+    
+    matrix matWV, matWVP;
+    
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+    
+    Out.vPosition = mul(vPosition, matWVP);
+    Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+    Out.vTexcoord = In.vTexcoord;
+    Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+    Out.vProjPos = Out.vPosition;
+    
+    
+    return Out;
+}
+
+VS_OUT VS_INNERLINE(VS_IN In)
+{
+    /* 기타 변환들을 수행한다.*/
+    VS_OUT Out = (VS_OUT) 0;
+    
+    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+
+    matrix BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+        g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+        g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+        g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+    vector vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
+    
+    vPosition -= normalize(vNormal) * 0.01f;
+    
+    matrix matWV, matWVP;
+    
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+    
+    Out.vPosition = mul(vPosition, matWVP);
+    Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+    Out.vTexcoord = In.vTexcoord;
+    Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+    Out.vProjPos = Out.vPosition;
+    
+    
+    return Out;
+}
+
 
 VS_OUT VS_PICK(VS_IN In)
 {
@@ -239,6 +308,11 @@ struct PS_OUT_PICK
     vector vARM : SV_TARGET2;
     vector vDepth : SV_TARGET3;
     
+};
+
+struct PS_OUT_LINE
+{
+    vector vDiffuse : SV_TARGET0;
 };
 
 PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
@@ -368,6 +442,64 @@ float4 PS_Cascade2(VS_OUT_SHADOW In) : SV_TARGET2
     return float4(1.f, 0.f, 0.f, 1.f);
 }
 
+
+PS_OUT_LINE PS_OUTLINE(PS_IN In)
+{
+    PS_OUT_LINE Out;
+    
+    float4 vEdgeColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
+    float fNoiseScale = 2.0f;
+    float fNoiseContrast = 1.0f;
+    float fEdgeSoftness = 0.1f;
+    float fScrollSpeed = 2.0f;
+    float fGlowBoost = 1.0f;
+    float fTimeSeconds = 0.0f;
+    
+    float2 vNoiseUV = In.vTexcoord * fNoiseScale
+                    + fTimeSeconds * fScrollSpeed * float2(0.17f, -0.09f);
+    
+    float fNoise = g_NoiseMap.Sample(DefaultSampler, vNoiseUV).r;
+    fNoise = pow(saturate(fNoise), max(0.001f, fNoiseContrast));
+    
+    float fMask = smoothstep(0.5f - fEdgeSoftness, 0.5f + fEdgeSoftness, fNoise);
+    
+    float3 vEdgeRGB = vEdgeColor.rgb * (1.0f + fGlowBoost * fMask);
+    float fAlpha = vEdgeColor.a * fMask;
+
+    Out.vDiffuse = float4(vEdgeRGB, fAlpha);
+    return Out;
+    
+}
+
+PS_OUT_LINE PS_INNERLINE(PS_IN In)
+{
+    PS_OUT_LINE Out;
+    
+    float4 vEdgeColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
+    float fNoiseScale = 2.0f;
+    float fNoiseContrast = 1.0f;
+    float fEdgeSoftness = 0.1f;
+    float fScrollSpeed = 2.0f;
+    float fGlowBoost = 1.0f;
+    float fTimeSeconds = 0.0f;
+    
+    float2 vNoiseUV = In.vTexcoord * fNoiseScale
+                    + fTimeSeconds * fScrollSpeed * float2(0.17f, -0.09f);
+    
+    float fNoise = g_NoiseMap.Sample(DefaultSampler, vNoiseUV).r;
+    fNoise = pow(saturate(fNoise), max(0.001f, fNoiseContrast));
+    
+    float fMask = smoothstep(0.5f - fEdgeSoftness, 0.5f + fEdgeSoftness, fNoise);
+    
+    float3 vEdgeRGB = vEdgeColor.rgb * (1.0f + fGlowBoost * fMask);
+    float fAlpha = vEdgeColor.a * fMask;
+
+    Out.vDiffuse = float4(vEdgeRGB, fAlpha);
+    return Out;
+    
+}
+
+
 technique11 DefaultTechnique
 {   
     pass Default //0
@@ -430,6 +562,26 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
         PixelShader = compile ps_5_0 PS_Cascade2(); // SV_TARGET2 전용
+    }
+   
+    pass OutLine //6
+    {
+        SetRasterizerState(RS_Outline);
+        SetDepthStencilState(DSS_Outline, 0);
+        SetBlendState(BS_AlphaBlend, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_OUTLINE();
+        PixelShader = compile ps_5_0 PS_OUTLINE();
+    }
+
+    pass InnerLine //6
+    { 
+        SetRasterizerState(RS_Inner);
+        SetDepthStencilState(DSS_Inner, 0);
+        SetBlendState(BS_AlphaBlend, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_INNERLINE();
+        PixelShader = compile ps_5_0 PS_INNERLINE(); 
     }
    
 }

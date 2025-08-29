@@ -948,7 +948,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (KEY_DOWN(DIK_SPACE))
+        if (m_fStateTime > 1.f && KEY_DOWN(DIK_SPACE))
         {
             m_fStateTime = 0.f;
             m_pOwner->m_pAnimator->SetTrigger("Dash");
@@ -1203,6 +1203,9 @@ public:
         m_pOwner->m_pAnimator->SetInt("Combo", 0);
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
 
+        _float fDamageRatio = m_pGameInstance->Compute_Random(0.6f, 0.8f);
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -1327,6 +1330,9 @@ public:
         m_pOwner->m_pAnimator->SetInt("Combo", 1);
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
 
+        _float fDamageRatio = m_pGameInstance->Compute_Random(0.6f, 0.8f);
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -1447,6 +1453,9 @@ public:
         // 강공은 무기 장착상태여야합니다.
         m_pOwner->m_pAnimator->SetInt("Combo", 0);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
+
+        _float fDamageRatio = m_pGameInstance->Compute_Random(1.f, 1.2f);
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
         
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1571,6 +1580,9 @@ public:
         // 강공은 무기 장착상태여야합니다.
         m_pOwner->m_pAnimator->SetInt("Combo", 1);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
+
+        _float fDamageRatio = m_pGameInstance->Compute_Random(1.f, 1.2f);
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1702,6 +1714,8 @@ public:
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
         m_pOwner->m_bMovable = false;
         
+        _float fDamageRatio = m_pGameInstance->Compute_Random(1.f, 1.2f);;
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1805,6 +1819,8 @@ public:
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
         m_pOwner->m_bMovable = false;
 
+        _float fDamageRatio = m_pGameInstance->Compute_Random(1.2f, 1.5f);;
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2135,6 +2151,9 @@ public:
         m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
+        _float fDamageRatio = m_pGameInstance->Compute_Random(0.8f, 1.2f);;
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -2203,6 +2222,9 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
+
+        _float fDamageRatio = m_pGameInstance->Compute_Random(0.8f, 1.2f);;
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2274,6 +2296,9 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetInt("ArmCombo", 0);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
+
+        _float fDamageRatio = m_pGameInstance->Compute_Random(0.8f, 1.2f);
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2390,6 +2415,9 @@ public:
         m_pOwner->m_pAnimator->SetInt("ArmCombo", 1);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
 
+        _float fDamageRatio = m_pGameInstance->Compute_Random(0.8f, 1.2f);
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -2497,6 +2525,9 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetBool("Charge", true);
         m_pOwner->m_pAnimator->SetTrigger("ArmAttack");
+
+        _float fDamageRatio = m_pGameInstance->Compute_Random(1.2f, 1.5f);
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2661,6 +2692,9 @@ public:
         m_pOwner->m_pAnimator->SetTrigger("MainSkill");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
+        _float fDamageRatio = m_pGameInstance->Compute_Random(1.2f, 1.8f);
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -2824,6 +2858,9 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("Fatal");
         m_pOwner->m_bIsInvincible = true;
+
+        _float fDamageRatio = m_pGameInstance->Compute_Random(1.2f, 1.7f);;
+        m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
         
         if (m_pOwner->m_pFatalTarget && !m_pOwner->m_bIsFatalBoss)
         {
@@ -3087,7 +3124,6 @@ public:
         m_fStateTime = 0.f;
         m_pOwner->m_bIsInvincible = true;
 
-        
         /* [ 모든 진행이 종료된다. ] */
         if (m_pOwner->m_pWeapon)
         {
@@ -3141,8 +3177,7 @@ public:
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
             
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
-            m_pOwner->m_pBelt_Down->Reset();
-			m_pOwner->m_pBelt_Up->Reset();
+            m_pOwner->Reset();
 
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pWeapon->SetbIsActive(false);

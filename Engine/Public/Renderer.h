@@ -40,6 +40,7 @@ private:
 
 	ID3D11DepthStencilView*		m_pShadowDSV = { nullptr };
 	ID3D11DepthStencilView*		m_pBlurDSV = { nullptr };
+	ID3D11DepthStencilView*		m_pPBRBlurDSV = { nullptr };
 	ID3D11DepthStencilView*		m_pVolumetricDSV = { nullptr };
 	_uint						m_iOriginalViewportWidth{}, m_iOriginalViewportHeight{};
 
@@ -73,6 +74,7 @@ private:
 	HRESULT Render_UI();
 	HRESULT Render_Lights();
 	HRESULT Render_PBRLights();
+	HRESULT Render_Outline();
 	HRESULT Render_Volumetric();
 	HRESULT Render_BackBuffer();
 	HRESULT Render_NonLight();
@@ -91,6 +93,7 @@ private:
 	HRESULT Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight);
 	//HRESULT Ready_DepthStencilView_Volumetric(_uint iWidth, _uint iHeight);
 	HRESULT Ready_DepthStencilView_Blur(_uint iWidth, _uint iHeight);
+	HRESULT Ready_DepthStencilView_PBR_Blur(_uint iWidth, _uint iHeight);
 	HRESULT Change_ViewportDesc(_uint iWidth, _uint iHeight);
 
 #ifdef _DEBUG
