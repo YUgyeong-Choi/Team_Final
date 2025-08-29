@@ -135,6 +135,32 @@ HRESULT CBayonet::Render()
 	return S_OK;
 }
 
+HRESULT CBayonet::Render_Shadow()
+{
+	if (!m_bIsActive)
+		return S_OK;
+
+	/* [ 월드 스페이스 넘기기 ] */
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Light_ViewMatrix(SHADOW::SHADOWA))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Light_ProjMatrix(SHADOW::SHADOWA))))
+		return E_FAIL;
+
+	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+	for (_uint i = 0; i < iNumMesh; i++)
+	{
+		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
+		m_pShaderCom->Begin(3);
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 void CBayonet::Update_Collider()
 {
 	if (!m_isActive)

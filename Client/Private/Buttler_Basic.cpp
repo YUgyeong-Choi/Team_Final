@@ -55,6 +55,8 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
 	if (pCurState && pCurState->stateName.find("Dead") != pCurState->stateName.npos)
 	{
+		m_fEmissive = 0.f;
+
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
 			cout << pCurState->stateName << endl;

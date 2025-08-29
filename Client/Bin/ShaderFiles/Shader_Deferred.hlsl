@@ -494,15 +494,22 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalBCDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalBCDesc.a * vARMDesc.a);
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
+    vDecalNormal = -vDecalNormal;
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a));
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
+    
+    float fMask = vDecalAMRTDesc.a;
+    AO = lerp(AO, vDecalAMRTDesc.r, fMask);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g * 0.5f, fMask);
+    Metallic = lerp(Metallic, vDecalAMRTDesc.b, fMask);
+    
     float Unit = vARMDesc.a;
     float3 Ambient = Albedo * g_fLightAmbient * AO;
 
@@ -602,11 +609,18 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    vDecalNormal = -vDecalNormal;
     Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
+    
+    float fMask = vDecalAMRTDesc.a;
+    AO = lerp(AO, vDecalAMRTDesc.r, fMask);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g * 0.5f, fMask);
+    Metallic = lerp(Metallic, vDecalAMRTDesc.b, fMask);
+    
     float Unit = vARMDesc.a;
     float3 Ambient = Albedo * g_fLightAmbient * AO;
 

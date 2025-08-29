@@ -18,6 +18,7 @@ matrix g_BoneMatrices2[256];
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 Texture2D g_ARMTexture;
+Texture2D g_Emissive;
 
 /* [ 조절용 파라미터 ] */
 float g_fDiffuseIntensity = 1;
@@ -28,6 +29,7 @@ float g_fRoughnessIntensity = 1;
 float g_fMetallicIntensity = 1;
 float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
+float g_fEmissiveIntensity = 1;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
 /* [ 피킹변수 ] */
@@ -226,6 +228,7 @@ struct PS_OUT_PBR
     vector vAO : SV_TARGET4;
     vector vRoughness : SV_TARGET5;
     vector vMetallic : SV_TARGET6;
+    vector vEmissive : SV_TARGET7;
 };
 
 
@@ -262,6 +265,9 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
     float Roughness = vARM.g * g_fRoughnessIntensity;
     float Metallic = vARM.b * g_fMetallicIntensity;
+    
+    // 이미시브 텍스처
+    vector vEmissive = g_Emissive.Sample(DefaultSampler, In.vTexcoord);
    
     float fIsUnit = 0.f;
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
@@ -271,6 +277,7 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
+    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, 0.f);
     
     return Out;
 }

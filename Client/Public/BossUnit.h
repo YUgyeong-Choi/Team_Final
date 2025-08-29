@@ -47,6 +47,8 @@ public:
 	const EBossAttackType& Get_BossAttackType() const { m_eBossAttackType; }
 	void EnterCutScene()
 	{
+		ToggleEmissive(1.f);
+
 		if (m_pHPBar)
 			return;
 
