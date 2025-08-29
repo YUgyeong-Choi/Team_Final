@@ -1412,7 +1412,16 @@ void CPlayer::Register_Events()
 	m_pAnimator->RegisterEventListener("ToggleLamp", [this]()
 		{
 			if(m_pPlayerLamp)
+			{
 				m_pPlayerLamp->ToggleLamp();
+				CEffectContainer::DESC desc = {};
+				_vector vPos = m_pPlayerLamp->Get_TransfomCom()->Get_State(STATE::POSITION);
+				desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Lamp_02"));
+				desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+				XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.13f, 0.f, 0.05f));
+				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Monad_P1"), &desc))
+					return;
+			}
 		});
 	
 
