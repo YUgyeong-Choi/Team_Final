@@ -96,7 +96,10 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 			// 여러개 묶어놨으니까 그대로 불러온다
 			CUI_Guide::UI_GUIDE_DESC eGuideDesc = {};
 			eGuideDesc.partPaths = m_strFilePaths;
+			eGuideDesc.pTrigger = this;
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), (m_strProtoName), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide_UI"), &eGuideDesc);
+
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 		}
 		else if (m_strProtoName == L"Prototype_GameObject_UI_Info")
 		{

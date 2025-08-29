@@ -114,7 +114,6 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
 {
     if (m_isFade == false && m_fCurrentAlpha <= 0.f)
     {
-        CCamera_Manager::Get_Instance()->SetbMoveable(true);
         Set_bDead();
         if(nullptr != m_pTrigger)
             m_pTrigger->Set_bDead();
