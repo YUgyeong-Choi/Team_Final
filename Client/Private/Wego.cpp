@@ -41,6 +41,10 @@ HRESULT CWego::Initialize(void* pArg)
 
 	m_strNpcName = u8"ÃÊº¸ Å½Çè°¡ ÈÞ°í";
 
+	LoadAnimDataFromJson();
+
+	m_pAnimator->SetPlaying(true);
+
 	return S_OK;
 }
 
@@ -76,6 +80,7 @@ void CWego::Update(_float fTimeDelta)
 
 				CUI_Manager::Get_Instance()->Activate_TalkScript(false);
 				CUI_Manager::Get_Instance()->On_Panel();
+				m_pAnimator->SetBool("TalkStart", false);
 				return;
 			}
 
@@ -100,6 +105,8 @@ void CWego::Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 			CUI_Manager::Get_Instance()->Activate_TalkScript(true);
 			CUI_Manager::Get_Instance()->Update_TalkScript(m_strNpcName, (m_NpcTalkData[m_curTalkType][m_curTalkIndex]), m_bAutoTalk);
+
+			m_pAnimator->SetBool("TalkStart",true);
 		}
 	}
 
@@ -117,6 +124,7 @@ void CWego::Update(_float fTimeDelta)
 
 			CUI_Manager::Get_Instance()->On_Panel();
 			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+			m_pAnimator->SetBool("TalkStart", false);
 		}
 	}
 }
@@ -278,6 +286,47 @@ void CWego::LoadNpcTalkData(string filePath)
 			m_NpcTalkData[talkType] = std::move(words);
 		}
 	}
+}
+
+void CWego::LoadAnimDataFromJson()
+{
+	string path = "../Bin/Save/AnimationEvents/" + m_pModelCom->Get_ModelName() + "_events.json";
+	ifstream ifs(path);
+	if (ifs.is_open())
+	{
+		json root;
+		ifs >> root;
+		if (root.contains("animations"))
+		{
+			auto& animationsJson = root["animations"];
+			auto& clonedAnims = m_pModelCom->GetAnimations();
+
+			for (const auto& animData : animationsJson)
+			{
+				const string& clipName = animData["ClipName"];
+
+				for (auto& pAnim : clonedAnims)
+				{
+					if (pAnim->Get_Name() == clipName)
+					{
+						pAnim->Deserialize(animData);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	path = "../Bin/Save/AnimationStates/" + m_pModelCom->Get_ModelName() + "_States.json";
+	ifstream ifsStates(path);
+	if (ifsStates.is_open())
+	{
+		json rootStates;
+		ifsStates >> rootStates;
+		m_pAnimator->Deserialize(rootStates);
+	}
+
+
 }
 
 CWego* CWego::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
