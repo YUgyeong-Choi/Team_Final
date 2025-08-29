@@ -24,6 +24,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
             "EmissiveIntensity": 2.0,
@@ -144,11 +145,12 @@
                 0.0
             ],
             "Color": [
-                1.0,
+                0.6544502973556519,
+                0.06167594715952873,
                 0.0,
-                0.0,
-                0.0
+                1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 0,
             "EmissiveIntensity": 1.850000023841858,
@@ -246,10 +248,11 @@
             ],
             "Color": [
                 1.0,
-                1.0,
-                1.0,
+                0.3015816807746887,
+                0.10471206903457642,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 0,
             "EmissiveIntensity": 1.649999976158142,
@@ -346,11 +349,12 @@
                 1.0
             ],
             "Color": [
-                0.0,
-                0.0,
-                0.0,
-                0.0
+                1.0,
+                1.0,
+                1.0,
+                1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
@@ -448,10 +452,11 @@
             ],
             "Color": [
                 1.0,
-                1.0,
-                1.0,
+                0.0,
+                0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 0,
             "EmissiveIntensity": 10.0,
@@ -548,11 +553,12 @@
                 1.0
             ],
             "Color": [
-                0.0,
-                0.0,
-                0.0,
-                0.0
+                1.0,
+                1.0,
+                1.0,
+                1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
@@ -663,6 +669,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
             "EmissiveIntensity": 3.4000000953674316,
@@ -745,8 +752,8 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.03999999910593033,
-                0.07999999821186066
+                0.029999999329447746,
+                0.05000000074505806
             ],
             "Speed": [
                 10.0,
@@ -761,7 +768,7 @@
                 ""
             ],
             "TextureUsage": [
-                true,
+                false,
                 true,
                 false,
                 false
@@ -788,6 +795,7 @@
                 0.0,
                 0.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 117,
             "EffectType": 0,
             "EmissiveIntensity": 0.699999988079071,
@@ -898,6 +906,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
             "EmissiveIntensity": 3.4000000953674316,
@@ -980,8 +989,8 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.03999999910593033,
-                0.07999999821186066
+                0.029999999329447746,
+                0.05000000074505806
             ],
             "Speed": [
                 5.0,
@@ -996,7 +1005,7 @@
                 ""
             ],
             "TextureUsage": [
-                true,
+                false,
                 true,
                 false,
                 false
@@ -1009,6 +1018,6 @@
             "isTileLoop": false
         }
     ],
-    "Loop": true,
-    "MaxFrame": 120
+    "Loop": false,
+    "MaxFrame": 110
 }

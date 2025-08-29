@@ -24,6 +24,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 112,
             "EffectType": 1,
             "EmissiveIntensity": 1.75,
@@ -60,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 6191.08056640625,
+            "LifeTime": 6224.12646484375,
             "LifeTime_Particle": [
                 0.5,
                 0.800000011920929
@@ -71,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_Slam_SparkParticle1",
-            "NumInstance": 150,
+            "NumInstance": 400,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -86,7 +87,7 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                -0.1899999976158142,
+                -0.05000000074505806,
                 0.0
             ],
             "Range": [
@@ -158,6 +159,7 @@
                 0.21238452196121216,
                 0.4921466112136841
             ],
+            "DistortionStrength": 10.0,
             "Duration": 114,
             "EffectType": 1,
             "EmissiveIntensity": 0.0,
@@ -194,7 +196,7 @@
                     ]
                 }
             ],
-            "LifeTime": 536.454345703125,
+            "LifeTime": 569.6627807617188,
             "LifeTime_Particle": [
                 1.5,
                 1.7999999523162842

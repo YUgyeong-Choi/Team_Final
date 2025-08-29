@@ -1081,24 +1081,44 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::FATAL:
 	{
+		if (m_pFatalTarget == nullptr)
+			break;
+		
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(STATE::POSITION) - m_pFatalTarget->Get_TransfomCom()->Get_State(STATE::POSITION));
+		auto& vLockonPos = m_pFatalTarget->Get_LockonPos();
+		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
+		CEffectContainer::DESC desc = {};
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(1.3f, 1.3f, 1.3f) * XMMatrixTranslation(vLockonPos.x, vLockonPos.y, vLockonPos.z));
+		CGameObject* pEffect = { nullptr };
+
 		m_fSetTime += fTimeDelta;
 		if (m_fSetTime > 0.2f && !m_bSetCamera[0])
 		{
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 0.1f, 0.2f);
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.4f, 0.3f,100.f, 40.f, 0.05f);
 			m_bSetCamera[0] = true;
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_FatalCombo1_P3S6"), &desc);
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+
 		}
 		if (m_fSetTime > 1.f && !m_bSetCamera[1])
 		{
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.5f, 0.1f, 0.2f); 
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.4f, 0.3f, 100.f, 40.f, 0.05f);
 			m_bSetCamera[1] = true;
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_FatalCombo2_P3S6"), &desc);
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
 		}
 		if (m_fSetTime > 2.f && !m_bSetCamera[2])
 		{
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Start_DistanceLerp(2.2f, 0.1f, 0.4f, 0.2f);
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->StartShake(0.8f, 0.3f, 100.f, 40.f, 0.05f);
 			m_bSetCamera[2] = true;
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_FatalCombo3_P5S7"), &desc);
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
 		}
 
 		RootMotionActive(fTimeDelta);
