@@ -64,6 +64,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	m_bUseLockon = true;
 	
+	m_eSpawnType = MONSTER_SPAWN_TYPE(pDesc->iSpawnType);
 
 	return S_OK;
 }

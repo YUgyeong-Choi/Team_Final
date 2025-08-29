@@ -682,7 +682,7 @@
         {
             "ClipName": "AS_Idle_Spawn_02_Loop",
             "Duration": 167.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 70.0
         },

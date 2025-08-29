@@ -84,6 +84,8 @@ public:
 	//락온에서 hp 0이하인거는 제외할라고(죽는모션할떄 락온되서)
 	_bool Get_UseLockon() { return m_bUseLockon; }
 
+	EUnitType& Get_UnitType() { return m_eUnitType; }
+
 
 public: /* [ 이미시브를 켜고 끈다. ] */
 	void OnEmissive(_float fTimeDelta);

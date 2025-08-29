@@ -45,6 +45,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	virtual void Reset();
+
 
 private:
 	CShader* m_pShaderCom = { nullptr };
