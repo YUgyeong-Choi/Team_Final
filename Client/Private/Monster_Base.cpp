@@ -55,11 +55,7 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(Ready_PartObject()))
 		return E_FAIL;
 	
-	if (pArg != nullptr)
-	{
-		m_fHeight = pDesc->fHeight;
-	}
-
+	//m_fHeight = pDesc->fHeight;
 
 	if(m_pNaviCom)
 		m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
@@ -267,14 +263,14 @@ HRESULT CMonster_Base::Ready_Actor(void* pArg)
 
 	PxVec3 halfExtents = {};
 
-	if (pArg != nullptr)
+	/*if (pArg != nullptr)
 	{
 		halfExtents = VectorToPxVec3(XMLoadFloat3(&pDesc->vExtent));
 	}
 	else
 	{
 		halfExtents = VectorToPxVec3(XMLoadFloat3(&m_vHalfExtents));
-	}
+	}*/
 
 	halfExtents = VectorToPxVec3(XMLoadFloat3(&m_vHalfExtents));
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);

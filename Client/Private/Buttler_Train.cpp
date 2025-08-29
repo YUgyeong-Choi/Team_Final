@@ -31,7 +31,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	pDesc->fRotationPerSec = XMConvertToRadians(180.0f);
 
 	m_fHeight = 1.f;
-	m_vHalfExtents = { 0.5f,1.f,0.5f };
+	m_vHalfExtents = { 0.5f, 1.f, 0.5f };
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

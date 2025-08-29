@@ -88,7 +88,7 @@ public: /* [ Setup 함수 ] */
 protected:
 
 	//(영웅)halfExtents 몬스터 베이스에다가 넣어둘게요
-	_float3 m_vHalfExtents = {};
+	_float3 m_vHalfExtents = { 0.5f, 1.f, 0.5f };
 
 	STATE_MONSTER	m_eCurrentState = {};
 	//CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
@@ -115,7 +115,7 @@ protected:
 	string			m_strStateName = {};
 
 	//
-	_float			m_fHeight = {};
+	_float			m_fHeight = { 1.f };
 
 	_vector			m_vPushDir = {};
 	_int			m_iCollisionCount = {};

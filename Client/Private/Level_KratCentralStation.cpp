@@ -957,47 +957,6 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				wsLayer = TEXT("Layer_Monster_Normal");
 			}
 
-			//만약 보스몹(푸오코라면 다른 방식으로 소환
-			/*if (wstrMonsterName == TEXT("FireEater"))
-			{
-				CUnit::UNIT_DESC UnitDesc{};
-				UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-				UnitDesc.wsNavName = StringToWString(Map);
-				UnitDesc.WorldMatrix = WorldMatrix;
-				UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-
-				CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"), &UnitDesc));
-				m_pGameInstance->Add_PoolObject(L"Layer_Monster", pObj);
-
-				continue;
-			}
-			else  if (wstrMonsterName == TEXT("Elite_Police"))
-			{
-				CUnit::UNIT_DESC UnitDesc{};
-				UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-				UnitDesc.wsNavName = StringToWString(Map);
-				UnitDesc.WorldMatrix = WorldMatrix;
-				UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-
-				CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Elite_Police"), &UnitDesc));
-				m_pGameInstance->Add_PoolObject(L"Layer_Monster", pObj);
-
-				continue;
-			}*/
-			// 오브젝트 생성 Desc 채우기
-			//CMonster_Base::MONSTER_BASE_DESC Desc{};
-			//Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-			//Desc.wsNavName = StringToWString(Map);
-			//Desc.WorldMatrix = WorldMatrix;
-			//Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-
-			//Desc.fSpeedPerSec = 5.f;
-			//Desc.fRotationPerSec = XMConvertToRadians(180.0f);
-			//Desc.szMeshID = wstrMonsterName.c_str();
-
-			//Desc.fHeight = 1.f;
-			//Desc.vExtent = { 0.5f,1.f,0.5f };
-
 			CUnit::UNIT_DESC UnitDesc{};
 			UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 			UnitDesc.wsNavName = StringToWString(Map);
@@ -1005,11 +964,13 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 			UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 			UnitDesc.szMeshID = wstrMonsterName.c_str();
 
-			wstring wsPrototypeTag = TEXT("Prototype_GameObject_Monster_") + wstrMonsterName;
-
+			wstring wsPrototypeTag = TEXT("Prototype_GameObject_") + wstrMonsterName;
 
 			CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), wsPrototypeTag, &UnitDesc));
 			m_pGameInstance->Add_PoolObject(wsLayer, pObj);
+
+			if (pObj == nullptr)
+				return E_FAIL;
 		}
 	}
 
