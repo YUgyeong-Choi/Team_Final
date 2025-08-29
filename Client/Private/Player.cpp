@@ -1459,11 +1459,13 @@ void CPlayer::Register_Events()
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
 			m_fMaxRootMotionSpeed = 40.f;
+			m_fRootMotionAddtiveScale = 1.3f;
 		});
 
 	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()
 		{
 			m_fMaxRootMotionSpeed = 18.f;
+			m_fRootMotionAddtiveScale = 1.f;
 		});
 
 
@@ -1531,7 +1533,8 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 	if (bUseRoot)
 	{
 		_float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
-		XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
+		_vector vLocal = XMLoadFloat3(&rootMotionDelta);
+		vLocal = XMVectorScale(vLocal, m_fRootMotionAddtiveScale);
 
 		_vector vScale, vRotQuat, vTrans;
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
