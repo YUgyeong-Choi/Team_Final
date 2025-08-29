@@ -237,6 +237,30 @@ HRESULT CEliteUnit::Ready_Actor()
     return S_OK;
 }
 
+void CEliteUnit::HandleMovementDecision(_float fDistance, _float fTimeDelta)
+{  // 가까우면 
+    if (fDistance < m_fChasingDistance)
+    {
+        if (m_fChangeMoveDirCooldown > 0.f)
+        {
+            m_fChangeMoveDirCooldown -= fTimeDelta;
+            m_fChangeMoveDirCooldown = max(m_fChangeMoveDirCooldown, 0.f);
+        }
+        else
+        {
+            _int iMoveDir = GetRandomInt(1, 3);
+            m_pAnimator->SetInt("MoveDir", iMoveDir);
+            m_fChangeMoveDirCooldown = 5.f;
+        }
+    }
+    else if (fDistance >= m_fChasingDistance)
+    {
+        m_pAnimator->SetInt("MoveDir", 0);
+    }
+    m_eCurrentState = EEliteState::WALK;
+    m_pAnimator->SetFloat("Distance", abs(fDistance));
+}
+
 void CEliteUnit::Update_Collider()
 {
     _matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
@@ -293,33 +317,14 @@ void CEliteUnit::UpdateState(_float fTimeDelta)
 
 void CEliteUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
 {
-	_bool bCanMove = CanMove();
+  	_bool bCanMove = CanMove();
 
 	m_pAnimator->SetBool("Move", bCanMove);
 
     if (bCanMove)
     {
-        // 가까우면 
-        if (fDistance < m_fChasingDistance)
-        {
-            if (m_fChangeMoveDirCooldown > 0.f)
-            {
-                m_fChangeMoveDirCooldown -= fTimeDelta;
-                m_fChangeMoveDirCooldown = max(m_fChangeMoveDirCooldown, 0.f);
-            }
-            else
-            {
-                _int iMoveDir = GetRandomInt(1, 3);
-                m_pAnimator->SetInt("MoveDir", iMoveDir);
-                m_fChangeMoveDirCooldown = 5.f;
-            }
-        }
-        else if (fDistance >= m_fChasingDistance)
-        {
-            m_pAnimator->SetInt("MoveDir", 0);
-        }
-        m_eCurrentState = EEliteState::WALK;
-        m_pAnimator->SetFloat("Distance", abs(fDistance));
+		HandleMovementDecision(fDistance, fTimeDelta);
+      
     }
     _bool bIsRootMotion = m_pAnimator->GetCurrentAnim()->IsRootMotionEnabled();
 
@@ -329,7 +334,7 @@ void CEliteUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
     }
     else
     {
-        UpdateNormalMove(fTimeDelta);
+          UpdateNormalMove(fTimeDelta);
     }
 
     _vector vDir = GetTargetDirection();
@@ -372,6 +377,32 @@ void CEliteUnit::UpdateStateByNodeID(_uint iNodeID)
 {
 }
 
+
+void CEliteUnit::EnableColliders(_bool bEnable)
+{
+    if (bEnable)
+    {
+        m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+        if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+        {
+            if (auto pController = pPlayer->Get_Controller())
+            {
+                pController->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
+            }
+        }
+    }
+    else
+    {
+        m_pPhysXActorCom->Init_SimulationFilterData();
+        if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+        {
+            if (auto pController = pPlayer->Get_Controller())
+            {
+                pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+            }
+        }
+    }
+}
 
 _bool CEliteUnit::CanMove() const
 {
@@ -628,6 +659,7 @@ void CEliteUnit::Reset()
             pController->SetState(pController->GetEntryNodeId());
         }
     }
+    ToggleEmissive(false);
 }
 
 void CEliteUnit::Register_Events()
@@ -714,6 +746,7 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
                 m_bGroggyActive = true;                  // 화이트 게이지 시작
                 m_fGroggyEndTimer = m_fGroggyTimer;      
                 m_fGroggyGauge = m_fGroggyThreshold;
+                cout << "그로기 가능" << endl;
                 break;
             }
             if (m_bGroggyActive)

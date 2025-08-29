@@ -157,6 +157,7 @@ private:
     virtual HRESULT Spawn_Effect();
     
     virtual HRESULT Ready_Effect();
+	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {   

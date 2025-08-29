@@ -10,8 +10,22 @@
         {
             "ClipName": "AS_ATSC0_Skill_01_New",
             "Duration": 170.0,
+            "Events": [
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 38.31999969482422
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 54.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 66.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -24,8 +38,30 @@
         {
             "ClipName": "AS_ATSC0_Skill_02_New",
             "Duration": 149.0,
+            "Events": [
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 39.2400016784668
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 43.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 60.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -38,8 +74,30 @@
         {
             "ClipName": "AS_ATSC0_Skill_03_New",
             "Duration": 197.0,
+            "Events": [
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 72.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 68.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 65.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -52,8 +110,22 @@
         {
             "ClipName": "AS_ATSC0_Skill_04_New",
             "Duration": 172.0,
+            "Events": [
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 60.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 64.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 77.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -66,6 +138,12 @@
         {
             "ClipName": "AS_ATSC0_Skill_05_New",
             "Duration": 162.0,
+            "Events": [
+                {
+                    "EventName": "Turnnig",
+                    "Time": 47.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -73,6 +151,28 @@
         {
             "ClipName": "AS_ATSC0_Skill_06",
             "Duration": 150.0,
+            "Events": [
+                {
+                    "EventName": "SetRootLargeStep",
+                    "Time": 75.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 89.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 71.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 84.0
+                },
+                {
+                    "EventName": "Turnnig",
+                    "Time": 32.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -80,8 +180,18 @@
         {
             "ClipName": "AS_ATSC0_Skill_06_New",
             "Duration": 160.0,
+            "Events": [
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 87.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 106.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -206,6 +316,12 @@
         {
             "ClipName": "AS_Idle_Spawn_01_End",
             "Duration": 190.0,
+            "Events": [
+                {
+                    "EventName": "Spawned",
+                    "Time": 190.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -264,14 +380,14 @@
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 85.0
         },
         {
             "ClipName": "AS_Turn_C_R",
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 85.0
         },
         {
             "ClipName": "AS_Walk_C_B",

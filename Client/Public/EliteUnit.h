@@ -67,6 +67,7 @@ protected:
 	virtual void Ready_EffectNames() {};
 	virtual void Ready_BoneInformation() {};
 
+	virtual void HandleMovementDecision(_float fDistance, _float fTimeDelta);
 	virtual void Update_Collider();
 	virtual void UpdateState(_float fTimeDelta);
 	virtual void UpdateMovement(_float fDistance, _float fTimeDelta);
@@ -74,8 +75,8 @@ protected:
 	virtual void UpdateStateByNodeID(_uint iNodeID);
 	virtual void ProcessingEffects(const _wstring& stEffectTag) {}; // ¿Ã∆Â∆Æ √≥∏Æ
 
-	virtual void EnableColliders(_bool bEnable) {};
-	_bool CanMove() const;
+	virtual void EnableColliders(_bool bEnable);
+	virtual _bool CanMove() const;
 	_bool  IsTargetInFront(_float fDectedAngle = 60.f) const;
 
 	_bool UpdateTurnDuringAttack(_float fTimeDelta);

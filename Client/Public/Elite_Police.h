@@ -37,13 +37,14 @@ class CElite_Police final : public CEliteUnit
         Paralyzation_End = 100060
     };
 
-    enum EEliteAttackPattern : _int
+    enum EPoliceAttackPattern : _int
     {
         AP_NONE = 0,
 		COMBO1 = 1,
 		COMBO2 = 2,
 		COMBO3 = 3,
-		COMBO4 = 4
+		COMBO4 = 4,
+		COMBO5 = 5
     };
 private:
 	CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -73,6 +74,7 @@ private:
     virtual void Ready_BoneInformation() override;
     HRESULT Ready_Weapon();
 
+	virtual void HandleMovementDecision(_float fDistance, _float fTimeDelta) override;
     virtual void UpdateAttackPattern(_float fDistance, _float fTimeDelta) override;
     virtual void UpdateStateByNodeID(_uint iNodeID) override;
     virtual void UpdateSpecificBehavior() override;
@@ -86,19 +88,21 @@ private:
     virtual HRESULT Ready_Effect();
 
     virtual void Register_Events() override;
-
+	virtual void Reset() override;
 
     virtual _int GetRandomAttackPattern(_float fDistance) override;
     virtual void UpdatePatternWeight(_int iPattern) override;
-
+    virtual _bool CanMove() const override;
 
 
     virtual void ChosePatternWeightByDistance(_float fDistance);
-
     virtual void SetupAttackByType(_int iPattern);
+    void         Ready_AttackPatternWeight();
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
-
+    _bool m_bPlayedDetect = false;
+	_bool m_bSpawned = false;
+	_float m_fDetectRange = 10.f;
     // 공격 관련
     _int   m_iPatternLimit = 1;
     _int   m_iFireBallComboCount = 0;
@@ -108,22 +112,21 @@ private:
     _float m_fWeightDecreaseRate = 0.6f;
     _float m_fWeightIncreaseRate = 0.4f;
 
-    EEliteAttackPattern m_eCurAttackPattern = EEliteAttackPattern::AP_NONE;
-    EEliteAttackPattern m_ePrevAttackPattern = EEliteAttackPattern::AP_NONE;
-    unordered_map<EEliteAttackPattern, _float> m_PatternWeightMap;
-    unordered_map<EEliteAttackPattern, _float> m_PatternWeighForDisttMap;
-    unordered_map<EEliteAttackPattern, _int> m_PatternCountMap;// 패턴 연속 횟수
+    _float m_fTooCloseDistance = 1.f;
 
-    vector<EEliteAttackPattern> m_vecCloseAttackPatterns = {
-		COMBO1, COMBO2, COMBO3, COMBO4
+    EPoliceAttackPattern m_eCurAttackPattern = EPoliceAttackPattern::AP_NONE;
+    EPoliceAttackPattern m_ePrevAttackPattern = EPoliceAttackPattern::AP_NONE;
+
+    vector<EPoliceAttackPattern> m_vecCloseAttackPatterns = {
+        COMBO1, COMBO2, COMBO3, COMBO4,COMBO5
     };
 
-    vector<EEliteAttackPattern> m_vecMiddleAttackPatterns = {
-		COMBO2
+    vector<EPoliceAttackPattern> m_vecMiddleAttackPatterns = {
+			COMBO1, COMBO2, COMBO3, COMBO4,COMBO5
     };
 
     const _float ATTACK_DISTANCE_CLOSE = 0.f;
-    const _float ATTACK_DISTANCE_MIDDLE = 7.f;
+    const _float ATTACK_DISTANCE_MIDDLE = 5.f;
 public:
 	static CElite_Police* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

@@ -642,16 +642,15 @@ void CFuoco::UpdateSpecificBehavior()
 
 void CFuoco::EnableColliders(_bool bEnable)
 {
+	__super::EnableColliders(bEnable);
 	if (bEnable)
 	{
-		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 		m_pPhysXActorComForArm->Set_SimulationFilterData(m_pPhysXActorComForArm->Get_FilterData());
 		m_pPhysXActorComForFoot->Set_SimulationFilterData(m_pPhysXActorComForFoot->Get_FilterData());
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
 			if (auto pController = pPlayer->Get_Controller())
 			{
-				pController->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
 				pController->Remove_IgnoreActors(m_pPhysXActorComForArm->Get_Actor());
 				pController->Remove_IgnoreActors(m_pPhysXActorComForFoot->Get_Actor());
 			}
@@ -659,14 +658,12 @@ void CFuoco::EnableColliders(_bool bEnable)
 	}
 	else
 	{
-		m_pPhysXActorCom->Init_SimulationFilterData();
 		m_pPhysXActorComForArm->Init_SimulationFilterData();
 		m_pPhysXActorComForFoot->Init_SimulationFilterData();
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
 			if (auto pController = pPlayer->Get_Controller())
 			{
-				pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 				pController->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
 				pController->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
 			}
@@ -718,6 +715,7 @@ void CFuoco::SetupAttackByType(_int iPattern)
 		break;
 	case Client::CFuoco::StrikeFury:
 		SetTurnTimeDuringAttack(1.2f);
+		m_eAttackType = EAttackType::FURY_AIRBORNE;
 		break;
 	case Client::CFuoco::P2_FireFlame:
 	{
