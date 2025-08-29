@@ -15674,12 +15674,12 @@
         {
             "Collision": false,
             "ModelName": "SM_LightProp_Lamp_03",
-            "NoInstancing": false,
+            "NoInstancing": true,
             "ObjectCount": 1,
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "LightShape": 1,
+                    "LightShape": 2,
                     "WorldMatrix": [
                         [
                             1.0,
@@ -35666,7 +35666,7 @@
         {
             "Collision": false,
             "ModelName": "SM_Station_Light_02",
-            "NoInstancing": false,
+            "NoInstancing": true,
             "ObjectCount": 13,
             "Objects": [
                 {

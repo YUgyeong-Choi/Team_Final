@@ -737,7 +737,7 @@
     {
         "Collision": false,
         "ModelName": "SM_LightProp_Lamp_03",
-        "NoInstancing": false,
+        "NoInstancing": true,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Lamp_03.bin"
     },
@@ -1073,7 +1073,7 @@
     {
         "Collision": false,
         "ModelName": "SM_Station_Light_02",
-        "NoInstancing": false,
+        "NoInstancing": true,
         "ObjectCount": 13,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_02.bin"
     },
