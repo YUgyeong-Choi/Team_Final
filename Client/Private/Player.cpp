@@ -221,7 +221,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	
 	/* [ 특수행동 ] */
-	ItemWeaponOFF(fTimeDelta);
+	ItemWeapOnOff(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 
 	/* [ 이곳은 실험실입니다. ] */
@@ -240,7 +240,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_U))
 	{
-		
 	}
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -259,6 +258,13 @@ HRESULT CPlayer::Render()
 #endif
 
 	return S_OK;
+}
+
+void CPlayer::Reset()
+{
+	m_pBelt_Down->Reset();
+	m_pBelt_Up->Reset();
+	m_pPlayerLamp->Reset();
 }
 
 CAnimController* CPlayer::GetCurrentAnimContrller()
@@ -1004,16 +1010,73 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::MAINSKILLA:
 	{
 		RootMotionActive(fTimeDelta);
-		break;
+		if (!m_bSetTwo)
+		{
+			m_bIsInvincible = true;
+			m_bSetTwo = true;
+		}
+
+		
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetOnce && m_fMana >= 0.f)
+			{
+				m_bIsInvincible = false;
+				m_fMana -= 100.f;
+				Callback_Mana();
+				m_bSetOnce = true;
+			}
+		}
+
+		break; 
 	}
 	case eAnimCategory::MAINSKILLB:
 	{
 		RootMotionActive(fTimeDelta);
+
+		if (!m_bSetTwo)
+		{
+			m_bIsInvincible = true;
+			m_bSetTwo = true;
+		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetOnce && m_fMana >= 0.f)
+			{
+				m_bIsInvincible = false;
+				m_fMana -= 100.f;
+				Callback_Mana();
+				m_bSetOnce = true;
+			}
+		}
+
 		break;
 	}
 	case eAnimCategory::MAINSKILLC:
 	{
 		RootMotionActive(fTimeDelta);
+
+		if (!m_bSetTwo)
+		{
+			m_bIsInvincible = true;
+			m_bSetTwo = true;
+		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.6f)
+		{
+			if (!m_bSetOnce && m_fMana >= 0.f)
+			{
+				m_bIsInvincible = false;
+				m_fMana -= 100.f;
+				Callback_Mana();
+				m_bSetOnce = true;
+			}
+		}
+
 		break;
 	}
 	case eAnimCategory::FATAL:
@@ -1098,13 +1161,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		_float  m_fTime = 0.4f;
 		_float  m_fDistance = 2.f;
-
+		
 		if (!m_bMove)
 		{
 			if (m_pHitedTarget)
 			{
 				_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
-
+		
 				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 				SyncTransformWithController();
 			}
@@ -1115,11 +1178,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		_float  m_fTime = 0.1f;
 		_float  m_fDistance = 2.f;
-
-		if (m_pHitedTarget)
+		
+		if (m_pHitedTarget && !m_bMove)
 		{
 			_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
-
+		
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
@@ -1326,6 +1389,13 @@ void CPlayer::Register_Events()
 		{
 			Use_Item();
 		});
+	m_pAnimator->RegisterEventListener("ToggleLamp", [this]()
+		{
+			if(m_pPlayerLamp)
+				m_pPlayerLamp->ToggleLamp();
+		});
+	
+
 
 	m_pAnimator->RegisterEventListener("ReceiveDamageToFatalTarget", [this]()
 		{
@@ -1342,6 +1412,17 @@ void CPlayer::Register_Events()
 			if (m_iFatalAttackCount == 3)
 				m_iFatalAttackCount = 0;
 		});
+	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
+		{
+			m_fMaxRootMotionSpeed = 40.f;
+		});
+
+	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()
+		{
+			m_fMaxRootMotionSpeed = 18.f;
+		});
+
+
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
@@ -1418,7 +1499,7 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 
 		_float fDeltaMag = XMVectorGetX(XMVector3Length(finalDelta));
 
-		_float fMaxDeltaPerFrame =18.f * fTimeDelta;
+		_float fMaxDeltaPerFrame = m_fMaxRootMotionSpeed * fTimeDelta;
 		if (fDeltaMag > fMaxDeltaPerFrame)
 		{
 			finalDelta = XMVector3Normalize(finalDelta) * fMaxDeltaPerFrame;
@@ -2087,7 +2168,7 @@ void CPlayer::Play_CutScene_Door()
 	m_bInteractionRotate[0] = true;
 }
 
-void CPlayer::ItemWeaponOFF(_float fTimeDelta)
+void CPlayer::ItemWeapOnOff(_float fTimeDelta)
 {
 	if (m_bItemSwitch)
 	{

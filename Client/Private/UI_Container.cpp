@@ -176,6 +176,13 @@ void CUI_Container::Priority_Update(_float fTimeDelta)
 
 void CUI_Container::Update(_float fTimeDelta)
 {
+	if (m_fDelay > 0)
+	{
+		m_fDelay -= fTimeDelta;
+		return;
+	}
+
+
 	for (auto& pObj : m_PartObjects)
 	{
 		if (nullptr != pObj)
@@ -186,6 +193,12 @@ void CUI_Container::Update(_float fTimeDelta)
 
 void CUI_Container::Late_Update(_float fTimeDelta)
 {
+	if (m_fDelay > 0)
+	{
+	
+		return;
+	}
+
 	for (auto& pObj : m_PartObjects)
 	{
 		if (nullptr != pObj)

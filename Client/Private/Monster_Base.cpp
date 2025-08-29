@@ -12,7 +12,7 @@ CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 }
 
 CMonster_Base::CMonster_Base(const CMonster_Base& Prototype)
-	:CUnit{Prototype}
+	:CUnit(Prototype)
 {
 	m_eUnitType = EUnitType::NORMAL_MONSTER;
 }
@@ -55,7 +55,8 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	if (FAILED(Ready_PartObject()))
 		return E_FAIL;
 	
-	m_fHeight = pDesc->fHeight;
+	//m_fHeight = pDesc->fHeight;
+
 	if(m_pNaviCom)
 		m_pNaviCom->Select_Cell(m_pTransformCom->Get_State(STATE::POSITION));
 
@@ -232,7 +233,7 @@ HRESULT CMonster_Base::Ready_Components(void* pArg)
 		return S_OK;
 	}
 
-	MONSTER_BASE_DESC* pDesc = static_cast<MONSTER_BASE_DESC*>(pArg);
+	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
 
 	//네비게이션 가져오기
 	wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 탈 것인가 STAION, HOTEL...
@@ -260,7 +261,18 @@ HRESULT CMonster_Base::Ready_Actor(void* pArg)
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxVec3 halfExtents = VectorToPxVec3(XMLoadFloat3(&pDesc->vExtent));
+	PxVec3 halfExtents = {};
+
+	/*if (pArg != nullptr)
+	{
+		halfExtents = VectorToPxVec3(XMLoadFloat3(&pDesc->vExtent));
+	}
+	else
+	{
+		halfExtents = VectorToPxVec3(XMLoadFloat3(&m_vHalfExtents));
+	}*/
+
+	halfExtents = VectorToPxVec3(XMLoadFloat3(&m_vHalfExtents));
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
@@ -471,6 +483,7 @@ _bool CMonster_Base::Check_Detect()
 
 	if (XMVectorGetX(XMVector3Length(vDir)) < m_fDetectDist)
 	{
+		ToggleEmissive(1.f);
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
 		

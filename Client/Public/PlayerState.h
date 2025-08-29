@@ -632,6 +632,7 @@ public:
 			
             m_pOwner->m_bUseLamp = true;
             m_pOwner->m_bItemSwitch = true;
+            m_pOwner->m_bLampSwitch = true;
             m_pOwner->m_bResetSoundTime = false;
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
@@ -652,7 +653,7 @@ public:
         {
             m_pOwner->m_bPulseReservation = false;
 
-            /* [ 순회하면서 아이템 찾기 ] */
+            /* [ 아이템 찾기 ] */
             _bool PulseUse = FindPulseObject();
 
             if (!PulseUse)
@@ -1027,12 +1028,13 @@ public:
         {
             m_pOwner->m_pAnimator->SetTrigger("EquipWeapon");
             m_pOwner->m_pAnimator->ApplyOverrideAnimController("TwoHand");
-     /*       m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), m_pOwner->m_pWeapon);*/
+            m_pOwner->m_bWeaponEquipped = true;
         }
         else
         {
             m_pOwner->m_pAnimator->SetTrigger("PutWeapon");
             m_pOwner->m_pAnimator->CancelOverrideAnimController();
+            m_pOwner->m_bWeaponEquipped = false;
         }
 
         m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
@@ -1045,25 +1047,6 @@ public:
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
-
-        if(0.5f < m_fStateTime && !m_pOwner->m_bWeaponEquipped)
-        {
-            if (!m_bDoOnce)
-            {
-                m_pOwner->m_bWeaponEquipped = true;
-                //m_pOwner->m_pWeapon->SetbIsActive(true);
-				m_bDoOnce = true;
-            }
-        }
-        else if (0.5f < m_fStateTime && m_pOwner->m_bWeaponEquipped)
-        {
-            if (!m_bDoOnce)
-            {
-                m_pOwner->m_bWeaponEquipped = false;
-               // m_pOwner->m_pWeapon->SetbIsActive(false);
-                m_bDoOnce = true;
-            }
-        }
 
         _bool bMoving =
             KEY_PRESSING(DIK_W) ||
@@ -2677,8 +2660,6 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("MainSkill");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
-        m_pOwner->m_fMana -= 100.f;
-        m_pOwner->Callback_Mana();
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -2694,8 +2675,6 @@ public:
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
-                m_pOwner->m_fMana -= 100.f;
-                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 
@@ -2709,8 +2688,6 @@ public:
             if (KEY_DOWN(DIK_F))
             {
                 m_pOwner->m_pAnimator->SetTrigger("MainSkill");
-                m_pOwner->m_fMana -= 100.f;
-                m_pOwner->Callback_Mana();
                 m_iSkillCount++;
             }
 
@@ -2927,6 +2904,8 @@ public:
 public:
     virtual void Enter() override
     {
+
+        m_pOwner->m_fMaxRootMotionSpeed = 18.f;
         /* [ 이펙트를 생성한다. ] */
         _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
 
@@ -3024,8 +3003,6 @@ public:
 
         m_pOwner->m_pAnimator->ResetParameters();
         m_pOwner->Set_GrinderEffect_Active(false);
-
-
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -3165,6 +3142,8 @@ public:
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
             
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
+            m_pOwner->m_pBelt_Down->Reset();
+			m_pOwner->m_pBelt_Up->Reset();
 
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pWeapon->SetbIsActive(false);

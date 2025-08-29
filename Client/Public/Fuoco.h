@@ -119,6 +119,8 @@ private:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
+
+
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT Ready_Actor() override;
@@ -132,7 +134,7 @@ private:
 
 
     // 공견 패턴
-    void SetupAttackByType(EBossAttackPattern ePattern);
+    virtual void SetupAttackByType(_int iPattern) override;
 
 
     virtual void Register_Events() override;
@@ -140,8 +142,8 @@ private:
 	virtual void Ready_AttackPatternWeightForPhase1() override;
 	virtual void Ready_AttackPatternWeightForPhase2() override;
 
-	EBossAttackPattern GetRandomAttackPattern(_float fDistance);
-	void UpdatePatternWeight(EBossAttackPattern ePattern);
+    virtual _int GetRandomAttackPattern(_float fDistance) override;
+	virtual void UpdatePatternWeight(_int iPattern) override;
 
     _bool CheckConditionFlameField();
 
@@ -187,13 +189,9 @@ private:
 
 
     // 공격 관련
-    _int   m_iPatternLimit = 1;
+
     _int   m_iFireBallComboCount = 0;
-    _float m_fBasePatternWeight = 100.f;
-    _float m_fMinWeight = 30.f;
-    _float m_fMaxWeight = 250.f;
-    _float m_fWeightDecreaseRate = 0.6f;
-	_float m_fWeightIncreaseRate = 0.4f;
+
     //_float m_fAttackCooldown = 0.f; // 공격 쿨타임
     //_float m_fAttckDleay = 4.f;
     _float m_fFireFlameDuration = 0.f;
@@ -206,9 +204,7 @@ private:
     };
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
     EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
-    unordered_map<EBossAttackPattern, _float> m_PatternWeightMap;
-    unordered_map<EBossAttackPattern, _float> m_PatternWeighForDisttMap;
-    unordered_map<EBossAttackPattern, _int> m_PatternCountMap;// 패턴 연속 횟수
+
 
 	vector<EBossAttackPattern> m_vecCloseAttackPatterns = {
 	  SlamCombo, Uppercut, SlamAtk, SwingAtk, 

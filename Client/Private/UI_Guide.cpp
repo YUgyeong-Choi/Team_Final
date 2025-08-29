@@ -43,7 +43,7 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     for (auto& partPath : pDesc->partPaths)
     {
         CUI_Container::UI_CONTAINER_DESC eDesc = {};
-
+    
         eDesc.strFilePath = partPath; 
 
         m_Explainations.push_back(static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc)));
@@ -138,6 +138,12 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
 
 void CUI_Guide::Update(_float fTimeDelta)
 {
+    if (m_fDelay > 0)
+    {
+        m_fDelay -= fTimeDelta;
+        return;
+    }
+
 
     Fade(fTimeDelta);
 
@@ -162,6 +168,12 @@ void CUI_Guide::Update(_float fTimeDelta)
 
 void CUI_Guide::Late_Update(_float fTimeDelta)
 {
+
+    if (m_fDelay > 0)
+    {
+        
+        return;
+    }
 
     if (m_isActive)
     {

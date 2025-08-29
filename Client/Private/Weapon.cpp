@@ -91,8 +91,26 @@ void CWeapon::Late_Update(_float fTimeDelta)
 			SocketMatrix *
 			XMLoadFloat4x4(m_pParentWorldMatrix));
 	
-	
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	/* [ 공간분할 ] */
+	vector<AABBBOX> CurrentBounds;
+	m_pGameInstance->GetActiveAreaBounds(CurrentBounds);
+	if (CurrentBounds.empty())
+		return;
+
+	AABBBOX tAreaUnion = CurrentBounds[0];
+	for (_uint iArea = 1; iArea < static_cast<_uint>(CurrentBounds.size()); ++iArea)
+	{
+		// 현재 영역들의 AABB를 합친다 (1차 핉터)
+		AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
+	}
+	AABB_Inflate(tAreaUnion, 10.f);
+
+	_float3 vPosition = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43 };
+	if (AABB_ContainsPoint(tAreaUnion, vPosition))
+	{
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	}
 }
 
 HRESULT CWeapon::Render()

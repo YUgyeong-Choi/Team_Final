@@ -155,6 +155,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 	m_pLevel_Manager->Priority_Update(fTimeDelta);
 
+	m_pPulling_Manager->RemoveObjMagr_PushPullingMgr();
+
 	m_pObject_Manager->Update(fTimeDelta);	
 	m_pLevel_Manager->Update(fTimeDelta);
 
@@ -242,6 +244,26 @@ _float CGameInstance::Compute_Random(_float fMin, _float fMax)
 {
 	return fMin + (fMax - fMin) * Compute_Random_Normal();	
 }
+
+void CGameInstance::Call_BeforeChangeLevel()
+{
+	// 렌더
+	ClearRenderObjects();
+
+	// 빛
+	RemoveAll_Light(m_iCurrentLevelIndex);
+	
+	// 옵저버
+	Reset_All();
+
+	// 피직스
+	Set_IsChangeLevel(true);
+	Remove_OnStayTrigger();
+
+	// 풀링 
+	m_pPulling_Manager->Clear_Pools();
+}
+
 
 #pragma region LEVEL_MANAGER
 
@@ -776,6 +798,10 @@ void CGameInstance::Remove_TriggerRemoveActor(CPhysXActor* pMe, unordered_set<CP
 {
 	m_pPhysX_Manager->Remove_TriggerRemoveActor(pMe, pOthers);
 }
+void CGameInstance::Remove_OnStayTrigger()
+{
+	m_pPhysX_Manager->Remove_OnStayTrigger();
+}
 #pragma endregion
 
 #pragma region SOUND_DEVICE
@@ -972,11 +998,17 @@ void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* 
 {
 	m_pPulling_Manager->Return_PoolObject(wsLayerName, pObj);
 }
+void CGameInstance::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj)
+{ 	
+	m_pPulling_Manager->Push_WillRemove(wsLayerName, pObj);
+}
 #pragma endregion
 
 
 void CGameInstance::Release_Engine()
 {
+	Safe_Release(m_pPulling_Manager);
+
 	Safe_Release(m_pFrustum);
 
 	Safe_Release(m_pShadow);
@@ -1016,8 +1048,6 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pOctoTree_Manager);
 
 	Safe_Release(m_pArea_Manager);
-
-	Safe_Release(m_pPulling_Manager);
 
 	CComputeShader::ReleaseCache(); // 캐싱해둔 컴퓨트 셰이더들 해제
 

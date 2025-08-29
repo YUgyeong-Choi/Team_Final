@@ -1,10 +1,10 @@
 #pragma once
 
-#include "BossUnit.h"
+#include "EliteUnit.h"
 #include "Client_Defines.h"
 
 NS_BEGIN(Client)
-class CElite_Police final : public CBossUnit
+class CElite_Police final : public CEliteUnit
 {
     enum class EliteMonsterStateID : _uint
     {
@@ -70,11 +70,9 @@ public:
 
 private:
     virtual HRESULT Ready_Components(void* pArg) override;
-    virtual HRESULT Ready_Actor() override;
     virtual void Ready_BoneInformation() override;
     HRESULT Ready_Weapon();
 
-    virtual void Update_Collider() override;
     virtual void UpdateAttackPattern(_float fDistance, _float fTimeDelta) override;
     virtual void UpdateStateByNodeID(_uint iNodeID) override;
     virtual void UpdateSpecificBehavior() override;
@@ -90,12 +88,14 @@ private:
     virtual void Register_Events() override;
 
 
-    EEliteAttackPattern GetRandomAttackPattern(_float fDistance);
-    void UpdatePatternWeight(EEliteAttackPattern ePattern);
+    virtual _int GetRandomAttackPattern(_float fDistance) override;
+    virtual void UpdatePatternWeight(_int iPattern) override;
 
-    _bool CheckConditionFlameField();
 
-    void ChosePatternWeightByDistance(_float fDistance);
+
+    virtual void ChosePatternWeightByDistance(_float fDistance);
+
+    virtual void SetupAttackByType(_int iPattern);
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
 

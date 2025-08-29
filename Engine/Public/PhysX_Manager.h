@@ -64,6 +64,8 @@ public:
 	void Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther);
 	void Remove_TriggerRemoveActor(CPhysXActor* pMe, unordered_set<CPhysXActor*> pTriggerEnterOthers);
 	void Update_OnTriggerStay();
+
+	void Remove_OnStayTrigger();
 public:
 	static CPhysX_Manager* Create();
 	virtual void Free() override;

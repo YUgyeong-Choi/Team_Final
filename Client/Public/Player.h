@@ -72,6 +72,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual void Reset() override;
+
 public:
 	CPhysXController*	Get_Controller() { return m_pControllerCom; }
 	EPlayerState		Get_PlayerState() { return m_eCurrentState; }
@@ -151,7 +153,7 @@ private:
 	void Play_CutScene_Door();
 
 private:
-	void ItemWeaponOFF(_float fTimeDelta);
+	void ItemWeapOnOff(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
 
 	void Weapon_Collider_Active();
@@ -321,6 +323,7 @@ private: /* [ 루트모션 관련 변수 ] */
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
 	_float   m_fSmoothThreshold = 0.1f;
+	_float   m_fMaxRootMotionSpeed = 18.f;
 
 private: /* [ 플레이어 변수 ] */
 	_float  m_fSetTime = {};
@@ -366,6 +369,8 @@ private: /* [ 현재 플레이어 레벨 ] */
 private: /* [ 아이템 사용 관련 변수 ] */
 	_bool	 m_bItemSwitch = {};
 	_float	 m_fItemTime = {};
+	_bool	 m_bLampSwitch = {};
+	_float	 m_fLampTime = {};
 	
 private: /* [ 벨트 슬롯 ] */
 	_bool	 m_bUseLamp = {};

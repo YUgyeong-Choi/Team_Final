@@ -241,7 +241,7 @@
         "Collision": true,
         "ModelName": "SM_Exhibition_Pillar_01",
         "NoInstancing": false,
-        "ObjectCount": 163,
+        "ObjectCount": 168,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Pillar_01.bin"
     },
     {

@@ -30,6 +30,7 @@ void CPulling_Manager::Use_PoolObject(const _wstring& wsLayerName)
     if (!pObj) return;
 
     const int levelIdx = m_pGameInstance->GetCurrentLevelIndex();
+    pObj->Reset();
     m_pGameInstance->Push_GameObject(pObj, levelIdx, wsLayerName);
 }
 
@@ -50,6 +51,7 @@ void CPulling_Manager::UseAll_PoolObjects(const _wstring& wsLayerName)
 
         if (!pObj) continue; 
 
+        pObj->Reset();
         m_pGameInstance->Push_GameObject(pObj, levelIdx, wsLayerName);
     }
 }
@@ -62,8 +64,23 @@ void CPulling_Manager::Return_PoolObject(const _wstring& wsLayerName, CGameObjec
     if (!pObj)
         return;
 
-    pReturnObj->Reset();
     m_ObjectPools[wsLayerName].push(pReturnObj);
+}
+
+void CPulling_Manager::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj)
+{
+    RemoveObject desc{};
+    desc.layerName = wsLayerName;
+    desc.pObj = pObj;
+    m_RemoveObjects.push_back(desc);
+}
+
+void CPulling_Manager::RemoveObjMagr_PushPullingMgr()
+{
+    for (auto& obj : m_RemoveObjects)
+        Return_PoolObject(obj.layerName, obj.pObj);
+
+    m_RemoveObjects.clear();
 }
 
 void CPulling_Manager::Clear_Pools()
@@ -81,6 +98,7 @@ void CPulling_Manager::Clear_Pools()
     }
 
     m_ObjectPools.clear(); // 모든 key-value 제거
+    m_RemoveObjects.clear();
 }
 
 CPulling_Manager* CPulling_Manager::Create()

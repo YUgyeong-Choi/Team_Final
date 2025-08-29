@@ -110,6 +110,7 @@
 #include "Fuoco.h"
 #include "FireBall.h"
 #include "FlameField.h"
+#include "Elite_Police.h"
 #include "TestAnimObject.h"
 #pragma endregion
 
@@ -419,6 +420,17 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+	//테스트(영웅)
+	/* For.Prototype_Component_Texture_FireEaterMask*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEaterMask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_C_KMH.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_FireEaterNormal*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEaterNormal"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_N_KMH.dds")))))
+		return E_FAIL;
+
 
 	m_fRatio = 0.1f;
 
@@ -524,8 +536,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CWego::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TestAnimObject"),
-		CTestAnimObject::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Elite_Police"),
+		CElite_Police::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -546,19 +558,21 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CDoorMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Test"),
+	//뒤에 몬스터 붙이는거 뺐어요(영웅) TEXT("Prototype_GameObject_Buttler_Monster_Train") 이거
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Test"),
 		CMonster_Test::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Buttler_Train"),
 		CButtler_Train::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Basic"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Buttler_Basic"),
 		CButtler_Basic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
+	//FIRE EATER로 바꿧어요 (영웅)
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireEater"),
 		CFuoco::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -613,29 +627,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 시작!!..."));
 
 	m_pGameInstance->ClaerOctoTreeObjects();
-
-	//lstrcpy(m_szLoadingText, TEXT("맵 로딩 중..."));
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
-
-	//lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-	////제이슨으로 저장된 맵을 로드한다.
-	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
-	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
-
-	/*
-		이게 왜 문제가 안생김?????
-		두 스레드가 동시에
-		프로토타입매니저나 오브젝트 매니저에
-		ADD 프로토타입, 오브젝트 하면 문제 생길 줄 알았음
-		STL 원소추가하는건 스레드 잘되어있나?
-
-		<오류 나가지고 뮤텍스로 락 걸었음>
-	*/
 
 	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 	//	return E_FAIL;
@@ -1144,6 +1135,11 @@ HRESULT CLoader::Loading_For_YW()
 	/* For.Prototype_Component_Texture_DefaultDecalTexture*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_DefaultDecal"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Bloodstain_01_N.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_DefaultMaskTexture*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Texture_DefaultMaskTexture"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_C_KMH.dds")))))
 		return E_FAIL;
 
 #pragma endregion
@@ -1784,8 +1780,33 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_W"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_W.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_S"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_S.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_A"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_A.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_D"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_D.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_ESC"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_ESC.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_Mouse_Move"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Mouse_Move.dds")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/

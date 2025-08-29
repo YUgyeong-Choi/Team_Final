@@ -32,6 +32,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Shadow() override;
 
 	void 	Update_Collider();
 	CPhysXDynamicActor* Get_PhysXActor() { return m_pPhysXActorCom; }

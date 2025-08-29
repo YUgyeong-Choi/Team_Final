@@ -2,21 +2,21 @@
 
 matrix g_ViewMatrix, g_ProjMatrix, g_WorldMatrix;
 
-//matrix g_WorldMatrixInv;
 matrix g_ProjMatrixInv;
-//matrix g_ViewMatrixInv;
 matrix g_ViewWorldMatrixInv;
 
 Texture2D g_DepthTexture;
-//Texture2D g_WorldPosTexture;
 
 Texture2D g_ARMT;
 Texture2D g_N;
 Texture2D g_BC;
 
-//float g_Near = 0.001f;
+Texture2D g_MASK; //노말 온리의 마스크 텍스쳐
+
 float g_Far = 1000.f;
 float2 g_ScreenSize = float2(1600.f, 900.f);
+
+
 
 
 struct VS_IN
@@ -50,6 +50,49 @@ struct PS_IN
     float4 vPosition : SV_POSITION;
 };
 
+struct DECAL_SAMPLE
+{
+    float2 vTexcoord;
+    float3 vLocalPos;
+    float3 vWorldPos;
+};
+
+DECAL_SAMPLE SampleDecal(PS_IN In)
+{
+    DECAL_SAMPLE Out;
+
+    // 화면 좌표 → UV
+    float2 vUV = In.vPosition.xy / g_ScreenSize;
+    
+    // Depth
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, vUV);
+    float fViewZ = vDepthDesc.y * g_Far;
+
+    // NDC → View Space
+    float4 vPosition;
+    vPosition.x = vUV.x * 2.f - 1.f;
+    vPosition.y = vUV.y * -2.f + 1.f;
+    vPosition.z = vDepthDesc.x;
+    vPosition.w = 1.f;
+
+    vPosition *= fViewZ;
+
+    float4 vWorldPos4 = mul(vPosition, g_ProjMatrixInv);
+    Out.vWorldPos = vWorldPos4.xyz;
+
+    // Local space
+    Out.vLocalPos = mul(float4(Out.vWorldPos, 1.f), g_ViewWorldMatrixInv).xyz;
+
+    // Clip: 볼륨메쉬 밖은 제거
+    clip(0.5f - abs(Out.vLocalPos));
+
+    // Texcoord
+    Out.vTexcoord = Out.vLocalPos.xz + 0.5f;
+
+    return Out;
+}
+
+
 struct PS_OUT
 {
     float4 vARMT : SV_Target0;
@@ -61,47 +104,44 @@ PS_OUT PS_DECAL(PS_IN In)
 {
     PS_OUT Out;
 
-    float2 vUV = In.vPosition.xy / g_ScreenSize; //이것으로 해결했음 으아아악(왜곡되는거)
-    
-    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, vUV);
-    float fViewZ = vDepthDesc.y * g_Far; //(Near~Far)
-    
-    vector vPosition;
+    DECAL_SAMPLE tagDecalSample = SampleDecal(In);
 
-    vPosition.x = vUV.x * 2.f - 1.f;
-    vPosition.y = vUV.y * -2.f + 1.f;
-    vPosition.z = vDepthDesc.x; //투영 스페이스의 깊이(0~1)
-    vPosition.w = 1.f;
-
-    vPosition = vPosition * fViewZ; //w나누던 연산을 역으로 곱하는 부분
-    
-    vPosition = mul(vPosition, g_ProjMatrixInv); //투영 역행렬
-    //vPosition = mul(vPosition, g_ViewMatrixInv); //뷰 역행렬
-    
-    //월드로 왔음
-    //vector vWorldPosDesc = g_WorldPosTexture.Sample(PointSampler, vUV); //테스트
-    
-    // 데칼 로컬 공간으로 변환
-    float3 vLocalPos = mul(float4(vPosition.xyz, 1.f), g_ViewWorldMatrixInv).xyz; //뷰*월드 역행렬로 한방에하니까 떨림이 사라졌다!!!!!!!
-    
-    //일정 각도이상 기울어진 표면은 데칼을 적용하지 않음 
-    
-    clip(0.5f - abs(vLocalPos.xyz));
-
-    // 텍스처 좌표 계산 (0 ~ 1)
-    float2 vTexcoord = vLocalPos.xz + 0.5f;
-    
-    vector vARMT = g_ARMT.Sample(DefaultSampler, vTexcoord);
-    
+    vector vARMT = g_ARMT.Sample(DefaultSampler, tagDecalSample.vTexcoord);
     if (vARMT.a < 0.3f)
         discard;
     
-    Out.vARMT = vARMT;//g_ARMT.Sample(DefaultSampler, vTexcoord);
-    Out.vN = g_N.Sample(DefaultSampler, vTexcoord);
-    Out.vBC = g_BC.Sample(DefaultSampler, vTexcoord);
-    
+    vector vN = g_N.Sample(DefaultSampler, tagDecalSample.vTexcoord);
+    vector vBC = g_BC.Sample(DefaultSampler, tagDecalSample.vTexcoord);
+
+    Out.vARMT = vARMT;
+    Out.vN = vN * vARMT.a;
+    Out.vBC = vBC * vARMT.a;
+
     return Out;
 }
+
+struct PS_OUT_NORMALONLY
+{
+    float4 vN : SV_Target1;
+};
+
+PS_OUT_NORMALONLY PS_DECAL_NORMALONLY(PS_IN In)
+{
+    PS_OUT_NORMALONLY Out;
+
+    DECAL_SAMPLE tagDecalSample = SampleDecal(In);
+
+    vector vN = g_N.Sample(DefaultSampler, tagDecalSample.vTexcoord);
+    vector vMask = g_MASK.Sample(DefaultSampler, tagDecalSample.vTexcoord);
+
+    if (vMask.r < 0.3f)
+        discard;
+    
+    Out.vN = vN * vMask.r;
+
+    return Out;
+}
+
 
 struct VS_OUT_DEBUG
 {
@@ -128,7 +168,7 @@ float4 PS_DEBUG(VS_OUT_DEBUG In) : SV_Target3
 
 technique11 DefaultTechnique
 {
-    pass Decal
+    pass Decal //0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -139,7 +179,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_DECAL();
     }
 
-    pass DebugCube // 디버깅용 큐브
+    pass DebugCube //1 디버깅용 큐브
     {
         SetRasterizerState(RS_Wireframe); // 와이어프레임으로 보이게
         SetDepthStencilState(DSS_Default, 0);
@@ -147,5 +187,16 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_DEBUG();
         PixelShader = compile ps_5_0 PS_DEBUG();
+    }
+
+    pass Decal_NormalOnly //2 노말만 묻히는 데칼
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_DECAL();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_DECAL_NORMALONLY();
     }
 }

@@ -114,6 +114,10 @@ HRESULT CMapToolObject::Render()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
 			return E_FAIL;
 
+		/*_float fGlass = 0.f;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlass", &fGlass, sizeof(_float))))
+			return E_FAIL;*/
+
 		if (FAILED(m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
 			if (!m_bDoOnce)

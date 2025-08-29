@@ -10,7 +10,14 @@ class CTriggerUI : public CTriggerBox
 public:
 	typedef struct tagTriggerUIDesc : public CTriggerBox::TRIGGERBOX_DESC
 	{
-		TRIGGERUI_TYPE eTriggerUIType;
+		
+
+		// 만들 ui 프로토타입 이름
+		_wstring strProtoName;
+		// 필요한 경로들. 여러개 필요한 것들도 있어서
+		vector<_wstring> strFilePaths;
+		
+
 	}TRIGGERUI_DESC;
 protected:
 	CTriggerUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -30,7 +37,11 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 
 private:
-	TRIGGERUI_TYPE m_eTriggerUIType;
+	
+	_bool	m_isFinish = {};
+
+	_wstring m_strProtoName;
+	vector<_wstring> m_strFilePaths;
 public:
 	static CTriggerUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

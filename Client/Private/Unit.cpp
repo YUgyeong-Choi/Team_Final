@@ -74,6 +74,11 @@ void CUnit::Update(_float fTimeDelta)
 	if (m_pModelCom)
 		m_pModelCom->Update_Bones();
 
+	if (m_bEmissive)
+		OnEmissive(fTimeDelta);
+	else
+		OffEmissive(fTimeDelta);
+
 }
 
 void CUnit::Late_Update(_float fTimeDelta)
@@ -113,9 +118,6 @@ void CUnit::Late_Update(_float fTimeDelta)
 			m_isActive = false;
 		}
 	}
-
-
-
 }
 
 HRESULT CUnit::Render()
@@ -227,8 +229,15 @@ HRESULT CUnit::Bind_Shader()
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0);
-		
 
+		m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float));
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Emissive", i, aiTextureType_EMISSIVE, 0)))
+		{
+			_float fEmissive = 0.f;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+				return E_FAIL;
+		}
+		
 		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		if (FAILED(m_pShaderCom->Begin(0)))
@@ -358,6 +367,32 @@ void CUnit::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CUnit::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+}
+
+void CUnit::OnEmissive(_float fTimeDelta)
+{
+	if (m_fEmissive <= 1.2f)
+	{
+		m_fEmissive += fTimeDelta * m_fEmissiveSpeed;
+		if (m_fEmissive > 1.2f)
+			m_fEmissive = 1.2f;
+	}
+}
+
+void CUnit::OffEmissive(_float fTimeDelta)
+{
+	if (m_fEmissive >= 0.f)
+	{
+		m_fEmissive -= fTimeDelta * m_fEmissiveSpeed;
+		if (m_fEmissive < 0.f)
+			m_fEmissive = 0.f;
+	}
+}
+
+void CUnit::ToggleEmissive(_float fEmissiveSpeed)
+{
+	m_bEmissive = !m_bEmissive;
+	m_fEmissiveSpeed = fEmissiveSpeed;
 }
 
 

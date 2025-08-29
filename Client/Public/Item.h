@@ -51,8 +51,6 @@ protected:
 
 	_int     m_iUseCount = { 0 };
 
-
-	_bool    m_isActive = {};
 	_float	m_fElapsedTime = {};
 
 public:

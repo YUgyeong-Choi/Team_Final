@@ -24,6 +24,13 @@ HRESULT CButtler_Basic::Initialize(void* pArg)
 	/* [ 데미지 설정 ] */
 	m_fDamage = 18.f;
 
+	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
+	pDesc->fSpeedPerSec = 5.f;
+	pDesc->fRotationPerSec = XMConvertToRadians(180.0f);
+
+	m_fHeight = 1.f;
+	m_vHalfExtents = { 0.5f,1.f,0.5f };
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -55,12 +62,14 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
 	if (pCurState && pCurState->stateName.find("Dead") != pCurState->stateName.npos)
 	{
+		m_fEmissive = 0.f;
+
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", this);
+			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
 			m_pWeapon->SetbIsActive(false);
 		}
 	}

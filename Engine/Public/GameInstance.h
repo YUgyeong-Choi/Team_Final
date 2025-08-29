@@ -32,6 +32,7 @@ public:
 	void Set_IsChangeLevel(_bool _b) { g_bSceneChanging = _b; }
 	void Set_GameTimeScale(_float ftimeScale) { m_fTimeScale = ftimeScale; }
 
+	void Call_BeforeChangeLevel();
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
@@ -200,6 +201,8 @@ public:
 	void Insert_TriggerEnterActor(CPhysXActor* pMe, CPhysXActor* pOther);
 	void Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOther);
 	void Remove_TriggerRemoveActor(CPhysXActor* pMe, unordered_set<CPhysXActor*> pOthers);
+
+	void Remove_OnStayTrigger();
 #pragma endregion
 
 #pragma region SOUND_DEVICE
@@ -272,6 +275,7 @@ public:
 	void Use_PoolObject(const _wstring& wsLayerName);
 	void UseAll_PoolObjects(const _wstring& wsLayerName);
 	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
+	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
 #pragma endregion
 
 private:
