@@ -1,5 +1,6 @@
 #include "UI_Fatal_Icon.h"
 #include "GameInstance.h"
+#include "Monster_Base.h"
 
 CUI_Fatal_Icon::CUI_Fatal_Icon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUIObject{pDevice, pContext}
@@ -42,13 +43,28 @@ void CUI_Fatal_Icon::Priority_Update(_float fTimeDelta)
 void CUI_Fatal_Icon::Update(_float fTimeDelta)
 {
 	if (nullptr == m_pPlayer)
+	{
+		m_isRender = false;
 		return;
+	}
+		
 
 	// 보스 페이탈 로직 보고 다시 바꾸기, 그로기면 이제 빨간색으로 띄운게 필요할듯?
 
+	if (nullptr == m_pPlayer->GetFatalTarget())
+	{
+		m_isRender = false;
+		return;
+	}
+	
+	
+
 	if (m_pPlayer->GetFatalTarget()->Get_UnitType() == EUnitType::NORMAL_MONSTER)
 	{
-		if (nullptr == m_pPlayer->GetFatalTarget() || !m_pPlayer->GetbIsBackAttack() || !m_pPlayer->GetFatalTarget()->Get_isActive())
+		CMonster_Base* pMonster = static_cast<CMonster_Base*>(m_pPlayer->GetFatalTarget());
+
+
+		if (false == m_pPlayer->GetbIsBackAttack() || !pMonster->Get_isActive() || pMonster->Get_CurrentHp() <= 0)
 		{
 			m_isRender = false;
 			return;
@@ -77,7 +93,7 @@ void CUI_Fatal_Icon::Update(_float fTimeDelta)
 			_float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
 			_float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
 
-			_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.01f,1.f };
+			_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.f,1.f };
 
 			m_pTransformCom->Set_State(STATE::POSITION, vPos);
 

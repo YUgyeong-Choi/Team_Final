@@ -405,7 +405,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		}
 		else if (m_fHp <= 0 && m_isFatal)
 		{
-			CLockOn_Manager::Get_Instance()->Set_Off(this);
+			CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 			m_bUseLockon = false;
 
 			

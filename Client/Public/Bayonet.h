@@ -40,6 +40,8 @@ public:
 	virtual void SetisAttack(_bool isAttack);
 
 	virtual void Calc_Durability(_float fDelta);
+
+	virtual void Reset();
 	
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();

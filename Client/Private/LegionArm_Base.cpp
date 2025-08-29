@@ -92,6 +92,12 @@ void CLegionArm_Base::Use_LegionEnergy(_float energy)
 	m_pGameInstance->Notify(L"Weapon_Status", L"Legion", &m_fLegionArmEnergy);
 }
 
+void CLegionArm_Base::Reset()
+{
+	m_fLegionArmEnergy = m_fMaxLegionArmEnergy;
+	m_pGameInstance->Notify(L"Weapon_Status", L"Legion", &m_fLegionArmEnergy);
+}
+
 void CLegionArm_Base::Free()
 {
 	__super::Free();

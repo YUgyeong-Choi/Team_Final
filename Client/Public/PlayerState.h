@@ -2824,6 +2824,8 @@ public:
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("Fatal");
         m_pOwner->m_bIsInvincible = true;
+
+        
         
         if (m_pOwner->m_pFatalTarget && !m_pOwner->m_bIsFatalBoss)
         {
@@ -3142,16 +3144,8 @@ public:
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
             
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
-            m_pOwner->m_pBelt_Down->Reset();
-			m_pOwner->m_pBelt_Up->Reset();
-
-            /* [ 무기 장착 해제 ] */
-            m_pOwner->m_pWeapon->SetbIsActive(false);
-            m_pOwner->m_bWeaponEquipped = false;
-
-            m_pOwner->m_fHP = 100.f;
-            m_pOwner->Callback_HP();
-            m_pOwner->m_bIsRrevival = true;
+           
+            m_pOwner->Reset();
 
             m_pGameInstance->Reset_LevelUnits();
         }

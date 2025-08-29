@@ -41,6 +41,7 @@ public:
 	_float& Get_fLegionEnergy() { return m_fLegionArmEnergy; }
 	void Use_LegionEnergy(_float energy);
 
+	virtual void Reset();
 	
 
 
