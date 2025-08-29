@@ -55,7 +55,7 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_pWeapon->Collider_FilterOff();
 
-	if (m_eSpawnType == MONSTER_SPAWN_TYPE::STAND)
+	if (m_eSpawnType == SPAWN_TYPE::STAND)
 	{
 		m_pAnimator->SetTrigger("SpawnStand");
 	}

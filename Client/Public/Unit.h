@@ -33,6 +33,7 @@ public:
 			0.f, 0.f, 0.f, 1.f
 		);
 		wstring wsNavName = {}; //어떤 네비를 탈 것인가? //STATION, HOTEL...
+		SPAWN_TYPE eSpawnType = { SPAWN_TYPE::END };
 	}UNIT_DESC;
 
 protected:
@@ -116,6 +117,9 @@ public:
 
 protected:
 	void Spawn_MonsterHit_Effect(const _float3& vPos);
+
+protected:
+	SPAWN_TYPE m_eSpawnType = { SPAWN_TYPE::IDLE };
 
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };

@@ -940,12 +940,19 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				wsLayer = TEXT("Layer_Monster_Normal");
 			}
 
+			// 오브젝트 생성 Desc 채우기
 			CUnit::UNIT_DESC UnitDesc{};
 			UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 			UnitDesc.wsNavName = StringToWString(Map);
 			UnitDesc.WorldMatrix = WorldMatrix;
 			UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 			UnitDesc.szMeshID = wstrMonsterName.c_str();
+
+			if (MonsterData.contains("SpawnType"))
+				UnitDesc.eSpawnType = static_cast<SPAWN_TYPE>(MonsterData["SpawnType"].get<_int>());
+			else
+				UnitDesc.eSpawnType = SPAWN_TYPE::IDLE;
+			
 
 			wstring wsPrototypeTag = TEXT("Prototype_GameObject_") + wstrMonsterName;
 

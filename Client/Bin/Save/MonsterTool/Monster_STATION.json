@@ -1,6 +1,7 @@
 {
     "Buttler_Train": [
         {
+            "SpawnType": 0,
             "WorldMatrix": [
                 [
                     -0.9082995057106018,
@@ -29,6 +30,7 @@
             ]
         },
         {
+            "SpawnType": 1,
             "WorldMatrix": [
                 [
                     0.13787105679512024,
