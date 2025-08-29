@@ -38,6 +38,10 @@ public:
 		//노말만 적용하는 데칼인지 분기하려고함
 		_bool bNormalOnly = { false };
 
+		//라이프타임이 있는지? 몇초인지?
+		_bool bHasLifeTime = { false };
+		_float fLifeTime = { 0.f };
+
 	} DECAL_DESC;
 
 protected:
@@ -56,6 +60,10 @@ public:
 protected:
 	//노말만 그리는 데칼인가?
 	_bool m_bNormalOnly = { false };
+
+protected:
+	_bool	m_bHasLifeTime = { false };
+	_float	m_fLifeTime = { 0.f };
 
 protected:
 	CShader* m_pShaderCom = { nullptr };

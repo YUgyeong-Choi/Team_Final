@@ -26,7 +26,9 @@ HRESULT CDecal::Initialize(void* pArg)
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 	m_bNormalOnly = pDesc->bNormalOnly;
-	
+
+	m_bHasLifeTime = pDesc->bHasLifeTime;
+	m_fLifeTime = pDesc->fLifeTime;
 
 	return S_OK;
 }
@@ -37,6 +39,14 @@ void CDecal::Priority_Update(_float fTimeDelta)
 
 void CDecal::Update(_float fTimeDelta)
 {
+	if (m_bHasLifeTime)
+	{
+		m_fLifeTime -= fTimeDelta;
+
+		if (m_fLifeTime < 0.f)
+			Set_bDead();
+	}
+
 }
 
 void CDecal::Late_Update(_float fTimeDelta)

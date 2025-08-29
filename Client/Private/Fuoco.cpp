@@ -220,46 +220,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 void CFuoco::Update(_float fTimeDelta)
 {
-#pragma region 영웅 데칼 테스트 코드
-	if (m_pGameInstance->Key_Down(DIK_0))
-	{
-		//데칼 테스트(영웅)
-		CStatic_Decal::DECAL_DESC DecalDesc = {};
-		DecalDesc.bNormalOnly = true;
-		DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEaterNormal");
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEaterMask");
-		//DecalDesc.WorldMatrix = m_pTransformCom->Get_World4x4(); //크자이공부로 직접 넣어주면 ㅎㅎ
-
-		// 기존 월드행렬
-		_matrix World = XMLoadFloat4x4(&m_pTransformCom->Get_World4x4());
-
-		// 스케일, 회전, 위치 분해
-		_vector scale, rotQuat, trans;
-		XMMatrixDecompose(&scale, &rotQuat, &trans, World);
-
-		// 새 스케일 설정
-		scale = XMVectorSet(5.f, 1.f, 5.f, 0.f);
-
-		// 다시 합성
-		_matrix NewWorld = XMMatrixScalingFromVector(scale) *
-			XMMatrixRotationQuaternion(rotQuat) *
-			XMMatrixTranslationFromVector(trans);
-
-		// 적용
-		XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
-
-
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
-		{
-			//return E_FAIL;
-		}
-
-	}
-#pragma endregion
-
-
 
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
@@ -1371,49 +1331,54 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
-	}
-	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2") || stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
-	{
-		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-
-#pragma region 영웅 데칼 테스트 코드
-		//데칼 테스트(영웅)
+#pragma region 영웅 데칼 생성코드
 		CStatic_Decal::DECAL_DESC DecalDesc = {};
 		DecalDesc.bNormalOnly = true;
 		DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEaterNormal");
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEaterMask");
-		//DecalDesc.WorldMatrix = m_pTransformCom->Get_World4x4(); //크자이공부로 직접 넣어주면 ㅎㅎ
+		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Normal");
+		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask");
+		DecalDesc.bHasLifeTime = true;
+		DecalDesc.fLifeTime = 5.f;
+
 
 		// 기존 월드행렬
-		_matrix World = XMLoadFloat4x4(desc.pParentMatrix);
+		_matrix World = XMLoadFloat4x4(desc.pSocketMatrix) * XMLoadFloat4x4(desc.pParentMatrix);
 
 		// 스케일, 회전, 위치 분해
-		_vector scale, rotQuat, trans;
-		XMMatrixDecompose(&scale, &rotQuat, &trans, World);
+		_vector vScale, vRotQuat, vTrans;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
 
 		// 새 스케일 설정
-		scale = XMVectorSet(5.f, 0.1f, 5.f, 0.f);
+		vScale = XMVectorSet(10.f, 0.1f, 5.f, 0.f);
 
-		//// 보스의 Look / Right 벡터 추출
-		//_vector vRight = World.r[0]; //노말라이즈 일단 뺌
-		//_vector vLook = World.r[2];//노말라이즈 일단 뺌
-		//_vector vPos = World.r[3];
+		//네브메쉬 높이 값으로 변경
+		_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
+		vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
 
-		//// 방향 정규화
-		//vRight = XMVector3Normalize(vRight);
-		//vLook = XMVector3Normalize(vLook);
+		// Look 반대 방향
+		_matrix ParentWorld = m_pTransformCom->Get_WorldMatrix();
 
-		//// 앞으로 조금, 오른쪽으로 조금 이동
-		//trans = vPos + vLook * 1.5f + vRight * 0.5f;
+		_vector vLook = XMVector3Normalize(-ParentWorld.r[2]);
+
+		// Up은 기존 Up을 쓰고
+		_vector vUp = XMVector3Normalize(ParentWorld.r[1]);
+
+		// Right는 Look과 Up으로 다시 계산
+		_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+
+		// Orthonormalize (보정)
+		vUp = XMVector3Cross(vLook, vRight);
+
+		// 회전 행렬 구성
+		_matrix RotMat = XMMatrixIdentity();
+		RotMat.r[0] = vRight;
+		RotMat.r[1] = vUp;
+		RotMat.r[2] = vLook;
 
 		// 다시 합성
-		_matrix NewWorld = XMMatrixScalingFromVector(scale) *
-			XMMatrixRotationQuaternion(rotQuat) *
-			XMMatrixTranslationFromVector(trans);
+		_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
+			RotMat *
+			XMMatrixTranslationFromVector(vTrans);
 
 		// 적용
 		XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
@@ -1426,6 +1391,52 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 #pragma endregion
 
 
+	}
+	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2") || stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
+	{
+		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+
+		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+#pragma region 영웅 데칼 생성코드
+		CStatic_Decal::DECAL_DESC DecalDesc = {};
+		DecalDesc.bNormalOnly = true;
+		DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Slam_Normal");
+		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEater_Slam_Mask");
+		DecalDesc.bHasLifeTime = true;
+		DecalDesc.fLifeTime = 5.f;
+
+		// 기존 월드행렬
+		_matrix World = XMLoadFloat4x4(desc.pSocketMatrix) * XMLoadFloat4x4(desc.pParentMatrix);
+
+		// 스케일, 회전, 위치 분해
+		_vector vScale, vRotQuat, vTrans;
+		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
+
+		// 새 스케일 설정
+		vScale = XMVectorSet(8.f, 0.1f, 8.f, 0.f);
+
+		//네브메쉬 높이 값으로 변경
+		_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
+
+		vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
+
+		// 다시 합성
+		_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
+			XMMatrixIdentity() *
+			XMMatrixTranslationFromVector(vTrans);
+
+		// 적용
+		XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+		{
+			//return E_FAIL;
+		}
+#pragma endregion
 
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"))
