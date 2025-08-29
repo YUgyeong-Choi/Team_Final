@@ -45,6 +45,8 @@ public:
 
 public:
 	const EAttackType Get_AttackType() const { m_eAttackType; }
+	EEliteState Get_CurrentState() const { return m_eCurrentState; }
+	void EnterFatalHit();
 
 protected:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);

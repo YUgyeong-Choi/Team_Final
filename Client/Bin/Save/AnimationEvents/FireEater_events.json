@@ -100,6 +100,10 @@
                 {
                     "EventName": "OffGroundScratchEffect",
                     "Time": 51.0
+                },
+                {
+                    "EventName": "DecalScratchEffect",
+                    "Time": 44.0
                 }
             ],
             "IsLoop": false,
@@ -239,6 +243,10 @@
                 {
                     "EventName": "OffGroundScratchEffect",
                     "Time": 50.0
+                },
+                {
+                    "EventName": "DecalScratchEffect",
+                    "Time": 44.0
                 }
             ],
             "IsLoop": false,
@@ -713,14 +721,14 @@
                     "EventName": "ColliderArmOff",
                     "Time": 1.0
                 },
-              {
-                "EventName": "ColliderFootOff",
-                "Time": 1.0
-              },
-              {
-                "EventName": "ActiveHpBar",
-                "Time": 1.0
-              }
+                {
+                    "EventName": "ColliderFootOff",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ActiveHpBar",
+                    "Time": 1.0
+                }
             ],
             "IsLoop": false,
             "RootMotion": false,
