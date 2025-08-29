@@ -43,6 +43,11 @@ private:
 private:
 	_bool	m_isRender = { false };
 
+	_float m_fInitSizeX = {};
+	_float m_fInitSizeY = {};
+
+	_float m_fRenderTime = {};
+
 public:
 	static CUI_LockOn_Icon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
