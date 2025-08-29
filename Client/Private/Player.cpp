@@ -1546,7 +1546,7 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 
 		_float fDeltaMag = XMVectorGetX(XMVector3Length(finalDelta));
 
-		_float fMaxDeltaPerFrame = m_fMaxRootMotionSpeed * fTimeDelta;
+		_float fMaxDeltaPerFrame = m_fMaxRootMotionSpeed / 60.0f;
 		if (fDeltaMag > fMaxDeltaPerFrame)
 		{
 			finalDelta = XMVector3Normalize(finalDelta) * fMaxDeltaPerFrame;
