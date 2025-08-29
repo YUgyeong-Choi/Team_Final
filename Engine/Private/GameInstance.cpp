@@ -245,6 +245,26 @@ _float CGameInstance::Compute_Random(_float fMin, _float fMax)
 	return fMin + (fMax - fMin) * Compute_Random_Normal();	
 }
 
+void CGameInstance::Call_BeforeChangeLevel()
+{
+	// 렌더
+	ClearRenderObjects();
+
+	// 빛
+	RemoveAll_Light(m_iCurrentLevelIndex);
+	
+	// 옵저버
+	Reset_All();
+
+	// 피직스
+	Set_IsChangeLevel(true);
+	Remove_OnStayTrigger();
+
+	// 풀링 
+	m_pPulling_Manager->Clear_Pools();
+}
+
+
 #pragma region LEVEL_MANAGER
 
 HRESULT CGameInstance::Change_Level(_uint iLevelIndex, CLevel* pNewLevel)
@@ -777,6 +797,10 @@ void CGameInstance::Remove_TriggerExitActor(CPhysXActor* pMe, CPhysXActor* pOthe
 void CGameInstance::Remove_TriggerRemoveActor(CPhysXActor* pMe, unordered_set<CPhysXActor*> pOthers)
 {
 	m_pPhysX_Manager->Remove_TriggerRemoveActor(pMe, pOthers);
+}
+void CGameInstance::Remove_OnStayTrigger()
+{
+	m_pPhysX_Manager->Remove_OnStayTrigger();
 }
 #pragma endregion
 
