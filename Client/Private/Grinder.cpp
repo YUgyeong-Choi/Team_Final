@@ -28,7 +28,7 @@ HRESULT CGrinder::Initialize(void* pArg)
 
     Ready_Components();
 
-
+    m_isActive = false;
 
     return S_OK;
 }
