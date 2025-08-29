@@ -59,8 +59,6 @@ void CUI_Pickup_Item::Priority_Update(_float fTimeDelta)
 
 
     m_pDescription->Priority_Update(fTimeDelta);
-
-
 	
 }
 
@@ -90,8 +88,10 @@ void CUI_Pickup_Item::Active_Update(_bool isActive)
 	m_pDescription->Active_Update(isActive);
 
 	if (isActive)
+	{
 		m_fLifeTime = 8.f;
-
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_RewardItem_02");
+	}
 }
 
 void CUI_Pickup_Item::Update_Description(string itemName, _int itemType)

@@ -37,7 +37,6 @@ HRESULT CUI_Guide::Initialize(void* pArg)
         return E_FAIL;
 
     UI_GUIDE_DESC* pDesc = static_cast<UI_GUIDE_DESC*>(pArg);
-    m_pTrigger = pDesc->pTrigger;
     
 
     for (auto& partPath : pDesc->partPaths)
@@ -106,7 +105,7 @@ HRESULT CUI_Guide::Initialize(void* pArg)
 
     m_fCurrentAlpha = 1.f;
    
-
+    CUI_Manager::Get_Instance()->Sound_Play("SE_UI_OpenWindowTutorial_01");
     return S_OK;
 }
 
@@ -114,22 +113,11 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
 {
     if (m_isFade == false && m_fCurrentAlpha <= 0.f)
     {
-        CCamera_Manager::Get_Instance()->SetbMoveable(true);
         Set_bDead();
-        if(nullptr != m_pTrigger)
-            m_pTrigger->Set_bDead();
+        CCamera_Manager::Get_Instance()->SetbMoveable(true);
         return;
     }
 
-  
-
-    
-
-
-
-    
-    
-   
     // Å° ÀÔ·Â
     Check_Button();
     
@@ -211,9 +199,6 @@ void CUI_Guide::Check_Button()
 
     if (m_pGameInstance->Key_Down(DIK_SPACE))
     {
-       
-       
-       
 
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
         {
@@ -226,6 +211,7 @@ void CUI_Guide::Check_Button()
 
           
             CUI_Manager::Get_Instance()->On_Panel();
+            CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindowTutorial_01");
 
            
 
@@ -341,6 +327,7 @@ void CUI_Guide::Click_Interaction()
             }
             else
             {
+                CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindowTutorial_01");
                 Active_Update(false);
             }
 
@@ -385,6 +372,11 @@ void CUI_Guide::Active_Update(_bool isActive)
         pButton->Set_isActive(isActive);
 
     m_pBackGround->Active_Update(isActive);
+
+    if (isActive)
+        CUI_Manager::Get_Instance()->Sound_Play("SE_UI_OpenWindowTutorial_01");
+    else
+        CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindowTutorial_01");
 }
 
 

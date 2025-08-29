@@ -13,6 +13,17 @@ CUI_Manager::CUI_Manager()
 	Safe_AddRef(m_pGameInstance);
 }
 
+void CUI_Manager::Initialize()
+{	
+	CComponent* pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_Component_Sound_UI")));
+	if (nullptr == pComponent)
+		return;
+
+	CComponent** ppOut = reinterpret_cast<CComponent**>(&m_pSoundCom);
+
+	*ppOut = pComponent;
+}
+
 void CUI_Manager::Emplace_UI(CUIObject* pUI, _wstring strTag)
 {
 
@@ -184,6 +195,11 @@ _int CUI_Manager::Check_Script_Click_Button()
 	return static_cast<CUI_Script_Talk*>(m_UImap.find(L"TalkScript")->second)->Check_Click_Button();
 }
 
+void CUI_Manager::Sound_Play(string soundTag)
+{
+	m_pSoundCom->Play(soundTag);
+}
+
 void CUI_Manager::Free()
 {
 	__super::Free();
@@ -197,4 +213,6 @@ void CUI_Manager::Free()
 	m_pPanel.clear();
 
 	Safe_Release(m_pGameInstance);
+
+	Safe_Release(m_pSoundCom);
 }

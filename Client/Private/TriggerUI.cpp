@@ -97,6 +97,8 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 			CUI_Guide::UI_GUIDE_DESC eGuideDesc = {};
 			eGuideDesc.partPaths = m_strFilePaths;
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), (m_strProtoName), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide_UI"), &eGuideDesc);
+
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 		}
 		else if (m_strProtoName == L"Prototype_GameObject_UI_Info")
 		{

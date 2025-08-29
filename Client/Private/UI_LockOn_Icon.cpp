@@ -28,6 +28,9 @@ HRESULT CUI_LockOn_Icon::Initialize(void* pArg)
 
 	m_fOffset = 0.01f;
 
+	m_fInitSizeX = m_fSizeX * 2.f;
+	m_fInitSizeY = m_fSizeY * 2.f;
+
 	return S_OK;
 }
 
@@ -42,11 +45,28 @@ void CUI_LockOn_Icon::Update(_float fTimeDelta)
   	if (nullptr == pTarget || pTarget->Get_bDead())
 	{
 		m_isRender = false;
+
+		
+		m_fRenderTime = 0.f;
 		return;
 	}
 	else
 	{
 		m_isRender = true;
+
+		if (m_fRenderTime >= 1.f)
+		{
+			m_pTransformCom->Scaling(m_fSizeX, m_fSizeY);
+		}
+		else
+		{
+			_float fSizeX = LERP(m_fInitSizeX, m_fSizeX, m_fRenderTime);
+			_float fSizeY = LERP(m_fInitSizeY, m_fSizeY, m_fRenderTime);
+
+			m_pTransformCom->Scaling(fSizeX, fSizeY);
+
+			m_fRenderTime += fTimeDelta * 2.f;
+		}
 
 		// 위치 가져와서 직교로 그리자
 

@@ -10,6 +10,7 @@
 #include "UI_Feature_UV.h"
 #include "UI_Container.h"
 #include "UI_Guide.h"
+#include "UI_Manager.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -47,6 +48,7 @@ void CLevel_Logo::Update(_float fTimeDelta)
 			if (keyState & 0x8000)
 			{
 				m_isReady = true;
+				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
 				Ready_Menu();
 				return;
 			}
@@ -401,6 +403,7 @@ void CLevel_Logo::Check_Button()
 				Interation_Button(m_iButtonIndex);
 			}
 
+			//CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 			break;
 		}
 
@@ -423,6 +426,7 @@ void CLevel_Logo::Interation_Button(_int& iIndex)
 	{
 	case 0:
 		m_eNextLevel = LEVEL::KRAT_CENTERAL_STATION;
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_StartGame_03");
 		break;
 	case 1:
 		//m_pGuide->Active_Update(true);
@@ -430,9 +434,11 @@ void CLevel_Logo::Interation_Button(_int& iIndex)
 		break;
 	case 2:
 		m_isOpen = true;
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
 		break;
 	case 3:
 		PostQuitMessage(0);
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
 		break;
 	default:
 		break;

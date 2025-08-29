@@ -71,6 +71,8 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Sound()))
 		return E_FAIL;
 
+	CUI_Manager::Get_Instance()->Initialize();
+
     return S_OK;
 }
 
@@ -296,6 +298,10 @@ HRESULT CMainApp::Ready_Sound()
 
 	/* [ 트리거용 사운드 ] */
 	ADD_SOUND_EX(Trigger, "../Bin/Resources/Sound/Trigger/", false, false, false);
+
+	/* [ UI용 사운드 ] */
+	ADD_SOUND_EX(UI, "../Bin/Resources/Sound/UI/", true, false, false);
+
 	return S_OK;
 }
 
