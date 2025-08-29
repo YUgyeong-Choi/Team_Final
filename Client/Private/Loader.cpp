@@ -673,6 +673,17 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 			return S_OK;
 		});
 
+	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
+	auto futureFireEater = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
 
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 
@@ -680,6 +691,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;
 
 	if (FAILED(futureHotel.get()))
+		return E_FAIL;
+
+	if (FAILED(futureFireEater.get()))
 		return E_FAIL;
 
 #pragma endregion
@@ -1218,6 +1232,9 @@ HRESULT CLoader::Loading_For_YW()
 		return E_FAIL;
 
 	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
+		return E_FAIL;
+
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "FIRE_EATER")))
 		return E_FAIL;
 
 	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
