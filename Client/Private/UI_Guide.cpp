@@ -43,7 +43,7 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     for (auto& partPath : pDesc->partPaths)
     {
         CUI_Container::UI_CONTAINER_DESC eDesc = {};
-
+    
         eDesc.strFilePath = partPath; 
 
         m_Explainations.push_back(static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc)));

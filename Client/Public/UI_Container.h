@@ -31,6 +31,9 @@ public:
 	vector<class CUIObject*>& Get_PartUI();
 	virtual void Set_isReverse(_bool isReverse);
 
+	void Set_UseLifeTime() { m_useLifeTime = true; }
+	void Set_LifeTime(_float fLifeTime) { m_fLifeTime = fLifeTime; }
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
