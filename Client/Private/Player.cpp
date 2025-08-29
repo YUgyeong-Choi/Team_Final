@@ -14,6 +14,7 @@
 #include "Weapon.h"
 #include "DH_ToolMesh.h"
 #include "StaticMesh.h"
+#include "Oil.h"
 
 #include "Observer_Player_Status.h"
 
@@ -240,7 +241,11 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_U))
 	{
+		m_pAnimator->SetInt("HitDir", 0);
+		m_pAnimator->SetBool("IsUp", true);
+		m_pAnimator->SetTrigger("Hited");
 	}
+
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
 
@@ -1128,7 +1133,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::GUARD_HIT:
 	{
-		if (m_eHitedTarget == eHitedTarget::MONSTER || m_eHitedTarget == eHitedTarget::ARROW)
+		if (m_eHitedTarget == eHitedTarget::MONSTER || m_eHitedTarget == eHitedTarget::RANGED)
 		{
 			//가드 밀림 여부
 			_float  m_fTime = 0.1f;
@@ -1162,15 +1167,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		_float  m_fTime = 0.4f;
 		_float  m_fDistance = 2.f;
 		
-		if (!m_bMove)
+		if (m_pHitedTarget && !m_bMove)
 		{
-			if (m_pHitedTarget)
-			{
-				_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
+			_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
 		
-				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
-				SyncTransformWithController();
-			}
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+			SyncTransformWithController(); 
 		}
 		break;
 	}
@@ -1638,20 +1640,24 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		}
 		else
 		{
-			m_eHitedTarget = eHitedTarget::ARROW;
+			m_eHitedTarget = eHitedTarget::RANGED;
 
-			CGameObject* pArrow = dynamic_cast<CGameObject*>(pOther);
-			m_pHitedTarget = pArrow;
+			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
+			m_pHitedTarget = pRANGED;
 
-			//0. 필요한 정보를 수집한다.
 			CalculateDamage(pOther, eColliderType);
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-			_vector vOtherPos = pArrow->Get_TransfomCom()->Get_State(STATE::POSITION);
+			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
 
 			m_vHitNormal = vOtherPos - vPlayerPos;
 		}
 
-		//1. 애니메이션 상태를 히트로 바꾼다.
+		COil* pOil = dynamic_cast<COil*>(pOther);
+		if (pOil)
+		{
+			//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
+			return;
+		}
 
 		//가드 중에 피격시 스위치를 켠다.
 		if (m_bIsGuarding)
@@ -1737,26 +1743,43 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		m_bIsHit = true;
 
 	}
-
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
 		m_eHitedTarget = eHitedTarget::BOSS;
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
-		if (pBoss == nullptr)
+		if (pBoss)
+		{
+			m_eHitedTarget = eHitedTarget::BOSS;
+			m_pHitedTarget = pBoss;
+
+			//0. 필요한 정보를 수집한다.
+			CalculateDamage(pOther, eColliderType);
+			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+			m_vHitNormal = vOtherPos - vPlayerPos;
+		}
+		else
+		{
+			m_eHitedTarget = eHitedTarget::RANGED;
+
+			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
+			m_pHitedTarget = pRANGED;
+
+			CalculateDamage(pOther, eColliderType);
+			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
+
+			m_vHitNormal = vOtherPos - vPlayerPos;
+		}
+
+		COil* pOil = dynamic_cast<COil*>(pOther);
+		if (pOil)
+		{
+			//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
 			return;
+		}
 
-		m_pHitedTarget = pBoss;
-
-		//0. 필요한 정보를 수집한다.
-		CalculateDamage(pOther, eColliderType);
-		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
-
-		m_vHitNormal = vOtherPos - vPlayerPos;
-
-		//1. 애니메이션 상태를 히트로 바꾼다.
-
-		//가드 중에 피격시 스위치를 켠다.
 		if (m_bIsGuarding)
 		{
 			m_bGardHit = true;

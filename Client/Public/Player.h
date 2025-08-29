@@ -1,7 +1,7 @@
 #pragma once
-#include "Unit.h"
 #include "Client_Defines.h"
 #include "PhysX_ControllerReport.h"
+#include "BossUnit.h"
 
 NS_BEGIN(Engine)
 class CPhysXController;
@@ -56,7 +56,7 @@ public:
 
 	enum class eHitedTarget
 	{
-		MONSTER, BOSS, ARROW, END
+		MONSTER, BOSS, RANGED, END
 	};
 
 protected:
@@ -224,10 +224,12 @@ public:
 	HITMOTION GetHitMotion() const { return m_eHitMotion; }
 	void SetfReceiveDamage(_float fDamage) { m_fReceiveDamage = fDamage; }
 	_float GetfReceiveDamage() const { return m_fReceiveDamage; }
+	void SetHitedAttackType(CBossUnit::EAttackType eType) { m_eHitedAttackType = eType; }
 
 private: /* [ 특수 모션 ] */
 	HITMOTION m_eHitMotion = { HITMOTION::END };
 	eHitedTarget m_eHitedTarget = { eHitedTarget::END };
+	CBossUnit::EAttackType m_eHitedAttackType = { CBossUnit::EAttackType::NONE };
 
 private: /* [ 상태 변수 ] */
 	EPlayerState  m_pPreviousState = { EPlayerState::END };

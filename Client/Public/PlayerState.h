@@ -2904,6 +2904,17 @@ public:
 public:
     virtual void Enter() override
     {
+        /* [ 모든 진행이 종료된다. ] */
+        if (m_pOwner->m_pWeapon)
+        {
+            m_pOwner->m_pWeapon->SetisAttack(false);
+            m_pOwner->m_pWeapon->Set_WeaponTrail_Active(false);
+        }
+        if (m_pOwner->m_pLegionArm)
+            m_pOwner->m_pLegionArm->SetisAttack(false);
+        
+        m_pOwner->m_pAnimator->ResetParameters();
+        m_pOwner->Set_GrinderEffect_Active(false);
 
         m_pOwner->m_fMaxRootMotionSpeed = 18.f;
         /* [ 이펙트를 생성한다. ] */
@@ -2979,6 +2990,8 @@ public:
 
                 m_pOwner->m_pAnimator->SetBool("IsUp", true);
                 m_pOwner->m_pAnimator->SetTrigger("Hited");
+                break;
+
             default:
                 m_pOwner->m_pAnimator->SetTrigger("Hited");
                 break;
@@ -2989,20 +3002,6 @@ public:
             m_pOwner->m_pAnimator->SetTrigger("Hited");
         }
 
-
-
-
-        /* [ 모든 진행이 종료된다. ] */
-        if (m_pOwner->m_pWeapon)
-        {
-            m_pOwner->m_pWeapon->SetisAttack(false);
-            m_pOwner->m_pWeapon->Set_WeaponTrail_Active(false);
-        }
-        if (m_pOwner->m_pLegionArm)
-            m_pOwner->m_pLegionArm->SetisAttack(false);
-
-        m_pOwner->m_pAnimator->ResetParameters();
-        m_pOwner->Set_GrinderEffect_Active(false);
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
