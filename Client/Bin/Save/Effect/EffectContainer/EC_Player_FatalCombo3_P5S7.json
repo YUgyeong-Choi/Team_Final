@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2269.79052734375,
+            "LifeTime": 3778.883056640625,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.5
@@ -71,8 +71,8 @@
             "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
             "MinSpeed": 3.0,
-            "Name": "Player_FatalCombo2_SparkParticle1",
-            "NumInstance": 150,
+            "Name": "Player_FatalCombo3_SparkParticle1",
+            "NumInstance": 50,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -86,7 +86,7 @@
             ],
             "PType": 0,
             "Pivot": [
-                -0.05000000074505806,
+                0.0,
                 0.0,
                 0.0
             ],
@@ -107,12 +107,12 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.019999999552965164,
-                0.03999999910593033
+                0.029999999329447746,
+                0.05000000074505806
             ],
             "Speed": [
-                10.0,
-                30.0
+                30.0,
+                40.0
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -139,15 +139,15 @@
             "Animation": true,
             "Billboard": true,
             "CenterColor": [
-                0.6387434601783752,
-                0.040130406618118286,
+                0.0,
+                0.0,
                 0.0,
                 0.0
             ],
             "Color": [
-                0.6544502973556519,
-                0.06167594715952873,
-                0.0,
+                1.0,
+                0.3669307827949524,
+                0.21989530324935913,
                 1.0
             ],
             "DistortionStrength": 10.0,
@@ -159,12 +159,12 @@
             "KeyFrames": [
                 {
                     "Color": [
-                        0.6544502973556519,
-                        0.06167594715952873,
-                        0.0,
+                        1.0,
+                        0.3669307827949524,
+                        0.21989530324935913,
                         1.0
                     ],
-                    "Intensity": 0.8500000238418579,
+                    "Intensity": 10.0,
                     "Interpolation": 2,
                     "Rotation": [
                         0.0,
@@ -173,8 +173,8 @@
                         -0.7071065902709961
                     ],
                     "Scale": [
-                        2.9908745288848877,
-                        2.9908745288848877,
+                        2.999957323074341,
+                        2.999957323074341,
                         3.0
                     ],
                     "TrackPosition": 0.0,
@@ -194,14 +194,14 @@
                     "Intensity": 0.8299999833106995,
                     "Interpolation": 0,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        1.0
+                        -0.7071065306663513,
+                        0.7071070671081543
                     ],
                     "Scale": [
-                        5.0,
-                        5.0,
+                        4.9999799728393555,
+                        4.9999799728393555,
                         5.0
                     ],
                     "TrackPosition": 10.0,
@@ -212,9 +212,9 @@
                     ]
                 }
             ],
-            "LifeTime": 1798.646728515625,
+            "LifeTime": 3504.584228515625,
             "Loop": true,
-            "Name": "Player_FatalCombo2_CircleFlareSprite1",
+            "Name": "Player_FatalCombo3_CircleFlareSprite1",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 5,
@@ -314,9 +314,9 @@
                     ]
                 }
             ],
-            "LifeTime": 1775.041259765625,
+            "LifeTime": 3480.984619140625,
             "Loop": true,
-            "Name": "Player_FatalCombo2_LensFlareSprite1",
+            "Name": "Player_FatalCombo3_LensFlareSprite1",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 5,
@@ -349,9 +349,9 @@
                 1.0
             ],
             "Color": [
-                1.0,
-                1.0,
-                1.0,
+                0.2408376932144165,
+                0.2408376932144165,
+                0.2408376932144165,
                 1.0
             ],
             "DistortionStrength": 10.0,
@@ -363,9 +363,9 @@
             "KeyFrames": [
                 {
                     "Color": [
-                        1.0,
-                        1.0,
-                        1.0,
+                        0.2408376932144165,
+                        0.2408376932144165,
+                        0.2408376932144165,
                         1.0
                     ],
                     "Intensity": 1.0,
@@ -404,11 +404,11 @@
                         0.0
                     ],
                     "Scale": [
-                        5.0,
-                        5.0,
-                        5.0
+                        10.0,
+                        10.0,
+                        10.0
                     ],
-                    "TrackPosition": 30.0,
+                    "TrackPosition": 40.0,
                     "Translation": [
                         0.0,
                         0.0,
@@ -416,9 +416,9 @@
                     ]
                 }
             ],
-            "LifeTime": 1650.052734375,
+            "LifeTime": 3356.0166015625,
             "Loop": true,
-            "Name": "Player_FatalCombo2_Distortion1",
+            "Name": "Player_FatalCombo3_Distortion1",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 8,
@@ -518,9 +518,9 @@
                     ]
                 }
             ],
-            "LifeTime": 692.2340698242188,
+            "LifeTime": 2398.915771484375,
             "Loop": true,
-            "Name": "Player_FatalCombo2_SlashSprite1",
+            "Name": "Player_FatalCombo3_SlashSprite1",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 5,
@@ -558,7 +558,7 @@
                 1.0,
                 1.0
             ],
-            "DistortionStrength": 10.0,
+            "DistortionStrength": 50.0,
             "Duration": 120,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
@@ -608,11 +608,11 @@
                         1.0
                     ],
                     "Scale": [
-                        7.0,
-                        7.0,
-                        7.0
+                        10.0,
+                        10.0,
+                        10.0
                     ],
-                    "TrackPosition": 30.0,
+                    "TrackPosition": 40.0,
                     "Translation": [
                         0.0,
                         0.0,
@@ -620,9 +620,9 @@
                     ]
                 }
             ],
-            "LifeTime": 692.2340698242188,
+            "LifeTime": 1782.362060546875,
             "Loop": true,
-            "Name": "Player_FatalCombo2_Distortion2",
+            "Name": "Player_FatalCombo3_Distortion2",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 8,
@@ -630,7 +630,7 @@
             "TextureTags": [
                 "",
                 "",
-                "T_Ring_03_C_GDH",
+                "T_Shere_06_C_HJS",
                 ""
             ],
             "TextureUsage": [
@@ -706,7 +706,7 @@
                     ]
                 }
             ],
-            "LifeTime": 480.3118591308594,
+            "LifeTime": 1573.3931884765625,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.5
@@ -716,7 +716,7 @@
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "Player_FatalCombo2_SparkParticle2",
+            "Name": "Player_FatalCombo3_fastsparkparticle1",
             "NumInstance": 100,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -784,33 +784,33 @@
             "Animation": true,
             "Billboard": true,
             "CenterColor": [
-                0.2670156955718994,
+                1.0,
+                0.21989530324935913,
                 0.0,
-                0.0,
-                0.0
+                0.05759161710739136
             ],
             "Color": [
-                0.8272251486778259,
-                0.28584739565849304,
+                1.0,
+                0.34554970264434814,
                 0.0,
-                0.628272294998169
+                1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 117,
+            "Duration": 120,
             "EffectType": 0,
-            "EmissiveIntensity": 0.699999988079071,
+            "EmissiveIntensity": 0.5,
             "EndTrack": 120,
             "FlipUV": false,
             "KeyFrames": [
                 {
                     "Color": [
-                        0.8272251486778259,
-                        0.28584739565849304,
+                        1.0,
+                        0.34554970264434814,
                         0.0,
-                        0.628272294998169
+                        1.0
                     ],
-                    "Intensity": 5.730000019073486,
-                    "Interpolation": 3,
+                    "Intensity": 6.610000133514404,
+                    "Interpolation": 2,
                     "Rotation": [
                         0.0,
                         0.0,
@@ -818,9 +818,9 @@
                         0.0
                     ],
                     "Scale": [
-                        1.2000000476837158,
-                        1.2000000476837158,
-                        1.2000000476837158
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -831,13 +831,13 @@
                 },
                 {
                     "Color": [
-                        0.0,
-                        0.0,
+                        1.0,
+                        0.3450980484485626,
                         0.0,
                         0.0
                     ],
                     "Intensity": 0.0,
-                    "Interpolation": 0,
+                    "Interpolation": 1,
                     "Rotation": [
                         0.0,
                         0.0,
@@ -845,11 +845,11 @@
                         0.0
                     ],
                     "Scale": [
-                        0.699999988079071,
-                        0.699999988079071,
-                        0.699999988079071
+                        5.0,
+                        5.0,
+                        5.0
                     ],
-                    "TrackPosition": 5.0,
+                    "TrackPosition": 15.0,
                     "Translation": [
                         0.0,
                         0.0,
@@ -857,13 +857,13 @@
                     ]
                 }
             ],
-            "LifeTime": 48.39198684692383,
+            "LifeTime": 1745.2012939453125,
             "Loop": true,
-            "Name": "Player_FatalCombo2_SparkSprite1",
+            "Name": "Player_FatalCombo3_SparkSprite1",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 5,
-            "StartTrack": 3,
+            "StartTrack": 0,
             "TextureTags": [
                 "",
                 "T_Flare_01_C_LGS",
@@ -943,7 +943,7 @@
                     ]
                 }
             ],
-            "LifeTime": 525.628662109375,
+            "LifeTime": 2041.2423095703125,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.8299999833106995
@@ -953,7 +953,7 @@
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 3.0,
-            "Name": "Player_FatalCombo2_SparkParticle3",
+            "Name": "Player_FatalCombo3_slowsparkparticle1",
             "NumInstance": 50,
             "NumKeyFrames": 1,
             "Orbit": true,
@@ -1016,6 +1016,405 @@
             "TileX": 1,
             "TileY": 1,
             "isTileLoop": false
+        },
+        {
+            "Accel": [
+                -100.0,
+                -50.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.40665000677108765,
+                0.17277485132217407,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 120,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.0,
+            "EndTrack": 120,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.450000047683716,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 48.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 3790.71435546875,
+            "LifeTime_Particle": [
+                0.09000000357627869,
+                0.5
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 0.10000000149011612,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 3.0,
+            "Name": "Player_FatalCombo3_fastsparkparticle2",
+            "NumInstance": 35,
+            "NumKeyFrames": 2,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.7071067690849304,
+                0.0,
+                0.7071067690849304
+            ],
+            "OrbitSpeed": [
+                -180.0,
+                180.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.029999999329447746,
+                0.029999999329447746,
+                0.029999999329447746
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "Size": [
+                0.019999999552965164,
+                0.03999999910593033
+            ],
+            "Speed": [
+                30.0,
+                40.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                -80.0,
+                -70.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.25073331594467163,
+                0.17277485132217407,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 120,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.0,
+            "EndTrack": 120,
+            "FlipUV": false,
+            "Gravity": -1.0,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.450000047683716,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 3959.175537109375,
+            "LifeTime_Particle": [
+                0.09000000357627869,
+                1.5
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 0.10000000149011612,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 2.0,
+            "Name": "Player_FatalCombo3_slowsparkparticle2",
+            "NumInstance": 50,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.7071067690849304,
+                0.0,
+                0.7071067690849304
+            ],
+            "OrbitSpeed": [
+                -180.0,
+                180.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.029999999329447746,
+                0.029999999329447746,
+                0.029999999329447746
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "Size": [
+                0.029999999329447746,
+                0.05000000074505806
+            ],
+            "Speed": [
+                10.0,
+                20.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.7120692729949951,
+                0.4554973840713501,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 120,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 120,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.7120692729949951,
+                        0.4554973840713501,
+                        1.0
+                    ],
+                    "Intensity": 4.210000038146973,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 0.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        4.0,
+                        4.0,
+                        4.0
+                    ],
+                    "TrackPosition": 15.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 60.453338623046875,
+            "Loop": true,
+            "Name": "Player_FatalCombo3_SparkSprite2",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Flare_04_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
         }
     ],
     "Loop": false,

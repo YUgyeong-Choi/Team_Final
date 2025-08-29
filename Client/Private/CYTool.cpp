@@ -772,9 +772,9 @@ void CCYTool::Edit_Keyframes(CEffectBase* pEffect)
 		ImGui::BeginDisabled();
 		ImGui::DragFloat3(string("Rotation##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&vRotAxis));
 		ImGui::EndDisabled();
-
+		// i'm super ssayeeko effecter CY Park
 		ImGui::DragFloat3(string("Scaling##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.vScale), 0.1f);
-		ImGui::DragFloat(string("Intensity##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.fIntensity), 0.01f, 0.f, 10.f, "%.2f");
+		ImGui::DragFloat(string("Intensity##" + to_string(iIdx)).c_str(), reinterpret_cast<_float*>(&Keyframe.fIntensity), 0.01f, -10.f, 20.f, "%.2f");
 
 		ImGui::ColorEdit4(string("Color##" + to_string(iIdx)).c_str(), (float*)&Keyframe.vColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_None);
 		ImGui::SameLine();
