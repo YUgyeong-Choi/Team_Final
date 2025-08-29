@@ -269,7 +269,7 @@
             "Duration": 160.0,
             "Events": [
                 {
-                    "EventName": "UseItem",
+                    "EventName": "ToggleLamp",
                     "Time": 46.0
                 }
             ],
@@ -1653,7 +1653,7 @@
                 },
                 {
                     "EventName": "OffWeaponCollider",
-                    "Time": 42.0
+                    "Time": 37.0
                 }
             ],
             "IsLoop": false,

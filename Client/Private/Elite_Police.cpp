@@ -5,13 +5,14 @@
 #include "Client_Calculation.h"
 
 CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CBossUnit{pDevice, pContext}
+	:CEliteUnit{pDevice, pContext}
 {
 }
 
 CElite_Police::CElite_Police(const CElite_Police& Prototype)
-	:CBossUnit(Prototype)
+	:CEliteUnit(Prototype)
 {
+	m_pAnimator = nullptr;
 }
 
 HRESULT CElite_Police::Initialize_Prototype()
@@ -22,7 +23,7 @@ HRESULT CElite_Police::Initialize_Prototype()
 HRESULT CElite_Police::Initialize(void* pArg)
 {
 
-	m_fAttckDleay = 2.f;
+	m_fAttckDleay = 4.f;
 
 	if (pArg == nullptr)
 	{
@@ -65,13 +66,28 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	//m_pHPBar->Set_MaxHp(m_fHP);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
+	auto pShape = m_pPhysXActorCom->Get_Shape();
+	PxGeometryHolder geomHolder = pShape->getGeometry();
+	PxBoxGeometry box = geomHolder.box();
+	box.halfExtents = PxVec3(0.7f, 1.2f, 0.6f);
+	pShape->setGeometry(box);
 
+	PxTransform localPose = pShape->getLocalPose();
+	localPose.p += PxVec3(0.f, -0.5f, 0.f);
+	pShape->setLocalPose(localPose);
 	return S_OK;
 }
 
 void CElite_Police::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+#ifdef _DEBUG
+	if (KEY_DOWN(DIK_V))
+	{
+		m_pAnimator->SetTrigger("Detect");
+	}
+#endif // _DEBUG
+
 
 
 	if (m_bDead)
@@ -98,7 +114,7 @@ void CElite_Police::Update(_float fTimeDelta)
 		m_bUseLockon = false;
 		Safe_Release(m_pHPBar);
 	}
-	__super::Update(fTimeDelta);
+   	__super::Update(fTimeDelta);
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
@@ -163,7 +179,7 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	{
 		return;
 	}
-	if (m_eCurrentState == EBossState::ATTACK)
+	if (m_eCurrentState == EEliteState::ATTACK)
 	{
 		return;
 	}
@@ -176,7 +192,7 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 			return; // 공격 쿨타임이 남아있으면 업데이트 중지
 	}
 
-	EEliteAttackPattern eAttackType = GetRandomAttackPattern(fDistance);
+	EEliteAttackPattern eAttackType = static_cast<EEliteAttackPattern>(GetRandomAttackPattern(fDistance));
 
 
 	SetupAttackByType(eAttackType);
@@ -184,7 +200,7 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	m_pAnimator->SetBool("Move", false);
 	m_pAnimator->SetInt("AttackType", eAttackType);
 	m_pAnimator->SetTrigger("Attack");
-	m_eCurrentState = EBossState::ATTACK;
+	m_eCurrentState = EEliteState::ATTACK;
 	m_fAttackCooldown = m_fAttckDleay;
 }
 
@@ -194,6 +210,7 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 
 void CElite_Police::UpdateSpecificBehavior()
 {
+//	m_eCurrentState = EEliteState::WALK;
 }
 
 void CElite_Police::EnableColliders(_bool bEnable)
@@ -227,7 +244,7 @@ void CElite_Police::Register_Events()
 {
 }
 
-CElite_Police::EEliteAttackPattern CElite_Police::GetRandomAttackPattern(_float fDistance)
+_int CElite_Police::GetRandomAttackPattern(_float fDistance)
 {
 	EEliteAttackPattern ePattern = AP_NONE;
 	m_PatternWeighForDisttMap = m_PatternWeightMap;
@@ -235,7 +252,7 @@ CElite_Police::EEliteAttackPattern CElite_Police::GetRandomAttackPattern(_float 
 
 
 	_float fTotalWeight = accumulate(m_PatternWeighForDisttMap.begin(), m_PatternWeighForDisttMap.end(), 0.f,
-		[](_float fAcc, const pair<EEliteAttackPattern, _float>& Pair) { return fAcc + Pair.second; });
+		[](_float fAcc, const pair<_int, _float>& Pair) { return fAcc + Pair.second; });
 
 	_float fRandomVal = GetRandomFloat(0.f, fTotalWeight);
 	_float fCurWeight = 0.f;
@@ -256,14 +273,11 @@ CElite_Police::EEliteAttackPattern CElite_Police::GetRandomAttackPattern(_float 
 	return ePattern;
 }
 
-void CElite_Police::UpdatePatternWeight(EEliteAttackPattern ePattern)
+void CElite_Police::UpdatePatternWeight(_int iPattern)
 {
 }
 
-_bool CElite_Police::CheckConditionFlameField()
-{
-	return _bool();
-}
+
 
 void CElite_Police::ChosePatternWeightByDistance(_float fDistance)
 {
@@ -293,7 +307,7 @@ void CElite_Police::ChosePatternWeightByDistance(_float fDistance)
 	}
 }
 
-void CElite_Police::SetupAttackByType(EEliteAttackPattern ePattern)
+void CElite_Police::SetupAttackByType(_int iPattern)
 {
 }
 

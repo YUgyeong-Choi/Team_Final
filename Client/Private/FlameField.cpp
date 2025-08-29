@@ -34,7 +34,7 @@ HRESULT CFlameField::Initialize(void* pArg)
 	m_fExpandRadius = pFlameFieldDesc->fExpandRadius; // 불꽃이 확장되는 반지름
 	m_fInitialRadius = pFlameFieldDesc->fInitialRadius; // 불꽃의 초기 반지름
 	m_fExpandTime = pFlameFieldDesc->fExpandTime; // 불꽃이 확장되는 시간
-	if (FAILED(__super::Initialize(&pArg)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&pFlameFieldDesc->vPos), 1.f));
@@ -94,7 +94,7 @@ void CFlameField::Update(_float fTimeDelta)
 
 		_float step = 2.5f; // 이펙트 크기에 맞춰 조정
 
-		// 16방향으로 퍼짐
+		// 12방향으로 퍼짐
 		for (_int i = 0; i <12; i++)
 		{
 			_float maxDist = m_MergeDist[i];

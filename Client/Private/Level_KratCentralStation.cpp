@@ -969,7 +969,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
 				CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Elite_Police"), &UnitDesc));
-				m_pGameInstance->Add_PoolObject(L"Layer_Monster", pObj);
+				m_pGameInstance->Add_PoolObject(L"Layer_Monster_Normal", pObj);
 
 				continue;
 			}

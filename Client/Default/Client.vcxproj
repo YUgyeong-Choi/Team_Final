@@ -168,6 +168,7 @@
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\public\BossUnit.h" />
+    <ClInclude Include="..\public\EliteUnit.h" />
     <ClInclude Include="..\public\Buttler_Basic.h" />
     <ClInclude Include="..\public\Buttler_Train.h" />
     <ClInclude Include="..\Public\CameraSequence.h" />
@@ -346,6 +347,7 @@
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
+    <ClCompile Include="..\private\EliteUnit.cpp" />
     <ClCompile Include="..\private\Buttler_Basic.cpp" />
     <ClCompile Include="..\private\Buttler_Train.cpp" />
     <ClCompile Include="..\Private\CameraSequence.cpp" />

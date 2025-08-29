@@ -711,12 +711,16 @@
                 },
                 {
                     "EventName": "ColliderArmOff",
-                    "Time": 0.0
+                    "Time": 1.0
                 },
-                {
-                    "EventName": "ColliderFootOff",
-                    "Time": 0.0
-                }
+              {
+                "EventName": "ColliderFootOff",
+                "Time": 1.0
+              },
+              {
+                "EventName": "ActiveHpBar",
+                "Time": 1.0
+              }
             ],
             "IsLoop": false,
             "RootMotion": false,
