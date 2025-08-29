@@ -78,7 +78,12 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 
 			m_pPlayer->Add_Icon(TEXT("Prototype_GameObject_Lamp"));
 			m_pPlayer->Get_PlayerLamp()->SetbLampVisible(true);
-			
+
+			eDesc.fDelay = 3.f;
+			eDesc.useLifeTime = true;
+			eDesc.fLifeTime = 8.f;
+			eDesc.strFilePath = TEXT("../Bin/Save/UI/Info/Info_Lamp.json");
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lamp_Desc"), &eDesc);
 			//CUI_Manager::Get_Instance()->On_Panel();
 		}
 			

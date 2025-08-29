@@ -23,6 +23,7 @@ public:
 		
 		_float3 vExtent;
 		_float  fHeight;
+		_int	iSpawnType;
 	}MONSTER_BASE_DESC;
 
 protected:
@@ -126,6 +127,8 @@ protected:
 	_bool			m_isFatal = {};
 
 	_bool			m_isGroogyLoop = {};
+
+	MONSTER_SPAWN_TYPE m_eSpawnType = { MONSTER_SPAWN_TYPE ::IDLE};
 	
 
 private: /* [ 루트모션 관련 변수 ] */

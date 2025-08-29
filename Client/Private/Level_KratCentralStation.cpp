@@ -784,17 +784,18 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 	CUIObject::UIOBJECT_DESC eLockonDesc = {};
 
-	eLockonDesc.fSizeX = 50.f;
-	eLockonDesc.fSizeY = 50.f;
+	eLockonDesc.fSizeX = 64.f;
+	eLockonDesc.fSizeY = 64.f;
 
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Fatal_Icon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LockOn_Icon"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Fatal_Icon"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
-		return E_FAIL;
+
 
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Popup.json");
 

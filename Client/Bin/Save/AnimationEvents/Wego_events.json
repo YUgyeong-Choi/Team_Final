@@ -1,0 +1,18 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_Idle_P",
+            "Duration": 1300.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Talk",
+            "Duration": 1200.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        }
+    ]
+}

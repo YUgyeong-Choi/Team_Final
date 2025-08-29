@@ -1,5 +1,6 @@
 #include "UI_Fatal_Icon.h"
 #include "GameInstance.h"
+#include "Monster_Base.h"
 
 CUI_Fatal_Icon::CUI_Fatal_Icon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUIObject{pDevice, pContext}
@@ -42,44 +43,69 @@ void CUI_Fatal_Icon::Priority_Update(_float fTimeDelta)
 void CUI_Fatal_Icon::Update(_float fTimeDelta)
 {
 	if (nullptr == m_pPlayer)
-		return;
-
-	// 보스 페이탈 로직 보고 다시 바꾸기, 그로기면 이제 빨간색으로 띄운게 필요할듯?
-
-	if (nullptr == m_pPlayer->GetFatalTarget() || !m_pPlayer->GetbIsBackAttack() || !m_pPlayer->GetFatalTarget()->Get_isActive())
 	{
 		m_isRender = false;
 		return;
 	}
-	else
+		
+
+	// 보스 페이탈 로직 보고 다시 바꾸기, 그로기면 이제 빨간색으로 띄운게 필요할듯?
+
+	if (nullptr == m_pPlayer->GetFatalTarget())
 	{
-		m_isRender = true;
-
-		// 위치 가져와서 직교로 그리자
-
-		// 회전 값 다 빼고, z 위치 0.01로, 위에 페이탈 이미지 덧그리도록?
-
-		_vector vWorldPos = XMLoadFloat4(&m_pPlayer->GetFatalTarget()->Get_LockonPos());
-
-
-
-		_matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
-		_matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);
-
-		_vector vClipPos = XMVector4Transform(vWorldPos, ViewMat * ProjMat);
-
-		vClipPos.m128_f32[0] /= vClipPos.m128_f32[3];
-		vClipPos.m128_f32[1] /= vClipPos.m128_f32[3];
-		vClipPos.m128_f32[2] /= vClipPos.m128_f32[3];
-
-		_float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
-		_float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
-
-		_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.01f,1.f };
-
-		m_pTransformCom->Set_State(STATE::POSITION, vPos);
-
+		m_isRender = false;
+		return;
 	}
+	
+	
+
+	if (m_pPlayer->GetFatalTarget()->Get_UnitType() == EUnitType::NORMAL_MONSTER)
+	{
+		CMonster_Base* pMonster = static_cast<CMonster_Base*>(m_pPlayer->GetFatalTarget());
+
+
+		if (false == m_pPlayer->GetbIsBackAttack() || !pMonster->Get_isActive() || pMonster->Get_CurrentHp() <= 0)
+		{
+			m_isRender = false;
+			return;
+		}
+		else
+		{
+			m_isRender = true;
+
+			// 위치 가져와서 직교로 그리자
+
+			// 회전 값 다 빼고, z 위치 0.01로, 위에 페이탈 이미지 덧그리도록?
+
+			_vector vWorldPos = XMLoadFloat4(&m_pPlayer->GetFatalTarget()->Get_LockonPos());
+
+
+
+			_matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
+			_matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);
+
+			_vector vClipPos = XMVector4Transform(vWorldPos, ViewMat * ProjMat);
+
+			vClipPos.m128_f32[0] /= vClipPos.m128_f32[3];
+			vClipPos.m128_f32[1] /= vClipPos.m128_f32[3];
+			vClipPos.m128_f32[2] /= vClipPos.m128_f32[3];
+
+			_float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
+			_float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
+
+			_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.f,1.f };
+
+			m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+		}
+	}
+	else if (m_pPlayer->GetFatalTarget()->Get_UnitType() == EUnitType::BOSS)
+	{
+		// 엘리트 보스로 캐스팅해서
+		// state 가져오기
+		
+	}
+
 
 
 }
