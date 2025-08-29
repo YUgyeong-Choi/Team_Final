@@ -85,6 +85,12 @@ public:
 	_bool Get_UseLockon() { return m_bUseLockon; }
 
 
+public: /* [ 이미시브를 켜고 끈다. ] */
+	void OnEmissive(_float fTimeDelta);
+	void OffEmissive(_float fTimeDelta);
+	void ToggleEmissive(_float fEmissiveSpeed);
+
+
 public:
 	// 데미지를 준다
 	virtual void Attack(CGameObject* pOther, COLLIDERTYPE eColliderType) {};
@@ -125,6 +131,9 @@ protected:				/* [ 기본 속성 ] */
 	_float3				m_InitScale = {};
 	_int				m_iRender = {};
 	_bool				m_bUseLockon = {};
+	_bool				m_bEmissive = {};
+	_float				m_fEmissive = {};
+	_float				m_fEmissiveSpeed = {};
 
 protected: 				/* [ 기본 타입 ] */
 	const _tchar*		m_szName = { nullptr };

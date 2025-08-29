@@ -483,6 +483,7 @@ _bool CMonster_Base::Check_Detect()
 
 	if (XMVectorGetX(XMVector3Length(vDir)) < m_fDetectDist)
 	{
+		ToggleEmissive(1.f);
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
 		

@@ -54,7 +54,7 @@ HRESULT CPlayerLamp::Initialize(void* pArg)
 	if (FAILED(Ready_Light()))
 		return E_FAIL;
 
-	SetRange(5.f);
+	SetRange(6.f);
 	SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
 	SetIntensity(1.f);
 
@@ -94,7 +94,7 @@ void CPlayerLamp::Late_Update(_float fTimeDelta)
 	{
 		_vector vPosition = m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION);
 		_vector vLook = m_pOwner->Get_TransfomCom()->Get_State(STATE::LOOK);
-		vPosition += vLook * 1.5f;
+		vPosition += -vLook * 1.5f;
 		vPosition = XMVectorAdd(vPosition, XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
 		XMStoreFloat4(&m_pLight->Get_LightDesc()->vPosition, vPosition);

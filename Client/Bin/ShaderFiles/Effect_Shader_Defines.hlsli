@@ -28,11 +28,12 @@ vector g_vCenterColor;
 float g_fEmissiveIntensity = 0.f;
 float g_fWeightPower = 5.f;
 
+/******  Miscellaneous variables  ******/
 float g_fTime;
+float g_fDistortionStrength = 10.f;
 
 
 /******  Basic Functions  ******/
-
 float2 FlipUV_90(float2 vInTexcoord)
 {
     if (g_bFlipUV != 0)

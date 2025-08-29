@@ -29,7 +29,7 @@
             "EmissiveIntensity": 0.0,
             "EndTrack": 1017,
             "FlipUV": true,
-            "Gravity": 30.0,
+            "Gravity": 6.0,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -86,7 +86,7 @@
             "PType": 1,
             "Pivot": [
                 -0.009999999776482582,
-                0.050000190734863,
+                0.05000019073486328,
                 0.009999999776482582
             ],
             "Range": [
@@ -110,8 +110,8 @@
                 0.10000000149011612
             ],
             "Speed": [
-                15.0,
-                30.0
+                3.0,
+                6.0
             ],
             "Spin": false,
             "StartTrack": 0,

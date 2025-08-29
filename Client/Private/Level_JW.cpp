@@ -5,7 +5,7 @@
 #include "Level_Loading.h"
 #include "PBRMesh.h"
 
-static CGameObject* pMap = { nullptr };
+static CGameObject* pMap2 = { nullptr };
 
 CLevel_JW::CLevel_JW(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -152,7 +152,7 @@ HRESULT CLevel_JW::Ready_Layer_DummyMap(const _wstring strLayerTag)
 	lstrcpy(Desc.szName, TEXT("Train"));
 
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-		ENUM_CLASS(LEVEL::JW), strLayerTag, &pMap, &Desc)))
+		ENUM_CLASS(LEVEL::JW), strLayerTag, &pMap2, &Desc)))
 		return E_FAIL;
 
 	//Desc.szMeshID = TEXT("Station");

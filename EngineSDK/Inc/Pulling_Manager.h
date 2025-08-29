@@ -34,7 +34,6 @@ public:
 	// PriorityUpdate다음에 지워줄 애들
 	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
 	void RemoveObjMagr_PushPullingMgr();
-private:
 	void Clear_Pools();
 public:
 	static CPulling_Manager* Create();

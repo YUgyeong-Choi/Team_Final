@@ -101,6 +101,7 @@ protected:
 	_float4				m_vCenterColor = { 1.f, 1.f, 1.f, 1.f };
 	_float				m_fEmissiveIntensity = { 0.f };
 	//_float			m_fUVScrollSpeed = {};
+	_float				m_fDistortionStrength = { 10.f };
 
 
 	// TrackPositions
@@ -143,6 +144,7 @@ public:
 	_float* Get_EmissiveIntensity_Ptr() { return &m_fEmissiveIntensity; }
 	_uint* Get_RenderGroup_Ptr() { return &m_iRenderGroup; }
 	_uint* Get_ShaderPass_Ptr() { return &m_iShaderPass; }
+	_float* Get_DistortionStrength_Ptr() { return &m_fDistortionStrength; }
 	void Set_TileXY(_int iX, _int iY) { m_iTileX = iX; m_iTileY = iY; }
 	//void Set_Billboard(_bool bBillboard) { m_bBillboard = bBillboard; }
 	HRESULT Change_Texture(_wstring strTextureName, TEXUSAGE eTex = TU_DIFFUSE);

@@ -96,11 +96,10 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
-		m_pGameInstance->Set_IsChangeLevel(true);
+
 		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
-		m_pGameInstance->ClearRenderObjects();
-		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-		m_pGameInstance->Reset_All();
+		m_pGameInstance->Call_BeforeChangeLevel();
+
 		CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
@@ -1193,7 +1192,16 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 				Desc.Rotation = VecToFloat3(rotDegArr);
 				Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 				Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
-				Desc.eTriggerUIType = static_cast<TRIGGERUI_TYPE>(triggerType);
+
+				Desc.strProtoName = StringToWStringU8(j["PrototypeName"].get<string>());
+
+				for (auto& filePath : j["FilePaths"])
+				{
+					string path = filePath.get<string>();
+
+					Desc.strFilePaths.push_back(StringToWStringU8(path));
+				}
+				
 				if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerUI"),
 					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerUI"), &Desc)))
 					return E_FAIL;

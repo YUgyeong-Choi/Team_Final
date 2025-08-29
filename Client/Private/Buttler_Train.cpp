@@ -66,6 +66,8 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
 	if (pCurState && pCurState->stateName.find("Dead") != pCurState->stateName.npos)
 	{
+		m_fEmissive = 0.f;
+
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
 			cout << pCurState->stateName << endl;
@@ -93,7 +95,6 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 
 void CButtler_Train::Update(_float fTimeDelta)
 {
-
 	Calc_Pos(fTimeDelta);
 
 	__super::Update(fTimeDelta);

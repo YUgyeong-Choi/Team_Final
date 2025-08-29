@@ -494,15 +494,22 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     
     /* [ 활용할 변수 정리 ] */
     float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalBCDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
+    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalBCDesc.a * vARMDesc.a);
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
+    vDecalNormal = -vDecalNormal;
+    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a));
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
+    
+    float fMask = vDecalAMRTDesc.a;
+    AO = lerp(AO, vDecalAMRTDesc.r, fMask);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g * 0.5f, fMask);
+    Metallic = lerp(Metallic, vDecalAMRTDesc.b, fMask);
+    
     float Unit = vARMDesc.a;
     float3 Ambient = Albedo * g_fLightAmbient * AO;
 
@@ -602,11 +609,18 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     
     float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
     float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
+    vDecalNormal = -vDecalNormal;
     Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
     
     float AO = vARMDesc.r;
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
+    
+    float fMask = vDecalAMRTDesc.a;
+    AO = lerp(AO, vDecalAMRTDesc.r, fMask);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g * 0.5f, fMask);
+    Metallic = lerp(Metallic, vDecalAMRTDesc.b, fMask);
+    
     float Unit = vARMDesc.a;
     float3 Ambient = Albedo * g_fLightAmbient * AO;
 
@@ -1295,16 +1309,20 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
 {
     PS_OUT Out;
     
-    float2 vDistortion = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord).rg;
+    vector vDistortRT = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord);
+    
+    float2 vDistortion = vDistortRT.rg;
+    float fStrength = vDistortRT.b;
     vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환
     
     // 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
     float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
-    float fStrength = 10.f; // 강도 조절 변수
+    //float fStrength = 10.f; // 강도 조절 변수
+    fStrength *= 255.f;
     float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
     
     // 가장자리 아티팩트 줄이기
-      uv = saturate(uv);
+    uv = saturate(uv);
     
     // 흔든 UV로 최종 씬 샘플
     vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);

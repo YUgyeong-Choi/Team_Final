@@ -191,7 +191,7 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 
     // 최종 Up에 더해줌 (Y축 Up + 속도 꼬리)
     float3 upStretch = vUp + vStretch;
-
+    
     // === VP 변환 ===
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
   
@@ -413,14 +413,13 @@ PS_OUT_WB PS_MAIN_RAINONLY(PS_IN In)
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
     Out.fRevealage = vColor.a;
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
-    
-
 
     float vMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0);
     Out.vDistortion *= g_vColor;
     Out.vDistortion.a *= 1.f - vMask;
+    Out.vDistortion.b = g_fDistortionStrength / 255.f;
     
     
     return Out;

@@ -185,9 +185,10 @@ PS_OUT PS_MAIN(PS_IN In)
     
     Out.vDistortion = g_MaskTexture2.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     Out.vDistortion.a *= fade * fMask;
+    Out.vDistortion.b = g_fDistortionStrength / 255.f;
+
     return Out;
 }
-
 
 struct PS_Blood_Blend
 {
@@ -245,4 +246,3 @@ technique11 DefaultTechnique
     }
 
 }
-

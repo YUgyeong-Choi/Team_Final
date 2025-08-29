@@ -33,7 +33,7 @@ private:
 
 private:
 	virtual HRESULT Ready_Components();
-	HRESULT Bind_ShaderResources();
+	//HRESULT Bind_ShaderResources();
 
 public:
 	static CToolMeshEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

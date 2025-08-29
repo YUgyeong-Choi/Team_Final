@@ -455,6 +455,11 @@ void CPhysX_Manager::Update_OnTriggerStay()
 	}
 }
 
+void CPhysX_Manager::Remove_OnStayTrigger()
+{
+	m_ActorsForTriggerStay.clear();
+}
+
 CPhysX_Manager* CPhysX_Manager::Create()
 {
 	CPhysX_Manager* pInstance = new CPhysX_Manager();

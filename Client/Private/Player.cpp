@@ -1161,13 +1161,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		_float  m_fTime = 0.4f;
 		_float  m_fDistance = 2.f;
-
+		
 		if (!m_bMove)
 		{
 			if (m_pHitedTarget)
 			{
 				_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
-
+		
 				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 				SyncTransformWithController();
 			}
@@ -1178,11 +1178,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		_float  m_fTime = 0.1f;
 		_float  m_fDistance = 2.f;
-
-		if (m_pHitedTarget)
+		
+		if (m_pHitedTarget && !m_bMove)
 		{
 			_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
-
+		
 			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
@@ -1389,6 +1389,13 @@ void CPlayer::Register_Events()
 		{
 			Use_Item();
 		});
+	m_pAnimator->RegisterEventListener("ToggleLamp", [this]()
+		{
+			if(m_pPlayerLamp)
+				m_pPlayerLamp->ToggleLamp();
+		});
+	
+
 
 	m_pAnimator->RegisterEventListener("ReceiveDamageToFatalTarget", [this]()
 		{
@@ -2351,7 +2358,6 @@ void CPlayer::Use_Item()
 		return;
 
 	m_pSelectItem->Use();
-	m_pPlayerLamp->ToggleLamp();
 
 	if(m_isSelectUpBelt)
 		Callback_UpBelt();
