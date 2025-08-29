@@ -626,6 +626,14 @@
                 {
                     "EventName": "OffArmCollider",
                     "Time": 27.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 17.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 40.0
                 }
             ],
             "IsLoop": false,
@@ -643,6 +651,14 @@
                 {
                     "EventName": "OffArmCollider",
                     "Time": 60.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 14.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 50.0
                 }
             ],
             "IsLoop": false,
@@ -660,6 +676,14 @@
                 {
                     "EventName": "OffArmCollider",
                     "Time": 38.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 16.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 35.0
                 }
             ],
             "IsLoop": false,

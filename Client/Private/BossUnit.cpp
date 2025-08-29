@@ -54,6 +54,8 @@ void CBossUnit::Reset()
 	m_pModelCom->Update_Bones();
 	m_pAnimator->SetPlaying(false);
 	Ready_AttackPatternWeightForPhase1();
+	m_ActiveEffect.clear();
+	m_pAnimator->SetPlayRate(1.f);
 }
 
 void CBossUnit::Ready_AttackPatternWeightForPhase1()

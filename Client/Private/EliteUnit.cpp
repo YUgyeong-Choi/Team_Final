@@ -740,7 +740,7 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         {
         case Client::EPlayerState::CHARGEA:
         case Client::EPlayerState::CHARGEB:
-            m_fGroggyGauge += 0.4f;
+            m_fGroggyGauge += 0.2f;
             if (m_fGroggyGauge >= m_fGroggyThreshold && !m_bGroggyActive)
             {
                 m_bGroggyActive = true;                  // 화이트 게이지 시작

@@ -31,7 +31,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
 	m_fDamage = 15.f;
-	m_fAttckDleay = 1.5f;
+	m_fAttckDleay = 1.3f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -170,10 +170,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		m_eCurrentState = EEliteState::ATTACK;
-		m_pAnimator->SetBool("IsCombo", true);
-		_int iDir = GetYawSignFromDiretion();
-		m_pAnimator->SetInt("Direction", iDir);
 		//m_fHP -= 10.f;
 		/*m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType",Uppercut);*/
@@ -600,6 +596,11 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::CUTSCENE):
 		m_eCurrentState = EEliteState::CUTSCENE;
 		break;
+	case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_LEFT_END):
+	case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_RIGHT_END):
+		SetTurnTimeDuringAttack(0.7f,1.2f);
+		break;
+		
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
@@ -870,7 +871,7 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("FireBallCombo", [this]()
 		{
-			_bool bIsCombo = GetRandomInt(0, 99) < 70;
+			_bool bIsCombo = GetRandomInt(0, 99) < 85;
 			if (m_iFireBallComboCount == LIMIT_FIREBALL_COMBO_COUNT)
 			{
 				m_iFireBallComboCount = 0;
@@ -1652,19 +1653,22 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
 		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM2):
 		case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_START):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET2):
 		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
 		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
 		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_LEFT_END):
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_RIGHT_END):
 			pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
-			pPlayer->SetfReceiveDamage(DAMAGE_LIGHT);
+			pPlayer->SetfReceiveDamage(DAMAGE_MEDIUM);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_START):
 			pPlayer->SetHitMotion(HITMOTION::NORMAL);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_FOOT):
-			pPlayer->SetfReceiveDamage(DAMAGE_MEDIUM);
+			pPlayer->SetfReceiveDamage(DAMAGE_LIGHT);
 			m_pAnimator->SetBool("IsHit", true);
 			SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
 			pPlayer->SetHitMotion(HITMOTION::UP);
