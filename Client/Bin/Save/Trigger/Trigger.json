@@ -192,6 +192,50 @@
       "PrototypeName": "Prototype_GameObject_UI_Info",
       "FilePaths": [ "../Bin/Save/UI/Info/Info_Attack.json" ]
 
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 5,
+      "vPos": [ 141, 2.7, -8 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 10.0, 0.8, 10 ],
+      "PrototypeName": "Prototype_GameObject_UI_Info",
+      "FilePaths": [ "../Bin/Save/UI/Info/Info_Avoid.json" ]
+
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 6,
+      "vPos": [ 172, 5, -26 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 3.0, 0.8, 3 ],
+      "PrototypeName": "Prototype_GameObject_UI_Info",
+      "FilePaths": [ "../Bin/Save/UI/Info/Info_Guard.json" ]
+
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 7,
+      "vPos": [ 134, 13, -66 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 3.0, 0.8, 3 ],
+      "PrototypeName": "Prototype_GameObject_UI_Info",
+      "FilePaths": [ "../Bin/Save/UI/Info/Info_Fatal_Back.json" ]
+
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 8,
+      "vPos": [ 140, 13, -28 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 3.0, 0.8, 3 ],
+      "PrototypeName": "Prototype_GameObject_UI_Info",
+      "FilePaths": [ "../Bin/Save/UI/Info/Info_LegionArm.json" ]
+
     }
   ]
 }
