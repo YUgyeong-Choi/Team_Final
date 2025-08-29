@@ -283,7 +283,7 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTIONONLY(PS_IN_BLEND In)
 
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, flowUV);
     Out.vDistortion *= g_vColor;
-    
+    Out.vDistortion.b = g_fDistortionStrength / 255.f;
     return Out;
 }
 
@@ -295,6 +295,7 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTION(PS_IN_BLEND In)
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0);
     Out.vDistortion *= g_vColor;
+    Out.vDistortion.b = g_fDistortionStrength / 255.f;
     
     return Out;
 }

@@ -65,7 +65,7 @@ private:
 
 private:
 	HRESULT Ready_Components(void* pArg);
-	HRESULT Bind_ShaderResources();
+	//HRESULT Bind_ShaderResources();
 
 public:
 	static CToolParticle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

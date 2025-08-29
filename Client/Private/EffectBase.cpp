@@ -194,6 +194,8 @@ HRESULT CEffectBase::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissiveIntensity, sizeof(_float))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fDistortionStrength", &m_fDistortionStrength, sizeof(_float))))
+		return E_FAIL;
 
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
@@ -463,6 +465,7 @@ json CEffectBase::Serialize()
 	j["Threshold"] = m_fThreshold;
 	j["EmissiveIntensity"] = m_fEmissiveIntensity;
 	j["CenterColor"] = { m_vCenterColor.x, m_vCenterColor.y, m_vCenterColor.z, m_vCenterColor.w };
+	j["DistortionStrength"] = m_fDistortionStrength;
 
 	// Texture Usage
 	json textureUsage = json::array();
@@ -531,6 +534,9 @@ void CEffectBase::Deserialize(const json& j)
 
 	if (j.contains("EmissiveIntensity"))
 		m_fEmissiveIntensity = j["EmissiveIntensity"].get<_float>();
+
+	if (j.contains("DistortionStrength"))
+		m_fDistortionStrength = j["DistortionStrength"].get<_float>();
 
 	if (j.contains("CenterColor") && j["CenterColor"].is_array() && j["CenterColor"].size() == 4)
 		m_vCenterColor = { j["CenterColor"][0].get<_float>(), j["CenterColor"][1].get<_float>(), j["CenterColor"][2].get<_float>(), j["CenterColor"][3].get<_float>() };

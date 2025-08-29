@@ -27,7 +27,7 @@ public:
 
 private:
 	virtual HRESULT Ready_Components();
-	HRESULT Bind_ShaderResources();
+	//HRESULT Bind_ShaderResources();
 
 private:
 	_bool m_bLoadingInTool = { false };
