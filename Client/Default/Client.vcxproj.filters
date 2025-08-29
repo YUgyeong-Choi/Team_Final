@@ -922,9 +922,6 @@
     <ClInclude Include="..\public\LegionArm_Steel.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\BossUnit.h">
-      <Filter>02.GameObjects\01.Unit\02. Monster\Boss</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\TriggerBox.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClInclude>
@@ -984,6 +981,12 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Fatal_Icon.h">
       <Filter>02.GameObjects\99.UI\World\Fatal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EliteUnit.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossUnit.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1409,9 +1412,6 @@
     <ClCompile Include="..\private\LegionArm_Steel.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Steel</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\BossUnit.cpp">
-      <Filter>02.GameObjects\01.Unit\02. Monster\Boss</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\StaticMesh.cpp">
       <Filter>02.GameObjects\00.StaticMesh</Filter>
     </ClCompile>
@@ -1477,6 +1477,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Weapon_Monster.cpp">
       <Filter>02.GameObjects\03.Weapon\99. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EliteUnit.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossUnit.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -117,6 +117,7 @@ namespace Client
 	{
 		NONE,
 		NORMAL_MONSTER,
+		ELITE_MONSTER,
 		BOSS,
 		PLAYER,
 		NPC

@@ -170,7 +170,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		m_pAnimator->SetBool("IsCombo", true);
 		_int iDir = GetYawSignFromDiretion();
 		m_pAnimator->SetInt("Direction", iDir);
@@ -479,7 +479,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	}
 
 
-	if (m_eCurrentState == EBossState::ATTACK)
+	if (m_eCurrentState == EEliteState::ATTACK)
 	{
 		return;
 	}
@@ -504,7 +504,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 
 
-	EBossAttackPattern eSkillType = GetRandomAttackPattern(fDistance);
+	EBossAttackPattern eSkillType = static_cast<EBossAttackPattern>(GetRandomAttackPattern(fDistance));
 
 
 	SetupAttackByType(eSkillType);
@@ -512,7 +512,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	m_pAnimator->SetBool("Move", false);
 	m_pAnimator->SetInt("SkillType", eSkillType);
 	m_pAnimator->SetTrigger("Attack");
-	m_eCurrentState = EBossState::ATTACK;
+	m_eCurrentState = EEliteState::ATTACK;
 	m_fAttackCooldown = m_fAttckDleay;
 
 }
@@ -524,7 +524,7 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	switch (iNodeID)
 	{
 	case ENUM_CLASS(BossStateID::IDLE):
-		m_eCurrentState = EBossState::IDLE;
+		m_eCurrentState = EEliteState::IDLE;
 		break;
 	case ENUM_CLASS(BossStateID::WALK_B):
 	case ENUM_CLASS(BossStateID::WALK_F):
@@ -532,51 +532,51 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::WALK_L):
 	{
 		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
-		m_eCurrentState = EBossState::WALK;
+		m_eCurrentState = EEliteState::WALK;
 	}
 	break;
 	case ENUM_CLASS(BossStateID::RUN_F):
 		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
-		m_eCurrentState = EBossState::RUN;
+		m_eCurrentState = EEliteState::RUN;
 		break;
 	case ENUM_CLASS(BossStateID::GROGGY_START):
 	case ENUM_CLASS(BossStateID::GROGGY_LOOP):
 	case ENUM_CLASS(BossStateID::GROGGY_END):
-		m_eCurrentState = EBossState::GROGGY;
+		m_eCurrentState = EEliteState::GROGGY;
 		break;
 	case ENUM_CLASS(BossStateID::DEAD_B):
 	case ENUM_CLASS(BossStateID::DEAD_F):
 	case ENUM_CLASS(BossStateID::SPECIAL_DIE):
-		m_eCurrentState = EBossState::DEAD;
+		m_eCurrentState = EEliteState::DEAD;
 		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_BellyFire"));
 		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke1"));
 		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2"));
 		break;
 	case ENUM_CLASS(BossStateID::TURN_L):
 	case ENUM_CLASS(BossStateID::TURN_R):
-		m_eCurrentState = EBossState::TURN;
+		m_eCurrentState = EEliteState::TURN;
 		break;
 	case ENUM_CLASS(BossStateID::PARALYZATION_START):
 	case ENUM_CLASS(BossStateID::PARALYZATION_LOOP):
 	case ENUM_CLASS(BossStateID::PARALYZATION_END):
-		m_eCurrentState = EBossState::PARALYZATION;
+		m_eCurrentState = EEliteState::PARALYZATION;
 		break;
 	case ENUM_CLASS(BossStateID::FATAL_START):
 	case ENUM_CLASS(BossStateID::FATAL_LOOP):
 	case ENUM_CLASS(BossStateID::FATAL_END):
-		m_eCurrentState = EBossState::FATAL;
+		m_eCurrentState = EEliteState::FATAL;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 	{
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
 			EffectSpawn_Active(15, true);
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
@@ -585,26 +585,26 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET):
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET2):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(100.f);
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_END):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::CUTSCENE):
-		m_eCurrentState = EBossState::CUTSCENE;
+		m_eCurrentState = EEliteState::CUTSCENE;
 		break;
 	default:
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	}
-	if (m_ePrevState == EBossState::FATAL && m_eCurrentState != EBossState::FATAL)
+	if (m_ePrevState == EEliteState::FATAL && m_eCurrentState != EEliteState::FATAL)
 	{
 		m_fMaxRootMotionSpeed = 13.f;
 		m_fRootMotionAddtiveScale = 1.2f;
@@ -614,21 +614,21 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 
 void CFuoco::UpdateSpecificBehavior()
 {
-	if (m_eCurrentState == EBossState::DEAD)
+	if (m_eCurrentState == EEliteState::DEAD)
 		return;
 	if (m_eCurAttackPattern == StrikeFury && m_bPlayerCollided)
 	{
 		//	EnableColliders(false);
 	}
-	if (m_eCurrentState != EBossState::ATTACK)
+	if (m_eCurrentState != EEliteState::ATTACK)
 	{
 		m_pAnimator->SetBool("IsHit", false);
 	}
-	else if (m_eCurrentState == EBossState::ATTACK)
+	else if (m_eCurrentState == EEliteState::ATTACK)
 	{
 		m_pAnimator->SetBool("Move", false);
 	}
-	//if (m_ePrevState != EBossState::FATAL &&m_eCurrentState == EBossState::FATAL)
+	//if (m_ePrevState != EEliteState::FATAL &&m_eCurrentState == EEliteState::FATAL)
 	//{
 	//	m_fRootMotionAddtiveScale = 15.f;
 	//	m_fMaxRootMotionSpeed = 25.f;
@@ -674,10 +674,10 @@ void CFuoco::EnableColliders(_bool bEnable)
 	}
 }
 
-void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
+void CFuoco::SetupAttackByType(_int iPattern)
 {
 
-	switch (ePattern)
+	switch (iPattern)
 	{
 	case Client::CFuoco::SlamCombo:
 	{
@@ -699,22 +699,22 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 			_int iComboType = GetRandomInt(0, 1);
 			m_pAnimator->SetInt("SwingCombo", iComboType);
 		}
-		m_eBossAttackType = EBossAttackType::KNOCKBACK;
+		m_eAttackType = EAttackType::KNOCKBACK;
 	}
 	break;
 	case Client::CFuoco::SlamFury:
 		SetTurnTimeDuringAttack(1.5f, 1.3f);
-		m_eBossAttackType = EBossAttackType::STAMP;
+		m_eAttackType = EAttackType::STAMP;
 	case Client::CFuoco::FootAtk:
 		//	SetTurnTimeDuringAttack(1.f,1.5f);
 		break;
 	case Client::CFuoco::SlamAtk:
 		SetTurnTimeDuringAttack(1.f);
-		m_eBossAttackType = EBossAttackType::STAMP;
+		m_eAttackType = EAttackType::STAMP;
 		break;
 	case Client::CFuoco::Uppercut:
 		SetTurnTimeDuringAttack(1.f);
-		m_eBossAttackType = EBossAttackType::NORMAL;
+		m_eAttackType = EAttackType::NORMAL;
 		break;
 	case Client::CFuoco::StrikeFury:
 		SetTurnTimeDuringAttack(1.2f);
@@ -725,17 +725,17 @@ void CFuoco::SetupAttackByType(EBossAttackPattern ePattern)
 		m_pAnimator->SetInt("Direction", iDir);
 	}
 	case Client::CFuoco::P2_FireOil:
-		m_eBossAttackType = EBossAttackType::NONE;
+		m_eAttackType = EAttackType::NONE;
 		break;
 	case Client::CFuoco::P2_FireBall:
 	{
 		_int iDir = GetRandomInt(0, 2);
 		m_pAnimator->SetInt("Direction", iDir);
-		m_eBossAttackType = EBossAttackType::KNOCKBACK;
+		m_eAttackType = EAttackType::KNOCKBACK;
 	}
 	break;
 	case Client::CFuoco::P2_FireBall_B:
-		m_eBossAttackType = EBossAttackType::KNOCKBACK;
+		m_eAttackType = EAttackType::KNOCKBACK;
 		break;
 	default:
 		break;
@@ -747,11 +747,13 @@ void CFuoco::Register_Events()
 	if (nullptr == m_pAnimator)
 		return;
 
-	m_pAnimator->RegisterEventListener("CameraShake",
-		[this]()
-		{
-			CCamera_Manager::Get_Instance()->Shake_Camera(0.15f, 0.2f);
-		});
+	CEliteUnit::Register_Events();
+
+	//m_pAnimator->RegisterEventListener("CameraShake",
+	//	[this]()
+	//	{
+	//		CCamera_Manager::Get_Instance()->Shake_Camera(0.15f, 0.2f);
+	//	});
 	m_pAnimator->RegisterEventListener("IsFront",
 		[this]()
 		{
@@ -796,21 +798,21 @@ void CFuoco::Register_Events()
 
 		});
 
-	m_pAnimator->RegisterEventListener("ResetAnim", [this]()
-		{
-			m_pAnimator->GetCurrentAnim()->ResetTrack();
-		});
+	//m_pAnimator->RegisterEventListener("ResetAnim", [this]()
+	//	{
+	//		m_pAnimator->GetCurrentAnim()->ResetTrack();
+	//	});
 
-	m_pAnimator->RegisterEventListener("SlowAnimSpeed", [this]() {
-		m_pAnimator->SetPlayRate(0.4f);
-		});
-	m_pAnimator->RegisterEventListener("ResetAnimSpeed", [this]() {
-		m_pAnimator->SetPlayRate(1.f);
-		});
+	//m_pAnimator->RegisterEventListener("SlowAnimSpeed", [this]() {
+	//	m_pAnimator->SetPlayRate(0.4f);
+	//	});
+	//m_pAnimator->RegisterEventListener("ResetAnimSpeed", [this]() {
+	//	m_pAnimator->SetPlayRate(1.f);
+	//	});
 
-	m_pAnimator->RegisterEventListener("FastAnimSpeed", [this]() {
-		m_pAnimator->SetPlayRate(1.3f);
-		});
+	//m_pAnimator->RegisterEventListener("FastAnimSpeed", [this]() {
+	//	m_pAnimator->SetPlayRate(1.3f);
+	//	});
 
 
 	m_pAnimator->RegisterEventListener("CollidersOff", [this]() {
@@ -983,6 +985,8 @@ void CFuoco::Register_Events()
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
 {
+	m_PatternWeightMap.clear();
+	m_PatternCountMap.clear();
 	vector<EBossAttackPattern> m_vecBossPatterns = {
 		SlamCombo,Uppercut,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
 		SlamAtk,StrikeFury
@@ -997,8 +1001,8 @@ void CFuoco::Ready_AttackPatternWeightForPhase1()
 
 void CFuoco::Ready_AttackPatternWeightForPhase2()
 {
-	//	m_pAnimator->SetTrigger("Paralyzation");
-	m_pAnimator->SetTrigger("Groggy");
+	m_pAnimator->SetTrigger("Paralyzation");
+	//m_pAnimator->SetTrigger("Groggy");
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
 		SlamCombo,Uppercut,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
@@ -1014,7 +1018,7 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	}
 }
 
-CFuoco::EBossAttackPattern CFuoco::GetRandomAttackPattern(_float fDistance)
+_int CFuoco::GetRandomAttackPattern(_float fDistance)
 {
 	EBossAttackPattern ePattern = BAP_NONE;
 	m_PatternWeighForDisttMap = m_PatternWeightMap;
@@ -1022,7 +1026,7 @@ CFuoco::EBossAttackPattern CFuoco::GetRandomAttackPattern(_float fDistance)
 
 
 	_float fTotalWeight = accumulate(m_PatternWeighForDisttMap.begin(), m_PatternWeighForDisttMap.end(), 0.f,
-		[](_float fAcc, const pair<EBossAttackPattern, _float>& Pair) { return fAcc + Pair.second; });
+		[](_float fAcc, const pair<_int, _float>& Pair) { return fAcc + Pair.second; });
 
 	_float fRandomVal = GetRandomFloat(0.f, fTotalWeight);
 	_float fCurWeight = 0.f;
@@ -1033,7 +1037,7 @@ CFuoco::EBossAttackPattern CFuoco::GetRandomAttackPattern(_float fDistance)
 		fCurWeight += weight;
 		if (fRandomVal <= fCurWeight)
 		{
-			ePattern = pattern;
+			ePattern = static_cast<EBossAttackPattern>(pattern);
 			m_ePrevAttackPattern = m_eCurAttackPattern;
 			m_eCurAttackPattern = ePattern;
 #ifdef _DEBUG
@@ -1503,18 +1507,18 @@ HRESULT CFuoco::Ready_Effect()
 	return S_OK;
 }
 
-void CFuoco::UpdatePatternWeight(EBossAttackPattern ePattern)
+void CFuoco::UpdatePatternWeight(_int iPattern)
 {
-	m_PatternCountMap[ePattern]++;
-	if (m_PatternCountMap[ePattern] >= m_iPatternLimit)
+	m_PatternCountMap[iPattern]++;
+	if (m_PatternCountMap[iPattern] >= m_iPatternLimit)
 	{
-		m_PatternWeightMap[ePattern] *= (1.f - m_fWeightDecreaseRate); // 가중치 감소
-		m_PatternWeightMap[ePattern] = max(m_PatternWeightMap[ePattern], m_fMinWeight); // 최소 가중치로 설정
-		m_PatternCountMap[ePattern] = 0;
+		m_PatternWeightMap[iPattern] *= (1.f - m_fWeightDecreaseRate); // 가중치 감소
+		m_PatternWeightMap[iPattern] = max(m_PatternWeightMap[iPattern], m_fMinWeight); // 최소 가중치로 설정
+		m_PatternCountMap[iPattern] = 0;
 
 		for (auto& [pattern, weight] : m_PatternWeightMap)
 		{
-			if (pattern != ePattern)
+			if (pattern != iPattern)
 			{
 				weight += (m_fMaxWeight - weight) * m_fWeightIncreaseRate; // 가중치 증가
 				weight = min(weight, m_fMaxWeight); // 최대 가중치로 제한
@@ -1543,7 +1547,7 @@ _bool CFuoco::CheckConditionFlameField()
 			m_bIsPhase2 = true;
 		}
 		m_pAnimator->SetBool("Move", false);
-		m_eCurrentState = EBossState::ATTACK;
+		m_eCurrentState = EEliteState::ATTACK;
 		return true;
 	}
 	return false;
@@ -1692,6 +1696,8 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CFuoco::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
+
+
 
 
 CFuoco* CFuoco::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
