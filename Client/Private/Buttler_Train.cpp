@@ -585,6 +585,10 @@ void CButtler_Train::Reset()
 		m_pHPBar->Reset();
 	}
 	
+	if (m_eSpawnType == SPAWN_TYPE::STAND)
+	{
+		m_pAnimator->SetTrigger("SpawnStand");
+	}
 
 	m_iAttackCount = {};
 	m_fDuration = 0.f;
