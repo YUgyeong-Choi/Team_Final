@@ -16,6 +16,8 @@ CBossUnit::CBossUnit(const CBossUnit& Prototype)
 
 HRESULT CBossUnit::Initialize(void* pArg)
 {
+	m_fHP = 150.f;
+	m_fMaxHP = 150.f;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -38,7 +40,7 @@ void CBossUnit::Priority_Update(_float fTimeDelta)
 
 void CBossUnit::EnterCutScene()
 {
-	ToggleEmissive(true);
+	ToggleEmissive(1.f);
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
 }
