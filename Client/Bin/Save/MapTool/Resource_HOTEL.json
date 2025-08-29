@@ -29,6 +29,13 @@
     },
     {
         "Collision": true,
+        "ModelName": "SM_BuildingA_Pillar_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Pillar_02.bin"
+    },
+    {
+        "Collision": true,
         "ModelName": "SM_BuildingA_Wall_058",
         "NoInstancing": false,
         "ObjectCount": 2,
@@ -1300,6 +1307,13 @@
         "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Archway0aA.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Wall_Hotel_DoorPillar05",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Hotel_DoorPillar05.bin"
     },
     {
         "Collision": true,
