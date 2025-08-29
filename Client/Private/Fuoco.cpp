@@ -961,6 +961,7 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("OnSlamEffect", [this]()
 		{
 			EffectSpawn_Active(SlamAtk, true);
+
 		});
 
 	m_pAnimator->RegisterEventListener("OnFlamethrowerEffect", [this]()
@@ -1373,11 +1374,59 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2") || stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
 	{
-
 		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
 
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+#pragma region 영웅 데칼 테스트 코드
+		//데칼 테스트(영웅)
+		CStatic_Decal::DECAL_DESC DecalDesc = {};
+		DecalDesc.bNormalOnly = true;
+		DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEaterNormal");
+		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEaterMask");
+		//DecalDesc.WorldMatrix = m_pTransformCom->Get_World4x4(); //크자이공부로 직접 넣어주면 ㅎㅎ
+
+		// 기존 월드행렬
+		_matrix World = XMLoadFloat4x4(desc.pParentMatrix);
+
+		// 스케일, 회전, 위치 분해
+		_vector scale, rotQuat, trans;
+		XMMatrixDecompose(&scale, &rotQuat, &trans, World);
+
+		// 새 스케일 설정
+		scale = XMVectorSet(5.f, 0.1f, 5.f, 0.f);
+
+		//// 보스의 Look / Right 벡터 추출
+		//_vector vRight = World.r[0]; //노말라이즈 일단 뺌
+		//_vector vLook = World.r[2];//노말라이즈 일단 뺌
+		//_vector vPos = World.r[3];
+
+		//// 방향 정규화
+		//vRight = XMVector3Normalize(vRight);
+		//vLook = XMVector3Normalize(vLook);
+
+		//// 앞으로 조금, 오른쪽으로 조금 이동
+		//trans = vPos + vLook * 1.5f + vRight * 0.5f;
+
+		// 다시 합성
+		_matrix NewWorld = XMMatrixScalingFromVector(scale) *
+			XMMatrixRotationQuaternion(rotQuat) *
+			XMMatrixTranslationFromVector(trans);
+
+		// 적용
+		XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+		{
+			//return E_FAIL;
+		}
+#pragma endregion
+
+
+
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"))
 	{
