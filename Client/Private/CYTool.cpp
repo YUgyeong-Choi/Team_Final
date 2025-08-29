@@ -383,6 +383,7 @@ HRESULT CCYTool::Edit_Preferences()
 	ImGui::Text("Center Color");
 	ImGui::SameLine();
 	ImGui::DragFloat("Glow Intensity", pEffect->Get_EmissiveIntensity_Ptr(), 0.05f, 0.0f, 10.f, "%.2f");
+	ImGui::DragFloat("Distortion Strength", pEffect->Get_DistortionStrength_Ptr(), 0.1f, 0.f, 255.f, "%.1f");
 	ImGui::PopItemWidth();
 	string strRGName;
 	for (_uint i = ENUM_CLASS(RENDERGROUP::RG_BLEND); i < ENUM_CLASS(RENDERGROUP::RG_EFFECT_END); i++)

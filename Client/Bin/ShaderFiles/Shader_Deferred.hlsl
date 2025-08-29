@@ -1309,16 +1309,20 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
 {
     PS_OUT Out;
     
-    float2 vDistortion = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord).rg;
+    vector vDistortRT = g_Effect_Distort.Sample(DefaultSampler, In.vTexcoord);
+    
+    float2 vDistortion = vDistortRT.rg;
+    float fStrength = vDistortRT.b;
     vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환
     
     // 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
     float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
-    float fStrength = 10.f; // 강도 조절 변수
+    //float fStrength = 10.f; // 강도 조절 변수
+    fStrength *= 255.f;
     float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);
     
     // 가장자리 아티팩트 줄이기
-      uv = saturate(uv);
+    uv = saturate(uv);
     
     // 흔든 UV로 최종 씬 샘플
     vector vFinalColor = g_FinalTexture.Sample(DefaultSampler, uv);
