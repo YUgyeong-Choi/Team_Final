@@ -7,6 +7,7 @@
 NS_BEGIN(Engine)
 class CGameInstance;
 class CUIObject;
+class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -22,6 +23,7 @@ private:
 
 
 public:
+    void Initialize();
 
     void Emplace_UI(CUIObject* pUI, _wstring strTag);
 
@@ -54,7 +56,7 @@ public:
 
     _int Check_Script_Click_Button();
   
-
+    void Sound_Play(string soundTag);
 public:
 
 private:
@@ -65,8 +67,7 @@ private:
 
     map<_wstring, CUIObject*> m_UImap = {};
     
-  
-
+    CSoundController* m_pSoundCom = { nullptr };
 public:
     virtual void Free() override;
 };

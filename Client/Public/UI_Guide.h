@@ -13,7 +13,6 @@ public:
 	{
 	
 		vector<_wstring> partPaths;
-		CGameObject* pTrigger;
 	}UI_GUIDE_DESC;
 	
 protected:
