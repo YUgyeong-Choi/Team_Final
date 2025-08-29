@@ -31,7 +31,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
 	m_fDamage = 15.f;
-	m_fAttckDleay = 1.5f;
+	m_fAttckDleay = 1.3f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -170,10 +170,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		m_eCurrentState = EEliteState::ATTACK;
-		m_pAnimator->SetBool("IsCombo", true);
-		_int iDir = GetYawSignFromDiretion();
-		m_pAnimator->SetInt("Direction", iDir);
 		//m_fHP -= 10.f;
 		/*m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType",Uppercut);*/
@@ -560,6 +556,11 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::CUTSCENE):
 		m_eCurrentState = EEliteState::CUTSCENE;
 		break;
+	case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_LEFT_END):
+	case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_RIGHT_END):
+		SetTurnTimeDuringAttack(0.7f,1.2f);
+		break;
+		
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
@@ -602,16 +603,15 @@ void CFuoco::UpdateSpecificBehavior()
 
 void CFuoco::EnableColliders(_bool bEnable)
 {
+	__super::EnableColliders(bEnable);
 	if (bEnable)
 	{
-		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 		m_pPhysXActorComForArm->Set_SimulationFilterData(m_pPhysXActorComForArm->Get_FilterData());
 		m_pPhysXActorComForFoot->Set_SimulationFilterData(m_pPhysXActorComForFoot->Get_FilterData());
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
 			if (auto pController = pPlayer->Get_Controller())
 			{
-				pController->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
 				pController->Remove_IgnoreActors(m_pPhysXActorComForArm->Get_Actor());
 				pController->Remove_IgnoreActors(m_pPhysXActorComForFoot->Get_Actor());
 			}
@@ -619,14 +619,12 @@ void CFuoco::EnableColliders(_bool bEnable)
 	}
 	else
 	{
-		m_pPhysXActorCom->Init_SimulationFilterData();
 		m_pPhysXActorComForArm->Init_SimulationFilterData();
 		m_pPhysXActorComForFoot->Init_SimulationFilterData();
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
 			if (auto pController = pPlayer->Get_Controller())
 			{
-				pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 				pController->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
 				pController->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
 			}
@@ -678,6 +676,7 @@ void CFuoco::SetupAttackByType(_int iPattern)
 		break;
 	case Client::CFuoco::StrikeFury:
 		SetTurnTimeDuringAttack(1.2f);
+		m_eAttackType = EAttackType::FURY_AIRBORNE;
 		break;
 	case Client::CFuoco::P2_FireFlame:
 	{
@@ -832,7 +831,7 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("FireBallCombo", [this]()
 		{
-			_bool bIsCombo = GetRandomInt(0, 99) < 70;
+			_bool bIsCombo = GetRandomInt(0, 99) < 85;
 			if (m_iFireBallComboCount == LIMIT_FIREBALL_COMBO_COUNT)
 			{
 				m_iFireBallComboCount = 0;
@@ -1714,19 +1713,22 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
 		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM2):
 		case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_START):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET):
+		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ_RESET2):
 		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
 		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
 		case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_LEFT_END):
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_RIGHT_END):
 			pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
-			pPlayer->SetfReceiveDamage(DAMAGE_LIGHT);
+			pPlayer->SetfReceiveDamage(DAMAGE_MEDIUM);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_START):
 			pPlayer->SetHitMotion(HITMOTION::NORMAL);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_FOOT):
-			pPlayer->SetfReceiveDamage(DAMAGE_MEDIUM);
+			pPlayer->SetfReceiveDamage(DAMAGE_LIGHT);
 			m_pAnimator->SetBool("IsHit", true);
 			SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
 			pPlayer->SetHitMotion(HITMOTION::UP);

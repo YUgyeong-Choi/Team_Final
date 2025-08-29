@@ -22,14 +22,17 @@ HRESULT CElite_Police::Initialize_Prototype()
 
 HRESULT CElite_Police::Initialize(void* pArg)
 {
-
-	m_fAttckDleay = 4.f;
+	m_fMaxRootMotionSpeed = 13.f;
+	m_fRootMotionAddtiveScale = 1.f;
+	m_fAttckDleay = 1.5f;
+	m_fWalkSpeed = 3.f;
+	m_fChasingDistance = 2.f;
 
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
 		UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-		UnitDesc.fRotationPerSec = XMConvertToRadians(140.f);
+		UnitDesc.fRotationPerSec = XMConvertToRadians(270.f);
 		UnitDesc.fSpeedPerSec = m_fWalkSpeed;
 		lstrcpy(UnitDesc.szName, TEXT("Elite_Police"));
 		UnitDesc.szMeshID = TEXT("Elite_Police");
@@ -46,7 +49,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 		lstrcpy(pDesc->szName, TEXT("Elite_Police"));
 		pDesc->szMeshID = TEXT("Elite_Police");
-		pDesc->fRotationPerSec = XMConvertToRadians(140.f);
+		pDesc->fRotationPerSec = XMConvertToRadians(270.f);
 		pDesc->fSpeedPerSec = m_fWalkSpeed;
 
 		//UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
@@ -77,6 +80,10 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	PxTransform localPose = pShape->getLocalPose();
 	localPose.p += PxVec3(0.f, -0.5f, 0.f);
 	pShape->setLocalPose(localPose);
+
+
+	Ready_AttackPatternWeight();
+	m_bIsFirstAttack = false;
 	return S_OK;
 }
 
@@ -86,7 +93,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_V))
 	{
-		m_pAnimator->SetTrigger("Detect");
+
 	}
 #endif // _DEBUG
 
@@ -175,8 +182,53 @@ HRESULT CElite_Police::Ready_Weapon()
 }
 
 
+void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
+{
+	if (m_bSpawned == false)
+		return;
+	if (fDistance < m_fChasingDistance)
+	{
+		if (m_fChangeMoveDirCooldown > 0.f)
+		{
+			m_fChangeMoveDirCooldown -= fTimeDelta;
+			m_fChangeMoveDirCooldown = max(m_fChangeMoveDirCooldown, 0.f);
+		}
+		else
+		{
+			_int iMoveDir = 0;
+			if (fDistance < m_fTooCloseDistance) 
+			{
+				iMoveDir = 2; // Back
+			}
+			m_pAnimator->SetInt("MoveDir", iMoveDir);
+			m_fChangeMoveDirCooldown = 5.f;
+		}
+	}
+	else if (fDistance >= m_fChasingDistance)
+	{
+		m_pAnimator->SetInt("MoveDir", 0);
+	}
+	m_eCurrentState = EEliteState::WALK;
+	m_pAnimator->SetFloat("Distance", abs(fDistance));
+	cout << "플레이어와의 거리 : " << fDistance << endl;
+}
+
 void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
+	if (m_bPlayedDetect == false)
+		return;
+
+	if (m_bIsFirstAttack)
+	{
+		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetInt("AttackType", COMBO3);
+		m_bIsFirstAttack = false;
+		m_pAnimator->SetBool("Move", false);
+		m_fAttackCooldown = m_fAttckDleay;
+		SetTurnTimeDuringAttack(1.5f, 1.4f);
+		return;
+	}
+
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
 	{
 		return;
@@ -185,7 +237,13 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	{
 		return;
 	}
-
+	if (fDistance >= 4.f)
+	{
+		//m_pAnimator->SetBool("Move", true);
+		//m_pAnimator->SetInt("MoveDir", 0); // 정면
+		//m_eCurrentState = EEliteState::WALK;
+		return;
+	}
 	if (m_fAttackCooldown > 0.f)
 	{
 		m_fAttackCooldown -= fTimeDelta;
@@ -194,7 +252,20 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 			return; // 공격 쿨타임이 남아있으면 업데이트 중지
 	}
 
-	EEliteAttackPattern eAttackType = static_cast<EEliteAttackPattern>(GetRandomAttackPattern(fDistance));
+
+	if (IsTargetInFront(180.f) == false)
+	{
+
+		m_pAnimator->SetBool("Move", false);
+		m_pAnimator->SetInt("AttackType", COMBO4);
+		m_pAnimator->SetTrigger("Attack");
+		m_eCurrentState = EEliteState::ATTACK;
+		m_fAttackCooldown = m_fAttckDleay;
+		SetTurnTimeDuringAttack(1.f, 1.5f);
+		return;
+	}
+	EPoliceAttackPattern eAttackType = static_cast<EPoliceAttackPattern>(GetRandomAttackPattern(fDistance));
+
 
 
 	SetupAttackByType(eAttackType);
@@ -208,15 +279,78 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 {
+	m_ePrevState = m_eCurrentState;
+	static _int iLastNodeID = -1;
+  	switch (iNodeID)
+	{
+	case ENUM_CLASS(EliteMonsterStateID::Idle):
+		m_eCurrentState = EEliteState::IDLE;
+		break;
+	case ENUM_CLASS(EliteMonsterStateID::Walk_B):
+	case ENUM_CLASS(EliteMonsterStateID::Walk_F):
+	case ENUM_CLASS(EliteMonsterStateID::Walk_R):
+	case ENUM_CLASS(EliteMonsterStateID::Walk_L):
+	{
+		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_eCurrentState = EEliteState::WALK;
+		break;
+	}
+	case ENUM_CLASS(EliteMonsterStateID::Run_F):
+		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
+		m_eCurrentState = EEliteState::RUN;
+		break;
+	case ENUM_CLASS(EliteMonsterStateID::Atk_Combo1):
+	case ENUM_CLASS(EliteMonsterStateID::Atk_Combo2):
+	case ENUM_CLASS(EliteMonsterStateID::Atk_Combo3):
+		m_eCurrentState = EEliteState::ATTACK;
+		break;
+	case ENUM_CLASS(EliteMonsterStateID::Atk_Combo4):
+		m_eCurrentState = EEliteState::ATTACK;
+
+		break;
+	case ENUM_CLASS(EliteMonsterStateID::Death_B):
+		m_eCurrentState = EEliteState::DEAD;
+		break;
+	case ENUM_CLASS(EliteMonsterStateID::Turn_L):
+	case ENUM_CLASS(EliteMonsterStateID::Turn_R):
+		m_eCurrentState = EEliteState::TURN;
+		break;
+	case ENUM_CLASS(EliteMonsterStateID::Groggy_Start):
+	case ENUM_CLASS(EliteMonsterStateID::Groggy_Loop):
+	case ENUM_CLASS(EliteMonsterStateID::Groggy_End):
+		m_eCurrentState = EEliteState::GROGGY;
+		break;
+	case ENUM_CLASS(EliteMonsterStateID::Fatal_Hit_Start):
+	case ENUM_CLASS(EliteMonsterStateID::Fatal_Hit_Ing):
+	case ENUM_CLASS(EliteMonsterStateID::Fatal_Hit_End):
+		m_eCurrentState = EEliteState::FATAL;
+		break;
+	case ENUM_CLASS(EliteMonsterStateID::Paralyzation_Start):
+	case ENUM_CLASS(EliteMonsterStateID::Paralyzation_Loop):
+	case ENUM_CLASS(EliteMonsterStateID::Paralyzation_End):
+		m_eCurrentState = EEliteState::PARALYZATION;
+		break;
+	default:
+		break;
+	}
+	iLastNodeID = iNodeID;
 }
 
 void CElite_Police::UpdateSpecificBehavior()
 {
-//	m_eCurrentState = EEliteState::WALK;
+	if (m_pPlayer)
+	{
+		if (m_bPlayedDetect == false&& Get_DistanceToPlayer() <= m_fDetectRange)
+		{
+			m_bPlayedDetect = true;
+			m_pAnimator->SetTrigger("Detect");
+		}
+	}
 }
 
 void CElite_Police::EnableColliders(_bool bEnable)
 {
+	__super::EnableColliders(bEnable);
 }
 
 void CElite_Police::Ready_EffectNames()
@@ -244,11 +378,46 @@ HRESULT CElite_Police::Ready_Effect()
 
 void CElite_Police::Register_Events()
 {
+	__super::Register_Events();
+
+	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
+		{
+			m_fMaxRootMotionSpeed = 1.f;
+		});
+
+	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()
+		{
+			m_fMaxRootMotionSpeed = 13.f;
+			m_fRootMotionAddtiveScale = 1.f;
+		});
+
+	m_pAnimator->RegisterEventListener("SetRootLargeStep", [this]()
+		{
+			m_fMaxRootMotionSpeed = 30.f;
+			m_fRootMotionAddtiveScale = 1.2f;
+		});
+
+	m_pAnimator->RegisterEventListener("Spawned", [this]()
+		{
+			m_bSpawned = true;
+		});
+	m_pAnimator->RegisterEventListener("Turnnig", [this]()
+		{
+			SetTurnTimeDuringAttack(1.3f,1.4f);
+		});
+
+}
+
+void CElite_Police::Reset()
+{
+	__super::Reset();
+	m_bPlayedDetect = false;
+	m_bSpawned = false;
 }
 
 _int CElite_Police::GetRandomAttackPattern(_float fDistance)
 {
-	EEliteAttackPattern ePattern = AP_NONE;
+	EPoliceAttackPattern ePattern = AP_NONE;
 	m_PatternWeighForDisttMap = m_PatternWeightMap;
 	ChosePatternWeightByDistance(fDistance);
 
@@ -265,7 +434,7 @@ _int CElite_Police::GetRandomAttackPattern(_float fDistance)
 		fCurWeight += weight;
 		if (fRandomVal <= fCurWeight)
 		{
-			ePattern = pattern;
+			ePattern = static_cast<EPoliceAttackPattern>(pattern);
 			m_ePrevAttackPattern = m_eCurAttackPattern;
 			m_eCurAttackPattern = ePattern;
 			UpdatePatternWeight(ePattern);
@@ -277,6 +446,35 @@ _int CElite_Police::GetRandomAttackPattern(_float fDistance)
 
 void CElite_Police::UpdatePatternWeight(_int iPattern)
 {
+	m_PatternCountMap[iPattern]++;
+	if (m_PatternCountMap[iPattern] >= m_iPatternLimit)
+	{
+		m_PatternWeightMap[iPattern] *= (1.f - m_fWeightDecreaseRate); // 가중치 감소
+		m_PatternWeightMap[iPattern] = max(m_PatternWeightMap[iPattern], m_fMinWeight); // 최소 가중치로 설정
+		m_PatternCountMap[iPattern] = 0;
+
+		for (auto& [pattern, weight] : m_PatternWeightMap)
+		{
+			if (pattern != iPattern)
+			{
+				weight += (m_fMaxWeight - weight) * m_fWeightIncreaseRate; // 가중치 증가
+				weight = min(weight, m_fMaxWeight); // 최대 가중치로 제한
+			}
+		}
+	}
+}
+
+_bool CElite_Police::CanMove() const
+{
+	return (m_eCurrentState == EEliteState::IDLE ||
+		m_eCurrentState == EEliteState::WALK ||
+		m_eCurrentState == EEliteState::RUN) &&
+		m_eCurrentState != EEliteState::GROGGY &&
+		m_eCurrentState != EEliteState::DEAD &&
+		m_eCurrentState != EEliteState::PARALYZATION &&
+		m_eCurrentState != EEliteState::ATTACK &&
+		m_eCurrentState != EEliteState::FATAL &&
+		m_bPlayedDetect;
 }
 
 
@@ -311,6 +509,35 @@ void CElite_Police::ChosePatternWeightByDistance(_float fDistance)
 
 void CElite_Police::SetupAttackByType(_int iPattern)
 {
+	switch (iPattern)
+	{
+	case COMBO1:
+		break;
+	case COMBO2:
+		break;
+	case COMBO3:
+		break;
+	case COMBO4:
+		SetTurnTimeDuringAttack(1.5f, 1.f);
+		break;
+	default:
+		break;
+	}
+}
+
+void CElite_Police::Ready_AttackPatternWeight()
+{
+	m_PatternWeightMap.clear();
+	m_PatternCountMap.clear();
+	vector<EPoliceAttackPattern> m_vecBossPatterns = {
+			COMBO1, COMBO2, COMBO3, COMBO4,COMBO5
+	};
+
+	for (const auto& pattern : m_vecBossPatterns)
+	{
+		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
+		m_PatternCountMap[pattern] = 0;
+	}
 }
 
 void CElite_Police::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)

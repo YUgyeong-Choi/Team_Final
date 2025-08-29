@@ -157,6 +157,7 @@ private:
     virtual HRESULT Spawn_Effect();
     
     virtual HRESULT Ready_Effect();
+	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {   
@@ -234,10 +235,10 @@ private:
 	const _float ATTACK_DISTANCE_CLOSE = 0.f;
     const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
-    const _float DAMAGE_LIGHT = 4.f;   
-    const _float DAMAGE_MEDIUM = 7.f;  
-    const _float DAMAGE_HEAVY = 10.f; 
-    const _float DAMAGE_FURY = 15.f; 
+    const _float DAMAGE_LIGHT = 5.f;   
+    const _float DAMAGE_MEDIUM = 10.f;  
+    const _float DAMAGE_HEAVY = 15.f; 
+    const _float DAMAGE_FURY = 17.f; 
 
    
 public:

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Fuoco.h"
 #include "EditorObjectFactory.h"
+#include "Elite_Police.h"
 #include "GameInstance.h"
 #include <queue>
 
@@ -2855,7 +2856,9 @@ HRESULT CAnimTool::Register_Objects()
 	m_vecObjectNames.push_back("Player");
 	m_SpawnObjectDesc["Player"] = pPlayerDesc;
 
-
+	if (FAILED(m_pEditorObjectFactory->RegisterObject<CElite_Police>(TEXT("Elite_Police"))))
+		return E_FAIL;
+	m_vecObjectNames.push_back("Elite_Police");
 	return S_OK;
 }
 
