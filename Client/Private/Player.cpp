@@ -228,14 +228,11 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if(KEY_DOWN(DIK_Y))
 	{
 		CEffectContainer::DESC desc = {};
-		auto worldmat =  m_pTransformCom->Get_WorldMatrix();
-
-		// 위치 프리셋만
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixTranslation(worldmat.r[3].m128_f32[0], worldmat.r[3].m128_f32[1], worldmat.r[3].m128_f32[2]));
-
-		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_Imsi_P2"), &desc))
-			MSG_BOX("이펙트 생성 실패함");
+		_vector vPos = m_pPlayerLamp->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_matrix vWorldMat = XMMatrixTranslation(0.13f, 0.f, 0.05f) * XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Lamp_02"))) * m_pTransformCom->Get_WorldMatrix();
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vWorldMat.r[3].m128_f32[0], vWorldMat.r[3].m128_f32[1], vWorldMat.r[3].m128_f32[2]));
+		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Monad_P1"), &desc))
+			return;
 	}
 
 	if (KEY_DOWN(DIK_U))
@@ -1088,7 +1085,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		auto& vLockonPos = m_pFatalTarget->Get_LockonPos();
 		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
 		CEffectContainer::DESC desc = {};
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(1.3f, 1.3f, 1.3f) * XMMatrixTranslation(vLockonPos.x, vLockonPos.y, vLockonPos.z));
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(1.3f, 1.3f, 1.3f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
 		CGameObject* pEffect = { nullptr };
 
 		m_fSetTime += fTimeDelta;
@@ -1416,9 +1413,8 @@ void CPlayer::Register_Events()
 				m_pPlayerLamp->ToggleLamp();
 				CEffectContainer::DESC desc = {};
 				_vector vPos = m_pPlayerLamp->Get_TransfomCom()->Get_State(STATE::POSITION);
-				desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Lamp_02"));
-				desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-				XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.13f, 0.f, 0.05f));
+				_matrix vWorldMat = XMMatrixTranslation(0.13f, 0.f, 0.05f) * XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Lamp_02"))) * m_pTransformCom->Get_WorldMatrix();
+				XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vWorldMat.r[3].m128_f32[0], vWorldMat.r[3].m128_f32[1], vWorldMat.r[3].m128_f32[2]));
 				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Monad_P1"), &desc))
 					return;
 			}

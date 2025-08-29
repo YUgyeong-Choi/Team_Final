@@ -71,7 +71,7 @@
             "MaxLifeTime": 3.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.30000001192092896,
-            "Name": "Rain_Particle",
+            "Name": "Player_Monad_Particle1",
             "NumInstance": 40,
             "NumKeyFrames": 1,
             "Orbit": true,
