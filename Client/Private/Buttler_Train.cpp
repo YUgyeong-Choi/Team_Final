@@ -54,6 +54,11 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
 
 	m_pWeapon->Collider_FilterOff();
+
+	if (m_eSpawnType == MONSTER_SPAWN_TYPE::STAND)
+	{
+		m_pAnimator->SetTrigger("SpawnStand");
+	}
 	
 	return S_OK; 
 }
@@ -113,7 +118,7 @@ void CButtler_Train::Update(_float fTimeDelta)
 		m_pWeapon->SetisAttack(false);
 	}
 
-	if (m_strStateName.find("Down") != m_strStateName.npos)
+	if (m_strStateName.find("Getup") != m_strStateName.npos)
 	{
 		m_isFatal = false;
 	}
@@ -403,8 +408,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
 			m_bUseLockon = false;
 
-			if (nullptr != m_pHPBar)
-				m_pHPBar->Set_RenderTime(0.f);
+			
 			return;
 		}
 
@@ -576,7 +580,11 @@ void CButtler_Train::Reset()
 	m_fHp = 300;
 
 	if (nullptr != m_pHPBar)
+	{
 		m_pHPBar->Set_MaxHp(m_fHp);
+		m_pHPBar->Reset();
+	}
+	
 
 	m_iAttackCount = {};
 	m_fDuration = 0.f;
@@ -596,7 +604,7 @@ void CButtler_Train::Reset()
 	}
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 
-
+	m_isFatal = false;
 }
 
 HRESULT CButtler_Train::Ready_Weapon()

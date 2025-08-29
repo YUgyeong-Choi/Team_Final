@@ -91,7 +91,7 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
     {
         m_fRenderTime -= fTimeDelta;
     }
-    else if(m_fRenderTime < 0.f)
+    else
     {
         m_fRenderTime = 0.f;
         m_fDamage = 0.f;
@@ -222,6 +222,13 @@ HRESULT CUI_MonsterHP_Bar::Render()
         
     
     return S_OK;
+}
+
+void CUI_MonsterHP_Bar::Reset()
+{
+    m_fDamage = 0.f;
+    m_fRenderTime = 0.f;
+
 }
 
 HRESULT CUI_MonsterHP_Bar::Ready_Components()
