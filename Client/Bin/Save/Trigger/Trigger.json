@@ -170,6 +170,17 @@
       "triggerSize": [ 3.5, 0.2, 1.0 ],
       "PrototypeName": "Prototype_GameObject_UI_Info",
       "FilePaths": [ "../Bin/Save/UI/Info/Info_Move.json" ]
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 4,
+      "vPos": [ 61.975121, 0.5, -7.373825 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 5.0, 0.2, 5 ],
+      "PrototypeName": "Prototype_GameObject_UI_Info",
+      "FilePaths": [ "../Bin/Save/UI/Info/Info_Lockon.json" ]
+
     }
   ]
 }
