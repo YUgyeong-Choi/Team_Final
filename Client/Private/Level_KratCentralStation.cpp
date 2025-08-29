@@ -228,8 +228,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
 	if (FAILED(Separate_Area()))
