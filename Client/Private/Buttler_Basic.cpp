@@ -109,7 +109,7 @@ void CButtler_Basic::Update(_float fTimeDelta)
 		m_pWeapon->SetisAttack(false);
 	}
 
-	if (m_strStateName.find("Down") != m_strStateName.npos)
+	if (m_strStateName.find("Getup") != m_strStateName.npos)
 	{
 		m_isFatal = false;
 	}
@@ -317,11 +317,10 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		}
 		else if (m_fHp <= 0 && m_isFatal)
 		{
-			CLockOn_Manager::Get_Instance()->Set_Off(this);
-			m_bUseLockon = false;
+			CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
+			m_bUseLockon = false;	
 
-			if (nullptr != m_pHPBar)
-				m_pHPBar->Set_RenderTime(0.f);
+			
 			return;
 		}
 
@@ -499,6 +498,8 @@ void CButtler_Basic::Reset()
 		pPlayer->Get_Controller()->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
 	}
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+
+	m_isFatal = false;
 }
 
 HRESULT CButtler_Basic::Ready_Weapon()

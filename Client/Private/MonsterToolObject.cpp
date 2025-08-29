@@ -58,6 +58,8 @@ HRESULT CMonsterToolObject::Initialize(void* pArg)
 	m_pTransformCom->Scaling(pDesc->InitScale);
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+
+	m_eSpawnType = pDesc->eSpawnType;
 	
 	return S_OK;
 }

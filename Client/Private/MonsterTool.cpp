@@ -115,9 +115,13 @@ HRESULT CMonsterTool::Save(const _char* Map)
 		CMonsterToolObject* pMonsterToolObj = static_cast<CMonsterToolObject*>(pObj);
 		string MonsterType = WStringToString(pMonsterToolObj->m_szMeshID);
 
-		// JSON에 추가 (몬스터 종류별 리스트에 행렬 푸시)
+		// spawnType 가져오기
+		_int SpawnType = static_cast<_int>(pMonsterToolObj->m_eSpawnType);
+
+		// JSON에 추가
 		MonsterJson[MonsterType].push_back({
-			{"WorldMatrix", MatrixJson}
+			{"WorldMatrix", MatrixJson},
+			{"SpawnType", SpawnType}
 			});
 	}
 
@@ -165,6 +169,11 @@ HRESULT CMonsterTool::Load(const _char* Map)
 
 			// 오브젝트 생성 Desc 채우기
 			CMonsterToolObject::MONSTERTOOLOBJECT_DESC MonsterDesc = {};
+
+			if (MonsterData.contains("SpawnType"))
+				MonsterDesc.eSpawnType = static_cast<SPAWN_TYPE>(MonsterData["SpawnType"].get<_int>());
+			else
+				MonsterDesc.eSpawnType = SPAWN_TYPE::IDLE;
 
 			MonsterDesc.eMeshLevelID = LEVEL::YW;
 			MonsterDesc.InitScale = _float3(1.f, 1.f, 1.f);
@@ -459,7 +468,7 @@ void CMonsterTool::Render_Detail()
 
 	ImGui::Separator();
 
-	Detail_Texture();
+	Detail_SpawnType();
 
 
 	ImGui::End();
@@ -570,99 +579,30 @@ void CMonsterTool::Detail_Transform()
 }
 
 
-void CMonsterTool::Detail_Texture()
+void CMonsterTool::Detail_SpawnType()
 {
-	//여기서 데칼의 ARM, N, BC 세개의 텍스쳐를 갈아 낄 수 있게 하고싶다.
-	//Imgui 솔루션 탐색기를 열어서 dds텍스쳐를 찾아서 꽂아넣어야지
+	ImGui::Text("Spawn Type");
 
-//	ImGui::Text("Texture");
-//	if (m_pFocusObject == nullptr)
-//		return;
-//
-//	IGFD::FileDialogConfig Config;
-//	Config.path = "../Bin/Resources/Textures/Decal/";
-//
-//#pragma region ARM 텍스처
-//	string ARMT_Name = WStringToString(m_pFocusObject->m_PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)]);
-//	string N_Name = WStringToString(m_pFocusObject->m_PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)]);
-//	string BC_Name = WStringToString(m_pFocusObject->m_PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)]);
-//
-//	ImGui::TextWrapped(ARMT_Name.c_str());
-//	// ARM 텍스처 선택 버튼
-//	if (ImGui::Button("Change ARMT Texture"))
-//	{
-//		ImGuiFileDialog::Instance()->OpenDialog("ChooseARMTTexture", "Select ARMT Texture (.dds)", ".dds", Config);
-//	}
-//	if (ImGuiFileDialog::Instance()->Display("ChooseARMTTexture"))
-//	{
-//		if (ImGuiFileDialog::Instance()->IsOk())
-//		{
-//			string filePath = ImGuiFileDialog::Instance()->GetFilePathName();
-//			//상대경로로 저장하자
-//			filePath = ToRelativePath(filePath);
-//
-//			string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-//
-//			//파일 이름을 가져와서, 프로토타입을 만들고, 갈아껴주자
-//			if (FAILED(m_pFocusObject->Set_Texture(CDecal::TEXTURE_TYPE::ARMT, filePath, fileName)))
-//				MSG_BOX("ARMT 텍스쳐 갈아끼기 실패");
-//		}
-//		ImGuiFileDialog::Instance()->Close();
-//	}
-//#pragma endregion
-//
-//#pragma region Normal 텍스쳐
-//	ImGui::TextWrapped(N_Name.c_str());
-//	// Normal 텍스처 선택 버튼
-//	if (ImGui::Button("Change Normal Texture"))
-//	{
-//		ImGuiFileDialog::Instance()->OpenDialog("ChooseNormalTexture", "Select Normal Texture (.dds)", ".dds", Config);
-//	}
-//	if (ImGuiFileDialog::Instance()->Display("ChooseNormalTexture"))
-//	{
-//		if (ImGuiFileDialog::Instance()->IsOk())
-//		{
-//			string filePath = ImGuiFileDialog::Instance()->GetFilePathName();
-//			//상대경로로 저장하자
-//			filePath = ToRelativePath(filePath);
-//
-//			string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-//
-//			//파일 이름을 가져와서, 프로토타입을 만들고, 갈아껴주자
-//			if (FAILED(m_pFocusObject->Set_Texture(CDecal::TEXTURE_TYPE::N, filePath, fileName)))
-//				MSG_BOX("Normal 텍스쳐 갈아끼기 실패");
-//		}
-//		ImGuiFileDialog::Instance()->Close();
-//	}
-//#pragma endregion
-//
-//#pragma region BaseColor 텍스쳐
-//	ImGui::TextWrapped(BC_Name.c_str());
-//	// BaseColor 텍스처 선택 버튼
-//	if (ImGui::Button("Change BaseColor Texture"))
-//	{
-//		ImGuiFileDialog::Instance()->OpenDialog("ChooseBaseColorTexture", "Select BaseColor Texture (.dds)", ".dds", Config);
-//	}
-//	if (ImGuiFileDialog::Instance()->Display("ChooseBaseColorTexture"))
-//	{
-//		if (ImGuiFileDialog::Instance()->IsOk())
-//		{
-//			string filePath = ImGuiFileDialog::Instance()->GetFilePathName();
-//			//상대경로로 저장하자
-//			filePath = ToRelativePath(filePath);
-//
-//			string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-//
-//			//파일 이름을 가져와서, 프로토타입을 만들고, 갈아껴주자
-//			if (FAILED(m_pFocusObject->Set_Texture(CDecal::TEXTURE_TYPE::BC, filePath, fileName)))
-//				MSG_BOX("BaseColor 텍스쳐 갈아끼기 실패");
-//		}
-//		ImGuiFileDialog::Instance()->Close();
-//	}
-//#pragma endregion
+	if (m_pFocusObject)
+	{
+		//스폰 타입 콤보 박스
+		if (ImGui::BeginCombo("##SpawnType", m_SpawnType[ENUM_CLASS(m_pFocusObject->m_eSpawnType)].c_str()))
+		{
+			for (_int i = 0; i < IM_ARRAYSIZE(m_SpawnType); i++)
+			{
+				_bool bSelected = ENUM_CLASS(m_pFocusObject->m_eSpawnType) == i;
 
+				if (ImGui::Selectable(m_SpawnType[i].c_str(), bSelected))
+				{
+					m_pFocusObject->m_eSpawnType = static_cast<SPAWN_TYPE>(i);
+				}
 
-
+				if (bSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+	}
 }
 
 

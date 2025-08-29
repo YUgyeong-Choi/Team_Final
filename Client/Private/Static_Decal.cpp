@@ -34,6 +34,7 @@ void CStatic_Decal::Priority_Update(_float fTimeDelta)
 
 void CStatic_Decal::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
 }
 
 void CStatic_Decal::Late_Update(_float fTimeDelta)
@@ -45,12 +46,12 @@ void CStatic_Decal::Late_Update(_float fTimeDelta)
 
 HRESULT CStatic_Decal::Render()
 {
-	return __super::Render();
+	if (FAILED(__super::Render()))
+		return E_FAIL;
 
-	//if (FAILED(Bind_ShaderResources()))
-	//	return E_FAIL;
+	//#ifdef _DEBUG
 
-	//if (FAILED(m_pShaderCom->Begin(0)))
+	//if (FAILED(m_pShaderCom->Begin(1)))
 	//	return E_FAIL;
 
 	//if (FAILED(m_pVIBufferCom->Bind_Buffers()))
@@ -59,8 +60,10 @@ HRESULT CStatic_Decal::Render()
 	//if (FAILED(m_pVIBufferCom->Render()))
 	//	return E_FAIL;
 
-	//return S_OK;
+	//#endif // _DEBUG
 
+
+	return S_OK;
 }
 
 HRESULT CStatic_Decal::Ready_Components(void* pArg)

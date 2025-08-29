@@ -32,6 +32,9 @@ public:
 			0.f, 0.f, 0.f, 1.f
 		);
 		_int iID = { 0 };
+
+		SPAWN_TYPE eSpawnType = { SPAWN_TYPE::END };
+
 	}MONSTERTOOLOBJECT_DESC;
 
 protected:
@@ -60,6 +63,10 @@ protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Collider();
 
 	virtual void Register_Events() {}
+
+private:
+	SPAWN_TYPE m_eSpawnType = { SPAWN_TYPE::IDLE };
+
 
 private:
 	_int m_iID = { 0 }; //몬스터 아이디는 음수 -1 부터 시작

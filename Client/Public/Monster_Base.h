@@ -23,6 +23,7 @@ public:
 		
 		_float3 vExtent;
 		_float  fHeight;
+		//_int	iSpawnType;
 	}MONSTER_BASE_DESC;
 
 protected:

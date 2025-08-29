@@ -32,8 +32,8 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
-
+	
+	
 protected: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();

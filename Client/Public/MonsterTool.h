@@ -45,7 +45,7 @@ private:
 private:
 	void Render_Detail();
 	void Detail_Transform();
-	void Detail_Texture();
+	void Detail_SpawnType();
 
 private:
 #pragma region 몬스터 종류
@@ -66,6 +66,14 @@ private:
 
 #pragma endregion
 
+#pragma region 스폰 타입
+	const string m_SpawnType[static_cast<_int>(SPAWN_TYPE::END)] = {
+	"IDLE",
+	"STAND",
+	"WALK",
+	};
+
+#pragma endregion
 	_int m_iMonsterIndex = static_cast<_int>(Monster::Buttler_Train);
 
 private:

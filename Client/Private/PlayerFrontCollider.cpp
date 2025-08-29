@@ -140,12 +140,21 @@ void CPlayerFrontCollider::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE e
 }
 void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+
 	// 들어온 몬스터의 상태를 가져온다.
 	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
 	if (!pUnit)
 		return;
 
-	const _float fBackDotThreshold = -0.9f;
+
+	
+	
+	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
+	{
+		return;
+	}
+
+	const _float fBackDotThreshold = 0.9f;
 
 	// 위치/룩 수집
 	_vector vMonsterPos = pOther->Get_TransfomCom()->Get_State(STATE::POSITION);
@@ -161,7 +170,7 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 	_vector vDirPlayerToMonster = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vMonsterPos, vPlayerPos)));
 	_vector vDirMonsterToPlayer = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vPlayerPos, vMonsterPos)));
 
-	_bool bPlayerBehindMonster = (XMVectorGetX(XMVector3Dot(vMonsterLookFlat, vDirMonsterToPlayer)) <= fBackDotThreshold);
+	_bool bPlayerBehindMonster = (XMVectorGetX(XMVector3Dot(vMonsterLookFlat, vDirPlayerToMonster)) >= fBackDotThreshold);
 
 	
 	if (bPlayerBehindMonster)
@@ -183,7 +192,14 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 }
 void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
+	{
+		return;
+	}
+
 	m_pOwner->SetbIsBackAttack(false);
+	
+	
 }
 
 void CPlayerFrontCollider::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)

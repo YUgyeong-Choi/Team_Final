@@ -52,7 +52,9 @@ namespace Client
 	
 	enum class UI_TYPE {STATIC, DYNAMIC, TEXT , END};
 	
-	enum class UI_TRIGGER_TYPE {TUTORIAL, POPUP, SCRIPT, GUIDE, NARRATION, WEAPON_SELECT, END};
+	enum class SPAWN_TYPE {IDLE, STAND, WALK, END};
+
+	
 
 #pragma endregion
 

@@ -34,6 +34,7 @@ public:
 			0.f, 0.f, 0.f, 1.f
 		);
 		wstring wsNavName = {}; //어떤 네비를 탈 것인가? //STATION, HOTEL...
+		SPAWN_TYPE eSpawnType = { SPAWN_TYPE::END };
 	}UNIT_DESC;
 
 protected:
@@ -86,6 +87,8 @@ public:
 	//락온에서 hp 0이하인거는 제외할라고(죽는모션할떄 락온되서)
 	_bool Get_UseLockon() { return m_bUseLockon; }
 
+	EUnitType& Get_UnitType() { return m_eUnitType; }
+
 
 public: /* [ 이미시브를 켜고 끈다. ] */
 	void OnEmissive(_float fTimeDelta);
@@ -116,6 +119,9 @@ public:
 
 protected:
 	void Spawn_MonsterHit_Effect(const _float3& vPos);
+
+protected:
+	SPAWN_TYPE m_eSpawnType = { SPAWN_TYPE::IDLE };
 
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };

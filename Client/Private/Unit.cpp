@@ -57,6 +57,9 @@ HRESULT CUnit::Initialize(void* pArg)
 	_vector vInitPos = XMVectorSetW(XMLoadFloat3(&pDesc->InitPos), 1.f);
 	m_pTransformCom->Set_State(STATE::POSITION, vInitPos);
 	m_pTransformCom->Scaling(pDesc->InitScale);
+
+	//스폰타입 (일반 몬스터에서 씀)
+	m_eSpawnType = pDesc->eSpawnType;
 	return S_OK;
 }
 

@@ -218,6 +218,12 @@ void CBayonet::Calc_Durability(_float fDelta)
 	m_pGameInstance->Notify(L"Weapon_Status", L"AddDurablity", &fTemp);
 }
 
+void CBayonet::Reset()
+{
+	m_fDurability = m_fMaxDurability;
+	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
+}
+
 
 
 HRESULT CBayonet::Ready_Components()

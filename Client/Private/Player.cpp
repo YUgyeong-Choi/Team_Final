@@ -268,9 +268,25 @@ HRESULT CPlayer::Render()
 
 void CPlayer::Reset()
 {
+	
+	/* [ 무기 장착 해제 ] */
+	m_pWeapon->SetbIsActive(false);
+	m_bWeaponEquipped = false;
+	m_pWeapon->Reset();
+
+	m_fHP = 100.f;
+	Callback_HP();
+	m_bIsRrevival = true;
+
 	m_pBelt_Down->Reset();
 	m_pBelt_Up->Reset();
 	m_pPlayerLamp->Reset();
+
+	m_pLegionArm->Reset();
+
+	Callback_DownBelt();
+	Callback_UpBelt();
+
 }
 
 CAnimController* CPlayer::GetCurrentAnimContrller()
@@ -1376,7 +1392,7 @@ void CPlayer::Register_Events()
 			{
 				m_pWeapon->SetbIsActive(false);
 				m_pWeapon->SetisAttack(false);
-				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),nullptr);
+				
 			}
 		});
 	m_pAnimator->RegisterEventListener("OnGrinderEffect", [this]()

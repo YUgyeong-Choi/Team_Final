@@ -72,23 +72,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	Reset();
 
-	//데칼 테스트(영웅)
-	CStatic_Decal::DECAL_DESC DecalDesc = {};
-	DecalDesc.bNormalOnly = true;
-	DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEaterNormal");
-	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEaterMask");
-	DecalDesc.WorldMatrix = _float4x4(
-		3.f, 0.f, 0.f, 0.f,
-		0.f, 3.f, 0.f, 0.f,
-		0.f, 0.f, 3.f, 0.f,
-		0.f, 0.f, 0.f, 1.f
-	);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -245,8 +228,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
 	if (FAILED(Separate_Area()))
@@ -787,14 +770,15 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 	eLockonDesc.fSizeX = 50.f;
 	eLockonDesc.fSizeY = 50.f;
 
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Fatal_Icon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LockOn_Icon"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Fatal_Icon"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Lockon_Icon"), &eLockonDesc)))
-		return E_FAIL;
+
 
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Popup.json");
 
@@ -956,12 +940,19 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 				wsLayer = TEXT("Layer_Monster_Normal");
 			}
 
+			// 오브젝트 생성 Desc 채우기
 			CUnit::UNIT_DESC UnitDesc{};
 			UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 			UnitDesc.wsNavName = StringToWString(Map);
 			UnitDesc.WorldMatrix = WorldMatrix;
 			UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 			UnitDesc.szMeshID = wstrMonsterName.c_str();
+
+			if (MonsterData.contains("SpawnType"))
+				UnitDesc.eSpawnType = static_cast<SPAWN_TYPE>(MonsterData["SpawnType"].get<_int>());
+			else
+				UnitDesc.eSpawnType = SPAWN_TYPE::IDLE;
+			
 
 			wstring wsPrototypeTag = TEXT("Prototype_GameObject_") + wstrMonsterName;
 
