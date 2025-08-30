@@ -37,7 +37,7 @@ HRESULT CEliteUnit::Initialize(void* pArg)
         m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
         m_InitWorldMatrix = pDesc->WorldMatrix;
     }
-
+    
 	if (FAILED(LoadFromJson()))
 		return E_FAIL;
 
@@ -659,7 +659,7 @@ void CEliteUnit::Reset()
             pController->SetState(pController->GetEntryNodeId());
         }
     }
-    ToggleEmissive(false);
+    SwitchEmissive(false, 1.f);
 }
 
 void CEliteUnit::Register_Events()

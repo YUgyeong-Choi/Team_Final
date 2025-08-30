@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EliteUnit.h"
 
 CPlayerFrontCollider::CPlayerFrontCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -140,19 +141,37 @@ void CPlayerFrontCollider::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE e
 }
 void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	/* [ 만약 보스몬스터라면 ] */
+	CEliteUnit* pEliteUnit = dynamic_cast<CEliteUnit*>(pOther);
+	if (pEliteUnit)
+	{
+		/* 보스가 그로기상태라면 */
+		CEliteUnit::EEliteState eState = pEliteUnit->GetCurrentState();
+		if (eState == CEliteUnit::EEliteState::GROGGY)
+		{
+			/* 스위치를 켜준다. */
+			m_pOwner->SetIsFatalBoss(true);
+			m_pOwner->SetbIsGroggyAttack(true);
+			m_pOwner->SetFatalTarget(pEliteUnit);
+		}
+		else
+		{
+			m_pOwner->SetbIsGroggyAttack(false);
+			m_pOwner->SetIsFatalBoss(false);
+			m_pOwner->SetFatalTargetNull();
+		}
+
+		return;
+	}
+
 
 	// 들어온 몬스터의 상태를 가져온다.
 	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
 	if (!pUnit)
 		return;
 
-
-	
-	
 	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
-	{
 		return;
-	}
 
 	const _float fBackDotThreshold = 0.9f;
 
@@ -173,16 +192,12 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 	_bool bPlayerBehindMonster = (XMVectorGetX(XMVector3Dot(vMonsterLookFlat, vDirPlayerToMonster)) >= fBackDotThreshold);
 
 	
+	/* [ 뒤를 잡았을 때 ] */
 	if (bPlayerBehindMonster)
 	{
 		m_pOwner->SetbIsBackAttack(true);
 		m_pOwner->SetFatalTarget(pUnit);
-
-		/* [ 보스 콜라이더 타입 바뀌면 바꿔야함 ] */
-		if (eColliderType == COLLIDERTYPE::MONSTER)
-			m_pOwner->SetIsFatalBoss(false);
-		else if (eColliderType == COLLIDERTYPE::MONSTER)
-			m_pOwner->SetIsFatalBoss(false);
+		m_pOwner->SetIsFatalBoss(false);
 	}
 	else
 	{

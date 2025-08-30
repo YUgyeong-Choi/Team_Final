@@ -187,24 +187,24 @@ HRESULT CUnit::Render_Fury()
 		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
 			return E_FAIL;
 
-		if (FAILED(m_pShaderCom->Begin(6)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Render(i)))
-			return E_FAIL;
-	}
-
-	for (_uint i = 0; i < iNumMeshes; i++)
-	{
-		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
-			return E_FAIL;
-
 		if (FAILED(m_pShaderCom->Begin(7)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))
 			return E_FAIL;
 	}
+
+	//for (_uint i = 0; i < iNumMeshes; i++)
+	//{
+	//	if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
+	//		return E_FAIL;
+	//
+	//	if (FAILED(m_pShaderCom->Begin(7)))
+	//		return E_FAIL;
+	//
+	//	if (FAILED(m_pModelCom->Render(i)))
+	//		return E_FAIL;
+	//}
 
 	return S_OK;
 }
@@ -446,6 +446,13 @@ void CUnit::ToggleEmissive(_float fEmissiveSpeed)
 	m_bEmissive = !m_bEmissive;
 	m_fEmissiveSpeed = fEmissiveSpeed;
 }
+
+void CUnit::SwitchEmissive(_bool bEmissive, _float fEmissiveSpeed)
+{
+	m_bEmissive = bEmissive;
+	m_fEmissiveSpeed = fEmissiveSpeed;
+}
+
 
 
 AABBBOX CUnit::GetWorldAABB() const

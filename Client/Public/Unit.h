@@ -94,6 +94,7 @@ public: /* [ 이미시브를 켜고 끈다. ] */
 	void OnEmissive(_float fTimeDelta);
 	void OffEmissive(_float fTimeDelta);
 	void ToggleEmissive(_float fEmissiveSpeed);
+	void SwitchEmissive(_bool bEmissive, _float fEmissiveSpeed);
 
 
 public:

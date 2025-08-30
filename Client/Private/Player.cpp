@@ -26,6 +26,7 @@
 
 #include "LegionArm_Base.h"
 #include "LegionArm_Steel.h"
+#include "EliteUnit.h"
 
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
@@ -220,7 +221,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
 	
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);

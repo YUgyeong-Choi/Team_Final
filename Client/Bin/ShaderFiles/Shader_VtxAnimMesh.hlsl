@@ -180,7 +180,7 @@ VS_OUT VS_INNERLINE(VS_IN In)
     vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
     vector vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
     
-    vPosition -= normalize(vNormal) * 0.01f;
+    vPosition -= normalize(vNormal) * 0.02f;
     
     matrix matWV, matWVP;
     
@@ -476,9 +476,9 @@ PS_OUT_LINE PS_INNERLINE(PS_IN In)
     PS_OUT_LINE Out;
     
     float4 vEdgeColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
-    float fNoiseScale = 2.0f;
-    float fNoiseContrast = 1.0f;
-    float fEdgeSoftness = 0.1f;
+    float fNoiseScale = 10.f;
+    float fNoiseContrast = 5.0f;
+    float fEdgeSoftness = 0.06f;
     float fScrollSpeed = 2.0f;
     float fGlowBoost = 1.0f;
     float fTimeSeconds = 0.0f;
@@ -578,7 +578,7 @@ technique11 DefaultTechnique
     { 
         SetRasterizerState(RS_Inner);
         SetDepthStencilState(DSS_Inner, 0);
-        SetBlendState(BS_AlphaBlend, float4(0, 0, 0, 0), 0xffffffff);
+        SetBlendState(BS_OneBlend, float4(0, 0, 0, 0), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_INNERLINE();
         PixelShader = compile ps_5_0 PS_INNERLINE(); 

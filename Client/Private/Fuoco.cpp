@@ -66,8 +66,8 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 	// 체력 일단 각 객체에 
 
-
-
+	int a = 0;
+	//m_bEmissive = false;
 	return S_OK;
 }
 
