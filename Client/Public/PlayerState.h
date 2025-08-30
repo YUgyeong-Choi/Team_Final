@@ -1258,7 +1258,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 0.8f)
+        if (m_fStateTime > 0.6f)
         {
             if (MOUSE_DOWN(DIM::LBUTTON))
                 m_bAttackA = true;
@@ -1512,7 +1512,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 0.8f)
+        if (m_fStateTime > 0.4f)
         {
             if (MOUSE_DOWN(DIM::RBUTTON))
                 m_bAttackB = true;
@@ -3219,7 +3219,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 3.f && !m_pOwner->m_bIsRrevival)
+        if (m_fStateTime > 6.f && !m_pOwner->m_bIsRrevival)
         {
 			/* [ 사망 후 특정 위치에서 다시 살아난다. ] */
             m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{1.f,0.f,0.f,0.f});

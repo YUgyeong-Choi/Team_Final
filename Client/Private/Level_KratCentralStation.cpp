@@ -222,8 +222,8 @@ HRESULT CLevel_KratCentralStation::Reset()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
-	//if (FAILED(Ready_Dummy()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Dummy()))
+		return E_FAIL;
 	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
@@ -312,8 +312,8 @@ HRESULT CLevel_KratCentralStation::Ready_Dummy()
 	CPBRMesh::STATICMESH_DESC Desc{};
 	Desc.iRender = 0;
 	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.szMeshID = TEXT("Hotel");
-	lstrcpy(Desc.szName, TEXT("Hotel"));
+	Desc.szMeshID = TEXT("OutDoor");
+	lstrcpy(Desc.szName, TEXT("OutDoor"));
 	//lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Hotel"));
 
 	CGameObject* pGameObject = nullptr;
@@ -613,6 +613,18 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a18Min, a18Max;
 	FnToAABB(a18p0, a18p1, a18Min, a18Max);
 
+	// ------------- Area 98 --------------
+	_float3 a98p0 = _float3{ -100.65f, -50.f, -100.f };
+	_float3 a98p1 = _float3{ 100.66f, 50.f, -300.f };
+	_float3 a98Min, a98Max;
+	FnToAABB(a98p0, a98p1, a98Min, a98Max);
+	
+	// ------------- Area 99 --------------
+	_float3 a99p0 = _float3{ 186.65f, -47.92f, 63.37f };
+	_float3 a99p1 = _float3{ 457.66f, 133.33f, -116.79f };
+	_float3 a99Min, a99Max;
+	FnToAABB(a99p0, a99p1, a99Min, a99Max);
+
 	{
 		/* [ 1번 구역 ] */
 		const vector<_uint> vecAdj1 = { 2 };
@@ -741,6 +753,22 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 
 
+
+
+	{
+		/* -------- [ 98번 구역 ] ---------- */
+		const vector<_uint> vecAdj98 = {  };
+		if (!m_pGameInstance->AddArea_AABB(
+			98, a98Min, a98Max, vecAdj98, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* -------- [ 99번 구역 ] ---------- */
+		const vector<_uint> vecAdj99 = {  };
+		if (!m_pGameInstance->AddArea_AABB(
+			99, a99Min, a99Max, vecAdj99, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pGameInstance->FinalizePartition()))
 		return E_FAIL;
 

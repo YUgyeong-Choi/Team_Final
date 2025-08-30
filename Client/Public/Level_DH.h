@@ -35,6 +35,8 @@ public:
 	HRESULT Add_RenderGroup_OctoTree();
 	HRESULT Separate_Area();
 
+	HRESULT Ready_Dummy();
+
 
 private:
 	//맵 로드하는 부분

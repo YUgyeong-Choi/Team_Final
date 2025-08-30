@@ -175,6 +175,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_DOWN(DIK_6))
+	{
+		PxVec3 pos = PxVec3(188.27f, 13.18f, -8.23f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
@@ -1190,6 +1197,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		}
 		else if (m_eHitedTarget == eHitedTarget::BOSS)
 		{
+			
 			//가드 밀림 여부
 			_float  m_fTime = 0.1f;
 			_float  m_fDistance = 3.f;
@@ -1749,7 +1757,9 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		}
 
 		//가드 중에 피격시 스위치를 켠다.
-		if (m_bIsGuarding)
+		if (m_bIsGuarding &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_AIRBORNE &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_STAMP)
 		{
 			m_bGardHit = true;
 			return;
@@ -1869,7 +1879,9 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			return;
 		}
 
-		if (m_bIsGuarding)
+		if (m_bIsGuarding &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_AIRBORNE &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_STAMP)
 		{
 			m_bGardHit = true;
 			return;
