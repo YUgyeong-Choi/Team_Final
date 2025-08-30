@@ -228,8 +228,18 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
+	if (FAILED(Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+
+	//고사양 모드
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
+
+	//저사양 모드
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
+	
+
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
 	if (FAILED(Separate_Area()))
@@ -377,6 +387,26 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 
 		//pNewLight->SetDebug(false);
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Lights_LowQuality()
+{
+	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.fAmbient = 0.6f;
+	LightDesc.fIntensity = 0.8f;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDirection = _float4(1.f, -0.5f, 1.f, 0.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.fFogDensity = 0.f;
+
+	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), LightDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
