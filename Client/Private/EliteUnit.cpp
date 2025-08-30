@@ -716,11 +716,16 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3);
 
-        m_fHP -= pWeapon->Get_CurrentDamage() * 0.03f;
+        _float fDamage = 0.f;
+		if (m_eUnitType == EUnitType::ELITE_MONSTER)
+			fDamage = pWeapon->Get_CurrentDamage() * 0.5f;
+		else
+			fDamage = pWeapon->Get_CurrentDamage() * 0.2f;
+        m_fHP -= fDamage;
 
         if (nullptr != m_pHPBar)
         {
-            m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() * 0.03f);
+            m_pHPBar->Add_Damage(fDamage);
             m_pHPBar->Set_RenderTime(3.f);
         }
          
