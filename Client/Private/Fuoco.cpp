@@ -31,12 +31,12 @@ HRESULT CFuoco::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
 	m_fDamage = 15.f;
-	m_fAttckDleay = 1.3f;
+	m_fAttckDleay = 1.2f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
 		UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-		UnitDesc.fRotationPerSec = XMConvertToRadians(140.f);
+		UnitDesc.fRotationPerSec = XMConvertToRadians(180.f);
 		UnitDesc.fSpeedPerSec = m_fWalkSpeed;
 		lstrcpy(UnitDesc.szName, TEXT("FireEater"));
 		UnitDesc.szMeshID = TEXT("FireEater");
@@ -53,7 +53,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 		lstrcpy(pDesc->szName, TEXT("FireEater"));
 		pDesc->szMeshID = TEXT("FireEater");
-		pDesc->fRotationPerSec = XMConvertToRadians(140.f);
+		pDesc->fRotationPerSec = XMConvertToRadians(180.f);
 		pDesc->fSpeedPerSec = m_fWalkSpeed;
 
 		//UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
@@ -66,8 +66,8 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 	// 체력 일단 각 객체에 
 
-	int a = 0;
-	//m_bEmissive = false;
+
+	m_fMaxRootMotionSpeed = 18.f;
 	return S_OK;
 }
 
@@ -421,6 +421,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		m_pAnimator->SetBool("Move", false);
 		m_fAttackCooldown = m_fAttckDleay;
 		SetTurnTimeDuringAttack(1.5f, 1.4f);
+		m_eAttackType = EAttackType::FURY_AIRBORNE;
 		return;
 	}
 
@@ -567,7 +568,7 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	}
 	if (m_ePrevState == EEliteState::FATAL && m_eCurrentState != EEliteState::FATAL)
 	{
-		m_fMaxRootMotionSpeed = 13.f;
+		m_fMaxRootMotionSpeed = 18.f;
 		m_fRootMotionAddtiveScale = 1.2f;
 	}
 	iLastNodeID = iNodeID;
@@ -661,7 +662,7 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	}
 	break;
 	case Client::CFuoco::SlamFury:
-		SetTurnTimeDuringAttack(1.5f, 1.3f);
+		SetTurnTimeDuringAttack(2.f, 1.5f);
 		m_eAttackType = EAttackType::STAMP;
 	case Client::CFuoco::FootAtk:
 		//	SetTurnTimeDuringAttack(1.f,1.5f);
@@ -904,7 +905,71 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("OnGroundScratchEffect", [this]()
 		{
+
 			EffectSpawn_Active(SwingAtk, true, false);
+		});
+
+	m_pAnimator->RegisterEventListener("DecalScratchEffect", [this]()
+		{
+#pragma region 영웅 데칼 생성코드
+			CStatic_Decal::DECAL_DESC DecalDesc = {};
+			DecalDesc.bNormalOnly = true;
+			DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+			DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Normal");
+			DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask");
+			DecalDesc.bHasLifeTime = true;
+			DecalDesc.fLifeTime = 5.f;
+
+			auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+
+			// 기존 월드행렬
+			_matrix World = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+
+			// 스케일, 회전, 위치 분해
+			_vector vScale, vRotQuat, vTrans;
+			XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
+
+			// 새 스케일 설정
+			vScale = XMVectorSet(10.f, 0.1f, 5.f, 0.f);
+
+			//네브메쉬 높이 값으로 변경
+			_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
+			vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
+
+			// Look 반대 방향
+			_matrix ParentWorld = m_pTransformCom->Get_WorldMatrix();
+
+			_vector vLook = XMVector3Normalize(-ParentWorld.r[2]);
+
+			// Up은 기존 Up을 쓰고
+			_vector vUp = XMVector3Normalize(ParentWorld.r[1]);
+
+			// Right는 Look과 Up으로 다시 계산
+			_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+
+			// Orthonormalize (보정)
+			vUp = XMVector3Cross(vLook, vRight);
+
+			// 회전 행렬 구성
+			_matrix RotMat = XMMatrixIdentity();
+			RotMat.r[0] = vRight;
+			RotMat.r[1] = vUp;
+			RotMat.r[2] = vLook;
+
+			// 다시 합성
+			_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
+				RotMat *
+				XMMatrixTranslationFromVector(vTrans);
+
+			// 적용
+			XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
+
+			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+			{
+				//return E_FAIL;
+			}
+#pragma endregion
 		});
 
 	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
@@ -931,12 +996,12 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
 			m_fRootMotionAddtiveScale = 15.f;
-			m_fMaxRootMotionSpeed = 25.f;
+			m_fMaxRootMotionSpeed = 40.f;
 		});
 
 	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()
 		{
-			m_fMaxRootMotionSpeed = 13.f;
+			m_fMaxRootMotionSpeed = 18.f;
 			m_fRootMotionAddtiveScale = 1.2f;
 		});
 
@@ -1330,64 +1395,7 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
-#pragma region 영웅 데칼 생성코드
-		CStatic_Decal::DECAL_DESC DecalDesc = {};
-		DecalDesc.bNormalOnly = true;
-		DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Normal");
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask");
-		DecalDesc.bHasLifeTime = true;
-		DecalDesc.fLifeTime = 5.f;
 
-
-		// 기존 월드행렬
-		_matrix World = XMLoadFloat4x4(desc.pSocketMatrix) * XMLoadFloat4x4(desc.pParentMatrix);
-
-		// 스케일, 회전, 위치 분해
-		_vector vScale, vRotQuat, vTrans;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
-
-		// 새 스케일 설정
-		vScale = XMVectorSet(10.f, 0.1f, 5.f, 0.f);
-
-		//네브메쉬 높이 값으로 변경
-		_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
-		vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
-
-		// Look 반대 방향
-		_matrix ParentWorld = m_pTransformCom->Get_WorldMatrix();
-
-		_vector vLook = XMVector3Normalize(-ParentWorld.r[2]);
-
-		// Up은 기존 Up을 쓰고
-		_vector vUp = XMVector3Normalize(ParentWorld.r[1]);
-
-		// Right는 Look과 Up으로 다시 계산
-		_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-
-		// Orthonormalize (보정)
-		vUp = XMVector3Cross(vLook, vRight);
-
-		// 회전 행렬 구성
-		_matrix RotMat = XMMatrixIdentity();
-		RotMat.r[0] = vRight;
-		RotMat.r[1] = vUp;
-		RotMat.r[2] = vLook;
-
-		// 다시 합성
-		_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
-			RotMat *
-			XMMatrixTranslationFromVector(vTrans);
-
-		// 적용
-		XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
-
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
-		{
-			//return E_FAIL;
-		}
-#pragma endregion
 
 
 	}
@@ -1744,6 +1752,7 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			break;
 		}
 
+		pPlayer->SetHitedAttackType(m_eAttackType);
 	}
 
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)

@@ -5,7 +5,9 @@
 #include "Camera_Manager.h"
 #include "LockOn_Manager.h"
 #include "Client_Calculation.h"
+#include <PlayerFrontCollider.h>
 #include <PhysX_IgnoreSelfCallback.h>
+
 
 CEliteUnit::CEliteUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUnit(pDevice, pContext)
@@ -573,7 +575,7 @@ void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
         return;
     }
 
-    _float fAnimSafeStep = m_fMaxRootMotionSpeed * fTimeDelta;
+    _float fAnimSafeStep = m_fMaxRootMotionSpeed /60.f;
     if (fDeltaMag > fAnimSafeStep)
         vWorldDelta = XMVector3Normalize(vWorldDelta) * fAnimSafeStep;
 
@@ -646,7 +648,10 @@ void CEliteUnit::Reset()
 {
 	m_fHP = m_fMaxHP;
     m_eCurrentState = EEliteState::IDLE;
+	m_ePrevState = EEliteState::IDLE;
 	m_bIsFirstAttack = true;
+	m_fGroggyEndTimer = 0.f;
+    m_fGroggyThreshold = 1.f;
 	m_fGroggyGauge = 0.f;
 	m_bGroggyActive = false;
 	Safe_Release(m_pHPBar);
@@ -686,6 +691,19 @@ void CEliteUnit::Register_Events()
         });
 }
 
+void CEliteUnit::EnterFatalHit()
+{
+    if (m_pAnimator && m_eCurrentState == EEliteState::GROGGY && m_eCurrentState != EEliteState::FATAL
+        && m_eCurrentState != EEliteState::DEAD)
+    {
+		m_pAnimator->SetTrigger("Fatal");
+		m_fGroggyEndTimer = 0.f;
+		m_bGroggyActive = false;
+		m_fGroggyGauge = 0.f;
+		cout << "Elite Fatal Attack" << endl;
+    }
+}
+
 void CEliteUnit::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
     
@@ -693,7 +711,7 @@ void CEliteUnit::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 void CEliteUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-  
+ 
 }
 
 void CEliteUnit::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -743,25 +761,24 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
         switch (playerState)
         {
+        case Client::EPlayerState::WEAKATTACKA:
+        case Client::EPlayerState::WEAKATTACKB:
+			m_fGroggyGauge += 0.05f;
+			break;
+        case Client::EPlayerState::STRONGATTACKA:
+		case Client::EPlayerState::STRONGATTACKB:
+            m_fGroggyGauge += 0.1f;
+            break;
         case Client::EPlayerState::CHARGEA:
         case Client::EPlayerState::CHARGEB:
-            m_fGroggyGauge += 0.2f;
-            if (m_fGroggyGauge >= m_fGroggyThreshold && !m_bGroggyActive)
-            {
-                m_bGroggyActive = true;                  // 화이트 게이지 시작
-                m_fGroggyEndTimer = m_fGroggyTimer;      
-                m_fGroggyGauge = m_fGroggyThreshold;
-                cout << "그로기 가능" << endl;
-                break;
-            }
+            m_fGroggyGauge += 0.15f;
             if (m_bGroggyActive)
             {
                 m_pAnimator->SetTrigger("Groggy");
+				m_eCurrentState = EEliteState::GROGGY;
                 m_bGroggyActive = false;
                 m_fGroggyGauge = 0.f;
             }
-            cout << "그로기 게이지 : " << m_fGroggyGauge << endl;
-            cout << "그로기 상태 : " << m_bGroggyActive << endl;
             break;
         case Client::EPlayerState::GARD:
             break;
@@ -784,6 +801,18 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         default:
             break;
         }
+
+        if (m_fGroggyGauge >= m_fGroggyThreshold && !m_bGroggyActive)
+        {
+            m_bGroggyActive = true;                  // 화이트 게이지 시작
+            m_fGroggyEndTimer = m_fGroggyTimer;
+            m_fGroggyGauge = m_fGroggyThreshold;
+            cout << "그로기 가능" << endl;
+            return;
+        }
+
+        cout << "그로기 게이지 : " << m_fGroggyGauge << endl;
+        cout << "그로기 상태 : " << m_bGroggyActive << endl;
     }
 }
 
