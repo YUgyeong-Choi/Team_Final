@@ -82,6 +82,10 @@ void CUnit::Update(_float fTimeDelta)
 	else
 		OffEmissive(fTimeDelta);
 
+	if (m_bFurySwitch)
+		OnFury(fTimeDelta);
+	else
+		OffFury(fTimeDelta);
 }
 
 void CUnit::Late_Update(_float fTimeDelta)
@@ -169,9 +173,20 @@ HRESULT CUnit::Render_Fury()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
 		return E_FAIL;
 
+	_float4 vCamPostion = {};
+	XMStoreFloat4(&vCamPostion, m_pTransformCom->Get_State(STATE::POSITION));
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_CamposWS", &vCamPostion, sizeof(_float4))))
+		return E_FAIL;
+
+	_float4x4 matWorldInv = {};
+	XMStoreFloat4x4(&matWorldInv, m_pTransformCom->Get_WorldMatrix_Inverse());
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrixInvTrans", &matWorldInv)))
+		return E_FAIL;
+	
 	_float4x4 ViewMatrix, ProjViewMatrix;
 	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
 	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+	
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
@@ -180,31 +195,34 @@ HRESULT CUnit::Render_Fury()
 	if (FAILED(m_pNoiseMap->Bind_ShaderResource(m_pShaderCom, "g_NoiseMap", 0)))
 		return E_FAIL;
 
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFuryIntensity", &m_fFurySwitch, sizeof(_float))))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
 			return E_FAIL;
 
-		if (FAILED(m_pShaderCom->Begin(7)))
+		if (FAILED(m_pShaderCom->Begin(6)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))
 			return E_FAIL;
 	}
 
-	//for (_uint i = 0; i < iNumMeshes; i++)
-	//{
-	//	if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
-	//		return E_FAIL;
-	//
-	//	if (FAILED(m_pShaderCom->Begin(7)))
-	//		return E_FAIL;
-	//
-	//	if (FAILED(m_pModelCom->Render(i)))
-	//		return E_FAIL;
-	//}
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
+			return E_FAIL;
+	
+		if (FAILED(m_pShaderCom->Begin(7)))
+			return E_FAIL;
+	
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -441,6 +459,29 @@ void CUnit::OffEmissive(_float fTimeDelta)
 	}
 }
 
+void CUnit::OnFury(_float fTimeDelta)
+{
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
+
+	if (m_fFurySwitch <= 1.2f)
+	{
+		m_fFurySwitch += fTimeDelta * m_fFurySpeed;
+		if (m_fFurySwitch > 1.2f)
+			m_fFurySwitch = 1.2f;
+	}
+}
+void CUnit::OffFury(_float fTimeDelta)
+{
+	if (m_fFurySwitch >= 0.f)
+	{
+		m_fFurySwitch -= fTimeDelta * m_fFurySpeed;
+		if (m_fFurySwitch < 0.f)
+			m_fFurySwitch = 0.f;
+		else
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
+	}
+}
+
 void CUnit::ToggleEmissive(_float fEmissiveSpeed)
 {
 	m_bEmissive = !m_bEmissive;
@@ -451,6 +492,12 @@ void CUnit::SwitchEmissive(_bool bEmissive, _float fEmissiveSpeed)
 {
 	m_bEmissive = bEmissive;
 	m_fEmissiveSpeed = fEmissiveSpeed;
+}
+
+void CUnit::SwitchFury(_bool bFury, _float fFurySpeed)
+{
+	m_bFurySwitch = bFury;
+	m_fFurySpeed = fFurySpeed;
 }
 
 

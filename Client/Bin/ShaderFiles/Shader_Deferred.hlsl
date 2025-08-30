@@ -24,6 +24,7 @@ Texture2D g_DecalVolumeMesh;
 /* [ Blur ] */
 Texture2D g_PreBlurTexture;
 Texture2D g_PreBlurTexture2;
+Texture2D g_PreBlurTexture3;
 Texture2D g_BlurXTexture;
 Texture2D g_BlurYTexture;
 
@@ -50,7 +51,8 @@ Texture2D g_PBR_ARM;
 Texture2D g_PBR_Depth;
 Texture2D g_PBR_Final;
 Texture2D g_PBR_UnitMask;
-Texture2D g_PBR_OutLine;
+Texture2D g_PBR_LimLight;
+Texture2D g_PBR_InnerLine;
 Texture2D g_PBR_Emissive;
 Texture2D g_PBR_Glow;
 Texture2D g_VolumetricTexture;
@@ -989,7 +991,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
 
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
-    PS_OUT Out;
+    PS_OUT Out = (PS_OUT) 0;
     
     vector finalColor = vector(0.f, 0.f, 0.f, 0.f);
     
@@ -998,13 +1000,14 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vVolumetric = g_VolumetricTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
-    vector vOutLine = g_PBR_OutLine.Sample(DefaultSampler, In.vTexcoord);
+    vector vLimLight = g_PBR_LimLight.Sample(DefaultSampler, In.vTexcoord);
+    vector vOutLine = g_PBR_InnerLine.Sample(DefaultSampler, In.vTexcoord);
     vector vEmissive = g_PBR_Emissive.Sample(DefaultSampler, In.vTexcoord);
     vector vGlow = g_PBR_Glow.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
-    finalColor = Out.vBackBuffer + vOutLine;
+    finalColor = Out.vBackBuffer + vOutLine + vLimLight;
     
     /* [ 유리 재질 효과 ] */
     float fGlass = saturate(vEmissive.a);
@@ -1214,6 +1217,7 @@ PS_OUT_BLUR PS_MAIN_BLURX(PS_IN In)
             vTexcoord.y = In.vTexcoord.y;
   
             Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture2.Sample(LinearClampSampler, vTexcoord);
+            Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture3.Sample(LinearClampSampler, vTexcoord);
         }
     }
        

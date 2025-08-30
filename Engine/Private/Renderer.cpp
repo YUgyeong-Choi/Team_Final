@@ -126,7 +126,9 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	
 	/* [ 외곽선 이펙트 ] */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_OutLine"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_LimLight"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_InnerLine"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* [ 볼륨메트릭 포그 ] */
@@ -157,9 +159,11 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_DepthStencilView_PBR_Blur(g_iSmallWidth, g_iSmallHeight)))
-		return E_FAIL;
+		return E_FAIL; 
 
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBROutLine"), TEXT("Target_PBR_OutLine"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_Fury"), TEXT("Target_PBR_LimLight"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_Fury"), TEXT("Target_PBR_InnerLine"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
@@ -344,7 +348,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Unit"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_OutLine"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_LimLight"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
@@ -816,7 +820,7 @@ HRESULT CRenderer::Render_PBRLights()
 HRESULT CRenderer::Render_Outline()
 {
 	/* [ PBR 렌더링 ] */
-	m_pGameInstance->Begin_MRT(TEXT("MRT_PBROutLine"));
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_Fury"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_FURY)])
 	{
@@ -910,7 +914,9 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Unit"), m_pShader, "g_PBR_UnitMask")))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_OutLine"), m_pShader, "g_PBR_OutLine")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_LimLight"), m_pShader, "g_PBR_LimLight")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_InnerLine"), m_pShader, "g_PBR_InnerLine")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PBR_Emissive")))
 		return E_FAIL;
@@ -1170,7 +1176,9 @@ HRESULT CRenderer::Render_PBR_Glow()
 	_bool bOutline = true;
 	if (FAILED(m_pShader->Bind_RawValue("g_bOutLine" , &bOutline, sizeof(_bool))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_OutLine"), m_pShader, "g_PreBlurTexture2")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_LimLight"), m_pShader, "g_PreBlurTexture2")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_InnerLine"), m_pShader, "g_PreBlurTexture3")))
 		return E_FAIL;
 
 	m_pShader->Begin(4);
@@ -1447,7 +1455,7 @@ HRESULT CRenderer::Render_Debug()
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGlowFinal"), m_pShader, m_pVIBuffer);
-			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBROutLine"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBR_Fury"), m_pShader, m_pVIBuffer);
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
 			/* 여기에 MRT 입력 */

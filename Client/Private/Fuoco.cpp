@@ -216,6 +216,10 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 void CFuoco::Update(_float fTimeDelta)
 {
+	if (KEY_DOWN(DIK_J))
+		SwitchFury(true, 1.f);
+	if (KEY_DOWN(DIK_K))
+		SwitchFury(false, 1.f);
 
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{

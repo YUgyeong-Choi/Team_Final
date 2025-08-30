@@ -1779,7 +1779,7 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
-
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
         m_pOwner->m_bMovable = true;
     }
 
@@ -1788,7 +1788,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (2.5f < m_fStateTime)
+        if (3.f < m_fStateTime)
         {
             if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
@@ -1806,16 +1806,13 @@ public:
             {
                 if (m_pOwner->m_bWalk)
                 {
-                    m_pOwner->m_pAnimator->SetBool("Charge", false);
                     return EPlayerState::WALK;
                 }
                 else
                 {
-                    m_pOwner->m_pAnimator->SetBool("Charge", false);
                     return EPlayerState::RUN;
                 }
             }
-            m_pOwner->m_pAnimator->SetBool("Charge", false);
             return EPlayerState::IDLE;
         }
 
@@ -2916,10 +2913,7 @@ public:
         {
             CEliteUnit* pBoss = dynamic_cast<CEliteUnit*>(m_pOwner->m_pFatalTarget);
             if (pBoss)
-            {
-                // 보스 페이탈 생기면 넣기
-                //pBoss->Start_Fatal_Reaction();
-            }
+                pBoss->EnterFatalHit();
         }
 
         /* [ 디버깅 ] */

@@ -93,8 +93,11 @@ public:
 public: /* [ 이미시브를 켜고 끈다. ] */
 	void OnEmissive(_float fTimeDelta);
 	void OffEmissive(_float fTimeDelta);
+	void OnFury(_float fTimeDelta);
+	void OffFury(_float fTimeDelta);
 	void ToggleEmissive(_float fEmissiveSpeed);
 	void SwitchEmissive(_bool bEmissive, _float fEmissiveSpeed);
+	void SwitchFury(_bool bFury, _float fFurySpeed);
 
 
 public:
@@ -128,6 +131,15 @@ protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };
 	_bool m_bIsPlayer = { false };
 
+protected:
+	_bool				m_bEmissive = {};
+	_float				m_fEmissive = {};
+	_float				m_fEmissiveSpeed = {};
+
+	_bool				m_bFurySwitch = {};
+	_float				m_fFurySwitch = {};
+	_float				m_fFurySpeed = {};
+
 
 protected:              /* [ 컴포넌트 ] */
 	CModel*				m_pModelCom = { nullptr };
@@ -145,9 +157,6 @@ protected:				/* [ 기본 속성 ] */
 	_float3				m_InitScale = {};
 	_int				m_iRender = {};
 	_bool				m_bUseLockon = {};
-	_bool				m_bEmissive = {};
-	_float				m_fEmissive = {};
-	_float				m_fEmissiveSpeed = {};
 
 protected: 				/* [ 기본 타입 ] */
 	const _tchar*		m_szName = { nullptr };

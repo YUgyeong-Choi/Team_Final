@@ -44,7 +44,6 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 
 public:
-	const EAttackType Get_AttackType() const { m_eAttackType; }
 	EEliteState Get_CurrentState() const { return m_eCurrentState; }
 	void EnterFatalHit();
 	const EAttackType Get_AttackType() const { return m_eAttackType; }
