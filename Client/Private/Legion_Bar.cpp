@@ -63,6 +63,8 @@ HRESULT CLegion_Bar::Initialize(void* pArg)
 
     Ready_Component(m_strTextureTag);
 
+    m_fRatio = 1.f;
+
     if (nullptr == pArg)
         return S_OK;
 

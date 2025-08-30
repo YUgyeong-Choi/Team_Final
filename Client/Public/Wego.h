@@ -41,6 +41,8 @@ private: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Trigger();
 
 	void LoadNpcTalkData(string filePath);
+
+	void LoadAnimDataFromJson();
 private:
 	CPhysXDynamicActor* m_pPhysXTriggerCom = { nullptr };
 
