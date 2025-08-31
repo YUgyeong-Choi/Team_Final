@@ -314,6 +314,12 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_05_End",
             "Duration": 80.0,
+            "Events": [
+                {
+                    "EventName": "OffFury",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -333,6 +339,10 @@
                 {
                     "EventName": "FastAnimSpeed",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "OnFury",
+                    "Time": 4.0
                 }
             ],
             "IsLoop": false,
@@ -470,6 +480,14 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 145.0
+                },
+                {
+                    "EventName": "OnFury",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "OffFury",
+                    "Time": 158.0
                 }
             ],
             "IsLoop": false,

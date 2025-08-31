@@ -20,11 +20,11 @@ public:
 	{
 		FURY_AIRBORNE,AIRBORNE,STRONG_KNOCKBACK,KNOCKBACK, NORMAL, FURY_STAMP, STAMP, NONE
 	};
-public:
 	enum class EEliteState {
 		IDLE, WALK, RUN, TURN, ATTACK, GROGGY, PARALYZATION, FATAL, DEAD, CUTSCENE,NONE
 	};
 
+protected:
 	enum class EMoveDirection {
 		FRONT, RIGHT, BACK, LEFT
 	};
@@ -44,7 +44,6 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 
 public:
-	EEliteState Get_CurrentState() const { return m_eCurrentState; }
 	void EnterFatalHit();
 	const EAttackType Get_AttackType() const { return m_eAttackType; }
 

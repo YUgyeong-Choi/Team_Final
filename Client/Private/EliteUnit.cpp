@@ -689,6 +689,13 @@ void CEliteUnit::Register_Events()
     m_pAnimator->RegisterEventListener("FastAnimSpeed", [this]() {
         m_pAnimator->SetPlayRate(1.3f);
         });
+
+	m_pAnimator->RegisterEventListener("OnFury", [this]() {
+        SwitchFury(true, 1.f);
+		});
+	m_pAnimator->RegisterEventListener("OffFury", [this]() {
+		SwitchFury(false, 1.f);
+		});
 }
 
 void CEliteUnit::EnterFatalHit()

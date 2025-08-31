@@ -216,11 +216,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 void CFuoco::Update(_float fTimeDelta)
 {
-	if (KEY_DOWN(DIK_J))
-		SwitchFury(true, 1.f);
-	if (KEY_DOWN(DIK_K))
-		SwitchFury(false, 1.f);
-
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
 		m_pAnimator->SetTrigger("SpecialDie");
@@ -257,7 +252,6 @@ void CFuoco::Late_Update(_float fTimeDelta)
 			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForFoot);
 	}
 #endif
-
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Late_Update(fTimeDelta);
@@ -1430,6 +1424,8 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		vScale = XMVectorSet(8.f, 0.1f, 8.f, 0.f);
 
 		//네브메쉬 높이 값으로 변경
+		if (m_pNaviCom == nullptr)
+			return;
 		_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
 
 		vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
