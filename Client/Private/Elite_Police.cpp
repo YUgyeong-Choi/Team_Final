@@ -5,7 +5,7 @@
 #include "Client_Calculation.h"
 
 CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CEliteUnit{pDevice, pContext}
+	:CEliteUnit{ pDevice, pContext }
 {
 }
 
@@ -22,12 +22,13 @@ HRESULT CElite_Police::Initialize_Prototype()
 
 HRESULT CElite_Police::Initialize(void* pArg)
 {
-	m_fMaxRootMotionSpeed = 13.f;
+	m_fMaxRootMotionSpeed = 30.f;
 	m_fRootMotionAddtiveScale = 1.f;
-	m_fAttckDleay = 1.5f;
-	m_fWalkSpeed = 3.f;
+	m_fAttckDleay = 3.5f;
+	m_fTooCloseDistance = 1.5f;
 	m_fChasingDistance = 2.f;
-
+	m_fMinimumTurnAngle = 120.f;
+	m_bIsFirstAttack = false;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -60,11 +61,24 @@ HRESULT CElite_Police::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
-	//if (FAILED(Ready_Weapon()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Weapon()))
+		return E_FAIL;
 
 
-	m_fHP = 100;
+	m_fMaxHP = 150.f;
+	m_fHP = m_fMaxHP;
+	/*CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+
+	eDesc.fSizeX = 1.f;
+	eDesc.fSizeY = 1.f;
+	eDesc.fHeight = 2.5f;
+	eDesc.pHP = &m_fHP;
+	eDesc.pIsGroggy = &m_bGroggyActive;
+	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));*/
+
 
 	//m_pHPBar->Set_MaxHp(m_fHP);
 
@@ -91,13 +105,45 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 #ifdef _DEBUG
-	if (KEY_DOWN(DIK_V))
+	if (KEY_DOWN(DIK_TAB))
 	{
+		cout << "현재 폴리스 상태 : ";
 
+		switch (m_eCurrentState)
+		{
+		case Client::CEliteUnit::EEliteState::IDLE:
+			cout << "IDLE" << endl;
+			break;
+		case Client::CEliteUnit::EEliteState::WALK:
+			cout << "WALK" << endl;
+			break;
+		case Client::CEliteUnit::EEliteState::RUN:
+			cout << "RUN" << endl;
+			break;
+		case Client::CEliteUnit::EEliteState::TURN:
+			cout << "TURN" << endl;
+			break;
+		case Client::CEliteUnit::EEliteState::ATTACK:
+			cout << "ATTACK" << endl;
+			break;
+		case Client::CEliteUnit::EEliteState::GROGGY:
+			cout << "GROGGY" << endl;
+			break;
+		case Client::CEliteUnit::EEliteState::PARALYZATION:
+			break;
+		case Client::CEliteUnit::EEliteState::FATAL:
+			break;
+		case Client::CEliteUnit::EEliteState::DEAD:
+			break;
+		case Client::CEliteUnit::EEliteState::CUTSCENE:
+			break;
+		case Client::CEliteUnit::EEliteState::NONE:
+			break;
+		default:
+			break;
+		}
 	}
 #endif // _DEBUG
-
-
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
@@ -123,7 +169,7 @@ void CElite_Police::Update(_float fTimeDelta)
 		m_bUseLockon = false;
 		Safe_Release(m_pHPBar);
 	}
-   	__super::Update(fTimeDelta);
+	__super::Update(fTimeDelta);
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
@@ -152,21 +198,23 @@ void CElite_Police::Ready_BoneInformation()
 
 HRESULT CElite_Police::Ready_Weapon()
 {
-	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
+ 	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
 	Desc.eMeshLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.125f, 0.f, 0.f };
-	Desc.InitScale = { 1.f, 0.6f, 1.f };
+	Desc.InitScale = {0.1f,0.1f,0.1f };
 	Desc.iRender = 0;
 
 	Desc.szMeshID = TEXT("Elite_Police_Weapon");
 	lstrcpy(Desc.szName, TEXT("Elite_Police_Weapon"));
 	Desc.vAxis = { 0.f,1.f,0.f,0.f };
 	Desc.fRotationDegree = { 90.f };
-
+	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
+	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Desc.pOwner = this;
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
@@ -186,31 +234,50 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 {
 	if (m_bSpawned == false)
 		return;
-	if (fDistance < m_fChasingDistance)
+
+	if (fDistance < m_fTooCloseDistance) 
 	{
-		if (m_fChangeMoveDirCooldown > 0.f)
+		m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::BACK));
+	}
+	else if (fDistance <= m_fChasingDistance) // 공격 범위 근처
+	{
+		_vector vLook = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
+		_vector vToPlayer = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+		vToPlayer = XMVector3Normalize(XMVectorSetY(vToPlayer, 0.f));
+
+		// 서로 락온이라서 외적으로 
+		_vector vCross = XMVector3Cross(vLook, vToPlayer);
+		_float fCrossY = XMVectorGetY(vCross);
+
+		if (m_fChangeMoveDirCooldown <= 0.f)
 		{
-			m_fChangeMoveDirCooldown -= fTimeDelta;
-			m_fChangeMoveDirCooldown = max(m_fChangeMoveDirCooldown, 0.f);
+			if (fCrossY > 0.f) // 플레이어가 오른쪽에 있음
+				m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::RIGHT));
+			else               // 플레이어가 왼쪽에 있음
+				m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::LEFT));
+
+			m_fChangeMoveDirCooldown = 1.5f;
 		}
 		else
 		{
-			_int iMoveDir = 0;
-			if (fDistance < m_fTooCloseDistance) 
-			{
-				iMoveDir = 2; // Back
-			}
-			m_pAnimator->SetInt("MoveDir", iMoveDir);
-			m_fChangeMoveDirCooldown = 5.f;
+			m_fChangeMoveDirCooldown -= fTimeDelta;
 		}
 	}
-	else if (fDistance >= m_fChasingDistance)
+	else
 	{
-		m_pAnimator->SetInt("MoveDir", 0);
+		if (m_fChangeMoveDirCooldown <= 0.f)
+		{
+			m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
+			m_fChangeMoveDirCooldown = 0.5f;
+		}
+		else
+		{
+			m_fChangeMoveDirCooldown -= fTimeDelta;
+		}
 	}
+
 	m_eCurrentState = EEliteState::WALK;
 	m_pAnimator->SetFloat("Distance", abs(fDistance));
-	cout << "플레이어와의 거리 : " << fDistance << endl;
 }
 
 void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
@@ -218,16 +285,18 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	if (m_bPlayedDetect == false)
 		return;
 
-	if (m_bIsFirstAttack)
-	{
-		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("AttackType", COMBO3);
-		m_bIsFirstAttack = false;
-		m_pAnimator->SetBool("Move", false);
-		m_fAttackCooldown = m_fAttckDleay;
-		SetTurnTimeDuringAttack(1.5f, 1.4f);
-		return;
-	}
+	if (fDistance < ATTACK_DISTANCE_CLOSE || fDistance > ATTACK_DISTANCE_MIDDLE)
+		return; // 너무 가깝거나 너무 멀면 공격 안 함
+	//if (m_bIsFirstAttack)
+	//{
+	//	m_pAnimator->SetTrigger("Attack");
+	//	m_pAnimator->SetInt("AttackType", COMBO3);
+	//	m_bIsFirstAttack = false;
+	//	m_pAnimator->SetBool("Move", false);
+	//	m_fAttackCooldown = m_fAttckDleay;
+	//	SetTurnTimeDuringAttack(1.5f, 1.4f);
+	//	return;
+	//}
 
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
 	{
@@ -237,13 +306,7 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	{
 		return;
 	}
-	if (fDistance >= 4.f)
-	{
-		//m_pAnimator->SetBool("Move", true);
-		//m_pAnimator->SetInt("MoveDir", 0); // 정면
-		//m_eCurrentState = EEliteState::WALK;
-		return;
-	}
+
 	if (m_fAttackCooldown > 0.f)
 	{
 		m_fAttackCooldown -= fTimeDelta;
@@ -253,15 +316,15 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	}
 
 
-	if (IsTargetInFront(180.f) == false)
+	if (IsTargetInFront(170.f) == false)
 	{
 
 		m_pAnimator->SetBool("Move", false);
 		m_pAnimator->SetInt("AttackType", COMBO4);
 		m_pAnimator->SetTrigger("Attack");
+		m_ePrevState = m_eCurrentState;
 		m_eCurrentState = EEliteState::ATTACK;
 		m_fAttackCooldown = m_fAttckDleay;
-		SetTurnTimeDuringAttack(1.f, 1.5f);
 		return;
 	}
 	EPoliceAttackPattern eAttackType = static_cast<EPoliceAttackPattern>(GetRandomAttackPattern(fDistance));
@@ -273,15 +336,17 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	m_pAnimator->SetBool("Move", false);
 	m_pAnimator->SetInt("AttackType", eAttackType);
 	m_pAnimator->SetTrigger("Attack");
+	m_ePrevState = m_eCurrentState;
 	m_eCurrentState = EEliteState::ATTACK;
 	m_fAttackCooldown = m_fAttckDleay;
+	m_fChangeMoveDirCooldown = 0.f;
 }
 
 void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 {
 	m_ePrevState = m_eCurrentState;
 	static _int iLastNodeID = -1;
-  	switch (iNodeID)
+	switch (iNodeID)
 	{
 	case ENUM_CLASS(EliteMonsterStateID::Idle):
 		m_eCurrentState = EEliteState::IDLE;
@@ -340,11 +405,23 @@ void CElite_Police::UpdateSpecificBehavior()
 {
 	if (m_pPlayer)
 	{
-		if (m_bPlayedDetect == false&& Get_DistanceToPlayer() <= m_fDetectRange)
+		if (m_bPlayedDetect == false && Get_DistanceToPlayer() <= m_fDetectRange)
 		{
 			m_bPlayedDetect = true;
 			m_pAnimator->SetTrigger("Detect");
 		}
+
+		if (m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK && m_eCurrentState != EEliteState::ATTACK && m_eCurrentState != EEliteState::TURN)
+		{
+			m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
+		}
+
+		//if (Get_DistanceToPlayer() <= m_fChasingDistance)
+		//{
+		//	m_pAnimator->SetBool("Move", false);
+		//	m_ePrevState = m_eCurrentState;
+		//	m_eCurrentState = EEliteState::IDLE;
+		//}
 	}
 }
 
@@ -387,14 +464,14 @@ void CElite_Police::Register_Events()
 
 	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()
 		{
-			m_fMaxRootMotionSpeed = 13.f;
+			m_fMaxRootMotionSpeed = 30.f;
 			m_fRootMotionAddtiveScale = 1.f;
 		});
 
 	m_pAnimator->RegisterEventListener("SetRootLargeStep", [this]()
 		{
-			m_fMaxRootMotionSpeed = 30.f;
-			m_fRootMotionAddtiveScale = 1.2f;
+			m_fMaxRootMotionSpeed = 60.f;
+			m_fRootMotionAddtiveScale = 1.5f;
 		});
 
 	m_pAnimator->RegisterEventListener("Spawned", [this]()
@@ -403,7 +480,18 @@ void CElite_Police::Register_Events()
 		});
 	m_pAnimator->RegisterEventListener("Turnnig", [this]()
 		{
-			SetTurnTimeDuringAttack(1.3f,1.4f);
+			SetTurnTimeDuringAttack(2.f, 1.4f);
+		});
+
+	m_pAnimator->RegisterEventListener("LargeTurnnig", [this]()
+		{
+			_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+			vLook = XMVectorSetY(vLook, 0.f);
+			vLook = XMVector3Normalize(vLook);
+
+			// 반대 방향
+			_vector vDir = -vLook;
+			m_pTransformCom->RotateToDirectionImmediately(vDir);
 		});
 
 }
@@ -518,7 +606,6 @@ void CElite_Police::SetupAttackByType(_int iPattern)
 	case COMBO3:
 		break;
 	case COMBO4:
-		SetTurnTimeDuringAttack(1.5f, 1.f);
 		break;
 	default:
 		break;

@@ -46,6 +46,9 @@ public:
 
 	void Gravity_On();
 
+	_float4& GetLocalOffset() { return m_vLocalOffset; }
+	void SetLocalOffset(_float4 vOffset) { m_vLocalOffset = vOffset; }
+
 
 protected: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components();

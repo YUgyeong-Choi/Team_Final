@@ -80,6 +80,14 @@ void CPBRMesh::Late_Update(_float fTimeDelta)
 
 HRESULT CPBRMesh::Render()
 {
+#ifdef USE_IMGUI
+	if (!m_bDummyShow)
+	{
+		if (m_szMeshID == TEXT("Train") || m_szMeshID == TEXT("Station"))
+			return S_OK; 
+	}
+#endif
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 

@@ -108,16 +108,17 @@ void CBayonet::Update(_float fTimeDelta)
 		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<unsigned int>(m_iLevelID), L"EC_AttackHit_Basic_Spark_1_P2S4"))
 			MSG_BOX("이펙트 생성 실패함");
 	}
-
-	if (KEY_DOWN(DIK_9))
-		Set_WeaponTrail_Active(false);
-	if (KEY_DOWN(DIK_0))
-		Set_WeaponTrail_Active(true);
 }
 
 void CBayonet::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	// 매 프레임 칼 끝 위치 저장
+	m_vEndSocketPrevPos = m_vEndSocketCurPos;
+	auto CurEndWorldMat = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Blade_End")));
+	_float4 vPos = { CurEndWorldMat->_41, CurEndWorldMat->_42, CurEndWorldMat->_43, 1.f };
+	m_vEndSocketCurPos = XMLoadFloat3(reinterpret_cast<_float3*>(&CurEndWorldMat->_41));
 
 	Update_Collider();
 }
@@ -319,13 +320,16 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
 
 		CEffectContainer::DESC desc = {};
+		// * XMMatrixRotationAxis(_vector()) 
+		XMStoreFloat4x4(&desc.PresetMatrix,
+			XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
 
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
-
+		//memcpy(&desc.PresetMatrix.m[2], &m_pOwner->Get_TransfomCom()->Get_State(STATE::LOOK), sizeof(_vector));
+		
 		CGameObject* pEffect = { nullptr };
 		/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc)
-			: rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_2"), &desc)
-			:*/ pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
+			: rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc)
+			:*/ pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc);
 
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
