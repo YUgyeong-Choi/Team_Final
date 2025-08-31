@@ -45,6 +45,8 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 
 	m_physxExtent = pDesc->vPhsyxExtent;
 
+	m_pTransformCom->Scaling(pDesc->InitScale);
+
 	// offset
 	m_pTransformCom->Scaling(pDesc->InitScale);
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);

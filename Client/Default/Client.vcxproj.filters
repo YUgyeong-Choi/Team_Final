@@ -469,6 +469,9 @@
     <Filter Include="02.GameObjects\99.UI\Container\Button">
       <UniqueIdentifier>{b6828a60-69e9-498a-8a8d-e54993171365}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Rotation">
+      <UniqueIdentifier>{e874890a-b1e2-4c41-ba17-5f255ffc7f46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -994,6 +997,9 @@
     <ClInclude Include="..\public\UI_Button_Script.h">
       <Filter>02.GameObjects\99.UI\Container\Button</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Feature_Rotation.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Rotation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1492,6 +1498,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Button_Script.cpp">
       <Filter>02.GameObjects\99.UI\Container\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Feature_Rotation.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Rotation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -57,7 +57,7 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
         m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
 
         m_fSizeX = g_iWinSizeX * 0.6f;
-        m_fSizeY = g_iWinSizeY * 0.015f;
+        m_fSizeY = g_iWinSizeY * 0.02f;
 
         m_fX = g_iWinSizeX * 0.5f;
         m_fY = g_iWinSizeY * 0.85f;
@@ -303,7 +303,7 @@ HRESULT CUI_MonsterHP_Bar::Bind_ShaderResources()
 
     _float fGroogy = _float(*m_isGroggy);
 
-    //_float fGroogy = 0.f;
+    //_float fGroogy = 1.f;
 
     if (FAILED(m_pShaderCom->Bind_RawValue("g_Groggy", &(fGroogy), sizeof(_float))))
         return E_FAIL;

@@ -266,7 +266,7 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
     highlightUV.x = (In.vTexcoord.x - 0.5f) * 0.9f + 0.5f;
     highlightUV.y = (In.vTexcoord.y - 0.5f) * 0.5f + 0.5f;
 
-    float4 vHighlight = (g_Groggy == 1.f) ? g_HighlightTexture.Sample(DefaultSampler, highlightUV) : float4(0, 0, 0, 0);
+ 
 
     float fMarginX = 0.085f;
     float fMarginY = 0.25f;
@@ -282,11 +282,7 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
     bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY ;
 
 
-    if (vHighlight.a > 0.0001f)
-    {
-        Out.vColor += vHighlight * 2.f;
-    }
-
+    
     if (vBorder.a > 0.001f)
     {
         Out.vColor += vBorder * 0.8f;
@@ -297,11 +293,6 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
     {
         vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
         Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
-    }
-    else
-    {
-        if (isInsideY)
-            Out.vColor += vHighlight * 2.f;
     }
 
     return Out;
@@ -524,8 +515,8 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     float4 vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     float2 highlightUV;
 // 축소하고 가운데 정렬
-    highlightUV.x = (In.vTexcoord.x - 0.5f) * 0.9f + 0.5f;
-    highlightUV.y = (In.vTexcoord.y - 0.5f) * 0.5f + 0.5f;
+    highlightUV.x = saturate((In.vTexcoord.x - 0.45f) * 1.f  + 0.5f);
+    highlightUV.y = saturate((In.vTexcoord.y - 0.5f) * 0.2f + 0.5f);
 
     float4 vHighlight = (g_Groggy == 1.f) ? g_HighlightTexture.Sample(DefaultSampler, highlightUV) : float4(0, 0, 0, 0);
 
@@ -543,9 +534,10 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
 
 
-    if (vHighlight.a > 0.0001f)
+    if (vHighlight.a > 0.001f)
     {
-        Out.vColor += vHighlight * 2.f ;
+       
+        Out.vColor += vHighlight ;
     }
     
     if (vBorder.a > 0.1f)
@@ -564,7 +556,7 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     else
     {
         if (isInsideY)
-            Out.vColor += vHighlight * 2.f ;
+            Out.vColor += vHighlight  ;
     }
 
     return Out;

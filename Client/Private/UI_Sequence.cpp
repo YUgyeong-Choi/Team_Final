@@ -16,6 +16,8 @@ void CUI_Sequence::Add(_int type)
 		eDesc.strTypeTag = "Pos";
 	else if (type == 3)
 		eDesc.strTypeTag = "Scale";
+	else if (type == 4)
+		eDesc.strTypeTag = "Rotation";
 
 	// Èò»ö?
 	eDesc.color = 0xFFFFFFFF;
@@ -46,6 +48,8 @@ void CUI_Sequence::Upadte_Items(_int iIndex, UI_FEATURE_TOOL_DESC& eDesc)
 		eDesc.strTypeTag = "Pos";
 	else if (eDesc.iType == 3)
 		eDesc.strTypeTag = "Scale";
+	else if (eDesc.iType == 4)
+		eDesc.strTypeTag = "Rotation";
 }
 
 void CUI_Sequence::Push_Item(UI_FEATURE_TOOL_DESC& eDesc)
