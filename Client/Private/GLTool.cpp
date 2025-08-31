@@ -434,6 +434,21 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 
 			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(scaleDesc.strProtoTag), &scaleDesc);
 		}
+		else if (4 == eDesc.iType)
+		{
+			// fade
+			UI_FEATURE_ROTATION_DESC fadeDesc = {};
+			fadeDesc.strProtoTag = "Prototype_Component_UI_Feature_Rotation";
+			fadeDesc.isLoop = eDesc.isLoop;
+			fadeDesc.iStartFrame = eDesc.iStartFrame;
+			fadeDesc.iEndFrame = eDesc.iEndFrame;
+			fadeDesc.fStartRotation = eDesc.fStartAlpha;
+			fadeDesc.fEndRotation = eDesc.fEndAlpha;
+			fadeDesc.fRotationPos = eDesc.fStartPos;
+
+			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(fadeDesc.strProtoTag), &fadeDesc);
+
+		}
 	}
 }
 
@@ -614,7 +629,8 @@ void CGLTool::Input_Sequence_Desc()
 		m_eFeatureDesc.strTypeTag = "Pos";
 	else if (3 == m_eFeatureDesc.iType)
 		m_eFeatureDesc.strTypeTag = "Scale";
-
+	else if(4 == m_eFeatureDesc.iType)
+		m_eFeatureDesc.strTypeTag = "Rotation";
 }
 
 void CGLTool::Input_Text()

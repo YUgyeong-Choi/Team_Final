@@ -81,6 +81,15 @@ namespace Client
 
 	}UI_FEATURE_SCALE_DESC;
 
+	typedef struct tagRotationFeature : public tagFeatureUI {
+
+		_float			fStartRotation{};
+		_float			fEndRotation{};
+		// 어디를 중심으로 돌릴지
+		_float2			fRotationPos{};
+
+	}UI_FEATURE_ROTATION_DESC;
+
 	// 여기까지?
 
 	// 옵저버에 던질 구조체
