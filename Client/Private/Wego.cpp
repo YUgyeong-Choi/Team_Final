@@ -37,7 +37,7 @@ HRESULT CWego::Initialize(void* pArg)
 	Ready_Trigger();
 
 	// NPC 대화 데이터 
-	LoadNpcTalkData("../Bin/Save/Npc/Wego.json");
+	LoadNpcTalkData("../Bin/Save/Npc/Wego_Temp.json");
 
 	m_strNpcName = u8"초보 탐험가 휴고";
 
@@ -56,6 +56,9 @@ void CWego::Priority_Update(_float fTimeDelta)
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 		m_bFinish = false;
 	}
+
+	for (auto& pButton : m_pSelectButtons)
+		pButton->Priority_Update(fTimeDelta);
 }
 
 void CWego::Update(_float fTimeDelta)
@@ -65,11 +68,40 @@ void CWego::Update(_float fTimeDelta)
 	// Talk 진행
 	if (m_bTalkActive)
 	{
+		
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
 			++m_curTalkIndex;
-			if (m_curTalkIndex >= m_NpcTalkData[m_curTalkType].size())
+
+			if(m_curTalkIndex < m_NpcTalkData[m_curTalkType].size())
 			{
+				// 버튼 로직을 생각하자
+				if (m_curTalkIndex == m_iButtonActiveIndex + 1)
+				{
+
+					m_curTalkIndex = m_NextIndex[m_iSelectButtonIndex];
+					m_CheckButtonSelct[m_iSelectButtonIndex] = true;
+				}
+				else if (m_curTalkIndex > m_iButtonActiveIndex + 1)
+				{
+					for (auto bCheck : m_CheckButtonSelct)
+					{
+						if (!bCheck)
+						{
+							m_curTalkIndex = m_iButtonActiveIndex;
+
+			
+
+							break;
+						}
+						m_curTalkIndex = m_NpcTalkData[m_curTalkType].size() - 1;
+					}
+
+				}
+			}
+			else if (m_curTalkIndex >= m_NpcTalkData[m_curTalkType].size())
+			{
+			
 				if (m_curTalkType == WEGOTALKTYPE::ONE)
 					m_curTalkType = WEGOTALKTYPE::TWO;
 
@@ -83,10 +115,14 @@ void CWego::Update(_float fTimeDelta)
 				m_pAnimator->SetBool("TalkStart", false);
 				return;
 			}
+			
 
 			//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
 			CUI_Manager::Get_Instance()->Update_TalkScript(m_strNpcName, (m_NpcTalkData[m_curTalkType][m_curTalkIndex]), m_bAutoTalk);
+
+			//
 		}
+		Update_Button();
 	}
 
 	// Talk 활성화
@@ -127,11 +163,17 @@ void CWego::Update(_float fTimeDelta)
 			m_pAnimator->SetBool("TalkStart", false);
 		}
 	}
+
+	for (auto& pButton : m_pSelectButtons)
+		pButton->Update(fTimeDelta);
 }
 
 void CWego::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+
+	for (auto& pButton : m_pSelectButtons)
+		pButton->Late_Update(fTimeDelta);
 }
 
 HRESULT CWego::Render()
@@ -284,6 +326,47 @@ void CWego::LoadNpcTalkData(string filePath)
 
 			// 맵에 저장
 			m_NpcTalkData[talkType] = std::move(words);
+
+
+			if (item.contains("ButtonActiveIndex"))
+			{
+				m_iButtonActiveIndex = item["ButtonActiveIndex"].get<_int>();
+
+
+
+				for (auto& button : item["Buttons"])
+				{
+					auto pObj = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button_Script"));
+
+					m_pSelectButtons.push_back(static_cast<CUI_Button_Script*>(pObj));
+
+					string strCaption = button["Label"].get<string>();
+
+					m_pSelectButtons.back()->Update_Script((strCaption));
+					m_pSelectButtons.back()->Active_Update(false);
+
+					m_NextIndex.push_back(button["NextIndex"].get<_int>());
+					m_CheckButtonSelct.push_back(false);
+				}
+
+				// 위치 잡아주기
+
+				_float2 vSize = m_pSelectButtons.back()->Get_ButtonPos();
+
+				size_t iNum = m_pSelectButtons.size();
+
+				for (size_t i =0; i< iNum; ++i)
+				{
+					m_pSelectButtons[i]->Update_Position(vSize.x, vSize.y - g_iWinSizeY * 0.07f * (iNum - 1 - i));
+				}
+
+				m_pSelectButtons[0]->Set_isSelect(true);
+
+			}
+
+
+
+
 		}
 	}
 }
@@ -329,6 +412,58 @@ void CWego::LoadAnimDataFromJson()
 
 }
 
+void CWego::Update_Button()
+{
+	if (m_curTalkIndex == m_iButtonActiveIndex)
+	{
+		for (auto& button : m_pSelectButtons)
+			button->Active_Update(true);
+
+		if (m_pGameInstance->Mouse_Down(DIM::LBUTTON))
+		{
+			for (int i = 0; i < m_pSelectButtons.size(); ++i)
+			{
+				m_pSelectButtons[i]->Check_Select();
+				if (m_pSelectButtons[i]->Get_isSelect())
+				{
+					m_iSelectButtonIndex = i;
+				}
+			}
+
+
+
+		}
+
+	
+		if (m_pGameInstance->Key_Down(DIK_W))
+		{
+			m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+			--m_iSelectButtonIndex;
+			if (m_iSelectButtonIndex < 0)
+				m_iSelectButtonIndex = 0;
+
+			m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
+		}
+		else if (m_pGameInstance->Key_Down(DIK_S))
+		{
+			m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+			++m_iSelectButtonIndex;
+			if (m_iSelectButtonIndex >= m_pSelectButtons.size())
+				m_iSelectButtonIndex = m_pSelectButtons.size() - 1;
+			m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
+		}
+
+		
+
+	}
+	else
+	{
+		for (auto& button : m_pSelectButtons)
+			button->Active_Update(false);
+	}
+	
+}
+
 CWego* CWego::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CWego* pInstance = new CWego(pDevice, pContext);
@@ -359,4 +494,7 @@ void CWego::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pPhysXTriggerCom);
+
+	for (auto& pButton : m_pSelectButtons)
+		Safe_Release(pButton);
 }

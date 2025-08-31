@@ -103,6 +103,7 @@
 #include "UI_SelectWeapon.h"
 #include "UI_Pickup_Item.h"
 #include "Buttler_Basic.h"
+#include "UI_Button_Script.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -409,6 +410,11 @@ HRESULT CLoader::Loading_For_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Pickup_Item"),
 		CUI_Pickup_Item::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button_Script"),
+		CUI_Button_Script::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
