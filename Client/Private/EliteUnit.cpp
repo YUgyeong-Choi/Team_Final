@@ -355,7 +355,7 @@ void CEliteUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
     _float fYaw = acosf(fDot) * fSign; // 회전 각도 (라디안 단위) -180~180
 
 
-    _bool bIsTurn = abs(XMConvertToDegrees(fYaw)) > MINIMUM_TURN_ANGLE && (m_eCurrentState == EEliteState::IDLE ||
+    _bool bIsTurn = abs(XMConvertToDegrees(fYaw)) > m_fMinimumTurnAngle && (m_eCurrentState == EEliteState::IDLE ||
         m_eCurrentState == EEliteState::WALK || m_eCurrentState == EEliteState::RUN);
 
     if (bIsTurn && m_eCurrentState != EEliteState::TURN)
@@ -363,6 +363,7 @@ void CEliteUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
         m_pAnimator->SetTrigger("Turn");
         m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: 오른쪽, 1: 왼쪽
         m_pAnimator->SetBool("Move", false); // 회전 중에는 이동하지 않음
+        m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
     }
 
     if (m_eCurrentState == EEliteState::TURN)
@@ -626,7 +627,19 @@ void CEliteUnit::UpdateNormalMove(_float fTimeDelta)
         switch (iMoveDir)
         {
         case ENUM_CLASS(EMoveDirection::FRONT):
-            m_pTransformCom->ChaseWithOutY(vTargetPos, fTimeDelta, m_fChasingDistance, nullptr, m_pNaviCom);
+        {
+
+           _bool bCanChase =  m_pTransformCom->ChaseWithOutY(vTargetPos, fTimeDelta, m_fChasingDistance, nullptr, m_pNaviCom);
+           if (bCanChase == false)
+           {
+			   //m_ePrevState = m_eCurrentState;
+			   //m_eCurrentState = EEliteState::IDLE;
+			   //m_pAnimator->SetBool("Move", false);
+      //         _float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
+      //         m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
+      //         return;
+           }
+        }
             break;
         case ENUM_CLASS(EMoveDirection::BACK):
             m_pTransformCom->Go_Backward(fTimeDelta, nullptr, m_pNaviCom);
@@ -649,15 +662,17 @@ void CEliteUnit::Reset()
 	m_fHP = m_fMaxHP;
     m_eCurrentState = EEliteState::IDLE;
 	m_ePrevState = EEliteState::IDLE;
-	m_bIsFirstAttack = true;
+    m_bIsFirstAttack = false;
 	m_fGroggyEndTimer = 0.f;
     m_fGroggyThreshold = 1.f;
 	m_fGroggyGauge = 0.f;
 	m_bGroggyActive = false;
+    m_fChangeMoveDirCooldown = 0.f;
 	Safe_Release(m_pHPBar);
     m_pTransformCom->Set_WorldMatrix(m_InitWorldMatrix);
     if (m_pAnimator)
     {
+        m_pAnimator->ResetParameters();
         auto pController = m_pAnimator->Get_CurrentAnimController();
         if (pController)
         {
@@ -689,6 +704,13 @@ void CEliteUnit::Register_Events()
     m_pAnimator->RegisterEventListener("FastAnimSpeed", [this]() {
         m_pAnimator->SetPlayRate(1.3f);
         });
+
+	m_pAnimator->RegisterEventListener("OnFury", [this]() {
+        SwitchFury(true, 1.f);
+		});
+	m_pAnimator->RegisterEventListener("OffFury", [this]() {
+		SwitchFury(false, 1.f);
+		});
 }
 
 void CEliteUnit::EnterFatalHit()
