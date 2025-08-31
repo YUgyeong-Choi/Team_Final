@@ -46,7 +46,7 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
         m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
-        m_pTransformCom->Scaling(0.1f, 0.025f, 1.f);
+        m_pTransformCom->Scaling(0.1f, 0.015f, 1.f);
     }
     else
     {
@@ -56,8 +56,8 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
         m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
 
-        m_fSizeX = g_iWinSizeX * 0.55f;
-        m_fSizeY = g_iWinSizeY * 0.0125f;
+        m_fSizeX = g_iWinSizeX * 0.6f;
+        m_fSizeY = g_iWinSizeY * 0.015f;
 
         m_fX = g_iWinSizeX * 0.5f;
         m_fY = g_iWinSizeY * 0.85f;

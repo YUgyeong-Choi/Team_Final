@@ -68,10 +68,10 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 {
 	/* [ 공간분할 ] */
 
-	AREAMMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
+	AREAMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
 
 	//현재 활성화된 지역이 호텔입니다.
-	if (eAreaMgr == AREAMMGR::HOTEL)
+	if (eAreaMgr == AREAMGR::HOTEL)
 	{
 		if (m_wsMap == TEXT("HOTEL"))
 		{
@@ -80,7 +80,7 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 	}
 
 	//현재 활성화된 지역이 스테이션입니다.
-	if (eAreaMgr == AREAMMGR::STATION)
+	if (eAreaMgr == AREAMGR::STATION)
 	{
 		if (m_wsMap == TEXT("STATION"))
 		{

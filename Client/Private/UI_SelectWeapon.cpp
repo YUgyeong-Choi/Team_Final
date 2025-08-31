@@ -73,6 +73,9 @@ HRESULT CUI_SelectWeapon::Initialize(void* pArg)
 
     m_pSelectEffect->Get_PartUI()[1]->Get_TransfomCom()->Set_State(STATE::POSITION, vPos);
 
+
+    CUI_Manager::Get_Instance()->Sound_Play("SE_UI_OpenWindow_01");
+
     return S_OK;
 }
 
@@ -107,6 +110,7 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
     if (m_pGameInstance->Key_Down(DIK_ESCAPE) && m_isSelectWeapon)
     {
         m_isSelectWeapon = false;
+        CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
     }
 
     if (m_pGameInstance->Key_Down(DIK_ESCAPE) && !m_isSelectWeapon)
@@ -117,6 +121,8 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
         static_cast<CTriggerBox*>(m_pTarget)->Reset_DoOnce();
 
         Set_bDead();
+
+        CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
     }
 
 
@@ -131,13 +137,14 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
 
         CPlayer* pPlayer = GET_PLAYER(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
         pPlayer->GetWeapon();
+        CUI_Manager::Get_Instance()->Sound_Play("SE_UI_RewardItem_02");
     }
    
     // 첫 화면에서 두번째 화면
     if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_isSelectWeapon)
     {
         m_isSelectWeapon = true;
-
+        CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
     }
 
    
@@ -159,6 +166,7 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
         static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[m_iSelectIndex])->Set_isSelect(false);
         --m_iSelectIndex;
         static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[m_iSelectIndex])->Set_isSelect(true);
+        CUI_Manager::Get_Instance()->Sound_Play("SE_UI_QuickSlotChange_03");
     }
     else if (m_pGameInstance->Key_Down(DIK_D))
     {
@@ -170,6 +178,7 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
         static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[m_iSelectIndex])->Set_isSelect(false);
         ++m_iSelectIndex;
         static_cast<CActionType_Icon*>(m_pIcons->Get_PartUI()[m_iSelectIndex])->Set_isSelect(true);
+        CUI_Manager::Get_Instance()->Sound_Play("SE_UI_QuickSlotChange_03");
     }
 
     _vector vPos = m_pIcons->Get_PartUI()[m_iSelectIndex]->Get_TransfomCom()->Get_State(STATE::POSITION);

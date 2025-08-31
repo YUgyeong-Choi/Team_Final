@@ -486,17 +486,19 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
         Out.vColor = vBorder;
         return Out;
     }
+    
+    float filledX = minX + (maxX - minX) * g_BarRatio;
+
+    bool isInsideX = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
+    bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
 
     float borderThickness = 0.1f;
-
-    float fillStartX = borderThickness * 0.65f;
-    float fillEndX = 1.0f - borderThickness * 0.7f;
 
     float fillStartY = borderThickness * 3.6f;
     float fillEndY = 1.0f - borderThickness * 3.35f;
 
 
-    if (In.vTexcoord.x < fillStartX || In.vTexcoord.x > fillEndX ||
+    if (!isInsideX ||
     In.vTexcoord.y < fillStartY || In.vTexcoord.y > fillEndY)
     {
         Out.vColor = float4(0.f, 0.f, 0.f, 0.7f);
@@ -504,7 +506,6 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
     }
     else
     {
-        bool isInsideX = In.vTexcoord.x >= fMarginX && In.vTexcoord.x <= g_BarRatio - fMarginX;
         
         if (isInsideX)
             Out.vColor = g_Color;

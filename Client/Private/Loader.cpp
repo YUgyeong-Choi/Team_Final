@@ -512,7 +512,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Hotel"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Hotel.bin", PreTransformMatrix))))
 		return E_FAIL;
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_OutDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/OutDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_SM_Station_TrainDoor"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin", PreTransformMatrix))))
@@ -673,6 +675,17 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 			return S_OK;
 		});
 
+	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
+	auto futureFireEater = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
 
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 
@@ -680,6 +693,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;
 
 	if (FAILED(futureHotel.get()))
+		return E_FAIL;
+
+	if (FAILED(futureFireEater.get()))
 		return E_FAIL;
 
 #pragma endregion
@@ -770,6 +786,10 @@ HRESULT CLoader::Loading_For_DH()
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_TestMap"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/TestMap.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_OutDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/OutDoor.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -1218,6 +1238,9 @@ HRESULT CLoader::Loading_For_YW()
 		return E_FAIL;
 
 	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
+		return E_FAIL;
+
+	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "FIRE_EATER")))
 		return E_FAIL;
 
 	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))

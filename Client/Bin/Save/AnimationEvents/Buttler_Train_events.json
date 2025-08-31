@@ -654,7 +654,7 @@
         {
             "ClipName": "AS_Idle_C",
             "Duration": 448.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": true,
             "TickPerSecond": 70.0
         },

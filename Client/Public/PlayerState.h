@@ -6,6 +6,7 @@
 #include "DH_ToolMesh.h"
 #include "LegionArm_Base.h"
 #include "Monster_Base.h"
+#include "EliteUnit.h"
 
 #include "GameInstance.h"
 
@@ -257,8 +258,8 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
-        m_bChargeStarted = false;
         m_fChargeElapsed = 0.f;
+        m_bChargeStarted = false;
         m_bChargeArm = false;
         m_fChargeArm = 0.f;
     }
@@ -282,7 +283,7 @@ public:
                 return EPlayerState::ARMFAIL;
         }
 
-        if (m_bChargeArm && m_pOwner->m_bWeaponEquipped) // 차징
+        if (m_bChargeArm)
         {
             if (IsLegionArmEnergyEnough(20.f))
                 return EPlayerState::ARMATTACKCHARGE;
@@ -296,7 +297,7 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
 			return EPlayerState::CHARGEA;
         
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && (m_pOwner->m_bIsBackAttack || m_pOwner->m_bIsGroggyAttack)) // 페이탈
             return EPlayerState::FATAL;
 
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
@@ -384,7 +385,16 @@ public:
                     m_bChargeStarted = true;
             }
         }
+        if (KEY_PRESSING(DIK_LCONTROL))
+        {
+            if (!m_bChargeArm)
+            {
+                m_fChargeArm += fTimeDelta;
 
+                if (m_fChargeArm >= 0.3f)
+                    m_bChargeArm = true;
+            }
+        }
 
         LockOnMovement();        
     }
@@ -394,6 +404,9 @@ public:
         m_bChargeStarted = false;
         m_fChargeElapsed = 0.f;
         m_fSpaceHoldTime = 0.f;
+        m_bChargeStarted = false;
+        m_bChargeArm = false;
+        m_fChargeArm = 0.f;
         m_fStateTime = 0.f;
     }
 
@@ -421,6 +434,13 @@ public:
             else
                 return EPlayerState::ARMFAIL;
         }
+        if (m_bChargeArm)
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKCHARGE;
+            else
+                return EPlayerState::ARMFAIL;
+        }
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 강공
             return EPlayerState::STRONGATTACKA;
@@ -428,7 +448,7 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && (m_pOwner->m_bIsBackAttack || m_pOwner->m_bIsGroggyAttack)) // 페이탈
             return EPlayerState::FATAL;
 
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
@@ -470,6 +490,8 @@ private:
 private:
     _bool   m_bChargeStarted = {};
     _float  m_fChargeElapsed = 0.f;
+    _bool   m_bChargeArm = {};
+    _float  m_fChargeArm = 0.f;
 };
 
 /* [ 이 클래스는 뛰는 상태입니다. ] */
@@ -517,7 +539,16 @@ public:
             }
         }
 
+        if (KEY_PRESSING(DIK_LCONTROL))
+        {
+            if (!m_bChargeArm)
+            {
+                m_fChargeArm += fTimeDelta;
 
+                if (m_fChargeArm >= 0.3f)
+                    m_bChargeArm = true;
+            }
+        }
 		LockOnMovement();
     }
 
@@ -526,6 +557,9 @@ public:
         m_bChargeStarted = false;
         m_fChargeElapsed = 0.f;
         m_fStateTime = 0.f;
+        m_bChargeStarted = false;
+        m_bChargeArm = false;
+        m_fChargeArm = 0.f;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -550,6 +584,14 @@ public:
                 return EPlayerState::ARMFAIL;
         }
 
+        if (m_bChargeArm)
+        {
+            if (IsLegionArmEnergyEnough(20.f))
+                return EPlayerState::ARMATTACKCHARGE;
+            else
+                return EPlayerState::ARMFAIL;
+        }
+
         if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
             return EPlayerState::MAINSKILL;
 
@@ -559,7 +601,7 @@ public:
         if (m_bChargeStarted && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(21.f)) // 차징
             return EPlayerState::CHARGEA;
 
-        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && m_pOwner->m_bIsBackAttack) // 페이탈
+        if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && (m_pOwner->m_bIsBackAttack || m_pOwner->m_bIsGroggyAttack)) // 페이탈
             return EPlayerState::FATAL;
 
         if (input.bLeftMouseDown && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 약공
@@ -599,6 +641,8 @@ private:
 private:
     _bool   m_bChargeStarted = {};
     _float  m_fChargeElapsed = 0.f;
+    _bool   m_bChargeArm = {};
+    _float  m_fChargeArm = 0.f;
 };
 
 /* [ 이 클래스는 아이템 사용 상태입니다. ] */
@@ -1214,7 +1258,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 0.2f)
+        if (m_fStateTime > 0.6f)
         {
             if (MOUSE_DOWN(DIM::LBUTTON))
                 m_bAttackA = true;
@@ -1341,7 +1385,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 0.2f)
+        if (m_fStateTime > 1.f)
         {
             if (MOUSE_DOWN(DIM::LBUTTON))
                 m_bAttackA = true;
@@ -1468,7 +1512,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 0.2f)
+        if (m_fStateTime > 0.4f)
         {
             if (MOUSE_DOWN(DIM::RBUTTON))
                 m_bAttackB = true;
@@ -1595,7 +1639,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 0.2f)
+        if (m_fStateTime > 1.f)
         {
             if (MOUSE_DOWN(DIM::RBUTTON))
                 m_bAttackB = true;
@@ -1735,7 +1779,7 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
-
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
         m_pOwner->m_bMovable = true;
     }
 
@@ -1744,7 +1788,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (2.5f < m_fStateTime)
+        if (3.f < m_fStateTime)
         {
             if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
@@ -1762,16 +1806,13 @@ public:
             {
                 if (m_pOwner->m_bWalk)
                 {
-                    m_pOwner->m_pAnimator->SetBool("Charge", false);
                     return EPlayerState::WALK;
                 }
                 else
                 {
-                    m_pOwner->m_pAnimator->SetBool("Charge", false);
                     return EPlayerState::RUN;
                 }
             }
-            m_pOwner->m_pAnimator->SetBool("Charge", false);
             return EPlayerState::IDLE;
         }
 
@@ -2868,6 +2909,12 @@ public:
             if (pMonster)
                 pMonster->Start_Fatal_Reaction();
         }
+        if (m_pOwner->m_pFatalTarget && m_pOwner->m_bIsFatalBoss)
+        {
+            CEliteUnit* pBoss = dynamic_cast<CEliteUnit*>(m_pOwner->m_pFatalTarget);
+            if (pBoss)
+                pBoss->EnterFatalHit();
+        }
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -3133,6 +3180,10 @@ public:
         if (m_pOwner->m_pLegionArm)
             m_pOwner->m_pLegionArm->SetisAttack(false);
 
+        m_pOwner->m_eHitMotion = HITMOTION::END;
+        m_pOwner->m_eHitedTarget = CPlayer::eHitedTarget::END;
+        m_pOwner->m_eHitedAttackType = CBossUnit::EAttackType::NONE;
+
         m_pOwner->m_pAnimator->ResetParameters();
         m_pOwner->Set_GrinderEffect_Active(false);
 
@@ -3168,7 +3219,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 3.f && !m_pOwner->m_bIsRrevival)
+        if (m_fStateTime > 6.f && !m_pOwner->m_bIsRrevival)
         {
 			/* [ 사망 후 특정 위치에서 다시 살아난다. ] */
             m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{1.f,0.f,0.f,0.f});

@@ -24,6 +24,7 @@ Texture2D g_DecalVolumeMesh;
 /* [ Blur ] */
 Texture2D g_PreBlurTexture;
 Texture2D g_PreBlurTexture2;
+Texture2D g_PreBlurTexture3;
 Texture2D g_BlurXTexture;
 Texture2D g_BlurYTexture;
 
@@ -50,7 +51,8 @@ Texture2D g_PBR_ARM;
 Texture2D g_PBR_Depth;
 Texture2D g_PBR_Final;
 Texture2D g_PBR_UnitMask;
-Texture2D g_PBR_OutLine;
+Texture2D g_PBR_LimLight;
+Texture2D g_PBR_InnerLine;
 Texture2D g_PBR_Emissive;
 Texture2D g_PBR_Glow;
 Texture2D g_VolumetricTexture;
@@ -385,101 +387,92 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     vector vARMDesc = g_PBR_ARM.Sample(DefaultSampler, In.vTexcoord);
     vector vDepthDesc = g_PBR_Depth.Sample(DefaultSampler, In.vTexcoord);
     
-    /* [ 데칼 ARM 불러오기 ] */
+    /* [ 데칼 텍스처 임포트 ] */
     vector vDecalNDesc = g_DecalN.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalAMRTDesc = g_DecalAMRT.Sample(DefaultSampler, In.vTexcoord);
     vector vDecalBCDesc = g_DecalBC.Sample(DefaultSampler, In.vTexcoord);
     
-    /* [ 활용할 변수 정리 ] */
-    float3 Albedo = vDiffuseDesc.rgb;
-    Albedo = lerp(Albedo.xyz, vDecalBCDesc.xyz, vDecalBCDesc.a * vARMDesc.a/*유닛 여부*/); //데칼 디퓨즈 추가
-    
-    float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
-    float3 vDecalNormal = float3(vDecalNDesc.xyz * 2.f - 1.f);
-    Normal = normalize(lerp(Normal.xyz, vDecalNormal, vDecalNDesc.a * vARMDesc.a/*유닛 여부*/)); //데칼 노말 추가
-    
-    float AO = vARMDesc.r;
-    float Roughness = vARMDesc.g;
-    float Metallic = vARMDesc.b;
-    float Unit = vARMDesc.a; //유닛 여부(유닛 = 0)
-    float3 Ambient = Albedo * 0.1f * AO;
-    
-    /* ARM 블렌딩 */
-    AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/);
-    Roughness = lerp(Roughness, vDecalAMRTDesc.g, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/);
-    Metallic = lerp(Metallic, vDecalAMRTDesc.b, vDecalAMRTDesc.a * vARMDesc.a/*유닛 여부*/);
+    /* [ 알베도 (디퓨즈) ] */
+    float3 Albedo = lerp(vDiffuseDesc.rgb, vDecalBCDesc.rgb, vDecalBCDesc.a * vARMDesc.a);
 
-    
+    /* [ 노멀 ] */
+    float3 Normal = normalize(vNormalDesc.rgb * 2.0f - 1.0f);
+    float3 vDecalNormal = vDecalNDesc.rgb * 2.f - 1.f;
+
+    // PointLight와 동일하게 반전 보정
+    vDecalNormal = -vDecalNormal;
+
+    Normal = normalize(lerp(Normal, vDecalNormal, vDecalNDesc.a * vARMDesc.a));
+
+    /* [ ARM 파라미터 ] */
+    float AO = lerp(vARMDesc.r, vDecalAMRTDesc.r, vDecalAMRTDesc.a * vARMDesc.a);
+    float Roughness = lerp(vARMDesc.g, vDecalAMRTDesc.g, vDecalAMRTDesc.a * vARMDesc.a);
+    float Metallic = lerp(vARMDesc.b, vDecalAMRTDesc.b, vDecalAMRTDesc.a * vARMDesc.a);
+    float Unit = vARMDesc.a;
+
+    float3 Ambient = Albedo * 0.1f * AO; // 최소한의 앰비언트
+
     // [ ViewPos 복원 ]
     float2 vUV = In.vTexcoord;
     float z_ndc = vDepthDesc.x;
     float viewZ = vDepthDesc.y * 1000.0f;
     
-    float4 ndcPos;
-    ndcPos.x = vUV.x * 2.0f - 1.0f;
-    ndcPos.y = (1.0f - vUV.y * 2.0f);
-    ndcPos.z = z_ndc;
-    ndcPos.w = 1.0f;
-    
+    float4 ndcPos = float4(vUV.x * 2.0f - 1.0f, (1.0f - vUV.y * 2.0f), z_ndc, 1.0f);
     float4 viewPos = mul(ndcPos, g_ProjMatrixInv);
-    viewPos /= viewPos.w; // Perspective divide
-    viewPos *= viewZ / viewPos.z; // View Z 보정
-
+    viewPos /= viewPos.w;
+    viewPos *= viewZ / viewPos.z; // ViewZ 보정
     float4 worldPos = mul(viewPos, g_ViewMatrixInv);
-    
-    /* [ 빛 계산 ] */
+
+    /* [ 라이트 벡터 계산 ] */
     float3 V = normalize(g_vCamPosition.xyz - worldPos.xyz);
     float3 L = normalize(g_vLightDir.xyz);
     float3 H = normalize(V + L);
-    
-    /* [ 필요한 내적 공식 ] */
+
+    /* [ 내적 계산 ] */
     float NdotL = saturate(dot(Normal, L));
     float NdotV = saturate(dot(Normal, V));
     float NdotH = saturate(dot(Normal, H));
     float VdotH = saturate(dot(V, H));
 
-    /* [ 프레넬 반사율(금속) ] */
+    /* [ 프레넬 ] */
     float3 F0 = lerp(float3(0.04f, 0.04f, 0.04f), Albedo, Metallic);
     float3 F = F0 + (1.0f - F0) * pow(1.0f - VdotH, 5.0f);
-    F *= vDepthDesc.z;
 
-    /* [ GGX 에너지반사 공식 ] */
+    /* [ GGX Normal Distribution ] */
     float a = Roughness * Roughness;
     float a2 = a * a;
     float denom = (NdotH * NdotH * (a2 - 1.0f) + 1.0f);
     float D = a2 / (PI * denom * denom + 0.001f);
 
-    /* [ 지오메트리 함수 공식 ] */
+    /* [ Geometry 함수 (Smith) ] */
     float k = (Roughness + 1.0f);
     k = (k * k) / 8.0f;
     float G_V = NdotV / (NdotV * (1.0f - k) + k);
     float G_L = NdotL / (NdotL * (1.0f - k) + k);
     float G = G_V * G_L;
 
-    /* [ 공식의 결과 스펙큘러 ] */
+    /* [ 스페큘러 ] */
     float3 Specular = D * G * F / (4.0f * NdotV * NdotL + 0.001f);
     Specular *= g_vLightSpecular.rgb;
-    Specular *= vDepthDesc.w;
 
-    /* [ 디퓨즈 색상 결정 ] */
+    /* [ 디퓨즈 ] */
     float3 kD = (1.0f - F) * (1.0f - Metallic);
     float3 Diffuse = kD * Albedo / PI;
 
-    /* [ 라이트의 색상 ] */
+    /* [ 라이트 세기 ] */
     float3 radiance = g_vLightDiffuse.rgb;
-    radiance *= g_fLightIntencity;
-    radiance *= 3.5f;
+    radiance *= g_fLightIntencity * 3.5f;
 
-    /* [ 최종 PBR 조명 계산 ] */
+    /* [ 최종 출력 색상 ] */
     float3 FinalColor = (Diffuse + Specular) * radiance * NdotL * AO + Ambient;
-    float3 Specalur = Specular * radiance;
 
     Out.vFinal = float4(FinalColor, vDiffuseDesc.a);
-    Out.vSpecular = float4(Specular, 1.0f);
+    Out.vSpecular = float4(Specular * radiance, 1.0f);
     Out.vUnit = float4(Unit, 0.f, 0.f, 0.f);
-    
+
     return Out;
 }
+
 PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
 {
     PS_OUT_PBR Out;
@@ -998,7 +991,7 @@ PS_OUT_VOLUMETRIC PS_VOLUMETRIC_SPOT(PS_IN In)
 
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
-    PS_OUT Out;
+    PS_OUT Out = (PS_OUT) 0;
     
     vector finalColor = vector(0.f, 0.f, 0.f, 0.f);
     
@@ -1007,13 +1000,14 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vVolumetric = g_VolumetricTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
-    vector vOutLine = g_PBR_OutLine.Sample(DefaultSampler, In.vTexcoord);
+    vector vLimLight = g_PBR_LimLight.Sample(DefaultSampler, In.vTexcoord);
+    vector vOutLine = g_PBR_InnerLine.Sample(DefaultSampler, In.vTexcoord);
     vector vEmissive = g_PBR_Emissive.Sample(DefaultSampler, In.vTexcoord);
     vector vGlow = g_PBR_Glow.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
-    finalColor = Out.vBackBuffer + vOutLine;
+    finalColor = Out.vBackBuffer + vOutLine + vLimLight;
     
     /* [ 유리 재질 효과 ] */
     float fGlass = saturate(vEmissive.a);
@@ -1223,6 +1217,7 @@ PS_OUT_BLUR PS_MAIN_BLURX(PS_IN In)
             vTexcoord.y = In.vTexcoord.y;
   
             Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture2.Sample(LinearClampSampler, vTexcoord);
+            Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture3.Sample(LinearClampSampler, vTexcoord);
         }
     }
        

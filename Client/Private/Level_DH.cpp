@@ -24,6 +24,9 @@ HRESULT CLevel_DH::Initialize()
 	if (FAILED(Ready_ImGuiTools()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Dummy()))
+		return E_FAIL;
+	
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 	
@@ -211,6 +214,22 @@ HRESULT CLevel_DH::Separate_Area()
 	if (FAILED(m_pGameInstance->FinalizePartition()))
 		return E_FAIL;
 
+
+	return S_OK;
+}
+
+HRESULT CLevel_DH::Ready_Dummy()
+{
+	CPBRMesh::STATICMESH_DESC Desc{};
+	Desc.iRender = 0;
+	Desc.m_eMeshLevelID = LEVEL::DH;
+	Desc.szMeshID = TEXT("OutDoor");
+	lstrcpy(Desc.szName, TEXT("OutDoor"));
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
+		ENUM_CLASS(LEVEL::DH), TEXT("Layer_Dummy"), &pGameObject, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

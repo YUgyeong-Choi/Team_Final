@@ -391,7 +391,7 @@ HRESULT CDHTool::Render_LightTool()
 		float fRange = m_pSelectedObject->GetRange();
 
 		// 2. Range 슬라이더 UI
-		if (ImGui::SliderFloat("Range", &fRange, 0.01f, 20.0f, "%.1f"))
+		if (ImGui::SliderFloat("Range", &fRange, 0.01f, 50.0f, "%.1f"))
 		{
 			// 3. 값이 바뀌었을 때 다시 적용
 			m_pSelectedObject->SetRange(fRange);
@@ -401,7 +401,7 @@ HRESULT CDHTool::Render_LightTool()
 	{
 		// 선택된 오브젝트가 없을 경우 기본값만 표시 (비활성 상태)
 		static float fRange = 10.0f;
-		ImGui::SliderFloat("Range", &fRange, 0.01f, 20.0f, "%.1f");
+		ImGui::SliderFloat("Range", &fRange, 0.01f, 50.0f, "%.1f");
 	}
 
 	// SPOT(Range)
