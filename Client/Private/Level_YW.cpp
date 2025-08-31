@@ -53,8 +53,8 @@ HRESULT CLevel_YW::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;	
 
-	//if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
-	//	return E_FAIL;	
+	if (FAILED(Ready_Layer_DummyMap(TEXT("Layer_DummyMap"))))
+		return E_FAIL;	
 
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YW));
 
@@ -419,8 +419,8 @@ HRESULT CLevel_YW::Ready_Layer_DummyMap(const _wstring strLayerTag)
 	//	ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
 	//	return E_FAIL;
 
-	Desc.szMeshID = TEXT("Hotel");
-	lstrcpy(Desc.szName, TEXT("Hotel"));
+	Desc.szMeshID = TEXT("OutDoor");
+	lstrcpy(Desc.szName, TEXT("OutDoor"));
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::YW), strLayerTag, &Desc)))
 		return E_FAIL;

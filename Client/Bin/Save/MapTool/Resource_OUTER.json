@@ -1,0 +1,9 @@
+[
+    {
+        "Collision": true,
+        "ModelName": "SM_Vehicle_Carriage_13",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Vehicle_Carriage_13.bin"
+    }
+]
