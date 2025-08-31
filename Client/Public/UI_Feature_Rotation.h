@@ -26,6 +26,8 @@ public:
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
 
+	virtual void Reset() { m_vInitPos = {}; m_vCenter = {}; m_vOffset = {}; };
+
 private:
 
 	_float m_fStartRotation = {};
@@ -34,6 +36,10 @@ private:
 	_float m_fCurrentRotation = {};
 
 	_float2 m_fRotationPos = {};
+
+	_vector m_vInitPos = {};
+	_vector m_vOffset = {};
+	_vector m_vCenter = {};
 
 
 	UI_FEATURE_ROTATION_DESC m_eDesc = {};

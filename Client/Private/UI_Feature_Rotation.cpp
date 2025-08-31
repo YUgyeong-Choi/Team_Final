@@ -41,6 +41,14 @@ HRESULT CUI_Feature_Rotation::Initialize(void* pArg)
 
 void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool isReverse)
 {
+  
+    if (m_iCurrentFrame == 0)
+    {
+        m_vInitPos = pUI->Get_TransfomCom()->Get_State(STATE::POSITION);
+        m_vCenter = { m_fRotationPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fRotationPos.y * g_iWinSizeY, 0.f, 1.f };
+        m_vOffset = m_vInitPos - m_vCenter;
+    }
+
     if (m_iStartFrame == m_iEndFrame)
         return;
 
@@ -61,39 +69,40 @@ void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool i
     // 0 ~ 1 구간으로 보간 값 계산
     float t = std::clamp(float(m_iCurrentFrame) / m_iRange, 0.f, 1.f);
 
+   
+
+    _vector qCurrent = {};
+
+    _float fPreRotation = m_fCurrentRotation;
+
     // 방향에 따라 보간 순서 변경
     if (!isReverse)
     {
-        m_fCurrentRotation = LERP(m_fStartRotation, m_fEndRotation, t);
+       
+        m_fCurrentRotation = LERP(m_fEndRotation, m_fStartRotation, t);
       
     }
     else
     {
-        m_fCurrentRotation = LERP(m_fStartRotation, m_fEndRotation, t);
+  
       
+        m_fCurrentRotation = LERP(m_fStartRotation, m_fEndRotation, t);
     }
 
+    qCurrent = XMQuaternionRotationAxis({ 0,0,1 }, XMConvertToRadians(m_fCurrentRotation));
+
+
    
-    _vector vCenter = XMVectorSet(m_fRotationPos.x * g_iWinSizeX, m_fRotationPos.y * g_iWinSizeY, 0.f, 1.f);
-
-    _vector vPos = { pUI->Get_Pos().x,pUI->Get_Pos().y, 0.f,1.f};
-
-    _vector delta = vPos - vCenter;
-
-    _vector vAxis = { 0.f,0.f,1.f,0.f };
-    // 행렬을 만든다
-    _matrix RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_fCurrentRotation));
-
-    // 중심 점을 기준으로 회전하도록 바꾸고, 다시 이동시킨다.
-    vPos = XMVector3Transform(delta, RotationMatrix) + vCenter;
 
     _vector vScale = pUI->Get_TransfomCom()->Get_Scale();
+    _matrix mScale = XMMatrixScalingFromVector(vScale);
 
-    pUI->Get_TransfomCom()->Set_WorldMatrix(RotationMatrix);
+    _vector vRotatedOffset = XMVector3Rotate(m_vOffset, qCurrent);
 
-    pUI->Get_TransfomCom()->SetUp_Scale(vScale.m128_f32[0], vScale.m128_f32[1], vScale.m128_f32[2]);
+    _vector vFinalPos = m_vCenter + vRotatedOffset;
 
-    pUI->Set_Position(vPos.m128_f32[0], vPos.m128_f32[1]);
+    _matrix mWorld = mScale* XMMatrixRotationQuaternion(qCurrent)* XMMatrixTranslationFromVector(vFinalPos);
+    pUI->Get_TransfomCom()->Set_WorldMatrix(mWorld);
 
 
 }

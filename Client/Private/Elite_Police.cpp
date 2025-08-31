@@ -203,13 +203,13 @@ HRESULT CElite_Police::Ready_Weapon()
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.125f, 0.f, 0.f };
-	Desc.InitScale = {0.1f,0.1f,0.1f };
+	Desc.InitScale = {1.f,0.5f,1.f };
 	Desc.iRender = 0;
 
 	Desc.szMeshID = TEXT("Elite_Police_Weapon");
 	lstrcpy(Desc.szName, TEXT("Elite_Police_Weapon"));
-	Desc.vAxis = { 0.f,1.f,0.f,0.f };
-	Desc.fRotationDegree = { 90.f };
+	Desc.vAxis = { 1.f,0.f,0.f,0.f };
+	Desc.fRotationDegree = { -90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
 	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
@@ -218,7 +218,7 @@ HRESULT CElite_Police::Ready_Weapon()
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Monster_Weapon"), &pGameObject, &Desc)))
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Monster_Elite_Weapon"), &pGameObject, &Desc)))
 		return E_FAIL;
 
 	m_pWeapon = dynamic_cast<CWeapon_Monster*>(pGameObject);
