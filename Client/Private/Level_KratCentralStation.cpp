@@ -912,6 +912,8 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		return E_FAIL;
 	if (FAILED(Ready_Monster("HOTEL")))
 		return E_FAIL;
+	if (FAILED(Ready_Monster("FIRE_EATER")))
+		return E_FAIL;
 #pragma endregion
 
 

@@ -935,7 +935,7 @@ void CFuoco::Register_Events()
 			XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
 
 			// 새 스케일 설정
-			vScale = XMVectorSet(10.f, 0.1f, 5.f, 0.f);
+			vScale = XMVectorSet(10.f, 0.5f, 5.f, 0.f);
 
 			//네브메쉬 높이 값으로 변경
 			_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
@@ -1428,7 +1428,7 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
 
 		// 새 스케일 설정
-		vScale = XMVectorSet(8.f, 0.1f, 8.f, 0.f);
+		vScale = XMVectorSet(8.f, 0.5f, 8.f, 0.f);
 
 		//네브메쉬 높이 값으로 변경
 		if (m_pNaviCom == nullptr)

@@ -248,7 +248,7 @@
         "Collision": true,
         "ModelName": "SM_Exhibition_Pillar_01",
         "NoInstancing": false,
-        "ObjectCount": 168,
+        "ObjectCount": 163,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Pillar_01.bin"
     },
     {
@@ -1307,13 +1307,6 @@
         "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Archway0aA.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Wall_Hotel_DoorPillar05",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Hotel_DoorPillar05.bin"
     },
     {
         "Collision": true,
