@@ -268,6 +268,10 @@ HRESULT CFuoco::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX3"), reinterpret_cast<CComponent**>(&m_pPhysXActorComForFoot))))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_FireEater"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -469,6 +473,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	m_pAnimator->SetTrigger("Attack");
 	m_eCurrentState = EEliteState::ATTACK;
 	m_fAttackCooldown = m_fAttckDleay;
+	m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Attack_", 9);
 
 }
 
@@ -524,16 +529,29 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
 		m_eCurrentState = EEliteState::ATTACK;
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
+
+		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ))
+		{
+		m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+		}
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
 		m_eCurrentState = EEliteState::ATTACK;
+		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ2))
+		{
+			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 	{
 		m_eCurrentState = EEliteState::ATTACK;
 		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
+		{
+
 			EffectSpawn_Active(15, true);
+		m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_2");
+		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
 	}
 	break;
@@ -548,10 +566,41 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
-	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
+		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R)
+			&& iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM1))
+		{
+			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
+	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
+		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM2))
+		{
+			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+		}
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
+		m_eCurrentState = EEliteState::ATTACK;
+		break;
+
+	case ENUM_CLASS(BossStateID::ATK_SWING_L_COM2):
+		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM2))
+		{
+			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+		}
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
+		m_eCurrentState = EEliteState::ATTACK;
+		break;
+
+	case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
+		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM1))
+		{
+			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+		}
+		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
+		m_eCurrentState = EEliteState::ATTACK;
+		break;
+
 	case ENUM_CLASS(BossStateID::CUTSCENE):
 		m_eCurrentState = EEliteState::CUTSCENE;
 		break;
@@ -756,7 +805,7 @@ void CFuoco::Register_Events()
 			eDesc.strName = TEXT("왕의 불꽃 푸오코");
 			eDesc.isBoss = true;
 			eDesc.pHP = &m_fHP;
-			eDesc.pIsGroggy = &m_isGroggy;
+			eDesc.pIsGroggy = &m_bGroggyActive;
 
 			m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
 				ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
@@ -906,6 +955,7 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("SpawnFlameField", [this]()
 		{
 			SpawnFlameField();
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_Short_", 3);
 		});
 
 	m_pAnimator->RegisterEventListener("OnGroundScratchEffect", [this]()
@@ -937,6 +987,8 @@ void CFuoco::Register_Events()
 			// 새 스케일 설정
 			vScale = XMVectorSet(10.f, 0.5f, 5.f, 0.f);
 
+			if (m_pNaviCom == nullptr)
+				return;
 			//네브메쉬 높이 값으로 변경
 			_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
 			vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
@@ -1581,6 +1633,66 @@ HRESULT CFuoco::Ready_Effect()
 	return S_OK;
 }
 
+void CFuoco::Ready_SoundEvents()
+{
+	m_pAnimator->RegisterEventListener("MoveSound", [this]()
+	{
+	   m_pSoundCom->Play_Random("SE_NPC_FS_Boss_Fire_Eater_Stone_", 4); 
+	   m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Movement_", 6); }
+	);
+
+	m_pAnimator->RegisterEventListener("FireBallSound", [this]()
+	{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_PJ_Fire_Ball_Shot_", 3); }
+	);
+
+	m_pAnimator->RegisterEventListener("FlamethrowerStartSound", [this]() // 소리가 안나옴
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_Start_", 3); }
+	);
+	m_pAnimator->RegisterEventListener("FlamethrowerLoopSound", [this]()
+		{
+			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_Loop_0"); }
+	);
+	m_pAnimator->RegisterEventListener("FlamethrowerEndSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_End_", 3); }
+	);
+
+	m_pAnimator->RegisterEventListener("StrikeSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_RArm_Roll_", 3); }
+	);
+
+	m_pAnimator->RegisterEventListener("RunSound", [this]()
+		{
+			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Run_", 3); }
+	);
+
+	m_pAnimator->RegisterEventListener("SlamSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_RArm_Impact_", 6); }
+	);
+
+	m_pAnimator->RegisterEventListener("SwingAfterSalmSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_WS_Short_", 3); }
+	);
+	m_pAnimator->RegisterEventListener("SwingAtkStartSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_RArm_Roll_", 3); }
+	);
+
+	m_pAnimator->RegisterEventListener("FireOilSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_RArm_Put_", 3); }
+	);
+	m_pAnimator->RegisterEventListener("StandUpSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Standup_", 6); }
+	);
+}
+
 void CFuoco::UpdatePatternWeight(_int iPattern)
 {
 	m_PatternCountMap[iPattern]++;
@@ -1691,23 +1803,28 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	ReceiveDamage(pOther, eColliderType);
 
+	if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
+	{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Dmg_", 3);
+	}
+
 	if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 	{
-		auto pAnimator = pPlayer->Get_Animator();
-		_vector vDir = GetTargetDirection();
-		_float fDot = XMVectorGetX(XMVector3Dot(vDir, pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
-		if (fDot > 0.f)
-		{
-			pAnimator->SetInt("HitDir", 2); // 뒤에서 맞음
-		}
-		else if (fDot < 0.f)
-		{
-			pAnimator->SetInt("HitDir", 0); // 앞에서 맞음
-		}
-		else
-		{
-			pAnimator->SetInt("HitDir", 1); // 옆에서 맞음
-		}
+		//auto pAnimator = pPlayer->Get_Animator();
+		//_vector vDir = GetTargetDirection();
+		//_float fDot = XMVectorGetX(XMVector3Dot(vDir, pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
+		//if (fDot > 0.f)
+		//{
+		//	pAnimator->SetInt("HitDir", 2); // 뒤에서 맞음
+		//}
+		//else if (fDot < 0.f)
+		//{
+		//	pAnimator->SetInt("HitDir", 0); // 앞에서 맞음
+		//}
+		//else
+		//{
+		//	pAnimator->SetInt("HitDir", 1); // 옆에서 맞음
+		//}
 		_uint curNodeID = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->iNodeId;
 		switch (curNodeID)
 		{

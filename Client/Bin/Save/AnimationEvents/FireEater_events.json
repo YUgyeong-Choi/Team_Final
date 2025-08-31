@@ -34,6 +34,10 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 31.0
+                },
+                {
+                    "EventName": "SwingAfterSalmSound",
+                    "Time": 33.0
                 }
             ],
             "IsLoop": false,
@@ -66,6 +70,10 @@
                 },
                 {
                     "EventName": "OnSlamEffect",
+                    "Time": 56.0
+                },
+                {
+                    "EventName": "SlamSound",
                     "Time": 56.0
                 }
             ],
@@ -104,6 +112,10 @@
                 {
                     "EventName": "DecalScratchEffect",
                     "Time": 44.0
+                },
+                {
+                    "EventName": "SwingAfterSalmSound",
+                    "Time": 45.0
                 }
             ],
             "IsLoop": false,
@@ -147,6 +159,10 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 76.0
+                },
+                {
+                    "EventName": "SwingAfterSalmSound",
+                    "Time": 56.0
                 }
             ],
             "IsLoop": false,
@@ -214,6 +230,14 @@
                 {
                     "EventName": "OnSlamEffect",
                     "Time": 46.0
+                },
+                {
+                    "EventName": "SwingAtkStartSound",
+                    "Time": 47.0
+                },
+                {
+                    "EventName": "SlamSound",
+                    "Time": 46.0
                 }
             ],
             "IsLoop": false,
@@ -264,6 +288,10 @@
                 {
                     "EventName": "OnSlamEffect",
                     "Time": 28.0
+                },
+                {
+                    "EventName": "SlamSound",
+                    "Time": 5.0
                 }
             ],
             "IsLoop": false,
@@ -292,7 +320,7 @@
                 },
                 {
                     "EventName": "ColliderArmOff",
-                    "Time": 104.0
+                    "Time": 106.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
@@ -304,6 +332,10 @@
                 },
                 {
                     "EventName": "OnSlamEffect",
+                    "Time": 99.0
+                },
+                {
+                    "EventName": "SlamSound",
                     "Time": 99.0
                 }
             ],
@@ -439,6 +471,10 @@
                 {
                     "EventName": "OnSlamEffect",
                     "Time": 42.0
+                },
+                {
+                    "EventName": "SlamSound",
+                    "Time": 42.0
                 }
             ],
             "IsLoop": false,
@@ -488,6 +524,14 @@
                 {
                     "EventName": "OffFury",
                     "Time": 158.0
+                },
+                {
+                    "EventName": "StrikeSound",
+                    "Time": 58.0
+                },
+                {
+                    "EventName": "RunSound",
+                    "Time": 58.0
                 }
             ],
             "IsLoop": false,
@@ -508,6 +552,14 @@
                 },
                 {
                     "EventName": "FireOilSecond",
+                    "Time": 126.0
+                },
+                {
+                    "EventName": "FireOilSound",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "FireOilSound",
                     "Time": 126.0
                 }
             ],
@@ -537,6 +589,10 @@
                 {
                     "EventName": "FireBallCombo",
                     "Time": 75.0
+                },
+                {
+                    "EventName": "FireBallSound",
+                    "Time": 50.0
                 }
             ],
             "IsLoop": false,
@@ -558,6 +614,10 @@
                 {
                     "EventName": "FireBallCombo",
                     "Time": 60.029998779296875
+                },
+                {
+                    "EventName": "FireBallSound",
+                    "Time": 15.0
                 }
             ],
             "IsLoop": false,
@@ -579,6 +639,10 @@
                 {
                     "EventName": "FireBallCombo",
                     "Time": 75.0
+                },
+                {
+                    "EventName": "FireBallSound",
+                    "Time": 50.0
                 }
             ],
             "IsLoop": false,
@@ -595,6 +659,12 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_12_End",
             "Duration": 114.0,
+            "Events": [
+                {
+                    "EventName": "FlamethrowerEndSound",
+                    "Time": 1.526676893234253
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -618,6 +688,10 @@
                 {
                     "EventName": "OnFlamethrowerEffect",
                     "Time": 27.0
+                },
+                {
+                    "EventName": "FlamethrowerLoopSound",
+                    "Time": 4.0
                 }
             ],
             "IsLoop": false,
@@ -643,6 +717,10 @@
                 {
                     "EventName": "OnFlamethrowerEffect",
                     "Time": 27.0
+                },
+                {
+                    "EventName": "FlamethrowerLoopSound",
+                    "Time": 4.0
                 }
             ],
             "IsLoop": false,
@@ -655,6 +733,10 @@
             "Events": [
                 {
                     "EventName": "Turnning",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "FlamethrowerStartSound",
                     "Time": 2.0
                 }
             ],
@@ -676,6 +758,14 @@
                 },
                 {
                     "EventName": "FireBall",
+                    "Time": 89.0
+                },
+                {
+                    "EventName": "FireBallSound",
+                    "Time": 57.0
+                },
+                {
+                    "EventName": "FireBallSound",
                     "Time": 89.0
                 }
             ],
@@ -851,6 +941,16 @@
         {
             "ClipName": "AS_Run_C_F",
             "Duration": 80.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 44.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -878,6 +978,16 @@
         {
             "ClipName": "AS_Turn_C_L",
             "Duration": 90.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 37.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 77.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -885,6 +995,16 @@
         {
             "ClipName": "AS_Turn_C_R",
             "Duration": 90.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 37.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 77.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -892,6 +1012,16 @@
         {
             "ClipName": "AS_Walk_C_B",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 70.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 110.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -899,6 +1029,20 @@
         {
             "ClipName": "AS_Walk_C_F",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 10.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 61.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 0.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -913,6 +1057,16 @@
         {
             "ClipName": "AS_Walk_C_L",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 61.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 110.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -920,6 +1074,16 @@
         {
             "ClipName": "AS_Walk_C_R",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 61.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 110.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0

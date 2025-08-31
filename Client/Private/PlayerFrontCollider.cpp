@@ -154,7 +154,7 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 			m_pOwner->SetbIsGroggyAttack(true);
 			m_pOwner->SetFatalTarget(pEliteUnit);
 		}
-		else
+		else if(eState != CEliteUnit::EEliteState::FATAL&&eState != CEliteUnit::EEliteState::GROGGY)
 		{
 			m_pOwner->SetbIsGroggyAttack(false);
 			m_pOwner->SetIsFatalBoss(false);

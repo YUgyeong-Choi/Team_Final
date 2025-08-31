@@ -146,6 +146,7 @@ void COil::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _v
 		if (m_bIsSpreaded == false)
 		{
 			m_bCanSpread = true;
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_PJ_Oil_Hit_", 3);
 		}
 	}
 }
@@ -196,7 +197,10 @@ HRESULT COil::Ready_Components()
 {
 	if (FAILED(__super::Ready_Components()))
 		return E_FAIL;
-	// 나중에 모델 불러오기
+
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_FireEater"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
     return S_OK;
 }
 
@@ -237,4 +241,5 @@ CGameObject* COil::Clone(void* pArg)
 void COil::Free()
 {
 	__super::Free();
+	Safe_Release(m_pSoundCom);
 }
