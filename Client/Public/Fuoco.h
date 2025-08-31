@@ -159,6 +159,8 @@ private:
     virtual HRESULT Ready_Effect();
 	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
+    virtual void Ready_SoundEvents() override;
+
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {   
     //    cout << "=== Attack Pattern Weights ===" << endl;

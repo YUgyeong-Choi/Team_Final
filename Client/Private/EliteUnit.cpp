@@ -70,7 +70,7 @@ HRESULT CEliteUnit::Initialize(void* pArg)
     if (FAILED(Ready_Effect()))
         return E_FAIL;
 
-
+    Ready_SoundEvents();
     return S_OK;
 }
 
@@ -304,14 +304,10 @@ void CEliteUnit::UpdateState(_float fTimeDelta)
         {
             m_bGroggyActive = false; 
             m_fGroggyGauge = 0.f;
+#ifdef _DEBUG
 			cout << "그로기 가능 시간 종료" << endl;
+#endif
         }
-
-    }
-    else
-    {
-        // 게이지는 조금씩 감소시키기(일단 주석)
-   //     m_fGroggyGauge = max(0.f, m_fGroggyGauge - fTimeDelta * 0.05f);
     }
     UpdateAttackPattern(fDistance, fTimeDelta);// 공격 패턴 업데이트
     UpdateMovement(fDistance, fTimeDelta);
@@ -478,82 +474,6 @@ _vector CEliteUnit::GetTargetDirection() const
 
 void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
 {
-  //  _float3	 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
-  //  _float4  rootMotionQuat = m_pAnimator->GetRootRotationDelta();
-
-  //  _vector vLocal = XMLoadFloat3(&rootMotionDelta);
-  //  vLocal = XMVectorScale(vLocal, m_fRootMotionAddtiveScale);
-  //  _vector vRotQuat = XMQuaternionNormalize(XMLoadFloat4(&rootMotionQuat));
-
-  //  _vector vScale, vCurRotQuat, vTrans;
-  //  XMMatrixDecompose(&vScale, &vCurRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
-  //  _vector vNewRotQut = XMQuaternionNormalize(XMQuaternionMultiply(vRotQuat, vCurRotQuat));
-
-  //  _vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vNewRotQut));
-  //  vWorldDelta = XMVectorSetY(vWorldDelta, 0.f);
-  //  _float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
-
-  //  _vector finalDelta = vWorldDelta;
-  //  float fLenSq = XMVectorGetX(XMVector3LengthSq(finalDelta));
-  //  if (fLenSq < 1e-6f) {
-  //      m_PrevWorldDelta = XMVectorZero();
-  //      return; // 루트모션 적용하지 않고 그대로 둠
-  //  }
-  //  //if (XMVectorGetX(XMVector3Length(m_PrevWorldDelta)) > m_fSmoothThreshold)
-  //  //{
-  //  //    //// 이전 프레임 이동이 있으면 현재 이동과 보간
-  //  //    //_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-  //  //    //finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
-  //  //    return;
-  //  //    m_PrevWorldDelta = finalDelta;
-  //  //}
-
-  //  _float fAnimSafeStep = 12.f * fTimeDelta; //
-  //  if (XMVectorGetX(XMVector3Length(finalDelta)) > fAnimSafeStep)
-  //      finalDelta = XMVector3Normalize(finalDelta) * fAnimSafeStep;
-  //  m_PrevWorldDelta = finalDelta;
-  //  _float fLen = XMVectorGetX(XMVector3Length(finalDelta));
-  //  if (fLen < 1e-6f)
-  //      cout << "PrevWorldDelta = ZERO" << endl;
-  //  else
-  //      cout << "PrevWorldDelta = " << fLen << endl;
-  //  _vector vNext = XMVectorAdd(vTrans, finalDelta);
-
-  //  if (m_pNaviCom)
-  //  {
-  //      if (m_pNaviCom->isMove(vNext))
-  //      {
-  //          // 갈 수 있으면 Y만 네비로 보정
-  //          _float fY = m_pNaviCom->Compute_NavigationY(vNext);
-  //          vTrans = XMVectorSetY(vNext, fY);
-		////	cout << "일반 이동" << endl;
-  //      }
-  //      else
-  //      {
-  //          _vector vSlideDir = m_pNaviCom->GetSlideDirection(vNext, XMVector3Normalize(finalDelta));
-  //          _vector vSlidePos = vTrans + vSlideDir * min(fDeltaMag, m_fSlideClamp);
-
-  //          if (m_pNaviCom->isMove(vSlidePos))
-  //          {
-		//		//cout << "슬라이드 이동" << endl;
-  //              _float fY = m_pNaviCom->Compute_NavigationY(vSlidePos);
-  //              vTrans = XMVectorSetY(vSlidePos, fY);
-  //          }
-  //          else
-  //          {
-		//		//cout << "이동 불가" << endl;
-  //              vTrans = XMVectorSetY(vTrans, m_pNaviCom->Compute_NavigationY(vTrans));
-  //          }
-  //      }
-  //  }
-
-  //  // 최종 매트릭스 갱신
-  //  _matrix newWorld =
-  //      XMMatrixScalingFromVector(vScale) *
-  //      XMMatrixRotationQuaternion(vNewRotQut) *
-  //      XMMatrixTranslationFromVector(vTrans);
-
-  //  m_pTransformCom->Set_WorldMatrix(newWorld);
 
     _float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 
@@ -662,7 +582,7 @@ void CEliteUnit::Reset()
 	m_fHP = m_fMaxHP;
     m_eCurrentState = EEliteState::IDLE;
 	m_ePrevState = EEliteState::IDLE;
-    m_bIsFirstAttack = false;
+    m_bIsFirstAttack = true;
 	m_fGroggyEndTimer = 0.f;
     m_fGroggyThreshold = 1.f;
 	m_fGroggyGauge = 0.f;
@@ -722,7 +642,10 @@ void CEliteUnit::EnterFatalHit()
 		m_fGroggyEndTimer = 0.f;
 		m_bGroggyActive = false;
 		m_fGroggyGauge = 0.f;
-		cout << "Elite Fatal Attack" << endl;
+        SwitchEmissive(false, 1.f);
+#ifdef _DEBUG
+        cout << "Elite Fatal Attack" << endl;
+#endif
     }
 }
 
@@ -758,9 +681,9 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
         _float fDamage = 0.f;
 		if (m_eUnitType == EUnitType::ELITE_MONSTER)
-			fDamage = pWeapon->Get_CurrentDamage() * 0.5f;
+			fDamage = pWeapon->Get_CurrentDamage() * 0.25f;
 		else
-			fDamage = pWeapon->Get_CurrentDamage() * 0.2f;
+			fDamage = pWeapon->Get_CurrentDamage() * 0.15f;
         m_fHP -= fDamage;
 
         if (nullptr != m_pHPBar)
@@ -785,17 +708,18 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         {
         case Client::EPlayerState::WEAKATTACKA:
         case Client::EPlayerState::WEAKATTACKB:
-			m_fGroggyGauge += 0.05f;
+			m_fGroggyGauge += m_fGroggyScale_Weak;
 			break;
         case Client::EPlayerState::STRONGATTACKA:
 		case Client::EPlayerState::STRONGATTACKB:
-            m_fGroggyGauge += 0.1f;
+            m_fGroggyGauge += m_fGroggyScale_Strong;
             break;
         case Client::EPlayerState::CHARGEA:
         case Client::EPlayerState::CHARGEB:
-            m_fGroggyGauge += 0.15f;
+            m_fGroggyGauge += m_fGroggyScale_Charge;
             if (m_bGroggyActive)
             {
+                SwitchEmissive(false, 1.f);
                 m_pAnimator->SetTrigger("Groggy");
 				m_eCurrentState = EEliteState::GROGGY;
                 m_bGroggyActive = false;
@@ -829,12 +753,16 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
             m_bGroggyActive = true;                  // 화이트 게이지 시작
             m_fGroggyEndTimer = m_fGroggyTimer;
             m_fGroggyGauge = m_fGroggyThreshold;
+#ifdef _DEBUG
             cout << "그로기 가능" << endl;
+#endif
             return;
         }
 
+#ifdef _DEBUG
         cout << "그로기 게이지 : " << m_fGroggyGauge << endl;
         cout << "그로기 상태 : " << m_bGroggyActive << endl;
+#endif
     }
 }
 

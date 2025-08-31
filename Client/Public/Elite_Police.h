@@ -99,10 +99,11 @@ private:
     virtual void SetupAttackByType(_int iPattern);
     void         Ready_AttackPatternWeight();
 private:
+    class CSwordTrailEffect* m_pWeaponTrailEffect = { nullptr };
 	class CWeapon_Monster* m_pWeapon = { nullptr };
     _bool m_bPlayedDetect = false;
 	_bool m_bSpawned = false;
-	_float m_fDetectRange = 10.f;
+	_float m_fDetectRange = 22.f;
     // 공격 관련
     _int   m_iPatternLimit = 1;
     _int   m_iFireBallComboCount = 0;
