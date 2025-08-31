@@ -1098,6 +1098,7 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
 		m_PatternCountMap[pattern] = 0;
 	}
+	SwitchEmissive(false, 1.f); 
 }
 
 _int CFuoco::GetRandomAttackPattern(_float fDistance)
@@ -1805,7 +1806,7 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	if (eColliderType == COLLIDERTYPE::PLAYER_WEAPON)
 	{
-			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Dmg_", 3);
+		m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Dmg_", 3);
 	}
 
 	if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))

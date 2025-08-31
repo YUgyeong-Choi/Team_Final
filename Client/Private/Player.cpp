@@ -306,7 +306,7 @@ CAnimController* CPlayer::GetCurrentAnimContrller()
 	return m_pAnimator->Get_CurrentAnimController();
 }
 
-void CPlayer::Set_HitTarger(CUnit* pTarget, _bool bDead)
+void CPlayer::Set_HitTarget(CUnit* pTarget, _bool bDead)
 {
 	if (bDead && m_pHitTarget == pTarget)
 	{

@@ -3,6 +3,7 @@
 #include "Weapon_Monster.h"
 #include "LockOn_Manager.h"
 #include "Client_Calculation.h"
+#include <Player.h>
 
 CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CEliteUnit{ pDevice, pContext }
@@ -24,11 +25,14 @@ HRESULT CElite_Police::Initialize(void* pArg)
 {
 	m_fMaxRootMotionSpeed = 30.f;
 	m_fRootMotionAddtiveScale = 1.f;
-	m_fAttckDleay = 3.5f;
-	m_fTooCloseDistance = 1.5f;
+	m_fAttckDleay = 2.5f;
+	m_fTooCloseDistance = 1.0f;
 	m_fChasingDistance = 2.f;
-	m_fMinimumTurnAngle = 120.f;
+	m_fMinimumTurnAngle = 140.f;
 	m_bIsFirstAttack = false;
+	m_fGroggyScale_Weak = 0.1f;
+	m_fGroggyScale_Strong = 0.15f;
+	m_fGroggyScale_Charge = 0.2f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -65,7 +69,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	m_fMaxHP = 150.f;
+	m_fMaxHP = 300.f;
 	m_fHP = m_fMaxHP;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
@@ -80,7 +84,8 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 
 
-	m_pHPBar->Set_MaxHp(m_fHP);
+	if(m_pHPBar)
+		m_pHPBar->Set_MaxHp(m_fHP);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
@@ -97,7 +102,6 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 
 	Ready_AttackPatternWeight();
-	m_bIsFirstAttack = false;
 	return S_OK;
 }
 
@@ -145,20 +149,30 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 	}
 #endif // _DEBUG
 
+	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
+	if (pCurState && pCurState->stateName.find("Death") != pCurState->stateName.npos)
+	{
+		m_fEmissive = 0.f;
+		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
+		{
+			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+			m_pWeapon->SetbIsActive(false);
+		}
+	}
+
+	if (m_fHP <= 0 &&m_ePrevState != EEliteState::DEAD)
+	{
+		m_pWeapon->Collider_FilterOff();
+		EnableColliders(false);
+
+		static_cast<CPlayer*>(m_pPlayer)->Set_HitTarget(this, true);
+	}
+
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
-
-	//if (m_strStateName.find("Dead") != m_strStateName.npos)
-	//{
-	//	if (m_pAnimator->IsFinished())
-	//	{
-	//		m_pWeapon->Set_bDead();
-	//	}
-	//}
-
 }
 
 void CElite_Police::Update(_float fTimeDelta)
@@ -256,7 +270,7 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 			else               // 플레이어가 왼쪽에 있음
 				m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::LEFT));
 
-			m_fChangeMoveDirCooldown = 1.5f;
+			m_fChangeMoveDirCooldown = 1.0f;
 		}
 		else
 		{
@@ -494,6 +508,21 @@ void CElite_Police::Register_Events()
 			m_pTransformCom->RotateToDirectionImmediately(vDir);
 		});
 
+	m_pAnimator->RegisterEventListener("WeaponAttackOn", [this]() {
+
+		if (m_pWeapon == nullptr)
+			return;
+		m_pWeapon->SetisAttack(true);
+		m_pWeapon->Clear_CollisionObj();
+		});
+
+	m_pAnimator->RegisterEventListener("WeaponAttackOff", [this]() {
+		if (m_pWeapon == nullptr)
+			return;
+		m_pWeapon->SetisAttack(false);
+		m_pWeapon->Clear_CollisionObj();
+		});
+
 }
 
 void CElite_Police::Reset()
@@ -501,6 +530,9 @@ void CElite_Police::Reset()
 	__super::Reset();
 	m_bPlayedDetect = false;
 	m_bSpawned = false;
+	m_fGroggyScale_Weak = 0.1f;
+	m_fGroggyScale_Strong = 0.15f;
+	m_fGroggyScale_Charge = 0.2f;
 }
 
 _int CElite_Police::GetRandomAttackPattern(_float fDistance)
@@ -617,7 +649,7 @@ void CElite_Police::Ready_AttackPatternWeight()
 	m_PatternWeightMap.clear();
 	m_PatternCountMap.clear();
 	vector<EPoliceAttackPattern> m_vecBossPatterns = {
-			COMBO1, COMBO2, COMBO3, COMBO4,COMBO5
+			COMBO1, COMBO2, COMBO3,COMBO5
 	};
 
 	for (const auto& pattern : m_vecBossPatterns)
@@ -629,6 +661,7 @@ void CElite_Police::Ready_AttackPatternWeight()
 
 void CElite_Police::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+
 }
 
 void CElite_Police::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -645,6 +678,7 @@ void CElite_Police::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CElite_Police::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+	ReceiveDamage(pOther, eColliderType);
 }
 
 void CElite_Police::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)

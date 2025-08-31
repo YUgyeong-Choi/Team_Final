@@ -143,6 +143,9 @@ protected:
 	
 
 	 _bool   m_bGroggyActive = false;
+	 _float  m_fGroggyScale_Weak = 0.05f;   // 약공격에 대한 게이지 증가율
+	 _float  m_fGroggyScale_Strong = 0.1f; // 강공격에 대한 게이지 증가율
+	 _float  m_fGroggyScale_Charge = 0.15f; // 차지공격에 대한 게이지 증가율
 	_float   m_fGroggyGauge  = 0.f;       // 누적 값
 	_float   m_fGroggyThreshold = 1.f;   // 발동 기준
 	_float   m_fGroggyTimer = 7.f;       // 화이트 게이지 유지 시간
@@ -189,9 +192,6 @@ protected:
 	list<pair<_wstring, _bool>> m_ActiveEffect; // 활성화된 이펙트 (이름, 한번만 실행할지)
 
 	_float m_fMinimumTurnAngle = 35.f;
-
-	_bool m_isGroggy = {};
-
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

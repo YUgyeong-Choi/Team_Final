@@ -13,7 +13,7 @@
             "Events": [
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 38.31999969482422
+                    "Time": 42.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
@@ -26,6 +26,14 @@
                 {
                     "EventName": "Turnnig",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "WeaponAttackOn",
+                    "Time": 58.0
+                },
+                {
+                    "EventName": "WeaponAttackOff",
+                    "Time": 69.0
                 }
             ],
             "IsLoop": false,
@@ -45,7 +53,7 @@
             "Events": [
                 {
                     "EventName": "SetRootStep",
-                    "Time": 1.0
+                    "Time": 2.0
                 },
                 {
                     "EventName": "ResetRootStep",
@@ -62,6 +70,14 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 60.0
+                },
+                {
+                    "EventName": "WeaponAttackOn",
+                    "Time": 46.0
+                },
+                {
+                    "EventName": "WeaponAttackOff",
+                    "Time": 57.0
                 }
             ],
             "IsLoop": false,
@@ -81,7 +97,7 @@
             "Events": [
                 {
                     "EventName": "SetRootStep",
-                    "Time": 1.0
+                    "Time": 20.0
                 },
                 {
                     "EventName": "ResetRootStep",
@@ -102,6 +118,14 @@
                 {
                     "EventName": "Turnnig",
                     "Time": 3.123917579650879
+                },
+                {
+                    "EventName": "WeaponAttackOn",
+                    "Time": 74.0
+                },
+                {
+                    "EventName": "WeaponAttackOff",
+                    "Time": 84.0
                 }
             ],
             "IsLoop": false,
@@ -130,6 +154,14 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 77.0
+                },
+                {
+                    "EventName": "WeaponAttackOn",
+                    "Time": 68.0
+                },
+                {
+                    "EventName": "WeaponAttackOff",
+                    "Time": 76.0
                 }
             ],
             "IsLoop": false,
@@ -162,7 +194,7 @@
             "Events": [
                 {
                     "EventName": "SetRootLargeStep",
-                    "Time": 75.0
+                    "Time": 60.0
                 },
                 {
                     "EventName": "ResetRootStep",
@@ -178,7 +210,7 @@
                 },
                 {
                     "EventName": "Turnnig",
-                    "Time": 32.0
+                    "Time": 45.0
                 }
             ],
             "IsLoop": false,

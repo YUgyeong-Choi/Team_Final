@@ -797,6 +797,10 @@
                 {
                     "EventName": "SetRootStep",
                     "Time": 3.0
+                },
+                {
+                    "EventName": "StandUpSound",
+                    "Time": 116.0
                 }
             ],
             "IsLoop": false,
@@ -845,6 +849,12 @@
         {
             "ClipName": "AS_Groggy_End",
             "Duration": 100.0,
+            "Events": [
+                {
+                    "EventName": "StandUpSound",
+                    "Time": 6.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -920,6 +930,12 @@
         {
             "ClipName": "AS_Paralyzation_End",
             "Duration": 115.0,
+            "Events": [
+                {
+                    "EventName": "StandUpSound",
+                    "Time": 17.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

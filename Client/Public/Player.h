@@ -81,7 +81,7 @@ public:
 	CAnimController* GetCurrentAnimContrller();
 
 	// 몬스터가 죽을 때 불러줌
-	void Set_HitTarger(CUnit* pTarget, _bool bDead);
+	void Set_HitTarget(CUnit* pTarget, _bool bDead);
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
 	void			CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
