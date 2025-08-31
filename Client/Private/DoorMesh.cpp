@@ -28,7 +28,9 @@ HRESULT CDoorMesh::Initialize(void* pArg)
 
 	m_eInteractType = pDoorMeshDESC->eInteractType;
  	m_pBGM = pDoorMeshDESC->pBGM;
+ 	m_pBGM2 = pDoorMeshDESC->pBGM2;
 	Safe_AddRef(m_pBGM);
+	Safe_AddRef(m_pBGM2);
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -158,6 +160,10 @@ void CDoorMesh::Play_BGM(_float fTimeDelta)
 					m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_Train_Out_Rain");
 					m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 					m_pBGM->Play();
+
+					m_pBGM2 = m_pGameInstance->Get_Single_Sound("AMB_SS_Trainstation_Raindrop");
+					m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+					m_pBGM2->Play();
 					break;
 				default:
 					break;
@@ -181,7 +187,7 @@ void CDoorMesh::Play_BGM(_float fTimeDelta)
 				case Client::TUTORIALDOOR:
 					m_pBGM->Stop();
 					Safe_Release(m_pBGM);
-					m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
+					m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_Train_In_03");
 					m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 					m_pBGM->Play();
 					break;
@@ -292,4 +298,5 @@ void CDoorMesh::Free()
 	Safe_Release(m_pPhysXTriggerCom);
 	Safe_Release(m_pSoundCom);
 	Safe_Release(m_pBGM);
+	Safe_Release(m_pBGM2);
 }

@@ -167,6 +167,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pLevel_Manager->Late_Update(fTimeDelta);
 
 	m_pObject_Manager->Last_Update(fTimeDelta);
+
 	m_pPhysX_Manager->Update_OnTriggerStay();
 
  	m_pPhysX_Manager->Simulate(fTimeDelta);

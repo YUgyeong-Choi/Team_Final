@@ -24,6 +24,7 @@ public:
 		_vector vTriggerOffset;
 		_vector vTriggerSize;
 		CSound_Core* pBGM;
+		CSound_Core* pBGM2;
 	}DOORMESH_DESC;
 protected:
 	CDoorMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -56,6 +57,7 @@ private:
 
 	// 레벨에서 받아온 BGM
 	CSound_Core* m_pBGM = { nullptr };
+	CSound_Core* m_pBGM2 = { nullptr };
 	_bool m_bInSound = false;
 	_bool m_bBGMToZero = false;
 	_bool m_bBGMToVolume = false;

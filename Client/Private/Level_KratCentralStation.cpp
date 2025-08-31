@@ -44,7 +44,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->Set_IsChangeLevel(false);
 
 	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
+	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_Train_In_03");
 	m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
 	m_pBGM->Play();
 
@@ -1154,6 +1154,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
 	Desc.pBGM = m_pBGM;
+	Desc.pBGM2 = m_pBGM2;
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
@@ -1448,6 +1449,12 @@ void CLevel_KratCentralStation::Free()
 	{
 		m_pBGM->Stop();
 		Safe_Release(m_pBGM);
+	}
+
+	if (m_pBGM2)
+	{
+		m_pBGM2->Stop();
+		Safe_Release(m_pBGM2);
 	}
 	Safe_Release(m_pShaderComPBR);
 	Safe_Release(m_pShaderComANIM);
