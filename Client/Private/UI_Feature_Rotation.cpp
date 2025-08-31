@@ -36,18 +36,16 @@ HRESULT CUI_Feature_Rotation::Initialize(void* pArg)
 
     m_strProtoTag = TEXT("Prototype_Component_UI_Feature_Rotation");
 
+
+    m_vInitPos = { pDesc->fInitPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - pDesc->fInitPos.y * g_iWinSizeY, 0.f, 1.f };
+    m_vCenter = { m_fRotationPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fRotationPos.y * g_iWinSizeY, 0.f, 1.f };
+    m_vOffset =   m_vCenter - m_vInitPos;
+
     return S_OK;
 }
 
 void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool isReverse)
 {
-  
-    if (m_iCurrentFrame == 0)
-    {
-        m_vInitPos = pUI->Get_TransfomCom()->Get_State(STATE::POSITION);
-        m_vCenter = { m_fRotationPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fRotationPos.y * g_iWinSizeY, 0.f, 1.f };
-        m_vOffset = m_vInitPos - m_vCenter;
-    }
 
     if (m_iStartFrame == m_iEndFrame)
         return;
@@ -70,11 +68,6 @@ void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool i
     float t = std::clamp(float(m_iCurrentFrame) / m_iRange, 0.f, 1.f);
 
    
-
-    _vector qCurrent = {};
-
-    _float fPreRotation = m_fCurrentRotation;
-
     // 방향에 따라 보간 순서 변경
     if (!isReverse)
     {
@@ -84,12 +77,13 @@ void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool i
     }
     else
     {
-  
-      
+     
         m_fCurrentRotation = LERP(m_fStartRotation, m_fEndRotation, t);
+    
     }
 
-    qCurrent = XMQuaternionRotationAxis({ 0,0,1 }, XMConvertToRadians(m_fCurrentRotation));
+
+    _matrix matRotate = XMMatrixRotationZ(XMConvertToRadians(m_fCurrentRotation));
 
 
    
@@ -97,11 +91,10 @@ void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool i
     _vector vScale = pUI->Get_TransfomCom()->Get_Scale();
     _matrix mScale = XMMatrixScalingFromVector(vScale);
 
-    _vector vRotatedOffset = XMVector3Rotate(m_vOffset, qCurrent);
-
+    _vector vRotatedOffset = XMVector3TransformCoord(m_vOffset, matRotate);
     _vector vFinalPos = m_vCenter + vRotatedOffset;
 
-    _matrix mWorld = mScale* XMMatrixRotationQuaternion(qCurrent)* XMMatrixTranslationFromVector(vFinalPos);
+    _matrix mWorld = mScale* matRotate * XMMatrixTranslationFromVector(vFinalPos);
     pUI->Get_TransfomCom()->Set_WorldMatrix(mWorld);
 
 
@@ -120,10 +113,9 @@ UI_FEATURE_TOOL_DESC CUI_Feature_Rotation::Get_Desc_From_Tool()
     eDesc.iType = 4;
     eDesc.iStartFrame = m_iStartFrame;
     eDesc.iEndFrame = m_iEndFrame;
-    eDesc.fStartAlpha = m_fCurrentRotation;
+    eDesc.fStartAlpha = m_fStartRotation;
     eDesc.fEndAlpha = m_fEndRotation;
     eDesc.strTypeTag = "Rotation";
-
 
     return eDesc;
 }
@@ -137,6 +129,7 @@ UI_FEATRE_DESC& CUI_Feature_Rotation::Get_Desc()
     m_eDesc.fEndRotation = m_fEndRotation;
     m_eDesc.fRotationPos = m_fRotationPos;
     m_eDesc.strProtoTag = "Prototype_Component_UI_Feature_Rotation";
+    m_eDesc.fInitPos = { m_vInitPos.m128_f32[0], m_vInitPos.m128_f32[1] };
 
     return m_eDesc;
 }
@@ -153,6 +146,9 @@ json CUI_Feature_Rotation::Serialize()
     j["RotationPos"]["X"] = m_fRotationPos.x;
     j["RotationPos"]["Y"] = m_fRotationPos.y;
 
+    j["Initpos"]["X"] = m_fInitPos.x;
+    j["Initpos"]["Y"] = m_fInitPos.y;
+
     j["FeatureProtoTag"] = "Prototype_Component_UI_Feature_Rotation";
 
 
@@ -168,9 +164,19 @@ void CUI_Feature_Rotation::Deserialize(const json& j)
 
     m_fRotationPos = { j["RotationPos"]["X"] , j["RotationPos"]["Y"] };
 
+    m_fInitPos = { j["Initpos"]["X"],  j["Initpos"]["Y"] };
+
     string strPrototag = j["FeatureProtoTag"];
     m_strProtoTag = StringToWStringU8(strPrototag);
+
+
+    m_vInitPos = { m_fInitPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fInitPos.y * g_iWinSizeY, 0.f, 1.f };
+    m_vCenter = { m_fRotationPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fRotationPos.y * g_iWinSizeY, 0.f, 1.f };
+    m_vOffset = m_vInitPos - m_vCenter  ;
 }
+
+
+
 
 CUI_Feature_Rotation* CUI_Feature_Rotation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

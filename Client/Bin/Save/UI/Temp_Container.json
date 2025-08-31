@@ -40,9 +40,13 @@
                     {
                         "EndRotation": 360.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.5,
+                            "Y": 0.39
+                        },
                         "RotationPos": {
                             "X": 0.5,
-                            "Y": 0.495
+                            "Y": 0.4950000047683716
                         },
                         "StartRotation": 0.0,
                         "iEndFrame": 60,
@@ -73,28 +77,32 @@
                 },
                 "Features": [
                     {
-                        "EndRotation": 300.0,
+                        "EndRotation": 450.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.5,
+                            "Y": 0.4
+                        },
                         "RotationPos": {
                             "X": 0.5,
-                            "Y": 0.51
+                            "Y": 0.5
                         },
-                        "StartRotation": 30.0,
+                        "StartRotation": -30.0,
                         "iEndFrame": 60,
-                        "iStartFrame": 1,
+                        "iStartFrame": 0,
                         "isLoop": false
                     }
                 ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
                 "SizeX": 80.0,
-                "SizeY": 270.0,
+                "SizeY": 274.5,
                 "Texturetag": "Prototype_Component_Texture_Watch_Needle",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
                 "fX": 800.0,
-                "fY": 361.8000183105469,
+                "fY": 364.5,
                 "iPassIndex": 1,
                 "iTextureIndex": 1,
                 "iTextureLevel": 0

@@ -445,6 +445,7 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			fadeDesc.fStartRotation = eDesc.fStartAlpha;
 			fadeDesc.fEndRotation = eDesc.fEndAlpha;
 			fadeDesc.fRotationPos = eDesc.fStartPos;
+			fadeDesc.fInitPos = eDesc.fEndPos;
 
 			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(fadeDesc.strProtoTag), &fadeDesc);
 
