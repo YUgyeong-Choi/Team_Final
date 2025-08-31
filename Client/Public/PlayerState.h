@@ -706,6 +706,7 @@ public:
                 m_pOwner->m_pAnimator->SetBool("HasLamp", false);
                 m_pOwner->m_pAnimator->SetTrigger("UseItem");
                 m_pOwner->m_bUsePulse = true;
+                m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Item_Fail_", 3);
             }
             else
             {
@@ -713,6 +714,7 @@ public:
                 m_pOwner->m_pAnimator->SetTrigger("Pulse");
                 m_pOwner->m_pAnimator->SetTrigger("UseItem");
                 m_pOwner->m_bUsePulse = true;
+                m_pOwner->m_pSoundCom->Play("SE_PC_FX_Item_Heal");
             }
         }
 
@@ -2043,7 +2045,7 @@ public:
                     m_pOwner->m_pAnimator->SetInt("HitDir", 0);
                     m_pOwner->m_pAnimator->SetTrigger("Hited");
 
-                    m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_Guard_", 3);
+                    m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_M_Guard_Metal_", 6);
 
                 }
             }
