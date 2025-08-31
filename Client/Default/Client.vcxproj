@@ -219,6 +219,7 @@
     <ClInclude Include="..\Public\TriggerSound.h" />
     <ClInclude Include="..\Public\TriggerTalk.h" />
     <ClInclude Include="..\Public\TriggerUI.h" />
+    <ClInclude Include="..\public\UI_Button_Script.h" />
     <ClInclude Include="..\public\UI_Fatal_Icon.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
     <ClInclude Include="..\public\Fuoco.h" />
@@ -453,6 +454,7 @@
     <ClCompile Include="..\Private\TriggerUI.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
+    <ClCompile Include="..\private\UI_Button_Script.cpp" />
     <ClCompile Include="..\Private\UI_Container.cpp" />
     <ClCompile Include="..\private\UI_Fatal_Icon.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />

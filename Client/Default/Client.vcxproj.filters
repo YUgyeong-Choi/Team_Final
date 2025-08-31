@@ -466,6 +466,9 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Basic">
       <UniqueIdentifier>{c36f0b3c-c3fe-4ba7-a261-cb942f41f202}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Button">
+      <UniqueIdentifier>{b6828a60-69e9-498a-8a8d-e54993171365}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -988,6 +991,9 @@
     <ClInclude Include="..\public\BossUnit.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Button_Script.h">
+      <Filter>02.GameObjects\99.UI\Container\Button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1483,6 +1489,9 @@
     </ClCompile>
     <ClCompile Include="..\private\BossUnit.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Button_Script.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -153,6 +153,9 @@ void CUIObject::Update_Data()
 void CUIObject::Set_Position(_float fX, _float fY)
 {
 
+	m_fX = fX;
+	m_fY = fY;
+
 	D3D11_VIEWPORT			ViewportDesc{};
 	_uint					iNumViewports = { 1 };
 

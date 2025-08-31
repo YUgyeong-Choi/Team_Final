@@ -1,6 +1,7 @@
 #pragma once
 #include "Unit.h"
 #include "Client_Defines.h"
+#include "UI_Button_Script.h"
 
 NS_BEGIN(Client)
 class CWego : public CUnit
@@ -43,6 +44,10 @@ private: /* [ Setup 함수 ] */
 	void LoadNpcTalkData(string filePath);
 
 	void LoadAnimDataFromJson();
+
+private:
+	void Update_Button();
+
 private:
 	CPhysXDynamicActor* m_pPhysXTriggerCom = { nullptr };
 
@@ -58,6 +63,14 @@ private:
 	_bool m_bAutoTalk = {};
 	
 	_bool m_bFinish = false;
+
+	// 버튼에 필요한 변수들?
+	vector<CUI_Button_Script*> m_pSelectButtons;
+	_int m_iButtonActiveIndex = {-1};
+	_int m_iSelectButtonIndex = {};
+	vector<_int> m_NextIndex = {};
+	vector<_bool> m_CheckButtonSelct = {};
+
 public:
 	static CWego* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
