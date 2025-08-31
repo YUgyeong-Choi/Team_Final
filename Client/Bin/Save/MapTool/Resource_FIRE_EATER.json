@@ -38,7 +38,7 @@
         "Collision": false,
         "ModelName": "SM_Factory_BasePipe_06",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_06.bin"
     },
     {
@@ -80,7 +80,7 @@
         "Collision": false,
         "ModelName": "SM_Factory_Generator_01",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Generator_01.bin"
     },
     {
@@ -115,15 +115,22 @@
         "Collision": false,
         "ModelName": "SM_LightProp_Light_02",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_02.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_LightProp_Light_04",
         "NoInstancing": false,
-        "ObjectCount": 6,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Sign_Chain_01",
+        "NoInstancing": false,
+        "ObjectCount": 7,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Chain_01.bin"
     },
     {
         "Collision": false,

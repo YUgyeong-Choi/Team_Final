@@ -94,7 +94,7 @@ void CWego::Update(_float fTimeDelta)
 
 							break;
 						}
-						m_curTalkIndex = _int(m_NpcTalkData[m_curTalkType].size() - 1);
+						m_curTalkIndex = static_cast<_int>(m_NpcTalkData[m_curTalkType].size()) - 1;
 					}
 
 				}
@@ -449,7 +449,7 @@ void CWego::Update_Button()
 			m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
 			++m_iSelectButtonIndex;
 			if (m_iSelectButtonIndex >= m_pSelectButtons.size())
-				m_iSelectButtonIndex = _int(m_pSelectButtons.size() - 1);
+				m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
 			m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
 		}
 

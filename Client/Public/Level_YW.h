@@ -64,6 +64,7 @@ private:
 	enum class Map {
 		STATION,
 		HOTEL,
+		OUTER,
 		FIRE_EATER,
 		TEST,
 		END
@@ -72,6 +73,7 @@ private:
 	const _char* m_Maps[static_cast<_int>(Map::END)] = {
 		"STATION",
 		"HOTEL",
+		"OUTER",
 		"FIRE_EATER",
 		"TEST"
 	};

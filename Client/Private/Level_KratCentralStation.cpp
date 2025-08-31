@@ -228,6 +228,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
+	if (FAILED(Add_MapActor("OUTER")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
 	if (FAILED(Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 
@@ -911,6 +913,8 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	if (FAILED(Ready_Monster("STATION")))
 		return E_FAIL;
 	if (FAILED(Ready_Monster("HOTEL")))
+		return E_FAIL;
+	if (FAILED(Ready_Monster("OUTER")))
 		return E_FAIL;
 	if (FAILED(Ready_Monster("FIRE_EATER")))
 		return E_FAIL;
