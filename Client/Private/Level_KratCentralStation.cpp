@@ -1054,7 +1054,7 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 
 	CGameObject* pEC = { nullptr };
 
-	presetmat = XMMatrixTranslation(60.f, 20.f, -7.1f);
+	presetmat = XMMatrixTranslation(62.f, 10.f, -7.2f);
 	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
 	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain"), &ECDesc);
 	if (pEC == nullptr)
@@ -1062,7 +1062,7 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_1"), static_cast<CEffectContainer*>(pEC));
 
 	pEC = nullptr;
-	presetmat = XMMatrixTranslation(80.f, 20.f, -8.f);
+	presetmat = XMMatrixTranslation(88.8f, 10.f, -7.3f);
 	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
 	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain"), &ECDesc);
 	if (pEC == nullptr)

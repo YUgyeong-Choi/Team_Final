@@ -170,13 +170,19 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out;
-    vector vColor = g_DiffuseTexture.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-    vColor = ColorAdjustment_Multiply(vColor, g_vColor);
+    float fPremask = g_DiffuseTexture.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     float fMask = g_MaskTexture1.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x);
     float fade = 1.0 - smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
-    vColor.a *= fade * fMask;
+        
+    float4 vPreColor;
+    float lerpFactor = saturate((fMask - g_fThreshold) / (1.f - g_fThreshold));
 
+    vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    float4 vColor;
+    vColor.rgb = vPreColor.rgb * fPremask * g_fIntensity;
+    vColor.a = vPreColor.a * fMask * fade;
     
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);

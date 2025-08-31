@@ -62,7 +62,9 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	class CSwordTrailEffect* m_pHitTrailEffect = { nullptr }; // 타격 시에만 나오는 트레일 이펙트 전용
-	//class CEffectContainer* m_pEffectContainer = { nullptr };
+	_vector				m_vEndSocketPrevPos = {};	// 타격 시 방향 구하는 용도로 씀
+	_vector				m_vEndSocketCurPos = {};
+
 
 public:
 	static CBayonet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
