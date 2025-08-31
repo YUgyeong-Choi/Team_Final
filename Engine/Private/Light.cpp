@@ -118,6 +118,10 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 }
 HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
+	AREAMGR eArea = m_pGameInstance->GetCurrentAreaMgr();
+	if (eArea == AREAMGR::DEBUG)
+		return S_OK;
+
 	/* [ º¼·ý¸ÞÆ®¸¯ Àü¿ë ·»´õ ] */
 	if(!m_LightDesc.bIsVolumetric)
 		return S_OK; // º¼·ý¸ÞÆ®¸¯ÀÌ ²¨Áö¸é ·»´õ¸µÇÏÁö ¾Ê´Â´Ù.
@@ -126,14 +130,14 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
 	{
-		AREAMMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
-		if (eAreaMgr == AREAMMGR::HOTEL)
+		AREAMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
+		if (eAreaMgr == AREAMGR::HOTEL)
 		{
 			_float fFogDensity = 0.2f;
 			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))
 				return E_FAIL;
 		}
-		else if (eAreaMgr == AREAMMGR::STATION)
+		else if (eAreaMgr == AREAMGR::STATION)
 		{
 			_float fFogDensity = 0.4f;
 			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))

@@ -44,7 +44,7 @@ namespace Client
 	const unsigned int			g_iWinSizeY = 900;
 
 	const float g_fBGMSoundVolume = 1.f; // BGM º¼·ý
-	const float g_fInteractSoundVolume = 1.f; // NPC´ëÈ­ º¼·ý
+	const float g_fInteractSoundVolume = 0.7f; // NPC´ëÈ­ º¼·ý
 	const float g_fObjectSoundVolume = 1.f; // OBJECT º¼·ý
 }
 

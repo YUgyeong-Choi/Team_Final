@@ -1,7 +1,9 @@
 
 #include "Engine_Shader_Defines.hlsli"
 #pragma pack_matrix(row_major)
- matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_WorldMatrixInvTrans;
+float4 g_CamposWS;
 
 matrix g_BoneMatrices[512];
 matrix g_BoneMatrices2[256];
@@ -31,6 +33,7 @@ float g_fMetallicIntensity = 1;
 float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
 float g_fEmissiveIntensity = 1;
+float g_fFuryIntensity = 1;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
 /* [ 피킹변수 ] */
@@ -131,36 +134,46 @@ VS_OUT_PBR VS_MAIN(VS_IN In)
 }
 
 
-VS_OUT VS_OUTLINE(VS_IN In)
+VS_OUT_PBR VS_LIMLIGHT(VS_IN In)
 {
-    /* 기타 변환들을 수행한다.*/
-    VS_OUT Out = (VS_OUT) 0;
-    
-    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+    VS_OUT_PBR Out = (VS_OUT_PBR) 0;
 
+    // 1) 스킨 가중치
+    float fWeightW = saturate(1.0f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z));
 
-    matrix BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
-        g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
-        g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
-        g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+    // 2) 스킨 매트릭스 (가중합)
+    float4x4 mSkin =
+          g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x
+        + g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y
+        + g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z
+        + g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
 
-    vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
-    vector vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
-    
-    vPosition += normalize(vNormal) * 0.01f;
-    
-    matrix matWV, matWVP;
-    
-    matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    matWVP = mul(matWV, g_ProjMatrix);
-    
-    Out.vPosition = mul(vPosition, matWVP);
-    Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+    // 3) 스킨 적용
+    float4 vPosSkinned = mul(float4(In.vPosition, 1.0f), mSkin);
+    float3 vNrmSkinned = normalize(mul((float3x3) mSkin, In.vNormal));
+    float3 vTanSkinned = normalize(mul((float3x3) mSkin, In.vTangent.xyz));
+
+    // 4) 월드 변환
+    float4 vPosWS = mul(vPosSkinned, g_WorldMatrix);
+
+    float3x3 mN = (float3x3) g_WorldMatrixInvTrans;
+    float3 vNrmWS = normalize(mul(vNrmSkinned, mN));
+    float3 vTanWS = normalize(mul(vTanSkinned, mN));
+
+    // 5) 클립 좌표
+    float4 vPosH = mul(mul(vPosWS, g_ViewMatrix), g_ProjMatrix);
+
+    // 6) 출력 (PS 림마스크가 쓰는 값들)
+    Out.vPosition = vPosH;
+    Out.vProjPos = vPosH;
+    Out.vWorldPos = vPosWS;
+    Out.vNormal = float4(vNrmWS, 1.f);
     Out.vTexcoord = In.vTexcoord;
-    Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
-    Out.vProjPos = Out.vPosition;
-    
-    
+
+    // (옵션) 기존 파이프 호환용
+    Out.vTangent = float4(vTanWS, 1.f);
+    Out.vBinormal = normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz));
+
     return Out;
 }
 
@@ -180,7 +193,7 @@ VS_OUT VS_INNERLINE(VS_IN In)
     vector vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
     vector vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
     
-    vPosition -= normalize(vNormal) * 0.01f;
+    vPosition -= normalize(vNormal) * 0.045f;
     
     matrix matWV, matWVP;
     
@@ -312,7 +325,8 @@ struct PS_OUT_PICK
 
 struct PS_OUT_LINE
 {
-    vector vDiffuse : SV_TARGET0;
+    vector vLimLight : SV_TARGET0;
+    vector vInnerLine : SV_TARGET1;
 };
 
 PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
@@ -443,44 +457,62 @@ float4 PS_Cascade2(VS_OUT_SHADOW In) : SV_TARGET2
 }
 
 
-PS_OUT_LINE PS_OUTLINE(PS_IN In)
+float4 PS_LIMLIGHT(PS_IN_PBR In) : SV_Target0
 {
-    PS_OUT_LINE Out;
-    
+    float4 Out;
+    // --- 기본 파라미터 ---
     float4 vEdgeColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
-    float fNoiseScale = 2.0f;
-    float fNoiseContrast = 1.0f;
-    float fEdgeSoftness = 0.1f;
-    float fScrollSpeed = 2.0f;
-    float fGlowBoost = 1.0f;
-    float fTimeSeconds = 0.0f;
+    float fNoiseScale = 0.5f;
+    float fNoiseContrast = 0.9f;
+    float fEdgeSoftness = 0.12f;
+    float fScrollSpeed = 0.0f; 
     
-    float2 vNoiseUV = In.vTexcoord * fNoiseScale
-                    + fTimeSeconds * fScrollSpeed * float2(0.17f, -0.09f);
+    float fTimeSeconds = 0.0f; 
+    float fRimPower = 2.4f; 
+    float fBandStart = 0.75f;
+    float fBandEnd = 0.80f; 
     
+    float3 vNrmWS = normalize(In.vNormal.xyz);
+    float3 vView = normalize(g_CamposWS.xyz - In.vWorldPos.xyz);
+    
+    float fDot = dot(vNrmWS, vView);
+    float fRim = pow(1.0f - saturate(abs(fDot)), fRimPower);
+    
+    float fBandWidth = 0.1f;
+    float fW = max(fwidth(fRim) * 1.5f, 1e-4f);
+    float fUp = smoothstep(fBandStart - fW, fBandEnd + fW, fRim);
+    float fOut = smoothstep(fBandEnd + fW, fBandEnd + fBandWidth + 2.0f * fW, fRim);
+    float fRimBand = saturate(fUp - fOut);
+    
+    // --- 노이즈 마스크 --- 
+    float2 vNoiseUV = In.vTexcoord * fNoiseScale + fTimeSeconds * fScrollSpeed * float2(0.17f, -0.09f);
     float fNoise = g_NoiseMap.Sample(DefaultSampler, vNoiseUV).r;
     fNoise = pow(saturate(fNoise), max(0.001f, fNoiseContrast));
+    float fNoiseMask = smoothstep(0.5f - fEdgeSoftness, 0.5f + fEdgeSoftness, fNoise);
+    float fMask = saturate(fRimBand * fNoiseMask);
+    float fA = vEdgeColor.a * fMask;
     
-    float fMask = smoothstep(0.5f - fEdgeSoftness, 0.5f + fEdgeSoftness, fNoise);
+    float fAmbientStrength = 0.2f;
+    float3 vAmbient = vEdgeColor.rgb * fAmbientStrength;
     
-    float3 vEdgeRGB = vEdgeColor.rgb * (1.0f + fGlowBoost * fMask);
-    float fAlpha = vEdgeColor.a * fMask;
-
-    Out.vDiffuse = float4(vEdgeRGB, fAlpha);
+    Out = float4(vEdgeColor.rgb * fMask, fMask);
+    Out += float4(vAmbient, 0.2f);
+    Out *= g_fFuryIntensity;
+    
     return Out;
     
 }
 
-PS_OUT_LINE PS_INNERLINE(PS_IN In)
+float4 PS_INNERLINE(PS_IN In) : SV_Target1
 {
-    PS_OUT_LINE Out;
+    float4 Out;
     
     float4 vEdgeColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
-    float fNoiseScale = 2.0f;
-    float fNoiseContrast = 1.0f;
-    float fEdgeSoftness = 0.1f;
+    float fNoiseScale = 0.5f;
+    float fNoiseContrast = 3.0f;
+    float fEdgeSoftness = 0.06f;
     float fScrollSpeed = 2.0f;
-    float fGlowBoost = 1.0f;
+    float fGlowBoost = 0.0f;
     float fTimeSeconds = 0.0f;
     
     float2 vNoiseUV = In.vTexcoord * fNoiseScale
@@ -494,7 +526,9 @@ PS_OUT_LINE PS_INNERLINE(PS_IN In)
     float3 vEdgeRGB = vEdgeColor.rgb * (1.0f + fGlowBoost * fMask);
     float fAlpha = vEdgeColor.a * fMask;
 
-    Out.vDiffuse = float4(vEdgeRGB, fAlpha);
+    Out = float4(vEdgeRGB, fAlpha);
+    Out *= g_fFuryIntensity;
+    
     return Out;
     
 }
@@ -564,21 +598,21 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_Cascade2(); // SV_TARGET2 전용
     }
    
-    pass OutLine //6
+    pass RimLight //6
     {
-        SetRasterizerState(RS_Outline);
-        SetDepthStencilState(DSS_Outline, 0);
-        SetBlendState(BS_AlphaBlend, float4(0, 0, 0, 0), 0xffffffff);
-
-        VertexShader = compile vs_5_0 VS_OUTLINE();
-        PixelShader = compile ps_5_0 PS_OUTLINE();
-    }
-
-    pass InnerLine //6
-    { 
         SetRasterizerState(RS_Inner);
         SetDepthStencilState(DSS_Inner, 0);
         SetBlendState(BS_AlphaBlend, float4(0, 0, 0, 0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_LIMLIGHT();
+        PixelShader = compile ps_5_0 PS_LIMLIGHT();
+    }
+
+    pass InnerLine //7
+    { 
+        SetRasterizerState(RS_Inner);
+        SetDepthStencilState(DSS_Inner, 0);
+        SetBlendState(BS_OneBlend, float4(0, 0, 0, 0), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_INNERLINE();
         PixelShader = compile ps_5_0 PS_INNERLINE(); 

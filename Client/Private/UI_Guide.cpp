@@ -254,17 +254,19 @@ void CUI_Guide::Check_Button()
         {
             if (m_pGameInstance->Key_Down(DIK_A))
             {
-                --m_iIndex;
-
-                if (m_iIndex < 0)
-                    m_iIndex = 0;
+                if (m_iIndex > 0)
+                {
+                    --m_iIndex;
+                    CUI_Manager::Get_Instance()->Sound_Play("SE_UI_TutorialChangePage_01");
+                }
             }
             else if (m_pGameInstance->Key_Down(DIK_D))
             {
-                ++m_iIndex;
-
-                if (m_iIndex >= m_iSize)
-                    m_iIndex = m_iSize - 1;
+                if (m_iIndex < m_iSize - 1)
+                {
+                    ++m_iIndex;
+                    CUI_Manager::Get_Instance()->Sound_Play("SE_UI_TutorialChangePage_01");
+                }
             }
 
 
@@ -338,20 +340,22 @@ void CUI_Guide::Click_Interaction()
         {
             if (m_Buttons[1]->Get_isActive() && m_Buttons[1]->Check_Click())
             {
-                ++m_iIndex;
-
-                if (m_iIndex >= m_iSize)
-                    m_iIndex = m_iSize - 1;
+                if (m_iIndex < m_iSize - 1)
+                {
+                    ++m_iIndex;
+                    CUI_Manager::Get_Instance()->Sound_Play("SE_UI_TutorialChangePage_01");
+                }
 
                 m_Buttons[1]->Set_isHighlight(false);
             }
 
             if (m_Buttons[2]->Get_isActive() && m_Buttons[2]->Check_Click())
             {
-                --m_iIndex;
-
-                if (m_iIndex < 0)
-                    m_iIndex = 0;
+                if (m_iIndex > 0)
+                {
+                    --m_iIndex;
+                    CUI_Manager::Get_Instance()->Sound_Play("SE_UI_TutorialChangePage_01");
+                }
 
                 m_Buttons[2]->Set_isHighlight(false);
             }

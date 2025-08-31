@@ -184,6 +184,8 @@ private: /* [ 이펙트 관리 함수 ]*/
 public: /* [ 페이탈 함수 ] */
 	void SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
 	_bool GetbIsBackAttack() const { return m_bIsBackAttack; }
+	void SetbIsGroggyAttack(_bool bIsGroggyAttack) { m_bIsGroggyAttack = bIsGroggyAttack; }
+	_bool GetbIsGroggyAttack() const { return m_bIsGroggyAttack; }
 	void SetFatalTarget(CUnit* pTarget) { m_pFatalTarget = pTarget; }
 	void SetFatalTargetNull() { m_pFatalTarget = nullptr; }
 	void SetIsFatalBoss(_bool bIsFatalBoss) { m_bIsFatalBoss = bIsFatalBoss; }
@@ -264,6 +266,7 @@ private: /* [ 전투관련 변수 ] */
 	_bool 	m_bIsChange = { false };
 	_bool 	m_bLockOnSprint = { false };
 	_bool   m_bIsBackAttack = { false };
+	_bool   m_bIsGroggyAttack = { false };
 	_bool   m_bIsFatalBoss = { false };
 
 	_float 	m_fChangeTime = {};
@@ -355,8 +358,6 @@ private: /* [ 특수키 ] */
 
 private: /* [ 리전 암 내구도 ] */
 	CLegionArm_Base* m_pLegionArm = { nullptr };
-	//_float  m_fLegionArmEnergy = { 100.f };
-	//_float  m_fMaxLegionArmEnergy = { 100.f };
 
 private: /* [ 현재 상태 ] */
 	_bool	m_bIsGuarding = { false };

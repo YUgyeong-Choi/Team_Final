@@ -1,0 +1,9 @@
+[
+    {
+        "Collision": true,
+        "ModelName": "FloorA",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorA.bin"
+    }
+]

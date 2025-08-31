@@ -20,7 +20,7 @@ public:
 	{
 		FURY_AIRBORNE,AIRBORNE,STRONG_KNOCKBACK,KNOCKBACK, NORMAL, FURY_STAMP, STAMP, NONE
 	};
-protected:
+public:
 	enum class EEliteState {
 		IDLE, WALK, RUN, TURN, ATTACK, GROGGY, PARALYZATION, FATAL, DEAD, CUTSCENE,NONE
 	};
@@ -44,7 +44,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 
 public:
-	const EAttackType Get_AttackType() const { m_eAttackType; }
+	EEliteState Get_CurrentState() const { return m_eCurrentState; }
+	void EnterFatalHit();
+	const EAttackType Get_AttackType() const { return m_eAttackType; }
 
 protected:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -122,6 +124,10 @@ protected:
 	_bool CanGroggyActive() const { return m_bGroggyActive; } // 그로기를 만들 수 있는 상태인지
 	virtual void Reset() override;
 	virtual void Register_Events() override;
+
+public:
+	EEliteState GetCurrentState() const { return m_eCurrentState; }
+
 protected:
 	CNavigation* m_pNaviCom = { nullptr };
 	CUI_MonsterHP_Bar* m_pHPBar = { nullptr };
@@ -134,7 +140,7 @@ protected:
 	// 체력
 	_float   m_fHP = 100.f;
 	_float   m_fMaxHP = 100.f;
-
+	
 
 	 _bool   m_bGroggyActive = false;
 	_float   m_fGroggyGauge  = 0.f;       // 누적 값

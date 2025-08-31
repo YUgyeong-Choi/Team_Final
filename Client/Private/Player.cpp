@@ -26,6 +26,7 @@
 
 #include "LegionArm_Base.h"
 #include "LegionArm_Steel.h"
+#include "EliteUnit.h"
 
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
@@ -162,7 +163,21 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_4))
 	{
-		PxVec3 pos = PxVec3(119.659203f, 3.f, -28.681953f);
+		PxVec3 pos = PxVec3(128.767609f, 4.716591f, -34.020145f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
+	if (KEY_DOWN(DIK_5))
+	{
+		PxVec3 pos = PxVec3(0.f, 10.f, -200.f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
+	if (KEY_DOWN(DIK_6))
+	{
+		PxVec3 pos = PxVec3(188.27f, 13.18f, -8.23f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}
@@ -1182,6 +1197,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		}
 		else if (m_eHitedTarget == eHitedTarget::BOSS)
 		{
+			
 			//가드 밀림 여부
 			_float  m_fTime = 0.1f;
 			_float  m_fDistance = 3.f;
@@ -1199,14 +1215,50 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::HITEDUP:
 	{
 		_float  m_fTime = 0.4f;
-		_float  m_fDistance = 2.f;
+		_float  m_fDistance = 3.f;
 		
-		if (m_pHitedTarget && !m_bMove)
+		if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE)
 		{
-			_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
-		
-			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
-			SyncTransformWithController(); 
+			if (m_pHitedTarget && !m_bMove)
+			{
+				const _vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+				_vector vForward = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
+				vForward = XMVector3Normalize(XMVectorSet(XMVectorGetX(vForward), 0.f, XMVectorGetZ(vForward), 0.f));
+
+				const _vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vForward));
+
+				const _vector vTargetPos = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+				const _vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+				_vector vToPlayer = XMVectorSubtract(vPlayerPos, vTargetPos);
+				vToPlayer = XMVector3Normalize(XMVectorSet(XMVectorGetX(vToPlayer), 0.f, XMVectorGetZ(vToPlayer), 0.f));
+
+				const _float fSide = XMVectorGetX(XMVector3Dot(vToPlayer, vRight));
+				const _float fSign = (fSide >= 0.f) ? static_cast<_float>(1.f) : static_cast<_float>(-1.f);
+
+				const _float fCos45 = 0.17f;
+				const _float fSin45 = 0.98f;
+
+				_vector vPushDir = XMVector3Normalize(XMVectorAdd(XMVectorScale(vForward, fCos45),XMVectorScale(vRight, fSign * fSin45)));
+
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vPushDir, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+			if (m_bMove)
+			{
+				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
+			}
+		}
+		else
+		{
+			if (m_pHitedTarget && !m_bMove)
+			{
+				_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
+
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
 		}
 		break;
 	}
@@ -1705,7 +1757,9 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		}
 
 		//가드 중에 피격시 스위치를 켠다.
-		if (m_bIsGuarding)
+		if (m_bIsGuarding &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_AIRBORNE &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_STAMP)
 		{
 			m_bGardHit = true;
 			return;
@@ -1825,7 +1879,9 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			return;
 		}
 
-		if (m_bIsGuarding)
+		if (m_bIsGuarding &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_AIRBORNE &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_STAMP)
 		{
 			m_bGardHit = true;
 			return;

@@ -109,8 +109,14 @@ void CDoorMesh::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		m_bCanActive = false;
 
 
-	m_bInSound = !m_bInSound;
-	m_bBGMToZero = true;
+	if (m_bFinish)
+	{
+		m_bInSound = !m_bInSound;
+		m_bBGMToZero = true;
+		m_bBGMToVolume = false;
+		m_fBGMVolume = 1.f;
+	}
+
 
 	CUI_Manager::Get_Instance()->Activate_Popup(false);
 }

@@ -89,6 +89,8 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 				eDesc.useLifeTime = true;
 				eDesc.fLifeTime = 8.f;
 				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), (m_strProtoName), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Trigger_UI"), &eDesc);
+
+				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertLocation_02");
 			}
 		}
 		else if (m_strProtoName == L"Prototype_GameObject_UI_Guide")

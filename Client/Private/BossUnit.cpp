@@ -1,7 +1,6 @@
 #include "BossUnit.h"
 #include "Player.h"
 #include "GameInstance.h"
-#include <PlayerFrontCollider.h>
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEliteUnit(pDevice, pContext)
@@ -16,8 +15,8 @@ CBossUnit::CBossUnit(const CBossUnit& Prototype)
 
 HRESULT CBossUnit::Initialize(void* pArg)
 {
-	m_fHP = 150.f;
-	m_fMaxHP = 150.f;
+	m_fMaxHP = 900.f;
+	m_fHP = m_fMaxHP;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -40,7 +39,7 @@ void CBossUnit::Priority_Update(_float fTimeDelta)
 
 void CBossUnit::EnterCutScene()
 {
-	ToggleEmissive(1.f);
+	SwitchEmissive(true, 1.f);
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
 }
@@ -49,6 +48,7 @@ void CBossUnit::Reset()
 {
 	__super::Reset();
 	m_eCurrentState = EEliteState::CUTSCENE;
+	m_ePrevState = EEliteState::CUTSCENE;
 	m_bIsPhase2 = false;
 	m_bStartPhase2 = false;
 	m_bCutSceneOn = false;
@@ -70,27 +70,7 @@ void CBossUnit::Ready_AttackPatternWeightForPhase2()
 
 void CBossUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::TRIGGER) // 이게 아마 플레이어의 프론트 콜라이더
-	{
-		if (auto pFrontTrigger = dynamic_cast<CPlayerFrontCollider*>(pOther))
-		{
-			if (m_bStartPhase2 == false && m_eCurrentState == EEliteState::GROGGY && m_pAnimator)
-			{
-				if (auto pPlayer = pFrontTrigger->Get_Owner())
-				{
-					if (pPlayer->Get_PlayerState() == EPlayerState::WEAKATTACKA ||
-						pPlayer->Get_PlayerState() == EPlayerState::WEAKATTACKB)
-					{
-						m_pAnimator->SetTrigger("Fatal");
-						m_fGroggyEndTimer = 0.f;
-						m_bGroggyActive = false;
-						m_fGroggyGauge = 0.f;
-						cout << "Elite Fatal Attack" << endl;
-					}
-				}
-			}
-		}
-	}
+	__super::On_CollisionStay(pOther, eColliderType, HitPos, HitNormal);
 }
 
 CBossUnit* CBossUnit::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
