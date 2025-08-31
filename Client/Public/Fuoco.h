@@ -192,7 +192,7 @@ private:
     // 공격 관련
 
     _int   m_iFireBallComboCount = 0;
-
+    _int   m_iLastComboType = -1;
     //_float m_fAttackCooldown = 0.f; // 공격 쿨타임
     //_float m_fAttckDleay = 4.f;
     _float m_fFireFlameDuration = 0.f;

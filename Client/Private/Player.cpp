@@ -818,6 +818,14 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::EQUIP:
 	{
+		if (!m_bSetSound)
+		{
+			if(m_bWeaponEquipped)
+				m_pSoundCom->Play_Random("SE_PC_WP_Bayonet_On_", 3);
+			else
+				m_pSoundCom->Play_Random("SE_PC_WP_Bayonet_Off_", 3);
+			m_bSetSound = true;
+		}
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
 	}
@@ -828,37 +836,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::ITEM:
 	{
-		if (m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
-		{
-			m_fSetSoundTime += fTimeDelta;
-			if (m_fSetSoundTime >= 0.7f && !m_bSetSound)
-			{
-				if (!m_bCheckSound)
-				{
-					m_pSoundCom->Play_Random("SE_PC_MT_Item_Monard_Lamp_", 3);
-					m_bSetSound = true;
-					m_bCheckSound = true;
-				}
-			}
-		}
-
 		break;
 	}
 	case eAnimCategory::ITEM_WALK:
 	{
-		if (m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
-		{
-			m_fSetSoundTime += fTimeDelta;
-			if (m_fSetSoundTime >= 0.7f && !m_bSetSound)
-			{
-				if (!m_bCheckSound)
-				{
-					m_pSoundCom->Play_Random("SE_PC_MT_Item_Monard_Lamp_", 3);
-					m_bSetSound = true;
-					m_bCheckSound = true;
-				}
-			}
-		}
 
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
@@ -1488,6 +1469,8 @@ void CPlayer::Register_Events()
 				XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vWorldMat.r[3].m128_f32[0], vWorldMat.r[3].m128_f32[1], vWorldMat.r[3].m128_f32[2]));
 				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Monad_P1"), &desc))
 					return;
+
+				m_pSoundCom->Play_Random("SE_PC_MT_Item_Monard_Lamp_", 3);
 			}
 		});
 	

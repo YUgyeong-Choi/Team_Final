@@ -20,11 +20,11 @@ public:
 	{
 		FURY_AIRBORNE,AIRBORNE,STRONG_KNOCKBACK,KNOCKBACK, NORMAL, FURY_STAMP, STAMP, NONE
 	};
-public:
 	enum class EEliteState {
 		IDLE, WALK, RUN, TURN, ATTACK, GROGGY, PARALYZATION, FATAL, DEAD, CUTSCENE,NONE
 	};
 
+protected:
 	enum class EMoveDirection {
 		FRONT, RIGHT, BACK, LEFT
 	};
@@ -44,7 +44,6 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 
 public:
-	EEliteState Get_CurrentState() const { return m_eCurrentState; }
 	void EnterFatalHit();
 	const EAttackType Get_AttackType() const { return m_eAttackType; }
 
@@ -188,7 +187,7 @@ protected:
 	unordered_map<_int, vector<_wstring>> m_EffectMap; // 이펙트 이름 맵 (패턴, 이름)
 	list<pair<_wstring, _bool>> m_ActiveEffect; // 활성화된 이펙트 (이름, 한번만 실행할지)
 
-	static constexpr _float MINIMUM_TURN_ANGLE = 35.f;
+	_float m_fMinimumTurnAngle = 35.f;
 
 	_bool m_isGroggy = {};
 

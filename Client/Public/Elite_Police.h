@@ -12,8 +12,8 @@ class CElite_Police final : public CEliteUnit
         Spawn_End = 100003,
         Idle = 100004,
         Walk_F = 100005,
-        Walk_L = 100006,
-        Walk_R = 100007,
+        Walk_L = 100096,
+        Walk_R = 100097,
         Walk_B = 100008,
         Run_F = 100009,
         Turn_L = 100012,
@@ -118,11 +118,11 @@ private:
     EPoliceAttackPattern m_ePrevAttackPattern = EPoliceAttackPattern::AP_NONE;
 
     vector<EPoliceAttackPattern> m_vecCloseAttackPatterns = {
-        COMBO1, COMBO2, COMBO3, COMBO4,COMBO5
+        COMBO1, COMBO2, COMBO3,COMBO5
     };
 
     vector<EPoliceAttackPattern> m_vecMiddleAttackPatterns = {
-			COMBO1, COMBO2, COMBO3, COMBO4,COMBO5
+			COMBO1, COMBO2, COMBO3,COMBO5
     };
 
     const _float ATTACK_DISTANCE_CLOSE = 0.f;

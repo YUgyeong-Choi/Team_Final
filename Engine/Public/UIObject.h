@@ -32,9 +32,14 @@ public:
 
 	void  Set_isVignetting(_bool isVignetting) { m_isDeferred = isVignetting; }
 
+	void Set_Color(_float4 vColor) { m_vColor = vColor; }
+
 	_wstring Get_ProtoTag() { return m_strProtoTag; }
 
 	virtual void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; }
+
+	_float2 Get_Pos() { return { m_fX, m_fY }; }
+	_float2 Get_Size() { return {m_fSizeX, m_fSizeY}; }
 
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
