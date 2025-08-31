@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 3241.972900390625,
+            "LifeTime": 3321.671142578125,
             "LifeTime_Particle": [
                 0.4099999964237213,
                 1.1799999475479126
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_FlameField_BellyFire_Particle1",
-            "NumInstance": 15,
+            "NumInstance": 25,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -87,7 +87,7 @@
             "PType": 1,
             "Pivot": [
                 0.0,
-                2.0,
+                4.0,
                 0.0
             ],
             "Range": [
@@ -107,12 +107,12 @@
             ],
             "ShaderPass": 2,
             "Size": [
-                0.5,
-                1.0
+                0.800000011920929,
+                1.2000000476837158
             ],
             "Speed": [
-                0.36000001430511475,
-                0.5799999833106995
+                0.5199999809265137,
+                0.8700000047683716
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -196,7 +196,7 @@
                     ]
                 }
             ],
-            "LifeTime": 551.2620849609375,
+            "LifeTime": 630.9739379882813,
             "LifeTime_Particle": [
                 0.5199999809265137,
                 1.0
@@ -207,7 +207,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_FlameField_BellyFire_Particle2",
-            "NumInstance": 3,
+            "NumInstance": 5,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -252,13 +252,13 @@
             "Spin": false,
             "StartTrack": 0,
             "TextureTags": [
-                "T_SubUV_Fire_06_8x8_SC_KMH",
+                "",
                 "T_SubUV_Fire_06_8x8_SC_KMH",
                 "",
                 ""
             ],
             "TextureUsage": [
-                true,
+                false,
                 true,
                 false,
                 false
@@ -271,6 +271,6 @@
             "isTileLoop": true
         }
     ],
-    "Loop": true,
+    "Loop": false,
     "MaxFrame": 70
 }

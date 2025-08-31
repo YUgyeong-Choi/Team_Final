@@ -2,7 +2,7 @@
     "EffectObject": [
         {
             "Accel": [
-                -200.0,
+                -150.0,
                 -100.0
             ],
             "Animation": true,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2291.71923828125,
+            "LifeTime": 2342.662353515625,
             "LifeTime_Particle": [
                 0.019999999552965164,
                 0.30000001192092896
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 1.0,
             "Name": "Hit_Spiral_Particle1",
-            "NumInstance": 100,
+            "NumInstance": 50,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -111,8 +111,8 @@
                 0.029999999329447746
             ],
             "Speed": [
-                18.0,
-                22.0
+                12.0,
+                15.0
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -196,7 +196,7 @@
                     ]
                 }
             ],
-            "LifeTime": 323.69146728515625,
+            "LifeTime": 374.6755065917969,
             "LifeTime_Particle": [
                 0.019999999552965164,
                 0.30000001192092896
@@ -246,8 +246,8 @@
                 0.029999999329447746
             ],
             "Speed": [
-                5.0,
-                5.0
+                3.0,
+                4.0
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -281,8 +281,8 @@
             ],
             "Color": [
                 1.0,
-                0.15706807374954224,
-                0.0,
+                1.0,
+                1.0,
                 1.0
             ],
             "DistortionStrength": 10.0,
@@ -347,7 +347,7 @@
                     ]
                 }
             ],
-            "LifeTime": 0.0,
+            "LifeTime": 50.97988510131836,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 2,

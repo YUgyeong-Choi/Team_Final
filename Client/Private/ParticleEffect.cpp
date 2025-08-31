@@ -135,6 +135,11 @@ void CParticleEffect::Set_Loop(_bool isLoop)
 	m_pVIBufferCom->Set_Loop(isLoop);
 }
 
+void CParticleEffect::Set_InitRotation(_fmatrix matRot)
+{
+	m_pVIBufferCom->Set_InitRotation(matRot);
+}
+
 
 HRESULT CParticleEffect::Ready_Components()
 {

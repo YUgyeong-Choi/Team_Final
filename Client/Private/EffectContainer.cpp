@@ -253,6 +253,10 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			{
 				if (FAILED(pInstance->Ready_Effect_Deserialize(jItem)))
 					return E_FAIL;
+				_vector rot, scale, trans;
+				XMMatrixDecompose(&scale, &rot, &trans, m_pTransformCom->Get_WorldMatrix());
+				if (eEffectType == EFF_PARTICLE)
+					static_cast<CParticleEffect*>(pInstance)->Set_InitRotation(XMMatrixRotationQuaternion(rot));
 				m_Effects.push_back(pInstance);
 			}
 			else

@@ -336,6 +336,13 @@ void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
+void CVIBuffer_Point_Instance::Set_InitRotation(_fmatrix matRot)
+{
+	_vector vOrigOrbitAxis = XMLoadFloat3(&m_tCBuffer.vOrbitAxis);
+	_vector vResOrbitAxis = XMVector3Normalize(XMVector3TransformNormal(vOrigOrbitAxis, matRot));
+	XMStoreFloat3(&m_tCBuffer.vOrbitAxis, vResOrbitAxis);
+}
+
 HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 {
 	// desc 변수 저장

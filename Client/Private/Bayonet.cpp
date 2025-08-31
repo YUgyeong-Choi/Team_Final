@@ -10,6 +10,7 @@
 #include "Effect_Manager.h"
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Player.h"
+#include "Client_Calculation.h"
 
 
 CBayonet::CBayonet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -88,6 +89,7 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	m_iHandleIndex = m_pModelCom->Find_BoneIndex("BN_Handle");
 
+	m_pWeaponEndMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Blade_End"));
 
 	return S_OK;
 }
@@ -105,7 +107,7 @@ void CBayonet::Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_8))
 	{
-		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<unsigned int>(m_iLevelID), L"EC_AttackHit_Basic_Spark_1_P2S4"))
+		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_AttackHit_Basic_Spark_1_P2S4"))
 			MSG_BOX("이펙트 생성 실패함");
 	}
 }
@@ -115,11 +117,22 @@ void CBayonet::Late_Update(_float fTimeDelta)
 	__super::Late_Update(fTimeDelta);
 
 	// 매 프레임 칼 끝 위치 저장
-	m_vEndSocketPrevPos = m_vEndSocketCurPos;
-	auto CurEndWorldMat = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Blade_End")));
-	_float4 vPos = { CurEndWorldMat->_41, CurEndWorldMat->_42, CurEndWorldMat->_43, 1.f };
-	m_vEndSocketCurPos = XMLoadFloat3(reinterpret_cast<_float3*>(&CurEndWorldMat->_41));
-
+	//m_vEndSocketPrevPos = m_vEndSocketCurPos;
+	//auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
+	//XMStoreFloat3(&m_vEndSocketCurPos, CurEndWorldMat.r[3]);
+	if (m_bHitEffect == true)
+	{
+		auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
+		XMStoreFloat3(&m_vEndSocketCurPos, CurEndWorldMat.r[3]);
+		_float fLength = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_vEndSocketCurPos) - XMLoadFloat3(&m_vEndSocketPrevPos)));
+		if (fLength < 1e-6f) 
+			m_bHitEffect = true;
+		else
+		{
+			m_bHitEffect = false;
+			Create_AttackEffect(m_pLastHitObject, m_eLastHitColType);
+		}
+	}
 	Update_Collider();
 }
 
@@ -293,7 +306,7 @@ void CBayonet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 {
 	// 내구도나 이런거 하면 될듯?
 	// 가드 때 충돌하고, 퍼펙트 가드가 아니면 감소하도록
-	
+	// 이제 트리거로 이사감
 }
 
 void CBayonet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -311,28 +324,22 @@ void CBayonet::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	_vector vDir = XMVector3Normalize(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION) - pOther->Get_TransfomCom()->Get_State(STATE::POSITION));
+	//_vector vPlayerPos = XMVectorSetY(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
+	//_vector vOtherPos = XMVectorSetY(pOther->Get_TransfomCom()->Get_State(STATE::POSITION),0.f);
+	//_vector vDir = XMVector3Normalize(vPlayerPos - vOtherPos);
 
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
+		m_bHitEffect = true;
+		m_pLastHitObject = pOther;
+		m_eLastHitColType = eColliderType;
+		auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
+		XMStoreFloat3(&m_vEndSocketPrevPos, CurEndWorldMat.r[3]);
+		//Create_AttackEffect(pOther, eColliderType);
+
 		CUnit* pUnit = static_cast<CUnit*>(pOther);
-		auto& vLockonPos = pUnit->Get_LockonPos();
-		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
-
-		CEffectContainer::DESC desc = {};
-		// * XMMatrixRotationAxis(_vector()) 
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
-
-		//memcpy(&desc.PresetMatrix.m[2], &m_pOwner->Get_TransfomCom()->Get_State(STATE::LOOK), sizeof(_vector));
 		
-		CGameObject* pEffect = { nullptr };
-		/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc)
-			: rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc)
-			:*/ pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc);
 
-			if (pEffect == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
 		
 		StartHitReg(0.1f, 0.015f, 0.025f);
 
@@ -340,10 +347,67 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 		static_cast<CPlayer*>(m_pOwner)->Set_HitTarger(pUnit, false);
 	}
+
+	// 플레이어의 공격 state에 따라 변경 -> slash / thrust
+	// 막타인지도 알 수 있을까? 
 }
 
 void CBayonet::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+}
+
+HRESULT CBayonet::Create_AttackEffect(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	_vector vPlayerPos = XMVectorSetY(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
+	_vector vOtherPos = XMVectorSetY(pOther->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
+	_vector vDir = XMVector3Normalize(vPlayerPos - vOtherPos);
+
+	CUnit* pUnit = static_cast<CUnit*>(pOther);
+
+	auto& vLockonPos = pUnit->Get_LockonPos();
+	_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
+
+	_vector vLook = XMVector3Normalize(vDir);           // Look
+	_vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f); // 고정 Up
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vLook));
+	_vector vUp = XMVector3Cross(vLook, vRight);
+
+	_matrix mAlign = XMMATRIX(vRight, vUp, vLook, XMVectorSet(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z, 1.f));
+
+	_vector vSlashDir = XMVector3Normalize(XMLoadFloat3(&m_vEndSocketCurPos) - XMLoadFloat3(&m_vEndSocketPrevPos));
+	float lenSq = XMVectorGetX(XMVector3LengthSq(vSlashDir));
+
+	if (lenSq < 1e-6f) {
+		// 너무 짧으면 fallback 방향 (예: +X)
+		vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	}
+	else {
+		vRight = XMVector3Normalize(vSlashDir);
+	}
+
+	_float dot = XMVectorGetX(XMVector3Dot(vLook, vSlashDir));
+	dot = max(-1.f, min(1.f, dot));
+	_float angle = acosf(dot);
+
+	_vector axis = XMVector3Normalize(XMVector3Cross(vLook, vSlashDir));
+	_matrix mRot = XMMatrixRotationAxis(axis, angle);
+
+	_matrix mRoll = XMMatrixRotationAxis(vLook, angle);
+
+	CEffectContainer::DESC desc = {};
+
+	XMStoreFloat4x4(&desc.PresetMatrix,
+		XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);
+
+	CGameObject* pEffect = { nullptr };
+	/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc)
+		: rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc)
+		:*/ pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+
+		if (pEffect == nullptr)
+			return E_FAIL;
+
+	return S_OK;
 }
 
 CBayonet* CBayonet::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

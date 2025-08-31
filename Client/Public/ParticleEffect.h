@@ -47,6 +47,9 @@ public:
 	void Set_PType(PARTICLETYPE ePType) { m_ePType = ePType; }
 	void Set_Loop(_bool isLoop);
 
+	void Set_InitRotation(_fmatrix matRot);
+
+
 #ifdef USE_IMGUI
 	PARTICLETYPE* Get_PType_Ptr() { return &m_ePType; }
 	_bool* Get_Loop_Ptr() { return &m_isLoop; }
