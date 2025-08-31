@@ -257,7 +257,7 @@ HRESULT CCYTool::SequenceWindow()
 			break;
 		case Client::EFF_TRAIL:
 		{
-			if (GET_PLAYER(ENUM_CLASS(LEVEL::CY))== nullptr)
+			if (GET_PLAYER(ENUM_CLASS(LEVEL::CY)) == nullptr)
 				break;
 			//CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player_Weapon"), 0);
 			//CModel* pWeaponModelCom = static_cast<CModel*>(TestWeapon->Get_Component(TEXT("Com_Model")));
@@ -279,10 +279,17 @@ HRESULT CCYTool::SequenceWindow()
 
 			/******************************************/
 
-			CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Player_Weapon"), 0);
+			CGameObject* TestWeapon = m_pGameInstance->Get_Object(ENUM_CLASS(LEVEL::CY), TEXT("Player_Weapon"), 0);
+			if (TestWeapon == nullptr)
+			{
+				MSG_BOX("무기 모델을 못찾겠어요 ");
+				ImGui::End();
+				return E_FAIL;
+			}
+			
 			CModel* pWeaponModelCom = static_cast<CModel*>(TestWeapon->Get_Component(TEXT("Com_Model")));
-			_uint iInnerBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade");
-			_uint iOuterBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_B");
+			_uint iInnerBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_B");
+			_uint iOuterBoneIdx = pWeaponModelCom->Find_BoneIndex("BN_Blade_End");
 
 			CToolTrail::DESC desc = {};
 			desc.bAnimation = true;
@@ -1035,11 +1042,12 @@ HRESULT CCYTool::Load_EffectSet()
 						return E_FAIL;
 					}
 				}
-				m_bOpenLoadEffectContainer = false;
-				m_iSelected = -1;
-				IFILEDIALOG->Close();
+
 			}
 		}
+		m_bOpenLoadEffectContainer = false;
+		m_iSelected = -1;
+		IFILEDIALOG->Close();
 	}
 	return S_OK;
 

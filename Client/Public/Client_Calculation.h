@@ -229,3 +229,31 @@ static _float SmoothExp(_float curr, _float target, _float speed, _float dt)
     const _float a = 1.f - expf(-speed * dt);
     return curr + (target - curr) * a;
 }
+
+/* [ vFrom → vTo 로 회전하는 쿼터니언 반환 ] */
+static _vector XMQuaternionRotationVectorToVector(_fvector vFrom, _fvector vTo)
+{
+    _vector v1 = XMVector3Normalize(vFrom);
+    _vector v2 = XMVector3Normalize(vTo);
+
+    _float dot = XMVectorGetX(XMVector3Dot(v1, v2));
+
+    // 벡터가 거의 같은 방향일 경우
+    if (dot > 0.9999f)
+        return XMQuaternionIdentity();
+
+    // 벡터가 정반대 방향일 경우 → 아무 축이나 직교축 선택
+    if (dot < -0.9999f)
+    {
+        _vector axis = XMVector3Cross(v1, XMVectorSet(1.f, 0.f, 0.f, 0.f));
+        if (XMVector3Equal(axis, XMVectorZero())) // v1 이 (1,0,0)일 경우
+            axis = XMVector3Cross(v1, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+        axis = XMVector3Normalize(axis);
+        return XMQuaternionRotationAxis(axis, XM_PI);
+    }
+
+    // 일반적인 경우
+    _vector axis = XMVector3Normalize(XMVector3Cross(v1, v2));
+    _float angle = acosf(dot);
+    return XMQuaternionRotationAxis(axis, angle);
+}

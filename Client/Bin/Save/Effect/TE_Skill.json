@@ -1,0 +1,78 @@
+{
+    "Animation": true,
+    "Billboard": false,
+    "CenterColor": [
+        0.4188481569290161,
+        0.8083111047744751,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        0.0,
+        0.2931935787200928,
+        1.0,
+        1.0
+    ],
+    "DistortionStrength": 10.0,
+    "Duration": 20,
+    "EffectType": 3,
+    "EmissiveIntensity": 1.25,
+    "EndTrack": 20,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.0,
+                0.2931935787200928,
+                1.0,
+                1.0
+            ],
+            "Intensity": 2.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeDuration": 0.5,
+    "LifeTime": 0.0,
+    "Loop": true,
+    "Name": "Trail_Skill",
+    "NodeInterval": 0.016599999740719795,
+    "NumKeyFrames": 1,
+    "RenderGroup": 8,
+    "ShaderPass": 0,
+    "StartTrack": 0,
+    "Subdivisions": 4,
+    "TextureTags": [
+        "T_Tile_Wave_05_C_LGS",
+        "trail_tex",
+        "T_Slash_01_C_RSW",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        true,
+        true,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}
