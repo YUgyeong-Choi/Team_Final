@@ -1,5 +1,124 @@
 [
     {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Balcony_03",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Balcony_03.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Door_06",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_06.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_03",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_03.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_05",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_05.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_06",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_06.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_07",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_07.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_08",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_08.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_09",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_09.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_10",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_10.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouWall_11",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouWall_11.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Store_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Store_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Wall_17",
+        "NoInstancing": false,
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_17.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Wall_19",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_19.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Wall_24",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_24.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Vehicle_Carriage_13",
         "NoInstancing": false,
