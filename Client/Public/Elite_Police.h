@@ -71,6 +71,7 @@ public:
 
 private:
     virtual HRESULT Ready_Components(void* pArg) override;
+	virtual HRESULT Ready_Actor() override;
     virtual void Ready_BoneInformation() override;
     HRESULT Ready_Weapon();
 
@@ -94,11 +95,12 @@ private:
     virtual void UpdatePatternWeight(_int iPattern) override;
     virtual _bool CanMove() const override;
 
-
     virtual void ChosePatternWeightByDistance(_float fDistance);
     virtual void SetupAttackByType(_int iPattern);
     void         Ready_AttackPatternWeight();
 private:
+	CBone* m_pRightElbowBone = { nullptr };
+	CPhysXDynamicActor* m_pPhysXElbow = { nullptr };
     class CSwordTrailEffect* m_pWeaponTrailEffect = { nullptr };
 	class CWeapon_Monster* m_pWeapon = { nullptr };
     _bool m_bPlayedDetect = false;

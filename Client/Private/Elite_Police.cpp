@@ -1,9 +1,11 @@
+#include "Bone.h"
+#include <Player.h>
 #include "Elite_Police.h"
 #include "GameInstance.h"
 #include "Weapon_Monster.h"
 #include "LockOn_Manager.h"
 #include "Client_Calculation.h"
-#include <Player.h>
+#include <PhysX_IgnoreSelfCallback.h>
 
 CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CEliteUnit{ pDevice, pContext }
@@ -14,6 +16,7 @@ CElite_Police::CElite_Police(const CElite_Police& Prototype)
 	:CEliteUnit(Prototype)
 {
 	m_pAnimator = nullptr;
+	m_eUnitType = EUnitType::ELITE_MONSTER;
 }
 
 HRESULT CElite_Police::Initialize_Prototype()
@@ -27,7 +30,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	m_fRootMotionAddtiveScale = 1.f;
 	m_fAttckDleay = 2.5f;
 	m_fTooCloseDistance = 1.0f;
-	m_fChasingDistance = 2.f;
+	m_fChasingDistance = 2.5f;
 	m_fMinimumTurnAngle = 140.f;
 	m_bIsFirstAttack = false;
 	m_fGroggyScale_Weak = 0.1f;
@@ -69,7 +72,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	m_fMaxHP = 300.f;
+	m_fMaxHP = 400.f;
 	m_fHP = m_fMaxHP;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
@@ -93,7 +96,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	auto pShape = m_pPhysXActorCom->Get_Shape();
 	PxGeometryHolder geomHolder = pShape->getGeometry();
 	PxBoxGeometry box = geomHolder.box();
-	box.halfExtents = PxVec3(0.7f, 1.2f, 0.6f);
+	box.halfExtents = PxVec3(0.7f, 1.2f, 0.8f);
 	pShape->setGeometry(box);
 
 	PxTransform localPose = pShape->getLocalPose();
@@ -200,13 +203,54 @@ HRESULT CElite_Police::Ready_Components(void* pArg)
 {
 	if (FAILED(__super::Ready_Components(pArg)))
 		return E_FAIL;
+
+	// ¿¤¸®Æ® °æÂûÀº ÆÈ²ÞÄ¡¿¡ ¹«±â ÄÝ¶óÀÌ´õ
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXElbow))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CElite_Police::Ready_Actor()
+{
+	if (FAILED(__super::Ready_Actor()))
+		return E_FAIL;
+	_vector S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+	if (m_pRightElbowBone)
+	{
+		auto elbowLocalMatrix = m_pRightElbowBone->Get_CombinedTransformationMatrix();
+		auto elbowWorldMatrix = XMLoadFloat4x4(elbowLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
+		XMMatrixDecompose(&S, &R, &T, elbowWorldMatrix);
+
+		PxQuat elbowRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+		PxVec3 elbowPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+		PxTransform footPose(elbowPositionVec, elbowRotationQuat);
+		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(0.5f);
+		m_pPhysXElbow->Create_Collision(m_pGameInstance->GetPhysics(), elbowGeom, footPose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXElbow->Set_ShapeFlag(false, true, true);
+		PxFilterData footFilterData{};
+		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		m_pPhysXElbow->Set_SimulationFilterData(footFilterData);
+		m_pPhysXElbow->Set_QueryFilterData(footFilterData);
+		m_pPhysXElbow->Set_Owner(this);
+		m_pPhysXElbow->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
+		m_pPhysXElbow->Set_Kinematic(true);
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXElbow->Get_Actor());
+	}
 	return S_OK;
 }
 
 
 void CElite_Police::Ready_BoneInformation()
 {
-
+	auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-R-Forearm"); });
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pRightElbowBone = *it;
+	}
 }
 
 
@@ -225,7 +269,7 @@ HRESULT CElite_Police::Ready_Weapon()
 	Desc.vAxis = { 1.f,0.f,0.f,0.f };
 	Desc.fRotationDegree = { -90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
+	Desc.vPhsyxExtent = { 1.f, 0.4f, 0.4f };
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Desc.pOwner = this;
@@ -442,6 +486,28 @@ void CElite_Police::UpdateSpecificBehavior()
 void CElite_Police::EnableColliders(_bool bEnable)
 {
 	__super::EnableColliders(bEnable);
+	if (bEnable)
+	{
+		m_pPhysXElbow->Set_SimulationFilterData(m_pPhysXElbow->Get_FilterData());
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			if (auto pController = pPlayer->Get_Controller())
+			{
+				pController->Remove_IgnoreActors(m_pPhysXElbow->Get_Actor());
+			}
+		}
+	}
+	else
+	{
+		m_pPhysXElbow->Init_SimulationFilterData();
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			if (auto pController = pPlayer->Get_Controller())
+			{
+				pController->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
+			}
+		}
+	}
 }
 
 void CElite_Police::Ready_EffectNames()
@@ -520,7 +586,6 @@ void CElite_Police::Register_Events()
 		if (m_pWeapon == nullptr)
 			return;
 		m_pWeapon->SetisAttack(false);
-		m_pWeapon->Clear_CollisionObj();
 		});
 
 }
@@ -712,5 +777,6 @@ void CElite_Police::Free()
 	__super::Free();
 
 	Safe_Release(m_pWeapon);
+	Safe_Release(m_pRightElbowBone);
 
 }

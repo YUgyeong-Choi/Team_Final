@@ -1,5 +1,6 @@
 ﻿#include "Fuoco.h"
 #include "Bone.h"
+#include <Oil.h>
 #include <Player.h>
 #include "Projectile.h"
 #include "FlameField.h"
@@ -10,7 +11,6 @@
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
 #include "UI_MonsterHP_Bar.h"
-#include <Oil.h>
 #include "Static_Decal.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
