@@ -818,6 +818,14 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::EQUIP:
 	{
+		if (!m_bSetSound)
+		{
+			if(m_bWeaponEquipped)
+				m_pSoundCom->Play_Random("SE_PC_WP_Bayonet_On_", 3);
+			else
+				m_pSoundCom->Play_Random("SE_PC_WP_Bayonet_Off_", 3);
+			m_bSetSound = true;
+		}
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
 	}
