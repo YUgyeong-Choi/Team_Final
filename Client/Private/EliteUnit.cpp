@@ -70,7 +70,7 @@ HRESULT CEliteUnit::Initialize(void* pArg)
     if (FAILED(Ready_Effect()))
         return E_FAIL;
 
-
+    Ready_SoundEvents();
     return S_OK;
 }
 
@@ -832,6 +832,7 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
             cout << "그로기 가능" << endl;
             return;
         }
+
 
         cout << "그로기 게이지 : " << m_fGroggyGauge << endl;
         cout << "그로기 상태 : " << m_bGroggyActive << endl;

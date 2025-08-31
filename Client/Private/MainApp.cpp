@@ -303,6 +303,8 @@ HRESULT CMainApp::Ready_Sound()
 	/* [ UI용 사운드 ] */
 	ADD_SOUND_EX(UI, "../Bin/Resources/Sound/UI/", true, false, false);
 
+	ADD_SOUND_EX(FireEater, "../Bin/Resources/Sound/Unit/FireEater/", true, false, false);
+
 	return S_OK;
 }
 

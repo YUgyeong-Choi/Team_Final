@@ -67,7 +67,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 	m_fMaxHP = 150.f;
 	m_fHP = m_fMaxHP;
-	/*CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
@@ -77,10 +77,10 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
-		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));*/
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 
 
-	//m_pHPBar->Set_MaxHp(m_fHP);
+	m_pHPBar->Set_MaxHp(m_fHP);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
