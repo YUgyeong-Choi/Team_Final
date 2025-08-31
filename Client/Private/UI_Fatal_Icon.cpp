@@ -103,6 +103,48 @@ void CUI_Fatal_Icon::Update(_float fTimeDelta)
 	{
 		// 엘리트 보스로 캐스팅해서
 		// state 가져오기
+
+		CEliteUnit* pUnit = static_cast<CEliteUnit*>(m_pPlayer->GetFatalTarget());
+
+		// 조건 나중에 추가
+		if (!pUnit->Get_isActive() || pUnit->GetCurrentState() == CEliteUnit::EEliteState::FATAL)
+		{
+			m_isRender = false;
+			return;
+		}
+		else
+		{
+			m_isRender = true;
+
+			// 위치 가져와서 직교로 그리자
+
+			// 회전 값 다 빼고, z 위치 0.01로, 위에 페이탈 이미지 덧그리도록?
+
+			_vector vWorldPos = XMLoadFloat4(&m_pPlayer->GetFatalTarget()->Get_LockonPos());
+
+
+
+			_matrix ViewMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW);
+			_matrix ProjMat = m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ);
+
+			_vector vClipPos = XMVector4Transform(vWorldPos, ViewMat * ProjMat);
+
+			vClipPos.m128_f32[0] /= vClipPos.m128_f32[3];
+			vClipPos.m128_f32[1] /= vClipPos.m128_f32[3];
+			vClipPos.m128_f32[2] /= vClipPos.m128_f32[3];
+
+			_float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
+			_float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
+
+			_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.f,1.f };
+
+			m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+			
+
+		}
+
+
 		
 	}
 
