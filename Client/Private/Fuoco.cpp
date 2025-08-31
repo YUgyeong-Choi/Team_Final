@@ -653,8 +653,15 @@ void CFuoco::SetupAttackByType(_int iPattern)
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
 		if (bIsCombo)
 		{
-			_int iComboType = GetRandomInt(0, 1);
-			m_pAnimator->SetInt("SwingCombo", iComboType);
+				_int iComboType;
+
+				if (m_iLastComboType == -1) // 첫 시작은 랜덤
+					iComboType = GetRandomInt(0, 1);
+				else
+					iComboType = 1 - m_iLastComboType; // 이전 값과 반대로
+
+				m_pAnimator->SetInt("SwingCombo", iComboType);
+				m_iLastComboType = iComboType;
 		}
 		m_eAttackType = EAttackType::KNOCKBACK;
 	}

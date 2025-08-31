@@ -52,6 +52,8 @@ HRESULT CWeapon::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Scaling(m_InitScale);
+
 	return S_OK;
 }
 
