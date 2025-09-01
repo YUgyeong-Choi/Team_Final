@@ -2,7 +2,7 @@
 
 namespace Engine
 {
-	enum class AREAMGR { STATION, HOTEL, DEBUG, END };
+	enum class AREAMGR { STATION, HOTEL, FUOCO, DEBUG, END };
 
 	enum class COLLIDER { AABB, OBB, SPHERE, END };
 	enum class MODEL { NONANIM, ANIM };

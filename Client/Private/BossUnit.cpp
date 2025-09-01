@@ -15,8 +15,8 @@ CBossUnit::CBossUnit(const CBossUnit& Prototype)
 
 HRESULT CBossUnit::Initialize(void* pArg)
 {
-	m_fMaxHP = 900.f;
-	m_fHP = m_fMaxHP;
+	m_fMaxHp = 900.f;
+	m_fHp = m_fMaxHp;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 

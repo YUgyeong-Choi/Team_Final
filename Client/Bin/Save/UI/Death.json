@@ -25,17 +25,25 @@
                         "isLoop": false
                     },
                     {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
                         "EndScale": {
-                            "X": 0.255,
-                            "Y": 0.45
+                            "X": 0.2549999952316284,
+                            "Y": 0.44999998807907104
                         },
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Scale",
                         "StartScale": {
                             "X": 0.3400000035762787,
                             "Y": 0.6000000238418579
                         },
-                        "iEndFrame": 240,
-                        "iStartFrame": 180,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
                         "isLoop": false
                     }
                 ],
@@ -56,25 +64,75 @@
             {
                 "Color": {
                     "A": 1.0,
-                    "B": 1.0,
-                    "G": 1.0,
+                    "B": 0.0,
+                    "G": 0.0,
                     "R": 1.0
                 },
                 "Features": [
                     {
-                        "EndRotation": 360.0,
+                        "EndRotation": 300.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
                         "Initpos": {
                             "X": 0.5,
-                            "Y": 0.38999998569488525
+                            "Y": 0.39500001072883606
                         },
                         "RotationPos": {
                             "X": 0.5,
                             "Y": 0.4950000047683716
                         },
-                        "StartRotation": 0.0,
-                        "iEndFrame": 60,
+                        "StartRotation": 330.0,
+                        "iEndFrame": 75,
+                        "iStartFrame": 45,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": 900.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.5,
+                            "Y": 0.39500001072883606
+                        },
+                        "RotationPos": {
+                            "X": 0.5,
+                            "Y": 0.4950000047683716
+                        },
+                        "StartRotation": 300.0,
+                        "iEndFrame": 240,
+                        "iStartFrame": 75,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 45,
                         "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndColor": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 0.0,
+                            "Z": 0.0
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Color",
+                        "StartColor": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "iEndFrame": 120,
+                        "iStartFrame": 60,
                         "isLoop": false
                     }
                 ],
@@ -83,11 +141,199 @@
                 "SizeX": 80.0,
                 "SizeY": 288.0,
                 "Texturetag": "Prototype_Component_Texture_Watch_Needle",
-                "fAlpha": 1.0,
+                "fAlpha": 0.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
                 "fX": 800.0,
                 "fY": 351.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.0,
+                    "G": 0.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndRotation": 6000.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.5,
+                            "Y": 0.39500001072883606
+                        },
+                        "RotationPos": {
+                            "X": 0.5,
+                            "Y": 0.4950000047683716
+                        },
+                        "StartRotation": 300.0,
+                        "iEndFrame": 240,
+                        "iStartFrame": 75,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": 330.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.5,
+                            "Y": 0.39500001072883606
+                        },
+                        "RotationPos": {
+                            "X": 0.5,
+                            "Y": 0.4950000047683716
+                        },
+                        "StartRotation": 300.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 45,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndColor": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 0.0,
+                            "Z": 0.0
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Color",
+                        "StartColor": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "iEndFrame": 120,
+                        "iStartFrame": 60,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 64.0,
+                "SizeY": 270.0,
+                "Texturetag": "Prototype_Component_Texture_Watch_Needle",
+                "fAlpha": 0.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 800.0,
+                "fY": 356.3999938964844,
+                "iPassIndex": 1,
+                "iTextureIndex": 1,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 45,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": -30.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RotationPos": {
+                            "X": 0.550000011920929,
+                            "Y": 0.2849999964237213
+                        },
+                        "StartRotation": 0.0,
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RotationPos": {
+                            "X": 0.550000011920929,
+                            "Y": 0.2849999964237213
+                        },
+                        "StartRotation": -30.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndPos": {
+                            "X": 0.5600000023841858,
+                            "Y": 0.26499998569488525
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 0.550000011920929,
+                            "Y": 0.2849999964237213
+                        },
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndPos": {
+                            "X": 0.5399999618530273,
+                            "Y": 0.29499998688697815
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 0.5600000023841858,
+                            "Y": 0.26499998569488525
+                        },
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 80.0,
+                "SizeY": 67.5,
+                "Texturetag": "Prototype_Component_Texture_Watch_Num",
+                "fAlpha": 0.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 863.9999389648438,
+                "fY": 265.5,
                 "iPassIndex": 1,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
@@ -101,36 +347,378 @@
                 },
                 "Features": [
                     {
-                        "EndRotation": 450.0,
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 45,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": 120.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
                         "Initpos": {
-                            "X": 0.5,
-                            "Y": 0.4000000059604645
+                            "X": 0.0,
+                            "Y": 0.0
                         },
                         "RotationPos": {
-                            "X": 0.5,
-                            "Y": 0.5
+                            "X": 0.625,
+                            "Y": 0.3400000035762787
                         },
-                        "StartRotation": -30.0,
+                        "StartRotation": 180.0,
                         "iEndFrame": 60,
                         "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndPos": {
+                            "X": 0.625,
+                            "Y": 0.3400000035762787
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 0.6050000190734863,
+                            "Y": 0.33000001311302185
+                        },
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": 240.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RotationPos": {
+                            "X": 0.625,
+                            "Y": 0.3400000035762787
+                        },
+                        "StartRotation": 120.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndPos": {
+                            "X": 0.5799999833106995,
+                            "Y": 0.36000001430511475
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 0.625,
+                            "Y": 0.3400000035762787
+                        },
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 126.88500213623047,
+                "SizeX": 80.0,
+                "SizeY": 67.5,
+                "Texturetag": "Prototype_Component_Texture_Watch_Num",
+                "fAlpha": 0.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 928.0,
+                "fY": 324.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 1,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 45,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": 150.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RotationPos": {
+                            "X": 0.6600000262260437,
+                            "Y": 0.4449999928474426
+                        },
+                        "StartRotation": 330.0,
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndPos": {
+                            "X": 0.6600000262260437,
+                            "Y": 0.4449999928474426
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 0.6399999856948853,
+                            "Y": 0.46000000834465027
+                        },
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": 300.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RotationPos": {
+                            "X": 0.6600000262260437,
+                            "Y": 0.4449999928474426
+                        },
+                        "StartRotation": 150.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndPos": {
+                            "X": 0.6000000238418579,
+                            "Y": 0.46000000834465027
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 0.6600000262260437,
+                            "Y": 0.4449999928474426
+                        },
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 149.01699829101563,
+                "SizeX": 80.0,
+                "SizeY": 67.5,
+                "Texturetag": "Prototype_Component_Texture_Watch_Num",
+                "fAlpha": 0.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 960.0000610351563,
+                "fY": 414.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 2,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 45,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": -30.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RotationPos": {
+                            "X": 0.47999998927116394,
+                            "Y": 0.25999999046325684
+                        },
+                        "StartRotation": 0.0,
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndPos": {
+                            "X": 0.47999998927116394,
+                            "Y": 0.25999999046325684
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 0.46000000834465027,
+                            "Y": 0.2800000011920929
+                        },
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndRotation": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.0,
+                            "Y": 0.0
+                        },
+                        "RotationPos": {
+                            "X": 0.47999998927116394,
+                            "Y": 0.25999999046325684
+                        },
+                        "StartRotation": -30.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndPos": {
+                            "X": 0.46000000834465027,
+                            "Y": 0.30000001192092896
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+                        "StartPos": {
+                            "X": 0.47999998927116394,
+                            "Y": 0.25999999046325684
+                        },
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 150,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 327.5409851074219,
+                "SizeX": 80.0,
+                "SizeY": 67.5,
+                "Texturetag": "Prototype_Component_Texture_Watch_Num",
+                "fAlpha": 0.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 736.0,
+                "fY": 270.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 3,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 120,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndScale": {
+                            "X": 0.6000000238418579,
+                            "Y": 0.30000001192092896
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Scale",
+                        "StartScale": {
+                            "X": 0.44999998807907104,
+                            "Y": 0.22499999403953552
+                        },
+                        "iEndFrame": 180,
+                        "iStartFrame": 90,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 240,
+                        "iStartFrame": 150,
                         "isLoop": false
                     }
                 ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
-                "SizeX": 64.0,
-                "SizeY": 270.0,
-                "Texturetag": "Prototype_Component_Texture_Watch_Needle",
-                "fAlpha": 1.0,
+                "SizeX": 720.0,
+                "SizeY": 202.5,
+                "Texturetag": "Prototype_Component_Texture_DieText",
+                "fAlpha": 0.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
                 "fX": 800.0,
-                "fY": 356.3999938964844,
+                "fY": 450.0,
                 "iPassIndex": 1,
-                "iTextureIndex": 1,
+                "iTextureIndex": 0,
                 "iTextureLevel": 0
-            }
+            },
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 0.0,
+              "G": 0.0,
+              "R": 0.0
+            },
+            "Features": [
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 210,
+                "iStartFrame": 120,
+                "isLoop": false
+              }
+            ],
+            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+            "RotationZ": 0.0,
+            "SizeX": 1600.0,
+            "SizeY": 900.0,
+            "Texturetag": "Prototype_Component_Texture_BackGround_Loading_Desk",
+            "fAlpha": 0.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.10000000149011612,
+            "fX": 800.0,
+            "fY": 450.0,
+            "iPassIndex": 1,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          }
         ],
         "ProtoTag": "Prototype_GameObject_UI_Container",
         "RotationZ": 0.0,

@@ -96,6 +96,19 @@ void CGLTool::Update(_float fTimeDelta)
 
 void CGLTool::Late_Update(_float fTimeDelta)
 {
+	for (auto& container : m_ContainerList)
+	{
+		if (nullptr != container)
+		{
+			for (auto& part : container->Get_PartUI())
+			{
+				if (nullptr == part)
+					continue;
+				part->Late_Update(fTimeDelta);
+			}
+		}
+
+	}
 }
 
 HRESULT CGLTool::Render()
@@ -137,11 +150,11 @@ void CGLTool::Obj_Deserialize()
 {
 	string filePath = IFILEDIALOG->GetFilePathName();
 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
-		ENUM_CLASS(LEVEL::GL), TEXT("Layer_Container"), nullptr)))
-		return ;
+	CBase* pContainer = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), nullptr);
 
-	m_ContainerList.push_back(static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::GL), TEXT("Layer_Container"))));
+
+
+	m_ContainerList.push_back(static_cast<CUI_Container*>(pContainer));
 
 	json j;
 
@@ -179,10 +192,6 @@ void CGLTool::Obj_Deserialize()
 					partList.back()->Deserialize(objJson);
 					partList.back()->Update_Data();
 
-					if (nullptr != dynamic_cast<CDynamic_UI*>(partList.back()))
-					{
-						dynamic_cast<CDynamic_UI*>(partList.back())->Set_isFromTool();
-					}
 				}
 
 
@@ -236,9 +245,8 @@ void CGLTool::Add_UI_Select_Prototype()
 	if (m_strSelectProtoName.empty())
 		return;
 
-	m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), m_strSelectProtoName, static_cast<_uint>(LEVEL::GL), TEXT("Layer_Temp"), nullptr);
+	auto pObj = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, static_cast<_uint>(LEVEL::STATIC), m_strSelectProtoName, nullptr);
 
-	auto pObj = m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::GL), TEXT("Layer_Temp"));
 	if (nullptr == pObj)
 		return;
 
@@ -247,11 +255,6 @@ void CGLTool::Add_UI_Select_Prototype()
 
 
 	m_pContainerObj->Add_UI_From_Tool(static_cast<CUIObject*>(pObj));
-
-	if (nullptr != dynamic_cast<CDynamic_UI*>(pObj))
-	{
-		dynamic_cast<CDynamic_UI*>(pObj)->Set_isFromTool();
-	}
 
 }
 
@@ -458,6 +461,20 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(fadeDesc.strProtoTag), &fadeDesc);
 
 		}
+		else if (5 == eDesc.iType)
+		{
+			// fade
+			UI_FEATURE_COLOR_DESC fadeDesc = {};
+			fadeDesc.strProtoTag = "Prototype_Component_UI_Feature_Color";
+			fadeDesc.isLoop = eDesc.isLoop;
+			fadeDesc.iStartFrame = eDesc.iStartFrame;
+			fadeDesc.iEndFrame = eDesc.iEndFrame;
+			fadeDesc.fStartColor = eDesc.fStartColor;
+			fadeDesc.fEndColor = eDesc.fEndColor;
+			
+			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(fadeDesc.strProtoTag), &fadeDesc);
+
+		}
 	}
 }
 
@@ -616,6 +633,9 @@ void CGLTool::Input_Sequence_Desc()
 	ImGui::InputFloat2("StartPos", reinterpret_cast<float*>(&m_eFeatureDesc.fStartPos));
 	ImGui::InputFloat2("EndPos", reinterpret_cast<float*>(&m_eFeatureDesc.fEndPos));
 
+	ImGui::InputFloat4("StartColor", reinterpret_cast<float*>(&m_eFeatureDesc.fStartColor));
+	ImGui::InputFloat4("EndColor", reinterpret_cast<float*>(&m_eFeatureDesc.fEndColor));
+
 	// 최소값 설정
 	ImGui::InputFloat2("StartScale", reinterpret_cast<float*>(&m_eFeatureDesc.fStartScale));
 	if (m_eFeatureDesc.fStartScale.x <= 0.0f)
@@ -629,6 +649,12 @@ void CGLTool::Input_Sequence_Desc()
 	if (m_eFeatureDesc.fEndScale.y <= 0.0f)
 		m_eFeatureDesc.fEndScale.y = 0.001f;
 
+	ImGui::InputFloat("StartRotation", &m_eFeatureDesc.fStartRotation);
+	ImGui::InputFloat("EndRotation", &m_eFeatureDesc.fEndRotation);
+
+	ImGui::InputFloat2("RotationPos", reinterpret_cast<float*>(&m_eFeatureDesc.fRotationPos));
+	ImGui::InputFloat2("InitPos", reinterpret_cast<float*>(&m_eFeatureDesc.fInitPos));
+
 
 	if (0 == m_eFeatureDesc.iType)
 		m_eFeatureDesc.strTypeTag = "Fade";
@@ -640,6 +666,8 @@ void CGLTool::Input_Sequence_Desc()
 		m_eFeatureDesc.strTypeTag = "Scale";
 	else if(4 == m_eFeatureDesc.iType)
 		m_eFeatureDesc.strTypeTag = "Rotation";
+	else if (5 == m_eFeatureDesc.iType)
+		m_eFeatureDesc.strTypeTag = "Color";
 }
 
 void CGLTool::Input_Text()
@@ -1328,4 +1356,10 @@ void CGLTool::Free()
 	Safe_Delete(m_pSequence);
 
 	Safe_Release(m_pMergeContainer);
+
+	for (auto& pContainer : m_ContainerList)
+	{
+		Safe_Release(pContainer);
+	}
+	
 }

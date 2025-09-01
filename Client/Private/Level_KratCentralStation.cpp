@@ -71,6 +71,10 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
+	if (FAILED(Ready_TriggerBGM()))
+		return E_FAIL;
+	
+
 	Reset();
 
 	return S_OK;
@@ -194,6 +198,21 @@ void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 	__super::Late_Update(fTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_J))
+	{
+		
+		CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+		eDesc.strFilePath = TEXT("../Bin/Save/UI/Death.json");
+
+		eDesc.fLifeTime = 10.f;
+		eDesc.useLifeTime = true;
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Death"), &eDesc)))
+			return ;
+	}
 
 	Add_RenderGroup_OctoTree();
 }
@@ -615,11 +634,11 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a18Min, a18Max;
 	FnToAABB(a18p0, a18p1, a18Min, a18Max);
 
-	// ------------- Area 98 --------------
-	_float3 a98p0 = _float3{ -100.65f, -50.f, -100.f };
-	_float3 a98p1 = _float3{ 100.66f, 50.f, -300.f };
-	_float3 a98Min, a98Max;
-	FnToAABB(a98p0, a98p1, a98Min, a98Max);
+	// Area 19 
+	_float3 a19p0 = _float3{ 51.44f, 42.46f, -266.51f };
+	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
+	_float3 a19Min, a19Max;
+	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 	
 	// ------------- Area 99 --------------
 	_float3 a99p0 = _float3{ 186.65f, -47.92f, 63.37f };
@@ -753,17 +772,17 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 			18, a18Min, a18Max, vecAdj18, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
 	}
-
-
-
-
 	{
-		/* -------- [ 98번 구역 ] ---------- */
-		const vector<_uint> vecAdj98 = {  };
+		/* [ 19번 구역 ] */
+		const vector<_uint> vecAdj19 = {  };
 		if (!m_pGameInstance->AddArea_AABB(
-			98, a98Min, a98Max, vecAdj98, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			19, a19Min, a19Max, vecAdj19, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
+
+
+
+
 	{
 		/* -------- [ 99번 구역 ] ---------- */
 		const vector<_uint> vecAdj99 = {  };
@@ -874,7 +893,10 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Pickup_Item"))))
 		return E_FAIL;
 
-	/*eDesc.strFilePath = TEXT("../Bin/Save/UI/Death.json");
+	/*
+	CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Death.json");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Death"), &eDesc)))
@@ -1296,6 +1318,8 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 			Desc.Rotation = VecToFloat3(rotDegArr);
 			Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 			Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
+			Desc.pBGM = m_pBGM;
+			Desc.pBGM2 = m_pBGM2;
 			Desc.strInBGM = strInBGM;
 			Desc.strOutBGM = strOutBGM;
 			Desc.strInBGM2 = strInBGM2;

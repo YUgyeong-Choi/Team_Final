@@ -28,10 +28,10 @@ HRESULT CElite_Police::Initialize(void* pArg)
 {
 	m_fMaxRootMotionSpeed = 30.f;
 	m_fRootMotionAddtiveScale = 1.f;
-	m_fAttckDleay = 3.f;
+	m_fAttckDleay = 2.5f;
 	m_fTooCloseDistance = 2.0f;
 	m_fChasingDistance = 3.f;
-	m_fMinimumTurnAngle = 160.f;
+	m_fMinimumTurnAngle = 90.f;
 	m_bIsFirstAttack = false;
 	m_fGroggyScale_Weak = 0.1f;
 	m_fGroggyScale_Strong = 0.15f;
@@ -72,14 +72,14 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	m_fMaxHP = 400.f;
-	m_fHP = m_fMaxHP;
+	m_fMaxHp = 400.f;
+	m_fHp = m_fMaxHp;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
 	eDesc.fHeight = 2.5f;
-	eDesc.pHP = &m_fHP;
+	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_bGroggyActive;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
@@ -88,7 +88,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 
 	if(m_pHPBar)
-		m_pHPBar->Set_MaxHp(m_fHP);
+		m_pHPBar->Set_MaxHp(m_fHp);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
@@ -96,7 +96,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	auto pShape = m_pPhysXActorCom->Get_Shape();
 	PxGeometryHolder geomHolder = pShape->getGeometry();
 	PxBoxGeometry box = geomHolder.box();
-	box.halfExtents = PxVec3(0.7f, 1.2f, 0.8f);
+	box.halfExtents = PxVec3(0.7f, 1.2f, 1.f);
 	pShape->setGeometry(box);
 
 	PxTransform localPose = pShape->getLocalPose();
@@ -153,17 +153,34 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 #endif // _DEBUG
 
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
-	if (pCurState && pCurState->stateName.find("Death") != pCurState->stateName.npos)
+	if (pCurState&&m_fHp<=0.f)
 	{
-		m_fEmissive = 0.f;
+		if (pCurState->stateName.find("Death") != pCurState->stateName.npos)
+		{
+
+			m_fEmissive = 0.f;
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
 			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
 			m_pWeapon->SetbIsActive(false);
+			Safe_Release(m_pHPBar);
+		}
+		}
+		else if (pCurState->stateName.find("Fatal_Hit_End") != pCurState->stateName.npos)
+		{
+			if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
+			{
+				m_eCurrentState = EEliteState::DEAD;
+				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+				m_pWeapon->SetbIsActive(false);
+				Safe_Release(m_pHPBar);
+			}
 		}
 	}
 
-	if (m_fHP <= 0 &&m_ePrevState != EEliteState::DEAD)
+	
+
+	if (m_fHp <= 0 &&m_ePrevState != EEliteState::DEAD)
 	{
 		m_pWeapon->Collider_FilterOff();
 		EnableColliders(false);
@@ -182,9 +199,9 @@ void CElite_Police::Update(_float fTimeDelta)
 {
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
-		m_pAnimator->SetTrigger("Die");
+		if(m_eCurrentState != EEliteState::FATAL)
+			m_pAnimator->SetTrigger("Die");
 		m_bUseLockon = false;
-		Safe_Release(m_pHPBar);
 	}
 	__super::Update(fTimeDelta);
 
@@ -276,7 +293,7 @@ HRESULT CElite_Police::Ready_Weapon()
 	Desc.vAxis = { 1.f,0.f,0.f,0.f };
 	Desc.fRotationDegree = { -90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 1.f, 0.4f, 0.4f };
+	Desc.vPhsyxExtent = { 1.5f, 0.7f, 0.7f };
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Desc.pOwner = this;
@@ -291,7 +308,8 @@ HRESULT CElite_Police::Ready_Weapon()
 	Safe_AddRef(m_pWeapon);
 
 	m_pWeapon->SetisAttack(false);
-	return S_OK;
+	m_pWeapon->Set_WeaponTrail_Active(true);
+return S_OK;
 }
 
 
@@ -319,9 +337,9 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 		{
 			m_fWalkSpeed = 2.5f;
 			if (fCrossY > 0.f) // 플레이어가 오른쪽에 있음
-				m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::RIGHT));
-			else               // 플레이어가 왼쪽에 있음
 				m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::LEFT));
+			else               // 플레이어가 왼쪽에 있음
+				m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::RIGHT));
 
 			m_fChangeMoveDirCooldown = 1.5f;
 		}
@@ -479,7 +497,14 @@ void CElite_Police::UpdateSpecificBehavior()
 			m_pAnimator->SetTrigger("Detect");
 		}
 
-		if (m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK && m_eCurrentState != EEliteState::ATTACK && m_eCurrentState != EEliteState::TURN)
+		//if (m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK && m_eCurrentState != EEliteState::ATTACK && m_eCurrentState != EEliteState::TURN)
+		//{
+		//	m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
+		//}
+
+		if ((m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK)
+			&& m_eCurrentState != EEliteState::ATTACK
+			&& m_eCurrentState != EEliteState::TURN)  // Turn 상태 제외
 		{
 			m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 		}
@@ -560,7 +585,7 @@ void CElite_Police::Register_Events()
 
 	m_pAnimator->RegisterEventListener("SetRootLargeStep", [this]()
 		{
-			m_fMaxRootMotionSpeed = 60.f;
+			m_fMaxRootMotionSpeed = 100.f;
 			m_fRootMotionAddtiveScale = 1.5f;
 		});
 
@@ -596,6 +621,7 @@ void CElite_Police::Register_Events()
 		if (m_pWeapon == nullptr)
 			return;
 		m_pWeapon->SetisAttack(false);
+		m_pWeapon->Clear_CollisionObj();
 		});
 
 

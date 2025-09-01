@@ -100,7 +100,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_U))
 	{
-		m_fHP -= 100.f;
+		m_fHp -= 100.f;
 	}
 	if (KEY_DOWN(DIK_X))
 	{
@@ -164,13 +164,13 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//m_pAnimator->SetTrigger("Groggy");
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
-	//	m_fHP -= 10.f;
+	//	m_fHp -= 10.f;
 	}
 
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		//m_fHP -= 10.f;
+		//m_fHp -= 10.f;
 		/*m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType",Uppercut);*/
 
@@ -205,9 +205,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 			//	MSG_BOX("이펙트 생성 실패함");
 
 			CEffectContainer::DESC BellyFireDesc = {};
-			//BellyFireDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Ball01"));
-			//
-			//BellyFireDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 			_matrix combmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Ball01"))) * m_pTransformCom->Get_WorldMatrix();
 			_vector vPos = combmat.r[3];
@@ -240,7 +237,10 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
 
-
+	if (KEY_DOWN(DIK_B))
+	{
+		EnterCutScene();
+	}
 
 }
 
@@ -248,9 +248,14 @@ void CFuoco::Update(_float fTimeDelta)
 {
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
-		m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Dead_", 3);
-		m_pAnimator->SetTrigger("SpecialDie");
+		// 죽음 처리
 		m_bUseLockon = false;
+		if (m_eCurrentState != EEliteState::DEAD)
+		{
+			m_eCurrentState = EEliteState::DEAD;
+			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Dead_", 3);
+			m_pAnimator->SetTrigger("SpecialDie");
+		}
 		Safe_Release(m_pHPBar);
 	}
 
@@ -323,7 +328,7 @@ HRESULT CFuoco::Ready_Actor()
 		PxQuat armRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 armPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 		PxTransform armPose(armPositionVec, armRotationQuat);
-		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(1.5f);
+		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(1.7f);
 		m_pPhysXActorComForArm->Create_Collision(m_pGameInstance->GetPhysics(), armGeom, armPose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorComForArm->Set_ShapeFlag(false, true, true);
 		PxFilterData armFilterData{};
@@ -789,7 +794,7 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("IsFront",
 		[this]()
 		{
-			if (IsTargetInFront(20.f))
+			if (IsTargetInFront(10.f))
 			{
 				m_pAnimator->SetBool("IsFront", true);
 				SetTurnTimeDuringAttack(1.f);
@@ -822,7 +827,7 @@ void CFuoco::Register_Events()
 			CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 			eDesc.strName = TEXT("왕의 불꽃 푸오코");
 			eDesc.isBoss = true;
-			eDesc.pHP = &m_fHP;
+			eDesc.pHP = &m_fHp;
 			eDesc.pIsGroggy = &m_bGroggyActive;
 
 			m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
@@ -973,6 +978,16 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("SpawnFlameField", [this]()
 		{
 			SpawnFlameField();
+			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_FieldBellyFire"));
+			CEffectContainer::DESC Desc = {};
+
+			_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+
+			XMStoreFloat4x4(&Desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_Erupt_P1"), &Desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
 			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_Short_", 3);
 		});
 
@@ -1081,6 +1096,22 @@ void CFuoco::Register_Events()
 		});
 
 
+	m_pAnimator->RegisterEventListener("BellyFireSpawn", [this]()
+		{
+			CEffectContainer::DESC BellyFireDesc = {};
+
+			_matrix combmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Ball01"))) * m_pTransformCom->Get_WorldMatrix();
+			_vector vPos = combmat.r[3];
+			_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
+			vPos += vLook * 0.6f;
+			XMStoreFloat4x4(&BellyFireDesc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
+
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_BellyFire_P2"), &BellyFireDesc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_FieldBellyFire"), static_cast<CEffectContainer*>(pEC));
+		});
+
 }
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
@@ -1113,7 +1144,16 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	m_PatternCountMap.clear();
 	for (const auto& pattern : m_vecBossPatterns)
 	{
-		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
+		if (pattern == P2_FireOil || pattern == P2_FireBall ||
+			pattern == P2_FireFlame || pattern == P2_FireBall_B)
+		{
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
+		}
+		else
+		{
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.2f;
+		}
+
 		m_PatternCountMap[pattern] = 0;
 	}
 	SwitchEmissive(false, 1.f); 
@@ -1185,6 +1225,20 @@ void CFuoco::ChosePatternWeightByDistance(_float fDistance)
 			if (it == m_vecFarAttackPatterns.end())
 			{
 				m_PatternWeighForDisttMap[pattern] *= 0.f;
+			}
+		}
+	}
+
+	// TODO
+	// 2페이즈 패턴 많이 보여주려고 가중치 올림
+	if (m_bIsPhase2)
+	{
+		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
+		{
+			if (pattern == P2_FireOil || pattern == P2_FireBall ||
+				pattern == P2_FireFlame || pattern == P2_FireBall_B)
+			{
+				weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
 			}
 		}
 	}

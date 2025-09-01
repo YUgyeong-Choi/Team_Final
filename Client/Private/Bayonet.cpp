@@ -109,39 +109,39 @@ void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	if (KEY_PRESSING(DIK_G))
-	{
-		CEffectContainer::DESC desc = {};
+	//if (KEY_PRESSING(DIK_G))
+	//{
+	//	CEffectContainer::DESC desc = {};
 
-		auto worldmat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
-		_vector rot, trans, scale;
-		XMMatrixDecompose(&scale, &rot, &trans, worldmat);
+	//	auto worldmat = XMLoadFloat4x4(m_pWeaponEndMatrix) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
+	//	_vector rot, trans, scale;
+	//	XMMatrixDecompose(&scale, &rot, &trans, worldmat);
 
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) *
-			XMMatrixTranslation(trans.m128_f32[0],
-				trans.m128_f32[1],
-				trans.m128_f32[2]));
+	//	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) *
+	//		XMMatrixTranslation(trans.m128_f32[0],
+	//			trans.m128_f32[1],
+	//			trans.m128_f32[2]));
 
-		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_WeaponParticle_P1", &desc))
-			MSG_BOX("이펙트 생성 실패함");
-	}
-	if (KEY_DOWN(DIK_G))
-	{
-		CEffectContainer::DESC desc = {};
-		
-		auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * m_pTransformCom->Get_WorldMatrix() * m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+	//	if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_WeaponParticle_P1", &desc))
+	//		MSG_BOX("이펙트 생성 실패함");
+	//}
+	//if (KEY_DOWN(DIK_G))
+	//{
+	//	CEffectContainer::DESC desc = {};
+	//	
+	//	auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
 
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
-				worldmat.r[3].m128_f32[1],
-				worldmat.r[3].m128_f32[2]));
+	//	XMStoreFloat4x4(&desc.PresetMatrix,
+	//		XMMatrixTranslation(worldmat.r[3].m128_f32[0],
+	//			worldmat.r[3].m128_f32[1],
+	//			worldmat.r[3].m128_f32[2]));
 
-		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
-			MSG_BOX("이펙트 생성 실패함");
-		static _bool bTEactive = true;
-		bTEactive = !bTEactive;
-		Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
-	}
+	//	if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
+	//		MSG_BOX("이펙트 생성 실패함");
+	//	static _bool bTEactive = true;
+	//	bTEactive = !bTEactive;
+	//	Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
+	//}
 }
 
 void CBayonet::Late_Update(_float fTimeDelta)
@@ -162,7 +162,7 @@ void CBayonet::Late_Update(_float fTimeDelta)
 		else
 		{
 			m_bHitEffect = false;
-			Create_AttackEffect(m_pLastHitObject, m_eLastHitColType);
+			Create_SlashEffect(m_pLastHitObject, m_eLastHitColType);
 		}
 	}
 	Update_Collider();
@@ -396,7 +396,7 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		m_eLastHitColType = eColliderType;
 		auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
 		XMStoreFloat3(&m_vEndSocketPrevPos, CurEndWorldMat.r[3]);
-		//Create_AttackEffect(pOther, eColliderType);
+		//Create_SlashEffect(pOther, eColliderType);
 
 		CUnit* pUnit = static_cast<CUnit*>(pOther);
 		
@@ -417,7 +417,7 @@ void CBayonet::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-HRESULT CBayonet::Create_AttackEffect(CGameObject* pOther, COLLIDERTYPE eColliderType)
+HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	_vector vPlayerPos = XMVectorSetY(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
 	_vector vOtherPos = XMVectorSetY(pOther->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
@@ -446,27 +446,131 @@ HRESULT CBayonet::Create_AttackEffect(CGameObject* pOther, COLLIDERTYPE eCollide
 		vRight = XMVector3Normalize(vSlashDir);
 	}
 
-	_float dot = XMVectorGetX(XMVector3Dot(vLook, vSlashDir));
-	dot = max(-1.f, min(1.f, dot));
-	_float angle = acosf(dot);
+	/******************/
+	//_float dot = XMVectorGetX(XMVector3Dot(vLook, vSlashDir));
+	//dot = max(-1.f, min(1.f, dot));
+	//_float angle = acosf(dot);
 
-	_vector axis = XMVector3Normalize(XMVector3Cross(vLook, vSlashDir));
-	_matrix mRot = XMMatrixRotationAxis(axis, angle);
+	//_vector axis = XMVector3Normalize(XMVector3Cross(vLook, vSlashDir));
+	//_matrix mRot = XMMatrixRotationAxis(axis, angle);
+
+	//_matrix mRoll = XMMatrixRotationAxis(vLook, angle);
+	/******************/
+
+
+	_matrix OwnerMat = m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+	_vector right = XMVector3Normalize(OwnerMat.r[0]);
+	_vector up = XMVector3Normalize(OwnerMat.r[1]);
+	_vector look = XMVector3Normalize(OwnerMat.r[2]);
+
+	_vector v = vSlashDir;
+
+	// look 방향 성분
+	_float dotLook = XMVectorGetX(XMVector3Dot(v, look));
+	_vector vOnPlane = XMVectorSubtract(v, look * dotLook);
+
+	vOnPlane = XMVector3Normalize(vOnPlane);
+
+	_float dotR = XMVectorGetX(XMVector3Dot(vOnPlane, right));
+	_float angle = acosf(std::clamp(dotR, -1.0f, 1.0f));
+
+	_float sign = XMVectorGetX(XMVector3Dot(XMVector3Cross(right, vOnPlane), look));
+	if (sign < 0) angle = -angle; // 반대 방향 보정
 
 	_matrix mRoll = XMMatrixRotationAxis(vLook, angle);
+
+
+	/******************/
+	CEffectContainer::DESC desc = {};
+
+	CGameObject* pEffect = { nullptr };
+	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
+
+	// 막타일 때 
+	if (pUnit->GetHP() <= 0.f)
+	{
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
+			return E_FAIL;
+	}
+	else
+	{
+		// 찌르기 공격
+		if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKA)
+		{
+
+			XMStoreFloat4x4(&desc.PresetMatrix,
+				XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
+		}
+
+		// 베기 공격
+		else if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::MAINSKILLA
+			|| eCategory == CPlayer::eAnimCategory::MAINSKILLB
+			|| eCategory == CPlayer::eAnimCategory::MAINSKILLC)
+		{
+			XMStoreFloat4x4(&desc.PresetMatrix,
+				XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+		}
+	}
+
+	if (pEffect == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBayonet::Create_AttackEffect(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	_vector vPlayerPos = XMVectorSetY(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
+	_vector vOtherPos = XMVectorSetY(pOther->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
+	_vector vDir = XMVector3Normalize(vPlayerPos - vOtherPos);
+
+	CUnit* pUnit = static_cast<CUnit*>(pOther);
+
+	auto& vLockonPos = pUnit->Get_LockonPos();
+	_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
+
+	_vector vLook = XMVector3Normalize(vDir);           // Look
+	_vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f); // 고정 Up
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vLook));
+	_vector vUp = XMVector3Cross(vLook, vRight);
+
+	_matrix mAlign = XMMATRIX(vRight, vUp, vLook, XMVectorSet(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z, 1.f));
 
 	CEffectContainer::DESC desc = {};
 
 	XMStoreFloat4x4(&desc.PresetMatrix,
-		XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);
+		XMMatrixScaling(1.5f, 1.5f, 1.5f) * mAlign);
 
 	CGameObject* pEffect = { nullptr };
-	/*rand() % 3 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc)
-		: rand() % 2 == 1 ? pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc)
-		:*/ pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
 
-		if (pEffect == nullptr)
-			return E_FAIL;
+
+	// 찌르기 공격
+	if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKA
+		|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKB
+		|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKA )
+		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
+
+	//// 베기 공격 생각해보니 기본으로 나오는중 
+	//else if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKB
+	//	|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
+	//	|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
+	//	|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
+	//	|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB)
+	//	pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+
+	if (pEffect == nullptr)
+		return E_FAIL;
 
 	return S_OK;
 }

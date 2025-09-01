@@ -18,6 +18,10 @@
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
 
+#include "UI_Container.h"
+#include "UI_Manager.h"
+
+
 NS_BEGIN(Client)
 
 _float g_fWalkSpeed = 1.5f;
@@ -903,9 +907,9 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (0.3f < m_fStateTime)
+        if (0.2f < m_fStateTime)
         {
-            if (MOUSE_PRESSING(DIM::LBUTTON))
+            if (MOUSE_DOWN(DIM::LBUTTON))
             {
                 m_pOwner->m_bBackStepAttack = true;
                 m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
@@ -934,7 +938,7 @@ public:
 
         if (m_pOwner->m_bBackStepAttack)
         {
-            if (0.5f < m_fStateTime)
+            if (1.8f < m_fStateTime)
                 return EPlayerState::IDLE;
         }
         else
@@ -1770,16 +1774,27 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 1.f)
+        if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+            m_pOwner->m_bPulseReservation = true;
+
+        if (MOUSE_PRESSING(DIM::RBUTTON))
         {
-            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
-                m_pOwner->m_bPulseReservation = true;
+            m_fChargeTime += fTimeDelta;
+            if (m_fChargeTime > 0.5f)
+                m_bChargeB = true;
+        }
+        else
+        {
+            m_fChargeTime = 0.f;
+            m_bChargeB = false;
         }
     }
 
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
+        m_bChargeB = false;
+        m_fChargeTime = 0.f;
         m_pOwner->m_bMovable = true;
         m_pOwner->m_pAnimator->SetBool("Charge", false);
     }
@@ -1789,7 +1804,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (3.f < m_fStateTime)
+        if (1.5f < m_fStateTime)
         {
             if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
@@ -1797,12 +1812,14 @@ public:
             if (m_pOwner->m_bUseLockon && KEY_UP(DIK_SPACE))
                 return EPlayerState::ROLLING;
 
-            if (m_pOwner->m_bIsChange && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
+            if (m_bChargeB && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
             {
-                m_pOwner->m_bIsChange = false;
                 return EPlayerState::CHARGEB;
             }
+        }
 
+        if (3.f < m_fStateTime)
+        {
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -1837,6 +1854,9 @@ private:
 
 private:
     _bool   m_bAttack = {};
+    _bool   m_bChargeB = {};
+
+	_float  m_fChargeTime = { 0.f };
 
 };
 class CPlayer_ChargeB final : public CPlayerState
@@ -1856,6 +1876,7 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 차지는 무기 장착상태여야합니다.
+        m_pOwner->m_pAnimator->SetBool("Charge", true);
         m_pOwner->m_pAnimator->SetInt("Combo", 1);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
@@ -2034,7 +2055,7 @@ public:
 
                     /* [ HP 를 감소시키고 사망을 확인한다. ] */
                     m_pOwner->HPSubtract();
-                    if (m_pOwner->m_fHP <= 0.f)
+                    if (m_pOwner->m_fHp <= 0.f)
                     {
                         m_bDead = true;
                         return;
@@ -2068,9 +2089,11 @@ public:
                 if (pEffect == nullptr)
                     MSG_BOX("이펙트 생성 실패함");
 
+                m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+
                 /* [ HP 를 감소시키고 사망을 확인한다. ] */
                 m_pOwner->HPSubtract();
-                if (m_pOwner->m_fHP <= 0.f)
+                if (m_pOwner->m_fHp <= 0.f)
                 {
                     m_bDead = true;
                     return;
@@ -2929,6 +2952,10 @@ public:
     {
         m_fStateTime = 0.f;
         m_pOwner->m_bIsInvincible = false;
+        m_pOwner->SetbIsBackAttack(false);
+        m_pOwner->SetbIsGroggyAttack(false);
+        m_pOwner->SetIsFatalBoss(false);
+        m_pOwner->SetFatalTargetNull();
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -3018,9 +3045,11 @@ public:
         if (pEffect == nullptr)
             MSG_BOX("이펙트 생성 실패함");
 
+        m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+
         /* [ HP 를 우선으로 감소시키고 사망을 확인한다. ] */
         m_pOwner->HPSubtract();
-        if (m_pOwner->m_fHP <= 0.f)
+        if (m_pOwner->m_fHp <= 0.f)
         {
             m_bDead = true;
             return;
@@ -3216,11 +3245,33 @@ public:
 
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Hit_Dead_B_", 3);
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+
+        //?
+
+
     }
 
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        if (m_fStateTime > 1.f && !m_bDoOnce)
+        {
+            CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+            eDesc.strFilePath = TEXT("../Bin/Save/UI/Death.json");
+
+            eDesc.fLifeTime = 6.f;
+            eDesc.useLifeTime = true;
+
+            if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+                ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Death"), &eDesc)))
+                return;
+
+            CUI_Manager::Get_Instance()->Off_Panel();
+            CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertDeath_01");
+            m_bDoOnce = true;
+        }
 
         if (m_fStateTime > 6.f && !m_pOwner->m_bIsRrevival)
         {
@@ -3237,12 +3288,14 @@ public:
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_bWeaponEquipped = false;
 
-            m_pOwner->m_fHP = 100.f;
+            m_pOwner->m_fHp = 100.f;
             m_pOwner->Callback_HP();
             m_pOwner->m_bIsRrevival = true;
 
             m_pGameInstance->Reset_LevelUnits();
             m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
+
+            CUI_Manager::Get_Instance()->On_Panel();
         }
 
         if (m_pOwner->m_bIsRrevival)
@@ -3257,6 +3310,7 @@ public:
         m_fRrevivalTime = 0.f;
         m_pOwner->m_bIsRrevival = false;
         m_pOwner->m_bIsInvincible = false;
+        m_bDoOnce = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

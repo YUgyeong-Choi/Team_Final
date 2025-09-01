@@ -118,10 +118,6 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 }
 HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
-	AREAMGR eArea = m_pGameInstance->GetCurrentAreaMgr();
-	if (eArea == AREAMGR::DEBUG)
-		return S_OK;
-
 	/* [ º¼·ý¸ÞÆ®¸¯ Àü¿ë ·»´õ ] */
 	if(!m_LightDesc.bIsVolumetric)
 		return S_OK; // º¼·ý¸ÞÆ®¸¯ÀÌ ²¨Áö¸é ·»´õ¸µÇÏÁö ¾Ê´Â´Ù.
@@ -130,6 +126,10 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
 	{
+		AREAMGR eArea = m_pGameInstance->GetCurrentAreaMgr();
+		if (eArea == AREAMGR::FUOCO || eArea == AREAMGR::DEBUG)
+			return S_OK;
+
 		AREAMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
 		if (eAreaMgr == AREAMGR::HOTEL)
 		{

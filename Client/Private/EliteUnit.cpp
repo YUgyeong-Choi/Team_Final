@@ -579,7 +579,7 @@ void CEliteUnit::UpdateNormalMove(_float fTimeDelta)
 
 void CEliteUnit::Reset()
 {
-	m_fHP = m_fMaxHP;
+	m_fHp = m_fMaxHp;
     m_eCurrentState = EEliteState::IDLE;
 	m_ePrevState = EEliteState::IDLE;
     m_bIsFirstAttack = true;
@@ -686,7 +686,7 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			fDamage = pWeapon->Get_CurrentDamage() * 0.25f;
 		else
 			fDamage = pWeapon->Get_CurrentDamage() * 0.15f;
-        m_fHP -= fDamage;
+        m_fHp -= fDamage;
 
         if (nullptr != m_pHPBar)
         {
@@ -695,8 +695,8 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         }
          
 
-		m_fHP = max(m_fHP, 0.f);
-        cout << "몬스터 현재 체력 : " << m_fHP << endl;
+		m_fHp = max(m_fHp, 0.f);
+        cout << "몬스터 현재 체력 : " << m_fHp << endl;
 
 		_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
         auto pPlayer = GET_PLAYER(iLevelIndex);

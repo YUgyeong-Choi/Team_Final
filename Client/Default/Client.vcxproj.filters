@@ -472,6 +472,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Rotation">
       <UniqueIdentifier>{e874890a-b1e2-4c41-ba17-5f255ffc7f46}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Color">
+      <UniqueIdentifier>{cbaffa57-c9b2-414d-b13c-89dadc25a8f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1000,6 +1003,9 @@
     <ClInclude Include="..\public\UI_Feature_Rotation.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Rotation</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Feature_Color.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Color</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\TriggerBGM.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClInclude>
@@ -1507,6 +1513,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerBGM.cpp">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Feature_Color.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Feature\Color</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

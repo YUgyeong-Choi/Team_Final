@@ -32,7 +32,7 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
     m_isGroggy = pDesc->pIsGroggy;
 
-    m_fMaxHP = *m_pHP;
+    m_fMaxHp = *m_pHP;
 
     m_isBoss = pDesc->isBoss;
 
@@ -98,7 +98,7 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
     }
 
 
-    _float fRatio = *m_pHP / (m_fMaxHP);
+    _float fRatio = *m_pHP / (m_fMaxHp);
     
     if (m_fCurrentRatio > fRatio)
     {

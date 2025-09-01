@@ -33,7 +33,7 @@
                 },
                 {
                     "EventName": "WeaponAttackOff",
-                    "Time": 69.0
+                    "Time": 74.0
                 }
             ],
             "IsLoop": false,
@@ -73,11 +73,11 @@
                 },
                 {
                     "EventName": "WeaponAttackOn",
-                    "Time": 46.0
+                    "Time": 42.0
                 },
                 {
                     "EventName": "WeaponAttackOff",
-                    "Time": 59.0
+                    "Time": 64.0
                 }
             ],
             "IsLoop": false,
@@ -120,12 +120,12 @@
                     "Time": 3.123917579650879
                 },
                 {
-                    "EventName": "WeaponAttackOn",
-                    "Time": 74.0
+                    "EventName": "WeaponAttackOff",
+                    "Time": 96.0
                 },
                 {
-                    "EventName": "WeaponAttackOff",
-                    "Time": 86.0
+                    "EventName": "WeaponAttackOn",
+                    "Time": 68.0
                 }
             ],
             "IsLoop": false,
@@ -161,7 +161,7 @@
                 },
                 {
                     "EventName": "WeaponAttackOff",
-                    "Time": 79.0
+                    "Time": 83.0
                 }
             ],
             "IsLoop": false,

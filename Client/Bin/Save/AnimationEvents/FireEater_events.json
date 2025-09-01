@@ -110,10 +110,6 @@
                     "Time": 51.0
                 },
                 {
-                    "EventName": "DecalScratchEffect",
-                    "Time": 44.0
-                },
-                {
                     "EventName": "SwingAfterSalmSound",
                     "Time": 45.0
                 }
@@ -806,6 +802,10 @@
                 {
                     "EventName": "FurnaceOpenSound",
                     "Time": 49.0
+                },
+                {
+                    "EventName": "BellyFireSpawn",
+                    "Time": 57.0
                 }
             ],
             "IsLoop": false,

@@ -15,37 +15,131 @@
                     "G": 1.0,
                     "R": 1.0
                 },
-                "ProtoTag": "Prototype_GameObject_Static_UI",
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 45,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 240,
+                        "iStartFrame": 180,
+                        "isLoop": false
+                    },
+                    {
+                        "EndScale": {
+                            "X": 0.2549999952316284,
+                            "Y": 0.44999998807907104
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Scale",
+                        "StartScale": {
+                            "X": 0.3400000035762787,
+                            "Y": 0.6000000238418579
+                        },
+                        "iEndFrame": 240,
+                        "iStartFrame": 180,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
-                "SizeX": 1600.0,
-                "SizeY": 900.0,
-                "Texturetag": "Prototype_Component_Texture_BackGround_Loading_Desk",
-                "fAlpha": 1.0,
-                "fOffset": 0.800000011920929,
+                "SizeX": 544.0,
+                "SizeY": 540.0,
+                "Texturetag": "Prototype_Component_Texture_WatchBG",
+                "fAlpha": 0.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
                 "fX": 800.0,
                 "fY": 450.0,
-                "iPassIndex": 0,
+                "iPassIndex": 1,
                 "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndRotation": 360.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.5,
+                            "Y": 0.38999998569488525
+                        },
+                        "RotationPos": {
+                            "X": 0.5,
+                            "Y": 0.4950000047683716
+                        },
+                        "StartRotation": 0.0,
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 80.0,
+                "SizeY": 288.0,
+                "Texturetag": "Prototype_Component_Texture_Watch_Needle",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 800.0,
+                "fY": 351.0,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndRotation": 450.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Rotation",
+                        "Initpos": {
+                            "X": 0.5,
+                            "Y": 0.4000000059604645
+                        },
+                        "RotationPos": {
+                            "X": 0.5,
+                            "Y": 0.5
+                        },
+                        "StartRotation": -30.0,
+                        "iEndFrame": 60,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 64.0,
+                "SizeY": 270.0,
+                "Texturetag": "Prototype_Component_Texture_Watch_Needle",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 800.0,
+                "fY": 356.3999938964844,
+                "iPassIndex": 1,
+                "iTextureIndex": 1,
                 "iTextureLevel": 0
             }
         ],
-        "ProtoTag": "Prototype_GameObject_UI_Container",
-        "RotationZ": 0.0,
-        "SizeX": 0.0,
-        "SizeY": 0.0,
-        "fAlpha": 1.0,
-        "fOffset": 0.0,
-        "fX": 0.0,
-        "fY": 0.0
-    },
-    {
-        "Color": {
-            "A": 1.0,
-            "B": 1.0,
-            "G": 1.0,
-            "R": 1.0
-        },
-        "FilePath": "",
         "ProtoTag": "Prototype_GameObject_UI_Container",
         "RotationZ": 0.0,
         "SizeX": 0.0,
