@@ -830,14 +830,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::EQUIP:
 	{
-		if (!m_bSetSound)
-		{
-			if(m_bWeaponEquipped)
-				m_pSoundCom->Play_Random("SE_PC_WP_Bayonet_On_", 3);
-			else
-				m_pSoundCom->Play_Random("SE_PC_WP_Bayonet_Off_", 3);
-			m_bSetSound = true;
-		}
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
 	}
@@ -1077,7 +1069,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			//m_pSoundCom->Play_Random("SE_PC_SK_WS_Glaive_P_B_S_", 3);
 			//m_pSoundCom->Play_Random("SE_PC_SK_FX_ClockworkBlunt_2H_FableArts_Whoosh_", 4);
 			//m_pSoundCom->Play_Random("SE_PC_SK_FX_SwordLance_2H_FableArts_Whoosh_End_", 3);
-			m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Motor_0");
+			//m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Motor_0");
 			//m_pSoundCom->Play("SE_PC_SK_FX_Frenzy_Rise");
 			//m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Start_01");
 			m_bSetSound = true;
@@ -1197,6 +1189,15 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::PULSE:
 	{
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.5f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_FX_Item_Heal");
+				m_bSetSound = true;
+			}
+		}
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 		break;
 	}
@@ -1473,6 +1474,7 @@ void CPlayer::Register_Events()
 				m_pWeapon->SetbIsActive(true);
 				m_pWeapon->SetisAttack(false);
 				m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"),m_pWeapon);
+				m_pSoundCom->Play_Random("SE_PC_WP_Bayonet_On_", 3);
 			}
 		});
 	m_pAnimator->RegisterEventListener("PutWeapon", [this]()
@@ -1481,7 +1483,7 @@ void CPlayer::Register_Events()
 			{
 				m_pWeapon->SetbIsActive(false);
 				m_pWeapon->SetisAttack(false);
-				
+				m_pSoundCom->Play_Random("SE_PC_WP_Bayonet_Off_", 3);
 			}
 		});
 	m_pAnimator->RegisterEventListener("OnGrinderEffect", [this]()
