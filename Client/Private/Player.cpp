@@ -1144,6 +1144,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 
+			m_pSoundCom->Play("SE_PC_SK_Hit_FatalAttack_Oil_0");
+
 		}
 		if (m_fSetTime > 1.f && !m_bSetCamera[1])
 		{
@@ -1153,6 +1155,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_FatalCombo2_P3S6"), &desc);
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+			m_pSoundCom->Play("SE_PC_SK_Hit_FatalAttack_Oil_1");
 		}
 		if (m_fSetTime > 2.f && !m_bSetCamera[2])
 		{
@@ -1162,6 +1165,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_FatalCombo3_P5S7"), &desc);
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+
+			m_pSoundCom->Play("SE_PC_SK_Hit_M_FinishHit_Oil_0");
 		}
 
 		RootMotionActive(fTimeDelta);

@@ -1,14 +1,24 @@
 ﻿{
   "triggers": [
     {
-      "vPos": [ 4.382186, 1.0, 0.864605 ],
+      "vPos": [ 52.593300, 0.044559, -3.042135 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
-      "triggerSize": [ 0.2, 0.2, 1.0 ],
+      "triggerSize": [ 1.0, 0.2, 0.2 ],
       "strInBGM": "AMB_SS_Train_In_03",
       "strOutBGM": "AMB_SS_Train_Out_Rain",
       "strInBGM2": "",
-      "strOutBGM2": "AMB_SS_Trainstation_Raindrop"
+      "strOutBGM2": ""
+    },
+    {
+      "vPos": [ 117.151184, 1.629256, -9.092491 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 0.2, 0.2, 2.0 ],
+      "strInBGM": "AMB_SS_Train_Out_Rain",
+      "strOutBGM": "AMB_SS_Train_Out_All",
+      "strInBGM2": "",
+      "strOutBGM2": ""
     }
   ]
 }

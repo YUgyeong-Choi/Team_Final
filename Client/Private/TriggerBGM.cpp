@@ -59,6 +59,18 @@ void CTriggerBGM::Late_Update(_float fTimeDelta)
 HRESULT CTriggerBGM::Render()
 {
 	__super::Render();
+#ifdef _DEBUG
+
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXTriggerCom))
+	{
+		if (m_pGameInstance->Get_RenderCollider())
+		{
+			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXTriggerCom)))
+				return E_FAIL;
+		}
+	}
+
+#endif
 	return S_OK;
 }
 
@@ -92,6 +104,10 @@ void CTriggerBGM::Play_BGM(_float fTimeDelta)
 			// m_fBGMVolume 이 1일텐데 0으로 lerp할거임
 			m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 4.f);
 			m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+			if (m_pBGM2)
+			{
+				m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+			}
 
 			if (m_fBGMVolume < 0.01f)
 			{
@@ -103,9 +119,24 @@ void CTriggerBGM::Play_BGM(_float fTimeDelta)
 
 				if (m_strOutBGM2 != "")
 				{
+					if (m_pBGM2)
+					{
+						m_pBGM2->Stop();
+						Safe_Release(m_pBGM2);
+					}
+
 					m_pBGM2 = m_pGameInstance->Get_Single_Sound(m_strOutBGM2);
 					m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 					m_pBGM2->Play();
+				}
+				else
+				{
+					if (m_pBGM2)
+					{
+						m_pBGM2->Stop();
+						Safe_Release(m_pBGM2);
+					}
+
 				}
 
 				m_bBGMToZero = false;
@@ -128,9 +159,22 @@ void CTriggerBGM::Play_BGM(_float fTimeDelta)
 
 				if (m_strInBGM2 != "")
 				{
+					if (m_pBGM2)
+					{
+						m_pBGM2->Stop();
+						Safe_Release(m_pBGM2);
+					}
 					m_pBGM2 = m_pGameInstance->Get_Single_Sound(m_strInBGM2);
 					m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 					m_pBGM2->Play();
+				}
+				else
+				{
+					if (m_pBGM2)
+					{
+						m_pBGM2->Stop();
+						Safe_Release(m_pBGM2);
+					}
 				}
 
 				m_bBGMToZero = false;
@@ -146,6 +190,8 @@ void CTriggerBGM::Play_BGM(_float fTimeDelta)
 		// m_fBGMVolume 이 0일텐데 1로 lerp할거임
 		m_fBGMVolume = LerpFloat(m_fBGMVolume, 2.f, fTimeDelta * 3.f);
 		m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+		if(m_pBGM2)
+			m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 
 		// 만약에 m_fBGMVolume가 1이 되면
 		if (m_fBGMVolume > 0.99f)
