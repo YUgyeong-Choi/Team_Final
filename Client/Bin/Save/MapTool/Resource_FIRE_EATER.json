@@ -7,32 +7,11 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorA.bin"
     },
     {
-        "Collision": true,
-        "ModelName": "SM_Cathedral_BrickWall_22",
-        "NoInstancing": false,
-        "ObjectCount": 4,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_22.bin"
-    },
-    {
         "Collision": false,
         "ModelName": "SM_Exterior_Barrel_01",
         "NoInstancing": false,
-        "ObjectCount": 12,
+        "ObjectCount": 11,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Barrel_01.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Factory_BasePipe_03",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_03.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Factory_BasePipe_04",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_04.bin"
     },
     {
         "Collision": false,
@@ -45,21 +24,21 @@
         "Collision": true,
         "ModelName": "SM_Factory_BasePipe_07",
         "NoInstancing": false,
-        "ObjectCount": 7,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin"
     },
     {
         "Collision": true,
         "ModelName": "SM_Factory_BossWall_01",
         "NoInstancing": false,
-        "ObjectCount": 12,
+        "ObjectCount": 13,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BossWall_01.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Factory_BossWall_02",
         "NoInstancing": false,
-        "ObjectCount": 12,
+        "ObjectCount": 13,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BossWall_02.bin"
     },
     {
@@ -78,10 +57,115 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Factory_Device_05",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Device_05.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_Drum_03",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Drum_03.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_Drum_04",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Drum_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_Drum_05",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Drum_05.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Factory_Generator_01",
         "NoInstancing": false,
         "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Generator_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PillarIndoor_01",
+        "NoInstancing": false,
+        "ObjectCount": 7,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PillarIndoor_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeA_01",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeA_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeA_02",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeA_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeA_05",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeA_05.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeA_06",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeA_06.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeA_07",
+        "NoInstancing": false,
+        "ObjectCount": 5,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeA_07.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeA_08",
+        "NoInstancing": false,
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeA_08.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeC_01",
+        "NoInstancing": false,
+        "ObjectCount": 20,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeC_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeC_02",
+        "NoInstancing": false,
+        "ObjectCount": 23,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeC_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeC_03",
+        "NoInstancing": false,
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeC_03.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_PipeC_04",
+        "NoInstancing": false,
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeC_04.bin"
     },
     {
         "Collision": false,
@@ -94,11 +178,11 @@
         "Collision": false,
         "ModelName": "SM_Factory_RoofFrame_01",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_RoofFrame_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_FireEaterFloor_01_JJS",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -108,7 +192,7 @@
         "Collision": true,
         "ModelName": "SM_Interior_Shelving_04",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Shelving_04.bin"
     },
     {
@@ -122,7 +206,7 @@
         "Collision": false,
         "ModelName": "SM_LightProp_Light_04",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 10,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_04.bin"
     },
     {
@@ -136,14 +220,21 @@
         "Collision": false,
         "ModelName": "SM_Station_MoldingC_02",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_MoldingC_02.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Station_TrainDoor_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin"
     },
     {
         "Collision": true,
         "ModelName": "SM_Wall_BrickWall",
         "NoInstancing": false,
-        "ObjectCount": 34,
+        "ObjectCount": 45,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_BrickWall.bin"
     }
 ]
