@@ -72,14 +72,14 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	m_fMaxHP = 400.f;
-	m_fHP = m_fMaxHP;
+	m_fMaxHp = 400.f;
+	m_fHp = m_fMaxHp;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
 	eDesc.fHeight = 2.5f;
-	eDesc.pHP = &m_fHP;
+	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_bGroggyActive;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
@@ -88,7 +88,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 
 	if(m_pHPBar)
-		m_pHPBar->Set_MaxHp(m_fHP);
+		m_pHPBar->Set_MaxHp(m_fHp);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
@@ -153,7 +153,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 #endif // _DEBUG
 
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
-	if (pCurState&&m_fHP<=0.f)
+	if (pCurState&&m_fHp<=0.f)
 	{
 		if (pCurState->stateName.find("Death") != pCurState->stateName.npos)
 		{
@@ -180,7 +180,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 
 	
 
-	if (m_fHP <= 0 &&m_ePrevState != EEliteState::DEAD)
+	if (m_fHp <= 0 &&m_ePrevState != EEliteState::DEAD)
 	{
 		m_pWeapon->Collider_FilterOff();
 		EnableColliders(false);

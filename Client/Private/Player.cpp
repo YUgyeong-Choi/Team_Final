@@ -2147,7 +2147,7 @@ HRESULT CPlayer::Ready_UIParameters()
 		
 		});
 
-	//m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHP);
+	//m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
 
 
 	return S_OK;

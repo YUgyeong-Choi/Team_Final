@@ -42,12 +42,12 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 		}
 		else if (L"MaxHP" == eventType)
 		{
-			m_fMaxHP = *static_cast<_float*>(data);
+			m_fMaxHp = *static_cast<_float*>(data);
 
 
 		}
 			
-		m_fRatio = (m_fCurrentHP) / m_fMaxHP;
+		m_fRatio = (m_fCurrentHP) / m_fMaxHp;
 
 		if (m_fRatio > m_fCurrentRatio)
 			m_isPlus = true;

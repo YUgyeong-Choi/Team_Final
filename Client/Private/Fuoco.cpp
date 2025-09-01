@@ -100,7 +100,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_U))
 	{
-		m_fHP -= 100.f;
+		m_fHp -= 100.f;
 	}
 	if (KEY_DOWN(DIK_X))
 	{
@@ -164,13 +164,13 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		//m_pAnimator->SetTrigger("Groggy");
 		//if (m_bStartPhase2 == false)
 		//	m_bStartPhase2 = true;
-	//	m_fHP -= 10.f;
+	//	m_fHp -= 10.f;
 	}
 
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		//m_fHP -= 10.f;
+		//m_fHp -= 10.f;
 		/*m_pAnimator->SetTrigger("Attack");
 		m_pAnimator->SetInt("SkillType",Uppercut);*/
 
@@ -824,7 +824,7 @@ void CFuoco::Register_Events()
 			CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 			eDesc.strName = TEXT("왕의 불꽃 푸오코");
 			eDesc.isBoss = true;
-			eDesc.pHP = &m_fHP;
+			eDesc.pHP = &m_fHp;
 			eDesc.pIsGroggy = &m_bGroggyActive;
 
 			m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,

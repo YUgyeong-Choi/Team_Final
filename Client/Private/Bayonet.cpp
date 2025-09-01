@@ -487,30 +487,36 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
 
 	// 막타일 때 
-	//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
-	//	return E_FAIL;
-
-	// 찌르기 공격
-	if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKA
-		|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKB
-		|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKA)
+	if (pUnit->GetHP() <= 0.f)
 	{
-
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
-		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
+			return E_FAIL;
 	}
-
-	// 베기 공격
-	else if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKB
-		|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
-		|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
-		|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
-		|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB)
+	else
 	{
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);
-		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+		// 찌르기 공격
+		if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKA)
+		{
+
+			XMStoreFloat4x4(&desc.PresetMatrix,
+				XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
+		}
+
+		// 베기 공격
+		else if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB)
+		{
+			XMStoreFloat4x4(&desc.PresetMatrix,
+				XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+		}
 	}
 
 	if (pEffect == nullptr)

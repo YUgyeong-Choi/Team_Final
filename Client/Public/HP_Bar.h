@@ -42,7 +42,7 @@ private:
 
 private:
 	_float m_fCurrentHP = {};
-	_float m_fMaxHP = {};
+	_float m_fMaxHp = {};
 	_float m_fRatio = {1.f};
 	_float m_fCurrentRatio = { 1.f };
 	_bool  m_isPlus = { false };

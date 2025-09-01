@@ -109,7 +109,7 @@ protected:
 
 	_float CalculateCurrentHpRatio() const
 	{
-		return m_fHP / m_fMaxHP;
+		return m_fHp / m_fMaxHp;
 	}
 	virtual void UpdatePatternWeight(_int iPattern) {}
 	virtual void SetupAttackByType(_int iPattern) {}
@@ -137,9 +137,6 @@ protected:
 	_bool    m_bIsFirstAttack{ true };
 	_float4x4 	m_InitWorldMatrix{};
 
-	// Ã¼·Â
-	_float   m_fHP = 100.f;
-	_float   m_fMaxHP = 100.f;
 	
 
 	 _bool   m_bGroggyActive = false;
