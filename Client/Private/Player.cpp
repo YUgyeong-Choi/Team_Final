@@ -1834,7 +1834,10 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		CUnit* pUnit = pWeapon->Get_Owner();
 		m_pHitedTarget = pUnit;
 
-		CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pUnit);
+		if (nullptr == pUnit)
+			return;
+
+		//CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pUnit);
 
 		if (pUnit->Get_UnitType() != EUnitType::ELITE_MONSTER &&
 			pUnit->Get_UnitType() != EUnitType::NORMAL_MONSTER)
@@ -1844,8 +1847,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		if(pUnit->Get_UnitType() == EUnitType::ELITE_MONSTER)
 			cout << "엘리트 몬스터 피격" << endl;
 
-		//if (pMonster&&pMonster->Get_CurrentHp() <= 0)
-		//	return;
+		if ( pUnit->GetHP() <= 0)
+			return;
 
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
