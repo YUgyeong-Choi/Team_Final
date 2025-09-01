@@ -46,6 +46,7 @@ private:
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();
 	HRESULT Ready_Trigger();
+	HRESULT Ready_TriggerBGM();
 
 
 

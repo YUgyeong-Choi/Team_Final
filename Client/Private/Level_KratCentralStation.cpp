@@ -16,6 +16,7 @@
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
+#include "TriggerBGM.h"
 
 #include "PBRMesh.h"
 #include "DH_ToolMesh.h"     
@@ -1153,8 +1154,6 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
-	Desc.pBGM = m_pBGM;
-	Desc.pBGM2 = m_pBGM2;
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
@@ -1262,6 +1261,44 @@ HRESULT CLevel_KratCentralStation::Ready_Trigger()
 					ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerUI"), &Desc)))
 					return E_FAIL;
 			}
+		}
+	}
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
+{
+	ifstream inFile("../Bin/Save/Trigger/TriggerBGM.json");
+	if (inFile.is_open())
+	{
+		json root;
+		inFile >> root;
+		inFile.close();
+
+		for (const auto& j : root["triggers"]) {
+			const auto vPosArr = j.value("vPos", vector<float>{});
+			const auto rotDegArr = j.value("rotationDeg", vector<float>{});
+			const auto offsetArr = j.value("triggerOffset", vector<float>{});
+			const auto sizeArr = j.value("triggerSize", vector<float>{});
+
+			const auto strInBGM = j.value("strInBGM", string{});
+			const auto strOutBGM = j.value("strOutBGM", string{});
+			const auto strInBGM2 = j.value("strInBGM2", string{});
+			const auto strOutBGM2 = j.value("strOutBGM2", string{});
+
+			CTriggerBGM::tagTriggerBGMDesc Desc{};
+			Desc.vPos = VecSetW(vPosArr, 1.f);
+			Desc.Rotation = VecToFloat3(rotDegArr);
+			Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
+			Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
+			Desc.strInBGM = strInBGM;
+			Desc.strOutBGM = strOutBGM;
+			Desc.strInBGM2 = strInBGM2;
+			Desc.strOutBGM2 = strOutBGM2;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerBGM"),
+				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerBGM"), &Desc)))
+				return E_FAIL;
 		}
 	}
 	return S_OK;
