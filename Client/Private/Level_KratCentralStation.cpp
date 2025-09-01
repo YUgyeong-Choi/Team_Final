@@ -71,6 +71,10 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;
 
+	if (FAILED(Ready_TriggerBGM()))
+		return E_FAIL;
+	
+
 	Reset();
 
 	return S_OK;
@@ -1315,6 +1319,8 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 			Desc.Rotation = VecToFloat3(rotDegArr);
 			Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 			Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
+			Desc.pBGM = m_pBGM;
+			Desc.pBGM2 = m_pBGM2;
 			Desc.strInBGM = strInBGM;
 			Desc.strOutBGM = strOutBGM;
 			Desc.strInBGM2 = strInBGM2;

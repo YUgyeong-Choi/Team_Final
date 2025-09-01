@@ -290,6 +290,7 @@ HRESULT CMainApp::Ready_Sound()
 
 	/* [ 플레이어 사운드 ] */
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Unit/Player/", false, false, false);
+	ADD_SOUND_EX(Grinder, "../Bin/Resources/Sound/Unit/Player/Grinder/", false, false, false);
 	ADD_SOUND_EX(Weapon, "../Bin/Resources/Sound/Unit/Weapon/", false, false, false);
 
 	/* [ 동영상용 사운드 ] */

@@ -140,7 +140,6 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
 	//HRESULT Ready_Effect();
-
 private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
@@ -395,7 +394,8 @@ private: /* [ 공격한 적 ] */
 	class CUnit* m_pHitTarget = { nullptr };
 
 	_int m_iFatalAttackCount = {};
-
+private: // 그라인더용 변수
+	CSoundController* m_pGrinderSound = { nullptr };
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
