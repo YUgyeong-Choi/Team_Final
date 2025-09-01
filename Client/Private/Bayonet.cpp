@@ -447,36 +447,37 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	}
 
 	/******************/
-	_float dot = XMVectorGetX(XMVector3Dot(vLook, vSlashDir));
-	dot = max(-1.f, min(1.f, dot));
-	_float angle = acosf(dot);
+	//_float dot = XMVectorGetX(XMVector3Dot(vLook, vSlashDir));
+	//dot = max(-1.f, min(1.f, dot));
+	//_float angle = acosf(dot);
 
-	_vector axis = XMVector3Normalize(XMVector3Cross(vLook, vSlashDir));
-	_matrix mRot = XMMatrixRotationAxis(axis, angle);
+	//_vector axis = XMVector3Normalize(XMVector3Cross(vLook, vSlashDir));
+	//_matrix mRot = XMMatrixRotationAxis(axis, angle);
 
-	_matrix mRoll = XMMatrixRotationAxis(vLook, angle);
+	//_matrix mRoll = XMMatrixRotationAxis(vLook, angle);
 	/******************/
 
 
+	_matrix OwnerMat = m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+	_vector right = XMVector3Normalize(OwnerMat.r[0]);
+	_vector up = XMVector3Normalize(OwnerMat.r[1]);
+	_vector look = XMVector3Normalize(OwnerMat.r[2]);
 
-	//XMVECTOR right = XMVector3Normalize(mAlign.r[0]);
-	//XMVECTOR up = XMVector3Normalize(mAlign.r[1]);
-	//XMVECTOR look = XMVector3Normalize(mAlign.r[2]);
+	_vector v = vSlashDir;
 
-	//XMVECTOR v = vSlashDir;
+	// look 방향 성분
+	_float dotLook = XMVectorGetX(XMVector3Dot(v, look));
+	_vector vOnPlane = XMVectorSubtract(v, look * dotLook);
 
-	//// look 방향 성분
-	//float dotLook = XMVectorGetX(XMVector3Dot(v, look));
-	//XMVECTOR vOnPlane = XMVectorSubtract(v, look * dotLook);
+	vOnPlane = XMVector3Normalize(vOnPlane);
 
-	//vOnPlane = XMVector3Normalize(vOnPlane);
+	_float dotR = XMVectorGetX(XMVector3Dot(vOnPlane, right));
+	_float angle = acosf(std::clamp(dotR, -1.0f, 1.0f));
 
-	//float dotR = XMVectorGetX(XMVector3Dot(vOnPlane, right));
-	//float angle = acosf(std::clamp(dotR, -1.0f, 1.0f));
+	_float sign = XMVectorGetX(XMVector3Dot(XMVector3Cross(right, vOnPlane), look));
+	if (sign < 0) angle = -angle; // 반대 방향 보정
 
-	//float sign = XMVectorGetX(XMVector3Dot(XMVector3Cross(right, vOnPlane), look));
-	//if (sign < 0) angle = -angle; // 반대 방향 보정
-
+	_matrix mRoll = XMMatrixRotationAxis(vLook, angle);
 
 
 	/******************/
@@ -486,30 +487,36 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
 
 	// 막타일 때 
-	//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
-	//	return E_FAIL;
-
-	// 찌르기 공격
-	if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKA
-		|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKB
-		|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKA)
+	if (pUnit->GetHP() <= 0.f)
 	{
-
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
-		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
+			return E_FAIL;
 	}
-
-	// 베기 공격
-	else if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKB
-		|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
-		|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
-		|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
-		|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB)
+	else
 	{
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixScaling(2.f, 2.f, 2.f) * mRot * mAlign);
-		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+		// 찌르기 공격
+		if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKA)
+		{
+
+			XMStoreFloat4x4(&desc.PresetMatrix,
+				XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
+		}
+
+		// 베기 공격
+		else if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
+			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB)
+		{
+			XMStoreFloat4x4(&desc.PresetMatrix,
+				XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);
+			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+		}
 	}
 
 	if (pEffect == nullptr)

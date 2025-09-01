@@ -47,7 +47,7 @@
             ]
         }
     ],
-    "LifeDuration": 0.5,
+    "LifeDuration": 0.35,
     "LifeTime": 0.0,
     "Loop": true,
     "Name": "Player_WeaponTrail",
@@ -56,7 +56,7 @@
     "RenderGroup": 8,
     "ShaderPass": 0,
     "StartTrack": 0,
-    "Subdivisions": 15,
+    "Subdivisions": 12,
     "TextureTags": [
         "T_Mask_05_C_LGS",
         "trail_tex",
@@ -70,7 +70,7 @@
         false
     ],
     "Threshold": 0.0,
-    "TickPerSecond": 60.0,
+    "TickPerSecond": 100.0,
     "TileX": 1,
     "TileY": 1
 }

@@ -33,7 +33,7 @@ private:
 
 public:
 	void Set_RenderTime(_float fTime) { m_fRenderTime = fTime; }
-	void Set_MaxHp(_float iHp) { m_fMaxHP = iHp; }
+	void Set_MaxHp(_float iHp) { m_fMaxHp = iHp; }
 
 	void Add_Damage(_float fDamage) { m_fDamage += fDamage; }
 
@@ -62,7 +62,7 @@ private:
 private:
 	_float* m_pHP = { nullptr };
 	_bool* m_isGroggy = {nullptr};
-	_float  m_fMaxHP = {};
+	_float  m_fMaxHp = {};
 	_float  m_fDamage = {};
 
 	_float m_fCurrentRatio = { 1.f };
