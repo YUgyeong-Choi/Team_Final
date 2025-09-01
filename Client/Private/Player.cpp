@@ -2073,6 +2073,8 @@ HRESULT CPlayer::Ready_Components()
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Player"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
+	m_pSoundCom->Set_AllVolume(g_fPlayerSoundVolume);
+
 	return S_OK;
 }
 HRESULT CPlayer::Ready_Controller()

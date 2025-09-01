@@ -28,6 +28,7 @@ public:
     void Set_Pitch(const string& strTag, _float Pitch);
 
     void SetVolume(const string& strTag,_float Volume);
+    void Set_AllVolume(_float Volume);
     // 사운드 포지션 업데이트
     void Update3DPosition(const string& strTag, _float3& vPos);
     //트랜스폼과 소리의 감쇠곡선을 결정할 죄소,최대 거리
