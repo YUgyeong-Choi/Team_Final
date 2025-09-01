@@ -587,12 +587,14 @@ void CEliteUnit::Reset()
     m_fGroggyThreshold = 1.f;
 	m_fGroggyGauge = 0.f;
 	m_bGroggyActive = false;
+    m_bUseLockon = true;
     m_fChangeMoveDirCooldown = 0.f;
 	Safe_Release(m_pHPBar);
     m_pTransformCom->Set_WorldMatrix(m_InitWorldMatrix);
     if (m_pAnimator)
     {
-        m_pAnimator->ResetParameters();
+        m_pAnimator->Reset();
+      //  m_pAnimator->ResetParameters();
         auto pController = m_pAnimator->Get_CurrentAnimController();
         if (pController)
         {
@@ -792,4 +794,5 @@ void CEliteUnit::Free()
 {
     __super::Free();
     Safe_Release(m_pNaviCom);
+    Safe_Release(m_pHPBar);
 }

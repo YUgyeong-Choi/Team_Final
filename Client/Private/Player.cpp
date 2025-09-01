@@ -1837,10 +1837,12 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 		CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pUnit);
 
-		if (nullptr == pMonster)
+		if (pUnit->Get_UnitType() != EUnitType::ELITE_MONSTER &&
+			pUnit->Get_UnitType() != EUnitType::NORMAL_MONSTER)
 			return;
 
-		if (pMonster->Get_CurrentHp() <= 0)
+		// TODO 엘리트 몬스터도 할 수 있게
+		if (pMonster&&pMonster->Get_CurrentHp() <= 0)
 			return;
 
 		//0. 필요한 정보를 수집한다.

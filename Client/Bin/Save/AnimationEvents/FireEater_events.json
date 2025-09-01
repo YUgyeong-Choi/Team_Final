@@ -202,6 +202,10 @@
                 {
                     "EventName": "OffGroundScratchEffect",
                     "Time": 43.0
+                },
+                {
+                    "EventName": "SwingImpactSound",
+                    "Time": 29.0
                 }
             ],
             "IsLoop": false,
@@ -271,6 +275,10 @@
                 {
                     "EventName": "DecalScratchEffect",
                     "Time": 44.0
+                },
+                {
+                    "EventName": "SwingImpactSound",
+                    "Time": 34.0
                 }
             ],
             "IsLoop": false,
@@ -436,6 +444,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_07",
             "Duration": 90.0,
+            "Events": [
+                {
+                    "EventName": "FurnaceOpenSound",
+                    "Time": 17.0
+                },
+                {
+                    "EventName": "FurnaceCloseSound",
+                    "Time": 78.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -780,6 +798,14 @@
                 {
                     "EventName": "SpawnFlameField",
                     "Time": 208.0
+                },
+                {
+                    "EventName": "FurnaceCloseSound",
+                    "Time": 370.0
+                },
+                {
+                    "EventName": "FurnaceOpenSound",
+                    "Time": 49.0
                 }
             ],
             "IsLoop": false,
@@ -840,6 +866,18 @@
                 {
                     "EventName": "ActiveHpBar",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "StandUpSound",
+                    "Time": 27.0
+                },
+                {
+                    "EventName": "SlamSound",
+                    "Time": 252.0
+                },
+                {
+                    "EventName": "StartPhase1Sound",
+                    "Time": 351.0
                 }
             ],
             "IsLoop": false,
@@ -862,6 +900,12 @@
         {
             "ClipName": "AS_Groggy_Loop",
             "Duration": 180.0,
+            "Events": [
+                {
+                    "EventName": "GroggySound",
+                    "Time": 3.254525899887085
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

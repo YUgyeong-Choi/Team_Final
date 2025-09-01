@@ -104,6 +104,38 @@ void CAnimator::Update(_float fDeltaTime)
 	DispatchAnimEvents(triggeredEvents);
 }
 
+void CAnimator::Reset()
+{
+	m_pCurrentAnim = nullptr;
+	m_bPlaying = false;
+	m_bIsFinished = false;
+
+	// RootMotion 관련
+	m_RootMotionDelta = { 0.f, 0.f, 0.f };
+	m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
+	m_CurrentRootPosition = { 0.f, 0.f, 0.f };
+	m_PrevRootPosition = { 0.f, 0.f, 0.f };
+	m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
+	m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
+
+	// 블렌드 초기화
+	m_Blend = {};
+	m_eCurrentTransitionType = ET::FullbodyToFullbody;
+
+	// 마스크 관련 초기화
+	m_bPlayMask = false;
+	m_pLowerClip = nullptr;
+	m_pUpperClip = nullptr;
+	m_UpperMaskSet.clear();
+
+	// 현재 컨트롤러도 기본값으로
+	if (!m_AnimControllers.empty())
+	{
+		m_pCurAnimController = m_AnimControllers.begin()->second;
+		m_pCurAnimController->ResetParameters();
+	}
+}
+
 void CAnimator::PlayClip(CAnimation* pAnim, _bool isLoop)
 {
 	if (pAnim == nullptr)

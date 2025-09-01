@@ -77,7 +77,7 @@
                 },
                 {
                     "EventName": "WeaponAttackOff",
-                    "Time": 57.0
+                    "Time": 59.0
                 }
             ],
             "IsLoop": false,
@@ -125,7 +125,7 @@
                 },
                 {
                     "EventName": "WeaponAttackOff",
-                    "Time": 84.0
+                    "Time": 86.0
                 }
             ],
             "IsLoop": false,
@@ -161,7 +161,7 @@
                 },
                 {
                     "EventName": "WeaponAttackOff",
-                    "Time": 76.0
+                    "Time": 79.0
                 }
             ],
             "IsLoop": false,
@@ -211,6 +211,14 @@
                 {
                     "EventName": "Turnnig",
                     "Time": 45.0
+                },
+                {
+                    "EventName": "ElbowOn",
+                    "Time": 74.0
+                },
+                {
+                    "EventName": "ElbowOff",
+                    "Time": 94.0
                 }
             ],
             "IsLoop": false,
@@ -228,6 +236,14 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 106.0
+                },
+                {
+                    "EventName": "ElbowOn",
+                    "Time": 85.0
+                },
+                {
+                    "EventName": "ElbowOff",
+                    "Time": 116.0
                 }
             ],
             "IsLoop": false,
