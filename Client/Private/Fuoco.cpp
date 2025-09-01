@@ -98,9 +98,9 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_pHPBar->Set_bDead();
 
 #ifdef _DEBUG
-	if (KEY_DOWN(DIK_U))
+	if (KEY_DOWN(DIK_Y))
 	{
-		m_fHp -= 100.f;
+		m_fHp -= 100;
 	}
 	if (KEY_DOWN(DIK_X))
 	{
@@ -1085,7 +1085,7 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
-			m_fRootMotionAddtiveScale = 15.f;
+			m_fRootMotionAddtiveScale = 7.f;
 			m_fMaxRootMotionSpeed = 40.f;
 		});
 
@@ -1156,7 +1156,7 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 
 		m_PatternCountMap[pattern] = 0;
 	}
-	SwitchEmissive(false, 1.f); 
+	SwitchFury(false, 1.f); 
 }
 
 _int CFuoco::GetRandomAttackPattern(_float fDistance)

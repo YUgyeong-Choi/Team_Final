@@ -601,6 +601,7 @@ void CEliteUnit::Reset()
             pController->SetState(pController->GetEntryNodeId());
         }
     }
+    SwitchFury(false, 1.f);
     SwitchEmissive(false, 1.f);
 }
 
@@ -726,6 +727,7 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 				m_eCurrentState = EEliteState::GROGGY;
                 m_bGroggyActive = false;
                 m_fGroggyGauge = 0.f;
+                SwitchFury(false, 1.f);
             }
             break;
         case Client::EPlayerState::GARD:

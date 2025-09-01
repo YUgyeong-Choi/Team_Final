@@ -493,8 +493,15 @@ void CElite_Police::UpdateSpecificBehavior()
 	{
 		if (m_bPlayedDetect == false && Get_DistanceToPlayer() <= m_fDetectRange)
 		{
-			m_bPlayedDetect = true;
-			m_pAnimator->SetTrigger("Detect");
+			_vector vMyPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+			_vector vDirVec = vPlayerPos - vMyPos;
+			_float fDiffY = abs(XMVectorGetY(vDirVec));
+			if (m_fDetectDiffY >= fDiffY)
+			{
+				m_bPlayedDetect = true;
+				m_pAnimator->SetTrigger("Detect");
+			}
 		}
 
 		//if (m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK && m_eCurrentState != EEliteState::ATTACK && m_eCurrentState != EEliteState::TURN)

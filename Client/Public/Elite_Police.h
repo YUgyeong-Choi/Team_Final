@@ -106,6 +106,7 @@ private:
     _bool m_bPlayedDetect = false;
 	_bool m_bSpawned = false;
 	_float m_fDetectRange = 18.f;
+    _float m_fDetectDiffY = 5.f;
     // 공격 관련
     _int   m_iPatternLimit = 1;
     _int   m_iFireBallComboCount = 0;
