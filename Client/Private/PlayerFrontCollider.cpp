@@ -212,14 +212,16 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 }
 void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	m_pOwner->SetbIsBackAttack(false);
-	m_pOwner->SetFatalTargetNull();
-	m_pOwner->SetbIsBackAttack(false);
-
 	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
 	{
 		return;
 	}
+
+	m_pOwner->SetbIsBackAttack(false);
+	m_pOwner->SetbIsGroggyAttack(false);
+	m_pOwner->SetIsFatalBoss(false);
+	m_pOwner->SetFatalTargetNull();
+	
 }
 
 void CPlayerFrontCollider::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
