@@ -62,6 +62,7 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 private:
+	HRESULT Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	HRESULT Create_AttackEffect(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 private:
