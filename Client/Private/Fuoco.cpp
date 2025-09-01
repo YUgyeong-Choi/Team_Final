@@ -100,7 +100,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_U))
 	{
-		m_pAnimator->SetTrigger("Fatal");
+		m_fHP -= 100.f;
 	}
 	if (KEY_DOWN(DIK_X))
 	{
@@ -218,6 +218,7 @@ void CFuoco::Update(_float fTimeDelta)
 {
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
+		m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Dead_", 3);
 		m_pAnimator->SetTrigger("SpecialDie");
 		m_bUseLockon = false;
 		Safe_Release(m_pHPBar);
@@ -371,20 +372,6 @@ void CFuoco::Ready_BoneInformation()
 
 void CFuoco::Update_Collider()
 {
-	// 이것도 부모꺼 부르면서 밑에꺼 부르기
-	//_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
-
-	//_float4 vPos;
-	//XMStoreFloat4(&vPos, worldMatrix.r[3]);
-
-	//PxVec3 pos(vPos.x, vPos.y + 2.f, vPos.z);
-	//XMVECTOR boneQuat = XMQuaternionRotationMatrix(worldMatrix);
-	//XMFLOAT4 fQuat;
-	//XMStoreFloat4(&fQuat, boneQuat);
-	//PxQuat rot = PxQuat(fQuat.x, fQuat.y, fQuat.z, fQuat.w);
-
-	//m_pPhysXActorCom->Set_Transform(PxTransform(pos, rot));
-
 	__super::Update_Collider();
 
 	auto fistLocalMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
@@ -479,8 +466,9 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 {
+	m_iPrevNodeID = m_iCurNodeID;
+	m_iCurNodeID = iNodeID;
 	m_ePrevState = m_eCurrentState;
-	static _int iLastNodeID = -1;
 	switch (iNodeID)
 	{
 	case ENUM_CLASS(BossStateID::IDLE):
@@ -530,27 +518,27 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_eCurrentState = EEliteState::ATTACK;
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(45.f);
 
-		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ))
+		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ))
 		{
-		m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
 		}
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
 		m_eCurrentState = EEliteState::ATTACK;
-		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ2))
+		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ2))
 		{
-			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
 		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(60.f);
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
 	{
 		m_eCurrentState = EEliteState::ATTACK;
-		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
+		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
 		{
 
 			EffectSpawn_Active(15, true);
-		m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_2");
+			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_2");
 		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
 	}
@@ -566,36 +554,36 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
-		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R)
-			&& iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM1))
+		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R)
+			&& m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM1))
 		{
-			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+		//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
 		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
-		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM2))
+		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM2))
 		{
-			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
 		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 
 	case ENUM_CLASS(BossStateID::ATK_SWING_L_COM2):
-		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM2))
+		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM2))
 		{
-			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+		//	m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
 		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 
 	case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
-		if (iLastNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM1))
+		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM1))
 		{
-			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
 		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
@@ -618,7 +606,7 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_fMaxRootMotionSpeed = 18.f;
 		m_fRootMotionAddtiveScale = 1.2f;
 	}
-	iLastNodeID = iNodeID;
+
 }
 
 void CFuoco::UpdateSpecificBehavior()
@@ -1651,10 +1639,12 @@ void CFuoco::Ready_SoundEvents()
 		{
 			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_Start_", 3); }
 	);
+
 	m_pAnimator->RegisterEventListener("FlamethrowerLoopSound", [this]()
 		{
 			m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_Loop_0"); }
 	);
+
 	m_pAnimator->RegisterEventListener("FlamethrowerEndSound", [this]()
 		{
 			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_End_", 3); }
@@ -1688,10 +1678,64 @@ void CFuoco::Ready_SoundEvents()
 		{
 			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_RArm_Put_", 3); }
 	);
+
 	m_pAnimator->RegisterEventListener("StandUpSound", [this]()
 		{
 			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Standup_", 6); }
 	);
+
+	m_pAnimator->RegisterEventListener("StartPhase1Sound", [this]()
+		{
+			m_pSoundCom->Play("Dialog_CH03_Attack_P1_01_text_3"); }
+	);
+
+	m_pAnimator->RegisterEventListener("FurnaceOpenSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Furnace_Open_",3); }
+	);
+
+	m_pAnimator->RegisterEventListener("FurnaceCloseSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Furnace_Close_", 3); }
+	);
+
+	m_pAnimator->RegisterEventListener("GroggySound", [this]()
+		{
+			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Groggy_", 9); }
+	);
+
+	m_pAnimator->RegisterEventListener("SwingImpactSound", [this]()
+		{
+			switch (m_iCurNodeID)
+			{
+			case ENUM_CLASS(BossStateID::ATK_SWING_SEQ):
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+				break;
+			case ENUM_CLASS(BossStateID::ATK_SWING_SEQ2):
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+				break;
+			case ENUM_CLASS(BossStateID::ATK_SWING_SEQ3):
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_2");
+				m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_Short_",3);
+				break;
+			case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+				break;
+			case ENUM_CLASS(BossStateID::ATK_SWING_L_COM2):
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+				break;
+			case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
+				break;
+			case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+				break;
+			default:
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
+				break;
+			}
+			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Growl_", 3);
+		});
 }
 
 void CFuoco::UpdatePatternWeight(_int iPattern)
@@ -1732,6 +1776,7 @@ _bool CFuoco::CheckConditionFlameField()
 			m_pAnimator->SetTrigger("Phase2Start");
 			m_bStartPhase2 = false;
 			m_bIsPhase2 = true;
+			m_pSoundCom->Play("Dialog_CH03_PhaseChange_01_text_3");
 		}
 		m_pAnimator->SetBool("Move", false);
 		m_eCurrentState = EEliteState::ATTACK;
@@ -1925,7 +1970,4 @@ void CFuoco::Free()
 	//Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pPhysXActorComForArm);
 	Safe_Release(m_pPhysXActorComForFoot);
-
-	Safe_Release(m_pHPBar);
-
 }

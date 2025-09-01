@@ -47,6 +47,8 @@ public:
     HRESULT Initialize_Test(void* pArg);
     void Update(_float fDeltaTime);
 
+    void Reset();
+
 	void PlayClip(class CAnimation* pAnim, _bool isLoop = true);
     void StopAnimation() { m_bPlaying = false; }
 

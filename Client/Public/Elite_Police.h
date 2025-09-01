@@ -58,7 +58,7 @@ public:
     virtual void Update(_float fTimeDelta) override;
     virtual void Late_Update(_float fTimeDelta) override;
 
-
+	virtual void Update_Collider() override;
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -105,7 +105,7 @@ private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
     _bool m_bPlayedDetect = false;
 	_bool m_bSpawned = false;
-	_float m_fDetectRange = 22.f;
+	_float m_fDetectRange = 18.f;
     // 공격 관련
     _int   m_iPatternLimit = 1;
     _int   m_iFireBallComboCount = 0;

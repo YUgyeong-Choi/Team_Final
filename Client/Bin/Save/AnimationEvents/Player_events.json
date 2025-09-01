@@ -1420,7 +1420,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 60.0
+            "TickPerSecond": 70.0
         },
         {
             "ClipName": "AS_Pino_T_Bayonet_CA4",

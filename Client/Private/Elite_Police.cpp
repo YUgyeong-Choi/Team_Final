@@ -28,10 +28,10 @@ HRESULT CElite_Police::Initialize(void* pArg)
 {
 	m_fMaxRootMotionSpeed = 30.f;
 	m_fRootMotionAddtiveScale = 1.f;
-	m_fAttckDleay = 2.5f;
-	m_fTooCloseDistance = 1.0f;
-	m_fChasingDistance = 2.5f;
-	m_fMinimumTurnAngle = 140.f;
+	m_fAttckDleay = 3.f;
+	m_fTooCloseDistance = 2.0f;
+	m_fChasingDistance = 3.f;
+	m_fMinimumTurnAngle = 160.f;
 	m_bIsFirstAttack = false;
 	m_fGroggyScale_Weak = 0.1f;
 	m_fGroggyScale_Strong = 0.15f;
@@ -167,8 +167,8 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 	{
 		m_pWeapon->Collider_FilterOff();
 		EnableColliders(false);
-
-		static_cast<CPlayer*>(m_pPlayer)->Set_HitTarget(this, true);
+		CLockOn_Manager::Get_Instance()->Set_Off(this);
+		m_bUseLockon = false;
 	}
 
 	if (m_bDead)
@@ -197,6 +197,13 @@ void CElite_Police::Late_Update(_float fTimeDelta)
 	__super::Late_Update(fTimeDelta);
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Late_Update(fTimeDelta);
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()&& m_pPhysXElbow->Get_ReadyForDebugDraw())
+	{
+		m_pGameInstance->Add_DebugComponent(m_pPhysXElbow);
+	}
+#endif
 }
 
 HRESULT CElite_Police::Ready_Components(void* pArg)
@@ -225,15 +232,15 @@ HRESULT CElite_Police::Ready_Actor()
 
 		PxQuat elbowRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 elbowPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-		PxTransform footPose(elbowPositionVec, elbowRotationQuat);
-		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(0.5f);
-		m_pPhysXElbow->Create_Collision(m_pGameInstance->GetPhysics(), elbowGeom, footPose, m_pGameInstance->GetMaterial(L"Default"));
+		PxTransform elbowPose(elbowPositionVec, elbowRotationQuat);
+		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(0.7f);
+		m_pPhysXElbow->Create_Collision(m_pGameInstance->GetPhysics(), elbowGeom, elbowPose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXElbow->Set_ShapeFlag(false, true, true);
-		PxFilterData footFilterData{};
-		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
-		m_pPhysXElbow->Set_SimulationFilterData(footFilterData);
-		m_pPhysXElbow->Set_QueryFilterData(footFilterData);
+		PxFilterData elbowFilterData{};
+		elbowFilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+		elbowFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		m_pPhysXElbow->Set_SimulationFilterData(elbowFilterData);
+		m_pPhysXElbow->Set_QueryFilterData(elbowFilterData);
 		m_pPhysXElbow->Set_Owner(this);
 		m_pPhysXElbow->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
 		m_pPhysXElbow->Set_Kinematic(true);
@@ -283,7 +290,7 @@ HRESULT CElite_Police::Ready_Weapon()
 
 	Safe_AddRef(m_pWeapon);
 
-
+	m_pWeapon->SetisAttack(false);
 	return S_OK;
 }
 
@@ -295,6 +302,7 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 
 	if (fDistance < m_fTooCloseDistance) 
 	{
+		m_fWalkSpeed = 2.5f;
 		m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::BACK));
 	}
 	else if (fDistance <= m_fChasingDistance) // 공격 범위 근처
@@ -309,12 +317,13 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 
 		if (m_fChangeMoveDirCooldown <= 0.f)
 		{
+			m_fWalkSpeed = 2.5f;
 			if (fCrossY > 0.f) // 플레이어가 오른쪽에 있음
 				m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::RIGHT));
 			else               // 플레이어가 왼쪽에 있음
 				m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::LEFT));
 
-			m_fChangeMoveDirCooldown = 1.0f;
+			m_fChangeMoveDirCooldown = 1.5f;
 		}
 		else
 		{
@@ -325,6 +334,7 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 	{
 		if (m_fChangeMoveDirCooldown <= 0.f)
 		{
+			m_fWalkSpeed = 3.f;
 			m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
 			m_fChangeMoveDirCooldown = 0.5f;
 		}
@@ -360,6 +370,7 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	{
 		return;
 	}
+
 	if (m_eCurrentState == EEliteState::ATTACK)
 	{
 		return;
@@ -374,7 +385,7 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	}
 
 
-	if (IsTargetInFront(170.f) == false)
+	if (IsTargetInFront(180.f) == false)
 	{
 
 		m_pAnimator->SetBool("Move", false);
@@ -385,9 +396,8 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		m_fAttackCooldown = m_fAttckDleay;
 		return;
 	}
+
 	EPoliceAttackPattern eAttackType = static_cast<EPoliceAttackPattern>(GetRandomAttackPattern(fDistance));
-
-
 
 	SetupAttackByType(eAttackType);
 
@@ -588,6 +598,29 @@ void CElite_Police::Register_Events()
 		m_pWeapon->SetisAttack(false);
 		});
 
+
+	m_pAnimator->RegisterEventListener("ElbowOn", [this]() {
+		m_pPhysXElbow->Set_SimulationFilterData(m_pPhysXElbow->Get_FilterData());
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			if (auto pController = pPlayer->Get_Controller())
+			{
+				pController->Remove_IgnoreActors(m_pPhysXElbow->Get_Actor());
+			}
+		}
+		});
+
+	m_pAnimator->RegisterEventListener("ElbowOff", [this]() {
+		m_pPhysXElbow->Init_SimulationFilterData();
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			if (auto pController = pPlayer->Get_Controller())
+			{
+				pController->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
+			}
+		}
+		});
+
 }
 
 void CElite_Police::Reset()
@@ -724,6 +757,22 @@ void CElite_Police::Ready_AttackPatternWeight()
 	}
 }
 
+void CElite_Police::Update_Collider()
+{
+	__super::Update_Collider();
+
+	auto elbowLocalMatrix = m_pRightElbowBone->Get_CombinedTransformationMatrix();
+	auto elbowWorldMatrix = XMLoadFloat4x4(elbowLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
+	_float4 elbowPos;
+	XMStoreFloat4(&elbowPos, elbowWorldMatrix.r[3]);
+	PxVec3 armPos(elbowPos.x, elbowPos.y, elbowPos.z);
+	_vector boneQuatForElbow = XMQuaternionRotationMatrix(elbowWorldMatrix);
+	_float4 fQuatForElbow;
+	XMStoreFloat4(&fQuatForElbow, boneQuatForElbow);
+	PxQuat elbowRot = PxQuat(fQuatForElbow.x, fQuatForElbow.y, fQuatForElbow.z, fQuatForElbow.w);
+	m_pPhysXElbow->Set_Transform(PxTransform(armPos, elbowRot));
+}
+
 void CElite_Police::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 
@@ -777,6 +826,5 @@ void CElite_Police::Free()
 	__super::Free();
 
 	Safe_Release(m_pWeapon);
-	Safe_Release(m_pRightElbowBone);
-
+	Safe_Release(m_pPhysXElbow);
 }
