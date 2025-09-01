@@ -24,6 +24,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 213,
             "EffectType": 1,
             "EmissiveIntensity": 0.3499999940395355,
@@ -60,13 +61,13 @@
                     ]
                 }
             ],
-            "LifeTime": 1006.201904296875,
+            "LifeTime": 1100.95849609375,
             "LifeTime_Particle": [
-                0.4099999964237213,
-                3.0
+                0.6000000238418579,
+                2.5
             ],
             "Local": true,
-            "Loop": false,
+            "Loop": true,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -158,6 +159,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 212,
             "EffectType": 1,
             "EmissiveIntensity": 0.0,
@@ -194,13 +196,13 @@
                     ]
                 }
             ],
-            "LifeTime": 14.093949317932129,
+            "LifeTime": 107.59972381591797,
             "LifeTime_Particle": [
-                0.4099999964237213,
-                3.0
+                0.6000000238418579,
+                2.5
             ],
             "Local": true,
-            "Loop": false,
+            "Loop": true,
             "MaxLifeTime": 3.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -251,7 +253,7 @@
             "StartTrack": 0,
             "TextureTags": [
                 "",
-                "T_SubUV_Fire_17_FC_8x8_SC_LGS",
+                "T_SubUV_Fire_06_8x8_SC_KMH",
                 "",
                 ""
             ],

@@ -64,6 +64,7 @@ public:
 	void Set_SocketRotation(const _float4& vRot) { m_tCBuffer.vSocketRot = vRot; }
 	void Set_CombinedMatrix(const _float4x4& matCombined) { m_bFirst = true; m_tCBuffer.g_CombinedMatrix = matCombined; }
 	void Set_First(_bool bFirst) { m_bFirst = bFirst; }
+	void Set_InitRotation(_fmatrix matRot);
 
 #ifdef USE_IMGUI
 	void Set_CBuffer(const PARTICLECBUFFER& tCBuffer) { m_tCBuffer = tCBuffer; }

@@ -42,7 +42,9 @@ public:
 	virtual void Calc_Durability(_float fDelta);
 
 	virtual void Reset();
-	
+
+	virtual void Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType = TRAIL_DEFAULT) override;
+
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
@@ -60,11 +62,19 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 private:
-	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
-	class CSwordTrailEffect* m_pHitTrailEffect = { nullptr }; // 타격 시에만 나오는 트레일 이펙트 전용
-	_vector				m_vEndSocketPrevPos = {};	// 타격 시 방향 구하는 용도로 씀
-	_vector				m_vEndSocketCurPos = {};
+	HRESULT Create_AttackEffect(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
+private:
+	CPhysXDynamicActor*			m_pPhysXActorCom = { nullptr };
+
+	class CSwordTrailEffect*	m_pHitTrailEffect = { nullptr }; // 타격 시에만 나오는 트레일 이펙트 전용(피)
+	class CSwordTrailEffect*	m_pSkillTrailEffect = { nullptr }; // 스킬 시에 나오는 트레일 이펙트 전용
+	_bool						m_bHitEffect = { false };
+	_float3						m_vEndSocketPrevPos = {};	// 타격 시 방향 구하는 용도로 씀
+	_float3						m_vEndSocketCurPos = {};
+	const _float4x4*			m_pWeaponEndMatrix = {nullptr};
+	class CGameObject*			m_pLastHitObject = { nullptr };
+	COLLIDERTYPE				m_eLastHitColType = { COLLIDERTYPE::PLAYER };
 
 public:
 	static CBayonet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -68,7 +68,7 @@ void CParticleEffect::Update(_float fTimeDelta)
 			XMStoreFloat4x4(&m_CombinedWorldMatrix,
 				m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
 		}
-		//__super::Update(fTimeDelta);
+
 		m_fTileSize.x = 1.0f / _float(m_iTileX);
 		m_fTileSize.y = 1.0f / _float(m_iTileY);
 		if (m_pSocketMatrix != nullptr)
@@ -133,6 +133,11 @@ _float CParticleEffect::Ready_Death()
 void CParticleEffect::Set_Loop(_bool isLoop)
 {
 	m_pVIBufferCom->Set_Loop(isLoop);
+}
+
+void CParticleEffect::Set_InitRotation(_fmatrix matRot)
+{
+	m_pVIBufferCom->Set_InitRotation(matRot);
 }
 
 

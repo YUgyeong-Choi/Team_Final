@@ -258,6 +258,7 @@ PS_OUT PS_MAIN(PS_IN In)
     float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
     fade = 1.0 - fade; // 남은 생명에 비례해 감소
     Out.vColor.a *= fade;  
+    Out.vColor = SoftEffect(Out.vColor, In.vProjPos);
 
     if (In.vLifeTime.y >= In.vLifeTime.x)
         discard;
@@ -281,7 +282,7 @@ PS_OUT PS_MAIN_MASKONLY(PS_IN In)
     Out.vColor.a = color.a * mask;
     
     Out.vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
-
+    Out.vColor = SoftEffect(Out.vColor, In.vProjPos);
 
     if (In.vLifeTime.y >= In.vLifeTime.x)
         discard;
@@ -318,6 +319,7 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
     fade = 1.0 - fade; // 남은 생명에 비례해 감소
     vColor.a *= fade;
+    vColor = SoftEffect(vColor, In.vProjPos);
     
     
     ////float fDepth = In.vProjPos.z / In.vProjPos.w;
@@ -377,6 +379,7 @@ PS_OUT_WB PS_MAIN_DIFFUSE_WB(PS_IN In)
     float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
     fade = 1.0 - fade; // 남은 생명에 비례해 감소
     vColor.a *= fade;
+    vColor = SoftEffect(vColor, In.vProjPos);
 
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
@@ -408,6 +411,7 @@ PS_OUT_WB PS_MAIN_RAINONLY(PS_IN In)
     float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
     fade = 1.0 - fade; // 남은 생명에 비례해 감소
     vColor.a *= fade;
+    vColor = SoftEffect(vColor, In.vProjPos);
 
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
