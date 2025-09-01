@@ -67,8 +67,30 @@ void CFlameField::Update(_float fTimeDelta)
 		{
 			if (m_pPlayer)
 			{
-				m_pPlayer->SetfReceiveDamage(2.f);
-				m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
+				_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+				_vector vFieldPos = m_pTransformCom->Get_State(STATE::POSITION);
+				_vector vDir = vPlayerPos - vFieldPos;
+				_float fDist = XMVectorGetX(XMVector3Length(vDir));
+
+				_float fAngle = atan2f(XMVectorGetZ(vDir), XMVectorGetX(vDir));
+				if (fAngle < 0) fAngle += XM_2PI;
+				_int iIndex = static_cast<_int>(fAngle / XMConvertToRadians(5.f));
+
+				// 레이 결과와 비교
+				if (fDist <= m_SpawnEffectDistanceList[iIndex])
+				{
+					m_pPlayer->SetfReceiveDamage(2.f);
+					m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
+#ifdef _DEBUG
+
+					cout << "Player Damaged by Flame Field" << endl;
+#endif // _DEBUG
+
+				}
+
+				m_fDamgeElapsedTime = 0.f;
+			/*	m_pPlayer->SetfReceiveDamage(2.f);
+				m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);*/
 			}
 			m_fDamgeElapsedTime = 0.f;
 		}
@@ -92,7 +114,7 @@ void CFlameField::Update(_float fTimeDelta)
 		_float fCurrentRadius = LerpFloat(m_fInitialRadius, m_fExpandRadius, fExpandRatio);
 
 
-		_float step = 2.5f; // 이펙트 크기에 맞춰 조정
+		_float step = 4.f; // 이펙트 크기에 맞춰 조정
 
 		// 12방향으로 퍼짐
 		for (_int i = 0; i <12; i++)

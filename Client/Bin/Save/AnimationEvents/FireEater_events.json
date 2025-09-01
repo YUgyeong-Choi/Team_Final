@@ -806,6 +806,10 @@
                 {
                     "EventName": "FurnaceOpenSound",
                     "Time": 49.0
+                },
+                {
+                    "EventName": "BellyFireSpawn",
+                    "Time": 57.0
                 }
             ],
             "IsLoop": false,

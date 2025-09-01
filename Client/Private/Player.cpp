@@ -32,6 +32,7 @@
 #include "Effect_Manager.h"
 
 #include "DoorMesh.h"
+#include <FlameField.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -1842,8 +1843,11 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			return;
 
 		// TODO 엘리트 몬스터도 할 수 있게
-		if (pMonster&&pMonster->Get_CurrentHp() <= 0)
-			return;
+		if(pUnit->Get_UnitType() == EUnitType::ELITE_MONSTER)
+			cout << "엘리트 몬스터 피격" << endl;
+
+		//if (pMonster&&pMonster->Get_CurrentHp() <= 0)
+		//	return;
 
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
@@ -1906,6 +1910,16 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		if (pOil)
 		{
 			//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
+			return;
+		}
+
+		CFlameField* pFlame = dynamic_cast<CFlameField*>(pOther);
+		if (pFlame)
+		{
+			//TODO 플레임 필드가 나중에 넘겨주는 과열로 데미지처리
+#ifdef _DEBUG
+			cout << "플레임필드" << endl;
+#endif // _DEBUG
 			return;
 		}
 
