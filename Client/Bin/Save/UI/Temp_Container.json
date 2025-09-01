@@ -688,37 +688,37 @@
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
             },
-          {
-            "Color": {
-              "A": 1.0,
-              "B": 0.0,
-              "G": 0.0,
-              "R": 0.0
-            },
-            "Features": [
-              {
-                "EndAlpha": 1.0,
-                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
-                "StartAlpha": 0.0,
-                "iEndFrame": 210,
-                "iStartFrame": 120,
-                "isLoop": false
-              }
-            ],
-            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
-            "RotationZ": 0.0,
-            "SizeX": 1600.0,
-            "SizeY": 900.0,
-            "Texturetag": "Prototype_Component_Texture_BackGround_Loading_Desk",
-            "fAlpha": 0.0,
-            "fDuration": 0.01600000075995922,
-            "fOffset": 0.10000000149011612,
-            "fX": 800.0,
-            "fY": 450.0,
-            "iPassIndex": 1,
-            "iTextureIndex": 0,
-            "iTextureLevel": 0
-          }
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.0,
+                    "G": 0.0,
+                    "R": 0.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 240,
+                        "iStartFrame": 150,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 1600.0,
+                "SizeY": 900.0,
+                "Texturetag": "Prototype_Component_Texture_Script_Background",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.10000000149011612,
+                "fX": 800.0,
+                "fY": 450.0,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
         ],
         "ProtoTag": "Prototype_GameObject_UI_Container",
         "RotationZ": 0.0,

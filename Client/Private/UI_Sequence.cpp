@@ -18,6 +18,8 @@ void CUI_Sequence::Add(_int type)
 		eDesc.strTypeTag = "Scale";
 	else if (type == 4)
 		eDesc.strTypeTag = "Rotation";
+	else if (type == 4)
+		eDesc.strTypeTag = "Color";
 
 	// Èò»ö?
 	eDesc.color = 0xFFFFFFFF;
