@@ -1781,8 +1781,8 @@ public:
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
         m_pOwner->m_bMovable = true;
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -1882,9 +1882,8 @@ public:
 
     virtual void Exit() override
     {
-        m_pOwner->m_pAnimator->SetBool("Charge", false);
         m_fStateTime = 0.f;
-
+        m_pOwner->m_pAnimator->SetBool("Charge", false);
         m_pOwner->m_bMovable = true;
     }
 

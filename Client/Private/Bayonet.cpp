@@ -98,7 +98,11 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 
 	if (m_bHitRegActive)
 		Update_HitReg(fTimeDelta);
+
+
+	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
 }
+
 void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);

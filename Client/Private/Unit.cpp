@@ -294,7 +294,20 @@ HRESULT CUnit::Bind_Shader()
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0);
+		
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
+		{
+			if (!m_bDoOnce)
+			{
+				/* Com_Texture */
+				if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Texture_DefaultARM")),
+					TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+					return E_FAIL;
+				m_bDoOnce = true;
+			}
+			if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_ARMTexture", 0)))
+				return E_FAIL;
+		}
 
 		m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float));
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Emissive", i, aiTextureType_EMISSIVE, 0)))
@@ -557,4 +570,5 @@ void CUnit::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pSoundCom);
 	Safe_Release(m_pNoiseMap);
+	Safe_Release(m_pTextureCom);
 }

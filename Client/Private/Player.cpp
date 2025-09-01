@@ -252,12 +252,9 @@ void CPlayer::Late_Update(_float fTimeDelta)
 			return;
 	}
 
+	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
-	{
-		m_pAnimator->SetInt("HitDir", 0);
-		m_pAnimator->SetBool("IsUp", true);
-		m_pAnimator->SetTrigger("Hited");
-	}
+		ResetGage();
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -518,10 +515,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_pLegionArm->SetisAttack(false);
 	}
 	
-	eAnimCategory eCategory = GetAnimCategoryFromName(stateName);
+	m_eCategory = GetAnimCategoryFromName(stateName);
 	//printf("Anim Category: %d\n", static_cast<int>(eCategory));
 
-	switch (eCategory)
+	switch (m_eCategory)
 	{
 	case eAnimCategory::NORMAL_ATTACKA:
 	{
@@ -1296,6 +1293,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		}
 		break;
 	}
+	case eAnimCategory::ITEMFAIL:
+	{
+		break;
+	}
+
 
 	default:
 		break;
@@ -1309,6 +1311,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Walk") == 0) return eAnimCategory::WALK;
 	if (stateName.find("Run") == 0) return eAnimCategory::RUN;
 
+	if (stateName.find("Fail_Item") == 0)
+		return eAnimCategory::ITEMFAIL;
 	if (stateName.find("Dash_Normal_B") == 0)
 		return eAnimCategory::DASH_BACK;
 	if (stateName.find("Dash_Normal_F") == 0)
@@ -2283,6 +2287,22 @@ void CPlayer::Callback_Mana()
 
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
+}
+
+void CPlayer::ResetGage()
+{
+	m_fHP = m_fMaxHP;
+	Callback_HP();
+	m_fStamina = m_fMaxStamina;
+	Callback_Stamina();
+	m_fMana = m_fMaxMana;
+	Callback_Mana();
+
+	m_pBelt_Down->Reset();
+	m_pBelt_Up->Reset();
+	m_pPlayerLamp->Reset();
+
+	m_pLegionArm->Reset();
 }
 
 void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)

@@ -195,12 +195,13 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 	/* [ 뒤를 잡았을 때 ] */
 	if (bPlayerBehindMonster)
 	{
+		m_pOwner->SetIsFatalBoss(false);
 		m_pOwner->SetbIsBackAttack(true);
 		m_pOwner->SetFatalTarget(pUnit);
-		m_pOwner->SetIsFatalBoss(false);
 	}
 	else
 	{
+		m_pOwner->SetIsFatalBoss(false);
 		m_pOwner->SetbIsBackAttack(false);
 		m_pOwner->SetFatalTargetNull();
 	}

@@ -148,6 +148,7 @@ protected:              /* [ 컴포넌트 ] */
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	CSoundController*	m_pSoundCom = { nullptr };
 	CTexture*			m_pNoiseMap = { nullptr };
+	CTexture*			m_pTextureCom = { nullptr };
 
 protected:				/* [ 기본 속성 ] */
 	_float				m_fSpeedPerSec = 5.f;
@@ -157,6 +158,7 @@ protected:				/* [ 기본 속성 ] */
 	_float3				m_InitScale = {};
 	_int				m_iRender = {};
 	_bool				m_bUseLockon = {};
+	_bool				m_bDoOnce = {};
 
 protected: 				/* [ 기본 타입 ] */
 	const _tchar*		m_szName = { nullptr };

@@ -51,7 +51,7 @@ public:
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT, GUARD_BREAK,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
 		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,
-		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, HITEDUP, HITEDSTAMP, PULSE, FATAL, END
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, HITEDUP, HITEDSTAMP, PULSE, FATAL, ITEMFAIL, END
 	};
 
 	enum class eHitedTarget
@@ -97,7 +97,7 @@ private:
 	void			UpdateCurrentState(_float fTimeDelta);			// [3] 현재 상태 로직 수행
 	void			TriggerStateEffects(_float fTimeDelta);			// [4] 추가적인 셋팅
 
-private: /* [ 애니메이션 관련 ] */
+public: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
 	_vector ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
 	virtual void Register_Events() override;
@@ -145,6 +145,8 @@ private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
 	void Callback_Mana();
+
+	void ResetGage();
 
 public: /* [ 상호작용 관련 ] */
 	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj);
@@ -228,6 +230,8 @@ public:
 	_float GetfReceiveDamage() const { return m_fReceiveDamage; }
 	void SetHitedAttackType(CBossUnit::EAttackType eType) { m_eHitedAttackType = eType; }
 
+	eAnimCategory GetAnimCategory() const { return m_eCategory; }
+
 private: /* [ 특수 모션 ] */
 	HITMOTION m_eHitMotion = { HITMOTION::END };
 	eHitedTarget m_eHitedTarget = { eHitedTarget::END };
@@ -236,6 +240,7 @@ private: /* [ 특수 모션 ] */
 private: /* [ 상태 변수 ] */
 	EPlayerState  m_pPreviousState = { EPlayerState::END };
 	EPlayerState  m_eCurrentState = { EPlayerState::IDLE };
+	eAnimCategory m_eCategory = { eAnimCategory::NONE };
 
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };

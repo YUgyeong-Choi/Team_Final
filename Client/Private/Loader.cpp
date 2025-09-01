@@ -922,6 +922,28 @@ HRESULT CLoader::Loading_For_DH()
 			return S_OK;
 		});
 
+	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
+	auto futureFireEater = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "FIRE_EATER")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "FIRE_EATER")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
+	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
+	auto futureOuter = async(launch::async, [&]
+		{
+			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "OUTER")))
+				return E_FAIL;
+			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "OUTER")))
+				return E_FAIL;
+
+			return S_OK;
+		});
+
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
 
 	if (FAILED(futureStation.get()))
@@ -930,7 +952,15 @@ HRESULT CLoader::Loading_For_DH()
 
 	if (FAILED(futureHotel.get()))
 		return E_FAIL;
-	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료..."));
+	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 완료...")); 
+
+	if (FAILED(futureFireEater.get()))
+		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 완료..."));
+
+	if (FAILED(futureOuter.get()))
+		return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 완료..."));
 
 #pragma endregion
 
