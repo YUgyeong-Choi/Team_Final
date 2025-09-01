@@ -341,37 +341,6 @@
         ]
     },
     {
-        "ARMT": "Prototype_Component_Texture_T_Decal_Blood_02_ARMT.dds",
-        "BC": "Prototype_Component_Texture_T_Decal_Bloodstain_01_BC.dds",
-        "N": "Prototype_Component_Texture_T_Decal_Blood_01_N.dds",
-        "WorldMatrix": [
-            [
-                2.0,
-                0.0,
-                0.0,
-                0.0
-            ],
-            [
-                0.0,
-                0.08949346840381622,
-                0.0,
-                0.0
-            ],
-            [
-                0.0,
-                0.0,
-                2.0,
-                0.0
-            ],
-            [
-                32.89377975463867,
-                0.032598793506622314,
-                1.176804542541504,
-                1.0
-            ]
-        ]
-    },
-    {
         "ARMT": "Prototype_Component_Texture_T_Decal_BloodTrail_39_ARMT.dds",
         "BC": "Prototype_Component_Texture_T_Decal_BloodTrail_39_BC.dds",
         "N": "Prototype_Component_Texture_T_Decal_BloodTrail_39_N.dds",
@@ -554,6 +523,37 @@
                 -0.2689138352870941,
                 -5.3760881423950195,
                 0.9999998807907104
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_BloodSpot_3_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_BloodSpot_3_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_BloodSpot_3_N.dds",
+        "WorldMatrix": [
+            [
+                1.367139220237732,
+                0.0,
+                -1.459770679473877,
+                0.0
+            ],
+            [
+                0.0,
+                0.06635402888059616,
+                0.0,
+                0.0
+            ],
+            [
+                1.459770679473877,
+                0.0,
+                1.367139220237732,
+                0.0
+            ],
+            [
+                32.690643310546875,
+                0.030111253261566162,
+                1.4205492734909058,
+                1.0
             ]
         ]
     }
