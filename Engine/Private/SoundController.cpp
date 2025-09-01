@@ -73,6 +73,12 @@ void CSoundController::SetVolume(const string& strTag, _float Volume)
 		pSoundCore->Set_Volume(Volume);
 }
 
+void CSoundController::Set_AllVolume(_float Volume)
+{
+	for (auto& [key, value] : m_Sounds)
+		value->Set_Volume(Volume);
+}
+
 void CSoundController::Update3DPosition(const string& strTag, _float3& vPos)
 {
 	auto pSoundCore = Find_Sound(strTag);

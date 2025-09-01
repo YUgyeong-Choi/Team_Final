@@ -172,12 +172,12 @@ protected:
 
 
 	// 공격 관련
-	_int	 m_iPatternLimit = 1;
+	_int	 m_iPatternLimit = 2;
 	_float	 m_fBasePatternWeight = 100.f;
 	_float	 m_fMinWeight = 30.f;
 	_float	 m_fMaxWeight = 250.f;
-	_float	 m_fWeightDecreaseRate = 0.6f;
-	_float	 m_fWeightIncreaseRate = 0.4f;
+	_float	 m_fWeightDecreaseRate = 0.7f;
+	_float	 m_fWeightIncreaseRate = 0.6f;
 	_float   m_fAttackCooldown = 0.f; // 공격 쿨타임
 	_float   m_fAttckDleay = 4.f;
 

@@ -80,7 +80,7 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 	}
 
 	//현재 활성화된 지역이 스테이션입니다.
-	if (eAreaMgr == AREAMGR::STATION)
+	if (eAreaMgr == AREAMGR::STATION) 
 	{
 		if (m_wsMap == TEXT("STATION"))
 		{
@@ -89,9 +89,18 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 	}
 
 	//현재 활성화된 지역이 스테이션입니다.
+	if (eAreaMgr == AREAMGR::FUOCO)
+	{
+		if (m_wsMap == TEXT("FIRE_EATER"))
+		{
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+		}
+	}
+
+	//현재 활성화된 지역이 스테이션입니다.
 	if (eAreaMgr == AREAMGR::DEBUG)
 	{
-		if (m_wsMap == TEXT("FIER_EATER"))
+		if (m_wsMap == TEXT("OUTER"))
 		{
 			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 		}

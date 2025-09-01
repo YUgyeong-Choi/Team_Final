@@ -170,6 +170,10 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 	if (!pUnit)
 		return;
 
+	_float fHP = pUnit->GetHP();
+	if (fHP <= 0.f)
+		return;
+
 	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
 		return;
 
@@ -214,7 +218,9 @@ void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eC
 	}
 
 	m_pOwner->SetbIsBackAttack(false);
-	
+	m_pOwner->SetbIsGroggyAttack(false);
+	m_pOwner->SetIsFatalBoss(false);
+	m_pOwner->SetFatalTargetNull();
 	
 }
 

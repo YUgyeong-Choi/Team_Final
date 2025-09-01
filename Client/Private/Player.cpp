@@ -32,6 +32,7 @@
 #include "Effect_Manager.h"
 
 #include "DoorMesh.h"
+#include <FlameField.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -123,7 +124,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
-	
 
 	return S_OK;
 }
@@ -170,7 +170,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_5))
 	{
-		PxVec3 pos = PxVec3(0.f, 10.f, -200.f);
+		PxVec3 pos = PxVec3(-1.4f, 1.f, -237.f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}
@@ -254,7 +254,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
-		ResetGage();
+		Reset();
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -276,15 +276,19 @@ HRESULT CPlayer::Render()
 }
 
 void CPlayer::Reset()
-{
-	
+{	
 	/* [ 무기 장착 해제 ] */
 	m_pWeapon->SetbIsActive(false);
 	m_bWeaponEquipped = false;
 	m_pWeapon->Reset();
 
-	m_fHP = 100.f;
+	m_fHp = 100.f;
 	Callback_HP();
+	m_fStamina = m_fMaxStamina;
+	Callback_Stamina();
+	m_fMana = m_fMaxMana;
+	Callback_Mana();
+
 	m_bIsRrevival = true;
 
 	m_pBelt_Down->Reset();
@@ -383,10 +387,10 @@ void CPlayer::HPSubtract()
 	}
 
 
-	m_fHP -= m_fReceiveDamage;
+	m_fHp -= m_fReceiveDamage;
 
-	if (m_fHP <= 0.f)
-		m_fHP = 0.f;
+	if (m_fHp <= 0.f)
+		m_fHp = 0.f;
 
 	Callback_HP();
 }
@@ -523,6 +527,44 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::NORMAL_ATTACKA:
 	{
 		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.3f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.55f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.7f)
+		{
+			if (!m_bSetOnce && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetOnce = true;
+			}
+		}
+
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.6f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
+				m_bSetSound = true;
+			}
+		}
+		break;
+	}
+	case eAnimCategory::NORMAL_ATTACKB:
+	{
+		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.2f;
 		_float  m_fDistance = 1.f;
 
@@ -557,44 +599,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		break;
-	}
-	case eAnimCategory::NORMAL_ATTACKB:
-	{
-		m_fMoveTime += fTimeDelta;
-		_float  m_fTime = 0.3f;
-		_float  m_fDistance = 1.f;
-
-		if (!m_bMove)
-		{
-			if (0.55f < m_fMoveTime)
-			{
-				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
-				SyncTransformWithController();
-			}
-		}
-
-		m_fSetTime += fTimeDelta;
-		if (m_fSetTime > 0.7f)
-		{
-			if (!m_bSetOnce && m_fStamina >= 0.f)
-			{
-				m_fStamina -= 20.f;
-				Callback_Stamina();
-				m_bSetOnce = true;
-			}
-		}
-
-		m_fSetSoundTime += fTimeDelta;
-		if (m_fSetSoundTime > 0.6f)
-		{
-			if (!m_bSetSound)
-			{
-				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
-				m_bSetSound = true;
-			}
-		}
 		break;
 	}
 	case eAnimCategory::STRONG_ATTACKA:
@@ -676,28 +680,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::CHARGE_ATTACKA:
 	{
 		RootMotionActive(fTimeDelta);
-
-		/* [ 차지 A 일 때 R버튼이 꾹 눌리면 체인지 변수가 켜진다. ] */
-		m_fChangeTimeElaped += fTimeDelta;
-		m_fSetTime += fTimeDelta;
-
-		if (m_fChangeTimeElaped > 1.f)
-		{
-			if (MOUSE_PRESSING(DIM::RBUTTON))
-			{
-				m_fChangeTime += fTimeDelta;
-
-				if (m_fChangeTime >= 0.5f)
-				{
-					m_bIsChange = true;
-				}
-			}
-			else
-			{
-				m_fChangeTime = 0.f;
-				m_bIsChange = false;
-			}
-		}
 
 		if (m_fSetTime > 1.f)
 		{
@@ -1144,6 +1126,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 
+			m_pSoundCom->Play("SE_PC_SK_Hit_FatalAttack_Oil_0");
+
 		}
 		if (m_fSetTime > 1.f && !m_bSetCamera[1])
 		{
@@ -1153,6 +1137,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_FatalCombo2_P3S6"), &desc);
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+			m_pSoundCom->Play("SE_PC_SK_Hit_FatalAttack_Oil_1");
 		}
 		if (m_fSetTime > 2.f && !m_bSetCamera[2])
 		{
@@ -1162,6 +1147,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_FatalCombo3_P5S7"), &desc);
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+
+			m_pSoundCom->Play("SE_PC_SK_Hit_M_FinishHit_Oil_0");
 		}
 
 		RootMotionActive(fTimeDelta);
@@ -1171,11 +1158,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		RootMotionActive(fTimeDelta);
 
-		if (!m_bSetSound)
-		{
-			m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
-			m_bSetSound = true;
-		}
+		//if (!m_bSetSound)
+		//{
+		//	m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+		//	m_bSetSound = true;
+		//}
 
 		break;
 	}
@@ -1338,16 +1325,16 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
 
-	if (stateName == "Grinder") return eAnimCategory::GRINDER; 
+	if (stateName == "Grinder") return eAnimCategory::GRINDER;
 	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0)
 		return eAnimCategory::ITEM_WALK;
 	if (stateName.find("OnLamp") == 0 || stateName.find("FailItem") == 0)
 		return eAnimCategory::ITEM;
 
 	if (stateName.find("NormalAttack2") == 0)
-		return eAnimCategory::NORMAL_ATTACKA;
-	if (stateName.find("NormalAttack") == 0)
 		return eAnimCategory::NORMAL_ATTACKB;
+	if (stateName.find("NormalAttack") == 0)
+		return eAnimCategory::NORMAL_ATTACKA;
 	if (stateName.find("StrongAttack2") == 0)
 		return eAnimCategory::STRONG_ATTACKB;
 	if (stateName.find("StrongAttack") == 0)
@@ -1842,8 +1829,11 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			return;
 
 		// TODO 엘리트 몬스터도 할 수 있게
-		if (pMonster&&pMonster->Get_CurrentHp() <= 0)
-			return;
+		if(pUnit->Get_UnitType() == EUnitType::ELITE_MONSTER)
+			cout << "엘리트 몬스터 피격" << endl;
+
+		//if (pMonster&&pMonster->Get_CurrentHp() <= 0)
+		//	return;
 
 		//0. 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
@@ -1906,6 +1896,16 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		if (pOil)
 		{
 			//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
+			return;
+		}
+
+		CFlameField* pFlame = dynamic_cast<CFlameField*>(pOther);
+		if (pFlame)
+		{
+			//TODO 플레임 필드가 나중에 넘겨주는 과열로 데미지처리
+#ifdef _DEBUG
+			cout << "플레임필드" << endl;
+#endif // _DEBUG
 			return;
 		}
 
@@ -2073,6 +2073,13 @@ HRESULT CPlayer::Ready_Components()
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Player"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
+	m_pSoundCom->Set_AllVolume(g_fPlayerSoundVolume);
+
+
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Grinder"), TEXT("Com_Sound2"), reinterpret_cast<CComponent**>(&m_pGrinderSound))))
+		return E_FAIL;
+	m_pGrinderSound->Set_AllVolume(g_fPlayerSoundVolume);
 	return S_OK;
 }
 HRESULT CPlayer::Ready_Controller()
@@ -2094,6 +2101,9 @@ HRESULT CPlayer::Ready_Controller()
 }
 HRESULT CPlayer::Ready_UIParameters()
 {
+	m_fHp = 100.f;
+	m_fMaxHp = 100.f;
+
 	Callback_HP();
 	Callback_Mana();
 	Callback_Stamina();
@@ -2126,10 +2136,10 @@ HRESULT CPlayer::Ready_UIParameters()
 		{
 			_float* fRatio = static_cast<_float*>(data);
 
-			m_fHP = m_fHP + m_fMaxHP * (*fRatio);
+			m_fHp = m_fHp + m_fMaxHp * (*fRatio);
 
-			if (m_fHP > m_fMaxHP)
-				m_fHP = m_fMaxHP;
+			if (m_fHp > m_fMaxHp)
+				m_fHp = m_fMaxHp;
 
 			Callback_HP();
 		}
@@ -2259,14 +2269,14 @@ HRESULT CPlayer::Ready_Actor()
 
 void CPlayer::Callback_HP()
 {
-	if (m_fHP < 0.f)
-		m_fHP = 0.f;
+	if (m_fHp < 0.f)
+		m_fHp = 0.f;
 
-	if (m_fHP >= m_fMaxHP)
-		m_fHP = m_fMaxHP;
+	if (m_fHp >= m_fMaxHp)
+		m_fHp = m_fMaxHp;
 
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHP);
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_fMaxHP);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_fMaxHp);
 }
 
 void CPlayer::Callback_Stamina()
@@ -2291,22 +2301,6 @@ void CPlayer::Callback_Mana()
 
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
-}
-
-void CPlayer::ResetGage()
-{
-	m_fHP = m_fMaxHP;
-	Callback_HP();
-	m_fStamina = m_fMaxStamina;
-	Callback_Stamina();
-	m_fMana = m_fMaxMana;
-	Callback_Mana();
-
-	m_pBelt_Down->Reset();
-	m_pBelt_Up->Reset();
-	m_pPlayerLamp->Reset();
-
-	m_pLegionArm->Reset();
 }
 
 void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
@@ -2872,6 +2866,7 @@ void CPlayer::Free()
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pControllerCom);
+	Safe_Release(m_pGrinderSound);
 //	Safe_Release(m_pPhysXActorCom);
 
 	for (size_t i = 0; i < ENUM_CLASS(EPlayerState::END); ++i)

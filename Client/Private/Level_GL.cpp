@@ -60,6 +60,8 @@ void CLevel_GL::Update(_float fTimeDelta)
 {
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
 
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
+
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);

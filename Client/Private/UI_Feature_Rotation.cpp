@@ -32,7 +32,7 @@ HRESULT CUI_Feature_Rotation::Initialize(void* pArg)
 
     m_iEndFrame = pDesc->iEndFrame;
 
-    m_iRange = m_iEndFrame - m_iStartFrame;
+    m_iRange = m_iEndFrame - m_iStartFrame + 1;
 
     m_strProtoTag = TEXT("Prototype_Component_UI_Feature_Rotation");
 
@@ -47,40 +47,29 @@ HRESULT CUI_Feature_Rotation::Initialize(void* pArg)
 void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool isReverse)
 {
 
-    if (m_iStartFrame == m_iEndFrame)
+    if (m_iStartFrame == m_iEndFrame )
         return;
 
-    if (iCurrentFrame < m_iStartFrame)
+    if (iCurrentFrame < m_iStartFrame || (!m_isLoop && iCurrentFrame > m_iEndFrame))
         return;
 
-    if (m_isLoop)
-    {
-        m_iCurrentFrame = (iCurrentFrame - m_iStartFrame) % m_iRange;
+    int frame = 0;
+    if (m_isLoop) {
+        frame = (iCurrentFrame - m_iStartFrame) % m_iRange;
     }
-    else
-    {
-        m_iCurrentFrame = iCurrentFrame - m_iStartFrame;
-        if (m_iCurrentFrame > m_iRange)
-            return;
+    else {
+        frame = iCurrentFrame - m_iStartFrame;
+        frame = std::clamp(frame, 0, m_iRange - 1);
     }
 
-    // 0 ~ 1 구간으로 보간 값 계산
-    float t = std::clamp(float(m_iCurrentFrame) / m_iRange, 0.f, 1.f);
+    // 0~1 범위로 t 계산
+    float t = float(frame) / float(m_iRange - 1);
 
-   
-    // 방향에 따라 보간 순서 변경
-    if (!isReverse)
-    {
-       
-        m_fCurrentRotation = LERP(m_fEndRotation, m_fStartRotation, t);
-      
-    }
-    else
-    {
-     
-        m_fCurrentRotation = LERP(m_fStartRotation, m_fEndRotation, t);
-    
-    }
+    if (isReverse)
+        t = 1.f - t;
+
+    m_fCurrentRotation = LERP(m_fStartRotation, m_fEndRotation, t);
+
 
 
     _matrix matRotate = XMMatrixRotationZ(XMConvertToRadians(m_fCurrentRotation));
@@ -113,8 +102,10 @@ UI_FEATURE_TOOL_DESC CUI_Feature_Rotation::Get_Desc_From_Tool()
     eDesc.iType = 4;
     eDesc.iStartFrame = m_iStartFrame;
     eDesc.iEndFrame = m_iEndFrame;
-    eDesc.fStartAlpha = m_fStartRotation;
-    eDesc.fEndAlpha = m_fEndRotation;
+    eDesc.fStartRotation = m_fStartRotation;
+    eDesc.fEndRotation = m_fEndRotation;
+    eDesc.fRotationPos = m_fRotationPos;
+    eDesc.fInitPos = { m_vInitPos.m128_f32[0], m_vInitPos.m128_f32[1] };
     eDesc.strTypeTag = "Rotation";
 
     return eDesc;

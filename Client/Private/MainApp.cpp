@@ -16,6 +16,7 @@
 #include "UI_Feature_Position.h"
 #include "UI_Featrue_Scale.h"
 #include "UI_Feature_Rotation.h"
+#include "UI_Feature_Color.h"
 #include "UI_Bar_Loading.h"
 
 #include "Sky.h"
@@ -289,6 +290,7 @@ HRESULT CMainApp::Ready_Sound()
 
 	/* [ 플레이어 사운드 ] */
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Unit/Player/", false, false, false);
+	ADD_SOUND_EX(Grinder, "../Bin/Resources/Sound/Unit/Player/Grinder/", false, false, false);
 	ADD_SOUND_EX(Weapon, "../Bin/Resources/Sound/Unit/Weapon/", false, false, false);
 
 	/* [ 동영상용 사운드 ] */
@@ -396,6 +398,11 @@ HRESULT CMainApp::Ready_Loading()
 	/* For.Prototype_Component_UI_Feature_Scale*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_UI_Feature_Rotation"),
 		CUI_Feature_Rotation::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_UI_Feature_Scale*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_UI_Feature_Color"),
+		CUI_Feature_Color::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
