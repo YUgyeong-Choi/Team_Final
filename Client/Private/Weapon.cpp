@@ -281,12 +281,6 @@ void CWeapon::Add_CollisonObj(CGameObject* pObj)
 	m_CollisonObjects.push_back(pObj);
 }
 
-void CWeapon::Set_WeaponTrail_Active(_bool bActive)
-{
-	if (m_pWeaponTrailEffect)
-		m_pWeaponTrailEffect->Set_TrailActive(bActive);
-}
-
 void CWeapon::StartHitReg(_float fHitRegTarget, _float fHitRegStartSpeed, _float fHitRegEndSpeed)
 {
 	m_fHitRegTime = fHitRegStartSpeed + fHitRegEndSpeed;

@@ -68,7 +68,7 @@ void CParticleEffect::Update(_float fTimeDelta)
 			XMStoreFloat4x4(&m_CombinedWorldMatrix,
 				m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
 		}
-		//__super::Update(fTimeDelta);
+
 		m_fTileSize.x = 1.0f / _float(m_iTileX);
 		m_fTileSize.y = 1.0f / _float(m_iTileY);
 		if (m_pSocketMatrix != nullptr)

@@ -2,45 +2,45 @@
     "EffectObject": [
         {
             "Accel": [
-                0.0,
-                0.0
+                -40.0,
+                -30.0
             ],
             "Animation": true,
             "Billboard": false,
             "Center": [
                 0.0,
-                0.699999988079071,
+                0.0,
                 0.0
             ],
             "CenterColor": [
+                0.06806284189224243,
+                0.22419923543930054,
                 1.0,
-                0.43263620138168335,
-                0.17277485132217407,
                 1.0
             ],
             "Color": [
+                0.0,
+                0.010471343994140625,
                 1.0,
-                0.0,
-                0.0,
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 36,
+            "Duration": 86,
             "EffectType": 1,
-            "EmissiveIntensity": 0.44999998807907104,
-            "EndTrack": 36,
+            "EmissiveIntensity": 1.0,
+            "EndTrack": 86,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
             "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
+                        0.0,
+                        0.010471343994140625,
                         1.0,
-                        0.0,
-                        0.0,
                         1.0
                     ],
-                    "Intensity": 2.6500000953674316,
+                    "Intensity": 4.860000133514404,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,18 +61,18 @@
                     ]
                 }
             ],
-            "LifeTime": 456.2371826171875,
+            "LifeTime": 672.1781616210938,
             "LifeTime_Particle": [
-                0.25,
-                1.0
+                0.029999999329447746,
+                0.4000000059604645
             ],
             "Local": true,
-            "Loop": true,
+            "Loop": false,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
-            "Name": "Fuoco_FlameField_Erupt_Particle1",
-            "NumInstance": 50,
+            "MinSpeed": 1.0,
+            "Name": "Player_Skill_WeaponParticle1",
+            "NumInstance": 30,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -86,14 +86,14 @@
             ],
             "PType": 0,
             "Pivot": [
+                -0.09000000357627869,
                 0.0,
-                0.699999988079071,
-                0.0
+                0.03999999910593033
             ],
             "Range": [
-                0.5,
                 0.009999999776482582,
-                0.5
+                0.009999999776482582,
+                0.009999999776482582
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -105,20 +105,20 @@
                 0.0,
                 0.0
             ],
-            "ShaderPass": 2,
+            "ShaderPass": 3,
             "Size": [
-                1.0,
-                2.0
+                0.009999999776482582,
+                0.019999999552965164
             ],
             "Speed": [
-                2.0,
-                4.0
+                5.0,
+                10.0
             ],
             "Spin": false,
             "StartTrack": 0,
             "TextureTags": [
                 "",
-                "T_SubUV_Fire_06_8x8_SC_KMH",
+                "T_Shere_04_C_HJS",
                 "",
                 ""
             ],
@@ -131,11 +131,11 @@
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
             "TileTickPerSec": 60.0,
-            "TileX": 8,
-            "TileY": 8,
-            "isTileLoop": true
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
         }
     ],
     "Loop": false,
-    "MaxFrame": 35
+    "MaxFrame": 83
 }

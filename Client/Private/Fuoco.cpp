@@ -213,7 +213,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 			_vector vPos = combmat.r[3];
 			_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
 			vPos += vLook * 0.6f;
-			XMStoreFloat4x4(&BellyFireDesc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
+			XMStoreFloat4x4(&BellyFireDesc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
 
 			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_BellyFire_P2"), &BellyFireDesc);
 			if (pEC == nullptr)
@@ -229,7 +229,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 			_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 
-			XMStoreFloat4x4(&Desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
+			XMStoreFloat4x4(&Desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
 			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_Erupt_P1"), &Desc);
 			if (pEC == nullptr)
 				MSG_BOX("이펙트 생성 실패함");

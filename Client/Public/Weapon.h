@@ -88,7 +88,7 @@ public: /* [ 활성화 , 비활성화 ] */
 	void Add_CollisonObj(CGameObject* pObj);
 
 	// 트레일 이펙트 온 오프
-	void Set_WeaponTrail_Active(_bool bActive);
+	virtual void Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType = TRAIL_DEFAULT) {};
 
 public: /* [ 무기의 소유자 (Unit) 을 가져온다. ] */
 	class CUnit* Get_Owner() const { return m_pOwner; }

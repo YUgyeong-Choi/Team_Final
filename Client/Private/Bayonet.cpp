@@ -105,10 +105,38 @@ void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	if (KEY_DOWN(DIK_8))
+	if (KEY_PRESSING(DIK_G))
 	{
-		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_AttackHit_Basic_Spark_1_P2S4"))
+		CEffectContainer::DESC desc = {};
+
+		auto worldmat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+		_vector rot, trans, scale;
+		XMMatrixDecompose(&scale, &rot, &trans, worldmat);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) *
+			XMMatrixTranslation(trans.m128_f32[0],
+				trans.m128_f32[1],
+				trans.m128_f32[2]));
+
+		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_WeaponParticle_P1", &desc))
 			MSG_BOX("이펙트 생성 실패함");
+	}
+	if (KEY_DOWN(DIK_G))
+	{
+		CEffectContainer::DESC desc = {};
+		
+		auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * m_pTransformCom->Get_WorldMatrix() * m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+
+		XMStoreFloat4x4(&desc.PresetMatrix,
+			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
+				worldmat.r[3].m128_f32[1],
+				worldmat.r[3].m128_f32[2]));
+
+		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
+			MSG_BOX("이펙트 생성 실패함");
+		static _bool bTEactive = true;
+		bTEactive = !bTEactive;
+		Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
 	}
 }
 
@@ -238,6 +266,29 @@ void CBayonet::Reset()
 	m_pGameInstance->Notify(L"Weapon_Status", L"Durablity", &m_fDurability);
 }
 
+void CBayonet::Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType)
+{
+	switch (eType)
+	{
+	case Client::TRAIL_DEFAULT:
+		if (m_pWeaponTrailEffect)
+			m_pWeaponTrailEffect->Set_TrailActive(bActive);
+		break;
+	case Client::TRAIL_SKILL_BLUE:
+		if (m_pSkillTrailEffect)
+			m_pSkillTrailEffect->Set_TrailActive(bActive);
+		break;
+	case Client::TRAIL_SKILL_RED:
+		break;
+	case Client::TRAIL_BLOOD:
+		break;
+	case Client::TRAIL_END:
+		break;
+	default:
+		break;
+	}
+}
+
 
 
 HRESULT CBayonet::Ready_Components()
@@ -298,6 +349,12 @@ HRESULT CBayonet::Ready_Effect()
 		m_pWeaponTrailEffect->Set_TrailActive(false);
 	else
 		MSG_BOX("무기 트레일 사망");
+
+	m_pSkillTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Skill"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (m_pSkillTrailEffect)
+		m_pSkillTrailEffect->Set_TrailActive(false);
+	else
+		MSG_BOX("무기 스킬 트레일 사망");
 
 	return S_OK;	
 }

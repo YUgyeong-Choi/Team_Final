@@ -42,7 +42,9 @@ public:
 	virtual void Calc_Durability(_float fDelta);
 
 	virtual void Reset();
-	
+
+	virtual void Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType = TRAIL_DEFAULT) override;
+
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
@@ -65,7 +67,8 @@ private:
 private:
 	CPhysXDynamicActor*			m_pPhysXActorCom = { nullptr };
 
-	class CSwordTrailEffect*	m_pHitTrailEffect = { nullptr }; // 타격 시에만 나오는 트레일 이펙트 전용
+	class CSwordTrailEffect*	m_pHitTrailEffect = { nullptr }; // 타격 시에만 나오는 트레일 이펙트 전용(피)
+	class CSwordTrailEffect*	m_pSkillTrailEffect = { nullptr }; // 스킬 시에 나오는 트레일 이펙트 전용
 	_bool						m_bHitEffect = { false };
 	_float3						m_vEndSocketPrevPos = {};	// 타격 시 방향 구하는 용도로 씀
 	_float3						m_vEndSocketCurPos = {};
