@@ -1225,6 +1225,20 @@ void CFuoco::ChosePatternWeightByDistance(_float fDistance)
 			}
 		}
 	}
+
+	// TODO
+	// 2페이즈 패턴 많이 보여주려고 가중치 올림
+	if (m_bIsPhase2)
+	{
+		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
+		{
+			if (pattern == P2_FireOil || pattern == P2_FireBall ||
+				pattern == P2_FireFlame || pattern == P2_FireBall_B)
+			{
+				weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
+			}
+		}
+	}
 }
 
 void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)

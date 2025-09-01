@@ -110,10 +110,6 @@
                     "Time": 51.0
                 },
                 {
-                    "EventName": "DecalScratchEffect",
-                    "Time": 44.0
-                },
-                {
                     "EventName": "SwingAfterSalmSound",
                     "Time": 45.0
                 }
