@@ -1176,11 +1176,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		RootMotionActive(fTimeDelta);
 
-		if (!m_bSetSound)
-		{
-			m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
-			m_bSetSound = true;
-		}
+		//if (!m_bSetSound)
+		//{
+		//	m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+		//	m_bSetSound = true;
+		//}
 
 		break;
 	}
@@ -1343,7 +1343,7 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
 
-	if (stateName == "Grinder") return eAnimCategory::GRINDER; 
+	if (stateName == "Grinder") return eAnimCategory::GRINDER;
 	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0)
 		return eAnimCategory::ITEM_WALK;
 	if (stateName.find("OnLamp") == 0 || stateName.find("FailItem") == 0)
@@ -2080,6 +2080,11 @@ HRESULT CPlayer::Ready_Components()
 
 	m_pSoundCom->Set_AllVolume(g_fPlayerSoundVolume);
 
+
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Grinder"), TEXT("Com_Sound2"), reinterpret_cast<CComponent**>(&m_pGrinderSound))))
+		return E_FAIL;
+	m_pGrinderSound->Set_AllVolume(g_fPlayerSoundVolume);
 	return S_OK;
 }
 HRESULT CPlayer::Ready_Controller()
@@ -2879,6 +2884,7 @@ void CPlayer::Free()
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pControllerCom);
+	Safe_Release(m_pGrinderSound);
 //	Safe_Release(m_pPhysXActorCom);
 
 	for (size_t i = 0; i < ENUM_CLASS(EPlayerState::END); ++i)

@@ -14,7 +14,7 @@
       "vPos": [ 117.151184, 1.629256, -9.092491 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
-      "triggerSize": [ 0.2, 0.2, 2.0 ],
+      "triggerSize": [ 0.2, 0.2, 2.5 ],
       "strInBGM": "AMB_SS_Train_Out_Rain",
       "strOutBGM": "AMB_SS_Train_Out_All",
       "strInBGM2": "",

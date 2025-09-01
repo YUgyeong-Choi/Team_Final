@@ -2068,6 +2068,8 @@ public:
                 if (pEffect == nullptr)
                     MSG_BOX("이펙트 생성 실패함");
 
+                m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+
                 /* [ HP 를 감소시키고 사망을 확인한다. ] */
                 m_pOwner->HPSubtract();
                 if (m_pOwner->m_fHP <= 0.f)
@@ -3017,6 +3019,8 @@ public:
 
         if (pEffect == nullptr)
             MSG_BOX("이펙트 생성 실패함");
+
+        m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 
         /* [ HP 를 우선으로 감소시키고 사망을 확인한다. ] */
         m_pOwner->HPSubtract();
