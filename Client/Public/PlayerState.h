@@ -18,6 +18,10 @@
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
 
+#include "UI_Container.h"
+#include "UI_Manager.h"
+
+
 NS_BEGIN(Client)
 
 _float g_fWalkSpeed = 1.5f;
@@ -3218,11 +3222,33 @@ public:
 
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Hit_Dead_B_", 3);
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+
+        //?
+
+
     }
 
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+        if (m_fStateTime > 1.f && !m_bDoOnce)
+        {
+            CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+            eDesc.strFilePath = TEXT("../Bin/Save/UI/Death.json");
+
+            eDesc.fLifeTime = 6.f;
+            eDesc.useLifeTime = true;
+
+            if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+                ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Death"), &eDesc)))
+                return;
+
+            CUI_Manager::Get_Instance()->Off_Panel();
+
+            m_bDoOnce = true;
+        }
 
         if (m_fStateTime > 6.f && !m_pOwner->m_bIsRrevival)
         {
@@ -3245,6 +3271,8 @@ public:
 
             m_pGameInstance->Reset_LevelUnits();
             m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
+
+            CUI_Manager::Get_Instance()->On_Panel();
         }
 
         if (m_pOwner->m_bIsRrevival)
@@ -3259,6 +3287,7 @@ public:
         m_fRrevivalTime = 0.f;
         m_pOwner->m_bIsRrevival = false;
         m_pOwner->m_bIsInvincible = false;
+        m_bDoOnce = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

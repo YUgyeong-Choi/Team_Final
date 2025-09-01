@@ -288,6 +288,7 @@
     <ClInclude Include="..\Public\UI_Container.h" />
     <ClInclude Include="..\public\UI_Featrue_Scale.h" />
     <ClInclude Include="..\public\UI_Feature.h" />
+    <ClInclude Include="..\public\UI_Feature_Color.h" />
     <ClInclude Include="..\public\UI_Feature_Fade.h" />
     <ClInclude Include="..\public\UI_Feature_Position.h" />
     <ClInclude Include="..\public\UI_Feature_Rotation.h" />
@@ -461,6 +462,7 @@
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
     <ClCompile Include="..\private\UI_Feature_Click.cpp" />
+    <ClCompile Include="..\private\UI_Feature_Color.cpp" />
     <ClCompile Include="..\private\UI_Feature_Fade.cpp" />
     <ClCompile Include="..\Private\UI_Feature_Position.cpp" />
     <ClCompile Include="..\private\UI_Feature_Rotation.cpp" />

@@ -40,6 +40,17 @@ namespace Client
 		// scale
 		_float2			fStartScale{};
 		_float2			fEndScale{};
+
+		// color
+		_float4			fStartColor{};
+		_float4			fEndColor{};
+
+		// rotation
+		_float			fStartRotation{};
+		_float			fEndRotation{};
+		// 어디를 중심으로 돌릴지
+		_float2			fRotationPos{};
+		_float2			fInitPos{};
 		
 	}UI_FEATURE_TOOL_DESC;
 
@@ -90,6 +101,13 @@ namespace Client
 		_float2			fInitPos{};
 
 	}UI_FEATURE_ROTATION_DESC;
+
+	typedef struct tagColorFeature : public tagFeatureUI {
+
+		_float4 fStartColor{}; 
+		_float4 fEndColor{};
+
+	}UI_FEATURE_COLOR_DESC;
 
 	// 여기까지?
 
