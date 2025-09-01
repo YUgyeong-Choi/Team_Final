@@ -542,7 +542,16 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     float maxX = 1 - 1.05f * fMarginX;
 
 // 비율에 따라 실제 채워지는 위치
-    float filledX = minX + (maxX - minX) * g_BarRatio;
+    
+    float filledX = 0.f;
+    
+    if (g_BarRatio > 0.f)
+    {
+        float minWidth = 0.05f;
+        
+        
+        filledX = minX + max((maxX - minX) * g_BarRatio, minWidth);
+    }
 
     bool isInsideX = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
     bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;
