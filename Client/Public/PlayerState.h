@@ -3265,7 +3265,7 @@ public:
                 return;
 
             CUI_Manager::Get_Instance()->Off_Panel();
-
+            CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertDeath_01");
             m_bDoOnce = true;
         }
 
