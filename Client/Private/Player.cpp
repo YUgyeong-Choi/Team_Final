@@ -1846,7 +1846,9 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		//1. 애니메이션 상태를 히트로 바꾼다.
 
 		//가드 중에 피격시 스위치를 켠다.
-		if (m_bIsGuarding)
+		if (m_bIsGuarding &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_AIRBORNE &&
+			m_eHitedAttackType != CBossUnit::EAttackType::FURY_STAMP)
 		{
 			m_bGardHit = true;
 

@@ -909,7 +909,7 @@ public:
 
         if (0.2f < m_fStateTime)
         {
-            if (MOUSE_PRESSING(DIM::LBUTTON))
+            if (MOUSE_DOWN(DIM::LBUTTON))
             {
                 m_pOwner->m_bBackStepAttack = true;
                 m_pOwner->m_pAnimator->SetTrigger("NormalAttack");
@@ -938,7 +938,7 @@ public:
 
         if (m_pOwner->m_bBackStepAttack)
         {
-            if (1.f < m_fStateTime)
+            if (1.8f < m_fStateTime)
                 return EPlayerState::IDLE;
         }
         else
@@ -2952,6 +2952,10 @@ public:
     {
         m_fStateTime = 0.f;
         m_pOwner->m_bIsInvincible = false;
+        m_pOwner->SetbIsBackAttack(false);
+        m_pOwner->SetbIsGroggyAttack(false);
+        m_pOwner->SetIsFatalBoss(false);
+        m_pOwner->SetFatalTargetNull();
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
