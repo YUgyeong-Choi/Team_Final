@@ -87,6 +87,7 @@ namespace Client
 		_float			fEndRotation{};
 		// 어디를 중심으로 돌릴지
 		_float2			fRotationPos{};
+		_float2			fInitPos{};
 
 	}UI_FEATURE_ROTATION_DESC;
 

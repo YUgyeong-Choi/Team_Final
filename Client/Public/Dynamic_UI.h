@@ -55,6 +55,8 @@ public:
 
 	void Set_isUVmove(_bool isMove) { m_isUVMove = isMove; }
 
+	void Set_isFromTool() { m_isFromTool = true; }
+
 protected:
 	CDynamic_UI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDynamic_UI(const CDynamic_UI& Prototype);
@@ -70,7 +72,7 @@ public:
 
 	void Update_UI_From_Frame(_int& iCurrentFrame);
 	virtual void Update_UI_From_Tool(void* pArg) override;
-	void Reset();
+	virtual void Reset();
 
 	HRESULT Ready_Components(const wstring& strTextureTag);
 

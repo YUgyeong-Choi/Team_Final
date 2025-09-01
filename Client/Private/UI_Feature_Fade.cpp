@@ -34,6 +34,7 @@ HRESULT CUI_Feature_Fade::Initialize(void* pArg)
 
     m_iRange = m_iEndFrame - m_iStartFrame;
 
+
     m_strProtoTag = TEXT("Prototype_Component_UI_Feature_Fade");
 
     return S_OK;
@@ -48,7 +49,7 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
 
     if (iCurrentFrame < m_iStartFrame)
     {
-        pUI->Set_Alpha(m_fStartAlpha);
+     
         return;
     }
         
@@ -83,18 +84,12 @@ void CUI_Feature_Fade::Update(_int& iCurrentFrame, CDynamic_UI* pUI,  _bool isRe
         m_fCurrentAlpha = LERP(m_fEndAlpha, m_fStartAlpha, t);
     }
   
-
- 
     pUI->Set_Alpha(m_fCurrentAlpha);
+
 }
 
 HRESULT CUI_Feature_Fade::Bind_ShaderResources(CShader* pShader)
 {
-    if (m_iCurrentFrame > m_iEndFrame || m_iCurrentFrame < m_iStartFrame)
-        return S_OK;
-
-    if (FAILED(pShader->Bind_RawValue("g_Alpha", &m_fCurrentAlpha, sizeof(_float))))
-        return E_FAIL;
 
     return S_OK;
 }
@@ -153,6 +148,10 @@ void CUI_Feature_Fade::Deserialize(const json& j)
 
     string strPrototag = j["FeatureProtoTag"];
     m_strProtoTag = StringToWStringU8(strPrototag);
+
+    m_iRange = m_iEndFrame - m_iStartFrame;
+
+
 }
 
 CUI_Feature_Fade* CUI_Feature_Fade::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

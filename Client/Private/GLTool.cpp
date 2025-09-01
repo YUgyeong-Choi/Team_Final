@@ -68,12 +68,10 @@ void CGLTool::Update(_float fTimeDelta)
 	if (m_isPlay)
 	{
 		m_fElapsedTime += fTimeDelta;
-
-		if (m_fElapsedTime > 0.016f)
+		while (m_fElapsedTime > 0.016f)
 		{
 			++m_iCurrentFrame;
-			m_fElapsedTime = 0.f;
-
+			m_fElapsedTime -= 0.016f;
 		}
 	}
 
@@ -180,6 +178,11 @@ void CGLTool::Obj_Deserialize()
 				{
 					partList.back()->Deserialize(objJson);
 					partList.back()->Update_Data();
+
+					if (nullptr != dynamic_cast<CDynamic_UI*>(partList.back()))
+					{
+						dynamic_cast<CDynamic_UI*>(partList.back())->Set_isFromTool();
+					}
 				}
 
 
@@ -244,6 +247,11 @@ void CGLTool::Add_UI_Select_Prototype()
 
 
 	m_pContainerObj->Add_UI_From_Tool(static_cast<CUIObject*>(pObj));
+
+	if (nullptr != dynamic_cast<CDynamic_UI*>(pObj))
+	{
+		dynamic_cast<CDynamic_UI*>(pObj)->Set_isFromTool();
+	}
 
 }
 
@@ -445,6 +453,7 @@ void CGLTool::Apply_Sequence_To_DynamicUI()
 			fadeDesc.fStartRotation = eDesc.fStartAlpha;
 			fadeDesc.fEndRotation = eDesc.fEndAlpha;
 			fadeDesc.fRotationPos = eDesc.fStartPos;
+			fadeDesc.fInitPos = eDesc.fEndPos;
 
 			static_cast<CDynamic_UI*>(m_pSelectConatinerPart)->Add_Feature(static_cast<int>(LEVEL::STATIC), StringToWString(fadeDesc.strProtoTag), &fadeDesc);
 
@@ -982,14 +991,15 @@ HRESULT CGLTool::Render_SelectOptionTool()
 				m_isPlay = false;
 				m_iCurrentFrame = 0;
 
-			/*	for (const auto& pObj : m_DynamicUIList)
+				for (const auto& pContainer : m_ContainerList)
 				{
 
-					if (nullptr == pObj || pObj->Get_bDead())
+					if (nullptr == pContainer || pContainer->Get_bDead())
 						continue;
 
-					pObj->Reset();
-				}*/
+					for(auto& pObj : pContainer->Get_PartUI())
+						pObj->Reset();
+				}
 			}
 
 			if (Button(u8"Upload Merge Container"))
