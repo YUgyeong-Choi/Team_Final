@@ -431,7 +431,7 @@ void CWego::Update_Button()
 			}
 
 
-			m_pSelectButtons[0]->Check_Select();
+			m_pSelectButtons[0]->Set_isSelect(true);
 			m_iSelectButtonIndex = (0);
 		}
 

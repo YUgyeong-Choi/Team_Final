@@ -470,10 +470,10 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
 
 // 채워질 수 있는 X 범위
     float minX = fMarginX;
-    float maxX = 1 - 1.2f * fMarginX;
+    float maxX = 1 - 1.025f * fMarginX;
 
     // Y 범위 밖이면 버림
-    if (In.vTexcoord.y < fMarginY || In.vTexcoord.y > 1.0f - fMarginY)
+    if (In.vTexcoord.y < fMarginY || In.vTexcoord.y > 1.0f - fMarginY * 1.05f)
         discard;
     
     if (In.vTexcoord.x < fMarginX || In.vTexcoord.x > 1.0f - fMarginX)
