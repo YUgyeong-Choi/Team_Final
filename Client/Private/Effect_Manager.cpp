@@ -391,8 +391,8 @@ HRESULT CEffect_Manager::Ready_Prototype_Components(const json& j, EFFECT_TYPE e
         Ready_Prototype_Particle_VIBuffers(j);
     else if (eEffType == EFF_TRAIL)
 		Ready_Prototype_Trail_VIBuffers(j);
-  //  else if (eEffType == EFF_ONETRAIL)
-		//Ready_Prototype_Trail_VIBuffers(j);
+    else if (eEffType == EFF_ONETRAIL)
+		Ready_Prototype_Trail_VIBuffers(j);
     return S_OK;
 }
 
