@@ -146,8 +146,6 @@ private: /* [ 옵저버 관련 ] */
 	void Callback_Stamina();
 	void Callback_Mana();
 
-	void ResetGage();
-
 public: /* [ 상호작용 관련 ] */
 	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj);
 	void GetWeapon();
@@ -268,14 +266,11 @@ private: /* [ 소유할 수 있는 객체 ] */
 private: /* [ 전투관련 변수 ] */
 	_bool	m_bWeaponEquipped = { false };
 	_bool	m_bBackStepAttack = { false };
-	_bool 	m_bIsChange = { false };
 	_bool 	m_bLockOnSprint = { false };
 	_bool   m_bIsBackAttack = { false };
 	_bool   m_bIsGroggyAttack = { false };
 	_bool   m_bIsFatalBoss = { false };
 
-	_float 	m_fChangeTime = {};
-	_float 	m_fChangeTimeElaped = {};
 	_int 	m_iCurrentCombo = { 0 };
 
 	_float  m_fReceiveDamage = {};
@@ -346,9 +341,6 @@ private: /* [ 플레이어 변수 ] */
 	_bool   m_bResetSoundTime = true;
 	_bool   m_bSetCamera[9] = {};
 
-	_float	m_fMaxHP = { 100.f };
-	_float	m_fHP = { 100.f };
-	
 	_float	m_fMaxStamina = { 150.f };
 	_float	m_fStamina = { 150.f };
 	

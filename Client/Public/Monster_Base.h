@@ -97,10 +97,6 @@ protected:
 	
 	CUI_MonsterHP_Bar* m_pHPBar = {nullptr};
 
-	
-	_float			m_fHp = {};
-	_float			m_fMaxHp = {};
-
 	_float			m_fDamage = {};
 	
 

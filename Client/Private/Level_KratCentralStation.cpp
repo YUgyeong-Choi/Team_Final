@@ -616,11 +616,11 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a18Min, a18Max;
 	FnToAABB(a18p0, a18p1, a18Min, a18Max);
 
-	// ------------- Area 98 --------------
-	_float3 a98p0 = _float3{ -100.65f, -50.f, -100.f };
-	_float3 a98p1 = _float3{ 100.66f, 50.f, -300.f };
-	_float3 a98Min, a98Max;
-	FnToAABB(a98p0, a98p1, a98Min, a98Max);
+	// Area 19 
+	_float3 a19p0 = _float3{ 51.44f, 42.46f, -266.51f };
+	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
+	_float3 a19Min, a19Max;
+	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 	
 	// ------------- Area 99 --------------
 	_float3 a99p0 = _float3{ 186.65f, -47.92f, 63.37f };
@@ -754,17 +754,17 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 			18, a18Min, a18Max, vecAdj18, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
 	}
-
-
-
-
 	{
-		/* -------- [ 98번 구역 ] ---------- */
-		const vector<_uint> vecAdj98 = {  };
+		/* [ 19번 구역 ] */
+		const vector<_uint> vecAdj19 = {  };
 		if (!m_pGameInstance->AddArea_AABB(
-			98, a98Min, a98Max, vecAdj98, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			19, a19Min, a19Max, vecAdj19, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
+
+
+
+
 	{
 		/* -------- [ 99번 구역 ] ---------- */
 		const vector<_uint> vecAdj99 = {  };

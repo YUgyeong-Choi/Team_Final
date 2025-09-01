@@ -124,12 +124,19 @@ public:
 protected:
 	void Spawn_MonsterHit_Effect(const _float3& vPos);
 
+public:
+	_float GetHP() const { return m_fHp; }
+
 protected:
 	SPAWN_TYPE m_eSpawnType = { SPAWN_TYPE::IDLE };
 
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };
 	_bool m_bIsPlayer = { false };
+
+protected:
+	_float				m_fHp = {};
+	_float				m_fMaxHp = {};
 
 protected:
 	_bool				m_bEmissive = {};

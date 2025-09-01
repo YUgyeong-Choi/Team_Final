@@ -123,7 +123,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
-	
 
 	return S_OK;
 }
@@ -170,7 +169,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_5))
 	{
-		PxVec3 pos = PxVec3(0.f, 10.f, -200.f);
+		PxVec3 pos = PxVec3(-1.4f, 1.f, -237.f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}
@@ -254,7 +253,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
-		ResetGage();
+		Reset();
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -276,15 +275,19 @@ HRESULT CPlayer::Render()
 }
 
 void CPlayer::Reset()
-{
-	
+{	
 	/* [ 무기 장착 해제 ] */
 	m_pWeapon->SetbIsActive(false);
 	m_bWeaponEquipped = false;
 	m_pWeapon->Reset();
 
-	m_fHP = 100.f;
+	m_fHp = 100.f;
 	Callback_HP();
+	m_fStamina = m_fMaxStamina;
+	Callback_Stamina();
+	m_fMana = m_fMaxMana;
+	Callback_Mana();
+
 	m_bIsRrevival = true;
 
 	m_pBelt_Down->Reset();
@@ -383,10 +386,10 @@ void CPlayer::HPSubtract()
 	}
 
 
-	m_fHP -= m_fReceiveDamage;
+	m_fHp -= m_fReceiveDamage;
 
-	if (m_fHP <= 0.f)
-		m_fHP = 0.f;
+	if (m_fHp <= 0.f)
+		m_fHp = 0.f;
 
 	Callback_HP();
 }
@@ -523,6 +526,44 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::NORMAL_ATTACKA:
 	{
 		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.3f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.55f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+
+		m_fSetTime += fTimeDelta;
+		if (m_fSetTime > 0.7f)
+		{
+			if (!m_bSetOnce && m_fStamina >= 0.f)
+			{
+				m_fStamina -= 20.f;
+				Callback_Stamina();
+				m_bSetOnce = true;
+			}
+		}
+
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 0.6f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
+				m_bSetSound = true;
+			}
+		}
+		break;
+	}
+	case eAnimCategory::NORMAL_ATTACKB:
+	{
+		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.2f;
 		_float  m_fDistance = 1.f;
 
@@ -557,44 +598,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		break;
-	}
-	case eAnimCategory::NORMAL_ATTACKB:
-	{
-		m_fMoveTime += fTimeDelta;
-		_float  m_fTime = 0.3f;
-		_float  m_fDistance = 1.f;
-
-		if (!m_bMove)
-		{
-			if (0.55f < m_fMoveTime)
-			{
-				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
-				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
-				SyncTransformWithController();
-			}
-		}
-
-		m_fSetTime += fTimeDelta;
-		if (m_fSetTime > 0.7f)
-		{
-			if (!m_bSetOnce && m_fStamina >= 0.f)
-			{
-				m_fStamina -= 20.f;
-				Callback_Stamina();
-				m_bSetOnce = true;
-			}
-		}
-
-		m_fSetSoundTime += fTimeDelta;
-		if (m_fSetSoundTime > 0.6f)
-		{
-			if (!m_bSetSound)
-			{
-				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
-				m_bSetSound = true;
-			}
-		}
 		break;
 	}
 	case eAnimCategory::STRONG_ATTACKA:
@@ -676,28 +679,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::CHARGE_ATTACKA:
 	{
 		RootMotionActive(fTimeDelta);
-
-		/* [ 차지 A 일 때 R버튼이 꾹 눌리면 체인지 변수가 켜진다. ] */
-		m_fChangeTimeElaped += fTimeDelta;
-		m_fSetTime += fTimeDelta;
-
-		if (m_fChangeTimeElaped > 1.f)
-		{
-			if (MOUSE_PRESSING(DIM::RBUTTON))
-			{
-				m_fChangeTime += fTimeDelta;
-
-				if (m_fChangeTime >= 0.5f)
-				{
-					m_bIsChange = true;
-				}
-			}
-			else
-			{
-				m_fChangeTime = 0.f;
-				m_bIsChange = false;
-			}
-		}
 
 		if (m_fSetTime > 1.f)
 		{
@@ -1345,9 +1326,9 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::ITEM;
 
 	if (stateName.find("NormalAttack2") == 0)
-		return eAnimCategory::NORMAL_ATTACKA;
-	if (stateName.find("NormalAttack") == 0)
 		return eAnimCategory::NORMAL_ATTACKB;
+	if (stateName.find("NormalAttack") == 0)
+		return eAnimCategory::NORMAL_ATTACKA;
 	if (stateName.find("StrongAttack2") == 0)
 		return eAnimCategory::STRONG_ATTACKB;
 	if (stateName.find("StrongAttack") == 0)
@@ -2094,6 +2075,9 @@ HRESULT CPlayer::Ready_Controller()
 }
 HRESULT CPlayer::Ready_UIParameters()
 {
+	m_fHp = 100.f;
+	m_fMaxHp = 100.f;
+
 	Callback_HP();
 	Callback_Mana();
 	Callback_Stamina();
@@ -2126,10 +2110,10 @@ HRESULT CPlayer::Ready_UIParameters()
 		{
 			_float* fRatio = static_cast<_float*>(data);
 
-			m_fHP = m_fHP + m_fMaxHP * (*fRatio);
+			m_fHp = m_fHp + m_fMaxHp * (*fRatio);
 
-			if (m_fHP > m_fMaxHP)
-				m_fHP = m_fMaxHP;
+			if (m_fHp > m_fMaxHp)
+				m_fHp = m_fMaxHp;
 
 			Callback_HP();
 		}
@@ -2259,14 +2243,14 @@ HRESULT CPlayer::Ready_Actor()
 
 void CPlayer::Callback_HP()
 {
-	if (m_fHP < 0.f)
-		m_fHP = 0.f;
+	if (m_fHp < 0.f)
+		m_fHp = 0.f;
 
-	if (m_fHP >= m_fMaxHP)
-		m_fHP = m_fMaxHP;
+	if (m_fHp >= m_fMaxHp)
+		m_fHp = m_fMaxHp;
 
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHP);
-	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_fMaxHP);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxHP"), &m_fMaxHp);
 }
 
 void CPlayer::Callback_Stamina()
@@ -2291,22 +2275,6 @@ void CPlayer::Callback_Mana()
 
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
-}
-
-void CPlayer::ResetGage()
-{
-	m_fHP = m_fMaxHP;
-	Callback_HP();
-	m_fStamina = m_fMaxStamina;
-	Callback_Stamina();
-	m_fMana = m_fMaxMana;
-	Callback_Mana();
-
-	m_pBelt_Down->Reset();
-	m_pBelt_Up->Reset();
-	m_pPlayerLamp->Reset();
-
-	m_pLegionArm->Reset();
 }
 
 void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)

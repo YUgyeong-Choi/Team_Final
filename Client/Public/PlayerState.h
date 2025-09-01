@@ -903,7 +903,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (0.3f < m_fStateTime)
+        if (0.2f < m_fStateTime)
         {
             if (MOUSE_PRESSING(DIM::LBUTTON))
             {
@@ -934,7 +934,7 @@ public:
 
         if (m_pOwner->m_bBackStepAttack)
         {
-            if (0.5f < m_fStateTime)
+            if (1.f < m_fStateTime)
                 return EPlayerState::IDLE;
         }
         else
@@ -1770,16 +1770,27 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        if (m_fStateTime > 1.f)
+        if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
+            m_pOwner->m_bPulseReservation = true;
+
+        if (MOUSE_PRESSING(DIM::RBUTTON))
         {
-            if (KEY_DOWN(DIK_R) && !m_pOwner->m_bPulseReservation)
-                m_pOwner->m_bPulseReservation = true;
+            m_fChargeTime += fTimeDelta;
+            if (m_fChargeTime > 0.5f)
+                m_bChargeB = true;
+        }
+        else
+        {
+            m_fChargeTime = 0.f;
+            m_bChargeB = false;
         }
     }
 
     virtual void Exit() override
     {
         m_fStateTime = 0.f;
+        m_bChargeB = false;
+        m_fChargeTime = 0.f;
         m_pOwner->m_bMovable = true;
         m_pOwner->m_pAnimator->SetBool("Charge", false);
     }
@@ -1789,7 +1800,7 @@ public:
         /* [ 키 인풋을 받아서 이 상태를 유지할지 결정합니다. ] */
         m_pOwner->m_pAnimator->SetBool("Move", input.bMove);
 
-        if (3.f < m_fStateTime)
+        if (1.5f < m_fStateTime)
         {
             if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
@@ -1797,12 +1808,14 @@ public:
             if (m_pOwner->m_bUseLockon && KEY_UP(DIK_SPACE))
                 return EPlayerState::ROLLING;
 
-            if (m_pOwner->m_bIsChange && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
+            if (m_bChargeB && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(20.f))
             {
-                m_pOwner->m_bIsChange = false;
                 return EPlayerState::CHARGEB;
             }
+        }
 
+        if (3.f < m_fStateTime)
+        {
             if (input.bMove)
             {
                 if (m_pOwner->m_bWalk)
@@ -1837,6 +1850,9 @@ private:
 
 private:
     _bool   m_bAttack = {};
+    _bool   m_bChargeB = {};
+
+	_float  m_fChargeTime = { 0.f };
 
 };
 class CPlayer_ChargeB final : public CPlayerState
@@ -1856,6 +1872,7 @@ public:
         /* [ 애니메이션 설정 ] */
 
         // 차지는 무기 장착상태여야합니다.
+        m_pOwner->m_pAnimator->SetBool("Charge", true);
         m_pOwner->m_pAnimator->SetInt("Combo", 1);
         m_pOwner->m_pAnimator->SetTrigger("StrongAttack");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
@@ -2034,7 +2051,7 @@ public:
 
                     /* [ HP 를 감소시키고 사망을 확인한다. ] */
                     m_pOwner->HPSubtract();
-                    if (m_pOwner->m_fHP <= 0.f)
+                    if (m_pOwner->m_fHp <= 0.f)
                     {
                         m_bDead = true;
                         return;
@@ -2070,7 +2087,7 @@ public:
 
                 /* [ HP 를 감소시키고 사망을 확인한다. ] */
                 m_pOwner->HPSubtract();
-                if (m_pOwner->m_fHP <= 0.f)
+                if (m_pOwner->m_fHp <= 0.f)
                 {
                     m_bDead = true;
                     return;
@@ -3020,7 +3037,7 @@ public:
 
         /* [ HP 를 우선으로 감소시키고 사망을 확인한다. ] */
         m_pOwner->HPSubtract();
-        if (m_pOwner->m_fHP <= 0.f)
+        if (m_pOwner->m_fHp <= 0.f)
         {
             m_bDead = true;
             return;
@@ -3237,7 +3254,7 @@ public:
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_bWeaponEquipped = false;
 
-            m_pOwner->m_fHP = 100.f;
+            m_pOwner->m_fHp = 100.f;
             m_pOwner->Callback_HP();
             m_pOwner->m_bIsRrevival = true;
 
