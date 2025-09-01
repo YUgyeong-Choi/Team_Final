@@ -212,6 +212,7 @@
     <ClInclude Include="..\Public\PlayerLamp.h" />
     <ClInclude Include="..\Public\Oil.h" />
     <ClInclude Include="..\Public\Projectile.h" />
+    <ClInclude Include="..\Public\TriggerBGM.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
     <ClInclude Include="..\public\TriggerDropItem.h" />
     <ClInclude Include="..\Public\TriggerItem.h" />
@@ -438,6 +439,7 @@
     <ClCompile Include="..\private\Stamina_Bar.cpp" />
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
+    <ClCompile Include="..\Private\TriggerBGM.cpp" />
     <ClCompile Include="..\Private\TriggerBox.cpp" />
     <ClCompile Include="..\private\TriggerDropItem.cpp" />
     <ClCompile Include="..\Private\TriggerItem.cpp" />

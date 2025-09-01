@@ -714,7 +714,6 @@ public:
                 m_pOwner->m_pAnimator->SetTrigger("Pulse");
                 m_pOwner->m_pAnimator->SetTrigger("UseItem");
                 m_pOwner->m_bUsePulse = true;
-                m_pOwner->m_pSoundCom->Play("SE_PC_FX_Item_Heal");
             }
         }
 

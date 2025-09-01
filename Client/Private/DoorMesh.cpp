@@ -1,8 +1,8 @@
 #include "DoorMesh.h"
 #include "GameInstance.h"
 #include "Player.h"
-#include "Client_Calculation.h"
 #include "UI_Manager.h"
+
 CDoorMesh::CDoorMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDynamicMesh{ pDevice, pContext }
 {
@@ -27,8 +27,8 @@ HRESULT CDoorMesh::Initialize(void* pArg)
 	CDoorMesh::DOORMESH_DESC* pDoorMeshDESC = static_cast<DOORMESH_DESC*>(pArg);
 
 	m_eInteractType = pDoorMeshDESC->eInteractType;
- 	m_pBGM = pDoorMeshDESC->pBGM;
-	Safe_AddRef(m_pBGM);
+
+
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -56,8 +56,6 @@ void CDoorMesh::Priority_Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 		}
 	}
-
-	Play_BGM(fTimeDelta);
 }
 
 void CDoorMesh::Update(_float fTimeDelta)
@@ -109,15 +107,6 @@ void CDoorMesh::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		m_bCanActive = false;
 
 
-	if (m_bFinish)
-	{
-		m_bInSound = !m_bInSound;
-		m_bBGMToZero = true;
-		m_bBGMToVolume = false;
-		m_fBGMVolume = 1.f;
-	}
-
-
 	CUI_Manager::Get_Instance()->Activate_Popup(false);
 }
 
@@ -135,82 +124,7 @@ void CDoorMesh::Play_Sound()
 
 }
 
-void CDoorMesh::Play_BGM(_float fTimeDelta)
-{	
-	
-	// BGM
-	if (m_bBGMToZero)
-	{
-		if (m_bInSound)
-		{
-			//안에서 밖으로 나감
-			// m_fBGMVolume 이 1일텐데 0으로 lerp할거임
-			m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 4.f);
-			m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 
-			if (m_fBGMVolume < 0.01f)
-			{
-				switch (m_eInteractType)
-				{
-				case Client::TUTORIALDOOR:
-					m_pBGM->Stop();
-					Safe_Release(m_pBGM);
-					m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_Train_Out_Rain");
-					m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-					m_pBGM->Play();
-					break;
-				default:
-					break;
-				}
-
-
-				m_bBGMToZero = false;
-				m_bBGMToVolume = true;
-			}
-		}
-		else
-		{
-			//안에서 밖으로 나감
-			m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 4.f);
-			m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-
-			if (m_fBGMVolume < 0.01f)
-			{
-				switch (m_eInteractType)
-				{
-				case Client::TUTORIALDOOR:
-					m_pBGM->Stop();
-					Safe_Release(m_pBGM);
-					m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_CentralstationB_Inside");
-					m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-					m_pBGM->Play();
-					break;
-				default:
-					break;
-				}
-
-
-				m_bBGMToZero = false;
-				m_bBGMToVolume = true;
-			}
-		}
-	}
-
-
-
-	if (m_bBGMToVolume)
-	{
-		// m_fBGMVolume 이 0일텐데 1로 lerp할거임
-		m_fBGMVolume = LerpFloat(m_fBGMVolume, 2.f, fTimeDelta * 3.f);
-		m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-
-		// 만약에 m_fBGMVolume가 1이 되면
-		if (m_fBGMVolume > 0.99f)
-			m_bBGMToVolume = false;
-	}
-
-	
-}
 
 HRESULT CDoorMesh::Ready_Components(void* pArg)
 {
@@ -291,5 +205,4 @@ void CDoorMesh::Free()
 
 	Safe_Release(m_pPhysXTriggerCom);
 	Safe_Release(m_pSoundCom);
-	Safe_Release(m_pBGM);
 }

@@ -46,6 +46,7 @@ private:
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();
 	HRESULT Ready_Trigger();
+	HRESULT Ready_TriggerBGM();
 
 
 
@@ -71,6 +72,7 @@ private:
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	CSound_Core* m_pBGM = { nullptr };
+	CSound_Core* m_pBGM2 = { nullptr };
 
 	class CUI_Video* m_pStartVideo = { nullptr };
 	_bool m_bEndVideo = {};

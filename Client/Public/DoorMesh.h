@@ -10,7 +10,6 @@ class CModel;
 class CPhysXDynamicActor;
 class CPhysXStaticActor;
 class CSoundController;
-class CSound_Core;
 NS_END
 
 NS_BEGIN(Client)
@@ -23,7 +22,6 @@ public:
 		INTERACT_TYPE eInteractType;
 		_vector vTriggerOffset;
 		_vector vTriggerSize;
-		CSound_Core* pBGM;
 	}DOORMESH_DESC;
 protected:
 	CDoorMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -42,7 +40,6 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	void Play_Sound();
-	void Play_BGM(_float fTimeDelta);
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(DOORMESH_DESC* pDesc);
@@ -53,13 +50,6 @@ private:
 
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
-
-	// 레벨에서 받아온 BGM
-	CSound_Core* m_pBGM = { nullptr };
-	_bool m_bInSound = false;
-	_bool m_bBGMToZero = false;
-	_bool m_bBGMToVolume = false;
-	_float m_fBGMVolume = 1.f;
 public:
 	static CDoorMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
