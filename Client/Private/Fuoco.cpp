@@ -237,7 +237,10 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
 
-
+	if (KEY_DOWN(DIK_B))
+	{
+		EnterCutScene();
+	}
 
 }
 

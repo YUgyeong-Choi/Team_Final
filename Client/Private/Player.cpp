@@ -681,6 +681,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		RootMotionActive(fTimeDelta);
 
+		m_fSetTime += fTimeDelta;
 		if (m_fSetTime > 1.f)
 		{
 			if (!m_bSetOnce && m_fStamina >= 0.f)
@@ -692,6 +693,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_1st");
 			}
 		}
+
 		if (m_fSetTime > 1.8f)
 		{
 			if (!m_bSetTwo && m_fStamina >= 0.f)
@@ -728,6 +730,16 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_fStamina -= 20.f;
 				Callback_Stamina();
 				m_bSetOnce = true;
+			}
+		}
+
+		m_fSetSoundTime += fTimeDelta;
+		if (m_fSetSoundTime > 1.f)
+		{
+			if (!m_bSetSound)
+			{
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_2nd");
+				m_bSetSound = true;
 			}
 		}
 
