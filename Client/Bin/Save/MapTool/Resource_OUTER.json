@@ -10,8 +10,57 @@
         "Collision": false,
         "ModelName": "SM_BuildingA_Door_06",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_06.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Door_07",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_07.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RoofWall_01",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RoofWall_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RoofWindow_01",
+        "NoInstancing": false,
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RoofWindow_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Roof_01",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Roof_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouBorder_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouBorder_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouBorder_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouBorder_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_RouBorder_03",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RouBorder_03.bin"
     },
     {
         "Collision": false,
@@ -99,24 +148,66 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_BuildingA_Wall_17",
+        "ModelName": "SM_BuildingA_Wall_12",
         "NoInstancing": false,
-        "ObjectCount": 6,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_17.bin"
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_12.bin"
     },
     {
         "Collision": false,
-        "ModelName": "SM_BuildingA_Wall_19",
+        "ModelName": "SM_BuildingA_Wall_17",
         "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_19.bin"
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_17.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_BuildingA_Wall_24",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_24.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Wall_44",
+        "NoInstancing": false,
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_44.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_Clock_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Clock_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_FrontRail_07",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FrontRail_07.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_FrontRail_09",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FrontRail_09.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_FrontShade_01",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FrontShade_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Station_FrontWindow_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FrontWindow_01.bin"
     },
     {
         "Collision": true,
