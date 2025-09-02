@@ -1153,14 +1153,18 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	ImNodes::MiniMap(0.25f, 3);
 
 	// 정렬하기
-	if (ImGui::IsKeyDown(ImGuiKey_L))
-	{
-		//ApplyHierarchicalLayout(pCtrl);
-		ApplyCategoryLayout(pCtrl);
-		ImNodes::ClearLinkSelection();
-		ImNodes::ClearNodeSelection();
-	//	ImNodes::EditorContextResetPanning(ImVec2(0.0f, 0.0f));
-	}
+
+	_bool requestLayout = false;
+	if (ImGui::IsKeyPressed(ImGuiKey_L))
+		requestLayout = true;
+	//if (ImGui::IsKeyDown(ImGuiKey_L))
+	//{
+	//	//ApplyHierarchicalLayout(pCtrl);
+	//	ApplyCategoryLayout(pCtrl);
+	//	ImNodes::ClearLinkSelection();
+	//	ImNodes::ClearNodeSelection();
+	//	ImNodes::EndNodeEditor();
+	//}
 
 	m_DrawnInPins.clear();
 	m_DrawnOutPins.clear();
@@ -1241,27 +1245,62 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 				}
 
 				// Pin
-				ImGui::Columns(2, nullptr, false);
-				ImGui::SetColumnWidth(0, 60);
-				ImGui::SetColumnWidth(1, 60);
+				//ImGui::Columns(2, nullptr, false);
+				//ImGui::SetColumnWidth(0, 60);
+				//ImGui::SetColumnWidth(1, 60);
 
-				if (!isAny)
+				//if (!isAny)
+				//{
+				//	const _int inPin = state.iNodeId * 10 + 1;
+				//	ImNodes::BeginInputAttribute(inPin);
+				//	ImGui::TextColored(ImVec4(0.3f, 0.8f, 0.3f, 1.f), "In");
+				//	ImNodes::EndInputAttribute();
+				//	m_DrawnInPins.insert(inPin);
+				//}
+
+				//ImGui::NextColumn();
+
+				//const _int outPin = state.iNodeId * 10 + 2;
+				//ImNodes::BeginOutputAttribute(outPin);
+				//ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
+				//ImNodes::EndOutputAttribute();
+				//m_DrawnOutPins.insert(outPin);
+				//ImGui::Columns(1);
+				const ImVec4 kInColor = ImVec4(0.3f, 0.8f, 0.3f, 1.f);
+				const ImVec4 kOutColor = ImVec4(0.8f, 0.4f, 0.2f, 1.f);
+
+				if (ImGui::BeginTable(
+					("pins##" + std::to_string(state.iNodeId)).c_str(), // 노드별 고유 ID
+					2,
+					ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoBordersInBody,
+					ImVec2(140.0f, 0.0f))) // 최소 가로폭 
 				{
-					const _int inPin = state.iNodeId * 10 + 1;
-					ImNodes::BeginInputAttribute(inPin);
-					ImGui::TextColored(ImVec4(0.3f, 0.8f, 0.3f, 1.f), "In");
-					ImNodes::EndInputAttribute();
-					m_DrawnInPins.insert(inPin);
+					ImGui::TableSetupColumn("L", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+					ImGui::TableSetupColumn("R", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+
+					ImGui::TableNextRow();
+
+					// 왼쪽 컬럼: In 핀
+					ImGui::TableSetColumnIndex(0);
+					if (!isAny)
+					{
+						const _int inPin = state.iNodeId * 10 + 1;
+						ImNodes::BeginInputAttribute(inPin);
+						ImGui::TextColored(kInColor, "In");
+						ImNodes::EndInputAttribute();
+						m_DrawnInPins.insert(inPin);
+					}
+
+					// 오른쪽 컬럼: Out 핀
+					ImGui::TableSetColumnIndex(1);
+					const _int outPin = state.iNodeId * 10 + 2;
+					ImNodes::BeginOutputAttribute(outPin);
+					ImGui::TextColored(kOutColor, "Out");
+					ImNodes::EndOutputAttribute();
+					m_DrawnOutPins.insert(outPin);
+
+					ImGui::EndTable();
 				}
-
-				ImGui::NextColumn();
-
-				const _int outPin = state.iNodeId * 10 + 2;
-				ImNodes::BeginOutputAttribute(outPin);
-				ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
-				ImNodes::EndOutputAttribute();
-				m_DrawnOutPins.insert(outPin);
-				ImGui::Columns(1);
 				ImGui::EndGroup();
 
 				ImNodes::EndNode();
@@ -1284,53 +1323,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 	for (auto& t : pCtrl->GetTransitions())
 	{
-		//_bool bDrawLink = false;
-		//_int startPinID = t.iFromNodeId * 10 + 2;  // Output Pin
-		//_int endPinID = t.iToNodeId * 10 + 1;     // Input Pin
-		//string fromName = pCtrl->GetStateNameByNodeId(t.iFromNodeId);
-		//string toName = pCtrl->GetStateNameByNodeId(t.iToNodeId);
-		//string fromCat = GetStateCategory(fromName);
-		//string toCat = GetStateCategory(toName);
-
-		//_bool fromVisible = m_bShowAll || m_CategoryVisibility[fromCat];
-		//_bool toVisible = m_bShowAll || m_CategoryVisibility[toCat];
-
-		//if (!fromVisible || !toVisible)
-		//	continue;
-
-		//if (isAnyLinkSelected)
-		//{
-		//	for (const auto& linkId : selectedLinkIds)
-		//	{
-		//		if (linkId == t.link.iLinkId)
-		//		{
-		//			bDrawLink = true;
-		//			break;
-		//		}
-		//	}
-		//}
-		//else if (isAnyNodeSelected)
-		//{
-		//	_bool isFromSelected = ImNodes::IsNodeSelected(t.iFromNodeId);
-		//	_bool isToSelected = ImNodes::IsNodeSelected(t.iToNodeId);
-
-		//	if (isFromSelected || isToSelected)
-		//	{
-		//		bDrawLink = true;
-		//		// 둘 중 하나라도 선택이 됐으면
-		//		//ImNodes::Link(t.link.iLinkId, startPinID, endPinID);
-		//	}
-		//}
-		//else  // 아무것도 선택이 안됐는데 링크도 선택된게 없으면
-		//{
-		//	bDrawLink = m_bShowAllLink;
-		//}
-		//if (bDrawLink)
-		//{
-		//	ImNodes::Link(t.link.iLinkId, startPinID, endPinID);
-		//}
-
-
+	
 		const _bool fromIsSpecial = (t.iFromNodeId == ANY_NODE_ID || t.iFromNodeId == EXIT_NODE_ID);
 		const _bool toIsSpecial = (t.iToNodeId == ANY_NODE_ID || t.iToNodeId == EXIT_NODE_ID);
 
@@ -1389,6 +1382,14 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 
 	ImNodes::EndNodeEditor();
+
+	if (requestLayout)
+	{
+		ApplyCategoryLayout(pCtrl);
+		ImNodes::ClearLinkSelection();
+		ImNodes::ClearNodeSelection();
+	}
+
 
 	_bool bCanLink = pCtrl->GetStates().size() >= 2;
 	if (bCanLink)
@@ -1527,8 +1528,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 		m_iSelectedNodeID = hoveredNodeID;
 	}
 	ImGui::End();
-
-
 
 
 	vector<CAnimation*>& anims = m_bIsObject ? m_pCurModel->GetAnimations() : m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
@@ -2250,11 +2249,11 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 	const float categorySpacingX = 720.f;   // 카테고리(컬럼) 간 X 간격
 	const float nodeSpacingX = 280.f;   // 같은 카테고리 내 X 간격
 	const float nodeSpacingY = 170.f;   // 같은 카테고리 내 Y 간격
-	const int   MAX_COLS = 3;       // 한 카테고리 최대 열 수(너무 가로로 길어지는 것 방지)
+	const int   MAX_COLS = 4;       // 한 카테고리 최대 열 수(너무 가로로 길어지는 것 방지)
 	const bool  snakeLayout = true;    // 지그재그 배치로 링크 교차 완화
 
 	// ---- 3) 가시 카테고리 목록 추출 ----
-	std::vector<std::pair<std::string, std::vector<_int>>> visibleCats;
+	vector<pair<string, std::vector<_int>>> visibleCats;
 	visibleCats.reserve(categories.size());
 	for (auto& kv : categories) {
 		if (m_bShowAll || m_CategoryVisibility[kv.first])
@@ -2303,7 +2302,7 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 
 	// ---- 6) 카테고리를 컬럼으로 배치(클러스터 + 최대 행수 고정) ----
 	const int   kMaxRowsPerCol = 6;     // ★ 세로 길이(행 수) 제한
-	const float kColGapX = 40.f;  // 같은 버킷(Column) 간 간격
+	const float kColGapX = 100.f;  // 같은 버킷(Column) 간 간격
 
 	for (size_t ci = 0; ci < visibleCats.size(); ++ci)
 	{
@@ -2352,7 +2351,7 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 			curX = colX + nodeSpacingX + kColGapX * 2.f;
 		}
 	}
-	// ---- 7) 허브 노드(Any/Exit) 최종 위치 지정 ----
+
 	// Any는 왼쪽 상단, Exit은 마지막 카테고리 오른쪽 상단으로 고정
 	const float exitX = (float)(visibleCats.size()) * categorySpacingX + 200.f;
 	if (pCtrl->GetStateByNodeIdForEditor(ANY_NODE_ID))

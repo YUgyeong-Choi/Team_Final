@@ -490,6 +490,14 @@ void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
     _vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vCurRotQuat));
     vWorldDelta = XMVectorSetY(vWorldDelta, 0.f);
 
+    if (m_pPlayer&& m_bRootMotionClamped)
+    {
+        _float fDistToPlayer = Get_DistanceToPlayer();
+
+        _float fFactor = clamp(fDistToPlayer / 1.f, 0.f, 1.f);
+        vWorldDelta *= fFactor;
+    }
+
     _float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
 
     if (fDeltaMag < 1e-6f)

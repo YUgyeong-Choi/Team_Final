@@ -32,7 +32,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 	/* [ 데미지 설정 ] */
 	m_fDamage = 15.f;
 	m_fAttckDleay = 1.5f;
-	m_fChasingDistance = 3.5f;
+	m_fChasingDistance = 4.f;
 	m_iPatternLimit = 1;
 	if (pArg == nullptr)
 	{
@@ -769,9 +769,10 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	break;
 	case Client::CFuoco::SlamFury:
 		SetTurnTimeDuringAttack(2.f, 1.5f);
-		m_eAttackType = EAttackType::STAMP;
+
+		m_eAttackType = EAttackType::FURY_STAMP;
 	case Client::CFuoco::FootAtk:
-		//	SetTurnTimeDuringAttack(1.f,1.5f);
+		m_eAttackType = EAttackType::AIRBORNE;
 		break;
 	case Client::CFuoco::SlamAtk:
 		SetTurnTimeDuringAttack(1.f);
@@ -806,6 +807,15 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	default:
 		break;
 	}
+	if (iPattern == Client::CFuoco::SlamFury)
+	{
+		m_bRootMotionClamped = true;
+	}
+	else
+	{
+		m_bRootMotionClamped = false;
+	}
+	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(m_eAttackType);
 }
 
 void CFuoco::Register_Events()

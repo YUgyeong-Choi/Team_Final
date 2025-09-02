@@ -333,7 +333,8 @@ private: /* [ 인터렉션 관련변수 ] */
 		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
 		"OnLamp_Walk", "FailItem_Walk", "Fail_Walk",
 		"Grinder_Start", "Grinder_Loop", "Grinder_Loop_Walk_F", "Grinder_Loop_Walk_R", "Grinder_Loop_Walk_L" , "Grinder_Loop_Walk_B",//"Grinder_End"
-		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR"
+		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR",
+		"Item_Get_Walk"
 	};
 	_int m_iTestInt = { 0 };
 
