@@ -12,6 +12,11 @@ json CStatic_UI::Serialize()
 	j["iTextureIndex"] = m_iTextureIndex;
 	j["iPassIndex"] = m_iPassIndex;
 
+	j["fX"] = m_fX / _float(g_iWinSizeX);
+	j["fY"] = m_fY / _float(g_iWinSizeY);
+	j["SizeX"] = m_fSizeX / _float(g_iWinSizeX);
+	j["SizeY"] = m_fSizeY / _float(g_iWinSizeY);
+
 	return j;
 }
 
@@ -25,6 +30,11 @@ void CStatic_UI::Deserialize(const json& j)
 	m_iTextureLevel = j["iTextureLevel"];
 	m_iTextureIndex = j["iTextureIndex"];
 	m_iPassIndex = j["iPassIndex"];
+
+	m_fX = j["fX"].get<_float>() * _float(g_iWinSizeX);
+	m_fY = j["fY"].get<_float>() * _float(g_iWinSizeY);
+	m_fSizeX = j["SizeX"].get<_float>() * _float(g_iWinSizeX);
+	m_fSizeY = j["SizeY"].get<_float>() * _float(g_iWinSizeY);
 
 	CStatic_UI::Ready_Components_File(m_strTextureTag);
 

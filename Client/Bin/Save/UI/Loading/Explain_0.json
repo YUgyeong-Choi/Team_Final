@@ -29,8 +29,8 @@
                 "SizeY": 1.1111111234640703e-05,
                 "fAlpha": 1.0,
                 "fOffset": 0.0,
-                "fX": 760.0,
-                "fY": 693.0
+                "fX": 0.475,
+                "fY": 0.77
             },
             {
                 "Color": {
@@ -41,13 +41,13 @@
                 },
                 "ProtoTag": "Prototype_GameObject_Static_UI",
                 "RotationZ": 0.0,
-                "SizeX": 1006.4000244140625,
-                "SizeY": 558.8999633789063,
+                "SizeX": 0.63,
+                "SizeY": 0.621,
                 "Texturetag": "Prototype_Component_Texture_Loading_Image",
                 "fAlpha": 1.0,
                 "fOffset": 0.0,
-                "fX": 774.4000244140625,
-                "fY": 376.20001220703125,
+                "fX": 0.484,
+                "fY": 0.418,
                 "iPassIndex": 4,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0

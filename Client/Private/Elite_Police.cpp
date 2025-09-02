@@ -26,12 +26,13 @@ HRESULT CElite_Police::Initialize_Prototype()
 
 HRESULT CElite_Police::Initialize(void* pArg)
 {
+	m_iPatternLimit = 1;
 	m_fMaxRootMotionSpeed = 30.f;
 	m_fRootMotionAddtiveScale = 1.f;
 	m_fAttckDleay = 2.5f;
 	m_fTooCloseDistance = 2.0f;
 	m_fChasingDistance = 3.f;
-	m_fMinimumTurnAngle = 70.f;
+	m_fMinimumTurnAngle = 85.f;
 	m_bIsFirstAttack = false;
 	m_fGroggyScale_Weak = 0.1f;
 	m_fGroggyScale_Strong = 0.15f;
@@ -40,7 +41,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	{
 		UNIT_DESC UnitDesc{};
 		UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-		UnitDesc.fRotationPerSec = XMConvertToRadians(270.f);
+		UnitDesc.fRotationPerSec = XMConvertToRadians(300.f);
 		UnitDesc.fSpeedPerSec = m_fWalkSpeed;
 		lstrcpy(UnitDesc.szName, TEXT("Elite_Police"));
 		UnitDesc.szMeshID = TEXT("Elite_Police");
@@ -57,7 +58,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 		lstrcpy(pDesc->szName, TEXT("Elite_Police"));
 		pDesc->szMeshID = TEXT("Elite_Police");
-		pDesc->fRotationPerSec = XMConvertToRadians(270.f);
+		pDesc->fRotationPerSec = XMConvertToRadians(300.f);
 		pDesc->fSpeedPerSec = m_fWalkSpeed;
 
 		//UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
@@ -87,7 +88,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 
 
-	if(m_pHPBar)
+	if (m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
@@ -96,7 +97,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	auto pShape = m_pPhysXActorCom->Get_Shape();
 	PxGeometryHolder geomHolder = pShape->getGeometry();
 	PxBoxGeometry box = geomHolder.box();
-	box.halfExtents = PxVec3(0.7f, 1.2f, 1.f);
+	box.halfExtents = PxVec3(0.6f, 1.2f, 1.1f);
 	pShape->setGeometry(box);
 
 	PxTransform localPose = pShape->getLocalPose();
@@ -149,22 +150,24 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		default:
 			break;
 		}
+		m_pAnimator->SetInt("AttackType", COMBO5);
+		m_pAnimator->SetTrigger("Attack");
 	}
 #endif // _DEBUG
 
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
-	if (pCurState&&m_fHp<=0.f)
+	if (pCurState && m_fHp <= 0.f)
 	{
 		if (pCurState->stateName.find("Death") != pCurState->stateName.npos)
 		{
 
 			m_fEmissive = 0.f;
-		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
-		{
-			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
-			m_pWeapon->SetbIsActive(false);
-			Safe_Release(m_pHPBar);
-		}
+			if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
+			{
+				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+				m_pWeapon->SetbIsActive(false);
+				Safe_Release(m_pHPBar);
+			}
 		}
 		else if (pCurState->stateName.find("Fatal_Hit_End") != pCurState->stateName.npos)
 		{
@@ -178,9 +181,9 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-	
 
-	if (m_fHp <= 0 &&m_ePrevState != EEliteState::DEAD)
+
+	if (m_fHp <= 0 && m_ePrevState != EEliteState::DEAD)
 	{
 		m_pWeapon->Collider_FilterOff();
 		EnableColliders(false);
@@ -199,7 +202,7 @@ void CElite_Police::Update(_float fTimeDelta)
 {
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
-		if(m_eCurrentState != EEliteState::FATAL)
+		if (m_eCurrentState != EEliteState::FATAL)
 			m_pAnimator->SetTrigger("Die");
 		m_bUseLockon = false;
 	}
@@ -207,6 +210,7 @@ void CElite_Police::Update(_float fTimeDelta)
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
+
 }
 
 void CElite_Police::Late_Update(_float fTimeDelta)
@@ -216,7 +220,7 @@ void CElite_Police::Late_Update(_float fTimeDelta)
 		m_pHPBar->Late_Update(fTimeDelta);
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_RenderCollider()&& m_pPhysXElbow->Get_ReadyForDebugDraw())
+	if (m_pGameInstance->Get_RenderCollider() && m_pPhysXElbow->Get_ReadyForDebugDraw())
 	{
 		m_pGameInstance->Add_DebugComponent(m_pPhysXElbow);
 	}
@@ -250,7 +254,7 @@ HRESULT CElite_Police::Ready_Actor()
 		PxQuat elbowRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 elbowPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 		PxTransform elbowPose(elbowPositionVec, elbowRotationQuat);
-		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(0.7f);
+		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(0.85f);
 		m_pPhysXElbow->Create_Collision(m_pGameInstance->GetPhysics(), elbowGeom, elbowPose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXElbow->Set_ShapeFlag(false, true, true);
 		PxFilterData elbowFilterData{};
@@ -280,12 +284,12 @@ void CElite_Police::Ready_BoneInformation()
 
 HRESULT CElite_Police::Ready_Weapon()
 {
- 	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
+	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
 	Desc.eMeshLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.125f, 0.f, 0.f };
-	Desc.InitScale = {1.f,0.5f,1.f };
+	Desc.InitScale = { 1.1f,0.5f,1.1f };
 	Desc.iRender = 0;
 
 	Desc.szMeshID = TEXT("Elite_Police_Weapon");
@@ -293,7 +297,7 @@ HRESULT CElite_Police::Ready_Weapon()
 	Desc.vAxis = { 1.f,0.f,0.f,0.f };
 	Desc.fRotationDegree = { -90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 1.5f, 0.7f, 0.7f };
+	Desc.vPhsyxExtent = { 1.6f, 0.6f, 0.6f };
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Desc.pOwner = this;
@@ -309,7 +313,7 @@ HRESULT CElite_Police::Ready_Weapon()
 
 	m_pWeapon->SetisAttack(false);
 	m_pWeapon->Set_WeaponTrail_Active(true);
-return S_OK;
+	return S_OK;
 }
 
 
@@ -318,10 +322,18 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 	if (m_bSpawned == false)
 		return;
 
-	if (fDistance < m_fTooCloseDistance) 
+	if (fDistance < m_fTooCloseDistance)
 	{
-		m_fWalkSpeed = 2.5f;
-		m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::BACK));
+		if (m_fChangeMoveDirCooldown <= 0.f)
+		{
+			m_fWalkSpeed = 2.5f;
+			m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::BACK));
+			m_fChangeMoveDirCooldown = 2.f;
+		}
+		else
+		{
+			m_fChangeMoveDirCooldown -= fTimeDelta;
+		}
 	}
 	else if (fDistance <= m_fChasingDistance) // 공격 범위 근처
 	{
@@ -373,16 +385,6 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 	if (fDistance < ATTACK_DISTANCE_CLOSE || fDistance > ATTACK_DISTANCE_MIDDLE)
 		return; // 너무 가깝거나 너무 멀면 공격 안 함
-	//if (m_bIsFirstAttack)
-	//{
-	//	m_pAnimator->SetTrigger("Attack");
-	//	m_pAnimator->SetInt("AttackType", COMBO3);
-	//	m_bIsFirstAttack = false;
-	//	m_pAnimator->SetBool("Move", false);
-	//	m_fAttackCooldown = m_fAttckDleay;
-	//	SetTurnTimeDuringAttack(1.5f, 1.4f);
-	//	return;
-	//}
 
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
 	{
@@ -402,18 +404,6 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 			return; // 공격 쿨타임이 남아있으면 업데이트 중지
 	}
 
-
-	if (IsTargetInFront(180.f) == false)
-	{
-
-		m_pAnimator->SetBool("Move", false);
-		m_pAnimator->SetInt("AttackType", COMBO4);
-		m_pAnimator->SetTrigger("Attack");
-		m_ePrevState = m_eCurrentState;
-		m_eCurrentState = EEliteState::ATTACK;
-		m_fAttackCooldown = m_fAttckDleay;
-		return;
-	}
 
 	EPoliceAttackPattern eAttackType = static_cast<EPoliceAttackPattern>(GetRandomAttackPattern(fDistance));
 
@@ -505,25 +495,24 @@ void CElite_Police::UpdateSpecificBehavior(_float fTimeDelta)
 			}
 		}
 
-		//if (m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK && m_eCurrentState != EEliteState::ATTACK && m_eCurrentState != EEliteState::TURN)
-		//{
-		//	m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
-		//}
-
 		if ((m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK)
 			&& m_eCurrentState != EEliteState::ATTACK
 			&& m_eCurrentState != EEliteState::TURN)  // Turn 상태 제외
 		{
 			m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 		}
-
-		//if (Get_DistanceToPlayer() <= m_fChasingDistance)
-		//{
-		//	m_pAnimator->SetBool("Move", false);
-		//	m_ePrevState = m_eCurrentState;
-		//	m_eCurrentState = EEliteState::IDLE;
-		//}
 	}
+
+	//if (IsTargetInFront(180.f) == false)
+	//{
+
+	//	m_pAnimator->SetBool("Move", false);
+	//	m_pAnimator->SetInt("AttackType", COMBO4);
+	//	m_pAnimator->SetTrigger("Attack");
+	//	m_ePrevState = m_eCurrentState;
+	//	m_eCurrentState = EEliteState::ATTACK;
+	//	m_fAttackCooldown = m_fAttckDleay;
+	//}
 }
 
 void CElite_Police::EnableColliders(_bool bEnable)
@@ -594,7 +583,7 @@ void CElite_Police::Register_Events()
 	m_pAnimator->RegisterEventListener("SetRootLargeStep", [this]()
 		{
 			m_fMaxRootMotionSpeed = 100.f;
-			m_fRootMotionAddtiveScale = 1.5f;
+			m_fRootMotionAddtiveScale = 1.75f;
 		});
 
 	m_pAnimator->RegisterEventListener("Spawned", [this]()
@@ -603,7 +592,7 @@ void CElite_Police::Register_Events()
 		});
 	m_pAnimator->RegisterEventListener("Turnnig", [this]()
 		{
-			SetTurnTimeDuringAttack(2.f, 1.4f);
+			SetTurnTimeDuringAttack(1.7f, 1.4f);
 		});
 
 	m_pAnimator->RegisterEventListener("LargeTurnnig", [this]()
@@ -654,6 +643,33 @@ void CElite_Police::Register_Events()
 			}
 		}
 		});
+
+	m_pAnimator->RegisterEventListener("ChageLook", [this]() {
+
+		if (m_pTransformCom)
+		{
+			m_pTransformCom->RotateToDirectionImmediately(-m_pTransformCom->Get_State(STATE::LOOK));
+			//_vector vNewLook = m_pTransformCom->Get_State(STATE::LOOK) * -1.f;
+			//vNewLook = XMVector3Normalize(vNewLook);
+
+			//_vector vUp = XMVectorSet(0, 1, 0, 0); // World Up
+			//_vector vRight = XMVector3Cross(vUp, vNewLook);
+			//vRight = XMVector3Normalize(vRight);
+
+
+			//vUp = XMVector3Cross(vNewLook, vRight);
+			//vUp = XMVector3Normalize(vUp);
+
+			//// 현재 위치는 유지
+			//_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+			//m_pTransformCom->Set_State(STATE::RIGHT, vRight);
+			//m_pTransformCom->Set_State(STATE::UP, vUp);
+			//m_pTransformCom->Set_State(STATE::LOOK, vNewLook);
+			//m_pTransformCom->Set_State(STATE::POSITION, vPos);
+		}
+		});
+
 
 }
 
@@ -764,14 +780,18 @@ void CElite_Police::SetupAttackByType(_int iPattern)
 	switch (iPattern)
 	{
 	case COMBO1:
-		break;
 	case COMBO2:
-		break;
 	case COMBO3:
-		break;
 	case COMBO4:
+		m_bRootMotionClamped = false;
+		static_cast<CPlayer*>(m_pPlayer)->SetHitMotion(HITMOTION::NORMAL);
+		break;
+	case COMBO5:
+		m_bRootMotionClamped = true;
+		static_cast<CPlayer*>(m_pPlayer)->SetHitMotion(HITMOTION::KNOCKBACK);
 		break;
 	default:
+		m_bRootMotionClamped = false;
 		break;
 	}
 }

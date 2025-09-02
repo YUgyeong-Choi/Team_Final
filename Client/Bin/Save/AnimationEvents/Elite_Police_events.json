@@ -13,7 +13,7 @@
             "Events": [
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 42.0
+                    "Time": 46.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
@@ -61,7 +61,7 @@
                 },
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 39.2400016784668
+                    "Time": 40.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
@@ -105,7 +105,7 @@
                 },
                 {
                     "EventName": "FastAnimSpeed",
-                    "Time": 68.0
+                    "Time": 69.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
@@ -113,7 +113,7 @@
                 },
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 65.0
+                    "Time": 64.0
                 },
                 {
                     "EventName": "Turnnig",
@@ -145,7 +145,7 @@
             "Events": [
                 {
                     "EventName": "SlowAnimSpeed",
-                    "Time": 60.0
+                    "Time": 62.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
@@ -172,7 +172,7 @@
             "ClipName": "AS_ATSC0_Skill_05",
             "Duration": 162.0,
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
@@ -180,12 +180,12 @@
             "Duration": 162.0,
             "Events": [
                 {
-                    "EventName": "LargeTurnnig",
-                    "Time": 112.0
+                    "EventName": "ChageLook",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
@@ -202,7 +202,7 @@
                 },
                 {
                     "EventName": "FastAnimSpeed",
-                    "Time": 71.0
+                    "Time": 65.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
@@ -218,7 +218,7 @@
                 },
                 {
                     "EventName": "ElbowOff",
-                    "Time": 94.0
+                    "Time": 100.0
                 }
             ],
             "IsLoop": false,

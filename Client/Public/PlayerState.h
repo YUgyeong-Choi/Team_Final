@@ -20,6 +20,7 @@
 
 #include "UI_Container.h"
 #include "UI_Manager.h"
+#include "Static_UI.h"
 
 
 NS_BEGIN(Client)
@@ -3261,7 +3262,7 @@ public:
 
             eDesc.strFilePath = TEXT("../Bin/Save/UI/Death.json");
 
-            eDesc.fLifeTime = 6.f;
+            eDesc.fLifeTime = 5.f;
             eDesc.useLifeTime = true;
 
             if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
@@ -3273,15 +3274,39 @@ public:
             m_bDoOnce = true;
         }
 
-        if (m_fStateTime > 6.f && !m_pOwner->m_bIsRrevival)
+        if (m_fStateTime > 5.75f && !m_bDoTwo)
         {
-			/* [ 사망 후 특정 위치에서 다시 살아난다. ] */
-            m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{1.f,0.f,0.f,0.f});
+            /* [ 사망 후 특정 위치에서 다시 살아난다. ] */
+            m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{ 1.f,0.f,0.f,0.f });
             PxVec3 pos = PxVec3(51.3f, 1.f, -5.1f);
             PxTransform posTrans = PxTransform(pos);
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
-            
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
+         
+
+            // 페이드 되도록
+
+            CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+            eDesc.strFilePath = TEXT("../Bin/Save/UI/Revive.json");
+
+            eDesc.fLifeTime = 4.f;
+            eDesc.useLifeTime = true;
+
+            if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+                ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Death"), &eDesc)))
+                return;
+
+            m_bDoTwo = true;
+
+        }
+
+
+        if (m_fStateTime > 9.5f && !m_pOwner->m_bIsRrevival)
+        {
+		
+            
+         
             m_pOwner->Reset();
 
             /* [ 무기 장착 해제 ] */
@@ -3296,6 +3321,9 @@ public:
             m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
 
             CUI_Manager::Get_Instance()->On_Panel();
+
+            
+
         }
 
         if (m_pOwner->m_bIsRrevival)
@@ -3311,6 +3339,7 @@ public:
         m_pOwner->m_bIsRrevival = false;
         m_pOwner->m_bIsInvincible = false;
         m_bDoOnce = false;
+        m_bDoTwo = false;
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

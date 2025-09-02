@@ -182,6 +182,17 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (KEY_DOWN(DIK_R))
+		{
+			m_fTimeScale = 0.5f;
+		}
+		if (KEY_DOWN(DIK_T))
+		{
+			m_fTimeScale = 1.f;
+		}
+	}
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
@@ -235,30 +246,29 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
 	
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 
 	/* [ 이곳은 실험실입니다. ] */
-	if(KEY_DOWN(DIK_Y))
+	if (KEY_PRESSING(DIK_Y))
 	{
-		CEffectContainer::DESC desc = {};
-		_vector vPos = m_pPlayerLamp->Get_TransfomCom()->Get_State(STATE::POSITION);
-		_matrix vWorldMat = XMMatrixTranslation(0.13f, 0.f, 0.05f) * XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Lamp_02"))) * m_pTransformCom->Get_WorldMatrix();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vWorldMat.r[3].m128_f32[0], vWorldMat.r[3].m128_f32[1], vWorldMat.r[3].m128_f32[2]));
-		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Monad_P1"), &desc))
-			return;
+		m_fBurnPhase += (fTimeDelta * 0.1f) * m_fBurnSpeed;
+		m_fBurnPhase = min(m_fBurnPhase, 0.25f);
 	}
 
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
 		Reset();
 
+	if (KEY_DOWN(DIK_Y))
+		m_pAnimator->SetTrigger("GetItem");
+
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
-
+	m_fBurnTime += fTimeDelta;
 }
 
 HRESULT CPlayer::Render()
@@ -274,6 +284,53 @@ HRESULT CPlayer::Render()
 
 	return S_OK;
 }
+
+HRESULT CPlayer::Render_Burn()
+{
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
+		return E_FAIL;
+
+	_float4x4 ViewMatrix, ProjViewMatrix;
+	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pBurn->Bind_ShaderResource(m_pShaderCom, "g_Burn", 0)))
+		return E_FAIL;
+	if (FAILED(m_pBurnMask->Bind_ShaderResource(m_pShaderCom, "g_BurnMask", 0)))
+		return E_FAIL;
+	if (FAILED(m_pBurnMask2->Bind_ShaderResource(m_pShaderCom, "g_BurnMask2", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBurnPhase", &m_fBurnPhase, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBurnTime", &m_fBurnTime, sizeof(_float))))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (i >= 3)
+			break;
+
+		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Begin(8)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 
 void CPlayer::Reset()
 {	
@@ -2138,6 +2195,17 @@ HRESULT CPlayer::Ready_Components()
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Player"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_FireElement"),
+		TEXT("Burn_Com"), reinterpret_cast<CComponent**>(&m_pBurn))))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_FireElementMask"),
+		TEXT("BurnMask_Com"), reinterpret_cast<CComponent**>(&m_pBurnMask))))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_FireElementMask2"),
+		TEXT("BurnMask_Com2"), reinterpret_cast<CComponent**>(&m_pBurnMask2))))
+		return E_FAIL;
+
 	m_pSoundCom->Set_AllVolume(g_fPlayerSoundVolume);
 
 
@@ -2434,7 +2502,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	{
 		// 이동 완료 시 회전
 		_bool vRotate = m_pTransformCom->RotateToDirectionSmoothly(_fvector{ 0.f , 0.f, -1.f, 0.f }, fTimeDelta);
-		if (!vRotate)
+		if (vRotate)
 		{
 			m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 			m_bInteractionRotate[0] = false; // 회전 완료
@@ -2935,6 +3003,9 @@ CGameObject* CPlayer::Clone(void* pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+	Safe_Release(m_pBurn);
+	Safe_Release(m_pBurnMask);
+	Safe_Release(m_pBurnMask2);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);

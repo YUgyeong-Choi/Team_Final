@@ -8,13 +8,13 @@
         },
         "ProtoTag": "Prototype_GameObject_Static_UI",
         "RotationZ": 0.0,
-        "SizeX": 1120.0,
-        "SizeY": 540.0,
+        "SizeX": 0.7,
+        "SizeY": 0.6,
         "Texturetag": "Prototype_Component_Texture_Guide_Background",
         "fAlpha": 1.0,
         "fOffset": 0.029999999329447746,
-        "fX": 800.0,
-        "fY": 450.0,
+        "fX": 0.5,
+        "fY": 0.5,
         "iPassIndex": 2,
         "iTextureIndex": 0,
         "iTextureLevel": 0
@@ -28,13 +28,13 @@
         },
         "ProtoTag": "Prototype_GameObject_Static_UI",
         "RotationZ": 0.0,
-        "SizeX": 80.0,
-        "SizeY": 36.0,
+        "SizeX": 0.05,
+        "SizeY": 0.04,
         "Texturetag": "Prototype_Component_Texture_Icon_Key_Space",
         "fAlpha": 1.0,
         "fOffset": 0.0,
-        "fX": 800.0,
-        "fY": 670.5,
+        "fX": 0.5,
+        "fY": 0.745,
         "iPassIndex": 6,
         "iTextureIndex": 0,
         "iTextureLevel": 0
@@ -48,13 +48,13 @@
         },
         "ProtoTag": "Prototype_GameObject_Static_UI",
         "RotationZ": 38.361000061035156,
-        "SizeX": 104.0,
-        "SizeY": 90.0,
+        "SizeX": 0.065,
+        "SizeY": 0.1,
         "Texturetag": "Prototype_Component_Texture_Sealingwax",
         "fAlpha": 1.0,
         "fOffset": 0,
-        "fX": 1155.199951171875,
-        "fY": 361.8000183105469,
+        "fX": 0.722,
+        "fY": 0.4,
         "iPassIndex": 4,
         "iTextureIndex": 0,
         "iTextureLevel": 0
@@ -68,13 +68,13 @@
         },
         "ProtoTag": "Prototype_GameObject_Static_UI",
         "RotationZ": 357,
-        "SizeX": 440.0,
-        "SizeY": 225.0,
+        "SizeX": 0.275,
+        "SizeY": 0.25,
         "Texturetag": "Prototype_Component_Texture_TeamPicture",
         "fAlpha": 1.0,
         "fOffset": 0.019999999552965164,
-        "fX": 1080.0,
-        "fY": 472.4999694824219,
+        "fX": 0.675,
+        "fY": 0.525,
         "iPassIndex": 4,
         "iTextureIndex": 0,
         "iTextureLevel": 2
@@ -100,8 +100,8 @@
         "SizeY": 0.009999999776482582,
         "fAlpha": 1.0,
         "fOffset": 0.0,
-        "fX": 800.0,
-        "fY": 229.5
+        "fX": 0.5,
+        "fY": 0.255
     },
     {
         "Caption": "임동하 - 메인 셰이더, 플레이어\n\n김경래 - UI\n\n김장원 - 애니메이션\n\n박채영 - 이펙트\n\n최유경 - 프레임워크, 카메라\n\n한영웅 - 맵",
@@ -124,8 +124,8 @@
         "SizeY": 0.009999999776482582,
         "fAlpha": 1.0,
         "fOffset": 0.0,
-        "fX": 427.1999816894531,
-        "fY": 310.5
+        "fX": 0.267,
+        "fY": 0.345
     },
     {
         "Caption": "닫기",
@@ -148,7 +148,7 @@
         "SizeY": 0.009999999776482582,
         "fAlpha": 1.0,
         "fOffset": 0.0,
-        "fX": 864.0000610351563,
-        "fY": 670.5
+        "fX": 0.54,
+        "fY": 0.745
     }
 ]

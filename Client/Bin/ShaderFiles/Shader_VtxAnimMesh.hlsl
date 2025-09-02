@@ -36,6 +36,13 @@ float g_fEmissiveIntensity = 1;
 float g_fFuryIntensity = 1;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
+/* [ BurnTextures ] */
+Texture2D g_Burn;
+Texture2D g_BurnMask;
+Texture2D g_BurnMask2;
+float g_fBurnPhase;
+float g_fBurnTime;
+
 /* [ 피킹변수 ] */
 float g_fID;
 
@@ -533,6 +540,62 @@ float4 PS_INNERLINE(PS_IN In) : SV_Target1
     
 }
 
+struct PS_OUT_BURN
+{
+    float4 vBurn : SV_TARGET0;
+    float4 vBlack : SV_TARGET1;
+};
+PS_OUT_BURN PS_BURN(PS_IN_PBR In)
+{
+    PS_OUT_BURN Out;
+    float4 vBurnTexture = g_Burn.Sample(DefaultSampler, In.vTexcoord);
+    float fTimeSeconds = g_fBurnTime;
+    
+    float fMaskTiling = 2.2f;
+    float fMaskScrollU = 0.07f;
+    float fMaskScrollV = 0.07f;
+    
+    float fWobbleAmp = 0.015f;
+    float fWobbleFreq = 9.0f;
+    float fWobbleSpeed = 1.7f; 
+    
+    float fNoiseTiling = 3.0f;
+    float fNoiseAmp = 0.010f;
+    float fNoiseScroll = 0.4f;
+    
+    float fBurnPhase = g_fBurnPhase;
+    float fEdgeWidth = 0.08f;
+    
+    float2 vMaskUV = In.vTexcoord * fMaskTiling
+               + float2(fMaskScrollU, fMaskScrollV) * fTimeSeconds;
+    
+    float2 vWobble;
+    vWobble.x = sin(vMaskUV.y * fWobbleFreq + fTimeSeconds * fWobbleSpeed);
+    vWobble.y = cos(vMaskUV.x * fWobbleFreq - fTimeSeconds * fWobbleSpeed);
+    vMaskUV += vWobble * fWobbleAmp;
+    
+    if (fNoiseAmp > 0.0f)
+    {
+        float fNoise = g_Burn.Sample(DefaultSampler,
+                                     In.vTexcoord * fNoiseTiling + fTimeSeconds * fNoiseScroll).b;
+        vMaskUV += (fNoise - 0.5f) * fNoiseAmp;
+    }
+    
+    float4 vBurnMask = g_BurnMask.Sample(DefaultSampler, vMaskUV);
+    float fSeed = vBurnMask.r;
+    
+    float fReveal = 1.0f - smoothstep(fBurnPhase - fEdgeWidth, fBurnPhase + fEdgeWidth, fSeed);
+    
+    Out.vBurn.rgb = vBurnTexture.rgb * fReveal;
+    Out.vBurn.a = fReveal;
+    
+    
+    float4 vBlackTexture = g_BurnMask2.Sample(DefaultSampler, In.vTexcoord * 0.5f);
+    Out.vBlack = vBlackTexture;
+    
+    return Out;
+}
+
 
 technique11 DefaultTechnique
 {   
@@ -616,6 +679,17 @@ technique11 DefaultTechnique
 
         VertexShader = compile vs_5_0 VS_INNERLINE();
         PixelShader = compile ps_5_0 PS_INNERLINE(); 
+    }
+
+    pass Burn //8
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_BURN();
     }
    
 }

@@ -23,6 +23,11 @@ json CDynamic_UI::Serialize()
 	j["iPassIndex"] = m_iPassIndex;
 	j["fDuration"] = m_fDuration;
 
+	j["fX"] = m_fX / _float(g_iWinSizeX);
+	j["fY"] = m_fY / _float(g_iWinSizeY);
+	j["SizeX"] = m_fSizeX / _float(g_iWinSizeX);
+	j["SizeY"] = m_fSizeY / _float(g_iWinSizeY);
+
 	for (const auto& pFeature : m_pUIFeatures)
 		if(nullptr != pFeature)
 			j["Features"].push_back(pFeature->Serialize());
@@ -43,6 +48,11 @@ void CDynamic_UI::Deserialize(const json& j)
 	m_iTextureIndex = j["iTextureIndex"];
 	m_iPassIndex = j["iPassIndex"];
 	m_fDuration = j["fDuration"];
+
+	m_fX = j["fX"].get<_float>() * _float(g_iWinSizeX);
+	m_fY = j["fY"].get<_float>() * _float(g_iWinSizeY);
+	m_fSizeX = j["SizeX"].get<_float>() * _float(g_iWinSizeX);
+	m_fSizeY = j["SizeY"].get<_float>() * _float(g_iWinSizeY);
 
 	if (j.contains("Features") && j["Features"].is_array())
 	{
