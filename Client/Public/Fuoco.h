@@ -129,7 +129,7 @@ private:
 	virtual void Update_Collider() override;
     virtual void UpdateAttackPattern(_float fDistance,_float fTimeDelta) override;
     virtual void UpdateStateByNodeID(_uint iNodeID) override;
-    virtual void UpdateSpecificBehavior() override;
+    virtual void UpdateSpecificBehavior(_float fTimeDelta) override;
     virtual void EnableColliders(_bool bEnable) override;
 
 
@@ -192,10 +192,11 @@ private:
 
 
     // 공격 관련
-
-    _int   m_iFireBallComboCount = 0;
-    _int   m_iLastComboType = -1;
-    _float m_fFireFlameDuration = 0.f;
+	_bool   m_bWaitPhase2Rotate = false;
+    _float4 m_vCenterPos{-0.195f, 0.f,-213.f ,1.f};
+    _int    m_iFireBallComboCount = 0;
+    _int    m_iLastComboType = -1;
+    _float  m_fFireFlameDuration = 0.f;
     array<_float3, 4> m_vOilSpawnPos =
     {
         _float3{ 0.f, 0.f, 0.f }, // 중앙
@@ -206,8 +207,7 @@ private:
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
     EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
 
-    _int m_iCurNodeID = -1;
-	_int m_iPrevNodeID = -1;
+
 
 	vector<EBossAttackPattern> m_vecCloseAttackPatterns = {
 	  SlamCombo, Uppercut, SlamAtk, SwingAtk, 
@@ -218,7 +218,6 @@ private:
 	};
 
     vector<EBossAttackPattern> m_vecMiddleAttackPatterns = {
-     SlamCombo,
      StrikeFury, SwingAtk,
      SlamFury, P2_FireOil
     ,SwingAtkSeq, P2_FireBall,
@@ -234,7 +233,7 @@ private:
 
     // 상수
     const _int   LIMIT_FIREBALL_COMBO_COUNT = 4;
-	const _float ATTACK_DISTANCE_CLOSE = 0.f;
+	const _float ATTACK_DISTANCE_CLOSE = 1.f;
     const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
     const _float DAMAGE_LIGHT = 5.f;   

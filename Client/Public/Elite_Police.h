@@ -78,7 +78,7 @@ private:
 	virtual void HandleMovementDecision(_float fDistance, _float fTimeDelta) override;
     virtual void UpdateAttackPattern(_float fDistance, _float fTimeDelta) override;
     virtual void UpdateStateByNodeID(_uint iNodeID) override;
-    virtual void UpdateSpecificBehavior() override;
+    virtual void UpdateSpecificBehavior(_float fTimeDelta) override;
     virtual void EnableColliders(_bool bEnable) override;
 
     virtual void Ready_EffectNames() override;

@@ -255,9 +255,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
 		Reset();
-	
-	if (KEY_DOWN(DIK_Y))
-		m_pAnimator->SetTrigger("Fatal");
+
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
 

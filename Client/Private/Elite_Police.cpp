@@ -31,7 +31,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	m_fAttckDleay = 2.5f;
 	m_fTooCloseDistance = 2.0f;
 	m_fChasingDistance = 3.f;
-	m_fMinimumTurnAngle = 90.f;
+	m_fMinimumTurnAngle = 70.f;
 	m_bIsFirstAttack = false;
 	m_fGroggyScale_Weak = 0.1f;
 	m_fGroggyScale_Strong = 0.15f;
@@ -431,7 +431,8 @@ void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 {
 	m_ePrevState = m_eCurrentState;
-	static _int iLastNodeID = -1;
+
+	m_iPrevNodeID = m_iCurNodeID;
 	switch (iNodeID)
 	{
 	case ENUM_CLASS(EliteMonsterStateID::Idle):
@@ -484,10 +485,10 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 	default:
 		break;
 	}
-	iLastNodeID = iNodeID;
+	m_iCurNodeID = iNodeID;
 }
 
-void CElite_Police::UpdateSpecificBehavior()
+void CElite_Police::UpdateSpecificBehavior(_float fTimeDelta)
 {
 	if (m_pPlayer)
 	{
