@@ -81,19 +81,9 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
 	//}
 
-	//if (m_pGameInstance->Key_Down(DIK_X))
-	//{
-	//	m_fMouseSensor -= 0.1f;
-	//	if (m_fMouseSensor <  0.f)
-	//		m_fMouseSensor = 0.1f;
-	//	printf("mouseSenor %f\n", m_fMouseSensor);
-	//}
-	//	
-	//if (m_pGameInstance->Key_Down(DIK_C))
-	//{
-	//	m_fMouseSensor += 0.1f;
-	//	printf("mouseSenor %f\n", m_fMouseSensor);
-	//}
+	//if (KEY_DOWN(DIK_CAPSLOCK))
+	//	PrintMatrix("OribitalCameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+
 
 	if (!m_pPlayer)
 		return;

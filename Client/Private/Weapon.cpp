@@ -59,8 +59,8 @@ HRESULT CWeapon::Initialize(void* pArg)
 
 void CWeapon::Priority_Update(_float fTimeDelta)
 {
-	if (KEY_DOWN(DIK_CAPSLOCK))
-		PrintMatrix("World", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+	//if (KEY_DOWN(DIK_CAPSLOCK))
+	//	PrintMatrix("World", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 }
 
 void CWeapon::Update(_float fTimeDelta)
