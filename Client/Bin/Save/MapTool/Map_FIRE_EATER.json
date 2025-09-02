@@ -8318,13 +8318,13 @@
             ]
         },
         {
-            "Collision": true,
+            "Collision": false,
             "ModelName": "SM_FireEaterFloor_01_JJS",
             "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
-                    "ColliderType": 1,
+                    "ColliderType": 0,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [

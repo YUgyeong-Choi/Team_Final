@@ -382,94 +382,95 @@ HRESULT CStaticMesh::Bind_ShaderResources()
 
 HRESULT CStaticMesh::Ready_Collider()
 {
-	if (m_pModelCom)
+	if (!m_pModelCom)
 	{
-		_uint numVertices = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_Mesh_NumVertices(0);
-		_uint numIndices = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_Mesh_NumIndices(0);
+		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
+		return E_FAIL;
+	}
 
-		vector<PxVec3> physxVertices;
-		physxVertices.reserve(numVertices);
+	_uint numMeshes = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_NumMeshes();
 
-		const _float3* pVertexPositions = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_Mesh_pVertices(0);
+	vector<PxVec3> physxVertices;
+	vector<PxU32> physxIndices;
+
+	_uint vertexBase = 0;
+
+	for (_uint meshIndex = 0; meshIndex < numMeshes; ++meshIndex)
+	{
+		_uint numVertices = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_Mesh_NumVertices(meshIndex);
+		_uint numIndices = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_Mesh_NumIndices(meshIndex);
+
+		// --- 버텍스 ---
+		const _float3* pVertexPositions = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_Mesh_pVertices(meshIndex);
 		for (_uint i = 0; i < numVertices; ++i)
 		{
 			const _float3& v = pVertexPositions[i];
 			physxVertices.emplace_back(v.x, v.y, v.z);
 		}
 
-		// 3. Transform에서 S, R, T 분리
-		XMVECTOR S, R, T;
-		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
-
-		// 3-1. 스케일, 회전, 위치 변환
-		PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
-		PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-		PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-
-		PxTransform pose(positionVec, rotationQuat);
-		PxMeshScale meshScale(scaleVec);
-
-		PxFilterData filterData{};
-		filterData.word0 = WORLDFILTER::FILTER_MAP;
-		filterData.word1 = 0;
-
-		if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)
+		// --- 인덱스 ---
+		const _uint* pIndices = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_Mesh_pIndices(meshIndex);
+		for (_uint i = 0; i < numIndices; ++i)
 		{
-#pragma region 컨벡스 메쉬
-			PxConvexMeshGeometry  ConvexGeom = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
-			m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), ConvexGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
-			//m_pPhysXActorCom->Set_Kinematic(true);
-			m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
-
-			m_pPhysXActorCom->Set_SimulationFilterData(filterData);
-			m_pPhysXActorCom->Set_QueryFilterData(filterData);
-			m_pPhysXActorCom->Set_Owner(this);
-			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX); // 이걸로 색깔을 바꿀 수 있다.
-
-			//충돌체가 있는 것만
-			/*if (m_eColliderType == COLLIDER_TYPE::CONVEX)
-			{
-				m_pGameInstance->Get_Scene()->lockWrite();
-				m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
-				m_pGameInstance->Get_Scene()->unlockWrite();
-			}*/
-			
-#pragma endregion
+			physxIndices.push_back(static_cast<PxU32>(pIndices[i] + vertexBase));
 		}
-		else if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
-		{
-#pragma region 트라이앵글 메쉬
-			// 인덱스 복사
-			const _uint* pIndices = m_pModelCom[ENUM_CLASS(m_eLOD)]->Get_Mesh_pIndices(0);
-			vector<PxU32> physxIndices;
-			physxIndices.reserve(numIndices);
 
-			for (_uint i = 0; i < numIndices; ++i)
-				physxIndices.push_back(static_cast<PxU32>(pIndices[i]));
-
-			PxTriangleMeshGeometry  TriangleGeom = m_pGameInstance->CookTriangleMesh(physxVertices.data(), numVertices, physxIndices.data(), numIndices / 3, meshScale);
-			m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), TriangleGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
-			m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
-
-			m_pPhysXActorCom->Set_SimulationFilterData(filterData);
-			m_pPhysXActorCom->Set_QueryFilterData(filterData);
-			m_pPhysXActorCom->Set_Owner(this);
-			m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_TRI);
-
-			/*m_pGameInstance->Get_Scene()->lockWrite();
-			m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
-			m_pGameInstance->Get_Scene()->unlockWrite();*/
-#pragma endregion
-		}
+		vertexBase += numVertices;
 	}
-	else
+
+	// ──────────────────────────────
+	// Transform → Scale/Rotation/Position
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_MAP;
+
+	// ──────────────────────────────
+	if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)
 	{
-		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
-	}
+		// Convex는 버텍스 제한 있음 (255개)
+		PxConvexMeshGeometry ConvexGeom =
+			m_pGameInstance->CookConvexMesh(
+				physxVertices.data(),
+				static_cast<PxU32>(physxVertices.size()),
+				meshScale);
 
+		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), ConvexGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorCom->Set_QueryFilterData(filterData);
+		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX);
+	}
+	else if (m_eColliderType == COLLIDER_TYPE::TRIANGLE)
+	{
+		PxTriangleMeshGeometry TriangleGeom =
+			m_pGameInstance->CookTriangleMesh(
+				physxVertices.data(),
+				static_cast<PxU32>(physxVertices.size()),
+				physxIndices.data(),
+				static_cast<PxU32>(physxIndices.size() / 3),
+				meshScale);
+
+		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), TriangleGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+		m_pPhysXActorCom->Set_QueryFilterData(filterData);
+		m_pPhysXActorCom->Set_Owner(this);
+		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_TRI);
+	}
 
 	return S_OK;
 }
+
 
 CStaticMesh* CStaticMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

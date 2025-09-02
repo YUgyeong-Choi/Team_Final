@@ -176,6 +176,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Cathedral_BrickWall_07",
+        "NoInstancing": false,
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_07.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Station_Clock_01",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -215,5 +222,33 @@
         "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Vehicle_Carriage_13.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "T_Tile_BrickFloor_01",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_BrickFloor_01.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "T_Tile_Soil_Circle_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_Soil_Circle_04.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "T_Tile_StoneFloor_08",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_StoneFloor_08.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "T_Tile_StoneFloor_Circle_08",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_StoneFloor_Circle_08.bin"
     }
 ]

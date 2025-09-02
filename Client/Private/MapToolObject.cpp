@@ -349,78 +349,93 @@ HRESULT CMapToolObject::Bind_ShaderResources()
 
 HRESULT CMapToolObject::Ready_Collider()
 {
-	//굳이 LOD0으로 콜라이더를 만들어야할까?(일단 지금은 0으로 LOD의 사이즈가 안맞음)
-
-	if (m_pModelCom[ENUM_CLASS(LOD::LOD0)])
+	if (!m_pModelCom[ENUM_CLASS(LOD::LOD0)])
 	{
-		_uint numVertices = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_Mesh_NumVertices(0);
-		_uint numIndices = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_Mesh_NumIndices(0);
+		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
+		return E_FAIL;
+	}
 
-		vector<PxVec3> physxVertices;
-		physxVertices.reserve(numVertices);
+	vector<PxVec3> physxVertices;
+	vector<PxU32> physxIndices;
 
-		const _float3* pVertexPositions = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_Mesh_pVertices(0);
+	_uint vertexBase = 0;
+	_uint numMeshes = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_NumMeshes();
+
+	for (_uint meshIndex = 0; meshIndex < numMeshes; ++meshIndex)
+	{
+		_uint numVertices = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_Mesh_NumVertices(meshIndex);
+		_uint numIndices = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_Mesh_NumIndices(meshIndex);
+
+		// --- 버텍스 ---
+		const _float3* pVertexPositions = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_Mesh_pVertices(meshIndex);
 		for (_uint i = 0; i < numVertices; ++i)
 		{
 			const _float3& v = pVertexPositions[i];
 			physxVertices.emplace_back(v.x, v.y, v.z);
 		}
 
-		// 3. Transform에서 S, R, T 분리
-		XMVECTOR S, R, T;
-		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
-
-		// 3-1. 스케일, 회전, 위치 변환
-		PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
-		PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-		PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-
-		PxTransform pose(positionVec, rotationQuat);
-		PxMeshScale meshScale(scaleVec);
-
-		PxFilterData filterData{};
-		filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
-
-#pragma region 컨벡스 메쉬
-		PxConvexMeshGeometry  ConvexGeom = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
-		m_pPhysXActorConvexCom->Create_Collision(m_pGameInstance->GetPhysics(), ConvexGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorConvexCom->Set_Kinematic(true);
-		m_pPhysXActorConvexCom->Set_ShapeFlag(false, false, false);
-
-		m_pPhysXActorConvexCom->Set_SimulationFilterData(filterData);
-		m_pPhysXActorConvexCom->Set_QueryFilterData(filterData);
-		m_pPhysXActorConvexCom->Set_Owner(this);
-		m_pPhysXActorConvexCom->Set_ColliderType(COLLIDERTYPE::B); // 이걸로 색깔을 바꿀 수 있다.
-		//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
-#pragma endregion
-
-#pragma region 트라이앵글 메쉬
-		// 인덱스 복사
-		const _uint* pIndices = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_Mesh_pIndices(0);
-		vector<PxU32> physxIndices;
-		physxIndices.reserve(numIndices);
-
+		// --- 인덱스 ---
+		const _uint* pIndices = m_pModelCom[ENUM_CLASS(LOD::LOD0)]->Get_Mesh_pIndices(meshIndex);
 		for (_uint i = 0; i < numIndices; ++i)
-			physxIndices.push_back(static_cast<PxU32>(pIndices[i]));
+		{
+			physxIndices.push_back(static_cast<PxU32>(pIndices[i] + vertexBase));
+		}
 
-		PxTriangleMeshGeometry  TriangleGeom = m_pGameInstance->CookTriangleMesh(physxVertices.data(), numVertices, physxIndices.data(), numIndices / 3, meshScale);
-		m_pPhysXActorTriangleCom->Create_Collision(m_pGameInstance->GetPhysics(), TriangleGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorTriangleCom->Set_ShapeFlag(false, false, false);
-
-		m_pPhysXActorTriangleCom->Set_SimulationFilterData(filterData);
-		m_pPhysXActorTriangleCom->Set_QueryFilterData(filterData);
-		m_pPhysXActorTriangleCom->Set_Owner(this);
-		m_pPhysXActorTriangleCom->Set_ColliderType(COLLIDERTYPE::A);
-		//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorTriangleCom->Get_Actor());
-#pragma endregion
-	}
-	else
-	{
-		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
+		vertexBase += numVertices;
 	}
 
-	//AABB박스 출력하지마
+	// Transform 분리
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	PxVec3 scaleVec(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+
+	// ─────────────── Convex Mesh ───────────────
+	PxConvexMeshGeometry ConvexGeom =
+		m_pGameInstance->CookConvexMesh(physxVertices.data(),
+			static_cast<PxU32>(physxVertices.size()),
+			meshScale);
+
+	m_pPhysXActorConvexCom->Create_Collision(
+		m_pGameInstance->GetPhysics(), ConvexGeom, pose,
+		m_pGameInstance->GetMaterial(L"Default"));
+
+	m_pPhysXActorConvexCom->Set_Kinematic(true);
+	m_pPhysXActorConvexCom->Set_ShapeFlag(false, false, false);
+	m_pPhysXActorConvexCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorConvexCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorConvexCom->Set_Owner(this);
+	m_pPhysXActorConvexCom->Set_ColliderType(COLLIDERTYPE::B);
+
+	// ─────────────── Triangle Mesh ───────────────
+	PxTriangleMeshGeometry TriangleGeom =
+		m_pGameInstance->CookTriangleMesh(
+			physxVertices.data(),
+			static_cast<PxU32>(physxVertices.size()),
+			physxIndices.data(),
+			static_cast<PxU32>(physxIndices.size() / 3),
+			meshScale);
+
+	m_pPhysXActorTriangleCom->Create_Collision(
+		m_pGameInstance->GetPhysics(), TriangleGeom, pose,
+		m_pGameInstance->GetMaterial(L"Default"));
+
+	m_pPhysXActorTriangleCom->Set_ShapeFlag(false, false, false);
+	m_pPhysXActorTriangleCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorTriangleCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorTriangleCom->Set_Owner(this);
+	m_pPhysXActorTriangleCom->Set_ColliderType(COLLIDERTYPE::A);
+
+	// AABB 디버그 박스 출력하지 않음
 	m_pPhysXActorConvexCom->Set_DrawAABB(false);
 	m_pPhysXActorTriangleCom->Set_DrawAABB(false);
 
