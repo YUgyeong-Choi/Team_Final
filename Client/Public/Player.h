@@ -231,8 +231,8 @@ public:
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
 public:
-	void SetElement(EELEMENTCONDITION eElement) { m_eElement = eElement; }
-	EELEMENTCONDITION GetElement() const { return m_eElement; }
+	void SetElement(const EELEMENTCONDITION& eElement) { m_eElement = eElement; }
+	const EELEMENTCONDITION& GetElement() const { return m_eElement; }
 
 private: /* [ 부여 속성 ] */
 	EELEMENTCONDITION m_eElement = {};
