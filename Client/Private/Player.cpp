@@ -2491,7 +2491,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	{
 		// 이동 완료 시 회전
 		_bool vRotate = m_pTransformCom->RotateToDirectionSmoothly(_fvector{ 0.f , 0.f, -1.f, 0.f }, fTimeDelta);
-		if (!vRotate)
+		if (vRotate)
 		{
 			m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 			m_bInteractionRotate[0] = false; // 회전 완료

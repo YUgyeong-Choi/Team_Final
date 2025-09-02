@@ -8,6 +8,18 @@
 #include "Client_Calculation.h"
 #include "Unit.h"
 
+inline float WrapPi(float a) {
+	a = fmodf(a + XM_PI, XM_2PI);
+	if (a <= 0) a += XM_2PI;
+	return a - XM_PI; 
+}
+inline float ShortestDelta(float from, float to) {
+	return WrapPi(to - from);
+}
+inline float MoveTargetNear(float current, float target) {
+	return current + ShortestDelta(current, target);
+}
+
 CCamera_Orbital::CCamera_Orbital(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
 {
@@ -102,7 +114,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		else
 			Update_CameraLook(fTimeDelta);
 	}
-	
+
 	__super::Update(fTimeDelta);
 }
 
@@ -188,7 +200,8 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 	const _float bz = XMVectorGetZ(vDir);
 
 	// Pitch Yaw 역계산
-	m_fTargetYaw = atan2f(bx, bz);
+	_float rawTargetYaw = atan2f(bx, bz);
+	m_fTargetYaw = MoveTargetNear(m_fYaw, rawTargetYaw);
 	//m_fTargetPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
 	m_fTargetPitch = m_fPitch;
 
@@ -261,6 +274,8 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 	m_fYaw = LerpFloat(m_fYaw, fAfterYaw, m_fMouseSensor);
 	m_fPitch = LerpFloat(m_fPitch, fAfterPitch, m_fMouseSensor);
 
+	m_fYaw = WrapPi(m_fYaw);
+
 	// 카메라 설정
 	Update_CameraPos(fTimeDelta);
 
@@ -291,7 +306,8 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
 {
 	// Yaw 와 Pitch 설정
-	m_fYaw = LerpFloat(m_fYaw, m_fTargetYaw, fTimeDelta * m_fTargetLerpSpeed);
+	float dyaw = ShortestDelta(m_fYaw, m_fTargetYaw);
+	m_fYaw = WrapPi(m_fYaw + dyaw * (fTimeDelta * m_fTargetLerpSpeed));
 	m_fPitch = LerpFloat(m_fPitch, m_fTargetPitch, fTimeDelta * m_fTargetLerpSpeed);
 
 	// 카메라 설정

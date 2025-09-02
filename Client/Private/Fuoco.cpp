@@ -74,25 +74,6 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 void CFuoco::Priority_Update(_float fTimeDelta)
 {
-	//if (m_pPhysXActorCom && m_pPhysXActorCom->Get_Actor())
-	//{
-	//	PxRigidActor* pActor = m_pPhysXActorCom->Get_Actor();
-
-	//	PxU32 shapeCount = pActor->getNbShapes();
-	//	std::vector<PxShape*> shapes(shapeCount);
-	//	pActor->getShapes(shapes.data(), shapeCount);
-
-	//	for (PxU32 i = 0; i < shapeCount; ++i)
-	//	{
-	//		PxFilterData simFilterData = shapes[i]->getSimulationFilterData();
-	//		PxFilterData queryFilterData = shapes[i]->getQueryFilterData();
-
-	//		printf("Shape[%d] Simulation FilterData: word0=%u, word1=%u\n",
-	//			i, simFilterData.word0, simFilterData.word1);
-	//	}
-	//}
-
-
 	__super::Priority_Update(fTimeDelta);
 
 	if (m_bDead)
@@ -256,6 +237,7 @@ void CFuoco::Update(_float fTimeDelta)
 			m_eCurrentState = EEliteState::DEAD;
 			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Dead_", 3);
 			m_pAnimator->SetTrigger("SpecialDie");
+			CLockOn_Manager::Get_Instance()->Set_Off(this);
 		}
 		Safe_Release(m_pHPBar);
 	}

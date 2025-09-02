@@ -43,7 +43,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         else
         {
             XMVECTOR backDir = XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -1;
-            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir,15.f);
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir,15.f, false);
         }
         m_bStartLockOn = false;
     }
@@ -113,7 +113,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
         direction.normalize(); // 방향 벡터 정규화
         origin -= direction * 0.5f;
 
-        _float fRayLength = 15.f;
+        _float fRayLength = 25.f;
 
         PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
         PxRaycastBuffer hit;
@@ -172,7 +172,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
             _data.vStartPos = origin;
             _data.vDirection = direction;
-            _data.fRayLength = 15.f;
+            _data.fRayLength = 25.f;
             _data.bIsHit = bHit;
             _data.vHitPos = hitPos;
             pPlayer->Get_Controller()->Add_RenderRay(_data);
@@ -203,7 +203,7 @@ void CLockOn_Manager::RemoveSomeTargets()
         // 거리 기준 제거 (3D 거리)
         _vector delta = targetPos - playerPos;
         float distSq = XMVectorGetX(XMVector3Length(delta));
-        if (distSq > 15.f)
+        if (distSq > 25.f)
             bRemove = true;
 
 
@@ -213,7 +213,7 @@ void CLockOn_Manager::RemoveSomeTargets()
             PxVec3 origin = VectorToPxVec3(playerPos);
             PxVec3 direction = VectorToPxVec3(targetPos - playerPos);
             direction.normalize();
-            _float fRayLength = 15.f;
+            _float fRayLength = 25.f;
 
             PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
             PxRaycastBuffer hit;
