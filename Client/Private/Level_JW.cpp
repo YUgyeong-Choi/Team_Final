@@ -74,7 +74,9 @@ HRESULT CLevel_JW::Render()
 
 	ImGuiIO& io = ImGui::GetIO();
 
-
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	io.DisplaySize = viewport->Size;
+	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 	//RECT rect;
 	//GetClientRect(g_hWnd, &rect);
 	//int width = rect.right - rect.left;
