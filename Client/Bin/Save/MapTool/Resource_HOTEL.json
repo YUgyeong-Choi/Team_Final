@@ -1190,13 +1190,6 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Radiator_02.bin"
     },
     {
-        "Collision": true,
-        "ModelName": "SM_Station_STGate_01",
-        "NoInstancing": false,
-        "ObjectCount": 2,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_STGate_01.bin"
-    },
-    {
         "Collision": false,
         "ModelName": "SM_Station_Schedule_01",
         "NoInstancing": false,

@@ -29,7 +29,7 @@ public:
 		);
 		_uint		iID = { 0 };
 		_bool		bUseTiling = { false };
-		_float2		vTileDensity = { 1.f, 1.f };
+		_float2		vTileDensity = { 0.3f, 0.3f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
 		_int		iLightShape = { 0 }; //라이트 모양
 		_bool		bNoInstancing = { false }; //인스턴싱 제외 여부
