@@ -32,7 +32,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	m_fAttckDleay = 2.5f;
 	m_fTooCloseDistance = 2.0f;
 	m_fChasingDistance = 3.f;
-	m_fMinimumTurnAngle = 40.f;
+	m_fMinimumTurnAngle = 85.f;
 	m_bIsFirstAttack = false;
 	m_fGroggyScale_Weak = 0.1f;
 	m_fGroggyScale_Strong = 0.15f;
