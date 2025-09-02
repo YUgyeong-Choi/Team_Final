@@ -24,8 +24,8 @@ protected:
 protected:
 	_bool    m_bIsPhase2{ false };
 	_bool    m_bStartPhase2 = false;
-	_float   m_fPhase2HPThreshold = 0.5f; // 50% 이하로 떨어지면 페이즈2 시작
-
+	_float   m_fPhase2HPThreshold = 0.6f; // 60% 이하로 떨어지면 페이즈2 시작
+	_float   m_fFirstChaseBeforeAttack = 2.f;
 	_bool    m_bCutSceneOn = false;
 public:
 	static CBossUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

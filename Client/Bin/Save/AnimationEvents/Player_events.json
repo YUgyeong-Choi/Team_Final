@@ -291,20 +291,6 @@
             "TickPerSecond": 55.0
         },
         {
-            "ClipName": "AS_Pino_Prop_Door_Unlock",
-            "Duration": 150.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 55.0
-        },
-        {
-            "ClipName": "AS_Pino_Prop_DoubleDoor_Boss",
-            "Duration": 578.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 55.0
-        },
-        {
             "ClipName": "AS_Pino_Prop_DoubleDoor_Push_TrainStation",
             "Duration": 680.0,
             "IsLoop": false,
@@ -560,10 +546,38 @@
             "TickPerSecond": 55.0
         },
         {
+            "ClipName": "AS_Pino_Prop_Door_Check",
+            "Duration": 120.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Prop_Door_Unlock",
+            "Duration": 150.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Prop_DoubleDoor_Boss",
+            "Duration": 578.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
             "ClipName": "AS_Pino_Prop_Fog",
             "Duration": 370.0,
             "IsLoop": false,
             "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Prop_ItemGet",
+            "Duration": 85.0,
+            "IsLoop": false,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {

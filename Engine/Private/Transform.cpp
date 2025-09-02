@@ -711,7 +711,7 @@ bool CTransform::RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fT
 
 	// 거의 정면이면 회전하지 않음
 	if (fAngle < 0.01f)
-		return false;
+		return true;
 
 	// 회전 축 계산
 	_vector vAxis = XMVector3Normalize(XMVector3Cross(vCurrentLook, vTargetLook));
@@ -739,7 +739,7 @@ bool CTransform::RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fT
 	Set_State(STATE::UP, XMVector3Normalize(vUp) * XMVectorGetY(vScale));
 	Set_State(STATE::LOOK, XMVector3Normalize(vLook) * XMVectorGetZ(vScale));
 
-	return true;
+	return (fAngle - fStep) <= 0.001f;
 }
 
 void CTransform::Quaternion_Turn(const _vector& vAngle)
@@ -791,18 +791,17 @@ bool CTransform::ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fM
 	vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vPosition));
 
 	_vector		vMoveDir = vTargetPos - vPosition;
-
+	_float fDist = XMVectorGetX(XMVector3Length(vMoveDir));
 	//최소거리보다 길때는 포지션 갱신
-	if (fMinDistance <= XMVectorGetX(XMVector3Length(vMoveDir)))
+	if (fDist >= fMinDistance)
 	{
 		Go_Dir(vMoveDir, fTimeDelta, pController, pNavigation);
-		return false;
+		return true;  
 	}
 	else
 	{
-		return true;
+		return false;
 	}
-	return false;
 }
 
 bool CTransform::ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _float fMinDistance, _float fSpeed, CPhysXController* pController)

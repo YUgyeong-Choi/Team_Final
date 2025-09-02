@@ -14,7 +14,7 @@ Texture2D g_BC;
 Texture2D g_MASK; //노말 온리의 마스크 텍스쳐
 
 float g_Far = 1000.f;
-float2 g_ScreenSize = float2(1600.f, 900.f);
+float2 g_ScreenSize; //= float2(1600.f, 900.f);
 
 
 

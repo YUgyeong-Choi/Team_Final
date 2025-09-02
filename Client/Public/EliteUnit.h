@@ -105,7 +105,7 @@ protected:
 	void ApplyRootMotionDelta(_float fTimeDelta);
 	virtual void UpdateNormalMove(_float fTimeDelta);
 
-	virtual void UpdateSpecificBehavior() {};
+	virtual void UpdateSpecificBehavior(_float fTimeDelta) {};
 
 	_float CalculateCurrentHpRatio() const
 	{
@@ -145,7 +145,7 @@ protected:
 	 _float  m_fGroggyScale_Charge = 0.15f; // 차지공격에 대한 게이지 증가율
 	_float   m_fGroggyGauge  = 0.f;       // 누적 값
 	_float   m_fGroggyThreshold = 1.f;   // 발동 기준
-	_float   m_fGroggyTimer = 7.f;       // 화이트 게이지 유지 시간
+	_float   m_fGroggyTimer = 6.f;       // 화이트 게이지 유지 시간
 	_float	 m_fGroggyEndTimer = 0.f;   // 화이트 게이지 유지 시간 카운트
 	_vector  m_PrevWorldDelta = XMVectorZero();
 	_vector  m_PrevWorldRotation = XMVectorZero();
@@ -159,9 +159,15 @@ protected:
 	_float   m_fRootMotionAddtiveScale =1.2f; // 루트 모션 추가 배율
 	_float   m_fChasingDistance = 1.5f; // 플레이어 추적 거리
 
+	_bool    m_bRootMotionClamped = false;
 	_float   m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
 	_float   m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
 	_float   m_fTurnTimeDuringAttack = 0.f;
+
+
+
+	_int m_iCurNodeID = -1;
+	_int m_iPrevNodeID = -1;
 
 #ifdef _DEBUG
 	_bool m_bDebugMode = false;

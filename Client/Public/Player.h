@@ -71,6 +71,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Burn() override;
 
 	virtual void Reset() override;
 
@@ -229,6 +230,13 @@ public:
 
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
+public:
+	void SetElement(EELEMENTCONDITION eElement) { m_eElement = eElement; }
+	EELEMENTCONDITION GetElement() const { return m_eElement; }
+
+private: /* [ 부여 속성 ] */
+	EELEMENTCONDITION m_eElement = {};
+
 private: /* [ 특수 모션 ] */
 	HITMOTION m_eHitMotion = { HITMOTION::END };
 	eHitedTarget m_eHitedTarget = { eHitedTarget::END };
@@ -242,13 +250,22 @@ private: /* [ 상태 변수 ] */
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
+private: /* [ 불타버려~ ] */
+	CTexture* m_pBurn = { nullptr };
+	CTexture* m_pBurnMask = { nullptr };
+	CTexture* m_pBurnMask2 = { nullptr };
+	_float m_fBurnTime = {};
+	_float m_fBurnPhase = {};
+	_float m_fBurnSpeed = 1.f;
+
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	class CLockOn_Manager* m_pLockOn_Manager = { nullptr };
 
-	/* [ 피직스 관련 ] */
+		/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
+
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};
@@ -316,7 +333,8 @@ private: /* [ 인터렉션 관련변수 ] */
 		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
 		"OnLamp_Walk", "FailItem_Walk", "Fail_Walk",
 		"Grinder_Start", "Grinder_Loop", "Grinder_Loop_Walk_F", "Grinder_Loop_Walk_R", "Grinder_Loop_Walk_L" , "Grinder_Loop_Walk_B",//"Grinder_End"
-		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR"
+		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR",
+		"Item_Get_Walk"
 	};
 	_int m_iTestInt = { 0 };
 

@@ -225,7 +225,7 @@ HRESULT CFlameField::Effect_FlameField(const _fvector& vSpawnPos)
 	XMStoreFloat3(&pos, vSpawnPos);
 
 	// 위치만 반영된 월드 매트릭스 생성
-	_matrix matWorld = XMMatrixTranslation(pos.x, pos.y, pos.z);
+	_matrix matWorld = XMMatrixTranslation(pos.x, pos.y + 0.5f, pos.z);
 	_int iLevelID = m_pGameInstance->GetCurrentLevelIndex();
 	XMStoreFloat4x4(&desc.PresetMatrix, matWorld);
 	if (nullptr == MAKE_EFFECT(ENUM_CLASS(iLevelID), TEXT("EC_Fuoco_FlameField_Imsi_P2"), &desc))

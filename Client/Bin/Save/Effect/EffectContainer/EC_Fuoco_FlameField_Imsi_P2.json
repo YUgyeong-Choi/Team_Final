@@ -63,7 +63,7 @@
             ],
             "LifeTime": 1100.95849609375,
             "LifeTime_Particle": [
-                0.6000000238418579,
+                0.5000000238418579,
                 2.5
             ],
             "Local": true,
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_Flamefield_imsiParticle1",
-            "NumInstance": 20,
+            "NumInstance": 5,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -107,8 +107,8 @@
             ],
             "ShaderPass": 2,
             "Size": [
-                1.0,
-                2.0
+                1.5,
+                3.0
             ],
             "Speed": [
                 0.0,
@@ -129,7 +129,7 @@
                 false
             ],
             "Threshold": 0.0,
-            "TickPerSecond": 60.0,
+            "TickPerSecond": 40.0,
             "TileTickPerSec": 60.0,
             "TileX": 8,
             "TileY": 8,
@@ -198,7 +198,7 @@
             ],
             "LifeTime": 107.59972381591797,
             "LifeTime_Particle": [
-                0.6000000238418579,
+                0.5000000238418579,
                 2.5
             ],
             "Local": true,
@@ -207,7 +207,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_Flamefield_imsiParticle2",
-            "NumInstance": 10,
+            "NumInstance": 3,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -242,8 +242,8 @@
             ],
             "ShaderPass": 2,
             "Size": [
-                0.5,
-                0.699999988079071
+                0.75,
+                1.5
             ],
             "Speed": [
                 0.0,
@@ -264,7 +264,7 @@
                 false
             ],
             "Threshold": 0.0,
-            "TickPerSecond": 60.0,
+            "TickPerSecond": 40.0,
             "TileTickPerSec": 60.0,
             "TileX": 8,
             "TileY": 8,

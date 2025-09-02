@@ -216,12 +216,6 @@ void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eC
 	{
 		return;
 	}
-
-	m_pOwner->SetbIsBackAttack(false);
-	m_pOwner->SetbIsGroggyAttack(false);
-	m_pOwner->SetIsFatalBoss(false);
-	m_pOwner->SetFatalTargetNull();
-	
 }
 
 void CPlayerFrontCollider::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)

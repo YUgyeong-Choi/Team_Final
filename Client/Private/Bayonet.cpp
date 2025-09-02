@@ -109,39 +109,39 @@ void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	//if (KEY_PRESSING(DIK_G))
-	//{
-	//	CEffectContainer::DESC desc = {};
+	if (KEY_PRESSING(DIK_G))
+	{
+		CEffectContainer::DESC desc = {};
 
-	//	auto worldmat = XMLoadFloat4x4(m_pWeaponEndMatrix) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
-	//	_vector rot, trans, scale;
-	//	XMMatrixDecompose(&scale, &rot, &trans, worldmat);
+		auto worldmat = XMLoadFloat4x4(m_pWeaponEndMatrix) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
+		_vector rot, trans, scale;
+		XMMatrixDecompose(&scale, &rot, &trans, worldmat);
 
-	//	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) *
-	//		XMMatrixTranslation(trans.m128_f32[0],
-	//			trans.m128_f32[1],
-	//			trans.m128_f32[2]));
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) *
+			XMMatrixTranslation(trans.m128_f32[0],
+				trans.m128_f32[1],
+				trans.m128_f32[2]));
 
-	//	if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_WeaponParticle_P1", &desc))
-	//		MSG_BOX("이펙트 생성 실패함");
-	//}
-	//if (KEY_DOWN(DIK_G))
-	//{
-	//	CEffectContainer::DESC desc = {};
-	//	
-	//	auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
+		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_WeaponParticle_P1", &desc))
+			MSG_BOX("이펙트 생성 실패함");
+	}
+	if (KEY_DOWN(DIK_G))
+	{
+		CEffectContainer::DESC desc = {};
+		
+		auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
 
-	//	XMStoreFloat4x4(&desc.PresetMatrix,
-	//		XMMatrixTranslation(worldmat.r[3].m128_f32[0],
-	//			worldmat.r[3].m128_f32[1],
-	//			worldmat.r[3].m128_f32[2]));
+		XMStoreFloat4x4(&desc.PresetMatrix,
+			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
+				worldmat.r[3].m128_f32[1],
+				worldmat.r[3].m128_f32[2]));
 
-	//	if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
-	//		MSG_BOX("이펙트 생성 실패함");
-	//	static _bool bTEactive = true;
-	//	bTEactive = !bTEactive;
-	//	Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
-	//}
+		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
+			MSG_BOX("이펙트 생성 실패함");
+		static _bool bTEactive = true;
+		bTEactive = !bTEactive;
+		Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
+	}
 }
 
 void CBayonet::Late_Update(_float fTimeDelta)
@@ -249,7 +249,7 @@ void CBayonet::SetisAttack(_bool isAttack)
 	if (isAttack)
 	{
 		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
-		m_pGameInstance->Get_Scene()->resetFiltering(*m_pPhysXActorCom->Get_Actor());
+
 	}
 	else
 	{

@@ -182,6 +182,17 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (KEY_DOWN(DIK_R))
+		{
+			m_fTimeScale = 0.5f;
+		}
+		if (KEY_DOWN(DIK_T))
+		{
+			m_fTimeScale = 1.f;
+		}
+	}
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
@@ -235,30 +246,29 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
 	
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
 
 	/* [ 이곳은 실험실입니다. ] */
-	if(KEY_DOWN(DIK_Y))
+	if (KEY_PRESSING(DIK_Y))
 	{
-		CEffectContainer::DESC desc = {};
-		_vector vPos = m_pPlayerLamp->Get_TransfomCom()->Get_State(STATE::POSITION);
-		_matrix vWorldMat = XMMatrixTranslation(0.13f, 0.f, 0.05f) * XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("BN_Lamp_02"))) * m_pTransformCom->Get_WorldMatrix();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vWorldMat.r[3].m128_f32[0], vWorldMat.r[3].m128_f32[1], vWorldMat.r[3].m128_f32[2]));
-		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Monad_P1"), &desc))
-			return;
+		m_fBurnPhase += (fTimeDelta * 0.1f) * m_fBurnSpeed;
+		m_fBurnPhase = min(m_fBurnPhase, 0.25f);
 	}
 
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
 		Reset();
 
+	if (KEY_DOWN(DIK_Y))
+		m_pAnimator->SetTrigger("GetItem");
+
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
-
+	m_fBurnTime += fTimeDelta;
 }
 
 HRESULT CPlayer::Render()
@@ -274,6 +284,53 @@ HRESULT CPlayer::Render()
 
 	return S_OK;
 }
+
+HRESULT CPlayer::Render_Burn()
+{
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
+		return E_FAIL;
+
+	_float4x4 ViewMatrix, ProjViewMatrix;
+	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pBurn->Bind_ShaderResource(m_pShaderCom, "g_Burn", 0)))
+		return E_FAIL;
+	if (FAILED(m_pBurnMask->Bind_ShaderResource(m_pShaderCom, "g_BurnMask", 0)))
+		return E_FAIL;
+	if (FAILED(m_pBurnMask2->Bind_ShaderResource(m_pShaderCom, "g_BurnMask2", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBurnPhase", &m_fBurnPhase, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBurnTime", &m_fBurnTime, sizeof(_float))))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (i >= 3)
+			break;
+
+		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Begin(8)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
 
 void CPlayer::Reset()
 {	
@@ -1138,7 +1195,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 
-			m_pSoundCom->Play("SE_PC_SK_Hit_FatalAttack_Oil_0");
+	 		m_pSoundCom->Play("SE_PC_SK_Hit_FatalAttack_Oil_0");
 
 		}
 		if (m_fSetTime > 1.f && !m_bSetCamera[1])
@@ -1703,42 +1760,68 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		return;
 
 
-	/* [ 무엇을 해야하는가? ] */
+	/* [ 일반 몬스터 피격 ] */
 	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
 	{
+		//히트한 몬스터타입
 		m_eHitedTarget = eHitedTarget::MONSTER;
+
+
+		//피격한 객체를 찾는다.
+		CUnit* pUnit = nullptr;
 		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
-		if (pWeapon == nullptr)
+		if (pWeapon)
+		{
+			//이미 피격한 오브젝트라면 리턴
+			if (pWeapon->Find_CollisonObj(this, eColliderType))
+				return;
+
+			pWeapon->Add_CollisonObj(this);
+			CUnit* pUnit = pWeapon->Get_Owner();
+		}
+		else
+		{
+			pUnit = dynamic_cast<CUnit*>(pOther);
+			if (pUnit == nullptr)
+				return;
+		}
+
+		//일반 몬스터나 엘리트 몬스터가 아니라면 리턴
+		if (pUnit->Get_UnitType() != EUnitType::ELITE_MONSTER &&
+			pUnit->Get_UnitType() != EUnitType::NORMAL_MONSTER &&
+			pUnit == nullptr)
+			return;
+
+		//Hp 가 0 이하면 리턴
+		if (pUnit->GetHP() <= 0.f)
 			return;
 
 
-		if (pWeapon->Find_CollisonObj(this, eColliderType))
-			return;
-
-		pWeapon->Add_CollisonObj(this);
-
-		//0. 필요한 정보를 수집한다.
+		// 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
-		CUnit* pUnit = pWeapon->Get_Owner();
-		m_pHitedTarget = pUnit;
+
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
-
-
+		m_pHitedTarget = pUnit;
 		m_vHitNormal = vOtherPos - vPlayerPos;
-		
 
-		//1. 애니메이션 상태를 히트로 바꾼다.
-
-		//가드 중에 피격시 스위치를 켠다.
+		//가드 중이라면?
 		if (m_bIsGuarding)
 		{
+			//퓨리어택이라면? 가드불가
+			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE &&
+				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
+			{
+				m_bIsHit = true;
+				return;
+			}
+
 			m_bGardHit = true;
 
+			//몬스터 가드리액션
 			EHitDir eDir = ComputeHitDir();
-
-			if(eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
+			if (eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
 				pUnit->Block_Reaction();
 
 			return;
@@ -1746,48 +1829,59 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 		//가드 중이 아니라면 피격상태로 넘긴다.
 		m_bIsHit = true;
+
 	}
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
+		//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
+		COil* pOil = dynamic_cast<COil*>(pOther);
+		if (pOil)
+		{
+			return;
+		}
+		//플레임 필드에 맞았을 경우
+		CFlameField* pFlame = dynamic_cast<CFlameField*>(pOther);
+		if (pFlame)
+		{
+			return;
+		}
+
+
+		//보스몬스터라면?
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
 		if (pBoss)
 		{
+			//필요한 정보를 수집한다.
 			m_eHitedTarget = eHitedTarget::BOSS;
 			m_pHitedTarget = pBoss;
 
-			//0. 필요한 정보를 수집한다.
-			CalculateDamage(pOther, eColliderType);
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
-
 			m_vHitNormal = vOtherPos - vPlayerPos;
 		}
 		else
 		{
+			//보스 몬스터가 아니라면 원거리 공격으로 간주한다.
 			m_eHitedTarget = eHitedTarget::RANGED;
 
 			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
 			m_pHitedTarget = pRANGED;
 
-			CalculateDamage(pOther, eColliderType);
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
-
 			m_vHitNormal = vOtherPos - vPlayerPos;
 		}
 
-		COil* pOil = dynamic_cast<COil*>(pOther);
-		if (pOil)
+		if (m_bIsGuarding)
 		{
-			//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
-			return;
-		}
+			//퓨리어택이라면? 가드불가
+			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE ||
+				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
+			{
+				m_bIsHit = true;
+				return;
+			}
 
-		//가드 중에 피격시 스위치를 켠다.
-		if (m_bIsGuarding &&
-			m_eHitedAttackType != CBossUnit::EAttackType::FURY_AIRBORNE &&
-			m_eHitedAttackType != CBossUnit::EAttackType::FURY_STAMP)
-		{
 			m_bGardHit = true;
 			return;
 		}
@@ -1818,57 +1912,68 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		return;
 
 
-	/* [ 무엇을 해야하는가? ] */
+	/* [ 일반 몬스터 피격 ] */
 	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
 	{
+		//히트한 몬스터타입
 		m_eHitedTarget = eHitedTarget::MONSTER;
+
+
+		//피격한 객체를 찾는다.
+		CUnit* pUnit = nullptr;
 		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
-		if (pWeapon == nullptr)
-			return;
+		if (pWeapon)
+		{
+			//이미 피격한 오브젝트라면 리턴
+			if (pWeapon->Find_CollisonObj(this, eColliderType))
+				return;
 
-		if (pWeapon->Find_CollisonObj(this, eColliderType))
-			return;
+			pWeapon->Add_CollisonObj(this);
+			pUnit = pWeapon->Get_Owner();
+		}
+		else
+		{
+			pUnit = dynamic_cast<CUnit*>(pOther);
+			if (pUnit == nullptr)
+				return;
+		}
 
-		pWeapon->Add_CollisonObj(this);
-
-		CUnit* pUnit = pWeapon->Get_Owner();
-		m_pHitedTarget = pUnit;
-
-		if (nullptr == pUnit)
-			return;
-
-		//CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pUnit);
-
+		//히트한 몬스터를 찾는다.
+		//일반 몬스터나 엘리트 몬스터가 아니라면 리턴
 		if (pUnit->Get_UnitType() != EUnitType::ELITE_MONSTER &&
-			pUnit->Get_UnitType() != EUnitType::NORMAL_MONSTER)
+			pUnit->Get_UnitType() != EUnitType::NORMAL_MONSTER &&
+			pUnit == nullptr)
 			return;
 
-		// TODO 엘리트 몬스터도 할 수 있게
-		if(pUnit->Get_UnitType() == EUnitType::ELITE_MONSTER)
-			cout << "엘리트 몬스터 피격" << endl;
-
-		if ( pUnit->GetHP() <= 0)
+		//Hp 가 0 이하면 리턴
+		if ( pUnit->GetHP() <= 0.f)
 			return;
 
-		//0. 필요한 정보를 수집한다.
+
+		// 필요한 정보를 수집한다.
 		CalculateDamage(pOther, eColliderType);
 		
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
+		m_pHitedTarget = pUnit;
 		m_vHitNormal = vOtherPos - vPlayerPos;
 
-		//1. 애니메이션 상태를 히트로 바꾼다.
-
-		//가드 중에 피격시 스위치를 켠다.
-		if (m_bIsGuarding &&
-			m_eHitedAttackType != CBossUnit::EAttackType::FURY_AIRBORNE &&
-			m_eHitedAttackType != CBossUnit::EAttackType::FURY_STAMP)
+		//가드 중이라면?
+		if (m_bIsGuarding)
 		{
+			//퓨리어택이라면? 가드불가
+			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE &&
+				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
+			{
+				m_bIsHit = true;
+				return;
+			}
+
 			m_bGardHit = true;
 
+			//몬스터 가드리액션
 			EHitDir eDir = ComputeHitDir();
-
 			if (eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
 				pUnit->Block_Reaction();
 
@@ -1881,55 +1986,55 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	}
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
-		m_eHitedTarget = eHitedTarget::BOSS;
+		//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
+		COil* pOil = dynamic_cast<COil*>(pOther);
+		if (pOil)
+		{
+			return;
+		}
+		//플레임 필드에 맞았을 경우
+		CFlameField* pFlame = dynamic_cast<CFlameField*>(pOther);
+		if (pFlame)
+		{
+			return;
+		}
+
+
+		//보스몬스터라면?
 		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
 		if (pBoss)
 		{
+			//필요한 정보를 수집한다.
 			m_eHitedTarget = eHitedTarget::BOSS;
 			m_pHitedTarget = pBoss;
 
-			//0. 필요한 정보를 수집한다.
-			CalculateDamage(pOther, eColliderType);
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
-
 			m_vHitNormal = vOtherPos - vPlayerPos;
 		}
 		else
 		{
+			//보스 몬스터가 아니라면 원거리 공격으로 간주한다.
 			m_eHitedTarget = eHitedTarget::RANGED;
 
 			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
 			m_pHitedTarget = pRANGED;
 
-			CalculateDamage(pOther, eColliderType);
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
-
 			m_vHitNormal = vOtherPos - vPlayerPos;
 		}
 
-		COil* pOil = dynamic_cast<COil*>(pOther);
-		if (pOil)
+		if (m_bIsGuarding)
 		{
-			//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
-			return;
-		}
+			//퓨리어택이라면? 가드불가
+			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE ||
+				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
+			{
+				m_bIsHit = true;
+				return;
+			}
 
-		CFlameField* pFlame = dynamic_cast<CFlameField*>(pOther);
-		if (pFlame)
-		{
-			//TODO 플레임 필드가 나중에 넘겨주는 과열로 데미지처리
-#ifdef _DEBUG
-			cout << "플레임필드" << endl;
-#endif // _DEBUG
-			return;
-		}
-
-		if (m_bIsGuarding &&
-			m_eHitedAttackType != CBossUnit::EAttackType::FURY_AIRBORNE &&
-			m_eHitedAttackType != CBossUnit::EAttackType::FURY_STAMP)
-		{
 			m_bGardHit = true;
 			return;
 		}
@@ -2090,6 +2195,17 @@ HRESULT CPlayer::Ready_Components()
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Player"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_FireElement"),
+		TEXT("Burn_Com"), reinterpret_cast<CComponent**>(&m_pBurn))))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_FireElementMask"),
+		TEXT("BurnMask_Com"), reinterpret_cast<CComponent**>(&m_pBurnMask))))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_FireElementMask2"),
+		TEXT("BurnMask_Com2"), reinterpret_cast<CComponent**>(&m_pBurnMask2))))
+		return E_FAIL;
+
 	m_pSoundCom->Set_AllVolume(g_fPlayerSoundVolume);
 
 
@@ -2176,7 +2292,7 @@ HRESULT CPlayer::Ready_Arm()
 	
 	eDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	eDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
-	
+	eDesc.pOwner = this;
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LegionArm_Steel"),
@@ -2386,7 +2502,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	{
 		// 이동 완료 시 회전
 		_bool vRotate = m_pTransformCom->RotateToDirectionSmoothly(_fvector{ 0.f , 0.f, -1.f, 0.f }, fTimeDelta);
-		if (!vRotate)
+		if (vRotate)
 		{
 			m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 			m_bInteractionRotate[0] = false; // 회전 완료
@@ -2837,6 +2953,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
 
 	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
+	PxExtendedVec3 exPos = m_pControllerCom->Get_Controller()->getPosition();
 	
 	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 	PxControllerFilters filters;
@@ -2845,10 +2962,17 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	collisionFlags = m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 
 	//printf(" 왜 안움직이지?? : %s \n", strName.c_str());
+	PxExtendedVec3 nowPos = m_pControllerCom->Get_Controller()->getPosition();
 
 	// 4. 지면에 닿았으면 중력 속도 초기화
 	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
 		m_vGravityVelocity.y = 0.f;
+
+	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_UP)
+	{
+		m_pControllerCom->Get_Controller()->setPosition(PxExtendedVec3(nowPos.x, exPos.y, nowPos.z));
+		printf("Call Collider Up\n");
+	}
 
 	SyncTransformWithController();
 }
@@ -2879,6 +3003,9 @@ CGameObject* CPlayer::Clone(void* pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+	Safe_Release(m_pBurn);
+	Safe_Release(m_pBurnMask);
+	Safe_Release(m_pBurnMask2);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pAnimator);
 	Safe_Release(m_pShaderCom);

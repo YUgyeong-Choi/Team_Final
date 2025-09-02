@@ -31,7 +31,9 @@ HRESULT CFuoco::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
 	m_fDamage = 15.f;
-	m_fAttckDleay = 1.2f;
+	m_fAttckDleay = 1.5f;
+	m_fChasingDistance = 4.f;
+	m_iPatternLimit = 1;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -41,7 +43,6 @@ HRESULT CFuoco::Initialize(void* pArg)
 		lstrcpy(UnitDesc.szName, TEXT("FireEater"));
 		UnitDesc.szMeshID = TEXT("FireEater");
 		UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
-		//UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
 		UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
 
 		if (FAILED(__super::Initialize(&UnitDesc)))
@@ -73,34 +74,15 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 void CFuoco::Priority_Update(_float fTimeDelta)
 {
-	//if (m_pPhysXActorCom && m_pPhysXActorCom->Get_Actor())
-	//{
-	//	PxRigidActor* pActor = m_pPhysXActorCom->Get_Actor();
-
-	//	PxU32 shapeCount = pActor->getNbShapes();
-	//	std::vector<PxShape*> shapes(shapeCount);
-	//	pActor->getShapes(shapes.data(), shapeCount);
-
-	//	for (PxU32 i = 0; i < shapeCount; ++i)
-	//	{
-	//		PxFilterData simFilterData = shapes[i]->getSimulationFilterData();
-	//		PxFilterData queryFilterData = shapes[i]->getQueryFilterData();
-
-	//		printf("Shape[%d] Simulation FilterData: word0=%u, word1=%u\n",
-	//			i, simFilterData.word0, simFilterData.word1);
-	//	}
-	//}
-
-
 	__super::Priority_Update(fTimeDelta);
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
 
 #ifdef _DEBUG
-	if (KEY_DOWN(DIK_U))
+	if (KEY_DOWN(DIK_Y))
 	{
-		m_fHp -= 100.f;
+		m_fHp -= 100;
 	}
 	if (KEY_DOWN(DIK_X))
 	{
@@ -255,6 +237,7 @@ void CFuoco::Update(_float fTimeDelta)
 			m_eCurrentState = EEliteState::DEAD;
 			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Dead_", 3);
 			m_pAnimator->SetTrigger("SpecialDie");
+			CLockOn_Manager::Get_Instance()->Set_Off(this);
 		}
 		Safe_Release(m_pHPBar);
 	}
@@ -435,7 +418,13 @@ void CFuoco::Update_Collider()
 
 void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
-
+	if (m_fFirstChaseBeforeAttack >= 0.f)
+	{
+		m_fFirstChaseBeforeAttack -= fTimeDelta;
+	//	m_pAnimator->SetBool("Move", true);
+	//	m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
+		return;
+	}
 	// 퓨리 돌진 9번
 	if (m_bIsFirstAttack)
 	{
@@ -454,6 +443,8 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		m_fAttackCooldown = 10.f;
 		return;
 	}
+
+
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
 	{
 		return;
@@ -644,7 +635,7 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 
 }
 
-void CFuoco::UpdateSpecificBehavior()
+void CFuoco::UpdateSpecificBehavior(_float fTimeDelta)
 {
 	if (m_eCurrentState == EEliteState::DEAD)
 		return;
@@ -660,11 +651,31 @@ void CFuoco::UpdateSpecificBehavior()
 	{
 		m_pAnimator->SetBool("Move", false);
 	}
-	//if (m_ePrevState != EEliteState::FATAL &&m_eCurrentState == EEliteState::FATAL)
-	//{
-	//	m_fRootMotionAddtiveScale = 15.f;
-	//	m_fMaxRootMotionSpeed = 25.f;
-	//}
+
+	if ((m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK)
+		&& m_eCurrentState != EEliteState::ATTACK
+		&& m_eCurrentState != EEliteState::TURN)  // Turn 상태 제외
+	{
+		m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
+	}
+
+	if (m_bIsPhase2&& m_eCurrentState != EEliteState::PARALYZATION&& m_bWaitPhase2Rotate)
+	{
+		_vector vDir = XMLoadFloat4(&m_vCenterPos) - m_pTransformCom->Get_State(STATE::POSITION);
+		vDir = XMVectorSetY(vDir, 0.f);
+		vDir = XMVector3Normalize(vDir);
+		m_pTransformCom->RotateToDirectionImmediately(vDir);
+
+		m_pAnimator->SetInt("SkillType", StrikeFury);
+		m_fAttackCooldown = m_fAttckDleay;
+		m_ePrevState = m_eCurrentState;
+		m_eCurrentState = EEliteState::ATTACK;
+		m_eAttackType = EAttackType::FURY_AIRBORNE;
+		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetTrigger("Phase2Start");
+		m_pAnimator->SetBool("Move", false);
+		m_bWaitPhase2Rotate = false;
+	}
 
 	//if (m_pAnimator->CheckTrigger("Attack") == false)
 	//{
@@ -740,9 +751,10 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	break;
 	case Client::CFuoco::SlamFury:
 		SetTurnTimeDuringAttack(2.f, 1.5f);
-		m_eAttackType = EAttackType::STAMP;
+
+		m_eAttackType = EAttackType::FURY_STAMP;
 	case Client::CFuoco::FootAtk:
-		//	SetTurnTimeDuringAttack(1.f,1.5f);
+		m_eAttackType = EAttackType::AIRBORNE;
 		break;
 	case Client::CFuoco::SlamAtk:
 		SetTurnTimeDuringAttack(1.f);
@@ -777,6 +789,15 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	default:
 		break;
 	}
+	if (iPattern == Client::CFuoco::SlamFury)
+	{
+		m_bRootMotionClamped = true;
+	}
+	else
+	{
+		m_bRootMotionClamped = false;
+	}
+	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(m_eAttackType);
 }
 
 void CFuoco::Register_Events()
@@ -1085,7 +1106,7 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
-			m_fRootMotionAddtiveScale = 15.f;
+			m_fRootMotionAddtiveScale = 7.f;
 			m_fMaxRootMotionSpeed = 40.f;
 		});
 
@@ -1156,7 +1177,7 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 
 		m_PatternCountMap[pattern] = 0;
 	}
-	SwitchEmissive(false, 1.f); 
+	SwitchFury(false, 1.f); 
 }
 
 _int CFuoco::GetRandomAttackPattern(_float fDistance)
@@ -1855,9 +1876,13 @@ _bool CFuoco::CheckConditionFlameField()
 		}
 		else
 		{
-			m_pAnimator->SetInt("SkillType", StrikeFury);
-			m_pAnimator->SetTrigger("Attack");
-			m_pAnimator->SetTrigger("Phase2Start");
+			m_bWaitPhase2Rotate = true;
+			//m_pAnimator->SetInt("SkillType", StrikeFury);
+			//m_fAttackCooldown = m_fAttckDleay;
+			//m_eAttackType = EAttackType::FURY_AIRBORNE;
+
+			//m_pAnimator->SetTrigger("Attack");
+			//m_pAnimator->SetTrigger("Phase2Start");
 			m_bStartPhase2 = false;
 			m_bIsPhase2 = true;
 			m_pSoundCom->Play("Dialog_CH03_PhaseChange_01_text_3");
@@ -1872,28 +1897,12 @@ _bool CFuoco::CheckConditionFlameField()
 
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-
 	if (pOther)
 	{
 		if (eColliderType == COLLIDERTYPE::PLAYER)
 		{
 			m_bPlayerCollided = true;
-			//	if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
-			//	{
-			//		if (m_pAnimator->GetInt("SkillType") == FootAtk)
-			//		{
-			//			m_pAnimator->SetBool("IsHit", true);
-			//			SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
-
-			//			//auto pAnimator = pPlayer->Get_Animator();
-			//			pPlayer->SetHitMotion(HITMOTION::UP);
-			//			//pAnimator->SetBool("IsUp", true);
-			//			//pAnimator->SetTrigger("Hited");
-			//		}
-			//	}
-			//}
 		}
-
 	}
 }
 
@@ -1965,10 +1974,12 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_FRONT):
 			pPlayer->SetHitMotion(HITMOTION::STAMP);
 			pPlayer->SetfReceiveDamage(DAMAGE_HEAVY);
+			pPlayer->SetHitedAttackType(EAttackType::STAMP);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
 			pPlayer->SetHitMotion(HITMOTION::STAMP);
 			pPlayer->SetfReceiveDamage(DAMAGE_FURY);
+			pPlayer->SetHitedAttackType(EAttackType::FURY_STAMP);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SWING_R):
 		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
@@ -1985,28 +1996,30 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_RIGHT_END):
 			pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
 			pPlayer->SetfReceiveDamage(DAMAGE_MEDIUM);
+			pPlayer->SetHitedAttackType(EAttackType::KNOCKBACK);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_UPPERCUT_START):
 			pPlayer->SetHitMotion(HITMOTION::NORMAL);
+			pPlayer->SetHitedAttackType(EAttackType::NORMAL);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_FOOT):
 			pPlayer->SetfReceiveDamage(DAMAGE_LIGHT);
-			m_pAnimator->SetBool("IsHit", true);
-			SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
 			pPlayer->SetHitMotion(HITMOTION::UP);
+			pPlayer->SetHitedAttackType(EAttackType::AIRBORNE);
 			if (m_pAnimator->GetInt("SkillType") == FootAtk)
 			{
+				SetTurnTimeDuringAttack(2.5f, 1.3f); // 퓨리 어택 
 				m_pAnimator->SetBool("IsHit", true);
 			}
+			break;
 		case ENUM_CLASS(BossStateID::ATK_STRIKE_FURY):
 			pPlayer->SetfReceiveDamage(DAMAGE_FURY);
 			pPlayer->SetHitMotion(HITMOTION::UP);
+			pPlayer->SetHitedAttackType(EAttackType::FURY_AIRBORNE);
 			break;
 		default:
 			break;
 		}
-
-		pPlayer->SetHitedAttackType(m_eAttackType);
 	}
 
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)

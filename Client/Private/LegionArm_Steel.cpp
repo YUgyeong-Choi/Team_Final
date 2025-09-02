@@ -1,13 +1,17 @@
 #include "LegionArm_Steel.h"
 #include "GameInstance.h"
 
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
+#include "Player.h"
+
 CLegionArm_Steel::CLegionArm_Steel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLegionArm_Base{pDevice, pContext}
 {
 }
 
 CLegionArm_Steel::CLegionArm_Steel(const CLegionArm_Steel& Prototype)
-	:CLegionArm_Base{Prototype}
+	:CLegionArm_Base(Prototype)
 {
 }
 
@@ -104,6 +108,54 @@ void CLegionArm_Steel::SetisAttack(_bool isAttack)
 	{
 		m_pActorCom->Init_SimulationFilterData();
 	}
+}
+
+void CLegionArm_Steel::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (eColliderType == COLLIDERTYPE::MONSTER)
+	{
+		// m_pOwner 설정 후 주석 풀 것 
+		_vector vPlayerPos = XMVectorSetY(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
+		_vector vOtherPos = XMVectorSetY(pOther->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
+		_vector vDir = XMVector3Normalize(vPlayerPos - vOtherPos);
+
+		CUnit* pUnit = static_cast<CUnit*>(pOther);
+
+		auto& vLockonPos = pUnit->Get_LockonPos();
+		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
+
+		_vector vLook = XMVector3Normalize(vDir);           // Look
+		_vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f); // 고정 Up
+		_vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vLook));
+		_vector vUp = XMVector3Cross(vLook, vRight);
+
+		_matrix mAlign = XMMATRIX(vRight, vUp, vLook, XMVectorSet(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z, 1.f));
+
+		CEffectContainer::DESC desc = {};
+
+		CGameObject* pEffect = { nullptr };
+		CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
+
+		// 막타일 때 
+		if (pUnit->GetHP() <= 0.f)
+		{
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
+				return;
+		}
+		else
+		{
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_LeftArm_Spark_1_P2S1"), &desc) == nullptr)
+				return;
+		}
+
+		if (pEffect == nullptr)
+			return;
+	}
+
+	return ;
+
 }
 
 HRESULT CLegionArm_Steel::Ready_Actor()

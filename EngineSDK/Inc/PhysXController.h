@@ -20,7 +20,11 @@ public:
         if (m_pController)
             m_pController->setPosition(PxExtendedVec3(pose.p.x, pose.p.y, pose.p.z));
     }
-
+    void Set_Transform(const PxVec3& pose)
+    {
+        if (m_pController)
+            m_pController->setPosition(PxExtendedVec3(pose.x, pose.y, pose.z));
+    }
     void Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool bQuery);
     void Set_SimulationFilterData(PxFilterData _data);
     virtual void Init_SimulationFilterData() override;

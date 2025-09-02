@@ -195,6 +195,12 @@ PxControllerCollisionFlags CPhysXController::Move(_float fDeltaTime, const PxVec
 		m_pController->setPosition(PxExtendedVec3(vPos.x, exPos.y, vPos.z));
     }
 
+    if (result & PxControllerCollisionFlag::eCOLLISION_UP)
+    {
+        m_pController->setPosition(PxExtendedVec3(nowPos.x, exPos.y, nowPos.z));
+        printf("Call Collider Up\n");
+    }
+
     return result;
 }
 

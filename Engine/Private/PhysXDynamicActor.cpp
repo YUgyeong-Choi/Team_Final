@@ -92,6 +92,10 @@ void CPhysXDynamicActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool 
 void CPhysXDynamicActor::Set_SimulationFilterData(PxFilterData _data)
 {
 	m_pShape->setSimulationFilterData(_data);
+	if (Get_Actor() && Get_Actor()->getScene())
+	{
+		m_pGameInstance->Get_Scene()->resetFiltering(*Get_Actor());
+	}
 	m_filterData = _data;
 #ifdef _DEBUG
 	m_bReadyForDebugDraw = true;
