@@ -451,15 +451,36 @@
         "Collision": true,
         "ModelName": "SM_Cathedral_BrickWall_07",
         "NoInstancing": false,
-        "ObjectCount": 27,
+        "ObjectCount": 33,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_07.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Cathedral_BrickWall_22",
+        "NoInstancing": false,
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_22.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Cathedral_StairWall_01_B",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_StairWall_01_B.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Exterior_Sack_01",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Sack_01.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Exterior_WoodBox_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_WoodBox_02.bin"
     },
     {
         "Collision": false,
@@ -586,13 +607,6 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_StairBrick_01.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Wall_Stairs_01",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Stairs_01.bin"
     },
     {
         "Collision": true,
