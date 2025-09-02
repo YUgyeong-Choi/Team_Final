@@ -182,6 +182,17 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_PRESSING(DIK_LCONTROL))
+	{
+		if (KEY_DOWN(DIK_R))
+		{
+			m_fTimeScale = 0.5f;
+		}
+		if (KEY_DOWN(DIK_T))
+		{
+			m_fTimeScale = 1.f;
+		}
+	}
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();

@@ -481,13 +481,6 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Effect_WB_Composite()))
-	{
-		MSG_BOX("Render_Effect_WB_Composite Failed");
-		return E_FAIL;
-	}
-
-	//if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
 	if (FAILED(Render_Blur(TEXT("Target_Effect_WB_Emissive"))))
 	{
 		MSG_BOX("Render_Blur - Target_Effect_WB_Emissive Failed");
@@ -500,27 +493,18 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	//if (FAILED(Render_Blur(TEXT("Target_EffectBlend_Diffuse"))))
-	//{
-	//	MSG_BOX("Render_Blur - Target_EffectBlend_Diffuse Failed");
-	//	return E_FAIL;
-	//}
-	//
-	//if (FAILED(Render_Effect_Glow()))
-	//{
-	//	MSG_BOX("Render_Effect_Glow Failed");
-	//	return E_FAIL;
-	//}
-
-
-	//if (FAILED(Render_Effect_NonLight()))
-	//	return E_FAIL;
-
 	if (FAILED(Render_BackBuffer()))
 	{
 		MSG_BOX("Render_BackBuffer Failed");
 		return E_FAIL;
 	}
+
+	if (FAILED(Render_Effect_WB_Composite()))
+	{
+		MSG_BOX("Render_Effect_WB_Composite Failed");
+		return E_FAIL;
+	}
+
 
 	if (FAILED(Render_Outline()))
 	{
@@ -923,15 +907,15 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_GlowFinal"), m_pShader, "g_PBR_Glow")))
 		return E_FAIL;
 
-	/* [ Effect ·»´õ¸µ¿ë ]*/
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Composite"), m_pShader, "g_EffectBlend_WBComposite")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Glow"), m_pShader, "g_EffectBlend_Glow")))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_WBGlow"), m_pShader, "g_EffectBlend_WBGlow")))
-		return E_FAIL;
+	///* [ Effect ·»´õ¸µ¿ë ]*/
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Composite"), m_pShader, "g_EffectBlend_WBComposite")))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Glow"), m_pShader, "g_EffectBlend_Glow")))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_WBGlow"), m_pShader, "g_EffectBlend_WBGlow")))
+	//	return E_FAIL;
 
 
 	/* [ º¼·ý¸ÞÆ®¸¯ Æ÷±× ] */
@@ -1261,18 +1245,13 @@ HRESULT CRenderer::Render_Effect_WB()
 
 HRESULT CRenderer::Render_Effect_WB_Composite()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Effect_WeightedBlend_Composite"))))
-		return E_FAIL;
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, false);
 
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Accumulation"), m_pShader, "g_WB_Accumulation")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Revealage"), m_pShader, "g_WB_Revealage")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_WBGlow"), m_pShader, "g_EffectBlend_WBGlow")))
 		return E_FAIL;
 
 	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::WB_COMPOSITE));
