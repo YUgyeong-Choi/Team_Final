@@ -82,7 +82,7 @@ private:
 
 private:
 	_bool	m_bUseTiling = { false };
-	_float	m_TileDensity[2] = { 1.0f, 1.0f };
+	_float	m_TileDensity[2] = { 0.3f, 0.3f };
 
 private:
 	COLLIDER_TYPE m_eColliderType = { COLLIDER_TYPE::NONE };

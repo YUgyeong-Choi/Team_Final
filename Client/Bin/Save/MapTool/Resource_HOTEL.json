@@ -765,8 +765,8 @@
     {
         "Collision": false,
         "ModelName": "SM_LightProp_StreetLamp_09",
-        "NoInstancing": false,
-        "ObjectCount": 25,
+        "NoInstancing": true,
+        "ObjectCount": 20,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_09.bin"
     },
     {
