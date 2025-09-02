@@ -2837,6 +2837,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	moveVec.y += m_vGravityVelocity.y * fTimeDelta;
 
 	PxVec3 pxMove(moveVec.x, moveVec.y, moveVec.z);
+	PxExtendedVec3 exPos = m_pControllerCom->Get_Controller()->getPosition();
 	
 	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
 	PxControllerFilters filters;
@@ -2845,10 +2846,17 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 	collisionFlags = m_pControllerCom->Get_Controller()->move(pxMove, 0.001f, fTimeDelta, filters);
 
 	//printf(" 왜 안움직이지?? : %s \n", strName.c_str());
+	PxExtendedVec3 nowPos = m_pControllerCom->Get_Controller()->getPosition();
 
 	// 4. 지면에 닿았으면 중력 속도 초기화
 	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_DOWN)
 		m_vGravityVelocity.y = 0.f;
+
+	if (collisionFlags & PxControllerCollisionFlag::eCOLLISION_UP)
+	{
+		m_pControllerCom->Get_Controller()->setPosition(PxExtendedVec3(nowPos.x, exPos.y, nowPos.z));
+		printf("Call Collider Up\n");
+	}
 
 	SyncTransformWithController();
 }
