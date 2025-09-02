@@ -148,20 +148,19 @@ void CBayonet::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	// 매 프레임 칼 끝 위치 저장
-	//m_vEndSocketPrevPos = m_vEndSocketCurPos;
-	//auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
-	//XMStoreFloat3(&m_vEndSocketCurPos, CurEndWorldMat.r[3]);
 	if (m_bHitEffect == true)
 	{
-		auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
+		// 첫 히트 상태의 칼 끝 위치와 현재 칼 끝 위치를 이펙트 생성될 때 까지 비교함
+		//auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
+		m_vEndSocketPrevPos = m_vEndSocketCurPos;
+		auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
 		XMStoreFloat3(&m_vEndSocketCurPos, CurEndWorldMat.r[3]);
 		_float fLength = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_vEndSocketCurPos) - XMLoadFloat3(&m_vEndSocketPrevPos)));
 		if (fLength < 1e-6f) 
-			m_bHitEffect = true;
+			m_bHitEffect = true; // 방향벡터가 나오지 못했으면 다음 프레임도 검사
 		else
 		{
-			m_bHitEffect = false;
+			m_bHitEffect = false; // 방향벡터가 구해졌으면 이펙트 생성 후 off
 			Create_SlashEffect(m_pLastHitObject, m_eLastHitColType);
 		}
 	}
@@ -394,8 +393,9 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		m_bHitEffect = true;
 		m_pLastHitObject = pOther;
 		m_eLastHitColType = eColliderType;
-		auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
-		XMStoreFloat3(&m_vEndSocketPrevPos, CurEndWorldMat.r[3]);
+		//auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
+		//auto CurEndWorldMat = XMLoadFloat4x4(m_pWeaponEndMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentWorldMatrix);
+		//XMStoreFloat3(&m_vEndSocketPrevPos, CurEndWorldMat.r[3]);
 		//Create_SlashEffect(pOther, eColliderType);
 
 		CUnit* pUnit = static_cast<CUnit*>(pOther);
@@ -408,9 +408,6 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
  		static_cast<CPlayer*>(m_pOwner)->Set_HitTarget(pUnit, false);
 	}
-
-	// 플레이어의 공격 state에 따라 변경 -> slash / thrust
-	// 막타인지도 알 수 있을까? 
 }
 
 void CBayonet::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -428,15 +425,16 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	auto& vLockonPos = pUnit->Get_LockonPos();
 	_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
 
+	// 몬스터를 바라보는 방향에 맞춰 이펙트컨테이너 전체를 회전시킴 (Look기반 행렬 생성)
 	_vector vLook = XMVector3Normalize(vDir);           // Look
 	_vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f); // 고정 Up
 	_vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vLook));
 	_vector vUp = XMVector3Cross(vLook, vRight);
 
-	_matrix mAlign = XMMATRIX(vRight, vUp, vLook, XMVectorSet(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z, 1.f));
+	_matrix mAlign = _matrix(vRight, vUp, vLook, XMVectorSet(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z, 1.f));
 
 	_vector vSlashDir = XMVector3Normalize(XMLoadFloat3(&m_vEndSocketCurPos) - XMLoadFloat3(&m_vEndSocketPrevPos));
-	float lenSq = XMVectorGetX(XMVector3LengthSq(vSlashDir));
+	_float lenSq = XMVectorGetX(XMVector3LengthSq(vSlashDir));
 
 	if (lenSq < 1e-6f) {
 		// 너무 짧으면 fallback 방향 (예: +X)
@@ -445,6 +443,7 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	else {
 		vRight = XMVector3Normalize(vSlashDir);
 	}
+	XMStoreFloat3(&m_vSlashDir, vSlashDir);
 
 	/******************/
 	//_float dot = XMVectorGetX(XMVector3Dot(vLook, vSlashDir));
@@ -452,7 +451,7 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	//_float angle = acosf(dot);
 
 	//_vector axis = XMVector3Normalize(XMVector3Cross(vLook, vSlashDir));
-	//_matrix mRot = XMMatrixRotationAxis(axis, angle);
+	//_matrix mRoll = XMMatrixRotationAxis(axis, angle);
 
 	//_matrix mRoll = XMMatrixRotationAxis(vLook, angle);
 	/******************/
@@ -472,7 +471,7 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	vOnPlane = XMVector3Normalize(vOnPlane);
 
 	_float dotR = XMVectorGetX(XMVector3Dot(vOnPlane, right));
-	_float angle = acosf(std::clamp(dotR, -1.0f, 1.0f));
+	_float angle = acosf(clamp(dotR, -1.0f, 1.0f));
 
 	_float sign = XMVectorGetX(XMVector3Dot(XMVector3Cross(right, vOnPlane), look));
 	if (sign < 0) angle = -angle; // 반대 방향 보정
@@ -530,48 +529,6 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 
 HRESULT CBayonet::Create_AttackEffect(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	_vector vPlayerPos = XMVectorSetY(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
-	_vector vOtherPos = XMVectorSetY(pOther->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
-	_vector vDir = XMVector3Normalize(vPlayerPos - vOtherPos);
-
-	CUnit* pUnit = static_cast<CUnit*>(pOther);
-
-	auto& vLockonPos = pUnit->Get_LockonPos();
-	_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
-
-	_vector vLook = XMVector3Normalize(vDir);           // Look
-	_vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f); // 고정 Up
-	_vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vLook));
-	_vector vUp = XMVector3Cross(vLook, vRight);
-
-	_matrix mAlign = XMMATRIX(vRight, vUp, vLook, XMVectorSet(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z, 1.f));
-
-	CEffectContainer::DESC desc = {};
-
-	XMStoreFloat4x4(&desc.PresetMatrix,
-		XMMatrixScaling(1.5f, 1.5f, 1.5f) * mAlign);
-
-	CGameObject* pEffect = { nullptr };
-	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
-
-
-	// 찌르기 공격
-	if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKA
-		|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKB
-		|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKA )
-		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
-
-	//// 베기 공격 생각해보니 기본으로 나오는중 
-	//else if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKB
-	//	|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
-	//	|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
-	//	|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
-	//	|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB)
-	//	pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
-
-	if (pEffect == nullptr)
-		return E_FAIL;
-
 	return S_OK;
 }
 

@@ -1339,7 +1339,7 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
     vDistortion = vDistortion * 2.f - 1.f; // [-1, 1] 범위로 변환
     
     // 해상도 독립 스케일: 픽셀 단위 강도 * texelSize
-    float2 vTexelSize = float2(1.f / 1600.f, 1.f / 900.f);
+    float2 vTexelSize = float2(1.f / 1920.f, 1.f / 1080.f);
     //float fStrength = 10.f; // 강도 조절 변수
     fStrength *= 255.f;
     float2 uv = In.vTexcoord + vDistortion * (fStrength * vTexelSize);

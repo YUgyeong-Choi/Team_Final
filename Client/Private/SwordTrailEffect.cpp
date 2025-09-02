@@ -1,5 +1,5 @@
 #include "SwordTrailEffect.h"
-
+#include "ParticleEffect.h"
 #include "GameInstance.h"
 
 CSwordTrailEffect::CSwordTrailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -94,6 +94,11 @@ void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 	XMStoreFloat3(&m_vOuterPos, XMVector3TransformCoord(XMVectorZero(), matOuterWorld));
 
 	m_pVIBufferCom->Update_Trail(m_vInnerPos, m_vOuterPos, fTimeDelta);
+	const vector<_float3>& vNodes =  m_pVIBufferCom->Get_InterpolatedNewNodes();
+	if (m_bTrailActive == true && !vNodes.empty() && m_bHasEmitter)
+	{
+
+	}
 
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }
@@ -119,6 +124,7 @@ void CSwordTrailEffect::Set_TrailActive(_bool bActive)
 {
 	if (m_pVIBufferCom)
 		m_pVIBufferCom->Set_TrailActive(bActive);
+	m_bTrailActive = bActive;
 }
 
 HRESULT CSwordTrailEffect::Ready_Components()
