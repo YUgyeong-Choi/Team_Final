@@ -71,6 +71,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Burn() override;
 
 	virtual void Reset() override;
 
@@ -230,11 +231,11 @@ public:
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
 public:
-	void SetElement(EELEMENT eElement) { m_eElement = eElement; }
-	EELEMENT GetElement() const { return m_eElement; }
+	void SetElement(EELEMENTCONDITION eElement) { m_eElement = eElement; }
+	EELEMENTCONDITION GetElement() const { return m_eElement; }
 
 private: /* [ 부여 속성 ] */
-	EELEMENT m_eElement = { EELEMENT::NONE };
+	EELEMENTCONDITION m_eElement = {};
 
 private: /* [ 특수 모션 ] */
 	HITMOTION m_eHitMotion = { HITMOTION::END };
@@ -249,13 +250,22 @@ private: /* [ 상태 변수 ] */
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
+private: /* [ 불타버려~ ] */
+	CTexture* m_pBurn = { nullptr };
+	CTexture* m_pBurnMask = { nullptr };
+	CTexture* m_pBurnMask2 = { nullptr };
+	_float m_fBurnTime = {};
+	_float m_fBurnPhase = {};
+	_float m_fBurnSpeed = 1.f;
+
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	class CLockOn_Manager* m_pLockOn_Manager = { nullptr };
 
-	/* [ 피직스 관련 ] */
+		/* [ 피직스 관련 ] */
 	CPhysXController* m_pControllerCom = { nullptr };
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
+
 private: /* [ 그림자 변수 ] */
 	_vector m_vShadowCam_Eye = {};
 	_vector m_vShadowCam_At = {};

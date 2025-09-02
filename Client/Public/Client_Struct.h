@@ -10,6 +10,13 @@ namespace Client
 		bool	ShowConvertMenu = false;
 	}IMGUIWINDATA;
 
+	struct EELEMENTCONDITION
+	{
+		_bool		bIsActive = {};
+		_float		fDuration = {};
+		_float		fElementWeight = {};
+		EELEMENT	eElement = { EELEMENT::END };
+	};
 
 #pragma region GL
 
