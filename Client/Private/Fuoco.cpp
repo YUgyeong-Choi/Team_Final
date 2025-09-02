@@ -751,7 +751,6 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	break;
 	case Client::CFuoco::SlamFury:
 		SetTurnTimeDuringAttack(2.f, 1.5f);
-
 		m_eAttackType = EAttackType::FURY_STAMP;
 	case Client::CFuoco::FootAtk:
 		m_eAttackType = EAttackType::AIRBORNE;
@@ -1978,8 +1977,8 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
 			pPlayer->SetHitMotion(HITMOTION::STAMP);
-			pPlayer->SetfReceiveDamage(DAMAGE_FURY);
 			pPlayer->SetHitedAttackType(EAttackType::FURY_STAMP);
+			pPlayer->SetfReceiveDamage(DAMAGE_FURY);
 			break;
 		case ENUM_CLASS(BossStateID::ATK_SWING_R):
 		case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
