@@ -125,10 +125,15 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowC"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
 		return E_FAIL;
 	
-	/* [ ¿Ü°û¼± ÀÌÆåÆ® ] */
+	/* [ Ç»¸® ÀÌÆåÆ® ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_LimLight"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_InnerLine"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Burn"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Black"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* [ º¼·ý¸ÞÆ®¸¯ Æ÷±× ] */
@@ -164,6 +169,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_Fury"), TEXT("Target_PBR_LimLight"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_Fury"), TEXT("Target_PBR_InnerLine"))))
+		return E_FAIL;
+	
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_Burn"), TEXT("Target_PBR_Burn"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_Burn"), TEXT("Target_PBR_Black"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
@@ -312,8 +322,8 @@ HRESULT CRenderer::Initialize()
 #ifdef _DEBUG
 
 	/* [ PBR µð¹ö±ë ] */
-	_float fSizeX = 1600.f / 5;
-	_float fSizeY = 900.f / 5;
+	_float fSizeX = ViewportDesc.Width / 5;
+	_float fSizeY = ViewportDesc.Height / 5;
 	_float fOffset = 3.f;
 
 	const _float fStartX = fSizeX / 2.f;
@@ -348,7 +358,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Unit"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_LimLight"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Burn"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
@@ -504,11 +514,15 @@ HRESULT CRenderer::Draw()
 		MSG_BOX("Render_Effect_WB_Composite Failed");
 		return E_FAIL;
 	}
-
-
-	if (FAILED(Render_Outline()))
+	if (FAILED(Render_Pury()))
 	{
-		MSG_BOX("Render_Outline Failed");
+		MSG_BOX("Render_Pury Failed");
+		return E_FAIL;
+	}
+	
+	if (FAILED(Render_Burn()))
+	{
+		MSG_BOX("Render_Burn Failed");
 		return E_FAIL;
 	}
 
@@ -801,9 +815,9 @@ HRESULT CRenderer::Render_PBRLights()
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_Outline()
+HRESULT CRenderer::Render_Pury()
 {
-	/* [ PBR ·»´õ¸µ ] */
+	/* [ Ç»¸® ·»´õ¸µ ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_Fury"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_FURY)])
@@ -814,6 +828,25 @@ HRESULT CRenderer::Render_Outline()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_FURY)].clear();
+
+	m_pGameInstance->End_MRT();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Burn()
+{
+	/* [ ºÒ°ø°Ý ·»´õ¸µ ] */
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_Burn"));
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_BURN)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_Burn();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_BURN)].clear();
 
 	m_pGameInstance->End_MRT();
 
@@ -901,6 +934,10 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_LimLight"), m_pShader, "g_PBR_LimLight")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_InnerLine"), m_pShader, "g_PBR_InnerLine")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Burn"), m_pShader, "g_PBR_Burn")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Black"), m_pShader, "g_PBR_Black")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PBR_Emissive")))
 		return E_FAIL;
@@ -1157,12 +1194,11 @@ HRESULT CRenderer::Render_PBR_Glow()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PreBlurTexture")))
 		return E_FAIL;
 
-	_bool bOutline = true;
-	if (FAILED(m_pShader->Bind_RawValue("g_bOutLine" , &bOutline, sizeof(_bool))))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_LimLight"), m_pShader, "g_PreBlurTexture2")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_InnerLine"), m_pShader, "g_PreBlurTexture3")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Burn"), m_pShader, "g_PreBlurTexture4")))
 		return E_FAIL;
 
 	m_pShader->Begin(4);
@@ -1170,10 +1206,6 @@ HRESULT CRenderer::Render_PBR_Glow()
 	m_pVIBuffer->Render();
 
 	m_pGameInstance->End_MRT();
-
-	bOutline = false;
-	if (FAILED(m_pShader->Bind_RawValue("g_bOutLine", &bOutline, sizeof(_bool))))
-		return E_FAIL;
 
 	if (FAILED(Change_ViewportDesc(m_iOriginalViewportWidth, m_iOriginalViewportHeight)))
 		return E_FAIL;
@@ -1433,8 +1465,7 @@ HRESULT CRenderer::Render_Debug()
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
-			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGlowFinal"), m_pShader, m_pVIBuffer);
-			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBR_Fury"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBR_Burn"), m_pShader, m_pVIBuffer);
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
 			/* ¿©±â¿¡ MRT ÀÔ·Â */

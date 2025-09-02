@@ -74,7 +74,8 @@ private:
 	HRESULT Render_UI();
 	HRESULT Render_Lights();
 	HRESULT Render_PBRLights();
-	HRESULT Render_Outline();
+	HRESULT Render_Pury();
+	HRESULT Render_Burn();
 	HRESULT Render_Volumetric();
 	HRESULT Render_BackBuffer();
 	HRESULT Render_NonLight();

@@ -1,0 +1,70 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 2.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 90,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    },
+                    {
+                        "EndColor": {
+                            "W": 0.0,
+                            "X": 0.0,
+                            "Y": 0.0,
+                            "Z": 0.0
+                        },
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Color",
+                        "StartColor": {
+                            "W": 1.0,
+                            "X": 1.0,
+                            "Y": 1.0,
+                            "Z": 1.0
+                        },
+                        "iEndFrame": 90,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 1.0,
+                "SizeY": 1.0,
+                "Texturetag": "Prototype_Component_Texture_Revive_BackGround",
+                "fAlpha": 1.0,
+                "fDuration": 0.03200000075995922,
+                "fOffset": 0.0,
+                "fX": 0.5,
+                "fY": 0.5,
+                "iPassIndex": 13,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

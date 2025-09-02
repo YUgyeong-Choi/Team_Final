@@ -6,6 +6,11 @@ json CUI_Text::Serialize()
 	json j;
 	j = __super::Serialize();
 
+	j["fX"] = m_fX / _float(g_iWinSizeX);
+	j["fY"] = m_fY / _float(g_iWinSizeY);
+	j["SizeX"] = m_fSizeX / _float(g_iWinSizeX);
+	j["SizeY"] = m_fSizeY / _float(g_iWinSizeY);
+
 
 	j["FontTag"] = WStringToStringU8(m_strFontTag);
 	j["Caption"] = WStringToStringU8(m_strCaption);
@@ -32,6 +37,14 @@ void CUI_Text::Deserialize(const json& j)
 	m_fFontScale = j["FontScale"].get<_float>();
 
 	m_eAlignType = TEXTALIGN(j["IsCenter"].get<int>());
+
+
+	m_fX = j["fX"].get<_float>() * _float(g_iWinSizeX);
+	m_fY = j["fY"].get<_float>() * _float(g_iWinSizeY);
+	m_fSizeX = j["SizeX"].get<_float>() * _float(g_iWinSizeX);
+	m_fSizeY = j["SizeY"].get<_float>() * _float(g_iWinSizeY);
+
+	Update_Data();
 }
 
 CUI_Text::CUI_Text(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

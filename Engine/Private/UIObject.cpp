@@ -138,7 +138,7 @@ void CUIObject::Update_Data()
 	D3D11_VIEWPORT			ViewportDesc{};
 	_uint					iNumViewports = { 1 };
 
-	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+ 	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.0f, 1.f));

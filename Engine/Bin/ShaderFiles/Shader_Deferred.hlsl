@@ -25,6 +25,7 @@ Texture2D g_DecalVolumeMesh;
 Texture2D g_PreBlurTexture;
 Texture2D g_PreBlurTexture2;
 Texture2D g_PreBlurTexture3;
+Texture2D g_PreBlurTexture4;
 Texture2D g_BlurXTexture;
 Texture2D g_BlurYTexture;
 
@@ -53,11 +54,11 @@ Texture2D g_PBR_Final;
 Texture2D g_PBR_UnitMask;
 Texture2D g_PBR_LimLight;
 Texture2D g_PBR_InnerLine;
+Texture2D g_PBR_Burn;
+Texture2D g_PBR_Black;
 Texture2D g_PBR_Emissive;
 Texture2D g_PBR_Glow;
 Texture2D g_VolumetricTexture;
-
-bool g_bOutLine = false;
 
 /* [ Effect ] */
 Texture2D g_EffectBlend_Diffuse;
@@ -1013,11 +1014,15 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vLimLight = g_PBR_LimLight.Sample(DefaultSampler, In.vTexcoord);
     vector vOutLine = g_PBR_InnerLine.Sample(DefaultSampler, In.vTexcoord);
     vector vEmissive = g_PBR_Emissive.Sample(DefaultSampler, In.vTexcoord);
+    vector vBurn = g_PBR_Burn.Sample(DefaultSampler, In.vTexcoord);
+    vector vBlack = g_PBR_Black.Sample(DefaultSampler, In.vTexcoord);
     vector vGlow = g_PBR_Glow.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
-    finalColor = Out.vBackBuffer + vOutLine + vLimLight;
+    finalColor.rgb *= (1.f - Out.vBackBuffer.rgb);
+    finalColor = Out.vBackBuffer + vOutLine + vLimLight + vBurn;
+    
     
     /* [ 유리 재질 효과 ] */
     float fGlass = saturate(vEmissive.a);
@@ -1219,16 +1224,14 @@ PS_OUT_BLUR PS_MAIN_BLURX(PS_IN In)
     }
     
     
-    if (g_bOutLine)
+    for (int j = -6; j < 7; ++j)
     {
-        for (int j = -6; j < 7; ++j)
-        {
-            vTexcoord.x = In.vTexcoord.x + j / g_fViewportSizeX;
-            vTexcoord.y = In.vTexcoord.y;
+        vTexcoord.x = In.vTexcoord.x + j / g_fViewportSizeX;
+        vTexcoord.y = In.vTexcoord.y;
   
-            Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture2.Sample(LinearClampSampler, vTexcoord);
-            Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture3.Sample(LinearClampSampler, vTexcoord);
-        }
+        Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture2.Sample(LinearClampSampler, vTexcoord);
+        Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture3.Sample(LinearClampSampler, vTexcoord);
+        Out.vColor += g_f13Weights[j + 6] * g_PreBlurTexture4.Sample(LinearClampSampler, vTexcoord);
     }
        
     return Out;

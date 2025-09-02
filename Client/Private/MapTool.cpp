@@ -1616,6 +1616,9 @@ void CMapTool::SelectByDrag(const _float2& vMouseDragEnd)
 
 		for (_int iID : IDs)
 		{
+			//아이디가 0은 디폴트 값, 음수는 몬스터임
+			if (iID <= 0)
+				continue;
 
 			//새로 추가
 			_int iIndex = Find_HierarchyIndex_By_ID(iID);
@@ -1850,10 +1853,10 @@ void CMapTool::Detail_Tile()
 		// 타일링 여부 체크박스
 		ImGui::Checkbox("Enable Tiling", &m_pFocusObject->m_bUseTiling);
 
-		// 타일링 값 슬라이더 (X, Z)
+		// 타일링 값 슬라이더 
 		if (m_pFocusObject->m_bUseTiling)
 		{
-			ImGui::DragFloat2("Tiling (X,Z)", m_pFocusObject->m_TileDensity, 0.01f, 0.01f, 32.0f, "%.2f");
+			ImGui::DragFloat2("Tiling (U,V)", m_pFocusObject->m_TileDensity, 0.01f, 0.01f, 32.0f, "%.2f");
 		}
 	}
 }
