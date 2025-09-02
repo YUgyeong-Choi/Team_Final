@@ -11,6 +11,8 @@ json CUI_Button::Serialize()
 	j["FontSize"] = m_fFontSize;
 	j["Caption"] = WStringToStringU8(m_strCaption);
 
+	
+
 
 	return j;
 }
@@ -24,6 +26,7 @@ void CUI_Button::Deserialize(const json& j)
 	string strCaption = j["Caption"].get<string>();
 	m_strCaption = StringToWStringU8(strCaption);
 
+	
 	CUI_Button::Ready_Components_File(m_strTextureTag);
 
 }

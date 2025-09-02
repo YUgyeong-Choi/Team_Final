@@ -586,15 +586,17 @@ PS_OUT PS_MAIN_DISCARD_ALPAH_REVERSE(PS_IN In)
     PS_OUT Out;
     
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+   
     
-    
-    if (length(Out.vColor.rgb) > 0.6f)
+    if(length(Out.vColor.rgb) > 0.4f)
         discard;
+
+    Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+    Out.vColor.a = 1.f;
     
-  
-    Out.vColor.a = 1 - length(Out.vColor.rgb);
     
     Out.vColor *= g_Color;
+    Out.vColor.a *= g_Alpha;
     
     return Out;
 }
@@ -638,6 +640,27 @@ PS_OUT PS_MAIN_ACTION_ICON(PS_IN In)
         Out.vColor.rgb *= vHighlight.a;
     }
 
+    Out.vColor *= g_Color;
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_REVIVE(PS_IN In)
+{
+    PS_OUT Out;
+    
+    Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    
+    Out.vColor *= g_Alpha;
+   
+    
+    if (length(Out.vColor.rgb) > 0.5f)
+        discard;
+
+    Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+    Out.vColor.a = 1.f;
+    
+    
     Out.vColor *= g_Color;
     
     return Out;
@@ -797,6 +820,18 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_ACTION_ICON();
+    }
+
+    pass Revive
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_REVIVE();
     }
     
 
