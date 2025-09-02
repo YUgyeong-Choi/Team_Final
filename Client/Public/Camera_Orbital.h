@@ -44,7 +44,7 @@ public:
 	_matrix Get_OrbitalWorldMatrix(_float fPitch, _float fYaw);
 
 	/* [ 방향 벡터로 Yaw Pich 가지고오기 ] */
-	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed);
+	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed, _bool bActivePitch = true);
 	
 	void Set_LockOn(CGameObject* pTarget, _bool bActive);
 	void Set_ActiveTalk(_bool bActive, CGameObject*  pTarget, _bool bCanMove, _float fTalkOffSet);
