@@ -1872,7 +1872,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 				return;
 
 			pWeapon->Add_CollisonObj(this);
-			CUnit* pUnit = pWeapon->Get_Owner();
+			pUnit = pWeapon->Get_Owner();
 		}
 		else
 		{

@@ -10,7 +10,7 @@ namespace Client
 		HITED, FATAL, END
 	};
 
-	enum class EELEMENT : _uint
+	enum class EELEMENT
 	{
 		NONE = 0,		// 무속성
 		FIRE = 1,		// 불
