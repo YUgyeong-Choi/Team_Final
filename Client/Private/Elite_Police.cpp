@@ -35,8 +35,8 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	m_fMinimumTurnAngle = 85.f;
 	m_bIsFirstAttack = false;
 	m_fGroggyScale_Weak = 0.1f;
-	m_fGroggyScale_Strong = 0.15f;
-	m_fGroggyScale_Charge = 0.2f;
+	m_fGroggyScale_Strong = 0.2f;
+	m_fGroggyScale_Charge = 0.25f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -73,7 +73,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	m_fMaxHp = 400.f;
+	m_fMaxHp = 500.f;
 	m_fHp = m_fMaxHp;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
@@ -89,7 +89,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 
 	if (m_pHPBar)
-		m_pHPBar->Set_MaxHp(m_fHp);
+		m_pHPBar->Set_MaxHp(m_fMaxHp);
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
