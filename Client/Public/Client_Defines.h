@@ -40,8 +40,8 @@ using namespace ImGui;
 
 namespace Client
 {
-	const unsigned int			g_iWinSizeX = 1600;
-	const unsigned int			g_iWinSizeY = 900;
+	const unsigned int			g_iWinSizeX = 1920;
+	const unsigned int			g_iWinSizeY = 1080;
 
 	const float g_fBGMSoundVolume = 1.f; // BGM º¼·ý
 	const float g_fInteractSoundVolume = 0.7f; // NPC´ëÈ­ º¼·ý

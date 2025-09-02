@@ -43,6 +43,7 @@ public:
 	/* [ 직접 주는 pitch & yaw 값대로 오비탈 위치 가져옴 ] */
 	_matrix Get_OrbitalWorldMatrix(_float fPitch, _float fYaw);
 
+
 	/* [ 방향 벡터로 Yaw Pich 가지고오기 ] */
 	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed, _bool bActivePitch = true);
 	

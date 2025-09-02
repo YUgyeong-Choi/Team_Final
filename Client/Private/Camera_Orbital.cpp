@@ -149,6 +149,30 @@ void CCamera_Orbital::Set_PitchYaw(_float fPitch, _float fYaw)
 	m_fYaw = fYaw;
 }
 
+void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed, _bool bActivePitch)
+{
+	const _float bx = XMVectorGetX(vDir);
+	const _float by = XMVectorGetY(vDir);
+	const _float bz = XMVectorGetZ(vDir);
+
+	// Pitch Yaw 역계산
+	_float rawTargetYaw = atan2f(bx, bz);
+	m_fTargetYaw = MoveTargetNear(m_fYaw, rawTargetYaw);
+
+	if (bActivePitch)
+	{
+		m_fTargetPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
+		m_fTargetPitch += XMConvertToRadians(10.f);
+	}
+	else
+	{
+		m_fTargetPitch = m_fPitch;
+	}
+
+	m_fTargetLerpSpeed = fLerpSpeed;
+
+	m_bSetPitchYaw = true;
+}
 void CCamera_Orbital::Set_LockOn(CGameObject* pTarget, _bool bActive)
 {
 
@@ -191,26 +215,6 @@ _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float fPitch, _float fYaw)
 	matWorld.r[3] = XMVectorSetW(vCamPos, 1.f);        
 
 	return matWorld;
-}
-
-void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
-{
-	const _float bx = XMVectorGetX(vDir);
-	const _float by = XMVectorGetY(vDir);
-	const _float bz = XMVectorGetZ(vDir);
-
-	// Pitch Yaw 역계산
-	_float rawTargetYaw = atan2f(bx, bz);
-	m_fTargetYaw = MoveTargetNear(m_fYaw, rawTargetYaw);
-	//m_fTargetPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
-	m_fTargetPitch = m_fPitch;
-
-	// 살짝 위에서 보이게 
-	//m_fTargetPitch += XMConvertToRadians(10.f);
-
-	m_fTargetLerpSpeed = fLerpSpeed;
-
-	m_bSetPitchYaw = true;
 }
 
 void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool bCanMove, _float fTalkOffSet)
