@@ -29,8 +29,8 @@
                 "SizeY": 1.1111111234640703e-05,
                 "fAlpha": 1.0,
                 "fOffset": 0.0,
-                "fX": 1496.0,
-                "fY": 37.79999923706055
+                "fX": 0.935,
+                "fY": 0.042
             },
             {
                 "Color": {
@@ -42,7 +42,7 @@
                 "Features": [
                     {
                         "EndPos": {
-                            "X": 0.8543000221252441,
+                            "X": 0.865,
                             "Y": 0.07400000095367432
                         },
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
@@ -57,14 +57,14 @@
                 ],
                 "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
-                "SizeX": 24.0,
-                "SizeY": 22.5,
+                "SizeX": 0.015,
+                "SizeY": 0.025,
                 "Texturetag": "Prototype_Component_Texture_Ergo",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.009999999776482582,
-                "fX": 1366.8800048828125,
-                "fY": 66.59999084472656,
+                "fX": 1.1,
+                "fY": -0.1,
                 "iPassIndex": 1,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
@@ -94,14 +94,14 @@
                 ],
                 "ProtoTag": "Prototype_GameObject_UI_Ergo_Bar",
                 "RotationZ": 0.0,
-                "SizeX": 160.0,
-                "SizeY": 9.0,
+                "SizeX": 0.1,
+                "SizeY": 0.01,
                 "Texturetag": "Prototype_Component_Texture_Bar_Border",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.009999999776482582,
-                "fX": 1428.800048828125,
-                "fY": 81.0,
+                "fX": 1.1,
+                "fY": -0.1,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
@@ -134,14 +134,14 @@
                 "IsCenter": 2,
                 "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
                 "RotationZ": 0.0,
-                "SizeX": 560.0,
-                "SizeY": 315.0,
+                "SizeX": 0.35,
+                "SizeY": 0.35,
                 "Texturetag": "",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.01,
-                "fX": 1496.0,
-                "fY": 66.59999084472656,
+                "fX": 0.935,
+                "fY": 0.074,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0

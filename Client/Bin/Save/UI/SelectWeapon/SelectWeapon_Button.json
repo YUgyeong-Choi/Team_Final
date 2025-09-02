@@ -23,45 +23,45 @@
                 },
                 "ProtoTag": "Prototype_GameObject_UI_Button",
                 "RotationZ": 0.0,
-                "SizeX": 91.19999694824219,
-                "SizeY": 31.5,
+                "SizeX": 0.057,
+                "SizeY": 0.035,
                 "Texturetag": "",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
-                "fX": 812.800048828125,
-                "fY": 697.5,
+                "fX": 0.508,
+                "fY": 0.775,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
             },
-            {
-                "Caption": "선택",
-                "Color": {
-                    "A": 0.800000011920929,
-                    "B": 0.800000011920929,
-                    "G": 0.800000011920929,
-                    "R": 0.800000011920929
-                },
-                "FontSize": 0.6000000238418579,
-                "Padding": {
-                    "X": 0.0,
-                    "Y": 5.0
-                },
-                "ProtoTag": "Prototype_GameObject_UI_Button",
-                "RotationZ": 0.0,
-                "SizeX": 91.19999694824219,
-                "SizeY": 31.5,
-                "Texturetag": "",
-                "fAlpha": 1.0,
-                "fDuration": 0.01600000075995922,
-                "fOffset": 0.0,
-                "fX": 979.199951171875,
-                "fY": 697.5,
-                "iPassIndex": 0,
-                "iTextureIndex": 0,
-                "iTextureLevel": 0
-            }
+          {
+            "Caption": "선택",
+            "Color": {
+              "A": 0.800000011920929,
+              "B": 0.800000011920929,
+              "G": 0.800000011920929,
+              "R": 0.800000011920929
+            },
+            "FontSize": 0.6000000238418579,
+            "Padding": {
+              "X": 0.0,
+              "Y": 5.0
+            },
+            "ProtoTag": "Prototype_GameObject_UI_Button",
+            "RotationZ": 0.0,
+            "SizeX": 0.057,
+            "SizeY": 0.035,
+            "Texturetag": "",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 0.612,
+            "fY": 0.775,
+            "iPassIndex": 0,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          }
         ],
         "ProtoTag": "Prototype_GameObject_UI_Container",
         "RotationZ": 0.0,
