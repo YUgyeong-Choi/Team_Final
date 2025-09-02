@@ -27,6 +27,8 @@ float4 g_ItemDesc;
 float g_Groggy;
 float g_UVTime;
 
+float g_IsHpBar;
+
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
 
@@ -272,7 +274,7 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
     float fMarginY = 0.25f;
 
 // 채워질 수 있는 X 범위
-    float minX = fMarginX;
+    float minX = fMarginX * 1.15f;
     float maxX = 1 - 1.15f * fMarginX;
 
 // 비율에 따라 실제 채워지는 위치
@@ -280,8 +282,13 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
     
     if(g_BarRatio > 0.f)
     {
-        float minWidth = 0.01f;
-        filledX = minX + max((maxX - minX) * g_BarRatio, minWidth);
+        float minWidth = 0.f;
+        if (g_IsHpBar == 1.f)
+        {
+            minWidth = 0.05f;
+        }
+        
+        filledX = minX + max((maxX - minX) * g_BarRatio , minWidth);
     }
  
 
@@ -535,7 +542,16 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     float maxX = 1 - 1.05f * fMarginX;
 
 // 비율에 따라 실제 채워지는 위치
-    float filledX = minX + (maxX - minX) * g_BarRatio;
+    
+    float filledX = 0.f;
+    
+    if (g_BarRatio > 0.f)
+    {
+        float minWidth = 0.05f;
+        
+        
+        filledX = minX + max((maxX - minX) * g_BarRatio, minWidth);
+    }
 
     bool isInsideX = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
     bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY;

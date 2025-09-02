@@ -147,14 +147,14 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 	{
 		/* 보스가 그로기상태라면 */
 		CEliteUnit::EEliteState eState = pEliteUnit->GetCurrentState();
-		if (eState == CEliteUnit::EEliteState::GROGGY)
+		if (eState == CEliteUnit::EEliteState::GROGGY || eState == CEliteUnit::EEliteState::FATAL)
 		{
 			/* 스위치를 켜준다. */
 			m_pOwner->SetIsFatalBoss(true);
 			m_pOwner->SetbIsGroggyAttack(true);
 			m_pOwner->SetFatalTarget(pEliteUnit);
 		}
-		else if(eState != CEliteUnit::EEliteState::FATAL&& eState != CEliteUnit::EEliteState::GROGGY)
+		else 
 		{
 			m_pOwner->SetbIsGroggyAttack(false);
 			m_pOwner->SetIsFatalBoss(false);

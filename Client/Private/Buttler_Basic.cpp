@@ -21,8 +21,8 @@ HRESULT CButtler_Basic::Initialize_Prototype()
 
 HRESULT CButtler_Basic::Initialize(void* pArg)
 {
-	/* [ 데미지 설정 ] */
-	m_fDamage = 18.f;
+	
+	
 
 	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
 	pDesc->fSpeedPerSec = 5.f;
