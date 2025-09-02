@@ -77,9 +77,9 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	m_fHp = m_fMaxHp;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
-	eDesc.fSizeX = 1.f;
-	eDesc.fSizeY = 1.f;
-	eDesc.fHeight = 2.5f;
+	eDesc.fSizeX = 1.2f;
+	eDesc.fSizeY = 1.1f;
+	eDesc.fHeight = 3.5f;
 	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_bGroggyActive;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -89,7 +89,12 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 
 	if (m_pHPBar)
+	{
+		// reset ¶§ releaseÇØ¼­
+		Safe_AddRef(m_pHPBar);
 		m_pHPBar->Set_MaxHp(m_fHp);
+	}
+		
 
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };

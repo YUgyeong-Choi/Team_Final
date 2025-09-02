@@ -38,6 +38,8 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
     m_strName = pDesc->strName;
 
+    
+
     if (!m_isBoss)
     {
         m_pParentMatrix = pDesc->pParentMatrix;
@@ -46,7 +48,7 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
         m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
-        m_pTransformCom->Scaling(0.1f, 0.015f, 1.f);
+        m_pTransformCom->Scaling(0.1f * pDesc->fSizeX, 0.015f * pDesc->fSizeY, 1.f);
     }
     else
     {
