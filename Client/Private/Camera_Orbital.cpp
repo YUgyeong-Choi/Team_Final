@@ -189,10 +189,11 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 
 	// Pitch Yaw 역계산
 	m_fTargetYaw = atan2f(bx, bz);
-	m_fTargetPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
+	//m_fTargetPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
+	m_fTargetPitch = m_fPitch;
 
 	// 살짝 위에서 보이게 
-	m_fTargetPitch += XMConvertToRadians(10.f);
+	//m_fTargetPitch += XMConvertToRadians(10.f);
 
 	m_fTargetLerpSpeed = fLerpSpeed;
 
