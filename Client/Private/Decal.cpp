@@ -124,6 +124,10 @@ HRESULT CDecal::Bind_ShaderResources()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
 
+	_float2 vScreenSize = { g_iWinSizeX, g_iWinSizeY };
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_ScreenSize", &vScreenSize, sizeof(_float2))))
+		return E_FAIL;
+
 	/* 
 	노말만 적용하려면...AMRT의 알파를 0으로하고
 	노말은 마스킹으로 처리해야하는데...

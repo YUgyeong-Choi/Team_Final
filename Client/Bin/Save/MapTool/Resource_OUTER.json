@@ -175,10 +175,10 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_44.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Cathedral_BrickWall_07",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 11,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_07.bin"
     },
     {
@@ -187,6 +187,13 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Clock_01.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Station_FStair_01",
+        "NoInstancing": false,
+        "ObjectCount": 15,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FStair_01.bin"
     },
     {
         "Collision": false,
@@ -224,10 +231,31 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Vehicle_Carriage_13.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_Wall_InStairPoll02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_InStairPoll02.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Wall_Stair01_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Stair01_04.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "SM_Wall_StairBrick_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_StairBrick_01.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "T_Tile_BrickFloor_01",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 20,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_BrickFloor_01.bin"
     },
     {
@@ -241,14 +269,14 @@
         "Collision": true,
         "ModelName": "T_Tile_StoneFloor_08",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 11,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_StoneFloor_08.bin"
     },
     {
         "Collision": true,
         "ModelName": "T_Tile_StoneFloor_Circle_08",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_StoneFloor_Circle_08.bin"
     }
 ]
