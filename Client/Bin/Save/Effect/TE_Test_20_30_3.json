@@ -2,17 +2,18 @@
     "Animation": false,
     "Billboard": false,
     "CenterColor": [
-        1.0,
-        1.0,
-        1.0,
-        1.0
+        0.42359036207199097,
+        0.47757017612457275,
+        0.5287958383560181,
+        0.0
     ],
     "Color": [
-        0.6753926277160645,
-        0.811353862285614,
+        0.7434555292129517,
+        0.8509089946746826,
         1.0,
-        0.1256544589996338
+        0.46596860885620117
     ],
+    "DistortionStrength": 10.0,
     "Duration": 20,
     "EffectType": 3,
     "EmissiveIntensity": 0.0,
@@ -21,12 +22,12 @@
     "KeyFrames": [
         {
             "Color": [
-                0.6753926277160645,
-                0.811353862285614,
+                0.7434555292129517,
+                0.8509089946746826,
                 1.0,
-                0.1256544589996338
+                0.46596860885620117
             ],
-            "Intensity": 0.23000000417232513,
+            "Intensity": 1.0,
             "Interpolation": 0,
             "Rotation": [
                 0.0,
@@ -47,7 +48,7 @@
             ]
         }
     ],
-    "LifeDuration": 0.45,
+    "LifeDuration": 0.44999998807907104,
     "LifeTime": 0.0,
     "Loop": true,
     "Name": "Player_WeaponTrail",
@@ -71,6 +72,7 @@
     ],
     "Threshold": 0.0,
     "TickPerSecond": 100.0,
+    "TileTickPerSec": 60.0,
     "TileX": 1,
     "TileY": 1
 }

@@ -1165,15 +1165,15 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     }
     
     /* [ 이펙트 디퍼드 합성 ] */
-    vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
-    vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
-    EffectBlendDiffuse += EffectBlendGlow;
-    Out.vBackBuffer += EffectBlendDiffuse;
+    //vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
+    //vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
+    //EffectBlendDiffuse += EffectBlendGlow;
+    //Out.vBackBuffer += EffectBlendDiffuse;
     
-    vector EffectBlendWBComposite = g_EffectBlend_WBComposite.Sample(DefaultSampler, In.vTexcoord);
-    vector EffectBlendWBGlow = g_EffectBlend_WBGlow.Sample(DefaultSampler, In.vTexcoord);
-    EffectBlendWBComposite += EffectBlendWBGlow;
-    Out.vBackBuffer += EffectBlendWBComposite;
+    //vector EffectBlendWBComposite = g_EffectBlend_WBComposite.Sample(DefaultSampler, In.vTexcoord);
+    //vector EffectBlendWBGlow = g_EffectBlend_WBGlow.Sample(DefaultSampler, In.vTexcoord);
+    //EffectBlendWBComposite += EffectBlendWBGlow;
+    //Out.vBackBuffer += EffectBlendWBComposite;
        
     if (Out.vBackBuffer.a < 0.003f)
         discard;
@@ -1292,7 +1292,9 @@ PS_OUT PS_WB_COMPOSITE(PS_IN In)
     float fReveal = g_WB_Revealage.Sample(DefaultSampler, In.vTexcoord).r;
     float fAlpha = 1 - saturate(fReveal);
     Out.vBackBuffer = float4(vAccum.rgb, fAlpha);
-
+    
+    vector EffectBlendWBGlow = g_EffectBlend_WBGlow.Sample(DefaultSampler, In.vTexcoord);
+    Out.vBackBuffer += EffectBlendWBGlow;
     /********************************************************************/
 
     

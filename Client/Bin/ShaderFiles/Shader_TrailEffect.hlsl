@@ -176,13 +176,13 @@ PS_OUT PS_MAIN(PS_IN In)
     float fade = 1.0 - smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
         
     float4 vPreColor;
-    float lerpFactor = saturate((fMask - g_fThreshold) / (1.f - g_fThreshold));
+    float lerpFactor = saturate((fPremask - g_fThreshold) / (1.f - g_fThreshold));
 
     vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
     
     float4 vColor;
     vColor.rgb = vPreColor.rgb * fPremask * g_fIntensity;
-    vColor.a = vPreColor.a * fMask * fade;
+    vColor.a = fMask * fade;
     
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
@@ -222,7 +222,7 @@ technique11 DefaultTechnique
     pass Default // 0
     {
         SetRasterizerState(RS_Cull_None);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
         SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
@@ -233,7 +233,7 @@ technique11 DefaultTechnique
     pass Drop // 1
     {
         SetRasterizerState(RS_Cull_None);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
         SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN_DROP();
@@ -243,7 +243,7 @@ technique11 DefaultTechnique
     pass Blood_Drop // 2
     {
         SetRasterizerState(RS_Cull_None);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
         SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN_DROP();
