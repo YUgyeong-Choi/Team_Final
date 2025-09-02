@@ -12,10 +12,8 @@ namespace Client
 
 	struct EELEMENTCONDITION
 	{
-		_bool		bIsActive = {};
 		_float		fDuration = {};
 		_float		fElementWeight = {};
-		EELEMENT	eElement = { EELEMENT::END };
 	};
 
 #pragma region GL

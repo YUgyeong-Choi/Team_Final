@@ -231,11 +231,15 @@ public:
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
 public:
-	void SetElement(EELEMENTCONDITION eElement) { m_eElement = eElement; }
-	EELEMENTCONDITION GetElement() const { return m_eElement; }
+	void SetElementTypeDuration(EELEMENT eElement, _float fValue) { m_vecElements[eElement].fDuration = fValue; }
+	void SetElementTypeWeight(EELEMENT eElement, _float fValue) 
+	{
+		_float fWeight = m_vecElements[eElement].fElementWeight + fValue;
+		m_vecElements[eElement].fElementWeight = min(fWeight, 1.f);
+	}
 
 private: /* [ 何咯 加己 ] */
-	EELEMENTCONDITION m_eElement = {};
+	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
 
 private: /* [ 漂荐 葛记 ] */
 	HITMOTION m_eHitMotion = { HITMOTION::END };
