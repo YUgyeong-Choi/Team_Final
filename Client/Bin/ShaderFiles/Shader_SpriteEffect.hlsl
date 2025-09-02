@@ -212,7 +212,7 @@ PS_OUT_EFFECT_WB PS_MAIN_MASKONLY_CWB(PS_IN_BLEND In)
     float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     if (mask < 0.003f)
         discard;
-    float noise = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    //float noise = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     float4 vPreColor;
     float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
     
@@ -223,7 +223,7 @@ PS_OUT_EFFECT_WB PS_MAIN_MASKONLY_CWB(PS_IN_BLEND In)
     vColor = SoftEffect(vPreColor, In.vProjPos);
 
     vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
-    vColor.a = vPreColor.a * mask;
+    vColor.a = g_vColor.a * mask;
     
 
     float3 vPremulRGB = vColor.rgb * vColor.a;
@@ -259,8 +259,9 @@ PS_OUT_EFFECT_WB PS_MAIN_MASKDISSOLVE_CWB(PS_IN_BLEND In)
     vector vColor;
     
     vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
-    vColor.a = vPreColor.a * mask;
-    
+    //vColor.a = vPreColor.a * mask;
+    vColor.a = g_vColor.a * mask;
+
 
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);

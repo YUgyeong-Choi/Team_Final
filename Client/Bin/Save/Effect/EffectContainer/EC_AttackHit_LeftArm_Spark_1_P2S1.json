@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1531.64111328125,
+            "LifeTime": 1556.058349609375,
             "LifeTime_Particle": [
                 0.009999999776482582,
                 0.18000000715255737
@@ -137,8 +137,8 @@
         },
         {
             "Accel": [
-                -100.0,
-                -80.0
+                -50.0,
+                -30.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -196,7 +196,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1327.59521484375,
+            "LifeTime": 1352.012451171875,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.6700000166893005
@@ -205,7 +205,7 @@
             "Loop": false,
             "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 1.5,
+            "MinSpeed": 3.0,
             "Name": "LeftArmHit_Particle2",
             "NumInstance": 30,
             "NumKeyFrames": 1,
@@ -275,15 +275,15 @@
             "Billboard": true,
             "CenterColor": [
                 1.0,
-                0.7031605243682861,
-                0.5235601663589478,
+                0.38825690746307373,
+                0.32460731267929077,
                 1.0
             ],
             "Color": [
                 1.0,
-                0.5615237951278687,
-                0.2149336189031601,
-                0.021218925714492798
+                0.21720898151397705,
+                0.10471206903457642,
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 61,
@@ -295,7 +295,7 @@
                 {
                     "Color": [
                         1.0,
-                        0.4397905468940735,
+                        0.15706807374954224,
                         0.0,
                         0.14659684896469116
                     ],
@@ -322,8 +322,8 @@
                 {
                     "Color": [
                         1.0,
-                        0.5821259021759033,
-                        0.2513089179992676,
+                        0.21720898151397705,
+                        0.10471206903457642,
                         0.0
                     ],
                     "Intensity": 1.0,
@@ -347,22 +347,22 @@
                     ]
                 }
             ],
-            "LifeTime": 1265.6236572265625,
+            "LifeTime": 1290.0408935546875,
             "Loop": true,
             "Name": "Hit_BasicSprite1",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
-            "ShaderPass": 4,
+            "ShaderPass": 5,
             "StartTrack": 0,
             "TextureTags": [
-                "T_Ring_06_C_HJS",
                 "",
+                "T_Ring_05_C_HJS",
                 "",
                 ""
             ],
             "TextureUsage": [
-                true,
                 false,
+                true,
                 false,
                 false
             ],

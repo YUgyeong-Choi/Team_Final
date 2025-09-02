@@ -24,6 +24,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
             "EmissiveIntensity": 1.2999999523162842,
@@ -60,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1741.4239501953125,
+            "LifeTime": 1761.57763671875,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.47999998927116394
@@ -144,11 +145,12 @@
                 0.6544502973556519
             ],
             "Color": [
+                0.3053644895553589,
+                0.09592603147029877,
                 0.0,
-                0.0,
-                0.0,
-                0.0
+                0.3053644895553589
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 0.15000000596046448,
@@ -210,7 +212,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1679.452392578125,
+            "LifeTime": 1699.6060791015625,
             "Loop": true,
             "Name": "Fuoco_Spawn_Fireball_FlareSprite1",
             "NumKeyFrames": 2,
@@ -245,11 +247,12 @@
                 1.0
             ],
             "Color": [
-                0.0,
-                0.0,
-                0.0,
-                0.0
+                0.48999810218811035,
+                0.48999810218811035,
+                0.48999810218811035,
+                0.48999810218811035
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
@@ -311,7 +314,7 @@
                     ]
                 }
             ],
-            "LifeTime": 825.6558837890625,
+            "LifeTime": 845.811767578125,
             "Loop": true,
             "Name": "Fuoco_Spawn_Fireball_DistortionSprite1",
             "NumKeyFrames": 2,
@@ -346,11 +349,12 @@
                 0.6549019813537598
             ],
             "Color": [
+                0.3053644895553589,
+                0.09580062329769135,
                 0.0,
-                0.0,
-                0.0,
-                0.0
+                0.3053644895553589
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 0.44999998807907104,
@@ -412,7 +416,7 @@
                     ]
                 }
             ],
-            "LifeTime": 550.2097778320313,
+            "LifeTime": 570.3656616210938,
             "Loop": true,
             "Name": "Fuoco_Spawn_Fireball_RingSprite2",
             "NumKeyFrames": 2,
@@ -447,11 +451,12 @@
                 1.0
             ],
             "Color": [
-                0.41590315103530884,
-                0.05550835281610489,
-                0.05550835281610489,
-                1.0
+                0.4548429250717163,
+                0.05180779844522476,
+                0.05180779844522476,
+                0.125
             ],
+            "DistortionStrength": 10.0,
             "Duration": 15,
             "EffectType": 0,
             "EmissiveIntensity": 0.800000011920929,
@@ -490,9 +495,9 @@
                         0.37696337699890137,
                         0.059208910912275314,
                         0.059208910912275314,
-                        1.0
+                        0.0
                     ],
-                    "Intensity": 0.0,
+                    "Intensity": 1.0,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -513,7 +518,7 @@
                     ]
                 }
             ],
-            "LifeTime": 276.2275390625,
+            "LifeTime": 284.8419189453125,
             "Loop": true,
             "Name": "Fuoco_Spawn_Fireball_FlameSprite1",
             "NumKeyFrames": 2,
