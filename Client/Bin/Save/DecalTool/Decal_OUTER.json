@@ -29,5 +29,129 @@
                 1.0
             ]
         ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_Soil_01_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_Soil_02_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_Soil_01_N.dds",
+        "WorldMatrix": [
+            [
+                14.893717765808105,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                15.157712936401367,
+                0.0
+            ],
+            [
+                205.60948181152344,
+                7.070770263671875,
+                0.4224979877471924,
+                1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_Dirt_08_T.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_Soil_02_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_Soil_01_N.dds",
+        "WorldMatrix": [
+            [
+                14.893717765808105,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                15.157712936401367,
+                0.0
+            ],
+            [
+                205.60948181152344,
+                7.070770263671875,
+                15.760477066040039,
+                1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_Dirt_08_T.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_Soil_02_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_Dirt_08_N.dds",
+        "WorldMatrix": [
+            [
+                14.893717765808105,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                15.157712936401367,
+                0.0
+            ],
+            [
+                220.79513549804688,
+                7.070770263671875,
+                17.67738151550293,
+                1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_Dirt_11_T.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_Dirt_08_BC.dds",
+        "N": "Prototype_Component_Texture_T_Decal_Dirt_08_N.dds",
+        "WorldMatrix": [
+            [
+                14.893717765808105,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                15.157712936401367,
+                0.0
+            ],
+            [
+                236.4766845703125,
+                7.070770263671875,
+                17.67738151550293,
+                1.0
+            ]
+        ]
     }
 ]

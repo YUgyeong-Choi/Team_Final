@@ -221,7 +221,7 @@ HRESULT CEliteUnit::Ready_Actor()
     PxTransform pose(positionVec + offset, rotationQuat);
 
 
-    PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y * 1.7f, scaleVec.z * 1.5f);
+    PxVec3 halfExtents = PxVec3(scaleVec.x * 1.2f, scaleVec.y * 1.7f, scaleVec.z * 1.3f);
     PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
     m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
     m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
@@ -240,26 +240,29 @@ HRESULT CEliteUnit::Ready_Actor()
 }
 
 void CEliteUnit::HandleMovementDecision(_float fDistance, _float fTimeDelta)
-{  // 가까우면 
-    if (fDistance < m_fChasingDistance)
-    {
-        if (m_fChangeMoveDirCooldown > 0.f)
-        {
-            m_fChangeMoveDirCooldown -= fTimeDelta;
-            m_fChangeMoveDirCooldown = max(m_fChangeMoveDirCooldown, 0.f);
-        }
-        else
-        {
-            _int iMoveDir = GetRandomInt(1, 3);
-            m_pAnimator->SetInt("MoveDir", iMoveDir);
-            m_fChangeMoveDirCooldown = 5.f;
-        }
-    }
-    else if (fDistance >= m_fChasingDistance)
-    {
-        m_pAnimator->SetInt("MoveDir", 0);
-    }
-    m_eCurrentState = EEliteState::WALK;
+{   
+ //   // 가까우면 
+ //   if (fDistance < m_fChasingDistance)
+ //   {
+ //       if (m_fChangeMoveDirCooldown > 0.f)
+ //       {
+ //           m_fChangeMoveDirCooldown -= fTimeDelta;
+ //           m_fChangeMoveDirCooldown = max(m_fChangeMoveDirCooldown, 0.f);
+ //       }
+ //       else
+ //       {
+ //           _int iMoveDir = GetRandomInt(1, 3);
+ //           m_pAnimator->SetInt("MoveDir", iMoveDir);
+ //           m_fChangeMoveDirCooldown = 5.f;
+	//		cout << "현재 이동 방향 : " << iMoveDir << endl;
+ //       }
+ //   }
+ //   else if (fDistance >= m_fChasingDistance)
+ //   {
+ //       m_pAnimator->SetInt("MoveDir", 0);
+ //       cout << "현재 프론트로 바뀜" << endl;
+ //   }
+ ////   m_eCurrentState = EEliteState::WALK;
     m_pAnimator->SetFloat("Distance", abs(fDistance));
 }
 
@@ -295,7 +298,7 @@ void CEliteUnit::UpdateState(_float fTimeDelta)
 
     if (m_eCurrentState == EEliteState::DEAD)
         return;
-    UpdateSpecificBehavior();
+    UpdateSpecificBehavior(fTimeDelta);
     _float fDistance = Get_DistanceToPlayer();
     if (m_bGroggyActive)
     {
@@ -412,8 +415,7 @@ _bool CEliteUnit::CanMove() const
         m_eCurrentState != EEliteState::DEAD &&
         m_eCurrentState != EEliteState::PARALYZATION &&
         m_eCurrentState != EEliteState::ATTACK &&
-        m_eCurrentState != EEliteState::FATAL &&
-        !m_bIsFirstAttack;
+        m_eCurrentState != EEliteState::FATAL;
 }
 
 _bool CEliteUnit::IsTargetInFront(_float fDectedAngle) const
@@ -543,32 +545,43 @@ void CEliteUnit::UpdateNormalMove(_float fTimeDelta)
         _vector vTargetPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 
         _int iMoveDir = m_pAnimator->GetInt("MoveDir");
-
+        if (m_fChangeMoveDirCooldown > 0.f)
+            m_fChangeMoveDirCooldown -= fTimeDelta;
         switch (iMoveDir)
         {
         case ENUM_CLASS(EMoveDirection::FRONT):
         {
-
            _bool bCanChase =  m_pTransformCom->ChaseWithOutY(vTargetPos, fTimeDelta, m_fChasingDistance, nullptr, m_pNaviCom);
-           if (bCanChase == false)
+           if (bCanChase == false && m_fChangeMoveDirCooldown <= 0.f)
            {
-			   //m_ePrevState = m_eCurrentState;
-			   //m_eCurrentState = EEliteState::IDLE;
-			   //m_pAnimator->SetBool("Move", false);
-      //         _float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
-      //         m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetY(m_pTransformCom->Get_State(STATE::POSITION), fY));
-      //         return;
+               m_ePrevState = m_eCurrentState;
+               // 랜덤 방향 전환
+               int randDir = GetRandomInt(1, 3); // BACK, LEFT, RIGHT
+               m_pAnimator->SetInt("MoveDir", randDir);
+
+               m_eCurrentState = EEliteState::WALK;
+               m_pAnimator->SetBool("Move", true);
+
+               m_fChangeMoveDirCooldown = 1.5f; // 자주 안 바뀌게 쿨타임
+               return;
            }
         }
             break;
         case ENUM_CLASS(EMoveDirection::BACK):
-            m_pTransformCom->Go_Backward(fTimeDelta, nullptr, m_pNaviCom);
-            break;
         case ENUM_CLASS(EMoveDirection::LEFT):
-            m_pTransformCom->Go_Left(fTimeDelta, nullptr, m_pNaviCom);
-            break;
         case ENUM_CLASS(EMoveDirection::RIGHT):
-            m_pTransformCom->Go_Right(fTimeDelta, nullptr, m_pNaviCom);
+			_bool bCanChase = Get_DistanceToPlayer() > m_fChasingDistance;
+            if (bCanChase && m_fChangeMoveDirCooldown <= 0.f)
+            {
+                m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
+                return;
+            }
+			if (iMoveDir == ENUM_CLASS(EMoveDirection::BACK))
+				m_pTransformCom->Go_Backward(fTimeDelta, nullptr, m_pNaviCom);
+			else if (iMoveDir == ENUM_CLASS(EMoveDirection::LEFT))
+				m_pTransformCom->Go_Left(fTimeDelta, nullptr, m_pNaviCom);
+			else if (iMoveDir == ENUM_CLASS(EMoveDirection::RIGHT))
+				m_pTransformCom->Go_Right(fTimeDelta, nullptr, m_pNaviCom);
             break;
         }
 
@@ -601,7 +614,10 @@ void CEliteUnit::Reset()
             pController->SetState(pController->GetEntryNodeId());
         }
     }
+    SwitchFury(false, 1.f);
     SwitchEmissive(false, 1.f);
+    m_iCurNodeID = -1;
+    m_iPrevNodeID = -1;
 }
 
 void CEliteUnit::Register_Events()
@@ -726,6 +742,7 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 				m_eCurrentState = EEliteState::GROGGY;
                 m_bGroggyActive = false;
                 m_fGroggyGauge = 0.f;
+                SwitchFury(false, 1.f);
             }
             break;
         case Client::EPlayerState::GARD:

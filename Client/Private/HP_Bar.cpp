@@ -128,6 +128,11 @@ HRESULT CHP_Bar::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fCurrentRatio, sizeof(_float))))
 		return E_FAIL;
 
+	_float isHpbar = 1.f;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_IsHpBar", &isHpbar, sizeof(_float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

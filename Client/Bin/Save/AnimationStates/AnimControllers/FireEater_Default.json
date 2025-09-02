@@ -1590,7 +1590,7 @@
                     "Op": "Greater",
                     "ParamName": "Distance",
                     "Type": "Float",
-                    "fThreshold": 10.0,
+                    "fThreshold": 6.0,
                     "iThreshold": 0
                 }
             ],
@@ -1612,7 +1612,7 @@
                     "Op": "Less",
                     "ParamName": "Distance",
                     "Type": "Float",
-                    "fThreshold": 10.0,
+                    "fThreshold":6.0,
                     "iThreshold": 0
                 },
                 {
@@ -1648,7 +1648,7 @@
                     "Op": "Greater",
                     "ParamName": "Distance",
                     "Type": "Float",
-                    "fThreshold": 10.0,
+                    "fThreshold": 6.0,
                     "iThreshold": 0
                 }
             ],
@@ -2663,7 +2663,7 @@
                     "Op": "Less",
                     "ParamName": "Distance",
                     "Type": "Float",
-                    "fThreshold": 10.0,
+                    "fThreshold": 6.0,
                     "iThreshold": 0
                 }
             ],

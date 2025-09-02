@@ -58,6 +58,7 @@ void CBossUnit::Reset()
 	Ready_AttackPatternWeightForPhase1();
 	m_ActiveEffect.clear();
 	m_pAnimator->SetPlayRate(1.f);
+	m_fFirstChaseBeforeAttack = 2.f;
 }
 
 void CBossUnit::Ready_AttackPatternWeightForPhase1()

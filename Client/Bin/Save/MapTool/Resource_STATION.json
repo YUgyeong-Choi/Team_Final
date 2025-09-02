@@ -248,7 +248,7 @@
         "Collision": false,
         "ModelName": "SM_Exterior_TrashPaper_02",
         "NoInstancing": false,
-        "ObjectCount": 12,
+        "ObjectCount": 13,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_TrashPaper_02.bin"
     },
     {
@@ -506,8 +506,8 @@
     {
         "Collision": false,
         "ModelName": "SM_Interior_Bottle_01",
-        "NoInstancing": true,
-        "ObjectCount": 3,
+        "NoInstancing": false,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Bottle_01.bin"
     },
     {
@@ -520,8 +520,8 @@
     {
         "Collision": false,
         "ModelName": "SM_Interior_Bottle_02",
-        "NoInstancing": true,
-        "ObjectCount": 4,
+        "NoInstancing": false,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Bottle_02.bin"
     },
     {
@@ -565,6 +565,20 @@
         "NoInstancing": false,
         "ObjectCount": 12,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Box_08.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Can_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Can_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Can_04",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Can_04.bin"
     },
     {
         "Collision": false,

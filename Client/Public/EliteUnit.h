@@ -105,7 +105,7 @@ protected:
 	void ApplyRootMotionDelta(_float fTimeDelta);
 	virtual void UpdateNormalMove(_float fTimeDelta);
 
-	virtual void UpdateSpecificBehavior() {};
+	virtual void UpdateSpecificBehavior(_float fTimeDelta) {};
 
 	_float CalculateCurrentHpRatio() const
 	{
@@ -162,6 +162,11 @@ protected:
 	_float   m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
 	_float   m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값
 	_float   m_fTurnTimeDuringAttack = 0.f;
+
+
+
+	_int m_iCurNodeID = -1;
+	_int m_iPrevNodeID = -1;
 
 #ifdef _DEBUG
 	_bool m_bDebugMode = false;

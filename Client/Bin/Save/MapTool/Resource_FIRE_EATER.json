@@ -182,7 +182,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_RoofFrame_01.bin"
     },
     {
-        "Collision": true,
+        "Collision": false,
         "ModelName": "SM_FireEaterFloor_01_JJS",
         "NoInstancing": false,
         "ObjectCount": 1,

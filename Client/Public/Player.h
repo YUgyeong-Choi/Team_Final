@@ -229,6 +229,13 @@ public:
 
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
+public:
+	void SetElement(EELEMENT eElement) { m_eElement = eElement; }
+	EELEMENT GetElement() const { return m_eElement; }
+
+private: /* [ 何咯 加己 ] */
+	EELEMENT m_eElement = { EELEMENT::NONE };
+
 private: /* [ 漂荐 葛记 ] */
 	HITMOTION m_eHitMotion = { HITMOTION::END };
 	eHitedTarget m_eHitedTarget = { eHitedTarget::END };

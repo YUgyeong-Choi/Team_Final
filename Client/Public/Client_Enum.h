@@ -10,6 +10,21 @@ namespace Client
 		HITED, FATAL, END
 	};
 
+	enum class EELEMENT
+	{
+		NONE = 0,		// 무속성
+		FIRE = 1,		// 불
+		WATER = 2,		// 물
+		ELECTRIC = 3,   // 전기
+		ICE = 4,		// 얼음
+		WIND = 5,		// 바람
+		EARTH = 6,		// 대지
+		LIGHT = 7,		// 빛
+		DARK = 8,		// 어둠
+
+		END
+	};
+
 	enum class HITMOTION { NONE_MOTION,STRONG_KNOCKBACK, KNOCKBACK, UP, FURY_STAMP, STAMP,NORMAL, END }; //필요한거 추가하시오
 
 	enum class LEVEL { STATIC, LOADING, LOGO, KRAT_CENTERAL_STATION, KRAT_HOTEL, YG, CY, GL, DH, YW, JW,END };
