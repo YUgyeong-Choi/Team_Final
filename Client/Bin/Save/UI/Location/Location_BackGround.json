@@ -77,7 +77,7 @@
             ],
             "ProtoTag": "Prototype_GameObject_Dynamic_UI",
             "RotationZ": 0.0,
-            "SizeX": 0.04,
+            "SizeX": 0.4,
             "SizeY": 0.002,
             "Texturetag": "Prototype_Component_Texture_Line_Center_Gradation",
             "fAlpha": 0.0,

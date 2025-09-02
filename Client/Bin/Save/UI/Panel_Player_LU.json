@@ -55,7 +55,7 @@
                 "Features": [
                     {
                         "EndPos": {
-                            "X": 0.09,
+                            "X": 0.0975,
                             "Y": 0.087
                         },
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
@@ -92,8 +92,8 @@
                 "Features": [
                     {
                       "EndPos": {
-                        "X": 0.105,
-                        "Y": 0.107
+                        "X": 0.106,
+                        "Y": 0.108
                       },
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
                         "StartPos": {
