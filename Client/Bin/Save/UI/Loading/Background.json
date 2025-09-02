@@ -57,7 +57,7 @@
                 },
                 "ProtoTag": "Prototype_GameObject_Static_UI",
                 "RotationZ": 0.0,
-                "SizeX": 2000.0,
+                "SizeX": 1.25,
                 "SizeY": 1.25,
                 "Texturetag": "Prototype_Component_Texture_BackGround_Loading_Paper",
                 "fAlpha": 1.0,

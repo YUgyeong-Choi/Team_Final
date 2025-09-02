@@ -68,6 +68,8 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
         m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 
+
+        m_fOffset = 0.1f;
     }
 
    

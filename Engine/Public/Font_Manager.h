@@ -25,6 +25,10 @@ private:
 
 	map<const _wstring, class CCustomFont*>		m_Fonts;
 
+	_uint					m_iWidth{}, m_iHeight{};
+
+	_float					m_fRatio = { 1.f };
+
 private:
 	class CCustomFont* Find_Font(const _wstring& strFontTag);
 

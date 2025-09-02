@@ -42,7 +42,7 @@
                 "Features": [
                     {
                         "EndPos": {
-                            "X": 0.865,
+                            "X": 0.8625,
                             "Y": 0.07400000095367432
                         },
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
