@@ -249,7 +249,7 @@ void CBayonet::SetisAttack(_bool isAttack)
 	if (isAttack)
 	{
 		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
-		m_pGameInstance->Get_Scene()->resetFiltering(*m_pPhysXActorCom->Get_Actor());
+
 	}
 	else
 	{

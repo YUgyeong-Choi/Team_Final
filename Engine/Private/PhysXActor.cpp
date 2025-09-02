@@ -632,6 +632,10 @@ void CPhysXActor::Set_RenderColor()
     case COLLIDERTYPE::NPC:
         m_vRenderColor = Colors::BlueViolet;
         break;
+    case COLLIDERTYPE::BOSS_WEAPON:
+    case COLLIDERTYPE::BOSS_PROJECTILE:
+        m_vRenderColor = Colors::HotPink;
+        break;
     }
 }
 #endif
