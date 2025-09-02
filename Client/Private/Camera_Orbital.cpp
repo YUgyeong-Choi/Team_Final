@@ -114,7 +114,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		else
 			Update_CameraLook(fTimeDelta);
 	}
-	printf("Yaw: %f\n", m_fYaw);
+
 	__super::Update(fTimeDelta);
 }
 
@@ -211,8 +211,6 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed)
 	m_fTargetLerpSpeed = fLerpSpeed;
 
 	m_bSetPitchYaw = true;
-
-	printf("락온 누름 TargetYaw %f\n" , m_fTargetYaw);
 }
 
 void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool bCanMove, _float fTalkOffSet)
