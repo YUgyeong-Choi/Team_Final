@@ -249,7 +249,7 @@ void CBayonet::SetisAttack(_bool isAttack)
 	if (isAttack)
 	{
 		m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
-		m_pGameInstance->Get_Scene()->resetFiltering(*m_pPhysXActorCom->Get_Actor());
+
 	}
 	else
 	{
@@ -511,7 +511,10 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
 			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
 			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
-			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB)
+			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::MAINSKILLA
+			|| eCategory == CPlayer::eAnimCategory::MAINSKILLB
+			|| eCategory == CPlayer::eAnimCategory::MAINSKILLC)
 		{
 			XMStoreFloat4x4(&desc.PresetMatrix,
 				XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);

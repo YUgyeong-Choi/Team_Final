@@ -47,7 +47,7 @@
             ]
         }
     ],
-    "LifeDuration": 0.35,
+    "LifeDuration": 0.45,
     "LifeTime": 0.0,
     "Loop": true,
     "Name": "Player_WeaponTrail",
