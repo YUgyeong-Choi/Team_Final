@@ -1126,7 +1126,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 
-			m_pSoundCom->Play("SE_PC_SK_Hit_FatalAttack_Oil_0");
+	 		m_pSoundCom->Play("SE_PC_SK_Hit_FatalAttack_Oil_0");
 
 		}
 		if (m_fSetTime > 1.f && !m_bSetCamera[1])
@@ -2159,7 +2159,7 @@ HRESULT CPlayer::Ready_Arm()
 	
 	eDesc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	eDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
-	
+	eDesc.pOwner = this;
 
 	CGameObject* pGameObject = nullptr;
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_LegionArm_Steel"),

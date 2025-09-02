@@ -43,7 +43,7 @@ public:
 	// Ray로 인항 충돌을 하면 On_Hit를 호출함 (HitPos & HitNormal을 가지고 올 수 있음)
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 
-	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
+	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 
 private:
