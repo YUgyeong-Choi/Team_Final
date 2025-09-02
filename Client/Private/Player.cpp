@@ -256,6 +256,9 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_U))
 		Reset();
 
+	if (KEY_DOWN(DIK_Y))
+		m_pAnimator->SetTrigger("GetItem");
+
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
 

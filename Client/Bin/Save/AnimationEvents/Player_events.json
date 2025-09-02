@@ -567,6 +567,13 @@
             "TickPerSecond": 55.0
         },
         {
+            "ClipName": "AS_Pino_Prop_ItemGet",
+            "Duration": 85.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
             "ClipName": "AS_Pino_Stargazer_Active_End",
             "Duration": 55.0,
             "IsLoop": false,

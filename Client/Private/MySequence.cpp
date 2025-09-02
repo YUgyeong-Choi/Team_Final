@@ -6,7 +6,6 @@
 
 CMySequence::~CMySequence()
 {
-    Safe_Release(m_pAnimator); 
 }
 
 void CMySequence::Get(int index, int** start, int** end, int* type, unsigned int* color)

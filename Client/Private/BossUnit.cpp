@@ -15,7 +15,7 @@ CBossUnit::CBossUnit(const CBossUnit& Prototype)
 
 HRESULT CBossUnit::Initialize(void* pArg)
 {
-	m_fMaxHp = 900.f;
+	m_fMaxHp = 700.f;
 	m_fHp = m_fMaxHp;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -25,6 +25,9 @@ HRESULT CBossUnit::Initialize(void* pArg)
 	m_pModelCom->Update_Bones();
 	m_pAnimator->SetPlaying(false);
 	Ready_AttackPatternWeightForPhase1();
+	m_fGroggyScale_Weak = 0.01f;
+	m_fGroggyScale_Strong = 0.025f;
+	m_fGroggyScale_Charge = 0.08f;
 	return S_OK;
 }
 
