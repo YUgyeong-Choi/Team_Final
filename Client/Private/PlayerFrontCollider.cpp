@@ -154,7 +154,7 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 			m_pOwner->SetbIsGroggyAttack(true);
 			m_pOwner->SetFatalTarget(pEliteUnit);
 		}
-		else if(eState != CEliteUnit::EEliteState::FATAL&&eState != CEliteUnit::EEliteState::GROGGY)
+		else if(eState != CEliteUnit::EEliteState::FATAL&& eState != CEliteUnit::EEliteState::GROGGY)
 		{
 			m_pOwner->SetbIsGroggyAttack(false);
 			m_pOwner->SetIsFatalBoss(false);
@@ -216,12 +216,6 @@ void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eC
 	{
 		return;
 	}
-
-	m_pOwner->SetbIsBackAttack(false);
-	m_pOwner->SetbIsGroggyAttack(false);
-	m_pOwner->SetIsFatalBoss(false);
-	m_pOwner->SetFatalTargetNull();
-	
 }
 
 void CPlayerFrontCollider::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
