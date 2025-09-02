@@ -1616,6 +1616,9 @@ void CMapTool::SelectByDrag(const _float2& vMouseDragEnd)
 
 		for (_int iID : IDs)
 		{
+			//아이디가 0은 디폴트 값, 음수는 몬스터임
+			if (iID <= 0)
+				continue;
 
 			//새로 추가
 			_int iIndex = Find_HierarchyIndex_By_ID(iID);
