@@ -36,6 +36,8 @@ HRESULT CBossDoor::Initialize(void* pArg)
 
 	Ready_Trigger(pDoorMeshDESC);
 
+	m_pAnimator->SetPlaying(true);
+
 	return S_OK;
 }
 
@@ -70,6 +72,11 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 void CBossDoor::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+	if (m_pAnimator)
+		m_pAnimator->Update(fTimeDelta);
+
+	if (m_pModelCom)
+		m_pModelCom->Update_Bones();
 }
 
 void CBossDoor::Late_Update(_float fTimeDelta)
@@ -92,15 +99,7 @@ HRESULT CBossDoor::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
-		_float Emissive = 0.f;
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &Emissive, sizeof(_float))))
-			return E_FAIL;
-
-		if (FAILED(pModel->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
-		{
-			return E_FAIL;
-		}
-
+		pModel->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		pModel->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
 		if (FAILED(pModel->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
@@ -119,9 +118,22 @@ HRESULT CBossDoor::Render()
 		}
 		
 
-		m_pShaderCom->Begin(0);
+		_float m_fEmissive = 0.f;
+		m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float));
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Emissive", i, aiTextureType_EMISSIVE, 0)))
+		{
+			_float fEmissive = 0.f;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+				return E_FAIL;
+		}
 
-		pModel->Render(i);
+		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
 	}
 
 #ifdef _DEBUG
@@ -187,19 +199,40 @@ void CBossDoor::Play_Sound()
 
 }
 
+void CBossDoor::Update_ColliderPos()
+{
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
+
+	// 행렬 → 스케일, 회전, 위치 분해
+	_vector vScale, vRotationQuat, vTranslation;
+	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
+
+	// 위치 추출
+	_float3 vPos;
+	XMStoreFloat3(&vPos, vTranslation);
+
+	// 회전 추출
+	_float4 vRot;
+	XMStoreFloat4(&vRot, vRotationQuat);
+
+	// PxTransform으로 생성
+	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
+	m_pPhysXActorCom->Set_Transform(physxTransform);
+}
+
 HRESULT CBossDoor::Ready_Components(void* pArg)
 {
 	CBossDoor::BOSSDOORMESH_DESC* BossDoorDESC = static_cast<BOSSDOORMESH_DESC*>(pArg);
 
 	// 애니메이션 있는거 이걸로 해야 함
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxAnimMesh"),
-	//	TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-	//	return E_FAIL;
-
-	/* Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
-		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxAnimMesh"),
+		TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
+
+	///* Com_Shader */
+	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
+	//	TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+	//	return E_FAIL;
 
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),

@@ -36,7 +36,7 @@ HRESULT CDynamicMesh::Initialize(void* pArg)
 
 	m_pTransformCom->Set_WorldMatrix(StaicMeshDESC->WorldMatrix);
 
-	if (FAILED(Ready_Collider()))
+	if (FAILED(Ready_Collider(StaicMeshDESC)))
 		return E_FAIL;
 
 	return S_OK;
@@ -176,8 +176,9 @@ HRESULT CDynamicMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CDynamicMesh::Ready_Collider()
+HRESULT CDynamicMesh::Ready_Collider(void* pArg)
 {
+	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
 	if (m_pModelCom)
 	{
 		_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(0);
@@ -185,7 +186,6 @@ HRESULT CDynamicMesh::Ready_Collider()
 
 		vector<PxVec3> physxVertices;
 		physxVertices.reserve(numVertices);
-
 		const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(0);
 		for (_uint i = 0; i < numVertices; ++i)
 		{
@@ -198,7 +198,7 @@ HRESULT CDynamicMesh::Ready_Collider()
 		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
 		// 3-1. 스케일, 회전, 위치 변환
-		PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+		PxVec3 scaleVec = PxVec3(XMVectorGetX(S) * StaicMeshDESC->fColliderScale, XMVectorGetY(S) * StaicMeshDESC->fColliderScale, XMVectorGetZ(S) * StaicMeshDESC->fColliderScale);
 		PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 
