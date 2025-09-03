@@ -83,6 +83,7 @@ public:
 
 	// 몬스터가 죽을 때 불러줌
 	void Set_HitTarget(CUnit* pTarget, _bool bDead);
+
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
 	void			CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -91,8 +92,8 @@ private: /* [ 피격 헬퍼함수 ] */
 private:
 	void			SitAnimationMove(_float fTimeDelta);
 
-/* [ 입력 처리 ] */
-private: 
+
+private: /* [ 입력 처리 ] */
 	void			HandleInput();									// [1] 키 입력만 처리
 	EPlayerState	EvaluateTransitions();							// [2] 입력에 따라 상태 전이
 	void			UpdateCurrentState(_float fTimeDelta);			// [3] 현재 상태 로직 수행
@@ -141,6 +142,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
 	//HRESULT Ready_Effect();
+
 private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
@@ -151,11 +153,10 @@ public: /* [ 상호작용 관련 ] */
 	void GetWeapon();
 private:
 	void Play_CutScene_Door();
-
-private:
 	void ItemWeapOnOff(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
 
+private: /* [ 무기 관련 ] */
 	void Weapon_Collider_Active();
 	void Reset_Weapon();
 
@@ -227,16 +228,16 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_Hited;
 	friend class CPlayer_Dead;
 
-public:
+public: /* [ 특수 모션 관련 ] */
 	void SetHitMotion(HITMOTION eHitMotion) { m_eHitMotion = eHitMotion; }
 	HITMOTION GetHitMotion() const { return m_eHitMotion; }
 	void SetfReceiveDamage(_float fDamage) { m_fReceiveDamage = fDamage; }
 	_float GetfReceiveDamage() const { return m_fReceiveDamage; }
 	void SetHitedAttackType(CBossUnit::EAttackType eType) { m_eHitedAttackType = eType; }
-
+	void IsPerfectGard(_float fTimeDelta);
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
-public:
+public: /* [ 부여 속성 관련 ] */
 	void SetElementTypeDuration(EELEMENT eElement, _float fValue) { m_vecElements[eElement].fDuration = fValue; }
 	void SetElementTypeWeight(EELEMENT eElement, _float fValue) 
 	{
@@ -301,6 +302,7 @@ private: /* [ 전투관련 변수 ] */
 	_int 	m_iCurrentCombo = { 0 };
 
 	_float  m_fReceiveDamage = {};
+	_float  m_fPerfectGardTime = {};
 	_vector m_vHitPos = {};
 	_vector m_vHitNormal = {};
 	EHitDir m_eDir = EHitDir::END;

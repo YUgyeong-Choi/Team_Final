@@ -241,6 +241,9 @@ void CPlayer::Update(_float fTimeDelta)
 	else
 		OffBurn(fTimeDelta);
 
+	/* [ 가드시간(0.2f) ] */
+	IsPerfectGard(fTimeDelta);
+
 	/* [ 플레이어 락온 위치  ] */
 	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
 	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
@@ -1272,19 +1275,53 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		}
 		else if (m_eHitedTarget == eHitedTarget::BOSS)
 		{
-			
-			//가드 밀림 여부
-			_float  m_fTime = 0.1f;
-			_float  m_fDistance = 3.f;
-
-			if (!m_bMove)
+			// 퓨리 가드 성공 = 퍼펙트 가드 성공
+			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE)
 			{
-				_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
-				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
-				SyncTransformWithController();
+				_float  m_fTime = 0.4f;
+				_float  m_fDistance = 3.f;
+
+				if (m_pHitedTarget && !m_bMove)
+				{
+					const _vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+					_vector vForward = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
+					vForward = XMVector3Normalize(XMVectorSet(XMVectorGetX(vForward), 0.f, XMVectorGetZ(vForward), 0.f));
+
+					const _vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vForward));
+
+					const _vector vTargetPos = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+					const _vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+					_vector vToPlayer = XMVectorSubtract(vPlayerPos, vTargetPos);
+					vToPlayer = XMVector3Normalize(XMVectorSet(XMVectorGetX(vToPlayer), 0.f, XMVectorGetZ(vToPlayer), 0.f));
+
+					const _float fSide = XMVectorGetX(XMVector3Dot(vToPlayer, vRight));
+					const _float fSign = (fSide >= 0.f) ? static_cast<_float>(1.f) : static_cast<_float>(-1.f);
+
+					const _float fCos45 = 0.17f;
+					const _float fSin45 = 0.98f;
+
+					_vector vPushDir = XMVector3Normalize(XMVectorAdd(XMVectorScale(vForward, fCos45), XMVectorScale(vRight, fSign * fSin45)));
+
+					m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vPushDir, m_fDistance, m_pControllerCom);
+					SyncTransformWithController();
+				}
+			}
+			else
+			{
+				//가드 밀림 여부
+				_float  m_fTime = 0.1f;
+				_float  m_fDistance = 3.f;
+
+				if (!m_bMove)
+				{
+					_vector vLook = XMVectorNegate(m_pTransformCom->Get_State(STATE::LOOK));
+					m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+					SyncTransformWithController();
+				}
 			}
 		}
-
 		break;
 	}
 	case eAnimCategory::HITEDUP:
@@ -1319,10 +1356,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vPushDir, m_fDistance, m_pControllerCom);
 				SyncTransformWithController();
-			}
-			if (m_bMove)
-			{
-				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 			}
 		}
 		else
@@ -1824,6 +1857,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE ||
 				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
 			{
+
 				m_bIsHit = true;
 				return;
 			}
@@ -1909,10 +1943,19 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		if (m_bIsGuarding)
 		{
 			//퓨리어택이라면? 가드불가
-			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE &&
+			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE ||
 				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
 			{
+				//근데 퍼펙트 가드 타임 안이라면 가드 가능
+				if (m_fPerfectGardTime < 0.2f)
+				{
+					m_bGardHit = true;
+					m_bIsInvincible = true;
+					return;
+				}
+
 				m_bIsHit = true;
+				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 				return;
 			}
 
@@ -1930,6 +1973,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		m_bIsHit = true;
 
 	}
+	/* [ 보스 몬스터 피격 ] */
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
 		//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
@@ -1978,7 +2022,16 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE ||
 				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
 			{
+				//근데 퍼펙트 가드 타임 안이라면 가드 가능
+				if (m_fPerfectGardTime < 0.2f)
+				{
+					m_bIsInvincible = true;
+					m_bGardHit = true;
+					return;
+				}
+
 				m_bIsHit = true;
+				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 				return;
 			}
 
@@ -2026,6 +2079,14 @@ void CPlayer::ReadyForState()
 	m_pStateArray[ENUM_CLASS(EPlayerState::DEAD)] = new CPlayer_Dead(this);
 
 	m_pCurrentState = m_pStateArray[ENUM_CLASS(EPlayerState::IDLE)];
+}
+
+void CPlayer::IsPerfectGard(_float fTimeDelta)
+{
+	if (m_Input.bShift)
+		m_fPerfectGardTime += fTimeDelta;
+	else
+		m_fPerfectGardTime = 0.f;
 }
 
 
