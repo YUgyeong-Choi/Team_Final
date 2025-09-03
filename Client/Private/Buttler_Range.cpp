@@ -3,6 +3,7 @@
 #include "Weapon_Monster.h"
 #include "Player.h"
 #include "LockOn_Manager.h" 
+#include "PhysX_IgnoreSelfCallback.h"
 
 CButtler_Range::CButtler_Range(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CMonster_Base{pDevice, pContext}
@@ -47,6 +48,13 @@ HRESULT CButtler_Range::Initialize(void* pArg)
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
 
 	m_pWeapon->Collider_FilterOff();
+
+
+	// 서로는 충돌 무시하게
+
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors((m_pWeapon)->Get_PhysXActor()->Get_Actor());
+	
 
 	return S_OK;
 }
@@ -212,6 +220,17 @@ void CButtler_Range::Update_State()
 	{
 		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 
+		
+		RayCast(m_pPhysXActorCom);
+
+		if (m_bRayHit)
+		{
+			m_pAnimator->SetBool("IsAttack", true);
+		}
+		else
+		{
+			m_pAnimator->SetBool("IsAttack", false);
+		}
 	}
 
 	if (m_iAttackCount == 3)
@@ -487,12 +506,12 @@ HRESULT CButtler_Range::Ready_Weapon()
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.125f, 0.f, 0.f };
-	Desc.InitScale = { 1.f, 0.8f, 1.f };
+	Desc.InitScale = { 1.05f, 0.84f, 1.05f };
 	Desc.iRender = 0;
 
 	Desc.szMeshID = TEXT("Buttler_Range_Weapon");
 	lstrcpy(Desc.szName, TEXT("Buttler_Range_Weapon"));
-	Desc.vAxis = { 1.f,0.f,0.5f,0.f };
+	Desc.vAxis = { 1.f,0.f,0.2f,0.f };
 	Desc.fRotationDegree = { 180.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
 	Desc.vPhsyxExtent = { 0.8f, 0.2f, 0.2f };

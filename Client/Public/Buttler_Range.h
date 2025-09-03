@@ -63,6 +63,8 @@ private:
 	// 날아가는 속도
 	_float m_fAwaySpeed = { 1.f };
 
+	
+
 
 public:
 	static CButtler_Range* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
