@@ -245,8 +245,10 @@ public: /* [ 부여 속성 관련 ] */
 		_float fWeight = m_vecElements[eElement].fElementWeight + fValue;
 		m_vecElements[eElement].fElementWeight = min(fWeight, 1.f);
 
-		//cout << "Element : " << static_cast<_int>(eElement) << " Weight : " << m_vecElements[eElement].fElementWeight << endl;
+		cout << "Element : " << static_cast<_int>(eElement) << " Weight : " << m_vecElements[eElement].fElementWeight << endl;
 	}
+
+	void Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight);
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
@@ -392,6 +394,7 @@ private: /* [ 리전 암 내구도 ] */
 private: /* [ 현재 상태 ] */
 	_bool	m_bIsGuarding = { false };
 	_bool	m_bIsHit = { false };
+	_bool	m_bIsForceDead = { false };
 	_bool	m_bIsInvincible = { false };
 	_float	m_fIsInvincible = { false };
 	_bool	m_bIsLockOn = { false };

@@ -528,6 +528,11 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 		eNextState = EPlayerState::HITED;
 		m_bIsHit = false;
 	}
+	else if (m_bIsForceDead)
+	{
+		eNextState = EPlayerState::DEAD;
+		m_bIsForceDead = false;
+	}
 
 	if (eNextState != m_eCurrentState && m_pCurrentState->CanExit())
 	{
@@ -1745,7 +1750,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		//히트한 몬스터타입
 		m_eHitedTarget = eHitedTarget::MONSTER;
 
-
+		cout << "몬스터 웨폰 충돌 들어옴" << endl;
 		//피격한 객체를 찾는다.
 		CUnit* pUnit = nullptr;
 		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);
@@ -1756,7 +1761,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 				return;
 
 			pWeapon->Add_CollisonObj(this);
-			CUnit* pUnit = pWeapon->Get_Owner();
+			pUnit = pWeapon->Get_Owner();
 		}
 		else
 		{
@@ -1765,6 +1770,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 				return;
 		}
 
+		//히트한 몬스터를 찾는다.
 		//일반 몬스터나 엘리트 몬스터가 아니라면 리턴
 		if (pUnit->Get_UnitType() != EUnitType::ELITE_MONSTER &&
 			pUnit->Get_UnitType() != EUnitType::NORMAL_MONSTER &&
@@ -1789,10 +1795,20 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		if (m_bIsGuarding)
 		{
 			//퓨리어택이라면? 가드불가
-			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE &&
+			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE ||
 				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
 			{
+				//근데 퍼펙트 가드 타임 안이라면 가드 가능
+				if (m_fPerfectGardTime < 0.2f)
+				{
+					m_eHitedAttackType = CBossUnit::EAttackType::NONE;
+					m_bGardHit = true;
+					m_bIsInvincible = true;
+					return;
+				}
+
 				m_bIsHit = true;
+				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 				return;
 			}
 
@@ -1810,6 +1826,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		m_bIsHit = true;
 
 	}
+	/* [ 보스 몬스터 피격 ] */
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
 	{
 		//만약 히트된 대상이 오일이라면 피격스위치는 켜지지않는다.
@@ -1851,14 +1868,24 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 			m_vHitNormal = vOtherPos - vPlayerPos;
 		}
 
+		cout << " 현재 보스 공격 타입 :" << static_cast<_int>(m_eHitedAttackType) << endl;
 		if (m_bIsGuarding)
 		{
 			//퓨리어택이라면? 가드불가
 			if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE ||
 				m_eHitedAttackType == CBossUnit::EAttackType::FURY_STAMP)
 			{
+				//근데 퍼펙트 가드 타임 안이라면 가드 가능
+				if (m_fPerfectGardTime < 0.2f)
+				{
+					m_eHitedAttackType = CBossUnit::EAttackType::NONE;
+					m_bIsInvincible = true;
+					m_bGardHit = true;
+					return;
+				}
 
 				m_bIsHit = true;
+				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 				return;
 			}
 
@@ -1949,6 +1976,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 				//근데 퍼펙트 가드 타임 안이라면 가드 가능
 				if (m_fPerfectGardTime < 0.2f)
 				{
+					m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 					m_bGardHit = true;
 					m_bIsInvincible = true;
 					return;
@@ -2025,6 +2053,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 				//근데 퍼펙트 가드 타임 안이라면 가드 가능
 				if (m_fPerfectGardTime < 0.2f)
 				{
+					m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 					m_bIsInvincible = true;
 					m_bGardHit = true;
 					return;
@@ -2087,6 +2116,20 @@ void CPlayer::IsPerfectGard(_float fTimeDelta)
 		m_fPerfectGardTime += fTimeDelta;
 	else
 		m_fPerfectGardTime = 0.f;
+}
+
+void CPlayer::Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight)
+{
+	const _uint uElementCount = static_cast<_uint>(m_vecElements.size());
+
+	for (_uint uElemIndex = 0u; uElemIndex < uElementCount; ++uElemIndex)
+	{
+		EELEMENT eElemType = static_cast<EELEMENT>(uElemIndex);
+
+		EELEMENTCONDITION& tElemCond = m_vecElements[uElemIndex];
+		tElemCond.fDuration = fDefaultDuration;
+		tElemCond.fElementWeight = fDefaultWeight;
+	}
 }
 
 
@@ -2585,10 +2628,50 @@ void CPlayer::Reset_Weapon()
 void CPlayer::BurnActive(_float fDeltaTime)
 {
 	if (m_vecElements[0].fElementWeight <= 0.01f)
+	{
+		m_bBurnSwitch = false;
 		return;
+	}
 
 	_float fFireWeight = m_vecElements[0].fElementWeight;
 	_float fFireDuration = m_vecElements[0].fDuration;
+
+	if (fFireWeight > 0.f)
+	{
+		//점화 감소시간
+		if (m_pAnimator->CheckBool("Sprint"))
+		{
+			//스프린트 중이라면
+			_float Speed = 0.25f;
+			m_vecElements[0].fElementWeight -= fDeltaTime * Speed;
+		}
+		else if (m_bWalk)
+		{
+			//걷고있다면
+			_float Speed = 0.1f;
+			m_vecElements[0].fElementWeight -= fDeltaTime * Speed;
+		}
+		else
+		{
+			//뛰고 있다면
+			_float Speed = 0.15f;
+			m_vecElements[0].fElementWeight -= fDeltaTime * Speed;
+		}
+		
+		
+		if (m_fHp > 0.f)
+		{
+			m_fHp -= 0.05f;
+		}
+		else
+		{
+			m_vecElements[0].fElementWeight = 0.f;
+			m_vecElements[0].fDuration = 0.f;
+			m_bIsForceDead = true;
+		}
+
+		Callback_HP();
+	}
 
 	/* [ 화속성 시작 ] */
 	if (fFireWeight > 0.2f)
@@ -2600,20 +2683,6 @@ void CPlayer::BurnActive(_float fDeltaTime)
 	{
 		//플레이어 점화 종료
 		m_bBurnSwitch = false;
-	}
-
-	if (fFireWeight > 0.1f)
-	{
-		//점화 감소시간
-		_float Speed = 0.2f;
-		m_vecElements[0].fElementWeight -= fDeltaTime * Speed;
-		
-		if (m_fHp > 0.f)
-			m_fHp -= 0.05f;
-		else
-			m_bIsHit = true;
-
-		Callback_HP();
 	}
 }
 

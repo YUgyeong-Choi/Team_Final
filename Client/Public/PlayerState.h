@@ -3241,6 +3241,7 @@ public:
         if (m_pOwner->m_pLegionArm)
             m_pOwner->m_pLegionArm->SetisAttack(false);
 
+        m_pOwner->Initialize_ElementConditions(0.f, 0.f);
 
         m_pOwner->m_eHitMotion = HITMOTION::END;
         m_pOwner->m_eHitedTarget = CPlayer::eHitedTarget::END;
