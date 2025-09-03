@@ -209,7 +209,7 @@ void CButtler_Range::Update_State()
 	vDist = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 
 
-	m_pAnimator->SetFloat("Distance", XMVectorGetX(XMVector3Length(vDist)));
+	//m_pAnimator->SetFloat("Distance", XMVectorGetX(XMVector3Length(vDist)));
 
 	m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
@@ -497,6 +497,89 @@ void CButtler_Range::Reset()
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 
 	m_isFatal = false;
+}
+
+void CButtler_Range::RayCast(CPhysXActor* actor)
+{
+
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) -  m_pTransformCom->Get_State(STATE::POSITION);
+
+	vDir.m128_f32[3] = 0.f;
+
+	_vector vOffset = m_vRayOffset;
+	vOffset.m128_f32[1] += 0.3f;
+
+	PxVec3 origin = actor->Get_Actor()->getGlobalPose().p; //+VectorToPxVec3(vOffset);
+	XMFLOAT3 fLook;
+	XMStoreFloat3(&fLook, vDir);
+	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
+	direction.normalize();
+	_float fRayLength = 10.f;
+
+	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+	PxRaycastBuffer hit;
+	PxQueryFilterData filterData;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+	unordered_set<PxActor*> ignoreActors = actor->Get_IngoreActors();
+	CIgnoreSelfCallback callback(ignoreActors);
+
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+	{
+		if (hit.hasBlock)
+		{
+			PxRigidActor* hitActor = hit.block.actor;
+
+			if (hitActor == actor->Get_Actor())
+			{
+				printf(" Ray hit myself  skipping\n");
+				return;
+			}
+			PxVec3 hitPos = hit.block.position;
+			PxVec3 hitNormal = hit.block.normal;
+
+			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+
+			if (pHitActor)
+			{
+				if (nullptr == pHitActor->Get_Owner())
+					return;
+				pHitActor->Get_Owner()->On_Hit(this, actor->Get_ColliderType());
+			}
+
+		
+			if (COLLIDERTYPE::PLAYER == actor->Get_ColliderType())
+			{
+				m_bRayHit = true;
+				m_vRayHitPos = hitPos;
+			}
+			else
+			{
+				m_bRayHit = false;
+				m_vRayHitPos = {};
+			}
+			
+
+			
+		}
+	}
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = actor->Get_Actor()->getGlobalPose().p;
+		XMFLOAT3 fLook;
+		XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
+		_data.fRayLength = 10.f;
+		_data.bIsHit = m_bRayHit;
+		_data.vHitPos = m_vRayHitPos;
+		actor->Add_RenderRay(_data);
+
+		//m_bRayHit = false;
+		//m_vRayHitPos = {};
+	}
+#endif
 }
 
 HRESULT CButtler_Range::Ready_Weapon()

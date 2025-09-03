@@ -66,7 +66,7 @@ protected: /* [ Setup 함수 ] */
 public: /* [ 피직스 관련 ] */
 	PxRigidActor* Get_Actor(CPhysXActor* actor);
 	_vector Get_RayOffset() { return m_vRayOffset; }
-	void RayCast(CPhysXActor* actor);
+	virtual void RayCast(CPhysXActor* actor);
 #ifdef USE_IMGUI
 	class CAnimator* Get_Animator() const { return m_pAnimator; }
 #endif
