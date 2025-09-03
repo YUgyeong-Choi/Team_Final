@@ -246,8 +246,8 @@ void CFuoco::Update(_float fTimeDelta)
 	{
 		m_fFireFlameDuration -= fTimeDelta;
 		FlamethrowerAttack();
-		if (m_fFireFlameDuration <= 0.f)
 		{
+		if (m_fFireFlameDuration <= 0.f)
 			m_fFireFlameDuration = 0.f;
 		}
 	}
@@ -256,6 +256,9 @@ void CFuoco::Update(_float fTimeDelta)
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
+
+	if (static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0)
+		m_pHPBar->Set_RenderTime(0.f);
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)

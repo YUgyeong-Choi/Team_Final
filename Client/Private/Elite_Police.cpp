@@ -77,8 +77,8 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	m_fHp = m_fMaxHp;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
-	eDesc.fSizeX = 1.2f;
-	eDesc.fSizeY = 1.1f;
+	eDesc.fSizeX = 1.f;
+	eDesc.fSizeY = 1.f;
 	eDesc.fHeight = 3.5f;
 	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_bGroggyActive;
@@ -90,8 +90,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 	if (m_pHPBar)
 	{
-		// reset ¶§ releaseÇØ¼­
-		Safe_AddRef(m_pHPBar);
+		
 		m_pHPBar->Set_MaxHp(m_fHp);
 	}
 		

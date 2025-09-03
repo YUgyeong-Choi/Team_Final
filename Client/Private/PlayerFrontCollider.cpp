@@ -141,18 +141,52 @@ void CPlayerFrontCollider::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE e
 }
 void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
+		return;
+
+	if (nullptr == pOther)
+		return;
+
+	const _float fDotThreshold = 0.9f;
+
+	// 위치/룩 수집
+	_vector vMonsterPos = pOther->Get_TransfomCom()->Get_State(STATE::POSITION);
+	_vector vMonsterLook = pOther->Get_TransfomCom()->Get_State(STATE::LOOK);
+
+	_vector vPlayerPos = m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION);
+	_vector vPlayerLook = m_pOwner->Get_TransfomCom()->Get_State(STATE::LOOK);
+
+	// 평면(XZ) 투영 + 정규화
+	_vector vMonsterLookFlat = XMVector3Normalize(ProjectToXZ(vMonsterLook));
+	_vector vPlayerLookFlat = XMVector3Normalize(ProjectToXZ(vPlayerLook));
+
+	_vector vDirPlayerToMonster = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vMonsterPos, vPlayerPos)));
+	_vector vDirMonsterToPlayer = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vPlayerPos, vMonsterPos)));
+
+	_float fDot = XMVectorGetX(XMVector3Dot(vMonsterLookFlat, vDirMonsterToPlayer));
+
+	_bool bPlayerFrontMonster = (fDot >= fDotThreshold * fDotThreshold);
+	_bool bPlayerBehindMonster = (fDot <= -fDotThreshold);
+
 	/* [ 만약 보스몬스터라면 ] */
 	CEliteUnit* pEliteUnit = dynamic_cast<CEliteUnit*>(pOther);
 	if (pEliteUnit)
 	{
 		/* 보스가 그로기상태라면 */
 		CEliteUnit::EEliteState eState = pEliteUnit->GetCurrentState();
-		if (eState == CEliteUnit::EEliteState::GROGGY || eState == CEliteUnit::EEliteState::FATAL)
+		if (eState == CEliteUnit::EEliteState::GROGGY)
 		{
 			/* 스위치를 켜준다. */
 			m_pOwner->SetIsFatalBoss(true);
-			m_pOwner->SetbIsGroggyAttack(true);
 			m_pOwner->SetFatalTarget(pEliteUnit);
+
+			// 방향 체크
+
+			if(bPlayerFrontMonster)
+				m_pOwner->SetbIsGroggyAttack(true);
+			else
+				m_pOwner->SetbIsGroggyAttack(false);
+			
 		}
 		else 
 		{
@@ -174,26 +208,7 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 	if (fHP <= 0.f)
 		return;
 
-	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
-		return;
 
-	const _float fBackDotThreshold = 0.9f;
-
-	// 위치/룩 수집
-	_vector vMonsterPos = pOther->Get_TransfomCom()->Get_State(STATE::POSITION);
-	_vector vMonsterLook = pOther->Get_TransfomCom()->Get_State(STATE::LOOK);
-
-	_vector vPlayerPos = m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION);
-	_vector vPlayerLook = m_pOwner->Get_TransfomCom()->Get_State(STATE::LOOK);
-
-	// 평면(XZ) 투영 + 정규화
-	_vector vMonsterLookFlat = XMVector3Normalize(ProjectToXZ(vMonsterLook));
-	_vector vPlayerLookFlat = XMVector3Normalize(ProjectToXZ(vPlayerLook));
-
-	_vector vDirPlayerToMonster = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vMonsterPos, vPlayerPos)));
-	_vector vDirMonsterToPlayer = XMVector3Normalize(ProjectToXZ(XMVectorSubtract(vPlayerPos, vMonsterPos)));
-
-	_bool bPlayerBehindMonster = (XMVectorGetX(XMVector3Dot(vMonsterLookFlat, vDirPlayerToMonster)) >= fBackDotThreshold);
 
 	
 	/* [ 뒤를 잡았을 때 ] */
@@ -215,6 +230,23 @@ void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eC
 	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
 	{
 		return;
+	}
+
+	CEliteUnit* pEliteUnit = dynamic_cast<CEliteUnit*>(pOther);
+	if (pEliteUnit)
+	{
+		CEliteUnit::EEliteState eState = pEliteUnit->GetCurrentState();
+		if (eState == CEliteUnit::EEliteState::GROGGY)
+		{
+			// 보스에서 너무 떨어지면 페이탈 안되도록
+			m_pOwner->SetbIsGroggyAttack(false);
+			return;
+		}
+			
+		m_pOwner->SetbIsGroggyAttack(false);
+		m_pOwner->SetIsFatalBoss(false);
+		m_pOwner->SetFatalTargetNull();
+
 	}
 }
 
