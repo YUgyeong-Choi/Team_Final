@@ -48,10 +48,10 @@ cbuffer ParticleCB : register(b0)
 
     float2 vTileCnt;
     float fTileTickPerSec;
-    float _pad2;
+    float fAccTime;
 
-    float3  Pivot; // vPivot
-    float _pad3;
+    float3 Pivot; // vPivot
+    uint EffectSeed;
     
     float3 Center; // vCenter
     float _pad4;
@@ -61,7 +61,10 @@ cbuffer ParticleCB : register(b0)
     
     float3 RotationAxis; // normalized
     float _pad6;
-
+    
+    float3 Range; // vRange
+    float _pad7;
+    
     float4 vSocketRot;
 
     row_major float4x4 g_CombinedMatrix;
@@ -89,7 +92,29 @@ float3 RotateByQuat(float3 v, float4 q)
     float3 t = 2.0f * cross(q.xyz, v);
     return v + q.w * t + cross(q.xyz, t);
 }
+float Safe(float v)
+{
+    return (v == v) ? v : 0.0;
+} // NaN이면 0으로
+float Random_Normal(uint iSeed)
+{
+    float s = (float) iSeed * 12.9898 + (float) EffectSeed * 78.233 + fAccTime;
+    s = Safe(s); // 디버깅용
+    float r = sin(s);
+    r = Safe(r);
+    return frac(r * 43758.5453);
+}
 
+//float Random_Normal(uint iSeed)
+//{
+//    float s = (float) iSeed * 12.9898 + (float)EffectSeed * 78.233 + fAccTime;
+//    return frac(sin(s) * 43758.5453);
+//}
+
+float Random(uint iSeed, float fMin, float fMax)
+{
+    return fMin + (fMax - fMin) * Random_Normal(iSeed);
+}
 
 [numthreads(128, 1, 1)]
 void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
@@ -204,11 +229,45 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         
         if (isFirst == 1)
         {
-            pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
+            /* 이펙트 랜덤 생성 없을 시(bake 하고 고정 생성) */
+            //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
+            //
+            //float3 localDir = gInitInst[i].Direction.xyz;
+            //float3 worldDir = RotateByQuat(localDir, vSocketRot);
+            //pp.Direction.xyz = normalize(worldDir);
 
-            float3 localDir = gInitInst[i].Direction.xyz;
-            float3 worldDir = RotateByQuat(localDir, vSocketRot);
-            pp.Direction.xyz = normalize(worldDir);
+            ///////////////////////////////////
+            /* 이펙트 랜덤 생성 시 (bake 안 하고) */
+            
+            pp.Translation = float4(
+			    Random(i * 3,     Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			    Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			    Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
+			    1.f
+		    );
+            pp.vInitOffset = float3(
+			    pp.Translation.x,
+			    pp.Translation.y,
+			    pp.Translation.z
+		    );
+
+            float3 vCurPivot = Center + Pivot;
+            
+            if (ParticleType == 0) // spread
+            {
+                pp.Direction = float4(normalize(pp.Translation.xyz - vCurPivot.xyz), 0.f);
+            }
+            else if (ParticleType == 1) // directional
+            {
+                pp.Direction = float4(normalize(Center.xyz - vCurPivot.xyz), 0.f);
+            }
+            else if (ParticleType == 2) // random
+            {
+                pp.Direction = float4(Random_Normal(i * 3), Random_Normal(i * 3 + 1), Random_Normal(i * 3 + 2), 0.f);
+            }
+            //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
+            //float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
+            //pp.Direction.xyz = normalize(worldDir);
         }
         
         float t = pp.LifeTime.y;
@@ -290,43 +349,51 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             else if (isLoop != 0)
                 needReset = lifeEnded;
         }
-        
-        
 
-        
         if (needReset)
         {
+            // initoffset을 사용해서 초기 모양 그대로 리셋할건지..
             pp.LifeTime.y = 0.0f;
-            float3 offset0 = gInitInst[i].vInitOffset;
-            pos = Center + offset0; // << 변경점
+            //float3 offset0 = gInitInst[i].vInitOffset;
+            //pos = Center + offset0; // << 변경점
             pp.Speed = gInitInst[i].Speed; // 속도 초기화는 유지
             
             // === 뼈 회전 적용된 방향으로 다시 세팅 ===
-            float3 localDir = gInitInst[i].Direction.xyz;
-            float3 worldDir = RotateByQuat(localDir, vSocketRot);
-            pp.Direction.xyz = normalize(worldDir);
+            //float3 localDir = gInitInst[i].Direction.xyz;
+            //float3 worldDir = RotateByQuat(localDir, vSocketRot);
+            //pp.Direction.xyz = normalize(worldDir);
             pp.bFirstLoopDiscard = 0;
             pp.fTileIdx = 0.f;
-        }
 
-        
-        //// 루프: 위치/라이프만 초기화(기하 기준은 유지하고 싶으면 아래처럼 Translation만 복원)
-        //if ((isLoop != 0 && pp.LifeTime.y >= pp.LifeTime.x)
-        //    || (isTileLoop != 0 && pp.fTileIdx >= vTileCnt.x * vTileCnt.y)) // tileloop의 조건 or lifetimeloop의 조건 둘 중 하나만 걸려도 초기화 되도록 함
-        //{
-        //    pp.LifeTime.y = 0.0f;
-        //    //float3 offset0 = float3(pp.Right.w, pp.Up.w, pp.Look.w);
-        //    float3 offset0 = gInitInst[i].vInitOffset;
-        //    pos = Center + offset0; // << 변경점
-        //    pp.Speed = gInitInst[i].Speed; // 속도 초기화는 유지
-        //    
-        //    // === 뼈 회전 적용된 방향으로 다시 세팅 ===
-        //    float3 localDir = gInitInst[i].Direction.xyz;
-        //    float3 worldDir = RotateByQuat(localDir, vSocketRot);
-        //    pp.Direction.xyz = normalize(worldDir);
-        //    pp.bFirstLoopDiscard = false;
-        //    pp.fTileIdx = 0.f;
-        //}
+
+            float3 vCurPivot = Center + Pivot;
+
+            // range를 다시 사용해서 새롭게 다시 만들 건지..
+            pos = float3(
+			    Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			    Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			    Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f)
+		    );
+            pp.vInitOffset = float3(
+			    pos.x - Center.x,
+			    pos.y - Center.y,
+			    pos.z - Center.z
+		    );
+
+            if (ParticleType == 0)
+            {
+                pp.Direction = float4(normalize(pos.xyz - vCurPivot.xyz), 0.f);
+            }
+            else if (ParticleType == 1)
+            {
+                pp.Direction = float4(normalize(Center.xyz - vCurPivot.xyz), 0.f);
+            }
+
+            //float3 localDir = gInitInst[i].Direction.xyz;
+            float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
+            pp.Direction.xyz = normalize(worldDir);
+            
+        }
         
         uint iTileIdx = (uint) pp.fTileIdx;
         float fTileSizeX = 1.0f / float(vTileCnt.x);
@@ -335,7 +402,10 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
 
         pp.Translation = float4(pos, 1.0f);
         float3 velocity = pos - prevPos;
-        pp.VelocityDir = float4(normalize(velocity), length(velocity));
+        if (isFirst)
+            pp.VelocityDir = float4(0.f, 0.f, 0.f, 0.f);
+        else
+            pp.VelocityDir = float4(normalize(velocity), length(velocity));
         gInst[i] = pp;
         return;
     }

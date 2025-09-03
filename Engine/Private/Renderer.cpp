@@ -423,9 +423,6 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pRende
 
 HRESULT CRenderer::Draw()
 {
-
-
-
 	if (FAILED(Render_Priority()))
 	{
 		MSG_BOX("Render Priority Failed");

@@ -1,6 +1,8 @@
 #include "SwordTrailEffect.h"
 #include "ParticleEffect.h"
 #include "GameInstance.h"
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
 
 CSwordTrailEffect::CSwordTrailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEffectBase{ pDevice, pContext }
@@ -36,6 +38,8 @@ HRESULT CSwordTrailEffect::Initialize(void* pArg)
 	m_pParentCombinedMatrix = pDesc->pParentCombinedMatrix;
 	m_pInnerSocketMatrix = pDesc->pInnerSocketMatrix;
 	m_pOuterSocketMatrix = pDesc->pOuterSocketMatrix;
+	m_strEmitterTag = pDesc->strEmitterTag;
+	m_bHasEmitter = pDesc->bHasEmitter;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -94,11 +98,22 @@ void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 	XMStoreFloat3(&m_vOuterPos, XMVector3TransformCoord(XMVectorZero(), matOuterWorld));
 
 	m_pVIBufferCom->Update_Trail(m_vInnerPos, m_vOuterPos, fTimeDelta);
-	const vector<_float3>& vNodes =  m_pVIBufferCom->Get_InterpolatedNewNodes();
-	if (m_bTrailActive == true && !vNodes.empty() && m_bHasEmitter)
+	if (m_bHasEmitter && m_bTrailActive)
 	{
-
-	}
+		const vector<_float3>& vNodes =  m_pVIBufferCom->Get_InterpolatedNewNodes();
+		if (!vNodes.empty())
+		{
+			for (auto& vPos : vNodes)
+			{
+				CEffectContainer::DESC desc;
+				desc.iLevelID = m_iLevelID;
+				XMStoreFloat4x4(&desc.PresetMatrix,
+					XMMatrixTranslation(vPos.x, vPos.y, vPos.z) /** XMMatrixRotationAxis() 이거대체어케넣지*/
+				);
+				MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Skill_WeaponParticle_P1"), &desc);
+			}
+		}
+	}   
 
 	m_pGameInstance->Add_RenderGroup((RENDERGROUP)m_iRenderGroup, this);
 }

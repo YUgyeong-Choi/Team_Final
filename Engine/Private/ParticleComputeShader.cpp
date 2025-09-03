@@ -97,8 +97,6 @@
 		//m_pDevice->CreateBuffer(&desc, nullptr, &m_pStaging);
 #pragma endregion 
 
-
-
 		return S_OK;
 	}
 

@@ -14,10 +14,11 @@ class CSwordTrailEffect : public CEffectBase
 public:
 	typedef struct tagTrailEffectDesc : public CEffectBase::DESC
 	{
-		_float4x4* pParentCombinedMatrix = { nullptr }; // 부모 모델의 월드 매트릭스
-		_float4x4* pInnerSocketMatrix = { nullptr };
-		_float4x4* pOuterSocketMatrix = { nullptr };
-		_wstring strEmitterTag;
+		_float4x4*	pParentCombinedMatrix = { nullptr }; // 부모 모델의 월드 매트릭스
+		_float4x4*	pInnerSocketMatrix = { nullptr };
+		_float4x4*	pOuterSocketMatrix = { nullptr };
+		_wstring	strEmitterTag;
+		_bool		bHasEmitter = { false };
 	}DESC;
 
 protected:
@@ -68,7 +69,7 @@ public:
 
 public:
 	virtual json Serialize()override;
-	virtual void Deserialize(const json& j)override;
+	virtual void Deserialize(const json& j) override;
 };
 
 NS_END

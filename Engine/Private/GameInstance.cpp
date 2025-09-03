@@ -146,6 +146,8 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+	m_fAccTime += fTimeDelta;
+
 	m_pPicking->Update();
 
 	m_pSound_Device->Update();
@@ -171,7 +173,6 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pPhysX_Manager->Update_OnTriggerStay();
 
  	m_pPhysX_Manager->Simulate(fTimeDelta);
-
 
 	//m_pPhysX_Manager->Sync();
 #ifdef _DEBUG
