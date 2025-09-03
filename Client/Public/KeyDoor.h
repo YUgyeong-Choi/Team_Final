@@ -14,19 +14,19 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CDoorMesh : public CDynamicMesh
+class CKeyDoor : public CDynamicMesh
 {
 public:
-	typedef struct tagDoorMeshDesc : public CDynamicMesh::DYNAMICMESH_DESC
+	typedef struct tagKeyDoorMeshDesc : public CDynamicMesh::DYNAMICMESH_DESC
 	{
 		INTERACT_TYPE eInteractType;
 		_vector vTriggerOffset;
 		_vector vTriggerSize;
-	}DOORMESH_DESC;
+	}KEYDOORMESH_DESC;
 protected:
-	CDoorMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CDoorMesh(const CDoorMesh& Prototype);
-	virtual ~CDoorMesh() = default;
+	CKeyDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CKeyDoor(const CKeyDoor& Prototype);
+	virtual ~CKeyDoor() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -42,7 +42,7 @@ public:
 	void Play_Sound();
 protected:
 	HRESULT Ready_Components(void* pArg);
-	HRESULT Ready_Trigger(DOORMESH_DESC* pDesc);
+	HRESULT Ready_Trigger(KEYDOORMESH_DESC* pDesc);
 private:
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
 	CSoundController* m_pSoundCom = { nullptr };
@@ -51,7 +51,7 @@ private:
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
 public:
-	static CDoorMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CKeyDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
