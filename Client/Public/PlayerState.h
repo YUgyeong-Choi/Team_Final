@@ -3057,6 +3057,8 @@ public:
         }
 
         m_fStateTime = 0.f;
+        m_pOwner->m_bLockOnSprint = false;
+        m_pOwner->m_pAnimator->SetBool("Sprint", false);
 
         /* [ 어느방향에서 맞는지 설정하기 ] */
         m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
@@ -3276,6 +3278,10 @@ public:
 
         if (m_fStateTime > 5.75f && !m_bDoTwo)
         {
+            /* [ 무기 장착 해제 ] */
+            m_pOwner->m_pWeapon->SetbIsActive(false);
+            m_pOwner->m_bWeaponEquipped = false;
+
             /* [ 사망 후 특정 위치에서 다시 살아난다. ] */
             m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{ 1.f,0.f,0.f,0.f });
             PxVec3 pos = PxVec3(51.3f, 1.f, -5.1f);
@@ -3304,14 +3310,7 @@ public:
 
         if (m_fStateTime > 9.5f && !m_pOwner->m_bIsRrevival)
         {
-		
-            
-         
             m_pOwner->Reset();
-
-            /* [ 무기 장착 해제 ] */
-            m_pOwner->m_pWeapon->SetbIsActive(false);
-            m_pOwner->m_bWeaponEquipped = false;
 
             m_pOwner->m_fHp = 100.f;
             m_pOwner->Callback_HP();

@@ -236,6 +236,12 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 아이템 ] */
 	Update_Slot(fTimeDelta);
 
+	/* [ 불타는 셰이더 ] */
+	if (m_bBurnSwitch)
+		OnBurn(fTimeDelta);
+	else
+		OffBurn(fTimeDelta);
+
 	/* [ 플레이어 락온 위치  ] */
 	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
 	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
@@ -253,18 +259,14 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	SitAnimationMove(fTimeDelta);
 
 	/* [ 이곳은 실험실입니다. ] */
-	if (KEY_PRESSING(DIK_Y))
+	if (KEY_DOWN(DIK_Y))
 	{
-		m_fBurnPhase += (fTimeDelta * 0.1f) * m_fBurnSpeed;
-		m_fBurnPhase = min(m_fBurnPhase, 0.25f);
+		m_bBurnSwitch = !m_bBurnSwitch;
 	}
 
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
 		Reset();
-
-	if (KEY_DOWN(DIK_Y))
-		m_pAnimator->SetTrigger("GetItem");
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -315,8 +317,8 @@ HRESULT CPlayer::Render_Burn()
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
-		if (i >= 3)
-			break;
+		if (i >= 3 && i != 9)
+			continue;
 
 		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
 			return E_FAIL;
@@ -1290,7 +1292,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		_float  m_fTime = 0.4f;
 		_float  m_fDistance = 3.f;
-		
+
 		if (m_eHitedAttackType == CBossUnit::EAttackType::FURY_AIRBORNE)
 		{
 			if (m_pHitedTarget && !m_bMove)
@@ -1340,7 +1342,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		_float  m_fTime = 0.1f;
 		_float  m_fDistance = 2.f;
-		
+
 		if (m_pHitedTarget && !m_bMove)
 		{
 			_vector vLook = m_pHitedTarget->Get_TransfomCom()->Get_State(STATE::LOOK);
@@ -2574,6 +2576,28 @@ void CPlayer::Reset_Weapon()
 	m_pWeapon->Clear_CollisionObj();
 }
 
+void CPlayer::OnBurn(_float fTimeDelta)
+{
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
+
+	if (m_fBurnPhase <= 0.25f)
+	{
+		m_fBurnPhase += (fTimeDelta * 0.1f) * m_fBurnSpeed;
+		m_fBurnPhase = min(m_fBurnPhase, 0.25f);
+	}
+}
+void CPlayer::OffBurn(_float fTimeDelta)
+{
+	if (m_fBurnPhase >= 0.f)
+	{
+		m_fBurnPhase -= (fTimeDelta * 0.1f) * m_fBurnSpeed;
+		if (m_fBurnPhase < 0.f)
+			m_fBurnPhase = 0.f;
+		else
+			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
+	}
+}
+
 void CPlayer::LockOnState(_float fTimeDelta)
 {
 	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
@@ -2588,10 +2612,14 @@ void CPlayer::LockOnState(_float fTimeDelta)
 		m_bIsLockOn = true;
 		m_pAnimator->SetBool("FocusOn", m_bIsLockOn);
 
-		if (KEY_UP(DIK_SPACE))
+		if (KEY_UP(DIK_SPACE) && 
+			m_eCategory != eAnimCategory::HITED &&
+			m_eCategory != eAnimCategory::HITEDSTAMP &&
+			m_eCategory != eAnimCategory::HITEDUP)
 			m_bLockOnSprint = true;
 
 	}
+
 	/* [ 스페이스를 뗀 순간 회전 보간을 시작한다. ] */
 	if (pTarget && m_bLockOnSprint)
 	{

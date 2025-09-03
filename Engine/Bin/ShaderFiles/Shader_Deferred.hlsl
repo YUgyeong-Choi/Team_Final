@@ -514,7 +514,7 @@ PS_OUT_PBR PS_PBR_LIGHT_POINT(PS_IN In)
     
     float fMask = vDecalAMRTDesc.a;
     AO = lerp(AO, vDecalAMRTDesc.r, fMask);
-    Roughness = lerp(Roughness, vDecalAMRTDesc.g * 0.5f, fMask);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g * 0.1f, fMask);
     Metallic = lerp(Metallic, vDecalAMRTDesc.b, fMask);
     
     float Unit = vARMDesc.a;
@@ -625,7 +625,7 @@ PS_OUT_PBR PS_PBR_LIGHT_SPOT(PS_IN In)
     
     float fMask = vDecalAMRTDesc.a;
     AO = lerp(AO, vDecalAMRTDesc.r, fMask);
-    Roughness = lerp(Roughness, vDecalAMRTDesc.g * 0.5f, fMask);
+    Roughness = lerp(Roughness, vDecalAMRTDesc.g * 0.1f, fMask);
     Metallic = lerp(Metallic, vDecalAMRTDesc.b, fMask);
     
     float Unit = vARMDesc.a;
@@ -1020,7 +1020,9 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
-    finalColor.rgb *= (1.f - Out.vBackBuffer.rgb);
+    
+    Out.vBackBuffer *= vBlack;
+    
     finalColor = Out.vBackBuffer + vOutLine + vLimLight + vBurn;
     
     

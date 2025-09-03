@@ -551,7 +551,7 @@ PS_OUT_BURN PS_BURN(PS_IN_PBR In)
     float4 vBurnTexture = g_Burn.Sample(DefaultSampler, In.vTexcoord);
     float fTimeSeconds = g_fBurnTime;
     
-    float fMaskTiling = 2.2f;
+    float fMaskTiling = 3.1f;
     float fMaskScrollU = 0.07f;
     float fMaskScrollV = 0.07f;
     
@@ -563,8 +563,12 @@ PS_OUT_BURN PS_BURN(PS_IN_PBR In)
     float fNoiseAmp = 0.010f;
     float fNoiseScroll = 0.4f;
     
-    float fBurnPhase = g_fBurnPhase;
     float fEdgeWidth = 0.08f;
+    float fBurnPhase = g_fBurnPhase;
+    float fBurnPhaseNormalize = saturate(fBurnPhase / 0.25f);
+    
+    float4 vBlackMask = g_BurnMask2.Sample(DefaultSampler, In.vTexcoord * 1.f);
+    float4 vBlackInverse = (1.0f - vBlackMask) * fBurnPhaseNormalize;
     
     float2 vMaskUV = In.vTexcoord * fMaskTiling
                + float2(fMaskScrollU, fMaskScrollV) * fTimeSeconds;
@@ -585,13 +589,20 @@ PS_OUT_BURN PS_BURN(PS_IN_PBR In)
     float fSeed = vBurnMask.r;
     
     float fReveal = 1.0f - smoothstep(fBurnPhase - fEdgeWidth, fBurnPhase + fEdgeWidth, fSeed);
+    fReveal += vBlackInverse.r;
     
     Out.vBurn.rgb = vBurnTexture.rgb * fReveal;
     Out.vBurn.a = fReveal;
     
     
-    float4 vBlackTexture = g_BurnMask2.Sample(DefaultSampler, In.vTexcoord * 0.5f);
-    Out.vBlack = vBlackTexture;
+    const float fSootStrength = 1.f;
+    float fEdgeMask = saturate(1.0f - abs(fSeed - fBurnPhase) / 0.5f);
+    
+    
+    float4 vBlackTexture = g_BurnMask2.Sample(DefaultSampler, In.vTexcoord * 3.f);
+   
+    Out.vBlack = lerp(float4(1.0f, 1.0f, 1.0f, 1.0f), vBlackTexture, fBurnPhaseNormalize);
+    Out.vBlack.rgb *= (1.0f - fEdgeMask * fSootStrength * fBurnPhaseNormalize);
     
     return Out;
 }

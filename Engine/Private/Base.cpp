@@ -11,7 +11,7 @@ unsigned int CBase::AddRef()
 
 unsigned int CBase::Release()
 {
-	if (0 == m_iRefCnt)
+	if (0 == m_iRefCnt) 
 	{
 		Free();
 

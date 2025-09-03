@@ -159,6 +159,12 @@ private:
 	void Weapon_Collider_Active();
 	void Reset_Weapon();
 
+
+public: /* [ 불타는 셰이딩 ] */
+	void OnBurn(_float fTimeDelta);
+	void OffBurn(_float fTimeDelta);
+
+
 public:
 	CPlayerLamp* Get_PlayerLamp() { return m_pPlayerLamp; }
 
@@ -258,9 +264,10 @@ private: /* [ 불타버려~ ] */
 	CTexture* m_pBurn = { nullptr };
 	CTexture* m_pBurnMask = { nullptr };
 	CTexture* m_pBurnMask2 = { nullptr };
-	_float m_fBurnTime = {};
-	_float m_fBurnPhase = {};
-	_float m_fBurnSpeed = 1.f;
+	_float	m_fBurnTime = {};
+	_float	m_fBurnPhase = {};
+	_float	m_fBurnSpeed = 1.f;
+	_bool	m_bBurnSwitch = {};
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
