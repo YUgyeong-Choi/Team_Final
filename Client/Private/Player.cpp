@@ -1609,61 +1609,6 @@ void CPlayer::Register_Events()
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
 {
-	//CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
-	//_bool        bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
-
-	//if (bUseRoot)
-	//{
-	//	_float3			rootMotionDelta = m_pAnimator->GetRootMotionDelta();
-	//	XMVECTOR vLocal = XMLoadFloat3(&rootMotionDelta);
-
-	//	_vector vScale, vRotQuat, vTrans;
-	//	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, m_pTransformCom->Get_WorldMatrix());
-
-	//	XMVECTOR vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vRotQuat));
-
-	//	_float dy = XMVectorGetY(vWorldDelta) - 0.8f;
-	//	_vector  finalDelta = XMVectorSetY(vWorldDelta, dy);
-
-	//	_float fDeltaMag = XMVectorGetX(XMVector3Length(finalDelta));
-	//	//if (fDeltaMag > m_fSmoothThreshold)
-	//	//{
-	//	//	_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-	//	//	finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
-	//	//}
-	//	//else
-	//	//{
-	//	//	finalDelta = vWorldDelta;
-	//	//}
-
-	//	if (fDeltaMag < 1e-6f)
-	//	{
-	//		m_PrevWorldDelta = XMVectorZero();
-	//		return;
-	//	}
-	//	m_PrevWorldDelta = finalDelta;
-
-	//	PxVec3 pos{
-	//		XMVectorGetX(finalDelta),
-	//		XMVectorGetY(finalDelta),
-	//		XMVectorGetZ(finalDelta)
-	//	};
-
-	//	CIgnoreSelfCallback filter(m_pControllerCom->Get_IngoreActors());
-	//	PxControllerFilters filters;
-	//	filters.mFilterCallback = &filter; 
-
-	//	m_pControllerCom->Get_Controller()->move(pos, 0.001f, fTimeDelta, filters);
-	//	SyncTransformWithController();
-	//	_vector vTmp{};
-	//	XMMatrixDecompose(&vScale, &vTmp, &vTrans, m_pTransformCom->Get_WorldMatrix());
-	//	_matrix newWorld =
-	//		XMMatrixScalingFromVector(vScale) *
-	//		XMMatrixRotationQuaternion(vRotQuat) *
-	//		XMMatrixTranslationFromVector(vTrans);
-	//	m_pTransformCom->Set_WorldMatrix(newWorld);
-	//}
-
 	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
 	_bool bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 	if (bUseRoot)
@@ -2025,6 +1970,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			m_vHitNormal = vOtherPos - vPlayerPos;
 		}
 
+		cout << " 현재 보스 공격 타입 :" << static_cast<_int>(m_eHitedAttackType) << endl;
 		if (m_bIsGuarding)
 		{
 			//퓨리어택이라면? 가드불가

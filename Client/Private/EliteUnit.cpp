@@ -365,7 +365,7 @@ void CEliteUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
         m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
     }
 
-    if (m_eCurrentState == EEliteState::TURN)
+    if (m_eCurrentState == EEliteState::TURN && CanProcessTurn())
     {
         m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta);
     }
@@ -672,6 +672,21 @@ void CEliteUnit::EnterFatalHit()
 #ifdef _DEBUG
         cout << "Elite Fatal Attack" << endl;
 #endif
+    }
+}
+
+void CEliteUnit::NotifyPerfectGuarded()
+{
+    m_fGroggyGauge += m_fGroggyScale_Charge;
+    if (m_fGroggyGauge >= m_fGroggyThreshold && !m_bGroggyActive)
+    {
+        m_bGroggyActive = true;                  // 화이트 게이지 시작
+        m_fGroggyEndTimer = m_fGroggyTimer;
+        m_fGroggyGauge = m_fGroggyThreshold;
+#ifdef _DEBUG
+        cout << "그로기 가능" << endl;
+#endif
+        return;
     }
 }
 
