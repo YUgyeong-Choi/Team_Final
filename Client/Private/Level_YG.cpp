@@ -12,7 +12,7 @@
 
 #include "DH_ToolMesh.h"
 #include "UI_Container.h"
-#include "DoorMesh.h"
+#include "SlideDoor.h"
 #include "StaticMesh.h"
 
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -848,7 +848,7 @@ HRESULT CLevel_YG::Ready_OctoTree()
 
 HRESULT CLevel_YG::Ready_Interact()
 {
-	CDoorMesh::DOORMESH_DESC Desc{};
+	CSlideDoor::DOORMESH_DESC Desc{};
 	Desc.m_eMeshLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));

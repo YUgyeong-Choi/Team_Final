@@ -137,27 +137,27 @@
             "iTextureIndex": 0,
             "iTextureLevel": 0
           },
-            {
-                "Color": {
-                    "A": 1.0,
-                    "B": 1.0,
-                    "G": 1.0,
-                    "R": 1.0
-                },
-                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
-                "RotationZ": 44.262001037597656,
-                "SizeX": 80.0,
-                "SizeY": 81.0,
-                "Texturetag": "Prototype_Component_Texture_Weapon_Background",
-                "fAlpha": 1.0,
-                "fDuration": 0.01600000075995922,
-                "fOffset": 0.0,
-                "fX": 0.28,
-                "fY": 0.582,
-                "iPassIndex": 1,
-                "iTextureIndex": 0,
-                "iTextureLevel": 0
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
             },
+            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+            "RotationZ": 44.262001037597656,
+            "SizeX": 0.05,
+            "SizeY": 0.09,
+            "Texturetag": "Prototype_Component_Texture_Weapon_Background",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 0.28,
+            "fY": 0.582,
+            "iPassIndex": 1,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          },
             {
                 "Color": {
                     "A": 1.0,

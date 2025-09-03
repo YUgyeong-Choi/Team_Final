@@ -475,6 +475,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Color">
       <UniqueIdentifier>{cbaffa57-c9b2-414d-b13c-89dadc25a8f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Range">
+      <UniqueIdentifier>{073cdcc5-ca16-4720-bf1c-e81b935a67d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -768,9 +771,6 @@
     <ClInclude Include="..\public\HP_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PlayerState.h">
-      <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Mana_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Mana</Filter>
     </ClInclude>
@@ -919,7 +919,7 @@
     <ClInclude Include="..\public\AStar_Manager.h">
       <Filter>02.GameObjects\14. AStar</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\DoorMesh.h">
+    <ClInclude Include="..\Public\SlideDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LegionArm_Base.h">
@@ -1008,6 +1008,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\TriggerBGM.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KeyDoor.h">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerState.h">
+      <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Buttler_Range.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossDoor.h">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1421,7 +1433,7 @@
     <ClCompile Include="..\private\AStar_Manager.cpp">
       <Filter>02.GameObjects\14. AStar</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\DoorMesh.cpp">
+    <ClCompile Include="..\Private\SlideDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LegionArm_Base.cpp">
@@ -1516,6 +1528,15 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Feature_Color.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\KeyDoor.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Buttler_Range.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossDoor.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

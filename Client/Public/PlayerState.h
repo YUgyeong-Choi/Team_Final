@@ -900,6 +900,15 @@ public:
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
         m_pOwner->m_bIsInvincible = true;
 
+        // 백스텝은 화속성 공격을 끌 수 있다.
+        if (m_pOwner->m_vecElements[0].fElementWeight >= 0.f)
+        {
+            _float fDamege = m_pOwner->m_vecElements[0].fElementWeight - 0.3f;
+            m_pOwner->m_vecElements[0].fElementWeight = fDamege;
+            if (m_pOwner->m_vecElements[0].fElementWeight < 0.f)
+                m_pOwner->m_vecElements[0].fElementWeight = 0.f;
+        }
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -989,6 +998,15 @@ public:
         // 구르기는 무브 ON 입니다.
         m_pOwner->m_pAnimator->SetTrigger("Dash");
         m_pOwner->m_bIsInvincible = true;
+
+        // 구르기는 화속성 공격을 끌 수 있다.
+        if (m_pOwner->m_vecElements[0].fElementWeight >= 0.f)
+        {
+			_float fDamege = m_pOwner->m_vecElements[0].fElementWeight - 0.3f;
+			m_pOwner->m_vecElements[0].fElementWeight = fDamege;
+			if (m_pOwner->m_vecElements[0].fElementWeight < 0.f)
+				m_pOwner->m_vecElements[0].fElementWeight = 0.f;
+        }
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -1981,6 +1999,9 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
+        if (m_pOwner->m_bIsInvincible && m_fStateTime > 0.5f)
+            m_pOwner->m_bIsInvincible = false;
+
         LockOnMovement();
 
         /* [ 가드중에 피격당했을 시 ] */
@@ -2002,6 +2023,13 @@ public:
                     m_pOwner->HPSubtract();
                     m_pOwner->m_pAnimator->SetInt("HitDir", 0);
                     m_pOwner->m_pAnimator->SetTrigger("Hited");
+
+                    if (m_pOwner->m_eHitedTarget == CPlayer::eHitedTarget::BOSS)
+                    {
+                        CEliteUnit* pEliteUnit = dynamic_cast<CEliteUnit*>(m_pOwner->m_pHitedTarget);
+                        if (pEliteUnit)
+                            pEliteUnit->NotifyPerfectGuarded();
+                    }
 
                     /* [ 이펙트를 생성한다. ] */
                     _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
@@ -2135,6 +2163,7 @@ public:
     {
         m_pOwner->m_pAnimator->SetBool("Guard", false);
         m_pOwner->m_bIsGuarding = false;
+        m_pOwner->m_bIsInvincible = false;
         m_bIsHitAnimation = false;
         m_fStateTime = 0.f;
         m_fGardTime = 0.f;
@@ -3016,6 +3045,14 @@ public:
 public:
     virtual void Enter() override
     {
+        /* [ HP 를 우선으로 감소시키고 사망을 확인한다. ] */
+        m_pOwner->HPSubtract();
+        if (m_pOwner->m_fHp <= 0.f)
+        {
+            m_bDead = true;
+            return;
+        }
+        
         /* [ 모든 진행이 종료된다. ] */
         if (m_pOwner->m_pWeapon)
         {
@@ -3048,15 +3085,9 @@ public:
 
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 
-        /* [ HP 를 우선으로 감소시키고 사망을 확인한다. ] */
-        m_pOwner->HPSubtract();
-        if (m_pOwner->m_fHp <= 0.f)
-        {
-            m_bDead = true;
-            return;
-        }
-
         m_fStateTime = 0.f;
+        m_pOwner->m_bLockOnSprint = false;
+        m_pOwner->m_pAnimator->SetBool("Sprint", false);
 
         /* [ 어느방향에서 맞는지 설정하기 ] */
         m_pOwner->m_eDir = m_pOwner->ComputeHitDir();
@@ -3210,6 +3241,8 @@ public:
         if (m_pOwner->m_pLegionArm)
             m_pOwner->m_pLegionArm->SetisAttack(false);
 
+        m_pOwner->Initialize_ElementConditions(0.f, 0.f);
+
         m_pOwner->m_eHitMotion = HITMOTION::END;
         m_pOwner->m_eHitedTarget = CPlayer::eHitedTarget::END;
         m_pOwner->m_eHitedAttackType = CBossUnit::EAttackType::NONE;
@@ -3239,6 +3272,8 @@ public:
         /* [ 죽는 애니메이션 ] */
         m_pOwner->m_pAnimator->SetTrigger("Death");
         m_pOwner->m_pAnimator->SetBool("WasDead", true);
+        m_pOwner->m_pAnimator->SetBool("Sprint", false);
+        m_pOwner->m_bWalk = true;
 
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
@@ -3247,7 +3282,6 @@ public:
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Hit_Dead_B_", 3);
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 
-        //?
 
 
     }
@@ -3276,6 +3310,11 @@ public:
 
         if (m_fStateTime > 5.75f && !m_bDoTwo)
         {
+            /* [ 무기 장착 해제 ] */
+            m_pOwner->m_pAnimator->CancelOverrideAnimController();
+            m_pOwner->m_pWeapon->SetbIsActive(false);
+            m_pOwner->m_bWeaponEquipped = false;
+
             /* [ 사망 후 특정 위치에서 다시 살아난다. ] */
             m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{ 1.f,0.f,0.f,0.f });
             PxVec3 pos = PxVec3(51.3f, 1.f, -5.1f);
@@ -3283,6 +3322,8 @@ public:
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
          
+            XMVECTOR backDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK)) * -1;
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir, 15.f, false);
 
             // 페이드 되도록
 
@@ -3304,14 +3345,7 @@ public:
 
         if (m_fStateTime > 9.5f && !m_pOwner->m_bIsRrevival)
         {
-		
-            
-         
             m_pOwner->Reset();
-
-            /* [ 무기 장착 해제 ] */
-            m_pOwner->m_pWeapon->SetbIsActive(false);
-            m_pOwner->m_bWeaponEquipped = false;
 
             m_pOwner->m_fHp = 100.f;
             m_pOwner->Callback_HP();
@@ -3322,8 +3356,6 @@ public:
 
             CUI_Manager::Get_Instance()->On_Panel();
 
-            
-
         }
 
         if (m_pOwner->m_bIsRrevival)
@@ -3332,7 +3364,6 @@ public:
 
     virtual void Exit() override
     {
-        m_pOwner->m_pAnimator->CancelOverrideAnimController();
         m_pOwner->m_pAnimator->SetBool("WasDead", false);
         m_fStateTime = 0.f;
         m_fRrevivalTime = 0.f;

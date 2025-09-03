@@ -177,7 +177,7 @@ void CDynamic_Text_UI::SplitLinedraw()
 	wstring line;
 	vector<std::wstring> lines;
 
-	_float fY = m_fY - m_fPaddingY * 0.35f;
+	_float fY = m_fY - m_fPaddingY * 0.35f * (g_iWinSizeY / 900.f);
 
 	while (std::getline(wss, line, L'\n')) {
 		

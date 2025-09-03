@@ -12,6 +12,17 @@ CFont_Manager::CFont_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 HRESULT CFont_Manager::Initialize()
 {
 	m_pBatch = new SpriteBatch(m_pContext);
+	
+	_uint				iNumViewports = { 1 };
+	D3D11_VIEWPORT		ViewportDesc{};
+
+	m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+	m_iWidth = _int(ViewportDesc.Width);
+
+	m_iHeight = _int(ViewportDesc.Height);
+
+	m_fRatio = m_iWidth / (1600.f);
 
 	return S_OK;
 }
@@ -38,7 +49,7 @@ void CFont_Manager::Draw(const _wstring& strFontTag, const _tchar* pText, const 
 
 	m_pBatch->Begin();
 
-	pFont->Draw(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale, fOffset);
+	pFont->Draw(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale * m_fRatio, fOffset);
 
 	m_pBatch->End();
 }
@@ -51,7 +62,7 @@ void CFont_Manager::Draw_Centered(const _wstring& strFontTag, const _tchar* pTex
 
 	m_pBatch->Begin();
 
-	pFont->Draw_Centered(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale, fOffset);
+	pFont->Draw_Centered(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale * m_fRatio, fOffset);
 
 	m_pBatch->End();
 }
@@ -64,7 +75,7 @@ void CFont_Manager::Draw_Righted(const _wstring& strFontTag, const _tchar* pText
 
 	m_pBatch->Begin();
 
-	pFont->Draw_Righted(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale, fOffset);
+	pFont->Draw_Righted(m_pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale * m_fRatio, fOffset);
 
 	m_pBatch->End();
 }

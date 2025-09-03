@@ -36,7 +36,7 @@ HRESULT CDynamicMesh::Initialize(void* pArg)
 
 	m_pTransformCom->Set_WorldMatrix(StaicMeshDESC->WorldMatrix);
 
-	if (FAILED(Ready_Collider()))
+	if (FAILED(Ready_Collider(StaicMeshDESC)))
 		return E_FAIL;
 
 	return S_OK;
@@ -150,11 +150,6 @@ HRESULT CDynamicMesh::Ready_Components(void* pArg)
 {
 	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
 
-	/* Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
-		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-		return E_FAIL;
-
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), StaicMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
@@ -181,8 +176,9 @@ HRESULT CDynamicMesh::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CDynamicMesh::Ready_Collider()
+HRESULT CDynamicMesh::Ready_Collider(void* pArg)
 {
+	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
 	if (m_pModelCom)
 	{
 		_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(0);
@@ -190,7 +186,6 @@ HRESULT CDynamicMesh::Ready_Collider()
 
 		vector<PxVec3> physxVertices;
 		physxVertices.reserve(numVertices);
-
 		const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(0);
 		for (_uint i = 0; i < numVertices; ++i)
 		{
@@ -203,7 +198,7 @@ HRESULT CDynamicMesh::Ready_Collider()
 		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
 		// 3-1. 스케일, 회전, 위치 변환
-		PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+		PxVec3 scaleVec = PxVec3(XMVectorGetX(S) * StaicMeshDESC->fColliderScale, XMVectorGetY(S) * StaicMeshDESC->fColliderScale, XMVectorGetZ(S) * StaicMeshDESC->fColliderScale);
 		PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 		PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
 
@@ -211,13 +206,14 @@ HRESULT CDynamicMesh::Ready_Collider()
 		PxMeshScale meshScale(scaleVec);
 
 		PxFilterData filterData{};
-		filterData.word0 = WORLDFILTER::FILTER_MAP;
-		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		filterData.word0 = 0;//WORLDFILTER::FILTER_MAP;
+		filterData.word1 = 0;//WORLDFILTER::FILTER_PLAYERBODY;
 
 		PxConvexMeshGeometry  ConvexGeom = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
 		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), ConvexGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorCom->Set_Kinematic(true);
-		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+		//m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);

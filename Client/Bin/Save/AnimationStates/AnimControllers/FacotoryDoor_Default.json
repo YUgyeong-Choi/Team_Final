@@ -1,0 +1,106 @@
+{
+    "Anim States": [
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Open_Idle",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Open_Idle",
+            "NodeId": 8,
+            "NodePos": [
+                928.0,
+                390.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Close_Idle",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Idle",
+            "NodeId": 9,
+            "NodePos": [
+                378.0,
+                308.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Open",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Open",
+            "NodeId": 10,
+            "NodePos": [
+                692.0,
+                319.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        }
+    ],
+    "ControllerName": "FacotoryDoor_Default",
+    "EntryState": "Idle",
+    "Parameters": {
+        "Open": {
+            "Type": 1,
+            "bTriggered": false,
+            "bValue": false,
+            "fValue": 0.0,
+            "iValue": 0
+        }
+    },
+    "Transitions": [
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "Open",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 9,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 92,
+                "LinkId": 11,
+                "ToNodeId": 101
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 10
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 10,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 102,
+                "LinkId": 12,
+                "ToNodeId": 81
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 8
+        }
+    ]
+}

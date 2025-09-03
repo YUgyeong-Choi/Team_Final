@@ -49,12 +49,13 @@
 #include "YGController.h"
 
 #include "Wego.h"
-#include "DoorMesh.h"
+#include "SlideDoor.h"
+#include "KeyDoor.h"
+#include "BossDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
 #include "TriggerBGM.h"
-#include "DoorMesh.h"
 #include "TriggerItemLamp.h"
 #pragma endregion
 
@@ -105,6 +106,7 @@
 #include "UI_Pickup_Item.h"
 #include "Buttler_Basic.h"
 #include "UI_Button_Script.h"
+#include "Buttler_Range.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -500,6 +502,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Candle/SK_WP_MOB_Candle_01.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Buttler_Range_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ShotGun/SK_WP_MOB_Shotgun_01.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.0115f, 0.0115f, 0.0115f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Buttler_Train"),
@@ -508,6 +514,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Buttler_Basic"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Basic/Buttler_Basic.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Buttler_Range"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Range/Buttler_Range.bin", PreTransformMatrix))))
 		return E_FAIL;
 	
 	PreTransformMatrix = XMMatrixIdentity();
@@ -525,12 +535,30 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/OutDoor.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* 상호 작용 문 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_SM_Station_TrainDoor"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	m_fRatio = 0.4f;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_SM_Station_STGate_01"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_STGate_01.bin", PreTransformMatrix))))
+		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_FacotoryDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FacotoryDoor/FacotoryDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_FestivalDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalDoor/FestivalDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_FestivalCrashDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalCrashDoor/FestivalCrashDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	m_fRatio = 0.4f;
 
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -576,11 +604,6 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CFlameField::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
-		CDoorMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	//뒤에 몬스터 붙이는거 뺐어요(영웅) TEXT("Prototype_GameObject_Buttler_Monster_Train") 이거
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Test"),
 		CMonster_Test::Create(m_pDevice, m_pContext))))
@@ -592,6 +615,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Buttler_Basic"),
 		CButtler_Basic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Buttler_Range"),
+		CButtler_Range::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//FIRE EATER로 바꿧어요 (영웅)
@@ -629,6 +656,19 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTriggerItemLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
+
+	/* 상호 작용 문 */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_SlideDoor"),
+		CSlideDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
+		CKeyDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossDoor"),
+		CBossDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma region YW
 	//스태틱 데칼	
@@ -1286,6 +1326,10 @@ HRESULT CLoader::Loading_For_YW()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Buttler_Basic"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Basic/Buttler_Basic.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Buttler_Range"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Range/Buttler_Range.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 
@@ -2421,7 +2465,7 @@ HRESULT CLoader::Loading_For_YG()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_DoorMesh"),
-		CDoorMesh::Create(m_pDevice, m_pContext))))
+		CSlideDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//뒤에 몬스터 붙이는거 뺐어요(영웅) TEXT("Prototype_GameObject_Buttler_Monster_Train") 이거

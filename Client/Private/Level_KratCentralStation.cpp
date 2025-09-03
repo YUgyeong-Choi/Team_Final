@@ -12,7 +12,9 @@
 #include "Static_Decal.h"
 #pragma endregion
 
-#include "DoorMesh.h"
+#include "SlideDoor.h"
+#include "KeyDoor.h"
+#include "BossDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
@@ -258,8 +260,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//저사양 모드
-	/*if (FAILED(Ready_Lights_LowQuality()))
-		return E_FAIL;*/
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -951,26 +953,26 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 
 #pragma region 전통적인 하드코드 방식으로 소환(지금 월드행렬로 몬스터 소환중이라 이걸로하면 항등행렬로 소환됨!!! 근데 항등행렬로 소환하니까 플레이어 충돌 문제 생김)
 
-	//CMonster_Base::MONSTER_BASE_DESC Desc{};
-	//Desc.fSpeedPerSec = 5.f;
-	//Desc.fRotationPerSec = XMConvertToRadians(180.0f);
-	//Desc.fHeight = 1.f;
-	//Desc.vExtent = { 0.5f,1.f,0.5f };
-	//Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	CMonster_Base::MONSTER_BASE_DESC Desc{};
+	Desc.fSpeedPerSec = 5.f;
+	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	Desc.fHeight = 1.f;
+	Desc.vExtent = { 0.5f,1.f,0.5f };
+	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 
-	////시작 위치에 네비게이션이 없으면 터진다 지금
-	//Desc.wsNavName = TEXT("STATION");
-	//Desc.InitPos =
-	//	//_float3(148.f, 2.47f, -7.38f); //호텔위치
-	//	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
+	//시작 위치에 네비게이션이 없으면 터진다 지금
+	Desc.wsNavName = TEXT("STATION");
+	Desc.InitPos =
+		//_float3(148.f, 2.47f, -7.38f); //호텔위치
+		_float3(85.5f, 0.f, -7.5f); //스테이션 위치
 
-	//Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	//lstrcpy(Desc.szName, TEXT("Buttler_Basic"));
-	//Desc.szMeshID = TEXT("Buttler_Basic");
+	Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(Desc.szName, TEXT("Buttler_Range"));
+	Desc.szMeshID = TEXT("Buttler_Range");
 
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Basic"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Buttler_Range"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+		return E_FAIL;
 
 	//Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
 	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
@@ -1163,12 +1165,12 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 
 HRESULT CLevel_KratCentralStation::Ready_Interact()
 {
-	CDoorMesh::DOORMESH_DESC Desc{};
+	/*  [ 기차역 슬라이딩 문 ] */
+	CSlideDoor::DOORMESH_DESC Desc{};
 	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
 
-	/* 문자열 받는 곳 */
 	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
 	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
@@ -1177,13 +1179,69 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	_float4x4 matWorldFloat;
 	XMStoreFloat4x4(&matWorldFloat, matWorld);
 	Desc.WorldMatrix = matWorldFloat;
+	Desc.fColliderScale = 1.f;
 
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_SlideDoor"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
+
+	/* [ 푸쿠오 보스 문 ] */
+	CBossDoor::BOSSDOORMESH_DESC BossDoorDesc{};
+	BossDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	BossDoorDesc.szMeshID = TEXT("FacotoryDoor");
+	lstrcpy(BossDoorDesc.szName, TEXT("FacotoryDoor"));
+
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_FacotoryDoor");
+	lstrcpy(BossDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	vPosition = _float3(-1.4f, 0.31f, -235.f);
+	XMMATRIX trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	XMMATRIX rotY = XMMatrixRotationY(XM_PIDIV2); // = 90도
+	XMMATRIX world = rotY * trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	BossDoorDesc.WorldMatrix = matWorldFloat;
+	BossDoorDesc.fColliderScale = 0.01f;
+	BossDoorDesc.OffSetCollider = {2.f, 2.f,0.f};
+
+	BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
+	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
+		return E_FAIL;
+
+	///* [ 축제의 인도자 문 ] */
+	//BossDoorDesc = {};
+	//BossDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	//BossDoorDesc.szMeshID = TEXT("FestivalDoor");
+	//lstrcpy(BossDoorDesc.szName, TEXT("FestivalDoor"));
+
+	//ModelPrototypeTag = TEXT("Prototype_Component_Model_FestivalDoor");
+	//lstrcpy(BossDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	//BossDoorDesc.bNeedSecondDoor = true;
+	//ModelPrototypeTag = TEXT("Prototype_Component_Model_FestivalCrashDoor");
+	//lstrcpy(BossDoorDesc.szSecondModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	//vPosition = _float3(368.55f, 12.4f, -49.24f);
+	//trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	//rotY = XMMatrixRotationY(XM_PIDIV2); // = 90도
+	//world = rotY * trans;
+
+	//XMStoreFloat4x4(&matWorldFloat, world);
+	//BossDoorDesc.WorldMatrix = matWorldFloat;
+	//BossDoorDesc.fColliderScale = 0.01f;
+
+	//BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
+	//BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	//BossDoorDesc.vTriggerSize = _vector({ 1.0f, 0.2f, 0.5f, 0.f });
+ //	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossDoor"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

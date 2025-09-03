@@ -107,7 +107,7 @@ public:
 	virtual void Priority_Update(_float fTimeDelta) override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
-
+	virtual void Reset() override;
 private:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -132,6 +132,7 @@ private:
     virtual void UpdateSpecificBehavior(_float fTimeDelta) override;
     virtual void EnableColliders(_bool bEnable) override;
 
+    virtual _bool CanProcessTurn() override;
 
     // 공견 패턴
     virtual void SetupAttackByType(_int iPattern) override;
@@ -189,6 +190,8 @@ private:
     // 상태 관련
     _bool m_bUsedFlameFiledOnLowHp = false;
 	_bool m_bPlayerCollided = false;
+    _bool m_bPhase2TurnProcessed = false;
+    _bool m_bPhase2TurnFinished = false;
 
 
     // 공격 관련
@@ -207,7 +210,7 @@ private:
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
     EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
 
-
+	_vector m_vPhase2TurnDir = XMVectorZero();
 
 	vector<EBossAttackPattern> m_vecCloseAttackPatterns = {
 	  SlamCombo, Uppercut, SlamAtk, SwingAtk, 
