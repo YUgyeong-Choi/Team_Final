@@ -3283,6 +3283,8 @@ public:
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
          
+            XMVECTOR backDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK)) * -1;
+            CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir, 15.f, false);
 
             // 페이드 되도록
 
@@ -3321,8 +3323,6 @@ public:
             m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
 
             CUI_Manager::Get_Instance()->On_Panel();
-
-            
 
         }
 

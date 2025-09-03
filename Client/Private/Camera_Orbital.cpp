@@ -8,10 +8,11 @@
 #include "Client_Calculation.h"
 #include "Unit.h"
 
+// ---- Angle helpers (radians) ----
 inline float WrapPi(float a) {
 	a = fmodf(a + XM_PI, XM_2PI);
 	if (a <= 0) a += XM_2PI;
-	return a - XM_PI; 
+	return a - XM_PI;
 }
 inline float ShortestDelta(float from, float to) {
 	return WrapPi(to - from);
@@ -61,35 +62,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	//// 화면 중앙으로 마우스 위치 고정
-	//RECT rcClient;
-	//GetClientRect(g_hWnd, &rcClient);
-
-	//POINT ptCenter;
-	//ptCenter.x = (rcClient.right - rcClient.left) / 2;
-	//ptCenter.y = (rcClient.bottom - rcClient.top) / 2;
-
-	//// 클라이언트 좌표 -> 스크린 좌표로 변환
-	//ClientToScreen(g_hWnd, &ptCenter);
-
-	//// 마우스 커서 이동
-	//SetCursorPos(ptCenter.x, ptCenter.y);
-
-	//if (m_pGameInstance->Key_Down(DIK_T))
-	//{
-	//	m_bActive = !m_bActive;
-	//	printf("Pitch %f, Yaw %f\n", m_fPitch, m_fYaw);
-	//}
-
-	//if (KEY_DOWN(DIK_CAPSLOCK))
-	//	PrintMatrix("OribitalCameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
-
-
 	if (!m_pPlayer)
 		return;
 
 	Update_LerpDistacne(fTimeDelta);
-	
+
 	if (m_bActive)
 		return;
 
@@ -124,7 +101,7 @@ void CCamera_Orbital::Set_InitCam(_float fPitch, _float fYaw)
 	if (m_pPlayer)
 	{
 		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(fPitch, fYaw));
-		Set_PitchYaw(fPitch, fYaw);
+		Set_PitchYaw(fPitch, fYaw); // Set_PitchYaw 내부에서 Wrap 적용
 
 		m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
@@ -135,8 +112,9 @@ void CCamera_Orbital::Set_InitCam(_float fPitch, _float fYaw)
 
 void CCamera_Orbital::Set_PitchYaw(_float fPitch, _float fYaw)
 {
-	m_fPitch = fPitch;
-	m_fYaw = fYaw;
+	// Normalize incoming angles to prevent boundary glitches
+	m_fPitch = WrapPi(fPitch);
+	m_fYaw = WrapPi(fYaw);
 }
 
 void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed, _bool bActivePitch)
@@ -145,14 +123,21 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed, _bool 
 	const _float by = XMVectorGetY(vDir);
 	const _float bz = XMVectorGetZ(vDir);
 
-	// Pitch Yaw 역계산
-	_float rawTargetYaw = atan2f(bx, bz);
-	m_fTargetYaw = MoveTargetNear(m_fYaw, rawTargetYaw);
+	// Ensure current angles are in [-pi, pi] before computing nearest target
+	m_fYaw = WrapPi(m_fYaw);
+	m_fPitch = WrapPi(m_fPitch);
 
+	// Yaw target
+	const _float rawTargetYaw = atan2f(bx, bz); // [-pi, pi]
+	m_fTargetYaw = MoveTargetNear(m_fYaw, rawTargetYaw);
+	m_fTargetYaw = WrapPi(m_fTargetYaw); // keep target normalized
+
+	// Pitch target
 	if (bActivePitch)
 	{
-		m_fTargetPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
-		m_fTargetPitch += XMConvertToRadians(10.f);
+		_float rawTargetPitch = atan2f(by, sqrtf(bx * bx + bz * bz)); // typically [-pi/2, pi/2]
+		rawTargetPitch += XMConvertToRadians(10.f);
+		m_fTargetPitch = MoveTargetNear(m_fPitch, rawTargetPitch);
 	}
 	else
 	{
@@ -160,12 +145,11 @@ void CCamera_Orbital::Set_TargetYawPitch(_vector vDir, _float fLerpSpeed, _bool 
 	}
 
 	m_fTargetLerpSpeed = fLerpSpeed;
-
 	m_bSetPitchYaw = true;
 }
+
 void CCamera_Orbital::Set_LockOn(CGameObject* pTarget, _bool bActive)
 {
-
 	if (bActive)
 	{
 		m_pLockOnTarget = pTarget;
@@ -180,7 +164,7 @@ void CCamera_Orbital::Set_LockOn(CGameObject* pTarget, _bool bActive)
 
 _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float fPitch, _float fYaw)
 {
-	if(!m_pPlayer)
+	if (!m_pPlayer)
 		return _matrix();
 
 	m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
@@ -197,12 +181,12 @@ _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float fPitch, _float fYaw)
 	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
 	_vector vUp = XMVector3Cross(vLook, vRight);
 
-	// 행렬 생성
+	// matrix
 	_matrix matWorld;
-	matWorld.r[0] = vRight;                          
-	matWorld.r[1] = vUp;                              
-	matWorld.r[2] = vLook;                            
-	matWorld.r[3] = XMVectorSetW(vCamPos, 1.f);        
+	matWorld.r[0] = vRight;
+	matWorld.r[1] = vUp;
+	matWorld.r[2] = vLook;
+	matWorld.r[3] = XMVectorSetW(vCamPos, 1.f);
 
 	return matWorld;
 }
@@ -210,7 +194,7 @@ _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float fPitch, _float fYaw)
 void CCamera_Orbital::Set_ActiveTalk(_bool bActive, CGameObject* pTarget, _bool bCanMove, _float fTalkOffSet)
 {
 	if (bActive)
-	{  
+	{
 		m_bTalkStart = true;
 		m_bTalkEnd = false;
 		m_bTalkActive = true;
@@ -244,7 +228,7 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 
 	_long MouseMoveX = 0;
-	_long MouseMoveY = 0; 
+	_long MouseMoveY = 0;
 
 	if (m_bCanMoveTalk)
 	{
@@ -252,14 +236,14 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 		MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMM::Y);
 	}
 
-	//  Yaw Pitch 설정
+	//  Yaw Pitch
 	_float fAfterYaw = m_fYaw;
 	_float fAfterPitch = m_fPitch;
 
 	fAfterYaw += MouseMoveX * 0.008f * m_fMouseSensor;
 	fAfterPitch += MouseMoveY * 0.008f * m_fMouseSensor;
 
-	// 카메라 Pitch 제한
+	// Pitch clamp
 	if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
 		fAfterPitch = clamp(fAfterPitch, XMConvertToRadians(-30.f), XMConvertToRadians(60.f));
 	else
@@ -268,43 +252,10 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 	m_fYaw = LerpFloat(m_fYaw, fAfterYaw, m_fMouseSensor);
 	m_fPitch = LerpFloat(m_fPitch, fAfterPitch, m_fMouseSensor);
 
+	// Keep yaw normalized every frame
 	m_fYaw = WrapPi(m_fYaw);
 
-	// 카메라 설정
-	Update_CameraPos(fTimeDelta);
-
-	_vector vTargetLookPos;
-	if (m_bTalkActive)
-	{
-		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION)+ XMVectorSet(0.f, m_fTalkOffSet, 0.f, 0.f);
-		vTargetLookPos = targetPos;
-	}
-	else
-	{
-		vTargetLookPos = m_vPlayerPosition;
-	}
-
-	// 초기화 (첫 프레임)
-	if (!m_bPrevLookInit) {
-		m_vPrevLookTarget = vTargetLookPos;
-		m_bPrevLookInit = true;
-	}
-
-	// 보간
-	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
-	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
-
-	m_pTransformCom->LookAt(m_vPrevLookTarget);
-}
-
-void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
-{
-	// Yaw 와 Pitch 설정
-	float dyaw = ShortestDelta(m_fYaw, m_fTargetYaw);
-	m_fYaw = WrapPi(m_fYaw + dyaw * (fTimeDelta * m_fTargetLerpSpeed));
-	m_fPitch = LerpFloat(m_fPitch, m_fTargetPitch, fTimeDelta * m_fTargetLerpSpeed);
-
-	// 카메라 설정
+	// camera
 	Update_CameraPos(fTimeDelta);
 
 	_vector vTargetLookPos;
@@ -318,19 +269,57 @@ void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
 		vTargetLookPos = m_vPlayerPosition;
 	}
 
-	// 초기화 (첫 프레임)
+	// init
 	if (!m_bPrevLookInit) {
 		m_vPrevLookTarget = vTargetLookPos;
 		m_bPrevLookInit = true;
 	}
 
-	// 보간
+	// smoothing (exp decay)
+	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
+	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
+
+	m_pTransformCom->LookAt(m_vPrevLookTarget);
+}
+
+void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
+{
+	// Yaw: move along shortest arc, normalize as we go
+	float dyaw = ShortestDelta(m_fYaw, m_fTargetYaw);
+	m_fYaw = WrapPi(m_fYaw + dyaw * (fTimeDelta * m_fTargetLerpSpeed));
+
+	// Pitch: simple lerp toward target pitch (usually clamped elsewhere)
+	m_fPitch = LerpFloat(m_fPitch, m_fTargetPitch, fTimeDelta * m_fTargetLerpSpeed);
+
+	// camera
+	Update_CameraPos(fTimeDelta);
+
+	_vector vTargetLookPos;
+	if (m_bTalkActive)
+	{
+		_vector targetPos = m_pNpcTalkTarget->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, m_fTalkOffSet, 0.f, 0.f);
+		vTargetLookPos = targetPos;
+	}
+	else
+	{
+		vTargetLookPos = m_vPlayerPosition;
+	}
+
+	// init
+	if (!m_bPrevLookInit) {
+		m_vPrevLookTarget = vTargetLookPos;
+		m_bPrevLookInit = true;
+	}
+
+	// smoothing
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
 	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
 
 	m_pTransformCom->LookAt(m_vPrevLookTarget);
 
-	if (fabs(m_fYaw - m_fTargetYaw) < 0.001f && fabs(m_fPitch - m_fTargetPitch) < 0.001f)
+	// use angular deltas for completion (wrap-safe)
+	const float eps = 0.001f;
+	if (fabsf(ShortestDelta(m_fYaw, m_fTargetYaw)) < eps && fabsf(m_fPitch - m_fTargetPitch) < eps)
 	{
 		m_bSetPitchYaw = false;
 	}
@@ -340,15 +329,10 @@ void CCamera_Orbital::Update_LockOnCameraLook(_float fTimeDelta)
 {
 	_vector vTargetLookPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
 
-	// 보간량 (지수 감쇠)
+	// exp decay
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
-
-	// 보간된 목표 계산
 	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
-
-	// 보간된 위치를 바라보도록 회전
 	m_pTransformCom->LookAt(m_vPrevLookTarget);
-
 
 	_vector vCamLook = m_pTransformCom->Get_State(STATE::LOOK) * -1;
 
@@ -356,15 +340,15 @@ void CCamera_Orbital::Update_LockOnCameraLook(_float fTimeDelta)
 	const _float by = XMVectorGetY(vCamLook);
 	const _float bz = XMVectorGetZ(vCamLook);
 
-	// Pitch Yaw 역계산
-	m_fYaw = atan2f(bx, bz);
+	// derive angles from current camera orientation
+	m_fYaw = WrapPi(atan2f(bx, bz));
 	m_fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
 
-	// 거리가 가까워 질 수록 카메라 조금 위로
+	// distance-based pitch lift
 	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 	_float dist = XMVectorGetX(XMVector3Length(vTargetLookPos - vPlayerPos));
-	const _float maxDist = 10.f; // 원하는 거리값으로 조정
-	_float t = 1.f - clamp(dist / maxDist, 0.f, 1.f); // 0~1
+	const _float maxDist = 10.f;
+	_float t = 1.f - clamp(dist / maxDist, 0.f, 1.f);
 	_float pitchOffset = XMConvertToRadians(10.f * t);
 
 	m_fPitch += pitchOffset;
@@ -377,7 +361,7 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 {
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 
-	// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
+	// follow point (player + height + slight back)
 	if (!m_bTalkActive)
 	{
 		m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
@@ -385,16 +369,16 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
 	}
 
-	// 방향 계산
+	// offset from yaw/pitch
 	_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
 	_float y = m_fDistance * sinf(m_fPitch);
 	_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
 	_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-	// 목표 카메라 위치
+	// target cam pos
 	m_vTargetCamPos = m_vPlayerPosition + vOffset;
 
-	// --- 스프링암 Raycast 처리 시작 ---
+	// --- spring-arm Raycast ---
 	_vector vRayDir = XMVector3Normalize(vOffset);
 
 	PxVec3 origin = VectorToPxVec3(m_vPlayerPosition);
@@ -412,27 +396,24 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 	{
 		if (hit.hasBlock)
 		{
-			_float fHitDist = hit.block.distance - 0.3f; // 여유 거리
-			fHitDist = max(fHitDist, 0.5f);              // 너무 가까워지지 않게 제한
+			_float fHitDist = hit.block.distance - 0.3f; // margin
+			fHitDist = max(fHitDist, 0.5f);              // min distance
 
-			// 보정된 카메라 위치
 			m_vTargetCamPos = m_vPlayerPosition + vRayDir * fHitDist;
 		}
 	}
-	// --- 스프링암 Raycast 처리 끝 ---
+	// --- end spring-arm Raycast ---
 
-	// 카메라 설정
-	const _float kPos = 12.f; // 응답 속도(높을수록 빠름)
-	const _float a = 1.f - expf(-kPos * fTimeDelta);         
+	// smooth position
+	const _float kPos = 12.f;
+	const _float a = 1.f - expf(-kPos * fTimeDelta);
 
 	_vector vCurPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vNewPos = XMVectorLerp(vCurPos, m_vTargetCamPos, a);
 
-	// 아주 가까워지면 스냅
 	if (XMVectorGetX(XMVector3LengthSq(vNewPos - m_vTargetCamPos)) < 1e-6f)
 		vNewPos = m_vTargetCamPos;
 
-	// 카메라 설정
 	m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
 }
 
@@ -464,21 +445,19 @@ void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
 	{
 		m_fDistanceLerpElapsed += fTimeDelta;
 
-		// 페이즈 1: 1.0 → m_fDistanceTarget
+		// phase 1: 3.0 -> target
 		if (m_fDistanceLerpElapsed <= m_fDistnaceStartSpeed)
 		{
 			_float t = m_fDistnaceStartSpeed <= 0.f ? 1.f : (m_fDistanceLerpElapsed / m_fDistnaceStartSpeed);
 			m_fDistance = LerpFloat(3.f, m_fDistanceTarget, t);
 		}
-		// 페이즈 1이 끝났고, 아직 딜레이 시간 진행 중
+		// delay hold
 		else if (m_fDistanceLerpElapsed <= (m_fDistnaceStartSpeed + m_fDistanceDelayTime))
 		{
 			m_fDistanceDelayElapsed += fTimeDelta;
-
-			// 딜레이 구간에서는 값 고정 (m_fDistanceTarget 유지)
 			m_fDistance = m_fDistanceTarget;
 		}
-		// 페이즈 2: m_fDistanceTarget → 3.0
+		// phase 2: target -> 3.0
 		else if (m_fDistanceLerpElapsed <= (m_fDistnaceStartSpeed + m_fDistanceDelayTime + m_fDistnaceEndSpeed))
 		{
 			_float t = m_fDistnaceEndSpeed <= 0.f
@@ -489,7 +468,6 @@ void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
 		}
 		else
 		{
-			// 끝
 			m_bDistanceLerp = false;
 			m_fDistance = 3.f;
 		}
