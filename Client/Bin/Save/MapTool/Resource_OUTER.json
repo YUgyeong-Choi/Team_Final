@@ -199,15 +199,22 @@
         "Collision": false,
         "ModelName": "SM_BuildingA_Wall_057",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_057.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_BuildingA_Wall_06",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_06.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Wall_11",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_11.bin"
     },
     {
         "Collision": false,
@@ -220,8 +227,15 @@
         "Collision": true,
         "ModelName": "SM_BuildingA_Wall_17",
         "NoInstancing": false,
-        "ObjectCount": 16,
+        "ObjectCount": 19,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_17.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Wall_23",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_23.bin"
     },
     {
         "Collision": false,
@@ -229,6 +243,13 @@
         "NoInstancing": false,
         "ObjectCount": 43,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_24.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Wall_30",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_30.bin"
     },
     {
         "Collision": false,
@@ -248,7 +269,7 @@
         "Collision": false,
         "ModelName": "SM_BuildingA_WindowGlass_03",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_WindowGlass_03.bin"
     },
     {

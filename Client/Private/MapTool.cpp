@@ -820,7 +820,7 @@ void CMapTool::Render_Asset()
 	// 창 포커스 여부
 	const _bool bWindowFocused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootAndChildWindows);
 
-	if (ImGui::BeginListBox("##Model List", ImVec2(-FLT_MIN, 200)))
+	if (ImGui::BeginListBox("##Model List", ImVec2(-FLT_MIN, 100)))
 	{
 		/*
 		* 모델 원형의 보관함에 들어있는 모든 <모델이름>을 출력
