@@ -56,8 +56,9 @@ private:
 	_float m_fExpandTime = 0.f; // 불꽃이 확장까지 걸리는 시간
 	_float m_fExpandElapsedTime = 0.f; // 불꽃이 확장된 시간
 	_float m_fRemainTime = 2.f;
-	_float m_fDamageInterval = 0.15f; // 데미지 간격
+	_float m_fDamageInterval = 0.25f; // 데미지 간격
 	_float m_fDamgeElapsedTime = 0.f; // 누적 데미지 시간
+	_vector m_vBegningRayPos = XMVectorZero();
 	vector<_float> m_SpawnEffectDistanceList; // 이펙트를 생성할 거리 리스트
 	vector<_float> m_LastSpawnDist; // 이펙트를 생성할 거리 리스트
 	vector<_float> m_MergeDist; // 72방향에서 레이를 쏴서 얻은 거리의 평균
