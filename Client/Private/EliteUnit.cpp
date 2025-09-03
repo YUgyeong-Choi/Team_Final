@@ -365,7 +365,7 @@ void CEliteUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
         m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
     }
 
-    if (m_eCurrentState == EEliteState::TURN)
+    if (m_eCurrentState == EEliteState::TURN && CanProcessTurn())
     {
         m_pTransformCom->RotateToDirectionSmoothly(vDir, fTimeDelta);
     }
@@ -490,11 +490,11 @@ void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
     _vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vCurRotQuat));
     vWorldDelta = XMVectorSetY(vWorldDelta, 0.f);
 
-    if (m_pPlayer&& m_bRootMotionClamped)
+    if (m_pPlayer && m_bRootMotionClamped && m_eCurrentState !=EEliteState::FATAL)
     {
         _float fDistToPlayer = Get_DistanceToPlayer();
 
-        _float fFactor = clamp(fDistToPlayer / 1.f, 0.f, 1.f);
+        _float fFactor = clamp(fDistToPlayer / 2.5f, 0.f, 1.f);
         vWorldDelta *= fFactor;
     }
 
@@ -624,6 +624,7 @@ void CEliteUnit::Reset()
             pController->SetState(pController->GetEntryNodeId());
         }
     }
+    m_bRootMotionClamped = false;
     SwitchFury(false, 1.f);
     SwitchEmissive(false, 1.f);
     m_iCurNodeID = -1;
@@ -674,6 +675,21 @@ void CEliteUnit::EnterFatalHit()
 #ifdef _DEBUG
         cout << "Elite Fatal Attack" << endl;
 #endif
+    }
+}
+
+void CEliteUnit::NotifyPerfectGuarded()
+{
+    m_fGroggyGauge += m_fGroggyScale_Charge;
+    if (m_fGroggyGauge >= m_fGroggyThreshold && !m_bGroggyActive)
+    {
+        m_bGroggyActive = true;                  // 화이트 게이지 시작
+        m_fGroggyEndTimer = m_fGroggyTimer;
+        m_fGroggyGauge = m_fGroggyThreshold;
+#ifdef _DEBUG
+        cout << "그로기 가능" << endl;
+#endif
+        return;
     }
 }
 

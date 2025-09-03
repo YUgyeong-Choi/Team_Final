@@ -214,11 +214,11 @@
                 },
                 {
                     "EventName": "ElbowOn",
-                    "Time": 74.0
+                    "Time": 85.0
                 },
                 {
                     "EventName": "ElbowOff",
-                    "Time": 100.0
+                    "Time": 97.0
                 }
             ],
             "IsLoop": false,
@@ -239,11 +239,11 @@
                 },
                 {
                     "EventName": "ElbowOn",
-                    "Time": 85.0
+                    "Time": 91.0
                 },
                 {
                     "EventName": "ElbowOff",
-                    "Time": 116.0
+                    "Time": 105.0
                 }
             ],
             "IsLoop": false,

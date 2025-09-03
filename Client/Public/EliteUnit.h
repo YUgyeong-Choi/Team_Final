@@ -46,6 +46,7 @@ public:
 public:
 	void EnterFatalHit();
 	const EAttackType Get_AttackType() const { return m_eAttackType; }
+	void NotifyPerfectGuarded();
 
 protected:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -107,6 +108,7 @@ protected:
 
 	virtual void UpdateSpecificBehavior(_float fTimeDelta) {};
 
+	virtual _bool CanProcessTurn() { return true; }
 	_float CalculateCurrentHpRatio() const
 	{
 		return m_fHp / m_fMaxHp;

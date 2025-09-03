@@ -279,6 +279,21 @@ void CFuoco::Late_Update(_float fTimeDelta)
 		m_pHPBar->Late_Update(fTimeDelta);
 }
 
+void CFuoco::Reset()
+{
+	__super::Reset();
+	m_bWaitPhase2Rotate = false;
+	m_vPhase2TurnDir = XMVectorZero();
+	m_bPhase2TurnProcessed = false;
+	m_bPhase2TurnFinished = false;
+	m_bPlayerCollided = false;
+	m_bUsedFlameFiledOnLowHp = false;
+	m_iLastComboType = -1;
+	m_fFireFlameDuration = 0.f;
+	m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
+	m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
+}
+
 HRESULT CFuoco::Ready_Components(void* pArg)
 {
 	if (FAILED(__super::Ready_Components(pArg)))
@@ -438,6 +453,8 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		m_fAttackCooldown = m_fAttckDleay;
 		SetTurnTimeDuringAttack(1.5f, 1.4f);
 		m_eAttackType = EAttackType::FURY_AIRBORNE;
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+			pPlayer->SetHitedAttackType(EAttackType::FURY_AIRBORNE);
 		return;
 	}
 
@@ -625,7 +642,11 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::ATK_SLAM_COMBO_RIGHT_END):
 		SetTurnTimeDuringAttack(0.7f,1.2f);
 		break;
-		
+	case ENUM_CLASS(BossStateID::ATK_SLAM_FURY_START):
+		m_eAttackType = EAttackType::FURY_STAMP;
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+			pPlayer->SetHitedAttackType(EAttackType::FURY_STAMP);
+		break;
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
@@ -657,33 +678,54 @@ void CFuoco::UpdateSpecificBehavior(_float fTimeDelta)
 
 	if ((m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK)
 		&& m_eCurrentState != EEliteState::ATTACK
-		&& m_eCurrentState != EEliteState::TURN)  // Turn 상태 제외
+		&& m_eCurrentState != EEliteState::TURN && m_bWaitPhase2Rotate == false)  // Turn 상태 제외
 	{
 		m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 	}
 
 	if (m_bIsPhase2&& m_eCurrentState != EEliteState::PARALYZATION&& m_bWaitPhase2Rotate)
 	{
-		_vector vDir = XMLoadFloat4(&m_vCenterPos) - m_pTransformCom->Get_State(STATE::POSITION);
-		vDir = XMVectorSetY(vDir, 0.f);
-		vDir = XMVector3Normalize(vDir);
-		m_pTransformCom->RotateToDirectionImmediately(vDir);
+		// 현재 중앙으로 턴을 안했으면
+		if (m_eCurrentState != EEliteState::TURN&& m_bPhase2TurnProcessed == false)
+		{	// 방향을 정하고
+			m_vPhase2TurnDir = XMLoadFloat4(&m_vCenterPos) - m_pTransformCom->Get_State(STATE::POSITION);
+			m_vPhase2TurnDir = XMVectorSetY(m_vPhase2TurnDir, 0.f);
+			m_vPhase2TurnDir = XMVector3Normalize(m_vPhase2TurnDir);
 
-		m_pAnimator->SetInt("SkillType", StrikeFury);
-		m_fAttackCooldown = m_fAttckDleay;
-		m_ePrevState = m_eCurrentState;
-		m_eCurrentState = EEliteState::ATTACK;
-		m_eAttackType = EAttackType::FURY_AIRBORNE;
-		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetTrigger("Phase2Start");
-		m_pAnimator->SetBool("Move", false);
-		m_bWaitPhase2Rotate = false;
+			_vector vCurrentLook = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
+			_float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, m_vPhase2TurnDir));
+			fDot = clamp(fDot, -1.f, 1.f);
+			_vector vCross = XMVector3Cross(vCurrentLook, m_vPhase2TurnDir);
+			_float fSign = (XMVectorGetY(vCross) < 0.f) ? -1.f : 1.f;
+			_float fYaw = acosf(fDot) * fSign; // 회전 각도 (라디안 단위) -180~180
+			m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: 오른쪽, 1: 왼쪽
+			m_pAnimator->SetTrigger("Turn");
+			m_pAnimator->SetBool("Move", false); // 회전 중에는 이동하지 않음
+			m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
+			m_ePrevState = m_eCurrentState;
+			m_eCurrentState = EEliteState::TURN;
+			m_bPhase2TurnProcessed = true;
+		}
+
+		if(m_bPhase2TurnFinished)
+		{
+			m_pAnimator->SetInt("SkillType", StrikeFury);
+			m_fAttackCooldown = m_fAttckDleay;
+			m_ePrevState = m_eCurrentState;
+			m_eCurrentState = EEliteState::ATTACK;
+			m_eAttackType = EAttackType::FURY_AIRBORNE;
+			m_pAnimator->SetTrigger("Attack");
+			m_pAnimator->SetTrigger("Phase2Start");
+			m_pAnimator->SetBool("Move", false);
+			m_bWaitPhase2Rotate = false;
+			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+				pPlayer->SetHitedAttackType(EAttackType::FURY_AIRBORNE);
+		}
+		else if(m_bPhase2TurnProcessed)
+		{
+			m_pTransformCom->RotateToDirectionSmoothly(m_vPhase2TurnDir, fTimeDelta);
+		}
 	}
-
-	//if (m_pAnimator->CheckTrigger("Attack") == false)
-	//{
-	//	m_pAnimator->SetInt("SkillType", -1);
-	//}
 }
 
 void CFuoco::EnableColliders(_bool bEnable)
@@ -716,6 +758,13 @@ void CFuoco::EnableColliders(_bool bEnable)
 		}
 	}
 }
+
+_bool CFuoco::CanProcessTurn()
+{
+	// 2페이즈이고 중앙으로 턴을 기다리는 중이면 false
+	return !(m_bIsPhase2 && m_bWaitPhase2Rotate);
+}
+
 
 void CFuoco::SetupAttackByType(_int iPattern)
 {
@@ -1135,6 +1184,15 @@ void CFuoco::Register_Events()
 			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_FieldBellyFire"), static_cast<CEffectContainer*>(pEC));
 		});
 
+	m_pAnimator->RegisterEventListener("Phase2TurnFinished", [this]()
+		{
+			if (m_bIsPhase2)
+			{
+				m_bPhase2TurnFinished = true;
+			}
+		});
+
+
 }
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
@@ -1155,6 +1213,8 @@ void CFuoco::Ready_AttackPatternWeightForPhase1()
 
 void CFuoco::Ready_AttackPatternWeightForPhase2()
 {
+	if (m_eCurrentState == EEliteState::FATAL)
+		return;
 	m_pAnimator->SetTrigger("Paralyzation");
 	//m_pAnimator->SetTrigger("Groggy");
 	m_bStartPhase2 = true;
