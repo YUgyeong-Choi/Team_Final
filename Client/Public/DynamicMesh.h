@@ -29,7 +29,7 @@ public:
 			0.f, 0.f, 0.f, 1.f
 		);
 		_float fColliderScale;
-
+		_int   iColliderMeshIdx;
 	}DYNAMICMESH_DESC;
 
 protected:
