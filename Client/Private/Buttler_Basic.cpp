@@ -324,6 +324,22 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 
+		if (static_cast<CPlayer*>(m_pPlayer)->GetAnimCategory() == CPlayer::eAnimCategory::ARM_ATTACKCHARGE)
+		{
+			m_isLookAt = false;
+			m_pAnimator->SetTrigger("KnockBack");
+			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+
+
+			m_vKnockBackDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
+
+			XMVector3Normalize(m_vKnockBackDir);
+
+			return;
+		}
+		
+		
+
 		if (!m_isCanGroggy)
 		{
 			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos ||
@@ -390,7 +406,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 	}
 	else
 	{
-		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
+		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
 		{
 			m_isLookAt = false;
 			m_isCollisionPlayer = false;
@@ -400,12 +416,18 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-		if (m_strStateName.find("Away") == m_strStateName.npos)
+		if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
 		{
-			m_fAwaySpeed = 1.5f;
+			m_fAwaySpeed = 1.f;
 			RootMotionActive(fTimeDelta);
+
+			return;
 		}
-		else
+
+
+
+
+		if (m_strStateName.find("Away") != m_strStateName.npos)
 		{
 			m_fAwaySpeed -= fTimeDelta * 0.5f;
 
@@ -413,8 +435,29 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 				m_fAwaySpeed = 0.f;
 
 
+			if (m_strStateName.find("B") == m_strStateName.npos)
+			{
+				vLook *= -1.f;
+
+			}
+
+
+
+
 			m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
 		}
+		else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
+		{
+			m_fAwaySpeed -= fTimeDelta * 0.5f;
+
+			if (m_fAwaySpeed <= 0.f)
+				m_fAwaySpeed = 0.f;
+
+			RootMotionActive(fTimeDelta);
+
+			m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
+		}
+
 	}
 
 }

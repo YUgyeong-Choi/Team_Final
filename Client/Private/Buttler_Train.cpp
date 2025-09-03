@@ -122,69 +122,6 @@ void CButtler_Train::Update(_float fTimeDelta)
 	{
 		m_isFatal = false;
 	}
-	
-//#ifdef _DEBUG
-//	// ===== Shape 교체 (F5) =====
-//	if (KEY_DOWN(DIK_F5))
-//	{
-//		if (m_pPhysXActorCom && m_pPhysXActorCom->Get_Actor())
-//		{
-//			switch (m_iShapeTestState)
-//			{
-//			case 0: // Box
-//				m_pPhysXActorCom->ReCreate_Shape(m_pPhysXActorCom->Get_Actor(), m_DebugBox, m_pGameInstance->GetMaterial(L"Default"));
-//				cout << "Shape Test: Box ("
-//					<< m_DebugBox.halfExtents.x << ","
-//					<< m_DebugBox.halfExtents.y << ","
-//					<< m_DebugBox.halfExtents.z << ")" << endl;
-//				break;
-//
-//			case 1: // Sphere
-//				m_pPhysXActorCom->ReCreate_Shape(m_pPhysXActorCom->Get_Actor(), m_DebugSphere, m_pGameInstance->GetMaterial(L"Default"));
-//				cout << "Shape Test: Sphere (r=" << m_DebugSphere.radius << ")" << endl;
-//				break;
-//
-//			case 2: // Capsule
-//				m_pPhysXActorCom->ReCreate_Shape(m_pPhysXActorCom->Get_Actor(), m_DebugCapsule, m_pGameInstance->GetMaterial(L"Default"));
-//				cout << "Shape Test: Capsule (r=" << m_DebugCapsule.radius
-//					<< ", h=" << m_DebugCapsule.halfHeight * 2 << ")" << endl;
-//				break;
-//			}
-//
-//			m_iShapeTestState = (m_iShapeTestState + 1) % 3;
-//		}
-//	}
-//
-//	//// ===== 크기 조정 =====
-//	//if (m_pPhysXActorCom && m_pPhysXActorCom->Get_Actor())
-//	//{
-//	//	switch (m_iShapeTestState)
-//	//	{
-//	//	case 0: // Box
-//	//		if (KEY_DOWN(DIK_F6)) { m_DebugBox.halfExtents.x += 0.1f; }
-//	//		if (KEY_DOWN(DIK_F7)) { m_DebugBox.halfExtents.y += 0.1f; }
-//	//		if (KEY_DOWN(DIK_F8)) { m_DebugBox.halfExtents.z += 0.1f; }
-//	//		if (KEY_DOWN(DIK_F9)) { m_DebugBox.halfExtents = PxVec3(1.f, 2.f, 1.f); } // reset
-//	//		m_pPhysXActorCom->Modify_Shape(m_DebugBox, m_pGameInstance->GetMaterial(L"Default"));
-//	//		break;
-//
-//	//	case 1: // Sphere
-//	//		if (KEY_DOWN(DIK_F6)) { m_DebugSphere.radius += 0.1f; }
-//	//		if (KEY_DOWN(DIK_F7)) { m_DebugSphere.radius = max(0.1f, m_DebugSphere.radius - 0.1f); }
-//	//		if (KEY_DOWN(DIK_F9)) { m_DebugSphere.radius = 1.5f; } // reset
-//	//		m_pPhysXActorCom->Modify_Shape(m_DebugSphere, m_pGameInstance->GetMaterial(L"Default"));
-//	//		break;
-//
-//	//	case 2: // Capsule
-//	//		if (KEY_DOWN(DIK_F6)) { m_DebugCapsule.radius += 0.1f; }
-//	//		if (KEY_DOWN(DIK_F7)) { m_DebugCapsule.halfHeight += 0.1f; }
-//	//		if (KEY_DOWN(DIK_F8)) { m_DebugCapsule.halfHeight = max(0.1f, m_DebugCapsule.halfHeight - 0.1f); }
-//	//		if (KEY_DOWN(DIK_F9)) { m_DebugCapsule = PxCapsuleGeometry(0.8f, 2.0f); } // reset
-//	//		m_pPhysXActorCom->Modify_Shape(m_DebugCapsule, m_pGameInstance->GetMaterial(L"Default"));
-//	//		break;
-//	//	}
-//	//}
-//#endif
 
 }
 
@@ -412,6 +349,20 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 
+		if (static_cast<CPlayer*>(m_pPlayer)->GetAnimCategory() == CPlayer::eAnimCategory::ARM_ATTACKCHARGE)
+		{
+			m_isLookAt = false;
+			m_pAnimator->SetTrigger("KnockBack");
+			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+
+
+			m_vKnockBackDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
+
+			XMVector3Normalize(m_vKnockBackDir);
+
+			return;
+		}
+
 		if (!m_isCanGroggy)
 		{
 			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos || 
@@ -477,29 +428,32 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	}
 	else
 	{
-		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
+		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
 		{
 			m_isLookAt = false;
 			m_isCollisionPlayer = false;
 		}
 
 
-
-
-
-		if (m_strStateName.find("Away") == m_strStateName.npos)
+		if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
 		{
 			m_fAwaySpeed = 1.f;
 			RootMotionActive(fTimeDelta);
+
+			return;
 		}
-		else
+
+
+
+
+		if (m_strStateName.find("Away") != m_strStateName.npos)
 		{
 			m_fAwaySpeed -= fTimeDelta * 0.5f;
 
 			if (m_fAwaySpeed <= 0.f)
 				m_fAwaySpeed = 0.f;
 
-		
+
 			if (m_strStateName.find("B") == m_strStateName.npos)
 			{
 				vLook *= -1.f;
@@ -511,13 +465,26 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 
 			m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
 		}
+		else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
+		{
+			m_fAwaySpeed -= fTimeDelta * 0.5f;
+
+			if (m_fAwaySpeed <= 0.f)
+				m_fAwaySpeed = 0.f;
+
+			RootMotionActive(fTimeDelta);
+
+			m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
+		}
+
 	}
+}
 
 
 
 	
 
-}
+
 
 void CButtler_Train::Register_Events()
 {
