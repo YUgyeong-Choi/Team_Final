@@ -2,21 +2,21 @@
     "animations": [
         {
             "ClipName": "AS_Close_Idle",
-            "Duration": 5.0,
+            "Duration": 60.0,
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
-            "ClipName": "AS_Open_Idle",
-            "Duration": 5.0,
+            "ClipName": "AS_Open",
+            "Duration": 600.0,
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
-            "ClipName": "AS_Open_Push",
-            "Duration": 647.0,
+            "ClipName": "AS_Open_Idle",
+            "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

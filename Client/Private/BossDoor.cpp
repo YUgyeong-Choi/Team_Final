@@ -37,7 +37,8 @@ HRESULT CBossDoor::Initialize(void* pArg)
 
 	Ready_Trigger(pDoorMeshDESC);
 
-	m_pAnimator->SetPlaying(true);
+	if (FAILED(LoadFromJson()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -51,6 +52,9 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 		// 상호작용
 		if (KEY_DOWN(DIK_E))
 		{
+			CPlayer* pPlayer = dynamic_cast<CPlayer*>(GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex()));
+			if (pPlayer == nullptr)
+				return;
 			switch (m_eInteractType)
 			{
 			case Client::FESTIVALDOOR:
@@ -58,11 +62,14 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 				// 컷씬 플레이
 				break;
 			case Client::FUOCO:
-				// 플레이어 움직임
-				// 컷씬 플레이
+				pPlayer->Interaction_Door(m_eInteractType, this);
 				break;
 			default:
 				break;
+			}
+			if (m_pAnimator)
+			{
+				m_pAnimator->SetTrigger("Open");
 			}
 			m_bFinish = true;
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
@@ -297,6 +304,70 @@ HRESULT CBossDoor::Ready_Trigger(BOSSDOORMESH_DESC* pDesc)
 	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::TRIGGER);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
 
+	return S_OK;
+}
+
+HRESULT CBossDoor::LoadFromJson()
+{
+	string modelName = m_pModelCom->Get_ModelName();
+	if (FAILED(LoadAnimationEventsFromJson(modelName)))
+		return E_FAIL;
+	if (FAILED(LoadAnimationStatesFromJson(modelName)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CBossDoor::LoadAnimationEventsFromJson(const string& modelName)
+{
+	string path = "../Bin/Save/AnimationEvents/" + modelName + "_events.json";
+	ifstream ifs(path);
+	if (ifs.is_open())
+	{
+		json root;
+		ifs >> root;
+		if (root.contains("animations"))
+		{
+			auto& animationsJson = root["animations"];
+			auto& clonedAnims = m_pModelCom->GetAnimations();
+
+			for (const auto& animData : animationsJson)
+			{
+				const string& clipName = animData["ClipName"];
+
+				for (auto& pAnim : clonedAnims)
+				{
+					if (pAnim->Get_Name() == clipName)
+					{
+						pAnim->Deserialize(animData);
+						break;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		MSG_BOX("Failed to open animation events file.");
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
+HRESULT CBossDoor::LoadAnimationStatesFromJson(const string& modelName)
+{
+	string path = "../Bin/Save/AnimationStates/" + modelName + "_States.json";
+	ifstream ifsStates(path);
+	if (ifsStates.is_open())
+	{
+		json rootStates;
+		ifsStates >> rootStates;
+		m_pAnimator->Deserialize(rootStates);
+	}
+	else
+	{
+		MSG_BOX("Failed to open animation states file.");
+		return E_FAIL;
+	}
 	return S_OK;
 }
 

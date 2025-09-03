@@ -49,6 +49,10 @@ public:
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(BOSSDOORMESH_DESC* pDesc);
+protected:
+	HRESULT LoadFromJson();
+	HRESULT LoadAnimationEventsFromJson(const string& modelName);
+	HRESULT LoadAnimationStatesFromJson(const string& modelName);
 private:
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
 

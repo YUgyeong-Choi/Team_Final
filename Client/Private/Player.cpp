@@ -2513,6 +2513,9 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 	case Client::TUTORIALDOOR:
 		Play_CutScene_Door();
 		break;
+	case Client::FUOCO:
+		m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+		break;
 	default:
 		break;
 	}
