@@ -475,6 +475,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Color">
       <UniqueIdentifier>{cbaffa57-c9b2-414d-b13c-89dadc25a8f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Range">
+      <UniqueIdentifier>{073cdcc5-ca16-4720-bf1c-e81b935a67d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1012,6 +1015,9 @@
     <ClInclude Include="..\Public\KeyDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Buttler_Range.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1522,6 +1528,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\KeyDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Buttler_Range.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
