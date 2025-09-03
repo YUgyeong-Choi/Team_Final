@@ -132,8 +132,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	if (KEY_DOWN(DIK_Y))
-		m_pAnimator->SetTrigger("Fatal");
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
