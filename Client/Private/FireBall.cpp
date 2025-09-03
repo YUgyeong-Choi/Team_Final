@@ -40,9 +40,9 @@ void CFireBall::Priority_Update(_float fTimeDelta)
 }
 
 void CFireBall::Update(_float fTimeDelta)
-{/*
+{
 	if (ProcessCollisionPriority())
-		return;*/
+		return;
 	__super::Update(fTimeDelta);
 }
 
@@ -64,7 +64,7 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 		if (auto pOil = dynamic_cast<COil*>(pOther))
 		{
 			pOil->Explode_Oil();
-			Set_bDead();
+		//	Set_bDead();
 		//	m_CollisionPriority[Oil] = pOther;
 #ifdef _DEBUG
 				cout << "FireBall On_CollisionEnter COil" << endl;
@@ -75,12 +75,13 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 
 	if (eColliderType == COLLIDERTYPE::PLAYER)
 	{
-		if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
-		{
-			pPlayer->SetHitMotion(HITMOTION::NORMAL);
-			pPlayer->SetfReceiveDamage(5.f);
-			Set_bDead();
-		}
+		//if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
+		//{
+		//	pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
+		//	pPlayer->SetfReceiveDamage(7.f);
+		//	pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.5f);
+		////	Set_bDead();
+		//}
 		m_CollisionPriority[Player] = pOther;
 #ifdef _DEBUG
 			cout << "FireBall On_CollisionEnter Player" << endl;
@@ -89,11 +90,14 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 	else if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
 	{
 		m_CollisionPriority[Environment] = pOther;
-		Set_bDead();
+	//	Set_bDead();
 #ifdef _DEBUG
 		cout << "FireBall On_CollisionEnter ENVIRONMENT" << endl;
 #endif
 	}
+	
+	if(m_pEffect)
+		m_pEffect->End_Effect();
 }
 
 void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -158,7 +162,8 @@ _bool CFireBall::ProcessCollisionPriority()
 				if (auto pPlayer = dynamic_cast<CPlayer*>(pObj))
 				{
 					pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
-					pPlayer->SetfReceiveDamage(5.f);
+					pPlayer->SetfReceiveDamage(7.f);
+					pPlayer->SetElementTypeDuration(EELEMENT::FIRE, 5.f);
 					Set_bDead();
 				}
 				return true;;
