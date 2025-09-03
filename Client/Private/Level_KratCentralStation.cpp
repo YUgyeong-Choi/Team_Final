@@ -953,26 +953,26 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 
 #pragma region 전통적인 하드코드 방식으로 소환(지금 월드행렬로 몬스터 소환중이라 이걸로하면 항등행렬로 소환됨!!! 근데 항등행렬로 소환하니까 플레이어 충돌 문제 생김)
 
-	CMonster_Base::MONSTER_BASE_DESC Desc{};
-	Desc.fSpeedPerSec = 5.f;
-	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
-	Desc.fHeight = 1.f;
-	Desc.vExtent = { 0.5f,1.f,0.5f };
-	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	//CMonster_Base::MONSTER_BASE_DESC Desc{};
+	//Desc.fSpeedPerSec = 5.f;
+	//Desc.fRotationPerSec = XMConvertToRadians(180.0f);
+	//Desc.fHeight = 1.f;
+	//Desc.vExtent = { 0.5f,1.f,0.5f };
+	//Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 
-	//시작 위치에 네비게이션이 없으면 터진다 지금
-	Desc.wsNavName = TEXT("STATION");
-	Desc.InitPos =
-		//_float3(148.f, 2.47f, -7.38f); //호텔위치
-		_float3(85.5f, 0.f, -7.5f); //스테이션 위치
+	////시작 위치에 네비게이션이 없으면 터진다 지금
+	//Desc.wsNavName = TEXT("STATION");
+	//Desc.InitPos =
+	//	//_float3(148.f, 2.47f, -7.38f); //호텔위치
+	//	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
 
-	Desc.InitScale = _float3(1.f, 1.f, 1.f);
-	lstrcpy(Desc.szName, TEXT("Buttler_Range"));
-	Desc.szMeshID = TEXT("Buttler_Range");
+	//Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	//lstrcpy(Desc.szName, TEXT("Buttler_Range"));
+	//Desc.szMeshID = TEXT("Buttler_Range");
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Buttler_Range"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Buttler_Range"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
+	//	return E_FAIL;
 
 	//Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
 	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),

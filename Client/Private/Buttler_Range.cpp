@@ -502,14 +502,11 @@ void CButtler_Range::Reset()
 void CButtler_Range::RayCast(CPhysXActor* actor)
 {
 
-	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) -  m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.5f - m_pTransformCom->Get_State(STATE::POSITION);
 
-	vDir.m128_f32[3] = 0.f;
+	_vector vOffset = m_vRayOffset * 0.5f;
 
-	_vector vOffset = m_vRayOffset;
-	vOffset.m128_f32[1] += 0.3f;
-
-	PxVec3 origin = actor->Get_Actor()->getGlobalPose().p; //+VectorToPxVec3(vOffset);
+	PxVec3 origin = actor->Get_Actor()->getGlobalPose().p +VectorToPxVec3(vOffset);
 	XMFLOAT3 fLook;
 	XMStoreFloat3(&fLook, vDir);
 	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
@@ -545,19 +542,21 @@ void CButtler_Range::RayCast(CPhysXActor* actor)
 				if (nullptr == pHitActor->Get_Owner())
 					return;
 				pHitActor->Get_Owner()->On_Hit(this, actor->Get_ColliderType());
+
+				if (COLLIDERTYPE::PLAYER == pHitActor->Get_ColliderType() || COLLIDERTYPE::PLAYER_WEAPON == pHitActor->Get_ColliderType())
+				{
+					m_bRayHit = true;
+					m_vRayHitPos = hitPos;
+				}
+				else
+				{
+					m_bRayHit = false;
+					m_vRayHitPos = {};
+				}
 			}
 
 		
-			if (COLLIDERTYPE::PLAYER == actor->Get_ColliderType())
-			{
-				m_bRayHit = true;
-				m_vRayHitPos = hitPos;
-			}
-			else
-			{
-				m_bRayHit = false;
-				m_vRayHitPos = {};
-			}
+			
 			
 
 			
@@ -567,9 +566,9 @@ void CButtler_Range::RayCast(CPhysXActor* actor)
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		DEBUGRAY_DATA _data{};
-		_data.vStartPos = actor->Get_Actor()->getGlobalPose().p;
+		_data.vStartPos = actor->Get_Actor()->getGlobalPose().p + VectorToPxVec3(vOffset);
 		XMFLOAT3 fLook;
-		XMStoreFloat3(&fLook, m_pTransformCom->Get_State(STATE::LOOK));
+		XMStoreFloat3(&fLook, vDir);
 		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
 		_data.fRayLength = 10.f;
 		_data.bIsHit = m_bRayHit;
