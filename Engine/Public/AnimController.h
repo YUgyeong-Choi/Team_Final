@@ -224,7 +224,7 @@ public:
 	// 파라미터 설정
 	void SetBool(const string& name, _bool v) {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return; // 파라미터가 없으면 아무것도 하지 않음
 		}
 		auto& p = m_Params[name];
@@ -232,7 +232,7 @@ public:
 	}
 	void SetFloat(const string& name, _float v) {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return; // 파라미터가 없으면 아무것도 하지 않음
 		}
 		auto& p = m_Params[name];
@@ -240,7 +240,7 @@ public:
 	}
 	void SetTrigger(const string& name) {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return; // 파라미터가 없으면 아무것도 하지 않음
 		}
 		auto& p = m_Params[name];
@@ -249,7 +249,7 @@ public:
 
 	void ResetTrigger(const string& name) {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return; // 파라미터가 없으면 아무것도 하지 않음
 		}
 		auto& p = m_Params[name];
@@ -258,7 +258,7 @@ public:
 
 	void SetInt(const string& name, _int v) {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return; // 파라미터가 없으면 아무것도 하지 않음
 		}
 		auto& p = m_Params[name];
@@ -267,7 +267,7 @@ public:
 
 	void DeleteParameter(const string& name) {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return; // 파라미터가 없으면 아무것도 하지 않음
 		}
 		m_Params.erase(name);
@@ -278,14 +278,14 @@ public:
 	// 조건 검사용
 	_bool CheckBool(const string& name) const {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return false; // 기본값 반환
 		}
 		return m_Params.at(name).bValue;
 	}
 	_float GetFloat(const string& name) const {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return 0.f; // 기본값 반환
 		}
 		return m_Params.at(name).fValue;
@@ -302,7 +302,7 @@ public:
 	}
 	_int GetInt(const string& name) const {
 		if (m_Params.find(name) == m_Params.end()) {
-			cout << "Parameter not found: " << name << endl; // 디버그용 출력
+			//cout << "Parameter not found: " << name << endl; // 디버그용 출력
 			return 0; // 기본값 반환
 		}
 

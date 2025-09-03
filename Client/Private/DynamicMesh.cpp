@@ -206,13 +206,14 @@ HRESULT CDynamicMesh::Ready_Collider(void* pArg)
 		PxMeshScale meshScale(scaleVec);
 
 		PxFilterData filterData{};
-		filterData.word0 = WORLDFILTER::FILTER_MAP;
-		filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		filterData.word0 = 0;//WORLDFILTER::FILTER_MAP;
+		filterData.word1 = 0;//WORLDFILTER::FILTER_PLAYERBODY;
 
 		PxConvexMeshGeometry  ConvexGeom = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
 		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), ConvexGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorCom->Set_Kinematic(true);
-		m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+		//m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 		m_pPhysXActorCom->Set_QueryFilterData(filterData);
 		m_pPhysXActorCom->Set_Owner(this);
