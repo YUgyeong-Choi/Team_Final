@@ -14,6 +14,7 @@
 
 #include "SlideDoor.h"
 #include "KeyDoor.h"
+#include "BossDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
@@ -1170,7 +1171,6 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
 
-	/* 문자열 받는 곳 */
 	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
 	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
@@ -1179,6 +1179,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	_float4x4 matWorldFloat;
 	XMStoreFloat4x4(&matWorldFloat, matWorld);
 	Desc.WorldMatrix = matWorldFloat;
+	Desc.fColliderScale = 1.f;
 
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
@@ -1187,46 +1188,60 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
 
-	/*  [ 야외로 나가는 문 ] */
-	CKeyDoor::KEYDOORMESH_DESC KeyDoorDesc{};
-	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	KeyDoorDesc.szMeshID = TEXT("SM_Station_STGate_01");
-	lstrcpy(KeyDoorDesc.szName, TEXT("SM_Station_STGate_01"));
+	/* [ 푸쿠오 보스 문 ] */
+	CBossDoor::BOSSDOORMESH_DESC BossDoorDesc{};
+	BossDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	BossDoorDesc.szMeshID = TEXT("FacotoryDoor");
+	lstrcpy(BossDoorDesc.szName, TEXT("FacotoryDoor"));
 
-	/* 문자열 받는 곳 */
-	ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_STGate_01");
-	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_FacotoryDoor");
+	lstrcpy(BossDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
-	vPosition = _float3(184.f, 8.90f, -5.8f);
-	XMMATRIX rotY = XMMatrixRotationY(-XM_PIDIV2); // = 90도
+	vPosition = _float3(-1.4f, 0.31f, -235.f);
 	XMMATRIX trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	XMMATRIX rotY = XMMatrixRotationY(XM_PIDIV2); // = 90도
 	XMMATRIX world = rotY * trans;
 
 	XMStoreFloat4x4(&matWorldFloat, world);
-	KeyDoorDesc.WorldMatrix = matWorldFloat;
+	BossDoorDesc.WorldMatrix = matWorldFloat;
+	BossDoorDesc.fColliderScale = 0.01f;
+	BossDoorDesc.OffSetCollider = {2.f, 2.f,0.f};
 
-	KeyDoorDesc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
-	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
-	KeyDoorDesc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
+	BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
+	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
+	///* [ 축제의 인도자 문 ] */
+	//BossDoorDesc = {};
+	//BossDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	//BossDoorDesc.szMeshID = TEXT("FestivalDoor");
+	//lstrcpy(BossDoorDesc.szName, TEXT("FestivalDoor"));
 
-	vPosition = _float3(184.f, 8.90f, -10.2f);
-	rotY = XMMatrixRotationY(XM_PIDIV2); // = 90도
-	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
-	world = rotY * trans;
+	//ModelPrototypeTag = TEXT("Prototype_Component_Model_FestivalDoor");
+	//lstrcpy(BossDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
-	XMStoreFloat4x4(&matWorldFloat, world);
-	KeyDoorDesc.WorldMatrix = matWorldFloat;
+	//BossDoorDesc.bNeedSecondDoor = true;
+	//ModelPrototypeTag = TEXT("Prototype_Component_Model_FestivalCrashDoor");
+	//lstrcpy(BossDoorDesc.szSecondModelPrototypeTag, ModelPrototypeTag.c_str());
 
-	KeyDoorDesc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
-	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
-	KeyDoorDesc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
-		return E_FAIL;
+	//vPosition = _float3(368.55f, 12.4f, -49.24f);
+	//trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	//rotY = XMMatrixRotationY(XM_PIDIV2); // = 90도
+	//world = rotY * trans;
+
+	//XMStoreFloat4x4(&matWorldFloat, world);
+	//BossDoorDesc.WorldMatrix = matWorldFloat;
+	//BossDoorDesc.fColliderScale = 0.01f;
+
+	//BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
+	//BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	//BossDoorDesc.vTriggerSize = _vector({ 1.0f, 0.2f, 0.5f, 0.f });
+ //	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossDoor"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

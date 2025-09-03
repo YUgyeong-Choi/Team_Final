@@ -1018,6 +1018,9 @@
     <ClInclude Include="..\public\Buttler_Range.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BossDoor.h">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1531,6 +1534,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Buttler_Range.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossDoor.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
