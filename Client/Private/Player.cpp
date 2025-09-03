@@ -1272,6 +1272,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::GUARD_HIT:
 	{
+		if (m_pHitedTarget == nullptr)
+			return;
+
 		if (m_eHitedTarget == eHitedTarget::MONSTER || m_eHitedTarget == eHitedTarget::RANGED)
 		{
 			//가드 밀림 여부
@@ -1338,6 +1341,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::HITEDUP:
 	{
+		if (m_pHitedTarget == nullptr)
+			return;
+
 		_float  m_fTime = 0.4f;
 		_float  m_fDistance = 3.f;
 
@@ -1384,6 +1390,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::HITEDSTAMP:
 	{
+		if (m_pHitedTarget == nullptr)
+			return;
+
 		_float  m_fTime = 0.1f;
 		_float  m_fDistance = 2.f;
 
@@ -1856,6 +1865,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		{
 			//필요한 정보를 수집한다.
 			m_eHitedTarget = eHitedTarget::BOSS;
+			m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 			m_pHitedTarget = pBoss;
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -1868,7 +1878,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 			m_eHitedTarget = eHitedTarget::RANGED;
 
 			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
-			m_pHitedTarget = pRANGED;
+			m_pHitedTarget = nullptr;
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
@@ -2041,9 +2051,10 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		{
 			//보스 몬스터가 아니라면 원거리 공격으로 간주한다.
 			m_eHitedTarget = eHitedTarget::RANGED;
+			m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 
 			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
-			m_pHitedTarget = pRANGED;
+			m_pHitedTarget = nullptr;
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
@@ -2501,6 +2512,9 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 	{
 	case Client::TUTORIALDOOR:
 		Play_CutScene_Door();
+		break;
+	case Client::FUOCO:
+		m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
 		break;
 	default:
 		break;
