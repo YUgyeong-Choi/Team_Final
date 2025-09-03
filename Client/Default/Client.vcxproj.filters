@@ -768,9 +768,6 @@
     <ClInclude Include="..\public\HP_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PlayerState.h">
-      <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Mana_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Mana</Filter>
     </ClInclude>

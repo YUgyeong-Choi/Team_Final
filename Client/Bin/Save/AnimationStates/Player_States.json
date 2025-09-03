@@ -537,14 +537,6 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "",
-                    "LowerClipName": "AS_Pino_T_Walk_F",
-                    "MaskBoneName": "Bip001-Spine2",
-                    "Name": "Fail_Walk",
-                    "UpperClipName": "AS_Pino_Fail_Item"
-                },
-                {
-                    "BlendWeight": 1.0,
                     "ClipName": "AS_Pino_T_Dash_Focus_B",
                     "LowerClipName": "",
                     "MaskBoneName": "",

@@ -266,9 +266,6 @@
     <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PBRMesh.h" />
     <ClInclude Include="..\public\Player.h" />
-    <ClInclude Include="..\Public\PlayerState.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\public\Portion.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
     <ClInclude Include="..\public\Lamp.h" />
