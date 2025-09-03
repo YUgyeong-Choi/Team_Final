@@ -610,7 +610,9 @@ void CEliteUnit::Reset()
 	m_bGroggyActive = false;
     m_bUseLockon = true;
     m_fChangeMoveDirCooldown = 0.f;
-	Safe_Release(m_pHPBar);
+    if (nullptr != m_pHPBar)
+        m_pHPBar->Set_RenderTime(0.f);
+	
     m_pTransformCom->Set_WorldMatrix(m_InitWorldMatrix);
     if (m_pAnimator)
     {

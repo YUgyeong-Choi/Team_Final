@@ -547,7 +547,7 @@ PS_OUT PS_MAIN_HPBAR_MONSTER(PS_IN In)
     
     if (g_BarRatio > 0.f)
     {
-        float minWidth = 0.05f;
+        float minWidth = 0.03f;
         
         
         filledX = minX + max((maxX - minX) * g_BarRatio, minWidth);

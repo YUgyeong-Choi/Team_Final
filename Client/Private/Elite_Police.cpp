@@ -79,7 +79,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
-	eDesc.fHeight = 2.5f;
+	eDesc.fHeight = 3.5f;
 	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_bGroggyActive;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();

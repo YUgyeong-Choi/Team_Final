@@ -154,6 +154,12 @@ HRESULT CUI_Container::Initialize(void* pArg)
 
 void CUI_Container::Priority_Update(_float fTimeDelta)
 {
+	if (m_fDelay > 0)
+	{
+		m_fDelay -= fTimeDelta;
+		return;
+	}
+
 	if (m_useLifeTime)
 	{
 		m_fLifeTime -= fTimeDelta;
@@ -178,7 +184,6 @@ void CUI_Container::Update(_float fTimeDelta)
 {
 	if (m_fDelay > 0)
 	{
-		m_fDelay -= fTimeDelta;
 		return;
 	}
 

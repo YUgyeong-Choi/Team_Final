@@ -97,22 +97,18 @@ void CUI_Fatal_Icon::Update(_float fTimeDelta)
 
 			m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
+			m_vColor = { 1.f, 0.4f, 0.1f, 1.f };
+
 		}
 	}
-	else if (m_pPlayer->GetFatalTarget()->Get_UnitType() == EUnitType::BOSS)
+	else if (m_pPlayer->GetFatalTarget()->Get_UnitType() == EUnitType::BOSS || m_pPlayer->GetFatalTarget()->Get_UnitType() == EUnitType::ELITE_MONSTER)
 	{
 		// 엘리트 보스로 캐스팅해서
 		// state 가져오기
 
 		CEliteUnit* pUnit = static_cast<CEliteUnit*>(m_pPlayer->GetFatalTarget());
 
-		// 조건 나중에 추가
-		if (!pUnit->Get_isActive() || pUnit->GetCurrentState() == CEliteUnit::EEliteState::FATAL)
-		{
-			m_isRender = false;
-			return;
-		}
-		else
+		if (pUnit->GetCurrentState() == CEliteUnit::EEliteState::GROGGY )
 		{
 			m_isRender = true;
 
@@ -140,11 +136,17 @@ void CUI_Fatal_Icon::Update(_float fTimeDelta)
 
 			m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
-			
-
+			if (!m_pPlayer->GetbIsGroggyAttack())
+				m_vColor = { 0.3f,0.f,0.f,1.f };
+			else
+				m_vColor = { 1.f, 0.3f, 0.1f, 1.f };
 		}
-
-
+		else
+		{
+			m_isRender = false;
+			return;
+		}
+	
 		
 	}
 
