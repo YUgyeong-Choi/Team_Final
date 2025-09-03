@@ -206,9 +206,9 @@ void CStaticMesh::LOD_Update()
 
 	_float fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(STATE::POSITION) - XMLoadFloat4(pCamPos)));
 
-	if (fDistance < 5.f)
+	if (fDistance < 20.f)
 		m_eLOD = LOD::LOD0;
-	else if (fDistance < 10.f)
+	else if (fDistance < 50.f)
 		m_eLOD = LOD::LOD1;
 	else
 		m_eLOD = LOD::LOD2;
