@@ -346,7 +346,7 @@
         "Collision": true,
         "ModelName": "SM_Cathedral_DoorArch_02",
         "NoInstancing": false,
-        "ObjectCount": 18,
+        "ObjectCount": 20,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_DoorArch_02.bin"
     },
     {
@@ -416,7 +416,7 @@
         "Collision": false,
         "ModelName": "SM_Gate_Gate_05",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_Gate_05.bin"
     },
     {
@@ -605,7 +605,7 @@
         "Collision": false,
         "ModelName": "SM_Station_Windows_03",
         "NoInstancing": false,
-        "ObjectCount": 18,
+        "ObjectCount": 20,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Windows_03.bin"
     },
     {

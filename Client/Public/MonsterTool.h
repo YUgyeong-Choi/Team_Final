@@ -52,6 +52,7 @@ private:
 	enum class Monster {
 		Buttler_Basic,
 		Buttler_Train,
+		Buttler_Range,
 		Elite_Police,
 		FireEater,
 		END
@@ -60,6 +61,7 @@ private:
 	const string m_Monsters[static_cast<_int>(Monster::END)] = {
 	"Buttler_Basic",
 	"Buttler_Train",
+	"Buttler_Range",
 	"Elite_Police",
 	"FireEater"
 	};
