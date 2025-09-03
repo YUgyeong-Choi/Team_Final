@@ -79,7 +79,7 @@ void CFlameField::Update(_float fTimeDelta)
 				// 레이 결과와 비교
 				if (fDist <= m_SpawnEffectDistanceList[iIndex])
 				{
-					m_pPlayer->SetfReceiveDamage(2.f);
+					m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE,0.2f);
 					m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
 #ifdef _DEBUG
 

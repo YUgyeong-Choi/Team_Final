@@ -1524,6 +1524,11 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 				//printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
 				m_bRayHit = true;
 				m_vRayHitPos = hitPos;
+				if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+				{
+					pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.1f);
+					pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
+				}
 			}
 
 #ifdef _DEBUG

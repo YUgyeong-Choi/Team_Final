@@ -243,6 +243,8 @@ public: /* [ 何咯 加己 包访 ] */
 	{
 		_float fWeight = m_vecElements[eElement].fElementWeight + fValue;
 		m_vecElements[eElement].fElementWeight = min(fWeight, 1.f);
+
+		cout << "Element : " << static_cast<_int>(eElement) << " Weight : " << m_vecElements[eElement].fElementWeight << endl;
 	}
 
 private: /* [ 何咯 加己 ] */
@@ -344,7 +346,7 @@ private: /* [ 牢磐泛记 包访函荐 ] */
 		"Sprint", //"Sprint_Stop",
 		"Guard_Walk_B", "Guard_Walk_F", "Guard_Walk_L", "Guard_Walk_R",
 		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
-		"OnLamp_Walk", "FailItem_Walk", "Fail_Walk",
+		"OnLamp_Walk",
 		"Grinder_Start", "Grinder_Loop", "Grinder_Loop_Walk_F", "Grinder_Loop_Walk_R", "Grinder_Loop_Walk_L" , "Grinder_Loop_Walk_B",//"Grinder_End"
 		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR",
 		"Item_Get_Walk"
