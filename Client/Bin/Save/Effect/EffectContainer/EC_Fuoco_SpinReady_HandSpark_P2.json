@@ -24,6 +24,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 54,
             "EffectType": 1,
             "EmissiveIntensity": 1.75,
@@ -158,6 +159,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 54,
             "EffectType": 1,
             "EmissiveIntensity": 1.75,
@@ -270,5 +272,5 @@
         }
     ],
     "Loop": false,
-    "MaxFrame": 52
+    "MaxFrame": 70
 }

@@ -71,6 +71,8 @@ HRESULT CVIBuffer_SwordTrail::Initialize_Prototype(const _wstring& strJsonFilePa
 HRESULT CVIBuffer_SwordTrail::Initialize(void* pArg)
 {
 	// 여기서 종류 정해야하나?
+	m_InterpolatedNewNodes.reserve(m_Subdivisions + 1);
+
 	return S_OK;
 }
 
@@ -87,26 +89,20 @@ void CVIBuffer_SwordTrail::Update_Trail(const _float3& vInnerPos, const _float3&
 		m_TrailNodes.end()
 	);
 
+
+	m_bNewNode = false;
+	m_InterpolatedNewNodes.clear();
+
 	m_fNodeAccTime += fTimeDelta;
 	// 3. 트레일 활성 상태일 경우에만 노드 추가
 	if (m_bTrailActive && m_fNodeAccTime >= m_fNodeInterval)
 	{
-//		if (m_TrailNodes.empty())
-//		{
-//			VTXPOS_TRAIL firstNode;
-//			firstNode.vInnerPos = vInnerPos;
-//			firstNode.vOuterPos = vOuterPos;
-//			firstNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
-//			m_TrailNodes.push_back(firstNode);
-//		}
-//		else
-//		{
-			VTXPOS_TRAIL newNode;
-			newNode.vInnerPos = vInnerPos;
-			newNode.vOuterPos = vOuterPos;
-			newNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
-			m_TrailNodes.push_back(newNode);
-//		}
+		VTXPOS_TRAIL newNode;
+		newNode.vInnerPos = vInnerPos;
+		newNode.vOuterPos = vOuterPos;
+		newNode.vLifeTime = _float2(m_fLifeDuration, 0.f);
+		m_TrailNodes.push_back(newNode);
+		m_bNewNode = true;
 
 		m_fNodeAccTime = 0.f;
 	}
@@ -122,22 +118,6 @@ HRESULT CVIBuffer_SwordTrail::Update_Buffers()
 
 	if (FAILED(Interpolate_TrailNodes()))
 		return E_FAIL;
-
-
-	//D3D11_MAPPED_SUBRESOURCE subres;
-	//if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &subres)))
-	//	return E_FAIL;
-
-	//VTXPOS_TRAIL* pVertices = static_cast<VTXPOS_TRAIL*>(subres.pData);
-	//for (_uint i = 0; i < m_iNumVertices; ++i)
-	//{
-	//	pVertices[i].vInnerPos= m_TrailNodes[i].vInnerPos;
-	//	pVertices[i].vOuterPos= m_TrailNodes[i].vOuterPos;
-	//	pVertices[i].vLifeTime= m_TrailNodes[i].vLifeTime;
-	//}
-
-	//m_pContext->Unmap(m_pVB, 0);
-
 
 	return S_OK;
 }
@@ -215,19 +195,19 @@ HRESULT CVIBuffer_SwordTrail::Interpolate_TrailNodes()
 			 _float t = (_float)s / (_float)m_Subdivisions;
 
 			// Inner pos 보간
-			XMVECTOR i0 = XMLoadFloat3(&P0.vInnerPos);
-			XMVECTOR i1 = XMLoadFloat3(&P1.vInnerPos);
-			XMVECTOR i2 = XMLoadFloat3(&P2.vInnerPos);
-			XMVECTOR i3 = XMLoadFloat3(&P3.vInnerPos);
-			XMFLOAT3 inner;
+			_vector i0 = XMLoadFloat3(&P0.vInnerPos);
+			_vector i1 = XMLoadFloat3(&P1.vInnerPos);
+			_vector i2 = XMLoadFloat3(&P2.vInnerPos);
+			_vector i3 = XMLoadFloat3(&P3.vInnerPos);
+			_float3 inner;
 			XMStoreFloat3(&inner, XMVectorCatmullRom(i0, i1, i2, i3, t));
 
 			// Outer pos 보간
-			XMVECTOR o0 = XMLoadFloat3(&P0.vOuterPos);
-			XMVECTOR o1 = XMLoadFloat3(&P1.vOuterPos);
-			XMVECTOR o2 = XMLoadFloat3(&P2.vOuterPos);
-			XMVECTOR o3 = XMLoadFloat3(&P3.vOuterPos);
-			XMFLOAT3 outer;
+			_vector o0 = XMLoadFloat3(&P0.vOuterPos);
+			_vector o1 = XMLoadFloat3(&P1.vOuterPos);
+			_vector o2 = XMLoadFloat3(&P2.vOuterPos);
+			_vector o3 = XMLoadFloat3(&P3.vOuterPos);
+			_float3 outer;
 			XMStoreFloat3(&outer, XMVectorCatmullRom(o0, o1, o2, o3, t));
 
 			// LifeTime (간단히 P1 기준)
@@ -238,6 +218,10 @@ HRESULT CVIBuffer_SwordTrail::Interpolate_TrailNodes()
 			node.fVCoord = (_float)outIndex * invDen;
 			++outIndex;
 			SmoothNodes.push_back(node);
+			if (m_bNewNode == true && i + 4 >= m_TrailNodes.size())
+			{ //새 노드가 추가됐고 지금 그 위치일 때(제일 마지막 세트)
+				m_InterpolatedNewNodes.push_back(outer);
+			}
 		}
 	}
 
@@ -255,19 +239,6 @@ HRESULT CVIBuffer_SwordTrail::Interpolate_TrailNodes()
 
 	return S_OK;
 }
-
-//CVIBuffer_SwordTrail* CVIBuffer_SwordTrail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-//{
-//	CVIBuffer_SwordTrail* pInstance = new CVIBuffer_SwordTrail(pDevice, pContext);
-//
-//	if (FAILED(pInstance->Initialize_Prototype()))
-//	{
-//		MSG_BOX("Failed to Created : CVIBuffer_SwordTrail");
-//		Safe_Release(pInstance);
-//	}
-//
-//	return pInstance;
-//}
 
 CVIBuffer_SwordTrail* CVIBuffer_SwordTrail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& strJsonFilePath)
 {
@@ -311,6 +282,5 @@ CComponent* CVIBuffer_SwordTrail::Clone(void* pArg)
 void CVIBuffer_SwordTrail::Free()
 {
 	__super::Free();
-
 
 }

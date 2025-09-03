@@ -76,6 +76,7 @@ private:
 	const _float4x4*			m_pWeaponEndMatrix = {nullptr};
 	class CGameObject*			m_pLastHitObject = { nullptr };
 	COLLIDERTYPE				m_eLastHitColType = { COLLIDERTYPE::PLAYER };
+	_float3						m_vSlashDir = {};
 
 public:
 	static CBayonet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

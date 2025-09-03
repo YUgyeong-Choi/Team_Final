@@ -281,9 +281,9 @@
             ],
             "Color": [
                 1.0,
-                1.0,
-                1.0,
-                1.0
+                0.1568627506494522,
+                0.0,
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 69,
@@ -322,11 +322,11 @@
                 {
                     "Color": [
                         1.0,
-                        1.0,
-                        1.0,
-                        1.0
+                        0.1568627506494522,
+                        0.0,
+                        0.0
                     ],
-                    "Intensity": 0.0,
+                    "Intensity": 1.0,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -339,7 +339,7 @@
                         1.0,
                         1.0
                     ],
-                    "TrackPosition": 10.0,
+                    "TrackPosition": 15.0,
                     "Translation": [
                         0.0,
                         0.0,
