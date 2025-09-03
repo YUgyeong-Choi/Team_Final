@@ -88,7 +88,7 @@ void CFlameField::Update(_float fTimeDelta)
 
 					if (fDist <= fMaxAllowedDist)
 					{
-						m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.05f);
+						m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.095f);
 						m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
 					}
 				}
