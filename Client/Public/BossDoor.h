@@ -23,6 +23,8 @@ public:
 		_vector vTriggerOffset;
 		_vector vTriggerSize;
 
+		_float3 OffSetCollider;
+
 		_bool		bNeedSecondDoor;
 		_tchar		szSecondModelPrototypeTag[MAX_PATH] = { 0 };
 	}BOSSDOORMESH_DESC;
@@ -61,6 +63,8 @@ private:
 	// 두번째꺼 렌더하려면
 	_bool m_bRenderSecond = false;
 
+	// 오프셋 
+	_float3 m_OffSetCollider;
 
 	INTERACT_TYPE m_eInteractType;
 

@@ -27,6 +27,7 @@ HRESULT CBossDoor::Initialize(void* pArg)
 	CBossDoor::BOSSDOORMESH_DESC* pDoorMeshDESC = static_cast<BOSSDOORMESH_DESC*>(pArg);
 
 	m_eInteractType = pDoorMeshDESC->eInteractType;
+	m_OffSetCollider = pDoorMeshDESC->OffSetCollider;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -210,6 +211,9 @@ void CBossDoor::Update_ColliderPos()
 	// 위치 추출
 	_float3 vPos;
 	XMStoreFloat3(&vPos, vTranslation);
+	vPos.x += m_OffSetCollider.x;
+	vPos.y += m_OffSetCollider.y;
+	vPos.z += m_OffSetCollider.z;
 
 	// 회전 추출
 	_float4 vRot;
