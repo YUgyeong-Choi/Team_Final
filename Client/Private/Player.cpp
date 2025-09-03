@@ -132,7 +132,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-
+	if (KEY_DOWN(DIK_Y))
+		m_pAnimator->SetTrigger("Fatal");
 	/* [ 캡스락을 누르면 위치를 볼 수 있다? ] */
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
@@ -263,8 +264,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_U))
 		Reset();
 
-	if (KEY_DOWN(DIK_Y))
-		m_pAnimator->SetTrigger("GetItem");
+
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -1863,7 +1863,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		//히트한 몬스터타입
 		m_eHitedTarget = eHitedTarget::MONSTER;
 
-
+		cout << "몬스터 웨폰 충돌 들어옴" << endl;
 		//피격한 객체를 찾는다.
 		CUnit* pUnit = nullptr;
 		CWeapon* pWeapon = dynamic_cast<CWeapon*>(pOther);

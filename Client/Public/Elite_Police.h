@@ -32,6 +32,7 @@ class CElite_Police final : public CEliteUnit
         Atk_Combo3_2 = 100052,
         Atk_Combo3_3 = 100054,
         Atk_Combo4 = 100056,
+        Atk_Combo5 = 100090,
         Paralyzation_Start = 100058,
         Paralyzation_Loop = 100059,
         Paralyzation_End = 100060
@@ -104,6 +105,7 @@ private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
     _bool m_bPlayedDetect = false;
 	_bool m_bSpawned = false;
+    _bool m_bReturnToSpawn = false;
 	_float m_fDetectRange = 22.f;
     _float m_fDetectDiffY = 5.f;
     // 공격 관련

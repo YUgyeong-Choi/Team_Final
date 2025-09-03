@@ -490,11 +490,11 @@ void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
     _vector vWorldDelta = XMVector3Transform(vLocal, XMMatrixRotationQuaternion(vCurRotQuat));
     vWorldDelta = XMVectorSetY(vWorldDelta, 0.f);
 
-    if (m_pPlayer&& m_bRootMotionClamped)
+    if (m_pPlayer && m_bRootMotionClamped && m_eCurrentState !=EEliteState::FATAL)
     {
         _float fDistToPlayer = Get_DistanceToPlayer();
 
-        _float fFactor = clamp(fDistToPlayer / 1.f, 0.f, 1.f);
+        _float fFactor = clamp(fDistToPlayer / 2.5f, 0.f, 1.f);
         vWorldDelta *= fFactor;
     }
 
@@ -622,6 +622,7 @@ void CEliteUnit::Reset()
             pController->SetState(pController->GetEntryNodeId());
         }
     }
+    m_bRootMotionClamped = false;
     SwitchFury(false, 1.f);
     SwitchEmissive(false, 1.f);
     m_iCurNodeID = -1;

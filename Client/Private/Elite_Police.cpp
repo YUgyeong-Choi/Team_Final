@@ -155,6 +155,8 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 	}
 #endif // _DEBUG
 
+	if (KEY_DOWN(DIK_Y))
+		m_pAnimator->SetTrigger("Fatal");
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
 	if (pCurState && m_fHp <= 0.f)
 	{
@@ -266,6 +268,14 @@ HRESULT CElite_Police::Ready_Actor()
 		m_pPhysXElbow->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
 		m_pPhysXElbow->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXElbow->Get_Actor());
+		m_pPhysXElbow->Init_SimulationFilterData();
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			if (auto pController = pPlayer->Get_Controller())
+			{
+				pController->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
+			}
+		}
 	}
 	return S_OK;
 }
@@ -297,7 +307,7 @@ HRESULT CElite_Police::Ready_Weapon()
 	Desc.vAxis = { 1.f,0.f,0.f,0.f };
 	Desc.fRotationDegree = { -90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 1.6f, 0.6f, 0.6f };
+	Desc.vPhsyxExtent = { 1.4f, 0.65f, 0.65f };
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Desc.pOwner = this;
@@ -321,6 +331,27 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 {
 	if (m_bSpawned == false)
 		return;
+
+	if (m_bReturnToSpawn)
+	{
+		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+		_vector vTarget = XMLoadFloat3(&m_InitPos);
+		_vector vDir = XMVector3Normalize(vTarget - vPos);
+
+		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
+		m_eCurrentState = EEliteState::WALK;
+
+		m_pTransformCom->LookAtWithOutY(vTarget);
+
+		if (XMVectorGetX(XMVector3Length(vTarget - vPos)) < 0.5f)
+		{
+			m_bReturnToSpawn = false;
+			m_eCurrentState = EEliteState::IDLE;
+			m_pAnimator->SetBool("Move", false);
+		}
+		return;
+	}
 
 	if (fDistance < m_fTooCloseDistance)
 	{
@@ -448,6 +479,7 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(EliteMonsterStateID::Atk_Combo4):
 		m_eCurrentState = EEliteState::ATTACK;
+		break;
 
 		break;
 	case ENUM_CLASS(EliteMonsterStateID::Death_B):
@@ -475,13 +507,31 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 	default:
 		break;
 	}
+	if (iNodeID == ENUM_CLASS(EliteMonsterStateID::Atk_Combo5) ||
+		iNodeID == ENUM_CLASS(EliteMonsterStateID::Atk_Combo2_2))
+	{
+		m_bRootMotionClamped = true;
+	}
+	else
+	{
+		m_bRootMotionClamped = false;
+	}
 	m_iCurNodeID = iNodeID;
 }
 
 void CElite_Police::UpdateSpecificBehavior(_float fTimeDelta)
 {
+	if (m_bReturnToSpawn)
+		return;
 	if (m_pPlayer)
 	{
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			if (pPlayer->Get_PlayerState() == EPlayerState::DEAD)
+			{
+				m_bReturnToSpawn = true;
+			}
+		}
 		if (m_bPlayedDetect == false && Get_DistanceToPlayer() <= m_fDetectRange)
 		{
 			_vector vMyPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -676,6 +726,7 @@ void CElite_Police::Register_Events()
 void CElite_Police::Reset()
 {
 	__super::Reset();
+	m_bReturnToSpawn = false;
 	m_bPlayedDetect = false;
 	m_bSpawned = false;
 	m_fGroggyScale_Weak = 0.1f;
