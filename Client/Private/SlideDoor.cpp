@@ -1,30 +1,30 @@
-#include "DoorMesh.h"
+#include "SlideDoor.h"
 #include "GameInstance.h"
 #include "Player.h"
 #include "UI_Manager.h"
 
-CDoorMesh::CDoorMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CSlideDoor::CSlideDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDynamicMesh{ pDevice, pContext }
 {
 
 }
 
-CDoorMesh::CDoorMesh(const CDoorMesh& Prototype)
+CSlideDoor::CSlideDoor(const CSlideDoor& Prototype)
 	: CDynamicMesh(Prototype)
 {
 
 }
 
-HRESULT CDoorMesh::Initialize_Prototype()
+HRESULT CSlideDoor::Initialize_Prototype()
 {
 	/* 외부 데이터베이스를 통해서 값을 채운다. */
 
 	return S_OK;
 }
 
-HRESULT CDoorMesh::Initialize(void* pArg)
+HRESULT CSlideDoor::Initialize(void* pArg)
 {
-	CDoorMesh::DOORMESH_DESC* pDoorMeshDESC = static_cast<DOORMESH_DESC*>(pArg);
+	CSlideDoor::DOORMESH_DESC* pDoorMeshDESC = static_cast<DOORMESH_DESC*>(pArg);
 
 	m_eInteractType = pDoorMeshDESC->eInteractType;
 
@@ -41,7 +41,7 @@ HRESULT CDoorMesh::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CDoorMesh::Priority_Update(_float fTimeDelta)
+void CSlideDoor::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
@@ -58,17 +58,17 @@ void CDoorMesh::Priority_Update(_float fTimeDelta)
 	}
 }
 
-void CDoorMesh::Update(_float fTimeDelta)
+void CSlideDoor::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 }
 
-void CDoorMesh::Late_Update(_float fTimeDelta)
+void CSlideDoor::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 }
 
-HRESULT CDoorMesh::Render()
+HRESULT CSlideDoor::Render()
 {
 	__super::Render();
 
@@ -88,7 +88,7 @@ HRESULT CDoorMesh::Render()
 	return S_OK;
 }
 
-void CDoorMesh::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CSlideDoor::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (!m_bFinish)
 	{
@@ -101,7 +101,7 @@ void CDoorMesh::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	
 }
 
-void CDoorMesh::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CSlideDoor::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (!m_bFinish)
 		m_bCanActive = false;
@@ -110,7 +110,7 @@ void CDoorMesh::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	CUI_Manager::Get_Instance()->Activate_Popup(false);
 }
 
-void CDoorMesh::Play_Sound()
+void CSlideDoor::Play_Sound()
 {
 	switch (m_eInteractType)
 	{
@@ -126,7 +126,7 @@ void CDoorMesh::Play_Sound()
 
 
 
-HRESULT CDoorMesh::Ready_Components(void* pArg)
+HRESULT CSlideDoor::Ready_Components(void* pArg)
 {
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
@@ -140,7 +140,7 @@ HRESULT CDoorMesh::Ready_Components(void* pArg)
 	return S_OK;
 }
 
-HRESULT CDoorMesh::Ready_Trigger(DOORMESH_DESC* pDesc)
+HRESULT CSlideDoor::Ready_Trigger(DOORMESH_DESC* pDesc)
 {
 	XMVECTOR S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
@@ -172,13 +172,13 @@ HRESULT CDoorMesh::Ready_Trigger(DOORMESH_DESC* pDesc)
 }
 
 
-CDoorMesh* CDoorMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CSlideDoor* CSlideDoor::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CDoorMesh* pGameInstance = new CDoorMesh(pDevice, pContext);
+	CSlideDoor* pGameInstance = new CSlideDoor(pDevice, pContext);
 
 	if (FAILED(pGameInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Create : CDoorMesh");
+		MSG_BOX("Failed to Create : CSlideDoor");
 		Safe_Release(pGameInstance);
 	}
 
@@ -186,20 +186,20 @@ CDoorMesh* CDoorMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 }
 
 
-CGameObject* CDoorMesh::Clone(void* pArg)
+CGameObject* CSlideDoor::Clone(void* pArg)
 {
-	CDoorMesh* pGameInstance = new CDoorMesh(*this);
+	CSlideDoor* pGameInstance = new CSlideDoor(*this);
 
 	if (FAILED(pGameInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CDoorMesh");
+		MSG_BOX("Failed to Clone : CSlideDoor");
 		Safe_Release(pGameInstance);
 	}
 
 	return pGameInstance;
 }
 
-void CDoorMesh::Free()
+void CSlideDoor::Free()
 {
 	__super::Free();
 

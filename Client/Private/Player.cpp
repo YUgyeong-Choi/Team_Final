@@ -31,7 +31,7 @@
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
 
-#include "DoorMesh.h"
+#include "SlideDoor.h"
 #include <FlameField.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -2516,7 +2516,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 		if (m_fInteractionTime[0] >= 1.f && !m_bInteractSound[0])
 		{
 			m_bInteractSound[0] = true;
-			static_cast<CDoorMesh*>(m_pInterectionStuff)->Play_Sound();
+			static_cast<CSlideDoor*>(m_pInterectionStuff)->Play_Sound();
 		}
 
 		//손 뼈의 컴바인드 행렬

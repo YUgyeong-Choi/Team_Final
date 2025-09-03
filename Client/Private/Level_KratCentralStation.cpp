@@ -12,7 +12,8 @@
 #include "Static_Decal.h"
 #pragma endregion
 
-#include "DoorMesh.h"
+#include "SlideDoor.h"
+#include "KeyDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
@@ -1163,7 +1164,8 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 
 HRESULT CLevel_KratCentralStation::Ready_Interact()
 {
-	CDoorMesh::DOORMESH_DESC Desc{};
+	/*  [ 기차역 슬라이딩 문 ] */
+	CSlideDoor::DOORMESH_DESC Desc{};
 	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
@@ -1181,8 +1183,49 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_DoorMesh"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_SlideDoor"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
+		return E_FAIL;
+
+	/*  [ 야외로 나가는 문 ] */
+	CKeyDoor::KEYDOORMESH_DESC KeyDoorDesc{};
+	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	KeyDoorDesc.szMeshID = TEXT("SM_Station_STGate_01");
+	lstrcpy(KeyDoorDesc.szName, TEXT("SM_Station_STGate_01"));
+
+	/* 문자열 받는 곳 */
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_STGate_01");
+	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	vPosition = _float3(184.f, 8.90f, -5.8f);
+	XMMATRIX rotY = XMMatrixRotationY(-XM_PIDIV2); // = 90도
+	XMMATRIX trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	XMMATRIX world = rotY * trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	KeyDoorDesc.WorldMatrix = matWorldFloat;
+
+	KeyDoorDesc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
+	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
+	KeyDoorDesc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
+		return E_FAIL;
+
+
+	vPosition = _float3(184.f, 8.90f, -10.2f);
+	rotY = XMMatrixRotationY(XM_PIDIV2); // = 90도
+	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	world = rotY * trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	KeyDoorDesc.WorldMatrix = matWorldFloat;
+
+	KeyDoorDesc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
+	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
+	KeyDoorDesc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
 		return E_FAIL;
 
 	return S_OK;
