@@ -1,42 +1,36 @@
-Ôªø#include "Buttler_Train.h"
+#include "Buttler_Range.h"
 #include "GameInstance.h"
 #include "Weapon_Monster.h"
-#include "LockOn_Manager.h"
+#include "Player.h"
+#include "LockOn_Manager.h" 
 #include "PhysX_IgnoreSelfCallback.h"
-#include "Client_Calculation.h"
-#include <Player.h>
 
-CButtler_Train::CButtler_Train(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CMonster_Base{ pDevice, pContext }
+CButtler_Range::CButtler_Range(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    :CMonster_Base{pDevice, pContext}
 {
 }
 
-CButtler_Train::CButtler_Train(const CButtler_Train& Prototype)
-	:CMonster_Base(Prototype)
+CButtler_Range::CButtler_Range(const CButtler_Range& Prototype)
+    :CMonster_Base{Prototype}
 {
 }
 
-HRESULT CButtler_Train::Initialize_Prototype()
+HRESULT CButtler_Range::Initialize_Prototype()
 {
-	return S_OK;
+    return S_OK;
 }
 
-HRESULT CButtler_Train::Initialize(void* pArg)
+HRESULT CButtler_Range::Initialize(void* pArg)
 {
-	/* [ Îç∞ÎØ∏ÏßÄ ÏÑ§Ï†ï ] */
-	
-
 	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
 	pDesc->fSpeedPerSec = 5.f;
 	pDesc->fRotationPerSec = XMConvertToRadians(180.0f);
 
 	m_fHeight = 1.f;
-	m_vHalfExtents = { 0.5f, 1.f, 0.5f };
+	m_vHalfExtents = { 0.5f,1.f,0.5f };
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-
 
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
@@ -49,23 +43,24 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
 
-	// ÎùΩÏò® Ïö©
+	// ∂Ùø¬ øÎ
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.8f, 0.f, 0.f };
 
 	m_pWeapon->Collider_FilterOff();
 
-	/*if (m_eSpawnType == SPAWN_TYPE::STAND)
-	{
-		m_pAnimator->SetTrigger("SpawnStand");
-	}*/
+
+	// º≠∑Œ¥¬ √Êµπ π´Ω√«œ∞‘
+
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors((m_pWeapon)->Get_PhysXActor()->Get_Actor());
 	
-	return S_OK; 
+
+	return S_OK;
 }
 
-void CButtler_Train::Priority_Update(_float fTimeDelta)
+void CButtler_Range::Priority_Update(_float fTimeDelta)
 {
-
 	__super::Priority_Update(fTimeDelta);
 
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
@@ -98,7 +93,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 	}
 }
 
-void CButtler_Train::Update(_float fTimeDelta)
+void CButtler_Range::Update(_float fTimeDelta)
 {
 	Calc_Pos(fTimeDelta);
 
@@ -122,18 +117,16 @@ void CButtler_Train::Update(_float fTimeDelta)
 	{
 		m_isFatal = false;
 	}
-
 }
 
-void CButtler_Train::Late_Update(_float fTimeDelta)
+void CButtler_Range::Late_Update(_float fTimeDelta)
 {
-
 	__super::Late_Update(fTimeDelta);
 
 	Update_State();
 }
 
-HRESULT CButtler_Train::Render()
+HRESULT CButtler_Range::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -142,7 +135,7 @@ HRESULT CButtler_Train::Render()
 	return S_OK;
 }
 
-void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+void CButtler_Range::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
@@ -151,28 +144,19 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER)
 		m_isCollisionPlayer = true;
-
-
-	// Î¨¥Í∏∞Í∞Ä ÏÉÅÌÉúÎßàÎã§ ÌïúÎ≤àÏî© Îç∞ÎØ∏ÏßÄ Ï£ºÍ≥†
-	// Ïù¥Ï†ú Ï¥àÍ∏∞ÌôîÌïòÎ©¥ Îã§Ïãú Îç∞ÎØ∏ÏßÄ Ï§Ñ Ïàò ÏûàÍ≤å
-	//ReceiveDamage(pOther, eColliderType);
-
 }
 
-void CButtler_Train::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+void CButtler_Range::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
-		// Í≥ÑÏÜç Ï∂©ÎèåÏ§ëÏù¥Î©¥ Îπ†Ï†∏ÎÇòÍ∞à Ïàò ÏûàÍ≤å Ï¢Ä Î≥¥Ï†ïÏùÑ
+		// ∞Ëº” √Êµπ¡ﬂ¿Ã∏È ∫¸¡Æ≥™∞• ºˆ ¿÷∞‘ ¡ª ∫∏¡§¿ª
 		_vector vCorrection = HitNormal * 0.01f;
 		m_vPushDir -= vCorrection;
 	}
-	
-
-	//ReceiveDamage(pOther, eColliderType);
 }
 
-void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+void CButtler_Range::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
@@ -186,24 +170,22 @@ void CButtler_Train::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eCollide
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER)
 		m_isCollisionPlayer = false;
-
-
 }
 
-void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Range::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CButtler_Train::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Range::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	ReceiveDamage(pOther, eColliderType);
 }
 
-void CButtler_Train::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Range::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CButtler_Train::Update_State()
+void CButtler_Range::Update_State()
 {
 	Check_Detect();
 
@@ -220,7 +202,7 @@ void CButtler_Train::Update_State()
 		return;
 	}
 
-	
+
 
 
 	_vector vDist = {};
@@ -238,31 +220,23 @@ void CButtler_Train::Update_State()
 	{
 		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 
-	}
+		
+		RayCast(m_pPhysXActorCom);
 
-
-	if (m_strStateName.find("Attack") != m_strStateName.npos)
-	{
-		if (m_strStateName.find("Light") != m_strStateName.npos)
+		if (m_bRayHit)
 		{
-			m_pAnimator->SetBool("UseLightAttack", false);
+			m_pAnimator->SetBool("IsAttack", true);
 		}
 		else
 		{
-			m_pAnimator->SetBool("UseLightAttack", true);
+			m_pAnimator->SetBool("IsAttack", false);
 		}
-
-
 	}
 
 	if (m_iAttackCount == 3)
 	{
-		// Îí§Î°ú Í∞ÄÍ≤å ÌïòÍ∏∞
-
-		if (XMVectorGetX(XMVector3Length(vDist)) < 1.f)
-			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-		else
-			m_pAnimator->SetInt("Dir", ENUM_CLASS(MONSTER_DIR::B));
+		// µ⁄∑Œ ∞°∞‘ «œ±‚
+		m_pAnimator->SetInt("Dir", ENUM_CLASS(MONSTER_DIR::B));
 		m_pAnimator->SetBool("IsBack", true);
 
 		m_iAttackCount = 0;
@@ -281,21 +255,17 @@ void CButtler_Train::Update_State()
 	{
 		m_isGroogyLoop = true;
 	}
-
-
-
-
 }
 
-void CButtler_Train::Attack(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Range::Attack(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CButtler_Train::AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Range::AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
-void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
+void CButtler_Range::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (m_strStateName == "Dead")
 		return;
@@ -315,9 +285,9 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3.f);
 
-		m_fHp -= pWeapon->Get_CurrentDamage() ;
+		m_fHp -= pWeapon->Get_CurrentDamage();
 
-		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage() );
+		m_pHPBar->Add_Damage(pWeapon->Get_CurrentDamage());
 
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
@@ -328,7 +298,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		if (m_fHp <= 0 && !m_isFatal)
 		{
-			
+
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 			m_pAnimator->SetTrigger("Dead");
 			m_strStateName = "Dead";
@@ -345,7 +315,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 			m_bUseLockon = false;
 
-			
+
 			return;
 		}
 
@@ -363,9 +333,11 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 
+
+
 		if (!m_isCanGroggy)
 		{
-			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos || 
+			if (m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Groggy") != m_strStateName.npos ||
 				m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos)
 				return;
 
@@ -397,100 +369,76 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			}
 
 		}
-
 	}
 }
 
-void CButtler_Train::Calc_Pos(_float fTimeDelta)
+void CButtler_Range::Calc_Pos(_float fTimeDelta)
 {
 	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-	if (m_strStateName.find("Run") != m_strStateName.npos || m_strStateName.find("Walk_F") != m_strStateName.npos)
+	if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
 	{
-		_float fSpeed = { 1.f };
-		if (m_strStateName.find("Walk_F") != m_strStateName.npos)
-		{
-			fSpeed = 0.5f;
-		}
-
-		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-		
-		m_vPushDir  = XMVector3Normalize(m_vPushDir);
-
-		m_vPushDir.m128_f32[3] = 0.f;
-		
-		_vector vDir = XMVector3Normalize(vLook)  +m_vPushDir ;
-
-
-		m_pTransformCom->Go_Dir(vDir, fTimeDelta * fSpeed, nullptr, m_pNaviCom);
-		
-
+		m_isLookAt = false;
+		m_isCollisionPlayer = false;
 	}
-	else
+
+
+
+
+
+	if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
 	{
-		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
-		{
-			m_isLookAt = false;
-			m_isCollisionPlayer = false;
-		}
+		m_fAwaySpeed = 1.f;
+		RootMotionActive(fTimeDelta);
 
-
-		if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
-		{
-			m_fAwaySpeed = 1.f;
-			RootMotionActive(fTimeDelta);
-
-			return;
-		}
-
-
-
-
-		if (m_strStateName.find("Away") != m_strStateName.npos)
-		{
-			m_fAwaySpeed -= fTimeDelta * 0.5f;
-
-			if (m_fAwaySpeed <= 0.f)
-				m_fAwaySpeed = 0.f;
-
-
-			if (m_strStateName.find("B") == m_strStateName.npos)
-			{
-				vLook *= -1.f;
-
-			}
-
-
-
-
-			m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
-		}
-		else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
-		{
-			m_fAwaySpeed -= fTimeDelta * 0.5f;
-
-			if (m_fAwaySpeed <= 0.f)
-				m_fAwaySpeed = 0.f;
-
-			RootMotionActive(fTimeDelta);
-
-			m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
-		}
-
+		return;
 	}
-}
 
 
+
+
+	if (m_strStateName.find("Away") != m_strStateName.npos)
+	{
+		m_fAwaySpeed -= fTimeDelta * 0.5f;
+
+		if (m_fAwaySpeed <= 0.f)
+			m_fAwaySpeed = 0.f;
+
+
+		if (m_strStateName.find("B") == m_strStateName.npos)
+		{
+			vLook *= -1.f;
+
+		}
+
+
+
+
+		m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
+	}
+	else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
+	{
+		m_fAwaySpeed -= fTimeDelta * 0.5f;
+
+		if (m_fAwaySpeed <= 0.f)
+			m_fAwaySpeed = 0.f;
+
+		RootMotionActive(fTimeDelta);
+
+		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
+	}
 
 	
 
+}
 
-
-void CButtler_Train::Register_Events()
+void CButtler_Range::Register_Events()
 {
 	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
 
 		++m_iAttackCount;
+
+		// ≈ıªÁ√º ∏∏µÈæÓº≠ ΩÓ¥¬∞≈ √ﬂ∞°«œ±‚
 
 		});
 
@@ -511,28 +459,9 @@ void CButtler_Train::Register_Events()
 		m_isLookAt = true;
 
 		});
-
-	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
-
-		m_pWeapon->SetisAttack(true);
-		m_pWeapon->Clear_CollisionObj();
-		});
-
-	m_pAnimator->RegisterEventListener("AttackOff", [this]() {
-
-		m_pWeapon->SetisAttack(false);
-		m_pWeapon->Clear_CollisionObj();
-		});
-
 }
 
-void CButtler_Train::Block_Reaction()
-{
-	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-	m_pAnimator->SetTrigger("Hit");
-}
-
-void CButtler_Train::Start_Fatal_Reaction()
+void CButtler_Range::Start_Fatal_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 	m_pAnimator->SetTrigger("Fatal");
@@ -542,20 +471,12 @@ void CButtler_Train::Start_Fatal_Reaction()
 	m_pWeapon->Clear_CollisionObj();
 }
 
-void CButtler_Train::Reset()
+void CButtler_Range::Reset()
 {
 	m_fHp = 300;
 
 	if (nullptr != m_pHPBar)
-	{
 		m_pHPBar->Set_MaxHp(m_fHp);
-		m_pHPBar->Reset();
-	}
-	
-	/*if (m_eSpawnType == SPAWN_TYPE::STAND)
-	{
-		m_pAnimator->SetTrigger("SpawnStand");
-	}*/
 
 	m_iAttackCount = {};
 	m_fDuration = 0.f;
@@ -578,22 +499,22 @@ void CButtler_Train::Reset()
 	m_isFatal = false;
 }
 
-HRESULT CButtler_Train::Ready_Weapon()
+HRESULT CButtler_Range::Ready_Weapon()
 {
 	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
 	Desc.eMeshLevelID = LEVEL::STATIC;
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
 	Desc.InitPos = { 0.125f, 0.f, 0.f };
-	Desc.InitScale = { 1.f, 0.6f, 1.f };
+	Desc.InitScale = { 1.05f, 0.84f, 1.05f };
 	Desc.iRender = 0;
 
-	Desc.szMeshID = TEXT("Buttler_Train_Weapon");
-	lstrcpy(Desc.szName, TEXT("Buttler_Train_Weapon"));
-	Desc.vAxis = { 0.f,1.f,0.f,0.f };
-	Desc.fRotationDegree = { 90.f };
+	Desc.szMeshID = TEXT("Buttler_Range_Weapon");
+	lstrcpy(Desc.szName, TEXT("Buttler_Range_Weapon"));
+	Desc.vAxis = { 1.f,0.f,0.2f,0.f };
+	Desc.fRotationDegree = { 180.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
+	Desc.vPhsyxExtent = { 0.8f, 0.2f, 0.2f };
 
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
@@ -612,9 +533,9 @@ HRESULT CButtler_Train::Ready_Weapon()
 	return S_OK;
 }
 
-CButtler_Train* CButtler_Train::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CButtler_Range* CButtler_Range::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CButtler_Train* pInstance = new CButtler_Train(pDevice, pContext);
+	CButtler_Range* pInstance = new CButtler_Range(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed to Created : CButtler_Train");
@@ -622,18 +543,18 @@ CButtler_Train* CButtler_Train::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	}
 	return pInstance;
 }
-CGameObject* CButtler_Train::Clone(void* pArg)
+CGameObject* CButtler_Range::Clone(void* pArg)
 {
-	CButtler_Train* pInstance = new CButtler_Train(*this);
+	CButtler_Range* pInstance = new CButtler_Range(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CButtler_Train");
+		MSG_BOX("Failed to Cloned : CButtler_Basic");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CButtler_Train::Free()
+void CButtler_Range::Free()
 {
 	__super::Free();
 

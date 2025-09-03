@@ -123,6 +123,9 @@ protected:
 	_bool			m_isFatal = {};
 
 	_bool			m_isGroogyLoop = {};
+
+
+	_vector m_vKnockBackDir = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */

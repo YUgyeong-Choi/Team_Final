@@ -647,7 +647,7 @@
               "EndAlpha": 1.0,
               "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
               "StartAlpha": 0.0,
-              "iEndFrame": 60,
+              "iEndFrame": 45,
               "iStartFrame": 0,
               "isLoop": false
             },

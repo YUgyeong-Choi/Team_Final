@@ -1,16 +1,16 @@
-ï»¿#pragma once
+#pragma once
 
 #include "Monster_Base.h"
 #include "Client_Defines.h"
 
 NS_BEGIN(Client)
 
-class CButtler_Train final : public CMonster_Base
+class CButtler_Range final : public CMonster_Base
 {
 private:
-	CButtler_Train(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CButtler_Train(const CButtler_Train& Prototype);
-	virtual ~CButtler_Train() = default;
+	CButtler_Range(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CButtler_Range(const CButtler_Range& Prototype);
+	virtual ~CButtler_Range() = default;
 
 public:
 	void Add_AttackCount() { ++m_iAttackCount; }
@@ -27,7 +27,7 @@ public:
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 
-	/* Rayë¡œ ì¸í•­ ì¶©ëŒ(HitPos& HitNormal) */
+	/* Ray·Î ÀÎÇ× Ãæµ¹(HitPos& HitNormal) */
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -35,44 +35,39 @@ public:
 
 	virtual void	Update_State();
 
-	// ë°ë¯¸ì§€ë¥¼ ì¤€ë‹¤
+	// µ¥¹ÌÁö¸¦ ÁØ´Ù
 	virtual void Attack(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	// ë¬´ê¸°ë¥¼ í†µí•´ ë°ë¯¸ì§€ë¥¼ ì¤€ë‹¤
+	// ¹«±â¸¦ ÅëÇØ µ¥¹ÌÁö¸¦ ÁØ´Ù
 	virtual void AttackWithWeapon(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	// ë°ë¯¸ì§€ë¥¼ ë°›ëŠ”ë‹¤
+	// µ¥¹ÌÁö¸¦ ¹Ş´Â´Ù
 	virtual void ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	void Calc_Pos(_float fTimeDelta);
 
 	virtual void Register_Events();
 
-	virtual void Block_Reaction();
-
 	virtual void Start_Fatal_Reaction();
 
 	virtual void Reset() override;
 private:
-	HRESULT Ready_Weapon(); 
+	HRESULT Ready_Weapon();
 
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
 
 	_int m_iAttackCount = {};
 
-	
+
 	_float m_fDuration = {};
-	
-	// ë‚ ì•„ê°€ëŠ” ì†ë„
+
+	// ³¯¾Æ°¡´Â ¼Óµµ
 	_float m_fAwaySpeed = { 1.f };
 
+	
 
-	//int m_iShapeTestState = 0; // 0: Box, 1: Sphere, 2: Capsule
-	//PxBoxGeometry m_DebugBox = PxBoxGeometry(1.0f, 2.0f, 1.0f);
-	//PxSphereGeometry m_DebugSphere = PxSphereGeometry(1.5f);
-	//PxCapsuleGeometry m_DebugCapsule = PxCapsuleGeometry(0.8f, 2.0f);
 
 public:
-	static CButtler_Train* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CButtler_Range* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 
