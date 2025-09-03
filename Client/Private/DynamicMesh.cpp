@@ -150,11 +150,6 @@ HRESULT CDynamicMesh::Ready_Components(void* pArg)
 {
 	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
 
-	/* Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
-		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-		return E_FAIL;
-
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), StaicMeshDESC->szModelPrototypeTag/*_wstring(TEXT("Prototype_Component_Model_")) + m_szMeshID*/,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))

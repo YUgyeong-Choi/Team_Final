@@ -167,6 +167,7 @@
     <ClInclude Include="..\public\AStar_Manager.h" />
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
+    <ClInclude Include="..\Public\BossDoor.h" />
     <ClInclude Include="..\public\BossUnit.h" />
     <ClInclude Include="..\public\EliteUnit.h" />
     <ClInclude Include="..\public\Buttler_Basic.h" />
@@ -351,6 +352,7 @@
     <ClCompile Include="..\private\AStar_Manager.cpp" />
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
+    <ClCompile Include="..\Private\BossDoor.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
     <ClCompile Include="..\private\EliteUnit.cpp" />
     <ClCompile Include="..\private\Buttler_Basic.cpp" />
