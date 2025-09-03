@@ -30,5 +30,9 @@
     {
         "ModelName": "SM_Gate_GateWall_02",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_GateWall_02.bin"
+    },
+    {
+        "ModelName": "SM_Exterior_MetalSupport_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_MetalSupport_01.bin"
     }
 ]
