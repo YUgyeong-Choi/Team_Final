@@ -27,7 +27,6 @@ HRESULT CBossDoor::Initialize(void* pArg)
 	CBossDoor::BOSSDOORMESH_DESC* pDoorMeshDESC = static_cast<BOSSDOORMESH_DESC*>(pArg);
 
 	m_eInteractType = pDoorMeshDESC->eInteractType;
-	m_OffSetCollider = pDoorMeshDESC->OffSetCollider;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -198,30 +197,6 @@ void CBossDoor::Play_Sound()
 	//	break;
 	//}
 
-}
-
-void CBossDoor::Update_ColliderPos()
-{
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
-
-	// 행렬 → 스케일, 회전, 위치 분해
-	_vector vScale, vRotationQuat, vTranslation;
-	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
-
-	// 위치 추출
-	_float3 vPos;
-	XMStoreFloat3(&vPos, vTranslation);
-	vPos.x += m_OffSetCollider.x;
-	vPos.y += m_OffSetCollider.y;
-	vPos.z += m_OffSetCollider.z;
-
-	// 회전 추출
-	_float4 vRot;
-	XMStoreFloat4(&vRot, vRotationQuat);
-
-	// PxTransform으로 생성
-	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
-	m_pPhysXActorCom->Set_Transform(physxTransform);
 }
 
 HRESULT CBossDoor::Ready_Components(void* pArg)

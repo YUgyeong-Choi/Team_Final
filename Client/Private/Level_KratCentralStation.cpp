@@ -1179,8 +1179,8 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	_float4x4 matWorldFloat;
 	XMStoreFloat4x4(&matWorldFloat, matWorld);
 	Desc.WorldMatrix = matWorldFloat;
-	Desc.fColliderScale = 1.f;
-	Desc.iColliderMeshIdx = 0;
+	Desc.vColliderOffSet = _vector({ 0.f, 1.3f, 0.f, 0.f });
+	Desc.vColliderSize = _vector({ 1.5f, 2.f, 0.2f, 0.f });
 
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
@@ -1205,9 +1205,8 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 
 	XMStoreFloat4x4(&matWorldFloat, world);
 	BossDoorDesc.WorldMatrix = matWorldFloat;
-	BossDoorDesc.fColliderScale = 0.01f;
-	BossDoorDesc.OffSetCollider = {2.f, 2.f,0.f};
-	BossDoorDesc.iColliderMeshIdx = 0;
+	BossDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 1.5f, 0.f });
 
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
 	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
@@ -1235,8 +1234,8 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 
 	XMStoreFloat4x4(&matWorldFloat, world);
 	BossDoorDesc.WorldMatrix = matWorldFloat;
-	BossDoorDesc.fColliderScale = 0.01f;
-	BossDoorDesc.iColliderMeshIdx = 1;
+	BossDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
 
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FESTIVALDOOR;
 	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });

@@ -23,8 +23,6 @@ public:
 		_vector vTriggerOffset;
 		_vector vTriggerSize;
 
-		_float3 OffSetCollider;
-
 		_bool		bNeedSecondDoor;
 		_tchar		szSecondModelPrototypeTag[MAX_PATH] = { 0 };
 	}BOSSDOORMESH_DESC;
@@ -45,7 +43,6 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	void Play_Sound();
-	virtual void Update_ColliderPos() override;
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(BOSSDOORMESH_DESC* pDesc);
