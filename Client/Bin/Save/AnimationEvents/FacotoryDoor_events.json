@@ -1,22 +1,22 @@
 {
     "animations": [
         {
-            "ClipName": "AS_Door_Crash_Close_Idle",
-            "Duration": 11.0,
+            "ClipName": "AS_Close_Idle",
+            "Duration": 60.0,
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
-            "ClipName": "AS_Door_Crash_Open",
-            "Duration": 300.0,
+            "ClipName": "AS_Open",
+            "Duration": 600.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 28.0
+            "TickPerSecond": 55.0
         },
         {
-            "ClipName": "AS_Door_Crash_Open_Idle",
-            "Duration": 9.0,
+            "ClipName": "AS_Open_Idle",
+            "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0

@@ -41,11 +41,15 @@ public:
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
-
+	void Register_Events();
 	void Play_Sound();
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(BOSSDOORMESH_DESC* pDesc);
+protected:
+	HRESULT LoadFromJson();
+	HRESULT LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom);
+	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
 private:
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
 
