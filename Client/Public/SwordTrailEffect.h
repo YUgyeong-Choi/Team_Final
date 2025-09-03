@@ -17,6 +17,7 @@ public:
 		_float4x4* pParentCombinedMatrix = { nullptr }; // 부모 모델의 월드 매트릭스
 		_float4x4* pInnerSocketMatrix = { nullptr };
 		_float4x4* pOuterSocketMatrix = { nullptr };
+		_wstring strEmitterTag;
 	}DESC;
 
 protected:
@@ -34,17 +35,21 @@ public:
 
 public:
 	void Set_TrailActive(_bool bActive);
+	void Add_Emitter(const _wstring& strEffectTag) { m_strEmitterTag = strEffectTag; }
 	void Release_Matrices() {
 		m_pParentCombinedMatrix = { nullptr };
 		m_pInnerSocketMatrix = { nullptr };
 		m_pOuterSocketMatrix = { nullptr };
 	}
-	
+
 protected:
 	CVIBuffer_SwordTrail*		m_pVIBufferCom = { nullptr };
 	_float4x4*					m_pParentCombinedMatrix = { nullptr };
 	_float4x4*					m_pInnerSocketMatrix	= { nullptr };
 	_float4x4*					m_pOuterSocketMatrix	= { nullptr };
+
+	_wstring					m_strEmitterTag;
+	_bool						m_bHasEmitter = { false };
 
 	_float3						m_vInnerPos = { 0.f, 0.f, 0.f }; // 안쪽 위치
 	_float3						m_vOuterPos = { 0.f, 0.f, 0.f }; // 바깥쪽 위치

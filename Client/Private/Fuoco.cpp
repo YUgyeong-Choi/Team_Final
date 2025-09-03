@@ -82,7 +82,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_Y))
 	{
-		m_fHp -= 100;
+		//m_fHp -= 100;
 	}
 	if (KEY_DOWN(DIK_X))
 	{
@@ -1513,6 +1513,11 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 
 					if (pHitActor->Get_Owner()->Get_Name() == TEXT("Player"))
 					{
+						if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+						{
+							pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.025f);
+							pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
+						}
 						cout << "플레이어 화염방사 맞음" << endl;
 					}
 
@@ -1524,6 +1529,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 				//printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
 				m_bRayHit = true;
 				m_vRayHitPos = hitPos;
+		
 			}
 
 #ifdef _DEBUG

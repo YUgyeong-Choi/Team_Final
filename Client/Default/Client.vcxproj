@@ -167,6 +167,7 @@
     <ClInclude Include="..\public\AStar_Manager.h" />
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
+    <ClInclude Include="..\Public\BossDoor.h" />
     <ClInclude Include="..\public\BossUnit.h" />
     <ClInclude Include="..\public\Buttler_Range.h" />
     <ClInclude Include="..\public\EliteUnit.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\DH_ToolMesh.h" />
     <ClInclude Include="..\Public\KeyDoor.h" />
+    <ClInclude Include="..\Public\PlayerState.h" />
     <ClInclude Include="..\Public\SlideDoor.h" />
     <ClInclude Include="..\public\Durability_Bar.h" />
     <ClInclude Include="..\Public\DynamicMesh.h" />
@@ -266,9 +268,6 @@
     <ClInclude Include="..\public\ParticleEffect.h" />
     <ClInclude Include="..\public\PBRMesh.h" />
     <ClInclude Include="..\public\Player.h" />
-    <ClInclude Include="..\Public\PlayerState.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\public\Portion.h" />
     <ClInclude Include="..\public\PreviewObject.h" />
     <ClInclude Include="..\public\Lamp.h" />
@@ -352,6 +351,7 @@
     <ClCompile Include="..\private\AStar_Manager.cpp" />
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
+    <ClCompile Include="..\Private\BossDoor.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
     <ClCompile Include="..\private\Buttler_Range.cpp" />
     <ClCompile Include="..\private\EliteUnit.cpp" />

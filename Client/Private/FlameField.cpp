@@ -46,7 +46,7 @@ HRESULT CFlameField::Initialize(void* pArg)
 
 	m_fExpandElapsedTime = 0.f;
 	m_LastSpawnDist.resize(16, 0.f);
-	m_SpawnEffectDistanceList.reserve(16);
+	m_SpawnEffectDistanceList.reserve(72);
 	Check_SpawnEffectDistance();
     return S_OK;
 }
@@ -68,29 +68,30 @@ void CFlameField::Update(_float fTimeDelta)
 			if (m_pPlayer)
 			{
 				_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-				_vector vFieldPos = m_pTransformCom->Get_State(STATE::POSITION);
+				_vector vFieldPos = m_vBegningRayPos;
+
 				_vector vDir = vPlayerPos - vFieldPos;
 				_float fDist = XMVectorGetX(XMVector3Length(vDir));
 
 				_float fAngle = atan2f(XMVectorGetZ(vDir), XMVectorGetX(vDir));
 				if (fAngle < 0) fAngle += XM_2PI;
-				_int iIndex = static_cast<_int>(fAngle / XMConvertToRadians(5.f));
 
-				// 레이 결과와 비교
-				if (fDist <= m_SpawnEffectDistanceList[iIndex])
+				_float fAngleDegrees = XMConvertToDegrees(fAngle);
+				_int iIndex = static_cast<_int>(fAngleDegrees / 5.0f + 0.5f) % 72;
+				_int iPrevIndex = (iIndex - 1 + 72) % 72; // 이전 인덱스
+				_int iNextIndex = (iIndex + 1) % 72;      // 다음 인덱스
+				_float fMaxAllowedDist = max(m_SpawnEffectDistanceList[iPrevIndex], m_SpawnEffectDistanceList[iIndex]);
+				fMaxAllowedDist = max(fMaxAllowedDist, m_SpawnEffectDistanceList[iNextIndex]);
+
+				if (iIndex >= 0 && iIndex < m_SpawnEffectDistanceList.size())
 				{
-					m_pPlayer->SetfReceiveDamage(2.f);
-					m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
-#ifdef _DEBUG
 
-					cout << "Player Damaged by Flame Field" << endl;
-#endif // _DEBUG
-
+					if (fDist <= fMaxAllowedDist)
+					{
+						m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.095f);
+						m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
+					}
 				}
-
-				m_fDamgeElapsedTime = 0.f;
-			/*	m_pPlayer->SetfReceiveDamage(2.f);
-				m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);*/
 			}
 			m_fDamgeElapsedTime = 0.f;
 		}
@@ -99,6 +100,12 @@ void CFlameField::Update(_float fTimeDelta)
 			m_fDamgeElapsedTime += fTimeDelta;
 		}
 	}
+#ifdef _DEBUG
+	else
+	{
+		cout << "Player NOT in field" << endl;
+	}
+#endif
 	m_fExpandElapsedTime += fTimeDelta;
 	if (m_fExpandElapsedTime > m_fExpandTime + m_fRemainTime&& !m_bIsExpanded)
 	{
@@ -280,6 +287,7 @@ void CFlameField::Check_SpawnEffectDistance()
 	_float fOffSetY = 1.f; // 불꽃 필드의 Y 오프셋
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vOffsetPos = XMVectorSetY(vPos, XMVectorGetY(vPos) + fOffSetY);
+	m_vBegningRayPos = vOffsetPos;
 	PxVec3 origin(XMVectorGetX(vOffsetPos), XMVectorGetY(vOffsetPos), XMVectorGetZ(vOffsetPos));
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;
@@ -323,7 +331,9 @@ void CFlameField::Check_SpawnEffectDistance()
 			{
 				if (auto pHitActor = static_cast<CPhysXActor*>(hit.block.actor->userData))
 				{
-					if (pHitActor->Get_Owner() && pHitActor->Get_ColliderType() != COLLIDERTYPE::PLAYER)
+					if (pHitActor->Get_Owner() && pHitActor->Get_ColliderType() != COLLIDERTYPE::PLAYER
+						&&pHitActor->Get_ColliderType() != COLLIDERTYPE::PLAYER_WEAPON
+						&&pHitActor->Get_ColliderType() != COLLIDERTYPE::TRIGGER)
 						finalDist = hit.block.distance;
 					else
 						finalDist = fDistance;

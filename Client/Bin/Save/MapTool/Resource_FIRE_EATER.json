@@ -17,7 +17,7 @@
         "Collision": false,
         "ModelName": "SM_Factory_BasePipe_06",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_06.bin"
     },
     {
@@ -31,7 +31,7 @@
         "Collision": true,
         "ModelName": "SM_Factory_BossWall_01",
         "NoInstancing": false,
-        "ObjectCount": 16,
+        "ObjectCount": 19,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BossWall_01.bin"
     },
     {
@@ -94,7 +94,7 @@
         "Collision": false,
         "ModelName": "SM_Factory_Height_01",
         "NoInstancing": false,
-        "ObjectCount": 19,
+        "ObjectCount": 16,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Height_01.bin"
     },
     {
@@ -115,7 +115,7 @@
         "Collision": false,
         "ModelName": "SM_Factory_PipeA_05",
         "NoInstancing": false,
-        "ObjectCount": 13,
+        "ObjectCount": 20,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeA_05.bin"
     },
     {
@@ -143,14 +143,14 @@
         "Collision": true,
         "ModelName": "SM_Factory_PipeC_01",
         "NoInstancing": false,
-        "ObjectCount": 26,
+        "ObjectCount": 27,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeC_01.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Factory_PipeC_02",
         "NoInstancing": false,
-        "ObjectCount": 27,
+        "ObjectCount": 33,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_PipeC_02.bin"
     },
     {
@@ -178,14 +178,14 @@
         "Collision": false,
         "ModelName": "SM_Factory_RoofFrame_01",
         "NoInstancing": false,
-        "ObjectCount": 18,
+        "ObjectCount": 21,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_RoofFrame_01.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_FireEaterFloor_01_JJS",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_FireEaterFloor_01_JJS.bin"
     },
     {
@@ -229,13 +229,6 @@
         "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_MoldingC_02.bin"
-    },
-    {
-        "Collision": true,
-        "ModelName": "SM_Station_TrainDoor_01",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin"
     },
     {
         "Collision": true,

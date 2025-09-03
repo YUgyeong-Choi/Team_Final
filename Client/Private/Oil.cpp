@@ -128,11 +128,10 @@ void COil::Explode_Oil()
 			if (fDist <= fColliderWidth)
 			{
 				_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
-				auto pPlayer = GET_PLAYER(iLevelIndex);
-				if (pPlayer)
-				{
-					pPlayer->SetHitMotion(HITMOTION::NORMAL);
-				}
+			
+				// 살짝만 날라가게 나중에 처리하기
+				m_pPlayer->SetHitMotion(HITMOTION::UP);
+				m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.95f);
 			}
 			Set_bDead();
 		}

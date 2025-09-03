@@ -145,10 +145,10 @@
                 0.24607330560684204
             ],
             "Color": [
+                0.2565445303916931,
+                0.4278120994567871,
                 1.0,
-                1.0,
-                1.0,
-                0.0
+                0.4921466112136841
             ],
             "DistortionStrength": 10.0,
             "Duration": 121,
@@ -191,7 +191,7 @@
                         1.0,
                         0.0
                     ],
-                    "Intensity": 0.0,
+                    "Intensity": 1.0,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -204,7 +204,7 @@
                         1.5,
                         1.5
                     ],
-                    "TrackPosition": 15.0,
+                    "TrackPosition": 30.0,
                     "Translation": [
                         0.0,
                         0.0,
@@ -247,8 +247,8 @@
                 1.0
             ],
             "Color": [
-                0.4554973840713501,
-                0.4958310127258301,
+                0.04712039232254028,
+                0.11696523427963257,
                 1.0,
                 1.0
             ],
@@ -291,10 +291,10 @@
                         0.4554973840713501,
                         0.4958310127258301,
                         1.0,
-                        1.0
+                        0.4083769917488098
                     ],
-                    "Intensity": 0.0,
-                    "Interpolation": 0,
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
                     "Rotation": [
                         0.0,
                         0.0,
@@ -312,12 +312,39 @@
                         0.0,
                         0.0
                     ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "TrackPosition": 17.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
                 }
             ],
             "LifeTime": 286.9271545410156,
             "Loop": true,
             "Name": "Player_Skill_Blink_FlareSprite1",
-            "NumKeyFrames": 2,
+            "NumKeyFrames": 3,
             "RenderGroup": 8,
             "ShaderPass": 5,
             "StartTrack": 0,

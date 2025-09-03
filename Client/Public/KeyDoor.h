@@ -1,5 +1,5 @@
 #pragma once
-
+/* [ 야외 맵으로 갈 때 key 필요한 문들 ] */
 #include "Client_Defines.h"
 #include "DynamicMesh.h"
 
@@ -50,6 +50,8 @@ private:
 
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
+
+	CModel* m_pModelCom2 = { nullptr };
 public:
 	static CKeyDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

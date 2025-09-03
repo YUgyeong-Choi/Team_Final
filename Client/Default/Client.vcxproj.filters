@@ -771,9 +771,6 @@
     <ClInclude Include="..\public\HP_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\HP</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PlayerState.h">
-      <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Mana_Bar.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Bar\Mana</Filter>
     </ClInclude>
@@ -1015,8 +1012,14 @@
     <ClInclude Include="..\Public\KeyDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerState.h">
+      <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Buttler_Range.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossDoor.h">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1531,6 +1534,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Buttler_Range.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossDoor.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

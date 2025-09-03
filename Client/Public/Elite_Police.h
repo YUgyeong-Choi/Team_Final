@@ -75,6 +75,7 @@ private:
 	virtual HRESULT Ready_Actor() override;
     virtual void Ready_BoneInformation() override;
     HRESULT Ready_Weapon();
+	virtual _bool CanProcessTurn() override;
 
 	virtual void HandleMovementDecision(_float fDistance, _float fTimeDelta) override;
     virtual void UpdateAttackPattern(_float fDistance, _float fTimeDelta) override;

@@ -31,6 +31,7 @@ public:
 
 public:
 	void Set_TrailActive(_bool bActive) { m_bTrailActive = bActive; if (bActive == true) m_TrailNodes.clear();}
+	const vector<_float3>& Get_InterpolatedNewNodes() { return m_InterpolatedNewNodes; }
 
 #ifdef USE_IMGUI
 	void Set_MaxNodeCount(_uint iCnt) { m_iMaxNodeCount = iCnt; }
@@ -46,13 +47,14 @@ private:
 
 private:
 	vector<VTXPOS_TRAIL>	m_TrailNodes;
-	_uint					m_iMaxNodeCount = { 300 }; // 임시로 개수 지정함
+	vector<_float3>			m_InterpolatedNewNodes;
+	_uint					m_iMaxNodeCount = { 500 }; // 임시로 개수 지정함
 	_float					m_fLifeDuration = { 0.5f };
 	_bool					m_bTrailActive = true;
 	_float					m_fNodeAccTime = { 0.f };
 	_float					m_fNodeInterval = { 0.0166f }; // 60 FPS 기준, 1초에 60번 노드 추가
 	_int					m_Subdivisions = 4; // 캣멀롬 보간을 위한 세분화 단계
-
+	_bool					m_bNewNode = false;
 
 public:
 	static CVIBuffer_SwordTrail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& strJsonFilePath);

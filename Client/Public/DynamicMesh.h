@@ -28,6 +28,7 @@ public:
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
 		);
+		_float fColliderScale;
 
 	}DYNAMICMESH_DESC;
 
@@ -51,7 +52,7 @@ public:
 	LEVEL Get_LevelID() const { return m_eMeshLevelID; }
 
 protected:
-	void Update_ColliderPos();
+	virtual void Update_ColliderPos();
 
 protected: /* [ 초기화 변수 ] */
 	const _tchar*	m_szMeshID = { nullptr };
@@ -68,7 +69,7 @@ protected:
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
-	HRESULT Ready_Collider();
+	HRESULT Ready_Collider(void* pArg);
 
 public:
 	static CDynamicMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

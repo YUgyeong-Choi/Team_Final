@@ -83,6 +83,7 @@ public:
 
 	// 몬스터가 죽을 때 불러줌
 	void Set_HitTarget(CUnit* pTarget, _bool bDead);
+
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
 	void			CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -91,8 +92,8 @@ private: /* [ 피격 헬퍼함수 ] */
 private:
 	void			SitAnimationMove(_float fTimeDelta);
 
-/* [ 입력 처리 ] */
-private: 
+
+private: /* [ 입력 처리 ] */
 	void			HandleInput();									// [1] 키 입력만 처리
 	EPlayerState	EvaluateTransitions();							// [2] 입력에 따라 상태 전이
 	void			UpdateCurrentState(_float fTimeDelta);			// [3] 현재 상태 로직 수행
@@ -141,6 +142,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
 	//HRESULT Ready_Effect();
+
 private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
@@ -151,16 +153,16 @@ public: /* [ 상호작용 관련 ] */
 	void GetWeapon();
 private:
 	void Play_CutScene_Door();
-
-private:
 	void ItemWeapOnOff(_float fTimeDelta);
 	void SlidDoorMove(_float fTimeDelta);
 
+private: /* [ 무기 관련 ] */
 	void Weapon_Collider_Active();
 	void Reset_Weapon();
 
 
 public: /* [ 불타는 셰이딩 ] */
+	void BurnActive(_float fDeltaTime);
 	void OnBurn(_float fTimeDelta);
 	void OffBurn(_float fTimeDelta);
 
@@ -227,22 +229,26 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_Hited;
 	friend class CPlayer_Dead;
 
-public:
+public: /* [ 특수 모션 관련 ] */
 	void SetHitMotion(HITMOTION eHitMotion) { m_eHitMotion = eHitMotion; }
 	HITMOTION GetHitMotion() const { return m_eHitMotion; }
 	void SetfReceiveDamage(_float fDamage) { m_fReceiveDamage = fDamage; }
 	_float GetfReceiveDamage() const { return m_fReceiveDamage; }
 	void SetHitedAttackType(CBossUnit::EAttackType eType) { m_eHitedAttackType = eType; }
-
+	void IsPerfectGard(_float fTimeDelta);
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
-public:
+public: /* [ 부여 속성 관련 ] */
 	void SetElementTypeDuration(EELEMENT eElement, _float fValue) { m_vecElements[eElement].fDuration = fValue; }
 	void SetElementTypeWeight(EELEMENT eElement, _float fValue) 
 	{
 		_float fWeight = m_vecElements[eElement].fElementWeight + fValue;
 		m_vecElements[eElement].fElementWeight = min(fWeight, 1.f);
+
+		cout << "Element : " << static_cast<_int>(eElement) << " Weight : " << m_vecElements[eElement].fElementWeight << endl;
 	}
+
+	void Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight);
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
@@ -266,7 +272,7 @@ private: /* [ 불타버려~ ] */
 	CTexture* m_pBurnMask2 = { nullptr };
 	_float	m_fBurnTime = {};
 	_float	m_fBurnPhase = {};
-	_float	m_fBurnSpeed = 1.f;
+	_float	m_fBurnSpeed = 1.7f;
 	_bool	m_bBurnSwitch = {};
 
 protected:
@@ -301,6 +307,7 @@ private: /* [ 전투관련 변수 ] */
 	_int 	m_iCurrentCombo = { 0 };
 
 	_float  m_fReceiveDamage = {};
+	_float  m_fPerfectGardTime = {};
 	_vector m_vHitPos = {};
 	_vector m_vHitNormal = {};
 	EHitDir m_eDir = EHitDir::END;
@@ -342,7 +349,7 @@ private: /* [ 인터렉션 관련변수 ] */
 		"Sprint", //"Sprint_Stop",
 		"Guard_Walk_B", "Guard_Walk_F", "Guard_Walk_L", "Guard_Walk_R",
 		"EquipWeapon_Walk_F", "PutWeapon_Walk_F",
-		"OnLamp_Walk", "FailItem_Walk", "Fail_Walk",
+		"OnLamp_Walk",
 		"Grinder_Start", "Grinder_Loop", "Grinder_Loop_Walk_F", "Grinder_Loop_Walk_R", "Grinder_Loop_Walk_L" , "Grinder_Loop_Walk_B",//"Grinder_End"
 		"Heal","Heal_Walk_R","Heal_Walk_F","Heal_Walk_FR","Heal_Walk_FL","Heal_Walk_L", "Heal_Walk_B","Heal_Walk_BL","Heal_Walk_BR",
 		"Item_Get_Walk"
@@ -387,6 +394,7 @@ private: /* [ 리전 암 내구도 ] */
 private: /* [ 현재 상태 ] */
 	_bool	m_bIsGuarding = { false };
 	_bool	m_bIsHit = { false };
+	_bool	m_bIsForceDead = { false };
 	_bool	m_bIsInvincible = { false };
 	_float	m_fIsInvincible = { false };
 	_bool	m_bIsLockOn = { false };

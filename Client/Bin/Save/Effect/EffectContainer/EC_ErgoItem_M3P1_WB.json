@@ -15,6 +15,7 @@
                 1.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 200,
             "EffectType": 2,
             "EmissiveIntensity": 1.5499999523162842,
@@ -125,6 +126,7 @@
             ],
             "Threshold": 0.8999999761581421,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -141,8 +143,9 @@
                 0.10588235408067703,
                 0.5058823823928833,
                 1.0,
-                0.11000001430511475
+                0.30000001192092896
             ],
+            "DistortionStrength": 10.0,
             "Duration": 200,
             "EffectType": 2,
             "EmissiveIntensity": 1.0,
@@ -183,7 +186,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 0.7799999713897705,
+                    "Intensity": 1.9800000190734863,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -253,6 +256,7 @@
             ],
             "Threshold": 0.8999999761581421,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -269,8 +273,9 @@
                 0.10588235408067703,
                 0.5058823823928833,
                 1.0,
-                -0.04777169227600098
+                -0.061945199966430664
             ],
+            "DistortionStrength": 10.0,
             "Duration": 200,
             "EffectType": 2,
             "EmissiveIntensity": 1.0,
@@ -284,7 +289,7 @@
                         1.0,
                         0.4136125445365906
                     ],
-                    "Intensity": 0.18000000715255737,
+                    "Intensity": 0.4099999964237213,
                     "Interpolation": 3,
                     "Rotation": [
                         0.0,
@@ -311,7 +316,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 0.7799999713897705,
+                    "Intensity": 1.5299999713897705,
                     "Interpolation": 4,
                     "Rotation": [
                         -0.0,
@@ -381,10 +386,15 @@
             ],
             "Threshold": 0.8999999761581421,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
         {
+            "Accel": [
+                0.0,
+                0.0
+            ],
             "Animation": true,
             "Billboard": false,
             "Center": [
@@ -404,11 +414,14 @@
                 1.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 200,
             "EffectType": 1,
             "EmissiveIntensity": 3.299999952316284,
             "EndTrack": 200,
             "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
@@ -446,9 +459,21 @@
             "Local": true,
             "Loop": true,
             "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
             "Name": "ergo_particle",
             "NumInstance": 25,
             "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
             "PType": 0,
             "Pivot": [
                 0.0,
@@ -461,6 +486,15 @@
                 0.029999999329447746
             ],
             "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
             "ShaderPass": 2,
             "Size": [
                 0.029999999329447746,
@@ -470,6 +504,7 @@
                 0.10000000149011612,
                 0.20000000298023224
             ],
+            "Spin": false,
             "StartTrack": 0,
             "TextureTags": [
                 "T_Shere_05_C_HJS",
@@ -485,8 +520,12 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
-            "TileY": 1
+            "TileY": 1,
+            "isTileLoop": false
         }
-    ]
+    ],
+    "Loop": true,
+    "MaxFrame": 200
 }

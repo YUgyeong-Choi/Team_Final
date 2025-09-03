@@ -326,6 +326,11 @@ HRESULT CElite_Police::Ready_Weapon()
 	return S_OK;
 }
 
+_bool CElite_Police::CanProcessTurn()
+{
+	return m_bReturnToSpawn == false;
+}
+
 
 void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 {
@@ -336,13 +341,18 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 	{
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vTarget = XMLoadFloat3(&m_InitPos);
+		_float fDistance = XMVectorGetX(XMVector3Length(vTarget - vPos));
 		_vector vDir = XMVector3Normalize(vTarget - vPos);
 
+		m_pAnimator->SetFloat("Distance ", abs(fDistance));
 		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_pAnimator->SetBool("Move", true);
 		m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
 		m_eCurrentState = EEliteState::WALK;
 
 		m_pTransformCom->LookAtWithOutY(vTarget);
+		m_pTransformCom->Go_Dir(vDir, fTimeDelta,nullptr,m_pNaviCom);
+
 
 		if (XMVectorGetX(XMVector3Length(vTarget - vPos)) < 0.5f)
 		{
@@ -411,6 +421,9 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 
 void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
+	if (m_bReturnToSpawn)
+		return;
+
 	if (m_bPlayedDetect == false)
 		return;
 
@@ -529,7 +542,9 @@ void CElite_Police::UpdateSpecificBehavior(_float fTimeDelta)
 		{
 			if (pPlayer->Get_PlayerState() == EPlayerState::DEAD)
 			{
+				m_pPlayer = nullptr;
 				m_bReturnToSpawn = true;
+				return;
 			}
 		}
 		if (m_bPlayedDetect == false && Get_DistanceToPlayer() <= m_fDetectRange)
@@ -726,6 +741,7 @@ void CElite_Police::Register_Events()
 void CElite_Police::Reset()
 {
 	__super::Reset();
+	m_pPlayer = GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex());
 	m_bReturnToSpawn = false;
 	m_bPlayedDetect = false;
 	m_bSpawned = false;
@@ -785,15 +801,16 @@ void CElite_Police::UpdatePatternWeight(_int iPattern)
 
 _bool CElite_Police::CanMove() const
 {
-	return (m_eCurrentState == EEliteState::IDLE ||
-		m_eCurrentState == EEliteState::WALK ||
-		m_eCurrentState == EEliteState::RUN) &&
+	return (m_bReturnToSpawn ||
+		(m_eCurrentState == EEliteState::IDLE ||
+			m_eCurrentState == EEliteState::WALK ||
+			m_eCurrentState == EEliteState::RUN) &&
 		m_eCurrentState != EEliteState::GROGGY &&
 		m_eCurrentState != EEliteState::DEAD &&
 		m_eCurrentState != EEliteState::PARALYZATION &&
 		m_eCurrentState != EEliteState::ATTACK &&
 		m_eCurrentState != EEliteState::FATAL &&
-		m_bPlayedDetect;
+		m_bPlayedDetect);
 }
 
 

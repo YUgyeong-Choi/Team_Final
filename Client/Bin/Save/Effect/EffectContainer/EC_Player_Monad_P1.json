@@ -412,13 +412,13 @@
                 1.0,
                 0.9411764740943909,
                 0.0,
-                1.0
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 82,
             "EffectType": 0,
             "EmissiveIntensity": 1.2999999523162842,
-            "EndTrack": 86,
+            "EndTrack": 88,
             "FlipUV": false,
             "KeyFrames": [
                 {
@@ -453,9 +453,9 @@
                         1.0,
                         0.9411764740943909,
                         0.0,
-                        1.0
+                        0.0
                     ],
-                    "Intensity": 0.0,
+                    "Intensity": 1.0,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -482,7 +482,7 @@
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 5,
-            "StartTrack": 4,
+            "StartTrack": 6,
             "TextureTags": [
                 "",
                 "T_Smoke_03_C_LGS",
