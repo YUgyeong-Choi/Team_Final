@@ -263,7 +263,12 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             }
             else if (ParticleType == 2) // random
             {
-                pp.Direction = float4(Random_Normal(i * 3), Random_Normal(i * 3 + 1), Random_Normal(i * 3 + 2), 0.f);
+                pp.Direction = float4(
+                    Random(i * 3    , -1.f, 1.f), 
+                    Random(i * 3 + 1, -1.f, 1.f),
+                    Random(i * 3 + 2, -1.f, 1.f),
+                    0.f
+                );
             }
             //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
             //float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);

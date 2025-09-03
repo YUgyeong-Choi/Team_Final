@@ -182,7 +182,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     float4 vColor;
     vColor.rgb = vPreColor.rgb * fPremask * g_fIntensity;
-    vColor.a = fMask * fade;
+    vColor.a = g_vColor.a * fMask * fade * fPremask;
     
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
@@ -190,7 +190,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
     
     Out.vDistortion = g_MaskTexture2.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-    Out.vDistortion.a *= fade * fMask;
+    Out.vDistortion.a *= fade;
     Out.vDistortion.b = g_fDistortionStrength / 255.f;
 
     return Out;
