@@ -179,14 +179,15 @@ HRESULT CDynamicMesh::Bind_ShaderResources()
 HRESULT CDynamicMesh::Ready_Collider(void* pArg)
 {
 	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
+	_int meshIdx = StaicMeshDESC->iColliderMeshIdx;
 	if (m_pModelCom)
 	{
-		_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(0);
-		_uint numIndices = m_pModelCom->Get_Mesh_NumIndices(0);
+		_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(meshIdx);
+		_uint numIndices = m_pModelCom->Get_Mesh_NumIndices(meshIdx);
 
 		vector<PxVec3> physxVertices;
 		physxVertices.reserve(numVertices);
-		const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(0);
+		const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(meshIdx);
 		for (_uint i = 0; i < numVertices; ++i)
 		{
 			const _float3& v = pVertexPositions[i];

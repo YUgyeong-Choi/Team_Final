@@ -257,7 +257,7 @@ HRESULT CBossDoor::Ready_Components(void* pArg)
 	{
 		/* Com_Model */
 		if (FAILED(__super::Add_Component(ENUM_CLASS(m_eMeshLevelID), BossDoorDESC->szSecondModelPrototypeTag,
-			TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pSecondModelCom))))
+			TEXT("Com_Model2"), reinterpret_cast<CComponent**>(&m_pSecondModelCom))))
 			return E_FAIL;
 
 		m_pSecondAnimator = CAnimator::Create(m_pDevice, m_pContext);
