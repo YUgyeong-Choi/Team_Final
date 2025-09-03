@@ -236,6 +236,7 @@ void CPlayer::Update(_float fTimeDelta)
 	Update_Slot(fTimeDelta);
 
 	/* [ 불타는 셰이더 ] */
+	BurnActive(fTimeDelta);
 	if (m_bBurnSwitch)
 		OnBurn(fTimeDelta);
 	else
@@ -262,8 +263,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	/* [ 이곳은 실험실입니다. ] */
 	if (KEY_DOWN(DIK_Y))
-	{
-		m_bBurnSwitch = !m_bBurnSwitch;
+	{	
 	}
 
 	/* [ 소모자원 리셋 ] */
@@ -2580,6 +2580,41 @@ void CPlayer::Reset_Weapon()
 
 	m_pWeapon->SetisAttack(true);
 	m_pWeapon->Clear_CollisionObj();
+}
+
+void CPlayer::BurnActive(_float fDeltaTime)
+{
+	if (m_vecElements[0].fElementWeight <= 0.01f)
+		return;
+
+	_float fFireWeight = m_vecElements[0].fElementWeight;
+	_float fFireDuration = m_vecElements[0].fDuration;
+
+	/* [ 화속성 시작 ] */
+	if (fFireWeight > 0.2f)
+	{
+		// 플레이어 점화 걸림
+		m_bBurnSwitch = true;
+	}
+	else
+	{
+		//플레이어 점화 종료
+		m_bBurnSwitch = false;
+	}
+
+	if (fFireWeight > 0.1f)
+	{
+		//점화 감소시간
+		_float Speed = 0.2f;
+		m_vecElements[0].fElementWeight -= fDeltaTime * Speed;
+		
+		if (m_fHp > 0.f)
+			m_fHp -= 0.05f;
+		else
+			m_bIsHit = true;
+
+		Callback_HP();
+	}
 }
 
 void CPlayer::OnBurn(_float fTimeDelta)

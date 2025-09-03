@@ -82,7 +82,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_Y))
 	{
-		m_fHp -= 100;
+		//m_fHp -= 100;
 	}
 	if (KEY_DOWN(DIK_X))
 	{

@@ -162,6 +162,7 @@ private: /* [ 무기 관련 ] */
 
 
 public: /* [ 불타는 셰이딩 ] */
+	void BurnActive(_float fDeltaTime);
 	void OnBurn(_float fTimeDelta);
 	void OffBurn(_float fTimeDelta);
 
@@ -244,7 +245,7 @@ public: /* [ 부여 속성 관련 ] */
 		_float fWeight = m_vecElements[eElement].fElementWeight + fValue;
 		m_vecElements[eElement].fElementWeight = min(fWeight, 1.f);
 
-		cout << "Element : " << static_cast<_int>(eElement) << " Weight : " << m_vecElements[eElement].fElementWeight << endl;
+		//cout << "Element : " << static_cast<_int>(eElement) << " Weight : " << m_vecElements[eElement].fElementWeight << endl;
 	}
 
 private: /* [ 부여 속성 ] */
@@ -269,7 +270,7 @@ private: /* [ 불타버려~ ] */
 	CTexture* m_pBurnMask2 = { nullptr };
 	_float	m_fBurnTime = {};
 	_float	m_fBurnPhase = {};
-	_float	m_fBurnSpeed = 1.f;
+	_float	m_fBurnSpeed = 1.7f;
 	_bool	m_bBurnSwitch = {};
 
 protected:

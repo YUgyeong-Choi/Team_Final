@@ -1009,6 +1009,9 @@
     <ClInclude Include="..\Public\KeyDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerState.h">
+      <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
