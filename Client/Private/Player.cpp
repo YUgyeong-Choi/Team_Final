@@ -34,6 +34,7 @@
 #include "SlideDoor.h"
 #include <FlameField.h>
 #include <Elite_Police.h>
+#include <KeyDoor.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -1123,6 +1124,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		RootMotionActive(fTimeDelta);
 		break;
 	}
+	case eAnimCategory::STATIONDOOR:
+	{
+		RootMotionActive(fTimeDelta);
+		break;
+	}
 	case eAnimCategory::ARM_ATTACKA:
 	{
 		if (!m_bSetOnce)
@@ -1534,6 +1540,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Hit") == 0)
 		return eAnimCategory::HITED;
 
+	if (stateName.find("DoubleDoor_Push_TrainStation") == 0)
+		return eAnimCategory::STATIONDOOR;
 	if (stateName.find("DoubleDoor_Boss") == 0)
 		return eAnimCategory::FESTIVALDOOR;
 	if (stateName.find("SlidingDoor") == 0)
@@ -1712,6 +1720,13 @@ void CPlayer::Register_Events()
 		});
 
 
+		m_pAnimator->RegisterEventListener("OnInteractionKeyDoor", [this]()
+			{
+				if (auto pKeyDoor = dynamic_cast<CKeyDoor*>(m_pInterectionStuff))
+				{
+					pKeyDoor->OpenDoor();
+				}
+			});
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
@@ -2582,6 +2597,18 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 		break;
 	case Client::FESTIVALDOOR:
 		stateName = "DoubleDoor_Boss";
+		break;
+	case Client::OUTDOOR:
+		if (Get_HaveKey())
+		{
+			stateName = "Door_Unlock";
+			m_pAnimator->SetBool("Outdoor", true);
+		}
+		else
+		{
+			stateName = "Door_Check";
+			m_pAnimator->SetBool("Outdoor", false);
+		}
 		break;
 	default:
 		break;
