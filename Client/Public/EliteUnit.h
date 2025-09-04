@@ -133,6 +133,7 @@ public:
 protected:
 	CNavigation* m_pNaviCom = { nullptr };
 	CUI_MonsterHP_Bar* m_pHPBar = { nullptr };
+	_vector m_vTargetPos = XMVectorZero();
 
 	EEliteState m_eCurrentState = EEliteState::NONE;
 	EEliteState m_ePrevState = EEliteState::NONE;

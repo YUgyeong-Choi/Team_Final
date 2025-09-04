@@ -56,10 +56,10 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 				return;
 			switch (m_eInteractType)
 			{
-			case Client::FESTIVALDOOR:
+			case Client::FESTIVALDOOR: //X:375.136841, Y:14.995386, Z:-48.836079
 				pPlayer->Interaction_Door(m_eInteractType, this);
 				break;
-			case Client::FUOCO: // -2.983806, Y:0.318406, Z:-235.703735 위치가 좋을듯
+			case Client::FUOCO: // -2.953791, Y:0.318406, Z:-235.758652 위치가 좋을듯
 				pPlayer->Interaction_Door(m_eInteractType, this);
 				break;
 			default:

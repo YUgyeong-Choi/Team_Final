@@ -265,7 +265,7 @@ HRESULT CElite_Police::Ready_Actor()
 		m_pPhysXElbow->Set_SimulationFilterData(elbowFilterData);
 		m_pPhysXElbow->Set_QueryFilterData(elbowFilterData);
 		m_pPhysXElbow->Set_Owner(this);
-		m_pPhysXElbow->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
+		m_pPhysXElbow->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON_BODY);
 		m_pPhysXElbow->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXElbow->Get_Actor());
 		m_pPhysXElbow->Init_SimulationFilterData();
@@ -307,7 +307,7 @@ HRESULT CElite_Police::Ready_Weapon()
 	Desc.vAxis = { 1.f,0.f,0.f,0.f };
 	Desc.fRotationDegree = { -90.f };
 	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 1.4f, 0.65f, 0.65f };
+	Desc.vPhsyxExtent = { 1.45f, 0.6f, 0.6f };
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	Desc.pOwner = this;
@@ -339,7 +339,7 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 
 	if (m_bReturnToSpawn)
 	{
-		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	/*	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vTarget = XMLoadFloat3(&m_InitPos);
 		_float fDistance = XMVectorGetX(XMVector3Length(vTarget - vPos));
 		_vector vDir = XMVector3Normalize(vTarget - vPos);
@@ -360,7 +360,7 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 			m_eCurrentState = EEliteState::IDLE;
 			m_pAnimator->SetBool("Move", false);
 		}
-		return;
+		return;*/
 	}
 
 	if (fDistance < m_fTooCloseDistance)
@@ -534,19 +534,22 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 
 void CElite_Police::UpdateSpecificBehavior(_float fTimeDelta)
 {
-	if (m_bReturnToSpawn)
-		return;
+	//if (m_bReturnToSpawn)
+	//	return;
 	if (m_pPlayer)
 	{
-		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+	/*	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
 			if (pPlayer->Get_PlayerState() == EPlayerState::DEAD)
 			{
-				m_pPlayer = nullptr;
 				m_bReturnToSpawn = true;
 				return;
 			}
-		}
+			else
+			{
+				m_bReturnToSpawn = false;
+			}
+		}*/
 		if (m_bPlayedDetect == false && Get_DistanceToPlayer() <= m_fDetectRange)
 		{
 			_vector vMyPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -688,6 +691,7 @@ void CElite_Police::Register_Events()
 
 
 	m_pAnimator->RegisterEventListener("ElbowOn", [this]() {
+		Set_ElbowHit(false);
 		m_pPhysXElbow->Set_SimulationFilterData(m_pPhysXElbow->Get_FilterData());
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
@@ -707,6 +711,7 @@ void CElite_Police::Register_Events()
 				pController->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
 			}
 		}
+		Set_ElbowHit(false);
 		});
 
 	m_pAnimator->RegisterEventListener("ChageLook", [this]() {
@@ -915,6 +920,14 @@ void CElite_Police::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CElite_Police::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	ReceiveDamage(pOther, eColliderType);
+
+	if (eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		if (m_bElbowHit)
+		{
+			static_cast<CPlayer*>(pOther)->SetfReceiveDamage(10.f);
+		}
+	}
 }
 
 void CElite_Police::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
