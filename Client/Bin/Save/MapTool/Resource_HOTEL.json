@@ -353,7 +353,7 @@
         "Collision": true,
         "ModelName": "SM_Fence_HandRail_07",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Fence_HandRail_07.bin"
     },
     {
@@ -948,7 +948,7 @@
         "Collision": true,
         "ModelName": "SM_Station_FenceB_01",
         "NoInstancing": false,
-        "ObjectCount": 117,
+        "ObjectCount": 118,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FenceB_01.bin"
     },
     {
@@ -1319,7 +1319,7 @@
         "Collision": true,
         "ModelName": "SM_Wall_NobleStair02",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_NobleStair02.bin"
     },
     {
