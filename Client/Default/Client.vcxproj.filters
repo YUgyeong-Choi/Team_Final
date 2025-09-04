@@ -478,6 +478,9 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Range">
       <UniqueIdentifier>{073cdcc5-ca16-4720-bf1c-e81b935a67d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.StaticMesh\Water_Puddle">
+      <UniqueIdentifier>{0e0921cf-ff24-4bc8-9d86-492820a0237b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1021,6 +1024,9 @@
     <ClInclude Include="..\Public\BossDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\WaterPuddle.h">
+      <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1537,6 +1543,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WaterPuddle.cpp">
+      <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
