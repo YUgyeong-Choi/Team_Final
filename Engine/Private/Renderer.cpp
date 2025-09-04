@@ -1037,6 +1037,16 @@ HRESULT CRenderer::Render_NonLight()
 {
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, false);
 
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_NONLIGHT)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_NONLIGHT)].clear();
+
+
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)])
 	{
 		if (nullptr != pGameObject)
