@@ -3,6 +3,7 @@
 #include "EventMag.h"
 #include "AnimTool.h"
 #include "Buttler_Train.h"
+#include "Buttler_Range.h"
 #include "Player.h"
 #include "Fuoco.h"
 #include "EditorObjectFactory.h"
@@ -2838,6 +2839,22 @@ HRESULT CAnimTool::Register_Objects()
 		return E_FAIL;
 	m_vecObjectNames.push_back("Buttler_Basic");
 	m_SpawnObjectDesc["Buttler_Basic"] = pDesc1;
+
+	CMonster_Base::MONSTER_BASE_DESC* pDesc2 = new CMonster_Base::MONSTER_BASE_DESC();
+	//pDesc.fSpeedPerSec = 1.f;
+	pDesc2->fSpeedPerSec = 5.f;
+	pDesc2->fRotationPerSec = XMConvertToRadians(600.0f);
+	pDesc2->eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	pDesc2->InitPos = _float3(0.f, 0.f, 0.f);
+	pDesc2->InitScale = _float3(1.f, 1.f, 1.f);
+	lstrcpy(pDesc2->szName, TEXT("Buttler_Range"));
+	pDesc2->szMeshID = TEXT("Buttler_Range");
+	pDesc2->fHeight = 1.f;
+	pDesc2->vExtent = { 0.5f,1.f,0.5f };
+	if (FAILED(m_pEditorObjectFactory->RegisterObject<CButtler_Range>(TEXT("Buttler_Range"), pDesc2)))
+		return E_FAIL;
+	m_vecObjectNames.push_back("Buttler_Range");
+	m_SpawnObjectDesc["Buttler_Range"] = pDesc2;
 
 
 	CPlayer::PLAYER_DESC* pPlayerDesc = new CPlayer::PLAYER_DESC();

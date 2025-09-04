@@ -24,7 +24,7 @@ HRESULT CButtler_Range::Initialize(void* pArg)
 {
 	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
 	pDesc->fSpeedPerSec = 5.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(180.0f);
+	pDesc->fRotationPerSec = XMConvertToRadians(60.0f);
 
 	m_fHeight = 1.f;
 	m_vHalfExtents = { 0.5f,1.f,0.5f };
@@ -216,10 +216,10 @@ void CButtler_Range::Update_State()
 
 
 
-	if (m_strStateName.find("Idle") != m_strStateName.npos)
+	if (m_strStateName.find("Idle") != m_strStateName.npos || m_strStateName.find("Attack") != m_strStateName.npos)
 	{
-		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-
+	
+		m_isLookAt = true;
 		
 		RayCast(m_pPhysXActorCom);
 
@@ -232,11 +232,15 @@ void CButtler_Range::Update_State()
 			m_pAnimator->SetBool("IsAttack", false);
 		}
 	}
+	else
+	{
+		m_isLookAt = false;
+	}
 
 	if (m_iAttackCount == 3)
 	{
 		// 뒤로 가게 하기
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(MONSTER_DIR::B));
+		//m_pAnimator->SetInt("Dir", ENUM_CLASS(MONSTER_DIR::B));
 		m_pAnimator->SetBool("IsBack", true);
 
 		m_iAttackCount = 0;
@@ -386,7 +390,7 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 
 
-	if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
+	if (m_strStateName.find("Down") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
 	{
 		m_fAwaySpeed = 1.f;
 		RootMotionActive(fTimeDelta);
@@ -397,20 +401,12 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 
 
-	if (m_strStateName.find("Away") != m_strStateName.npos)
+	if (m_strStateName.find("Down") != m_strStateName.npos)
 	{
 		m_fAwaySpeed -= fTimeDelta * 0.5f;
 
 		if (m_fAwaySpeed <= 0.f)
 			m_fAwaySpeed = 0.f;
-
-
-		if (m_strStateName.find("B") == m_strStateName.npos)
-		{
-			vLook *= -1.f;
-
-		}
-
 
 
 
@@ -427,7 +423,6 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
 	}
-
 	
 
 }

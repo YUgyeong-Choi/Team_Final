@@ -12,8 +12,12 @@
             "Duration": 251.0,
             "Events": [
                 {
-                    "EventName": "AttackCount",
-                    "Time": 60.0
+                    "EventName": "AddAttackCount",
+                    "Time": 80.0
+                },
+                {
+                    "EventName": "LookAt",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -23,6 +27,16 @@
         {
             "ClipName": "AS_ATSA2_Skill_01_Backstep",
             "Duration": 80.0,
+            "Events": [
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "BackMoveEnd",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -81,7 +95,7 @@
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Down_Away_Intro_B_01",
@@ -95,7 +109,7 @@
             "Duration": 30.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Down_Away_Intro_F_01",
@@ -123,7 +137,7 @@
             "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Down_Away_Land_F_01",
@@ -150,8 +164,8 @@
             "ClipName": "AS_Down_Dead_B_02",
             "Duration": 162.0,
             "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Down_Dead_F_01",
@@ -186,7 +200,7 @@
             "Duration": 187.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Down_GetUp_F_01",
@@ -238,6 +252,34 @@
             "TickPerSecond": 30.0
         },
         {
+            "ClipName": "AS_Fatal_NPC_Hit_Ing_B",
+            "Duration": 120.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Ing_F",
+            "Duration": 119.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 30.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Start_B",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Fatal_NPC_Hit_Start_F",
+            "Duration": 30.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 30.0
+        },
+        {
             "ClipName": "AS_Hit_B_01",
             "Duration": 88.0,
             "IsLoop": false,
@@ -255,8 +297,8 @@
             "ClipName": "AS_Hit_B_03",
             "Duration": 86.0,
             "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_Dead_B_01",
@@ -277,7 +319,7 @@
             "Duration": 342.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_Dead_F_01",
@@ -291,14 +333,14 @@
             "Duration": 208.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_Dead_F_03",
             "Duration": 138.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 30.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_L_01",
@@ -318,8 +360,8 @@
             "ClipName": "AS_Hit_L_03",
             "Duration": 83.0,
             "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_R_01",
@@ -339,8 +381,8 @@
             "ClipName": "AS_Hit_R_03",
             "Duration": 83.0,
             "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Idle_C",
@@ -367,8 +409,8 @@
             "ClipName": "AS_KnockBack_Weak_B_03",
             "Duration": 126.0,
             "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_KnockBack_Weak_L_01",
@@ -388,8 +430,8 @@
             "ClipName": "AS_KnockBack_Weak_L_03",
             "Duration": 131.0,
             "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_KnockBack_Weak_R_01",
@@ -409,8 +451,8 @@
             "ClipName": "AS_KnockBack_Weak_R_03",
             "Duration": 129.0,
             "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
+            "RootMotion": true,
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Run_C_F",
@@ -437,7 +479,7 @@
             "ClipName": "AS_Walk_C_B_Root",
             "Duration": 80.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 30.0
         },
         {

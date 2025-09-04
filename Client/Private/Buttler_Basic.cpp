@@ -435,11 +435,6 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 				m_fAwaySpeed = 0.f;
 
 
-			if (m_strStateName.find("B") == m_strStateName.npos)
-			{
-				vLook *= -1.f;
-
-			}
 
 
 
