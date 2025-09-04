@@ -344,24 +344,38 @@
             "TickPerSecond": 65.0
         },
         {
+            "ClipName": "AS_F_Guide_C03",
+            "Duration": 619.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_F_Guide_C04",
+            "Duration": 200.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
             "ClipName": "AS_ATHBoss0_Skill_01_Attack",
             "Duration": 24.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 65.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_01_End",
             "Duration": 72.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 65.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_01_Start",
             "Duration": 60.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 65.0
         },
         {
