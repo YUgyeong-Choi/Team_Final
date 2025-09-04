@@ -31,9 +31,9 @@
         ]
     },
     {
-        "ARMT": "Prototype_Component_Texture_T_Decal_Crack_04_ARMK.dds",
-        "BC": "Prototype_Component_Texture_T_Decal_Crack_02_BC.dds",
-        "N": "Prototype_Component_Texture_T_Decal_Bloodstain_01_N.dds",
+        "ARMT": "Prototype_Component_Texture_T_Tile_MossyStone_02_ARH.dds",
+        "BC": "Prototype_Component_Texture_T_Tile_MossyStone_02_BC.dds",
+        "N": "Prototype_Component_Texture_T_Tile_MossyStone_02_N.dds",
         "WorldMatrix": [
             [
                 1.0,
@@ -55,7 +55,7 @@
             ],
             [
                 -1.239902138710022,
-                -0.9154011011123657,
+                -1.3710100650787354,
                 2.7818379402160645,
                 1.0
             ]
@@ -616,6 +616,68 @@
                 1.0358567237854004,
                 -10.716493606567383,
                 1.0000001192092896
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_water_moss_01a_ORH.dds",
+        "BC": "Prototype_Component_Texture_water_moss_01a_D2.dds",
+        "N": "Prototype_Component_Texture_water_moss_01a_N.dds",
+        "WorldMatrix": [
+            [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+            ],
+            [
+                -1.239902138710022,
+                -1.3710100650787354,
+                1.4874253273010254,
+                1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_Blood_02_ARMT.dds",
+        "BC": "Prototype_Component_Texture_water_moss_01a_D2.dds",
+        "N": "Prototype_Component_Texture_water_moss_01a_N.dds",
+        "WorldMatrix": [
+            [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+            ],
+            [
+                -0.1660679429769516,
+                -1.527086615562439,
+                1.4874253273010254,
+                1.0
             ]
         ]
     }

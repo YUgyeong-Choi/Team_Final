@@ -34,5 +34,13 @@
     {
         "ModelName": "SM_Exterior_MetalSupport_01",
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_MetalSupport_01.bin"
+    },
+    {
+        "ModelName": "SM_Wall_Noble_RoofDeco06",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Noble_RoofDeco06.bin"
+    },
+    {
+        "ModelName": "SM_BuildingA_RoofWindow_01",
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RoofWindow_01.bin"
     }
 ]

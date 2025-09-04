@@ -407,7 +407,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
     float Unit = vARMDesc.a; //À¯´Ö ¿©ºÎ(À¯´Ö = 0)
-    float3 Ambient = Albedo * 0.1f * AO;
+    float3 Ambient = Albedo * g_fLightAmbient * AO; //Albedo * 0.1f * AO;(¿µ¿õ ¿¥ºñ¾ðÆ® 0.1f °íÁ¤µÇ¾îÀÖ´ø°Å ¹Ù²Þ¿ä)
     
     /* ARM ºí·»µù */
     AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a * vARMDesc.a/*À¯´Ö ¿©ºÎ*/);
