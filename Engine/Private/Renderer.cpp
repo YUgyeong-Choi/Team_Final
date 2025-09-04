@@ -131,9 +131,14 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_InnerLine"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/* [ 화속성 이펙트 ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Burn"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Black"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+
+	/* [ 플레이어 림 이펙트 ] */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_PlayerLim"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* [ 볼륨메트릭 포그 ] */
@@ -174,6 +179,9 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_Burn"), TEXT("Target_PBR_Burn"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_Burn"), TEXT("Target_PBR_Black"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_PlayerLim"), TEXT("Target_PBR_PlayerLim"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
@@ -358,7 +366,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Unit"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Burn"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Emissive"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
@@ -423,9 +431,6 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pRende
 
 HRESULT CRenderer::Draw()
 {
-
-
-
 	if (FAILED(Render_Priority()))
 	{
 		MSG_BOX("Render Priority Failed");
@@ -514,9 +519,16 @@ HRESULT CRenderer::Draw()
 		MSG_BOX("Render_Effect_WB_Composite Failed");
 		return E_FAIL;
 	}
+
 	if (FAILED(Render_Pury()))
 	{
 		MSG_BOX("Render_Pury Failed");
+		return E_FAIL;
+	}
+	
+	if (FAILED(Render_LimLight()))
+	{
+		MSG_BOX("Render_LimLight Failed");
 		return E_FAIL;
 	}
 	
@@ -834,6 +846,25 @@ HRESULT CRenderer::Render_Pury()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_LimLight()
+{
+	/* [ 림라이트 렌더링 ] */
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_PlayerLim"));
+	
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_LIM)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_LimLight();
+	
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_LIM)].clear();
+	
+	m_pGameInstance->End_MRT();
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_Burn()
 {
 	/* [ 불공격 렌더링 ] */
@@ -942,6 +973,8 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PBR_Emissive")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_GlowFinal"), m_pShader, "g_PBR_Glow")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_PlayerLim"), m_pShader, "g_PBR_PlayerLim")))
 		return E_FAIL;
 
 	///* [ Effect 렌더링용 ]*/
@@ -1465,7 +1498,7 @@ HRESULT CRenderer::Render_Debug()
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
-			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBR_Burn"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBR_Fury"), m_pShader, m_pVIBuffer);
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
 			/* 여기에 MRT 입력 */

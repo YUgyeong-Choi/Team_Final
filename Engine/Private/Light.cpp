@@ -133,7 +133,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		AREAMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
 		if (eAreaMgr == AREAMGR::HOTEL)
 		{
-			_float fFogDensity = 0.2f;
+			_float fFogDensity = 0.1f;
 			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))
 				return E_FAIL;
 		}

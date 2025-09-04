@@ -966,13 +966,13 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		//_float3(148.f, 2.47f, -7.38f); //호텔위치
 		_float3(85.5f, 0.f, -7.5f); //스테이션 위치
 
-	Desc.InitScale = _float3(1.f, 1.f, 1.f);
+	/*Desc.InitScale = _float3(1.f, 1.f, 1.f);
 	lstrcpy(Desc.szName, TEXT("Buttler_Range"));
 	Desc.szMeshID = TEXT("Buttler_Range");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Buttler_Range"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	//Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
 	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),

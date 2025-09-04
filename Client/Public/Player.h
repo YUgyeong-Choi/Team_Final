@@ -72,6 +72,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Burn() override;
+	virtual HRESULT Render_LimLight() override;
 
 	virtual void Reset() override;
 

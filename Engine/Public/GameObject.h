@@ -35,6 +35,7 @@ public:
 	virtual HRESULT Render_Shadow() { return S_OK; }
 	virtual HRESULT Render_Fury() { return S_OK; }
 	virtual HRESULT Render_Burn() { return S_OK; }
+	virtual HRESULT Render_LimLight() { return S_OK; }
 
 	virtual void Reset() {};
 public:

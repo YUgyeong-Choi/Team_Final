@@ -109,7 +109,7 @@ void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	if (KEY_PRESSING(DIK_G))
+	/*if (KEY_PRESSING(DIK_G))
 	{
 		CEffectContainer::DESC desc = {};
 
@@ -141,7 +141,7 @@ void CBayonet::Update(_float fTimeDelta)
 		static _bool bTEactive = true;
 		bTEactive = !bTEactive;
 		Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
-	}
+	}*/
 }
 
 void CBayonet::Late_Update(_float fTimeDelta)

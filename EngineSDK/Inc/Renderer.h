@@ -75,6 +75,7 @@ private:
 	HRESULT Render_Lights();
 	HRESULT Render_PBRLights();
 	HRESULT Render_Pury();
+	HRESULT Render_LimLight();
 	HRESULT Render_Burn();
 	HRESULT Render_Volumetric();
 	HRESULT Render_BackBuffer();
