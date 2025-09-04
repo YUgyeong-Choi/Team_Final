@@ -253,14 +253,71 @@
     <Filter Include="02.GameObjects\14. AStar">
       <UniqueIdentifier>{b465af8a-30b0-4d99-982d-fc5de51f5df9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Script">
-      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\13. DynamicMesh\00.Door">
       <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Unit\00.Player\Arm">
       <UniqueIdentifier>{de9c87a9-7366-4fba-8867-e942279ecb45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script">
+      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Base">
+      <UniqueIdentifier>{77774670-8181-44d9-a3cd-ac18e732e9e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Steel">
+      <UniqueIdentifier>{e8b16ba0-86c5-4932-821a-a1f8834a9fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Falcon">
+      <UniqueIdentifier>{9b969649-0e9b-4de5-99c4-383ddbfb7c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool">
+      <UniqueIdentifier>{d3b0d8fc-aabf-4ea6-955f-c42488f4c8b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
+      <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger">
+      <UniqueIdentifier>{53ddc91d-fc1d-47ec-8d5a-68f72fb6bc75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject">
+      <UniqueIdentifier>{da918027-254d-4345-aec4-3c323dbfff75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles">
+      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles\Effect">
+      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\FrontCollider">
+      <UniqueIdentifier>{d4c63305-0980-4007-be91-0d252ad9cc49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\00.Player\Lamp">
+      <UniqueIdentifier>{f271a8c5-3b22-4233-b044-b30176865f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\Fuoco\Skill">
+      <UniqueIdentifier>{fe63929d-0b86-4319-b35f-e6b8d18eae81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerItem">
+      <UniqueIdentifier>{8ce35ac3-2f6d-4bd2-8c70-afdd5167bcd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Item\Lamp">
+      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\DropItem">
+      <UniqueIdentifier>{2c3d912b-b147-46ab-9d4a-e9049f9614e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\UI">
+      <UniqueIdentifier>{e05af1b0-7999-451e-b1a1-d4596ece04d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Basic">
+      <UniqueIdentifier>{c36f0b3c-c3fe-4ba7-a261-cb942f41f202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Range">
+      <UniqueIdentifier>{073cdcc5-ca16-4720-bf1c-e81b935a67d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Projectile\Buttler_Range">
+      <UniqueIdentifier>{a825bff6-6be7-4b96-858a-a6bd753fba1f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI">
       <UniqueIdentifier>{abd57b5b-f0cf-4c34-8c0b-f0f78d57b774}</UniqueIdentifier>
@@ -307,6 +364,9 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\LegionArm">
       <UniqueIdentifier>{5f05da4b-d7e7-4354-ad22-0daec0c9d1d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\ActionType">
+      <UniqueIdentifier>{2b13074a-d794-4165-bf06-72b9eabcfbb1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature">
       <UniqueIdentifier>{352f8db1-0649-441d-9b02-807cefb57c48}</UniqueIdentifier>
     </Filter>
@@ -328,6 +388,12 @@
     <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Click">
       <UniqueIdentifier>{563b9a86-eb9e-4b76-b71f-0cbd6f539b67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Rotation">
+      <UniqueIdentifier>{e874890a-b1e2-4c41-ba17-5f255ffc7f46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Color">
+      <UniqueIdentifier>{cbaffa57-c9b2-414d-b13c-89dadc25a8f2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\99.UI\Dynamic\Text">
       <UniqueIdentifier>{390fc19e-aa96-482f-a915-8e70584e6967}</UniqueIdentifier>
     </Filter>
@@ -342,6 +408,15 @@
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Container">
       <UniqueIdentifier>{a57f9c53-0a50-4000-935c-7a8076f50e0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script">
+      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script\Text">
+      <UniqueIdentifier>{5f7dc3bc-1cea-422a-b416-fdc2b1d33a4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script\Talk">
+      <UniqueIdentifier>{4eee5c3c-7ac8-4b3d-9f29-6f661ffb1211}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Guide">
       <UniqueIdentifier>{d4dbb103-38eb-42f4-bae6-7687d2708db9}</UniqueIdentifier>
@@ -367,8 +442,23 @@
     <Filter Include="02.GameObjects\99.UI\Container\Monster">
       <UniqueIdentifier>{3ee88807-5483-4c39-969c-48cf776b8700}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Script">
-      <UniqueIdentifier>{a61cbf01-4886-4c8d-9843-72065a5daa6b}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\99.UI\Container\Popup">
+      <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\SelectWeapon">
+      <UniqueIdentifier>{6b28a854-4528-4ec6-b1e9-6ad4d197763f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup">
+      <UniqueIdentifier>{a19245ee-eea7-44cd-a095-a156e2c472c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup\Item">
+      <UniqueIdentifier>{ed75b6f6-c903-4fbc-9123-3696358a1edc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup\Weapon">
+      <UniqueIdentifier>{b0dce10e-e343-4df9-98d8-bb1e854e9b1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Button">
+      <UniqueIdentifier>{b6828a60-69e9-498a-8a8d-e54993171365}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\World">
       <UniqueIdentifier>{c622a759-7795-4101-a76e-892f83c691ef}</UniqueIdentifier>
@@ -385,98 +475,17 @@
     <Filter Include="02.GameObjects\99.UI\World\Popup">
       <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Base">
-      <UniqueIdentifier>{77774670-8181-44d9-a3cd-ac18e732e9e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Steel">
-      <UniqueIdentifier>{e8b16ba0-86c5-4932-821a-a1f8834a9fc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\00.Player\Arm\Falcon">
-      <UniqueIdentifier>{9b969649-0e9b-4de5-99c4-383ddbfb7c57}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool">
-      <UniqueIdentifier>{d3b0d8fc-aabf-4ea6-955f-c42488f4c8b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Train">
-      <UniqueIdentifier>{a4d31dfd-a1a9-44d0-9d8b-8154a0f1bcfe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\World\Tutorial">
       <UniqueIdentifier>{7619dac2-9da0-4c4b-b7bb-52a6b1622caf}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.UI\Manager">
       <UniqueIdentifier>{5012f782-ee34-4b2a-b39c-29b78e33b2bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Popup">
-      <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Bar\DeBuff">
+      <UniqueIdentifier>{604e2912-7c3f-40f4-9f6e-7a8d41b28495}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\15.StaticTrigger">
-      <UniqueIdentifier>{53ddc91d-fc1d-47ec-8d5a-68f72fb6bc75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\LevelYW\YWTool\MonsterTool\MonsterToolObject">
-      <UniqueIdentifier>{da918027-254d-4345-aec4-3c323dbfff75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Script\Text">
-      <UniqueIdentifier>{5f7dc3bc-1cea-422a-b416-fdc2b1d33a4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Script\Talk">
-      <UniqueIdentifier>{4eee5c3c-7ac8-4b3d-9f29-6f661ffb1211}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.ShaderFiles">
-      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.ShaderFiles\Effect">
-      <UniqueIdentifier>{b1ea1614-e2c2-43a4-ad95-890bb9682bf2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\00.Player\FrontCollider">
-      <UniqueIdentifier>{d4c63305-0980-4007-be91-0d252ad9cc49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\00.Player\Lamp">
-      <UniqueIdentifier>{f271a8c5-3b22-4233-b044-b30176865f59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\SelectWeapon">
-      <UniqueIdentifier>{6b28a854-4528-4ec6-b1e9-6ad4d197763f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Icon\ActionType">
-      <UniqueIdentifier>{2b13074a-d794-4165-bf06-72b9eabcfbb1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\Fuoco\Skill">
-      <UniqueIdentifier>{fe63929d-0b86-4319-b35f-e6b8d18eae81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerItem">
-      <UniqueIdentifier>{8ce35ac3-2f6d-4bd2-8c70-afdd5167bcd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Item\Lamp">
-      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\15.StaticTrigger\DropItem">
-      <UniqueIdentifier>{2c3d912b-b147-46ab-9d4a-e9049f9614e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Pickup">
-      <UniqueIdentifier>{a19245ee-eea7-44cd-a095-a156e2c472c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Pickup\Item">
-      <UniqueIdentifier>{ed75b6f6-c903-4fbc-9123-3696358a1edc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Pickup\Weapon">
-      <UniqueIdentifier>{b0dce10e-e343-4df9-98d8-bb1e854e9b1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\15.StaticTrigger\UI">
-      <UniqueIdentifier>{e05af1b0-7999-451e-b1a1-d4596ece04d9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Basic">
-      <UniqueIdentifier>{c36f0b3c-c3fe-4ba7-a261-cb942f41f202}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Button">
-      <UniqueIdentifier>{b6828a60-69e9-498a-8a8d-e54993171365}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Rotation">
-      <UniqueIdentifier>{e874890a-b1e2-4c41-ba17-5f255ffc7f46}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Color">
-      <UniqueIdentifier>{cbaffa57-c9b2-414d-b13c-89dadc25a8f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Range">
-      <UniqueIdentifier>{073cdcc5-ca16-4720-bf1c-e81b935a67d9}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\99.UI\Container\DeBuff">
+      <UniqueIdentifier>{5640eb68-dfc9-46e1-8966-982cf3b6ff2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1021,6 +1030,15 @@
     <ClInclude Include="..\Public\BossDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Bullet.h">
+      <Filter>02.GameObjects\12.Projectile\Buttler_Range</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DeBuff_Bar.h">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\DeBuff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Container_DeBuff.h">
+      <Filter>02.GameObjects\99.UI\Container\DeBuff</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1537,6 +1555,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\BossDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bullet.cpp">
+      <Filter>02.GameObjects\12.Projectile\Buttler_Range</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DeBuff_Bar.cpp">
+      <Filter>02.GameObjects\99.UI\Dynamic\Bar\DeBuff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Container_DeBuff.cpp">
+      <Filter>02.GameObjects\99.UI\Container\DeBuff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

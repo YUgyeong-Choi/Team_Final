@@ -107,6 +107,9 @@
 #include "Buttler_Basic.h"
 #include "UI_Button_Script.h"
 #include "Buttler_Range.h"
+#include "Bullet.h"
+#include "DeBuff_Bar.h"
+#include "UI_Container_DeBuff.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -335,6 +338,10 @@ HRESULT CLoader::Loading_For_Static()
 		CLegion_Bar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_DeBuff_Bar"),
+		CDeBuff_Bar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Panel_Player_LD"),
 		CPanel_Player_LD::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -421,6 +428,11 @@ HRESULT CLoader::Loading_For_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button_Script"),
 		CUI_Button_Script::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container_DeBuff"),
+		CUI_Container_DeBuff::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -595,8 +607,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CElite_Police::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Projectile"),
-		CProjectile::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Bullet"),
+		CBullet::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -2204,6 +2216,16 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	/* For.Prototype_Component_Texture_Button_Highlight*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Revive_BackGround"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Dissolve_Nonalpha.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_DeBuff"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/DeBuff/Icon_Debuff_%d.dds"),2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Cloud"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Effect_Cloud.dds")))))
 		return E_FAIL;
 
 	return S_OK;

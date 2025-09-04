@@ -122,9 +122,9 @@
             {
                 "Color": {
                     "A": 1.0,
-                    "B": 0.8999999761581421,
-                    "G": 0.8999999761581421,
-                    "R": 0.8999999761581421
+                    "B": 0.8,
+                    "G": 0.8,
+                    "R": 0.8
                 },
                 "Features": [
                     {
@@ -145,7 +145,7 @@
                 "ProtoTag": "Prototype_GameObject_UI_Durability_Bar",
                 "RotationZ": 0.0,
                 "SizeX": 0.172,
-                "SizeY": 0.033,
+                "SizeY": 0.025,
                 "Texturetag": "Prototype_Component_Texture_Bar_Border",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,

@@ -34,6 +34,7 @@
 #include "SlideDoor.h"
 #include <FlameField.h>
 #include <Elite_Police.h>
+#include "Bullet.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -1818,6 +1819,25 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		//히트한 몬스터타입
 		m_eHitedTarget = eHitedTarget::MONSTER;
 
+
+		// 
+
+		CBullet* pBullet = dynamic_cast<CBullet*>(pOther);
+
+		if (pBullet)
+		{
+			m_eHitedTarget = eHitedTarget::RANGED;
+			m_eHitedAttackType = CBossUnit::EAttackType::NONE;
+			m_eHitMotion = HITMOTION::END;
+			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
+			m_pHitedTarget = nullptr;
+
+			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
+			m_vHitNormal = vOtherPos - vPlayerPos;
+		}
+
+
 		cout << "몬스터 웨폰 충돌 들어옴" << endl;
 		//피격한 객체를 찾는다.
 		CUnit* pUnit = nullptr;
@@ -1834,30 +1854,29 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		else
 		{
 			pUnit = dynamic_cast<CUnit*>(pOther);
-			if (pUnit == nullptr)
-				return;
 		}
 
-		//히트한 몬스터를 찾는다.
+		if (pUnit)
+		{
+			//히트한 몬스터를 찾는다.
 		//일반 몬스터나 엘리트 몬스터가 아니라면 리턴
-		if (pUnit->Get_UnitType() != EUnitType::ELITE_MONSTER &&
-			pUnit->Get_UnitType() != EUnitType::NORMAL_MONSTER &&
-			pUnit == nullptr)
-			return;
+			if (pUnit->Get_UnitType() != EUnitType::ELITE_MONSTER &&
+				pUnit->Get_UnitType() != EUnitType::NORMAL_MONSTER)
+				return;
 
-		//Hp 가 0 이하면 리턴
-		if (pUnit->GetHP() <= 0.f)
-			return;
+			//Hp 가 0 이하면 리턴
+			if (pUnit->GetHP() <= 0.f)
+				return;
 
+			// 필요한 정보를 수집한다.
+			CalculateDamage(pOther, eColliderType);
 
-		// 필요한 정보를 수집한다.
-		CalculateDamage(pOther, eColliderType);
+			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
-		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
-
-		m_pHitedTarget = pUnit;
-		m_vHitNormal = vOtherPos - vPlayerPos;
+			m_pHitedTarget = pUnit;
+			m_vHitNormal = vOtherPos - vPlayerPos;
+		}
 
 		//가드 중이라면?
 		if (m_bIsGuarding)
@@ -1885,7 +1904,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 			//몬스터 가드리액션
 			EHitDir eDir = ComputeHitDir();
 			if (eDir == EHitDir::F || eDir == EHitDir::FR || eDir == EHitDir::FL)
-				pUnit->Block_Reaction();
+				if(pUnit)
+					pUnit->Block_Reaction();
 
 			return;
 		}
@@ -2199,6 +2219,19 @@ void CPlayer::IsPerfectGard(_float fTimeDelta)
 		m_fPerfectGardTime = 0.f;
 }
 
+void CPlayer::SetElementTypeWeight(EELEMENT eElement, _float fValue)
+{
+	
+	_float fWeight = m_vecElements[eElement].fElementWeight + fValue;
+	m_vecElements[eElement].fElementWeight = min(fWeight, 1.f);
+
+	cout << "Element : " << static_cast<_int>(eElement) << " Weight : " << m_vecElements[eElement].fElementWeight << endl;
+
+	if(EELEMENT::FIRE == eElement)
+		m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[eElement].fElementWeight);
+	
+}
+
 void CPlayer::Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight)
 {
 	const _uint uElementCount = static_cast<_uint>(m_vecElements.size());
@@ -2413,6 +2446,8 @@ HRESULT CPlayer::Ready_UIParameters()
 		});
 
 	//m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
+
+	
 
 
 	return S_OK;
@@ -2763,6 +2798,9 @@ void CPlayer::BurnActive(_float fDeltaTime)
 
 		Callback_HP();
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
+
+	
+		m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[EELEMENT::FIRE].fElementWeight);
 	}
 
 	/* [ 화속성 시작 ] */

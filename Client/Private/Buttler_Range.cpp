@@ -381,7 +381,10 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 {
 	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-	if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
+	if (m_strStateName.find("Fatal") != m_strStateName.npos || 
+		m_strStateName.find("Down") != m_strStateName.npos || 
+		m_strStateName.find("KnockBack") != m_strStateName.npos ||
+		m_strStateName.find("Hit") != m_strStateName.npos)
 	{
 		m_isLookAt = false;
 		m_isCollisionPlayer = false;
@@ -391,8 +394,9 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 
 
-	if (m_strStateName.find("Down") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
+	if (m_strStateName.find("Down") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos && m_strStateName.find("Hit") == m_strStateName.npos)
 	{
+		m_fHitSpeed = 1.f;
 		m_fAwaySpeed = 1.f;
 		RootMotionActive(fTimeDelta);
 
@@ -424,6 +428,20 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
 	}
+	else if (m_strStateName.find("Hit") != m_strStateName.npos)
+	{
+		m_fHitSpeed -= fTimeDelta ;
+
+		if (m_fHitSpeed <= 0.f)
+			m_fHitSpeed = 0.f;
+
+		if (m_strStateName.find("B") == m_strStateName.npos)
+			vLook *= -1.f;
+
+
+
+		m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fHitSpeed * 0.7f , nullptr, m_pNaviCom);
+	}
 	
 
 }
@@ -443,7 +461,7 @@ void CButtler_Range::Register_Events()
 		CProjectile::PROJECTILE_DESC desc{};
 		_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
-		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.3f - vPos;
+		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.3f - vPos;
 
 		desc.bUseDistTrigger = false;
 		desc.bUseTimeTrigger = false;
@@ -452,13 +470,13 @@ void CButtler_Range::Register_Events()
 		desc.fRadius = 0.1f;
 		desc.fRotationPerSec = 0.f;
 		desc.fSpeed = 1.f;
-		desc.fSpeedPerSec = 3.f;
+		desc.fSpeedPerSec = 5.f;
 		desc.iLevelID = iLevelIndex;
 		lstrcpy(desc.szName, TEXT("Bullet"));
 		desc.vDir = { vDir.m128_f32[0], vDir.m128_f32[1], vDir.m128_f32[2] };
 		desc.vPos = { vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2] };
 
-		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Projectile"), iLevelIndex, TEXT("Layer_Projectile_Normal"), &desc)))
+		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Bullet"), iLevelIndex, TEXT("Layer_Projectile_Normal"), &desc)))
 		{
 			return;
 		}

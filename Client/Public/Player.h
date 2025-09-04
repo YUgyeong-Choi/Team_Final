@@ -243,13 +243,8 @@ public: /* [ 漂荐 葛记 包访 ] */
 
 public: /* [ 何咯 加己 包访 ] */
 	void SetElementTypeDuration(EELEMENT eElement, _float fValue) { m_vecElements[eElement].fDuration = fValue; }
-	void SetElementTypeWeight(EELEMENT eElement, _float fValue) 
-	{
-		_float fWeight = m_vecElements[eElement].fElementWeight + fValue;
-		m_vecElements[eElement].fElementWeight = min(fWeight, 1.f);
-
-		cout << "Element : " << static_cast<_int>(eElement) << " Weight : " << m_vecElements[eElement].fElementWeight << endl;
-	}
+	void SetElementTypeWeight(EELEMENT eElement, _float fValue);
+	
 
 	void Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight);
 
