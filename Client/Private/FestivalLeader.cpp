@@ -152,7 +152,8 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_C))
 	{
-		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetTrigger("Phase2Start");
+	//	m_pAnimator->SetTrigger("Attack");
 	}
 
 	if (KEY_DOWN(DIK_B))
@@ -206,7 +207,7 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
-	if (static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0)
+	if (static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0&& m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 }
 
@@ -275,7 +276,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 		PxTransform hammerPose(hammerPos, hammerRotQ);
 
 		// 해머 구체 콜라이더
-		PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.7f);
+		PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.f);
 		m_pPhysXActorComForHammer->Create_Collision(m_pGameInstance->GetPhysics(), hammerGeom, hammerPose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorComForHammer->Set_ShapeFlag(false, true, true);
 
@@ -334,7 +335,7 @@ void CFestivalLeader::Ready_BoneInformation()
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine");
 
 	auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
-		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-L-Hand"); });
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bn_Head_Weapon"); });
 	if (it != m_pModelCom->Get_Bones().end())
 	{
 		m_pHammerBone = *it;
@@ -799,7 +800,7 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
 		Slam  ,JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
-		DashSwing ,FuryHammerSlam ,FurySwing ,FuryBodySlam
+		DashSwing ,Swing,FuryHammerSlam ,FurySwing ,FuryBodySlam
 	};
 	m_PatternWeightMap.clear();
 	m_PatternCountMap.clear();

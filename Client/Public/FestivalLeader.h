@@ -108,9 +108,10 @@ class CFestivalLeader final : public CBossUnit
 		HalfSpin = 7,
 		HammerSlam = 8,
 		DashSwing = 9,
-		FuryHammerSlam = 10,
-		FurySwing = 11,
-		FuryBodySlam = 12
+		Swing = 10,
+		FuryHammerSlam = 11,
+		FurySwing = 12,
+		FuryBodySlam = 13
 	};
 
 private:
