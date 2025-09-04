@@ -91,7 +91,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Generator_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Factory_Height_01",
         "NoInstancing": false,
         "ObjectCount": 16,
@@ -182,7 +182,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_RoofFrame_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_FireEaterFloor_01_JJS",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -210,7 +210,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_04.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_LightProp_Light_06",
         "NoInstancing": false,
         "ObjectCount": 2,

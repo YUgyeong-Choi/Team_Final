@@ -9344,7 +9344,7 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_BuildingA_Wall_24",
             "NoInstancing": false,
             "ObjectCount": 50,
@@ -9680,7 +9680,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -29552,7 +29552,7 @@
             "ObjectCount": 1,
             "Objects": [
                 {
-                    "ColliderType": 1,
+                    "ColliderType": 2,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -29748,7 +29748,7 @@
             "ObjectCount": 2,
             "Objects": [
                 {
-                    "ColliderType": 1,
+                    "ColliderType": 2,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -29778,7 +29778,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 1,
+                    "ColliderType": 2,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
