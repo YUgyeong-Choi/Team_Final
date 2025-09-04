@@ -45,7 +45,7 @@
         "Collision": true,
         "ModelName": "SM_BuildingA_Fence_08",
         "NoInstancing": false,
-        "ObjectCount": 52,
+        "ObjectCount": 64,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Fence_08.bin"
     },
     {
@@ -66,7 +66,7 @@
         "Collision": false,
         "ModelName": "SM_BuildingA_RoofWall_01",
         "NoInstancing": false,
-        "ObjectCount": 7,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RoofWall_01.bin"
     },
     {
@@ -80,8 +80,22 @@
         "Collision": false,
         "ModelName": "SM_BuildingA_Roof_01",
         "NoInstancing": false,
-        "ObjectCount": 15,
+        "ObjectCount": 17,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Roof_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Roof_04",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Roof_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Roof_12",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Roof_12.bin"
     },
     {
         "Collision": false,
@@ -218,6 +232,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_BuildingA_Wall_08",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_08.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_BuildingA_Wall_11",
         "NoInstancing": false,
         "ObjectCount": 7,
@@ -248,14 +269,14 @@
         "Collision": false,
         "ModelName": "SM_BuildingA_Wall_23",
         "NoInstancing": false,
-        "ObjectCount": 6,
+        "ObjectCount": 9,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_23.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_BuildingA_Wall_24",
         "NoInstancing": false,
-        "ObjectCount": 45,
+        "ObjectCount": 50,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_24.bin"
     },
     {
@@ -297,8 +318,29 @@
         "Collision": false,
         "ModelName": "SM_BuildingC_Pillar_01",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 19,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Pillar_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_Roof_08",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Roof_08.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_Roof_09",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Roof_09.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_Roof_12",
+        "NoInstancing": false,
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Roof_12.bin"
     },
     {
         "Collision": false,
@@ -308,11 +350,39 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_04.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_Wall_06",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_06.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_Wall_16",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_16.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_BuildingC_Wall_17",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 11,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_17.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_Wall_18",
+        "NoInstancing": false,
+        "ObjectCount": 5,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_18.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_Wall_22",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_22.bin"
     },
     {
         "Collision": false,
@@ -320,6 +390,20 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_23.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_Wall_31",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_31.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingC_WoodStore_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_WoodStore_02.bin"
     },
     {
         "Collision": true,
@@ -346,7 +430,7 @@
         "Collision": true,
         "ModelName": "SM_Cathedral_BrickWall_07",
         "NoInstancing": false,
-        "ObjectCount": 44,
+        "ObjectCount": 47,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Cathedral_BrickWall_07.bin"
     },
     {
@@ -388,7 +472,7 @@
         "Collision": true,
         "ModelName": "SM_Exterior_TrashContainer_01",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_TrashContainer_01.bin"
     },
     {
@@ -500,28 +584,28 @@
         "Collision": false,
         "ModelName": "SM_NewTown_SideWalk_A03",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_NewTown_SideWalk_A03.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_NewTown_SideWalk_B01",
         "NoInstancing": false,
-        "ObjectCount": 25,
+        "ObjectCount": 36,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_NewTown_SideWalk_B01.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_NewTown_SideWalk_B02",
         "NoInstancing": false,
-        "ObjectCount": 32,
+        "ObjectCount": 48,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_NewTown_SideWalk_B02.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_NewTown_SideWalk_B04",
         "NoInstancing": false,
-        "ObjectCount": 14,
+        "ObjectCount": 19,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_NewTown_SideWalk_B04.bin"
     },
     {
@@ -675,7 +759,7 @@
         "Collision": true,
         "ModelName": "SM_Wall_InStairPoll02",
         "NoInstancing": false,
-        "ObjectCount": 27,
+        "ObjectCount": 29,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_InStairPoll02.bin"
     },
     {
@@ -710,7 +794,7 @@
         "Collision": true,
         "ModelName": "T_Tile_BrickFloor_01",
         "NoInstancing": false,
-        "ObjectCount": 24,
+        "ObjectCount": 22,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_BrickFloor_01.bin"
     },
     {
@@ -719,6 +803,20 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_BrickFloor_Circle_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "T_Tile_Soil",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_Soil.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "T_Tile_StoneFloor_03",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_StoneFloor_03.bin"
     },
     {
         "Collision": true,
