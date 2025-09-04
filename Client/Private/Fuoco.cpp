@@ -2087,6 +2087,12 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			break;
 		default:
 			break;
+
+
+		}
+		if (curNodeID == ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
+		{
+			pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.3f);
 		}
 	}
 

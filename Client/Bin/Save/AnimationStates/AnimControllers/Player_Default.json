@@ -9,8 +9,8 @@
             "Name": "Run_F",
             "NodeId": 2,
             "NodePos": [
-                1606.2423095703125,
-                -230.7134246826172
+                6480.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -24,8 +24,8 @@
             "Name": "Walk_F",
             "NodeId": 4,
             "NodePos": [
-                3766.242431640625,
-                -230.7134246826172
+                8640.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -39,8 +39,8 @@
             "Name": "Run_F_Stop",
             "NodeId": 5,
             "NodePos": [
-                2466.242431640625,
-                -230.7134246826172
+                7340.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Sprint",
             "NodeId": 9,
             "NodePos": [
-                10080.0,
-                -425.0
+                4182.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -69,8 +69,8 @@
             "Name": "Idle",
             "NodeId": 17,
             "NodePos": [
-                166.2423553466797,
-                -230.7134246826172
+                4320.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Sprint_Stop",
             "NodeId": 23,
             "NodePos": [
-                10080.0,
-                -255.0
+                4182.0,
+                368.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "EquipWeapon",
             "NodeId": 35,
             "NodePos": [
-                7200.0,
-                -425.0
+                1302.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -144,8 +144,8 @@
             "Name": "EquipWeapon_Walk_F",
             "NodeId": 38,
             "NodePos": [
-                2326.242431640625,
-                -230.7134246826172
+                7200.0,
+                -425.0
             ],
             "UpperClip": "AS_Pino_T_EquipmentWeapon",
             "UpperStartTime": 0.0
@@ -279,8 +279,8 @@
             "Name": "Guard_Walk_R",
             "NodeId": 102,
             "NodePos": [
-                3360.0,
-                -425.0
+                0.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -294,8 +294,8 @@
             "Name": "Guard_Walk_F",
             "NodeId": 103,
             "NodePos": [
-                3360.0,
-                -255.0
+                0.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -309,8 +309,8 @@
             "Name": "Guard_Walk_B",
             "NodeId": 104,
             "NodePos": [
-                3360.0,
-                -85.0
+                0.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -324,8 +324,8 @@
             "Name": "Guard_Walk_L",
             "NodeId": 105,
             "NodePos": [
-                3360.0,
-                85.0
+                0.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -355,8 +355,8 @@
             "Name": "Guard_Break",
             "NodeId": 107,
             "NodePos": [
-                2880.0,
-                -425.0
+                0.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -370,8 +370,8 @@
             "Name": "Guard",
             "NodeId": 108,
             "NodePos": [
-                2880.0,
-                -255.0
+                0.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -385,8 +385,8 @@
             "Name": "Run_B",
             "NodeId": 109,
             "NodePos": [
-                1606.2423095703125,
-                -60.71342468261719
+                6480.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -400,8 +400,8 @@
             "Name": "Run_BL",
             "NodeId": 110,
             "NodePos": [
-                1606.2423095703125,
-                109.28657531738281
+                6480.0,
+                -85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -415,8 +415,8 @@
             "Name": "Run_BR",
             "NodeId": 112,
             "NodePos": [
-                1606.2423095703125,
-                279.28656005859375
+                6480.0,
+                85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -430,8 +430,8 @@
             "Name": "Run_FL",
             "NodeId": 114,
             "NodePos": [
-                1606.2423095703125,
-                449.28656005859375
+                6480.0,
+                255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -445,8 +445,8 @@
             "Name": "Run_FR",
             "NodeId": 116,
             "NodePos": [
-                1606.2423095703125,
-                619.2865600585938
+                6480.0,
+                425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -460,8 +460,8 @@
             "Name": "Run_R",
             "NodeId": 118,
             "NodePos": [
-                1986.2423095703125,
-                -230.7134246826172
+                6860.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -475,8 +475,8 @@
             "Name": "Run_L",
             "NodeId": 119,
             "NodePos": [
-                1986.2423095703125,
-                -60.71342468261719
+                6860.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -535,8 +535,8 @@
             "Name": "PutWeapon",
             "NodeId": 257,
             "NodePos": [
-                8640.0,
-                -425.0
+                2742.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -550,8 +550,8 @@
             "Name": "PutWeapon_Walk_F",
             "NodeId": 258,
             "NodePos": [
-                3286.242431640625,
-                -230.7134246826172
+                8160.0,
+                -425.0
             ],
             "UpperClip": "AS_Pino_T_PutWeapon",
             "UpperStartTime": 0.0
@@ -625,8 +625,8 @@
             "Name": "Walk_R",
             "NodeId": 298,
             "NodePos": [
-                3766.242431640625,
-                -60.71342468261719
+                8640.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -640,8 +640,8 @@
             "Name": "Walk_L",
             "NodeId": 299,
             "NodePos": [
-                3766.242431640625,
-                109.28657531738281
+                8640.0,
+                -85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -655,8 +655,8 @@
             "Name": "Walk_B",
             "NodeId": 300,
             "NodePos": [
-                3766.242431640625,
-                279.28656005859375
+                8640.0,
+                85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -670,8 +670,8 @@
             "Name": "Walk_FL",
             "NodeId": 301,
             "NodePos": [
-                3766.242431640625,
-                449.28656005859375
+                8640.0,
+                255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -685,8 +685,8 @@
             "Name": "Walk_FR",
             "NodeId": 302,
             "NodePos": [
-                3766.242431640625,
-                619.2865600585938
+                8640.0,
+                425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -700,8 +700,8 @@
             "Name": "Walk_BL",
             "NodeId": 303,
             "NodePos": [
-                4146.2421875,
-                -230.7134246826172
+                9020.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -715,8 +715,8 @@
             "Name": "Walk_BR",
             "NodeId": 304,
             "NodePos": [
-                4146.2421875,
-                -60.71342468261719
+                9020.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -730,8 +730,8 @@
             "Name": "SlidingDoor",
             "NodeId": 403,
             "NodePos": [
-                9600.0,
-                -425.0
+                3702.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -745,8 +745,8 @@
             "Name": "DoubleDoor_Push_TrainStation",
             "NodeId": 404,
             "NodePos": [
-                6240.0,
-                -425.0
+                822.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -760,8 +760,8 @@
             "Name": "Sit_Loop",
             "NodeId": 407,
             "NodePos": [
-                9120.0,
-                -425.0
+                3222.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -775,8 +775,8 @@
             "Name": "Sit_End",
             "NodeId": 408,
             "NodePos": [
-                9120.0,
-                -255.0
+                3222.0,
+                368.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -790,8 +790,8 @@
             "Name": "OnLamp",
             "NodeId": 446,
             "NodePos": [
-                8160.0,
-                -425.0
+                2262.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -805,8 +805,8 @@
             "Name": "Fail_Item",
             "NodeId": 449,
             "NodePos": [
-                1165.242431640625,
-                334.28656005859375
+                5040.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -820,8 +820,8 @@
             "Name": "OnLamp_Walk",
             "NodeId": 452,
             "NodePos": [
-                2806.242431640625,
-                -230.7134246826172
+                7680.0,
+                -425.0
             ],
             "UpperClip": "AS_Pino_Item_Lamp",
             "UpperStartTime": 0.0
@@ -880,8 +880,8 @@
             "Name": "Fail_Arm",
             "NodeId": 555,
             "NodePos": [
-                7680.0,
-                -425.0
+                1782.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -895,8 +895,8 @@
             "Name": "Grinder_Start",
             "NodeId": 100030,
             "NodePos": [
-                1366.2423095703125,
-                -230.7134246826172
+                5520.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -910,8 +910,8 @@
             "Name": "Grinder_Loop",
             "NodeId": 100031,
             "NodePos": [
-                1366.2423095703125,
-                -60.71342468261719
+                5520.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -925,8 +925,8 @@
             "Name": "Grinder_End",
             "NodeId": 100032,
             "NodePos": [
-                1366.2423095703125,
-                109.28657531738281
+                5520.0,
+                -85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -940,8 +940,8 @@
             "Name": "Grinder_Loop_Walk_F",
             "NodeId": 100035,
             "NodePos": [
-                1846.2423095703125,
-                -230.7134246826172
+                6000.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -955,8 +955,8 @@
             "Name": "Heal",
             "NodeId": 100060,
             "NodePos": [
-                2326.242431640625,
-                -230.7134246826172
+                6480.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -970,8 +970,8 @@
             "Name": "Heal_Walk_F",
             "NodeId": 100064,
             "NodePos": [
-                2806.242431640625,
-                -230.7134246826172
+                6960.0,
+                -425.0
             ],
             "UpperClip": "AS_Pino_Item_Pulse",
             "UpperStartTime": 0.0
@@ -985,8 +985,8 @@
             "Name": "Heal_Walk_FR",
             "NodeId": 100069,
             "NodePos": [
-                2806.242431640625,
-                -60.71342468261719
+                6960.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1000,8 +1000,8 @@
             "Name": "Heal_Walk_FL",
             "NodeId": 100070,
             "NodePos": [
-                2806.242431640625,
-                109.28657531738281
+                6960.0,
+                -85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1015,8 +1015,8 @@
             "Name": "Heal_Walk_L",
             "NodeId": 100071,
             "NodePos": [
-                2806.242431640625,
-                279.28656005859375
+                6960.0,
+                85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1030,8 +1030,8 @@
             "Name": "Heal_Walk_R",
             "NodeId": 100072,
             "NodePos": [
-                2806.242431640625,
-                449.28656005859375
+                6960.0,
+                255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1045,8 +1045,8 @@
             "Name": "Heal_Walk_BL",
             "NodeId": 100073,
             "NodePos": [
-                2806.242431640625,
-                619.2865600585938
+                6960.0,
+                425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1060,8 +1060,8 @@
             "Name": "Heal_Walk_BR",
             "NodeId": 100074,
             "NodePos": [
-                3186.242431640625,
-                -230.7134246826172
+                7340.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1075,8 +1075,8 @@
             "Name": "Heal_Walk_B",
             "NodeId": 100075,
             "NodePos": [
-                3186.242431640625,
-                -60.71342468261719
+                7340.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1105,8 +1105,8 @@
             "Name": "Grinder_Loop_Walk_R",
             "NodeId": 100149,
             "NodePos": [
-                1846.2423095703125,
-                -60.71342468261719
+                6000.0,
+                -255.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1120,8 +1120,8 @@
             "Name": "Grinder_Loop_Walk_L",
             "NodeId": 100150,
             "NodePos": [
-                1846.2423095703125,
-                109.28657531738281
+                6000.0,
+                -85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1135,8 +1135,8 @@
             "Name": "Grinder_Loop_Walk_B",
             "NodeId": 100151,
             "NodePos": [
-                1846.2423095703125,
-                279.28656005859375
+                6000.0,
+                85.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1386,8 +1386,8 @@
             "Name": "Teleport_End",
             "NodeId": 100238,
             "NodePos": [
-                11520.0,
-                -425.0
+                5622.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1401,8 +1401,8 @@
             "Name": "Teleport_Start",
             "NodeId": 100242,
             "NodePos": [
-                11520.0,
-                -255.0
+                5622.0,
+                368.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1569,8 +1569,8 @@
             "Name": "Stargazer_Inactive_Start",
             "NodeId": 100309,
             "NodePos": [
-                11040.0,
-                -425.0
+                5142.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1584,8 +1584,8 @@
             "Name": "Stargazer_Inactive_Loop",
             "NodeId": 100310,
             "NodePos": [
-                11040.0,
-                -255.0
+                5142.0,
+                368.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1599,8 +1599,8 @@
             "Name": "Stargazer_Inactive_End",
             "NodeId": 100311,
             "NodePos": [
-                11040.0,
-                -85.0
+                5142.0,
+                538.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1614,8 +1614,8 @@
             "Name": "Stargazer_Active_Start",
             "NodeId": 100312,
             "NodePos": [
-                10560.0,
-                -425.0
+                4662.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1629,8 +1629,8 @@
             "Name": "Stargazer_Active_Loop",
             "NodeId": 100313,
             "NodePos": [
-                10560.0,
-                -255.0
+                4662.0,
+                368.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1644,8 +1644,8 @@
             "Name": "Stargazer_Active_End",
             "NodeId": 100314,
             "NodePos": [
-                10560.0,
-                -85.0
+                4662.0,
+                538.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1659,8 +1659,8 @@
             "Name": "Item_Get",
             "NodeId": 100325,
             "NodePos": [
-                3666.242431640625,
-                -230.7134246826172
+                7820.0,
+                -425.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1674,8 +1674,8 @@
             "Name": "Item_Get_Walk",
             "NodeId": 100326,
             "NodePos": [
-                4146.2421875,
-                -230.7134246826172
+                8300.0,
+                -425.0
             ],
             "UpperClip": "AS_Pino_Prop_ItemGet",
             "UpperStartTime": 0.0
@@ -1686,11 +1686,11 @@
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
-            "Name": "DubleDoor_Boss",
+            "Name": "DoubleDoor_Boss",
             "NodeId": 100333,
             "NodePos": [
-                6720.0,
-                -425.0
+                342.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1704,8 +1704,8 @@
             "Name": "Door_Unlock",
             "NodeId": 100334,
             "NodePos": [
-                5760.0,
-                -425.0
+                -138.0,
+                198.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1719,8 +1719,8 @@
             "Name": "Door_Check",
             "NodeId": 100335,
             "NodePos": [
-                5760.0,
-                -255.0
+                -138.0,
+                368.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -2844,8 +2844,15 @@
         {
             "Conditions": [
                 {
+                    "Op": "IsTrue",
+                    "ParamName": "Fail",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
                     "Op": "Trigger",
-                    "ParamName": "Grinder",
+                    "ParamName": "UseItem",
                     "Type": "Trigger",
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -2856,12 +2863,12 @@
             "HasExitTime": false,
             "Link": {
                 "FromNodeId": 1000012,
-                "LinkId": 100033,
-                "ToNodeId": 1000301
+                "LinkId": 100339,
+                "ToNodeId": 4491
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 100030
+            "ToNodeId": 449
         },
         {
             "Conditions": [
@@ -2928,6 +2935,28 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 100312
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "Trigger",
+                    "ParamName": "Grinder",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100001,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1000012,
+                "LinkId": 100033,
+                "ToNodeId": 1000301
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100030
         },
         {
             "Conditions": [
@@ -3440,63 +3469,6 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 118
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Back",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Front",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Left",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Right",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 109,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1092,
-                "LinkId": 597,
-                "ToNodeId": 1141
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 114
         },
         {
             "Conditions": [
@@ -5212,6 +5184,13 @@
             "Conditions": [
                 {
                     "Op": "IsFalse",
+                    "ParamName": "Back",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
                     "ParamName": "Front",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -5219,21 +5198,14 @@
                 },
                 {
                     "Op": "IsTrue",
-                    "ParamName": "Back",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsFalse",
                     "ParamName": "Left",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 },
                 {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
+                    "Op": "IsFalse",
+                    "ParamName": "Right",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -5246,24 +5218,24 @@
                     "iThreshold": 0
                 },
                 {
-                    "Op": "IsFalse",
-                    "ParamName": "Right",
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 118,
+            "FromNodeId": 109,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 1182,
-                "LinkId": 100176,
-                "ToNodeId": 1091
+                "FromNodeId": 1092,
+                "LinkId": 597,
+                "ToNodeId": 1141
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 109
+            "ToNodeId": 114
         },
         {
             "Conditions": [
@@ -5838,6 +5810,63 @@
         {
             "Conditions": [
                 {
+                    "Op": "IsFalse",
+                    "ParamName": "Front",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Back",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Left",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Run",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Right",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 118,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1182,
+                "LinkId": 100176,
+                "ToNodeId": 1091
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 109
+        },
+        {
+            "Conditions": [
+                {
                     "Op": "IsTrue",
                     "ParamName": "Move",
                     "Type": "Bool",
@@ -5891,56 +5920,6 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 112
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Run",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Back",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Right",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "FocusOn",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 4,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 42,
-                "LinkId": 304,
-                "ToNodeId": 304
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 304
         },
         {
             "Conditions": [
@@ -6396,21 +6375,21 @@
             "Conditions": [
                 {
                     "Op": "IsTrue",
+                    "ParamName": "Move",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Run",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
                     "ParamName": "Back",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Front",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsFalse",
-                    "ParamName": "Left",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -6421,19 +6400,26 @@
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "FocusOn",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 100070,
+            "FromNodeId": 4,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 1000702,
-                "LinkId": 100116,
-                "ToNodeId": 1000741
+                "FromNodeId": 42,
+                "LinkId": 304,
+                "ToNodeId": 304
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 100074
+            "ToNodeId": 304
         },
         {
             "Conditions": [
@@ -9707,37 +9693,44 @@
             "Conditions": [
                 {
                     "Op": "IsTrue",
-                    "ParamName": "FocusOn",
+                    "ParamName": "Back",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Front",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsFalse",
+                    "ParamName": "Left",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 },
                 {
                     "Op": "IsTrue",
-                    "ParamName": "Move",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "IsTrue",
-                    "ParamName": "Run",
+                    "ParamName": "Right",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 17,
+            "FromNodeId": 100070,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 172,
-                "LinkId": 221,
-                "ToNodeId": 1161
+                "FromNodeId": 1000702,
+                "LinkId": 100116,
+                "ToNodeId": 1000741
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 116
+            "ToNodeId": 100074
         },
         {
             "Conditions": [
@@ -12586,15 +12579,8 @@
         {
             "Conditions": [
                 {
-                    "Op": "IsFalse",
-                    "ParamName": "Guard",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
                     "Op": "IsTrue",
-                    "ParamName": "Run",
+                    "ParamName": "FocusOn",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
@@ -12605,19 +12591,26 @@
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Run",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
                 }
             ],
-            "Duration": 0.15000000596046448,
-            "FromNodeId": 102,
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 17,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 1022,
-                "LinkId": 189,
-                "ToNodeId": 21
+                "FromNodeId": 172,
+                "LinkId": 221,
+                "ToNodeId": 1161
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 2
+            "ToNodeId": 116
         },
         {
             "Conditions": [
@@ -14062,38 +14055,38 @@
         {
             "Conditions": [
                 {
-                    "Op": "Trigger",
-                    "ParamName": "ArmAttack",
-                    "Type": "Trigger",
+                    "Op": "IsFalse",
+                    "ParamName": "Guard",
+                    "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 },
                 {
                     "Op": "IsTrue",
-                    "ParamName": "Charge",
+                    "ParamName": "Run",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 },
                 {
-                    "Op": "IsFalse",
-                    "ParamName": "Fail",
+                    "Op": "IsTrue",
+                    "ParamName": "Move",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 303,
+            "Duration": 0.15000000596046448,
+            "FromNodeId": 102,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 3032,
-                "LinkId": 528,
-                "ToNodeId": 4991
+                "FromNodeId": 1022,
+                "LinkId": 189,
+                "ToNodeId": 21
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 499
+            "ToNodeId": 2
         },
         {
             "Conditions": [
@@ -15538,31 +15531,38 @@
         {
             "Conditions": [
                 {
+                    "Op": "Trigger",
+                    "ParamName": "ArmAttack",
+                    "Type": "Trigger",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
                     "Op": "IsTrue",
-                    "ParamName": "Sprint",
+                    "ParamName": "Charge",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 },
                 {
-                    "Op": "Trigger",
-                    "ParamName": "NormalAttack",
-                    "Type": "Trigger",
+                    "Op": "IsFalse",
+                    "ParamName": "Fail",
+                    "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 9,
+            "FromNodeId": 303,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 92,
-                "LinkId": 85,
-                "ToNodeId": 801
+                "FromNodeId": 3032,
+                "LinkId": 528,
+                "ToNodeId": 4991
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 80
+            "ToNodeId": 499
         },
         {
             "Conditions": [
@@ -21484,23 +21484,30 @@
             "Conditions": [
                 {
                     "Op": "IsTrue",
-                    "ParamName": "Guard",
+                    "ParamName": "Sprint",
                     "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "Trigger",
+                    "ParamName": "NormalAttack",
+                    "Type": "Trigger",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.16099999845027924,
-            "FromNodeId": 79,
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 9,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 792,
-                "LinkId": 680,
-                "ToNodeId": 1081
+                "FromNodeId": 92,
+                "LinkId": 85,
+                "ToNodeId": 801
             },
             "MaxTime": 1.0,
-            "MinTime": 0.41600000858306885,
-            "ToNodeId": 108
+            "MinTime": 0.0,
+            "ToNodeId": 80
         },
         {
             "Conditions": [
@@ -23200,23 +23207,23 @@
             "Conditions": [
                 {
                     "Op": "IsTrue",
-                    "ParamName": "Back",
+                    "ParamName": "Guard",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 102,
+            "Duration": 0.16099999845027924,
+            "FromNodeId": 79,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 1022,
-                "LinkId": 196,
-                "ToNodeId": 1041
+                "FromNodeId": 792,
+                "LinkId": 680,
+                "ToNodeId": 1081
             },
             "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 104
+            "MinTime": 0.41600000858306885,
+            "ToNodeId": 108
         },
         {
             "Conditions": [
@@ -25421,24 +25428,24 @@
         {
             "Conditions": [
                 {
-                    "Op": "IsFalse",
-                    "ParamName": "Right",
+                    "Op": "IsTrue",
+                    "ParamName": "Back",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 298,
+            "FromNodeId": 102,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 2982,
-                "LinkId": 330,
-                "ToNodeId": 41
+                "FromNodeId": 1022,
+                "LinkId": 196,
+                "ToNodeId": 1041
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 4
+            "ToNodeId": 104
         },
         {
             "Conditions": [
@@ -27643,31 +27650,24 @@
         {
             "Conditions": [
                 {
-                    "Op": "IsTrue",
-                    "ParamName": "Fail",
+                    "Op": "IsFalse",
+                    "ParamName": "Right",
                     "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                },
-                {
-                    "Op": "Trigger",
-                    "ParamName": "UseItem",
-                    "Type": "Trigger",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 100001,
+            "FromNodeId": 298,
             "HasExitTime": false,
             "Link": {
-                "FromNodeId": 1000012,
-                "LinkId": 100339,
-                "ToNodeId": 4491
+                "FromNodeId": 2982,
+                "LinkId": 330,
+                "ToNodeId": 41
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 449
+            "ToNodeId": 4
         }
     ]
 }

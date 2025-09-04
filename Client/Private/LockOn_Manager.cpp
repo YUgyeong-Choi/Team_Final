@@ -236,6 +236,14 @@ void CLockOn_Manager::RemoveSomeTargets()
                         // 벽 등 다른 오브젝트가 먼저 막음 → 제거
                         bRemove = true;
                     }
+                    else
+                    {
+                        _vector vMonsterPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+                        _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+                        _float difY = XMVectorGetY(vMonsterPos) - XMVectorGetY(vPlayerPos);
+                        if(fabs(difY) > 4)
+                            bRemove = true;
+                    }
                 }
                 else
                 {
@@ -270,7 +278,7 @@ CUnit* CLockOn_Manager::Find_ClosestToLookTarget()
     // ===== 설정 =====
     const _float wAngle = 0.35f;                     // 각도 가중치(정면 우선)
     const _float wDist = 0.65f;                     // 거리 가중치(가까운 대상 우선)
-    const _float cosHalfFov = cosf(XMConvertToRadians(80.f)); // 시야각에 있는 것만
+    const _float cosHalfFov = cosf(XMConvertToRadians(60.f)); // 시야각에 있는 것만
 
     // ===== 1) FOV 안의 타깃만 대상으로 최대 거리 계산 =====
     _float maxDist2 = 0.f;
@@ -366,7 +374,7 @@ CUnit* CLockOn_Manager::Change_ToLookTarget()
     CUnit* best = nullptr;
     _float bestAngle = XM_PI;
 
-    const _float cosHalfFov = cosf(XMConvertToRadians(80.f)); // 시야각에 있는 것만
+    const _float cosHalfFov = cosf(XMConvertToRadians(60.f)); // 시야각에 있는 것만
 
     for (auto* target : m_vecTarget)
     {

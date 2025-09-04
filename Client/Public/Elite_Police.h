@@ -70,6 +70,9 @@ public:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
+	_bool Get_ElbowHit() const { return m_bElbowHit; }
+	void  Set_ElbowHit(_bool bHit) { m_bElbowHit = bHit; }
+
 private:
     virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT Ready_Actor() override;
@@ -109,7 +112,9 @@ private:
     _bool m_bReturnToSpawn = false;
 	_float m_fDetectRange = 22.f;
     _float m_fDetectDiffY = 5.f;
+   
     // 공격 관련
+    _bool  m_bElbowHit = false;
     _int   m_iPatternLimit = 1;
     _int   m_iFireBallComboCount = 0;
     _float m_fBasePatternWeight = 100.f;

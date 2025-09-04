@@ -59,6 +59,7 @@ Texture2D g_PBR_Black;
 Texture2D g_PBR_Emissive;
 Texture2D g_PBR_Glow;
 Texture2D g_VolumetricTexture;
+Texture2D g_PBR_PlayerLim;
 
 /* [ Effect ] */
 Texture2D g_EffectBlend_Diffuse;
@@ -1017,13 +1018,14 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vBurn = g_PBR_Burn.Sample(DefaultSampler, In.vTexcoord);
     vector vBlack = g_PBR_Black.Sample(DefaultSampler, In.vTexcoord);
     vector vGlow = g_PBR_Glow.Sample(DefaultSampler, In.vTexcoord);
+    vector vPlayerLim = g_PBR_PlayerLim.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
         Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
     
     Out.vBackBuffer *= vBlack;
     
-    finalColor = Out.vBackBuffer + vOutLine + vLimLight + vBurn;
+    finalColor = Out.vBackBuffer + vOutLine + vLimLight + vBurn + vPlayerLim;
     
     
     /* [ 유리 재질 효과 ] */

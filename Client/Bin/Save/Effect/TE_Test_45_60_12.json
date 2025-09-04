@@ -1,33 +1,33 @@
 {
-    "Animation": true,
+    "Animation": false,
     "Billboard": false,
     "CenterColor": [
-        0.4031413793563843,
-        0.8031306266784668,
-        1.0,
-        1.0
+        0.5901153683662415,
+        0.7064012885093689,
+        0.8167539238929749,
+        0.6020942330360413
     ],
     "Color": [
-        0.0,
-        0.293194055557251,
+        0.7434555292129517,
+        0.8509089946746826,
         1.0,
-        0.6020942330360413
+        0.33507853746414185
     ],
     "DistortionStrength": 10.0,
     "Duration": 20,
     "EffectType": 3,
-    "EmissiveIntensity": 3.0,
+    "EmissiveIntensity": 0.20000000298023224,
     "EndTrack": 20,
     "FlipUV": false,
     "KeyFrames": [
         {
             "Color": [
-                0.0,
-                0.293194055557251,
+                0.7434555292129517,
+                0.8509089946746826,
                 1.0,
-                0.6020942330360413
+                0.33507853746414185
             ],
-            "Intensity": 13.029999732971191,
+            "Intensity": 1.0,
             "Interpolation": 0,
             "Rotation": [
                 0.0,
@@ -48,18 +48,18 @@
             ]
         }
     ],
-    "LifeDuration": 0.5,
+    "LifeDuration": 0.44999998807907104,
     "LifeTime": 0.0,
     "Loop": true,
-    "Name": "Trail_Skill",
+    "Name": "Player_WeaponTrail",
     "NodeInterval": 0.016599999740719795,
     "NumKeyFrames": 1,
     "RenderGroup": 8,
     "ShaderPass": 0,
     "StartTrack": 0,
-    "Subdivisions": 4,
+    "Subdivisions": 12,
     "TextureTags": [
-        "T_Tile_Wave_05_C_LGS",
+        "T_Mask_05_C_LGS",
         "trail_tex",
         "T_Slash_01_C_RSW",
         ""
@@ -71,7 +71,7 @@
         false
     ],
     "Threshold": 0.0,
-    "TickPerSecond": 60.0,
+    "TickPerSecond": 100.0,
     "TileTickPerSec": 60.0,
     "TileX": 1,
     "TileY": 1

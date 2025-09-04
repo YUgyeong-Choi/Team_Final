@@ -43,7 +43,28 @@ struct VS_OUT
     float fSpeed : TEXCOORD1;
     float4 vDir : TEXCOORD2;
     float2 vTileOffset : TEXCOORD3;
+    float2 vRotation : TEXCOORD4;
 };
+
+float2 RotateSubUV(float2 baseUV, float2 tileSize, float2 tileOffset, float angle)
+{
+    // (1) 아틀라스 절대UV → 타일 로컬UV(0~1)
+    float2 uvLocal = (baseUV - tileOffset) / tileSize;
+
+    // (2) 중심 기준 회전
+    float2 p = uvLocal - 0.5;
+    float s, c;
+    sincos(angle, s, c);
+    float2 pr = float2(p.x * c - p.y * s, p.x * s + p.y * c);
+    uvLocal = pr + 0.5;
+
+    // (선택) 타일 경계 샘플링 누수 방지용 소축(bleeding 방지)
+    // float2 border = 1.0 / g_AtlasTexSize; // 텍스처 해상도 기반으로 조절
+    // uvLocal = saturate(lerp(0.5, uvLocal, 1.0 - 2.0 * max(border.x, border.y)));
+
+    // (3) 타일 로컬UV → 아틀라스 절대UV
+    return tileOffset + uvLocal * tileSize;
+}
 
 VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
 {
@@ -188,6 +209,9 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     float3 vDir = normalize(In[0].vDir.xyz);
     float stretchFactor = 0.015f * In[0].fSpeed; // 튜닝값
     float3 vStretch = vDir * stretchFactor;
+    if (In[0].vDir.w < 0.0001f)
+        vStretch = float3(0.f, 0.f, 0.f);
+        
 
     // 최종 Up에 더해줌 (Y축 Up + 속도 꼬리)
     float3 upStretch = vUp + vStretch;
@@ -429,6 +453,26 @@ PS_OUT_WB PS_MAIN_RAINONLY(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_NONLIGHT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+        
+    vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset));
+    
+    if (In.vLifeTime.y >= In.vLifeTime.x)
+        discard;
+
+    if (vColor.a < 0.01f)
+        discard;
+    
+    vColor *= g_vColor;
+
+    vColor = SoftEffect(vColor, In.vProjPos);
+
+    Out.vColor = vColor;
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Default // 0
@@ -475,16 +519,16 @@ technique11 DefaultTechnique
         GeometryShader = compile gs_5_0 GS_MAIN_VSTRETCH();
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WBGLOW();
     }
-    pass Diffuse_WB // 4
+    pass NonLight // 4
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
-        SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
         
 
         VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
-        PixelShader = compile ps_5_0 PS_MAIN_DIFFUSE_WB();
+        PixelShader = compile ps_5_0 PS_MAIN_NONLIGHT();
     }
     pass Rain // 5
     {
@@ -497,5 +541,16 @@ technique11 DefaultTechnique
         GeometryShader = compile gs_5_0 GS_MAIN_VSTRETCH();
         PixelShader = compile ps_5_0 PS_MAIN_RAINONLY();
     }
- 
+
+    pass Diffuse_WB // 6
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN_CS();
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_DIFFUSE_WB();
+    }
 }

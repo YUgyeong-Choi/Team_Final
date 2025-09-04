@@ -33,6 +33,7 @@
 
 #include "SlideDoor.h"
 #include <FlameField.h>
+#include <Elite_Police.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -262,7 +263,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
+	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_LIM, this);
 	
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
@@ -333,6 +334,57 @@ HRESULT CPlayer::Render_Burn()
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Begin(8)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Render_LimLight()
+{
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
+		return E_FAIL;
+
+	_float4 vLimLightColor = { 0.f, 0.749f, 1.f, 1.f };
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightColor, sizeof(_float4))))
+		return E_FAIL;
+
+	_float4 vCamPostion = {};
+	XMStoreFloat4(&vCamPostion, m_pTransformCom->Get_State(STATE::POSITION));
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_CamposWS", &vCamPostion, sizeof(_float4))))
+		return E_FAIL;
+
+	_float4x4 matWorldInv = {};
+	XMStoreFloat4x4(&matWorldInv, m_pTransformCom->Get_WorldMatrix_Inverse());
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrixInvTrans", &matWorldInv)))
+		return E_FAIL;
+
+	_float4x4 ViewMatrix, ProjViewMatrix;
+	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pNoiseMap->Bind_ShaderResource(m_pShaderCom, "g_NoiseMap", 0)))
+		return E_FAIL;
+
+	_float fLimLightIntensity = 1.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightIntensity", &fLimLightIntensity, sizeof(_float))))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Begin(6)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))
@@ -1066,6 +1118,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
+	case eAnimCategory::FESTIVALDOOR:
+	{
+		RootMotionActive(fTimeDelta);
+		break;
+	}
 	case eAnimCategory::ARM_ATTACKA:
 	{
 		if (!m_bSetOnce)
@@ -1242,13 +1299,6 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::HITED:
 	{
 		RootMotionActive(fTimeDelta);
-
-		//if (!m_bSetSound)
-		//{
-		//	m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
-		//	m_bSetSound = true;
-		//}
-
 		break;
 	}
 	case eAnimCategory::GRINDER:
@@ -1484,6 +1534,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Hit") == 0)
 		return eAnimCategory::HITED;
 
+	if (stateName.find("DoubleDoor_Boss") == 0)
+		return eAnimCategory::FESTIVALDOOR;
 	if (stateName.find("SlidingDoor") == 0)
 		return eAnimCategory::FIRSTDOOR;
 	if (stateName.find("Arm_NormalAttack") == 0)
@@ -1865,7 +1917,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		{
 			//필요한 정보를 수집한다.
 			m_eHitedTarget = eHitedTarget::BOSS;
-			m_eHitedAttackType = CBossUnit::EAttackType::NONE;
+			
 			m_pHitedTarget = pBoss;
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -1876,7 +1928,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		{
 			//보스 몬스터가 아니라면 원거리 공격으로 간주한다.
 			m_eHitedTarget = eHitedTarget::RANGED;
-
+			m_eHitedAttackType = CBossUnit::EAttackType::NONE;
+			m_eHitMotion = HITMOTION::END;
 			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
 			m_pHitedTarget = nullptr;
 
@@ -1937,7 +1990,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 	/* [ 일반 몬스터 피격 ] */
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER_WEAPON_BODY)
 	{
 		//히트한 몬스터타입
 		m_eHitedTarget = eHitedTarget::MONSTER;
@@ -1969,9 +2022,19 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			pUnit == nullptr)
 			return;
 
+
 		//Hp 가 0 이하면 리턴
 		if ( pUnit->GetHP() <= 0.f)
 			return;
+		if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON_BODY &&
+			pUnit->Get_UnitType() == EUnitType::ELITE_MONSTER)
+		{
+			auto pElite = static_cast<CElite_Police*>(pUnit);
+			if (pElite->Get_ElbowHit())
+				return;
+
+			pElite->Set_ElbowHit(true);
+		}
 
 
 		// 필요한 정보를 수집한다.
@@ -2052,7 +2115,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			//보스 몬스터가 아니라면 원거리 공격으로 간주한다.
 			m_eHitedTarget = eHitedTarget::RANGED;
 			m_eHitedAttackType = CBossUnit::EAttackType::NONE;
-
+			m_eHitMotion = HITMOTION::END;
 			CGameObject* pRANGED = dynamic_cast<CGameObject*>(pOther);
 			m_pHitedTarget = nullptr;
 
@@ -2452,7 +2515,7 @@ HRESULT CPlayer::Ready_Actor()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.4f, 0.8f);
+	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.45f, 0.9f);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 
@@ -2508,17 +2571,24 @@ void CPlayer::Callback_Mana()
 void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 {
 	m_pInterectionStuff = pObj;
+	string stateName;
 	switch (eType)
 	{
 	case Client::TUTORIALDOOR:
 		Play_CutScene_Door();
 		break;
 	case Client::FUOCO:
-		m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+		stateName = "SlidingDoor";
+		break;
+	case Client::FESTIVALDOOR:
+		stateName = "DoubleDoor_Boss";
 		break;
 	default:
 		break;
 	}
+
+	if (stateName.empty() == false)
+		m_pAnimator->Get_CurrentAnimController()->SetState(stateName);
 }
 
 void CPlayer::GetWeapon()
@@ -2692,6 +2762,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		}
 
 		Callback_HP();
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
 	}
 
 	/* [ 화속성 시작 ] */

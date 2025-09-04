@@ -25,10 +25,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 121,
+            "Duration": 131,
             "EffectType": 1,
             "EmissiveIntensity": 1.0,
-            "EndTrack": 121,
+            "EndTrack": 131,
             "FlipUV": false,
             "Gravity": -0.699999988079071,
             "IsGravity": true,
@@ -151,10 +151,10 @@
                 0.4921466112136841
             ],
             "DistortionStrength": 10.0,
-            "Duration": 121,
+            "Duration": 131,
             "EffectType": 0,
             "EmissiveIntensity": 1.0,
-            "EndTrack": 121,
+            "EndTrack": 131,
             "FlipUV": false,
             "KeyFrames": [
                 {
@@ -253,10 +253,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 121,
+            "Duration": 131,
             "EffectType": 0,
             "EmissiveIntensity": 1.0,
-            "EndTrack": 121,
+            "EndTrack": 131,
             "FlipUV": false,
             "KeyFrames": [
                 {

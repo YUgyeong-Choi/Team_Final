@@ -2786,7 +2786,7 @@ public:
         m_pOwner->m_pAnimator->SetTrigger("MainSkill");
         m_pOwner->m_pTransformCom->SetbSpecialMoving();
 
-        _float fDamageRatio = m_pGameInstance->Compute_Random(1.2f, 1.8f);
+        _float fDamageRatio = m_pGameInstance->Compute_Random(1.5f, 2.f);
         m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
 
         /* [ 디버깅 ] */

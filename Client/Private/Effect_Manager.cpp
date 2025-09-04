@@ -14,13 +14,6 @@ CEffect_Manager::CEffect_Manager()
 {
     Safe_AddRef(m_pGameInstance);
 }
-/*
-* [지금 고민]
-* 이펙트가 여러개 모인 EffectContainer와
-* 단일 이펙트들(SE, PE, ME, TE) 저장을 별개로 하는중
-* EC를 저장할 때 단일로 쪼개서 무슨 이펙트가 들어있는지 파일명을 저장할건지
-* 그냥 모든 이펙트를 EC로 만들어서 단일이펙트여도 그룹에 담을건지
-*/
 
 HRESULT CEffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring EffectFilePath)
 {
@@ -60,7 +53,6 @@ HRESULT CEffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
                     int a = 0;
                 if (prefix == L"TE")
                     int a = 0;
-
             }
         }
         else
@@ -75,6 +67,7 @@ HRESULT CEffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 HRESULT CEffect_Manager::Update(_float fTimeDelta)
 {
+    //m_fAccTime += fTimeDelta;
     return S_OK;
 }
 

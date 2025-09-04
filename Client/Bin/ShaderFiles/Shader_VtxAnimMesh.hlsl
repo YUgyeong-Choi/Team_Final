@@ -33,7 +33,7 @@ float g_fMetallicIntensity = 1;
 float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
 float g_fEmissiveIntensity = 1;
-float g_fFuryIntensity = 1;
+float g_fLimLightIntensity = 1;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
 /* [ BurnTextures ] */
@@ -42,6 +42,9 @@ Texture2D g_BurnMask;
 Texture2D g_BurnMask2;
 float g_fBurnPhase;
 float g_fBurnTime;
+
+/* [ LimLight ] */
+float4 g_fLimLightColor = { 1.f, 0.f, 0.f, 1.f };
 
 /* [ 피킹변수 ] */
 float g_fID;
@@ -468,7 +471,8 @@ float4 PS_LIMLIGHT(PS_IN_PBR In) : SV_Target0
 {
     float4 Out;
     // --- 기본 파라미터 ---
-    float4 vEdgeColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
+    //float4 vEdgeColor = float4(1.0f, 0.0f, 0.0f, 1.0f);
+    float4 vEdgeColor = g_fLimLightColor;
     float fNoiseScale = 0.5f;
     float fNoiseContrast = 0.9f;
     float fEdgeSoftness = 0.12f;
@@ -504,7 +508,7 @@ float4 PS_LIMLIGHT(PS_IN_PBR In) : SV_Target0
     
     Out = float4(vEdgeColor.rgb * fMask, fMask);
     Out += float4(vAmbient, 0.2f);
-    Out *= g_fFuryIntensity;
+    Out *= g_fLimLightIntensity;
     
     return Out;
     
@@ -534,7 +538,7 @@ float4 PS_INNERLINE(PS_IN In) : SV_Target1
     float fAlpha = vEdgeColor.a * fMask;
 
     Out = float4(vEdgeRGB, fAlpha);
-    Out *= g_fFuryIntensity;
+    Out *= g_fLimLightIntensity;
     
     return Out;
     

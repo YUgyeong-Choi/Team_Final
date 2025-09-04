@@ -71,6 +71,13 @@ HRESULT CEliteUnit::Initialize(void* pArg)
         return E_FAIL;
 
     Ready_SoundEvents();
+    _float4x4 worldMatrix = m_InitWorldMatrix;
+
+    _vector S, R, T;
+    XMMatrixDecompose(&S, &R, &T, XMLoadFloat4x4(&worldMatrix));
+
+     XMStoreFloat3(&m_InitPos, T);
+
     return S_OK;
 }
 

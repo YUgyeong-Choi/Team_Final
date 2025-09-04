@@ -173,6 +173,10 @@ HRESULT CUnit::Render_Fury()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
 		return E_FAIL;
 
+	_float4 vLimLightColor = { 1.f, 0.f, 0.f, 1.f };
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightColor, sizeof(_float4))))
+		return E_FAIL;
+
 	_float4 vCamPostion = {};
 	XMStoreFloat4(&vCamPostion, m_pTransformCom->Get_State(STATE::POSITION));
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_CamposWS", &vCamPostion, sizeof(_float4))))
@@ -196,7 +200,7 @@ HRESULT CUnit::Render_Fury()
 		return E_FAIL;
 
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFuryIntensity", &m_fFurySwitch, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightIntensity", &m_fFurySwitch, sizeof(_float))))
 		return E_FAIL;
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();

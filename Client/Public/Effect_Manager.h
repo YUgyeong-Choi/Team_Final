@@ -68,6 +68,9 @@ private:
 
     CONTAINERS                          m_ECs;
 
+private:
+    _float                  m_fAccTime = {};
+
 public:
     virtual void Free() override;
 

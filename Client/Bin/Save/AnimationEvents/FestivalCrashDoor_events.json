@@ -12,7 +12,7 @@
             "Duration": 300.0,
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 28.0
         },
         {
             "ClipName": "AS_Door_Crash_Open_Idle",
