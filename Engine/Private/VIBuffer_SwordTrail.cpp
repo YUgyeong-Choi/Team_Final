@@ -11,6 +11,8 @@ CVIBuffer_SwordTrail::CVIBuffer_SwordTrail(const CVIBuffer_SwordTrail& Prototype
 	, m_fLifeDuration{ Prototype.m_fLifeDuration }
 	, m_bTrailActive{ Prototype.m_bTrailActive }
 	, m_TrailNodes{ Prototype.m_TrailNodes }
+	, m_Subdivisions{ Prototype.m_Subdivisions }
+	, m_fNodeInterval{ Prototype.m_fNodeInterval }
 {
 }
 

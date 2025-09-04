@@ -33,6 +33,9 @@ public:
 	void Set_GameTimeScale(_float ftimeScale) { m_fTimeScale = ftimeScale; }
 
 	void Call_BeforeChangeLevel();
+
+	_float Get_GlobalAccTime() { return m_fAccTime; }
+
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
@@ -301,7 +304,8 @@ private:
 	class CPulling_Manager*		m_pPulling_Manager = { nullptr };
 private:
 	_uint					m_iCurrentLevelIndex = 0;
-	float m_fTimeScale = 1.f; // 업데이트 속도
+	_float					m_fTimeScale = 1.f; // 업데이트 속도
+	_float					m_fAccTime = {}; // 게임 실행 후 누적 시간 전역으로 저장함 임시로..아마도
 
 private: /* [ 플레이어 포지션 ] */
 	_vector m_vPlayerPosition = {};

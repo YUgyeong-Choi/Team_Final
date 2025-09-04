@@ -1213,7 +1213,7 @@ HRESULT CRenderer::Render_Effect_WBGlow()
 HRESULT CRenderer::Render_PBR_Glow()
 {
 	/* [ 가로로 늘린다. ] */
-	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGlow"));
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGlow"), m_pPBRBlurDSV, true, true);
 
 	if (FAILED(Change_ViewportDesc(g_iSmallWidth, g_iSmallHeight)))
 		return E_FAIL;
@@ -1245,7 +1245,7 @@ HRESULT CRenderer::Render_PBR_Glow()
 
 
 	/* [ 세로로 늘린다. ] */
-	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGlowFinal"));
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGlowFinal"), m_pPBRBlurDSV, true, true);
 
 	if (FAILED(Change_ViewportDesc(g_iSmallWidth, g_iSmallHeight)))
 		return E_FAIL;

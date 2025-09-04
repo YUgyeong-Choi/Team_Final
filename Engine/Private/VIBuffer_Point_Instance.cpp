@@ -11,13 +11,6 @@ CVIBuffer_Point_Instance::CVIBuffer_Point_Instance(ID3D11Device* pDevice, ID3D11
 CVIBuffer_Point_Instance::CVIBuffer_Point_Instance(const CVIBuffer_Point_Instance& Prototype)
 	: CVIBuffer_Instance( Prototype )
 	, m_pParticleParamDesc{ Prototype.m_pParticleParamDesc }
-	//, m_pParticleDesc(Prototype.m_pParticleDesc)
-	//, m_vPivot{ Prototype.m_vPivot }
-	//, m_isLoop{ Prototype.m_isLoop }
-	//, m_bGravity{ Prototype.m_bGravity }
-	//, m_fGravity{ Prototype.m_fGravity }
-	//, m_vDirection{ Prototype.m_vDirection }
-	//, m_ePType{ Prototype.m_ePType }
 	, m_tCBuffer{ Prototype.m_tCBuffer }
 {
 }
@@ -107,48 +100,27 @@ HRESULT CVIBuffer_Point_Instance::Initialize(void* pArg)
 
 void CVIBuffer_Point_Instance::Update(_float fTimeDelta)
 {
-	//switch (m_ePType)
-	//{
-	//case Engine::PTYPE_SPREAD:
-	//	Spread(fTimeDelta);
-	//	break;
-	//case Engine::PTYPE_DIRECTIONAL:
-	//	Directional(fTimeDelta);
-	//	break;
-	//case Engine::PTYPE_END:
-	//	break;
-	//default:
-	//	break;
-	//}
 	m_tCBuffer.isFirst = 0;
 	if (m_bFirst == true)
 	{
 		m_tCBuffer.isFirst = 1;
+		m_tCBuffer.fAccTime = m_pGameInstance->Get_GlobalAccTime();
+		m_tCBuffer.iEffectSeed = rand() % 100000;
 		m_bFirst = false;
 	}
 
 	m_tCBuffer.fDeltaTime = fTimeDelta;
 	m_tCBuffer.bIsTool = false;
+	m_tCBuffer.fAccTime = m_pGameInstance->Get_GlobalAccTime();
 	/* [ CS ] */
 	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
 }
 
 void CVIBuffer_Point_Instance::Update_Tool(_float fCurTrackPos)
 {
-	//switch (m_ePType)
-	//{
-	//case Engine::PTYPE_SPREAD:
-	//	Spread(fCurTrackPos / 60.f, true);
-	//	break;
-	//case Engine::PTYPE_DIRECTIONAL:
-	//	Directional(fCurTrackPos / 60.f, true);
-	//	break;
-	//case Engine::PTYPE_END:
-	//	break;
-	//default:
-	//	break;
-	//}
+
 	m_tCBuffer.fTrackTime = fCurTrackPos;
+	m_tCBuffer.fAccTime = m_pGameInstance->Get_GlobalAccTime();
 	m_tCBuffer.bIsTool = true;
 	m_pParticleCS->Dispatch_ParticleCS(m_tCBuffer, 128);
 
@@ -355,13 +327,17 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_tCBuffer.bUseSpin = pDesc->bSpin ? 1 : 0;
 	m_tCBuffer.bUseOrbit = pDesc->bOrbit ? 1 : 0;
 	m_tCBuffer.fGravity = pDesc->fGravity;
-	m_tCBuffer.vPivot = pDesc->vPivot;
 	m_tCBuffer.vCenter = pDesc->vCenter;
+	//m_tCBuffer.vPivot = pDesc->vPivot;
+	// 절대 위치 Pivot으로 저장
+	XMStoreFloat3(&m_tCBuffer.vPivot, XMLoadFloat3(&pDesc->vPivot) - XMLoadFloat3(&pDesc->vCenter));
 	m_tCBuffer.vOrbitAxis = pDesc->vOrbitAxis;
 	m_tCBuffer.vRotationAxis = pDesc->vRotationAxis;
 	m_tCBuffer.isTileLoop = pDesc->isTileLoop ? 1 : 0;
 	m_tCBuffer.vTileCnt = pDesc->vTileCnt; // m_iTileX, Y인데..
 	m_tCBuffer.fTileTickPerSec = pDesc->fTileTickPerSec;
+	m_tCBuffer.vRange = pDesc->vRange;
+	XMStoreFloat4x4(&m_tCBuffer.g_CombinedMatrix, XMMatrixIdentity());
 
 #pragma region INSTANCEBUFFER
 	/* [ CS ] */
@@ -385,18 +361,18 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 		m_pParticleParamDesc[i].vUp = _float4(0.f, fSize, 0.f, 0.f);
 		m_pParticleParamDesc[i].vLook = _float4(0.f, 0.f, fSize, 0.f);
 
-		m_pParticleParamDesc[i].vTranslation = _float4(
-			m_pGameInstance->Compute_Random(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f),
-			m_pGameInstance->Compute_Random(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
-			m_pGameInstance->Compute_Random(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f),
-			1.f
-		);
+		//m_pParticleParamDesc[i].vTranslation = _float4(
+		//	m_pGameInstance->Compute_Random(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f),
+		//	m_pGameInstance->Compute_Random(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
+		//	m_pGameInstance->Compute_Random(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f),
+		//	1.f
+		//);
 
-		m_pParticleParamDesc[i].vInitOffset = _float3(
-			m_pParticleParamDesc[i].vTranslation.x - pDesc->vCenter.x,
-			m_pParticleParamDesc[i].vTranslation.y - pDesc->vCenter.y,
-			m_pParticleParamDesc[i].vTranslation.z - pDesc->vCenter.z
-		);
+		//m_pParticleParamDesc[i].vInitOffset = _float3(
+		//	m_pParticleParamDesc[i].vTranslation.x - pDesc->vCenter.x,
+		//	m_pParticleParamDesc[i].vTranslation.y - pDesc->vCenter.y,
+		//	m_pParticleParamDesc[i].vTranslation.z - pDesc->vCenter.z
+		//);
 
 		m_pParticleParamDesc[i].vLifeTime = _float2(
 			m_pGameInstance->Compute_Random(pDesc->vLifeTime.x, pDesc->vLifeTime.y),
@@ -405,38 +381,38 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 		_vector vDir = {};
 
 
-		switch (m_tCBuffer.iParticleType)
-		{
-		case Engine::PTYPE_SPREAD:
-		{
-			_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
-			_vector vPivot = XMLoadFloat3(&m_tCBuffer.vPivot);
-			vDir = XMVectorSetW(XMVector3Normalize(vStart - vPivot), 0.f);
-		}
-			break;
-		case Engine::PTYPE_DIRECTIONAL:
-		{
-			_vector vPivot = XMLoadFloat3(&m_tCBuffer.vPivot);
-			_vector vCenter = XMLoadFloat3(&pDesc->vCenter);
-			vDir = XMVectorSetW(XMVector3Normalize(vCenter - vPivot), 0.f);
-			//vDir = XMVector3Normalize(XMLoadFloat4(&m_vDirection));
-		}
-			break;
-		case Engine::PTYPE_ALLRANDOM:
-		{
-			vDir = XMVectorSetW(XMVector3Normalize(
-				XMVectorSet(
-					m_pGameInstance->Compute_Random(-1.f, 1.f),
-					m_pGameInstance->Compute_Random(-1.f, 1.f),
-					m_pGameInstance->Compute_Random(-1.f, 1.f),
-					0.f)), 0.f);
-		}
-			break;
-		default:
-			break;
-		}
+		//switch (m_tCBuffer.iParticleType)
+		//{
+		//case Engine::PTYPE_SPREAD:
+		//{
+		//	_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
+		//	_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
+		//	vDir = XMVectorSetW(XMVector3Normalize(vStart - vPivot), 0.f);
+		//}
+		//	break;
+		//case Engine::PTYPE_DIRECTIONAL:
+		//{
+		//	_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
+		//	_vector vCenter = XMLoadFloat3(&pDesc->vCenter);
+		//	vDir = XMVectorSetW(XMVector3Normalize(vCenter - vPivot), 0.f);
+		//	//vDir = XMVector3Normalize(XMLoadFloat4(&m_vDirection));
+		//}
+		//	break;
+		//case Engine::PTYPE_ALLRANDOM:
+		//{
+		//	vDir = XMVectorSetW(XMVector3Normalize(
+		//		XMVectorSet(
+		//			m_pGameInstance->Compute_Random(-1.f, 1.f),
+		//			m_pGameInstance->Compute_Random(-1.f, 1.f),
+		//			m_pGameInstance->Compute_Random(-1.f, 1.f),
+		//			0.f)), 0.f);
+		//}
+		//	break;
+		//default:
+		//	break;
+		//}
 
-		XMStoreFloat4(&m_pParticleParamDesc[i].vDirection, vDir);
+		//XMStoreFloat4(&m_pParticleParamDesc[i].vDirection, vDir);
 	}
 
 	m_VBInstanceSubresourceData.pSysMem = m_pParticleParamDesc;

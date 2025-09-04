@@ -573,10 +573,10 @@ namespace Engine
 
 		_float2		vTileCnt = { 1.f,1.f };
 		_float		fTileTickPerSec = { 30.f };
-		_float		_pad2;
+		_float		fAccTime;
 
 		_float3		vPivot;          // vPivot
-		_float		_pad3;
+		_uint		iEffectSeed;
 
 		_float3		vCenter;         // vCenter
 		_float		_pad4;
@@ -586,6 +586,9 @@ namespace Engine
 
 		_float3		vRotationAxis;   // normalized
 		_float		_pad6;
+
+		_float3		vRange;			 // vRange
+		_float		_pad7;
 
 		_float4		vSocketRot;
 
