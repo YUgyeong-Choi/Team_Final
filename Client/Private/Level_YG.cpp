@@ -13,6 +13,8 @@
 #include "DH_ToolMesh.h"
 #include "UI_Container.h"
 #include "SlideDoor.h"
+#include "KeyDoor.h"
+#include "BossDoor.h"
 #include "StaticMesh.h"
 
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -848,12 +850,12 @@ HRESULT CLevel_YG::Ready_OctoTree()
 
 HRESULT CLevel_YG::Ready_Interact()
 {
+	/*  [ 기차역 슬라이딩 문 ] */
 	CSlideDoor::DOORMESH_DESC Desc{};
 	Desc.m_eMeshLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
 
-	/* 문자열 받는 곳 */
 	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_SM_Station_TrainDoor");
 	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
@@ -862,14 +864,92 @@ HRESULT CLevel_YG::Ready_Interact()
 	_float4x4 matWorldFloat;
 	XMStoreFloat4x4(&matWorldFloat, matWorld);
 	Desc.WorldMatrix = matWorldFloat;
+	Desc.vColliderOffSet = _vector({ 0.f, 1.3f, 0.f, 0.f });
+	Desc.vColliderSize = _vector({ 1.5f, 2.f, 0.2f, 0.f });
 
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_SlideDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("TrainDoor"), &Desc)))
+		return E_FAIL;
 
-	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_DoorMesh"),
-		ENUM_CLASS(LEVEL::YG), TEXT("TrainDoor"), &pGameObject, &Desc)))
+	/* [ 푸쿠오 보스 문 ] */
+	CBossDoor::BOSSDOORMESH_DESC BossDoorDesc{};
+	BossDoorDesc.m_eMeshLevelID = LEVEL::YG;
+	BossDoorDesc.szMeshID = TEXT("FacotoryDoor");
+	lstrcpy(BossDoorDesc.szName, TEXT("FacotoryDoor"));
+
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_FacotoryDoor");
+	lstrcpy(BossDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	vPosition = _float3(-1.4f, 0.31f, -235.f);
+	XMMATRIX trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	XMMATRIX rotY = XMMatrixRotationY(XM_PIDIV2); // = 90도
+	XMMATRIX world = rotY * trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	BossDoorDesc.WorldMatrix = matWorldFloat;
+	BossDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 1.5f, 0.f });
+
+	BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
+	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("BossDoor"), &BossDoorDesc)))
+		return E_FAIL;
+
+	///* [ 축제의 인도자 문 ] */
+	BossDoorDesc = {};
+	BossDoorDesc.m_eMeshLevelID = LEVEL::YG;
+	BossDoorDesc.szMeshID = TEXT("FestivalDoor");
+	lstrcpy(BossDoorDesc.szName, TEXT("FestivalDoor"));
+
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_FestivalDoor");
+	lstrcpy(BossDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	BossDoorDesc.bNeedSecondDoor = true;
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_FestivalCrashDoor");
+	lstrcpy(BossDoorDesc.szSecondModelPrototypeTag, ModelPrototypeTag.c_str());
+
+	vPosition = _float3(375.63f, 15.00f, -48.67f);
+	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	world = trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	BossDoorDesc.WorldMatrix = matWorldFloat;
+	BossDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
+
+	BossDoorDesc.eInteractType = INTERACT_TYPE::FESTIVALDOOR;
+	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("BossDoor"), &BossDoorDesc)))
+		return E_FAIL;
+
+	CKeyDoor::KEYDOORMESH_DESC KeyDoorDesc{};
+	KeyDoorDesc.m_eMeshLevelID = LEVEL::YG;
+	KeyDoorDesc.szMeshID = TEXT("StationDoubleDoor");
+	lstrcpy(KeyDoorDesc.szName, TEXT("StationDoubleDoor"));
+
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_StationDoubleDoor");
+	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	vPosition = _float3(184.04f, 8.90f, -8.f);
+	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	world = trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	KeyDoorDesc.WorldMatrix = matWorldFloat;
+	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	KeyDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
+
+	KeyDoorDesc.eInteractType = INTERACT_TYPE::OUTDOOR;
+	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_KeyDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("KeyDoor"), &KeyDoorDesc)))
 		return E_FAIL;
 
 	return S_OK;
