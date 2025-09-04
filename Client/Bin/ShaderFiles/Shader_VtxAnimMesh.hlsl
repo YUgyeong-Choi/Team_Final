@@ -364,7 +364,7 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     
     // ARM 텍스처
     float3 vARM = g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
-    float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
+    float AO = pow(abs(vARM.r), g_fAOPower) * g_fAOIntensity;
     float Roughness = vARM.g * g_fRoughnessIntensity;
     float Metallic = vARM.b * g_fMetallicIntensity;
     
@@ -399,7 +399,7 @@ PS_OUT_PICK PS_PICK(PS_IN In)
      
     // ARM 텍스처
     float3 vARM = g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
-    float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
+    float AO = pow(abs(vARM.r), g_fAOPower) * g_fAOIntensity;
     float Roughness = vARM.g * g_fRoughnessIntensity;
     float Metallic = vARM.b * g_fMetallicIntensity;
     

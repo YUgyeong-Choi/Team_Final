@@ -170,7 +170,7 @@ PS_OUT PS_MAIN(PS_IN In)
     // ARM 텍스처
     float3 vARM = Sample_TriplanarTexture(g_ARMTexture, In, vTriplanarUV, vTriplanarBlend).rgb;
     //g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
-    float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
+    float AO = pow(abs(vARM.r), g_fAOPower) * g_fAOIntensity;
     float Roughness = vARM.g * g_fRoughnessIntensity;
     float Metallic = vARM.b * g_fMetallicIntensity;
     
@@ -227,7 +227,7 @@ PS_OUT PS_TOOL_MAIN(PS_IN In)
     // ARM 텍스처
     float4 vARM = Sample_TriplanarTexture(g_ARMTexture, In, vTriplanarUV, vTriplanarBlend);
     //g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
-    float AO = pow(vARM.r, g_fAOPower) * g_fAOIntensity;
+    float AO = pow(abs(vARM.r), g_fAOPower) * g_fAOIntensity;
     float Roughness = vARM.g * g_fRoughnessIntensity;
     float Metallic = vARM.b * g_fMetallicIntensity;
     

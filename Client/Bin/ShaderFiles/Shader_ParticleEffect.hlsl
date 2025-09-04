@@ -207,7 +207,7 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 [maxvertexcount(6)]
 void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4];
+    GS_OUT Out[4] = (GS_OUT[4])0;
     // === 카메라 → 파티클 벡터 ===
     float3 vLook = normalize(g_vCamPosition.xyz - In[0].vPosition.xyz);
 
