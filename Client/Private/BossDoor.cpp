@@ -391,8 +391,7 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			vTargetPos = _vector({ 375.13f, 14.9f, -48.83f, 1.f});
 			break;
 		case Client::FUOCO:
-			// -2.953791, Y:0.318406, Z:-235.758652 
-			vTargetPos = _vector({ -2.95f, 0.31f, -235.75f, 1.f});
+			vTargetPos = _vector({ -3.1f, 0.3f, -235.80f, 1.f});
 			break;
 		default:
 			break;
