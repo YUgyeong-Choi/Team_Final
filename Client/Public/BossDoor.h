@@ -2,7 +2,7 @@
 /* [ 야외 맵으로 갈 때 key 필요한 문들 ] */
 #include "Client_Defines.h"
 #include "DynamicMesh.h"
-
+#include "Player.h"
 NS_BEGIN(Engine)
 class CShader;
 class CTexture;
@@ -50,6 +50,8 @@ protected:
 	HRESULT LoadFromJson();
 	HRESULT LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom);
 	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
+
+	void Move_Player(_float fTimeDelta);
 private:
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
 
@@ -71,6 +73,12 @@ private:
 
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
+
+	_bool m_bMoveStart = false;
+	_bool m_bRotationStart = false;
+	_bool m_bStartCutScene = false;
+
+	CPlayer* m_pPlayer = { nullptr };
 public:
 	static CBossDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

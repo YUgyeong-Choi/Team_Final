@@ -1729,6 +1729,22 @@ void CPlayer::Register_Events()
 			});
 }
 
+_bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
+{
+	m_Input.bMove = true;
+	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+	_bool bFinishSetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ XMVectorGetX(vTargetPos), XMVectorGetY(vPosition), XMVectorGetZ(vTargetPos), 1.f}, m_pControllerCom);
+	
+	return bFinishSetPosition;
+}
+
+_bool CPlayer::RotateToDoor(_float fTimeDelta, _vector vRotation)
+{
+	_bool bFinishRotate = m_pTransformCom->RotateToDirectionSmoothly(vRotation, fTimeDelta);
+	return bFinishRotate;
+}
+
 void CPlayer::RootMotionActive(_float fTimeDelta)
 {
 	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();

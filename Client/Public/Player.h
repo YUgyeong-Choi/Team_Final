@@ -104,9 +104,11 @@ public: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
 	_vector ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
 	virtual void Register_Events() override;
-public:
+public: /* [ 컷씬 용 ] */
 	_bool Get_HaveKey() { return m_bHaveKey; }
 	void Set_GetKey() { m_bHaveKey = true; }
+	_bool MoveToDoor(_float fTimeDelta, _vector vTargetPos);
+	_bool RotateToDoor(_float fTimeDelta, _vector vRotation);
 private: /* [ 루트모션 활성화 ] */
 	void	RootMotionActive(_float fTimeDelta);
 

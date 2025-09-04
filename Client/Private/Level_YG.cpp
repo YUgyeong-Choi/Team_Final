@@ -894,7 +894,7 @@ HRESULT CLevel_YG::Ready_Interact()
 	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 1.5f, 0.f });
 
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
-	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
 	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
 		ENUM_CLASS(LEVEL::YG), TEXT("BossDoor"), &BossDoorDesc)))
