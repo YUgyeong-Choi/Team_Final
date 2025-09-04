@@ -2789,6 +2789,8 @@ public:
         _float fDamageRatio = m_pGameInstance->Compute_Random(1.5f, 2.f);
         m_pOwner->m_pWeapon->SetDamageRatio(fDamageRatio);
 
+        m_pOwner->LimActive(true, 1.5f);
+        
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -2828,6 +2830,7 @@ public:
 
     virtual void Exit() override
     {
+        m_pOwner->LimActive(false, 1.f);
         m_fStateTime = 0.f;
         m_iSkillCount = 0;
         m_bAttackA = false;

@@ -169,6 +169,11 @@ public: /* [ 불타는 셰이딩 ] */
 	void OnBurn(_float fTimeDelta);
 	void OffBurn(_float fTimeDelta);
 
+public: /* [ 림라이트 셰이딩 ] */
+	void LimActive(_bool bOnOff, _float fSpeed);
+	void OnLim(_float fTimeDelta);
+	void OffLim(_float fTimeDelta);
+
 
 public:
 	CPlayerLamp* Get_PlayerLamp() { return m_pPlayerLamp; }
@@ -277,6 +282,12 @@ private: /* [ 불타버려~ ] */
 	_float	m_fBurnPhase = {};
 	_float	m_fBurnSpeed = 1.7f;
 	_bool	m_bBurnSwitch = {};
+
+private: /* [ 림라이트 ] */
+	_float	m_fLimTime = {};
+	_float	m_fLimPhase = {};
+	_float	m_fLimSpeed = 1.7f;
+	_bool	m_bLimSwitch = {};
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };

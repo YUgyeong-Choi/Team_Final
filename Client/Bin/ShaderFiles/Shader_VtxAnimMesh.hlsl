@@ -33,7 +33,7 @@ float g_fMetallicIntensity = 1;
 float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
 float g_fEmissiveIntensity = 1;
-float g_fLimLightIntensity = 1;
+float g_fLimLightIntensity = 0;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
 /* [ BurnTextures ] */
@@ -45,6 +45,10 @@ float g_fBurnTime;
 
 /* [ LimLight ] */
 float4 g_fLimLightColor = { 1.f, 0.f, 0.f, 1.f };
+bool g_bUseLimLight = false;
+float g_RimPower = 2.f;
+float g_fBandStart = 0.75f;
+float g_fBandEnd = 0.8f;
 
 /* [ 피킹변수 ] */
 float g_fID;
@@ -475,41 +479,65 @@ float4 PS_LIMLIGHT(PS_IN_PBR In) : SV_Target0
     float4 vEdgeColor = g_fLimLightColor;
     float fNoiseScale = 0.5f;
     float fNoiseContrast = 0.9f;
-    float fEdgeSoftness = 0.12f;
+    float fEdgeSoftness = 3.12f;
     float fScrollSpeed = 0.0f; 
     
     float fTimeSeconds = 0.0f; 
-    float fRimPower = 2.4f; 
-    float fBandStart = 0.75f;
-    float fBandEnd = 0.80f; 
+    float fRimPower = g_RimPower;
+    float fBandStart = g_fBandStart;
+    float fBandEnd = g_fBandEnd;
     
+    // WS 노말 → VS, 위치도 VS로 변환해서 수치 안정
+    float3 vPosVS = mul(In.vWorldPos, g_ViewMatrix).xyz;
+    float3 vViewVS = normalize(-vPosVS);
+
     float3 vNrmWS = normalize(In.vNormal.xyz);
-    float3 vView = normalize(g_CamposWS.xyz - In.vWorldPos.xyz);
+    float3 vNrmVS = normalize(mul(float4(vNrmWS, 0.0f), g_ViewMatrix).xyz);
+
+    // 지오메트리 노말(면 노말) 섞어서 고주파 완화
+    float3 vNgWS = normalize(cross(ddx(In.vWorldPos.xyz), ddy(In.vWorldPos.xyz)));
+    float3 vNgVS = normalize(mul(float4(vNgWS, 0.0f), g_ViewMatrix).xyz);
+    vNrmVS = normalize(lerp(vNgVS, vNrmVS, 0.15f)); // 0.4~0.7 사이 튜닝
+
+    // 동일(뷰) 공간에서 림 계산
+    float fDotRaw = dot(vNrmVS, vViewVS);
+    float fRimRaw = 1.0f - saturate(abs(fDotRaw));
+    float fRim = pow(fRimRaw, fRimPower);
     
-    float fDot = dot(vNrmWS, vView);
-    float fRim = pow(1.0f - saturate(abs(fDot)), fRimPower);
-    
-    float fBandWidth = 0.1f;
-    float fW = max(fwidth(fRim) * 1.5f, 1e-4f);
+    float fBandWidth = 0.14f;
+
+    // dot / rimRaw의 파생폭도 함께 고려 + 최소폭 보장
+    float fWdot = max(fwidth(fDotRaw) * 1.0f, 1e-3f);
+    float fWraw = max(fwidth(fRimRaw) * 2.0f, 1e-3f);
+    float fW = max(fwidth(fRim) * 2.0f + fWdot + fWraw, 0.01f);
+
     float fUp = smoothstep(fBandStart - fW, fBandEnd + fW, fRim);
     float fOut = smoothstep(fBandEnd + fW, fBandEnd + fBandWidth + 2.0f * fW, fRim);
     float fRimBand = saturate(fUp - fOut);
     
-    // --- 노이즈 마스크 --- 
-    float2 vNoiseUV = In.vTexcoord * fNoiseScale + fTimeSeconds * fScrollSpeed * float2(0.17f, -0.09f);
-    float fNoise = g_NoiseMap.Sample(DefaultSampler, vNoiseUV).r;
-    fNoise = pow(saturate(fNoise), max(0.001f, fNoiseContrast));
-    float fNoiseMask = smoothstep(0.5f - fEdgeSoftness, 0.5f + fEdgeSoftness, fNoise);
-    float fMask = saturate(fRimBand * fNoiseMask);
-    float fA = vEdgeColor.a * fMask;
     
-    float fAmbientStrength = 0.2f;
-    float3 vAmbient = vEdgeColor.rgb * fAmbientStrength;
+    if (g_bUseLimLight)
+    {
+        // --- 노이즈 마스크 --- 
+        float2 vNoiseUV = In.vTexcoord * fNoiseScale + fTimeSeconds * fScrollSpeed * float2(0.17f, -0.09f);
+        float fNoise = g_NoiseMap.Sample(DefaultSampler, vNoiseUV).r;
+        fNoise = pow(saturate(fNoise), max(0.001f, fNoiseContrast));
+        float fNoiseMask = smoothstep(0.5f - fEdgeSoftness, 0.5f + fEdgeSoftness, fNoise);
+        float fMask = saturate(fRimBand * fNoiseMask);
+        float fA = vEdgeColor.a * fMask;
     
-    Out = float4(vEdgeColor.rgb * fMask, fMask);
-    Out += float4(vAmbient, 0.2f);
-    Out *= g_fLimLightIntensity;
+        float fAmbientStrength = 0.2f;
+        float3 vAmbient = vEdgeColor.rgb * fAmbientStrength;
     
+        Out = float4(vEdgeColor.rgb * g_fLimLightIntensity, fMask * g_fLimLightIntensity);
+        Out += float4(vAmbient, 0.2f);
+    }
+    else
+    {
+        Out = float4(vEdgeColor.rgb * g_fLimLightIntensity, fRimBand * g_fLimLightIntensity);
+    }
+    
+    //Out = float4(fRimBand.xxx, 1);
     return Out;
     
 }

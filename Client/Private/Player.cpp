@@ -250,6 +250,12 @@ void CPlayer::Update(_float fTimeDelta)
 	else
 		OffBurn(fTimeDelta);
 
+	/* [ 림라이트 셰이더 ] */
+	if (m_bLimSwitch)
+		OnLim(fTimeDelta);
+	else
+		OffLim(fTimeDelta);
+
 	/* [ 가드시간(0.2f) ] */
 	IsPerfectGard(fTimeDelta);
 
@@ -263,8 +269,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_LIM, this);
-	
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_LIMLIGHT, this);
+
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
@@ -348,8 +354,25 @@ HRESULT CPlayer::Render_LimLight()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightIntensity", &m_fLimPhase, sizeof(_float))))
+		return E_FAIL;
+
 	_float4 vLimLightColor = { 0.f, 0.749f, 1.f, 1.f };
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightColor, sizeof(_float4))))
+		return E_FAIL;
+
+	_float vRimPower = 3.6f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_RimPower", &vRimPower, sizeof(_float))))
+		return E_FAIL;
+	_float vRimStart = 0.62f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBandStart", &vRimStart, sizeof(_float))))
+		return E_FAIL;
+	_float vRimEnd = 0.82f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBandEnd", &vRimEnd, sizeof(_float))))
+		return E_FAIL;
+
+	_bool vLimLightMask = { false };
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightMask, sizeof(_bool))))
 		return E_FAIL;
 
 	_float4 vCamPostion = {};
@@ -374,13 +397,12 @@ HRESULT CPlayer::Render_LimLight()
 	if (FAILED(m_pNoiseMap->Bind_ShaderResource(m_pShaderCom, "g_NoiseMap", 0)))
 		return E_FAIL;
 
-	_float fLimLightIntensity = 1.f;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightIntensity", &fLimLightIntensity, sizeof(_float))))
-		return E_FAIL;
-
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
+		//if (i >= 3 && i != 9)
+		//	continue;
+
 		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
 			return E_FAIL;
 
@@ -398,6 +420,7 @@ HRESULT CPlayer::Render_LimLight()
 void CPlayer::Reset()
 {	
 	/* [ 무기 장착 해제 ] */
+	m_pAnimator->CancelOverrideAnimController();
 	m_pWeapon->SetbIsActive(false);
 	m_bWeaponEquipped = false;
 	m_pWeapon->Reset();
@@ -1166,6 +1189,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::MAINSKILLA:
 	{
 		RootMotionActive(fTimeDelta);
+
 		if (!m_bSetTwo)
 		{
 			m_fMana -= 100.f;
@@ -2038,7 +2062,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 		// 필요한 정보를 수집한다.
-		CalculateDamage(pOther, eColliderType);
+		if (pUnit->Get_UnitType() == EUnitType::NORMAL_MONSTER)
+			CalculateDamage(pOther, eColliderType);
 		
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
@@ -2733,7 +2758,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		if (m_pAnimator->CheckBool("Sprint"))
 		{
 			//스프린트 중이라면
-			_float Speed = 0.25f;
+			_float Speed = 0.2f;
 			m_vecElements[0].fElementWeight -= fDeltaTime * Speed;
 		}
 		else if (m_bWalk)
@@ -2745,7 +2770,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		else
 		{
 			//뛰고 있다면
-			_float Speed = 0.15f;
+			_float Speed = 0.1f;
 			m_vecElements[0].fElementWeight -= fDeltaTime * Speed;
 		}
 		
@@ -2797,6 +2822,32 @@ void CPlayer::OffBurn(_float fTimeDelta)
 			m_fBurnPhase = 0.f;
 		else
 			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
+	}
+}
+
+
+
+void CPlayer::LimActive(_bool bOnOff, _float fSpeed)
+{
+	m_bLimSwitch = bOnOff;
+	m_fLimSpeed = fSpeed;
+}
+
+void CPlayer::OnLim(_float fTimeDelta)
+{
+	if (m_fLimPhase <= 1.f)
+	{
+		m_fLimPhase += fTimeDelta * m_fLimSpeed;
+		m_fLimPhase = min(m_fLimPhase, 1.f);
+	}
+}
+void CPlayer::OffLim(_float fTimeDelta)
+{
+	if (m_fLimPhase >= 0.f)
+	{
+		m_fLimPhase -= fTimeDelta * m_fLimSpeed;
+		if (m_fLimPhase < 0.f)
+			m_fLimPhase = 0.f;
 	}
 }
 

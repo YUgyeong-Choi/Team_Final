@@ -1279,9 +1279,6 @@
     <ClCompile Include="..\private\Unit.cpp">
       <Filter>02.GameObjects\01.Unit</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Player.cpp">
-      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Observer_Player_Status.cpp">
       <Filter>03. Observer\PlayerStatus</Filter>
     </ClCompile>
@@ -1537,6 +1534,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BossDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

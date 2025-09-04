@@ -369,6 +369,7 @@
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
     <ClCompile Include="..\Private\KeyDoor.cpp" />
+    <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\SlideDoor.cpp" />
     <ClCompile Include="..\private\Durability_Bar.cpp" />
     <ClCompile Include="..\Private\DynamicMesh.cpp" />
@@ -428,7 +429,6 @@
     <ClCompile Include="..\private\Panel_Player_RU.cpp" />
     <ClCompile Include="..\private\ParticleEffect.cpp" />
     <ClCompile Include="..\private\PBRMesh.cpp" />
-    <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Elite_Police.cpp" />
     <ClCompile Include="..\private\LegionArm_Base.cpp" />
     <ClCompile Include="..\private\LegionArm_Steel.cpp" />

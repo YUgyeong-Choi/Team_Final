@@ -851,14 +851,14 @@ HRESULT CRenderer::Render_LimLight()
 	/* [ 림라이트 렌더링 ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_PlayerLim"));
 	
-	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_LIM)])
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_LIMLIGHT)])
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render_LimLight();
 	
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_LIM)].clear();
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_LIMLIGHT)].clear();
 	
 	m_pGameInstance->End_MRT();
 
@@ -1227,7 +1227,7 @@ HRESULT CRenderer::Render_PBR_Glow()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Emissive"), m_pShader, "g_PreBlurTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_LimLight"), m_pShader, "g_PreBlurTexture2")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_PlayerLim"), m_pShader, "g_PreBlurTexture2")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_InnerLine"), m_pShader, "g_PreBlurTexture3")))
 		return E_FAIL;

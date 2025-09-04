@@ -173,8 +173,18 @@ HRESULT CUnit::Render_Fury()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
 		return E_FAIL;
 
-	_float4 vLimLightColor = { 1.f, 0.f, 0.f, 1.f };
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightColor, sizeof(_float4))))
+	_bool vLimLightMask = { true };
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightMask, sizeof(_bool))))
+		return E_FAIL;
+
+	_float vRimPower = 2.4f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_RimPower", &vRimPower, sizeof(_float))))
+		return E_FAIL;
+	_float vRimStart = 0.75f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBandStart", &vRimStart, sizeof(_float))))
+		return E_FAIL;
+	_float vRimEnd = 0.8f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBandEnd", &vRimEnd, sizeof(_float))))
 		return E_FAIL;
 
 	_float4 vCamPostion = {};
@@ -203,6 +213,11 @@ HRESULT CUnit::Render_Fury()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightIntensity", &m_fFurySwitch, sizeof(_float))))
 		return E_FAIL;
 
+
+	
+	_float4 vLimLightColor = { 1.0f, 0.549f, 0.0f, 1.f };
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightColor, sizeof(_float4))))
+		return E_FAIL;
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
@@ -216,6 +231,10 @@ HRESULT CUnit::Render_Fury()
 			return E_FAIL;
 	}
 
+
+	vLimLightColor = { 1.f, 0.f, 0.f, 1.f };
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightColor, sizeof(_float4))))
+		return E_FAIL;
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
