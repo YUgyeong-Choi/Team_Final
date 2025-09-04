@@ -1167,17 +1167,6 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
         else if (bHeightOK_C && bInsideC && (fCurrViewZC - fBiasViewZ > fShadowViewZC))
             Out.vBackBuffer *= 0.5f;
     }
-    
-    /* [ 이펙트 디퍼드 합성 ] */
-    //vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
-    //vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
-    //EffectBlendDiffuse += EffectBlendGlow;
-    //Out.vBackBuffer += EffectBlendDiffuse;
-    
-    //vector EffectBlendWBComposite = g_EffectBlend_WBComposite.Sample(DefaultSampler, In.vTexcoord);
-    //vector EffectBlendWBGlow = g_EffectBlend_WBGlow.Sample(DefaultSampler, In.vTexcoord);
-    //EffectBlendWBComposite += EffectBlendWBGlow;
-    //Out.vBackBuffer += EffectBlendWBComposite;
        
     if (Out.vBackBuffer.a < 0.003f)
         discard;
