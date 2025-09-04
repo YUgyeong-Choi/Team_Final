@@ -76,6 +76,9 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 		m_bCanActive = true;
 	}
 #endif // _DEBUG
+
+	if (m_bStartSound)
+		Play_Sound(fTimeDelta);
 }
 
 void CBossDoor::Update(_float fTimeDelta)
@@ -215,18 +218,25 @@ void CBossDoor::Register_Events()
 	}
 }
 
-void CBossDoor::Play_Sound()
+void CBossDoor::Play_Sound(_float fTimeDelta)
 {
-
-	//switch (m_eInteractType)
-	//{
-	//case Client::TUTORIALDOOR:
-	//	m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.5f * g_fInteractSoundVolume);
-	//	m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
-	//	break;
-	//default:
-	//	break;
-	//}
+	m_fSoundDelta += fTimeDelta;
+	switch (m_eInteractType)
+	{
+	case Client::FUOCO:
+	{
+		if (m_fSoundDelta > 1.8f)
+		{
+			m_bStartSound = false;
+			m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.5f * g_fInteractSoundVolume);
+			m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
+			m_fSoundDelta = 0.f;
+		}
+		break;
+	}
+	default:
+		break;
+	}
 
 }
 
@@ -435,6 +445,8 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			m_pAnimator->SetTrigger("Open");
 		if (m_pSecondAnimator)
 			m_pSecondAnimator->SetTrigger("Open");
+
+		m_bStartSound = true;
 	}
 }
 

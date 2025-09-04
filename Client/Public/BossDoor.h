@@ -42,7 +42,6 @@ public:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	void Register_Events();
-	void Play_Sound();
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(BOSSDOORMESH_DESC* pDesc);
@@ -52,6 +51,7 @@ protected:
 	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
 
 	void Move_Player(_float fTimeDelta);
+	void Play_Sound(_float fTimeDelta);
 private:
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
 
@@ -69,14 +69,19 @@ private:
 	// 오프셋 
 	_float3 m_OffSetCollider;
 
+	// 트리거 관련
 	INTERACT_TYPE m_eInteractType;
-
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
 
+	// 플레이어 이동 관련
 	_bool m_bMoveStart = false;
 	_bool m_bRotationStart = false;
 	_bool m_bStartCutScene = false;
+
+	// 사운드 관련
+	_bool m_bStartSound = false;
+	_float m_fSoundDelta = {};
 
 	CPlayer* m_pPlayer = { nullptr };
 public:
