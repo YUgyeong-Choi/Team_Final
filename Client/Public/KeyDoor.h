@@ -50,8 +50,6 @@ private:
 
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
-
-	CModel* m_pModelCom2 = { nullptr };
 public:
 	static CKeyDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
