@@ -1022,7 +1022,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 
 			wstring wsLayer = {};
 
-			if (wstrMonsterName == TEXT("FireEater"))
+			if (wstrMonsterName == TEXT("FireEater") || wstrMonsterName == TEXT("FestivalLeader"))
 			{
 				wsLayer = TEXT("Layer_Monster");
 			}
