@@ -123,7 +123,6 @@ HRESULT CParticleComputeShader::Dispatch_ParticleCS(const PARTICLECBUFFER& tCBuf
 	return S_OK;
 }
 
-
 void CParticleComputeShader::Bind()
 {
 	__super::Bind();

@@ -1035,7 +1035,7 @@ HRESULT CRenderer::Render_BackBuffer()
 
 HRESULT CRenderer::Render_NonLight()
 {
-	//m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, true);
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, false);
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)])
 	{
@@ -1046,7 +1046,7 @@ HRESULT CRenderer::Render_NonLight()
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)].clear();
 
-	//m_pGameInstance->End_MRT();
+	m_pGameInstance->End_MRT();
 
 	return S_OK;
 }

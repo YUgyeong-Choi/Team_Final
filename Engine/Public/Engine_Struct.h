@@ -542,16 +542,16 @@ namespace Engine
 	
 		_float2		vLifeTime;
 		_float		fSpeed = {};
-		_float		fRotationSpeed = {}; // 자전 속도
-	
+		_float		fTileIdx = {};
+
 		_float		fOrbitSpeed = {}; // 공전 속도
 		_float		fAccel;        // 가속도 (+면 가속, -면 감속
 		_float		fMaxSpeed;     // 최대 속도 (옵션)
 		_float		fMinSpeed;     // 최소 속도 (옵션, 감속 시 멈춤 방지)
 
-		_float		fTileIdx = {};
 		_float2		vTileOffset = {};
-		_float		_pad0;
+		_float		fRotationSpeed = {}; // 자전 속도
+		_float		fRotationAngle = {}; // 자전 각도(radian)
 	}PPDESC;
 	/* [ 이 구조체를 수정하면 ParticleVS와 CS hlsl 내부 구조체도 반드시 수정하시오 !! ] */
 
@@ -584,11 +584,8 @@ namespace Engine
 		_float3		vOrbitAxis;      // normalized
 		_float		_pad5;
 
-		_float3		vRotationAxis;   // normalized
-		_float		_pad6;
-
 		_float3		vRange;			 // vRange
-		_float		_pad7;
+		_float		_pad6;
 
 		_float4		vSocketRot;
 

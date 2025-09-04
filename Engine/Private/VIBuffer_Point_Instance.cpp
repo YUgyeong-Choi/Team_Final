@@ -158,156 +158,6 @@ HRESULT CVIBuffer_Point_Instance::Render()
 	return S_OK;
 }
 
-void CVIBuffer_Point_Instance::Directional(_float fTimeDelta, _bool bTool)
-{
-	D3D11_MAPPED_SUBRESOURCE	SubResource{};
-
-	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-
-	VTXPOS_PARTICLE_INSTANCE* pVertices = static_cast<VTXPOS_PARTICLE_INSTANCE*>(SubResource.pData);
-
-
-	if (bTool)
-	{
-		for (size_t i = 0; i < m_iNumInstance; i++)
-		{
-			_float trackTime = fTimeDelta; // fTimeDelta는 누적 시간으로 들어옴 (trackPos / 60.0f)
-
-			// 루프 적용 시: trackTime을 주기 내로 제한
-			if (m_tCBuffer.bIsLoop)
-			{
-				trackTime = fmodf(trackTime, m_pParticleParamDesc[i].vLifeTime.x);
-			}
-			_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
-			_vector vDir = XMLoadFloat4(&m_pParticleParamDesc[i].vDirection);
-			_vector vNew = vStart + vDir * m_pParticleParamDesc[i].fSpeed * trackTime;
-
-			XMStoreFloat4(&pVertices[i].vTranslation, vNew);
-
-			pVertices[i].vLifeTime.y = trackTime;
-
-			// 초기 위치 - 속도 * 시간
-			//pVertices[i].vTranslation = m_pVertexInstances[i].vTranslation;
-			//pVertices[i].vTranslation.y -= m_pSpeeds[i] * trackTime;
-		}
-	}
-	else
-	{
-		for (size_t i = 0; i < m_iNumInstance; i++)
-		{
-			pVertices[i].vLifeTime.y += fTimeDelta;
-
-			//pVertices[i].vTranslation.y -= m_pSpeeds[i] * fTimeDelta;
-
-			_vector vDir = XMLoadFloat4(&m_pParticleParamDesc[i].vDirection);
-			_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
-			vPos += vDir * m_pParticleParamDesc[i].fSpeed * fTimeDelta;
-			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-
-
-			if (1 == m_tCBuffer.bIsLoop &&
-				pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
-			{
-				pVertices[i].vLifeTime.y = 0.f;
-				pVertices[i].vTranslation = m_pParticleParamDesc[i].vTranslation;
-			}
-		}
-	}
-
-	m_pContext->Unmap(m_pVBInstance, 0);
-}
-
-void CVIBuffer_Point_Instance::Spread(_float fTimeDelta, _bool bTool)
-{
-	D3D11_MAPPED_SUBRESOURCE	SubResource{};
-
-	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-
-	VTXPOS_PARTICLE_INSTANCE* pVertices = static_cast<VTXPOS_PARTICLE_INSTANCE*>(SubResource.pData);
-
-	_vector vDir = {};
-
-	if (bTool)
-	{
-		for (size_t i = 0; i < m_iNumInstance; i++)
-		{
-			_float trackTime = fTimeDelta;
-			if (m_tCBuffer.bIsLoop)
-				trackTime = fmodf(trackTime, m_pParticleParamDesc[i].vLifeTime.x);
-
-			pVertices[i].vLifeTime.y = trackTime;
-
-			_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
-			_vector vDir = XMLoadFloat4(&m_pParticleParamDesc[i].vDirection);
-			_vector vNew = vStart + vDir * m_pParticleParamDesc[i].fSpeed * trackTime;
-
-			if (m_tCBuffer.bUseGravity)
-			{
-				_float gOffset = 0.5f * m_tCBuffer.fGravity * trackTime * trackTime;
-				vNew = XMVectorSetY(vNew, XMVectorGetY(vNew) - gOffset);
-			}
-
-			// 자전
-			if (m_tCBuffer.bUseSpin)
-			{
-				_float angle = XMConvertToRadians(m_pParticleParamDesc[i].fRotationSpeed) * trackTime;
-				_vector axis = XMLoadFloat3(&m_tCBuffer.vRotationAxis);
-				_matrix rot = XMMatrixRotationAxis(axis, angle);
-
-				_vector vRight = XMVector3TransformNormal(XMLoadFloat4(&pVertices[i].vRight), rot);
-				_vector vUp = XMVector3TransformNormal(XMLoadFloat4(&pVertices[i].vUp), rot);
-				_vector vLook = XMVector3TransformNormal(XMLoadFloat4(&pVertices[i].vLook), rot);
-
-				XMStoreFloat4(&pVertices[i].vRight, vRight);
-				XMStoreFloat4(&pVertices[i].vUp, vUp);
-				XMStoreFloat4(&pVertices[i].vLook, vLook);
-			}
-			// 공전
-			if (m_tCBuffer.bUseOrbit)
-			{
-				_float angle = XMConvertToRadians(m_pParticleParamDesc[i].fOrbitSpeed) * trackTime;
-				_vector axis = XMLoadFloat3(&m_tCBuffer.vOrbitAxis);
-				_matrix orbitRot = XMMatrixRotationAxis(axis, angle);
-
-				_vector center = XMVectorSetW(XMLoadFloat3(&m_tCBuffer.vCenter), 1.f);
-				_vector offset = vNew - center;
-				offset = XMVector3TransformNormal(offset, orbitRot);
-				vNew = center + offset;
-			}
-
-			XMStoreFloat4(&pVertices[i].vTranslation, vNew);
-		}
-	}
-	else
-	{
-		for (size_t i = 0; i < m_iNumInstance; i++)
-		{
-			pVertices[i].vLifeTime.y += fTimeDelta;
-
-			_vector vDir = XMLoadFloat4(&m_pParticleParamDesc[i].vDirection);
-			_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
-			vPos += vDir * m_pParticleParamDesc[i].fSpeed * fTimeDelta;
-
-			if (m_tCBuffer.bUseGravity)
-			{
-				_float t = pVertices[i].vLifeTime.y;
-				_float gOffset = 0.5f * m_tCBuffer.fGravity * fTimeDelta * fTimeDelta;
-				vPos = XMVectorSetY(vPos, XMVectorGetY(vPos) - gOffset);
-			}
-
-			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-
-			if (m_tCBuffer.bIsLoop && pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
-			{
-				pVertices[i].vLifeTime.y = 0.f;
-				pVertices[i].vTranslation = m_pParticleParamDesc[i].vTranslation;
-			}
-		}
-	}
-
-	m_pContext->Unmap(m_pVBInstance, 0);
-}
-
 void CVIBuffer_Point_Instance::Set_InitRotation(_fmatrix matRot)
 {
 	_vector vOrigOrbitAxis = XMLoadFloat3(&m_tCBuffer.vOrbitAxis);
@@ -332,7 +182,6 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	// 절대 위치 Pivot으로 저장
 	XMStoreFloat3(&m_tCBuffer.vPivot, XMLoadFloat3(&pDesc->vPivot) - XMLoadFloat3(&pDesc->vCenter));
 	m_tCBuffer.vOrbitAxis = pDesc->vOrbitAxis;
-	m_tCBuffer.vRotationAxis = pDesc->vRotationAxis;
 	m_tCBuffer.isTileLoop = pDesc->isTileLoop ? 1 : 0;
 	m_tCBuffer.vTileCnt = pDesc->vTileCnt; // m_iTileX, Y인데..
 	m_tCBuffer.fTileTickPerSec = pDesc->fTileTickPerSec;
@@ -353,10 +202,9 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 		m_pParticleParamDesc[i].fMinSpeed = pDesc->fMinSpeed;
 		m_pParticleParamDesc[i].fSpeed = m_pGameInstance->Compute_Random(pDesc->vSpeed.x, pDesc->vSpeed.y);
 		m_pParticleParamDesc[i].fAccel = m_pGameInstance->Compute_Random(pDesc->vAccel.x, pDesc->vAccel.y);
-		m_pParticleParamDesc[i].fRotationSpeed = m_pGameInstance->Compute_Random(pDesc->vRotationSpeed.x, pDesc->vRotationSpeed.y);
+		m_pParticleParamDesc[i].fRotationSpeed = XMConvertToRadians(m_pGameInstance->Compute_Random(pDesc->vRotationSpeed.x, pDesc->vRotationSpeed.y));
 		m_pParticleParamDesc[i].fOrbitSpeed = m_pGameInstance->Compute_Random(pDesc->vOrbitSpeed.x, pDesc->vOrbitSpeed.y);
 		_float	fSize = m_pGameInstance->Compute_Random(pDesc->vSize.x, pDesc->vSize.y);
-
 		m_pParticleParamDesc[i].vRight = _float4(fSize, 0.f, 0.f, 0.f);
 		m_pParticleParamDesc[i].vUp = _float4(0.f, fSize, 0.f, 0.f);
 		m_pParticleParamDesc[i].vLook = _float4(0.f, 0.f, fSize, 0.f);

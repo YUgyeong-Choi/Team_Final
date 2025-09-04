@@ -15,16 +15,16 @@ struct ParticleParam
     
     float2      LifeTime;   // x=max, y=acc
     float       Speed;
-    float       RotationSpeed; // degrees/sec
+    float       fTileIdx;
 
     float       OrbitSpeed; // degrees/sec
     float       fAccel;     // 가속도 (+면 가속, -면 감속)
     float       fMaxSpeed;  // 최대 속도 (옵션)
     float       fMinSpeed;  // 최소 속도 (옵션, 감속 시 멈춤 방지)
     
-    float       fTileIdx;
     float2      vTileOffset;
-    float       _pad0;
+    float       RotationSpeed; // degrees/sec
+    float       RotationAngle;
 };
 
 
@@ -58,12 +58,9 @@ cbuffer ParticleCB : register(b0)
     
     float3 OrbitAxis; // normalized
     float _pad5;
-    
-    float3 RotationAxis; // normalized
-    float _pad6;
-    
+
     float3 Range; // vRange
-    float _pad7;
+    float _pad6;
     
     float4 vSocketRot;
 
@@ -189,14 +186,6 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             pos.y -= 0.5f * fGravity * t * t;
 
         // 자전: 초기 basis에 "절대 각도" 적용
-        if (UseSpin != 0)
-        {
-            float3 axis = normalize(RotationAxis);
-            float angle = radians(pp.RotationSpeed) * t;
-            pp.Right.xyz = rotateAroundAxis(init.Right.xyz, axis, angle);
-            pp.Up.xyz = rotateAroundAxis(init.Up.xyz, axis, angle);
-            pp.Look.xyz = rotateAroundAxis(init.Look.xyz, axis, angle);
-        }
         else
         {
             pp.Right = init.Right;
@@ -236,7 +225,8 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             //float3 worldDir = RotateByQuat(localDir, vSocketRot);
             //pp.Direction.xyz = normalize(worldDir);
 
-            ///////////////////////////////////
+            /******************************************************************************/
+
             /* 이펙트 랜덤 생성 시 (bake 안 하고) */
             
             pp.Translation = float4(
@@ -270,6 +260,8 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
                     0.f
                 );
             }
+            pp.RotationAngle = Random(pp.RotationSpeed, 0.f, 3.14f);
+            
             //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
             //float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
             //pp.Direction.xyz = normalize(worldDir);
@@ -302,11 +294,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         // 자전: 직전 basis에 Δ각도만큼 회전
         if (UseSpin != 0)
         {
-            float3 axis = normalize(RotationAxis);
             float angle = radians(pp.RotationSpeed) * DeltaTime;
-            pp.Right.xyz = rotateAroundAxis(pp.Right.xyz, axis, angle);
-            pp.Up.xyz = rotateAroundAxis(pp.Up.xyz, axis, angle);
-            pp.Look.xyz = rotateAroundAxis(pp.Look.xyz, axis, angle);
         }
 
         // 공전: Δ각도만큼 오프셋 회전
@@ -399,6 +387,10 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             pp.Direction.xyz = normalize(worldDir);
             
         }
+        pp.RotationAngle += pp.RotationSpeed;
+
+        if (pp.RotationAngle > 6.28318530718f)
+            pp.RotationAngle -= 6.28318530718f;
         
         uint iTileIdx = (uint) pp.fTileIdx;
         float fTileSizeX = 1.0f / float(vTileCnt.x);
