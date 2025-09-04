@@ -48,20 +48,11 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 		return;
 	if (m_bCanActive && !m_bFinish)
 	{
-	
 		if (KEY_DOWN(DIK_E))
 		{
-			switch (m_eInteractType)
-			{
-			case Client::OUTDOOR: //X:183.086136, Y:8.865019, Z:-7.831734 이쯤
-			{
-				/* 플레이어의 m_bHaveKey 가지고 Interaction_Door안에서 분기 잡기 */
-				m_pPlayer->Interaction_Door(m_eInteractType, this);
-				break;
-			}
-			default:
-				break;
-			}
+			m_bMoveStart = true;
+			m_pPhysXActorCom->Init_SimulationFilterData();
+			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			m_bFinish = m_pPlayer->Get_HaveKey();
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 		}
@@ -87,6 +78,7 @@ void CKeyDoor::Update(_float fTimeDelta)
 	if (m_pModelCom)
 		m_pModelCom->Update_Bones();
 
+	Move_Player(fTimeDelta);
 }
 
 void CKeyDoor::Late_Update(_float fTimeDelta)
@@ -207,6 +199,55 @@ void CKeyDoor::OpenDoor()
 	if (m_pAnimator)
 	{
 		m_pAnimator->SetTrigger("Open");
+	}
+}
+
+void CKeyDoor::Move_Player(_float fTimeDelta)
+{
+	if (m_bMoveStart)
+	{
+		_vector vTargetPos;
+		switch (m_eInteractType)
+		{
+		case Client::OUTDOOR:
+			//X:183.086136, Y:8.865019, Z:-7.831734 이쯤
+			vTargetPos = _vector({ 183.08f, 8.86f, -7.83f, 1.f });
+			break;
+		default:
+			break;
+		}
+
+		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
+		{
+			m_bMoveStart = false;
+			m_bRotationStart = true;
+		}
+	}
+
+
+	if (m_bRotationStart)
+	{
+		_vector vTargetRotation;
+		switch (m_eInteractType)
+		{
+		case Client::OUTDOOR:
+			vTargetRotation = _vector({ 1.f, 0.f, 0.f, 0.f });
+			break;
+		default:
+			break;
+		}
+
+		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
+		{
+			m_bRotationStart = false;
+			m_bStartCutScene = true;
+		}
+	}
+
+	if (m_bStartCutScene)
+	{
+		m_bStartCutScene = false;
+		m_pPlayer->Interaction_Door(m_eInteractType, this);
 	}
 }
 

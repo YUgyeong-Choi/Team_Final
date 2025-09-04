@@ -43,6 +43,8 @@ public:
 	void Play_Sound();
 
 	void OpenDoor();
+
+	void Move_Player(_float fTimeDelta);
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(KEYDOORMESH_DESC* pDesc);
@@ -59,6 +61,10 @@ private:
 
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
+
+	_bool m_bMoveStart = false;
+	_bool m_bRotationStart = false;
+	_bool m_bStartCutScene = false;
 public:
 	static CKeyDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

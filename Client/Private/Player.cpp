@@ -3070,8 +3070,8 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 
 void CPlayer::Movement(_float fTimeDelta)
 {
-	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-		return;
+	//if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+	//	return;
 
 	SetMoveState(fTimeDelta);
 }

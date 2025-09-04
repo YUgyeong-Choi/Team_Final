@@ -2,7 +2,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "UI_Manager.h"
-
+#include "Camera_Manager.h"
 CBossDoor::CBossDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDynamicMesh{ pDevice, pContext }
 {
@@ -57,8 +57,13 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 			m_pPhysXActorCom->Init_SimulationFilterData();
 			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
+
+			//CCamera_Manager::Get_Instance()->SetbMoveable(false);
 		}
 	}
+
+	/*if(KEY_DOWN(DIK_C))
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);*/
 
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))
