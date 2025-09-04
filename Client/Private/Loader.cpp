@@ -591,6 +591,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CElite_Police::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Projectile"),
+		CProjectile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireBall"),
 		CFireBall::Create(m_pDevice, m_pContext))))

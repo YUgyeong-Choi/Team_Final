@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "LockOn_Manager.h" 
 #include "PhysX_IgnoreSelfCallback.h"
+#include "FireBall.h"
 
 CButtler_Range::CButtler_Range(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CMonster_Base{pDevice, pContext}
@@ -434,6 +435,32 @@ void CButtler_Range::Register_Events()
 		++m_iAttackCount;
 
 		// 투사체 만들어서 쏘는거 추가하기
+
+		const _float* vWeaponPos = m_pWeapon->Get_CombinedWorldMatrix()->m[3];
+
+		_vector vPos = { vWeaponPos[0], vWeaponPos[1], vWeaponPos[2], vWeaponPos[3] };
+		CProjectile::PROJECTILE_DESC desc{};
+		_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+
+		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.5f - m_pTransformCom->Get_State(STATE::POSITION);
+
+		desc.bUseDistTrigger = false;
+		desc.bUseTimeTrigger = false;
+		desc.fGravityOnDist = 0.f;
+		desc.fLifeTime = 5.f;
+		desc.fRadius = 0.1f;
+		desc.fRotationPerSec = 0.f;
+		desc.fSpeed = 1.f;
+		desc.fSpeedPerSec = 1.f;
+		desc.iLevelID = iLevelIndex;
+		lstrcpy(desc.szName, TEXT("Bullet"));
+		desc.vDir = { vDir.m128_f32[0], vDir.m128_f32[1], vDir.m128_f32[2] };
+		desc.vPos = { vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2] };
+
+		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Projectile"), iLevelIndex, TEXT("Layer_Projectile_Normal"), &desc)))
+		{
+			return;
+		}
 
 		});
 
