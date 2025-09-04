@@ -1172,8 +1172,8 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	_float4x4 matWorldFloat;
 	XMStoreFloat4x4(&matWorldFloat, matWorld);
 	Desc.WorldMatrix = matWorldFloat;
-	Desc.fColliderScale = 1.f;
-	Desc.iColliderMeshIdx = 0;
+	Desc.vColliderOffSet = _vector({ 0.f, 1.3f, 0.f, 0.f });
+	Desc.vColliderSize = _vector({ 1.5f, 2.f, 0.2f, 0.f });
 
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
@@ -1198,9 +1198,8 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 
 	XMStoreFloat4x4(&matWorldFloat, world);
 	BossDoorDesc.WorldMatrix = matWorldFloat;
-	BossDoorDesc.fColliderScale = 0.01f;
-	BossDoorDesc.OffSetCollider = {2.f, 2.f,0.f};
-	BossDoorDesc.iColliderMeshIdx = 0;
+	BossDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 1.5f, 0.f });
 
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
 	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
@@ -1228,14 +1227,37 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 
 	XMStoreFloat4x4(&matWorldFloat, world);
 	BossDoorDesc.WorldMatrix = matWorldFloat;
-	BossDoorDesc.fColliderScale = 0.01f;
-	BossDoorDesc.iColliderMeshIdx = 1;
+	BossDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
 
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FESTIVALDOOR;
 	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
 	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
  	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossDoor"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
+		return E_FAIL;
+
+	CKeyDoor::KEYDOORMESH_DESC KeyDoorDesc{};
+	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	KeyDoorDesc.szMeshID = TEXT("StationDoubleDoor");
+	lstrcpy(KeyDoorDesc.szName, TEXT("StationDoubleDoor"));
+
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_StationDoubleDoor");
+	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	vPosition = _float3(184.04f, 8.90f, -8.f);
+	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	world = trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	KeyDoorDesc.WorldMatrix = matWorldFloat;
+	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	KeyDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
+
+	KeyDoorDesc.eInteractType = INTERACT_TYPE::OUTDOOR;
+	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
 		return E_FAIL;
 
 	return S_OK;

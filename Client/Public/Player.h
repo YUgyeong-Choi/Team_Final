@@ -104,7 +104,9 @@ public: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
 	_vector ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
 	virtual void Register_Events() override;
-
+public:
+	_bool Get_HaveKey() { return m_bHaveKey; }
+	void Set_GetKey() { m_bHaveKey = true; }
 private: /* [ 루트모션 활성화 ] */
 	void	RootMotionActive(_float fTimeDelta);
 
@@ -343,6 +345,7 @@ private: /* [ 인터렉션 관련변수 ] */
 	_bool  m_bInteractionRotate[9] = { false };
 	_bool  m_bInteractSound[9] = { false };
 	_float m_fInteractionTime[9] = { 0 };
+	_bool  m_bHaveKey = false;
 
 	unordered_set<string> m_MovableStates = {
 		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",

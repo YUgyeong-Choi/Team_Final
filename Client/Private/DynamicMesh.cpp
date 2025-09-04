@@ -25,7 +25,7 @@ HRESULT CDynamicMesh::Initialize(void* pArg)
 	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
 
 	m_eMeshLevelID = StaicMeshDESC->m_eMeshLevelID;
-
+	m_vColliderOffSet = StaicMeshDESC->vColliderOffSet;
 	m_szMeshID = StaicMeshDESC->szMeshID;
 
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
@@ -136,6 +136,9 @@ void CDynamicMesh::Update_ColliderPos()
 	// 위치 추출
 	_float3 vPos;
 	XMStoreFloat3(&vPos, vTranslation);
+	vPos.x += XMVectorGetX(m_vColliderOffSet);
+	vPos.y += XMVectorGetY(m_vColliderOffSet);
+	vPos.z += XMVectorGetZ(m_vColliderOffSet);
 
 	// 회전 추출
 	_float4 vRot;
@@ -179,54 +182,33 @@ HRESULT CDynamicMesh::Bind_ShaderResources()
 HRESULT CDynamicMesh::Ready_Collider(void* pArg)
 {
 	CDynamicMesh::DYNAMICMESH_DESC* StaicMeshDESC = static_cast<DYNAMICMESH_DESC*>(pArg);
-	_int meshIdx = StaicMeshDESC->iColliderMeshIdx;
-	if (m_pModelCom)
-	{
-		_uint numVertices = m_pModelCom->Get_Mesh_NumVertices(meshIdx);
-		_uint numIndices = m_pModelCom->Get_Mesh_NumIndices(meshIdx);
 
-		vector<PxVec3> physxVertices;
-		physxVertices.reserve(numVertices);
-		const _float3* pVertexPositions = m_pModelCom->Get_Mesh_pVertices(meshIdx);
-		for (_uint i = 0; i < numVertices; ++i)
-		{
-			const _float3& v = pVertexPositions[i];
-			physxVertices.emplace_back(v.x, v.y, v.z);
-		}
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
-		// 3. Transform에서 S, R, T 분리
-		XMVECTOR S, R, T;
-		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+	positionVec += VectorToPxVec3(StaicMeshDESC->vColliderOffSet);
 
-		// 3-1. 스케일, 회전, 위치 변환
-		PxVec3 scaleVec = PxVec3(XMVectorGetX(S) * StaicMeshDESC->fColliderScale, XMVectorGetY(S) * StaicMeshDESC->fColliderScale, XMVectorGetZ(S) * StaicMeshDESC->fColliderScale);
-		PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-		PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
 
-		PxTransform pose(positionVec, rotationQuat);
-		PxMeshScale meshScale(scaleVec);
+	PxVec3 halfExtents = VectorToPxVec3(StaicMeshDESC->vColliderSize);
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	//m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+	m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 
-		PxFilterData filterData{};
-		filterData.word0 = 0;//WORLDFILTER::FILTER_MAP;
-		filterData.word1 = 0;//WORLDFILTER::FILTER_PLAYERBODY;
-
-		PxConvexMeshGeometry  ConvexGeom = m_pGameInstance->CookConvexMesh(physxVertices.data(), numVertices, meshScale);
-		m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), ConvexGeom, pose, m_pGameInstance->GetMaterial(L"Default"));
-		m_pPhysXActorCom->Set_Kinematic(true);
-		//m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
-		m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
-		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
-		m_pPhysXActorCom->Set_QueryFilterData(filterData);
-		m_pPhysXActorCom->Set_Owner(this);
-		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::B); // 이걸로 색깔을 바꿀 수 있다.
-
-		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
-	}
-	else
-	{
-		_tprintf(_T("%s 콜라이더 생성 실패\n"), m_szName);
-	}
-
+	PxFilterData filterData{};
+	filterData.word0 = 0;// WORLDFILTER::FILTER_MAP;
+	filterData.word1 = 0;// WORLDFILTER::FILTER_PLAYERBODY;
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_Kinematic(true);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::C);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }

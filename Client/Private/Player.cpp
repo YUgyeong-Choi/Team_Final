@@ -2553,17 +2553,24 @@ void CPlayer::Callback_Mana()
 void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 {
 	m_pInterectionStuff = pObj;
+	string stateName;
 	switch (eType)
 	{
 	case Client::TUTORIALDOOR:
 		Play_CutScene_Door();
 		break;
 	case Client::FUOCO:
-		m_pAnimator->Get_CurrentAnimController()->SetState("SlidingDoor");
+		stateName = "SlidingDoor";
+		break;
+	case Client::FESTIVALDOOR:
+		stateName = "DubleDoor_Boss";
 		break;
 	default:
 		break;
 	}
+
+	if (stateName.empty() == false)
+		m_pAnimator->Get_CurrentAnimController()->SetState(stateName);
 }
 
 void CPlayer::GetWeapon()

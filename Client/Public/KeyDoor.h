@@ -10,6 +10,7 @@ class CModel;
 class CPhysXDynamicActor;
 class CPhysXStaticActor;
 class CSoundController;
+class CAnimController;
 NS_END
 
 NS_BEGIN(Client)
@@ -44,14 +45,14 @@ protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(KEYDOORMESH_DESC* pDesc);
 private:
+
+	CAnimator* m_pAnimator = { nullptr };
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
 	CSoundController* m_pSoundCom = { nullptr };
 	INTERACT_TYPE m_eInteractType;
 
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
-
-	CModel* m_pModelCom2 = { nullptr };
 public:
 	static CKeyDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

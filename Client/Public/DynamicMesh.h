@@ -28,8 +28,9 @@ public:
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
 		);
-		_float fColliderScale;
-		_int   iColliderMeshIdx;
+
+		_vector vColliderOffSet;
+		_vector vColliderSize;
 	}DYNAMICMESH_DESC;
 
 protected:
@@ -66,6 +67,7 @@ protected:
 	CTexture*		m_pEmissiveCom = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 
+	_vector m_vColliderOffSet;
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

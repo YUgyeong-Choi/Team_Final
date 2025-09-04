@@ -27,7 +27,6 @@ HRESULT CBossDoor::Initialize(void* pArg)
 	CBossDoor::BOSSDOORMESH_DESC* pDoorMeshDESC = static_cast<BOSSDOORMESH_DESC*>(pArg);
 
 	m_eInteractType = pDoorMeshDESC->eInteractType;
-	m_OffSetCollider = pDoorMeshDESC->OffSetCollider;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -39,7 +38,7 @@ HRESULT CBossDoor::Initialize(void* pArg)
 
 	if (FAILED(LoadFromJson()))
 		return E_FAIL;
-
+	Register_Events();
 	return S_OK;
 }
 
@@ -58,33 +57,52 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 			switch (m_eInteractType)
 			{
 			case Client::FESTIVALDOOR:
-				// 플레이어 움직임
-				// 컷씬 플레이
+				pPlayer->Interaction_Door(m_eInteractType, this);
 				break;
-			case Client::FUOCO:
+			case Client::FUOCO: // -2.983806, Y:0.318406, Z:-235.703735 위치가 좋을듯
 				pPlayer->Interaction_Door(m_eInteractType, this);
 				break;
 			default:
 				break;
 			}
 			if (m_pAnimator)
-			{
 				m_pAnimator->SetTrigger("Open");
-			}
+			if (m_pSecondAnimator)
+				m_pSecondAnimator->SetTrigger("Open");
 			m_bFinish = true;
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 		}
+
+		
 	}
+
+#ifdef _DEBUG
+	if (KEY_DOWN(DIK_X))
+	{
+		m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
+		if (m_pSecondAnimator)
+			m_pSecondAnimator->Get_CurrentAnimController()->SetState("Idle");
+		m_bRenderSecond = false;
+		m_bFinish = false;
+		m_bCanActive = true;
+	}
+#endif // _DEBUG
 }
 
 void CBossDoor::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+
 	if (m_pAnimator)
 		m_pAnimator->Update(fTimeDelta);
 
 	if (m_pModelCom)
 		m_pModelCom->Update_Bones();
+
+	if(m_pSecondAnimator)
+		m_pSecondAnimator->Update(fTimeDelta);
+	if (m_pSecondModelCom)
+		m_pSecondModelCom->Update_Bones();
 }
 
 void CBossDoor::Late_Update(_float fTimeDelta)
@@ -128,19 +146,19 @@ HRESULT CBossDoor::Render()
 
 		_float m_fEmissive = 0.f;
 		m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &m_fEmissive, sizeof(_float));
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Emissive", i, aiTextureType_EMISSIVE, 0)))
+		if (FAILED(pModel->Bind_Material(m_pShaderCom, "g_Emissive", i, aiTextureType_EMISSIVE, 0)))
 		{
 			_float fEmissive = 0.f;
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
 				return E_FAIL;
 		}
 
-		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
+		pModel->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		if (FAILED(m_pShaderCom->Begin(0)))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->Render(i)))
+		if (FAILED(pModel->Render(i)))
 			return E_FAIL;
 	}
 
@@ -192,6 +210,20 @@ void CBossDoor::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	CUI_Manager::Get_Instance()->Activate_Popup(false);
 }
 
+void CBossDoor::Register_Events()
+{
+	if (m_eInteractType == Client::FESTIVALDOOR)
+	{
+		m_pAnimator->RegisterEventListener("ChangeDoorModel", [this]() 
+			{
+				if (m_bRenderSecond)
+					m_bRenderSecond = false;
+				else
+					m_bRenderSecond = true;
+			});
+	}
+}
+
 void CBossDoor::Play_Sound()
 {
 
@@ -205,30 +237,6 @@ void CBossDoor::Play_Sound()
 	//	break;
 	//}
 
-}
-
-void CBossDoor::Update_ColliderPos()
-{
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix(); //월드행렬
-
-	// 행렬 → 스케일, 회전, 위치 분해
-	_vector vScale, vRotationQuat, vTranslation;
-	XMMatrixDecompose(&vScale, &vRotationQuat, &vTranslation, WorldMatrix);
-
-	// 위치 추출
-	_float3 vPos;
-	XMStoreFloat3(&vPos, vTranslation);
-	vPos.x += m_OffSetCollider.x;
-	vPos.y += m_OffSetCollider.y;
-	vPos.z += m_OffSetCollider.z;
-
-	// 회전 추출
-	_float4 vRot;
-	XMStoreFloat4(&vRot, vRotationQuat);
-
-	// PxTransform으로 생성
-	PxTransform physxTransform(PxVec3(vPos.x, vPos.y, vPos.z), PxQuat(vRot.x, vRot.y, vRot.z, vRot.w));
-	m_pPhysXActorCom->Set_Transform(physxTransform);
 }
 
 HRESULT CBossDoor::Ready_Components(void* pArg)
@@ -310,14 +318,22 @@ HRESULT CBossDoor::Ready_Trigger(BOSSDOORMESH_DESC* pDesc)
 HRESULT CBossDoor::LoadFromJson()
 {
 	string modelName = m_pModelCom->Get_ModelName();
-	if (FAILED(LoadAnimationEventsFromJson(modelName)))
+	if (FAILED(LoadAnimationEventsFromJson(modelName, m_pModelCom)))
 		return E_FAIL;
-	if (FAILED(LoadAnimationStatesFromJson(modelName)))
+	if (FAILED(LoadAnimationStatesFromJson(modelName,m_pAnimator)))
 		return E_FAIL;
+	if (m_pSecondModelCom && m_pSecondAnimator)
+	{
+		string modelName2 = m_pSecondModelCom->Get_ModelName();
+		if (FAILED(LoadAnimationEventsFromJson(modelName2, m_pSecondModelCom)))
+			return E_FAIL;
+		if (FAILED(LoadAnimationStatesFromJson(modelName2, m_pSecondAnimator)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 
-HRESULT CBossDoor::LoadAnimationEventsFromJson(const string& modelName)
+HRESULT CBossDoor::LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom)
 {
 	string path = "../Bin/Save/AnimationEvents/" + modelName + "_events.json";
 	ifstream ifs(path);
@@ -328,7 +344,7 @@ HRESULT CBossDoor::LoadAnimationEventsFromJson(const string& modelName)
 		if (root.contains("animations"))
 		{
 			auto& animationsJson = root["animations"];
-			auto& clonedAnims = m_pModelCom->GetAnimations();
+			auto& clonedAnims = pModelCom->GetAnimations();
 
 			for (const auto& animData : animationsJson)
 			{
@@ -353,7 +369,7 @@ HRESULT CBossDoor::LoadAnimationEventsFromJson(const string& modelName)
 	return S_OK;
 }
 
-HRESULT CBossDoor::LoadAnimationStatesFromJson(const string& modelName)
+HRESULT CBossDoor::LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator)
 {
 	string path = "../Bin/Save/AnimationStates/" + modelName + "_States.json";
 	ifstream ifsStates(path);
@@ -361,7 +377,7 @@ HRESULT CBossDoor::LoadAnimationStatesFromJson(const string& modelName)
 	{
 		json rootStates;
 		ifsStates >> rootStates;
-		m_pAnimator->Deserialize(rootStates);
+		pAnimator->Deserialize(rootStates);
 	}
 	else
 	{
