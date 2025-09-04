@@ -33,6 +33,7 @@
 
 #include "SlideDoor.h"
 #include <FlameField.h>
+#include <Elite_Police.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -1066,6 +1067,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		break;
 	}
+	case eAnimCategory::FESTIVALDOOR:
+	{
+		RootMotionActive(fTimeDelta);
+		break;
+	}
 	case eAnimCategory::ARM_ATTACKA:
 	{
 		if (!m_bSetOnce)
@@ -1484,6 +1490,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Hit") == 0)
 		return eAnimCategory::HITED;
 
+	if (stateName.find("DoubleDoor_Boss") == 0)
+		return eAnimCategory::FESTIVALDOOR;
 	if (stateName.find("SlidingDoor") == 0)
 		return eAnimCategory::FIRSTDOOR;
 	if (stateName.find("Arm_NormalAttack") == 0)
@@ -1937,7 +1945,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 	/* [ 일반 몬스터 피격 ] */
-	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON)
+	if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON || eColliderType == COLLIDERTYPE::MONSTER_WEAPON_BODY)
 	{
 		//히트한 몬스터타입
 		m_eHitedTarget = eHitedTarget::MONSTER;
@@ -1969,9 +1977,19 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			pUnit == nullptr)
 			return;
 
+
 		//Hp 가 0 이하면 리턴
 		if ( pUnit->GetHP() <= 0.f)
 			return;
+		if (eColliderType == COLLIDERTYPE::MONSTER_WEAPON_BODY &&
+			pUnit->Get_UnitType() == EUnitType::ELITE_MONSTER)
+		{
+			auto pElite = static_cast<CElite_Police*>(pUnit);
+			if (pElite->Get_ElbowHit())
+				return;
+
+			pElite->Set_ElbowHit(true);
+		}
 
 
 		// 필요한 정보를 수집한다.
@@ -2452,7 +2470,7 @@ HRESULT CPlayer::Ready_Actor()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.4f, 0.8f);
+	PxCapsuleGeometry  geom = m_pGameInstance->CookCapsuleGeometry(0.45f, 0.9f);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 
@@ -2518,7 +2536,7 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 		stateName = "SlidingDoor";
 		break;
 	case Client::FESTIVALDOOR:
-		stateName = "DubleDoor_Boss";
+		stateName = "DoubleDoor_Boss";
 		break;
 	default:
 		break;
