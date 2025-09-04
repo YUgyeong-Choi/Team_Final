@@ -521,6 +521,12 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_15",
             "Duration": 440.0,
+            "Events": [
+                {
+                    "EventName": "Phase2InvisibledModel",
+                    "Time": 341.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0

@@ -35,6 +35,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fAttckDleay = 1.5f;
 	m_fChasingDistance = 4.f;
 	m_iPatternLimit = 1;
+	m_fMinimumTurnAngle = 50.f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -153,7 +154,6 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Phase2Start");
-	//	m_pAnimator->SetTrigger("Attack");
 	}
 
 	if (KEY_DOWN(DIK_B))
@@ -207,7 +207,7 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
-	if (static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0&& m_pHPBar)
+	if (m_pPlayer&&static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0&& m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 }
 
@@ -235,6 +235,12 @@ void CFestivalLeader::Reset()
 	m_iLastComboType = -1;
 	m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
 	m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
+	if (m_pAnimator)
+	{
+		m_pAnimator->CancelOverrideAnimController();
+	}
+	m_pModelCom->SetMeshVisible(2, true);
+	m_pModelCom->SetMeshVisible(3, true);
 }
 
 HRESULT CFestivalLeader::Ready_Components(void* pArg)
@@ -513,7 +519,7 @@ void CFestivalLeader::UpdateSpecificBehavior(_float fTimeDelta)
 
 	if ((m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK)
 		&& m_eCurrentState != EEliteState::ATTACK
-		&& m_eCurrentState != EEliteState::TURN && m_bWaitPhase2)  // Turn 상태 제외
+		&& m_eCurrentState != EEliteState::TURN)  // Turn 상태 제외
 	{
 		m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 	}
@@ -768,9 +774,18 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Phase2InvisibledModel", [this]()
 		{
-			if (m_bIsPhase2)
+			if (m_pModelCom)
 			{
-				m_bVisibleModel = false;
+				m_pModelCom->SetMeshVisible(2, false);
+				m_pModelCom->SetMeshVisible(3, false);
+			}
+			if (m_pAnimator)
+			{
+				m_pAnimator->ApplyOverrideAnimController("Phase2");
+				m_pAnimator->SetInt("SkillType",DashSwing);
+				m_pAnimator->SetTrigger("Attack");
+				m_ePrevState = m_eCurrentState;
+				m_eCurrentState = EEliteState::ATTACK;
 			}
 		});
 
@@ -794,7 +809,8 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase1()
 
 void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 {
-	if (m_eCurrentState == EEliteState::FATAL)
+	if (m_eCurrentState == EEliteState::FATAL
+		|| m_eCurrentState == EEliteState::ATTACK)
 		return;
 	m_pAnimator->SetTrigger("Phase2Start");
 	m_bStartPhase2 = true;

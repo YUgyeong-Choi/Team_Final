@@ -78,7 +78,8 @@ public:
 		return m_Meshes[iMeshIndex]->Bind_SkinningSRVs(pShader);
 	}
 	const auto& Get_PreTransformMatrix() const { return m_PreTransformMatrix; }
-
+	void SetMeshVisible(_uint index, _bool bVisible);
+	_bool IsMeshVisible(_uint index) const;
 public:
 	virtual HRESULT Initialize_Prototype(MODEL eType, const _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT Initialize(void* pArg);
@@ -89,6 +90,7 @@ public:
 
 protected:
 	void MakeBoneChildrenMap();
+	void InitMeshVisibility();
 
 
 protected:
@@ -118,7 +120,8 @@ protected:
 	string 						 m_ModelName;
 	unordered_map<string, vector<_int>> m_BoneChildrenMap; // »À ÀÌ¸§°ú ÀÚ½Ä »À ÀÎµ¦½º ¸ñ·Ï
 
-
+	vector<_bool>       m_MeshVisible;
+	 
 public:
 	vector<CMesh*>* Get_Meshes() { return &m_Meshes; };
 
