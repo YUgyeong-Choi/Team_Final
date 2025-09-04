@@ -2,7 +2,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "UI_Manager.h"
-
+#include "Camera_Manager.h"
 CBossDoor::CBossDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDynamicMesh{ pDevice, pContext }
 {
@@ -44,6 +44,8 @@ HRESULT CBossDoor::Initialize(void* pArg)
 
 void CBossDoor::Priority_Update(_float fTimeDelta)
 {
+	if(!m_pPlayer)
+		m_pPlayer = dynamic_cast<CPlayer*>(GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex()));
 	__super::Priority_Update(fTimeDelta);
 
 	if (m_bCanActive && !m_bFinish)
@@ -51,30 +53,17 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 		// 상호작용
 		if (KEY_DOWN(DIK_E))
 		{
-			CPlayer* pPlayer = dynamic_cast<CPlayer*>(GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex()));
-			if (pPlayer == nullptr)
-				return;
-			switch (m_eInteractType)
-			{
-			case Client::FESTIVALDOOR: //X:375.136841, Y:14.995386, Z:-48.836079
-				pPlayer->Interaction_Door(m_eInteractType, this);
-				break;
-			case Client::FUOCO: // -2.953791, Y:0.318406, Z:-235.758652 위치가 좋을듯
-				pPlayer->Interaction_Door(m_eInteractType, this);
-				break;
-			default:
-				break;
-			}
-			if (m_pAnimator)
-				m_pAnimator->SetTrigger("Open");
-			if (m_pSecondAnimator)
-				m_pSecondAnimator->SetTrigger("Open");
-			m_bFinish = true;
+			m_bMoveStart = true;
+			m_pPhysXActorCom->Init_SimulationFilterData();
+			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
-		}
 
-		
+			//CCamera_Manager::Get_Instance()->SetbMoveable(false);
+		}
 	}
+
+	/*if(KEY_DOWN(DIK_C))
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);*/
 
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))
@@ -87,6 +76,9 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 		m_bCanActive = true;
 	}
 #endif // _DEBUG
+
+	if (m_bStartSound)
+		Play_Sound(fTimeDelta);
 }
 
 void CBossDoor::Update(_float fTimeDelta)
@@ -103,6 +95,8 @@ void CBossDoor::Update(_float fTimeDelta)
 		m_pSecondAnimator->Update(fTimeDelta);
 	if (m_pSecondModelCom)
 		m_pSecondModelCom->Update_Bones();
+
+	Move_Player(fTimeDelta);
 }
 
 void CBossDoor::Late_Update(_float fTimeDelta)
@@ -166,7 +160,7 @@ HRESULT CBossDoor::Render()
 
 	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
 	{
-		if (m_pGameInstance->Get_RenderCollider())
+		if (m_pGameInstance->Get_RenderCollider() && m_pPhysXActorCom->Get_ReadyForDebugDraw())
 		{
 			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
 				return E_FAIL;
@@ -224,18 +218,25 @@ void CBossDoor::Register_Events()
 	}
 }
 
-void CBossDoor::Play_Sound()
+void CBossDoor::Play_Sound(_float fTimeDelta)
 {
-
-	//switch (m_eInteractType)
-	//{
-	//case Client::TUTORIALDOOR:
-	//	m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.5f * g_fInteractSoundVolume);
-	//	m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
-	//	break;
-	//default:
-	//	break;
-	//}
+	m_fSoundDelta += fTimeDelta;
+	switch (m_eInteractType)
+	{
+	case Client::FUOCO:
+	{
+		if (m_fSoundDelta > 1.8f)
+		{
+			m_bStartSound = false;
+			m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.5f * g_fInteractSoundVolume);
+			m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
+			m_fSoundDelta = 0.f;
+		}
+		break;
+	}
+	default:
+		break;
+	}
 
 }
 
@@ -385,6 +386,68 @@ HRESULT CBossDoor::LoadAnimationStatesFromJson(const string& modelName, CAnimato
 		return E_FAIL;
 	}
 	return S_OK;
+}
+
+void CBossDoor::Move_Player(_float fTimeDelta)
+{
+	if (m_bMoveStart)
+	{
+		m_bFinish = true;
+		_vector vTargetPos;
+		switch (m_eInteractType)
+		{
+		case Client::FESTIVALDOOR:
+			//X:375.136841, Y:14.995386, Z:-48.836079
+			vTargetPos = _vector({ 375.13f, 14.9f, -48.83f, 1.f});
+			break;
+		case Client::FUOCO:
+			vTargetPos = _vector({ -3.1f, 0.3f, -235.80f, 1.f});
+			break;
+		default:
+			break;
+		}
+
+		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
+		{
+			m_bMoveStart = false;
+			m_bRotationStart = true;
+		}
+	}
+
+
+	if (m_bRotationStart)
+	{
+		_vector vTargetRotation;
+		switch (m_eInteractType)
+		{
+		case Client::FESTIVALDOOR:
+			vTargetRotation = _vector({ 1.f, 0.f, 0.f, 0.f });
+			break;
+		case Client::FUOCO:
+			vTargetRotation = _vector({ 0.f, 0.f, 1.f, 0.f });
+			break;
+		default:
+			break;
+		}
+
+		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
+		{
+			m_bRotationStart = false;
+			m_bStartCutScene = true;
+		}
+	}
+
+	if (m_bStartCutScene)
+	{
+		m_bStartCutScene = false;
+		m_pPlayer->Interaction_Door(m_eInteractType, this);
+		if (m_pAnimator)
+			m_pAnimator->SetTrigger("Open");
+		if (m_pSecondAnimator)
+			m_pSecondAnimator->SetTrigger("Open");
+
+		m_bStartSound = true;
+	}
 }
 
 

@@ -53,6 +53,7 @@ void CSlideDoor::Priority_Update(_float fTimeDelta)
 			{
 			case Client::TUTORIALDOOR:
 			{
+				m_pPhysXActorCom->Init_SimulationFilterData();
 				CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_Player")));
 				pPlayer->Interaction_Door(m_eInteractType, this);
 				break;

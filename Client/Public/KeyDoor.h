@@ -41,11 +41,19 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	void Play_Sound();
+
+	void OpenDoor();
+
+	void Move_Player(_float fTimeDelta);
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(KEYDOORMESH_DESC* pDesc);
-private:
 
+	HRESULT LoadFromJson();
+	HRESULT LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom);
+	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
+private:
+	class CPlayer* m_pPlayer = { nullptr };
 	CAnimator* m_pAnimator = { nullptr };
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
 	CSoundController* m_pSoundCom = { nullptr };
@@ -53,6 +61,10 @@ private:
 
 	_bool m_bCanActive = false;
 	_bool m_bFinish = false;
+
+	_bool m_bMoveStart = false;
+	_bool m_bRotationStart = false;
+	_bool m_bStartCutScene = false;
 public:
 	static CKeyDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

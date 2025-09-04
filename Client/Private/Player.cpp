@@ -34,6 +34,7 @@
 #include "SlideDoor.h"
 #include <FlameField.h>
 #include <Elite_Police.h>
+#include <KeyDoor.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -1146,6 +1147,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		RootMotionActive(fTimeDelta);
 		break;
 	}
+	case eAnimCategory::STATIONDOOR:
+	{
+		RootMotionActive(fTimeDelta);
+		break;
+	}
 	case eAnimCategory::ARM_ATTACKA:
 	{
 		if (!m_bSetOnce)
@@ -1558,6 +1564,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("Hit") == 0)
 		return eAnimCategory::HITED;
 
+	if (stateName.find("DoubleDoor_Push_TrainStation") == 0)
+		return eAnimCategory::STATIONDOOR;
 	if (stateName.find("DoubleDoor_Boss") == 0)
 		return eAnimCategory::FESTIVALDOOR;
 	if (stateName.find("SlidingDoor") == 0)
@@ -1736,6 +1744,29 @@ void CPlayer::Register_Events()
 		});
 
 
+		m_pAnimator->RegisterEventListener("OnInteractionKeyDoor", [this]()
+			{
+				if (auto pKeyDoor = dynamic_cast<CKeyDoor*>(m_pInterectionStuff))
+				{
+					pKeyDoor->OpenDoor();
+				}
+			});
+}
+
+_bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
+{
+	m_Input.bMove = true;
+	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+	_bool bFinishSetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ XMVectorGetX(vTargetPos), XMVectorGetY(vPosition), XMVectorGetZ(vTargetPos), 1.f}, m_pControllerCom);
+	
+	return bFinishSetPosition;
+}
+
+_bool CPlayer::RotateToDoor(_float fTimeDelta, _vector vRotation)
+{
+	_bool bFinishRotate = m_pTransformCom->RotateToDirectionSmoothly(vRotation, fTimeDelta);
+	return bFinishRotate;
 }
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
@@ -2608,6 +2639,18 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 	case Client::FESTIVALDOOR:
 		stateName = "DoubleDoor_Boss";
 		break;
+	case Client::OUTDOOR:
+		if (Get_HaveKey())
+		{
+			stateName = "Door_Unlock";
+			m_pAnimator->SetBool("Outdoor", true);
+		}
+		else
+		{
+			stateName = "Door_Check";
+			m_pAnimator->SetBool("Outdoor", false);
+		}
+		break;
 	default:
 		break;
 	}
@@ -3078,8 +3121,8 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 
 void CPlayer::Movement(_float fTimeDelta)
 {
-	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-		return;
+	//if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+	//	return;
 
 	SetMoveState(fTimeDelta);
 }
@@ -3089,7 +3132,7 @@ void CPlayer::SyncTransformWithController()
 	if (!m_pControllerCom) return;
 
 	PxExtendedVec3 pos = m_pControllerCom->Get_Controller()->getPosition();
-	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.9f, (float)pos.z, 1.f);
+	_vector vPos = XMVectorSet((float)pos.x, (float)pos.y - 0.95f, (float)pos.z, 1.f);
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 }
 

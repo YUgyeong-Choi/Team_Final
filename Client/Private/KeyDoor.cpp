@@ -35,48 +35,32 @@ HRESULT CKeyDoor::Initialize(void* pArg)
 		return E_FAIL;
 
 	Ready_Trigger(pDoorMeshDESC);
-
+	m_pPlayer = GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex());
+	if (FAILED(LoadFromJson()))
+		return E_FAIL;
 	return S_OK;
 }
 
 void CKeyDoor::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
-
+	if (m_pPlayer == nullptr)
+		return;
 	if (m_bCanActive && !m_bFinish)
 	{
 		if (KEY_DOWN(DIK_E))
 		{
-			switch (m_eInteractType)
-			{
-			case Client::OUTDOOR:
-			{
-				CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_Player")));
-
-				/* 플레이어의 m_bHaveKey 가지고 Interaction_Door안에서 분기 잡기 */
-				if (pPlayer->Get_HaveKey())
-				{
-					m_bFinish = true;
-					pPlayer->Interaction_Door(m_eInteractType, this);
-				}
-				else
-				{
-					pPlayer->Interaction_Door(m_eInteractType, this);
-				}
-				break;
-			}
-			default:
-				break;
-			}
-
+			m_bMoveStart = true;
+			m_pPhysXActorCom->Init_SimulationFilterData();
+			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+			m_bFinish = m_pPlayer->Get_HaveKey();
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 		}
 	}
 
 	if (KEY_PRESSING(DIK_LCONTROL) && KEY_DOWN(DIK_Z))
 	{
-		CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_Player")));
-		pPlayer->Set_GetKey();
+		m_pPlayer->Set_GetKey();
 	}
 }
 
@@ -84,12 +68,17 @@ void CKeyDoor::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
+	if (m_eInteractType == Client::OUTDOOR)
+	{
+
+	}
 	if (m_pAnimator)
 		m_pAnimator->Update(fTimeDelta);
 
 	if (m_pModelCom)
 		m_pModelCom->Update_Bones();
 
+	Move_Player(fTimeDelta);
 }
 
 void CKeyDoor::Late_Update(_float fTimeDelta)
@@ -205,6 +194,63 @@ void CKeyDoor::Play_Sound()
 
 }
 
+void CKeyDoor::OpenDoor()
+{
+	if (m_pAnimator)
+	{
+		m_pAnimator->SetTrigger("Open");
+	}
+}
+
+void CKeyDoor::Move_Player(_float fTimeDelta)
+{
+	if (m_bMoveStart)
+	{
+		_vector vTargetPos;
+		switch (m_eInteractType)
+		{
+		case Client::OUTDOOR:
+			//X:183.086136, Y:8.865019, Z:-7.831734 이쯤
+			vTargetPos = _vector({ 183.32f, 8.86f, -7.83f, 1.f });
+			break;
+		default:
+			break;
+		}
+
+		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
+		{
+			m_bMoveStart = false;
+			m_bRotationStart = true;
+		}
+	}
+
+
+	if (m_bRotationStart)
+	{
+		_vector vTargetRotation;
+		switch (m_eInteractType)
+		{
+		case Client::OUTDOOR:
+			vTargetRotation = _vector({ 1.f, 0.f, 0.f, 0.f });
+			break;
+		default:
+			break;
+		}
+
+		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
+		{
+			m_bRotationStart = false;
+			m_bStartCutScene = true;
+		}
+	}
+
+	if (m_bStartCutScene)
+	{
+		m_bStartCutScene = false;
+		m_pPlayer->Interaction_Door(m_eInteractType, this);
+	}
+}
+
 
 
 HRESULT CKeyDoor::Ready_Components(void* pArg)
@@ -260,6 +306,70 @@ HRESULT CKeyDoor::Ready_Trigger(KEYDOORMESH_DESC* pDesc)
 	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::TRIGGER);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
 
+	return S_OK;
+}
+
+HRESULT CKeyDoor::LoadFromJson()
+{
+	string modelName = m_pModelCom->Get_ModelName();
+	if (FAILED(LoadAnimationEventsFromJson(modelName, m_pModelCom)))
+		return E_FAIL;
+	if (FAILED(LoadAnimationStatesFromJson(modelName, m_pAnimator)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CKeyDoor::LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom)
+{
+	string path = "../Bin/Save/AnimationEvents/" + modelName + "_events.json";
+	ifstream ifs(path);
+	if (ifs.is_open())
+	{
+		json root;
+		ifs >> root;
+		if (root.contains("animations"))
+		{
+			auto& animationsJson = root["animations"];
+			auto& clonedAnims = pModelCom->GetAnimations();
+
+			for (const auto& animData : animationsJson)
+			{
+				const string& clipName = animData["ClipName"];
+
+				for (auto& pAnim : clonedAnims)
+				{
+					if (pAnim->Get_Name() == clipName)
+					{
+						pAnim->Deserialize(animData);
+						break;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		MSG_BOX("Failed to open animation events file.");
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
+HRESULT CKeyDoor::LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator)
+{
+	string path = "../Bin/Save/AnimationStates/" + modelName + "_States.json";
+	ifstream ifsStates(path);
+	if (ifsStates.is_open())
+	{
+		json rootStates;
+		ifsStates >> rootStates;
+		pAnimator->Deserialize(rootStates);
+	}
+	else
+	{
+		MSG_BOX("Failed to open animation states file.");
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
