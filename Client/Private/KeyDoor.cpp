@@ -207,14 +207,17 @@ void CKeyDoor::OpenDoor()
 
 void CKeyDoor::Move_Player(_float fTimeDelta)
 {
+	/* [ 이거 그냥 야외로 가는 문 전용 클래스로 씁시다ㅏ ] */
+
 	if (m_bMoveStart)
 	{
 		_vector vTargetPos;
 		switch (m_eInteractType)
 		{
 		case Client::OUTDOOR:
+			//PlayerPos X : 183.389999, Y : 8.854537, Z : -8.384386
 			//X:183.086136, Y:8.865019, Z:-7.831734 이쯤
-			vTargetPos = _vector({ 183.32f, 8.86f, -7.83f, 1.f });
+			vTargetPos = _vector({ 183.38f, 8.85f, -8.f, 1.f });
 			break;
 		default:
 			break;
@@ -243,14 +246,48 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
 		{
 			m_bRotationStart = false;
-			m_bStartCutScene = true;
+			m_bMoveSecondStart = true;
+
+			// 여기서 키 여는 애니메이션 활성화
+
+			// 장원햄이 키 여는 애니메이션 끝났으면 
+			// m_bMoveSecondStart = true;
+			// 무기 집어넣는거 애니메이션 실행
 		}
 	}
 
-	if (m_bStartCutScene)
+	if (m_bMoveSecondStart)
 	{
-		m_bStartCutScene = false;
+		_vector vTargetPos;
+		switch (m_eInteractType)
+		{
+		case Client::OUTDOOR:
+			// 아직 위치 조정 안함
+			vTargetPos = _vector({ 183.38f, 8.85f, -8.f, 1.f });
+			break;
+		default:
+			break;
+		}
+
+		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
+		{
+			m_bMoveSecondStart = false;
+			// 위치 조정 끝난 거
+			m_bFinishPos = true;
+
+			//장원햄이 무기 집어넣는거 끝났는 지 확인하는 코드해서
+			// m_bPutWeapon = true;
+		}
+	}
+
+	// m_bFinishPos && m_bPutWeapon 면
+	// m_pPlayer->Interaction_Door(m_eInteractType, this);
+	if (m_bFinishPos && m_bPutWeapon)
+	{
+		// 문 여는 거 활성화
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
+		m_bFinishPos = false;
+		m_bPutWeapon = false;
 	}
 }
 

@@ -63,8 +63,11 @@ private:
 	_bool m_bFinish = false;
 
 	_bool m_bMoveStart = false;
+	_bool m_bMoveSecondStart = false;
 	_bool m_bRotationStart = false;
-	_bool m_bStartCutScene = false;
+
+	_bool m_bFinishPos = false;
+	_bool m_bPutWeapon = false;
 public:
 	static CKeyDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
