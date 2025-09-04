@@ -552,7 +552,7 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Distortion()))
+	if (FAILED(Render_Distortion())) // ¿©±â¼­ Final·»´õÅ¸°Ù ¾È¾²°í ¹é¹öÆÛ·Î µ¹¾Æ°¨ !!
 	{
 		MSG_BOX("Render_Distortion Failed");
 		return E_FAIL;
@@ -1035,18 +1035,18 @@ HRESULT CRenderer::Render_BackBuffer()
 
 HRESULT CRenderer::Render_NonLight()
 {
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, false);
+	//m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, true);
 
-	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_NONLIGHT)])
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)])
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render();
 
 		Safe_Release(pGameObject);
 	}
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_NONLIGHT)].clear();
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)].clear();
 
-	m_pGameInstance->End_MRT();
+	//m_pGameInstance->End_MRT();
 
 	return S_OK;
 }
@@ -1329,14 +1329,13 @@ HRESULT CRenderer::Render_Effect_WB_Composite()
 
 HRESULT CRenderer::Render_Distortion()
 {
-	// final ·»´õÅ¸°Ù ½á¾ßÇÔ
-
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+	// final ·»´õÅ¸°Ù ½á¾ßÇÔ
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Distortion"), m_pShader, "g_Effect_Distort")))
