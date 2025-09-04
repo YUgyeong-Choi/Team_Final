@@ -189,6 +189,7 @@
     <ClInclude Include="..\public\DecalToolObject.h" />
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\DH_ToolMesh.h" />
+    <ClInclude Include="..\Public\FestivalLeader.h" />
     <ClInclude Include="..\Public\KeyDoor.h" />
     <ClInclude Include="..\Public\PlayerState.h" />
     <ClInclude Include="..\Public\SlideDoor.h" />
@@ -369,6 +370,7 @@
     <ClCompile Include="..\private\DecalToolObject.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
+    <ClCompile Include="..\Private\FestivalLeader.cpp" />
     <ClCompile Include="..\Private\KeyDoor.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\SlideDoor.cpp" />

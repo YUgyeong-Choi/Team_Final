@@ -22,6 +22,494 @@
                     "MaskBoneName": "",
                     "Name": "ExitState",
                     "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_12_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FuryHammerSlam_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_01_Start_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Slam_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_06_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_CrossSlam_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_01_Attack_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Slam_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_06_Attack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_CrossSlam_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_10_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_SwingCom_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_01_End_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Slam_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_06_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_CrossSlam_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Idle_C_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Idle",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_02_Start_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Jump_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_02_Attack_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Jump_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Groggy_Start_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Groggy_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Groggy_Loop_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Groggy_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_02_End_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Jump_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Groggy_End_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Groggy_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Walk_C_F_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Walk_F",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Fatal_NPC_Hit_Start_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Fatal_Hit_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Fatal_NPC_Hit_Ing_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Fatal_Hit_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_04_End_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Strike_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Fatal_NPC_Hit_End_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Fatal_Hit_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Turn_C_L_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Turn_L",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Special_Die",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Special_Die",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_04_Start_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Strike_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_04_Attack_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Strike_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Run_C_F_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Run_F",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_07_Start1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_AlternateSmash_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_10_Attack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Swing_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_07_Attack1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_AlternateSmash_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_07_Attack2",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_AlternateSmash_Loop2",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_12_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FuryHammerSlam_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_07_Start2",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_AlternateSmash_Start2",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_07_Attack3",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_AlternateSmash_Loop3",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_07_Start3",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_AlternateSmash_Start3",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_07_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_AlternateSmash_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_F_Guide_C03",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "CutScene_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_15",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Phase2Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Walk_C_L_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Walk_L",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_09_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_HalfSpin_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_09_Attack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_HalfSpin_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_14",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Spin",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_09_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_HalfSpin_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_11_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FurySwing_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Turn_C_R_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Turn_R",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_11_Attack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FurySwing_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_11_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FurySwing_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_12_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_HammerSlam_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_08_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FuryBodySlam_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_08_Attack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FuryBodySlam_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_08_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FuryBodySlam_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_12_Attack_Dash",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_DashSwing_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_11_Attack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_DashSwing_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_12_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_HammerSlam_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_11_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_DashSwing_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_12_Attack",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_HammerSlam_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_12_Attack_Sub",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_FuryHammerSlam_Loop",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_10_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Swing_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_10_End",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_Swing_End",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_09_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_DashSwingCom_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Walk_C_B_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Walk_B",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_Walk_C_R_1",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Walk_R",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_F_Guide_C04",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "CutScene_End",
+                    "UpperClipName": ""
                 }
             ]
         }

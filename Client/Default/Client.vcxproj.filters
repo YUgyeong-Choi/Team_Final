@@ -481,6 +481,9 @@
     <Filter Include="02.GameObjects\00.StaticMesh\Water_Puddle">
       <UniqueIdentifier>{0e0921cf-ff24-4bc8-9d86-492820a0237b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\FestivalLeader">
+      <UniqueIdentifier>{0951c273-c653-4fac-9369-d349e12d1b0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1027,6 +1030,9 @@
     <ClInclude Include="..\public\WaterPuddle.h">
       <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FestivalLeader.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\FestivalLeader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1546,6 +1552,9 @@
     </ClCompile>
     <ClCompile Include="..\private\WaterPuddle.cpp">
       <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FestivalLeader.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\FestivalLeader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
