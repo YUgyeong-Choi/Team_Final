@@ -93,9 +93,9 @@
         ]
     },
     {
-        "ARMT": "Prototype_Component_Texture_T_Decal_BloodTrail_59_ARMT.dds",
-        "BC": "Prototype_Component_Texture_T_Decal_Soil_02_BC.dds",
-        "N": "Prototype_Component_Texture_T_Decal_Soil_01_N.dds",
+        "ARMT": "Prototype_Component_Texture_water_moss_01a_ORH.dds",
+        "BC": "Prototype_Component_Texture_water_moss_01a_D2.dds",
+        "N": "Prototype_Component_Texture_water_moss_01a_N.dds",
         "WorldMatrix": [
             [
                 5.0,
@@ -118,7 +118,38 @@
             [
                 201.70460510253906,
                 7.371065139770508,
-                -9.241386413574219,
+                -9.479546546936035,
+                1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_BloodSpot_2_ARMT.dds",
+        "BC": "Prototype_Component_Texture_water_moss_01a_D2.dds",
+        "N": "Prototype_Component_Texture_water_moss_01a_N.dds",
+        "WorldMatrix": [
+            [
+                5.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                5.0,
+                0.0
+            ],
+            [
+                209.33856201171875,
+                7.411298751831055,
+                -5.466039657592773,
                 1.0
             ]
         ]
