@@ -74,6 +74,8 @@ protected:
 	_vector m_vDirection = XMVectorZero();
 	_vector m_vStartPos = XMVectorZero(); // 시작 위치
 
+	_float  m_fBasicDamage = { 5.f };
+
 	class CEffectContainer* m_pEffect = { nullptr }; // 최소 하나의 이펙트,
 public:
 	static CProjectile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

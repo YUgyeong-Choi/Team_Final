@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "LockOn_Manager.h" 
 #include "PhysX_IgnoreSelfCallback.h"
+#include "FireBall.h"
 
 CButtler_Range::CButtler_Range(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CMonster_Base{pDevice, pContext}
@@ -24,7 +25,7 @@ HRESULT CButtler_Range::Initialize(void* pArg)
 {
 	UNIT_DESC* pDesc = static_cast<UNIT_DESC*>(pArg);
 	pDesc->fSpeedPerSec = 5.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(180.0f);
+	pDesc->fRotationPerSec = XMConvertToRadians(60.0f);
 
 	m_fHeight = 1.f;
 	m_vHalfExtents = { 0.5f,1.f,0.5f };
@@ -209,17 +210,17 @@ void CButtler_Range::Update_State()
 	vDist = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 
 
-	m_pAnimator->SetFloat("Distance", XMVectorGetX(XMVector3Length(vDist)));
+	//m_pAnimator->SetFloat("Distance", XMVectorGetX(XMVector3Length(vDist)));
 
 	m_strStateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 
 
 
 
-	if (m_strStateName.find("Idle") != m_strStateName.npos)
+	if (m_strStateName.find("Idle") != m_strStateName.npos || m_strStateName.find("Attack") != m_strStateName.npos)
 	{
-		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
-
+	
+		m_isLookAt = true;
 		
 		RayCast(m_pPhysXActorCom);
 
@@ -232,11 +233,15 @@ void CButtler_Range::Update_State()
 			m_pAnimator->SetBool("IsAttack", false);
 		}
 	}
+	else
+	{
+		m_isLookAt = false;
+	}
 
 	if (m_iAttackCount == 3)
 	{
 		// 뒤로 가게 하기
-		m_pAnimator->SetInt("Dir", ENUM_CLASS(MONSTER_DIR::B));
+		//m_pAnimator->SetInt("Dir", ENUM_CLASS(MONSTER_DIR::B));
 		m_pAnimator->SetBool("IsBack", true);
 
 		m_iAttackCount = 0;
@@ -386,7 +391,7 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 
 
-	if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
+	if (m_strStateName.find("Down") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
 	{
 		m_fAwaySpeed = 1.f;
 		RootMotionActive(fTimeDelta);
@@ -397,20 +402,12 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 
 
-	if (m_strStateName.find("Away") != m_strStateName.npos)
+	if (m_strStateName.find("Down") != m_strStateName.npos)
 	{
 		m_fAwaySpeed -= fTimeDelta * 0.5f;
 
 		if (m_fAwaySpeed <= 0.f)
 			m_fAwaySpeed = 0.f;
-
-
-		if (m_strStateName.find("B") == m_strStateName.npos)
-		{
-			vLook *= -1.f;
-
-		}
-
 
 
 
@@ -427,7 +424,6 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
 	}
-
 	
 
 }
@@ -439,6 +435,33 @@ void CButtler_Range::Register_Events()
 		++m_iAttackCount;
 
 		// 투사체 만들어서 쏘는거 추가하기
+
+		const _float* vWeaponPos = m_pWeapon->Get_CombinedWorldMatrix()->m[3] ;
+
+		_vector vPos = { vWeaponPos[0], vWeaponPos[1], vWeaponPos[2], vWeaponPos[3] };
+		vPos -= m_vRayOffset * 0.5f;
+		CProjectile::PROJECTILE_DESC desc{};
+		_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+
+		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.3f - vPos;
+
+		desc.bUseDistTrigger = false;
+		desc.bUseTimeTrigger = false;
+		desc.fGravityOnDist = 0.f;
+		desc.fLifeTime = 5.f;
+		desc.fRadius = 0.1f;
+		desc.fRotationPerSec = 0.f;
+		desc.fSpeed = 1.f;
+		desc.fSpeedPerSec = 3.f;
+		desc.iLevelID = iLevelIndex;
+		lstrcpy(desc.szName, TEXT("Bullet"));
+		desc.vDir = { vDir.m128_f32[0], vDir.m128_f32[1], vDir.m128_f32[2] };
+		desc.vPos = { vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2] };
+
+		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Projectile"), iLevelIndex, TEXT("Layer_Projectile_Normal"), &desc)))
+		{
+			return;
+		}
 
 		});
 
@@ -497,6 +520,88 @@ void CButtler_Range::Reset()
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 
 	m_isFatal = false;
+}
+
+void CButtler_Range::RayCast(CPhysXActor* actor)
+{
+
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.5f - m_pTransformCom->Get_State(STATE::POSITION);
+
+	_vector vOffset = m_vRayOffset * 0.5f;
+
+	PxVec3 origin = actor->Get_Actor()->getGlobalPose().p +VectorToPxVec3(vOffset);
+	XMFLOAT3 fLook;
+	XMStoreFloat3(&fLook, vDir);
+	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
+	direction.normalize();
+	_float fRayLength = 10.f;
+
+	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
+	PxRaycastBuffer hit;
+	PxQueryFilterData filterData;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
+
+	unordered_set<PxActor*> ignoreActors = actor->Get_IngoreActors();
+	CIgnoreSelfCallback callback(ignoreActors);
+
+	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, fRayLength, hit, hitFlags, filterData, &callback))
+	{
+		if (hit.hasBlock)
+		{
+			PxRigidActor* hitActor = hit.block.actor;
+
+			if (hitActor == actor->Get_Actor())
+			{
+				printf(" Ray hit myself  skipping\n");
+				return;
+			}
+			PxVec3 hitPos = hit.block.position;
+			PxVec3 hitNormal = hit.block.normal;
+
+			CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
+
+			if (pHitActor)
+			{
+				if (nullptr == pHitActor->Get_Owner())
+					return;
+				pHitActor->Get_Owner()->On_Hit(this, actor->Get_ColliderType());
+
+				if (COLLIDERTYPE::PLAYER == pHitActor->Get_ColliderType() || COLLIDERTYPE::PLAYER_WEAPON == pHitActor->Get_ColliderType())
+				{
+					m_bRayHit = true;
+					m_vRayHitPos = hitPos;
+				}
+				else
+				{
+					m_bRayHit = false;
+					m_vRayHitPos = {};
+				}
+			}
+
+		
+			
+			
+
+			
+		}
+	}
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider()) {
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = actor->Get_Actor()->getGlobalPose().p + VectorToPxVec3(vOffset);
+		XMFLOAT3 fLook;
+		XMStoreFloat3(&fLook, vDir);
+		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
+		_data.fRayLength = 10.f;
+		_data.bIsHit = m_bRayHit;
+		_data.vHitPos = m_vRayHitPos;
+		actor->Add_RenderRay(_data);
+
+		//m_bRayHit = false;
+		//m_vRayHitPos = {};
+	}
+#endif
 }
 
 HRESULT CButtler_Range::Ready_Weapon()

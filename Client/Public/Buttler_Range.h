@@ -49,6 +49,9 @@ public:
 	virtual void Start_Fatal_Reaction();
 
 	virtual void Reset() override;
+
+	virtual void RayCast(CPhysXActor* actor);
+
 private:
 	HRESULT Ready_Weapon();
 

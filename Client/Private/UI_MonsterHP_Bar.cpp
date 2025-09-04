@@ -72,6 +72,8 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
 
         m_fOffset = 0.1f;
+
+        m_fRenderTime = 1.f;
     }
 
    
@@ -91,15 +93,19 @@ void CUI_MonsterHP_Bar::Priority_Update(_float fTimeDelta)
 
 void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
 {
-    if (m_fRenderTime > 0.f)
+    if (!m_isBoss)
     {
-        m_fRenderTime -= fTimeDelta;
+        if (m_fRenderTime > 0.f)
+        {
+            m_fRenderTime -= fTimeDelta;
+        }
+        else
+        {
+            m_fRenderTime = 0.f;
+            m_fDamage = 0.f;
+        }
     }
-    else
-    {
-        m_fRenderTime = 0.f;
-        m_fDamage = 0.f;
-    }
+   
 
 
     _float fRatio = *m_pHP / (m_fMaxHp);
@@ -182,7 +188,8 @@ void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
 
     else
     {
-        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
+        if (m_fRenderTime > 0.f)
+          m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
     }
   
    
