@@ -1025,7 +1025,7 @@
         "Collision": true,
         "ModelName": "SM_Station_InWall_04",
         "NoInstancing": false,
-        "ObjectCount": 5,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWall_04.bin"
     },
     {

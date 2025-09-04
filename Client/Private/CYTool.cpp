@@ -532,7 +532,6 @@ HRESULT CCYTool::Window_Particle()
 		m_iLastSelected = m_iSelected;
 		m_tPCB.bUseGravity = desc.bGravity;
 		m_tPCB.fGravity = desc.fGravity;
-		m_tPCB.vRotationAxis = desc.vRotationAxis;
 		m_tPCB.vOrbitAxis = desc.vOrbitAxis;
 		m_tPCB.bUseOrbit = desc.bOrbit;
 		m_tPCB.bUseSpin = desc.bSpin;
@@ -570,12 +569,6 @@ HRESULT CCYTool::Window_Particle()
 	m_tPCB.bUseGravity = m_bUseGravity == true ? 1 : 0;
 
 	// --- 자전(Spin) ---
-	ImGui::InputFloat3("Spin Axis", &m_tPCB.vRotationAxis.x);
-	ImGui::SameLine();
-	if (ImGui::Button("Normalize##spin")) {
-		_vector a = XMVector3Normalize(XMLoadFloat3(&m_tPCB.vRotationAxis));
-		XMStoreFloat3(&m_tPCB.vRotationAxis, a);
-	}
 	ImGui::DragFloat2("Spin Speed (deg/s)", reinterpret_cast<_float*>(&m_vRotationSpeed), 0.1f, -2000.f, 2000.f);
 
 	// --- 공전(Orbit) ---
@@ -648,7 +641,6 @@ HRESULT CCYTool::Window_Particle()
 		desc.vSpeed = m_vSpeed;
 		desc.bGravity = m_tPCB.bUseGravity;
 		desc.fGravity = m_tPCB.fGravity;
-		desc.vRotationAxis = m_tPCB.vRotationAxis;
 		desc.vOrbitAxis = m_tPCB.vOrbitAxis;
 		desc.vRotationSpeed = m_vRotationSpeed;
 		desc.vOrbitSpeed = m_vOrbitSpeed;

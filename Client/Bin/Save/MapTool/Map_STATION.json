@@ -22110,13 +22110,13 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Station_TrainCarpet_01",
             "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -22146,7 +22146,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [

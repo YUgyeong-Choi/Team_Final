@@ -51,7 +51,7 @@ public:
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT, GUARD_BREAK,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
 		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,FESTIVALDOOR,
-		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, HITEDUP, HITEDSTAMP, PULSE, FATAL, ITEMFAIL, END
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, HITEDUP, HITEDSTAMP, PULSE, FATAL, ITEMFAIL, STATIONDOOR, END
 	};
 
 	enum class eHitedTarget
@@ -104,9 +104,11 @@ public: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
 	_vector ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
 	virtual void Register_Events() override;
-public:
+public: /* [ 컷씬 용 ] */
 	_bool Get_HaveKey() { return m_bHaveKey; }
 	void Set_GetKey() { m_bHaveKey = true; }
+	_bool MoveToDoor(_float fTimeDelta, _vector vTargetPos);
+	_bool RotateToDoor(_float fTimeDelta, _vector vRotation);
 private: /* [ 루트모션 활성화 ] */
 	void	RootMotionActive(_float fTimeDelta);
 
@@ -168,6 +170,11 @@ public: /* [ 불타는 셰이딩 ] */
 	void BurnActive(_float fDeltaTime);
 	void OnBurn(_float fTimeDelta);
 	void OffBurn(_float fTimeDelta);
+
+public: /* [ 림라이트 셰이딩 ] */
+	void LimActive(_bool bOnOff, _float fSpeed);
+	void OnLim(_float fTimeDelta);
+	void OffLim(_float fTimeDelta);
 
 
 public:
@@ -272,6 +279,12 @@ private: /* [ 불타버려~ ] */
 	_float	m_fBurnPhase = {};
 	_float	m_fBurnSpeed = 1.7f;
 	_bool	m_bBurnSwitch = {};
+
+private: /* [ 림라이트 ] */
+	_float	m_fLimTime = {};
+	_float	m_fLimPhase = {};
+	_float	m_fLimSpeed = 1.7f;
+	_bool	m_bLimSwitch = {};
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };

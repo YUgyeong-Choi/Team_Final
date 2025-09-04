@@ -1022,7 +1022,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TopDeco_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_TrainCarpet_01",
         "NoInstancing": false,
         "ObjectCount": 2,

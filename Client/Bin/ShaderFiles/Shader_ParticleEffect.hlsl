@@ -19,16 +19,16 @@ struct ParticleParam
 
     float2  LifeTime; // x=max, y=acc
     float   Speed;
-    float   RotationSpeed; // degrees/sec
+    float   fTileIdx;
 
     float   OrbitSpeed; // degrees/sec
     float   fAccel; // 가속도 (+면 가속, -면 감속)
     float   fMaxSpeed; // 최대 속도 (옵션)
     float   fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
     
-    float   fTileIdx;
     float2  vTileOffset;
-    float   _pad0;
+    float   RotationSpeed; // degrees/sec
+    float   RotationAngle;
 };
 
 StructuredBuffer<ParticleParam> Particle_SRV : register(t0);
@@ -40,30 +40,46 @@ struct VS_OUT
     float4 vPosition : POSITION;
     float2 vPSize : PSIZE;
     float2 vLifeTime : TEXCOORD0;
-    float fSpeed : TEXCOORD1;
+    float2 vSpeedRotation : TEXCOORD1; // 그냥 값 좀 같이 씁시다 / x:Speed, y:RotationAngle
     float4 vDir : TEXCOORD2;
     float2 vTileOffset : TEXCOORD3;
-    float2 vRotation : TEXCOORD4;
 };
 
-float2 RotateSubUV(float2 baseUV, float2 tileSize, float2 tileOffset, float angle)
-{
-    // (1) 아틀라스 절대UV → 타일 로컬UV(0~1)
-    float2 uvLocal = (baseUV - tileOffset) / tileSize;
+//float2 RotateSubUV(float2 baseUV, float2 tileSize, float2 tileOffset, float angle)
+//{
+//    // (1) 아틀라스 절대UV → 타일 로컬UV(0~1)
+//    float2 uvLocal = (baseUV - tileOffset) / tileSize;
 
-    // (2) 중심 기준 회전
-    float2 p = uvLocal - 0.5;
+//    // (2) 중심 기준 회전
+//    float2 p = uvLocal - 0.5;
+//    float s, c;
+//    sincos(angle, s, c);
+//    float2 pr = float2(p.x * c - p.y * s, p.x * s + p.y * c);
+//    uvLocal = pr + 0.5;
+
+//    // (선택) 타일 경계 샘플링 누수 방지용 소축(bleeding 방지)
+//    // float2 border = 1.0 / g_AtlasTexSize; // 텍스처 해상도 기반으로 조절
+//    // uvLocal = saturate(lerp(0.5, uvLocal, 1.0 - 2.0 * max(border.x, border.y)));
+
+//    // (3) 타일 로컬UV → 아틀라스 절대UV
+//    return tileOffset + uvLocal * tileSize;
+//}
+
+
+
+float2 RotateSubUV_Local(float2 uvLocal, float angle)
+{
     float s, c;
     sincos(angle, s, c);
-    float2 pr = float2(p.x * c - p.y * s, p.x * s + p.y * c);
-    uvLocal = pr + 0.5;
+    float2 p = uvLocal - 0.5;
+    return float2(p.x * c - p.y * s, p.x * s + p.y * c) + 0.5;
+}
 
-    // (선택) 타일 경계 샘플링 누수 방지용 소축(bleeding 방지)
-    // float2 border = 1.0 / g_AtlasTexSize; // 텍스처 해상도 기반으로 조절
-    // uvLocal = saturate(lerp(0.5, uvLocal, 1.0 - 2.0 * max(border.x, border.y)));
-
-    // (3) 타일 로컬UV → 아틀라스 절대UV
-    return tileOffset + uvLocal * tileSize;
+float2 MakeRotatedAtlasUV(float2 baseUV, float2 tileSize, float2 tileOffset, float angle)
+{
+    float2 uvLocal = baseUV; // 0..1 (쿼드 로컬 UV)
+    uvLocal = RotateSubUV_Local(uvLocal, angle); // 로컬에서 회전
+    return tileOffset + uvLocal * tileSize; // 아틀라스 절대 UV로 복귀
 }
 
 VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
@@ -98,10 +114,10 @@ VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
     Out.vPSize = float2(length(particle.Right.xyz), length(particle.Up.xyz));
 
     Out.vLifeTime = particle.LifeTime;
-    Out.fSpeed = particle.Speed;
+    Out.vSpeedRotation.x = particle.Speed;
+    Out.vSpeedRotation.y = particle.RotationAngle;
     Out.vDir = float4(normalize(particle.VelocityDir.xyz), particle.VelocityDir.w);
     Out.vTileOffset = particle.vTileOffset;
-
     return Out;
 }
 
@@ -114,7 +130,7 @@ struct GS_IN
     float2 vPSize : PSIZE;
     
     float2 vLifeTime : TEXCOORD0;
-    float fSpeed : TEXCOORD1;
+    float2 vSpeedRotation : TEXCOORD1; // 그냥 값 좀 같이 씁시다 / x:Speed, y:RotationAngle
     float4 vDir : TEXCOORD2;
     float2 vTileOffset : TEXCOORD3;
 };
@@ -126,6 +142,7 @@ struct GS_OUT
     float2 vLifeTime : TEXCOORD1;
     float4 vProjPos : TEXCOORD2;
     float2 vTileOffset : TEXCOORD3;
+    float  fRotAngle : TEXCOORD4;
 };
 
 [maxvertexcount(6)]
@@ -152,24 +169,28 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Out[0].vLifeTime = In[0].vLifeTime;
     Out[0].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     Out[0].vTileOffset = In[0].vTileOffset;
+    Out[0].fRotAngle = In[0].vSpeedRotation.y;
         
     Out[1].vPosition = mul(float4(In[0].vPosition.xyz - vRight + vUp, 1.f), matVP);
     Out[1].vTexcoord = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
     Out[1].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     Out[1].vTileOffset = In[0].vTileOffset;
+    Out[1].fRotAngle = In[0].vSpeedRotation.y;
     
     Out[2].vPosition = mul(float4(In[0].vPosition.xyz - vRight - vUp, 1.f), matVP);
     Out[2].vTexcoord = float2(1.f, 1.f);
     Out[2].vLifeTime = In[0].vLifeTime;
     Out[2].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     Out[2].vTileOffset = In[0].vTileOffset;
+    Out[2].fRotAngle = In[0].vSpeedRotation.y;
     
     Out[3].vPosition = mul(float4(In[0].vPosition.xyz + vRight - vUp, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
     Out[3].vLifeTime = In[0].vLifeTime;
     Out[3].vProjPos = float4(length(In[0].vPosition.xyz - g_vCamPosition.xyz), 0.f, 0.f, 0.f);
     Out[3].vTileOffset = In[0].vTileOffset;
+    Out[3].fRotAngle = In[0].vSpeedRotation.y;
     
     Triangles.Append(Out[0]);
     Triangles.Append(Out[1]);
@@ -186,7 +207,7 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 [maxvertexcount(6)]
 void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4];
+    GS_OUT Out[4] = (GS_OUT[4])0;
     // === 카메라 → 파티클 벡터 ===
     float3 vLook = normalize(g_vCamPosition.xyz - In[0].vPosition.xyz);
 
@@ -207,7 +228,7 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 
     // === 속도 방향 Stretch (길이만 늘림) ===
     float3 vDir = normalize(In[0].vDir.xyz);
-    float stretchFactor = 0.015f * In[0].fSpeed; // 튜닝값
+    float stretchFactor = 0.015f * In[0].vSpeedRotation.x; // 튜닝값
     float3 vStretch = vDir * stretchFactor;
     if (In[0].vDir.w < 0.0001f)
         vStretch = float3(0.f, 0.f, 0.f);
@@ -256,11 +277,12 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 
 struct PS_IN
 {
-    float4 vPosition : SV_POSITION;
-    float2 vTexcoord : TEXCOORD0;
-    float2 vLifeTime : TEXCOORD1;
-    float4 vProjPos : TEXCOORD2;
-    float2 vTileOffset : TEXCOORD3;
+    float4 vPosition    : SV_POSITION;
+    float2 vTexcoord    : TEXCOORD0;
+    float2 vLifeTime    : TEXCOORD1;
+    float4 vProjPos     : TEXCOORD2;
+    float2 vTileOffset  : TEXCOORD3;
+    float  fRotAngle    : TEXCOORD4;
 };
 
 struct PS_OUT
@@ -456,15 +478,22 @@ PS_OUT_WB PS_MAIN_RAINONLY(PS_IN In)
 PS_OUT PS_MAIN_NONLIGHT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
-        
-    vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset));
+
+    // In.vTexcoord: 기본(0~1) UV
+    float2 rotUV = MakeRotatedAtlasUV(In.vTexcoord, g_fTileSize, In.vTileOffset, In.fRotAngle);
+
+    // ==== 샘플 ====
+    vector vColor = g_DiffuseTexture.Sample(LinearClampSampler, rotUV);
+
+    //vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset));
+
     
     if (In.vLifeTime.y >= In.vLifeTime.x)
         discard;
 
-    if (vColor.a < 0.01f)
+    if (vColor.a < 0.1f)
         discard;
-    
+
     vColor *= g_vColor;
 
     vColor = SoftEffect(vColor, In.vProjPos);

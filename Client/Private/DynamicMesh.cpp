@@ -197,12 +197,11 @@ HRESULT CDynamicMesh::Ready_Collider(void* pArg)
 	PxVec3 halfExtents = VectorToPxVec3(StaicMeshDESC->vColliderSize);
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	//m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
-	m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 
 	PxFilterData filterData{};
-	filterData.word0 = 0;// WORLDFILTER::FILTER_MAP;
-	filterData.word1 = 0;// WORLDFILTER::FILTER_PLAYERBODY;
+	filterData.word0 = WORLDFILTER::FILTER_MAP;
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);

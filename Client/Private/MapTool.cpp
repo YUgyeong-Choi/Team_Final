@@ -724,7 +724,7 @@ void CMapTool::Render_Hierarchy()
 							}
 							else
 							{
-								for (CMapToolObject* pObj : m_SelectedObjects)
+								//for (CMapToolObject* pObj : m_SelectedObjects)
 									//Safe_Release(pObj);
 								m_SelectedObjects.clear();
 

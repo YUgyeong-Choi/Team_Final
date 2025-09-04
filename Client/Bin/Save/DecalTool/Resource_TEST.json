@@ -1,6 +1,7 @@
 {
     "Prototype_Component_Texture_T_Decal_Blood_01_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Blood_01_ARMT.dds",
     "Prototype_Component_Texture_T_Decal_Blood_01_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Blood_01_N.dds",
+    "Prototype_Component_Texture_T_Decal_Blood_02_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Blood_02_ARMT.dds",
     "Prototype_Component_Texture_T_Decal_Blood_03_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Blood_03_ARMT.dds",
     "Prototype_Component_Texture_T_Decal_Bloodstain_01_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Bloodstain_01_ARMT.dds",
     "Prototype_Component_Texture_T_Decal_Bloodstain_01_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Bloodstain_01_BC.dds",
@@ -9,5 +10,11 @@
     "Prototype_Component_Texture_T_Decal_Crack_01_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Crack_01_BC.dds",
     "Prototype_Component_Texture_T_Decal_Crack_01_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Crack_01_N.dds",
     "Prototype_Component_Texture_T_Decal_Crack_02_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Crack_02_BC.dds",
-    "Prototype_Component_Texture_T_Decal_Crack_04_ARMK.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Crack_04_ARMK.dds"
+    "Prototype_Component_Texture_T_Decal_Crack_04_ARMK.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Crack_04_ARMK.dds",
+    "Prototype_Component_Texture_T_Tile_MossyStone_02_ARH.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Tile_MossyStone_02_ARH.dds",
+    "Prototype_Component_Texture_T_Tile_MossyStone_02_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Tile_MossyStone_02_BC.dds",
+    "Prototype_Component_Texture_T_Tile_MossyStone_02_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Tile_MossyStone_02_N.dds",
+    "Prototype_Component_Texture_water_moss_01a_D2.dds": "..\\Bin\\Resources\\Textures\\Decal\\water_moss_01a_D2.dds",
+    "Prototype_Component_Texture_water_moss_01a_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\water_moss_01a_N.dds",
+    "Prototype_Component_Texture_water_moss_01a_ORH.dds": "..\\Bin\\Resources\\Textures\\Decal\\water_moss_01a_ORH.dds"
 }

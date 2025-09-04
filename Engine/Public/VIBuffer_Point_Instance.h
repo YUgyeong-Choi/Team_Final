@@ -55,9 +55,6 @@ public:
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
 
-	virtual void Directional(_float fTimeDelta, _bool bTool = false);
-	virtual void Spread(_float fTimeDelta, _bool bTool = false);
-
 	void Set_Loop(_bool isLoop) { m_tCBuffer.bIsLoop = isLoop ? 1 : 0; m_tCBuffer.isTileLoop = isLoop ? 1 : 0; }
 	void Set_Center(const _float3& vCenter) { m_tCBuffer.vCenter = vCenter; }
 	void Set_Center(const _float4x4& matWorld) { XMStoreFloat3(&m_tCBuffer.vCenter, XMVector3TransformCoord(XMLoadFloat3(&m_tCBuffer.vCenter), XMLoadFloat4x4(&matWorld))); }

@@ -487,6 +487,45 @@
     <Filter Include="02.GameObjects\99.UI\Container\DeBuff">
       <UniqueIdentifier>{5640eb68-dfc9-46e1-8966-982cf3b6ff2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03. Item\Lamp">
+      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\DropItem">
+      <UniqueIdentifier>{2c3d912b-b147-46ab-9d4a-e9049f9614e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup">
+      <UniqueIdentifier>{a19245ee-eea7-44cd-a095-a156e2c472c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup\Item">
+      <UniqueIdentifier>{ed75b6f6-c903-4fbc-9123-3696358a1edc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Pickup\Weapon">
+      <UniqueIdentifier>{b0dce10e-e343-4df9-98d8-bb1e854e9b1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\UI">
+      <UniqueIdentifier>{e05af1b0-7999-451e-b1a1-d4596ece04d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Basic">
+      <UniqueIdentifier>{c36f0b3c-c3fe-4ba7-a261-cb942f41f202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Button">
+      <UniqueIdentifier>{b6828a60-69e9-498a-8a8d-e54993171365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Rotation">
+      <UniqueIdentifier>{e874890a-b1e2-4c41-ba17-5f255ffc7f46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Dynamic\Feature\Color">
+      <UniqueIdentifier>{cbaffa57-c9b2-414d-b13c-89dadc25a8f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Buttler\Range">
+      <UniqueIdentifier>{073cdcc5-ca16-4720-bf1c-e81b935a67d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.StaticMesh\Water_Puddle">
+      <UniqueIdentifier>{0e0921cf-ff24-4bc8-9d86-492820a0237b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\FestivalLeader">
+      <UniqueIdentifier>{0951c273-c653-4fac-9369-d349e12d1b0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1030,6 +1069,12 @@
     <ClInclude Include="..\Public\BossDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\WaterPuddle.h">
+      <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FestivalLeader.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\FestivalLeader</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Bullet.h">
       <Filter>02.GameObjects\12.Projectile\Buttler_Range</Filter>
     </ClInclude>
@@ -1297,9 +1342,6 @@
     <ClCompile Include="..\private\Unit.cpp">
       <Filter>02.GameObjects\01.Unit</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Player.cpp">
-      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Observer_Player_Status.cpp">
       <Filter>03. Observer\PlayerStatus</Filter>
     </ClCompile>
@@ -1555,6 +1597,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\BossDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WaterPuddle.cpp">
+      <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FestivalLeader.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\Boss\FestivalLeader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Bullet.cpp">
       <Filter>02.GameObjects\12.Projectile\Buttler_Range</Filter>

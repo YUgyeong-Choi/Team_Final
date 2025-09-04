@@ -407,7 +407,7 @@ PS_OUT_PBR PS_PBR_LIGHT_DIRECTIONAL(PS_IN In)
     float Roughness = vARMDesc.g;
     float Metallic = vARMDesc.b;
     float Unit = vARMDesc.a; //¿Ø¥÷ ø©∫Œ(¿Ø¥÷ = 0)
-    float3 Ambient = Albedo * 0.1f * AO;
+    float3 Ambient = Albedo * g_fLightAmbient * AO; //Albedo * 0.1f * AO;(øµøı ø•∫Òæ∆Æ 0.1f ∞Ì¡§µ«æÓ¿÷¥¯∞≈ πŸ≤ﬁø‰)
     
     /* ARM ∫Ì∑ªµ˘ */
     AO = lerp(AO, vDecalAMRTDesc.r, vDecalAMRTDesc.a * vARMDesc.a/*¿Ø¥÷ ø©∫Œ*/);
@@ -1167,17 +1167,6 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
         else if (bHeightOK_C && bInsideC && (fCurrViewZC - fBiasViewZ > fShadowViewZC))
             Out.vBackBuffer *= 0.5f;
     }
-    
-    /* [ ¿Ã∆Â∆Æ µ∆€µÂ «’º∫ ] */
-    //vector EffectBlendDiffuse = g_EffectBlend_Diffuse.Sample(DefaultSampler, In.vTexcoord);
-    //vector EffectBlendGlow = g_EffectBlend_Glow.Sample(DefaultSampler, In.vTexcoord);
-    //EffectBlendDiffuse += EffectBlendGlow;
-    //Out.vBackBuffer += EffectBlendDiffuse;
-    
-    //vector EffectBlendWBComposite = g_EffectBlend_WBComposite.Sample(DefaultSampler, In.vTexcoord);
-    //vector EffectBlendWBGlow = g_EffectBlend_WBGlow.Sample(DefaultSampler, In.vTexcoord);
-    //EffectBlendWBComposite += EffectBlendWBGlow;
-    //Out.vBackBuffer += EffectBlendWBComposite;
        
     if (Out.vBackBuffer.a < 0.003f)
         discard;
