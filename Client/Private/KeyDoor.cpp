@@ -211,7 +211,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		{
 		case Client::OUTDOOR:
 			//X:183.086136, Y:8.865019, Z:-7.831734 ¿Ã¬Î
-			vTargetPos = _vector({ 183.08f, 8.86f, -7.83f, 1.f });
+			vTargetPos = _vector({ 183.32f, 8.86f, -7.83f, 1.f });
 			break;
 		default:
 			break;
