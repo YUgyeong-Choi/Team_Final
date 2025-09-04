@@ -58,12 +58,12 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 
-			//CCamera_Manager::Get_Instance()->SetbMoveable(false);
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 		}
 	}
 
-	/*if(KEY_DOWN(DIK_C))
-		CCamera_Manager::Get_Instance()->SetbMoveable(true);*/
+	if(KEY_DOWN(DIK_C))
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))

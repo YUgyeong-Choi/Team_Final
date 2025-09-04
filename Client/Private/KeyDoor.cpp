@@ -51,9 +51,12 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 		if (KEY_DOWN(DIK_E))
 		{
 			m_bMoveStart = true;
-			m_pPhysXActorCom->Init_SimulationFilterData();
-			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			m_bFinish = m_pPlayer->Get_HaveKey();
+			if (m_bFinish)
+			{
+				m_pPhysXActorCom->Init_SimulationFilterData();
+				m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+			}
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 		}
 	}
