@@ -66,7 +66,8 @@ private:
 	// 날아가는 속도
 	_float m_fAwaySpeed = { 1.f };
 
-	
+	// 맞을 때 밀리는 속도
+	_float m_fHitSpeed = { 1.f };
 
 
 public:

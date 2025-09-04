@@ -904,6 +904,10 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Death"), &eDesc)))
 		return E_FAIL;*/
 
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container_DeBuff"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_DeBuff_UI"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

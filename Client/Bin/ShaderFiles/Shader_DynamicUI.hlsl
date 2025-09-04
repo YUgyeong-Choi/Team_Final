@@ -28,6 +28,7 @@ float g_Groggy;
 float g_UVTime;
 
 float g_IsHpBar;
+float g_UseGradation;
 
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
@@ -472,23 +473,23 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
     vector vBack = g_BackgroundTexture.Sample(DefaultSampler, In.vTexcoord);
 
     
-    float fMarginX = 0.11f;
-    float fMarginY = 0.30f;
+    float fMarginX = 0.097f;
+    float fMarginY = 0.097f;
 
 // 채워질 수 있는 X 범위
     float minX = fMarginX;
-    float maxX = 1 - 1.025f * fMarginX;
+    float maxX = 1 - fMarginX * 0.97f;
 
     // Y 범위 밖이면 버림
-    if (In.vTexcoord.y < fMarginY || In.vTexcoord.y > 1.0f - fMarginY * 1.05f)
+    if (In.vTexcoord.y < fMarginY * 1.5f  || In.vTexcoord.y > 1.0f - fMarginY * 1.07f )
         discard;
     
-    if (In.vTexcoord.x < fMarginX || In.vTexcoord.x > 1.0f - fMarginX)
+    if (In.vTexcoord.x < fMarginX * 0.9f || In.vTexcoord.x > 1.0f - fMarginX *  0.9f)
         discard;
     
-    if (vBorder.a > 0.1f)
+    if (vBorder.a > 0.01f)
     {
-        Out.vColor = vBorder;
+        Out.vColor = vBorder * 0.9f;
         return Out;
     }
     
@@ -499,8 +500,8 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
 
     float borderThickness = 0.1f;
 
-    float fillStartY = borderThickness * 3.6f;
-    float fillEndY = 1.0f - borderThickness * 3.35f;
+    float fillStartY = borderThickness * 2.75f;
+    float fillEndY = 1.0f - borderThickness * 2.7f;
 
 
     if (!isInsideX ||
@@ -513,7 +514,19 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
     {
         
         if (isInsideX)
-            Out.vColor = g_Color;
+        {
+            if (g_UseGradation == 1.f)
+            {
+                float2 vTexcoord;
+                vTexcoord.x = In.vTexcoord.x;
+                vTexcoord.y = In.vTexcoord.y * 0.5f + 0.5f;
+                vector vGradation = g_GradationTexture.Sample(DefaultSampler, vTexcoord);
+                Out.vColor = g_Color * (length(vGradation.rgb)   + 0.5f);
+            }
+            else
+                Out.vColor = g_Color;
+        }
+          
         else
             Out.vColor = float4(0.f, 0.f, 0.f, 0.7f);
     }

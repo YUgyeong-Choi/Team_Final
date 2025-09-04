@@ -169,7 +169,9 @@
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\BossDoor.h" />
     <ClInclude Include="..\public\BossUnit.h" />
+    <ClInclude Include="..\public\Bullet.h" />
     <ClInclude Include="..\public\Buttler_Range.h" />
+    <ClInclude Include="..\public\DeBuff_Bar.h" />
     <ClInclude Include="..\public\EliteUnit.h" />
     <ClInclude Include="..\public\Buttler_Basic.h" />
     <ClInclude Include="..\public\Buttler_Train.h" />
@@ -226,6 +228,7 @@
     <ClInclude Include="..\Public\TriggerTalk.h" />
     <ClInclude Include="..\Public\TriggerUI.h" />
     <ClInclude Include="..\public\UI_Button_Script.h" />
+    <ClInclude Include="..\public\UI_Container_DeBuff.h" />
     <ClInclude Include="..\public\UI_Fatal_Icon.h" />
     <ClInclude Include="..\public\UI_Feature_Click.h" />
     <ClInclude Include="..\public\Fuoco.h" />
@@ -355,7 +358,9 @@
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\BossDoor.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
+    <ClCompile Include="..\private\Bullet.cpp" />
     <ClCompile Include="..\private\Buttler_Range.cpp" />
+    <ClCompile Include="..\private\DeBuff_Bar.cpp" />
     <ClCompile Include="..\private\EliteUnit.cpp" />
     <ClCompile Include="..\private\Buttler_Basic.cpp" />
     <ClCompile Include="..\private\Buttler_Train.cpp" />
@@ -467,6 +472,7 @@
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\private\UI_Button_Script.cpp" />
     <ClCompile Include="..\Private\UI_Container.cpp" />
+    <ClCompile Include="..\private\UI_Container_DeBuff.cpp" />
     <ClCompile Include="..\private\UI_Fatal_Icon.cpp" />
     <ClCompile Include="..\private\UI_Featrue_Scale.cpp" />
     <ClCompile Include="..\private\UI_Feature.cpp" />
