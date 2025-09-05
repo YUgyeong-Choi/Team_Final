@@ -21,6 +21,8 @@
 #include "TriggerBGM.h"
 
 #include "PBRMesh.h"
+#include "WaterPuddle.h"
+
 #include "DH_ToolMesh.h"     
 #include "Level_Loading.h"
 #include "UI_Container.h"
@@ -76,6 +78,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_TriggerBGM()))
 		return E_FAIL;
 	
+	//if (FAILED(Ready_WaterPuddle()))
+	//	return E_FAIL;
 
 	Reset();
 
@@ -1409,6 +1413,18 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 				return E_FAIL;
 		}
 	}
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_WaterPuddle()
+{
+	CWaterPuddle::WATER_DESC Desc{};
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_WaterPuddle"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_WaterPuddle"), &Desc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 

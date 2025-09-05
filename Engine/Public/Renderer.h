@@ -74,6 +74,7 @@ private:
 	HRESULT Render_UI();
 	HRESULT Render_Lights();
 	HRESULT Render_PBRLights();
+	HRESULT Render_PBRWaterPuddle();
 	HRESULT Render_Pury();
 	HRESULT Render_LimLight();
 	HRESULT Render_Burn();

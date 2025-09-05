@@ -47,6 +47,7 @@ private:
 	HRESULT Ready_Interact();
 	HRESULT Ready_Trigger();
 	HRESULT Ready_TriggerBGM();
+	HRESULT Ready_WaterPuddle();
 
 
 

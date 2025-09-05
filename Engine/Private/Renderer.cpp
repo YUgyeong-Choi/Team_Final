@@ -141,6 +141,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_PlayerLim"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/* [ ¹° ¿õµ¢ÀÌ ¼ÎÀÌ´õ ] */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_WaterPuddle"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/* [ º¼·ý¸ÞÆ®¸¯ Æ÷±× ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Volumetric"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -182,6 +186,9 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_PlayerLim"), TEXT("Target_PBR_PlayerLim"))))
+		return E_FAIL;
+	
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBR_WaterPuddle"), TEXT("Target_PBR_WaterPuddle"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRFinal"), TEXT("Target_PBR_Specular"))))
@@ -366,7 +373,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Unit"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_Emissive"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_PBR_WaterPuddle"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Volumetric"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
@@ -476,6 +483,12 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_PBRLights()))
 	{
 		MSG_BOX("Render_PBRLights Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_PBRWaterPuddle()))
+	{
+		MSG_BOX("Render_PBRWaterPuddle Failed");
 		return E_FAIL;
 	}
 	
@@ -827,6 +840,25 @@ HRESULT CRenderer::Render_PBRLights()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_PBRWaterPuddle()
+{
+	/* [ ¹° ¿õµ¢ÀÌ ·»´õ¸µ ] */
+	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_WaterPuddle"));
+
+	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_WATERPUDDLE)])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_WaterPuddle();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_WATERPUDDLE)].clear();
+
+	m_pGameInstance->End_MRT();
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_Pury()
 {
 	/* [ Ç»¸® ·»´õ¸µ ] */
@@ -975,6 +1007,8 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_GlowFinal"), m_pShader, "g_PBR_Glow")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_PlayerLim"), m_pShader, "g_PBR_PlayerLim")))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_WaterPuddle"), m_pShader, "g_PBR_WaterPuddle")))
 		return E_FAIL;
 
 	///* [ Effect ·»´õ¸µ¿ë ]*/
@@ -1497,7 +1531,7 @@ HRESULT CRenderer::Render_Debug()
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRShadow"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_Volumetric"), m_pShader, m_pVIBuffer);
-			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBR_Fury"), m_pShader, m_pVIBuffer);
+			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBR_WaterPuddle"), m_pShader, m_pVIBuffer);
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
 			/* ¿©±â¿¡ MRT ÀÔ·Â */
