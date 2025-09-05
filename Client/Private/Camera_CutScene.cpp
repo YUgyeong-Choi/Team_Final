@@ -501,7 +501,8 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 
 			m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
 			m_pTransformCom->LookAt(vtargetPos);
-			
+			//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+			//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
 			return;
 		}
 	}
