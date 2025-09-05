@@ -260,12 +260,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//고사양 모드
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 
 	//저사양 모드
-	if (FAILED(Ready_Lights_LowQuality()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -647,7 +647,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 	
 	// ------------- Area 99 --------------
-	_float3 a99p0 = _float3{ 186.65f, -47.92f, 63.37f };
+	_float3 a99p0 = _float3{ 180.65f, -47.92f, 63.37f };
 	_float3 a99p1 = _float3{ 457.66f, 133.33f, -116.79f };
 	_float3 a99Min, a99Max;
 	FnToAABB(a99p0, a99p1, a99Min, a99Max);
