@@ -78,6 +78,15 @@ namespace Client
 		LOD2,
 		END
 	};
+
+	//별바라기 태그
+	enum class STARGAZER_TAG
+	{
+		OUTER,
+		FESTIVAL_LEADER,
+		FIRE_EATER,
+		END
+	};
 #pragma endregion
 
 #pragma region YG

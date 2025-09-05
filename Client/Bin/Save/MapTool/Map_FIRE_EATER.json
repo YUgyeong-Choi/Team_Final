@@ -1,5 +1,5 @@
 {
-    "ModelCount": 34,
+    "ModelCount": 35,
     "Models": [
         {
             "Collision": true,
@@ -11470,6 +11470,12 @@
                     ]
                 }
             ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "Stargazer",
+            "ObjectCount": 0,
+            "Objects": []
         }
     ]
 }

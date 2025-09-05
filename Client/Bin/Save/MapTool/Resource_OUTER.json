@@ -1057,6 +1057,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_VMonumentsC.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "Stargazer",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/Stargazer.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "T_Tile_BrickFloor_01",
         "NoInstancing": false,

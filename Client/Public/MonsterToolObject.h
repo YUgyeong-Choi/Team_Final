@@ -69,7 +69,7 @@ private:
 
 
 private:
-	_int m_iID = { 0 }; //몬스터 아이디는 음수 -1 부터 시작
+	_int m_iID = { -1 };
 
 protected:				/* [ 기본 속성 ] */
 

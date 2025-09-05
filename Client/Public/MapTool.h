@@ -1,7 +1,8 @@
 #pragma once
 #include "YWTool.h"
-
 #include "Client_Defines.h"
+
+#include "MapToolObject.h"
 
 NS_BEGIN(Client)
 
@@ -24,6 +25,10 @@ public:
 	virtual HRESULT Save(const _char* Map) override;
 
 private:
+	HRESULT Load_StaticMesh(const _char* Map);
+	HRESULT Load_Stargazer(const _char* Map);
+
+private:
 	//맵툴 조작
 	void Control(_float fTimeDelta);
 private:
@@ -38,8 +43,6 @@ private:
 
 private:
 	HRESULT Ready_Model(const _char* Map);
-
-
 
 	HRESULT Save_Favorite();
 	HRESULT Load_Favorite();
@@ -88,6 +91,7 @@ private:
 
 private:
 	void Detail_Name();
+	void Detail_ObjType();
 	void Detail_Transform();
 	void Detail_Tile();
 	//컨백스 또는 트라이앵글 선택(기본 컨백스)
@@ -95,8 +99,26 @@ private:
 	void Detail_LightShape();
 	void Detail_NoInstancing();
 
+	//스타게이저
+	void Detail_StargazerTag();
+
 private:
 	HRESULT Add_Favorite(const string& ModelName, _bool bSave);
+
+private:
+	const _char* m_ObjType[ENUM_CLASS(CMapToolObject::OBJ_TYPE::END)] = {
+		"STATIC_MESH",
+		"STARGAZER",
+		"ITEM",
+		"BREAKABLE",
+	};
+
+private:
+	const _char* m_StargazerTag[ENUM_CLASS(STARGAZER_TAG::END)] = {
+		"OUTER",
+		"FESTIVAL_LEADER",
+		"FIRE_EATER",
+	};
 
 private:
 	//마우스 드랙 시작 포인트
