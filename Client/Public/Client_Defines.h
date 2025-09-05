@@ -55,6 +55,8 @@ extern HINSTANCE g_hInst;
 
 using namespace Client;
 
+//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+
 #pragma region 한영웅
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
 #define PRE_TRANSFORMMATRIX_SCALE 0.004f

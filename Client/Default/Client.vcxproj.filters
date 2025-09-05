@@ -526,6 +526,12 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\FestivalLeader">
       <UniqueIdentifier>{0951c273-c653-4fac-9369-d349e12d1b0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\WatchDog">
+      <UniqueIdentifier>{0d0dc286-4c73-4d88-af00-e5469ed213ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\16.Stargazer">
+      <UniqueIdentifier>{9e8895d9-2e68-482a-ba0a-26d4445a772a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\07.Effect\MeshEmitter%3f">
       <UniqueIdentifier>{27f0ce26-06a0-4848-ac27-0f3a1159fcb9}</UniqueIdentifier>
     </Filter>
@@ -1087,6 +1093,12 @@
     <ClInclude Include="..\public\UI_Container_DeBuff.h">
       <Filter>02.GameObjects\99.UI\Container\DeBuff</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\WatchDog.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Stargazer.h">
+      <Filter>02.GameObjects\16.Stargazer</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\MeshEmitter.h">
       <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
     </ClInclude>
@@ -1621,6 +1633,12 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Container_DeBuff.cpp">
       <Filter>02.GameObjects\99.UI\Container\DeBuff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WatchDog.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Stargazer.cpp">
+      <Filter>02.GameObjects\16.Stargazer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\MeshEmitter.cpp">
       <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>

@@ -153,9 +153,6 @@ void CButtler_Train::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 		m_isCollisionPlayer = true;
 
 
-	// 무기가 상태마다 한번씩 데미지 주고
-	// 이제 초기화하면 다시 데미지 줄 수 있게
-	//ReceiveDamage(pOther, eColliderType);
 
 }
 
@@ -592,8 +589,8 @@ HRESULT CButtler_Train::Ready_Weapon()
 	lstrcpy(Desc.szName, TEXT("Buttler_Train_Weapon"));
 	Desc.vAxis = { 0.f,1.f,0.f,0.f };
 	Desc.fRotationDegree = { 90.f };
-	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
-	Desc.vPhsyxExtent = { 0.4f, 0.2f, 0.2f };
+	Desc.vLocalOffset = { -0.0f,0.f,0.f,1.f };
+	Desc.vPhsyxExtent = { 0.75f, 0.2f, 0.2f };
 
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();

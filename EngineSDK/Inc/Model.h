@@ -69,6 +69,12 @@ public:
 			return nullptr;
 		return m_Meshes[iMeshIndex];
 	}
+	class CMesh* CloneMesh(_uint iMeshIndex)
+	{
+		if (iMeshIndex >= m_iNumMeshes)
+			return nullptr;
+		return dynamic_cast<CMesh*>(m_Meshes[iMeshIndex]->Clone(nullptr));
+	}
 public:
 	virtual HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iMeshIndex, aiTextureType eType, _uint iTextureIndex = 0);
 	_bool HasTexture(_uint iMaterialIndex, aiTextureType eType) const;

@@ -255,7 +255,7 @@
         "Collision": false,
         "ModelName": "SM_Exhibition_Pillar_06",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 10,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Pillar_06.bin"
     },
     {
@@ -570,7 +570,7 @@
         "Collision": false,
         "ModelName": "SM_Interior_Deco_01",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Deco_01.bin"
     },
     {
@@ -981,6 +981,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Station_FrontGate_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FrontGate_01.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Station_FrontWindow_01",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -1071,6 +1078,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_InWall_06.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_Station_KratSymbol_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_KratSymbol_01.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Station_Light_01",
         "NoInstancing": false,
@@ -1155,17 +1169,17 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_PillarC_03.bin"
     },
     {
-        "Collision": true,
+        "Collision": false,
         "ModelName": "SM_Station_PillarD_01",
         "NoInstancing": false,
-        "ObjectCount": 6,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_PillarD_01.bin"
     },
     {
-        "Collision": true,
+        "Collision": false,
         "ModelName": "SM_Station_PillarD_02",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_PillarD_02.bin"
     },
     {

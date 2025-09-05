@@ -9,8 +9,8 @@
             "Name": "Restore",
             "NodeId": 1,
             "NodePos": [
-                1297.0,
-                114.0
+                1369.0,
+                213.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -24,14 +24,15 @@
             "Name": "Idle",
             "NodeId": 2,
             "NodePos": [
-                577.0,
-                116.0
+                649.0,
+                213.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         }
     ],
     "ControllerName": "Stargazer_Des_2_Default",
+    "EntryState": "Idle",
     "Parameters": {
         "Restore": {
             "Type": 1,

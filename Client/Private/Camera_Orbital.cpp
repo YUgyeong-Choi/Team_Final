@@ -55,6 +55,7 @@ void CCamera_Orbital::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_T))
 		m_bActive = !m_bActive;
 
+
 	if (KEY_DOWN(DIK_CAPSLOCK))
 		PrintMatrix("OribitalCameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 

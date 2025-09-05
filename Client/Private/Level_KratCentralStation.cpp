@@ -10,6 +10,9 @@
 #include "StaticMesh_Instance.h"
 #include "Nav.h"
 #include "Static_Decal.h"
+
+//별바라기 테스트
+#include "Stargazer.h"
 #pragma endregion
 
 #include "SlideDoor.h"
@@ -83,6 +86,15 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	Reset();
 
+//#pragma region 영웅 별바라기 테스트
+//	CStargazer::STARGAZER_DESC Desc{};
+//	Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+//
+//	if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
+//		Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
+//		return E_FAIL;
+//#pragma endregion
+
 	return S_OK;
 }
 
@@ -90,15 +102,12 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
-
 		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
 		m_pGameInstance->Call_BeforeChangeLevel();
 
 		CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
-
-
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_bEndVideo)
@@ -205,21 +214,6 @@ void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 	__super::Late_Update(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_J))
-	{
-		
-		CUI_Container::UI_CONTAINER_DESC eDesc = {};
-
-		eDesc.strFilePath = TEXT("../Bin/Save/UI/Death.json");
-
-		eDesc.fLifeTime = 10.f;
-		eDesc.useLifeTime = true;
-
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Death"), &eDesc)))
-			return ;
-	}
-
 	Add_RenderGroup_OctoTree();
 }
 
@@ -249,6 +243,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
 	if (FAILED(Ready_Dummy()))
+		return E_FAIL;
+	if (FAILED(Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
@@ -647,7 +643,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 	
 	// ------------- Area 99 --------------
-	_float3 a99p0 = _float3{ 186.65f, -47.92f, 63.37f };
+	_float3 a99p0 = _float3{ 180.65f, -47.92f, 63.37f };
 	_float3 a99p1 = _float3{ 457.66f, 133.33f, -116.79f };
 	_float3 a99Min, a99Max;
 	FnToAABB(a99p0, a99p1, a99Min, a99Max);
@@ -948,6 +944,13 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
 #pragma region 몬스터 JSON 파일 받아서 소환
+
+#ifdef TESTMAP
+	if (FAILED(Ready_Monster("TEST")))
+		return E_FAIL;
+#endif // TESTMAP
+
+#ifndef TESTMAP
 	if (FAILED(Ready_Monster("STATION")))
 		return E_FAIL;
 	if (FAILED(Ready_Monster("HOTEL")))
@@ -956,6 +959,8 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		return E_FAIL;
 	if (FAILED(Ready_Monster("FIRE_EATER")))
 		return E_FAIL;
+#endif // !TESTMAP
+
 #pragma endregion
 
 
@@ -973,10 +978,11 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	//Desc.InitPos =
 	//	//_float3(148.f, 2.47f, -7.38f); //호텔위치
 	//	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
+	//Desc.szMeshID = TEXT("WatchDog");
+	//
 
-
-	//Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+	////Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_WatchDog"),
 	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
 	//	return E_FAIL;
 

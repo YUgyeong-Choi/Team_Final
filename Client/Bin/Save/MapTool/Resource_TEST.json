@@ -26,5 +26,12 @@
         "NoInstancing": false,
         "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TicketOffice_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "Stargazer",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/Stargazer.bin"
     }
 ]

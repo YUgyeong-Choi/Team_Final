@@ -1857,7 +1857,7 @@ HRESULT CAnimTool::Render_Spawn_Object()
 			{
 				m_vecObjects.emplace_back(pObj);
 				pObj->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-				pObj->Get_TransfomCom()->Scaling(_float3(5.f, 5.f, 5.f));
+				//pObj->Get_TransfomCom()->Scaling(_float3(5.f, 5.f, 5.f));
 			}
 		}
 	}

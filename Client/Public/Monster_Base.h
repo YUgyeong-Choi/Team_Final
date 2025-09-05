@@ -85,6 +85,12 @@ public: /* [ Setup 함수 ] */
 	void Push_Other(_vector vHitPos, _vector vNormal);
 
 	virtual void Start_Fatal_Reaction() {};
+
+
+#ifdef _DEBUG
+	void SetLocalOffset();
+#endif // _DEBUG
+
 	
 protected:
 
@@ -97,7 +103,6 @@ protected:
 	
 	CUI_MonsterHP_Bar* m_pHPBar = {nullptr};
 
-	_float			m_fDamage = {};
 	
 
 	// 특정 상태에만 계속 바라보게 해야?

@@ -29,7 +29,7 @@ HRESULT CYGTool::Initialize(void* pArg)
 
 	m_CameraSequence = new CCameraSequence();
 	m_CameraSequence->m_iFrameMin = 0;
-	m_CameraSequence->m_iFrameMax = 2000;
+	m_CameraSequence->m_iFrameMax = 9999;
 	m_CameraSequence->Add(0,10,0);
 	m_CameraSequence->Add(0,10,1);
 	m_CameraSequence->Add(0,10,2);
@@ -41,6 +41,15 @@ HRESULT CYGTool::Initialize(void* pArg)
 void CYGTool::Priority_Update(_float fTimeDelta)
 {
 	ShowCursor(TRUE);
+
+	if (bStopCamera)
+	{
+		if (CCamera_Manager::Get_Instance()->GetCutScene()->Get_CurrentFrame() == iStopFrame)
+			m_pGameInstance->Set_GameTimeScale(0.f);
+	}
+	else {
+		m_pGameInstance->Set_GameTimeScale(1.f);
+	}
 }
 
 void CYGTool::Update(_float fTimeDelta)
@@ -261,7 +270,7 @@ HRESULT CYGTool::Render_CameraTool()
 		m_CameraSequence->Set_EndFrame(m_iEndFrame);
 		m_CameraDatas.iEndFrame = m_iEndFrame;
 
-		const char* CutsceneTypeNames[] = { "WakeUp", "TutorialDoor", "THREE" };
+		const char* CutsceneTypeNames[] = { "WakeUp", "TutorialDoor", "OutDoor", "FuocoDoor", "FestivalDoor" };
 		int currentCutsceneType = static_cast<int>(m_eCutSceneType); // 현재 값 저장
 
 		if (ImGui::Combo("Load Type", &currentCutsceneType, CutsceneTypeNames, IM_ARRAYSIZE(CutsceneTypeNames)))
@@ -280,8 +289,14 @@ HRESULT CYGTool::Render_CameraTool()
 			case Client::CUTSCENE_TYPE::TUTORIALDOOR:
 				filePath = "../Bin/Save/CutScene/TutorialDoor.json";
 				break;
-			case Client::CUTSCENE_TYPE::THREE:
-				filePath = "../Bin/Save/CutScene/three.json";
+			case Client::CUTSCENE_TYPE::OUTDOOOR:
+				filePath = "../Bin/Save/CutScene/OutDoor.json";
+				break;
+			case Client::CUTSCENE_TYPE::FUOCO:
+				filePath = "../Bin/Save/CutScene/FuocoDoor.json";
+				break;
+			case Client::CUTSCENE_TYPE::FESTIVAL:
+				filePath = "../Bin/Save/CutScene/FestivalDoor.json";
 				break;
 			default:
 				break;
@@ -404,7 +419,7 @@ HRESULT CYGTool::Render_CameraTool()
 		else if (m_iSelected == 4)
 		{
 			// Target
-			const char* targetNames[] = { "None", "Layer_Player", "Layer_Boss1" };
+			const char* targetNames[] = { "None", "Layer_Player", "Layer_Fuocu" };
 			_int target = static_cast<int>(m_pSelectedKey->eTarget);
 
 			if (ImGui::Combo("Target", &target, targetNames, IM_ARRAYSIZE(targetNames)))
@@ -414,6 +429,12 @@ HRESULT CYGTool::Render_CameraTool()
 			ImGui::DragFloat("fPitch", &m_pSelectedKey->fPitch, 0.f, -89.0f, 89.0f);
 			ImGui::DragFloat("fYaw", &m_pSelectedKey->fYaw, 0.f, -180.0f, 180.0f);
 			ImGui::DragFloat("fDistance", &m_pSelectedKey->fDistance, 0.f, 1.0f, 179.0f);
+
+			if (ImGui::Button("Clone Pitch Yaw"))
+			{
+				m_pSelectedKey->fPitch = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch();
+				m_pSelectedKey->fYaw = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw();
+			}
 		}
 	}
 
@@ -617,12 +638,13 @@ HRESULT CYGTool::Render_CameraTool()
 	ImGui::SameLine();
 	ImGui::Text("Current Frame: %d", CCamera_Manager::Get_Instance()->GetCutScene()->Get_CurrentFrame());
 
-	ImGui::SeparatorText("Save Data");
-
-	const char* CutsceneTypeNames[] = { "WakeUp", "TutorialDoor", "THREE" };
-	int currentCutsceneType = static_cast<int>(m_eCutSceneType); // 현재 값 저장
+	ImGui::SeparatorText("Stop Camera");
+	ImGui::Checkbox("Enable Stop Camera", &bStopCamera);
+	ImGui::InputInt("Stop Frame", &iStopFrame);
 
 	ImGui::SeparatorText("Cutscene Type");
+	const char* CutsceneTypeNames[] = { "WakeUp", "TutorialDoor", "OutDoor", "FuocoDoor", "FestivalDoor" };
+	int currentCutsceneType = static_cast<int>(m_eCutSceneType); // 현재 값 저장
 	if (ImGui::Combo("Type", &currentCutsceneType, CutsceneTypeNames, IM_ARRAYSIZE(CutsceneTypeNames)))
 	{
 		m_eCutSceneType = static_cast<CUTSCENE_TYPE>(currentCutsceneType);
@@ -639,8 +661,14 @@ HRESULT CYGTool::Render_CameraTool()
 		case Client::CUTSCENE_TYPE::TUTORIALDOOR:
 			filePath = "../Bin/Save/CutScene/TutorialDoor.json";
 			break;
-		case Client::CUTSCENE_TYPE::THREE:
-			filePath = "../Bin/Save/CutScene/three.json";
+		case Client::CUTSCENE_TYPE::OUTDOOOR:
+			filePath = "../Bin/Save/CutScene/OutDoor.json";
+			break;
+		case Client::CUTSCENE_TYPE::FUOCO:
+			filePath = "../Bin/Save/CutScene/FuocoDoor.json";
+			break;
+		case Client::CUTSCENE_TYPE::FESTIVAL:
+			filePath = "../Bin/Save/CutScene/FestivalDoor.json";
 			break;
 		default:
 			break;
@@ -858,7 +886,7 @@ HRESULT CYGTool::Render_CameraFrame()
 
 		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
 		int interpOffsetRot = static_cast<int>(m_EditOffSetPosKey.interpOffSetPos);
-		if (ImGui::Combo("OffsetRot Interp", &interpOffsetRot, interpNames, IM_ARRAYSIZE(interpNames)))
+		if (ImGui::Combo("OffsetPos Interp", &interpOffsetRot, interpNames, IM_ARRAYSIZE(interpNames)))
 			m_EditOffSetPosKey.interpOffSetPos = static_cast<INTERPOLATION_CAMERA>(interpOffsetRot);
 
 		ImGui::DragInt("OffsetPos Key", &m_iChangeKeyFrame);

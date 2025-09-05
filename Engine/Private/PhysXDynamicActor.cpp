@@ -108,6 +108,10 @@ void CPhysXDynamicActor::Init_SimulationFilterData()
 	filterData.word0 = 0;
 	filterData.word1 = 0; 
 	m_pShape->setSimulationFilterData(filterData);
+	if (Get_Actor() && Get_Actor()->getScene())
+	{
+		m_pGameInstance->Get_Scene()->resetFiltering(*Get_Actor());
+	}
 #ifdef _DEBUG
 	m_bReadyForDebugDraw = false;
 #endif

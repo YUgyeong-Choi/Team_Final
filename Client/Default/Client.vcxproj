@@ -220,6 +220,7 @@
     <ClInclude Include="..\Public\PlayerLamp.h" />
     <ClInclude Include="..\Public\Oil.h" />
     <ClInclude Include="..\Public\Projectile.h" />
+    <ClInclude Include="..\public\Stargazer.h" />
     <ClInclude Include="..\Public\TriggerBGM.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
     <ClInclude Include="..\public\TriggerDropItem.h" />
@@ -313,6 +314,7 @@
     <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
     <ClInclude Include="..\public\Unit.h" />
+    <ClInclude Include="..\public\WatchDog.h" />
     <ClInclude Include="..\public\WaterPuddle.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\Weapon_Monster.h" />
@@ -452,6 +454,7 @@
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />
     <ClCompile Include="..\private\Stamina_Bar.cpp" />
+    <ClCompile Include="..\private\Stargazer.cpp" />
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
     <ClCompile Include="..\Private\TriggerBGM.cpp" />
@@ -497,6 +500,7 @@
     <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />
     <ClCompile Include="..\private\Unit.cpp" />
+    <ClCompile Include="..\private\WatchDog.cpp" />
     <ClCompile Include="..\private\WaterPuddle.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\Weapon_Monster.cpp" />
