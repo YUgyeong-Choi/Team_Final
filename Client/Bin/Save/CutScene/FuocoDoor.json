@@ -1,0 +1,88 @@
+{
+    "Pitch": 0.03343728184700012,
+    "Yaw": 3.1411163806915283,
+    "bEndBlend": false,
+    "bStartBlend": false,
+    "iEndFrame": 400,
+    "vecPosData": [
+        {
+            "interpPosition": 1,
+            "keyFrame": 0,
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpPosition": 1,
+            "keyFrame": 70,
+            "position": [
+                0.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "interpPosition": 0,
+            "keyFrame": 250,
+            "position": [
+                0.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        }
+    ],
+    "vecRotData": [
+        {
+            "interpRotation": 1,
+            "keyFrame": 0,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 70,
+            "rotation": [
+                0.0,
+                0.0,
+                -10.0
+            ]
+        },
+        {
+            "interpRotation": 0,
+            "keyFrame": 250,
+            "rotation": [
+                0.0,
+                0.0,
+                -10.0
+            ]
+        }
+    ],
+    "vecTargetData": [
+        {
+            "distance": 3.0,
+            "keyFrame": 0,
+            "pitch": 0.01728011667728424,
+            "targetType": 1,
+            "yaw": -3.1247942447662354
+        },
+        {
+            "distance": 2.0,
+            "keyFrame": 70,
+            "pitch": -0.1295998990535736,
+            "targetType": 1,
+            "yaw": 1.5859062671661377
+        },
+        {
+            "distance": 2.0,
+            "keyFrame": 250,
+            "pitch": -0.12999999523162842,
+            "targetType": 1,
+            "yaw": 1.5859999656677246
+        }
+    ]
+}
