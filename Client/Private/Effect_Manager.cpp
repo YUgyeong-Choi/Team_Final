@@ -117,12 +117,15 @@ CGameObject* CEffect_Manager::Make_Effect(_uint iLevelIndex, const _wstring& str
     break;
     case Client::EFF_PARTICLE:
     {
-        CParticleEffect::DESC desc = {};
-        desc.fRotationPerSec = XMConvertToRadians(90.f);
-        desc.fSpeedPerSec = 5.f;
-        desc.bTool = false;
-        pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-            PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
+        CParticleEffect::DESC* pDesc = static_cast<CParticleEffect::DESC*>(pArg);
+        pDesc->fRotationPerSec = XMConvertToRadians(90.f);
+        pDesc->fSpeedPerSec = 5.f;
+        pDesc->bTool = false;
+        if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"),
+            iLevelIndex, strLayerTag, &pInstance, pDesc)))
+            return nullptr;
+        //pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+        //    PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
     }
     break;
     case Client::EFF_MESH:

@@ -57,6 +57,8 @@ protected:
 
 	_bool						m_bTrailActive = true;
 	_wstring					m_strBufferTag;
+	_float3						m_vPrevOuterPos = {};
+	_float3						m_vCurOuterPos = {};
 
 protected:
 	virtual HRESULT Ready_Components() override;

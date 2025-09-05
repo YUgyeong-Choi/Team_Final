@@ -259,8 +259,8 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             pp.RotationAngle = Random(pp.RotationSpeed, 0.f, 3.14f);
             
             //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
-            //float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
-            //pp.Direction.xyz = normalize(worldDir);
+            float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
+            pp.Direction.xyz = normalize(worldDir);
             
             // MeshEmitter 사용 시 함수 호출 하라는데
             // Spawn();

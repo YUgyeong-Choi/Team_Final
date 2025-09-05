@@ -30,6 +30,10 @@ HRESULT CParticleEffect::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	DESC* pDesc = static_cast<DESC*>(pArg);
+	m_bHasPresetMat = pDesc->bHasPresetMat;
+	if (m_bHasPresetMat)
+		m_pTransformCom->Set_WorldMatrix(pDesc->PresetMatrix);
 
 	m_eEffectType = EFF_PARTICLE;
 	m_bFirst = true;
@@ -87,7 +91,17 @@ void CParticleEffect::Update(_float fTimeDelta)
 		}
 		else
 		{
-			m_pVIBufferCom->Set_Center(m_pTransformCom->Get_World4x4());
+			if (m_bFirst)
+			{
+				m_pVIBufferCom->Set_CombinedMatrix(m_pTransformCom->Get_World4x4());
+				m_bFirst = false;
+			}
+			_vector rot, pos, scale;
+			XMMatrixDecompose(&scale, &rot, &pos, m_pTransformCom->Get_WorldMatrix());
+			m_pVIBufferCom->Set_Center(_float3{ pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2] });
+			_float4 vRot = {};
+			XMStoreFloat4(&vRot, rot);
+			m_pVIBufferCom->Set_SocketRotation(vRot);
 		}
 	}
 
