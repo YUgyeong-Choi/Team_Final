@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "LockOn_Manager.h"
 #include "Weapon.h"
+#include "Bone.h"
 
 CWatchDog::CWatchDog(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CMonster_Base{pDevice, pContext}
@@ -26,7 +27,7 @@ HRESULT CWatchDog::Initialize(void* pArg)
 	pDesc->fRotationPerSec = XMConvertToRadians(180.0f);
 
 	m_fHeight = 1.f;
-	m_vHalfExtents = { 0.5f, 0.5f, 0.5f };
+	m_vHalfExtents = { 0.5f, 0.6f, 0.725f };
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -46,9 +47,9 @@ HRESULT CWatchDog::Initialize(void* pArg)
 
 	// 락온 용
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
-	m_vRayOffset = { 0.f, 0.9f, 0.f, 0.f };
+	m_vRayOffset = { 0.f, 1.f, 0.f, 0.f };
 
-
+	m_fDamage = 10.f;
 
 	return S_OK;
 }
@@ -80,8 +81,10 @@ void CWatchDog::Priority_Update(_float fTimeDelta)
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
 			pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+			pPlayer->Get_Controller()->Add_IngoreActors(m_pAttackCollider->Get_Actor());
 		}
 		m_pPhysXActorCom->Init_SimulationFilterData();
+		m_pAttackCollider->Init_SimulationFilterData();
 
 		static_cast<CPlayer*>(m_pPlayer)->Set_HitTarget(this, true);
 	}
@@ -94,12 +97,16 @@ void CWatchDog::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 
 
-	if (m_strStateName.find("Groggy_Loop") != m_strStateName.npos)
-	{
-		m_fDuration += fTimeDelta;
-
-		m_pAnimator->SetFloat("GroggyTime", m_fDuration);
-	}
+	auto HeadLocalMatrix = m_pHeadBone->Get_CombinedTransformationMatrix();
+	auto HeadWorldMatrix = XMLoadFloat4x4(HeadLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
+	_float4 HeadPos;
+	XMStoreFloat4(&HeadPos, HeadWorldMatrix.r[3]);
+	PxVec3 footPosVec(HeadPos.x, HeadPos.y, HeadPos.z);
+	_vector boneQuatForHead = XMQuaternionRotationMatrix(HeadWorldMatrix);
+	_float4 fQuatForHead;
+	XMStoreFloat4(&fQuatForHead, boneQuatForHead);
+	PxQuat footRot = PxQuat(fQuatForHead.x, fQuatForHead.y, fQuatForHead.z, fQuatForHead.w);
+	m_pAttackCollider->Set_Transform(PxTransform(footPosVec, footRot));
 
 
 }
@@ -109,6 +116,15 @@ void CWatchDog::Late_Update(_float fTimeDelta)
 	__super::Late_Update(fTimeDelta);
 
 	Update_State();
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider())
+	{
+		//m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
+		if (m_pAttackCollider->Get_ReadyForDebugDraw())
+			m_pGameInstance->Add_DebugComponent(m_pAttackCollider);
+	}
+#endif
 }
 
 HRESULT CWatchDog::Render()
@@ -429,12 +445,12 @@ void CWatchDog::Register_Events()
 
 	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
 
-		
+		m_pAttackCollider->Set_SimulationFilterData(m_pAttackCollider->Get_FilterData());
 		});
 
 	m_pAnimator->RegisterEventListener("AttackOff", [this]() {
 
-		
+		m_pAttackCollider->Init_SimulationFilterData();
 		});
 }
 
@@ -474,8 +490,10 @@ void CWatchDog::Reset()
 	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 	{
 		pPlayer->Get_Controller()->Remove_IgnoreActors(m_pPhysXActorCom->Get_Actor());
+		pPlayer->Get_Controller()->Remove_IgnoreActors(m_pAttackCollider->Get_Actor());
 	}
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+	m_pAttackCollider->Set_SimulationFilterData(m_pAttackCollider->Get_FilterData());
 
 	m_isFatal = false;
 
@@ -484,7 +502,48 @@ void CWatchDog::Reset()
 
 HRESULT CWatchDog::Ready_Weapon()
 {
-	// 일단 냅둬
+	// 컴포넌트 만들고
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"),
+		TEXT("Com_PhysX_Attack"), reinterpret_cast<CComponent**>(&m_pAttackCollider))))
+		return E_FAIL;
+
+	// 붙일 뼈 찾고
+	auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-Head"); });
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pHeadBone = *it;
+	}
+
+	_vector S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 만들기
+	auto HeadLocalMatrix = m_pHeadBone->Get_CombinedTransformationMatrix();
+	auto HeadWorldMatrix = XMLoadFloat4x4(HeadLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
+	XMMatrixDecompose(&S, &R, &T, HeadWorldMatrix);
+
+	PxQuat HeadRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 HeadPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+	PxTransform HeadPose(HeadPositionVec, HeadRotationQuat);
+	PxSphereGeometry HeadGeom = m_pGameInstance->CookSphereGeometry(0.45f);
+	m_pAttackCollider->Create_Collision(m_pGameInstance->GetPhysics(), HeadGeom, HeadPose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pAttackCollider->Set_ShapeFlag(false, true, true);
+	PxFilterData HeadFilterData{};
+	HeadFilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+	HeadFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+	m_pAttackCollider->Set_SimulationFilterData(HeadFilterData);
+	m_pAttackCollider->Set_QueryFilterData(HeadFilterData);
+
+	m_pAttackCollider->Set_Owner(this);
+	m_pAttackCollider->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
+	m_pAttackCollider->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pAttackCollider->Get_Actor());
+
+	m_pAttackCollider->Init_SimulationFilterData();
+
+
+
 
     return S_OK;
 }
