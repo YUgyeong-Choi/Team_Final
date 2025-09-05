@@ -90,15 +90,12 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
-
 		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
 		m_pGameInstance->Call_BeforeChangeLevel();
 
 		CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
-
-
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE) && !m_bEndVideo)
