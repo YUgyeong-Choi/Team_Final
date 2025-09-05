@@ -44,6 +44,13 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
+	if (KEY_DOWN(DIK_C))
+	{
+		m_bStopCamera = !m_bStopCamera;
+	}
+	if (m_bStopCamera)
+		fTimeDelta = 0.f;
+
 	if (m_bActive)
 	{
 		if (!m_bOrbitalToSetOrbital)
@@ -146,6 +153,13 @@ void CCamera_CutScene::Update(_float fTimeDelta)
 {
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
+
+	if (KEY_DOWN(DIK_CAPSLOCK))
+		PrintMatrix("CutScene CameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+
+	if (m_bStopCamera)
+		fTimeDelta = 0.f;
+
 	__super::Update(fTimeDelta);
 }
 
@@ -248,8 +262,8 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 	}
 
 	// 범위 밖이면 고정
-	const _matrix& m = (curFrame <= vec.front().iKeyFrame) ? vec.front().WorldMatrix : vec.back().WorldMatrix;
-	m_pTransformCom->Set_WorldMatrix(m);
+	//const _matrix& m = (curFrame <= vec.front().iKeyFrame) ? vec.front().WorldMatrix : vec.back().WorldMatrix;
+	//m_pTransformCom->Set_WorldMatrix(m);
 }
 
 void CCamera_CutScene::Interp_Fov(_int curFrame)
@@ -487,6 +501,7 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 
 			m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
 			m_pTransformCom->LookAt(vtargetPos);
+			
 			return;
 		}
 	}

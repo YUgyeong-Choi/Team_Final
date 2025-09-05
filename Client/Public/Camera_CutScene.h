@@ -96,6 +96,8 @@ private:
 	_bool m_bOrbitalToSetOrbital = false;
 	_bool m_bReadyCutScene = false;
 	_bool m_bReadyCutSceneOrbital = false;
+
+	_bool m_bStopCamera = false;
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
