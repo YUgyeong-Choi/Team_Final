@@ -38,7 +38,9 @@ public:
 		_float			fMaxSpeed = { 1000.f };	// 필요한지
 		_float			fMinSpeed = { 0.f };
 
-		//_float4			vDirection = {0.f, 1.f, 0.f, 0.f}; // 쓰지말죠	
+		/* --- Is Mesh Emitter? --- */
+		_bool			bMeshEmit = { false };
+
 	}DESC;
 
 private:

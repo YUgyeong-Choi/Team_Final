@@ -22,7 +22,11 @@ HRESULT CBullet::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
+    if (FAILED(Ready_Effect()))
+        return E_FAIL;
+
     m_fDamge = 10.f;
+
 
     // 이펙트?
     // 모르겟음 필요하면 넣기
@@ -68,7 +72,11 @@ void CBullet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
         pPlayer->SetfReceiveDamage(m_fDamge);
     }
 
-   
+    CEffectContainer::DESC desc = {};
+    _vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
+    if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Hit_P3"), &desc))
+        MSG_BOX("이펙트 생성 실패함");
     
     Set_bDead();
 
@@ -106,6 +114,13 @@ HRESULT CBullet::Ready_Components()
 
 HRESULT CBullet::Ready_Effect()
 {
+    CEffectContainer::DESC desc = {};
+    desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+    m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Trail_P1"), &desc));
+    if (nullptr == m_pEffect)
+        MSG_BOX("이펙트 생성 실패함");
+
     return S_OK;
 }
 

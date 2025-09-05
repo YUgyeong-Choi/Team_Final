@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Effect_Manager.h"
 #include "EffectContainer.h"
+#include "Client_Calculation.h"
 
 CSwordTrailEffect::CSwordTrailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEffectBase{ pDevice, pContext }
@@ -81,6 +82,8 @@ void CSwordTrailEffect::Update(_float fTimeDelta)
 	m_fOffset.y = (m_iTileIdx / m_iTileX) * m_fTileSize.y;
 }
 
+
+
 void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 {
 	if (!m_pParentCombinedMatrix || !m_pInnerSocketMatrix || !m_pOuterSocketMatrix)
@@ -98,19 +101,31 @@ void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 	XMStoreFloat3(&m_vOuterPos, XMVector3TransformCoord(XMVectorZero(), matOuterWorld));
 
 	m_pVIBufferCom->Update_Trail(m_vInnerPos, m_vOuterPos, fTimeDelta);
+	if (m_bTrailActive)
+		m_vPrevOuterPos = m_vCurOuterPos;
+	m_vCurOuterPos = m_vOuterPos;
+
 	if (m_bHasEmitter && m_bTrailActive)
 	{
+		_vector vDir = XMVector3Normalize(XMLoadFloat3(&m_vPrevOuterPos) - XMLoadFloat3(&m_vCurOuterPos));
+		if (XMVectorGetX(XMVector3Length(vDir)) < 0.00001f)
+			vDir = XMVectorSet(0.f, 0.f, 1.f, 0.f);
 		const vector<_float3>& vNodes =  m_pVIBufferCom->Get_InterpolatedNewNodes();
 		if (!vNodes.empty())
 		{
 			for (auto& vPos : vNodes)
 			{
-				CEffectContainer::DESC desc;
+				CParticleEffect::DESC desc = {};
 				desc.iLevelID = m_iLevelID;
+				desc.bHasPresetMat = true;
 				XMStoreFloat4x4(&desc.PresetMatrix,
+					XMMatrixRotationQuaternion(XMQuaternionRotationVectorToVector(_vector{0.f,0.f,1.f,0.f}, vDir)) *
 					XMMatrixTranslation(vPos.x, vPos.y, vPos.z) /** XMMatrixRotationAxis() 이거대체어케넣지*/
 				);
-				MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Skill_WeaponParticle_P1"), &desc);
+				
+				CParticleEffect* pEmitter = static_cast<CParticleEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), m_strEmitterTag, TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+				if (pEmitter == nullptr)
+					MSG_BOX("emitter failed");
 			}
 		}
 	}   

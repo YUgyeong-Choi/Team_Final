@@ -5,6 +5,8 @@
 #include "LockOn_Manager.h" 
 #include "PhysX_IgnoreSelfCallback.h"
 #include "FireBall.h"
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
 
 CButtler_Range::CButtler_Range(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CMonster_Base{pDevice, pContext}
@@ -480,6 +482,11 @@ void CButtler_Range::Register_Events()
 		{
 			return;
 		}
+
+		CEffectContainer::DESC Effdesc = {};
+		XMStoreFloat4x4(&Effdesc.PresetMatrix, XMMatrixTranslation(vWeaponPos[0], vWeaponPos[1], vWeaponPos[2]));
+		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ButlerRange_Muzzle_P3"), &Effdesc))
+			MSG_BOX("이펙트 생성 실패함");
 
 		});
 

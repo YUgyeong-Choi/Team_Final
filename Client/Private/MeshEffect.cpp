@@ -30,12 +30,7 @@ HRESULT CMeshEffect::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	//if (!m_bTool)
-	//{
-	//	if (FAILED(Ready_Components()))
-	//		return E_FAIL;
-	//}
-	m_eEffectType = EFF_MESH;
+	m_eEffectType = EFF_PARTICLE;
 	return S_OK;
 }
 

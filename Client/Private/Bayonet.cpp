@@ -113,9 +113,9 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 
 		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
 			MSG_BOX("이펙트 생성 실패함");
-		//static _bool bTEactive = true;
-		//bTEactive = !bTEactive;
-		//Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
+		static _bool bTEactive = true;
+		bTEactive = !bTEactive;
+		Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
 	}
 
 	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
@@ -370,6 +370,7 @@ HRESULT CBayonet::Ready_Effect()
 		MSG_BOX("무기 트레일 사망");
 
 	desc.strEmitterTag = L"PE_Player_SkillWeaponParticle";
+	//desc.strEmitterTag = L"EC_Player_Skill_WeaponParticle_P1";
 	desc.bHasEmitter = true;
 	m_pSkillTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Skill"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (m_pSkillTrailEffect)
