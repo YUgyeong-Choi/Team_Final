@@ -157,7 +157,7 @@ _bool CPicking::PickByClick(_int* pOut)
 
 	*pOut = static_cast<_int>(m_pIDs[iIndex].w);
 
-	if (static_cast<_int>(m_pIDs[iIndex].w) == 0) //내가 왜 0보다 작으면 피킹 실패한걸로 했더라... 0이면 실패로하자, id의 초기값은 0인걸로
+	if (static_cast<_int>(m_pIDs[iIndex].w) < 0.f)
 		return false;
 
 	return true;
@@ -201,7 +201,6 @@ _bool CPicking::PickInRect(const _float2& vStart, const _float2& vEnd, set<_int>
 
 	return !pOut->empty(); // 선택된 게 있으면 true
 }
-
 _bool CPicking::PickingToolMesh(_int* pOut)
 {
 	if (FAILED(m_pGameInstance->Copy_RT_Resource(TEXT("Target_PBR_Depth"), m_pTexture)))

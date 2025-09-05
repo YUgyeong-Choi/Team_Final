@@ -181,7 +181,7 @@ HRESULT CMonsterTool::Load(const _char* Map)
 			lstrcpy(MonsterDesc.szMeshID, wstrMonsterName.c_str());
 
 			MonsterDesc.WorldMatrix = WorldMatrix;
-			MonsterDesc.iID = m_iID--;
+			MonsterDesc.iID = ++m_iID;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(
 				ENUM_CLASS(LEVEL::YW),
@@ -256,7 +256,7 @@ void CMonsterTool::Picking()
 	_int iID = { 0 };
 	if (m_pGameInstance->PickByClick(&iID))
 	{
-		cout << "Monster ID(음수): " << iID << endl;
+		cout << "Monster ID: " << iID << endl;
 	}
 
 	//MonsterToolObject 중에 같은 아이디를 찾아서 포커스한다.
@@ -437,7 +437,7 @@ HRESULT CMonsterTool::Spawn_MonsterToolObject()
 
 
 
-	Desc.iID = m_iID--;
+	Desc.iID = ++m_iID;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MonsterToolObject"),
 		ENUM_CLASS(LEVEL::YW), TEXT("Layer_MonsterToolObject"), &Desc)))

@@ -514,7 +514,7 @@ HRESULT CMapTool::Load(const _char* Map)
 			lstrcpy(MapToolObjDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 			MapToolObjDesc.WorldMatrix = WorldMatrix;
 
-			MapToolObjDesc.iID = m_iID++;
+			MapToolObjDesc.iID = ++m_iID;
 
 			//타일링
 			if (Objects[j].contains("TileDensity"))
@@ -1117,7 +1117,7 @@ HRESULT CMapTool::Spawn_MapToolObject()
 	wstring LayerTag = TEXT("Layer_MapToolObject_");
 	LayerTag += ModelName;
 
-	MapToolObjDesc.iID = m_iID++;
+	MapToolObjDesc.iID = ++m_iID;
 
 #pragma region 카메라 앞에다가 소환
 	//카메라 앞에다가 소환
@@ -1206,7 +1206,7 @@ HRESULT CMapTool::Spawn_MapToolObject(string ModelName)
 	wstring LayerTag = TEXT("Layer_MapToolObject_");
 	LayerTag += wModelName;
 
-	MapToolObjDesc.iID = m_iID++;
+	MapToolObjDesc.iID = ++m_iID;
 
 #pragma region 카메라 앞에다가 소환
 	//카메라 앞에다가 소환
@@ -1312,7 +1312,7 @@ HRESULT CMapTool::Duplicate_Selected_Object()
 		wstring LayerTag = TEXT("Layer_MapToolObject_");
 		LayerTag += StringToWString(ModelName);
 
-		MapToolObjDesc.iID = m_iID++;
+		MapToolObjDesc.iID = ++m_iID;
 
 #pragma region 해당 오브젝트 옆에다가 소환
 		_matrix SpawnWorldMatrix = pObj->Get_TransfomCom()->Get_WorldMatrix();
