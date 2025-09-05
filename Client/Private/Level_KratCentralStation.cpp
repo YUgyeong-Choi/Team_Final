@@ -10,6 +10,9 @@
 #include "StaticMesh_Instance.h"
 #include "Nav.h"
 #include "Static_Decal.h"
+
+//별바라기 테스트
+#include "Stargazer.h"
 #pragma endregion
 
 #include "SlideDoor.h"
@@ -82,6 +85,15 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	//	return E_FAIL;
 
 	Reset();
+
+//#pragma region 영웅 별바라기 테스트
+//	CStargazer::STARGAZER_DESC Desc{};
+//	Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+//
+//	if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
+//		Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
+//		return E_FAIL;
+//#pragma endregion
 
 	return S_OK;
 }
@@ -231,6 +243,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
 	if (FAILED(Ready_Dummy()))
+		return E_FAIL;
+	if (FAILED(Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
@@ -930,6 +944,13 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 HRESULT CLevel_KratCentralStation::Ready_Monster()
 {
 #pragma region 몬스터 JSON 파일 받아서 소환
+
+#ifdef TESTMAP
+	if (FAILED(Ready_Monster("TEST")))
+		return E_FAIL;
+#endif // TESTMAP
+
+#ifndef TESTMAP
 	if (FAILED(Ready_Monster("STATION")))
 		return E_FAIL;
 	if (FAILED(Ready_Monster("HOTEL")))
@@ -938,6 +959,8 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 		return E_FAIL;
 	if (FAILED(Ready_Monster("FIRE_EATER")))
 		return E_FAIL;
+#endif // !TESTMAP
+
 #pragma endregion
 
 

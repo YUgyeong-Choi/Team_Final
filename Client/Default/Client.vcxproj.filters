@@ -529,6 +529,9 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\WatchDog">
       <UniqueIdentifier>{0d0dc286-4c73-4d88-af00-e5469ed213ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\16.Stargazer">
+      <UniqueIdentifier>{9e8895d9-2e68-482a-ba0a-26d4445a772a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1090,6 +1093,9 @@
     <ClInclude Include="..\public\WatchDog.h">
       <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Stargazer.h">
+      <Filter>02.GameObjects\16.Stargazer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1624,6 +1630,9 @@
     </ClCompile>
     <ClCompile Include="..\private\WatchDog.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Stargazer.cpp">
+      <Filter>02.GameObjects\16.Stargazer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
