@@ -18,7 +18,7 @@ HRESULT CBossUnit::Initialize(void* pArg)
 	m_fMaxHp = 700.f;
 	m_fHp = m_fMaxHp;
 	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
+ 		return E_FAIL;
 
 	// ÄÆ¾À ½ÃÀÛ Àü ´ë±â
 	m_pAnimator->Update(0.f);

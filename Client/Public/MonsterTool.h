@@ -54,6 +54,7 @@ private:
 		Buttler_Train,
 		Buttler_Range,
 		Elite_Police,
+		FestivalLeader,
 		FireEater,
 		END
 	};
@@ -63,6 +64,7 @@ private:
 	"Buttler_Train",
 	"Buttler_Range",
 	"Elite_Police",
+	"FestivalLeader",
 	"FireEater"
 	};
 

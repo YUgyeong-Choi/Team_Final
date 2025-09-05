@@ -99,19 +99,19 @@ class CFestivalLeader final : public CBossUnit
 	enum EBossAttackPattern : _int
 	{
 		BAP_NONE = 0,
-		SlamCombo = 1,
-		Uppercut = 2,
-		SwingAtkSeq = 3,
-		SwingAtk = 4,
-		SlamFury = 5,
-		FootAtk = 6,
-		P2_FlameField = 7,
-		SlamAtk = 8,
-		StrikeFury = 9,
-		P2_FireOil = 10,
-		P2_FireBall = 11,
-		P2_FireFlame = 12,
-		P2_FireBall_B = 13,
+		Slam = 1,
+		CrossSlam = 2,
+		JumpAttack = 3,
+		Strike = 4,
+		AlternateSmash = 5,
+		Spin = 6,
+		HalfSpin = 7,
+		HammerSlam = 8,
+		DashSwing = 9,
+		Swing = 10,
+		FuryHammerSlam = 11,
+		FurySwing = 12,
+		FuryBodySlam = 13
 	};
 
 private:
@@ -197,26 +197,17 @@ private:
 	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
 
 	vector<EBossAttackPattern> m_vecCloseAttackPatterns = {
-	  SlamCombo, Uppercut, SlamAtk, SwingAtk,
-	  SlamFury, P2_FireBall,
-	  SwingAtkSeq,FootAtk,
-	  StrikeFury,  P2_FireOil,
-	  P2_FireBall_B, P2_FireFlame,
+	  Slam,CrossSlam,JumpAttack,Strike
 	};
 
 	vector<EBossAttackPattern> m_vecMiddleAttackPatterns = {
-	 StrikeFury, SwingAtk,
-	 SlamFury, P2_FireOil
-	,SwingAtkSeq, P2_FireBall,
-	 P2_FireBall_B, P2_FireFlame
-
+		  Slam,CrossSlam,JumpAttack,Strike
 	};
 
 	vector<EBossAttackPattern> m_vecFarAttackPatterns = {
-	 P2_FireOil,StrikeFury,
-	 P2_FireBall, P2_FireBall_B,
-	 P2_FireFlame
+	  DashSwing ,FurySwing ,JumpAttack,Strike
 	};
+
 
 	// »ó¼ö
 	const _int   LIMIT_FIREBALL_COMBO_COUNT = 4;

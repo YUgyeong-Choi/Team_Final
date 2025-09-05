@@ -152,6 +152,8 @@ HRESULT CUnit::Render_Shadow()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		if (!m_pModelCom->IsMeshVisible(i))
+			continue;
 		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		switch (iCascadeCount)
@@ -221,6 +223,8 @@ HRESULT CUnit::Render_Fury()
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
+		if (!m_pModelCom->IsMeshVisible(i))
+			continue;
 		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
 			return E_FAIL;
 
@@ -237,6 +241,8 @@ HRESULT CUnit::Render_Fury()
 		return E_FAIL;
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
+		if (!m_pModelCom->IsMeshVisible(i))
+			continue;
 		if (FAILED(m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i)))
 			return E_FAIL;
 	
@@ -315,6 +321,8 @@ HRESULT CUnit::Bind_Shader()
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		if (!m_pModelCom->IsMeshVisible(i))
+			continue;
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 		

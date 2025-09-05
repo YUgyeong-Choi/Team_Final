@@ -822,15 +822,8 @@
         "Collision": false,
         "ModelName": "SM_Wall_Noble_RoofDeco06",
         "NoInstancing": false,
-        "ObjectCount": 5,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Noble_RoofDeco06.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Wall_Northern_Callan_Window01",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Northern_Callan_Window01.bin"
     },
     {
         "Collision": true,
@@ -873,13 +866,6 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_ThroneDeco02.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Wall_Uni_CityHwin01",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_Uni_CityHwin01.bin"
     },
     {
         "Collision": true,
