@@ -58,6 +58,13 @@ void CWatchDog::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
+	if (!m_isInit)
+	{
+		m_pAttackCollider->Init_SimulationFilterData();
+		m_isInit = true;
+	}
+
+
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
 	if (pCurState && pCurState->stateName.find("Dead") != pCurState->stateName.npos)
 	{
@@ -87,6 +94,12 @@ void CWatchDog::Priority_Update(_float fTimeDelta)
 		m_pAttackCollider->Init_SimulationFilterData();
 
 		static_cast<CPlayer*>(m_pPlayer)->Set_HitTarget(this, true);
+	}
+
+
+	if (m_strStateName.find("Hit") != m_strStateName.npos)
+	{
+		m_pAttackCollider->Init_SimulationFilterData();
 	}
 }
 

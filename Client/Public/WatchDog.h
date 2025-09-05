@@ -66,6 +66,8 @@ private:
 	CPhysXDynamicActor* m_pAttackCollider = {nullptr};
 	CBone* m_pHeadBone = { nullptr };
 
+	_bool  m_isInit = { false };
+
 	//int m_iShapeTestState = 0; // 0: Box, 1: Sphere, 2: Capsule
 	//PxBoxGeometry m_DebugBox = PxBoxGeometry(1.0f, 2.0f, 1.0f);
 	//PxSphereGeometry m_DebugSphere = PxSphereGeometry(1.5f);
