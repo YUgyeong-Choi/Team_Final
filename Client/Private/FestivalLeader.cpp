@@ -217,87 +217,87 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	if (m_pPlayer && static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 
-#ifdef _DEBUG
-
-	if (m_pHammer)
-	{
-		auto pTrans = m_pHammer->Get_TransfomCom();
-		auto pos = m_pHammer->GetLocalOffset();
-
-		static float rotX = 0.f;
-		static float rotY = 0.f;
-		static float rotZ = 0.f;
-
-		const _float fRotateSpeed = 1.f; // 도 단위
-
-		bool bChanged = false;
-
-		//// z는 280도 y는 5도
-		//// Y축 회전 (좌/우)
-		//if (KEY_DOWN(DIK_V)) {
-		//	rotY -= fRotateSpeed;
-		//	bChanged = true;
-		//}
-		//if (KEY_DOWN(DIK_G)) {
-		//	rotY += fRotateSpeed;
-		//	bChanged = true;
-		//}
-
-		//// X축 회전
-		//if (KEY_DOWN(DIK_5)) {
-		//	rotX += fRotateSpeed;
-		//	bChanged = true;
-		//}
-
-		//// Z축 회전
-		//if (KEY_DOWN(DIK_J)) {
-		//	rotZ += fRotateSpeed;
-		//	bChanged = true;
-		//}
-
-		//if (bChanged)
-		//{
-		//	// 누적된 회전값으로 행렬 생성
-		//	_matrix matRotX = XMMatrixRotationX(XMConvertToRadians(rotX));
-		//	_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(rotY));
-		//	_matrix matRotZ = XMMatrixRotationZ(XMConvertToRadians(rotZ));
-
-		//	// 회전 순서 (필요에 맞게 바꿀 수 있음: Y→X→Z 등)
-		//	_matrix matFinalRot = matRotX * matRotY * matRotZ;
-
-		//	// 현재 위치 유지한 채 회전만 적용
-		//	_float4x4 worldMat;
-		//	XMStoreFloat4x4(&worldMat, matFinalRot);
-		//	worldMat._41 = pTrans->Get_State(STATE::POSITION).m128_f32[0];
-		//	worldMat._42 = pTrans->Get_State(STATE::POSITION).m128_f32[1];
-		//	worldMat._43 = pTrans->Get_State(STATE::POSITION).m128_f32[2];
-
-		//	pTrans->Set_WorldMatrix(worldMat);
-
-		//	// 디버그 출력
-		//	cout << "Hammer Rotation = (X:" << rotX
-		//		<< "°, Y:" << rotY
-		//		<< "°, Z:" << rotZ << "°)" << endl;
-		//}
-			if (KEY_DOWN(DIK_1)) { pos.y += 0.05f; bChanged = true; }  // 위
-			if (KEY_DOWN(DIK_2)) { pos.y -= 0.05f; bChanged = true; }  // 아래
-			if (KEY_DOWN(DIK_3)) { pos.x -= 0.05f; bChanged = true; }  // 왼쪽
-			if (KEY_DOWN(DIK_4)) { pos.x += 0.05f; bChanged = true; }  // 오른쪽
-			if (KEY_DOWN(DIK_5)) { pos.z += 0.05f; bChanged = true; }  // 앞
-			if (KEY_DOWN(DIK_6)) { pos.z -= 0.05f; bChanged = true; }  // 뒤
-
-			if (bChanged)
-			{
-				m_pHammer->SetLocalOffset(pos);
-
-				// 현재 오프셋 콘솔 출력
-				cout << "Hammer Offset = ("
-					<< pos.x << ", "
-					<< pos.y << ", "
-					<< pos.z << ")" << endl;
-			}
-	}
-#endif
+//#ifdef _DEBUG
+//
+//	if (m_pHammer)
+//	{
+//		auto pTrans = m_pHammer->Get_TransfomCom();
+//		auto pos = m_pHammer->GetLocalOffset();
+//
+//		static float rotX = 0.f;
+//		static float rotY = 0.f;
+//		static float rotZ = 0.f;
+//
+//		const _float fRotateSpeed = 1.f; // 도 단위
+//
+//		bool bChanged = false;
+//
+//		//// z는 280도 y는 5도
+//		//// Y축 회전 (좌/우)
+//		//if (KEY_DOWN(DIK_V)) {
+//		//	rotY -= fRotateSpeed;
+//		//	bChanged = true;
+//		//}
+//		//if (KEY_DOWN(DIK_G)) {
+//		//	rotY += fRotateSpeed;
+//		//	bChanged = true;
+//		//}
+//
+//		//// X축 회전
+//		//if (KEY_DOWN(DIK_5)) {
+//		//	rotX += fRotateSpeed;
+//		//	bChanged = true;
+//		//}
+//
+//		//// Z축 회전
+//		//if (KEY_DOWN(DIK_J)) {
+//		//	rotZ += fRotateSpeed;
+//		//	bChanged = true;
+//		//}
+//
+//		//if (bChanged)
+//		//{
+//		//	// 누적된 회전값으로 행렬 생성
+//		//	_matrix matRotX = XMMatrixRotationX(XMConvertToRadians(rotX));
+//		//	_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(rotY));
+//		//	_matrix matRotZ = XMMatrixRotationZ(XMConvertToRadians(rotZ));
+//
+//		//	// 회전 순서 (필요에 맞게 바꿀 수 있음: Y→X→Z 등)
+//		//	_matrix matFinalRot = matRotX * matRotY * matRotZ;
+//
+//		//	// 현재 위치 유지한 채 회전만 적용
+//		//	_float4x4 worldMat;
+//		//	XMStoreFloat4x4(&worldMat, matFinalRot);
+//		//	worldMat._41 = pTrans->Get_State(STATE::POSITION).m128_f32[0];
+//		//	worldMat._42 = pTrans->Get_State(STATE::POSITION).m128_f32[1];
+//		//	worldMat._43 = pTrans->Get_State(STATE::POSITION).m128_f32[2];
+//
+//		//	pTrans->Set_WorldMatrix(worldMat);
+//
+//		//	// 디버그 출력
+//		//	cout << "Hammer Rotation = (X:" << rotX
+//		//		<< "°, Y:" << rotY
+//		//		<< "°, Z:" << rotZ << "°)" << endl;
+//		//}
+//			if (KEY_DOWN(DIK_1)) { pos.y += 0.05f; bChanged = true; }  // 위
+//			if (KEY_DOWN(DIK_2)) { pos.y -= 0.05f; bChanged = true; }  // 아래
+//			if (KEY_DOWN(DIK_3)) { pos.x -= 0.05f; bChanged = true; }  // 왼쪽
+//			if (KEY_DOWN(DIK_4)) { pos.x += 0.05f; bChanged = true; }  // 오른쪽
+//			if (KEY_DOWN(DIK_5)) { pos.z += 0.05f; bChanged = true; }  // 앞
+//			if (KEY_DOWN(DIK_6)) { pos.z -= 0.05f; bChanged = true; }  // 뒤
+//
+//			if (bChanged)
+//			{
+//				m_pHammer->SetLocalOffset(pos);
+//
+//				// 현재 오프셋 콘솔 출력
+//				cout << "Hammer Offset = ("
+//					<< pos.x << ", "
+//					<< pos.y << ", "
+//					<< pos.z << ")" << endl;
+//			}
+//	}
+//#endif
 
 }
 
@@ -927,8 +927,24 @@ void CFestivalLeader::Register_Events()
 		{
 			if (m_pModelCom)
 			{
+				if (m_pModelCom->IsMeshVisible(2))
+				{
 				m_pModelCom->SetMeshVisible(2, false);
-				m_pModelCom->SetMeshVisible(3, false);
+
+				}
+				else
+				{
+					m_pModelCom->SetMeshVisible(2, true);
+				}
+
+				if (m_pModelCom->IsMeshVisible(3))
+				{
+					m_pModelCom->SetMeshVisible(3, false);
+				}
+				else
+				{
+					m_pModelCom->SetMeshVisible(3, true);
+				}
 			}
 			if (m_pAnimator)
 			{
