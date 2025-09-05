@@ -7,7 +7,7 @@
     "vecMatrixPosData": [
         {
             "interpMatrixPosition": 1,
-            "keyFrame": 281,
+            "keyFrame": 271,
             "worldMatrix": [
                 0.014700000174343586,
                 -0.003800000064074993,
@@ -29,7 +29,7 @@
         },
         {
             "interpMatrixPosition": 1,
-            "keyFrame": 350,
+            "keyFrame": 300,
             "worldMatrix": [
                 0.6725581288337708,
                 -0.0003190265269950032,
@@ -51,7 +51,7 @@
         },
         {
             "interpMatrixPosition": 1,
-            "keyFrame": 370,
+            "keyFrame": 340,
             "worldMatrix": [
                 0.6725581288337708,
                 -0.0003190265269950032,
@@ -137,7 +137,7 @@
         },
         {
             "interpPosition": 0,
-            "keyFrame": 280,
+            "keyFrame": 270,
             "position": [
                 0.5,
                 -0.6000000238418579,
@@ -166,7 +166,7 @@
         },
         {
             "interpRotation": 0,
-            "keyFrame": 280,
+            "keyFrame": 270,
             "rotation": [
                 0.0,
                 0.0,
@@ -191,7 +191,7 @@
         },
         {
             "distance": 2.0,
-            "keyFrame": 280,
+            "keyFrame": 270,
             "pitch": -0.12999999523162842,
             "targetType": 1,
             "yaw": 1.5859999656677246
