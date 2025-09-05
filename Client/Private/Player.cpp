@@ -1757,6 +1757,11 @@ void CPlayer::Register_Events()
 _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 {
 	m_Input.bMove = true;
+	m_bWalk = true;
+
+	m_pAnimator->SetBool("Sprint", false);
+	m_pAnimator->SetBool("Run", false);
+
 	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 	_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 	_bool bFinishSetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ XMVectorGetX(vTargetPos), XMVectorGetY(vPosition), XMVectorGetZ(vTargetPos), 1.f}, m_pControllerCom);
@@ -3159,8 +3164,10 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 
 void CPlayer::Movement(_float fTimeDelta)
 {
-	//if (!CCamera_Manager::Get_Instance()->GetbMoveable())
-	//	return;
+	SyncTransformWithController();
+
+	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
+		return;
 
 	SetMoveState(fTimeDelta);
 }
@@ -3335,8 +3342,6 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 		m_pControllerCom->Get_Controller()->setPosition(PxExtendedVec3(nowPos.x, exPos.y, nowPos.z));
 		printf("Call Collider Up\n");
 	}
-
-	SyncTransformWithController();
 }
 
 

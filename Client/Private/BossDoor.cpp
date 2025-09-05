@@ -58,12 +58,12 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 
-			//CCamera_Manager::Get_Instance()->SetbMoveable(false);
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 		}
 	}
 
-	/*if(KEY_DOWN(DIK_C))
-		CCamera_Manager::Get_Instance()->SetbMoveable(true);*/
+	//if(KEY_DOWN(DIK_C))
+	//	CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))
@@ -228,8 +228,19 @@ void CBossDoor::Play_Sound(_float fTimeDelta)
 		if (m_fSoundDelta > 1.8f)
 		{
 			m_bStartSound = false;
-			m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.5f * g_fInteractSoundVolume);
+			m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.7f * g_fInteractSoundVolume);
 			m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
+			m_fSoundDelta = 0.f;
+		}
+		break;
+	}
+	case Client::FESTIVALDOOR:
+	{
+		if (m_fSoundDelta > 2.9f)
+		{
+			m_bStartSound = false;
+			m_pSoundCom->SetVolume("AMB_OJ_DR_Metal_Gate_Crash", 0.7f * g_fInteractSoundVolume);
+			m_pSoundCom->Play("AMB_OJ_DR_Metal_Gate_Crash");
 			m_fSoundDelta = 0.f;
 		}
 		break;
@@ -447,6 +458,9 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			m_pSecondAnimator->SetTrigger("Open");
 
 		m_bStartSound = true;
+
+		// юс╫ц
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 	}
 }
 
