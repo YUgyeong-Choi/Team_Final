@@ -53,6 +53,7 @@ private:
 		Buttler_Basic,
 		Buttler_Train,
 		Buttler_Range,
+		WatchDog,
 		Elite_Police,
 		FestivalLeader,
 		FireEater,
@@ -63,6 +64,7 @@ private:
 	"Buttler_Basic",
 	"Buttler_Train",
 	"Buttler_Range",
+	"WatchDog",
 	"Elite_Police",
 	"FestivalLeader",
 	"FireEater"
