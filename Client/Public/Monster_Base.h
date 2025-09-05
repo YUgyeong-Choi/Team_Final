@@ -85,6 +85,12 @@ public: /* [ Setup ÇÔ¼ö ] */
 	void Push_Other(_vector vHitPos, _vector vNormal);
 
 	virtual void Start_Fatal_Reaction() {};
+
+
+#ifdef _DEBUG
+	void SetLocalOffset();
+#endif // _DEBUG
+
 	
 protected:
 

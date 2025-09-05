@@ -11,8 +11,28 @@ CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CMesh::CMesh(const CMesh& Prototype)
 	: CVIBuffer( Prototype )
 {
-	//메쉬 클론 안함?
-	//_int a = 0;
+	strcpy_s(m_szName, Prototype.m_szName);
+
+
+	m_iMaterialIndex = Prototype.m_iMaterialIndex;
+	m_iNumBones = Prototype.m_iNumBones;
+
+	m_pIndices = Prototype.m_pIndices;
+	m_pVertexPositions = Prototype.m_pVertexPositions;
+
+	m_OffsetMatrices = Prototype.m_OffsetMatrices;
+	m_BoneIndices = Prototype.m_BoneIndices;
+	memcpy(m_BoneMatrices, Prototype.m_BoneMatrices, sizeof(_float4x4) * g_iMaxNumBones);
+
+	m_pLocalToGlobalBuffer = Prototype.m_pLocalToGlobalBuffer;
+	m_pLocalToGlobalSRV = Prototype.m_pLocalToGlobalSRV;
+	m_pOffsetsBuffer = Prototype.m_pOffsetsBuffer;
+	m_pOffsetsSRV = Prototype.m_pOffsetsSRV;
+
+	Safe_AddRef(m_pLocalToGlobalBuffer);
+	Safe_AddRef(m_pLocalToGlobalSRV);
+	Safe_AddRef(m_pOffsetsBuffer);
+	Safe_AddRef(m_pOffsetsSRV);
 }
 
 HRESULT CMesh::Initialize_Prototype(MODEL eType, const aiMesh* pAIMesh, const vector<class CBone*>& Bones, _fmatrix PreTransformMatrix)
