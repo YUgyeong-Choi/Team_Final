@@ -1569,7 +1569,7 @@ void CFuoco::Ready_EffectNames()
 
 	// Phase 1
 	//m_EffectMap[Uppercut] = TEXT("EC_Fuoco_Uppercut_01");
-	m_EffectMap[SwingAtk].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P2"));
+	m_EffectMap[SwingAtk].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P5"));
 	m_EffectMap[SwingAtk].emplace_back(TEXT("EC_Fuoco_Spin3_HandSpark_P1"));
 	m_EffectMap[SlamAtk].emplace_back(TEXT("EC_Fuoco_Slam_Imsi_P2"));
 	m_EffectMap[SwingAtkSeq].emplace_back(TEXT("EC_Fuoco_SpinReady_HandSpark_P2"));
