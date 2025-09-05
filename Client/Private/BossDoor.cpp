@@ -445,7 +445,16 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 		{
 			m_bRotationStart = false;
 			m_bStartCutScene = true;
-			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::FUOCO);
+			switch (m_eInteractType)
+			{
+			case Client::FESTIVALDOOR:
+				break;
+			case Client::FUOCO:
+				CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::FUOCO);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
