@@ -172,6 +172,60 @@
                 0.0,
                 -15.0
             ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 271,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 276,
+            "rotation": [
+                3.0,
+                0.0,
+                3.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 281,
+            "rotation": [
+                -3.0,
+                0.0,
+                -3.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 286,
+            "rotation": [
+                3.0,
+                0.0,
+                3.0
+            ]
+        },
+        {
+            "interpRotation": 1,
+            "keyFrame": 291,
+            "rotation": [
+                -3.0,
+                0.0,
+                -3.0
+            ]
+        },
+        {
+            "interpRotation": 0,
+            "keyFrame": 296,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
         }
     ],
     "vecTargetData": [
