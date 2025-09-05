@@ -100,23 +100,23 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 
 	if (m_bHitRegActive)
 		Update_HitReg(fTimeDelta);
-	//if (KEY_DOWN(DIK_G))
-	//{
-	//	CEffectContainer::DESC desc = {};`
+	if (KEY_PRESSING(DIK_LCONTROL) && KEY_DOWN(DIK_G))
+	{
+		CEffectContainer::DESC desc = {};
 
-	//	auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
+		auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
 
-	//	XMStoreFloat4x4(&desc.PresetMatrix,
-	//		XMMatrixTranslation(worldmat.r[3].m128_f32[0],
-	//			worldmat.r[3].m128_f32[1],
-	//			worldmat.r[3].m128_f32[2]));
+		XMStoreFloat4x4(&desc.PresetMatrix,
+			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
+				worldmat.r[3].m128_f32[1],
+				worldmat.r[3].m128_f32[2]));
 
-	//	if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
-	//		MSG_BOX("이펙트 생성 실패함");
-	//	static _bool bTEactive = true;
-	//	bTEactive = !bTEactive;
-	//	Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
-	//}
+		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
+			MSG_BOX("이펙트 생성 실패함");
+		static _bool bTEactive = true;
+		bTEactive = !bTEactive;
+		Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
+	}
 
 	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
 }

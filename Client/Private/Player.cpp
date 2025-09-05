@@ -1627,7 +1627,7 @@ void CPlayer::Register_Events()
 		{
 			if (m_pWeapon)
 			{
-				m_pWeapon->Set_WeaponTrail_Active(true,TRAIL_SKILL_BLUE);
+				m_pWeapon->Set_WeaponTrail_Active(true);
 			}
 		});
 
@@ -1635,7 +1635,7 @@ void CPlayer::Register_Events()
 		{
 			if (m_pWeapon)
 			{
-				m_pWeapon->Set_WeaponTrail_Active(false, TRAIL_SKILL_BLUE);
+				m_pWeapon->Set_WeaponTrail_Active(false);
 			}
 		});
 
