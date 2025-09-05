@@ -58,7 +58,16 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 
-			//CCamera_Manager::Get_Instance()->SetbMoveable(false);
+			switch (m_eInteractType)
+			{
+			case Client::FESTIVALDOOR:
+				break;
+			case Client::FUOCO:
+				CCamera_Manager::Get_Instance()->SetbMoveable(false);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -468,9 +477,6 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			m_pSecondAnimator->SetTrigger("Open");
 
 		m_bStartSound = true;
-
-		// юс╫ц
-		//CCamera_Manager::Get_Instance()->SetbMoveable(true);
 	}
 }
 
