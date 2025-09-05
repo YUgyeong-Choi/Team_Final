@@ -3,6 +3,10 @@
 #include "Monster_Base.h"
 #include "Client_Defines.h"
 
+NS_BEGIN(Engine)
+class CBone;
+NS_END
+
 NS_BEGIN(Client)
 
 class CWatchDog final : public CMonster_Base
