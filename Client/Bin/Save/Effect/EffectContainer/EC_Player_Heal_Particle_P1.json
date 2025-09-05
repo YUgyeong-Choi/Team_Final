@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                0.0,
-                0.0
+                -1.0,
+                -0.5
             ],
             "Animation": true,
             "Billboard": false,
@@ -14,44 +14,44 @@
             ],
             "CenterColor": [
                 1.0,
-                0.3390531539916992,
-                0.07853400707244873,
+                1.0,
+                1.0,
                 1.0
             ],
             "Color": [
+                0.020942211151123047,
+                0.0,
                 1.0,
-                0.0,
-                0.0,
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 60,
+            "Duration": 170,
             "EffectType": 1,
-            "EmissiveIntensity": 0.3499999940395355,
-            "EndTrack": 60,
+            "EmissiveIntensity": 0.30000001192092896,
+            "EndTrack": 170,
             "FlipUV": false,
-            "Gravity": -1.5,
+            "Gravity": -0.5,
             "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [
+                        0.020942211151123047,
+                        0.0,
                         1.0,
-                        0.0,
-                        0.0,
                         1.0
                     ],
-                    "Intensity": 1.2699999809265137,
+                    "Intensity": 5.539999961853027,
                     "Interpolation": 0,
                     "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
+                        -2.39857513406605e-07,
+                        0.00020114181097596884,
+                        4.2797410060302354e-07,
                         1.0
                     ],
                     "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.9999864101409912,
+                        0.9999958276748657,
+                        0.9999777674674988
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -61,39 +61,39 @@
                     ]
                 }
             ],
-            "LifeTime": 376.156982421875,
+            "LifeTime": 826.8927001953125,
             "LifeTime_Particle": [
                 0.10000000149011612,
-                1.5
+                2.0
             ],
             "Local": true,
-            "Loop": true,
-            "MaxLifeTime": 4.0,
+            "Loop": false,
+            "MaxLifeTime": 3.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
-            "Name": "Fuoco_FlameThrow_Particle1",
-            "NumInstance": 100,
+            "MinSpeed": -2.0,
+            "Name": "Player_Heal_SkelEmitterParticle1",
+            "NumInstance": 300,
             "NumKeyFrames": 1,
-            "Orbit": false,
+            "Orbit": true,
             "OrbitAxis": [
-                0.0,
-                1.0,
+                0.7071067690849304,
+                0.7071067690849304,
                 0.0
             ],
             "OrbitSpeed": [
-                -10.0,
-                10.0
+                -90.0,
+                90.0
             ],
             "PType": 0,
             "Pivot": [
                 0.0,
-                -0.20999999344348907,
-                0.0
+                0.0,
+                -0.009999999776482582
             ],
             "Range": [
-                0.10000000149011612,
-                0.10000000149011612,
-                0.10000000149011612
+                0.05000000074505806,
+                0.05000000074505806,
+                0.0
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -107,18 +107,18 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                1.0,
-                2.0
+                0.029999999329447746,
+                0.03999999910593033
             ],
             "Speed": [
-                17.0,
-                23.0
+                0.5,
+                1.0
             ],
             "Spin": false,
             "StartTrack": 0,
             "TextureTags": [
                 "",
-                "T_SubUV_Fire_06_8x8_SC_KMH",
+                "T_Shere_05_C_HJS",
                 "",
                 ""
             ],
@@ -130,12 +130,12 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 100.0,
-            "TileX": 8,
-            "TileY": 8,
-            "isTileLoop": true
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
         }
     ],
     "Loop": false,
-    "MaxFrame": 59
+    "MaxFrame": 116
 }

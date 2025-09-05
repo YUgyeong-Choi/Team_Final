@@ -1353,9 +1353,47 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			{
 				m_pSoundCom->Play("SE_PC_FX_Item_Heal");
 				m_bSetSound = true;
+
+				// 이펙트 임시로 한번에 몰아둠 
+				CEffectContainer::DESC desc = {};
+				_uint iBoneIdx = m_pModelCom->Find_BoneIndex("BN_Weapon_L");
+				//auto a = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(iBoneIdx))
+				_matrix vWorldMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(iBoneIdx)) * m_pTransformCom->Get_WorldMatrix();
+				XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vWorldMat.r[3].m128_f32[0], vWorldMat.r[3].m128_f32[1], vWorldMat.r[3].m128_f32[2]));
+				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_HealSprite_Hand_S3"), &desc))
+					MSG_BOX("이펙트 생성 실패함");
+
+				//CEffectContainer::DESC Partdesc = {};
+				//vWorldMat = XMLoadFloat4x4(
+				//	m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_Deltoid"))) * // 왼쪽 어깨
+				//	m_pTransformCom->Get_WorldMatrix();
+				//XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
+				//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &Partdesc))
+				//	MSG_BOX("이펙트 생성 실패함");
+				//vWorldMat = XMLoadFloat4x4(
+				//	m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-Spine"))) * // 척추 중앙
+				//	m_pTransformCom->Get_WorldMatrix();
+				//XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
+				//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &Partdesc))
+				//	MSG_BOX("이펙트 생성 실패함");
+				//vWorldMat = XMLoadFloat4x4(
+				//	m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_R_Cucullaris"))) * // 모름 승모근?
+				//	m_pTransformCom->Get_WorldMatrix();
+				//XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
+				//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &Partdesc))
+				//	MSG_BOX("이펙트 생성 실패함");
+				//vWorldMat = XMLoadFloat4x4(
+				//	m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_R_Hip"))) * // 언더니
+				//	m_pTransformCom->Get_WorldMatrix();
+				//XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
+				//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &Partdesc))
+				//	MSG_BOX("이펙트 생성 실패함");
 			}
 		}
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+
+
+
 		break;
 	}
 	case eAnimCategory::GUARD_HIT:

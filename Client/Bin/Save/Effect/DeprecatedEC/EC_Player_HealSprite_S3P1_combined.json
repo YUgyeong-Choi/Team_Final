@@ -1,0 +1,501 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -1.0,
+                -0.5
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.020942211151123047,
+                0.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 170,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.30000001192092896,
+            "EndTrack": 170,
+            "FlipUV": false,
+            "Gravity": -1.0,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.020942211151123047,
+                        0.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.7000000476837158,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -2.39857513406605e-07,
+                        0.00020114181097596884,
+                        4.2797410060302354e-07,
+                        1.0
+                    ],
+                    "Scale": [
+                        0.9999864101409912,
+                        0.9999958276748657,
+                        0.9999777674674988
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 564.3736572265625,
+            "LifeTime_Particle": [
+                0.10000000149011612,
+                2.0
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 3.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": -2.0,
+            "Name": "Player_Heal_SkelEmitterParticle1",
+            "NumInstance": 300,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.7071067690849304,
+                0.7071067690849304,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -90.0,
+                90.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.05000000074505806,
+                0.05000000074505806,
+                0.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "Size": [
+                0.05000000074505806,
+                0.07000000029802322
+            ],
+            "Speed": [
+                0.5,
+                1.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Shere_05_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                0.26167044043540955,
+                0.282740980386734,
+                0.38743454217910767,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.16753935813903809,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 171,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.30000001192092896,
+            "EndTrack": 171,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.16753935813903809,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.319999933242798,
+                    "Interpolation": 1,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.019607843831181526,
+                        0.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.319999933242798,
+                    "Interpolation": 1,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.5,
+                        1.5,
+                        1.5
+                    ],
+                    "TrackPosition": 8.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 0.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 12.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 297.2590637207031,
+            "Loop": true,
+            "Name": "Player_Heal_BlinkSprite1",
+            "NumKeyFrames": 3,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_LensFlare_01_C_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                0.5433513522148132,
+                0.6163495779037476,
+                0.9790576100349426,
+                0.5078533887863159
+            ],
+            "Color": [
+                0.486705482006073,
+                0.47643977403640747,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 173,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.30000001192092896,
+            "EndTrack": 173,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.486705482006073,
+                        0.47643977403640747,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 10.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.48627451062202454,
+                        0.4745098054409027,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 1,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.2000000476837158,
+                        1.2000000476837158,
+                        1.2000000476837158
+                    ],
+                    "TrackPosition": 8.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 0.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 12.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 291.3351135253906,
+            "Loop": true,
+            "Name": "Player_Heal_BlinkSprite2",
+            "NumKeyFrames": 3,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Flare_04_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 54,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 54,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "TrackPosition": 26.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 69.71257019042969,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Suv_Tornado_02_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 8,
+            "TileY": 8
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 116
+}

@@ -287,24 +287,32 @@ void CBayonet::Reset()
 
 void CBayonet::Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType)
 {
-	switch (eType)
+	if (bActive == false)
 	{
-	case Client::TRAIL_DEFAULT:
-		if (m_pWeaponTrailEffect)
-			m_pWeaponTrailEffect->Set_TrailActive(bActive);
-		break;
-	case Client::TRAIL_SKILL_BLUE:
-		if (m_pSkillTrailEffect)
-			m_pSkillTrailEffect->Set_TrailActive(bActive);
-		break;
-	case Client::TRAIL_SKILL_RED:
-		break;
-	case Client::TRAIL_BLOOD:
-		break;
-	case Client::TRAIL_END:
-		break;
-	default:
-		break;
+		m_pWeaponTrailEffect->Set_TrailActive(bActive);
+		m_pSkillTrailEffect->Set_TrailActive(bActive);
+	}
+	else
+	{
+		switch (eType)
+		{
+		case Client::TRAIL_DEFAULT:
+			if (m_pWeaponTrailEffect)
+				m_pWeaponTrailEffect->Set_TrailActive(bActive);
+			break;
+		case Client::TRAIL_SKILL_BLUE:
+			if (m_pSkillTrailEffect)
+				m_pSkillTrailEffect->Set_TrailActive(bActive);
+			break;
+		case Client::TRAIL_SKILL_RED:
+			break;
+		case Client::TRAIL_BLOOD:
+			break;
+		case Client::TRAIL_END:
+			break;
+		default:
+			break;
+		}
 	}
 }
 
