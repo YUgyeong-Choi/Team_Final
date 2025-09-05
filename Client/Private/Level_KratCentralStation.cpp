@@ -970,10 +970,11 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	//Desc.InitPos =
 	//	//_float3(148.f, 2.47f, -7.38f); //호텔위치
 	//	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
+	//Desc.szMeshID = TEXT("WatchDog");
+	//
 
-
-	//Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
+	////Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_WatchDog"),
 	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
 	//	return E_FAIL;
 
