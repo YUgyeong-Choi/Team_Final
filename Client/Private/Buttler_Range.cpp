@@ -636,7 +636,7 @@ HRESULT CButtler_Range::Ready_Weapon()
 	lstrcpy(Desc.szName, TEXT("Buttler_Range_Weapon"));
 	Desc.vAxis = { 1.f,0.f,0.2f,0.f };
 	Desc.fRotationDegree = { 180.f };
-	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
+	//Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
 	Desc.vPhsyxExtent = { 0.8f, 0.2f, 0.2f };
 
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));

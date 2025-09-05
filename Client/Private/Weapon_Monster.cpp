@@ -41,6 +41,8 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 	
 	m_pTransformCom->Rotation(XMLoadFloat4(&pDesc->vAxis), XMConvertToRadians(pDesc->fRotationDegree));
 
+	m_vAxis = pDesc->vAxis;
+	m_fRotationDegree = pDesc->fRotationDegree;
 	m_vLocalOffset = pDesc->vLocalOffset;
 
 	m_physxExtent = pDesc->vPhsyxExtent;
@@ -85,8 +87,50 @@ void CWeapon_Monster::Update(_float fTimeDelta)
 
 void CWeapon_Monster::Late_Update(_float fTimeDelta)
 {
-	__super::Late_Update(fTimeDelta);
+	//__super::Late_Update(fTimeDelta);
+	_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
+	for (size_t i = 0; i < 3; i++)
+		SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
+
+	// 위치 오프셋만 적용
+	_matrix LocalOffsetMat = XMMatrixTranslation(
+		m_vLocalOffset.x,
+		m_vLocalOffset.y,
+		m_vLocalOffset.z);
+
+	XMStoreFloat4x4(&m_CombinedWorldMatrix,
+		XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * // 자기 로컬/월드
+		LocalOffsetMat *
+		SocketMatrix *
+		XMLoadFloat4x4(m_pParentWorldMatrix));
+
+	if (m_pGameInstance->GetCurrentLevelIndex() != ENUM_CLASS(LEVEL::JW))
+	{
+
+	vector<AABBBOX> CurrentBounds;
+	m_pGameInstance->GetActiveAreaBounds(CurrentBounds);
+	if (CurrentBounds.empty())
+		return;
+
+	AABBBOX tAreaUnion = CurrentBounds[0];
+	for (_uint iArea = 1; iArea < static_cast<_uint>(CurrentBounds.size()); ++iArea)
+		AABB_ExpandByAABB(tAreaUnion, CurrentBounds[iArea]);
+
+	AABB_Inflate(tAreaUnion, 10.f);
+
+	_float3 vPosition = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43 };
+	if (AABB_ContainsPoint(tAreaUnion, vPosition))
+	{
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	}
+	}
+	else
+	{
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	}
 	Update_Collider();
 }
 

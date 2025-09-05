@@ -17,7 +17,7 @@ public:
 	typedef struct eTagMonsterWeaponDesc : public WEAPON_DESC {
 		_float4 vAxis;
 		_float  fRotationDegree; // 라디안 변환 해주기
-		_float4 vLocalOffset; // 피직스 보정해 줄 오프셋
+		_float4 vLocalOffset = { 0.0f,0.f,0.f,1.f };
 		PxVec3 vPhsyxExtent;
 	}MONSTER_WEAPON_DESC;
 
@@ -49,6 +49,12 @@ public:
 	_float4& GetLocalOffset() { return m_vLocalOffset; }
 	void SetLocalOffset(_float4 vOffset) { m_vLocalOffset = vOffset; }
 
+	_float3 GetAxis3() { return _float3(m_vAxis.x, m_vAxis.y, m_vAxis.z); }
+	_float  GetRotationDegree() { return m_fRotationDegree; }
+	void    SetAxis(_float4 vAxis) { m_vAxis = vAxis; }
+	void    SetRotationDegree(_float fDegree) { m_fRotationDegree = fDegree; }
+	_float3 GetLocalRot3() { return _float3(m_vLocalRot.x, m_vLocalRot.y, m_vLocalRot.z); }
+	void    SetLocalRot(const _float3& vRot) { m_vLocalRot = _float4(vRot.x, vRot.y, vRot.z, 0.f); }
 
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
@@ -69,6 +75,9 @@ protected: /* [ 충돌 시 공통으로 실행 ] */
 private:
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
 	_float4	m_vLocalOffset = {};
+	_float4 m_vLocalRot = {};
+	_float4 m_vAxis = {};
+	_float  m_fRotationDegree = {};
 
 	PxVec3 m_physxExtent = {};
 public:

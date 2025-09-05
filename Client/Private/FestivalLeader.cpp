@@ -13,6 +13,7 @@
 #include <PhysX_IgnoreSelfCallback.h>
 #include "UI_MonsterHP_Bar.h"
 #include "Static_Decal.h"
+#include "Weapon_Monster.h"
 
 CFestivalLeader::CFestivalLeader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -69,8 +70,14 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 
 	// 체력 일단 각 객체에 
 
-
+	// 0번 메시는 다리,1번은 몸통, 4번 양팔, 5번 머리
+	// 2,3번은 바스켓
+	//m_pModelCom->SetMeshVisible(5, false);
+	//	m_pModelCom->SetMeshVisible(3, false);
 	m_fMaxRootMotionSpeed = 18.f;
+
+	if(FAILED(Ready_Weapon()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -166,12 +173,12 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 	{
 		if (KEY_DOWN(DIK_A))
 		{
-			
+
 
 		}
 		if (KEY_DOWN(DIK_S))
 		{
-		
+
 		}
 	}
 #endif
@@ -207,8 +214,91 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
-	if (m_pPlayer&&static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0&& m_pHPBar)
+	if (m_pPlayer && static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
+
+#ifdef _DEBUG
+
+	if (m_pHammer)
+	{
+		auto pTrans = m_pHammer->Get_TransfomCom();
+		auto pos = m_pHammer->GetLocalOffset();
+
+		static float rotX = 0.f;
+		static float rotY = 0.f;
+		static float rotZ = 0.f;
+
+		const _float fRotateSpeed = 1.f; // 도 단위
+
+		bool bChanged = false;
+
+		//// z는 280도 y는 5도
+		//// Y축 회전 (좌/우)
+		//if (KEY_DOWN(DIK_V)) {
+		//	rotY -= fRotateSpeed;
+		//	bChanged = true;
+		//}
+		//if (KEY_DOWN(DIK_G)) {
+		//	rotY += fRotateSpeed;
+		//	bChanged = true;
+		//}
+
+		//// X축 회전
+		//if (KEY_DOWN(DIK_5)) {
+		//	rotX += fRotateSpeed;
+		//	bChanged = true;
+		//}
+
+		//// Z축 회전
+		//if (KEY_DOWN(DIK_J)) {
+		//	rotZ += fRotateSpeed;
+		//	bChanged = true;
+		//}
+
+		//if (bChanged)
+		//{
+		//	// 누적된 회전값으로 행렬 생성
+		//	_matrix matRotX = XMMatrixRotationX(XMConvertToRadians(rotX));
+		//	_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(rotY));
+		//	_matrix matRotZ = XMMatrixRotationZ(XMConvertToRadians(rotZ));
+
+		//	// 회전 순서 (필요에 맞게 바꿀 수 있음: Y→X→Z 등)
+		//	_matrix matFinalRot = matRotX * matRotY * matRotZ;
+
+		//	// 현재 위치 유지한 채 회전만 적용
+		//	_float4x4 worldMat;
+		//	XMStoreFloat4x4(&worldMat, matFinalRot);
+		//	worldMat._41 = pTrans->Get_State(STATE::POSITION).m128_f32[0];
+		//	worldMat._42 = pTrans->Get_State(STATE::POSITION).m128_f32[1];
+		//	worldMat._43 = pTrans->Get_State(STATE::POSITION).m128_f32[2];
+
+		//	pTrans->Set_WorldMatrix(worldMat);
+
+		//	// 디버그 출력
+		//	cout << "Hammer Rotation = (X:" << rotX
+		//		<< "°, Y:" << rotY
+		//		<< "°, Z:" << rotZ << "°)" << endl;
+		//}
+			if (KEY_DOWN(DIK_1)) { pos.y += 0.05f; bChanged = true; }  // 위
+			if (KEY_DOWN(DIK_2)) { pos.y -= 0.05f; bChanged = true; }  // 아래
+			if (KEY_DOWN(DIK_3)) { pos.x -= 0.05f; bChanged = true; }  // 왼쪽
+			if (KEY_DOWN(DIK_4)) { pos.x += 0.05f; bChanged = true; }  // 오른쪽
+			if (KEY_DOWN(DIK_5)) { pos.z += 0.05f; bChanged = true; }  // 앞
+			if (KEY_DOWN(DIK_6)) { pos.z -= 0.05f; bChanged = true; }  // 뒤
+
+			if (bChanged)
+			{
+				m_pHammer->SetLocalOffset(pos);
+
+				// 현재 오프셋 콘솔 출력
+				cout << "Hammer Offset = ("
+					<< pos.x << ", "
+					<< pos.y << ", "
+					<< pos.z << ")" << endl;
+			}
+	}
+#endif
+
 }
 
 void CFestivalLeader::Late_Update(_float fTimeDelta)
@@ -224,6 +314,12 @@ void CFestivalLeader::Late_Update(_float fTimeDelta)
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Late_Update(fTimeDelta);
+}
+
+HRESULT CFestivalLeader::Render()
+{
+	__super::Render();
+	return S_OK;
 }
 
 void CFestivalLeader::Reset()
@@ -336,6 +432,53 @@ HRESULT CFestivalLeader::Ready_Actor()
 	return S_OK;
 }
 
+HRESULT CFestivalLeader::Ready_Weapon()
+{
+	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
+	Desc.eMeshLevelID = LEVEL::STATIC;
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.InitPos = {0.f,0.f,0.f };
+	Desc.InitScale = { 1.f,1.f,1.f };
+	Desc.iRender = 0;
+
+	Desc.szMeshID = TEXT("FestivalWeapon");
+	lstrcpy(Desc.szName, TEXT("FestivalWeapon"));
+	Desc.vAxis = { 0.f,0.f,1.f,0.f };
+	Desc.fRotationDegree = { 0.f };
+//	Desc.vLocalOffset = { 0.8f,0.2f,-0.2f,1.f };
+	Desc.vLocalOffset = { 0.9f, 0.2f, -0.25f,1.f };
+	Desc.vPhsyxExtent = { 0.1f, 0.1f, 0.1f };
+	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
+	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	Desc.pOwner = this;
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("FestivalWeapon"), &pGameObject, &Desc)))
+		return E_FAIL;
+
+	m_pHammer = dynamic_cast<CWeapon_Monster*>(pGameObject);
+
+	_matrix matRotX = XMMatrixRotationX(XMConvertToRadians(5.f));
+	_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(-12.f));
+	_matrix matRotZ = XMMatrixRotationZ(XMConvertToRadians(279.f));
+
+	auto pTrans = m_pHammer->Get_TransfomCom();
+	_matrix matFinalRot = matRotX * matRotY * matRotZ;
+	_float4x4 worldMat;
+	XMStoreFloat4x4(&worldMat, matFinalRot);
+	worldMat._41 = pTrans->Get_State(STATE::POSITION).m128_f32[0];
+	worldMat._42 = pTrans->Get_State(STATE::POSITION).m128_f32[1];
+	worldMat._43 = pTrans->Get_State(STATE::POSITION).m128_f32[2];
+
+	pTrans->Set_WorldMatrix(worldMat);
+
+	m_pHammer->SetisAttack(false);
+	m_pHammer->Set_WeaponTrail_Active(true);
+	return S_OK;
+}
+
 void CFestivalLeader::Ready_BoneInformation()
 {
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine");
@@ -355,6 +498,14 @@ void CFestivalLeader::Ready_BoneInformation()
 		m_pBasketBone = *it;
 	}
 
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "BN_Weapon_R"); });
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pRightHandBone = *it;
+	}
 }
 
 void CFestivalLeader::Update_Collider()
@@ -390,8 +541,8 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
 		m_fFirstChaseBeforeAttack -= fTimeDelta;
-	//	m_pAnimator->SetBool("Move", true);
-	//	m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
+		//	m_pAnimator->SetBool("Move", true);
+		//	m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
 		return;
 	}
 	// 퓨리 몸빵
@@ -782,7 +933,7 @@ void CFestivalLeader::Register_Events()
 			if (m_pAnimator)
 			{
 				m_pAnimator->ApplyOverrideAnimController("Phase2");
-				m_pAnimator->SetInt("SkillType",DashSwing);
+				m_pAnimator->SetInt("SkillType", DashSwing);
 				m_pAnimator->SetTrigger("Attack");
 				m_ePrevState = m_eCurrentState;
 				m_eCurrentState = EEliteState::ATTACK;
@@ -834,7 +985,7 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 
 	//	m_PatternCountMap[pattern] = 0;
 	//}
-	SwitchFury(false, 1.f); 
+	SwitchFury(false, 1.f);
 }
 
 _int CFestivalLeader::GetRandomAttackPattern(_float fDistance)
@@ -1064,14 +1215,14 @@ void CFestivalLeader::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 
 	if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 	{
-	
+
 		_uint curNodeID = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->iNodeId;
-	/*	switch (curNodeID)
-		{
-	
-		default:
-			break;
-		}*/
+		/*	switch (curNodeID)
+			{
+
+			default:
+				break;
+			}*/
 
 	}
 
@@ -1109,6 +1260,7 @@ CGameObject* CFestivalLeader::Clone(void* pArg)
 void CFestivalLeader::Free()
 {
 	__super::Free();
+	//Safe_Release(m_pHammer);
 	Safe_Release(m_pPhysXActorComForHammer);
 	Safe_Release(m_pPhysXActorComForBasket);
 }

@@ -306,7 +306,7 @@ HRESULT CElite_Police::Ready_Weapon()
 	lstrcpy(Desc.szName, TEXT("Elite_Police_Weapon"));
 	Desc.vAxis = { 1.f,0.f,0.f,0.f };
 	Desc.fRotationDegree = { -90.f };
-	Desc.vLocalOffset = { -0.5f,0.f,0.f,1.f };
+	Desc.vLocalOffset = { -0.f,0.f,0.f,1.f };
 	Desc.vPhsyxExtent = { 1.45f, 0.6f, 0.6f };
 	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
 	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();

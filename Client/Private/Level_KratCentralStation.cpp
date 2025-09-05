@@ -202,21 +202,6 @@ void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 	__super::Late_Update(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_J))
-	{
-		
-		CUI_Container::UI_CONTAINER_DESC eDesc = {};
-
-		eDesc.strFilePath = TEXT("../Bin/Save/UI/Death.json");
-
-		eDesc.fLifeTime = 10.f;
-		eDesc.useLifeTime = true;
-
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Death"), &eDesc)))
-			return ;
-	}
-
 	Add_RenderGroup_OctoTree();
 }
 
