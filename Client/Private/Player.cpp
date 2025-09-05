@@ -2877,10 +2877,9 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		}
 
 		Callback_HP();
+		m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
-
-	
-		m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[EELEMENT::FIRE].fElementWeight);
+		
 	}
 
 	/* [ 화속성 시작 ] */
@@ -2894,6 +2893,8 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		//플레이어 점화 종료
 		m_bBurnSwitch = false;
 	}
+
+	m_pGameInstance->Notify(L"Player_Status", L"Fire", &fFireWeight);
 }
 
 void CPlayer::OnBurn(_float fTimeDelta)
@@ -2912,7 +2913,10 @@ void CPlayer::OffBurn(_float fTimeDelta)
 	{
 		m_fBurnPhase -= (fTimeDelta * 0.1f) * m_fBurnSpeed;
 		if (m_fBurnPhase < 0.f)
+		{
 			m_fBurnPhase = 0.f;
+			m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_fBurnPhase);
+		}
 		else
 			m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
 	}

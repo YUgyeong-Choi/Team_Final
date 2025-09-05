@@ -907,6 +907,8 @@ public:
             m_pOwner->m_vecElements[0].fElementWeight = fDamege;
             if (m_pOwner->m_vecElements[0].fElementWeight < 0.f)
                 m_pOwner->m_vecElements[0].fElementWeight = 0.f;
+
+            m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_pOwner->m_vecElements[0].fElementWeight);
         }
 
         /* [ 디버깅 ] */
@@ -1006,6 +1008,8 @@ public:
 			m_pOwner->m_vecElements[0].fElementWeight = fDamege;
 			if (m_pOwner->m_vecElements[0].fElementWeight < 0.f)
 				m_pOwner->m_vecElements[0].fElementWeight = 0.f;
+
+            m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_pOwner->m_vecElements[0].fElementWeight);
         }
 
         /* [ 디버깅 ] */
