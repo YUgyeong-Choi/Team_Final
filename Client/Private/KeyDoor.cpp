@@ -215,8 +215,6 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		switch (m_eInteractType)
 		{
 		case Client::OUTDOOR:
-			//PlayerPos X : 183.389999, Y : 8.854537, Z : -8.384386
-			//X:183.086136, Y:8.865019, Z:-7.831734 이쯤
 			vTargetPos = _vector({ 183.38f, 8.85f, -8.f, 1.f });
 			break;
 		default:
@@ -246,7 +244,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
 		{
 			m_bRotationStart = false;
-			m_bMoveSecondStart = true;
+			m_bStartCutScene = true;
 
 			// 여기서 키 여는 애니메이션 활성화
 
@@ -256,38 +254,13 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		}
 	}
 
-	if (m_bMoveSecondStart)
-	{
-		_vector vTargetPos;
-		switch (m_eInteractType)
-		{
-		case Client::OUTDOOR:
-			// 아직 위치 조정 안함
-			vTargetPos = _vector({ 183.38f, 8.85f, -8.f, 1.f });
-			break;
-		default:
-			break;
-		}
-
-		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
-		{
-			m_bMoveSecondStart = false;
-			// 위치 조정 끝난 거
-			m_bFinishPos = true;
-
-			//장원햄이 무기 집어넣는거 끝났는 지 확인하는 코드해서
-			// m_bPutWeapon = true;
-		}
-	}
-
 	// m_bFinishPos && m_bPutWeapon 면
 	// m_pPlayer->Interaction_Door(m_eInteractType, this);
-	if (m_bFinishPos && m_bPutWeapon)
+	if (m_bStartCutScene)
 	{
+		m_bStartCutScene = false;
 		// 문 여는 거 활성화
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
-		m_bFinishPos = false;
-		m_bPutWeapon = false;
 	}
 }
 
