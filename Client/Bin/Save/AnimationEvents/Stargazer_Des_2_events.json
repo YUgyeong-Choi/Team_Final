@@ -3,7 +3,7 @@
         {
             "ClipName": "AS_Stargazer_broken_idle",
             "Duration": 11.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },

@@ -6,16 +6,17 @@
 #include "Sky.h"
 #include "UI_Button.h"
 
+#include <future>
 
 #pragma region LEVEL_KRAT_CENTERAL_STATION
 #include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
 #include "Nav.h"
 #include "Static_Decal.h"
+#include "Stargazer.h"
 #pragma endregion
 
 #pragma region LEVEL_KRAT_HOTEL
-#include <future>
 
 #pragma endregion
 
@@ -527,11 +528,16 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ShotGun/SK_WP_MOB_Shotgun_01.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Stargazer"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Stargazer/Stargazer.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Stargazer_Destroyed"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Stargazer_Des_2/Stargazer_Des_2.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.0115f, 0.0115f, 0.0115f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Buttler_Train"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Train/Buttler_Train.bin", PreTransformMatrix))))
-		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Buttler_Basic"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Basic/Buttler_Basic.bin", PreTransformMatrix))))
@@ -543,6 +549,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Buttler_Train"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Train/Buttler_Train.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Train"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Train.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -708,6 +719,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;
 
 #pragma region YW
+	//별바라기
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Stargazer"),
+		CStargazer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
@@ -732,6 +748,16 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	m_pGameInstance->ClaerOctoTreeObjects();
 
+#ifdef TESTMAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+		return E_FAIL;
+#endif // TESTMAP
+
+
+
+
 	/*if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 		return E_FAIL;
 	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
@@ -752,6 +778,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
 		return E_FAIL;*/
 
+#ifndef TESTMAP
+
+#pragma region 멀티 스레드로 소환
 	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
 
 	auto futureStation = async(launch::async, [&]
@@ -811,6 +840,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(futureFireEater.get()))
 		return E_FAIL;
+#pragma endregion
+
+#endif // !TESTMAP
+
+
 
 #pragma endregion
 
@@ -1788,6 +1822,22 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 
 		// 락 걸기
 		lock_guard<mutex> lock(m_mtx);
+
+		//스타게이저라면 다르게 소환
+		if (wstrModelName == TEXT("Stargazer"))
+		{
+#pragma region 영웅 별바라기 테스트
+			CStargazer::STARGAZER_DESC Desc{};
+			Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+			Desc.WorldMatrix = WorldMatrix;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
+				Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
+				return E_FAIL;
+#pragma endregion
+
+			continue;
+		}
 
 		CGameObject* pGameObject = nullptr;
 		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
