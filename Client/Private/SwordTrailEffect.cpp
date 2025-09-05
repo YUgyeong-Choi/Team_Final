@@ -110,7 +110,7 @@ void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 				XMStoreFloat4x4(&desc.PresetMatrix,
 					XMMatrixTranslation(vPos.x, vPos.y, vPos.z) /** XMMatrixRotationAxis() 이거대체어케넣지*/
 				);
-				MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Skill_WeaponParticle_P1"), &desc);
+				MAKE_EFFECT(ENUM_CLASS(m_iLevelID), m_strEmitterTag, &desc);
 			}
 		}
 	}   

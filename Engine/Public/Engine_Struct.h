@@ -579,13 +579,13 @@ namespace Engine
 		_uint		iEffectSeed;
 
 		_float3		vCenter;         // vCenter
-		_float		_pad4;
+		_float		_pad0;
 
 		_float3		vOrbitAxis;      // normalized
-		_float		_pad5;
+		_float		_pad1;
 
 		_float3		vRange;			 // vRange
-		_float		_pad6;
+		_float		_pad2;
 
 		_float4		vSocketRot;
 

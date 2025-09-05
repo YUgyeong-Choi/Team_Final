@@ -102,16 +102,12 @@ float Random_Normal(uint iSeed)
     return frac(r * 43758.5453);
 }
 
-//float Random_Normal(uint iSeed)
-//{
-//    float s = (float) iSeed * 12.9898 + (float)EffectSeed * 78.233 + fAccTime;
-//    return frac(sin(s) * 43758.5453);
-//}
-
 float Random(uint iSeed, float fMin, float fMax)
 {
     return fMin + (fMax - fMin) * Random_Normal(iSeed);
 }
+
+
 
 [numthreads(128, 1, 1)]
 void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
@@ -265,6 +261,9 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
             //float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
             //pp.Direction.xyz = normalize(worldDir);
+            
+            // MeshEmitter 사용 시 함수 호출 하라는데
+            // Spawn();
         }
         
         float t = pp.LifeTime.y;
