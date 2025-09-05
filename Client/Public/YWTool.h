@@ -22,6 +22,9 @@ public:
 	virtual HRESULT	Render_ImGui();
 	virtual HRESULT Save(const _char* Map); //void Arg·Î ¹Ù²ÜÁö´Â ¾ÆÁ÷ °í¹Î
 	virtual HRESULT Load(const _char* Map);
+
+protected:
+	static _int m_iID;
 public:
 	virtual void Free() override;
 

@@ -244,6 +244,7 @@ void CEffectBase::Update_Keyframes()
 		vPosition = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vTranslation), 1.f);
 		vColor = XMLoadFloat4(&LastKeyFrame.vColor);
 		fIntensity = XMLoadFloat(&LastKeyFrame.fIntensity);
+
 	}
 	else
 	{
@@ -284,12 +285,17 @@ void CEffectBase::Update_Keyframes()
 	}
 
 	// TransformationMatrix = XMMatrixScaling() * XMMatrixRotationQuaternion() * XMMatrixTranslation();
-	TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-	_float4x4 resWorldMat = {};
-	XMStoreFloat4x4(&resWorldMat, TransformationMatrix);
-	m_pTransformCom->Set_WorldMatrix(resWorldMat);
+	if (!m_bHasPresetMat)
+	{
+		TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+		_float4x4 resWorldMat = {};
+		XMStoreFloat4x4(&resWorldMat, TransformationMatrix);
+		m_pTransformCom->Set_WorldMatrix(resWorldMat);
+	}
+
 	XMStoreFloat4(&m_vColor, vColor);
 	XMStoreFloat(&m_fIntensity, fIntensity);
+
 
 }
 

@@ -179,7 +179,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_6))
 	{
-		PxVec3 pos = PxVec3(188.27f, 13.18f, -8.23f);
+		PxVec3 pos = PxVec3(188.27f, 10.18f, -8.23f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}
@@ -187,6 +187,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_7))
 	{
 		PxVec3 pos = PxVec3(360.78f, 10.90f, -48.81f);
+		PxTransform posTrans = PxTransform(pos);
+		m_pControllerCom->Set_Transform(posTrans);
+	}
+
+	if (KEY_DOWN(DIK_8))
+	{
+		PxVec3 pos = PxVec3(383.f, 16.90f, -48.81f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}
@@ -1620,7 +1627,7 @@ void CPlayer::Register_Events()
 		{
 			if (m_pWeapon)
 			{
-				m_pWeapon->Set_WeaponTrail_Active(true);
+				m_pWeapon->Set_WeaponTrail_Active(true,TRAIL_SKILL_BLUE);
 			}
 		});
 
@@ -1628,7 +1635,7 @@ void CPlayer::Register_Events()
 		{
 			if (m_pWeapon)
 			{
-				m_pWeapon->Set_WeaponTrail_Active(false);
+				m_pWeapon->Set_WeaponTrail_Active(false, TRAIL_SKILL_BLUE);
 			}
 		});
 

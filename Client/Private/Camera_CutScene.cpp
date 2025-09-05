@@ -44,6 +44,13 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
+	if (KEY_DOWN(DIK_C))
+	{
+		m_bStopCamera = !m_bStopCamera;
+	}
+	if (m_bStopCamera)
+		fTimeDelta = 0.f;
+
 	if (m_bActive)
 	{
 		if (!m_bOrbitalToSetOrbital)
@@ -146,6 +153,13 @@ void CCamera_CutScene::Update(_float fTimeDelta)
 {
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
+
+	if (KEY_DOWN(DIK_CAPSLOCK))
+		PrintMatrix("CutScene CameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+
+	if (m_bStopCamera)
+		fTimeDelta = 0.f;
+
 	__super::Update(fTimeDelta);
 }
 
@@ -248,8 +262,8 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 	}
 
 	// 범위 밖이면 고정
-	const _matrix& m = (curFrame <= vec.front().iKeyFrame) ? vec.front().WorldMatrix : vec.back().WorldMatrix;
-	m_pTransformCom->Set_WorldMatrix(m);
+	//const _matrix& m = (curFrame <= vec.front().iKeyFrame) ? vec.front().WorldMatrix : vec.back().WorldMatrix;
+	//m_pTransformCom->Set_WorldMatrix(m);
 }
 
 void CCamera_CutScene::Interp_Fov(_int curFrame)
@@ -417,74 +431,82 @@ void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
 			m_vCurrentShakePos = XMLoadFloat3(&vec.back().offSetPos);
 }
 
+// 각도 유틸(라디안)
+inline _float WrapPi(_float a) {
+	a = fmodf(a + XM_PI, XM_2PI);
+	if (a <= 0) a += XM_2PI;
+	return a - XM_PI;
+}
+inline _float ShortestDelta(_float from, _float to) {
+	return WrapPi(to - from);
+}
+inline _float LerpAngle(_float from, _float to, _float t) {
+	return from + ShortestDelta(from, to) * t;
+}
+
 void CCamera_CutScene::Interp_Target(_int curFrame)
 {
 	const auto& vec = m_CameraDatas.vecTargetData;
-	if (vec.size() < 1)
-		return;
+	if (vec.size() < 1) return;
 
 	for (size_t i = 0; i < vec.size() - 1; ++i)
 	{
 		const auto& a = vec[i];
 		const auto& b = vec[i + 1];
-		_vector vTargetCamPos;
 
-		if (curFrame >= a.iKeyFrame && curFrame <= b.iKeyFrame)
+		if (curFrame < a.iKeyFrame || curFrame > b.iKeyFrame)
+			continue;
+
+		CGameObject* pTargetObj = nullptr;
+		if (a.eTarget != TARGET_CAMERA::NONE)
 		{
-			CGameObject* pTargetObj = nullptr;
-			if (a.eTarget != TARGET_CAMERA::NONE)
+			switch (a.eTarget)
 			{
-				switch (a.eTarget)
-				{
-				case TARGET_CAMERA::PLAYER:
-					pTargetObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"));
-					break;
-				default:
-					break;
-				}
-
-				if (pTargetObj == nullptr)
-					return;
-				float t = float(curFrame - a.iKeyFrame) / float(max(1, b.iKeyFrame - a.iKeyFrame));
-				_float fPitch;
-				_float fYaw;
-				_float fDistance;
-				fPitch = LerpFloat(a.fPitch, b.fPitch, t);
-				fYaw = LerpFloat(a.fYaw, b.fYaw, t);
-				fDistance = LerpFloat(a.fDistance, b.fDistance, t);
-
-				_vector vtargetPos;
-				// 기준점 위치 계산 (플레이어 + 높이 + 조금 뒤에)
-				vtargetPos = pTargetObj->Get_TransfomCom()->Get_State(STATE::POSITION);
-				vtargetPos += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-				vtargetPos += XMVector3Normalize(pTargetObj->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
-
-				// 방향 계산
-				_float x = fDistance * cosf(fPitch) * sinf(fYaw);
-				_float y = fDistance * sinf(fPitch);
-				_float z = fDistance * cosf(fPitch) * cosf(fYaw);
-				_vector vOffset = XMVectorSet(x, y, z, 0.f);
-
-				// 목표 카메라 위치
-				vTargetCamPos = vtargetPos + vOffset;
-
-				// 카메라 설정
-				_vector vCurPos = m_pTransformCom->Get_State(STATE::POSITION);
-				_vector vNewPos = XMVectorLerp(vCurPos, vTargetCamPos, t);
-
-				// 아주 가까워지면 스냅
-				if (XMVectorGetX(XMVector3LengthSq(vNewPos - vTargetCamPos)) < 1e-6f)
-					vNewPos = vTargetCamPos;
-
-				// 카메라 설정
-				m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
-				m_pTransformCom->LookAt(vtargetPos);
-				return;
+			case TARGET_CAMERA::PLAYER:
+				pTargetObj = m_pGameInstance->Get_LastObject(
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"));
+				break;
+			default:
+				break;
 			}
+			if (!pTargetObj) return;
+
+			const float denom = float(max(1, b.iKeyFrame - a.iKeyFrame));
+			const float t = float(curFrame - a.iKeyFrame) / denom;
+
+			_float fPitch = LerpFloat(a.fPitch, b.fPitch, t);      // Pitch는 범위가 좁으면 일반 Lerp로 충분
+			_float fYaw = LerpAngle(a.fYaw, b.fYaw, t);        //  Yaw는 짧은 경로로 보간
+
+			_float fDistance = LerpFloat(a.fDistance, b.fDistance, t);
+
+			// 기준점(플레이어 머리 위 약간 + 뒤로 약간)
+			_vector vtargetPos = pTargetObj->Get_TransfomCom()->Get_State(STATE::POSITION);
+			vtargetPos += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+			vtargetPos += XMVector3Normalize(
+				pTargetObj->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+
+			// 구면좌표 → 오프셋
+			const _float x = fDistance * cosf(fPitch) * sinf(fYaw);
+			const _float y = fDistance * sinf(fPitch);
+			const _float z = fDistance * cosf(fPitch) * cosf(fYaw);
+			const _vector vOffset = XMVectorSet(x, y, z, 0.f);
+
+			const _vector vTargetCamPos = vtargetPos + vOffset;
+
+			// 위치 보간 + 스냅
+			const _vector vCurPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vNewPos = XMVectorLerp(vCurPos, vTargetCamPos, t);
+			if (XMVectorGetX(XMVector3LengthSq(vNewPos - vTargetCamPos)) < 1e-6f)
+				vNewPos = vTargetCamPos;
+
+			m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
+			m_pTransformCom->LookAt(vtargetPos);
+			//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+			//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+			return;
 		}
 	}
 }
-
 XMVECTOR CCamera_CutScene::XMMatrixDecompose_T(const _matrix& m)
 {
 	XMVECTOR scale, rot, trans;
@@ -514,6 +536,37 @@ HRESULT CCamera_CutScene::InitDatas()
 
 		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::TUTORIALDOOR, LoadCameraFrameData(j)));
 	}
+
+	ifstream inFile3("../Bin/Save/CutScene/OutDoor.json");
+	if (inFile3.is_open())
+	{
+		json j;
+		inFile3 >> j;
+		inFile3.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::OUTDOOOR, LoadCameraFrameData(j)));
+	}
+
+	ifstream inFile4("../Bin/Save/CutScene/FuocoDoor.json");
+	if (inFile4.is_open())
+	{
+		json j;
+		inFile4 >> j;
+		inFile4.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::FUOCO, LoadCameraFrameData(j)));
+	}
+
+	ifstream inFile5("../Bin/Save/CutScene/FestivalDoor.json");
+	if (inFile5.is_open())
+	{
+		json j;
+		inFile5 >> j;
+		inFile5.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::FESTIVAL, LoadCameraFrameData(j)));
+	}
+
 	return S_OK;
 }
 

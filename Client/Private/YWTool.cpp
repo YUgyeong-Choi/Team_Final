@@ -1,5 +1,7 @@
 #include "YWTool.h"
 
+_int CYWTool::m_iID = -1;
+
 CYWTool::CYWTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
 {

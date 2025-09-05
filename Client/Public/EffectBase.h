@@ -26,6 +26,10 @@ public:
 		_uint				iShaderPass = { 0 };
 		_bool				isLoop = { true };
 		_bool				bTool = { false };
+
+		/* PresetWorldMatrix */
+		_bool				bHasPresetMat = { false };
+		_float4x4			PresetMatrix;
 	}DESC;
 
 	// Keyframes
@@ -81,6 +85,7 @@ protected:
 protected:
 	const _float4x4*	m_pSocketMatrix = { nullptr };
 	_float4x4			m_CombinedWorldMatrix{};
+	_bool				m_bHasPresetMat = { false };
 
 protected:
 	// Basic Effect Preferences

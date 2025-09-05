@@ -276,29 +276,21 @@ HRESULT CLevel_YG::Ready_Lights()
 		pNewLight->SetDebug(false);
 	}
 	*/
+	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YG));
+
 	LIGHT_DESC			LightDesc{};
 
-	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	//LightDesc.vDiffuse = _float4(0.6f, 0.6f, 0.6f, 1.f);
-	//LightDesc.fAmbient = 0.8f;
-	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	//if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
-	//	return E_FAIL;
-
-	//LIGHT_DESC			LightDesc{};
-
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.fAmbient = 0.3f;
-	LightDesc.fIntensity = 1.f;
+	LightDesc.fAmbient = 0.6f;
+	LightDesc.fIntensity = 0.8f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDirection = _float4(1.f, -0.5f, 1.f, 0.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.fFogDensity = 0.f;
 
 	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::YG), LightDesc)))
 		return E_FAIL;
+
 	return S_OK;
 }
 

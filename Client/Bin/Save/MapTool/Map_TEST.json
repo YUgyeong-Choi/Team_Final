@@ -1,5 +1,5 @@
 {
-    "ModelCount": 4,
+    "ModelCount": 5,
     "Models": [
         {
             "Collision": true,
@@ -722,6 +722,44 @@
                             1.7088425159454346,
                             3.6326723098754883,
                             0.9999998807907104
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "Stargazer",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            1.4046342372894287,
+                            -1.1756083965301514,
+                            -2.285792350769043,
+                            1.0
                         ]
                     ]
                 }

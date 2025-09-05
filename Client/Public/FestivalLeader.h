@@ -125,6 +125,7 @@ public:
 	virtual void Priority_Update(_float fTimeDelta) override;
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
 	virtual void Reset() override;
 private:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -142,6 +143,7 @@ private:
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT Ready_Actor() override;
+	 HRESULT        Ready_Weapon();
 	virtual void Ready_BoneInformation() override;
 
 	virtual void Update_Collider() override;
@@ -180,6 +182,11 @@ private:
 	CPhysXDynamicActor* m_pPhysXActorComForBasket = { nullptr };
 	CBone* m_pHammerBone{ nullptr };
 	CBone* m_pBasketBone{ nullptr };
+	CBone* m_pRightHandBone{ nullptr };
+	CBone* m_pLeftHandBone{ nullptr };
+	class CWeapon_Monster* m_pHammer{ nullptr };
+	_matrix m_pHammerWorldMatrix = XMMatrixIdentity();
+
 
 	// 상태 관련
 	_bool m_bPlayerCollided = false;

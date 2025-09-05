@@ -52,6 +52,10 @@ private:
 
 	_float m_fPitch = {};
 	_float m_fYaw = {};
+
+
+	bool bStopCamera = false; // 상태 저장용
+	int iStopFrame = 0;
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;
