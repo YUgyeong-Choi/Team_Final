@@ -3,41 +3,73 @@
         {
             "ClipName": "AS_ATSD0_Skill_01",
             "Duration": 126.0,
+            "Events": [
+                {
+                    "EventName": "UpdateJumpCount",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "NotLookAt",
+                    "Time": 30.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATSD0_Skill_02_Left",
             "Duration": 48.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATSD0_Skill_02_LeftEnd",
             "Duration": 12.0,
+            "Events": [
+                {
+                    "EventName": "SubJumpCount",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATSD0_Skill_02_Right",
             "Duration": 48.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATSD0_Skill_02_RightEnd",
             "Duration": 12.0,
+            "Events": [
+                {
+                    "EventName": "SubJumpCount",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATSD0_Skill_03",
             "Duration": 117.0,
+            "Events": [
+                {
+                    "EventName": "UpdateJumpCount",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "NotLootAt",
+                    "Time": 15.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -66,13 +98,29 @@
         {
             "ClipName": "AS_AT_S_D_1_Skill_03",
             "Duration": 341.0,
+            "Events": [
+                {
+                    "EventName": "UpdateJumpCount",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ComboEnd",
+                    "Time": 5.0
+                }
+            ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Dead_Start",
             "Duration": 356.0,
+            "Events": [
+                {
+                    "EventName": "NotLootAt",
+                    "Time": 2.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -235,21 +283,21 @@
             "ClipName": "AS_Hit_B",
             "Duration": 60.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_L",
             "Duration": 57.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_Hit_R",
             "Duration": 57.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -340,7 +388,7 @@
             "ClipName": "AS_KnockBack_Weak_B",
             "Duration": 110.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -354,7 +402,7 @@
             "ClipName": "AS_KnockBack_Weak_R",
             "Duration": 110.0,
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 55.0
         },
         {
@@ -388,8 +436,8 @@
         {
             "ClipName": "AS_Run_F_Root",
             "Duration": 42.0,
-            "IsLoop": false,
-            "RootMotion": true,
+            "IsLoop": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {

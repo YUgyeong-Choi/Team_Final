@@ -300,7 +300,7 @@ HRESULT CMonster_Base::Ready_PartObject()
 
 	eDesc.fSizeX = 1.f;
 	eDesc.fSizeY = 1.f;
-	eDesc.fHeight = 2.5f;
+	eDesc.fHeight = m_vHalfExtents.y * 2.5f;
 	eDesc.pHP = &m_fHp;
 	eDesc.pIsGroggy = &m_isCanGroggy;
 	eDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();

@@ -312,6 +312,7 @@
     <ClInclude Include="..\public\UI_Text.h" />
     <ClInclude Include="..\public\UI_Video.h" />
     <ClInclude Include="..\public\Unit.h" />
+    <ClInclude Include="..\public\WatchDog.h" />
     <ClInclude Include="..\public\WaterPuddle.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\Weapon_Monster.h" />
@@ -495,6 +496,7 @@
     <ClCompile Include="..\private\UI_Text.cpp" />
     <ClCompile Include="..\private\UI_Video.cpp" />
     <ClCompile Include="..\private\Unit.cpp" />
+    <ClCompile Include="..\private\WatchDog.cpp" />
     <ClCompile Include="..\private\WaterPuddle.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\Weapon_Monster.cpp" />

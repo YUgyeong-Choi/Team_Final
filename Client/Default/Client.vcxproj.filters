@@ -526,6 +526,9 @@
     <Filter Include="02.GameObjects\01.Unit\02. Monster\Boss\FestivalLeader">
       <UniqueIdentifier>{0951c273-c653-4fac-9369-d349e12d1b0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Unit\02. Monster\WatchDog">
+      <UniqueIdentifier>{0d0dc286-4c73-4d88-af00-e5469ed213ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1084,6 +1087,9 @@
     <ClInclude Include="..\public\UI_Container_DeBuff.h">
       <Filter>02.GameObjects\99.UI\Container\DeBuff</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\WatchDog.h">
+      <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1615,6 +1621,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Container_DeBuff.cpp">
       <Filter>02.GameObjects\99.UI\Container\DeBuff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WatchDog.cpp">
+      <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
