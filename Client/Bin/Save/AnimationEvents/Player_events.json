@@ -290,23 +290,27 @@
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
-      {
-        "ClipName": "AS_Pino_Prop_DoubleDoor_Push_TrainStation",
-        "Duration": 680.0,
-        "Events": [
-          {
-            "EventName": "SetRootStep",
-            "Time": 1.0
-          },
-          {
-            "EventName": "ResetRootStep",
-            "Time": 670.0
-          }
-        ],
-        "IsLoop": false,
-        "RootMotion": true,
-        "TickPerSecond": 55.0
-      },
+        {
+            "ClipName": "AS_Pino_Prop_DoubleDoor_Push_TrainStation",
+            "Duration": 680.0,
+            "Events": [
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 670.0
+                },
+                {
+                    "EventName": "OnInteractionKeyDoor",
+                    "Time": 1.0
+                }
+            ],
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
         {
             "ClipName": "AS_Pino_Prop_SlidingDoor_Boss",
             "Duration": 616.0,
@@ -562,36 +566,30 @@
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
-      {
-        "ClipName": "AS_Pino_Prop_Door_Unlock",
-        "Duration": 150.0,
-        "Events": [
-          {
-            "EventName": "OnInteractionKeyDoor",
-            "Time": 148.0
-          }
-        ],
-        "IsLoop": false,
-        "RootMotion": true,
-        "TickPerSecond": 55.0
-      },
-      {
-        "ClipName": "AS_Pino_Prop_DoubleDoor_Boss",
-        "Duration": 578.0,
-        "Events": [
-          {
-            "EventName": "SetRootStep",
-            "Time": 1.0
-          },
-          {
-            "EventName": "ResetRootStep",
-            "Time": 575.0
-          }
-        ],
-        "IsLoop": false,
-        "RootMotion": true,
-        "TickPerSecond": 55.0
-      },
+        {
+            "ClipName": "AS_Pino_Prop_Door_Unlock",
+            "Duration": 150.0,
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
+        {
+            "ClipName": "AS_Pino_Prop_DoubleDoor_Boss",
+            "Duration": 578.0,
+            "Events": [
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 575.0
+                }
+            ],
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 55.0
+        },
         {
             "ClipName": "AS_Pino_Prop_Fog",
             "Duration": 370.0,

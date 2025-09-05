@@ -26,7 +26,7 @@ CModel::CModel(const CModel& Prototype)
 	, m_AnimationNameMap{ Prototype.m_AnimationNameMap }
 	, m_ModelName{ Prototype.m_ModelName }	
 	, m_BoneChildrenMap{ Prototype.m_BoneChildrenMap }
-	// , m_Animations { Prototype.m_Animations }
+	, m_MeshVisible{ Prototype.m_MeshVisible }
 {
 	for (auto& pPrototypeBone : Prototype.m_Bones)
 		m_Bones.push_back(pPrototypeBone->Clone());
@@ -133,6 +133,22 @@ void CModel::MakeBoneChildrenMap()
 			m_BoneChildrenMap[pParentBoneName].push_back(i);
 		}
 	}
+}
+
+void CModel::InitMeshVisibility()
+{
+	m_MeshVisible.resize(m_iNumMeshes, true);
+}
+
+void CModel::SetMeshVisible(_uint index, _bool bVisible)
+{
+	if (index < m_MeshVisible.size())
+		m_MeshVisible[index] = bVisible;
+}
+
+_bool CModel::IsMeshVisible(_uint index) const
+{
+	return (index < m_MeshVisible.size()) ? m_MeshVisible[index] : false;
 }
 
 
@@ -305,7 +321,7 @@ HRESULT CModel::Ready_Meshes(ifstream& ifs)
 
 		m_Meshes.push_back(pMesh);
 	}
-
+	InitMeshVisibility();
 	return S_OK;
 }
 

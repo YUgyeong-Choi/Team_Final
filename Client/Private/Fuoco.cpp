@@ -257,7 +257,7 @@ void CFuoco::Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
-	if (static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0)
+	if (m_pPlayer&&static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 }
 

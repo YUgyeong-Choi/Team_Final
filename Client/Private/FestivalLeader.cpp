@@ -35,6 +35,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fAttckDleay = 1.5f;
 	m_fChasingDistance = 4.f;
 	m_iPatternLimit = 1;
+	m_fMinimumTurnAngle = 50.f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -43,7 +44,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 		UnitDesc.fSpeedPerSec = m_fWalkSpeed;
 		lstrcpy(UnitDesc.szName, TEXT("FestivalLeader"));
 		UnitDesc.szMeshID = TEXT("FestivalLeader");
-		UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
+		UnitDesc.InitPos = _float3(200.520279f, 7.415279f, -8.159760f);
 		UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
 
 		if (FAILED(__super::Initialize(&UnitDesc)))
@@ -152,7 +153,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_C))
 	{
-		m_pAnimator->SetTrigger("Attack");
+		m_pAnimator->SetTrigger("Phase2Start");
 	}
 
 	if (KEY_DOWN(DIK_B))
@@ -206,7 +207,7 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
-	if (static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0)
+	if (m_pPlayer&&static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0&& m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 }
 
@@ -234,6 +235,12 @@ void CFestivalLeader::Reset()
 	m_iLastComboType = -1;
 	m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
 	m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
+	if (m_pAnimator)
+	{
+		m_pAnimator->CancelOverrideAnimController();
+	}
+	m_pModelCom->SetMeshVisible(2, true);
+	m_pModelCom->SetMeshVisible(3, true);
 }
 
 HRESULT CFestivalLeader::Ready_Components(void* pArg)
@@ -275,7 +282,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 		PxTransform hammerPose(hammerPos, hammerRotQ);
 
 		// 해머 구체 콜라이더
-		PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.7f);
+		PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.f);
 		m_pPhysXActorComForHammer->Create_Collision(m_pGameInstance->GetPhysics(), hammerGeom, hammerPose, m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorComForHammer->Set_ShapeFlag(false, true, true);
 
@@ -334,7 +341,7 @@ void CFestivalLeader::Ready_BoneInformation()
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine");
 
 	auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
-		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-L-Hand"); });
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bn_Head_Weapon"); });
 	if (it != m_pModelCom->Get_Bones().end())
 	{
 		m_pHammerBone = *it;
@@ -391,14 +398,14 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	if (m_bIsFirstAttack)
 	{
 		m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType", StrikeFury);
+		m_pAnimator->SetInt("SkillType", Strike);
 		m_bIsFirstAttack = false;
 		m_pAnimator->SetBool("Move", false);
 		m_fAttackCooldown = m_fAttckDleay;
 		SetTurnTimeDuringAttack(1.5f, 1.4f);
-		m_eAttackType = EAttackType::FURY_AIRBORNE;
+		m_eAttackType = EAttackType::AIRBORNE;
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-			pPlayer->SetHitedAttackType(EAttackType::FURY_AIRBORNE);
+			pPlayer->SetHitedAttackType(EAttackType::AIRBORNE);
 		return;
 	}
 
@@ -444,7 +451,7 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	m_pAnimator->SetTrigger("Attack");
 	m_eCurrentState = EEliteState::ATTACK;
 	m_fAttackCooldown = m_fAttckDleay;
-	m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Attack_", 9);
+	//m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Attack_", 9);
 
 }
 
@@ -512,7 +519,7 @@ void CFestivalLeader::UpdateSpecificBehavior(_float fTimeDelta)
 
 	if ((m_eCurrentState == EEliteState::RUN || m_eCurrentState == EEliteState::WALK)
 		&& m_eCurrentState != EEliteState::ATTACK
-		&& m_eCurrentState != EEliteState::TURN && m_bWaitPhase2)  // Turn 상태 제외
+		&& m_eCurrentState != EEliteState::TURN)  // Turn 상태 제외
 	{
 		m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 	}
@@ -560,85 +567,85 @@ _bool CFestivalLeader::CanProcessTurn()
 void CFestivalLeader::SetupAttackByType(_int iPattern)
 {
 
-	switch (iPattern)
-	{
-	case Client::CFestivalLeader::SlamCombo:
-	{
-		_bool bIsCombo = GetRandomInt(0, 1) == 1;
-		m_pAnimator->SetBool("IsCombo", bIsCombo);
-		if (bIsCombo)
-		{
-			_int iDir = GetYawSignFromDiretion();
-			m_pAnimator->SetInt("Direction", iDir);
-		}
-	}
-	break;
-	case Client::CFestivalLeader::SwingAtk:
-	{
-		_bool bIsCombo = GetRandomInt(0, 1) == 1;
-		m_pAnimator->SetBool("IsCombo", bIsCombo);
-		if (bIsCombo)
-		{
-				_int iComboType;
+	//switch (iPattern)
+	//{
+	//case Client::CFestivalLeader::SlamCombo:
+	//{
+	//	_bool bIsCombo = GetRandomInt(0, 1) == 1;
+	//	m_pAnimator->SetBool("IsCombo", bIsCombo);
+	//	if (bIsCombo)
+	//	{
+	//		_int iDir = GetYawSignFromDiretion();
+	//		m_pAnimator->SetInt("Direction", iDir);
+	//	}
+	//}
+	//break;
+	//case Client::CFestivalLeader::SwingAtk:
+	//{
+	//	_bool bIsCombo = GetRandomInt(0, 1) == 1;
+	//	m_pAnimator->SetBool("IsCombo", bIsCombo);
+	//	if (bIsCombo)
+	//	{
+	//			_int iComboType;
 
-				if (m_iLastComboType == -1) // 첫 시작은 랜덤
-					iComboType = GetRandomInt(0, 1);
-				else
-					iComboType = 1 - m_iLastComboType; // 이전 값과 반대로
+	//			if (m_iLastComboType == -1) // 첫 시작은 랜덤
+	//				iComboType = GetRandomInt(0, 1);
+	//			else
+	//				iComboType = 1 - m_iLastComboType; // 이전 값과 반대로
 
-				m_pAnimator->SetInt("SwingCombo", iComboType);
-				m_iLastComboType = iComboType;
-		}
-		m_eAttackType = EAttackType::KNOCKBACK;
-	}
-	break;
-	case Client::CFestivalLeader::SlamFury:
-		SetTurnTimeDuringAttack(2.f, 1.5f);
-		m_eAttackType = EAttackType::FURY_STAMP;
-	case Client::CFestivalLeader::FootAtk:
-		m_eAttackType = EAttackType::AIRBORNE;
-		break;
-	case Client::CFestivalLeader::SlamAtk:
-		SetTurnTimeDuringAttack(1.f);
-		m_eAttackType = EAttackType::STAMP;
-		break;
-	case Client::CFestivalLeader::Uppercut:
-		SetTurnTimeDuringAttack(1.f);
-		m_eAttackType = EAttackType::NORMAL;
-		break;
-	case Client::CFestivalLeader::StrikeFury:
-		SetTurnTimeDuringAttack(1.2f);
-		m_eAttackType = EAttackType::FURY_AIRBORNE;
-		break;
-	case Client::CFestivalLeader::P2_FireFlame:
-	{
-		_int iDir = GetYawSignFromDiretion();
-		m_pAnimator->SetInt("Direction", iDir);
-	}
-	case Client::CFestivalLeader::P2_FireOil:
-		m_eAttackType = EAttackType::NONE;
-		break;
-	case Client::CFestivalLeader::P2_FireBall:
-	{
-		_int iDir = GetRandomInt(0, 2);
-		m_pAnimator->SetInt("Direction", iDir);
-		m_eAttackType = EAttackType::KNOCKBACK;
-	}
-	break;
-	case Client::CFestivalLeader::P2_FireBall_B:
-		m_eAttackType = EAttackType::KNOCKBACK;
-		break;
-	default:
-		break;
-	}
-	if (iPattern == Client::CFestivalLeader::SlamFury)
-	{
-		m_bRootMotionClamped = true;
-	}
-	else
-	{
-		m_bRootMotionClamped = false;
-	}
+	//			m_pAnimator->SetInt("SwingCombo", iComboType);
+	//			m_iLastComboType = iComboType;
+	//	}
+	//	m_eAttackType = EAttackType::KNOCKBACK;
+	//}
+	//break;
+	//case Client::CFestivalLeader::SlamFury:
+	//	SetTurnTimeDuringAttack(2.f, 1.5f);
+	//	m_eAttackType = EAttackType::FURY_STAMP;
+	//case Client::CFestivalLeader::FootAtk:
+	//	m_eAttackType = EAttackType::AIRBORNE;
+	//	break;
+	//case Client::CFestivalLeader::SlamAtk:
+	//	SetTurnTimeDuringAttack(1.f);
+	//	m_eAttackType = EAttackType::STAMP;
+	//	break;
+	//case Client::CFestivalLeader::Uppercut:
+	//	SetTurnTimeDuringAttack(1.f);
+	//	m_eAttackType = EAttackType::NORMAL;
+	//	break;
+	//case Client::CFestivalLeader::StrikeFury:
+	//	SetTurnTimeDuringAttack(1.2f);
+	//	m_eAttackType = EAttackType::FURY_AIRBORNE;
+	//	break;
+	//case Client::CFestivalLeader::P2_FireFlame:
+	//{
+	//	_int iDir = GetYawSignFromDiretion();
+	//	m_pAnimator->SetInt("Direction", iDir);
+	//}
+	//case Client::CFestivalLeader::P2_FireOil:
+	//	m_eAttackType = EAttackType::NONE;
+	//	break;
+	//case Client::CFestivalLeader::P2_FireBall:
+	//{
+	//	_int iDir = GetRandomInt(0, 2);
+	//	m_pAnimator->SetInt("Direction", iDir);
+	//	m_eAttackType = EAttackType::KNOCKBACK;
+	//}
+	//break;
+	//case Client::CFestivalLeader::P2_FireBall_B:
+	//	m_eAttackType = EAttackType::KNOCKBACK;
+	//	break;
+	//default:
+	//	break;
+	//}
+	//if (iPattern == Client::CFestivalLeader::SlamFury)
+	//{
+	//	m_bRootMotionClamped = true;
+	//}
+	//else
+	//{
+	//	m_bRootMotionClamped = false;
+	//}
 	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(m_eAttackType);
 }
 
@@ -752,11 +759,6 @@ void CFestivalLeader::Register_Events()
 
 		});
 
-	m_pAnimator->RegisterEventListener("OnFlamethrowerEffect", [this]()
-		{
-			EffectSpawn_Active(P2_FireFlame, true);
-		});
-
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
 			m_fRootMotionAddtiveScale = 7.f;
@@ -772,9 +774,18 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Phase2InvisibledModel", [this]()
 		{
-			if (m_bIsPhase2)
+			if (m_pModelCom)
 			{
-				m_bVisibleModel = false;
+				m_pModelCom->SetMeshVisible(2, false);
+				m_pModelCom->SetMeshVisible(3, false);
+			}
+			if (m_pAnimator)
+			{
+				m_pAnimator->ApplyOverrideAnimController("Phase2");
+				m_pAnimator->SetInt("SkillType",DashSwing);
+				m_pAnimator->SetTrigger("Attack");
+				m_ePrevState = m_eCurrentState;
+				m_eCurrentState = EEliteState::ATTACK;
 			}
 		});
 
@@ -786,8 +797,7 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase1()
 	m_PatternWeightMap.clear();
 	m_PatternCountMap.clear();
 	vector<EBossAttackPattern> m_vecBossPatterns = {
-		SlamCombo,Uppercut,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
-		SlamAtk,StrikeFury
+		Slam,CrossSlam,JumpAttack,Strike,AlternateSmash,FuryBodySlam
 	};
 
 	for (const auto& pattern : m_vecBossPatterns)
@@ -799,31 +809,31 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase1()
 
 void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 {
-	if (m_eCurrentState == EEliteState::FATAL)
+	if (m_eCurrentState == EEliteState::FATAL
+		|| m_eCurrentState == EEliteState::ATTACK)
 		return;
 	m_pAnimator->SetTrigger("Phase2Start");
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
-		SlamCombo,Uppercut,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
-		SlamAtk,StrikeFury,P2_FireOil,P2_FireBall,P2_FireFlame,
-		P2_FireBall_B
+		Slam  ,JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
+		DashSwing ,Swing,FuryHammerSlam ,FurySwing ,FuryBodySlam
 	};
 	m_PatternWeightMap.clear();
 	m_PatternCountMap.clear();
-	for (const auto& pattern : m_vecBossPatterns)
-	{
-		if (pattern == P2_FireOil || pattern == P2_FireBall ||
-			pattern == P2_FireFlame || pattern == P2_FireBall_B)
-		{
-			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
-		}
-		else
-		{
-			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.2f;
-		}
+	//for (const auto& pattern : m_vecBossPatterns)
+	//{
+	//	if (pattern == P2_FireOil || pattern == P2_FireBall ||
+	//		pattern == P2_FireFlame || pattern == P2_FireBall_B)
+	//	{
+	//		m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
+	//	}
+	//	else
+	//	{
+	//		m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.2f;
+	//	}
 
-		m_PatternCountMap[pattern] = 0;
-	}
+	//	m_PatternCountMap[pattern] = 0;
+	//}
 	SwitchFury(false, 1.f); 
 }
 
@@ -871,23 +881,12 @@ void CFestivalLeader::ChosePatternWeightByDistance(_float fDistance)
 		}
 
 	}
-	else if (fDistance >= ATTACK_DISTANCE_MIDDLE && fDistance < ATTACK_DISTANCE_FAR)
+	else if (fDistance >= ATTACK_DISTANCE_MIDDLE)
 	{
 		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
 		{
 			auto it = find(m_vecMiddleAttackPatterns.begin(), m_vecMiddleAttackPatterns.end(), pattern);
 			if (it == m_vecMiddleAttackPatterns.end())
-			{
-				m_PatternWeighForDisttMap[pattern] *= 0.f;
-			}
-		}
-	}
-	else if (fDistance >= ATTACK_DISTANCE_FAR)
-	{
-		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
-		{
-			auto it = find(m_vecFarAttackPatterns.begin(), m_vecFarAttackPatterns.end(), pattern);
-			if (it == m_vecFarAttackPatterns.end())
 			{
 				m_PatternWeighForDisttMap[pattern] *= 0.f;
 			}
@@ -900,8 +899,8 @@ void CFestivalLeader::ChosePatternWeightByDistance(_float fDistance)
 	{
 		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
 		{
-			if (pattern == P2_FireOil || pattern == P2_FireBall ||
-				pattern == P2_FireFlame || pattern == P2_FireBall_B)
+			if (pattern == FuryHammerSlam || pattern == FurySwing ||
+				pattern == FuryBodySlam || pattern == HammerSlam)
 			{
 				weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
 			}
@@ -992,53 +991,6 @@ HRESULT CFestivalLeader::Ready_Effect()
 
 void CFestivalLeader::Ready_SoundEvents()
 {
-	m_pAnimator->RegisterEventListener("MoveSound", [this]()
-	{
-	   m_pSoundCom->Play_Random("SE_NPC_FS_Boss_Fire_Eater_Stone_", 4); 
-	   m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Movement_", 6); }
-	);
-
-
-	m_pAnimator->RegisterEventListener("StrikeSound", [this]()
-		{
-			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_RArm_Roll_", 3); }
-	);
-
-	m_pAnimator->RegisterEventListener("RunSound", [this]()
-		{
-			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Run_", 3); }
-	);
-
-	m_pAnimator->RegisterEventListener("SlamSound", [this]()
-		{
-			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_RArm_Impact_", 6); }
-	);
-
-	m_pAnimator->RegisterEventListener("SwingAfterSalmSound", [this]()
-		{
-			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_WS_Short_", 3); }
-	);
-	m_pAnimator->RegisterEventListener("SwingAtkStartSound", [this]()
-		{
-			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_RArm_Roll_", 3); }
-	);
-
-	m_pAnimator->RegisterEventListener("FireOilSound", [this]()
-		{
-			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_RArm_Put_", 3); }
-	);
-
-	m_pAnimator->RegisterEventListener("StartPhase1Sound", [this]()
-		{
-		//	m_pSoundCom->Play("Dialog_CH03_Attack_P1_01_text_3"); 
-		}
-	);
-
-	m_pAnimator->RegisterEventListener("GroggySound", [this]()
-		{
-		//	m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Groggy_", 9); 
-		}
-	);
 
 }
 

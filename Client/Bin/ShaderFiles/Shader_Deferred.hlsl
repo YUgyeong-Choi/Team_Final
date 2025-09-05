@@ -60,6 +60,7 @@ Texture2D g_PBR_Emissive;
 Texture2D g_PBR_Glow;
 Texture2D g_VolumetricTexture;
 Texture2D g_PBR_PlayerLim;
+Texture2D g_PBR_WaterPuddle;
 
 /* [ Effect ] */
 Texture2D g_EffectBlend_Diffuse;
@@ -1009,6 +1010,15 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     
     /* [ PBR ¸Å½¬ ] */
     vector vPBRFinal = g_PBR_Final.Sample(DefaultSampler, In.vTexcoord);
+    vector vWaterPuddle = g_PBR_WaterPuddle.Sample(DefaultSampler, In.vTexcoord);
+    
+    vector vScene0 = vPBRFinal;
+    float fAlphaSum = vWaterPuddle.b;
+    float2 vDistort = (fAlphaSum > 1e-6f) ? (vWaterPuddle.rg / fAlphaSum) : float2(0.f, 0.f);
+    float fAlpha = saturate(fAlphaSum);    
+    vector vSceneWater = lerp(vScene0, vWaterPuddle, fAlpha);
+    
+    
     vector vDepthDesc = g_DepthTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vVolumetric = g_VolumetricTexture.Sample(DefaultSampler, In.vTexcoord);
     vector vUnitMask = g_PBR_UnitMask.Sample(DefaultSampler, In.vTexcoord);
@@ -1021,7 +1031,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector vPlayerLim = g_PBR_PlayerLim.Sample(DefaultSampler, In.vTexcoord);
     float fViewZ = vDepthDesc.y * 1000.f;
     if (vPBRFinal.a > 0.01f)
-        Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
+    {
+        vector vPBRFinalMix = vSceneWater + vEmissive + (vGlow * 2.f);
+        Out.vBackBuffer = float4(vPBRFinalMix.rgb, vPBRFinal.a);
+    }
+    //Out.vBackBuffer = float4(vPBRFinal.rgb + vEmissive.rgb + (vGlow.rgb * 2.f), vPBRFinal.a);
     
     Out.vBackBuffer *= vBlack;
     

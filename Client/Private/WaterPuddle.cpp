@@ -32,6 +32,7 @@ HRESULT CWaterPuddle::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	m_szMeshID = WaterDESC->szMeshID;
 	m_pTransformCom->Set_WorldMatrix(WaterDESC->WorldMatrix);
 
 	return S_OK;
@@ -48,9 +49,26 @@ void CWaterPuddle::Update(_float fTimeDelta)
 
 void CWaterPuddle::Late_Update(_float fTimeDelta)
 {
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_WATERPUDDLE, this);
 }
 
 HRESULT CWaterPuddle::Render()
+{
+#ifdef _DEBUG
+	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
+	{
+		if (m_pGameInstance->Get_RenderMapCollider())
+		{
+			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
+				return E_FAIL;
+		}
+	}
+#endif
+
+	return S_OK;
+}
+
+HRESULT CWaterPuddle::Render_WaterPuddle()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -67,18 +85,6 @@ HRESULT CWaterPuddle::Render()
 		m_pModelCom->Render(i);
 	}
 
-
-#ifdef _DEBUG
-	if (m_pGameInstance->isIn_PhysXAABB(m_pPhysXActorCom))
-	{
-		if (m_pGameInstance->Get_RenderMapCollider())
-		{
-			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
-				return E_FAIL;
-		}
-	}
-#endif
-
 	return S_OK;
 }
 
@@ -91,9 +97,10 @@ HRESULT CWaterPuddle::Ready_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	//if (FAILED(__super::Add_Component(WaterDESC->iLevelID, 
-	//	TEXT("Com_LOD0"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
+	/* Com_Model */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), _wstring(TEXT("Prototype_Component_Model_WaterPuddleA")),
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
 		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))

@@ -17,12 +17,15 @@ class CWaterPuddle : public CGameObject
 public:
 	typedef struct tagWaterDesc : public CGameObject::GAMEOBJECT_DESC
 	{
+		const _tchar* szMeshID;
+
 		_float4x4	WorldMatrix = _float4x4(
 			1.f, 0.f, 0.f, 0.f,
 			0.f, 1.f, 0.f, 0.f,
 			0.f, 0.f, 1.f, 0.f,
-			0.f, 0.f, 0.f, 1.f
+			0.f, 1.f, 0.f, 1.f
 		);
+
 	}WATER_DESC;
 
 protected:
@@ -37,9 +40,11 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_WaterPuddle() override;
 
 protected: /* [ 초기화 변수 ] */
 	LEVEL			m_eLevelLight = { LEVEL::END };
+	const _tchar*	m_szMeshID = { nullptr };
 	_float3			m_InitPos = {};
 	_bool			m_bDoOnce = {};
 

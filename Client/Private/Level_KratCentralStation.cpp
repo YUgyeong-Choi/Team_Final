@@ -21,6 +21,8 @@
 #include "TriggerBGM.h"
 
 #include "PBRMesh.h"
+#include "WaterPuddle.h"
+
 #include "DH_ToolMesh.h"     
 #include "Level_Loading.h"
 #include "UI_Container.h"
@@ -76,6 +78,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_TriggerBGM()))
 		return E_FAIL;
 	
+	//if (FAILED(Ready_WaterPuddle()))
+	//	return E_FAIL;
 
 	Reset();
 
@@ -256,12 +260,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -1023,7 +1027,7 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 
 			wstring wsLayer = {};
 
-			if (wstrMonsterName == TEXT("FireEater"))
+			if (wstrMonsterName == TEXT("FireEater") || wstrMonsterName == TEXT("FestivalLeader"))
 			{
 				wsLayer = TEXT("Layer_Monster");
 			}
@@ -1410,6 +1414,18 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 				return E_FAIL;
 		}
 	}
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_WaterPuddle()
+{
+	CWaterPuddle::WATER_DESC Desc{};
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_WaterPuddle"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_WaterPuddle"), &Desc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
