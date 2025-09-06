@@ -181,10 +181,13 @@ private:
 	// 컴포넌트 관련
 	CPhysXDynamicActor* m_pPhysXActorComForHammer = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForBasket = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorComForRightHand = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorComForLeftHand = { nullptr };
 	CBone* m_pHammerBone{ nullptr };
 	CBone* m_pBasketBone{ nullptr };
-	CBone* m_pRightHandBone{ nullptr };
+	CBone* m_pRightWeaponBone{ nullptr };
 	CBone* m_pLeftHandBone{ nullptr };
+	CBone* m_pRightHandBone{ nullptr };
 	class CWeapon_Monster* m_pHammer{ nullptr };
 	_matrix m_pHammerWorldMatrix = XMMatrixIdentity();
 	_int m_iOriginBoneIndex = -1;

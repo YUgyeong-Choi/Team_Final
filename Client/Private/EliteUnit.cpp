@@ -1,4 +1,5 @@
 #include "EliteUnit.h"
+#include "Bone.h"
 #include <Player.h>
 #include "Weapon.h"
 #include "GameInstance.h"
@@ -667,6 +668,33 @@ void CEliteUnit::Register_Events()
 	m_pAnimator->RegisterEventListener("OffFury", [this]() {
 		SwitchFury(false, 1.f);
 		});
+}
+
+PxTransform CEliteUnit::ToPxPose(const _fmatrix& W)
+{
+    _vector S, R, T;
+    XMMatrixDecompose(&S, &R, &T, W);
+    R = XMQuaternionNormalize(R);
+
+    _float4 q; XMStoreFloat4(&q, R);
+    return PxTransform(
+        PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T)),
+        PxQuat(q.x, q.y, q.z, q.w));
+}
+
+PxTransform CEliteUnit::GetBonePose(CBone* pBone, const _matrix* pLocalOffset) 
+{
+    if (!pBone) 
+        return PxTransform(PxIdentity);
+
+    _matrix W = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix()) *
+        m_pTransformCom->Get_WorldMatrix();
+
+
+    if (pLocalOffset)
+        W = W * (*pLocalOffset);
+
+    return ToPxPose(W);
 }
 
 void CEliteUnit::EnterFatalHit()
