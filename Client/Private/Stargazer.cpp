@@ -52,8 +52,9 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	LoadScriptData();
 
-
-	//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+	if (FAILED(Ready_Collider()))
+		return E_FAIL;
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }
@@ -97,7 +98,9 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			if (m_eState == STARGAZER_STATE::DESTROYED)
 			{
 				// 나중에 트리거로 바꾸기
-				m_eState = STARGAZER_STATE::FUNCTIONAL;
+				m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
+
+				//m_eState = STARGAZER_STATE::FUNCTIONAL;
 				CUI_Manager::Get_Instance()->Activate_Popup(false);
 				return;
 			}
@@ -191,23 +194,23 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 
 	//상태변경
-	if (m_pGameInstance->Key_Down(DIK_C))
-	{
-		if (m_eState == STARGAZER_STATE::DESTROYED)
-			m_eState = STARGAZER_STATE::FUNCTIONAL;
-		else
-			m_eState = STARGAZER_STATE::DESTROYED;
-	}
+	//if (m_pGameInstance->Key_Down(DIK_C))
+	//{
+	//	if (m_eState == STARGAZER_STATE::DESTROYED)
+	//		m_eState = STARGAZER_STATE::FUNCTIONAL;
+	//	else
+	//		m_eState = STARGAZER_STATE::DESTROYED;
+	//}
 
-	if (m_pGameInstance->Key_Down(DIK_R))
-	{
-		m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
-	}
+	//if (m_pGameInstance->Key_Down(DIK_R))
+	//{
+	//	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
+	//}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
-	}
+	//if (m_pGameInstance->Key_Down(DIK_O))
+	//{
+	//	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+	//}
 
 	//플레이어와 가깝고 E를 누르면 다른 별바라기로 이동(테스트)
 	//플레이어쪽으로 코드 옮기는 작업 필요할지도
@@ -346,6 +349,16 @@ void CStargazer::Find_Player()
 {
 	m_pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player")));
 	Safe_AddRef(m_pPlayer);
+}
+
+void CStargazer::Register_Events()
+{
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->RegisterEventListener("ChangeModel", [this]()
+		{
+			if (m_eState == STARGAZER_STATE::DESTROYED)
+				m_eState = STARGAZER_STATE::FUNCTIONAL;
+			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+		});
 }
 
 void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
