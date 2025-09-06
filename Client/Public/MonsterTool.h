@@ -60,7 +60,7 @@ private:
 		END
 	};
 
-	const string m_Monsters[static_cast<_int>(Monster::END)] = {
+	const string m_Monsters[ENUM_CLASS(Monster::END)] = {
 	"Buttler_Basic",
 	"Buttler_Train",
 	"Buttler_Range",

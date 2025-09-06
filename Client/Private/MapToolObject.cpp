@@ -46,6 +46,12 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	//인스턴싱 제외 여부
 	m_bNoInstancing = pDesc->bNoInstancing;
 
+	//오브젝트 타입
+	m_eObjType = pDesc->eObjType;
+
+	//별바라기 태그
+	m_eStargazerTag = pDesc->eStargazerTag;
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 

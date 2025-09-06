@@ -1424,6 +1424,13 @@ HRESULT CLoader::Loading_For_YW()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/OutDoor.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Stargazer"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Stargazer.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma region  애님 모델
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
@@ -1431,7 +1438,6 @@ HRESULT CLoader::Loading_For_YW()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_Elite_Police"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Elite_Police/Elite_Police.bin", PreTransformMatrix))))
 		return E_FAIL;
-
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_Component_Model_WatchDog"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/WatchDog/WatchDog.bin", PreTransformMatrix))))
@@ -1774,6 +1780,10 @@ HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
 	{
 		string ModelName = Models[i]["ModelName"];
 		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.(아니 충돌여부로 인스턴싱 해야겠다.)
+
+		if (iObjectCount == 0)
+			continue;
+
 		const json& objects = Models[i]["Objects"];
 
 		_bool bCollision = Models[i]["Collision"];
@@ -1854,21 +1864,21 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 		// 락 걸기
 		lock_guard<mutex> lock(m_mtx);
 
-		//스타게이저라면 다르게 소환
-		if (wstrModelName == TEXT("Stargazer"))
-		{
-#pragma region 영웅 별바라기 테스트
-			CStargazer::STARGAZER_DESC Desc{};
-			Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-			Desc.WorldMatrix = WorldMatrix;
-
-			if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
-				Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
-				return E_FAIL;
-#pragma endregion
-
-			continue;
-		}
+//		//스타게이저라면 다르게 소환
+//		if (wstrModelName == TEXT("Stargazer"))
+//		{
+//#pragma region 영웅 별바라기 테스트
+//			CStargazer::STARGAZER_DESC Desc{};
+//			Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+//			Desc.WorldMatrix = WorldMatrix;
+//
+//			if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
+//				Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
+//				return E_FAIL;
+//#pragma endregion
+//
+//			continue;
+//		}
 
 		CGameObject* pGameObject = nullptr;
 		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),

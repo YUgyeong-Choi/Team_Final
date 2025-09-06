@@ -40,7 +40,11 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
+	m_eStargazerTag = pDesc->eStargazerTag;
+
 	m_eState = STARGAZER_STATE::DESTROYED;
+
+
 
 
 
@@ -87,17 +91,27 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 	//플레이어쪽으로 코드 옮기는 작업 필요할지도
 	if (m_pGameInstance->Key_Down(DIK_E))
 	{
-		//플레이어가 가까운지 체크
-		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_vector vDiff = vPos - vPlayerPos;
-		_float fDist = XMVectorGetX(XMVector3Length(vDiff));
-
-		if (fDist < 2.f)
+		if (Check_Player_Close())
 		{
 			//리셋
 			m_pGameInstance->Get_CurrentLevel()->Reset();
 			m_pPlayer->Reset();
+		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_0))
+	{
+		if (Check_Player_Close())
+		{
+			Teleport_Stargazer(STARGAZER_TAG::OUTER);
+		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_9))
+	{
+		if (Check_Player_Close())
+		{
+			Teleport_Stargazer(STARGAZER_TAG::FIRE_EATER);
 		}
 	}
 	 
@@ -186,6 +200,49 @@ void CStargazer::Find_Player()
 {
 	m_pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player")));
 	Safe_AddRef(m_pPlayer);
+}
+
+void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
+{
+	//별바라기 리스트에서 같은 태그를 찾고 그곳으로 플레이어 이동시켜라
+
+	list<CGameObject*>& ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Stargazer"));
+
+	for (CGameObject* pObj : ObjList)
+	{
+		if (static_cast<CStargazer*>(pObj)->m_eStargazerTag == eTag)
+		{
+			_float3 vPos;
+			XMStoreFloat3(&vPos, pObj->Get_TransfomCom()->Get_State(STATE::POSITION));
+
+			//살짝 위로
+			vPos.y += 2.f;
+
+			PxVec3 pxPos(vPos.x, vPos.y, vPos.z);
+
+			PxTransform posTrans = PxTransform(pxPos);
+
+			m_pPlayer->Get_Controller()->Set_Transform(posTrans);
+
+			break;
+		}
+	}
+
+
+}
+
+_bool CStargazer::Check_Player_Close()
+{
+	//플레이어가 가까운지 체크
+	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vDiff = vPos - vPlayerPos;
+	_float fDist = XMVectorGetX(XMVector3Length(vDiff));
+
+	if (fDist < 2.f)
+		return true;
+	else 
+		return false;
 }
 
 HRESULT CStargazer::Bind_ShaderResources()

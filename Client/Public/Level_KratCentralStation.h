@@ -25,7 +25,6 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Reset() override;
 
-
 	HRESULT Ready_Level();
 
 private:
@@ -42,6 +41,9 @@ private:
 	HRESULT Ready_Monster();
 	//특정 맵의 몬스터를 소환한다. 그 맵의 네비게이션을 장착시킨다.
 	HRESULT Ready_Monster(const _char* Map);
+
+	HRESULT Ready_Stargazer();
+	HRESULT Ready_Stargazer(const _char* Map);
 	HRESULT Ready_Effect();
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();

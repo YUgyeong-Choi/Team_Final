@@ -22,6 +22,7 @@ public:
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
 		);
+		STARGAZER_TAG eStargazerTag = { STARGAZER_TAG::END };
 	}STARGAZER_DESC;
 
 protected:
@@ -40,6 +41,8 @@ public:
 private:
 	void LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator);
 	void Find_Player();
+	void Teleport_Stargazer(STARGAZER_TAG eTag);
+	_bool Check_Player_Close();
 
 private:
 	enum class STARGAZER_STATE { DESTROYED, FUNCTIONAL, END };
@@ -49,6 +52,9 @@ private:
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
+
+private:
+	STARGAZER_TAG m_eStargazerTag = { STARGAZER_TAG::END };
 
 private:    /* [ ÄÄÆ÷³ÍÆ® ] */
 	CModel* m_pModelCom[ENUM_CLASS(STARGAZER_STATE::END)] = {nullptr};

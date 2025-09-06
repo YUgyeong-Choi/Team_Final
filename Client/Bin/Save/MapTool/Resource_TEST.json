@@ -31,7 +31,7 @@
         "Collision": false,
         "ModelName": "Stargazer",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/Stargazer.bin"
     }
 ]

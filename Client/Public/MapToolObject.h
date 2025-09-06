@@ -16,6 +16,10 @@ NS_BEGIN(Client)
 class CMapToolObject final : public CGameObject
 {
 	friend class CMapTool;
+
+public:
+	enum class OBJ_TYPE { STATIC_MESH, STARGAZER, ITEM, BREAKABLE, END };
+
 public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
@@ -33,6 +37,8 @@ public:
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
 		_int		iLightShape = { 0 }; //라이트 모양
 		_bool		bNoInstancing = { false }; //인스턴싱 제외 여부
+		OBJ_TYPE	eObjType = { OBJ_TYPE::STATIC_MESH };
+		STARGAZER_TAG eStargazerTag = { STARGAZER_TAG::END };
 
 	}MAPTOOLOBJ_DESC;
 
@@ -62,7 +68,7 @@ public:
 		return m_ModelPrototypeTag;
 	}
 
-	_uint Get_ID() const {
+	_int Get_ID() const {
 	return m_iID;
 	}
 
@@ -78,7 +84,7 @@ private:
 	wstring m_ModelPrototypeTag = {};
 	string	m_ModelName = {};
 	//맵 오브젝트들 간 고유 식별 번호
-	_uint	m_iID = { 0 };
+	_int	m_iID = { -1 };
 
 private:
 	_bool	m_bUseTiling = { false };
@@ -98,6 +104,12 @@ private:
 
 private:
 	_bool			m_bDoOnce = {};
+
+private:
+	STARGAZER_TAG m_eStargazerTag = { STARGAZER_TAG::END };
+
+private:
+	OBJ_TYPE m_eObjType = { OBJ_TYPE::STATIC_MESH };
 
 private:
 	CShader* m_pShaderCom = { nullptr };
