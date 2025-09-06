@@ -5,15 +5,14 @@
 #include <Player.h>
 #include "Projectile.h"
 #include "FlameField.h"
+#include "Static_Decal.h"
 #include "GameInstance.h"
 #include "Effect_Manager.h"
 #include "LockOn_Manager.h"
 #include "Camera_Manager.h"
 #include "Client_Calculation.h"
-#include <PhysX_IgnoreSelfCallback.h>
 #include "UI_MonsterHP_Bar.h"
-#include "Static_Decal.h"
-#include "Weapon_Monster.h"
+#include <PhysX_IgnoreSelfCallback.h>
 
 CFestivalLeader::CFestivalLeader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -37,6 +36,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fChasingDistance = 4.f;
 	m_iPatternLimit = 1;
 	m_fMinimumTurnAngle = 50.f;
+	m_fChangeMoveDirCooldown = 2.f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -60,24 +60,13 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 		pDesc->fRotationPerSec = XMConvertToRadians(180.f);
 		pDesc->fSpeedPerSec = m_fWalkSpeed;
 
-		//UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
-		//UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
-		//UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
-
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
 	}
 
-	// 체력 일단 각 객체에 
-
 	// 0번 메시는 다리,1번은 몸통, 4번 양팔, 5번 머리
 	// 2,3번은 바스켓
-	//m_pModelCom->SetMeshVisible(5, false);
-	//	m_pModelCom->SetMeshVisible(3, false);
-	m_fMaxRootMotionSpeed = 18.f;
-
-	//if(FAILED(Ready_Weapon()))
-	//	return E_FAIL;
+	m_fMaxRootMotionSpeed = 30.f;
 
 	if (m_pAnimator)
 	{
@@ -95,7 +84,6 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 			_matrix attachOffset = W_head * XMMatrixInverse(nullptr, W_hand); // row
 			XMStoreFloat4x4(&m_StoredHeadLocalMatrix, attachOffset);
 		}
-
 
 		m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
 	}
@@ -423,10 +411,11 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform hammerPose = GetBonePose(m_pHammerBone);
 
-		PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.f);
+		PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(PxVec3(1.f,1.f,1.f));
+		//PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.5f);
 		m_pPhysXActorComForHammer->Create_Collision(
 			m_pGameInstance->GetPhysics(),
-			hammerGeom,
+			geom,
 			hammerPose,
 			m_pGameInstance->GetMaterial(L"Default")
 		);
@@ -477,7 +466,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform leftPose = GetBonePose(m_pLeftHandBone);
 
-		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(0.85f);
+		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(1.2f);
 		m_pPhysXActorComForLeftHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			leftGeom,
@@ -502,7 +491,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	if (m_pRightHandBone)
 	{
 		const PxTransform rightPose = GetBonePose(m_pRightHandBone);
-		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(0.85f);
+		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(1.2f);
 		m_pPhysXActorComForRightHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			rightGeom,
@@ -521,54 +510,6 @@ HRESULT CFestivalLeader::Ready_Actor()
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForRightHand->Get_Actor());
 	}
 
-	return S_OK;
-}
-
-HRESULT CFestivalLeader::Ready_Weapon()
-{
-	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
-	Desc.eMeshLevelID = LEVEL::STATIC;
-	Desc.fRotationPerSec = 0.f;
-	Desc.fSpeedPerSec = 0.f;
-	Desc.InitPos = {0.f,0.f,0.f };
-	Desc.InitScale = { 1.f,1.f,1.f };
-	Desc.iRender = 0;
-
-	Desc.szMeshID = TEXT("FestivalWeapon");
-	lstrcpy(Desc.szName, TEXT("FestivalWeapon"));
-	Desc.vAxis = { 0.f,0.f,1.f,0.f };
-	Desc.fRotationDegree = { 0.f };
-//	Desc.vLocalOffset = { 0.8f,0.2f,-0.2f,1.f };
-	Desc.vLocalOffset = { 0.9f, 0.2f, -0.25f,1.f };
-	Desc.vPhsyxExtent = { 0.1f, 0.1f, 0.1f };
-	Desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Hand"));
-	Desc.pParentWorldMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	Desc.pOwner = this;
-
-	CGameObject* pGameObject = nullptr;
-	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("FestivalWeapon"), &pGameObject, &Desc)))
-		return E_FAIL;
-
-	m_pHammer = dynamic_cast<CWeapon_Monster*>(pGameObject);
-
-	_matrix matRotX = XMMatrixRotationX(XMConvertToRadians(5.f));
-	_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(-12.f));
-	_matrix matRotZ = XMMatrixRotationZ(XMConvertToRadians(279.f));
-
-	auto pTrans = m_pHammer->Get_TransfomCom();
-	_matrix matFinalRot = matRotX * matRotY * matRotZ;
-	_float4x4 worldMat;
-	XMStoreFloat4x4(&worldMat, matFinalRot);
-	worldMat._41 = pTrans->Get_State(STATE::POSITION).m128_f32[0];
-	worldMat._42 = pTrans->Get_State(STATE::POSITION).m128_f32[1];
-	worldMat._43 = pTrans->Get_State(STATE::POSITION).m128_f32[2];
-
-	pTrans->Set_WorldMatrix(worldMat);
-
-	m_pHammer->SetisAttack(false);
-	m_pHammer->Set_isActive(false);
-	m_pHammer->Set_WeaponTrail_Active(true);
 	return S_OK;
 }
 
@@ -602,7 +543,7 @@ void CFestivalLeader::Ready_BoneInformation()
 
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
-		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-L-Hand"); });
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Ref_Bip001-L-Hand"); });
 
 	if (it != m_pModelCom->Get_Bones().end())
 	{
@@ -661,6 +602,9 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 			pPlayer->SetHitedAttackType(EAttackType::AIRBORNE);
 		return;
 	}
+
+	if (fDistance > 10.f)
+		return;
 
 
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
@@ -747,6 +691,17 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::Fatal_Hit_Loop):
 	case ENUM_CLASS(BossStateID::Fatal_Hit_End):
 		m_eCurrentState = EEliteState::FATAL;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_SwingCom_Start):
+	case ENUM_CLASS(BossStateID::Atk_DashSwingCom_Start):
+		m_iSwingComboLimit++;
+		if (m_iSwingComboLimit > 3)
+		{
+			m_pAnimator->SetBool("IsCombo", false);
+			m_iSwingComboLimit = 0;
+		}
+		break;
+	case ENUM_CLASS(BossStateID::Atk_HalfSpin_Start):
 		break;
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
@@ -841,86 +796,102 @@ void CFestivalLeader::ApplyHeadSpaceSwitch(_float fTimeDelta)
 
 void CFestivalLeader::SetupAttackByType(_int iPattern)
 {
+	_bool bIsCombo = GetRandomInt(0, 1) == 1;
+	switch (iPattern)
+	{
+	case Client::CFestivalLeader::Slam:
+	{
+	
+		m_pAnimator->SetBool("IsCombo", bIsCombo);
+		if (bIsCombo)
+		{
+			_int iDir = GetYawSignFromDiretion();
+			m_pAnimator->SetInt("Direction", iDir);
+		}
+		m_eAttackType = EAttackType::NORMAL;
+	}
+	break;
+	case Client::CFestivalLeader::CrossSlam:
+	{
+		m_pAnimator->SetBool("IsCombo", bIsCombo);
+		if (bIsCombo)
+		{
+				_int iComboType;
 
-	//switch (iPattern)
-	//{
-	//case Client::CFestivalLeader::SlamCombo:
-	//{
-	//	_bool bIsCombo = GetRandomInt(0, 1) == 1;
-	//	m_pAnimator->SetBool("IsCombo", bIsCombo);
-	//	if (bIsCombo)
-	//	{
-	//		_int iDir = GetYawSignFromDiretion();
-	//		m_pAnimator->SetInt("Direction", iDir);
-	//	}
-	//}
-	//break;
-	//case Client::CFestivalLeader::SwingAtk:
-	//{
-	//	_bool bIsCombo = GetRandomInt(0, 1) == 1;
-	//	m_pAnimator->SetBool("IsCombo", bIsCombo);
-	//	if (bIsCombo)
-	//	{
-	//			_int iComboType;
+				if (m_iLastComboType == -1) // 첫 시작은 랜덤
+					iComboType = GetRandomInt(0, 1);
+				else
+					iComboType = 1 - m_iLastComboType; // 이전 값과 반대로
 
-	//			if (m_iLastComboType == -1) // 첫 시작은 랜덤
-	//				iComboType = GetRandomInt(0, 1);
-	//			else
-	//				iComboType = 1 - m_iLastComboType; // 이전 값과 반대로
+				m_pAnimator->SetInt("SwingCombo", iComboType);
+				m_iLastComboType = iComboType;
+		}
+		m_eAttackType = EAttackType::NORMAL;
+	}
+	break;
+	case Client::CFestivalLeader::JumpAttack:
+		SetTurnTimeDuringAttack(2.f, 1.5f);
+		m_eAttackType = EAttackType::FURY_STAMP;
+	case Client::CFestivalLeader::Strike:
+	{
+		_int iStrikeCombo = GetRandomInt(0, 1);
+		m_pAnimator->SetInt("IsCombo", bIsCombo);
+		m_pAnimator->SetInt("StrikeCombo", iStrikeCombo);
+		m_eAttackType = EAttackType::AIRBORNE;
+	}
+		break;
+	case Client::CFestivalLeader::AlternateSmash:
+	{
+		_int iSmashCount = GetRandomInt(0, 2);
+		m_pAnimator->SetInt("SmashCount", iSmashCount);
+		m_pAnimator->SetInt("IsCombo", bIsCombo);
+		SetTurnTimeDuringAttack(1.f);
+		m_eAttackType = EAttackType::STAMP;
+	}
+		break;
+	case Client::CFestivalLeader::Spin:
+		SetTurnTimeDuringAttack(1.f);
+		m_eAttackType = EAttackType::NORMAL;
+		break;
+	case Client::CFestivalLeader::HalfSpin:
+		m_pAnimator->SetBool("IsCombo", bIsCombo);
+		SetTurnTimeDuringAttack(1.2f);
+		m_eAttackType = EAttackType::FURY_AIRBORNE;
+		break;
+	case Client::CFestivalLeader::HammerSlam:
+	{
 
-	//			m_pAnimator->SetInt("SwingCombo", iComboType);
-	//			m_iLastComboType = iComboType;
-	//	}
-	//	m_eAttackType = EAttackType::KNOCKBACK;
-	//}
-	//break;
-	//case Client::CFestivalLeader::SlamFury:
-	//	SetTurnTimeDuringAttack(2.f, 1.5f);
-	//	m_eAttackType = EAttackType::FURY_STAMP;
-	//case Client::CFestivalLeader::FootAtk:
-	//	m_eAttackType = EAttackType::AIRBORNE;
-	//	break;
-	//case Client::CFestivalLeader::SlamAtk:
-	//	SetTurnTimeDuringAttack(1.f);
-	//	m_eAttackType = EAttackType::STAMP;
-	//	break;
-	//case Client::CFestivalLeader::Uppercut:
-	//	SetTurnTimeDuringAttack(1.f);
-	//	m_eAttackType = EAttackType::NORMAL;
-	//	break;
-	//case Client::CFestivalLeader::StrikeFury:
-	//	SetTurnTimeDuringAttack(1.2f);
-	//	m_eAttackType = EAttackType::FURY_AIRBORNE;
-	//	break;
-	//case Client::CFestivalLeader::P2_FireFlame:
-	//{
-	//	_int iDir = GetYawSignFromDiretion();
-	//	m_pAnimator->SetInt("Direction", iDir);
-	//}
-	//case Client::CFestivalLeader::P2_FireOil:
-	//	m_eAttackType = EAttackType::NONE;
-	//	break;
-	//case Client::CFestivalLeader::P2_FireBall:
-	//{
-	//	_int iDir = GetRandomInt(0, 2);
-	//	m_pAnimator->SetInt("Direction", iDir);
-	//	m_eAttackType = EAttackType::KNOCKBACK;
-	//}
-	//break;
-	//case Client::CFestivalLeader::P2_FireBall_B:
-	//	m_eAttackType = EAttackType::KNOCKBACK;
-	//	break;
-	//default:
-	//	break;
-	//}
-	//if (iPattern == Client::CFestivalLeader::SlamFury)
-	//{
-	//	m_bRootMotionClamped = true;
-	//}
-	//else
-	//{
-	//	m_bRootMotionClamped = false;
-	//}
+	}
+	break;
+	case Client::CFestivalLeader::DashSwing:
+		m_eAttackType = EAttackType::KNOCKBACK;
+		break;
+	case Client::CFestivalLeader::Swing:
+	{
+		m_pAnimator->SetInt("IsCombo", bIsCombo);
+		m_eAttackType = EAttackType::KNOCKBACK;
+	}
+	break;
+	case Client::CFestivalLeader::FuryHammerSlam:
+		m_eAttackType = EAttackType::FURY_STAMP;
+		break;
+	case Client::CFestivalLeader::FurySwing:
+		m_eAttackType = EAttackType::STRONG_KNOCKBACK;
+		break;
+	case Client::CFestivalLeader::FuryBodySlam:
+		m_eAttackType = EAttackType::FURY_STAMP;
+		break;
+	default:
+		break;
+	}
+	if (iPattern == Client::CFestivalLeader::Strike)
+	{
+		m_bRootMotionClamped = true;
+	}
+	else
+	{
+		m_bRootMotionClamped = false;
+	}
 	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(m_eAttackType);
 }
 
@@ -1122,28 +1093,20 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 	if (m_eCurrentState == EEliteState::FATAL
 		|| m_eCurrentState == EEliteState::ATTACK)
 		return;
+	if(m_bStartPhase2 == false)
 	m_pAnimator->SetTrigger("Phase2Start");
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
-		Slam  ,JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
+		Slam, JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
 		DashSwing ,Swing,FuryHammerSlam ,FurySwing ,FuryBodySlam
 	};
 	m_PatternWeightMap.clear();
 	m_PatternCountMap.clear();
-	//for (const auto& pattern : m_vecBossPatterns)
-	//{
-	//	if (pattern == P2_FireOil || pattern == P2_FireBall ||
-	//		pattern == P2_FireFlame || pattern == P2_FireBall_B)
-	//	{
-	//		m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
-	//	}
-	//	else
-	//	{
-	//		m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.2f;
-	//	}
-
-	//	m_PatternCountMap[pattern] = 0;
-	//}
+	for (const auto& pattern : m_vecBossPatterns)
+	{
+		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
+		m_PatternCountMap[pattern] = 0;
+	}
 	SwitchFury(false, 1.f);
 }
 

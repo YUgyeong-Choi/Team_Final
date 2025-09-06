@@ -827,7 +827,9 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	{
 		_int iDir = GetYawSignFromDiretion();
 		m_pAnimator->SetInt("Direction", iDir);
+		m_eAttackType = EAttackType::NONE;
 	}
+	break;
 	case Client::CFuoco::P2_FireOil:
 		m_eAttackType = EAttackType::NONE;
 		break;

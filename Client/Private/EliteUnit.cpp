@@ -249,28 +249,6 @@ HRESULT CEliteUnit::Ready_Actor()
 
 void CEliteUnit::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 {   
- //   // 가까우면 
- //   if (fDistance < m_fChasingDistance)
- //   {
- //       if (m_fChangeMoveDirCooldown > 0.f)
- //       {
- //           m_fChangeMoveDirCooldown -= fTimeDelta;
- //           m_fChangeMoveDirCooldown = max(m_fChangeMoveDirCooldown, 0.f);
- //       }
- //       else
- //       {
- //           _int iMoveDir = GetRandomInt(1, 3);
- //           m_pAnimator->SetInt("MoveDir", iMoveDir);
- //           m_fChangeMoveDirCooldown = 5.f;
-	//		cout << "현재 이동 방향 : " << iMoveDir << endl;
- //       }
- //   }
- //   else if (fDistance >= m_fChasingDistance)
- //   {
- //       m_pAnimator->SetInt("MoveDir", 0);
- //       cout << "현재 프론트로 바뀜" << endl;
- //   }
- ////   m_eCurrentState = EEliteState::WALK;
     m_pAnimator->SetFloat("Distance", abs(fDistance));
 }
 
@@ -572,8 +550,8 @@ void CEliteUnit::UpdateNormalMove(_float fTimeDelta)
            {
                m_ePrevState = m_eCurrentState;
                // 랜덤 방향 전환
-               int randDir = GetRandomInt(1, 3); // BACK, LEFT, RIGHT
-               m_pAnimator->SetInt("MoveDir", randDir);
+               _int iRandDir = GetRandomInt(1, 3); // R,B,L
+               m_pAnimator->SetInt("MoveDir", iRandDir);
 
                m_eCurrentState = EEliteState::WALK;
                m_pAnimator->SetBool("Move", true);
@@ -676,7 +654,8 @@ PxTransform CEliteUnit::ToPxPose(const _fmatrix& W)
     XMMatrixDecompose(&S, &R, &T, W);
     R = XMQuaternionNormalize(R);
 
-    _float4 q; XMStoreFloat4(&q, R);
+    _float4 q; 
+    XMStoreFloat4(&q, R);
     return PxTransform(
         PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T)),
         PxQuat(q.x, q.y, q.z, q.w));

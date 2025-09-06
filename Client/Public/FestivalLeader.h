@@ -143,7 +143,6 @@ private:
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT Ready_Actor() override;
-	 HRESULT        Ready_Weapon();
 	virtual void Ready_BoneInformation() override;
 
 	virtual void Update_Collider() override;
@@ -210,20 +209,24 @@ private:
 	_float4 m_vCenterPos{ -0.195f, 0.f,-213.f ,1.f };
 	_int    m_iCrossComboCount = 0;
 	_int    m_iLastComboType = -1;
+	_int    m_iSwingComboLimit = 3;
 
 	EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
 	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
 
 	vector<EBossAttackPattern> m_vecCloseAttackPatterns = {
-	  Slam,CrossSlam,JumpAttack,Strike
+	  Slam,CrossSlam,JumpAttack,Strike,
+	AlternateSmash,Spin,HalfSpin ,HammerSlam ,
+	Swing,FuryHammerSlam ,FurySwing,
+	FuryBodySlam 
 	};
 
 	vector<EBossAttackPattern> m_vecMiddleAttackPatterns = {
-		  Slam,CrossSlam,JumpAttack,Strike
+	Swing,	HammerSlam, DashSwing ,FurySwing ,JumpAttack,Strike,FuryBodySlam
 	};
 
 	vector<EBossAttackPattern> m_vecFarAttackPatterns = {
-	  DashSwing ,FurySwing ,JumpAttack,Strike
+	  DashSwing ,FurySwing ,JumpAttack,Strike,FuryBodySlam
 	};
 
 
