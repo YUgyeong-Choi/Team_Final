@@ -327,15 +327,14 @@ HRESULT CFuoco::Ready_Actor()
 	// 부모꺼 부르면서 밑에꺼 부르기
 	if (m_pFistBone)
 	{
-		auto fistLocalMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-		auto fistWorldMatrix = XMLoadFloat4x4(fistLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-		XMMatrixDecompose(&S, &R, &T, fistWorldMatrix);
+		const PxTransform armPose = GetBonePose(m_pFistBone);
 
-		PxQuat armRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-		PxVec3 armPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-		PxTransform armPose(armPositionVec, armRotationQuat);
 		PxSphereGeometry armGeom = m_pGameInstance->CookSphereGeometry(1.7f);
-		m_pPhysXActorComForArm->Create_Collision(m_pGameInstance->GetPhysics(), armGeom, armPose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorComForArm->Create_Collision(
+			m_pGameInstance->GetPhysics(), 
+			armGeom, 
+			armPose,
+			m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorComForArm->Set_ShapeFlag(false, true, true);
 		PxFilterData armFilterData{};
 		armFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
@@ -350,15 +349,14 @@ HRESULT CFuoco::Ready_Actor()
 
 	if (m_pFootBone)
 	{
-		auto footLocalMatrix = m_pFootBone->Get_CombinedTransformationMatrix();
-		auto footWorldMatrix = XMLoadFloat4x4(footLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-		XMMatrixDecompose(&S, &R, &T, footWorldMatrix);
+		const PxTransform footPose = GetBonePose(m_pFootBone);
 
-		PxQuat footRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-		PxVec3 footPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-		PxTransform footPose(footPositionVec, footRotationQuat);
 		PxSphereGeometry footGeom = m_pGameInstance->CookSphereGeometry(1.f);
-		m_pPhysXActorComForFoot->Create_Collision(m_pGameInstance->GetPhysics(), footGeom, footPose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorComForFoot->Create_Collision(
+			m_pGameInstance->GetPhysics(),
+			footGeom, 
+			footPose,
+			m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXActorComForFoot->Set_ShapeFlag(false, true, true);
 		PxFilterData footFilterData{};
 		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERBODY;
@@ -415,27 +413,33 @@ void CFuoco::Update_Collider()
 {
 	__super::Update_Collider();
 
-	auto fistLocalMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-	auto fistWorldMatrix = XMLoadFloat4x4(fistLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-	_float4 fistPos;
-	XMStoreFloat4(&fistPos, fistWorldMatrix.r[3]);
-	PxVec3 armPos(fistPos.x, fistPos.y, fistPos.z);
-	_vector boneQuatForArm = XMQuaternionRotationMatrix(fistWorldMatrix);
-	_float4 fQuatForArm;
-	XMStoreFloat4(&fQuatForArm, boneQuatForArm);
-	PxQuat armRot = PxQuat(fQuatForArm.x, fQuatForArm.y, fQuatForArm.z, fQuatForArm.w);
-	m_pPhysXActorComForArm->Set_Transform(PxTransform(armPos, armRot));
 
-	auto footLocalMatrix = m_pFootBone->Get_CombinedTransformationMatrix();
-	auto footWorldMatrix = XMLoadFloat4x4(footLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-	_float4 footPos;
-	XMStoreFloat4(&footPos, footWorldMatrix.r[3]);
-	PxVec3 footPosVec(footPos.x, footPos.y, footPos.z);
-	_vector boneQuatForFoot = XMQuaternionRotationMatrix(footWorldMatrix);
-	_float4 fQuatForFoot;
-	XMStoreFloat4(&fQuatForFoot, boneQuatForFoot);
-	PxQuat footRot = PxQuat(fQuatForFoot.x, fQuatForFoot.y, fQuatForFoot.z, fQuatForFoot.w);
-	m_pPhysXActorComForFoot->Set_Transform(PxTransform(footPosVec, footRot));
+	if (m_pPhysXActorComForArm && m_pFistBone)
+		m_pPhysXActorComForArm->Set_Transform(GetBonePose(m_pFistBone));
+
+	if (m_pPhysXActorComForFoot && m_pFootBone)
+		m_pPhysXActorComForFoot->Set_Transform(GetBonePose(m_pFootBone));
+	//auto fistLocalMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+	//auto fistWorldMatrix = XMLoadFloat4x4(fistLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
+	//_float4 fistPos;
+	//XMStoreFloat4(&fistPos, fistWorldMatrix.r[3]);
+	//PxVec3 armPos(fistPos.x, fistPos.y, fistPos.z);
+	//_vector boneQuatForArm = XMQuaternionRotationMatrix(fistWorldMatrix);
+	//_float4 fQuatForArm;
+	//XMStoreFloat4(&fQuatForArm, boneQuatForArm);
+	//PxQuat armRot = PxQuat(fQuatForArm.x, fQuatForArm.y, fQuatForArm.z, fQuatForArm.w);
+	//m_pPhysXActorComForArm->Set_Transform(PxTransform(armPos, armRot));
+
+	//auto footLocalMatrix = m_pFootBone->Get_CombinedTransformationMatrix();
+	//auto footWorldMatrix = XMLoadFloat4x4(footLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
+	//_float4 footPos;
+	//XMStoreFloat4(&footPos, footWorldMatrix.r[3]);
+	//PxVec3 footPosVec(footPos.x, footPos.y, footPos.z);
+	//_vector boneQuatForFoot = XMQuaternionRotationMatrix(footWorldMatrix);
+	//_float4 fQuatForFoot;
+	//XMStoreFloat4(&fQuatForFoot, boneQuatForFoot);
+	//PxQuat footRot = PxQuat(fQuatForFoot.x, fQuatForFoot.y, fQuatForFoot.z, fQuatForFoot.w);
+	//m_pPhysXActorComForFoot->Set_Transform(PxTransform(footPosVec, footRot));
 
 }
 
@@ -828,7 +832,9 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	{
 		_int iDir = GetYawSignFromDiretion();
 		m_pAnimator->SetInt("Direction", iDir);
+		m_eAttackType = EAttackType::NONE;
 	}
+	break;
 	case Client::CFuoco::P2_FireOil:
 		m_eAttackType = EAttackType::NONE;
 		break;

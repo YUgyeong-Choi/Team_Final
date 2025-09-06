@@ -40,6 +40,7 @@ public:
 private:
 	void LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator);
 	void Find_Player();
+	void Register_Events();
 
 private:
 	enum class STARGAZER_STATE { DESTROYED, FUNCTIONAL, END };

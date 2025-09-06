@@ -42,7 +42,7 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	m_eState = STARGAZER_STATE::DESTROYED;
 
-
+	Register_Events();
 
 	return S_OK;
 }
@@ -186,6 +186,16 @@ void CStargazer::Find_Player()
 {
 	m_pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player")));
 	Safe_AddRef(m_pPlayer);
+}
+
+void CStargazer::Register_Events()
+{
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->RegisterEventListener("ChangeModel", [this]()
+		{
+			if (m_eState == STARGAZER_STATE::DESTROYED)
+				m_eState = STARGAZER_STATE::FUNCTIONAL;
+			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+		});
 }
 
 HRESULT CStargazer::Bind_ShaderResources()
