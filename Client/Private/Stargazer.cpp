@@ -48,8 +48,7 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	m_eState = STARGAZER_STATE::DESTROYED;
 
-	if (FAILED(Ready_Collider()))
-		return E_FAIL;
+	Register_Events();
 
 	LoadScriptData();
 

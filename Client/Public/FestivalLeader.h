@@ -154,6 +154,7 @@ private:
 
 	virtual _bool CanProcessTurn() override;
 
+	void ApplyHeadSpaceSwitch(_float fTimeDelta);
 	// 공견 패턴
 	virtual void SetupAttackByType(_int iPattern) override;
 
@@ -180,19 +181,29 @@ private:
 	// 컴포넌트 관련
 	CPhysXDynamicActor* m_pPhysXActorComForHammer = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForBasket = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorComForRightHand = { nullptr };
+	CPhysXDynamicActor* m_pPhysXActorComForLeftHand = { nullptr };
 	CBone* m_pHammerBone{ nullptr };
 	CBone* m_pBasketBone{ nullptr };
-	CBone* m_pRightHandBone{ nullptr };
+	CBone* m_pRightWeaponBone{ nullptr };
 	CBone* m_pLeftHandBone{ nullptr };
+	CBone* m_pRightHandBone{ nullptr };
 	class CWeapon_Monster* m_pHammer{ nullptr };
 	_matrix m_pHammerWorldMatrix = XMMatrixIdentity();
-
-
+	_int m_iOriginBoneIndex = -1;
+	_int m_iNewParentIndex = -1;
+	_float4x4 m_StoredHeadLocalMatrix{};
+	_float4x4 m_HeadLocalInit{};
+	_bool m_bSwitchHeadSpace = false;
+	_float3   m_vHeadExtraEulerDeg = {90.f, 0.f, 0.f}; // X=90° 기본
+	_float3   m_vHeadExtraOffset   = {0.f, 0.f, 0.f};  // 추가 위치 보정(로컬)
+	_float     m_fHeadExtraScale    = 1.f;              // 필요 없으면 1
 	// 상태 관련
 	_bool m_bPlayerCollided = false;
 	_bool m_bPhase2Processed = false;
 	_bool m_bWaitPhase2 = false;
 	_bool m_bVisibleModel = true;
+	_bool m_bVisibleHeadOnce = false;
 
 
 	// 공격 관련

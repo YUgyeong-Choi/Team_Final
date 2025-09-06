@@ -76,8 +76,29 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	//	m_pModelCom->SetMeshVisible(3, false);
 	m_fMaxRootMotionSpeed = 18.f;
 
-	if(FAILED(Ready_Weapon()))
-		return E_FAIL;
+	//if(FAILED(Ready_Weapon()))
+	//	return E_FAIL;
+
+	if (m_pAnimator)
+	{
+		m_HeadLocalInit = m_pHammerBone->Get_TransformationMatrix_Float4x4();
+		m_pAnimator->PlayClip(m_pModelCom->GetAnimationClipByName("AS_Idle_C_1"), false);
+		m_pAnimator->Update(0.016f);
+		m_pModelCom->Update_Bones();
+
+		if (m_pHammerBone)
+		{
+			_matrix W_head = XMLoadFloat4x4(m_pHammerBone->Get_CombinedTransformationMatrix()); // 머리 컴바인드
+			_matrix W_hand = XMLoadFloat4x4(m_pRightWeaponBone->Get_CombinedTransformationMatrix()); // 오른손 무기 소켓 컴바인드
+
+			//  손 기준 로컬 오프셋
+			_matrix attachOffset = W_head * XMMatrixInverse(nullptr, W_hand); // row
+			XMStoreFloat4x4(&m_StoredHeadLocalMatrix, attachOffset);
+		}
+
+
+		m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
+	}
 	return S_OK;
 }
 
@@ -210,94 +231,103 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	}
 
 	__super::Update(fTimeDelta);
-
+	if (m_bSwitchHeadSpace)
+	{
+		ApplyHeadSpaceSwitch(fTimeDelta);
+		Update_Collider(); 
+	}
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
 	if (m_pPlayer && static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 
-#ifdef _DEBUG
+	//if (m_pHammer && m_pHammer->Get_isActive() == false)
+	//{
+	//	m_pHammer->Update(fTimeDelta);
+	//}
 
-	if (m_pHammer)
-	{
-		auto pTrans = m_pHammer->Get_TransfomCom();
-		auto pos = m_pHammer->GetLocalOffset();
-
-		static float rotX = 0.f;
-		static float rotY = 0.f;
-		static float rotZ = 0.f;
-
-		const _float fRotateSpeed = 1.f; // 도 단위
-
-		bool bChanged = false;
-
-		//// z는 280도 y는 5도
-		//// Y축 회전 (좌/우)
-		//if (KEY_DOWN(DIK_V)) {
-		//	rotY -= fRotateSpeed;
-		//	bChanged = true;
-		//}
-		//if (KEY_DOWN(DIK_G)) {
-		//	rotY += fRotateSpeed;
-		//	bChanged = true;
-		//}
-
-		//// X축 회전
-		//if (KEY_DOWN(DIK_5)) {
-		//	rotX += fRotateSpeed;
-		//	bChanged = true;
-		//}
-
-		//// Z축 회전
-		//if (KEY_DOWN(DIK_J)) {
-		//	rotZ += fRotateSpeed;
-		//	bChanged = true;
-		//}
-
-		//if (bChanged)
-		//{
-		//	// 누적된 회전값으로 행렬 생성
-		//	_matrix matRotX = XMMatrixRotationX(XMConvertToRadians(rotX));
-		//	_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(rotY));
-		//	_matrix matRotZ = XMMatrixRotationZ(XMConvertToRadians(rotZ));
-
-		//	// 회전 순서 (필요에 맞게 바꿀 수 있음: Y→X→Z 등)
-		//	_matrix matFinalRot = matRotX * matRotY * matRotZ;
-
-		//	// 현재 위치 유지한 채 회전만 적용
-		//	_float4x4 worldMat;
-		//	XMStoreFloat4x4(&worldMat, matFinalRot);
-		//	worldMat._41 = pTrans->Get_State(STATE::POSITION).m128_f32[0];
-		//	worldMat._42 = pTrans->Get_State(STATE::POSITION).m128_f32[1];
-		//	worldMat._43 = pTrans->Get_State(STATE::POSITION).m128_f32[2];
-
-		//	pTrans->Set_WorldMatrix(worldMat);
-
-		//	// 디버그 출력
-		//	cout << "Hammer Rotation = (X:" << rotX
-		//		<< "°, Y:" << rotY
-		//		<< "°, Z:" << rotZ << "°)" << endl;
-		//}
-			if (KEY_DOWN(DIK_1)) { pos.y += 0.05f; bChanged = true; }  // 위
-			if (KEY_DOWN(DIK_2)) { pos.y -= 0.05f; bChanged = true; }  // 아래
-			if (KEY_DOWN(DIK_3)) { pos.x -= 0.05f; bChanged = true; }  // 왼쪽
-			if (KEY_DOWN(DIK_4)) { pos.x += 0.05f; bChanged = true; }  // 오른쪽
-			if (KEY_DOWN(DIK_5)) { pos.z += 0.05f; bChanged = true; }  // 앞
-			if (KEY_DOWN(DIK_6)) { pos.z -= 0.05f; bChanged = true; }  // 뒤
-
-			if (bChanged)
-			{
-				m_pHammer->SetLocalOffset(pos);
-
-				// 현재 오프셋 콘솔 출력
-				cout << "Hammer Offset = ("
-					<< pos.x << ", "
-					<< pos.y << ", "
-					<< pos.z << ")" << endl;
-			}
-	}
-#endif
+//#ifdef _DEBUG
+//
+//	if (m_pHammer)
+//	{
+//		auto pTrans = m_pHammer->Get_TransfomCom();
+//		auto pos = m_pHammer->GetLocalOffset();
+//
+//		static float rotX = 0.f;
+//		static float rotY = 0.f;
+//		static float rotZ = 0.f;
+//
+//		const _float fRotateSpeed = 1.f; // 도 단위
+//
+//		bool bChanged = false;
+//
+//		//// z는 280도 y는 5도
+//		//// Y축 회전 (좌/우)
+//		//if (KEY_DOWN(DIK_V)) {
+//		//	rotY -= fRotateSpeed;
+//		//	bChanged = true;
+//		//}
+//		//if (KEY_DOWN(DIK_G)) {
+//		//	rotY += fRotateSpeed;
+//		//	bChanged = true;
+//		//}
+//
+//		//// X축 회전
+//		//if (KEY_DOWN(DIK_5)) {
+//		//	rotX += fRotateSpeed;
+//		//	bChanged = true;
+//		//}
+//
+//		//// Z축 회전
+//		//if (KEY_DOWN(DIK_J)) {
+//		//	rotZ += fRotateSpeed;
+//		//	bChanged = true;
+//		//}
+//
+//		//if (bChanged)
+//		//{
+//		//	// 누적된 회전값으로 행렬 생성
+//		//	_matrix matRotX = XMMatrixRotationX(XMConvertToRadians(rotX));
+//		//	_matrix matRotY = XMMatrixRotationY(XMConvertToRadians(rotY));
+//		//	_matrix matRotZ = XMMatrixRotationZ(XMConvertToRadians(rotZ));
+//
+//		//	// 회전 순서 (필요에 맞게 바꿀 수 있음: Y→X→Z 등)
+//		//	_matrix matFinalRot = matRotX * matRotY * matRotZ;
+//
+//		//	// 현재 위치 유지한 채 회전만 적용
+//		//	_float4x4 worldMat;
+//		//	XMStoreFloat4x4(&worldMat, matFinalRot);
+//		//	worldMat._41 = pTrans->Get_State(STATE::POSITION).m128_f32[0];
+//		//	worldMat._42 = pTrans->Get_State(STATE::POSITION).m128_f32[1];
+//		//	worldMat._43 = pTrans->Get_State(STATE::POSITION).m128_f32[2];
+//
+//		//	pTrans->Set_WorldMatrix(worldMat);
+//
+//		//	// 디버그 출력
+//		//	cout << "Hammer Rotation = (X:" << rotX
+//		//		<< "°, Y:" << rotY
+//		//		<< "°, Z:" << rotZ << "°)" << endl;
+//		//}
+//			if (KEY_DOWN(DIK_1)) { pos.y += 0.05f; bChanged = true; }  // 위
+//			if (KEY_DOWN(DIK_2)) { pos.y -= 0.05f; bChanged = true; }  // 아래
+//			if (KEY_DOWN(DIK_3)) { pos.x -= 0.05f; bChanged = true; }  // 왼쪽
+//			if (KEY_DOWN(DIK_4)) { pos.x += 0.05f; bChanged = true; }  // 오른쪽
+//			if (KEY_DOWN(DIK_5)) { pos.z += 0.05f; bChanged = true; }  // 앞
+//			if (KEY_DOWN(DIK_6)) { pos.z -= 0.05f; bChanged = true; }  // 뒤
+//
+//			if (bChanged)
+//			{
+//				m_pHammer->SetLocalOffset(pos);
+//
+//				// 현재 오프셋 콘솔 출력
+//				cout << "Hammer Offset = ("
+//					<< pos.x << ", "
+//					<< pos.y << ", "
+//					<< pos.z << ")" << endl;
+//			}
+//	}
+//#endif
 
 }
 
@@ -309,6 +339,12 @@ void CFestivalLeader::Late_Update(_float fTimeDelta)
 	{
 		if (m_pPhysXActorComForHammer->Get_ReadyForDebugDraw())
 			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForHammer);
+		if (m_pPhysXActorComForBasket->Get_ReadyForDebugDraw())
+			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForBasket);
+		if (m_pPhysXActorComForRightHand->Get_ReadyForDebugDraw())
+			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForRightHand);
+		if (m_pPhysXActorComForLeftHand->Get_ReadyForDebugDraw())
+			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForLeftHand);
 	}
 #endif
 
@@ -337,6 +373,17 @@ void CFestivalLeader::Reset()
 	}
 	m_pModelCom->SetMeshVisible(2, true);
 	m_pModelCom->SetMeshVisible(3, true);
+	m_pModelCom->SetMeshVisible(5, true);
+
+	m_bSwitchHeadSpace = false;                       
+	if (m_pHammerBone && m_iOriginBoneIndex >= 0)
+	{
+		m_pHammerBone->Set_ParentBoneIndex(m_iOriginBoneIndex);
+		m_pHammerBone->Set_TransformationMatrix(XMLoadFloat4x4(&m_HeadLocalInit));
+	}
+	m_pAnimator->Update(0.016f);
+	m_pModelCom->Update_Bones();                      // 뼈 재계산
+	Update_Collider();                                // 콜라이더도 같은 프레임에 동기화
 }
 
 HRESULT CFestivalLeader::Ready_Components(void* pArg)
@@ -348,6 +395,12 @@ HRESULT CFestivalLeader::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX3"), reinterpret_cast<CComponent**>(&m_pPhysXActorComForBasket))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX4"), reinterpret_cast<CComponent**>(&m_pPhysXActorComForRightHand))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX5"), reinterpret_cast<CComponent**>(&m_pPhysXActorComForLeftHand))))
 		return E_FAIL;
 
 	///* For.Com_Sound */
@@ -364,69 +417,108 @@ HRESULT CFestivalLeader::Ready_Actor()
 	_vector S, R, T;
 	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
-	// 부모꺼 부르면서 밑에꺼 부르기
+
+	// 해머
 	if (m_pHammerBone)
 	{
-		// 해머 본 → 월드 변환
-		auto hammerLocalMatrix = m_pHammerBone->Get_CombinedTransformationMatrix();
-		auto hammerWorldMatrix = XMLoadFloat4x4(hammerLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-		XMMatrixDecompose(&S, &R, &T, hammerWorldMatrix);
+		const PxTransform hammerPose = GetBonePose(m_pHammerBone);
 
-		// 해머 충돌체 변환
-		PxQuat  hammerRotQ = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-		PxVec3  hammerPos = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-		PxTransform hammerPose(hammerPos, hammerRotQ);
-
-		// 해머 구체 콜라이더
 		PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.f);
-		m_pPhysXActorComForHammer->Create_Collision(m_pGameInstance->GetPhysics(), hammerGeom, hammerPose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorComForHammer->Create_Collision(
+			m_pGameInstance->GetPhysics(),
+			hammerGeom,
+			hammerPose,
+			m_pGameInstance->GetMaterial(L"Default")
+		);
 		m_pPhysXActorComForHammer->Set_ShapeFlag(false, true, true);
 
-		// 필터
 		PxFilterData hammerFilter{};
 		hammerFilter.word0 = WORLDFILTER::FILTER_MONSTERBODY;
 		hammerFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_MONSTERWEAPON;
 		m_pPhysXActorComForHammer->Set_SimulationFilterData(hammerFilter);
 		m_pPhysXActorComForHammer->Set_QueryFilterData(hammerFilter);
 
-		// 소유/타입/키네마틱 설정
 		m_pPhysXActorComForHammer->Set_Owner(this);
 		m_pPhysXActorComForHammer->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
 		m_pPhysXActorComForHammer->Set_Kinematic(true);
 
-		// 씬 등록
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForHammer->Get_Actor());
 	}
 
+	// 바스켓
 	if (m_pBasketBone)
 	{
-		auto basketLocalMatrix = m_pBasketBone->Get_CombinedTransformationMatrix();
-		auto basketWorldMatrix = XMLoadFloat4x4(basketLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-		XMMatrixDecompose(&S, &R, &T, basketWorldMatrix);
+		const PxTransform basketPose = GetBonePose(m_pBasketBone);
 
-		PxQuat  basketRotQ = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-		PxVec3  basketPos = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-		PxTransform basketPose(basketPos, basketRotQ);
-
-		// 바스켓 구체 콜라이더
 		PxSphereGeometry basketGeom = m_pGameInstance->CookSphereGeometry(1.0f);
-		m_pPhysXActorComForBasket->Create_Collision(m_pGameInstance->GetPhysics(), basketGeom, basketPose, m_pGameInstance->GetMaterial(L"Default"));
+		m_pPhysXActorComForBasket->Create_Collision(
+			m_pGameInstance->GetPhysics(),
+			basketGeom,
+			basketPose,
+			m_pGameInstance->GetMaterial(L"Default")
+		);
 		m_pPhysXActorComForBasket->Set_ShapeFlag(false, true, true);
 
-		// 필터
 		PxFilterData basketFilter{};
 		basketFilter.word0 = WORLDFILTER::FILTER_MONSTERBODY;
 		basketFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorComForBasket->Set_SimulationFilterData(basketFilter);
 		m_pPhysXActorComForBasket->Set_QueryFilterData(basketFilter);
 
-		// 소유/타입/키네마틱 설정
 		m_pPhysXActorComForBasket->Set_Owner(this);
 		m_pPhysXActorComForBasket->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
 		m_pPhysXActorComForBasket->Set_Kinematic(true);
 
-		// 씬 등록
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForBasket->Get_Actor());
+	}
+
+
+	if (m_pLeftHandBone)
+	{
+		const PxTransform leftPose = GetBonePose(m_pLeftHandBone);
+
+		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(0.85f);
+		m_pPhysXActorComForLeftHand->Create_Collision(
+			m_pGameInstance->GetPhysics(),
+			leftGeom,
+			leftPose,
+			m_pGameInstance->GetMaterial(L"Default")
+		);
+		m_pPhysXActorComForBasket->Set_ShapeFlag(false, true, true);
+
+		PxFilterData leftFilter{};
+		leftFilter.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		leftFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		m_pPhysXActorComForLeftHand->Set_SimulationFilterData(leftFilter);
+		m_pPhysXActorComForLeftHand->Set_QueryFilterData(leftFilter);
+
+		m_pPhysXActorComForLeftHand->Set_Owner(this);
+		m_pPhysXActorComForLeftHand->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
+		m_pPhysXActorComForLeftHand->Set_Kinematic(true);
+
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForLeftHand->Get_Actor());
+	}
+
+	if (m_pRightHandBone)
+	{
+		const PxTransform rightPose = GetBonePose(m_pRightHandBone);
+		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(0.85f);
+		m_pPhysXActorComForRightHand->Create_Collision(
+			m_pGameInstance->GetPhysics(),
+			rightGeom,
+			rightPose,
+			m_pGameInstance->GetMaterial(L"Default")
+		);
+		m_pPhysXActorComForRightHand->Set_ShapeFlag(false, true, true);
+		PxFilterData rightFilter{};
+		rightFilter.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		rightFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		m_pPhysXActorComForRightHand->Set_SimulationFilterData(rightFilter);
+		m_pPhysXActorComForRightHand->Set_QueryFilterData(rightFilter);
+		m_pPhysXActorComForRightHand->Set_Owner(this);
+		m_pPhysXActorComForRightHand->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
+		m_pPhysXActorComForRightHand->Set_Kinematic(true);
+		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForRightHand->Get_Actor());
 	}
 
 	return S_OK;
@@ -475,6 +567,7 @@ HRESULT CFestivalLeader::Ready_Weapon()
 	pTrans->Set_WorldMatrix(worldMat);
 
 	m_pHammer->SetisAttack(false);
+	m_pHammer->Set_isActive(false);
 	m_pHammer->Set_WeaponTrail_Active(true);
 	return S_OK;
 }
@@ -504,35 +597,44 @@ void CFestivalLeader::Ready_BoneInformation()
 
 	if (it != m_pModelCom->Get_Bones().end())
 	{
+		m_pRightWeaponBone = *it;
+	}
+
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-L-Hand"); });
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pLeftHandBone = *it;
+	}
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-R-Hand"); });
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
 		m_pRightHandBone = *it;
 	}
+	
 }
 
 void CFestivalLeader::Update_Collider()
 {
 	__super::Update_Collider();
 
-	auto hammerLocalMatrix = m_pHammerBone->Get_CombinedTransformationMatrix();
-	auto hammerWorldMatrix = XMLoadFloat4x4(hammerLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-	_float4 hammerPos;
-	XMStoreFloat4(&hammerPos, hammerWorldMatrix.r[3]);
-	PxVec3 weaponPos(hammerPos.x, hammerPos.y, hammerPos.z);
-	_vector boneQuatForHammer = XMQuaternionRotationMatrix(hammerWorldMatrix);
-	_float4 fQuatForHammer;
-	XMStoreFloat4(&fQuatForHammer, boneQuatForHammer);
-	PxQuat hammerRot = PxQuat(fQuatForHammer.x, fQuatForHammer.y, fQuatForHammer.z, fQuatForHammer.w);
-	m_pPhysXActorComForHammer->Set_Transform(PxTransform(weaponPos, hammerRot));
+	if (m_pPhysXActorComForHammer && m_pHammerBone)
+		m_pPhysXActorComForHammer->Set_Transform(GetBonePose(m_pHammerBone));
 
-	auto basketLocalMatrix = m_pBasketBone->Get_CombinedTransformationMatrix();
-	auto basketWorldMatrix = XMLoadFloat4x4(basketLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-	_float4 baskeyPos;
-	XMStoreFloat4(&baskeyPos, basketWorldMatrix.r[3]);
-	PxVec3 basketPosVec(baskeyPos.x, baskeyPos.y, baskeyPos.z);
-	_vector boneQuatForBasket = XMQuaternionRotationMatrix(basketWorldMatrix);
-	_float4 fQuatForBasket;
-	XMStoreFloat4(&fQuatForBasket, boneQuatForBasket);
-	PxQuat basketRot = PxQuat(fQuatForBasket.x, fQuatForBasket.y, fQuatForBasket.z, fQuatForBasket.w);
-	m_pPhysXActorComForBasket->Set_Transform(PxTransform(basketPosVec, basketRot));
+	if (m_pPhysXActorComForBasket && m_pBasketBone)
+		m_pPhysXActorComForBasket->Set_Transform(GetBonePose(m_pBasketBone));
+
+	if (m_pPhysXActorComForRightHand && m_pRightHandBone)
+		m_pPhysXActorComForRightHand->Set_Transform(GetBonePose(m_pRightHandBone));
+
+	if (m_pPhysXActorComForLeftHand && m_pLeftHandBone)
+		m_pPhysXActorComForLeftHand->Set_Transform(GetBonePose(m_pLeftHandBone));
+
 
 }
 
@@ -684,12 +786,16 @@ void CFestivalLeader::EnableColliders(_bool bEnable)
 	{
 		m_pPhysXActorComForHammer->Set_SimulationFilterData(m_pPhysXActorComForHammer->Get_FilterData());
 		m_pPhysXActorComForBasket->Set_SimulationFilterData(m_pPhysXActorComForBasket->Get_FilterData());
+		m_pPhysXActorComForLeftHand->Set_SimulationFilterData(m_pPhysXActorComForLeftHand->Get_FilterData());
+		m_pPhysXActorComForRightHand->Set_SimulationFilterData(m_pPhysXActorComForRightHand->Get_FilterData());
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
 			if (auto pController = pPlayer->Get_Controller())
 			{
 				pController->Remove_IgnoreActors(m_pPhysXActorComForHammer->Get_Actor());
 				pController->Remove_IgnoreActors(m_pPhysXActorComForBasket->Get_Actor());
+				pController->Remove_IgnoreActors(m_pPhysXActorComForLeftHand->Get_Actor());
+				pController->Remove_IgnoreActors(m_pPhysXActorComForRightHand->Get_Actor());
 			}
 		}
 	}
@@ -697,12 +803,16 @@ void CFestivalLeader::EnableColliders(_bool bEnable)
 	{
 		m_pPhysXActorComForHammer->Init_SimulationFilterData();
 		m_pPhysXActorComForBasket->Init_SimulationFilterData();
+		m_pPhysXActorComForLeftHand->Init_SimulationFilterData();
+		m_pPhysXActorComForRightHand->Init_SimulationFilterData();
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 		{
 			if (auto pController = pPlayer->Get_Controller())
 			{
 				pController->Add_IngoreActors(m_pPhysXActorComForHammer->Get_Actor());
 				pController->Add_IngoreActors(m_pPhysXActorComForBasket->Get_Actor());
+				pController->Add_IngoreActors(m_pPhysXActorComForLeftHand->Get_Actor());
+				pController->Add_IngoreActors(m_pPhysXActorComForRightHand->Get_Actor());
 			}
 		}
 	}
@@ -712,6 +822,20 @@ _bool CFestivalLeader::CanProcessTurn()
 {
 	// 2페이즈이고 중앙으로 턴을 기다리는 중이면 false
 	return !(m_bIsPhase2 && m_bWaitPhase2);
+}
+
+void CFestivalLeader::ApplyHeadSpaceSwitch(_float fTimeDelta)
+{
+	// 거꾸로 뒤집혀 있어서 x축으로 90도 회적
+	_matrix rotExtra = XMMatrixRotationX(XMConvertToRadians(90.f));
+
+	// 로컬 = 추가회전과 저장해둔 부착 오프셋 회전 후에 위치
+	_matrix L = rotExtra * XMLoadFloat4x4(&m_StoredHeadLocalMatrix);
+
+	m_pHammerBone->Set_TransformationMatrix(L);
+
+	// 뼈 정보 반영
+	m_pModelCom->Update_Bones();
 }
 
 
@@ -857,25 +981,29 @@ void CFestivalLeader::Register_Events()
 	m_pAnimator->RegisterEventListener("ColliderBaskettOn", [this]()
 		{
 			m_pPhysXActorComForBasket->Set_SimulationFilterData(m_pPhysXActorComForBasket->Get_FilterData());
-			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-			{
-				if (auto pController = pPlayer->Get_Controller())
-				{
-					pController->Remove_IgnoreActors(m_pPhysXActorComForBasket->Get_Actor());
-				}
-			}
 		});
 	m_pAnimator->RegisterEventListener("ColliderBasketOff", [this]()
 		{
 			m_pPhysXActorComForBasket->Init_SimulationFilterData();
-			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-			{
-				if (auto pController = pPlayer->Get_Controller())
-				{
-					pController->Add_IngoreActors(m_pPhysXActorComForBasket->Get_Actor());
-				}
-			}
 		});
+
+	m_pAnimator->RegisterEventListener("ColliderRightHandOn", [this]()
+		{
+			m_pPhysXActorComForRightHand->Set_SimulationFilterData(m_pPhysXActorComForRightHand->Get_FilterData());
+		});
+	m_pAnimator->RegisterEventListener("ColliderRightHandOff", [this]()
+		{
+			m_pPhysXActorComForRightHand->Init_SimulationFilterData();
+		});
+	m_pAnimator->RegisterEventListener("ColliderLeftHandOn", [this]()
+		{
+			m_pPhysXActorComForLeftHand->Set_SimulationFilterData(m_pPhysXActorComForLeftHand->Get_FilterData());
+		});
+	m_pAnimator->RegisterEventListener("ColliderLeftHandOff", [this]()
+		{
+			m_pPhysXActorComForLeftHand->Init_SimulationFilterData();
+		});
+
 
 	m_pAnimator->RegisterEventListener("IgnorePlayerCollision", [this]()
 		{
@@ -927,8 +1055,15 @@ void CFestivalLeader::Register_Events()
 		{
 			if (m_pModelCom)
 			{
-				m_pModelCom->SetMeshVisible(2, false);
-				m_pModelCom->SetMeshVisible(3, false);
+				if (m_pModelCom->IsMeshVisible(2))
+				{
+					m_pModelCom->SetMeshVisible(2, false);
+				}
+
+				if (m_pModelCom->IsMeshVisible(3))
+				{
+					m_pModelCom->SetMeshVisible(3, false);
+				}
 			}
 			if (m_pAnimator)
 			{
@@ -938,8 +1073,32 @@ void CFestivalLeader::Register_Events()
 				m_ePrevState = m_eCurrentState;
 				m_eCurrentState = EEliteState::ATTACK;
 			}
+
+			if (m_pHammerBone)
+			{
+				if(m_iOriginBoneIndex == -1)
+					m_iOriginBoneIndex = m_pHammerBone->Get_ParentBoneIndex();
+
+				m_iNewParentIndex = m_pModelCom->Find_BoneIndex("BN_Weapon_R");
+				if (m_iNewParentIndex >= 0)
+				{
+					m_pHammerBone->Set_ParentBoneIndex(m_iNewParentIndex);
+					m_bSwitchHeadSpace = true;
+				}
+			}
 		});
 
+
+	m_pAnimator->RegisterEventListener("RestoreHeadBoneIndex", [this]()
+		{
+			if (!m_pModelCom || !m_pHammerBone || m_iOriginBoneIndex < 0)
+				return;
+			// 부모 교체
+			m_pHammerBone->Set_ParentBoneIndex(m_iOriginBoneIndex);
+			m_pModelCom->Update_Bones();
+			m_bSwitchHeadSpace = false;
+		});
+	
 
 }
 
@@ -1260,7 +1419,8 @@ CGameObject* CFestivalLeader::Clone(void* pArg)
 void CFestivalLeader::Free()
 {
 	__super::Free();
-	//Safe_Release(m_pHammer);
 	Safe_Release(m_pPhysXActorComForHammer);
 	Safe_Release(m_pPhysXActorComForBasket);
+	Safe_Release(m_pPhysXActorComForRightHand);
+	Safe_Release(m_pPhysXActorComForLeftHand);
 }
