@@ -44,9 +44,10 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	m_eState = STARGAZER_STATE::DESTROYED;
 
+	if (FAILED(Ready_Collider()))
+		return E_FAIL;
 
-
-
+	//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }
@@ -114,6 +115,14 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			Teleport_Stargazer(STARGAZER_TAG::FIRE_EATER);
 		}
 	}
+
+	if (m_pGameInstance->Key_Down(DIK_MINUS))
+	{
+		if (Check_Player_Close())
+		{
+			Teleport_Stargazer(STARGAZER_TAG::FESTIVAL_LEADER);
+		}
+	}
 	 
 }
 
@@ -151,6 +160,12 @@ HRESULT CStargazer::Render()
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom[ENUM_CLASS(m_eState)]->Render(i)))
+			return E_FAIL;
+	}
+
+	if (m_pGameInstance->Get_RenderMapCollider())
+	{
+		if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
 			return E_FAIL;
 	}
 
@@ -216,7 +231,9 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 			XMStoreFloat3(&vPos, pObj->Get_TransfomCom()->Get_State(STATE::POSITION));
 
 			//살짝 위로
-			vPos.y += 2.f;
+			vPos.y += 1.f;
+			//살짝 뒤로
+			vPos.x -= 2.f;
 
 			PxVec3 pxPos(vPos.x, vPos.y, vPos.z);
 
@@ -263,6 +280,50 @@ HRESULT CStargazer::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CStargazer::Ready_Collider()
+{
+	// 3. Transform에서 S, R, T 분리
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 3-1. 스케일, 회전, 위치 변환
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxVec3 halfExtents = {};
+
+	/*if (pArg != nullptr)
+	{
+		halfExtents = VectorToPxVec3(XMLoadFloat3(&pDesc->vExtent));
+	}
+	else
+	{
+		halfExtents = VectorToPxVec3(XMLoadFloat3(&m_vHalfExtents));
+	}*/
+
+	_float3 vHalf = _float3(0.5f, 0.5f, 0.5f);
+
+	halfExtents = VectorToPxVec3(XMLoadFloat3(&vHalf));
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::A);
+	//m_pPhysXActorCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	return S_OK;
+}
+
 HRESULT CStargazer::Ready_Components(void* pArg)
 {
 	/* Com_Model */
@@ -288,6 +349,10 @@ HRESULT CStargazer::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
 
 
 	return S_OK;
@@ -329,4 +394,5 @@ void CStargazer::Free()
 	
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pPhysXActorCom);
 }

@@ -1,6 +1,13 @@
 [
     {
         "Collision": false,
+        "ModelName": "ErgoItem",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_BuildingA_Balcony_03",
         "NoInstancing": false,
         "ObjectCount": 8,
@@ -1060,7 +1067,7 @@
         "Collision": false,
         "ModelName": "Stargazer",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/Stargazer.bin"
     },
     {
