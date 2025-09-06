@@ -44,10 +44,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	if (KEY_DOWN(DIK_C))
+	/*if (KEY_DOWN(DIK_C))
 	{
 		m_bStopCamera = !m_bStopCamera;
-	}
+	}*/
 	
 	if (m_bStopCamera)
 		fTimeDelta = 0.f;
@@ -194,6 +194,8 @@ void CCamera_CutScene::Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_
 	m_eCurrentCutScene = cutSceneType;
 
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+
+	m_iCurrentFrame = -1;
 }
 
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
@@ -208,6 +210,7 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 	m_eCurrentCutScene = cutSceneType;
 
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	m_iCurrentFrame = -1;
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -689,7 +692,7 @@ void CCamera_CutScene::Event()
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
 	{
-		if (m_iCurrentFrame == 770)
+		if (m_iCurrentFrame == 860)
 		{
 			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
 			unit->EnterCutScene();
