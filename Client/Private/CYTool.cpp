@@ -542,7 +542,7 @@ HRESULT CCYTool::Window_Particle()
 		m_tPCB.isTileLoop = desc.isTileLoop;
 	}
 
-	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t 3. vstretch\n4. Diffuse_WB\t5. Rain(Distort+Mask)");
+	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t3. vstretch\n4. Nonlight\t5. Rain(Distort+Mask)\n6. Diffuse_WB\t7. MaskDissolve_WB,");
 	for (_uint i = 0; i < PE_END; i++)
 	{
 		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), *pPE->Get_ShaderPass_Ptr() == i)) {

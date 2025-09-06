@@ -367,7 +367,7 @@ HRESULT CPlayer::Render_LimLight()
 		return E_FAIL;
 
 	_float4 vLimLightColor = { 0.f, 0.749f, 1.f, 1.f };
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &vLimLightColor, sizeof(_float4))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLimLightColor", &m_vLimLightColor, sizeof(_float4))))
 		return E_FAIL;
 
 	_float vRimPower = 3.6f;
@@ -1354,6 +1354,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				m_pSoundCom->Play("SE_PC_FX_Item_Heal");
 				m_bSetSound = true;
 
+				LimActive(true, 0.5f, { 0.1f ,0.15f, 1.f, 1.f });
+
 				// 이펙트 임시로 한번에 몰아둠 
 				CEffectContainer::DESC desc = {};
 				_uint iBoneIdx = m_pModelCom->Find_BoneIndex("BN_Weapon_L");
@@ -1363,32 +1365,53 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_HealSprite_Hand_S3"), &desc))
 					MSG_BOX("이펙트 생성 실패함");
 
-				//CEffectContainer::DESC Partdesc = {};
-				//vWorldMat = XMLoadFloat4x4(
-				//	m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_Deltoid"))) * // 왼쪽 어깨
-				//	m_pTransformCom->Get_WorldMatrix();
-				//XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
-				//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &Partdesc))
-				//	MSG_BOX("이펙트 생성 실패함");
-				//vWorldMat = XMLoadFloat4x4(
-				//	m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-Spine"))) * // 척추 중앙
-				//	m_pTransformCom->Get_WorldMatrix();
-				//XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
-				//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &Partdesc))
-				//	MSG_BOX("이펙트 생성 실패함");
-				//vWorldMat = XMLoadFloat4x4(
-				//	m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_R_Cucullaris"))) * // 모름 승모근?
-				//	m_pTransformCom->Get_WorldMatrix();
-				//XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
-				//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &Partdesc))
-				//	MSG_BOX("이펙트 생성 실패함");
-				//vWorldMat = XMLoadFloat4x4(
-				//	m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_R_Hip"))) * // 언더니
-				//	m_pTransformCom->Get_WorldMatrix();
-				//XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
-				//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &Partdesc))
-				//	MSG_BOX("이펙트 생성 실패함");
-			}
+				CEffectContainer::DESC Partdesc = {};	// 고정 월드 위치로 넣기
+				CEffectContainer::DESC socketdesc = {}; // 소켓으로 넣기
+				socketdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+				vWorldMat = XMLoadFloat4x4(
+					m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_Deltoid"))) * // 왼쪽 어깨
+					m_pTransformCom->Get_WorldMatrix();
+				XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
+				XMStoreFloat4x4(&socketdesc.PresetMatrix, XMMatrixRotationRollPitchYaw(m_pGameInstance->Compute_Random_Normal(), m_pGameInstance->Compute_Random_Normal(), m_pGameInstance->Compute_Random_Normal()));
+				socketdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_Deltoid"));
+				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &socketdesc)) // Partdesc
+					MSG_BOX("이펙트 생성 실패함");
+
+				vWorldMat = XMLoadFloat4x4(
+					m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-Spine"))) * // 척추 중앙
+					m_pTransformCom->Get_WorldMatrix();
+				XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
+				XMStoreFloat4x4(&socketdesc.PresetMatrix, XMMatrixRotationRollPitchYaw(m_pGameInstance->Compute_Random_Normal(), m_pGameInstance->Compute_Random_Normal(), m_pGameInstance->Compute_Random_Normal()));
+				socketdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-Spine"));
+				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &socketdesc)) // Partdesc
+					MSG_BOX("이펙트 생성 실패함");
+
+				vWorldMat = XMLoadFloat4x4(
+					m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_R_Cucullaris"))) * // 모름 승모근?
+					m_pTransformCom->Get_WorldMatrix();
+				XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
+				XMStoreFloat4x4(&socketdesc.PresetMatrix, XMMatrixRotationRollPitchYaw(m_pGameInstance->Compute_Random_Normal(), m_pGameInstance->Compute_Random_Normal(), m_pGameInstance->Compute_Random_Normal()));
+				socketdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_R_Cucullaris"));
+				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &socketdesc)) // Partdesc
+					MSG_BOX("이펙트 생성 실패함");
+
+				vWorldMat = XMLoadFloat4x4(
+					m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_R_Hip"))) * // 언더니
+					m_pTransformCom->Get_WorldMatrix();
+				XMStoreFloat4x4(&Partdesc.PresetMatrix, vWorldMat);
+				XMStoreFloat4x4(&socketdesc.PresetMatrix, XMMatrixRotationRollPitchYaw(m_pGameInstance->Compute_Random_Normal(), m_pGameInstance->Compute_Random_Normal(), m_pGameInstance->Compute_Random_Normal()));
+				socketdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_R_Hip"));
+				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Heal_Particle_P1"), &socketdesc)) // Partdesc
+					MSG_BOX("이펙트 생성 실패함");
+
+				CEffectContainer::DESC Lightdesc = {};
+				Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+				Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+				XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+				if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Test_Lightning_P3"), &Lightdesc))
+					MSG_BOX("이펙트 생성 실패함");
+			} 
 		}
 		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 
@@ -2958,8 +2981,9 @@ void CPlayer::OffBurn(_float fTimeDelta)
 
 
 
-void CPlayer::LimActive(_bool bOnOff, _float fSpeed)
+void CPlayer::LimActive(_bool bOnOff, _float fSpeed, _float4 vColor)
 {
+	m_vLimLightColor = vColor;
 	m_bLimSwitch = bOnOff;
 	m_fLimSpeed = fSpeed;
 }

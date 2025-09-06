@@ -1083,10 +1083,10 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
 	//	MSG_BOX("이펙트 생성 실패");
 
-	//presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
+	presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
+		MSG_BOX("이펙트 생성 실패");
 
 	//presetmat = XMMatrixTranslation(0.f, 0.f, 0.f);
 	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);

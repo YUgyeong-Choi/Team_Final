@@ -203,7 +203,6 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Triangles.RestartStrip();
 }
 
-
 [maxvertexcount(6)]
 void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
@@ -406,7 +405,6 @@ PS_OUT_WB PS_MAIN_MASKONLY_WBGLOW(PS_IN In)
     return Out;
 }
 
-
 PS_OUT_WB PS_MAIN_DIFFUSE_WB(PS_IN In)
 {
     PS_OUT_WB Out = (PS_OUT_WB) 0;
@@ -471,7 +469,6 @@ PS_OUT_WB PS_MAIN_RAINONLY(PS_IN In)
     Out.vDistortion.a *= 1.f - vMask;
     Out.vDistortion.b = g_fDistortionStrength / 255.f;
     
-    
     return Out;
 }
 
@@ -487,7 +484,6 @@ PS_OUT PS_MAIN_NONLIGHT(PS_IN In)
 
     //vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset));
 
-    
     if (In.vLifeTime.y >= In.vLifeTime.x)
         discard;
 
@@ -499,6 +495,44 @@ PS_OUT PS_MAIN_NONLIGHT(PS_IN In)
     vColor = SoftEffect(vColor, In.vProjPos);
 
     Out.vColor = vColor;
+    return Out;
+}
+
+PS_OUT_WB PS_MAIN_MASK_DISSOLVE_WB(PS_IN In)
+{
+    PS_OUT_WB Out = (PS_OUT_WB) 0;
+    
+    float mask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset)).r;
+    float DissolveMask = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, In.vTileOffset)).r;
+    if (mask < 0.003f)
+        discard;
+    float4 vPreColor;
+    float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    
+    vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    vector vColor;
+    
+    vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
+    vColor.a = vPreColor.a * mask;
+    //vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x); // 0 ~ 1
+    float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
+    if (DissolveMask < lifeRatio)
+        discard;
+    //fade = 1.0 - fade; // 남은 생명에 비례해 감소
+    //vColor.a *= fade;
+    vColor = SoftEffect(vColor, In.vProjPos);
+
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+    
+    
+    if (In.vLifeTime.y >= In.vLifeTime.x)
+        discard;
+    
     return Out;
 }
 
@@ -581,5 +615,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_CS();
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN_DIFFUSE_WB();
+    }
+    pass Mask_Dissolve_Glow_WB //7
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+
+        VertexShader = compile vs_5_0 VS_MAIN_CS();
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_MASK_DISSOLVE_WB();
     }
 }

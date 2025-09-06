@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -1.0,
-                -0.5
+                -40.0,
+                -30.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -13,13 +13,13 @@
                 0.0
             ],
             "CenterColor": [
-                1.0,
-                1.0,
+                0.481675386428833,
+                0.6987747550010681,
                 1.0,
                 1.0
             ],
             "Color": [
-                0.020942211151123047,
+                0.11518287658691406,
                 0.0,
                 1.0,
                 1.0
@@ -27,7 +27,7 @@
             "DistortionStrength": 10.0,
             "Duration": 170,
             "EffectType": 1,
-            "EmissiveIntensity": 0.30000001192092896,
+            "EmissiveIntensity": 3.299999952316284,
             "EndTrack": 170,
             "FlipUV": false,
             "Gravity": -0.5,
@@ -35,12 +35,12 @@
             "KeyFrames": [
                 {
                     "Color": [
-                        0.020942211151123047,
+                        0.11518287658691406,
                         0.0,
                         1.0,
                         1.0
                     ],
-                    "Intensity": 5.539999961853027,
+                    "Intensity": 4.03000020980835,
                     "Interpolation": 0,
                     "Rotation": [
                         -2.39857513406605e-07,
@@ -61,18 +61,18 @@
                     ]
                 }
             ],
-            "LifeTime": 826.8927001953125,
+            "LifeTime": 4532.95654296875,
             "LifeTime_Particle": [
                 0.10000000149011612,
-                2.0
+                1.0
             ],
             "Local": true,
             "Loop": false,
             "MaxLifeTime": 3.0,
-            "MaxSpeed": 1000.0,
-            "MinSpeed": -2.0,
+            "MaxSpeed": 3.0,
+            "MinSpeed": -0.30000001192092896,
             "Name": "Player_Heal_SkelEmitterParticle1",
-            "NumInstance": 300,
+            "NumInstance": 1000,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -81,19 +81,19 @@
                 0.0
             ],
             "OrbitSpeed": [
-                -90.0,
-                90.0
+                180.0,
+                -180.0
             ],
             "PType": 0,
             "Pivot": [
                 0.0,
                 0.0,
-                -0.009999999776482582
+                0.0
             ],
             "Range": [
-                0.05000000074505806,
-                0.05000000074505806,
-                0.0
+                0.30000001192092896,
+                0.30000001192092896,
+                0.019999999552965164
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -107,18 +107,18 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.029999999329447746,
+                0.019999999552965164,
                 0.03999999910593033
             ],
             "Speed": [
-                0.5,
-                1.0
+                4.389999866485596,
+                4.0
             ],
             "Spin": false,
             "StartTrack": 0,
             "TextureTags": [
                 "",
-                "T_Shere_05_C_HJS",
+                "T_LensFlare_04_C_RSW",
                 "",
                 ""
             ],

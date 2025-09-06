@@ -1,0 +1,135 @@
+{
+    "Accel": [
+        0.0,
+        0.0
+    ],
+    "Animation": true,
+    "Billboard": false,
+    "Center": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "CenterColor": [
+        0.282722532749176,
+        0.44795936346054077,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        0.14659643173217773,
+        0.0,
+        1.0,
+        1.0
+    ],
+    "DistortionStrength": 10.0,
+    "Duration": 98,
+    "EffectType": 1,
+    "EmissiveIntensity": 1.100000023841858,
+    "EndTrack": 98,
+    "FlipUV": false,
+    "Gravity": 9.800000190734863,
+    "IsGravity": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.14659643173217773,
+                0.0,
+                1.0,
+                1.0
+            ],
+            "Intensity": 10.609999656677246,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 4768.8212890625,
+    "LifeTime_Particle": [
+        0.20000000298023224,
+        0.5
+    ],
+    "Local": true,
+    "Loop": true,
+    "MaxLifeTime": 4.0,
+    "MaxSpeed": 1000.0,
+    "MinSpeed": 0.0,
+    "Name": "Test_LighteningParticle1",
+    "NumInstance": 2,
+    "NumKeyFrames": 1,
+    "Orbit": false,
+    "OrbitAxis": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "OrbitSpeed": [
+        0.0,
+        0.0
+    ],
+    "PType": 0,
+    "Pivot": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "Range": [
+        0.5,
+        0.5,
+        0.5
+    ],
+    "RenderGroup": 8,
+    "RotationAxis": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "RotationSpeed": [
+        0.0,
+        0.0
+    ],
+    "ShaderPass": 7,
+    "Size": [
+        0.10000000149011612,
+        0.4000000059604645
+    ],
+    "Speed": [
+        0.0,
+        0.0
+    ],
+    "Spin": false,
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "T_SubUV_Lightning_01_4x4_SC_LGS",
+        "T_Waterfall_Foam_01_SC_RSW",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        true,
+        true,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 10.0,
+    "TileX": 4,
+    "TileY": 4,
+    "isTileLoop": false
+}
