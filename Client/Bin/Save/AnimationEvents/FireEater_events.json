@@ -865,7 +865,7 @@
                 },
                 {
                     "EventName": "ActiveHpBar",
-                    "Time": 1.0
+                    "Time": 649.0
                 },
                 {
                     "EventName": "StandUpSound",
@@ -882,7 +882,7 @@
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 35.0
+            "TickPerSecond": 25.0
         },
         {
             "ClipName": "AS_Groggy_End",

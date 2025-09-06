@@ -143,7 +143,6 @@ private:
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
 	virtual HRESULT Ready_Actor() override;
-	 HRESULT        Ready_Weapon();
 	virtual void Ready_BoneInformation() override;
 
 	virtual void Update_Collider() override;
