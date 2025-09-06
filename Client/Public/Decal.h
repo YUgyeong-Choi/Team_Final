@@ -26,12 +26,12 @@ public:
 public:
 	typedef struct tagDecalDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		_float4x4	WorldMatrix = _float4x4(
-			1.f, 0.f, 0.f, 0.f,
-			0.f, 1.f, 0.f, 0.f,
-			0.f, 0.f, 1.f, 0.f,
-			0.f, 0.f, 0.f, 1.f
-		);
+		//_float4x4	WorldMatrix = _float4x4(
+		//	1.f, 0.f, 0.f, 0.f,
+		//	0.f, 1.f, 0.f, 0.f,
+		//	0.f, 0.f, 1.f, 0.f,
+		//	0.f, 0.f, 0.f, 1.f
+		//);
 
 		wstring PrototypeTag[ENUM_CLASS(TEXTURE_TYPE::END)] = {};
 

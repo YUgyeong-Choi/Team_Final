@@ -1,5 +1,5 @@
 {
-    "ModelCount": 197,
+    "ModelCount": 198,
     "Models": [
         {
             "Collision": false,
@@ -416,6 +416,12 @@
                     ]
                 }
             ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "ErgoItem",
+            "ObjectCount": 0,
+            "Objects": []
         },
         {
             "Collision": true,

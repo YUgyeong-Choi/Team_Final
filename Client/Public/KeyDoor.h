@@ -11,6 +11,7 @@ class CPhysXDynamicActor;
 class CPhysXStaticActor;
 class CSoundController;
 class CAnimController;
+class CAnimator;
 NS_END
 
 NS_BEGIN(Client)
@@ -54,7 +55,7 @@ protected:
 	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
 private:
 	class CPlayer* m_pPlayer = { nullptr };
-	CAnimator* m_pAnimator = { nullptr };
+	class CAnimator* m_pAnimator = { nullptr };
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
 	CSoundController* m_pSoundCom = { nullptr };
 	INTERACT_TYPE m_eInteractType;
